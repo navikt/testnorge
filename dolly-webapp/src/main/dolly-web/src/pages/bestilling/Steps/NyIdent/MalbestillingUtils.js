@@ -24,6 +24,14 @@ export const getAttributesFromMal = mal => {
 		tpsfKriterier.relasjoner.barn && attrArray.push('barn')
 		tpsfKriterier.relasjoner.partner && attrArray.push('partner')
 	}
+
+	if (tpsfKriterier.utvandretTilLand) {
+		attrArray.push('utvandret')
+		delete attrArray[attrArray.indexOf('utvandretTilLand')]
+		tpsfKriterier.utvandretTilLandFlyttedato &&
+			delete attrArray[attrArray.indexOf('utvandretTilLandFlyttedato')]
+	}
+
 	if (bestKriterier.pdlforvalter) {
 		Object.keys(bestKriterier.pdlforvalter).map(pdlattr => {
 			attrArray.push(pdlattr)
@@ -52,6 +60,12 @@ export const getValuesFromMal = mal => {
 			_mapArrayValuesToObject(reduxStateValue, valueArray, navn)
 		}
 	})
+
+	if (reduxStateValue.utvandretTilLand) {
+		const utvandretValues = _mapUtvandretValues(reduxStateValue)
+		reduxStateValue = utvandretValues
+	}
+
 	if (reduxStateValue.adressetype && reduxStateValue.adressetype === 'MATR') {
 		const matrikkeladresseValues = _mapAdresseValues(reduxStateValue)
 		reduxStateValue = matrikkeladresseValues
@@ -138,6 +152,7 @@ const _formatValueForObject = (key, value) => {
 		'flyttedato',
 		'fraDato',
 		'tilDato',
+		'utvandretTilLandFlyttedato',
 		'startdato',
 		'faktiskSluttdato',
 		'forventetSluttdato'
@@ -174,6 +189,18 @@ const _mapRegistreKey = key => {
 		default:
 			return key
 	}
+}
+
+const _mapUtvandretValues = values => {
+	let utvandretValues = [
+		{
+			utvandretTilLand: values.utvandretTilLand,
+			utvandretTilLandFlyttedato: values.utvandretTilLandFlyttedato
+		}
+	]
+	let returnValues = values
+	returnValues['utvandret'] = utvandretValues
+	return returnValues
 }
 
 const _mapAdresseValues = values => {

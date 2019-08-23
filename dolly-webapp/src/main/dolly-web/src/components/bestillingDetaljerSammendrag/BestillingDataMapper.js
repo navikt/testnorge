@@ -28,6 +28,10 @@ const _getTpsfBestillingData = data => {
 			value: Formatters.kjonnToString(data.kjonn)
 		},
 		{
+			label: 'Har mellomnavn',
+			value: Formatters.oversettBoolean(data.harMellomnavn)
+		},
+		{
 			label: 'Sivilstand',
 			value: data.sivilstand,
 			apiKodeverkId: 'Sivilstander'
@@ -45,6 +49,15 @@ const _getTpsfBestillingData = data => {
 			label: 'Språk',
 			value: data.sprakKode,
 			apiKodeverkId: 'Språk'
+		},
+		{
+			label: 'Utvandret til land',
+			value: data.utvandretTilLand,
+			apiKodeverkId: 'StatsborgerskapFreg'
+		},
+		{
+			label: 'Utvandret dato',
+			value: Formatters.formatDate(data.utvandretTilLandFlyttedato)
 		},
 		{
 			label: 'Egenansatt',
