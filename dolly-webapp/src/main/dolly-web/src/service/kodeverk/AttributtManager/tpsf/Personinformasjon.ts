@@ -60,6 +60,18 @@ const AttributtListe: Attributt[] = [
 		attributtType: AttributtType.SelectOnly,
 		sattForEksisterendeIdent: true
 	},
+
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Diverse,
+		id: 'harMellomnavn',
+		label: 'Mellomnavn',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Select,
+		options: SelectOptionsManager('boolean'),
+		attributtType: AttributtType.SelectAndEdit
+	},
+
 	{
 		hovedKategori: Kategorier.PersInfo,
 		subKategori: SubKategorier.Diverse,
