@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class KrrStubResponseHandler {
+public class KrrstubResponseHandler {
 
     private static boolean isOkStatus(ResponseEntity<Object> response) {
         return HttpStatus.OK == response.getStatusCode() ||

@@ -32,7 +32,7 @@ public class KrrstubClientTest {
     private KrrstubConsumer krrstubConsumer;
 
     @Mock
-    private KrrStubResponseHandler krrStubResponseHandler;
+    private KrrstubResponseHandler krrStubResponseHandler;
 
     @Mock
     private MapperFacade mapperFacade;
