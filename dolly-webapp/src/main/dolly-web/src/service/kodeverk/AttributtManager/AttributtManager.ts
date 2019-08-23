@@ -40,6 +40,9 @@ export default class AttributtManager {
 						attr.dataSource === 'PDLF' ||
 						attr.dataSource === 'ARENA' ||
 						attr.dataSource === 'INST' ||
+						(attr.dataSource === 'TPSF' && attr.id === 'utvandret') ||
+						(attr.dataSource === 'TPSF' && attr.id === 'partner_utvandret') ||
+						(attr.dataSource === 'TPSF' && attr.id === 'barn_utvandret') ||
 						(attr.dataSource === 'TPSF' && attr.id === 'matrikkeladresse')
 					) {
 						return attr
@@ -149,6 +152,12 @@ export default class AttributtManager {
 			if (!dataSourceValues) return false
 
 			const dataPath = editPath || path || id
+
+			// Quick fix for å ikke vise utvandret som editable, fordi jeg ikke får til å redigere den
+			if (dataPath === 'utvandret') {
+				return false
+			}
+
 			// fjern attributt som allerede har en verdi
 			if (_get(dataSourceValues, dataPath)) {
 				return !_get(dataSourceValues, dataPath)

@@ -3,6 +3,8 @@ import { Attributt, InputType, DataSource, AttributtType } from '../Types'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import DateValidation from '~/components/fields/Datepicker/DateValidation'
 
+import * as yup from 'yup'
+
 const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -91,6 +93,39 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		apiKodeverkId: 'Språk',
 		attributtType: AttributtType.SelectAndEdit
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Diverse,
+		id: 'utvandret',
+		label: 'Utvandret',
+		dataSource: DataSource.TPSF,
+		attributtType: AttributtType.SelectAndEdit,
+		validation: yup.object(),
+		items: [
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Diverse,
+				id: 'utvandretTilLand',
+				label: 'Utvandret til land',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				editPath: 'utvandretTilLand',
+				validation: yup.string().required('Vennligst velg'),
+				apiKodeverkId: 'StatsborgerskapFreg',
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Diverse,
+				id: 'utvandretTilLandFlyttedato',
+				label: 'Utvandret dato',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				editPath: 'utvandretTilLandFlyttedato',
+				attributtType: AttributtType.SelectAndEdit
+			}
+		]
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
