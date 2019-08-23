@@ -87,16 +87,17 @@ public class FoedselServiceTest {
     }
 
     /**
-     * Testscenario: Systemet skal finne en far til barnet basert på mors alder og tidligere valgte mødre
+     * Testscenario: Systemet skal finne en far til barnet basert på mors alder, barns alder og tidligere valgte mødre
      */
     @Test
     public void shouldFindFatherForChild() {
-        String morFnr = "22061756889";
-        List<String> levendeIdenterINorge = new ArrayList<>(Arrays.asList("22061756889", "22051767891", "30111757809", "26101767990"));
-        List<String> moedre = new ArrayList<>(Arrays.asList("22061756889", "30111657809"));
-        String farFnr = foedselService.findFar(morFnr, levendeIdenterINorge, moedre);
+        String morFnr = "22060156889";
+        List<String> levendeIdenterINorge = new ArrayList<>(Arrays.asList("22060156889", "22050167791", "30111757809", "26101767990"));
+        List<String> moedre = new ArrayList<>(Arrays.asList("22060156889", "30111657809"));
+        String barnFnr = "21051767891";
+        String farFnr = foedselService.findFar(morFnr, barnFnr, levendeIdenterINorge, moedre);
 
-        assertThat(farFnr, equalTo("22051767891"));
+        assertThat(farFnr, equalTo("22050167791"));
     }
 
     /**

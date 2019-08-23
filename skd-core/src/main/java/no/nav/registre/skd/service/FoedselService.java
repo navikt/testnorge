@@ -28,6 +28,9 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 @Slf4j
 public class FoedselService {
 
+    private static final int MIN_FORELDER_ALDER = 16;
+    private static final int MAKS_FORELDER_ALDER = 70;
+
     @Autowired
     private IdentPoolConsumer identPoolConsumer;
 
@@ -53,7 +56,7 @@ public class FoedselService {
 
             String barnFnr;
             try {
-                barnFnr = identPoolConsumer.hentNyeIdenter(HentIdenterRequest.builder().foedtEtter(morFoedselsdato.plusYears(13)).antall(1).identtype(identType).build()).get(0);
+                barnFnr = identPoolConsumer.hentNyeIdenter(HentIdenterRequest.builder().foedtEtter(morFoedselsdato.plusYears(MIN_FORELDER_ALDER)).antall(1).identtype(identType).build()).get(0);
             } catch (RuntimeException e) {
                 log.warn("Kunne ikke finne barn til mor med fnr {} - Fjernet melding med meldingsnummer {}", morFnr, melding.getMeldingsnrHosTpsSynt());
                 meldingIterator.remove();
@@ -65,7 +68,7 @@ public class FoedselService {
             ((RsMeldingstype1Felter) melding).setMorsFodselsdato(morFnr.substring(0, 6));
             ((RsMeldingstype1Felter) melding).setMorsPersonnummer(morFnr.substring(6));
 
-            String farFnr = findFar(morFnr, levendeIdenterINorge, moedre);
+            String farFnr = findFar(morFnr, barnFnr, levendeIdenterINorge, moedre);
             if (farFnr != null) {
                 ((RsMeldingstype1Felter) melding).setFarsFodselsdato(farFnr.substring(0, 6));
                 ((RsMeldingstype1Felter) melding).setFarsPersonnummer(farFnr.substring(6));
@@ -100,16 +103,40 @@ public class FoedselService {
 
     /**
      * @param morsFnr
+     * @param barnFnr
      * @param levendeIdenterINorge
      * @param moedre
-     * @return Fnr til far til barn. Far er like gammel eller eldre enn mor. Far kan være mann eller kvinne.
+     * @return Fnr til far til barn. Far kan være yngre, like gammel eller eldre enn mor, og minst MIN_FORELDER_ALDER år eldre enn barnet. Far vil alltid være mann
      */
-    public String findFar(String morsFnr, List<String> levendeIdenterINorge, List<String> moedre) {
+    public String findFar(String morsFnr, String barnFnr, List<String> levendeIdenterINorge, List<String> moedre) {
         List<String> potensielleFedre = new ArrayList<>(levendeIdenterINorge);
+        potensielleFedre.removeIf(potensiellFar -> !"13579".contains(String.valueOf(potensiellFar.charAt(8)))); // menn har oddetall på index 8 i FNR
         Collections.shuffle(potensielleFedre);
-        for (String ident : potensielleFedre) {
-            if (!moedre.contains(ident) && getFoedselsdatoFraFnr(ident).compareTo(getFoedselsdatoFraFnr(morsFnr)) <= 0) { // finn far som er like gammel eller eldre enn mor for enkelhets skyld
-                return ident;
+
+        LocalDate foedselsdatoTilMor = getFoedselsdatoFraFnr(morsFnr);
+        LocalDate foedselsdatoTilBarn = getFoedselsdatoFraFnr(barnFnr);
+        LocalDate dagensDato = LocalDate.now();
+
+        int morAlder = dagensDato.minusYears(foedselsdatoTilMor.getYear()).getYear();
+        int barnAlder = dagensDato.minusYears(foedselsdatoTilBarn.getYear()).getYear();
+        int gyldigMinimumFarAlder = morAlder - 30;
+        int gyldigMaksimumFarAlder = morAlder + 30;
+
+        if (gyldigMinimumFarAlder < barnAlder + MIN_FORELDER_ALDER) {
+            gyldigMinimumFarAlder = barnAlder + MIN_FORELDER_ALDER;
+        }
+
+        if (gyldigMaksimumFarAlder > barnAlder + MAKS_FORELDER_ALDER) {
+            gyldigMaksimumFarAlder = barnAlder + MAKS_FORELDER_ALDER;
+        }
+
+        for (String far : potensielleFedre) {
+            if (!moedre.contains(far)) {
+                LocalDate foedselsdatoTilFar = getFoedselsdatoFraFnr(far);
+                int farAlder = dagensDato.minusYears(foedselsdatoTilFar.getYear()).getYear();
+                if (farAlder >= gyldigMinimumFarAlder && farAlder <= gyldigMaksimumFarAlder) {
+                    return far;
+                }
             }
         }
         return null;

@@ -23,5 +23,4 @@ public class IdentUtility {
 
         return LocalDate.of(year, month, day);
     }
-
 }
