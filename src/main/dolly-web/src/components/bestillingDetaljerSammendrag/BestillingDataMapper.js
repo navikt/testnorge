@@ -122,7 +122,6 @@ export function mapBestillingData(bestillingData) {
 					]
 				}
 				pdlf.items.forEach(item => {
-					console.log('item :', item)
 					personinfo.items.push(item)
 				})
 			}
