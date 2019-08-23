@@ -20,7 +20,7 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDate;
 
 @DisplayName("POST /api/v1/gruppe")
-class TestgruppeControllerPostTest extends TestgruppeTestCaseBase {
+class TestgruppeControllerPostTest extends TestgruppeTestBase {
 
     @Test
     @DisplayName("Returnerer opprettet Testgruppe med innlogget bruker som eier")

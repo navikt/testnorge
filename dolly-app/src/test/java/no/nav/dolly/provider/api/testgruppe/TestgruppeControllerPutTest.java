@@ -6,7 +6,6 @@ import static org.junit.Assert.assertThat;
 
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.domain.resultset.RsTestident;
@@ -20,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @DisplayName("PUT /api/v1/gruppe")
-class TestgruppeControllerPutTest extends TestgruppeTestCaseBase {
+class TestgruppeControllerPutTest extends TestgruppeTestBase {
 
     @Test
     @DisplayName("Returnerer HTTP 404 Not Found når Testgruppe ikke finnes")

@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 @DisplayName("GET /api/v1/gruppe")
-class TestgruppeControllerGetTest extends TestgruppeTestCaseBase {
+class TestgruppeControllerGetTest extends TestgruppeTestBase {
 
     private static final ParameterizedTypeReference<List<String>> expectedResponseString = new ParameterizedTypeReference<List<String>>() {
     };

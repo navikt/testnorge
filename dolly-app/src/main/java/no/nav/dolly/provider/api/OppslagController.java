@@ -38,6 +38,7 @@ public class OppslagController {
         return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverkNavn, response.getBetydninger());
     }
 
+    //TODO Bruk egen cache
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/norg2/enhet/{tknr}")
     public Norg2EnhetResponse fetchEnhetByTknr(@PathVariable("tknr") String tknr) {

@@ -4,12 +4,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
-import no.nav.dolly.domain.resultset.RsTestident;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
@@ -20,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @DisplayName("DELETE /api/v1/gruppe")
-class TestgruppeControllerDeleteTest extends TestgruppeTestCaseBase {
+class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
 
     @Test
     @DisplayName("Returnerer HTTP 404 Not Found ved sletting når Testgruppe ikke finnes")

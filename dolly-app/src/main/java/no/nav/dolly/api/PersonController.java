@@ -13,7 +13,6 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.TestgruppeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,9 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "api/v1/person")
 public class PersonController {
-
-    @Autowired
-    private TestgruppeService testgruppeService;
 
     @Autowired
     private BestillingService bestillingService;
