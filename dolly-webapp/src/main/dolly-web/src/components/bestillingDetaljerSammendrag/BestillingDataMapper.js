@@ -28,6 +28,10 @@ const _getTpsfBestillingData = data => {
 			value: Formatters.kjonnToString(data.kjonn)
 		},
 		{
+			label: 'Har mellomnavn',
+			value: Formatters.oversettBoolean(data.harMellomnavn)
+		},
+		{
 			label: 'Sivilstand',
 			value: data.sivilstand,
 			apiKodeverkId: 'Sivilstander'
