@@ -14,7 +14,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAktoer;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
-import no.nav.dolly.domain.resultset.aareg.RsPerson;
+import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -46,7 +46,7 @@ public class AaregClient implements ClientRegister {
                 AtomicInteger arbeidsForholdId = new AtomicInteger(1);
                 bestilling.getAareg().forEach(arbfInput -> {
                     arbfInput.setArbeidsforholdID(Integer.toString(arbeidsForholdId.getAndIncrement()));
-                    arbfInput.setArbeidstaker(RsPerson.builder().ident(norskIdent.getIdent()).build());
+                    arbfInput.setArbeidstaker(RsPersonAareg.builder().ident(norskIdent.getIdent()).build());
 
                     if (arbeidsforhold != null && equalArbeidsforhold(arbfInput, (Map) arbeidsforhold)) {
                         Map arbfFraAareg = (Map) arbeidsforhold;

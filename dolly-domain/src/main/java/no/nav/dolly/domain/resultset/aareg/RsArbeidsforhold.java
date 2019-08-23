@@ -29,7 +29,7 @@ public class RsArbeidsforhold {
     private List<RsPermisjon> permisjon;
     private List<RsUtenlandsopphold> utenlandsopphold;
     private RsAktoer arbeidsgiver;
-    private RsPerson arbeidstaker;
+    private RsPersonAareg arbeidstaker;
 
     public List<RsAntallTimerIPerioden> getAntallTimerForTimeloennet() {
         if (isNull(antallTimerForTimeloennet)) {

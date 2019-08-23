@@ -15,7 +15,7 @@ import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPeriode;
 import no.nav.dolly.domain.resultset.aareg.RsPermisjon;
-import no.nav.dolly.domain.resultset.aareg.RsPerson;
+import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 import no.nav.dolly.domain.resultset.aareg.RsUtenlandsopphold;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
@@ -36,59 +36,6 @@ public class AaregMappingStrategyTest {
     private CustomConverter calendarConverter = new XmlGregorianCalendarCustomMapping();
     private MappingStrategy aaregMappingStrategy = new AaregMappingStrategy();
     private MapperFacade mapper;
-
-    private static RsArbeidsforhold buildRsArbeidforhold() {
-
-        return RsArbeidsforhold.builder()
-                .ansettelsesPeriode(RsPeriode.builder()
-                        .fom(of(2010, 11, 4, 0, 0))
-                        .tom(of(2018, 1, 5, 0, 0))
-                        .build())
-                .arbeidsforholdID("Ansatt")
-                .arbeidsforholdIDnav(101L)
-                .arbeidstaker(RsPerson.builder()
-                        .ident("5345345345")
-                        .identtype("FNR")
-                        .build())
-                .arbeidsgiver(RsOrganisasjon.builder()
-                        .orgnummer("354534534544")
-                        .build())
-                .arbeidsforholdstype("ansatt")
-                .arbeidsavtale(RsArbeidsavtale.builder()
-                        .yrke("bussjåfør")
-                        .avloenningstype("Per time")
-                        .arbeidstidsordning("Regulær")
-                        .stillingsprosent(valueOf(20))
-                        .antallKonverterteTimer(valueOf(50))
-                        .avtaltArbeidstimerPerUke(valueOf(17))
-                        .endringsdatoStillingsprosent(of(2014, 1, 8, 0, 0))
-                        .sisteLoennsendringsdato(of(2019, 1, 3, 0, 0))
-                        .build())
-                .antallTimerForTimeloennet(singletonList(RsAntallTimerIPerioden.builder()
-                        .antallTimer(valueOf(345))
-                        .periode(RsPeriode.builder()
-                                .fom(of(2013, 10, 8, 0, 0))
-                                .tom(of(2015, 2, 7, 0, 0))
-                                .build())
-                        .build()))
-                .permisjon(singletonList(RsPermisjon.builder()
-                        .permisjonsId("123456")
-                        .permisjonsPeriode(RsPeriode.builder()
-                                .fom(of(2012, 12, 9, 0, 0))
-                                .tom(of(2016, 5, 3, 0, 0))
-                                .build())
-                        .permisjonsprosent(valueOf(20))
-                        .permisjonOgPermittering("velferdspermisjon")
-                        .build()))
-                .utenlandsopphold(singletonList(RsUtenlandsopphold.builder()
-                        .land("Flesland")
-                        .periode(RsPeriode.builder()
-                                .fom(of(2011, 4, 2, 0, 0))
-                                .tom(of(2017, 7, 1, 0, 0))
-                                .build())
-                        .build()))
-                .build();
-    }
 
     @Before
     public void setup() {
@@ -164,5 +111,58 @@ public class AaregMappingStrategyTest {
                 is(equalTo(mapper.map(rsArbeidsforhold.getUtenlandsopphold().get(0).getPeriode().getFom(), XMLGregorianCalendar.class))));
         assertThat(utenlandsopphold.getPeriode().getTom(),
                 is(equalTo(mapper.map(rsArbeidsforhold.getUtenlandsopphold().get(0).getPeriode().getTom(), XMLGregorianCalendar.class))));
+    }
+
+    private static RsArbeidsforhold buildRsArbeidforhold() {
+
+        return RsArbeidsforhold.builder()
+                .ansettelsesPeriode(RsPeriode.builder()
+                        .fom(of(2010, 11, 4, 0, 0))
+                        .tom(of(2018, 1, 5, 0, 0))
+                        .build())
+                .arbeidsforholdID("Ansatt")
+                .arbeidsforholdIDnav(101L)
+                .arbeidstaker(RsPersonAareg.builder()
+                        .ident("5345345345")
+                        .identtype("FNR")
+                        .build())
+                .arbeidsgiver(RsOrganisasjon.builder()
+                        .orgnummer("354534534544")
+                        .build())
+                .arbeidsforholdstype("ansatt")
+                .arbeidsavtale(RsArbeidsavtale.builder()
+                        .yrke("bussjåfør")
+                        .avloenningstype("Per time")
+                        .arbeidstidsordning("Regulær")
+                        .stillingsprosent(valueOf(20))
+                        .antallKonverterteTimer(valueOf(50))
+                        .avtaltArbeidstimerPerUke(valueOf(17))
+                        .endringsdatoStillingsprosent(of(2014, 1, 8, 0, 0))
+                        .sisteLoennsendringsdato(of(2019, 1, 3, 0, 0))
+                        .build())
+                .antallTimerForTimeloennet(singletonList(RsAntallTimerIPerioden.builder()
+                        .antallTimer(valueOf(345))
+                        .periode(RsPeriode.builder()
+                                .fom(of(2013, 10, 8, 0, 0))
+                                .tom(of(2015, 2, 7, 0, 0))
+                                .build())
+                        .build()))
+                .permisjon(singletonList(RsPermisjon.builder()
+                        .permisjonsId("123456")
+                        .permisjonsPeriode(RsPeriode.builder()
+                                .fom(of(2012, 12, 9, 0, 0))
+                                .tom(of(2016, 5, 3, 0, 0))
+                                .build())
+                        .permisjonsprosent(valueOf(20))
+                        .permisjonOgPermittering("velferdspermisjon")
+                        .build()))
+                .utenlandsopphold(singletonList(RsUtenlandsopphold.builder()
+                        .land("Flesland")
+                        .periode(RsPeriode.builder()
+                                .fom(of(2011, 4, 2, 0, 0))
+                                .tom(of(2017, 7, 1, 0, 0))
+                                .build())
+                        .build()))
+                .build();
     }
 }

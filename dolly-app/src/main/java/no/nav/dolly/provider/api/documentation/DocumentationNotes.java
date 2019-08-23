@@ -14,7 +14,7 @@ public final class DocumentationNotes {
             "       &nbsp; &nbsp; \"postnr\": \"string\", <br />"
                     + "     &nbsp; &nbsp; \"kommunenr\": \"string\", <br />"
                     + "     &nbsp; &nbsp; \"flyttedato\": \"string\" <br />";
-    private static final String BOADRESSE_COMMENT = "Json-parametere for boadresse har følgende parametre: <br />"
+    public static final String BOADRESSE_COMMENT = "Alternativt har Json-parametere for boadresse følgende parametre: <br />"
             + " For gateadresse:  <br />"
             + "     &nbsp; \"boadresse\": {<br />"
             + "     &nbsp; &nbsp; \"adressetype\": \"GATE\", <br />"
@@ -32,7 +32,7 @@ public final class DocumentationNotes {
             + "     &nbsp; &nbsp; \"undernr\": \"string\", <br />"
             + ADRESSE_COMMON + "} <br /> <br />";
 
-    private static final String UTEN_ARBEIDSTAKER = "I bestilling benyttes ikke feltet for arbeidstaker. <br /><br />";
+    public static final String UTEN_ARBEIDSTAKER = "I bestilling benyttes ikke feltet for arbeidstaker. <br /><br />";
 
     private static final String FULLT_NAVN =
             "     &nbsp; &nbsp; &nbsp; \"etternavn\": \"string\", <br />"
@@ -78,7 +78,7 @@ public final class DocumentationNotes {
             + "For identitet med personnummer:<br />"
             + FALSK_IDENTITET_TYPE
             + "     &nbsp; &nbsp; \"identitetType\": \"ENTYDIG\", <br />"
-            + "     &nbsp; &nbsp; \"rettIdentitetVedIdentifikasjonsnummer\": \"&lt;fnr/dnr&gt;\" <br />"
+            + "     &nbsp; &nbsp; \"rettIdentitetVedIdentifikasjonsnummer\": \"&lt;fnr/dnr/bost&gt;\" <br />"
             + EPILOG
             + "For identitet med opplysninger:<br />"
             + FALSK_IDENTITET_TYPE

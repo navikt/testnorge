@@ -15,6 +15,7 @@ import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestilteKriterier;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -89,6 +90,25 @@ public class BestillingService {
     }
 
     @Transactional
+    public Bestilling saveBestilling(String ident, RsDollyUpdateRequest request) {
+        return saveBestillingToDB(
+                Bestilling.builder()
+                        .ident(ident)
+                        .sistOppdatert(now())
+                        .miljoer(join(",", request.getEnvironments()))
+                        .tpsfKriterier(toJson(request.getTpsfPerson()))
+                        .bestKriterier(toJson(BestilteKriterier.builder()
+                                .aareg(request.getAareg())
+                                .krrstub(request.getKrrstub())
+                                .sigrunstub(request.getSigrunstub())
+                                .arenaforvalter(request.getArenaforvalter())
+                                .pdlforvalter(request.getPdlforvalter())
+                                .instdata(request.getInstdata())
+                                .build()))
+                        .build());
+    }
+
+    @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, RsTpsfBasisBestilling tpsf, Integer antall, List<String> opprettFraIdenter) {
         Testgruppe gruppe = testgruppeService.fetchTestgruppeById(gruppeId);
         return saveBestillingToDB(
@@ -100,8 +120,8 @@ public class BestillingService {
                         .tpsfKriterier(toJson(tpsf))
                         .bestKriterier(toJson(BestilteKriterier.builder()
                                 .aareg(request.getAareg())
-                                .krrStub(request.getKrrstub())
-                                .sigrunStub(request.getSigrunstub())
+                                .krrstub(request.getKrrstub())
+                                .sigrunstub(request.getSigrunstub())
                                 .arenaforvalter(request.getArenaforvalter())
                                 .pdlforvalter(request.getPdlforvalter())
                                 .instdata(request.getInstdata())

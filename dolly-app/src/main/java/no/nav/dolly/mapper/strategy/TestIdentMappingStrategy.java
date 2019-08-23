@@ -51,7 +51,7 @@ public class TestIdentMappingStrategy implements MappingStrategy {
                             rsTestIdent.setArenaforvalterStatus(buildArenaStatusMap(bestillinger));
                             rsTestIdent.setAaregStatus(buildAaregStatusMap(bestillinger));
                             rsTestIdent.setPdlforvalterStatus(buildPdldataStatusMap(bestillinger));
-                            rsTestIdent.setInstdata(buildInstdataStatusMap(bestillinger));
+                            rsTestIdent.setInstdataStatus(buildInstdataStatusMap(bestillinger));
                         }
                     }
                 })

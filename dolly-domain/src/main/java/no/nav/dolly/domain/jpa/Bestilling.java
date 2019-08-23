@@ -84,6 +84,9 @@ public class Bestilling {
     @Column(name = "MAL_BESTILLING_NAVN")
     private String malBestillingNavn;
 
+    @Column(name = "IDENT")
+    private String ident;
+
     @OneToMany(mappedBy = "bestillingId", fetch = FetchType.LAZY)
     private List<BestillingProgress> progresser;
 

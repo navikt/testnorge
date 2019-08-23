@@ -26,8 +26,8 @@ import java.util.List;
 public class BestilteKriterier {
 
     private List<RsArbeidsforhold> aareg;
-    private RsDigitalKontaktdata krrStub;
-    private List<RsOpprettSkattegrunnlag> sigrunStub;
+    private RsDigitalKontaktdata krrstub;
+    private List<RsOpprettSkattegrunnlag> sigrunstub;
     private Arenadata arenaforvalter;
     private RsPdldata pdlforvalter;
     private List<RsInstdata> instdata;

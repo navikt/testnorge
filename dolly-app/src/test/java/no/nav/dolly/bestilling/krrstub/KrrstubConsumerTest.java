@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
+import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.AfterClass;
@@ -24,7 +24,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @RunWith(MockitoJUnitRunner.class)
-public class KrrStubConsumerTest {
+public class KrrstubConsumerTest {
 
     private static final String CURRENT_BRUKER_IDENT = "user";
     private static final Long BEST_ID = 1L;
@@ -40,7 +40,7 @@ public class KrrStubConsumerTest {
     @Mock
     private ProvidersProps providersProps;
     @InjectMocks
-    private KrrStubConsumer krrStubConsumer;
+    private KrrstubConsumer krrStubConsumer;
 
     @BeforeClass
     public static void beforeClass() {
@@ -60,7 +60,7 @@ public class KrrStubConsumerTest {
         when(providersProps.getKrrStub()).thenReturn(ProvidersProps.KrrStub.builder()
                 .url(BASE_URL).build());
 
-        krrStubConsumer.createDigitalKontaktdata(BEST_ID, DigitalKontaktdataRequest.builder()
+        krrStubConsumer.createDigitalKontaktdata(DigitalKontaktdata.builder()
                 .epost(EPOST)
                 .mobil(MOBIL)
                 .reservert(RESVERT)
@@ -77,7 +77,7 @@ public class KrrStubConsumerTest {
 
         expectedException.expect(RuntimeException.class);
 
-        krrStubConsumer.createDigitalKontaktdata(BEST_ID, DigitalKontaktdataRequest.builder()
+        krrStubConsumer.createDigitalKontaktdata(DigitalKontaktdata.builder()
                 .epost(EPOST)
                 .mobil(MOBIL)
                 .reservert(RESVERT)
