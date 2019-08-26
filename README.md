@@ -37,8 +37,9 @@ For å legge til data kan man enten gå rett på databasen og fylle ut feltene, 
 ## Nytt domene
 
 For å opprette et nytt domene må en POJO og repository opprettes. Det er sterkt anbefalt å eksponere dette nye domenet i APIet.
+
 Nåværende domener belager seg på eksisterende applikasjoner som ikke er direkte tilknyttet fast data. Denne modellen er også
-sterkt anbefalt å følge. 
+sterkt anbefalt å følge. Disse applikasjonen er ansvarlige for å opprette manglende data og gjøre disse tilgjengelige for søk i hodejegeren. 
 
 
 ## Bygg og deploy
