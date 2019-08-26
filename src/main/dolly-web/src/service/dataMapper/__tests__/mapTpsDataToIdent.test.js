@@ -13,13 +13,16 @@ describe('mapTpsDataToIdent.js', () => {
 			gtVerdi: '030103',
 			kjonn: 'MENN',
 			alder: 20,
+			personStatus: 'UTVA',
 			sivilstand: 'ENKE',
 			spesreg: 'KODE6',
 			utenFastBopel: 'JA',
 			relasjoner: [],
 			tknr: '0314',
 			egenAnsattDatoFom: '2019-04-10T12:55:14.896',
-			sprakKode: 'English'
+			sprakKode: 'English',
+			utvandretTilLand: 'BWA',
+			utvandretTilLandFlyttedato: '2019-08-06T00:00:00'
 		}
 
 		const testPdlfData = {
@@ -68,6 +71,11 @@ describe('mapTpsDataToIdent.js', () => {
 						value: '20'
 					},
 					{
+						id: 'personStatus',
+						label: 'Personstatus',
+						value: 'UTVA'
+					},
+					{
 						id: 'sivilstand',
 						label: 'Sivilstand',
 						value: 'ENKE'
@@ -103,6 +111,17 @@ describe('mapTpsDataToIdent.js', () => {
 						id: 'egenAnsattDatoFom',
 						label: 'Egenansatt',
 						value: 'JA'
+					},
+					{
+						apiKodeverkId: 'StatsborgerskapFreg',
+						id: 'utvandretTilLand',
+						label: 'Utvandret til land',
+						value: 'BWA'
+					},
+					{
+						id: 'utvandretTilLandFlyttedato',
+						label: 'Utvandret dato',
+						value: '06.08.2019'
 					}
 				]
 			}

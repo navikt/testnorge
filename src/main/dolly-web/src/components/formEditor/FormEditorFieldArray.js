@@ -20,7 +20,6 @@ const FormEditorFieldArray = (
 	shouldRenderSubItem
 ) => {
 	const parentId = subKategori.id
-
 	return (
 		<div className="subkategori" key={parentId}>
 			<FieldArray
@@ -50,12 +49,13 @@ export const FieldArrayComponent = ({
 	shouldRenderFieldComponent,
 	shouldRenderSubItem,
 	editMode,
-	arrayHelpers
+	arrayHelpers,
+	idx
 }) => {
 	const { subKategori, items, subItems, id } = item
-
 	const parentId = id
-	const parentAttributes = items.reduce((prev, curr) => {
+	const itemid = idx
+	let parentAttributes = items.reduce((prev, curr) => {
 		return {
 			...prev,
 			[curr.id]: Boolean(curr.subItems)
@@ -63,8 +63,12 @@ export const FieldArrayComponent = ({
 				: Attributt.initValueSelector(curr)
 		}
 	}, {})
-	const createDefaultObject = () => arrayHelpers.push({ ...parentAttributes })
-
+	const createDefaultObject = () => {
+		if ('barn_utvandret' in parentAttributes) {
+			parentAttributes.barn_utvandret = [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }]
+		}
+		arrayHelpers.push({ ...parentAttributes })
+	}
 	const createSubItem = (subitem, itemIndex) => {
 		let subItemArray = subitem.subItems
 		const subItemId = subitem.id
@@ -72,7 +76,6 @@ export const FieldArrayComponent = ({
 		const subItemAttributes = subItemArray.reduce((prev, curr) => {
 			return { ...prev, [curr.id]: Attributt.initValueSelector(curr) }
 		}, {})
-
 		let valueCopy = JSON.parse(JSON.stringify(formikProps.values[parentId][itemIndex]))
 		let subArray = valueCopy[subItemId]
 
@@ -91,12 +94,16 @@ export const FieldArrayComponent = ({
 
 		arrayHelpers.replace(itemIndex, { ...valueCopy, [subItem]: subItemArr })
 	}
-	const formikValues = formikProps.values[parentId]
+	let formikValues = formikProps.values[parentId]
+	if (item.id === 'barn_utvandret') {
+		formikValues = [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }]
+		// formikValues = formikProps.values.barn[idx][parentId]
+	}
 	let subLabelArray = []
 	let antallInstanser = 0
 
 	return (
-		<Fragment>
+		<Fragment key={item.id}>
 			{formikValues && formikValues.length > 0 ? (
 				formikValues.map((faKey, idx) => {
 					antallInstanser = idx + 1
@@ -106,6 +113,19 @@ export const FieldArrayComponent = ({
 							<div className="flexbox">
 								<div className="subkategori-field-group multi">
 									{items.map((item, kdx) => {
+										if (item.items) {
+											return FieldArrayComponent({
+												item,
+												formikProps,
+												renderFieldComponent,
+												renderFieldSubItem,
+												shouldRenderFieldComponent,
+												shouldRenderSubItem,
+												editMode,
+												arrayHelpers,
+												idx
+											})
+										}
 										if (
 											item.subKategori.id !== subKategori.navn &&
 											!subLabelArray.includes(item.subKategori.id)
@@ -144,6 +164,12 @@ export const FieldArrayComponent = ({
 											const fakeItem = {
 												...item,
 												id: `${parentId}[${idx}]${item.id}`
+											}
+											if (fakeItem.id === 'barn_utvandret[0]utvandretTilLand') {
+												fakeItem.id = `barn[${itemid}]barn_utvandret[0]utvandretTilLand`
+											}
+											if (fakeItem.id === 'barn_utvandret[0]utvandretTilLandFlyttedato') {
+												fakeItem.id = `barn[${itemid}]barn_utvandret[0]utvandretTilLandFlyttedato`
 											}
 											return (
 												<div key={kdx} className="flexbox">

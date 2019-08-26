@@ -37,10 +37,9 @@ export default class DollySelect extends PureComponent {
 		} = this.props
 
 		let restPropsCopy = Object.assign({}, restProps)
-		if (typeof this.props.value === 'object') {
-			restPropsCopy.value = {} // <arrayField/> viser ingen verdi i vinduet.
-		}
-
+		// if (this.props.isMultiple) {
+		// 	restPropsCopy.value = {} // <arrayField/> viser ingen verdi i vinduet.
+		// }
 		return (
 			<div className={cn({ error: Boolean(error) }, size, 'skjemaelement dollyselect')}>
 				<label htmlFor={name} className="skjemaelement__label">

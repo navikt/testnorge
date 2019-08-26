@@ -241,6 +241,7 @@ export default class Step3 extends PureComponent {
 						onRemove={() => this._onRemoveSubKategori(items, header)}
 					>
 						{header && <h4>{typeof header === 'number' ? `# ${header}` : header}</h4>}
+
 						<div
 							className={
 								typeof items[0].subGruppe === 'string'
@@ -248,7 +249,7 @@ export default class Step3 extends PureComponent {
 									: 'oppsummering-blokk'
 							}
 						>
-							{items.map(item => this.renderItem(item, values))}
+							{items.map(item => this.renderItem(item, values, header))}
 						</div>
 					</RemoveableField>
 				</div>
@@ -262,9 +263,14 @@ export default class Step3 extends PureComponent {
 		)
 	}
 
-	renderItem = (item, stateValues) => {
+	renderItem = (item, stateValues, header) => {
 		if (item.items) {
-			const valueArray = _get(this.props.values, item.id)
+			let valueArray = _get(this.props.values, item.id)
+			if (item.id === 'barn_utvandret') {
+				let barnIndex = 0
+				if (header) barnIndex = header - 1
+				valueArray = _get(this.props.values.barn[barnIndex], item.id)
+			}
 			return valueArray.map((values, idx) => {
 				Object.keys(values).map(attr => {
 					return !values[attr] && delete values[attr]

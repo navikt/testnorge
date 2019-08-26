@@ -9,7 +9,7 @@ import { FormikInput } from '~/components/fields/Input/Input'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 import DateValidation from '~/components/fields/Datepicker/DateValidation'
 import Knapp from 'nav-frontend-knapper'
-import DataFormatter from '~/utils/DataFormatter'
+import Formatters from '~/utils/DataFormatter'
 
 export default class SendDoedsmelding extends PureComponent {
 	state = {
@@ -64,7 +64,7 @@ export default class SendDoedsmelding extends PureComponent {
 				try {
 					let response = await TpsfApi.createDoedsmelding({
 						...request,
-						doedsdato: DataFormatter.parseDate(values.doedsdato)
+						doedsdato: Formatters.parseDate(values.doedsdato)
 					})
 					const status = response.data.status
 
@@ -210,7 +210,7 @@ export default class SendDoedsmelding extends PureComponent {
 		let initialValues = {
 			ident: currentfnr,
 			handling: 'C',
-			doedsdato: '',
+			doedsdato: Formatters.formatDate(new Date()),
 			miljoer: miljoer.slice()
 		}
 
