@@ -24,7 +24,7 @@ er lagt inn. Resten av mantallet ekisterer der.
 Manglende data på identer blir løpende syntetisert hvis det ikke er fylt inn i databasen. Dette er gjort for å redusere
 kompleksitetsbehovet hos de som ønsker faste data. 
 
-Eksempel: En tester trenger en person med arbeidsforhold i AAREG med en på orgnr 123674181. 
+Eksempel: En tester trenger en person med arbeidsforhold i AAREG i en bedrift med orgnr 123674181. 
 
 I dette tilfellet må bedriftsnavn og enhetstype settes, og for en person må mange felter settes, slik som adresse, navn osv. Disse verdiene blir automatisk satt av applikasjonene som er gitt som avhengigheter. 
  
