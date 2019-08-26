@@ -25,3 +25,8 @@ For å legge til data kan man enten gå rett på databasen og fylle ut feltene, 
 For å opprette et nytt domene må en POJO og repository opprettes. Det er sterkt anbefalt å eksponere dette nye domenet i APIet.
 Nåværende domener belager seg på eksisterende applikasjoner som ikke er direkte tilknyttet fast data. Denne modellen er også
 sterkt anbefalt å følge. 
+
+
+## Bygg og deploy
+
+CircleCI håndterer bygg og deploy til nais via [deployment-cli](https://github.com/navikt/deployment-cli). Github packages er brukt for å hoste docker image som blir generert og et personlig access token + brukernavn må legges til i CircleCI prosjektet. 
