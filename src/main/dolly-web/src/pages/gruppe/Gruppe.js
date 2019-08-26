@@ -20,7 +20,7 @@ export default class Gruppe extends Component {
 	static propTypes = {
 		gruppeArray: PropTypes.array,
 		isFetching: PropTypes.bool,
-		createOrUpdateId: PropTypes.string
+		createOrUpdateId: PropTypes.number
 	}
 
 	VISNING_TESTPERSONER = 'testpersoner'
