@@ -10,6 +10,7 @@ import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import RedigerTeamConnector from '~/components/RedigerTeam/RedigerTeamConnector'
 import PaginationConnector from '~/components/pagination/PaginationConnector'
 
+import './Team.less'
 class Team extends Component {
 	state = {
 		leggTilBruker: false
@@ -71,7 +72,9 @@ class Team extends Component {
 						onClick={deleteTeam}
 					/>
 				</Overskrift>
-				<div style = {{width: '70%'}}>{team.beskrivelse}</div>
+				<div style={{ width: '70%' }} className="Beskrivelse">
+					{team.beskrivelse}
+				</div>
 				{visRedigerTeam && <RedigerTeamConnector team={team} />}
 
 				<Toolbar title="Medlemmer">

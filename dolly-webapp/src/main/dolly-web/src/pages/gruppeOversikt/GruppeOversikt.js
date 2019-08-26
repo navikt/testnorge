@@ -15,7 +15,7 @@ export default class GruppeOversikt extends PureComponent {
 		isFetching: PropTypes.bool,
 		gruppeListe: PropTypes.array,
 		visning: PropTypes.string,
-		createOrUpdateId: PropTypes.number,
+		createOrUpdateId: PropTypes.string,
 		history: PropTypes.object,
 		listGrupper: PropTypes.func,
 		settVisning: PropTypes.func,
