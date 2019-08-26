@@ -39,6 +39,11 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 					value: Formatters.formatAlder(tpsfData.alder, tpsfData.doedsdato)
 				},
 				{
+					id: 'personStatus',
+					label: 'Personstatus',
+					value: tpsfData.personStatus
+				},
+				{
 					id: 'sivilstand',
 					label: 'Sivilstand',
 					value: tpsfData.sivilstand
@@ -56,7 +61,7 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 				{
 					id: 'utenFastBopel',
 					label: 'Uten fast bopel',
-					value: Formatters.oversettBoolean(tpsfData.utenFastBopel)
+					value: tpsfData.utenFastBopel && Formatters.oversettBoolean(tpsfData.utenFastBopel)
 				},
 				{
 					id: 'gtVerdi',
@@ -74,6 +79,17 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 					id: 'egenAnsattDatoFom',
 					label: 'Egenansatt',
 					value: tpsfData.egenAnsattDatoFom && 'JA'
+				},
+				{
+					id: 'utvandretTilLand',
+					label: 'Utvandret til land',
+					value: tpsfData.utvandretTilLand,
+					apiKodeverkId: tpsfData.utvandretTilLand && 'StatsborgerskapFreg'
+				},
+				{
+					id: 'utvandretTilLandFlyttedato',
+					label: 'Utvandret dato',
+					value: Formatters.formatDate(tpsfData.utvandretTilLandFlyttedato)
 				}
 			]
 		}
@@ -281,6 +297,11 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 							)
 						},
 						{
+							id: 'personStatus',
+							label: 'Personstatus',
+							value: relasjon.personRelasjonMed.personStatus
+						},
+						{
 							id: 'statsborgerskap',
 							label: 'Statsborgerskap',
 							value: relasjon.personRelasjonMed.statsborgerskap
@@ -289,6 +310,17 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 							id: 'sprakKode',
 							label: 'Språk',
 							value: relasjon.personRelasjonMed.sprakKode
+						},
+						{
+							id: 'utvandretTilLand',
+							label: 'Utvandret til land',
+							value: relasjon.personRelasjonMed.utvandretTilLand,
+							apiKodeverkId: 'StatsborgerskapFreg'
+						},
+						{
+							id: 'utvandretTilLandFlyttedato',
+							label: 'Utvandret dato',
+							value: Formatters.formatDate(relasjon.personRelasjonMed.utvandretTilLandFlyttedato)
 						},
 						{
 							id: 'sivilstand',
