@@ -7,13 +7,13 @@ import static no.nav.dolly.provider.api.documentation.DocumentationNotes.BOADRES
 import static no.nav.dolly.provider.api.documentation.DocumentationNotes.UTEN_ARBEIDSTAKER;
 
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.service.BestillingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,17 +23,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "api/v1/person")
 public class PersonController {
 
-    @Autowired
-    private BestillingService bestillingService;
-
-    @Autowired
-    private DollyBestillingService dollyBestillingService;
-
-    @Autowired
-    private MapperFacade mapperFacade;
+    private final BestillingService bestillingService;
+    private final DollyBestillingService dollyBestillingService;
+    private final MapperFacade mapperFacade;
 
     @ApiOperation(value = "Endre/oppdater person i TPS og øvrige systemer", notes =
             BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET)

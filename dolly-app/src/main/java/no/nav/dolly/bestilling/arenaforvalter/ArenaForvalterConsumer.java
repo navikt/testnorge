@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
 import static java.lang.String.format;
+import static java.util.Collections.emptyList;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.properties.ProvidersProps;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -57,11 +59,15 @@ public class ArenaForvalterConsumer {
                 .body(arenaNyeBrukere), ArenaArbeidssokerBruker.class);
     }
 
-    public ResponseEntity<List> getEnvironments() {
-        return restTemplate.exchange(RequestEntity.get(
+    public List<String> getEnvironments() {
+        ParameterizedTypeReference<List<String>> expectedResponseType = new ParameterizedTypeReference<List<String>>() {
+        };
+        ResponseEntity<List<String>> resp = restTemplate.exchange(RequestEntity.get(
                 URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_ENVIRONMENTS))
                 .header(HEADER_NAV_CALL_ID, getCallId())
                 .header(HEADER_NAV_CONSUMER_ID, KILDE)
-                .build(), List.class);
+                .build(), expectedResponseType);
+        //TODO Fjern resp != null når ArenaForvalterConsumerTest er skrevet om.
+        return resp != null && resp.getBody() != null ? resp.getBody() : emptyList();
     }
 }

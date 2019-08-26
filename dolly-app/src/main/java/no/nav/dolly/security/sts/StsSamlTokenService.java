@@ -1,6 +1,10 @@
 package no.nav.dolly.security.sts;
 
 import static no.nav.dolly.properties.Environment.convertEnv;
+import static org.apache.cxf.rt.security.SecurityConstants.CACHE_ISSUED_TOKEN_IN_ENDPOINT;
+import static org.apache.cxf.rt.security.SecurityConstants.PASSWORD;
+import static org.apache.cxf.rt.security.SecurityConstants.STS_CLIENT;
+import static org.apache.cxf.rt.security.SecurityConstants.USERNAME;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.properties.CredentialsProps;
@@ -56,9 +60,9 @@ public class StsSamlTokenService {
         STSClient stsClient = new STSClient(client.getBus());
         configureSTSClient(stsClient, convertEnv(env));
 
-        client.getRequestContext().put(SecurityConstants.STS_CLIENT, stsClient);
+        client.getRequestContext().put(STS_CLIENT, stsClient);
         //Using CXF cache
-        client.getRequestContext().put(SecurityConstants.CACHE_ISSUED_TOKEN_IN_ENDPOINT, true);
+        client.getRequestContext().put(CACHE_ISSUED_TOKEN_IN_ENDPOINT, true);
         Policy policy = resolvePolicyReference(client);
         setClientEndpointPolicy(client, policy);
     }
@@ -70,8 +74,8 @@ public class StsSamlTokenService {
         stsClient.setLocation(stsSamlFasitConsumer.getStsSamlService(env));
 
         Map<String, Object> properties = new HashMap<>();
-        properties.put(SecurityConstants.USERNAME, credentialsProps.getUsername(env));
-        properties.put(SecurityConstants.PASSWORD, credentialsProps.getPassword(env));
+        properties.put(USERNAME, credentialsProps.getUsername(env));
+        properties.put(PASSWORD, credentialsProps.getPassword(env));
 
         stsClient.setProperties(properties);
 

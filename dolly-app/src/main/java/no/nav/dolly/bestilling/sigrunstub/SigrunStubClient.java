@@ -18,21 +18,24 @@ public class SigrunStubClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
-        if (!bestilling.getSigrunstub().isEmpty()) {
-            try {
-                for (RsOpprettSkattegrunnlag request : bestilling.getSigrunstub()) {
-                    request.setPersonidentifikator(norskIdent.getIdent());
-                }
+        if (bestilling.getSigrunstub() == null || bestilling.getSigrunstub().isEmpty()) {
+            progress.setSigrunstubStatus(null);
+            return;
+        }
 
-                // Alle skattegrunnlag har samme ident
-                sigrunStubConsumer.deleteSkattegrunnlag(bestilling.getSigrunstub().get(0).getPersonidentifikator());
-                progress.setSigrunstubStatus(
-                        sigrunStubResponseHandler.extractResponse(
-                                sigrunStubConsumer.createSkattegrunnlag(bestilling.getSigrunstub())));
-
-            } catch (RuntimeException e) {
-                progress.setSigrunstubStatus("Feil:" + e.getMessage());
+        try {
+            for (RsOpprettSkattegrunnlag request : bestilling.getSigrunstub()) {
+                request.setPersonidentifikator(norskIdent.getIdent());
             }
+
+            // Alle skattegrunnlag har samme ident
+            sigrunStubConsumer.deleteSkattegrunnlag(bestilling.getSigrunstub().get(0).getPersonidentifikator());
+            progress.setSigrunstubStatus(
+                    sigrunStubResponseHandler.extractResponse(
+                            sigrunStubConsumer.createSkattegrunnlag(bestilling.getSigrunstub())));
+
+        } catch (RuntimeException e) {
+            progress.setSigrunstubStatus("Feil:" + e.getMessage());
         }
     }
 }

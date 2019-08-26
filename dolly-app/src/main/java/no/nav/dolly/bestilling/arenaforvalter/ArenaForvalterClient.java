@@ -1,7 +1,5 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
 import lombok.RequiredArgsConstructor;
@@ -32,42 +30,39 @@ public class ArenaForvalterClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
-        if (nonNull(bestilling.getArenaforvalter())) {
-
-            StringBuilder status = new StringBuilder();
-
-            ResponseEntity<List> envResponse = arenaForvalterConsumer.getEnvironments();
-            List<String> environments = envResponse.hasBody() ? envResponse.getBody() : emptyList();
-
-            List<String> availEnvironments = new ArrayList<>(requireNonNull(environments));
-
-            availEnvironments.retainAll(bestilling.getEnvironments());
-
-            if (!availEnvironments.isEmpty()) {
-
-                ResponseEntity<ArenaArbeidssokerBruker> existingServicebruker = fetchServiceBruker(norskIdent.getIdent(), availEnvironments, status);
-                deleteServicebruker(norskIdent.getIdent(), availEnvironments, status, existingServicebruker);
-
-                ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
-                availEnvironments.forEach(environment -> {
-                    ArenaNyBruker arenaNyBruker = mapperFacade.map(bestilling.getArenaforvalter(), ArenaNyBruker.class);
-                    arenaNyBruker.setPersonident(norskIdent.getIdent());
-                    arenaNyBruker.setMiljoe(environment);
-                    arenaNyeBrukere.getNyeBrukere().add(arenaNyBruker);
-                });
-
-                sendArenadata(arenaNyeBrukere, status);
-            }
-
-            List<String> notSupportedEnvironments = new ArrayList<>(bestilling.getEnvironments());
-            notSupportedEnvironments.removeAll(environments);
-            notSupportedEnvironments.forEach(environment ->
-                    status.append(',')
-                            .append(environment)
-                            .append("$Feil: Miljø ikke støttet"));
-
-            progress.setArenaforvalterStatus(status.substring(1));
+        if (bestilling.getArenaforvalter() == null) {
+            progress.setArenaforvalterStatus(null);
+            return;
         }
+
+        StringBuilder status = new StringBuilder();
+        List<String> environments = new ArrayList<>(arenaForvalterConsumer.getEnvironments());
+        environments.retainAll(bestilling.getEnvironments());
+
+        if (!environments.isEmpty()) {
+
+            ResponseEntity<ArenaArbeidssokerBruker> existingServicebruker = fetchServiceBruker(norskIdent.getIdent(), environments, status);
+            deleteServicebruker(norskIdent.getIdent(), environments, status, existingServicebruker);
+
+            ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
+            environments.forEach(environment -> {
+                ArenaNyBruker arenaNyBruker = mapperFacade.map(bestilling.getArenaforvalter(), ArenaNyBruker.class);
+                arenaNyBruker.setPersonident(norskIdent.getIdent());
+                arenaNyBruker.setMiljoe(environment);
+                arenaNyeBrukere.getNyeBrukere().add(arenaNyBruker);
+            });
+
+            sendArenadata(arenaNyeBrukere, status);
+        }
+
+        List<String> notSupportedEnvironments = new ArrayList<>(bestilling.getEnvironments());
+        notSupportedEnvironments.removeAll(environments);
+        notSupportedEnvironments.forEach(environment ->
+                status.append(',')
+                        .append(environment)
+                        .append("$Feil: Miljø ikke støttet"));
+
+        progress.setArenaforvalterStatus(status.substring(1));
     }
 
     private void deleteServicebruker(String ident, List<String> availEnvironments, StringBuilder status, ResponseEntity<ArenaArbeidssokerBruker> response) {

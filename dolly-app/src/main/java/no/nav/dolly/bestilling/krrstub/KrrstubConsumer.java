@@ -2,21 +2,22 @@ package no.nav.dolly.bestilling.krrstub;
 
 import static java.lang.String.format;
 
-import java.net.URI;
-import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.properties.ProvidersProps;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
+import java.util.UUID;
 
 @Slf4j
-@Service
+@Component
+@RequiredArgsConstructor
 public class KrrstubConsumer {
 
     private static final String CONSUMER = "Dolly";
@@ -26,11 +27,8 @@ public class KrrstubConsumer {
     private static final String DIGITAL_KONTAKT_URL = "/api/v1/kontaktinformasjon";
     private static final String PERSON_DIGITAL_KONTAKT_URL = "/api/v1/person/kontaktinformasjon";
 
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
-    private ProvidersProps providersProps;
+    private final RestTemplate restTemplate;
+    private final ProvidersProps providersProps;
 
     public ResponseEntity readDigitalKontaktdata(String ident) {
 

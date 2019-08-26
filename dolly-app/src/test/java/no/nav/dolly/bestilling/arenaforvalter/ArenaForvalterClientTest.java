@@ -53,7 +53,7 @@ public class ArenaForvalterClientTest {
 
     @Before
     public void setup() {
-        when(arenaForvalterConsumer.getEnvironments()).thenReturn(ResponseEntity.ok(singletonList(ENV)));
+        when(arenaForvalterConsumer.getEnvironments()).thenReturn(singletonList(ENV));
         when(arenaForvalterConsumer.getIdent(IDENT)).thenReturn(ResponseEntity.ok(new ArenaArbeidssokerBruker()));
         when(mapperFacade.map(any(Arenadata.class), eq(ArenaNyBruker.class))).thenReturn(new ArenaNyBruker());
     }

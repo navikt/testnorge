@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -71,12 +72,15 @@ public class ArenaForvalterConsumerTest {
         verify(restTemplate).exchange(any(RequestEntity.class), eq(ArenaArbeidssokerBruker.class));
     }
 
+    //TODO Skriv om test, eller flytt ut til ende-til-ende test
     @Test
     public void getEnvironments() {
+        ParameterizedTypeReference<List<String>> expectedResponseType = new ParameterizedTypeReference<List<String>>() {
+        };
 
         arenaForvalterConsumer.getEnvironments();
 
         verify(providersProps).getArenaForvalter();
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(List.class));
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(expectedResponseType));
     }
 }

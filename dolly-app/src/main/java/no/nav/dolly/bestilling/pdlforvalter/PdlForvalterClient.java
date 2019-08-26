@@ -41,30 +41,32 @@ public class PdlForvalterClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
-        if (nonNull(bestilling.getPdlforvalter())) {
-
-            StringBuilder status = new StringBuilder();
-
-            if (bestilling.getEnvironments().contains(SYNTH_ENV)) {
-
-                Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
-
-                sendDeleteIdent(norskIdent, status);
-                sendUtenlandsid(pdldata, norskIdent, status);
-                sendDoedsbo(pdldata, norskIdent, status);
-                sendFalskIdentitet(pdldata, norskIdent, status);
-
-            } else {
-
-                status.append('$')
-                        .append(PDL_FORVALTER)
-                        .append("&Feil: Bestilling ble ikke sendt til PdlForvalter da miljø '")
-                        .append(SYNTH_ENV)
-                        .append("' ikke er valgt");
-            }
-
-            progress.setPdlforvalterStatus(status.substring(1));
+        if (bestilling.getPdlforvalter() == null) {
+            progress.setPdlforvalterStatus(null);
+            return;
         }
+
+        StringBuilder status = new StringBuilder();
+
+        if (bestilling.getEnvironments().contains(SYNTH_ENV)) {
+
+            Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
+
+            sendDeleteIdent(norskIdent, status);
+            sendUtenlandsid(pdldata, norskIdent, status);
+            sendDoedsbo(pdldata, norskIdent, status);
+            sendFalskIdentitet(pdldata, norskIdent, status);
+
+        } else {
+
+            status.append('$')
+                    .append(PDL_FORVALTER)
+                    .append("&Feil: Bestilling ble ikke sendt til PdlForvalter da miljø '")
+                    .append(SYNTH_ENV)
+                    .append("' ikke er valgt");
+        }
+
+        progress.setPdlforvalterStatus(status.substring(1));
     }
 
     private void sendUtenlandsid(Pdldata pdldata, NorskIdent norskIdent, StringBuilder status) {

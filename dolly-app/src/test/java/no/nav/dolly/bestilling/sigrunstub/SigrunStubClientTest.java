@@ -35,6 +35,7 @@ public class SigrunStubClientTest {
     @InjectMocks
     private SigrunStubClient sigrunStubClient;
 
+    //TODO Ikke en veldig dekkende test uten asserts av noe slag
     @Test
     public void gjenopprett_ingendata() {
 

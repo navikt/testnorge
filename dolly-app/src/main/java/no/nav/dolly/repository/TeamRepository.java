@@ -1,6 +1,5 @@
 package no.nav.dolly.repository;
 
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import org.springframework.data.repository.Repository;
 
