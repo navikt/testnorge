@@ -7,11 +7,12 @@ Denne applikasjonen belager seg på flere andre applikasjoner for å kunne legge
 
 De følgende applikasjonene må være kjørende for å kunne legge inn all data i et miljø. 
 
- - [Ereg flatfil mapper](https://github.com/navikt/testnorge-ereg-mapper)
+ - [Ereg flatfil mapper](https://github.com/navikt/testnorge-ereg-mapper) generering av flatfiler som erstatter manuell oppretting
  - [TP](https://stash.adeo.no/projects/FEL/repos/testnorge-tp/browse) for å legge inn i TP databasen, skal ikke være 
  nødvendig, men denne gjør det raskere enn selve TP applikasjonen som lytter på distribusjonsmeldinger fra TPS 
  - [SKD adapter](https://stash.adeo.no/projects/FEL/repos/testnorge-skd/browse) for oppretting av testpersoner i TPS
  - [SAM](https://stash.adeo.no/projects/FEL/repos/testnorge-sam/browse) Samme som TP for SAM
+ - [AAreg](https://stash.adeo.no/projects/FEL/repos/testnorge-aareg/browse) for arbeidsforhold
  
 ## Statiske data
 
