@@ -9,7 +9,7 @@ export default class InstService {
 
 	static getTestbruker(ident, env) {
 		return Request.getWithoutCredentials(
-			`${this.getInstUrl()}/api/v1/ident?identer=${ident}&miljoe=${env}`,
+			`${this.getInstUrl()}/api/v1/ident?identer=${ident}&miljoe=${env[0]}`,
 			{
 				headers: {
 					NavCallId: 'dolly',
