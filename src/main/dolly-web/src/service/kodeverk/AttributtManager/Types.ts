@@ -15,7 +15,8 @@ export enum DataSource {
 	AAREG = 'AAREG',
 	PDLF = 'PDLF',
 	ARENA = 'ARENA',
-	INST = 'INST'
+	INST = 'INST',
+	UDI = 'UDI'
 }
 
 export interface Options {

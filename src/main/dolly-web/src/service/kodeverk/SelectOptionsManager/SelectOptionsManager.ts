@@ -70,6 +70,60 @@ const selectOptions = {
 		{ value: 'L', label: 'Langvarig' },
 		{ value: 'K', label: 'Kortvarig' },
 		{ value: 'U', label: 'Ubestemt' }
+	],
+
+	// UDI
+	//! Hent riktige values
+	opphold: [
+		{ value: 'UAV', label: 'Uavklart' },
+		{ value: 'EØS', label: 'EØS- eller EFTA-opphold' },
+		{ value: 'OPP', label: 'Oppholdstillatelse eller opphold på samme vilkår' },
+		{ value: 'IKK', label: 'Ikke oppholdstillatelse' }
+	],
+
+	//! Hent riktige values
+	oppholdstype: [
+		{ value: 'BES', label: 'Beslutning om oppholdsrett fra EØS eller EFTA' },
+		{ value: 'VED', label: 'Vedtak om varig oppholdsrett fra EØS eller EFTA' },
+		{ value: 'OPP', label: 'Oppholdstillatelse fra EØS eller EFTA' }
+	],
+
+	//! Hent riktige values
+	ikkeOppholdGrunn: [
+		{ value: 'UTV', label: 'Utvist med innreiseforbud' },
+		{
+			value: 'AVS',
+			label: 'Avslag eller bortfall av PO-BOS eller tilbakekall eller formelt vedtak'
+		},
+		{ value: 'ØVR', label: 'Øvrig ikke opphold' }
+	],
+
+	harArbeidsadgang: [
+		{ value: 'JA', label: 'Ja' },
+		{ value: 'NEI', label: 'Nei' },
+		{ value: 'UAV', label: 'Uavklart' }
+	],
+
+	typeArbeidsadgang: [
+		{
+			value: 'BESTEMT_ARBEIDSGIVER_ELLER_OPPDRAGSGIVER',
+			label: 'Bestemt arbeidsgiver eller oppdragsgiver'
+		},
+		{ value: 'BESTEMT_ARBEID_ELLER_OPPDRAG', label: 'Bestemt arbeid eller oppdrag' },
+		{
+			value: 'BESTEMT_ARBEIDSGIVER_OG_ARBEID_ELLER_BESTEMT_OPPDRAGSGIVER_OG_OPPDRAG',
+			label: 'Bestemt arbeidsgiver og arbeid eller bestemt oppdragsgiver og oppdrag'
+		},
+		{ value: 'GENERELL', label: 'Generell' },
+		{ value: 'UAVKLART', label: 'Uavklart' }
+	],
+
+	arbeidsOmfang: [
+		{ value: 'INGEN_KRAV_TIL_STILLINGSPROSENT', label: 'Ingen krav til stillingsprosent' },
+		{ value: 'KUN_ARBEID_HELTID', label: 'Kun arbeid heltid' },
+		{ value: 'KUN_ARBEID_DELTID', label: 'Kun arbeid deltid' },
+		{ value: 'DELTID_SAMT_FERIER_HELTID', label: 'Deltid, samt ferier heltid' },
+		{ value: 'UAVKLART', label: 'Uavklart' }
 	]
 }
 
