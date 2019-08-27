@@ -16,6 +16,9 @@ De følgende applikasjonene må være kjørende for å kunne legge inn all data 
  
 ## Statiske data
 
+![Faste data flowchart](./doc/images/Faste%20data%20flowchart.png "Faste data flowchart")
+
+
 All data som eksisterer i databasen er test-data som skal kjøres inn i miljøer etter tømming og produksjonslaster.
 Av dataen som skal inn i TPS er det bare ekstra identer som ikke eksisterer i TPSF avspillergruppen til SKD-mantallet som
 er lagt inn. Resten av mantallet ekisterer der. 

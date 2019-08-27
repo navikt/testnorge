@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication(scanBasePackages = "no.nav.registre")
 @EnableJpaRepositories(basePackages = "no.nav.registre")
 @PropertySource("classpath:application-local.properties")
-//@Profile("local")
 public class LocalApplicationStarter {
 
     public static void main(String[] args) {
