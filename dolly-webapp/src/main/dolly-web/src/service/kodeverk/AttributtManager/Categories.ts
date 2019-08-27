@@ -55,6 +55,11 @@ export const Kategorier: KategoriTypes = {
 			'Arena-data blir ikke distribuert til alle miljøer, og et eller flere av miljøene under må derfor velges i siste steg.',
 		tilgjengeligeMiljoeEndepunkt: ArenaApi.getTilgjengeligeMiljoe(),
 		order: 60
+	},
+	Udi: {
+		id: 'udi',
+		navn: 'UDI',
+		order: 70
 	}
 }
 
@@ -153,6 +158,20 @@ export const SubKategorier: KategoriTypes = {
 		id: 'arena',
 		navn: '',
 		order: 10,
+		showInSummary: true
+	},
+
+	Oppholdsstatus: {
+		id: 'oppholdsstatus',
+		navn: 'Gjeldende oppholdsstatus',
+		order: 10,
+		showInSummary: true
+	},
+
+	Arbeidsadgang: {
+		id: 'arbeidsadgang',
+		navn: 'Arbeidsadgang',
+		order: 20,
 		showInSummary: true
 	}
 }

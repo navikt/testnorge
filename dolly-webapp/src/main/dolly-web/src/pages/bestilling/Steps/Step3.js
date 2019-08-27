@@ -292,6 +292,13 @@ export default class Step3 extends PureComponent {
 			itemValue = Formatters.showLabel(item.id, itemValue)
 		}
 
+		if (
+			item.dataSource === 'UDI' &&
+			(item.id === 'arbeidsOmfang' || item.id === 'typeArbeidsadgang')
+		) {
+			itemValue = Formatters.showLabel(item.id, itemValue)
+		}
+
 		itemValue === 'true' && (itemValue = true) // Quickfix fra SelectOptions(stringBoolean)
 		itemValue === 'false' && (itemValue = false)
 		typeof itemValue === 'boolean' && (itemValue = Formatters.oversettBoolean(itemValue))
