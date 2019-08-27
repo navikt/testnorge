@@ -1,73 +1,70 @@
 package no.nav.registre.bisys.consumer.ui;
 
-import static no.nav.registre.bisys.consumer.ui.BisysUiNavigationSupport.bisysLogon;
+import java.util.List;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import lombok.extern.slf4j.Slf4j;
-import net.morher.ui.connect.html.HtmlApplicationUtils;
-import no.nav.bidrag.dto.SynthesizedBidragRequest;
-import no.nav.bidrag.exception.BidragRequestProcessingException;
 import no.nav.bidrag.ui.bisys.BisysApplication;
-import no.nav.bidrag.ui.bisys.sak.Sak;
+import no.nav.bidrag.ui.dto.SynthesizedBidragRequest;
+import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
+import no.nav.registre.bisys.consumer.rs.request.BisysRequestAugments;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
-import no.nav.registre.bisys.consumer.ui.modules.BisysUiSakConsumer;
+import no.nav.registre.bisys.consumer.ui.modules.BisysUiFatteVedtakConsumer;
+import no.nav.registre.bisys.consumer.ui.modules.BisysUiSoknadConsumer;
 
 @Slf4j
 public class BisysUiConsumer {
 
-  String saksbehandlerUid;
-  String saksbehandlerPwd;
-  String bisysUrl;
-  String rolleSaksbehandler;
-  int enhet;
+  public static final String INCORRECT_ENTRY_PAGE = "Incorrect entry page";
 
-  private BisysApplication bisys;
+  public static final String PROCESSING_FAILED = "Processing failed.";
 
-  private TestnorgeToBisysMapper testnorgeToBisysMapper;
+  @Autowired
+  private BisysUiSupport navigationSupport;
 
-  @Autowired private BisysUiSakConsumer bisysUiSakConsumer;
+  @Autowired
+  private BisysUiSoknadConsumer soknadConsumer;
 
-  public BisysUiConsumer(
-      String saksbehandlerUid,
-      String saksbehandlerPwd,
-      String bisysUrl,
-      String rolleSaksbehandler,
-      String enhet) {
+  @Autowired
+  private BisysUiFatteVedtakConsumer fatteVedtakConsumer;
 
-    this.saksbehandlerUid = saksbehandlerUid;
-    this.saksbehandlerPwd = saksbehandlerPwd;
-    this.bisysUrl = bisysUrl;
-    this.rolleSaksbehandler = rolleSaksbehandler;
-    this.enhet = Integer.valueOf(enhet);
+  @Autowired
+  private BisysRequestAugments bisysRequestAugments;
 
-    this.testnorgeToBisysMapper = Mappers.getMapper(TestnorgeToBisysMapper.class);
-  }
 
-  public void runCreateSoknad(SyntetisertBidragsmelding bidragsmelding)
+  private TestnorgeToBisysMapper testnorgeToBisysMapper =
+      Mappers.getMapper(TestnorgeToBisysMapper.class);
+
+  public void createVedtak(List<SyntetisertBidragsmelding> bidragsmeldinger)
       throws BidragRequestProcessingException {
 
-    SynthesizedBidragRequest request = testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding);
+    BisysApplication bisys = null;
 
-    log.info(
-        "### Soknad creation started ### soknad related to child with ID {}, details: soknadstype {}, sokt om {}, soknad fra {}, mottatt dato {}, fra dato {}",
-        request.getFnrBa(),
-        request.getSoknadstype(),
-        request.getSoktOm(),
-        request.getSoknadFra(),
-        request.getMottattDato(),
-        request.getSoktFra());
+    if (bidragsmeldinger != null && bidragsmeldinger.size() > 0) {
+      bisys = navigationSupport.logon();
+    }
 
-    bisysLogon(bisysUrl, saksbehandlerUid, saksbehandlerPwd, rolleSaksbehandler, enhet);
+    for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
 
-    Sak sak = bisysUiSakConsumer.openOrCreateSak(bisys, request);
+      SynthesizedBidragRequest request =
+          testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding, bisysRequestAugments);
+      log.info("Processing SyntetisertBidragsmelding with barnetsFnr {}",
+          bidragsmelding.getBarnetsFnr());
 
-    log.info("html dump: {}", HtmlApplicationUtils.getHtml(sak));
+      try {
 
-    sak.nySoknad().click();
-    bisys.soknad().fillInAndSaveSoknad(request);
+        soknadConsumer.openOrCreateSoknad(bisys, request);
+        fatteVedtakConsumer.runFatteVedtak(bisys, request);
 
-    log.info(
-        "### Soknad creation completed successfully ### soknad for child {} was created.",
-        request.getFnrBa());
+      } catch (BidragRequestProcessingException brpe) {
+
+        log.warn(
+            "Processing failed for SyntetisertBidragsmelding with barnetsFnr {}, and mottattDato {}",
+            bidragsmelding.getBarnetsFnr(), bidragsmelding.getMottattDato());
+
+      }
+    }
   }
 }
+
+

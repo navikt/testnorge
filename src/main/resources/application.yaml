@@ -1,25 +1,25 @@
 application.version: @application.version@
 
+# BisysRequestAguments
+BOFORHOLD_ANDEL_FORSORGING: 0.0
+BOFORHOLD_BARN_REGISTRERT_PAA_ADRESSE: 0
+BIDRAGSBEREGNING_KODE_VIRK_AARSAK: SB
+BIDRAGSBEREGNING_SAMVARSKLASSE: "00"
+FATTE_VEDTAK_GEBYR_BESLAARSAK_KODE_FRITATT_IKKE_SOKT: 1
+
 management.endpoints.web.base-path: /internal
 management.endpoints.web.exposure.include: prometheus
 
-BISYS_URL: https://wasapp-q2.adeo.no/rtv-bidrag/Oppgaveliste.do
+BISYS_URL: https://wasapp-q8.adeo.no/rtv-bidrag/Oppgaveliste.do
 SAKSBEHANDLER_ROLLE: TK_Behandler
-ENHET: 4806
+ENHET: 4849
 
 --- 
 spring:
-  profiles: test, integration-test  
-  
-SYNTBISYS_USERNAME: <missing>
-SYNTBISYS_PASSWORD: <missing>
+  profiles: test, local-integration-test
+    
+SYNTBISYS_USERNAME: z991656
+SYNTBISYS_PASSWORD: Sjalabais8
 
 syntrest.rest.api.url: http://localhost:${wiremock.server.port}/synthdata-bisys/api
 testnorge-hodejegeren.rest-api.url: http://localhost:${wiremock.server.port}/hodejegeren/api
-
----
-spring:
-  profiles: local
-  
-testnorge-hodejegeren.rest-api.url: https://testnorge-hodejegeren.nais.preprod.local/api
-syntrest.rest.api.url: https://syntrest.nais.preprod.local/api
