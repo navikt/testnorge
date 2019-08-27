@@ -24,7 +24,7 @@ export const actions = createActions(
 				const res = await DollyApi.getBestillingMaler()
 				return res
 			} catch (err) {
-				if (err.response && err.response.status === 404) {
+				if (err.response) {
 					//*Ingen maler
 					return { data: [] }
 				}
