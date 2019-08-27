@@ -210,7 +210,7 @@ export default class SendDoedsmelding extends PureComponent {
 		let initialValues = {
 			ident: currentfnr,
 			handling: 'C',
-			doedsdato: Formatters.formatDate(new Date()),
+			doedsdato: '',
 			miljoer: miljoer.slice()
 		}
 
