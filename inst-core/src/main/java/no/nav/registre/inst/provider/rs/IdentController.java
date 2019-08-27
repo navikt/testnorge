@@ -1,5 +1,7 @@
 package no.nav.registre.inst.provider.rs;
 
+import static no.nav.registre.inst.service.Inst2FasitService.FASIT_FEILMELDING;
+
 import com.google.common.collect.Maps;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -80,13 +82,14 @@ public class IdentController {
     public List<String> hentTilgjengeligeMiljoer() {
         List<String> alleMiljoer = fasitClient.getAllEnvironments("u", "t", "q");
         List<String> tilgjengeligeMiljoer = new ArrayList<>();
-        List<String> utilgjengeligeMiljoer = new ArrayList<>();
         for (String miljoe : alleMiljoer) {
             try {
                 inst2FasitService.getUrlForEnv(miljoe);
                 tilgjengeligeMiljoer.add(miljoe);
             } catch (RuntimeException e) {
-                utilgjengeligeMiljoer.add(miljoe);
+                if(!FASIT_FEILMELDING.equals(e.getMessage())) {
+                    throw e;
+                }
             }
         }
         return tilgjengeligeMiljoer;

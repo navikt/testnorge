@@ -16,6 +16,8 @@ import no.nav.registre.inst.fasit.FasitResourceWithUnmappedProperties;
 @Service
 public class Inst2FasitService {
 
+    public static final String FASIT_FEILMELDING = "Ugyldig miljø/miljø ikke funnet.";
+
     private static final String REST_SERVICE = "RestService";
     private static final String INST2_WEB_API = "inst2.web-api";
 
@@ -47,7 +49,7 @@ public class Inst2FasitService {
         if (urlPerEnv.containsKey(environment)) {
             return urlPerEnv.get(environment);
         } else {
-            throw new RuntimeException("Ugyldig miljø/miljø ikke funnet.");
+            throw new RuntimeException(FASIT_FEILMELDING);
         }
     }
 
