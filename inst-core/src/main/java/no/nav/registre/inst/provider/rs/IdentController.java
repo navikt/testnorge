@@ -89,7 +89,6 @@ public class IdentController {
                 utilgjengeligeMiljoer.add(miljoe);
             }
         }
-        log.info("tilgjengelige miljoer: {} - utilgjengelige miljoer: {}", tilgjengeligeMiljoer, utilgjengeligeMiljoer);
         return tilgjengeligeMiljoer;
     }
 
