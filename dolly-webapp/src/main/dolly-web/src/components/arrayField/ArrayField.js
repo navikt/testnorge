@@ -47,6 +47,7 @@ export default class ArrayField extends Component {
 						onChange={this._handleChange}
 						options={this.state.options}
 						placeholder="Ikke spesifisert"
+						isMultiple={true}
 						{...item.inputTypeAttributes}
 					/>
 				)}
