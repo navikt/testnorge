@@ -33,7 +33,7 @@ public class IdentPoolConsumer {
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         this.restTemplate.setMessageConverters(Collections.singletonList(new MappingJackson2HttpMessageConverter(objectMapper)));
 
-        this.url = new URI(serverUrl + "/v1/identifikator");
+        this.url = new URI(serverUrl + "/v1/identifikator?finnNaermesteLedigeDato=false");
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "identpool" })
