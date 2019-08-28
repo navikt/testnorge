@@ -61,6 +61,7 @@ public class BestillingService {
         return bestillingRepository.findBestillingByGruppeOrderById(testgruppeService.fetchTestgruppeById(gruppeId));
     }
 
+    @Transactional
     public List<Bestilling> fetchMalBestillinger() {
         return bestillingRepository.findMalBestilling().orElseThrow(() -> new NotFoundException("Ingen mal-bestilling funnet"));
     }
