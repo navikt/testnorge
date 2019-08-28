@@ -90,7 +90,7 @@ const AttributtListe: Attributt[] = [
 				size: 'medium',
 				path: 'falskIdentitet.identitetType',
 				inputType: InputType.Select,
-				options: SelectOptionsManager('rettIdentitet'),
+				options: SelectOptionsManager('identitetType'),
 				validation: yup.string().required('Velg rett identitet'),
 				attributtType: AttributtType.SelectAndEdit
 			},
