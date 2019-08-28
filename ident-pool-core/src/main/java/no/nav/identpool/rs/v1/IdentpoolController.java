@@ -1,5 +1,7 @@
 package no.nav.identpool.rs.v1;
 
+import static no.nav.identpool.util.PersonidentUtil.validate;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.nav.identpool.util.PersonidentUtil.validate;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
@@ -49,11 +50,19 @@ public class IdentpoolController {
 
     @PostMapping
     @ApiOperation(value = "rekvirer nye test-identer")
-    public List<String> rekvirer(@RequestBody @Valid HentIdenterRequest hentIdenterRequest) throws Exception {
-        try {
-            return identpoolService.rekvirer(hentIdenterRequest);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getLocalizedMessage(), e);
+    public List<String> rekvirer(@RequestParam(required = false, defaultValue = "true") boolean finnNaermesteLedigeDato, @RequestBody @Valid HentIdenterRequest hentIdenterRequest) throws Exception {
+        if (finnNaermesteLedigeDato) {
+            try {
+                return identpoolService.rekvirerNaermesteLedigDato(hentIdenterRequest);
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getLocalizedMessage(), e);
+            }
+        } else {
+            try {
+                return identpoolService.rekvirer(hentIdenterRequest);
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getLocalizedMessage(), e);
+            }
         }
     }
 
