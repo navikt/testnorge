@@ -5,6 +5,7 @@ import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 import static no.nav.identpool.util.PersonidentUtil.getIdentType;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,17 +32,41 @@ import no.nav.identpool.util.IdentGeneratorUtil;
 import no.nav.identpool.util.IdentPredicateUtil;
 import no.nav.identpool.util.PersonidentUtil;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class IdentpoolService {
 
     private static final int MAKS_ANTALL_MANGLENDE_IDENTER = 80;
     private static final int MAKS_ANTALL_KALL_MOT_TPS = 3;
+    private static final int MAKS_ANTALL_FORSOEK_PAA_LEDIG_DATO = 3;
 
     private final IdentRepository identRepository;
     private final IdentTpsService identTpsService;
     private final IdentGeneratorService identGeneratorService;
     private final WhitelistRepository whitelistRepository;
+
+    public List<String> rekvirerNaermesteLedigDato(HentIdenterRequest request) throws IllegalArgumentException, ForFaaLedigeIdenterException {
+        LocalDate foedtEtter = request.getFoedtEtter();
+
+        int i = 0;
+        while (i <= MAKS_ANTALL_FORSOEK_PAA_LEDIG_DATO) {
+            request.setFoedtEtter(foedtEtter.minusWeeks(i));
+
+            try {
+                return rekvirer(request);
+            } catch (ForFaaLedigeIdenterException e) {
+                i++;
+                if (i == MAKS_ANTALL_FORSOEK_PAA_LEDIG_DATO) {
+                    throw e;
+                } else {
+                    log.info("Fant ikke ledig ident etter {} forsøk. Prøver med tidligere fødselsdato.", i + 1);
+                }
+            }
+        }
+
+        return new ArrayList<>();
+    }
 
     public List<String> rekvirer(HentIdenterRequest request) throws ForFaaLedigeIdenterException {
         Iterable<Ident> identEntities = identRepository.findAll(

@@ -106,7 +106,7 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
 
         ResponseEntity<ForFaaLedigeIdenterException> identListe = doPostRequest(ROOT_URI, createBodyEntity(body), ForFaaLedigeIdenterException.class);
 
-        assertThat(identListe.getStatusCode(), is(HttpStatus.SERVICE_UNAVAILABLE));
+        assertThat(identListe.getStatusCode(), is(HttpStatus.BAD_REQUEST));
     }
 
     @Test
