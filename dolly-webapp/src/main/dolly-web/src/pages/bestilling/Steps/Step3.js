@@ -16,6 +16,7 @@ import BestillingMapper from '~/utils/BestillingMapper'
 import { FormikInput } from '~/components/fields/Input/Input'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import { FormikDollySelect } from '~/components/fields/Select/Select'
+import DataSourceMapper from '~/utils/DataSourceMapper'
 
 export default class Step3 extends PureComponent {
 	static propTypes = {
@@ -175,11 +176,12 @@ export default class Step3 extends PureComponent {
 	}
 
 	renderHovedKategori = ({ hovedKategori, items }) => {
-		let removable = items.every(
-			nested =>
+		let removable = items.every(nested => {
+			return (
 				!nested.subKategori.showInSummary &&
 				!nested.items.every(item => this.props.selectedAttributeIds.includes(item.id))
-		)
+			)
+		})
 		return (
 			<Fragment key={hovedKategori.navn}>
 				<h4>{hovedKategori.navn}</h4>
@@ -203,10 +205,6 @@ export default class Step3 extends PureComponent {
 		if (!subKategori.showInSummary) {
 			return items.map(item => this.renderItem(item, values))
 		}
-		if (subKategori.id === 'arena') {
-			return items[0].items.map(item => this.renderItem(item, values))
-		}
-
 		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
 	}
 
@@ -219,12 +217,21 @@ export default class Step3 extends PureComponent {
 		if (
 			typeof header === 'number' ||
 			(header === 'Partner' && this.props.selectedAttributeIds.includes('barn')) ||
-			(header === 'Arbeidsforhold' && this.props.selectedAttributeIds.includes('inntekt'))
+			(header === 'Arbeidsforhold' && this.props.selectedAttributeIds.includes('inntekt')) ||
+			(header === 'Falsk identitet' &&
+				this.props.selectedAttributeIds.includes('falskIdentitet')) ||
+			(header === 'Utenlands-ID' &&
+				this.props.selectedAttributeIds.includes('utenlandskIdentifikasjonsnummer')) ||
+			(header === 'Institusjonsopphold' &&
+				this.props.selectedAttributeIds.includes('institusjonsopphold'))
 		) {
 			fieldType = 'oppsummering-multifield'
 		}
-
-		if (!items.every(nested => nested.items)) {
+		if (
+			!items.every(nested => {
+				return nested.items
+			})
+		) {
 			let removable = !items.every(item => this.props.selectedAttributeIds.includes(item.id))
 			return (
 				<div className={fieldType} key={header}>
@@ -277,40 +284,19 @@ export default class Step3 extends PureComponent {
 		}
 
 		if (!item.inputType) return null
+		if (item.onlyShowAfterSelectedValue && !itemValue) return null
+		if ((item.id === 'utenFastBopel' || item.id === 'ufb_kommunenr') && !itemValue) return null
 
-		let itemValue = Formatters.oversettBoolean(_get(stateValues, item.id))
-
-		if (item.dataSource === 'ARENA') {
-			item.id === 'arenaBrukertype'
-				? (itemValue = Formatters.uppercaseAndUnderscoreToCapitalized(
-						_get(stateValues['arenaforvalter'][0], item.id)
-				  ))
-				: (itemValue = Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id)))
-		}
-
-		if (item.dataSource === 'PDLF' && item.subKategori.id === 'utenlandskIdentifikasjonsnummer') {
-			itemValue = Formatters.oversettBoolean(
-				_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
-			)
-		}
-
-		if (item.dataSource === 'INST' && (item.id === 'institusjonstype' || item.id === 'varighet')) {
-			itemValue = Formatters.showLabel(item.id, itemValue)
-		}
-
-		itemValue === 'true' && (itemValue = true) // Quickfix fra SelectOptions(stringBoolean)
-		itemValue === 'false' && (itemValue = false)
-		typeof itemValue === 'boolean' && (itemValue = Formatters.oversettBoolean(itemValue))
+		let itemValue = this._formatereItemValue(item, _get(stateValues, item.id))
 
 		const staticValueProps = {
 			key: item.id,
 			header: item.label,
 			value: itemValue !== '' ? itemValue : null,
-			format: item.format
+			format: item.format,
+			size: item.size
 		}
 
-		if (item.onlyShowAfterSelectedValue && !itemValue) return null
-		if ((item.id === 'utenFastBopel' || item.id === 'ufb_kommunenr') && !itemValue) return null
 		return (
 			<RemoveableField
 				removable={this.state.edit && this.props.selectedAttributeIds.indexOf(item.id) >= 0}
@@ -345,7 +331,10 @@ export default class Step3 extends PureComponent {
 				index: header - 1
 			})
 		} else {
-			this.props.deleteValues({ values: [header.toLowerCase()] })
+			let slettHeader = header || items[0].subKategori.id
+			slettHeader === 'arena' && (slettHeader = DataSourceMapper(items[0].dataSource))
+			slettHeader === 'adressat' && (slettHeader = items[0].hovedKategori.id)
+			this.props.deleteValues({ values: [slettHeader.toLowerCase()] })
 		}
 	}
 
@@ -355,5 +344,20 @@ export default class Step3 extends PureComponent {
 
 	onClickPrevious = values => {
 		this.props.setEnvironments({ values, goBack: true })
+	}
+
+	_formatereItemValue = (item, itemValue) => {
+		let copyItemValue = Formatters.oversettBoolean(itemValue)
+
+		item.options &&
+			item.options[0].value !== true &&
+			item.options[0].value !== 'true' &&
+			//Vil ikke ha med true/false -> ja/nei
+			(copyItemValue = Formatters.showLabel(item.id, copyItemValue))
+
+		item.id === 'arenaBrukertype' &&
+			(copyItemValue = Formatters.uppercaseAndUnderscoreToCapitalized(copyItemValue))
+
+		return copyItemValue
 	}
 }
