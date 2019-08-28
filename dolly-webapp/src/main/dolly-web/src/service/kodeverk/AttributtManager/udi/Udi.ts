@@ -24,7 +24,7 @@ const AttributtListe: Attributt[] = [
 				// editPath: 'oppholdsstatus',
 				dataSource: DataSource.UDI,
 				inputType: InputType.Select,
-				options: SelectOptionsManager('opphold'),
+				options: SelectOptionsManager('oppholdsstatus'),
 				validation: yup.string().required('Velg en oppholdsstatus'),
 				attributtType: AttributtType.SelectAndRead
 			},
@@ -38,7 +38,7 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.UDI,
 				inputType: InputType.Select,
 				onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [1] },
-				options: SelectOptionsManager('oppholdstype'),
+				options: SelectOptionsManager('typeOpphold'),
 				// validation: yup.string().required('Velg en type opphold'),
 				attributtType: AttributtType.SelectAndRead
 			},

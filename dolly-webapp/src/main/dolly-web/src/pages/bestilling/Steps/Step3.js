@@ -287,14 +287,20 @@ export default class Step3 extends PureComponent {
 				_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
 			)
 		}
-
+		// console.log('item.id :', item.id)
+		// console.log('itemValue :', itemValue)
 		if (item.dataSource === 'INST' && (item.id === 'institusjonstype' || item.id === 'varighet')) {
 			itemValue = Formatters.showLabel(item.id, itemValue)
 		}
 
 		if (
 			item.dataSource === 'UDI' &&
-			(item.id === 'arbeidsOmfang' || item.id === 'typeArbeidsadgang')
+			itemValue &&
+			(item.id === 'arbeidsOmfang' ||
+				item.id === 'typeArbeidsadgang' ||
+				item.id === 'oppholdsstatus' ||
+				item.id === 'typeOpphold' ||
+				item.id === 'ikkeOppholdGrunn')
 		) {
 			itemValue = Formatters.showLabel(item.id, itemValue)
 		}

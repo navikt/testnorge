@@ -73,29 +73,32 @@ const selectOptions = {
 	],
 
 	// UDI
-	//! Hent riktige values
-	opphold: [
-		{ value: 'UAV', label: 'Uavklart' },
-		{ value: 'EØS', label: 'EØS- eller EFTA-opphold' },
-		{ value: 'OPP', label: 'Oppholdstillatelse eller opphold på samme vilkår' },
-		{ value: 'IKK', label: 'Ikke oppholdstillatelse' }
+	oppholdsstatus: [
+		{ value: 'uavklart', label: 'Uavklart' },
+		{ value: 'eosEllerEFTAOpphold', label: 'EØS- eller EFTA-opphold' },
+		{ value: 'oppholdSammeVilkaar', label: 'Oppholdstillatelse eller opphold på samme vilkår' },
+		{ value: 'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum', label: 'Ikke oppholdstillatelse' }
 	],
 
-	//! Hent riktige values
-	oppholdstype: [
-		{ value: 'BES', label: 'Beslutning om oppholdsrett fra EØS eller EFTA' },
-		{ value: 'VED', label: 'Vedtak om varig oppholdsrett fra EØS eller EFTA' },
-		{ value: 'OPP', label: 'Oppholdstillatelse fra EØS eller EFTA' }
-	],
-
-	//! Hent riktige values
-	ikkeOppholdGrunn: [
-		{ value: 'UTV', label: 'Utvist med innreiseforbud' },
+	typeOpphold: [
 		{
-			value: 'AVS',
+			value: 'eosEllerEFTABeslutningOmOppholdsrett',
+			label: 'Beslutning om oppholdsrett fra EØS eller EFTA'
+		},
+		{
+			value: 'eosEllerEFTAVedtakOmVarigOppholdsrett',
+			label: 'Vedtak om varig oppholdsrett fra EØS eller EFTA'
+		},
+		{ value: 'eosEllerEFTAOppholdstillatelse', label: 'Oppholdstillatelse fra EØS eller EFTA' }
+	],
+
+	ikkeOppholdGrunn: [
+		{ value: 'utvistMedInnreiseForbud', label: 'Utvist med innreiseforbud' },
+		{
+			value: 'avslagEllerBortFall',
 			label: 'Avslag eller bortfall av PO-BOS eller tilbakekall eller formelt vedtak'
 		},
-		{ value: 'ØVR', label: 'Øvrig ikke opphold' }
+		{ value: 'ovrigIkkeOppholdsKategoriArsak', label: 'Øvrig ikke opphold' }
 	],
 
 	harArbeidsadgang: [
