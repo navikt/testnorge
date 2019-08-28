@@ -7,6 +7,7 @@ const mapStateToProps = (state, ownProps) => {
 	return {
 		kodeverkObject: oppslagLabelSelector(state, apiKodeverkId, value),
 		kodeverkObjectArray:
+			value &&
 			typeof value === 'object' &&
 			value.map(singleValue => oppslagLabelSelector(state, apiKodeverkId, singleValue))
 	}
