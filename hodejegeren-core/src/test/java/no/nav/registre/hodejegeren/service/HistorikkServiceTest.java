@@ -13,6 +13,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.common.io.Resources;
 import no.rtv.namespacetps.TpsPersonDokumentType;
 import org.junit.Before;
@@ -25,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -136,9 +138,9 @@ public class HistorikkServiceTest {
     }
 
     @Test
-    public void shouldOppdatereTpsPersonDokument() {
+    public void shouldOppdatereTpsPersonDokument() throws IOException {
         LocalDateTime datoOpprettet = LocalDateTime.of(2000, 1, 1, 1, 1);
-        String skdFnr = "03030303030";
+        String skdFnr = "19040979827";
         List<Data> data = new ArrayList<>();
         data.add(Data.builder().datoOpprettet(datoOpprettet).datoEndret(datoOpprettet).build());
         List<Kilde> kilder = new ArrayList<>();
@@ -154,7 +156,10 @@ public class HistorikkServiceTest {
         when(syntHistorikkRepository.findById(skdFnr)).thenReturn(Optional.ofNullable(skdHistorikk));
         when(syntHistorikkRepository.save(any())).thenReturn(skdHistorikk);
 
-        TpsPersonDokumentType tpsPersonDokumentType = new TpsPersonDokumentType();
+        URL resource = Resources.getResource("historikk/TpsPersonDokumentType.xml");
+        XmlMapper xmlMapper = new XmlMapper();
+        TpsPersonDokumentType tpsPersonDokumentType = xmlMapper.readValue(resource, TpsPersonDokumentType.class);
+
         List<String> identerOppdatert = historikkService.oppdaterTpsPersonDokument(skdFnr, tpsPersonDokumentType);
 
         assertThat(identerOppdatert, contains(skdFnr));

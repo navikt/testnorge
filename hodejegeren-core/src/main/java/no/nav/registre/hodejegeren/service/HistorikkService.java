@@ -20,6 +20,8 @@ import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikkRepository;
 import no.nav.registre.hodejegeren.provider.rs.requests.DataRequest;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
+import no.nav.registre.hodejegeren.provider.rs.requests.skd.PersonDokumentWrapper;
+import no.nav.registre.hodejegeren.service.utilities.PersonDokumentUtility;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -131,7 +133,8 @@ public class HistorikkService {
             }
             if (kilde != null) {
                 Data eksisterendeSkdData = kilde.getData().get(0);
-                eksisterendeSkdData.setInnhold(tpsPersonDokument);
+                PersonDokumentWrapper personDokumentWrapper = PersonDokumentUtility.convertToPersonDokumentWrapper(tpsPersonDokument);
+                eksisterendeSkdData.setInnhold(personDokumentWrapper);
                 eksisterendeSkdData.setDatoEndret(LocalDateTime.now());
                 return Collections.singletonList(syntHistorikkRepository.save(syntHistorikk).getId());
             } else {

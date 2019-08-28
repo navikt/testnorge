@@ -1,0 +1,28 @@
+package no.nav.registre.hodejegeren.provider.rs.requests.skd.innhold;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDate;
+
+import no.nav.person.tjenestekontrakter.adapter.java.LocalDateAdapter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class Doedshistorikk {
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private LocalDate dato;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private LocalDate regDato;
+}

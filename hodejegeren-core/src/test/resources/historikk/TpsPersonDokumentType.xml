@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tpsPersonDokument>
+    <dokument>
+        <dokumentstatus>Ok</dokumentstatus>
+        <dokumentutfyllendemelding> </dokumentutfyllendemelding>
+        <dokumenttidspunkt> </dokumenttidspunkt>
+        <dokumenthistorikk>Ja</dokumenthistorikk>
+        <dokumentFraDato> </dokumentFraDato>
+        <dokumentTilDato>2019-08-25</dokumentTilDato>
+        <dokumentKilde>TPS</dokumentKilde>
+    </dokument>
+    <person>
+        <meldingId>0</meldingId>
+        <personidTPS>130891</personidTPS>
+        <personIdent>
+            <personIdent>19040979827</personIdent>
+            <personIdenttype>FNR</personIdenttype>
+            <personIdentneste> </personIdentneste>
+            <personIdentFraDato>2017-12-08</personIdentFraDato>
+            <personIdentTilDato> </personIdentTilDato>
+            <personIdentKilde> </personIdentKilde>
+        </personIdent>
+        <personIdentstatus>
+            <personIdentStatus>BRUK</personIdentStatus>
+            <personIdentStatusFraDato> </personIdentStatusFraDato>
+            <personIdentStatusTilDato>2017-12-08</personIdentStatusTilDato>
+            <personIdentStatusKilde>SKD</personIdentStatusKilde>
+        </personIdentstatus>
+        <personInfo>
+            <personKjonn>K</personKjonn>
+            <personDatofodt>2009-04-19</personDatofodt>
+            <personFodtLand>NOR</personFodtLand>
+            <personFodtKommune>1805</personFodtKommune>
+            <personFraDato>2017-12-08</personFraDato>
+            <personTilDato> </personTilDato>
+            <personKilde>SKD</personKilde>
+        </personInfo>
+        <personStatus>
+            <personStatus>BOSA</personStatus>
+            <personStatusFraDato> </personStatusFraDato>
+            <personStatusTilDato>2009-04-19</personStatusTilDato>
+            <personStatusKilde>SKD</personStatusKilde>
+        </personStatus>
+        <navn>
+            <forkortetNavn>MOSE MISFORNØYD</forkortetNavn>
+            <slektsNavn>MOSE</slektsNavn>
+            <forNavn>MISFORNØYD</forNavn>
+            <mellomNavn> </mellomNavn>
+            <slektsNavnugift> </slektsNavnugift>
+            <navnFraDato>2017-12-08</navnFraDato>
+            <navnTilDato> </navnTilDato>
+            <navnKilde>SKD</navnKilde>
+            <navnRegistrertAv>AJOURHD</navnRegistrertAv>
+        </navn>
+        <spraak>
+            <spraak> </spraak>
+            <spraakFraDato> </spraakFraDato>
+            <spraakTilDato> </spraakTilDato>
+            <spraakKilde> </spraakKilde>
+            <spraakRegistrertAv> </spraakRegistrertAv>
+        </spraak>
+        <sivilstand>
+            <sivilstand> </sivilstand>
+            <sivilstandFraDato> </sivilstandFraDato>
+            <sivilstandTilDato> </sivilstandTilDato>
+            <sivilstandKilde> </sivilstandKilde>
+            <sivilstandRegistrertAv> </sivilstandRegistrertAv>
+        </sivilstand>
+        <statsborger>
+            <statsborger>NOR</statsborger>
+            <statsborgerFraDato>2017-12-08</statsborgerFraDato>
+            <statsborgerTilDato> </statsborgerTilDato>
+            <statsborgerKilde>SKD</statsborgerKilde>
+            <statsborgerRegistrertAv>AJOURHD</statsborgerRegistrertAv>
+        </statsborger>
+        <dod>
+            <datoDod> </datoDod>
+            <dodDatoReg> </dodDatoReg>
+            <dodKilde> </dodKilde>
+            <dodRegistrertAv> </dodRegistrertAv>
+        </dod>
+        <telefon>
+            <tlfPrivat>
+                <tlfPrivatRetningslinje> </tlfPrivatRetningslinje>
+                <tlfPrivatNummer> </tlfPrivatNummer>
+                <tlfPrivatFraDato> </tlfPrivatFraDato>
+                <tlfPrivatTilDato> </tlfPrivatTilDato>
+                <tlfPrivatKilde> </tlfPrivatKilde>
+                <tlfPrivatRegistrertAv> </tlfPrivatRegistrertAv>
+            </tlfPrivat>
+            <tlfJobb>
+                <tlfJobbRetningslinje> </tlfJobbRetningslinje>
+                <tlfJobbNummer> </tlfJobbNummer>
+                <tlfJobbFraDato> </tlfJobbFraDato>
+                <tlfJobbTilDato> </tlfJobbTilDato>
+                <tlfJobbKilde> </tlfJobbKilde>
+                <tlfJobbRegistrertAv> </tlfJobbRegistrertAv>
+            </tlfJobb>
+            <tlfMobil>
+                <tlfMobilRetningslinje> </tlfMobilRetningslinje>
+                <tlfMobilNummer> </tlfMobilNummer>
+                <tlfMobilFraDato> </tlfMobilFraDato>
+                <tlfMobilTilDato> </tlfMobilTilDato>
+                <tlfMobilKilde> </tlfMobilKilde>
+                <tlfMobilRegistrertAv> </tlfMobilRegistrertAv>
+            </tlfMobil>
+        </telefon>
+        <tknr>
+            <tknrPerson> </tknrPerson>
+            <tknrFraDato> </tknrFraDato>
+            <tknrTilDato> </tknrTilDato>
+            <tknrKilde> </tknrKilde>
+            <tknregistrertAv> </tknregistrertAv>
+        </tknr>
+        <spesReg>
+            <spesReg> </spesReg>
+            <spesRegFraDato> </spesRegFraDato>
+            <spesRegTilDato> </spesRegTilDato>
+            <spesRegKilde> </spesRegKilde>
+            <spesRegRegistrertAv> </spesRegRegistrertAv>
+        </spesReg>
+        <tiltak>
+            <tiltak> </tiltak>
+            <tiltakFraDato> </tiltakFraDato>
+            <tiltakTilDato> </tiltakTilDato>
+            <tiltakKilde> </tiltakKilde>
+            <tiltakRegistrertAv> </tiltakRegistrertAv>
+        </tiltak>
+        <egenansatt>
+            <egenansatt> </egenansatt>
+            <egenansattFraDato> </egenansattFraDato>
+            <egenansattTilDato> </egenansattTilDato>
+            <egenansattKilde> </egenansattKilde>
+            <egenansattRegistrertAv> </egenansattRegistrertAv>
+        </egenansatt>
+        <boadresse>
+            <boAdresse>SOFIESPLASS</boAdresse>
+            <boKodeLand>NOR</boKodeLand>
+            <boKommune>0301</boKommune>
+            <boPostnr>0169</boPostnr>
+            <boBydel>030104</boBydel>
+            <boAdressetillegg> </boAdressetillegg>
+            <booffaGateKode>16745</booffaGateKode>
+            <booffaHusnr>0002</booffaHusnr>
+            <booffaBokstav>B</booffaBokstav>
+            <booffaBolignr> </booffaBolignr>
+            <bomatrGardsnr> </bomatrGardsnr>
+            <bomatrBruksnr> </bomatrBruksnr>
+            <bomatrFestenr> </bomatrFestenr>
+            <bomatrUndernr> </bomatrUndernr>
+            <boAdresseFraDato>2016-02-25</boAdresseFraDato>
+            <boAdresseTilDato> </boAdresseTilDato>
+            <boAdresseKilde>SKD</boAdresseKilde>
+        </boadresse>
+        <prioritertadresse>
+            <prioritertAdresseType> </prioritertAdresseType>
+            <prioritertAdresseFraDato> </prioritertAdresseFraDato>
+            <prioritertAdresseTilDato> </prioritertAdresseTilDato>
+            <prioritertAdresseKilde> </prioritertAdresseKilde>
+        </prioritertadresse>
+        <geti>
+            <getiLand> </getiLand>
+            <getiKommune> </getiKommune>
+            <getiBydel> </getiBydel>
+            <getiRegel>U</getiRegel>
+            <getiFraDato> </getiFraDato>
+            <getiTilDato> </getiTilDato>
+            <getiKilde> </getiKilde>
+        </geti>
+        <foreldreansvar>
+            <foreldreAnsvar>DELT</foreldreAnsvar>
+            <foreldreAnsvarFraDato>2017-12-08</foreldreAnsvarFraDato>
+            <foreldreAnsvarTilDato> </foreldreAnsvarTilDato>
+            <foreldreAnsvarKilde>SKD</foreldreAnsvarKilde>
+            <forreldreAnsvarRegistrertAv>AJOURHD</forreldreAnsvarRegistrertAv>
+        </foreldreansvar>
+        <oppholdstillatelse>
+            <oppholdsTillatelse> </oppholdsTillatelse>
+            <oppholdsTillatelseFraDato> </oppholdsTillatelseFraDato>
+            <oppholdsTillatelseTilDato> </oppholdsTillatelseTilDato>
+            <oppholdsTillatelseKilde> </oppholdsTillatelseKilde>
+            <oppholdsTillatelseRegistrertAv> </oppholdsTillatelseRegistrertAv>
+        </oppholdstillatelse>
+        <gironummer>
+            <gironummer> </gironummer>
+            <gironummerFraDato> </gironummerFraDato>
+            <gironummerTilDato> </gironummerTilDato>
+            <gironummerKilde> </gironummerKilde>
+            <gironummeRegistrertAv> </gironummeRegistrertAv>
+        </gironummer>
+        <tillegg>
+            <tilleggAdresse1> </tilleggAdresse1>
+            <tilleggAdresse2> </tilleggAdresse2>
+            <tilleggAdresse3> </tilleggAdresse3>
+            <tilleggPostnr> </tilleggPostnr>
+            <tilleggAdresseDatoTom> </tilleggAdresseDatoTom>
+            <tilleggKommunenr> </tilleggKommunenr>
+            <tilleggGateKode> </tilleggGateKode>
+            <tilleggHusnummer> </tilleggHusnummer>
+            <tilleggHusbokstav> </tilleggHusbokstav>
+            <tilleggBolignummer> </tilleggBolignummer>
+            <tilleggBydel> </tilleggBydel>
+            <tilleggPostboksnr> </tilleggPostboksnr>
+            <tilleggPostboksAnlegg> </tilleggPostboksAnlegg>
+            <tilleggAdresseFraDato> </tilleggAdresseFraDato>
+            <tilleggAdresseTilDato> </tilleggAdresseTilDato>
+            <tilleggKilde> </tilleggKilde>
+            <tilleggRegistrertAv> </tilleggRegistrertAv>
+        </tillegg>
+        <utad>
+            <utadAdresse1> </utadAdresse1>
+            <utadAdresse2> </utadAdresse2>
+            <utadAdresse3> </utadAdresse3>
+            <utadAdresseDatoTom> </utadAdresseDatoTom>
+            <utadLand> </utadLand>
+            <utadAdresseFraDato> </utadAdresseFraDato>
+            <utadAdresseTilDato> </utadAdresseTilDato>
+            <utadKilde> </utadKilde>
+            <utadRegistrertAv> </utadRegistrertAv>
+        </utad>
+        <post>
+            <postAdresse1> </postAdresse1>
+            <postAdresse2> </postAdresse2>
+            <postAdresse3> </postAdresse3>
+            <postpostnr> </postpostnr>
+            <postLand> </postLand>
+            <postAdresseFraDato> </postAdresseFraDato>
+            <postAdresseTilDato> </postAdresseTilDato>
+            <postKilde> </postKilde>
+            <postRegistrertAv> </postRegistrertAv>
+        </post>
+        <migrasjon>
+            <migrasjon> </migrasjon>
+            <migrasjonLand> </migrasjonLand>
+            <migrasjonFraDato> </migrasjonFraDato>
+            <migrasjonTilDato> </migrasjonTilDato>
+            <migrasjonKilde> </migrasjonKilde>
+            <migrasjonRegistrertAv> </migrasjonRegistrertAv>
+        </migrasjon>
+        <vergemaal>
+            <vergeSaksid> </vergeSaksid>
+            <vergeId> </vergeId>
+            <vergeType> </vergeType>
+            <vergeSakstype> </vergeSakstype>
+            <vergeMandattype> </vergeMandattype>
+            <vergeEmbete> </vergeEmbete>
+            <vergeVedtakDato> </vergeVedtakDato>
+            <vergeFnr> </vergeFnr>
+            <vergeFraDato> </vergeFraDato>
+            <vergeTilDato> </vergeTilDato>
+            <vergeKilde> </vergeKilde>
+        </vergemaal>
+        <behov>
+            <brukerBehov> </brukerBehov>
+            <brukerBehovFraDato> </brukerBehovFraDato>
+            <brukerBehovTilDato> </brukerBehovTilDato>
+            <brukerBehovKilde> </brukerBehovKilde>
+            <brukerBehovRegistrertAv> </brukerBehovRegistrertAv>
+        </behov>
+        <utlandbank>
+            <utlandbankGironummer> </utlandbankGironummer>
+            <utlandbankSwiftKode> </utlandbankSwiftKode>
+            <utlandbankIban> </utlandbankIban>
+            <utlandbankBankKode> </utlandbankBankKode>
+            <utlandbankBanknavn> </utlandbankBanknavn>
+            <utlandbankAdresse1> </utlandbankAdresse1>
+            <utlandbankAdresse2> </utlandbankAdresse2>
+            <utlandbankAdresse3> </utlandbankAdresse3>
+            <utlandbankValuta> </utlandbankValuta>
+            <utlandbankLand> </utlandbankLand>
+            <utlandbankFraDato> </utlandbankFraDato>
+            <utlandbankTilDato> </utlandbankTilDato>
+            <utlandbankKilde> </utlandbankKilde>
+            <utlandbankRegistrertAv> </utlandbankRegistrertAv>
+        </utlandbank>
+        <utlandinfo>
+            <utlandinfoIdOff> </utlandinfoIdOff>
+            <utlandinfoLand> </utlandinfoLand>
+            <utlandinfoSektor> </utlandinfoSektor>
+            <utlandinfoInstitusjon> </utlandinfoInstitusjon>
+            <utlandinfoKildePin> </utlandinfoKildePin>
+            <utlandinfoFamnavnFodt> </utlandinfoFamnavnFodt>
+            <utlandinfoFornavnFodt> </utlandinfoFornavnFodt>
+            <utlandinfoFodested> </utlandinfoFodested>
+            <utlandinfoFarsFamnavn> </utlandinfoFarsFamnavn>
+            <utlandinfoMorsFamnavn> </utlandinfoMorsFamnavn>
+            <utlandinfoFarsFornavn> </utlandinfoFarsFornavn>
+            <utlandinfoMorsFornavn> </utlandinfoMorsFornavn>
+            <utlandinfoNasjonalitet> </utlandinfoNasjonalitet>
+            <utlandinfoSedRef> </utlandinfoSedRef>
+            <utlandinfoNasjonalId> </utlandinfoNasjonalId>
+            <utlandinfoInstitusjonNavn> </utlandinfoInstitusjonNavn>
+            <utlandinfoDato> </utlandinfoDato>
+            <utlandinfoKilde> </utlandinfoKilde>
+        </utlandinfo>
+    </person>
+    <relasjon>
+        <relasjonIdent>12108117670</relasjonIdent>
+        <relasjonIdentType>FNR</relasjonIdentType>
+        <relasjonIdentStatus>BRUK</relasjonIdentStatus>
+        <relasjonRolle>MORA</relasjonRolle>
+        <relasjonFraDato>2009-04-19</relasjonFraDato>
+        <relasjonTilDato> </relasjonTilDato>
+        <relasjonKilde>SKD</relasjonKilde>
+        <relasjonRegistrertAv>AJOURHD</relasjonRegistrertAv>
+    </relasjon>
+    <relasjon>
+        <relasjonIdent>13069010711</relasjonIdent>
+        <relasjonIdentType>FNR</relasjonIdentType>
+        <relasjonIdentStatus>BRUK</relasjonIdentStatus>
+        <relasjonRolle>FARA</relasjonRolle>
+        <relasjonFraDato>2009-04-19</relasjonFraDato>
+        <relasjonTilDato> </relasjonTilDato>
+        <relasjonKilde>SKD</relasjonKilde>
+        <relasjonRegistrertAv>AJOURHD</relasjonRegistrertAv>
+    </relasjon>
+</tpsPersonDokument>
