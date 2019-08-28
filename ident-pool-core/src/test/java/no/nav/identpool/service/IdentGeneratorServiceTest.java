@@ -34,15 +34,6 @@ class IdentGeneratorServiceTest {
     private IdentGeneratorService identGeneratorService = new IdentGeneratorService();
 
     @Test
-    @DisplayName("Skal feile når FOM og TOM dato er like")
-    void shouldThrowEqualDates() {
-        HentIdenterRequest.HentIdenterRequestBuilder request = createRequest(Identtype.FNR, Kjoenn.MANN);
-        request.foedtFoer(LOCAL_DATE);
-
-        assertThrows(IllegalArgumentException.class, () -> identGeneratorService.genererIdenter(request.build()));
-    }
-
-    @Test
     @DisplayName("Skal feile når FOM er etter TOM")
     void shouldThrowToDateAfterFromDate() {
         HentIdenterRequest.HentIdenterRequestBuilder request = createRequest(Identtype.FNR, Kjoenn.MANN);
