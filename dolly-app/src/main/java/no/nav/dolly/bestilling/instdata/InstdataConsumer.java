@@ -3,21 +3,18 @@ package no.nav.dolly.bestilling.instdata;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 
-import java.net.URI;
-import java.util.List;
-import java.util.UUID;
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import no.nav.dolly.domain.resultset.inst.Instdata;
+import no.nav.dolly.properties.ProvidersProps;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.dolly.domain.resultset.inst.Instdata;
-import no.nav.dolly.properties.ProvidersProps;
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor

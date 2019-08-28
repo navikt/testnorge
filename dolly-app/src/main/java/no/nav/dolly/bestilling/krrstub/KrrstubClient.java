@@ -35,17 +35,17 @@ public class KrrstubClient implements ClientRegister {
             DigitalKontaktdata digitalKontaktdata = mapperFacade.map(bestilling.getKrrstub(), DigitalKontaktdata.class);
             digitalKontaktdata.setPersonident(norskIdent.getIdent());
 
-            ResponseEntity<DigitalKontaktdata[]> response = krrstubConsumer.readDigitalKontaktdata(norskIdent.getIdent());
+            DigitalKontaktdata[] response = krrstubConsumer.readDigitalKontaktdata(norskIdent.getIdent());
 
-            if (response.hasBody()) {
-                asList(response.getBody()).forEach(dkif -> {
+            if (response != null) {
+                asList(response).forEach(dkif -> {
                     if (nonNull(dkif.getId())) {
                         krrstubConsumer.deleteDigitalKontaktdata(dkif.getId());
                     }
                 });
             }
 
-            ResponseEntity krrstubResponse = krrstubConsumer.createDigitalKontaktdata(digitalKontaktdata);
+            ResponseEntity<Object> krrstubResponse = krrstubConsumer.createDigitalKontaktdata(digitalKontaktdata);
             progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
 
         } catch (RuntimeException e) {

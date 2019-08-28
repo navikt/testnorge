@@ -53,7 +53,7 @@ public class KrrstubClientTest {
         when(mapperFacade.map(any(RsDigitalKontaktdata.class), eq(DigitalKontaktdata.class)))
                 .thenReturn(new DigitalKontaktdata());
 
-        when(krrstubConsumer.readDigitalKontaktdata(IDENT)).thenReturn(ResponseEntity.ok(null));
+        when(krrstubConsumer.readDigitalKontaktdata(IDENT)).thenReturn(null);
         when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenReturn(ResponseEntity.ok(""));
 
         krrstubClient.gjenopprett(RsDollyBestilling.builder().krrstub(new RsDigitalKontaktdata()).build(),
@@ -61,14 +61,14 @@ public class KrrstubClientTest {
                 BestillingProgress.builder().bestillingId(BESTILLING_ID).build());
 
         verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
-        verify(krrStubResponseHandler).extractResponse(any(ResponseEntity.class));
+        verify(krrStubResponseHandler).extractResponse(any());
     }
 
     @Test
     public void gjenopprett_krrdata_feil() {
 
         BestillingProgress progress = BestillingProgress.builder().bestillingId(BESTILLING_ID).build();
-        when(krrstubConsumer.readDigitalKontaktdata(IDENT)).thenReturn(ResponseEntity.ok(null));
+        when(krrstubConsumer.readDigitalKontaktdata(IDENT)).thenReturn(null);
         when(mapperFacade.map(any(RsDigitalKontaktdata.class), eq(DigitalKontaktdata.class)))
                 .thenReturn(new DigitalKontaktdata());
         when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenThrow(HttpClientErrorException.class);
@@ -78,7 +78,7 @@ public class KrrstubClientTest {
                 .build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
         verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
-        verify(krrStubResponseHandler, times(0)).extractResponse(any(ResponseEntity.class));
+        verify(krrStubResponseHandler, times(0)).extractResponse(any());
 
         assertThat(progress.getKrrstubStatus(), containsString("Feil:"));
     }

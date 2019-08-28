@@ -30,14 +30,14 @@ public class KrrstubConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
-    public ResponseEntity readDigitalKontaktdata(String ident) {
+    public DigitalKontaktdata[] readDigitalKontaktdata(String ident) {
 
         return restTemplate.exchange(
                 RequestEntity.get(URI.create(providersProps.getKrrStub().getUrl() + PERSON_DIGITAL_KONTAKT_URL))
                         .header(NAV_CALL_ID, getNavCallId())
                         .header(NAV_CONSUMER_ID, CONSUMER)
                         .header(NAV_PERSONIDENT, ident)
-                        .build(), DigitalKontaktdata[].class);
+                        .build(), DigitalKontaktdata[].class).getBody();
     }
 
     public ResponseEntity<Object> createDigitalKontaktdata(DigitalKontaktdata digitalKontaktdata) {

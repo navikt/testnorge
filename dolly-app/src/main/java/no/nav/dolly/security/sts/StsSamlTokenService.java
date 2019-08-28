@@ -20,7 +20,6 @@ import org.apache.cxf.ws.policy.PolicyBuilder;
 import org.apache.cxf.ws.policy.PolicyEngine;
 import org.apache.cxf.ws.policy.attachment.reference.ReferenceResolver;
 import org.apache.cxf.ws.policy.attachment.reference.RemoteReferenceResolver;
-import org.apache.cxf.ws.security.SecurityConstants;
 import org.apache.cxf.ws.security.trust.STSClient;
 import org.apache.neethi.Policy;
 import org.springframework.stereotype.Service;
