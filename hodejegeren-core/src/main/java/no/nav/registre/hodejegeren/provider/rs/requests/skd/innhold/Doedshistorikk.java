@@ -10,8 +10,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-import no.nav.person.tjenestekontrakter.adapter.java.LocalDateAdapter;
-
 @Getter
 @Setter
 @NoArgsConstructor

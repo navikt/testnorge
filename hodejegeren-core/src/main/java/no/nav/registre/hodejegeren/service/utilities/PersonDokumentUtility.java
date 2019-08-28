@@ -53,7 +53,7 @@ public class PersonDokumentUtility {
         List<Relasjon> relasjoner = new ArrayList<>();
 
         PersonIdentType personIdentType = extractPersonIdent(tpsPersonDokumentType);
-        PersonIdentStatusType personIdentStatus = extractPersonIdentStatus(tpsPersonDokumentType);
+        PersonIdentStatusType personIdentStatusType = extractPersonIdentStatus(tpsPersonDokumentType);
         PersonInfoType personInfoType = extractPersonInfoType(tpsPersonDokumentType);
         PersonStatusType personStatusType = extractPersonStatusType(tpsPersonDokumentType);
         NavnType navnType = extractNavnType(tpsPersonDokumentType);
@@ -69,11 +69,7 @@ public class PersonDokumentUtility {
         List<ForeldreansvarType> foreldreansvarTypeListe = extractForeldreansvarType(tpsPersonDokumentType);
         for (ForeldreansvarType foreldreansvarType : foreldreansvarTypeListe) {
 
-            Foreldreansvar foreldreansvaret = Foreldreansvar.builder()
-                    .ident(foreldreansvarType.getForeldreAnsvar().trim())
-                    .fraDato(checkIfDateIsEmpty(foreldreansvarType.getForeldreAnsvarFraDato().trim()))
-                    .tilDato(checkIfDateIsEmpty(foreldreansvarType.getForeldreAnsvarTilDato().trim()))
-                    .build();
+            Foreldreansvar foreldreansvaret = buildForeldreansvar(foreldreansvarType);
             if (!foreldreansvaret.getIdent().isEmpty()) {
                 foreldreansvar.add(foreldreansvaret);
             }
@@ -87,156 +83,30 @@ public class PersonDokumentUtility {
 
         List<RelasjonType> relasjonTypeListe = extractRelasjonType(tpsPersonDokumentType);
         for (RelasjonType relasjonType : relasjonTypeListe) {
-            Relasjon relasjonen = Relasjon.builder()
-                    .ident(relasjonType.getRelasjonIdent().trim())
-                    .type(relasjonType.getRelasjonIdentType().trim())
-                    .status(relasjonType.getRelasjonIdentStatus().trim())
-                    .rolle(relasjonType.getRelasjonRolle().trim())
-                    .fraDato(checkIfDateIsEmpty(relasjonType.getRelasjonFraDato().trim()))
-                    .tilDato(checkIfDateIsEmpty(relasjonType.getRelasjonTilDato().trim()))
-                    .build();
+            Relasjon relasjonen = buildRelasjon(relasjonType);
             if (!relasjonen.getIdent().isEmpty() && !relasjonen.getType().isEmpty() && !relasjonen.getStatus().isEmpty() && !relasjonen.getRolle().isEmpty()) {
                 relasjoner.add(relasjonen);
             }
         }
 
         return PersonDokumentWrapper.builder()
-                .personIdent(
-                        PersonIdent.builder()
-                                .id(personIdentType.getPersonIdent().trim())
-                                .type(personIdentType.getPersonIdenttype().trim())
-                                .status(personIdentStatus.getPersonIdentStatus().trim())
-                                .fraDato(checkIfDateIsEmpty(personIdentType.getPersonIdentFraDato().trim()))
-                                .tilDato(checkIfDateIsEmpty(personIdentType.getPersonIdentTilDato().trim()))
-                                .build())
-                .personInfo(
-                        PersonInfo.builder()
-                                .kjoenn(personInfoType.getPersonKjonn().trim())
-                                .datoFoedt(checkIfDateIsEmpty(personInfoType.getPersonDatofodt().trim()))
-                                .foedtLand(personInfoType.getPersonFodtLand().trim())
-                                .foedtKommune(personInfoType.getPersonFodtKommune().trim())
-                                .status(personStatusType.getPersonStatus().trim())
-                                .build())
-                .navn(
-                        Navn.builder()
-                                .forkortet(navnType.getForkortetNavn().trim())
-                                .slektsnavn(navnType.getSlektsNavn().trim())
-                                .fornavn(navnType.getForNavn().trim())
-                                .mellomnavn(navnType.getMellomNavn().trim())
-                                .slektsnavnUgift(navnType.getSlektsNavnugift().trim())
-                                .fraDato(checkIfDateIsEmpty(navnType.getNavnFraDato().trim()))
-                                .tilDato(checkIfDateIsEmpty(navnType.getNavnTilDato().trim()))
-                                .build())
-                .sivilstand(
-                        Sivilstand.builder()
-                                .type(sivilstandType.getSivilstand().trim())
-                                .fraDato(checkIfDateIsEmpty(sivilstandType.getSivilstandFraDato().trim()))
-                                .tilDato(checkIfDateIsEmpty(sivilstandType.getSivilstandTilDato().trim()))
-                                .build())
-                .statsborger(
-                        Statsborger.builder()
-                                .land(statsborgerType.getStatsborger().trim())
-                                .fraDato(checkIfDateIsEmpty(statsborgerType.getStatsborgerFraDato().trim()))
-                                .tilDato(checkIfDateIsEmpty(statsborgerType.getStatsborgerTilDato().trim()))
-                                .build())
-                .doedshistorikk(
-                        Doedshistorikk.builder()
-                                .dato(checkIfDateIsEmpty(dodType.getDatoDod().trim()))
-                                .regDato(checkIfDateIsEmpty(dodType.getDodDatoReg().trim()))
-                                .build())
-                .telefonPrivat(
-                        TelefonPrivat.builder()
-                                .retningslinje(telefonPrivatType.getTlfPrivatRetningslinje().trim())
-                                .nummer(telefonPrivatType.getTlfPrivatNummer().trim())
-                                .fraDato(checkIfDateIsEmpty(telefonPrivatType.getTlfPrivatFraDato().trim()))
-                                .tilDato(checkIfDateIsEmpty(telefonPrivatType.getTlfPrivatTilDato().trim()))
-                                .build())
-                .telefonJobb(
-                        TelefonJobb.builder()
-                                .retningslinje(telefonJobbType.getTlfJobbRetningslinje().trim())
-                                .nummer(telefonJobbType.getTlfJobbNummer().trim())
-                                .fraDato(checkIfDateIsEmpty(telefonJobbType.getTlfJobbFraDato().trim()))
-                                .tilDato(checkIfDateIsEmpty(telefonJobbType.getTlfJobbTilDato().trim()))
-                                .build())
-                .telefonMobil(
-                        TelefonMobil.builder()
-                                .retningslinje(telefonMobilType.getTlfMobilRetningslinje().trim())
-                                .nummer(telefonMobilType.getTlfMobilNummer().trim())
-                                .fraDato(checkIfDateIsEmpty(telefonMobilType.getTlfMobilFraDato().trim()))
-                                .tilDato(checkIfDateIsEmpty(telefonMobilType.getTlfMobilTilDato().trim()))
-                                .build())
-                .boadresse(
-                        Boadresse.builder()
-                                .adresse(boadresseType.getBoAdresse().trim())
-                                .land(boadresseType.getBoKodeLand().trim())
-                                .kommune(boadresseType.getBoKommune().trim())
-                                .postnr(boadresseType.getBoPostnr().trim())
-                                .bydel(boadresseType.getBoBydel().trim())
-                                .offentligGateKode(boadresseType.getBooffaGateKode().trim())
-                                .offentligHusnr(boadresseType.getBooffaHusnr().trim())
-                                .offentligBokstav(boadresseType.getBooffaBokstav().trim())
-                                .offentligBolignr(boadresseType.getBooffaBolignr().trim())
-                                .matrikkelGardsnr(boadresseType.getBomatrGardsnr().trim())
-                                .matrikkelBruksnr(boadresseType.getBomatrBruksnr().trim())
-                                .matrikkelFestenr(boadresseType.getBomatrFestenr().trim())
-                                .matrikkelUndernr(boadresseType.getBomatrUndernr().trim())
-                                .fraDato(checkIfDateIsEmpty(boadresseType.getBoAdresseFraDato().trim()))
-                                .tilDato(checkIfDateIsEmpty(boadresseType.getBoAdresseTilDato().trim()))
-                                .build())
-                .prioritertAdresse(
-                        PrioritertAdresse.builder()
-                                .type(prioritertadresseType.getPrioritertAdresseType().trim())
-                                .fraDato(checkIfDateIsEmpty(prioritertadresseType.getPrioritertAdresseFraDato().trim()))
-                                .tilDato(checkIfDateIsEmpty(prioritertadresseType.getPrioritertAdresseTilDato().trim()))
-                                .build())
+                .personIdent(buildPersonident(personIdentType, personIdentStatusType))
+                .personInfo(buildPersonInfo(personInfoType, personStatusType))
+                .navn(buildNavn(navnType))
+                .sivilstand(buildSivilstand(sivilstandType))
+                .statsborger(buildStatsborger(statsborgerType))
+                .doedshistorikk(buildDoedshistorikk(dodType))
+                .telefonPrivat(buildTelefonPrivat(telefonPrivatType))
+                .telefonJobb(buildTelefonJobb(telefonJobbType))
+                .telefonMobil(buildTelefonMobil(telefonMobilType))
+                .boadresse(buildBoadresse(boadresseType))
+                .prioritertAdresse(buildPrioritertAdresse(prioritertadresseType))
                 .foreldreansvar(foreldreansvar)
-                .oppholdstillatelse(
-                        Oppholdstillatelse.builder()
-                                .status(oppholdstillatelseType.getOppholdsTillatelse().trim())
-                                .fraDato(checkIfDateIsEmpty(oppholdstillatelseType.getOppholdsTillatelseFraDato().trim()))
-                                .tilDato(checkIfDateIsEmpty(oppholdstillatelseType.getOppholdsTillatelseTilDato().trim()))
-                                .build())
-                .giro(
-                        Giro.builder()
-                                .nummer(gironummerType.getGironummer().trim())
-                                .fraDato(checkIfDateIsEmpty(gironummerType.getGironummerFraDato().trim()))
-                                .tilDato(checkIfDateIsEmpty(gironummerType.getGironummerTilDato().trim()))
-                                .build())
-                .tillegg(
-                        Tillegg.builder()
-                                .adresse1(tilleggType.getTilleggAdresse1().trim())
-                                .adresse2(tilleggType.getTilleggAdresse2().trim())
-                                .adresse3(tilleggType.getTilleggAdresse3().trim())
-                                .postnr(tilleggType.getTilleggPostnr().trim())
-                                .datoTom(checkIfDateIsEmpty(tilleggType.getTilleggAdresseDatoTom().trim()))
-                                .kommunenr(tilleggType.getTilleggKommunenr().trim())
-                                .gateKode(tilleggType.getTilleggGateKode().trim())
-                                .husnummer(tilleggType.getTilleggHusnummer().trim())
-                                .husbokstav(tilleggType.getTilleggHusbokstav().trim())
-                                .bolignummer(tilleggType.getTilleggBolignummer().trim())
-                                .bydel(tilleggType.getTilleggBydel().trim())
-                                .postboksnr(tilleggType.getTilleggPostboksnr().trim())
-                                .postboksAnlegg(tilleggType.getTilleggPostboksAnlegg().trim())
-                                .fraDato(checkIfDateIsEmpty(tilleggType.getTilleggAdresseFraDato().trim()))
-                                .tilDato(checkIfDateIsEmpty(tilleggType.getTilleggAdresseTilDato().trim()))
-                                .build())
-                .post(
-                        Post.builder()
-                                .adresse1(postType.getPostAdresse1().trim())
-                                .adresse2(postType.getPostAdresse2().trim())
-                                .adresse3(postType.getPostAdresse3().trim())
-                                .postnr(postType.getPostpostnr().trim())
-                                .postland(postType.getPostLand().trim())
-                                .fraDato(checkIfDateIsEmpty(postType.getPostAdresseFraDato().trim()))
-                                .tilDato(checkIfDateIsEmpty(postType.getPostAdresseTilDato().trim()))
-                                .build())
-                .migrasjon(
-                        Migrasjon.builder()
-                                .type(migrasjonType.getMigrasjon().trim())
-                                .land(migrasjonType.getMigrasjonLand().trim())
-                                .fraDato(checkIfDateIsEmpty(migrasjonType.getMigrasjonFraDato().trim()))
-                                .tilDato(checkIfDateIsEmpty(migrasjonType.getMigrasjonTilDato().trim()))
-                                .build())
+                .oppholdstillatelse(buildOppholdstillatelse(oppholdstillatelseType))
+                .giro(buildGiro(gironummerType))
+                .tillegg(buildTillegg(tilleggType))
+                .post(buildPost(postType))
+                .migrasjon(buildMigrasjon(migrasjonType))
                 .relasjoner(relasjoner)
                 .build();
     }
@@ -319,6 +189,192 @@ public class PersonDokumentUtility {
 
     private static List<RelasjonType> extractRelasjonType(TpsPersonDokumentType tpsPersonDokumentType) {
         return tpsPersonDokumentType.getRelasjon();
+    }
+
+    private static PersonIdent buildPersonident(PersonIdentType personIdentType, PersonIdentStatusType personIdentStatusType) {
+        return PersonIdent.builder()
+                .id(personIdentType.getPersonIdent().trim())
+                .type(personIdentType.getPersonIdenttype().trim())
+                .status(personIdentStatusType.getPersonIdentStatus().trim())
+                .fraDato(checkIfDateIsEmpty(personIdentType.getPersonIdentFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(personIdentType.getPersonIdentTilDato().trim()))
+                .build();
+    }
+
+    private static PersonInfo buildPersonInfo(PersonInfoType personInfoType, PersonStatusType personStatusType) {
+        return PersonInfo.builder()
+                .kjoenn(personInfoType.getPersonKjonn().trim())
+                .datoFoedt(checkIfDateIsEmpty(personInfoType.getPersonDatofodt().trim()))
+                .foedtLand(personInfoType.getPersonFodtLand().trim())
+                .foedtKommune(personInfoType.getPersonFodtKommune().trim())
+                .status(personStatusType.getPersonStatus().trim())
+                .build();
+    }
+
+    private static Navn buildNavn(NavnType navnType) {
+        return Navn.builder()
+                .forkortet(navnType.getForkortetNavn().trim())
+                .slektsnavn(navnType.getSlektsNavn().trim())
+                .fornavn(navnType.getForNavn().trim())
+                .mellomnavn(navnType.getMellomNavn().trim())
+                .slektsnavnUgift(navnType.getSlektsNavnugift().trim())
+                .fraDato(checkIfDateIsEmpty(navnType.getNavnFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(navnType.getNavnTilDato().trim()))
+                .build();
+    }
+
+    private static Sivilstand buildSivilstand(SivilstandType sivilstandType) {
+        return Sivilstand.builder()
+                .type(sivilstandType.getSivilstand().trim())
+                .fraDato(checkIfDateIsEmpty(sivilstandType.getSivilstandFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(sivilstandType.getSivilstandTilDato().trim()))
+                .build();
+    }
+
+    private static Statsborger buildStatsborger(StatsborgerType statsborgerType) {
+        return Statsborger.builder()
+                .land(statsborgerType.getStatsborger().trim())
+                .fraDato(checkIfDateIsEmpty(statsborgerType.getStatsborgerFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(statsborgerType.getStatsborgerTilDato().trim()))
+                .build();
+    }
+
+    private static Doedshistorikk buildDoedshistorikk(DodType dodType) {
+        return Doedshistorikk.builder()
+                .dato(checkIfDateIsEmpty(dodType.getDatoDod().trim()))
+                .regDato(checkIfDateIsEmpty(dodType.getDodDatoReg().trim()))
+                .build();
+    }
+
+    private static TelefonPrivat buildTelefonPrivat(TelefonPrivatType telefonPrivatType) {
+        return TelefonPrivat.builder()
+                .retningslinje(telefonPrivatType.getTlfPrivatRetningslinje().trim())
+                .nummer(telefonPrivatType.getTlfPrivatNummer().trim())
+                .fraDato(checkIfDateIsEmpty(telefonPrivatType.getTlfPrivatFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(telefonPrivatType.getTlfPrivatTilDato().trim()))
+                .build();
+    }
+
+    private static TelefonJobb buildTelefonJobb(TelefonJobbType telefonJobbType) {
+        return TelefonJobb.builder()
+                .retningslinje(telefonJobbType.getTlfJobbRetningslinje().trim())
+                .nummer(telefonJobbType.getTlfJobbNummer().trim())
+                .fraDato(checkIfDateIsEmpty(telefonJobbType.getTlfJobbFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(telefonJobbType.getTlfJobbTilDato().trim()))
+                .build();
+    }
+
+    private static TelefonMobil buildTelefonMobil(TelefonMobilType telefonMobilType) {
+        return TelefonMobil.builder()
+                .retningslinje(telefonMobilType.getTlfMobilRetningslinje().trim())
+                .nummer(telefonMobilType.getTlfMobilNummer().trim())
+                .fraDato(checkIfDateIsEmpty(telefonMobilType.getTlfMobilFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(telefonMobilType.getTlfMobilTilDato().trim()))
+                .build();
+    }
+
+    private static Boadresse buildBoadresse(BoadresseType boadresseType) {
+        return Boadresse.builder()
+                .adresse(boadresseType.getBoAdresse().trim())
+                .land(boadresseType.getBoKodeLand().trim())
+                .kommune(boadresseType.getBoKommune().trim())
+                .postnr(boadresseType.getBoPostnr().trim())
+                .bydel(boadresseType.getBoBydel().trim())
+                .offentligGateKode(boadresseType.getBooffaGateKode().trim())
+                .offentligHusnr(boadresseType.getBooffaHusnr().trim())
+                .offentligBokstav(boadresseType.getBooffaBokstav().trim())
+                .offentligBolignr(boadresseType.getBooffaBolignr().trim())
+                .matrikkelGardsnr(boadresseType.getBomatrGardsnr().trim())
+                .matrikkelBruksnr(boadresseType.getBomatrBruksnr().trim())
+                .matrikkelFestenr(boadresseType.getBomatrFestenr().trim())
+                .matrikkelUndernr(boadresseType.getBomatrUndernr().trim())
+                .fraDato(checkIfDateIsEmpty(boadresseType.getBoAdresseFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(boadresseType.getBoAdresseTilDato().trim()))
+                .build();
+    }
+
+    private static PrioritertAdresse buildPrioritertAdresse(PrioritertadresseType prioritertadresseType) {
+        return PrioritertAdresse.builder()
+                .type(prioritertadresseType.getPrioritertAdresseType().trim())
+                .fraDato(checkIfDateIsEmpty(prioritertadresseType.getPrioritertAdresseFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(prioritertadresseType.getPrioritertAdresseTilDato().trim()))
+                .build();
+    }
+
+    private static Foreldreansvar buildForeldreansvar(ForeldreansvarType foreldreansvarType) {
+        return Foreldreansvar.builder()
+                .ident(foreldreansvarType.getForeldreAnsvar().trim())
+                .fraDato(checkIfDateIsEmpty(foreldreansvarType.getForeldreAnsvarFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(foreldreansvarType.getForeldreAnsvarTilDato().trim()))
+                .build();
+    }
+
+    private static Oppholdstillatelse buildOppholdstillatelse(OppholdstillatelseType oppholdstillatelseType) {
+        return Oppholdstillatelse.builder()
+                .status(oppholdstillatelseType.getOppholdsTillatelse().trim())
+                .fraDato(checkIfDateIsEmpty(oppholdstillatelseType.getOppholdsTillatelseFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(oppholdstillatelseType.getOppholdsTillatelseTilDato().trim()))
+                .build();
+    }
+
+    private static Giro buildGiro(GironummerType gironummerType) {
+        return Giro.builder()
+                .nummer(gironummerType.getGironummer().trim())
+                .fraDato(checkIfDateIsEmpty(gironummerType.getGironummerFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(gironummerType.getGironummerTilDato().trim()))
+                .build();
+    }
+
+    private static Tillegg buildTillegg(TilleggType tilleggType) {
+        return Tillegg.builder()
+                .adresse1(tilleggType.getTilleggAdresse1().trim())
+                .adresse2(tilleggType.getTilleggAdresse2().trim())
+                .adresse3(tilleggType.getTilleggAdresse3().trim())
+                .postnr(tilleggType.getTilleggPostnr().trim())
+                .datoTom(checkIfDateIsEmpty(tilleggType.getTilleggAdresseDatoTom().trim()))
+                .kommunenr(tilleggType.getTilleggKommunenr().trim())
+                .gateKode(tilleggType.getTilleggGateKode().trim())
+                .husnummer(tilleggType.getTilleggHusnummer().trim())
+                .husbokstav(tilleggType.getTilleggHusbokstav().trim())
+                .bolignummer(tilleggType.getTilleggBolignummer().trim())
+                .bydel(tilleggType.getTilleggBydel().trim())
+                .postboksnr(tilleggType.getTilleggPostboksnr().trim())
+                .postboksAnlegg(tilleggType.getTilleggPostboksAnlegg().trim())
+                .fraDato(checkIfDateIsEmpty(tilleggType.getTilleggAdresseFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(tilleggType.getTilleggAdresseTilDato().trim()))
+                .build();
+    }
+
+    private static Post buildPost(PostType postType) {
+        return Post.builder()
+                .adresse1(postType.getPostAdresse1().trim())
+                .adresse2(postType.getPostAdresse2().trim())
+                .adresse3(postType.getPostAdresse3().trim())
+                .postnr(postType.getPostpostnr().trim())
+                .postland(postType.getPostLand().trim())
+                .fraDato(checkIfDateIsEmpty(postType.getPostAdresseFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(postType.getPostAdresseTilDato().trim()))
+                .build();
+    }
+
+    private static Migrasjon buildMigrasjon(MigrasjonType migrasjonType) {
+        return Migrasjon.builder()
+                .type(migrasjonType.getMigrasjon().trim())
+                .land(migrasjonType.getMigrasjonLand().trim())
+                .fraDato(checkIfDateIsEmpty(migrasjonType.getMigrasjonFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(migrasjonType.getMigrasjonTilDato().trim()))
+                .build();
+    }
+
+    private static Relasjon buildRelasjon(RelasjonType relasjonType) {
+        return Relasjon.builder()
+                .ident(relasjonType.getRelasjonIdent().trim())
+                .type(relasjonType.getRelasjonIdentType().trim())
+                .status(relasjonType.getRelasjonIdentStatus().trim())
+                .rolle(relasjonType.getRelasjonRolle().trim())
+                .fraDato(checkIfDateIsEmpty(relasjonType.getRelasjonFraDato().trim()))
+                .tilDato(checkIfDateIsEmpty(relasjonType.getRelasjonTilDato().trim()))
+                .build();
     }
 
     private static LocalDate checkIfDateIsEmpty(String date) {

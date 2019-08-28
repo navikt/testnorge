@@ -1,6 +1,5 @@
 package no.nav.registre.hodejegeren.provider.rs.requests.skd;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
