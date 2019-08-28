@@ -50,7 +50,10 @@ public class IdentpoolController {
 
     @PostMapping
     @ApiOperation(value = "rekvirer nye test-identer")
-    public List<String> rekvirer(@RequestParam(required = false, defaultValue = "false") boolean finnNaermesteLedigeDato, @RequestBody @Valid HentIdenterRequest hentIdenterRequest) throws Exception {
+    public List<String> rekvirer(@RequestParam(required = false, defaultValue = "true") boolean finnNaermesteLedigeDato, @RequestBody @Valid HentIdenterRequest hentIdenterRequest) throws Exception {
+        if (hentIdenterRequest.getFoedtEtter().compareTo(LocalDate.now()) > 0) {
+            throw new IllegalArgumentException("Kan ikke oppgi framtidig dato i felt 'foedtEtter'");
+        }
         if (finnNaermesteLedigeDato) {
             try {
                 return identpoolService.rekvirerNaermesteLedigDato(hentIdenterRequest);
