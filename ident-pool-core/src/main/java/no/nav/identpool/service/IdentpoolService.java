@@ -56,11 +56,11 @@ public class IdentpoolService {
             try {
                 return rekvirer(request);
             } catch (ForFaaLedigeIdenterException e) {
-                i++;
                 if (i == MAKS_ANTALL_FORSOEK_PAA_LEDIG_DATO) {
                     throw e;
                 } else {
                     log.info("Fant ikke ledig ident etter {} forsøk. Prøver med tidligere fødselsdato.", i + 1);
+                    i++;
                 }
             }
         }
