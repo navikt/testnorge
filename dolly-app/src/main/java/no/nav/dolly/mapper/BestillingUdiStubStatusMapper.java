@@ -1,8 +1,8 @@
 package no.nav.dolly.mapper;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 
-import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -25,17 +25,17 @@ public final class BestillingUdiStubStatusMapper {
                 if (statusMap.containsKey(progress.getUdistubStatus())) {
                     statusMap.get(progress.getUdistubStatus()).add(progress.getIdent());
                 } else {
-                    statusMap.put(progress.getUdistubStatus(), Lists.newArrayList(progress.getIdent()));
+                    statusMap.put(progress.getUdistubStatus(), newArrayList(progress.getIdent()));
                 }
             }
         });
 
         List<RsStatusIdent> identStatus = new ArrayList<>();
         statusMap.forEach((key, value) ->
-            identStatus.add(RsStatusIdent.builder()
-                    .statusMelding(key)
-                    .identer(value)
-                    .build())
+                identStatus.add(RsStatusIdent.builder()
+                        .statusMelding(key)
+                        .identer(value)
+                        .build())
         );
         return identStatus;
     }

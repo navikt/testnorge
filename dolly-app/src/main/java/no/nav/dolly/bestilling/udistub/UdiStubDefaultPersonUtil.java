@@ -76,25 +76,25 @@ public class UdiStubDefaultPersonUtil {
         IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo in = nullcheckSetDefaultValue(oppholdStatus.getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum(), new IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo());
         return IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo.builder()
                 .ovrigIkkeOppholdsKategoriArsak(nullcheckSetDefaultValue(in.getOvrigIkkeOppholdsKategoriArsak(), "ANNULERING_AV_VISUM"))
-                .avslagEllerBortfall(avslagEllerBortFallIfUnspecified(in))
+                .avslagEllerBortfall(avslagEllerBortfallIfUnspecified(in))
                 .utvistMedInnreiseForbud(utvistMedInnreiseForbudIfUnspecified(in))
                 .build();
     }
 
-    private static AvslagEllerBortfallTo avslagEllerBortFallIfUnspecified(IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo ikkeOppholdstilatelseIkkeVilkaarIkkeVisum) {
-        AvslagEllerBortfallTo avslagEllerBortFall = nullcheckSetDefaultValue(ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.getAvslagEllerBortfall(), new AvslagEllerBortfallTo());
+    private static AvslagEllerBortfallTo avslagEllerBortfallIfUnspecified(IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo ikkeOppholdstilatelseIkkeVilkaarIkkeVisum) {
+        AvslagEllerBortfallTo avslagEllerBortfall = nullcheckSetDefaultValue(ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.getAvslagEllerBortfall(), new AvslagEllerBortfallTo());
         return AvslagEllerBortfallTo.builder()
-                .avslagGrunnlagOverig(nullcheckSetDefaultValue(avslagEllerBortFall.getAvslagGrunnlagOverig(), DEFAULT_FAMILE_KODE))
-                .avslagGrunnlagTillatelseGrunnlagEOS(nullcheckSetDefaultValue(avslagEllerBortFall.getAvslagOppholdstillatelseBehandletGrunnlagEOS(), DEFAULT_FAMILE_KODE))
-                .avslagOppholdsrettBehandlet(nullcheckSetDefaultValue(avslagEllerBortFall.getAvslagOppholdsrettBehandlet(), DEFAULT_FAMILE_KODE))
-                .avslagOppholdstillatelseBehandletUtreiseFrist(nullcheckSetDefaultValue(avslagEllerBortFall.getAvslagOppholdstillatelseUtreiseFrist(), DEFAULT_DATE))
-                .avslagOppholdstillatelseBehandletGrunnlagOvrig(nullcheckSetDefaultValue(avslagEllerBortFall.getAvslagOppholdstillatelseBehandletGrunnlagOvrig(), DEFAULT_FAMILE_KODE))
-                .avslagOppholdstillatelseBehandletGrunnlagEOS(nullcheckSetDefaultValue(avslagEllerBortFall.getAvslagGrunnlagTillatelseGrunnlagEOS(), DEFAULT_FAMILE_KODE))
-                .tilbakeKallVirkningsDato(nullcheckSetDefaultValue(avslagEllerBortFall.getTilbakeKallVirkningsDato(), DEFAULT_DATE))
-                .tilbakeKallUtreiseFrist(nullcheckSetDefaultValue(avslagEllerBortFall.getTilbakeKallUtreiseFrist(), DEFAULT_DATE))
-                .bortfallAvPOellerBOSDato(nullcheckSetDefaultValue(avslagEllerBortFall.getBortfallAvPOellerBOSDato(), DEFAULT_DATE))
-                .avslagOppholdstillatelseUtreiseFrist(nullcheckSetDefaultValue(avslagEllerBortFall.getAvslagOppholdstillatelseUtreiseFrist(), DEFAULT_DATE))
-                .formeltVedtakUtreiseFrist(nullcheckSetDefaultValue(avslagEllerBortFall.getFormeltVedtakUtreiseFrist(), DEFAULT_DATE))
+                .avslagGrunnlagOverig(nullcheckSetDefaultValue(avslagEllerBortfall.getAvslagGrunnlagOverig(), DEFAULT_FAMILE_KODE))
+                .avslagGrunnlagTillatelseGrunnlagEOS(nullcheckSetDefaultValue(avslagEllerBortfall.getAvslagOppholdstillatelseBehandletGrunnlagEOS(), DEFAULT_FAMILE_KODE))
+                .avslagOppholdsrettBehandlet(nullcheckSetDefaultValue(avslagEllerBortfall.getAvslagOppholdsrettBehandlet(), DEFAULT_FAMILE_KODE))
+                .avslagOppholdstillatelseBehandletUtreiseFrist(nullcheckSetDefaultValue(avslagEllerBortfall.getAvslagOppholdstillatelseUtreiseFrist(), DEFAULT_DATE))
+                .avslagOppholdstillatelseBehandletGrunnlagOvrig(nullcheckSetDefaultValue(avslagEllerBortfall.getAvslagOppholdstillatelseBehandletGrunnlagOvrig(), DEFAULT_FAMILE_KODE))
+                .avslagOppholdstillatelseBehandletGrunnlagEOS(nullcheckSetDefaultValue(avslagEllerBortfall.getAvslagGrunnlagTillatelseGrunnlagEOS(), DEFAULT_FAMILE_KODE))
+                .tilbakeKallVirkningsDato(nullcheckSetDefaultValue(avslagEllerBortfall.getTilbakeKallVirkningsDato(), DEFAULT_DATE))
+                .tilbakeKallUtreiseFrist(nullcheckSetDefaultValue(avslagEllerBortfall.getTilbakeKallUtreiseFrist(), DEFAULT_DATE))
+                .bortfallAvPOellerBOSDato(nullcheckSetDefaultValue(avslagEllerBortfall.getBortfallAvPOellerBOSDato(), DEFAULT_DATE))
+                .avslagOppholdstillatelseUtreiseFrist(nullcheckSetDefaultValue(avslagEllerBortfall.getAvslagOppholdstillatelseUtreiseFrist(), DEFAULT_DATE))
+                .formeltVedtakUtreiseFrist(nullcheckSetDefaultValue(avslagEllerBortfall.getFormeltVedtakUtreiseFrist(), DEFAULT_DATE))
                 .build();
     }
 

@@ -31,7 +31,7 @@ public class UdiStubConsumer {
     private ProvidersProps providersProps;
 
     public ResponseEntity<PersonControllerResponse> createUdiPerson(Long bestillingsid, PersonTo udiPerson) {
-        return restTemplate.exchange(RequestEntity.post(URI.create(format("%s%s", providersProps.getUdiStub().getUrl(), UDI_STUB_PERSON)))
+        return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Nav-Call-Id", Long.toString(bestillingsid))
                 .header("Nav-Consumer-Id", getUserIdToken())
@@ -53,7 +53,7 @@ public class UdiStubConsumer {
                 log.warn(String.format("Kunne ikke slette udistub innslag for fnr: %s, da personen ikke ble funnet.", ident));
                 return responseEntity;
             } else {
-                throw new UdiStubFunctionalException(e.getMessage());
+                throw new UdiStubFunctionalException(e);
             }
         }
 

@@ -28,5 +28,4 @@ public class AvslagEllerBortfallTo {
     private String avslagOppholdsrettBehandlet;
     private LocalDate formeltVedtakUtreiseFrist;
 
-
 }

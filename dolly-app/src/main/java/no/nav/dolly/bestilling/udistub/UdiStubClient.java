@@ -33,8 +33,7 @@ public class UdiStubClient implements ClientRegister {
             StringBuilder status = new StringBuilder();
 
             try {
-                String fnr = norskIdent.getIdent();
-                ResponseEntity<PersonControllerResponse> deleteResponse = udiStubConsumer.deleteUdiPerson(progress.getBestillingId(), fnr);
+                ResponseEntity<PersonControllerResponse> deleteResponse = udiStubConsumer.deleteUdiPerson(progress.getBestillingId(), norskIdent.getIdent());
 
                 if (isOkStatus(deleteResponse)) {
                     PersonTo udiPerson = mapperFacade.map(bestilling.getUdistub(), PersonTo.class);
@@ -55,12 +54,11 @@ public class UdiStubClient implements ClientRegister {
 
     private boolean isOkStatus(ResponseEntity<PersonControllerResponse> response) {
         return HttpStatus.OK == response.getStatusCode() ||
-                HttpStatus.CREATED == response.getStatusCode() ||
                 HttpStatus.ACCEPTED == response.getStatusCode();
     }
 
     private static void appendOkStatus(StringBuilder status, ResponseEntity<PersonControllerResponse> postResponse) {
-        if (postResponse.hasBody()) {
+        if (postResponse.getBody() != null && postResponse.getBody().getPerson() != null) {
             PersonTo createdPerson = postResponse.getBody().getPerson();
             status.append(',')
                     .append("ident=")
