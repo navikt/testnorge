@@ -46,7 +46,7 @@ public class IdentpoolService {
     private final IdentGeneratorService identGeneratorService;
     private final WhitelistRepository whitelistRepository;
 
-    public List<String> rekvirerNaermesteLedigDato(HentIdenterRequest request) throws IllegalArgumentException, ForFaaLedigeIdenterException {
+    public List<String> rekvirerNaermesteLedigDato(HentIdenterRequest request) throws ForFaaLedigeIdenterException {
         LocalDate foedtEtter = request.getFoedtEtter();
 
         int i = 0;

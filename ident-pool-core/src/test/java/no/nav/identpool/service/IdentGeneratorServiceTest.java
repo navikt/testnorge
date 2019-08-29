@@ -107,6 +107,7 @@ class IdentGeneratorServiceTest {
                 .identtype(identtype)
                 .antall(GENERATE_SIZE)
                 .foedtEtter(LOCAL_DATE)
+                .foedtFoer(LOCAL_DATE)
                 .kjoenn(kjoenn);
     }
 
