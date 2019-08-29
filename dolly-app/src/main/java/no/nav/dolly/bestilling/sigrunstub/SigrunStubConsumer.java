@@ -29,9 +29,9 @@ public class SigrunStubConsumer {
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
 
-    public ResponseEntity deleteSkattegrunnlag(String ident) {
+    public void deleteSkattegrunnlag(String ident) {
 
-        return restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getSigrunStub().getUrl() + SIGRUN_STUB_DELETE_GRUNNLAG))
+        restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getSigrunStub().getUrl() + SIGRUN_STUB_DELETE_GRUNNLAG))
                         .header(AUTHORIZATION, getUserIdToken())
                         .header("personidentifikator", ident)
                         .build(),

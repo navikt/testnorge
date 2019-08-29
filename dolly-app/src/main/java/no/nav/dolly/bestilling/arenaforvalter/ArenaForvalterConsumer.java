@@ -4,6 +4,9 @@ import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +14,9 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.properties.ProvidersProps;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -36,27 +42,18 @@ public class ArenaForvalterConsumer {
     }
 
     public ResponseEntity<ArenaArbeidssokerBruker> getIdent(String ident) {
-        return restTemplate.exchange(RequestEntity.get(
-                URI.create(format("%s%s?filter-personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, ident)))
-                .header(HEADER_NAV_CALL_ID, getCallId())
-                .header(HEADER_NAV_CONSUMER_ID, KILDE)
-                .build(), ArenaArbeidssokerBruker.class);
+        URI uri = URI.create(format("%s%s?filter-personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, ident));
+        return doRequest(GET, uri, null, ArenaArbeidssokerBruker.class);
     }
 
     public void deleteIdent(String ident, String environment) {
-        restTemplate.exchange(RequestEntity.delete(
-                URI.create(format("%s%s?miljoe=%s&personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, environment, ident)))
-                .header(HEADER_NAV_CALL_ID, getCallId())
-                .header(HEADER_NAV_CONSUMER_ID, KILDE)
-                .build(), JsonNode.class);
+        URI uri = URI.create(format("%s%s?miljoe=%s&personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, environment, ident));
+        doRequest(DELETE, uri, null, JsonNode.class);
     }
 
     public ResponseEntity<ArenaArbeidssokerBruker> postArenadata(ArenaNyeBrukere arenaNyeBrukere) {
-        return restTemplate.exchange(RequestEntity.post(
-                URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_BRUKER))
-                .header(HEADER_NAV_CALL_ID, getCallId())
-                .header(HEADER_NAV_CONSUMER_ID, KILDE)
-                .body(arenaNyeBrukere), ArenaArbeidssokerBruker.class);
+        URI uri = URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_BRUKER);
+        return doRequest(POST, uri, arenaNyeBrukere, ArenaArbeidssokerBruker.class);
     }
 
     public List<String> getEnvironments() {
@@ -69,5 +66,13 @@ public class ArenaForvalterConsumer {
                 .build(), expectedResponseType);
         //TODO Fjern resp != null når ArenaForvalterConsumerTest er skrevet om.
         return resp != null && resp.getBody() != null ? resp.getBody() : emptyList();
+    }
+
+    private <T> ResponseEntity<T> doRequest(HttpMethod method, URI uri, ArenaNyeBrukere body, Class<T> clazz) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HEADER_NAV_CALL_ID, getCallId());
+        httpHeaders.add(HEADER_NAV_CONSUMER_ID, KILDE);
+
+        return restTemplate.exchange(uri, method, new HttpEntity<>(body, httpHeaders), clazz);
     }
 }

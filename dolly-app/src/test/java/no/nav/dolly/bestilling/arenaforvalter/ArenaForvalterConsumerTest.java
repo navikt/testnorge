@@ -5,6 +5,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
@@ -18,9 +21,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -49,7 +54,7 @@ public class ArenaForvalterConsumerTest {
         arenaForvalterConsumer.deleteIdent(IDENT, ENV);
 
         verify(providersProps).getArenaForvalter();
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(JsonNode.class));
+        verify(restTemplate).exchange(any(URI.class), eq(DELETE), any(HttpEntity.class), eq(JsonNode.class));
     }
 
     @Test
@@ -60,7 +65,7 @@ public class ArenaForvalterConsumerTest {
                 .build());
 
         verify(providersProps).getArenaForvalter();
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(ArenaArbeidssokerBruker.class));
+        verify(restTemplate).exchange(any(URI.class), eq(POST), any(HttpEntity.class), eq(ArenaArbeidssokerBruker.class));
     }
 
     @Test
@@ -69,7 +74,7 @@ public class ArenaForvalterConsumerTest {
         arenaForvalterConsumer.getIdent(IDENT);
 
         verify(providersProps).getArenaForvalter();
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(ArenaArbeidssokerBruker.class));
+        verify(restTemplate).exchange(any(URI.class), eq(GET), any(HttpEntity.class), eq(ArenaArbeidssokerBruker.class));
     }
 
     //TODO Skriv om test, eller flytt ut til ende-til-ende test
