@@ -119,7 +119,7 @@ public class FeilhaandteringCompTest {
         placeholderValues.put("foedtEtter", LocalDate.now().minusYears(90).format(formatter));
 
         String path = "__files/comptest/identpool/identpool_hent2Identer_request.json";
-        stubFor(post("/identpool/api/v1/identifikator")
+        stubFor(post("/identpool/api/v1/identifikator?finnNaermesteLedigeDato=false")
                 .withRequestBody(equalToJson(replace(getResourceFileContent(path), placeholderValues)))
                 .willReturn(okJson(expectedFnrFromIdentpool.toString())));
     }

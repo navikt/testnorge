@@ -18,6 +18,7 @@ public class HentIdenterRequest {
     private LocalDate foedtFoer;
     private Kjonn kjoenn;
     private int antall;
+    private String rekvirertAv;
 
     public enum IdentType {
         FNR, DNR

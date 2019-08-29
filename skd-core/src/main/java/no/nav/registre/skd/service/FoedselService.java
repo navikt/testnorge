@@ -56,7 +56,14 @@ public class FoedselService {
 
             String barnFnr;
             try {
-                barnFnr = identPoolConsumer.hentNyeIdenter(HentIdenterRequest.builder().foedtEtter(morFoedselsdato.plusYears(MIN_FORELDER_ALDER)).antall(1).identtype(identType).build()).get(0);
+                barnFnr = identPoolConsumer.hentNyeIdenter(
+                        HentIdenterRequest.builder()
+                                .foedtEtter(morFoedselsdato.plusYears(MIN_FORELDER_ALDER))
+                                .antall(1)
+                                .identtype(identType)
+                                .rekvirertAv("orkestratoren")
+                                .build())
+                        .get(0);
             } catch (RuntimeException e) {
                 log.warn("Kunne ikke finne barn til mor med fnr {} - Fjernet melding med meldingsnummer {}", morFnr, melding.getMeldingsnrHosTpsSynt());
                 meldingIterator.remove();

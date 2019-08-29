@@ -30,7 +30,9 @@ public class NyeIdenterService {
         HentIdenterRequest request = HentIdenterRequest.builder()
                 .antall(antallNyeIdenter)
                 .identtype(identType)
-                .foedtEtter(LocalDate.now().minusYears(90)).build();
+                .foedtEtter(LocalDate.now().minusYears(90))
+                .rekvirertAv("orkestratoren")
+                .build();
         List<String> identer = identPoolConsumer.hentNyeIdenter(request);
         for (int i = 0; i < antallNyeIdenter; i++) {
             putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), identer.get(i));
