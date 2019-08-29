@@ -39,7 +39,6 @@ public class DefaultTestData {
     public static final Boolean TEST_UAVKLART_FLYKTNINGSTATUS = false;
 
     public static final PersonNavn TEST_NAVN = new PersonNavn("NATURLIG", "ABSURD", "BÆREPOSE");
-    public static final Long TEST_ID = 1L;
     public static final ArbeidOmfangKategori TEST_ARBEIDOMGANGKATEGORI = ArbeidOmfangKategori.DELTID_SAMT_FERIER_HELTID;
     public static final JaNeiUavklart TEST_ARBEIDSADGANG = JaNeiUavklart.NEI;
     public static final ArbeidsadgangType TEST_ARBEIDSADGANG_TYPE = ArbeidsadgangType.GENERELL;
@@ -49,11 +48,11 @@ public class DefaultTestData {
 
     public static final Boolean TEST_AVGJOERELSE_UAVKLART = false;
     public static final Boolean TEST_OPPHOLDSTILLATELSE = true;
-    public static final OppholdstillatelseKategori TEST_OPPHOLDSTILLATELSE_TYPE = OppholdstillatelseKategori.PERMANENT;
     public static final JaNeiUavklart TEST_SOEKNAD_OM_BESKYTTELSE = JaNeiUavklart.JA;
     public static final JaNeiUavklart TEST_INNREISEFORBUD = JaNeiUavklart.JA;
     public static final OppholdsgrunnlagKategori TEST_OPPHOLDS_GRUNNLAG_KATEGORI = OppholdsgrunnlagKategori.ARBEID;
     public static final OvrigIkkeOppholdsKategori TEST_ovrigIkkeOppholdsKategori = OvrigIkkeOppholdsKategori.ANNULERING_AV_VISUM;
+    public static final OppholdstillatelseKategori TEST_OPPHOLDSTILLATELSE_TYPE = OppholdstillatelseKategori.PERMANENT;
 
     private static final PersonTo testPerson = createPersonTo();
 
