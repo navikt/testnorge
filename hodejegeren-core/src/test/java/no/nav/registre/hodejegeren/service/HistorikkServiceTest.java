@@ -169,7 +169,7 @@ public class HistorikkServiceTest {
     }
 
     @Test
-    public void shouldOppretteNyttSkdDokument() {
+    public void shouldOppretteNyttSkdDokument() throws IOException {
         String skdFnr = "03030303030";
         List<Kilde> kilder = new ArrayList<>();
         kilder.add(Kilde.builder()
@@ -183,7 +183,10 @@ public class HistorikkServiceTest {
         when(syntHistorikkRepository.findById(skdFnr)).thenReturn(Optional.empty());
         when(syntHistorikkRepository.save(any())).thenReturn(skdHistorikk);
 
-        TpsPersonDokumentType tpsPersonDokumentType = new TpsPersonDokumentType();
+        URL resource = Resources.getResource("historikk/TpsPersonDokumentType.xml");
+        XmlMapper xmlMapper = new XmlMapper();
+        TpsPersonDokumentType tpsPersonDokumentType = xmlMapper.readValue(resource, TpsPersonDokumentType.class);
+
         List<String> identerLagtTil = historikkService.oppdaterTpsPersonDokument(skdFnr, tpsPersonDokumentType);
 
         assertThat(identerLagtTil, contains(skdFnr));

@@ -123,6 +123,7 @@ public class HistorikkService {
 
     public List<String> oppdaterTpsPersonDokument(String ident, TpsPersonDokumentType tpsPersonDokument) {
         SyntHistorikk syntHistorikk = hentHistorikkMedId(ident);
+        PersonDokumentWrapper personDokumentWrapper = PersonDokumentUtility.convertToPersonDokumentWrapper(tpsPersonDokument);
         if (syntHistorikk != null) {
             Kilde kilde = null;
             for (Kilde k : syntHistorikk.getKilder()) {
@@ -133,15 +134,14 @@ public class HistorikkService {
             }
             if (kilde != null) {
                 Data eksisterendeSkdData = kilde.getData().get(0);
-                PersonDokumentWrapper personDokumentWrapper = PersonDokumentUtility.convertToPersonDokumentWrapper(tpsPersonDokument);
                 eksisterendeSkdData.setInnhold(personDokumentWrapper);
                 eksisterendeSkdData.setDatoEndret(LocalDateTime.now());
                 return Collections.singletonList(syntHistorikkRepository.save(syntHistorikk).getId());
             } else {
-                return leggTilSkdData(ident, tpsPersonDokument);
+                return leggTilSkdData(ident, personDokumentWrapper);
             }
         } else {
-            return leggTilSkdData(ident, tpsPersonDokument);
+            return leggTilSkdData(ident, personDokumentWrapper);
         }
     }
 
@@ -183,12 +183,12 @@ public class HistorikkService {
         }
     }
 
-    private List<String> leggTilSkdData(String ident, TpsPersonDokumentType tpsPersonDokument) {
+    private List<String> leggTilSkdData(String ident, PersonDokumentWrapper personDokumentWrapper) {
         HistorikkRequest historikkRequest = HistorikkRequest.builder()
                 .kilde("skd")
                 .identMedData(Collections.singletonList(DataRequest.builder()
                         .id(ident)
-                        .data(Collections.singletonList(tpsPersonDokument))
+                        .data(Collections.singletonList(personDokumentWrapper))
                         .build()))
                 .build();
         return leggTilHistorikkPaaIdent(historikkRequest);
