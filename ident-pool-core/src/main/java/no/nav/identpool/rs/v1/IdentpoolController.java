@@ -53,6 +53,9 @@ public class IdentpoolController {
     @ApiOperation(value = "rekvirer nye test-identer")
     public List<String> rekvirer(@RequestParam(required = false, defaultValue = "true") boolean finnNaermesteLedigeDato, @RequestBody @Valid HentIdenterRequest hentIdenterRequest) throws Exception {
         validateDatesInRequest(hentIdenterRequest);
+        if (hentIdenterRequest.getFoedtFoer() == null) {
+            hentIdenterRequest.setFoedtFoer(hentIdenterRequest.getFoedtEtter().plusDays(1));
+        }
         if (finnNaermesteLedigeDato) {
             try {
                 return identpoolService.rekvirerNaermesteLedigDato(hentIdenterRequest);

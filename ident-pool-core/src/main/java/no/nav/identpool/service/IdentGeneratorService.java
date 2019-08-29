@@ -47,11 +47,9 @@ public class IdentGeneratorService {
     public List<String> genererIdenter(HentIdenterRequest request) {
         Assert.notNull(request.getFoedtEtter(), "FOM dato ikke oppgitt");
 
-        LocalDate foedtEtter = request.getFoedtEtter();
-        LocalDate foedtFoer = request.getFoedtFoer() == null ? foedtEtter.plusDays(1) : request.getFoedtFoer();
-        validateDates(foedtEtter, foedtFoer);
-        if (foedtFoer.isEqual(foedtEtter)) {
-            foedtFoer = foedtFoer.plusDays(1);
+        validateDates(request.getFoedtEtter(), request.getFoedtFoer());
+        if (request.getFoedtFoer().isEqual(request.getFoedtEtter())) {
+            request.setFoedtFoer(request.getFoedtEtter().plusDays(1));
         }
 
         int antall = request.getAntall();
@@ -60,13 +58,13 @@ public class IdentGeneratorService {
 
         Set<String> identer = new HashSet<>();
         int iteratorRange = (kjoenn == null) ? 1 : 2;
-        int numberOfDates = toIntExact(ChronoUnit.DAYS.between(foedtEtter, foedtFoer));
+        int numberOfDates = toIntExact(ChronoUnit.DAYS.between(request.getFoedtEtter(), request.getFoedtFoer()));
 
         Function<LocalDate, String> numberFormat =
                 numberFormatter.getOrDefault(identtype, IdentGeneratorUtil::randomFormat);
 
         while (identer.size() < antall) {
-            LocalDate birthdate = foedtEtter.plusDays(random.nextInt(numberOfDates));
+            LocalDate birthdate = request.getFoedtEtter().plusDays(random.nextInt(numberOfDates));
             String format = numberFormat.apply(birthdate);
 
             List<Integer> yearRange = getYearRange(birthdate);
