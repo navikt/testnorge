@@ -53,7 +53,7 @@ describe('mapPdlDataToIdent.js', () => {
 				},
 				{
 					id: 'idNummer',
-					label: 'Fnr/dnr/bnr',
+					label: 'Fnr/dnr/BOST',
 					value: undefined
 				},
 				{
