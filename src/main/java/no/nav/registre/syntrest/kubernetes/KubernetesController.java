@@ -1,29 +1,39 @@
 package no.nav.registre.syntrest.kubernetes;
 
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.internal.LinkedTreeMap;
 import io.kubernetes.client.ApiClient;
-import io.kubernetes.client.util.Config;
-import io.kubernetes.client.util.KubeConfig;
+import io.kubernetes.client.ApiException;
+import io.kubernetes.client.apis.CustomObjectsApi;
+import io.kubernetes.client.models.V1DeleteOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.yaml.snakeyaml.Yaml;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
 public class KubernetesController {
 
-    // Sjekk om application kjører på NAIS
-    // // Hvis ikke, spinn opp ny via KubernetesController
-    // Sjekk om den er ledig
-    // Lås applikasjonen s.a. bare denne innstansen har tilgang
-    // Gjør kall på applikasjonen
-    // Lås opp applikasjonen igjen, og la andre få tilgang på den.
-    // Sjekk om flere skal bruke applikasjonen
-    // // Hvis ikke slett applikasjonen
+    private final String GROUP = "nais.io";
+    private final String VERSION = "v1alpha1";
+    private final String MILJOE = "q2";
+    private final String PLURAL = "applications";
 
+    private final String manifestPath;
+    private final RestTemplate restTemplate;
+    private final String isAliveUrl;
+    private final CustomObjectsApi api;
+
+    @Value("${docker-image-path}")
+    private String dockerImagePath;
 
     @Value("${max-alive-retries}")
     private int maxRetries;
@@ -31,21 +41,120 @@ public class KubernetesController {
     @Value("${alive-retry-delay")
     private int retryDelay;
 
-    public String getApiInterface(String appName) {
+    public KubernetesController(RestTemplate restTemplate, ApiClient apiClient) {
+        this.restTemplate = restTemplate;
+        this.manifestPath = "/nais/{}.yaml";
+        this.isAliveUrl = "https://nais-{}.nais.preprod.local/internal/isAlive";
 
-        return "";
+        this.api = new CustomObjectsApi();
+        api.setApiClient(apiClient);
     }
 
-//    public ApiClient createApiClient() throws IOException {
-//        String kubeConfigFilePath = "/var/run/secrets/nais.io/vault/kubeconfig";
-//
-//        try {
-//            KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader(kubeConfigFilePath));
-//            return Config.fromConfig(kc);
-//        } catch (FileNotFoundException e) {
-//            log.error("Could not find kubeconfig file at {}.", kubeConfigFilePath);
-//            throw e;
-//        }
-//    }
+    public void deployImage(String appName) throws ApiException, InterruptedException {
+        Map<String, Object> manifestFile = prepareYaml(appName);
 
+        if (!existsOnCluster(appName)) {
+
+            api.createNamespacedCustomObject(GROUP, VERSION, MILJOE, PLURAL, manifestFile, null);
+            log.info("Application \'{}\' created!", appName);
+            waitForDeployment(appName);
+
+        } else if (!isAlive(appName)) {
+
+            waitForDeployment(appName);
+        }
+    }
+
+    public void takedownImage(String appName) throws ApiException, JsonSyntaxException {
+
+        if (existsOnCluster(appName)) {
+            V1DeleteOptions deleteOptions = new V1DeleteOptions();
+
+            try {
+
+                api.deleteNamespacedCustomObject(GROUP, VERSION, MILJOE, PLURAL, appName, deleteOptions,
+                        null, null, null);
+                log.info("Successfully deleted application \'{}\'", appName);
+
+            } catch (JsonSyntaxException e) { // TODO: When does this happen?
+
+                if (e.getCause() instanceof IllegalStateException) {
+                    IllegalStateException ise = (IllegalStateException) e.getCause();
+                    if (!Objects.isNull(ise.getMessage()) && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")) {
+                        log.info("Successfully deleted application \'{}\'", appName);
+                    } else { throw e; }
+                } else { throw e; }
+
+            }
+
+        } else {
+            throw new IllegalArgumentException("No application named \'" + appName + "\' found. Unable to delete.");
+        }
+    }
+
+    public boolean isAlive(String appName) {
+        String response = restTemplate.getForObject(String.format(isAliveUrl, appName), String.class);
+        return "1".equals(response);
+    }
+
+    private boolean existsOnCluster(String appName) throws ApiException {
+        List<String> applications = listApplicationsOnCluster();
+        return applications.contains(appName);
+    }
+
+    private List<String> listApplicationsOnCluster() throws ApiException{
+
+        List<String> applications = new ArrayList<>();
+
+        LinkedTreeMap result = (LinkedTreeMap) api.listNamespacedCustomObject(GROUP, VERSION, MILJOE, PLURAL,
+                null, null, null, null);
+        ArrayList items = (ArrayList) result.get("items");
+
+        for (Object item : items) {
+            LinkedTreeMap app = (LinkedTreeMap) item;
+            LinkedTreeMap metadata = (LinkedTreeMap) app.get("metadata");
+            String name = (String) metadata.get("name");
+
+            applications.add(name);
+        }
+
+        return applications;
+    }
+
+    private void waitForDeployment(String appName) throws InterruptedException, ApiException {
+        log.info("Checking \'{}\'s deployment status...", appName);
+        int numRetries = 0;
+
+        while (!isAlive(appName)) {
+            if (numRetries < maxRetries) {
+                TimeUnit.SECONDS.sleep(retryDelay);
+                log.info("Waiting for \'{}\' to deploy...", appName);
+            } else {
+                log.error("Application \'{}\' failed to deploy. Terminating...", appName);
+                takedownImage(appName);
+                return;
+            }
+            numRetries++;
+        } // wend
+    }
+
+    private Map<String, Object> prepareYaml(String appName) {
+        Yaml yaml = new Yaml();
+        Map<String, Object> manifestFile = yaml.load(
+                getClass().getResourceAsStream(String.format(manifestPath, appName)));
+
+        Map<String, Object> spec = (Map) manifestFile.get("spec");
+        String imageBase = spec.get("image").toString();
+        String latestImage = imageBase.replace("latest", getLatestImageVersion(appName));
+        spec.put("image", latestImage);
+
+        return manifestFile;
+    }
+
+    private String getLatestImageVersion(String appName) {
+        String query = String.format(dockerImagePath, appName);
+        Map<String, Object> repositoryMap = (Map) restTemplate.getForObject(query, Object.class);
+        List<String> tags = (List) repositoryMap.get("tags");
+        return tags.get(tags.size() -1);
+    }
 }

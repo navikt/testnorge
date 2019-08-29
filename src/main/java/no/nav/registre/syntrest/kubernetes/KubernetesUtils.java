@@ -120,7 +120,7 @@ public class KubernetesUtils {
                     log.info("It's Alive!");
                     stillDeploying = false;
                 }
-            } catch (Exception e) {
+            } catch (Exception e) { // catching the nullptr here i think?
                 if (num_retries < maxRetries) {
                     TimeUnit.SECONDS.sleep(retryDelay);
                     log.info("Waiting for " + appName + " to come alive: " + e);
