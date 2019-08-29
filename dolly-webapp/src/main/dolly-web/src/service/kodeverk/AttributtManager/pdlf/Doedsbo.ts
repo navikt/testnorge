@@ -27,7 +27,7 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.PDLF,
 				validation: yup.string().required('Velg en type adressat'),
 				inputType: InputType.Select,
-				options: SelectOptionsManager('adressattype'),
+				options: SelectOptionsManager('adressatType'),
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
