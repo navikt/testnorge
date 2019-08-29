@@ -34,10 +34,20 @@
 		<spring.vault.version>2.1.3.RELEASE</spring.vault.version>
 		<spring.vault-config.version>2.1.2.RELEASE</spring.vault-config.version>
 		<spring.boot.test.version>2.1.0.RELEASE</spring.boot.test.version>
+		<orika.version>1.5.2</orika.version>
+		<wiremock-standalone.version>2.22.0</wiremock-standalone.version>
+		<spring-cloud-contract-wiremock.version>2.1.1.RELEASE</spring-cloud-contract-wiremock.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
+			<!--UTIL-->
+			<dependency>
+				<groupId>ma.glasnost.orika</groupId>
+				<artifactId>orika-core</artifactId>
+				<version>${orika.version}</version>
+			</dependency>
+
 			<!--LOGGING-->
 			<dependency>
 				<groupId>net.logstash.logback</groupId>
@@ -96,6 +106,18 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-test</artifactId>
 				<version>${spring.boot.test.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.tomakehurst</groupId>
+				<artifactId>wiremock-standalone</artifactId>
+				<version>${wiremock-standalone.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-contract-wiremock</artifactId>
+				<version>${spring-cloud-contract-wiremock.version}</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

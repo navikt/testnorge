@@ -1,0 +1,153 @@
+[
+  {
+    "personId": 100020773,
+    "ident": "19026229432",
+    "identtype": "FNR",
+    "kjonn": "K",
+    "fornavn": "NATURLIG",
+    "mellomnavn": "ABSURD",
+    "etternavn": "BÆREPOSE",
+    "statsborgerskap": "NOR",
+    "statsborgerskapRegdato": "2005-04-03T00:00:00",
+    "innvandretFraLand": "BHS",
+    "innvandretFraLandFlyttedato": "2005-04-03T00:00:00",
+    "utvandretTilLand": "BOL",
+    "utvandretTilLandFlyttedato": "2005-04-03T08:29:05",
+    "boadresse": {
+      "adressetype": "GATE",
+      "gateadresse": "KISTEBAKKANE",
+      "husnummer": "042",
+      "gatekode": "51255",
+      "adresseId": 100020551,
+      "personId": 100020773,
+      "postnr": "5137",
+      "kommunenr": "1201",
+      "flyttedato": "2005-04-03T00:00:00"
+    },
+    "postadresse": [
+      {
+        "id": 100001546,
+        "postLinje1": "1KOLEJOWA 6/5",
+        "postLinje2": "18-500 KOLNO",
+        "postLand": "BOL"
+      }
+    ],
+    "regdato": "2019-08-29T08:29:05",
+    "relasjoner": [
+      {
+        "id": 100006754,
+        "person": {
+          "personId": 100020773,
+          "ident": "19026229432",
+          "identtype": "FNR",
+          "kjonn": "K",
+          "fornavn": "NATURLIG",
+          "etternavn": "BÆREPOSE"
+        },
+        "personRelasjonMed": {
+          "personId": 100020774,
+          "ident": "14106229253",
+          "identtype": "FNR",
+          "kjonn": "K",
+          "fornavn": "TYKKMAGET",
+          "etternavn": "MYGG",
+          "statsborgerskap": "NOR",
+          "statsborgerskapRegdato": "1962-10-14T00:00:00",
+          "innvandretFraLand": "BHS",
+          "innvandretFraLandFlyttedato": "1962-10-14T00:00:00",
+          "utvandretTilLand": "ARG",
+          "utvandretTilLandFlyttedato": "2019-08-29T08:29:07",
+          "boadresse": {
+            "adressetype": "GATE",
+            "gateadresse": "KISTEBAKKANE",
+            "husnummer": "042",
+            "gatekode": "51255",
+            "adresseId": 100020552,
+            "personId": 100020774,
+            "postnr": "5137",
+            "kommunenr": "1201",
+            "flyttedato": "1962-02-19T00:00:00"
+          },
+          "postadresse": [
+            {
+              "id": 100001547,
+              "postLinje1": "1KOLEJOWA 6/5",
+              "postLinje2": "18-500 KOLNO",
+              "postLand": "ARG"
+            }
+          ],
+          "regdato": "2019-08-29T08:29:04",
+          "foedselsdato": "2005-04-03T00:00:00",
+          "alder": 56,
+          "opprettetDato": "2019-08-29T08:29:04.709",
+          "opprettetAv": "anonymousUser",
+          "sprakKode": "NB",
+          "datoSprak": "1962-10-14T00:00:00",
+          "utenFastBopel": false
+        },
+        "relasjonTypeNavn": "EKTEFELLE"
+      },
+      {
+        "id": 100006755,
+        "person": {
+          "personId": 100020773,
+          "ident": "19026229432",
+          "identtype": "FNR",
+          "kjonn": "K",
+          "fornavn": "NATURLIG",
+          "etternavn": "BÆREPOSE"
+        },
+        "personRelasjonMed": {
+          "personId": 100020775,
+          "ident": "23121887649",
+          "identtype": "FNR",
+          "kjonn": "K",
+          "fornavn": "NOBEL",
+          "etternavn": "STAUDE",
+          "statsborgerskap": "NOR",
+          "statsborgerskapRegdato": "2018-12-23T00:00:00",
+          "innvandretFraLand": "BHS",
+          "innvandretFraLandFlyttedato": "2018-12-23T00:00:00",
+          "utvandretTilLand": "AUS",
+          "utvandretTilLandFlyttedato": "2019-08-29T08:29:07",
+          "boadresse": {
+            "adressetype": "GATE",
+            "gateadresse": "KISTEBAKKANE",
+            "husnummer": "042",
+            "gatekode": "51255",
+            "adresseId": 100020553,
+            "personId": 100020775,
+            "postnr": "5137",
+            "kommunenr": "1201",
+            "flyttedato": "1962-02-19T00:00:00"
+          },
+          "postadresse": [
+            {
+              "id": 100001548,
+              "postLinje1": "1KOLEJOWA 6/5",
+              "postLinje2": "18-500 KOLNO",
+              "postLand": "AUS"
+            }
+          ],
+          "regdato": "2019-08-29T08:29:05",
+          "foedselsdato": "2018-12-23T00:00:00",
+          "alder": 0,
+          "opprettetDato": "2019-08-29T08:29:05.298",
+          "opprettetAv": "anonymousUser",
+          "sprakKode": "NB",
+          "datoSprak": "2018-12-23T00:00:00",
+          "utenFastBopel": false
+        },
+        "relasjonTypeNavn": "FOEDSEL"
+      }
+    ],
+    "sikkerhetsTiltakDatoFom": "2019-08-29T08:29:05.299",
+    "foedselsdato": "2005-04-03T00:00:00",
+    "alder": 57,
+    "opprettetDato": "2019-08-29T08:29:04.115",
+    "opprettetAv": "anonymousUser",
+    "sprakKode": "NB",
+    "datoSprak": "1962-02-19T00:00:00",
+    "utenFastBopel": false
+  }
+]

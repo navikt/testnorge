@@ -1,151 +1,154 @@
 {
-  "id": 1,
-  "fnr": "13371337133",
-  "navn": {
-    "fornavn": "GLENN",
-    "mellomnavn": "ATLE",
-    "etternavn": "GLENNSON"
-  },
-  "foedselsDato": {
-    "dag": 1,
-    "maaned": 2,
-    "aar": 3
-  },
-  "avgjoerelser": [
-    {
-      "id": 4,
-      "omgjortAvgjoerelsesId": "123",
-      "utfallstypeKode": null,
-      "grunntypeKode": null,
-      "tillatelseKode": null,
-      "erPositiv": true,
-      "utfallVarighetKode": null,
-      "utfallVarighet": 1,
-      "utfallPeriode": {
-        "fra": "2000-01-03",
-        "til": "2000-01-04"
-      },
-      "tillatelseVarighetKode": null,
-      "tillatelseVarighet": 1,
-      "tillatelsePeriode": null,
-      "effektueringsDato": "2000-02-01",
-      "avgjoerelsesDato": "2000-02-01",
-      "iverksettelseDato": "2000-02-01",
-      "utreisefristDato": "2000-02-01",
-      "saksnummer": "1",
-      "etat": "ETATUS MAXIMUS",
-      "flyktningstatus": true,
-      "uavklartFlyktningstatus": false
-    },
-    {
-      "id": 5,
-      "omgjortAvgjoerelsesId": "123",
-      "utfallstypeKode": null,
-      "grunntypeKode": null,
-      "tillatelseKode": null,
-      "erPositiv": true,
-      "utfallVarighetKode": null,
-      "utfallVarighet": 1,
-      "utfallPeriode": {
-        "fra": "2000-01-03",
-        "til": "2000-01-04"
-      },
-      "tillatelseVarighetKode": null,
-      "tillatelseVarighet": 1,
-      "tillatelsePeriode": null,
-      "effektueringsDato": "2000-02-01",
-      "avgjoerelsesDato": "2000-02-01",
-      "iverksettelseDato": "2000-02-01",
-      "utreisefristDato": "2000-02-01",
-      "saksnummer": "1",
-      "etat": "ETATUS MAXIMUS",
-      "flyktningstatus": true,
-      "uavklartFlyktningstatus": false
-    }
-  ],
-  "aliaser": [
-    {
-      "id": 2,
-      "fnr": "13371337133",
-      "navn": {
-        "fornavn": "GLENN",
-        "mellomnavn": "ATLE",
-        "etternavn": "GLENNSON"
-      }
-    },
-    {
-      "id": 3,
-      "fnr": "13371337133",
-      "navn": {
-        "fornavn": "GLENN",
-        "mellomnavn": "ATLE",
-        "etternavn": "GLENNSON"
-      }
-    }
-  ],
+  "ident": "09016430134",
+  "navn": null,
+  "foedselsDato": null,
+  "avgjoerelser": null,
+  "aliaser": null,
   "arbeidsadgang": {
-    "id": 6,
-    "harArbeidsAdgang": "NEI",
-    "typeArbeidsadgang": "GENERELL",
-    "arbeidsOmfang": "DELTID_SAMT_FERIER_HELTID",
+    "harArbeidsAdgang": "JA",
+    "typeArbeidsadgang": "UAVKLART",
+    "arbeidsOmfang": "UAVKLART",
     "periode": {
-      "fra": "2000-01-03",
-      "til": "2000-01-04"
+      "fra": [
+        2000,
+        2,
+        1
+      ],
+      "til": [
+        2000,
+        2,
+        1
+      ]
     }
   },
   "oppholdStatus": {
-    "id": 7,
-    "uavklart": null,
+    "uavklart": false,
     "eosEllerEFTABeslutningOmOppholdsrettPeriode": {
-      "fra": "2000-01-03",
-      "til": "2000-01-04"
+      "fra": [
+        2000,
+        1,
+        3
+      ],
+      "til": [
+        2000,
+        1,
+        4
+      ]
     },
-    "eosEllerEFTABeslutningOmOppholdsrettEffektuering": "2000-02-01",
+    "eosEllerEFTABeslutningOmOppholdsrettEffektuering": [
+      2000,
+      2,
+      1
+    ],
     "eosEllerEFTABeslutningOmOppholdsrett": "FAMILIE",
-    "eosEllerEFTAVedtakOmVarigOppholdsrettPeriode": {
-      "fra": "2000-01-03",
-      "til": "2000-01-04"
-    },
-    "eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering": null,
+    "eosEllerEFTAVedtakOmVarigOppholdsrettPeriode": null,
+    "eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering": [
+      2019,
+      8,
+      28
+    ],
     "eosEllerEFTAVedtakOmVarigOppholdsrett": "FAMILIE",
-    "eosEllerEFTAOppholdstillatelsePeriode": null,
-    "eosEllerEFTAOppholdstillatelseEffektuering": "2000-02-01",
-    "eosEllerEFTAOppholdstillatelse": "ARBEID",
+    "eosEllerEFTAOppholdstillatelsePeriode": {
+      "fra": [
+        2000,
+        1,
+        3
+      ],
+      "til": [
+        2000,
+        1,
+        4
+      ]
+    },
+    "eosEllerEFTAOppholdstillatelseEffektuering": [
+      2000,
+      2,
+      1
+    ],
+    "eosEllerEFTAOppholdstillatelse": "FAMILIE",
     "oppholdSammeVilkaar": {
       "oppholdSammeVilkaarPeriode": {
-        "fra": "2000-01-03",
-        "til": "2000-01-04"
+        "fra": [
+          2000,
+          1,
+          3
+        ],
+        "til": [
+          2000,
+          1,
+          4
+        ]
       },
-      "oppholdSammeVilkaarEffektuering": "2000-02-01",
+      "oppholdSammeVilkaarEffektuering": [
+        2000,
+        2,
+        1
+      ],
       "oppholdstillatelseType": "PERMANENT",
-      "oppholdstillatelseVedtaksDato": "2000-02-01"
+      "oppholdstillatelseVedtaksDato": [
+        2000,
+        2,
+        1
+      ]
     },
     "ikkeOppholdstilatelseIkkeVilkaarIkkeVisum": {
       "utvistMedInnreiseForbud": {
         "innreiseForbud": "JA",
-        "innreiseForbudVedtaksDato": "2000-02-01",
+        "innreiseForbudVedtaksDato": [
+          2000,
+          2,
+          1
+        ],
         "varighet": "ETT_AR"
       },
-      "avslagEllerBortFall": {
-        "avgjorelsesDato": "2000-02-01",
-        "bortfallAvPOellerBOSDato": "2000-02-01",
-        "tilbakeKallVirkningsDato": "2000-02-01",
-        "tilbakeKallUtreiseFrist": "2000-02-01",
-        "avslagOppholdstillatelseUtreiseFrist": null,
+      "avslagEllerBortfall": {
+        "avgjorelsesDato": null,
+        "bortfallAvPOellerBOSDato": [
+          2019,
+          8,
+          28
+        ],
+        "tilbakeKallVirkningsDato": [
+          2019,
+          8,
+          28
+        ],
+        "tilbakeKallUtreiseFrist": [
+          2019,
+          8,
+          28
+        ],
+        "avslagOppholdstillatelseUtreiseFrist": [
+          2019,
+          8,
+          28
+        ],
         "avslagGrunnlagOverig": "ARBEID",
-        "avslagGrunnlagTillatelseGrunnlagEOS": "ARBEID",
-        "avslagOppholdstillatelseBehandletUtreiseFrist": "2000-02-01",
+        "avslagGrunnlagTillatelseGrunnlagEOS": "FAMILIE",
+        "avslagOppholdstillatelseBehandletUtreiseFrist": [
+          2019,
+          8,
+          28
+        ],
         "avslagOppholdstillatelseBehandletGrunnlagOvrig": "ARBEID",
-        "avslagOppholdstillatelseBehandletGrunnlagEOS": "ARBEID",
+        "avslagOppholdstillatelseBehandletGrunnlagEOS": "FAMILIE",
         "avslagOppholdsrettBehandlet": "FAMILIE",
-        "formeltVedtakUtreiseFrist": "2000-02-01"
+        "formeltVedtakUtreiseFrist": [
+          2019,
+          8,
+          28
+        ]
       },
       "ovrigIkkeOppholdsKategoriArsak": "ANNULERING_AV_VISUM"
     }
   },
   "avgjoerelseUavklart": false,
-  "oppholdsTillatelse": true,
+  "harOppholdsTillatelse": true,
   "flyktning": true,
-  "soeknadOmBeskyttelseUnderBehandling": "JA",
-  "soknadDato": "2000-02-01"
+  "soeknadOmBeskyttelseUnderBehandling": null,
+  "soknadDato": [
+    2005,
+    5,
+    5
+  ]
 }

@@ -17,3 +17,7 @@ application:
 
 spring.flyway.locations: classpath:db/migration/postgresql
 spring.jpa.hibernate.ddl-auto: update
+
+tpsf:
+  base:
+    url: http://localhost:${wiremock.server.port}/tpsfstuburl
