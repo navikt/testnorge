@@ -18,4 +18,6 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
 
     @Query(value = "from Bestilling b where b.malBestillingNavn is not null order by b.malBestillingNavn")
     Optional<List<Bestilling>> findMalBestilling();
+
+    int deleteByGruppeId(Long gruppeId);
 }

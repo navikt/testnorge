@@ -59,6 +59,9 @@ public class TestgruppeServiceTest {
     private BrukerService brukerService;
 
     @Mock
+    private BestillingService bestillingService;
+
+    @Mock
     private TeamService teamService;
 
     @Mock

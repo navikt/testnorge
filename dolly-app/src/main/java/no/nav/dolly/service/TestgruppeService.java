@@ -33,6 +33,7 @@ public class TestgruppeService {
     private final BrukerService brukerService;
     private final TeamService teamService;
     private final IdentService identService;
+    private final BestillingService bestillingService;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
@@ -92,6 +93,7 @@ public class TestgruppeService {
     }
 
     public int slettGruppeById(Long gruppeId) {
+        bestillingService.slettBestillingerByGruppeId(gruppeId);
         identService.slettTestidenterByGruppeId(gruppeId);
         brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
         return gruppeRepository.deleteTestgruppeById(gruppeId);
