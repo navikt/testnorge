@@ -30,70 +30,66 @@ import no.nav.registre.bisys.consumer.ui.modules.BisysUiSoknadConsumer;
 
 @ActiveProfiles("local-integration-test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = LocalApplicationStarter.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = LocalApplicationStarter.class)
 @AutoConfigureWireMock(port = 0)
-@ComponentScan(excludeFilters = {@Filter(type = ASSIGNABLE_TYPE, value = ApplicationStarter.class)})
+@ComponentScan(excludeFilters = { @Filter(type = ASSIGNABLE_TYPE, value = ApplicationStarter.class) })
 public class BisysUiConsumersIntegrationTest {
 
-  @Autowired
-  private BisysUiSupport navigationSupport;
+    @Autowired
+    private BisysUiSupport navigationSupport;
 
-  @Autowired
-  private BisysUiSoknadConsumer soknadConsumer;
+    @Autowired
+    private BisysUiSoknadConsumer soknadConsumer;
 
-  @Autowired
-  private BisysUiFatteVedtakConsumer fatteVedtakConsumer;
+    @Autowired
+    private BisysUiFatteVedtakConsumer fatteVedtakConsumer;
 
-  @Autowired
-  private BisysRequestAugments bisysRequestAugments;
+    @Autowired
+    private BisysRequestAugments bisysRequestAugments;
 
+    private TestnorgeToBisysMapper testnorgeToBisysMapper = Mappers.getMapper(TestnorgeToBisysMapper.class);
 
-  private TestnorgeToBisysMapper testnorgeToBisysMapper =
-      Mappers.getMapper(TestnorgeToBisysMapper.class);
+    @Test
+    public void openOrCreateSoknadIntegrationTest() throws BidragRequestProcessingException,
+            JsonParseException, JsonMappingException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        BisysApplication bisys = null;
 
-  @Test
-  public void openOrCreateSoknadIntegrationTest() throws BidragRequestProcessingException,
-      JsonParseException, JsonMappingException, IOException {
-    ObjectMapper mapper = new ObjectMapper();
-    BisysApplication bisys = null;
+        String meldinger = getResourceFileContent("bidragsmeldingEttBarn.json");
 
-    String meldinger = getResourceFileContent("bidragsmeldingEttBarn.json");
+        List<SyntetisertBidragsmelding> bidragsmeldinger = mapper.readValue(meldinger, new TypeReference<List<SyntetisertBidragsmelding>>() {
+        });
 
-    List<SyntetisertBidragsmelding> bidragsmeldinger =
-        mapper.readValue(meldinger, new TypeReference<List<SyntetisertBidragsmelding>>() {});
+        if (bidragsmeldinger != null && bidragsmeldinger.size() > 0) {
+            bisys = navigationSupport.logon();
+        }
 
-    if (bidragsmeldinger != null && bidragsmeldinger.size() > 0) {
-      bisys = navigationSupport.logon();
+        for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
+            soknadConsumer.openOrCreateSoknad(bisys,
+                    testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding, bisysRequestAugments));
+        }
     }
 
-    for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
-      soknadConsumer.openOrCreateSoknad(bisys,
-          testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding, bisysRequestAugments));
+    @Test
+    public void createFatteVedtakIntegrationTest() throws JsonParseException, JsonMappingException,
+            IOException, BidragRequestProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        BisysApplication bisys = null;
+
+        String meldinger = getResourceFileContent("bidragsmeldingForQ8.json");
+
+        List<SyntetisertBidragsmelding> bidragsmeldinger = mapper.readValue(meldinger, new TypeReference<List<SyntetisertBidragsmelding>>() {
+        });
+
+        if (bidragsmeldinger != null && bidragsmeldinger.size() > 0) {
+            bisys = navigationSupport.logon();
+        }
+
+        for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
+            SynthesizedBidragRequest request = testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding, bisysRequestAugments);
+            soknadConsumer.openOrCreateSoknad(bisys, request);
+            fatteVedtakConsumer.runFatteVedtak(bisys, request);
+        }
+
     }
-  }
-
-  @Test
-  public void createFatteVedtakIntegrationTest() throws JsonParseException, JsonMappingException,
-      IOException, BidragRequestProcessingException {
-    ObjectMapper mapper = new ObjectMapper();
-    BisysApplication bisys = null;
-
-    String meldinger = getResourceFileContent("bidragsmeldingForQ8.json");
-
-    List<SyntetisertBidragsmelding> bidragsmeldinger =
-        mapper.readValue(meldinger, new TypeReference<List<SyntetisertBidragsmelding>>() {});
-
-    if (bidragsmeldinger != null && bidragsmeldinger.size() > 0) {
-      bisys = navigationSupport.logon();
-    }
-
-    for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
-      SynthesizedBidragRequest request =
-          testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding, bisysRequestAugments);
-      soknadConsumer.openOrCreateSoknad(bisys, request);
-      fatteVedtakConsumer.runFatteVedtak(bisys, request);
-    }
-
-  }
 }

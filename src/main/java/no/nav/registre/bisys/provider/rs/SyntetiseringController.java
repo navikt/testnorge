@@ -17,25 +17,23 @@ import no.nav.registre.bisys.service.SyntetiseringService;
 @RequestMapping("api/v1/syntetisering")
 public class SyntetiseringController {
 
-  @Autowired
-  private SyntetiseringService syntetiseringService;
+    @Autowired
+    private SyntetiseringService syntetiseringService;
 
-  @LogExceptions
-  @ApiOperation(
-      value = "Her kan man starte generering av syntetiske bidragsmeldinger på personer i en gitt TPSF-avspillergruppe i et gitt miljø.")
-  @PostMapping(value = "/generer")
-  public List<SyntetisertBidragsmelding> genererBidragsmeldinger(
-      @RequestBody SyntetiserBisysRequest syntetiserBisysRequest) {
+    @LogExceptions
+    @ApiOperation(value = "Her kan man starte generering av syntetiske bidragsmeldinger på personer i en gitt TPSF-avspillergruppe i et gitt miljø.")
+    @PostMapping(value = "/generer")
+    public List<SyntetisertBidragsmelding> genererBidragsmeldinger(
+            @RequestBody SyntetiserBisysRequest syntetiserBisysRequest) {
 
-    return syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
-  }
+        return syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
+    }
 
-  @ApiOperation(
-      value = "Registrerer bidragsaker-, søknader, og vedtak i Bisys basert på syntetiske bidragsmeldinger.")
-  @PostMapping(value = "/lagre")
-  public void lagreBidragsmeldinger(@RequestBody List<SyntetisertBidragsmelding> bidragsmeldinger)
-      throws BidragRequestProcessingException {
+    @ApiOperation(value = "Registrerer bidragsaker-, søknader, og vedtak i Bisys basert på syntetiske bidragsmeldinger.")
+    @PostMapping(value = "/lagre")
+    public void lagreBidragsmeldinger(@RequestBody List<SyntetisertBidragsmelding> bidragsmeldinger)
+            throws BidragRequestProcessingException {
 
-    syntetiseringService.processBidragsmeldinger(bidragsmeldinger);
-  }
+        syntetiseringService.processBidragsmeldinger(bidragsmeldinger);
+    }
 }

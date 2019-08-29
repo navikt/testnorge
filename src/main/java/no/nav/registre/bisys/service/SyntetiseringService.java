@@ -26,115 +26,110 @@ import no.nav.registre.bisys.service.utils.Barn;
 @Slf4j
 public class SyntetiseringService {
 
-  public static final String RELASJON_MOR = "MORA";
-  public static final String RELASJON_FAR = "FARA";
+    public static final String RELASJON_MOR = "MORA";
+    public static final String RELASJON_FAR = "FARA";
 
-  @Autowired
-  private HodejegerenConsumer hodejegerenConsumer;
+    @Autowired
+    private HodejegerenConsumer hodejegerenConsumer;
 
-  @Autowired
-  private BisysSyntetisererenConsumer syntetisererenConsumer;
+    @Autowired
+    private BisysSyntetisererenConsumer syntetisererenConsumer;
 
-  @Autowired
-  private BisysUiSupport navigationSupport;
+    @Autowired
+    private BisysUiSupport navigationSupport;
 
-  @Autowired
-  private BisysUiSoknadConsumer soknadConsumer;
+    @Autowired
+    private BisysUiSoknadConsumer soknadConsumer;
 
-  @Autowired
-  private BisysUiFatteVedtakConsumer fatteVedtakConsumer;
+    @Autowired
+    private BisysUiFatteVedtakConsumer fatteVedtakConsumer;
 
-  @Autowired
-  private BisysRequestAugments bisysRequestAugments;
+    @Autowired
+    private BisysRequestAugments bisysRequestAugments;
 
-  private TestnorgeToBisysMapper testnorgeToBisysMapper =
-      Mappers.getMapper(TestnorgeToBisysMapper.class);
+    private TestnorgeToBisysMapper testnorgeToBisysMapper = Mappers.getMapper(TestnorgeToBisysMapper.class);
 
-  public List<SyntetisertBidragsmelding> generateBidragsmeldinger(
-      SyntetiserBisysRequest syntetiserBisysRequest) {
+    public List<SyntetisertBidragsmelding> generateBidragsmeldinger(
+            SyntetiserBisysRequest syntetiserBisysRequest) {
 
-    List<String> identerMedFoedselsmelding =
-        hodejegerenConsumer.finnFoedteIdenter(syntetiserBisysRequest.getAvspillergruppeId());
-    List<Barn> utvalgteIdenter = selectValidUids(syntetiserBisysRequest.getAntallNyeIdenter(),
-        identerMedFoedselsmelding, syntetiserBisysRequest.getMiljoe());
+        List<String> identerMedFoedselsmelding = hodejegerenConsumer.finnFoedteIdenter(syntetiserBisysRequest.getAvspillergruppeId());
+        List<Barn> utvalgteIdenter = selectValidUids(syntetiserBisysRequest.getAntallNyeIdenter(),
+                identerMedFoedselsmelding, syntetiserBisysRequest.getMiljoe());
 
-    if (utvalgteIdenter.size() < syntetiserBisysRequest.getAntallNyeIdenter()) {
-      log.warn("Fant ikke nok identer registrert med mor og far. Oppretter {} bidragsmelding(er).",
-          utvalgteIdenter.size());
-    }
-
-    List<SyntetisertBidragsmelding> bidragsmeldinger =
-        syntetisererenConsumer.getSyntetiserteBidragsmeldinger(utvalgteIdenter.size());
-
-    setRelationsInBidragsmeldinger(utvalgteIdenter, bidragsmeldinger);
-
-    return bidragsmeldinger;
-  }
-
-  public void processBidragsmeldinger(List<SyntetisertBidragsmelding> bidragsmeldinger)
-      throws BidragRequestProcessingException {
-    BisysApplication bisys = null;
-
-    if (bidragsmeldinger != null && bidragsmeldinger.size() > 0) {
-      bisys = navigationSupport.logon();
-    } else {
-      log.warn("Ingen bidragsmeldinger mottatt, avbryter prosessering.");
-      return;
-    }
-
-    for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
-      try {
-        SynthesizedBidragRequest request =
-            testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding, bisysRequestAugments);
-        soknadConsumer.openOrCreateSoknad(bisys, request);
-        fatteVedtakConsumer.runFatteVedtak(bisys, request);
-      } catch (BidragRequestProcessingException e) {
-        log.warn(
-            "En feil oppstod under prosessering av bidragsmelding for barn {}. Fortsetter med prossesering av neste melding.",
-            bidragsmelding.getBarnetsFnr());
-      }
-    }
-  }
-
-  private List<Barn> selectValidUids(int antallIdenter, List<String> identerMedFoedselsmelding,
-      String miljoe) {
-    List<Barn> utvalgteIdenter = new ArrayList<>();
-
-    for (String ident : identerMedFoedselsmelding) {
-      RelasjonsResponse relasjonsResponse =
-          hodejegerenConsumer.hentRelasjonerTilIdent(ident, miljoe);
-      List<Relasjon> relasjoner = relasjonsResponse.getRelasjoner();
-
-      String morFnr = "";
-      String farFnr = "";
-
-      for (Relasjon relasjon : relasjoner) {
-        if (RELASJON_MOR.equals(relasjon.getTypeRelasjon())) {
-          morFnr = relasjon.getFnrRelasjon();
-        } else if (RELASJON_FAR.equals(relasjon.getTypeRelasjon())) {
-          farFnr = relasjon.getFnrRelasjon();
+        if (utvalgteIdenter.size() < syntetiserBisysRequest.getAntallNyeIdenter()) {
+            log.warn("Fant ikke nok identer registrert med mor og far. Oppretter {} bidragsmelding(er).",
+                    utvalgteIdenter.size());
         }
-      }
 
-      if (!morFnr.isEmpty() && !farFnr.isEmpty()) {
-        utvalgteIdenter.add(Barn.builder().fnr(ident).morFnr(morFnr).farFnr(farFnr).build());
-      }
+        List<SyntetisertBidragsmelding> bidragsmeldinger = syntetisererenConsumer.getSyntetiserteBidragsmeldinger(utvalgteIdenter.size());
 
-      if (utvalgteIdenter.size() >= antallIdenter) {
-        break;
-      }
+        setRelationsInBidragsmeldinger(utvalgteIdenter, bidragsmeldinger);
+
+        return bidragsmeldinger;
     }
 
-    return utvalgteIdenter;
-  }
+    public void processBidragsmeldinger(List<SyntetisertBidragsmelding> bidragsmeldinger)
+            throws BidragRequestProcessingException {
+        BisysApplication bisys = null;
 
-  private void setRelationsInBidragsmeldinger(List<Barn> utvalgteIdenter,
-      List<SyntetisertBidragsmelding> bidragsmeldinger) {
-    for (SyntetisertBidragsmelding bidragsMelding : bidragsmeldinger) {
-      Barn barn = utvalgteIdenter.remove(0);
-      bidragsMelding.setBarnetsFnr(barn.getFnr());
-      bidragsMelding.setBidragsmottaker(barn.getMorFnr());
-      bidragsMelding.setBidragspliktig(barn.getFarFnr());
+        if (bidragsmeldinger != null && bidragsmeldinger.size() > 0) {
+            bisys = navigationSupport.logon();
+        } else {
+            log.warn("Ingen bidragsmeldinger mottatt, avbryter prosessering.");
+            return;
+        }
+
+        for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
+            try {
+                SynthesizedBidragRequest request = testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding, bisysRequestAugments);
+                soknadConsumer.openOrCreateSoknad(bisys, request);
+                fatteVedtakConsumer.runFatteVedtak(bisys, request);
+            } catch (BidragRequestProcessingException e) {
+                log.warn(
+                        "En feil oppstod under prosessering av bidragsmelding for barn {}. Fortsetter med prossesering av neste melding.",
+                        bidragsmelding.getBarnetsFnr());
+            }
+        }
     }
-  }
+
+    private List<Barn> selectValidUids(int antallIdenter, List<String> identerMedFoedselsmelding,
+            String miljoe) {
+        List<Barn> utvalgteIdenter = new ArrayList<>();
+
+        for (String ident : identerMedFoedselsmelding) {
+            RelasjonsResponse relasjonsResponse = hodejegerenConsumer.hentRelasjonerTilIdent(ident, miljoe);
+            List<Relasjon> relasjoner = relasjonsResponse.getRelasjoner();
+
+            String morFnr = "";
+            String farFnr = "";
+
+            for (Relasjon relasjon : relasjoner) {
+                if (RELASJON_MOR.equals(relasjon.getTypeRelasjon())) {
+                    morFnr = relasjon.getFnrRelasjon();
+                } else if (RELASJON_FAR.equals(relasjon.getTypeRelasjon())) {
+                    farFnr = relasjon.getFnrRelasjon();
+                }
+            }
+
+            if (!morFnr.isEmpty() && !farFnr.isEmpty()) {
+                utvalgteIdenter.add(Barn.builder().fnr(ident).morFnr(morFnr).farFnr(farFnr).build());
+            }
+
+            if (utvalgteIdenter.size() >= antallIdenter) {
+                break;
+            }
+        }
+
+        return utvalgteIdenter;
+    }
+
+    private void setRelationsInBidragsmeldinger(List<Barn> utvalgteIdenter,
+            List<SyntetisertBidragsmelding> bidragsmeldinger) {
+        for (SyntetisertBidragsmelding bidragsMelding : bidragsmeldinger) {
+            Barn barn = utvalgteIdenter.remove(0);
+            bidragsMelding.setBarnetsFnr(barn.getFnr());
+            bidragsMelding.setBidragsmottaker(barn.getMorFnr());
+            bidragsMelding.setBidragspliktig(barn.getFarFnr());
+        }
+    }
 }

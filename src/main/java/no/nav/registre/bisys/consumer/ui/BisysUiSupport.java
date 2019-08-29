@@ -20,127 +20,127 @@ import no.nav.bidrag.ui.exception.BidragRequestRuntimeException;
 @AllArgsConstructor
 public class BisysUiSupport {
 
-  String saksbehandlerUid;
-  String saksbehandlerPwd;
-  String bisysUrl;
-  String rolleSaksbehandler;
-  int enhet;
+    String saksbehandlerUid;
+    String saksbehandlerPwd;
+    String bisysUrl;
+    String rolleSaksbehandler;
+    int enhet;
 
-  public BisysApplication logon() throws BidragRequestProcessingException {
-    return bisysLogon(bisysUrl, saksbehandlerUid, saksbehandlerPwd, rolleSaksbehandler, enhet);
-  }
-
-  /**
-   * Opens Sak
-   * 
-   * <code>
-   *  - Expected entry page: Sak
-   *  - Expected exit page: Sak
-   * </code>
-   * 
-   * @param bisys
-   * @param saksnr
-   * @throws BidragRequestProcessingException
-   */
-  public static void getSak(BisysApplication bisys, String saksnr)
-      throws BidragRequestProcessingException {
-
-    ActiveBisysPage activePage = checkCorrectActivePage(bisys, ActiveBisysPage.SAK);
-    Sak sak = (Sak) bisys.getActivePage(activePage);
-
-    // Fill in saksnr
-    sak.sokSaksnr().setValue(saksnr);
-
-    // Click "Hent"
-    sak.hentSak().click();
-  }
-
-  /**
-   * 
-   * <code>
-   *  - Expected entry page: Any page that contains header with link to Oppgaveliste 
-   *  - Expected exit page: Sak
-   * </code>
-   * 
-   * @param bisys
-   * @throws BidragRequestProcessingException
-   */
-  public static void redirectToSak(BisysApplication bisys) throws BidragRequestProcessingException {
-
-    ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-    try {
-
-      HeaderView header = bisys.bisysPage().header();
-      header.oppgavelister().click();
-      bisys.bisysPage().header().velgSkjermbilde().select("Sak");
-      activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-    } catch (ElementNotFoundException | NoSuchElementException e) {
-      throw new BidragRequestRuntimeException(activePage, bisys.bisysPage(), e);
+    public BisysApplication logon() throws BidragRequestProcessingException {
+        return bisysLogon(bisysUrl, saksbehandlerUid, saksbehandlerPwd, rolleSaksbehandler, enhet);
     }
-  }
 
-  /**
-   * Logs on to Bisys.
-   * 
-   * @param bisysUrl
-   * @param saksbehandlerUid
-   * @param saksbehandlerPwd
-   * @param rolleSaksbehandler
-   * @param enhet
-   * @return bisysApplication
-   * @throws BidragRequestProcessingException
-   */
-  public static BisysApplication bisysLogon(String bisysUrl, String saksbehandlerUid,
-      String saksbehandlerPwd, String rolleSaksbehandler, int enhet)
-      throws BidragRequestProcessingException {
+    /**
+     * Opens Sak
+     * 
+     * <code>
+     *  - Expected entry page: Sak
+     *  - Expected exit page: Sak
+     * </code>
+     * 
+     * @param bisys
+     * @param saksnr
+     * @throws BidragRequestProcessingException
+     */
+    public static void getSak(BisysApplication bisys, String saksnr)
+            throws BidragRequestProcessingException {
 
-    BisysApplication bisys = openBrowser(bisysUrl);
-    ActiveBisysPage activePage = ActiveBisysPage.OPENAM_LOGIN_PAGE;
+        ActiveBisysPage activePage = checkCorrectActivePage(bisys, ActiveBisysPage.SAK);
+        Sak sak = (Sak) bisys.getActivePage(activePage);
 
-    try {
-      bisys.openamLoginPage().signIn(saksbehandlerUid, saksbehandlerPwd);
+        // Fill in saksnr
+        sak.sokSaksnr().setValue(saksnr);
 
-      // TODO: Introdusere mapping mellom saksbehandlers NAV-kontor og synt.brukers tilknyttede enhet
-      // Velg pålogget enhet
-      bisys.velgGruppe().velgGruppe(rolleSaksbehandler);
-
-      activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-      bisys.velgEnhet().velgEnhet(enhet);
-
-      activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-      return bisys;
-    } catch (ElementNotFoundException | NoSuchElementException e) {
-      throw new BidragRequestRuntimeException(activePage, bisys.bisysPage(), e);
+        // Click "Hent"
+        sak.hentSak().click();
     }
-  }
 
-  private static BisysApplication openBrowser(String url) {
-    return ApplicationDefinition.of(BisysApplication.class).mapWith(new HtmlMapper())
-        .addListener(new WaitForJavaScriptListener()).addListener(new ActionLogger())
-        .connect(new Browser().asChrome().useInsecureSSL()
-            .addConfigurer(new BisysBrowserConfigurer()).openUrl(url));
-  }
+    /**
+     * 
+     * <code>
+     *  - Expected entry page: Any page that contains header with link to Oppgaveliste 
+     *  - Expected exit page: Sak
+     * </code>
+     * 
+     * @param bisys
+     * @throws BidragRequestProcessingException
+     */
+    public static void redirectToSak(BisysApplication bisys) throws BidragRequestProcessingException {
 
-  private static class BisysBrowserConfigurer implements BrowserConfigurer {
+        ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
 
-    @Override
-    public void configure(WebClient client) {
-      client.getOptions().setThrowExceptionOnScriptError(false);
+        try {
+
+            HeaderView header = bisys.bisysPage().header();
+            header.oppgavelister().click();
+            bisys.bisysPage().header().velgSkjermbilde().select("Sak");
+            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+
+        } catch (ElementNotFoundException | NoSuchElementException e) {
+            throw new BidragRequestRuntimeException(activePage, bisys.bisysPage(), e);
+        }
     }
-  }
 
-  public static ActiveBisysPage checkCorrectActivePage(BisysApplication bisys,
-      ActiveBisysPage expectedEntryPage) throws BidragRequestProcessingException {
-    ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+    /**
+     * Logs on to Bisys.
+     * 
+     * @param bisysUrl
+     * @param saksbehandlerUid
+     * @param saksbehandlerPwd
+     * @param rolleSaksbehandler
+     * @param enhet
+     * @return bisysApplication
+     * @throws BidragRequestProcessingException
+     */
+    public static BisysApplication bisysLogon(String bisysUrl, String saksbehandlerUid,
+            String saksbehandlerPwd, String rolleSaksbehandler, int enhet)
+            throws BidragRequestProcessingException {
 
-    if (!activePage.equals(expectedEntryPage)) {
-      throw new BidragRequestProcessingException(activePage, bisys.bisysPage(),
-          new Exception(BisysUiConsumer.INCORRECT_ENTRY_PAGE));
-    } else {
-      return activePage;
+        BisysApplication bisys = openBrowser(bisysUrl);
+        ActiveBisysPage activePage = ActiveBisysPage.OPENAM_LOGIN_PAGE;
+
+        try {
+            bisys.openamLoginPage().signIn(saksbehandlerUid, saksbehandlerPwd);
+
+            // TODO: Introdusere mapping mellom saksbehandlers NAV-kontor og synt.brukers tilknyttede enhet
+            // Velg pålogget enhet
+            bisys.velgGruppe().velgGruppe(rolleSaksbehandler);
+
+            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+
+            bisys.velgEnhet().velgEnhet(enhet);
+
+            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+            return bisys;
+        } catch (ElementNotFoundException | NoSuchElementException e) {
+            throw new BidragRequestRuntimeException(activePage, bisys.bisysPage(), e);
+        }
     }
-  }
+
+    private static BisysApplication openBrowser(String url) {
+        return ApplicationDefinition.of(BisysApplication.class).mapWith(new HtmlMapper())
+                .addListener(new WaitForJavaScriptListener()).addListener(new ActionLogger())
+                .connect(new Browser().asChrome().useInsecureSSL()
+                        .addConfigurer(new BisysBrowserConfigurer()).openUrl(url));
+    }
+
+    private static class BisysBrowserConfigurer implements BrowserConfigurer {
+
+        @Override
+        public void configure(WebClient client) {
+            client.getOptions().setThrowExceptionOnScriptError(false);
+        }
+    }
+
+    public static ActiveBisysPage checkCorrectActivePage(BisysApplication bisys,
+            ActiveBisysPage expectedEntryPage) throws BidragRequestProcessingException {
+        ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+
+        if (!activePage.equals(expectedEntryPage)) {
+            throw new BidragRequestProcessingException(activePage, bisys.bisysPage(),
+                    new Exception(BisysUiConsumer.INCORRECT_ENTRY_PAGE));
+        } else {
+            return activePage;
+        }
+    }
 }

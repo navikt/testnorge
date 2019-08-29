@@ -15,56 +15,51 @@ import no.nav.registre.bisys.consumer.ui.modules.BisysUiSoknadConsumer;
 @Slf4j
 public class BisysUiConsumer {
 
-  public static final String INCORRECT_ENTRY_PAGE = "Incorrect entry page";
+    public static final String INCORRECT_ENTRY_PAGE = "Incorrect entry page";
 
-  public static final String PROCESSING_FAILED = "Processing failed.";
+    public static final String PROCESSING_FAILED = "Processing failed.";
 
-  @Autowired
-  private BisysUiSupport navigationSupport;
+    @Autowired
+    private BisysUiSupport navigationSupport;
 
-  @Autowired
-  private BisysUiSoknadConsumer soknadConsumer;
+    @Autowired
+    private BisysUiSoknadConsumer soknadConsumer;
 
-  @Autowired
-  private BisysUiFatteVedtakConsumer fatteVedtakConsumer;
+    @Autowired
+    private BisysUiFatteVedtakConsumer fatteVedtakConsumer;
 
-  @Autowired
-  private BisysRequestAugments bisysRequestAugments;
+    @Autowired
+    private BisysRequestAugments bisysRequestAugments;
 
+    private TestnorgeToBisysMapper testnorgeToBisysMapper = Mappers.getMapper(TestnorgeToBisysMapper.class);
 
-  private TestnorgeToBisysMapper testnorgeToBisysMapper =
-      Mappers.getMapper(TestnorgeToBisysMapper.class);
+    public void createVedtak(List<SyntetisertBidragsmelding> bidragsmeldinger)
+            throws BidragRequestProcessingException {
 
-  public void createVedtak(List<SyntetisertBidragsmelding> bidragsmeldinger)
-      throws BidragRequestProcessingException {
+        BisysApplication bisys = null;
 
-    BisysApplication bisys = null;
+        if (bidragsmeldinger != null && bidragsmeldinger.size() > 0) {
+            bisys = navigationSupport.logon();
+        }
 
-    if (bidragsmeldinger != null && bidragsmeldinger.size() > 0) {
-      bisys = navigationSupport.logon();
+        for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
+
+            SynthesizedBidragRequest request = testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding, bisysRequestAugments);
+            log.info("Processing SyntetisertBidragsmelding with barnetsFnr {}",
+                    bidragsmelding.getBarnetsFnr());
+
+            try {
+
+                soknadConsumer.openOrCreateSoknad(bisys, request);
+                fatteVedtakConsumer.runFatteVedtak(bisys, request);
+
+            } catch (BidragRequestProcessingException brpe) {
+
+                log.warn(
+                        "Processing failed for SyntetisertBidragsmelding with barnetsFnr {}, and mottattDato {}",
+                        bidragsmelding.getBarnetsFnr(), bidragsmelding.getMottattDato());
+
+            }
+        }
     }
-
-    for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
-
-      SynthesizedBidragRequest request =
-          testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding, bisysRequestAugments);
-      log.info("Processing SyntetisertBidragsmelding with barnetsFnr {}",
-          bidragsmelding.getBarnetsFnr());
-
-      try {
-
-        soknadConsumer.openOrCreateSoknad(bisys, request);
-        fatteVedtakConsumer.runFatteVedtak(bisys, request);
-
-      } catch (BidragRequestProcessingException brpe) {
-
-        log.warn(
-            "Processing failed for SyntetisertBidragsmelding with barnetsFnr {}, and mottattDato {}",
-            bidragsmelding.getBarnetsFnr(), bidragsmelding.getMottattDato());
-
-      }
-    }
-  }
 }
-
-

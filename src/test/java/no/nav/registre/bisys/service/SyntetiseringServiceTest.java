@@ -38,132 +38,125 @@ import no.nav.registre.bisys.provider.requests.SyntetiserBisysRequest;
 @ActiveProfiles("test")
 public class SyntetiseringServiceTest {
 
-  @Mock
-  private HodejegerenConsumer hodejegerenConsumer;
+    @Mock
+    private HodejegerenConsumer hodejegerenConsumer;
 
-  @Mock
-  private BisysSyntetisererenConsumer syntetisererenConsumer;
+    @Mock
+    private BisysSyntetisererenConsumer syntetisererenConsumer;
 
-  @Mock
-  private BisysUiSupport navigationSupport;
+    @Mock
+    private BisysUiSupport navigationSupport;
 
-  @Mock
-  private BisysUiSoknadConsumer soknadConsumer;
+    @Mock
+    private BisysUiSoknadConsumer soknadConsumer;
 
-  @Mock
-  private BisysUiFatteVedtakConsumer fatteVedtakConsumer;
+    @Mock
+    private BisysUiFatteVedtakConsumer fatteVedtakConsumer;
 
-  @Mock
-  private BisysRequestAugments bisysRequestAugments;
+    @Mock
+    private BisysRequestAugments bisysRequestAugments;
 
-  @InjectMocks
-  private SyntetiseringService syntetiseringService;
+    @InjectMocks
+    private SyntetiseringService syntetiseringService;
 
+    private Long avspillergruppeId = 123L;
+    private String miljoe = "t1";
+    private SyntetiserBisysRequest syntetiserBisysRequest;
+    private List<String> foedteIdenter;
+    private String barn1 = "04041956789";
+    private String barn2 = "03051712345";
+    private String bidragsmottaker = "01016259875";
+    private String bidragspliktig = "02056157925";
+    private List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger;
+    private List<Relasjon> relasjoner;
 
-  private Long avspillergruppeId = 123L;
-  private String miljoe = "t1";
-  private SyntetiserBisysRequest syntetiserBisysRequest;
-  private List<String> foedteIdenter;
-  private String barn1 = "04041956789";
-  private String barn2 = "03051712345";
-  private String bidragsmottaker = "01016259875";
-  private String bidragspliktig = "02056157925";
-  private List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger;
-  private List<Relasjon> relasjoner;
+    @Before
+    public void setUp() {
+        foedteIdenter = new ArrayList<>(Arrays.asList(barn1, barn2));
+        syntetiserBisysRequest = new SyntetiserBisysRequest(avspillergruppeId, miljoe, foedteIdenter.size());
+        syntetiserteBidragsmeldinger = new ArrayList<>(Arrays.asList(SyntetisertBidragsmelding.builder().build(),
+                SyntetisertBidragsmelding.builder().build()));
+        relasjoner = new ArrayList<>(Arrays.asList(
+                Relasjon.builder().fnrRelasjon(bidragsmottaker).typeRelasjon(RELASJON_MOR).build(),
+                Relasjon.builder().fnrRelasjon(bidragspliktig).typeRelasjon(RELASJON_FAR).build()));
+    }
 
-  @Before
-  public void setUp() {
-    foedteIdenter = new ArrayList<>(Arrays.asList(barn1, barn2));
-    syntetiserBisysRequest =
-        new SyntetiserBisysRequest(avspillergruppeId, miljoe, foedteIdenter.size());
-    syntetiserteBidragsmeldinger =
-        new ArrayList<>(Arrays.asList(SyntetisertBidragsmelding.builder().build(),
-            SyntetisertBidragsmelding.builder().build()));
-    relasjoner = new ArrayList<>(Arrays.asList(
-        Relasjon.builder().fnrRelasjon(bidragsmottaker).typeRelasjon(RELASJON_MOR).build(),
-        Relasjon.builder().fnrRelasjon(bidragspliktig).typeRelasjon(RELASJON_FAR).build()));
-  }
+    @Test
+    public void shouldGenerateBidragsmeldinger() {
+        when(hodejegerenConsumer.finnFoedteIdenter(avspillergruppeId)).thenReturn(foedteIdenter);
+        when(syntetisererenConsumer.getSyntetiserteBidragsmeldinger(foedteIdenter.size()))
+                .thenReturn(syntetiserteBidragsmeldinger);
+        when(hodejegerenConsumer.hentRelasjonerTilIdent(barn1, miljoe))
+                .thenReturn(RelasjonsResponse.builder().fnr(barn1).relasjoner(relasjoner).build());
 
-  @Test
-  public void shouldGenerateBidragsmeldinger() {
-    when(hodejegerenConsumer.finnFoedteIdenter(avspillergruppeId)).thenReturn(foedteIdenter);
-    when(syntetisererenConsumer.getSyntetiserteBidragsmeldinger(foedteIdenter.size()))
-        .thenReturn(syntetiserteBidragsmeldinger);
-    when(hodejegerenConsumer.hentRelasjonerTilIdent(barn1, miljoe))
-        .thenReturn(RelasjonsResponse.builder().fnr(barn1).relasjoner(relasjoner).build());
+        when(hodejegerenConsumer.hentRelasjonerTilIdent(barn2, miljoe))
+                .thenReturn(RelasjonsResponse.builder().fnr(barn2).relasjoner(relasjoner).build());
 
-    when(hodejegerenConsumer.hentRelasjonerTilIdent(barn2, miljoe))
-        .thenReturn(RelasjonsResponse.builder().fnr(barn2).relasjoner(relasjoner).build());
+        List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger = syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
 
-    List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger =
-        syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
+        assertThat(syntetiserteBidragsmeldinger.get(0).getBarnetsFnr(), equalTo(barn1));
+        assertThat(syntetiserteBidragsmeldinger.get(0).getBidragsmottaker(), equalTo(bidragsmottaker));
+        assertThat(syntetiserteBidragsmeldinger.get(0).getBidragspliktig(), equalTo(bidragspliktig));
+        assertThat(syntetiserteBidragsmeldinger.get(1).getBarnetsFnr(), equalTo(barn2));
+        assertThat(syntetiserteBidragsmeldinger.get(1).getBidragsmottaker(), equalTo(bidragsmottaker));
+        assertThat(syntetiserteBidragsmeldinger.get(1).getBidragspliktig(), equalTo(bidragspliktig));
+    }
 
-    assertThat(syntetiserteBidragsmeldinger.get(0).getBarnetsFnr(), equalTo(barn1));
-    assertThat(syntetiserteBidragsmeldinger.get(0).getBidragsmottaker(), equalTo(bidragsmottaker));
-    assertThat(syntetiserteBidragsmeldinger.get(0).getBidragspliktig(), equalTo(bidragspliktig));
-    assertThat(syntetiserteBidragsmeldinger.get(1).getBarnetsFnr(), equalTo(barn2));
-    assertThat(syntetiserteBidragsmeldinger.get(1).getBidragsmottaker(), equalTo(bidragsmottaker));
-    assertThat(syntetiserteBidragsmeldinger.get(1).getBidragspliktig(), equalTo(bidragspliktig));
-  }
+    @Test
+    public void shouldLogOnTooFewIdenter() {
+        Logger logger = (Logger) LoggerFactory.getLogger(SyntetiseringService.class);
+        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+        listAppender.start();
+        logger.addAppender(listAppender);
 
-  @Test
-  public void shouldLogOnTooFewIdenter() {
-    Logger logger = (Logger) LoggerFactory.getLogger(SyntetiseringService.class);
-    ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
-    listAppender.start();
-    logger.addAppender(listAppender);
+        foedteIdenter.remove(foedteIdenter.size() - 1);
+        syntetiserteBidragsmeldinger.remove(syntetiserteBidragsmeldinger.size() - 1);
+        when(hodejegerenConsumer.finnFoedteIdenter(avspillergruppeId)).thenReturn(foedteIdenter);
+        when(syntetisererenConsumer.getSyntetiserteBidragsmeldinger(foedteIdenter.size()))
+                .thenReturn(syntetiserteBidragsmeldinger);
+        when(hodejegerenConsumer.hentRelasjonerTilIdent(barn1, miljoe))
+                .thenReturn(RelasjonsResponse.builder().fnr(barn1).relasjoner(relasjoner).build());
 
-    foedteIdenter.remove(foedteIdenter.size() - 1);
-    syntetiserteBidragsmeldinger.remove(syntetiserteBidragsmeldinger.size() - 1);
-    when(hodejegerenConsumer.finnFoedteIdenter(avspillergruppeId)).thenReturn(foedteIdenter);
-    when(syntetisererenConsumer.getSyntetiserteBidragsmeldinger(foedteIdenter.size()))
-        .thenReturn(syntetiserteBidragsmeldinger);
-    when(hodejegerenConsumer.hentRelasjonerTilIdent(barn1, miljoe))
-        .thenReturn(RelasjonsResponse.builder().fnr(barn1).relasjoner(relasjoner).build());
+        List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger = syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
 
-    List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger =
-        syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
+        assertThat(syntetiserteBidragsmeldinger.get(0).getBarnetsFnr(), equalTo(barn1));
+        assertThat(syntetiserteBidragsmeldinger.get(0).getBidragsmottaker(), equalTo(bidragsmottaker));
+        assertThat(syntetiserteBidragsmeldinger.get(0).getBidragspliktig(), equalTo(bidragspliktig));
+        assertThat(listAppender.list.size(), is(CoreMatchers.equalTo(1)));
+        assertThat(listAppender.list.get(0).toString(), containsString(
+                "Fant ikke nok identer registrert med mor og far. Oppretter 1 bidragsmelding(er)."));
+    }
 
-    assertThat(syntetiserteBidragsmeldinger.get(0).getBarnetsFnr(), equalTo(barn1));
-    assertThat(syntetiserteBidragsmeldinger.get(0).getBidragsmottaker(), equalTo(bidragsmottaker));
-    assertThat(syntetiserteBidragsmeldinger.get(0).getBidragspliktig(), equalTo(bidragspliktig));
-    assertThat(listAppender.list.size(), is(CoreMatchers.equalTo(1)));
-    assertThat(listAppender.list.get(0).toString(), containsString(
-        "Fant ikke nok identer registrert med mor og far. Oppretter 1 bidragsmelding(er)."));
-  }
+    @Test
+    public void shouldProcessBidragsmeldingerIfNoExceptionsOccur()
+            throws BidragRequestProcessingException {
+        when(hodejegerenConsumer.finnFoedteIdenter(avspillergruppeId)).thenReturn(foedteIdenter);
+        when(syntetisererenConsumer.getSyntetiserteBidragsmeldinger(foedteIdenter.size()))
+                .thenReturn(syntetiserteBidragsmeldinger);
+        when(hodejegerenConsumer.hentRelasjonerTilIdent(barn1, miljoe))
+                .thenReturn(RelasjonsResponse.builder().fnr(barn1).relasjoner(relasjoner).build());
+        when(hodejegerenConsumer.hentRelasjonerTilIdent(barn2, miljoe))
+                .thenReturn(RelasjonsResponse.builder().fnr(barn2).relasjoner(relasjoner).build());
 
-  @Test
-  public void shouldProcessBidragsmeldingerIfNoExceptionsOccur()
-      throws BidragRequestProcessingException {
-    when(hodejegerenConsumer.finnFoedteIdenter(avspillergruppeId)).thenReturn(foedteIdenter);
-    when(syntetisererenConsumer.getSyntetiserteBidragsmeldinger(foedteIdenter.size()))
-        .thenReturn(syntetiserteBidragsmeldinger);
-    when(hodejegerenConsumer.hentRelasjonerTilIdent(barn1, miljoe))
-        .thenReturn(RelasjonsResponse.builder().fnr(barn1).relasjoner(relasjoner).build());
-    when(hodejegerenConsumer.hentRelasjonerTilIdent(barn2, miljoe))
-        .thenReturn(RelasjonsResponse.builder().fnr(barn2).relasjoner(relasjoner).build());
+        List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger = syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
 
-    List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger =
-        syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
+        syntetiseringService.processBidragsmeldinger(syntetiserteBidragsmeldinger);
 
-    syntetiseringService.processBidragsmeldinger(syntetiserteBidragsmeldinger);
+    }
 
-  }
+    @Test
+    public void shouldSkipToNextBidragsmeldingIfExceptionOccur()
+            throws BidragRequestProcessingException {
+        when(hodejegerenConsumer.finnFoedteIdenter(avspillergruppeId)).thenReturn(foedteIdenter);
+        when(syntetisererenConsumer.getSyntetiserteBidragsmeldinger(foedteIdenter.size()))
+                .thenReturn(syntetiserteBidragsmeldinger);
+        when(hodejegerenConsumer.hentRelasjonerTilIdent(barn1, miljoe))
+                .thenReturn(RelasjonsResponse.builder().fnr(barn1).relasjoner(relasjoner).build());
+        when(hodejegerenConsumer.hentRelasjonerTilIdent(barn2, miljoe))
+                .thenReturn(RelasjonsResponse.builder().fnr(barn2).relasjoner(relasjoner).build());
 
-  @Test
-  public void shouldSkipToNextBidragsmeldingIfExceptionOccur()
-      throws BidragRequestProcessingException {
-    when(hodejegerenConsumer.finnFoedteIdenter(avspillergruppeId)).thenReturn(foedteIdenter);
-    when(syntetisererenConsumer.getSyntetiserteBidragsmeldinger(foedteIdenter.size()))
-        .thenReturn(syntetiserteBidragsmeldinger);
-    when(hodejegerenConsumer.hentRelasjonerTilIdent(barn1, miljoe))
-        .thenReturn(RelasjonsResponse.builder().fnr(barn1).relasjoner(relasjoner).build());
-    when(hodejegerenConsumer.hentRelasjonerTilIdent(barn2, miljoe))
-        .thenReturn(RelasjonsResponse.builder().fnr(barn2).relasjoner(relasjoner).build());
+        List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger = syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
 
-    List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger =
-        syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
-
-    syntetiseringService.processBidragsmeldinger(syntetiserteBidragsmeldinger);
-  }
+        syntetiseringService.processBidragsmeldinger(syntetiserteBidragsmeldinger);
+    }
 }

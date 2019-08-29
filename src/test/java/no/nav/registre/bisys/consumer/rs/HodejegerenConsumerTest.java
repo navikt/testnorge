@@ -31,100 +31,98 @@ import no.nav.registre.bisys.LocalApplicationStarter;
 import no.nav.registre.bisys.consumer.rs.responses.relasjon.RelasjonsResponse;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = ApplicationStarter.class)
-@ComponentScan(
-    excludeFilters = {@Filter(type = ASSIGNABLE_TYPE, value = LocalApplicationStarter.class)})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = ApplicationStarter.class)
+@ComponentScan(excludeFilters = { @Filter(type = ASSIGNABLE_TYPE, value = LocalApplicationStarter.class) })
 @AutoConfigureWireMock(port = 0)
 @ActiveProfiles("test")
 public class HodejegerenConsumerTest {
 
-  @Autowired private HodejegerenConsumer hodejegerenConsumer;
+    @Autowired
+    private HodejegerenConsumer hodejegerenConsumer;
 
-  private long gruppeId = 10L;
-  private String fnr1 = "01010101010";
-  private String fnr2 = "02020202020";
-  private String fnrBarn = "11021950000";
-  private String miljoe = "t1";
+    private long gruppeId = 10L;
+    private String fnr1 = "01010101010";
+    private String fnr2 = "02020202020";
+    private String fnrBarn = "11021950000";
+    private String miljoe = "t1";
 
-  @Test
-  public void shouldFindLevendeIdenter() {
-    stubHodejegerenConsumerFinnFoedteIdenter();
+    @Test
+    public void shouldFindLevendeIdenter() {
+        stubHodejegerenConsumerFinnFoedteIdenter();
 
-    List<String> levendeIdenter = hodejegerenConsumer.finnFoedteIdenter(gruppeId);
+        List<String> levendeIdenter = hodejegerenConsumer.finnFoedteIdenter(gruppeId);
 
-    assertThat(levendeIdenter, hasItem(fnr1));
-    assertThat(levendeIdenter, hasItem(fnr2));
-  }
+        assertThat(levendeIdenter, hasItem(fnr1));
+        assertThat(levendeIdenter, hasItem(fnr2));
+    }
 
-  @Test
-  public void shouldLogOnEmptyResponseFindLevendeIdenter() {
-    Logger logger = (Logger) LoggerFactory.getLogger(HodejegerenConsumer.class);
-    ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
-    listAppender.start();
-    logger.addAppender(listAppender);
+    @Test
+    public void shouldLogOnEmptyResponseFindLevendeIdenter() {
+        Logger logger = (Logger) LoggerFactory.getLogger(HodejegerenConsumer.class);
+        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+        listAppender.start();
+        logger.addAppender(listAppender);
 
-    stubHodejegerenConsumerWithEmptyBody("/hodejegeren/api/v1/foedte-identer/" + gruppeId);
+        stubHodejegerenConsumerWithEmptyBody("/hodejegeren/api/v1/foedte-identer/" + gruppeId);
 
-    hodejegerenConsumer.finnFoedteIdenter(gruppeId);
+        hodejegerenConsumer.finnFoedteIdenter(gruppeId);
 
-    assertThat(listAppender.list.size(), is(equalTo(1)));
-    assertThat(
-        listAppender.list.get(0).toString(),
-        containsString("Kunne ikke hente response body fra Hodejegeren: NullPointerException"));
-  }
+        assertThat(listAppender.list.size(), is(equalTo(1)));
+        assertThat(
+                listAppender.list.get(0).toString(),
+                containsString("Kunne ikke hente response body fra Hodejegeren: NullPointerException"));
+    }
 
-  @Test
-  public void shouldHenteRelasjonerTilIdent() {
-    String fnrFar = "16120680637";
-    String fnrMor = "11020681073";
+    @Test
+    public void shouldHenteRelasjonerTilIdent() {
+        String fnrFar = "16120680637";
+        String fnrMor = "11020681073";
 
-    stubHodejegerenConsumerHentRelasjoner(fnrBarn, miljoe);
+        stubHodejegerenConsumerHentRelasjoner(fnrBarn, miljoe);
 
-    RelasjonsResponse response = hodejegerenConsumer.hentRelasjonerTilIdent(fnrBarn, miljoe);
+        RelasjonsResponse response = hodejegerenConsumer.hentRelasjonerTilIdent(fnrBarn, miljoe);
 
-    assertThat(response.getFnr(), equalTo(fnrBarn));
-    assertThat(response.getRelasjoner().get(0).getFnrRelasjon(), equalTo(fnrFar));
-    assertThat(response.getRelasjoner().get(1).getFnrRelasjon(), equalTo(fnrMor));
-  }
+        assertThat(response.getFnr(), equalTo(fnrBarn));
+        assertThat(response.getRelasjoner().get(0).getFnrRelasjon(), equalTo(fnrFar));
+        assertThat(response.getRelasjoner().get(1).getFnrRelasjon(), equalTo(fnrMor));
+    }
 
-  @Test
-  public void shouldLogOnEmptyResponseHenteRelasjonerTilIdent() {
-    Logger logger = (Logger) LoggerFactory.getLogger(HodejegerenConsumer.class);
-    ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
-    listAppender.start();
-    logger.addAppender(listAppender);
+    @Test
+    public void shouldLogOnEmptyResponseHenteRelasjonerTilIdent() {
+        Logger logger = (Logger) LoggerFactory.getLogger(HodejegerenConsumer.class);
+        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+        listAppender.start();
+        logger.addAppender(listAppender);
 
-    stubHodejegerenConsumerWithEmptyBody(
-        "/hodejegeren/api/v1/relasjoner-til-ident?ident=" + fnrBarn + "&miljoe=" + miljoe);
+        stubHodejegerenConsumerWithEmptyBody(
+                "/hodejegeren/api/v1/relasjoner-til-ident?ident=" + fnrBarn + "&miljoe=" + miljoe);
 
-    hodejegerenConsumer.hentRelasjonerTilIdent(fnrBarn, miljoe);
+        hodejegerenConsumer.hentRelasjonerTilIdent(fnrBarn, miljoe);
 
-    assertThat(listAppender.list.size(), is(equalTo(1)));
-    assertThat(
-        listAppender.list.get(0).toString(),
-        containsString("Kunne ikke hente response body fra Hodejegeren: NullPointerException"));
-  }
+        assertThat(listAppender.list.size(), is(equalTo(1)));
+        assertThat(
+                listAppender.list.get(0).toString(),
+                containsString("Kunne ikke hente response body fra Hodejegeren: NullPointerException"));
+    }
 
-  private void stubHodejegerenConsumerFinnFoedteIdenter() {
-    stubFor(
-        get(urlPathEqualTo("/hodejegeren/api/v1/foedte-identer/" + gruppeId))
-            .willReturn(
-                ok().withHeader("Content-Type", "application/json")
-                    .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
-  }
+    private void stubHodejegerenConsumerFinnFoedteIdenter() {
+        stubFor(
+                get(urlPathEqualTo("/hodejegeren/api/v1/foedte-identer/" + gruppeId))
+                        .willReturn(
+                                ok().withHeader("Content-Type", "application/json")
+                                        .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
+    }
 
-  private void stubHodejegerenConsumerWithEmptyBody(String url) {
-    stubFor(get(urlEqualTo(url)).willReturn(ok().withHeader("Content-Type", "application/json")));
-  }
+    private void stubHodejegerenConsumerWithEmptyBody(String url) {
+        stubFor(get(urlEqualTo(url)).willReturn(ok().withHeader("Content-Type", "application/json")));
+    }
 
-  private void stubHodejegerenConsumerHentRelasjoner(String ident, String miljoe) {
-    stubFor(
-        get(urlEqualTo(
-                "/hodejegeren/api/v1/relasjoner-til-ident?ident=" + ident + "&miljoe=" + miljoe))
-            .willReturn(
-                ok().withHeader("Content-Type", "application/json")
-                    .withBody(getResourceFileContent("relasjon.json"))));
-  }
+    private void stubHodejegerenConsumerHentRelasjoner(String ident, String miljoe) {
+        stubFor(
+                get(urlEqualTo(
+                        "/hodejegeren/api/v1/relasjoner-til-ident?ident=" + ident + "&miljoe=" + miljoe))
+                                .willReturn(
+                                        ok().withHeader("Content-Type", "application/json")
+                                                .withBody(getResourceFileContent("relasjon.json"))));
+    }
 }

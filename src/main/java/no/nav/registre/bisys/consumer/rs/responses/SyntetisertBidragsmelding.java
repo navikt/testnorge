@@ -14,39 +14,39 @@ import lombok.Setter;
 @Builder
 public class SyntetisertBidragsmelding {
 
-  @JsonProperty("BA")
-  private String barnetsFnr;
+    @JsonProperty("BA")
+    private String barnetsFnr;
 
-  @JsonProperty("BM")
-  private String bidragsmottaker;
+    @JsonProperty("BM")
+    private String bidragsmottaker;
 
-  @JsonProperty("BP")
-  private String bidragspliktig;
+    @JsonProperty("BP")
+    private String bidragspliktig;
 
-  @JsonProperty("FASTSATT_I")
-  private String fastsattI;
+    @JsonProperty("FASTSATT_I")
+    private String fastsattI;
 
-  @JsonProperty("GEBYRFRITAK_BM")
-  private String gebyrfritakBm;
+    @JsonProperty("GEBYRFRITAK_BM")
+    private String gebyrfritakBm;
 
-  @JsonProperty("GEBYRFRITAK_BP")
-  private String gebyrfritakBp;
+    @JsonProperty("GEBYRFRITAK_BP")
+    private String gebyrfritakBp;
 
-  @JsonProperty("INNBETALT")
-  private String innbetalt;
+    @JsonProperty("INNBETALT")
+    private String innbetalt;
 
-  @JsonProperty("MOTTATT_DATO")
-  private String mottattDato;
+    @JsonProperty("MOTTATT_DATO")
+    private String mottattDato;
 
-  @JsonProperty("SOKNADSTYPE")
-  private String soknadstype;
+    @JsonProperty("SOKNADSTYPE")
+    private String soknadstype;
 
-  @JsonProperty("SOKNAD_FRA")
-  private String soknadFra;
+    @JsonProperty("SOKNAD_FRA")
+    private String soknadFra;
 
-  @JsonProperty("SOKT_FRA")
-  private String soktFra;
+    @JsonProperty("SOKT_FRA")
+    private String soktFra;
 
-  @JsonProperty("SOKT_OM")
-  private String soktOm;
+    @JsonProperty("SOKT_OM")
+    private String soktOm;
 }

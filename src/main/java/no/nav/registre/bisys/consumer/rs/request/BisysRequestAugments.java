@@ -7,10 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public class BisysRequestAugments {
 
-  private final String boforholdAndelForsorging;
-  private final boolean boforholdBarnRegistrertPaaAdresse;
-  private final String bidragsberegningKodeVirkAarsak;
-  private final String bidragsberegningSamvarsklasse;
-  private final String fatteVedtakGebyrBeslAarsakKode;
+    private final String boforholdAndelForsorging;
+    private final boolean boforholdBarnRegistrertPaaAdresse;
+    private final String bidragsberegningKodeVirkAarsak;
+    private final String bidragsberegningSamvarsklasse;
+    private final String fatteVedtakGebyrBeslAarsakKode;
 
 }

@@ -15,62 +15,54 @@ import no.nav.registre.bisys.consumer.rs.responses.relasjon.RelasjonsResponse;
 @Slf4j
 public class HodejegerenConsumer {
 
-  private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE_IDENTER =
-      new ParameterizedTypeReference<List<String>>() {};
-  private static final ParameterizedTypeReference<RelasjonsResponse> RESPONSE_TYPE_RELASJON =
-      new ParameterizedTypeReference<RelasjonsResponse>() {};
+    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE_IDENTER = new ParameterizedTypeReference<List<String>>() {
+    };
+    private static final ParameterizedTypeReference<RelasjonsResponse> RESPONSE_TYPE_RELASJON = new ParameterizedTypeReference<RelasjonsResponse>() {
+    };
 
-  @Autowired private RestTemplate restTemplate;
+    @Autowired
+    private RestTemplate restTemplate;
 
-  private UriTemplate hentFoedteIdenterUrl;
-  private UriTemplate hentRelasjonerUrl;
+    private UriTemplate hentFoedteIdenterUrl;
+    private UriTemplate hentRelasjonerUrl;
 
-  public HodejegerenConsumer(String hodejegerenServerUrl) {
-    this.hentFoedteIdenterUrl =
-        new UriTemplate(hodejegerenServerUrl + "/v1/foedte-identer/{avspillergruppeId}");
-    this.hentRelasjonerUrl =
-        new UriTemplate(
-            hodejegerenServerUrl + "/v1/relasjoner-til-ident?ident={ident}&miljoe={miljoe}");
-  }
-
-  @Timed(
-      value = "bisys.resource.latency",
-      extraTags = {"operation", "hodejegeren"})
-  public List<String> finnFoedteIdenter(Long avspillergruppeId) {
-    RequestEntity getRequest =
-        RequestEntity.get(hentFoedteIdenterUrl.expand(avspillergruppeId.toString())).build();
-    List<String> levendeIdenter = new ArrayList<>();
-    ResponseEntity<List<String>> response =
-        restTemplate.exchange(getRequest, RESPONSE_TYPE_IDENTER);
-
-    if (response.getBody() != null) {
-      levendeIdenter.addAll(response.getBody());
-    } else {
-      log.error(
-          "HodejegerenConsumer.finnFoedteIdenter: Kunne ikke hente response body fra Hodejegeren: NullPointerException");
+    public HodejegerenConsumer(String hodejegerenServerUrl) {
+        this.hentFoedteIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/foedte-identer/{avspillergruppeId}");
+        this.hentRelasjonerUrl = new UriTemplate(
+                hodejegerenServerUrl + "/v1/relasjoner-til-ident?ident={ident}&miljoe={miljoe}");
     }
 
-    return levendeIdenter;
-  }
+    @Timed(value = "bisys.resource.latency", extraTags = { "operation", "hodejegeren" })
+    public List<String> finnFoedteIdenter(Long avspillergruppeId) {
+        RequestEntity getRequest = RequestEntity.get(hentFoedteIdenterUrl.expand(avspillergruppeId.toString())).build();
+        List<String> levendeIdenter = new ArrayList<>();
+        ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_IDENTER);
 
-  @Timed(
-      value = "bisys.resource.latency",
-      extraTags = {"operation", "hodejegeren"})
-  public RelasjonsResponse hentRelasjonerTilIdent(String ident, String miljoe) {
+        if (response.getBody() != null) {
+            levendeIdenter.addAll(response.getBody());
+        } else {
+            log.error(
+                    "HodejegerenConsumer.finnFoedteIdenter: Kunne ikke hente response body fra Hodejegeren: NullPointerException");
+        }
 
-    RequestEntity getRequest = RequestEntity.get(hentRelasjonerUrl.expand(ident, miljoe)).build();
-    ResponseEntity<RelasjonsResponse> response =
-        restTemplate.exchange(getRequest, RESPONSE_TYPE_RELASJON);
-
-    RelasjonsResponse relasjonsResponse = new RelasjonsResponse();
-
-    if (response.getBody() != null) {
-      relasjonsResponse = response.getBody();
-    } else {
-      log.error(
-          "HodejegerenConsumer.hentRelasjonerTilIdent: Kunne ikke hente response body fra Hodejegeren: NullPointerException");
+        return levendeIdenter;
     }
 
-    return relasjonsResponse;
-  }
+    @Timed(value = "bisys.resource.latency", extraTags = { "operation", "hodejegeren" })
+    public RelasjonsResponse hentRelasjonerTilIdent(String ident, String miljoe) {
+
+        RequestEntity getRequest = RequestEntity.get(hentRelasjonerUrl.expand(ident, miljoe)).build();
+        ResponseEntity<RelasjonsResponse> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_RELASJON);
+
+        RelasjonsResponse relasjonsResponse = new RelasjonsResponse();
+
+        if (response.getBody() != null) {
+            relasjonsResponse = response.getBody();
+        } else {
+            log.error(
+                    "HodejegerenConsumer.hentRelasjonerTilIdent: Kunne ikke hente response body fra Hodejegeren: NullPointerException");
+        }
+
+        return relasjonsResponse;
+    }
 }

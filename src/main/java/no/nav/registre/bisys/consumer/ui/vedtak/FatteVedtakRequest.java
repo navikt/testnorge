@@ -9,10 +9,10 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class FatteVedtakRequest {
 
-  private final String mottattdato;
-  private final String soeknadFra;
-  private final String soeknadsgrupper;
-  private final String typeSoeknad;
-  private final int enhet;
+    private final String mottattdato;
+    private final String soeknadFra;
+    private final String soeknadsgrupper;
+    private final String typeSoeknad;
+    private final int enhet;
 
 }
