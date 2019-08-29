@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -39,6 +40,9 @@ public class TestgruppeService {
 
     @Autowired
     private IdentService identService;
+
+    @Autowired
+    private BestillingService bestillingService;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
@@ -72,7 +76,7 @@ public class TestgruppeService {
         bruker.getTeams().forEach(team -> testgrupper.addAll(team.getGrupper()));
 
         List<Testgruppe> unikeTestgrupper = new ArrayList(testgrupper);
-        Collections.sort(unikeTestgrupper,(Testgruppe tg1, Testgruppe tg2) -> tg1.getNavn().compareToIgnoreCase(tg2.getNavn()));
+        Collections.sort(unikeTestgrupper, (Testgruppe tg1, Testgruppe tg2) -> tg1.getNavn().compareToIgnoreCase(tg2.getNavn()));
 
         return unikeTestgrupper;
     }
@@ -98,6 +102,7 @@ public class TestgruppeService {
     }
 
     public int slettGruppeById(Long gruppeId) {
+        bestillingService.slettBestillingerByGruppeId(gruppeId);
         identService.slettTestidenterByGruppeId(gruppeId);
         brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
         return gruppeRepository.deleteTestgruppeById(gruppeId);
@@ -136,7 +141,7 @@ public class TestgruppeService {
         return fetchTestgruppeById(gruppeId)
                 .getTestidenter()
                 .stream()
-                .map(ident -> ident.getIdent())
+                .map(Testident::getIdent)
                 .collect(Collectors.toList());
     }
 }
