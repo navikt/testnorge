@@ -3,10 +3,13 @@ package no.nav.identpool.service;
 import static java.lang.Math.toIntExact;
 import static no.nav.identpool.util.IdentGeneratorUtil.generatorMap;
 import static no.nav.identpool.util.IdentGeneratorUtil.getGenderNumber;
-import static no.nav.identpool.util.IdentGeneratorUtil.getYearRange;
 import static no.nav.identpool.util.IdentGeneratorUtil.getStartIndex;
+import static no.nav.identpool.util.IdentGeneratorUtil.getYearRange;
 import static no.nav.identpool.util.IdentGeneratorUtil.numberFormatter;
 import static no.nav.identpool.util.PersonidentUtil.generateFnr;
+
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
@@ -20,15 +23,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import no.nav.identpool.util.IdentGeneratorUtil;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import no.nav.identpool.util.IdentGeneratorUtil;
 
 @Service
 public class IdentGeneratorService {
+
     private static SecureRandom random = new SecureRandom();
 
     public Map<LocalDate, List<String>> genererIdenterMap(LocalDate foedtEtter, LocalDate foedtFoer, Identtype type) {
@@ -48,6 +50,9 @@ public class IdentGeneratorService {
         LocalDate foedtEtter = request.getFoedtEtter();
         LocalDate foedtFoer = request.getFoedtFoer() == null ? foedtEtter.plusDays(1) : request.getFoedtFoer();
         validateDates(foedtEtter, foedtFoer);
+        if (foedtFoer.isEqual(foedtEtter)) {
+            foedtFoer = foedtFoer.plusDays(1);
+        }
 
         int antall = request.getAntall();
         Kjoenn kjoenn = request.getKjoenn();
@@ -91,10 +96,7 @@ public class IdentGeneratorService {
     }
 
     private void validateDates(LocalDate foedtEtter, LocalDate foedtFoer) {
-        if (foedtEtter.isEqual(foedtFoer)) {
-            throw new IllegalArgumentException(String.format("Til (%s) og fra (%s) dato kan ikke være like", foedtFoer, foedtEtter));
-        }
-        if (foedtEtter.isAfter(foedtFoer) || foedtEtter.plusDays(1).isAfter(foedtFoer)) {
+        if (foedtEtter.isAfter(foedtFoer)) {
             throw new IllegalArgumentException(String.format("Til dato (%s) kan ikke være etter før dato (%s)", foedtEtter, foedtFoer));
         }
     }

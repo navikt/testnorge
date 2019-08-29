@@ -1,6 +1,7 @@
 package no.nav.identpool.rs.v1;
 
 import static no.nav.identpool.util.PersonidentUtil.validate;
+import static no.nav.identpool.util.ValiderRequestUtil.validateDatesInRequest;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -51,9 +52,7 @@ public class IdentpoolController {
     @PostMapping
     @ApiOperation(value = "rekvirer nye test-identer")
     public List<String> rekvirer(@RequestParam(required = false, defaultValue = "true") boolean finnNaermesteLedigeDato, @RequestBody @Valid HentIdenterRequest hentIdenterRequest) throws Exception {
-        if (hentIdenterRequest.getFoedtEtter().compareTo(LocalDate.now()) > 0) {
-            throw new IllegalArgumentException("Kan ikke oppgi framtidig dato i felt 'foedtEtter'");
-        }
+        validateDatesInRequest(hentIdenterRequest);
         if (finnNaermesteLedigeDato) {
             try {
                 return identpoolService.rekvirerNaermesteLedigDato(hentIdenterRequest);

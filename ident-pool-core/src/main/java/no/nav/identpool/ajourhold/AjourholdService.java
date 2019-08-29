@@ -82,6 +82,9 @@ public class AjourholdService {
         if (lastDate.isAfter(current)) {
             lastDate = LocalDate.of(year, current.getMonth(), current.getDayOfMonth());
         }
+        if (lastDate.isEqual(firstDate)) {
+            lastDate = lastDate.plusDays(1);
+        }
 
         Map<LocalDate, List<String>> pinMap = identGeneratorService.genererIdenterMap(firstDate, lastDate, type);
 
