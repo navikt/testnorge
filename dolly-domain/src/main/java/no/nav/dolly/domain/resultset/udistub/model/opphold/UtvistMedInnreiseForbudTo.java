@@ -6,15 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 @Builder
-public class IkkeOppholdstilatelseIkkeVilkaarIkkeVisum {
+public class UtvistMedInnreiseForbudTo {
 
-	private UtvistMedInnreiseForbud utvistMedInnreiseForbud;
-	private AvslagEllerBortFall avslagEllerBortFall;
-	private String ovrigIkkeOppholdsKategoriArsak;
-
+    private String innreiseForbud;
+    private LocalDate innreiseForbudVedtaksDato;
+    private String varighet;
 }

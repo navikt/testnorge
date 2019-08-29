@@ -8,15 +8,12 @@ import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
+@Setter
 @Builder
-public class Arbeidsadgang {
+public class AliasTo {
 
-	private String harArbeidsAdgang;
-
-	private String typeArbeidsadgang;
-	private String arbeidsOmfang;
-	private Periode periode;
-	private Person person;
+    private String fnr;
+    private PersonNavnTo navn;
+    private PersonTo person;
 }

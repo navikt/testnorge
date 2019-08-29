@@ -1,36 +1,35 @@
 package no.nav.dolly.bestilling.udistub;
 
-import static java.time.LocalDate.now;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
-import no.nav.dolly.domain.resultset.udistub.model.Arbeidsadgang;
-import no.nav.dolly.domain.resultset.udistub.model.Avgjoerelse;
-import no.nav.dolly.domain.resultset.udistub.model.Periode;
-import no.nav.dolly.domain.resultset.udistub.model.Person;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.AvslagEllerBortFall;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.IkkeOppholdstilatelseIkkeVilkaarIkkeVisum;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.OppholdSammeVilkaar;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.OppholdStatus;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.UtvistMedInnreiseForbud;
+import no.nav.dolly.domain.resultset.udistub.model.ArbeidsadgangTo;
+import no.nav.dolly.domain.resultset.udistub.model.AvgjorelseTo;
+import no.nav.dolly.domain.resultset.udistub.model.PeriodeTo;
+import no.nav.dolly.domain.resultset.udistub.model.PersonTo;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.AvslagEllerBortfallTo;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.OppholdSammeVilkaarTo;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.OppholdStatusTo;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.UtvistMedInnreiseForbudTo;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Collections;
 
 public class UdiStubDefaultPersonUtil {
-    private static final Periode DEFAULT_PERIODE = new Periode(Date.valueOf(now()), Date.valueOf(now()));
-    private static final Date DEFAULT_DATE = Date.valueOf(now());
+    private static final PeriodeTo DEFAULT_PERIODE = new PeriodeTo(LocalDate.now(), LocalDate.now());
+    private static final LocalDate DEFAULT_DATE = LocalDate.now();
     private static final String DEFAULT_FAMILE_KODE = "FAMILIE";
     private static final String DEFAULT_PERMANENT_KODE = "PERMANENT";
 
     private UdiStubDefaultPersonUtil() {
     }
 
-    public static void setPersonDefaultsIfUnspecified(Person udiPerson) {
+    public static void setPersonDefaultsIfUnspecified(PersonTo udiPerson) {
 
         //OPPHOLDSSTATUS
-        OppholdStatus specifiedOppholdStatus = nullcheckSetDefaultValue(udiPerson.getOppholdStatus(), new OppholdStatus());
+        OppholdStatusTo specifiedOppholdStatus = nullcheckSetDefaultValue(udiPerson.getOppholdStatus(), new OppholdStatusTo());
 
-        udiPerson.setOppholdStatus(OppholdStatus.builder()
+        udiPerson.setOppholdStatus(OppholdStatusTo.builder()
                 .uavklart(nullcheckSetDefaultValue(specifiedOppholdStatus.getUavklart(), false))
                 .oppholdSammeVilkaar(oppholdSammeVilkaarDefaultsIfUnspecified(specifiedOppholdStatus))
                 .ikkeOppholdstilatelseIkkeVilkaarIkkeVisum(ikkeOppholdstilatelseIkkeVilkaarIkkeVisumIfUnspecified(specifiedOppholdStatus))
@@ -47,21 +46,24 @@ public class UdiStubDefaultPersonUtil {
                 .build());
 
         // ARBEIDSADGANG
-        Arbeidsadgang specifiedArbeidsadgang = nullcheckSetDefaultValue(udiPerson.getArbeidsadgang(), new Arbeidsadgang());
+        ArbeidsadgangTo specifiedArbeidsadgang = nullcheckSetDefaultValue(udiPerson.getArbeidsadgang(), new ArbeidsadgangTo());
         udiPerson.setArbeidsadgang(
-                Arbeidsadgang.builder()
-                        .arbeidsOmfang(nullcheckSetDefaultValue(specifiedArbeidsadgang.getArbeidsOmfang(), "KunArbeidHeltid"))
-                        .harArbeidsAdgang(nullcheckSetDefaultValue(specifiedArbeidsadgang.getHarArbeidsAdgang(), "Ja"))
+                ArbeidsadgangTo.builder()
+                        .arbeidsOmfang(nullcheckSetDefaultValue(specifiedArbeidsadgang.getArbeidsOmfang(), "KUN_ARBEID_HELTID"))
+                        .harArbeidsAdgang(nullcheckSetDefaultValue(specifiedArbeidsadgang.getHarArbeidsAdgang(), "JA"))
                         .periode(nullcheckSetDefaultValue(specifiedArbeidsadgang.getPeriode(), DEFAULT_PERIODE))
-                        .typeArbeidsadgang(nullcheckSetDefaultValue(specifiedArbeidsadgang.getTypeArbeidsadgang(), "BestemtArbeidEllerOppdrag"))
+                        .typeArbeidsadgang(nullcheckSetDefaultValue(specifiedArbeidsadgang.getTypeArbeidsadgang(), "GENERELL"))
                         .build());
 
         // AVGJORELSER
-        udiPerson.setAvgjoerelser(nullcheckSetDefaultValue(udiPerson.getAvgjoerelser(), Collections.singletonList(new Avgjoerelse())));
+        udiPerson.setAvgjoerelser(nullcheckSetDefaultValue(udiPerson.getAvgjoerelser(), Collections.singletonList(new AvgjorelseTo())));
+        udiPerson.setHarOppholdsTillatelse(nullcheckSetDefaultValue(udiPerson.getHarOppholdsTillatelse(), true));
+        udiPerson.setSoknadDato(nullcheckSetDefaultValue(udiPerson.getSoknadDato(), LocalDate.of(2005, 5, 5)));
+        udiPerson.setAvgjoerelseUavklart(nullcheckSetDefaultValue(udiPerson.getAvgjoerelseUavklart(), false));
     }
 
-    private static OppholdSammeVilkaar oppholdSammeVilkaarDefaultsIfUnspecified(OppholdStatus oppholdStatus) {
-        OppholdSammeVilkaar oppholdSammeVilkaar = nullcheckSetDefaultValue(oppholdStatus.getOppholdSammeVilkaar(), new OppholdSammeVilkaar());
+    private static OppholdSammeVilkaarTo oppholdSammeVilkaarDefaultsIfUnspecified(OppholdStatusTo oppholdStatus) {
+        OppholdSammeVilkaarTo oppholdSammeVilkaar = nullcheckSetDefaultValue(oppholdStatus.getOppholdSammeVilkaar(), new OppholdSammeVilkaarTo());
 
         oppholdSammeVilkaar.setOppholdSammeVilkaarEffektuering(nullcheckSetDefaultValue(oppholdSammeVilkaar.getOppholdstillatelseVedtaksDato(), DEFAULT_DATE));
         oppholdSammeVilkaar.setOppholdstillatelseType(nullcheckSetDefaultValue(oppholdSammeVilkaar.getOppholdstillatelseType(), DEFAULT_PERMANENT_KODE));
@@ -70,18 +72,18 @@ public class UdiStubDefaultPersonUtil {
         return oppholdSammeVilkaar;
     }
 
-    private static IkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOppholdstilatelseIkkeVilkaarIkkeVisumIfUnspecified(OppholdStatus oppholdStatus) {
-        IkkeOppholdstilatelseIkkeVilkaarIkkeVisum in = nullcheckSetDefaultValue(oppholdStatus.getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum(), new IkkeOppholdstilatelseIkkeVilkaarIkkeVisum());
-        return IkkeOppholdstilatelseIkkeVilkaarIkkeVisum.builder()
+    private static IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo ikkeOppholdstilatelseIkkeVilkaarIkkeVisumIfUnspecified(OppholdStatusTo oppholdStatus) {
+        IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo in = nullcheckSetDefaultValue(oppholdStatus.getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum(), new IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo());
+        return IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo.builder()
                 .ovrigIkkeOppholdsKategoriArsak(nullcheckSetDefaultValue(in.getOvrigIkkeOppholdsKategoriArsak(), "ANNULERING_AV_VISUM"))
-                .avslagEllerBortFall(avslagEllerBortFallIfUnspecified(in))
+                .avslagEllerBortfall(avslagEllerBortFallIfUnspecified(in))
                 .utvistMedInnreiseForbud(utvistMedInnreiseForbudIfUnspecified(in))
                 .build();
     }
 
-    private static AvslagEllerBortFall avslagEllerBortFallIfUnspecified(IkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOppholdstilatelseIkkeVilkaarIkkeVisum) {
-        AvslagEllerBortFall avslagEllerBortFall = nullcheckSetDefaultValue(ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.getAvslagEllerBortFall(), new AvslagEllerBortFall());
-        return AvslagEllerBortFall.builder()
+    private static AvslagEllerBortfallTo avslagEllerBortFallIfUnspecified(IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo ikkeOppholdstilatelseIkkeVilkaarIkkeVisum) {
+        AvslagEllerBortfallTo avslagEllerBortFall = nullcheckSetDefaultValue(ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.getAvslagEllerBortfall(), new AvslagEllerBortfallTo());
+        return AvslagEllerBortfallTo.builder()
                 .avslagGrunnlagOverig(nullcheckSetDefaultValue(avslagEllerBortFall.getAvslagGrunnlagOverig(), DEFAULT_FAMILE_KODE))
                 .avslagGrunnlagTillatelseGrunnlagEOS(nullcheckSetDefaultValue(avslagEllerBortFall.getAvslagOppholdstillatelseBehandletGrunnlagEOS(), DEFAULT_FAMILE_KODE))
                 .avslagOppholdsrettBehandlet(nullcheckSetDefaultValue(avslagEllerBortFall.getAvslagOppholdsrettBehandlet(), DEFAULT_FAMILE_KODE))
@@ -96,9 +98,9 @@ public class UdiStubDefaultPersonUtil {
                 .build();
     }
 
-    private static UtvistMedInnreiseForbud utvistMedInnreiseForbudIfUnspecified(IkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOppholdstilatelseIkkeVilkaarIkkeVisum) {
-        UtvistMedInnreiseForbud utvistMedInnreiseForbud = nullcheckSetDefaultValue(ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.getUtvistMedInnreiseForbud(), new UtvistMedInnreiseForbud());
-        return UtvistMedInnreiseForbud.builder()
+    private static UtvistMedInnreiseForbudTo utvistMedInnreiseForbudIfUnspecified(IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo ikkeOppholdstilatelseIkkeVilkaarIkkeVisum) {
+        UtvistMedInnreiseForbudTo utvistMedInnreiseForbud = nullcheckSetDefaultValue(ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.getUtvistMedInnreiseForbud(), new UtvistMedInnreiseForbudTo());
+        return UtvistMedInnreiseForbudTo.builder()
                 .innreiseForbud(nullcheckSetDefaultValue(utvistMedInnreiseForbud.getInnreiseForbud(), "JA"))
                 .innreiseForbudVedtaksDato(nullcheckSetDefaultValue(utvistMedInnreiseForbud.getInnreiseForbudVedtaksDato(), DEFAULT_DATE))
                 .varighet(nullcheckSetDefaultValue(utvistMedInnreiseForbud.getVarighet(), "ETT_AR"))

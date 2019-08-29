@@ -9,19 +9,6 @@ import static no.nav.dolly.sts.StsOidcService.getUserIdToken;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
@@ -36,14 +23,15 @@ import no.nav.dolly.properties.ProvidersProps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +43,6 @@ public class TpsfService {
     private static final String TPSF_OPPRETT_URL = "/personer";
     private static final String TPSF_SEND_TPS_FLERE_URL = "/tilTpsFlere";
     private static final String TPSF_HENT_PERSONER_URL = "/hentpersoner";
-    private static final String TPSF_HENT_PERSON_URL = "/personerdata";
     private static final String TPSF_CHECK_IDENT_STATUS = "/checkpersoner";
     private static final String TPSF_UPDATE_PERSON_URL = "/api/v1/testdata/updatepersoner";
 
@@ -103,23 +90,6 @@ public class TpsfService {
                 .header(AUTHORIZATION, getUserIdToken())
                 .body(singletonList(tpsfPerson)), Object.class);
     }
-
-    public Person hentPersonWithIdent(String ident) {
-        String uri = UriComponentsBuilder.fromHttpUrl(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_BASE_URL, TPSF_HENT_PERSON_URL))
-                .queryParam("identer", ident)
-                .build().toUriString();
-        try {
-            ResponseEntity<Object> response = restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<>(ident), Object.class);
-            Person[] personer = objectMapper.convertValue(response.getBody(), Person[].class);
-            if (personer != null && personer.length > 0) {
-                return personer[0];
-            }
-        } catch (Exception e) {
-            log.error("Tps-forvalteren sitt kall feilet mot url <{}> grunnet {}", uri, e.getMessage());
-        }
-        return null;
-    }
-
 
     private ResponseEntity<Object> postToTpsf(String addtionalUrl, HttpEntity request) {
         String url = format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_BASE_URL, addtionalUrl);

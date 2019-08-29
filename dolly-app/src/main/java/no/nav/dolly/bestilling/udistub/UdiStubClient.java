@@ -6,13 +6,10 @@ import static no.nav.dolly.bestilling.udistub.UdiStubDefaultPersonUtil.setPerson
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.domain.resultset.udistub.model.MangelfullDato;
-import no.nav.dolly.domain.resultset.udistub.model.Person;
-import no.nav.dolly.domain.resultset.udistub.model.PersonNavn;
+import no.nav.dolly.domain.resultset.udistub.model.PersonTo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +26,6 @@ public class UdiStubClient implements ClientRegister {
     @Autowired
     private MapperFacade mapperFacade;
 
-    @Autowired
-    private TpsfService tpsfService;
-
     @Override
     public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
@@ -43,10 +37,8 @@ public class UdiStubClient implements ClientRegister {
                 ResponseEntity<PersonControllerResponse> deleteResponse = udiStubConsumer.deleteUdiPerson(progress.getBestillingId(), fnr);
 
                 if (isOkStatus(deleteResponse)) {
-                    Person udiPerson = mapperFacade.map(bestilling.getUdistub(), Person.class);
-
-                    no.nav.dolly.domain.resultset.Person tpsfPerson = tpsfService.hentPersonWithIdent(fnr);
-                    insertFieldsFromTpsfPerson(udiPerson, tpsfPerson);
+                    PersonTo udiPerson = mapperFacade.map(bestilling.getUdistub(), PersonTo.class);
+                    udiPerson.setIdent(norskIdent.getIdent());
                     setPersonDefaultsIfUnspecified(udiPerson);
 
                     ResponseEntity<PersonControllerResponse> postResponse = udiStubConsumer.createUdiPerson(progress.getBestillingId(), udiPerson);
@@ -61,28 +53,6 @@ public class UdiStubClient implements ClientRegister {
         }
     }
 
-    private void insertFieldsFromTpsfPerson(Person udiPerson, no.nav.dolly.domain.resultset.Person tpsfPerson) {
-        PersonNavn tpsfPersonNavn = new PersonNavn(tpsfPerson.getFornavn(), null, tpsfPerson.getEtternavn());
-
-        udiPerson.setFnr(tpsfPerson.getIdent());
-        udiPerson.setNavn(tpsfPersonNavn);
-        udiPerson.getAliaser().forEach(alias ->
-        {
-            alias.setFnr(tpsfPerson.getIdent());
-            alias.setNavn(tpsfPersonNavn);
-        });
-        udiPerson.setFoedselsDato(extractFodselsDatoFromIdent(tpsfPerson.getIdent()));
-    }
-
-    private MangelfullDato extractFodselsDatoFromIdent(String ident) {
-        return new MangelfullDato(
-                Integer.valueOf(ident.substring(0, 2)),
-                Integer.valueOf(ident.substring(2, 4)),
-                Integer.valueOf(ident.substring(4, 6))
-        );
-    }
-
-
     private boolean isOkStatus(ResponseEntity<PersonControllerResponse> response) {
         return HttpStatus.OK == response.getStatusCode() ||
                 HttpStatus.CREATED == response.getStatusCode() ||
@@ -91,10 +61,10 @@ public class UdiStubClient implements ClientRegister {
 
     private static void appendOkStatus(StringBuilder status, ResponseEntity<PersonControllerResponse> postResponse) {
         if (postResponse.hasBody()) {
-            Person createdPerson = postResponse.getBody().getPerson();
+            PersonTo createdPerson = postResponse.getBody().getPerson();
             status.append(',')
-                    .append("fnr=")
-                    .append(createdPerson.getFnr())
+                    .append("ident=")
+                    .append(createdPerson.getIdent())
                     .append(postResponse.getStatusCode().getReasonPhrase());
         }
     }

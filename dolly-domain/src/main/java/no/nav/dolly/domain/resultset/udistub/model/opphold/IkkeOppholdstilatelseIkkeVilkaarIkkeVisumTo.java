@@ -6,17 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Date;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 @Builder
-public class UtvistMedInnreiseForbud {
+public class IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo {
 
-	private String innreiseForbud;
-
-	private Date innreiseForbudVedtaksDato;
-	private String varighet;
+    private UtvistMedInnreiseForbudTo utvistMedInnreiseForbud;
+    private AvslagEllerBortfallTo avslagEllerBortfall;
+    private String ovrigIkkeOppholdsKategoriArsak;
 }
