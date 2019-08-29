@@ -21,7 +21,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<bisys-ui-connect.version>0.6-SNAPSHOT</bisys-ui-connect.version>
+		<bisys-ui-connect.version>0.6</bisys-ui-connect.version>
 		<spring-boot-admin.version>2.0.2</spring-boot-admin.version>
 		<springfox.version>2.4.0</springfox.version>
 		<logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
