@@ -19,6 +19,7 @@ import no.rtv.namespacetps.StatsborgerType;
 import no.rtv.namespacetps.TelefonJobbType;
 import no.rtv.namespacetps.TelefonMobilType;
 import no.rtv.namespacetps.TelefonPrivatType;
+import no.rtv.namespacetps.TelefonType;
 import no.rtv.namespacetps.TilleggType;
 import no.rtv.namespacetps.TpsPersonDokumentType;
 
@@ -112,55 +113,70 @@ public class PersonDokumentUtility {
     }
 
     private static PersonIdentType extractPersonIdent(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getPersonIdent().get(0);
+        return (PersonIdentType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getPersonIdent());
     }
 
     private static PersonIdentStatusType extractPersonIdentStatus(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getPersonIdentstatus().get(0);
+        return (PersonIdentStatusType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getPersonIdentstatus());
     }
 
     private static PersonInfoType extractPersonInfoType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getPersonInfo().get(0);
+        return (PersonInfoType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getPersonInfo());
     }
 
     private static PersonStatusType extractPersonStatusType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getPersonStatus().get(0);
+        return (PersonStatusType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getPersonStatus());
     }
 
     private static NavnType extractNavnType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getNavn().get(0);
+        return (NavnType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getNavn());
     }
 
     private static SivilstandType extractSivilstandType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getSivilstand().get(0);
+        return (SivilstandType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getSivilstand());
     }
 
     private static StatsborgerType extractStatsborgerType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getStatsborger().get(0);
+        return (StatsborgerType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getStatsborger());
     }
 
     private static DodType extractDodType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getDod().get(0);
+        return (DodType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getDod());
     }
 
     private static TelefonPrivatType extractTelefonPrivatType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getTelefon().get(0).getTlfPrivat();
+        TelefonType telefonType = (TelefonType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getTelefon());
+        if (telefonType != null) {
+            return telefonType.getTlfPrivat();
+        } else {
+            return null;
+        }
     }
 
     private static TelefonJobbType extractTelefonJobbType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getTelefon().get(0).getTlfJobb();
+        TelefonType telefonType = (TelefonType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getTelefon());
+        if (telefonType != null) {
+            return telefonType.getTlfJobb();
+        } else {
+            return null;
+        }
     }
 
     private static TelefonMobilType extractTelefonmobilType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getTelefon().get(0).getTlfMobil();
+        TelefonType telefonType = (TelefonType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getTelefon());
+        if (telefonType != null) {
+            return telefonType.getTlfMobil();
+        } else {
+            return null;
+        }
     }
 
     private static BoadresseType extractBoadresseType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getBoadresse().get(0);
+        return (BoadresseType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getBoadresse());
     }
 
     private static PrioritertadresseType extractPrioritertadresseType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getPrioritertadresse().get(0);
+        return (PrioritertadresseType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getPrioritertadresse());
     }
 
     private static List<ForeldreansvarType> extractForeldreansvarType(TpsPersonDokumentType tpsPersonDokumentType) {
@@ -168,50 +184,69 @@ public class PersonDokumentUtility {
     }
 
     private static OppholdstillatelseType extractOppholdstillatelseType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getOppholdstillatelse().get(0);
+        return (OppholdstillatelseType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getOppholdstillatelse());
     }
 
     private static GironummerType extractGironummerType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getGironummer().get(0);
+        return (GironummerType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getGironummer());
     }
 
     private static TilleggType extractTilleggType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getTillegg().get(0);
+        return (TilleggType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getTillegg());
     }
 
     private static PostType extractPostType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getPost().get(0);
+        return (PostType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getPost());
     }
 
     private static MigrasjonType extractmigrasjonType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getMigrasjon().get(0);
+        return (MigrasjonType) extractIfNotEmpty(tpsPersonDokumentType.getPerson().getMigrasjon());
     }
 
     private static List<RelasjonType> extractRelasjonType(TpsPersonDokumentType tpsPersonDokumentType) {
         return tpsPersonDokumentType.getRelasjon();
     }
 
+    private static Object extractIfNotEmpty(List<?> list) {
+        if (!list.isEmpty()) {
+            return list.get(0);
+        } else {
+            return null;
+        }
+    }
+
     private static PersonIdent buildPersonident(PersonIdentType personIdentType, PersonIdentStatusType personIdentStatusType) {
-        return PersonIdent.builder()
-                .id(personIdentType.getPersonIdent().trim())
-                .type(personIdentType.getPersonIdenttype().trim())
-                .status(personIdentStatusType.getPersonIdentStatus().trim())
-                .fraDato(checkIfDateIsEmpty(personIdentType.getPersonIdentFraDato().trim()))
-                .tilDato(checkIfDateIsEmpty(personIdentType.getPersonIdentTilDato().trim()))
-                .build();
+        PersonIdent personIdent = PersonIdent.builder().build();
+        if (personIdentType != null) {
+            personIdent.setId(personIdentType.getPersonIdent().trim());
+            personIdent.setType(personIdentType.getPersonIdenttype().trim());
+            personIdent.setFraDato(checkIfDateIsEmpty(personIdentType.getPersonIdentFraDato().trim()));
+            personIdent.setTilDato(checkIfDateIsEmpty(personIdentType.getPersonIdentTilDato().trim()));
+        }
+        if (personIdentStatusType != null) {
+            personIdent.setStatus(personIdentStatusType.getPersonIdentStatus().trim());
+        }
+        return personIdent;
     }
 
     private static PersonInfo buildPersonInfo(PersonInfoType personInfoType, PersonStatusType personStatusType) {
-        return PersonInfo.builder()
-                .kjoenn(personInfoType.getPersonKjonn().trim())
-                .datoFoedt(checkIfDateIsEmpty(personInfoType.getPersonDatofodt().trim()))
-                .foedtLand(personInfoType.getPersonFodtLand().trim())
-                .foedtKommune(personInfoType.getPersonFodtKommune().trim())
-                .status(personStatusType.getPersonStatus().trim())
-                .build();
+        PersonInfo personInfo = PersonInfo.builder().build();
+        if (personInfoType != null) {
+            personInfo.setKjoenn(personInfoType.getPersonKjonn().trim());
+            personInfo.setDatoFoedt(checkIfDateIsEmpty(personInfoType.getPersonDatofodt().trim()));
+            personInfo.setFoedtLand(personInfoType.getPersonFodtLand().trim());
+            personInfo.setFoedtKommune(personInfoType.getPersonFodtKommune().trim());
+        }
+        if (personStatusType != null) {
+            personInfo.setStatus(personStatusType.getPersonStatus().trim());
+        }
+        return personInfo;
     }
 
     private static Navn buildNavn(NavnType navnType) {
+        if (navnType == null) {
+            return Navn.builder().build();
+        }
         return Navn.builder()
                 .forkortet(navnType.getForkortetNavn().trim())
                 .slektsnavn(navnType.getSlektsNavn().trim())
@@ -224,6 +259,9 @@ public class PersonDokumentUtility {
     }
 
     private static Sivilstand buildSivilstand(SivilstandType sivilstandType) {
+        if (sivilstandType == null) {
+            return Sivilstand.builder().build();
+        }
         return Sivilstand.builder()
                 .type(sivilstandType.getSivilstand().trim())
                 .fraDato(checkIfDateIsEmpty(sivilstandType.getSivilstandFraDato().trim()))
@@ -232,6 +270,9 @@ public class PersonDokumentUtility {
     }
 
     private static Statsborger buildStatsborger(StatsborgerType statsborgerType) {
+        if (statsborgerType == null) {
+            return Statsborger.builder().build();
+        }
         return Statsborger.builder()
                 .land(statsborgerType.getStatsborger().trim())
                 .fraDato(checkIfDateIsEmpty(statsborgerType.getStatsborgerFraDato().trim()))
@@ -240,6 +281,9 @@ public class PersonDokumentUtility {
     }
 
     private static Doedshistorikk buildDoedshistorikk(DodType dodType) {
+        if (dodType == null) {
+            return Doedshistorikk.builder().build();
+        }
         return Doedshistorikk.builder()
                 .dato(checkIfDateIsEmpty(dodType.getDatoDod().trim()))
                 .regDato(checkIfDateIsEmpty(dodType.getDodDatoReg().trim()))
@@ -247,6 +291,9 @@ public class PersonDokumentUtility {
     }
 
     private static TelefonPrivat buildTelefonPrivat(TelefonPrivatType telefonPrivatType) {
+        if (telefonPrivatType == null) {
+            return TelefonPrivat.builder().build();
+        }
         return TelefonPrivat.builder()
                 .retningslinje(telefonPrivatType.getTlfPrivatRetningslinje().trim())
                 .nummer(telefonPrivatType.getTlfPrivatNummer().trim())
@@ -256,6 +303,9 @@ public class PersonDokumentUtility {
     }
 
     private static TelefonJobb buildTelefonJobb(TelefonJobbType telefonJobbType) {
+        if (telefonJobbType == null) {
+            return TelefonJobb.builder().build();
+        }
         return TelefonJobb.builder()
                 .retningslinje(telefonJobbType.getTlfJobbRetningslinje().trim())
                 .nummer(telefonJobbType.getTlfJobbNummer().trim())
@@ -265,6 +315,9 @@ public class PersonDokumentUtility {
     }
 
     private static TelefonMobil buildTelefonMobil(TelefonMobilType telefonMobilType) {
+        if (telefonMobilType == null) {
+            return TelefonMobil.builder().build();
+        }
         return TelefonMobil.builder()
                 .retningslinje(telefonMobilType.getTlfMobilRetningslinje().trim())
                 .nummer(telefonMobilType.getTlfMobilNummer().trim())
@@ -274,6 +327,9 @@ public class PersonDokumentUtility {
     }
 
     private static Boadresse buildBoadresse(BoadresseType boadresseType) {
+        if (boadresseType == null) {
+            return Boadresse.builder().build();
+        }
         return Boadresse.builder()
                 .adresse(boadresseType.getBoAdresse().trim())
                 .land(boadresseType.getBoKodeLand().trim())
@@ -294,6 +350,9 @@ public class PersonDokumentUtility {
     }
 
     private static PrioritertAdresse buildPrioritertAdresse(PrioritertadresseType prioritertadresseType) {
+        if (prioritertadresseType == null) {
+            return PrioritertAdresse.builder().build();
+        }
         return PrioritertAdresse.builder()
                 .type(prioritertadresseType.getPrioritertAdresseType().trim())
                 .fraDato(checkIfDateIsEmpty(prioritertadresseType.getPrioritertAdresseFraDato().trim()))
@@ -302,6 +361,9 @@ public class PersonDokumentUtility {
     }
 
     private static Foreldreansvar buildForeldreansvar(ForeldreansvarType foreldreansvarType) {
+        if (foreldreansvarType == null) {
+            return Foreldreansvar.builder().build();
+        }
         return Foreldreansvar.builder()
                 .ident(foreldreansvarType.getForeldreAnsvar().trim())
                 .fraDato(checkIfDateIsEmpty(foreldreansvarType.getForeldreAnsvarFraDato().trim()))
@@ -310,6 +372,9 @@ public class PersonDokumentUtility {
     }
 
     private static Oppholdstillatelse buildOppholdstillatelse(OppholdstillatelseType oppholdstillatelseType) {
+        if (oppholdstillatelseType == null) {
+            return Oppholdstillatelse.builder().build();
+        }
         return Oppholdstillatelse.builder()
                 .status(oppholdstillatelseType.getOppholdsTillatelse().trim())
                 .fraDato(checkIfDateIsEmpty(oppholdstillatelseType.getOppholdsTillatelseFraDato().trim()))
@@ -318,6 +383,9 @@ public class PersonDokumentUtility {
     }
 
     private static Giro buildGiro(GironummerType gironummerType) {
+        if (gironummerType == null) {
+            return Giro.builder().build();
+        }
         return Giro.builder()
                 .nummer(gironummerType.getGironummer().trim())
                 .fraDato(checkIfDateIsEmpty(gironummerType.getGironummerFraDato().trim()))
@@ -326,6 +394,9 @@ public class PersonDokumentUtility {
     }
 
     private static Tillegg buildTillegg(TilleggType tilleggType) {
+        if (tilleggType == null) {
+            return Tillegg.builder().build();
+        }
         return Tillegg.builder()
                 .adresse1(tilleggType.getTilleggAdresse1().trim())
                 .adresse2(tilleggType.getTilleggAdresse2().trim())
@@ -346,6 +417,9 @@ public class PersonDokumentUtility {
     }
 
     private static Post buildPost(PostType postType) {
+        if (postType == null) {
+            return Post.builder().build();
+        }
         return Post.builder()
                 .adresse1(postType.getPostAdresse1().trim())
                 .adresse2(postType.getPostAdresse2().trim())
@@ -358,6 +432,9 @@ public class PersonDokumentUtility {
     }
 
     private static Migrasjon buildMigrasjon(MigrasjonType migrasjonType) {
+        if (migrasjonType == null) {
+            return Migrasjon.builder().build();
+        }
         return Migrasjon.builder()
                 .type(migrasjonType.getMigrasjon().trim())
                 .land(migrasjonType.getMigrasjonLand().trim())
@@ -367,6 +444,9 @@ public class PersonDokumentUtility {
     }
 
     private static Relasjon buildRelasjon(RelasjonType relasjonType) {
+        if (relasjonType == null) {
+            return Relasjon.builder().build();
+        }
         return Relasjon.builder()
                 .ident(relasjonType.getRelasjonIdent().trim())
                 .type(relasjonType.getRelasjonIdentType().trim())
