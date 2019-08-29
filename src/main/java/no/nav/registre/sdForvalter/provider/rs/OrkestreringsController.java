@@ -22,7 +22,6 @@ public class OrkestreringsController {
 
     private final EnvironmentInitializationService environmentInitializationService;
 
-
     @ApiOperation(
             value = "Initialiserer alle dataene som er tilgjengelig i forvalteren sin database i et gitt miljø. Endepunktet spiller også av SKD-mantall gruppen og eventuelt legger til nye identer",
             consumes = "TPSF, Testnorge-SKD, Testnorge-aaregstub, Krr-stub, Testnorge-tp, Testnorge-SAM"

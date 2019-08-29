@@ -1,5 +1,6 @@
 package no.nav.registre.sdForvalter.database.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.List;
 
@@ -41,6 +44,11 @@ public class TpsModel extends AuditModel implements CreatableFromString {
     private String postNr;
     @JsonProperty("by")
     private String city;
+
+    @JsonBackReference(value = "tps")
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     @Override
     public void updateFromString(List<String> input, List<String> headers) {

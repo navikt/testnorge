@@ -1,5 +1,6 @@
 package no.nav.registre.sdForvalter.database.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.List;
 
@@ -36,6 +39,12 @@ public class KrrModel extends AuditModel implements CreatableFromString {
     private boolean sdp;
     private boolean emailValid;
     private boolean smsValid;
+
+
+    @JsonBackReference(value = "krr")
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     @Override
     public void updateFromString(List<String> input, List<String> headers) {

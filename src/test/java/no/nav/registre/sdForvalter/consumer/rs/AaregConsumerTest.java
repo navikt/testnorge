@@ -10,6 +10,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +26,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
+import no.nav.registre.sdForvalter.database.model.Team;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -38,6 +40,10 @@ import no.nav.registre.sdForvalter.database.model.AaregModel;
 public class AaregConsumerTest {
 
     private final String environment = "t1";
+    private final Team eier = new Team(
+            1L, "test@nav.no", "#team_zynt", "synt", Collections.emptySet(),
+            Collections.emptySet(), Collections.emptySet(), Collections.emptySet()
+    );
 
     @Autowired
     private AaregConsumer aaregConsumer;
@@ -46,7 +52,7 @@ public class AaregConsumerTest {
     public void sendGyldigeTilAdapter() {
 
         Set<AaregModel> data = new HashSet<>();
-        data.add(new AaregModel("123", 345L));
+        data.add(new AaregModel("123", 345L, eier));
 
         stubAareg();
 
@@ -87,7 +93,7 @@ public class AaregConsumerTest {
     @Test
     public void sendNoeFeil() {
         Set<AaregModel> data = new HashSet<>();
-        data.add(new AaregModel("123", 0));
+        data.add(new AaregModel("123", 0, eier));
 
         stubFeilAareg();
         Map<String, String> statusMap = aaregConsumer.send(data, environment);

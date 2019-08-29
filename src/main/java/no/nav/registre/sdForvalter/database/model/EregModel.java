@@ -1,5 +1,6 @@
 package no.nav.registre.sdForvalter.database.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,8 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -49,6 +52,11 @@ public class EregModel extends AuditModel {
     private String naeringskode;
 
     private String parent;
+
+    @JsonBackReference(value = "ereg")
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     @Embedded
     @AttributeOverrides({

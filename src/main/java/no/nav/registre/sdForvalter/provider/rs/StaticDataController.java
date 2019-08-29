@@ -17,7 +17,10 @@ import java.util.Set;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
+import no.nav.registre.sdForvalter.database.model.Team;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
+import no.nav.registre.sdForvalter.provider.rs.request.AaregRequest;
+import no.nav.registre.sdForvalter.provider.rs.request.TpsRequest;
 import no.nav.registre.sdForvalter.service.StaticDataService;
 
 //TODO: Fix database update and create complex heriarcy
@@ -29,6 +32,15 @@ public class StaticDataController {
 
     private final StaticDataService staticDataService;
 
+    @GetMapping("/team")
+    public ResponseEntity<Set<Team>> getTeams() {
+        return ResponseEntity.ok(staticDataService.getAllTeams());
+    }
+
+    @PostMapping("/team")
+    public ResponseEntity<Team> saveTeam(@RequestBody Team team) {
+        return ResponseEntity.ok(staticDataService.saveTeam(team));
+    }
 
     @GetMapping(value = "/tps")
     public ResponseEntity<Set<TpsModel>> getTpsStaticData() {
@@ -54,13 +66,13 @@ public class StaticDataController {
 
 
     @PostMapping(value = "/tps")
-    public ResponseEntity storeStaticDataInTps(@Valid @RequestBody Set<TpsModel> data) {
+    public ResponseEntity storeStaticDataInTps(@RequestBody Set<TpsRequest> data) {
         return ResponseEntity.ok(staticDataService.saveInTps(data));
     }
 
 
-    @PostMapping(value = "/aargg")
-    public ResponseEntity storeStaticDataInAaareg(@Valid @RequestBody Set<AaregModel> data) {
+    @PostMapping(value = "/aareg")
+    public ResponseEntity storeStaticDataInAaareg(@Valid @RequestBody Set<AaregRequest> data) {
         return ResponseEntity.ok(staticDataService.saveInAareg(data));
     }
 

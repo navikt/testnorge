@@ -9,6 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ import no.nav.registre.sdForvalter.consumer.rs.SamConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.SkdConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.TpConsumer;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
+import no.nav.registre.sdForvalter.database.model.Team;
 import no.nav.registre.sdForvalter.database.repository.AaregRepository;
 import no.nav.registre.sdForvalter.database.repository.EregRepository;
 import no.nav.registre.sdForvalter.database.repository.KrrRepository;
@@ -76,6 +78,11 @@ public class EnvironmentInitializationServiceTest {
     @InjectMocks
     private EnvironmentInitializationService environmentInitializationService;
 
+    private final Team eier = new Team(
+            1L, "test@nav.no", "#team_zynt", "synt", Collections.emptySet(),
+            Collections.emptySet(), Collections.emptySet(), Collections.emptySet()
+    );
+
     @Test
     public void initializeEnvironmentWithStaticData() {
     }
@@ -97,10 +104,10 @@ public class EnvironmentInitializationServiceTest {
         when(aaregConsumer.finnPersonerUtenArbeidsforhold(input, ENV)).thenReturn(result);
 
         Set<AaregModel> expectedInput = new HashSet<>();
-        expectedInput.add(new AaregModel("123", 0));
+        expectedInput.add(new AaregModel("123", 0, eier));
 
         ArrayList<AaregModel> repoOut = new ArrayList<>(expectedInput);
-        repoOut.add(new AaregModel("456", 1));
+        repoOut.add(new AaregModel("456", 1, eier));
 
         when(aaregRepository.findAll()).thenReturn(repoOut);
 
