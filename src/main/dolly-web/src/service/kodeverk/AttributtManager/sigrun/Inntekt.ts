@@ -24,7 +24,7 @@ const AttributtListe: Attributt[] = [
 				editPath: 'tjeneste',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Select,
-				options: SelectOptionsManager('inntektTjeneste'),
+				options: SelectOptionsManager('tjeneste'),
 				validation: yup.string().required('Velg en type tjeneste.'),
 				attributtType: AttributtType.SelectAndRead
 			},
@@ -37,7 +37,8 @@ const AttributtListe: Attributt[] = [
 				editPath: 'grunnlag',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Select,
-				size: 'large',
+				size: 'xlarge',
+				hoydeOptions: 'medium',
 				dependentOn: 'tjeneste',
 				validation: yup.string().required('Velg en type inntekt.'),
 				attributtType: AttributtType.SelectAndRead
