@@ -8,6 +8,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
+import java.sql.Date;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -24,6 +26,7 @@ import no.nav.registre.sdForvalter.consumer.rs.SkdConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.TpConsumer;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.Team;
+import no.nav.registre.sdForvalter.database.model.Varighet;
 import no.nav.registre.sdForvalter.database.repository.AaregRepository;
 import no.nav.registre.sdForvalter.database.repository.EregRepository;
 import no.nav.registre.sdForvalter.database.repository.KrrRepository;
@@ -80,8 +83,15 @@ public class EnvironmentInitializationServiceTest {
 
     private final Team eier = new Team(
             1L, "test@nav.no", "#team_zynt", "synt", Collections.emptySet(),
-            Collections.emptySet(), Collections.emptySet(), Collections.emptySet()
+            Collections.emptySet(), Collections.emptySet(), Collections.emptySet(),
+            Collections.emptySet()
     );
+
+    private final Varighet varighet = new Varighet(
+            1L,
+            Period.of(1, 0, 0), Date.valueOf("2019-04-03"), eier,
+            Collections.emptySet(), Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
+
 
     @Test
     public void initializeEnvironmentWithStaticData() {
@@ -104,10 +114,10 @@ public class EnvironmentInitializationServiceTest {
         when(aaregConsumer.finnPersonerUtenArbeidsforhold(input, ENV)).thenReturn(result);
 
         Set<AaregModel> expectedInput = new HashSet<>();
-        expectedInput.add(new AaregModel("123", 0, eier));
+        expectedInput.add(new AaregModel("123", 0, eier, varighet));
 
         ArrayList<AaregModel> repoOut = new ArrayList<>(expectedInput);
-        repoOut.add(new AaregModel("456", 1, eier));
+        repoOut.add(new AaregModel("456", 1, eier, varighet));
 
         when(aaregRepository.findAll()).thenReturn(repoOut);
 

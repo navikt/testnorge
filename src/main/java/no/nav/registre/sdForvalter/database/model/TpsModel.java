@@ -50,6 +50,11 @@ public class TpsModel extends AuditModel implements CreatableFromString {
     @JoinColumn(name = "team_id")
     private Team team;
 
+    @JsonBackReference(value = "tps-varighet")
+    @ManyToOne
+    @JoinColumn(name = "varighet_id")
+    private Varighet varighet;
+
     @Override
     public void updateFromString(List<String> input, List<String> headers) {
 

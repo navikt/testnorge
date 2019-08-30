@@ -40,11 +40,15 @@ public class KrrModel extends AuditModel implements CreatableFromString {
     private boolean emailValid;
     private boolean smsValid;
 
-
     @JsonBackReference(value = "krr")
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
+
+    @JsonBackReference(value = "krr-varighet")
+    @ManyToOne
+    @JoinColumn(name = "varighet_id")
+    private Varighet varighet;
 
     @Override
     public void updateFromString(List<String> input, List<String> headers) {

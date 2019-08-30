@@ -10,6 +10,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
+import java.sql.Date;
+import java.time.Period;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,6 +29,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.Team;
+import no.nav.registre.sdForvalter.database.model.Varighet;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -42,8 +45,14 @@ public class AaregConsumerTest {
     private final String environment = "t1";
     private final Team eier = new Team(
             1L, "test@nav.no", "#team_zynt", "synt", Collections.emptySet(),
-            Collections.emptySet(), Collections.emptySet(), Collections.emptySet()
+            Collections.emptySet(), Collections.emptySet(), Collections.emptySet(),
+            Collections.emptySet()
     );
+
+    private final Varighet varighet = new Varighet(
+            1L,
+            Period.of(1, 0, 0), Date.valueOf("2019-04-03"), eier,
+            Collections.emptySet(), Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
 
     @Autowired
     private AaregConsumer aaregConsumer;
@@ -52,7 +61,7 @@ public class AaregConsumerTest {
     public void sendGyldigeTilAdapter() {
 
         Set<AaregModel> data = new HashSet<>();
-        data.add(new AaregModel("123", 345L, eier));
+        data.add(new AaregModel("123", 345L, eier, varighet));
 
         stubAareg();
 
@@ -93,7 +102,7 @@ public class AaregConsumerTest {
     @Test
     public void sendNoeFeil() {
         Set<AaregModel> data = new HashSet<>();
-        data.add(new AaregModel("123", 0, eier));
+        data.add(new AaregModel("123", 0, eier, varighet));
 
         stubFeilAareg();
         Map<String, String> statusMap = aaregConsumer.send(data, environment);

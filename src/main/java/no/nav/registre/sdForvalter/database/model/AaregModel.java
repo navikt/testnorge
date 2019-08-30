@@ -42,6 +42,11 @@ public class AaregModel extends AuditModel implements CreatableFromString {
     @JoinColumn(name = "team_id")
     private Team team;
 
+    @JsonBackReference(value = "aareg-varighet")
+    @ManyToOne
+    @JoinColumn(name = "varighet_id")
+    private Varighet varighet;
+
     @Override
     public void updateFromString(List<String> input, List<String> headers) {
 

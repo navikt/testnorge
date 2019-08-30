@@ -58,6 +58,11 @@ public class EregModel extends AuditModel {
     @JoinColumn(name = "team_id")
     private Team team;
 
+    @JsonBackReference(value = "ereg-varighet")
+    @ManyToOne
+    @JoinColumn(name = "varighet_id")
+    private Varighet varighet;
+
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "adresse", column = @Column(name = "forretnings_adresse")),

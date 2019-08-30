@@ -3,9 +3,14 @@ package no.nav.registre.sdForvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
+import java.sql.Date;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -17,11 +22,13 @@ import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.model.Team;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
+import no.nav.registre.sdForvalter.database.model.Varighet;
 import no.nav.registre.sdForvalter.database.repository.AaregRepository;
 import no.nav.registre.sdForvalter.database.repository.EregRepository;
 import no.nav.registre.sdForvalter.database.repository.KrrRepository;
 import no.nav.registre.sdForvalter.database.repository.TeamRepository;
 import no.nav.registre.sdForvalter.database.repository.TpsRepository;
+import no.nav.registre.sdForvalter.database.repository.VarighetRepository;
 import no.nav.registre.sdForvalter.provider.rs.request.AaregRequest;
 import no.nav.registre.sdForvalter.provider.rs.request.TpsRequest;
 
@@ -35,6 +42,7 @@ public class StaticDataService {
     private final KrrRepository krrRepository;
     private final EregRepository eregRepository;
     private final TeamRepository teamRepository;
+    private final VarighetRepository varighetRepository;
 
     @Value("${tps.statisk.avspillergruppeId}")
     private Long playgroupStaticData;
@@ -65,16 +73,28 @@ public class StaticDataService {
     }
 
     public Set<AaregModel> saveInAareg(Set<AaregRequest> data) {
-        Set<AaregModel> reduced = data.stream()
-                .filter(t -> !aaregRepository.findById(t.getFnr()).isPresent())
-                .peek(t -> teamRepository.findByNavn(t.getEier()).ifPresent(t::setTeam))
-                .map(t -> new AaregModel(
-                        t.getFnr(),
-                        t.getOrgId(),
-                        t.getTeam()
-                ))
+        Varighet.VarighetBuilder varighetBuilder = Varighet.builder()
+                .bestilt(new Date(Calendar.getInstance().getTime().getTime()))
+                .ttl(Period.of(1, 0, 0));
+        return data.stream()
+                .filter(aaregRequest -> !aaregRepository.findById(aaregRequest.getFnr()).isPresent())
+                .peek(aaregRequest -> teamRepository.findByNavn(aaregRequest.getEier()).ifPresent(team -> {
+                    aaregRequest.setTeam(team);
+                    Varighet varighet = varighetRepository.save(
+                            varighetBuilder
+                                    .team(team)
+                                    .build()
+                    );
+                    team.getVarigheter().add(varighet);
+                    teamRepository.save(team);
+                    aaregRepository.save(new AaregModel(
+                            aaregRequest.getFnr(),
+                            aaregRequest.getOrgId(),
+                            aaregRequest.getTeam(),
+                            varighet
+                    ));
+                }))
                 .collect(Collectors.toSet());
-        return new HashSet<>((Collection<? extends AaregModel>) aaregRepository.saveAll(reduced));
     }
 
     public List<EregModel> saveInEreg(List<EregModel> data) {
@@ -96,5 +116,9 @@ public class StaticDataService {
 
     public List<String> deleteEreg(List<String> data) {
         return data.stream().map(eregRepository::deleteByOrgnr).map(EregModel::getOrgnr).collect(Collectors.toList());
+    }
+
+    public Team getTeam(String name) {
+        return teamRepository.findByNavn(name).orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Ingen team med dette navnet"));
     }
 }

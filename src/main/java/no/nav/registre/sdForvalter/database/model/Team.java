@@ -53,4 +53,8 @@ public class Team {
     @JsonManagedReference(value = "ereg")
     @OneToMany(mappedBy = "team")
     private Collection<EregModel> ereg;
+
+    @JsonManagedReference(value = "team-varigheter")
+    @OneToMany(mappedBy = "team")
+    private Collection<Varighet> varigheter;
 }
