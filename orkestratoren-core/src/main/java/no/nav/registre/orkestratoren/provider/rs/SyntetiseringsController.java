@@ -30,7 +30,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
-import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
+import no.nav.registre.orkestratoren.service.InntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
@@ -50,7 +50,7 @@ public class SyntetiseringsController {
     private TpsSyntPakkenService tpsSyntPakkenService;
 
     @Autowired
-    private ArenaInntektSyntPakkenService arenaInntektSyntPakkenService;
+    private InntektSyntPakkenService inntektSyntPakkenService;
 
     @Autowired
     private EiaSyntPakkenService eiaSyntPakkenService;
@@ -94,10 +94,10 @@ public class SyntetiseringsController {
     }
 
     @LogExceptions
-    @PostMapping(value = "/arena/inntekt/generer")
+    @PostMapping(value = "/inntekt/generer")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public String opprettSyntetiskInntektsmeldingIInntektstub(@RequestBody SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
-        return arenaInntektSyntPakkenService.genererInntektsmeldinger(syntetiserInntektsmeldingRequest);
+        return inntektSyntPakkenService.genererInntektsmeldinger(syntetiserInntektsmeldingRequest);
     }
 
     @LogExceptions

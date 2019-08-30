@@ -23,7 +23,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
-import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
+import no.nav.registre.orkestratoren.service.InntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
@@ -40,7 +40,7 @@ public class SyntetiseringsControllerTest {
     private TpsSyntPakkenService tpsSyntPakkenService;
 
     @Mock
-    private ArenaInntektSyntPakkenService arenaInntektSyntPakkenService;
+    private InntektSyntPakkenService inntektSyntPakkenService;
 
     @Mock
     private EiaSyntPakkenService eiaSyntPakkenService;
@@ -110,7 +110,7 @@ public class SyntetiseringsControllerTest {
 
     /**
      * Scenario: HVIS syntetiseringskontrolleren får et request om å opprette inntektsmeldinger, skal metoden kalle på
-     * {@link ArenaInntektSyntPakkenService#genererInntektsmeldinger}
+     * {@link InntektSyntPakkenService#genererInntektsmeldinger}
      */
     @Test
     public void shouldProduceInntektsmeldinger() {
@@ -118,7 +118,7 @@ public class SyntetiseringsControllerTest {
 
         syntetiseringsController.opprettSyntetiskInntektsmeldingIInntektstub(syntetiserInntektsmeldingRequest);
 
-        verify(arenaInntektSyntPakkenService).genererInntektsmeldinger(syntetiserInntektsmeldingRequest);
+        verify(inntektSyntPakkenService).genererInntektsmeldinger(syntetiserInntektsmeldingRequest);
     }
 
     /**

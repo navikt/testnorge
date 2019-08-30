@@ -15,7 +15,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeld
 
 @Slf4j
 @Component
-public class ArenaInntektSyntConsumer {
+public class InntektSyntConsumer {
 
     private static final ParameterizedTypeReference<String> RESPONSE_TYPE = new ParameterizedTypeReference<String>() {
     };
@@ -25,11 +25,11 @@ public class ArenaInntektSyntConsumer {
 
     private UriTemplate url;
 
-    public ArenaInntektSyntConsumer(@Value("${testnorge-arena-inntekt.rest-api.url}") String arenaInntektServerUrl) {
-        this.url = new UriTemplate(arenaInntektServerUrl + "/v1/syntetisering/generer");
+    public InntektSyntConsumer(@Value("${inntekt.rest.api.url}") String inntektServerUrl) {
+        this.url = new UriTemplate(inntektServerUrl + "/v1/syntetisering/generer");
     }
 
-    @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena-inntekt" })
+    @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "inntekt" })
     public String startSyntetisering(SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserInntektsmeldingRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();

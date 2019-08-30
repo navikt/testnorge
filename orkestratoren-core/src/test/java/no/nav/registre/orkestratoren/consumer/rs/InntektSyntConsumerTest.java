@@ -22,10 +22,10 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeld
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @ActiveProfiles("test")
-public class ArenaInntektSyntConsumerTest {
+public class InntektSyntConsumerTest {
 
     @Autowired
-    private ArenaInntektSyntConsumer arenaInntektSyntConsumer;
+    private InntektSyntConsumer inntektSyntConsumer;
 
     private long gruppeId = 10L;
     private String expectedId = "1234";
@@ -37,20 +37,20 @@ public class ArenaInntektSyntConsumerTest {
     }
 
     /**
-     * Scenario: Tester happypath til {@link ArenaInntektSyntConsumer#startSyntetisering} - forventer at metoden returnerer id-en
-     * gitt av arena-inntekt. Forventer at metoden kaller Testnorge-Arena-Inntekt med de rette parametrene (se stub)
+     * Scenario: Tester happypath til {@link InntektSyntConsumer#startSyntetisering} - forventer at metoden returnerer id-en
+     * gitt av inntekt. Forventer at metoden kaller Testnorge-Inntekt med de rette parametrene (se stub)
      */
     @Test
     public void shouldStartSyntetisering() {
-        stubArenaInntektConsumer();
+        stubInntektConsumer();
 
-        String id = arenaInntektSyntConsumer.startSyntetisering(syntetiserInntektsmeldingRequest);
+        String id = inntektSyntConsumer.startSyntetisering(syntetiserInntektsmeldingRequest);
 
         assertEquals(expectedId, id);
     }
 
-    private void stubArenaInntektConsumer() {
-        stubFor(post(urlPathEqualTo("/arenainntekt/api/v1/syntetisering/generer"))
+    private void stubInntektConsumer() {
+        stubFor(post(urlPathEqualTo("/inntekt/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson(
                         "{\"avspillergruppeId\":" + gruppeId + "}"))
                 .willReturn(ok()

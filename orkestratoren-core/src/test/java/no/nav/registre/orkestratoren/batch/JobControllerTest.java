@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
-import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
+import no.nav.registre.orkestratoren.service.InntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
@@ -41,7 +41,7 @@ public class JobControllerTest {
     private TpsSyntPakkenService tpsSyntPakkenService;
 
     @Mock
-    private ArenaInntektSyntPakkenService arenaInntektSyntPakkenService;
+    private InntektSyntPakkenService inntektSyntPakkenService;
 
     @Mock
     private EiaSyntPakkenService eiaSyntPakkenService;
@@ -108,9 +108,9 @@ public class JobControllerTest {
     }
 
     @Test
-    public void shouldStartArenaInntektBatch() {
-        jobController.arenaInntektSyntBatch();
-        verify(arenaInntektSyntPakkenService).genererInntektsmeldinger(any());
+    public void shouldStartInntektBatch() {
+        jobController.inntektSyntBatch();
+        verify(inntektSyntPakkenService).genererInntektsmeldinger(any());
     }
 
     @Test

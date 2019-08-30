@@ -33,8 +33,6 @@ fasitResources:
       resourceType: restservice
     - alias: "testnorge-nav-endringsmeldinger.rest-api"
       resourceType: restservice
-    - alias: "testnorge-arena-inntekt.rest-api"
-      resourceType: restservice
     - alias: "eias-emottakstub.rest-api"
       resourceType: restservice
     - alias: "testnorge-aareg.rest-api"

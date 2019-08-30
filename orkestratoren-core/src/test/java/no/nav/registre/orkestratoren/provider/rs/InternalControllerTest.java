@@ -33,7 +33,7 @@ public class InternalControllerTest {
     @Test
     public void shouldReturnNotReady() {
         this.server.expect(requestTo("https://dummyUrl.skd/internal/isReady")).andRespond(withServerError());
-        this.server.expect(requestTo("https://dummyUrl.arena.inntekt/internal/isReady")).andRespond(withSuccess());
+        this.server.expect(requestTo("https://dummyUrl.inntekt/internal/isReady")).andRespond(withSuccess());
         this.server.expect(requestTo("https://dummyUrl.aareg/internal/isReady")).andRespond(withServerError());
         this.server.expect(requestTo("https://dummyUrl.eia/internal/isReady")).andRespond(withSuccess());
         this.server.expect(requestTo("https://dummyUrl.sigrun/internal/isReady")).andRespond(withSuccess());
@@ -52,7 +52,7 @@ public class InternalControllerTest {
     @Test
     public void shouldReturnReady() {
         this.server.expect(requestTo("https://dummyUrl.skd/internal/isReady")).andRespond(withSuccess());
-        this.server.expect(requestTo("https://dummyUrl.arena.inntekt/internal/isReady")).andRespond(withSuccess());
+        this.server.expect(requestTo("https://dummyUrl.inntekt/internal/isReady")).andRespond(withSuccess());
         this.server.expect(requestTo("https://dummyUrl.aareg/internal/isReady")).andRespond(withSuccess());
         this.server.expect(requestTo("https://dummyUrl.eia/internal/isReady")).andRespond(withSuccess());
         this.server.expect(requestTo("https://dummyUrl.sigrun/internal/isReady")).andRespond(withSuccess());

@@ -22,7 +22,7 @@ import java.util.List;
 public class InternalController {
 
     private String testnorgeSkdIsReadyUrl;
-    private String testnorgeArenaInntektIsReadyUrl;
+    private String testnorgeInntektIsReadyUrl;
     private String testnorgeAaregIsReadyUrl;
     private String eiasEmottakstubIsReadyUrl;
     private String testnorgeSigrunIsReadyUrl;
@@ -32,7 +32,7 @@ public class InternalController {
 
     public InternalController(RestTemplateBuilder restTemplateBuilder,
             @Value("${testnorge-skd.rest-api.url}") String testnorgeSkdBaseUrl,
-            @Value("${testnorge-arena-inntekt.rest-api.url}") String testnorgeArenaInntektBaseUrl,
+            @Value("${inntekt.rest.api.url}") String testnorgeInntektBaseUrl,
             @Value("${testnorge-aareg.rest-api.url}") String testnorgeAaregBaseUrl,
             @Value("${eias-emottakstub.rest-api.url}") String eiasEmottakstubBaseUrl,
             @Value("${testnorge-sigrun.rest-api.url}") String testnorgeSigrunBaseUrl,
@@ -40,7 +40,7 @@ public class InternalController {
     ) throws MalformedURLException {
         this.restTemplate = restTemplateBuilder.build();
         this.testnorgeSkdIsReadyUrl = createIsReadyUrl(testnorgeSkdBaseUrl);
-        this.testnorgeArenaInntektIsReadyUrl = createIsReadyUrl(testnorgeArenaInntektBaseUrl);
+        this.testnorgeInntektIsReadyUrl = createIsReadyUrl(testnorgeInntektBaseUrl);
         this.testnorgeAaregIsReadyUrl = createIsReadyUrl(testnorgeAaregBaseUrl);
         this.eiasEmottakstubIsReadyUrl = createIsReadyUrl(eiasEmottakstubBaseUrl);
         this.testnorgeSigrunIsReadyUrl = createIsReadyUrl(testnorgeSigrunBaseUrl);
@@ -57,7 +57,7 @@ public class InternalController {
         List<String> nonAvailableResources = new ArrayList<>();
 
         checkReadiness(testnorgeSkdIsReadyUrl, nonAvailableResources);
-        checkReadiness(testnorgeArenaInntektIsReadyUrl, nonAvailableResources);
+        checkReadiness(testnorgeInntektIsReadyUrl, nonAvailableResources);
         checkReadiness(testnorgeAaregIsReadyUrl, nonAvailableResources);
         checkReadiness(eiasEmottakstubIsReadyUrl, nonAvailableResources);
         checkReadiness(testnorgeSigrunIsReadyUrl, nonAvailableResources);

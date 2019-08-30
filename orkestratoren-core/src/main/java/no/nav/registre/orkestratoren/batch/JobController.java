@@ -26,7 +26,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
-import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
+import no.nav.registre.orkestratoren.service.InntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
@@ -92,7 +92,7 @@ public class JobController {
     private TpsSyntPakkenService tpsSyntPakkenService;
 
     @Autowired
-    private ArenaInntektSyntPakkenService arenaInntektSyntPakkenService;
+    private InntektSyntPakkenService inntektSyntPakkenService;
 
     @Autowired
     private EiaSyntPakkenService eiaSyntPakkenService;
@@ -145,10 +145,10 @@ public class JobController {
     }
 
     @Scheduled(cron = "0 0 1 1 * *")
-    public void arenaInntektSyntBatch() {
+    public void inntektSyntBatch() {
         SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(inntektbatchAvspillergruppeId);
-        String arenaInntektId = arenaInntektSyntPakkenService.genererInntektsmeldinger(request);
-        log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger og mottat id {}.", arenaInntektId);
+        String inntektId = inntektSyntPakkenService.genererInntektsmeldinger(request);
+        log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger og mottat id {}.", inntektId);
     }
 
     public void eiaSyntBatch() {
