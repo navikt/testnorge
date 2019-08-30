@@ -23,3 +23,6 @@ SYNTBISYS_PASSWORD: Sjalabais8
 
 syntrest.rest.api.url: http://localhost:${wiremock.server.port}/synthdata-bisys/api
 testnorge-hodejegeren.rest-api.url: http://localhost:${wiremock.server.port}/hodejegeren/api
+
+INNTEKT_BM_EGNE_OPPLYSNINGER: 400000
+INNTEKT_BP_EGNE_OPPLYSNINGER: 700000

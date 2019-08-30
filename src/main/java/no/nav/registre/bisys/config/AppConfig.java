@@ -3,12 +3,14 @@ package no.nav.registre.bisys.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.client.RestTemplate;
+
 import no.nav.registre.bisys.consumer.rs.BisysSyntetisererenConsumer;
-import no.nav.registre.bisys.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.bisys.consumer.rs.request.BisysRequestAugments;
 import no.nav.registre.bisys.consumer.ui.BisysUiSupport;
 import no.nav.registre.bisys.consumer.ui.modules.BisysUiFatteVedtakConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Configuration
 public class AppConfig {
@@ -38,7 +40,7 @@ public class AppConfig {
     String enhet;
 
     @Value("${testnorge-hodejegeren.rest-api.url}")
-    String hodejegerenServerUrl;
+    String hodejegerenUrl;
 
     @Value("${BOFORHOLD_ANDEL_FORSORGING}")
     String boforholdAndelForsorging;
@@ -51,6 +53,12 @@ public class AppConfig {
 
     @Value("${FATTE_VEDTAK_GEBYR_BESLAARSAK_KODE_FRITATT_IKKE_SOKT}")
     boolean fatteVedtakGebyrBeslAarsakKodeFritattIkkeSokt;
+
+    @Value("${INNTEKT_BM_EGNE_OPPLYSNINGER:0}")
+    private int inntektBmEgneOpplysninger;
+
+    @Value("${INNTEKT_BP_EGNE_OPPLYSNINGER:0}")
+    private int inntektBpEgneOpplysninger;
 
     @Bean
     public RestTemplate restTemplate() {
@@ -77,11 +85,12 @@ public class AppConfig {
 
         return new BisysRequestAugments(boforholdAndelForsorging, boforholdBarnRegistrertPaaAdresse,
                 bidragsberegningKodeVirkAarsak, bidragsberegningSamvarsklasse,
-                fatteVedtakGebyrBeslAarsakKode);
+                fatteVedtakGebyrBeslAarsakKode, inntektBmEgneOpplysninger, inntektBpEgneOpplysninger);
     }
 
     @Bean
+    @DependsOn("restTemplate")
     public HodejegerenConsumer hodejegerenConsumer() {
-        return new HodejegerenConsumer(hodejegerenServerUrl);
+        return new HodejegerenConsumer(hodejegerenUrl, restTemplate());
     }
 }

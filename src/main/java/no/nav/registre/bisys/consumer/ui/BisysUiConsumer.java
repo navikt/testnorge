@@ -1,8 +1,9 @@
 package no.nav.registre.bisys.consumer.ui;
 
-import java.util.List;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import lombok.extern.slf4j.Slf4j;
 import no.nav.bidrag.ui.bisys.BisysApplication;
 import no.nav.bidrag.ui.dto.SynthesizedBidragRequest;
@@ -13,6 +14,7 @@ import no.nav.registre.bisys.consumer.ui.modules.BisysUiFatteVedtakConsumer;
 import no.nav.registre.bisys.consumer.ui.modules.BisysUiSoknadConsumer;
 
 @Slf4j
+@Component
 public class BisysUiConsumer {
 
     public static final String INCORRECT_ENTRY_PAGE = "Incorrect entry page";
@@ -33,33 +35,21 @@ public class BisysUiConsumer {
 
     private TestnorgeToBisysMapper testnorgeToBisysMapper = Mappers.getMapper(TestnorgeToBisysMapper.class);
 
-    public void createVedtak(List<SyntetisertBidragsmelding> bidragsmeldinger)
+    public void createVedtak(SyntetisertBidragsmelding bidragsmelding)
             throws BidragRequestProcessingException {
 
         BisysApplication bisys = null;
 
-        if (bidragsmeldinger != null && bidragsmeldinger.size() > 0) {
+        if (bidragsmelding != null) {
             bisys = navigationSupport.logon();
         }
 
-        for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
+        SynthesizedBidragRequest request = testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding, bisysRequestAugments);
+        log.info("Processing SyntetisertBidragsmelding with barnetsFnr {}",
+                bidragsmelding.getBarnetsFnr());
 
-            SynthesizedBidragRequest request = testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding, bisysRequestAugments);
-            log.info("Processing SyntetisertBidragsmelding with barnetsFnr {}",
-                    bidragsmelding.getBarnetsFnr());
+        soknadConsumer.openOrCreateSoknad(bisys, request);
+        fatteVedtakConsumer.runFatteVedtak(bisys, request);
 
-            try {
-
-                soknadConsumer.openOrCreateSoknad(bisys, request);
-                fatteVedtakConsumer.runFatteVedtak(bisys, request);
-
-            } catch (BidragRequestProcessingException brpe) {
-
-                log.warn(
-                        "Processing failed for SyntetisertBidragsmelding with barnetsFnr {}, and mottattDato {}",
-                        bidragsmelding.getBarnetsFnr(), bidragsmelding.getMottattDato());
-
-            }
-        }
     }
 }

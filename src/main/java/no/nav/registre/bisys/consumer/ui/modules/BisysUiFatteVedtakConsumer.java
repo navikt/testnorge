@@ -6,10 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
+
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.stereotype.Component;
+
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+
 import lombok.extern.slf4j.Slf4j;
 import no.nav.bidrag.ui.bisys.BisysApplication;
 import no.nav.bidrag.ui.bisys.BisysApplication.ActiveBisysPage;
@@ -121,20 +124,44 @@ public class BisysUiFatteVedtakConsumer {
             throws BidragRequestProcessingException {
 
         // BMs inntekter
-        checkInntekter(inntekter.inntektslinjer());
+        checkInntekter(KodeRolletype_Constants.BIDRAGSMOTTAKER, inntekter, request);
         inntekter.lagre().click();
 
         // BPs inntekter
-        inntekter.selectValgtRolle(request.getFnrBp());
-        checkInntekter(inntekter.inntektslinjer());
-        inntekter.lagre().click();
+        for (String option : inntekter.valgtRolle().getOptions()) {
+            if (option.contains(request.getFnrBp())) {
+                inntekter.selectValgtRolle(option);
+                checkInntekter(KodeRolletype_Constants.BIDRAGSPLIKTIG, inntekter, request);
+                inntekter.lagre().click();
+            }
+        }
     }
 
-    private void checkInntekter(List<Inntektslinje> inntektslinjer) {
+    private void checkInntekter(String rolletype, Inntekter inntekter, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
+        for (Inntektslinje inntektslinje : inntekter.inntektslinjer()) {
+            try {
+                if (!inntektslinje.brukInntekt().isEnabled()) {
+                    inntektslinje.brukInntekt().toggle();
+                }
+            } catch (NoSuchElementException e) {
+                if (request.getInntektBmEgneOpplysninger() > 0 && request.getInntektBpEgneOpplysninger() > 0) {
 
-        for (Inntektslinje inntektslinje : inntektslinjer) {
-            if (!inntektslinje.brukInntekt().isEnabled()) {
-                inntektslinje.brukInntekt().toggle();
+                    inntekter.leggTilInntekslinje().click();
+                    for (Inntektslinje nyInntektslinje : inntekter.inntektslinjer()) {
+                        LocalDate soktFra = LocalDate.parse(request.getSoktFra(), DateTimeFormat.forPattern("yyyy-MM-dd"));
+                        soktFra.monthOfYear().withMinimumValue();
+                        soktFra.dayOfMonth().withMaximumValue();
+                        nyInntektslinje.gjelderFom().setValue(soktFra.toString("dd.MM.yyyy"));
+                        nyInntektslinje.beskrivelse().select(Inntektslinje.KODE_PERSONINNTEKT_EGNE_OPPLYSNINGER);
+
+                        int belop = rolletype.equals(KodeRolletype_Constants.BIDRAGSMOTTAKER) ? request.getInntektBmEgneOpplysninger() : request.getInntektBpEgneOpplysninger();
+                        nyInntektslinje.belop().setValue(Integer.toString(belop));
+                    }
+
+                    inntekter.lagre().click();
+                } else {
+                    throw new BidragRequestProcessingException("No income registered!", ActiveBisysPage.INNTEKTER, inntekter);
+                }
             }
         }
     }
@@ -206,7 +233,6 @@ public class BisysUiFatteVedtakConsumer {
                     manageBarnRegPaaAdresseConstant(barn, boforhold.rolle().getText());
                     barn.andelForsorget().select(request.getBoforholdAndelForsorging());
                 }
-                boforhold.lagreOgBidrag().click();
                 return;
             }
         }

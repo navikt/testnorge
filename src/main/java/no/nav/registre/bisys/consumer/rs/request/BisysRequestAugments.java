@@ -12,5 +12,7 @@ public class BisysRequestAugments {
     private final String bidragsberegningKodeVirkAarsak;
     private final String bidragsberegningSamvarsklasse;
     private final String fatteVedtakGebyrBeslAarsakKode;
+    private final int inntektBmEgneOpplysninger;
+    private final int inntektBpEgneOpplysninger;
 
 }
