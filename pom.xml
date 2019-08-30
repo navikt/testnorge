@@ -12,7 +12,7 @@
 
     <groupId>no.nav.registre</groupId>
     <artifactId>testnorge-sigrun</artifactId>
-    <version>1.5.3</version>
+    <version>1.5.4</version>
     <packaging>pom</packaging>
 
     <name>testnorge-sigrun</name>
