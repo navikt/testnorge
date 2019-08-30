@@ -34,10 +34,10 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
-import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.service.PersonService;
 import no.nav.dolly.service.TestgruppeService;
 
 @RestController
@@ -147,6 +147,9 @@ public class TestgruppeController {
     @Autowired
     private BestillingService bestillingService;
 
+    @Autowired
+    private PersonService personService;
+
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
     @PutMapping(value = "/{gruppeId}")
@@ -166,18 +169,12 @@ public class TestgruppeController {
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
-    @PutMapping("/{gruppeId}/slettTestidenter")
-    public void deleteTestident(@RequestBody List<RsTestident> testpersonIdentListe) {
-        identService.slettTestidenter(testpersonIdentListe);
-    }
-
-    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
-    @Transactional
     @DeleteMapping("/{gruppeId}/slettTestident")
     public void deleteTestident(@RequestParam String ident) {
         if (identService.slettTestident(ident) == 0) {
             throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
         }
+        personService.recyclePerson(ident);
     }
 
     @Cacheable(CACHE_GRUPPE)

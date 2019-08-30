@@ -3,8 +3,6 @@ package no.nav.dolly.service;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,15 +34,15 @@ public class IdentServiceTest {
     private Testgruppe standardGruppe = new Testgruppe();
 
     @Mock
-    IdentRepository identRepository;
+    private IdentRepository identRepository;
 
     @Mock
-    MapperFacade mapperFacade;
+    private MapperFacade mapperFacade;
 
     @InjectMocks
-    IdentService identService;
+    private IdentService identService;
 
-    Testgruppe testgruppe = new Testgruppe();
+    private Testgruppe testgruppe = new Testgruppe();
 
     @Before
     public void setup() {
@@ -96,17 +94,6 @@ public class IdentServiceTest {
     }
 
     @Test
-    public void slettTestidenter_kallesRiktigAntallGanger() {
-        RsTestident rsi1 = RsTestident.builder().ident(STANDARD_IDENTER_1).build();
-        RsTestident rsi2 = RsTestident.builder().ident(STANDAR_IDENTER_2).build();
-        List<RsTestident> rsTestidenter = Arrays.asList(rsi1, rsi2);
-
-        identService.slettTestidenter(rsTestidenter);
-
-        verify(identRepository, times(2)).deleteTestidentByIdent(anyString());
-    }
-
-    @Test
     public void slettTestident_ok() {
 
         String ident = "1";
@@ -124,25 +111,5 @@ public class IdentServiceTest {
         identService.slettTestidenterByGruppeId(gruppeId);
 
         verify(identRepository).deleteTestidentByTestgruppeId(gruppeId);
-    }
-
-    @Test
-    public void slettTestidenterByTeamId_ok() {
-
-        long teamId = 1L;
-
-        identService.slettTestidenterByTeamId(teamId);
-
-        verify(identRepository).deleteTestidentByTestgruppeTeamtilhoerighetId(teamId);
-    }
-
-    @Test
-    public void slettTestidenter_ok() {
-
-        long bestillingId = 1L;
-
-        identService.slettTestidenter(bestillingId);
-
-        verify(identRepository).deleteTestidentsByBestillingId(bestillingId);
     }
 }
