@@ -26,11 +26,11 @@ import no.nav.registre.inntekt.domain.RsUser;
 @Component
 public class InntektstubConsumer {
 
-    public static final ParameterizedTypeReference<Map<String, List<RsInntekt>>> RESPONSE_TYPE_OPPRETT_INNTEKT = new ParameterizedTypeReference<Map<String, List<RsInntekt>>>() {
+    private static final ParameterizedTypeReference<Map<String, List<RsInntekt>>> RESPONSE_TYPE_OPPRETT_INNTEKT = new ParameterizedTypeReference<Map<String, List<RsInntekt>>>() {
     };
-    public static final ParameterizedTypeReference<List<RsInntekt>> RESPONSE_TYPE_HENT_INNTEKT = new ParameterizedTypeReference<List<RsInntekt>>() {
+    private static final ParameterizedTypeReference<List<RsInntekt>> RESPONSE_TYPE_HENT_INNTEKT = new ParameterizedTypeReference<List<RsInntekt>>() {
     };
-    public static final ParameterizedTypeReference<List<RsPerson>> RESPONSE_TYPE_PERSON = new ParameterizedTypeReference<List<RsPerson>>() {
+    private static final ParameterizedTypeReference<List<RsPerson>> RESPONSE_TYPE_PERSON = new ParameterizedTypeReference<List<RsPerson>>() {
     };
 
     private String token;
@@ -87,7 +87,7 @@ public class InntektstubConsumer {
         }
     }
 
-    public HttpHeaders getHeaders() {
+    private HttpHeaders getHeaders() {
         HttpHeaders session = getSession();
         if (session.containsKey("X-XSRF-TOKEN")) {
             List<String> tokenList = session.get("X-XSRF-TOKEN");

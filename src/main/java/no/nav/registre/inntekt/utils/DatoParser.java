@@ -8,7 +8,7 @@ import no.nav.registre.inntekt.domain.RsInntekt;
 
 public class DatoParser {
 
-    private static List<String> MAANEDER = Arrays.asList("januar", "februar", "mars", "april", "mai", "juni", "juli", "august", "september", "oktober", "november", "desember");
+    private static final List<String> MAANEDER = Arrays.asList("januar", "februar", "mars", "april", "mai", "juni", "juli", "august", "september", "oktober", "november", "desember");
 
     public static List<RsInntekt> finnSenesteInntekter(List<RsInntekt> inntekter) {
         int senesteAar = 0;

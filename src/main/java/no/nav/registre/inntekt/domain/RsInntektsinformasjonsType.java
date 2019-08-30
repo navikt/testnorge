@@ -7,6 +7,6 @@ public enum RsInntektsinformasjonsType {
     FORSKUDDSTREKK,
     ARBEIDSFORHOLD;
 
-    private RsInntektsinformasjonsType() {
+    RsInntektsinformasjonsType() {
     }
 }
