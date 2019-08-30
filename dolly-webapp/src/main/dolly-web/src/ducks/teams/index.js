@@ -15,7 +15,7 @@ export const actions = createActions(
 			UPDATE: (teamId, data) => DollyApi.updateTeam(teamId, data),
 			DELETE: [teamId => DollyApi.deleteTeam(teamId), teamId => ({ teamId })],
 			ADD_TEAM_MEMBER: (teamId, userArray) => DollyApi.addTeamMedlemmer(teamId, userArray),
-			REMOVE_TEAM_MEMBER: (teamId, userArray) => DollyApi.removeTeamMedlemmer(teamId, userArray)
+			REMOVE_TEAM_MEMBER: (teamId, user) => DollyApi.removeTeamMedlemmer(teamId, user)
 		},
 		UI: {
 			SET_TEAM_VISNING: visning => ({ visning }),
