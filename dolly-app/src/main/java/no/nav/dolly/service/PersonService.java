@@ -5,7 +5,9 @@ import static java.util.Collections.singletonList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -22,7 +24,13 @@ public class PersonService {
 
     public void recyclePersoner(List<String> identer) {
 
-        tpsfService.deletePersoner(identer);
+        try {
+            tpsfService.deletePersoner(identer);
+        } catch (HttpClientErrorException error) {
+            if (HttpStatus.NOT_FOUND.value() != error.getStatusCode().value()) {
+                throw error;
+            }
+        }
     }
 
     public void recyclePerson(String ident) {
