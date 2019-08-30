@@ -5,7 +5,7 @@ import no.nav.registre.inntekt.domain.RsInntektsinformasjonsType;
 
 public class InntektGenerator {
 
-    public static RsInntekt genererInntekt(int beloep) {
+    public static RsInntekt genererInntekt(double beloep) {
         RsInntekt inntektEntry = new RsInntekt();
         inntektEntry.setAar("2019");
         inntektEntry.setBeloep(beloep);

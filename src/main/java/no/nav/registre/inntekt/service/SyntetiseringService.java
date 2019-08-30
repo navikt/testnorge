@@ -2,11 +2,15 @@ package no.nav.registre.inntekt.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
@@ -17,6 +21,7 @@ import no.nav.registre.inntekt.domain.InntektSaveInHodejegerenRequest;
 import no.nav.registre.inntekt.domain.RsInntekt;
 import no.nav.registre.inntekt.domain.RsPerson;
 import no.nav.registre.inntekt.provider.rs.requests.SyntetiseringsRequest;
+import no.nav.registre.inntekt.utils.DatoParser;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Slf4j
@@ -24,7 +29,10 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 public class SyntetiseringService {
 
     private static final int MINIMUM_ALDER = 13;
-    private static final String ARENA_INNTEKT_NAME = "inntekt";
+    private static final String INNTEKT_NAME = "inntekt";
+
+    @Value("${andelNyeIdenter}")
+    private int andelNyeIdenter;
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
@@ -40,44 +48,58 @@ public class SyntetiseringService {
 
     public Map<String, List<RsInntekt>> startSyntetisering(SyntetiseringsRequest syntetiseringsRequest) {
 
-        List<String> identer = hentLevendeIdenterOverAlder(syntetiseringsRequest.getAvspillergruppeId(), MINIMUM_ALDER);
-        List<String> identerIInntektstub = inntektstubConsumer.hentEksisterendeIdenter().stream().map(RsPerson::getFoedselsnummer).collect(Collectors.toList());
+        Set<String> identer = new HashSet<>(hentLevendeIdenterOverAlder(syntetiseringsRequest.getAvspillergruppeId(), MINIMUM_ALDER));
+        Set<String> identerIInntektstub = inntektstubConsumer.hentEksisterendeIdenter().stream().map(RsPerson::getFoedselsnummer).collect(Collectors.toSet());
 
-        if (!identer.isEmpty()) {
-            // >> 1 er samme som å dele på 2 (Java liker ikke float division i int context
-            identer = identer.subList(0, (identer.size() + 1 >> 1));
-        }
+        identerIInntektstub.retainAll(identer);
 
-        if (identer.isEmpty()) {
+        int antallNyeIdenterMedInntekt = (identer.size() / andelNyeIdenter) - identerIInntektstub.size();
+
+        identer.removeAll(identerIInntektstub);
+        List<String> nyeIdenter = new ArrayList<>(identer).subList(0, antallNyeIdenterMedInntekt);
+
+        if (identerIInntektstub.isEmpty() && nyeIdenter.isEmpty()) {
             log.warn("Ingen identer å opprette meldinger på");
             return null;
         }
 
-        Map<String, List<RsInntekt>> inntektsmeldinger = getInntektsmeldingerFraSynt(identer);
-
-        if (inntektsmeldinger == null) {
-            log.warn("Ingen inntektsmeldinger fra synt");
-            return null;
+        Map<String, List<RsInntekt>> identerMedInntekt = new HashMap<>();
+        for (String ident : identerIInntektstub) {
+            List<RsInntekt> inntekter = inntektstubConsumer.hentEksisterendeInntekterPaaIdent(ident);
+            inntekter = DatoParser.finnSenesteInntekter(inntekter);
+            identerMedInntekt.put(ident, inntekter);
+        }
+        for (String ident : nyeIdenter) {
+            identerMedInntekt.put(ident, new ArrayList<>());
         }
 
-        Map<String, List<RsInntekt>> gyldigeMeldinger = fjernTommeMeldinger(inntektsmeldinger);
+        Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger = getInntektsmeldingerFraSynt(identerMedInntekt);
+        if (syntetiskeInntektsmeldinger == null) {
+            return new HashMap<>();
+        }
 
-        Map<String, List<RsInntekt>> feiledeInntektsmeldinger = inntektstubConsumer.leggInntekterIInntektstub(gyldigeMeldinger);
+        syntetiskeInntektsmeldinger.keySet().retainAll(filtrerGyldigeMeldinger(syntetiskeInntektsmeldinger).keySet());
+
+        if (syntetiskeInntektsmeldinger.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        Map<String, List<RsInntekt>> feiledeInntektsmeldinger = inntektstubConsumer.leggInntekterIInntektstub(syntetiskeInntektsmeldinger);
 
         if (!feiledeInntektsmeldinger.isEmpty()) {
             log.warn("Kunne ikke opprette inntekt på følgende identer: {}", feiledeInntektsmeldinger.keySet());
 
             for (Map.Entry<String, List<RsInntekt>> feilet : feiledeInntektsmeldinger.entrySet()) {
-                gyldigeMeldinger.remove(feilet.getKey());
+                syntetiskeInntektsmeldinger.remove(feilet.getKey());
             }
         }
 
-        List<IdentMedData> identerMedData = new ArrayList<>(gyldigeMeldinger.size());
-        for (Map.Entry<String, List<RsInntekt>> personInfo : gyldigeMeldinger.entrySet()) {
+        List<IdentMedData> identerMedData = new ArrayList<>(syntetiskeInntektsmeldinger.size());
+        for (Map.Entry<String, List<RsInntekt>> personInfo : syntetiskeInntektsmeldinger.entrySet()) {
             identerMedData.add(new IdentMedData(personInfo.getKey(), personInfo.getValue()));
         }
 
-        InntektSaveInHodejegerenRequest hodejegerenRequests = new InntektSaveInHodejegerenRequest(ARENA_INNTEKT_NAME, identerMedData);
+        InntektSaveInHodejegerenRequest hodejegerenRequests = new InntektSaveInHodejegerenRequest(INNTEKT_NAME, identerMedData);
         List<String> lagredeIdenter = hodejegerenHistorikkConsumer.saveHistory(hodejegerenRequests);
 
         if (lagredeIdenter.size() < identerMedData.size()) {
@@ -96,20 +118,11 @@ public class SyntetiseringService {
         return hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder);
     }
 
-    private Map<String, List<RsInntekt>> getInntektsmeldingerFraSynt(List<String> identer) {
-        Map<String, List<RsInntekt>> inntektsmeldinger = inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(identer);
-        if (inntektsmeldinger == null) {
-            log.warn("syntetiserte meldinger feilet");
-            return null;
-        }
-        if (inntektsmeldinger.isEmpty()) {
-            log.info("Ingen intektsmeldinger syntetisert, identene kan ha eksisterende meldinger for denne måned. \nIdenter ønsket å genere melding på {}", identer);
-            return null;
-        }
-        return inntektsmeldinger;
+    private Map<String, List<RsInntekt>> getInntektsmeldingerFraSynt(Map<String, List<RsInntekt>> identerMedInntekt) {
+        return inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(identerMedInntekt);
     }
 
-    private Map<String, List<RsInntekt>> fjernTommeMeldinger(Map<String, List<RsInntekt>> inntektsmeldinger) {
+    private Map<String, List<RsInntekt>> filtrerGyldigeMeldinger(Map<String, List<RsInntekt>> inntektsmeldinger) {
         inntektsmeldinger.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue().isEmpty());
         if (inntektsmeldinger.isEmpty()) {
             log.info("Ingen syntetiserte meldinger å legge på inntektstub, returnerer");

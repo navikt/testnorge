@@ -26,15 +26,20 @@ import no.nav.registre.inntekt.domain.RsUser;
 @Component
 public class InntektstubConsumer {
 
-    public static final ParameterizedTypeReference<Map<String, List<RsInntekt>>> RESPONSE_TYPE_INNTEKT = new ParameterizedTypeReference<Map<String, List<RsInntekt>>>() {
+    public static final ParameterizedTypeReference<Map<String, List<RsInntekt>>> RESPONSE_TYPE_OPPRETT_INNTEKT = new ParameterizedTypeReference<Map<String, List<RsInntekt>>>() {
+    };
+    public static final ParameterizedTypeReference<List<RsInntekt>> RESPONSE_TYPE_HENT_INNTEKT = new ParameterizedTypeReference<List<RsInntekt>>() {
     };
     public static final ParameterizedTypeReference<List<RsPerson>> RESPONSE_TYPE_PERSON = new ParameterizedTypeReference<List<RsPerson>>() {
     };
+
+    private String token;
 
     private RestTemplate restTemplate;
 
     private UriTemplate leggTilInntektUrl;
     private UriTemplate hentEksisterendeIdenterUrl;
+    private UriTemplate hentEksisterendeInntekterUrl;
     private UriTemplate hentTokenUrl;
 
     public InntektstubConsumer(@Value("${inntektstub.rest.api.url}") String inntektstubUrl,
@@ -48,13 +53,14 @@ public class InntektstubConsumer {
         this.restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
         this.leggTilInntektUrl = new UriTemplate(inntektstubUrl + "/v1/personer/inntekt");
         this.hentEksisterendeIdenterUrl = new UriTemplate(inntektstubUrl + "/v1/personer");
+        this.hentEksisterendeInntekterUrl = new UriTemplate(inntektstubUrl + "/v1/person/{ident}/inntekter");
         this.hentTokenUrl = new UriTemplate(inntektstubUrl + "/v1/user");
     }
 
     public Map<String, List<RsInntekt>> leggInntekterIInntektstub(Map<String, List<RsInntekt>> inntekter) {
         try {
             HttpEntity<Map<String, List<RsInntekt>>> entity = new HttpEntity<>(inntekter, getHeaders());
-            return restTemplate.exchange(leggTilInntektUrl.expand(), HttpMethod.POST, entity, RESPONSE_TYPE_INNTEKT).getBody();
+            return restTemplate.exchange(leggTilInntektUrl.expand(), HttpMethod.POST, entity, RESPONSE_TYPE_OPPRETT_INNTEKT).getBody();
         } catch (HttpClientErrorException e) {
             log.warn(e.getMessage(), e);
             throw e;
@@ -71,8 +77,26 @@ public class InntektstubConsumer {
         }
     }
 
+    public List<RsInntekt> hentEksisterendeInntekterPaaIdent(String ident) {
+        try {
+            HttpEntity entity = new HttpEntity<>(getHeaders());
+            return restTemplate.exchange(hentEksisterendeInntekterUrl.expand(ident), HttpMethod.GET, entity, RESPONSE_TYPE_HENT_INNTEKT).getBody();
+        } catch (HttpClientErrorException e) {
+            log.warn(e.getMessage(), e);
+            throw e;
+        }
+    }
+
     public HttpHeaders getHeaders() {
         HttpHeaders session = getSession();
+        if (session.containsKey("X-XSRF-TOKEN")) {
+            List<String> tokenList = session.get("X-XSRF-TOKEN");
+            if (tokenList != null) {
+                this.token = tokenList.get(0);
+            }
+        } else {
+            session.add("X-XSRF-TOKEN", token);
+        }
         session.add("Content-Type", "application/json");
         return session;
     }

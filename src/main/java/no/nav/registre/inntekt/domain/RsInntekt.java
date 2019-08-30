@@ -1,5 +1,6 @@
 package no.nav.registre.inntekt.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,10 +12,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RsInntekt {
 
-    private String fnr;
-    private Integer beloep;
+    private Double beloep;
     private String inntektstype;
     private String aar;
     private String maaned;

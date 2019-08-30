@@ -31,8 +31,8 @@ public class InntektSyntConsumer {
         url = new UriTemplate(inntektSyntUrl + "/v1/generate/inntekt");
     }
 
-    public Map<String, List<RsInntekt>> hentSyntetiserteInntektsmeldinger(List<String> identer) {
-        RequestEntity postRequest = RequestEntity.post(url.expand()).body(identer);
+    public Map<String, List<RsInntekt>> hentSyntetiserteInntektsmeldinger(Map<String, List<RsInntekt>> identerMedInntekt) {
+        RequestEntity postRequest = RequestEntity.post(url.expand()).body(identerMedInntekt);
         try {
             return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
         } catch (HttpStatusCodeException e) {
