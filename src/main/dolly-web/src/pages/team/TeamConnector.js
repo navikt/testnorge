@@ -32,7 +32,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		startRedigerTeam: () => dispatch(actions.ui.startEditTeam(teamId)),
 		listGrupper: () => dispatch(listGrupper({ teamId })),
 		addMember: userArray => dispatch(actions.api.addTeamMember(teamId, userArray)),
-		removeMember: userArray => dispatch(actions.api.removeTeamMember(teamId, userArray))
+		removeMember: user => dispatch(actions.api.removeTeamMember(teamId, user))
 	}
 }
 

@@ -113,7 +113,7 @@ class Team extends Component {
 											>
 												<Table.Row
 													key={medlem.navIdent}
-													deleteAction={() => removeMember([medlem.navIdent])}
+													deleteAction={() => removeMember(medlem.navIdent)}
 													deleteMessage={'Vil du slette ' + medlem.navIdent + ' fra dette teamet?'}
 												>
 													<Table.Column width="30" value={medlem.navIdent} />
