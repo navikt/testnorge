@@ -43,10 +43,16 @@ public class SigrunStubConsumer {
         RequestEntity getRequest;
         if (testdataEier != null) {
             hentFnrUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/hentPersonidentifikatorer?testdataEier={testdataEier}");
-            getRequest = RequestEntity.get(hentFnrUrl.expand(testdataEier)).build();
+            getRequest = RequestEntity.get(hentFnrUrl.expand(testdataEier))
+                    .header("Nav-Call-Id", NAV_CALL_ID)
+                    .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                    .build();
         } else {
             hentFnrUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/hentPersonidentifikatorer");
-            getRequest = RequestEntity.get(hentFnrUrl.expand()).build();
+            getRequest = RequestEntity.get(hentFnrUrl.expand())
+                    .header("Nav-Call-Id", NAV_CALL_ID)
+                    .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                    .build();
         }
         ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
 
@@ -64,7 +70,11 @@ public class SigrunStubConsumer {
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
     public ResponseEntity sendDataTilSigrunstub(List<PoppSyntetisererenResponse> meldinger, String testdataEier, String miljoe) {
         UriTemplate sendDataUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/opprettBolk");
-        RequestEntity postRequest = RequestEntity.post(sendDataUrl.expand()).header("testdataEier", testdataEier).body(meldinger);
+        RequestEntity postRequest = RequestEntity.post(sendDataUrl.expand())
+                .header("Nav-Call-Id", NAV_CALL_ID)
+                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                .header("testdataEier", testdataEier)
+                .body(meldinger);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }
 
