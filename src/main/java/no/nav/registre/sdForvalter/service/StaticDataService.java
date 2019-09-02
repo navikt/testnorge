@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.sdForvalter.database.InTeam;
+import no.nav.registre.sdForvalter.database.Ownable;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
@@ -117,8 +117,8 @@ public class StaticDataService {
                 .ttl(Period.of(1, 0, 0));
     }
 
-    private InTeam saveIfNotPresent(InTeam entity, CrudRepository repository, Varighet.VarighetBuilder varighetBuilder, String eier) {
-        return (InTeam) teamRepository.findByNavn(eier).map(team -> {
+    private Ownable saveIfNotPresent(Ownable entity, CrudRepository repository, Varighet.VarighetBuilder varighetBuilder, String eier) {
+        return (Ownable) teamRepository.findByNavn(eier).map(team -> {
             entity.setTeam(team);
             Varighet varighet = varighetRepository.save(
                     varighetBuilder

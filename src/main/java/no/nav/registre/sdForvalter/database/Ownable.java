@@ -2,7 +2,7 @@ package no.nav.registre.sdForvalter.database;
 
 import no.nav.registre.sdForvalter.database.model.Team;
 
-public interface InTeam {
+public interface Ownable {
 
     Team getTeam();
 
