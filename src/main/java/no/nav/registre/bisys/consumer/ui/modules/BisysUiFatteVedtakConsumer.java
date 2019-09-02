@@ -39,6 +39,7 @@ public class BisysUiFatteVedtakConsumer {
 
     public static final String KODE_BESL_AARSAK_FRITATT_IKKE_SOKT = "GIFR";
     public static final String KODE_BESL_AARSAK_ILAGT_IKKE_SOKT = "GIGI";
+    public static final String INGEN_BARN_REGISTRERT_PAA_HUSSTAND = "Det er ikke registrert noen barn i husstanden.";
 
     public static final Map<String, String> beslAarsakDekodeMap() {
 
@@ -87,7 +88,7 @@ public class BisysUiFatteVedtakConsumer {
             activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
 
             Boforhold boforhold = (Boforhold) bisys.getActivePage(activePage);
-            fulfillBoforhold(bisys, boforhold, request);
+            fulfillBoforhold(boforhold, request);
             boforhold.lagreOgBidrag().click();
 
             activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
@@ -104,7 +105,7 @@ public class BisysUiFatteVedtakConsumer {
             fatteVedtak.executeFatteVedtak().click();
 
         } catch (ElementNotFoundException | NoSuchElementException | ClassCastException e) {
-            throw new BidragRequestProcessingException(activePage, bisys.bisysPage(), e);
+            throw new BidragRequestProcessingException(bisys.bisysPage(), e);
         }
     }
 
@@ -154,20 +155,20 @@ public class BisysUiFatteVedtakConsumer {
                         nyInntektslinje.gjelderFom().setValue(soktFra.toString("dd.MM.yyyy"));
                         nyInntektslinje.beskrivelse().select(Inntektslinje.KODE_PERSONINNTEKT_EGNE_OPPLYSNINGER);
 
-                        int belop = rolletype.equals(KodeRolletype_Constants.BIDRAGSMOTTAKER) ? request.getInntektBmEgneOpplysninger() : request.getInntektBpEgneOpplysninger();
+                        int belop = KodeRolletype_Constants.BIDRAGSMOTTAKER.equals(rolletype) ? request.getInntektBmEgneOpplysninger() : request.getInntektBpEgneOpplysninger();
                         nyInntektslinje.belop().setValue(Integer.toString(belop));
                     }
 
                     inntekter.lagre().click();
                 } else {
-                    throw new BidragRequestProcessingException("No income registered!", ActiveBisysPage.INNTEKTER, inntekter);
+                    throw new BidragRequestProcessingException("No income registered!", inntekter, e);
                 }
             }
         }
     }
 
     /**
-     * Enriches the Boforhold page view with data.
+     * Populates Boforhold page view with data.
      * 
      * <code>
      *  - Expected entry page: Boforhold
@@ -178,7 +179,7 @@ public class BisysUiFatteVedtakConsumer {
      * @param request
      * @throws BidragRequestProcessingException
      */
-    private void fulfillBoforhold(BisysApplication bisys, Boforhold boforhold,
+    private void fulfillBoforhold(Boforhold boforhold,
             SynthesizedBidragRequest request) throws BidragRequestProcessingException {
 
         List<Barn> barna = boforhold.barn();
@@ -232,13 +233,13 @@ public class BisysUiFatteVedtakConsumer {
 
                     manageBarnRegPaaAdresseConstant(barn, boforhold.rolle().getText());
                     barn.andelForsorget().select(request.getBoforholdAndelForsorging());
+
+                    return;
                 }
-                return;
             }
         }
 
-        throw new BidragRequestProcessingException(
-                ActiveBisysPage.getActivePage(boforhold.header().tittel()).get(), boforhold,
+        throw new BidragRequestProcessingException(boforhold,
                 new Exception(BisysUiConsumer.PROCESSING_FAILED + " Requested barn not found"));
     }
 
@@ -248,8 +249,8 @@ public class BisysUiFatteVedtakConsumer {
         try {
             field = SynthesizedBidragRequest.class.getDeclaredField("boforholdBarnRegistrertPaaAdresse");
 
-            if (field.getAnnotation(BidragsmeldingConstant.class).annotationType().equals(
-                    BidragsmeldingConstant.class) && rolle.equals(KodeRolletype_Constants.BIDRAGSMOTTAKER)
+            if (BidragsmeldingConstant.class.equals(field.getAnnotation(BidragsmeldingConstant.class).annotationType())
+                    && KodeRolletype_Constants.BIDRAGSMOTTAKER.equals(rolle)
                     && !barn.barnRegPaaAdrCbx().isEnabled()) {
 
                 barn.barnRegPaaAdrCbx().toggle();
@@ -257,15 +258,20 @@ public class BisysUiFatteVedtakConsumer {
             }
         } catch (NoSuchFieldException | SecurityException e) {
             log.warn(
-                    "@BidragsmeldingConstant annotation not found for field SynthesizedBidragRequest.boforholdBarnRegistrertPaaAdresse. If this is due to the field being included in Bidragsmelding, this warning can safely be ignored.");
+                    "@BidragsmeldingConstant annotation not found for field SynthesizedBidragRequest.boforholdBarnRegistrertPaaAdresse. "
+                            + "If this is due to the field being included in Bidragsmelding, this warning can safely be ignored.");
         }
     }
 
     private final boolean requestedBarnIncludedInList(List<Barn> barna, String fnrRequestedBarn) {
         for (Barn barn : barna) {
-            String fnr = barn.medlemFnr().getText().replaceAll("\\s", "");
-            if (fnr.equals(fnrRequestedBarn)) {
-                return true;
+            try {
+                String fnr = barn.medlemFnr().getText().replaceAll("\\s", "");
+                if (fnr.equals(fnrRequestedBarn)) {
+                    return true;
+                }
+            } catch (NoSuchElementException | ElementNotFoundException e) {
+                log.info(INGEN_BARN_REGISTRERT_PAA_HUSSTAND);
             }
         }
         return false;
@@ -281,10 +287,9 @@ public class BisysUiFatteVedtakConsumer {
      * 
      * @param bidragsberegning
      * @param request
-     * @throws BidragRequestProcessingException
      */
     private void fulfillBidragsberegning(Bidragsberegning bidragsberegning,
-            SynthesizedBidragRequest request) throws BidragRequestProcessingException {
+            SynthesizedBidragRequest request) {
 
         bidragsberegning.selectKodeAarsak(request.getBidragsberegningKodeVirkAarsak());
 
@@ -305,10 +310,8 @@ public class BisysUiFatteVedtakConsumer {
      * 
      * @param fatteVedtak
      * @param request
-     * @throws BidragRequestProcessingException
      */
-    private void completeFatteVedtak(FatteVedtak fatteVedtak, SynthesizedBidragRequest request)
-            throws BidragRequestProcessingException {
+    private void completeFatteVedtak(FatteVedtak fatteVedtak, SynthesizedBidragRequest request) {
 
         List<Vedtakslinje> vedtakslinjer = fatteVedtak.vedtakslinjer();
 

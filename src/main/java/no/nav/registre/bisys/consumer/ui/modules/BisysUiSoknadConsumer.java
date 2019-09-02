@@ -2,13 +2,17 @@ package no.nav.registre.bisys.consumer.ui.modules;
 
 import static no.nav.registre.bisys.config.AppConfig.STANDARD_DATE_FORMAT_BISYS;
 import static no.nav.registre.bisys.config.AppConfig.STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST;
+
 import java.util.List;
 import java.util.NoSuchElementException;
+
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+
 import lombok.extern.slf4j.Slf4j;
 import no.nav.bidrag.ui.bisys.BisysApplication;
 import no.nav.bidrag.ui.bisys.BisysApplication.ActiveBisysPage;
@@ -49,24 +53,22 @@ public class BisysUiSoknadConsumer {
     public ActiveBisysPage openOrCreateSoknad(BisysApplication bisys,
             SynthesizedBidragRequest request) throws BidragRequestProcessingException {
 
-        ActiveBisysPage activePage = BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.OPPGAVELISTE);
-
         try {
-            activePage = sakConsumer.openOrCreateSak(bisys, request);
-            ensureBarnIsPartInSak(bisys, request.getFnrBa(), activePage);
-            return openExistingOrCreateNewSoknad(bisys, request, activePage);
+            sakConsumer.openOrCreateSak(bisys, request);
+            ensureBarnIsPartInSak(bisys, request.getFnrBa());
+            return openExistingOrCreateNewSoknad(bisys, request);
 
         } catch (ElementNotFoundException | NoSuchElementException e) {
-            throw new BidragRequestProcessingException(activePage, bisys.bisysPage(), e);
+            throw new BidragRequestProcessingException(bisys.bisysPage(), e);
         }
     }
 
-    private void ensureBarnIsPartInSak(BisysApplication bisys, String fnrBa,
-            ActiveBisysPage activePage) throws BidragRequestProcessingException {
+    private void ensureBarnIsPartInSak(BisysApplication bisys, String fnrBa) throws BidragRequestProcessingException {
 
-        activePage = BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.SAK);
+        BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.SAK);
+
         bisys.bisysPage().sideBarMenu().roller().click();
-        activePage = ActiveBisysPage.getActivePage(bisys.bisysPage().header().tittel()).get();
+        ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.bisysPage().header().tittel()).get();
 
         Roller roller = (Roller) bisys.getActivePage(activePage);
 
@@ -89,10 +91,10 @@ public class BisysUiSoknadConsumer {
      * @throws BidragRequestProcessingException
      */
     private ActiveBisysPage openExistingOrCreateNewSoknad(BisysApplication bisys,
-            SynthesizedBidragRequest request, ActiveBisysPage activePage)
+            SynthesizedBidragRequest request)
             throws BidragRequestProcessingException {
 
-        activePage = BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.SAK);
+        ActiveBisysPage activePage = BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.SAK);
 
         Sak sak = (Sak) bisys.getActivePage(activePage);
 
@@ -105,10 +107,10 @@ public class BisysUiSoknadConsumer {
                 break;
             }
 
-            String soknGrKomKode_request = request.getSoktOm();
-            String soknGrKomDekode_request = KodeSoknGrKom_Constants.soknGrKomDekodeMap().get(soknGrKomKode_request);
-            String soknTypeKode_request = request.getSoknadstype();
-            String soknTypeDekode_request = KodeSoknType_Constants.soknTypeDekodeMap().get(soknTypeKode_request);
+            String soknGrKomKodeRequest = request.getSoktOm();
+            String soknGrKomDekodeRequest = KodeSoknGrKom_Constants.soknGrKomDekodeMap().get(soknGrKomKodeRequest);
+            String soknTypeKodeRequest = request.getSoknadstype();
+            String soknTypeDekodeRequest = KodeSoknType_Constants.soknTypeDekodeMap().get(soknTypeKodeRequest);
 
             LocalDate mottattdatoRequest = LocalDate.parse(request.getMottattDato(),
                     DateTimeFormat.forPattern(STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST));
@@ -121,8 +123,8 @@ public class BisysUiSoknadConsumer {
 
             if (mottattdatoBisys.isEqual(mottattdatoRequest)
                     && soknadFraBisys.equals(soknadFraDekodeRequest)
-                    && soknadUnderBehandling.soknadsgruppe().getText().equals(soknGrKomDekode_request)
-                    && soknadUnderBehandling.typeSoknad().getText().contentEquals(soknTypeDekode_request)) {
+                    && soknadUnderBehandling.soknadsgruppe().getText().equals(soknGrKomDekodeRequest)
+                    && soknadUnderBehandling.typeSoknad().getText().contentEquals(soknTypeDekodeRequest)) {
 
                 log.info(
                         "Found existing søknad in sak. Søknad details: mottattdato: {}, soknadFra: {}, soknadsgruppe: {}, soknadstype: {}",
@@ -148,7 +150,7 @@ public class BisysUiSoknadConsumer {
             bisys.bisysPage().sideBarMenu().sak().click();
         }
 
-        return createNewSoknad(bisys, request, activePage);
+        return createNewSoknad(bisys, request);
     }
 
     private boolean requestedBaIncludedInSoknad(Soknad soknad, String fnrBaRequest) {
@@ -163,8 +165,9 @@ public class BisysUiSoknadConsumer {
 
     }
 
-    private ActiveBisysPage createNewSoknad(BisysApplication bisys, SynthesizedBidragRequest request,
-            ActiveBisysPage activePage) throws BidragRequestProcessingException {
+    private ActiveBisysPage createNewSoknad(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
+
+        ActiveBisysPage activePage = BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.SAK);
 
         Sak sak = (Sak) bisys.getActivePage(activePage);
         sak.nySoknad().click();

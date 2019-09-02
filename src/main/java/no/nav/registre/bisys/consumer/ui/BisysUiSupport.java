@@ -1,8 +1,10 @@
 package no.nav.registre.bisys.consumer.ui;
 
 import java.util.NoSuchElementException;
+
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.WebClient;
+
 import lombok.AllArgsConstructor;
 import net.morher.ui.connect.api.ApplicationDefinition;
 import net.morher.ui.connect.api.listener.ActionLogger;
@@ -26,7 +28,7 @@ public class BisysUiSupport {
     String rolleSaksbehandler;
     int enhet;
 
-    public BisysApplication logon() throws BidragRequestProcessingException {
+    public BisysApplication logon() {
         return bisysLogon(bisysUrl, saksbehandlerUid, saksbehandlerPwd, rolleSaksbehandler, enhet);
     }
 
@@ -63,21 +65,17 @@ public class BisysUiSupport {
      * </code>
      * 
      * @param bisys
-     * @throws BidragRequestProcessingException
      */
-    public static void redirectToSak(BisysApplication bisys) throws BidragRequestProcessingException {
-
-        ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+    public static void redirectToSak(BisysApplication bisys) {
 
         try {
 
             HeaderView header = bisys.bisysPage().header();
             header.oppgavelister().click();
             bisys.bisysPage().header().velgSkjermbilde().select("Sak");
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
 
         } catch (ElementNotFoundException | NoSuchElementException e) {
-            throw new BidragRequestRuntimeException(activePage, bisys.bisysPage(), e);
+            throw new BidragRequestRuntimeException(bisys.bisysPage(), e);
         }
     }
 
@@ -90,14 +88,11 @@ public class BisysUiSupport {
      * @param rolleSaksbehandler
      * @param enhet
      * @return bisysApplication
-     * @throws BidragRequestProcessingException
      */
     public static BisysApplication bisysLogon(String bisysUrl, String saksbehandlerUid,
-            String saksbehandlerPwd, String rolleSaksbehandler, int enhet)
-            throws BidragRequestProcessingException {
+            String saksbehandlerPwd, String rolleSaksbehandler, int enhet) {
 
         BisysApplication bisys = openBrowser(bisysUrl);
-        ActiveBisysPage activePage = ActiveBisysPage.OPENAM_LOGIN_PAGE;
 
         try {
             bisys.openamLoginPage().signIn(saksbehandlerUid, saksbehandlerPwd);
@@ -105,15 +100,12 @@ public class BisysUiSupport {
             // TODO: Introdusere mapping mellom saksbehandlers NAV-kontor og synt.brukers tilknyttede enhet
             // Velg pålogget enhet
             bisys.velgGruppe().velgGruppe(rolleSaksbehandler);
-
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
             bisys.velgEnhet().velgEnhet(enhet);
 
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
             return bisys;
+
         } catch (ElementNotFoundException | NoSuchElementException e) {
-            throw new BidragRequestRuntimeException(activePage, bisys.bisysPage(), e);
+            throw new BidragRequestRuntimeException(bisys.bisysPage(), e);
         }
     }
 
@@ -124,23 +116,23 @@ public class BisysUiSupport {
                         .addConfigurer(new BisysBrowserConfigurer()).openUrl(url));
     }
 
-    private static class BisysBrowserConfigurer implements BrowserConfigurer {
-
-        @Override
-        public void configure(WebClient client) {
-            client.getOptions().setThrowExceptionOnScriptError(false);
-        }
-    }
-
     public static ActiveBisysPage checkCorrectActivePage(BisysApplication bisys,
             ActiveBisysPage expectedEntryPage) throws BidragRequestProcessingException {
         ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
 
         if (!activePage.equals(expectedEntryPage)) {
-            throw new BidragRequestProcessingException(activePage, bisys.bisysPage(),
+            throw new BidragRequestProcessingException(bisys.bisysPage(),
                     new Exception(BisysUiConsumer.INCORRECT_ENTRY_PAGE));
         } else {
             return activePage;
+        }
+    }
+
+    private static class BisysBrowserConfigurer implements BrowserConfigurer {
+
+        @Override
+        public void configure(WebClient client) {
+            client.getOptions().setThrowExceptionOnScriptError(false);
         }
     }
 }

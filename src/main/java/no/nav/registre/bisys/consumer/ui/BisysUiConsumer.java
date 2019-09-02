@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.bidrag.ui.bisys.BisysApplication;
 import no.nav.bidrag.ui.dto.SynthesizedBidragRequest;
 import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
+import no.nav.bidrag.ui.exception.BidragRequestRuntimeException;
 import no.nav.registre.bisys.consumer.rs.request.BisysRequestAugments;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.consumer.ui.modules.BisysUiFatteVedtakConsumer;
@@ -42,14 +43,19 @@ public class BisysUiConsumer {
 
         if (bidragsmelding != null) {
             bisys = navigationSupport.logon();
+
+            log.info("Processing SyntetisertBidragsmelding with barnetsFnr {}",
+                    bidragsmelding.getBarnetsFnr());
         }
 
         SynthesizedBidragRequest request = testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding, bisysRequestAugments);
-        log.info("Processing SyntetisertBidragsmelding with barnetsFnr {}",
-                bidragsmelding.getBarnetsFnr());
 
-        soknadConsumer.openOrCreateSoknad(bisys, request);
-        fatteVedtakConsumer.runFatteVedtak(bisys, request);
+        if (bisys != null) {
+            soknadConsumer.openOrCreateSoknad(bisys, request);
+            fatteVedtakConsumer.runFatteVedtak(bisys, request);
+        } else {
+            throw new BidragRequestRuntimeException("Bisys logon failed!");
+        }
 
     }
 }

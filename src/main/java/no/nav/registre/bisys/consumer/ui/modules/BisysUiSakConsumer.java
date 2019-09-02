@@ -2,12 +2,16 @@ package no.nav.registre.bisys.consumer.ui.modules;
 
 import static no.nav.registre.bisys.consumer.ui.BisysUiSupport.getSak;
 import static no.nav.registre.bisys.consumer.ui.BisysUiSupport.redirectToSak;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+
 import lombok.extern.slf4j.Slf4j;
 import net.morher.ui.connect.api.element.Button;
 import net.morher.ui.connect.api.element.Label;
@@ -48,7 +52,7 @@ public class BisysUiSakConsumer {
 
         try {
 
-            Optional<String> existingSaksnr = findExistingSakInBrukeroversikt(bisys, request, activePage);
+            Optional<String> existingSaksnr = findExistingSakInBrukeroversikt(bisys, request);
             activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
             Sak sak = (Sak) bisys.getActivePage(activePage);
 
@@ -61,7 +65,7 @@ public class BisysUiSakConsumer {
 
             return activePage;
         } catch (ElementNotFoundException | NoSuchElementException e) {
-            throw new BidragRequestRuntimeException(activePage, bisys.bisysPage(), e);
+            throw new BidragRequestRuntimeException(bisys.bisysPage(), e);
         }
     }
 
@@ -69,19 +73,16 @@ public class BisysUiSakConsumer {
      * 
      * @param bisys
      * @param request
-     * @param activePage
      * @return
      * @throws BidragRequestProcessingException
      */
     private final Optional<String> findExistingSakInBrukeroversikt(BisysApplication bisys,
-            SynthesizedBidragRequest request, ActiveBisysPage activePage)
+            SynthesizedBidragRequest request)
             throws BidragRequestProcessingException {
 
-        activePage = BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.OPPGAVELISTE);
+        bisys.bisysPage().header().velgSkjermbilde().select(ActiveBisysPage.BRUKEROVERSIKT.pageName());
 
-        bisys.bisysPage().header().velgSkjermbilde().select("Brukeroversikt");
-
-        activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+        ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
 
         Brukeroversikt brukeroversikt = (Brukeroversikt) bisys.getActivePage(activePage);
 
@@ -106,7 +107,7 @@ public class BisysUiSakConsumer {
                 return Optional.empty();
             }
             if (sakActive(status)
-                    && existingSakContainsSameBpBmAsRequest(bisys, ytelse.linkToSak(), request, activePage)) {
+                    && existingSakContainsSameBpBmAsRequest(bisys, ytelse.linkToSak(), request)) {
                 return Optional.of(ytelse.saksnr().getText());
             }
         }
@@ -127,15 +128,14 @@ public class BisysUiSakConsumer {
      * @param bisys
      * @param linkToSak
      * @param request
-     * @param activePage
      * @return true if matching Sak is found, return false if not
      * @throws BidragRequestProcessingException
      */
     private final boolean existingSakContainsSameBpBmAsRequest(BisysApplication bisys,
-            Button linkToSak, SynthesizedBidragRequest request, ActiveBisysPage activePage)
+            Button linkToSak, SynthesizedBidragRequest request)
             throws BidragRequestProcessingException {
 
-        activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+        ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
 
         if (activePage.equals(ActiveBisysPage.BRUKEROVERSIKT)) {
             linkToSak.click();
