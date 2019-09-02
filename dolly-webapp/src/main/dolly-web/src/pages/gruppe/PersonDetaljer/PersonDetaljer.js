@@ -89,12 +89,17 @@ export default class PersonDetaljer extends PureComponent {
 					<Button onClick={editAction} className="flexbox--align-center" kind="edit">
 						REDIGER
 					</Button>
-					<ConfirmTooltip
-						className="flexbox--align-center"
-						message="Er du sikker på at du vil frigjøre denne testidenten fra testdatagruppen?"
-						label="FRIGJØR"
-						onClick={frigjoerTestbruker}
-					/>
+
+					{this.props.isFrigjoering ? (
+						<Loading label="Frigjør testbruker ..." panel />
+					) : (
+						<ConfirmTooltip
+							className="flexbox--align-center"
+							message="Er du sikker på at du vil frigjøre denne testidenten fra testdatagruppen?"
+							label="FRIGJØR"
+							onClick={frigjoerTestbruker}
+						/>
+					)}
 				</div>
 			</div>
 		)
