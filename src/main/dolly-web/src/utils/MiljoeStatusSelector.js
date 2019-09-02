@@ -32,6 +32,11 @@ const avvikStatus = item => {
 			status.statusMelding !== 'OK' && (avvik = true)
 		})
 
+	item.udiStubStatus &&
+		item.udiStubStatus.map(status => {
+			status.statusMelding !== 'OK' && (avvik = true) // noe annet enn statusMelding??
+		})
+
 	item.feil && (avvik = true)
 	return avvik
 }
@@ -166,6 +171,14 @@ const miljoeStatusSelector = bestilling => {
 				: failedEnvs.push('Arena')
 			: successEnvs.push('Arena')
 	}
+
+	// Funker denne????
+	bestilling.udiStubStatus &&
+		bestilling.udiStubStatus.map(status => {
+			status.statusMelding == 'OK'
+				? !successEnvs.includes('Udi-stub') && successEnvs.push('Udi-stub')
+				: !failedEnvs.includes('Udi-stub') && failedEnvs.push('Udi-stub')
+		})
 
 	return {
 		bestillingId,

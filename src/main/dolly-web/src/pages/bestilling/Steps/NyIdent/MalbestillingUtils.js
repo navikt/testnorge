@@ -171,6 +171,8 @@ const _mapRegistreKey = key => {
 			return 'institusjonsopphold'
 		case 'falskIdentitet':
 			return 'falskIdentitet'
+		//! case 'udiStub':
+		//! return 'udiStub'
 		default:
 			return key
 	}
@@ -287,6 +289,8 @@ const _mapRegistreValue = (key, value) => {
 					: (mapFalskIdObj[attr[0]] = attr[1])
 			})
 			return [mapFalskIdObj]
+		//! case 'udistub':
+		//! return something
 		default:
 			return value
 	}

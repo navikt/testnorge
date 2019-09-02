@@ -33,6 +33,7 @@ export default class PersonDetaljer extends PureComponent {
 			getPdlforvalterStatusOK(this.props.testIdent.pdlforvalterStatus) &&
 			this.props.getPdlfTestbruker()
 		this.props.testIdent.arenaforvalterStatus && this.props.getArenaTestbruker()
+		this.props.testIdent.udistubStatus === 'OK' && this.props.getUdiTestbruker()
 
 		const aaregSuccessEnvs = getSuccessEnv(this.props.testIdent.aaregStatus)
 		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
@@ -115,7 +116,8 @@ export default class PersonDetaljer extends PureComponent {
 			isFetchingSigrun,
 			isFetchingAareg,
 			isFetchingArena,
-			isFetchingInst
+			isFetchingInst,
+			isFetchingUdi
 		} = this.props
 		if (i.header === 'Inntekter') {
 			return isFetchingSigrun ? (
@@ -144,6 +146,12 @@ export default class PersonDetaljer extends PureComponent {
 		} else if (i.header === 'Institusjonsopphold') {
 			return isFetchingInst ? (
 				<Loading label="Henter data fra Inst" panel />
+			) : (
+				this._renderPersonInfoBlock(i)
+			)
+		} else if (i.header === 'UDI') {
+			return isFetchingUdi ? (
+				<Loading label="Henter data fra UDI-stub" panel />
 			) : (
 				this._renderPersonInfoBlock(i)
 			)
