@@ -167,23 +167,16 @@ public class IdentpoolService {
 
     public List<String> frigjoerLedigeIdenter(List<String> identer) {
         List<String> ledigeIdenter = new ArrayList<>(identer.size());
-        Map<String, Ident> fnrMedIdent = new HashMap<>();
-        List<String> identerSomSkalSjekkes = new ArrayList<>();
+        Map<String, Ident> fnrMedIdent = new HashMap<>(identer.size());
+        List<String> identerSomSkalSjekkes = new ArrayList<>(identer.size());
         for (String id : identer) {
             Ident ident = identRepository.findTopByPersonidentifikator(id);
-            fnrMedIdent.put(id, ident);
             if (ident != null) {
                 if (LEDIG.equals(ident.getRekvireringsstatus())) {
                     ledigeIdenter.add(id);
                 } else if (!ident.finnesHosSkatt()) {
+                    fnrMedIdent.put(id, ident);
                     identerSomSkalSjekkes.add(id);
-                    //                    List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(Collections.singletonList(id)));
-                    //                    if (!tpsStatuses.get(0).isInUse()) {
-                    //                        ident.setRekvireringsstatus(LEDIG);
-                    //                        ident.setRekvirertAv(null);
-                    //                        identRepository.save(ident);
-                    //                        ledigeIdenter.add(id);
-                    //                    }
                 }
             }
         }
@@ -199,24 +192,6 @@ public class IdentpoolService {
             }
         }
 
-        // alternativ løsning:
-        //        List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(identer));
-        //        for (TpsStatus tpsStatus : tpsStatuses) {
-        //            if (!tpsStatus.isInUse()) {
-        //                String id = tpsStatus.getIdent();
-        //                Ident ident = identRepository.findTopByPersonidentifikator(id);
-        //                if (ident != null) {
-        //                    if (LEDIG.equals(ident.getRekvireringsstatus())) {
-        //                        ledigeIdenter.add(id);
-        //                    } else if (!ident.finnesHosSkatt()) {
-        //                        ident.setRekvireringsstatus(LEDIG);
-        //                        ident.setRekvirertAv(null);
-        //                        identRepository.save(ident);
-        //                        ledigeIdenter.add(id);
-        //                    }
-        //                }
-        //            }
-        //        }
         return ledigeIdenter;
     }
 
