@@ -288,7 +288,8 @@
             <utlandinfoSedRef> </utlandinfoSedRef>
             <utlandinfoNasjonalId> </utlandinfoNasjonalId>
             <utlandinfoInstitusjonNavn> </utlandinfoInstitusjonNavn>
-            <utlandinfoDato> </utlandinfoDato>
+            <utlandinfoFraDato> </utlandinfoFraDato>
+            <utlandinfoTilDato> </utlandinfoTilDato>
             <utlandinfoKilde> </utlandinfoKilde>
         </utlandinfo>
     </person>
