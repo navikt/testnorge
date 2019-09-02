@@ -602,6 +602,57 @@ export function mapBestillingData(bestillingData) {
 			})
 			data.push(instObj)
 		}
+
+		const udiStubKriterier = registreKriterier.udidata && registreKriterier.udidata
+
+		if (udiStubKriterier) {
+			const udistub = {
+				header: 'UDI',
+				items: [
+					{
+						label: 'Oppholdsstatus',
+						value: udiStubKriterier // + noe
+					},
+					{
+						label: 'Type opphold',
+						value: udiStubKriterier // + noe
+					},
+					{
+						label: 'Oppholdstillatelse fra dato',
+						value: udiStubKriterier // + noe
+					},
+					{
+						label: 'Oppholdstillatelse til dato',
+						value: udiStubKriterier // + noe
+					},
+					{
+						label: 'Grunn',
+						value: udiStubKriterier // + noe
+					},
+					{
+						label: 'Har arbeidsadgang',
+						value: udiStubKriterier // + noe
+					},
+					{
+						label: 'Type arbeidsadgang',
+						value: udiStubKriterier // + noe
+					},
+					{
+						label: 'Arbeidsomfang',
+						value: udiStubKriterier // + noe
+					},
+					{
+						label: 'Arbeidsadgang fra dato',
+						value: udiStubKriterier // + noe
+					},
+					{
+						label: 'Arbeidsadgang til dato',
+						value: udiStubKriterier // + noe
+					}
+				]
+			}
+			data.push(udistub)
+		}
 	}
 	return data
 }

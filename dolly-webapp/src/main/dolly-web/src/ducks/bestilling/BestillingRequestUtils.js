@@ -175,7 +175,67 @@ export const getValues = (attributeList, values) => {
 		}
 
 		if (pathPrefix === DataSourceMapper('UDI')) {
-			return _set(accumulator, pathPrefix, value[0])
+			const udiData = value[0]
+			const udiObj = {}
+
+			if (Object.keys(udiData).includes('harArbeidsAdgang')) {
+				Object.keys(udiData).map(attr => {
+					if (udiData[attr]) {
+						if (attr === 'arbeidsadgangFraDato') {
+							Object.assign(udiObj, { periode: { fra: udiData[attr] } })
+						} else if (attr === 'arbeidsadgangTilDato') {
+							if (udiObj.periode) {
+								Object.assign(udiObj.periode, { til: udiData[attr] })
+							} else {
+								Object.assign(udiObj, { periode: { til: udiData[attr] } })
+							}
+						} else {
+							Object.assign(udiObj, { [attr]: udiData[attr] })
+						}
+					}
+				})
+			}
+
+			if (Object.keys(udiData).includes('oppholdsstatus')) {
+				if (udiData.oppholdsstatus === 'eosEllerEFTAOpphold') {
+					const periode = udiData.typeOpphold + 'Periode'
+					Object.assign(udiObj, { [udiData.typeOpphold]: null })
+					if (udiData.oppholdFraDato) {
+						Object.assign(udiObj, { [periode]: { fra: udiData.oppholdFraDato } })
+					}
+					if (udiData.oppholdTilDato) {
+						if (periode in udiObj) {
+							Object.assign(udiObj[periode], { til: udiData.oppholdTilDato })
+						} else {
+							Object.assign(udiObj, { [periode]: { til: udiData.oppholdTilDato } })
+						}
+					}
+				} else if (udiData.oppholdsstatus === 'oppholdSammeVilkaar') {
+					const periode = udiData.oppholdsstatus + 'Periode'
+					Object.assign(udiObj, { [udiData.oppholdsstatus]: {} })
+					if (udiData.oppholdFraDato) {
+						Object.assign(udiObj[udiData.oppholdsstatus], {
+							[periode]: { fra: udiData.oppholdFraDato }
+						})
+					}
+					if (udiData.oppholdTilDato) {
+						if ([periode] in udiObj[udiData.oppholdsstatus]) {
+							Object.assign(udiObj[udiData.oppholdsstatus][periode], {
+								til: udiData.oppholdTilDato
+							})
+						} else {
+							Object.assign(udiObj[udiData.oppholdsstatus], {
+								[periode]: { til: udiData.oppholdTilDato }
+							})
+						}
+					}
+				} else if (udiData.oppholdsstatus === 'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum') {
+					Object.assign(udiObj, { [udiData.oppholdsstatus]: { [udiData.ikkeOppholdGrunn]: null } })
+				} else if (udiData.oppholdsstatus === 'uavklart') {
+					Object.assign(udiObj, { uavklart: null })
+				}
+			}
+			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, udiObj)
 		}
 
 		return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)

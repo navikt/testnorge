@@ -8,7 +8,8 @@ import {
 	GET_AAREG_TESTBRUKER,
 	GET_TESTBRUKER_PERSONOPPSLAG,
 	GET_ARENA_TESTBRUKER,
-	GET_INST_TESTBRUKER
+	GET_INST_TESTBRUKER,
+	GET_UDI_TESTBRUKER
 } from '~/ducks/testBruker'
 import { FRIGJOER_TESTBRUKER } from '~/ducks/testBruker'
 import { createLoadingSelector } from '~/ducks/loading'
@@ -20,6 +21,7 @@ const loadingSelectorAareg = createLoadingSelector(GET_AAREG_TESTBRUKER)
 const loadingSelectorPdlf = createLoadingSelector(GET_TESTBRUKER_PERSONOPPSLAG)
 const loadingSelectorArena = createLoadingSelector(GET_ARENA_TESTBRUKER)
 const loadingSelectorInst = createLoadingSelector(GET_INST_TESTBRUKER)
+const loadingSelectorUdi = createLoadingSelector(GET_UDI_TESTBRUKER)
 
 const mapStateToProps = (state, ownProps) => {
 	return {
@@ -29,6 +31,7 @@ const mapStateToProps = (state, ownProps) => {
 		isFetchingPdlf: loadingSelectorPdlf(state),
 		isFetchingArena: loadingSelectorArena(state),
 		isFetchingInst: loadingSelectorInst(state),
+		isFetchingUdi: loadingSelectorUdi(state),
 		personData: DataMapper.getDetailedData(state, ownProps),
 		testIdent: state.gruppe.data[0].testidenter.find(
 			testIdent => testIdent.ident === ownProps.personId
@@ -48,6 +51,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		getAaregTestbruker: env => dispatch(GET_AAREG_TESTBRUKER(ownProps.personId, env)),
 		getInstTestbruker: env => dispatch(GET_INST_TESTBRUKER(ownProps.personId, env)),
 		getPdlfTestbruker: () => dispatch(GET_TESTBRUKER_PERSONOPPSLAG(ownProps.personId)),
+		getUdiTestbruker: () => dispatch(GET_UDI_TESTBRUKER(ownProps.personId)),
 		frigjoerTestbruker: () => dispatch(FRIGJOER_TESTBRUKER(ownProps.personId))
 	}
 }

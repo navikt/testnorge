@@ -108,6 +108,11 @@ const avvikStatus = item => {
 			status.statusMelding !== 'OK' && (avvik = true)
 		})
 
+	item.udiStubStatus &&
+		item.udiStubStatus.map(status => {
+			status.statusMelding !== 'OK' && (avvik = true)
+		})
+
 	item.feil && (avvik = true)
 	return avvik
 }

@@ -69,8 +69,9 @@ export default class Feilmelding extends Component {
 		let stubStatus = []
 		const krrStubStatus = { navn: 'KRRSTUB', status: bestilling.krrStubStatus }
 		const sigrunStubStatus = { navn: 'SIGRUNSTUB', status: bestilling.sigrunStubStatus }
+		const udiStubStatus = { navn: 'UDISTUB', status: bestilling.udiStubStatus }
 
-		// Legger til feilmeldinger fra krrStub og sigrunStub i et array
+		// Legger til feilmeldinger fra krrStub, sigrunStub og udiStub i et array
 		{
 			krrStubStatus.status &&
 				krrStubStatus.status[0].statusMelding !== 'OK' &&
@@ -80,6 +81,11 @@ export default class Feilmelding extends Component {
 			sigrunStubStatus.status &&
 				sigrunStubStatus.status[0].statusMelding !== 'OK' &&
 				stubStatus.push(sigrunStubStatus)
+		}
+		{
+			udiStubStatus.status &&
+				udiStubStatus.status[0].statusMelding !== 'OK' &&
+				stubStatus.push(udiStubStatus)
 		}
 
 		return stubStatus
