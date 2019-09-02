@@ -266,11 +266,12 @@ export default class Step3 extends PureComponent {
 	renderItem = (item, stateValues, header) => {
 		if (item.items) {
 			let valueArray = _get(this.props.values, item.id)
-			if (item.id === 'barn_utvandret') {
+			if (item.id === 'barn_utvandret' || item.id === 'barn_innvandret') {
 				let barnIndex = 0
 				if (header) barnIndex = header - 1
 				valueArray = _get(this.props.values.barn[barnIndex], item.id)
 			}
+			if (!valueArray) return
 			return valueArray.map((values, idx) => {
 				Object.keys(values).map(attr => {
 					return !values[attr] && delete values[attr]
@@ -282,7 +283,6 @@ export default class Step3 extends PureComponent {
 				return this.renderSubKategoriBlokk(header, item.items, values)
 			})
 		}
-
 		if (!item.inputType) return null
 		if (item.onlyShowAfterSelectedValue && !itemValue) return null
 		if ((item.id === 'utenFastBopel' || item.id === 'ufb_kommunenr') && !itemValue) return null
