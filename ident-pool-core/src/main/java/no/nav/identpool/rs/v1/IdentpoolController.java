@@ -81,7 +81,7 @@ public class IdentpoolController {
     }
 
     @PostMapping("/brukFlere")
-    @ApiOperation(value = "Marker identer i oppgitt liste som I_BRUK i ident-pool-databasen. Returnerer en liste over de identene som nå er satt til I_BRUK.")
+    @ApiOperation(value = "Marker identer i gitt liste som I_BRUK i ident-pool-databasen. Returnerer en liste over de identene som nå er satt til I_BRUK.")
     public List<String> markerBruktIdenter(@RequestParam String rekvirertAv, @RequestBody List<String> identer) throws Exception {
         if (Strings.isNullOrEmpty(rekvirertAv)) {
             throw new IllegalArgumentException("Felt 'rekvirertAv' må fylles ut");
