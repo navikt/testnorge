@@ -8,6 +8,8 @@ import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriTemplate;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AaregService {
@@ -18,7 +20,7 @@ public class AaregService {
 
     private final SyntConsumer<AaregResponse> syntConsumer;
 
-    public AaregResponse generateData(String[] fnrs) {
+    public AaregResponse generateData(List<String> fnrs) {
         UriTemplate uri = new UriTemplate(synthUrl);
         RequestEntity request = RequestEntity.post(uri.expand()).body(fnrs);
         return syntConsumer.synthesizeData(appName, request);
