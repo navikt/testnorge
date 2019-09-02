@@ -1,15 +1,21 @@
 import Formatters from '~/utils/DataFormatter'
+import _set from 'lodash/set'
 
 export const getAttributesFromMal = mal => {
 	const tpsfKriterier = JSON.parse(mal.tpsfKriterier)
 	const bestKriterier = JSON.parse(mal.bestKriterier)
 	let attrArray = []
 	attrArray = Object.keys(tpsfKriterier).filter(k => {
-		if (k !== 'identtype' && k !== 'relasjoner' && k !== 'regdato') {
+		if (
+			k !== 'identtype' &&
+			k !== 'relasjoner' &&
+			k !== 'regdato' &&
+			!k.includes('innvandretFraLand') &&
+			!k.includes('utvandretTilLand')
+		) {
 			return k
 		}
 	})
-
 	if (tpsfKriterier.boadresse) {
 		tpsfKriterier.boadresse.flyttedato && attrArray.push('boadresse_flyttedato')
 		if (tpsfKriterier.boadresse.adressetype === 'MATR') {
@@ -25,12 +31,8 @@ export const getAttributesFromMal = mal => {
 		tpsfKriterier.relasjoner.partner && attrArray.push('partner')
 	}
 
-	if (tpsfKriterier.utvandretTilLand) {
-		attrArray.push('utvandret')
-		delete attrArray[attrArray.indexOf('utvandretTilLand')]
-		tpsfKriterier.utvandretTilLandFlyttedato &&
-			delete attrArray[attrArray.indexOf('utvandretTilLandFlyttedato')]
-	}
+	tpsfKriterier.innvandretFraLand && attrArray.push('innvandret')
+	tpsfKriterier.utvandretTilLand && attrArray.push('utvandret')
 
 	if (bestKriterier.pdlforvalter) {
 		Object.keys(bestKriterier.pdlforvalter).map(pdlattr => {
@@ -48,7 +50,6 @@ export const getValuesFromMal = mal => {
 	let reduxStateValue = {}
 	const tpsfKriterierArray = Object.entries(JSON.parse(mal.tpsfKriterier))
 	const bestKriterierArray = Object.entries(JSON.parse(mal.bestKriterier))
-
 	_mapValuesToObject(reduxStateValue, tpsfKriterierArray)
 	bestKriterierArray.forEach(reg => {
 		const pdlforvalter = reg[0] === 'pdlforvalter'
@@ -61,8 +62,8 @@ export const getValuesFromMal = mal => {
 		}
 	})
 
-	if (reduxStateValue.utvandretTilLand) {
-		const utvandretValues = _mapUtvandretValues(reduxStateValue)
+	if (reduxStateValue.utvandretTilLand || reduxStateValue.innvandretFraLand) {
+		const utvandretValues = _mapInnOgUtvandretValues(reduxStateValue)
 		reduxStateValue = utvandretValues
 	}
 
@@ -77,7 +78,6 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 	valueArray.forEach(v => {
 		let key = v[0]
 		if (key === 'regdato') return
-
 		let value = v[1]
 		if (value || value === false) {
 			let customKeyPrefix = keyPrefix
@@ -118,8 +118,6 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 }
 
 const _mapArrayValuesToObject = (objectToAssign, valueArray, key, keyPrefix = '') => {
-	//Må se på hvordan det skal gjøres når utenlandsID kommer inn
-
 	const mappedKey =
 		key === 'pdlforvalter' || key === 'arenaforvalter'
 			? _mapRegistreKey(Object.keys(valueArray[0])[0])
@@ -153,6 +151,7 @@ const _formatValueForObject = (key, value) => {
 		'fraDato',
 		'tilDato',
 		'utvandretTilLandFlyttedato',
+		'innvandretFraLandFlyttedato',
 		'startdato',
 		'faktiskSluttdato',
 		'forventetSluttdato'
@@ -191,16 +190,63 @@ const _mapRegistreKey = key => {
 	}
 }
 
-const _mapUtvandretValues = values => {
-	let utvandretValues = [
+const _mapInnOgUtvandretValues = values => {
+	// Trenger en forenkling. Lage en generisk løsning for alle attributter som samles i en undergruppe i formik (1 check i step 1 og 2 inputbokser i step2).
+	let valuesArray = JSON.parse(JSON.stringify(values))
+	valuesArray.barn &&
+		valuesArray.barn.map(enkeltBarn => {
+			enkeltBarn.barn_innvandret = [
+				{
+					innvandretFraLand: enkeltBarn.barn_innvandretFraLand && enkeltBarn.barn_innvandretFraLand,
+					innvandretFraLandFlyttedato:
+						enkeltBarn.barn_innvandretFraLandFlyttedato &&
+						enkeltBarn.barn_innvandretFraLandFlyttedato
+				}
+			]
+			enkeltBarn.barn_utvandret = [
+				{
+					utvandretTilLand: enkeltBarn.barn_utvandretTilLand && enkeltBarn.barn_utvandretTilLand,
+					utvandretTilLandFlyttedato:
+						enkeltBarn.barn_utvandretTilLandFlyttedato && enkeltBarn.barn_utvandretTilLandFlyttedato
+				}
+			]
+		})
+
+	valuesArray.partner_innvandret = [
 		{
-			utvandretTilLand: values.utvandretTilLand,
-			utvandretTilLandFlyttedato: values.utvandretTilLandFlyttedato
+			innvandretFraLand:
+				valuesArray.partner_innvandretFraLand && valuesArray.partner_innvandretFraLand,
+			innvandretFraLandFlyttedato:
+				valuesArray.partner_innvandretFraLandFlyttedato &&
+				valuesArray.partner_innvandretFraLandFlyttedato
 		}
 	]
-	let returnValues = values
-	returnValues['utvandret'] = utvandretValues
-	return returnValues
+	valuesArray.partner_utvandret = [
+		{
+			utvandretTilLand:
+				valuesArray.partner_utvandretTilLand && valuesArray.partner_utvandretTilLand,
+			utvandretTilLandFlyttedato:
+				valuesArray.partner_utvandretTilLandFlyttedato &&
+				valuesArray.partner_utvandretTilLandFlyttedato
+		}
+	]
+
+	valuesArray.innvandret = [
+		{
+			innvandretFraLand: valuesArray.innvandretFraLand && valuesArray.innvandretFraLand,
+			innvandretFraLandFlyttedato:
+				valuesArray.innvandretFraLandFlyttedato && valuesArray.innvandretFraLandFlyttedato
+		}
+	]
+
+	valuesArray.utvandret = [
+		{
+			utvandretTilLand: valuesArray.utvandretTilLand && valuesArray.utvandretTilLand,
+			utvandretTilLandFlyttedato:
+				valuesArray.utvandretTilLandFlyttedato && valuesArray.utvandretTilLandFlyttedato
+		}
+	]
+	return valuesArray
 }
 
 const _mapAdresseValues = values => {
