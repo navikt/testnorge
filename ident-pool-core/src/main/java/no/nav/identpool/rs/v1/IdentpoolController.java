@@ -90,6 +90,9 @@ public class IdentpoolController {
         return identpoolService.markerBruktFlere(rekvirertAv, identer);
     }
 
+    /**
+     * @deprecated (2019-02-09, erstattet av endepunkt /brukFlere, benytt endepunkt /brukFlere)
+     */
     @Deprecated
     @PostMapping("/bruk/batch")
     @ApiOperation(value = "marker eksisterende og ledige identer som i bruk")
