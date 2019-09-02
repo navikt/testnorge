@@ -17,7 +17,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 @Slf4j
 @Service
-public class UdiStubClient implements ClientRegister {
+public final class UdiStubClient implements ClientRegister {
 
     @Autowired
     private UdiStubConsumer udiStubConsumer;
@@ -41,17 +41,16 @@ public class UdiStubClient implements ClientRegister {
 
                 response = udiStubConsumer.createUdiPerson(progress.getBestillingId(), udiPerson);
                 if (response.getStatusCode().is4xxClientError() || response.getStatusCode().is5xxServerError()) {
-                    String reason = response.getBody() == null ? "Ukjent årsak" : response.getBody().getReason();
+                    String reason = nonNull(response.getBody()) ? response.getBody().getReason() : "Ukjent årsak";
                     throw new UdiStubException(reason);
                 }
                 appendOkStatus(status, response);
 
             } catch (UdiStubException e) {
-                if (response != null &&
-                        response.getBody() != null &&
-                        response.getBody().getReason() != null) {
+
+                if (reasonIsSet(response)) {
                     appendErrorStatus(status, e, response.getBody().getReason());
-                    log.error("Gjenopprett feilet for udistubclient: {}, {}", e.getMessage(), response.getBody().getReason(), e);
+                    log.error("Gjenopprett feilet for udistubclient: {}", response.getBody().getReason(), e);
                 } else {
                     appendErrorStatus(status, e, "ukjent årsak");
                     log.error("Gjenopprett feilet for udistubclient: {}", e.getMessage(), e);
@@ -62,13 +61,15 @@ public class UdiStubClient implements ClientRegister {
     }
 
     private static void appendOkStatus(StringBuilder status, ResponseEntity<PersonControllerResponse> postResponse) {
-        if (postResponse != null
-                && postResponse.getBody() != null
-                && postResponse.getBody().getPerson() != null) {
-            status.append("OK: ")
-                    .append("ident=")
-                    .append(postResponse.getBody().getPerson().getIdent());
+        if (reasonIsSet(postResponse)) {
+            status.append("OK: ident=").append(postResponse.getBody().getPerson().getIdent());
         }
+    }
+
+    private static Boolean reasonIsSet(ResponseEntity<PersonControllerResponse> response) {
+        return nonNull(response) &&
+                nonNull(response.getBody()) &&
+                nonNull(response.getBody().getReason());
     }
 
     private static void appendErrorStatus(StringBuilder status, RuntimeException e, String reason) {
