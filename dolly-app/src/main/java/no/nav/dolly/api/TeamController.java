@@ -79,12 +79,6 @@ public class TeamController {
     }
 
     @CacheEvict(value = CACHE_TEAM, allEntries = true)
-    @PutMapping("/{teamId}/fjernMedlemmer")
-    public RsTeamUtvidet fjernBrukerefraTeam(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
-        return teamService.fjernMedlemmer(teamId, navIdenter);
-    }
-
-    @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @DeleteMapping("/{teamId}/deleteMedlem")
     public RsTeamUtvidet deleteMedlemfraTeam(@PathVariable("teamId") Long teamId, @RequestParam String navIdent) {
         return teamService.slettMedlem(teamId, navIdent);
