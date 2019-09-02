@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,7 +57,13 @@ public class SyntetiseringService {
         int antallNyeIdenterMedInntekt = (identer.size() / andelNyeIdenter) - identerIInntektstub.size();
 
         identer.removeAll(identerIInntektstub);
-        List<String> nyeIdenter = new ArrayList<>(identer).subList(0, antallNyeIdenterMedInntekt);
+        List<String> nyeIdenter;
+        if (antallNyeIdenterMedInntekt <= 0) {
+            log.info("Tilstrekkelig mange identer i mininorge har allerede inntekt. Oppretter ikke inntekt på nye identer.");
+            nyeIdenter = Collections.emptyList();
+        } else {
+            nyeIdenter = new ArrayList<>(identer).subList(0, antallNyeIdenterMedInntekt);
+        }
 
         if (identerIInntektstub.isEmpty() && nyeIdenter.isEmpty()) {
             log.warn("Ingen identer å opprette meldinger på");

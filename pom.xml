@@ -14,7 +14,7 @@
 
     <groupId>no.nav.registre</groupId>
     <artifactId>testnorge-inntekt</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
 
     <properties>
         <application.version>${project.version}</application.version>
