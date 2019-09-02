@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.List;
 
+import no.nav.registre.sdForvalter.database.InTeam;
 import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 
 @Entity
@@ -27,7 +28,7 @@ import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 @AllArgsConstructor
 @Slf4j
 @Table(name = "krr")
-public class KrrModel extends AuditModel implements CreatableFromString {
+public class KrrModel extends AuditModel implements CreatableFromString, InTeam {
 
     @Id
     private String fnr;

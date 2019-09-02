@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.List;
 
+import no.nav.registre.sdForvalter.database.InTeam;
 import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 
 @Entity
@@ -28,7 +29,7 @@ import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 @AllArgsConstructor
 @Slf4j
 @Table(name = "AAREG")
-public class AaregModel extends AuditModel implements CreatableFromString {
+public class AaregModel extends AuditModel implements CreatableFromString, InTeam {
 
     @Id
     private String fnr;
@@ -69,18 +70,6 @@ public class AaregModel extends AuditModel implements CreatableFromString {
                     case "orgid":
                         this.setOrgId(Long.valueOf(fieldValue.replaceAll("\\s+", "")));
                         break;
-//                    case "orgnavn":
-//                        this.setName(fieldValue);
-//                        break;
-//                    case "knytning":
-//                        this.setConnection(fieldValue);
-//                        break;
-//                    case "beskrivelse":
-//                        this.setDescription(fieldValue);
-//                        break;
-//                    case "enhetstype":
-//                        this.setType(fieldValue);
-//                        break;
                     default:
                         throw new NoSuchFieldException(fieldName);
                 }

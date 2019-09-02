@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
@@ -20,8 +19,7 @@ import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.model.Team;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
-import no.nav.registre.sdForvalter.provider.rs.request.AaregRequest;
-import no.nav.registre.sdForvalter.provider.rs.request.TpsRequest;
+import no.nav.registre.sdForvalter.provider.rs.request.FastDataRequest;
 import no.nav.registre.sdForvalter.service.StaticDataService;
 
 //TODO: Fix database update and create complex heriarcy
@@ -71,26 +69,15 @@ public class StaticDataController {
     }
 
 
-    @PostMapping(value = "/tps")
-    public ResponseEntity storeStaticDataInTps(@RequestBody Set<TpsRequest> data) {
-        return ResponseEntity.ok(staticDataService.saveInTps(data));
-    }
-
-
-    @PostMapping(value = "/aareg")
-    public ResponseEntity storeStaticDataInAaareg(@Valid @RequestBody Set<AaregRequest> data) {
-        return ResponseEntity.ok(staticDataService.saveInAareg(data));
-    }
-
-
-    @PostMapping(value = "/krr")
-    public ResponseEntity storeStaticData(@Valid @RequestBody Set<KrrModel> data) {
-        return ResponseEntity.ok(staticDataService.saveInKrr(data));
-    }
-
-    @PostMapping(value = "/ereg")
-    public ResponseEntity<List<EregModel>> storeStaticData(@Valid @RequestBody List<EregModel> data) {
-        return ResponseEntity.ok(staticDataService.saveInEreg(data));
+    @PostMapping(value = "/")
+    public ResponseEntity<FastDataRequest> storeStaticDataInTps(@RequestBody FastDataRequest data) {
+        FastDataRequest responseBody = new FastDataRequest();
+        responseBody.setEier(data.getEier());
+        responseBody.setTps(staticDataService.saveInTps(data.getTps(), data.getEier()));
+        responseBody.setKrr(staticDataService.saveInKrr(data.getKrr(), data.getEier()));
+        responseBody.setEreg(staticDataService.saveInEreg(data.getEreg(), data.getEier()));
+        responseBody.setAareg(staticDataService.saveInAareg(data.getAareg(), data.getEier()));
+        return ResponseEntity.ok(responseBody);
     }
 
     @DeleteMapping(value = "/ereg")

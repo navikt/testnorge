@@ -22,6 +22,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import no.nav.registre.sdForvalter.database.InTeam;
+
 @Entity
 @ToString
 @Getter
@@ -31,7 +33,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Slf4j
 @Table(name = "EREG")
-public class EregModel extends AuditModel {
+public class EregModel extends AuditModel implements InTeam {
 
     @Id
     @GeneratedValue
