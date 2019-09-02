@@ -19,6 +19,7 @@ import org.mockito.stubbing.Answer;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -82,7 +83,7 @@ class AjourholdServiceTest {
 
     @Test
     void genererIdenterForAarHvorIngenErLedige() {
-        when(identTpsService.checkIdentsInTps(anyList())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
+        when(identTpsService.checkIdentsInTps(anyList(), eq(Collections.emptyList()))).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatus(p, false)).collect(Collectors.toSet());
         });
@@ -96,7 +97,7 @@ class AjourholdServiceTest {
 
     @Test
     void genererIdenterForAarHvorAlleErLedige() {
-        when(identTpsService.checkIdentsInTps(anyList())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
+        when(identTpsService.checkIdentsInTps(anyList(), eq(Collections.emptyList()))).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
         });
@@ -110,7 +111,7 @@ class AjourholdServiceTest {
 
     @Test
     void genererIdenterForAarHvorAlleErLedigeBOST() {
-        when(identTpsService.checkIdentsInTps(anyList())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
+        when(identTpsService.checkIdentsInTps(anyList(), eq(Collections.emptyList()))).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
         });
@@ -124,7 +125,7 @@ class AjourholdServiceTest {
 
     @Test
     void generererIdenterFraAarTilDatoMidtISammeAar() {
-        when(identTpsService.checkIdentsInTps(anyList())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
+        when(identTpsService.checkIdentsInTps(anyList(), eq(Collections.emptyList()))).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
         });
@@ -140,7 +141,7 @@ class AjourholdServiceTest {
 
     @Test
     void generererIdenterFraAarTilDatoMidtISammeAarBOST() {
-        when(identTpsService.checkIdentsInTps(anyList())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
+        when(identTpsService.checkIdentsInTps(anyList(), eq(Collections.emptyList()))).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
         });

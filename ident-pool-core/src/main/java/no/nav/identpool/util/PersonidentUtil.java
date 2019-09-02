@@ -7,6 +7,7 @@ import static no.nav.identpool.domain.Identtype.DNR;
 import static org.springframework.util.Assert.notNull;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
@@ -33,6 +34,18 @@ public final class PersonidentUtil {
             validateControlDigits(ident);    
         } else {
             throw new UgyldigPersonidentifikatorException(String.format("%s inneholder ikke nok sifre", ident));
+        }
+    }
+
+    public static void validateMultiple(List<String> identer) throws UgyldigPersonidentifikatorException {
+        for(String ident : identer) {
+            notNull(ident, "Personidentifikator kan ikke være null");
+
+            if (ident.matches("\\d{11}")) {
+                validateControlDigits(ident);
+            } else {
+                throw new UgyldigPersonidentifikatorException(String.format("%s inneholder ikke nok sifre", ident));
+            }
         }
     }
 

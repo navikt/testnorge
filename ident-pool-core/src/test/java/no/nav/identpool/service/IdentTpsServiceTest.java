@@ -64,7 +64,7 @@ class IdentTpsServiceTest {
         mockMqError();
         mockBackupMq(personData);
 
-        Set<TpsStatus> identerFinnes = identTpsService.checkIdentsInTps(idents);
+        Set<TpsStatus> identerFinnes = identTpsService.checkIdentsInTps(idents, new ArrayList<>());
 
         assertResponseOk(personData, identerFinnes);
     }
@@ -77,7 +77,7 @@ class IdentTpsServiceTest {
 
         mockMqSuccess(personData);
 
-        Set<TpsStatus> identerFinnes = identTpsService.checkIdentsInTps(idents);
+        Set<TpsStatus> identerFinnes = identTpsService.checkIdentsInTps(idents, new ArrayList<>());
 
         assertResponseOk(personData, identerFinnes);
     }
@@ -90,7 +90,7 @@ class IdentTpsServiceTest {
 
         mockMqSuccess(personData);
 
-        Set<TpsStatus> identerFinnes = identTpsService.checkIdentsInTps(idents);
+        Set<TpsStatus> identerFinnes = identTpsService.checkIdentsInTps(idents, new ArrayList<>());
 
         assertResponseOk(personData, identerFinnes);
     }
@@ -98,7 +98,7 @@ class IdentTpsServiceTest {
     @Test
     @DisplayName("Skal returnere når tom liste med fnr")
     void emptyFnrs() {
-        Set<TpsStatus> identerFinnes = identTpsService.checkIdentsInTps(new ArrayList<>());
+        Set<TpsStatus> identerFinnes = identTpsService.checkIdentsInTps(new ArrayList<>(), new ArrayList<>());
 
         assertEquals(0, identerFinnes.size());
     }
@@ -110,7 +110,7 @@ class IdentTpsServiceTest {
 
         List<String> idents = extractIdents(JAXB.unmarshal(fetchTestXml(), TpsPersonData.class));
 
-        assertThrows(RuntimeException.class, () -> identTpsService.checkIdentsInTps(idents));
+        assertThrows(RuntimeException.class, () -> identTpsService.checkIdentsInTps(idents, new ArrayList<>()));
     }
 
     private void assertResponseOk(TpsPersonData personData, Set<TpsStatus> identerFinnes) {
