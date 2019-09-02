@@ -3,6 +3,7 @@ package no.nav.identpool.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -56,12 +57,12 @@ import no.nav.identpool.test.mockito.MockitoExtension;
         statusSet.add(tpsStatus);
 
         when(repository.findTopByPersonidentifikator(fnr1)).thenReturn(ident);
-        when(identTpsService.checkIdentsInTps(anyList())).thenReturn(statusSet);
+        when(identTpsService.checkIdentsInTps(anyList(), eq(Collections.emptyList()))).thenReturn(statusSet);
 
         List<String> frigjorteIdenter = identpoolService.frigjoerLedigeIdenter(identer);
 
         verify(repository).findTopByPersonidentifikator(fnr1);
-        verify(identTpsService).checkIdentsInTps(anyList());
+        verify(identTpsService).checkIdentsInTps(anyList(), eq(Collections.emptyList()));
         verify(repository).save(ident);
 
         assertEquals(fnr1, frigjorteIdenter.get(0));

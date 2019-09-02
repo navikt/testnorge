@@ -5,11 +5,14 @@ import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.jms.JMSException;
 import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
 import java.io.StringReader;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,8 +40,10 @@ public class IdentTpsService {
     private MessageQueue messageQueue;
 
     @Timed(value = "ident_pool.resource.latency", extraTags = { "operation", "TPS" })
-    public Set<TpsStatus> checkIdentsInTps(List<String> idents) {
-        List<String> environments = QueueContext.getSuccessfulEnvs();
+    public Set<TpsStatus> checkIdentsInTps(List<String> idents, List<String> environments) {
+        if (CollectionUtils.isEmpty(environments)) {
+            environments = QueueContext.getSuccessfulEnvs();
+        }
 
         Set<TpsStatus> identSet = populateDefaultValues(idents);
 

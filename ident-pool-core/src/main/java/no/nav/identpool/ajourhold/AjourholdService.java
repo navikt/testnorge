@@ -93,7 +93,7 @@ public class AjourholdService {
 
     private void filterIdents(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
         List<String> identsNotInDatabase = filterAgainstDatabase(antallPerDag, pinMap);
-        Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase);
+        Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase, new ArrayList<>());
 
         List<String> rekvirert = tpsStatuses.stream()
                 .filter(TpsStatus::isInUse)

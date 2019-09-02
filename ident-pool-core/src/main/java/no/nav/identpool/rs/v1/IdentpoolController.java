@@ -3,6 +3,7 @@ package no.nav.identpool.rs.v1;
 import static no.nav.identpool.util.PersonidentUtil.validate;
 import static no.nav.identpool.util.ValiderRequestUtil.validateDatesInRequest;
 
+import com.google.common.base.Strings;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -78,6 +79,7 @@ public class IdentpoolController {
         identpoolService.markerBrukt(markerBruktRequest);
     }
 
+    @Deprecated
     @PostMapping("/bruk/batch")
     @ApiOperation(value = "marker eksisterende og ledige identer som i bruk")
     public MarkerBruktBatchResponse markerBruktBatch(@RequestBody MarkerBruktBatchRequest markerBruktBatchRequest) {
@@ -118,6 +120,15 @@ public class IdentpoolController {
     }
 
     @PostMapping("/frigjoer")
+    @ApiOperation(value = "Frigjør rekvirerte identer i en gitt liste. Returnerer de identene i den gitte listen som nå er ledige.")
+    public List<String> frigjoerIdenter(@RequestParam String rekvirertAv, @RequestBody List<String> identer) {
+        if (Strings.isNullOrEmpty(rekvirertAv)) {
+            throw new IllegalArgumentException("Felt 'rekvirertAv' må fylles ut");
+        }
+        return identpoolService.frigjoerIdenter(rekvirertAv, identer);
+    }
+
+    @PostMapping("/frigjoerLedige")
     @ApiOperation(value = "Frigjør rekvirerte, men ubrukte identer i en gitt liste. Returnerer de identene i den gitte listen som nå er ledige.")
     public List<String> frigjoerLedigeIdenter(@RequestBody List<String> identer) {
         return identpoolService.frigjoerLedigeIdenter(identer);
