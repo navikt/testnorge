@@ -165,6 +165,42 @@ public class IdentpoolService {
         throw new IllegalStateException("Den etterspurte identen er ugyldig siden den hverken markert som i bruk eller ledig.");
     }
 
+    public List<String> markerBruktFlere(String rekvirertAv, List<String> identer) {
+        List<String> identerMarkertSomIBruk = new ArrayList<>(identer.size());
+        List<String> identerSomSkalSjekkes = new ArrayList<>(identer.size());
+        for (String id : identer) {
+            Ident ident = identRepository.findTopByPersonidentifikator(id);
+            if (ident == null) {
+                identerSomSkalSjekkes.add(id);
+            } else if (LEDIG.equals(ident.getRekvireringsstatus())) {
+                ident.setRekvireringsstatus(I_BRUK);
+                ident.setRekvirertAv(rekvirertAv);
+                identRepository.save(ident);
+                identerMarkertSomIBruk.add(id);
+            }
+        }
+
+        List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(identerSomSkalSjekkes, Collections.singletonList("q0")));
+
+        for (TpsStatus tpsStatus : tpsStatuses) {
+            if (!tpsStatus.isInUse()) {
+                String id = tpsStatus.getIdent();
+                identRepository.save(Ident.builder()
+                        .identtype(getIdentType(id))
+                        .personidentifikator(id)
+                        .rekvireringsstatus(I_BRUK)
+                        .rekvirertAv(rekvirertAv)
+                        .finnesHosSkatt(false)
+                        .kjoenn(PersonidentUtil.getKjonn(id))
+                        .foedselsdato(PersonidentUtil.toBirthdate(id))
+                        .build());
+                identerMarkertSomIBruk.add(id);
+            }
+        }
+
+        return identerMarkertSomIBruk;
+    }
+
     public List<String> frigjoerIdenter(String rekvirertAv, List<String> identer) {
         List<String> ledigeIdenter = new ArrayList<>(identer.size());
         Map<String, Ident> fnrMedIdent = new HashMap<>(identer.size());

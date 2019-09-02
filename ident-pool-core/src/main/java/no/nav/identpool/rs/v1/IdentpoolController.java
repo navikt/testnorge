@@ -1,6 +1,7 @@
 package no.nav.identpool.rs.v1;
 
 import static no.nav.identpool.util.PersonidentUtil.validate;
+import static no.nav.identpool.util.PersonidentUtil.validateMultiple;
 import static no.nav.identpool.util.ValiderRequestUtil.validateDatesInRequest;
 
 import com.google.common.base.Strings;
@@ -79,10 +80,21 @@ public class IdentpoolController {
         identpoolService.markerBrukt(markerBruktRequest);
     }
 
+    @PostMapping("/brukFlere")
+    @ApiOperation(value = "Marker identer i oppgitt liste som I_BRUK i ident-pool-databasen. Returnerer en liste over de identene som nå er satt til I_BRUK.")
+    public List<String> markerBruktIdenter(@RequestParam String rekvirertAv, @RequestBody List<String> identer) throws Exception {
+        if (Strings.isNullOrEmpty(rekvirertAv)) {
+            throw new IllegalArgumentException("Felt 'rekvirertAv' må fylles ut");
+        }
+        validateMultiple(identer);
+        return identpoolService.markerBruktFlere(rekvirertAv, identer);
+    }
+
     @Deprecated
     @PostMapping("/bruk/batch")
     @ApiOperation(value = "marker eksisterende og ledige identer som i bruk")
     public MarkerBruktBatchResponse markerBruktBatch(@RequestBody MarkerBruktBatchRequest markerBruktBatchRequest) {
+        log.info("{} brukte deprecated endepunkt 'markerBruktBatch'", markerBruktBatchRequest.getBruker());
         MarkerBruktBatchResponse markerBruktBatchResponse = MarkerBruktBatchResponse.builder()
                 .personidentifikatorerMarkertSomBrukt(new ArrayList<>())
                 .personidentifikatorerSomIkkeKunneMarkeresSomBrukt(new ArrayList<>())
