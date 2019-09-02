@@ -1,5 +1,7 @@
 package no.nav.registre.udistub.core.service;
 
+import static java.lang.String.format;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -55,7 +57,7 @@ public class PersonService {
         if (optionalPerson.isPresent()) {
             personRepository.deleteById(optionalPerson.get().getId());
         } else {
-            throw new NotFoundException("findByIdent returnerte ingen person");
+            throw new NotFoundException(format("Kunne ikke slette person med ident:%s, da personen ikke ble funnet", ident));
         }
     }
 

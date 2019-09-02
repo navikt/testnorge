@@ -6,6 +6,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.udistub.core.exception.NotFoundException;
+import no.nav.registre.udistub.core.exception.TpsfHentPersonException;
 import no.nav.registre.udistub.core.service.tpsf.TpsfPerson;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -48,8 +49,7 @@ public class TpsfService {
                 throw new NotFoundException(format("Ingen personer med ident:%s ble funnet i tpsf", ident));
             }
         } catch (Exception e) {
-            log.error("Tps-forvalteren sitt kall feilet mot url <{}> grunnet {}", uri, e.getMessage());
+            throw new TpsfHentPersonException("Kall imot tpsf feilet grunnet: " + e.getMessage());
         }
-        return null;
     }
 }

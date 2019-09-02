@@ -46,11 +46,7 @@ public class PersonController {
 
     @DeleteMapping
     public ResponseEntity<PersonControllerResponse> deletePerson(@RequestHeader(name = "Nav-Personident") String ident) {
-        try {
-            personService.deletePerson(ident);
-            return ResponseEntity.status(HttpStatus.OK).body(new PersonControllerResponse());
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(new PersonControllerResponse(String.format("Kunne ikke slette person med ident:%s, da personen ikke ble funnet", ident)));
-        }
+        personService.deletePerson(ident);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
