@@ -14,7 +14,7 @@
 
     <groupId>no.nav.registre</groupId>
     <artifactId>testnorge-inntekt</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
 
     <properties>
         <application.version>${project.version}</application.version>
@@ -22,6 +22,7 @@
         <springframework.cloud.version>2.1.2.RELEASE</springframework.cloud.version>
         <fasterxml.jackson.version>2.9.9</fasterxml.jackson.version>
         <testnorge-consumers.version>1.8.0-RELEASE</testnorge-consumers.version>
+        <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
     </properties>
 
     <dependencies>
@@ -71,6 +72,13 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
+        </dependency>
+
+        <!-- LOGGING -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>${logstash.logback.encoder.version}</version>
         </dependency>
     </dependencies>
 
