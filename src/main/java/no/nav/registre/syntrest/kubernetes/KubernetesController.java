@@ -24,7 +24,7 @@ public class KubernetesController {
 
     private final String GROUP = "nais.io";
     private final String VERSION = "v1alpha1";
-    private final String MILJOE = "q2";
+    private final String NAMESPACE = "q2";
     private final String PLURAL = "applications";
 
     private final String manifestPath;
@@ -55,16 +55,16 @@ public class KubernetesController {
 
         if (!existsOnCluster(appName)) {
 
-            api.createNamespacedCustomObject(GROUP, VERSION, MILJOE, PLURAL, manifestFile, null);
+            api.createNamespacedCustomObject(GROUP, VERSION, NAMESPACE, PLURAL, manifestFile, null);
             log.info("Application \'{}\' created!", appName);
             waitForDeployment(appName);
 
         } else if (!isAlive(appName)) {
-
             waitForDeployment(appName);
         }
     }
 
+    // TODO: REFACTOR
     public void takedownImage(String appName) throws ApiException, JsonSyntaxException {
 
         if (existsOnCluster(appName)) {
@@ -72,7 +72,7 @@ public class KubernetesController {
 
             try {
 
-                api.deleteNamespacedCustomObject(GROUP, VERSION, MILJOE, PLURAL, appName, deleteOptions,
+                api.deleteNamespacedCustomObject(GROUP, VERSION, NAMESPACE, PLURAL, appName, deleteOptions,
                         null, null, null);
                 log.info("Successfully deleted application \'{}\'", appName);
 
@@ -102,11 +102,12 @@ public class KubernetesController {
         return applications.contains(appName);
     }
 
+    // TODO: REFACTOR
     private List<String> listApplicationsOnCluster() throws ApiException{
 
         List<String> applications = new ArrayList<>();
 
-        LinkedTreeMap result = (LinkedTreeMap) api.listNamespacedCustomObject(GROUP, VERSION, MILJOE, PLURAL,
+        LinkedTreeMap result = (LinkedTreeMap) api.listNamespacedCustomObject(GROUP, VERSION, NAMESPACE, PLURAL,
                 null, null, null, null);
         ArrayList items = (ArrayList) result.get("items");
 
@@ -138,6 +139,7 @@ public class KubernetesController {
         } // wend
     }
 
+    // TODO: REFACTOR
     private Map<String, Object> prepareYaml(String appName) {
         Yaml yaml = new Yaml();
         Map<String, Object> manifestFile = yaml.load(
@@ -151,6 +153,7 @@ public class KubernetesController {
         return manifestFile;
     }
 
+    // TODO: REFACTOR
     private String getLatestImageVersion(String appName) {
         String query = String.format(dockerImagePath, appName);
         Map<String, Object> repositoryMap = (Map) restTemplate.getForObject(query, Object.class);

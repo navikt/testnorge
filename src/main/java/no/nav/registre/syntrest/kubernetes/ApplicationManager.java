@@ -1,23 +1,24 @@
 package no.nav.registre.syntrest.kubernetes;
 
 import io.kubernetes.client.ApiException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import java.io.IOException;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
+/**
+ * Manages lifecycle of the app. Abstracts away the call to the KubernetesController,
+ * and make sure the calls to start/end applications happens one at a time.
+ * Is created as a Bean which means that only *one* synt package can be started/stopped at a time
+ * on the NAIS cluster.
+ * Does NOT ensure that only one call is given to a specific package at a time. This is done in the
+ */
 public class ApplicationManager {
 
     private final KubernetesController kubernetesController;
-    // private final String manifestPath;
 
-    public ApplicationManager(KubernetesController kubernetesController) {
-        this.kubernetesController = kubernetesController;
-        // this.manifestPath = "/nais/{}.yaml";
-    }
-
-    // only one thread is allowed to run at a time
     public synchronized void startApplication(String appId) {
         if (!kubernetesController.isAlive(appId)) {
             try {
@@ -29,7 +30,6 @@ public class ApplicationManager {
     }
 
     public synchronized void shutdownApplication(String appId) {
-        // shut it down
         try {
             kubernetesController.takedownImage(appId);
         } catch (ApiException e) {

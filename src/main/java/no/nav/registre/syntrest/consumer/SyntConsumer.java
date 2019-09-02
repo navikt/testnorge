@@ -8,10 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
+/**
+ * Ensures that only one call is done to each SyntPackage at a time. (If multiple calls is done while not returned,
+ * they will break.)
+ */
 public class SyntConsumer<T> {
     //
     // // Hvis ikke, spinn opp ny via KubernetesController
@@ -26,32 +30,36 @@ public class SyntConsumer<T> {
     };
     private final ApplicationManager applicationManager;
     private final RestTemplate restTemplate;
-    private int numClients;
+    private AtomicInteger numClients;
 
     public SyntConsumer(ApplicationManager applicationManager, RestTemplate restTemplate) {
         this.applicationManager = applicationManager;
         this.restTemplate = restTemplate;
-        this.numClients = 0;
+        this.numClients = new AtomicInteger(0);
     }
 
     public T synthesizeData(String appName, RequestEntity request) {
+        this.numClients.incrementAndGet();
         applicationManager.startApplication(appName);
 
-        this.numClients++;
-        T synthesizedData = accessSyntPackage(request); // SYNCHRONIZED CALL. CODE STOPS FOR EACH CLIENT?
-        // this.numClients--;
+        T synthesizedData = accessSyntPackage(request);
+        this.numClients.decrementAndGet();
 
-        if (this.numClients <= 0) {
+        if (this.numClients.get() <= 0) {
             applicationManager.shutdownApplication(appName);
         }
+
+        // TODO: bug
+        // The call to rest template should take so long that any concurrent threads will be able to
+        // increase numClients before it exits.
+        // However, if two methods comes *right after each other* the application will be spun down,
+        // just to be spun up again right after..
 
         return synthesizedData;
     }
 
     private synchronized T accessSyntPackage(RequestEntity request) {
         ResponseEntity<T> response = restTemplate.exchange(request, RESPONSE_TYPE);
-        this.numClients--;
-
         return response.getBody();
     }
 }

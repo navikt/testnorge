@@ -4,12 +4,9 @@ import lombok.RequiredArgsConstructor;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
 import no.nav.registre.syntrest.response.AaregResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriTemplate;
-
-import java.net.URI;
 
 @Service
 @RequiredArgsConstructor
