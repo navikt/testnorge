@@ -35,7 +35,7 @@
 		<spring.vault-config.version>2.1.2.RELEASE</spring.vault-config.version>
 		<spring.boot.test.version>2.1.0.RELEASE</spring.boot.test.version>
 		<orika.version>1.5.2</orika.version>
-		<wiremock-standalone.version>2.22.0</wiremock-standalone.version>
+		<wiremock.version>1.18</wiremock.version>
 		<spring-cloud-contract-wiremock.version>2.1.1.RELEASE</spring-cloud-contract-wiremock.version>
 	</properties>
 
@@ -109,8 +109,8 @@
 			</dependency>
 			<dependency>
 				<groupId>com.github.tomakehurst</groupId>
-				<artifactId>wiremock-standalone</artifactId>
-				<version>${wiremock-standalone.version}</version>
+				<artifactId>wiremock</artifactId>
+				<version>${wiremock.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
