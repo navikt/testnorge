@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -165,22 +167,31 @@ public class IdentpoolService {
 
     public List<String> frigjoerLedigeIdenter(List<String> identer) {
         List<String> ledigeIdenter = new ArrayList<>(identer.size());
+        Map<String, Ident> fnrMedIdent = new HashMap<>(identer.size());
+        List<String> identerSomSkalSjekkes = new ArrayList<>(identer.size());
         for (String id : identer) {
             Ident ident = identRepository.findTopByPersonidentifikator(id);
             if (ident != null) {
                 if (LEDIG.equals(ident.getRekvireringsstatus())) {
                     ledigeIdenter.add(id);
                 } else if (!ident.finnesHosSkatt()) {
-                    List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(Collections.singletonList(id)));
-                    if (!tpsStatuses.get(0).isInUse()) {
-                        ident.setRekvireringsstatus(LEDIG);
-                        ident.setRekvirertAv(null);
-                        identRepository.save(ident);
-                        ledigeIdenter.add(id);
-                    }
+                    fnrMedIdent.put(id, ident);
+                    identerSomSkalSjekkes.add(id);
                 }
             }
         }
+
+        List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(identerSomSkalSjekkes));
+        for (TpsStatus tpsStatus : tpsStatuses) {
+            if (!tpsStatus.isInUse()) {
+                Ident ident = fnrMedIdent.get(tpsStatus.getIdent());
+                ident.setRekvireringsstatus(LEDIG);
+                ident.setRekvirertAv(null);
+                identRepository.save(ident);
+                ledigeIdenter.add(tpsStatus.getIdent());
+            }
+        }
+
         return ledigeIdenter;
     }
 
