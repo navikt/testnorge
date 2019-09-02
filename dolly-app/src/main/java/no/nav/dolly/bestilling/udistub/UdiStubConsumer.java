@@ -13,6 +13,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -31,33 +32,37 @@ public class UdiStubConsumer {
     private ProvidersProps providersProps;
 
     public ResponseEntity<PersonControllerResponse> createUdiPerson(Long bestillingsid, PersonTo udiPerson) {
-        return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Nav-Call-Id", Long.toString(bestillingsid))
-                .header("Nav-Consumer-Id", getUserIdToken())
-                .body(udiPerson), PersonControllerResponse.class);
+        try {
+            return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header("Nav-Call-Id", Long.toString(bestillingsid))
+                            .header("Nav-Consumer-Id", getUserIdToken())
+                            .body(udiPerson),
+                    PersonControllerResponse.class);
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            return new ResponseEntity<>(PersonControllerResponse.builder()
+                    .reason(e.getResponseBodyAsString())
+                    .status(e.getStatusCode())
+                    .build(), e.getStatusCode());
+        }
     }
 
-    public ResponseEntity<PersonControllerResponse> deleteUdiPerson(Long bestillingsid, String ident) {
-        ResponseEntity<PersonControllerResponse> responseEntity = null;
+    public void deleteUdiPerson(Long bestillingsid, String ident) {
 
         try {
-            responseEntity = restTemplate.exchange(RequestEntity.delete(URI.create(format("%s%s", providersProps.getUdiStub().getUrl(), UDI_STUB_PERSON)))
+            restTemplate.exchange(RequestEntity.delete(URI.create(format("%s%s", providersProps.getUdiStub().getUrl(), UDI_STUB_PERSON)))
                             .header("Nav-Call-Id", Long.toString(bestillingsid))
                             .header("Nav-Consumer-Id", getUserIdToken())
                             .header(NAV_PERSON_IDENT, ident)
                             .build(),
                     PersonControllerResponse.class);
-        } catch (HttpClientErrorException e) {
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
             if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 log.warn(String.format("Kunne ikke slette udistub innslag for fnr: %s, da personen ikke ble funnet.", ident));
-                return responseEntity;
             } else {
-                throw new UdiStubFunctionalException(e);
+                throw new UdiStubException(e);
             }
         }
-
-        return responseEntity;
     }
 
 }
