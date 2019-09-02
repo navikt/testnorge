@@ -193,7 +193,6 @@
             <tilleggAdresse2> </tilleggAdresse2>
             <tilleggAdresse3> </tilleggAdresse3>
             <tilleggPostnr> </tilleggPostnr>
-            <tilleggAdresseDatoTom> </tilleggAdresseDatoTom>
             <tilleggKommunenr> </tilleggKommunenr>
             <tilleggGateKode> </tilleggGateKode>
             <tilleggHusnummer> </tilleggHusnummer>
@@ -211,7 +210,6 @@
             <utadAdresse1> </utadAdresse1>
             <utadAdresse2> </utadAdresse2>
             <utadAdresse3> </utadAdresse3>
-            <utadAdresseDatoTom> </utadAdresseDatoTom>
             <utadLand> </utadLand>
             <utadAdresseFraDato> </utadAdresseFraDato>
             <utadAdresseTilDato> </utadAdresseTilDato>

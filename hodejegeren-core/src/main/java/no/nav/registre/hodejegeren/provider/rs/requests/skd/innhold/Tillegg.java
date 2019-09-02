@@ -22,9 +22,6 @@ public class Tillegg {
     private String adresse2;
     private String adresse3;
     private String postnr;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private LocalDate datoTom;
     private String kommunenr;
     private String gateKode;
     private String husnummer;

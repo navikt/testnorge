@@ -402,7 +402,6 @@ public class PersonDokumentUtility {
                 .adresse2(tilleggType.getTilleggAdresse2().trim())
                 .adresse3(tilleggType.getTilleggAdresse3().trim())
                 .postnr(tilleggType.getTilleggPostnr().trim())
-                .datoTom(checkIfDateIsEmpty(tilleggType.getTilleggAdresseDatoTom().trim()))
                 .kommunenr(tilleggType.getTilleggKommunenr().trim())
                 .gateKode(tilleggType.getTilleggGateKode().trim())
                 .husnummer(tilleggType.getTilleggHusnummer().trim())
