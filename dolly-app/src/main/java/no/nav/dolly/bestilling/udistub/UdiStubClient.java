@@ -48,7 +48,9 @@ public final class UdiStubClient implements ClientRegister {
 
             } catch (UdiStubException e) {
 
-                if (reasonIsSet(response)) {
+                if (response != null &&
+                        response.getBody() != null &&
+                        response.getBody().getReason() != null) {
                     appendErrorStatus(status, e, response.getBody().getReason());
                     log.error("Gjenopprett feilet for udistubclient: {}", response.getBody().getReason(), e);
                 } else {
@@ -61,15 +63,11 @@ public final class UdiStubClient implements ClientRegister {
     }
 
     private static void appendOkStatus(StringBuilder status, ResponseEntity<UdiPersonControllerResponse> postResponse) {
-        if (reasonIsSet(postResponse)) {
+        if (postResponse != null &&
+                postResponse.getBody() != null &&
+                postResponse.getBody().getReason() != null) {
             status.append("OK: ident=").append(postResponse.getBody().getPerson().getIdent());
         }
-    }
-
-    private static Boolean reasonIsSet(ResponseEntity<UdiPersonControllerResponse> response) {
-        return nonNull(response) &&
-                nonNull(response.getBody()) &&
-                nonNull(response.getBody().getReason());
     }
 
     private static void appendErrorStatus(StringBuilder status, RuntimeException e, String reason) {
