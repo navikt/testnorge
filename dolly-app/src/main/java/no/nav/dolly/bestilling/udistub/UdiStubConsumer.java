@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.udistub;
 
-import static java.lang.String.format;
 import static no.nav.dolly.sts.StsOidcService.getUserIdToken;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +22,8 @@ import java.net.URI;
 public class UdiStubConsumer {
 
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
+    private static final String NAV_CALL_ID = "Nav-Call-Id";
+    private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
     private static final String UDI_STUB_PERSON = "/api/v1/person";
 
     @Autowired
@@ -35,8 +36,8 @@ public class UdiStubConsumer {
         try {
             return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
                             .contentType(MediaType.APPLICATION_JSON)
-                            .header("Nav-Call-Id", Long.toString(bestillingsid))
-                            .header("Nav-Consumer-Id", getUserIdToken())
+                            .header(NAV_CALL_ID, Long.toString(bestillingsid))
+                            .header(NAV_CONSUMER_ID, getUserIdToken())
                             .body(udiPerson),
                     PersonControllerResponse.class);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
@@ -50,16 +51,14 @@ public class UdiStubConsumer {
     public void deleteUdiPerson(Long bestillingsid, String ident) {
 
         try {
-            restTemplate.exchange(RequestEntity.delete(URI.create(format("%s%s", providersProps.getUdiStub().getUrl(), UDI_STUB_PERSON)))
-                            .header("Nav-Call-Id", Long.toString(bestillingsid))
-                            .header("Nav-Consumer-Id", getUserIdToken())
+            restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
+                            .header(NAV_CALL_ID, Long.toString(bestillingsid))
+                            .header(NAV_CONSUMER_ID, getUserIdToken())
                             .header(NAV_PERSON_IDENT, ident)
                             .build(),
                     PersonControllerResponse.class);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
-            if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-                log.warn(String.format("Kunne ikke slette udistub innslag for fnr: %s, da personen ikke ble funnet.", ident));
-            } else {
+            if (!e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 throw new UdiStubException(e);
             }
         }
