@@ -4,8 +4,7 @@ import success from '~/utils/SuccessAction'
 import { actions as bestillingActions } from '~/ducks/bestilling'
 
 export const getBestillinger = createAction('GET_BESTILLINGER', async gruppeID => {
-	let res = await DollyApi.getBestillinger(gruppeID)
-	return res
+	return DollyApi.getBestillinger(gruppeID)
 })
 
 export const removeNyBestillingStatus = createAction('REMOVE_NY_BESTILLING_STATUS')
@@ -14,13 +13,11 @@ export const removeNyBestillingStatus = createAction('REMOVE_NY_BESTILLING_STATU
 const initialState = { ny: [] }
 
 export const cancelBestilling = createAction('CANCEL_BESTILLING', async id => {
-	let res = await DollyApi.cancelBestilling(id)
-	return res
+	return DollyApi.cancelBestilling(id)
 })
 
 export const gjenopprettBestilling = createAction('GJENOPPRETT_BESTILLING', async (id, envs) => {
-	let res = await DollyApi.gjenopprettBestilling(id, envs)
-	return res
+	return DollyApi.gjenopprettBestilling(id, envs)
 })
 
 export default handleActions(
