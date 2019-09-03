@@ -11,7 +11,7 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class PersonNavnTo {
+public class UdiPersonNavn {
     private String fornavn;
     private String mellomnavn;
     private String etternavn;

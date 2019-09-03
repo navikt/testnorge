@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.udistub.model.PeriodeTo;
+import no.nav.dolly.domain.resultset.udistub.model.UdiPeriode;
 
 import java.time.LocalDate;
 
@@ -12,9 +12,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Setter
 @Getter
-public class OppholdSammeVilkaarTo {
+public class OppholdSammeVilkaar {
 
-    private PeriodeTo oppholdSammeVilkaarPeriode;
+    private UdiPeriode oppholdSammeVilkaarPeriode;
     private LocalDate oppholdSammeVilkaarEffektuering;
     private String oppholdstillatelseType;
     private LocalDate oppholdstillatelseVedtaksDato;

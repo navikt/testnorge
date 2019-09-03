@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @Builder
-public class UtvistMedInnreiseForbudTo {
+public class UtvistMedInnreiseForbud {
 
     private String innreiseForbud;
     private LocalDate innreiseForbudVedtaksDato;

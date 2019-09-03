@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import no.nav.dolly.domain.resultset.udistub.model.ArbeidsadgangTo;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.OppholdStatusTo;
+import no.nav.dolly.domain.resultset.udistub.model.UdiArbeidsadgang;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.OppholdStatus;
 
 @Getter
 @Setter
@@ -15,6 +15,6 @@ import no.nav.dolly.domain.resultset.udistub.model.opphold.OppholdStatusTo;
 @ToString
 public class RsUdiPersonData {
 
-    private ArbeidsadgangTo arbeidsadgang;
-    private OppholdStatusTo oppholdStatus;
+    private UdiArbeidsadgang arbeidsadgang;
+    private OppholdStatus oppholdStatus;
 }

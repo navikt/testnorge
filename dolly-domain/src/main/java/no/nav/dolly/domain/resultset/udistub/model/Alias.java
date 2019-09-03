@@ -11,9 +11,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class AliasTo {
+public class Alias {
 
     private String fnr;
-    private PersonNavnTo navn;
-    private PersonTo person;
+    private UdiPersonNavn navn;
+    private UdiPerson person;
 }

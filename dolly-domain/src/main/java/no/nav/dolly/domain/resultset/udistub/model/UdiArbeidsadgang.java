@@ -12,12 +12,12 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class ArbeidsadgangTo {
+public class UdiArbeidsadgang {
 
     private String harArbeidsAdgang;
     private String typeArbeidsadgang;
     private String arbeidsOmfang;
-    private PeriodeTo periode;
+    private UdiPeriode periode;
     @JsonBackReference
-    private PersonTo person;
+    private UdiPerson person;
 }

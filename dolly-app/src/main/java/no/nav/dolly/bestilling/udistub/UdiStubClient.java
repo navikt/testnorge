@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.domain.resultset.udistub.model.PersonTo;
+import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public final class UdiStubClient implements ClientRegister {
             try {
                 udiStubConsumer.deleteUdiPerson(progress.getBestillingId(), norskIdent.getIdent());
 
-                PersonTo udiPerson = mapperFacade.map(bestilling.getUdistub(), PersonTo.class);
+                UdiPerson udiPerson = mapperFacade.map(bestilling.getUdistub(), UdiPerson.class);
                 udiPerson.setIdent(norskIdent.getIdent());
                 setPersonDefaultsIfUnspecified(udiPerson);
 

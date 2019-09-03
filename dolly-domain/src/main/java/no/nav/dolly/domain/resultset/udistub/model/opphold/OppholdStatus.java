@@ -6,8 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.udistub.model.PeriodeTo;
-import no.nav.dolly.domain.resultset.udistub.model.PersonTo;
+import no.nav.dolly.domain.resultset.udistub.model.UdiPeriode;
+import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
 
 import java.time.LocalDate;
 
@@ -16,26 +16,26 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @Builder
-public class OppholdStatusTo {
+public class OppholdStatus {
 
     private Boolean uavklart;
 
-    private PeriodeTo eosEllerEFTABeslutningOmOppholdsrettPeriode;
+    private UdiPeriode eosEllerEFTABeslutningOmOppholdsrettPeriode;
     private LocalDate eosEllerEFTABeslutningOmOppholdsrettEffektuering;
     private String eosEllerEFTABeslutningOmOppholdsrett;
 
-    private PeriodeTo eosEllerEFTAVedtakOmVarigOppholdsrettPeriode;
+    private UdiPeriode eosEllerEFTAVedtakOmVarigOppholdsrettPeriode;
     private LocalDate eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering;
     private String eosEllerEFTAVedtakOmVarigOppholdsrett;
 
-    private PeriodeTo eosEllerEFTAOppholdstillatelsePeriode;
+    private UdiPeriode eosEllerEFTAOppholdstillatelsePeriode;
     private LocalDate eosEllerEFTAOppholdstillatelseEffektuering;
     private String eosEllerEFTAOppholdstillatelse;
 
 
-    private OppholdSammeVilkaarTo oppholdSammeVilkaar;
+    private OppholdSammeVilkaar oppholdSammeVilkaar;
 
-    private IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo ikkeOppholdstilatelseIkkeVilkaarIkkeVisum;
+    private IkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOppholdstilatelseIkkeVilkaarIkkeVisum;
     @JsonBackReference
-    private PersonTo person;
+    private UdiPerson person;
 }

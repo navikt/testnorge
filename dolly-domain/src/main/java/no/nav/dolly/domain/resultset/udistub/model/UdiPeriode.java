@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Builder
-public class PeriodeTo {
+public class UdiPeriode {
     private LocalDate fra;
     private LocalDate til;
 }

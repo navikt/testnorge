@@ -4,7 +4,7 @@ import static java.lang.String.format;
 import static no.nav.dolly.sts.StsOidcService.getUserIdToken;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.domain.resultset.udistub.model.PersonTo;
+import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
 import no.nav.dolly.properties.ProvidersProps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +31,7 @@ public class UdiStubConsumer {
     @Autowired
     private ProvidersProps providersProps;
 
-    public ResponseEntity<PersonControllerResponse> createUdiPerson(Long bestillingsid, PersonTo udiPerson) {
+    public ResponseEntity<PersonControllerResponse> createUdiPerson(Long bestillingsid, UdiPerson udiPerson) {
         try {
             return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
                             .contentType(MediaType.APPLICATION_JSON)
