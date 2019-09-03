@@ -19,7 +19,7 @@ class FavoriteButton extends PureComponent {
 				onClick={isFavorite ? removeFavorite : addFavorite}
 				onMouseEnter={this._handleOnMouseHover}
 			>
-				{!hideLabel && <p>{isFavorite ? 'FJERN FAVORITT' : 'FAVORISER'}</p>}
+				{!hideLabel && <span>{isFavorite ? 'FJERN FAVORITT' : 'FAVORISER'}</span>}
 			</Button>
 		)
 	}

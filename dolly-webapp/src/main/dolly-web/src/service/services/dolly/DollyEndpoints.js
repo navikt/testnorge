@@ -67,8 +67,8 @@ class DollyEndpoints {
 		return `${teamBase}/${teamId}/leggTilMedlemmer`
 	}
 
-	static teamRemoveMember(teamId) {
-		return `${teamBase}/${teamId}/fjernMedlemmer`
+	static teamRemoveMember(teamId, userId) {
+		return `${teamBase}/${teamId}/deleteMedlem?navIdent=${userId}`
 	}
 
 	static bruker() {

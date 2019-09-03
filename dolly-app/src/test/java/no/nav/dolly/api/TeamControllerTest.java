@@ -85,14 +85,6 @@ public class TeamControllerTest {
         verify(teamService).addMedlemmerByNavidenter(TEAM_ID, navidenter);
     }
 
-    @Test
-    public void fjernBrukerefraTeam() {
-        List<String> navidenter = singletonList("test");
-
-        controller.fjernBrukerefraTeam(TEAM_ID, navidenter);
-        verify(teamService).fjernMedlemmer(TEAM_ID, navidenter);
-    }
-
     @Test(expected = NotFoundException.class)
     public void slettMedlemFraTeamNotFound() {
         when(teamService.slettMedlem(TEAM_ID, NAV_IDENT)).thenThrow(NotFoundException.class);
