@@ -17,3 +17,7 @@ application:
 
 spring.flyway.locations: classpath:db/migration/postgresql
 spring.jpa.hibernate.ddl-auto: update
+
+tpsf:
+  base:
+    url: https://tps-forvalteren-u2.nais.preprod.local/api/v1/dolly/testdata
