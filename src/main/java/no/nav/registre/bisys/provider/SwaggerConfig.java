@@ -51,8 +51,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 "https://nav.no",
                 new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/testnorge-skd/browse", null),
                 "Super Strict Licence",
-                "https://opensource.org/licenses/super-strict-license"
-        );
+                "https://opensource.org/licenses/super-strict-license");
     }
 
     @Override

@@ -9,6 +9,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +21,19 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-
 import no.nav.registre.bisys.ApplicationStarter;
 import no.nav.registre.bisys.LocalApplicationStarter;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = ApplicationStarter.class)
-@ComponentScan(
-        excludeFilters = { @Filter(type = ASSIGNABLE_TYPE, value = LocalApplicationStarter.class) })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = ApplicationStarter.class)
+@ComponentScan(excludeFilters = { @Filter(type = ASSIGNABLE_TYPE, value = LocalApplicationStarter.class) })
 @AutoConfigureWireMock(port = 0)
 @ActiveProfiles("test")
 public class BisysSyntetisererenConsumerTest {
 
-    @Autowired private BisysSyntetisererenConsumer bisysSyntetisererenConsumer;
+    @Autowired
+    private BisysSyntetisererenConsumer bisysSyntetisererenConsumer;
 
     private int antallMeldinger = 2;
 
@@ -43,8 +41,7 @@ public class BisysSyntetisererenConsumerTest {
     public void shouldGetSyntetiserteMeldinger() {
         stubBisysSyntetisererenConsumer();
 
-        List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger =
-                bisysSyntetisererenConsumer.getSyntetiserteBidragsmeldinger(antallMeldinger);
+        List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger = bisysSyntetisererenConsumer.getSyntetiserteBidragsmeldinger(antallMeldinger);
 
         assertThat(syntetiserteBidragsmeldinger.get(0).getBarnetsFnr(), equalTo("01010101010"));
         assertThat(syntetiserteBidragsmeldinger.get(0).getBidragsmottaker(), equalTo("02020202020"));
