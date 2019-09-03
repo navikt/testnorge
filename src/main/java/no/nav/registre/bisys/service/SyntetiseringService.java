@@ -1,14 +1,14 @@
 package no.nav.registre.bisys.service;
 
-import io.micrometer.core.annotation.Timed;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.bidrag.exception.BidragRequestProcessingException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import io.micrometer.core.annotation.Timed;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
 import no.nav.registre.bisys.consumer.rs.BisysSyntetisererenConsumer;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.consumer.ui.BisysUiConsumer;
@@ -38,11 +38,10 @@ public class SyntetiseringService {
             SyntetiserBisysRequest syntetiserBisysRequest) {
 
         List<String> identerMedFoedselsmelding = finnFoedteIdenter(syntetiserBisysRequest.getAvspillergruppeId());
-        List<Barn> utvalgteIdenter =
-                selectValidUids(
-                        syntetiserBisysRequest.getAntallNyeIdenter(),
-                        identerMedFoedselsmelding,
-                        syntetiserBisysRequest.getMiljoe());
+        List<Barn> utvalgteIdenter = selectValidUids(
+                syntetiserBisysRequest.getAntallNyeIdenter(),
+                identerMedFoedselsmelding,
+                syntetiserBisysRequest.getMiljoe());
 
         if (utvalgteIdenter.size() < syntetiserBisysRequest.getAntallNyeIdenter()) {
             log.warn(
@@ -50,8 +49,7 @@ public class SyntetiseringService {
                     utvalgteIdenter.size());
         }
 
-        List<SyntetisertBidragsmelding> bidragsmeldinger =
-                bisysSyntetisererenConsumer.getSyntetiserteBidragsmeldinger(utvalgteIdenter.size());
+        List<SyntetisertBidragsmelding> bidragsmeldinger = bisysSyntetisererenConsumer.getSyntetiserteBidragsmeldinger(utvalgteIdenter.size());
 
         setRelationsInBidragsmeldinger(utvalgteIdenter, bidragsmeldinger);
 
@@ -61,7 +59,7 @@ public class SyntetiseringService {
     public void processBidragsmeldinger(List<SyntetisertBidragsmelding> bidragsmeldinger) {
         for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
             try {
-                bisysUiConsumer.runCreateSoknad(bidragsmelding);
+                bisysUiConsumer.createVedtak(bidragsmelding);
             } catch (BidragRequestProcessingException e) {
                 log.warn(
                         "En feil oppstod under prosessering av bidragsmelding for barn {}. Fortsetter med prossesering av neste melding.",
@@ -75,8 +73,7 @@ public class SyntetiseringService {
         List<Barn> utvalgteIdenter = new ArrayList<>();
 
         for (String ident : identerMedFoedselsmelding) {
-            RelasjonsResponse relasjonsResponse =
-                    finnRelasjonerTilIdent(ident, miljoe);
+            RelasjonsResponse relasjonsResponse = finnRelasjonerTilIdent(ident, miljoe);
             List<Relasjon> relasjoner = relasjonsResponse.getRelasjoner();
 
             String morFnr = "";
