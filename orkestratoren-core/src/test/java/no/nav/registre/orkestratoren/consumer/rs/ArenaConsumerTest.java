@@ -87,7 +87,7 @@ public class ArenaConsumerTest {
     }
 
     private void stubArenaConsumerSlettIdenter() {
-        stubFor(delete(urlEqualTo("/arena/api/v1/syntetisering/slett?miljoe=" + MILJOE))
+        stubFor(delete(urlEqualTo("/arena/api/v1/ident/slett?miljoe=" + MILJOE))
                 .withRequestBody(equalToJson("[\"" + identer.get(1) + "\",\"" + identer.get(2) + "\"]"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")

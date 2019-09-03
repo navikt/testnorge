@@ -38,7 +38,7 @@ public class ArenaConsumer {
 
     public ArenaConsumer(@Value("${testnorge.arena.rest.api.url}") String arenaServerUrl) {
         this.arenaOpprettArbeidsoekereUrl = new UriTemplate(arenaServerUrl + "/v1/syntetisering/generer");
-        this.arenaSlettArbeidsoekereUrl = new UriTemplate(arenaServerUrl + "/v1/syntetisering/slett?miljoe={miljoe}");
+        this.arenaSlettArbeidsoekereUrl = new UriTemplate(arenaServerUrl + "/v1/ident/slett?miljoe={miljoe}");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
