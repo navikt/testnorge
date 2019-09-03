@@ -131,6 +131,7 @@ public class BestillingService {
                         .bestKriterier(toJson(BestKriterier.builder()
                                 .aareg(request.getAareg())
                                 .krrstub(request.getKrrstub())
+                                .udistub(request.getUdistub())
                                 .sigrunstub(request.getSigrunstub())
                                 .arenaforvalter(request.getArenaforvalter())
                                 .pdlforvalter(request.getPdlforvalter())
