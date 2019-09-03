@@ -15,4 +15,10 @@ public interface BestillingKontrollRepository extends CrudRepository<BestillingK
     @Modifying
     @Query("delete from BestillingKontroll bk where bk.bestillingId in (select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
     int deleteByGruppeId(@Param("gruppeId") Long gruppeId);
+
+    @Modifying
+    @Query("delete from BestillingKontroll bk where bk.bestillingId = :bestillingId and bk.bestillingId "
+            + "not in (select bp.bestillingId from BestillingProgress bp where bp.bestillingId = :bestillingId)")
+    int deleteByBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
 }
+

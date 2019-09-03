@@ -167,13 +167,14 @@ public class TestgruppeController {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeUtvidet.class);
     }
 
-    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @Transactional
     @DeleteMapping("/{gruppeId}/slettTestident")
     public void deleteTestident(@RequestParam String ident) {
         if (identService.slettTestident(ident) == 0) {
             throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
         }
+        bestillingService.slettBestillingByTestIdent(ident);
         personService.recyclePerson(ident);
     }
 
