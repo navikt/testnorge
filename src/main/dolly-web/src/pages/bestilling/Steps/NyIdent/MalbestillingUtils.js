@@ -63,7 +63,7 @@ export const getValuesFromMal = mal => {
 	})
 
 	if (reduxStateValue.utvandretTilLand || reduxStateValue.innvandretFraLand) {
-		const utvandretValues = _mapInnOgUtvandretValues(reduxStateValue)
+		const utvandretValues = _mapInnOgUtvandret(reduxStateValue)
 		reduxStateValue = utvandretValues
 	}
 
@@ -190,62 +190,42 @@ const _mapRegistreKey = key => {
 	}
 }
 
-const _mapInnOgUtvandretValues = values => {
-	// Trenger en forenkling. Lage en generisk løsning for alle attributter som samles i en undergruppe i formik (1 check i step 1 og 2 inputbokser i step2).
+const _mapInnOgUtvandret = values => {
 	let valuesArray = JSON.parse(JSON.stringify(values))
-	valuesArray.barn &&
-		valuesArray.barn.map(enkeltBarn => {
-			enkeltBarn.barn_innvandret = [
-				{
-					innvandretFraLand: enkeltBarn.barn_innvandretFraLand && enkeltBarn.barn_innvandretFraLand,
-					innvandretFraLandFlyttedato:
-						enkeltBarn.barn_innvandretFraLandFlyttedato &&
-						enkeltBarn.barn_innvandretFraLandFlyttedato
-				}
-			]
-			enkeltBarn.barn_utvandret = [
-				{
-					utvandretTilLand: enkeltBarn.barn_utvandretTilLand && enkeltBarn.barn_utvandretTilLand,
-					utvandretTilLandFlyttedato:
-						enkeltBarn.barn_utvandretTilLandFlyttedato && enkeltBarn.barn_utvandretTilLandFlyttedato
-				}
-			]
+	if (valuesArray.barn) {
+		//Loop gjennom barn og kjør denne funksjonen for hvert barn
+		valuesArray.barn.map((enkeltBarn, idx) => {
+			valuesArray.barn[idx] = _mapInnOgUtvandret(enkeltBarn)
 		})
+	}
 
-	valuesArray.partner_innvandret = [
-		{
-			innvandretFraLand:
-				valuesArray.partner_innvandretFraLand && valuesArray.partner_innvandretFraLand,
-			innvandretFraLandFlyttedato:
-				valuesArray.partner_innvandretFraLandFlyttedato &&
-				valuesArray.partner_innvandretFraLandFlyttedato
+	Object.entries(valuesArray).map(value => {
+		if (value[0].includes('innvandret')) {
+			if (value[0].includes('partner')) {
+				!valuesArray.partner_innvandret && (valuesArray.partner_innvandret = [{}])
+				return (valuesArray.partner_innvandret[0][value[0].split('_')[1]] = value[1])
+			} else if (value[0].includes('barn')) {
+				!valuesArray.barn_innvandret && (valuesArray.barn_innvandret = [{}])
+				return (valuesArray.barn_innvandret[0][value[0].split('_')[1]] = value[1])
+			} else {
+				!valuesArray.innvandret && (valuesArray.innvandret = [{}])
+				return (valuesArray.innvandret[0][value[0]] = value[1])
+			}
 		}
-	]
-	valuesArray.partner_utvandret = [
-		{
-			utvandretTilLand:
-				valuesArray.partner_utvandretTilLand && valuesArray.partner_utvandretTilLand,
-			utvandretTilLandFlyttedato:
-				valuesArray.partner_utvandretTilLandFlyttedato &&
-				valuesArray.partner_utvandretTilLandFlyttedato
-		}
-	]
 
-	valuesArray.innvandret = [
-		{
-			innvandretFraLand: valuesArray.innvandretFraLand && valuesArray.innvandretFraLand,
-			innvandretFraLandFlyttedato:
-				valuesArray.innvandretFraLandFlyttedato && valuesArray.innvandretFraLandFlyttedato
+		if (value[0].includes('utvandret')) {
+			if (value[0].includes('partner')) {
+				!valuesArray.partner_utvandret && (valuesArray.partner_utvandret = [{}])
+				return (valuesArray.partner_utvandret[0][value[0].split('_')[1]] = value[1])
+			} else if (value[0].includes('barn')) {
+				!valuesArray.barn_utvandret && (valuesArray.barn_utvandret = [{}])
+				return (valuesArray.barn_utvandret[0][value[0].split('_')[1]] = value[1])
+			} else {
+				!valuesArray.utvandret && (valuesArray.utvandret = [{}])
+				return (valuesArray.utvandret[0][value[0]] = value[1])
+			}
 		}
-	]
-
-	valuesArray.utvandret = [
-		{
-			utvandretTilLand: valuesArray.utvandretTilLand && valuesArray.utvandretTilLand,
-			utvandretTilLandFlyttedato:
-				valuesArray.utvandretTilLandFlyttedato && valuesArray.utvandretTilLandFlyttedato
-		}
-	]
+	})
 	return valuesArray
 }
 
