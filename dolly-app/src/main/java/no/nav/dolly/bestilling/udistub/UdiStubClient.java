@@ -3,6 +3,12 @@ package no.nav.dolly.bestilling.udistub;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.udistub.UdiStubDefaultPersonUtil.setPersonDefaultsIfUnspecified;
 
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -10,10 +16,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Slf4j
 @Service
@@ -33,13 +35,13 @@ public final class UdiStubClient implements ClientRegister {
             ResponseEntity<UdiPersonControllerResponse> response = null;
 
             try {
-                udiStubConsumer.deleteUdiPerson(progress.getBestillingId(), norskIdent.getIdent());
+                udiStubConsumer.deleteUdiPerson(norskIdent.getIdent());
 
                 UdiPerson udiPerson = mapperFacade.map(bestilling.getUdistub(), UdiPerson.class);
                 udiPerson.setIdent(norskIdent.getIdent());
                 setPersonDefaultsIfUnspecified(udiPerson);
 
-                response = udiStubConsumer.createUdiPerson(progress.getBestillingId(), udiPerson);
+                response = udiStubConsumer.createUdiPerson(udiPerson);
                 if (response.getStatusCode().is4xxClientError() || response.getStatusCode().is5xxServerError()) {
                     String reason = nonNull(response.getBody()) ? response.getBody().getReason() : "Ukjent årsak";
                     throw new UdiStubException(reason);
@@ -60,6 +62,11 @@ public final class UdiStubClient implements ClientRegister {
             }
             progress.setUdistubStatus(status.toString());
         }
+    }
+
+    @Override public void release(List<String> identer) {
+
+        identer.forEach(ident -> udiStubConsumer.deleteUdiPerson(ident));
     }
 
     private static void appendOkStatus(StringBuilder status, ResponseEntity<UdiPersonControllerResponse> postResponse) {
