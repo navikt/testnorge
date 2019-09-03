@@ -33,6 +33,8 @@ fasitResources:
       resourceType: restservice
     - alias: "testnorge-properties"
       resourceType: applicationProperties
+    - alias: "testnorge-bisys-properties"
+      resourceType: applicationProperties
     - alias: syntbisys 
       resourceType: credential
       propertyMap: 

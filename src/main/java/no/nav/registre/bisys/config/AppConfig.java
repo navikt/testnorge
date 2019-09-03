@@ -37,7 +37,7 @@ public class AppConfig {
     String rolleSaksbehandler;
 
     @Value("${ENHET}")
-    String enhet;
+    int enhet;
 
     @Value("${testnorge-hodejegeren.rest-api.url}")
     String hodejegerenUrl;
@@ -73,7 +73,7 @@ public class AppConfig {
     @Bean
     public BisysUiSupport bisysUiNavigationSupport() {
         return new BisysUiSupport(saksbehandlerUid, saksbehandlerPwd, bisysUrl,
-                rolleSaksbehandler, Integer.parseInt(enhet));
+                rolleSaksbehandler, enhet);
     }
 
     @Bean
