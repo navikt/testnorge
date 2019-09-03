@@ -60,6 +60,11 @@ fasitResources:
     propertyMap:
       url: providers.krrStub.url
 
+  - alias: udiStub-host
+    resourceType: baseurl
+    propertyMap:
+      url: providers.udiStub.url
+
   - alias: jira.host
     resourceType: baseurl
     propertyMap:

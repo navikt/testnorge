@@ -20,6 +20,7 @@ public class EnvironmentPropsControllerTest {
     private static final String TPSF = "tpsf";
     private static final String SIGRUNSTUB = "sigrunstub";
     private static final String KRRSTUB = "krrstub";
+    private static final String UDISTUB = "udistub";
     private static final String KODEVERK = "kodeverk";
     private static final String ARENAFORVALTER = "arenaforvalter";
     private static final String INSTDATA = "instdata";
@@ -40,6 +41,8 @@ public class EnvironmentPropsControllerTest {
                 .url(SIGRUNSTUB).build());
         when(providersProps.getKrrStub()).thenReturn(ProvidersProps.KrrStub.builder()
                 .url(KRRSTUB).build());
+        when(providersProps.getUdiStub()).thenReturn(ProvidersProps.UdiStub.builder()
+                .url(UDISTUB).build());
         when(providersProps.getArenaForvalter()).thenReturn(ProvidersProps.ArenaForvalter.builder()
                 .url(ARENAFORVALTER).build());
         when(providersProps.getInstdata()).thenReturn(ProvidersProps.Instdata.builder()
@@ -51,6 +54,7 @@ public class EnvironmentPropsControllerTest {
         RsDollyProps props = environmentPropsController.getEnvironmentProps();
         assertThat(props.getKodeverkUrl(), is(KODEVERK));
         assertThat(props.getKrrStubUrl(), is(KRRSTUB));
+        assertThat(props.getUdiStubUrl(), is(UDISTUB));
         assertThat(props.getTpsfUrl(), is(TPSF));
         assertThat(props.getSigrunStubUrl(), is(SIGRUNSTUB));
         assertThat(props.getArenaForvalterUrl(), is(ARENAFORVALTER));
