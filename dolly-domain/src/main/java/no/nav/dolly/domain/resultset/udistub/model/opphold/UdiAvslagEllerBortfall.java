@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AvslagEllerBortfall {
+public class UdiAvslagEllerBortfall {
 
     private LocalDate avgjorelsesDato;
     private LocalDate bortfallAvPOellerBOSDato;

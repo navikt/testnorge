@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.OppholdStatus;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,9 +20,9 @@ public class UdiPerson {
     private UdiPersonNavn navn;
     private LocalDate foedselsDato;
     private List<UdiAvgjorelse> avgjoerelser;
-    private List<Alias> aliaser;
+    private List<UdiAlias> aliaser;
     private UdiArbeidsadgang arbeidsadgang;
-    private OppholdStatus oppholdStatus;
+    private UdiOppholdStatus udiOppholdStatus;
     private Boolean avgjoerelseUavklart;
     private Boolean harOppholdsTillatelse;
     private Boolean flyktning;

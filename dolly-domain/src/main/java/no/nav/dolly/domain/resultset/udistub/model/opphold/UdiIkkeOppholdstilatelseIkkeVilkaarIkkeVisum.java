@@ -11,9 +11,9 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class IkkeOppholdstilatelseIkkeVilkaarIkkeVisum {
+public class UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum {
 
-    private UtvistMedInnreiseForbud utvistMedInnreiseForbud;
-    private AvslagEllerBortfall avslagEllerBortfall;
+    private UdiUtvistMedInnreiseForbud udiUtvistMedInnreiseForbud;
+    private UdiAvslagEllerBortfall udiAvslagEllerBortfall;
     private String ovrigIkkeOppholdsKategoriArsak;
 }

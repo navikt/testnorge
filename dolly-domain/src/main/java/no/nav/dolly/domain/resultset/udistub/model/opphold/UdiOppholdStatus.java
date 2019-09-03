@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @Builder
-public class OppholdStatus {
+public class UdiOppholdStatus {
 
     private Boolean uavklart;
 
@@ -33,9 +33,9 @@ public class OppholdStatus {
     private String eosEllerEFTAOppholdstillatelse;
 
 
-    private OppholdSammeVilkaar oppholdSammeVilkaar;
+    private UdiOppholdSammeVilkaar udiOppholdSammeVilkaar;
 
-    private IkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOppholdstilatelseIkkeVilkaarIkkeVisum;
+    private UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum udiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum;
     @JsonBackReference
     private UdiPerson person;
 }

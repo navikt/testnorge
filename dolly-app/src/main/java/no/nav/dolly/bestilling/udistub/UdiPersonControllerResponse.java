@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 
 @Data
 @Builder
-public class PersonControllerResponse {
+public class UdiPersonControllerResponse {
     private UdiPerson person;
     private String reason;
     private HttpStatus status;

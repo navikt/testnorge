@@ -32,16 +32,16 @@ public class UdiStubConsumer {
     @Autowired
     private ProvidersProps providersProps;
 
-    public ResponseEntity<PersonControllerResponse> createUdiPerson(Long bestillingsid, UdiPerson udiPerson) {
+    public ResponseEntity<UdiPersonControllerResponse> createUdiPerson(Long bestillingsid, UdiPerson udiPerson) {
         try {
             return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
                             .contentType(MediaType.APPLICATION_JSON)
                             .header(NAV_CALL_ID, Long.toString(bestillingsid))
                             .header(NAV_CONSUMER_ID, getUserIdToken())
                             .body(udiPerson),
-                    PersonControllerResponse.class);
+                    UdiPersonControllerResponse.class);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
-            return new ResponseEntity<>(PersonControllerResponse.builder()
+            return new ResponseEntity<>(UdiPersonControllerResponse.builder()
                     .reason(e.getResponseBodyAsString())
                     .status(e.getStatusCode())
                     .build(), e.getStatusCode());
@@ -49,14 +49,13 @@ public class UdiStubConsumer {
     }
 
     public void deleteUdiPerson(Long bestillingsid, String ident) {
-
         try {
             restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
                             .header(NAV_CALL_ID, Long.toString(bestillingsid))
                             .header(NAV_CONSUMER_ID, getUserIdToken())
                             .header(NAV_PERSON_IDENT, ident)
                             .build(),
-                    PersonControllerResponse.class);
+                    UdiPersonControllerResponse.class);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             if (!e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 throw new UdiStubException(e);

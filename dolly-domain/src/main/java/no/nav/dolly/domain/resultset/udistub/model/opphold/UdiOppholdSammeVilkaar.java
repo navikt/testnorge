@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Setter
 @Getter
-public class OppholdSammeVilkaar {
+public class UdiOppholdSammeVilkaar {
 
     private UdiPeriode oppholdSammeVilkaarPeriode;
     private LocalDate oppholdSammeVilkaarEffektuering;

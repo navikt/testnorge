@@ -30,7 +30,7 @@ public final class UdiStubClient implements ClientRegister {
 
         if (nonNull(bestilling.getUdistub())) {
             StringBuilder status = new StringBuilder();
-            ResponseEntity<PersonControllerResponse> response = null;
+            ResponseEntity<UdiPersonControllerResponse> response = null;
 
             try {
                 udiStubConsumer.deleteUdiPerson(progress.getBestillingId(), norskIdent.getIdent());
@@ -60,13 +60,13 @@ public final class UdiStubClient implements ClientRegister {
         }
     }
 
-    private static void appendOkStatus(StringBuilder status, ResponseEntity<PersonControllerResponse> postResponse) {
+    private static void appendOkStatus(StringBuilder status, ResponseEntity<UdiPersonControllerResponse> postResponse) {
         if (reasonIsSet(postResponse)) {
             status.append("OK: ident=").append(postResponse.getBody().getPerson().getIdent());
         }
     }
 
-    private static Boolean reasonIsSet(ResponseEntity<PersonControllerResponse> response) {
+    private static Boolean reasonIsSet(ResponseEntity<UdiPersonControllerResponse> response) {
         return nonNull(response) &&
                 nonNull(response.getBody()) &&
                 nonNull(response.getBody().getReason());
