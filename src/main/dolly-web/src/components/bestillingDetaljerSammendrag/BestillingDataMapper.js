@@ -408,7 +408,7 @@ export function mapBestillingData(bestillingData) {
 							value: navnType && doedsboKriterier.adressat[navnType].etternavn
 						},
 						{
-							label: 'Fnr/dnr/bnr',
+							label: 'Fnr/dnr/BOST',
 							value: doedsboKriterier.adressat.idnummer
 						},
 						{

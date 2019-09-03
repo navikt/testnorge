@@ -133,7 +133,7 @@ describe('mapPdlDataToIdent.js', () => {
 				},
 				{
 					id: 'identitetsnummer',
-					label: 'Rett fnr/dnr/bnr',
+					label: 'Rett fnr/dnr/BOST',
 					value: undefined
 				},
 				{
