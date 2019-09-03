@@ -52,7 +52,7 @@ public class AppConfig {
     String bidragsberegningSamvarsklasse;
 
     @Value("${FATTE_VEDTAK_GEBYR_BESLAARSAK_KODE_FRITATT_IKKE_SOKT}")
-    boolean fatteVedtakGebyrBeslAarsakKodeFritattIkkeSokt;
+    String fatteVedtakGebyrBeslAarsakKodeFritattIkkeSokt;
 
     @Value("${INNTEKT_BM_EGNE_OPPLYSNINGER:0}")
     private int inntektBmEgneOpplysninger;
@@ -79,7 +79,7 @@ public class AppConfig {
     @Bean
     public BisysRequestAugments bisysRequestAugments() {
 
-        String fatteVedtakGebyrBeslAarsakKode = fatteVedtakGebyrBeslAarsakKodeFritattIkkeSokt
+        String fatteVedtakGebyrBeslAarsakKode = fatteVedtakGebyrBeslAarsakKodeFritattIkkeSokt.equals("1")
                 ? BisysUiFatteVedtakConsumer.KODE_BESL_AARSAK_FRITATT_IKKE_SOKT
                 : BisysUiFatteVedtakConsumer.KODE_BESL_AARSAK_ILAGT_IKKE_SOKT;
 
