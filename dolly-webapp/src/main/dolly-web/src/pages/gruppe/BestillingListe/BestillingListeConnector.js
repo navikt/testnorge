@@ -4,7 +4,6 @@ import { sokSelector } from '~/ducks/bestillingStatus/utils'
 import { getEnvironments } from '~/ducks/environments'
 
 const mapStateToProps = (state, ownProps) => {
-	console.log('ownProps :', ownProps)
 	return {
 		searchActive: Boolean(state.search),
 		bestillinger: sokSelector(ownProps.bestillingListe.data, state.search)
