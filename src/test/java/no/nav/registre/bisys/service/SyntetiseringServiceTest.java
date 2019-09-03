@@ -10,9 +10,10 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,11 +24,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import no.nav.bidrag.exception.BidragRequestProcessingException;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
 import no.nav.registre.bisys.consumer.rs.BisysSyntetisererenConsumer;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.consumer.ui.BisysUiConsumer;
@@ -66,18 +66,15 @@ public class SyntetiseringServiceTest {
     @Before
     public void setUp() {
         foedteIdenter = new ArrayList<>(Arrays.asList(barn1, barn2));
-        syntetiserBisysRequest =
-                new SyntetiserBisysRequest(avspillergruppeId, miljoe, foedteIdenter.size());
-        syntetiserteBidragsmeldinger =
-                new ArrayList<>(
-                        Arrays.asList(
-                                SyntetisertBidragsmelding.builder().build(),
-                                SyntetisertBidragsmelding.builder().build()));
-        relasjoner =
-                new ArrayList<>(
-                        Arrays.asList(
-                                Relasjon.builder().fnrRelasjon(bidragsmottaker).typeRelasjon(RELASJON_MOR).build(),
-                                Relasjon.builder().fnrRelasjon(bidragspliktig).typeRelasjon(RELASJON_FAR).build()));
+        syntetiserBisysRequest = new SyntetiserBisysRequest(avspillergruppeId, miljoe, foedteIdenter.size());
+        syntetiserteBidragsmeldinger = new ArrayList<>(
+                Arrays.asList(
+                        SyntetisertBidragsmelding.builder().build(),
+                        SyntetisertBidragsmelding.builder().build()));
+        relasjoner = new ArrayList<>(
+                Arrays.asList(
+                        Relasjon.builder().fnrRelasjon(bidragsmottaker).typeRelasjon(RELASJON_MOR).build(),
+                        Relasjon.builder().fnrRelasjon(bidragspliktig).typeRelasjon(RELASJON_FAR).build()));
     }
 
     @Test
@@ -91,8 +88,7 @@ public class SyntetiseringServiceTest {
         when(hodejegerenConsumer.getRelasjoner(barn2, miljoe))
                 .thenReturn(RelasjonsResponse.builder().fnr(barn2).relasjoner(relasjoner).build());
 
-        List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger =
-                syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
+        List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger = syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
 
         assertThat(syntetiserteBidragsmeldinger.get(0).getBarnetsFnr(), equalTo(barn1));
         assertThat(syntetiserteBidragsmeldinger.get(0).getBidragsmottaker(), equalTo(bidragsmottaker));
@@ -117,8 +113,7 @@ public class SyntetiseringServiceTest {
         when(hodejegerenConsumer.getRelasjoner(barn1, miljoe))
                 .thenReturn(RelasjonsResponse.builder().fnr(barn1).relasjoner(relasjoner).build());
 
-        List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger =
-                syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
+        List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger = syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
 
         assertThat(syntetiserteBidragsmeldinger.get(0).getBarnetsFnr(), equalTo(barn1));
         assertThat(syntetiserteBidragsmeldinger.get(0).getBidragsmottaker(), equalTo(bidragsmottaker));
@@ -142,10 +137,9 @@ public class SyntetiseringServiceTest {
         when(hodejegerenConsumer.getRelasjoner(barn2, miljoe))
                 .thenReturn(RelasjonsResponse.builder().fnr(barn2).relasjoner(relasjoner).build());
 
-        List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger =
-                syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
+        List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger = syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
         for (SyntetisertBidragsmelding bidragsmelding : syntetiserteBidragsmeldinger) {
-            doNothing().when(bisysUiConsumer).runCreateSoknad(bidragsmelding);
+            doNothing().when(bisysUiConsumer).createVedtak(bidragsmelding);
         }
 
         syntetiseringService.processBidragsmeldinger(syntetiserteBidragsmeldinger);
@@ -163,15 +157,14 @@ public class SyntetiseringServiceTest {
         when(hodejegerenConsumer.getRelasjoner(barn2, miljoe))
                 .thenReturn(RelasjonsResponse.builder().fnr(barn2).relasjoner(relasjoner).build());
 
-        List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger =
-                syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
+        List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger = syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
         for (SyntetisertBidragsmelding bidragsmelding : syntetiserteBidragsmeldinger) {
             if (bidragsmelding.getBarnetsFnr().equals(barn1))
                 doThrow(BidragRequestProcessingException.class)
                         .when(bisysUiConsumer)
-                        .runCreateSoknad(bidragsmelding);
+                        .createVedtak(bidragsmelding);
             else
-                doNothing().when(bisysUiConsumer).runCreateSoknad(bidragsmelding);
+                doNothing().when(bisysUiConsumer).createVedtak(bidragsmelding);
         }
 
         syntetiseringService.processBidragsmeldinger(syntetiserteBidragsmeldinger);

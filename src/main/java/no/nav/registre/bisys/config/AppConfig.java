@@ -7,13 +7,19 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.registre.bisys.consumer.rs.BisysSyntetisererenConsumer;
-import no.nav.registre.bisys.consumer.ui.BisysUiConsumer;
-import no.nav.registre.bisys.consumer.ui.modules.BisysUiRollerConsumer;
-import no.nav.registre.bisys.consumer.ui.modules.BisysUiSakConsumer;
+import no.nav.registre.bisys.consumer.rs.request.BisysRequestAugments;
+import no.nav.registre.bisys.consumer.ui.BisysUiSupport;
+import no.nav.registre.bisys.consumer.ui.modules.BisysUiFatteVedtakConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Configuration
 public class AppConfig {
+
+    public static final String STANDARD_DATE_FORMAT_BISYS = "dd.MM.yyyy";
+    public static final String STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST = "yyyy-MM-dd";
+
+    // Will be set to true for BMs household (forskudd)
+    private final static boolean boforholdBarnRegistrertPaaAdresse = false;
 
     @Value("${syntrest.rest.api.url}")
     String syntrestServerUrl;
@@ -34,7 +40,25 @@ public class AppConfig {
     String enhet;
 
     @Value("${testnorge-hodejegeren.rest-api.url}")
-    private String hodejegerenUrl;
+    String hodejegerenUrl;
+
+    @Value("${BOFORHOLD_ANDEL_FORSORGING}")
+    String boforholdAndelForsorging;
+
+    @Value("${BIDRAGSBEREGNING_KODE_VIRK_AARSAK}")
+    String bidragsberegningKodeVirkAarsak;
+
+    @Value("${BIDRAGSBEREGNING_SAMVARSKLASSE}")
+    String bidragsberegningSamvarsklasse;
+
+    @Value("${FATTE_VEDTAK_GEBYR_BESLAARSAK_KODE_FRITATT_IKKE_SOKT}")
+    boolean fatteVedtakGebyrBeslAarsakKodeFritattIkkeSokt;
+
+    @Value("${INNTEKT_BM_EGNE_OPPLYSNINGER:0}")
+    private int inntektBmEgneOpplysninger;
+
+    @Value("${INNTEKT_BP_EGNE_OPPLYSNINGER:0}")
+    private int inntektBpEgneOpplysninger;
 
     @Bean
     public RestTemplate restTemplate() {
@@ -47,19 +71,21 @@ public class AppConfig {
     }
 
     @Bean
-    public BisysUiConsumer bisysUiConsumer() {
-        return new BisysUiConsumer(
-                saksbehandlerUid, saksbehandlerPwd, bisysUrl, rolleSaksbehandler, enhet);
+    public BisysUiSupport bisysUiNavigationSupport() {
+        return new BisysUiSupport(saksbehandlerUid, saksbehandlerPwd, bisysUrl,
+                rolleSaksbehandler, Integer.parseInt(enhet));
     }
 
     @Bean
-    public BisysUiSakConsumer bisysUiSakConsumer() {
-        return new BisysUiSakConsumer();
-    }
+    public BisysRequestAugments bisysRequestAugments() {
 
-    @Bean
-    public BisysUiRollerConsumer bisysUiRollerConsumer() {
-        return new BisysUiRollerConsumer();
+        String fatteVedtakGebyrBeslAarsakKode = fatteVedtakGebyrBeslAarsakKodeFritattIkkeSokt
+                ? BisysUiFatteVedtakConsumer.KODE_BESL_AARSAK_FRITATT_IKKE_SOKT
+                : BisysUiFatteVedtakConsumer.KODE_BESL_AARSAK_ILAGT_IKKE_SOKT;
+
+        return new BisysRequestAugments(boforholdAndelForsorging, boforholdBarnRegistrertPaaAdresse,
+                bidragsberegningKodeVirkAarsak, bidragsberegningSamvarsklasse,
+                fatteVedtakGebyrBeslAarsakKode, inntektBmEgneOpplysninger, inntektBpEgneOpplysninger);
     }
 
     @Bean

@@ -2,110 +2,60 @@ package no.nav.registre.bisys.consumer.ui;
 
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.gargoylesoftware.htmlunit.WebClient;
+import org.springframework.stereotype.Component;
+
 import lombok.extern.slf4j.Slf4j;
-import net.morher.ui.connect.api.ApplicationDefinition;
-import net.morher.ui.connect.api.listener.ActionLogger;
-import net.morher.ui.connect.html.HtmlApplicationUtils;
-import net.morher.ui.connect.html.HtmlMapper;
-import net.morher.ui.connect.html.listener.WaitForJavaScriptListener;
-import net.morher.ui.connect.http.Browser;
-import net.morher.ui.connect.http.BrowserConfigurer;
-import no.nav.bidrag.dto.SynthesizedBidragRequest;
-import no.nav.bidrag.exception.BidragRequestProcessingException;
 import no.nav.bidrag.ui.bisys.BisysApplication;
-import no.nav.bidrag.ui.bisys.sak.Sak;
+import no.nav.bidrag.ui.dto.SynthesizedBidragRequest;
+import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
+import no.nav.bidrag.ui.exception.BidragRequestRuntimeException;
+import no.nav.registre.bisys.consumer.rs.request.BisysRequestAugments;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
-import no.nav.registre.bisys.consumer.ui.modules.BisysUiSakConsumer;
+import no.nav.registre.bisys.consumer.ui.modules.BisysUiFatteVedtakConsumer;
+import no.nav.registre.bisys.consumer.ui.modules.BisysUiSoknadConsumer;
 
 @Slf4j
+@Component
 public class BisysUiConsumer {
 
-  String saksbehandlerUid;
-  String saksbehandlerPwd;
-  String bisysUrl;
-  String rolleSaksbehandler;
-  int enhet;
+    public static final String INCORRECT_ENTRY_PAGE = "Incorrect entry page";
 
-  private BisysApplication bisys;
+    public static final String PROCESSING_FAILED = "Processing failed.";
 
-  private TestnorgeToBisysMapper testnorgeToBisysMapper;
+    @Autowired
+    private BisysUiSupport navigationSupport;
 
-  @Autowired private BisysUiSakConsumer bisysUiSakConsumer;
+    @Autowired
+    private BisysUiSoknadConsumer soknadConsumer;
 
-  public BisysUiConsumer(
-      String saksbehandlerUid,
-      String saksbehandlerPwd,
-      String bisysUrl,
-      String rolleSaksbehandler,
-      String enhet) {
+    @Autowired
+    private BisysUiFatteVedtakConsumer fatteVedtakConsumer;
 
-    this.saksbehandlerUid = saksbehandlerUid;
-    this.saksbehandlerPwd = saksbehandlerPwd;
-    this.bisysUrl = bisysUrl;
-    this.rolleSaksbehandler = rolleSaksbehandler;
-    this.enhet = Integer.valueOf(enhet);
+    @Autowired
+    private BisysRequestAugments bisysRequestAugments;
 
-    this.testnorgeToBisysMapper = Mappers.getMapper(TestnorgeToBisysMapper.class);
-  }
+    private TestnorgeToBisysMapper testnorgeToBisysMapper = Mappers.getMapper(TestnorgeToBisysMapper.class);
 
-  public void runCreateSoknad(SyntetisertBidragsmelding bidragsmelding)
-      throws BidragRequestProcessingException {
+    public void createVedtak(SyntetisertBidragsmelding bidragsmelding)
+            throws BidragRequestProcessingException {
 
-    SynthesizedBidragRequest request = testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding);
+        BisysApplication bisys = null;
 
-    log.info(
-        "### Soknad creation started ### soknad related to child with ID {}, details: soknadstype {}, sokt om {}, soknad fra {}, mottatt dato {}, fra dato {}",
-        request.getFnrBa(),
-        request.getSoknadstype(),
-        request.getSoktOm(),
-        request.getSoknadFra(),
-        request.getMottattDato(),
-        request.getSoktFra());
+        if (bidragsmelding != null) {
+            bisys = navigationSupport.logon();
 
-    bisysLogon();
+            log.info("Processing SyntetisertBidragsmelding with barnetsFnr {}",
+                    bidragsmelding.getBarnetsFnr());
+        }
 
-    // TODO: Introdusere mapping mellom saksbehandlers NAV-kontor og synt.brukers tilknyttede enhet
-    // Velg pålogget enhet
-    bisys.velgGruppe().velgGruppe(rolleSaksbehandler);
-    bisys.velgEnhet().velgEnhet(enhet);
+        SynthesizedBidragRequest request = testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding, bisysRequestAugments);
 
-    Sak sak = bisysUiSakConsumer.openOrCreateSak(bisys, request);
+        if (bisys != null) {
+            soknadConsumer.openOrCreateSoknad(bisys, request);
+            fatteVedtakConsumer.runFatteVedtak(bisys, request);
+        } else {
+            throw new BidragRequestRuntimeException("Bisys logon failed!");
+        }
 
-    log.info("html dump: {}", HtmlApplicationUtils.getHtml(sak));
-
-    sak.nySoknad().click();
-    bisys.soknad().fillInAndSaveSoknad(request);
-
-    log.info(
-        "### Soknad creation completed successfully ### soknad for child {} was created.",
-        request.getFnrBa());
-  }
-
-  private void bisysLogon() {
-    bisys = openBrowser(bisysUrl);
-    log.info("html dump: {}", HtmlApplicationUtils.getHtml(bisys.openamLoginPage()));
-    bisys.openamLoginPage().signIn(saksbehandlerUid, saksbehandlerPwd);
-  }
-
-  private BisysApplication openBrowser(String url) {
-    return ApplicationDefinition.of(BisysApplication.class)
-        .mapWith(new HtmlMapper())
-        .addListener(new WaitForJavaScriptListener())
-        .addListener(new ActionLogger())
-        .connect(
-            new Browser()
-                .asChrome()
-                .useInsecureSSL()
-                .addConfigurer(new BisysBrowserConfigurer())
-                .openUrl(url));
-  }
-
-  private static class BisysBrowserConfigurer implements BrowserConfigurer {
-
-    @Override
-    public void configure(WebClient client) {
-      client.getOptions().setThrowExceptionOnScriptError(false);
     }
-  }
 }
