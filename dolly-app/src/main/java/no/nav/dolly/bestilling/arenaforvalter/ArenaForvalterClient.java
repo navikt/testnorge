@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 
@@ -71,6 +72,22 @@ public class ArenaForvalterClient implements ClientRegister {
         }
     }
 
+    @Override
+    public void release(List<String> identer) {
+
+        identer.forEach(ident -> {
+            ResponseEntity<ArenaArbeidssokerBruker> existingServicebruker = arenaForvalterConsumer.getIdent(ident);
+            if (existingServicebruker.hasBody()) {
+                existingServicebruker.getBody().getArbeidsokerList().forEach(list -> {
+                    if (nonNull(list.getMiljoe())) {
+                        newArrayList(list.getMiljoe().split(",")).forEach(
+                                environment -> arenaForvalterConsumer.deleteIdent(ident, environment));
+                    }
+                });
+            }
+        });
+    }
+
     private void deleteServicebruker(String ident, List<String> availEnvironments, StringBuilder status, ResponseEntity<ArenaArbeidssokerBruker> response) {
 
         if (response.hasBody() && !response.getBody().getArbeidsokerList().isEmpty()) {
@@ -138,7 +155,7 @@ public class ArenaForvalterClient implements ClientRegister {
 
         if (e instanceof HttpClientErrorException) {
             status.append(" (")
-                    .append(((HttpClientErrorException) e).getResponseBodyAsString().replace(',','='))
+                    .append(((HttpClientErrorException) e).getResponseBodyAsString().replace(',', '='))
                     .append(')');
         }
     }
