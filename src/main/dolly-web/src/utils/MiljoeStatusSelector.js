@@ -1,51 +1,36 @@
-const avvikStatus = item => {
+import _get from 'lodash/get'
+
+export const avvikStatus = bestilling => {
+	if (bestilling.feil) return true
+
 	let avvik = false
-	item.tpsfStatus &&
-		item.tpsfStatus.map(status => {
-			status.statusMelding !== 'OK' && (avvik = true)
-		})
-	item.aaregStatus &&
-		item.aaregStatus.map(status => {
-			status.statusMelding !== 'OK' && (avvik = true)
-		})
-	item.krrStubStatus &&
-		item.krrStubStatus.map(status => {
-			status.statusMelding !== 'OK' && (avvik = true)
-		})
-	item.sigrunStubStatus &&
-		item.sigrunStubStatus.map(status => {
-			status.statusMelding !== 'OK' && (avvik = true)
-		})
-	item.pdlforvalterStatus &&
-		Object.keys(item.pdlforvalterStatus).map(pdlAttr => {
-			item.pdlforvalterStatus[pdlAttr].map(status => {
-				status.statusMelding !== 'OK' && (avvik = true)
-			})
-		})
-	item.arenaforvalterStatus &&
-		item.arenaforvalterStatus.map(status => {
-			status.status !== 'OK' && (avvik = true)
-		})
 
-	item.instdataStatus &&
-		item.instdataStatus.map(status => {
-			status.statusMelding !== 'OK' && (avvik = true)
-		})
+	const check = v => v.statusMelding !== 'OK'
 
-	item.feil && (avvik = true)
+	if (_get(bestilling, 'tpsfStatus', []).some(check)) avvik = true
+	if (_get(bestilling, 'aaregStatus', []).some(check)) avvik = true
+	if (_get(bestilling, 'krrStubStatus', []).some(check)) avvik = true
+	if (_get(bestilling, 'sigrunStubStatus', []).some(check)) avvik = true
+	if (_get(bestilling, 'pdlforvalterStatus.pdlForvalter', []).some(check)) avvik = true
+	if (_get(bestilling, 'instdataStatus', []).some(check)) avvik = true
+
+	// Arena har et annerledes property - 'status'
+	if (_get(bestilling, 'arenaforvalterStatus', []).some(o => o.status !== 'OK')) avvik = true
+
 	return avvik
 }
 
-const antallIdenterOpprettetFunk = bestilling => {
+export const countAntallIdenterOpprettet = bestilling => {
 	let identArray = []
-	bestilling.tpsfStatus &&
-		bestilling.tpsfStatus.map(status => {
-			Object.keys(status.environmentIdents).map(miljo => {
-				status.environmentIdents[miljo].map(ident => {
-					!identArray.includes(ident) && identArray.push(ident)
-				})
+
+	_get(bestilling, 'tpsfStatus', []).forEach(status => {
+		Object.keys(status.environmentIdents).forEach(miljo => {
+			status.environmentIdents[miljo].forEach(ident => {
+				if (!identArray.includes(ident)) identArray.push(ident)
 			})
 		})
+	})
+
 	return identArray.length
 }
 
@@ -53,11 +38,11 @@ const miljoeStatusSelector = bestilling => {
 	if (!bestilling) return null
 
 	const bestillingId = bestilling.id
-	let successEnvs = []
-	let failedEnvs = []
-	let avvikEnvs = []
+	const successEnvs = []
+	const failedEnvs = []
+	const avvikEnvs = []
 	const finnesFeilmelding = avvikStatus(bestilling)
-	const antallIdenterOpprettet = antallIdenterOpprettetFunk(bestilling)
+	const antallIdenterOpprettet = countAntallIdenterOpprettet(bestilling)
 
 	// TODO: Refactor, forenkler disse kodene
 	bestilling.tpsfStatus &&
