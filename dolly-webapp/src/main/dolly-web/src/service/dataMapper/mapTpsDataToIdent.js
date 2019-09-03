@@ -4,8 +4,8 @@ import _get from 'lodash/get'
 
 export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 	if (!tpsfData) return null
-	let data
-	data = [
+
+	const data = [
 		{
 			header: 'Personlig informasjon',
 			data: [
@@ -129,7 +129,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 	}
 
 	if (pdlfData && pdlfData.utenlandskeIdentifikasjonsnummere) {
-		var opphoert = false
+		let opphoert = false
 		if (pdlfData.utenlandskeIdentifikasjonsnummere[0].registrertOpphoertINAV) {
 			opphoert = true
 		}

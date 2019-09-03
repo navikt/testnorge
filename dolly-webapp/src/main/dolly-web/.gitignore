@@ -29,3 +29,6 @@ yarn-error.log*
 
 # Webpack stats file
 stats.json
+
+# Code counter extension
+.VSCodeCounter
