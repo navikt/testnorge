@@ -30,11 +30,11 @@ resources:
 fasitResources:
   used:
     - alias: "mqGateway02"
-        resourceType: QueueManager
-        propertyMap:
-          name: ibm.mq.queueManager
-          hostname: ibm.mq.hostname
-          port: ibm.mq.port
+      resourceType: QueueManager
+      propertyMap:
+        name: ibm.mq.queueManager
+        hostname: ibm.mq.hostname
+        port: ibm.mq.port
   exposed:
     - alias: testnorge-tss.rest-api
       description: På denne base-url finner du swagger-dokumentasjon av REST-tjenesten.
