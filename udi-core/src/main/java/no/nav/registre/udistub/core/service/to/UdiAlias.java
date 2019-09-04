@@ -12,10 +12,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class AliasTo {
+public class UdiAlias {
 
     private String fnr;
-    private PersonNavnTo navn;
+    private UdiPersonNavn navn;
     @JsonBackReference
-    private PersonTo person;
+    private UdiPerson person;
 }

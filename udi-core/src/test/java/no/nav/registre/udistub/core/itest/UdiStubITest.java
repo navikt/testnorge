@@ -16,7 +16,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.registre.udistub.core.database.model.Person;
 import no.nav.registre.udistub.core.database.repository.PersonRepository;
 import no.nav.registre.udistub.core.provider.rs.PersonControllerResponse;
-import no.nav.registre.udistub.core.service.to.PersonTo;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class UdiStubITest extends ITestBase {
 
     @BeforeEach
     public void mapToTestPerson() {
-        Person personEntity = mapperFacade.map(testpersonTo, Person.class);
+        Person personEntity = mapperFacade.map(TESTPERSON_UDI, Person.class);
         personEntity.getAvgjoerelser().forEach(avgjorelseTo -> avgjorelseTo.setPerson(personEntity));
         personEntity.getAliaser().forEach(aliasTo -> aliasTo.setPerson(personEntity));
         personEntity.getOppholdStatus().setPerson(personEntity);
@@ -103,7 +103,7 @@ public class UdiStubITest extends ITestBase {
         assertNotNull(response.getBody());
         assertNotNull(response.getBody().getPerson());
 
-        PersonTo storedPerson = response.getBody().getPerson();
+        UdiPerson storedPerson = response.getBody().getPerson();
         assertEquals(TEST_FLYKTNINGSTATUS, storedPerson.getFlyktning());
         assertEquals(TEST_OPPHOLDSTILLATELSE, storedPerson.getHarOppholdsTillatelse());
 

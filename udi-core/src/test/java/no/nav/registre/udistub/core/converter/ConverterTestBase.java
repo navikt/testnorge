@@ -3,7 +3,7 @@ package no.nav.registre.udistub.core.converter;
 import no.nav.registre.udistub.core.TestSetupException;
 import no.nav.registre.udistub.core.converter.ws.PeriodeWsConverter;
 import no.nav.registre.udistub.core.converter.ws.XmlDateWsConverter;
-import no.nav.registre.udistub.core.service.to.PersonTo;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
 import no.nav.registre.udistub.core.DefaultTestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.InjectMocks;
@@ -26,7 +26,7 @@ public class ConverterTestBase {
 	@Mock
 	private ConversionService conversionService;
 
-	protected PersonTo defaultTestPerson;
+	protected UdiPerson defaultTestPerson;
 	protected DatatypeFactory datatypeFactory;
 
 	public ConverterTestBase() {

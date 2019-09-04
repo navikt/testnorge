@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.registre.udistub.core.service.to.PeriodeTo;
+import no.nav.registre.udistub.core.service.to.UdiPeriode;
 import no.udi.mt_1067_nav_data.v1.OppholdstillatelseKategori;
 
 import java.time.LocalDate;
@@ -13,9 +13,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Setter
 @Getter
-public class OppholdSammeVilkaarTo {
+public class UdiOppholdSammeVilkaar {
 
-    private PeriodeTo oppholdSammeVilkaarPeriode;
+    private UdiPeriode oppholdSammeVilkaarPeriode;
     private LocalDate oppholdSammeVilkaarEffektuering;
     private OppholdstillatelseKategori oppholdstillatelseType;
     private LocalDate oppholdstillatelseVedtaksDato;

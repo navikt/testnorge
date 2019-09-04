@@ -8,10 +8,10 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.registre.udistub.core.database.model.Person;
 import no.nav.registre.udistub.core.database.repository.PersonRepository;
 import no.nav.registre.udistub.core.exception.NotFoundException;
-import no.nav.registre.udistub.core.service.to.AliasTo;
-import no.nav.registre.udistub.core.service.to.AvgjorelseTo;
-import no.nav.registre.udistub.core.service.to.PersonNavnTo;
-import no.nav.registre.udistub.core.service.to.PersonTo;
+import no.nav.registre.udistub.core.service.to.UdiAlias;
+import no.nav.registre.udistub.core.service.to.UdiAvgjorelse;
+import no.nav.registre.udistub.core.service.to.UdiPersonNavn;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
 import no.nav.registre.udistub.core.service.tpsf.TpsfPerson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,23 +33,23 @@ public class PersonService {
     @Autowired
     private final PersonRepository personRepository;
 
-    public Optional<PersonTo> opprettPerson(PersonTo personTo, String consumerId) {
+    public Optional<UdiPerson> opprettPerson(UdiPerson udiPerson, String consumerId) {
 
-        fetchAndSetTpsfPersonData(personTo, consumerId);
+        fetchAndSetTpsfPersonData(udiPerson, consumerId);
 
-        Person person = mapperFacade.map(personTo, Person.class);
+        Person person = mapperFacade.map(udiPerson, Person.class);
         Person storedPerson = personRepository.save(person);
 
-        PersonTo storedAndMappedPersonTo = mapStoredPerson(storedPerson);
-        return Optional.of(storedAndMappedPersonTo);
+        UdiPerson storedAndMappedUdiPerson = mapStoredPerson(storedPerson);
+        return Optional.of(storedAndMappedUdiPerson);
     }
 
-    public Optional<PersonTo> finnPerson(String ident) {
+    public Optional<UdiPerson> finnPerson(String ident) {
         Person storedPerson = personRepository.findByIdent(ident)
                 .orElseThrow(() -> new NotFoundException("Kunne ikke finne person med ident " + ident));
 
-        PersonTo storedAndMappedPersonTo = mapStoredPerson(storedPerson);
-        return Optional.of(storedAndMappedPersonTo);
+        UdiPerson storedAndMappedUdiPerson = mapStoredPerson(storedPerson);
+        return Optional.of(storedAndMappedUdiPerson);
     }
 
     public void deletePerson(String ident) {
@@ -61,41 +61,41 @@ public class PersonService {
         }
     }
 
-    public void fetchAndSetTpsfPersonData(PersonTo personTo, String consumerId) {
-        TpsfPerson tpsfPerson = tpsfService.hentPersonWithIdent(personTo.getIdent(), consumerId);
+    public void fetchAndSetTpsfPersonData(UdiPerson udiPerson, String consumerId) {
+        TpsfPerson tpsfPerson = tpsfService.hentPersonWithIdent(udiPerson.getIdent(), consumerId);
 
-        PersonNavnTo personNavnTo = new PersonNavnTo(tpsfPerson.getFornavn(), tpsfPerson.getMellomnavn(), tpsfPerson.getEtternavn());
-        personTo.setNavn(personNavnTo);
-        personTo.setIdent(tpsfPerson.getIdent());
+        UdiPersonNavn udiPersonNavn = new UdiPersonNavn(tpsfPerson.getFornavn(), tpsfPerson.getMellomnavn(), tpsfPerson.getEtternavn());
+        udiPerson.setNavn(udiPersonNavn);
+        udiPerson.setIdent(tpsfPerson.getIdent());
 
-        personTo.setAliaser(Collections.singletonList(
-                AliasTo.builder()
+        udiPerson.setAliaser(Collections.singletonList(
+                UdiAlias.builder()
                         .fnr(tpsfPerson.getIdent())
-                        .navn(personNavnTo)
-                        .person(personTo)
+                        .navn(udiPersonNavn)
+                        .person(udiPerson)
                         .build()));
 
-        personTo.setFoedselsDato(tpsfPerson.getFoedselsdato());
-        personTo.getOppholdStatus().setPerson(personTo);
+        udiPerson.setFoedselsDato(tpsfPerson.getFoedselsdato());
+        udiPerson.getOppholdStatus().setPerson(udiPerson);
 
-        personTo.setAvgjoerelser(Collections.singletonList(
-                AvgjorelseTo.builder()
-                        .person(personTo)
+        udiPerson.setAvgjoerelser(Collections.singletonList(
+                UdiAvgjorelse.builder()
+                        .person(udiPerson)
                         .build()));
 
-        personTo.getArbeidsadgang().setPerson(personTo);
+        udiPerson.getArbeidsadgang().setPerson(udiPerson);
     }
 
-    private PersonTo mapStoredPerson(Person storedPerson) {
+    private UdiPerson mapStoredPerson(Person storedPerson) {
         // This is a workaround to resolve the Orikamappers stack overflow error
         // encountered when mapping cycling objects
         storedPerson.getAvgjoerelser().forEach(avgjorelse -> avgjorelse.setPerson(null));
         storedPerson.getAliaser().forEach(alias -> alias.setPerson(null));
         storedPerson.getOppholdStatus().setPerson(null);
         storedPerson.getArbeidsadgang().setPerson(null);
-        PersonTo mappedPerson = mapperFacade.map(storedPerson, PersonTo.class);
+        UdiPerson mappedPerson = mapperFacade.map(storedPerson, UdiPerson.class);
         mappedPerson.getAvgjoerelser().forEach(avgjorelseTo -> avgjorelseTo.setPerson(mappedPerson));
-        mappedPerson.getAliaser().forEach(aliasTo -> aliasTo.setPerson(mappedPerson));
+        mappedPerson.getAliaser().forEach(udiAlias -> udiAlias.setPerson(mappedPerson));
         mappedPerson.getOppholdStatus().setPerson(mappedPerson);
         mappedPerson.getArbeidsadgang().setPerson(mappedPerson);
         return mappedPerson;

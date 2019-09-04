@@ -6,14 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Getter
 @Setter
-@Builder
-public class PeriodeTo {
-    private LocalDate fra;
-    private LocalDate til;
+public class UdiPersonNavn {
+    private String fornavn;
+    private String mellomnavn;
+    private String etternavn;
 }

@@ -12,9 +12,9 @@ import no.udi.mt_1067_nav_data.v1.OvrigIkkeOppholdsKategori;
 @Setter
 @Getter
 @Builder
-public class IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo {
+public class UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum {
 
-    private UtvistMedInnreiseForbudTo utvistMedInnreiseForbud;
-    private AvslagEllerBortfallTo avslagEllerBortfall;
+    private UdiUtvistMedInnreiseForbud utvistMedInnreiseForbud;
+    private UdiAvslagEllerBortfall avslagEllerBortfall;
     private OvrigIkkeOppholdsKategori ovrigIkkeOppholdsKategoriArsak;
 }
