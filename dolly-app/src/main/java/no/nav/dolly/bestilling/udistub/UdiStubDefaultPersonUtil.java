@@ -27,9 +27,9 @@ public class UdiStubDefaultPersonUtil {
     public static void setPersonDefaultsIfUnspecified(UdiPerson udiPerson) {
 
         //OPPHOLDSSTATUS
-        UdiOppholdStatus specifiedUdiOppholdStatus = nullcheckSetDefaultValue(udiPerson.getUdiOppholdStatus(), new UdiOppholdStatus());
+        UdiOppholdStatus specifiedUdiOppholdStatus = nullcheckSetDefaultValue(udiPerson.getOppholdStatus(), new UdiOppholdStatus());
 
-        udiPerson.setUdiOppholdStatus(UdiOppholdStatus.builder()
+        udiPerson.setOppholdStatus(UdiOppholdStatus.builder()
                 .uavklart(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getUavklart(), false))
                 .udiOppholdSammeVilkaar(oppholdSammeVilkaarDefaultsIfUnspecified(specifiedUdiOppholdStatus))
                 .udiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum(ikkeOppholdstilatelseIkkeVilkaarIkkeVisumIfUnspecified(specifiedUdiOppholdStatus))
