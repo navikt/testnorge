@@ -32,8 +32,8 @@ public class TSSController {
 
         try {
             tssService.sendToMQQueue(tssQueueMessages);
-        } catch(Exception e){
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error("Kunne ikke sende til kø", e);
         }
         log.info(tssQueueMessages.toString());
         return ResponseEntity.status(HttpStatus.OK).body(tssQueueMessages);
