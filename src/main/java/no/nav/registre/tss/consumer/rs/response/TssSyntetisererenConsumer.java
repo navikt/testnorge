@@ -38,7 +38,7 @@ public class TssSyntetisererenConsumer {
         List<String> filesToInsertInTSS = new ArrayList<>();
 
         ResponseEntity<List<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
-        if (response != null && response.getBody() != null) {
+        if (response.getBody() != null) {
             filesToInsertInTSS.addAll(response.getBody());
         } else {
             log.error("Kunne ikke hente response body fra synthdata-tss: NullPointerException");

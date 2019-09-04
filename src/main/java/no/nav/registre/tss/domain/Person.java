@@ -2,6 +2,7 @@ package no.nav.registre.tss.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,6 +11,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
 
+@Slf4j
 @Getter
 @NoArgsConstructor
 public class Person {
@@ -24,7 +26,7 @@ public class Person {
         this.alder = setalder();
     }
 
-    public int setalder() {
+    private int setalder() {
         String decade;
         LocalDate personBirth;
         int controll = Integer.parseInt(fnr.substring(6, 7));
@@ -40,7 +42,7 @@ public class Person {
         try {
             date = new SimpleDateFormat("ddMMyyyy").parse(dateString);
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.error("Kunne ikke opprette dato", e);
         }
         personBirth = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         Period period = Period.between(personBirth, LocalDate.now());

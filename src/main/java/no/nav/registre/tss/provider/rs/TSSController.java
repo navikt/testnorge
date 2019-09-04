@@ -5,13 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 import no.nav.registre.tss.domain.Person;
+import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 import no.nav.registre.tss.service.TSService;
 
 @Slf4j
@@ -23,8 +24,8 @@ public class TSSController {
     private TSService tssService;
 
     @GetMapping(value = "/opprettLeger")
-    public ResponseEntity createDoctorsInTSS(@RequestParam int numToSendToTSS) {
-        List<Person> ids = tssService.getIds(numToSendToTSS);
+    public ResponseEntity createDoctorsInTSS(@RequestBody SyntetiserTssRequest syntetiserTssRequest) {
+        List<Person> ids = tssService.getIds(syntetiserTssRequest);
         for (Person p : ids) {
             log.info(p.getNavn());
         }

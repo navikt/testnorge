@@ -13,6 +13,7 @@ import java.util.Map;
 import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.consumer.rs.response.TssSyntetisererenConsumer;
+import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 
 @Service
 public class TSService {
@@ -27,12 +28,17 @@ public class TSService {
     private JmsTemplate jmsTemplate;
 
     @Value("${queue.queueName}")
-    private String MQ_QUEUE_NAME;
+    private String mqQueueName;
 
-    public List<Person> getIds(Integer numToIdsGet) {
-        Map<String, JsonNode> personer = hodejegerenConsumer.getStatusQuo(100000883L, "q2", numToIdsGet, 25, 60);
+    public List<Person> getIds(SyntetiserTssRequest syntetiserTssRequest) {
+        Map<String, JsonNode> personer = hodejegerenConsumer.getStatusQuo(
+                syntetiserTssRequest.getAvspillergruppeId(),
+                syntetiserTssRequest.getMiljoe(),
+                syntetiserTssRequest.getAntallNyeIdenter(),
+                25,
+                60);
 
-        List<Person> personList = new ArrayList<>();
+        List<Person> personList = new ArrayList<>(personer.size());
         for (Map.Entry<String, JsonNode> entry : personer.entrySet()) {
             JsonNode jsonNode = entry.getValue();
             personList.add(new Person(
@@ -48,7 +54,7 @@ public class TSService {
 
     public void sendToMQQueue(List<String> messages) {
         for (String message : messages) {
-            jmsTemplate.convertAndSend(MQ_QUEUE_NAME, message);
+            jmsTemplate.convertAndSend(mqQueueName, message);
         }
     }
 }
