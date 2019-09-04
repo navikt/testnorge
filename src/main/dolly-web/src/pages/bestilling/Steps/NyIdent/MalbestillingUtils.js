@@ -31,6 +31,11 @@ export const getAttributesFromMal = mal => {
 		tpsfKriterier.utvandretTilLandFlyttedato &&
 			delete attrArray[attrArray.indexOf('utvandretTilLandFlyttedato')]
 	}
+	if (tpsfKriterier.utvandretTilLand) {
+		attrArray.push('forsvunnet')
+		delete attrArray[attrArray.indexOf('erForsvunnet')]
+		tpsfKriterier.forsvunnetDato && delete attrArray[attrArray.indexOf('forsvunnetDato')]
+	}
 
 	if (bestKriterier.pdlforvalter) {
 		Object.keys(bestKriterier.pdlforvalter).map(pdlattr => {

@@ -2,6 +2,7 @@ import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 
 export function mapTpsfData(tpsfData, testIdent, pdlfData) {
+	console.log('tpsfData :', tpsfData)
 	if (!tpsfData) return null
 	let data
 	data = [
@@ -42,6 +43,16 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 					id: 'personStatus',
 					label: 'Personstatus',
 					value: tpsfData.personStatus
+				},
+				{
+					id: 'erForsvunnet',
+					label: 'erForsvunnet',
+					value: tpsfData.erForsvunnet
+				},
+				{
+					id: 'forsvunnetDato',
+					label: 'Savnet Siden',
+					value: Formatters.formatDate(tpsfData.forsvunnetDato)
 				},
 				{
 					id: 'sivilstand',

@@ -43,7 +43,10 @@ export default class AttributtManager {
 						(attr.dataSource === 'TPSF' && attr.id === 'utvandret') ||
 						(attr.dataSource === 'TPSF' && attr.id === 'partner_utvandret') ||
 						(attr.dataSource === 'TPSF' && attr.id === 'barn_utvandret') ||
-						(attr.dataSource === 'TPSF' && attr.id === 'matrikkeladresse')
+						(attr.dataSource === 'TPSF' && attr.id === 'matrikkeladresse') ||
+						(attr.dataSource === 'TPSF' && attr.id === 'forsvunnet') ||
+						(attr.dataSource === 'TPSF' && attr.id === 'partner_forsvunnet') ||
+						(attr.dataSource === 'TPSF' && attr.id === 'barn_forsvunnet')
 					) {
 						return attr
 					} else {
