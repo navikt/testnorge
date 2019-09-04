@@ -254,7 +254,7 @@ export function mapBestillingData(bestillingData) {
 
 	if (bestillingData.bestKriterier) {
 		const registreKriterier = JSON.parse(bestillingData.bestKriterier)
-		const aaregKriterier = registreKriterier.aareg && registreKriterier.aareg
+		const aaregKriterier = registreKriterier.aareg
 		if (aaregKriterier) {
 			const aareg = {
 				header: 'Arbeidsforhold',
@@ -314,7 +314,7 @@ export function mapBestillingData(bestillingData) {
 			})
 			data.push(aareg)
 		}
-		const sigrunStubKriterier = registreKriterier.sigrunstub && registreKriterier.sigrunstub
+		const sigrunStubKriterier = registreKriterier.sigrunstub
 
 		if (sigrunStubKriterier) {
 			// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
@@ -363,7 +363,7 @@ export function mapBestillingData(bestillingData) {
 			data.push(sigrunStub)
 		}
 
-		const krrKriterier = registreKriterier.krrstub && registreKriterier.krrstub
+		const krrKriterier = registreKriterier.krrstub
 
 		if (krrKriterier) {
 			const krrStub = {
@@ -388,12 +388,10 @@ export function mapBestillingData(bestillingData) {
 			data.push(krrStub)
 		}
 
-		const pdlforvalterKriterier = registreKriterier.pdlforvalter && registreKriterier.pdlforvalter
+		const pdlforvalterKriterier = registreKriterier.pdlforvalter
 
 		if (pdlforvalterKriterier) {
-			const doedsboKriterier =
-				pdlforvalterKriterier.kontaktinformasjonForDoedsbo &&
-				pdlforvalterKriterier.kontaktinformasjonForDoedsbo
+			const doedsboKriterier = pdlforvalterKriterier.kontaktinformasjonForDoedsbo
 			if (doedsboKriterier) {
 				const navnType = doedsboKriterier.adressat.navn
 					? 'navn'
@@ -532,7 +530,7 @@ export function mapBestillingData(bestillingData) {
 				}
 			}
 		}
-		const arenaKriterier = registreKriterier.arenaforvalter && registreKriterier.arenaforvalter
+		const arenaKriterier = registreKriterier.arenaforvalter
 
 		if (arenaKriterier) {
 			const arenaforvalter = {
@@ -575,7 +573,7 @@ export function mapBestillingData(bestillingData) {
 			data.push(arenaforvalter)
 		}
 
-		const instKriterier = registreKriterier.instdata && registreKriterier.instdata
+		const instKriterier = registreKriterier.instdata
 
 		if (instKriterier) {
 			// Flater ut instKriterier for å gjøre det lettere å mappe

@@ -1,8 +1,8 @@
-import DataFormatter from '~/utils/DataFormatter'
-import DataSourceMapper from '~/utils/DataSourceMapper'
 import _groupBy from 'lodash/groupBy'
 import _set from 'lodash/set'
 import _isEmpty from 'lodash/isEmpty'
+import DataFormatter from '~/utils/DataFormatter'
+import DataSourceMapper from '~/utils/DataSourceMapper'
 import { AttributtManager } from '~/service/Kodeverk'
 
 // TODO: Kan getValues og transformAttributt merges?
