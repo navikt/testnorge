@@ -1,5 +1,7 @@
-import mss, { avvikStatus, countAntallIdenterOpprettet } from '../MiljoeStatusSelector'
-import miljoeStatusSelector from '../MiljoeStatusSelector'
+import miljoeStatusSelector, {
+	avvikStatus,
+	countAntallIdenterOpprettet
+} from '../MiljoeStatusSelector'
 
 describe('MiljoeStatusSelector.js', () => {
 	describe('avvikStatus()', () => {
@@ -250,8 +252,15 @@ describe('MiljoeStatusSelector.js', () => {
 			}
 		}
 
-		it('skal returnere 0 hvis bestillingen er undefined', () => {
+		it('skal returnere null hvis bestillingen er undefined', () => {
 			expect(miljoeStatusSelector(undefined)).toBe(null)
+		})
+
+		it('skal ha property "finnesFeilmelding" satt til true dersom det finnes avvik', () => {
+			const medAvvik = {
+				finnesFeilmelding: true
+			}
+			expect(miljoeStatusSelector(bestillingMockMedFailedRegister)).toMatchObject(medAvvik)
 		})
 
 		it('skal returnere successEnvs t5 og t11', () => {
