@@ -26,7 +26,7 @@ public class TSSController {
     public ResponseEntity createDoctorsInTSS(@RequestParam int numToSendToTSS) {
         List<Person> ids = tssService.getIds(numToSendToTSS);
         for (Person p : ids) {
-            System.out.println(p.getNavn());
+            log.info(p.getNavn());
         }
         List<String> tssQueueMessages = tssService.getMessagesFromSynt(ids);
 
@@ -35,7 +35,7 @@ public class TSSController {
         } catch(Exception e){
             e.printStackTrace();
         }
-        System.out.println(tssQueueMessages);
+        log.info(tssQueueMessages.toString());
         return ResponseEntity.status(HttpStatus.OK).body(tssQueueMessages);
     }
 }
