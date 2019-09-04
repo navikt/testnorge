@@ -64,8 +64,13 @@ export const FieldArrayComponent = ({
 		}
 	}, {})
 	const createDefaultObject = () => {
+		// Refaktoreres. Hvordan kan vi generalisere denne typen attributter for barn?
 		if ('barn_utvandret' in parentAttributes) {
 			parentAttributes.barn_utvandret = [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }]
+		} else if ('barn_innvandret' in parentAttributes) {
+			parentAttributes.barn_innvandret = [
+				{ innvandretFraLand: '', innvandretFraLandFlyttedato: '' }
+			]
 		}
 		arrayHelpers.push({ ...parentAttributes })
 	}
@@ -95,9 +100,12 @@ export const FieldArrayComponent = ({
 		arrayHelpers.replace(itemIndex, { ...valueCopy, [subItem]: subItemArr })
 	}
 	let formikValues = formikProps.values[parentId]
+
+	//Refaktorerers. Hvordan kan vi generalisere denne typen attributter for barn?
 	if (item.id === 'barn_utvandret') {
 		formikValues = [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }]
-		// formikValues = formikProps.values.barn[idx][parentId]
+	} else if (item.id === 'barn_innvandret') {
+		formikValues = [{ innvandretFraLand: '', innvandretFraLandFlyttedato: '' }]
 	}
 	let subLabelArray = []
 	let antallInstanser = 0
@@ -163,13 +171,12 @@ export const FieldArrayComponent = ({
 											// Add subKategori to ID
 											const fakeItem = {
 												...item,
-												id: `${parentId}[${idx}]${item.id}`
-											}
-											if (fakeItem.id === 'barn_utvandret[0]utvandretTilLand') {
-												fakeItem.id = `barn[${itemid}]barn_utvandret[0]utvandretTilLand`
-											}
-											if (fakeItem.id === 'barn_utvandret[0]utvandretTilLandFlyttedato') {
-												fakeItem.id = `barn[${itemid}]barn_utvandret[0]utvandretTilLandFlyttedato`
+												id:
+													parentId.includes('barn_innvandret') ||
+													parentId.includes('barn_utvandret')
+														? //Refaktorerers. Hvordan kan vi generalisere denne typen attributter for barn?
+														  `barn[${itemid}]${parentId}[0]${item.id}`
+														: `${parentId}[${idx}]${item.id}`
 											}
 											return (
 												<div key={kdx} className="flexbox">

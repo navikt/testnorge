@@ -25,6 +25,7 @@ export const actions = createActions(
 				return res
 			} catch (err) {
 				if (err.response) {
+					// && err.response.status === 404) {
 					//*Ingen maler
 					return { data: [] }
 				}
@@ -234,7 +235,6 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 	// mandatory
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
 	identOpprettesFra === BestillingMapper() && (final_values.tpsf.identtype = identtype)
-
 	// ? Vi trenger ikke nødvendigvis generisk løsning når det er så veldig mange spesiall tilfeller
 	// ? Forslag: lage en hjelpeklasse
 	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {
@@ -262,32 +262,6 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 				postLinje3: values.postLinje3
 			}
 		]
-	}
-	if (_get(final_values, 'tpsf.utvandret')) {
-		final_values.tpsf.utvandretTilLand = final_values.tpsf.utvandret[0].utvandretTilLand
-		final_values.tpsf.utvandretTilLandFlyttedato =
-			final_values.tpsf.utvandret[0].utvandretTilLandFlyttedato
-		delete final_values.tpsf.utvandret
-		if (_get(final_values, 'tpsf.relasjoner')) {
-			if (final_values.tpsf.relasjoner.partner && final_values.tpsf.relasjoner.partner.utvandret) {
-				final_values.tpsf.relasjoner.partner.utvandretTilLand =
-					final_values.tpsf.relasjoner.partner.utvandret[0].utvandretTilLand
-				final_values.tpsf.relasjoner.partner.utvandretTilLandFlyttedato =
-					final_values.tpsf.relasjoner.partner.utvandret[0].utvandretTilLandFlyttedato
-				delete final_values.tpsf.relasjoner.partner.utvandret
-			}
-			if (final_values.tpsf.relasjoner.barn) {
-				final_values.tpsf.relasjoner.barn.map((barnet, idx) => {
-					if (barnet.utvandret) {
-						final_values.tpsf.relasjoner.barn[idx].utvandretTilLand =
-							barnet.utvandret[0].utvandretTilLand
-						final_values.tpsf.relasjoner.barn[idx].utvandretTilLandFlyttedato =
-							barnet.utvandret[0].utvandretTilLandFlyttedato
-						delete final_values.tpsf.relasjoner.barn[idx].utvandret
-					}
-				})
-			}
-		}
 	}
 
 	if (_get(final_values, 'arenaforvalter')) {
@@ -336,7 +310,6 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 
 	// * Vurdere behovet for denne i U2/prod. Uglify?
 	// console.info('POSTING BESTILLING', final_values)
-
 	return final_values
 }
 
