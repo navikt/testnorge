@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.sigrunstub;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,5 +37,11 @@ public class SigrunStubClient implements ClientRegister {
                 progress.setSigrunstubStatus("Feil:" + e.getMessage());
             }
         }
+    }
+
+    @Override
+    public void release(List<String> identer) {
+
+        identer.forEach(ident -> sigrunStubConsumer.deleteSkattegrunnlag(ident));
     }
 }
