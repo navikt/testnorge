@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.stream.Collectors;
 
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
@@ -31,6 +32,7 @@ public class SyntetiseringService {
 
     private static final int MINIMUM_ALDER = 13;
     private static final String INNTEKT_NAME = "inntekt";
+    private static final int PAGE_SIZE = 100;
 
     @Value("${andelNyeIdenter}")
     private int andelNyeIdenter;
@@ -80,7 +82,7 @@ public class SyntetiseringService {
             identerMedInntekt.put(ident, new ArrayList<>());
         }
 
-        Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger = getInntektsmeldingerFraSynt(identerMedInntekt);
+        SortedMap<String, List<RsInntekt>> syntetiskeInntektsmeldinger = getInntektsmeldingerFraSynt(identerMedInntekt);
         if (syntetiskeInntektsmeldinger == null) {
             return new HashMap<>();
         }
@@ -91,7 +93,13 @@ public class SyntetiseringService {
             return new HashMap<>();
         }
 
-        Map<String, List<RsInntekt>> feiledeInntektsmeldinger = inntektstubConsumer.leggInntekterIInntektstub(syntetiskeInntektsmeldinger);
+        List<Map<String, List<RsInntekt>>> paginerteInntektsmeldinger = paginer(syntetiskeInntektsmeldinger);
+        Map<String, List<RsInntekt>> feiledeInntektsmeldinger = new HashMap<>();
+
+        for (int i = 0; i < paginerteInntektsmeldinger.size(); i++) {
+            feiledeInntektsmeldinger.putAll(inntektstubConsumer.leggInntekterIInntektstub(paginerteInntektsmeldinger.get(i)));
+            log.info("La til page {} av {} med inntekter i inntektstub", i + 1, paginerteInntektsmeldinger.size());
+        }
 
         if (!feiledeInntektsmeldinger.isEmpty()) {
             log.warn("Kunne ikke opprette inntekt på følgende identer: {}", feiledeInntektsmeldinger.keySet());
@@ -125,7 +133,7 @@ public class SyntetiseringService {
         return hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder);
     }
 
-    private Map<String, List<RsInntekt>> getInntektsmeldingerFraSynt(Map<String, List<RsInntekt>> identerMedInntekt) {
+    private SortedMap<String, List<RsInntekt>> getInntektsmeldingerFraSynt(Map<String, List<RsInntekt>> identerMedInntekt) {
         return inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(identerMedInntekt);
     }
 
@@ -135,5 +143,19 @@ public class SyntetiseringService {
             log.info("Ingen syntetiserte meldinger å legge på inntektstub, returnerer");
         }
         return inntektsmeldinger;
+    }
+
+    private static List<Map<String, List<RsInntekt>>> paginer(SortedMap<String, List<RsInntekt>> map) {
+        List<String> keys = new ArrayList<>(map.keySet());
+        List<Map<String, List<RsInntekt>>> pages = new ArrayList<>();
+        final int listSize = map.size();
+        for (int i = 0; i < listSize; i += PAGE_SIZE) {
+            if (i + PAGE_SIZE < listSize) {
+                pages.add(map.subMap(keys.get(i), keys.get(i + PAGE_SIZE)));
+            } else {
+                pages.add(map.tailMap(keys.get(i)));
+            }
+        }
+        return pages;
     }
 }

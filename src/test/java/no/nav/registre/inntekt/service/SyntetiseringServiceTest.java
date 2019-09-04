@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
@@ -50,7 +52,7 @@ public class SyntetiseringServiceTest {
     private SyntetiseringService syntetiseringService;
 
     private List<String> identer = Collections.singletonList("10128400000");
-    private Map<String, List<RsInntekt>> inntekter = new HashMap<>();
+    private SortedMap<String, List<RsInntekt>> inntekter = new TreeMap<>();
     private SyntetiseringsRequest request = new SyntetiseringsRequest(1L);
 
     @Before
@@ -109,7 +111,7 @@ public class SyntetiseringServiceTest {
      */
     @Test
     public void startSyntetiseringTestInntektSyntGirIngen() {
-        Map<String, List<RsInntekt>> tomSyntInntekt = new HashMap<>();
+        SortedMap<String, List<RsInntekt>> tomSyntInntekt = new TreeMap<>();
         when(inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(anyMap())).thenReturn(tomSyntInntekt);
         Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request);
         assertThat(feil, equalTo(Collections.EMPTY_MAP));
@@ -117,7 +119,7 @@ public class SyntetiseringServiceTest {
 
     @Test
     public void startSyntetiseringTestInntektSyntGirEn() {
-        Map<String, List<RsInntekt>> tomSyntInntekt = new HashMap<>();
+        SortedMap<String, List<RsInntekt>> tomSyntInntekt = new TreeMap<>();
         tomSyntInntekt.put("10128400000", new ArrayList<>(Collections.singletonList(RsInntekt.builder().build())));
         when(inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(anyMap())).thenReturn(tomSyntInntekt);
         when(inntektstubConsumer.leggInntekterIInntektstub(anyMap())).thenReturn(inntekter);

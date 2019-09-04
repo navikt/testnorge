@@ -12,6 +12,7 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 import no.nav.registre.inntekt.domain.RsInntekt;
 
@@ -19,7 +20,7 @@ import no.nav.registre.inntekt.domain.RsInntekt;
 @Component
 public class InntektSyntConsumer {
 
-    private static final ParameterizedTypeReference<Map<String, List<RsInntekt>>> RESPONSE_TYPE = new ParameterizedTypeReference<Map<String, List<RsInntekt>>>() {
+    private static final ParameterizedTypeReference<SortedMap<String, List<RsInntekt>>> RESPONSE_TYPE = new ParameterizedTypeReference<SortedMap<String, List<RsInntekt>>>() {
     };
 
     @Autowired
@@ -31,7 +32,7 @@ public class InntektSyntConsumer {
         url = new UriTemplate(inntektSyntUrl + "/v1/generate/inntekt");
     }
 
-    public Map<String, List<RsInntekt>> hentSyntetiserteInntektsmeldinger(Map<String, List<RsInntekt>> identerMedInntekt) {
+    public SortedMap<String, List<RsInntekt>> hentSyntetiserteInntektsmeldinger(Map<String, List<RsInntekt>> identerMedInntekt) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(identerMedInntekt);
         try {
             return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
