@@ -1,0 +1,54 @@
+package no.nav.registre.tss.service;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.tss.domain.Person;
+import no.nav.registre.tss.consumer.rs.response.TssSyntetisererenConsumer;
+
+@Service
+public class TSService {
+
+    @Autowired
+    private HodejegerenConsumer hodejegerenConsumer;
+
+    @Autowired
+    private TssSyntetisererenConsumer tssSyntetisererenConsumer;
+
+    @Autowired
+    private JmsTemplate jmsTemplate;
+
+    @Value("${queue.queueName}")
+    private String MQ_QUEUE_NAME;
+
+    public List<Person> getIds(Integer numToIdsGet) {
+        Map<String, JsonNode> personer = hodejegerenConsumer.getStatusQuo(100000883L, "q2", numToIdsGet, 25, 60);
+
+        List<Person> personList = new ArrayList<>();
+        for (Map.Entry<String, JsonNode> entry : personer.entrySet()) {
+            JsonNode jsonNode = entry.getValue();
+            personList.add(new Person(
+                    entry.getKey(),
+                    jsonNode.findValue("gjeldendePersonnavn").asText()));
+        }
+        return personList;
+    }
+
+    public List<String> getMessagesFromSynt(List<Person> personer) {
+        return tssSyntetisererenConsumer.produceFilesToTSS(personer);
+    }
+
+    public void sendToMQQueue(List<String> messages) {
+        for (String message : messages) {
+            jmsTemplate.convertAndSend(MQ_QUEUE_NAME, message);
+        }
+    }
+}
