@@ -45,47 +45,41 @@ const miljoeStatusSelector = bestilling => {
 	const antallIdenterOpprettet = countAntallIdenterOpprettet(bestilling)
 
 	// TODO: Refactor, forenkler disse kodene
-	bestilling.tpsfStatus &&
-		bestilling.tpsfStatus.map(status => {
-			status.statusMelding !== 'OK' &&
-				Object.keys(status.environmentIdents).map(miljo => {
-					const lowMiljo = miljo.toLowerCase()
-					!failedEnvs.includes(lowMiljo) && failedEnvs.push(lowMiljo)
-				})
-		})
+	const tpsf = _get(bestilling, 'tpsfStatus', [])
+	tpsf.forEach(status => {
+		if (status.statusMelding !== 'OK') {
+			Object.keys(status.environmentIdents).forEach(miljo => {
+				const lowMiljo = miljo.toLowerCase()
+				if (!failedEnvs.includes(lowMiljo)) failedEnvs.push(lowMiljo)
+			})
+		}
+	})
 
 	//Går gjennom TPSF-statuser igjen slik at ingen miljø er både suksess og feilet
 	//Burde kanskje legge til avvik slik som i arena og inst dersom et miljø feiler for noen, men ikke alle identer
-	bestilling.tpsfStatus &&
-		bestilling.tpsfStatus.map(status => {
-			status.statusMelding == 'OK' &&
-				Object.keys(status.environmentIdents).map(miljo => {
-					const lowMiljo = miljo.toLowerCase()
-					!failedEnvs.includes(lowMiljo) &&
-						(!successEnvs.includes(lowMiljo) && successEnvs.push(lowMiljo))
-				})
-		})
+	tpsf.forEach(status => {
+		if (status.statusMelding === 'OK') {
+			Object.keys(status.environmentIdents).forEach(miljo => {
+				const lowMiljo = miljo.toLowerCase()
+				if (!failedEnvs.includes(lowMiljo) && !successEnvs.includes(lowMiljo)) {
+					successEnvs.push(lowMiljo)
+				}
+			})
+		}
+	})
 
 	//Finn feilet og suksess miljø
-	bestilling.krrStubStatus &&
-		bestilling.krrStubStatus.map(status => {
-			status.statusMelding == 'OK'
-				? !successEnvs.includes('Krr-stub') && successEnvs.push('Krr-stub')
-				: !failedEnvs.includes('Krr-stub') && failedEnvs.push('Krr-stub')
-		})
-	bestilling.sigrunStubStatus &&
-		bestilling.sigrunStubStatus.map(status => {
-			if (status.statusMelding == 'OK') {
-				!successEnvs.includes('Sigrun-stub') && successEnvs.push('Sigrun-stub')
-			} else {
-				!failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
-			}
-		})
+	_get(bestilling, 'krrStubStatus', []).forEach(status => {
+		status.statusMelding === 'OK' ? successEnvs.push('Krr-stub') : failedEnvs.push('Krr-stub')
+	})
+	_get(bestilling, 'sigrunStubStatus', []).forEach(status => {
+		status.statusMelding === 'OK' ? successEnvs.push('Sigrun-stub') : failedEnvs.push('Sigrun-stub')
+	})
 
 	//Burde legge inn avvik hvis miljø både er success og fail
 	bestilling.pdlforvalterStatus &&
-		Object.keys(bestilling.pdlforvalterStatus).map(pdlAttr => {
-			bestilling.pdlforvalterStatus[pdlAttr].map(status => {
+		Object.keys(bestilling.pdlforvalterStatus).forEach(pdlAttr => {
+			bestilling.pdlforvalterStatus[pdlAttr].forEach(status => {
 				status.statusMelding === 'OK'
 					? !successEnvs.includes('Pdl-forvalter') &&
 					  !failedEnvs.includes('Pdl-forvalter') &&
@@ -94,65 +88,31 @@ const miljoeStatusSelector = bestilling => {
 			})
 		})
 
-	let instHasOneSuccessEnv = false
-	let instFailed = false
+	const setStatus = (prop, statusPropName, name) => {
+		let hasOneSuccessEnv = false
+		let hasFailed = false
+		const _node = _get(bestilling, prop, [])
 
-	bestilling.instdataStatus &&
-		bestilling.instdataStatus.length > 0 &&
-		bestilling.instdataStatus.map(status => {
-			if (status.statusMelding == 'OK') {
-				instHasOneSuccessEnv = true
+		_node.forEach(status => {
+			if (status[statusPropName] === 'OK') {
+				hasOneSuccessEnv = true
 			} else {
-				instFailed = true
+				hasFailed = true
 			}
 		})
 
-	if (bestilling.instdataStatus && bestilling.instdataStatus.length > 0) {
-		instFailed
-			? instHasOneSuccessEnv
-				? avvikEnvs.push('Inst')
-				: failedEnvs.push('Inst')
-			: successEnvs.push('Inst')
+		if (_node.length > 0) {
+			hasFailed
+				? hasOneSuccessEnv
+					? avvikEnvs.push(name)
+					: failedEnvs.push(name)
+				: successEnvs.push(name)
+		}
 	}
 
-	let aaregHasOneSuccessEnv = false
-	let aaregFailed = false
-	bestilling.aaregStatus &&
-		bestilling.aaregStatus.length > 0 &&
-		bestilling.aaregStatus.map(status => {
-			if (status.statusMelding == 'OK') {
-				aaregHasOneSuccessEnv = true
-			} else {
-				aaregFailed = true
-			}
-		})
-
-	if (bestilling.aaregStatus && bestilling.aaregStatus.length > 0) {
-		aaregFailed
-			? aaregHasOneSuccessEnv
-				? avvikEnvs.push('AAREG')
-				: failedEnvs.push('AAREG')
-			: successEnvs.push('AAREG')
-	}
-
-	let arenaHasOneSuccessEnv = false
-	let arenaFailed = false
-	bestilling.arenaforvalterStatus &&
-		bestilling.arenaforvalterStatus.length > 0 &&
-		bestilling.arenaforvalterStatus.map(status => {
-			if (status.status == 'OK') {
-				arenaHasOneSuccessEnv = true
-			} else {
-				arenaFailed = true
-			}
-		})
-
-	if (bestilling.arenaforvalterStatus && bestilling.arenaforvalterStatus.length > 0) {
-		arenaFailed
-			? arenaHasOneSuccessEnv
-				? avvikEnvs.push('Arena')
-				: failedEnvs.push('Arena')
-			: successEnvs.push('Arena')
+	setStatus('instdataStatus', 'statusMelding', 'Inst')
+	setStatus('aaregStatus', 'statusMelding', 'AAREG')
+	setStatus('arenaforvalterStatus', 'status', 'Arena')
 
 	return {
 		bestillingId,
