@@ -166,6 +166,42 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		apiKodeverkId: 'Diskresjonskoder',
 		attributtType: AttributtType.SelectAndEdit
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Diverse,
+		id: 'forsvunnet',
+		label: 'Forsvunnet',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Select,
+		attributtType: AttributtType.SelectAndRead,
+
+		items: [
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Diverse,
+				id: 'erForsvunnet',
+				label: 'Forsvunnet',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				options: SelectOptionsManager('boolean'),
+
+				attributtType: AttributtType.SelectAndRead,
+				editPath: 'erForsvunnet'
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Diverse,
+				id: 'forsvunnetDato',
+				label: 'ForsvunnetDato',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				validation: DateValidation(),
+				onlyShowAfterSelectedValue: { attributtId: 'erForsvunnet', valueIndex: [0] },
+				attributtType: AttributtType.SelectOnly,
+				editPath: 'forsvunnetDato'
+			}
+		]
 	}
 ]
 

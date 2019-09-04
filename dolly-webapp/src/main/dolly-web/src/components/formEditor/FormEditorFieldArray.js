@@ -55,6 +55,7 @@ export const FieldArrayComponent = ({
 	const { subKategori, items, subItems, id } = item
 	const parentId = id
 	const itemid = idx
+
 	let parentAttributes = items.reduce((prev, curr) => {
 		return {
 			...prev,
@@ -67,8 +68,12 @@ export const FieldArrayComponent = ({
 		if ('barn_utvandret' in parentAttributes) {
 			parentAttributes.barn_utvandret = [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }]
 		}
+		if ('barn_forsvunnet' in parentAttributes) {
+			parentAttributes.barn_forsvunnet = [{ erForsvunnet: '', forsvunnetDato: '' }]
+		}
 		arrayHelpers.push({ ...parentAttributes })
 	}
+	console.log('parentAttributes :', parentAttributes)
 	const createSubItem = (subitem, itemIndex) => {
 		let subItemArray = subitem.subItems
 		const subItemId = subitem.id
@@ -97,6 +102,10 @@ export const FieldArrayComponent = ({
 	let formikValues = formikProps.values[parentId]
 	if (item.id === 'barn_utvandret') {
 		formikValues = [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }]
+		// formikValues = formikProps.values.barn[idx][parentId]
+	}
+	if (item.id === 'barn_forsvunnet') {
+		formikValues = [{ erForsvunnet: '', forsvunnetDato: '' }]
 		// formikValues = formikProps.values.barn[idx][parentId]
 	}
 	let subLabelArray = []
@@ -171,6 +180,16 @@ export const FieldArrayComponent = ({
 											if (fakeItem.id === 'barn_utvandret[0]utvandretTilLandFlyttedato') {
 												fakeItem.id = `barn[${itemid}]barn_utvandret[0]utvandretTilLandFlyttedato`
 											}
+											if (fakeItem.id === 'barn_forsvunnet[0]erForsvunnet') {
+												fakeItem.id = `barn[${itemid}]barn_forsvunnet[0]erForsvunnet`
+											}
+											if (fakeItem.id === 'barn_forsvunnet[0]forsvunnetDato') {
+												fakeItem.id = `barn[${itemid}]barn_forsvunnet[0]forsvunnetDato`
+											}
+
+											console.log('itemid :', itemid)
+											console.log('fakeItem :', fakeItem)
+
 											return (
 												<div key={kdx} className="flexbox">
 													{renderFieldComponent(

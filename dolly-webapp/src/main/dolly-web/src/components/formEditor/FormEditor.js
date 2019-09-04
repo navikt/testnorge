@@ -219,17 +219,21 @@ export default class FormEditor extends Component {
 				dependantAttributt = arenaItem.items[0].items[0].items[0]
 			}
 			let foundIndex = false
+
 			item.onlyShowAfterSelectedValue.valueIndex.map(index => {
-				valgteVerdier[parentId][idx][attributtId] === dependantAttributt.options[index].value &&
-					(foundIndex = true)
+				if (parentId === 'barn_forsvunnet') {
+					foundIndex = true
+				} else
+					valgteVerdier[parentId][idx][attributtId] === dependantAttributt.options[index].value &&
+						(foundIndex = true)
 			})
 			if (!foundIndex) {
 				this._deleteValidation(item, valgteVerdier, errors, parentId, idx)
 				shouldRender = false
 			} else {
-				if (!([item.id] in formikProps.values[parentId][idx])) {
-					valgteVerdier[parentId][idx][item.id] = ''
-				}
+				//if (!([item.id] in formikProps.values[parentId][idx])) {
+				//	valgteVerdier[parentId][idx][item.id] = ''
+				console.log('hell no!!')
 			}
 		}
 
