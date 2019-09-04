@@ -1,10 +1,9 @@
 package no.nav.dolly.bestilling.udistub;
 
-import static no.nav.dolly.sts.StsOidcService.getUserIdToken;
+import static java.lang.String.format;
 
-import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
-import no.nav.dolly.properties.ProvidersProps;
+import java.net.URI;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,12 +14,15 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
+import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
 @Service
 public class UdiStubConsumer {
 
+    private static final String CONSUMER = "Dolly";
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
     private static final String NAV_CALL_ID = "Nav-Call-Id";
     private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
@@ -32,12 +34,12 @@ public class UdiStubConsumer {
     @Autowired
     private ProvidersProps providersProps;
 
-    public ResponseEntity<UdiPersonControllerResponse> createUdiPerson(Long bestillingsid, UdiPerson udiPerson) {
+    public ResponseEntity<UdiPersonControllerResponse> createUdiPerson(UdiPerson udiPerson) {
         try {
             return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
                             .contentType(MediaType.APPLICATION_JSON)
-                            .header(NAV_CALL_ID, Long.toString(bestillingsid))
-                            .header(NAV_CONSUMER_ID, getUserIdToken())
+                            .header(NAV_CALL_ID, getNavCallId())
+                            .header(NAV_CONSUMER_ID, CONSUMER)
                             .body(udiPerson),
                     UdiPersonControllerResponse.class);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
@@ -48,11 +50,11 @@ public class UdiStubConsumer {
         }
     }
 
-    public void deleteUdiPerson(Long bestillingsid, String ident) {
+    public void deleteUdiPerson(String ident) {
         try {
             restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
-                            .header(NAV_CALL_ID, Long.toString(bestillingsid))
-                            .header(NAV_CONSUMER_ID, getUserIdToken())
+                            .header(NAV_CALL_ID, getNavCallId())
+                            .header(NAV_CONSUMER_ID, CONSUMER)
                             .header(NAV_PERSON_IDENT, ident)
                             .build(),
                     UdiPersonControllerResponse.class);
@@ -63,4 +65,7 @@ public class UdiStubConsumer {
         }
     }
 
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
+    }
 }
