@@ -55,8 +55,8 @@ const miljoeStatusSelector = bestilling => {
 		}
 	})
 
-	//Går gjennom TPSF-statuser igjen slik at ingen miljø er både suksess og feilet
-	//Burde kanskje legge til avvik slik som i arena og inst dersom et miljø feiler for noen, men ikke alle identer
+	// Går gjennom TPSF-statuser igjen slik at ingen miljø er både suksess og feilet
+	// Burde kanskje legge til avvik slik som i arena og inst dersom et miljø feiler for noen, men ikke alle identer
 	tpsf.forEach(status => {
 		if (status.statusMelding === 'OK') {
 			Object.keys(status.environmentIdents).forEach(miljo => {
