@@ -62,7 +62,8 @@ export default class BestillingDetaljer extends PureComponent {
 				)}
 				<div className="flexbox--align-center--justify-end info-block">
 					<div className="flexbox--align-center--justify-end">
-						{!openAm &&
+						{this._erIdentOpprettet() &&
+							!openAm &&
 							(!openAmRes && (
 								<SendOpenAmConnector
 									bestillingId={bestillingId}
