@@ -8,11 +8,16 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import no.nav.registre.sdForvalter.database.model.AaregModel;
+import no.nav.registre.sdForvalter.database.model.EregModel;
+import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.model.Team;
+import no.nav.registre.sdForvalter.database.model.TpsModel;
 import no.nav.registre.sdForvalter.database.model.Varighet;
 import no.nav.registre.sdForvalter.database.repository.VarighetRepository;
 import no.nav.registre.sdForvalter.service.StaticDataService;
@@ -34,11 +39,7 @@ public class ValidityChecker {
         for (Team team : teams) {
             for (Varighet varighet : team.getVarigheter()) {
                 if (varighet.shouldNotify() && !varighet.isHasNotified()) {
-                    Map<String, Object> data = new HashMap<>();
-                    data.put("tps", varighet.getTps());
-                    data.put("aareg", varighet.getAareg());
-                    data.put("krr", varighet.getKrr());
-                    data.put("ereg", varighet.getEreg());
+                    Map<String, Object> data = buildMessageData(varighet);
                     try {
                         Map<String, Object> responseMessage = slackNotificationService.notifyTeam(team, data);
                         if (responseMessage != null) {
@@ -60,5 +61,23 @@ public class ValidityChecker {
         } catch (JsonProcessingException e) {
             log.error(e.getMessage(), e);
         }
+    }
+
+    private Map<String, Object> buildMessageData(Varighet varighet) {
+        Map<String, Object> data = new HashMap<>();
+        Collection<TpsModel> tps = varighet.getTps();
+        Collection<AaregModel> aareg = varighet.getAareg();
+        Collection<KrrModel> krr = varighet.getKrr();
+        Collection<EregModel> ereg = varighet.getEreg();
+        if (tps != null && !tps.isEmpty())
+            data.put("tps", tps);
+        if (tps != null && !aareg.isEmpty())
+            data.put("aareg", aareg);
+        if (tps != null && !krr.isEmpty())
+            data.put("krr", krr);
+        if (tps != null && !ereg.isEmpty())
+            data.put("ereg", ereg);
+
+        return data;
     }
 }

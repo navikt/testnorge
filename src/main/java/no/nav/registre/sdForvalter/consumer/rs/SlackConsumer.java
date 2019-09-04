@@ -43,7 +43,10 @@ public class SlackConsumer {
         try {
             MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
             ObjectMapper mapper = new ObjectMapper();
-            form.put("text", Collections.singletonList("```" + mapper.writeValueAsString(data) + "```"));
+            form.put("text", Collections.singletonList("" +
+                    "Følgende data får ut om 1 måned. For å fornye dataen ta kontakt med faste testdata administratorer" +
+                    "\n\n" +
+                    "```" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(data) + "```"));
             form.put("channel", Collections.singletonList(channel));
             form.put("token", Collections.singletonList(slackBotToken));
             HttpHeaders headers = new HttpHeaders();
