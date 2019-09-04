@@ -47,7 +47,7 @@ public class InstdataClient implements ClientRegister {
         if (nonNull(bestilling.getInstdata())) {
 
             StringBuilder status = new StringBuilder();
-            List<String> availEnvironments = getMiljoer();
+            List<String> availEnvironments = getEnvironments();
 
             List<String> environments = newArrayList(availEnvironments);
             environments.retainAll(bestilling.getEnvironments());
@@ -83,7 +83,16 @@ public class InstdataClient implements ClientRegister {
         }
     }
 
-    private List<String> getMiljoer() {
+    @Override
+    public void release(List<String> identer) {
+
+        List<String> environments = getEnvironments();
+        environments.forEach(environment ->
+                identer.forEach(ident -> instdataConsumer.deleteInstdata(ident, environment))
+        );
+    }
+
+    private List<String> getEnvironments() {
 
         try {
             ResponseEntity<String[]> envResponse = instdataConsumer.getMiljoer();

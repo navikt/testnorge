@@ -46,6 +46,7 @@ public class TestIdentMappingStrategy implements MappingStrategy {
                             rsTestIdent.setTpsfSuccessEnv(join(",", environments));
                             rsTestIdent.setKrrstubStatus(bestillinger.get(0).getKrrstubStatus());
                             rsTestIdent.setSigrunstubStatus(bestillinger.get(0).getSigrunstubStatus());
+                            rsTestIdent.setUdistubStatus(bestillinger.get(0).getUdistubStatus());
                             rsTestIdent.setArenaforvalterStatus(buildArenaStatusMap(bestillinger));
                             rsTestIdent.setAaregStatus(buildAaregStatusMap(bestillinger));
                             rsTestIdent.setPdlforvalterStatus(buildPdldataStatusMap(bestillinger));
