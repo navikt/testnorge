@@ -22,7 +22,7 @@ public class UdiPerson {
     private List<UdiAvgjorelse> avgjoerelser;
     private List<UdiAlias> aliaser;
     private UdiArbeidsadgang arbeidsadgang;
-    private UdiOppholdStatus udiOppholdStatus;
+    private UdiOppholdStatus oppholdStatus;
     private Boolean avgjoerelseUavklart;
     private Boolean harOppholdsTillatelse;
     private Boolean flyktning;
