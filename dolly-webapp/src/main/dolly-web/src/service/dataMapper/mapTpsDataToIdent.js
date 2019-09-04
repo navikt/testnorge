@@ -1,7 +1,8 @@
 import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
+import _get from 'lodash/get'
 
-export function mapTpsfData(tpsfData, testIdent, pdlfData) {
+export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 	if (!tpsfData) return null
 	let data
 	data = [
@@ -41,7 +42,8 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 				{
 					id: 'personStatus',
 					label: 'Personstatus',
-					value: tpsfData.personStatus
+					value: tpsfData.personStatus,
+					apiKodeverkId: tpsfData.personStatus && 'Personstatuser'
 				},
 				{
 					id: 'sivilstand',
@@ -79,6 +81,37 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 					id: 'egenAnsattDatoFom',
 					label: 'Egenansatt',
 					value: tpsfData.egenAnsattDatoFom && 'JA'
+				}
+			]
+		}
+	]
+
+	if (tpsfData.statsborgerskap) {
+		data.push({
+			header: 'Nasjonalitet',
+			data: [
+				{
+					id: 'statsborgerskap',
+					label: 'Statsborgerskap',
+					value: tpsfData.statsborgerskap
+				},
+				{
+					id: 'sprakKode',
+					label: 'Språk',
+					value: tpsfData.sprakKode
+				},
+				{
+					id: 'innvandretFraLand',
+					label: 'Innvandret fra land',
+					value: tpsfKriterier.innvandretFraLand && tpsfData.innvandretFraLand,
+					apiKodeverkId: tpsfData.innvandretFraLand && 'StatsborgerskapFreg'
+				},
+				{
+					id: 'innvandretFraLandFlyttedato',
+					label: 'Innvandret dato',
+					value:
+						tpsfKriterier.innvandretFraLand &&
+						Formatters.formatDate(tpsfData.innvandretFraLandFlyttedato)
 				},
 				{
 					id: 'utvandretTilLand',
@@ -90,29 +123,6 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 					id: 'utvandretTilLandFlyttedato',
 					label: 'Utvandret dato',
 					value: Formatters.formatDate(tpsfData.utvandretTilLandFlyttedato)
-				}
-			]
-		}
-	]
-
-	if (tpsfData.statsborgerskap) {
-		data.push({
-			header: 'Nasjonalitet',
-			data: [
-				{
-					id: 'innvandretFra',
-					label: 'Innvandret fra',
-					value: tpsfData.innvandretFra
-				},
-				{
-					id: 'statsborgerskap',
-					label: 'Statsborgerskap',
-					value: tpsfData.statsborgerskap
-				},
-				{
-					id: 'sprakKode',
-					label: 'Språk',
-					value: tpsfData.sprakKode
 				}
 			]
 		})
@@ -254,14 +264,17 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 	}
 
 	if (tpsfData.relasjoner && tpsfData.relasjoner.length) {
+		let numberOfChildren = 0
 		data.push({
 			header: 'Familierelasjoner',
 			multiple: true,
 			data: tpsfData.relasjoner.map(relasjon => {
+				const relasjonstype = relasjonTranslator(relasjon.relasjonTypeNavn)
+				relasjonstype === 'Barn' && (numberOfChildren += 1)
 				return {
 					parent: 'relasjoner',
 					id: relasjon.id,
-					label: relasjonTranslator(relasjon.relasjonTypeNavn),
+					label: relasjonstype,
 					value: [
 						{
 							id: 'ident',
@@ -299,7 +312,8 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 						{
 							id: 'personStatus',
 							label: 'Personstatus',
-							value: relasjon.personRelasjonMed.personStatus
+							value: relasjon.personRelasjonMed.personStatus,
+							apiKodeverkId: relasjon.personRelasjonMed.personStatus && 'Personstatuser'
 						},
 						{
 							id: 'statsborgerskap',
@@ -307,9 +321,29 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 							value: relasjon.personRelasjonMed.statsborgerskap
 						},
 						{
-							id: 'sprakKode',
-							label: 'Språk',
-							value: relasjon.personRelasjonMed.sprakKode
+							id: 'innvandretFraLand',
+							label: 'Innvandret fra land',
+							value:
+								relasjonstype === 'Barn' &&
+								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].innvandretFraLand
+									? relasjon.personRelasjonMed.innvandretFraLand
+									: relasjonstype === 'Partner' &&
+									  tpsfKriterier.relasjoner.partner.innvandretFraLand
+										? relasjon.personRelasjonMed.innvandretFraLand
+										: null,
+							apiKodeverkId: 'StatsborgerskapFreg'
+						},
+						{
+							id: 'innvandretFraLandFlyttedato',
+							label: 'Innvandret dato',
+							value:
+								relasjonstype === 'Barn' &&
+								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].innvandretFraLand
+									? Formatters.formatDate(relasjon.personRelasjonMed.innvandretFraLandFlyttedato)
+									: relasjonstype === 'Partner' &&
+									  tpsfKriterier.relasjoner.partner.innvandretFraLand
+										? Formatters.formatDate(relasjon.personRelasjonMed.innvandretFraLandFlyttedato)
+										: null
 						},
 						{
 							id: 'utvandretTilLand',
@@ -321,6 +355,11 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 							id: 'utvandretTilLandFlyttedato',
 							label: 'Utvandret dato',
 							value: Formatters.formatDate(relasjon.personRelasjonMed.utvandretTilLandFlyttedato)
+						},
+						{
+							id: 'sprakKode',
+							label: 'Språk',
+							value: relasjon.personRelasjonMed.sprakKode
 						},
 						{
 							id: 'sivilstand',

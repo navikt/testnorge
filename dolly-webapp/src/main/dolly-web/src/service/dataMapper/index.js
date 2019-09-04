@@ -68,8 +68,10 @@ const DataMapper = {
 		const instData = testbruker.items.instdata && testbruker.items.instdata[personId]
 
 		var bestillingId = _findBestillingId(gruppe, personId)
-
-		let data = mapTpsfData(tpsfData, testIdent, pdlfData && pdlfData.personidenter)
+		const tpsfKriterier = JSON.parse(
+			bestillingStatuser.data.find(bestilling => bestilling.id === bestillingId[0]).tpsfKriterier
+		)
+		let data = mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData && pdlfData.personidenter)
 
 		if (aaregData) {
 			data.push(mapAaregData(aaregData))
