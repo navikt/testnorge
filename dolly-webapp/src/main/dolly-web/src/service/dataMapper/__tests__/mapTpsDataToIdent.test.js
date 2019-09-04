@@ -21,8 +21,11 @@ describe('mapTpsDataToIdent.js', () => {
 			tknr: '0314',
 			egenAnsattDatoFom: '2019-04-10T12:55:14.896',
 			sprakKode: 'English',
-			utvandretTilLand: 'BWA',
-			utvandretTilLandFlyttedato: '2019-08-06T00:00:00'
+			statsborgerskap: 'NOR',
+			utvandretTilLand: 'AFG',
+			utvandretTilLandFlyttedato: '2019-08-06T00:00:00',
+			innvandretFraLand: 'BWA',
+			innvandretFraLandFlyttedato: '2019-08-05T00:00:00'
 		}
 
 		const testPdlfData = {
@@ -73,7 +76,8 @@ describe('mapTpsDataToIdent.js', () => {
 					{
 						id: 'personStatus',
 						label: 'Personstatus',
-						value: 'UTVA'
+						value: 'UTVA',
+						apiKodeverkId: 'Personstatuser'
 					},
 					{
 						id: 'sivilstand',
@@ -111,12 +115,42 @@ describe('mapTpsDataToIdent.js', () => {
 						id: 'egenAnsattDatoFom',
 						label: 'Egenansatt',
 						value: 'JA'
+					}
+				]
+			}
+		]
+
+		const testNasjonalitetRes = [
+			...testTpsfRes,
+			{
+				header: 'Nasjonalitet',
+				data: [
+					{
+						id: 'statsborgerskap',
+						label: 'Statsborgerskap',
+						value: 'NOR'
+					},
+					{
+						id: 'sprakKode',
+						label: 'Språk',
+						value: 'English'
+					},
+					{
+						id: 'innvandretFraLand',
+						label: 'Innvandret fra land',
+						value: undefined,
+						apiKodeverkId: 'StatsborgerskapFreg'
+					},
+					{
+						id: 'innvandretFraLandFlyttedato',
+						label: 'Innvandret dato',
+						value: undefined
 					},
 					{
 						apiKodeverkId: 'StatsborgerskapFreg',
 						id: 'utvandretTilLand',
 						label: 'Utvandret til land',
-						value: 'BWA'
+						value: 'AFG'
 					},
 					{
 						id: 'utvandretTilLandFlyttedato',
@@ -128,7 +162,7 @@ describe('mapTpsDataToIdent.js', () => {
 		]
 
 		const testPdlfRes = [
-			...testTpsfRes,
+			...testNasjonalitetRes,
 			{
 				header: 'Utenlands-ID',
 				data: [
@@ -162,12 +196,14 @@ describe('mapTpsDataToIdent.js', () => {
 			tpsfSuccessEnv: 't0,t1'
 		}
 
+		const tpsfKriterier = {}
+
 		it('should return null without data', () => {
 			expect(mapTpsfData()).toBeNull()
 		})
 
-		it('should return tpsf-data', () => {
-			expect(mapTpsfData(testTpsfData, testIdent)).toEqual(testTpsfRes)
+		it('should return tpsf-data, med undefined innvandretinfo', () => {
+			expect(mapTpsfData(testTpsfData, testIdent, tpsfKriterier)).toEqual(testNasjonalitetRes)
 		})
 
 		it('should return tpsf-data with matrikkeladresse', () => {
@@ -187,7 +223,7 @@ describe('mapTpsDataToIdent.js', () => {
 			}
 
 			const res = [
-				...testTpsfRes,
+				...testNasjonalitetRes,
 				{
 					header: 'Bostedadresse',
 					data: [
@@ -256,139 +292,11 @@ describe('mapTpsDataToIdent.js', () => {
 					]
 				}
 			]
-			expect(mapTpsfData(testTpsfDataAdresseValues, testIdent)).toEqual(res)
+			expect(mapTpsfData(testTpsfDataAdresseValues, testIdent, tpsfKriterier)).toEqual(res)
 		})
 
 		it('should return tpsf-data and pdlf-data', () => {
-			expect(mapTpsfData(testTpsfData, testIdent, testPdlfData)).toEqual(testPdlfRes)
+			expect(mapTpsfData(testTpsfData, testIdent, tpsfKriterier, testPdlfData)).toEqual(testPdlfRes)
 		})
-
-		// it('should return tpsf-data with alle values', () => {
-		// 	const testTpsfDataAllValues = {
-		// 		...testTpsfData,
-		// 		statsborgerskap: 'NOR',
-		// 		innvandretFra: 'VIE',
-		// 		boadresse: {
-		// 			gateadresse: 'SANNERGATA',
-		// 			husnummer: 'H0101',
-		// 			gatekode: '2',
-		// 			postnr: '1234',
-		// 			flyttedato: '1903-11-03T00:00:00'
-		// 		},
-		// 		relasjoner: [
-		// 			{
-		// 				id: '1',
-		// 				relasjonTypeNavn: 'EKTEFELLE',
-		// 				personRelasjonMed: {
-		// 					identtype: 'FNR',
-		// 					ident: '101010456789',
-		// 					fornavn: 'LISA',
-		// 					mellomnavn: 'MELLOMNAVN',
-		// 					etternavn: 'BERG',
-		// 					kjonn: 'KVINNE'
-		// 				}
-		// 			}
-		// 		]
-		// 	}
-
-		// 	const res = [
-		// 		...testTpsfRes,
-		// 		{
-		// 			header: 'Nasjonalitet',
-		// 			data: [
-		// 				{
-		// 					id: 'innvandretFra',
-		// 					label: 'Innvandret fra',
-		// 					value: 'VIE'
-		// 				},
-		// 				{
-		// 					id: 'statsborgerskap',
-		// 					label: 'Statsborgerskap',
-		// 					value: 'NOR'
-		// 				},
-		// 				{
-		// 					id: 'sprakKode',
-		// 					label: 'Språk',
-		// 					value: 'English'
-		// 				}
-		// 			]
-		// 		},
-		// 		// {
-		// 		// 	header: 'Bostedadresse',
-		// 		// 	data: [
-		// 		// 		{
-		// 		// 			parent: 'boadresse',
-		// 		// 			id: 'gateadresse',
-		// 		// 			label: 'Gatenavn',
-		// 		// 			value: 'SANNERGATA'
-		// 		// 		},
-		// 		// 		{
-		// 		// 			parent: 'boadresse',
-		// 		// 			id: 'husnummer',
-		// 		// 			label: 'Husnummer',
-		// 		// 			value: 'H0101'
-		// 		// 		},
-		// 		// 		{
-		// 		// 			parent: 'boadresse',
-		// 		// 			id: 'gatekode',
-		// 		// 			label: 'Gatekode',
-		// 		// 			value: '2'
-		// 		// 		},
-		// 		// 		{
-		// 		// 			parent: 'boadresse',
-		// 		// 			id: 'postnr',
-		// 		// 			label: 'Postnummer',
-		// 		// 			value: '1234'
-		// 		// 		},
-		// 		// 		{
-		// 		// 			parent: 'boadresse',
-		// 		// 			id: 'flyttedato',
-		// 		// 			label: 'Flyttedato',
-		// 		// 			value: '03.11.1903'
-		// 		// 		}
-		// 		// 	]
-		// 		// },
-		// 		{
-		// 			header: 'Familierelasjoner',
-		// 			multiple: true,
-		// 			data: testTpsfDataAllValues.relasjoner.map(relasjon => {
-		// 				return {
-		// 					parent: 'relasjoner',
-		// 					id: '1',
-		// 					label: 'Partner',
-		// 					value: [
-		// 						{
-		// 							id: 'ident',
-		// 							label: 'FNR',
-		// 							value: '101010456789'
-		// 						},
-		// 						{
-		// 							id: 'fornavn',
-		// 							label: 'Fornavn',
-		// 							value: 'LISA'
-		// 						},
-		// 						{
-		// 							id: 'mellomnavn',
-		// 							label: 'Mellomnavn',
-		// 							value: 'MELLOMNAVN'
-		// 						},
-		// 						{
-		// 							id: 'etternavn',
-		// 							label: 'Etternavn',
-		// 							value: 'BERG'
-		// 						},
-		// 						{
-		// 							id: 'kjonn',
-		// 							label: 'Kjønn',
-		// 							value: 'KVINNE'
-		// 						}
-		// 					]
-		// 				}
-		// 			})
-		// 		}
-		// 	]
-
-		// 	expect(mapTpsfData(testTpsfDataAllValues, testIdent)).toEqual(res)
-		// })
 	})
 })
