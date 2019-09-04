@@ -38,6 +38,8 @@ public class InntektSyntConsumer {
             return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
         } catch (HttpStatusCodeException e) {
             log.warn(e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Uventet feil fra syntetisering", e);
         }
         return null;
     }

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
@@ -72,7 +73,7 @@ public class SyntetiseringService {
             return null;
         }
 
-        Map<String, List<RsInntekt>> identerMedInntekt = new HashMap<>();
+        SortedMap<String, List<RsInntekt>> identerMedInntekt = new TreeMap<>();
         for (String ident : identerIInntektstub) {
             List<RsInntekt> inntekter = inntektstubConsumer.hentEksisterendeInntekterPaaIdent(ident);
             inntekter = DatoParser.finnSenesteInntekter(inntekter);
@@ -82,23 +83,28 @@ public class SyntetiseringService {
             identerMedInntekt.put(ident, new ArrayList<>());
         }
 
-        SortedMap<String, List<RsInntekt>> syntetiskeInntektsmeldinger = getInntektsmeldingerFraSynt(identerMedInntekt);
-        if (syntetiskeInntektsmeldinger == null) {
-            return new HashMap<>();
-        }
-
-        syntetiskeInntektsmeldinger.keySet().retainAll(filtrerGyldigeMeldinger(syntetiskeInntektsmeldinger).keySet());
-
-        if (syntetiskeInntektsmeldinger.isEmpty()) {
-            return new HashMap<>();
-        }
-
-        List<Map<String, List<RsInntekt>>> paginerteInntektsmeldinger = paginer(syntetiskeInntektsmeldinger);
+        List<Map<String, List<RsInntekt>>> paginerteIdenterMedInntekt = paginer(identerMedInntekt);
         Map<String, List<RsInntekt>> feiledeInntektsmeldinger = new HashMap<>();
+        Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger = new HashMap<>();
 
-        for (int i = 0; i < paginerteInntektsmeldinger.size(); i++) {
-            feiledeInntektsmeldinger.putAll(inntektstubConsumer.leggInntekterIInntektstub(paginerteInntektsmeldinger.get(i)));
-            log.info("La til page {} av {} med inntekter i inntektstub", i + 1, paginerteInntektsmeldinger.size());
+        for (int i = 0; i < paginerteIdenterMedInntekt.size(); i++) {
+            SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(paginerteIdenterMedInntekt.get(i));
+
+            if (inntektsmeldingerFraSynt == null) {
+                log.warn("Fikk ingen syntetiserte meldinger synt-pakken. Fortsetter med neste bolk");
+                continue;
+            }
+
+            inntektsmeldingerFraSynt.keySet().retainAll(filtrerGyldigeMeldinger(inntektsmeldingerFraSynt).keySet());
+
+            if (inntektsmeldingerFraSynt.isEmpty()) {
+                continue;
+            }
+
+            feiledeInntektsmeldinger.putAll(inntektstubConsumer.leggInntekterIInntektstub(inntektsmeldingerFraSynt));
+            syntetiskeInntektsmeldinger.putAll(inntektsmeldingerFraSynt);
+
+            log.info("La til page {} av {} med inntekter i inntektstub", i + 1, paginerteIdenterMedInntekt.size());
         }
 
         if (!feiledeInntektsmeldinger.isEmpty()) {
