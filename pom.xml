@@ -88,6 +88,8 @@
             <artifactId>testnorge-consumers</artifactId>
             <version>1.6.0-RELEASE</version>
         </dependency>
+
+        <!--> IBMMQ </!-->
         <dependency>
             <groupId>com.ibm.mq</groupId>
             <artifactId>mq-jms-spring-boot-starter</artifactId>
