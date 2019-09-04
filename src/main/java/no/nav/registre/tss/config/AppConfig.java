@@ -11,7 +11,6 @@ import no.nav.registre.testnorge.consumers.ConsumerFactory;
 import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 
 @Configuration
-@Profile("local")
 public class AppConfig {
 
     @Bean
