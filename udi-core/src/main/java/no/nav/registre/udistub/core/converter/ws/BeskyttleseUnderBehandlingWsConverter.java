@@ -1,6 +1,6 @@
 package no.nav.registre.udistub.core.converter.ws;
 
-import no.nav.registre.udistub.core.service.to.PersonTo;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
 import no.udi.mt_1067_nav_data.v1.SoknadOmBeskyttelseUnderBehandling;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 @Component
-public class BeskyttleseUnderBehandlingWsConverter implements Converter<PersonTo, SoknadOmBeskyttelseUnderBehandling> {
+public class BeskyttleseUnderBehandlingWsConverter implements Converter<UdiPerson, SoknadOmBeskyttelseUnderBehandling> {
 
 	private final ConversionService conversionService;
 
@@ -18,7 +18,7 @@ public class BeskyttleseUnderBehandlingWsConverter implements Converter<PersonTo
 	}
 
 	@Override
-	public SoknadOmBeskyttelseUnderBehandling convert(PersonTo person) {
+	public SoknadOmBeskyttelseUnderBehandling convert(UdiPerson person) {
 		if (person != null) {
 			SoknadOmBeskyttelseUnderBehandling beskyttelseUnderBehandling = new SoknadOmBeskyttelseUnderBehandling();
 			beskyttelseUnderBehandling.setErUnderBehandling(person.getSoeknadOmBeskyttelseUnderBehandling());

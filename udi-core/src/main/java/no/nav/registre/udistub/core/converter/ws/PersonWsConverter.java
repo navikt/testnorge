@@ -1,7 +1,7 @@
 package no.nav.registre.udistub.core.converter.ws;
 
-import no.nav.registre.udistub.core.service.to.AvgjorelseTo;
-import no.nav.registre.udistub.core.service.to.PersonTo;
+import no.nav.registre.udistub.core.service.to.UdiAvgjorelse;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
 import no.udi.mt_1067_nav_data.v1.Arbeidsadgang;
 import no.udi.mt_1067_nav_data.v1.Avgjorelser;
 import no.udi.mt_1067_nav_data.v1.GjeldendePerson;
@@ -16,7 +16,7 @@ import java.sql.Date;
 import java.time.Instant;
 
 @Component
-public class PersonWsConverter implements Converter<PersonTo, HentPersonstatusResultat> {
+public class PersonWsConverter implements Converter<UdiPerson, HentPersonstatusResultat> {
 
 	private final ConversionService conversionService;
 
@@ -25,7 +25,7 @@ public class PersonWsConverter implements Converter<PersonTo, HentPersonstatusRe
 	}
 
 	@Override
-	public HentPersonstatusResultat convert(PersonTo person) {
+	public HentPersonstatusResultat convert(UdiPerson person) {
 		if (person != null) {
 			HentPersonstatusResultat hentPersonstatusResultat = new HentPersonstatusResultat();
 			hentPersonstatusResultat.setGjeldendePerson(conversionService.convert(person, GjeldendePerson.class));
@@ -36,7 +36,7 @@ public class PersonWsConverter implements Converter<PersonTo, HentPersonstatusRe
 
 			hentPersonstatusResultat.setHistorikkHarFlyktningstatus(person.getAvgjoerelser()
 					.stream()
-					.anyMatch(AvgjorelseTo::getHarFlyktningstatus));
+					.anyMatch(UdiAvgjorelse::getHarFlyktningstatus));
 
 			hentPersonstatusResultat.setUavklartFlyktningstatus(person.getAvgjoerelseUavklart());
 			hentPersonstatusResultat.setSoknadOmBeskyttelseUnderBehandling(conversionService.convert(person, SoknadOmBeskyttelseUnderBehandling.class));

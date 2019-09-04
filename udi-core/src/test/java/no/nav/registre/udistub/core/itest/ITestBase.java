@@ -9,7 +9,7 @@ import static no.nav.registre.udistub.core.DefaultTestData.createPersonTo;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import no.nav.registre.udistub.core.service.to.PersonTo;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
@@ -25,7 +25,7 @@ import java.nio.file.Files;
 @AutoConfigureWireMock(port = 0)
 public class ITestBase {
 
-    protected static final PersonTo testpersonTo = createPersonTo();
+    protected static final UdiPerson TESTPERSON_UDI = createPersonTo();
 
     @BeforeEach
     public void setUp() throws IOException {

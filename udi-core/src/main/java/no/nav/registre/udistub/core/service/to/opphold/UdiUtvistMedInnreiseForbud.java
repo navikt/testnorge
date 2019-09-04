@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @Builder
-public class UtvistMedInnreiseForbudTo {
+public class UdiUtvistMedInnreiseForbud {
 
     private JaNeiUavklart innreiseForbud;
     private LocalDate innreiseForbudVedtaksDato;

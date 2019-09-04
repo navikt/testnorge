@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.udistub.core.exception.NotFoundException;
 import no.nav.registre.udistub.core.service.PersonService;
-import no.nav.registre.udistub.core.service.to.PersonTo;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
 import no.udi.common.v2.PingRequestType;
 import no.udi.mt_1067_nav_data.v1.HentPersonstatusResultat;
 import org.springframework.core.convert.ConversionService;
@@ -31,7 +31,7 @@ public class PersonEndpoint {
     @ResponsePayload
     public JAXBElement<HentPersonstatusResultat> hentPersonstatusRequest(@RequestPayload HentPersonstatusRequestType request) {
 
-        PersonTo foundPerson = personService.finnPerson(request.getParameter().getFodselsnummer())
+        UdiPerson foundPerson = personService.finnPerson(request.getParameter().getFodselsnummer())
                 .orElseThrow(() -> new NotFoundException(String.format("Kunne ikke finne person med fnr:%s", request.getParameter().getFodselsnummer())));
         HentPersonstatusResultat hentPersonstatusResultat = conversionService.convert(foundPerson, HentPersonstatusResultat.class);
 

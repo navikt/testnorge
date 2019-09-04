@@ -1,7 +1,7 @@
 package no.nav.registre.udistub.core.converter.ws;
 
-import no.nav.registre.udistub.core.service.to.PersonTo;
-import no.nav.registre.udistub.core.service.to.opphold.OppholdStatusTo;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
+import no.nav.registre.udistub.core.service.to.opphold.UdiOppholdStatus;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTABeslutningOmOppholdsrett;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAOpphold;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAOppholdstillatelse;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 @Component
-public class GjeldendeOppholdStatusWsConverter implements Converter<PersonTo, GjeldendeOppholdsstatus> {
+public class GjeldendeOppholdStatusWsConverter implements Converter<UdiPerson, GjeldendeOppholdsstatus> {
 
     private final ConversionService conversionService;
 
@@ -28,7 +28,7 @@ public class GjeldendeOppholdStatusWsConverter implements Converter<PersonTo, Gj
     }
 
     @Override
-    public GjeldendeOppholdsstatus convert(PersonTo person) {
+    public GjeldendeOppholdsstatus convert(UdiPerson person) {
         if (person != null) {
             var resultatOppholdsstatus = new GjeldendeOppholdsstatus();
             var oppholdStatus = person.getOppholdStatus();
@@ -50,7 +50,7 @@ public class GjeldendeOppholdStatusWsConverter implements Converter<PersonTo, Gj
         return null;
     }
 
-    private EOSellerEFTABeslutningOmOppholdsrett getEOSellerEFTABeslutningOmOpphold(OppholdStatusTo oppholdsStatus) {
+    private EOSellerEFTABeslutningOmOppholdsrett getEOSellerEFTABeslutningOmOpphold(UdiOppholdStatus oppholdsStatus) {
         var eoSellerEFTABeslutningOmOppholdsrett = new EOSellerEFTABeslutningOmOppholdsrett();
         eoSellerEFTABeslutningOmOppholdsrett.setEffektueringsdato(
                 conversionService.convert(oppholdsStatus.getEosEllerEFTABeslutningOmOppholdsrettEffektuering(), XMLGregorianCalendar.class));
@@ -60,7 +60,7 @@ public class GjeldendeOppholdStatusWsConverter implements Converter<PersonTo, Gj
         return eoSellerEFTABeslutningOmOppholdsrett;
     }
 
-    private EOSellerEFTAVedtakOmVarigOppholdsrett getEOSellerEFTAVedtakOmVarigOppholdrett(OppholdStatusTo oppholdsStatus) {
+    private EOSellerEFTAVedtakOmVarigOppholdsrett getEOSellerEFTAVedtakOmVarigOppholdrett(UdiOppholdStatus oppholdsStatus) {
         var eoSellerEFTAVedtakOmVarigOppholdsrett = new EOSellerEFTAVedtakOmVarigOppholdsrett();
         eoSellerEFTAVedtakOmVarigOppholdsrett.setEffektueringsdato(
                 conversionService.convert(oppholdsStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettEffektuering(), XMLGregorianCalendar.class));
@@ -71,7 +71,7 @@ public class GjeldendeOppholdStatusWsConverter implements Converter<PersonTo, Gj
         return eoSellerEFTAVedtakOmVarigOppholdsrett;
     }
 
-    private EOSellerEFTAOppholdstillatelse getEoSellerEFTAOppholdstillatelse(OppholdStatusTo oppholdStatus) {
+    private EOSellerEFTAOppholdstillatelse getEoSellerEFTAOppholdstillatelse(UdiOppholdStatus oppholdStatus) {
         var eoSellerEFTAOppholdstillatelse = new EOSellerEFTAOppholdstillatelse();
         eoSellerEFTAOppholdstillatelse.setEffektueringsdato(
                 conversionService.convert(oppholdStatus.getEosEllerEFTAOppholdstillatelseEffektuering(), XMLGregorianCalendar.class));
@@ -82,7 +82,7 @@ public class GjeldendeOppholdStatusWsConverter implements Converter<PersonTo, Gj
         return eoSellerEFTAOppholdstillatelse;
     }
 
-    private OppholdstillatelseEllerOppholdsPaSammeVilkar getOppholdstillatelseEllerOppholdsPaSammeVilkar(OppholdStatusTo oppholdStatus) {
+    private OppholdstillatelseEllerOppholdsPaSammeVilkar getOppholdstillatelseEllerOppholdsPaSammeVilkar(UdiOppholdStatus oppholdStatus) {
         var oppholdstillatelseEllerOppholdsPaSammeVilkar = new OppholdstillatelseEllerOppholdsPaSammeVilkar();
         var opphold = oppholdStatus.getOppholdSammeVilkaar();
 

@@ -15,12 +15,12 @@ import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 @Setter
 @Getter
 @Builder
-public class ArbeidsadgangTo {
+public class UdiArbeidsadgang {
 
     private JaNeiUavklart harArbeidsAdgang;
     private ArbeidsadgangType typeArbeidsadgang;
     private ArbeidOmfangKategori arbeidsOmfang;
-    private PeriodeTo periode;
+    private UdiPeriode periode;
     @JsonBackReference
-    private PersonTo person;
+    private UdiPerson person;
 }

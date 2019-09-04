@@ -1,7 +1,7 @@
 package no.nav.registre.udistub.core.converter.ws;
 
-import no.nav.registre.udistub.core.service.to.AvgjorelseTo;
-import no.nav.registre.udistub.core.service.to.PersonTo;
+import no.nav.registre.udistub.core.service.to.UdiAvgjorelse;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
 import no.udi.mt_1067_nav_data.v1.AvgjorelseListe;
 import no.udi.mt_1067_nav_data.v1.Avgjorelser;
 import no.udi.mt_1067_nav_data.v1.Avgjorelsestype;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 @Component
-public class AvgjorelsehistorikkWsConverter implements Converter<PersonTo, Avgjorelser> {
+public class AvgjorelsehistorikkWsConverter implements Converter<UdiPerson, Avgjorelser> {
 
     private final ConversionService conversionService;
 
@@ -24,7 +24,7 @@ public class AvgjorelsehistorikkWsConverter implements Converter<PersonTo, Avgjo
     }
 
     @Override
-    public Avgjorelser convert(PersonTo person) {
+    public Avgjorelser convert(UdiPerson person) {
         if (person != null) {
             Avgjorelser avgjorelser = new Avgjorelser();
             avgjorelser.setUavklart(person.getAvgjoerelseUavklart());
@@ -37,7 +37,7 @@ public class AvgjorelsehistorikkWsConverter implements Converter<PersonTo, Avgjo
         return null;
     }
 
-    private no.udi.mt_1067_nav_data.v1.Avgjorelse converterPersonAvgjorelse(AvgjorelseTo avgjorelse) {
+    private no.udi.mt_1067_nav_data.v1.Avgjorelse converterPersonAvgjorelse(UdiAvgjorelse avgjorelse) {
 
         no.udi.mt_1067_nav_data.v1.Avgjorelse udiAvgjorelse = new no.udi.mt_1067_nav_data.v1.Avgjorelse();
         udiAvgjorelse.setAvgjorelseDato(conversionService.convert(avgjorelse.getAvgjoerelsesDato(), XMLGregorianCalendar.class));

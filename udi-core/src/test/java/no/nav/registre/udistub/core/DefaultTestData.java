@@ -1,16 +1,16 @@
 package no.nav.registre.udistub.core;
 
 import no.nav.registre.udistub.core.database.model.PersonNavn;
-import no.nav.registre.udistub.core.service.to.AliasTo;
-import no.nav.registre.udistub.core.service.to.ArbeidsadgangTo;
-import no.nav.registre.udistub.core.service.to.AvgjorelseTo;
-import no.nav.registre.udistub.core.service.to.PeriodeTo;
-import no.nav.registre.udistub.core.service.to.PersonTo;
-import no.nav.registre.udistub.core.service.to.opphold.AvslagEllerBortfallTo;
-import no.nav.registre.udistub.core.service.to.opphold.IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo;
-import no.nav.registre.udistub.core.service.to.opphold.OppholdSammeVilkaarTo;
-import no.nav.registre.udistub.core.service.to.opphold.OppholdStatusTo;
-import no.nav.registre.udistub.core.service.to.opphold.UtvistMedInnreiseForbudTo;
+import no.nav.registre.udistub.core.service.to.UdiAlias;
+import no.nav.registre.udistub.core.service.to.UdiArbeidsadgang;
+import no.nav.registre.udistub.core.service.to.UdiAvgjorelse;
+import no.nav.registre.udistub.core.service.to.UdiPeriode;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
+import no.nav.registre.udistub.core.service.to.opphold.UdiAvslagEllerBortfall;
+import no.nav.registre.udistub.core.service.to.opphold.UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum;
+import no.nav.registre.udistub.core.service.to.opphold.UdiOppholdSammeVilkaar;
+import no.nav.registre.udistub.core.service.to.opphold.UdiOppholdStatus;
+import no.nav.registre.udistub.core.service.to.opphold.UdiUtvistMedInnreiseForbud;
 import no.udi.common.v2.Kodeverk;
 import no.udi.mt_1067_nav_data.v1.ArbeidOmfangKategori;
 import no.udi.mt_1067_nav_data.v1.ArbeidsadgangType;
@@ -30,7 +30,7 @@ public class DefaultTestData {
     public static final LocalDate TEST_DATE = LocalDate.of(2005, 4, 3);
     public static final String TEST_OMGJORT_AVGJORELSE_ID = "123";
     public static final Boolean TEST_ER_POSITIV = true;
-    public static final PeriodeTo TEST_PERIODE = new PeriodeTo(LocalDate.of(2000, 1, 2), LocalDate.of(2001, 2, 3));
+    public static final UdiPeriode TEST_PERIODE = new UdiPeriode(LocalDate.of(2000, 1, 2), LocalDate.of(2001, 2, 3));
     public static final Integer TEST_VARIGHET = 1;
     public static final Varighet TEST_VARIGHET_UDI = Varighet.ETT_AR;
     public static final String TEST_SAKSNUMMER = "testus maximus";
@@ -54,7 +54,7 @@ public class DefaultTestData {
     public static final OvrigIkkeOppholdsKategori TEST_ovrigIkkeOppholdsKategori = OvrigIkkeOppholdsKategori.ANNULERING_AV_VISUM;
     public static final OppholdstillatelseKategori TEST_OPPHOLDSTILLATELSE_TYPE = OppholdstillatelseKategori.PERMANENT;
 
-    private static final PersonTo testPerson = createPersonTo();
+    private static final UdiPerson testPerson = createPersonTo();
 
     public static final Kodeverk TEST_KODEVERK_CODE = new Kodeverk();
 
@@ -62,8 +62,8 @@ public class DefaultTestData {
         TEST_KODEVERK_CODE.setKode("testkode");
     }
 
-    public static PersonTo createPersonTo() {
-        PersonTo person = new PersonTo();
+    public static UdiPerson createPersonTo() {
+        UdiPerson person = new UdiPerson();
         person.setIdent(TEST_PERSON_FNR);
         person.setAvgjoerelser(
                 Arrays.asList(
@@ -85,8 +85,8 @@ public class DefaultTestData {
         return person;
     }
 
-    public static AvgjorelseTo.AvgjorelseToBuilder createPersonAvgjorelseBuilder() {
-        return AvgjorelseTo.builder()
+    public static UdiAvgjorelse.UdiAvgjorelseBuilder createPersonAvgjorelseBuilder() {
+        return UdiAvgjorelse.builder()
                 .avgjoerelsesDato(TEST_DATE)
                 .omgjortAvgjoerelsesId(TEST_OMGJORT_AVGJORELSE_ID)
                 .grunntypeKode(TEST_KODEVERK_CODE)
@@ -109,13 +109,13 @@ public class DefaultTestData {
                 .person(testPerson);
     }
 
-    public static AliasTo.AliasToBuilder createAlias() {
-        return AliasTo.builder()
+    public static UdiAlias.UdiAliasBuilder createAlias() {
+        return UdiAlias.builder()
                 .person(testPerson);
     }
 
-    public static ArbeidsadgangTo createArbeidsAdgang() {
-        ArbeidsadgangTo arbeidsadgang = new ArbeidsadgangTo();
+    public static UdiArbeidsadgang createArbeidsAdgang() {
+        UdiArbeidsadgang arbeidsadgang = new UdiArbeidsadgang();
         arbeidsadgang.setArbeidsOmfang(TEST_ARBEIDOMGANGKATEGORI);
         arbeidsadgang.setHarArbeidsAdgang(TEST_ARBEIDSADGANG);
         arbeidsadgang.setTypeArbeidsadgang(TEST_ARBEIDSADGANG_TYPE);
@@ -124,8 +124,8 @@ public class DefaultTestData {
         return arbeidsadgang;
     }
 
-    public static OppholdStatusTo createOppholdStatus() {
-        OppholdStatusTo oppholdStatus = new OppholdStatusTo();
+    public static UdiOppholdStatus createOppholdStatus() {
+        UdiOppholdStatus oppholdStatus = new UdiOppholdStatus();
         oppholdStatus.setOppholdSammeVilkaar(createOppholdSammeVilkaar());
         oppholdStatus.setEosEllerEFTABeslutningOmOppholdsrettEffektuering(TEST_DATE);
         oppholdStatus.setEosEllerEFTABeslutningOmOppholdsrettPeriode(TEST_PERIODE);
@@ -144,8 +144,8 @@ public class DefaultTestData {
         return oppholdStatus;
     }
 
-    public static OppholdSammeVilkaarTo createOppholdSammeVilkaar() {
-        OppholdSammeVilkaarTo oppholdSammeVilkaar = new OppholdSammeVilkaarTo();
+    public static UdiOppholdSammeVilkaar createOppholdSammeVilkaar() {
+        UdiOppholdSammeVilkaar oppholdSammeVilkaar = new UdiOppholdSammeVilkaar();
         oppholdSammeVilkaar.setOppholdSammeVilkaarEffektuering(TEST_DATE);
         oppholdSammeVilkaar.setOppholdSammeVilkaarPeriode(TEST_PERIODE);
         oppholdSammeVilkaar.setOppholdstillatelseType(TEST_OPPHOLDSTILLATELSE_TYPE);
@@ -153,16 +153,16 @@ public class DefaultTestData {
         return oppholdSammeVilkaar;
     }
 
-    public static IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo createIkkeOppholdstilatelseIkkeVilkaarIkkeVisum() {
-        IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo ikkeOppholdstilatelseIkkeVilkaarIkkeVisum = new IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo();
+    public static UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum createIkkeOppholdstilatelseIkkeVilkaarIkkeVisum() {
+        UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOppholdstilatelseIkkeVilkaarIkkeVisum = new UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum();
         ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.setAvslagEllerBortfall(createAvslagEllerBortfall());
         ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.setOvrigIkkeOppholdsKategoriArsak(TEST_ovrigIkkeOppholdsKategori);
         ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.setUtvistMedInnreiseForbud(createUtvistMedInnreiseForbud());
         return ikkeOppholdstilatelseIkkeVilkaarIkkeVisum;
     }
 
-    public static AvslagEllerBortfallTo createAvslagEllerBortfall() {
-        AvslagEllerBortfallTo avslagEllerBortfall = new AvslagEllerBortfallTo();
+    public static UdiAvslagEllerBortfall createAvslagEllerBortfall() {
+        UdiAvslagEllerBortfall avslagEllerBortfall = new UdiAvslagEllerBortfall();
         avslagEllerBortfall.setAvgjorelsesDato(TEST_DATE);
         avslagEllerBortfall.setAvslagGrunnlagOverig(TEST_OPPHOLDS_GRUNNLAG_KATEGORI);
         avslagEllerBortfall.setAvslagGrunnlagTillatelseGrunnlagEOS(TEST_eosEllerEFTAGrunnlagskategoriOppholdstillatelse);
@@ -177,8 +177,8 @@ public class DefaultTestData {
         return avslagEllerBortfall;
     }
 
-    public static UtvistMedInnreiseForbudTo createUtvistMedInnreiseForbud() {
-        UtvistMedInnreiseForbudTo utvistMedInnreiseForbud = new UtvistMedInnreiseForbudTo();
+    public static UdiUtvistMedInnreiseForbud createUtvistMedInnreiseForbud() {
+        UdiUtvistMedInnreiseForbud utvistMedInnreiseForbud = new UdiUtvistMedInnreiseForbud();
         utvistMedInnreiseForbud.setInnreiseForbud(TEST_INNREISEFORBUD);
         utvistMedInnreiseForbud.setInnreiseForbudVedtaksDato(TEST_DATE);
         utvistMedInnreiseForbud.setVarighet(TEST_VARIGHET_UDI);

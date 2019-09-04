@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.registre.udistub.core.service.to.opphold.OppholdStatusTo;
+import no.nav.registre.udistub.core.service.to.opphold.UdiOppholdStatus;
 import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 
 import java.time.LocalDate;
@@ -17,23 +17,23 @@ import java.util.List;
 @Setter
 @Getter
 @Builder
-public class PersonTo {
+public class UdiPerson {
 
     private String ident;
-    private PersonNavnTo navn;
+    private UdiPersonNavn navn;
     private LocalDate foedselsDato;
 
     @JsonManagedReference
-    private List<AvgjorelseTo> avgjoerelser;
+    private List<UdiAvgjorelse> avgjoerelser;
 
     @JsonManagedReference
-    private List<AliasTo> aliaser;
+    private List<UdiAlias> aliaser;
 
     @JsonManagedReference
-    private ArbeidsadgangTo arbeidsadgang;
+    private UdiArbeidsadgang arbeidsadgang;
 
     @JsonManagedReference
-    private OppholdStatusTo oppholdStatus;
+    private UdiOppholdStatus oppholdStatus;
 
     private Boolean avgjoerelseUavklart;
     private Boolean harOppholdsTillatelse;

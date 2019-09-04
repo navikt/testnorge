@@ -1,7 +1,7 @@
 package no.nav.registre.udistub.core.converter.ws;
 
-import no.nav.registre.udistub.core.service.to.PersonTo;
-import no.nav.registre.udistub.core.service.to.opphold.IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
+import no.nav.registre.udistub.core.service.to.opphold.UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum;
 import no.udi.mt_1067_nav_data.v1.AvslagEllerBortfallAvPOBOSellerTilbakekallEllerFormeltVedtak;
 import no.udi.mt_1067_nav_data.v1.AvslagPaSoknadOmOppholdsrettRealitetsBehandlet;
 import no.udi.mt_1067_nav_data.v1.AvslagPaSoknadOmOppholdstillatelseRealitetsBehandlet;
@@ -19,7 +19,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 @Component
 public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter
-        implements Converter<PersonTo, IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum> {
+        implements Converter<UdiPerson, IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum> {
 
     private final ConversionService conversionService;
 
@@ -28,7 +28,7 @@ public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter
     }
 
     @Override
-    public IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum convert(PersonTo person) {
+    public IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum convert(UdiPerson person) {
         if (person != null) {
             var ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum = new IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum();
             var ikkeOpphold = person.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum();
@@ -45,7 +45,7 @@ public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter
         return null;
     }
 
-    private UtvistMedInnreiseForbud getUtvistMedInnreiseForbud(IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo ikkeOpphold) {
+    private UtvistMedInnreiseForbud getUtvistMedInnreiseForbud(UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOpphold) {
         var udiUtvistMedInnreiseForbud = new UtvistMedInnreiseForbud();
         var ikkeOppholdUvistMedInnreiseForbud = ikkeOpphold.getUtvistMedInnreiseForbud();
         udiUtvistMedInnreiseForbud.setVarighet(ikkeOppholdUvistMedInnreiseForbud.getVarighet());
@@ -56,7 +56,7 @@ public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter
     }
 
     private AvslagEllerBortfallAvPOBOSellerTilbakekallEllerFormeltVedtak getAvslagEllerBortfall(
-            IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo ikkeOpphold) {
+            UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOpphold) {
 
         var udiAvslagEllerBortfall = new AvslagEllerBortfallAvPOBOSellerTilbakekallEllerFormeltVedtak();
         var ikkeOppholdAvslagEllerBortfall = ikkeOpphold.getAvslagEllerBortfall();
@@ -94,7 +94,7 @@ public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter
         return udiAvslagEllerBortfall;
     }
 
-    private OvrigIkkeOpphold getOvrigIkkeOpphold(IkkeOppholdstilatelseIkkeVilkaarIkkeVisumTo ikkeOpphold) {
+    private OvrigIkkeOpphold getOvrigIkkeOpphold(UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOpphold) {
         OvrigIkkeOpphold ovrigIkkeOpphold = new OvrigIkkeOpphold();
         ovrigIkkeOpphold.setArsak(ikkeOpphold.getOvrigIkkeOppholdsKategoriArsak());
         return ovrigIkkeOpphold;

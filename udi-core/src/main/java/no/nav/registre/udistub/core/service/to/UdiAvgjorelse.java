@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Builder
 @Setter
 @Getter
-public class AvgjorelseTo {
+public class UdiAvgjorelse {
 
     private String omgjortAvgjoerelsesId;
     private Kodeverk utfallstypeKode;
@@ -24,10 +24,10 @@ public class AvgjorelseTo {
     private Boolean erPositiv;
     private Kodeverk utfallVarighetKode;
     private Integer utfallVarighet;
-    private PeriodeTo utfallPeriode;
+    private UdiPeriode utfallPeriode;
     private Kodeverk tillatelseVarighetKode;
     private Integer tillatelseVarighet;
-    private PeriodeTo tillatelsePeriode;
+    private UdiPeriode tillatelsePeriode;
     private LocalDate effektueringsDato;
     private LocalDate avgjoerelsesDato;
     private LocalDate iverksettelseDato;
@@ -37,5 +37,5 @@ public class AvgjorelseTo {
     private Boolean harFlyktningstatus;
     private Boolean uavklartFlyktningstatus;
     @JsonBackReference
-    private PersonTo person;
+    private UdiPerson person;
 }
