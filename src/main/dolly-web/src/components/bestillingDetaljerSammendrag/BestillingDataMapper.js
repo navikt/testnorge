@@ -51,6 +51,15 @@ const _getTpsfBestillingData = data => {
 			apiKodeverkId: 'Språk'
 		},
 		{
+			label: 'Innvandret fra land',
+			value: data.innvandretFraLand,
+			apiKodeverkId: 'StatsborgerskapFreg'
+		},
+		{
+			label: 'Innvandret dato',
+			value: Formatters.formatDate(data.innvandretFraLandFlyttedato)
+		},
+		{
 			label: 'Utvandret til land',
 			value: data.utvandretTilLand,
 			apiKodeverkId: 'StatsborgerskapFreg'
@@ -211,7 +220,6 @@ export function mapBestillingData(bestillingData) {
 			}
 			data.push(postadresse)
 		}
-
 		if (tpsfKriterier.relasjoner) {
 			if (tpsfKriterier.relasjoner.partner) {
 				const partner = {
@@ -408,7 +416,7 @@ export function mapBestillingData(bestillingData) {
 							value: navnType && doedsboKriterier.adressat[navnType].etternavn
 						},
 						{
-							label: 'Fnr/dnr',
+							label: 'Fnr/dnr/BOST',
 							value: doedsboKriterier.adressat.idnummer
 						},
 						{

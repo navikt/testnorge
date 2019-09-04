@@ -1,10 +1,14 @@
 const selectOptions = {
-	identtype: [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }],
+	identtype: [
+		{ value: 'FNR', label: 'FNR' },
+		{ value: 'DNR', label: 'DNR' },
+		{ value: 'BOST', label: 'BOST' }
+	],
 	kjonn: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
 	kjonnBarn: [{ value: 'K', label: 'Jente' }, { value: 'M', label: 'Gutt' }],
 	sivilstand: [
-		{ value: 'GIFT', label: 'GIFT' },
-		{ value: 'SKILT', label: 'SKILT' }
+		{ value: 'GIFT', label: 'GIFT' }
+		// { value: 'SKILT', label: 'SKILT' }
 		//{ value: null, label: 'Tilfeldig' }
 	],
 
