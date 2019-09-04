@@ -55,6 +55,7 @@ const miljoeStatusSelector = bestilling => {
 		})
 
 	//Går gjennom TPSF-statuser igjen slik at ingen miljø er både suksess og feilet
+	//Burde kanskje legge til avvik slik som i arena og inst dersom et miljø feiler for noen, men ikke alle identer
 	bestilling.tpsfStatus &&
 		bestilling.tpsfStatus.map(status => {
 			status.statusMelding == 'OK' &&
@@ -80,6 +81,8 @@ const miljoeStatusSelector = bestilling => {
 				!failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
 			}
 		})
+
+	//Burde legge inn avvik hvis miljø både er success og fail
 	bestilling.pdlforvalterStatus &&
 		Object.keys(bestilling.pdlforvalterStatus).map(pdlAttr => {
 			bestilling.pdlforvalterStatus[pdlAttr].map(status => {
@@ -150,7 +153,6 @@ const miljoeStatusSelector = bestilling => {
 				? avvikEnvs.push('Arena')
 				: failedEnvs.push('Arena')
 			: successEnvs.push('Arena')
-	}
 
 	return {
 		bestillingId,
