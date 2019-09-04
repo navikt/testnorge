@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.krrstub;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -36,15 +37,7 @@ public class KrrstubClient implements ClientRegister {
                 DigitalKontaktdata digitalKontaktdata = mapperFacade.map(bestilling.getKrrstub(), DigitalKontaktdata.class);
                 digitalKontaktdata.setPersonident(norskIdent.getIdent());
 
-                ResponseEntity<DigitalKontaktdata[]> response = krrstubConsumer.readDigitalKontaktdata(norskIdent.getIdent());
-
-                if (response.hasBody()) {
-                    newArrayList(response.getBody()).forEach(dkif -> {
-                        if (nonNull(dkif.getId())) {
-                            krrstubConsumer.deleteDigitalKontaktdata(dkif.getId());
-                        }
-                    });
-                }
+                deleteIdent(norskIdent.getIdent());
 
                 ResponseEntity krrstubResponse = krrstubConsumer.createDigitalKontaktdata(digitalKontaktdata);
                 progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
@@ -53,6 +46,25 @@ public class KrrstubClient implements ClientRegister {
                 progress.setKrrstubStatus("Feil: " + e.getMessage());
                 log.error("Kall til KrrStub feilet: {}", e.getMessage(), e);
             }
+        }
+    }
+
+    @Override
+    public void release(List<String> identer) {
+
+        identer.forEach(ident -> deleteIdent(ident));
+    }
+
+    private void deleteIdent(String ident) {
+
+        ResponseEntity<DigitalKontaktdata[]> response = krrstubConsumer.readDigitalKontaktdata(ident);
+
+        if (response.hasBody()) {
+            newArrayList(response.getBody()).forEach(dkif -> {
+                if (nonNull(dkif.getId())) {
+                    krrstubConsumer.deleteDigitalKontaktdata(dkif.getId());
+                }
+            });
         }
     }
 }

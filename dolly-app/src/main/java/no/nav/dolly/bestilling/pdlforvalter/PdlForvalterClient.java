@@ -5,6 +5,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.NullcheckUtil.blankcheckSetDefaultValue;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -67,6 +68,12 @@ public class PdlForvalterClient implements ClientRegister {
 
             progress.setPdlforvalterStatus(status.substring(1));
         }
+    }
+
+    @Override
+    public void release(List<String> identer) {
+
+        identer.forEach(ident -> pdlForvalterRestConsumer.deleteIdent(ident));
     }
 
     private void sendUtenlandsid(Pdldata pdldata, NorskIdent norskIdent, StringBuilder status) {
