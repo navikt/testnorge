@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import no.nav.registre.sdForvalter.consumer.rs.SlackConsumer;
 import no.nav.registre.sdForvalter.database.Ownable;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.EregModel;
@@ -44,11 +46,13 @@ public class StaticDataService {
     private final TeamRepository teamRepository;
     private final VarighetRepository varighetRepository;
 
+    private final SlackConsumer slackConsumer;
+
     @Value("${tps.statisk.avspillergruppeId}")
     private Long playgroupStaticData;
 
     public Set<Team> getAllTeams() {
-        return new HashSet<>((Collection<? extends Team>) teamRepository.findAll());
+        return new HashSet<>((Collection<Team>) teamRepository.findAll());
     }
 
     public Team getTeam(String name) {
@@ -56,19 +60,37 @@ public class StaticDataService {
     }
 
     public Team saveTeam(Team team) {
-        return teamRepository.findByNavn(team.getNavn()).orElseGet(() -> teamRepository.save(team));
+        return teamRepository.findByNavn(team.getNavn()).orElseGet(() -> {
+            team.setSlackKanalId(slackConsumer.getChannelId(team.getSlackKanal()));
+            return teamRepository.save(team);
+        });
+    }
+
+    public Varighet getVarighet(Long id) {
+        return varighetRepository.findById(id).orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Id existerer ikke"));
+    }
+
+    public Varighet updateVarighet(Long id, Period ttl) {
+        Varighet varighet = varighetRepository.findById(id)
+                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Id existerer ikke"));
+
+        if (ttl != null) {
+            varighet.setTtl(ttl);
+        }
+        varighet.setBestilt(Date.valueOf(LocalDate.now()));
+        return varighetRepository.save(varighet);
     }
 
     public Set<TpsModel> getLocalTpsDatabaseData() {
-        return new HashSet<>((Collection<? extends TpsModel>) tpsRepository.findAll());
+        return new HashSet<>((Collection<TpsModel>) tpsRepository.findAll());
     }
 
     public Set<AaregModel> getAaregData() {
-        return new HashSet<>((Collection<? extends AaregModel>) aaregRepository.findAll());
+        return new HashSet<>((Collection<AaregModel>) aaregRepository.findAll());
     }
 
     public Set<KrrModel> getDkifData() {
-        return new HashSet<>((Collection<? extends KrrModel>) krrRepository.findAll());
+        return new HashSet<>((Collection<KrrModel>) krrRepository.findAll());
     }
 
     public Set<TpsModel> saveInTps(Set<TpsModel> data, String eier) {
@@ -125,6 +147,7 @@ public class StaticDataService {
                             .team(team)
                             .build()
             );
+            entity.setVarighet(varighet);
             team.getVarigheter().add(varighet);
             teamRepository.save(team);
             return repository.save(entity);

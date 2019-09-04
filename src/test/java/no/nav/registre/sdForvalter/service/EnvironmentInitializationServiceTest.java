@@ -82,16 +82,16 @@ public class EnvironmentInitializationServiceTest {
     private EnvironmentInitializationService environmentInitializationService;
 
     private final Team eier = new Team(
-            1L, "test@nav.no", "#team_zynt", "synt", Collections.emptySet(),
+            1L, "test@nav.no", "#team_zynt", "synt", "abc", Collections.emptySet(),
             Collections.emptySet(), Collections.emptySet(), Collections.emptySet(),
             Collections.emptySet()
     );
 
     private final Varighet varighet = new Varighet(
             1L,
-            Period.of(1, 0, 0), Date.valueOf("2019-04-03"), eier,
-            Collections.emptySet(), Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
-
+            Period.of(1, 0, 0), false, Date.valueOf("2019-04-03"), eier,
+            Collections.emptySet(), Collections.emptySet(), Collections.emptySet(), Collections.emptySet()
+    );
 
     @Test
     public void initializeEnvironmentWithStaticData() {

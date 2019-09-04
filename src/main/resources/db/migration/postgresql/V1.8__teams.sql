@@ -1,9 +1,11 @@
 create table team
 (
-    id          bigint       not null,
-    epost       varchar(255) not null,
-    navn        varchar(255) not null,
-    slack_kanal varchar(255) not null,
+    id             bigint       not null,
+    epost          varchar(255) not null,
+    navn           varchar(255) not null,
+    slack_kanal    varchar(255) not null,
+    slack_kanal_id varchar(255) not null,
+    has_notified   boolean      not null default false,
     primary key (id)
 );
 

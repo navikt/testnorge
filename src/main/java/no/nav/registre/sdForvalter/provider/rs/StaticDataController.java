@@ -22,7 +22,6 @@ import no.nav.registre.sdForvalter.database.model.TpsModel;
 import no.nav.registre.sdForvalter.provider.rs.request.FastDataRequest;
 import no.nav.registre.sdForvalter.service.StaticDataService;
 
-//TODO: Fix database update and create complex heriarcy
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -57,7 +56,6 @@ public class StaticDataController {
         return ResponseEntity.ok(staticDataService.getAaregData());
     }
 
-
     @GetMapping(value = "/krr")
     public ResponseEntity<Set<KrrModel>> getDkifStaticData() {
         return ResponseEntity.ok(staticDataService.getDkifData());
@@ -67,7 +65,6 @@ public class StaticDataController {
     public ResponseEntity<List<EregModel>> getEregStaticData() {
         return ResponseEntity.ok(staticDataService.getEregData());
     }
-
 
     @PostMapping(value = "/")
     public ResponseEntity<FastDataRequest> storeStaticDataInTps(@RequestBody FastDataRequest data) {

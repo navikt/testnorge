@@ -5,10 +5,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.client.RestTemplate;
 
 import java.sql.Date;
 import java.time.Period;
@@ -34,25 +32,21 @@ import no.nav.registre.sdForvalter.database.model.Varighet;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @AutoConfigureWireMock(port = 0)
-@TestPropertySource(locations = "src/test/resources/application-test.properties")
-@ContextConfiguration(classes = {
-        AaregConsumer.class,
-        RestTemplate.class
-
-})
+@TestPropertySource(locations = "classpath:/application-test.properties")
 public class AaregConsumerTest {
 
     private final String environment = "t1";
     private final Team eier = new Team(
-            1L, "test@nav.no", "#team_zynt", "synt", Collections.emptySet(),
+            1L, "test@nav.no", "#team_zynt", "synt", "abc", Collections.emptySet(),
             Collections.emptySet(), Collections.emptySet(), Collections.emptySet(),
             Collections.emptySet()
     );
 
     private final Varighet varighet = new Varighet(
             1L,
-            Period.of(1, 0, 0), Date.valueOf("2019-04-03"), eier,
-            Collections.emptySet(), Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
+            Period.of(1, 0, 0), false, Date.valueOf("2019-04-03"), eier,
+            Collections.emptySet(), Collections.emptySet(), Collections.emptySet(), Collections.emptySet()
+    );
 
     @Autowired
     private AaregConsumer aaregConsumer;

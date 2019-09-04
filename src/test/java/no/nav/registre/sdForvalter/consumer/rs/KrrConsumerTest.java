@@ -4,11 +4,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,8 +26,7 @@ import no.nav.registre.sdForvalter.consumer.rs.request.KrrRequest;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@TestPropertySource(locations = "src/test/resources/application-test.properties")
-@ContextConfiguration(classes = {KrrConsumer.class, RestTemplate.class})
+@Profile("test")
 public class KrrConsumerTest {
 
     @Mock
