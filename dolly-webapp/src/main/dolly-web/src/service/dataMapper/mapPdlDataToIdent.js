@@ -48,7 +48,7 @@ export function mapPdlData(pdlfData) {
 				},
 				{
 					id: 'idNummer',
-					label: 'Fnr/dnr',
+					label: 'Fnr/dnr/bost',
 					value: pdlfData.kontaktinformasjonForDoedsbo[0].adressat[adressatType].idNummer
 				},
 				{
@@ -128,7 +128,7 @@ export function mapPdlData(pdlfData) {
 				},
 				{
 					id: 'identitetsnummer',
-					label: 'Rett fnr/dnr',
+					label: 'Rett fnr/dnr/bost',
 					value: pdlfData.falskIdentitet.rettIdentitetVedIdentifikasjonsnummer
 				},
 				{
