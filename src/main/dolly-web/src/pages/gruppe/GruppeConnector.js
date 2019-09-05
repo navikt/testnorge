@@ -1,13 +1,8 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import Gruppe from './Gruppe'
-import {
-	getGruppe,
-	showCreateOrEditGroup,
-	deleteGruppe,
-	nyeBestillingerSelector
-} from '~/ducks/gruppe'
-import { getBestillinger, getBestillingStatus } from '~/ducks/bestillingStatus'
+import { getGruppe, showCreateOrEditGroup, deleteGruppe } from '~/ducks/gruppe'
+import { getBestillinger, nyeBestillingerSelector } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
 import { resetSearch } from '~/ducks/search'
 
