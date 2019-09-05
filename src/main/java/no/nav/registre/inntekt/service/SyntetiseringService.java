@@ -52,7 +52,7 @@ public class SyntetiseringService {
 
     public Map<String, List<RsInntekt>> startSyntetisering(SyntetiseringsRequest syntetiseringsRequest) {
 
-        Set<String> identer = new HashSet<>(hentLevendeIdenterOverAlder(syntetiseringsRequest.getAvspillergruppeId(), MINIMUM_ALDER));
+        Set<String> identer = new HashSet<>(hentLevendeIdenterOverAlder(syntetiseringsRequest.getAvspillergruppeId()));
         Set<String> identerIInntektstub = inntektstubConsumer.hentEksisterendeIdenter().stream().map(RsPerson::getFoedselsnummer).collect(Collectors.toSet());
 
         identerIInntektstub.retainAll(identer);
@@ -73,39 +73,17 @@ public class SyntetiseringService {
             return null;
         }
 
-        SortedMap<String, List<RsInntekt>> identerMedInntekt = new TreeMap<>();
-        for (String ident : identerIInntektstub) {
-            List<RsInntekt> inntekter = inntektstubConsumer.hentEksisterendeInntekterPaaIdent(ident);
-            inntekter = DatoParser.finnSenesteInntekter(inntekter);
-            identerMedInntekt.put(ident, inntekter);
-        }
-        for (String ident : nyeIdenter) {
-            identerMedInntekt.put(ident, new ArrayList<>());
-        }
-
-        List<Map<String, List<RsInntekt>>> paginerteIdenterMedInntekt = paginer(identerMedInntekt);
         Map<String, List<RsInntekt>> feiledeInntektsmeldinger = new HashMap<>();
         Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger = new HashMap<>();
 
-        for (int i = 0; i < paginerteIdenterMedInntekt.size(); i++) {
-            SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(paginerteIdenterMedInntekt.get(i));
+        opprettInntekterPaaEksisterende(identerIInntektstub, feiledeInntektsmeldinger, syntetiskeInntektsmeldinger);
 
-            if (inntektsmeldingerFraSynt == null) {
-                log.warn("Fikk ingen syntetiserte meldinger synt-pakken. Fortsetter med neste bolk");
-                continue;
-            }
-
-            inntektsmeldingerFraSynt.keySet().retainAll(filtrerGyldigeMeldinger(inntektsmeldingerFraSynt).keySet());
-
-            if (inntektsmeldingerFraSynt.isEmpty()) {
-                continue;
-            }
-
-            feiledeInntektsmeldinger.putAll(inntektstubConsumer.leggInntekterIInntektstub(inntektsmeldingerFraSynt));
-            syntetiskeInntektsmeldinger.putAll(inntektsmeldingerFraSynt);
-
-            log.info("La til page {} av {} med inntekter i inntektstub", i + 1, paginerteIdenterMedInntekt.size());
+        SortedMap<String, List<RsInntekt>> nyeIdenterMedInntekt = new TreeMap<>();
+        for (String ident : nyeIdenter) {
+            nyeIdenterMedInntekt.put(ident, new ArrayList<>());
         }
+
+        opprettInntekterPaaNye(feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, nyeIdenterMedInntekt);
 
         if (!feiledeInntektsmeldinger.isEmpty()) {
             log.warn("Kunne ikke opprette inntekt på følgende identer: {}", feiledeInntektsmeldinger.keySet());
@@ -135,12 +113,60 @@ public class SyntetiseringService {
         return feiledeInntektsmeldinger;
     }
 
-    private List<String> hentLevendeIdenterOverAlder(Long avspillergruppeId, int minimumAlder) {
-        return hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder);
+    private void opprettInntekterPaaEksisterende(Set<String> identerIInntektstub, Map<String, List<RsInntekt>> feiledeInntektsmeldinger, Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger) {
+        List<List<String>> partisjonerteIdenterIInntektstub = paginerIdenter(new ArrayList<>(identerIInntektstub));
+        for (int i = 0; i < partisjonerteIdenterIInntektstub.size(); i++) {
+            SortedMap<String, List<RsInntekt>> identerMedInntekt = new TreeMap<>();
+            for (String ident : partisjonerteIdenterIInntektstub.get(i)) {
+                List<RsInntekt> inntekter = inntektstubConsumer.hentEksisterendeInntekterPaaIdent(ident);
+                inntekter = DatoParser.finnSenesteInntekter(inntekter);
+                identerMedInntekt.put(ident, inntekter);
+            }
+
+            SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(identerMedInntekt);
+
+            if (!leggTilHvisGyldig(feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, inntektsmeldingerFraSynt))
+                continue;
+
+            log.info("La til page {} av {} med inntekter til eksisterende identer i inntektstub", i + 1, partisjonerteIdenterIInntektstub.size());
+        }
+    }
+
+    private void opprettInntekterPaaNye(Map<String, List<RsInntekt>> feiledeInntektsmeldinger, Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger, SortedMap<String, List<RsInntekt>> nyeIdenterMedInntekt) {
+        List<Map<String, List<RsInntekt>>> paginerteIdenterMedInntekt = paginerInntekter(nyeIdenterMedInntekt);
+        for (int i = 0; i < paginerteIdenterMedInntekt.size(); i++) {
+            SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(paginerteIdenterMedInntekt.get(i));
+
+            if (!leggTilHvisGyldig(feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, inntektsmeldingerFraSynt))
+                continue;
+
+            log.info("La til page {} av {} med inntekter til nye identer i inntektstub", i + 1, paginerteIdenterMedInntekt.size());
+        }
+    }
+
+    private List<String> hentLevendeIdenterOverAlder(Long avspillergruppeId) {
+        return hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER);
     }
 
     private SortedMap<String, List<RsInntekt>> getInntektsmeldingerFraSynt(Map<String, List<RsInntekt>> identerMedInntekt) {
         return inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(identerMedInntekt);
+    }
+
+    private boolean leggTilHvisGyldig(Map<String, List<RsInntekt>> feiledeInntektsmeldinger, Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger, SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt) {
+        if (inntektsmeldingerFraSynt == null) {
+            log.warn("Fikk ingen syntetiserte meldinger synt-pakken. Fortsetter med neste bolk");
+            return false;
+        }
+
+        inntektsmeldingerFraSynt.keySet().retainAll(filtrerGyldigeMeldinger(inntektsmeldingerFraSynt).keySet());
+
+        if (inntektsmeldingerFraSynt.isEmpty()) {
+            return false;
+        }
+
+        feiledeInntektsmeldinger.putAll(inntektstubConsumer.leggInntekterIInntektstub(inntektsmeldingerFraSynt));
+        syntetiskeInntektsmeldinger.putAll(inntektsmeldingerFraSynt);
+        return true;
     }
 
     private Map<String, List<RsInntekt>> filtrerGyldigeMeldinger(Map<String, List<RsInntekt>> inntektsmeldinger) {
@@ -151,7 +177,7 @@ public class SyntetiseringService {
         return inntektsmeldinger;
     }
 
-    private static List<Map<String, List<RsInntekt>>> paginer(SortedMap<String, List<RsInntekt>> map) {
+    private static List<Map<String, List<RsInntekt>>> paginerInntekter(SortedMap<String, List<RsInntekt>> map) {
         List<String> keys = new ArrayList<>(map.keySet());
         List<Map<String, List<RsInntekt>>> pages = new ArrayList<>();
         final int listSize = map.size();
@@ -163,5 +189,22 @@ public class SyntetiseringService {
             }
         }
         return pages;
+    }
+
+    private static List<List<String>> paginerIdenter(List<String> list) {
+        int size = list.size();
+        int m = size / PAGE_SIZE;
+        if (size % PAGE_SIZE != 0) {
+            m++;
+        }
+
+        List<List<String>> partisjoner = new ArrayList<>();
+        for (int i = 0; i < m; i++) {
+            int fromIndex = i * PAGE_SIZE;
+            int toIndex = (i * PAGE_SIZE + PAGE_SIZE < size) ? (i * PAGE_SIZE + PAGE_SIZE) : size;
+
+            partisjoner.add(new ArrayList<>(list.subList(fromIndex, toIndex)));
+        }
+        return partisjoner;
     }
 }
