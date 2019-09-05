@@ -1,6 +1,8 @@
 package no.nav.registre.tss.provider.rs;
 
+import static no.nav.registre.tss.utils.Rutine110Util.fiksPosisjoner;
 import static no.nav.registre.tss.utils.Rutine110Util.leggTilHeader;
+import static no.nav.registre.tss.utils.Rutine110Util.setOppdater;
 import static no.nav.registre.tss.utils.RutineUtil.TOTAL_LENGTH;
 import static no.nav.registre.tss.utils.RutineUtil.padTilLengde;
 
@@ -43,6 +45,8 @@ public class TSSController {
                     throw new RuntimeException("Feil lengde på rutine");
                 }
                 if (rutiner.get(j).startsWith("110")) {
+                    rutiner.set(j, fiksPosisjoner(rutiner.get(j)));
+                    rutiner.set(j, setOppdater(rutiner.get(j)));
                     rutiner.set(j, leggTilHeader(rutiner.get(j)));
                 }
                 s.append(rutiner.get(j));
