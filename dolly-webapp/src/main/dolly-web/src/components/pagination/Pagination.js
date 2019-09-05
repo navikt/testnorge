@@ -8,12 +8,9 @@ import './Pagination.less'
 const ITEM_PER_PAGE = 10
 
 export default class Pagination extends Component {
-	constructor(props) {
-		super()
-		this.state = {
-			currentPage: 0,
-			itemCount: ITEM_PER_PAGE
-		}
+	state = {
+		currentPage: 0,
+		itemCount: ITEM_PER_PAGE
 	}
 
 	componentDidUpdate(prevProps) {
