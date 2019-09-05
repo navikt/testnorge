@@ -46,26 +46,16 @@ const _findEnvironmentsForIdent = (state, ident) => {
 	if (!personObj) return null
 
 	const bestillingObj = bestillingStatuser.data.find(bestilling => {
-		const bestillingid = bestilling.id
-		let foundId = false
-
-		personObj.bestillingId.map(id => {
-			if (bestillingid === id) {
-				foundId = true
-			}
-		})
-		return foundId
+		return personObj.bestillingId.some(id => bestilling.id === id)
 	})
 
 	return bestillingObj.environments
 }
 
 export const mapSigrunSekvensnummer = (inntektData, sekvensData) => {
-	const data = inntektData.map(i => {
+	return inntektData.map(i => {
 		const sekvens = sekvensData.find(s => s.gjelderPeriode === i.inntektsaar)
 		const sekvensnummer = sekvens && sekvens.sekvensnummer.toString()
 		return { ...i, sekvensnummer }
 	})
-
-	return data
 }
