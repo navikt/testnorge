@@ -54,7 +54,7 @@ public class SlackConsumer {
 
             RequestEntity<MultiValueMap<String, String>> mapRequestEntity =
                     new RequestEntity<>(form, headers,
-                            HttpMethod.POST, new URI("https://slack.com/api/chat.postMessage"));
+                            HttpMethod.POST, new URI("https://api.slack.com/api/chat.postMessage"));
 
             ResponseEntity<Map<String, Object>> response = restTemplate.exchange(mapRequestEntity, MAP_RESPONSE);
             if (response.getBody() != null) {
