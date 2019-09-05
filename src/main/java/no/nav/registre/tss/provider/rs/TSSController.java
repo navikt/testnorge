@@ -59,7 +59,6 @@ public class TSSController {
         } catch (Exception e) {
             log.error("Kunne ikke sende til kø", e);
         }
-        log.info(tssQueueMessages.toString());
         return ResponseEntity.status(HttpStatus.OK).body(tssQueueMessages);
     }
 }

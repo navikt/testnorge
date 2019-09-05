@@ -1,6 +1,7 @@
 package no.nav.registre.tss.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
@@ -15,6 +16,7 @@ import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.consumer.rs.response.TssSyntetisererenConsumer;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 
+@Slf4j
 @Service
 public class TSService {
 
@@ -54,6 +56,7 @@ public class TSService {
 
     public void sendToMQQueue(List<String> messages) {
         for (String message : messages) {
+            log.info("Sender melding til TSS: {}", message);
             jmsTemplate.convertAndSend(mqQueueName, message);
         }
     }
