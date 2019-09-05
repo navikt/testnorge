@@ -19,7 +19,7 @@ public class Rutine110Util {
         return fullRutine.toString();
     }
 
-    public static String opprettHeader() {
+    private static String opprettHeader() {
         StringBuilder header = new StringBuilder(FORMAT);
         String mmelSymbol = " ";
         String mmel = IntStream.range(0, MMEL_LENGTH).mapToObj(i -> mmelSymbol).collect(Collectors.joining(""));
