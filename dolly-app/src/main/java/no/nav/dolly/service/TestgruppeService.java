@@ -106,6 +106,7 @@ public class TestgruppeService {
 
     public int slettGruppeById(Long gruppeId) {
         personService.recyclePersonerIGruppe(gruppeId);
+        personService.releaseArtifacts(gruppeId);
         bestillingService.slettBestillingerByGruppeId(gruppeId);
         identService.slettTestidenterByGruppeId(gruppeId);
         brukerService.sletteBrukerFavoritterByGroupId(gruppeId);

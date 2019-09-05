@@ -31,7 +31,6 @@ public class PersonService {
 
         if (!identer.isEmpty()) {
             tpsfService.deletePersoner(identer);
-            releaseArtifacts(identer);
         }
     }
 
@@ -47,7 +46,19 @@ public class PersonService {
     }
 
     @Async
+    public void releaseArtifacts(Long gruppeId) {
+
+        Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
+        releaseArtifactsInternal(testgruppe.getTestidenter().stream().map(Testident::getIdent).collect(Collectors.toList()));
+    }
+
+    @Async
     public void releaseArtifacts(List<String> identer) {
+
+        releaseArtifactsInternal(identer);
+    }
+
+    private void releaseArtifactsInternal(List<String> identer) {
 
         clientRegister.forEach(register -> {
 

@@ -1,6 +1,7 @@
 package no.nav.dolly.api;
 
 import static java.lang.String.format;
+import static java.util.Collections.singletonList;
 import static no.nav.dolly.api.AaregController.AAREG_JSON_COMMENT;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
@@ -176,6 +177,7 @@ public class TestgruppeController {
         }
         bestillingService.slettBestillingByTestIdent(ident);
         personService.recyclePerson(ident);
+        personService.releaseArtifacts(singletonList(ident));
     }
 
     @Cacheable(CACHE_GRUPPE)
