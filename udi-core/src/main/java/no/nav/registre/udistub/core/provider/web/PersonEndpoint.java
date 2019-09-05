@@ -2,20 +2,21 @@ package no.nav.registre.udistub.core.provider.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.udistub.core.exception.NotFoundException;
-import no.nav.registre.udistub.core.service.PersonService;
-import no.nav.registre.udistub.core.service.to.UdiPerson;
 import no.udi.common.v2.PingRequestType;
+import no.udi.mt_1067_nav_data.v1.HentPersonstatusRequestType;
 import no.udi.mt_1067_nav_data.v1.HentPersonstatusResultat;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-import v1.mt_1067_nav.no.udi.HentPersonstatusRequestType;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
+
+import no.nav.registre.udistub.core.exception.NotFoundException;
+import no.nav.registre.udistub.core.service.PersonService;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
 
 @Slf4j
 @Endpoint
