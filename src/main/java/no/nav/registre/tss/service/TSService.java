@@ -57,7 +57,6 @@ public class TSService {
     public void sendToMQQueue(List<String> messages) {
         for (String message : messages) {
             log.info("Sender melding til TSS: {}", message);
-//            jmsTemplate.send(mqQueueName, s -> s.createTextMessage(message));
             jmsTemplate.convertAndSend("queue:///" + mqQueueName + "?targetClient=1", message);
         }
     }
