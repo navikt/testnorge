@@ -119,16 +119,3 @@ export const sokSelectorOversikt = (items, searchStr) => {
 		return searchValues.some(v => v.includes(query))
 	})
 }
-
-// Nye bestillinger selector
-export const nyeBestillingerSelector = bestillinger => {
-	if (!bestillinger.data) return null
-
-	let nyeBestillinger = []
-
-	bestillinger.ny.forEach(bestillingsId => {
-		const bestilling = _find(bestillinger.data, bestilling => bestilling.id === bestillingsId)
-		bestilling && nyeBestillinger.push(bestilling)
-	})
-	return nyeBestillinger
-}
