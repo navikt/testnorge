@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
-import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.consumer.rs.response.TssSyntetisererenConsumer;
+import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 
 @Slf4j
@@ -57,7 +57,7 @@ public class TSService {
     public void sendToMQQueue(List<String> messages) {
         for (String message : messages) {
             log.info("Sender melding til TSS: {}", message);
-            jmsTemplate.convertAndSend(mqQueueName, message);
+            jmsTemplate.send(mqQueueName, s -> s.createTextMessage(message));
         }
     }
 }
