@@ -44,7 +44,6 @@ export default class Gruppe extends Component {
 			isFetching,
 			isFetchingBestillinger,
 			deleteGruppe,
-			addFavorite,
 			bestillinger,
 			nyeBestillinger,
 			getGruppe,
@@ -150,7 +149,7 @@ export default class Gruppe extends Component {
 
 	toggleToolbar = e => {
 		const visning = e.target.value
-		visning === this.VISNING_BESTILLING && this.props.getBestillinger()
+		if (visning === this.VISNING_BESTILLING) this.props.getBestillinger()
 		this.setState({ visning }, () => this.props.resetSearch())
 	}
 

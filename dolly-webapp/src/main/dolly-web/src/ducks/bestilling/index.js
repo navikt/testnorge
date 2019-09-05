@@ -6,7 +6,7 @@ import _set from 'lodash/set'
 import _union from 'lodash/union'
 import _difference from 'lodash/difference'
 import BestillingMapper from '~/utils/BestillingMapper'
-import { handleActions, createActions, createAction, combineActions } from 'redux-actions'
+import { handleActions, createActions, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 import { AttributtManager } from '~/service/Kodeverk'
 import { getValues, _filterAttributes, _filterArrayAttributes } from './BestillingRequestUtils'
@@ -206,6 +206,7 @@ export default handleActions(
 // - kanskje flyttes ut til egen fil (er jo bare en formatter og ikke thunk)
 // - kan dette være mer generisk? bruke datasource nodene i AttributtManager?
 // - CNN: LAGT TIL TPSF HARDKODET FOR NÅ FOR TESTING. FINN GENERISK LØSNING
+// - AAL: Denne bør flyttes ut til egen fil
 const bestillingFormatter = (bestillingState, oppslag) => {
 	const {
 		attributeIds,
