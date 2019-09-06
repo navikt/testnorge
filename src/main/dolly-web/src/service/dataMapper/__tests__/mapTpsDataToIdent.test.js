@@ -139,7 +139,7 @@ describe('mapTpsDataToIdent.js', () => {
 						id: 'innvandretFraLand',
 						label: 'Innvandret fra land',
 						value: undefined,
-						apiKodeverkId: 'StatsborgerskapFreg'
+						apiKodeverkId: 'Landkoder'
 					},
 					{
 						id: 'innvandretFraLandFlyttedato',
@@ -147,7 +147,7 @@ describe('mapTpsDataToIdent.js', () => {
 						value: undefined
 					},
 					{
-						apiKodeverkId: 'StatsborgerskapFreg',
+						apiKodeverkId: 'Landkoder',
 						id: 'utvandretTilLand',
 						label: 'Utvandret til land',
 						value: 'AFG'
@@ -185,7 +185,7 @@ describe('mapTpsDataToIdent.js', () => {
 						id: 'utstederland',
 						label: 'Utstederland',
 						value: 'JAPAN',
-						apiKodeverkId: 'StatsborgerskapFreg'
+						apiKodeverkId: 'Landkoder'
 					}
 				]
 			}

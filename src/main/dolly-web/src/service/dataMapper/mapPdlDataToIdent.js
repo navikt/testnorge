@@ -159,7 +159,7 @@ export function mapPdlData(pdlfData) {
 					id: 'statsborgerskap',
 					label: 'Statsborgerskap',
 					width: 'medium',
-					apiKodeverkId: 'StatsborgerskapFreg',
+					apiKodeverkId: 'Landkoder',
 					value: opplysninger && opplysninger.statsborgerskap
 				}
 			]
