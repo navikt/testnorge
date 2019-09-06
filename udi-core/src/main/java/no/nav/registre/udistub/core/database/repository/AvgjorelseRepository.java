@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AvgjorelseRepository extends CrudRepository<Avgjorelse, Long> {
-    Avgjorelse findAvgjoerelseBySaksnummer(Long saksnummer);
 }
