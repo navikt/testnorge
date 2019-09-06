@@ -28,10 +28,10 @@ public class AppConfig {
     String bisysUrl;
 
     @Value("${ENHET}")
-    int enhet;
+    String enhet;
 
     @Value("${GEBYR_BESLAARSAK_KODE_FRITATT_IKKE_SOKT}")
-    boolean gebyrBeslAarsakKodeFritattIkkeSokt;
+    String gebyrBeslAarsakKodeFritattIkkeSokt;
 
     @Value("${testnorge-hodejegeren.rest-api.url}")
     String hodejegerenUrl;
@@ -76,13 +76,13 @@ public class AppConfig {
     @Bean
     public BisysUiSupport bisysUiNavigationSupport() {
         return new BisysUiSupport(saksbehandlerUid, saksbehandlerPwd, bisysUrl,
-                rolleSaksbehandler, enhet);
+                rolleSaksbehandler, Integer.parseInt(enhet));
     }
 
     @Bean
     public BisysRequestAugments bisysRequestAugments() {
 
-        String gebyrBeslAarsakKode = gebyrBeslAarsakKodeFritattIkkeSokt
+        String gebyrBeslAarsakKode = gebyrBeslAarsakKodeFritattIkkeSokt.equals("1")
                 ? BisysUiFatteVedtakConsumer.KODE_BESL_AARSAK_FRITATT_IKKE_SOKT
                 : BisysUiFatteVedtakConsumer.KODE_BESL_AARSAK_ILAGT_IKKE_SOKT;
 
