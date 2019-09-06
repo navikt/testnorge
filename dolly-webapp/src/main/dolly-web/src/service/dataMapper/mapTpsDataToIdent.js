@@ -104,7 +104,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 					id: 'innvandretFraLand',
 					label: 'Innvandret fra land',
 					value: tpsfKriterier.innvandretFraLand && tpsfData.innvandretFraLand,
-					apiKodeverkId: tpsfData.innvandretFraLand && 'StatsborgerskapFreg'
+					apiKodeverkId: tpsfData.innvandretFraLand && 'Landkoder'
 				},
 				{
 					id: 'innvandretFraLandFlyttedato',
@@ -117,7 +117,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 					id: 'utvandretTilLand',
 					label: 'Utvandret til land',
 					value: tpsfData.utvandretTilLand,
-					apiKodeverkId: tpsfData.utvandretTilLand && 'StatsborgerskapFreg'
+					apiKodeverkId: tpsfData.utvandretTilLand && 'Landkoder'
 				},
 				{
 					id: 'utvandretTilLandFlyttedato',
@@ -155,7 +155,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 					id: 'utstederland',
 					label: 'Utstederland',
 					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].utstederland,
-					apiKodeverkId: 'StatsborgerskapFreg'
+					apiKodeverkId: 'Landkoder'
 				}
 			]
 		})
@@ -331,7 +331,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 									  tpsfKriterier.relasjoner.partner.innvandretFraLand
 										? relasjon.personRelasjonMed.innvandretFraLand
 										: null,
-							apiKodeverkId: 'StatsborgerskapFreg'
+							apiKodeverkId: 'Landkoder'
 						},
 						{
 							id: 'innvandretFraLandFlyttedato',
@@ -349,7 +349,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 							id: 'utvandretTilLand',
 							label: 'Utvandret til land',
 							value: relasjon.personRelasjonMed.utvandretTilLand,
-							apiKodeverkId: 'StatsborgerskapFreg'
+							apiKodeverkId: 'Landkoder'
 						},
 						{
 							id: 'utvandretTilLandFlyttedato',
