@@ -5,8 +5,6 @@ import { DataSource } from '~/service/kodeverk/AttributtManager/Types'
 import { Formik } from 'formik'
 import FormEditor from '~/components/formEditor/FormEditor'
 import DisplayFormikState from '~/utils/DisplayFormikState'
-import Button from '~/components/button/Button'
-import Loading from '~/components/loading/Loading'
 
 import './RedigerTestbruker.less'
 

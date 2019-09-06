@@ -1,15 +1,12 @@
 import React, { Component, Fragment } from 'react'
+import { TpsfApi } from '~/service/Api'
 import Button from '~/components/button/Button'
 import Loading from '~/components/loading/Loading'
-import { TpsfApi } from '~/service/Api'
 import Icon from '~/components/icon/Icon'
 
 export default class EksportExcel extends Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			loading: false
-		}
+	state = {
+		loading: false
 	}
 
 	render() {
@@ -19,10 +16,7 @@ export default class EksportExcel extends Component {
 	_eksportereData = () => {
 		return (
 			<Fragment>
-				<Button
-					className="flexbox--align-center gruppe-exceleksport"
-					onClick={() => this._onClick()}
-				>
+				<Button className="flexbox--align-center gruppe-exceleksport" onClick={this._onClick}>
 					<Icon size={'24px'} kind={'file-new-table'} className="excelknapp" />
 					<span className="excelknapp">EKSPORTER TIL EXCEL</span>
 				</Button>
@@ -57,14 +51,11 @@ export default class EksportExcel extends Component {
 	}
 
 	_getIdentliste = () => {
-		let identliste = []
-		this.props.testidenter.map(ident => {
-			identliste.push(ident.ident)
-		})
-		return identliste
+		return this.props.testidenter.map(ident => ident.ident)
 	}
 
 	_getDato = () => {
+		// TODO - denne hører til i util - dateformatter
 		const dato = new Date()
 		let dd = String(dato.getDate())
 		if (dd < 10) {

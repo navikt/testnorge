@@ -1,20 +1,6 @@
 import Formatter from '../DataFormatter'
 
 describe('DataFormatter.js', () => {
-	describe('formatIdentNr', () => {
-		const testNr = '12345612345'
-		const res = '12345612345'
-
-		it('should format ident nr to correct format: ###### #####', () => {
-			expect(Formatter.formatIdentNr(testNr)).toBe(res)
-		})
-
-		it('should return without parsing if undefined', () => {
-			const testUndefined = undefined
-			expect(Formatter.formatIdentNr(testUndefined)).toEqual(testUndefined)
-		})
-	})
-
 	describe('formatAlder', () => {
 		const dodsdato = new Date()
 		const testAlder = 70
