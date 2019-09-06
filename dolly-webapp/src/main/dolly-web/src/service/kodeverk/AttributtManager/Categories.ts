@@ -1,8 +1,6 @@
 import { KategoriTypes } from './Types'
 import { ArenaApi, InstApi } from '~/service/Api'
 
-import { DEFAULT_ECDH_CURVE } from 'tls'
-
 export const Kategorier: KategoriTypes = {
 	PersInfo: {
 		id: 'personinfo',
