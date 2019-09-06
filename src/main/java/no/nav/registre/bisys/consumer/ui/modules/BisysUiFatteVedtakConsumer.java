@@ -16,11 +16,13 @@ import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.bidrag.ui.bisys.BisysApplication;
 import no.nav.bidrag.ui.bisys.BisysApplication.ActiveBisysPage;
-import no.nav.bidrag.ui.bisys.kodeverk.KodeRolletype_Constants;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeRolletypeConstants;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
 import no.nav.bidrag.ui.bisys.soknad.Soknad;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Barn;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Bidragsberegning;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Boforhold;
+import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Forskuddsberegning;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Inntekter;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Inntektslinje;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Periode;
@@ -67,9 +69,67 @@ public class BisysUiFatteVedtakConsumer {
     public void runFatteVedtak(BisysApplication bisys, SynthesizedBidragRequest request)
             throws BidragRequestProcessingException {
 
-        ActiveBisysPage activePage = BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.SOKNAD);
+        BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.SOKNAD);
 
+        if (KodeSoknGrKomConstants.BIDRAG_INNKREVING.equals(request.getSoktOm())) {
+            runBidragInnkreving(bisys, request);
+        } else if (KodeSoknGrKomConstants.FORSKUDD.equals(request.getSoktOm())) {
+            runForskudd(bisys, request);
+        }
+    }
+
+    private void runForskudd(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
         try {
+            ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+
+            Soknad soknad = (Soknad) bisys.getActivePage(activePage);
+            try {
+                soknad.lagreOgForskudd().click();
+            } catch (NoSuchElementException | ElementNotFoundException e) {
+                throw new BidragRequestProcessingException("LagreOgForskudd-button not visible. Check logged on enhet", soknad, e);
+            }
+
+            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+
+            Inntekter inntekter = (Inntekter) bisys.getActivePage(activePage);
+            fulfillInntekter(request.getSoktOm(), inntekter, request);
+            inntekter.lagreTilBoforhold().click();
+
+            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+
+            Boforhold boforhold = (Boforhold) bisys.getActivePage(activePage);
+            fulfillBoforhold(boforhold, request);
+            boforhold.lagreOgForskudd().click();
+
+            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+
+            Forskuddsberegning forskuddsberegning = (Forskuddsberegning) bisys.getActivePage(activePage);
+            fulfillForskuddsberegning(forskuddsberegning, request);
+            forskuddsberegning.lagreOgBeregn().click();
+            forskuddsberegning.lagreBeregnFatteVedtak().click();
+
+            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+
+            FatteVedtak fatteVedtak = (FatteVedtak) bisys.getActivePage(activePage);
+            fatteVedtak.executeFatteVedtak().click();
+
+        } catch (ElementNotFoundException | NoSuchElementException | ClassCastException e) {
+            throw new BidragRequestProcessingException(bisys.bisysPage(), e);
+        }
+
+    }
+
+    private void fulfillForskuddsberegning(Forskuddsberegning forskuddsberegning, SynthesizedBidragRequest request) {
+
+        forskuddsberegning.selectKodeArsak(request.getKodeVirkAarsak(request.getSoktOm()));
+        forskuddsberegning.selectSivilstand(request.getSivilstandBm());
+        forskuddsberegning.selectUnntak(request.getKodeUnntForsk());
+
+    }
+
+    private void runBidragInnkreving(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
+        try {
+            ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
 
             Soknad soknad = (Soknad) bisys.getActivePage(activePage);
             soknad.lagreOgBidrag().click();
@@ -82,7 +142,7 @@ public class BisysUiFatteVedtakConsumer {
             activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
 
             Inntekter inntekter = (Inntekter) bisys.getActivePage(activePage);
-            fulfillInntekter(inntekter, request);
+            fulfillInntekter(request.getSoktOm(), inntekter, request);
             inntekter.lagreTilBoforhold().click();
 
             activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
@@ -117,23 +177,26 @@ public class BisysUiFatteVedtakConsumer {
      *  - Expected exit page: Inntekter
      * </code>
      * 
+     * @param grKomKode
      * @param inntekter
      * @param request
      * @throws BidragRequestProcessingException
      */
-    private void fulfillInntekter(Inntekter inntekter, SynthesizedBidragRequest request)
+    private void fulfillInntekter(String grKomKode, Inntekter inntekter, SynthesizedBidragRequest request)
             throws BidragRequestProcessingException {
 
         // BMs inntekter
-        checkInntekter(KodeRolletype_Constants.BIDRAGSMOTTAKER, inntekter, request);
+        checkInntekter(KodeRolletypeConstants.BIDRAGSMOTTAKER, inntekter, request);
         inntekter.lagre().click();
 
         // BPs inntekter
-        for (String option : inntekter.valgtRolle().getOptions()) {
-            if (option.contains(request.getFnrBp())) {
-                inntekter.selectValgtRolle(option);
-                checkInntekter(KodeRolletype_Constants.BIDRAGSPLIKTIG, inntekter, request);
-                inntekter.lagre().click();
+        if (!KodeSoknGrKomConstants.FORSKUDD.equals(grKomKode)) {
+            for (String option : inntekter.valgtRolle().getOptions()) {
+                if (option.contains(request.getFnrBp())) {
+                    inntekter.selectValgtRolle(option);
+                    checkInntekter(KodeRolletypeConstants.BIDRAGSPLIKTIG, inntekter, request);
+                    inntekter.lagre().click();
+                }
             }
         }
     }
@@ -155,7 +218,7 @@ public class BisysUiFatteVedtakConsumer {
                         nyInntektslinje.gjelderFom().setValue(soktFra.toString("dd.MM.yyyy"));
                         nyInntektslinje.beskrivelse().select(Inntektslinje.KODE_PERSONINNTEKT_EGNE_OPPLYSNINGER);
 
-                        int belop = KodeRolletype_Constants.BIDRAGSMOTTAKER.equals(rolletype) ? request.getInntektBmEgneOpplysninger() : request.getInntektBpEgneOpplysninger();
+                        int belop = KodeRolletypeConstants.BIDRAGSMOTTAKER.equals(rolletype) ? request.getInntektBmEgneOpplysninger() : request.getInntektBpEgneOpplysninger();
                         nyInntektslinje.belop().setValue(Integer.toString(belop));
                     }
 
@@ -187,20 +250,10 @@ public class BisysUiFatteVedtakConsumer {
 
         if (!requestedBarnIncludedInList(barna, request.getFnrBa())) {
             boforhold.leggTilNyLinjeBarn().click();
-            Barn nyttBarn = boforhold.barn().get(0);
-            nyttBarn.medlemFnrInput().setValue(request.getFnrBa());
-
-            nyttBarn.medlemFom().setValue(soktFra.toString("dd.MM.yyyy"));
-
-            // Toggle registrert på adresse checkbox if enabled status differs from the requested status
-            if (request.isBoforholdBarnRegistrertPaaAdresse() != nyttBarn.barnRegPaaAdrCbx()
-                    .isEnabled()) {
-                nyttBarn.barnRegPaaAdrCbx().toggle();
-            }
-
-            manageBarnRegPaaAdresseConstant(nyttBarn, boforhold.rolle().getText());
-            nyttBarn.andelForsorget().select(request.getBoforholdAndelForsorging());
-            nyttBarn.hentMedlem().click();
+            Barn newBarn = boforhold.barn().get(0);
+            newBarn.medlemFnrInput().setValue(request.getFnrBa());
+            updateBarnDetails(boforhold, request, soktFra, newBarn);
+            newBarn.hentMedlem().click();
 
             return;
 
@@ -210,30 +263,7 @@ public class BisysUiFatteVedtakConsumer {
                 String fnrBarn = barn.medlemFnr().getText().replaceAll("\\s", "");
 
                 if (fnrBarn.equals(request.getFnrBa())) {
-                    // Toggle bruk barn checkbox if not enabled
-                    if (!barn.inkluderMedlemCbx().isEnabled()) {
-                        barn.inkluderMedlemCbx().toggle();
-                    }
-
-                    // Date pattern dd.MM.yyyy
-                    Pattern fomDatePattern = Pattern.compile("^(0?[1-9]|[12][0-9]|3[01])[\\.](0?[1-9]|1[012])[\\.]\\d{4}$");
-
-                    String barnFomStr = barn.medlemFom().getValue().trim();
-
-                    // Set FOM date to the request's SOKT_FOM date if FOM date is missing
-                    if (!fomDatePattern.matcher(barnFomStr).matches()) {
-                        barn.medlemFom().setValue(soktFra.toString("dd.MM.yyyy"));
-                    }
-
-                    // Toggle registrert på adresse checkbox if enabled status differs from the requested status
-                    if (barn.barnRegPaaAdrCbx().isEnabled() != request
-                            .isBoforholdBarnRegistrertPaaAdresse()) {
-                        barn.barnRegPaaAdrCbx().toggle();
-                    }
-
-                    manageBarnRegPaaAdresseConstant(barn, boforhold.rolle().getText());
-                    barn.andelForsorget().select(request.getBoforholdAndelForsorging());
-
+                    updateBarnDetails(boforhold, request, soktFra, barn);
                     return;
                 }
             }
@@ -243,14 +273,45 @@ public class BisysUiFatteVedtakConsumer {
                 new Exception(BisysUiConsumer.PROCESSING_FAILED + " Requested barn not found"));
     }
 
-    // @TODO: Remove method once boforholdBarnRegistrertPaaAdresse has been made part of bidragsmelding.
+    private void updateBarnDetails(Boforhold boforhold, SynthesizedBidragRequest request, LocalDate soktFra, Barn barn) {
+        // Toggle bruk barn checkbox if not enabled
+        if (!barn.inkluderMedlemCbx().isEnabled()) {
+            barn.inkluderMedlemCbx().toggle();
+        }
+
+        // Date pattern dd.MM.yyyy
+        Pattern fomDatePattern = Pattern.compile("^(0?[1-9]|[12][0-9]|3[01])[\\.](0?[1-9]|1[012])[\\.]\\d{4}$");
+
+        String barnFomStr = barn.medlemFom().getValue().trim();
+
+        // Set FOM date to the request's SOKT_FOM date if FOM date is missing
+        if (!fomDatePattern.matcher(barnFomStr).matches()) {
+            barn.medlemFom().setValue(soktFra.toString("dd.MM.yyyy"));
+        }
+
+        // Toggle registrert på adresse checkbox if enabled status differs from the requested status
+        if (barn.barnRegPaaAdrCbx().isEnabled() != request
+                .isBarnRegistrertPaaAdresse()) {
+            barn.barnRegPaaAdrCbx().toggle();
+        }
+
+        manageBarnRegPaaAdresseConstant(barn, boforhold.rolle().getText());
+
+        if (!KodeSoknGrKomConstants.FORSKUDD.equals(request.getSoktOm())) {
+            barn.andelForsorget().select(request.getAndelForsorging());
+        }
+
+        return;
+    }
+
+    // @TODO: Remove method once barnRegistrertPaaAdresse has been made part of bidragsmelding.
     private void manageBarnRegPaaAdresseConstant(Barn barn, String rolle) {
         Field field;
         try {
-            field = SynthesizedBidragRequest.class.getDeclaredField("boforholdBarnRegistrertPaaAdresse");
+            field = SynthesizedBidragRequest.class.getDeclaredField("barnRegistrertPaaAdresse");
 
             if (BidragsmeldingConstant.class.equals(field.getAnnotation(BidragsmeldingConstant.class).annotationType())
-                    && KodeRolletype_Constants.BIDRAGSMOTTAKER.equals(rolle)
+                    && KodeRolletypeConstants.BIDRAGSMOTTAKER.equals(rolle)
                     && !barn.barnRegPaaAdrCbx().isEnabled()) {
 
                 barn.barnRegPaaAdrCbx().toggle();
@@ -258,7 +319,7 @@ public class BisysUiFatteVedtakConsumer {
             }
         } catch (NoSuchFieldException | SecurityException e) {
             log.warn(
-                    "@BidragsmeldingConstant annotation not found for field SynthesizedBidragRequest.boforholdBarnRegistrertPaaAdresse. "
+                    "@BidragsmeldingConstant annotation not found for field SynthesizedBidragRequest.barnRegistrertPaaAdresse. "
                             + "If this is due to the field being included in Bidragsmelding, this warning can safely be ignored.");
         }
     }
@@ -291,10 +352,10 @@ public class BisysUiFatteVedtakConsumer {
     private void fulfillBidragsberegning(Bidragsberegning bidragsberegning,
             SynthesizedBidragRequest request) {
 
-        bidragsberegning.selectKodeAarsak(request.getBidragsberegningKodeVirkAarsak());
+        bidragsberegning.selectKodeAarsak(request.getKodeVirkAarsak(request.getSoktOm()));
 
         for (Periode periode : bidragsberegning.perioder()) {
-            periode.samvaersklasseInput().setValue(request.getBidragsberegningSamvarsklasse());
+            periode.samvaersklasseInput().setValue(request.getSamvarsklasse());
         }
 
     }
@@ -322,7 +383,7 @@ public class BisysUiFatteVedtakConsumer {
             } catch (ElementNotFoundException | NoSuchElementException e1) {
                 log.info("Label resultat not found on vedtakslinje. Testing for resultatDropdown.");
                 try {
-                    vedtakslinje.selectResultatDropdown(request.getFatteVedtakGebyrBeslAarsakKode());
+                    vedtakslinje.selectResultatDropdown(request.getGebyrBeslAarsakKode());
                 } catch (ElementNotFoundException | NoSuchElementException e2) {
                     log.info("resultatDropdown not found.");
                 }

@@ -19,46 +19,49 @@ public class AppConfig {
     public static final String STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST = "yyyy-MM-dd";
 
     // Will be set to true for BMs household (forskudd)
-    private final static boolean boforholdBarnRegistrertPaaAdresse = false;
+    private final static boolean barnRegistrertPaaAdresse = false;
 
-    @Value("${syntrest.rest.api.url}")
-    String syntrestServerUrl;
-
-    @Value("${SYNTBISYS_USERNAME}")
-    String saksbehandlerUid;
-
-    @Value("${SYNTBISYS_PASSWORD}")
-    String saksbehandlerPwd;
+    @Value("${ANDEL_FORSORGING}")
+    String andelForsorging;
 
     @Value("${BISYS_URL}")
     String bisysUrl;
 
-    @Value("${SAKSBEHANDLER_ROLLE}")
-    String rolleSaksbehandler;
-
     @Value("${ENHET}")
     int enhet;
 
+    @Value("${GEBYR_BESLAARSAK_KODE_FRITATT_IKKE_SOKT}")
+    boolean gebyrBeslAarsakKodeFritattIkkeSokt;
+
     @Value("${testnorge-hodejegeren.rest-api.url}")
     String hodejegerenUrl;
-
-    @Value("${BOFORHOLD_ANDEL_FORSORGING}")
-    String boforholdAndelForsorging;
-
-    @Value("${BIDRAGSBEREGNING_KODE_VIRK_AARSAK}")
-    String bidragsberegningKodeVirkAarsak;
-
-    @Value("${BIDRAGSBEREGNING_SAMVARSKLASSE}")
-    String bidragsberegningSamvarsklasse;
-
-    @Value("${FATTE_VEDTAK_GEBYR_BESLAARSAK_KODE_FRITATT_IKKE_SOKT}")
-    String fatteVedtakGebyrBeslAarsakKodeFritattIkkeSokt;
 
     @Value("${INNTEKT_BM_EGNE_OPPLYSNINGER:0}")
     private int inntektBmEgneOpplysninger;
 
     @Value("${INNTEKT_BP_EGNE_OPPLYSNINGER:0}")
     private int inntektBpEgneOpplysninger;
+
+    @Value("${KODE_UNNT_FORSK}")
+    private String kodeUnntForsk;
+
+    @Value("${SAKSBEHANDLER_ROLLE}")
+    String rolleSaksbehandler;
+
+    @Value("${SYNTBISYS_PASSWORD}")
+    String saksbehandlerPwd;
+
+    @Value("${SYNTBISYS_USERNAME}")
+    String saksbehandlerUid;
+
+    @Value("${SAMVARSKLASSE}")
+    String samvarsklasse;
+
+    @Value("${SIVILSTAND_BM}")
+    private String sivilstandBm;
+
+    @Value("${syntrest.rest.api.url}")
+    String syntrestServerUrl;
 
     @Bean
     public RestTemplate restTemplate() {
@@ -79,13 +82,20 @@ public class AppConfig {
     @Bean
     public BisysRequestAugments bisysRequestAugments() {
 
-        String fatteVedtakGebyrBeslAarsakKode = fatteVedtakGebyrBeslAarsakKodeFritattIkkeSokt.equals("1")
+        String gebyrBeslAarsakKode = gebyrBeslAarsakKodeFritattIkkeSokt
                 ? BisysUiFatteVedtakConsumer.KODE_BESL_AARSAK_FRITATT_IKKE_SOKT
                 : BisysUiFatteVedtakConsumer.KODE_BESL_AARSAK_ILAGT_IKKE_SOKT;
 
-        return new BisysRequestAugments(boforholdAndelForsorging, boforholdBarnRegistrertPaaAdresse,
-                bidragsberegningKodeVirkAarsak, bidragsberegningSamvarsklasse,
-                fatteVedtakGebyrBeslAarsakKode, inntektBmEgneOpplysninger, inntektBpEgneOpplysninger);
+        return BisysRequestAugments.builder()
+                .barnRegistrertPaaAdresse(barnRegistrertPaaAdresse)
+                .inntektBmEgneOpplysninger(inntektBmEgneOpplysninger)
+                .inntektBpEgneOpplysninger(inntektBpEgneOpplysninger)
+                .andelForsorging(andelForsorging)
+                .gebyrBeslAarsakKode(gebyrBeslAarsakKode)
+                .kodeUnntForsk(kodeUnntForsk)
+                .samvarsklasse(samvarsklasse)
+                .sivilstandBm(sivilstandBm)
+                .build();
     }
 
     @Bean

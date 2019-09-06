@@ -10,13 +10,14 @@ import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 @Mapper
 public interface TestnorgeToBisysMapper {
 
+    @Mapping(target = "samvarsklasse", source = "augments.samvarsklasse")
+    @Mapping(target = "andelForsorging", source = "augments.andelForsorging")
+    @Mapping(target = "barnRegistrertPaaAdresse", source = "augments.barnRegistrertPaaAdresse")
+    @Mapping(target = "gebyrBeslAarsakKode", source = "augments.gebyrBeslAarsakKode")
     @Mapping(target = "inntektBmEgneOpplysninger", source = "augments.inntektBmEgneOpplysninger")
     @Mapping(target = "inntektBpEgneOpplysninger", source = "augments.inntektBpEgneOpplysninger")
-    @Mapping(target = "boforholdAndelForsorging", source = "augments.boforholdAndelForsorging")
-    @Mapping(target = "boforholdBarnRegistrertPaaAdresse", source = "augments.boforholdBarnRegistrertPaaAdresse")
-    @Mapping(target = "bidragsberegningKodeVirkAarsak", source = "augments.bidragsberegningKodeVirkAarsak")
-    @Mapping(target = "bidragsberegningSamvarsklasse", source = "augments.bidragsberegningSamvarsklasse")
-    @Mapping(target = "fatteVedtakGebyrBeslAarsakKode", source = "augments.fatteVedtakGebyrBeslAarsakKode")
+    @Mapping(target = "kodeUnntForsk", source = "augments.kodeUnntForsk")
+    @Mapping(target = "sivilstandBm", source = "augments.sivilstandBm")
     @Mapping(target = "fnrBa", source = "syntetisertBidragsmelding.barnetsFnr")
     @Mapping(target = "fnrBm", source = "syntetisertBidragsmelding.bidragsmottaker")
     @Mapping(target = "fnrBp", source = "syntetisertBidragsmelding.bidragspliktig")

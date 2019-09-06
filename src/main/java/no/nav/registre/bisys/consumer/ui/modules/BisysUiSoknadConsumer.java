@@ -16,9 +16,9 @@ import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.bidrag.ui.bisys.BisysApplication;
 import no.nav.bidrag.ui.bisys.BisysApplication.ActiveBisysPage;
-import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknFra_Constants;
-import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKom_Constants;
-import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknType_Constants;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknFraConstants;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknTypeConstants;
 import no.nav.bidrag.ui.bisys.rolle.Roller;
 import no.nav.bidrag.ui.bisys.sak.Sak;
 import no.nav.bidrag.ui.bisys.sak.UnderBehandling;
@@ -108,9 +108,9 @@ public class BisysUiSoknadConsumer {
             }
 
             String soknGrKomKodeRequest = request.getSoktOm();
-            String soknGrKomDekodeRequest = KodeSoknGrKom_Constants.soknGrKomDekodeMap().get(soknGrKomKodeRequest);
+            String soknGrKomDekodeRequest = KodeSoknGrKomConstants.dekodeMap().get(soknGrKomKodeRequest);
             String soknTypeKodeRequest = request.getSoknadstype();
-            String soknTypeDekodeRequest = KodeSoknType_Constants.soknTypeDekodeMap().get(soknTypeKodeRequest);
+            String soknTypeDekodeRequest = KodeSoknTypeConstants.dekodeMap().get(soknTypeKodeRequest);
 
             LocalDate mottattdatoRequest = LocalDate.parse(request.getMottattDato(),
                     DateTimeFormat.forPattern(STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST));
@@ -119,7 +119,7 @@ public class BisysUiSoknadConsumer {
                     DateTimeFormat.forPattern(STANDARD_DATE_FORMAT_BISYS));
 
             String soknadFraBisys = soknadUnderBehandling.soknadFra().getText();
-            String soknadFraDekodeRequest = KodeSoknFra_Constants.soknFraDekodeMap().get(request.getSoknadFra());
+            String soknadFraDekodeRequest = KodeSoknFraConstants.dekodeMap().get(request.getSoknadFra());
 
             if (mottattdatoBisys.isEqual(mottattdatoRequest)
                     && soknadFraBisys.equals(soknadFraDekodeRequest)
@@ -170,7 +170,11 @@ public class BisysUiSoknadConsumer {
         ActiveBisysPage activePage = BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.SAK);
 
         Sak sak = (Sak) bisys.getActivePage(activePage);
-        sak.nySoknad().click();
+        try {
+            sak.nySoknad().click();
+        } catch (NoSuchElementException | ElementNotFoundException e) {
+            throw new BidragRequestProcessingException("Soknad-button not visible. Check logged on enhet", sak, e);
+        }
 
         activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
         Soknad soknad = (Soknad) bisys.getActivePage(activePage);
