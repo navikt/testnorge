@@ -8,10 +8,12 @@ import { resetSearch } from '~/ducks/search'
 
 const loadingSelector = createLoadingSelector(getGruppe)
 const loadingBestillingerSelector = createLoadingSelector(getBestillinger)
+const loadingSelectorSlettGruppe = createLoadingSelector(deleteGruppe)
 
 const mapStateToProps = state => ({
 	isFetching: loadingSelector(state),
 	isFetchingBestillinger: loadingBestillingerSelector(state),
+	isDeletingGruppe: loadingSelectorSlettGruppe(state),
 	gruppeArray: state.gruppe.data,
 	createOrUpdateId: state.gruppe.createOrUpdateId,
 	bestillinger: state.bestillingStatuser,

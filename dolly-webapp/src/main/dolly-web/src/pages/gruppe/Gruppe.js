@@ -84,12 +84,16 @@ export default class Gruppe extends Component {
 				<div className="header-valg">
 					<div>
 						<Overskrift label={gruppe.navn} actions={groupActions}>
-							<ConfirmTooltip
-								label="SLETT"
-								className="flexbox--align-center"
-								message={'Vil du slette denne testdatagruppen?'}
-								onClick={deleteGruppe}
-							/>
+							{this.props.isDeletingGruppe ? (
+								<Loading label="Sletter gruppe" panel />
+							) : (
+								<ConfirmTooltip
+									label="SLETT"
+									className="flexbox--align-center"
+									message={'Vil du slette denne testdatagruppen?'}
+									onClick={deleteGruppe}
+								/>
+							)}
 							{!gruppe.erMedlemAvTeamSomEierGruppe && (
 								<FavoriteButtonConnector groupId={gruppe.id} />
 							)}
