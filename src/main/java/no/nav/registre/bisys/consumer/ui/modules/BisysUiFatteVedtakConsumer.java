@@ -83,11 +83,7 @@ public class BisysUiFatteVedtakConsumer {
             ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
 
             Soknad soknad = (Soknad) bisys.getActivePage(activePage);
-            try {
-                soknad.lagreOgForskudd().click();
-            } catch (NoSuchElementException | ElementNotFoundException e) {
-                throw new BidragRequestProcessingException("LagreOgForskudd-button not visible. Check logged on enhet", soknad, e);
-            }
+            lagreOgForskudd(soknad);
 
             activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
 
@@ -117,6 +113,14 @@ public class BisysUiFatteVedtakConsumer {
             throw new BidragRequestProcessingException(bisys.bisysPage(), e);
         }
 
+    }
+
+    private void lagreOgForskudd(Soknad soknad) throws BidragRequestProcessingException {
+        try {
+            soknad.lagreOgForskudd().click();
+        } catch (NoSuchElementException | ElementNotFoundException e) {
+            throw new BidragRequestProcessingException("LagreOgForskudd-button not visible. Check logged on enhet", soknad, e);
+        }
     }
 
     private void fulfillForskuddsberegning(Forskuddsberegning forskuddsberegning, SynthesizedBidragRequest request) {
@@ -300,8 +304,6 @@ public class BisysUiFatteVedtakConsumer {
         if (!KodeSoknGrKomConstants.FORSKUDD.equals(request.getSoktOm())) {
             barn.andelForsorget().select(request.getAndelForsorging());
         }
-
-        return;
     }
 
     // @TODO: Remove method once barnRegistrertPaaAdresse has been made part of bidragsmelding.
