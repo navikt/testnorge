@@ -13,6 +13,7 @@
 
 
     <dependencies>
+
         <dependency>
             <groupId>no.nav.registre</groupId>
             <artifactId>udi-core</artifactId>

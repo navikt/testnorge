@@ -1,16 +1,5 @@
 package no.nav.registre.udistub.core;
 
-import no.nav.registre.udistub.core.database.model.PersonNavn;
-import no.nav.registre.udistub.core.service.to.UdiAlias;
-import no.nav.registre.udistub.core.service.to.UdiArbeidsadgang;
-import no.nav.registre.udistub.core.service.to.UdiAvgjorelse;
-import no.nav.registre.udistub.core.service.to.UdiPeriode;
-import no.nav.registre.udistub.core.service.to.UdiPerson;
-import no.nav.registre.udistub.core.service.to.opphold.UdiAvslagEllerBortfall;
-import no.nav.registre.udistub.core.service.to.opphold.UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum;
-import no.nav.registre.udistub.core.service.to.opphold.UdiOppholdSammeVilkaar;
-import no.nav.registre.udistub.core.service.to.opphold.UdiOppholdStatus;
-import no.nav.registre.udistub.core.service.to.opphold.UdiUtvistMedInnreiseForbud;
 import no.udi.common.v2.Kodeverk;
 import no.udi.mt_1067_nav_data.v1.ArbeidOmfangKategori;
 import no.udi.mt_1067_nav_data.v1.ArbeidsadgangType;
@@ -25,9 +14,22 @@ import no.udi.mt_1067_nav_data.v1.Varighet;
 import java.time.LocalDate;
 import java.util.Arrays;
 
+import no.nav.registre.udistub.core.database.model.PersonNavn;
+import no.nav.registre.udistub.core.service.to.UdiAlias;
+import no.nav.registre.udistub.core.service.to.UdiArbeidsadgang;
+import no.nav.registre.udistub.core.service.to.UdiAvgjorelse;
+import no.nav.registre.udistub.core.service.to.UdiPeriode;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
+import no.nav.registre.udistub.core.service.to.opphold.UdiAvslagEllerBortfall;
+import no.nav.registre.udistub.core.service.to.opphold.UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum;
+import no.nav.registre.udistub.core.service.to.opphold.UdiOppholdSammeVilkaar;
+import no.nav.registre.udistub.core.service.to.opphold.UdiOppholdStatus;
+import no.nav.registre.udistub.core.service.to.opphold.UdiUtvistMedInnreiseForbud;
+
 public class DefaultTestData {
     public static final String TEST_PERSON_FNR = "19026229432";
-    public static final LocalDate TEST_DATE = LocalDate.of(2005, 4, 3);
+    public static final String TEST_PERSON_ALIAS_FNR = "19026212345";
+    public static final LocalDate TEST_DATE = LocalDate.of(1962, 2, 19);
     public static final String TEST_OMGJORT_AVGJORELSE_ID = "123";
     public static final Boolean TEST_ER_POSITIV = true;
     public static final UdiPeriode TEST_PERIODE = new UdiPeriode(LocalDate.of(2000, 1, 2), LocalDate.of(2001, 2, 3));
@@ -105,13 +107,11 @@ public class DefaultTestData {
                 .saksnummer(TEST_SAKSNUMMER)
                 .etat(TEST_ETAT)
                 .harFlyktningstatus(TEST_FLYKTNINGSTATUS)
-                .uavklartFlyktningstatus(TEST_UAVKLART_FLYKTNINGSTATUS)
-                .person(testPerson);
+                .uavklartFlyktningstatus(TEST_UAVKLART_FLYKTNINGSTATUS);
     }
 
     public static UdiAlias.UdiAliasBuilder createAlias() {
-        return UdiAlias.builder()
-                .person(testPerson);
+        return UdiAlias.builder();
     }
 
     public static UdiArbeidsadgang createArbeidsAdgang() {
@@ -119,7 +119,6 @@ public class DefaultTestData {
         arbeidsadgang.setArbeidsOmfang(TEST_ARBEIDOMGANGKATEGORI);
         arbeidsadgang.setHarArbeidsAdgang(TEST_ARBEIDSADGANG);
         arbeidsadgang.setTypeArbeidsadgang(TEST_ARBEIDSADGANG_TYPE);
-        arbeidsadgang.setPerson(testPerson);
         arbeidsadgang.setPeriode(TEST_PERIODE);
         return arbeidsadgang;
     }
@@ -139,7 +138,6 @@ public class DefaultTestData {
         oppholdStatus.setEosEllerEFTAVedtakOmVarigOppholdsrettPeriode(TEST_PERIODE);
         oppholdStatus.setEosEllerEFTAVedtakOmVarigOppholdsrett(TEST_eosEllerEFTAGrunnlagskategoriOppholdsrett);
         oppholdStatus.setIkkeOppholdstilatelseIkkeVilkaarIkkeVisum(createIkkeOppholdstilatelseIkkeVilkaarIkkeVisum());
-        oppholdStatus.setPerson(testPerson);
 
         return oppholdStatus;
     }

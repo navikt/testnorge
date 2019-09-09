@@ -1,9 +1,22 @@
 {
-  "ident": "09016430134",
-  "navn": null,
-  "foedselsDato": null,
+  "ident": "19026229432",
+  "navn": {
+    "fornavn": "NATURLIG",
+    "mellomnavn": "ABSURD",
+    "etternavn": "BÆREPOSE"
+  },
+  "foedselsDato": "1962-02-19",
   "avgjoerelser": null,
-  "aliaser": null,
+  "aliaser": [
+    {
+      "fnr": "19026212345",
+      "navn": {
+        "fornavn": "IKKE",
+        "mellomnavn": "NATURLIG",
+        "etternavn": "BÆREPOSE"
+      }
+    }
+  ],
   "arbeidsadgang": {
     "harArbeidsAdgang": "JA",
     "typeArbeidsadgang": "UAVKLART",

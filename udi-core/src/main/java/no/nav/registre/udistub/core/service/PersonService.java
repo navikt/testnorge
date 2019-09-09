@@ -1,55 +1,86 @@
 package no.nav.registre.udistub.core.service;
 
-import static java.lang.String.format;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static java.lang.String.format;
+import no.nav.registre.udistub.core.database.model.Alias;
+import no.nav.registre.udistub.core.database.model.Arbeidsadgang;
+import no.nav.registre.udistub.core.database.model.Avgjorelse;
 import no.nav.registre.udistub.core.database.model.Person;
+import no.nav.registre.udistub.core.database.model.PersonNavn;
+import no.nav.registre.udistub.core.database.model.opphold.OppholdStatus;
+import no.nav.registre.udistub.core.database.repository.AliasRepository;
+import no.nav.registre.udistub.core.database.repository.ArbeidsAdgangRepository;
+import no.nav.registre.udistub.core.database.repository.AvgjorelseRepository;
+import no.nav.registre.udistub.core.database.repository.OppholdStatusRepository;
 import no.nav.registre.udistub.core.database.repository.PersonRepository;
 import no.nav.registre.udistub.core.exception.NotFoundException;
 import no.nav.registre.udistub.core.service.to.UdiAlias;
 import no.nav.registre.udistub.core.service.to.UdiAvgjorelse;
-import no.nav.registre.udistub.core.service.to.UdiPersonNavn;
 import no.nav.registre.udistub.core.service.to.UdiPerson;
-import no.nav.registre.udistub.core.service.tpsf.TpsfPerson;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonService {
 
-    @Autowired
-    private TpsfService tpsfService;
+    private final MapperFacade mapperFacade;
 
-    @Autowired
-    private MapperFacade mapperFacade;
-
-    @Autowired
     private final PersonRepository personRepository;
+    private final AliasRepository aliasRepository;
+    private final AvgjorelseRepository avgjorelseRepository;
+    private final OppholdStatusRepository oppholdStatusRepository;
+    private final ArbeidsAdgangRepository arbeidsAdgangRepository;
 
-    public Optional<UdiPerson> opprettPerson(UdiPerson udiPerson, String consumerId) {
+    public Optional<UdiPerson> opprettPerson(UdiPerson udiPerson) {
 
-        fetchAndSetTpsfPersonData(udiPerson, consumerId);
+        Person nyPerson = Person.builder()
+                .flyktning(udiPerson.getFlyktning())
+                .avgjoerelseUavklart(udiPerson.getAvgjoerelseUavklart())
+                .harOppholdsTillatelse(udiPerson.getHarOppholdsTillatelse())
+                .ident(udiPerson.getIdent())
+                .foedselsDato(udiPerson.getFoedselsDato())
+                .navn(mapperFacade.map(udiPerson.getNavn(), PersonNavn.class))
+                .soeknadOmBeskyttelseUnderBehandling(udiPerson.getSoeknadOmBeskyttelseUnderBehandling())
+                .soknadDato(udiPerson.getSoknadDato())
+                .build();
+        Person person = personRepository.save(nyPerson);
+        List<UdiAlias> aliaser = udiPerson.getAliaser();
+        if (aliaser != null) {
+            aliasRepository.saveAll(aliaser.stream()
+                    .map(alias -> mapperFacade.map(alias, Alias.class))
+                    .peek(alias -> alias.setPerson(person))
+                    .collect(Collectors.toList())
+            );
+        }
+        List<UdiAvgjorelse> avgjoerelser = udiPerson.getAvgjoerelser();
+        if (avgjoerelser != null) {
+            avgjorelseRepository.saveAll(avgjoerelser.stream()
+                    .map(avgjorelse -> mapperFacade.map(avgjorelse, Avgjorelse.class))
+                    .peek(avgjorelse -> avgjorelse.setPerson(person))
+                    .collect(Collectors.toList())
+            );
+        }
+        OppholdStatus oppholdStatus = mapperFacade.map(udiPerson.getOppholdStatus(), OppholdStatus.class);
+        oppholdStatus.setPerson(person);
+        oppholdStatusRepository.save(oppholdStatus);
 
-        Person person = mapperFacade.map(udiPerson, Person.class);
-        Person storedPerson = personRepository.save(person);
+        Arbeidsadgang arbeidsadgang = mapperFacade.map(udiPerson.getArbeidsadgang(), Arbeidsadgang.class);
+        arbeidsadgang.setPerson(person);
+        arbeidsAdgangRepository.save(arbeidsadgang);
 
-        UdiPerson storedAndMappedUdiPerson = mapStoredPerson(storedPerson);
-        return Optional.of(storedAndMappedUdiPerson);
+        return personRepository.findById(person.getId()).map(found -> mapperFacade.map(found, UdiPerson.class));
     }
 
     public Optional<UdiPerson> finnPerson(String ident) {
-        Person storedPerson = personRepository.findByIdent(ident)
-                .orElseThrow(() -> new NotFoundException("Kunne ikke finne person med ident " + ident));
-
-        UdiPerson storedAndMappedUdiPerson = mapStoredPerson(storedPerson);
-        return Optional.of(storedAndMappedUdiPerson);
+        return personRepository.findByIdent(ident).map(person -> mapperFacade.map(person, UdiPerson.class));
     }
 
     public void deletePerson(String ident) {
@@ -59,45 +90,5 @@ public class PersonService {
         } else {
             throw new NotFoundException(format("Kunne ikke slette person med ident:%s, da personen ikke ble funnet", ident));
         }
-    }
-
-    public void fetchAndSetTpsfPersonData(UdiPerson udiPerson, String consumerId) {
-        TpsfPerson tpsfPerson = tpsfService.hentPersonWithIdent(udiPerson.getIdent(), consumerId);
-
-        UdiPersonNavn udiPersonNavn = new UdiPersonNavn(tpsfPerson.getFornavn(), tpsfPerson.getMellomnavn(), tpsfPerson.getEtternavn());
-        udiPerson.setNavn(udiPersonNavn);
-        udiPerson.setIdent(tpsfPerson.getIdent());
-
-        udiPerson.setAliaser(Collections.singletonList(
-                UdiAlias.builder()
-                        .fnr(tpsfPerson.getIdent())
-                        .navn(udiPersonNavn)
-                        .person(udiPerson)
-                        .build()));
-
-        udiPerson.setFoedselsDato(tpsfPerson.getFoedselsdato());
-        udiPerson.getOppholdStatus().setPerson(udiPerson);
-
-        udiPerson.setAvgjoerelser(Collections.singletonList(
-                UdiAvgjorelse.builder()
-                        .person(udiPerson)
-                        .build()));
-
-        udiPerson.getArbeidsadgang().setPerson(udiPerson);
-    }
-
-    private UdiPerson mapStoredPerson(Person storedPerson) {
-        // This is a workaround to resolve the Orikamappers stack overflow error
-        // encountered when mapping cycling objects
-        storedPerson.getAvgjoerelser().forEach(avgjorelse -> avgjorelse.setPerson(null));
-        storedPerson.getAliaser().forEach(alias -> alias.setPerson(null));
-        storedPerson.getOppholdStatus().setPerson(null);
-        storedPerson.getArbeidsadgang().setPerson(null);
-        UdiPerson mappedPerson = mapperFacade.map(storedPerson, UdiPerson.class);
-        mappedPerson.getAvgjoerelser().forEach(avgjorelseTo -> avgjorelseTo.setPerson(mappedPerson));
-        mappedPerson.getAliaser().forEach(udiAlias -> udiAlias.setPerson(mappedPerson));
-        mappedPerson.getOppholdStatus().setPerson(mappedPerson);
-        mappedPerson.getArbeidsadgang().setPerson(mappedPerson);
-        return mappedPerson;
     }
 }

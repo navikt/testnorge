@@ -10,7 +10,8 @@ spring:
     console:
       enabled: true
       path: /h2-console
-
+  flyway:
+    enabled: false
 
 application:
   version: local

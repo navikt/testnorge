@@ -1,22 +1,6 @@
 package no.nav.registre.udistub.core.itest;
 
-import static no.nav.registre.udistub.core.DefaultTestData.TEST_DATE;
-import static no.nav.registre.udistub.core.DefaultTestData.TEST_FLYKTNINGSTATUS;
-import static no.nav.registre.udistub.core.DefaultTestData.TEST_INNREISEFORBUD;
-import static no.nav.registre.udistub.core.DefaultTestData.TEST_NAVN;
-import static no.nav.registre.udistub.core.DefaultTestData.TEST_OPPHOLDSTILLATELSE;
-import static no.nav.registre.udistub.core.DefaultTestData.TEST_OPPHOLDS_GRUNNLAG_KATEGORI;
-import static no.nav.registre.udistub.core.DefaultTestData.TEST_PERSON_FNR;
-import static no.nav.registre.udistub.core.DefaultTestData.TEST_ovrigIkkeOppholdsKategori;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import ma.glasnost.orika.MapperFacade;
-import no.nav.registre.udistub.core.database.model.Person;
-import no.nav.registre.udistub.core.database.repository.PersonRepository;
-import no.nav.registre.udistub.core.provider.rs.PersonControllerResponse;
-import no.nav.registre.udistub.core.service.to.UdiPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +15,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.Optional;
+
+import static no.nav.registre.udistub.core.DefaultTestData.TEST_DATE;
+import static no.nav.registre.udistub.core.DefaultTestData.TEST_FLYKTNINGSTATUS;
+import static no.nav.registre.udistub.core.DefaultTestData.TEST_INNREISEFORBUD;
+import static no.nav.registre.udistub.core.DefaultTestData.TEST_NAVN;
+import static no.nav.registre.udistub.core.DefaultTestData.TEST_OPPHOLDSTILLATELSE;
+import static no.nav.registre.udistub.core.DefaultTestData.TEST_OPPHOLDS_GRUNNLAG_KATEGORI;
+import static no.nav.registre.udistub.core.DefaultTestData.TEST_PERSON_ALIAS_FNR;
+import static no.nav.registre.udistub.core.DefaultTestData.TEST_PERSON_FNR;
+import static no.nav.registre.udistub.core.DefaultTestData.TEST_ovrigIkkeOppholdsKategori;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import no.nav.registre.udistub.core.database.model.Person;
+import no.nav.registre.udistub.core.database.repository.PersonRepository;
+import no.nav.registre.udistub.core.provider.rs.PersonControllerResponse;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
 
 public class UdiStubITest extends ITestBase {
 
@@ -82,7 +83,8 @@ public class UdiStubITest extends ITestBase {
         assertEquals(TEST_OPPHOLDSTILLATELSE, storedPerson.getHarOppholdsTillatelse());
 
         assertNotNull(storedPerson.getAliaser());
-        assertEquals(TEST_PERSON_FNR, storedPerson.getAliaser().get(0).getFnr());
+        assertEquals(1, storedPerson.getAliaser().size());
+        assertEquals(TEST_PERSON_ALIAS_FNR, storedPerson.getAliaser().get(0).getFnr());
 
         assertNotNull(storedPerson.getOppholdStatus());
         assertEquals(TEST_OPPHOLDS_GRUNNLAG_KATEGORI, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getAvslagEllerBortfall().getAvslagGrunnlagOverig());

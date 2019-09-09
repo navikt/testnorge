@@ -2,10 +2,10 @@ package no.nav.registre.udistub.core.database.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.registre.udistub.core.database.model.opphold.OppholdStatus;
 import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -23,12 +23,15 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
+import no.nav.registre.udistub.core.database.model.opphold.OppholdStatus;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 @Table(name = "person")
+@Builder
 public class Person {
 
     @Id

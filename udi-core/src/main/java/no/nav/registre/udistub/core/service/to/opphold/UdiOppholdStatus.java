@@ -1,17 +1,16 @@
 package no.nav.registre.udistub.core.service.to.opphold;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.registre.udistub.core.service.to.UdiPeriode;
-import no.nav.registre.udistub.core.service.to.UdiPerson;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdsrett;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdstillatelse;
 
 import java.time.LocalDate;
+
+import no.nav.registre.udistub.core.service.to.UdiPeriode;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,6 +31,4 @@ public class UdiOppholdStatus {
     private EOSellerEFTAGrunnlagskategoriOppholdstillatelse eosEllerEFTAOppholdstillatelse;
     private UdiOppholdSammeVilkaar oppholdSammeVilkaar;
     private UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOppholdstilatelseIkkeVilkaarIkkeVisum;
-    @JsonBackReference
-    private UdiPerson person;
 }

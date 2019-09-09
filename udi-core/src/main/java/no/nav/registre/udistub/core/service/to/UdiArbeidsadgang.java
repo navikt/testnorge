@@ -1,6 +1,5 @@
 package no.nav.registre.udistub.core.service.to;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +20,4 @@ public class UdiArbeidsadgang {
     private ArbeidsadgangType typeArbeidsadgang;
     private ArbeidOmfangKategori arbeidsOmfang;
     private UdiPeriode periode;
-    @JsonBackReference
-    private UdiPerson person;
 }

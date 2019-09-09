@@ -1,4 +1,4 @@
-package no.nav.registre.udistub.core.provider;
+package no.nav.registre.udistub.core.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

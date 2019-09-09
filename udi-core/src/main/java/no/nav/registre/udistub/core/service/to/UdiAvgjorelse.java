@@ -1,6 +1,5 @@
 package no.nav.registre.udistub.core.service.to;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +16,7 @@ import java.time.LocalDate;
 @Getter
 public class UdiAvgjorelse {
 
+    //TODO: Fjern id under
     private String omgjortAvgjoerelsesId;
     private Kodeverk utfallstypeKode;
     private Kodeverk grunntypeKode;
@@ -36,6 +36,4 @@ public class UdiAvgjorelse {
     private String etat;
     private Boolean harFlyktningstatus;
     private Boolean uavklartFlyktningstatus;
-    @JsonBackReference
-    private UdiPerson person;
 }
