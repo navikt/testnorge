@@ -54,11 +54,9 @@ public class KubernetesController {
         Map<String, Object> manifestFile = prepareYaml(appName);
 
         if (!existsOnCluster(appName)) {
-
             api.createNamespacedCustomObject(GROUP, VERSION, NAMESPACE, PLURAL, manifestFile, null);
             log.info("Application \'{}\' created!", appName);
             waitForDeployment(appName);
-
         } else if (!isAlive(appName)) {
             waitForDeployment(appName);
         }
@@ -71,7 +69,6 @@ public class KubernetesController {
             V1DeleteOptions deleteOptions = new V1DeleteOptions();
 
             try {
-
                 api.deleteNamespacedCustomObject(GROUP, VERSION, NAMESPACE, PLURAL, appName, deleteOptions,
                         null, null, null);
                 log.info("Successfully deleted application \'{}\'", appName);
@@ -102,7 +99,7 @@ public class KubernetesController {
         return applications.contains(appName);
     }
 
-    // TODO: REFACTOR
+    // TODO: REFACTOR?
     private List<String> listApplicationsOnCluster() throws ApiException{
 
         List<String> applications = new ArrayList<>();
@@ -139,7 +136,7 @@ public class KubernetesController {
         } // wend
     }
 
-    // TODO: REFACTOR
+    // TODO: REFACTOR?
     private Map<String, Object> prepareYaml(String appName) {
         Yaml yaml = new Yaml();
         Map<String, Object> manifestFile = yaml.load(
@@ -153,7 +150,7 @@ public class KubernetesController {
         return manifestFile;
     }
 
-    // TODO: REFACTOR
+    // TODO: REFACTOR?
     private String getLatestImageVersion(String appName) {
         String query = String.format(dockerImagePath, appName);
         Map<String, Object> repositoryMap = (Map) restTemplate.getForObject(query, Object.class);

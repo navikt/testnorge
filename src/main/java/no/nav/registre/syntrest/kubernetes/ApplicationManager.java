@@ -19,13 +19,15 @@ public class ApplicationManager {
 
     private final KubernetesController kubernetesController;
 
+    public boolean applicationIsAlive(String appId) {
+        return kubernetesController.isAlive(appId);
+    }
+
     public synchronized void startApplication(String appId) {
-        if (!kubernetesController.isAlive(appId)) {
-            try {
-                kubernetesController.deployImage(appId);
-            } catch (ApiException | InterruptedException e) {
-                log.error("Could not create application \'{}\'!", appId);
-            }
+        try {
+            kubernetesController.deployImage(appId);
+        } catch (ApiException | InterruptedException e) {
+            log.error("Could not create application \'{}\'!", appId);
         }
     }
 
@@ -36,5 +38,4 @@ public class ApplicationManager {
             log.error("Could not delete application \'{}\'.", appId);
         }
     }
-
 }
