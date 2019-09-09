@@ -326,6 +326,11 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 							apiKodeverkId: relasjon.personRelasjonMed.personStatus && 'Personstatuser'
 						},
 						{
+							id: 'ForsvunnetDato',
+							label: 'Savnet Siden',
+							value: Formatters.formatDate(relasjon.personRelasjonMed.forsvunnetDato)
+						},
+						{
 							id: 'statsborgerskap',
 							label: 'Statsborgerskap',
 							value: relasjon.personRelasjonMed.statsborgerskap
@@ -385,11 +390,6 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 							id: 'egenAnsattDatoFom',
 							label: 'Egenansatt',
 							value: relasjon.personRelasjonMed.egenAnsattDatoFom && 'JA'
-						},
-						{
-							id: 'ForsvunnetDato',
-							label: 'Savnet Siden',
-							value: Formatters.formatDate(relasjon.personRelasjonMed.forsvunnetDato)
 						}
 					]
 				}

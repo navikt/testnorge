@@ -32,7 +32,6 @@ export default class AttributtManager {
 			)
 			.map(attr => {
 				if (attr.items) {
-<<<<<<< HEAD
 					if (
 						attr.dataSource === 'SIGRUN' ||
 						attr.dataSource === 'AAREG' ||
@@ -51,16 +50,9 @@ export default class AttributtManager {
 						return attr
 					} else {
 						// Eks: Barn som attributt må bli behandlet annerledes
-=======
-					//Hvis dette fungerer kan sjekken egentlig bare være om attr er barn. Droppe items-sjekk.
-					if (attr.id === 'barn') {
-						//attr.id.includes('barn')) {
->>>>>>> 722eec8db673a46c3b3c7342e28097a511e2576e
 						return Object.assign(Object.assign({}, attr), {
 							items: this.listAllSelectFilterItems(selectedIds, attr.items)
 						})
-					} else {
-						return attr
 					}
 				} else {
 					return attr
@@ -164,7 +156,7 @@ export default class AttributtManager {
 			const dataPath = editPath || path || id
 
 			// Quick fix for å ikke vise utvandret som editable, fordi jeg ikke får til å redigere den
-			if (dataPath === 'utvandret') {
+			if (dataPath === 'utvandret' || dataPath === 'forsvunnet') {
 				return false
 			}
 
