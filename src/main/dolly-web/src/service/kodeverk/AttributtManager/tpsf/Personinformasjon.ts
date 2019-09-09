@@ -48,8 +48,74 @@ const AttributtListe: Attributt[] = [
 		label: 'Statsborgerskap',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		apiKodeverkId: 'StatsborgerskapFreg',
+		apiKodeverkId: 'Landkoder',
 		attributtType: AttributtType.SelectAndEdit
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Nasjonalitet,
+		id: 'innvandret',
+		label: 'Innvandret fra',
+		dataSource: DataSource.TPSF,
+		attributtType: AttributtType.SelectOnly,
+		validation: yup.object(),
+		items: [
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Nasjonalitet,
+				id: 'innvandretFraLand',
+				label: 'Innvandret fra land',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				editPath: 'innvandretFraLand',
+				//validation: yup.string().required('Vennligst velg'),
+				apiKodeverkId: 'Landkoder',
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Nasjonalitet,
+				id: 'innvandretFraLandFlyttedato',
+				label: 'Innvandret dato',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				editPath: 'innvandretTilLandFlyttedato',
+				attributtType: AttributtType.SelectAndEdit
+			}
+		]
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Nasjonalitet,
+		id: 'utvandret',
+		label: 'Utvandret til',
+		dataSource: DataSource.TPSF,
+		attributtType: AttributtType.SelectAndEdit,
+		validation: yup.object(),
+		items: [
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Nasjonalitet,
+				id: 'utvandretTilLand',
+				label: 'Utvandret til land',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				editPath: 'utvandretTilLand',
+				validation: yup.string().required('Vennligst velg'),
+				apiKodeverkId: 'Landkoder',
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Nasjonalitet,
+				id: 'utvandretTilLandFlyttedato',
+				label: 'Utvandret dato',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				editPath: 'utvandretTilLandFlyttedato',
+				attributtType: AttributtType.SelectAndEdit
+			}
+		]
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -62,7 +128,6 @@ const AttributtListe: Attributt[] = [
 		attributtType: AttributtType.SelectOnly,
 		sattForEksisterendeIdent: true
 	},
-
 	{
 		hovedKategori: Kategorier.PersInfo,
 		subKategori: SubKategorier.Diverse,
@@ -73,7 +138,6 @@ const AttributtListe: Attributt[] = [
 		options: SelectOptionsManager('boolean'),
 		attributtType: AttributtType.SelectAndEdit
 	},
-
 	{
 		hovedKategori: Kategorier.PersInfo,
 		subKategori: SubKategorier.Diverse,
@@ -93,39 +157,6 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		apiKodeverkId: 'Språk',
 		attributtType: AttributtType.SelectAndEdit
-	},
-	{
-		hovedKategori: Kategorier.PersInfo,
-		subKategori: SubKategorier.Diverse,
-		id: 'utvandret',
-		label: 'Utvandret',
-		dataSource: DataSource.TPSF,
-		attributtType: AttributtType.SelectAndEdit,
-		validation: yup.object(),
-		items: [
-			{
-				hovedKategori: Kategorier.PersInfo,
-				subKategori: SubKategorier.Diverse,
-				id: 'utvandretTilLand',
-				label: 'Utvandret til land',
-				dataSource: DataSource.TPSF,
-				inputType: InputType.Select,
-				editPath: 'utvandretTilLand',
-				validation: yup.string().required('Vennligst velg'),
-				apiKodeverkId: 'StatsborgerskapFreg',
-				attributtType: AttributtType.SelectAndEdit
-			},
-			{
-				hovedKategori: Kategorier.PersInfo,
-				subKategori: SubKategorier.Diverse,
-				id: 'utvandretTilLandFlyttedato',
-				label: 'Utvandret dato',
-				dataSource: DataSource.TPSF,
-				inputType: InputType.Date,
-				editPath: 'utvandretTilLandFlyttedato',
-				attributtType: AttributtType.SelectAndEdit
-			}
-		]
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,

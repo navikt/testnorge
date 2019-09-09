@@ -9,7 +9,7 @@ export const getSuccessEnv = statusArray => {
 	statusArray.length > 0 &&
 		statusArray.forEach(status => {
 			if (status.statusMelding === 'OK') {
-				envs.push(Object.keys(status.environmentIdentsForhold))
+				envs = Object.keys(status.environmentIdentsForhold)
 			}
 		})
 

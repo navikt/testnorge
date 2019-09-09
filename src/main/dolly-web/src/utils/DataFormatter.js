@@ -214,6 +214,7 @@ Formatters.commaToSpace = streng => {
 }
 
 Formatters.showLabel = (optionsGruppe, value) => {
+	if (!value || !optionsGruppe) return value
 	let copyOptionsGruppe = optionsGruppe
 
 	optionsGruppe.includes('partner') && (copyOptionsGruppe = optionsGruppe.replace('partner_', ''))

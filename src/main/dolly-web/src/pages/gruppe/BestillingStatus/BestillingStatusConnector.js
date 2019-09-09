@@ -1,12 +1,7 @@
 import { connect } from 'react-redux'
 import BestillingStatus from './BestillingStatus'
-import {
-	removeNyBestillingStatus,
-	miljoStatusSelector,
-	cancelBestilling
-} from '~/ducks/bestillingStatus'
+import { removeNyBestillingStatus, cancelBestilling } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
-import _find from 'lodash/find'
 
 const loadingSelector = createLoadingSelector(cancelBestilling)
 const mapStateToProps = (state, ownProps) => {

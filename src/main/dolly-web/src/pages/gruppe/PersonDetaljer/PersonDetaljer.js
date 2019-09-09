@@ -89,12 +89,17 @@ export default class PersonDetaljer extends PureComponent {
 					<Button onClick={editAction} className="flexbox--align-center" kind="edit">
 						REDIGER
 					</Button>
-					<ConfirmTooltip
-						className="flexbox--align-center"
-						message="Er du sikker på at du vil frigjøre denne testidenten fra testdatagruppen?"
-						label="FRIGJØR"
-						onClick={frigjoerTestbruker}
-					/>
+
+					{this.props.isFrigjoering ? (
+						<Loading label="Frigjør testbruker ..." panel />
+					) : (
+						<ConfirmTooltip
+							className="flexbox--align-center"
+							message="Er du sikker på at du vil frigjøre denne testidenten fra testdatagruppen?"
+							label="FRIGJØR"
+							onClick={frigjoerTestbruker}
+						/>
+					)}
 				</div>
 			</div>
 		)
@@ -109,7 +114,8 @@ export default class PersonDetaljer extends PureComponent {
 	}
 
 	// render loading for krr og sigrun
-	_renderPersonInfoBlockHandler = i => {
+	_renderPersonInfoBlockHandler = item => {
+		const { header } = item
 		const {
 			isFetchingKrr,
 			isFetchingSigrun,
@@ -117,39 +123,20 @@ export default class PersonDetaljer extends PureComponent {
 			isFetchingArena,
 			isFetchingInst
 		} = this.props
-		if (i.header === 'Inntekter') {
-			return isFetchingSigrun ? (
-				<Loading label="Henter data fra Sigrun-stub" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else if (i.header === 'Kontaktinformasjon og reservasjon') {
-			return isFetchingKrr ? (
-				<Loading label="Henter data fra Krr" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else if (i.header === 'Arbeidsforhold') {
-			return isFetchingAareg ? (
-				<Loading label="Henter data fra Aareg" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else if (i.header === 'Arena') {
-			return isFetchingArena ? (
-				<Loading label="Henter data fra Arena" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else if (i.header === 'Institusjonsopphold') {
-			return isFetchingInst ? (
-				<Loading label="Henter data fra Inst" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else {
-			return this._renderPersonInfoBlock(i)
+
+		if (isFetchingSigrun && header === 'Inntekter') {
+			return <Loading label="Henter data fra Sigrun-stub" panel />
+		} else if (isFetchingKrr && header === 'Kontaktinformasjon og reservasjon') {
+			return <Loading label="Henter data fra Krr" panel />
+		} else if (isFetchingAareg && header === 'Arbeidsforhold') {
+			return <Loading label="Henter data fra Aareg" panel />
+		} else if (isFetchingArena && header === 'Arena') {
+			return <Loading label="Henter data fra Arena" panel />
+		} else if (isFetchingInst && header === 'Institusjonsopphold') {
+			return <Loading label="Henter data fra Inst" panel />
 		}
+
+		return this._renderPersonInfoBlock(item)
 	}
 
 	_renderPersonInfoBlock = i => (

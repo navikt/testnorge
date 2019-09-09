@@ -20,7 +20,7 @@ export default class Gruppe extends Component {
 	static propTypes = {
 		gruppeArray: PropTypes.array,
 		isFetching: PropTypes.bool,
-		createOrUpdateId: PropTypes.string
+		createOrUpdateId: PropTypes.number
 	}
 
 	VISNING_TESTPERSONER = 'testpersoner'
@@ -44,7 +44,6 @@ export default class Gruppe extends Component {
 			isFetching,
 			isFetchingBestillinger,
 			deleteGruppe,
-			addFavorite,
 			bestillinger,
 			nyeBestillinger,
 			getGruppe,
@@ -85,12 +84,16 @@ export default class Gruppe extends Component {
 				<div className="header-valg">
 					<div>
 						<Overskrift label={gruppe.navn} actions={groupActions}>
-							<ConfirmTooltip
-								label="SLETT"
-								className="flexbox--align-center"
-								message={'Vil du slette denne testdatagruppen?'}
-								onClick={deleteGruppe}
-							/>
+							{this.props.isDeletingGruppe ? (
+								<Loading label="Sletter gruppe" panel />
+							) : (
+								<ConfirmTooltip
+									label="SLETT"
+									className="flexbox--align-center"
+									message={'Vil du slette denne testdatagruppen?'}
+									onClick={deleteGruppe}
+								/>
+							)}
 							{!gruppe.erMedlemAvTeamSomEierGruppe && (
 								<FavoriteButtonConnector groupId={gruppe.id} />
 							)}
@@ -150,7 +153,7 @@ export default class Gruppe extends Component {
 
 	toggleToolbar = e => {
 		const visning = e.target.value
-		visning === this.VISNING_BESTILLING && this.props.getBestillinger()
+		if (visning === this.VISNING_BESTILLING) this.props.getBestillinger()
 		this.setState({ visning }, () => this.props.resetSearch())
 	}
 
