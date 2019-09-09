@@ -73,7 +73,7 @@ export const FieldArrayComponent = ({
 		}
 		arrayHelpers.push({ ...parentAttributes })
 	}
-	console.log('parentAttributes :', parentAttributes)
+
 	const createSubItem = (subitem, itemIndex) => {
 		let subItemArray = subitem.subItems
 		const subItemId = subitem.id
@@ -186,9 +186,6 @@ export const FieldArrayComponent = ({
 											if (fakeItem.id === 'barn_forsvunnet[0]forsvunnetDato') {
 												fakeItem.id = `barn[${itemid}]barn_forsvunnet[0]forsvunnetDato`
 											}
-
-											console.log('itemid :', itemid)
-											console.log('fakeItem :', fakeItem)
 
 											return (
 												<div key={kdx} className="flexbox">

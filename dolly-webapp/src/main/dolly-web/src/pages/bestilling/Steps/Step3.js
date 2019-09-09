@@ -266,30 +266,36 @@ export default class Step3 extends PureComponent {
 	renderItem = (item, stateValues, header) => {
 		if (item.items) {
 			let valueArray = _get(this.props.values, item.id)
-
-			if (item.id === 'barn_utvandret') {
+			// console.log('valueArray :', valueArray)
+			if (item.id === 'barn_utvandret' || item.id === 'barn_forsvunnet') {
 				let barnIndex = 0
 				if (header) barnIndex = header - 1
 				valueArray = _get(this.props.values.barn[barnIndex], item.id)
 			}
-			return valueArray.map((values, idx) => {
-				Object.keys(values).map(attr => {
-					return !values[attr] && delete values[attr]
+			return (
+				valueArray &&
+				valueArray.map((values, idx) => {
+					// console.log('values :', values)
+					Object.keys(values).map(attr => {
+						// console.log('attr :', attr)
+						return !values[attr] && delete values[attr]
+					})
+
+					const header =
+						valueArray.length > 1 ? idx + 1 : item.subGruppe ? item.items[0].subGruppe : null
+
+					return this.renderSubKategoriBlokk(header, item.items, values)
 				})
-
-				const header =
-					valueArray.length > 1 ? idx + 1 : item.subGruppe ? item.items[0].subGruppe : null
-
-				return this.renderSubKategoriBlokk(header, item.items, values)
-			})
+			)
 		}
+
+		let itemValue = this._formatereItemValue(item, _get(stateValues, item.id))
 
 		if (!item.inputType) return null
 		if (item.onlyShowAfterSelectedValue && !itemValue) return null
 		if ((item.id === 'utenFastBopel' || item.id === 'ufb_kommunenr') && !itemValue) return null
 
-		let itemValue = this._formatereItemValue(item, _get(stateValues, item.id))
-
+		console.log('itemValue :', itemValue)
 		const staticValueProps = {
 			key: item.id,
 			header: item.label,

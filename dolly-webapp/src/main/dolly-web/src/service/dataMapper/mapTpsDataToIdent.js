@@ -2,7 +2,6 @@ import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 
 export function mapTpsfData(tpsfData, testIdent, pdlfData) {
-	console.log('tpsfData :', tpsfData)
 	if (!tpsfData) return null
 	let data
 	data = [
@@ -347,11 +346,17 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 							id: 'egenAnsattDatoFom',
 							label: 'Egenansatt',
 							value: relasjon.personRelasjonMed.egenAnsattDatoFom && 'JA'
+						},
+						{
+							id: 'ForsvunnetDato',
+							label: 'Savnet Siden',
+							value: Formatters.formatDate(relasjon.personRelasjonMed.forsvunnetDato)
 						}
 					]
 				}
 			})
 		})
 	}
+
 	return data
 }
