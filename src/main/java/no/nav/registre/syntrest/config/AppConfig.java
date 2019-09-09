@@ -5,6 +5,7 @@ import io.kubernetes.client.util.Config;
 import io.kubernetes.client.util.KubeConfig;
 import lombok.extern.slf4j.Slf4j;
 //import no.nav.registre.syntrest.controllers.domains.AaregController;
+import no.nav.registre.syntrest.consumer.SyntConsumer;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 import no.nav.registre.syntrest.kubernetes.KubernetesController;
 import no.nav.registre.syntrest.utils.Validation;
@@ -14,11 +15,15 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 @Slf4j
 @Configuration
 //@Import({ AaregController.class })//MeldekortController.class, EIAController.class, InntektController.class, EIAController.class, MedlController.class})
 public class AppConfig {
+
+    private final int EXECUTOR_POOL_SIZE = 4;
 
     @Bean
     RestTemplate restTemplate() {
@@ -42,12 +47,26 @@ public class AppConfig {
     }
 
     @Bean
+    ScheduledExecutorService scheduledExecutorService() {
+        return Executors.newScheduledThreadPool(EXECUTOR_POOL_SIZE);
+    }
+
+    @Bean
+    @DependsOn({"apiClient", "restTemplate"})
     KubernetesController kubernetesController() {
         return new KubernetesController(restTemplate(), apiClient());
     }
 
     @Bean
+    @DependsOn("kubernetesController")
     ApplicationManager applicationManager() {
         return new ApplicationManager(kubernetesController());
+    }
+
+    @Bean
+    @Scope(value = "prototype")
+    @DependsOn({"applicationManager", "restTemplate", "scheduledExecutorService"})
+    SyntConsumer syntConsumer(String appName) {
+        return new SyntConsumer(applicationManager(), restTemplate(), scheduledExecutorService(), appName);
     }
 }

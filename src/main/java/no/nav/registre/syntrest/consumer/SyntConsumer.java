@@ -2,12 +2,14 @@ package no.nav.registre.syntrest.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
@@ -16,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Ensures that only one call is done to each SyntPackage at a time. (If multiple calls is done while not returned,
  * they will break.)
  */
-public class SyntConsumer<T> {
+public class SyntConsumer {
     //
     // // Hvis ikke, spinn opp ny via KubernetesController
     // Sjekk om den er ledig
@@ -26,40 +28,48 @@ public class SyntConsumer<T> {
     // Sjekk om flere skal bruke applikasjonen
     // // Hvis ikke slett applikasjonen
 
-    private final ParameterizedTypeReference<T> RESPONSE_TYPE = new ParameterizedTypeReference<T>() {
-    };
+    private final long SHUTDOWN_TIME_DELAY_SECONDS = 300;
+
     private final ApplicationManager applicationManager;
     private final RestTemplate restTemplate;
-    private AtomicInteger numClients;
+    private final ScheduledExecutorService scheduledExecutorService;
+    private final String appName;
+    private final AtomicInteger numClients;
 
-    public SyntConsumer(ApplicationManager applicationManager, RestTemplate restTemplate) {
+    public SyntConsumer(ApplicationManager applicationManager, RestTemplate restTemplate, ScheduledExecutorService scheduledExecutorService, String appName) {
         this.applicationManager = applicationManager;
         this.restTemplate = restTemplate;
+        this.scheduledExecutorService = scheduledExecutorService;
+        this.appName = appName;
         this.numClients = new AtomicInteger(0);
     }
 
-    public T synthesizeData(String appName, RequestEntity request) {
+    public Object synthesizeData(RequestEntity request) {
         this.numClients.incrementAndGet();
         applicationManager.startApplication(appName);
 
-        T synthesizedData = accessSyntPackage(request);
-        this.numClients.decrementAndGet();
+        Object synthesizedData = accessSyntPackage(request);
 
-        if (this.numClients.get() <= 0) {
-            applicationManager.shutdownApplication(appName);
+        try {
+            return synthesizedData;
+        } finally {
+            if (this.numClients.get() <= 0) {
+                scheduledExecutorService.schedule(this::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS);
+            }
         }
-
-        // TODO: bug
-        // The call to rest template should take so long that any concurrent threads will be able to
-        // increase numClients before it exits.
-        // However, if two methods comes *right after each other* the application will be spun down,
-        // just to be spun up again right after..
-
-        return synthesizedData;
     }
 
-    private synchronized T accessSyntPackage(RequestEntity request) {
-        ResponseEntity<T> response = restTemplate.exchange(request, RESPONSE_TYPE);
+    private void shutdownApplication() {
+        this.numClients.decrementAndGet();
+
+        if (this.numClients.get() > 0) {
+            return;
+        }
+        applicationManager.shutdownApplication(appName);
+    }
+
+    private synchronized Object accessSyntPackage(RequestEntity request) {
+        ResponseEntity response = restTemplate.exchange(request, Object.class);
         return response.getBody();
     }
 }
