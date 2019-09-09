@@ -131,7 +131,7 @@ export default class PersonInfoBlock extends PureComponent {
 
 						// finn tilhørende attributt
 						const attributt = this.props.attributtManager.getAttributtById(v && v.id)
-
+						console.log('attributt :', attributt)
 						if (attributt && attributt.apiKodeverkId && v.value) {
 							return (
 								<KodeverkValueConnector

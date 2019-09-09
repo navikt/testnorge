@@ -72,8 +72,7 @@ export const FieldArrayComponent = ({
 			parentAttributes.barn_innvandret = [
 				{ innvandretFraLand: '', innvandretFraLandFlyttedato: '' }
 			]
-		}
-		if ('barn_forsvunnet' in parentAttributes) {
+		} else if ('barn_forsvunnet' in parentAttributes) {
 			parentAttributes.barn_forsvunnet = [{ erForsvunnet: '', forsvunnetDato: '' }]
 		}
 		arrayHelpers.push({ ...parentAttributes })
@@ -111,8 +110,7 @@ export const FieldArrayComponent = ({
 		formikValues = [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }]
 	} else if (item.id === 'barn_innvandret') {
 		formikValues = [{ innvandretFraLand: '', innvandretFraLandFlyttedato: '' }]
-	}
-	if (item.id === 'barn_forsvunnet') {
+	} else if (item.id === 'barn_forsvunnet') {
 		formikValues = [{ erForsvunnet: '', forsvunnetDato: '' }]
 		// formikValues = formikProps.values.barn[idx][parentId]
 	}

@@ -48,11 +48,7 @@ export function mapPdlData(pdlfData) {
 				},
 				{
 					id: 'idNummer',
-<<<<<<< HEAD
 					label: 'Fnr/dnr/bost',
-=======
-					label: 'Fnr/dnr/BOST',
->>>>>>> 722eec8db673a46c3b3c7342e28097a511e2576e
 					value: pdlfData.kontaktinformasjonForDoedsbo[0].adressat[adressatType].idNummer
 				},
 				{
@@ -132,11 +128,7 @@ export function mapPdlData(pdlfData) {
 				},
 				{
 					id: 'identitetsnummer',
-<<<<<<< HEAD
 					label: 'Rett fnr/dnr/bost',
-=======
-					label: 'Rett fnr/dnr/BOST',
->>>>>>> 722eec8db673a46c3b3c7342e28097a511e2576e
 					value: pdlfData.falskIdentitet.rettIdentitetVedIdentifikasjonsnummer
 				},
 				{

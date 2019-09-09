@@ -76,11 +76,7 @@ export default class EksisterendeIdent extends Component {
 				<textarea
 					className="tekstboks"
 					id="ident"
-<<<<<<< HEAD
 					placeholder="Skriv inn fnr/dnr/bost (disse identene kan ikke eksistere i Q0, eller være opprettet i Dolly)."
-=======
-					placeholder="Skriv inn fnr/dnr/BOST(disse identene kan ikke eksistere i Q0, eller være opprettet i Dolly)."
->>>>>>> 722eec8db673a46c3b3c7342e28097a511e2576e
 					onChange={this.handleChange}
 					value={this.state.identListe}
 				/>
