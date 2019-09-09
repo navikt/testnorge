@@ -1,28 +1,35 @@
 package no.nav.dolly.bestilling.udistub;
 
+import static no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOverigIkkeOppholdKategoriType.ANNULERING_AV_VISUM;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
-
-import no.nav.dolly.domain.resultset.udistub.model.UdiArbeidsadgang;
-import no.nav.dolly.domain.resultset.udistub.model.UdiAvgjorelse;
-import no.nav.dolly.domain.resultset.udistub.model.UdiPeriode;
-import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiAvslagEllerBortfall;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdSammeVilkaar;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdStatus;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiUtvistMedInnreiseForbud;
 
 import java.time.LocalDate;
 import java.util.Collections;
 
-public class UdiStubDefaultPersonUtil {
-    private static final UdiPeriode DEFAULT_PERIODE = new UdiPeriode(LocalDate.now(), LocalDate.now());
-    private static final LocalDate DEFAULT_DATE = LocalDate.now();
-    private static final String DEFAULT_FAMILE_KODE = "FAMILIE";
-    private static final String DEFAULT_PERMANENT_KODE = "PERMANENT";
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import no.nav.dolly.domain.resultset.udistub.model.UdiHarType;
+import no.nav.dolly.domain.resultset.udistub.model.UdiPeriode;
+import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
+import no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang.UdiArbeidOmfangType;
+import no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang.UdiArbeidsadgang;
+import no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang.UdiArbeidsadgangType;
+import no.nav.dolly.domain.resultset.udistub.model.avgjoerelse.UdiAvgjorelse;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiAvslagEllerBortfall;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiGrunnlagEos;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiGrunnlagOverig;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdSammeVilkaar;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdStatus;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdsrettType;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdstillatelse;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdstillatelseType;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiUtvistMedInnreiseForbud;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiVarighetOpphold;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiVarighetType;
 
-    private UdiStubDefaultPersonUtil() {
-    }
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class UdiStubDefaultPersonUtil {
 
     public static void setPersonDefaultsIfUnspecified(UdiPerson udiPerson) {
 
@@ -32,27 +39,31 @@ public class UdiStubDefaultPersonUtil {
         udiPerson.setOppholdStatus(UdiOppholdStatus.builder()
                 .uavklart(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getUavklart(), false))
                 .udiOppholdSammeVilkaar(oppholdSammeVilkaarDefaultsIfUnspecified(specifiedUdiOppholdStatus))
-                .udiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum(ikkeOppholdstilatelseIkkeVilkaarIkkeVisumIfUnspecified(specifiedUdiOppholdStatus))
-                .eosEllerEFTAOppholdstillatelse(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAOppholdstillatelse(), DEFAULT_FAMILE_KODE))
-                .eosEllerEFTAOppholdstillatelseEffektuering(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAOppholdstillatelseEffektuering(), DEFAULT_DATE))
-                .eosEllerEFTAOppholdstillatelsePeriode(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAOppholdstillatelsePeriode(), DEFAULT_PERIODE))
+                .ikkeOppholdstilatelseIkkeVilkaarIkkeVisum(ikkeOppholdstilatelseIkkeVilkaarIkkeVisumIfUnspecified(specifiedUdiOppholdStatus))
+                .eosEllerEFTAOppholdstillatelse(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAOppholdstillatelse(), UdiOppholdstillatelse.FAMILIE))
+                .eosEllerEFTAOppholdstillatelseEffektuering(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAOppholdstillatelseEffektuering(), LocalDate.now()))
+                .eosEllerEFTAOppholdstillatelsePeriode(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAOppholdstillatelsePeriode(),
+                        UdiPeriode.builder().fra(LocalDate.now()).til(LocalDate.now()).build()))
 
-                .eosEllerEFTABeslutningOmOppholdsrett(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTABeslutningOmOppholdsrett(), DEFAULT_FAMILE_KODE))
-                .eosEllerEFTABeslutningOmOppholdsrettEffektuering(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTABeslutningOmOppholdsrettEffektuering(), DEFAULT_DATE))
-                .eosEllerEFTABeslutningOmOppholdsrettPeriode(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTABeslutningOmOppholdsrettPeriode(), DEFAULT_PERIODE))
-                .eosEllerEFTAVedtakOmVarigOppholdsrett(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAOppholdstillatelse(), DEFAULT_FAMILE_KODE))
-                .eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettEffektuering(), DEFAULT_DATE))
-                .eosEllerEFTAOppholdstillatelsePeriode(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode(), DEFAULT_PERIODE))
+                .eosEllerEFTABeslutningOmOppholdsrett(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTABeslutningOmOppholdsrett(), UdiOppholdsrettType.FAMILIE))
+                .eosEllerEFTABeslutningOmOppholdsrettEffektuering(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTABeslutningOmOppholdsrettEffektuering(), LocalDate.now()))
+                .eosEllerEFTABeslutningOmOppholdsrettPeriode(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTABeslutningOmOppholdsrettPeriode(),
+                        UdiPeriode.builder().fra(LocalDate.now()).til(LocalDate.now()).build()))
+                .eosEllerEFTAVedtakOmVarigOppholdsrett(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAVedtakOmVarigOppholdsrett(), UdiVarighetOpphold.FAMILIE))
+                .eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettEffektuering(), LocalDate.now()))
+                .eosEllerEFTAOppholdstillatelsePeriode(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode(),
+                        UdiPeriode.builder().fra(LocalDate.now()).til(LocalDate.now()).build()))
                 .build());
 
         // ARBEIDSADGANG
         UdiArbeidsadgang specifiedArbeidsadgang = nullcheckSetDefaultValue(udiPerson.getArbeidsadgang(), new UdiArbeidsadgang());
         udiPerson.setArbeidsadgang(
                 UdiArbeidsadgang.builder()
-                        .arbeidsOmfang(nullcheckSetDefaultValue(specifiedArbeidsadgang.getArbeidsOmfang(), "KUN_ARBEID_HELTID"))
-                        .harArbeidsAdgang(nullcheckSetDefaultValue(specifiedArbeidsadgang.getHarArbeidsAdgang(), "JA"))
-                        .periode(nullcheckSetDefaultValue(specifiedArbeidsadgang.getPeriode(), DEFAULT_PERIODE))
-                        .typeArbeidsadgang(nullcheckSetDefaultValue(specifiedArbeidsadgang.getTypeArbeidsadgang(), "GENERELL"))
+                        .arbeidsOmfang(nullcheckSetDefaultValue(specifiedArbeidsadgang.getArbeidsOmfang(), UdiArbeidOmfangType.KUN_ARBEID_HELTID))
+                        .harArbeidsAdgang(nullcheckSetDefaultValue(specifiedArbeidsadgang.getHarArbeidsAdgang(), UdiHarType.JA))
+                        .periode(nullcheckSetDefaultValue(specifiedArbeidsadgang.getPeriode(),
+                                UdiPeriode.builder().fra(LocalDate.now()).til(LocalDate.now()).build()))
+                        .typeArbeidsadgang(nullcheckSetDefaultValue(specifiedArbeidsadgang.getTypeArbeidsadgang(), UdiArbeidsadgangType.GENERELL))
                         .build());
 
         // AVGJORELSER
@@ -65,45 +76,45 @@ public class UdiStubDefaultPersonUtil {
     private static UdiOppholdSammeVilkaar oppholdSammeVilkaarDefaultsIfUnspecified(UdiOppholdStatus udiOppholdStatus) {
         UdiOppholdSammeVilkaar udiOppholdSammeVilkaar = nullcheckSetDefaultValue(udiOppholdStatus.getUdiOppholdSammeVilkaar(), new UdiOppholdSammeVilkaar());
 
-        udiOppholdSammeVilkaar.setOppholdSammeVilkaarEffektuering(nullcheckSetDefaultValue(udiOppholdSammeVilkaar.getOppholdstillatelseVedtaksDato(), DEFAULT_DATE));
-        udiOppholdSammeVilkaar.setOppholdstillatelseType(nullcheckSetDefaultValue(udiOppholdSammeVilkaar.getOppholdstillatelseType(), DEFAULT_PERMANENT_KODE));
-        udiOppholdSammeVilkaar.setOppholdSammeVilkaarPeriode(nullcheckSetDefaultValue(udiOppholdSammeVilkaar.getOppholdSammeVilkaarPeriode(), DEFAULT_PERIODE));
-        udiOppholdSammeVilkaar.setOppholdstillatelseVedtaksDato(nullcheckSetDefaultValue(udiOppholdSammeVilkaar.getOppholdstillatelseVedtaksDato(), DEFAULT_DATE));
+        udiOppholdSammeVilkaar.setOppholdSammeVilkaarEffektuering(nullcheckSetDefaultValue(udiOppholdSammeVilkaar.getOppholdstillatelseVedtaksDato(), LocalDate.now()));
+        udiOppholdSammeVilkaar.setOppholdstillatelseType(nullcheckSetDefaultValue(udiOppholdSammeVilkaar.getOppholdstillatelseType(), UdiOppholdstillatelseType.MIDLERTIDIG));
+        udiOppholdSammeVilkaar.setOppholdSammeVilkaarPeriode(nullcheckSetDefaultValue(udiOppholdSammeVilkaar.getOppholdSammeVilkaarPeriode(), UdiPeriode.builder().fra(LocalDate.now()).til(LocalDate.now()).build()));
+        udiOppholdSammeVilkaar.setOppholdstillatelseVedtaksDato(nullcheckSetDefaultValue(udiOppholdSammeVilkaar.getOppholdstillatelseVedtaksDato(), LocalDate.now()));
         return udiOppholdSammeVilkaar;
     }
 
     private static UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOppholdstilatelseIkkeVilkaarIkkeVisumIfUnspecified(UdiOppholdStatus udiOppholdStatus) {
-        UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum in = nullcheckSetDefaultValue(udiOppholdStatus.getUdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum(), new UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum());
+        UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum in = nullcheckSetDefaultValue(udiOppholdStatus.getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum(), new UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum());
         return UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum.builder()
-                .ovrigIkkeOppholdsKategoriArsak(nullcheckSetDefaultValue(in.getOvrigIkkeOppholdsKategoriArsak(), "ANNULERING_AV_VISUM"))
-                .udiAvslagEllerBortfall(avslagEllerBortfallIfUnspecified(in))
-                .udiUtvistMedInnreiseForbud(utvistMedInnreiseForbudIfUnspecified(in))
+                .ovrigIkkeOppholdsKategoriArsak(nullcheckSetDefaultValue(in.getOvrigIkkeOppholdsKategoriArsak(), ANNULERING_AV_VISUM))
+                .avslagEllerBortfall(avslagEllerBortfallIfUnspecified(in))
+                .utvistMedInnreiseForbud(utvistMedInnreiseForbudIfUnspecified(in))
                 .build();
     }
 
     private static UdiAvslagEllerBortfall avslagEllerBortfallIfUnspecified(UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum udiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum) {
-        UdiAvslagEllerBortfall udiAvslagEllerBortfall = nullcheckSetDefaultValue(udiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum.getUdiAvslagEllerBortfall(), new UdiAvslagEllerBortfall());
+        UdiAvslagEllerBortfall udiAvslagEllerBortfall = nullcheckSetDefaultValue(udiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum.getAvslagEllerBortfall(), new UdiAvslagEllerBortfall());
         return UdiAvslagEllerBortfall.builder()
-                .avslagGrunnlagOverig(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getAvslagGrunnlagOverig(), DEFAULT_FAMILE_KODE))
-                .avslagGrunnlagTillatelseGrunnlagEOS(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getAvslagOppholdstillatelseBehandletGrunnlagEOS(), DEFAULT_FAMILE_KODE))
-                .avslagOppholdsrettBehandlet(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getAvslagOppholdsrettBehandlet(), DEFAULT_FAMILE_KODE))
-                .avslagOppholdstillatelseBehandletUtreiseFrist(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getAvslagOppholdstillatelseUtreiseFrist(), DEFAULT_DATE))
-                .avslagOppholdstillatelseBehandletGrunnlagOvrig(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getAvslagOppholdstillatelseBehandletGrunnlagOvrig(), DEFAULT_FAMILE_KODE))
-                .avslagOppholdstillatelseBehandletGrunnlagEOS(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getAvslagGrunnlagTillatelseGrunnlagEOS(), DEFAULT_FAMILE_KODE))
-                .tilbakeKallVirkningsDato(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getTilbakeKallVirkningsDato(), DEFAULT_DATE))
-                .tilbakeKallUtreiseFrist(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getTilbakeKallUtreiseFrist(), DEFAULT_DATE))
-                .bortfallAvPOellerBOSDato(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getBortfallAvPOellerBOSDato(), DEFAULT_DATE))
-                .avslagOppholdstillatelseUtreiseFrist(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getAvslagOppholdstillatelseUtreiseFrist(), DEFAULT_DATE))
-                .formeltVedtakUtreiseFrist(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getFormeltVedtakUtreiseFrist(), DEFAULT_DATE))
+                .avslagGrunnlagOverig(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getAvslagGrunnlagOverig(), UdiGrunnlagOverig.FAMILIE))
+                .avslagGrunnlagTillatelseGrunnlagEOS(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getAvslagOppholdstillatelseBehandletGrunnlagEOS(), UdiGrunnlagEos.FAMILIE))
+                .avslagOppholdsrettBehandlet(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getAvslagOppholdsrettBehandlet(), UdiOppholdsrettType.FAMILIE))
+                .avslagOppholdstillatelseBehandletUtreiseFrist(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getAvslagOppholdstillatelseUtreiseFrist(), LocalDate.now()))
+                .avslagOppholdstillatelseBehandletGrunnlagOvrig(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getAvslagOppholdstillatelseBehandletGrunnlagOvrig(), UdiGrunnlagOverig.FAMILIE))
+                .avslagOppholdstillatelseBehandletGrunnlagEOS(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getAvslagGrunnlagTillatelseGrunnlagEOS(), UdiGrunnlagEos.FAMILIE))
+                .tilbakeKallVirkningsDato(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getTilbakeKallVirkningsDato(), LocalDate.now()))
+                .tilbakeKallUtreiseFrist(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getTilbakeKallUtreiseFrist(), LocalDate.now()))
+                .bortfallAvPOellerBOSDato(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getBortfallAvPOellerBOSDato(), LocalDate.now()))
+                .avslagOppholdstillatelseUtreiseFrist(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getAvslagOppholdstillatelseUtreiseFrist(), LocalDate.now()))
+                .formeltVedtakUtreiseFrist(nullcheckSetDefaultValue(udiAvslagEllerBortfall.getFormeltVedtakUtreiseFrist(), LocalDate.now()))
                 .build();
     }
 
     private static UdiUtvistMedInnreiseForbud utvistMedInnreiseForbudIfUnspecified(UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum udiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum) {
-        UdiUtvistMedInnreiseForbud udiUtvistMedInnreiseForbud = nullcheckSetDefaultValue(udiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum.getUdiUtvistMedInnreiseForbud(), new UdiUtvistMedInnreiseForbud());
+        UdiUtvistMedInnreiseForbud udiUtvistMedInnreiseForbud = nullcheckSetDefaultValue(udiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum.getUtvistMedInnreiseForbud(), new UdiUtvistMedInnreiseForbud());
         return UdiUtvistMedInnreiseForbud.builder()
-                .innreiseForbud(nullcheckSetDefaultValue(udiUtvistMedInnreiseForbud.getInnreiseForbud(), "JA"))
-                .innreiseForbudVedtaksDato(nullcheckSetDefaultValue(udiUtvistMedInnreiseForbud.getInnreiseForbudVedtaksDato(), DEFAULT_DATE))
-                .varighet(nullcheckSetDefaultValue(udiUtvistMedInnreiseForbud.getVarighet(), "ETT_AR"))
+                .innreiseForbud(nullcheckSetDefaultValue(udiUtvistMedInnreiseForbud.getInnreiseForbud(), UdiHarType.JA))
+                .innreiseForbudVedtaksDato(nullcheckSetDefaultValue(udiUtvistMedInnreiseForbud.getInnreiseForbudVedtaksDato(), LocalDate.now()))
+                .varighet(nullcheckSetDefaultValue(udiUtvistMedInnreiseForbud.getVarighet(), UdiVarighetType.ETT_AR))
                 .build();
     }
 }
