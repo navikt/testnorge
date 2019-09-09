@@ -73,7 +73,7 @@ const _getTpsfBestillingData = data => {
 			value: Formatters.oversettBoolean(data.egenansattDatoFom)
 		},
 		{
-			label: 'Savnet Siden',
+			label: 'Savnet siden',
 			value: Formatters.formatDate(data.forsvunnetDato)
 		}
 	]
