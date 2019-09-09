@@ -21,7 +21,7 @@ const _getTpsfBestillingData = data => {
 		{
 			label: 'Statsborgerskap',
 			value: data.statsborgerskap,
-			apiKodeverkId: 'StatsborgerskapFreg'
+			apiKodeverkId: 'Landkoder'
 		},
 		{
 			label: 'Kjønn',
@@ -53,7 +53,7 @@ const _getTpsfBestillingData = data => {
 		{
 			label: 'Innvandret fra land',
 			value: data.innvandretFraLand,
-			apiKodeverkId: 'StatsborgerskapFreg'
+			apiKodeverkId: 'Landkoder'
 		},
 		{
 			label: 'Innvandret dato',
@@ -62,7 +62,7 @@ const _getTpsfBestillingData = data => {
 		{
 			label: 'Utvandret til land',
 			value: data.utvandretTilLand,
-			apiKodeverkId: 'StatsborgerskapFreg'
+			apiKodeverkId: 'Landkoder'
 		},
 		{
 			label: 'Utvandret dato',
@@ -130,7 +130,7 @@ export function mapBestillingData(bestillingData) {
 						{
 							label: 'Utstederland (ID)',
 							value: pdlforvalter.utenlandskIdentifikasjonsnummer.utstederland,
-							apiKodeverkId: 'StatsborgerskapFreg'
+							apiKodeverkId: 'Landkoder'
 						}
 					]
 				}

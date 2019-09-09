@@ -5,6 +5,7 @@ import { createLoadingSelector } from '~/ducks/loading'
 import Team from './Team'
 
 const teamLoadingSelector = createLoadingSelector(actions.api.getById)
+const loadingSelectorSletteTeam = createLoadingSelector(actions.api.delete)
 const grupperLoadingSelector = createLoadingSelector('TODO')
 const createRemoveSelector = createLoadingSelector([
 	actions.api.addTeamMember,
@@ -20,7 +21,8 @@ const mapStateToProps = (state, ownProps) => {
 		visRedigerTeam: state.teams.editTeamId === teamId.toString(),
 		grupper: state.gruppe.data,
 		grupperIsFetching: grupperLoadingSelector(state),
-		isCreateDelete: createRemoveSelector(state)
+		isCreateDelete: createRemoveSelector(state),
+		isDeletingTeam: loadingSelectorSletteTeam(state)
 	}
 }
 

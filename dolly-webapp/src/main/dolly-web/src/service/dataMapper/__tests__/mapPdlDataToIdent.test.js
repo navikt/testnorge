@@ -160,7 +160,7 @@ describe('mapPdlDataToIdent.js', () => {
 					id: 'statsborgerskap',
 					label: 'Statsborgerskap',
 					width: 'medium',
-					apiKodeverkId: 'StatsborgerskapFreg',
+					apiKodeverkId: 'Landkoder',
 					value: undefined
 				}
 			]

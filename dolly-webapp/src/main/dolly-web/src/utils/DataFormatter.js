@@ -213,13 +213,13 @@ Formatters.commaToSpace = streng => {
 }
 
 Formatters.showLabel = (optionsGruppe, value) => {
+	if (!value || !optionsGruppe) return value
 	let copyOptionsGruppe = optionsGruppe
 
 	optionsGruppe.includes('partner') && (copyOptionsGruppe = optionsGruppe.replace('partner_', ''))
 	optionsGruppe.includes('barn') && (copyOptionsGruppe = optionsGruppe.replace('barn_', ''))
 
 	const obj = SelectOptionsManager(copyOptionsGruppe).filter(options => options.value === value)
-
 	return obj.label || obj[0].label
 }
 
