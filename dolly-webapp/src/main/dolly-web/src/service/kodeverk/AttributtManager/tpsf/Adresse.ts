@@ -188,7 +188,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Land',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		apiKodeverkId: 'StatsborgerskapFreg',
+		apiKodeverkId: 'Landkoder',
 		validation: yup.string(),
 		attributtType: AttributtType.SelectOnly
 	},

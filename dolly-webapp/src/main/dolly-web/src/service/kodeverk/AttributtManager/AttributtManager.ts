@@ -31,8 +31,8 @@ export default class AttributtManager {
 					(!attr.includeIf || attr.includeIf.every(e => selectedIds.includes(e.id)))
 			)
 			.map(attr => {
-				// TODO: Ikke bærekraftig løsning. Refactor
 				if (attr.items) {
+<<<<<<< HEAD
 					if (
 						attr.dataSource === 'SIGRUN' ||
 						attr.dataSource === 'AAREG' ||
@@ -51,9 +51,16 @@ export default class AttributtManager {
 						return attr
 					} else {
 						// Eks: Barn som attributt må bli behandlet annerledes
+=======
+					//Hvis dette fungerer kan sjekken egentlig bare være om attr er barn. Droppe items-sjekk.
+					if (attr.id === 'barn') {
+						//attr.id.includes('barn')) {
+>>>>>>> 722eec8db673a46c3b3c7342e28097a511e2576e
 						return Object.assign(Object.assign({}, attr), {
 							items: this.listAllSelectFilterItems(selectedIds, attr.items)
 						})
+					} else {
+						return attr
 					}
 				} else {
 					return attr

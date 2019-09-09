@@ -7,6 +7,8 @@ import static java.util.Objects.nonNull;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.BestKriterier;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
@@ -71,7 +74,6 @@ public class BestillingService {
         return bestillingRepository.findBestillingByGruppeOrderById(testgruppeService.fetchTestgruppeById(gruppeId));
     }
 
-    @Transactional
     public List<Bestilling> fetchMalBestillinger() {
         return bestillingRepository.findMalBestilling().orElseThrow(() -> new NotFoundException("Ingen mal-bestilling funnet"));
     }
@@ -132,6 +134,7 @@ public class BestillingService {
                         .bestKriterier(toJson(BestKriterier.builder()
                                 .aareg(request.getAareg())
                                 .krrstub(request.getKrrstub())
+                                .udistub(request.getUdistub())
                                 .sigrunstub(request.getSigrunstub())
                                 .arenaforvalter(request.getArenaforvalter())
                                 .pdlforvalter(request.getPdlforvalter())
@@ -175,5 +178,26 @@ public class BestillingService {
             log.debug("Konvertering til Json feilet", e);
         }
         return null;
+    }
+
+    public void slettBestillingerByGruppeId(Long gruppeId) {
+
+        bestillingKontrollRepository.deleteByGruppeId(gruppeId);
+        bestillingProgressRepository.deleteByGruppeId(gruppeId);
+        bestillingRepository.deleteByGruppeId(gruppeId);
+    }
+
+    public void slettBestillingByTestIdent(String ident) {
+
+        List<BestillingProgress> bestillingProgresses = bestillingProgressRepository.findByIdent(ident);
+        bestillingProgressRepository.deleteByIdent(ident);
+
+        Set<Long> bestillingIds = bestillingProgresses.stream().map(BestillingProgress::getBestillingId).collect(Collectors.toSet());
+
+        bestillingIds.forEach(id -> {
+
+            bestillingKontrollRepository.deleteByBestillingWithNoChildren(id);
+            bestillingRepository.deleteBestillingWithNoChildren(id);
+        });
     }
 }

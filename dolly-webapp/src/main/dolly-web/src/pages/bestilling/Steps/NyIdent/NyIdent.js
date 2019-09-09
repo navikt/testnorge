@@ -9,10 +9,6 @@ import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 import { getAttributesFromMal, getValuesFromMal } from './MalbestillingUtils'
 
 export default class NyIdent extends Component {
-	constructor(props) {
-		super(props)
-	}
-
 	componentDidMount() {
 		this.props.getBestillingMaler()
 		this.props.maler.length > 0 && this._formatMalerOptions()
@@ -65,7 +61,6 @@ export default class NyIdent extends Component {
 						className="input-field"
 						component={FormikDollySelect}
 						options={SelectOptionsManager('identtype')}
-						// value={identtype || 'FNR'}
 					/>
 					<Field
 						name="antall"
@@ -74,7 +69,6 @@ export default class NyIdent extends Component {
 						type="number"
 						min="0"
 						component={FormikInput}
-						// value={antall || 1}
 					/>
 					<Field
 						name="mal"
@@ -85,22 +79,6 @@ export default class NyIdent extends Component {
 						placeholder={maler.length > 0 ? 'Mal ikke valgt' : 'Ingen maler'}
 						options={this._formatMalerOptions(maler)}
 					/>
-					{/* <ContentTooltip>
-						<span>
-							Fødselsnummer er et ellevesifret registreringsnummer som tildeles av den norske stat
-							til alle landets innbyggere. Nummeret skiller enkeltpersoner fra hverandre, men kan
-							ikke brukes til å autentisere at en person er den de påstår de er. Fødselsnummer ble
-							innført i 1964 og administreres av Skatteetaten. Alle som er bosatt i Norge og innført
-							i Det sentrale folkeregisteret har enten et fødselsnummer eller et D-nummer.
-						</span>
-						<br />
-						<a
-							style={{ color: 'lightblue' }}
-							href="https://no.wikipedia.org/wiki/F%C3%B8dselsnummer"
-						>
-							Les mer
-						</a>
-					</ContentTooltip> */}
 				</div>
 				<AttributtVelgerConnector
 					onToggle={toggleAttributeSelection}

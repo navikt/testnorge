@@ -1,15 +1,21 @@
 import Formatters from '~/utils/DataFormatter'
+import _set from 'lodash/set'
 
 export const getAttributesFromMal = mal => {
 	const tpsfKriterier = JSON.parse(mal.tpsfKriterier)
 	const bestKriterier = JSON.parse(mal.bestKriterier)
 	let attrArray = []
 	attrArray = Object.keys(tpsfKriterier).filter(k => {
-		if (k !== 'identtype' && k !== 'relasjoner' && k !== 'regdato') {
+		if (
+			k !== 'identtype' &&
+			k !== 'relasjoner' &&
+			k !== 'regdato' &&
+			!k.includes('innvandretFraLand') &&
+			!k.includes('utvandretTilLand')
+		) {
 			return k
 		}
 	})
-
 	if (tpsfKriterier.boadresse) {
 		tpsfKriterier.boadresse.flyttedato && attrArray.push('boadresse_flyttedato')
 		if (tpsfKriterier.boadresse.adressetype === 'MATR') {
@@ -53,7 +59,6 @@ export const getValuesFromMal = mal => {
 	let reduxStateValue = {}
 	const tpsfKriterierArray = Object.entries(JSON.parse(mal.tpsfKriterier))
 	const bestKriterierArray = Object.entries(JSON.parse(mal.bestKriterier))
-
 	_mapValuesToObject(reduxStateValue, tpsfKriterierArray)
 	bestKriterierArray.forEach(reg => {
 		const pdlforvalter = reg[0] === 'pdlforvalter'
@@ -66,8 +71,8 @@ export const getValuesFromMal = mal => {
 		}
 	})
 
-	if (reduxStateValue.utvandretTilLand) {
-		const utvandretValues = _mapUtvandretValues(reduxStateValue)
+	if (reduxStateValue.utvandretTilLand || reduxStateValue.innvandretFraLand) {
+		const utvandretValues = _mapInnOgUtvandret(reduxStateValue)
 		reduxStateValue = utvandretValues
 	}
 	if (reduxStateValue.erForsvunnet) {
@@ -86,7 +91,6 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 	valueArray.forEach(v => {
 		let key = v[0]
 		if (key === 'regdato') return
-
 		let value = v[1]
 		if (value || value === false) {
 			let customKeyPrefix = keyPrefix
@@ -127,8 +131,6 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 }
 
 const _mapArrayValuesToObject = (objectToAssign, valueArray, key, keyPrefix = '') => {
-	//Må se på hvordan det skal gjøres når utenlandsID kommer inn
-
 	const mappedKey =
 		key === 'pdlforvalter' || key === 'arenaforvalter'
 			? _mapRegistreKey(Object.keys(valueArray[0])[0])
@@ -201,16 +203,43 @@ const _mapRegistreKey = key => {
 	}
 }
 
-const _mapUtvandretValues = values => {
-	let utvandretValues = [
-		{
-			utvandretTilLand: values.utvandretTilLand,
-			utvandretTilLandFlyttedato: values.utvandretTilLandFlyttedato
+const _mapInnOgUtvandret = values => {
+	let valuesArray = JSON.parse(JSON.stringify(values))
+	if (valuesArray.barn) {
+		//Loop gjennom barn og kjør denne funksjonen for hvert barn
+		valuesArray.barn.map((enkeltBarn, idx) => {
+			valuesArray.barn[idx] = _mapInnOgUtvandret(enkeltBarn)
+		})
+	}
+
+	Object.entries(valuesArray).map(value => {
+		if (value[0].includes('innvandret')) {
+			if (value[0].includes('partner')) {
+				!valuesArray.partner_innvandret && (valuesArray.partner_innvandret = [{}])
+				return (valuesArray.partner_innvandret[0][value[0].split('_')[1]] = value[1])
+			} else if (value[0].includes('barn')) {
+				!valuesArray.barn_innvandret && (valuesArray.barn_innvandret = [{}])
+				return (valuesArray.barn_innvandret[0][value[0].split('_')[1]] = value[1])
+			} else {
+				!valuesArray.innvandret && (valuesArray.innvandret = [{}])
+				return (valuesArray.innvandret[0][value[0]] = value[1])
+			}
 		}
-	]
-	let returnValues = values
-	returnValues['utvandret'] = utvandretValues
-	return returnValues
+
+		if (value[0].includes('utvandret')) {
+			if (value[0].includes('partner')) {
+				!valuesArray.partner_utvandret && (valuesArray.partner_utvandret = [{}])
+				return (valuesArray.partner_utvandret[0][value[0].split('_')[1]] = value[1])
+			} else if (value[0].includes('barn')) {
+				!valuesArray.barn_utvandret && (valuesArray.barn_utvandret = [{}])
+				return (valuesArray.barn_utvandret[0][value[0].split('_')[1]] = value[1])
+			} else {
+				!valuesArray.utvandret && (valuesArray.utvandret = [{}])
+				return (valuesArray.utvandret[0][value[0]] = value[1])
+			}
+		}
+	})
+	return valuesArray
 }
 
 const _mapForsvunnetValues = values => {

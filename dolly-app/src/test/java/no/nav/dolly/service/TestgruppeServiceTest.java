@@ -59,10 +59,16 @@ public class TestgruppeServiceTest {
     private BrukerService brukerService;
 
     @Mock
+    private BestillingService bestillingService;
+
+    @Mock
     private TeamService teamService;
 
     @Mock
     private IdentService identService;
+
+    @Mock
+    private PersonService personService;
 
     @Mock
     private NonTransientDataAccessException nonTransientDataAccessException;
@@ -236,15 +242,6 @@ public class TestgruppeServiceTest {
         doReturn(team).when(teamService).fetchTeamById(anyLong());
         testgruppeService.oppdaterTestgruppe(GROUP_ID, rsOpprettEndreTestgruppe);
         verify(gruppeRepository).save(testGruppe);
-    }
-
-    @Test
-    public void slettGruppeByTeamId() {
-
-        testgruppeService.slettGruppeByTeamId(TEAM_ID);
-        verify(identService).slettTestidenterByTeamId(TEAM_ID);
-        verify(brukerService).sletteBrukerFavoritterByTeamId(TEAM_ID);
-        verify(gruppeRepository).deleteTestgruppeByTeamtilhoerighetId(TEAM_ID);
     }
 
     @Test

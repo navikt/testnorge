@@ -1,18 +1,15 @@
 import React, { PureComponent, Fragment } from 'react'
-import './MiljoeStatus.less'
-import '~/styles/utils.less'
 import cn from 'classnames'
 import Icon from '~/components/icon/Icon'
 import Button from '~/components/button/Button'
 import DollyModal from '~/components/modal/DollyModal'
 import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
 
+import './MiljoeStatus.less'
+
 export default class MiljoeStatus extends PureComponent {
-	constructor(props) {
-		super(props)
-		this.state = {
-			modalOpen: false
-		}
+	state = {
+		modalOpen: false
 	}
 
 	openModal = () => {

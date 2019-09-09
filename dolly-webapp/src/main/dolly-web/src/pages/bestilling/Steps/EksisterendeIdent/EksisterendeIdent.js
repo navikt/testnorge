@@ -1,11 +1,12 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Button from '~/components/button/Button'
-import './EksisterendeIdent.less'
 import { TpsfApi } from '~/service/Api'
 import Loading from '~/components/loading/Loading'
 import Icon from '~/components/icon/Icon'
 import AttributtVelgerConnector from '~/components/attributtVelger/AttributtVelgerConnector'
+
+import './EksisterendeIdent.less'
 
 export default class EksisterendeIdent extends Component {
 	static propTypes = {
@@ -14,17 +15,14 @@ export default class EksisterendeIdent extends Component {
 		ugyldigIdentListe: PropTypes.arrayOf(PropTypes.string)
 	}
 
-	constructor(props) {
-		super(props)
-		this.state = {
-			identListe: [],
-			statusListe: [],
-			loading: false,
-			skriveModus:
-				this.props.eksisterendeIdentListe.length > 0 || this.props.ugyldigIdentListe.length > 0
-					? false
-					: true
-		}
+	state = {
+		identListe: [],
+		statusListe: [],
+		loading: false,
+		skriveModus:
+			this.props.eksisterendeIdentListe.length > 0 || this.props.ugyldigIdentListe.length > 0
+				? false
+				: true
 	}
 
 	handleChange = () => {
@@ -78,7 +76,11 @@ export default class EksisterendeIdent extends Component {
 				<textarea
 					className="tekstboks"
 					id="ident"
+<<<<<<< HEAD
 					placeholder="Skriv inn fnr/dnr/bost (disse identene kan ikke eksistere i Q0, eller være opprettet i Dolly)."
+=======
+					placeholder="Skriv inn fnr/dnr/BOST(disse identene kan ikke eksistere i Q0, eller være opprettet i Dolly)."
+>>>>>>> 722eec8db673a46c3b3c7342e28097a511e2576e
 					onChange={this.handleChange}
 					value={this.state.identListe}
 				/>

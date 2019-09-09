@@ -1,15 +1,13 @@
 import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { FormikDollySelect } from '~/components/fields/Select/Select'
-import { FormikInput } from '~/components/fields/Input/Input'
 import { Formik, Form, Field, getIn } from 'formik'
-import { DollyApi } from '~/service/Api'
 import Knapp from 'nav-frontend-knapper'
 import * as yup from 'yup'
+import { FormikDollySelect } from '~/components/fields/Select/Select'
+import { FormikInput } from '~/components/fields/Input/Input'
+import { DollyApi } from '~/service/Api'
 import Loading from '~/components/loading/Loading'
 import Table from '~/components/table/Table'
-
-// import './RedigerGruppe.less'
 
 export default class RedigerGruppe extends PureComponent {
 	static propTypes = {
@@ -27,10 +25,7 @@ export default class RedigerGruppe extends PureComponent {
 		error: PropTypes.string
 	}
 
-	constructor(props) {
-		super(props)
-		this.state = { teamToggle: false }
-	}
+	state = { teamToggle: false }
 
 	erRedigering = Boolean(getIn(this.props.gruppe, 'id', false))
 	Teams = Object.freeze({ currentUser: -1, newTeam: -2 })
@@ -141,7 +136,7 @@ export default class RedigerGruppe extends PureComponent {
 	}
 
 	onBeforeChange(option) {
-		let toggle = option != null && option.value === this.Teams.newTeam
+		const toggle = option != null && option.value === this.Teams.newTeam
 		if (toggle !== this.state.teamToggle) {
 			this.setState({ teamToggle: toggle })
 		}

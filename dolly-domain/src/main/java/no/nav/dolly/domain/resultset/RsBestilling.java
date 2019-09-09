@@ -34,6 +34,7 @@ public class RsBestilling {
     private Set<RsStatusMiljoeIdent> tpsfStatus;
     private Set<RsStatusIdent> krrStubStatus;
     private Set<RsStatusIdent> sigrunStubStatus;
+    private Set<RsStatusIdent> udiStubStatus;
     private Set<RsStatusMiljoeIdentForhold> aaregStatus;
     private Set<RsMeldingStatusIdent> arenaforvalterStatus;
     private RsPdlForvalterStatus pdlforvalterStatus;
@@ -81,6 +82,13 @@ public class RsBestilling {
             sigrunStubStatus = new HashSet();
         }
         return sigrunStubStatus;
+    }
+
+    public Set<RsStatusIdent> getUdiStubStatus() {
+        if (isNull(udiStubStatus)) {
+            udiStubStatus = new HashSet();
+        }
+        return udiStubStatus;
     }
 
     public Set<RsStatusMiljoeIdentForhold> getAaregStatus() {
