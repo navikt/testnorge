@@ -175,7 +175,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		attributtType: AttributtType.SelectAndRead,
-
 		items: [
 			{
 				hovedKategori: Kategorier.PersInfo,
@@ -185,7 +184,6 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
 				options: SelectOptionsManager('boolean'),
-
 				attributtType: AttributtType.SelectAndRead,
 				editPath: 'erForsvunnet'
 			},

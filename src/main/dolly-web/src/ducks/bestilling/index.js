@@ -293,7 +293,6 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 		final_values.tpsf.erForsvunnet = final_values.tpsf.forsvunnet[0].erForsvunnet
 		final_values.tpsf.forsvunnetDato = final_values.tpsf.forsvunnet[0].forsvunnetDato
 		delete final_values.tpsf.forsvunnet
-
 		if (_get(final_values, 'tpsf.relasjoner')) {
 			if (final_values.tpsf.relasjoner.partner && final_values.tpsf.relasjoner.partner.forsvunnet) {
 				final_values.tpsf.relasjoner.partner.erForsvunnet =

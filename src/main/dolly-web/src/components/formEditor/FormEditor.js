@@ -222,7 +222,10 @@ export default class FormEditor extends Component {
 
 			item.onlyShowAfterSelectedValue.valueIndex.map(index => {
 				if (parentId === 'barn_forsvunnet') {
-					foundIndex = true
+					if (valgteVerdier.barn[idx][parentId][0]) {
+						valgteVerdier.barn[idx][parentId][0][attributtId] ===
+							dependantAttributt.options[index].value && (foundIndex = true)
+					}
 				} else
 					valgteVerdier[parentId][idx][attributtId] === dependantAttributt.options[index].value &&
 						(foundIndex = true)
@@ -231,10 +234,15 @@ export default class FormEditor extends Component {
 				this._deleteValidation(item, valgteVerdier, errors, parentId, idx)
 				shouldRender = false
 			} else {
-				//if (!([item.id] in formikProps.values[parentId][idx])) {
-				//	valgteVerdier[parentId][idx][item.id] = ''
-				console.log('hell no!!')
+				if (parentId === 'barn_forsvunnet') {
+					if (!([item.id] in formikProps.values.barn[idx][parentId][0])) {
+						valgteVerdier['barn'][idx][parentId][0][item.id] = ''
+					}
+				} else if (!([item.id] in formikProps.values[parentId][idx])) {
+					valgteVerdier[parentId][idx][item.id] = ''
+				}
 			}
+			//console.log('valgteVerdier :', valgteVerdier)
 		}
 
 		if (item.onlyShowDependentOnOtherValue) {
@@ -262,7 +270,9 @@ export default class FormEditor extends Component {
 	}
 
 	_deleteValidation = (item, valgteVerdier, errors, parentId, idx) => {
-		delete valgteVerdier[parentId][idx][item.id]
+		if (parentId === 'barn_forsvunnet') {
+			delete valgteVerdier.barn[idx][parentId][item.id]
+		} else delete valgteVerdier[parentId][idx][item.id]
 
 		if (errors[parentId] && errors[parentId][idx] && errors[parentId][idx][item.id]) {
 			delete errors[parentId][idx][item.id]

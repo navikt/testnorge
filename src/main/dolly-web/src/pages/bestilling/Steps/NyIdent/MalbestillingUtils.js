@@ -31,7 +31,7 @@ export const getAttributesFromMal = mal => {
 		tpsfKriterier.utvandretTilLandFlyttedato &&
 			delete attrArray[attrArray.indexOf('utvandretTilLandFlyttedato')]
 	}
-	if (tpsfKriterier.utvandretTilLand) {
+	if (tpsfKriterier.erForsvunnet) {
 		attrArray.push('forsvunnet')
 		delete attrArray[attrArray.indexOf('erForsvunnet')]
 		tpsfKriterier.forsvunnetDato && delete attrArray[attrArray.indexOf('forsvunnetDato')]
@@ -69,6 +69,10 @@ export const getValuesFromMal = mal => {
 	if (reduxStateValue.utvandretTilLand) {
 		const utvandretValues = _mapUtvandretValues(reduxStateValue)
 		reduxStateValue = utvandretValues
+	}
+	if (reduxStateValue.erForsvunnet) {
+		const forsvunnetValues = _mapForsvunnetValues(reduxStateValue)
+		reduxStateValue = forsvunnetValues
 	}
 
 	if (reduxStateValue.adressetype && reduxStateValue.adressetype === 'MATR') {
@@ -158,6 +162,7 @@ const _formatValueForObject = (key, value) => {
 		'fraDato',
 		'tilDato',
 		'utvandretTilLandFlyttedato',
+		'forsvunnetDato',
 		'startdato',
 		'faktiskSluttdato',
 		'forventetSluttdato'
@@ -206,6 +211,18 @@ const _mapUtvandretValues = values => {
 	let returnValues = values
 	returnValues['utvandret'] = utvandretValues
 	return returnValues
+}
+
+const _mapForsvunnetValues = values => {
+	let forsvunnetValues = [
+		{
+			erForsvunnet: values.erForsvunnet,
+			forsvunnetDato: values.forsvunnetDato
+		}
+	]
+	let returnValues = values
+	returnValues['forsvunnet'] = forsvunnetValues
+	return forsvunnetValues
 }
 
 const _mapAdresseValues = values => {
