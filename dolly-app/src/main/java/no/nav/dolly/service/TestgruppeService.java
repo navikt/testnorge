@@ -42,6 +42,9 @@ public class TestgruppeService {
     private IdentService identService;
 
     @Autowired
+    private PersonService personService;
+
+    @Autowired
     private BestillingService bestillingService;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
@@ -102,16 +105,17 @@ public class TestgruppeService {
     }
 
     public int slettGruppeById(Long gruppeId) {
+        personService.recyclePersonerIGruppe(gruppeId);
+        personService.releaseArtifacts(gruppeId);
         bestillingService.slettBestillingerByGruppeId(gruppeId);
         identService.slettTestidenterByGruppeId(gruppeId);
         brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
         return gruppeRepository.deleteTestgruppeById(gruppeId);
     }
 
-    public int slettGruppeByTeamId(Long teamId) {
-        identService.slettTestidenterByTeamId(teamId);
-        brukerService.sletteBrukerFavoritterByTeamId(teamId);
-        return gruppeRepository.deleteTestgruppeByTeamtilhoerighetId(teamId);
+    public void slettGruppeByTeamId(Long teamId) {
+        Team team = teamService.fetchTeamById(teamId);
+        team.getGrupper().forEach(gruppe -> slettGruppeById(gruppe.getId()));
     }
 
     public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {

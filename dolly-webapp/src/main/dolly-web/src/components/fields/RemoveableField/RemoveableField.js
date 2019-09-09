@@ -1,17 +1,16 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { PureComponent } from 'react'
 import Button from '~/components/button/Button'
 import './RemovableField.less'
 
-class RemovbleField extends PureComponent {
+// TODO: Bruk classnames pakke
+
+export default class RemovableField extends PureComponent {
 	static defaultProps = {
 		removable: true,
 		removableText: null
 	}
 
-	constructor(props) {
-		super(props)
-		this.state = { onButtonHover: false }
-	}
+	state = { onButtonHover: false }
 
 	render() {
 		const { onRemove, removable, removableText } = this.props
@@ -21,15 +20,15 @@ class RemovbleField extends PureComponent {
 					{this.props.children}
 				</div>
 				{removable && (
-					<div className='removable-body-button'>
+					<div className="removable-body-button">
 						<div
-							className='removable-button'
+							className="removable-button"
 							onMouseEnter={() => this.setState({ onButtonHover: true })}
 							onMouseLeave={() => this.setState({ onButtonHover: false })}
 						>
 							<Button
-								className='field-group-remove'
-								kind='remove-circle'
+								className="field-group-remove"
+								kind="remove-circle"
 								onClick={() => onRemove(this.key)}
 							/>
 						</div>
@@ -40,5 +39,3 @@ class RemovbleField extends PureComponent {
 		)
 	}
 }
-
-export default RemovbleField

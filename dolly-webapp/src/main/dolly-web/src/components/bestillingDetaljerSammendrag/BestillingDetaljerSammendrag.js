@@ -16,14 +16,13 @@ export default class BestillingDetaljerSammendrag extends PureComponent {
 		const bestillingDetaljer = miljoeStatusSelector(bestilling)
 		const data = mapBestillingData(bestilling)
 		const modal = type === 'modal'
+		const style = modal
+			? { paddingLeft: 20, paddingRight: 20 }
+			: { paddingLeft: 0, paddingRight: 0 }
+
 		return (
 			<div className="bestilling-detaljer">
-				<div
-					className="dollymodal"
-					style={
-						modal ? { paddingLeft: 20, paddingRight: 20 } : { paddingLeft: 0, paddingRight: 0 }
-					}
-				>
+				<div className="dollymodal" style={style}>
 					{modal && <h1>Bestilling #{bestilling.id}</h1>}
 					<h3>Bestillingskriterier</h3>
 					<div className="bestilling-detaljer">
@@ -41,47 +40,45 @@ export default class BestillingDetaljerSammendrag extends PureComponent {
 	}
 
 	_renderBestillingsDetaljer = data => {
-		return data ? (
-			data.map((kategori, j) => {
-				const bottomBorder = j != data.length - 1
-				const cssClass = cn('flexbox--align-center info-text', {
-					'bottom-border': bottomBorder
-				})
-				if (kategori.header) {
-					return (
-						<Fragment key={j}>
-							<h4>{kategori.header} </h4>
-							{kategori.items && (
-								<div className={cssClass}>
-									{kategori.items.map((attributt, i) => {
-										if (attributt.value) {
-											return this._renderStaticValue(attributt, i)
-										}
-									})}
-								</div>
-							)}
-							{kategori.itemRows && (
-								<div className={cn('info-text', { 'bottom-border': bottomBorder })}>
-									{kategori.itemRows.map((row, i) => {
-										return (
-											<div className={'flexbox--align-start flexbox--wrap'} key={i}>
-												{row.map((attributt, j) => {
-													if (attributt.value) {
-														return this._renderStaticValue(attributt, j)
-													}
-												})}
-											</div>
-										)
-									})}
-								</div>
-							)}
-						</Fragment>
-					)
-				}
+		if (!data) return <p>Kunne ikke hente bestillingsdata</p>
+
+		return data.map((kategori, j) => {
+			const bottomBorder = j != data.length - 1
+			const cssClass = cn('flexbox--align-center info-text', {
+				'bottom-border': bottomBorder
 			})
-		) : (
-			<p>Kunne ikke hente bestillingsdata</p>
-		)
+			if (kategori.header) {
+				return (
+					<Fragment key={j}>
+						<h4>{kategori.header} </h4>
+						{kategori.items && (
+							<div className={cssClass}>
+								{kategori.items.map((attributt, i) => {
+									if (attributt.value) {
+										return this._renderStaticValue(attributt, i)
+									}
+								})}
+							</div>
+						)}
+						{kategori.itemRows && (
+							<div className={cn('info-text', { 'bottom-border': bottomBorder })}>
+								{kategori.itemRows.map((row, i) => {
+									return (
+										<div className={'flexbox--align-start flexbox--wrap'} key={i}>
+											{row.map((attributt, j) => {
+												if (attributt.value) {
+													return this._renderStaticValue(attributt, j)
+												}
+											})}
+										</div>
+									)
+								})}
+							</div>
+						)}
+					</Fragment>
+				)
+			}
+		})
 	}
 
 	_renderStaticValue = (attributt, key) => {

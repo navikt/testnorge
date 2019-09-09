@@ -2,19 +2,13 @@ import { connect } from 'react-redux'
 import TknrValue from './TknrValue'
 import { getEnhetByTknr, oppslagLabelSelector } from '~/ducks/oppslag'
 
-const mapStateToProps = (state, ownProps) => {
-	const { tknr } = ownProps
-	return {
-		tknrObject: oppslagLabelSelector(state, 'tknr', tknr)
-	}
-}
+const mapStateToProps = (state, ownProps) => ({
+	tknrObject: oppslagLabelSelector(state, 'tknr', ownProps.tknr)
+})
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { tknr } = ownProps
-	return {
-		fetchTknr: () => dispatch(getEnhetByTknr(tknr))
-	}
-}
+const mapDispatchToProps = (dispatch, ownProps) => ({
+	fetchTknr: () => dispatch(getEnhetByTknr(ownProps.tknr))
+})
 
 export default connect(
 	mapStateToProps,

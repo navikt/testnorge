@@ -40,23 +40,11 @@ public class IdentService {
         return identRepository.save(testident);
     }
 
-    public void slettTestidenter(List<RsTestident> personIdentSet) {
-        personIdentSet.forEach(testident -> identRepository.deleteTestidentByIdent(testident.getIdent()));
-    }
-
     public int slettTestident(String ident) {
         return identRepository.deleteTestidentByIdent(ident);
     }
 
     public int slettTestidenterByGruppeId(Long gruppeId) {
         return identRepository.deleteTestidentByTestgruppeId(gruppeId);
-    }
-
-    public int slettTestidenterByTeamId(Long teamId) {
-        return identRepository.deleteTestidentByTestgruppeTeamtilhoerighetId(teamId);
-    }
-
-    public int slettTestidenter(Long bestillingId) {
-        return identRepository.deleteTestidentsByBestillingId(bestillingId);
     }
 }

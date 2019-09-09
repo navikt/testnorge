@@ -27,12 +27,12 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
-import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.service.PersonService;
 import no.nav.dolly.service.TestgruppeService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -57,6 +57,9 @@ public class TestgruppeControllerTest {
     @Mock
     private BestillingService bestillingService;
 
+    @Mock
+    private PersonService personService;
+
     @InjectMocks
     private TestgruppeController controller;
 
@@ -80,13 +83,6 @@ public class TestgruppeControllerTest {
         controller.oppdaterTestgruppe(GRUPPE_ID, gruppe);
 
         verify(testgruppeService).oppdaterTestgruppe(GRUPPE_ID, gruppe);
-    }
-
-    @Test
-    public void deleteTestidenter() {
-        List<RsTestident> testpersonIdentListe = singletonList(new RsTestident());
-        controller.deleteTestident(testpersonIdentListe);
-        verify(identService).slettTestidenter(testpersonIdentListe);
     }
 
     @Test(expected = NotFoundException.class)

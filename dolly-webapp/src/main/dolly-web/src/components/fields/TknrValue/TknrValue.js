@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import StaticValue from '../StaticValue/StaticValue'
+import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import Loading from '~/components/loading/Loading'
 
-class TknrValue extends Component {
+export default class TknrValue extends Component {
 	componentDidMount() {
-		const { fetchTknr } = this.props
-		fetchTknr()
+		this.props.fetchTknr()
 	}
 
 	render() {
@@ -20,5 +19,3 @@ class TknrValue extends Component {
 		return <StaticValue value={tknrObject} {...restProps} />
 	}
 }
-
-export default TknrValue

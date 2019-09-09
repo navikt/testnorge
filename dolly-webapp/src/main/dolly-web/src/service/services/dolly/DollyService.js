@@ -80,8 +80,8 @@ export default class DollyService {
 		return Request.put(Endpoints.teamAddMember(teamId), userArray)
 	}
 
-	static removeTeamMedlemmer(teamId, userArray) {
-		return Request.put(Endpoints.teamRemoveMember(teamId), userArray)
+	static removeTeamMedlemmer(teamId, user) {
+		return Request.delete(Endpoints.teamRemoveMember(teamId, user))
 	}
 
 	// Bruker

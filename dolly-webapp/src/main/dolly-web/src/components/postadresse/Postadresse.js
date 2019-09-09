@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react'
-import { DollyApi } from '~/service/Api'
-import './Postadresse.less'
-import InputSelector from '~/components/fields/InputSelector'
 import { Field } from 'formik'
+import { DollyApi } from '~/service/Api'
+import InputSelector from '~/components/fields/InputSelector'
 import { sjekkPostadresse } from '~/utils/SjekkPostadresse'
 import Loading from '~/components/loading/Loading'
+import './Postadresse.less'
 
 export default class Postadresse extends Component {
 	constructor(props) {

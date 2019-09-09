@@ -1,6 +1,7 @@
 package no.nav.dolly.api;
 
 import static java.lang.String.format;
+import static java.util.Collections.singletonList;
 import static no.nav.dolly.api.AaregController.AAREG_JSON_COMMENT;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
@@ -34,10 +35,10 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
-import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.service.PersonService;
 import no.nav.dolly.service.TestgruppeService;
 
 @RestController
@@ -147,6 +148,9 @@ public class TestgruppeController {
     @Autowired
     private BestillingService bestillingService;
 
+    @Autowired
+    private PersonService personService;
+
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
     @PutMapping(value = "/{gruppeId}")
@@ -164,20 +168,16 @@ public class TestgruppeController {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeUtvidet.class);
     }
 
-    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
-    @Transactional
-    @PutMapping("/{gruppeId}/slettTestidenter")
-    public void deleteTestident(@RequestBody List<RsTestident> testpersonIdentListe) {
-        identService.slettTestidenter(testpersonIdentListe);
-    }
-
-    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @Transactional
     @DeleteMapping("/{gruppeId}/slettTestident")
     public void deleteTestident(@RequestParam String ident) {
         if (identService.slettTestident(ident) == 0) {
             throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
         }
+        bestillingService.slettBestillingByTestIdent(ident);
+        personService.recyclePerson(ident);
+        personService.releaseArtifacts(singletonList(ident));
     }
 
     @Cacheable(CACHE_GRUPPE)

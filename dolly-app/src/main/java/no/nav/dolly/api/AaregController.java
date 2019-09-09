@@ -1,9 +1,11 @@
 package no.nav.dolly.api;
 
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
+import no.nav.dolly.aareg.AaregReleaseIdentClient;
 import no.nav.dolly.aareg.AaregRestConsumer;
 import no.nav.dolly.aareg.AaregWsConsumer;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
@@ -51,6 +54,9 @@ public class AaregController {
     @Autowired
     private AaregRestConsumer aaregRestConsumer;
 
+    @Autowired
+    private AaregReleaseIdentClient releaseIdentClient;
+
     @ApiOperation(value = "Opprett arbeidsforhold mot Aareg", notes = AAREG_JSON_COMMENT)
     @PostMapping("/arbeidsforhold")
     @ResponseStatus(HttpStatus.CREATED)
@@ -72,5 +78,13 @@ public class AaregController {
     public ResponseEntity lesArbeidsforhold(@RequestParam String ident, @RequestParam String environment) {
 
         return aaregRestConsumer.readArbeidsforhold(ident, environment);
+    }
+
+    @ApiOperation(value = "Slett arbeidsforhold fra Aareg", notes = "Arbeidsforhold blir ikke slettet, men eksisterende forhold blir satt inaktive")
+    @DeleteMapping("/arbeidsforhold")
+    @ResponseStatus(HttpStatus.OK)
+    public Map<String, String> slettArbeidsforhold(@RequestParam String ident) {
+
+        return releaseIdentClient.deleteArbeidsforhold(ident);
     }
 }
