@@ -1,12 +1,13 @@
 package no.nav.dolly.domain.resultset.udistub.model.opphold;
 
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
+import no.nav.dolly.domain.resultset.udistub.model.UdiHarType;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 @Builder
 public class UdiUtvistMedInnreiseForbud {
 
-    private String innreiseForbud;
+    private UdiHarType innreiseForbud;
     private LocalDate innreiseForbudVedtaksDato;
-    private String varighet;
+    private UdiVarighetType varighet;
 }

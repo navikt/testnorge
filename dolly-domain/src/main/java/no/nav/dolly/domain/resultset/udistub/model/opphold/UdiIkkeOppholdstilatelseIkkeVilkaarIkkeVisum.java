@@ -13,7 +13,7 @@ import lombok.Setter;
 @Builder
 public class UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum {
 
-    private UdiUtvistMedInnreiseForbud udiUtvistMedInnreiseForbud;
-    private UdiAvslagEllerBortfall udiAvslagEllerBortfall;
-    private String ovrigIkkeOppholdsKategoriArsak;
+    private UdiAvslagEllerBortfall avslagEllerBortfall;
+    private UdiOverigIkkeOppholdKategoriType ovrigIkkeOppholdsKategoriArsak;
+    private UdiUtvistMedInnreiseForbud utvistMedInnreiseForbud;
 }

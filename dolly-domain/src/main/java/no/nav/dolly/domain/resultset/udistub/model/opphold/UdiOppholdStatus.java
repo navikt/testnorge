@@ -1,15 +1,13 @@
 package no.nav.dolly.domain.resultset.udistub.model.opphold;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPeriode;
-import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
-
-import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,24 +16,21 @@ import java.time.LocalDate;
 @Builder
 public class UdiOppholdStatus {
 
-    private Boolean uavklart;
-
-    private UdiPeriode eosEllerEFTABeslutningOmOppholdsrettPeriode;
+    private UdiOppholdsrettType eosEllerEFTABeslutningOmOppholdsrett;
     private LocalDate eosEllerEFTABeslutningOmOppholdsrettEffektuering;
-    private String eosEllerEFTABeslutningOmOppholdsrett;
+    private UdiPeriode eosEllerEFTABeslutningOmOppholdsrettPeriode;
 
-    private UdiPeriode eosEllerEFTAVedtakOmVarigOppholdsrettPeriode;
-    private LocalDate eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering;
-    private String eosEllerEFTAVedtakOmVarigOppholdsrett;
-
-    private UdiPeriode eosEllerEFTAOppholdstillatelsePeriode;
+    private UdiOppholdstillatelse eosEllerEFTAOppholdstillatelse;
     private LocalDate eosEllerEFTAOppholdstillatelseEffektuering;
-    private String eosEllerEFTAOppholdstillatelse;
+    private UdiPeriode eosEllerEFTAOppholdstillatelsePeriode;
 
+    private UdiVarighetOpphold eosEllerEFTAVedtakOmVarigOppholdsrett;
+    private LocalDate eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering;
+    private UdiPeriode eosEllerEFTAVedtakOmVarigOppholdsrettPeriode;
+
+    private UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOppholdstilatelseIkkeVilkaarIkkeVisum;
 
     private UdiOppholdSammeVilkaar udiOppholdSammeVilkaar;
 
-    private UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum udiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum;
-    @JsonBackReference
-    private UdiPerson person;
+    private Boolean uavklart;
 }
