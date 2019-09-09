@@ -1,12 +1,12 @@
 import React, { PureComponent, Fragment } from 'react'
+import Knapp from 'nav-frontend-knapper'
+import { Formik, FieldArray } from 'formik'
+import * as yup from 'yup'
 import Button from '~/components/button/Button'
 import './BestillingDetaljer.less'
 import Formatters from '~/utils/DataFormatter'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
-import Knapp from 'nav-frontend-knapper'
-import { Formik, FieldArray } from 'formik'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
-import * as yup from 'yup'
 import SendOpenAmConnector from '~/pages/gruppe/SendOpenAm/SendOpenAmConnector'
 import OpenAmStatusConnector from '~/pages/gruppe/OpenAmStatus/OpenAmStatusConnector'
 import DollyModal from '~/components/modal/DollyModal'
@@ -32,10 +32,9 @@ export default class BestillingDetaljer extends PureComponent {
 	}
 
 	render() {
-		const bestilling = this.props.bestilling
-		const bestillingId = this.props.bestilling.id
-		const { openAm, openAmState } = this.props
+		const { bestilling, openAm, openAmState } = this.props
 		const { modalOpen } = this.state
+		const bestillingId = bestilling.id
 
 		let openAmRes
 		if (openAmState.responses.length > 0) {
@@ -62,7 +61,8 @@ export default class BestillingDetaljer extends PureComponent {
 				)}
 				<div className="flexbox--align-center--justify-end info-block">
 					<div className="flexbox--align-center--justify-end">
-						{!openAm &&
+						{this._erIdentOpprettet() &&
+							!openAm &&
 							(!openAmRes && (
 								<SendOpenAmConnector
 									bestillingId={bestillingId}
@@ -85,35 +85,28 @@ export default class BestillingDetaljer extends PureComponent {
 					</div>
 				</div>
 			</div>
-			// </div>
 		)
 	}
 
 	_renderOpenAmStateResponses = openAmState => {
-		const responses = []
-		openAmState.data.forEach(response => {
-			responses.push(response.message)
-		})
-		return responses
+		return openAmState.data.map(response => response.message)
 	}
 
 	_erIdentOpprettet = () => {
 		const { bestilling } = this.props
 		let temp = false
 
-		{
-			bestilling.tpsfStatus &&
-				bestilling.tpsfStatus.map(status => {
-					if (status.environmentIdents) temp = true
-				})
+		if (bestilling.tpsfStatus) {
+			bestilling.tpsfStatus.forEach(status => {
+				if (status.environmentIdents) temp = true
+			})
 		}
 		return temp
 	}
 
 	_renderJiraLinks = openAm => {
 		const data = openAm.split(',')
-		const linkArray = data.map((respons, i) => {
-			const link = respons
+		const linkArray = data.map((link, i) => {
 			return (
 				<Fragment key={i}>
 					<a href={link} target="_blank">

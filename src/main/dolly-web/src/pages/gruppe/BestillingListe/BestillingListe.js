@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react'
+import _orderBy from 'lodash/orderBy'
 import Table from '~/components/table/Table'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 import PaginationConnector from '~/components/pagination/PaginationConnector'
-import _orderBy from 'lodash/orderBy'
-import BestillingStatusConnector from '../BestillingStatus/BestillingStatusConnector'
 import Formatters from '~/utils/DataFormatter'
 import BestillingDetaljerConnector from './BestillingDetaljer/BestillingDetaljerConnector'
 

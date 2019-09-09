@@ -6,7 +6,7 @@ import _set from 'lodash/set'
 import _union from 'lodash/union'
 import _difference from 'lodash/difference'
 import BestillingMapper from '~/utils/BestillingMapper'
-import { handleActions, createActions, createAction, combineActions } from 'redux-actions'
+import { handleActions, createActions, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 import { AttributtManager } from '~/service/Kodeverk'
 import { getValues, _filterAttributes, _filterArrayAttributes } from './BestillingRequestUtils'
@@ -25,6 +25,7 @@ export const actions = createActions(
 				return res
 			} catch (err) {
 				if (err.response) {
+					// && err.response.status === 404) {
 					//*Ingen maler
 					return { data: [] }
 				}
@@ -205,6 +206,7 @@ export default handleActions(
 // - kanskje flyttes ut til egen fil (er jo bare en formatter og ikke thunk)
 // - kan dette være mer generisk? bruke datasource nodene i AttributtManager?
 // - CNN: LAGT TIL TPSF HARDKODET FOR NÅ FOR TESTING. FINN GENERISK LØSNING
+// - AAL: Denne bør flyttes ut til egen fil
 const bestillingFormatter = (bestillingState, oppslag) => {
 	const {
 		attributeIds,
@@ -234,7 +236,6 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 	// mandatory
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
 	identOpprettesFra === BestillingMapper() && (final_values.tpsf.identtype = identtype)
-
 	// ? Vi trenger ikke nødvendigvis generisk løsning når det er så veldig mange spesiall tilfeller
 	// ? Forslag: lage en hjelpeklasse
 	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {
@@ -262,32 +263,6 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 				postLinje3: values.postLinje3
 			}
 		]
-	}
-	if (_get(final_values, 'tpsf.utvandret')) {
-		final_values.tpsf.utvandretTilLand = final_values.tpsf.utvandret[0].utvandretTilLand
-		final_values.tpsf.utvandretTilLandFlyttedato =
-			final_values.tpsf.utvandret[0].utvandretTilLandFlyttedato
-		delete final_values.tpsf.utvandret
-		if (_get(final_values, 'tpsf.relasjoner')) {
-			if (final_values.tpsf.relasjoner.partner && final_values.tpsf.relasjoner.partner.utvandret) {
-				final_values.tpsf.relasjoner.partner.utvandretTilLand =
-					final_values.tpsf.relasjoner.partner.utvandret[0].utvandretTilLand
-				final_values.tpsf.relasjoner.partner.utvandretTilLandFlyttedato =
-					final_values.tpsf.relasjoner.partner.utvandret[0].utvandretTilLandFlyttedato
-				delete final_values.tpsf.relasjoner.partner.utvandret
-			}
-			if (final_values.tpsf.relasjoner.barn) {
-				final_values.tpsf.relasjoner.barn.map((barnet, idx) => {
-					if (barnet.utvandret) {
-						final_values.tpsf.relasjoner.barn[idx].utvandretTilLand =
-							barnet.utvandret[0].utvandretTilLand
-						final_values.tpsf.relasjoner.barn[idx].utvandretTilLandFlyttedato =
-							barnet.utvandret[0].utvandretTilLandFlyttedato
-						delete final_values.tpsf.relasjoner.barn[idx].utvandret
-					}
-				})
-			}
-		}
 	}
 
 	if (_get(final_values, 'arenaforvalter')) {
@@ -322,21 +297,20 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 		final_values = _set(final_values, 'malBestillingNavn', malBestillingNavn)
 	}
 
-	final_values.pdlforvalter &&
-		final_values.pdlforvalter.kontaktinformasjonForDoedsbo &&
-		final_values.pdlforvalter.kontaktinformasjonForDoedsbo.postnummer &&
-		oppslag.Postnummer.koder.map(postnummer => {
-			postnummer.value === final_values.pdlforvalter.kontaktinformasjonForDoedsbo.postnummer &&
-				(final_values = _set(
+	if (_get(final_values, 'pdlforvalter.kontaktinformasjonForDoedsbo.postnummer')) {
+		oppslag.Postnummer.koder.forEach(postnummer => {
+			if (postnummer.value === final_values.pdlforvalter.kontaktinformasjonForDoedsbo.postnummer) {
+				final_values = _set(
 					final_values,
 					'pdlforvalter.kontaktinformasjonForDoedsbo.poststedsnavn',
 					postnummer.label
-				))
+				)
+			}
 		})
+	}
 
 	// * Vurdere behovet for denne i U2/prod. Uglify?
 	// console.info('POSTING BESTILLING', final_values)
-
 	return final_values
 }
 

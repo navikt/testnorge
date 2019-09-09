@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import StaticValue from '../StaticValue/StaticValue'
+import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import Loading from '~/components/loading/Loading'
 import Formatters from '~/utils/DataFormatter'
 
-class KodeverkValue extends Component {
+export default class KodeverkValue extends Component {
 	componentDidMount() {
-		const { fetchKodeverk } = this.props
-		fetchKodeverk()
+		this.props.fetchKodeverk()
 	}
 
 	render() {
@@ -18,6 +17,7 @@ class KodeverkValue extends Component {
 			kodeverkObjectArray,
 			...restProps
 		} = this.props
+
 		if (!kodeverkObject) {
 			return (
 				<div className="static-value">
@@ -38,5 +38,3 @@ class KodeverkValue extends Component {
 		return <StaticValue value={label} {...restProps} />
 	}
 }
-
-export default KodeverkValue
