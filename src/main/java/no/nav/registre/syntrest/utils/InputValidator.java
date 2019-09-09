@@ -1,18 +1,18 @@
 package no.nav.registre.syntrest.utils;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @Component
 public class InputValidator {
 
-    enum INPUT_STRING {MELDEGRUPPE, ENDRINGSKODE_NAV, ENDRINGSKODE}
+    public enum INPUT_STRING { MELDEGRUPPE, ENDRINGSKODE_NAV, ENDRINGSKODE }
 
     private final static List<String> meldegrupper = new ArrayList<>(Arrays.asList("ATTF", "DAGP", "INDI", "ARBS", "FY"));
 
@@ -23,58 +23,38 @@ public class InputValidator {
     private final static List<String> navEndringskoder = new ArrayList<>(Arrays.asList("Z010", "Z510", "Z310", "ZM10", "Z610",
             "ZV10", "ZD10", "1810", "Z810"));
 
-
-    public static void validateInput(List<String> fnrs) throws ValidationException {
-        HashMap<String, Boolean> rules = new HashMap<>();
-
-        validateFnrs(fnrs, rules);
-        checkViolations(rules);
-    }
-
-    public static void validateInput(INPUT_STRING type, String value) throws ValidationException {
-        HashMap<String, Boolean> rules = new HashMap<>();
-
-        handleInputType(type, value, rules);
-        checkViolations(rules);
-    }
-
-    public static void validateInput(List<String> fnrs, INPUT_STRING type, String value) throws ValidationException {
-        HashMap<String, Boolean> rules = new HashMap<>();
-
-        validateFnrs(fnrs, rules);
-        handleInputType(type, value, rules);
-        checkViolations(rules);
-    }
-
-    private static void handleInputType(INPUT_STRING type, String value, Map<String, Boolean> rules) {
-        switch (type) {
-            case MELDEGRUPPE:
-                rules.put(String.format("Ikke en gyldig meldegruppe. Må være en av %s.", meldegrupper.toString()),
-                        meldegrupper.contains(value));
-                break;
-            case ENDRINGSKODE:
-                rules.put(String.format("Ikke en gyldig endringskode (!). Må være en av %s.", endringskoder.toString()),
-                        endringskoder.stream().anyMatch(s -> !s.equals(value)));
-                break;
-            case ENDRINGSKODE_NAV:
-                rules.put(String.format("Ikke en gyldig nav endringskode (!). Må være en av %s.", navEndringskoder.toString()),
-                        navEndringskoder.stream().anyMatch(s -> !s.equals(value)));
+    public static void validateInput(Integer numToGenerate) throws ResponseStatusException {
+        if (Objects.isNull(numToGenerate)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Input \'null\' ikke tillatt");
         }
     }
 
-    private static void validateFnrs(List<String> fnrs, Map<String, Boolean> rules) {
-        rules.put("Invalid fødselsnummer. Må ha lengde 11.",
-                fnrs.stream().anyMatch(s -> s.length() != 11));
+    public static void validateInput(List<String> fnrs) throws ResponseStatusException {
+        if (fnrs.stream().anyMatch(s -> s.length() != 11)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Et eller flere fødselsnummer var ugyldig. Må ha lengde 11.");
+        }
     }
 
-    private static void checkViolations(Map<String, Boolean> rules) throws ValidationException {
-        List<String> errors = rules.entrySet().stream()
-                .filter(s -> s.getValue().equals(true))
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-
-        if (!errors.isEmpty()) {
-            throw new ValidationException(errors);
+    public static void validateInput(INPUT_STRING type, String value) throws ResponseStatusException {
+        switch (type) {
+            case MELDEGRUPPE:
+                if (!meldegrupper.contains(value)) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            String.format("Ikke en gyldig meldegruppe. Må være en av %s.", meldegrupper.toString()));
+                }
+                break;
+            case ENDRINGSKODE:
+                if (endringskoder.stream().anyMatch(s -> !s.equals(value))) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            String.format("Ikke en gyldig endringskode (!). Må være en av %s.", endringskoder.toString()));
+                }
+                break;
+            case ENDRINGSKODE_NAV:
+                if (navEndringskoder.stream().anyMatch(s -> !s.equals(value))) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            String.format("Ikke en gyldig nav endringskode (!). Må være en av %s.", navEndringskoder.toString()));
+                }
+                break;
         }
     }
 }
