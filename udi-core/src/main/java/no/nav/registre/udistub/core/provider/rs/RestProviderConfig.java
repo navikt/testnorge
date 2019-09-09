@@ -18,7 +18,7 @@ public class RestProviderConfig implements WebMvcConfigurer {
         registry
                 .addMapping("/api/v1/**")
                 .allowedOrigins(allowedOrigins)
-                .allowedMethods("OPTIONS")
+                .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowCredentials(true);
     }
 }
