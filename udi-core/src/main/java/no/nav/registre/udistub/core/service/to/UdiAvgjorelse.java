@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.udi.common.v2.Kodeverk;
 
 import java.time.LocalDate;
 
@@ -16,8 +15,6 @@ import java.time.LocalDate;
 @Getter
 public class UdiAvgjorelse {
 
-    //TODO: Fjern id under
-    private String omgjortAvgjoerelsesId;
     private Kodeverk utfallstypeKode;
     private Kodeverk grunntypeKode;
     private Kodeverk tillatelseKode;

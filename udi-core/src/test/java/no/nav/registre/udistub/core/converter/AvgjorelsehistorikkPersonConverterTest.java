@@ -1,10 +1,5 @@
 package no.nav.registre.udistub.core.converter;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import no.nav.registre.udistub.core.DefaultTestData;
-import no.nav.registre.udistub.core.converter.ws.AvgjorelsehistorikkWsConverter;
 import no.udi.mt_1067_nav_data.v1.Avgjorelse;
 import no.udi.mt_1067_nav_data.v1.Avgjorelser;
 import org.junit.jupiter.api.Assertions;
@@ -12,6 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import no.nav.registre.udistub.core.DefaultTestData;
+import no.nav.registre.udistub.core.converter.ws.AvgjorelsehistorikkWsConverter;
 
 @ExtendWith(MockitoExtension.class)
 public class AvgjorelsehistorikkPersonConverterTest extends ConverterTestBase {
@@ -30,21 +30,20 @@ public class AvgjorelsehistorikkPersonConverterTest extends ConverterTestBase {
 
     private void assertAvgjorelse(Avgjorelse avgjorelse) {
         assertNotNull(avgjorelse);
-        Assertions.assertEquals(DefaultTestData.TEST_OMGJORT_AVGJORELSE_ID, avgjorelse.getOmgjortavAvgjorelseId());
 
         assertNotNull(avgjorelse.getAvgjorelsestype());
-        Assertions.assertEquals(DefaultTestData.TEST_KODEVERK_CODE, avgjorelse.getAvgjorelsestype().getGrunntypeKode());
-        Assertions.assertEquals(DefaultTestData.TEST_KODEVERK_CODE, avgjorelse.getAvgjorelsestype().getUtfallstypeKode());
-        Assertions.assertEquals(DefaultTestData.TEST_KODEVERK_CODE, avgjorelse.getAvgjorelsestype().getTillatelseKode());
+        Assertions.assertEquals(DefaultTestData.TEST_KODEVERK_CODE.getKode(), avgjorelse.getAvgjorelsestype().getGrunntypeKode().getKode());
+        Assertions.assertEquals(DefaultTestData.TEST_KODEVERK_CODE.getKode(), avgjorelse.getAvgjorelsestype().getUtfallstypeKode().getKode());
+        Assertions.assertEquals(DefaultTestData.TEST_KODEVERK_CODE.getKode(), avgjorelse.getAvgjorelsestype().getTillatelseKode().getKode());
         Assertions.assertEquals(DefaultTestData.TEST_ER_POSITIV, avgjorelse.isErPositiv());
 
         assertNotNull(avgjorelse.getTillatelse());
-        Assertions.assertEquals(DefaultTestData.TEST_KODEVERK_CODE, avgjorelse.getTillatelse().getVarighetKode());
+        Assertions.assertEquals(DefaultTestData.TEST_KODEVERK_CODE.getKode(), avgjorelse.getTillatelse().getVarighetKode().getKode());
         Assertions.assertEquals(DefaultTestData.TEST_VARIGHET, avgjorelse.getTillatelse().getVarighet());
         assertNull(avgjorelse.getTillatelse().getGyldighetsperiode());
 
         Assertions.assertEquals(DefaultTestData.TEST_VARIGHET, avgjorelse.getUtfall().getVarighet());
-        Assertions.assertEquals(DefaultTestData.TEST_KODEVERK_CODE, avgjorelse.getUtfall().getVarighetKode());
+        Assertions.assertEquals(DefaultTestData.TEST_KODEVERK_CODE.getKode(), avgjorelse.getUtfall().getVarighetKode().getKode());
         assertNull(avgjorelse.getUtfall().getGjeldendePeriode());
 
         assertNull(avgjorelse.getAvgjorelseDato());

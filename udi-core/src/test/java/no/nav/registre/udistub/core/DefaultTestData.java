@@ -1,6 +1,5 @@
 package no.nav.registre.udistub.core;
 
-import no.udi.common.v2.Kodeverk;
 import no.udi.mt_1067_nav_data.v1.ArbeidOmfangKategori;
 import no.udi.mt_1067_nav_data.v1.ArbeidsadgangType;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdsrett;
@@ -15,6 +14,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 import no.nav.registre.udistub.core.database.model.PersonNavn;
+import no.nav.registre.udistub.core.service.to.Kodeverk;
 import no.nav.registre.udistub.core.service.to.UdiAlias;
 import no.nav.registre.udistub.core.service.to.UdiArbeidsadgang;
 import no.nav.registre.udistub.core.service.to.UdiAvgjorelse;
@@ -58,10 +58,12 @@ public class DefaultTestData {
 
     private static final UdiPerson testPerson = createPersonTo();
 
-    public static final Kodeverk TEST_KODEVERK_CODE = new Kodeverk();
+    public static final no.nav.registre.udistub.core.service.to.Kodeverk TEST_KODEVERK_CODE = new Kodeverk();
 
-    {
+    static {
         TEST_KODEVERK_CODE.setKode("testkode");
+        TEST_KODEVERK_CODE.setType(null);
+        TEST_KODEVERK_CODE.setVisningsnavn(null);
     }
 
     public static UdiPerson createPersonTo() {
@@ -90,7 +92,6 @@ public class DefaultTestData {
     public static UdiAvgjorelse.UdiAvgjorelseBuilder createPersonAvgjorelseBuilder() {
         return UdiAvgjorelse.builder()
                 .avgjoerelsesDato(TEST_DATE)
-                .omgjortAvgjoerelsesId(TEST_OMGJORT_AVGJORELSE_ID)
                 .grunntypeKode(TEST_KODEVERK_CODE)
                 .erPositiv(TEST_ER_POSITIV)
                 .tillatelseVarighetKode(TEST_KODEVERK_CODE)

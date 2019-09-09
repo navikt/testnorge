@@ -1,7 +1,5 @@
 package no.nav.registre.udistub.core.converter.ws;
 
-import no.nav.registre.udistub.core.service.to.UdiAvgjorelse;
-import no.nav.registre.udistub.core.service.to.UdiPerson;
 import no.udi.mt_1067_nav_data.v1.AvgjorelseListe;
 import no.udi.mt_1067_nav_data.v1.Avgjorelser;
 import no.udi.mt_1067_nav_data.v1.Avgjorelsestype;
@@ -13,6 +11,9 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import no.nav.registre.udistub.core.service.to.UdiAvgjorelse;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
 
 @Component
 public class AvgjorelsehistorikkWsConverter implements Converter<UdiPerson, Avgjorelser> {
@@ -42,9 +43,9 @@ public class AvgjorelsehistorikkWsConverter implements Converter<UdiPerson, Avgj
         no.udi.mt_1067_nav_data.v1.Avgjorelse udiAvgjorelse = new no.udi.mt_1067_nav_data.v1.Avgjorelse();
         udiAvgjorelse.setAvgjorelseDato(conversionService.convert(avgjorelse.getAvgjoerelsesDato(), XMLGregorianCalendar.class));
         Avgjorelsestype avgjorelsestype = new Avgjorelsestype();
-        avgjorelsestype.setGrunntypeKode(avgjorelse.getGrunntypeKode());
-        avgjorelsestype.setTillatelseKode(avgjorelse.getTillatelseKode());
-        avgjorelsestype.setUtfallstypeKode(avgjorelse.getUtfallstypeKode());
+        avgjorelsestype.setGrunntypeKode(avgjorelse.getGrunntypeKode().udiKodeverk());
+        avgjorelsestype.setTillatelseKode(avgjorelse.getTillatelseKode().udiKodeverk());
+        avgjorelsestype.setUtfallstypeKode(avgjorelse.getUtfallstypeKode().udiKodeverk());
         udiAvgjorelse.setAvgjorelsestype(avgjorelsestype);
 
         udiAvgjorelse.setEffektueringsDato(conversionService.convert(avgjorelse.getEffektueringsDato(), XMLGregorianCalendar.class));
@@ -52,14 +53,12 @@ public class AvgjorelsehistorikkWsConverter implements Converter<UdiPerson, Avgj
         udiAvgjorelse.setEtat(avgjorelse.getEtat());
         udiAvgjorelse.setFlyktingstatus(avgjorelse.getHarFlyktningstatus());
         udiAvgjorelse.setIverksettelseDato(conversionService.convert(avgjorelse.getIverksettelseDato(), XMLGregorianCalendar.class));
-
-        udiAvgjorelse.setOmgjortavAvgjorelseId(avgjorelse.getOmgjortAvgjoerelsesId());
-        udiAvgjorelse.setSaksnummer(avgjorelse.getSaksnummer().toString());
+        udiAvgjorelse.setSaksnummer(avgjorelse.getSaksnummer());
 
         Tillatelse tillatelse = new Tillatelse();
         tillatelse.setGyldighetsperiode(conversionService.convert(avgjorelse.getTillatelsePeriode(), Periode.class));
         tillatelse.setVarighet(avgjorelse.getTillatelseVarighet());
-        tillatelse.setVarighetKode(avgjorelse.getTillatelseVarighetKode());
+        tillatelse.setVarighetKode(avgjorelse.getTillatelseVarighetKode().udiKodeverk());
         udiAvgjorelse.setTillatelse(tillatelse);
 
         udiAvgjorelse.setUavklartFlyktningstatus(avgjorelse.getUavklartFlyktningstatus());
@@ -67,7 +66,7 @@ public class AvgjorelsehistorikkWsConverter implements Converter<UdiPerson, Avgj
         Utfall utfall = new Utfall();
         utfall.setGjeldendePeriode(conversionService.convert(avgjorelse.getTillatelsePeriode(), Periode.class));
         utfall.setVarighet(avgjorelse.getTillatelseVarighet());
-        utfall.setVarighetKode(avgjorelse.getTillatelseVarighetKode());
+        utfall.setVarighetKode(avgjorelse.getTillatelseVarighetKode().udiKodeverk());
         udiAvgjorelse.setUtfall(utfall);
 
         if (avgjorelse.getUtreisefristDato() != null) {
