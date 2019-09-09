@@ -112,7 +112,6 @@ export const FieldArrayComponent = ({
 		formikValues = [{ innvandretFraLand: '', innvandretFraLandFlyttedato: '' }]
 	} else if (item.id === 'barn_forsvunnet') {
 		formikValues = [{ erForsvunnet: '', forsvunnetDato: '' }]
-		// formikValues = formikProps.values.barn[idx][parentId]
 	}
 	let subLabelArray = []
 	let antallInstanser = 0
@@ -180,16 +179,11 @@ export const FieldArrayComponent = ({
 												...item,
 												id:
 													parentId.includes('barn_innvandret') ||
-													parentId.includes('barn_utvandret')
+													parentId.includes('barn_utvandret') ||
+													parentId.includes('barn_forsvunnet')
 														? //Refaktorerers. Hvordan kan vi generalisere denne typen attributter for barn?
 														  `barn[${itemid}]${parentId}[0]${item.id}`
 														: `${parentId}[${idx}]${item.id}`
-											}
-											if (fakeItem.id === 'barn_forsvunnet[0]erForsvunnet') {
-												fakeItem.id = `barn[${itemid}]barn_forsvunnet[0]erForsvunnet`
-											}
-											if (fakeItem.id === 'barn_forsvunnet[0]forsvunnetDato') {
-												fakeItem.id = `barn[${itemid}]barn_forsvunnet[0]forsvunnetDato`
 											}
 
 											return (

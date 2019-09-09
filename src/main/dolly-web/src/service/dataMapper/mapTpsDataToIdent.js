@@ -52,7 +52,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 				},
 				{
 					id: 'forsvunnetDato',
-					label: 'Savnet Siden',
+					label: 'Savnet siden',
 					value: Formatters.formatDate(tpsfData.forsvunnetDato)
 				},
 				{
@@ -327,7 +327,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 						},
 						{
 							id: 'ForsvunnetDato',
-							label: 'Savnet Siden',
+							label: 'Savnet siden',
 							value: Formatters.formatDate(relasjon.personRelasjonMed.forsvunnetDato)
 						},
 						{
