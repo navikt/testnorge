@@ -87,7 +87,7 @@ public class SlackConsumer {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            RequestEntity<MultiValueMap<String, String>> slackChannelListRequest = new RequestEntity<>(form, headers, HttpMethod.POST, new URI("https://slack.com/api/conversations.list"));
+            RequestEntity<MultiValueMap<String, String>> slackChannelListRequest = new RequestEntity<>(form, headers, HttpMethod.POST, new URI("https://api.slack.com/api/conversations.list"));
             ResponseEntity<SlackChannelResponse> response = restTemplate.exchange(slackChannelListRequest, SlackChannelResponse.class);
             if (response.getStatusCode().is2xxSuccessful()) {
                 SlackChannelResponse body = response.getBody();
