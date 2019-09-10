@@ -42,8 +42,6 @@ public class BidragExecutor {
             Underholdskostnad underholdskostnad = (Underholdskostnad) bisys.getActivePage(activePage);
             underholdskostnad.lagreTilInntekter().click();
 
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
             ytelsebereging.fulfillInntekterAndBoforhold(bisys, request);
 
             activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();

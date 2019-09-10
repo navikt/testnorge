@@ -37,11 +37,7 @@ public class SartilskuddExecutor {
             sartilskudd.belopFradrag().setValue(Integer.toString(request.getSartilskuddFradrag()));
             sartilskudd.lagreOgInntekt().click();
 
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
             ytelsebereging.fulfillInntekterAndBoforhold(bisys, request);
-
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
 
             sartilskudd.lagreOgBeregn().click();
             sartilskudd.lagreOgFatteVedtak().click();
