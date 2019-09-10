@@ -3,7 +3,9 @@ package no.nav.registre.udistub.core.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +21,7 @@ import no.nav.registre.udistub.core.database.model.opphold.OppholdStatus;
 import no.nav.registre.udistub.core.database.repository.AliasRepository;
 import no.nav.registre.udistub.core.database.repository.ArbeidsAdgangRepository;
 import no.nav.registre.udistub.core.database.repository.AvgjorelseRepository;
+import no.nav.registre.udistub.core.database.repository.KodeverkRepository;
 import no.nav.registre.udistub.core.database.repository.OppholdStatusRepository;
 import no.nav.registre.udistub.core.database.repository.PersonRepository;
 import no.nav.registre.udistub.core.exception.NotFoundException;
@@ -38,6 +41,7 @@ public class PersonService {
     private final AvgjorelseRepository avgjorelseRepository;
     private final OppholdStatusRepository oppholdStatusRepository;
     private final ArbeidsAdgangRepository arbeidsAdgangRepository;
+    private final KodeverkRepository kodeverkRepository;
 
     public Optional<UdiPerson> opprettPerson(UdiPerson udiPerson) {
 
@@ -51,6 +55,7 @@ public class PersonService {
                 .soeknadOmBeskyttelseUnderBehandling(udiPerson.getSoeknadOmBeskyttelseUnderBehandling())
                 .soknadDato(udiPerson.getSoknadDato())
                 .build();
+
         Person person = personRepository.save(nyPerson);
         List<UdiAlias> aliaser = udiPerson.getAliaser();
         if (aliaser != null) {
@@ -63,8 +68,35 @@ public class PersonService {
         List<UdiAvgjorelse> avgjoerelser = udiPerson.getAvgjoerelser();
         if (avgjoerelser != null) {
             avgjorelseRepository.saveAll(avgjoerelser.stream()
-                    .map(avgjorelse -> mapperFacade.map(avgjorelse, Avgjorelse.class))
-                    .peek(avgjorelse -> avgjorelse.setPerson(person))
+                    .map(avgjoerelse -> mapperFacade.map(avgjoerelse, Avgjorelse.class))
+                    .peek(avgjoerelse -> {
+                        avgjoerelse.setPerson(person);
+                        if (avgjoerelse.getTillatelseKode() != null) {
+                            avgjoerelse.setTillatelseKode(kodeverkRepository.findByKode(avgjoerelse.getTillatelseKode().getKode()).orElseThrow(
+                                    () -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Ugyldig kode i tillatelse")
+                            ));
+                        }
+                        if (avgjoerelse.getGrunntypeKode() != null) {
+                            avgjoerelse.setGrunntypeKode(kodeverkRepository.findByKode(avgjoerelse.getGrunntypeKode().getKode()).orElseThrow(
+                                    () -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Ugyldig kode i grunntype")
+                            ));
+                        }
+                        if (avgjoerelse.getUtfallstypeKode() != null) {
+                            avgjoerelse.setUtfallstypeKode(kodeverkRepository.findByKode(avgjoerelse.getUtfallstypeKode().getKode()).orElseThrow(
+                                    () -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Ugyldig kode i utfallstype")
+                            ));
+                        }
+                        if (avgjoerelse.getUtfallVarighetKode() != null) {
+                            avgjoerelse.setUtfallVarighetKode(kodeverkRepository.findByKode(avgjoerelse.getUtfallVarighetKode().getKode()).orElseThrow(
+                                    () -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Ugyldig kode i utfall varighet")
+                            ));
+                        }
+                        if (avgjoerelse.getTillatelseVarighetKode() != null) {
+                            avgjoerelse.setUtfallVarighetKode(kodeverkRepository.findByKode(avgjoerelse.getTillatelseVarighetKode().getKode()).orElseThrow(
+                                    () -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Ugyldig kode i tillatelse varighet")
+                            ));
+                        }
+                    })
                     .collect(Collectors.toList())
             );
         }
