@@ -10,7 +10,10 @@ export const getValues = (attributeList, values) => {
 	return attributeList.reduce((accumulator, attribute) => {
 		let value = _transformAttributt(attribute, attributeList, values[attribute.id])
 		const pathPrefix = DataSourceMapper(attribute.dataSource)
+		console.log('value :', value)
 		// console.log('pathPrefix :', pathPrefix)
+		// console.log('accumulator :', accumulator)
+		// console.log('attribute :', attribute)
 		if (pathPrefix == DataSourceMapper('SIGRUN')) {
 			const groupByTjeneste = _groupBy(value, 'tjeneste')
 			let tjenester = Object.keys(groupByTjeneste)
@@ -175,10 +178,13 @@ export const getValues = (attributeList, values) => {
 		}
 
 		if (pathPrefix === DataSourceMapper('UDI')) {
+			// console.log('value :', value)
 			const udiData = value[0]
-			const udiObj = {}
+			let udiObj = {}
+			console.log('udiData :', udiData)
 
-			if (Object.keys(udiData).includes('harArbeidsAdgang')) {
+			// if (Object.keys(udiData).includes('harArbeidsAdgang')) {
+			if (attribute.id === 'arbeidsadgang') {
 				Object.keys(udiData).map(attr => {
 					if (udiData[attr]) {
 						if (attr === 'arbeidsadgangFraDato') {
@@ -196,10 +202,14 @@ export const getValues = (attributeList, values) => {
 				})
 			}
 
-			if (Object.keys(udiData).includes('oppholdsstatus')) {
+			// if (Object.keys(udiData).includes('oppholdsstatus')) {
+			if (attribute.id === 'gjeldendeOppholdsstatus') {
 				if (udiData.oppholdsstatus === 'eosEllerEFTAOpphold') {
-					const periode = udiData.typeOpphold + 'Periode'
-					Object.assign(udiObj, { [udiData.typeOpphold]: null })
+					const periode = udiData.eosEllerEFTAtypeOpphold + 'Periode'
+					const effektuering = udiData.eosEllerEFTAtypeOpphold + 'Effektuering'
+					Object.assign(udiObj, {
+						[udiData.eosEllerEFTAtypeOpphold]: udiData[udiData.eosEllerEFTAtypeOpphold]
+					})
 					if (udiData.oppholdFraDato) {
 						Object.assign(udiObj, { [periode]: { fra: udiData.oppholdFraDato } })
 					}
@@ -210,31 +220,69 @@ export const getValues = (attributeList, values) => {
 							Object.assign(udiObj, { [periode]: { til: udiData.oppholdTilDato } })
 						}
 					}
-				} else if (udiData.oppholdsstatus === 'oppholdSammeVilkaar') {
-					const periode = udiData.oppholdsstatus + 'Periode'
-					Object.assign(udiObj, { [udiData.oppholdsstatus]: {} })
-					if (udiData.oppholdFraDato) {
-						Object.assign(udiObj[udiData.oppholdsstatus], {
-							[periode]: { fra: udiData.oppholdFraDato }
-						})
+					if (udiData.effektueringsDato) {
+						Object.assign(udiObj, { [effektuering]: udiData.effektueringsDato })
 					}
-					if (udiData.oppholdTilDato) {
-						if ([periode] in udiObj[udiData.oppholdsstatus]) {
-							Object.assign(udiObj[udiData.oppholdsstatus][periode], {
-								til: udiData.oppholdTilDato
-							})
-						} else {
+				} else if (udiData.oppholdsstatus === 'udiOppholdSammeVilkaar') {
+					// const periode = udiData.oppholdsstatus + 'Periode'
+					if (udiData.tredjelandsBorgereValg === 'oppholdSammeVilkaar') {
+						Object.assign(udiObj, { [udiData.oppholdsstatus]: {} })
+						if (udiData.oppholdSammeVilkaarFraDato) {
 							Object.assign(udiObj[udiData.oppholdsstatus], {
-								[periode]: { til: udiData.oppholdTilDato }
+								oppholdSammeVilkaarPeriode: { fra: udiData.oppholdSammeVilkaarFraDato }
 							})
 						}
+						if (udiData.oppholdSammeVilkaarTilDato) {
+							if ('oppholdSammeVilkaarPeriode' in udiObj[udiData.oppholdsstatus]) {
+								Object.assign(udiObj[udiData.oppholdsstatus].oppholdSammeVilkaarPeriode, {
+									til: udiData.oppholdSammeVilkaarTilDato
+								})
+							} else {
+								Object.assign(udiObj[udiData.oppholdsstatus], {
+									oppholdSammeVilkaarPeriode: { til: udiData.oppholdSammeVilkaarTilDato }
+								})
+							}
+						}
+						if (udiData.oppholdSammeVilkaarEffektuering) {
+							Object.assign(udiObj[udiData.oppholdsstatus], {
+								oppholdSammeVilkaarEffektuering: udiData.oppholdSammeVilkaarEffektuering
+							})
+						}
+						if (udiData.oppholdstillatelseType) {
+							Object.assign(udiObj[udiData.oppholdsstatus], {
+								oppholdstillatelseType: udiData.oppholdstillatelseType
+							})
+						}
+						if (udiData.oppholdstillatelseVedtaksDato) {
+							Object.assign(udiObj[udiData.oppholdsstatus], {
+								oppholdstillatelseVedtaksDato: udiData.oppholdstillatelseVedtaksDato
+							})
+						}
+					} else if (udiData.tredjelandsBorgereValg === 'UAVKLART') {
+						Object.assign(udiObj, { uavklart: true })
+					} else if (udiData.tredjelandsBorgereValg === 'ikkeUdiOppholdSammeVilkaar') {
+						Object.assign(udiObj, {
+							ikkeOppholdstilatelseIkkeVilkaarIkkeVisum: {}
+						})
 					}
-				} else if (udiData.oppholdsstatus === 'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum') {
-					Object.assign(udiObj, { [udiData.oppholdsstatus]: { [udiData.ikkeOppholdGrunn]: null } })
-				} else if (udiData.oppholdsstatus === 'uavklart') {
-					Object.assign(udiObj, { uavklart: null })
 				}
 			}
+
+			if (attribute.id === 'aliaser') {
+				// Object.assign(udiObj, { aliaser: [] })
+				udiObj = []
+				value.forEach((alias, idx) => {
+					alias.nyIdent === 'navn'
+						? (udiObj[idx] = { nyIdent: false })
+						: (udiObj[idx] = { identtype: alias.identtype, nyIdent: true })
+				})
+			}
+
+			if (attribute.id === 'flyktning') {
+				udiObj = ''
+				udiObj = value
+			}
+			// console.log('udiObj :', udiObj)
 			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, udiObj)
 		}
 
@@ -290,8 +338,11 @@ const _transformAttributt = (attribute, attributes, value) => {
 		return valueDeepCopy
 	}
 	if (attribute.items) {
+		// console.log('attribute :', attribute)
 		let attributeList = attribute.items.reduce((res, acc) => ({ ...res, [acc.id]: acc }), {})
+		// console.log('attrbuteList :', attributeList)
 		if (attribute.isMultiple) {
+			// console.log('value :', value)
 			return value.map(val =>
 				Object.assign(
 					{},

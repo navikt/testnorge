@@ -33,8 +33,8 @@ export default class PersonDetaljer extends PureComponent {
 			getPdlforvalterStatusOK(this.props.testIdent.pdlforvalterStatus) &&
 			this.props.getPdlfTestbruker()
 		this.props.testIdent.arenaforvalterStatus && this.props.getArenaTestbruker()
-		this.props.testIdent.udistubStatus === 'OK' && this.props.getUdiTestbruker()
-
+		// TODO Tilpass denne når vi får tilbake udistub-status fra backend:
+		// this.props.testIdent.udistubStatus === 'OK' && this.props.getUdiTestbruker()
 		const aaregSuccessEnvs = getSuccessEnv(this.props.testIdent.aaregStatus)
 		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
 

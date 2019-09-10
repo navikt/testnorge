@@ -54,7 +54,7 @@ export default class BestillingDetaljerSammendrag extends PureComponent {
 							{kategori.items && (
 								<div className={cssClass}>
 									{kategori.items.map((attributt, i) => {
-										if (attributt.value) {
+										if (attributt && attributt.value) {
 											return this._renderStaticValue(attributt, i)
 										}
 									})}

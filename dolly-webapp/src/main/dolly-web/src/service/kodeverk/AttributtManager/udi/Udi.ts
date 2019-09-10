@@ -28,16 +28,17 @@ const AttributtListe: Attributt[] = [
 				validation: yup.string().required('Velg en oppholdsstatus'),
 				attributtType: AttributtType.SelectAndRead
 			},
+			// EØS- eller EFTA-opphold:
 			{
 				hovedKategori: Kategorier.Udi,
 				subKategori: SubKategorier.Oppholdsstatus,
-				id: 'typeOpphold',
+				id: 'eosEllerEFTAtypeOpphold',
 				label: 'Type opphold',
 				size: 'large',
 				dataSource: DataSource.UDI,
 				inputType: InputType.Select,
-				onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [1] },
-				options: SelectOptionsManager('typeOpphold'),
+				onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [0] },
+				options: SelectOptionsManager('eosEllerEFTAtypeOpphold'),
 				validation: yup.string().required('Velg en type opphold'),
 				attributtType: AttributtType.SelectAndRead
 			},
@@ -48,7 +49,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Oppholdstillatelse fra dato',
 				dataSource: DataSource.UDI,
 				inputType: InputType.Date,
-				onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [1, 2] },
+				onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [0] },
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
@@ -58,24 +59,142 @@ const AttributtListe: Attributt[] = [
 				label: 'Oppholdstillatelse til dato',
 				dataSource: DataSource.UDI,
 				inputType: InputType.Date,
-				onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [1, 2] },
+				onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [0] },
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
 				hovedKategori: Kategorier.Udi,
 				subKategori: SubKategorier.Oppholdsstatus,
-				id: 'ikkeOppholdGrunn',
-				label: 'Grunn',
+				id: 'effektueringsDato',
+				label: 'Effektueringsdato',
+				dataSource: DataSource.UDI,
+				inputType: InputType.Date,
+				onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [0] },
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.Udi,
+				subKategori: SubKategorier.Oppholdsstatus,
+				id: 'eosEllerEFTABeslutningOmOppholdsrett',
+				label: 'Grunnlag for opphold',
 				size: 'medium',
 				dataSource: DataSource.UDI,
 				inputType: InputType.Select,
-				onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [3] },
-				options: SelectOptionsManager('ikkeOppholdGrunn'),
-				validation: yup.string().required('Velg en grunn'),
+				onlyShowAfterSelectedValue: { attributtId: 'eosEllerEFTAtypeOpphold', valueIndex: [0] },
+				options: SelectOptionsManager('eosEllerEFTABeslutningOmOppholdsrett'),
+				validation: yup.string().required('Velg et grunnlag'),
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.Udi,
+				subKategori: SubKategorier.Oppholdsstatus,
+				id: 'eosEllerEFTAVedtakOmVarigOppholdsrett',
+				label: 'Grunnlag for opphold',
+				size: 'medium',
+				dataSource: DataSource.UDI,
+				inputType: InputType.Select,
+				onlyShowAfterSelectedValue: { attributtId: 'eosEllerEFTAtypeOpphold', valueIndex: [1] },
+				options: SelectOptionsManager('eosEllerEFTABeslutningOmOppholdsrett'),
+				validation: yup.string().required('Velg et grunnlag'),
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.Udi,
+				subKategori: SubKategorier.Oppholdsstatus,
+				id: 'eosEllerEFTAOppholdstillatelse',
+				label: 'Grunnlag for opphold',
+				size: 'medium',
+				dataSource: DataSource.UDI,
+				inputType: InputType.Select,
+				onlyShowAfterSelectedValue: { attributtId: 'eosEllerEFTAtypeOpphold', valueIndex: [2] },
+				options: SelectOptionsManager('eosEllerEFTAOppholdstillatelse'),
+				validation: yup.string().required('Velg et grunnlag'),
+				attributtType: AttributtType.SelectAndRead
+			},
+			// Tredjelands borgere / Opphold samme vilkår:
+			{
+				hovedKategori: Kategorier.Udi,
+				subKategori: SubKategorier.Oppholdsstatus,
+				id: 'tredjelandsBorgereValg',
+				label: 'Status',
+				size: 'large',
+				dataSource: DataSource.UDI,
+				inputType: InputType.Select,
+				onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [1] },
+				options: SelectOptionsManager('tredjelandsBorgereValg'),
+				validation: yup.string().required('Velg en status'),
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.Udi,
+				subKategori: SubKategorier.Oppholdsstatus,
+				id: 'oppholdSammeVilkaarFraDato',
+				label: 'Oppholdstillatelse fra dato',
+				dataSource: DataSource.UDI,
+				inputType: InputType.Date,
+				onlyShowAfterSelectedValue: { attributtId: 'tredjelandsBorgereValg', valueIndex: [0] },
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.Udi,
+				subKategori: SubKategorier.Oppholdsstatus,
+				id: 'oppholdSammeVilkaarTilDato',
+				label: 'Oppholdstillatelse til dato',
+				dataSource: DataSource.UDI,
+				inputType: InputType.Date,
+				onlyShowAfterSelectedValue: { attributtId: 'tredjelandsBorgereValg', valueIndex: [0] },
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.Udi,
+				subKategori: SubKategorier.Oppholdsstatus,
+				id: 'oppholdSammeVilkaarEffektuering',
+				label: 'Effektueringsdato',
+				dataSource: DataSource.UDI,
+				inputType: InputType.Date,
+				onlyShowAfterSelectedValue: { attributtId: 'tredjelandsBorgereValg', valueIndex: [0] },
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.Udi,
+				subKategori: SubKategorier.Oppholdsstatus,
+				id: 'oppholdstillatelseType',
+				label: 'Type oppholdstillatelse',
+				// size: 'large',
+				dataSource: DataSource.UDI,
+				inputType: InputType.Select,
+				onlyShowAfterSelectedValue: { attributtId: 'tredjelandsBorgereValg', valueIndex: [0] },
+				options: SelectOptionsManager('oppholdstillatelseType'),
+				validation: yup.string().required('Velg en type oppholdstillatelse'),
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.Udi,
+				subKategori: SubKategorier.Oppholdsstatus,
+				id: 'oppholdstillatelseVedtaksDato',
+				label: 'Vedtaksdato',
+				dataSource: DataSource.UDI,
+				inputType: InputType.Date,
+				onlyShowAfterSelectedValue: { attributtId: 'tredjelandsBorgereValg', valueIndex: [0] },
 				attributtType: AttributtType.SelectAndRead
 			}
+			// ,
+			// {
+			// 	hovedKategori: Kategorier.Udi,
+			// 	subKategori: SubKategorier.Oppholdsstatus,
+			// 	id: 'ikkeOppholdGrunn',
+			// 	label: 'Grunn',
+			// 	size: 'medium',
+			// 	dataSource: DataSource.UDI,
+			// 	inputType: InputType.Select,
+			// 	onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [3] },
+			// 	options: SelectOptionsManager('ikkeOppholdGrunn'),
+			// 	validation: yup.string().required('Velg en grunn'),
+			// 	attributtType: AttributtType.SelectAndRead
+			// }
 		]
 	},
+	// ARBEIDSADGANG:
 	{
 		hovedKategori: Kategorier.Udi,
 		subKategori: SubKategorier.Arbeidsadgang,
@@ -142,7 +261,134 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndRead
 			}
 		]
+	},
+	// ALIASER:
+	{
+		hovedKategori: Kategorier.Udi,
+		subKategori: SubKategorier.Alias,
+		id: 'aliaser',
+		label: 'Har aliaser',
+		dataSource: DataSource.UDI,
+		isMultiple: true,
+		// inputType: InputType.Select,
+		// options: SelectOptionsManager('boolean'),
+		validation: yup.object(),
+		attributtType: AttributtType.SelectAndEdit,
+		items: [
+			{
+				hovedKategori: Kategorier.Udi,
+				subKategori: SubKategorier.Alias,
+				id: 'nyIdent',
+				label: 'Type alias',
+				path: 'nyIdent',
+				dataSource: DataSource.UDI,
+				// isMultiple: true,
+				inputType: InputType.Select,
+				options: SelectOptionsManager('nyIdent'),
+				// validation: yup.object(),
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Udi,
+				subKategori: SubKategorier.Alias,
+				id: 'identtype',
+				label: 'Identtype',
+				path: 'identtype',
+				dataSource: DataSource.UDI,
+				// isMultiple: true,
+				inputType: InputType.Select,
+				onlyShowAfterSelectedValue: { attributtId: 'nyIdent', valueIndex: [1] },
+				options: SelectOptionsManager('identtype'),
+				// validation: yup.object(),
+				attributtType: AttributtType.SelectAndEdit
+			}
+		]
+	},
+	// FLYKTNINGSTATUS:
+	{
+		hovedKategori: Kategorier.Udi,
+		subKategori: SubKategorier.Diverse,
+		id: 'flyktning',
+		label: 'Flyktningstatus',
+		// path: 'udiOppholdStatus',
+		dataSource: DataSource.UDI,
+		inputType: InputType.Select,
+		options: SelectOptionsManager('boolean'),
+		// validation: yup.object(),
+		attributtType: AttributtType.SelectAndEdit
 	}
 ]
 
 export default AttributtListe
+
+// GAMMEL OPPHOLDSSTATUS
+// {
+// 	hovedKategori: Kategorier.Udi,
+// 	subKategori: SubKategorier.Oppholdsstatus,
+// 	id: 'gjeldendeOppholdsstatus',
+// 	label: 'Har oppholdsstatus',
+// 	path: 'udiOppholdStatus',
+// 	dataSource: DataSource.UDI,
+// 	validation: yup.object(),
+// 	attributtType: AttributtType.SelectAndEdit,
+// 	items: [
+// 		{
+// 			hovedKategori: Kategorier.Udi,
+// 			subKategori: SubKategorier.Oppholdsstatus,
+// 			id: 'oppholdsstatus',
+// 			label: 'Oppholdsstatus',
+// 			size: 'large',
+// 			dataSource: DataSource.UDI,
+// 			inputType: InputType.Select,
+// 			options: SelectOptionsManager('oppholdsstatus'),
+// 			validation: yup.string().required('Velg en oppholdsstatus'),
+// 			attributtType: AttributtType.SelectAndRead
+// 		},
+// 		{
+// 			hovedKategori: Kategorier.Udi,
+// 			subKategori: SubKategorier.Oppholdsstatus,
+// 			id: 'typeOpphold',
+// 			label: 'Type opphold',
+// 			size: 'large',
+// 			dataSource: DataSource.UDI,
+// 			inputType: InputType.Select,
+// 			onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [1] },
+// 			options: SelectOptionsManager('typeOpphold'),
+// 			validation: yup.string().required('Velg en type opphold'),
+// 			attributtType: AttributtType.SelectAndRead
+// 		},
+// 		{
+// 			hovedKategori: Kategorier.Udi,
+// 			subKategori: SubKategorier.Oppholdsstatus,
+// 			id: 'oppholdFraDato',
+// 			label: 'Oppholdstillatelse fra dato',
+// 			dataSource: DataSource.UDI,
+// 			inputType: InputType.Date,
+// 			onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [1, 2] },
+// 			attributtType: AttributtType.SelectAndRead
+// 		},
+// 		{
+// 			hovedKategori: Kategorier.Udi,
+// 			subKategori: SubKategorier.Oppholdsstatus,
+// 			id: 'oppholdTilDato',
+// 			label: 'Oppholdstillatelse til dato',
+// 			dataSource: DataSource.UDI,
+// 			inputType: InputType.Date,
+// 			onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [1, 2] },
+// 			attributtType: AttributtType.SelectAndRead
+// 		},
+// 		{
+// 			hovedKategori: Kategorier.Udi,
+// 			subKategori: SubKategorier.Oppholdsstatus,
+// 			id: 'ikkeOppholdGrunn',
+// 			label: 'Grunn',
+// 			size: 'medium',
+// 			dataSource: DataSource.UDI,
+// 			inputType: InputType.Select,
+// 			onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [3] },
+// 			options: SelectOptionsManager('ikkeOppholdGrunn'),
+// 			validation: yup.string().required('Velg en grunn'),
+// 			attributtType: AttributtType.SelectAndRead
+// 		}
+// 	]
+// }

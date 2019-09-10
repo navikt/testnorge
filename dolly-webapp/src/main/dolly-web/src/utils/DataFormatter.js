@@ -210,6 +210,7 @@ Formatters.commaToSpace = streng => {
 }
 
 Formatters.showLabel = (optionsGruppe, value) => {
+	if (!value) return null
 	const obj = SelectOptionsManager(optionsGruppe).filter(options => options.value === value)
 	return obj.label || obj[0].label
 }
