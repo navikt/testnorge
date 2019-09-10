@@ -296,74 +296,71 @@ export function mapInstData(instData) {
 
 export function mapUdiData(udiData) {
 	if (!udiData) return null
-	//! Evt lage en Formatters.function som omstrukturerer hele udiData til et ok format
-	//! Lage noe av type Formatters.showLabel?
-	//! Evt lage flat object???
+	//! Begynte på denne for lenge siden, men tror ikke det er så mye som fortsatt er brukbart.
 	return {
 		header: 'UDI',
 		data: [
-			{
-				id: 'gjeldendeOppholdsstatus',
-				label: 'Gjeldende oppholdsstatus',
-				value: [
-					{
-						id: 'oppholdsstatus',
-						label: 'Oppholdsstatus',
-						value: udiData.oppholdStatus //! + Formatters.function()
-					},
-					{
-						id: 'typeOpphold',
-						label: 'Type opphold',
-						value: udiData.oppholdStatus //! + Formatters.function()
-					},
-					{
-						id: 'oppholdFraDato',
-						label: 'Oppholdstillatelse fra dato',
-						value: udiData.oppholdStatus //! + Formatters.function()
-					},
-					{
-						id: 'oppholdTilDato',
-						label: 'Oppholdstillatelse til dato',
-						value: udiData.oppholdStatus //! + Formatters.function()
-					},
-					{
-						id: 'ikkeOppholdGrunn',
-						label: 'Grunn',
-						value: udiData.oppholdStatus //! + Formatters.function()
-					}
-				]
-			},
-			{
-				id: 'arbeidsadgang',
-				label: 'Arbeidsadgang',
-				value: [
-					{
-						id: 'harArbeidsadgang',
-						label: 'Har arbeidsadgang',
-						value: udiData.arbeidsadgang.harArbeidsAdgang
-					},
-					{
-						id: 'typeArbeidsadgang',
-						label: 'Type arbeidsadgang',
-						value: Formatters.showLabel(udiData.arbeidsadgang.typeArbeidsAdgang)
-					},
-					{
-						id: 'arbeidsOmfang',
-						label: 'Arbeidsomfang',
-						value: Formatters.showLabel(udiData.arbeidsadgang.arbeidsOmfang)
-					},
-					{
-						id: 'arbeidsadgangFraDato',
-						label: 'Arbeidsadgang fra dato',
-						value: udiData.arbeidsadgang.periode.fra
-					},
-					{
-						id: 'arbeidsadgangTilDato',
-						label: 'Arbeidsadgang til dato',
-						value: udiData.arbeidsadgang.periode.til
-					}
-				]
-			}
+			// {
+			// 	id: 'gjeldendeOppholdsstatus',
+			// 	label: 'Gjeldende oppholdsstatus',
+			// 	value: [
+			// 		{
+			// 			id: 'oppholdsstatus',
+			// 			label: 'Oppholdsstatus',
+			// 			value: udiData.oppholdStatus
+			// 		},
+			// 		{
+			// 			id: 'typeOpphold',
+			// 			label: 'Type opphold',
+			// 			value: udiData.oppholdStatus
+			// 		},
+			// 		{
+			// 			id: 'oppholdFraDato',
+			// 			label: 'Oppholdstillatelse fra dato',
+			// 			value: udiData.oppholdStatus
+			// 		},
+			// 		{
+			// 			id: 'oppholdTilDato',
+			// 			label: 'Oppholdstillatelse til dato',
+			// 			value: udiData.oppholdStatus
+			// 		},
+			// 		{
+			// 			id: 'ikkeOppholdGrunn',
+			// 			label: 'Grunn',
+			// 		}
+			// 	]
+			// },
+			// {
+			// 	id: 'arbeidsadgang',
+			// 	label: 'Arbeidsadgang',
+			// 	value: [
+			// 		{
+			// 			id: 'harArbeidsadgang',
+			// 			label: 'Har arbeidsadgang',
+			// 			value: udiData.arbeidsadgang.harArbeidsAdgang
+			// 		},
+			// 		{
+			// 			id: 'typeArbeidsadgang',
+			// 			label: 'Type arbeidsadgang',
+			// 			value: Formatters.showLabel(udiData.arbeidsadgang.typeArbeidsAdgang)
+			// 		},
+			// 		{
+			// 			id: 'arbeidsOmfang',
+			// 			label: 'Arbeidsomfang',
+			// 			value: Formatters.showLabel(udiData.arbeidsadgang.arbeidsOmfang)
+			// 		},
+			// 		{
+			// 			id: 'arbeidsadgangFraDato',
+			// 			label: 'Arbeidsadgang fra dato',
+			// 			value: udiData.arbeidsadgang.periode.fra
+			// 		},
+			// 		{
+			// 			id: 'arbeidsadgangTilDato',
+			// 			label: 'Arbeidsadgang til dato',
+			// 			value: udiData.arbeidsadgang.periode.til
+			// 		}
+			// 	]
+			// }
 		]
 	}
 }

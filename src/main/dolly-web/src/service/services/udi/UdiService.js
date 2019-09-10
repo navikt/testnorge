@@ -1,5 +1,5 @@
 import Request from '../Request'
-// import axios from 'axios'
+import axios from 'axios'
 import ConfigService from '~/service/Config'
 
 export default class UdiService {
