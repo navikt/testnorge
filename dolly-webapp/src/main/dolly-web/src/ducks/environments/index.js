@@ -33,7 +33,7 @@ export const _getEnvironmentsSortedByType = envArray => {
 		return prev
 	}, {})
 
-	Object.keys(sortedByType).map(key => {
+	Object.keys(sortedByType).forEach(key => {
 		const envs = sortedByType[key]
 		sortedByType[key] = envs.sort((a, b) => {
 			return a.label.substring(1) - b.label.substring(1)
