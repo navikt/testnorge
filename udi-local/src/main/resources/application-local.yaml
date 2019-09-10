@@ -24,7 +24,7 @@ spring:
 application:
   version: @application.version@
 
-spring.jpa.hibernate.ddl-auto: update
+spring.jpa.hibernate.ddl-auto: create-drop
 
 tpsf:
   base:

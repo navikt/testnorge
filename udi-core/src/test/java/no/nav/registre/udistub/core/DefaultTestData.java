@@ -13,8 +13,8 @@ import no.udi.mt_1067_nav_data.v1.Varighet;
 import java.time.LocalDate;
 import java.util.Arrays;
 
+import no.nav.registre.udistub.core.database.model.Kodeverk;
 import no.nav.registre.udistub.core.database.model.PersonNavn;
-import no.nav.registre.udistub.core.service.to.Kodeverk;
 import no.nav.registre.udistub.core.service.to.UdiAlias;
 import no.nav.registre.udistub.core.service.to.UdiArbeidsadgang;
 import no.nav.registre.udistub.core.service.to.UdiAvgjorelse;
@@ -58,7 +58,7 @@ public class DefaultTestData {
 
     private static final UdiPerson testPerson = createPersonTo();
 
-    public static final no.nav.registre.udistub.core.service.to.Kodeverk TEST_KODEVERK_CODE = new Kodeverk();
+    public static final Kodeverk TEST_KODEVERK_CODE = new Kodeverk();
 
     static {
         TEST_KODEVERK_CODE.setKode("testkode");

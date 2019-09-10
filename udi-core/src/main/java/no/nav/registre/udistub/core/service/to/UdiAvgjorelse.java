@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+import no.nav.registre.udistub.core.database.model.Kodeverk;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

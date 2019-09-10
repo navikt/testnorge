@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.udi.common.v2.Kodeverk;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -20,6 +19,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
 
@@ -38,47 +38,27 @@ public class Avgjorelse {
 
     private String omgjortAvgjoerelsesId;
 
-    @Embedded
-    @AttributeOverrides(
-            value = {
-                    @AttributeOverride(name = "kode", column = @Column(name = "utfallstype_kode_kode")),
-                    @AttributeOverride(name = "visningsnavn", column = @Column(name = "utfallstype_kode_visningsnavn")),
-                    @AttributeOverride(name = "type", column = @Column(name = "utfallstype_kode_type"))
-            }
-    )
+    @OneToOne
+    @JoinColumn(name = "utfallstype_kode_id")
     private Kodeverk utfallstypeKode;
 
-    @Embedded
-    @AttributeOverrides(
-            value = {
-                    @AttributeOverride(name = "kode", column = @Column(name = "grunntype_kode_kode")),
-                    @AttributeOverride(name = "visningsnavn", column = @Column(name = "grunntype_kode_visningsnavn")),
-                    @AttributeOverride(name = "type", column = @Column(name = "grunntype_kode_type"))
-            }
-    )
+    @OneToOne
+    @JoinColumn(name = "grunntype_kode_id")
     private Kodeverk grunntypeKode;
 
-    @Embedded
-    @AttributeOverrides(
-            value = {
-                    @AttributeOverride(name = "kode", column = @Column(name = "tillatelse_kode_kode")),
-                    @AttributeOverride(name = "visningsnavn", column = @Column(name = "tillatelse_kode_visningsnavn")),
-                    @AttributeOverride(name = "type", column = @Column(name = "tillatelse_kode_type"))
-            }
-    )
+    @OneToOne
+    @JoinColumn(name = "tillatelse_kode_id")
     private Kodeverk tillatelseKode;
 
-    private boolean erPositiv;
-
-    @Embedded
-    @AttributeOverrides(
-            value = {
-                    @AttributeOverride(name = "kode", column = @Column(name = "utfall_kode")),
-                    @AttributeOverride(name = "visningsnavn", column = @Column(name = "utfall_visningsnavn")),
-                    @AttributeOverride(name = "type", column = @Column(name = "utfall_type"))
-            }
-    )
+    @OneToOne
+    @JoinColumn(name = "utfall_varighet_kode_id")
     private Kodeverk utfallVarighetKode;
+
+    @OneToOne
+    @JoinColumn(name = "tillatelse_varighet_kode_id")
+    private Kodeverk tillatelseVarighetKode;
+
+    private boolean erPositiv;
 
     private Integer utfallVarighet;
 
@@ -90,16 +70,6 @@ public class Avgjorelse {
             }
     )
     private Periode utfallPeriode;
-
-    @Embedded
-    @AttributeOverrides(
-            value = {
-                    @AttributeOverride(name = "kode", column = @Column(name = "tillatelse_kode")),
-                    @AttributeOverride(name = "visningsnavn", column = @Column(name = "tillatelse_visningsnavn")),
-                    @AttributeOverride(name = "type", column = @Column(name = "tillatelse_type"))
-            }
-    )
-    private Kodeverk tillatelseVarighetKode;
 
     private Integer tillatelseVarighet;
 
