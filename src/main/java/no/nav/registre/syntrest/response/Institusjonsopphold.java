@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class InstResponse {
+public class Institusjonsopphold {
     @JsonProperty("dato_fom")
     private String startdato;
     @JsonProperty("dato_tom")

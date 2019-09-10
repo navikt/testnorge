@@ -3,19 +3,21 @@ package no.nav.registre.syntrest.controllers;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.response.AaregResponse;
-import no.nav.registre.syntrest.response.BisysResponse;
+import no.nav.registre.syntrest.response.Arbeidsforholdsmelding;
+import no.nav.registre.syntrest.response.Barnebidragsmelding;
+import no.nav.registre.syntrest.response.Medlemskapsmelding;
 import no.nav.registre.syntrest.response.domain.AAP115Melding;
 import no.nav.registre.syntrest.response.domain.AAPMelding;
-import no.nav.registre.syntrest.services.AaregService;
-import no.nav.registre.syntrest.services.ArenaAAPService;
-import no.nav.registre.syntrest.services.BisysService;
+import no.nav.registre.syntrest.response.domain.Institusjonsmelding;
+import no.nav.registre.syntrest.services.SyntetiseringService;
 import no.nav.registre.syntrest.utils.InputValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,18 +34,16 @@ import java.util.Objects;
 @Api(description = "Endepunkter for å generere personer fra synt pakken. Tar seg også av å spinne opp og avslutte relevante synt-pakker på nais.")
 @RequiredArgsConstructor
 public class SyntController {
-    private final AaregService aaregService;
-    private final ArenaAAPService arenaAAPService;
-    private final BisysService bisysService;
+    private final SyntetiseringService syntetiseringService;
 
     @PostMapping("/aareg")
     @ApiOperation(value = "Aareg", notes = "Genererer syntetiske arbeidshistorikker bestående av meldinger på AAREG format.")
-    public ResponseEntity<List<AaregResponse>> generateAareg(
+    public ResponseEntity<List<Arbeidsforholdsmelding>> generateAareg(
             @ApiParam(value = "Liste med identifikasjonnumre for fikitve personer")
-            @RequestBody List<String> fnrs) {
-
+            @RequestBody List<String> fnrs
+    ) {
         InputValidator.validateInput(fnrs);
-        List<AaregResponse> response = aaregService.generateData(fnrs);
+        List<Arbeidsforholdsmelding> response = syntetiseringService.generateAaregData(fnrs);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -53,10 +53,10 @@ public class SyntController {
     @ApiOperation(value = "Aap115", notes = "Generer et antall AAP11_5 meldinger")
     public ResponseEntity<List<AAP115Melding>> generateAAP11_5(
             @ApiParam("Antall AAP11_5 meldinger")
-            @RequestParam Integer numToGenerate) {
-
+            @RequestParam Integer numToGenerate
+    ) {
         InputValidator.validateInput(numToGenerate);
-        List<AAP115Melding> response = arenaAAPService.generate115Data(numToGenerate);
+        List<AAP115Melding> response = syntetiseringService.generateAAP115Data(numToGenerate);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -66,10 +66,10 @@ public class SyntController {
     @ApiOperation(value = "Ny Rettighet", notes = "Generer et antall nye rettigheter")
     public ResponseEntity<List<AAPMelding>> generateAAPNyRettighet(
             @ApiParam("Antall AAP meldinger/nye rettigheter")
-            @RequestParam Integer numToGenerate) {
-
+            @RequestParam Integer numToGenerate
+    ) {
         InputValidator.validateInput(numToGenerate);
-        List<AAPMelding> response = arenaAAPService.generateNyRettighetData(numToGenerate);
+        List<AAPMelding> response = syntetiseringService.generateAAPData(numToGenerate);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -77,16 +77,59 @@ public class SyntController {
 
     @GetMapping("/bisys")
     @ApiOperation(value = "bisys")
-    public ResponseEntity<List<BisysResponse>> generateBisys(
+    public ResponseEntity<List<Barnebidragsmelding>> generateBisys(
             @ApiParam("Antall meldinger")
-            @RequestParam int numToGenerate){
-
+            @RequestParam int numToGenerate
+    ) {
         InputValidator.validateInput(numToGenerate);
-        List<BisysResponse> response = bisysService.generateData(numToGenerate);
+        List<Barnebidragsmelding> response = syntetiseringService.generateBisysData(numToGenerate);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/inst")
+    @ApiOperation(value = "Inst", notes = "Generer institusjonsforhold")
+    public ResponseEntity<List<Institusjonsmelding>> generateInst(
+            @ApiParam("Antall institusjonsmeldinger")
+            @RequestParam int numToGenerate
+    ) {
+        InputValidator.validateInput(numToGenerate);
+        List<Institusjonsmelding> response = syntetiseringService.generateInstData(numToGenerate);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/medl")
+    @ApiOperation(value = "Medl", notes = "Generer MEDL meldinger\nObs! Veldig treg!")
+    public ResponseEntity<List<Medlemskapsmelding>> generateMedl(
+            @ApiParam("Antall meldinger")
+            @RequestParam int numToGenerate
+    ) {
+        InputValidator.validateInput(numToGenerate);
+        List<Medlemskapsmelding> response = syntetiseringService.generateMedlData(numToGenerate);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/meldekort/{meldegruppe}")
+    @ApiOperation(value = "Meldekort", notes = "Opprett et antall meldekort for meldegruppen\nReturnerer en liste med strenger der en hvert element er en meldekort xml.")
+    public ResponseEntity<List<String>> generateMeldekort(
+            @ApiParam("Meldegruppe")
+            @PathVariable String meldegruppe,
+            @ApiParam("Antall meldinger")
+            @RequestParam int numToGenerate
+    ) {
+        InputValidator.validateInput(numToGenerate);
+        InputValidator.validateInput(InputValidator.INPUT_STRING.MELDEGRUPPE, meldegruppe);
+        List<String> response = syntetiseringService.generateMeldekortData(numToGenerate, meldegruppe);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
 
 
     private void doResponseValidation(Object response) {

@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class MedlResponse {
+public class Medlemskapsmelding {
 
     @JsonProperty("dato_registrert")
     private String datoRegistrert;

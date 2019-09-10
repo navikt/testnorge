@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class BisysResponse {
+public class Barnebidragsmelding {
 
     @JsonProperty("BA")
     private String barnetsFnr;
