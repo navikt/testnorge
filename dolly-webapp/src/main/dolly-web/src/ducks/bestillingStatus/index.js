@@ -21,17 +21,15 @@ export default handleActions(
 	{
 		[success(getBestillinger)](state, action) {
 			const { data } = action.payload
-			const nyeBestillinger = data.filter(bestilling => {
-				if (!bestilling.ferdig) return true
-			})
-			let idListe = []
-			nyeBestillinger.forEach(bestilling => {
-				if (!state.ny.find(id => id == bestilling.id)) idListe.push(bestilling.id)
-			})
+			const nyeBestillinger = data
+				.filter(bestilling => !bestilling.ferdig)
+				.filter(bestilling => !state.ny.find(id => id == bestilling.id))
+				.map(bestilling => bestilling.id)
+
 			return {
 				...state,
 				data,
-				ny: idListe.length > 0 ? [...state.ny, ...idListe] : state.ny
+				ny: nyeBestillinger.length > 0 ? [...state.ny, ...nyeBestillinger] : state.ny
 			}
 		},
 		[removeNyBestillingStatus](state, action) {
