@@ -16,6 +16,9 @@ public class BisysRequestAugments {
     private final String gebyrBeslAarsakKode;
     private final String kodeUnntForsk;
     private final String samvarsklasse;
+    private final int sartilskuddKravbelop;
+    private final int sartilskuddFradrag;
+    private final int sartilskuddGodkjentBelop;
     private final String sivilstandBm;
 
 }

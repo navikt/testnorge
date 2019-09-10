@@ -1,9 +1,7 @@
-package no.nav.registre.bisys.consumer.ui.modules;
+package no.nav.registre.bisys.consumer.ui.vedtak;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 
@@ -18,7 +16,6 @@ import no.nav.bidrag.ui.bisys.BisysApplication;
 import no.nav.bidrag.ui.bisys.BisysApplication.ActiveBisysPage;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeRolletypeConstants;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
-import no.nav.bidrag.ui.bisys.soknad.Soknad;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Barn;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Bidragsberegning;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Boforhold;
@@ -26,151 +23,25 @@ import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Forskuddsberegning;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Inntekter;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Inntektslinje;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Periode;
-import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Underholdskostnad;
 import no.nav.bidrag.ui.bisys.soknad.fattevedtak.FatteVedtak;
 import no.nav.bidrag.ui.bisys.soknad.fattevedtak.Vedtakslinje;
 import no.nav.bidrag.ui.dto.BidragsmeldingConstant;
 import no.nav.bidrag.ui.dto.SynthesizedBidragRequest;
 import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
 import no.nav.registre.bisys.consumer.ui.BisysUiConsumer;
-import no.nav.registre.bisys.consumer.ui.BisysUiSupport;
 
 @Slf4j
 @Component
-public class BisysUiFatteVedtakConsumer {
+public class BisysUiYtelseberegningConsumer {
 
-    public static final String KODE_BESL_AARSAK_FRITATT_IKKE_SOKT = "GIFR";
-    public static final String KODE_BESL_AARSAK_ILAGT_IKKE_SOKT = "GIGI";
-    public static final String INGEN_BARN_REGISTRERT_PAA_HUSSTAND = "Det er ikke registrert noen barn i husstanden.";
+    public static final String INGEN_BARN_REGISTRERT_PAA_HUSSTAND = "Det er ikke registrert noen barn på husstanden.";
 
-    public static final Map<String, String> beslAarsakDekodeMap() {
-
-        Map<String, String> dekodeMap = new HashMap<>();
-        dekodeMap.put(KODE_BESL_AARSAK_FRITATT_IKKE_SOKT, "Fritatt, ikke søkt");
-        dekodeMap.put(KODE_BESL_AARSAK_ILAGT_IKKE_SOKT, "Ilagt, ikke søkt");
-
-        return dekodeMap;
-    }
-
-    /**
-     * Runs the Bidragsberegning and FatteVedtak process
-     * 
-     * <code>
-     *  - Bisys entry point: Soknad
-     *  - Bisys exit point: Fatte vedtak
-     * </code>
-     * 
-     * @param bisys
-     *            BisysApplication
-     * @param request
-     *            SynthesizedBidragRequest containing all data required to complete the FatteVedtak process for a søknad
-     * @throws BidragRequestProcessingException
-     */
-    public void runFatteVedtak(BisysApplication bisys, SynthesizedBidragRequest request)
-            throws BidragRequestProcessingException {
-
-        BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.SOKNAD);
-
-        if (KodeSoknGrKomConstants.BIDRAG_INNKREVING.equals(request.getSoktOm())) {
-            runBidragInnkreving(bisys, request);
-        } else if (KodeSoknGrKomConstants.FORSKUDD.equals(request.getSoktOm())) {
-            runForskudd(bisys, request);
-        }
-    }
-
-    private void runForskudd(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
-        try {
-            ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            Soknad soknad = (Soknad) bisys.getActivePage(activePage);
-            lagreOgForskudd(soknad);
-
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            Inntekter inntekter = (Inntekter) bisys.getActivePage(activePage);
-            fulfillInntekter(request.getSoktOm(), inntekter, request);
-            inntekter.lagreTilBoforhold().click();
-
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            Boforhold boforhold = (Boforhold) bisys.getActivePage(activePage);
-            fulfillBoforhold(boforhold, request);
-            boforhold.lagreOgForskudd().click();
-
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            Forskuddsberegning forskuddsberegning = (Forskuddsberegning) bisys.getActivePage(activePage);
-            fulfillForskuddsberegning(forskuddsberegning, request);
-            forskuddsberegning.lagreOgBeregn().click();
-            forskuddsberegning.lagreBeregnFatteVedtak().click();
-
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            FatteVedtak fatteVedtak = (FatteVedtak) bisys.getActivePage(activePage);
-            fatteVedtak.executeFatteVedtak().click();
-
-        } catch (ElementNotFoundException | NoSuchElementException | ClassCastException e) {
-            throw new BidragRequestProcessingException(bisys.bisysPage(), e);
-        }
-
-    }
-
-    private void lagreOgForskudd(Soknad soknad) throws BidragRequestProcessingException {
-        try {
-            soknad.lagreOgForskudd().click();
-        } catch (NoSuchElementException | ElementNotFoundException e) {
-            throw new BidragRequestProcessingException("LagreOgForskudd-button not visible. Check logged on enhet", soknad, e);
-        }
-    }
-
-    private void fulfillForskuddsberegning(Forskuddsberegning forskuddsberegning, SynthesizedBidragRequest request) {
+    public void fulfillForskuddsberegning(Forskuddsberegning forskuddsberegning, SynthesizedBidragRequest request) {
 
         forskuddsberegning.selectKodeArsak(request.getKodeVirkAarsak(request.getSoktOm()));
         forskuddsberegning.selectSivilstand(request.getSivilstandBm());
         forskuddsberegning.selectUnntak(request.getKodeUnntForsk());
 
-    }
-
-    private void runBidragInnkreving(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
-        try {
-            ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            Soknad soknad = (Soknad) bisys.getActivePage(activePage);
-            soknad.lagreOgBidrag().click();
-
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            Underholdskostnad underholdskostnad = (Underholdskostnad) bisys.getActivePage(activePage);
-            underholdskostnad.lagreTilInntekter().click();
-
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            Inntekter inntekter = (Inntekter) bisys.getActivePage(activePage);
-            fulfillInntekter(request.getSoktOm(), inntekter, request);
-            inntekter.lagreTilBoforhold().click();
-
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            Boforhold boforhold = (Boforhold) bisys.getActivePage(activePage);
-            fulfillBoforhold(boforhold, request);
-            boforhold.lagreOgBidrag().click();
-
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            Bidragsberegning bidragsberegning = (Bidragsberegning) bisys.getActivePage(activePage);
-            fulfillBidragsberegning(bidragsberegning, request);
-            bidragsberegning.lagreOgBeregne().click();
-            bidragsberegning.lagreOgFatteVedtak().click();
-
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            FatteVedtak fatteVedtak = (FatteVedtak) bisys.getActivePage(activePage);
-            completeFatteVedtak(fatteVedtak, request);
-            fatteVedtak.executeFatteVedtak().click();
-
-        } catch (ElementNotFoundException | NoSuchElementException | ClassCastException e) {
-            throw new BidragRequestProcessingException(bisys.bisysPage(), e);
-        }
     }
 
     /**
@@ -203,6 +74,42 @@ public class BisysUiFatteVedtakConsumer {
                 }
             }
         }
+    }
+
+    /**
+     * 
+     * Updates Inntekter and Boforhold
+     * 
+     * <code>
+     *  - Expected entry page: Inntekter
+     *  - Expected exit page: Boforhold
+     * </code>
+     * 
+     * @param bisys
+     * @param request
+     * @throws BidragRequestProcessingException
+     */
+    public void fulfillInntekterAndBoforhold(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
+        ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+
+        Inntekter inntekter = (Inntekter) bisys.getActivePage(activePage);
+        fulfillInntekter(request.getSoktOm(), inntekter, request);
+        inntekter.lagreTilBoforhold().click();
+
+        activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+
+        Boforhold boforhold = (Boforhold) bisys.getActivePage(activePage);
+        fulfillBoforhold(boforhold, request);
+
+        if (KodeSoknGrKomConstants.FORSKUDD.equals(request.getSoktOm())) {
+            boforhold.lagreOgForskudd().click();
+        } else if (KodeSoknGrKomConstants.SARTILSKUDD.equals(request.getSoktOm())
+                || KodeSoknGrKomConstants.SARTILSKUDD_INNKREVING.equals(request.getSoktOm())) {
+            boforhold.lagreOgSartilskudd().click();
+        } else {
+            boforhold.lagreOgBidrag().click();
+        }
+
     }
 
     private void checkInntekter(String rolletype, Inntekter inntekter, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
@@ -351,7 +258,7 @@ public class BisysUiFatteVedtakConsumer {
      * @param bidragsberegning
      * @param request
      */
-    private void fulfillBidragsberegning(Bidragsberegning bidragsberegning,
+    public void fulfillBidragsberegning(Bidragsberegning bidragsberegning,
             SynthesizedBidragRequest request) {
 
         bidragsberegning.selectKodeAarsak(request.getKodeVirkAarsak(request.getSoktOm()));
@@ -374,7 +281,7 @@ public class BisysUiFatteVedtakConsumer {
      * @param fatteVedtak
      * @param request
      */
-    private void completeFatteVedtak(FatteVedtak fatteVedtak, SynthesizedBidragRequest request) {
+    public void completeFatteVedtak(FatteVedtak fatteVedtak, SynthesizedBidragRequest request) {
 
         List<Vedtakslinje> vedtakslinjer = fatteVedtak.vedtakslinjer();
 
@@ -392,4 +299,5 @@ public class BisysUiFatteVedtakConsumer {
             }
         }
     }
+
 }
