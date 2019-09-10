@@ -29,5 +29,6 @@ spec:
     requests:
       cpu: 200m
       memory: 1024Mi
+  webproxy: true
   ingresses:
     - "https://testnorge-statisk-data-forvalter.nais.preprod.local"
