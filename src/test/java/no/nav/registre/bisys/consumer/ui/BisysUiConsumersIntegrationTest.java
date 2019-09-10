@@ -28,7 +28,7 @@ import no.nav.registre.bisys.ApplicationStarter;
 import no.nav.registre.bisys.LocalApplicationStarter;
 import no.nav.registre.bisys.consumer.rs.request.BisysRequestAugments;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
-import no.nav.registre.bisys.consumer.ui.modules.BisysUiSoknadConsumer;
+import no.nav.registre.bisys.consumer.ui.sak.BisysUiSoknadConsumer;
 
 @ActiveProfiles("local-integration-test")
 @RunWith(SpringRunner.class)

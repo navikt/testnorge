@@ -1,4 +1,4 @@
-package no.nav.registre.bisys.consumer.ui.modules;
+package no.nav.registre.bisys.consumer.ui.sak;
 
 import static no.nav.registre.bisys.config.AppConfig.STANDARD_DATE_FORMAT_BISYS;
 import static no.nav.registre.bisys.config.AppConfig.STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST;
@@ -124,7 +124,7 @@ public class BisysUiSoknadConsumer {
             if (mottattdatoBisys.isEqual(mottattdatoRequest)
                     && soknadFraBisys.equals(soknadFraDekodeRequest)
                     && soknadUnderBehandling.soknadsgruppe().getText().equals(soknGrKomDekodeRequest)
-                    && soknadUnderBehandling.typeSoknad().getText().contentEquals(soknTypeDekodeRequest)) {
+                    && soknadUnderBehandling.typeSoknad().getText().equals(soknTypeDekodeRequest)) {
 
                 log.info(
                         "Found existing søknad in sak. Søknad details: mottattdato: {}, soknadFra: {}, soknadsgruppe: {}, soknadstype: {}",

@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import no.nav.registre.bisys.consumer.rs.BisysSyntetisererenConsumer;
 import no.nav.registre.bisys.consumer.rs.request.BisysRequestAugments;
 import no.nav.registre.bisys.consumer.ui.BisysUiSupport;
-import no.nav.registre.bisys.consumer.ui.modules.BisysUiFatteVedtakConsumer;
+import no.nav.registre.bisys.consumer.ui.vedtak.BisysUiFatteVedtakConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Configuration
@@ -22,19 +22,16 @@ public class AppConfig {
     private final static boolean barnRegistrertPaaAdresse = false;
 
     @Value("${ANDEL_FORSORGING}")
-    String andelForsorging;
+    private String andelForsorging;
 
     @Value("${BISYS_URL}")
-    String bisysUrl;
+    private String bisysUrl;
 
-    @Value("${ENHET}")
-    int enhet;
+    @Value("${ENHET:4802}")
+    private int enhet;
 
     @Value("${GEBYR_BESLAARSAK_KODE_FRITATT_IKKE_SOKT}")
     boolean gebyrBeslAarsakKodeFritattIkkeSokt;
-
-    @Value("${testnorge-hodejegeren.rest-api.url}")
-    String hodejegerenUrl;
 
     @Value("${INNTEKT_BM_EGNE_OPPLYSNINGER:0}")
     private int inntektBmEgneOpplysninger;
@@ -46,22 +43,34 @@ public class AppConfig {
     private String kodeUnntForsk;
 
     @Value("${SAKSBEHANDLER_ROLLE}")
-    String rolleSaksbehandler;
-
-    @Value("${SYNTBISYS_PASSWORD}")
-    String saksbehandlerPwd;
-
-    @Value("${SYNTBISYS_USERNAME}")
-    String saksbehandlerUid;
+    private String rolleSaksbehandler;
 
     @Value("${SAMVARSKLASSE}")
-    String samvarsklasse;
+    private String samvarsklasse;
 
     @Value("${SIVILSTAND_BM}")
     private String sivilstandBm;
 
+    @Value("${SYNTBISYS_PASSWORD}")
+    private String saksbehandlerPwd;
+
+    @Value("${SYNTBISYS_USERNAME}")
+    private String saksbehandlerUid;
+
+    @Value("${FRADRAG:0}")
+    private int sartilskuddFradrag;
+
+    @Value("${GODKJENT_BELOP:0}")
+    private int sartilskuddGodkjentBelop;
+
+    @Value("${KRAVBELOP:0}")
+    private int sartilskuddKravbelop;
+
     @Value("${syntrest.rest.api.url}")
-    String syntrestServerUrl;
+    private String syntrestServerUrl;
+
+    @Value("${testnorge-hodejegeren.rest-api.url}")
+    private String hodejegerenUrl;
 
     @Bean
     public RestTemplate restTemplate() {
@@ -95,6 +104,9 @@ public class AppConfig {
                 .kodeUnntForsk(kodeUnntForsk)
                 .samvarsklasse(samvarsklasse)
                 .sivilstandBm(sivilstandBm)
+                .sartilskuddKravbelop(sartilskuddKravbelop)
+                .sartilskuddGodkjentBelop(sartilskuddGodkjentBelop)
+                .sartilskuddFradrag(sartilskuddFradrag)
                 .build();
     }
 
