@@ -13,11 +13,13 @@ import net.morher.ui.connect.html.listener.WaitForJavaScriptListener;
 import net.morher.ui.connect.http.Browser;
 import net.morher.ui.connect.http.BrowserConfigurer;
 import no.nav.bidrag.ui.bisys.BisysApplication;
-import no.nav.bidrag.ui.bisys.BisysApplication.ActiveBisysPage;
+import no.nav.bidrag.ui.bisys.BisysApplication.BisysPageTitle;
+import no.nav.bidrag.ui.bisys.common.BisysPage;
 import no.nav.bidrag.ui.bisys.common.HeaderView;
+import no.nav.bidrag.ui.bisys.exception.BisysUiConnectException;
 import no.nav.bidrag.ui.bisys.sak.Sak;
-import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
-import no.nav.bidrag.ui.exception.BidragRequestRuntimeException;
+import no.nav.registre.bisys.exception.BidragRequestProcessingException;
+import no.nav.registre.bisys.exception.BidragRequestRuntimeException;
 
 @AllArgsConstructor
 public class BisysUiSupport {
@@ -29,6 +31,10 @@ public class BisysUiSupport {
     int enhet;
 
     public BisysApplication logon() {
+        if (bisysUrl.isEmpty() || saksbehandlerUid.isEmpty() || saksbehandlerPwd.isEmpty() || rolleSaksbehandler.isEmpty()) {
+            throw new BidragRequestRuntimeException("Logon information missing!");
+        }
+
         return bisysLogon(bisysUrl, saksbehandlerUid, saksbehandlerPwd, rolleSaksbehandler, enhet);
     }
 
@@ -43,18 +49,51 @@ public class BisysUiSupport {
      * @param bisys
      * @param saksnr
      * @throws BidragRequestProcessingException
+     * @throws BisysUiConnectException
      */
     public static void getSak(BisysApplication bisys, String saksnr)
             throws BidragRequestProcessingException {
 
-        ActiveBisysPage activePage = checkCorrectActivePage(bisys, ActiveBisysPage.SAK);
-        Sak sak = (Sak) bisys.getActivePage(activePage);
+        checkCorrectActivePage(bisys, BisysPageTitle.SAK);
+        Sak sak = (Sak) getActiveBisysPage(bisys);
 
         // Fill in saksnr
         sak.sokSaksnr().setValue(saksnr);
 
         // Click "Hent"
         sak.hentSak().click();
+    }
+
+    public static BisysPageTitle checkCorrectActivePage(BisysApplication bisys,
+            BisysPageTitle expectedEntryPage) throws BidragRequestProcessingException {
+
+        BisysPageTitle activePage = getBisysPageReference(bisys);
+
+        if (activePage == null || !activePage.equals(expectedEntryPage)) {
+            throw new BidragRequestProcessingException(bisys.bisysPage(),
+                    new Exception(BisysUiConsumer.INCORRECT_ENTRY_PAGE));
+        } else {
+            return activePage;
+        }
+    }
+
+    public static BisysPage getActiveBisysPage(BisysApplication bisys) throws BidragRequestProcessingException {
+        BisysPageTitle pageRef = getBisysPageReference(bisys);
+        try {
+            return bisys.getActivePage(pageRef);
+        } catch (BisysUiConnectException e) {
+            throw new BidragRequestProcessingException(bisys.bisysPage(),
+                    e);
+        }
+    }
+
+    public static BisysPageTitle getBisysPageReference(BisysApplication bisys) throws BidragRequestProcessingException {
+        try {
+            return BisysPageTitle.getPageRef(bisys.getBisysPageTitle()).get();
+        } catch (BisysUiConnectException e) {
+            throw new BidragRequestProcessingException(bisys.bisysPage(),
+                    e);
+        }
     }
 
     /**
@@ -114,18 +153,6 @@ public class BisysUiSupport {
                 .addListener(new WaitForJavaScriptListener()).addListener(new ActionLogger())
                 .connect(new Browser().asChrome().useInsecureSSL()
                         .addConfigurer(new BisysBrowserConfigurer()).openUrl(url));
-    }
-
-    public static ActiveBisysPage checkCorrectActivePage(BisysApplication bisys,
-            ActiveBisysPage expectedEntryPage) throws BidragRequestProcessingException {
-        ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-        if (!activePage.equals(expectedEntryPage)) {
-            throw new BidragRequestProcessingException(bisys.bisysPage(),
-                    new Exception(BisysUiConsumer.INCORRECT_ENTRY_PAGE));
-        } else {
-            return activePage;
-        }
     }
 
     private static class BisysBrowserConfigurer implements BrowserConfigurer {

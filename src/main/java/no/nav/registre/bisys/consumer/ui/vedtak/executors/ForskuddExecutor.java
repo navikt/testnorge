@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 
 import no.nav.bidrag.ui.bisys.BisysApplication;
-import no.nav.bidrag.ui.bisys.BisysApplication.ActiveBisysPage;
 import no.nav.bidrag.ui.bisys.soknad.Soknad;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Forskuddsberegning;
 import no.nav.bidrag.ui.bisys.soknad.fattevedtak.FatteVedtak;
-import no.nav.bidrag.ui.dto.SynthesizedBidragRequest;
-import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
+import no.nav.registre.bisys.consumer.rs.request.SynthesizedBidragRequest;
+import no.nav.registre.bisys.consumer.ui.BisysUiSupport;
 import no.nav.registre.bisys.consumer.ui.vedtak.BisysUiYtelseberegningConsumer;
+import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 
 @Component
 public class ForskuddExecutor {
@@ -24,24 +24,18 @@ public class ForskuddExecutor {
 
     public void runForskudd(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
 
-        ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
         try {
-            Soknad soknad = (Soknad) bisys.getActivePage(activePage);
+            Soknad soknad = (Soknad) BisysUiSupport.getActiveBisysPage(bisys);
             lagreOgForskudd(soknad);
 
             ytelsebereging.fulfillInntekterAndBoforhold(bisys, request);
 
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            Forskuddsberegning forskuddsberegning = (Forskuddsberegning) bisys.getActivePage(activePage);
+            Forskuddsberegning forskuddsberegning = (Forskuddsberegning) BisysUiSupport.getActiveBisysPage(bisys);
             ytelsebereging.fulfillForskuddsberegning(forskuddsberegning, request);
             forskuddsberegning.lagreOgBeregn().click();
             forskuddsberegning.lagreBeregnFatteVedtak().click();
 
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            FatteVedtak fatteVedtak = (FatteVedtak) bisys.getActivePage(activePage);
+            FatteVedtak fatteVedtak = (FatteVedtak) BisysUiSupport.getActiveBisysPage(bisys);
             fatteVedtak.executeFatteVedtak().click();
 
         } catch (ElementNotFoundException | NoSuchElementException | ClassCastException e) {

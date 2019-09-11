@@ -15,7 +15,8 @@ import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.bidrag.ui.bisys.BisysApplication;
-import no.nav.bidrag.ui.bisys.BisysApplication.ActiveBisysPage;
+import no.nav.bidrag.ui.bisys.BisysApplication.BisysPageTitle;
+import no.nav.bidrag.ui.bisys.exception.BisysUiConnectException;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknFraConstants;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknTypeConstants;
@@ -24,9 +25,9 @@ import no.nav.bidrag.ui.bisys.sak.Sak;
 import no.nav.bidrag.ui.bisys.sak.UnderBehandling;
 import no.nav.bidrag.ui.bisys.soknad.Soknad;
 import no.nav.bidrag.ui.bisys.soknad.Soknadslinje;
-import no.nav.bidrag.ui.dto.SynthesizedBidragRequest;
-import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
+import no.nav.bidrag.ui.bisys.soknad.request.SoknadRequest;
 import no.nav.registre.bisys.consumer.ui.BisysUiSupport;
+import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 
 @Slf4j
 @Component
@@ -50,8 +51,8 @@ public class BisysUiSoknadConsumer {
      * @param bisys
      * @throws BidragRequestProcessingException
      */
-    public ActiveBisysPage openOrCreateSoknad(BisysApplication bisys,
-            SynthesizedBidragRequest request) throws BidragRequestProcessingException {
+    public BisysPageTitle openOrCreateSoknad(BisysApplication bisys,
+            SoknadRequest request) throws BidragRequestProcessingException {
 
         try {
             sakConsumer.openOrCreateSak(bisys, request);
@@ -65,12 +66,11 @@ public class BisysUiSoknadConsumer {
 
     private void ensureBarnIsPartInSak(BisysApplication bisys, String fnrBa) throws BidragRequestProcessingException {
 
-        BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.SAK);
+        BisysUiSupport.checkCorrectActivePage(bisys, BisysPageTitle.SAK);
 
         bisys.bisysPage().sideBarMenu().roller().click();
-        ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.bisysPage().header().tittel()).get();
 
-        Roller roller = (Roller) bisys.getActivePage(activePage);
+        Roller roller = (Roller) BisysUiSupport.getActiveBisysPage(bisys);
 
         if (!rollerConsumer.barnIsIncluded(roller.barnListe(), fnrBa)) {
             rollerConsumer.addBarnToSak(bisys, fnrBa);
@@ -90,13 +90,13 @@ public class BisysUiSoknadConsumer {
      * @return activeBisysPage on exit
      * @throws BidragRequestProcessingException
      */
-    private ActiveBisysPage openExistingOrCreateNewSoknad(BisysApplication bisys,
-            SynthesizedBidragRequest request)
+    private BisysPageTitle openExistingOrCreateNewSoknad(BisysApplication bisys,
+            SoknadRequest request)
             throws BidragRequestProcessingException {
 
-        ActiveBisysPage activePage = BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.SAK);
+        BisysPageTitle activePage = BisysUiSupport.checkCorrectActivePage(bisys, BisysPageTitle.SAK);
 
-        Sak sak = (Sak) bisys.getActivePage(activePage);
+        Sak sak = (Sak) BisysUiSupport.getActiveBisysPage(bisys);
 
         for (UnderBehandling soknadUnderBehandling : sak.soknaderUnderBehandling()) {
             try {
@@ -134,9 +134,9 @@ public class BisysUiSoknadConsumer {
                         soknadUnderBehandling.typeSoknad().getText());
 
                 soknadUnderBehandling.velg().click();
-                activePage = ActiveBisysPage.getActivePage(bisys.bisysPage().header().tittel()).get();
+                activePage = BisysPageTitle.getPageRef(bisys.bisysPage().header().tittel()).get();
 
-                Soknad soknad = (Soknad) bisys.getActivePage(activePage);
+                Soknad soknad = (Soknad) BisysUiSupport.getActiveBisysPage(bisys);
                 if (requestedBaIncludedInSoknad(soknad, request.getFnrBa())) {
                     return activePage;
                 }
@@ -146,7 +146,7 @@ public class BisysUiSoknadConsumer {
         log.info("Existing søknad not found. Creating new søknad with mottattdato {}",
                 request.getMottattDato());
 
-        if (activePage.equals(ActiveBisysPage.SOKNAD)) {
+        if (activePage.equals(BisysPageTitle.SOKNAD)) {
             bisys.bisysPage().sideBarMenu().sak().click();
         }
 
@@ -165,21 +165,25 @@ public class BisysUiSoknadConsumer {
 
     }
 
-    private ActiveBisysPage createNewSoknad(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
+    private BisysPageTitle createNewSoknad(BisysApplication bisys, SoknadRequest request) throws BidragRequestProcessingException {
 
-        ActiveBisysPage activePage = BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.SAK);
+        BisysPageTitle activePage = BisysUiSupport.checkCorrectActivePage(bisys, BisysPageTitle.SAK);
 
-        Sak sak = (Sak) bisys.getActivePage(activePage);
+        Sak sak = (Sak) BisysUiSupport.getActiveBisysPage(bisys);
         try {
             sak.nySoknad().click();
         } catch (NoSuchElementException | ElementNotFoundException e) {
             throw new BidragRequestProcessingException("Soknad-button not visible. Check logged on enhet", sak, e);
         }
 
-        activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-        Soknad soknad = (Soknad) bisys.getActivePage(activePage);
+        activePage = BisysUiSupport.getBisysPageReference(bisys);
+        Soknad soknad = (Soknad) BisysUiSupport.getActiveBisysPage(bisys);
 
-        soknad.fillInAndSaveSoknad(request);
+        try {
+            soknad.fillInAndSaveSoknad(request);
+        } catch (BisysUiConnectException e) {
+            throw new BidragRequestProcessingException(soknad, e);
+        }
 
         log.info("### Søknad created ### application for barn {} was created.", request.getFnrBa());
         return activePage;

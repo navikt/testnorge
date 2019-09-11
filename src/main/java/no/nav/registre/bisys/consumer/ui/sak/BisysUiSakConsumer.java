@@ -16,14 +16,14 @@ import lombok.extern.slf4j.Slf4j;
 import net.morher.ui.connect.api.element.Button;
 import net.morher.ui.connect.api.element.Label;
 import no.nav.bidrag.ui.bisys.BisysApplication;
-import no.nav.bidrag.ui.bisys.BisysApplication.ActiveBisysPage;
+import no.nav.bidrag.ui.bisys.BisysApplication.BisysPageTitle;
 import no.nav.bidrag.ui.bisys.brukeroversikt.Brukeroversikt;
 import no.nav.bidrag.ui.bisys.brukeroversikt.Ytelseslinje;
 import no.nav.bidrag.ui.bisys.sak.Sak;
-import no.nav.bidrag.ui.dto.SynthesizedBidragRequest;
-import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
-import no.nav.bidrag.ui.exception.BidragRequestRuntimeException;
+import no.nav.bidrag.ui.bisys.soknad.request.SoknadRequest;
 import no.nav.registre.bisys.consumer.ui.BisysUiSupport;
+import no.nav.registre.bisys.exception.BidragRequestProcessingException;
+import no.nav.registre.bisys.exception.BidragRequestRuntimeException;
 
 @Component
 @Slf4j
@@ -45,16 +45,16 @@ public class BisysUiSakConsumer {
      * @return
      * @throws BidragRequestProcessingException
      */
-    public ActiveBisysPage openOrCreateSak(BisysApplication bisys, SynthesizedBidragRequest request)
+    public BisysPageTitle openOrCreateSak(BisysApplication bisys, SoknadRequest request)
             throws BidragRequestProcessingException {
 
-        ActiveBisysPage activePage = BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.OPPGAVELISTE);
+        BisysPageTitle activePage = BisysUiSupport.checkCorrectActivePage(bisys, BisysPageTitle.OPPGAVELISTE);
 
         try {
 
             Optional<String> existingSaksnr = findExistingSakInBrukeroversikt(bisys, request);
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-            Sak sak = (Sak) bisys.getActivePage(activePage);
+            activePage = BisysUiSupport.getBisysPageReference(bisys);
+            Sak sak = (Sak) BisysUiSupport.getActiveBisysPage(bisys);
 
             if (existingSaksnr.isPresent()) {
                 getSak(bisys, existingSaksnr.get());
@@ -77,14 +77,12 @@ public class BisysUiSakConsumer {
      * @throws BidragRequestProcessingException
      */
     private final Optional<String> findExistingSakInBrukeroversikt(BisysApplication bisys,
-            SynthesizedBidragRequest request)
+            SoknadRequest request)
             throws BidragRequestProcessingException {
 
-        bisys.bisysPage().header().velgSkjermbilde().select(ActiveBisysPage.BRUKEROVERSIKT.pageName());
+        bisys.bisysPage().header().velgSkjermbilde().select(BisysPageTitle.BRUKEROVERSIKT.pageName());
 
-        ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-        Brukeroversikt brukeroversikt = (Brukeroversikt) bisys.getActivePage(activePage);
+        Brukeroversikt brukeroversikt = (Brukeroversikt) BisysUiSupport.getActiveBisysPage(bisys);
 
         brukeroversikt.fnr().setValue(request.getFnrBm());
         brukeroversikt.hent().click();
@@ -132,19 +130,18 @@ public class BisysUiSakConsumer {
      * @throws BidragRequestProcessingException
      */
     private final boolean existingSakContainsSameBpBmAsRequest(BisysApplication bisys,
-            Button linkToSak, SynthesizedBidragRequest request)
+            Button linkToSak, SoknadRequest request)
             throws BidragRequestProcessingException {
 
-        ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+        BisysPageTitle activePageRef = BisysUiSupport.getBisysPageReference(bisys);
 
-        if (activePage.equals(ActiveBisysPage.BRUKEROVERSIKT)) {
+        if (activePageRef.equals(BisysPageTitle.BRUKEROVERSIKT)) {
             linkToSak.click();
         } else {
-            BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.SAK);
+            BisysUiSupport.checkCorrectActivePage(bisys, BisysPageTitle.SAK);
         }
 
-        activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-        Sak sak = (Sak) bisys.getActivePage(activePage);
+        Sak sak = (Sak) BisysUiSupport.getActiveBisysPage(bisys);
 
         Optional<String> fnrBpBisys;
 

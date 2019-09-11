@@ -13,7 +13,6 @@ import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.bidrag.ui.bisys.BisysApplication;
-import no.nav.bidrag.ui.bisys.BisysApplication.ActiveBisysPage;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeRolletypeConstants;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Barn;
@@ -25,10 +24,11 @@ import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Inntektslinje;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Periode;
 import no.nav.bidrag.ui.bisys.soknad.fattevedtak.FatteVedtak;
 import no.nav.bidrag.ui.bisys.soknad.fattevedtak.Vedtakslinje;
-import no.nav.bidrag.ui.dto.BidragsmeldingConstant;
-import no.nav.bidrag.ui.dto.SynthesizedBidragRequest;
-import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
+import no.nav.registre.bisys.consumer.rs.request.BidragsmeldingConstant;
+import no.nav.registre.bisys.consumer.rs.request.SynthesizedBidragRequest;
 import no.nav.registre.bisys.consumer.ui.BisysUiConsumer;
+import no.nav.registre.bisys.consumer.ui.BisysUiSupport;
+import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 
 @Slf4j
 @Component
@@ -38,7 +38,7 @@ public class BisysUiYtelseberegningConsumer {
 
     public void fulfillForskuddsberegning(Forskuddsberegning forskuddsberegning, SynthesizedBidragRequest request) {
 
-        forskuddsberegning.selectKodeArsak(request.getKodeVirkAarsak(request.getSoktOm()));
+        forskuddsberegning.selectKodeArsak(request.getKodeVirkAarsak(request.getSoknadRequest().getSoktOm()));
         forskuddsberegning.selectSivilstand(request.getSivilstandBm());
         forskuddsberegning.selectUnntak(request.getKodeUnntForsk());
 
@@ -57,7 +57,7 @@ public class BisysUiYtelseberegningConsumer {
      * @param request
      * @throws BidragRequestProcessingException
      */
-    private void fulfillInntekter(String grKomKode, Inntekter inntekter, SynthesizedBidragRequest request)
+    private void fulfillInntekter(Inntekter inntekter, SynthesizedBidragRequest request)
             throws BidragRequestProcessingException {
 
         // BMs inntekter
@@ -65,9 +65,9 @@ public class BisysUiYtelseberegningConsumer {
         inntekter.lagre().click();
 
         // BPs inntekter
-        if (!KodeSoknGrKomConstants.FORSKUDD.equals(grKomKode)) {
+        if (!KodeSoknGrKomConstants.FORSKUDD.equals(request.getSoknadRequest().getSoktOm())) {
             for (String option : inntekter.valgtRolle().getOptions()) {
-                if (option.contains(request.getFnrBp())) {
+                if (option.contains(request.getSoknadRequest().getFnrBp())) {
                     inntekter.selectValgtRolle(option);
                     checkInntekter(KodeRolletypeConstants.BIDRAGSPLIKTIG, inntekter, request);
                     inntekter.lagre().click();
@@ -90,21 +90,18 @@ public class BisysUiYtelseberegningConsumer {
      * @throws BidragRequestProcessingException
      */
     public void fulfillInntekterAndBoforhold(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
-        ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
 
-        Inntekter inntekter = (Inntekter) bisys.getActivePage(activePage);
-        fulfillInntekter(request.getSoktOm(), inntekter, request);
+        Inntekter inntekter = (Inntekter) BisysUiSupport.getActiveBisysPage(bisys);
+        fulfillInntekter(inntekter, request);
         inntekter.lagreTilBoforhold().click();
 
-        activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-        Boforhold boforhold = (Boforhold) bisys.getActivePage(activePage);
+        Boforhold boforhold = (Boforhold) BisysUiSupport.getActiveBisysPage(bisys);
         fulfillBoforhold(boforhold, request);
 
-        if (KodeSoknGrKomConstants.FORSKUDD.equals(request.getSoktOm())) {
+        if (KodeSoknGrKomConstants.FORSKUDD.equals(request.getSoknadRequest().getSoktOm())) {
             boforhold.lagreOgForskudd().click();
-        } else if (KodeSoknGrKomConstants.SARTILSKUDD.equals(request.getSoktOm())
-                || KodeSoknGrKomConstants.SARTILSKUDD_INNKREVING.equals(request.getSoktOm())) {
+        } else if (KodeSoknGrKomConstants.SARTILSKUDD.equals(request.getSoknadRequest().getSoktOm())
+                || KodeSoknGrKomConstants.SARTILSKUDD_INNKREVING.equals(request.getSoknadRequest().getSoktOm())) {
             boforhold.lagreOgSartilskudd().click();
         } else {
             boforhold.lagreOgBidrag().click();
@@ -123,7 +120,7 @@ public class BisysUiYtelseberegningConsumer {
 
                     inntekter.leggTilInntekslinje().click();
                     for (Inntektslinje nyInntektslinje : inntekter.inntektslinjer()) {
-                        LocalDate soktFra = LocalDate.parse(request.getSoktFra(), DateTimeFormat.forPattern("yyyy-MM-dd"));
+                        LocalDate soktFra = LocalDate.parse(request.getSoknadRequest().getSoktFra(), DateTimeFormat.forPattern("yyyy-MM-dd"));
                         soktFra.monthOfYear().withMinimumValue();
                         soktFra.dayOfMonth().withMaximumValue();
                         nyInntektslinje.gjelderFom().setValue(soktFra.toString("dd.MM.yyyy"));
@@ -157,12 +154,12 @@ public class BisysUiYtelseberegningConsumer {
             SynthesizedBidragRequest request) throws BidragRequestProcessingException {
 
         List<Barn> barna = boforhold.barn();
-        LocalDate soktFra = LocalDate.parse(request.getSoktFra(), DateTimeFormat.forPattern("yyyy-MM-dd"));
+        LocalDate soktFra = LocalDate.parse(request.getSoknadRequest().getSoktFra(), DateTimeFormat.forPattern("yyyy-MM-dd"));
 
-        if (!requestedBarnIncludedInList(barna, request.getFnrBa())) {
+        if (!requestedBarnIncludedInList(barna, request.getSoknadRequest().getFnrBa())) {
             boforhold.leggTilNyLinjeBarn().click();
             Barn newBarn = boforhold.barn().get(0);
-            newBarn.medlemFnrInput().setValue(request.getFnrBa());
+            newBarn.medlemFnrInput().setValue(request.getSoknadRequest().getFnrBa());
             updateBarnDetails(boforhold, request, soktFra, newBarn);
             newBarn.hentMedlem().click();
 
@@ -173,7 +170,7 @@ public class BisysUiYtelseberegningConsumer {
             for (Barn barn : barna) {
                 String fnrBarn = barn.medlemFnr().getText().replaceAll("\\s", "");
 
-                if (fnrBarn.equals(request.getFnrBa())) {
+                if (fnrBarn.equals(request.getSoknadRequest().getFnrBa())) {
                     updateBarnDetails(boforhold, request, soktFra, barn);
                     return;
                 }
@@ -208,7 +205,7 @@ public class BisysUiYtelseberegningConsumer {
 
         manageBarnRegPaaAdresseConstant(barn, boforhold.rolle().getText());
 
-        if (!KodeSoknGrKomConstants.FORSKUDD.equals(request.getSoktOm())) {
+        if (!KodeSoknGrKomConstants.FORSKUDD.equals(request.getSoknadRequest().getSoktOm())) {
             barn.andelForsorget().select(request.getAndelForsorging());
         }
     }
@@ -261,7 +258,7 @@ public class BisysUiYtelseberegningConsumer {
     public void fulfillBidragsberegning(Bidragsberegning bidragsberegning,
             SynthesizedBidragRequest request) {
 
-        bidragsberegning.selectKodeAarsak(request.getKodeVirkAarsak(request.getSoktOm()));
+        bidragsberegning.selectKodeAarsak(request.getKodeVirkAarsak(request.getSoknadRequest().getSoktOm()));
 
         for (Periode periode : bidragsberegning.perioder()) {
             periode.samvaersklasseInput().setValue(request.getSamvarsklasse());

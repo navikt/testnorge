@@ -6,13 +6,14 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.bidrag.ui.bisys.BisysApplication;
-import no.nav.bidrag.ui.dto.SynthesizedBidragRequest;
-import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
-import no.nav.bidrag.ui.exception.BidragRequestRuntimeException;
-import no.nav.registre.bisys.consumer.rs.request.BisysRequestAugments;
+import no.nav.bidrag.ui.bisys.soknad.request.SoknadRequest;
+import no.nav.registre.bisys.consumer.rs.request.BidragsmeldingAugments;
+import no.nav.registre.bisys.consumer.rs.request.SynthesizedBidragRequest;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.consumer.ui.sak.BisysUiSoknadConsumer;
 import no.nav.registre.bisys.consumer.ui.vedtak.BisysUiFatteVedtakConsumer;
+import no.nav.registre.bisys.exception.BidragRequestProcessingException;
+import no.nav.registre.bisys.exception.BidragRequestRuntimeException;
 
 @Slf4j
 @Component
@@ -32,7 +33,7 @@ public class BisysUiConsumer {
     private BisysUiFatteVedtakConsumer fatteVedtakConsumer;
 
     @Autowired
-    private BisysRequestAugments bisysRequestAugments;
+    private BidragsmeldingAugments bisysRequestAugments;
 
     private TestnorgeToBisysMapper testnorgeToBisysMapper = Mappers.getMapper(TestnorgeToBisysMapper.class);
 
@@ -48,10 +49,12 @@ public class BisysUiConsumer {
                     bidragsmelding.getBarnetsFnr());
         }
 
-        SynthesizedBidragRequest request = testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding, bisysRequestAugments);
+        SynthesizedBidragRequest request = testnorgeToBisysMapper.bidragsmeldingToBidragRequest(bisysRequestAugments);
+        SoknadRequest soknadRequest = testnorgeToBisysMapper.bidragsmeldingToSoknadRequest(bidragsmelding);
+        request.setSoknadRequest(soknadRequest);
 
         if (bisys != null) {
-            soknadConsumer.openOrCreateSoknad(bisys, request);
+            soknadConsumer.openOrCreateSoknad(bisys, request.getSoknadRequest());
             fatteVedtakConsumer.runFatteVedtak(bisys, request);
         } else {
             throw new BidragRequestRuntimeException("Bisys logon failed!");
