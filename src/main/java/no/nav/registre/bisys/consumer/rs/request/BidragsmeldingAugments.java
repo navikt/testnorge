@@ -7,8 +7,9 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class BisysRequestAugments {
+public class BidragsmeldingAugments {
 
+    @Boforhold
     private final boolean barnRegistrertPaaAdresse;
     private final int inntektBmEgneOpplysninger;
     private final int inntektBpEgneOpplysninger;

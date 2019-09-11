@@ -23,12 +23,14 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.bidrag.ui.bisys.BisysApplication;
-import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
+import no.nav.bidrag.ui.bisys.soknad.request.SoknadRequest;
 import no.nav.registre.bisys.ApplicationStarter;
 import no.nav.registre.bisys.LocalApplicationStarter;
-import no.nav.registre.bisys.consumer.rs.request.BisysRequestAugments;
+import no.nav.registre.bisys.consumer.rs.request.BidragsmeldingAugments;
+import no.nav.registre.bisys.consumer.rs.request.SynthesizedBidragRequest;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.consumer.ui.sak.BisysUiSoknadConsumer;
+import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 
 @ActiveProfiles("local-integration-test")
 @RunWith(SpringRunner.class)
@@ -47,7 +49,7 @@ public class BisysUiConsumersIntegrationTest {
     private BisysUiConsumer bisysUiConsumer;
 
     @Autowired
-    private BisysRequestAugments bisysRequestAugments;
+    private BidragsmeldingAugments bisysRequestAugments;
 
     private TestnorgeToBisysMapper testnorgeToBisysMapper = Mappers.getMapper(TestnorgeToBisysMapper.class);
 
@@ -67,8 +69,12 @@ public class BisysUiConsumersIntegrationTest {
         }
 
         for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
-            soknadConsumer.openOrCreateSoknad(bisys,
-                    testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding, bisysRequestAugments));
+
+            SynthesizedBidragRequest request = testnorgeToBisysMapper.bidragsmeldingToBidragRequest(bisysRequestAugments);
+            SoknadRequest soknadRequest = testnorgeToBisysMapper.bidragsmeldingToSoknadRequest(bidragsmelding);
+            request.setSoknadRequest(soknadRequest);
+
+            soknadConsumer.openOrCreateSoknad(bisys, request.getSoknadRequest());
         }
     }
 
@@ -77,7 +83,7 @@ public class BisysUiConsumersIntegrationTest {
             IOException, BidragRequestProcessingException {
         ObjectMapper mapper = new ObjectMapper();
 
-        String meldinger = getResourceFileContent("bidragsmeldingForskuddQ8.json");
+        String meldinger = getResourceFileContent("bidragsmeldingQ2.json");
 
         List<SyntetisertBidragsmelding> bidragsmeldinger = mapper.readValue(meldinger, new TypeReference<List<SyntetisertBidragsmelding>>() {
         });

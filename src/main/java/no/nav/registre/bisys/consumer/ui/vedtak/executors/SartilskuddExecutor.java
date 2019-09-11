@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 
 import no.nav.bidrag.ui.bisys.BisysApplication;
-import no.nav.bidrag.ui.bisys.BisysApplication.ActiveBisysPage;
 import no.nav.bidrag.ui.bisys.soknad.Soknad;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Sartilskudd;
 import no.nav.bidrag.ui.bisys.soknad.fattevedtak.FatteVedtak;
-import no.nav.bidrag.ui.dto.SynthesizedBidragRequest;
-import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
+import no.nav.registre.bisys.consumer.rs.request.SynthesizedBidragRequest;
+import no.nav.registre.bisys.consumer.ui.BisysUiSupport;
 import no.nav.registre.bisys.consumer.ui.vedtak.BisysUiYtelseberegningConsumer;
+import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 
 @Component
 public class SartilskuddExecutor {
@@ -23,15 +23,12 @@ public class SartilskuddExecutor {
     private BisysUiYtelseberegningConsumer ytelsebereging;
 
     public void runSartilskuddInnkreving(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
-        ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
 
         try {
-            Soknad soknad = (Soknad) bisys.getActivePage(activePage);
+            Soknad soknad = (Soknad) BisysUiSupport.getActiveBisysPage(bisys);
             lagreOgSartilskudd(soknad);
 
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            Sartilskudd sartilskudd = (Sartilskudd) bisys.getActivePage(activePage);
+            Sartilskudd sartilskudd = (Sartilskudd) BisysUiSupport.getActiveBisysPage(bisys);
             sartilskudd.kravbelop().setValue(Integer.toString(request.getSartilskuddKravbelop()));
             sartilskudd.godkjentBelop().setValue(Integer.toString(request.getSartilskuddGodkjentBelop()));
             sartilskudd.belopFradrag().setValue(Integer.toString(request.getSartilskuddFradrag()));
@@ -42,9 +39,7 @@ public class SartilskuddExecutor {
             sartilskudd.lagreOgBeregn().click();
             sartilskudd.lagreOgFatteVedtak().click();
 
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            FatteVedtak fatteVedtak = (FatteVedtak) bisys.getActivePage(activePage);
+            FatteVedtak fatteVedtak = (FatteVedtak) BisysUiSupport.getActiveBisysPage(bisys);
             fatteVedtak.executeFatteVedtak().click();
 
         } catch (NoSuchElementException | ElementNotFoundException | ClassCastException e) {

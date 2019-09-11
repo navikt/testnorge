@@ -15,14 +15,14 @@ import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import net.morher.ui.connect.api.element.Label;
 import no.nav.bidrag.ui.bisys.BisysApplication;
-import no.nav.bidrag.ui.bisys.BisysApplication.ActiveBisysPage;
+import no.nav.bidrag.ui.bisys.BisysApplication.BisysPageTitle;
 import no.nav.bidrag.ui.bisys.rolle.Person;
 import no.nav.bidrag.ui.bisys.rolle.RolleBarn;
 import no.nav.bidrag.ui.bisys.rolle.Roller;
 import no.nav.bidrag.ui.bisys.rolle.Samhandler;
-import no.nav.bidrag.ui.dto.SynthesizedBidragRequest;
-import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
+import no.nav.bidrag.ui.bisys.soknad.request.SoknadRequest;
 import no.nav.registre.bisys.consumer.ui.BisysUiSupport;
+import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 
 @Component
 @Slf4j
@@ -46,11 +46,11 @@ public class BisysUiRollerConsumer {
      * @return
      * @throws BidragRequestProcessingException
      */
-    public ActiveBisysPage createRoller(BisysApplication bisys, SynthesizedBidragRequest request,
+    public BisysPageTitle createRoller(BisysApplication bisys, SoknadRequest request,
             boolean ignoreExistingSakError) throws BidragRequestProcessingException {
 
-        ActiveBisysPage activePage = BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.ROLLER);
-        Roller rollerPage = (Roller) bisys.getActivePage(activePage);
+        BisysPageTitle activePageRef = BisysUiSupport.checkCorrectActivePage(bisys, BisysPageTitle.ROLLER);
+        Roller rollerPage = (Roller) BisysUiSupport.getActiveBisysPage(bisys);
 
         try {
             List<RolleBarn> barnListe = rollerPage.barnListe();
@@ -78,9 +78,9 @@ public class BisysUiRollerConsumer {
             // Sak with same parties already exists
             handleExistanceOfSakWithSameBmBp(bisys, ignoreExistingSakError);
 
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+            activePageRef = BisysUiSupport.getBisysPageReference(bisys);
 
-            if (activePage.equals(ActiveBisysPage.ROLLER)) {
+            if (activePageRef.equals(BisysPageTitle.ROLLER)) {
                 String saksnr = rollerPage.saksnr().getText();
                 if (saksnr != null && !saksnr.isEmpty()) {
                     // Go to Sak
@@ -88,12 +88,12 @@ public class BisysUiRollerConsumer {
                 } else {
                     throw new BidragRequestProcessingException("Saksnr missing from Roller!", bisys.bisysPage());
                 }
-            } else if (activePage.equals(ActiveBisysPage.SAK)) {
+            } else if (activePageRef.equals(BisysPageTitle.SAK)) {
                 verifySaksnrPresentOnPage(bisys);
             } else {
-                activePage = BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.SAK);
+                activePageRef = BisysUiSupport.checkCorrectActivePage(bisys, BisysPageTitle.SAK);
             }
-            return activePage;
+            return activePageRef;
         } catch (ElementNotFoundException | NoSuchElementException e) {
             throw new BidragRequestProcessingException(bisys.bisysPage(), e);
         }
@@ -139,11 +139,10 @@ public class BisysUiRollerConsumer {
      * @return ActiveBisysPage if activePage equals Roller on exits
      * @throws BidragRequestProcessingException
      */
-    public ActiveBisysPage addBarnToSak(BisysApplication bisys, String fnrBa)
+    public BisysPageTitle addBarnToSak(BisysApplication bisys, String fnrBa)
             throws BidragRequestProcessingException {
 
-        ActiveBisysPage activePage = BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.ROLLER);
-        Roller roller = (Roller) bisys.getActivePage(activePage);
+        Roller roller = (Roller) BisysUiSupport.getActiveBisysPage(bisys);
 
         roller.leggeTilLinje().click();
 
@@ -153,9 +152,9 @@ public class BisysUiRollerConsumer {
         nyttBarn.person().fnr().setValue(fnrBa);
         roller.executeLagre().click();
 
-        activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+        BisysPageTitle activePageRef = BisysUiSupport.getBisysPageReference(bisys);
         List<Label> errors = bisys.bisysPage().errors();
-        if (activePage.equals(ActiveBisysPage.ROLLER) && !errors.isEmpty()) {
+        if (activePageRef.equals(BisysPageTitle.ROLLER) && !errors.isEmpty()) {
             for (Label error : errors) {
                 if (error.getText().matches(ERROR_BARN_MANGLER_RELASJON_TIL_BM_BP_REGEX)) {
                     log.info(error.getText());
@@ -163,8 +162,8 @@ public class BisysUiRollerConsumer {
                     roller.ignorerRelasjonBarnogBMBP().toggle();
                     roller.executeLagre().click();
                     if (barnIsIncluded(roller.barnListe(), fnrBa)) {
-                        if (activePage.equals(ActiveBisysPage.ROLLER)) {
-                            return activePage;
+                        if (activePageRef.equals(BisysPageTitle.ROLLER)) {
+                            return activePageRef;
                         }
                     } else {
                         throw new BidragRequestProcessingException(bisys.bisysPage(),
@@ -176,15 +175,15 @@ public class BisysUiRollerConsumer {
                 }
             }
         } else {
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-            if (activePage.equals(ActiveBisysPage.ROLLER)) {
-                return activePage;
+            activePageRef = BisysUiSupport.getBisysPageReference(bisys);
+            if (activePageRef.equals(BisysPageTitle.ROLLER)) {
+                return activePageRef;
             }
         }
 
-        activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-        if (activePage.equals(ActiveBisysPage.ROLLER)) {
-            return activePage;
+        activePageRef = BisysUiSupport.getBisysPageReference(bisys);
+        if (activePageRef.equals(BisysPageTitle.ROLLER)) {
+            return activePageRef;
         }
 
         throw new BidragRequestProcessingException(bisys.bisysPage(),
@@ -213,9 +212,9 @@ public class BisysUiRollerConsumer {
      * @return
      * @throws BidragRequestProcessingException
      */
-    private ActiveBisysPage handleExistingSakError(BisysApplication bisys) throws BidragRequestProcessingException {
+    private BisysPageTitle handleExistingSakError(BisysApplication bisys) throws BidragRequestProcessingException {
 
-        BisysUiSupport.checkCorrectActivePage(bisys, ActiveBisysPage.ROLLER);
+        BisysUiSupport.checkCorrectActivePage(bisys, BisysPageTitle.ROLLER);
 
         List<Label> errors = bisys.bisysPage().errors();
 
@@ -239,13 +238,13 @@ public class BisysUiRollerConsumer {
                     saksnr = saksnr.substring(saksnrDigitsOnlyMatch.start());
                     redirectToSak(bisys);
 
-                    ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+                    BisysPageTitle activePageRef = BisysUiSupport.getBisysPageReference(bisys);
                     getSak(bisys, saksnr);
 
-                    return activePage;
+                    return activePageRef;
                 }
             }
         }
-        return ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
+        return BisysUiSupport.getBisysPageReference(bisys);
     }
 }

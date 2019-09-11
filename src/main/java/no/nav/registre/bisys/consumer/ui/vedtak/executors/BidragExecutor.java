@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 
 import no.nav.bidrag.ui.bisys.BisysApplication;
-import no.nav.bidrag.ui.bisys.BisysApplication.ActiveBisysPage;
 import no.nav.bidrag.ui.bisys.soknad.Soknad;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Bidragsberegning;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Underholdskostnad;
 import no.nav.bidrag.ui.bisys.soknad.fattevedtak.FatteVedtak;
-import no.nav.bidrag.ui.dto.SynthesizedBidragRequest;
-import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
+import no.nav.registre.bisys.consumer.rs.request.SynthesizedBidragRequest;
+import no.nav.registre.bisys.consumer.ui.BisysUiSupport;
 import no.nav.registre.bisys.consumer.ui.vedtak.BisysUiYtelseberegningConsumer;
+import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 
 @Component
 public class BidragExecutor {
@@ -32,28 +32,21 @@ public class BidragExecutor {
      */
     public void runBidragInnkreving(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
         try {
-            ActiveBisysPage activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
 
-            Soknad soknad = (Soknad) bisys.getActivePage(activePage);
+            Soknad soknad = (Soknad) BisysUiSupport.getActiveBisysPage(bisys);
             soknad.lagreOgBidrag().click();
 
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            Underholdskostnad underholdskostnad = (Underholdskostnad) bisys.getActivePage(activePage);
+            Underholdskostnad underholdskostnad = (Underholdskostnad) BisysUiSupport.getActiveBisysPage(bisys);
             underholdskostnad.lagreTilInntekter().click();
 
             ytelsebereging.fulfillInntekterAndBoforhold(bisys, request);
 
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            Bidragsberegning bidragsberegning = (Bidragsberegning) bisys.getActivePage(activePage);
+            Bidragsberegning bidragsberegning = (Bidragsberegning) BisysUiSupport.getActiveBisysPage(bisys);
             ytelsebereging.fulfillBidragsberegning(bidragsberegning, request);
             bidragsberegning.lagreOgBeregne().click();
             bidragsberegning.lagreOgFatteVedtak().click();
 
-            activePage = ActiveBisysPage.getActivePage(bisys.getBisysPageTitle()).get();
-
-            FatteVedtak fatteVedtak = (FatteVedtak) bisys.getActivePage(activePage);
+            FatteVedtak fatteVedtak = (FatteVedtak) BisysUiSupport.getActiveBisysPage(bisys);
             ytelsebereging.completeFatteVedtak(fatteVedtak, request);
             fatteVedtak.executeFatteVedtak().click();
 

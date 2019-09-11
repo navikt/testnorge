@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.bidrag.ui.exception.BidragRequestProcessingException;
 import no.nav.registre.bisys.consumer.rs.BisysSyntetisererenConsumer;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.consumer.ui.BisysUiConsumer;
+import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 import no.nav.registre.bisys.provider.requests.SyntetiserBisysRequest;
 import no.nav.registre.bisys.service.utils.Barn;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.registre.bisys.consumer.rs.BisysSyntetisererenConsumer;
-import no.nav.registre.bisys.consumer.rs.request.BisysRequestAugments;
+import no.nav.registre.bisys.consumer.rs.request.BidragsmeldingAugments;
 import no.nav.registre.bisys.consumer.ui.BisysUiSupport;
 import no.nav.registre.bisys.consumer.ui.vedtak.BisysUiFatteVedtakConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
@@ -89,13 +89,13 @@ public class AppConfig {
     }
 
     @Bean
-    public BisysRequestAugments bisysRequestAugments() {
+    public BidragsmeldingAugments bisysRequestAugments() {
 
         String gebyrBeslAarsakKode = gebyrBeslAarsakKodeFritattIkkeSokt
                 ? BisysUiFatteVedtakConsumer.KODE_BESL_AARSAK_FRITATT_IKKE_SOKT
                 : BisysUiFatteVedtakConsumer.KODE_BESL_AARSAK_ILAGT_IKKE_SOKT;
 
-        return BisysRequestAugments.builder()
+        return BidragsmeldingAugments.builder()
                 .barnRegistrertPaaAdresse(barnRegistrertPaaAdresse)
                 .inntektBmEgneOpplysninger(inntektBmEgneOpplysninger)
                 .inntektBpEgneOpplysninger(inntektBpEgneOpplysninger)
