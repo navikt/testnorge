@@ -231,7 +231,6 @@ public class DollyBestillingService {
 
     private void oppdaterProgressFerdig(Bestilling bestilling) {
         if (bestillingService.isStoppet(bestilling.getId())) {
-            identService.slettTestidenter(bestilling.getId());
             bestilling.setStoppet(true);
         }
         bestilling.setFerdig(true);

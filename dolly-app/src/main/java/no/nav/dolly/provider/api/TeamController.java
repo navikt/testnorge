@@ -77,6 +77,12 @@ public class TeamController {
     }
 
     @CacheEvict(value = CACHE_TEAM, allEntries = true)
+    @DeleteMapping("/{teamId}/deleteMedlem")
+    public RsTeamUtvidet deleteMedlemfraTeam(@PathVariable("teamId") Long teamId, @RequestParam String navIdent) {
+        return teamService.slettMedlem(teamId, navIdent);
+    }
+
+    @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @DeleteMapping("/{teamId}")
     public void deleteTeam(@PathVariable("teamId") Long teamId) {
         if (teamService.deleteTeam(teamId) == 0) {
@@ -87,12 +93,5 @@ public class TeamController {
         // Eventuelt legge opp til scheduled task som rydder opp
         // Både en unødvendig avhengighet i prodkoden og vanskeligere å teste.
         testgruppeService.slettGruppeByTeamId(teamId);
-    }
-
-    //TODO Er denne nødvendig når fjernBrukerefraTeam gjør samme jobben?
-    @CacheEvict(value = CACHE_TEAM, allEntries = true)
-    @DeleteMapping("/{teamId}/deleteMedlem")
-    public RsTeamUtvidet deleteMedlemfraTeam(@PathVariable("teamId") Long teamId, @RequestParam String navIdent) {
-        return teamService.slettMedlem(teamId, navIdent);
     }
 }

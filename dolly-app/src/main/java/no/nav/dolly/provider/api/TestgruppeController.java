@@ -22,6 +22,7 @@ import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.service.PersonService;
 import no.nav.dolly.service.TestgruppeService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -50,6 +51,7 @@ public class TestgruppeController {
     private final MapperFacade mapperFacade;
     private final DollyBestillingService dollyBestillingService;
     private final BestillingService bestillingService;
+    private final PersonService personService;
 
     @Cacheable(CACHE_GRUPPE)
     @GetMapping
@@ -118,14 +120,6 @@ public class TestgruppeController {
 
     @Transactional
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
-    @PutMapping("/{gruppeId}/slettTestidenter")
-    @ApiOperation("Fjern en eller flere Testident fra en Testgruppe")
-    public void deleteTestident(@RequestBody List<RsTestident> testpersonIdentListe) {
-        identService.slettTestidenter(testpersonIdentListe);
-    }
-
-    @Transactional
-    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @DeleteMapping("/{gruppeId}")
     @ApiOperation("Slett Testgruppe")
     public void slettgruppe(@PathVariable("gruppeId") Long gruppeId) {
@@ -142,5 +136,8 @@ public class TestgruppeController {
         if (identService.slettTestident(ident) == 0) {
             throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
         }
+        bestillingService.slettBestillingByTestIdent(ident);
+        personService.recyclePerson(ident);
+        personService.releaseArtifacts(singletonList(ident));
     }
 }

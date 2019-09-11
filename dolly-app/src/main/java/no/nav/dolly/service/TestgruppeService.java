@@ -34,6 +34,7 @@ public class TestgruppeService {
     private final TeamService teamService;
     private final IdentService identService;
     private final BestillingService bestillingService;
+    private final PersonService personService;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
@@ -93,16 +94,16 @@ public class TestgruppeService {
     }
 
     public int slettGruppeById(Long gruppeId) {
+        personService.recyclePersonerIGruppe(gruppeId);
         bestillingService.slettBestillingerByGruppeId(gruppeId);
         identService.slettTestidenterByGruppeId(gruppeId);
         brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
         return gruppeRepository.deleteTestgruppeById(gruppeId);
     }
 
-    public int slettGruppeByTeamId(Long teamId) {
-        identService.slettTestidenterByTeamId(teamId);
-        brukerService.sletteBrukerFavoritterByTeamId(teamId);
-        return gruppeRepository.deleteTestgruppeByTeamtilhoerighetId(teamId);
+    public void slettGruppeByTeamId(Long teamId) {
+        Team team = teamService.fetchTeamById(teamId);
+        team.getGrupper().forEach(gruppe -> slettGruppeById(gruppe.getId()));
     }
 
     public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {
