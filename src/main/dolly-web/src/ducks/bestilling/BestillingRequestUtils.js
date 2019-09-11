@@ -197,11 +197,25 @@ export const getValues = (attributeList, values) => {
 					})
 					delete valueCopy[idx].barn_utvandret
 				}
+				if (barn.forsvunnet) {
+					Object.entries(valueCopy[idx].barn_forsvunnet[0]).map(attr => {
+						_set(
+							valueCopy[idx],
+							attr[0],
+							isDate(attr[1]) ? DataFormatter.parseDate(attr[1]) : attr[1]
+						)
+					})
+					delete valueCopy[idx].barn_forsvunnet
+				}
 			})
 			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, valueCopy)
 		}
 
-		if (attribute.id.includes('innvandret') || attribute.id.includes('utvandret')) {
+		if (
+			attribute.id.includes('innvandret') ||
+			attribute.id.includes('utvandret') ||
+			attribute.id.includes('forsvunnet')
+		) {
 			// Viktig at denne ligger etter bolken med barn
 			Object.entries(value[0]).map(attr => {
 				_set(

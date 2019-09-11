@@ -1,5 +1,6 @@
 import Formatters from '~/utils/DataFormatter'
 import _set from 'lodash/set'
+import { ReactReduxContext } from 'react-redux/lib/components/Context'
 
 export const getAttributesFromMal = mal => {
 	const tpsfKriterier = JSON.parse(mal.tpsfKriterier)
@@ -30,6 +31,9 @@ export const getAttributesFromMal = mal => {
 		tpsfKriterier.relasjoner.barn && attrArray.push('barn')
 		tpsfKriterier.relasjoner.partner && attrArray.push('partner')
 	}
+
+	tpsfKriterier.innvandretFraLand && attrArray.push('innvandret')
+	tpsfKriterier.utvandretTilLand && attrArray.push('utvandret')
 
 	if (tpsfKriterier.utvandretTilLand) {
 		attrArray.push('utvandret')
@@ -71,15 +75,14 @@ export const getValuesFromMal = mal => {
 		}
 	})
 
-	if (reduxStateValue.utvandretTilLand || reduxStateValue.innvandretFraLand) {
+	if (
+		reduxStateValue.utvandretTilLand ||
+		reduxStateValue.innvandretFraLand ||
+		reduxStateValue.forsvunnet
+	) {
 		const utvandretValues = _mapInnOgUtvandret(reduxStateValue)
 		reduxStateValue = utvandretValues
 	}
-	if (reduxStateValue.erForsvunnet) {
-		const forsvunnetValues = _mapForsvunnetValues(reduxStateValue)
-		reduxStateValue = forsvunnetValues
-	}
-
 	if (reduxStateValue.adressetype && reduxStateValue.adressetype === 'MATR') {
 		const matrikkeladresseValues = _mapAdresseValues(reduxStateValue)
 		reduxStateValue = matrikkeladresseValues
@@ -164,6 +167,7 @@ const _formatValueForObject = (key, value) => {
 		'fraDato',
 		'tilDato',
 		'utvandretTilLandFlyttedato',
+		'innvandretFraLandFlytteDato',
 		'forsvunnetDato',
 		'startdato',
 		'faktiskSluttdato',
@@ -236,6 +240,19 @@ const _mapInnOgUtvandret = values => {
 			} else {
 				!valuesArray.utvandret && (valuesArray.utvandret = [{}])
 				return (valuesArray.utvandret[0][value[0]] = value[1])
+			}
+		}
+
+		if (value[0].includes('forsvunnet')) {
+			if (value[0].includes('partner')) {
+				!valuesArray.partner_forsvunnet && (valuesArray.partner_forsvunnet = [{}])
+				return (valuesArray.partner_forsvunnet[0][value[0].split('_')[1]] = value[1])
+			} else if (value[0].includes('barn')) {
+				!valuesArray.barn_forsvunnet && (valuesArray.barn_forsvunnet = [{}])
+				return (valuesArray.barn_forsvunnet[0][value[0].split('_')[1]] = value[1])
+			} else {
+				!valuesArray.forsvunnet && (valuesArray.forsvunnet = [{}])
+				return (valuesArray.forsvunnet[0][value[0]] = value[1])
 			}
 		}
 	})

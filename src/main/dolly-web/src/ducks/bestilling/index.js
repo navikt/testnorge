@@ -290,30 +290,6 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 			}
 		}
 	}
-	if (_get(final_values, 'tpsf.forsvunnet')) {
-		final_values.tpsf.erForsvunnet = final_values.tpsf.forsvunnet[0].erForsvunnet
-		final_values.tpsf.forsvunnetDato = final_values.tpsf.forsvunnet[0].forsvunnetDato
-		delete final_values.tpsf.forsvunnet
-		if (_get(final_values, 'tpsf.relasjoner')) {
-			if (final_values.tpsf.relasjoner.partner && final_values.tpsf.relasjoner.partner.forsvunnet) {
-				final_values.tpsf.relasjoner.partner.erForsvunnet =
-					final_values.tpsf.relasjoner.partner.forsvunnet[0].erForsvunnet
-				final_values.tpsf.relasjoner.partner.forsvunnetDato =
-					final_values.tpsf.relasjoner.partner.forsvunnet[0].forsvunnetDato
-				delete final_values.tpsf.relasjoner.partner.forsvunnet
-			}
-			if (final_values.tpsf.relasjoner.barn) {
-				final_values.tpsf.relasjoner.barn.map((barnet, idx) => {
-					if (barnet.forsvunnet) {
-						final_values.tpsf.relasjoner.barn[idx].erForsvunnet = barnet.forsvunnet[0].erForsvunnet
-						final_values.tpsf.relasjoner.barn[idx].forsvunnetDato =
-							barnet.forsvunnet[0].forsvunnetDato
-						delete final_values.tpsf.relasjoner.barn[idx].forsvunnet
-					}
-				})
-			}
-		}
-	}
 
 	if (_get(final_values, 'arenaforvalter')) {
 		if (_get(final_values, 'arenaforvalter.arenaBrukertype') !== 'MED_SERVICEBEHOV') {

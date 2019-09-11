@@ -205,7 +205,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Forsvunnet',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		attributtType: AttributtType.SelectAndRead,
+		attributtType: AttributtType.SelectOnly,
 		items: [
 			{
 				hovedKategori: Kategorier.PersInfo,
@@ -215,7 +215,7 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
 				options: SelectOptionsManager('boolean'),
-				attributtType: AttributtType.SelectAndRead,
+				attributtType: AttributtType.SelectOnly,
 				editPath: 'erForsvunnet'
 			},
 			{
@@ -226,7 +226,6 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Date,
 				validation: DateValidation(),
-				onlyShowAfterSelectedValue: { attributtId: 'erForsvunnet', valueIndex: [0] },
 				attributtType: AttributtType.SelectOnly,
 				editPath: 'forsvunnetDato'
 			}
