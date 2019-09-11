@@ -18,7 +18,7 @@ import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
-import no.nav.dolly.domain.resultset.udistub.RsUdiPersonData;
+import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
 @Getter
 @Setter
@@ -30,7 +30,7 @@ public class BestKriterier {
 
     private List<RsArbeidsforhold> aareg;
 	private RsDigitalKontaktdata krrstub;
-    private RsUdiPersonData udistub;
+    private RsUdiPerson udistub;
     private List<RsOpprettSkattegrunnlag> sigrunstub;
     private Arenadata arenaforvalter;
     private RsPdldata pdlforvalter;

@@ -1,0 +1,6 @@
+package no.nav.dolly.domain.resultset.udistub.model.opphold;
+
+public enum UdiOverigIkkeOppholdKategoriType {
+
+    OPPHEVET_INNREISEFORBUD, ANNULERING_AV_VISUM, UTLOPT_OPPHOLDSTILLATELSE, UTLOPT_EO_SELLER_EFTA_OPPHOLDSRETT_ELLER_EO_SELLER_EFTA_OPPHOLDSTILLATELSE
+}

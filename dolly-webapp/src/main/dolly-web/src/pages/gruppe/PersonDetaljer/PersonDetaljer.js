@@ -91,12 +91,12 @@ export default class PersonDetaljer extends PureComponent {
 					</Button>
 
 					{this.props.isFrigjoering ? (
-						<Loading label="Frigjør testbruker ..." panel />
+						<Loading label="Sletter testbruker" panel />
 					) : (
 						<ConfirmTooltip
 							className="flexbox--align-center"
-							message="Er du sikker på at du vil frigjøre denne testidenten fra testdatagruppen?"
-							label="FRIGJØR"
+							message="Er du sikker på at du vil slette denne testidenten?"
+							label="SLETT"
 							onClick={frigjoerTestbruker}
 						/>
 					)}

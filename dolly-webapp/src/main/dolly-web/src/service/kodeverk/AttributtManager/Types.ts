@@ -29,7 +29,7 @@ export interface Kategori {
 	order: number
 	informasjonstekst?: string
 	showInSummary?: boolean
-	tilgjengeligeMiljoeEndepunkt?: Function
+	tilgjengeligeMiljoeEndepunkt?: Promise<string[]>
 }
 
 export interface KategoriTypes {
