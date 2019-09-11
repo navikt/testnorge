@@ -167,8 +167,6 @@ public class BisysUiSoknadConsumer {
 
     private BisysPageTitle createNewSoknad(BisysApplication bisys, SoknadRequest request) throws BidragRequestProcessingException {
 
-        BisysPageTitle activePage = BisysUiSupport.checkCorrectActivePage(bisys, BisysPageTitle.SAK);
-
         Sak sak = (Sak) BisysUiSupport.getActiveBisysPage(bisys);
         try {
             sak.nySoknad().click();
@@ -176,7 +174,6 @@ public class BisysUiSoknadConsumer {
             throw new BidragRequestProcessingException("Soknad-button not visible. Check logged on enhet", sak, e);
         }
 
-        activePage = BisysUiSupport.getBisysPageReference(bisys);
         Soknad soknad = (Soknad) BisysUiSupport.getActiveBisysPage(bisys);
 
         try {
@@ -186,7 +183,8 @@ public class BisysUiSoknadConsumer {
         }
 
         log.info("### Søknad created ### application for barn {} was created.", request.getFnrBa());
-        return activePage;
+
+        return BisysUiSupport.getBisysPageReference(bisys);
 
     }
 

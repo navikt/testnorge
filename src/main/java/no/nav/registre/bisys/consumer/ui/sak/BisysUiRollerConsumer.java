@@ -142,7 +142,6 @@ public class BisysUiRollerConsumer {
     public BisysPageTitle addBarnToSak(BisysApplication bisys, String fnrBa)
             throws BidragRequestProcessingException {
 
-        BisysPageTitle activePageRef = BisysUiSupport.checkCorrectActivePage(bisys, BisysPageTitle.ROLLER);
         Roller roller = (Roller) BisysUiSupport.getActiveBisysPage(bisys);
 
         roller.leggeTilLinje().click();
@@ -153,7 +152,7 @@ public class BisysUiRollerConsumer {
         nyttBarn.person().fnr().setValue(fnrBa);
         roller.executeLagre().click();
 
-        activePageRef = BisysUiSupport.getBisysPageReference(bisys);
+        BisysPageTitle activePageRef = BisysUiSupport.getBisysPageReference(bisys);
         List<Label> errors = bisys.bisysPage().errors();
         if (activePageRef.equals(BisysPageTitle.ROLLER) && !errors.isEmpty()) {
             for (Label error : errors) {

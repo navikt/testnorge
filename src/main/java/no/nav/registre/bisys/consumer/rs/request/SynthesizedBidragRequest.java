@@ -42,14 +42,6 @@ public class SynthesizedBidragRequest {
     @Getter(AccessLevel.NONE)
     private String kodeVirkAarsak;
 
-    public String getKodeVirkAarsak(String kodeSoknGrKom) {
-        if (KodeSoknGrKomConstants.FORSKUDD.equals(kodeSoknGrKom)) {
-            return KodeVirkAarsConstants.ANNET_SF;
-        } else {
-            return KodeVirkAarsConstants.ANNET_SB;
-        }
-    }
-
     @BidragsmeldingConstant
     private int sartilskuddGodkjentBelop;
 
@@ -63,5 +55,13 @@ public class SynthesizedBidragRequest {
     private String sivilstandBm;
 
     private SoknadRequest soknadRequest;
+
+    public String getKodeVirkAarsak(String kodeSoknGrKom) {
+        if (KodeSoknGrKomConstants.FORSKUDD.equals(kodeSoknGrKom)) {
+            return KodeVirkAarsConstants.ANNET_SF;
+        } else {
+            return KodeVirkAarsConstants.ANNET_SB;
+        }
+    }
 
 }
