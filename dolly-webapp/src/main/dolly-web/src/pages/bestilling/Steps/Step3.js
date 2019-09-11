@@ -266,8 +266,12 @@ export default class Step3 extends PureComponent {
 	renderItem = (item, stateValues, header) => {
 		if (item.items) {
 			let valueArray = _get(this.props.values, item.id)
-			// console.log('valueArray :', valueArray)
-			if (item.id === 'barn_utvandret' || item.id === 'barn_forsvunnet') {
+
+			if (
+				item.id === 'barn_utvandret' ||
+				item.id === 'bard_innvandret' ||
+				item.id === 'barn_forsvunnet'
+			) {
 				let barnIndex = 0
 				if (header) barnIndex = header - 1
 				valueArray = _get(this.props.values.barn[barnIndex], item.id)
