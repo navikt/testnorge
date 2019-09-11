@@ -1,4 +1,5 @@
 import Formatters from '~/utils/DataFormatter'
+import _get from 'lodash/get'
 
 const _getTpsfBestillingData = data => {
 	return [
@@ -603,54 +604,103 @@ export function mapBestillingData(bestillingData) {
 			data.push(instObj)
 		}
 
-		const udiStubKriterier = registreKriterier.udidata && registreKriterier.udidata
+		const udiStubKriterier = registreKriterier.udistub && registreKriterier.udistub
 
 		if (udiStubKriterier) {
+			console.log('udiStubKriterier :', udiStubKriterier)
 			const udistub = {
+				//! Begynte på denne for lenge siden, men tror ikke det er så mye som fortsatt er brukbart.
 				header: 'UDI',
 				items: [
-					{
-						label: 'Oppholdsstatus',
-						value: udiStubKriterier // + noe
-					},
-					{
-						label: 'Type opphold',
-						value: udiStubKriterier // + noe
-					},
-					{
-						label: 'Oppholdstillatelse fra dato',
-						value: udiStubKriterier // + noe
-					},
-					{
-						label: 'Oppholdstillatelse til dato',
-						value: udiStubKriterier // + noe
-					},
-					{
-						label: 'Grunn',
-						value: udiStubKriterier // + noe
-					},
-					{
-						label: 'Har arbeidsadgang',
-						value: udiStubKriterier // + noe
-					},
-					{
-						label: 'Type arbeidsadgang',
-						value: udiStubKriterier // + noe
-					},
-					{
-						label: 'Arbeidsomfang',
-						value: udiStubKriterier // + noe
-					},
-					{
-						label: 'Arbeidsadgang fra dato',
-						value: udiStubKriterier // + noe
-					},
-					{
-						label: 'Arbeidsadgang til dato',
-						value: udiStubKriterier // + noe
-					}
+					// {
+					// 	label: 'Oppholdsstatus',
+					// 	value: udiStubKriterier.udiOppholdStatus.uavklart
+					// },
+					// {
+					// 	label: 'Type opphold',
+					// 	value: udiStubKriterier // + noe
+					// },
+					// {
+					// 	label: 'Oppholdstillatelse fra dato',
+					// 	value: udiStubKriterier // + noe
+					// },
+					// {
+					// 	label: 'Oppholdstillatelse til dato',
+					// 	value: udiStubKriterier // + noe
+					// },
+					// {
+					// 	label: 'Grunn',
+					// 	value: udiStubKriterier // + noe
+					// },
+					// udiStubKriterier.arbeidsadgang &&
+					// {
+					// 	label: 'Har arbeidsadgang',
+					// 	value: udiStubKriterier.arbeidsadgang.harArbeidsAdgang
+					// },
+					// {
+					// 	label: 'Type arbeidsadgang',
+					// 	value: Formatters.showLabel(
+					// 		'typeArbeidsadgang',
+					// 		udiStubKriterier.arbeidsadgang.typeArbeidsadgang
+					// 	)
+					// },
+					// {
+					// 	label: 'Arbeidsomfang',
+					// 	value: Formatters.showLabel(
+					// 		'arbeidsOmfang',
+					// 		udiStubKriterier.arbeidsadgang.arbeidsOmfang
+					// 	)
+					// },
+					// {
+					// 	label: 'Arbeidsadgang fra dato',
+					// 	value:
+					// 		udiStubKriterier.arbeidsadgang.periode &&
+					// 		Formatters.formateStringDates(udiStubKriterier.arbeidsadgang.periode.fra)
+					// },
+					// {
+					// 	label: 'Arbeidsadgang til dato',
+					// 	value:
+					// 		udiStubKriterier.arbeidsadgang.periode &&
+					// 		Formatters.formateStringDates(udiStubKriterier.arbeidsadgang.periode.til)
+					// }
 				]
 			}
+			// if (udiStubKriterier.arbeidsadgang) {
+			// 	const udistubArbeidsadgang = [
+			// 		{
+			// 			label: 'Har arbeidsadgang',
+			// 			value: udiStubKriterier.arbeidsadgang.harArbeidsAdgang
+			// 		},
+			// 		{
+			// 			label: 'Type arbeidsadgang',
+			// 			value: Formatters.showLabel(
+			// 				'typeArbeidsadgang',
+			// 				udiStubKriterier.arbeidsadgang.typeArbeidsadgang
+			// 			)
+			// 		},
+			// 		{
+			// 			label: 'Arbeidsomfang',
+			// 			value: Formatters.showLabel(
+			// 				'arbeidsOmfang',
+			// 				udiStubKriterier.arbeidsadgang.arbeidsOmfang
+			// 			)
+			// 		},
+			// 		{
+			// 			label: 'Arbeidsadgang fra dato',
+			// 			value:
+			// 				udiStubKriterier.arbeidsadgang.periode &&
+			// 				Formatters.formateStringDates(udiStubKriterier.arbeidsadgang.periode.fra)
+			// 		},
+			// 		{
+			// 			label: 'Arbeidsadgang til dato',
+			// 			value:
+			// 				udiStubKriterier.arbeidsadgang.periode &&
+			// 				Formatters.formateStringDates(udiStubKriterier.arbeidsadgang.periode.til)
+			// 		}
+			// 	]
+			// 	udistub.items.push(udistubArbeidsadgang)
+			// }
+
 			data.push(udistub)
 		}
 	}
