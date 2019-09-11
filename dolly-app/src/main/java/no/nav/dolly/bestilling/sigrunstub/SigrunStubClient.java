@@ -56,6 +56,6 @@ public class SigrunStubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(ident -> sigrunStubConsumer.deleteSkattegrunnlag(ident));
+        identer.forEach(this::deleteExistingSkattegrunnlag);
     }
 }
