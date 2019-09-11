@@ -75,7 +75,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 				{
 					id: 'tknr',
 					label: 'TK nummer',
-					tknr: tpsfData.tknr
+					tknr: tpsfData.tknavn ? `${tpsfData.tknr} - ${tpsfData.tknavn}` : tpsfData.tknr
 				},
 				{
 					id: 'egenAnsattDatoFom',
