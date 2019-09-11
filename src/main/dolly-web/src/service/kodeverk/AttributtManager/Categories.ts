@@ -173,6 +173,13 @@ export const SubKategorier: KategoriTypes = {
 		navn: 'Arbeidsadgang',
 		order: 20,
 		showInSummary: true
+	},
+
+	Alias: {
+		id: 'alias',
+		navn: 'Alias',
+		order: 30,
+		showInSummary: true
 	}
 }
 
