@@ -148,8 +148,16 @@ export default class PersonInfoBlock extends PureComponent {
 								/>
 							)
 						} else if (tknr) {
-							return <TknrValueConnector tknr={tknr} {...staticValueProps} />
+							// Tknavn sendes (i tillegg til tknr) på nye identer.
+							// Vil fortsatt bruke oppslag tknrValueConnector på allerede oppretta identer der det kun sendes tknr.
+							staticValueProps.value = tknr
+							return tknr.length > 4 ? (
+								<StaticValue {...staticValueProps} />
+							) : (
+								<TknrValueConnector tknr={tknr} {...staticValueProps} />
+							)
 						}
+
 						return v && v.value && <StaticValue {...staticValueProps} />
 					})}
 				</div>
