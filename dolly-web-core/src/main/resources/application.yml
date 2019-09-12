@@ -1,0 +1,30 @@
+server:
+  use-forward-headers: true
+
+app:
+  name: dolly-web
+  securedPath: /**
+  ignoredPaths: /internal/**
+
+freg:
+  security.oidc:
+    idp:
+      openAm:
+        clientId: ${idp.openAm.clientId}
+        clientSecret: ${idp.openAm.clientSecret}
+        hostUrl: ${idp.openAm.hostUrl}
+        issuerUrl: ${idp.openAm.issuerUrl}
+        jwksUrl: ${idp.openAm.jwksUrl}
+        loginUrl: ${idp.openAm.hostUrl}/oauth2/authorize
+        authorizationUrl: ${idp.openAm.hostUrl}/oauth2/access_token
+    auth:
+      securedPath: ${app.securedPath}
+      ignoredPaths: ${app.ignoredPaths}
+      codeFlow:
+        enabled: true
+      idToken:
+        refresh-on-seconds-left: 300
+        cookie-enabled: true
+        header-enabled: false
+        validation:
+          type: refreshing

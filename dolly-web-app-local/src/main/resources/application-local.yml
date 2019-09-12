@@ -1,0 +1,21 @@
+fasit.enabled: false
+
+freg.security.oidc:
+  idp:
+    openAm:
+      clientId: dolly-web-localhost
+      clientSecret: test-secret
+      hostUrl: https://isso-t.adeo.no:443/isso
+      issuerUrl: https://isso-t.adeo.no:443/isso/oauth2
+      loginUrl: https://isso-t.adeo.no/isso/oauth2/authorize
+      authorizationUrl: https://isso-t.adeo.no/isso/oauth2/access_token
+      jwksUrl: https://isso-t.adeo.no/isso/oauth2/connect/jwk_uri
+  auth:
+    codeFlow:
+      enabled: true
+    idToken:
+      refresh-on-seconds-left: 300
+      cookie-enabled: true
+      header-enabled: false
+      validation:
+        type: refreshing
