@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>dolly-web</artifactId>
+        <groupId>no.nav.dolly-web</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>dolly-web-core</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>${jsoup.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.freg</groupId>
+            <artifactId>freg-security-oidc</artifactId>
+            <version>${freg-security-oidc.version}</version>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>platform-windows</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <script.extension>.cmd</script.extension>
+            </properties>
+        </profile>
+        <profile>
+            <id>platform-unix</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <script.extension></script.extension>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>build-web-preinstalled</id>
+            <activation>
+                <property>
+                    <name>!skipCompileWeb</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>npm install</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <executable>npm${script.extension}</executable>
+                                    <arguments>
+                                        <!--OK-->
+                                        <argument>install</argument>
+                                        <argument>--registry=http://registry.npmjs.org/</argument>
+                                        <argument>--https-proxy=http://155.55.60.117:8088</argument>
+                                        <argument>--proxy=http://155.55.60.117:8088</argument>
+                                        <!--OK end-->
+                                    </arguments>
+                                    <workingDirectory>src/main/web_src</workingDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm run build (with local node installation)</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <executable>npm${script.extension}</executable>
+                                    <arguments>
+                                        <!--OK-->
+                                        <argument>run</argument>
+                                        <argument>build</argument>
+                                        <argument>--registry=http://registry.npmjs.org/</argument>
+                                        <argument>--https-proxy=http://155.55.60.117:8088</argument>
+                                        <argument>--proxy=http://155.55.60.117:8088</argument>
+                                        <!--OK end-->
+                                    </arguments>
+                                    <workingDirectory>src/main/web_src</workingDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy prod bundle to public folder</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <executable>npm${script.extension}</executable>
+                                    <arguments>
+                                        <argument>run</argument>
+                                        <argument>copy-prod-build</argument>
+                                    </arguments>
+                                    <workingDirectory>src/main/web_src</workingDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!--        <profile>-->
+        <!--            <id>clean-node</id>-->
+        <!--            <build>-->
+        <!--                <plugins>-->
+        <!--                    <plugin>-->
+        <!--                        <groupId>org.apache.maven.plugins</groupId>-->
+        <!--                        <artifactId>maven-clean-plugin</artifactId>-->
+        <!--                        <configuration>-->
+        <!--                            <filesets>-->
+        <!--                                <fileset>-->
+        <!--                                    <directory>src/main/dolly-web/node</directory>-->
+        <!--                                </fileset>-->
+        <!--                                <fileset>-->
+        <!--                                    <directory>src/main/dolly-web/node_modules</directory>-->
+        <!--                                </fileset>-->
+        <!--                                <fileset>-->
+        <!--                                    <directory>src/main/dolly-web/build</directory>-->
+        <!--                                </fileset>-->
+        <!--                                <fileset>-->
+        <!--                                    <directory>src/main/resources/public/production</directory>-->
+        <!--                                </fileset>-->
+        <!--                            </filesets>-->
+        <!--                        </configuration>-->
+        <!--                    </plugin>-->
+        <!--                </plugins>-->
+        <!--            </build>-->
+        <!--        </profile>-->
+    </profiles>
+
+</project>
