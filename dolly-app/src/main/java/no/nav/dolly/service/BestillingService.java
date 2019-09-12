@@ -4,6 +4,7 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.toSet;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.BestilteKriterier;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
@@ -30,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -121,6 +124,7 @@ public class BestillingService {
                         .bestKriterier(toJson(BestilteKriterier.builder()
                                 .aareg(request.getAareg())
                                 .krrstub(request.getKrrstub())
+                                .udistub(request.getUdistub())
                                 .sigrunstub(request.getSigrunstub())
                                 .arenaforvalter(request.getArenaforvalter())
                                 .pdlforvalter(request.getPdlforvalter())
@@ -171,5 +175,19 @@ public class BestillingService {
         bestillingKontrollRepository.deleteByGruppeId(gruppeId);
         bestillingProgressRepository.deleteByGruppeId(gruppeId);
         bestillingRepository.deleteByGruppeId(gruppeId);
+    }
+
+    public void slettBestillingByTestIdent(String ident) {
+
+        List<BestillingProgress> bestillingProgresses = bestillingProgressRepository.findByIdent(ident);
+        bestillingProgressRepository.deleteByIdent(ident);
+
+        Set<Long> bestillingIds = bestillingProgresses.stream().map(BestillingProgress::getBestillingId).collect(toSet());
+
+        bestillingIds.forEach(id -> {
+
+            bestillingKontrollRepository.deleteByBestillingWithNoChildren(id);
+            bestillingRepository.deleteBestillingWithNoChildren(id);
+        });
     }
 }

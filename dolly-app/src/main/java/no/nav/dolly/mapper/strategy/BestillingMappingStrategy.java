@@ -7,6 +7,7 @@ import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStat
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdldataStatusMap;
 import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
 import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
+import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
@@ -32,6 +33,7 @@ public class BestillingMappingStrategy implements MappingStrategy {
                         rsBestilling.getTpsfStatus().addAll(buildTpsfStatusMap(bestilling.getProgresser()));
                         rsBestilling.getKrrStubStatus().addAll(buildKrrStubStatusMap(bestilling.getProgresser()));
                         rsBestilling.getSigrunStubStatus().addAll(buildSigrunStubStatusMap(bestilling.getProgresser()));
+                        rsBestilling.getUdiStubStatus().addAll(buildUdiStubStatusMap(bestilling.getProgresser()));
                         rsBestilling.getAaregStatus().addAll(buildAaregStatusMap(bestilling.getProgresser()));
                         rsBestilling.getArenaforvalterStatus().addAll(buildArenaStatusMap(bestilling.getProgresser()));
                         rsBestilling.setPdlforvalterStatus(buildPdldataStatusMap(bestilling.getProgresser()));

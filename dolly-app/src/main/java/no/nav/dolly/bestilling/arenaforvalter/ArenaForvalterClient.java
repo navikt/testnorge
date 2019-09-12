@@ -1,5 +1,7 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
+import static java.util.Arrays.asList;
+import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
 import lombok.RequiredArgsConstructor;
@@ -63,6 +65,22 @@ public class ArenaForvalterClient implements ClientRegister {
                         .append("$Feil: Miljø ikke støttet"));
 
         progress.setArenaforvalterStatus(status.substring(1));
+    }
+
+    @Override
+    public void release(List<String> identer) {
+
+        identer.forEach(ident -> {
+            ResponseEntity<ArenaArbeidssokerBruker> existingServicebruker = arenaForvalterConsumer.getIdent(ident);
+            if (existingServicebruker.hasBody()) {
+                existingServicebruker.getBody().getArbeidsokerList().forEach(list -> {
+                    if (nonNull(list.getMiljoe())) {
+                        asList(list.getMiljoe().split(",")).forEach(
+                                environment -> arenaForvalterConsumer.deleteIdent(ident, environment));
+                    }
+                });
+            }
+        });
     }
 
     private void deleteServicebruker(String ident, List<String> availEnvironments, StringBuilder status, ResponseEntity<ArenaArbeidssokerBruker> response) {

@@ -17,6 +17,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
+
 @RunWith(MockitoJUnitRunner.class)
 public class AaregRestConsumerTest {
 
@@ -44,6 +46,6 @@ public class AaregRestConsumerTest {
 
         verify(stsOidcService, times(2)).getIdToken(ENV);
         verify(aaregArbeidsforholdFasitConsumer).getUrlForEnv(ENV);
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(Object[].class));
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(Map[].class));
     }
 }

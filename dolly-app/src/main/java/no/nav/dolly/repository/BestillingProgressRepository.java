@@ -20,4 +20,9 @@ public interface BestillingProgressRepository extends Repository<BestillingProgr
     @Modifying
     @Query("delete from BestillingProgress bp where bp.bestillingId in (select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
     int deleteByGruppeId(@Param("gruppeId") Long gruppeId);
+
+    @Modifying
+    int deleteByIdent(String ident);
+
+    List<BestillingProgress> findByIdent(String ident);
 }

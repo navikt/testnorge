@@ -21,6 +21,7 @@ public class EnvironmentPropsController {
                 .tpsfUrl(providersProps.getTpsf().getUrl())
                 .sigrunStubUrl(providersProps.getSigrunStub().getUrl())
                 .krrStubUrl(providersProps.getKrrStub().getUrl())
+                .udiStubUrl(providersProps.getUdiStub().getUrl())
                 .kodeverkUrl(providersProps.getKodeverk().getUrl())
                 .arenaForvalterUrl(providersProps.getArenaForvalter().getUrl())
                 .instdataUrl(providersProps.getInstdata().getUrl())

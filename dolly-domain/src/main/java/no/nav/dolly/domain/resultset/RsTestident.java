@@ -21,6 +21,7 @@ public class RsTestident {
     private String tpsfSuccessEnv;
     private String krrstubStatus;
     private String sigrunstubStatus;
+    private String udistubStatus;
     private List<RsMeldingStatusIdent> arenaforvalterStatus;
     private List<RsStatusMiljoeIdentForhold> aaregStatus;
     private RsPdlForvalterStatus pdlforvalterStatus;

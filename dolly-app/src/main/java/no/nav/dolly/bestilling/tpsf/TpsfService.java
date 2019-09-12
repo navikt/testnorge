@@ -19,6 +19,7 @@ import no.nav.dolly.domain.resultset.Person;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.TpsfIdenterMiljoer;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
+import no.nav.dolly.domain.resultset.tpsf.EnvironmentsResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
@@ -49,10 +50,17 @@ public class TpsfService {
     private static final String TPSF_CHECK_IDENT_STATUS = "/checkpersoner";
     private static final String TPSF_UPDATE_PERSON_URL = "/api/v1/testdata/updatepersoner";
     private static final String TPSF_DELETE_PERSONER_URL = TPSF_BASE_URL + "/personer?identer=";
+    private static final String TPSF_GET_ENVIRONMENTS = "/api/v1/environments";
 
     private final ObjectMapper objectMapper;
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
+
+    public ResponseEntity<EnvironmentsResponse> getEnvironments() {
+        return restTemplate.exchange(
+                RequestEntity.get(URI.create(providersProps.getTpsf().getUrl() + TPSF_GET_ENVIRONMENTS))
+                        .build(), EnvironmentsResponse.class);
+    }
 
     public ResponseEntity deletePersoner(List<String> identer) {
         return restTemplate.exchange(

@@ -14,6 +14,7 @@ import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
 import java.util.List;
 
@@ -26,7 +27,8 @@ import java.util.List;
 public class BestilteKriterier {
 
     private List<RsArbeidsforhold> aareg;
-    private RsDigitalKontaktdata krrstub;
+	private RsDigitalKontaktdata krrstub;
+    private RsUdiPerson udistub;
     private List<RsOpprettSkattegrunnlag> sigrunstub;
     private Arenadata arenaforvalter;
     private RsPdldata pdlforvalter;

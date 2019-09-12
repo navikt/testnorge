@@ -64,6 +64,10 @@ fasitResources:
       resourceType: baseurl
       propertyMap:
         url: jira.host
+   - alias: udiStub-host
+      resourceType: baseurl
+      propertyMap:
+        url: providers.udiStub.url
 
     - alias: fasit.host
       resourceType: baseurl

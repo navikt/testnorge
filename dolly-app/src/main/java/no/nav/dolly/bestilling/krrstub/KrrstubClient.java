@@ -14,6 +14,8 @@ import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -35,15 +37,7 @@ public class KrrstubClient implements ClientRegister {
             DigitalKontaktdata digitalKontaktdata = mapperFacade.map(bestilling.getKrrstub(), DigitalKontaktdata.class);
             digitalKontaktdata.setPersonident(norskIdent.getIdent());
 
-            DigitalKontaktdata[] response = krrstubConsumer.readDigitalKontaktdata(norskIdent.getIdent());
-
-            if (response != null) {
-                asList(response).forEach(dkif -> {
-                    if (nonNull(dkif.getId())) {
-                        krrstubConsumer.deleteDigitalKontaktdata(dkif.getId());
-                    }
-                });
-            }
+            deleteIdent(norskIdent.getIdent());
 
             ResponseEntity<Object> krrstubResponse = krrstubConsumer.createDigitalKontaktdata(digitalKontaktdata);
             progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
@@ -53,5 +47,24 @@ public class KrrstubClient implements ClientRegister {
             log.error("Kall til KrrStub feilet: {}", e.getMessage(), e);
         }
 
+    }
+
+    @Override
+    public void release(List<String> identer) {
+
+        identer.forEach(ident -> deleteIdent(ident));
+    }
+
+    private void deleteIdent(String ident) {
+
+        DigitalKontaktdata[] response = krrstubConsumer.readDigitalKontaktdata(ident);
+
+        if (response != null) {
+            asList(response).forEach(dkif -> {
+                if (nonNull(dkif.getId())) {
+                    krrstubConsumer.deleteDigitalKontaktdata(dkif.getId());
+                }
+            });
+        }
     }
 }

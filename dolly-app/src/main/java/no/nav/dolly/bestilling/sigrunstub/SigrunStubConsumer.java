@@ -1,5 +1,8 @@
 package no.nav.dolly.bestilling.sigrunstub;
 
+import static java.lang.String.format;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
 import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
 import static org.springframework.http.HttpHeaders.ACCEPT;
@@ -17,12 +20,14 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class SigrunStubConsumer {
 
+    private static final String CONSUMER = "Dolly";
     private static final String SIGRUN_STUB_DELETE_GRUNNLAG = "/testdata/slett";
     private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = "/testdata/opprettBolk";
 
@@ -33,6 +38,8 @@ public class SigrunStubConsumer {
 
         restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getSigrunStub().getUrl() + SIGRUN_STUB_DELETE_GRUNNLAG))
                         .header(AUTHORIZATION, getUserIdToken())
+                        .header(HEADER_NAV_CALL_ID, getNavCallId())
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .header("personidentifikator", ident)
                         .build(),
                 String.class);
@@ -43,8 +50,14 @@ public class SigrunStubConsumer {
         return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getSigrunStub().getUrl() + SIGRUN_STUB_OPPRETT_GRUNNLAG))
                         .header(ACCEPT, APPLICATION_JSON_VALUE)
                         .header(AUTHORIZATION, getUserIdToken())
+                        .header(HEADER_NAV_CALL_ID, getNavCallId())
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .header("testdataEier", getUserPrinciple())
                         .body(request),
                 Object.class);
+    }
+
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
     }
 }

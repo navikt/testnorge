@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 @EnableAsync
 public class AsyncConfig extends AsyncConfigurerSupport {
 
-    private static final int NUMBER_OF_FIXED_THREAD_POOLS = 2;
+    private static final int NUMBER_OF_FIXED_THREAD_POOLS = 4;
 
     @Override
     public Executor getAsyncExecutor() {

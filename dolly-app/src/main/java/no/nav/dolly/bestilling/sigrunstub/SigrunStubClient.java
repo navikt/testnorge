@@ -6,7 +6,11 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -28,8 +32,8 @@ public class SigrunStubClient implements ClientRegister {
                 request.setPersonidentifikator(norskIdent.getIdent());
             }
 
-            // Alle skattegrunnlag har samme ident
-            sigrunStubConsumer.deleteSkattegrunnlag(bestilling.getSigrunstub().get(0).getPersonidentifikator());
+            deleteExistingSkattegrunnlag(bestilling.getSigrunstub().get(0).getPersonidentifikator());
+
             progress.setSigrunstubStatus(
                     sigrunStubResponseHandler.extractResponse(
                             sigrunStubConsumer.createSkattegrunnlag(bestilling.getSigrunstub())));
@@ -37,5 +41,23 @@ public class SigrunStubClient implements ClientRegister {
         } catch (RuntimeException e) {
             progress.setSigrunstubStatus("Feil:" + e.getMessage());
         }
+    }
+
+    private void deleteExistingSkattegrunnlag(String ident) {
+        try {
+            // Alle skattegrunnlag har samme ident
+            sigrunStubConsumer.deleteSkattegrunnlag(ident);
+
+        } catch (HttpClientErrorException error) {
+            if (!HttpStatus.NOT_FOUND.equals(error.getStatusCode())) {
+                throw error;
+            }
+        }
+    }
+
+    @Override
+    public void release(List<String> identer) {
+
+        identer.forEach(this::deleteExistingSkattegrunnlag);
     }
 }

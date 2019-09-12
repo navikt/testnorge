@@ -47,6 +47,9 @@ public class BestillingProgress {
     @Column(name = "KRRSTUB_STATUS")
     private String krrstubStatus;
 
+    @Column(name = "UDISTUB_STATUS")
+    private String udistubStatus;
+
     @Column(name = "AAREG_STATUS")
     private String aaregStatus;
 

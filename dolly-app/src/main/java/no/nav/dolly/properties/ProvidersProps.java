@@ -17,6 +17,7 @@ public class ProvidersProps {
     private Tpsf tpsf = new Tpsf();
     private SigrunStub sigrunStub = new SigrunStub();
     private KrrStub krrStub = new KrrStub();
+    private UdiStub udiStub = new UdiStub();
     private Kodeverk kodeverk = new Kodeverk();
     private Norg2 norg2 = new Norg2();
     private Fasit fasit = new Fasit();
@@ -51,6 +52,16 @@ public class ProvidersProps {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class KrrStub {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UdiStub {
 
         private String url;
     }

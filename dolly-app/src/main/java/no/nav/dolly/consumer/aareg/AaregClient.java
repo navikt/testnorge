@@ -4,11 +4,12 @@ import static java.util.Collections.singletonList;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.aareg.AaregAbstractClient;
+import no.nav.dolly.aareg.AaregReleaseIdentClient;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAktoer;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
@@ -17,19 +18,20 @@ import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AaregClient implements ClientRegister {
+public class AaregClient extends AaregAbstractClient implements ClientRegister {
 
     private static final String ARBEIDSGIVER = "arbeidsgiver";
 
     private final AaregRestConsumer aaregRestConsumer;
     private final AaregWsConsumer aaregWsConsumer;
+    private final AaregReleaseIdentClient aaregReleaseIdentClient;
 
     @Override
     public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
@@ -68,12 +70,9 @@ public class AaregClient implements ClientRegister {
 
     }
 
-    private RsAaregOppdaterRequest buildRequest(RsArbeidsforhold arbfInput, String env) {
-        RsAaregOppdaterRequest request = new RsAaregOppdaterRequest();
-        request.setRapporteringsperiode(LocalDateTime.now());
-        request.setArbeidsforhold(arbfInput);
-        request.setEnvironments(singletonList(env));
-        return request;
+    @Override
+    public void release(List<String> identer) {
+        identer.forEach(aaregReleaseIdentClient::deleteArbeidsforhold);
     }
 
     private void appendResult(Map<String, String> result, String arbeidsforholdId, StringBuilder builder) {
@@ -121,19 +120,4 @@ public class AaregClient implements ClientRegister {
         return (String) ((Map) arbeidsforhold.get(ARBEIDSGIVER)).get("type");
     }
 
-    private String getOrgnummer(Map arbeidsforhold) {
-        return (String) ((Map) arbeidsforhold.get(ARBEIDSGIVER)).get("organisasjonsnummer");
-    }
-
-    private String getPersonnummer(Map arbeidsforhold) {
-        return (String) ((Map) arbeidsforhold.get(ARBEIDSGIVER)).get("offentligIdent");
-    }
-
-    private Long getNavArbfholdId(Map arbeidsforhold) {
-        return Long.valueOf((Integer) arbeidsforhold.get("navArbeidsforholdId"));
-    }
-
-    private String getArbforholdId(Map arbeidsforhold) {
-        return (String) arbeidsforhold.get("arbeidsforholdId");
-    }
 }

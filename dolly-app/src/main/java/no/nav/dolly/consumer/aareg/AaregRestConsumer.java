@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class AaregRestConsumer {
     private final RestTemplate restTemplate;
     private final StsOidcService stsOidcService;
 
-    public ResponseEntity<Object[]> readArbeidsforhold(String ident, String environment) {
+    public ResponseEntity<Map[]> readArbeidsforhold(String ident, String environment) {
 
         return restTemplate.exchange(RequestEntity
                         .get(URI.create(aaregArbeidsforholdFasitConsumer.getUrlForEnv(environment)))
@@ -32,6 +33,6 @@ public class AaregRestConsumer {
                         .header(HEADER_NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(environment))
                         .header(HEADER_NAV_PERSON_IDENT, ident)
                         .build(),
-                Object[].class);
+                Map[].class);
     }
 }

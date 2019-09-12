@@ -48,7 +48,7 @@ public class AaregClientTest {
     @Test
     public void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_OK() {
 
-        when(aaregRestConsumer.readArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(new Object[]{}));
+        when(aaregRestConsumer.readArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(new Map[]{}));
 
         aaregClient.gjenopprett(RsDollyBestilling.builder()
                         .aareg(singletonList(RsArbeidsforhold.builder().build()))
@@ -119,7 +119,7 @@ public class AaregClientTest {
         assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=1$OK")));
     }
 
-    private Object[] buildArbeidsforhold(boolean isOrgnummer) {
+    private Map[] buildArbeidsforhold(boolean isOrgnummer) {
 
         Map<String, Object> arbeidstaker = new HashMap<>();
         arbeidstaker.put("offentligIdent", IDENT);
@@ -137,6 +137,6 @@ public class AaregClientTest {
         arbeidsforhold.put("arbeidstaker", arbeidstaker);
         arbeidsforhold.put("navArbeidsforholdId", NAV_ARBFORHOLD_ID);
 
-        return listOf(arbeidsforhold).toArray();
+        return new Map[]{arbeidsforhold};
     }
 }

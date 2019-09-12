@@ -21,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.List;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -67,6 +69,12 @@ public class PdlForvalterClient implements ClientRegister {
         }
 
         progress.setPdlforvalterStatus(status.substring(1));
+    }
+
+    @Override
+    public void release(List<String> identer) {
+
+        identer.forEach(ident -> pdlForvalterRestConsumer.deleteIdent(ident));
     }
 
     private void sendUtenlandsid(Pdldata pdldata, NorskIdent norskIdent, StringBuilder status) {

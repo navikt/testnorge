@@ -4,6 +4,7 @@ import static no.nav.dolly.provider.api.documentation.DocumentationNotes.AAREG_J
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.aareg.AaregReleaseIdentClient;
 import no.nav.dolly.consumer.aareg.AaregRestConsumer;
 import no.nav.dolly.consumer.aareg.AaregWsConsumer;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
@@ -12,6 +13,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/aareg", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,6 +32,7 @@ public class AaregController {
 
     private final AaregWsConsumer aaregWsConsumer;
     private final AaregRestConsumer aaregRestConsumer;
+    private final AaregReleaseIdentClient releaseIdentClient;
 
     @ApiOperation(value = "Opprett arbeidsforhold mot Aareg", notes = AAREG_JSON_COMMENT)
     @PostMapping("/arbeidsforhold")
@@ -52,4 +57,11 @@ public class AaregController {
         return aaregRestConsumer.readArbeidsforhold(ident, environment);
     }
 
+    @ApiOperation(value = "Slett arbeidsforhold fra Aareg", notes = "Arbeidsforhold blir ikke slettet, men eksisterende forhold blir satt inaktive")
+    @DeleteMapping("/arbeidsforhold")
+    @ResponseStatus(HttpStatus.OK)
+    public Map<String, String> slettArbeidsforhold(@RequestParam String ident) {
+
+        return releaseIdentClient.deleteArbeidsforhold(ident);
+    }
 }
