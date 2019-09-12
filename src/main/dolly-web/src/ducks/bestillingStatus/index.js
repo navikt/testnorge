@@ -1,21 +1,21 @@
+import { createAction, handleActions } from 'redux-actions'
 import { DollyApi } from '~/service/Api'
-import { createAction, handleActions, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 
-export const getBestillinger = createAction('GET_BESTILLINGER', async gruppeID =>
+export const getBestillinger = createAction('GET_BESTILLINGER', gruppeID =>
 	DollyApi.getBestillinger(gruppeID)
 )
 
 export const removeNyBestillingStatus = createAction('REMOVE_NY_BESTILLING_STATUS')
-export const cancelBestilling = createAction('CANCEL_BESTILLING', async id =>
+export const cancelBestilling = createAction('CANCEL_BESTILLING', id =>
 	DollyApi.cancelBestilling(id)
 )
-export const gjenopprettBestilling = createAction('GJENOPPRETT_BESTILLING', async (id, envs) =>
+export const gjenopprettBestilling = createAction('GJENOPPRETT_BESTILLING', (id, envs) =>
 	DollyApi.gjenopprettBestilling(id, envs)
 )
 
 // ny-array holder oversikt over nye bestillinger i en session
-const initialState = { ny: [] }
+const initialState = { ny: [], data: [] }
 
 export default handleActions(
 	{
