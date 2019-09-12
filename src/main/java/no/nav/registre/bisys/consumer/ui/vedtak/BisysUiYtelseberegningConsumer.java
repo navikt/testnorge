@@ -116,6 +116,7 @@ public class BisysUiYtelseberegningConsumer {
                     inntektslinje.brukInntekt().toggle();
                 }
             } catch (NoSuchElementException e) {
+                // Use fixed inntekter from environment variables if provided
                 if (request.getInntektBmEgneOpplysninger() > 0 && request.getInntektBpEgneOpplysninger() > 0) {
 
                     inntekter.leggTilInntekslinje().click();

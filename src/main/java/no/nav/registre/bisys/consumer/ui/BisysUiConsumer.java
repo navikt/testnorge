@@ -10,7 +10,7 @@ import no.nav.bidrag.ui.bisys.soknad.request.SoknadRequest;
 import no.nav.registre.bisys.consumer.rs.request.BidragsmeldingAugments;
 import no.nav.registre.bisys.consumer.rs.request.SynthesizedBidragRequest;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
-import no.nav.registre.bisys.consumer.ui.sak.BisysUiSoknadConsumer;
+import no.nav.registre.bisys.consumer.ui.soknad.BisysUiSoknadConsumer;
 import no.nav.registre.bisys.consumer.ui.vedtak.BisysUiFatteVedtakConsumer;
 import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 import no.nav.registre.bisys.exception.BidragRequestRuntimeException;
