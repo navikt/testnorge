@@ -27,6 +27,7 @@ public interface TestnorgeToBisysMapper {
     @Mapping(target = "sartilskuddGodkjentBelop", source = "augments.sartilskuddGodkjentBelop")
     @Mapping(target = "sartilskuddKravbelop", source = "augments.sartilskuddKravbelop")
     @Mapping(target = "sivilstandBm", source = "augments.sivilstandBm")
+    @Mapping(target = "skatteklasse", source = "augments.skatteklasse")
     SynthesizedBidragRequest bidragsmeldingToBidragRequest(BidragsmeldingAugments augments);
 
 }

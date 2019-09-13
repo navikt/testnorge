@@ -1,5 +1,7 @@
 package no.nav.registre.bisys.consumer.ui;
 
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.bidrag.ui.bisys.BisysApplication;
 import no.nav.bidrag.ui.bisys.soknad.request.SoknadRequest;
+import no.nav.registre.bisys.config.AppConfig;
 import no.nav.registre.bisys.consumer.rs.request.BidragsmeldingAugments;
 import no.nav.registre.bisys.consumer.rs.request.SynthesizedBidragRequest;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
@@ -33,7 +36,7 @@ public class BisysUiConsumer {
     private BisysUiFatteVedtakConsumer fatteVedtakConsumer;
 
     @Autowired
-    private BidragsmeldingAugments bisysRequestAugments;
+    private BidragsmeldingAugments bidragsmeldingAugments;
 
     private TestnorgeToBisysMapper testnorgeToBisysMapper = Mappers.getMapper(TestnorgeToBisysMapper.class);
 
@@ -49,8 +52,9 @@ public class BisysUiConsumer {
                     bidragsmelding.getBarnetsFnr());
         }
 
-        SynthesizedBidragRequest request = testnorgeToBisysMapper.bidragsmeldingToBidragRequest(bisysRequestAugments);
-        SoknadRequest soknadRequest = testnorgeToBisysMapper.bidragsmeldingToSoknadRequest(bidragsmelding);
+        SynthesizedBidragRequest request = testnorgeToBisysMapper.bidragsmeldingToBidragRequest(bidragsmeldingAugments);
+        SoknadRequest soknadRequest = adjustSoktFraDate(testnorgeToBisysMapper.bidragsmeldingToSoknadRequest(bidragsmelding));
+
         request.setSoknadRequest(soknadRequest);
 
         if (bisys != null) {
@@ -60,5 +64,15 @@ public class BisysUiConsumer {
             throw new BidragRequestRuntimeException("Bisys logon failed!");
         }
 
+    }
+
+    private SoknadRequest adjustSoktFraDate(SoknadRequest request) {
+
+        LocalDate soktFraDate = LocalDate.parse(request.getSoktFra(),
+                DateTimeFormat.forPattern(AppConfig.STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST));
+
+        request.setSoktFra(soktFraDate.dayOfMonth().withMinimumValue().toString(AppConfig.STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST));
+
+        return request;
     }
 }

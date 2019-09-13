@@ -190,9 +190,7 @@ public class BisysUiSoknadConsumer {
 
         try {
             soknad.selectSoknadFra(request.getSoknadFra());
-            LocalDate soktFraDato = LocalDate.parse(request.getSoktFra(),
-                    DateTimeFormat.forPattern(STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST)).dayOfMonth().withMinimumValue();
-            soknad.setFomDato(request.getSoktOm(), soktFraDato.toString());
+            soknad.setFomDato(request.getSoktOm(), request.getSoktFra());
             soknad.setSoktOm(request.getFnrBa(), request.getSoktOm());
         } catch (BisysUiConnectException e) {
             throw new BidragRequestProcessingException(soknad, e);

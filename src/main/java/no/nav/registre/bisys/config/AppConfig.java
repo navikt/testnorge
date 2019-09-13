@@ -66,6 +66,9 @@ public class AppConfig {
     @Value("${KRAVBELOP:0}")
     private int sartilskuddKravbelop;
 
+    @Value("${SKATTEKLASSE:1}")
+    private int skatteklasse;
+
     @Value("${syntrest.rest.api.url}")
     private String syntrestServerUrl;
 
@@ -107,6 +110,7 @@ public class AppConfig {
                 .sartilskuddKravbelop(sartilskuddKravbelop)
                 .sartilskuddGodkjentBelop(sartilskuddGodkjentBelop)
                 .sartilskuddFradrag(sartilskuddFradrag)
+                .skatteklasse(skatteklasse)
                 .build();
     }
 
