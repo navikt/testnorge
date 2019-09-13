@@ -123,16 +123,6 @@ public class IdentpoolService {
             }
             TpsStatus identStatus = tpsStatus.get(0);
 
-            Rekvireringsstatus rekvireringsstatus = identStatus.isInUse() ? I_BRUK : LEDIG;
-            Ident newIdent = Ident.builder()
-                    .identtype(getIdentType(personidentifikator))
-                    .personidentifikator(personidentifikator)
-                    .rekvireringsstatus(rekvireringsstatus)
-                    .kjoenn(PersonidentUtil.getKjonn(personidentifikator))
-                    .finnesHosSkatt(false)
-                    .foedselsdato(PersonidentUtil.toBirthdate(personidentifikator))
-                    .build();
-            identRepository.save(newIdent);
             return !identStatus.isInUse();
         }
     }

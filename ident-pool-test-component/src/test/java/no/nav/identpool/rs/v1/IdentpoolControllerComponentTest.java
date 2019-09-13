@@ -202,7 +202,6 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
 
         assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(apiResponseEntity.getBody(), is(true));
-        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG));
     }
 
     @Test
