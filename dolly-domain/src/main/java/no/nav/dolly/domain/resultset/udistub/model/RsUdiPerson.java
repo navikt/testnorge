@@ -1,7 +1,6 @@
 package no.nav.dolly.domain.resultset.udistub.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -20,8 +19,6 @@ import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdStatus;
 @ToString
 public class RsUdiPerson {
 
-        private UdiPersonNavn navn;
-        private LocalDateTime foedselsDato;
         private List<UdiAvgjorelse> avgjoerelser;
         private List<UdiAlias> aliaser;
         private UdiArbeidsadgang arbeidsadgang;
