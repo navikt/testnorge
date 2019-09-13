@@ -263,8 +263,7 @@ export default function testbrukerReducer(state = initialState, action) {
 					...state.items,
 					udistub: {
 						...state.items.udistub,
-						[action.meta.ident]: action.payload && action.payload
-						// ENDRE DENNE???
+						[action.meta.ident]: action.payload && action.payload.data.person
 					}
 				}
 			}

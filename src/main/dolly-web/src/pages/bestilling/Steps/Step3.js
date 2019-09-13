@@ -272,42 +272,7 @@ export default class Step3 extends PureComponent {
 
 		if (!item.inputType) return null
 
-		let itemValue = Formatters.oversettBoolean(_get(stateValues, item.id))
-
-		if (item.dataSource === 'ARENA') {
-			item.id === 'arenaBrukertype'
-				? (itemValue = Formatters.uppercaseAndUnderscoreToCapitalized(
-						_get(stateValues['arenaforvalter'][0], item.id)
-				  ))
-				: (itemValue = Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id)))
-		}
-
-		if (item.dataSource === 'PDLF' && item.subKategori.id === 'utenlandskIdentifikasjonsnummer') {
-			itemValue = Formatters.oversettBoolean(
-				_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
-			)
-		}
-		// console.log('item.id :', item.id)
-		// console.log('itemValue :', itemValue)
-		if (item.dataSource === 'INST' && (item.id === 'institusjonstype' || item.id === 'varighet')) {
-			itemValue = Formatters.showLabel(item.id, itemValue)
-		}
-
-		if (
-			item.dataSource === 'UDI' &&
-			itemValue &&
-			(item.id === 'arbeidsOmfang' ||
-				item.id === 'typeArbeidsadgang' ||
-				item.id === 'oppholdsstatus' ||
-				item.id === 'typeOpphold' ||
-				item.id === 'ikkeOppholdGrunn')
-		) {
-			itemValue = Formatters.showLabel(item.id, itemValue)
-		}
-
-		itemValue === 'true' && (itemValue = true) // Quickfix fra SelectOptions(stringBoolean)
-		itemValue === 'false' && (itemValue = false)
-		typeof itemValue === 'boolean' && (itemValue = Formatters.oversettBoolean(itemValue))
+		const itemValue = this._formatereValue(item, stateValues)
 
 		const staticValueProps = {
 			key: item.id,
@@ -362,5 +327,61 @@ export default class Step3 extends PureComponent {
 
 	onClickPrevious = values => {
 		this.props.setEnvironments({ values, goBack: true })
+	}
+
+	_formatereValue = (item, stateValues) => {
+		const value = _get(stateValues, item.id)
+		if (item.dataSource === 'ARENA') {
+			console.log('item.id :', item.id)
+			return item.id === 'arenaBrukertype'
+				? Formatters.uppercaseAndUnderscoreToCapitalized(
+						_get(stateValues['arenaforvalter'][0], item.id)
+				  )
+				: Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id))
+			// item.id === 'arenaBrukertype'
+			// 	? (itemValue = Formatters.uppercaseAndUnderscoreToCapitalized(
+			// 			_get(stateValues['arenaforvalter'][0], item.id)
+			// 	  ))
+			// 	: (itemValue = Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id)))
+		}
+
+		if (item.dataSource === 'PDLF' && item.subKategori.id === 'utenlandskIdentifikasjonsnummer') {
+			return Formatters.oversettBoolean(
+				_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
+			)
+			// itemValue = Formatters.oversettBoolean(
+			// 	_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
+			// )
+		}
+
+		if (item.dataSource === 'INST' && (item.id === 'institusjonstype' || item.id === 'varighet')) {
+			return Formatters.showLabel(item.id, value)
+			// itemValue = Formatters.showLabel(item.id, itemValue)
+		}
+
+		if (
+			item.dataSource === 'UDI' &&
+			value &&
+			(item.id === 'arbeidsOmfang' ||
+				item.id === 'typeArbeidsadgang' ||
+				item.id === 'oppholdsstatus' ||
+				item.id === 'typeOpphold' ||
+				item.id === 'ikkeOppholdGrunn' ||
+				item.id === 'tredjelandsBorgereValg' ||
+				item.id === 'oppholdstillatelseType' ||
+				item.id === 'eosEllerEFTAtypeOpphold' ||
+				item.id === 'eosEllerEFTAOppholdstillatelse' ||
+				item.id === 'eosEllerEFTABeslutningOmOppholdsrett' ||
+				item.id === 'eosEllerEFTAVedtakOmVarigOppholdsrett')
+		) {
+			return Formatters.showLabel(item.id, value)
+			// itemValue = Formatters.showLabel(item.id, itemValue)
+		}
+
+		if (value === 'true') return true // Quickfix fra SelectOptions(stringBoolean)
+		if (value === 'false') return false
+		return Formatters.oversettBoolean(value)
+
+		// return itemValue
 	}
 }

@@ -75,7 +75,7 @@ const selectOptions = {
 	// UDI
 	oppholdsstatus: [
 		{ value: 'eosEllerEFTAOpphold', label: 'EØS- eller EFTA-opphold' },
-		{ value: 'udiOppholdSammeVilkaar', label: 'Tredjelands borgere' }
+		{ value: 'udiOppholdSammeVilkaar', label: 'Tredjelandsborgere' }
 	],
 	// oppholdsstatus: [
 	// 	{ value: 'uavklart', label: 'Uavklart' },
@@ -96,7 +96,16 @@ const selectOptions = {
 		{ value: 'eosEllerEFTAOppholdstillatelse', label: 'Oppholdstillatelse fra EØS eller EFTA' }
 	],
 
+	//Hvordan få samme innhold i to ulike keys?
 	eosEllerEFTABeslutningOmOppholdsrett: [
+		{ value: 'VARIG', label: 'Varig' },
+		{ value: 'INGEN_INFORMASJON', label: 'Ingen informasjon' },
+		{ value: 'FAMILIE', label: 'Familie' },
+		{ value: 'TJENESTEYTING_ELLER_ETABLERING', label: 'Tjenesteyting eller etablering' },
+		{ value: 'UAVKLART', label: 'Uavklart' }
+	],
+
+	eosEllerEFTAVedtakOmVarigOppholdsrett: [
 		{ value: 'VARIG', label: 'Varig' },
 		{ value: 'INGEN_INFORMASJON', label: 'Ingen informasjon' },
 		{ value: 'FAMILIE', label: 'Familie' },
