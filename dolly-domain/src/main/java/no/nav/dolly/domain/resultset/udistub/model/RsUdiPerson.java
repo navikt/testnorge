@@ -20,7 +20,7 @@ import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdStatus;
 public class RsUdiPerson {
 
         private List<UdiAvgjorelse> avgjoerelser;
-        private List<UdiAlias> aliaser;
+        private List<RsUdiAlias> aliaser;
         private UdiArbeidsadgang arbeidsadgang;
         private UdiOppholdStatus oppholdStatus;
         private Boolean avgjoerelseUavklart;
