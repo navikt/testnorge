@@ -7,7 +7,7 @@
     <parent>
         <artifactId>ident-pool</artifactId>
         <groupId>no.nav.ident-pool</groupId>
-        <version>1.9.1</version>
+        <version>1.9.2</version>
     </parent>
 
     <artifactId>ident-pool-app-local</artifactId>

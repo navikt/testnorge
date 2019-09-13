@@ -22,23 +22,22 @@ public final class PersonidentUtil {
     private static final int GENDER_POS = 8;
     private static final int C1_POS = 9;
     private static final int C2_POS = 10;
-    private static final int END_1900 = 499;
-    private static final int START_1900 = 0;
 
-    private PersonidentUtil() {}
+    private PersonidentUtil() {
+    }
 
     public static void validate(String ident) throws UgyldigPersonidentifikatorException {
         notNull(ident, "Personidentifikator kan ikke være null");
-        
+
         if (ident.matches("\\d{11}")) {
-            validateControlDigits(ident);    
+            validateControlDigits(ident);
         } else {
             throw new UgyldigPersonidentifikatorException(String.format("%s inneholder ikke nok sifre", ident));
         }
     }
 
     public static void validateMultiple(List<String> identer) throws UgyldigPersonidentifikatorException {
-        for(String ident : identer) {
+        for (String ident : identer) {
             notNull(ident, "Personidentifikator kan ikke være null");
 
             if (ident.matches("\\d{11}")) {
@@ -59,7 +58,7 @@ public final class PersonidentUtil {
     }
 
     public static LocalDate toBirthdate(String ident) {
-        int year = parseInt(getFullYear(ident));
+        int year = getFullYear(ident);
         int month = parseInt(ident.substring(2, 4));
         int day = parseInt(ident.substring(0, 2));
 
@@ -90,14 +89,29 @@ public final class PersonidentUtil {
         return digitsum == DEFAULT_MODULUS ? 0 : digitsum;
     }
 
-    private static String getFullYear(String ident) {
-        StringBuilder builder = new StringBuilder();
-        String year = ident.substring(4, 6);
-        int century = parseInt(ident.substring(6, 9));
+    /**
+     * INDIVID(POS 7-9) 500-749 OG ÅR > 54 => ÅRHUNDRE = 1800
+     * INDIVID(POS 7-9) 000-499            => ÅRHUNDRE = 1900
+     * INDIVID(POS 7-9) 900-999 OG ÅR > 39 => ÅRHUNDRE = 1900
+     * INDIVID(POS 7-9) 500-999 OG ÅR < 40 => ÅRHUNDRE = 2000
+     */
+    private static int getFullYear(String ident) {
+        int year = parseInt(ident.substring(4, 6));
+        int individ = parseInt(ident.substring(6, 9));
 
-        builder.append((century >= START_1900 && century <= END_1900) ? "19" : "20").append(year);
+        // Find century
+        int century;
+        if (individ < 500 || (individ >= 900 && year > 39)) {
+            century = 1900;
+        } else if (year < 40) {
+            century = 2000;
+        } else if (individ < 750 && year > 54) {
+            century = 1800;
+        } else {
+            century = 2000;
+        }
 
-        return builder.toString();
+        return LocalDate.of(century + year, 1, 1).getYear();
     }
 
     public static Kjoenn getKjonn(String fnr) {
