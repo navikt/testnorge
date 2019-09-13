@@ -17,14 +17,14 @@ public class BidragRequestProcessingException extends Exception {
         logHtmlDump(bisysPage);
     }
 
-    public BidragRequestProcessingException(String message, BisysPage bisysPage, Throwable t) {
+    public BidragRequestProcessingException(String message, BisysPage bisysPage, Exception t) {
         super(message, t);
         logFeedbackMessages(bisysPage);
         logFeedbackErrors(bisysPage);
         logHtmlDump(bisysPage);
     }
 
-    public BidragRequestProcessingException(BisysPage bisysPage, Throwable t) {
+    public BidragRequestProcessingException(BisysPage bisysPage, Exception t) {
         super(String.format("Processing failed when processing page %s.", bisysPage.header().tittel()),
                 t);
 

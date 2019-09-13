@@ -1,4 +1,4 @@
-package no.nav.registre.bisys.consumer.ui.sak;
+package no.nav.registre.bisys.consumer.ui.soknad;
 
 import static no.nav.registre.bisys.consumer.ui.BisysUiSupport.getSak;
 import static no.nav.registre.bisys.consumer.ui.BisysUiSupport.redirectToSak;

@@ -1,5 +1,7 @@
 package no.nav.registre.bisys.consumer.ui.vedtak;
 
+import static no.nav.registre.bisys.config.AppConfig.STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST;
+
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
+import net.morher.ui.connect.api.element.Label;
 import no.nav.bidrag.ui.bisys.BisysApplication;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeRolletypeConstants;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
@@ -22,6 +25,7 @@ import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Forskuddsberegning;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Inntekter;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Inntektslinje;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Periode;
+import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Skatteklasselinje;
 import no.nav.bidrag.ui.bisys.soknad.fattevedtak.FatteVedtak;
 import no.nav.bidrag.ui.bisys.soknad.fattevedtak.Vedtakslinje;
 import no.nav.registre.bisys.consumer.rs.request.BidragsmeldingConstant;
@@ -35,6 +39,17 @@ import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 public class BisysUiYtelseberegningConsumer {
 
     public static final String INGEN_BARN_REGISTRERT_PAA_HUSSTAND = "Det er ikke registrert noen barn på husstanden.";
+    private static final int SKATTEKLASSE_PAAKREVD_FOER_AAR = 2018;
+
+    private enum InntekterFeedback {
+        UGYLDIG_SKATTEKLASSE_REGEX(".+UGYLDIG SKATTEKLASSE"), INGEN_INNTEKTER_RETURNERT(".+INNTEKTSKOMPONENTEN RETURNERTE INGEN INNTEKTER."), INGEN_INNTEKTER_VALGT(".+INGEN INNTEKTER ER VALGT");
+
+        private final String regex;
+
+        InntekterFeedback(String regex) {
+            this.regex = regex;
+        }
+    }
 
     public void fulfillForskuddsberegning(Forskuddsberegning forskuddsberegning, SynthesizedBidragRequest request) {
 
@@ -61,16 +76,23 @@ public class BisysUiYtelseberegningConsumer {
             throws BidragRequestProcessingException {
 
         // BMs inntekter
-        checkInntekter(KodeRolletypeConstants.BIDRAGSMOTTAKER, inntekter, request);
+        checkRegisteredInntekter(KodeRolletypeConstants.BIDRAGSMOTTAKER, inntekter, request);
         inntekter.lagre().click();
+
+        if (manualInntekterInfoRequired(inntekter)) {
+            addInntektManually(KodeRolletypeConstants.BIDRAGSMOTTAKER, inntekter, request);
+        }
 
         // BPs inntekter
         if (!KodeSoknGrKomConstants.FORSKUDD.equals(request.getSoknadRequest().getSoktOm())) {
             for (String option : inntekter.valgtRolle().getOptions()) {
                 if (option.contains(request.getSoknadRequest().getFnrBp())) {
                     inntekter.selectValgtRolle(option);
-                    checkInntekter(KodeRolletypeConstants.BIDRAGSPLIKTIG, inntekter, request);
+                    checkRegisteredInntekter(KodeRolletypeConstants.BIDRAGSPLIKTIG, inntekter, request);
                     inntekter.lagre().click();
+                    if (manualInntekterInfoRequired(inntekter)) {
+                        addInntektManually(KodeRolletypeConstants.BIDRAGSPLIKTIG, inntekter, request);
+                    }
                 }
             }
         }
@@ -109,32 +131,107 @@ public class BisysUiYtelseberegningConsumer {
 
     }
 
-    private void checkInntekter(String rolletype, Inntekter inntekter, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
+    private void checkRegisteredInntekter(String rolletype, Inntekter inntekter, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
         for (Inntektslinje inntektslinje : inntekter.inntektslinjer()) {
             try {
                 if (!inntektslinje.brukInntekt().isEnabled()) {
                     inntektslinje.brukInntekt().toggle();
                 }
             } catch (NoSuchElementException e) {
-                if (request.getInntektBmEgneOpplysninger() > 0 && request.getInntektBpEgneOpplysninger() > 0) {
-
-                    inntekter.leggTilInntekslinje().click();
-                    for (Inntektslinje nyInntektslinje : inntekter.inntektslinjer()) {
-                        LocalDate soktFra = LocalDate.parse(request.getSoknadRequest().getSoktFra(), DateTimeFormat.forPattern("yyyy-MM-dd"));
-                        soktFra.monthOfYear().withMinimumValue();
-                        soktFra.dayOfMonth().withMaximumValue();
-                        nyInntektslinje.gjelderFom().setValue(soktFra.toString("dd.MM.yyyy"));
-                        nyInntektslinje.beskrivelse().select(Inntektslinje.KODE_PERSONINNTEKT_EGNE_OPPLYSNINGER);
-
-                        int belop = KodeRolletypeConstants.BIDRAGSMOTTAKER.equals(rolletype) ? request.getInntektBmEgneOpplysninger() : request.getInntektBpEgneOpplysninger();
-                        nyInntektslinje.belop().setValue(Integer.toString(belop));
-                    }
-
-                    inntekter.lagre().click();
-                } else {
+                if (!rolleHarInntektEgneOpplysninger(rolletype, request)) {
                     throw new BidragRequestProcessingException("No income registered!", inntekter, e);
                 }
             }
+        }
+    }
+
+    private void addInntektManually(String rolletype, Inntekter inntekter, SynthesizedBidragRequest request) {
+
+        inntekter.leggTilInntekslinje().click();
+        Inntektslinje nyInntektslinje = inntekter.inntektslinjer().get(0);
+
+        LocalDate soktFra = LocalDate.parse(request.getSoknadRequest().getSoktFra(), DateTimeFormat.forPattern("yyyy-MM-dd"));
+        soktFra.monthOfYear().withMinimumValue();
+        soktFra.dayOfMonth().withMaximumValue();
+        nyInntektslinje.gjelderFom().setValue(soktFra.dayOfMonth().withMinimumValue().toString("dd.MM.yyyy"));
+        nyInntektslinje.beskrivelse().select(Inntektslinje.KODE_PERSONINNTEKT_EGNE_OPPLYSNINGER);
+
+        int belop = KodeRolletypeConstants.BIDRAGSMOTTAKER.equals(rolletype) ? request.getInntektBmEgneOpplysninger() : request.getInntektBpEgneOpplysninger();
+        nyInntektslinje.belop().setValue(Integer.toString(belop));
+
+        inntekter.lagre().click();
+
+        if (feedbackMatchFound(InntekterFeedback.UGYLDIG_SKATTEKLASSE_REGEX.regex, inntekter.errors())) {
+            addSkatteklasseIfMissing(inntekter, request);
+        }
+    }
+
+    private boolean rolleHarInntektEgneOpplysninger(String rolletype, SynthesizedBidragRequest request) {
+        if (KodeRolletypeConstants.BIDRAGSMOTTAKER.equals(rolletype)) {
+            return request.getInntektBmEgneOpplysninger() > 0;
+        } else if (KodeRolletypeConstants.BIDRAGSPLIKTIG.equals(rolletype)) {
+            return request.getInntektBpEgneOpplysninger() > 0;
+        }
+        return false;
+    }
+
+    private boolean manualInntekterInfoRequired(Inntekter inntekter) {
+        for (InntekterFeedback feedback : InntekterFeedback.values()) {
+            if (feedbackMatchFound(feedback.regex, inntekter.messages())
+                    || feedbackMatchFound(feedback.regex, inntekter.errors())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean feedbackMatchFound(String regex, List<Label> feedback) {
+        for (Label label : feedback) {
+            String labelContent = label.getText();
+            if (labelContent.matches(regex)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void addSkatteklasseIfMissing(Inntekter inntekter, SynthesizedBidragRequest request) {
+
+        String soktFra = getSoktFra(inntekter, request);
+        LocalDate soktFraDate = LocalDate.parse(soktFra, DateTimeFormat.forPattern(STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST));
+
+        if (soktFraDate.getYear() < SKATTEKLASSE_PAAKREVD_FOER_AAR && !isSkatteklasseSetForSoktFraAr(inntekter, soktFraDate)) {
+            addSkatteklasseForSoktFraAr(inntekter, soktFraDate.getYear(), request);
+        }
+    }
+
+    private void addSkatteklasseForSoktFraAr(Inntekter inntekter, int year, SynthesizedBidragRequest request) {
+        for (Skatteklasselinje linje : inntekter.skatteklasselinjer()) {
+            String skattear = linje.skattear().getValue();
+            if (skattear.isEmpty()) {
+                linje.skattear().setValue(Integer.toString(year));
+                linje.skatteklasse().setValue(Integer.toString(request.getSkatteklasse()));
+                break;
+            }
+        }
+    }
+
+    private boolean isSkatteklasseSetForSoktFraAr(Inntekter inntekter, LocalDate soktFraDate) {
+        for (Skatteklasselinje linje : inntekter.skatteklasselinjer()) {
+            int skattear = linje.skattear().getValue().isEmpty() ? 0 : Integer.parseInt(linje.skattear().getValue());
+            if (skattear == soktFraDate.getYear()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String getSoktFra(Inntekter inntekter, SynthesizedBidragRequest request) {
+        try {
+            return inntekter.soktFraDato().getText();
+        } catch (ElementNotFoundException | NoSuchElementException e) {
+            return request.getSoknadRequest().getSoktFra();
         }
     }
 
@@ -154,7 +251,7 @@ public class BisysUiYtelseberegningConsumer {
             SynthesizedBidragRequest request) throws BidragRequestProcessingException {
 
         List<Barn> barna = boforhold.barn();
-        LocalDate soktFra = LocalDate.parse(request.getSoknadRequest().getSoktFra(), DateTimeFormat.forPattern("yyyy-MM-dd"));
+        LocalDate soktFra = LocalDate.parse(request.getSoknadRequest().getSoktFra(), DateTimeFormat.forPattern("yyyy-MM-dd")).dayOfMonth().withMinimumValue();
 
         if (!requestedBarnIncludedInList(barna, request.getSoknadRequest().getFnrBa())) {
             boforhold.leggTilNyLinjeBarn().click();
@@ -263,7 +360,6 @@ public class BisysUiYtelseberegningConsumer {
         for (Periode periode : bidragsberegning.perioder()) {
             periode.samvaersklasseInput().setValue(request.getSamvarsklasse());
         }
-
     }
 
     /**

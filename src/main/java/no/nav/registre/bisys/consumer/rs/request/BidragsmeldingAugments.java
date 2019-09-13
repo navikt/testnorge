@@ -21,5 +21,6 @@ public class BidragsmeldingAugments {
     private final int sartilskuddFradrag;
     private final int sartilskuddGodkjentBelop;
     private final String sivilstandBm;
+    private final int skatteklasse;
 
 }

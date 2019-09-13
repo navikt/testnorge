@@ -11,9 +11,9 @@ import no.nav.bidrag.ui.bisys.BisysApplication.BisysPageTitle;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
 import no.nav.registre.bisys.consumer.rs.request.SynthesizedBidragRequest;
 import no.nav.registre.bisys.consumer.ui.BisysUiSupport;
-import no.nav.registre.bisys.consumer.ui.vedtak.executors.BidragExecutor;
-import no.nav.registre.bisys.consumer.ui.vedtak.executors.ForskuddExecutor;
-import no.nav.registre.bisys.consumer.ui.vedtak.executors.SartilskuddExecutor;
+import no.nav.registre.bisys.consumer.ui.vedtak.types.BidragConsumer;
+import no.nav.registre.bisys.consumer.ui.vedtak.types.ForskuddConsumer;
+import no.nav.registre.bisys.consumer.ui.vedtak.types.SartilskuddConsumer;
 import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 
 @Component
@@ -23,13 +23,13 @@ public class BisysUiFatteVedtakConsumer {
     public static final String KODE_BESL_AARSAK_ILAGT_IKKE_SOKT = "GIGI";
 
     @Autowired
-    private BidragExecutor bidragExecutor;
+    private BidragConsumer bidragExecutor;
 
     @Autowired
-    private ForskuddExecutor forskuddExecutor;
+    private ForskuddConsumer forskuddExecutor;
 
     @Autowired
-    private SartilskuddExecutor sartilskuddExecutor;
+    private SartilskuddConsumer sartilskuddExecutor;
 
     public static final Map<String, String> beslAarsakDekodeMap() {
 

@@ -54,6 +54,9 @@ public class SynthesizedBidragRequest {
     @BidragsmeldingConstant
     private String sivilstandBm;
 
+    @BidragsmeldingConstant
+    private int skatteklasse;
+
     private SoknadRequest soknadRequest;
 
     public String getKodeVirkAarsak(String kodeSoknGrKom) {
