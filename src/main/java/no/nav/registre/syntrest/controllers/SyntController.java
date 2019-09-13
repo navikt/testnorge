@@ -6,12 +6,17 @@ import io.swagger.annotations.ApiParam;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.syntrest.controllers.request.InntektsmeldingInntekt;
 import no.nav.registre.syntrest.response.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.response.Barnebidragsmelding;
+import no.nav.registre.syntrest.response.InntektsmeldingPopp;
 import no.nav.registre.syntrest.response.Medlemskapsmelding;
 import no.nav.registre.syntrest.response.AAP115Melding;
 import no.nav.registre.syntrest.response.AAPMelding;
 import no.nav.registre.syntrest.response.Institusjonsmelding;
+import no.nav.registre.syntrest.response.SamMelding;
+import no.nav.registre.syntrest.response.SkdMelding;
+import no.nav.registre.syntrest.response.TPmelding;
 import no.nav.registre.syntrest.services.SyntetiseringService;
 import no.nav.registre.syntrest.utils.InputValidator;
 import org.springframework.http.HttpStatus;
@@ -25,7 +30,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -123,12 +130,97 @@ public class SyntController {
             @RequestParam int numToGenerate
     ) {
         InputValidator.validateInput(numToGenerate);
-        InputValidator.validateInput(InputValidator.INPUT_STRING.MELDEGRUPPE, meldegruppe);
+        InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.MELDEGRUPPE, meldegruppe);
         List<String> response = syntetiseringService.generateMeldekortData(numToGenerate, meldegruppe);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/nav/{endringskode}")
+    @ApiOperation(value = "Nav Melding", notes = "Opprett et antall meldinger med endringskode fra path variabelen.\nReturenterer en liste med strenger der hvert element er en endringsmelding-xml.")
+    public ResponseEntity<List<String>> generateNavEndringsmelding(
+            @ApiParam("Nav endringskode")
+            @PathVariable String endringskode,
+            @ApiParam("Antall meldinger")
+            @RequestParam int numToGenerate
+    ) {
+        InputValidator.validateInput(numToGenerate);
+        InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE_NAV, endringskode);
+        List<String> response = syntetiseringService.generateEndringsmeldingData(numToGenerate, endringskode);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/popp")
+    @ApiOperation(value = "Inntektsmelding", notes = "Genererer syntetiske inntektsmeldinger til Sigrunstub. Inntektsmeldingene blir returnert på et format som kan bli lagret i sigrunstub, og vil generere en ny inntektsmelding basert på personens inntektsmelding forrige år. Hvis personen ikke har en inntektsmelding vil det bli samplet en ny inntektsmelding fra en BeAn/CART-modell.")
+    public ResponseEntity<List<InntektsmeldingPopp>> generateInntektsmelding(
+            @ApiParam("Fnrs å opprette inntektsmeldinger på")
+            @RequestBody List<String> fnrs
+    ) {
+        InputValidator.validateInput(fnrs);
+        List<InntektsmeldingPopp> response = syntetiseringService.generatePoppData(fnrs);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/sam")
+    @ApiOperation(value = "Generer SAM melding", notes = "API for å generere syntetiserte SAM data.")
+    public ResponseEntity<List<SamMelding>> generateSamMelding(
+            @ApiParam("Antall meldinger")
+            @RequestParam int numToGenerate
+    ) {
+        InputValidator.validateInput(numToGenerate);
+        List<SamMelding> response = syntetiseringService.generateSamMeldingData(numToGenerate);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/inntekt")
+    @ApiOperation(value = "Inntektsmeldinger", notes = "Generer inntektsmeldinger på en liste med fødselsnumre. Hvis man også legger ved en liste med inntektsmeldinger per fødselsnummer blir den nye inntektsmeldingen basert på disse.")
+    public ResponseEntity<Map<String, List<InntektsmeldingInntekt>>> generateInntektsMelding(
+            @ApiParam("Map der key: fødselsnummer, value: liste med inntektsmeldinger")
+            @RequestBody Map<String, List<InntektsmeldingInntekt>> fnrInntektMap
+    ) {
+        InputValidator.validateInput(new ArrayList<>(fnrInntektMap.keySet()));
+        Map<String, List<InntektsmeldingInntekt>> response = syntetiseringService.generateInntektData(fnrInntektMap);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/tp")
+    @ApiOperation(value = "Tjeneste Pensjonsmeldinger", notes = "Generer antall tjenestepensjonsmeldinger")
+    public ResponseEntity<List<TPmelding>> generateTPMelding(
+            @ApiParam("Antall meldinger")
+            @RequestParam int numToGenerate
+    ) {
+        InputValidator.validateInput(numToGenerate);
+        List<TPmelding> response = syntetiseringService.generateTPData(numToGenerate);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/tps/{endringskode}")
+    @ApiOperation(value = "Generer SKD melding", notes = "Lager SKD meldinger for ulike endringskoder")
+    public ResponseEntity<List<SkdMelding>> generateSkdMelding(
+            @ApiParam("Endringskode")
+            @PathVariable String endringskode,
+            @ApiParam("Antall meldinger")
+            @RequestParam int numToGenerate
+    ) {
+        InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE, endringskode);
+        InputValidator.validateInput(numToGenerate);
+        List<SkdMelding> response = syntetiseringService.generateTPSData(numToGenerate, endringskode);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
 
 
 

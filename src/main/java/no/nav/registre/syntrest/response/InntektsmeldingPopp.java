@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PoppResponse {
+public class InntektsmeldingPopp {
 //    [
 //  {
 //    "grunnlag": [
@@ -66,3 +66,55 @@ public class PoppResponse {
 
     }
 }
+
+
+//[
+//  {
+//    "grunnlag": [
+//      {
+//        "tekniskNavn": "personinntektLoenn",
+//        "verdi": "571738"
+//      }
+//    ],
+//    "inntektsaar": "2018",
+//    "personidentifikator": "17062937823",
+//    "testdataEier": "synt_test",
+//    "tjeneste": "Beregnet skatt"
+//  },
+//  {
+//    "grunnlag": [
+//      {
+//        "tekniskNavn": "personinntektFiskeFangstFamiliebarnehage",
+//        "verdi": "16930"
+//      }
+//    ],
+//    "inntektsaar": "2018",
+//    "personidentifikator": "17062937823",
+//    "testdataEier": "synt_test",
+//    "tjeneste": "Beregnet skatt"
+//  },
+//  {
+//    "grunnlag": [
+//      {
+//        "tekniskNavn": "personinntektLoenn",
+//        "verdi": "204731"
+//      }
+//    ],
+//    "inntektsaar": "2018",
+//    "personidentifikator": "06060978369",
+//    "testdataEier": "synt_test",
+//    "tjeneste": "Beregnet skatt"
+//  },
+//  {
+//    "grunnlag": [
+//      {
+//        "tekniskNavn": "personinntektFiskeFangstFamiliebarnehage",
+//        "verdi": "27915"
+//      }
+//    ],
+//    "inntektsaar": "2018",
+//    "personidentifikator": "06060978369",
+//    "testdataEier": "synt_test",
+//    "tjeneste": "Beregnet skatt"
+//  }
+//]

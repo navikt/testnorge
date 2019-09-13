@@ -17,5 +17,4 @@ public class AAP115Melding {
     String SYKSKADLYT;
     String UTFALL;
     String VEDTAK_ID;
-
 }

@@ -12,7 +12,7 @@ import java.util.Objects;
 @Component
 public class InputValidator {
 
-    public enum INPUT_STRING { MELDEGRUPPE, ENDRINGSKODE_NAV, ENDRINGSKODE }
+    public enum INPUT_STRING_TYPE { MELDEGRUPPE, ENDRINGSKODE_NAV, ENDRINGSKODE }
 
     private final static List<String> meldegrupper = new ArrayList<>(Arrays.asList("ATTF", "DAGP", "INDI", "ARBS", "FY"));
 
@@ -35,7 +35,7 @@ public class InputValidator {
         }
     }
 
-    public static void validateInput(INPUT_STRING type, String value) throws ResponseStatusException {
+    public static void validateInput(INPUT_STRING_TYPE type, String value) throws ResponseStatusException {
         switch (type) {
             case MELDEGRUPPE:
                 if (!meldegrupper.contains(value)) {

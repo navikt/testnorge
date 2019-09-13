@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriTemplate;
 import org.yaml.snakeyaml.Yaml;
 
 import java.util.ArrayList;
@@ -29,8 +30,11 @@ public class KubernetesController {
 
     private final String manifestPath;
     private final RestTemplate restTemplate;
-    private final String isAliveUrl;
+    private final UriTemplate isAliveUri;
     private final CustomObjectsApi api;
+
+    @Value("${isAlive}")
+    private String isAliveUrl;
 
     @Value("${docker-image-path}")
     private String dockerImagePath;
@@ -44,7 +48,7 @@ public class KubernetesController {
     public KubernetesController(RestTemplate restTemplate, ApiClient apiClient) {
         this.restTemplate = restTemplate;
         this.manifestPath = "/nais/{}.yaml";
-        this.isAliveUrl = "https://nais-{}.nais.preprod.local/internal/isAlive";
+        this.isAliveUri = new UriTemplate(isAliveUrl);
 
         this.api = new CustomObjectsApi();
         api.setApiClient(apiClient);
@@ -90,7 +94,7 @@ public class KubernetesController {
     }
 
     public boolean isAlive(String appName) {
-        String response = restTemplate.getForObject(String.format(isAliveUrl, appName), String.class);
+        String response = restTemplate.getForObject(isAliveUri.expand(appName), String.class);
         return "1".equals(response);
     }
 

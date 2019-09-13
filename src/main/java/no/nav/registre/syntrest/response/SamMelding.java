@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class SamResponse {
+public class SamMelding {
 
     @JsonProperty("ANTALL_FORSOK")
     private String antallForsoek;

@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class TPResponse {
+public class TPmelding {
 
     @JsonProperty("dato_innm_ytel_fom")
     private java.sql.Date datoInnmeldt;
