@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import Loading from '~/components/loading/Loading'
 import Table from '~/components/table/Table'
@@ -42,66 +42,62 @@ export default class TestbrukerListe extends Component {
 
 		if (!sortedTestbrukere) return <Loading label="laster testbrukere" panel />
 
+		if (sortedTestbrukere.length <= 0 && searchActive) {
+			return <ContentContainer>Søket gav ingen resultater.</ContentContainer>
+		}
+
 		return (
 			<PaginationConnector
 				items={sortedTestbrukere}
 				render={testbrukere => {
 					return (
-						<div className="oversikt-container">
-							<Fragment>
-								{testbrukere && testbrukere.length <= 0 && searchActive ? (
-									<ContentContainer>Søket gav ingen resultater.</ContentContainer>
-								) : (
-									<Table>
-										<Table.Header>
-											{headers.map((header, idx) => (
-												<Table.Column key={idx} width={header.width} value={header.label} />
-											))}
-											<Table.Column width="10" value="" />
-										</Table.Header>
+						<Table>
+							<Table.Header>
+								{headers.map((header, idx) => (
+									<Table.Column key={idx} width={header.width} value={header.label} />
+								))}
+								<Table.Column width="10" value="" />
+							</Table.Header>
 
-										<TransitionGroup component={null}>
-											{testbrukere &&
-												testbrukere.map((bruker, idx) => {
-													// Note: idx=0 of bruker (data) is parsed to be ID
-													return (
-														<CSSTransition
-															key={bruker[0]}
-															timeout={isDeleting ? 2000 : 1}
-															classNames="fade"
-														>
-															<Table.Row
-																key={bruker[0]}
-																expandComponent={
-																	<PersonDetaljerConnector
-																		personId={bruker[0]}
-																		username={username}
-																		bestillingId={bruker[5]}
-																		editAction={() =>
-																			editTestbruker(
-																				bruker[0],
-																				this.dataSourceUrlListe(testidenter, bruker[0])
-																			)
-																		}
-																	/>
-																}
-															>
-																{bruker.map((dataCell, cellIdx) => (
-																	<Table.Column
-																		key={cellIdx}
-																		width={headers[cellIdx].width}
-																		value={dataCell}
-																	/>
-																))}
-															</Table.Row>
-														</CSSTransition>
-													)
-												})}
-										</TransitionGroup>
-									</Table>
-								)}
-							</Fragment>
-						</div>
+							<TransitionGroup component={null}>
+								{testbrukere &&
+									testbrukere.map((bruker, idx) => {
+										// Note: idx=0 of bruker (data) is parsed to be ID
+										return (
+											<CSSTransition
+												key={bruker[0]}
+												timeout={isDeleting ? 2000 : 1}
+												classNames="fade"
+											>
+												<Table.Row
+													key={bruker[0]}
+													expandComponent={
+														<PersonDetaljerConnector
+															personId={bruker[0]}
+															username={username}
+															bestillingId={bruker[5]}
+															editAction={() =>
+																editTestbruker(
+																	bruker[0],
+																	this.dataSourceUrlListe(testidenter, bruker[0])
+																)
+															}
+														/>
+													}
+												>
+													{bruker.map((dataCell, cellIdx) => (
+														<Table.Column
+															key={cellIdx}
+															width={headers[cellIdx].width}
+															value={dataCell}
+														/>
+													))}
+												</Table.Row>
+											</CSSTransition>
+										)
+									})}
+							</TransitionGroup>
+						</Table>
 					)
 				}}
 			/>
