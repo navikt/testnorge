@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 import no.nav.registre.syntrest.kubernetes.KubernetesController;
-import no.nav.registre.syntrest.utils.Validation;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -28,11 +27,6 @@ public class AppConfig {
     @Bean
     RestTemplate restTemplate() {
         return new RestTemplate();
-    }
-
-    @Bean
-    Validation validation() {
-        return new Validation();
     }
 
     @Bean
