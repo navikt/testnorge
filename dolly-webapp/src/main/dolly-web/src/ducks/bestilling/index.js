@@ -292,69 +292,6 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 		delete final_values.arenaforvalter.aap_tilDato
 	}
 
-	// if (_get(final_values, 'udistub')) {
-	// 	if (_get(final_values, 'udistub.oppholdsstatus')) {
-	// 		console.log('KOMMER HIT :')
-	// 		if (final_values.udistub.oppholdsstatus === 'uavklart') {
-	// 			final_values.udistub.oppholdStatus = {
-	// 				uavklart: null
-	// 			}
-	// 			delete final_values.udistub.oppholdsstatus
-	// 		} else if (final_values.udistub.oppholdsstatus === 'eosEllerEFTAOpphold') {
-	// 			const periode = final_values.udistub.typeOpphold + 'Periode'
-	// 			final_values.udistub.oppholdStatus = {
-	// 				[periode]: {
-	// 					fra: final_values.udistub.oppholdFraDato,
-	// 					til: final_values.udistub.oppholdTilDato
-	// 				}
-	// 			}
-	// 			delete final_values.udistub.oppholdFraDato
-	// 			delete final_values.udistub.oppholdTilDato
-	// 			delete final_values.udistub.oppholdsstatus
-	// 			delete final_values.udistub.typeOpphold
-	// 		} else if (final_values.udistub.oppholdsstatus === 'oppholdSammeVilkaar') {
-	// 			final_values.udistub.oppholdStatus = {
-	// 				oppholdSammeVilkaar: {
-	// 					oppholdSammeVilkaarPeriode: {
-	// 						fra: final_values.udistub.oppholdFraDato,
-	// 						til: final_values.udistub.oppholdTilDato
-	// 					}
-	// 				}
-	// 			}
-	// 			delete final_values.udistub.oppholdFraDato
-	// 			delete final_values.udistub.oppholdTilDato
-	// 			delete final_values.udistub.oppholdsstatus
-	// 		} else if (
-	// 			final_values.udistub.oppholdsstatus === 'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum'
-	// 		) {
-	// 			const grunn = final_values.udistub.ikkeOppholdGrunn
-	// 			final_values.udistub.oppholdStatus = {
-	// 				ikkeOppholdstilatelseIkkeVilkaarIkkeVisum: {
-	// 					[grunn]: null
-	// 				}
-	// 			}
-	// 			delete final_values.udistub.ikkeOppholdGrunn
-	// 			delete final_values.udistub.oppholdsstatus
-	// 		}
-	// 	}
-	// 	if (_get(final_values, 'udistub.harArbeidsAdgang')) {
-	// 		final_values.udistub.arbeidsadgang = {
-	// 			arbeidsOmfang: final_values.udistub.arbeidsOmfang,
-	// 			harArbeidsAdgang: final_values.udistub.harArbeidsAdgang,
-	// 			periode: {
-	// 				fra: final_values.udistub.arbeidsadgangFraDato,
-	// 				til: final_values.udistub.arbeidsadgangTilDato
-	// 			},
-	// 			typeArbeidsadgang: final_values.udistub.typeArbeidsadgang
-	// 		}
-	// 		delete final_values.udistub.arbeidsOmfang
-	// 		delete final_values.udistub.harArbeidsAdgang
-	// 		delete final_values.udistub.arbeidsadgangFraDato
-	// 		delete final_values.udistub.arbeidsadgangTilDato
-	// 		delete final_values.udistub.typeArbeidsadgang
-	// 	}
-	// }
-
 	if (malBestillingNavn !== '') {
 		final_values = _set(final_values, 'malBestillingNavn', malBestillingNavn)
 	}

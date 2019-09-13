@@ -1,4 +1,5 @@
 import Formatters from '~/utils/DataFormatter'
+import _get from 'lodash/get'
 
 export function mapSigrunData(sigrunData) {
 	if (!sigrunData || sigrunData.length === 0) return null
@@ -297,70 +298,152 @@ export function mapInstData(instData) {
 export function mapUdiData(udiData) {
 	if (!udiData) return null
 	//! Begynte på denne for lenge siden, men tror ikke det er så mye som fortsatt er brukbart.
+	console.log('udiData :', udiData)
+	const oppholdsrettTyper = [
+		'eosEllerEFTABeslutningOmOppholdsrett',
+		'eosEllerEFTAVedtakOmVarigOppholdsrett',
+		'eosEllerEFTAOppholdstillatelse',
+		'oppholdSammeVilkaar'
+	]
+	const currentOppholdsrettType = oppholdsrettTyper.find(type => udiData.oppholdStatus[type])
+
+	const oppholdsrett = Boolean(currentOppholdsrettType)
+
 	return {
 		header: 'UDI',
 		data: [
 			// {
-			// 	id: 'gjeldendeOppholdsstatus',
+			// 	id: 'oppholdStatus',
 			// 	label: 'Gjeldende oppholdsstatus',
 			// 	value: [
-			// 		{
-			// 			id: 'oppholdsstatus',
-			// 			label: 'Oppholdsstatus',
-			// 			value: udiData.oppholdStatus
-			// 		},
-			// 		{
-			// 			id: 'typeOpphold',
-			// 			label: 'Type opphold',
-			// 			value: udiData.oppholdStatus
-			// 		},
-			// 		{
-			// 			id: 'oppholdFraDato',
-			// 			label: 'Oppholdstillatelse fra dato',
-			// 			value: udiData.oppholdStatus
-			// 		},
-			// 		{
-			// 			id: 'oppholdTilDato',
-			// 			label: 'Oppholdstillatelse til dato',
-			// 			value: udiData.oppholdStatus
-			// 		},
-			// 		{
-			// 			id: 'ikkeOppholdGrunn',
-			// 			label: 'Grunn',
-			// 		}
+			{
+				id: 'oppholdsstatus',
+				label: 'Oppholdsstatus',
+				value: oppholdsrett
+					? 'EØS- eller EFTA-opphold'
+					: udiData.oppholdSammeVilkaar
+						? 'Tredjelandsborger'
+						: null // EØS/EFTA eller tredjelandsborger
+				// Sjekk hvilke felter som er utfylt? Kommer an på hva som fylles ut default.
+			},
+			{
+				id: 'status',
+				label: 'Status', //Status for tredjelandsborgere - Oppholdstillatelse, ikke opphold og uavklart
+				value: false //udiData.oppholdStatus
+			},
+			{
+				id: 'typeOpphold',
+				label: 'Type opphold',
+				value: Formatters.showLabel('eosEllerEFTAtypeOpphold', currentOppholdsrettType)
+			},
+			{
+				id: 'oppholdFraDato',
+				label: 'Oppholdstillatelse fra dato', //Denne skal egenltig ha dato fra tredjelandsborgere også
+				value: Formatters.formateStringDates(
+					_get(udiData.oppholdStatus, `${currentOppholdsrettType}Periode.fra`)
+				)
+			},
+			{
+				id: 'oppholdTilDato',
+				label: 'Oppholdstillatelse til dato', //Denne skal egenltig ha dato fra tredjelandsborgere også
+				value: Formatters.formateStringDates(
+					_get(udiData.oppholdStatus, `${currentOppholdsrettType}Periode.til`)
+				)
+			},
+			{
+				id: 'effektueringsdato',
+				label: 'Effektueringsdato', //Denne skal egenltig ha dato fra tredjelandsborgere også
+				value: Formatters.formateStringDates(
+					_get(udiData.oppholdStatus, `${currentOppholdsrettType}Effektuering`)
+				)
+			},
+			{
+				id: 'vedtaksdato',
+				label: 'Vedtaksdato', //tredjelandsborger
+				value: false //udiData.oppholdStatus
+			},
+			{
+				id: 'grunnlagForOpphold',
+				label: 'Grunnlag for opphold',
+				value: Formatters.showLabel(
+					'eosEllerEFTABeslutningOmOppholdsrett',
+					udiData.oppholdStatus[currentOppholdsrettType]
+				)
+			},
+			{
+				id: 'uavklart',
+				label: 'Uavklart',
+				value: udiData.uavklart && Formatters.oversettBoolean(true) //Kan kanskje heller vise denne under status
+			},
+			// {
+			// 	id: 'ikkeOppholdGrunn',
+			// 	label: 'Grunn'
+			// },
 			// 	]
 			// },
 			// {
 			// 	id: 'arbeidsadgang',
 			// 	label: 'Arbeidsadgang',
 			// 	value: [
-			// 		{
-			// 			id: 'harArbeidsadgang',
-			// 			label: 'Har arbeidsadgang',
-			// 			value: udiData.arbeidsadgang.harArbeidsAdgang
-			// 		},
-			// 		{
-			// 			id: 'typeArbeidsadgang',
-			// 			label: 'Type arbeidsadgang',
-			// 			value: Formatters.showLabel(udiData.arbeidsadgang.typeArbeidsAdgang)
-			// 		},
-			// 		{
-			// 			id: 'arbeidsOmfang',
-			// 			label: 'Arbeidsomfang',
-			// 			value: Formatters.showLabel(udiData.arbeidsadgang.arbeidsOmfang)
-			// 		},
-			// 		{
-			// 			id: 'arbeidsadgangFraDato',
-			// 			label: 'Arbeidsadgang fra dato',
-			// 			value: udiData.arbeidsadgang.periode.fra
-			// 		},
-			// 		{
-			// 			id: 'arbeidsadgangTilDato',
-			// 			label: 'Arbeidsadgang til dato',
-			// 			value: udiData.arbeidsadgang.periode.til
-			// 		}
+			{
+				id: 'harArbeidsadgang',
+				label: 'Har arbeidsadgang',
+				value: udiData.arbeidsadgang.harArbeidsAdgang
+			},
+			{
+				id: 'typeArbeidsadgang',
+				label: 'Type arbeidsadgang',
+				value: Formatters.showLabel('typeArbeidsadgang', udiData.arbeidsadgang.typeArbeidsAdgang)
+			},
+			{
+				id: 'arbeidsOmfang',
+				label: 'Arbeidsomfang',
+				value: Formatters.showLabel('arbeidsOmfang', udiData.arbeidsadgang.arbeidsOmfang)
+			},
+			{
+				id: 'arbeidsadgangFraDato',
+				label: 'Arbeidsadgang fra dato',
+				value: Formatters.formateStringDates(udiData.arbeidsadgang.periode.fra)
+			},
+			{
+				id: 'arbeidsadgangTilDato',
+				label: 'Arbeidsadgang til dato',
+				value: Formatters.formateStringDates(udiData.arbeidsadgang.periode.til)
+			}
 			// 	]
-			// }
-		]
+			// },
+		] //.concat(mapAliasData(udiData.aliaser))
+	}
+}
+
+const mapAliasData = aliasdata => {
+	if (!aliasdata || aliasdata.length === 0) return null
+	return {
+		header: 'Alias',
+		multiple: true,
+		data: aliasdata.map((data, i) => {
+			return {
+				parent: 'aliaser',
+				id: i,
+				value: [
+					{
+						id: 'id',
+						label: '',
+						value: `#${i + 1}`,
+						width: 'x-small'
+					},
+					{
+						id: 'fnr',
+						label: 'Fnr/dnr',
+						value: data.fnr
+					},
+					{
+						id: 'navn',
+						label: 'Navn',
+						value: data.navn
+					}
+				]
+			}
+		})
 	}
 }
