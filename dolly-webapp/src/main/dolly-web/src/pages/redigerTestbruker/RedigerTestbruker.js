@@ -56,14 +56,16 @@ export default class RedigerTestbruker extends Component {
 		let AttributtListeToEdit = []
 		if (bestillinger.data) {
 			const eksisterendeIdentBestilling = this._typeBestilling(bestillinger)
-			eksisterendeIdentBestilling &&
-				(finalAttributtListe = this._fjernSattForEksisterendeIdentAttr(AttributtListe))
+			if (eksisterendeIdentBestilling) {
+				finalAttributtListe = this._fjernSattForEksisterendeIdentAttr(AttributtListe)
+			}
 		}
 
-		finalAttributtListe.length < 1 &&
-			AttributtListe.map(element => {
+		if (finalAttributtListe.length < 1) {
+			AttributtListe.forEach(element => {
 				finalAttributtListe.push(element)
 			})
+		}
 
 		if (AddedAttributes && AddedAttributes.length > 0) {
 			let tempElement = null
@@ -87,11 +89,11 @@ export default class RedigerTestbruker extends Component {
 
 	_typeBestilling = bestillinger => {
 		let opprettetFraEksisterendeIdent = false
-		bestillinger.data.map(bestilling => {
+		bestillinger.data.forEach(bestilling => {
 			if (bestilling.opprettFraIdenter) {
 				const opprettFraIdenterArr = bestilling.opprettFraIdenter.split(',')
-				opprettFraIdenterArr.map(ident => {
-					ident === this.props.ident && (opprettetFraEksisterendeIdent = true)
+				opprettFraIdenterArr.forEach(ident => {
+					if (ident === this.props.ident) opprettetFraEksisterendeIdent = true
 				})
 			}
 		})
@@ -101,11 +103,11 @@ export default class RedigerTestbruker extends Component {
 	_fjernSattForEksisterendeIdentAttr = AttributtListe => {
 		let finalAttributtListe = []
 		let tempElement = null
-		AttributtListe.map(element => {
+		AttributtListe.forEach(element => {
 			tempElement = Object.assign({}, element)
-			tempElement.items.map((subElement, jdx) => {
-				subElement.items.map((attr, idx) => {
-					attr.sattForEksisterendeIdent && tempElement.items[jdx].items.splice(idx, 1)
+			tempElement.items.forEach((subElement, jdx) => {
+				subElement.items.forEach((attr, idx) => {
+					if (attr.sattForEksisterendeIdent) tempElement.items[jdx].items.splice(idx, 1)
 				})
 			})
 			finalAttributtListe.push(tempElement)
@@ -115,7 +117,7 @@ export default class RedigerTestbruker extends Component {
 
 	render() {
 		const { testbruker, goBack, match, bestillinger } = this.props
-		const { tpsf, sigrunstub, krrstub } = testbruker
+		const { tpsf } = testbruker
 		const { addedAttributes } = this.state
 
 		if (!tpsf) return null

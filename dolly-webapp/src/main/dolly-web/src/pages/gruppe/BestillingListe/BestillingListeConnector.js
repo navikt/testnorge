@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
-import { sokSelector } from '~/ducks/bestillingStatus/utils'
 import { getEnvironments } from '~/ducks/environments'
-import { getBestillinger } from '~/ducks/bestillingStatus'
+import { getBestillinger, sokSelector } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
 import BestillingListe from './BestillingListe'
 
