@@ -19,7 +19,6 @@ import java.util.concurrent.ScheduledExecutorService;
 
 @Slf4j
 @Configuration
-//@Import({ AaregController.class })//MeldekortController.class, EIAController.class, InntektController.class, EIAController.class, MedlController.class})
 public class AppConfig {
 
     private final int EXECUTOR_POOL_SIZE = 4;
