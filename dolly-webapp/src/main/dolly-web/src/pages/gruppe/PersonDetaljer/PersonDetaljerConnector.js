@@ -31,7 +31,7 @@ const mapStateToProps = (state, ownProps) => {
 		isFetchingArena: loadingSelectorArena(state),
 		isFetchingInst: loadingSelectorInst(state),
 		isFrigjoering: loadingSelectorFrigjoer(state),
-		personData: DataMapper.getDetailedData(state, ownProps),
+		personData: DataMapper.getDetailedData(state, ownProps.personId),
 		testIdent: state.gruppe.data[0].testidenter.find(
 			testIdent => testIdent.ident === ownProps.personId
 		),

@@ -2,11 +2,12 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { DollyApi } from '~/service/Api'
 import Loading from '~/components/loading/Loading'
+import ContentContainer from '~/components/contentContainer/ContentContainer'
+import miljoeStatusSelector from '~/utils/MiljoeStatusSelector'
 import BestillingProgress from './BestillingProgress/BestillingProgress'
 import MiljoeStatus from './MiljoeStatus/MiljoeStatus'
-import './BestillingStatus.less'
-import ContentContainer from '~/components/contentContainer/ContentContainer'
-import miljoeStatusSelector from '../../../utils/MiljoeStatusSelector'
+
+import './Status.less'
 
 export default class BestillingStatus extends PureComponent {
 	static propTypes = {
@@ -119,7 +120,7 @@ export default class BestillingStatus extends PureComponent {
 
 	_onCancelBtn = () => {
 		this.setState({ ferdig: true, showCancelLoadingMsg: true }, () => {
-			this.props.cancelBestilling()
+			this.props.cancelBestilling(this.props.bestilling.id)
 			this.stopPolling()
 		})
 	}
