@@ -1,9 +1,9 @@
-import { DollyApi } from '~/service/Api'
 import { createAction, handleActions } from 'redux-actions'
-import success from '~/utils/SuccessAction'
-import { SortKodeverkArray } from '~/service/services/dolly/Utils'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
+import { DollyApi } from '~/service/Api'
+import success from '~/utils/SuccessAction'
+import { SortKodeverkArray } from '~/service/services/dolly/Utils'
 
 export const getKodeverk = createAction(
 	'GET_KODEVERK',
@@ -50,7 +50,7 @@ export const fetchKodeverk = kodeverkNavn => (dispatch, getState) => {
 }
 
 export const oppslagLabelSelector = (state, navn, value) => {
-	let oppslag = state.oppslag[navn]
+	const oppslag = state.oppslag[navn]
 	if (!oppslag) return null
 
 	if (navn === 'tknr') {

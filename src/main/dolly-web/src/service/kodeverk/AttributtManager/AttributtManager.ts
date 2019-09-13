@@ -31,24 +31,15 @@ export default class AttributtManager {
 					(!attr.includeIf || attr.includeIf.every(e => selectedIds.includes(e.id)))
 			)
 			.map(attr => {
-				// TODO: Ikke bærekraftig løsning. Refactor
 				if (attr.items) {
-					if (
-						attr.dataSource === 'SIGRUN' ||
-						attr.dataSource === 'AAREG' ||
-						attr.dataSource === 'KRR' ||
-						attr.dataSource === 'PDLF' ||
-						attr.dataSource === 'ARENA' ||
-						attr.dataSource === 'INST' ||
-						attr.dataSource === 'UDI' ||
-						(attr.dataSource === 'TPSF' && attr.id === 'matrikkeladresse')
-					) {
-						return attr
-					} else {
-						// Eks: Barn som attributt må bli behandlet annerledes
+					//Hvis dette fungerer kan sjekken egentlig bare være om attr er barn. Droppe items-sjekk.
+					if (attr.id === 'barn') {
+						//attr.id.includes('barn')) {
 						return Object.assign(Object.assign({}, attr), {
 							items: this.listAllSelectFilterItems(selectedIds, attr.items)
 						})
+					} else {
+						return attr
 					}
 				} else {
 					return attr
@@ -150,6 +141,12 @@ export default class AttributtManager {
 			if (!dataSourceValues) return false
 
 			const dataPath = editPath || path || id
+
+			// Quick fix for å ikke vise utvandret som editable, fordi jeg ikke får til å redigere den
+			if (dataPath === 'utvandret') {
+				return false
+			}
+
 			// fjern attributt som allerede har en verdi
 			if (_get(dataSourceValues, dataPath)) {
 				return !_get(dataSourceValues, dataPath)

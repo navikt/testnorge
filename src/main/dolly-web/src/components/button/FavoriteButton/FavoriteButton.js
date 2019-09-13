@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Button from '../Button'
 
-class FavoriteButton extends PureComponent {
+export default class FavoriteButton extends PureComponent {
 	static propTypes = {
 		isFavorite: PropTypes.bool,
 		addFavorite: PropTypes.func,
@@ -19,12 +19,8 @@ class FavoriteButton extends PureComponent {
 				onClick={isFavorite ? removeFavorite : addFavorite}
 				onMouseEnter={this._handleOnMouseHover}
 			>
-				{!hideLabel && <p>{isFavorite ? 'FJERN FAVORITT' : 'FAVORISER'}</p>}
+				{!hideLabel && <span>{isFavorite ? 'FJERN FAVORITT' : 'FAVORISER'}</span>}
 			</Button>
 		)
 	}
 }
-
-FavoriteButton.propTypes = {}
-
-export default FavoriteButton

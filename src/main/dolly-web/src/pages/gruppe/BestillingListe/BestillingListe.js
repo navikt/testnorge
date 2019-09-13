@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react'
+import _orderBy from 'lodash/orderBy'
 import Table from '~/components/table/Table'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 import PaginationConnector from '~/components/pagination/PaginationConnector'
-import _orderBy from 'lodash/orderBy'
-import BestillingStatusConnector from '../BestillingStatus/BestillingStatusConnector'
 import Formatters from '~/utils/DataFormatter'
+import Loading from '~/components/loading/Loading'
 import BestillingDetaljerConnector from './BestillingDetaljer/BestillingDetaljerConnector'
 
 export default class BestillingListe extends PureComponent {
@@ -13,8 +13,11 @@ export default class BestillingListe extends PureComponent {
 	}
 
 	render() {
-		const { bestillinger, searchActive } = this.props
+		const { bestillinger, searchActive, isFetchingBestillinger } = this.props
+
+		if (isFetchingBestillinger) return <Loading label="Laster bestillinger" panel />
 		if (!bestillinger) return null
+
 		const sortedBestillinger = _orderBy(bestillinger, ['id'], ['desc'])
 
 		return (

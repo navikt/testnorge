@@ -1,6 +1,4 @@
 import React, { PureComponent } from 'react'
-import StaticValue from '~/components/fields/StaticValue/StaticValue'
-import AutofillAddressConnector from './AutofillAddressConnector'
 import LinkButton from '~/components/button/LinkButton/LinkButton'
 
 export default class FilledAdresse extends PureComponent {

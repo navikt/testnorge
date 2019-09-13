@@ -1,4 +1,4 @@
-import { createHeader as c, mapBestillingId } from './Utils'
+import { createHeader, mapBestillingId } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 import { mapTpsfData } from './mapTpsDataToIdent'
 import { mapPdlData } from './mapPdlDataToIdent'
@@ -15,12 +15,12 @@ import {
 const DataMapper = {
 	getHeaders() {
 		return [
-			c('Ident', '15'),
-			c('Type', '15'),
-			c('Navn', '30'),
-			c('Kjønn', '20'),
-			c('Alder', '10'),
-			c('Bestilling-ID', '10')
+			createHeader('Ident', '15'),
+			createHeader('Type', '15'),
+			createHeader('Navn', '30'),
+			createHeader('Kjønn', '20'),
+			createHeader('Alder', '10'),
+			createHeader('Bestilling-ID', '10')
 		]
 	},
 
@@ -30,7 +30,6 @@ const DataMapper = {
         Gruppe: Dolly
         Testbruker: TPSF
         */
-
 		const { gruppe, testbruker } = state
 
 		if (!testbruker.items.tpsf) return null
@@ -39,7 +38,9 @@ const DataMapper = {
 			return [
 				i.ident,
 				i.identtype,
-				`${i.fornavn} ${i.etternavn}`,
+				i.mellomnavn
+					? `${i.fornavn} ${i.mellomnavn} ${i.etternavn}`
+					: `${i.fornavn} ${i.etternavn}`,
 				Formatters.kjonnToString(i.kjonn),
 				Formatters.formatAlder(i.alder, i.doedsdato),
 				_findBestillingId(gruppe, i.ident).toString()
@@ -48,10 +49,9 @@ const DataMapper = {
 	},
 
 	// Viser under expand
-	getDetailedData(state, ownProps) {
+	getDetailedData(state, personId) {
 		const { gruppe, testbruker, bestillingStatuser } = state
 
-		const { personId } = ownProps
 		if (!testbruker.items || !testbruker.items.tpsf) return null
 
 		const testIdent = gruppe.data[0].testidenter.find(testIdent => testIdent.ident === personId)
@@ -68,8 +68,10 @@ const DataMapper = {
 		const udiData = testbruker.items.udistub && testbruker.items.udistub[personId]
 
 		var bestillingId = _findBestillingId(gruppe, personId)
-
-		let data = mapTpsfData(tpsfData, testIdent, pdlfData && pdlfData.personidenter)
+		const tpsfKriterier = JSON.parse(
+			bestillingStatuser.data.find(bestilling => bestilling.id === bestillingId[0]).tpsfKriterier
+		)
+		let data = mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData && pdlfData.personidenter)
 
 		if (aaregData) {
 			data.push(mapAaregData(aaregData))

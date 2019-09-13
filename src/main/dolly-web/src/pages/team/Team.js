@@ -10,6 +10,7 @@ import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import RedigerTeamConnector from '~/components/RedigerTeam/RedigerTeamConnector'
 import PaginationConnector from '~/components/pagination/PaginationConnector'
 
+import './Team.less'
 class Team extends Component {
 	state = {
 		leggTilBruker: false
@@ -58,20 +59,26 @@ class Team extends Component {
 		return (
 			<div className="oversikt-container">
 				<Overskrift label={team.navn} actions={teamActions}>
-					<ConfirmTooltip
-						label="SLETT"
-						className="flexbox--align-center"
-						message={
-							grupper.length > 0
-								? 'Å slette dette teamet vil føre til sletting av ' +
-								  grupper.length +
-								  ' testdatagrupper . Er du sikker på dette?'
-								: 'Vil du slette dette teamet?'
-						}
-						onClick={deleteTeam}
-					/>
+					{this.props.isDeletingTeam ? (
+						<Loading label="Sletter team" panel />
+					) : (
+						<ConfirmTooltip
+							label="SLETT"
+							className="flexbox--align-center"
+							message={
+								grupper.length > 0
+									? 'Å slette dette teamet vil føre til sletting av ' +
+									  grupper.length +
+									  ' testdatagrupper . Er du sikker på dette?'
+									: 'Vil du slette dette teamet?'
+							}
+							onClick={deleteTeam}
+						/>
+					)}
 				</Overskrift>
-				<div style = {{width: '70%'}}>{team.beskrivelse}</div>
+				<div style={{ width: '70%' }} className="Beskrivelse">
+					{team.beskrivelse}
+				</div>
 				{visRedigerTeam && <RedigerTeamConnector team={team} />}
 
 				<Toolbar title="Medlemmer">
@@ -110,7 +117,7 @@ class Team extends Component {
 											>
 												<Table.Row
 													key={medlem.navIdent}
-													deleteAction={() => removeMember([medlem.navIdent])}
+													deleteAction={() => removeMember(medlem.navIdent)}
 													deleteMessage={'Vil du slette ' + medlem.navIdent + ' fra dette teamet?'}
 												>
 													<Table.Column width="30" value={medlem.navIdent} />

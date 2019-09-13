@@ -63,7 +63,7 @@ const AttributtListe: Attributt[] = [
 				subGruppe: 'Utenlands-ID',
 				path: 'utenlandskIdentifikasjonsnummer.utstederland',
 				inputType: InputType.Select,
-				apiKodeverkId: 'StatsborgerskapFreg',
+				apiKodeverkId: 'Landkoder',
 				// validation: yup.array().required('Velg et land'),
 				attributtType: AttributtType.SelectAndEdit
 			}
@@ -90,7 +90,7 @@ const AttributtListe: Attributt[] = [
 				size: 'medium',
 				path: 'falskIdentitet.identitetType',
 				inputType: InputType.Select,
-				options: SelectOptionsManager('rettIdentitet'),
+				options: SelectOptionsManager('identitetType'),
 				validation: yup.string().required('Velg rett identitet'),
 				attributtType: AttributtType.SelectAndEdit
 			},
@@ -184,7 +184,7 @@ const AttributtListe: Attributt[] = [
 				isMultiple: true,
 				dataSource: DataSource.PDLF,
 				inputType: InputType.Select,
-				apiKodeverkId: 'StatsborgerskapFreg',
+				apiKodeverkId: 'Landkoder',
 				onlyShowAfterSelectedValue: { attributtId: 'identitetType', valueIndex: [2] },
 				validation: yup.string().required('Vennligst velg minst ett statsborgerskap'),
 				attributtType: AttributtType.SelectAndEdit

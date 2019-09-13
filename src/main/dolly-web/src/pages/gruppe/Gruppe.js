@@ -1,8 +1,9 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Knapp from 'nav-frontend-knapper'
 import Overskrift from '~/components/overskrift/Overskrift'
 import GruppeDetaljer from './GruppeDetaljer/GruppeDetaljer'
-import BestillingStatusConnector from './BestillingStatus/BestillingStatusConnector'
+import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import Loading from '~/components/loading/Loading'
 import TestbrukerListeConnector from './TestbrukerListe/TestbrukerListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
@@ -10,17 +11,15 @@ import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConn
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import Toolbar from '~/components/toolbar/Toolbar'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
-import Knapp from 'nav-frontend-knapper'
 import FavoriteButtonConnector from '~/components/button/FavoriteButton/FavoriteButtonConnector'
 import EksporterExcel from '~/pages/gruppe/EksporterExcel/EksporterExcel'
-import _find from 'lodash/find'
 import './Gruppe.less'
 
 export default class Gruppe extends Component {
 	static propTypes = {
 		gruppeArray: PropTypes.array,
 		isFetching: PropTypes.bool,
-		createOrUpdateId: PropTypes.string
+		createOrUpdateId: PropTypes.number
 	}
 
 	VISNING_TESTPERSONER = 'testpersoner'
@@ -42,17 +41,12 @@ export default class Gruppe extends Component {
 			createOrUpdateId,
 			createGroup,
 			isFetching,
-			isFetchingBestillinger,
 			deleteGruppe,
-			addFavorite,
-			bestillinger,
-			nyeBestillinger,
-			getGruppe,
-			getBestillinger
+			antallBestillinger
 		} = this.props
 
 		if (isFetching && this.state.visning != this.VISNING_BESTILLING)
-			return <Loading label="Laster grupper" panel />
+			return <Loading label="Laster testpersoner" panel />
 
 		if (!gruppeArray) return null
 
@@ -76,7 +70,7 @@ export default class Gruppe extends Component {
 			},
 			{
 				value: this.VISNING_BESTILLING,
-				label: `Bestillinger (${bestillinger.data ? bestillinger.data.length : 0})`
+				label: `Bestillinger (${antallBestillinger})`
 			}
 		]
 
@@ -85,44 +79,29 @@ export default class Gruppe extends Component {
 				<div className="header-valg">
 					<div>
 						<Overskrift label={gruppe.navn} actions={groupActions}>
-							<ConfirmTooltip
-								label="SLETT"
-								className="flexbox--align-center"
-								message={'Vil du slette denne testdatagruppen?'}
-								onClick={deleteGruppe}
-							/>
+							{this.props.isDeletingGruppe ? (
+								<Loading label="Sletter gruppe" panel />
+							) : (
+								<ConfirmTooltip
+									label="SLETT"
+									className="flexbox--align-center"
+									message="Vil du slette denne testdatagruppen?"
+									onClick={deleteGruppe}
+								/>
+							)}
 							{!gruppe.erMedlemAvTeamSomEierGruppe && (
 								<FavoriteButtonConnector groupId={gruppe.id} />
 							)}
 						</Overskrift>
 					</div>
 					<div className="hoyre">
-						{gruppeArray[0].testidenter && (
-							<EksporterExcel
-								testidenter={gruppeArray[0].testidenter}
-								gruppeId={gruppeArray[0].id}
-							/>
-						)}
+						<EksporterExcel testidenter={gruppe.testidenter} gruppeId={gruppe.id} />
 					</div>
 				</div>
 				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
 				<GruppeDetaljer gruppe={gruppe} />
 
-				{// Viser progressbar og bestillingsstatus
-				// Ikke render hvis det er ingen nye bestillinger besom tilhører gruppen
-				!isFetchingBestillinger &&
-					nyeBestillinger.map((bestilling, i) => {
-						if (bestilling) {
-							return (
-								<BestillingStatusConnector
-									key={i}
-									bestilling={bestilling}
-									onIdenterUpdate={getGruppe}
-									onBestillingerUpdate={getBestillinger}
-								/>
-							)
-						}
-					})}
+				<StatusListeConnector gruppeId={gruppe.id} />
 
 				<Toolbar
 					searchField={<SearchFieldConnector placeholder={this.searchfieldPlaceholderSelector()} />}
@@ -130,11 +109,9 @@ export default class Gruppe extends Component {
 					toggleCurrent={this.state.visning}
 					toggleValues={toggleValues}
 				>
-					<Fragment>
-						<Knapp type="hoved" onClick={this.startBestilling}>
-							Opprett personer
-						</Knapp>
-					</Fragment>
+					<Knapp type="hoved" onClick={this.startBestilling}>
+						Opprett personer
+					</Knapp>
 				</Toolbar>
 				{this.renderList(gruppe)}
 			</div>
@@ -150,7 +127,7 @@ export default class Gruppe extends Component {
 
 	toggleToolbar = e => {
 		const visning = e.target.value
-		visning === this.VISNING_BESTILLING && this.props.getBestillinger()
+		if (visning === this.VISNING_BESTILLING) this.props.getBestillinger()
 		this.setState({ visning }, () => this.props.resetSearch())
 	}
 
@@ -161,16 +138,10 @@ export default class Gruppe extends Component {
 
 	renderList = gruppe => {
 		const { visning } = this.state
-		const { editTestbruker, bestillinger, isFetchingBestillinger } = this.props
+		const { editTestbruker } = this.props
 
-		if (visning === this.VISNING_BESTILLING) {
-			if (isFetchingBestillinger) {
-				return <Loading label="Laster bestillinger" panel />
-			}
-			return <BestillingListeConnector bestillingListe={bestillinger} />
-		}
-		// !!! Pagination is is applied on TestbrukerListe because we fetch "testbrukere" from TPSF.
-		// !!! Therefore pagination is applied to data from TPSF and not DOLLY.
+		if (visning === this.VISNING_BESTILLING) return <BestillingListeConnector />
+
 		return (
 			<TestbrukerListeConnector testidenter={gruppe.testidenter} editTestbruker={editTestbruker} />
 		)
