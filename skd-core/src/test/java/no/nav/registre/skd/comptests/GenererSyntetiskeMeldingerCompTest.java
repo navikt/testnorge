@@ -88,6 +88,7 @@ public class GenererSyntetiskeMeldingerCompTest {
         stubTpsSynt();
         stubIdentpool();
         stubTpsf(gruppeId);
+        stubTp();
 
         GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, miljoe, antallMeldingerPerAarsakskode);
 
@@ -104,6 +105,7 @@ public class GenererSyntetiskeMeldingerCompTest {
 
         HashMap<String, String> placeholderValues = new HashMap<>();
         placeholderValues.put("foedtEtter", LocalDate.now().minusYears(90).format(formatter));
+        placeholderValues.put("foedtFoer", LocalDate.now().format(formatter));
 
         String path = "__files/comptest/identpool/identpool_hent2Identer_request.json";
         stubFor(post("/identpool/api/v1/identifikator?finnNaermesteLedigeDato=false")
@@ -163,5 +165,10 @@ public class GenererSyntetiskeMeldingerCompTest {
     private void stubHodejegerenHentGifteIdenter(long gruppeId, String okJsonResponse) {
         stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/gifte-identer/" + gruppeId))
                 .willReturn(okJson(okJsonResponse)));
+    }
+
+    private void stubTp() {
+        stubFor(post(urlPathEqualTo("/tp/api/v1/orkestrering/opprettPersoner/" + miljoe))
+                .willReturn(okJson("[]")));
     }
 }

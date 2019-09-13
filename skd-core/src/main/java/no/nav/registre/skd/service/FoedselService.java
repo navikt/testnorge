@@ -56,9 +56,14 @@ public class FoedselService {
 
             String barnFnr;
             try {
+                LocalDate foedtFoer = morFoedselsdato.plusYears(MAKS_FORELDER_ALDER);
+                if (foedtFoer.isAfter(LocalDate.now())) {
+                    foedtFoer = LocalDate.now();
+                }
                 barnFnr = identPoolConsumer.hentNyeIdenter(
                         HentIdenterRequest.builder()
                                 .foedtEtter(morFoedselsdato.plusYears(MIN_FORELDER_ALDER))
+                                .foedtFoer(foedtFoer)
                                 .antall(1)
                                 .identtype(identType)
                                 .rekvirertAv("orkestratoren")

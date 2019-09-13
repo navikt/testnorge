@@ -25,7 +25,6 @@ import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +38,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -117,6 +117,7 @@ public class FeilhaandteringCompTest {
 
         HashMap<String, String> placeholderValues = new HashMap<>();
         placeholderValues.put("foedtEtter", LocalDate.now().minusYears(90).format(formatter));
+        placeholderValues.put("foedtFoer", LocalDate.now().format(formatter));
 
         String path = "__files/comptest/identpool/identpool_hent2Identer_request.json";
         stubFor(post("/identpool/api/v1/identifikator?finnNaermesteLedigeDato=false")
@@ -131,18 +132,26 @@ public class FeilhaandteringCompTest {
     }
 
     private void stubHodejegeren(long gruppeId) {
+        List<String> fnrs = new ArrayList<>(Arrays.asList("01010101010", "02020202020", "33333333333", "44444444444", "55555555555", "66666666666"));
         // Henter alle identer i avspillergruppa hos TPSF:
         stubHodejegerenHentLevendeIdenter(gruppeId,
-                "[\"01010101010\",\n\"02020202020\"\n,\"33333333333\",\n  \"44444444444\"\n,\n\"55555555555\",\n\"66666666666\"\n]");
+                "["
+                        + "\"" + fnrs.get(0) + "\",\n"
+                        + "\"" + fnrs.get(1) + "\",\n"
+                        + "\"" + fnrs.get(2) + "\",\n"
+                        + "\"" + fnrs.get(3) + "\",\n"
+                        + "\"" + fnrs.get(4) + "\",\n"
+                        + "\"" + fnrs.get(5) + "\"]");
 
         // Henter liste med alle døde eller utvandrede identer i avspillergruppa hos TPSF:
-        stubHodejegerenHentDoedeIdenter(gruppeId, "[\n  \"33333333333\",\n  \"44444444444\"\n]");
+        stubHodejegerenHentDoedeIdenter(gruppeId, "[\n  \"" + fnrs.get(2) + "\",\n  \"" + fnrs.get(3) + "\"\n]");
 
         // Henter liste over alle gifte identer i avspillergruppa hos TPSF:
-        stubHodejegerenHentGifteIdenter(gruppeId, "[\n\"55555555555\",\n\"66666666666\"\n]");
+        stubHodejegerenHentGifteIdenter(gruppeId, "[\n\"" + fnrs.get(4) + "\",\n\"" + fnrs.get(5) + "\"\n]");
 
-        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/status-quo/NAVNEENDRING_FOERSTE/t10/01010101010"))
-                .willReturn(aResponse().withStatus(500).withBody("{\"message\":\"" + testfeilmelding + "\"}")));
+        for (String fnr : fnrs) {
+            stubHodejegerenHentStatusQuo(fnr, NAVNEENDRING_FOERSTE.getEndringskode());
+        }
     }
 
     private void stubTpsf(long gruppeId) {
@@ -185,6 +194,11 @@ public class FeilhaandteringCompTest {
     private void stubHodejegerenHentGifteIdenter(long gruppeId, String okJsonResponse) {
         stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/gifte-identer/" + gruppeId))
                 .willReturn(okJson(okJsonResponse)));
+    }
+
+    private void stubHodejegerenHentStatusQuo(String fnr, String endringskode) {
+        stubFor(get(urlEqualTo("/hodejegeren/api/v1/status-quo?miljoe=" + miljoe + "&fnr=" + fnr + "&endringskode=" + endringskode))
+                .willReturn(aResponse().withStatus(500).withBody("{\"message\":\"" + testfeilmelding + "\"}")));
     }
 
     private void stubSendIderTilTps(long gruppeId) {

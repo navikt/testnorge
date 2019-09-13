@@ -1,7 +1,7 @@
 {
   "identtype": "FNR",
   "foedtEtter": "${foedtEtter}",
-  "foedtFoer": null,
+  "foedtFoer": "${foedtFoer}",
   "kjoenn": null,
   "antall": 2,
   "rekvirertAv": "orkestratoren"

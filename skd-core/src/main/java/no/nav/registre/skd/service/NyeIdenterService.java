@@ -31,6 +31,7 @@ public class NyeIdenterService {
                 .antall(antallNyeIdenter)
                 .identtype(identType)
                 .foedtEtter(LocalDate.now().minusYears(90))
+                .foedtFoer(LocalDate.now())
                 .rekvirertAv("orkestratoren")
                 .build();
         List<String> identer = identPoolConsumer.hentNyeIdenter(request);
