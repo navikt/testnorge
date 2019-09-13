@@ -112,12 +112,12 @@ public class IdentpoolService {
         return identList;
     }
 
-    public Boolean erLedig(String personidentifikator) {
+    public Boolean erLedig(String personidentifikator, List<String> miljoer) {
         Ident ident = identRepository.findTopByPersonidentifikator(personidentifikator);
         if (ident != null) {
             return ident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG) ? Boolean.TRUE : Boolean.FALSE;
         } else {
-            List<TpsStatus> tpsStatus = new ArrayList<>(identTpsService.checkIdentsInTps(Collections.singletonList(personidentifikator), new ArrayList<>()));
+            List<TpsStatus> tpsStatus = new ArrayList<>(identTpsService.checkIdentsInTps(Collections.singletonList(personidentifikator), miljoer));
             if (tpsStatus.size() != 1) {
                 throw new RuntimeException("Fikk ikke riktig antall statuser tilbake på metodekall til checkIdentsInTps");
             }

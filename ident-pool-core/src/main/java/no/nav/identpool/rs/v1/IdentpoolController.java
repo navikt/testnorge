@@ -91,7 +91,7 @@ public class IdentpoolController {
     }
 
     /**
-     * @deprecated (2019-02-09, erstattet av endepunkt /brukFlere, benytt endepunkt /brukFlere)
+     * @deprecated (2019 - 02 - 09, erstattet av endepunkt / brukFlere, benytt endepunkt / brukFlere)
      */
     @Deprecated
     @PostMapping("/bruk/batch")
@@ -121,11 +121,9 @@ public class IdentpoolController {
 
     @GetMapping("/ledig")
     @ApiOperation(value = "returnerer true eller false avhengig av om en ident er ledig eller ikke")
-    public Boolean erLedig(
-            @RequestHeader String personidentifikator
-    ) throws UgyldigPersonidentifikatorException {
+    public Boolean erLedig(@RequestHeader String personidentifikator, @RequestParam(required = false) List<String> miljoer) throws UgyldigPersonidentifikatorException {
         validate(personidentifikator);
-        return identpoolService.erLedig(personidentifikator);
+        return identpoolService.erLedig(personidentifikator, miljoer);
     }
 
     @GetMapping("/ledige")
