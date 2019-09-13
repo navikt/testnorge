@@ -1,5 +1,6 @@
 package no.nav.dolly.aareg;
 
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 
@@ -50,7 +51,7 @@ public class AaregArbeidsforholdFasitConsumer {
         if (urlPerEnv.containsKey(environment)) {
             return urlPerEnv.get(environment);
         } else {
-            throw new DollyFunctionalException("Ugyldig miljø/miljø ikke funnet.");
+            throw new DollyFunctionalException(format("Ugyldig miljø/miljø ikke funnet, %s", environment));
         }
     }
 

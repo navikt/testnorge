@@ -8,15 +8,6 @@ import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/Select
 
 const Formatters = {}
 
-// Skriv ut FNR og DNR med mellom mellom fødselsdato og personnummer
-// Ex: 010195 12345
-Formatters.formatIdentNr = ident => {
-	if (!ident) return ident
-	const birth = ident.substring(0, 6)
-	const personnummer = ident.substring(6, 11)
-	return `${birth}${personnummer}`
-}
-
 Formatters.formatAlder = (alder, dodsdato) => {
 	if (!alder) return ''
 	return `${alder.toString()}${dodsdato ? ' (død)' : ''}`
@@ -52,6 +43,7 @@ Formatters.decamelize = (str, separator) => {
 	const res = str
 		.replace(/([a-z\d])([A-Z])/g, '$1' + separator + '$2')
 		.replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1' + separator + '$2')
+		.toLowerCase()
 
 	return res.charAt(0).toUpperCase() + res.slice(1)
 }
@@ -85,8 +77,7 @@ Formatters.arrayToString = (array, separator = ',') => {
 
 Formatters.camelCaseToLabel = camelCase => {
 	if (!camelCase) return null
-
-	return _startCase(camelCase)
+	return _capitalize(_startCase(camelCase))
 }
 
 Formatters.uppercaseAndUnderscoreToCapitalized = value => {
@@ -102,8 +93,11 @@ Formatters.kodeverkLabel = kodeverk => {
 
 Formatters.oversettBoolean = value => {
 	if (value === null) return null
-
-	return value === true ? 'Ja' : value === false ? 'Nei' : value
+	return value === true || value === 'true'
+		? 'Ja'
+		: value === false || value === 'false'
+			? 'Nei'
+			: value
 }
 
 Formatters.booleanToServicebehov = value => {
@@ -210,8 +204,13 @@ Formatters.commaToSpace = streng => {
 }
 
 Formatters.showLabel = (optionsGruppe, value) => {
-	if (!value) return null
-	const obj = SelectOptionsManager(optionsGruppe).filter(options => options.value === value)
+	if (!value || !optionsGruppe) return value
+	let copyOptionsGruppe = optionsGruppe
+
+	optionsGruppe.includes('partner') && (copyOptionsGruppe = optionsGruppe.replace('partner_', ''))
+	optionsGruppe.includes('barn') && (copyOptionsGruppe = optionsGruppe.replace('barn_', ''))
+
+	const obj = SelectOptionsManager(copyOptionsGruppe).filter(options => options.value === value)
 	return obj.label || obj[0].label
 }
 

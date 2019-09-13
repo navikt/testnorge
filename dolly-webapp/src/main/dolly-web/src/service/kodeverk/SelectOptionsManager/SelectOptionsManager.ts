@@ -1,10 +1,14 @@
 const selectOptions = {
-	identtype: [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }],
+	identtype: [
+		{ value: 'FNR', label: 'FNR' },
+		{ value: 'DNR', label: 'DNR' },
+		{ value: 'BOST', label: 'BOST' }
+	],
 	kjonn: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
 	kjonnBarn: [{ value: 'K', label: 'Jente' }, { value: 'M', label: 'Gutt' }],
 	sivilstand: [
-		{ value: 'GIFT', label: 'GIFT' },
-		{ value: 'SKILT', label: 'SKILT' }
+		{ value: 'GIFT', label: 'GIFT' }
+		// { value: 'SKILT', label: 'SKILT' }
 		//{ value: null, label: 'Tilfeldig' }
 	],
 
@@ -12,7 +16,7 @@ const selectOptions = {
 	stringBoolean: [{ value: 'true', label: 'Ja' }, { value: 'false', label: 'Nei' }],
 
 	// SIGRUN
-	inntektTjeneste: [
+	tjeneste: [
 		{ value: 'Beregnet skatt', label: 'Beregnet skatt' },
 		{ value: 'Summert skattegrunnlag', label: 'Summert skattegrunnlag' }
 	],
@@ -24,7 +28,7 @@ const selectOptions = {
 	],
 
 	//PDLF - kontaktinformasjon dødsbo
-	adressattype: [
+	adressatType: [
 		{ value: 'ADVOKAT', label: 'Advokat' },
 		{ value: 'ORGANISASJON', label: 'Organisasjon' },
 		{ value: 'PERSON_MEDID', label: 'Kontaktperson med id' },
@@ -34,7 +38,7 @@ const selectOptions = {
 	skifteform: [{ value: 'OFFENTLIG', label: 'Offentlig' }, { value: 'ANNET', label: 'Annet' }],
 
 	// PDLF - falsk identitet
-	rettIdentitet: [
+	identitetType: [
 		{ value: 'UKJENT', label: 'Ukjent' },
 		{ value: 'ENTYDIG', label: 'Ved identifikasjonsnummer' },
 		{ value: 'OMTRENTLIG', label: 'Ved personopplysninger' }

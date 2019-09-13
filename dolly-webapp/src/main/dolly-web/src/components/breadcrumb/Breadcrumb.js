@@ -6,7 +6,7 @@ import Version from '~/components/version/Version'
 
 import './Breadcrumb.less'
 
-class Breadcrumb extends PureComponent {
+export default class Breadcrumb extends PureComponent {
 	isActive = bc => bc.props.match.url === bc.props.location.pathname
 
 	render() {
@@ -49,5 +49,3 @@ class Breadcrumb extends PureComponent {
 		)
 	}
 }
-
-export default Breadcrumb

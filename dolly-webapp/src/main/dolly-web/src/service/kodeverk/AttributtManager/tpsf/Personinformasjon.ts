@@ -3,6 +3,8 @@ import { Attributt, InputType, DataSource, AttributtType } from '../Types'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import DateValidation from '~/components/fields/Datepicker/DateValidation'
 
+import * as yup from 'yup'
+
 const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -46,8 +48,74 @@ const AttributtListe: Attributt[] = [
 		label: 'Statsborgerskap',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		apiKodeverkId: 'StatsborgerskapFreg',
+		apiKodeverkId: 'Landkoder',
 		attributtType: AttributtType.SelectAndEdit
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Nasjonalitet,
+		id: 'innvandret',
+		label: 'Innvandret fra',
+		dataSource: DataSource.TPSF,
+		attributtType: AttributtType.SelectOnly,
+		validation: yup.object(),
+		items: [
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Nasjonalitet,
+				id: 'innvandretFraLand',
+				label: 'Innvandret fra land',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				editPath: 'innvandretFraLand',
+				//validation: yup.string().required('Vennligst velg'),
+				apiKodeverkId: 'Landkoder',
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Nasjonalitet,
+				id: 'innvandretFraLandFlyttedato',
+				label: 'Innvandret dato',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				editPath: 'innvandretTilLandFlyttedato',
+				attributtType: AttributtType.SelectAndEdit
+			}
+		]
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Nasjonalitet,
+		id: 'utvandret',
+		label: 'Utvandret til',
+		dataSource: DataSource.TPSF,
+		attributtType: AttributtType.SelectAndEdit,
+		validation: yup.object(),
+		items: [
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Nasjonalitet,
+				id: 'utvandretTilLand',
+				label: 'Utvandret til land',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				editPath: 'utvandretTilLand',
+				validation: yup.string().required('Vennligst velg'),
+				apiKodeverkId: 'Landkoder',
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Nasjonalitet,
+				id: 'utvandretTilLandFlyttedato',
+				label: 'Utvandret dato',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				editPath: 'utvandretTilLandFlyttedato',
+				attributtType: AttributtType.SelectAndEdit
+			}
+		]
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -59,6 +127,16 @@ const AttributtListe: Attributt[] = [
 		apiKodeverkId: 'Kjønnstyper',
 		attributtType: AttributtType.SelectOnly,
 		sattForEksisterendeIdent: true
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Diverse,
+		id: 'harMellomnavn',
+		label: 'Mellomnavn',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Select,
+		options: SelectOptionsManager('boolean'),
+		attributtType: AttributtType.SelectAndEdit
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,

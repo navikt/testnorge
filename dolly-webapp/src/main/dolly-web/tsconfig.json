@@ -1,5 +1,6 @@
 {
 	"compilerOptions": {
+		"allowJs": true,
 		"sourceMap": true,
 		"moduleResolution": "node",
 		"esModuleInterop": true,
@@ -9,8 +10,8 @@
 		"jsx": "react",
 		"baseUrl": ".",
 		"paths": {
-			"~/*": ["src/*"]
+			"~/*": ["./src/*"]
 		}
 	},
-	"exclude": ["node_modules"]
+	"exclude": ["node_modules", "**/node_modules/*"]
 }

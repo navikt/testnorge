@@ -22,6 +22,7 @@ const loadingSelectorPdlf = createLoadingSelector(GET_TESTBRUKER_PERSONOPPSLAG)
 const loadingSelectorArena = createLoadingSelector(GET_ARENA_TESTBRUKER)
 const loadingSelectorInst = createLoadingSelector(GET_INST_TESTBRUKER)
 const loadingSelectorUdi = createLoadingSelector(GET_UDI_TESTBRUKER)
+const loadingSelectorFrigjoer = createLoadingSelector(FRIGJOER_TESTBRUKER)
 
 const mapStateToProps = (state, ownProps) => {
 	return {
@@ -32,7 +33,8 @@ const mapStateToProps = (state, ownProps) => {
 		isFetchingArena: loadingSelectorArena(state),
 		isFetchingInst: loadingSelectorInst(state),
 		isFetchingUdi: loadingSelectorUdi(state),
-		personData: DataMapper.getDetailedData(state, ownProps),
+		isFrigjoering: loadingSelectorFrigjoer(state),
+		personData: DataMapper.getDetailedData(state, ownProps.personId),
 		testIdent: state.gruppe.data[0].testidenter.find(
 			testIdent => testIdent.ident === ownProps.personId
 		),

@@ -53,7 +53,7 @@ describe('mapPdlDataToIdent.js', () => {
 				},
 				{
 					id: 'idNummer',
-					label: 'Fnr/dnr',
+					label: 'Fnr/dnr/BOST',
 					value: undefined
 				},
 				{
@@ -133,7 +133,7 @@ describe('mapPdlDataToIdent.js', () => {
 				},
 				{
 					id: 'identitetsnummer',
-					label: 'Rett fnr/dnr',
+					label: 'Rett fnr/dnr/BOST',
 					value: undefined
 				},
 				{
@@ -160,7 +160,7 @@ describe('mapPdlDataToIdent.js', () => {
 					id: 'statsborgerskap',
 					label: 'Statsborgerskap',
 					width: 'medium',
-					apiKodeverkId: 'StatsborgerskapFreg',
+					apiKodeverkId: 'Landkoder',
 					value: undefined
 				}
 			]

@@ -2,7 +2,7 @@ package no.nav.dolly.aareg;
 
 import static java.util.Collections.singletonList;
 
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,6 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAktoer;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
@@ -23,14 +22,16 @@ import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 
 @Slf4j
 @Service
-public class AaregClient implements ClientRegister {
+public class AaregClient extends AaregAbstractClient implements ClientRegister {
 
-    private static final String ARBEIDSGIVER = "arbeidsgiver";
+    @Autowired
+    private AaregWsConsumer aaregWsConsumer;
+
     @Autowired
     private AaregRestConsumer aaregRestConsumer;
 
     @Autowired
-    private AaregWsConsumer aaregWsConsumer;
+    private AaregReleaseIdentClient aaregReleaseIdentClient;
 
     @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
@@ -81,8 +82,14 @@ public class AaregClient implements ClientRegister {
         progress.setAaregStatus(result.length() > 1 ? result.substring(1) : null);
     }
 
+    @Override public void release(List<String> identer) {
+
+        identer.forEach(ident ->
+                aaregReleaseIdentClient.deleteArbeidsforhold(ident));
+    }
+
     private static String getIdentifyingNumber(Map arbfFraAareg) {
-        return "Organisasjon".equals(getType(arbfFraAareg)) ? getOrgnummer(arbfFraAareg) : getPersonnummer(arbfFraAareg);
+        return "Organisasjon".equals(getArbeidsgiverType(arbfFraAareg)) ? getOrgnummer(arbfFraAareg) : getPersonnummer(arbfFraAareg);
     }
 
     private static boolean isMatchArbgivOrgnummer(RsAktoer arbeidsgiver, String orgnummer) {
@@ -95,14 +102,6 @@ public class AaregClient implements ClientRegister {
                 ((RsAktoerPerson) arbeidsgiver).getIdent().equals(ident);
     }
 
-    private static RsAaregOppdaterRequest buildRequest(RsArbeidsforhold arbfInput, String env) {
-        RsAaregOppdaterRequest request = new RsAaregOppdaterRequest();
-        request.setRapporteringsperiode(LocalDateTime.now());
-        request.setArbeidsforhold(arbfInput);
-        request.setEnvironments(singletonList(env));
-        return request;
-    }
-
     private static StringBuilder appendResult(Map<String, String> result, String arbeidsforholdId, StringBuilder builder) {
         for (Map.Entry<String, String> entry : result.entrySet()) {
             builder.append(',')
@@ -113,25 +112,5 @@ public class AaregClient implements ClientRegister {
                     .append(entry.getValue().replaceAll(",", "&").replaceAll(":", "="));
         }
         return builder;
-    }
-
-    private static String getType(Map arbeidsforhold) {
-        return (String) ((Map) arbeidsforhold.get(ARBEIDSGIVER)).get("type");
-    }
-
-    private static String getOrgnummer(Map arbeidsforhold) {
-        return (String) ((Map) arbeidsforhold.get(ARBEIDSGIVER)).get("organisasjonsnummer");
-    }
-
-    private static String getPersonnummer(Map arbeidsforhold) {
-        return (String) ((Map) arbeidsforhold.get(ARBEIDSGIVER)).get("offentligIdent");
-    }
-
-    private static Long getNavArbfholdId(Map arbeidsforhold) {
-        return Long.valueOf((Integer) arbeidsforhold.get("navArbeidsforholdId"));
-    }
-
-    private static String getArbforholdId(Map arbeidsforhold) {
-        return (String) arbeidsforhold.get("arbeidsforholdId");
     }
 }

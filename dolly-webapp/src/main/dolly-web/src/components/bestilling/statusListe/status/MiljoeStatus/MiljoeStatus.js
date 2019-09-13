@@ -1,18 +1,15 @@
 import React, { PureComponent, Fragment } from 'react'
-import './MiljoeStatus.less'
-import '~/styles/utils.less'
 import cn from 'classnames'
 import Icon from '~/components/icon/Icon'
 import Button from '~/components/button/Button'
 import DollyModal from '~/components/modal/DollyModal'
-import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
+import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
+
+import './MiljoeStatus.less'
 
 export default class MiljoeStatus extends PureComponent {
-	constructor(props) {
-		super(props)
-		this.state = {
-			modalOpen: false
-		}
+	state = {
+		modalOpen: false
 	}
 
 	openModal = () => {
@@ -45,14 +42,14 @@ export default class MiljoeStatus extends PureComponent {
 					</div>
 				</div>
 				<hr />
-				<div className={'miljoe-container miljoe-container-kolonne'}>
+				<div className="miljoe-container miljoe-container-kolonne">
 					{failed
 						? this._renderFailureMessage(bestilling, antallIdenterOpprettet)
 						: this._renderStatus(bestilling, antallIdenterOpprettet)}
 				</div>
 				{bestilling.feil && (
 					<div className="flexbox--all-center overall-feil-container">
-						<Icon size={'16px'} kind={'report-problem-triangle'} />
+						<Icon size="16px" kind="report-problem-triangle" />
 						<p>{bestilling.feil} </p>
 					</div>
 				)}
@@ -64,8 +61,8 @@ export default class MiljoeStatus extends PureComponent {
 						isOpen={modalOpen}
 						onRequestClose={this.closeModal}
 						closeModal={this.closeModal}
-						content={<BestillingDetaljerSammendrag bestilling={bestilling} type="modal" />}
-						width={'60%'}
+						content={<BestillingSammendrag bestilling={bestilling} modal />}
+						width="60%"
 					/>
 				</div>
 			</div>
@@ -108,7 +105,7 @@ export default class MiljoeStatus extends PureComponent {
 
 	_renderFailureMessage = () => (
 		<Fragment>
-			<Icon kind={'report-problem-circle'} />
+			<Icon kind="report-problem-circle" />
 			<p>Bestillingen din ble ikke utført.</p>
 		</Fragment>
 	)

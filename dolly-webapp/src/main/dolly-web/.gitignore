@@ -27,5 +27,11 @@ yarn-error.log*
 # testdata db.json
 /mock-api/mock-data/db.json
 
+# vscode settings
+/.vscode
+
 # Webpack stats file
 stats.json
+
+# Code counter extension
+/.VSCodeCounter

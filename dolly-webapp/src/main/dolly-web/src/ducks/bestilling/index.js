@@ -6,7 +6,7 @@ import _set from 'lodash/set'
 import _union from 'lodash/union'
 import _difference from 'lodash/difference'
 import BestillingMapper from '~/utils/BestillingMapper'
-import { handleActions, createActions, createAction, combineActions } from 'redux-actions'
+import { handleActions, createActions, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 import { AttributtManager } from '~/service/Kodeverk'
 import { getValues, _filterAttributes, _filterArrayAttributes } from './BestillingRequestUtils'
@@ -19,18 +19,7 @@ export const actions = createActions(
 		POST_BESTILLING_FRA_EKSISTERENDE_IDENTER: (gruppeId, value) =>
 			DollyApi.createBestillingFraEksisterendeIdenter(gruppeId, value),
 		POST_BESTILLING: (gruppeId, values) => DollyApi.createBestilling(gruppeId, values),
-		GET_BESTILLING_MALER: async () => {
-			try {
-				const res = await DollyApi.getBestillingMaler()
-				return res
-			} catch (err) {
-				if (err.response && err.response.status === 404) {
-					//*Ingen maler
-					return { data: [] }
-				}
-				return err
-			}
-		}
+		GET_BESTILLING_MALER: () => DollyApi.getBestillingMaler()
 	},
 	'NEXT_PAGE',
 	'PREV_PAGE',
@@ -107,10 +96,7 @@ export default handleActions(
 			}
 		},
 		[success(actions.getBestillingMaler)](state, action) {
-			return {
-				...state,
-				maler: action.payload && action.payload.data
-			}
+			return { ...state, maler: action.payload.data }
 		},
 		[actions.setEnvironments](state, action) {
 			return {
@@ -120,14 +106,6 @@ export default handleActions(
 			}
 		},
 		[actions.setValues](state, action) {
-			// Remove empty values
-			let copy = JSON.parse(JSON.stringify(action.payload.values))
-			Object.entries(copy).forEach(([key, value]) => {
-				if (value === '') {
-					delete copy[key]
-				}
-			})
-
 			return {
 				...state,
 				values: action.payload.values,
@@ -184,15 +162,10 @@ export default handleActions(
 				malBestillingNavn: action.payload
 			}
 		},
-		[combineActions(actions.abortBestilling, LOCATION_CHANGE, success(actions.postBestilling))](
-			state,
-			action
-		) {
-			return initialState
-		},
 		[combineActions(
 			actions.abortBestilling,
 			LOCATION_CHANGE,
+			success(actions.postBestilling),
 			success(actions.postBestillingFraEksisterendeIdenter)
 		)](state, action) {
 			return initialState
@@ -205,6 +178,7 @@ export default handleActions(
 // - kanskje flyttes ut til egen fil (er jo bare en formatter og ikke thunk)
 // - kan dette være mer generisk? bruke datasource nodene i AttributtManager?
 // - CNN: LAGT TIL TPSF HARDKODET FOR NÅ FOR TESTING. FINN GENERISK LØSNING
+// - AAL: Denne bør flyttes ut til egen fil
 const bestillingFormatter = (bestillingState, oppslag) => {
 	const {
 		attributeIds,
@@ -234,7 +208,6 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 	// mandatory
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
 	identOpprettesFra === BestillingMapper() && (final_values.tpsf.identtype = identtype)
-
 	// ? Vi trenger ikke nødvendigvis generisk løsning når det er så veldig mange spesiall tilfeller
 	// ? Forslag: lage en hjelpeklasse
 	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {
@@ -296,21 +269,25 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 		final_values = _set(final_values, 'malBestillingNavn', malBestillingNavn)
 	}
 
-	final_values.pdlforvalter &&
-		final_values.pdlforvalter.kontaktinformasjonForDoedsbo &&
-		final_values.pdlforvalter.kontaktinformasjonForDoedsbo.postnummer &&
-		oppslag.Postnummer.koder.map(postnummer => {
-			postnummer.value === final_values.pdlforvalter.kontaktinformasjonForDoedsbo.postnummer &&
-				(final_values = _set(
+	if (_get(final_values, 'pdlforvalter.kontaktinformasjonForDoedsbo.postnummer')) {
+		oppslag.Postnummer.koder.forEach(postnummer => {
+			if (postnummer.value === final_values.pdlforvalter.kontaktinformasjonForDoedsbo.postnummer) {
+				final_values = _set(
 					final_values,
 					'pdlforvalter.kontaktinformasjonForDoedsbo.poststedsnavn',
 					postnummer.label
-				))
+				)
+			}
 		})
+	}
 
 	// * Vurdere behovet for denne i U2/prod. Uglify?
+<<<<<<< HEAD
 	console.info('POSTING BESTILLING', final_values)
 
+=======
+	// console.info('POSTING BESTILLING', final_values)
+>>>>>>> release/test
 	return final_values
 }
 

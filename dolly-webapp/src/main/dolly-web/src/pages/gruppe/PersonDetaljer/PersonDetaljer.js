@@ -7,7 +7,7 @@ import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import Loading from '~/components/loading/Loading'
 import './PersonDetaljer.less'
 import DollyModal from '~/components/modal/DollyModal'
-import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
+import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
 import { getSuccessEnv, getPdlforvalterStatusOK } from '~/ducks/bestillingStatus/utils'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
@@ -85,18 +85,23 @@ export default class PersonDetaljer extends PureComponent {
 						isOpen={modalOpen}
 						onRequestClose={this.closeModal}
 						closeModal={this.closeModal}
-						content={<BestillingDetaljerSammendrag bestilling={bestilling} type="modal" />}
+						content={<BestillingSammendrag bestilling={bestilling} modal />}
 						width={'60%'}
 					/>
 					<Button onClick={editAction} className="flexbox--align-center" kind="edit">
 						REDIGER
 					</Button>
-					<ConfirmTooltip
-						className="flexbox--align-center"
-						message="Er du sikker på at du vil frigjøre denne testidenten fra testdatagruppen?"
-						label="FRIGJØR"
-						onClick={frigjoerTestbruker}
-					/>
+
+					{this.props.isFrigjoering ? (
+						<Loading label="Sletter testbruker" panel />
+					) : (
+						<ConfirmTooltip
+							className="flexbox--align-center"
+							message="Er du sikker på at du vil slette denne testidenten?"
+							label="SLETT"
+							onClick={frigjoerTestbruker}
+						/>
+					)}
 				</div>
 			</div>
 		)
@@ -111,7 +116,8 @@ export default class PersonDetaljer extends PureComponent {
 	}
 
 	// render loading for krr og sigrun
-	_renderPersonInfoBlockHandler = i => {
+	_renderPersonInfoBlockHandler = item => {
+		const { header } = item
 		const {
 			isFetchingKrr,
 			isFetchingSigrun,
@@ -120,45 +126,21 @@ export default class PersonDetaljer extends PureComponent {
 			isFetchingInst,
 			isFetchingUdi
 		} = this.props
-		if (i.header === 'Inntekter') {
-			return isFetchingSigrun ? (
-				<Loading label="Henter data fra Sigrun-stub" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else if (i.header === 'Kontaktinformasjon og reservasjon') {
-			return isFetchingKrr ? (
-				<Loading label="Henter data fra Krr" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else if (i.header === 'Arbeidsforhold') {
-			return isFetchingAareg ? (
-				<Loading label="Henter data fra Aareg" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else if (i.header === 'Arena') {
-			return isFetchingArena ? (
-				<Loading label="Henter data fra Arena" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else if (i.header === 'Institusjonsopphold') {
-			return isFetchingInst ? (
-				<Loading label="Henter data fra Inst" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else if (i.header === 'UDI') {
-			return isFetchingUdi ? (
-				<Loading label="Henter data fra UDI-stub" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else {
-			return this._renderPersonInfoBlock(i)
+
+		if (isFetchingSigrun && header === 'Inntekter') {
+			return <Loading label="Henter data fra Sigrun-stub" panel />
+		} else if (isFetchingKrr && header === 'Kontaktinformasjon og reservasjon') {
+			return <Loading label="Henter data fra Krr" panel />
+		} else if (isFetchingAareg && header === 'Arbeidsforhold') {
+			return <Loading label="Henter data fra Aareg" panel />
+		} else if (isFetchingArena && header === 'Arena') {
+			return <Loading label="Henter data fra Arena" panel />
+		} else if (isFetchingInst && header === 'Institusjonsopphold') {
+			return <Loading label="Henter data fra Inst" panel />
+		} else if (isFetchingUdi && header === 'UDI') {
+			return <Loading label="Henter data fra UDI-stub" panel />
 		}
+		return this._renderPersonInfoBlock(item)
 	}
 
 	_renderPersonInfoBlock = i => (

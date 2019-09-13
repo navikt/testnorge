@@ -1,9 +1,9 @@
-import DataFormatter from '~/utils/DataFormatter'
-import DataSourceMapper from '~/utils/DataSourceMapper'
 import _groupBy from 'lodash/groupBy'
 import _set from 'lodash/set'
 import _get from 'lodash/get'
 import _isEmpty from 'lodash/isEmpty'
+import DataFormatter from '~/utils/DataFormatter'
+import DataSourceMapper from '~/utils/DataSourceMapper'
 import { AttributtManager } from '~/service/Kodeverk'
 
 // TODO: Kan getValues og transformAttributt merges?
@@ -170,12 +170,53 @@ export const getValues = (attributeList, values) => {
 			}
 		}
 
+		if (pathPrefix === DataSourceMapper('INST')) {
+			return _set(accumulator, pathPrefix, value)
+		}
+
 		if (pathPrefix === DataSourceMapper('ARENA')) {
 			return _set(accumulator, pathPrefix, value[0])
 		}
+		if (attribute.id === 'barn') {
+			const valueCopy = JSON.parse(JSON.stringify(values.barn))
+			value.map((barn, idx) => {
+				//Loop gjennom liste med barn
+				if (barn.innvandret) {
+					Object.entries(valueCopy[idx].barn_innvandret[0]).map(attr => {
+						_set(
+							valueCopy[idx],
+							attr[0],
+							isDate(attr[1]) ? DataFormatter.parseDate(attr[1]) : attr[1]
+						)
+					})
+					delete valueCopy[idx].barn_innvandret
+				}
+				if (barn.utvandret) {
+					Object.entries(valueCopy[idx].barn_utvandret[0]).map(attr => {
+						_set(
+							valueCopy[idx],
+							attr[0],
+							isDate(attr[1]) ? DataFormatter.parseDate(attr[1]) : attr[1]
+						)
+					})
+					delete valueCopy[idx].barn_utvandret
+				}
+			})
+			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, valueCopy)
+		}
 
-		if (pathPrefix === DataSourceMapper('INST')) {
-			return _set(accumulator, pathPrefix, value)
+		if (attribute.id.includes('innvandret') || attribute.id.includes('utvandret')) {
+			// Viktig at denne ligger etter bolken med barn
+			Object.entries(value[0]).map(attr => {
+				_set(
+					accumulator,
+					attribute.id.includes('partner_')
+						? `${pathPrefix}.relasjoner.partner.${attr[0]}`
+						: `${pathPrefix}.${attr[0]}`,
+					attr[1]
+				)
+			})
+			return accumulator
 		}
 
 		if (pathPrefix === DataSourceMapper('UDI')) {
@@ -473,4 +514,11 @@ export const parseSubItemDate = (item, rad, radTransformation) => {
 export const deletePropertiesWithoutValues = obj => {
 	Object.keys(obj).map(key => !obj[key] && delete obj[key])
 	return obj
+}
+
+export const isDate = attr => {
+	if (attr.length !== 10) return false
+
+	const splittet = attr.split('.')
+	return splittet[0].length === 2 && splittet[1].length === 2 && splittet[2].length === 4
 }

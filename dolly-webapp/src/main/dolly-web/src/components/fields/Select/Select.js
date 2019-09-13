@@ -25,13 +25,21 @@ export default class DollySelect extends PureComponent {
 	})
 
 	render() {
-		const { name, label, placeholder, loadOptions, error, size, ...restProps } = this.props
+		const {
+			name,
+			label,
+			placeholder,
+			loadOptions,
+			error,
+			size,
+			hoydeOptions,
+			...restProps
+		} = this.props
 
 		let restPropsCopy = Object.assign({}, restProps)
-		if (typeof this.props.value === 'object') {
-			restPropsCopy.value = {} // <arrayField/> viser ingen verdi i vinduet.
-		}
-
+		// if (this.props.isMultiple) {
+		// 	restPropsCopy.value = {} // <arrayField/> viser ingen verdi i vinduet.
+		// }
 		return (
 			<div className={cn({ error: Boolean(error) }, size, 'skjemaelement dollyselect')}>
 				<label htmlFor={name} className="skjemaelement__label">
@@ -39,7 +47,6 @@ export default class DollySelect extends PureComponent {
 				</label>
 				<div className="dollyselect-input">
 					<Select
-						// Bruk optionHeight={}k for dynamisk height. Sjekk docs
 						async={loadOptions ? true : false}
 						loadOptions={loadOptions}
 						id={name}
@@ -48,6 +55,7 @@ export default class DollySelect extends PureComponent {
 						closeOnSelect={this.props.multi ? false : true}
 						clearable
 						openOnFocus
+						optionHeight={this.findOptionHeight(hoydeOptions)}
 						{...this.translations}
 						{...restPropsCopy}
 					/>
@@ -59,6 +67,19 @@ export default class DollySelect extends PureComponent {
 				)}
 			</div>
 		)
+	}
+
+	findOptionHeight = hoydeOptions => {
+		switch (hoydeOptions) {
+			case 'small':
+				return 35
+			case 'medium':
+				return 40
+			case 'large':
+				return 45
+			default:
+				return 35
+		}
 	}
 }
 
