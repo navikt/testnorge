@@ -38,7 +38,7 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping("api/v1/generate")
-@Api(description = "Endepunkter for å generere personer fra synt pakken. Tar seg også av å spinne opp og avslutte relevante synt-pakker på nais.")
+//@Api(description = "Endepunkter for å generere personer fra synt pakken. Tar seg også av å spinne opp og avslutte relevante synt-pakker på nais.")
 @RequiredArgsConstructor
 public class SyntController {
     private final SyntetiseringService syntetiseringService;

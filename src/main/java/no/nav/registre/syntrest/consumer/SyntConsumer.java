@@ -2,6 +2,7 @@ package no.nav.registre.syntrest.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
+import no.nav.registre.syntrest.utils.SyntAppNames;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -23,11 +24,11 @@ public class SyntConsumer {
     private final String appName;
     private final AtomicInteger numClients;
 
-    public SyntConsumer(ApplicationManager applicationManager, RestTemplate restTemplate, ScheduledExecutorService scheduledExecutorService, String appName) {
+    public SyntConsumer(ApplicationManager applicationManager, RestTemplate restTemplate, ScheduledExecutorService scheduledExecutorService, SyntAppNames name) {
         this.applicationManager = applicationManager;
         this.restTemplate = restTemplate;
         this.scheduledExecutorService = scheduledExecutorService;
-        this.appName = appName;
+        this.appName = name.getName();
         this.numClients = new AtomicInteger(0);
     }
 
