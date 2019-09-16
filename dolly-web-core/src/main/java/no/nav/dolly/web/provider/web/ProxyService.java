@@ -33,10 +33,10 @@ public class ProxyService {
         OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + auth.getIdToken());
 
-//        Cookie idTokenCookie = getIdTokenCookie(request);
-//        if (idTokenCookie != null) {
-//            headers.add(HttpHeaders.COOKIE, idTokenCookie.getName() + "=" + idTokenCookie.getValue());
-//        }
+        Cookie idTokenCookie = getIdTokenCookie(request);
+        if (idTokenCookie != null) {
+            headers.add(HttpHeaders.COOKIE, idTokenCookie.getName() + "=" + idTokenCookie.getValue());
+        }
 
         HttpEntity<String> httpEntity = new HttpEntity<>(body, headers);
         try {
@@ -63,7 +63,7 @@ public class ProxyService {
     }
 
     private Cookie getIdTokenCookie(HttpServletRequest request) {
-        for(Cookie c : request.getCookies()) {
+        for (Cookie c : request.getCookies()) {
             if (c.getName().equals("ID_token")) {
                 return c;
             }
