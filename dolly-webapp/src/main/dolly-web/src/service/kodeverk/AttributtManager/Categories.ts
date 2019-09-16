@@ -27,7 +27,7 @@ export const Kategorier: KategoriTypes = {
 			'Arbeidsforhold: \n' +
 			'Dataene her blir lagt til AAREG. \n\n' +
 			'Inntekt: \n' +
-			'Skatte- og inntektsgrunnlag. Inntektene blir lagt til i Sigrun-stub.',
+			'Skatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.',
 
 		order: 40
 	},
