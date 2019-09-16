@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.udistub;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.udistub.UdiStubDefaultPersonUtil.setPersonDefaultsIfUnspecified;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,6 @@ public final class UdiStubClient implements ClientRegister {
             ResponseEntity<UdiPersonControllerResponse> response = null;
 
             try {
-                udiStubConsumer.deleteUdiPerson(norskIdent.getIdent());
 
                 UdiPerson udiPerson = mapperFacade.map(bestilling.getUdistub(), UdiPerson.class);
                 udiPerson.setIdent(norskIdent.getIdent());
@@ -53,14 +53,13 @@ public final class UdiStubClient implements ClientRegister {
                 udiPerson.setFoedselsDato(aliases.getHovedperson().getFodselsdato().toLocalDate());
                 udiPerson.setNavn(mapperFacade.map(aliases.getHovedperson().getNavn(), UdiPersonNavn.class));
 
+                deletePerson(norskIdent.getIdent());
+
                 response = udiStubConsumer.createUdiPerson(udiPerson);
-                if (response.getStatusCode().is4xxClientError() || response.getStatusCode().is5xxServerError()) {
-                    String reason = response.hasBody() ? response.getBody().getReason() : "Ukjent årsak";
-                    throw new UdiStubException(reason);
-                }
+
                 appendOkStatus(status, response);
 
-            } catch (UdiStubException e) {
+            } catch (RuntimeException e) {
 
                 if (nonNull(response) && response.hasBody() && nonNull(response.getBody().getReason())) {
                     appendErrorStatus(status, e, response.getBody().getReason());
@@ -70,6 +69,7 @@ public final class UdiStubClient implements ClientRegister {
                     log.error("Gjenopprett feilet for udistubclient: {}", e.getMessage(), e);
                 }
             }
+
             progress.setUdistubStatus(status.toString());
         }
     }
@@ -77,6 +77,23 @@ public final class UdiStubClient implements ClientRegister {
     @Override public void release(List<String> identer) {
 
         identer.forEach(ident -> udiStubConsumer.deleteUdiPerson(ident));
+    }
+
+    private void deletePerson(String ident) {
+
+        try {
+            udiStubConsumer.deleteUdiPerson(ident);
+
+        } catch (HttpClientErrorException e) {
+
+            if (!NOT_FOUND.equals(e.getStatusCode())) {
+                log.error("DeleteUdiPerson feilet: {}", e.getMessage(), e);
+            }
+
+        } catch (RuntimeException e) {
+
+            log.error("DeleteUdiPerson feilet: {}", e.getMessage(), e);
+        }
     }
 
     private RsAliasResponse createAliases(String ident, List<RsUdiAlias> aliases, List<String> environments) {
