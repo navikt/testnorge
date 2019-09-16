@@ -7,13 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
 
 import no.nav.registre.udistub.core.exception.CouldNotCreatePersonException;
 import no.nav.registre.udistub.core.exception.NotFoundException;
@@ -30,14 +29,14 @@ public class PersonController {
     private final PersonService personService;
 
     @PostMapping
-    public ResponseEntity<PersonControllerResponse> opprettPerson(@Valid @RequestBody UdiPerson udiPerson) {
+    public ResponseEntity<PersonControllerResponse> opprettPerson(@RequestBody UdiPerson udiPerson) {
         UdiPerson createdPerson = personService.opprettPerson(udiPerson)
                 .orElseThrow(() -> new CouldNotCreatePersonException(String.format("Kunne ikke opprette person med fnr:%s", udiPerson.getIdent())));
         return ResponseEntity.status(HttpStatus.CREATED).body(new PersonControllerResponse(createdPerson));
     }
 
-    @GetMapping
-    public ResponseEntity<PersonControllerResponse> finnPerson(@RequestHeader(name = "Nav-Personident") String ident) {
+    @GetMapping("/{ident}")
+    public ResponseEntity<PersonControllerResponse> finnPerson(@PathVariable String ident) {
         UdiPerson foundPerson = personService.finnPerson(ident)
                 .orElseThrow(() -> new NotFoundException(String.format("Kunne ikke finne person med fnr:%s", ident)));
         return ResponseEntity.status(HttpStatus.OK).body(new PersonControllerResponse(foundPerson));

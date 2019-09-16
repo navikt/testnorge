@@ -1,5 +1,6 @@
 package no.nav.registre.udistub.core.database.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class Kodeverk {
 
     @Id
     @GeneratedValue
+    @JsonIgnore
     private Long id;
 
     @Column(unique = true)
