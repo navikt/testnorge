@@ -19,7 +19,7 @@ import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 import no.nav.registre.tss.consumer.rs.response.TssSyntetisererenConsumer;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
-import no.nav.registre.tss.utils.Rutine960Util;
+import no.nav.registre.tss.utils.Rutine910Util;
 
 @Slf4j
 @Service
@@ -80,18 +80,18 @@ public class TSService {
         }
 
         for (String lege : utvalgteLeger) {
-            String rutine960 = Rutine960Util.opprettRutine(lege);
+            String rutine910 = Rutine910Util.opprettRutine(lege);
 
             Message received = jmsTemplate.sendAndReceive("queue:///" + mqQueueNameSamhandlerService + "?targetClient=1", session -> {
                 //            String msgId = "foo";
-                TextMessage message = session.createTextMessage(rutine960);
+                TextMessage message = session.createTextMessage(rutine910);
                 //            message.setJMSCorrelationID(msgId);
                 return message;
             });
 
             try {
                 if (received != null) {
-                    log.info(received.getBody(Object.class).toString());
+                    log.info(received.getBody(String.class));
                 } else {
                     log.warn("Fikk ikke svar");
                 }
@@ -102,18 +102,18 @@ public class TSService {
     }
 
     public void sendAndReceiveFromTss(String lege) {
-        String rutine960 = Rutine960Util.opprettRutine(lege);
+        String rutine910 = Rutine910Util.opprettRutine(lege);
 
         Message received = jmsTemplate.sendAndReceive("queue:///" + mqQueueNameSamhandlerService + "?targetClient=1", session -> {
             //            String msgId = "foo";
-            TextMessage message = session.createTextMessage(rutine960);
+            TextMessage message = session.createTextMessage(rutine910);
             //            message.setJMSCorrelationID(msgId);
             return message;
         });
 
         try {
             if (received != null) {
-                log.info(received.getBody(Object.class).toString());
+                log.info(received.getBody(String.class));
             } else {
                 log.warn("Fikk ikke svar");
             }

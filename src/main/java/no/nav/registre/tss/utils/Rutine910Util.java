@@ -1,85 +1,108 @@
 package no.nav.registre.tss.utils;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 public class Rutine910Util {
 
+    private static final String FORMAT = "COB";
+    private static final int MMEL_LENGTH = 228;
     private static final int LENGDE_PAA_910_MELDING = 63;
 
-    public static String opprettRutine() {
-        StringBuilder stringBuilder = new StringBuilder(LENGDE_PAA_910_MELDING);
+    public static String opprettRutine(String ident) {
+        StringBuilder rutine = new StringBuilder(LENGDE_PAA_910_MELDING);
         for (int i = 0; i < LENGDE_PAA_910_MELDING; i++) {
-            stringBuilder.replace(i, i + 1, " ");
+            rutine.replace(i, i + 1, " ");
         }
-        return stringBuilder.toString();
+
+        setIdKode(rutine, "910");
+        setIdOff(rutine, ident);
+        setKodeIdenttype(rutine, "FNR");
+
+        leggTilHeader(rutine);
+        return rutine.toString();
     }
 
-    public static String setIdKode(StringBuilder rutine, String idKode) {
+    private static void leggTilHeader(StringBuilder rutine) {
+        rutine.insert(0, opprettHeader());
+    }
+
+    private static String opprettHeader() {
+        StringBuilder header = new StringBuilder(FORMAT);
+        String mmelSymbol = " ";
+        String mmel = IntStream.range(0, MMEL_LENGTH).mapToObj(i -> mmelSymbol).collect(Collectors.joining(""));
+        header.append(mmel);
+        return header.toString();
+    }
+
+    public static void setIdKode(StringBuilder rutine, String idKode) {
         int start = 0;
         checkLength(idKode, 3);
         int length = idKode.length();
-        return rutine.replace(start, start + length, idKode).toString();
+        rutine.replace(start, start + length, idKode);
     }
 
-    public static String setIdTssEkstern(StringBuilder rutine, String idTssEkstern) {
+    public static void setIdTssEkstern(StringBuilder rutine, String idTssEkstern) {
         int start = 3;
         checkLength(idTssEkstern, 11);
         int length = idTssEkstern.length();
-        return rutine.replace(start, start + length, idTssEkstern).toString();
+        rutine.replace(start, start + length, idTssEkstern);
     }
 
-    public static String setIdOff(StringBuilder rutine, String idOff) {
+    public static void setIdOff(StringBuilder rutine, String idOff) {
         int start = 14;
         checkLength(idOff, 11);
         int length = idOff.length();
-        return rutine.replace(start, start + length, idOff).toString();
+        rutine.replace(start, start + length, idOff);
     }
 
-    public static String setKodeIdenttype(StringBuilder rutine, String kodeIdenttype) {
+    public static void setKodeIdenttype(StringBuilder rutine, String kodeIdenttype) {
         int start = 25;
         checkLength(kodeIdenttype, 4);
         int length = kodeIdenttype.length();
-        return rutine.replace(start, start + length, kodeIdenttype).toString();
+        rutine.replace(start, start + length, kodeIdenttype);
     }
 
-    public static String setKodeSamhType(StringBuilder rutine, String kodeSamh) {
+    public static void setKodeSamhType(StringBuilder rutine, String kodeSamh) {
         int start = 29;
         checkLength(kodeSamh, 4);
         int length = kodeSamh.length();
-        return rutine.replace(start, start + length, kodeSamh).toString();
+        rutine.replace(start, start + length, kodeSamh);
     }
 
-    public static String setAvdelingnr(StringBuilder rutine, String avdelingnr) {
+    public static void setAvdelingnr(StringBuilder rutine, String avdelingnr) {
         int start = 33;
         checkLength(avdelingnr, 2);
         int length = avdelingnr.length();
-        return rutine.replace(start, start + length, avdelingnr).toString();
+        rutine.replace(start, start + length, avdelingnr);
     }
 
-    public static String setAvdOffnr(StringBuilder rutine, String avdOffnr) {
+    public static void setAvdOffnr(StringBuilder rutine, String avdOffnr) {
         int start = 35;
         checkLength(avdOffnr, 11);
         int length = avdOffnr.length();
-        return rutine.replace(start, start + length, avdOffnr).toString();
+        rutine.replace(start, start + length, avdOffnr);
     }
 
-    public static String setDato(StringBuilder rutine, String dato) {
+    public static void setDato(StringBuilder rutine, String dato) {
         int start = 46;
         checkLength(dato, 8);
         int length = dato.length();
-        return rutine.replace(start, start + length, dato).toString();
+        rutine.replace(start, start + length, dato);
     }
 
-    public static String setHistorikk(StringBuilder rutine, String historikk) {
+    public static void setHistorikk(StringBuilder rutine, String historikk) {
         int start = 54;
         checkLength(historikk, 1);
         int length = historikk.length();
-        return rutine.replace(start, start + length, historikk).toString();
+        rutine.replace(start, start + length, historikk);
     }
 
-    public static String setBrukerid(StringBuilder rutine, String brukerid) {
+    public static void setBrukerid(StringBuilder rutine, String brukerid) {
         int start = 55;
         checkLength(brukerid, 8);
         int length = brukerid.length();
-        return rutine.replace(start, start + length, brukerid).toString();
+        rutine.replace(start, start + length, brukerid);
     }
 
     private static void checkLength(String field, int maxLength) {
