@@ -1,4 +1,4 @@
-package no.nav.registre.tss.utils;
+package no.nav.registre.tss.consumer.rs.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Response910 {
+public class Response110 {
 
     private String idKode;
     private String idOff;

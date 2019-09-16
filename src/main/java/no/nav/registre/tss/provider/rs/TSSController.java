@@ -25,7 +25,7 @@ import java.util.List;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 import no.nav.registre.tss.service.TSService;
-import no.nav.registre.tss.utils.Response910;
+import no.nav.registre.tss.consumer.rs.response.Response910;
 
 @Slf4j
 @RestController
