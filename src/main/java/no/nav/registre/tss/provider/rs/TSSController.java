@@ -70,7 +70,7 @@ public class TSSController {
         tssService.sendAndReceiveFromTss(avspillergruppeId, antallLeger);
     }
 
-    @GetMapping("/hentLege")
+    @GetMapping("/hentLege/{ident}")
     public void getDocktorFromTss(@PathVariable String ident) {
         tssService.sendAndReceiveFromTss(ident);
     }
