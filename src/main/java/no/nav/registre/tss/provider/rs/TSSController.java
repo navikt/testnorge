@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,5 +68,10 @@ public class TSSController {
     @GetMapping("/hentLeger")
     public void getDoctorsFromTss(@RequestParam Long avspillergruppeId, @RequestParam(required = false) Integer antallLeger) {
         tssService.sendAndReceiveFromTss(avspillergruppeId, antallLeger);
+    }
+
+    @GetMapping("/hentLege")
+    public void getDocktorFromTss(@PathVariable String ident) {
+        tssService.sendAndReceiveFromTss(ident);
     }
 }

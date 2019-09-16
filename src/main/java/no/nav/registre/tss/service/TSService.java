@@ -100,4 +100,25 @@ public class TSService {
             }
         }
     }
+
+    public void sendAndReceiveFromTss(String lege) {
+        String rutine960 = Rutine960Util.opprettRutine(lege);
+
+        Message received = jmsTemplate.sendAndReceive("queue:///" + mqQueueNameSamhandlerService + "?targetClient=1", session -> {
+            //            String msgId = "foo";
+            TextMessage message = session.createTextMessage(rutine960);
+            //            message.setJMSCorrelationID(msgId);
+            return message;
+        });
+
+        try {
+            if (received != null) {
+                log.info(received.getBody(Object.class).toString());
+            } else {
+                log.warn("Fikk ikke svar");
+            }
+        } catch (JMSException e) {
+            log.error("Kunne ikke hente body", e);
+        }
+    }
 }
