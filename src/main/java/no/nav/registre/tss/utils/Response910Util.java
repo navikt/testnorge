@@ -2,6 +2,8 @@ package no.nav.registre.tss.utils;
 
 public class Response910Util {
 
+    private static int HEADER_LENGTH = 531;
+
     public static Response910 parseResponse(String response) {
         int currentPos = 0;
 

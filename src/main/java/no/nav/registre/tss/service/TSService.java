@@ -115,7 +115,9 @@ public class TSService {
 
         try {
             if (received != null) {
-                return Response910Util.parseResponse(received.getBody(String.class));
+                String response = received.getBody(String.class);
+                log.info(response);
+                return Response910Util.parseResponse(response);
             } else {
                 log.warn("Fikk ikke svar");
             }
