@@ -25,7 +25,7 @@ public class FasitClient {
     @Value("${application.name}")
     private String applicationName;
 
-    @Value("${test.environment}")
+    @Value("${test.environment:u2}")
     private String environmentName;
 
     public Map<String, Object> resolveFasitProperties() {

@@ -14,6 +14,7 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.GruppeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
@@ -33,8 +34,12 @@ public class TestgruppeService {
     private final BrukerService brukerService;
     private final TeamService teamService;
     private final IdentService identService;
-    private final BestillingService bestillingService;
-    private final PersonService personService;
+
+    //NOTE @Autowired på grunn av sirkulær avhengighet mellom PersonService, BestillingService og TestgruppeService
+    @Autowired
+    private BestillingService bestillingService;
+    @Autowired
+    private PersonService personService;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());

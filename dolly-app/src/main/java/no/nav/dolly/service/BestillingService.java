@@ -26,6 +26,7 @@ import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,11 +42,14 @@ import java.util.Set;
 public class BestillingService {
 
     private final BestillingRepository bestillingRepository;
-    private final TestgruppeService testgruppeService;
     private final BestillingKontrollRepository bestillingKontrollRepository;
     private final IdentRepository identRepository;
     private final BestillingProgressRepository bestillingProgressRepository;
     private final ObjectMapper objectMapper;
+
+    //NOTE @Autowired på grunn av sirkulær avhengighet mellom PersonService, BestillingService og TestgruppeService
+    @Autowired
+    private TestgruppeService testgruppeService;
 
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId).orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
