@@ -16,7 +16,6 @@
 
     <modules>
         <module>dolly-web-app</module>
-        <module>dolly-web-app-local</module>
         <module>dolly-web-core</module>
     </modules>
 
