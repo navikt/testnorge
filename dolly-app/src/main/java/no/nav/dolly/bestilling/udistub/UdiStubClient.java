@@ -55,7 +55,7 @@ public final class UdiStubClient implements ClientRegister {
 
                 response = udiStubConsumer.createUdiPerson(udiPerson);
                 if (response.getStatusCode().is4xxClientError() || response.getStatusCode().is5xxServerError()) {
-                    String reason = nonNull(response.getBody()) ? response.getBody().getReason() : "Ukjent årsak";
+                    String reason = response.hasBody() ? response.getBody().getReason() : "Ukjent årsak";
                     throw new UdiStubException(reason);
                 }
                 appendOkStatus(status, response);
