@@ -297,14 +297,12 @@ export function mapInstData(instData) {
 
 export function mapUdiData(udiData) {
 	if (!udiData) return null
-	//! Begynte på denne for lenge siden, men tror ikke det er så mye som fortsatt er brukbart.
-	console.log('udiData :', udiData)
 	const oppholdsrettTyper = [
 		'eosEllerEFTABeslutningOmOppholdsrett',
 		'eosEllerEFTAVedtakOmVarigOppholdsrett',
 		'eosEllerEFTAOppholdstillatelse',
 		'oppholdSammeVilkaar'
-	]
+	] //Sjekk ut dette mer når tilbakemeldinger blir mer fornuftige
 	const currentOppholdsrettType = oppholdsrettTyper.find(type => udiData.oppholdStatus[type])
 
 	const oppholdsrett = Boolean(currentOppholdsrettType)
@@ -312,10 +310,6 @@ export function mapUdiData(udiData) {
 	return {
 		header: 'UDI',
 		data: [
-			// {
-			// 	id: 'oppholdStatus',
-			// 	label: 'Gjeldende oppholdsstatus',
-			// 	value: [
 			{
 				id: 'oppholdsstatus',
 				label: 'Oppholdsstatus',
@@ -375,44 +369,38 @@ export function mapUdiData(udiData) {
 				label: 'Uavklart',
 				value: udiData.uavklart && Formatters.oversettBoolean(true) //Kan kanskje heller vise denne under status
 			},
-			// {
-			// 	id: 'ikkeOppholdGrunn',
-			// 	label: 'Grunn'
-			// },
-			// 	]
-			// },
-			// {
-			// 	id: 'arbeidsadgang',
-			// 	label: 'Arbeidsadgang',
-			// 	value: [
 			{
 				id: 'harArbeidsadgang',
 				label: 'Har arbeidsadgang',
-				value: udiData.arbeidsadgang.harArbeidsAdgang
+				value: udiData.arbeidsadgang && udiData.arbeidsadgang.harArbeidsAdgang
 			},
 			{
 				id: 'typeArbeidsadgang',
 				label: 'Type arbeidsadgang',
-				value: Formatters.showLabel('typeArbeidsadgang', udiData.arbeidsadgang.typeArbeidsAdgang)
+				value:
+					udiData.arbeidsadgang &&
+					Formatters.showLabel('typeArbeidsadgang', udiData.arbeidsadgang.typeArbeidsAdgang)
 			},
 			{
 				id: 'arbeidsOmfang',
 				label: 'Arbeidsomfang',
-				value: Formatters.showLabel('arbeidsOmfang', udiData.arbeidsadgang.arbeidsOmfang)
+				value:
+					udiData.arbeidsadgang &&
+					Formatters.showLabel('arbeidsOmfang', udiData.arbeidsadgang.arbeidsOmfang)
 			},
 			{
 				id: 'arbeidsadgangFraDato',
 				label: 'Arbeidsadgang fra dato',
-				value: Formatters.formateStringDates(udiData.arbeidsadgang.periode.fra)
+				value:
+					udiData.arbeidsadgang && Formatters.formateStringDates(udiData.arbeidsadgang.periode.fra)
 			},
 			{
 				id: 'arbeidsadgangTilDato',
 				label: 'Arbeidsadgang til dato',
-				value: Formatters.formateStringDates(udiData.arbeidsadgang.periode.til)
+				value:
+					udiData.arbeidsadgang && Formatters.formateStringDates(udiData.arbeidsadgang.periode.til)
 			}
-			// 	]
-			// },
-		] //.concat(mapAliasData(udiData.aliaser))
+		]
 	}
 }
 

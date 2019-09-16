@@ -152,7 +152,7 @@ const selectOptions = {
 	// 	{ value: 'ovrigIkkeOppholdsKategoriArsak', label: 'Øvrig ikke opphold' }
 	// ],
 
-	harArbeidsadgang: [
+	jaNeiUavklart: [
 		{ value: 'JA', label: 'Ja' },
 		{ value: 'NEI', label: 'Nei' },
 		{ value: 'UAVKLART', label: 'Uavklart' }
