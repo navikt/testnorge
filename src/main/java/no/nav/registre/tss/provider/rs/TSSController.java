@@ -25,6 +25,7 @@ import java.util.List;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 import no.nav.registre.tss.service.TSService;
+import no.nav.registre.tss.utils.Response910;
 
 @Slf4j
 @RestController
@@ -71,7 +72,7 @@ public class TSSController {
     }
 
     @GetMapping("/hentLege/{ident}")
-    public void getDocktorFromTss(@PathVariable String ident) {
-        tssService.sendAndReceiveFromTss(ident);
+    public Response910 getDocktorFromTss(@PathVariable String ident) {
+        return tssService.sendAndReceiveFromTss(ident);
     }
 }

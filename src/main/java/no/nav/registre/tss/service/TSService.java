@@ -19,6 +19,8 @@ import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 import no.nav.registre.tss.consumer.rs.response.TssSyntetisererenConsumer;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
+import no.nav.registre.tss.utils.Response910;
+import no.nav.registre.tss.utils.Response910Util;
 import no.nav.registre.tss.utils.Rutine910Util;
 
 @Slf4j
@@ -101,7 +103,7 @@ public class TSService {
         }
     }
 
-    public void sendAndReceiveFromTss(String lege) {
+    public Response910 sendAndReceiveFromTss(String lege) {
         String rutine910 = Rutine910Util.opprettRutine(lege);
 
         Message received = jmsTemplate.sendAndReceive("queue:///" + mqQueueNameSamhandlerService + "?targetClient=1", session -> {
@@ -113,12 +115,13 @@ public class TSService {
 
         try {
             if (received != null) {
-                log.info(received.getBody(String.class));
+                return Response910Util.parseResponse(received.getBody(String.class));
             } else {
                 log.warn("Fikk ikke svar");
             }
         } catch (JMSException e) {
             log.error("Kunne ikke hente body", e);
         }
+        return null;
     }
 }
