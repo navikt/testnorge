@@ -129,33 +129,6 @@
                 </plugins>
             </build>
         </profile>
-        <!--        <profile>-->
-        <!--            <id>clean-node</id>-->
-        <!--            <build>-->
-        <!--                <plugins>-->
-        <!--                    <plugin>-->
-        <!--                        <groupId>org.apache.maven.plugins</groupId>-->
-        <!--                        <artifactId>maven-clean-plugin</artifactId>-->
-        <!--                        <configuration>-->
-        <!--                            <filesets>-->
-        <!--                                <fileset>-->
-        <!--                                    <directory>src/main/dolly-web/node</directory>-->
-        <!--                                </fileset>-->
-        <!--                                <fileset>-->
-        <!--                                    <directory>src/main/dolly-web/node_modules</directory>-->
-        <!--                                </fileset>-->
-        <!--                                <fileset>-->
-        <!--                                    <directory>src/main/dolly-web/build</directory>-->
-        <!--                                </fileset>-->
-        <!--                                <fileset>-->
-        <!--                                    <directory>src/main/resources/public/production</directory>-->
-        <!--                                </fileset>-->
-        <!--                            </filesets>-->
-        <!--                        </configuration>-->
-        <!--                    </plugin>-->
-        <!--                </plugins>-->
-        <!--            </build>-->
-        <!--        </profile>-->
     </profiles>
 
 </project>

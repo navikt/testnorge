@@ -1,10 +1,12 @@
 package no.nav.dolly.web.provider.web;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -28,13 +30,13 @@ public class ProxyService {
         HttpHeaders headers = copyHeaders(request);
 
         //TODO Brukes når Dolly tar imot token i header
-//        OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
-//        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + auth.getIdToken());
+        OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + auth.getIdToken());
 
-        Cookie idTokenCookie = getIdTokenCookie(request);
-        if (idTokenCookie != null) {
-            headers.add(HttpHeaders.COOKIE, idTokenCookie.getName() + "=" + idTokenCookie.getValue());
-        }
+//        Cookie idTokenCookie = getIdTokenCookie(request);
+//        if (idTokenCookie != null) {
+//            headers.add(HttpHeaders.COOKIE, idTokenCookie.getName() + "=" + idTokenCookie.getValue());
+//        }
 
         HttpEntity<String> httpEntity = new HttpEntity<>(body, headers);
         try {
