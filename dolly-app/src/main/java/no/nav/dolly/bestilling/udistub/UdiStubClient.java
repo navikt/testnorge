@@ -55,16 +55,14 @@ public final class UdiStubClient implements ClientRegister {
 
                 response = udiStubConsumer.createUdiPerson(udiPerson);
                 if (response.getStatusCode().is4xxClientError() || response.getStatusCode().is5xxServerError()) {
-                    String reason = nonNull(response.getBody()) ? response.getBody().getReason() : "Ukjent årsak";
+                    String reason = response.hasBody() ? response.getBody().getReason() : "Ukjent årsak";
                     throw new UdiStubException(reason);
                 }
                 appendOkStatus(status, response);
 
             } catch (UdiStubException e) {
 
-                if (response != null &&
-                        response.getBody() != null &&
-                        response.getBody().getReason() != null) {
+                if (nonNull(response) && response.hasBody() && nonNull(response.getBody().getReason())) {
                     appendErrorStatus(status, e, response.getBody().getReason());
                     log.error("Gjenopprett feilet for udistubclient: {}", response.getBody().getReason(), e);
                 } else {
@@ -92,10 +90,8 @@ public final class UdiStubClient implements ClientRegister {
     }
 
     private static void appendOkStatus(StringBuilder status, ResponseEntity<UdiPersonControllerResponse> postResponse) {
-        if (postResponse != null &&
-                postResponse.getBody() != null &&
-                postResponse.getBody().getReason() != null) {
-            status.append("OK: ident=").append(postResponse.getBody().getPerson().getIdent());
+        if (nonNull(postResponse) && postResponse.hasBody()) {
+            status.append("OK");
         }
     }
 
