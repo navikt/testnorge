@@ -11,8 +11,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class UdiAlias {
+public class RsUdiAlias {
 
-    private String fnr;
-    private UdiPersonNavn navn;
+    private Boolean nyIdent;
+    private UdiIdentType identtype;
 }
