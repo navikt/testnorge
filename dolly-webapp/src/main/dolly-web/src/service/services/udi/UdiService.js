@@ -9,10 +9,6 @@ export default class UdiService {
 	}
 
 	static getTestbruker(ident) {
-		return Request.getWithoutCredentials(`${this.getUdiUrl()}/person`, {
-			headers: {
-				'Nav-Personident': ident
-			}
-		})
+		return Request.getWithoutCredentials(`${this.getUdiUrl()}/person/${ident}`)
 	}
 }

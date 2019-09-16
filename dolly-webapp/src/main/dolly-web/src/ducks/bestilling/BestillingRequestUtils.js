@@ -316,8 +316,7 @@ export const getValues = (attributeList, values) => {
 				})
 			}
 
-			if (attribute.id === 'flyktning') {
-				udiObj = ''
+			if (attribute.id === 'flyktning' || attribute.id === 'soeknadOmBeskyttelseUnderBehandling') {
 				udiObj = value
 			}
 			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, udiObj)

@@ -13,16 +13,11 @@ export const avvikStatus = bestilling => {
 	if (_get(bestilling, 'sigrunStubStatus', []).some(check)) avvik = true
 	if (_get(bestilling, 'pdlforvalterStatus.pdlForvalter', []).some(check)) avvik = true
 	if (_get(bestilling, 'instdataStatus', []).some(check)) avvik = true
+	if (_get(bestilling, 'udiStubStatus', []).some(check)) avvik = true
 
 	// Arena har et annerledes property - 'status'
 	if (_get(bestilling, 'arenaforvalterStatus', []).some(o => o.status !== 'OK')) avvik = true
 
-	item.udiStubStatus &&
-		item.udiStubStatus.map(status => {
-			status.statusMelding !== 'OK' && (avvik = true) // noe annet enn statusMelding??
-		})
-
-	item.feil && (avvik = true)
 	return avvik
 }
 
