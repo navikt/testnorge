@@ -160,10 +160,6 @@ export default class DollyService {
 		return Request.get(Endpoints.personoppslag(ident))
 	}
 
-	static getSyntData(path, numToGenerate) {
-		return Request.get(Endpoints.syntdataGenerate(path, numToGenerate))
-	}
-
 	//AAREG
 	static getArbeidsforhold(ident, env) {
 		return Request.get(Endpoints.arbeidsforholdByIdent(ident, env))

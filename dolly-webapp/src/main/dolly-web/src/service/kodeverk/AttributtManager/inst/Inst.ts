@@ -15,7 +15,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.INST,
 		validation: yup.object(),
 		isMultiple: true,
-		genererSyntVerdier: true,
 		attributtType: AttributtType.SelectAndEdit,
 		items: [
 			{
