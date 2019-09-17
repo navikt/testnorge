@@ -44,8 +44,8 @@ public class SyntController {
     @PostMapping("/aareg")
     @ApiOperation(value = "Aareg", notes = "Genererer syntetiske arbeidshistorikker bestående av meldinger på AAREG format.")
     public ResponseEntity<List<Arbeidsforholdsmelding>> generateAareg(
-            @ApiParam(value = "Liste med identifikasjonnumre for fikitve personer")
-            @RequestBody List<String> fnrs
+            @ApiParam(value = "Liste med identifikasjonnumre for fikitve personer", required = true)
+            @RequestBody(required = false) List<String> fnrs
     ) {
         InputValidator.validateInput(fnrs);
         List<Arbeidsforholdsmelding> response = syntetiseringService.generateAaregData(fnrs);
@@ -57,8 +57,8 @@ public class SyntController {
     @GetMapping("/arena/aap/11_5")
     @ApiOperation(value = "Aap115", notes = "Generer et antall AAP11_5 meldinger")
     public ResponseEntity<List<AAP115Melding>> generateAAP11_5(
-            @ApiParam("Antall AAP11_5 meldinger")
-            @RequestParam(required = true) Integer numToGenerate
+            @ApiParam(value = "Antall AAP11_5 meldinger", required = true)
+            @RequestParam Integer numToGenerate
     ) {
         InputValidator.validateInput(numToGenerate);
         List<AAP115Melding> response = syntetiseringService.generateAAP115Data(numToGenerate);
@@ -70,7 +70,7 @@ public class SyntController {
     @GetMapping("/arena/aap/nyRettighet")
     @ApiOperation(value = "Ny Rettighet/AAP melding", notes = "Generer et antall nye rettigheter")
     public ResponseEntity<List<AAPMelding>> generateAAPNyRettighet(
-            @ApiParam("Antall AAP meldinger/nye rettigheter")
+            @ApiParam(value = "Antall AAP meldinger/nye rettigheter", required = true)
             @RequestParam Integer numToGenerate
     ) {
         InputValidator.validateInput(numToGenerate);
@@ -83,7 +83,7 @@ public class SyntController {
     @GetMapping("/bisys")
     @ApiOperation(value = "Barnebidragsmelding", notes = "API for å generere syntetiserte bisysmeldinger.")
     public ResponseEntity<List<Barnebidragsmelding>> generateBisys(
-            @ApiParam("Antall meldinger som skal genereres")
+            @ApiParam(value = "Antall meldinger som skal genereres", required = true)
             @RequestParam int numToGenerate
     ) {
         InputValidator.validateInput(numToGenerate);
@@ -96,7 +96,7 @@ public class SyntController {
     @GetMapping("/inst")
     @ApiOperation(value = "Inst", notes = "Generer et antall institusjonsforholdsmeldinger.")
     public ResponseEntity<List<Institusjonsmelding>> generateInst(
-            @ApiParam("Antall institusjonsmeldinger")
+            @ApiParam(value = "Antall institusjonsmeldinger", required = true)
             @RequestParam int numToGenerate
     ) {
         InputValidator.validateInput(numToGenerate);
@@ -110,7 +110,7 @@ public class SyntController {
     @ApiOperation(value = "Medl", notes = "Generer MEDL meldinger. For info om selve syntetiseringen og datagrunnlag " +
             "se https://confluence.adeo.no/display/FEL/Syntetisering+-+MEDL\n\nObs! Veldig treg!")
     public ResponseEntity<List<Medlemskapsmelding>> generateMedl(
-            @ApiParam("Antall meldinger")
+            @ApiParam(value = "Antall meldinger", required = true)
             @RequestParam int numToGenerate
     ) {
         InputValidator.validateInput(numToGenerate);
@@ -130,9 +130,9 @@ public class SyntController {
             "tar lang tid og applikasjonen timer ut. Dette må enten gjøres lokalt med samme python versjon som blir " +
             "kjørt på NAIS (3.7.1 per dags dato), eller så må NAIS instillingene oppdateres.")
     public ResponseEntity<List<String>> generateMeldekort(
-            @ApiParam("Meldegruppe")
+            @ApiParam(value = "Meldegruppe", required = true)
             @PathVariable String meldegruppe,
-            @ApiParam("Antall meldinger")
+            @ApiParam(value = "Antall meldinger", required = true)
             @RequestParam int numToGenerate
     ) {
         InputValidator.validateInput(numToGenerate);
@@ -147,9 +147,9 @@ public class SyntController {
     @ApiOperation(value = "Nav Melding", notes = "Opprett et antall meldinger med endringskode fra path variabelen. " +
             "\nReturenterer en liste med strenger der hvert element er en endringsmelding-xml.")
     public ResponseEntity<List<String>> generateNavEndringsmelding(
-            @ApiParam("Nav endringskode")
+            @ApiParam(value = "Nav endringskode", required = true)
             @PathVariable String endringskode,
-            @ApiParam("Antall meldinger")
+            @ApiParam(value = "Antall meldinger", required = true)
             @RequestParam int numToGenerate
     ) {
         InputValidator.validateInput(numToGenerate);
@@ -161,12 +161,12 @@ public class SyntController {
     }
 
     @PostMapping("/popp")
-    @ApiOperation(value = "Inntektsmelding", notes = "Genererer syntetiske inntektsmeldinger til Sigrunstub. " +
+    @ApiOperation(value = "Inntektsmeldinger (sigrunstub)", notes = "Genererer syntetiske inntektsmeldinger til Sigrunstub. " +
             "Inntektsmeldingene blir returnert på et format som kan bli lagret i sigrunstub, og vil generere en ny " +
             "inntektsmelding basert på personens inntektsmelding forrige år. Hvis personen ikke har en inntektsmelding " +
             "vil det bli samplet en ny inntektsmelding fra en BeAn/CART-modell.")
     public ResponseEntity<List<InntektsmeldingPopp>> generateInntektsmelding(
-            @ApiParam("Fnrs å opprette inntektsmeldinger på")
+            @ApiParam(value = "Fnrs å opprette inntektsmeldinger på", required = true)
             @RequestBody List<String> fnrs
     ) {
         InputValidator.validateInput(fnrs);
@@ -179,7 +179,7 @@ public class SyntController {
     @GetMapping("/sam")
     @ApiOperation(value = "Generer SAM melding", notes = "API for å generere syntetiserte SAM data.")
     public ResponseEntity<List<SamMelding>> generateSamMelding(
-            @ApiParam("Antall meldinger")
+            @ApiParam(value = "Antall meldinger", required = true)
             @RequestParam int numToGenerate
     ) {
         InputValidator.validateInput(numToGenerate);
@@ -190,13 +190,13 @@ public class SyntController {
     }
 
     @PostMapping("/inntekt")
-    @ApiOperation(value = "Inntektsmeldinger", notes = "Generer inntektsmeldinger på et map med fødselsnumre og " +
+    @ApiOperation(value = "Inntektsmeldinger (inntektstub)", notes = "Generer inntektsmeldinger på et map med fødselsnumre og " +
             "inntektsmeldinger på samme format som i inntektstub. \n\nHvis man legger ved en liste med inntektsmeldinger " +
             "per fødselsnummer, (altså forrige måneds inntektsmelding) blir den nye inntektsmeldingen basert på disse. " +
             "Hvis man legger ved en tom liste til fødselsnummeret blir en inntektsmelding generert basert på en kernel " +
             "density model.")
     public ResponseEntity<Map<String, List<InntektsmeldingInntekt>>> generateInntektsMelding(
-            @ApiParam("Map der key=fødselsnummer, value=liste med inntektsmeldinger")
+            @ApiParam(value = "Map der key=fødselsnummer, value=liste med inntektsmeldinger", required = true)
             @RequestBody Map<String, List<InntektsmeldingInntekt>> fnrInntektMap
     ) {
         InputValidator.validateInput(new ArrayList<>(fnrInntektMap.keySet()));
@@ -210,7 +210,7 @@ public class SyntController {
     @ApiOperation(value = "Tjeneste Pensjonsmeldinger", notes = "Generer antall tjenestepensjonsmeldinger. For info om " +
             "selve syntetiseringen av TP, se https://confluence.adeo.no/display/FEL/Syntetisering+-+TP")
     public ResponseEntity<List<TPmelding>> generateTPMelding(
-            @ApiParam("Antall meldinger")
+            @ApiParam(value = "Antall meldinger", required = true)
             @RequestParam int numToGenerate
     ) {
         InputValidator.validateInput(numToGenerate);
@@ -223,9 +223,9 @@ public class SyntController {
     @GetMapping("/tps/{endringskode}")
     @ApiOperation(value = "Generer SKD melding", notes = "Lager SKD meldinger for ulike endringskoder")
     public ResponseEntity<List<SkdMelding>> generateSkdMelding(
-            @ApiParam("Endringskode")
+            @ApiParam(value = "Endringskode", required = true)
             @PathVariable String endringskode,
-            @ApiParam("Antall meldinger")
+            @ApiParam(value = "Antall meldinger", required = true)
             @RequestParam int numToGenerate
     ) {
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE, endringskode);
