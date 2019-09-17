@@ -1,6 +1,5 @@
 package no.nav.registre.syntrest.controllers;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -38,7 +37,6 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping("api/v1/generate")
-//@Api(description = "Endepunkter for å generere personer fra synt pakken. Tar seg også av å spinne opp og avslutte relevante synt-pakker på nais.")
 @RequiredArgsConstructor
 public class SyntController {
     private final SyntetiseringService syntetiseringService;
@@ -83,9 +81,9 @@ public class SyntController {
     }
 
     @GetMapping("/bisys")
-    @ApiOperation(value = "bisys")
+    @ApiOperation(value = "Barnebidragsmelding", notes = "API for å generere syntetiserte bisysmeldinger.")
     public ResponseEntity<List<Barnebidragsmelding>> generateBisys(
-            @ApiParam("Antall meldinger")
+            @ApiParam("Antall meldinger som skal genereres")
             @RequestParam int numToGenerate
     ) {
         InputValidator.validateInput(numToGenerate);
@@ -96,7 +94,7 @@ public class SyntController {
     }
 
     @GetMapping("/inst")
-    @ApiOperation(value = "Inst", notes = "Generer institusjonsforhold")
+    @ApiOperation(value = "Inst", notes = "Generer et antall institusjonsforholdsmeldinger.")
     public ResponseEntity<List<Institusjonsmelding>> generateInst(
             @ApiParam("Antall institusjonsmeldinger")
             @RequestParam int numToGenerate
@@ -109,7 +107,8 @@ public class SyntController {
     }
 
     @GetMapping("/medl")
-    @ApiOperation(value = "Medl", notes = "Generer MEDL meldinger\nObs! Veldig treg!")
+    @ApiOperation(value = "Medl", notes = "Generer MEDL meldinger. For info om selve syntetiseringen og datagrunnlag " +
+            "se https://confluence.adeo.no/display/FEL/Syntetisering+-+MEDL\n\nObs! Veldig treg!")
     public ResponseEntity<List<Medlemskapsmelding>> generateMedl(
             @ApiParam("Antall meldinger")
             @RequestParam int numToGenerate
@@ -122,7 +121,14 @@ public class SyntController {
     }
 
     @GetMapping("/meldekort/{meldegruppe}")
-    @ApiOperation(value = "Meldekort", notes = "Opprett et antall meldekort for meldegruppen\nReturnerer en liste med strenger der en hvert element er en meldekort xml.")
+    @ApiOperation(value = "Meldekort", notes = "Opprett et antall meldekort for meldegruppen\n\nAPIet genererer " +
+            "meldekort i XML format som kan settes inn i arena. Merk at denne metoden genererer kun bodyen til " +
+            "XML-meldingen til et meldekort, og er avhengig av å få satt på et hode for at denne kan legges inn i " +
+            "Arena.\n\nKernel density modellene blir generert ved førstegangs kjøring og lagret i postgresdatabasen, " +
+            "synthdata_register_syn. Hvis modellene skal trenes på nytt igjen og oppdateres må disse slettes fra " +
+            "postgresdatabasen og legges inn på nytt.\n\nMerk at dette ikke er mulig med dagens NAIS oppsett da dette " +
+            "tar lang tid og applikasjonen timer ut. Dette må enten gjøres lokalt med samme python versjon som blir " +
+            "kjørt på NAIS (3.7.1 per dags dato), eller så må NAIS instillingene oppdateres.")
     public ResponseEntity<List<String>> generateMeldekort(
             @ApiParam("Meldegruppe")
             @PathVariable String meldegruppe,
@@ -138,7 +144,8 @@ public class SyntController {
     }
 
     @GetMapping("/nav/{endringskode}")
-    @ApiOperation(value = "Nav Melding", notes = "Opprett et antall meldinger med endringskode fra path variabelen.\nReturenterer en liste med strenger der hvert element er en endringsmelding-xml.")
+    @ApiOperation(value = "Nav Melding", notes = "Opprett et antall meldinger med endringskode fra path variabelen. " +
+            "\nReturenterer en liste med strenger der hvert element er en endringsmelding-xml.")
     public ResponseEntity<List<String>> generateNavEndringsmelding(
             @ApiParam("Nav endringskode")
             @PathVariable String endringskode,
@@ -154,7 +161,10 @@ public class SyntController {
     }
 
     @PostMapping("/popp")
-    @ApiOperation(value = "Inntektsmelding", notes = "Genererer syntetiske inntektsmeldinger til Sigrunstub. Inntektsmeldingene blir returnert på et format som kan bli lagret i sigrunstub, og vil generere en ny inntektsmelding basert på personens inntektsmelding forrige år. Hvis personen ikke har en inntektsmelding vil det bli samplet en ny inntektsmelding fra en BeAn/CART-modell.")
+    @ApiOperation(value = "Inntektsmelding", notes = "Genererer syntetiske inntektsmeldinger til Sigrunstub. " +
+            "Inntektsmeldingene blir returnert på et format som kan bli lagret i sigrunstub, og vil generere en ny " +
+            "inntektsmelding basert på personens inntektsmelding forrige år. Hvis personen ikke har en inntektsmelding " +
+            "vil det bli samplet en ny inntektsmelding fra en BeAn/CART-modell.")
     public ResponseEntity<List<InntektsmeldingPopp>> generateInntektsmelding(
             @ApiParam("Fnrs å opprette inntektsmeldinger på")
             @RequestBody List<String> fnrs
@@ -180,7 +190,11 @@ public class SyntController {
     }
 
     @PostMapping("/inntekt")
-    @ApiOperation(value = "Inntektsmeldinger", notes = "Generer inntektsmeldinger på et map med fødselsnumre og inntektsmeldinger. Hvis man også legger ved en liste med inntektsmeldinger per fødselsnummer blir den nye inntektsmeldingen basert på disse. Hvis man legger ved en tom liste til fødselsnummeret, blir en tilfeldig inntektsmelding generert")
+    @ApiOperation(value = "Inntektsmeldinger", notes = "Generer inntektsmeldinger på et map med fødselsnumre og " +
+            "inntektsmeldinger på samme format som i inntektstub. \n\nHvis man legger ved en liste med inntektsmeldinger " +
+            "per fødselsnummer, (altså forrige måneds inntektsmelding) blir den nye inntektsmeldingen basert på disse. " +
+            "Hvis man legger ved en tom liste til fødselsnummeret blir en inntektsmelding generert basert på en kernel " +
+            "density model.")
     public ResponseEntity<Map<String, List<InntektsmeldingInntekt>>> generateInntektsMelding(
             @ApiParam("Map der key=fødselsnummer, value=liste med inntektsmeldinger")
             @RequestBody Map<String, List<InntektsmeldingInntekt>> fnrInntektMap
@@ -193,7 +207,8 @@ public class SyntController {
     }
 
     @GetMapping("/tp")
-    @ApiOperation(value = "Tjeneste Pensjonsmeldinger", notes = "Generer antall tjenestepensjonsmeldinger")
+    @ApiOperation(value = "Tjeneste Pensjonsmeldinger", notes = "Generer antall tjenestepensjonsmeldinger. For info om " +
+            "selve syntetiseringen av TP, se https://confluence.adeo.no/display/FEL/Syntetisering+-+TP")
     public ResponseEntity<List<TPmelding>> generateTPMelding(
             @ApiParam("Antall meldinger")
             @RequestParam int numToGenerate
