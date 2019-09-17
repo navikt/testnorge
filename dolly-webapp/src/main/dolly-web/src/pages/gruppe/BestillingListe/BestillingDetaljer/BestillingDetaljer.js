@@ -10,7 +10,7 @@ import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import SendOpenAmConnector from '~/pages/gruppe/SendOpenAm/SendOpenAmConnector'
 import OpenAmStatusConnector from '~/pages/gruppe/OpenAmStatus/OpenAmStatusConnector'
 import DollyModal from '~/components/modal/DollyModal'
-import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
+import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
 
 export default class BestillingDetaljer extends PureComponent {
 	constructor(props) {
@@ -43,7 +43,7 @@ export default class BestillingDetaljer extends PureComponent {
 
 		return (
 			<div className="bestilling-detaljer">
-				<BestillingDetaljerSammendrag bestilling={bestilling} type="panel" />
+				<BestillingSammendrag bestilling={bestilling} />
 				{openAm ? (
 					<div className="bestilling-detaljer">
 						<h3>Jira-lenker</h3>

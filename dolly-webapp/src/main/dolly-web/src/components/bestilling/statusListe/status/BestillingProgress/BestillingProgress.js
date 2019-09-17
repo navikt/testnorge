@@ -1,10 +1,11 @@
 import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { Line } from 'rc-progress'
-import Loading from '~/components/loading/Loading'
-import './BestillingProgress.less'
 import Knapp from 'nav-frontend-knapper'
+import Loading from '~/components/loading/Loading'
 import Icon from '~/components/icon/Icon'
+
+import './BestillingProgress.less'
 
 export default class BestillingProgress extends PureComponent {
 	static propTypes = {
@@ -12,7 +13,7 @@ export default class BestillingProgress extends PureComponent {
 	}
 
 	render() {
-		const { id, status, failed, cancelBestilling } = this.props
+		const { status, failed, cancelBestilling } = this.props
 
 		return (
 			<Fragment>

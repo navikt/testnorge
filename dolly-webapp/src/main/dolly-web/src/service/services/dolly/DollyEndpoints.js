@@ -12,7 +12,6 @@ const openamBase = `${uri}/openam`
 const norg2Base = `${uri}/norg2`
 const aaregBase = `${uri}/aareg/arbeidsforhold`
 const personoppslagBase = `${uri}/personoppslag`
-const syntdataGenerateBase = `${uri}/syntdata`
 
 class DollyEndpoints {
 	static gruppe() {
@@ -149,11 +148,6 @@ class DollyEndpoints {
 
 	static personoppslag(ident) {
 		return `${personoppslagBase}/ident/${ident}`
-	}
-
-	static syntdataGenerate(path, numToGenerate) {
-		const formatertPath = path.replace(/\//g, '%2F')
-		return `${syntdataGenerateBase}?path=${formatertPath}&numToGenerate=${numToGenerate}`
 	}
 }
 
