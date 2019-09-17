@@ -14,6 +14,7 @@ import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 import net.morher.ui.connect.api.element.Label;
+import net.morher.ui.connect.html.HtmlApplicationUtils;
 import no.nav.bidrag.ui.bisys.BisysApplication;
 import no.nav.bidrag.ui.bisys.BisysApplication.BisysPageTitle;
 import no.nav.bidrag.ui.bisys.rolle.Person;
@@ -29,8 +30,17 @@ import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 public class BisysUiRollerConsumer {
 
     private static final String BARN_NOT_ADDED_TO_SAK = "Barn with id %s was not added to existing sak %s";
-    private static final String DUPLIKAT_SAK = "Det finnes allerede en sak med samme BM og BP på saksnr ";
-    private static final String ERROR_BARN_MANGLER_RELASJON_TIL_BM_BP_REGEX = "Barn med fødselsnummer \\d{11} mangler relasjon til angitt BM/BP";
+
+    private enum RollerFeedback {
+        ERROR_DUPLIKAT_SAK("Det finnes allerede en sak med samme BM og BP på saksnr"), ERROR_BARN_MANGLER_RELASJON_TIL_BM_BP_REGEX(
+                "Barn med fødselsnummer \\d{11} mangler relasjon til angitt BM/BP"), ERROR_TILHORER_ANNET_TK_REGEX(".+tilhører et annet TK.+");
+
+        private final String feebackMsg;
+
+        RollerFeedback(String feebackMsg) {
+            this.feebackMsg = feebackMsg;
+        }
+    }
 
     /**
      * Creates roller for Sak
@@ -78,10 +88,14 @@ public class BisysUiRollerConsumer {
             // Sak with same parties already exists
             handleExistanceOfSakWithSameBmBp(bisys, ignoreExistingSakError);
 
+            handleErrorAnnetTk(rollerPage);
+
             activePageRef = BisysUiSupport.getBisysPageReference(bisys);
 
             if (activePageRef.equals(BisysPageTitle.ROLLER)) {
                 String saksnr = rollerPage.saksnr().getText();
+                log.debug(HtmlApplicationUtils.getHtml(rollerPage));
+
                 if (saksnr != null && !saksnr.isEmpty()) {
                     // Go to Sak
                     rollerPage.tilbake().click();
@@ -96,6 +110,14 @@ public class BisysUiRollerConsumer {
             return activePageRef;
         } catch (ElementNotFoundException | NoSuchElementException e) {
             throw new BidragRequestProcessingException(bisys.bisysPage(), e);
+        }
+    }
+
+    private void handleErrorAnnetTk(Roller roller) {
+        for (Label error : roller.errors()) {
+            if (error.getText().matches(RollerFeedback.ERROR_TILHORER_ANNET_TK_REGEX.feebackMsg)) {
+                roller.executeLagre().click();
+            }
         }
     }
 
@@ -156,7 +178,7 @@ public class BisysUiRollerConsumer {
         List<Label> errors = bisys.bisysPage().errors();
         if (activePageRef.equals(BisysPageTitle.ROLLER) && !errors.isEmpty()) {
             for (Label error : errors) {
-                if (error.getText().matches(ERROR_BARN_MANGLER_RELASJON_TIL_BM_BP_REGEX)) {
+                if (error.getText().matches(RollerFeedback.ERROR_BARN_MANGLER_RELASJON_TIL_BM_BP_REGEX.feebackMsg)) {
                     log.info(error.getText());
 
                     roller.ignorerRelasjonBarnogBMBP().toggle();
@@ -221,7 +243,7 @@ public class BisysUiRollerConsumer {
         for (Label error : errors) {
             String errorMsg = error.getText();
 
-            if (errorMsg.contains(DUPLIKAT_SAK)) {
+            if (errorMsg.contains(RollerFeedback.ERROR_DUPLIKAT_SAK.feebackMsg)) {
                 String saksnrRegEx = "saksnr\\s\\d{7}";
                 String saksnrDigitsOnlyRegEx = "\\d{7}";
 
