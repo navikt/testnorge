@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
-import ExpandButton from '~/components/button/ExpandButton'
-import Icon from '~/components/icon/Icon'
-import Checkbox from '~/components/fields/Checkbox/Checkbox'
-import LinkButton from '~/components/button/LinkButton/LinkButton'
-import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
+import Icon from '~/components/ui/icon/Icon'
+import ExpandButton from '~/components/ui/button/ExpandButton'
+import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
+import ContentTooltip from '~/components/ui/contentTooltip/ContentTooltip'
 
 import './Panel.less'
 

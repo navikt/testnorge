@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
-import Loading from '~/components/loading/Loading'
-import Table from '~/components/table/Table'
-import ContentContainer from '~/components/contentContainer/ContentContainer'
+import Loading from '~/components/ui/loading/Loading'
+import Table from '~/components/ui/table/Table'
+import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Formatters from '~/utils/DataFormatter'
 import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
-import PaginationConnector from '~/components/pagination/PaginationConnector'
+import PaginationConnector from '~/components/ui/pagination/PaginationConnector'
 
 export default class TestbrukerListe extends Component {
 	componentDidMount() {

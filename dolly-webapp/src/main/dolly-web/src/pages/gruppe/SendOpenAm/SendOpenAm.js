@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
-import Button from '~/components/button/Button'
+import Button from '~/components/ui/button/Button'
 import PropTypes from 'prop-types'
-import Loading from '~/components/loading/Loading'
+import Loading from '~/components/ui/loading/Loading'
 import './SendOpenAm.less'
 
 export default class SendOpenAm extends Component {

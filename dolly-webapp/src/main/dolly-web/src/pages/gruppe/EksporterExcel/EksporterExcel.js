@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { TpsfApi } from '~/service/Api'
-import Button from '~/components/button/Button'
-import Loading from '~/components/loading/Loading'
-import Icon from '~/components/icon/Icon'
+import Button from '~/components/ui/button/Button'
+import Loading from '~/components/ui/loading/Loading'
+import Icon from '~/components/ui/icon/Icon'
 
 export default class EksportExcel extends Component {
 	state = {
