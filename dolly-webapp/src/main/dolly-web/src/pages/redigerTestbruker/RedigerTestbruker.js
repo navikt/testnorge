@@ -20,11 +20,7 @@ export default class RedigerTestbruker extends Component {
 
 	componentDidMount = async () => {
 		this.props.getGruppe()
-		const urlArray = this.props.match.params.datasources.split('&')
-
-		await this.props.getTestbruker()
-		urlArray.includes('sigr') && (await this.props.getSigrunTestbruker())
-		urlArray.includes('krr') && (await this.props.getKrrTestbruker())
+		this.props.getTestbruker()
 	}
 
 	submit = (values, attributtListe) => {

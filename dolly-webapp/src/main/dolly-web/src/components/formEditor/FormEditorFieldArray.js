@@ -1,12 +1,7 @@
 import React, { Fragment } from 'react'
-import GenererSyntVerdier from '~/components/genererSyntVerdier/GenererSyntVerdier'
-import { Field, FieldArray } from 'formik'
-import { DollyApi } from '~/service/Api'
+import { FieldArray } from 'formik'
 import Button from '~/components/button/Button'
 import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManager'
-import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
-import cn from 'classnames'
-import InputSelector from '~/components/fields/InputSelector'
 
 const Attributt = new AttributtManager()
 
@@ -226,15 +221,6 @@ export const FieldArrayComponent = ({
 							item.isMultiple &&
 							addButton(createDefaultObject, subKategori.navn.toUpperCase())}
 					</div>
-					{/* <div>
-						{item.genererSyntVerdier && (
-							<GenererSyntVerdier
-								type={item.id}
-								formikValues={formikValues}
-								antall={antallInstanser}
-							/>
-						)}
-					</div> */}
 				</div>
 			}
 		</Fragment>
