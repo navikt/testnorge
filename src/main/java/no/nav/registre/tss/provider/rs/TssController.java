@@ -16,21 +16,21 @@ import javax.jms.JMSException;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.tss.consumer.rs.response.Response910;
+import no.nav.registre.tss.consumer.rs.responses.Response910;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
-import no.nav.registre.tss.service.TSService;
+import no.nav.registre.tss.service.TssService;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1/tss")
-public class TSSController {
+@RequestMapping("api/v1")
+public class TssController {
 
     @Autowired
-    private TSService tssService;
+    private TssService tssService;
 
     @PostMapping(value = "/opprettLeger")
-    public ResponseEntity createDoctorsInTSS(@RequestBody SyntetiserTssRequest syntetiserTssRequest) {
+    public ResponseEntity opprettLegerITss(@RequestBody SyntetiserTssRequest syntetiserTssRequest) {
         List<Person> identer = tssService.hentIdenter(syntetiserTssRequest);
         List<String> syntetiskeTssRutiner = tssService.opprettSyntetiskeTssRutiner(identer);
 

@@ -2,10 +2,10 @@ package no.nav.registre.tss.utils;
 
 import java.util.ArrayList;
 
-import no.nav.registre.tss.consumer.rs.response.Response110;
-import no.nav.registre.tss.consumer.rs.response.Response111;
-import no.nav.registre.tss.consumer.rs.response.Response125;
-import no.nav.registre.tss.consumer.rs.response.Response910;
+import no.nav.registre.tss.consumer.rs.responses.Response110;
+import no.nav.registre.tss.consumer.rs.responses.Response111;
+import no.nav.registre.tss.consumer.rs.responses.Response125;
+import no.nav.registre.tss.consumer.rs.responses.Response910;
 
 public class Response910Util {
 

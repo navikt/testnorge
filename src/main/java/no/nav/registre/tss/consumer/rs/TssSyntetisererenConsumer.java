@@ -1,8 +1,8 @@
-package no.nav.registre.tss.consumer.rs.response;
+package no.nav.registre.tss.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +21,14 @@ public class TssSyntetisererenConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
     };
-
-    @Autowired
+    
     private RestTemplate restTemplate;
 
     private UriTemplate url;
 
-    public TssSyntetisererenConsumer(@Value("${synthdata-tss-api-url}") String synthdataTssUrl) {
+    public TssSyntetisererenConsumer(RestTemplateBuilder restTemplateBuilder,
+            @Value("${synthdata-tss-api-url}") String synthdataTssUrl) {
+        this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(synthdataTssUrl + "/v1/generate_tss_file");
     }
 
@@ -41,7 +42,7 @@ public class TssSyntetisererenConsumer {
         if (response.getBody() != null) {
             rutiner.addAll(response.getBody());
         } else {
-            log.error("Kunne ikke hente response body fra synthdata-tss: NullPointerException");
+            log.error("Kunne ikke hente responses body fra synthdata-tss: NullPointerException");
         }
 
         return rutiner;

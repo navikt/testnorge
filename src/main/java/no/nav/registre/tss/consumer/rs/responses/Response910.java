@@ -1,4 +1,4 @@
-package no.nav.registre.tss.consumer.rs.response;
+package no.nav.registre.tss.consumer.rs.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

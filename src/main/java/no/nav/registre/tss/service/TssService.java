@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
-import no.nav.registre.tss.consumer.rs.response.Response910;
-import no.nav.registre.tss.consumer.rs.response.TssSyntetisererenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.tss.consumer.rs.responses.Response910;
+import no.nav.registre.tss.consumer.rs.TssSyntetisererenConsumer;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 import no.nav.registre.tss.utils.Response910Util;
@@ -32,10 +32,10 @@ import no.nav.registre.tss.utils.Rutine910Util;
 
 @Slf4j
 @Service
-public class TSService {
+public class TssService {
 
-    private static int MIN_ALDER = 25;
-    private static int MAX_ALDER = 60;
+    private static final int MIN_ALDER = 25;
+    private static final int MAX_ALDER = 60;
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;

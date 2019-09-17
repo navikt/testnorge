@@ -49,19 +49,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--NETWORK-->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.10</version>
-        </dependency>
-
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
@@ -83,10 +70,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!--HODEJEGEREN-->
         <dependency>
             <groupId>no.nav.registre</groupId>
             <artifactId>testnorge-consumers</artifactId>
-            <version>1.6.0-RELEASE</version>
+            <version>1.8.0-RELEASE</version>
         </dependency>
 
         <!--> IBMMQ </!-->
@@ -104,6 +93,16 @@
             <version>2.0.2.RELEASE</version>
         </dependency>
 
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+
+        <!--NETWORK-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
