@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
-import Button from '~/components/button/Button'
-import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
+import Button from '~/components/ui/button/Button'
 
 import './Overskrift.less'
 

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { FieldArray } from 'formik'
-import Button from '~/components/button/Button'
+import Button from '~/components/ui/button/Button'
 import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManager'
 
 const Attributt = new AttributtManager()

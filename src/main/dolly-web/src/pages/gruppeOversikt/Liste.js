@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import Table from '~/components/table/Table'
-import ContentContainer from '~/components/contentContainer/ContentContainer'
+import Table from '~/components/ui/table/Table'
+import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 
 export default class Liste extends PureComponent {

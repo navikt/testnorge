@@ -1,8 +1,8 @@
 import React, { PureComponent, Fragment } from 'react'
 import cn from 'classnames'
-import Icon from '~/components/icon/Icon'
-import Button from '~/components/button/Button'
-import DollyModal from '~/components/modal/DollyModal'
+import Icon from '~/components/ui/icon/Icon'
+import Button from '~/components/ui/button/Button'
+import DollyModal from '~/components/ui/modal/DollyModal'
 import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
 
 import './MiljoeStatus.less'

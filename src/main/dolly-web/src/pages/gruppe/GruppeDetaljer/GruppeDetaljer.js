@@ -1,6 +1,6 @@
 import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import ExpandButton from '~/components/button/ExpandButton'
+import ExpandButton from '~/components/ui/button/ExpandButton'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 
 import './GruppeDetaljer.less'

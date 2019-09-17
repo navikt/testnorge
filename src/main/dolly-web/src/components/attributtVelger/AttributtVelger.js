@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import Panel from '~/components/panel/Panel'
+import Panel from '~/components/ui/panel/Panel'
 import Input from '~/components/fields/Input/Input'
 import Utvalg from './Utvalg/Utvalg'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'

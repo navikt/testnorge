@@ -1,15 +1,15 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import PersonInfoBlock from '~/components/personInfoBlock/PersonInfoBlock'
 import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManager'
-import Button from '~/components/button/Button'
-import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
-import Loading from '~/components/loading/Loading'
-import './PersonDetaljer.less'
-import DollyModal from '~/components/modal/DollyModal'
+import Button from '~/components/ui/button/Button'
+import ConfirmTooltip from '~/components/ui/confirmTooltip/ConfirmTooltip'
+import Loading from '~/components/ui/loading/Loading'
+import DollyModal from '~/components/ui/modal/DollyModal'
 import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
 import { getSuccessEnv, getPdlforvalterStatusOK } from '~/ducks/bestillingStatus/utils'
-import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
+import ContentTooltip from '~/components/ui/contentTooltip/ContentTooltip'
+import './PersonDetaljer.less'
 
 const AttributtManagerInstance = new AttributtManager()
 

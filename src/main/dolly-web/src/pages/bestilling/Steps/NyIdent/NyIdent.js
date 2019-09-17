@@ -1,11 +1,9 @@
 import React, { Component, Fragment } from 'react'
-import '~/pages/bestilling/Bestilling.less'
+import { Field } from 'formik'
 import AttributtVelgerConnector from '~/components/attributtVelger/AttributtVelgerConnector'
 import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { FormikInput } from '~/components/fields/Input/Input'
-import { Field, withFormik } from 'formik'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
-import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 import { getAttributesFromMal, getValuesFromMal } from './MalbestillingUtils'
 
 export default class NyIdent extends Component {

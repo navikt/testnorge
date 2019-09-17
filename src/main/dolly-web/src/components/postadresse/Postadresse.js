@@ -3,7 +3,7 @@ import { Field } from 'formik'
 import { DollyApi } from '~/service/Api'
 import InputSelector from '~/components/fields/InputSelector'
 import { sjekkPostadresse } from '~/utils/SjekkPostadresse'
-import Loading from '~/components/loading/Loading'
+import Loading from '~/components/ui/loading/Loading'
 import './Postadresse.less'
 
 export default class Postadresse extends Component {

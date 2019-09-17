@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Tooltip from 'rc-tooltip'
-import Icon from '~/components/icon/Icon'
-import Button from '~/components/button/Button'
+import Button from '~/components/ui/button/Button'
 
 import 'rc-tooltip/assets/bootstrap_white.css'
 import './ConfirmTooltip.less'
