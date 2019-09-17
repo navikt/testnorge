@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
-import PropTypes from 'prop-types'
 import cn from 'classnames'
-import '~/pages/gruppe/BestillingListe/BestillingDetaljer/BestillingDetaljer.less'
+import Icon from '~/components/icon/Icon'
+import miljoeStatusSelector from '~/utils/MiljoeStatusSelector'
 import Formatters from '~/utils/DataFormatter'
 
 import './Feilmelding.less'
@@ -9,6 +9,9 @@ import './Feilmelding.less'
 export default class Feilmelding extends Component {
 	render() {
 		const { bestilling } = this.props
+		const bestillingDetaljer = miljoeStatusSelector(bestilling)
+
+		if (!bestillingDetaljer.finnesFeilmelding) return false
 
 		let cssClass = 'feil-container feil-container_border'
 		const stubStatus = this._finnStubStatus(bestilling)
@@ -23,45 +26,57 @@ export default class Feilmelding extends Component {
 			stubStatus.length > 0
 
 		return (
-			<div className="feil-melding">
-				{/*Generelle feilmeldinger */}
-				{bestilling.feil && this._renderGenerelleFeil(bestilling, cssClass, finnesIndividuellFeil)}
+			<Fragment>
+				<div className="flexbox--align-center error-header">
+					<Icon size="16px" kind="report-problem-triangle" />
+					<h3>Feilmeldinger</h3>
+				</div>
+				<div className="feil-melding">
+					{/*Generelle feilmeldinger */}
+					{bestilling.feil &&
+						this._renderGenerelleFeil(bestilling, cssClass, finnesIndividuellFeil)}
 
-				{/*Feilmeldinger fra ulike registre */}
-				{finnesIndividuellFeil && (
-					<span className="feil-container">
-						<h2 className="feil-header feil-header_stor">Feilmelding</h2>
-						<span className="feil-kolonne_header">
-							<h2 className="feil-header feil-header_liten">Miljø</h2>
-							<h2 className="feil-header feil-header_stor">Ident</h2>
+					{/*Feilmeldinger fra ulike registre */}
+					{finnesIndividuellFeil && (
+						<span className="feil-container">
+							<h2 className="feil-header feil-header_stor">Feilmelding</h2>
+							<span className="feil-kolonne_header">
+								<h2 className="feil-header feil-header_liten">Miljø</h2>
+								<h2 className="feil-header feil-header_stor">Ident</h2>
+							</span>
 						</span>
-					</span>
-				)}
-
-				{/*Individuelle feilmeldinger med miljø */}
-				{bestilling.tpsfStatus &&
-					this._renderStatusMedMiljoOgIdent(bestilling.tpsfStatus, stubStatus, 'TPSF', cssClass)}
-				{bestilling.aaregStatus &&
-					this._renderStatusMedMiljoOgIdent(bestilling.aaregStatus, stubStatus, 'AAREG', cssClass)}
-				{bestilling.arenaforvalterStatus &&
-					this._renderStatusMedMiljoOgIdent(
-						bestilling.arenaforvalterStatus,
-						stubStatus,
-						'ARENA',
-						cssClass
-					)}
-				{bestilling.instdataStatus &&
-					this._renderStatusMedMiljoOgIdent(
-						bestilling.instdataStatus,
-						stubStatus,
-						'INST',
-						cssClass
 					)}
 
-				{/*Individuelle feilmeldinger uavhengig av miljø*/}
-				{stubStatus && this._renderStatusUavhengigAvMiljo(stubStatus, cssClass)}
-				{pdlforvalterStatus && this._renderStatusUavhengigAvMiljo(pdlforvalterStatus, cssClass)}
-			</div>
+					{/*Individuelle feilmeldinger med miljø */}
+					{bestilling.tpsfStatus &&
+						this._renderStatusMedMiljoOgIdent(bestilling.tpsfStatus, stubStatus, 'TPSF', cssClass)}
+					{bestilling.aaregStatus &&
+						this._renderStatusMedMiljoOgIdent(
+							bestilling.aaregStatus,
+							stubStatus,
+							'AAREG',
+							cssClass
+						)}
+					{bestilling.arenaforvalterStatus &&
+						this._renderStatusMedMiljoOgIdent(
+							bestilling.arenaforvalterStatus,
+							stubStatus,
+							'ARENA',
+							cssClass
+						)}
+					{bestilling.instdataStatus &&
+						this._renderStatusMedMiljoOgIdent(
+							bestilling.instdataStatus,
+							stubStatus,
+							'INST',
+							cssClass
+						)}
+
+					{/*Individuelle feilmeldinger uavhengig av miljø*/}
+					{stubStatus && this._renderStatusUavhengigAvMiljo(stubStatus, cssClass)}
+					{pdlforvalterStatus && this._renderStatusUavhengigAvMiljo(pdlforvalterStatus, cssClass)}
+				</div>
+			</Fragment>
 		)
 	}
 

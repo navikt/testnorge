@@ -7,7 +7,7 @@ import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import Loading from '~/components/loading/Loading'
 import './PersonDetaljer.less'
 import DollyModal from '~/components/modal/DollyModal'
-import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
+import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
 import { getSuccessEnv, getPdlforvalterStatusOK } from '~/ducks/bestillingStatus/utils'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
@@ -83,7 +83,7 @@ export default class PersonDetaljer extends PureComponent {
 						isOpen={modalOpen}
 						onRequestClose={this.closeModal}
 						closeModal={this.closeModal}
-						content={<BestillingDetaljerSammendrag bestilling={bestilling} type="modal" />}
+						content={<BestillingSammendrag bestilling={bestilling} modal />}
 						width={'60%'}
 					/>
 					<Button onClick={editAction} className="flexbox--align-center" kind="edit">

@@ -11,9 +11,6 @@ import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.resultset.udistub.model.UdiHarType;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPeriode;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
-import no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang.UdiArbeidOmfangType;
-import no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang.UdiArbeidsadgang;
-import no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang.UdiArbeidsadgangType;
 import no.nav.dolly.domain.resultset.udistub.model.avgjoerelse.UdiAvgjorelse;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiAvslagEllerBortfall;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiGrunnlagEos;
@@ -22,10 +19,8 @@ import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiIkkeOppholdstilate
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdSammeVilkaar;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdStatus;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdsrettType;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdstillatelse;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdstillatelseType;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiUtvistMedInnreiseForbud;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiVarighetOpphold;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiVarighetType;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -40,36 +35,12 @@ public class UdiStubDefaultPersonUtil {
                 .uavklart(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getUavklart(), false))
                 .udiOppholdSammeVilkaar(oppholdSammeVilkaarDefaultsIfUnspecified(specifiedUdiOppholdStatus))
                 .ikkeOppholdstilatelseIkkeVilkaarIkkeVisum(ikkeOppholdstilatelseIkkeVilkaarIkkeVisumIfUnspecified(specifiedUdiOppholdStatus))
-                .eosEllerEFTAOppholdstillatelse(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAOppholdstillatelse(), UdiOppholdstillatelse.FAMILIE))
-                .eosEllerEFTAOppholdstillatelseEffektuering(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAOppholdstillatelseEffektuering(), LocalDate.now()))
-                .eosEllerEFTAOppholdstillatelsePeriode(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAOppholdstillatelsePeriode(),
-                        UdiPeriode.builder().fra(LocalDate.now()).til(LocalDate.now()).build()))
-
-                .eosEllerEFTABeslutningOmOppholdsrett(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTABeslutningOmOppholdsrett(), UdiOppholdsrettType.FAMILIE))
-                .eosEllerEFTABeslutningOmOppholdsrettEffektuering(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTABeslutningOmOppholdsrettEffektuering(), LocalDate.now()))
-                .eosEllerEFTABeslutningOmOppholdsrettPeriode(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTABeslutningOmOppholdsrettPeriode(),
-                        UdiPeriode.builder().fra(LocalDate.now()).til(LocalDate.now()).build()))
-                .eosEllerEFTAVedtakOmVarigOppholdsrett(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAVedtakOmVarigOppholdsrett(), UdiVarighetOpphold.FAMILIE))
-                .eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettEffektuering(), LocalDate.now()))
-                .eosEllerEFTAOppholdstillatelsePeriode(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode(),
-                        UdiPeriode.builder().fra(LocalDate.now()).til(LocalDate.now()).build()))
                 .build());
-
-        // ARBEIDSADGANG
-        UdiArbeidsadgang specifiedArbeidsadgang = nullcheckSetDefaultValue(udiPerson.getArbeidsadgang(), new UdiArbeidsadgang());
-        udiPerson.setArbeidsadgang(
-                UdiArbeidsadgang.builder()
-                        .arbeidsOmfang(nullcheckSetDefaultValue(specifiedArbeidsadgang.getArbeidsOmfang(), UdiArbeidOmfangType.KUN_ARBEID_HELTID))
-                        .harArbeidsAdgang(nullcheckSetDefaultValue(specifiedArbeidsadgang.getHarArbeidsAdgang(), UdiHarType.JA))
-                        .periode(nullcheckSetDefaultValue(specifiedArbeidsadgang.getPeriode(),
-                                UdiPeriode.builder().fra(LocalDate.now()).til(LocalDate.now()).build()))
-                        .typeArbeidsadgang(nullcheckSetDefaultValue(specifiedArbeidsadgang.getTypeArbeidsadgang(), UdiArbeidsadgangType.GENERELL))
-                        .build());
 
         // AVGJORELSER
         udiPerson.setAvgjoerelser(nullcheckSetDefaultValue(udiPerson.getAvgjoerelser(), Collections.singletonList(new UdiAvgjorelse())));
         udiPerson.setHarOppholdsTillatelse(nullcheckSetDefaultValue(udiPerson.getHarOppholdsTillatelse(), true));
-        udiPerson.setSoknadDato(nullcheckSetDefaultValue(udiPerson.getSoknadDato(), LocalDate.of(2005, 5, 5)));
+        udiPerson.setSoknadDato(nullcheckSetDefaultValue(udiPerson.getSoknadDato(), LocalDate.now()));
         udiPerson.setAvgjoerelseUavklart(nullcheckSetDefaultValue(udiPerson.getAvgjoerelseUavklart(), false));
     }
 
