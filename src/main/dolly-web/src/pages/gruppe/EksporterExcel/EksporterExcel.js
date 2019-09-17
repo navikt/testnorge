@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { TpsfApi } from '~/service/Api'
 import Button from '~/components/button/Button'
 import Loading from '~/components/loading/Loading'
@@ -10,17 +10,16 @@ export default class EksportExcel extends Component {
 	}
 
 	render() {
-		return this.state.loading ? <Loading label="Eksporterer" /> : this._eksportereData()
-	}
+		// Ikke render knapp dersom det ikke finnes noen testidenter
+		if (!this.props.testidenter) return false
 
-	_eksportereData = () => {
+		if (this.state.loading) return <Loading label="Eksporterer" />
+
 		return (
-			<Fragment>
-				<Button className="flexbox--align-center gruppe-exceleksport" onClick={this._onClick}>
-					<Icon size={'24px'} kind={'file-new-table'} className="excelknapp" />
-					<span className="excelknapp">EKSPORTER TIL EXCEL</span>
-				</Button>
-			</Fragment>
+			<Button className="flexbox--align-center gruppe-exceleksport" onClick={this._onClick}>
+				<Icon size={'24px'} kind={'file-new-table'} className="excelknapp" />
+				<span className="excelknapp">EKSPORTER TIL EXCEL</span>
+			</Button>
 		)
 	}
 

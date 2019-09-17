@@ -6,6 +6,10 @@ import logo from '~/assets/img/nav-logo-hvit.png'
 import './Header.less'
 
 export default ({ brukerData }) => {
+	const isGruppePathActive = (match, location) => {
+		return location.pathname === '/' || location.pathname.includes('/gruppe')
+	}
+
 	return (
 		<header className="app-header">
 			<NavLink to="/" className="home-nav">
@@ -16,7 +20,7 @@ export default ({ brukerData }) => {
 			</NavLink>
 
 			<div className="menu-links">
-				<NavLink exact to="/">
+				<NavLink isActive={isGruppePathActive} to="/">
 					Testdatagrupper
 				</NavLink>
 				<NavLink to="/team">Team</NavLink>
