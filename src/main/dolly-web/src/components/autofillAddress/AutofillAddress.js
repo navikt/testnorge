@@ -5,7 +5,7 @@ import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { TpsfApi, DollyApi } from '~/service/Api'
 import './AutofillAddress.less'
 import InputSelector from '~/components/fields/InputSelector'
-import LinkButton from '~/components/button/LinkButton/LinkButton'
+import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
 import FilledAddress from './FilledAddress'
 
 const initialState = {

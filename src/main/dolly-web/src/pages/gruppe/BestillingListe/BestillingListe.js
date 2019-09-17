@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react'
 import _orderBy from 'lodash/orderBy'
-import Table from '~/components/table/Table'
-import ContentContainer from '~/components/contentContainer/ContentContainer'
-import PaginationConnector from '~/components/pagination/PaginationConnector'
-import Loading from '~/components/loading/Loading'
+import Table from '~/components/ui/table/Table'
+import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
+import PaginationConnector from '~/components/ui/pagination/PaginationConnector'
+import Loading from '~/components/ui/loading/Loading'
 import BestillingDetaljerConnector from './BestillingDetaljer/BestillingDetaljerConnector'
 
 export default class BestillingListe extends PureComponent {

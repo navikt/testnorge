@@ -1,7 +1,7 @@
 import React from 'react'
 import UtenFastBopel from '../UtenFastBopel'
 import { shallow } from 'enzyme'
-import Button from '~/components/button/Button'
+import Button from '~/components/ui/button/Button'
 
 const item = {
 	apiKodeverkId: 'Diskresjonskoder',

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
-import Icon from '~/components/icon/Icon'
+import Icon from '~/components/ui/icon/Icon'
 import './Button.less'
 
 export default class Button extends PureComponent {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import Icon from '~/components/icon/Icon'
+import Icon from '~/components/ui/icon/Icon'
 import logo from '~/assets/img/nav-logo-hvit.png'
 
 import './Header.less'

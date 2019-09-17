@@ -2,8 +2,8 @@ import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { Line } from 'rc-progress'
 import Knapp from 'nav-frontend-knapper'
-import Loading from '~/components/loading/Loading'
-import Icon from '~/components/icon/Icon'
+import Loading from '~/components/ui/loading/Loading'
+import Icon from '~/components/ui/icon/Icon'
 
 import './BestillingProgress.less'
 

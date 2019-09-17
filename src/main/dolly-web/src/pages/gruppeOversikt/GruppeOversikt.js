@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Overskrift from '~/components/overskrift/Overskrift'
+import Knapp from 'nav-frontend-knapper'
+import Overskrift from '~/components/ui/overskrift/Overskrift'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
-import Toolbar from '~/components/toolbar/Toolbar'
-import Knapp from 'nav-frontend-knapper'
+import Toolbar from '~/components/ui/toolbar/Toolbar'
 import Liste from './Liste'
-import Loading from '~/components/loading/Loading'
-import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
-import PaginationConnector from '~/components/pagination/PaginationConnector'
+import Loading from '~/components/ui/loading/Loading'
+import ContentTooltip from '~/components/ui/contentTooltip/ContentTooltip'
+import PaginationConnector from '~/components/ui/pagination/PaginationConnector'
 
 export default class GruppeOversikt extends PureComponent {
 	static propTypes = {
