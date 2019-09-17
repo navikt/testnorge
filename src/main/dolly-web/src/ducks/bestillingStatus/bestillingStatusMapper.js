@@ -13,14 +13,14 @@
 import _get from 'lodash/get'
 import Formatters from '~/utils/DataFormatter'
 
-const _extract = (arr, kilde, navn) => {
+const _extract = (arr, id, navn) => {
 	if (!arr) return false
 	return {
-		kilde,
+		id,
 		navn,
 		statuser: arr.map(status => {
 			const obj = {
-				statusMelding: status.statusMelding || status.status
+				melding: status.statusMelding || status.status
 			}
 
 			if (status.identer) obj.identer = status.identer
@@ -28,10 +28,10 @@ const _extract = (arr, kilde, navn) => {
 			const envNode = status.environmentIdents || status.envIdent || status.environmentIdentsForhold
 
 			if (envNode) {
-				obj.environments = Object.keys(envNode).map(key => {
+				obj.detaljert = Object.keys(envNode).map(key => {
 					const identer = envNode[key]
 					return {
-						miljonavn: key,
+						miljo: key,
 						identer: Array.isArray(identer) ? identer : Object.keys(identer)
 					}
 				})
@@ -49,15 +49,15 @@ const _extract = (arr, kilde, navn) => {
  * 
  * Eksempel:
 const example = {
-	kilde: 'tpsfStatus',
+	id: 'tpsfStatus',
 	navn: 'TPSF',
 	statuser: [
 		{
-			status: 'OK',
+			melding: 'OK',
 			identer: ['31106329632'], // optional
-			environments: [ // Optional
+			detaljert: [ // Optional
 				{
-					miljonavn: 't4',
+					miljo: 't4',
 					identer: ['31106329632']
 				}
 			]
