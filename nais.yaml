@@ -128,4 +128,4 @@ fasitResources:
   exposed:
     - alias: dolly.api.v1
       resourceType: restservice
-      path: /swagger-ui.html
+      path: /api/v1
