@@ -16,7 +16,6 @@ import no.nav.registre.syntrest.response.SamMelding;
 import no.nav.registre.syntrest.response.SkdMelding;
 import no.nav.registre.syntrest.response.TPmelding;
 import no.nav.registre.syntrest.utils.SyntAppNames;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
@@ -68,73 +67,73 @@ public class SyntetiseringService {
     @Value("${synth-tps-url}")
     private String tpsUrl;
 
-    private final SyntConsumerManager cm;
+    private final SyntConsumerManager consumerManager;
 
     ///////////// GENERATE FUNCTIONS //////////////
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-aareg" })
     public List<Arbeidsforholdsmelding> generateAaregData(List<String> fnrs) {
-        return (List<Arbeidsforholdsmelding>) generateForFnrs(fnrs, aaregUrl, cm.get(SyntAppNames.AAREG));
+        return (List<Arbeidsforholdsmelding>) generateForFnrs(fnrs, aaregUrl, consumerManager.get(SyntAppNames.AAREG));
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-arena-aap" })
     public List<AAP115Melding> generateAAP115Data(int numToGenerate) {
-        return (List<AAP115Melding>) generateForNumbers(numToGenerate, aap115Url, cm.get(SyntAppNames.AAP));
+        return (List<AAP115Melding>) generateForNumbers(numToGenerate, aap115Url, consumerManager.get(SyntAppNames.AAP));
     }
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-arena-aap" })
     public List<AAPMelding> generateAAPData(int numToGenerate) {
-        return (List<AAPMelding>) generateForNumbers(numToGenerate, aapUrl, cm.get(SyntAppNames.AAP));
+        return (List<AAPMelding>) generateForNumbers(numToGenerate, aapUrl, consumerManager.get(SyntAppNames.AAP));
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-arena-bisys" })
     public List<Barnebidragsmelding> generateBisysData(int numToGenerate) {
-        return (List<Barnebidragsmelding>) generateForNumbers(numToGenerate, bisysUrl, cm.get(SyntAppNames.BISYS));
+        return (List<Barnebidragsmelding>) generateForNumbers(numToGenerate, bisysUrl, consumerManager.get(SyntAppNames.BISYS));
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-inst" })
     public List<Institusjonsmelding> generateInstData(int numToGenerate) {
-        return (List<Institusjonsmelding>) generateForNumbers(numToGenerate, instUrl, cm.get(SyntAppNames.INST));
+        return (List<Institusjonsmelding>) generateForNumbers(numToGenerate, instUrl, consumerManager.get(SyntAppNames.INST));
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-medl" })
     public List<Medlemskapsmelding> generateMedlData(int numToGenerate) {
-        return (List<Medlemskapsmelding>) generateForNumbers(numToGenerate, medlUrl, cm.get(SyntAppNames.MEDL));
+        return (List<Medlemskapsmelding>) generateForNumbers(numToGenerate, medlUrl, consumerManager.get(SyntAppNames.MEDL));
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-meldekort" })
     public List<String> generateMeldekortData(int numToGenerate, String meldegruppe) {
-        return (List<String>) generateForCodeAndNumber(meldegruppe, numToGenerate, arenaMeldekortUrl, cm.get(SyntAppNames.MELDEKORT));
+        return (List<String>) generateForCodeAndNumber(meldegruppe, numToGenerate, arenaMeldekortUrl, consumerManager.get(SyntAppNames.MELDEKORT));
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-nav" })
     public List<String> generateEndringsmeldingData(int numToGenerate, String endringskode) {
-        return (List<String>) generateForCodeAndNumber(endringskode, numToGenerate, navEndringsmeldingUrl, cm.get(SyntAppNames.NAV));
+        return (List<String>) generateForCodeAndNumber(endringskode, numToGenerate, navEndringsmeldingUrl, consumerManager.get(SyntAppNames.NAV));
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-popp" })
     public List<InntektsmeldingPopp> generatePoppData(List<String> fnrs) {
-        return (List<InntektsmeldingPopp>) generateForFnrs(fnrs, poppUrl, cm.get(SyntAppNames.POPP));
+        return (List<InntektsmeldingPopp>) generateForFnrs(fnrs, poppUrl, consumerManager.get(SyntAppNames.POPP));
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-sam" })
     public List<SamMelding> generateSamMeldingData(int numToGenerate) {
-        return (List<SamMelding>) generateForNumbers(numToGenerate, samUrl, cm.get(SyntAppNames.SAM));
+        return (List<SamMelding>) generateForNumbers(numToGenerate, samUrl, consumerManager.get(SyntAppNames.SAM));
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-inntekt" })
     public Map<String, List<InntektsmeldingInntekt>> generateInntektData(Map<String, List<InntektsmeldingInntekt>> map) {
         UriTemplate uri = new UriTemplate(inntektUrl);
         RequestEntity request = RequestEntity.post(uri.expand()).body(map);
-        return (Map<String, List<InntektsmeldingInntekt>>) cm.get(SyntAppNames.INNTEKT).synthesizeData(request);
+        return (Map<String, List<InntektsmeldingInntekt>>) consumerManager.get(SyntAppNames.INNTEKT).synthesizeData(request);
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-tp" })
     public List<TPmelding> generateTPData(int numToGenerate) {
-        return (List<TPmelding>) generateForNumbers(numToGenerate, tpUrl, cm.get(SyntAppNames.TP));
+        return (List<TPmelding>) generateForNumbers(numToGenerate, tpUrl, consumerManager.get(SyntAppNames.TP));
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-tps" })
     public List<SkdMelding> generateTPSData(int numToGenerate, String endringskode) {
-        return (List<SkdMelding>) generateForCodeAndNumber(endringskode, numToGenerate, tpsUrl, cm.get(SyntAppNames.TPS));
+        return (List<SkdMelding>) generateForCodeAndNumber(endringskode, numToGenerate, tpsUrl, consumerManager.get(SyntAppNames.TPS));
     }
 
     ///////////// COMMON FUNCTIONS /////////////
