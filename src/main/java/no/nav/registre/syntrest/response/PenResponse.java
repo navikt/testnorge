@@ -9,28 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class PenResponse {
-    //    [
-//  {
-//    "FLYKTNING": 0,
-//    "GRUNNLAG_LAST": 0,
-//    "GYLDIG_VILKAR_PROV": 0,
-//    "ID": 0,
-//    "K_INITIERT_AV": "BRUKER",
-//    "K_KANAL_BPROF_T": "",
-//    "K_KOMMSJN_FORM": "ELEK",
-//    "K_KRAV_GJELDER": "F_BH_MED_UTL",
-//    "OMSORG_BARN_UNDER_7_AR": 0,
-//    "SOKT_AFP_PRIVAT": 1,
-//    "STATSBORGER_I_LAND": 8,
-//    "UTTAKSGRAD": 0,
-//    "UTVANDRET": 0,
-//    "bostedsland": 10,
-//    "dato_sivilstand_fom": "29.05.1999",
-//    "dato_virk_onsket": "01.03.2011",
-//    "har_samboer": 0,
-//    "k_sivilstatus_t": "GIFT"
-//  }
-//]
+
     @JsonProperty("FLYKTNING")
     private int flyktning;
 
