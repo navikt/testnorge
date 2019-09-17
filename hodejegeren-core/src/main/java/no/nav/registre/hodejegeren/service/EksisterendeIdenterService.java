@@ -35,6 +35,7 @@ import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.SlettIdenterResponse;
+import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.Relasjon;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
 
@@ -221,6 +222,32 @@ public class EksisterendeIdenterService {
                 gruppeId, Collections.singletonList(FOEDSELSMELDING.getAarsakskode()),
                 TRANSAKSJONSTYPE
         ));
+    }
+
+    public PersondataResponse hentPersondata(String ident, String miljoe) {
+        try {
+            tpsStatusQuoService.resetCache();
+            JsonNode statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident);
+            return PersondataResponse.builder()
+                    .fnr(statusQuoTilIdent.findValue("fnr").asText())
+                    .kortnavn(statusQuoTilIdent.findValue("kortnavn").asText())
+                    .fornavn(statusQuoTilIdent.findValue("fornavn").asText())
+                    .mellomnavn(statusQuoTilIdent.findValue("mellomnavn").asText())
+                    .etternavn(statusQuoTilIdent.findValue("etternavn").asText())
+                    .kodeStatsborger(statusQuoTilIdent.findValue("kodeStatsborger").asText())
+                    .statsborger(statusQuoTilIdent.findValue("statsborger").asText())
+                    .datoStatsborger(statusQuoTilIdent.findValue("datoStatsborger").asText())
+                    .kodeSivilstand(statusQuoTilIdent.findValue("kodeSivilstand").asText())
+                    .sivilstand(statusQuoTilIdent.findValue("sivilstand").asText())
+                    .datoSivilstand(statusQuoTilIdent.findValue("datoSivilstand").asText())
+                    .kodeInnvandretFra(statusQuoTilIdent.findValue("kodeInnvandretFra").asText())
+                    .innvandretFra(statusQuoTilIdent.findValue("innvandretFra").asText())
+                    .datoInnvandret(statusQuoTilIdent.findValue("datoInnvandret").asText())
+                    .build();
+        } catch (IOException e) {
+            log.error("Kunne ikke hente status quo på ident {} - ", ident, e);
+            throw new RuntimeException("Kunne ikke hente status quo på ident " + ident, e);
+        }
     }
 
     public RelasjonsResponse hentRelasjoner(String ident, String miljoe) {

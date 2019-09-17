@@ -172,6 +172,13 @@ public class HodejegerenControllerTest {
     }
 
     @Test
+    public void shouldHentePersondataTilIdent() {
+        String ident = "01010101010";
+        hodejegerenController.hentPersondataTilIdent(ident, miljoe);
+        verify(eksisterendeIdenterService).hentPersondata(ident, miljoe);
+    }
+
+    @Test
     public void shouldHenteRelasjonerTilIdent() {
         String ident = "01010101010";
         hodejegerenController.hentRelasjonerTilIdent(ident, miljoe);

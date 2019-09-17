@@ -23,6 +23,7 @@ import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.hodejegeren.provider.rs.requests.SlettIdenterRequest;
 import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.SlettIdenterResponse;
+import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
 import no.nav.registre.hodejegeren.service.EksisterendeIdenterService;
 import no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService;
@@ -162,6 +163,13 @@ public class HodejegerenController {
     @GetMapping("api/v1/foedte-identer/{avspillergruppeId}")
     public List<String> hentFoedteIdenter(@PathVariable Long avspillergruppeId) {
         return eksisterendeIdenterService.finnFoedteIdenter(avspillergruppeId);
+    }
+
+    @LogExceptions
+    @ApiOperation(value = "Her kan man hente persondata til en ident i et gitt miljø i TPS.")
+    @GetMapping("api/v1/persondata")
+    public PersondataResponse hentPersondataTilIdent(@RequestParam String ident, @RequestParam String miljoe) {
+        return eksisterendeIdenterService.hentPersondata(ident, miljoe);
     }
 
     @LogExceptions

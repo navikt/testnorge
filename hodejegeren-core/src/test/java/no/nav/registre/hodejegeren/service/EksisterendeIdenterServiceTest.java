@@ -53,6 +53,7 @@ import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.SlettIdenterResponse;
+import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -285,6 +286,22 @@ public class EksisterendeIdenterServiceTest {
         Map<String, JsonNode> adressePaaIdenter = eksisterendeIdenterService.hentAdressePaaIdenter(miljoe, identer);
 
         assertThat(adressePaaIdenter.get("23048801390").findValue("boAdresse1").asText(), equalTo("WALLDORFERSTRABE 1289"));
+    }
+
+    @Test
+    public void shouldHentePersondataPaaIdent() throws IOException {
+        String fnr = "12101816735";
+        String miljoe = "t1";
+
+        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("persondata/persondata.json"));
+
+        when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
+        PersondataResponse response = eksisterendeIdenterService.hentPersondata(fnr, miljoe);
+
+        assertThat(response.getFnr(), equalTo(fnr));
+        assertThat(response.getFornavn(), equalTo("USTABIL"));
+        assertThat(response.getEtternavn(), equalTo("PARASOLL"));
+        assertThat(response.getStatsborger(), equalTo("NORGE"));
     }
 
     @Test
