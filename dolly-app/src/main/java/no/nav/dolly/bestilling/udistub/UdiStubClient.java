@@ -40,7 +40,6 @@ public final class UdiStubClient implements ClientRegister {
 
         if (nonNull(bestilling.getUdistub())) {
             StringBuilder status = new StringBuilder();
-            ResponseEntity<UdiPersonControllerResponse> response = null;
 
             try {
 
@@ -48,29 +47,32 @@ public final class UdiStubClient implements ClientRegister {
                 udiPerson.setIdent(norskIdent.getIdent());
                 setPersonDefaultsIfUnspecified(udiPerson);
 
-                RsAliasResponse aliases = createAliases(norskIdent.getIdent(), bestilling.getUdistub().getAliaser(), bestilling.getEnvironments());
-                udiPerson.setAliaser(mapperFacade.mapAsList(aliases.getAliaser(), UdiAlias.class));
-                udiPerson.setFoedselsDato(aliases.getHovedperson().getFodselsdato().toLocalDate());
-                udiPerson.setNavn(mapperFacade.map(aliases.getHovedperson().getNavn(), UdiPersonNavn.class));
+                createAndSetAlias(udiPerson, bestilling, norskIdent.getIdent());
 
                 deletePerson(norskIdent.getIdent());
 
-                response = udiStubConsumer.createUdiPerson(udiPerson);
-
-                appendOkStatus(status, response);
+                appendOkStatus(status, udiStubConsumer.createUdiPerson(udiPerson));
 
             } catch (RuntimeException e) {
 
-                if (nonNull(response) && response.hasBody() && nonNull(response.getBody().getReason())) {
-                    appendErrorStatus(status, e, response.getBody().getReason());
-                    log.error("Gjenopprett feilet for udistubclient: {}", response.getBody().getReason(), e);
-                } else {
-                    appendErrorStatus(status, e, "ukjent årsak");
-                    log.error("Gjenopprett feilet for udistubclient: {}", e.getMessage(), e);
-                }
+                appendErrorStatus(status, e);
+                log.error("Gjenopprett feilet for udistubclient: {}", e.getMessage(), e);
             }
 
             progress.setUdistubStatus(status.toString());
+        }
+    }
+
+    private void createAndSetAlias(UdiPerson person, RsDollyBestilling bestilling, String ident) {
+
+        try {
+            RsAliasResponse aliases = createAliases(ident, bestilling.getUdistub().getAliaser(), bestilling.getEnvironments());
+            person.setAliaser(mapperFacade.mapAsList(aliases.getAliaser(), UdiAlias.class));
+            person.setFoedselsDato(aliases.getHovedperson().getFodselsdato().toLocalDate());
+            person.setNavn(mapperFacade.map(aliases.getHovedperson().getNavn(), UdiPersonNavn.class));
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å opprette aliaser i TPSF {}", e.getMessage(), e);
         }
     }
 
@@ -112,20 +114,14 @@ public final class UdiStubClient implements ClientRegister {
         }
     }
 
-    private static void appendErrorStatus(StringBuilder status, RuntimeException e, String reason) {
+    private static void appendErrorStatus(StringBuilder status, RuntimeException e) {
         status.append("FEIL: ")
-                .append(e.getMessage())
-                .append(": ")
-                .append(reason);
+                .append(e.getMessage());
 
         if (e instanceof HttpClientErrorException) {
             status.append(" (")
-                    .append(encodeErrorStatus(((HttpClientErrorException) e).getResponseBodyAsString()))
+                    .append(((HttpClientErrorException) e).getResponseBodyAsString())
                     .append(')');
         }
-    }
-
-    private static String encodeErrorStatus(String toBeEncoded) {
-        return toBeEncoded.replaceAll(",", "&").replaceAll(":", "=");
     }
 }
