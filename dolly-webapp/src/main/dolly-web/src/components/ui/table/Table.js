@@ -1,11 +1,9 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
-import Button from '~/components/button/Button'
-import ExpandButton from '~/components/button/ExpandButton'
-import FavoriteButtonConnector from '~/components/button/FavoriteButton/FavoriteButtonConnector'
-import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
-import Icon from '~/components/icon/Icon'
+import ExpandButton from '~/components/ui/button/ExpandButton'
+import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
+import ConfirmTooltip from '~/components/ui/confirmTooltip/ConfirmTooltip'
 import './table.less'
 
 class TableRow extends PureComponent {
