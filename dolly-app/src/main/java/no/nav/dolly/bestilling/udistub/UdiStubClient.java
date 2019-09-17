@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -121,6 +122,11 @@ public final class UdiStubClient implements ClientRegister {
         if (e instanceof HttpClientErrorException) {
             status.append(" (")
                     .append(((HttpClientErrorException) e).getResponseBodyAsString())
+                    .append(')');
+
+        } else if (e instanceof HttpServerErrorException) {
+            status.append(" (")
+                    .append(((HttpServerErrorException) e).getResponseBodyAsString())
                     .append(')');
         }
     }
