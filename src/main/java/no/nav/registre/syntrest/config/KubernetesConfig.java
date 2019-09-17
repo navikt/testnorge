@@ -5,25 +5,29 @@ import io.kubernetes.client.util.Config;
 import io.kubernetes.client.util.KubeConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 import java.io.FileReader;
 import java.io.IOException;
 
 @Configuration
-@Profile("prod")
 @Slf4j
 public class KubernetesConfig {
+
+    @Value("${kube-config-path}")
+    String kubeConfigPath;
+
     @Bean
     ApiClient apiClient() {
         try {
-            KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("${kube-config-path}"));
+            KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader(kubeConfigPath));
             return Config.fromConfig(kc);
         } catch (IOException e) {
-            log.error("Could not apply configuration from {}.", "${kube-config-path}");
-            throw new BeanCreationException("Could not create apiClient from file {}.", "${kube-config-path}");
+            String errormsg = String.format("Could not apply configuration from %s", kubeConfigPath);
+            log.error("Could not apply configuration from {}.", kubeConfigPath);
+            throw new BeanCreationException(errormsg, e);
         }
     }
 }

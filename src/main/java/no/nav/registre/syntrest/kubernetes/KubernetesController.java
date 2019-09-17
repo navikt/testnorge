@@ -33,19 +33,17 @@ public class KubernetesController {
     private final UriTemplate isAliveUri;
     private final CustomObjectsApi api;
 
-    @Value("${isAlive}")
     private String isAliveUrl;
-
-    @Value("${docker-image-path}")
     private String dockerImagePath;
-
-    @Value("${max-alive-retries}")
     private int maxRetries;
-
-    @Value("${alive-retry-delay")
     private int retryDelay;
 
-    public KubernetesController(RestTemplate restTemplate, ApiClient apiClient) {
+    public KubernetesController(RestTemplate restTemplate, ApiClient apiClient,
+                                @Value("${isAlive}") String isAliveUrl,
+                                @Value("${docker-image-path}") String dockerImagePath,
+                                @Value("${max-alive-retries}") int maxRetries,
+                                @Value("${alive-retry-delay}") int retryDelay) {
+
         this.restTemplate = restTemplate;
         this.manifestPath = "/nais/{}.yaml";
         this.isAliveUri = new UriTemplate(isAliveUrl);

@@ -1,6 +1,6 @@
 package no.nav.registre.syntrest.consumer;
 
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 import no.nav.registre.syntrest.utils.SyntAppNames;
 import org.springframework.context.annotation.DependsOn;
@@ -11,6 +11,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 @Component
 @DependsOn("appConfig")
+@Slf4j
 public class SyntConsumerManager {
 
     private final SyntConsumer aaregConsumer;
@@ -70,6 +71,7 @@ public class SyntConsumerManager {
             case SAM:
                 return samConsumer;
             default:
+                log.error("No bean of type {} is defined. Returning null.", type);
                 return null;
         }
 

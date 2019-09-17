@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
-@Component
 public class SyntConsumer {
 
     private final long SHUTDOWN_TIME_DELAY_SECONDS = 300;

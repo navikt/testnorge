@@ -60,7 +60,7 @@ public class SyntController {
     @ApiOperation(value = "Aap115", notes = "Generer et antall AAP11_5 meldinger")
     public ResponseEntity<List<AAP115Melding>> generateAAP11_5(
             @ApiParam("Antall AAP11_5 meldinger")
-            @RequestParam Integer numToGenerate
+            @RequestParam(required = true) Integer numToGenerate
     ) {
         InputValidator.validateInput(numToGenerate);
         List<AAP115Melding> response = syntetiseringService.generateAAP115Data(numToGenerate);
@@ -70,7 +70,7 @@ public class SyntController {
     }
 
     @GetMapping("/arena/aap/nyRettighet")
-    @ApiOperation(value = "Ny Rettighet", notes = "Generer et antall nye rettigheter")
+    @ApiOperation(value = "Ny Rettighet/AAP melding", notes = "Generer et antall nye rettigheter")
     public ResponseEntity<List<AAPMelding>> generateAAPNyRettighet(
             @ApiParam("Antall AAP meldinger/nye rettigheter")
             @RequestParam Integer numToGenerate
@@ -180,9 +180,9 @@ public class SyntController {
     }
 
     @PostMapping("/inntekt")
-    @ApiOperation(value = "Inntektsmeldinger", notes = "Generer inntektsmeldinger på en liste med fødselsnumre. Hvis man også legger ved en liste med inntektsmeldinger per fødselsnummer blir den nye inntektsmeldingen basert på disse.")
+    @ApiOperation(value = "Inntektsmeldinger", notes = "Generer inntektsmeldinger på et map med fødselsnumre og inntektsmeldinger. Hvis man også legger ved en liste med inntektsmeldinger per fødselsnummer blir den nye inntektsmeldingen basert på disse. Hvis man legger ved en tom liste til fødselsnummeret, blir en tilfeldig inntektsmelding generert")
     public ResponseEntity<Map<String, List<InntektsmeldingInntekt>>> generateInntektsMelding(
-            @ApiParam("Map der key: fødselsnummer, value: liste med inntektsmeldinger")
+            @ApiParam("Map der key=fødselsnummer, value=liste med inntektsmeldinger")
             @RequestBody Map<String, List<InntektsmeldingInntekt>> fnrInntektMap
     ) {
         InputValidator.validateInput(new ArrayList<>(fnrInntektMap.keySet()));
