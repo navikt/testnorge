@@ -27,24 +27,23 @@ public class TssSyntetisererenConsumer {
 
     private UriTemplate url;
 
-    public TssSyntetisererenConsumer(@Value("${synthdata-tss-api-url}") String synthdataTssUrl){
+    public TssSyntetisererenConsumer(@Value("${synthdata-tss-api-url}") String synthdataTssUrl) {
         this.url = new UriTemplate(synthdataTssUrl + "/v1/generate_tss_file");
     }
 
-    public List<String> produceFilesToTSS(List<Person> personerToInsert) {
+    public List<String> hentSyntetiskeTssRutiner(List<Person> identer) {
 
-        RequestEntity postRequest = RequestEntity.post(url.expand()).body(personerToInsert);
+        RequestEntity postRequest = RequestEntity.post(url.expand()).body(identer);
 
-        List<String> filesToInsertInTSS = new ArrayList<>();
+        List<String> rutiner = new ArrayList<>();
 
         ResponseEntity<List<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
         if (response.getBody() != null) {
-            filesToInsertInTSS.addAll(response.getBody());
+            rutiner.addAll(response.getBody());
         } else {
             log.error("Kunne ikke hente response body fra synthdata-tss: NullPointerException");
         }
 
-        return filesToInsertInTSS;
+        return rutiner;
     }
-
 }

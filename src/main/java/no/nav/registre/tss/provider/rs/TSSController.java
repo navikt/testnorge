@@ -1,11 +1,5 @@
 package no.nav.registre.tss.provider.rs;
 
-import static no.nav.registre.tss.utils.Rutine110Util.fiksPosisjoner;
-import static no.nav.registre.tss.utils.Rutine110Util.leggTilHeader;
-import static no.nav.registre.tss.utils.Rutine110Util.setOppdater;
-import static no.nav.registre.tss.utils.RutineUtil.TOTAL_LENGTH;
-import static no.nav.registre.tss.utils.RutineUtil.padTilLengde;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import javax.jms.JMSException;
 import java.util.List;
+import java.util.Map;
 
+import no.nav.registre.tss.consumer.rs.response.Response910;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 import no.nav.registre.tss.service.TSService;
-import no.nav.registre.tss.consumer.rs.response.Response910;
 
 @Slf4j
 @RestController
@@ -37,42 +31,26 @@ public class TSSController {
 
     @PostMapping(value = "/opprettLeger")
     public ResponseEntity createDoctorsInTSS(@RequestBody SyntetiserTssRequest syntetiserTssRequest) {
-        List<Person> ids = tssService.getIds(syntetiserTssRequest);
-        List<String> tssQueueMessages = tssService.getMessagesFromSynt(ids);
-
-        for (int i = 0; i < tssQueueMessages.size(); i++) {
-            List<String> rutiner = new ArrayList<>(Arrays.asList(tssQueueMessages.get(i).split("\n")));
-            StringBuilder s = new StringBuilder();
-            for (int j = 0; j < rutiner.size(); j++) {
-                rutiner.set(j, padTilLengde(rutiner.get(j)));
-                if (rutiner.get(j).length() != TOTAL_LENGTH) {
-                    throw new RuntimeException("Feil lengde på rutine");
-                }
-                if (rutiner.get(j).startsWith("110")) {
-                    rutiner.set(j, fiksPosisjoner(rutiner.get(j)));
-                    rutiner.set(j, setOppdater(rutiner.get(j)));
-                    rutiner.set(j, leggTilHeader(rutiner.get(j)));
-                }
-                s.append(rutiner.get(j));
-            }
-            tssQueueMessages.set(i, s.toString());
-        }
+        List<Person> identer = tssService.hentIdenter(syntetiserTssRequest);
+        List<String> syntetiskeTssRutiner = tssService.opprettSyntetiskeTssRutiner(identer);
 
         try {
-            tssService.sendToMQQueue(tssQueueMessages);
+            tssService.sendTilTss(syntetiskeTssRutiner);
         } catch (Exception e) {
             log.error("Kunne ikke sende til kø", e);
+            throw e;
         }
-        return ResponseEntity.status(HttpStatus.OK).body(tssQueueMessages);
+
+        return ResponseEntity.status(HttpStatus.OK).body(syntetiskeTssRutiner);
     }
 
-    @GetMapping("/hentLeger")
-    public void getDoctorsFromTss(@RequestParam Long avspillergruppeId, @RequestParam(required = false) Integer antallLeger) {
-        tssService.sendAndReceiveFromTss(avspillergruppeId, antallLeger);
+    @GetMapping("/hentLeger/{avspillergruppeId}")
+    public Map<String, Response910> hentLegerFraTss(@PathVariable Long avspillergruppeId, @RequestParam(required = false) Integer antallLeger) throws JMSException {
+        return tssService.sendOgMotta910RutineFraTss(avspillergruppeId, antallLeger);
     }
 
     @GetMapping("/hentLege/{ident}")
-    public Response910 getDocktorFromTss(@PathVariable String ident) {
-        return tssService.sendAndReceiveFromTss(ident);
+    public Response910 hentLegeFraTss(@PathVariable String ident) throws JMSException {
+        return tssService.sendOgMotta910RutineFraTss(ident);
     }
 }
