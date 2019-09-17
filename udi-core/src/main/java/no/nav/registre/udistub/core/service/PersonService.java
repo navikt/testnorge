@@ -100,13 +100,17 @@ public class PersonService {
                     .collect(Collectors.toList())
             );
         }
-        OppholdStatus oppholdStatus = mapperFacade.map(udiPerson.getOppholdStatus(), OppholdStatus.class);
-        oppholdStatus.setPerson(person);
-        oppholdStatusRepository.save(oppholdStatus);
+        if (udiPerson.getOppholdStatus() != null) {
+            OppholdStatus oppholdStatus = mapperFacade.map(udiPerson.getOppholdStatus(), OppholdStatus.class);
+            oppholdStatus.setPerson(person);
+            oppholdStatusRepository.save(oppholdStatus);
+        }
 
-        Arbeidsadgang arbeidsadgang = mapperFacade.map(udiPerson.getArbeidsadgang(), Arbeidsadgang.class);
-        arbeidsadgang.setPerson(person);
-        arbeidsAdgangRepository.save(arbeidsadgang);
+        if (udiPerson.getArbeidsadgang() != null) {
+            Arbeidsadgang arbeidsadgang = mapperFacade.map(udiPerson.getArbeidsadgang(), Arbeidsadgang.class);
+            arbeidsadgang.setPerson(person);
+            arbeidsAdgangRepository.save(arbeidsadgang);
+        }
 
         return personRepository.findById(person.getId()).map(found -> mapperFacade.map(found, UdiPerson.class));
     }
