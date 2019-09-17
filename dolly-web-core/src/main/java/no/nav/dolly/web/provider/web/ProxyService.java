@@ -33,11 +33,6 @@ public class ProxyService {
         OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + auth.getIdToken());
 
-        Cookie idTokenCookie = getIdTokenCookie(request);
-        if (idTokenCookie != null) {
-            headers.add(HttpHeaders.COOKIE, idTokenCookie.getName() + "=" + idTokenCookie.getValue());
-        }
-
         HttpEntity<String> httpEntity = new HttpEntity<>(body, headers);
         try {
             return proxyRestTemplate.exchange(requestUrl, method, httpEntity, String.class);
@@ -55,19 +50,13 @@ public class ProxyService {
             String headerName = headerNames.nextElement();
             if ("connection".equals(headerName)) {
                 headers.set(headerName, "keep-alive");
-            } else {
+            } else if ("Cookie".equals(headerName)) {
                 headers.set(headerName, request.getHeader(headerName));
             }
+            /* } else {
+                headers.set(headerName, request.getHeader(headerName));
+            } */
         }
         return headers;
-    }
-
-    private Cookie getIdTokenCookie(HttpServletRequest request) {
-        for (Cookie c : request.getCookies()) {
-            if (c.getName().equals("ID_token")) {
-                return c;
-            }
-        }
-        return null;
     }
 }
