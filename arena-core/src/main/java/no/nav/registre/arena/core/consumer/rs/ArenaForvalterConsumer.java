@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 @Component
@@ -53,6 +54,11 @@ public class ArenaForvalterConsumer {
                 .body(Collections.singletonMap("nyeBrukere", nyeBrukere));
 
         ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
+        if (invalidResponse(response)) {
+            log.info("Kunne ikke sende arbeidsoekere til Arena Forvalteren på addresse:\n{}.\nStatus: {}\nBody: {}",
+                    postRequest.toString(), response.getStatusCode(), response.getBody());
+            return new ArrayList<>();
+        }
         return response.getBody().getArbeidsokerList();
     }
 
@@ -60,24 +66,25 @@ public class ArenaForvalterConsumer {
     public List<Arbeidsoeker> hentArbeidsoekere(String personident, String eier, String miljoe) {
 
         Map<String, String> filters = new HashMap<>();
-
-        if (eier != null && !"".equals(eier)) {
+        if (!"".equals(eier)) {
             filters.put("filter-eier", eier);
         }
-        if (miljoe != null && !"".equals(miljoe)) {
+        if (!"".equals(miljoe)) {
             filters.put("filter-miljoe", miljoe);
         }
-        if (personident != null && !"".equals(personident)) {
+        if (!"".equals(personident)) {
             filters.put("filter-personident", personident);
         }
 
-        String baseUrl = hentBrukere.toString() + "?";
-
+        StringBuilder baseUrl = new StringBuilder(hentBrukere.toString() + "?");
         for (Map.Entry<String, String> entry : filters.entrySet()) {
-            baseUrl += entry.getKey() + "=" + entry.getValue() + "&";
+            baseUrl.append(entry.getKey())
+                    .append('=')
+                    .append(entry.getValue())
+                    .append('&');
         }
 
-        return hentFiltrerteArbeidsoekere(baseUrl);
+        return hentFiltrerteArbeidsoekere(baseUrl.toString());
     }
 
     private List<Arbeidsoeker> hentFiltrerteArbeidsoekere(String refinedUrl) {
@@ -85,6 +92,11 @@ public class ArenaForvalterConsumer {
 
         RequestEntity getRequest = RequestEntity.get(uri.expand()).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
         ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
+        if (invalidResponse(response)) {
+            log.info("Kunne ikke hente arbeidsøkere fra Arena Forvalteren på addresse:\n{}\nStatus: {}\nBody: {}",
+                        getRequest.toString(), response.getStatusCode(), response.getBody());
+            return new ArrayList<>();
+        }
 
         return gaaGjennomSider(refinedUrl, response.getBody().getAntallSider(), response.getBody().getArbeidsokerList().size());
     }
@@ -94,9 +106,14 @@ public class ArenaForvalterConsumer {
         List<Arbeidsoeker> responseList = new ArrayList<>(antallSider * initialLength);
         UriTemplate hentBrukerePage = new UriTemplate(baseUri + "page={page}");
 
-        for (int page = 1; page <= antallSider; page++) {
+        for (int page = 0; page < antallSider; page++) {
             RequestEntity getRequest = RequestEntity.get(hentBrukerePage.expand(page)).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
             ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
+            if (invalidResponse(response)) {
+                log.info("Kunne ikke hente arbeidsøkere fra Arena Forvalteren på addresse:\n{}\nStatus: {}\nBody: {}",
+                        getRequest.toString(), response.getStatusCode(), response.getBody());
+                return responseList;
+            }
             responseList.addAll(response.getBody().getArbeidsokerList());
         }
 
@@ -117,5 +134,9 @@ public class ArenaForvalterConsumer {
         }
 
         return true;
+    }
+
+    private Boolean invalidResponse(ResponseEntity<?> response) {
+        return (Objects.isNull(response.getBody()) || response.getStatusCode() != HttpStatus.OK);
     }
 }

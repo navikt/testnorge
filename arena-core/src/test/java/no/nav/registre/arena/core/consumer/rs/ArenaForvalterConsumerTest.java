@@ -104,7 +104,7 @@ public class ArenaForvalterConsumerTest {
         stubArenaForvalterHentBrukereFirstPage();
         stubArenaForvalterHentBrukereSecondPage();
 
-        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere(null, null, null);
+        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("", "", "");
 
         assertThat(response.get(2).getPersonident(), is("09038817873"));
         assertThat(response.size(), is(3));
@@ -147,8 +147,8 @@ public class ArenaForvalterConsumerTest {
         stubArenaForvalterFilterPersonidentGuyTo();
         stubArenaForvalterFilterPersonidentGuyToPageEn();
 
-        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("10101010101", null, null);
-        response.addAll(arenaForvalterConsumer.hentArbeidsoekere("20202020202", null, null));
+        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("10101010101", "", "");
+        response.addAll(arenaForvalterConsumer.hentArbeidsoekere("20202020202", "", ""));
 
         assertThat(response.size(), is(4));
         assertThat(response.get(2).getPersonident(), is("10101010101"));
@@ -206,7 +206,7 @@ public class ArenaForvalterConsumerTest {
         )));
     }
     private void stubArenaForvalterFilterPersonidentPageEn() {
-        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-personident=10101010101&page=1"))
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-personident=10101010101&page=0"))
         .willReturn(ok()
         .withHeader("Content-Type", "application/json")
         .withBody(
@@ -234,7 +234,7 @@ public class ArenaForvalterConsumerTest {
         )));
     }
     private void stubArenaForvalterFilterPersonidentPageTo() {
-        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-personident=10101010101&page=2"))
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-personident=10101010101&page=1"))
         .willReturn(ok()
         .withHeader("Content-Type", "application/json")
         .withBody(
@@ -272,7 +272,7 @@ public class ArenaForvalterConsumerTest {
         )));
     }
         private void stubArenaForvalterFilterPersonidentGuyToPageEn() {
-        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-personident=20202020202&page=1"))
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-personident=20202020202&page=0"))
         .willReturn(ok()
         .withHeader("Content-Type", "application/json")
         .withBody(
@@ -311,7 +311,7 @@ public class ArenaForvalterConsumerTest {
         )));
     }
         private void stubArenaForvalterHentBrukereFilterPageEn() {
-        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-miljoe=q2&filter-eier=Dolly&filter-personident=10101010101&page=1"))
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-miljoe=q2&filter-eier=Dolly&filter-personident=10101010101&page=0"))
         .willReturn(ok()
         .withHeader("Content-Type", "application/json")
         .withBody(
@@ -330,7 +330,7 @@ public class ArenaForvalterConsumerTest {
         )));
     }
     private void stubArenaForvalterHentBrukereFilterPageTo() {
-        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-miljoe=q2&filter-eier=Dolly&filter-personident=10101010101&page=2"))
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-miljoe=q2&filter-eier=Dolly&filter-personident=10101010101&page=1"))
         .willReturn(ok()
         .withHeader("Content-Type", "application/json")
         .withBody(
@@ -382,7 +382,7 @@ public class ArenaForvalterConsumerTest {
                         )));
     }
     private void stubArenaForvalterHentBrukereFirstPage() {
-        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=1"))
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=0"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(
@@ -414,7 +414,7 @@ public class ArenaForvalterConsumerTest {
                         )));
     }
     private void stubArenaForvalterHentBrukereSecondPage() {
-        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=2"))
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=1"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(
@@ -436,7 +436,7 @@ public class ArenaForvalterConsumerTest {
                         )));
     }
     private void stubArenaForvalterHentBrukereNoBody() {
-        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=1"))
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=0"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("")));
@@ -444,7 +444,7 @@ public class ArenaForvalterConsumerTest {
 
 
     private void stubArenaForvlaterEmptyHentBrukere() {
-        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker"))
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?"))
                 .willReturn(ok().withHeader("Content-Type", "application/json")));
     }
 
