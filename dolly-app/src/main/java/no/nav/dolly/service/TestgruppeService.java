@@ -4,7 +4,6 @@ import static java.util.Objects.isNull;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -27,15 +26,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class TestgruppeService {
 
-    private final GruppeRepository gruppeRepository;
-    private final BrukerService brukerService;
-    private final TeamService teamService;
-    private final IdentService identService;
-
-    //NOTE @Autowired på grunn av sirkulær avhengighet mellom PersonService, BestillingService og TestgruppeService
+    //FIXME Bytt @Autowired med @RequiredArgsConstructor når sirkulær avhengighet mellom PersonService, BestillingService og TestgruppeService er rettet
+    @Autowired
+    private GruppeRepository gruppeRepository;
+    @Autowired
+    private BrukerService brukerService;
+    @Autowired
+    private TeamService teamService;
+    @Autowired
+    private IdentService identService;
     @Autowired
     private BestillingService bestillingService;
     @Autowired

@@ -9,7 +9,6 @@ import static java.util.stream.Collectors.toSet;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
@@ -37,17 +36,20 @@ import java.util.Set;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class BestillingService {
 
-    private final BestillingRepository bestillingRepository;
-    private final BestillingKontrollRepository bestillingKontrollRepository;
-    private final IdentRepository identRepository;
-    private final BestillingProgressRepository bestillingProgressRepository;
-    private final ObjectMapper objectMapper;
-
-    //NOTE @Autowired på grunn av sirkulær avhengighet mellom PersonService, BestillingService og TestgruppeService
+    //FIXME Bytt @Autowired med @RequiredArgsConstructor når sirkulær avhengighet mellom PersonService, BestillingService og TestgruppeService er rettet
+    @Autowired
+    private BestillingRepository bestillingRepository;
+    @Autowired
+    private BestillingKontrollRepository bestillingKontrollRepository;
+    @Autowired
+    private IdentRepository identRepository;
+    @Autowired
+    private BestillingProgressRepository bestillingProgressRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
     @Autowired
     private TestgruppeService testgruppeService;
 
