@@ -76,12 +76,9 @@ export default class BestillingDetaljer extends PureComponent {
 								GJENOPPRETT
 							</Button>
 						)}
-						<DollyModal
-							isOpen={modalOpen}
-							onRequestClose={this.closeModal}
-							closeModal={this.closeModal}
-							content={this._renderGjenopprettModal()}
-						/>
+						<DollyModal isOpen={modalOpen} closeModal={this.closeModal}>
+							{this._renderGjenopprettModal()}
+						</DollyModal>
 					</div>
 				</div>
 			</div>

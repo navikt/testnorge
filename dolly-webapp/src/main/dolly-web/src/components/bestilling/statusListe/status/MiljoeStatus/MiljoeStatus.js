@@ -57,13 +57,9 @@ export default class MiljoeStatus extends PureComponent {
 					<Button onClick={this.openModal} className="flexbox--align-center" kind="details">
 						BESTILLINGSDETALJER
 					</Button>
-					<DollyModal
-						isOpen={modalOpen}
-						onRequestClose={this.closeModal}
-						closeModal={this.closeModal}
-						content={<BestillingSammendrag bestilling={bestilling} modal />}
-						width="60%"
-					/>
+					<DollyModal isOpen={modalOpen} closeModal={this.closeModal} width="60%">
+						<BestillingSammendrag bestilling={bestilling} modal />
+					</DollyModal>
 				</div>
 			</div>
 		)
