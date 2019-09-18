@@ -1,14 +1,14 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import Overskrift from '~/components/overskrift/Overskrift'
-import RedigerTeamConnector from '~/components/RedigerTeam/RedigerTeamConnector'
-import Loading from '~/components/loading/Loading'
-import Toolbar from '~/components/toolbar/Toolbar'
 import Knapp from 'nav-frontend-knapper'
+import Overskrift from '~/components/ui/overskrift/Overskrift'
+import RedigerTeamConnector from '~/components/RedigerTeam/RedigerTeamConnector'
+import Loading from '~/components/ui/loading/Loading'
+import Toolbar from '~/components/ui/toolbar/Toolbar'
 import TeamListe from './TeamListe'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
-import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
-import PaginationConnector from '~/components/pagination/PaginationConnector'
+import ContentTooltip from '~/components/ui/contentTooltip/ContentTooltip'
+import PaginationConnector from '~/components/ui/pagination/PaginationConnector'
 
 export default class TeamOversikt extends Component {
 	static propTypes = {

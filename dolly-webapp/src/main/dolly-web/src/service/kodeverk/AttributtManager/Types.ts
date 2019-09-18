@@ -29,7 +29,7 @@ export interface Kategori {
 	order: number
 	informasjonstekst?: string
 	showInSummary?: boolean
-	tilgjengeligeMiljoeEndepunkt?: Function
+	tilgjengeligeMiljoeEndepunkt?: Promise<string[]>
 }
 
 export interface KategoriTypes {
@@ -76,7 +76,6 @@ export interface Attributt {
 	informasjonstekst?: String
 	subGruppe?: String
 	hoydeOptions?: String //Hvor mye plass trenger den lengste option i select. 'small', 'medium' eller 'large'.
-	genererSyntVerdier?: boolean
 }
 
 // Attributt grupper

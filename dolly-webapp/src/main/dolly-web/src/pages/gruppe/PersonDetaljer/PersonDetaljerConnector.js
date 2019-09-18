@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { getBestillingById } from '~/ducks/bestillingStatus'
 import PersonDetaljer from './PersonDetaljer'
 import DataMapper from '~/service/dataMapper'
 import {
@@ -31,12 +32,13 @@ const mapStateToProps = (state, ownProps) => {
 		isFetchingArena: loadingSelectorArena(state),
 		isFetchingInst: loadingSelectorInst(state),
 		isFrigjoering: loadingSelectorFrigjoer(state),
-		personData: DataMapper.getDetailedData(state, ownProps),
+		personData: DataMapper.getDetailedData(state, ownProps.personId),
 		testIdent: state.gruppe.data[0].testidenter.find(
 			testIdent => testIdent.ident === ownProps.personId
 		),
-		bestilling: state.bestillingStatuser.data.find(
-			bestilling => bestilling.id.toString() === Formatters.idUtenEllipse(ownProps.bestillingId)
+		bestilling: getBestillingById(
+			state.bestillingStatuser.data,
+			Formatters.idUtenEllipse(ownProps.bestillingId)
 		)
 	}
 }

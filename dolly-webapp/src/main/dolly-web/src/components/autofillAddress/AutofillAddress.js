@@ -1,11 +1,11 @@
 import React, { Component, Fragment } from 'react'
 import Knapp from 'nav-frontend-knapper'
+import { Field } from 'formik'
 import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { TpsfApi, DollyApi } from '~/service/Api'
 import './AutofillAddress.less'
 import InputSelector from '~/components/fields/InputSelector'
-import { Field } from 'formik'
-import LinkButton from '~/components/button/LinkButton/LinkButton'
+import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
 import FilledAddress from './FilledAddress'
 
 const initialState = {
@@ -105,48 +105,36 @@ export default class AutofillAddress extends Component {
 	}
 
 	_fetchAdresser = () => {
-		const adr = this.state.gyldigeAdresser
-		var options = []
-		if (adr.length > 1) {
-			adr.forEach(adresse => {
-				options.push({
-					label: adresse.adrnavn + ', ' + adresse.pnr + ' ' + adresse.psted,
-					value: adresse.adrnavn + '.' + adresse.pnr + '.' + adresse.psted,
-					adrObject: adresse
-				})
-			})
-		} else {
-			options.push({
-				label: adr.adrnavn + ', ' + adr.pnr + ' ' + adr.psted,
-				value: adr.adrnavn + '.' + adr.pnr + '.' + adr.psted,
-				adrObject: adr
-			})
-		}
-		return options
+		return this.state.gyldigeAdresser.map(adresse => ({
+			label: adresse.adrnavn + ', ' + adresse.pnr + ' ' + adresse.psted,
+			value: adresse.adrnavn + '.' + adresse.pnr + '.' + adresse.psted,
+			adrObject: adresse
+		}))
 	}
 
 	_fetchHusnr = () => {
-		const husnr = this.state.husnummerOptions
-		var options = []
-		husnr.forEach(nr => {
-			options.push({
-				label: nr,
-				value: nr
-			})
-		})
-		return options
+		return this.state.husnummerOptions.map(nr => ({
+			label: nr,
+			value: nr
+		}))
 	}
 
 	_setQueryString = () => {
+		const {
+			boadresse_gateadresse,
+			boadresse_postnr,
+			boadresse_kommunenr
+		} = this.props.formikProps.values
+
 		let queryString = ''
-		if (this.props.formikProps.values.boadresse_gateadresse) {
-			queryString += `&adresseNavnsok=${this.props.formikProps.values.boadresse_gateadresse}`
+		if (boadresse_gateadresse) {
+			queryString += `&adresseNavnsok=${boadresse_gateadresse}`
 		}
-		if (this.props.formikProps.values.boadresse_postnr) {
-			queryString += `&postNrsok=${this.props.formikProps.values.boadresse_postnr}`
+		if (boadresse_postnr) {
+			queryString += `&postNrsok=${boadresse_postnr}`
 		}
-		if (this.props.formikProps.values.boadresse_kommunenr) {
-			queryString += `&kommuneNrsok=${this.props.formikProps.values.boadresse_kommunenr}`
+		if (boadresse_kommunenr) {
+			queryString += `&kommuneNrsok=${boadresse_kommunenr}`
 		}
 		return queryString
 	}
@@ -198,8 +186,7 @@ export default class AutofillAddress extends Component {
 
 	_onHusnrChangeHandler = input => {
 		const { formikProps } = this.props
-		let husnrInput = ''
-		if (input) husnrInput = input.value
+		const husnrInput = input ? input.value : ''
 		formikProps.setValues({ ...formikProps.values, boadresse_husnummer: husnrInput })
 	}
 
@@ -244,8 +231,7 @@ export default class AutofillAddress extends Component {
 	_checkCurrentValues = () => {
 		const { values } = this.props
 		const { formikProps } = this.props
-		const adr = values.adr
-		const nr = values.nr
+		const { adr, nr } = values
 
 		this.setState({ harSjekketValues: true })
 
@@ -283,69 +269,61 @@ export default class AutofillAddress extends Component {
 	}
 
 	_renderAdresseSelect = () => {
+		const { adresseValgt, tilbakeEndreAdresse, husnummerOptions } = this.state
 		const gyldigeAdresser = this._fetchAdresser()
 		const husNummer = this._fetchHusnr()
+
+		if (!adresseValgt && !tilbakeEndreAdresse) return false
+
 		return (
-			<div>
-				{(this.state.adresseValgt || this.state.tilbakeEndreAdresse) && (
-					<div className="address-container">
+			<div className="address-container">
+				<Field
+					className="gyldigadresse-select"
+					name="boadresse_value"
+					placeholder="Velg gyldig adresse..."
+					label="Gyldig adresse"
+					component={FormikDollySelect}
+					beforeChange={this._onAdresseChangeHandler}
+					options={gyldigeAdresser}
+				/>
+				{husnummerOptions && (
+					<div>
 						<Field
-							className="gyldigadresse-select"
-							name="boadresse_value"
-							placeholder="Velg gyldig adresse..."
-							label="Gyldig adresse"
+							className="husnummer-select"
+							name="boadresse_husnummer"
+							placeholder="Velg husnummer..."
+							label="Husnummer"
 							component={FormikDollySelect}
-							beforeChange={this._onAdresseChangeHandler}
-							options={gyldigeAdresser}
+							beforeChange={this._onHusnrChangeHandler}
+							options={husNummer}
 						/>
-						{this.state.husnummerOptions && (
-							<div>
-								<Field
-									className="husnummer-select"
-									name="boadresse_husnummer"
-									placeholder="Velg husnummer..."
-									label="Husnummer"
-									component={FormikDollySelect}
-									beforeChange={this._onHusnrChangeHandler}
-									options={husNummer}
-								/>
-							</div>
-						)}
-						<LinkButton text="Endre adresse" onClick={this._onClickEndreAdresse} />
 					</div>
 				)}
+				<LinkButton text="Endre adresse" onClick={this._onClickEndreAdresse} />
 			</div>
 		)
 	}
 
 	_renderSelect = item => {
-		const selectProps = {
-			loadOptions: this._loadOptionsSelector(item.id),
-			placeholder: this._placeHolderGenerator(item.id)
-		}
-		const InputComponent = InputSelector(item.inputType)
+		if (item.id === 'boadresse_husnummer') return false
 
-		if (item.id !== 'boadresse_husnummer') {
-			if (item.inputType === 'text') {
-				return (
-					<Field
-						key={item.id}
-						name={item.id}
-						label={item.label}
-						component={InputComponent}
-						placeholder={selectProps.placeholder}
-					/>
-				)
-			}
-			return (
-				<Field
-					key={item.id}
-					name={item.id}
-					label={item.label}
-					component={InputComponent}
-					{...selectProps}
-				/>
-			)
+		const InputComponent = InputSelector(item.inputType)
+		const placeholder = this._placeHolderGenerator(item.id)
+		const extraProps = {}
+
+		if (item.inputType !== 'text') {
+			extraProps.loadOptions = this._loadOptionsSelector(item.id)
 		}
+
+		return (
+			<Field
+				key={item.id}
+				name={item.id}
+				label={item.label}
+				component={InputComponent}
+				placeholder={placeholder}
+				{...extraProps}
+			/>
+		)
 	}
 }

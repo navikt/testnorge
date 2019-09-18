@@ -1,0 +1,67 @@
+@import (reference) '~lessVars';
+
+@headerHoverColor: lighten(@color-nav-black, 7%);
+@borderColor: lighten(@color-nav-black, 40%);
+
+header.app-header {
+	background-color: @color-nav-black;
+	color: white;
+	display: flex;
+	//padding: 15px 0;
+	align-items: center;
+	justify-content: space-between;
+
+	.home-nav {
+		display: flex;
+		align-items: center;
+		text-decoration: none;
+
+		.img-logo {
+			width: @page-margin;
+			text-align: center;
+			border-right: 2px solid #88b1d6;
+
+			img {
+				height: 30px;
+			}
+		}
+
+		h1 {
+			display: inline-block;
+			margin: 0;
+			padding-left: 10px;
+			font-size: 1.6rem;
+			color: white;
+		}
+	}
+
+	.menu-links {
+		display: flex;
+		justify-content: center;
+		a {
+			color: white;
+			text-decoration: none;
+			font-weight: normal;
+			padding: 20px 10px;
+			margin: 0 10px;
+			font-size: 1.2em;
+			&.active {
+				font-weight: bold;
+				background-color: lighten(@color-nav-black, 10%);
+			}
+			&:hover {
+				background-color: @headerHoverColor;
+			}
+		}
+	}
+
+	.profil-area {
+		border-left: 2px solid #88b1d6;
+
+		width: @page-margin;
+		p {
+			margin: 0 10px;
+		}
+		height: 30px;
+	}
+}

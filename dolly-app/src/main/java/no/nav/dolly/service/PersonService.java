@@ -30,7 +30,7 @@ public class PersonService {
     public void recyclePersoner(List<String> identer) {
 
         if (!identer.isEmpty()) {
-            tpsfService.deletePersoner(identer);
+            tpsfService.deletePersones(identer);
         }
     }
 

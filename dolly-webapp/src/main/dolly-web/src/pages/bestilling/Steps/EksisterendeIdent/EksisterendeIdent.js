@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import Button from '~/components/button/Button'
 import { TpsfApi } from '~/service/Api'
-import Loading from '~/components/loading/Loading'
-import Icon from '~/components/icon/Icon'
+import Button from '~/components/ui/button/Button'
+import Loading from '~/components/ui/loading/Loading'
+import Icon from '~/components/ui/icon/Icon'
 import AttributtVelgerConnector from '~/components/attributtVelger/AttributtVelgerConnector'
 
 import './EksisterendeIdent.less'

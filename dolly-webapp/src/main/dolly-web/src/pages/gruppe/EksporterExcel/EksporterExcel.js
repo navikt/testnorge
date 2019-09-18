@@ -1,32 +1,25 @@
-import React, { Component, Fragment } from 'react'
-import Button from '~/components/button/Button'
-import Loading from '~/components/loading/Loading'
+import React, { Component } from 'react'
 import { TpsfApi } from '~/service/Api'
-import Icon from '~/components/icon/Icon'
+import Button from '~/components/ui/button/Button'
+import Loading from '~/components/ui/loading/Loading'
+import Icon from '~/components/ui/icon/Icon'
 
 export default class EksportExcel extends Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			loading: false
-		}
+	state = {
+		loading: false
 	}
 
 	render() {
-		return this.state.loading ? <Loading label="Eksporterer" /> : this._eksportereData()
-	}
+		// Ikke render knapp dersom det ikke finnes noen testidenter
+		if (!this.props.testidenter) return false
 
-	_eksportereData = () => {
+		if (this.state.loading) return <Loading label="Eksporterer" />
+
 		return (
-			<Fragment>
-				<Button
-					className="flexbox--align-center gruppe-exceleksport"
-					onClick={() => this._onClick()}
-				>
-					<Icon size={'24px'} kind={'file-new-table'} className="excelknapp" />
-					<span className="excelknapp">EKSPORTER TIL EXCEL</span>
-				</Button>
-			</Fragment>
+			<Button className="flexbox--align-center gruppe-exceleksport" onClick={this._onClick}>
+				<Icon size={'24px'} kind={'file-new-table'} className="excelknapp" />
+				<span className="excelknapp">EKSPORTER TIL EXCEL</span>
+			</Button>
 		)
 	}
 
@@ -57,14 +50,11 @@ export default class EksportExcel extends Component {
 	}
 
 	_getIdentliste = () => {
-		let identliste = []
-		this.props.testidenter.map(ident => {
-			identliste.push(ident.ident)
-		})
-		return identliste
+		return this.props.testidenter.map(ident => ident.ident)
 	}
 
 	_getDato = () => {
+		// TODO - denne hører til i util - dateformatter
 		const dato = new Date()
 		let dd = String(dato.getDate())
 		if (dd < 10) {

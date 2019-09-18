@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import KodeverkValue from '../KodeverkValue'
 import StaticValue from '../../StaticValue/StaticValue'
-import Loading from '~/components/loading/Loading'
+import Loading from '~/components/ui/loading/Loading'
 
 describe('KodeverkValue.js', () => {
 	const fetchKodeverk = jest.fn()

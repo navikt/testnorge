@@ -3,15 +3,15 @@ package no.nav.dolly.mapper;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsStatusIdent;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsStatusIdent;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingUdiStubStatusMapper {
