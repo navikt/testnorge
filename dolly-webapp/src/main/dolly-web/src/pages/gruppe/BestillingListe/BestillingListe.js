@@ -7,7 +7,7 @@ import Loading from '~/components/ui/loading/Loading'
 import BestillingDetaljerConnector from './BestillingDetaljer/BestillingDetaljerConnector'
 
 export default class BestillingListe extends PureComponent {
-	componentWillMount() {
+	componentDidMount() {
 		this.props.getEnvironments()
 	}
 
