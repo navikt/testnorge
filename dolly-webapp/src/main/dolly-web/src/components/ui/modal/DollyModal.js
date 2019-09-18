@@ -25,14 +25,14 @@ Modal.setAppElement('#root')
 
 export default class DollyModal extends PureComponent {
 	render() {
-		const { content, isOpen, onRequestClose, closeModal, width } = this.props
+		const { children, isOpen, closeModal, width } = this.props
+
 		if (width) customStyles.content.width = width
-		else customStyles.content.width = '25%'
 
 		return (
-			<Modal isOpen={isOpen} shouldCloseOnEsc onRequestClose={onRequestClose} style={customStyles}>
+			<Modal isOpen={isOpen} shouldCloseOnEsc onRequestClose={closeModal} style={customStyles}>
 				<div className="dollymodal">
-					{content ? content : <p>Du må sende inn content som props</p>}
+					{children}
 					<Lukknapp onClick={closeModal} />
 				</div>
 			</Modal>
