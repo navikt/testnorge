@@ -6,6 +6,8 @@ import static no.nav.identpool.util.PersonidentUtil.getIdentType;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,9 +17,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
@@ -71,12 +73,28 @@ public class IdentpoolService {
     }
 
     public List<String> rekvirer(HentIdenterRequest request) throws ForFaaLedigeIdenterException {
-        Iterable<Ident> identEntities = identRepository.findAll(
-                IdentPredicateUtil.lagPredicateFraRequest(request),
-                request.getPageable()
-        );
+        Set<Ident> identEntities = new HashSet<>();
+        Page<Ident> all = identRepository.findAll(IdentPredicateUtil.lagPredicateFraRequest(request), PageRequest.of(0, request.getAntall()));
 
-        List<String> identList = StreamSupport.stream(identEntities.spliterator(), false)
+        int totalPages = all.getTotalPages();
+        if (totalPages > 0) {
+            List<String> usedIdents = new ArrayList<>();
+            Random rand = new Random();
+            for (int i = 0; i < request.getAntall(); i++) {
+                int randomPageNumber = rand.nextInt(totalPages);
+
+                Page<Ident> page = identRepository.findAll(IdentPredicateUtil.lagPredicateFraRequest(request), PageRequest.of(randomPageNumber, request.getAntall()));
+                List<Ident> content = page.getContent();
+                for (Ident ident : content) {
+                    if (!usedIdents.contains(ident.getPersonidentifikator())) {
+                        usedIdents.add(ident.getPersonidentifikator());
+                        identEntities.add(ident);
+                        break;
+                    }
+                }
+            }
+        }
+        List<String> identList = identEntities.stream()
                 .map(Ident::getPersonidentifikator)
                 .collect(Collectors.toList());
 
