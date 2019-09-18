@@ -1,6 +1,5 @@
 import Formatters from '~/utils/DataFormatter'
 import _set from 'lodash/set'
-import { ReactReduxContext } from 'react-redux/lib/components/Context'
 
 export const getAttributesFromMal = mal => {
 	const tpsfKriterier = JSON.parse(mal.tpsfKriterier)
@@ -79,7 +78,7 @@ export const getValuesFromMal = mal => {
 	if (
 		reduxStateValue.utvandretTilLand ||
 		reduxStateValue.innvandretFraLand ||
-		reduxStateValue.forsvunnet
+		reduxStateValue.erForsvunnet
 	) {
 		const utvandretValues = _mapInnOgUtvandret(reduxStateValue)
 		reduxStateValue = utvandretValues
@@ -87,11 +86,6 @@ export const getValuesFromMal = mal => {
 	if (reduxStateValue.adressetype && reduxStateValue.adressetype === 'MATR') {
 		const matrikkeladresseValues = _mapAdresseValues(reduxStateValue)
 		reduxStateValue = matrikkeladresseValues
-	}
-	if (reduxStateValue.erForsvunnet)
-	{
-		const forsvunnetValues = _mapForsvunnet(reduxStateValue)
-		reduxStateValue = forsvunnetValues
 	}
 	return reduxStateValue
 }
@@ -248,20 +242,6 @@ const _mapInnOgUtvandret = values => {
 				return (valuesArray.utvandret[0][value[0]] = value[1])
 			}
 		}
-	})
-	return valuesArray
-}
-
-const _mapForsvunnet = values => {
-	let valuesArray = JSON.parse(JSON.stringify(values))
-	if (valuesArray.barn) {
-		//Loop gjennom barn og kjør denne funksjonen for hvert barn
-		valuesArray.barn.map((enkeltBarn, idx) => {
-		valuesArray.barn[idx] = _mapForsvunnet(enkeltBarn)
-		})
-	}
-	
-	Object.entries(valuesArray).map(value => {
 		if (Formatters.uppercaseAndUnderscoreToLowerCase(value).includes('forsvunnet')) { 
 			if (value[0].includes('partner')) {
 				!valuesArray.partner_forsvunnet && (valuesArray.partner_forsvunnet = [{}])
