@@ -71,14 +71,10 @@ public class IdentpoolService {
     }
 
     public List<String> rekvirer(HentIdenterRequest request) throws ForFaaLedigeIdenterException {
-        //        Iterable<Ident> identEntities = identRepository.findAll(
-        //                IdentPredicateUtil.lagPredicateFraRequest(request),
-        //                request.getPageable()
-        //        );
-        Set<Ident> identEntities = new HashSet<>();
-        for (int i = 0; i < request.getAntall(); i++) {
-            identRepository.findOne(IdentPredicateUtil.lagPredicateFraRequest(request)).ifPresent(identEntities::add);
-        }
+        Iterable<Ident> identEntities = identRepository.findAll(
+                IdentPredicateUtil.lagPredicateFraRequest(request),
+                request.getPageable()
+        );
 
         List<String> identList = StreamSupport.stream(identEntities.spliterator(), false)
                 .map(Ident::getPersonidentifikator)
