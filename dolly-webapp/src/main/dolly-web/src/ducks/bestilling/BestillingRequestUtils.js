@@ -300,9 +300,8 @@ export const getValues = (attributeList, values) => {
 					} else if (udiData.tredjelandsBorgereValg === 'UAVKLART') {
 						Object.assign(udiObj, { uavklart: true })
 					} else if (udiData.tredjelandsBorgereValg === 'ikkeUdiOppholdSammeVilkaar') {
-						Object.assign(udiObj, {
-							ikkeOppholdstilatelseIkkeVilkaarIkkeVisum: {} //TODO: Skal det ikke være med noe mer her?
-						})
+						udiObj = false
+						attribute.path = 'harOppholdsTillatelse'
 					}
 				}
 			}
