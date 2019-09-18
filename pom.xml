@@ -31,6 +31,7 @@
         <testnorge-consumers.version>1.8.0-RELEASE</testnorge-consumers.version>
         <jacoco.version>0.8.3</jacoco.version>
         <application.version>${project.version}</application.version>
+        <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
     </properties>
 
 
