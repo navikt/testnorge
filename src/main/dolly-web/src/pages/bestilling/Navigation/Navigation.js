@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Knapp from 'nav-frontend-knapper'
-import NavButton from '~/components/button/NavButton/NavButton'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { isPage } from '~/pages/bestilling/Utils'
 import BestillingMapper from '~/utils/BestillingMapper'
 import { sjekkPostadresse } from '~/utils/SjekkPostadresse'

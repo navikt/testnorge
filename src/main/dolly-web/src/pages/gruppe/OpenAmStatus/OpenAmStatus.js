@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import './OpenAmStatus.less'
-import Button from '~/components/button/Button'
+import Button from '~/components/ui/button/Button'
 
 export default class OpenAmStatus extends Component {
 	state = {

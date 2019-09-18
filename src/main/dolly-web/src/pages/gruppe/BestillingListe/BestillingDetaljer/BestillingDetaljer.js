@@ -2,15 +2,15 @@ import React, { PureComponent, Fragment } from 'react'
 import Knapp from 'nav-frontend-knapper'
 import { Formik, FieldArray } from 'formik'
 import * as yup from 'yup'
-import Button from '~/components/button/Button'
+import Button from '~/components/ui/button/Button'
 import './BestillingDetaljer.less'
 import Formatters from '~/utils/DataFormatter'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import SendOpenAmConnector from '~/pages/gruppe/SendOpenAm/SendOpenAmConnector'
 import OpenAmStatusConnector from '~/pages/gruppe/OpenAmStatus/OpenAmStatusConnector'
-import DollyModal from '~/components/modal/DollyModal'
-import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
+import DollyModal from '~/components/ui/modal/DollyModal'
+import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
 
 export default class BestillingDetaljer extends PureComponent {
 	constructor(props) {
@@ -43,7 +43,7 @@ export default class BestillingDetaljer extends PureComponent {
 
 		return (
 			<div className="bestilling-detaljer">
-				<BestillingDetaljerSammendrag bestilling={bestilling} type="panel" />
+				<BestillingSammendrag bestilling={bestilling} />
 				{openAm ? (
 					<div className="bestilling-detaljer">
 						<h3>Jira-lenker</h3>
@@ -76,12 +76,9 @@ export default class BestillingDetaljer extends PureComponent {
 								GJENOPPRETT
 							</Button>
 						)}
-						<DollyModal
-							isOpen={modalOpen}
-							onRequestClose={this.closeModal}
-							closeModal={this.closeModal}
-							content={this._renderGjenopprettModal()}
-						/>
+						<DollyModal isOpen={modalOpen} closeModal={this.closeModal}>
+							{this._renderGjenopprettModal()}
+						</DollyModal>
 					</div>
 				</div>
 			</div>

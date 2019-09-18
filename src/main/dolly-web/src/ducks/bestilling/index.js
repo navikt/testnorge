@@ -19,19 +19,7 @@ export const actions = createActions(
 		POST_BESTILLING_FRA_EKSISTERENDE_IDENTER: (gruppeId, value) =>
 			DollyApi.createBestillingFraEksisterendeIdenter(gruppeId, value),
 		POST_BESTILLING: (gruppeId, values) => DollyApi.createBestilling(gruppeId, values),
-		GET_BESTILLING_MALER: async () => {
-			try {
-				const res = await DollyApi.getBestillingMaler()
-				return res
-			} catch (err) {
-				if (err.response) {
-					// && err.response.status === 404) {
-					//*Ingen maler
-					return { data: [] }
-				}
-				return err
-			}
-		}
+		GET_BESTILLING_MALER: () => DollyApi.getBestillingMaler()
 	},
 	'NEXT_PAGE',
 	'PREV_PAGE',
@@ -108,10 +96,7 @@ export default handleActions(
 			}
 		},
 		[success(actions.getBestillingMaler)](state, action) {
-			return {
-				...state,
-				maler: action.payload && action.payload.data
-			}
+			return { ...state, maler: action.payload.data }
 		},
 		[actions.setEnvironments](state, action) {
 			return {
@@ -121,14 +106,6 @@ export default handleActions(
 			}
 		},
 		[actions.setValues](state, action) {
-			// Remove empty values
-			let copy = JSON.parse(JSON.stringify(action.payload.values))
-			Object.entries(copy).forEach(([key, value]) => {
-				if (value === '') {
-					delete copy[key]
-				}
-			})
-
 			return {
 				...state,
 				values: action.payload.values,
@@ -185,15 +162,10 @@ export default handleActions(
 				malBestillingNavn: action.payload
 			}
 		},
-		[combineActions(actions.abortBestilling, LOCATION_CHANGE, success(actions.postBestilling))](
-			state,
-			action
-		) {
-			return initialState
-		},
 		[combineActions(
 			actions.abortBestilling,
 			LOCATION_CHANGE,
+			success(actions.postBestilling),
 			success(actions.postBestillingFraEksisterendeIdenter)
 		)](state, action) {
 			return initialState

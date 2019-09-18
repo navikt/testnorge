@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react'
 import { DollyApi } from '~/service/Api'
 import { Field } from 'formik'
-import Button from '~/components/button/Button'
+import Button from '~/components/ui/button/Button'
 import InputSelector from '~/components/fields/InputSelector'
 import _set from 'lodash/set'
-import Loading from '~/components/loading/Loading'
+import Loading from '~/components/ui/loading/Loading'
 import './arrayField.less'
 
 export default class ArrayField extends Component {
@@ -16,14 +16,13 @@ export default class ArrayField extends Component {
 	}
 
 	componentDidMount() {
-		const { fetchKodeverk } = this.props
-		fetchKodeverk()
+		this.props.fetchKodeverk()
 	}
 
 	componentDidUpdate(prevProps) {
-		this.state.fieldListe.length < 1 && this._initiering()
-		this.state.options.length < 1 && this._alleOptions(this.props.item)
-		const { endretListe } = this.state
+		const { endretListe, fieldListe, options } = this.state
+		fieldListe.length < 1 && this._initiering()
+		options.length < 1 && this._alleOptions(this.props.item)
 		endretListe && this._fjerneOptions()
 	}
 
@@ -52,23 +51,17 @@ export default class ArrayField extends Component {
 					/>
 				)}
 				{fieldListe.length > 0 &&
-					fieldListe.map((field, idx) => {
-						return this._renderValue(field.label, idx)
-					})}
+					fieldListe.map((field, idx) => this._renderValue(field.label, idx))}
 			</div>
 		)
 	}
 
 	_handleChange = inputValue => {
-		let { value, label } = inputValue
+		const { valgteVerdier, item } = this.props
 		const newFieldListe = [...this.state.fieldListe, inputValue]
 		this.setState({ fieldListe: newFieldListe, endretListe: true })
 
-		//Legger kun til value av inputValue i formikprops
-		let valueListe = []
-		newFieldListe.map(field => valueListe.push(field.value))
-
-		_set(this.props.valgteVerdier, this.props.item.id, valueListe)
+		_set(valgteVerdier, item.id, newFieldListe.map(field => field.value))
 	}
 
 	_renderValue = (field, idx) => {
@@ -80,10 +73,10 @@ export default class ArrayField extends Component {
 	}
 
 	_removeValue = idx => {
-		const copyListe = [...this.state.fieldListe]
-		copyListe.splice(idx, 1)
+		const { valgteVerdier, item } = this.props
+		const copyListe = [...this.state.fieldListe].splice(idx, 1)
 		this.setState({ fieldListe: copyListe, endretListe: true })
-		_set(this.props.valgteVerdier, this.props.item.id, copyListe)
+		_set(valgteVerdier, item.id, copyListe)
 
 		// Legge til valget i options
 		this._leggeTilOptions(copyListe)
@@ -96,7 +89,7 @@ export default class ArrayField extends Component {
 	}
 
 	_alleOptions = async item => {
-		const showValueInLabel = item.apiKodeverkShowValueInLabel ? true : false
+		const showValueInLabel = Boolean(item.apiKodeverkShowValueInLabel)
 
 		this.props.kodeverkObjekt &&
 			this.setState({
@@ -111,37 +104,32 @@ export default class ArrayField extends Component {
 		const fieldListe = this.state.fieldListe
 		const optionsCopy = JSON.parse(JSON.stringify(this.state.options))
 
+		// TODO: Duplikat av koden under
 		fieldListe.length > 0 &&
-			fieldListe.map(field => {
-				const removeIndex = optionsCopy
-					.map(function(item) {
-						return item.value
-					})
-					.indexOf(field.value)
+			fieldListe.forEach(field => {
+				const removeIndex = optionsCopy.map(item => item.value).indexOf(field.value)
 				optionsCopy.splice(removeIndex, 1)
 			})
+
 		optionsCopy.length !== this.state.options.length &&
 			this.setState({ options: [...optionsCopy], endretListe: false })
 	}
 
 	_leggeTilOptions = fieldListe => {
-		const { item } = this.props
-		const showValueInLabel = item.apiKodeverkShowValueInLabel ? true : false
+		const { item, kodeverkObjekt } = this.props
+		const showValueInLabel = Boolean(item.apiKodeverkShowValueInLabel)
 
 		const optionsCopy = DollyApi.Utils.NormalizeKodeverkForDropdown(
-			{ data: this.props.kodeverkObjekt },
+			{ data: kodeverkObjekt },
 			showValueInLabel
 		).options
 
 		fieldListe.length > 0 &&
-			fieldListe.map(field => {
-				const removeIndex = optionsCopy
-					.map(function(item) {
-						return item.value
-					})
-					.indexOf(field.value)
+			fieldListe.forEach(field => {
+				const removeIndex = optionsCopy.map(item => item.value).indexOf(field.value)
 				optionsCopy.splice(removeIndex, 1)
 			})
+
 		this.setState({ options: [...optionsCopy] })
 	}
 }

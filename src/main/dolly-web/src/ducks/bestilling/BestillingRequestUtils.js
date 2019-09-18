@@ -174,9 +174,10 @@ export const getValues = (attributeList, values) => {
 			return _set(accumulator, pathPrefix, value[0])
 		}
 		if (attribute.id === 'barn') {
-			const valueCopy = JSON.parse(JSON.stringify(values.barn))
+			const valueCopy = JSON.parse(JSON.stringify(value))
 			value.map((barn, idx) => {
 				//Loop gjennom liste med barn
+				//Samme action for begge alternativ. TODO: Skrive felles
 				if (barn.innvandret) {
 					Object.entries(valueCopy[idx].barn_innvandret[0]).map(attr => {
 						_set(

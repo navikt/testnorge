@@ -6,8 +6,8 @@ import * as yup from 'yup'
 import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { FormikInput } from '~/components/fields/Input/Input'
 import { DollyApi } from '~/service/Api'
-import Loading from '~/components/loading/Loading'
-import Table from '~/components/table/Table'
+import Loading from '~/components/ui/loading/Loading'
+import Table from '~/components/ui/table/Table'
 
 export default class RedigerGruppe extends PureComponent {
 	static propTypes = {

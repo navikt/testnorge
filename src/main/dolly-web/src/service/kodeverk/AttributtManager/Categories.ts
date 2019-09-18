@@ -1,8 +1,6 @@
 import { KategoriTypes } from './Types'
 import { ArenaApi, InstApi } from '~/service/Api'
 
-import { DEFAULT_ECDH_CURVE } from 'tls'
-
 export const Kategorier: KategoriTypes = {
 	PersInfo: {
 		id: 'personinfo',
@@ -29,8 +27,7 @@ export const Kategorier: KategoriTypes = {
 			'Arbeidsforhold: \n' +
 			'Dataene her blir lagt til AAREG. \n\n' +
 			'Inntekt: \n' +
-			'Lignede inntekter - årlig: ' +
-			'Lignede inntekter er stemplet og godkjent. Inntektene her blir lagt i Sigrun-stub.',
+			'Skatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.',
 
 		order: 40
 	},
