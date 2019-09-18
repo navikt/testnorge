@@ -45,7 +45,7 @@ public class ArenaForvalterConsumer {
     }
 
 
-    @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
+    @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
     public List<Arbeidsoeker> sendTilArenaForvalter(List<NyBruker> nyeBrukere) {
 
         RequestEntity postRequest = RequestEntity.post(postBrukere.expand())
@@ -62,7 +62,7 @@ public class ArenaForvalterConsumer {
         return response.getBody().getArbeidsokerList();
     }
 
-    @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
+    @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
     public List<Arbeidsoeker> hentArbeidsoekere(String personident, String eier, String miljoe) {
 
         Map<String, String> filters = new HashMap<>();
