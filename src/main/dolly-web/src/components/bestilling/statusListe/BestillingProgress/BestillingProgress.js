@@ -1,15 +1,14 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { DollyApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
-import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
-import miljoeStatusSelector from '~/utils/MiljoeStatusSelector'
-import BestillingProgress from './BestillingProgress/BestillingProgress'
-import MiljoeStatus from './MiljoeStatus/MiljoeStatus'
+import { Line } from 'rc-progress'
+import Knapp from 'nav-frontend-knapper'
+import Icon from '~/components/ui/icon/Icon'
 
-import './Status.less'
+import './BestillingProgress.less'
 
-export default class BestillingStatus extends PureComponent {
+export default class BestillingProgress extends PureComponent {
 	static propTypes = {
 		bestilling: PropTypes.object.isRequired
 	}
@@ -28,8 +27,7 @@ export default class BestillingStatus extends PureComponent {
 				: 0,
 			failureIntervalCounter: 0,
 			failed: false,
-			sistOppdatert: props.bestilling.sistOppdatert,
-			showCancelLoadingMsg: false
+			sistOppdatert: props.bestilling.sistOppdatert
 		}
 	}
 
@@ -72,22 +70,26 @@ export default class BestillingStatus extends PureComponent {
 
 		if (data.ferdig) {
 			setTimeout(async () => {
-				// Update groups
-				await this.props.onBestillingerUpdate() // state.ferdig = true
-				await this.props.onIdenterUpdate()
+				await this.props.getBestillinger() // state.ferdig = true
+				await this.props.getGruppe()
 			}, this.TIMEOUT_BEFORE_HIDE)
+		} else {
+			this.harBestillingFeilet(data.sistOppdatert)
 		}
+	}
 
-		const liveTimeStamp = new Date(data.sistOppdatert).getTime()
+	harBestillingFeilet = sistOppdatert => {
+		const liveTimeStamp = new Date(sistOppdatert).getTime()
 		const oldTimeStamp = new Date(this.state.sistOppdatert).getTime()
 
 		if (liveTimeStamp == oldTimeStamp) {
-			this.setState({ failureIntervalCounter: (this.state.failureIntervalCounter += 1) })
+			this.setState({ failureIntervalCounter: this.state.failureIntervalCounter + 1 })
 			// Etter et bestemt intervall uten update av timestamp, setter bestilling til failed
-			this.state.failureIntervalCounter == this.TIME_BEFORE_WARNING_MESSAGE &&
+			if (this.state.failureIntervalCounter == this.TIME_BEFORE_WARNING_MESSAGE) {
 				this.setState({ failed: true })
+			}
 		} else {
-			this.setState({ sistOppdatert: data.sistOppdatert, failureIntervalCounter: 0, failed: false })
+			this.setState({ sistOppdatert: sistOppdatert, failureIntervalCounter: 0, failed: false })
 		}
 	}
 
@@ -113,50 +115,41 @@ export default class BestillingStatus extends PureComponent {
 		}
 	}
 
-	_onCloseMiljoeStatus = () => {
-		this.props.removeNyBestillingStatus(this.props.bestilling.id)
-		this.props.onBestillingerUpdate()
-	}
-
 	_onCancelBtn = () => {
-		this.setState({ ferdig: true, showCancelLoadingMsg: true }, () => {
+		this.setState({ ferdig: true }, () => {
 			this.props.cancelBestilling(this.props.bestilling.id)
 			this.stopPolling()
 		})
 	}
 
 	render() {
-		const { isCanceling, bestilling } = this.props
-		const miljoeStatusObj = miljoeStatusSelector(bestilling)
-
-		if (isCanceling && this.state.showCancelLoadingMsg) {
-			return (
-				<ContentContainer className="loading-content-container">
-					<Loading label="AVBRYTER BESTILLING" />
-				</ContentContainer>
-			)
-		}
-
 		const status = this.calculateStatus()
 
 		return (
-			<div className="bestilling-status">
-				{!this.state.ferdig ? (
-					<BestillingProgress
-						status={status}
-						failed={this.state.failed}
-						cancelBestilling={this._onCancelBtn}
-					/>
-				) : (
-					bestilling && (
-						<MiljoeStatus
-							miljoeStatusObj={miljoeStatusObj}
-							bestilling={bestilling}
-							onCloseButton={() => this._onCloseMiljoeStatus()}
-						/>
-					)
+			<Fragment>
+				<div className="flexbox--space">
+					<h5>
+						<Loading onlySpinner /> {status.title}
+					</h5>
+					<span>{status.text}</span>
+				</div>
+				<div>
+					<Line percent={status.percent} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
+				</div>
+				{this.state.failed && (
+					<div className="cancel-container">
+						<div>
+							<Icon kind={'report-problem-circle'} />
+							<h5 className="feil-status-text">
+								Dette tar lengre tid enn forventet. Noe kan ha gått galt med bestillingen din.
+							</h5>
+						</div>
+						<Knapp type="fare" onClick={this._onCancelBtn}>
+							AVBRYT BESTILLING
+						</Knapp>
+					</div>
 				)}
-			</div>
+			</Fragment>
 		)
 	}
 }

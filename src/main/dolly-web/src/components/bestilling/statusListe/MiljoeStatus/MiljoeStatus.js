@@ -3,6 +3,7 @@ import cn from 'classnames'
 import Icon from '~/components/ui/icon/Icon'
 import Button from '~/components/ui/button/Button'
 import DollyModal from '~/components/ui/modal/DollyModal'
+import miljoeStatusSelector from '~/utils/MiljoeStatusSelector'
 import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
 
 import './MiljoeStatus.less'
@@ -20,14 +21,13 @@ export default class MiljoeStatus extends PureComponent {
 	}
 
 	render() {
+		const { bestilling, onCloseButton } = this.props
 		const {
 			bestillingId,
 			successEnvs,
 			finnesFeilmelding,
 			antallIdenterOpprettet
-		} = this.props.miljoeStatusObj
-
-		const bestilling = this.props.bestilling
+		} = miljoeStatusSelector(bestilling)
 
 		const failed = true && successEnvs.length == 0 && !finnesFeilmelding
 		const { modalOpen } = this.state
@@ -38,7 +38,7 @@ export default class MiljoeStatus extends PureComponent {
 					<p>Bestilling #{bestillingId}</p>
 					<h3>Bestillingsstatus</h3>
 					<div className="remove-button-container">
-						<Button kind="remove-circle" onClick={this.props.onCloseButton} />
+						<Button kind="remove-circle" onClick={() => onCloseButton(bestillingId)} />
 					</div>
 				</div>
 				<hr />
@@ -80,7 +80,7 @@ export default class MiljoeStatus extends PureComponent {
 	}
 
 	_renderMiljoeStatus = () => {
-		const { successEnvs, failedEnvs, avvikEnvs } = this.props.miljoeStatusObj
+		const { successEnvs, failedEnvs, avvikEnvs } = miljoeStatusSelector(this.props.bestilling)
 
 		return (
 			<Fragment>
