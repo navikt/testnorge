@@ -37,7 +37,6 @@ export const countAntallIdenterOpprettet = bestilling => {
 const miljoeStatusSelector = bestilling => {
 	if (!bestilling) return null
 
-	const bestillingId = bestilling.id
 	const successEnvs = []
 	const failedEnvs = []
 	const avvikEnvs = []
@@ -115,7 +114,6 @@ const miljoeStatusSelector = bestilling => {
 	setStatus('arenaforvalterStatus', 'status', 'Arena')
 
 	return {
-		bestillingId,
 		successEnvs,
 		failedEnvs,
 		avvikEnvs,

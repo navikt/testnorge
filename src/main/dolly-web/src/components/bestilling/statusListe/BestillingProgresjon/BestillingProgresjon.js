@@ -6,9 +6,9 @@ import { Line } from 'rc-progress'
 import Knapp from 'nav-frontend-knapper'
 import Icon from '~/components/ui/icon/Icon'
 
-import './BestillingProgress.less'
+import './BestillingProgresjon.less'
 
-export default class BestillingProgress extends PureComponent {
+export default class BestillingProgresjon extends PureComponent {
 	static propTypes = {
 		bestilling: PropTypes.object.isRequired
 	}
