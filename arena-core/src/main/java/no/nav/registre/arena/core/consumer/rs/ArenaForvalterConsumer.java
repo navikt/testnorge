@@ -78,11 +78,14 @@ public class ArenaForvalterConsumer {
 
         StringBuilder baseUrl = new StringBuilder(hentBrukere.toString() + "?");
         for (Map.Entry<String, String> entry : filters.entrySet()) {
-            baseUrl.append(entry.getKey())
-                    .append('=')
-                    .append(entry.getValue())
-                    .append('&');
+            if (entry.getValue() != null) {
+                baseUrl.append(entry.getKey())
+                        .append('=')
+                        .append(entry.getValue())
+                        .append('&');
+            }
         }
+        // TODO: cleanup possible '&' at end of url
         log.info("Henter identer fra arena-forvalteren: GET \"{}\"", baseUrl.toString());
         return hentFiltrerteArbeidsoekere(baseUrl.toString());
     }
