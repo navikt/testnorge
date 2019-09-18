@@ -31,11 +31,11 @@ public class UdiStubDefaultPersonUtil {
         //OPPHOLDSSTATUS
         UdiOppholdStatus specifiedUdiOppholdStatus = nullcheckSetDefaultValue(udiPerson.getOppholdStatus(), new UdiOppholdStatus());
 
-        udiPerson.setOppholdStatus(UdiOppholdStatus.builder()
+        udiPerson.setOppholdStatus(nullcheckSetDefaultValue(udiPerson.getOppholdStatus(), UdiOppholdStatus.builder()
                 .uavklart(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getUavklart(), false))
                 .udiOppholdSammeVilkaar(oppholdSammeVilkaarDefaultsIfUnspecified(specifiedUdiOppholdStatus))
                 .ikkeOppholdstilatelseIkkeVilkaarIkkeVisum(ikkeOppholdstilatelseIkkeVilkaarIkkeVisumIfUnspecified(specifiedUdiOppholdStatus))
-                .build());
+                .build()));
 
         // AVGJORELSER
         udiPerson.setAvgjoerelser(nullcheckSetDefaultValue(udiPerson.getAvgjoerelser(), Collections.singletonList(new UdiAvgjorelse())));
