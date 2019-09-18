@@ -12,7 +12,7 @@ export const getAttributesFromMal = mal => {
 			k !== 'relasjoner' &&
 			k !== 'regdato' &&
 			!k.includes('innvandretFraLand') &&
-			!k.includes('utvandretTilLand')
+			!k.includes('utvandretTilLand') 
 		) {
 			return k
 		}
@@ -34,6 +34,7 @@ export const getAttributesFromMal = mal => {
 
 	tpsfKriterier.innvandretFraLand && attrArray.push('innvandret')
 	tpsfKriterier.utvandretTilLand && attrArray.push('utvandret')
+	tpsfKriterier.erForsvunnet && attrArray.push('forsvunnet')
 
 	if (tpsfKriterier.utvandretTilLand) {
 		attrArray.push('utvandret')
@@ -86,6 +87,11 @@ export const getValuesFromMal = mal => {
 	if (reduxStateValue.adressetype && reduxStateValue.adressetype === 'MATR') {
 		const matrikkeladresseValues = _mapAdresseValues(reduxStateValue)
 		reduxStateValue = matrikkeladresseValues
+	}
+	if (reduxStateValue.erForsvunnet)
+	{
+		const forsvunnetValues = _mapForsvunnet(reduxStateValue)
+		reduxStateValue = forsvunnetValues
 	}
 	return reduxStateValue
 }
@@ -216,7 +222,7 @@ const _mapInnOgUtvandret = values => {
 		})
 	}
 
-	Object.entries(valuesArray).map(value => {
+	Object.entries(valuesArray).map(value=> {
 		if (value[0].includes('innvandret')) {
 			if (value[0].includes('partner')) {
 				!valuesArray.partner_innvandret && (valuesArray.partner_innvandret = [{}])
@@ -242,8 +248,21 @@ const _mapInnOgUtvandret = values => {
 				return (valuesArray.utvandret[0][value[0]] = value[1])
 			}
 		}
+	})
+	return valuesArray
+}
 
-		if (value[0].includes('forsvunnet')) {
+const _mapForsvunnet = values => {
+	let valuesArray = JSON.parse(JSON.stringify(values))
+	if (valuesArray.barn) {
+		//Loop gjennom barn og kjør denne funksjonen for hvert barn
+		valuesArray.barn.map((enkeltBarn, idx) => {
+		valuesArray.barn[idx] = _mapForsvunnet(enkeltBarn)
+		})
+	}
+	
+	Object.entries(valuesArray).map(value => {
+		if (Formatters.uppercaseAndUnderscoreToLowerCase(value).includes('forsvunnet')) { 
 			if (value[0].includes('partner')) {
 				!valuesArray.partner_forsvunnet && (valuesArray.partner_forsvunnet = [{}])
 				return (valuesArray.partner_forsvunnet[0][value[0].split('_')[1]] = value[1])
@@ -254,21 +273,9 @@ const _mapInnOgUtvandret = values => {
 				!valuesArray.forsvunnet && (valuesArray.forsvunnet = [{}])
 				return (valuesArray.forsvunnet[0][value[0]] = value[1])
 			}
-		}
+		}	
 	})
 	return valuesArray
-}
-
-const _mapForsvunnetValues = values => {
-	let forsvunnetValues = [
-		{
-			erForsvunnet: values.erForsvunnet,
-			forsvunnetDato: values.forsvunnetDato
-		}
-	]
-	let returnValues = values
-	returnValues['forsvunnet'] = forsvunnetValues
-	return forsvunnetValues
 }
 
 const _mapAdresseValues = values => {

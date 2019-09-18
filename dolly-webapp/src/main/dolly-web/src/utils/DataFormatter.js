@@ -84,7 +84,6 @@ Formatters.arrayToString = (array, separator = ',') => {
 		}${nextString.toUpperCase()}`
 	}, '')
 }
-
 Formatters.camelCaseToLabel = camelCase => {
 	if (!camelCase) return null
 	return _capitalize(_startCase(camelCase))
@@ -94,6 +93,12 @@ Formatters.uppercaseAndUnderscoreToCapitalized = value => {
 	if (!value) return null
 	const clean = _startCase(value)
 	return _capitalize(clean)
+}
+
+Formatters.uppercaseAndUnderscoreToLowerCase = value => {
+	if (!value) return null
+	const clean = _startCase(value)
+	return clean.toLowerCase()
 }
 
 Formatters.kodeverkLabel = kodeverk => {
