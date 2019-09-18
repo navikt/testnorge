@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +18,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -79,7 +79,7 @@ public class IdentpoolService {
         int totalPages = all.getTotalPages();
         if (totalPages > 0) {
             List<String> usedIdents = new ArrayList<>();
-            Random rand = new Random();
+            SecureRandom rand = new SecureRandom();
             for (int i = 0; i < request.getAntall(); i++) {
                 int randomPageNumber = rand.nextInt(totalPages);
 
