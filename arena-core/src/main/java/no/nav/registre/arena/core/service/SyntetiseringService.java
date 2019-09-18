@@ -34,11 +34,13 @@ public class SyntetiseringService {
 
     public List<Arbeidsoeker> opprettArbeidsoekere(Integer antallNyeIdenter, Long avspillergruppeId, String miljoe) {
         List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
+        log.info("Fant {} eksisternende identer i Hodejegeren.", levendeIdenter.size());
         List<String> arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
+        log.info("Fant {} eksisternende identer i Arena Forvalteren", arbeidsoekerIdenter.size());
 
         if (antallNyeIdenter == null) {
             int antallArbeidsoekereAaOpprette = getAntallBrukereForAaFylleArenaForvalteren(levendeIdenter.size(), arbeidsoekerIdenter.size());
-            log.info("Kan ikke opprette 'null' antall identer.");
+
             if (antallArbeidsoekereAaOpprette > 0) {
                 antallNyeIdenter = antallArbeidsoekereAaOpprette;
             } else {
@@ -46,7 +48,8 @@ public class SyntetiseringService {
                         (PROSENTANDEL_SOM_SKAL_HA_MELDEKORT * 100));
                 return new ArrayList<>();
             }
-            log.info("Oppretter {} nye identer", antallNyeIdenter);
+            log.info("Oppretter arbeidsoekere for {} identer for aa faa {}% tilgjengelige identer i arena forvalteren.",
+                    antallArbeidsoekereAaOpprette, (PROSENTANDEL_SOM_SKAL_HA_MELDEKORT * 100));
         }
 
         List<String> nyeIdenter = hentKvalifiserteIdenter(antallNyeIdenter, levendeIdenter, arbeidsoekerIdenter);
@@ -55,7 +58,9 @@ public class SyntetiseringService {
 
     public List<Arbeidsoeker> opprettArbeidssoeker(String ident, Long avspillergruppeId, String miljoe) {
         List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
+
         List<String> arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
+        log.info("Fant {} eksisterende identer i Arena Forvalteren.", arbeidsoekerIdenter.size());
 
         if (arbeidsoekerIdenter.contains(ident)) {
             log.info("Ident {} er allerede registrert som arbeidsøker.", ident);
@@ -72,6 +77,7 @@ public class SyntetiseringService {
         levendeIdenter = levendeIdenter.parallelStream()
                 .filter(eksisterendeArbeidsoekere::contains)
                 .collect(Collectors.toList());
+        log.info("Fant {} ledige identer i hodejegeren.", levendeIdenter.size());
 
         if (antallIdenter > levendeIdenter.size()) {
             antallIdenter = levendeIdenter.size();

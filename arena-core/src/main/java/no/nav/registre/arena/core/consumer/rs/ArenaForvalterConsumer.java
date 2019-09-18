@@ -85,8 +85,7 @@ public class ArenaForvalterConsumer {
                         .append('&');
             }
         }
-        // TODO: cleanup possible '&' at end of url
-        log.info("Henter identer fra arena-forvalteren: GET \"{}\"", baseUrl.toString());
+
         return hentFiltrerteArbeidsoekere(baseUrl.toString());
     }
 
