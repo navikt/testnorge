@@ -58,7 +58,7 @@ public class SyntetiseringService {
 
     public List<Arbeidsoeker> opprettArbeidssoeker(String ident, Long avspillergruppeId, String miljoe) {
         List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
-
+        log.info("Fant {} ledige identer i hodejegeren.", levendeIdenter.size());
         List<String> arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
         log.info("Fant {} eksisterende identer i Arena Forvalteren.", arbeidsoekerIdenter.size());
 
@@ -77,7 +77,11 @@ public class SyntetiseringService {
         levendeIdenter = levendeIdenter.parallelStream()
                 .filter(eksisterendeArbeidsoekere::contains)
                 .collect(Collectors.toList());
-        log.info("Fant {} ledige identer i hodejegeren.", levendeIdenter.size());
+
+        if (levendeIdenter.size() <= 0) {
+            log.info("Alle identer som ble funnet i hodejegeren eksisterer allerede i Arena Forvalter.");
+            return new ArrayList<>();
+        }
 
         if (antallIdenter > levendeIdenter.size()) {
             antallIdenter = levendeIdenter.size();
