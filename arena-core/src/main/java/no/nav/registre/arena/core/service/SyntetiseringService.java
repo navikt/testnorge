@@ -38,7 +38,7 @@ public class SyntetiseringService {
 
         if (antallNyeIdenter == null) {
             int antallArbeidsoekereAaOpprette = getAntallBrukereForAaFylleArenaForvalteren(levendeIdenter.size(), arbeidsoekerIdenter.size());
-
+            log.info("Kan ikke opprette 'null' antall identer.");
             if (antallArbeidsoekereAaOpprette > 0) {
                 antallNyeIdenter = antallArbeidsoekereAaOpprette;
             } else {
@@ -46,6 +46,7 @@ public class SyntetiseringService {
                         (PROSENTANDEL_SOM_SKAL_HA_MELDEKORT * 100));
                 return new ArrayList<>();
             }
+            log.info("Oppretter {} nye identer", antallNyeIdenter);
         }
 
         List<String> nyeIdenter = hentKvalifiserteIdenter(antallNyeIdenter, levendeIdenter, arbeidsoekerIdenter);
@@ -121,14 +122,14 @@ public class SyntetiseringService {
         return hentIdentListe(arbeidsoekere);
     }
 
-    private List<String> hentIdentListe(List<Arbeidsoeker> Arbeidsoekere) {
+    private List<String> hentIdentListe(List<Arbeidsoeker> arbeidsoekere) {
 
-        if (Arbeidsoekere.isEmpty()) {
+        if (arbeidsoekere.isEmpty()) {
             log.info("Fant ingen eksisterende identer.");
             return new ArrayList<>();
         }
 
-        return Arbeidsoekere.stream().map(Arbeidsoeker::getPersonident).collect(Collectors.toList());
+        return arbeidsoekere.stream().map(Arbeidsoeker::getPersonident).collect(Collectors.toList());
     }
 
     private int getAntallBrukereForAaFylleArenaForvalteren(int antallLevendeIdenter, int antallEksisterendeIdenter) {

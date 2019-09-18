@@ -83,7 +83,7 @@ public class ArenaForvalterConsumer {
                     .append(entry.getValue())
                     .append('&');
         }
-
+        log.info("Henter identer fra arena-forvalteren: GET \"{}\"", baseUrl.toString());
         return hentFiltrerteArbeidsoekere(baseUrl.toString());
     }
 
@@ -108,19 +108,22 @@ public class ArenaForvalterConsumer {
 
         for (int page = 0; page < antallSider; page++) {
             RequestEntity getRequest = RequestEntity.get(hentBrukerePage.expand(page)).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
+            log.info("Henter identer fra arena forvalteren: {}", getRequest.toString());
+
             ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
             if (invalidResponse(response)) {
                 log.info("Kunne ikke hente arbeidsøkere fra Arena Forvalteren på addresse:\n{}\nStatus: {}\nBody: {}",
                         getRequest.toString(), response.getStatusCode(), response.getBody());
                 return responseList;
             }
+
             responseList.addAll(response.getBody().getArbeidsokerList());
         }
 
         return responseList;
     }
 
-    @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
+    @Timed(value = "testnroge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
     public Boolean slettBrukerSuccessful(String personident, String miljoe) {
         RequestEntity deleteRequest = RequestEntity.delete(slettBrukere.expand(miljoe, personident))
                 .header("Nav-Call-Id", NAV_CALL_ID)
