@@ -130,7 +130,7 @@ public class ArenaForvalterConsumer {
         RequestEntity deleteRequest = RequestEntity.delete(slettBrukere.expand(miljoe, personident))
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
-
+        log.info("Sletter ident {} fra Arena Forvalter i miljø {}.", personident, miljoe);
         ResponseEntity response = restTemplate.exchange(deleteRequest, String.class);
 
         if (response.getStatusCode() != HttpStatus.OK) {
