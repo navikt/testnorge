@@ -116,7 +116,7 @@ public class TssService {
 
         if (mottattMelding != null) {
             String body = mottattMelding.getBody(String.class);
-            log.info(body);
+            log.info("Mottok data:{}", body);
             return Response910Util.parseResponse(mottattMelding.getBody(String.class));
         } else {
             log.warn("Fikk ikke svar fra TSS for lege {}", lege.replaceAll("[\r\n]",""));
