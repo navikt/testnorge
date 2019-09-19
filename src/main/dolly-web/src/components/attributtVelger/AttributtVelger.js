@@ -65,12 +65,11 @@ export default class AttributtVelger extends Component {
 			const { informasjonstekst, tilgjengeligeMiljoeEndepunkt } = hovedKategori
 			if (!informasjonstekst && !tilgjengeligeMiljoeEndepunkt) return false
 			return (
-				<div>
+				<Fragment>
 					{informasjonstekst}
-					{tilgjengeligeMiljoeEndepunkt && (
-						<TilgjengeligeMiljoer endepunkt={tilgjengeligeMiljoeEndepunkt} />
-					)}
-				</div>
+					<br />
+					<TilgjengeligeMiljoer endepunkt={tilgjengeligeMiljoeEndepunkt} />
+				</Fragment>
 			)
 		}
 

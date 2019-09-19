@@ -1,9 +1,10 @@
 import React from 'react'
 import { useAsync } from 'react-use'
-import Loading from '~/components/ui/loading/Loading'
 import Formatters from '~/utils/DataFormatter'
 
 export default function TilgjengeligeMiljoer({ endepunkt }) {
+	if (!endepunkt) return false
+
 	const state = useAsync(
 		async () => {
 			const response = await endepunkt
@@ -12,9 +13,13 @@ export default function TilgjengeligeMiljoer({ endepunkt }) {
 		[endepunkt]
 	)
 
-	if (state.loading || !state.value) return <Loading label="laster tilgjengelige miljøer" />
+	let message = 'laster tilgjengelige miljøer..'
 
-	if (state.error) return <p>{state.error.message}</p>
+	if (state.value && state.value.data) {
+		message = Formatters.arrayToString(state.value.data)
+	} else if (state.error) {
+		message = state.error.message
+	}
 
-	return <p>Tilgjengelige miljø: {Formatters.arrayToString(state.value.data)}</p>
+	return <span>Tilgjengelige miljø: {message}</span>
 }
