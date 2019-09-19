@@ -2,6 +2,8 @@ package no.nav.registre.tss.utils;
 
 import static no.nav.registre.tss.utils.RutineUtil.MELDINGSLENGDE;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 
 import no.nav.registre.tss.consumer.rs.responses.Response110;
@@ -9,11 +11,13 @@ import no.nav.registre.tss.consumer.rs.responses.Response111;
 import no.nav.registre.tss.consumer.rs.responses.Response125;
 import no.nav.registre.tss.consumer.rs.responses.Response910;
 
+@Slf4j
 public class Response910Util {
 
     private static final int POS_AFTER_HEADER = 531;
 
     public static Response910 parseResponse(String response) {
+        log.info(response);
         CurrentPosition currentPosition = new CurrentPosition(POS_AFTER_HEADER);
         int numberOfMessages = 0;
 
