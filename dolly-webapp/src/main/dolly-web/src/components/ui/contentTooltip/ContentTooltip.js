@@ -14,15 +14,14 @@ export default class ContentTooltip extends PureComponent {
 	}
 
 	state = {
-		isOpen: false,
-		tilgjengeligeMiljoe: ''
+		isOpen: false
 	}
 
 	render() {
 		const { children, hideText } = this.props
 
 		return (
-			<div className="flexbox--align-center content-tooltip" onClick={this._handleOnClick}>
+			<div className="flexbox--align-center content-tooltip" onClick={this._openTooltip}>
 				<div className="hjelpetekst">
 					{this._renderHjelpeIkon()}
 					{this.state.isOpen && this._renderHjelpeTekst(children)}
@@ -32,18 +31,8 @@ export default class ContentTooltip extends PureComponent {
 		)
 	}
 
-	_handleOnClick = async () => {
+	_openTooltip = async () => {
 		this.setState({ isOpen: !this.state.isOpen })
-		let res
-		if (this.props.tilgjengeligeMiljoeEndepunkt) {
-			try {
-				res = await this.props.tilgjengeligeMiljoeEndepunkt
-			} catch (err) {
-				res = 'Fant ingen miljø'
-				console.error(err)
-			}
-		}
-		return this.setState({ tilgjengeligeMiljoe: res })
 	}
 
 	_renderHjelpeIkon = () => (
@@ -67,19 +56,12 @@ export default class ContentTooltip extends PureComponent {
 			role="tooltip"
 			className="hjelpetekst__tooltip content hjelpetekst__tooltip--under"
 		>
-			<div className="hjelpetekst__tekst">
-				<p className="typo-normal">{children}</p>
-				{this.state.tilgjengeligeMiljoe && (
-					<p className="typo-normal">
-						Tilgjengelige miljø: {Formatters.arrayToString(this.state.tilgjengeligeMiljoe.data)}
-					</p>
-				)}
-			</div>
+			<div className="hjelpetekst__tekst">{children}</div>
 			<button
 				className="lukknapp lukknapp--hvit"
 				aria-controls="tooltip-hjelpetekst"
 				aria-label="Lukk hjelpetekst"
-				onClick={this._handleOnClick}
+				onClick={this._openTooltip}
 			>
 				Lukk hjelpetekst
 			</button>
