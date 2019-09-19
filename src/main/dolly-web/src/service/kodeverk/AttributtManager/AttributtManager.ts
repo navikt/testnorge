@@ -32,33 +32,19 @@ export default class AttributtManager {
 			)
 			.map(attr => {
 				if (attr.items) {
-					if (
-						attr.dataSource === 'SIGRUN' ||
-						attr.dataSource === 'AAREG' ||
-						attr.dataSource === 'KRR' ||
-						attr.dataSource === 'PDLF' ||
-						attr.dataSource === 'ARENA' ||
-						attr.dataSource === 'INST' ||
-						(attr.dataSource === 'TPSF' && attr.id === 'utvandret') ||
-						(attr.dataSource === 'TPSF' && attr.id === 'partner_utvandret') ||
-						(attr.dataSource === 'TPSF' && attr.id === 'barn_utvandret') ||
-						(attr.dataSource === 'TPSF' && attr.id === 'matrikkeladresse') ||
-						(attr.dataSource === 'TPSF' && attr.id === 'forsvunnet') ||
-						(attr.dataSource === 'TPSF' && attr.id === 'partner_forsvunnet') ||
-						(attr.dataSource === 'TPSF' && attr.id === 'barn_forsvunnet')
-					) {
-						return attr
-					} else {
-						// Eks: Barn som attributt må bli behandlet annerledes
+						if (attr.id === 'barn') {
 						return Object.assign(Object.assign({}, attr), {
-							items: this.listAllSelectFilterItems(selectedIds, attr.items)
+						items: this.listAllSelectFilterItems(selectedIds, attr.items)
+						})
+						} else {
+						return attr
+						}
+						} else {
+						return attr
+						}
 						})
 					}
-				} else {
-					return attr
-				}
-			})
-	}
+			
 
 	listAllExcludingChildren(): Attributt[] {
 		return AttributtListe.filter(f => !f.parent)
