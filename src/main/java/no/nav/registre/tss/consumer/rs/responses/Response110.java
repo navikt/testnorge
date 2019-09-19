@@ -17,7 +17,7 @@ public class Response110 {
     private String idOff;
     private String kodeIdenttype;
     private String kodeSamhType;
-    private String BeskrSamhType;
+    private String beskrSamhType;
     private String datoSamhType;
     private String datoSamhTom;
     private String navn;
@@ -27,7 +27,7 @@ public class Response110 {
     private String kodeKontrint;
     private String beskrKontrint;
     private String kodeStatus;
-    private String BeskrStatus;
+    private String beskrStatus;
     private String oppdater;
     private String kilde;
     private String brukerId;

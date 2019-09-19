@@ -67,7 +67,7 @@ public class TssService {
 
     public List<String> opprettSyntetiskeTssRutiner(List<Person> identer) {
         Map<String, List<TssSyntMessage>> syntetiskeTssRutiner = hentSyntetiskeTssRutiner(identer);
-        List<String> flatfiler = new ArrayList<>();
+        List<String> flatfiler = new ArrayList<>(syntetiskeTssRutiner.values().size());
 
         for (List<TssSyntMessage> rutiner : syntetiskeTssRutiner.values()) {
             flatfiler.add(RutineUtil.opprettFlatfil(rutiner));
@@ -102,7 +102,7 @@ public class TssService {
             if (mottattMelding != null) {
                 legerMedRespons.put(lege, Response910Util.parseResponse(mottattMelding.getBody(String.class)));
             } else {
-                log.warn("Fikk ikke svar fra TSS for lege {}", lege);
+                log.warn("Fikk ikke svar fra TSS for lege {}", lege.replaceAll("[\r\n]",""));
             }
         }
 
@@ -117,7 +117,7 @@ public class TssService {
         if (mottattMelding != null) {
             return Response910Util.parseResponse(mottattMelding.getBody(String.class));
         } else {
-            log.warn("Fikk ikke svar fra TSS for lege {}", lege);
+            log.warn("Fikk ikke svar fra TSS for lege {}", lege.replaceAll("[\r\n]",""));
         }
         return null;
     }

@@ -1,13 +1,14 @@
 package no.nav.registre.tss.utils;
 
+import static no.nav.registre.tss.utils.RutineUtil.MELDINGSLENGDE;
+
 import no.nav.registre.tss.consumer.rs.responses.TssSyntMessage;
 
 public class Rutine111Util {
-    private static final int LENGDE_PAA_111_MELDING = 203;
 
     public static String opprett111Rutine(TssSyntMessage message) {
-        StringBuilder rutine = new StringBuilder(LENGDE_PAA_111_MELDING);
-        for (int i = 0; i < LENGDE_PAA_111_MELDING; i++) {
+        StringBuilder rutine = new StringBuilder(MELDINGSLENGDE);
+        for (int i = 0; i < MELDINGSLENGDE; i++) {
             rutine.replace(i, i + 1, " ");
         }
 

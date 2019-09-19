@@ -7,9 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import no.nav.registre.tss.service.IdentService;
 
@@ -17,11 +18,7 @@ import no.nav.registre.tss.service.IdentService;
 @RequestMapping("api/v1/ident")
 public class IdentController {
 
-    private static final List<String> STOETTEDE_MILJOER;
-
-    static {
-        STOETTEDE_MILJOER = new ArrayList<>(Arrays.asList("q1", "q2"));
-    }
+    private static final Set<String> STOETTEDE_MILJOER = new HashSet<>(Arrays.asList("q1", "q2"));
 
     @Autowired
     private IdentService identService;
@@ -29,7 +26,7 @@ public class IdentController {
     @PostMapping
     public void opprettLeger(@RequestParam String miljoe, @RequestBody List<String> identer) {
         if (!STOETTEDE_MILJOER.contains(miljoe)) {
-            throw new IllegalArgumentException("Miljø " + miljoe + " er ikke støttet. Støttede miljøer: " + STOETTEDE_MILJOER.toString());
+            throw new IllegalArgumentException("Miljø " + miljoe + " er ikke støttet. Støttede miljøer: " + STOETTEDE_MILJOER);
         }
         identService.opprettLegerITss(miljoe, identer);
         // bruk fnrs i listen med identer og finn tilhørende navn i tpsf (husk på miljø her) / ELLER: nytt endepunkt i hodejegeren som returnerer navn og litt diverse fra status-quo?

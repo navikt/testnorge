@@ -28,7 +28,7 @@ public class IdentService {
     }
 
     private List<Person> hentPersondataFraHodejegeren(String miljoe, List<String> identer) {
-        List<Person> identerMedNavn = new ArrayList<>();
+        List<Person> identerMedNavn = new ArrayList<>(identer.size());
 
         for (String ident : identer) {
             identerMedNavn.add(new Person(ident, hodejegerenConsumer.getPersondata(ident, miljoe).getKortnavn()));
