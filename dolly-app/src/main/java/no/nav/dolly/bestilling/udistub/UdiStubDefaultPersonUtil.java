@@ -33,7 +33,7 @@ public class UdiStubDefaultPersonUtil {
 
         udiPerson.setOppholdStatus(nullcheckSetDefaultValue(udiPerson.getOppholdStatus(), UdiOppholdStatus.builder()
                 .uavklart(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getUavklart(), false))
-                .udiOppholdSammeVilkaar(oppholdSammeVilkaarDefaultsIfUnspecified(specifiedUdiOppholdStatus))
+                .oppholdSammeVilkaar(oppholdSammeVilkaarDefaultsIfUnspecified(specifiedUdiOppholdStatus))
                 .ikkeOppholdstilatelseIkkeVilkaarIkkeVisum(ikkeOppholdstilatelseIkkeVilkaarIkkeVisumIfUnspecified(specifiedUdiOppholdStatus))
                 .build()));
 
@@ -45,13 +45,13 @@ public class UdiStubDefaultPersonUtil {
     }
 
     private static UdiOppholdSammeVilkaar oppholdSammeVilkaarDefaultsIfUnspecified(UdiOppholdStatus udiOppholdStatus) {
-        UdiOppholdSammeVilkaar udiOppholdSammeVilkaar = nullcheckSetDefaultValue(udiOppholdStatus.getUdiOppholdSammeVilkaar(), new UdiOppholdSammeVilkaar());
+        UdiOppholdSammeVilkaar oppholdSammeVilkaar = nullcheckSetDefaultValue(udiOppholdStatus.getOppholdSammeVilkaar(), new UdiOppholdSammeVilkaar());
 
-        udiOppholdSammeVilkaar.setOppholdSammeVilkaarEffektuering(nullcheckSetDefaultValue(udiOppholdSammeVilkaar.getOppholdstillatelseVedtaksDato(), LocalDate.now()));
-        udiOppholdSammeVilkaar.setOppholdstillatelseType(nullcheckSetDefaultValue(udiOppholdSammeVilkaar.getOppholdstillatelseType(), UdiOppholdstillatelseType.MIDLERTIDIG));
-        udiOppholdSammeVilkaar.setOppholdSammeVilkaarPeriode(nullcheckSetDefaultValue(udiOppholdSammeVilkaar.getOppholdSammeVilkaarPeriode(), UdiPeriode.builder().fra(LocalDate.now()).til(LocalDate.now()).build()));
-        udiOppholdSammeVilkaar.setOppholdstillatelseVedtaksDato(nullcheckSetDefaultValue(udiOppholdSammeVilkaar.getOppholdstillatelseVedtaksDato(), LocalDate.now()));
-        return udiOppholdSammeVilkaar;
+        oppholdSammeVilkaar.setOppholdSammeVilkaarEffektuering(nullcheckSetDefaultValue(oppholdSammeVilkaar.getOppholdSammeVilkaarEffektuering(), LocalDate.now()));
+        oppholdSammeVilkaar.setOppholdstillatelseType(nullcheckSetDefaultValue(oppholdSammeVilkaar.getOppholdstillatelseType(), UdiOppholdstillatelseType.MIDLERTIDIG));
+        oppholdSammeVilkaar.setOppholdSammeVilkaarPeriode(nullcheckSetDefaultValue(oppholdSammeVilkaar.getOppholdSammeVilkaarPeriode(), UdiPeriode.builder().fra(LocalDate.now()).til(LocalDate.now()).build()));
+        oppholdSammeVilkaar.setOppholdstillatelseVedtaksDato(nullcheckSetDefaultValue(oppholdSammeVilkaar.getOppholdstillatelseVedtaksDato(), LocalDate.now()));
+        return oppholdSammeVilkaar;
     }
 
     private static UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOppholdstilatelseIkkeVilkaarIkkeVisumIfUnspecified(UdiOppholdStatus udiOppholdStatus) {
