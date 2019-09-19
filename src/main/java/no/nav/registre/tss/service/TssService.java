@@ -100,9 +100,12 @@ public class TssService {
             Message mottattMelding = jmsTemplate.sendAndReceive("queue:///" + mqQueueNameSamhandlerService + "?targetClient=1", session -> session.createTextMessage(rutine910));
 
             if (mottattMelding != null) {
-                legerMedRespons.put(lege, Response910Util.parseResponse(mottattMelding.getBody(String.class)));
+                Response910 response = Response910Util.parseResponse(mottattMelding.getBody(String.class));
+                if (!response.getResponse110().isEmpty() || !response.getResponse111().isEmpty() || !response.getResponse125().isEmpty()) {
+                    legerMedRespons.put(lege, Response910Util.parseResponse(mottattMelding.getBody(String.class)));
+                }
             } else {
-                log.warn("Fikk ikke svar fra TSS for lege {}", lege.replaceAll("[\r\n]",""));
+                log.warn("Fikk ikke svar fra TSS for lege {}", lege.replaceAll("[\r\n]", ""));
             }
         }
 
@@ -117,7 +120,7 @@ public class TssService {
         if (mottattMelding != null) {
             return Response910Util.parseResponse(mottattMelding.getBody(String.class));
         } else {
-            log.warn("Fikk ikke svar fra TSS for lege {}", lege.replaceAll("[\r\n]",""));
+            log.warn("Fikk ikke svar fra TSS for lege {}", lege.replaceAll("[\r\n]", ""));
         }
         return null;
     }
