@@ -37,8 +37,7 @@ export default class Panel extends Component {
 			errors,
 			checkAttributeArray,
 			uncheckAttributeArray,
-			informasjonstekst,
-			tilgjengeligeMiljoeEndepunkt
+			informasjonstekst
 		} = this.props
 
 		const panelIsOpen = forceOpen || this.state.open
@@ -53,11 +52,7 @@ export default class Panel extends Component {
 			<div className={panelClass}>
 				<div className="panel-heading">
 					{heading}
-					{informasjonstekst && (
-						<ContentTooltip tilgjengeligeMiljoeEndepunkt={tilgjengeligeMiljoeEndepunkt}>
-							<span>{informasjonstekst}</span>
-						</ContentTooltip>
-					)}
+					{informasjonstekst && <ContentTooltip>{informasjonstekst}</ContentTooltip>}
 					{errors && (
 						<div className="panel-heading_error">
 							<Icon kind="report-problem-triangle" />Feil i felter
