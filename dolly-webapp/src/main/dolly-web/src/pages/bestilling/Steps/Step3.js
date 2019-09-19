@@ -269,25 +269,23 @@ export default class Step3 extends PureComponent {
 
 			if (
 				item.id === 'barn_utvandret' ||
-				item.id === 'bard_innvandret' ||
+				item.id === 'barn_innvandret' ||
 				item.id === 'barn_forsvunnet'
 			) {
 				let barnIndex = 0
 				if (header) barnIndex = header - 1
 				valueArray = _get(this.props.values.barn[barnIndex], item.id)
 			}
-			return (
-				valueArray &&
-				valueArray.map((values, idx) => {
-					Object.keys(values).map(attr => {
-						return !values[attr] && delete values[attr]
+			if (!valueArray) return
+			return valueArray.map((values, idx) => {
+				Object.keys(values).map(attr => {
+					return !values[attr] && delete values[attr]
 					})
 					const header =
 						valueArray.length > 1 ? idx + 1 : item.subGruppe ? item.items[0].subGruppe : null
 
 					return this.renderSubKategoriBlokk(header, item.items, values)
 				})
-			)
 		}
 
 		let itemValue = this._formatereItemValue(item, _get(stateValues, item.id))

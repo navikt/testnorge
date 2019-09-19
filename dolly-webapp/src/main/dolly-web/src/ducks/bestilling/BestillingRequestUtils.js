@@ -199,7 +199,7 @@ export const getValues = (attributeList, values) => {
 					delete valueCopy[idx].barn_utvandret
 				}
 				if (barn.forsvunnet) {
-					Object.entries(valueCopy[idx].barn_forsvunnet[0]).map(attr => {
+					Object.entries(valueCopy[idx].forsvunnet[0]).map(attr => {
 						_set(
 							valueCopy[idx],
 							attr[0],
