@@ -19,6 +19,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsBestilling;
 import no.nav.dolly.mapper.MappingStrategy;
 
+@Deprecated
 @Component
 public class BestillingMappingStrategy implements MappingStrategy {
 

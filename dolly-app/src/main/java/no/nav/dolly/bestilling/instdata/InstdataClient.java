@@ -3,6 +3,9 @@ package no.nav.dolly.bestilling.instdata;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +34,7 @@ import no.nav.dolly.domain.resultset.inst.InstdataKilde;
 @Service
 public class InstdataClient implements ClientRegister {
 
+    public static final String OK_RESULT = "OK";
     private static final String[] DEFAULT_ENV = { "q2" };
 
     @Autowired
@@ -55,20 +60,18 @@ public class InstdataClient implements ClientRegister {
             if (!environments.isEmpty()) {
 
                 environments.forEach(environment -> {
+                    deleteInstdata(norskIdent.getIdent(), environment, status);
 
-                    if (deleteInstdata(norskIdent.getIdent(), environment, status)) {
+                    List<Instdata> instdataListe = mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class);
+                    instdataListe.forEach(instdata -> {
+                        instdata.setPersonident(norskIdent.getIdent());
+                        instdata.setKategori(nullcheckSetDefaultValue(instdata.getKategori(), decideKategori(instdata.getInstitusjonstype())));
+                        instdata.setKilde(nullcheckSetDefaultValue(instdata.getKilde(), decideKilde(instdata.getInstitusjonstype())));
+                        instdata.setOverfoert(nullcheckSetDefaultValue(instdata.getOverfoert(), false));
+                        instdata.setTssEksternId(nullcheckSetDefaultValue(instdata.getTssEksternId(), decideTssEksternId(instdata.getInstitusjonstype())));
+                    });
 
-                        List<Instdata> instdataListe = mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class);
-                        instdataListe.forEach(instdata -> {
-                            instdata.setPersonident(norskIdent.getIdent());
-                            instdata.setKategori(nullcheckSetDefaultValue(instdata.getKategori(), decideKategori(instdata.getInstitusjonstype())));
-                            instdata.setKilde(nullcheckSetDefaultValue(instdata.getKilde(), decideKilde(instdata.getInstitusjonstype())));
-                            instdata.setOverfoert(nullcheckSetDefaultValue(instdata.getOverfoert(), false));
-                            instdata.setTssEksternId(nullcheckSetDefaultValue(instdata.getTssEksternId(), decideTssEksternId(instdata.getInstitusjonstype())));
-                        });
-
-                        postInstdata(norskIdent.getIdent(), instdataListe, environment, status);
-                    }
+                    postInstdata(norskIdent.getIdent(), instdataListe, environment, status);
                 });
             }
 
@@ -104,31 +107,21 @@ public class InstdataClient implements ClientRegister {
         }
     }
 
-    private boolean deleteInstdata(String ident, String environment, StringBuilder status) {
+    private void deleteInstdata(String ident, String environment, StringBuilder status) {
 
         try {
             ResponseEntity<InstdataResponse[]> response = instdataConsumer.deleteInstdata(ident, environment);
 
-            if (response.hasBody() && response.getBody().length > 0) {
-                if (HttpStatus.NOT_FOUND.equals(response.getBody()[0].getStatus())
-                        || HttpStatus.OK.equals(response.getBody()[0].getStatus())) {
+            if (!response.hasBody() ||
+                    (!NOT_FOUND.name().equals(response.getBody()[0].getStatus()) &&
+                            !OK.name().equals(response.getBody()[0].getStatus()))) {
 
-                    return true;
-                } else {
-                    status.append(',')
-                            .append(environment)
-                            .append(':')
-                            .append(getErrorText(response.getBody()[0].getStatus(), response.getBody()[0].getFeilmelding()));
-                }
+                log.error("Feilet å slette person: {}, i INST miljø: {}", ident, environment);
             }
         } catch (RuntimeException e) {
-            status.append(',')
-                    .append(environment)
-                    .append(':');
-            appendErrorText(status, e);
+
             log.error("Feilet å slette person: {}, i INST miljø: {}", ident, environment, e);
         }
-        return false;
     }
 
     private void postInstdata(String ident, List<Instdata> instdata, String environment, StringBuilder status) {
@@ -145,7 +138,7 @@ public class InstdataClient implements ClientRegister {
                             .append("opphold=")
                             .append(i + 1)
                             .append('$')
-                            .append(HttpStatus.CREATED.value() == response.getBody()[i].getStatus().value() ? "OK" :
+                            .append(CREATED.value() == response.getBody()[i].getStatus().value() ? OK_RESULT :
                                     getErrorText(response.getBody()[i].getStatus(), response.getBody()[i].getFeilmelding()));
                 }
             }
@@ -207,6 +200,11 @@ public class InstdataClient implements ClientRegister {
         if (e instanceof HttpClientErrorException) {
             status.append(" (")
                     .append(encodeErrorStatus(((HttpClientErrorException) e).getResponseBodyAsString()))
+                    .append(')');
+        }
+        if (e instanceof HttpServerErrorException) {
+            status.append(" (")
+                    .append(encodeErrorStatus(((HttpServerErrorException) e).getResponseBodyAsString()))
                     .append(')');
         }
     }
