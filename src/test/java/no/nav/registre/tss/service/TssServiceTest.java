@@ -1,14 +1,17 @@
 package no.nav.registre.tss.service;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -32,8 +35,9 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.tss.consumer.rs.responses.Response910;
 import no.nav.registre.tss.consumer.rs.TssSyntetisererenConsumer;
+import no.nav.registre.tss.consumer.rs.responses.Response910;
+import no.nav.registre.tss.consumer.rs.responses.TssSyntMessage;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 
@@ -92,7 +96,13 @@ public class TssServiceTest {
     }
 
     @Test
-    public void shouldOppretteSyntetiskeRutiner() {
+    public void shouldOppretteSyntetiskeRutiner() throws IOException {
+        URL resource = Resources.getResource("syntetiske_rutiner_flatfil.json");
+        List<String> forventetResultat = new ObjectMapper().readValue(resource, new TypeReference<List<String>>(){});
+
+        resource = Resources.getResource("syntetiske_rutiner.json");
+        Map<String, List<TssSyntMessage>> syntetiskeMeldinger = new ObjectMapper().readValue(resource, new TypeReference<Map<String, List<TssSyntMessage>>>(){});
+
         Person person1 = new Person(fnr1, navn1);
         Person person2 = new Person(fnr2, navn2);
         List<Person> personer = new ArrayList<>(Arrays.asList(person1, person2));
@@ -107,9 +117,12 @@ public class TssServiceTest {
 
         assertThat(person2.getAlder(), is(alder));
 
+        when(tssSyntetisererenConsumer.hentSyntetiskeTssRutiner(anyList())).thenReturn(syntetiskeMeldinger);
+
         List<String> syntetiskeRutiner = tssService.opprettSyntetiskeTssRutiner(personer);
 
-        // TODO: Test er ikke ferdig, da den syntetiske genereringen skal endres
+        assertThat(syntetiskeRutiner.get(0), equalTo(forventetResultat.get(0)));
+        assertThat(syntetiskeRutiner.get(1), equalTo(forventetResultat.get(1)));
     }
 
     @Test

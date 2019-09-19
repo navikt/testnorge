@@ -1,11 +1,5 @@
 package no.nav.registre.tss.service;
 
-import static no.nav.registre.tss.utils.Rutine110Util.fiksPosisjoner;
-import static no.nav.registre.tss.utils.Rutine110Util.leggTilHeader;
-import static no.nav.registre.tss.utils.Rutine110Util.setOppdater;
-import static no.nav.registre.tss.utils.RutineUtil.TOTAL_LENGTH;
-import static no.nav.registre.tss.utils.RutineUtil.padTilLengde;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +10,20 @@ import org.springframework.stereotype.Service;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.tss.consumer.rs.responses.Response910;
 import no.nav.registre.tss.consumer.rs.TssSyntetisererenConsumer;
+import no.nav.registre.tss.consumer.rs.responses.Response910;
+import no.nav.registre.tss.consumer.rs.responses.TssSyntMessage;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 import no.nav.registre.tss.utils.Response910Util;
 import no.nav.registre.tss.utils.Rutine910Util;
+import no.nav.registre.tss.utils.RutineUtil;
 
 @Slf4j
 @Service
@@ -71,32 +66,18 @@ public class TssService {
     }
 
     public List<String> opprettSyntetiskeTssRutiner(List<Person> identer) {
-        List<String> syntetiskeTssRutiner = hentSyntetiskeTssRutiner(identer);
+        Map<String, List<TssSyntMessage>> syntetiskeTssRutiner = hentSyntetiskeTssRutiner(identer);
+        List<String> flatfiler = new ArrayList<>();
 
-        for (int i = 0; i < syntetiskeTssRutiner.size(); i++) {
-            List<String> rutiner = new ArrayList<>(Arrays.asList(syntetiskeTssRutiner.get(i).split("\n")));
-            StringBuilder s = new StringBuilder();
-            for (int j = 0; j < rutiner.size(); j++) {
-                rutiner.set(j, padTilLengde(rutiner.get(j)));
-                if (rutiner.get(j).length() != TOTAL_LENGTH) {
-                    throw new RuntimeException("Feil lengde på rutine");
-                }
-                if (rutiner.get(j).startsWith("110")) {
-                    rutiner.set(j, fiksPosisjoner(rutiner.get(j)));
-                    rutiner.set(j, setOppdater(rutiner.get(j)));
-                    rutiner.set(j, leggTilHeader(rutiner.get(j)));
-                }
-                s.append(rutiner.get(j));
-            }
-            syntetiskeTssRutiner.set(i, s.toString());
+        for (List<TssSyntMessage> rutiner : syntetiskeTssRutiner.values()) {
+            flatfiler.add(RutineUtil.opprettFlatfil(rutiner));
         }
 
-        return syntetiskeTssRutiner;
+        return flatfiler;
     }
 
     public void sendTilTss(List<String> meldinger) {
         for (String melding : meldinger) {
-            log.info("Sender melding til TSS: {}", melding);
             jmsTemplate.convertAndSend("queue:///" + mqQueueNameAjourhold + "?targetClient=1", melding);
         }
     }
@@ -141,7 +122,7 @@ public class TssService {
         return null;
     }
 
-    private List<String> hentSyntetiskeTssRutiner(List<Person> personer) {
+    private Map<String, List<TssSyntMessage>> hentSyntetiskeTssRutiner(List<Person> personer) {
         return tssSyntetisererenConsumer.hentSyntetiskeTssRutiner(personer);
     }
 }

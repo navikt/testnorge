@@ -19,13 +19,13 @@ import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 import no.nav.registre.tss.service.TssService;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TssControllerTest {
+public class SyntetiseringsControllerTest {
 
     @Mock
     private TssService tssService;
 
     @InjectMocks
-    private TssController tssController;
+    private SyntetiseringsController syntetiseringsController;
 
     private Long avspillergruppeId = 123L;
     private String miljoe = "t1";
@@ -52,7 +52,7 @@ public class TssControllerTest {
         when(tssService.hentIdenter(syntetiserTssRequest)).thenReturn(personer);
         when(tssService.opprettSyntetiskeTssRutiner(personer)).thenReturn(syntetiskeMeldinger);
 
-        tssController.opprettLegerITss(syntetiserTssRequest);
+        syntetiseringsController.opprettLegerITss(syntetiserTssRequest);
 
         verify(tssService).hentIdenter(syntetiserTssRequest);
         verify(tssService).opprettSyntetiskeTssRutiner(personer);
@@ -61,14 +61,14 @@ public class TssControllerTest {
 
     @Test
     public void shouldHenteLegerFraTss() throws JMSException {
-        tssController.hentLegerFraTss(avspillergruppeId, antallNyeIdenter);
+        syntetiseringsController.hentLegerFraTss(avspillergruppeId, antallNyeIdenter);
 
         verify(tssService).sendOgMotta910RutineFraTss(avspillergruppeId, antallNyeIdenter);
     }
 
     @Test
     public void shouldHenteLegeFraTss() throws JMSException {
-        tssController.hentLegeFraTss(fnr1);
+        syntetiseringsController.hentLegeFraTss(fnr1);
         verify(tssService).sendOgMotta910RutineFraTss(fnr1);
     }
 }

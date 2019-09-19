@@ -41,14 +41,6 @@
             <version>${springfox.version}</version>
         </dependency>
 
-        <!--TEST-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-contract-wiremock</artifactId>
-            <version>2.0.2.RELEASE</version>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
@@ -75,7 +67,7 @@
         <dependency>
             <groupId>no.nav.registre</groupId>
             <artifactId>testnorge-consumers</artifactId>
-            <version>1.8.0-RELEASE</version>
+            <version>1.10.3-RELEASE</version>
         </dependency>
 
         <!--> IBMMQ </!-->
@@ -89,10 +81,9 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-contract-wiremock</artifactId>
-            <scope>test</scope>
             <version>2.0.2.RELEASE</version>
+            <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

@@ -23,8 +23,8 @@ import no.nav.registre.tss.service.TssService;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1")
-public class TssController {
+@RequestMapping("api/v1/syntetisering")
+public class SyntetiseringsController {
 
     @Autowired
     private TssService tssService;

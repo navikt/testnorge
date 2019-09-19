@@ -1,21 +1,35 @@
 package no.nav.registre.tss.utils;
 
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.List;
+
+import no.nav.registre.tss.consumer.rs.responses.TssSyntMessage;
 
 public class RutineUtil {
 
-    public static final int TOTAL_LENGTH = 203;
+    public static String opprettFlatfil(List<TssSyntMessage> rutiner) {
+        StringBuilder flatfil = new StringBuilder();
+        for (TssSyntMessage rutine : rutiner) {
+            String idKode = rutine.getIdKode();
 
-    public static String padTilLengde(String rutine) {
-        StringBuilder finalRutine = new StringBuilder(rutine);
-        String padding = " ";
+            switch (idKode) {
+            case "110":
+                flatfil.append(Rutine110Util.opprett110Rutine(rutine));
+                break;
+            case "111":
+                flatfil.append(Rutine111Util.opprett111Rutine(rutine));
+                break;
+            case "170":
+                flatfil.append(Rutine170Util.opprett170Rutine(rutine));
+                break;
+            case "175":
+                flatfil.append(Rutine175Util.opprett175Rutine(rutine));
+                break;
+            default:
+                throw new RuntimeException("Ukjent idKode");
+            }
+        }
 
-        String extraPadding = IntStream.range(rutine.length(), TOTAL_LENGTH).mapToObj(i -> padding).collect(Collectors.joining(""));
-
-        finalRutine.append(extraPadding);
-
-        return finalRutine.toString();
+        return flatfil.toString();
     }
 
 }

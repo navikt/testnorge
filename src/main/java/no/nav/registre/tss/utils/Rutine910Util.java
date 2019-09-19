@@ -107,7 +107,7 @@ public class Rutine910Util {
 
     private static void checkLength(String field, int maxLength) {
         if (field.length() > maxLength) {
-            throw new IllegalArgumentException("Kan ikke være lenger enn " + maxLength);
+            throw new IllegalArgumentException("Felt " + field + " er for langt. Kan ikke være lenger enn " + maxLength);
         }
     }
 }
