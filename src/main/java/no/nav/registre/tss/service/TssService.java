@@ -115,8 +115,6 @@ public class TssService {
         Message mottattMelding = jmsTemplate.sendAndReceive("queue:///" + mqQueueNameSamhandlerService + "?targetClient=1", session -> session.createTextMessage(rutine910));
 
         if (mottattMelding != null) {
-            String body = mottattMelding.getBody(String.class);
-            log.info("Mottok data:{}", body);
             return Response910Util.parseResponse(mottattMelding.getBody(String.class));
         } else {
             log.warn("Fikk ikke svar fra TSS for lege {}", lege.replaceAll("[\r\n]",""));
