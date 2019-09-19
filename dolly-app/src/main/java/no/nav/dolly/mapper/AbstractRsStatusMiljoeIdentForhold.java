@@ -10,6 +10,7 @@ import org.apache.commons.collections4.list.TreeList;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+@Deprecated
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AbstractRsStatusMiljoeIdentForhold {
 
@@ -19,7 +20,7 @@ public class AbstractRsStatusMiljoeIdentForhold {
         String status;
 
         if (errMsg.contains("$")) {
-            forhold = errMsg.split("\\$")[0].replace("=", ": ");
+            forhold = errMsg.split("\\$")[0];
             status = errMsg.split("\\$")[1].replace('&', ',').replace('=', ':');
         } else {
             status = errMsg.replace('&', ',').replace('=', ':');
