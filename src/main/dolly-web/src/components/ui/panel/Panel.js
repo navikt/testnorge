@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
+import HjelpeTekst from 'nav-frontend-hjelpetekst'
 import Icon from '~/components/ui/icon/Icon'
 import ExpandButton from '~/components/ui/button/ExpandButton'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
-import ContentTooltip from '~/components/ui/contentTooltip/ContentTooltip'
 
 import './Panel.less'
 
@@ -37,8 +37,7 @@ export default class Panel extends Component {
 			errors,
 			checkAttributeArray,
 			uncheckAttributeArray,
-			informasjonstekst,
-			tilgjengeligeMiljoeEndepunkt
+			informasjonstekst
 		} = this.props
 
 		const panelIsOpen = forceOpen || this.state.open
@@ -53,11 +52,7 @@ export default class Panel extends Component {
 			<div className={panelClass}>
 				<div className="panel-heading">
 					{heading}
-					{informasjonstekst && (
-						<ContentTooltip tilgjengeligeMiljoeEndepunkt={tilgjengeligeMiljoeEndepunkt}>
-							<span>{informasjonstekst}</span>
-						</ContentTooltip>
-					)}
+					{informasjonstekst && <HjelpeTekst>{informasjonstekst}</HjelpeTekst>}
 					{errors && (
 						<div className="panel-heading_error">
 							<Icon kind="report-problem-triangle" />Feil i felter
