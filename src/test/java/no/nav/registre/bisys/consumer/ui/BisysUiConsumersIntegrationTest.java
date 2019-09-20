@@ -29,7 +29,7 @@ import no.nav.registre.bisys.LocalApplicationStarter;
 import no.nav.registre.bisys.consumer.rs.request.BidragsmeldingAugments;
 import no.nav.registre.bisys.consumer.rs.request.SynthesizedBidragRequest;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
-import no.nav.registre.bisys.consumer.ui.sak.BisysUiSoknadConsumer;
+import no.nav.registre.bisys.consumer.ui.soknad.BisysUiSoknadConsumer;
 import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 
 @ActiveProfiles("local-integration-test")

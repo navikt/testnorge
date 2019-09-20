@@ -1,8 +1,6 @@
 package no.nav.registre.bisys.exception;
 
-import static no.nav.bidrag.ui.bisys.logging.BidragLoggingUtils.logFeedbackErrors;
-import static no.nav.bidrag.ui.bisys.logging.BidragLoggingUtils.logFeedbackMessages;
-import static no.nav.bidrag.ui.bisys.logging.BidragLoggingUtils.logHtmlDump;
+import static no.nav.bidrag.ui.bisys.logging.BidragLoggingUtils.logAndDump;
 
 import no.nav.bidrag.ui.bisys.common.BisysPage;
 
@@ -12,25 +10,21 @@ public class BidragRequestProcessingException extends Exception {
 
     public BidragRequestProcessingException(String message, BisysPage bisysPage) {
         super(message);
-        logFeedbackMessages(bisysPage);
-        logFeedbackErrors(bisysPage);
-        logHtmlDump(bisysPage);
+
+        logAndDump(bisysPage);
     }
 
-    public BidragRequestProcessingException(String message, BisysPage bisysPage, Throwable t) {
+    public BidragRequestProcessingException(String message, BisysPage bisysPage, Exception t) {
         super(message, t);
-        logFeedbackMessages(bisysPage);
-        logFeedbackErrors(bisysPage);
-        logHtmlDump(bisysPage);
+
+        logAndDump(bisysPage);
     }
 
-    public BidragRequestProcessingException(BisysPage bisysPage, Throwable t) {
+    public BidragRequestProcessingException(BisysPage bisysPage, Exception t) {
         super(String.format("Processing failed when processing page %s.", bisysPage.header().tittel()),
                 t);
 
-        logFeedbackMessages(bisysPage);
-        logFeedbackErrors(bisysPage);
-        logHtmlDump(bisysPage);
+        logAndDump(bisysPage);
     }
 
 }

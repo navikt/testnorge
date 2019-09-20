@@ -1,4 +1,4 @@
-package no.nav.registre.bisys.consumer.ui.sak;
+package no.nav.registre.bisys.consumer.ui.soknad;
 
 import static no.nav.registre.bisys.config.AppConfig.STANDARD_DATE_FORMAT_BISYS;
 import static no.nav.registre.bisys.config.AppConfig.STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST;
@@ -74,7 +74,9 @@ public class BisysUiSoknadConsumer {
 
         if (!rollerConsumer.barnIsIncluded(roller.barnListe(), fnrBa)) {
             rollerConsumer.addBarnToSak(bisys, fnrBa);
+
         }
+
         bisys.bisysPage().sideBarMenu().tilbake().click();
     }
 
@@ -176,16 +178,46 @@ public class BisysUiSoknadConsumer {
 
         Soknad soknad = (Soknad) BisysUiSupport.getActiveBisysPage(bisys);
 
-        try {
-            soknad.fillInAndSaveSoknad(request);
-        } catch (BisysUiConnectException e) {
-            throw new BidragRequestProcessingException(soknad, e);
-        }
+        fillInAndSaveSoknad(soknad, request);
 
         log.info("### Søknad created ### application for barn {} was created.", request.getFnrBa());
 
         return BisysUiSupport.getBisysPageReference(bisys);
 
+    }
+
+    private void fillInAndSaveSoknad(Soknad soknad, SoknadRequest request) throws BidragRequestProcessingException {
+
+        soknad.selectSoknadstype(request.getSoknadstype());
+
+        try {
+            soknad.selectSoknadFra(request.getSoknadFra());
+            soknad.setFomDato(request.getSoktOm(), request.getSoktFra());
+            soknad.setSoktOm(request.getFnrBa(), request.getSoktOm());
+        } catch (BisysUiConnectException e) {
+            throw new BidragRequestProcessingException(soknad, e);
+        }
+
+        soknad.setMottattDato(request.getMottattDato());
+
+        try {
+            soknad.selectFastsattI(request.getFastsattI());
+        } catch (Exception e) {
+            log.info("Element fastsattI eksisterer ikke.");
+        }
+
+        try {
+            soknad.lagre().click();
+            soknad.selectGebyrfritakBp(request.getGebyrfritakBp());
+            soknad.selectGebyrfritakBm(request.getGebyrfritakBm());
+
+            // Single soknad, one child per bidragsmelding.
+            soknad.soknadslinjer().get(0).setInnbetalt(request.getInnbetalt());
+            soknad.lagre().click();
+
+        } catch (Exception e) {
+            throw new BidragRequestProcessingException(soknad, e);
+        }
     }
 
 }
