@@ -30,16 +30,22 @@ import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 public class BisysUiRollerConsumer {
 
     private static final String BARN_NOT_ADDED_TO_SAK = "Barn with id %s was not added to existing sak %s";
+    private static final String ERROR_DUPLIKAT_SAK_REGEX = ".*Det finnes allerede en sak med samme BM og BP på saksnr.*";
+    private static final String ERROR_BARN_MANGLER_RELASJON_TIL_BM_BP_REGEX = "Barn med fødselsnummer \\d{11} mangler relasjon til angitt BM/BP";
+    private static final String ERROR_TILHORER_ANNET_TK_REGEX = ".+tilhører et annet TK.+";
+    private static final String ERROR_SAK_MED_SAMME_PARTER_EKSISTERER_REGEX = "Det finnes allerede en sak med samme BM og BP på saksnr.*Trykk lagre igjen dersom du ønsker å lagre saken.*";
 
     private enum RollerFeedback {
-        ERROR_DUPLIKAT_SAK("Det finnes allerede en sak med samme BM og BP på saksnr"), ERROR_BARN_MANGLER_RELASJON_TIL_BM_BP_REGEX(
-                "Barn med fødselsnummer \\d{11} mangler relasjon til angitt BM/BP"), ERROR_TILHORER_ANNET_TK_REGEX(".+tilhører et annet TK.+");
 
-        private final String feebackMsg;
+        ERROR_DUPLIKAT_SAK(ERROR_DUPLIKAT_SAK_REGEX), ERROR_BARN_MANGLER_RELASJON_TIL_BM_BP(
+                ERROR_BARN_MANGLER_RELASJON_TIL_BM_BP_REGEX), ERROR_SAK_MED_SAMME_PARTER_EKSISTERER(ERROR_SAK_MED_SAMME_PARTER_EKSISTERER_REGEX), ERROR_TILHORER_ANNET_TK(ERROR_TILHORER_ANNET_TK_REGEX);
 
-        RollerFeedback(String feebackMsg) {
-            this.feebackMsg = feebackMsg;
+        private final String regex;
+
+        RollerFeedback(String regex) {
+            this.regex = regex;
         }
+
     }
 
     /**
@@ -115,7 +121,7 @@ public class BisysUiRollerConsumer {
 
     private void handleErrorAnnetTk(Roller roller) {
         for (Label error : roller.errors()) {
-            if (error.getText().matches(RollerFeedback.ERROR_TILHORER_ANNET_TK_REGEX.feebackMsg)) {
+            if (error.getText().matches(RollerFeedback.ERROR_TILHORER_ANNET_TK.regex)) {
                 roller.executeLagre().click();
             }
         }
@@ -174,42 +180,43 @@ public class BisysUiRollerConsumer {
         nyttBarn.person().fnr().setValue(fnrBa);
         roller.executeLagre().click();
 
-        BisysPageTitle activePageRef = BisysUiSupport.getBisysPageReference(bisys);
-        List<Label> errors = bisys.bisysPage().errors();
-        if (activePageRef.equals(BisysPageTitle.ROLLER) && !errors.isEmpty()) {
-            for (Label error : errors) {
-                if (error.getText().matches(RollerFeedback.ERROR_BARN_MANGLER_RELASJON_TIL_BM_BP_REGEX.feebackMsg)) {
-                    log.info(error.getText());
+        BisysUiSupport.checkCorrectActivePage(bisys, BisysPageTitle.ROLLER);
 
-                    roller.ignorerRelasjonBarnogBMBP().toggle();
-                    roller.executeLagre().click();
-                    if (barnIsIncluded(roller.barnListe(), fnrBa)) {
-                        if (activePageRef.equals(BisysPageTitle.ROLLER)) {
-                            return activePageRef;
-                        }
-                    } else {
-                        throw new BidragRequestProcessingException(bisys.bisysPage(),
-                                new Exception(String.format(BARN_NOT_ADDED_TO_SAK, fnrBa, saksnr)));
-                    }
-                } else if (error.getText().trim().length() > 0) {
-                    throw new BidragRequestProcessingException(bisys.bisysPage(),
-                            new Exception(String.format(BARN_NOT_ADDED_TO_SAK, fnrBa, saksnr)));
-                }
-            }
-        } else {
-            activePageRef = BisysUiSupport.getBisysPageReference(bisys);
-            if (activePageRef.equals(BisysPageTitle.ROLLER)) {
-                return activePageRef;
-            }
+        if (isErrorPresent(bisys, RollerFeedback.ERROR_BARN_MANGLER_RELASJON_TIL_BM_BP)) {
+            roller.ignorerRelasjonBarnogBMBP().toggle();
+            roller.executeLagre().click();
         }
 
-        activePageRef = BisysUiSupport.getBisysPageReference(bisys);
+        if (isErrorPresent(bisys, RollerFeedback.ERROR_SAK_MED_SAMME_PARTER_EKSISTERER)) {
+            roller.executeLagre().click();
+        }
+
+        if (!bisys.bisysPage().errors().isEmpty()) {
+            throw new BidragRequestProcessingException(bisys.bisysPage(),
+                    new Exception(String.format(BARN_NOT_ADDED_TO_SAK, fnrBa, saksnr)));
+        }
+
+        BisysPageTitle activePageRef = BisysUiSupport.getBisysPageReference(bisys);
         if (activePageRef.equals(BisysPageTitle.ROLLER)) {
             return activePageRef;
         }
 
         throw new BidragRequestProcessingException(bisys.bisysPage(),
                 new Exception(String.format(BARN_NOT_ADDED_TO_SAK, fnrBa, saksnr)));
+    }
+
+    private boolean isErrorPresent(BisysApplication bisys, RollerFeedback feedback) {
+        List<Label> errors = bisys.bisysPage().errors();
+        if (!errors.isEmpty()) {
+            for (Label error : errors) {
+                if (error.getText().matches(feedback.regex)) {
+                    log.warn(error.getText());
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public boolean barnIsIncluded(List<RolleBarn> list, String fnrBa) {
@@ -243,7 +250,7 @@ public class BisysUiRollerConsumer {
         for (Label error : errors) {
             String errorMsg = error.getText();
 
-            if (errorMsg.contains(RollerFeedback.ERROR_DUPLIKAT_SAK.feebackMsg)) {
+            if (errorMsg.contains(RollerFeedback.ERROR_DUPLIKAT_SAK.regex)) {
                 String saksnrRegEx = "saksnr\\s\\d{7}";
                 String saksnrDigitsOnlyRegEx = "\\d{7}";
 

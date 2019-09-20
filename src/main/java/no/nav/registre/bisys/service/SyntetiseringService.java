@@ -22,6 +22,8 @@ import no.nav.registre.testnorge.consumers.hodejegeren.responses.RelasjonsRespon
 @Slf4j
 public class SyntetiseringService {
 
+    private static final String KIBANA_X_STATUS = "x_status";
+
     public static final String RELASJON_MOR = "MORA";
     public static final String RELASJON_FAR = "FARA";
 
@@ -60,10 +62,10 @@ public class SyntetiseringService {
         for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
             try {
                 bisysUiConsumer.createVedtak(bidragsmelding);
+                logProcessingCompletionStatus(ProcessingCompletionStatus.SUCCESS);
+
             } catch (BidragRequestProcessingException e) {
-                log.warn(
-                        "En feil oppstod under prosessering av bidragsmelding for barn {}. Fortsetter med prossesering av neste melding.",
-                        bidragsmelding.getBarnetsFnr());
+                logProcessingCompletionStatus(ProcessingCompletionStatus.FAILED);
             }
         }
     }
@@ -117,5 +119,26 @@ public class SyntetiseringService {
     @Timed(value = "bisys.resource.latency", extraTags = { "operation", "hodejegeren" })
     public RelasjonsResponse finnRelasjonerTilIdent(String ident, String miljoe) {
         return hodejegerenConsumer.getRelasjoner(ident, miljoe);
+    }
+
+    public static void logProcessingCompletionStatus(ProcessingCompletionStatus status) {
+
+        if (ProcessingCompletionStatus.SUCCESS.equals(status)) {
+            log.info("{}={} - {}", KIBANA_X_STATUS, status.toString(), status.description);
+        } else {
+            log.error("{}={} - {}", KIBANA_X_STATUS, status.toString(), status.description);
+
+        }
+    }
+
+    public enum ProcessingCompletionStatus {
+        SUCCESS("Bidragsmelding processed successfully!"), FAILED(
+                "Processing failed!");
+
+        private final String description;
+
+        ProcessingCompletionStatus(String status) {
+            this.description = status;
+        }
     }
 }

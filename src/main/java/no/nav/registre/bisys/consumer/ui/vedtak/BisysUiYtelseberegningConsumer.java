@@ -41,7 +41,7 @@ public class BisysUiYtelseberegningConsumer {
     public static final String INGEN_BARN_REGISTRERT_PAA_HUSSTAND = "Det er ikke registrert noen barn på husstanden.";
     private static final int SKATTEKLASSE_PAAKREVD_FOER_AAR = 2018;
 
-    private enum InntekterFeedback {
+    public enum InntekterFeedback {
         UGYLDIG_SKATTEKLASSE_REGEX(".+UGYLDIG SKATTEKLASSE"), INGEN_INNTEKTER_RETURNERT(".+INNTEKTSKOMPONENTEN RETURNERTE INGEN INNTEKTER."), INGEN_INNTEKTER_VALGT(".+INGEN INNTEKTER ER VALGT");
 
         private final String regex;
