@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import HjelpeTekst from 'nav-frontend-hjelpetekst'
 import PersonInfoBlock from '~/components/personInfoBlock/PersonInfoBlock'
 import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManager'
 import Button from '~/components/ui/button/Button'
@@ -8,7 +9,6 @@ import Loading from '~/components/ui/loading/Loading'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
 import { getSuccessEnv, getPdlforvalterStatusOK } from '~/ducks/bestillingStatus/utils'
-import ContentTooltip from '~/components/ui/contentTooltip/ContentTooltip'
 import './PersonDetaljer.less'
 
 const AttributtManagerInstance = new AttributtManager()
@@ -64,9 +64,7 @@ export default class PersonDetaljer extends PureComponent {
 								<div key={idx} className="person-details_content">
 									<h3 className="flexbox--align-center">
 										{i.header}
-										{i.informasjonstekst && (
-											<ContentTooltip hideText>{i.informasjonstekst} </ContentTooltip>
-										)}
+										{i.informasjonstekst && <HjelpeTekst>{i.informasjonstekst} </HjelpeTekst>}
 									</h3>
 
 									{this._renderPersonInfoBlockHandler(i)}

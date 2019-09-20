@@ -3,7 +3,6 @@ import Knapp from 'nav-frontend-knapper'
 import { Formik, FieldArray } from 'formik'
 import * as yup from 'yup'
 import Button from '~/components/ui/button/Button'
-import './BestillingDetaljer.less'
 import Formatters from '~/utils/DataFormatter'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
@@ -11,6 +10,8 @@ import SendOpenAmConnector from '~/pages/gruppe/SendOpenAm/SendOpenAmConnector'
 import OpenAmStatusConnector from '~/pages/gruppe/OpenAmStatus/OpenAmStatusConnector'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
+
+import './BestillingDetaljer.less'
 
 export default class BestillingDetaljer extends PureComponent {
 	constructor(props) {
@@ -120,47 +121,45 @@ export default class BestillingDetaljer extends PureComponent {
 		const { environments, id } = this.props.bestilling // miljø som ble bestilt i en bestilling
 
 		return (
-			<Fragment>
-				<div className="dollymodal">
-					<div style={{ paddingLeft: 20, paddingRight: 20 }}>
-						<h1>Bestilling #{id}</h1>
-						<StaticValue header="Bestilt miljø" value={Formatters.arrayToString(environments)} />
-						<br />
-						<hr />
-					</div>
-					<Formik
-						initialValues={{
-							environments
-						}}
-						onSubmit={this._submitFormik}
-						validationSchema={this.EnvValidation}
-						render={formikProps => {
-							return (
-								<Fragment>
-									<FieldArray
-										name="environments"
-										render={arrayHelpers => (
-											<MiljoVelgerConnector
-												heading={'Velg miljø å gjenopprette i'}
-												arrayHelpers={arrayHelpers}
-												arrayValues={formikProps.values.environments}
-											/>
-										)}
-									/>
-									<div className="dollymodal_buttons">
-										<Knapp autoFocus type="standard" onClick={this.closeModal}>
-											Avbryt
-										</Knapp>
-										<Knapp type="hoved" onClick={formikProps.submitForm}>
-											Utfør
-										</Knapp>
-									</div>
-								</Fragment>
-							)
-						}}
-					/>
+			<div className="dollymodal">
+				<div style={{ paddingLeft: 20, paddingRight: 20 }}>
+					<h1>Bestilling #{id}</h1>
+					<StaticValue header="Bestilt miljø" value={Formatters.arrayToString(environments)} />
+					<br />
+					<hr />
 				</div>
-			</Fragment>
+				<Formik
+					initialValues={{
+						environments
+					}}
+					onSubmit={this._submitFormik}
+					validationSchema={this.EnvValidation}
+					render={formikProps => {
+						return (
+							<Fragment>
+								<FieldArray
+									name="environments"
+									render={arrayHelpers => (
+										<MiljoVelgerConnector
+											heading={'Velg miljø å gjenopprette i'}
+											arrayHelpers={arrayHelpers}
+											arrayValues={formikProps.values.environments}
+										/>
+									)}
+								/>
+								<div className="dollymodal_buttons">
+									<Knapp autoFocus type="standard" onClick={this.closeModal}>
+										Avbryt
+									</Knapp>
+									<Knapp type="hoved" onClick={formikProps.submitForm}>
+										Utfør
+									</Knapp>
+								</div>
+							</Fragment>
+						)
+					}}
+				/>
+			</div>
 		)
 	}
 
@@ -170,9 +169,5 @@ export default class BestillingDetaljer extends PureComponent {
 			.toLowerCase()
 		await this.props.gjenopprettBestilling(envsQuery)
 		await this.props.getBestillinger()
-	}
-
-	_onToggleModal = () => {
-		this.setState({ modalOpen: !this.state.modalOpen })
 	}
 }
