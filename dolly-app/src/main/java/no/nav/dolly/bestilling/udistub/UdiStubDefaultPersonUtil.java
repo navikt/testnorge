@@ -9,17 +9,14 @@ import java.util.Collections;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.resultset.udistub.model.UdiHarType;
-import no.nav.dolly.domain.resultset.udistub.model.UdiPeriode;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
 import no.nav.dolly.domain.resultset.udistub.model.avgjoerelse.UdiAvgjorelse;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiAvslagEllerBortfall;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiGrunnlagEos;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiGrunnlagOverig;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdSammeVilkaar;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdStatus;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdsrettType;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdstillatelseType;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiUtvistMedInnreiseForbud;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiVarighetType;
 
@@ -33,7 +30,6 @@ public class UdiStubDefaultPersonUtil {
 
         udiPerson.setOppholdStatus(nullcheckSetDefaultValue(udiPerson.getOppholdStatus(), UdiOppholdStatus.builder()
                 .uavklart(nullcheckSetDefaultValue(specifiedUdiOppholdStatus.getUavklart(), false))
-                .oppholdSammeVilkaar(oppholdSammeVilkaarDefaultsIfUnspecified(specifiedUdiOppholdStatus))
                 .ikkeOppholdstilatelseIkkeVilkaarIkkeVisum(ikkeOppholdstilatelseIkkeVilkaarIkkeVisumIfUnspecified(specifiedUdiOppholdStatus))
                 .build()));
 
@@ -42,16 +38,6 @@ public class UdiStubDefaultPersonUtil {
         udiPerson.setHarOppholdsTillatelse(nullcheckSetDefaultValue(udiPerson.getHarOppholdsTillatelse(), true));
         udiPerson.setSoknadDato(nullcheckSetDefaultValue(udiPerson.getSoknadDato(), LocalDate.now()));
         udiPerson.setAvgjoerelseUavklart(nullcheckSetDefaultValue(udiPerson.getAvgjoerelseUavklart(), false));
-    }
-
-    private static UdiOppholdSammeVilkaar oppholdSammeVilkaarDefaultsIfUnspecified(UdiOppholdStatus udiOppholdStatus) {
-        UdiOppholdSammeVilkaar oppholdSammeVilkaar = nullcheckSetDefaultValue(udiOppholdStatus.getOppholdSammeVilkaar(), new UdiOppholdSammeVilkaar());
-
-        oppholdSammeVilkaar.setOppholdSammeVilkaarEffektuering(nullcheckSetDefaultValue(oppholdSammeVilkaar.getOppholdSammeVilkaarEffektuering(), LocalDate.now()));
-        oppholdSammeVilkaar.setOppholdstillatelseType(nullcheckSetDefaultValue(oppholdSammeVilkaar.getOppholdstillatelseType(), UdiOppholdstillatelseType.MIDLERTIDIG));
-        oppholdSammeVilkaar.setOppholdSammeVilkaarPeriode(nullcheckSetDefaultValue(oppholdSammeVilkaar.getOppholdSammeVilkaarPeriode(), UdiPeriode.builder().fra(LocalDate.now()).til(LocalDate.now()).build()));
-        oppholdSammeVilkaar.setOppholdstillatelseVedtaksDato(nullcheckSetDefaultValue(oppholdSammeVilkaar.getOppholdstillatelseVedtaksDato(), LocalDate.now()));
-        return oppholdSammeVilkaar;
     }
 
     private static UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOppholdstilatelseIkkeVilkaarIkkeVisumIfUnspecified(UdiOppholdStatus udiOppholdStatus) {
