@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,13 +22,14 @@ import org.springframework.jms.core.JmsTemplate;
 import wiremock.com.google.common.io.Resources;
 
 import javax.jms.JMSException;
-import javax.jms.TextMessage;
+import javax.jms.Message;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,10 +99,12 @@ public class TssServiceTest {
     @Test
     public void shouldOppretteSyntetiskeRutiner() throws IOException {
         URL resource = Resources.getResource("syntetiske_rutiner_flatfil.json");
-        List<String> forventetResultat = new ObjectMapper().readValue(resource, new TypeReference<List<String>>(){});
+        List<String> forventetResultat = new ObjectMapper().readValue(resource, new TypeReference<List<String>>() {
+        });
 
         resource = Resources.getResource("syntetiske_rutiner.json");
-        Map<String, List<TssSyntMessage>> syntetiskeMeldinger = new ObjectMapper().readValue(resource, new TypeReference<Map<String, List<TssSyntMessage>>>(){});
+        Map<String, List<TssSyntMessage>> syntetiskeMeldinger = new ObjectMapper().readValue(resource, new TypeReference<Map<String, List<TssSyntMessage>>>() {
+        });
 
         Person person1 = new Person(fnr1, navn1);
         Person person2 = new Person(fnr2, navn2);
@@ -137,26 +139,50 @@ public class TssServiceTest {
 
     @Test
     public void shouldSendOgMotta910RutinerFraTss() throws JMSException {
-        when(hodejegerenConsumer.getLevende(avspillergruppeId)).thenReturn(Arrays.asList(fnr1, fnr2));
-        // TODO: Fiks mocking her, slik at vi får respons fra tss i testen
+        String fnr = "24107626502";
+        when(hodejegerenConsumer.getLevende(avspillergruppeId)).thenReturn(Collections.singletonList(fnr));
 
-//         when(jmsTemplate.sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any())).thenReturn();
+        Message message = mock(Message.class);
+        when(message.getBody(String.class)).thenReturn(getSampleResponseText());
+        when(jmsTemplate.sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any())).thenReturn(message);
 
-        Map<String, Response910> response = tssService.sendOgMotta910RutineFraTss(avspillergruppeId, antallNyeIdenter, koeNavn);
+        Map<String, Response910> response = tssService.sendOgMotta910RutineFraTss(avspillergruppeId, 1, koeNavn);
 
-        verify(jmsTemplate, times(2)).sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any());
+        verify(jmsTemplate).sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any());
+
+        assertThat(response.get(fnr).getResponse110().get(0).getIdOff(), equalTo(fnr));
+        assertThat(response.get(fnr).getResponse111().get(0).getIdAlternativ(), equalTo(fnr));
+        assertThat(response.get(fnr).getResponse111().get(1).getIdAlternativ(), equalTo("587977648"));
+        assertThat(response.get(fnr).getResponse125().get(0).getIdTSSEkstern(), equalTo("80900100006"));
     }
 
     @Test
     public void shouldSendOgMotta910RutineFraTss() throws JMSException {
-        // TODO: Fiks mocking her, slik at vi får respons fra tss i testen
-        TextMessage textMessage = mock(TextMessage.class);
-        textMessage.setText( "COB                                                                                                                                                                                                                                    SYNTORK     000000000110786517791  HPR LE                                                AND FRÍO                                                                                                      J                        11118036432167FNR                                                                                                                                                                                          1701                                           1989010120340101                                                                                                                                            1751   1                                           1989010120340101                                                                                                                                        ");
+        String fnr = "24107626502";
 
-//        when(jmsTemplate.sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any())).thenReturn(textMessage);
+        Message message = mock(Message.class);
+        when(message.getBody(String.class)).thenReturn(getSampleResponseText());
+        when(jmsTemplate.sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any())).thenReturn(message);
 
-        Response910 response = tssService.sendOgMotta910RutineFraTss(fnr1, koeNavn);
+        Response910 response = tssService.sendOgMotta910RutineFraTss(fnr, koeNavn);
 
         verify(jmsTemplate).sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any());
+
+        assertThat(response.getResponse110().get(0).getIdOff(), equalTo(fnr));
+        assertThat(response.getResponse111().get(0).getIdAlternativ(), equalTo(fnr));
+        assertThat(response.getResponse111().get(1).getIdAlternativ(), equalTo("587977648"));
+        assertThat(response.getResponse125().get(0).getIdTSSEkstern(), equalTo("80900100006"));
+    }
+
+    private String getSampleResponseText() {
+        return "COB                00                                                                                                                                            "
+                + "                                                                      910           24107626502FNR                                                     "
+                + "                                                                                                                                                       "
+                + "                                                                    11024107626502FNR LE  Lege                          20190919        ETAT VRIEN     "
+                + "                         NO                                      GYLDGyldig                     SYNTORK     20190919121811124107626502FNR Norsk fødselsnummer"
+                + "                     20190919        JSYNTORK     201909191218                                                                                         "
+                + "               111587977648  HPR HPR-nummer                              20190919        JSYNTORK     201909191218                                     "
+                + "                                                                   12501                                                                               "
+                + "     20190919        J80900100006           SYNTORK     201909191218";
     }
 }
