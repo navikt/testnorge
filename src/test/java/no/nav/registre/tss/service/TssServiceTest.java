@@ -45,7 +45,7 @@ import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 public class TssServiceTest {
 
     private static final int MIN_ALDER = 25;
-    private static final int MAX_ALDER = 60;
+    private static final int MAX_ALDER = 70;
 
     @Mock
     private HodejegerenConsumer hodejegerenConsumer;

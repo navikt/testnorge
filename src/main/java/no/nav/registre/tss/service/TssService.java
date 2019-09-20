@@ -30,7 +30,7 @@ import no.nav.registre.tss.utils.RutineUtil;
 public class TssService {
 
     private static final int MIN_ALDER = 25;
-    private static final int MAX_ALDER = 60;
+    private static final int MAX_ALDER = 70;
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
