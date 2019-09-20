@@ -59,6 +59,7 @@ public class TssServiceTest {
     @InjectMocks
     private TssService tssService;
 
+    private String koeNavn = "testKoe";
     private Long avspillergruppeId = 123L;
     private String miljoe = "t1";
     private int antallNyeIdenter = 2;
@@ -128,10 +129,10 @@ public class TssServiceTest {
     @Test
     public void shouldSendeTilTss() {
         List<String> syntetiskeMeldinger = new ArrayList<>(Arrays.asList("Some melding", "Some other melding"));
-        tssService.sendTilTss(syntetiskeMeldinger);
+        tssService.sendTilTss(syntetiskeMeldinger, koeNavn);
 
-        verify(jmsTemplate).convertAndSend("queue:///null?targetClient=1", "Some melding");
-        verify(jmsTemplate).convertAndSend("queue:///null?targetClient=1", "Some other melding");
+        verify(jmsTemplate).convertAndSend("queue:///" + koeNavn + "?targetClient=1", "Some melding");
+        verify(jmsTemplate).convertAndSend("queue:///" + koeNavn + "?targetClient=1", "Some other melding");
     }
 
     @Test
@@ -139,11 +140,11 @@ public class TssServiceTest {
         when(hodejegerenConsumer.getLevende(avspillergruppeId)).thenReturn(Arrays.asList(fnr1, fnr2));
         // TODO: Fiks mocking her, slik at vi får respons fra tss i testen
 
-        // when(jmsTemplate.sendAndReceive(eq("queue:///null?targetClient=1"), any())).thenReturn();
+//         when(jmsTemplate.sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any())).thenReturn();
 
-        Map<String, Response910> response = tssService.sendOgMotta910RutineFraTss(avspillergruppeId, antallNyeIdenter);
+        Map<String, Response910> response = tssService.sendOgMotta910RutineFraTss(avspillergruppeId, antallNyeIdenter, koeNavn);
 
-        verify(jmsTemplate, times(2)).sendAndReceive(eq("queue:///null?targetClient=1"), any());
+        verify(jmsTemplate, times(2)).sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any());
     }
 
     @Test
@@ -152,10 +153,10 @@ public class TssServiceTest {
         TextMessage textMessage = mock(TextMessage.class);
         textMessage.setText( "COB                                                                                                                                                                                                                                    SYNTORK     000000000110786517791  HPR LE                                                AND FRÍO                                                                                                      J                        11118036432167FNR                                                                                                                                                                                          1701                                           1989010120340101                                                                                                                                            1751   1                                           1989010120340101                                                                                                                                        ");
 
-//        when(jmsTemplate.sendAndReceive(eq("queue:///null?targetClient=1"), any())).thenReturn(textMessage);
+//        when(jmsTemplate.sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any())).thenReturn(textMessage);
 
-        Response910 response = tssService.sendOgMotta910RutineFraTss(fnr1);
+        Response910 response = tssService.sendOgMotta910RutineFraTss(fnr1, koeNavn);
 
-        verify(jmsTemplate).sendAndReceive(eq("queue:///null?targetClient=1"), any());
+        verify(jmsTemplate).sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any());
     }
 }

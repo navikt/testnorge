@@ -56,19 +56,19 @@ public class SyntetiseringsControllerTest {
 
         verify(tssService).hentIdenter(syntetiserTssRequest);
         verify(tssService).opprettSyntetiskeTssRutiner(personer);
-        verify(tssService).sendTilTss(syntetiskeMeldinger);
+        verify(tssService).sendTilTss(syntetiskeMeldinger, null);
     }
 
     @Test
     public void shouldHenteLegerFraTss() throws JMSException {
         syntetiseringsController.hentLegerFraTss(avspillergruppeId, antallNyeIdenter);
 
-        verify(tssService).sendOgMotta910RutineFraTss(avspillergruppeId, antallNyeIdenter);
+        verify(tssService).sendOgMotta910RutineFraTss(avspillergruppeId, antallNyeIdenter, null);
     }
 
     @Test
     public void shouldHenteLegeFraTss() throws JMSException {
         syntetiseringsController.hentLegeFraTss(fnr1);
-        verify(tssService).sendOgMotta910RutineFraTss(fnr1);
+        verify(tssService).sendOgMotta910RutineFraTss(fnr1, null);
     }
 }

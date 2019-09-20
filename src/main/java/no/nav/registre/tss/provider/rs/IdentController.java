@@ -24,13 +24,10 @@ public class IdentController {
     private IdentService identService;
 
     @PostMapping
-    public void opprettLeger(@RequestParam String miljoe, @RequestBody List<String> identer) {
-        if (!STOETTEDE_MILJOER.contains(miljoe)) {
+    public List<String> opprettLeger(@RequestParam String miljoe, @RequestBody List<String> identer) {
+        if (!STOETTEDE_MILJOER.contains(miljoe.toLowerCase())) {
             throw new IllegalArgumentException("Miljø " + miljoe + " er ikke støttet. Støttede miljøer: " + STOETTEDE_MILJOER);
         }
-        identService.opprettLegerITss(miljoe, identer);
-        // bruk fnrs i listen med identer og finn tilhørende navn i tpsf (husk på miljø her) / ELLER: nytt endepunkt i hodejegeren som returnerer navn og litt diverse fra status-quo?
-        // bruk syntpakken til å opprette syntetiske meldinger på identene
-        // legg identene inn i tss (husk på miljø her)
+        return identService.opprettLegerITss(miljoe.toLowerCase(), identer);
     }
 }

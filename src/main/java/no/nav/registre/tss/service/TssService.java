@@ -41,12 +41,6 @@ public class TssService {
     @Autowired
     private JmsTemplate jmsTemplate;
 
-    @Value("${queue.queueNameAjourhold}")
-    private String mqQueueNameAjourhold;
-
-    @Value("${queue.queueNameSamhandlerService}")
-    private String mqQueueNameSamhandlerService;
-
     public List<Person> hentIdenter(SyntetiserTssRequest syntetiserTssRequest) {
         Map<String, JsonNode> identerMedStatusQuo = hodejegerenConsumer.getStatusQuo(
                 syntetiserTssRequest.getAvspillergruppeId(),
@@ -76,13 +70,18 @@ public class TssService {
         return flatfiler;
     }
 
-    public void sendTilTss(List<String> meldinger) {
-        for (String melding : meldinger) {
-            jmsTemplate.convertAndSend("queue:///" + mqQueueNameAjourhold + "?targetClient=1", melding);
+    public void sendTilTss(List<String> meldinger, String koeNavn) {
+        try {
+            for (String melding : meldinger) {
+                jmsTemplate.convertAndSend("queue:///" + koeNavn + "?targetClient=1", melding);
+            }
+        } catch (Exception e) {
+            log.error("Kunne ikke sende til kø", e);
+            throw e;
         }
     }
 
-    public Map<String, Response910> sendOgMotta910RutineFraTss(Long avspillergruppeId, Integer antallLeger) throws JMSException {
+    public Map<String, Response910> sendOgMotta910RutineFraTss(Long avspillergruppeId, Integer antallLeger, String koeNavn) throws JMSException {
         List<String> alleLeger = hodejegerenConsumer.getLevende(avspillergruppeId);
         List<String> utvalgteLeger = new ArrayList<>();
         if (antallLeger != null) {
@@ -97,7 +96,7 @@ public class TssService {
         for (String lege : utvalgteLeger) {
             String rutine910 = Rutine910Util.opprettRutine(lege);
 
-            Message mottattMelding = jmsTemplate.sendAndReceive("queue:///" + mqQueueNameSamhandlerService + "?targetClient=1", session -> session.createTextMessage(rutine910));
+            Message mottattMelding = jmsTemplate.sendAndReceive("queue:///" + koeNavn + "?targetClient=1", session -> session.createTextMessage(rutine910));
 
             if (mottattMelding != null) {
                 Response910 response = Response910Util.parseResponse(mottattMelding.getBody(String.class));
@@ -112,10 +111,10 @@ public class TssService {
         return legerMedRespons;
     }
 
-    public Response910 sendOgMotta910RutineFraTss(String lege) throws JMSException {
+    public Response910 sendOgMotta910RutineFraTss(String lege, String koeNavn) throws JMSException {
         String rutine910 = Rutine910Util.opprettRutine(lege);
 
-        Message mottattMelding = jmsTemplate.sendAndReceive("queue:///" + mqQueueNameSamhandlerService + "?targetClient=1", session -> session.createTextMessage(rutine910));
+        Message mottattMelding = jmsTemplate.sendAndReceive("queue:///" + koeNavn + "?targetClient=1", session -> session.createTextMessage(rutine910));
 
         if (mottattMelding != null) {
             return Response910Util.parseResponse(mottattMelding.getBody(String.class));
