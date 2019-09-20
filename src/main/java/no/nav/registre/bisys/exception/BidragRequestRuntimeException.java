@@ -1,8 +1,6 @@
 package no.nav.registre.bisys.exception;
 
-import static no.nav.bidrag.ui.bisys.logging.BidragLoggingUtils.logFeedbackErrors;
-import static no.nav.bidrag.ui.bisys.logging.BidragLoggingUtils.logFeedbackMessages;
-import static no.nav.bidrag.ui.bisys.logging.BidragLoggingUtils.logHtmlDump;
+import static no.nav.bidrag.ui.bisys.logging.BidragLoggingUtils.logAndDump;
 
 import no.nav.bidrag.ui.bisys.common.BisysPage;
 
@@ -14,16 +12,12 @@ public class BidragRequestRuntimeException extends RuntimeException {
 
     public BidragRequestRuntimeException(String message, BisysPage bisysPage) {
         super(message);
-        logFeedbackMessages(bisysPage);
-        logFeedbackErrors(bisysPage);
-        logHtmlDump(bisysPage);
+        logAndDump(bisysPage);
     }
 
     public BidragRequestRuntimeException(BisysPage bisysPage, Throwable t) {
         super(String.format(ERROR_MSG, bisysPage.header().tittel()), t);
-        logFeedbackMessages(bisysPage);
-        logFeedbackErrors(bisysPage);
-        logHtmlDump(bisysPage);
+        logAndDump(bisysPage);
     }
 
     public BidragRequestRuntimeException(String errorMsg) {

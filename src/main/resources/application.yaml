@@ -21,9 +21,11 @@ KRAVBELOP: 3500
 SAMVARSKLASSE: "00"
 SAKSBEHANDLER_ROLLE: TK_Behandler
 SIVILSTAND_BM: UGIFT
+INNTEKT_BM_EGNE_OPPLYSNINGER: 400000
+INNTEKT_BP_EGNE_OPPLYSNINGER: 5000000
     
-SYNTBISYS_USERNAME: <insert here>	  		
-SYNTBISYS_PASSWORD: <insert here>  
+SYNTBISYS_USERNAME: <>	  		
+SYNTBISYS_PASSWORD: <>  
 
 syntrest.rest.api.url: http://localhost:${wiremock.server.port}/synthdata-bisys/api
 testnorge-hodejegeren.rest-api.url: http://localhost:${wiremock.server.port}/hodejegeren/api

@@ -74,7 +74,9 @@ public class BisysUiSoknadConsumer {
 
         if (!rollerConsumer.barnIsIncluded(roller.barnListe(), fnrBa)) {
             rollerConsumer.addBarnToSak(bisys, fnrBa);
+
         }
+
         bisys.bisysPage().sideBarMenu().tilbake().click();
     }
 
