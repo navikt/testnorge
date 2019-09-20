@@ -46,7 +46,7 @@ export default class SendOpenAm extends Component {
 
 		if (openAmFetching & !this.state.showButton) {
 			if (this.state.requestSent) return null
-			return <Loading label="sender" className="openam-loading-spinner" />
+			return <Loading label="sender" />
 		}
 
 		return (
@@ -63,20 +63,4 @@ export default class SendOpenAm extends Component {
 			)
 		)
 	}
-
-	_renderOpenAmModalContent = () => (
-		<Fragment>
-			<h1>Oppdater OpenAM</h1>
-			Gruppen er allerede sendt til OpenAM. Dolly vil forsøke å sende alle testidenter på nytt. Er
-			du sikker på at du vil utføre dette?
-			<div className="dollymodal_buttons">
-				<Knapp autoFocus type="standard" onClick={this.closeModal}>
-					Avbryt
-				</Knapp>
-				<Knapp type="hoved" onClick={this.closeOnSend}>
-					Utfør
-				</Knapp>
-			</div>
-		</Fragment>
-	)
 }

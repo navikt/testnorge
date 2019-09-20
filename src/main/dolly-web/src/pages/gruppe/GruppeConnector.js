@@ -14,8 +14,7 @@ const mapStateToProps = state => ({
 	isDeletingGruppe: loadingSelectorSlettGruppe(state),
 	gruppeArray: state.gruppe.data,
 	createOrUpdateId: state.gruppe.createOrUpdateId,
-	antallBestillinger: state.bestillingStatuser.data.length,
-	openAm: state.openam
+	antallBestillinger: state.bestillingStatuser.data.length
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {
