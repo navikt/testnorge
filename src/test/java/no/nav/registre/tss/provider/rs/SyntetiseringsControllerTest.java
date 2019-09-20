@@ -9,20 +9,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.jms.JMSException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
-import no.nav.registre.tss.service.TssService;
+import no.nav.registre.tss.service.SyntetiseringService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringsControllerTest {
 
     @Mock
-    private TssService tssService;
+    private SyntetiseringService syntetiseringService;
 
     @InjectMocks
     private SyntetiseringsController syntetiseringsController;
@@ -49,26 +48,13 @@ public class SyntetiseringsControllerTest {
         String syntetiskMelding2 = "SomeOtherMelding";
         List<String> syntetiskeMeldinger = new ArrayList<>(Arrays.asList(syntetiskMelding1, syntetiskMelding2));
 
-        when(tssService.hentIdenter(syntetiserTssRequest)).thenReturn(personer);
-        when(tssService.opprettSyntetiskeTssRutiner(personer)).thenReturn(syntetiskeMeldinger);
+        when(syntetiseringService.hentIdenter(syntetiserTssRequest)).thenReturn(personer);
+        when(syntetiseringService.opprettSyntetiskeTssRutiner(personer)).thenReturn(syntetiskeMeldinger);
 
         syntetiseringsController.opprettLegerITss(syntetiserTssRequest);
 
-        verify(tssService).hentIdenter(syntetiserTssRequest);
-        verify(tssService).opprettSyntetiskeTssRutiner(personer);
-        verify(tssService).sendTilTss(syntetiskeMeldinger, null);
-    }
-
-    @Test
-    public void shouldHenteLegerFraTss() throws JMSException {
-        syntetiseringsController.hentLegerFraTss(avspillergruppeId, antallNyeIdenter);
-
-        verify(tssService).sendOgMotta910RutineFraTss(avspillergruppeId, antallNyeIdenter, null);
-    }
-
-    @Test
-    public void shouldHenteLegeFraTss() throws JMSException {
-        syntetiseringsController.hentLegeFraTss(fnr1);
-        verify(tssService).sendOgMotta910RutineFraTss(fnr1, null);
+        verify(syntetiseringService).hentIdenter(syntetiserTssRequest);
+        verify(syntetiseringService).opprettSyntetiskeTssRutiner(personer);
+        verify(syntetiseringService).sendTilTss(syntetiskeMeldinger, miljoe);
     }
 }
