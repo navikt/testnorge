@@ -236,32 +236,7 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 			}
 		]
 	}
-	if (_get(final_values, 'tpsf.utvandret')) {
-		final_values.tpsf.utvandretTilLand = final_values.tpsf.utvandret[0].utvandretTilLand
-		final_values.tpsf.utvandretTilLandFlyttedato =
-			final_values.tpsf.utvandret[0].utvandretTilLandFlyttedato
-		delete final_values.tpsf.utvandret
-		if (_get(final_values, 'tpsf.relasjoner')) {
-			if (final_values.tpsf.relasjoner.partner && final_values.tpsf.relasjoner.partner.utvandret) {
-				final_values.tpsf.relasjoner.partner.utvandretTilLand =
-					final_values.tpsf.relasjoner.partner.utvandret[0].utvandretTilLand
-				final_values.tpsf.relasjoner.partner.utvandretTilLandFlyttedato =
-					final_values.tpsf.relasjoner.partner.utvandret[0].utvandretTilLandFlyttedato
-				delete final_values.tpsf.relasjoner.partner.utvandret
-			}
-			if (final_values.tpsf.relasjoner.barn) {
-				final_values.tpsf.relasjoner.barn.map((barnet, idx) => {
-					if (barnet.utvandret) {
-						final_values.tpsf.relasjoner.barn[idx].utvandretTilLand =
-							barnet.utvandret[0].utvandretTilLand
-						final_values.tpsf.relasjoner.barn[idx].utvandretTilLandFlyttedato =
-							barnet.utvandret[0].utvandretTilLandFlyttedato
-						delete final_values.tpsf.relasjoner.barn[idx].utvandret
-					}
-				})
-			}
-		}
-	}
+	
 
 	if (_get(final_values, 'arenaforvalter')) {
 		if (_get(final_values, 'arenaforvalter.arenaBrukertype') !== 'MED_SERVICEBEHOV') {

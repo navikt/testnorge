@@ -11,10 +11,12 @@ export const getAttributesFromMal = mal => {
 			k !== 'relasjoner' &&
 			k !== 'regdato' &&
 			!k.includes('innvandretFraLand') &&
-			!k.includes('utvandretTilLand') 
+			!k.includes('utvandretTilLand') &&
+			!k.includes('erForsvunnet')
 		) {
 			return k
 		}
+		
 	})
 	if (tpsfKriterier.boadresse) {
 		tpsfKriterier.boadresse.flyttedato && attrArray.push('boadresse_flyttedato')
@@ -34,18 +36,6 @@ export const getAttributesFromMal = mal => {
 	tpsfKriterier.innvandretFraLand && attrArray.push('innvandret')
 	tpsfKriterier.utvandretTilLand && attrArray.push('utvandret')
 	tpsfKriterier.erForsvunnet && attrArray.push('forsvunnet')
-
-	if (tpsfKriterier.utvandretTilLand) {
-		attrArray.push('utvandret')
-		delete attrArray[attrArray.indexOf('utvandretTilLand')]
-		tpsfKriterier.utvandretTilLandFlyttedato &&
-			delete attrArray[attrArray.indexOf('utvandretTilLandFlyttedato')]
-	}
-	if (tpsfKriterier.erForsvunnet) {
-		attrArray.push('forsvunnet')
-		delete attrArray[attrArray.indexOf('erForsvunnet')]
-		tpsfKriterier.forsvunnetDato && delete attrArray[attrArray.indexOf('forsvunnetDato')]
-	}
 
 	if (bestKriterier.pdlforvalter) {
 		Object.keys(bestKriterier.pdlforvalter).map(pdlattr => {
