@@ -353,24 +353,36 @@ const _mapRegistreValue = (key, value) => {
 			return [value]
 		case 'kontaktinformasjonForDoedsbo':
 			const mapObj = {}
+			const datoAttr = ['foedselsdato', 'utstedtDato', 'gyldigFom', 'gyldigTom']
 			Object.entries(value).map(attr => {
-				attr[0] === 'adressat'
-					? Object.entries(value[attr[0]]).map(adressatAttr => {
-							if (adressatAttr[0] === 'kontaktperson' || adressatAttr[0] === 'navn') {
-								Object.entries(value[attr[0]][adressatAttr[0]]).map(navn => {
-									mapObj[navn[0]] = navn[1]
-								})
-							} else if (adressatAttr[0] === 'organisasjonsnavn') {
-								value[attr[0]].adressatType === 'ADVOKAT'
-									? (mapObj['advokat_orgnavn'] = adressatAttr[1])
-									: (mapObj['org_orgnavn'] = adressatAttr[1])
-							} else if (adressatAttr[0] === 'organisasjonsnummer') {
-								value[attr[0]].adressatType === 'ADVOKAT'
-									? (mapObj['advokat_orgnr'] = adressatAttr[1])
-									: (mapObj['org_orgnr'] = adressatAttr[1])
-							} else mapObj[adressatAttr[0]] = adressatAttr[1]
-					  })
-					: (mapObj[attr[0]] = attr[1])
+				if (attr[0] === 'adressat') {
+					Object.entries(value[attr[0]]).map(adressatAttr => {
+						if (adressatAttr[0] === 'kontaktperson' || adressatAttr[0] === 'navn') {
+							Object.entries(value[attr[0]][adressatAttr[0]]).map(navn => {
+								mapObj[navn[0]] = navn[1]
+							})
+						} else if (adressatAttr[0] === 'organisasjonsnavn') {
+							value[attr[0]].adressatType === 'ADVOKAT'
+								? (mapObj['advokat_orgnavn'] = adressatAttr[1])
+								: (mapObj['org_orgnavn'] = adressatAttr[1])
+						} else if (adressatAttr[0] === 'organisasjonsnummer') {
+							value[attr[0]].adressatType === 'ADVOKAT'
+								? (mapObj['advokat_orgnr'] = adressatAttr[1])
+								: (mapObj['org_orgnr'] = adressatAttr[1])
+						} else {
+							const attrValue = datoAttr.includes(adressatAttr[0])
+								? Formatters.formatDate(adressatAttr[1])
+								: adressatAttr[1]
+							mapObj[adressatAttr[0]] = attrValue
+						}
+					})
+				} else {
+					if (datoAttr.includes(attr[0])) {
+						mapObj[attr[0]] = Formatters.formatDate(attr[1])
+					} else {
+						mapObj[attr[0]] = attr[1]
+					}
+				}
 			})
 			return [mapObj]
 		case 'utenlandskIdentifikasjonsnummer':
