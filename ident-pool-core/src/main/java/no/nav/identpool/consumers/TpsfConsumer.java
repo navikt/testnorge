@@ -24,11 +24,8 @@ public class TpsfConsumer {
     public TpsfConsumer(
             RestTemplateBuilder restTemplateBuilder,
             @Value("${tps-forvalteren.rest-api.url}") String serverUrl
-            //            , @Value("${testnorges.ida.credential.tpsf.username}") String username,
-            //            @Value("${testnorges.ida.credential.tpsf.password}") String password
     ) {
         this.restTemplate = restTemplateBuilder.build();
-        //        this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
         this.url = new UriTemplate(serverUrl + "/v1/serviceroutine/FS03-FDLISTER-DISKNAVN-M?aksjonsKode=A2&antallFnr={numberOfIdents}&environment={environment}&nFnr={idents}");
     }
 

@@ -1,15 +1,17 @@
 package no.nav.identpool.ajourhold;
 
-import no.nav.identpool.consumers.TpsfConsumer;
-import no.nav.identpool.domain.Identtype;
-import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.domain.TpsStatus;
-import no.nav.identpool.service.IdentGeneratorService;
-import no.nav.identpool.service.IdentTpsService;
-import no.nav.identpool.domain.Ident;
-import no.nav.identpool.repository.IdentRepository;
-import no.nav.identpool.test.mockito.MockitoExtension;
-import no.nav.identpool.util.PersonidentUtil;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyIterable;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import io.micrometer.core.instrument.Counter;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,18 +27,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyIterable;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import no.nav.identpool.consumers.TpsfConsumer;
+import no.nav.identpool.domain.Ident;
+import no.nav.identpool.domain.Identtype;
+import no.nav.identpool.domain.Rekvireringsstatus;
+import no.nav.identpool.domain.TpsStatus;
+import no.nav.identpool.repository.IdentRepository;
+import no.nav.identpool.service.IdentGeneratorService;
+import no.nav.identpool.service.IdentTpsService;
+import no.nav.identpool.test.mockito.MockitoExtension;
+import no.nav.identpool.util.PersonidentUtil;
 
 @ExtendWith(MockitoExtension.class)
 class AjourholdServiceTest {

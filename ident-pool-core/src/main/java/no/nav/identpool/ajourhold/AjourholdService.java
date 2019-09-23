@@ -144,26 +144,21 @@ public class AjourholdService {
     }
 
     public void getIdentsAndCheckProd() {
-        int pageSize = MAX_SIZE_TPS_QUEUE;
         HentIdenterRequest request = HentIdenterRequest.builder()
-                .antall(pageSize)
+                .antall(MAX_SIZE_TPS_QUEUE)
                 .foedtEtter(LocalDate.of(1850, 1, 1))
                 .build();
         Predicate predicate = IdentPredicateUtil.lagPredicateFraRequest(request);
-        Page<Ident> firstPage = identRepository.findAll(predicate, PageRequest.of(0, pageSize));
-        int numberOfPages = firstPage.getTotalPages();
+        Page<Ident> firstPage = identRepository.findAll(predicate, PageRequest.of(0, MAX_SIZE_TPS_QUEUE));
+        List<String> usedIdents = new ArrayList<>();
 
-        if (numberOfPages > 0) {
-            for (int i = 0; i < numberOfPages; i++) {
-                if (i >= 20) {
-                    break; // TESTING
-                }
-                List<String> usedIdents = new ArrayList<>();
-                Page<Ident> page = identRepository.findAll(predicate, PageRequest.of(i, pageSize));
+        if (firstPage.getTotalPages() > 0) {
+            for (int i = 0; i < firstPage.getTotalPages(); i++) {
+                Page<Ident> page = identRepository.findAll(predicate, PageRequest.of(i, MAX_SIZE_TPS_QUEUE));
 
-                Set<String> idents = page.getContent().stream().map(Ident::getPersonidentifikator).collect(Collectors.toSet());
+                List<String> idents = page.getContent().stream().map(Ident::getPersonidentifikator).collect(Collectors.toList());
                 try {
-                    JsonNode statusFromTps = tpsfConsumer.getStatusFromTps(new ArrayList<>(idents)).findValue("EFnr");
+                    JsonNode statusFromTps = tpsfConsumer.getStatusFromTps(idents).findValue("EFnr");
                     List<Map<String, Object>> identStatus = new ObjectMapper().convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
                     });
                     for (Map<String, Object> map : identStatus) {
@@ -174,11 +169,10 @@ public class AjourholdService {
                 } catch (IOException e) {
                     log.error("Kunne ikke hente status fra TPS", e);
                 }
-
-                idents.removeAll(usedIdents);
-
-                log.info("Page {} av {} - Identer som er markert som I_BRUK i q0: {}. Identer som er ledige: {}", i, numberOfPages, usedIdents, idents);
             }
+        }
+        if (!usedIdents.isEmpty()) {
+            log.info("Identer som er i bruk i prod, men som er markert som LEDIG i ident-pool: {}", usedIdents);
         }
     }
 }

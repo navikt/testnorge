@@ -19,7 +19,7 @@ public class CronJobService {
         batchService.startGeneratingIdentsBatch();
     }
 
-    //    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 22 * * *")
     public void checkProdStatus() {
         batchService.updateDatabaseWithProdStatus();
     }

@@ -9,7 +9,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,8 +24,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.identpool.ajourhold.BatchService;
-import no.nav.identpool.ajourhold.CronJobService;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
@@ -154,14 +151,5 @@ public class IdentpoolController {
     @ApiOperation(value = "returnerer en list over whitelisted identer")
     public List<String> hentWhitelist() {
         return identpoolService.hentWhitelist();
-    }
-
-
-    @Autowired
-    private BatchService batchService;
-
-    @GetMapping("checkProdStatus")
-    public void checkProdStatus() {
-        batchService.updateDatabaseWithProdStatus();
     }
 }
