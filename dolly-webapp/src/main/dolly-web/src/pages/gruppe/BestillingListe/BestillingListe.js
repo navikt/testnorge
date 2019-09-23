@@ -4,7 +4,7 @@ import Table from '~/components/ui/table/Table'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PaginationConnector from '~/components/ui/pagination/PaginationConnector'
 import Loading from '~/components/ui/loading/Loading'
-import BestillingDetaljerConnector from './BestillingDetaljer/BestillingDetaljerConnector'
+import BestillingDetaljer from '~/components/bestilling/detaljer/Detaljer'
 
 export default class BestillingListe extends PureComponent {
 	componentDidMount() {
@@ -47,7 +47,7 @@ export default class BestillingListe extends PureComponent {
 							return (
 								<Table.Row
 									key={idx}
-									expandComponent={<BestillingDetaljerConnector bestilling={bestilling} />}
+									expandComponent={<BestillingDetaljer bestilling={bestilling} />}
 								>
 									<Table.Column width="15" value={id} />
 									<Table.Column width="15" value={antallIdenter} />

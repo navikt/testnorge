@@ -5,7 +5,7 @@ import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
 import GjenopprettConnector from '~/components/bestilling/gjenopprett/GjenopprettConnector'
 import SendOpenAm from '~/components/bestilling/sendOpenAm/SendOpenAm'
 
-import './BestillingDetaljer.less'
+import './Detaljer.less'
 
 export default function BestillingDetaljer({ bestilling }) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
@@ -27,6 +27,7 @@ export default function BestillingDetaljer({ bestilling }) {
 	}
 
 	const harIdenterOpprettet = _erIdentOpprettet()
+	const btnCss = 'flexbox--align-center'
 
 	return (
 		<div className="bestilling-detaljer">
@@ -35,20 +36,12 @@ export default function BestillingDetaljer({ bestilling }) {
 			{harIdenterOpprettet && (
 				<div className="flexbox--align-center--justify-end info-block">
 					{!alleredeSendtTilOpenAm && (
-						<Button
-							className="flexbox--align-center"
-							onClick={openOpenAmModal}
-							kind="chevron-right"
-						>
+						<Button className={btnCss} onClick={openOpenAmModal} kind="chevron-right">
 							SEND TIL OPENAM
 						</Button>
 					)}
 
-					<Button
-						onClick={openGjenopprettModal}
-						className="flexbox--align-center"
-						kind="synchronize"
-					>
+					<Button onClick={openGjenopprettModal} className={btnCss} kind="synchronize">
 						GJENOPPRETT
 					</Button>
 				</div>
