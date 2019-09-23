@@ -11,9 +11,11 @@ import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
 import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -43,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -370,5 +373,23 @@ public class EksisterendeIdenterServiceTest {
         verify(tpsStatusQuoService).hentStatusQuo(ROUTINE_PERSDATA, Arrays.asList(DATO_DO, STATSBORGER), miljoe, fnr);
         verify(tpsfConsumer).getMeldingIderTilhoerendeIdenter(avspillergruppeId, identer);
         verify(tpsfConsumer).slettMeldingerFraTpsf(meldingIds);
+    }
+
+    @Test
+    public void shouldHenteIdenterNotInTps() throws IOException {
+        Long avspillergruppeId = 123L;
+        String fnr1 = "20092943861";
+        String fnr2 = "12345678910";
+        List<String> identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+
+        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("tpsStatus/tps_status.json"));
+
+        when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(eq(avspillergruppeId), anyList(), anyString())).thenReturn(new HashSet<>(identer));
+        when(tpsfConsumer.hentTpsStatusPaaIdenter(eq(miljoe), anyList())).thenReturn(jsonNode);
+
+        List<String> identerIkkeITps = eksisterendeIdenterService.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
+
+        assertThat(identerIkkeITps, contains(fnr2));
+        assertThat(identerIkkeITps, not(contains(fnr1)));
     }
 }

@@ -184,4 +184,10 @@ public class HodejegerenControllerTest {
         hodejegerenController.hentRelasjonerTilIdent(ident, miljoe);
         verify(eksisterendeIdenterService).hentRelasjoner(ident, miljoe);
     }
+
+    @Test
+    public void shouldHenteIdenterSomIkkeErITps() {
+        hodejegerenController.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
+        verify(eksisterendeIdenterService).hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
+    }
 }

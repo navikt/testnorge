@@ -178,4 +178,11 @@ public class HodejegerenController {
     public RelasjonsResponse hentRelasjonerTilIdent(@RequestParam String ident, @RequestParam String miljoe) {
         return eksisterendeIdenterService.hentRelasjoner(ident, miljoe);
     }
+
+    @LogExceptions
+    @ApiOperation(value = "")
+    @GetMapping("api/v1/identer-ikke-i-tps/{avspillergruppeId}")
+    public List<String> hentIdenterSomIkkeErITps(@PathVariable Long avspillergruppeId, @RequestParam String miljoe) {
+        return eksisterendeIdenterService.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
+    }
 }

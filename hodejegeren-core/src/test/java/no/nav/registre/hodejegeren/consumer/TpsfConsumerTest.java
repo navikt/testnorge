@@ -72,16 +72,16 @@ public class TpsfConsumerTest {
     @Test
     public void shouldWriteProperRequestWhenGettingTpsServiceRoutine() throws IOException {
         String aksjonskode = "B0";
-        String environment = "env";
+        String miljoe = "env";
         String fnr = "bla";
 
         String rutinenavn = "a";
-        String expectedUri = serverUrl + "/v1/serviceroutine/{routineName}?aksjonsKode={aksjonskode}&environment={environment}&fnr={fnr}";
+        String expectedUri = serverUrl + "/v1/serviceroutine/{routineName}?aksjonsKode={aksjonskode}&environment={miljoe}&fnr={fnr}";
 
-        this.server.expect(requestToUriTemplate(expectedUri, rutinenavn, aksjonskode, environment, fnr))
+        this.server.expect(requestToUriTemplate(expectedUri, rutinenavn, aksjonskode, miljoe, fnr))
                 .andRespond(request -> new MockClientHttpResponse("[]".getBytes(), HttpStatus.OK));
 
-        tpsfConsumer.getTpsServiceRoutine(rutinenavn, aksjonskode, environment, fnr);
+        tpsfConsumer.getTpsServiceRoutine(rutinenavn, aksjonskode, miljoe, fnr);
     }
 
     /**

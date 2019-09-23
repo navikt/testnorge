@@ -11,10 +11,12 @@ import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMME
 import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
 import static no.nav.registre.hodejegeren.service.utilities.IdentUtility.getFoedselsdatoFraFnr;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -306,7 +308,29 @@ public class EksisterendeIdenterService {
         }
 
         return slettIdenterResponse;
+    }
 
+    public List<String> hentIdenterSomIkkeErITps(Long avspillergruppeId, String miljoe) {
+        List<String> alleIdenter = finnAlleIdenter(avspillergruppeId);
+        List<String> identerIkkeITps = new ArrayList<>();
+        for (List<String> identer : Lists.partition(alleIdenter, 80)) {
+            try {
+                JsonNode jsonNode = tpsfConsumer.hentTpsStatusPaaIdenter(miljoe, identer);
+                if (!"00".equals(jsonNode.findValue("status").findValue("kode").asText())) {
+                    JsonNode statusFromTps = jsonNode.findValue("EFnr");
+                    List<Map<String, Object>> identStatus = new ObjectMapper().convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
+                    });
+                    for (Map<String, Object> map : identStatus) {
+                        if (map.containsKey("svarStatus")) {
+                            identerIkkeITps.add(String.valueOf(map.get("fnr")));
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                log.error("Kunne ikke hente status fra TPS", e);
+            }
+        }
+        return identerIkkeITps;
     }
 
     private Relasjon parseRelasjonNode(JsonNode relasjonNode) {
