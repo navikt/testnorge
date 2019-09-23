@@ -9,7 +9,7 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.Udi,
 		subKategori: SubKategorier.Oppholdsstatus,
-		id: 'gjeldendeOppholdsstatus',
+		id: 'oppholdStatus',
 		label: 'Har oppholdsstatus',
 		path: 'oppholdStatus',
 		dataSource: DataSource.UDI,
