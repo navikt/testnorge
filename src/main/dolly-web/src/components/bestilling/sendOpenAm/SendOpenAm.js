@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import Knapp from 'nav-frontend-knapper'
 import { useAsyncFn } from 'react-use'
 import _get from 'lodash/get'
@@ -19,7 +19,10 @@ export default function SendOpenAm({ closeModal, bestillingId }) {
 			<h1>Send til OpenAm</h1>
 
 			{!requestState.value && (
-				<p>Dolly vil sende alle testidenter til OpenAm. Er du sikker på at du vil utføre dette?</p>
+				<p>
+					Dolly vil sende alle testidenter i bestillingen til OpenAm. Er du sikker på at du vil
+					utføre dette?
+				</p>
 			)}
 
 			{requestState.loading && <Loading label="sender til openAm" />}
