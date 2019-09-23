@@ -6,12 +6,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import lombok.extern.log4j.Log4j2;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
+@Log4j2
 @Service
 public class SigrunStubClient implements ClientRegister {
 
@@ -20,6 +23,9 @@ public class SigrunStubClient implements ClientRegister {
 
     @Autowired
     private SigrunStubResponseHandler sigrunStubResponseHandler;
+
+    @Autowired
+    private ErrorStatusDecoder errorStatusDecoder;
 
     @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
@@ -36,7 +42,7 @@ public class SigrunStubClient implements ClientRegister {
                                 sigrunStubConsumer.createSkattegrunnlag(bestilling.getSigrunstub())));
 
             } catch (RuntimeException e) {
-                progress.setSigrunstubStatus("Feil:" + e.getMessage());
+                progress.setSigrunstubStatus(errorStatusDecoder.decodeRuntimeException(e));
             }
         }
     }
@@ -48,7 +54,8 @@ public class SigrunStubClient implements ClientRegister {
 
         } catch (HttpClientErrorException error) {
             if (!HttpStatus.NOT_FOUND.equals(error.getStatusCode())) {
-                throw error;
+
+                log.error("Feilet å slette ident {} fra Sigrunstub", ident, error);
             }
         }
     }
