@@ -43,13 +43,12 @@
         <mq-jmqi.version>7.1.0.0</mq-jmqi.version>
         <dhbcore.version>DH610-GOLD</dhbcore.version>
         <javaee.version>7.0</javaee.version>
-        <fasit-util.version>2.1.1-SNAPSHOT</fasit-util.version>
         <guava.version>23.0</guava.version>
         <jackson.version>2.9.6</jackson.version>
         <woodstox.version>4.4.1</woodstox.version>
         <woodstox-core.version>5.0.3</woodstox-core.version>
         <javassist.version>3.22.0-GA</javassist.version>
-        <fasit-util.version>3.1.2</fasit-util.version>
+        <fasit-util.version>3.4.0</fasit-util.version>
         <freg-security-oidc.version>3.1.0</freg-security-oidc.version>
         <guava.version>18.0</guava.version>
         <tpsws-domain.version>1.58.1</tpsws-domain.version>

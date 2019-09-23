@@ -74,9 +74,9 @@ public class IdentpoolService {
 
     public List<String> rekvirer(HentIdenterRequest request) throws ForFaaLedigeIdenterException {
         Set<Ident> identEntities = new HashSet<>();
-        Page<Ident> all = identRepository.findAll(IdentPredicateUtil.lagPredicateFraRequest(request), PageRequest.of(0, request.getAntall()));
+        Page<Ident> firstPage = identRepository.findAll(IdentPredicateUtil.lagPredicateFraRequest(request), PageRequest.of(0, request.getAntall()));
 
-        int totalPages = all.getTotalPages();
+        int totalPages = firstPage.getTotalPages();
         if (totalPages > 0) {
             List<String> usedIdents = new ArrayList<>();
             SecureRandom rand = new SecureRandom();
