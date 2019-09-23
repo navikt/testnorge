@@ -57,4 +57,6 @@ public class RsRelasjon {
     private LocalDateTime forsvunnetDato;
 
     private LocalDateTime doedsdato;
+
+    private List<RsIdenthistorikk> identhistorikk;
 }
