@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Knapp from 'nav-frontend-knapper'
+import HjelpeTekst from 'nav-frontend-hjelpetekst'
 import Overskrift from '~/components/ui/overskrift/Overskrift'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import Toolbar from '~/components/ui/toolbar/Toolbar'
 import Liste from './Liste'
 import Loading from '~/components/ui/loading/Loading'
-import ContentTooltip from '~/components/ui/contentTooltip/ContentTooltip'
 import PaginationConnector from '~/components/ui/pagination/PaginationConnector'
 
 export default class GruppeOversikt extends PureComponent {
@@ -51,9 +51,9 @@ export default class GruppeOversikt extends PureComponent {
 			<div className="oversikt-container">
 				<div className="page-header flexbox--align-center--justify-start">
 					<Overskrift label="Testdatagrupper" />
-					<ContentTooltip>
+					<HjelpeTekst>
 						Testdatagruppen inneholder alle testpersonene dine (FNR/DNR/BOST).
-					</ContentTooltip>
+					</HjelpeTekst>
 				</div>
 
 				<Toolbar
