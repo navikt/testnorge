@@ -95,9 +95,11 @@ public class BisysUiSakConsumer {
 
         for (Ytelseslinje ytelse : ytelser) {
             String status;
+            String saksnr;
             try {
                 status = ytelse.status().getText();
-
+                saksnr = ytelse.saksnr().getText();
+                log.info("Sjekk saksnr {}", saksnr);
             } catch (ElementNotFoundException | NoSuchElementException ee) {
                 log.info("Ingen ytelser funnet på bm {}", request.getFnrBm());
                 redirectToSak(bisys);
@@ -139,9 +141,13 @@ public class BisysUiSakConsumer {
             linkToSak.click();
         } else {
             BisysUiSupport.checkCorrectActivePage(bisys, BisysPageTitle.SAK);
+            linkToSak.click();
         }
 
         Sak sak = (Sak) BisysUiSupport.getActiveBisysPage(bisys);
+        String saksnr = sak.saksnr().getText();
+
+        log.info("Sjekk om eksisterende sak ({}) har samme BM og BP som bidragsmeldingen", saksnr);
 
         Optional<String> fnrBpBisys;
 
