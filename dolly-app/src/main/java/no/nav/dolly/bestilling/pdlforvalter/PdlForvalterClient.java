@@ -9,7 +9,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +21,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @Slf4j
 @Service
@@ -41,6 +41,9 @@ public class PdlForvalterClient implements ClientRegister {
 
     @Autowired
     private MapperFacade mapperFacade;
+
+    @Autowired
+    private ErrorStatusDecoder errorStatusDecoder;
 
     @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
@@ -174,18 +177,9 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private static void appendErrorStatus(Exception exception, StringBuilder builder) {
+    private void appendErrorStatus(RuntimeException exception, StringBuilder builder) {
 
-        builder.append("&Feil (")
-                .append(exception.getMessage());
-
-        if (exception instanceof HttpClientErrorException) {
-            String responseBody = ((HttpClientErrorException) exception).getResponseBodyAsString();
-            if (responseBody.contains("message")) {
-                builder.append(" - message: ")
-                        .append(responseBody.substring(responseBody.indexOf("message") + 9, responseBody.indexOf("path") - 2));
-            }
-        }
-        builder.append(')');
+        builder.append("&")
+                .append(errorStatusDecoder.decodeRuntimeException(exception));
     }
 }

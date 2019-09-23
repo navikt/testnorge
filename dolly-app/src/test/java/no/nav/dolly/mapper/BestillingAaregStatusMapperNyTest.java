@@ -12,7 +12,7 @@ import org.junit.Test;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
-public class BestillingAaregStatusMapperTest {
+public class BestillingAaregStatusMapperNyTest {
 
     private static final String IDENT = "111111111";
 

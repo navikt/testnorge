@@ -22,6 +22,7 @@ import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KrrstubClientTest {
@@ -37,6 +38,9 @@ public class KrrstubClientTest {
 
     @Mock
     private MapperFacade mapperFacade;
+
+    @Mock
+    private ErrorStatusDecoder errorStatusDecoder;
 
     @InjectMocks
     private KrrstubClient krrstubClient;
@@ -73,6 +77,7 @@ public class KrrstubClientTest {
         when(mapperFacade.map(any(RsDigitalKontaktdata.class), eq(DigitalKontaktdata.class)))
                 .thenReturn(new DigitalKontaktdata());
         when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenThrow(HttpClientErrorException.class);
+        when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil:");
 
         krrstubClient.gjenopprett(RsDollyBestilling.builder()
                 .krrstub(new RsDigitalKontaktdata())

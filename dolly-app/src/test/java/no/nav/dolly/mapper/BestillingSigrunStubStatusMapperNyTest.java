@@ -12,38 +12,38 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsStatusIdent;
+import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BestillingKrrStubStatusMapperTest {
+public class BestillingSigrunStubStatusMapperNyTest {
 
     private static final List<BestillingProgress> RUN_STATUS = newArrayList(
             BestillingProgress.builder().ident("IDENT_1")
-                    .krrstubStatus("OK")
+                    .sigrunstubStatus("OK")
                     .build(),
             BestillingProgress.builder().ident("IDENT_2")
-                    .krrstubStatus("FEIL")
+                    .sigrunstubStatus("FEIL")
                     .build(),
             BestillingProgress.builder().ident("IDENT_3")
-                    .krrstubStatus("OK")
+                    .sigrunstubStatus("OK")
                     .build(),
             BestillingProgress.builder().ident("IDENT_4")
-                    .krrstubStatus("FEIL")
+                    .sigrunstubStatus("FEIL")
                     .build(),
             BestillingProgress.builder().ident("IDENT_5")
-                    .krrstubStatus("OK")
+                    .sigrunstubStatus("OK")
                     .build()
     );
 
     @Test
-    public void krrStubStatusMap() {
+    public void sigrunStubStatusMap() {
 
-        List<RsStatusIdent> identStatuses = BestillingKrrStubStatusMapper.buildKrrStubStatusMap(RUN_STATUS);
+        List<RsStatusRapport> identStatuses = BestillingSigrunStubStatusMapperNy.buildSigrunStubStatusMap(RUN_STATUS);
 
-        assertThat(identStatuses.get(0).getStatusMelding(), is(equalTo("FEIL")));
-        assertThat(identStatuses.get(0).getIdenter(), containsInAnyOrder("IDENT_2", "IDENT_4"));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("FEIL")));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getIdenter(), containsInAnyOrder("IDENT_2", "IDENT_4"));
 
-        assertThat(identStatuses.get(1).getStatusMelding(), is(equalTo("OK")));
-        assertThat(identStatuses.get(1).getIdenter(), containsInAnyOrder("IDENT_1", "IDENT_3", "IDENT_5"));
+        assertThat(identStatuses.get(0).getStatuser().get(1).getMelding(), is(equalTo("OK")));
+        assertThat(identStatuses.get(0).getStatuser().get(1).getIdenter(), containsInAnyOrder("IDENT_1", "IDENT_3", "IDENT_5"));
     }
 }
