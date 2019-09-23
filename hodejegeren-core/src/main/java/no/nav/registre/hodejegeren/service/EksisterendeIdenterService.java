@@ -313,12 +313,13 @@ public class EksisterendeIdenterService {
     public List<String> hentIdenterSomIkkeErITps(Long avspillergruppeId, String miljoe) {
         List<String> alleIdenter = finnAlleIdenter(avspillergruppeId);
         List<String> identerIkkeITps = new ArrayList<>();
+        List<Map<String, Object>> identStatus;
         for (List<String> identer : Lists.partition(alleIdenter, 80)) {
             try {
                 JsonNode jsonNode = tpsfConsumer.hentTpsStatusPaaIdenter(miljoe, identer);
                 if (!"00".equals(jsonNode.findValue("status").findValue("kode").asText())) {
                     JsonNode statusFromTps = jsonNode.findValue("EFnr");
-                    List<Map<String, Object>> identStatus = new ObjectMapper().convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
+                    identStatus = new ObjectMapper().convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
                     });
                     for (Map<String, Object> map : identStatus) {
                         if (map.containsKey("svarStatus")) {
