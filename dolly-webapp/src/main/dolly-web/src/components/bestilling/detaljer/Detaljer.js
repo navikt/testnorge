@@ -3,7 +3,7 @@ import useBoolean from '~/utils/hooks/useBoolean'
 import Button from '~/components/ui/button/Button'
 import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
 import GjenopprettConnector from '~/components/bestilling/gjenopprett/GjenopprettConnector'
-import SendOpenAm from '~/components/bestilling/sendOpenAm/SendOpenAm'
+import SendOpenAmConnector from '~/components/bestilling/sendOpenAm/SendOpenAmConnector'
 
 import './Detaljer.less'
 
@@ -48,7 +48,7 @@ export default function BestillingDetaljer({ bestilling }) {
 			)}
 
 			{isOpenAmModalOpen && (
-				<SendOpenAm bestillingId={bestilling.id} closeModal={closeOpenAmModal} />
+				<SendOpenAmConnector bestilling={bestilling} closeModal={closeOpenAmModal} />
 			)}
 
 			{isGjenopprettModalOpen && (

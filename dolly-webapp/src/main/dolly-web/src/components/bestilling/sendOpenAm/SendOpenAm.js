@@ -7,15 +7,17 @@ import DollyModal from '~/components/ui/modal/DollyModal'
 import Loading from '~/components/ui/loading/Loading'
 import JiraLenker from '~/components/bestilling/jiraLenker/JiraLenker'
 
-export default function SendOpenAm({ closeModal, bestillingId }) {
+export default function SendOpenAm({ closeModal, bestilling, getBestillinger }) {
 	const [requestState, postOpenAm] = useAsyncFn(async () => {
-		return DollyApi.postOpenAmBestilling(bestillingId)
+		return DollyApi.postOpenAmBestilling(bestilling.id)
 	})
 
 	const openAmLinkArray = _get(requestState, 'value.data', []).map(response => response.message)
 
+	const close = () => (requestState.value ? getBestillinger() : closeModal())
+
 	return (
-		<DollyModal isOpen={true} closeModal={closeModal}>
+		<DollyModal isOpen={true} closeModal={close}>
 			<h1>Send til OpenAm</h1>
 
 			{!requestState.value && (
@@ -33,7 +35,7 @@ export default function SendOpenAm({ closeModal, bestillingId }) {
 					<p>Sakene vil bli oppdatert i løpet av 2-3 minutter, og finnes da i kommentarfeltet.</p>
 
 					<div className="dollymodal_buttons">
-						<Knapp autoFocus type="standard" onClick={closeModal}>
+						<Knapp autoFocus type="standard" onClick={close}>
 							Lukk
 						</Knapp>
 					</div>
