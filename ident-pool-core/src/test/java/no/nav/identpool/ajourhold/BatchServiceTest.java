@@ -48,7 +48,7 @@ class BatchServiceTest {
     @Test
     void batchKjorer() {
         when(ajourholdService.checkCriticalAndGenerate()).thenReturn(true);
-        batchService.startBatch();
+        batchService.startGeneratingIdentsBatch();
         assertThat(entity.getStatus(), is(BatchStatus.COMPLETED));
     }
 
@@ -56,18 +56,18 @@ class BatchServiceTest {
     void batchFeiler() {
         String exception = "Unique exception";
         when(ajourholdService.checkCriticalAndGenerate()).thenThrow(new RuntimeException(exception));
-        batchService.startBatch();
+        batchService.startGeneratingIdentsBatch();
         assertThat(entity.getStatus(), is(BatchStatus.FAILED));
         assertThat(entity.getFeilmelding(), containsString(exception));
         Ajourhold prev = entity;
-        batchService.startBatch();
+        batchService.startGeneratingIdentsBatch();
         assertThat(prev, is(entity));
     }
 
     @Test
     void batchKjorerMenGenerererIngenIdenter() {
         when(ajourholdService.checkCriticalAndGenerate()).thenReturn(false);
-        batchService.startBatch();
+        batchService.startGeneratingIdentsBatch();
         verify(ajourholdRepository, times(1)).delete(any(Ajourhold.class));
     }
 }

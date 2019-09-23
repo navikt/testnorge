@@ -2,9 +2,12 @@ package no.nav.identpool.ajourhold;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
 
+import com.querydsl.core.types.Predicate;
 import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,9 +23,11 @@ import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.repository.IdentRepository;
+import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import no.nav.identpool.service.IdentGeneratorService;
 import no.nav.identpool.service.IdentTpsService;
 import no.nav.identpool.util.IdentGeneratorUtil;
+import no.nav.identpool.util.IdentPredicateUtil;
 
 @Slf4j
 @Service
@@ -128,5 +133,30 @@ public class AjourholdService {
         return identRepository.saveAll(idents.stream()
                 .map(fnr -> IdentGeneratorUtil.createIdent(fnr, status, rekvirertAv))
                 .collect(Collectors.toList()));
+    }
+
+    public void getIdentsAndCheckProd() {
+        int pageSize = 80;
+        HentIdenterRequest request = HentIdenterRequest.builder()
+                .antall(pageSize)
+                .foedtEtter(LocalDate.now().minusYears(200))
+                .build();
+        Predicate predicate = IdentPredicateUtil.lagPredicateFraRequest(request);
+        Page<Ident> firstPage = identRepository.findAll(predicate, PageRequest.of(0, pageSize));
+
+        if (firstPage.getTotalPages() > 1) {
+            for (int i = 1; i < firstPage.getTotalPages(); i++) {
+                if (i >= 10) {
+                    break; // TESTING
+                }
+                Page<Ident> page = identRepository.findAll(predicate, PageRequest.of(i, pageSize));
+
+                List<String> identer = page.getContent().stream().map(Ident::getPersonidentifikator).collect(Collectors.toList());
+
+                Set<String> usedIdents = identTpsService.checkInEnvironment("q0", identer);
+
+                log.info("Identer som er markert som I_BRUK i q0: {}", usedIdents);
+            }
+        }
     }
 }

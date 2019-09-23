@@ -21,7 +21,7 @@ public class BatchService {
 
     private int waitCounter = 0;
 
-    public void startBatch() {
+    public void startGeneratingIdentsBatch() {
         if (waitCounter > 0) {
             waitCounter--;
             return;
@@ -31,10 +31,14 @@ public class BatchService {
                 .status(BatchStatus.STARTED)
                 .build();
         ajourholdRepository.update(entity);
-        this.run(entity);
+        this.runNewAjourhold(entity);
     }
 
-    private void run(Ajourhold ajourhold) {
+    public void updateDatabaseWithProdStatus() {
+        ajourholdService.getIdentsAndCheckProd();
+    }
+
+    private void runNewAjourhold(Ajourhold ajourhold) {
         try {
             boolean newIdentsAdded = ajourholdService.checkCriticalAndGenerate();
             if (newIdentsAdded) {

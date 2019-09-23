@@ -69,7 +69,7 @@ public class IdentTpsService {
     }
 
     @Timed(value = "ident_pool.resource.latency", extraTags = { "operation", "TPS" })
-    private Set<String> checkInEnvironment(String env, List<String> nonExisting) {
+    public Set<String> checkInEnvironment(String env, List<String> nonExisting) {
         Set<String> usedIdents = new HashSet<>();
         try {
             initMq(env);
