@@ -21,6 +21,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SigrunStubClientTest {
@@ -32,6 +33,9 @@ public class SigrunStubClientTest {
 
     @Mock
     private SigrunStubResponseHandler sigrunStubResponseHandler;
+
+    @Mock
+    private ErrorStatusDecoder errorStatusDecoder;
 
     @InjectMocks
     private SigrunStubClient sigrunStubClient;
@@ -47,6 +51,7 @@ public class SigrunStubClientTest {
 
         BestillingProgress progress = new BestillingProgress();
         when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenThrow(HttpClientErrorException.class);
+        when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil:");
 
         sigrunStubClient.gjenopprett(RsDollyBestilling.builder()
                 .sigrunstub(singletonList(new RsOpprettSkattegrunnlag())).build(), NorskIdent.builder().ident(IDENT).build(), progress);
