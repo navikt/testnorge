@@ -115,12 +115,10 @@ public class SyntetiseringService {
                 skdMeldingerTilTpsResponsTotal.setAntallSendte(skdMeldingerTilTpsResponsTotal.getAntallSendte() + skdMeldingerTilTpsRespons.getAntallSendte());
                 skdMeldingerTilTpsResponsTotal.setAntallFeilet(skdMeldingerTilTpsResponsTotal.getAntallFeilet() + skdMeldingerTilTpsRespons.getAntallFeilet());
                 for (StatusPaaAvspiltSkdMelding status : skdMeldingerTilTpsRespons.getStatusFraFeilendeMeldinger()) {
-                    skdMeldingerTilTpsResponsTotal.addStatusFraFeilendeMeldinger(status);
-                }
-                if (skdMeldingerTilTpsRespons.getTpsfIds() != null) {
-                    for (Long tpsfId : skdMeldingerTilTpsRespons.getTpsfIds()) {
-                        skdMeldingerTilTpsResponsTotal.addTpsfId(tpsfId);
+                    if (skdMeldingerTilTpsResponsTotal.getStatusFraFeilendeMeldinger() == null) {
+                        skdMeldingerTilTpsResponsTotal.setStatusFraFeilendeMeldinger(new ArrayList<>());
                     }
+                    skdMeldingerTilTpsResponsTotal.getStatusFraFeilendeMeldinger().add(status);
                 }
 
                 fjernBrukteIdenterFraListerMedIdenter(listerMedIdenter);

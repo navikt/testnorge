@@ -94,6 +94,7 @@ public class GenererSyntetiskeMeldingerCompTest {
 
         SkdMeldingerTilTpsRespons respons = (SkdMeldingerTilTpsRespons) syntetiseringController.genererSkdMeldinger(ordreRequest).getBody();
 
+        assert respons != null;
         assertEquals(4, expectedMeldingsIdsITpsf.size());
         assertEquals(4, respons.getAntallSendte());
         assertEquals(expectedFnrFromIdentpool.get(0), respons.getStatusFraFeilendeMeldinger().get(0).getFoedselsnummer());

@@ -1,6 +1,5 @@
 package no.nav.registre.skd.consumer.requests;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,9 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class SendToTpsRequest {
 
-    @JsonProperty("environment")
     private String environment;
-
-    @JsonProperty("ids")
     private List<Long> ids;
 }

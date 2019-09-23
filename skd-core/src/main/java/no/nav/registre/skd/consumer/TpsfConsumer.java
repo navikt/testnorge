@@ -26,6 +26,8 @@ public class TpsfConsumer {
 
     private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Long>>() {
     };
+    private static final ParameterizedTypeReference<SkdMeldingerTilTpsRespons> RESPONSE_TYPE_TPS = new ParameterizedTypeReference<SkdMeldingerTilTpsRespons>() {
+    };
 
     private RestTemplate restTemplate;
     private UriTemplate uriTemplateSaveToTpsf;
@@ -57,11 +59,8 @@ public class TpsfConsumer {
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public SkdMeldingerTilTpsRespons sendSkdmeldingerToTps(Long gruppeId, SendToTpsRequest sendToTpsRequest) {
-        String url = uriTemplateSaveToTps.expand(gruppeId).toString();
-
-        return restTemplate.postForObject(url,
-                sendToTpsRequest,
-                SkdMeldingerTilTpsRespons.class);
+        RequestEntity postRequest = RequestEntity.post(uriTemplateSaveToTps.expand(gruppeId)).body(sendToTpsRequest);
+        return restTemplate.exchange(postRequest, RESPONSE_TYPE_TPS).getBody();
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
