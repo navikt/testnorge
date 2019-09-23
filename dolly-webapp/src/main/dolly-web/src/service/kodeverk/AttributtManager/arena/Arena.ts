@@ -35,7 +35,7 @@ const AttributtListe: Attributt[] = [
 				inputType: InputType.Select,
 				size: 'large',
 				validation: yup.string().when('arenaBrukertype', {
-					is: 'MED_SERVICEBEHOV',
+					is: val => val === 'MED_SERVICEBEHOV',
 					then: yup.string().required('Velg et servicebehov')
 				}),
 				options: SelectOptionsManager('kvalifiseringsgruppe'),

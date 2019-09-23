@@ -23,6 +23,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsBestilling;
+import no.nav.dolly.domain.resultset.RsBestillingStatus;
 import no.nav.dolly.service.BestillingService;
 
 @Transactional
@@ -70,5 +71,11 @@ public class BestillingController {
     @GetMapping("/malbestilling")
     public List<RsBestilling> getMalBestillinger() {
         return mapperFacade.mapAsList(bestillingService.fetchMalBestillinger(), RsBestilling.class);
+    }
+
+ //   @Cacheable(value = CACHE_BESTILLING)
+    @GetMapping("/{bestillingId}/ny")
+    public RsBestillingStatus getBestillingsstatus(@PathVariable("bestillingId") Long bestillingId) {
+        return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestillingStatus.class);
     }
 }
