@@ -1,5 +1,6 @@
 package no.nav.identpool.ajourhold;
 
+import no.nav.identpool.consumers.TpsfConsumer;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
@@ -46,6 +47,9 @@ class AjourholdServiceTest {
     @Mock
     private IdentRepository identRepository;
 
+    @Mock
+    private TpsfConsumer tpsfConsumer;
+
     private AjourholdService ajourholdService;
 
     private List<Ident> entities = new ArrayList<>();
@@ -56,7 +60,7 @@ class AjourholdServiceTest {
     @BeforeEach
     void init() {
         entities.clear();
-        ajourholdService = spy(new AjourholdService(identRepository, new IdentGeneratorService(), identTpsService, counter));
+        ajourholdService = spy(new AjourholdService(identRepository, new IdentGeneratorService(), identTpsService, tpsfConsumer, counter));
         ajourholdService.current = LocalDate.now();
 
         when(identRepository.saveAll(anyIterable())).thenAnswer((Answer<Void>) invocationOnMock -> {

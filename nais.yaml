@@ -45,3 +45,5 @@ fasitResources:
     propertyMap:
       issuerUrl: freg.security.oidc.idp.navSts.issuerUrl
       jwksUrl: freg.security.oidc.idp.navSts.jwksUrl
+  - alias: "tps-forvalteren.rest-api"
+    resourceType: restservice

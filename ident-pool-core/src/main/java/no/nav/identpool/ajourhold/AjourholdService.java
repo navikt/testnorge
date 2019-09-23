@@ -2,6 +2,9 @@ package no.nav.identpool.ajourhold;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.types.Predicate;
 import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +22,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import no.nav.identpool.consumers.TpsfConsumer;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
@@ -34,9 +39,12 @@ import no.nav.identpool.util.IdentPredicateUtil;
 @RequiredArgsConstructor
 public class AjourholdService {
 
+    private static final int MAX_SIZE_TPS_QUEUE = 80;
+
     private final IdentRepository identRepository;
     private final IdentGeneratorService identGeneratorService;
     private final IdentTpsService identTpsService;
+    private final TpsfConsumer tpsfConsumer;
 
     private final Counter counter;
 
@@ -136,28 +144,40 @@ public class AjourholdService {
     }
 
     public void getIdentsAndCheckProd() {
-        int pageSize = 80;
+        int pageSize = MAX_SIZE_TPS_QUEUE;
         HentIdenterRequest request = HentIdenterRequest.builder()
                 .antall(pageSize)
                 .foedtEtter(LocalDate.of(1850, 1, 1))
                 .build();
         Predicate predicate = IdentPredicateUtil.lagPredicateFraRequest(request);
         Page<Ident> firstPage = identRepository.findAll(predicate, PageRequest.of(0, pageSize));
+        int numberOfPages = firstPage.getTotalPages();
 
-        if (firstPage.getTotalPages() > 1) {
-            for (int i = 1; i < firstPage.getTotalPages(); i++) {
+        if (numberOfPages > 0) {
+            for (int i = 0; i < numberOfPages; i++) {
                 if (i >= 20) {
                     break; // TESTING
                 }
+                List<String> usedIdents = new ArrayList<>();
                 Page<Ident> page = identRepository.findAll(predicate, PageRequest.of(i, pageSize));
 
-                Set<String> identer = page.getContent().stream().map(Ident::getPersonidentifikator).collect(Collectors.toSet());
+                Set<String> idents = page.getContent().stream().map(Ident::getPersonidentifikator).collect(Collectors.toSet());
+                try {
+                    JsonNode statusFromTps = tpsfConsumer.getStatusFromTps(new ArrayList<>(idents)).findValue("EFnr");
+                    List<Map<String, Object>> identStatus = new ObjectMapper().convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
+                    });
+                    for (Map<String, Object> map : identStatus) {
+                        if (!map.containsKey("svarStatus")) {
+                            usedIdents.add(String.valueOf(map.get("fnr")));
+                        }
+                    }
+                } catch (IOException e) {
+                    log.error("Kunne ikke hente status fra TPS", e);
+                }
 
-                Set<String> usedIdents = identTpsService.checkInEnvironment("q0", new ArrayList<>(identer));
+                idents.removeAll(usedIdents);
 
-                identer.removeAll(usedIdents);
-
-                log.info("Page {} av {} - Identer som er markert som I_BRUK i q0: {}. Identer som er ledige: {}", i, firstPage.getTotalPages(), usedIdents, identer);
+                log.info("Page {} av {} - Identer som er markert som I_BRUK i q0: {}. Identer som er ledige: {}", i, numberOfPages, usedIdents, idents);
             }
         }
     }
