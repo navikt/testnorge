@@ -180,7 +180,7 @@ public class HodejegerenController {
     }
 
     @LogExceptions
-    @ApiOperation(value = "")
+    @ApiOperation(value = "Her kan man hente identer som er i avspillergruppe, men ikke i TPS i gitt miljø.")
     @GetMapping("api/v1/identer-ikke-i-tps/{avspillergruppeId}")
     public List<String> hentIdenterSomIkkeErITps(@PathVariable Long avspillergruppeId, @RequestParam String miljoe) {
         return eksisterendeIdenterService.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
