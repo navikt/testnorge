@@ -139,23 +139,25 @@ public class AjourholdService {
         int pageSize = 80;
         HentIdenterRequest request = HentIdenterRequest.builder()
                 .antall(pageSize)
-                .foedtEtter(LocalDate.now().minusYears(200))
+                .foedtEtter(LocalDate.of(1850, 1, 1))
                 .build();
         Predicate predicate = IdentPredicateUtil.lagPredicateFraRequest(request);
         Page<Ident> firstPage = identRepository.findAll(predicate, PageRequest.of(0, pageSize));
 
         if (firstPage.getTotalPages() > 1) {
             for (int i = 1; i < firstPage.getTotalPages(); i++) {
-                if (i >= 10) {
+                if (i >= 20) {
                     break; // TESTING
                 }
                 Page<Ident> page = identRepository.findAll(predicate, PageRequest.of(i, pageSize));
 
-                List<String> identer = page.getContent().stream().map(Ident::getPersonidentifikator).collect(Collectors.toList());
+                Set<String> identer = page.getContent().stream().map(Ident::getPersonidentifikator).collect(Collectors.toSet());
 
-                Set<String> usedIdents = identTpsService.checkInEnvironment("q0", identer);
+                Set<String> usedIdents = identTpsService.checkInEnvironment("q0", new ArrayList<>(identer));
 
-                log.info("Identer som er markert som I_BRUK i q0: {}", usedIdents);
+                identer.removeAll(usedIdents);
+
+                log.info("Page {} av {} - Identer som er markert som I_BRUK i q0: {}. Identer som er ledige: {}", i, firstPage.getTotalPages(), usedIdents, identer);
             }
         }
     }
