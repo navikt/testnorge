@@ -323,7 +323,11 @@ public class EksisterendeIdenterService {
                     });
                     for (Map<String, Object> map : identStatus) {
                         if (map.containsKey("svarStatus")) {
-                            identerIkkeITps.add(String.valueOf(map.get("fnr")));
+                            Map<String, String> svarStatus = objectMapper.convertValue(map.get("svarStatus"), new TypeReference<Map<String, String>>() {
+                            });
+                            if ("08".equals(svarStatus.get("returStatus"))) {
+                                identerIkkeITps.add(String.valueOf(map.get("fnr")));
+                            }
                         }
                     }
                 }
