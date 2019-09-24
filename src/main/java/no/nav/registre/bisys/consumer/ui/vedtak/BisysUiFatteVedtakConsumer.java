@@ -69,16 +69,20 @@ public class BisysUiFatteVedtakConsumer {
 
         if (KodeSoknGrKomConstants.FORSKUDD.equals(soktOm)) {
             forskuddExecutor.runForskudd(bisys, request);
-        } else if (KodeSoknGrKomConstants.SARTILSKUDD_INNKREVING.equals(soktOm)) {
-            sartilskuddExecutor.runSartilskuddInnkreving(bisys, request);
-        } else if (KodeSoknGrKomConstants.BIDRAG_INNKREVING.equals(soktOm)) {
+        } else if (KodeSoknGrKomConstants.SARTILSKUDD.equals(soktOm)
+                || KodeSoknGrKomConstants.SARTILSKUDD_INNKREVING.equals(soktOm)) {
+            sartilskuddExecutor.runSartilskudd(bisys, request);
+        } else if (KodeSoknGrKomConstants.BIDRAG.equals(soktOm)
+                || KodeSoknGrKomConstants.BIDRAG_INNKREVING.equals(soktOm)) {
             if (KodeSoknTypeConstants.OPPHOR.equals(soknadstype)) {
                 opphorExecutor.runOpphor(bisys, request);
             } else {
-                bidragExecutor.runBidragInnkreving(bisys, request);
+                bidragExecutor.runBidrag(bisys, request);
             }
         } else {
-            throw new BidragRequestProcessingException(BisysUiSupport.getActiveBisysPage(bisys), new Exception(String.format("SoktOm %s not supported", KodeSoknGrKomConstants.dekodeMap().get(soktOm))));
+            throw new BidragRequestProcessingException(BisysUiSupport.getActiveBisysPage(bisys),
+                    new Exception(String.format("SoktOm %s not supported",
+                            KodeSoknGrKomConstants.dekodeMap().get(soktOm))));
         }
     }
 

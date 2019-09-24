@@ -22,7 +22,7 @@ public class SartilskuddConsumer {
     @Autowired
     private BisysUiYtelseberegningConsumer ytelsebereging;
 
-    public void runSartilskuddInnkreving(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
+    public void runSartilskudd(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
 
         try {
             Soknad soknad = (Soknad) BisysUiSupport.getActiveBisysPage(bisys);
