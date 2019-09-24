@@ -34,7 +34,6 @@ export function mapSigrunData(sigrunData) {
 						width: 'medium',
 						value: data.tjeneste
 					},
-
 					{
 						id: 'grunnlag',
 						label: 'Grunnlag',
@@ -296,16 +295,36 @@ export function mapInstData(instData) {
 }
 
 export function mapUdiData(udiData) {
+	console.log('udiData :', udiData)
 	if (!udiData) return null
+	if (
+		udiData.arbeidsadgang == null &&
+		udiData.flyktning == null &&
+		udiData.harOppholdsTillatelse == null &&
+		udiData.oppholdStatus == null &&
+		udiData.soeknadOmBeskyttelseUnderBehandling == null
+	)
+		return null
+
 	const oppholdsrettTyper = [
 		'eosEllerEFTABeslutningOmOppholdsrett',
 		'eosEllerEFTAVedtakOmVarigOppholdsrett',
-		'eosEllerEFTAOppholdstillatelse',
-		'oppholdSammeVilkaar'
-	] //Sjekk ut dette mer når tilbakemeldinger blir mer fornuftige
-	const currentOppholdsrettType = oppholdsrettTyper.find(type => udiData.oppholdStatus[type])
+		'eosEllerEFTAOppholdstillatelse'
+	]
+	const currentOppholdsrettType =
+		udiData.oppholdStatus && oppholdsrettTyper.find(type => udiData.oppholdStatus[type])
+
+	const currentTredjelandsborgereStatus =
+		udiData.oppholdStatus && udiData.oppholdStatus.oppholdSammeVilkaar
+			? 'Oppholdstillatelse eller opphold på samme vilkår'
+			: udiData.oppholdStatus && udiData.oppholdStatus.uavklart
+				? 'Uavklart'
+				: udiData.harOppholdsTillatelse === false
+					? 'Ikke oppholdstillatalse eller ikke opphold på samme vilkår'
+					: null
 
 	const oppholdsrett = Boolean(currentOppholdsrettType)
+	const tredjelandsborger = Boolean(currentTredjelandsborgereStatus)
 
 	return {
 		header: 'UDI',
@@ -315,71 +334,88 @@ export function mapUdiData(udiData) {
 				label: 'Oppholdsstatus',
 				value: oppholdsrett
 					? 'EØS- eller EFTA-opphold'
-					: udiData.oppholdSammeVilkaar
+					: tredjelandsborger
 						? 'Tredjelandsborger'
-						: null // EØS/EFTA eller tredjelandsborger
-				// Sjekk hvilke felter som er utfylt? Kommer an på hva som fylles ut default.
-			},
-			{
-				id: 'status',
-				label: 'Status', //Status for tredjelandsborgere - Oppholdstillatelse, ikke opphold og uavklart
-				value: false //udiData.oppholdStatus
+						: null
 			},
 			{
 				id: 'typeOpphold',
 				label: 'Type opphold',
-				value: Formatters.showLabel('eosEllerEFTAtypeOpphold', currentOppholdsrettType)
+				value:
+					oppholdsrett && Formatters.showLabel('eosEllerEFTAtypeOpphold', currentOppholdsrettType)
+			},
+			{
+				id: 'status',
+				label: 'Status',
+				value: currentTredjelandsborgereStatus //udiData.oppholdStatus
 			},
 			{
 				id: 'oppholdFraDato',
-				label: 'Oppholdstillatelse fra dato', //Denne skal egenltig ha dato fra tredjelandsborgere også
+				label: 'Oppholdstillatelse fra dato',
 				value: Formatters.formateStringDates(
-					_get(udiData.oppholdStatus, `${currentOppholdsrettType}Periode.fra`)
+					_get(udiData.oppholdStatus, `${currentOppholdsrettType}Periode.fra`) ||
+						_get(udiData.oppholdStatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
 				)
 			},
 			{
 				id: 'oppholdTilDato',
-				label: 'Oppholdstillatelse til dato', //Denne skal egenltig ha dato fra tredjelandsborgere også
+				label: 'Oppholdstillatelse til dato',
 				value: Formatters.formateStringDates(
-					_get(udiData.oppholdStatus, `${currentOppholdsrettType}Periode.til`)
+					_get(udiData.oppholdStatus, `${currentOppholdsrettType}Periode.til`) ||
+						_get(udiData.oppholdStatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
 				)
 			},
 			{
 				id: 'effektueringsdato',
-				label: 'Effektueringsdato', //Denne skal egenltig ha dato fra tredjelandsborgere også
+				label: 'Effektueringsdato',
 				value: Formatters.formateStringDates(
-					_get(udiData.oppholdStatus, `${currentOppholdsrettType}Effektuering`)
+					_get(udiData.oppholdStatus, `${currentOppholdsrettType}Effektuering`) ||
+						_get(udiData.oppholdStatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarEffektuering')
+				)
+			},
+			{
+				id: 'typeOppholdstillatelse',
+				label: 'Type oppholdstillatelse',
+				value: Formatters.showLabel(
+					'oppholdstillatelseType',
+					_get(udiData.oppholdStatus, 'oppholdSammeVilkaar.oppholdstillatelseType')
 				)
 			},
 			{
 				id: 'vedtaksdato',
-				label: 'Vedtaksdato', //tredjelandsborger
-				value: false //udiData.oppholdStatus
+				label: 'Vedtaksdato',
+				value: Formatters.formateStringDates(
+					_get(udiData.oppholdStatus, 'oppholdSammeVilkaar.oppholdstillatelseVedtaksDato')
+				)
 			},
 			{
 				id: 'grunnlagForOpphold',
 				label: 'Grunnlag for opphold',
-				value: Formatters.showLabel(
-					'eosEllerEFTABeslutningOmOppholdsrett',
-					udiData.oppholdStatus[currentOppholdsrettType]
-				)
+				value:
+					oppholdsrett &&
+					Formatters.showLabel(
+						'eosEllerEFTABeslutningOmOppholdsrett',
+						udiData.oppholdStatus[currentOppholdsrettType]
+					)
 			},
 			{
 				id: 'uavklart',
 				label: 'Uavklart',
-				value: udiData.uavklart && Formatters.oversettBoolean(true) //Kan kanskje heller vise denne under status
+				value: udiData.uavklart && Formatters.oversettBoolean(true)
 			},
 			{
 				id: 'harArbeidsadgang',
 				label: 'Har arbeidsadgang',
-				value: udiData.arbeidsadgang && udiData.arbeidsadgang.harArbeidsAdgang
+				value: Formatters.allCapsToCapitalized(
+					udiData.arbeidsadgang && udiData.arbeidsadgang.harArbeidsAdgang
+				)
 			},
 			{
 				id: 'typeArbeidsadgang',
 				label: 'Type arbeidsadgang',
 				value:
 					udiData.arbeidsadgang &&
-					Formatters.showLabel('typeArbeidsadgang', udiData.arbeidsadgang.typeArbeidsAdgang)
+					Formatters.showLabel('typeArbeidsadgang', udiData.arbeidsadgang.typeArbeidsadgang)
 			},
 			{
 				id: 'arbeidsOmfang',
@@ -392,19 +428,31 @@ export function mapUdiData(udiData) {
 				id: 'arbeidsadgangFraDato',
 				label: 'Arbeidsadgang fra dato',
 				value:
-					udiData.arbeidsadgang && Formatters.formateStringDates(udiData.arbeidsadgang.periode.fra)
+					_get(udiData, 'arbeidsadgang.periode.til') &&
+					Formatters.formateStringDates(udiData.arbeidsadgang.periode.fra)
 			},
 			{
 				id: 'arbeidsadgangTilDato',
 				label: 'Arbeidsadgang til dato',
 				value:
-					udiData.arbeidsadgang && Formatters.formateStringDates(udiData.arbeidsadgang.periode.til)
+					_get(udiData, 'arbeidsadgang.periode.til') &&
+					Formatters.formateStringDates(udiData.arbeidsadgang.periode.til)
+			},
+			{
+				id: 'flyktningstatus',
+				label: 'Flyktningstatus',
+				value: Formatters.oversettBoolean(udiData.flyktning)
+			},
+			{
+				id: 'asylsøker',
+				label: 'Asylsøker',
+				value: Formatters.showLabel('jaNeiUavklart', udiData.soeknadOmBeskyttelseUnderBehandling)
 			}
 		]
 	}
 }
 
-const mapAliasData = aliasdata => {
+export function mapAliasData(aliasdata) {
 	if (!aliasdata || aliasdata.length === 0) return null
 	return {
 		header: 'Alias',
@@ -422,13 +470,23 @@ const mapAliasData = aliasdata => {
 					},
 					{
 						id: 'fnr',
-						label: 'Fnr/dnr',
+						label: 'FNR/DNR',
 						value: data.fnr
 					},
 					{
-						id: 'navn',
-						label: 'Navn',
-						value: data.navn
+						id: 'fornavn',
+						label: 'Fornavn',
+						value: data.navn.fornavn
+					},
+					{
+						id: 'mellomnavn',
+						label: 'Mellomnavn',
+						value: data.navn.mellomnavn
+					},
+					{
+						id: 'etternavn',
+						label: 'Etternavn',
+						value: data.navn.etternavn
 					}
 				]
 			}

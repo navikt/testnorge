@@ -8,7 +8,8 @@ import {
 	mapAaregData,
 	mapArenaData,
 	mapInstData,
-	mapUdiData
+	mapUdiData,
+	mapAliasData
 } from './mapRegistreDataToIdent'
 
 // * Mapper testperson-data for å vise under testpersonliste
@@ -103,6 +104,9 @@ const DataMapper = {
 
 		if (udiData) {
 			data.push(mapUdiData(udiData))
+			if (udiData.aliaser) {
+				data.push(mapAliasData(udiData.aliaser))
+			}
 		}
 
 		if (bestillingId.length > 1) {

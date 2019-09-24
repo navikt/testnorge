@@ -210,7 +210,6 @@ export default class Step3 extends PureComponent {
 
 	renderSubKategoriBlokk = (header, items, values) => {
 		let fieldType = 'oppsummering-multifield-uten-border'
-
 		// Legger til border hvis det finnes flere f.eks. inntekter,
 		// eller hvis f.eks. både inntekter og arbeidsforhold ligger under samme hovedkategori
 		// Gjøres mer generell?
@@ -258,7 +257,9 @@ export default class Step3 extends PureComponent {
 		return (
 			<div className={fieldType} key={header}>
 				{header && !items[0].subGruppe && <h4>{header}</h4>}
-				<div className="oppsummering-blokk">{items.map(item => this.renderItem(item, values))}</div>
+				<div className="oppsummering-blokk">
+					{items.map(item => this.renderItem(item, values, header))}
+				</div>
 			</div>
 		)
 	}
@@ -283,11 +284,12 @@ export default class Step3 extends PureComponent {
 				return this.renderSubKategoriBlokk(header, item.items, values)
 			})
 		}
+
+		const itemValue = this._formatereValue(item, stateValues)
+
 		if (!item.inputType) return null
 		if (item.onlyShowAfterSelectedValue && !itemValue) return null
 		if ((item.id === 'utenFastBopel' || item.id === 'ufb_kommunenr') && !itemValue) return null
-
-		const itemValue = this._formatereValue(item, stateValues)
 
 		const staticValueProps = {
 			key: item.id,
@@ -349,7 +351,6 @@ export default class Step3 extends PureComponent {
 	_formatereValue = (item, stateValues) => {
 		const value = _get(stateValues, item.id)
 		if (item.dataSource === 'ARENA') {
-			console.log('item.id :', item.id)
 			return item.id === 'arenaBrukertype'
 				? Formatters.uppercaseAndUnderscoreToCapitalized(
 						_get(stateValues['arenaforvalter'][0], item.id)
@@ -389,12 +390,18 @@ export default class Step3 extends PureComponent {
 				item.id === 'eosEllerEFTAtypeOpphold' ||
 				item.id === 'eosEllerEFTAOppholdstillatelse' ||
 				item.id === 'eosEllerEFTABeslutningOmOppholdsrett' ||
-				item.id === 'eosEllerEFTAVedtakOmVarigOppholdsrett')
+				item.id === 'eosEllerEFTAVedtakOmVarigOppholdsrett' ||
+				item.id === 'nyIdent')
 		) {
 			return Formatters.showLabel(item.id, value)
 			// itemValue = Formatters.showLabel(item.id, itemValue)
 		}
 
+		if (
+			value &&
+			(item.id === 'soeknadOmBeskyttelseUnderBehandling' || item.id === 'harArbeidsAdgang')
+		)
+			return Formatters.allCapsToCapitalized(value)
 		if (value === 'true') return true // Quickfix fra SelectOptions(stringBoolean)
 		if (value === 'false') return false
 		return Formatters.oversettBoolean(value)

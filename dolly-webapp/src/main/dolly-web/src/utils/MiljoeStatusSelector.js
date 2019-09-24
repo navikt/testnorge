@@ -115,7 +115,6 @@ const miljoeStatusSelector = bestilling => {
 	setStatus('aaregStatus', 'statusMelding', 'AAREG')
 	setStatus('arenaforvalterStatus', 'status', 'Arena')
 
-	// Funker denne????
 	bestilling.udiStubStatus &&
 		bestilling.udiStubStatus.map(status => {
 			status.statusMelding == 'OK'
