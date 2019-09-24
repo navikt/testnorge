@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +24,8 @@ public class IdentController {
 
     @Autowired
     private IdentService identService;
+
+    private static final String TESTDATAEIER = "orkestratoren";
 
     @Value("#{${batch.avspillergruppeId.miljoe}}")
     private Map<Long, String> avspillergruppeIdMedMiljoe;
@@ -42,15 +43,20 @@ public class IdentController {
     @LogExceptions
     @PostMapping("/synkronisering")
     @Scheduled(cron = "0 0 1 1 * *")
-    public Map<Long, List<String>> synkroniserMedTps() {
-        Map<Long, List<String>> avspillergruppeMedSlettedeIdenter = new HashMap<>();
+    public Map<Long, SlettedeIdenterResponse> synkroniserMedTps() {
+        Map<Long, SlettedeIdenterResponse> avspillergruppeMedFjernedeIdenter = new HashMap<>();
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            avspillergruppeMedSlettedeIdenter.put(entry.getKey(), new ArrayList<>());
-            List<String> newEntry = avspillergruppeMedSlettedeIdenter.get(entry.getKey());
-            if (newEntry != null) {
-                newEntry.addAll(identService.synkroniserMedTps(entry.getKey(), entry.getValue()));
-            }
+            avspillergruppeMedFjernedeIdenter
+                    .put(
+                            entry.getKey(),
+                            identService.slettIdenterFraAdaptere(
+                                    entry.getKey(),
+                                    entry.getValue(),
+                                    TESTDATAEIER,
+                                    identService.synkroniserMedTps(entry.getKey(), entry.getValue())
+                            )
+                    );
         }
-        return avspillergruppeMedSlettedeIdenter;
+        return avspillergruppeMedFjernedeIdenter;
     }
 }
