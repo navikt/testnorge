@@ -3,13 +3,7 @@ import Icon from '~/components/ui/icon/Icon'
 import miljoeStatusSelector from '~/utils/MiljoeStatusSelector'
 
 export default function MiljoeStatus({ bestilling }) {
-	const {
-		finnesFeilmelding,
-		antallIdenterOpprettet,
-		successEnvs,
-		failedEnvs,
-		avvikEnvs
-	} = miljoeStatusSelector(bestilling)
+	const { successEnvs, failedEnvs, avvikEnvs } = miljoeStatusSelector(bestilling)
 
 	const _renderMiljoeStatus = () => (
 		<Fragment>
@@ -27,22 +21,12 @@ export default function MiljoeStatus({ bestilling }) {
 	)
 
 	const _manglerIdenterOpprettet = () => {
+		const { antallIdenterOpprettet } = bestilling
 		if (antallIdenterOpprettet === bestilling.antallIdenter) return null
 		return (
 			<span className="miljoe-status error-text">
 				{antallIdenterOpprettet} av {bestilling.antallIdenter} bestilte identer ble opprettet i TPS.
 			</span>
-		)
-	}
-
-	const failed = successEnvs.length == 0 && !finnesFeilmelding
-
-	if (failed) {
-		return (
-			<Fragment>
-				<Icon kind="report-problem-circle" />
-				<p>Bestillingen din ble ikke utført.</p>
-			</Fragment>
 		)
 	}
 

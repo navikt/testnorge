@@ -1,7 +1,4 @@
-import miljoeStatusSelector, {
-	avvikStatus,
-	countAntallIdenterOpprettet
-} from '../MiljoeStatusSelector'
+import miljoeStatusSelector, { avvikStatus } from '../MiljoeStatusSelector'
 
 describe('MiljoeStatusSelector.js', () => {
 	describe('avvikStatus()', () => {
@@ -95,41 +92,6 @@ describe('MiljoeStatusSelector.js', () => {
 			expect(avvikStatus(notOk5)).toBe(true)
 			expect(avvikStatus(notOk6)).toBe(true)
 			expect(avvikStatus(notOk7)).toBe(true)
-		})
-	})
-
-	describe('countAntallIdenterOpprettet()', () => {
-		const bestillingMock = {
-			tpsfStatus: [
-				{
-					environmentIdents: {
-						t5: ['19106129722', '14028733245']
-					}
-				}
-			]
-		}
-
-		const bestillingMockMedDuplikat = {
-			tpsfStatus: [
-				{
-					environmentIdents: {
-						t5: ['19106129722', '14028733245'],
-						t11: ['19106129722']
-					}
-				}
-			]
-		}
-
-		it('skal returnere 0 hvis "tpsfstatus" property ikke finnes', () => {
-			expect(countAntallIdenterOpprettet({})).toBe(0)
-		})
-
-		it('skal returnere antall identer opprettet', () => {
-			expect(countAntallIdenterOpprettet(bestillingMock)).toBe(2)
-		})
-
-		it('skal ikke telle duplikater dersom person er opprettet i flere miljøer', () => {
-			expect(countAntallIdenterOpprettet(bestillingMockMedDuplikat)).toBe(2)
 		})
 	})
 
@@ -254,13 +216,6 @@ describe('MiljoeStatusSelector.js', () => {
 
 		it('skal returnere null hvis bestillingen er undefined', () => {
 			expect(miljoeStatusSelector(undefined)).toBe(null)
-		})
-
-		it('skal ha property "finnesFeilmelding" satt til true dersom det finnes avvik', () => {
-			const medAvvik = {
-				finnesFeilmelding: true
-			}
-			expect(miljoeStatusSelector(bestillingMockMedFailedRegister)).toMatchObject(medAvvik)
 		})
 
 		it('skal returnere successEnvs t5 og t11', () => {
