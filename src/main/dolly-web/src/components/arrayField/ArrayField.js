@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react'
 import { DollyApi } from '~/service/Api'
 import { Field } from 'formik'
-import Button from '~/components/button/Button'
+import Button from '~/components/ui/button/Button'
 import InputSelector from '~/components/fields/InputSelector'
 import _set from 'lodash/set'
-import Loading from '~/components/loading/Loading'
+import Loading from '~/components/ui/loading/Loading'
 import './arrayField.less'
 
 export default class ArrayField extends Component {

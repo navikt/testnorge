@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import LinkButton from '~/components/button/LinkButton/LinkButton'
+import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
 
 export default class FilledAdresse extends PureComponent {
 	render() {

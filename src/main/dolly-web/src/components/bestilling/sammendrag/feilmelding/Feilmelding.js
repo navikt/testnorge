@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import cn from 'classnames'
-import Icon from '~/components/icon/Icon'
+import Icon from '~/components/ui/icon/Icon'
 import miljoeStatusSelector from '~/utils/MiljoeStatusSelector'
 import Formatters from '~/utils/DataFormatter'
 

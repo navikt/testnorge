@@ -77,7 +77,6 @@ export interface Attributt {
 	informasjonstekst?: String
 	subGruppe?: String
 	hoydeOptions?: String //Hvor mye plass trenger den lengste option i select. 'small', 'medium' eller 'large'.
-	genererSyntVerdier?: boolean
 }
 
 // Attributt grupper
