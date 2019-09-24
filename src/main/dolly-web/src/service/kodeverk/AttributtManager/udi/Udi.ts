@@ -160,7 +160,6 @@ const AttributtListe: Attributt[] = [
 				subKategori: SubKategorier.Oppholdsstatus,
 				id: 'oppholdstillatelseType',
 				label: 'Type oppholdstillatelse',
-				// size: 'large',
 				dataSource: DataSource.UDI,
 				inputType: InputType.Select,
 				onlyShowAfterSelectedValue: { attributtId: 'tredjelandsBorgereValg', valueIndex: [0] },
@@ -178,20 +177,6 @@ const AttributtListe: Attributt[] = [
 				onlyShowAfterSelectedValue: { attributtId: 'tredjelandsBorgereValg', valueIndex: [0] },
 				attributtType: AttributtType.SelectAndRead
 			}
-			// ,
-			// {
-			// 	hovedKategori: Kategorier.Udi,
-			// 	subKategori: SubKategorier.Oppholdsstatus,
-			// 	id: 'ikkeOppholdGrunn',
-			// 	label: 'Grunn',
-			// 	size: 'medium',
-			// 	dataSource: DataSource.UDI,
-			// 	inputType: InputType.Select,
-			// 	onlyShowAfterSelectedValue: { attributtId: 'oppholdsstatus', valueIndex: [3] },
-			// 	options: SelectOptionsManager('ikkeOppholdGrunn'),
-			// 	validation: yup.string().required('Velg en grunn'),
-			// 	attributtType: AttributtType.SelectAndRead
-			// }
 		]
 	},
 	// ARBEIDSADGANG:
@@ -306,7 +291,6 @@ const AttributtListe: Attributt[] = [
 		subKategori: SubKategorier.Diverse,
 		id: 'flyktning',
 		label: 'Flyktningstatus',
-		// path: 'udiOppholdStatus',
 		dataSource: DataSource.UDI,
 		inputType: InputType.Select,
 		options: SelectOptionsManager('boolean'),

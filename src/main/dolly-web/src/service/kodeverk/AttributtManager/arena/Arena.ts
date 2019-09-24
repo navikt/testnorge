@@ -34,10 +34,10 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.ARENA,
 				inputType: InputType.Select,
 				size: 'large',
-				validation: yup.string().when('arenaBrukertype', {
-					is: 'MED_SERVICEBEHOV',
-					then: yup.string().required('Velg et servicebehov')
-				}),
+				// validation: yup.string().when('arenaBrukertype', {
+				// 	is: 'MED_SERVICEBEHOV',
+				// 	then: yup.string().required('Velg et servicebehov')
+				// }),
 				options: SelectOptionsManager('kvalifiseringsgruppe'),
 				attributtType: AttributtType.SelectAndEdit
 			},

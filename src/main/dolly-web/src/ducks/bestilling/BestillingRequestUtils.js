@@ -263,7 +263,7 @@ export const getValues = (attributeList, values) => {
 					if (udiData.effektueringsDato) {
 						Object.assign(udiObj, { [effektuering]: udiData.effektueringsDato })
 					}
-				} else if (udiData.oppholdsstatus === 'udiOppholdSammeVilkaar') {
+				} else if (udiData.oppholdsstatus === 'oppholdSammeVilkaar') {
 					if (udiData.tredjelandsBorgereValg === 'oppholdSammeVilkaar') {
 						Object.assign(udiObj, { [udiData.oppholdsstatus]: {} })
 						if (udiData.oppholdSammeVilkaarFraDato) {
@@ -299,7 +299,7 @@ export const getValues = (attributeList, values) => {
 						}
 					} else if (udiData.tredjelandsBorgereValg === 'UAVKLART') {
 						Object.assign(udiObj, { uavklart: true })
-					} else if (udiData.tredjelandsBorgereValg === 'ikkeUdiOppholdSammeVilkaar') {
+					} else if (udiData.tredjelandsBorgereValg === 'ikkeOppholdSammeVilkaar') {
 						udiObj = false
 						attribute.path = 'harOppholdsTillatelse'
 					}

@@ -79,14 +79,8 @@ const selectOptions = {
 	// UDI
 	oppholdsstatus: [
 		{ value: 'eosEllerEFTAOpphold', label: 'EØS- eller EFTA-opphold' },
-		{ value: 'udiOppholdSammeVilkaar', label: 'Tredjelandsborgere' }
+		{ value: 'oppholdSammeVilkaar', label: 'Tredjelandsborgere' }
 	],
-	// oppholdsstatus: [
-	// 	{ value: 'uavklart', label: 'Uavklart' },
-	// 	{ value: 'eosEllerEFTAOpphold', label: 'EØS- eller EFTA-opphold' },
-	// 	{ value: 'udiOppholdSammeVilkaar', label: 'Oppholdstillatelse eller opphold på samme vilkår' },
-	// 	{ value: 'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum', label: 'Ikke oppholdstillatelse' }
-	// ],
 
 	eosEllerEFTAtypeOpphold: [
 		{
@@ -132,7 +126,7 @@ const selectOptions = {
 	tredjelandsBorgereValg: [
 		{ value: 'oppholdSammeVilkaar', label: 'Oppholdstillatelse eller opphold på samme vilkår' },
 		{
-			value: 'ikkeUdiOppholdSammeVilkaar',
+			value: 'ikkeOppholdSammeVilkaar',
 			label: 'Ikke oppholdstillatelse eller ikke opphold på samme vilkår'
 		},
 		{ value: 'UAVKLART', label: 'Uavklart' }
@@ -142,15 +136,6 @@ const selectOptions = {
 		{ value: 'PERMANENT', label: 'Permanent' },
 		{ value: 'MIDLERTIDIG', label: 'Midlertidig' }
 	],
-
-	// ikkeOppholdGrunn: [
-	// 	{ value: 'utvistMedInnreiseForbud', label: 'Utvist med innreiseforbud' },
-	// 	{
-	// 		value: 'avslagEllerBortFall',
-	// 		label: 'Avslag eller bortfall av PO-BOS eller tilbakekall eller formelt vedtak'
-	// 	},
-	// 	{ value: 'ovrigIkkeOppholdsKategoriArsak', label: 'Øvrig ikke opphold' }
-	// ],
 
 	jaNeiUavklart: [
 		{ value: 'JA', label: 'Ja' },
