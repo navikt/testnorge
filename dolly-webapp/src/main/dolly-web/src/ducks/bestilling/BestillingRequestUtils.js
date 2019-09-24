@@ -241,7 +241,7 @@ export const getValues = (attributeList, values) => {
 				})
 			}
 
-			if (attribute.id === 'gjeldendeOppholdsstatus') {
+			if (attribute.id === 'oppholdStatus') {
 				const oppholdsstatus = udiData.oppholdsstatus
 				if (oppholdsstatus === 'eosEllerEFTAOpphold') {
 					const typeOpphold = udiData.eosEllerEFTAtypeOpphold

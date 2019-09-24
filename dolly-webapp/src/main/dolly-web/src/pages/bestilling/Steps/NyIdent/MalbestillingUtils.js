@@ -34,14 +34,13 @@ export const getAttributesFromMal = mal => {
 	tpsfKriterier.innvandretFraLand && attrArray.push('innvandret')
 	tpsfKriterier.utvandretTilLand && attrArray.push('utvandret')
 
-	if (bestKriterier.pdlforvalter) {
-		Object.keys(bestKriterier.pdlforvalter).map(pdlattr => {
-			attrArray.push(pdlattr)
-		})
-	}
-
 	Object.keys(bestKriterier).forEach(reg => {
-		attrArray.push(_mapRegistreKey(reg))
+		if (reg === 'udistub' || reg === 'pdlforvalter') {
+			// Der det ligger flere keys under samme reg
+			attrArray.push(...mapMultipleRegistreKey(reg, bestKriterier))
+		} else {
+			attrArray.push(_mapRegistreKey(reg, bestKriterier))
+		}
 	})
 	return attrArray
 }
@@ -51,14 +50,25 @@ export const getValuesFromMal = mal => {
 	const tpsfKriterierArray = Object.entries(JSON.parse(mal.tpsfKriterier))
 	const bestKriterierArray = Object.entries(JSON.parse(mal.bestKriterier))
 	_mapValuesToObject(reduxStateValue, tpsfKriterierArray)
-	bestKriterierArray.forEach(reg => {
-		const pdlforvalter = reg[0] === 'pdlforvalter'
-		const navn = pdlforvalter ? Object.keys(reg[1])[0] : reg[0]
-		const values = pdlforvalter ? reg[1][navn] : reg[1]
-		let valueArray = _mapRegistreValue(navn, values)
 
-		if (Array.isArray(valueArray)) {
-			_mapArrayValuesToObject(reduxStateValue, valueArray, navn)
+	bestKriterierArray.forEach(reg => {
+		const navn = reg[0]
+		const values = reg[1]
+		const multipleKeys = navn === 'pdlforvalter'
+		let valueArray = []
+		if (multipleKeys) {
+			Object.entries(values).forEach(pdlattr => {
+				_mapArrayValuesToObject(
+					reduxStateValue,
+					[{ [pdlattr[0]]: _mapRegistreValue(pdlattr[0], pdlattr[1]) }],
+					navn
+				)
+			})
+		} else {
+			valueArray = _mapRegistreValue(navn, values)
+			if (Array.isArray(valueArray)) {
+				_mapArrayValuesToObject(reduxStateValue, valueArray, navn)
+			}
 		}
 	})
 
@@ -71,6 +81,7 @@ export const getValuesFromMal = mal => {
 		const matrikkeladresseValues = _mapAdresseValues(reduxStateValue)
 		reduxStateValue = matrikkeladresseValues
 	}
+	console.log('reduxStateValue :', reduxStateValue)
 	return reduxStateValue
 }
 
@@ -119,20 +130,25 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 
 const _mapArrayValuesToObject = (objectToAssign, valueArray, key, keyPrefix = '') => {
 	const mappedKey =
-		key === 'pdlforvalter' || key === 'arenaforvalter'
-			? _mapRegistreKey(Object.keys(valueArray[0])[0])
-			: _mapRegistreKey(key)
-
+		key === 'arenaforvalter' ? _mapRegistreKey(Object.keys(valueArray[0])[0]) : _mapRegistreKey(key)
+	console.log('mappedKey :', mappedKey)
 	let valueArrayObj = []
 
 	valueArray.forEach(v => {
 		let childObj = {}
+		console.log('v :', v)
 		_mapValuesToObject(childObj, Object.entries(v), keyPrefix)
 		valueArrayObj.push(childObj)
 	})
-	Object.assign(objectToAssign, {
-		[mappedKey]: valueArrayObj
-	})
+	const multipleGroupsPerKey = key === 'pdlforvalter' || key === 'udistub'
+
+	multipleGroupsPerKey
+		? Object.assign(objectToAssign, {
+				...valueArrayObj[0]
+		  })
+		: Object.assign(objectToAssign, {
+				[mappedKey]: valueArrayObj
+		  })
 }
 
 const _formatValueForObject = (key, value) => {
@@ -154,7 +170,16 @@ const _formatValueForObject = (key, value) => {
 		'innvandretFraLandFlyttedato',
 		'startdato',
 		'faktiskSluttdato',
-		'forventetSluttdato'
+		'forventetSluttdato',
+		'oppholdFraDato',
+		'oppholdTilDato',
+		'effektueringsDato',
+		'oppholdSammeVilkaarFraDato',
+		'oppholdSammeVilkaarTilDato',
+		'oppholdSammeVilkaarEffektuering',
+		'oppholdstillatelseVedtaksDato',
+		'arbeidsadgangFraDato',
+		'arbeidsadgangTilDato'
 	]
 
 	if (dateAttributes.includes(key)) {
@@ -171,7 +196,7 @@ const _mapRegistreKey = key => {
 	switch (key) {
 		case 'aareg':
 			return 'arbeidsforhold'
-		case 'sigrunStub':
+		case 'sigrunstub':
 			return 'inntekt'
 		case 'krrstub':
 			return 'krr'
@@ -185,11 +210,29 @@ const _mapRegistreKey = key => {
 			return 'institusjonsopphold'
 		case 'falskIdentitet':
 			return 'falskIdentitet'
-		//! case 'udiStub':
-		//! return 'udiStub'
 		default:
 			return key
 	}
+}
+
+const mapMultipleRegistreKey = (reg, bestKriterier) => {
+	const valgteAttributt = []
+
+	if (reg === 'pdlforvalter') {
+		return Object.keys(bestKriterier.pdlforvalter)
+	} else if (reg === 'udistub') {
+		const muligeAttr = [
+			'aliaser',
+			'arbeidsadgang',
+			'oppholdStatus',
+			'soeknadOmBeskyttelseUnderBehandling',
+			'flyktning'
+		]
+		return Object.keys(bestKriterier.udistub).filter(
+			attr => muligeAttr.includes(attr) && bestKriterier.udistub[attr]
+		)
+	}
+	return valgteAttributt
 }
 
 const _mapInnOgUtvandret = values => {
@@ -248,6 +291,8 @@ const _mapAdresseValues = values => {
 }
 
 const _mapRegistreValue = (key, value) => {
+	console.log('key :', key)
+	console.log('value :', value)
 	let mappedValue = []
 	switch (key) {
 		case 'aareg':
@@ -292,7 +337,7 @@ const _mapRegistreValue = (key, value) => {
 			})
 
 			return mappedValue
-		case 'sigrunStub':
+		case 'sigrunstub':
 			value.forEach(inntekt => {
 				inntekt.grunnlag.forEach(g => {
 					mappedValue.push({
@@ -308,24 +353,36 @@ const _mapRegistreValue = (key, value) => {
 			return [value]
 		case 'kontaktinformasjonForDoedsbo':
 			const mapObj = {}
+			const datoAttr = ['foedselsdato', 'utstedtDato', 'gyldigFom', 'gyldigTom']
 			Object.entries(value).map(attr => {
-				attr[0] === 'adressat'
-					? Object.entries(value[attr[0]]).map(adressatAttr => {
-							if (adressatAttr[0] === 'kontaktperson' || adressatAttr[0] === 'navn') {
-								Object.entries(value[attr[0]][adressatAttr[0]]).map(navn => {
-									mapObj[navn[0]] = navn[1]
-								})
-							} else if (adressatAttr[0] === 'organisasjonsnavn') {
-								value[attr[0]].adressatType === 'ADVOKAT'
-									? (mapObj['advokat_orgnavn'] = adressatAttr[1])
-									: (mapObj['org_orgnavn'] = adressatAttr[1])
-							} else if (adressatAttr[0] === 'organisasjonsnummer') {
-								value[attr[0]].adressatType === 'ADVOKAT'
-									? (mapObj['advokat_orgnr'] = adressatAttr[1])
-									: (mapObj['org_orgnr'] = adressatAttr[1])
-							} else mapObj[adressatAttr[0]] = adressatAttr[1]
-					  })
-					: (mapObj[attr[0]] = attr[1])
+				if (attr[0] === 'adressat') {
+					Object.entries(value[attr[0]]).map(adressatAttr => {
+						if (adressatAttr[0] === 'kontaktperson' || adressatAttr[0] === 'navn') {
+							Object.entries(value[attr[0]][adressatAttr[0]]).map(navn => {
+								mapObj[navn[0]] = navn[1]
+							})
+						} else if (adressatAttr[0] === 'organisasjonsnavn') {
+							value[attr[0]].adressatType === 'ADVOKAT'
+								? (mapObj['advokat_orgnavn'] = adressatAttr[1])
+								: (mapObj['org_orgnavn'] = adressatAttr[1])
+						} else if (adressatAttr[0] === 'organisasjonsnummer') {
+							value[attr[0]].adressatType === 'ADVOKAT'
+								? (mapObj['advokat_orgnr'] = adressatAttr[1])
+								: (mapObj['org_orgnr'] = adressatAttr[1])
+						} else {
+							const attrValue = datoAttr.includes(adressatAttr[0])
+								? Formatters.formatDate(adressatAttr[1])
+								: adressatAttr[1]
+							mapObj[adressatAttr[0]] = attrValue
+						}
+					})
+				} else {
+					if (datoAttr.includes(attr[0])) {
+						mapObj[attr[0]] = Formatters.formatDate(attr[1])
+					} else {
+						mapObj[attr[0]] = attr[1]
+					}
+				}
 			})
 			return [mapObj]
 		case 'utenlandskIdentifikasjonsnummer':
@@ -342,8 +399,83 @@ const _mapRegistreValue = (key, value) => {
 					: (mapFalskIdObj[attr[0]] = attr[1])
 			})
 			return [mapFalskIdObj]
-		//! case 'udistub':
-		//! return something
+		case 'udistub':
+			const mapUdiObj = {}
+			if (value.oppholdStatus) {
+				const oppholdObj = {}
+				Object.entries(value.oppholdStatus).forEach(attr => {
+					if (attr[1]) {
+						if (attr[0].includes('eosEllerEFTA')) {
+							if (attr[0].includes('Periode')) {
+								Object.assign(oppholdObj, {
+									...oppholdObj,
+									oppholdFraDato: attr[1].fra ? Formatters.formateStringDates(attr[1].fra) : '',
+									oppholdTilDato: attr[1].til ? Formatters.formateStringDates(attr[1].til) : ''
+								})
+							} else if (attr[0].includes('Effektuering')) {
+								Object.assign(oppholdObj, {
+									...oppholdObj,
+									effektueringsDato: Formatters.formateStringDates(attr[1])
+								})
+							} else {
+								Object.assign(oppholdObj, {
+									...oppholdObj,
+									oppholdsstatus: 'eosEllerEFTAOpphold',
+									eosEllerEFTAtypeOpphold: attr[0],
+									[attr[0]]: attr[1]
+								})
+							}
+						}
+						//Mangler:
+						//Tredjeland ikke oppholdstillatelse. Tredjelandsborger opphold. Tredjeland uavklart.
+					}
+				})
+				console.log('oppholdObj :', oppholdObj)
+				_set(mapUdiObj, 'oppholdStatus', [oppholdObj])
+			}
+			if (value.harOppholdstillatelse === false) {
+				Object.assign(mapUdiObj, {
+					oppholdStatus: [
+						{
+							oppholdsstatus: 'UdiOppholdSammeVilkaar',
+							tredjelandsBorgereValg: 'ikkeUdiOppholdSammeVilkaar'
+						}
+					]
+				})
+			}
+			if (value.arbeidsadgang) {
+				const arbAdg = {}
+				Object.entries(value.arbeidsadgang).forEach(attr => {
+					if (attr[1] && typeof attr[1] !== 'string') {
+						Object.entries(attr[1]).forEach(subAttr => {
+							Object.assign(arbAdg, {
+								...arbAdg,
+								[subAttr[0]]: subAttr[1]
+							})
+						})
+					} else {
+						Object.assign(arbAdg, {
+							...arbAdg,
+							[attr[0]]: attr[1]
+						})
+					}
+				})
+				_set(mapUdiObj, 'arbeidsadgang', [arbAdg])
+			}
+			if (value.aliaser) {
+				mapUdiObj.aliaser = value.aliaser
+				value.aliaser.forEach((alias, idx) => {
+					mapUdiObj.aliaser[idx].nyIdent = alias.nyIdent ? 'idnummer' : 'navn'
+				})
+			}
+			if (value.flyktning) {
+				mapUdiObj.flyktning = value.flyktning
+			}
+			if (value.soeknadOmBeskyttelseUnderBehandling) {
+				mapUdiObj.soeknadOmBeskyttelseUnderBehandling = value.soeknadOmBeskyttelseUnderBehandling
+			}
+			console.log('mapUdiObj :', mapUdiObj)
+			return [mapUdiObj]
 		default:
 			return value
 	}
