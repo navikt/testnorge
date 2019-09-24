@@ -92,6 +92,8 @@ public class TpsfBestilling {
 
     private LocalDateTime forsvunnetDato;
 
+    private List<RsIdenthistorikk> identhistorikk;
+
     public List<String> getOpprettFraIdenter() {
         if (isNull(opprettFraIdenter)) {
             opprettFraIdenter = new ArrayList();
