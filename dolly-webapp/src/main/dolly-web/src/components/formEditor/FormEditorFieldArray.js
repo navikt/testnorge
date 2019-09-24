@@ -190,7 +190,8 @@ export const FieldArrayComponent = ({
 															parentId,
 															idx
 														},
-														formikProps
+														formikProps,
+														itemid
 													)}
 												</div>
 											)
