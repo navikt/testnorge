@@ -151,6 +151,7 @@ public class AjourholdService {
         Predicate predicate = IdentPredicateUtil.lagPredicateFraRequest(request);
         Page<Ident> firstPage = identRepository.findAll(predicate, PageRequest.of(0, MAX_SIZE_TPS_QUEUE));
         List<String> usedIdents = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
 
         if (firstPage.getTotalPages() > 0) {
             for (int i = 0; i < firstPage.getTotalPages(); i++) {
@@ -159,7 +160,7 @@ public class AjourholdService {
                 List<String> idents = page.getContent().stream().map(Ident::getPersonidentifikator).collect(Collectors.toList());
                 try {
                     JsonNode statusFromTps = tpsfConsumer.getStatusFromTps(idents).findValue("EFnr");
-                    List<Map<String, Object>> identStatus = new ObjectMapper().convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
+                    List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
                     });
                     for (Map<String, Object> map : identStatus) {
                         if (!map.containsKey("svarStatus")) {
@@ -173,6 +174,13 @@ public class AjourholdService {
         }
         if (!usedIdents.isEmpty()) {
             log.info("Identer som er i bruk i prod, men som er markert som LEDIG i ident-pool: {}", usedIdents);
+
+            for(String usedIdent : usedIdents) {
+                Ident ident = identRepository.findTopByPersonidentifikator(usedIdent);
+                ident.setRekvireringsstatus(Rekvireringsstatus.I_BRUK);
+                ident.setRekvirertAv("TPS");
+                identRepository.save(ident);
+            }
         }
     }
 }
