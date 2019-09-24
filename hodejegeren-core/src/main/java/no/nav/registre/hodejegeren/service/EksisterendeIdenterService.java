@@ -317,16 +317,22 @@ public class EksisterendeIdenterService {
         for (List<String> identer : Lists.partition(alleIdenter, 80)) {
             try {
                 JsonNode jsonNode = tpsfConsumer.hentTpsStatusPaaIdenter(miljoe, identer);
-                if (!"00".equals(jsonNode.findValue("status").findValue("kode").asText())) {
-                    JsonNode statusFromTps = jsonNode.findValue("EFnr");
-                    List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
-                    });
-                    for (Map<String, Object> map : identStatus) {
-                        if (map.containsKey("svarStatus")) {
-                            Map<String, String> svarStatus = objectMapper.convertValue(map.get("svarStatus"), new TypeReference<Map<String, String>>() {
+                JsonNode status = jsonNode.findValue("status");
+                if (status != null) {
+                    JsonNode kode = status.findValue("kode");
+                    if (kode != null) {
+                        if (!"00".equals(kode.asText())) {
+                            JsonNode statusFromTps = jsonNode.findValue("EFnr");
+                            List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
                             });
-                            if ("08".equals(svarStatus.get("returStatus"))) {
-                                identerIkkeITps.add(String.valueOf(map.get("fnr")));
+                            for (Map<String, Object> map : identStatus) {
+                                if (map.containsKey("svarStatus")) {
+                                    Map<String, String> svarStatus = objectMapper.convertValue(map.get("svarStatus"), new TypeReference<Map<String, String>>() {
+                                    });
+                                    if ("08".equals(svarStatus.get("returStatus"))) {
+                                        identerIkkeITps.add(String.valueOf(map.get("fnr")));
+                                    }
+                                }
                             }
                         }
                     }
