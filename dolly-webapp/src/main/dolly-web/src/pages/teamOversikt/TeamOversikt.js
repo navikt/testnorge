@@ -1,13 +1,13 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Knapp from 'nav-frontend-knapper'
+import HjelpeTekst from 'nav-frontend-hjelpetekst'
 import Overskrift from '~/components/ui/overskrift/Overskrift'
 import RedigerTeamConnector from '~/components/RedigerTeam/RedigerTeamConnector'
 import Loading from '~/components/ui/loading/Loading'
 import Toolbar from '~/components/ui/toolbar/Toolbar'
 import TeamListe from './TeamListe'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
-import ContentTooltip from '~/components/ui/contentTooltip/ContentTooltip'
 import PaginationConnector from '~/components/ui/pagination/PaginationConnector'
 
 export default class TeamOversikt extends Component {
@@ -41,7 +41,7 @@ export default class TeamOversikt extends Component {
 			<div className="oversikt-container">
 				<div className="page-header flexbox--align-center--justify-start">
 					<Overskrift label="Teams" />
-					<ContentTooltip>Med teams kan du og kolleger dele testdatagrupper.</ContentTooltip>
+					<HjelpeTekst>Med teams kan du og kolleger dele testdatagrupper.</HjelpeTekst>
 				</div>
 				<Toolbar
 					toggleOnChange={this.handleViewChange}

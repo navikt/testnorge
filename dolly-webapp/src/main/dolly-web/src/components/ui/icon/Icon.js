@@ -13,6 +13,8 @@ export const iconList = [
 	'eraser',
 	'star',
 	'star-filled',
+	'help-circle',
+	'help-circle-filled',
 	'user',
 	'search',
 	'chevron-up',
@@ -158,7 +160,15 @@ export default class Icon extends PureComponent {
 				<path d="M14,19h-1.787l-0.021-0.021C11.588,18.336,10.332,17,8,17H5v-0.5C5,16.224,4.776,16,4.5,16h-4C0.224,16,0,16.224,0,16.5v7
 				C0,23.776,0.224,24,0.5,24h4C4.776,24,5,23.776,5,23.5V23h16.5c0.276,0,0.5-0.224,0.5-0.5C22,20.438,17.784,19,14,19z M4,23H1v-6h3
 				V23z M5,22v-4h3c1.289,0,2.165,0.498,2.771,1H7c-0.276,0-0.5,0.224-0.5,0.5S6.724,20,7,20h7c3.36,0,6.021,1.073,6.781,2H5z"/>			
-			</g></svg>)		
+            </g></svg>)
+            case ('help-circle'): return (<svg {...props} className={cn('hjelpetekst__anchor', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 18.22 18.22"><title>Hjelp</title>
+                <path fill="none" d="M9.11 1a8.11 8.11 0 1 0 8.11 8.11A8.12 8.12 0 0 0 9.11 1zm0 13.7a.89.89 0 1 1 .89-.9.89.89 0 0 1-.89.9zm.5-5.7v1.89a.5.5 0 0 1-1 0V8.5a.5.5 0 0 1 .5-.5 1.85 1.85 0 1 0-1.85-1.85.5.5 0 0 1-1 0A2.85 2.85 0 1 1 9.61 9z"/>
+				<path fill="#2968b2" d="M9.11 0a9.11 9.11 0 1 0 9.11 9.11A9.12 9.12 0 0 0 9.11 0zm0 17.22a8.11 8.11 0 1 1 8.11-8.11 8.12 8.12 0 0 1-8.11 8.11z"/>
+				<path fill="#2968b2" d="M9.11 3.3a2.85 2.85 0 0 0-2.85 2.85.5.5 0 0 0 1 0A1.85 1.85 0 1 1 9.11 8a.5.5 0 0 0-.5.5v2.35a.5.5 0 0 0 1 0V9a2.85 2.85 0 0 0-.5-5.65z"/>
+				<circle fill="#2968b2" cx="9.11" cy="13.8" r=".89" />
+                </svg>)
+            case ('help-circle-filled'): return (<svg {...props} className={cn('hjelpetekst__anchor', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 18.22 18.22"><title>Hjelp</title>
+            <path fill="#2868B3" d="M9.1 0C4.1 0 0 4.1 0 9.1s4.1 9.1 9.1 9.1 9.1-4.1 9.1-9.1S14.1 0 9.1 0zm0 14.7c-.5 0-.9-.4-.9-.9s.4-.9.9-.9.9.4.9.9-.4.9-.9.9zM9.6 9v1.9c0 .3-.2.5-.5.5s-.5-.2-.5-.5V8.5c0-.3.2-.5.5-.5 1 0 1.9-.8 1.9-1.8s-.8-1.9-1.9-1.9-1.8.8-1.8 1.8c0 .3-.2.5-.5.5s-.5-.2-.5-.5c0-1.6 1.3-2.9 2.8-2.9 1.4 0 2.5 1 2.8 2.4.3 1.6-.7 3.1-2.3 3.4z"/></svg>)
 		}
 	}
 }
