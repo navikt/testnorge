@@ -7,6 +7,7 @@ import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.rs.AaregSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.ArenaConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.InstSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.PoppSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
@@ -31,6 +32,9 @@ public class IdentService {
     @Autowired
     private ArenaConsumer arenaConsumer;
 
+    @Autowired
+    private HodejegerenConsumer hodejegerenConsumer;
+
     public SlettedeIdenterResponse slettIdenterFraAdaptere(Long avspillergruppeId, String miljoe, String testdataEier, List<String> identer) {
         SlettedeIdenterResponse slettedeIdenterResponse = SlettedeIdenterResponse.builder()
                 .tpsfStatus(SletteFraAvspillerguppeResponse.builder()
@@ -41,8 +45,13 @@ public class IdentService {
         slettedeIdenterResponse.setInstStatus(instSyntConsumer.slettIdenterFraInst(identer));
         slettedeIdenterResponse.setSigrunStatus(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer));
         slettedeIdenterResponse.setAaregStatus(aaregSyntConsumer.slettIdenterFraAaregstub(identer));
-        slettedeIdenterResponse.setArenaForvalterStatus(arenaConsumer.slettIdenter(miljoe, identer));
+        // TODO: Fiks arena og legg inn denne igjen
+        // slettedeIdenterResponse.setArenaForvalterStatus(arenaConsumer.slettIdenter(miljoe, identer));
 
         return slettedeIdenterResponse;
+    }
+
+    public List<String> synkroniserMedTps(Long avspillergruppeId, String miljoe) {
+        return hodejegerenConsumer.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
     }
 }

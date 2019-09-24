@@ -26,10 +26,12 @@ public class HodejegerenConsumer {
 
     private UriTemplate hentAlleIdenterUrl;
     private UriTemplate sendTilHodejegerenUrl;
+    private UriTemplate hentIdenterSomIkkeErITpsUrl;
 
     public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
         this.hentAlleIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/alle-identer/{avspillergruppeId}");
         this.sendTilHodejegerenUrl = new UriTemplate(hodejegerenServerUrl + "/v1/historikk/skd/oppdaterDokument/{ident}");
+        this.hentIdenterSomIkkeErITpsUrl = new UriTemplate(hodejegerenServerUrl + "api/v1/identer-ikke-i-tps/{avspillergruppeId}?miljoe={miljoe}");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })
@@ -42,5 +44,11 @@ public class HodejegerenConsumer {
     public List<String> sendTpsPersondokumentTilHodejegeren(TpsPersonDokumentType tpsPersonDokument, String personIdent) {
         RequestEntity postRequest = RequestEntity.post(sendTilHodejegerenUrl.expand(personIdent)).contentType(MediaType.APPLICATION_JSON).body(tpsPersonDokument);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
+    }
+
+    @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })
+    public List<String> hentIdenterSomIkkeErITps(Long avspillergruppeId, String miljoe) {
+        RequestEntity requestEntity = RequestEntity.get(hentIdenterSomIkkeErITpsUrl.expand(avspillergruppeId, miljoe)).build();
+        return restTemplate.exchange(requestEntity, RESPONSE_TYPE).getBody();
     }
 }
