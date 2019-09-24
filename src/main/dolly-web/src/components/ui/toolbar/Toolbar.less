@@ -1,0 +1,27 @@
+.toolbar {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	margin: 20px 0;
+
+	h2 {
+		margin: 0;
+	}
+
+	h2,
+	.toggle {
+		margin-right: 20px;
+	}
+
+	.skjemaelement {
+		margin: 0;
+	}
+
+	&--actions {
+		margin-left: auto;
+
+		:not(:last-child) {
+			margin-right: 5px;
+		}
+	}
+}
