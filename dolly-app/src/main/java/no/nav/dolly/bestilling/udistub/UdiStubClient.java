@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.udistub;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.udistub.UdiStubDefaultPersonUtil.setPersonDefaultsIfUnspecified;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.util.List;
@@ -50,7 +49,6 @@ public final class UdiStubClient implements ClientRegister {
 
                 UdiPerson udiPerson = mapperFacade.map(bestilling.getUdistub(), UdiPerson.class);
                 udiPerson.setIdent(norskIdent.getIdent());
-                setPersonDefaultsIfUnspecified(udiPerson);
 
                 createAndSetAliases(udiPerson, bestilling, norskIdent.getIdent());
 
