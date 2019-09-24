@@ -24,7 +24,7 @@ public class SynthesizedBidragRequest {
     private boolean barnRegistrertPaaAdresse;
 
     @BidragsmeldingConstant
-    private String samvarsklasse;
+    private String beslaarsakKode;
 
     @BidragsmeldingConstant
     private String gebyrBeslAarsakKode;
@@ -41,6 +41,9 @@ public class SynthesizedBidragRequest {
     @BidragsmeldingConstant
     @Getter(AccessLevel.NONE)
     private String kodeVirkAarsak;
+
+    @BidragsmeldingConstant
+    private String samvarsklasse;
 
     @BidragsmeldingConstant
     private int sartilskuddGodkjentBelop;

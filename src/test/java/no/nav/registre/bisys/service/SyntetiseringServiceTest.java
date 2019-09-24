@@ -27,6 +27,9 @@ import org.springframework.test.context.ActiveProfiles;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknFraConstants;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknTypeConstants;
 import no.nav.registre.bisys.consumer.rs.BisysSyntetisererenConsumer;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.consumer.ui.BisysUiConsumer;
@@ -69,8 +72,8 @@ public class SyntetiseringServiceTest {
         syntetiserBisysRequest = new SyntetiserBisysRequest(avspillergruppeId, miljoe, foedteIdenter.size());
         syntetiserteBidragsmeldinger = new ArrayList<>(
                 Arrays.asList(
-                        SyntetisertBidragsmelding.builder().build(),
-                        SyntetisertBidragsmelding.builder().build()));
+                        SyntetisertBidragsmelding.builder().soknadstype(KodeSoknTypeConstants.SOKNAD).soknadFra(KodeSoknFraConstants.BM).soktOm(KodeSoknGrKomConstants.BIDRAG_INNKREVING).build(),
+                        SyntetisertBidragsmelding.builder().soknadstype(KodeSoknTypeConstants.SOKNAD).soknadFra(KodeSoknFraConstants.BM).soktOm(KodeSoknGrKomConstants.BIDRAG_INNKREVING).build()));
         relasjoner = new ArrayList<>(
                 Arrays.asList(
                         Relasjon.builder().fnrRelasjon(bidragsmottaker).typeRelasjon(RELASJON_MOR).build(),
