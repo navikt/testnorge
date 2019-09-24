@@ -8,10 +8,14 @@ import org.springframework.stereotype.Service;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknFraConstants;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknTypeConstants;
 import no.nav.registre.bisys.consumer.rs.BisysSyntetisererenConsumer;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.consumer.ui.BisysUiConsumer;
 import no.nav.registre.bisys.exception.BidragRequestProcessingException;
+import no.nav.registre.bisys.exception.BidragRequestRuntimeException;
 import no.nav.registre.bisys.provider.requests.SyntetiserBisysRequest;
 import no.nav.registre.bisys.service.utils.Barn;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
@@ -59,14 +63,44 @@ public class SyntetiseringService {
     }
 
     public void processBidragsmeldinger(List<SyntetisertBidragsmelding> bidragsmeldinger) {
-        for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
-            try {
-                bisysUiConsumer.createVedtak(bidragsmelding);
-                logProcessingCompletionStatus(ProcessingCompletionStatus.SUCCESS);
 
-            } catch (BidragRequestProcessingException e) {
-                logProcessingCompletionStatus(ProcessingCompletionStatus.FAILED);
+        for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
+
+            boolean soktOmSupported = KodeSoknGrKomConstants.supportedKodeSoknGrKom().contains(bidragsmelding.getSoktOm());
+            boolean soknadstypeSupported = KodeSoknTypeConstants.supportedKodeSoknType().contains(bidragsmelding.getSoknadstype());
+            boolean soknadFraSupported = KodeSoknFraConstants.supportedKodeSoknFra().contains(bidragsmelding.getSoknadFra());
+
+            if (soktOmSupported && soknadstypeSupported && soknadFraSupported) {
+                runVedtak(bidragsmelding);
+            } else {
+                logErrorsAndThrowException(bidragsmelding, soktOmSupported, soknadstypeSupported, soknadFraSupported);
             }
+        }
+    }
+
+    private void logErrorsAndThrowException(SyntetisertBidragsmelding bidragsmelding, boolean soktOmSupported, boolean soknadstypeSupported, boolean soknadFraSupported) {
+        if (!soktOmSupported) {
+            log.error("Søkt om: {}  støttes foreløpig ikke!", bidragsmelding.getSoktOm());
+        }
+
+        if (!soknadstypeSupported) {
+            log.error("Søknadstype: {} støttes foreløpig ikke!", bidragsmelding.getSoknadstype());
+        }
+
+        if (!soknadFraSupported) {
+            log.error("SoknadFra: {} støttes foreløpig ikke!", bidragsmelding.getSoknadFra());
+        }
+
+        throw new BidragRequestRuntimeException("Invalid input!");
+    }
+
+    private void runVedtak(SyntetisertBidragsmelding bidragsmelding) {
+        try {
+            bisysUiConsumer.createVedtak(bidragsmelding);
+            logProcessingCompletionStatus(ProcessingCompletionStatus.SUCCESS);
+
+        } catch (BidragRequestProcessingException e) {
+            logProcessingCompletionStatus(ProcessingCompletionStatus.FAILED);
         }
     }
 

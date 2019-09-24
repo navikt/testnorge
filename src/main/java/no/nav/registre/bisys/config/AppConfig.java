@@ -30,6 +30,9 @@ public class AppConfig {
     @Value("${ENHET:4802}")
     private int enhet;
 
+    @Value("${BESLAARSAK_KODE}")
+    private String beslaarsakKode;
+
     @Value("${GEBYR_BESLAARSAK_KODE_FRITATT_IKKE_SOKT}")
     boolean gebyrBeslAarsakKodeFritattIkkeSokt;
 
@@ -99,18 +102,19 @@ public class AppConfig {
                 : BisysUiFatteVedtakConsumer.KODE_BESL_AARSAK_ILAGT_IKKE_SOKT;
 
         return BidragsmeldingAugments.builder()
+                .andelForsorging(andelForsorging)
                 .barnRegistrertPaaAdresse(barnRegistrertPaaAdresse)
+                .beslaarsakKode(beslaarsakKode)
+                .gebyrBeslAarsakKode(gebyrBeslAarsakKode)
                 .inntektBmEgneOpplysninger(inntektBmEgneOpplysninger)
                 .inntektBpEgneOpplysninger(inntektBpEgneOpplysninger)
-                .andelForsorging(andelForsorging)
-                .gebyrBeslAarsakKode(gebyrBeslAarsakKode)
                 .kodeUnntForsk(kodeUnntForsk)
                 .samvarsklasse(samvarsklasse)
-                .sivilstandBm(sivilstandBm)
                 .sartilskuddKravbelop(sartilskuddKravbelop)
                 .sartilskuddGodkjentBelop(sartilskuddGodkjentBelop)
                 .sartilskuddFradrag(sartilskuddFradrag)
                 .skatteklasse(skatteklasse)
+                .sivilstandBm(sivilstandBm)
                 .build();
     }
 

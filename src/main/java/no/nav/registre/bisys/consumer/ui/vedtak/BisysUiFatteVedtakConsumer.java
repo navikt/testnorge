@@ -9,10 +9,12 @@ import org.springframework.stereotype.Component;
 import no.nav.bidrag.ui.bisys.BisysApplication;
 import no.nav.bidrag.ui.bisys.BisysApplication.BisysPageTitle;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknTypeConstants;
 import no.nav.registre.bisys.consumer.rs.request.SynthesizedBidragRequest;
 import no.nav.registre.bisys.consumer.ui.BisysUiSupport;
 import no.nav.registre.bisys.consumer.ui.vedtak.types.BidragConsumer;
 import no.nav.registre.bisys.consumer.ui.vedtak.types.ForskuddConsumer;
+import no.nav.registre.bisys.consumer.ui.vedtak.types.OpphorConsumer;
 import no.nav.registre.bisys.consumer.ui.vedtak.types.SartilskuddConsumer;
 import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 
@@ -27,6 +29,9 @@ public class BisysUiFatteVedtakConsumer {
 
     @Autowired
     private ForskuddConsumer forskuddExecutor;
+
+    @Autowired
+    private OpphorConsumer opphorExecutor;
 
     @Autowired
     private SartilskuddConsumer sartilskuddExecutor;
@@ -60,13 +65,18 @@ public class BisysUiFatteVedtakConsumer {
         BisysUiSupport.checkCorrectActivePage(bisys, BisysPageTitle.SOKNAD);
 
         String soktOm = request.getSoknadRequest().getSoktOm();
+        String soknadstype = request.getSoknadRequest().getSoknadstype();
 
         if (KodeSoknGrKomConstants.FORSKUDD.equals(soktOm)) {
             forskuddExecutor.runForskudd(bisys, request);
         } else if (KodeSoknGrKomConstants.SARTILSKUDD_INNKREVING.equals(soktOm)) {
             sartilskuddExecutor.runSartilskuddInnkreving(bisys, request);
         } else if (KodeSoknGrKomConstants.BIDRAG_INNKREVING.equals(soktOm)) {
-            bidragExecutor.runBidragInnkreving(bisys, request);
+            if (KodeSoknTypeConstants.OPPHOR.equals(soknadstype)) {
+                opphorExecutor.runOpphor(bisys, request);
+            } else {
+                bidragExecutor.runBidragInnkreving(bisys, request);
+            }
         } else {
             throw new BidragRequestProcessingException(BisysUiSupport.getActiveBisysPage(bisys), new Exception(String.format("SoktOm %s not supported", KodeSoknGrKomConstants.dekodeMap().get(soktOm))));
         }

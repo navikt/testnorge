@@ -18,6 +18,7 @@ public interface TestnorgeToBisysMapper {
 
     @Mapping(target = "andelForsorging", source = "augments.andelForsorging")
     @Mapping(target = "barnRegistrertPaaAdresse", source = "augments.barnRegistrertPaaAdresse")
+    @Mapping(target = "beslaarsakKode", source = "augments.beslaarsakKode")
     @Mapping(target = "gebyrBeslAarsakKode", source = "augments.gebyrBeslAarsakKode")
     @Mapping(target = "inntektBmEgneOpplysninger", source = "augments.inntektBmEgneOpplysninger")
     @Mapping(target = "inntektBpEgneOpplysninger", source = "augments.inntektBpEgneOpplysninger")
