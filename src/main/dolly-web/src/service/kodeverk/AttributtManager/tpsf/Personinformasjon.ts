@@ -214,7 +214,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Forsvunnet',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
-				options: SelectOptionsManager('boolean'),
+				options: SelectOptionsManager('stringBoolean'),
 				attributtType: AttributtType.SelectOnly,
 				editPath: 'erForsvunnet'
 			},

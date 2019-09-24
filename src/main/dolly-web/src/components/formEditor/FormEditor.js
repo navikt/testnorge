@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import { Field } from 'formik'
 import _intersection from 'lodash/intersection'
 import _set from 'lodash/set'
+import _get from 'lodash/get'
 import { DollyApi } from '~/service/Api'
 import { AttributtType } from '~/service/kodeverk/AttributtManager/Types'
 import Panel from '~/components/ui/panel/Panel'
@@ -318,7 +319,7 @@ export default class FormEditor extends Component {
 		return subGruppeArray
 	}
 
-	renderFieldComponent = (item, valgteVerdier, parentObject, formikProps) => {
+	renderFieldComponent = (item, valgteVerdier, parentObject, formikProps, barnTall) => {
 		if (!item.inputType) return null
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
@@ -354,7 +355,21 @@ export default class FormEditor extends Component {
 				/>
 			)
 		}
-
+		
+			if(item.id === 'forsvunnet[0]forsvunnetDato' && valgteVerdier.forsvunnet[0].erForsvunnet == 'false'){
+				disabled = true
+				valgteVerdier.forsvunnet[0].forsvunnetDato = ''
+			}
+			if (item.id === 'partner_forsvunnet[0]forsvunnetDato' &&  _get(valgteVerdier, 'partner_forsvunnet[0].erForsvunnet') === 'false' ){
+			//if(item.id === 'partner_forsvunnet[0]forsvunnetDato' && valgteVerdier.partner_forsvunnet && valgteVerdier.partner_forsvunnet[0].erForsvunnet == 'false'){
+				disabled = true
+				valgteVerdier.partner_forsvunnet[0].forsvunnetDato = ''
+			}
+			if(item.id === `barn[${barnTall}]barn_forsvunnet[0]forsvunnetDato` && _get(valgteVerdier, `barn[${barnTall}].barn_forsvunnet[0].erForsvunnet`) === 'false'){
+			disabled = true
+			valgteVerdier.barn[barnTall].barn_forsvunnet[0].forsvunnetDato = ''
+			}
+		
 		if (
 			item.id === 'arenaforvalter[0]kvalifiseringsgruppe' &&
 			valgteVerdier.arenaforvalter[0].arenaBrukertype !== 'MED_SERVICEBEHOV'

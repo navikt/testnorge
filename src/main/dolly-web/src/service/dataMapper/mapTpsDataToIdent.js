@@ -46,16 +46,6 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 					apiKodeverkId: tpsfData.personStatus && 'Personstatuser'
 				},
 				{
-					id: 'erForsvunnet',
-					label: 'erForsvunnet',
-					value: tpsfData.erForsvunnet
-				},
-				{
-					id: 'forsvunnetDato',
-					label: 'Savnet siden',
-					value: Formatters.formatDate(tpsfData.forsvunnetDato)
-				},
-				{
 					id: 'sivilstand',
 					label: 'Sivilstand',
 					value: tpsfData.sivilstand
