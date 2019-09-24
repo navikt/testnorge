@@ -2,48 +2,46 @@ package no.nav.dolly.mapper;
 
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsStatusIdent;
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.List;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BestillingUdiStatusMapperTest {
+public class BestillingUdiStatusMapperNyTest {
 
     private static final List<BestillingProgress> ERROR_STATUS = newArrayList(
             BestillingProgress.builder().ident("IDENT_1")
-                    .udistubStatus("OK: ident=IDENT_1")
+                    .udistubStatus("OK")
                     .build(),
             BestillingProgress.builder().ident("IDENT_2")
                     .udistubStatus("FEIL: Gjenopprett feilet for udistubclient: 500 Internal Server Error")
                     .build(),
             BestillingProgress.builder().ident("IDENT_3")
-                    .udistubStatus("OK: ident=IDENT_3")
+                    .udistubStatus("OK")
                     .build(),
             BestillingProgress.builder().ident("IDENT_4")
                     .udistubStatus("FEIL: Gjenopprett feilet for udistubclient: 500 Internal Server Error")
                     .build(),
             BestillingProgress.builder().ident("IDENT_5")
-                    .udistubStatus("OK: ident=IDENT_5")
+                    .udistubStatus("OK")
                     .build()
     );
 
     @Test
     public void udiStatusMapper_MapFeilmeldinger() {
-        List<RsStatusIdent> mapperResult = BestillingUdiStubStatusMapper.buildUdiStubStatusMap(ERROR_STATUS);
-        BestillingTpsfStatusMapper.buildTpsfStatusMap(ERROR_STATUS);
+        List<RsStatusRapport> statusRapport = BestillingUdiStubStatusMapperNy.buildUdiStubStatusMap(ERROR_STATUS);
 
-        assertThat(mapperResult.get(0).getStatusMelding(), is(equalTo("FEIL: Gjenopprett feilet for udistubclient: 500 Internal Server Error")));
-        assertThat(mapperResult.get(0).getIdenter().get(0), is(equalTo("IDENT_2")));
-        assertThat(mapperResult.get(0).getIdenter().get(1), is(equalTo("IDENT_4")));
-        assertThat(mapperResult.get(1).getStatusMelding(), is(equalTo("OK: ident=IDENT_3")));
-        assertThat(mapperResult.get(2).getStatusMelding(), is(equalTo("OK: ident=IDENT_5")));
-        assertThat(mapperResult.get(3).getStatusMelding(), is(equalTo("OK: ident=IDENT_1")));
+        assertThat(statusRapport.get(0).getStatuser().get(0).getMelding(), is(equalTo("FEIL: Gjenopprett feilet for udistubclient: 500 Internal Server Error")));
+        assertThat(statusRapport.get(0).getStatuser().get(0).getIdenter(), containsInAnyOrder("IDENT_2", "IDENT_4"));
+        assertThat(statusRapport.get(0).getStatuser().get(1).getMelding(), is(equalTo("OK")));
+        assertThat(statusRapport.get(0).getStatuser().get(1).getIdenter(), containsInAnyOrder("IDENT_3", "IDENT_5", "IDENT_1"));
     }
 }

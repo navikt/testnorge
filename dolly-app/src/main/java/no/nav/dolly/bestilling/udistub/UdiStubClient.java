@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.udistub;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.udistub.UdiStubDefaultPersonUtil.setPersonDefaultsIfUnspecified;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.util.List;
@@ -22,6 +21,7 @@ import no.nav.dolly.domain.resultset.udistub.model.RsUdiAlias;
 import no.nav.dolly.domain.resultset.udistub.model.UdiAlias;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPersonNavn;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @Slf4j
 @Service
@@ -36,6 +36,9 @@ public final class UdiStubClient implements ClientRegister {
     @Autowired
     private TpsfService tpsfService;
 
+    @Autowired
+    private ErrorStatusDecoder errorStatusDecoder;
+
     @Override
     public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
@@ -46,13 +49,13 @@ public final class UdiStubClient implements ClientRegister {
 
                 UdiPerson udiPerson = mapperFacade.map(bestilling.getUdistub(), UdiPerson.class);
                 udiPerson.setIdent(norskIdent.getIdent());
-                setPersonDefaultsIfUnspecified(udiPerson);
 
-                createAndSetAlias(udiPerson, bestilling, norskIdent.getIdent());
+                createAndSetAliases(udiPerson, bestilling, norskIdent.getIdent());
 
                 deletePerson(norskIdent.getIdent());
 
-                appendOkStatus(status, udiStubConsumer.createUdiPerson(udiPerson));
+                ResponseEntity<UdiPersonControllerResponse> response = udiStubConsumer.createUdiPerson(udiPerson);
+                appendOkStatus(status, response);
 
             } catch (RuntimeException e) {
 
@@ -64,7 +67,7 @@ public final class UdiStubClient implements ClientRegister {
         }
     }
 
-    private void createAndSetAlias(UdiPerson person, RsDollyBestilling bestilling, String ident) {
+    private void createAndSetAliases(UdiPerson person, RsDollyBestilling bestilling, String ident) {
 
         try {
             RsAliasResponse aliases = createAliases(ident, bestilling.getUdistub().getAliaser(), bestilling.getEnvironments());
@@ -116,8 +119,7 @@ public final class UdiStubClient implements ClientRegister {
     }
 
     private static void appendErrorStatus(StringBuilder status, RuntimeException e) {
-        status.append("FEIL: ")
-                .append(e.getMessage());
+        status.append("FEIL: ");
 
         if (e instanceof HttpClientErrorException) {
             status.append(" (")
@@ -125,9 +127,8 @@ public final class UdiStubClient implements ClientRegister {
                     .append(')');
 
         } else if (e instanceof HttpServerErrorException) {
-            status.append(" (")
-                    .append(((HttpServerErrorException) e).getResponseBodyAsString())
-                    .append(')');
+            status.append(" Teknisk feil i UdiStub. Se logg!");
+
         }
     }
 }

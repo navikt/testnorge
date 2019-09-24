@@ -15,7 +15,6 @@ import errorsReducer from './ducks/errors'
 import commonReducer from './ducks/common'
 import bestillingStatusReducer from './ducks/bestillingStatus'
 import environmentsReducer from './ducks/environments'
-import openamReducer from './ducks/openam'
 import oppslagReducer from './ducks/oppslag'
 import history from './history'
 
@@ -56,7 +55,6 @@ const configureReduxStore = history => {
 			errors: errorsReducer,
 			common: commonReducer,
 			environments: environmentsReducer,
-			openam: openamReducer,
 			oppslag: oppslagReducer
 		})
 
