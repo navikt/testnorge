@@ -2,6 +2,7 @@ import React from 'react'
 import Feilmelding from './feilmelding/Feilmelding'
 import Bestillingskriterier from './kriterier/Kriterier'
 import MiljoeStatus from './miljoeStatus/MiljoeStatus'
+import JiraLenker from '~/components/bestilling/jiraLenker/JiraLenker'
 
 export default function BestillingSammendrag({ bestilling, modal = false }) {
 	return (
@@ -10,6 +11,7 @@ export default function BestillingSammendrag({ bestilling, modal = false }) {
 			<Bestillingskriterier bestilling={bestilling} />
 			<MiljoeStatus bestilling={bestilling} />
 			<Feilmelding bestilling={bestilling} />
+			<JiraLenker openAm={bestilling.openamSent && bestilling.openamSent.split(',')} />
 		</div>
 	)
 }
