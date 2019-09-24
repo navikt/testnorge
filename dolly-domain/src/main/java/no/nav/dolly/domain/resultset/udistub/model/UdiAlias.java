@@ -13,6 +13,6 @@ import lombok.Setter;
 @Builder
 public class UdiAlias {
 
-    private Boolean nyIdent;
-    private UdiIdentType identtype;
+    private String fnr;
+    private UdiPersonNavn navn;
 }

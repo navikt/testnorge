@@ -3,17 +3,15 @@ package no.nav.dolly.bestilling.instdata;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -25,11 +23,13 @@ import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.domain.resultset.inst.InstdataInstitusjonstype;
 import no.nav.dolly.domain.resultset.inst.InstdataKategori;
 import no.nav.dolly.domain.resultset.inst.InstdataKilde;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @Slf4j
 @Service
 public class InstdataClient implements ClientRegister {
 
+    public static final String OK_RESULT = "OK";
     private static final String[] DEFAULT_ENV = { "q2" };
 
     @Autowired
@@ -39,7 +39,7 @@ public class InstdataClient implements ClientRegister {
     private InstdataConsumer instdataConsumer;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private ErrorStatusDecoder errorStatusDecoder;
 
     @Override
     public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
@@ -55,20 +55,18 @@ public class InstdataClient implements ClientRegister {
             if (!environments.isEmpty()) {
 
                 environments.forEach(environment -> {
+                    deleteInstdata(norskIdent.getIdent(), environment);
 
-                    if (deleteInstdata(norskIdent.getIdent(), environment, status)) {
+                    List<Instdata> instdataListe = mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class);
+                    instdataListe.forEach(instdata -> {
+                        instdata.setPersonident(norskIdent.getIdent());
+                        instdata.setKategori(nullcheckSetDefaultValue(instdata.getKategori(), decideKategori(instdata.getInstitusjonstype())));
+                        instdata.setKilde(nullcheckSetDefaultValue(instdata.getKilde(), decideKilde(instdata.getInstitusjonstype())));
+                        instdata.setOverfoert(nullcheckSetDefaultValue(instdata.getOverfoert(), false));
+                        instdata.setTssEksternId(nullcheckSetDefaultValue(instdata.getTssEksternId(), decideTssEksternId(instdata.getInstitusjonstype())));
+                    });
 
-                        List<Instdata> instdataListe = mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class);
-                        instdataListe.forEach(instdata -> {
-                            instdata.setPersonident(norskIdent.getIdent());
-                            instdata.setKategori(nullcheckSetDefaultValue(instdata.getKategori(), decideKategori(instdata.getInstitusjonstype())));
-                            instdata.setKilde(nullcheckSetDefaultValue(instdata.getKilde(), decideKilde(instdata.getInstitusjonstype())));
-                            instdata.setOverfoert(nullcheckSetDefaultValue(instdata.getOverfoert(), false));
-                            instdata.setTssEksternId(nullcheckSetDefaultValue(instdata.getTssEksternId(), decideTssEksternId(instdata.getInstitusjonstype())));
-                        });
-
-                        postInstdata(norskIdent.getIdent(), instdataListe, environment, status);
-                    }
+                    postInstdata(norskIdent.getIdent(), instdataListe, environment, status);
                 });
             }
 
@@ -104,31 +102,21 @@ public class InstdataClient implements ClientRegister {
         }
     }
 
-    private boolean deleteInstdata(String ident, String environment, StringBuilder status) {
+    private void deleteInstdata(String ident, String environment) {
 
         try {
             ResponseEntity<InstdataResponse[]> response = instdataConsumer.deleteInstdata(ident, environment);
 
-            if (response.hasBody() && response.getBody().length > 0) {
-                if (HttpStatus.NOT_FOUND.equals(response.getBody()[0].getStatus())
-                        || HttpStatus.OK.equals(response.getBody()[0].getStatus())) {
+            if (!response.hasBody() ||
+                    (!NOT_FOUND.equals(response.getBody()[0].getStatus()) &&
+                            !OK.equals(response.getBody()[0].getStatus()))) {
 
-                    return true;
-                } else {
-                    status.append(',')
-                            .append(environment)
-                            .append(':')
-                            .append(getErrorText(response.getBody()[0].getStatus(), response.getBody()[0].getFeilmelding()));
-                }
+                log.error("Feilet å slette person: {}, i INST miljø: {}", ident, environment);
             }
         } catch (RuntimeException e) {
-            status.append(',')
-                    .append(environment)
-                    .append(':');
-            appendErrorText(status, e);
+
             log.error("Feilet å slette person: {}, i INST miljø: {}", ident, environment, e);
         }
-        return false;
     }
 
     private void postInstdata(String ident, List<Instdata> instdata, String environment, StringBuilder status) {
@@ -145,19 +133,19 @@ public class InstdataClient implements ClientRegister {
                             .append("opphold=")
                             .append(i + 1)
                             .append('$')
-                            .append(HttpStatus.CREATED.value() == response.getBody()[i].getStatus().value() ? "OK" :
-                                    getErrorText(response.getBody()[i].getStatus(), response.getBody()[i].getFeilmelding()));
+                            .append(CREATED.equals(response.getBody()[i].getStatus()) ? OK_RESULT :
+                                    errorStatusDecoder.getErrorText(response.getBody()[i].getStatus(), response.getBody()[i].getFeilmelding()));
                 }
             }
 
-        } catch (RuntimeException e) {
+        } catch (RuntimeException re) {
 
             status.append(',')
                     .append(environment)
-                    .append(':');
-            appendErrorText(status, e);
+                    .append(':')
+                    .append(errorStatusDecoder.decodeRuntimeException(re));
 
-            log.error("Feilet å legge inn person: {} til INST miljø: {}", ident, environment, e);
+            log.error("Feilet å legge inn person: {} til INST miljø: {}", ident, environment, re);
         }
     }
 
@@ -198,40 +186,5 @@ public class InstdataClient implements ClientRegister {
         default:
             return "80000464241"; // HELGELANDSSYKEHUSET HF
         }
-    }
-
-    private static void appendErrorText(StringBuilder status, RuntimeException e) {
-        status.append("Feil: ")
-                .append(e.getMessage());
-
-        if (e instanceof HttpClientErrorException) {
-            status.append(" (")
-                    .append(encodeErrorStatus(((HttpClientErrorException) e).getResponseBodyAsString()))
-                    .append(')');
-        }
-    }
-
-    private String getErrorText(HttpStatus errorStatus, String errorMsg) {
-
-        StringBuilder status = new StringBuilder()
-                .append("Feil: ")
-                .append(errorStatus.value())
-                .append(" (")
-                .append(errorStatus.getReasonPhrase())
-                .append(") ");
-
-        try {
-
-            status.append(encodeErrorStatus(errorMsg.contains("{") ? (String) objectMapper.readValue(errorMsg, Map.class).get("message") : errorMsg));
-        } catch (IOException e) {
-
-            log.warn("Parsing av feilmelding fra INST-adapter feilet: ", e);
-        }
-
-        return status.toString();
-    }
-
-    private static String encodeErrorStatus(String toBeEncoded) {
-        return toBeEncoded.replaceAll(",", "&").replaceAll(":", "=");
     }
 }

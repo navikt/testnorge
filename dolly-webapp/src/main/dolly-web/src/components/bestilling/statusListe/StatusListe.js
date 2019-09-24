@@ -1,17 +1,49 @@
 import React from 'react'
-import Status from './status/Status'
+import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
+import Loading from '~/components/ui/loading/Loading'
+import BestillingProgresjon from './BestillingProgresjon/BestillingProgresjon'
+import BestillingResultat from './BestillingResultat/BestillingResultat'
 
 export default function StatusListe(props) {
-	const { isFetchingBestillinger, nyeBestillinger, getGruppe, getBestillinger } = props
+	const {
+		isFetchingBestillinger,
+		nyeBestillinger,
+		isCanceling,
+		getGruppe,
+		getBestillinger,
+		removeNyBestillingStatus,
+		cancelBestilling
+	} = props
+
+	const _onCloseBestillingResultat = bestillingId => {
+		removeNyBestillingStatus(bestillingId)
+		getBestillinger()
+	}
 
 	if (isFetchingBestillinger) return false
 
-	return nyeBestillinger.map(bestilling => (
-		<Status
-			key={bestilling.id}
-			bestilling={bestilling}
-			onIdenterUpdate={getGruppe}
-			onBestillingerUpdate={getBestillinger}
-		/>
-	))
+	if (isCanceling) {
+		return (
+			<ContentContainer className="loading-content-container">
+				<Loading label="AVBRYTER BESTILLING" />
+			</ContentContainer>
+		)
+	}
+
+	return nyeBestillinger.map(bestilling => {
+		return (
+			<div className="bestilling-status" key={bestilling.id}>
+				{bestilling.ferdig ? (
+					<BestillingResultat bestilling={bestilling} onCloseButton={_onCloseBestillingResultat} />
+				) : (
+					<BestillingProgresjon
+						bestilling={bestilling}
+						getGruppe={getGruppe}
+						getBestillinger={getBestillinger}
+						cancelBestilling={cancelBestilling}
+					/>
+				)}
+			</div>
+		)
+	})
 }

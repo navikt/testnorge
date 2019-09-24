@@ -32,7 +32,7 @@ export default class Datepicker extends Component {
 		validDate: new Date()
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 		document.addEventListener('mousedown', this.handleDocumentEventClick, false)
 	}
 

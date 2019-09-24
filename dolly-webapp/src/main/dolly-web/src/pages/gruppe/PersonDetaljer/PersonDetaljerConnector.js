@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { getBestillingById } from '~/ducks/bestillingStatus'
 import PersonDetaljer from './PersonDetaljer'
 import DataMapper from '~/service/dataMapper'
 import {
@@ -38,8 +39,9 @@ const mapStateToProps = (state, ownProps) => {
 		testIdent: state.gruppe.data[0].testidenter.find(
 			testIdent => testIdent.ident === ownProps.personId
 		),
-		bestilling: state.bestillingStatuser.data.find(
-			bestilling => bestilling.id.toString() === Formatters.idUtenEllipse(ownProps.bestillingId)
+		bestilling: getBestillingById(
+			state.bestillingStatuser.data,
+			Formatters.idUtenEllipse(ownProps.bestillingId)
 		)
 	}
 }

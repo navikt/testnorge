@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import _mapValues from 'lodash/mapValues'
-import LinkButton from '~/components/button/LinkButton/LinkButton'
+import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
 
 import './MiljoVelger.less'

@@ -37,9 +37,9 @@ const AttributtListe: Attributt[] = [
 		label: 'Dødsdato',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: DateValidation(),
-		attributtType: AttributtType.SelectOnly,
-		defaultValue: new Date()
+		validation: DateValidation(false),
+		attributtType: AttributtType.SelectOnly
+		//defaultValue: new Date()
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,

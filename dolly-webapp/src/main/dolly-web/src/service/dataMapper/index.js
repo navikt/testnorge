@@ -1,4 +1,5 @@
 import { createHeader, mapBestillingId } from './Utils'
+import { getBestillingById } from '~/ducks/bestillingStatus'
 import Formatters from '~/utils/DataFormatter'
 import { mapTpsfData } from './mapTpsDataToIdent'
 import { mapPdlData } from './mapPdlDataToIdent'
@@ -69,9 +70,12 @@ const DataMapper = {
 		const udiData = testbruker.items.udistub && testbruker.items.udistub[personId]
 
 		var bestillingId = _findBestillingId(gruppe, personId)
-		const tpsfKriterier = JSON.parse(
-			bestillingStatuser.data.find(bestilling => bestilling.id === bestillingId[0]).tpsfKriterier
-		)
+
+		const bestilling = getBestillingById(bestillingStatuser.data, bestillingId[0])
+
+		const tpsfKriterier = JSON.parse(bestilling.tpsfKriterier)
+		const bestKriterier = JSON.parse(bestilling.bestKriterier)
+
 		let data = mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData && pdlfData.personidenter)
 
 		if (aaregData) {
@@ -87,10 +91,8 @@ const DataMapper = {
 			data.push(...mapPdlData(pdlfData))
 		}
 		if (arenaData) {
-			// Workaround for å hente servicebehov-type, inaktiveringsdato, AAP og AAP115 fra bestilling så lenge vi ikke kan få den fra arenaforvalteren
-			const bestKriterier = JSON.parse(
-				bestillingStatuser.data.find(bestilling => bestilling.id === bestillingId[0]).bestKriterier
-			)
+			// Workaround for å hente servicebehov-type, inaktiveringsdato, AAP og AAP115
+			// fra bestilling så lenge vi ikke kan få den fra arenaforvalteren
 			var kvalifiseringsgruppe = bestKriterier.arenaforvalter.kvalifiseringsgruppe
 			var inaktiveringDato = bestKriterier.arenaforvalter.inaktiveringDato
 			var aap115 = bestKriterier.arenaforvalter.aap115
