@@ -16,7 +16,7 @@ import java.util.List;
 @Component
 public class TpsfConsumer {
 
-    private static final String environment = "q2";
+    private static final String ENVIRONMENT = "q2";
 
     private RestTemplate restTemplate;
     private UriTemplate url;
@@ -31,7 +31,7 @@ public class TpsfConsumer {
 
     public JsonNode getStatusFromTps(List<String> idents) throws IOException {
         String identsAsString = String.join(",", idents);
-        RequestEntity getRequest = RequestEntity.get(url.expand(idents.size(), environment, identsAsString)).build();
+        RequestEntity getRequest = RequestEntity.get(url.expand(idents.size(), ENVIRONMENT, identsAsString)).build();
         ResponseEntity<String> response = restTemplate.exchange(getRequest, String.class);
         return new ObjectMapper().readTree(response.getBody()).findValue("data1");
     }
