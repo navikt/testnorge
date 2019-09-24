@@ -1,6 +1,7 @@
 package no.nav.registre.udistub.core.database.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @Table(name = "kodeverk")
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class Kodeverk {
 
     @Id

@@ -1,5 +1,6 @@
 package no.nav.registre.udistub.core.service.to.opphold;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,7 @@ import no.nav.registre.udistub.core.service.to.UdiPeriode;
 @Setter
 @Getter
 @Builder
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class UdiOppholdStatus {
 
     private Boolean uavklart;

@@ -1,5 +1,6 @@
 package no.nav.registre.udistub.core.service.to;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,7 @@ import no.nav.registre.udistub.core.service.to.opphold.UdiOppholdStatus;
 @Setter
 @Getter
 @Builder
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class UdiPerson {
 
     private String ident;
