@@ -82,6 +82,6 @@ public class StartSyntetiseringPoppCompTest {
                         + "\", \"antallNyeIdenter\": " + antallNyeIdenter + "}"))
                 .willReturn(ok()
                         .withHeader("content-type", "application/json")
-                        .withBody("[" + HttpStatus.OK + ", " + HttpStatus.OK + "]")));
+                        .withBody("[" + HttpStatus.OK.value() + ", " + HttpStatus.OK.value() + "]")));
     }
 }

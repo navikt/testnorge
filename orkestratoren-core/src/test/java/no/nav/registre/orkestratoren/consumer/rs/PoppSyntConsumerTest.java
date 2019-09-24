@@ -9,6 +9,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.util.ArrayList;
@@ -60,7 +62,7 @@ public class PoppSyntConsumerTest {
 
         ResponseEntity response = poppSyntConsumer.startSyntetisering(syntetiserPoppRequest, "test");
 
-        assertThat(response.getBody().toString(), containsString(HttpStatus.OK.toString()));
+        assertThat((List<Integer>)response.getBody(), containsInAnyOrder(HttpStatus.OK.value(), HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
 
     @Test
@@ -82,7 +84,7 @@ public class PoppSyntConsumerTest {
                                 + ",\"antallNyeIdenter\":" + identer.size() + "}"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
-                        .withBody("[\"" + HttpStatus.OK + "\", \"" + HttpStatus.INTERNAL_SERVER_ERROR + "\"]")));
+                        .withBody("[\"" + HttpStatus.OK.value() + "\", \"" + HttpStatus.INTERNAL_SERVER_ERROR.value() + "\"]")));
     }
 
     private void stubPoppConsumerSlettIdenter() {

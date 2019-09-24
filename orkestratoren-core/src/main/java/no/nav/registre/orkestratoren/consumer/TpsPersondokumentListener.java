@@ -18,8 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.orkestratoren.consumer.utils.PersondokumentConverter;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Slf4j
 @Component
@@ -30,6 +31,9 @@ public class TpsPersondokumentListener {
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
+
+    @Autowired
+    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     @Value("#{${batch.avspillergruppeId.miljoe}}")
     private Map<Long, String> avspillergruppeIdMedMiljoe;
@@ -55,7 +59,7 @@ public class TpsPersondokumentListener {
                 sjekkOmIdentLiggerICacheOgOppdater(personIdent);
 
                 if (alleOrkestrerteIdenter.contains(personIdent)) {
-                    hodejegerenConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersondokument, personIdent);
+                    hodejegerenHistorikkConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersondokument, personIdent);
                 }
             }
         } catch (RuntimeException e) {
@@ -66,7 +70,7 @@ public class TpsPersondokumentListener {
     private void sjekkOmIdentLiggerICacheOgOppdater(String personIdent) {
         if (!alleOrkestrerteIdenter.contains(personIdent)) {
             for (Long avspillergruppeId : avspillergruppeIdMedMiljoe.keySet()) {
-                List<String> orkestrerteIdenter = hodejegerenConsumer.finnAlleIdenter(avspillergruppeId);
+                List<String> orkestrerteIdenter = hodejegerenConsumer.get(avspillergruppeId);
                 alleOrkestrerteIdenter.addAll(orkestrerteIdenter);
             }
         }
