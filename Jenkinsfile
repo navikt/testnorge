@@ -1,6 +1,6 @@
 applicationPipeline {
     applicationName = "orkestratoren"
-    javaVersion = "1.11"
+    javaVersion = "1.8"
     environment = "q2"
     namespace="default"
     hasPerformanceTest = false

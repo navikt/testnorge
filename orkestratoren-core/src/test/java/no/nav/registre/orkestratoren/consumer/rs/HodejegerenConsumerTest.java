@@ -28,10 +28,10 @@ import no.rtv.namespacetps.TpsPersonDokumentType;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @ActiveProfiles("test")
-public class HodejegerenHistorikkConsumerTest {
+public class HodejegerenConsumerTest {
 
     @Autowired
-    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
+    private HodejegerenConsumer hodejegerenConsumer;
 
     private TpsPersonDokumentType tpsPersonDokument;
     private String fnr = "01010101010";
@@ -45,7 +45,7 @@ public class HodejegerenHistorikkConsumerTest {
     public void shouldSendPersondokumentTilHodejegeren() throws JsonProcessingException {
         stubHodejegerenConsumer();
 
-        List<String> identer = hodejegerenHistorikkConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersonDokument, fnr);
+        List<String> identer = hodejegerenConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersonDokument, fnr);
 
         assertThat(identer, contains(fnr));
     }

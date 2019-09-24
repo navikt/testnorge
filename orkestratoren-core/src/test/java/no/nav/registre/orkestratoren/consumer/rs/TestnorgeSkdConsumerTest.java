@@ -6,7 +6,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hamcrest.CoreMatchers;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,7 +69,7 @@ public class TestnorgeSkdConsumerTest {
         SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
 
         assert skdMeldingerTilTpsRespons != null;
-        assertThat(skdMeldingerTilTpsRespons.getAntallSendte(), is(2));
+        assertThat(skdMeldingerTilTpsRespons.getTpsfIds(), IsIterableContainingInOrder.contains(expectedMeldingsIds.get(0), expectedMeldingsIds.get(1)));
     }
 
     @Test

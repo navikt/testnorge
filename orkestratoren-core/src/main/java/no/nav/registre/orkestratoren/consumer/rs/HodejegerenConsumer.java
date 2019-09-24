@@ -16,7 +16,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class HodejegerenHistorikkConsumer {
+public class HodejegerenConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
     };
@@ -24,10 +24,18 @@ public class HodejegerenHistorikkConsumer {
     @Autowired
     private RestTemplate restTemplate;
 
+    private UriTemplate hentAlleIdenterUrl;
     private UriTemplate sendTilHodejegerenUrl;
 
-    public HodejegerenHistorikkConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
+    public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
+        this.hentAlleIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/alle-identer/{avspillergruppeId}");
         this.sendTilHodejegerenUrl = new UriTemplate(hodejegerenServerUrl + "/v1/historikk/skd/oppdaterDokument/{ident}");
+    }
+
+    @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })
+    public List<String> finnAlleIdenter(Long avspillergruppeId) {
+        RequestEntity getRequest = RequestEntity.get(hentAlleIdenterUrl.expand(avspillergruppeId.toString())).build();
+        return restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })

@@ -10,7 +10,8 @@ import java.util.List;
 @Setter
 public class SkdMeldingerTilTpsRespons {
 
-    private int antallSendte;
-    private int antallFeilet;
-    private List<StatusPaaAvspiltSkdMelding> statusFraFeilendeMeldinger;
+    private int antallSendte = 0;
+    private int antallFeilet = 0;
+    private List<StatusPaaAvspiltSkdMelding> statusFraFeilendeMeldinger = new ArrayList();
+    private List<Long> tpsfIds;
 }
