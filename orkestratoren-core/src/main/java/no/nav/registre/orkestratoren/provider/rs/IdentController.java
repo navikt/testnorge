@@ -45,7 +45,8 @@ public class IdentController {
     public Map<Long, List<String>> synkroniserMedTps() {
         Map<Long, List<String>> avspillergruppeMedSlettedeIdenter = new HashMap<>();
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            List<String> newEntry = avspillergruppeMedSlettedeIdenter.put(entry.getKey(), new ArrayList<>());
+            avspillergruppeMedSlettedeIdenter.put(entry.getKey(), new ArrayList<>());
+            List<String> newEntry = avspillergruppeMedSlettedeIdenter.get(entry.getKey());
             if (newEntry != null) {
                 newEntry.addAll(identService.synkroniserMedTps(entry.getKey(), entry.getValue()));
             }
