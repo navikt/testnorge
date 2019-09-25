@@ -35,6 +35,6 @@ public final class AaregResponseHandler {
             log.error("Lesing av faultInfo fra Aaareg feilet.", e);
         }
         return isBlank(feilbeskrivelse) ? "Feil: " + exception.getMessage() :
-                format(" Feil, %s -> %s%s", exception.getClass().getSimpleName(), exception.getMessage(), feilbeskrivelse);
+                format("Feil, %s -> %s%s", exception.getClass().getSimpleName(), exception.getMessage(), feilbeskrivelse);
     }
 }

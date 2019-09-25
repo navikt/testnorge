@@ -82,7 +82,6 @@ public class ArenaForvalterClientTest {
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$OK")));
         verify(arenaForvalterConsumer).getEnvironments();
-        verify(arenaForvalterConsumer).getIdent(IDENT);
         verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class));
     }
 
@@ -101,7 +100,6 @@ public class ArenaForvalterClientTest {
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo(
                 "q2$Feil: 400 Bad request (An error has occured)")));
-        verify(arenaForvalterConsumer).getIdent(IDENT);
         verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class));
     }
 
