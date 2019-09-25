@@ -30,7 +30,7 @@ public class BidragConsumer {
      * @param request
      * @throws BidragRequestProcessingException
      */
-    public void runBidragInnkreving(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
+    public void runBidrag(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
         try {
 
             Soknad soknad = (Soknad) BisysUiSupport.getActiveBisysPage(bisys);
