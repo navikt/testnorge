@@ -356,18 +356,22 @@ export default class FormEditor extends Component {
 			)
 		}
 		
-			if(item.id === 'forsvunnet[0]forsvunnetDato' && valgteVerdier.forsvunnet[0].erForsvunnet == 'false'){
+			if(item.id === 'forsvunnet[0]forsvunnetDato' && valgteVerdier.forsvunnet[0].erForsvunnet !== 'true'){
 				disabled = true
 				valgteVerdier.forsvunnet[0].forsvunnetDato = ''
 			}
-			if (item.id === 'partner_forsvunnet[0]forsvunnetDato' &&  _get(valgteVerdier, 'partner_forsvunnet[0].erForsvunnet') === 'false' ){
+			if (item.id === 'partner_forsvunnet[0]forsvunnetDato' &&  _get(valgteVerdier, 'partner_forsvunnet[0].erForsvunnet') !== 'true' ){
 			//if(item.id === 'partner_forsvunnet[0]forsvunnetDato' && valgteVerdier.partner_forsvunnet && valgteVerdier.partner_forsvunnet[0].erForsvunnet == 'false'){
 				disabled = true
 				valgteVerdier.partner_forsvunnet[0].forsvunnetDato = ''
 			}
-			if(item.id === `barn[${barnTall}]barn_forsvunnet[0]forsvunnetDato` && _get(valgteVerdier, `barn[${barnTall}].barn_forsvunnet[0].erForsvunnet`) === 'false'){
-			disabled = true
+		
+			if(item.id === `barn[${barnTall}]barn_forsvunnet[0]forsvunnetDato` && _get(valgteVerdier, `barn[${barnTall}].barn_forsvunnet[0].erForsvunnet`) !== 'true'){
+
+				disabled = true
+			if (valgteVerdier.barn[barnTall].barn_forsvunnet[0]){
 			valgteVerdier.barn[barnTall].barn_forsvunnet[0].forsvunnetDato = ''
+			}
 			}
 		
 		if (
