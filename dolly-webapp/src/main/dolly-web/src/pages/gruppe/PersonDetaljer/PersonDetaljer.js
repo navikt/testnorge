@@ -1,15 +1,15 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import HjelpeTekst from 'nav-frontend-hjelpetekst'
 import PersonInfoBlock from '~/components/personInfoBlock/PersonInfoBlock'
 import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManager'
-import Button from '~/components/button/Button'
-import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
-import Loading from '~/components/loading/Loading'
-import './PersonDetaljer.less'
-import DollyModal from '~/components/modal/DollyModal'
+import Button from '~/components/ui/button/Button'
+import ConfirmTooltip from '~/components/ui/confirmTooltip/ConfirmTooltip'
+import Loading from '~/components/ui/loading/Loading'
+import DollyModal from '~/components/ui/modal/DollyModal'
 import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
 import { getSuccessEnv, getPdlforvalterStatusOK } from '~/ducks/bestillingStatus/utils'
-import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
+import './PersonDetaljer.less'
 
 const AttributtManagerInstance = new AttributtManager()
 
@@ -33,7 +33,7 @@ export default class PersonDetaljer extends PureComponent {
 			getPdlforvalterStatusOK(this.props.testIdent.pdlforvalterStatus) &&
 			this.props.getPdlfTestbruker()
 		this.props.testIdent.arenaforvalterStatus && this.props.getArenaTestbruker()
-
+		this.props.testIdent.udistubStatus === 'OK' && this.props.getUdiTestbruker()
 		const aaregSuccessEnvs = getSuccessEnv(this.props.testIdent.aaregStatus)
 		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
 
@@ -64,9 +64,7 @@ export default class PersonDetaljer extends PureComponent {
 								<div key={idx} className="person-details_content">
 									<h3 className="flexbox--align-center">
 										{i.header}
-										{i.informasjonstekst && (
-											<ContentTooltip hideText>{i.informasjonstekst} </ContentTooltip>
-										)}
+										{i.informasjonstekst && <HjelpeTekst>{i.informasjonstekst} </HjelpeTekst>}
 									</h3>
 
 									{this._renderPersonInfoBlockHandler(i)}
@@ -79,13 +77,9 @@ export default class PersonDetaljer extends PureComponent {
 					<Button onClick={this.openModal} className="flexbox--align-center" kind="details">
 						BESTILLINGSDETALJER
 					</Button>
-					<DollyModal
-						isOpen={modalOpen}
-						onRequestClose={this.closeModal}
-						closeModal={this.closeModal}
-						content={<BestillingSammendrag bestilling={bestilling} modal />}
-						width={'60%'}
-					/>
+					<DollyModal isOpen={modalOpen} closeModal={this.closeModal} width="60%">
+						<BestillingSammendrag bestilling={bestilling} modal />
+					</DollyModal>
 					<Button onClick={editAction} className="flexbox--align-center" kind="edit">
 						REDIGER
 					</Button>
@@ -121,7 +115,8 @@ export default class PersonDetaljer extends PureComponent {
 			isFetchingSigrun,
 			isFetchingAareg,
 			isFetchingArena,
-			isFetchingInst
+			isFetchingInst,
+			isFetchingUdi
 		} = this.props
 
 		if (isFetchingSigrun && header === 'Inntekter') {
@@ -134,8 +129,9 @@ export default class PersonDetaljer extends PureComponent {
 			return <Loading label="Henter data fra Arena" panel />
 		} else if (isFetchingInst && header === 'Institusjonsopphold') {
 			return <Loading label="Henter data fra Inst" panel />
+		} else if (isFetchingUdi && header === 'UDI') {
+			return <Loading label="Henter data fra UDI-stub" panel />
 		}
-
 		return this._renderPersonInfoBlock(item)
 	}
 

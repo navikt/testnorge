@@ -13,6 +13,7 @@ export const avvikStatus = bestilling => {
 	if (_get(bestilling, 'sigrunStubStatus', []).some(check)) avvik = true
 	if (_get(bestilling, 'pdlforvalterStatus.pdlForvalter', []).some(check)) avvik = true
 	if (_get(bestilling, 'instdataStatus', []).some(check)) avvik = true
+	if (_get(bestilling, 'udiStubStatus', []).some(check)) avvik = true
 
 	// Arena har et annerledes property - 'status'
 	if (_get(bestilling, 'arenaforvalterStatus', []).some(o => o.status !== 'OK')) avvik = true
@@ -37,7 +38,6 @@ export const countAntallIdenterOpprettet = bestilling => {
 const miljoeStatusSelector = bestilling => {
 	if (!bestilling) return null
 
-	const bestillingId = bestilling.id
 	const successEnvs = []
 	const failedEnvs = []
 	const avvikEnvs = []
@@ -114,8 +114,14 @@ const miljoeStatusSelector = bestilling => {
 	setStatus('aaregStatus', 'statusMelding', 'AAREG')
 	setStatus('arenaforvalterStatus', 'status', 'Arena')
 
+	bestilling.udiStubStatus &&
+		bestilling.udiStubStatus.map(status => {
+			status.statusMelding == 'OK'
+				? !successEnvs.includes('Udi-stub') && successEnvs.push('Udi-stub')
+				: !failedEnvs.includes('Udi-stub') && failedEnvs.push('Udi-stub')
+		})
+
 	return {
-		bestillingId,
 		successEnvs,
 		failedEnvs,
 		avvikEnvs,

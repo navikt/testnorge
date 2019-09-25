@@ -29,6 +29,8 @@ const ConfigService = {
 				return dollyConfig.arenaUrl
 			case 'inst':
 				return dollyConfig.instdataUrl
+			case 'udi':
+				return dollyConfig.udiStubUrl
 			default:
 				return undefined
 		}

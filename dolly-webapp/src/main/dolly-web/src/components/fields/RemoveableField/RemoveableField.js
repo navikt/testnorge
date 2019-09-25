@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import Button from '~/components/button/Button'
+import Button from '~/components/ui/button/Button'
 import './RemovableField.less'
 
 // TODO: Bruk classnames pakke

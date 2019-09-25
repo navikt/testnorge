@@ -1,7 +1,10 @@
 package no.nav.dolly.api;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.dolly.kodeverk.KodeverkConsumer;
 import no.nav.dolly.kodeverk.KodeverkMapper;
@@ -61,5 +65,12 @@ public class OppslagController {
     @GetMapping("/syntdata")
     public ResponseEntity syntdataGenerate(@RequestParam("path") String path, @RequestParam("numToGenerate") Integer numToGenerate) {
         return syntdataConsumer.generate(path, numToGenerate);
+    }
+
+    @GetMapping("/systemer")
+    public List<SystemTyper.SystemBeskrivelse> getSystemTyper() {
+        return newArrayList(SystemTyper.values()).stream()
+                .map(type -> SystemTyper.SystemBeskrivelse.builder().system(type.name()).beskrivelse(type.getBeskrivelse()).build())
+                .collect(Collectors.toList());
     }
 }
