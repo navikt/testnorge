@@ -400,7 +400,6 @@ export function mapBestillingData(bestillingData) {
 		const udiStubKriterier = registreKriterier.udistub
 
 		if (udiStubKriterier) {
-			console.log('udiStubKriterier :', udiStubKriterier)
 			const oppholdKriterier = udiStubKriterier.oppholdStatus
 			const arbeidsadgangKriterier = udiStubKriterier.arbeidsadgang
 
@@ -408,7 +407,6 @@ export function mapBestillingData(bestillingData) {
 				'eosEllerEFTABeslutningOmOppholdsrett',
 				'eosEllerEFTAVedtakOmVarigOppholdsrett',
 				'eosEllerEFTAOppholdstillatelse'
-				// , 'oppholdSammeVilkaar'
 			]
 			const currentOppholdsrettType =
 				oppholdKriterier && oppholdsrettTyper.find(type => oppholdKriterier[type])

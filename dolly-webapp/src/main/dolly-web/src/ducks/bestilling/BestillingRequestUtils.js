@@ -11,10 +11,7 @@ export const getValues = (attributeList, values) => {
 	return attributeList.reduce((accumulator, attribute) => {
 		let value = _transformAttributt(attribute, attributeList, values[attribute.id])
 		const pathPrefix = DataSourceMapper(attribute.dataSource)
-		console.log('value :', value)
-		// console.log('pathPrefix :', pathPrefix)
-		// console.log('accumulator :', accumulator)
-		// console.log('attribute :', attribute)
+
 		if (pathPrefix == DataSourceMapper('SIGRUN')) {
 			const groupByTjeneste = _groupBy(value, 'tjeneste')
 			let tjenester = Object.keys(groupByTjeneste)
@@ -374,11 +371,8 @@ const _transformAttributt = (attribute, attributes, value) => {
 		return valueDeepCopy
 	}
 	if (attribute.items) {
-		// console.log('attribute :', attribute)
 		let attributeList = attribute.items.reduce((res, acc) => ({ ...res, [acc.id]: acc }), {})
-		// console.log('attrbuteList :', attributeList)
 		if (attribute.isMultiple) {
-			// console.log('value :', value)
 			return value.map(val =>
 				Object.assign(
 					{},

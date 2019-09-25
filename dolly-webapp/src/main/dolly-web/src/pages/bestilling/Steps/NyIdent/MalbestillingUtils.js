@@ -81,7 +81,6 @@ export const getValuesFromMal = mal => {
 		const matrikkeladresseValues = _mapAdresseValues(reduxStateValue)
 		reduxStateValue = matrikkeladresseValues
 	}
-	console.log('reduxStateValue :', reduxStateValue)
 	return reduxStateValue
 }
 
@@ -131,12 +130,10 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 const _mapArrayValuesToObject = (objectToAssign, valueArray, key, keyPrefix = '') => {
 	const mappedKey =
 		key === 'arenaforvalter' ? _mapRegistreKey(Object.keys(valueArray[0])[0]) : _mapRegistreKey(key)
-	console.log('mappedKey :', mappedKey)
 	let valueArrayObj = []
 
 	valueArray.forEach(v => {
 		let childObj = {}
-		console.log('v :', v)
 		_mapValuesToObject(childObj, Object.entries(v), keyPrefix)
 		valueArrayObj.push(childObj)
 	})
@@ -291,8 +288,6 @@ const _mapAdresseValues = values => {
 }
 
 const _mapRegistreValue = (key, value) => {
-	console.log('key :', key)
-	console.log('value :', value)
 	let mappedValue = []
 	switch (key) {
 		case 'aareg':
@@ -430,7 +425,6 @@ const _mapRegistreValue = (key, value) => {
 						//Tredjeland ikke oppholdstillatelse. Tredjelandsborger opphold. Tredjeland uavklart.
 					}
 				})
-				console.log('oppholdObj :', oppholdObj)
 				_set(mapUdiObj, 'oppholdStatus', [oppholdObj])
 			}
 			if (value.harOppholdstillatelse === false) {
@@ -474,7 +468,6 @@ const _mapRegistreValue = (key, value) => {
 			if (value.soeknadOmBeskyttelseUnderBehandling) {
 				mapUdiObj.soeknadOmBeskyttelseUnderBehandling = value.soeknadOmBeskyttelseUnderBehandling
 			}
-			console.log('mapUdiObj :', mapUdiObj)
 			return [mapUdiObj]
 		default:
 			return value
