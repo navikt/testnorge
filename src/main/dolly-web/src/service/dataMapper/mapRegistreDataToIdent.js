@@ -295,7 +295,6 @@ export function mapInstData(instData) {
 }
 
 export function mapUdiData(udiData) {
-	console.log('udiData :', udiData)
 	if (!udiData) return null
 	if (
 		udiData.arbeidsadgang == null &&
@@ -347,7 +346,7 @@ export function mapUdiData(udiData) {
 			{
 				id: 'status',
 				label: 'Status',
-				value: currentTredjelandsborgereStatus //udiData.oppholdStatus
+				value: currentTredjelandsborgereStatus
 			},
 			{
 				id: 'oppholdFraDato',

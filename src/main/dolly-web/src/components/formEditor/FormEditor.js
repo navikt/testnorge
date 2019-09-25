@@ -206,34 +206,17 @@ export default class FormEditor extends Component {
 		const valgteVerdier = formikProps.values
 		const errors = formikProps.errors
 		let shouldRender = true
-		// console.log('item :', item)
 		if (item.onlyShowAfterSelectedValue) {
 			const { parentId, idx } = parentObject
 			const attributtId = item.onlyShowAfterSelectedValue.attributtId
-			// console.log('items :', items)
-			// console.log('attributtId :', attributtId)
-			// console.log('idx :', idx)
 			let dependantAttributt = items.find(attributt => attributt.id === attributtId)
 			// Spesialtilfelle fordi dependant attributt ligger i en annen subkategori
 			if (item.hovedKategori.id === 'arena' && attributtId) {
 				const arenaItem = this.props.AttributtListe.find(item => item.hovedKategori.id === 'arena')
 				dependantAttributt = arenaItem.items[0].items[0].items[0]
 			}
-			// if (item.hovedKategori.id === 'udi' && attributtId) {
-			// 	const udiItem = this.props.AttributtListe.find(item => item.hovedKategori.id === 'udi')
-			// 	console.log('udiItem :', udiItem)
-			// 	if (attributtId === 'oppholdsstatus') {
-			// 		dependantAttributt = udiItem.items[0].items[0].items[0]
-			// 	}
-			// 	if (attributtId === 'oppholdsstatus') {
-			// 		dependantAttributt = udiItem.items[0].items[0].items[0]
-			// 	}
-			// }
 			let foundIndex = false
-			// console.log('valgteVerdier :', valgteVerdier)
-			// console.log('dependantAttributt :', dependantAttributt)
 			item.onlyShowAfterSelectedValue.valueIndex.map(index => {
-				// console.log('index :', index)
 				valgteVerdier[parentId][idx][attributtId] === dependantAttributt.options[index].value &&
 					(foundIndex = true)
 			})
