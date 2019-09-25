@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <springProfile name="default">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="net.logstash.logback.encoder.LogstashEncoder">
                 <customFields>{"log_type":"default"}</customFields>
@@ -10,5 +9,4 @@
         <root level="INFO">
             <appender-ref ref="stdout_json"/>
         </root>
-    </springProfile>
 </configuration>

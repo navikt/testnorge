@@ -1,15 +1,20 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
@@ -18,6 +23,7 @@ import io.micrometer.core.annotation.Timed;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteArbeidsforholdResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 
+@Slf4j
 @Component
 public class AaregSyntConsumer {
 
@@ -48,6 +54,13 @@ public class AaregSyntConsumer {
         RequestEntity deleteRequest = RequestEntity.method(HttpMethod.DELETE, slettIdenterUrl.expand())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(identer);
-        return restTemplate.exchange(deleteRequest, RESPONSE_TYPE_DELETE).getBody();
+        SletteArbeidsforholdResponse response = SletteArbeidsforholdResponse.builder().build();
+        try {
+            response = restTemplate.exchange(deleteRequest, RESPONSE_TYPE_DELETE).getBody();
+        } catch (HttpStatusCodeException e) {
+            log.error("Kunne ikke slette identer fra aaregstub", e);
+            response.setIdenterSomIkkeKunneSlettes(identer);
+        }
+        return response;
     }
 }

@@ -46,16 +46,19 @@ public class IdentController {
     public Map<Long, SlettedeIdenterResponse> synkroniserMedTps() {
         Map<Long, SlettedeIdenterResponse> avspillergruppeMedFjernedeIdenter = new HashMap<>();
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            avspillergruppeMedFjernedeIdenter
-                    .put(
-                            entry.getKey(),
-                            identService.slettIdenterFraAdaptere(
-                                    entry.getKey(),
-                                    entry.getValue(),
-                                    TESTDATAEIER,
-                                    identService.synkroniserMedTps(entry.getKey(), entry.getValue())
-                            )
-                    );
+            List<String> identerSomIkkeErITps = identService.hentIdenterSomIkkeErITps(entry.getKey(), entry.getValue());
+            if (!identerSomIkkeErITps.isEmpty()) {
+                avspillergruppeMedFjernedeIdenter
+                        .put(
+                                entry.getKey(),
+                                identService.slettIdenterFraAdaptere(
+                                        entry.getKey(),
+                                        entry.getValue(),
+                                        TESTDATAEIER,
+                                        identerSomIkkeErITps
+                                )
+                        );
+            }
         }
         return avspillergruppeMedFjernedeIdenter;
     }

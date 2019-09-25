@@ -46,12 +46,12 @@ public class IdentService {
         slettedeIdenterResponse.setSigrunStatus(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer));
         slettedeIdenterResponse.setAaregStatus(aaregSyntConsumer.slettIdenterFraAaregstub(identer));
         // TODO: Fiks arena og legg inn denne igjen
-        // slettedeIdenterResponse.setArenaForvalterStatus(arenaConsumer.slettIdenter(miljoe, identer));
+//         slettedeIdenterResponse.setArenaForvalterStatus(arenaConsumer.slettIdenter(miljoe, identer));
 
         return slettedeIdenterResponse;
     }
 
-    public List<String> synkroniserMedTps(Long avspillergruppeId, String miljoe) {
+    public List<String> hentIdenterSomIkkeErITps(Long avspillergruppeId, String miljoe) {
         return hodejegerenConsumer.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
     }
 }
