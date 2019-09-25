@@ -190,6 +190,87 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			}
 		]
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Identifikasjon,
+		id: 'identhistorikk',
+		label: 'Har identhistorikk',
+		subGruppe: 'true',
+		dataSource: DataSource.TPSF,
+		attributtType: AttributtType.SelectOnly,
+		isMultiple: true,
+		informasjonstekst:
+			'Dette er en oversikt over identhistorikken. ' +
+			'Dagens identtype legges inn på forrige side, mens tidligere identer legges inn her. Eldste identer nederst. ' +
+			'Eksempel: En testperson med DNR får FNR. Da velges FNR på forrige side. DNR legges inn i denne oversikten. ' +
+			'Hvis fødselsdatoen ble endret i overgangen kan født før og født etter fylles ut. Dersom de står som "Ikke spesifisert" beholdes samme fødselsdato.',
+		validation: yup.object(),
+		items: [
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Identifikasjon,
+				id: 'identhistorikkType',
+				label: 'Grunn ',
+				subGruppe: 'Identhistorikk',
+				path: 'identhistorikk.identtype',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				validation: yup.string().required('Vennligst velg'),
+				options: SelectOptionsManager('identhistorikkType'),
+				attributtType: AttributtType.SelectOnly
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Identifikasjon,
+				id: 'identtype',
+				label: 'Identtype',
+				subGruppe: 'Identhistorikk',
+				path: 'identhistorikk.identtype',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				validation: yup.string().required('Vennligst velg'),
+				options: SelectOptionsManager('identtype'),
+				onlyShowAfterSelectedValue: { attributtId: 'identhistorikkType', valueIndex: [1] },
+				attributtType: AttributtType.SelectOnly
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Identifikasjon,
+				id: 'kjoenn',
+				label: 'Kjønn',
+				subGruppe: 'Identhistorikk',
+				path: 'identhistorikk.identtype',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				validation: yup.string().required('Vennligst velg'),
+				apiKodeverkId: 'Kjønnstyper',
+				onlyShowAfterSelectedValue: { attributtId: 'identhistorikkType', valueIndex: [0] },
+				attributtType: AttributtType.SelectOnly
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Identifikasjon,
+				id: 'foedtFoer',
+				label: 'Født før',
+				subGruppe: 'Identhistorikk',
+				path: 'identhistorikk.foedtFoer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				attributtType: AttributtType.SelectOnly
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Identifikasjon,
+				id: 'foedtEtter',
+				label: 'Født etter',
+				subGruppe: 'Identhistorikk',
+				path: 'identhistorikk.foedtEtter',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				attributtType: AttributtType.SelectOnly
+			}
+		]
 	}
 ]
 

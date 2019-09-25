@@ -381,5 +381,53 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 			})
 		})
 	}
+	if (tpsfData.identHistorikk) {
+		data.push({
+			header: 'Identhistorikk (eldste sist)',
+			multiple: true,
+			data: tpsfData.identHistorikk.map((data, i) => {
+				return {
+					parent: 'identhistorikk',
+					id: data.id,
+					value: [
+						{
+							id: 'id',
+							label: '',
+							value: `#${i + 1}`,
+							width: 'x-small'
+						},
+						{
+							id: 'identtype',
+							label: 'Identtype',
+							value: data.aliasPerson.identtype
+						},
+						{
+							id: 'fnrdnr',
+							label: data.aliasPerson.identtype,
+							value: data.aliasPerson.ident
+						},
+						{
+							id: 'kjonn',
+							label: 'Kjønn',
+							value: data.aliasPerson.kjonn
+						},
+						{
+							id: 'tjeneste',
+							label: 'Tjeneste',
+							width: 'medium',
+							value: data.tjeneste
+						},
+
+						{
+							id: 'grunnlag',
+							label: 'Grunnlag',
+							width: 'xlarge',
+							value: Formatters.camelCaseToLabel(data.grunnlag)
+						}
+					]
+				}
+			})
+		})
+	}
 	return data
 }
