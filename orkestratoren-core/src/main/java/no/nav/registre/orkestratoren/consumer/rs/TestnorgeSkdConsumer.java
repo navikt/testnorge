@@ -15,8 +15,8 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 
-import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 
 @Component
 @Slf4j
@@ -40,8 +40,8 @@ public class TestnorgeSkdConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "skd" })
-    public ResponseEntity startSyntetisering(GenereringsOrdreRequest genereringsOrdreRequest) {
-        RequestEntity postRequest = RequestEntity.post(startSyntetiseringUrl.expand()).contentType(MediaType.APPLICATION_JSON).body(genereringsOrdreRequest);
+    public ResponseEntity startSyntetisering(SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest) {
+        RequestEntity postRequest = RequestEntity.post(startSyntetiseringUrl.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserSkdmeldingerRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE_START_SYNT);
     }
 

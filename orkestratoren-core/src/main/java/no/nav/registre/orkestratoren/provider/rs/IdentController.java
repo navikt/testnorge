@@ -42,7 +42,7 @@ public class IdentController {
     @PostMapping("/synkronisering")
     @Scheduled(cron = "0 0 1 1 * *")
     public Map<Long, SlettedeIdenterResponse> synkroniserMedTps() {
-        Map<Long, SlettedeIdenterResponse> avspillergruppeMedFjernedeIdenter = new HashMap<>();
+        Map<Long, SlettedeIdenterResponse> avspillergruppeMedFjernedeIdenter = new HashMap<>(avspillergruppeIdMedMiljoe.size());
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             avspillergruppeMedFjernedeIdenter.put(entry.getKey(), identService.synkroniserMedTps(entry.getKey(), entry.getValue()));
 

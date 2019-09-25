@@ -11,13 +11,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.util.List;
+import java.util.Map;
+
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 
 @Slf4j
 @Component
 public class InntektSyntConsumer {
 
-    private static final ParameterizedTypeReference<String> RESPONSE_TYPE = new ParameterizedTypeReference<String>() {
+    private static final ParameterizedTypeReference<Map<String, List<Object>>> RESPONSE_TYPE = new ParameterizedTypeReference<Map<String, List<Object>>>() {
     };
 
     private RestTemplate restTemplate;
@@ -31,7 +34,7 @@ public class InntektSyntConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "inntekt" })
-    public String startSyntetisering(SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
+    public Map<String, List<Object>> startSyntetisering(SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserInntektsmeldingRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }

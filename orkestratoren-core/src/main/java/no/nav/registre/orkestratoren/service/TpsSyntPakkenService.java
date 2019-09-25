@@ -11,10 +11,10 @@ import java.util.Map;
 
 import no.nav.registre.orkestratoren.consumer.rs.NavSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
-import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.orkestratoren.consumer.rs.response.RsPureXmlMessageResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldingerRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 
 @Service
 @Slf4j
@@ -30,7 +30,7 @@ public class TpsSyntPakkenService {
             String miljoe,
             Map<String, Integer> antallMeldingerPerEndringskode) {
 
-        ResponseEntity response = testnorgeSkdConsumer.startSyntetisering(new GenereringsOrdreRequest(avspillergruppeId, miljoe, antallMeldingerPerEndringskode));
+        ResponseEntity response = testnorgeSkdConsumer.startSyntetisering(new SyntetiserSkdmeldingerRequest(avspillergruppeId, miljoe, antallMeldingerPerEndringskode));
         if (!response.getStatusCode().equals(HttpStatus.CREATED)) {
             log.warn("Noe feilet under syntetisering av skd-meldinger. Vennligst se loggene til Testnorge-Skd for mer informasjon");
         } else {

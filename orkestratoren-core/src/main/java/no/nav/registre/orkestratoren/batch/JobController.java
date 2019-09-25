@@ -147,8 +147,8 @@ public class JobController {
     @Scheduled(cron = "0 0 1 1 * *")
     public void inntektSyntBatch() {
         SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(inntektbatchAvspillergruppeId);
-        String inntektId = inntektSyntPakkenService.genererInntektsmeldinger(request);
-        log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger og mottat id {}.", inntektId);
+        Map<String, List<Object>> feiledeInntektsmeldinger = inntektSyntPakkenService.genererInntektsmeldinger(request);
+        log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger. Meldinger som feilet: {}.", feiledeInntektsmeldinger.keySet().toString());
     }
 
     public void eiaSyntBatch() {

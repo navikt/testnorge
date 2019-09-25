@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.consumer.rs.response.RsPureXmlMessageResponse;
@@ -96,7 +97,7 @@ public class SyntetiseringsController {
     @LogExceptions
     @PostMapping(value = "/inntekt/generer")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    public String opprettSyntetiskInntektsmeldingIInntektstub(@RequestBody SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
+    public Map<String, List<Object>> opprettSyntetiskInntektsmeldingIInntektstub(@RequestBody SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
         return inntektSyntPakkenService.genererInntektsmeldinger(syntetiserInntektsmeldingRequest);
     }
 

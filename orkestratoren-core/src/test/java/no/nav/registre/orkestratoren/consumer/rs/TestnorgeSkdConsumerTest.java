@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(TestnorgeSkdConsumer.class)
@@ -49,14 +49,14 @@ public class TestnorgeSkdConsumerTest {
     private String endringskode = "0110";
     private int antallPerEndringskode = 2;
     private List<Long> expectedMeldingsIds;
-    private GenereringsOrdreRequest ordreRequest;
+    private SyntetiserSkdmeldingerRequest ordreRequest;
     private List<String> identer;
 
     @Before
     public void setUp() {
         Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put(endringskode, antallPerEndringskode);
-        ordreRequest = new GenereringsOrdreRequest(avspillergruppeId, miljoe, antallMeldingerPerEndringskode);
+        ordreRequest = new SyntetiserSkdmeldingerRequest(avspillergruppeId, miljoe, antallMeldingerPerEndringskode);
         expectedMeldingsIds = new ArrayList<>();
         expectedMeldingsIds.add(120421016L);
         expectedMeldingsIds.add(110156008L);
@@ -88,7 +88,6 @@ public class TestnorgeSkdConsumerTest {
         List<Long> response = testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, identer);
 
         assertThat(response, IsIterableContainingInOrder.contains(expectedMeldingsIds.get(0), expectedMeldingsIds.get(1)));
-
     }
 
     private void stubSkdConsumerStartSyntetisering(String expectedUri) {
@@ -105,8 +104,7 @@ public class TestnorgeSkdConsumerTest {
                         + ", \"status\": \"\"},"
                         + "{\"foedselsnummer\": \"" + "02020202020"
                         + "\", \"sekvensnummer\": \"\""
-                        + ", \"status\": \"\"}],"
-                        + "\"tpsfIds\": [\"" + expectedMeldingsIds.get(0) + "\", \"" + expectedMeldingsIds.get(1) + "\"]}", MediaType.APPLICATION_JSON));
+                        + ", \"status\": \"\"}]}", MediaType.APPLICATION_JSON));
     }
 
     private void stubSkdConsumerSlettIdenter(String expectedUri) {
