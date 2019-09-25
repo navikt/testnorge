@@ -1,8 +1,8 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -25,13 +25,14 @@ public class PoppSyntConsumer {
     private static final ParameterizedTypeReference<SletteSkattegrunnlagResponse> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<SletteSkattegrunnlagResponse>() {
     };
 
-    @Autowired
     private RestTemplate restTemplate;
-
     private UriTemplate startSyntetiseringUrl;
     private UriTemplate slettIdenterUrl;
 
-    public PoppSyntConsumer(@Value("${testnorge-sigrun.rest-api.url}") String sigrunServerUrl) {
+    public PoppSyntConsumer(
+            RestTemplateBuilder restTemplateBuilder,
+            @Value("${testnorge-sigrun.rest-api.url}") String sigrunServerUrl) {
+        this.restTemplate = restTemplateBuilder.build();
         this.startSyntetiseringUrl = new UriTemplate(sigrunServerUrl + "/v1/syntetisering/generer");
         this.slettIdenterUrl = new UriTemplate(sigrunServerUrl + "/v1/ident?miljoe={miljoe}");
     }

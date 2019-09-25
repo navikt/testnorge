@@ -1,34 +1,41 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 0)
+@RestClientTest(EiaSyntConsumer.class)
 @ActiveProfiles("test")
 public class EiaSyntConsumerTest {
 
     @Autowired
     private EiaSyntConsumer eiaSyntConsumer;
+
+    @Autowired
+    private MockRestServiceServer server;
+
+    @Value("${eias-emottakstub.rest-api.url}")
+    private String serverUrl;
 
     private long gruppeId = 10L;
     private String miljoe = "t9";
@@ -50,21 +57,20 @@ public class EiaSyntConsumerTest {
      */
     @Test
     public void shouldStartSyntetisering() {
-        stubEiaSyntConsumer();
+        String expectedUri = serverUrl + "/v1/syntetisering/generer/QA.Q414.FS06_EIA_MELDINGER";
+        stubEiaSyntConsumer(expectedUri);
 
         List<String> identer = eiaSyntConsumer.startSyntetisering(syntetiserEiaRequest);
 
         assertEquals(expectedIdenter.toString(), identer.toString());
     }
 
-    private void stubEiaSyntConsumer() {
-        stubFor(post(urlPathEqualTo("/eia/api/v1/syntetisering/generer/QA.Q414.FS06_EIA_MELDINGER"))
-                .withRequestBody(equalToJson(
-                        "{\"avspillergruppeId\":" + gruppeId
-                                + ",\"miljoe\":\"" + miljoe + "\""
-                                + ",\"antallMeldinger\":" + antallMeldinger + "}"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("[\"" + expectedIdenter.get(0) + "\", \"" + expectedIdenter.get(1) + "\"]")));
+    private void stubEiaSyntConsumer(String expectedUri) {
+        server.expect(requestToUriTemplate(expectedUri))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"avspillergruppeId\":" + gruppeId
+                        + ",\"miljoe\":\"" + miljoe + "\""
+                        + ",\"antallMeldinger\":" + antallMeldinger + "}"))
+                .andRespond(withSuccess("[\"" + expectedIdenter.get(0) + "\", \"" + expectedIdenter.get(1) + "\"]", MediaType.APPLICATION_JSON));
     }
 }

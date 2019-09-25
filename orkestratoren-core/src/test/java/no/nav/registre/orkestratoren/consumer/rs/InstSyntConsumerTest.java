@@ -1,24 +1,25 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,30 +29,34 @@ import no.nav.registre.orkestratoren.consumer.rs.response.SletteInstitusjonsopph
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 0)
+@RestClientTest(InstSyntConsumer.class)
 @ActiveProfiles("test")
 public class InstSyntConsumerTest {
 
     @Autowired
     private InstSyntConsumer instSyntConsumer;
 
+    @Autowired
+    private MockRestServiceServer server;
+
+    @Value("${testnorge-inst.rest-api.url}")
+    private String serverUrl;
+
     private static final Long AVSPILLERGRUPPE_ID = 123L;
-    private static final String MILJOE = "t1";
+    private static final String MILJOE = "q2";
     private SyntetiserInstRequest syntetiserInstRequest;
     private List<String> identer;
-    private List<String> oppholdIder;
 
     @Before
     public void setUp() {
         identer = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
-        oppholdIder = new ArrayList<>(Arrays.asList("123", "456"));
         syntetiserInstRequest = new SyntetiserInstRequest(AVSPILLERGRUPPE_ID, MILJOE, identer.size());
     }
 
     @Test
     public void shouldStartSyntetisering() {
-        stubInstConsumerStartSyntetisering();
+        String expectedUri = serverUrl + "/v1/syntetisering/generer?miljoe={miljoe}";
+        stubInstConsumerStartSyntetisering(expectedUri);
 
         ResponseEntity response = (ResponseEntity) instSyntConsumer.startSyntetisering(syntetiserInstRequest);
 
@@ -60,7 +65,8 @@ public class InstSyntConsumerTest {
 
     @Test
     public void shouldDeleteIdenterFromInst() {
-        stubInstConsumerSlettIdenter();
+        String expectedUri = serverUrl + "/v1/ident/batch?miljoe={miljoe}&identer={identer}";
+        stubInstConsumerSlettIdenter(expectedUri);
 
         SletteInstitusjonsoppholdResponse response = instSyntConsumer.slettIdenterFraInst(identer);
 
@@ -70,44 +76,43 @@ public class InstSyntConsumerTest {
         assertThat(response.getInstStatus().get(1).getStatus(), equalTo(HttpStatus.NOT_FOUND));
     }
 
-    private void stubInstConsumerStartSyntetisering() {
-        stubFor(post(urlEqualTo("/inst/api/v1/syntetisering/generer?miljoe=q2"))
-                .withRequestBody(equalToJson(
-                        "{\"avspillergruppeId\":" + AVSPILLERGRUPPE_ID
-                                + ",\"miljoe\":\"" + MILJOE + "\""
-                                + ",\"antallNyeIdenter\":" + identer.size() + "}"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")));
+    private void stubInstConsumerStartSyntetisering(String expectedUri) {
+        server.expect(requestToUriTemplate(expectedUri, MILJOE))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"avspillergruppeId\":" + AVSPILLERGRUPPE_ID
+                        + ",\"miljoe\":\"" + MILJOE + "\""
+                        + ",\"antallNyeIdenter\":" + identer.size() + "}"))
+                .andRespond(withSuccess());
     }
 
-    private void stubInstConsumerSlettIdenter() {
-        stubFor(delete(urlEqualTo("/inst/api/v1/ident/batch?miljoe=q2&identer=" + identer.get(0) + "," + identer.get(1)))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("[\n"
-                                + "  {\n"
-                                + "    \"personident\": \"" + identer.get(0) + "\",\n"
-                                + "    \"status\": \"OK\",\n"
-                                + "    \"institusjonsopphold\": {\n"
-                                + "      \"oppholdId\": 200485356,\n"
-                                + "      \"tssEksternId\": \"80000465396\",\n"
-                                + "      \"institusjonstype\": \"AS\",\n"
-                                + "      \"varighet\": \"L\",\n"
-                                + "      \"kategori\": \"A\",\n"
-                                + "      \"startdato\": \"2018-08-12\",\n"
-                                + "      \"faktiskSluttdato\": \"2019-04-13\",\n"
-                                + "      \"forventetSluttdato\": \"2019-04-13\",\n"
-                                + "      \"kilde\": \"PP01\",\n"
-                                + "      \"overfoert\": false\n"
-                                + "    },\n"
-                                + "    \"feilmelding\": null\n"
-                                + "  },\n"
-                                + "  {\n"
-                                + "    \"personident\": \"" + identer.get(1) + "\",\n"
-                                + "    \"status\": \"NOT_FOUND\",\n"
-                                + "    \"institusjonsopphold\": null,\n"
-                                + "    \"feilmelding\": \"Fant ingen institusjonsopphold på ident.\"\n"
-                                + "  }\n"
-                                + "]")));
+    private void stubInstConsumerSlettIdenter(String expectedUri) {
+        String identerAsString = String.join(",", identer);
+        server.expect(requestToUriTemplate(expectedUri, MILJOE, identerAsString))
+                .andExpect(method(HttpMethod.DELETE))
+                .andRespond(withSuccess("[\n"
+                        + "  {\n"
+                        + "    \"personident\": \"" + identer.get(0) + "\",\n"
+                        + "    \"status\": \"OK\",\n"
+                        + "    \"institusjonsopphold\": {\n"
+                        + "      \"oppholdId\": 200485356,\n"
+                        + "      \"tssEksternId\": \"80000465396\",\n"
+                        + "      \"institusjonstype\": \"AS\",\n"
+                        + "      \"varighet\": \"L\",\n"
+                        + "      \"kategori\": \"A\",\n"
+                        + "      \"startdato\": \"2018-08-12\",\n"
+                        + "      \"faktiskSluttdato\": \"2019-04-13\",\n"
+                        + "      \"forventetSluttdato\": \"2019-04-13\",\n"
+                        + "      \"kilde\": \"PP01\",\n"
+                        + "      \"overfoert\": false\n"
+                        + "    },\n"
+                        + "    \"feilmelding\": null\n"
+                        + "  },\n"
+                        + "  {\n"
+                        + "    \"personident\": \"" + identer.get(1) + "\",\n"
+                        + "    \"status\": \"NOT_FOUND\",\n"
+                        + "    \"institusjonsopphold\": null,\n"
+                        + "    \"feilmelding\": \"Fant ingen institusjonsopphold på ident.\"\n"
+                        + "  }\n"
+                        + "]", MediaType.APPLICATION_JSON));
     }
 }

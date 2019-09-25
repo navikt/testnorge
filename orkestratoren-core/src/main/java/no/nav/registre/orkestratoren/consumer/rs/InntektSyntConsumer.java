@@ -2,8 +2,8 @@ package no.nav.registre.orkestratoren.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -20,12 +20,13 @@ public class InntektSyntConsumer {
     private static final ParameterizedTypeReference<String> RESPONSE_TYPE = new ParameterizedTypeReference<String>() {
     };
 
-    @Autowired
     private RestTemplate restTemplate;
-
     private UriTemplate url;
 
-    public InntektSyntConsumer(@Value("${inntekt.rest.api.url}") String inntektServerUrl) {
+    public InntektSyntConsumer(
+            RestTemplateBuilder restTemplateBuilder,
+            @Value("${inntekt.rest.api.url}") String inntektServerUrl) {
+        this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(inntektServerUrl + "/v1/syntetisering/generer");
     }
 

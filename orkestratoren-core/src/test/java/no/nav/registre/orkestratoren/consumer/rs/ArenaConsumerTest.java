@@ -1,40 +1,45 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import no.nav.registre.orkestratoren.consumer.rs.response.SletteArenaResponse;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import no.nav.registre.orkestratoren.consumer.rs.response.SletteArenaResponse;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 0)
+@RestClientTest(ArenaConsumer.class)
 @ActiveProfiles("test")
 public class ArenaConsumerTest {
 
     @Autowired
     private ArenaConsumer arenaConsumer;
+
+    @Autowired
+    private MockRestServiceServer server;
+
+    @Value("${testnorge.arena.rest.api.url}")
+    private String serverUrl;
 
     private static final Long AVSPILLERGRUPPE_ID = 10L;
     private static final String MILJOE = "t1";
@@ -53,7 +58,8 @@ public class ArenaConsumerTest {
 
     @Test
     public void shouldSendTilArenaForvalteren() {
-        stubArenaConsumerLeggTilIdenter();
+        String expectedUri = serverUrl + "/v1/syntetisering/generer";
+        stubArenaConsumerLeggTilIdenter(expectedUri);
 
         List<String> opprettedeIdenter = arenaConsumer.opprettArbeidsoekere(syntetiserArenaRequest);
         assertThat(opprettedeIdenter.size(), is(2));
@@ -62,7 +68,8 @@ public class ArenaConsumerTest {
 
     @Test
     public void shouldDeleteIdenter() {
-        stubArenaConsumerSlettIdenter();
+        String expectedUri = serverUrl + "/v1/ident/slett?miljoe={miljoe}";
+        stubArenaConsumerSlettIdenter(expectedUri);
 
         List<String> identerToBeSlettet = Arrays.asList(fnr2, fnr3);
         SletteArenaResponse response = arenaConsumer.slettIdenter(MILJOE, identerToBeSlettet);
@@ -71,29 +78,19 @@ public class ArenaConsumerTest {
         assertThat(response.getSlettet().get(0), containsString(fnr2));
     }
 
-
-
-    private void stubArenaConsumerLeggTilIdenter() {
-        stubFor(post(urlPathEqualTo("/arena/api/v1/syntetisering/generer"))
-                .withRequestBody(equalToJson(
-                        "{\"avspillergruppeId\": " + AVSPILLERGRUPPE_ID +
-                                ", \"miljoe\": \"" + MILJOE + "\"" +
-                                ", \"antallNyeIdenter\": 2}"
-                ))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("{\"registrerteIdenter\": [\"" + fnr2 + "\",\"" + fnr3 + "\"]}")));
+    private void stubArenaConsumerLeggTilIdenter(String expectedUri) {
+        server.expect(requestToUriTemplate(expectedUri))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"avspillergruppeId\": " + AVSPILLERGRUPPE_ID +
+                        ", \"miljoe\": \"" + MILJOE + "\"" +
+                        ", \"antallNyeIdenter\": 2}"))
+                .andRespond(withSuccess("{\"registrerteIdenter\": [\"" + fnr2 + "\",\"" + fnr3 + "\"]}", MediaType.APPLICATION_JSON));
     }
 
-    private void stubArenaConsumerSlettIdenter() {
-        stubFor(delete(urlEqualTo("/arena/api/v1/ident/slett?miljoe=" + MILJOE))
-                .withRequestBody(equalToJson("[\"" + identer.get(1) + "\",\"" + identer.get(2) + "\"]"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(
-                                "{ \"slettet\": [\"" + identer.get(1) + "\",\"" + identer.get(2) + "\"],\"ikkeSlettet\": [] }"
-                        )));
+    private void stubArenaConsumerSlettIdenter(String expectedUri) {
+        server.expect(requestToUriTemplate(expectedUri, MILJOE))
+                .andExpect(method(HttpMethod.DELETE))
+                .andExpect(content().json("[\"" + identer.get(1) + "\",\"" + identer.get(2) + "\"]"))
+                .andRespond(withSuccess("{ \"slettet\": [\"" + identer.get(1) + "\",\"" + identer.get(2) + "\"],\"ikkeSlettet\": [] }", MediaType.APPLICATION_JSON));
     }
-
 }

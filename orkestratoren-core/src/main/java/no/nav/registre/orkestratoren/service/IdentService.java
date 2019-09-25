@@ -17,6 +17,8 @@ import no.nav.registre.orkestratoren.provider.rs.responses.SlettedeIdenterRespon
 @Service
 public class IdentService {
 
+    private static final String TESTDATAEIER = "orkestratoren";
+
     @Autowired
     private TestnorgeSkdConsumer testnorgeSkdConsumer;
 
@@ -46,8 +48,22 @@ public class IdentService {
         slettedeIdenterResponse.setSigrunStatus(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer));
         slettedeIdenterResponse.setAaregStatus(aaregSyntConsumer.slettIdenterFraAaregstub(identer));
         // TODO: Fiks arena og legg inn denne igjen
-//         slettedeIdenterResponse.setArenaForvalterStatus(arenaConsumer.slettIdenter(miljoe, identer));
+        //         slettedeIdenterResponse.setArenaForvalterStatus(arenaConsumer.slettIdenter(miljoe, identer));
 
+        return slettedeIdenterResponse;
+    }
+
+    public SlettedeIdenterResponse synkroniserMedTps(Long avspillergruppeId, String miljoe) {
+        SlettedeIdenterResponse slettedeIdenterResponse = SlettedeIdenterResponse.builder().build();
+        List<String> identerSomIkkeErITps = hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
+        if (!identerSomIkkeErITps.isEmpty()) {
+            slettedeIdenterResponse = slettIdenterFraAdaptere(
+                    avspillergruppeId,
+                    miljoe,
+                    TESTDATAEIER,
+                    identerSomIkkeErITps
+            );
+        }
         return slettedeIdenterResponse;
     }
 

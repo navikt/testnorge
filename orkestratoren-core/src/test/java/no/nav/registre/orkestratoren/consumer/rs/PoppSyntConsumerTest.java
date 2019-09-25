@@ -1,42 +1,48 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.matching;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteSkattegrunnlagResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 0)
+@RestClientTest(PoppSyntConsumer.class)
 @ActiveProfiles("test")
 public class PoppSyntConsumerTest {
 
     @Autowired
     private PoppSyntConsumer poppSyntConsumer;
+
+    @Autowired
+    private MockRestServiceServer server;
+
+    @Value("${testnorge-sigrun.rest-api.url}")
+    private String serverUrl;
 
     private static final Long AVSPILLERGRUPPE_ID = 123L;
     private static final String MILJOE = "t1";
@@ -56,16 +62,18 @@ public class PoppSyntConsumerTest {
      */
     @Test
     public void shouldStartSyntetisering() {
-        stubPoppConsumerStartSyntetisering();
+        String expectedUri = serverUrl + "/v1/syntetisering/generer";
+        stubPoppConsumerStartSyntetisering(expectedUri);
 
-        ResponseEntity response = poppSyntConsumer.startSyntetisering(syntetiserPoppRequest, "test");
+        ResponseEntity response = poppSyntConsumer.startSyntetisering(syntetiserPoppRequest, testdataEier);
 
         assertThat(response.getBody().toString(), containsString(HttpStatus.OK.toString()));
     }
 
     @Test
     public void shouldDeleteIdenterFromSigrun() {
-        stubPoppConsumerSlettIdenter();
+        String expectedUri = serverUrl + "/v1/ident?miljoe={miljoe}";
+        stubPoppConsumerSlettIdenter(expectedUri);
 
         SletteSkattegrunnlagResponse response = poppSyntConsumer.slettIdenterFraSigrun(testdataEier, MILJOE, identer);
 
@@ -73,41 +81,37 @@ public class PoppSyntConsumerTest {
         assertThat(response.getGrunnlagSomBleSlettet().get(0).getPersonidentifikator(), equalTo(identer.get(1)));
     }
 
-    private void stubPoppConsumerStartSyntetisering() {
-        stubFor(post(urlPathEqualTo("/sigrun/api/v1/syntetisering/generer"))
-                .withHeader("testdataEier", matching("test"))
-                .withRequestBody(equalToJson(
-                        "{\"avspillergruppeId\":" + AVSPILLERGRUPPE_ID
-                                + ",\"miljoe\":\"" + MILJOE + "\""
-                                + ",\"antallNyeIdenter\":" + identer.size() + "}"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("[\"" + HttpStatus.OK + "\", \"" + HttpStatus.INTERNAL_SERVER_ERROR + "\"]")));
+    private void stubPoppConsumerStartSyntetisering(String expectedUri) {
+        server.expect(requestToUriTemplate(expectedUri))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(header("testdataEier", testdataEier))
+                .andExpect(content().json("{\"avspillergruppeId\":" + AVSPILLERGRUPPE_ID
+                        + ",\"miljoe\":\"" + MILJOE + "\""
+                        + ",\"antallNyeIdenter\":" + identer.size() + "}"))
+                .andRespond(withSuccess("[\"" + HttpStatus.OK + "\", \"" + HttpStatus.INTERNAL_SERVER_ERROR + "\"]", MediaType.APPLICATION_JSON));
     }
 
-    private void stubPoppConsumerSlettIdenter() {
-        stubFor(delete(urlPathEqualTo("/sigrun/api/v1/ident"))
-                .withHeader("testdataEier", matching(testdataEier))
-                .withRequestBody(equalToJson(
-                        "[\"" + identer.get(0) + "\", \"" + identer.get(1) + "\"]"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("{"
-                                + "  \"grunnlagSomIkkeKunneSlettes\": "
-                                + "    [{\"personidentifikator\": \"" + identer.get(0) + "\","
-                                + "    \"inntektsaar\": \"1968\","
-                                + "    \"tjeneste\": \"Beregnet skatt\","
-                                + "    \"grunnlag\": \"personinntektFiskeFangstFamiliebarnehage\","
-                                + "    \"verdi\": \"874\","
-                                + "    \"testdataEier\": \"test\"}],"
-                                + "  \"grunnlagSomBleSlettet\": "
-                                + "    [{\"personidentifikator\": \"" + identer.get(1) + "\","
-                                + "    \"inntektsaar\": \"1969\","
-                                + "    \"tjeneste\": \"Beregnet skatt\","
-                                + "    \"grunnlag\": \"personinntektFiskeFangstFamiliebarnehage\","
-                                + "    \"verdi\": \"823\","
-                                + "    \"testdataEier\": \"test\"}],"
-                                + "  \"identerMedGrunnlagFraAnnenTestdataEier\": []"
-                                + "}")));
+    private void stubPoppConsumerSlettIdenter(String expectedUri) {
+        server.expect(requestToUriTemplate(expectedUri, MILJOE))
+                .andExpect(method(HttpMethod.DELETE))
+                .andExpect(header("testdataEier", testdataEier))
+                .andExpect(content().json("[\"" + identer.get(0) + "\", \"" + identer.get(1) + "\"]"))
+                .andRespond(withSuccess("{"
+                        + "  \"grunnlagSomIkkeKunneSlettes\": "
+                        + "    [{\"personidentifikator\": \"" + identer.get(0) + "\","
+                        + "    \"inntektsaar\": \"1968\","
+                        + "    \"tjeneste\": \"Beregnet skatt\","
+                        + "    \"grunnlag\": \"personinntektFiskeFangstFamiliebarnehage\","
+                        + "    \"verdi\": \"874\","
+                        + "    \"testdataEier\": \"test\"}],"
+                        + "  \"grunnlagSomBleSlettet\": "
+                        + "    [{\"personidentifikator\": \"" + identer.get(1) + "\","
+                        + "    \"inntektsaar\": \"1969\","
+                        + "    \"tjeneste\": \"Beregnet skatt\","
+                        + "    \"grunnlag\": \"personinntektFiskeFangstFamiliebarnehage\","
+                        + "    \"verdi\": \"823\","
+                        + "    \"testdataEier\": \"test\"}],"
+                        + "  \"identerMedGrunnlagFraAnnenTestdataEier\": []"
+                        + "}", MediaType.APPLICATION_JSON));
     }
 }

@@ -3,8 +3,8 @@ package no.nav.registre.orkestratoren.consumer.rs;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import no.rtv.namespacetps.TpsPersonDokumentType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -21,14 +21,15 @@ public class HodejegerenConsumer {
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
     };
 
-    @Autowired
     private RestTemplate restTemplate;
-
     private UriTemplate hentAlleIdenterUrl;
     private UriTemplate sendTilHodejegerenUrl;
     private UriTemplate hentIdenterSomIkkeErITpsUrl;
 
-    public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
+    public HodejegerenConsumer(
+            RestTemplateBuilder restTemplateBuilder,
+            @Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
+        this.restTemplate = restTemplateBuilder.build();
         this.hentAlleIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/alle-identer/{avspillergruppeId}");
         this.sendTilHodejegerenUrl = new UriTemplate(hodejegerenServerUrl + "/v1/historikk/skd/oppdaterDokument/{ident}");
         this.hentIdenterSomIkkeErITpsUrl = new UriTemplate(hodejegerenServerUrl + "/v1/identer-ikke-i-tps/{avspillergruppeId}?miljoe={miljoe}");

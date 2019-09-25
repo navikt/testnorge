@@ -1,37 +1,42 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import java.util.List;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.rtv.namespacetps.TpsPersonDokumentType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import no.rtv.namespacetps.TpsPersonDokumentType;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 0)
+@RestClientTest(HodejegerenConsumer.class)
 @ActiveProfiles("test")
 public class HodejegerenConsumerTest {
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
+
+    @Autowired
+    private MockRestServiceServer server;
+
+    @Value("${testnorge-hodejegeren.rest-api.url}")
+    private String serverUrl;
 
     private TpsPersonDokumentType tpsPersonDokument;
     private String fnr = "01010101010";
@@ -43,19 +48,19 @@ public class HodejegerenConsumerTest {
 
     @Test
     public void shouldSendPersondokumentTilHodejegeren() throws JsonProcessingException {
-        stubHodejegerenConsumer();
+        String expectedUri = serverUrl + "/v1/historikk/skd/oppdaterDokument/{ident}";
+        stubHodejegerenConsumer(expectedUri);
 
         List<String> identer = hodejegerenConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersonDokument, fnr);
 
         assertThat(identer, contains(fnr));
     }
 
-    private void stubHodejegerenConsumer() throws JsonProcessingException {
-        stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/historikk/skd/oppdaterDokument/" + fnr))
-                .withRequestBody(equalToJson(asJsonString(tpsPersonDokument)))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("[\"" + fnr + "\"]")));
+    private void stubHodejegerenConsumer(String expectedUri) throws JsonProcessingException {
+        server.expect(requestToUriTemplate(expectedUri, fnr))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json(asJsonString(tpsPersonDokument)))
+                .andRespond(withSuccess("[\"" + fnr + "\"]", MediaType.APPLICATION_JSON));
     }
 
     private static String asJsonString(final Object object) throws JsonProcessingException {

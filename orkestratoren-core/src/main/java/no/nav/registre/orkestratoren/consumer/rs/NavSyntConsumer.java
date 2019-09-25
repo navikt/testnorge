@@ -1,8 +1,8 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -22,12 +22,13 @@ public class NavSyntConsumer {
     private static final ParameterizedTypeReference<List<RsPureXmlMessageResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<List<RsPureXmlMessageResponse>>() {
     };
 
-    @Autowired
     private RestTemplate restTemplate;
-
     private UriTemplate url;
 
-    public NavSyntConsumer(@Value("${testnorge-nav-endringsmeldinger.rest-api.url}") String skdServerUrl) {
+    public NavSyntConsumer(
+            RestTemplateBuilder restTemplateBuilder,
+            @Value("${testnorge-nav-endringsmeldinger.rest-api.url}") String skdServerUrl) {
+        this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(skdServerUrl + "/v1/syntetisering/generer");
     }
 

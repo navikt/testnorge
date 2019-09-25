@@ -1,8 +1,8 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -18,12 +18,13 @@ public class BisysSyntConsumer {
     private static final ParameterizedTypeReference<Object> RESPONSE_TYPE = new ParameterizedTypeReference<Object>() {
     };
 
-    @Autowired
     private RestTemplate restTemplate;
-
     private UriTemplate url;
 
-    public BisysSyntConsumer(@Value("${testnorge-bisys.rest-api.url}") String bisysServerUrl) {
+    public BisysSyntConsumer(
+            RestTemplateBuilder restTemplateBuilder,
+            @Value("${testnorge-bisys.rest-api.url}") String bisysServerUrl) {
+        this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(bisysServerUrl + "/v1/syntetisering/generer");
     }
 

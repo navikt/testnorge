@@ -2,8 +2,8 @@ package no.nav.registre.orkestratoren.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -22,12 +22,14 @@ public class EiaSyntConsumer {
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
     };
 
-    @Autowired
     private RestTemplate restTemplate;
-
     private UriTemplate url;
 
-    public EiaSyntConsumer(@Value("${eias-emottakstub.rest-api.url}") String baseUrl, @Value("${eiabatch.queue}") String queueName) {
+    public EiaSyntConsumer(
+            RestTemplateBuilder restTemplateBuilder,
+            @Value("${eias-emottakstub.rest-api.url}") String baseUrl,
+            @Value("${eiabatch.queue}") String queueName) {
+        this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(baseUrl + "/v1/syntetisering/generer/" + queueName);
     }
 

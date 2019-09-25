@@ -25,8 +25,6 @@ public class IdentController {
     @Autowired
     private IdentService identService;
 
-    private static final String TESTDATAEIER = "orkestratoren";
-
     @Value("#{${batch.avspillergruppeId.miljoe}}")
     private Map<Long, String> avspillergruppeIdMedMiljoe;
 
@@ -46,19 +44,8 @@ public class IdentController {
     public Map<Long, SlettedeIdenterResponse> synkroniserMedTps() {
         Map<Long, SlettedeIdenterResponse> avspillergruppeMedFjernedeIdenter = new HashMap<>();
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            List<String> identerSomIkkeErITps = identService.hentIdenterSomIkkeErITps(entry.getKey(), entry.getValue());
-            if (!identerSomIkkeErITps.isEmpty()) {
-                avspillergruppeMedFjernedeIdenter
-                        .put(
-                                entry.getKey(),
-                                identService.slettIdenterFraAdaptere(
-                                        entry.getKey(),
-                                        entry.getValue(),
-                                        TESTDATAEIER,
-                                        identerSomIkkeErITps
-                                )
-                        );
-            }
+            avspillergruppeMedFjernedeIdenter.put(entry.getKey(), identService.synkroniserMedTps(entry.getKey(), entry.getValue()));
+
         }
         return avspillergruppeMedFjernedeIdenter;
     }

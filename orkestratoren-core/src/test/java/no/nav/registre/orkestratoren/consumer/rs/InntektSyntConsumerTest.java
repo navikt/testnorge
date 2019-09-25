@@ -1,31 +1,38 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 0)
+@RestClientTest(InntektSyntConsumer.class)
 @ActiveProfiles("test")
 public class InntektSyntConsumerTest {
 
     @Autowired
     private InntektSyntConsumer inntektSyntConsumer;
+
+    @Autowired
+    private MockRestServiceServer server;
+
+    @Value("${inntekt.rest.api.url}")
+    private String serverUrl;
 
     private long gruppeId = 10L;
     private String expectedId = "1234";
@@ -42,19 +49,18 @@ public class InntektSyntConsumerTest {
      */
     @Test
     public void shouldStartSyntetisering() {
-        stubInntektConsumer();
+        String expectedUri = serverUrl + "/v1/syntetisering/generer";
+        stubInntektConsumer(expectedUri);
 
         String id = inntektSyntConsumer.startSyntetisering(syntetiserInntektsmeldingRequest);
 
         assertEquals(expectedId, id);
     }
 
-    private void stubInntektConsumer() {
-        stubFor(post(urlPathEqualTo("/inntekt/api/v1/syntetisering/generer"))
-                .withRequestBody(equalToJson(
-                        "{\"avspillergruppeId\":" + gruppeId + "}"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(expectedId)));
+    private void stubInntektConsumer(String expectedUri) {
+        server.expect(requestToUriTemplate(expectedUri))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"avspillergruppeId\":" + gruppeId + "}"))
+                .andRespond(withSuccess(expectedId, MediaType.APPLICATION_JSON));
     }
 }

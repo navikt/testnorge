@@ -2,8 +2,8 @@ package no.nav.registre.orkestratoren.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -26,17 +26,17 @@ public class ArenaConsumer {
 
     private static final ParameterizedTypeReference<GenererArenaResponse> RESPONSE_TYPE = new ParameterizedTypeReference<GenererArenaResponse>() {
     };
-    private static final ParameterizedTypeReference<SletteArenaResponse> RESPONSE_TYPE_DELETE =
-            new ParameterizedTypeReference<SletteArenaResponse>() {
-            };
+    private static final ParameterizedTypeReference<SletteArenaResponse> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<SletteArenaResponse>() {
+    };
 
-    @Autowired
     private RestTemplate restTemplate;
-
     private UriTemplate arenaOpprettArbeidsoekereUrl;
     private UriTemplate arenaSlettArbeidsoekereUrl;
 
-    public ArenaConsumer(@Value("${testnorge.arena.rest.api.url}") String arenaServerUrl) {
+    public ArenaConsumer(
+            RestTemplateBuilder restTemplateBuilder,
+            @Value("${testnorge.arena.rest.api.url}") String arenaServerUrl) {
+        this.restTemplate = restTemplateBuilder.build();
         this.arenaOpprettArbeidsoekereUrl = new UriTemplate(arenaServerUrl + "/v1/syntetisering/generer");
         this.arenaSlettArbeidsoekereUrl = new UriTemplate(arenaServerUrl + "/v1/ident/slett?miljoe={miljoe}");
     }

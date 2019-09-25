@@ -1,14 +1,10 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -18,7 +14,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import io.micrometer.core.annotation.Timed;
+import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteArbeidsforholdResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
@@ -32,13 +28,14 @@ public class AaregSyntConsumer {
     private static final ParameterizedTypeReference<SletteArbeidsforholdResponse> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<SletteArbeidsforholdResponse>() {
     };
 
-    @Autowired
     private RestTemplate restTemplate;
-
     private UriTemplate startSyntetiseringUrl;
     private UriTemplate slettIdenterUrl;
 
-    public AaregSyntConsumer(@Value("${testnorge-aareg.rest-api.url}") String aaregServerUrl) {
+    public AaregSyntConsumer(
+            RestTemplateBuilder restTemplateBuilder,
+            @Value("${testnorge-aareg.rest-api.url}") String aaregServerUrl) {
+        this.restTemplate = restTemplateBuilder.build();
         this.startSyntetiseringUrl = new UriTemplate(aaregServerUrl + "/v1/syntetisering/generer?lagreIAareg={lagreIAareg}");
         this.slettIdenterUrl = new UriTemplate(aaregServerUrl + "/v1/ident");
     }

@@ -23,10 +23,10 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
-import no.nav.registre.orkestratoren.service.InntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
+import no.nav.registre.orkestratoren.service.InntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.MedlSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
@@ -209,7 +209,7 @@ public class SyntetiseringsControllerTest {
     }
 
     @Test
-    public void asd() {
+    public void shouldOppretteArbeidssoekereIArena() {
         SyntetiserArenaRequest syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 2);
         syntetiseringsController.opprettArbeidssoekereIArena(syntetiserArenaRequest);
 

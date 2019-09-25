@@ -1,13 +1,25 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+
+import org.hamcrest.collection.IsIterableContainingInOrder;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,28 +27,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hamcrest.collection.IsIterableContainingInOrder;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 0)
+@RestClientTest(TestnorgeSkdConsumer.class)
 @ActiveProfiles("test")
 public class TestnorgeSkdConsumerTest {
 
     @Autowired
     private TestnorgeSkdConsumer testnorgeSkdConsumer;
+
+    @Autowired
+    private MockRestServiceServer server;
+
+    @Value("${testnorge-skd.rest-api.url}")
+    private String serverUrl;
 
     private long avspillergruppeId = 10L;
     private String miljoe = "t9";
@@ -63,7 +69,8 @@ public class TestnorgeSkdConsumerTest {
      */
     @Test
     public void shouldStartSyntetisering() {
-        stubSkdConsumerStartSyntetisering();
+        String expectedUri = serverUrl + "/v1/syntetisering/generer";
+        stubSkdConsumerStartSyntetisering(expectedUri);
 
         ResponseEntity response = testnorgeSkdConsumer.startSyntetisering(ordreRequest);
 
@@ -75,7 +82,8 @@ public class TestnorgeSkdConsumerTest {
 
     @Test
     public void shouldDeleteIdenterFromAvspillergruppe() {
-        stubSkdConsumerSlettIdenter();
+        String expectedUri = serverUrl + "/v1/ident/{avspillergruppeId}";
+        stubSkdConsumerSlettIdenter(expectedUri);
 
         List<Long> response = testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, identer);
 
@@ -83,31 +91,28 @@ public class TestnorgeSkdConsumerTest {
 
     }
 
-    private void stubSkdConsumerStartSyntetisering() {
-        stubFor(post(urlPathEqualTo("/skd/api/v1/syntetisering/generer"))
-                .withRequestBody(equalToJson(
-                        "{\"avspillergruppeId\":" + avspillergruppeId
-                                + ",\"miljoe\":\"" + miljoe
-                                + "\",\"antallMeldingerPerEndringskode\":{\"" + endringskode + "\":" + antallPerEndringskode + "}}"))
-                .willReturn(ok()
-                        .withHeader("content-type", "application/json")
-                        .withBody("{\"antallSendte\": \"" + expectedMeldingsIds.size()
-                                + "\", \"antallFeilet\": \"" + 0
-                                + "\", \"statusFraFeilendeMeldinger\": ["
-                                + "{\"foedselsnummer\": \"" + "01010101010"
-                                + "\", \"sekvensnummer\": \"\""
-                                + ", \"status\": \"\"},"
-                                + "{\"foedselsnummer\": \"" + "02020202020"
-                                + "\", \"sekvensnummer\": \"\""
-                                + ", \"status\": \"\"}],"
-                                + "\"tpsfIds\": [\"" + expectedMeldingsIds.get(0) + "\", \"" + expectedMeldingsIds.get(1) + "\"]}")));
+    private void stubSkdConsumerStartSyntetisering(String expectedUri) {
+        server.expect(requestToUriTemplate(expectedUri))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"avspillergruppeId\":" + avspillergruppeId
+                        + ",\"miljoe\":\"" + miljoe
+                        + "\",\"antallMeldingerPerEndringskode\":{\"" + endringskode + "\":" + antallPerEndringskode + "}}"))
+                .andRespond(withSuccess("{\"antallSendte\": \"" + expectedMeldingsIds.size()
+                        + "\", \"antallFeilet\": \"" + 0
+                        + "\", \"statusFraFeilendeMeldinger\": ["
+                        + "{\"foedselsnummer\": \"" + "01010101010"
+                        + "\", \"sekvensnummer\": \"\""
+                        + ", \"status\": \"\"},"
+                        + "{\"foedselsnummer\": \"" + "02020202020"
+                        + "\", \"sekvensnummer\": \"\""
+                        + ", \"status\": \"\"}],"
+                        + "\"tpsfIds\": [\"" + expectedMeldingsIds.get(0) + "\", \"" + expectedMeldingsIds.get(1) + "\"]}", MediaType.APPLICATION_JSON));
     }
 
-    private void stubSkdConsumerSlettIdenter() {
-        stubFor(delete(urlPathEqualTo("/skd/api/v1/ident/" + avspillergruppeId))
-                .withRequestBody(equalToJson("[\"" + identer.get(0) + "\", \"" + identer.get(1) + "\"]"))
-                .willReturn(ok()
-                        .withHeader("content-type", "application/json")
-                        .withBody("[" + expectedMeldingsIds.get(0) + ", " + expectedMeldingsIds.get(1) + "]")));
+    private void stubSkdConsumerSlettIdenter(String expectedUri) {
+        server.expect(requestToUriTemplate(expectedUri, avspillergruppeId))
+                .andExpect(method(HttpMethod.DELETE))
+                .andExpect(content().json("[\"" + identer.get(0) + "\", \"" + identer.get(1) + "\"]"))
+                .andRespond(withSuccess("[" + expectedMeldingsIds.get(0) + ", " + expectedMeldingsIds.get(1) + "]", MediaType.APPLICATION_JSON));
     }
 }

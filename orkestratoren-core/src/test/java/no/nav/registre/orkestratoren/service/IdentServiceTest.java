@@ -22,6 +22,7 @@ import java.util.Map;
 
 import no.nav.registre.orkestratoren.consumer.rs.AaregSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.ArenaConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.InstSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.PoppSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
@@ -51,12 +52,15 @@ public class IdentServiceTest {
     @Mock
     private ArenaConsumer arenaConsumer;
 
+    @Mock
+    private HodejegerenConsumer hodejegerenConsumer;
+
     @InjectMocks
     private IdentService identService;
 
     private Long avspillergruppeId = 123L;
     private String miljoe = "t1";
-    private String testdataEier = "test";
+    private String testdataEier = "orkestratoren";
     private String fnr1 = "01010101010";
     private String fnr2 = "02020202020";
     private List<String> identer;
@@ -129,5 +133,28 @@ public class IdentServiceTest {
         // assertThat(response.getArenaForvalterStatus().getSlettet().get(0), equalTo(fnr1));
         // assertThat(response.getArenaForvalterStatus().getSlettet().get(1), equalTo(fnr2));
         // assertThat(response.getArenaForvalterStatus().getIkkeSlettet().size(), equalTo(0));
+    }
+
+    @Test
+    public void shouldSynkronisereMedTps() {
+        when(hodejegerenConsumer.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe)).thenReturn(identer);
+        when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, identer)).thenReturn(expectedMeldingIder);
+        when(instSyntConsumer.slettIdenterFraInst(identer)).thenReturn(SletteInstitusjonsoppholdResponse.builder().build());
+        when(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(SletteSkattegrunnlagResponse.builder().build());
+        when(aaregSyntConsumer.slettIdenterFraAaregstub(identer)).thenReturn(SletteArbeidsforholdResponse.builder().build());
+        // TODO: Fiks arena og legg inn denne igjen
+        // when(arenaConsumer.slettIdenter(miljoe, identer)).thenReturn(SletteArenaResponse.builder().build());
+
+        SlettedeIdenterResponse response = identService.synkroniserMedTps(avspillergruppeId, miljoe);
+
+        assertThat(response.getTpsfStatus().getSlettedeMeldingIderFraTpsf(), IsIterableContainingInOrder.contains(expectedMeldingIder.get(0), expectedMeldingIder.get(1)));
+
+        verify(hodejegerenConsumer).hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
+        verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(avspillergruppeId, identer);
+        verify(instSyntConsumer).slettIdenterFraInst(identer);
+        verify(poppSyntConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
+        verify(aaregSyntConsumer).slettIdenterFraAaregstub(identer);
+        // TODO: Fiks arena og legg inn denne igjen
+        // verify(arenaConsumer).slettIdenter(miljoe, identer);
     }
 }

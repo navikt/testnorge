@@ -1,8 +1,8 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -19,12 +19,13 @@ public class SamSyntConsumer {
     private static final ParameterizedTypeReference<ResponseEntity> RESPONSE_TYPE = new ParameterizedTypeReference<ResponseEntity>() {
     };
 
-    @Autowired
     private RestTemplate restTemplate;
-
     private UriTemplate url;
 
-    public SamSyntConsumer(@Value("${testnorge-sam.rest-api.url}") String samServerUrl) {
+    public SamSyntConsumer(
+            RestTemplateBuilder restTemplateBuilder,
+            @Value("${testnorge-sam.rest-api.url}") String samServerUrl) {
+        this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(samServerUrl + "/v1/syntetisering/generer");
     }
 

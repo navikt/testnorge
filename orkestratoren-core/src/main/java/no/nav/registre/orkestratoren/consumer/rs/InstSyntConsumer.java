@@ -1,8 +1,8 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -27,13 +27,14 @@ public class InstSyntConsumer {
     private static final String NAV_CONSUMER_ID = "orkestratoren";
     private static final String MILJOE = "q2";
 
-    @Autowired
     private RestTemplate restTemplate;
-
     private UriTemplate startSyntetiseringUrl;
     private UriTemplate sletteIdenterUrl;
 
-    public InstSyntConsumer(@Value("${testnorge-inst.rest-api.url}") String instServerUrl) {
+    public InstSyntConsumer(
+            RestTemplateBuilder restTemplateBuilder,
+            @Value("${testnorge-inst.rest-api.url}") String instServerUrl) {
+        this.restTemplate = restTemplateBuilder.build();
         this.startSyntetiseringUrl = new UriTemplate(instServerUrl + "/v1/syntetisering/generer?miljoe={miljoe}");
         this.sletteIdenterUrl = new UriTemplate(instServerUrl + "/v1/ident/batch?miljoe={miljoe}&identer={identer}");
     }

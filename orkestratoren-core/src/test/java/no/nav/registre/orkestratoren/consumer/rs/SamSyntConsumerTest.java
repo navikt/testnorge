@@ -1,38 +1,44 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 0)
+@RestClientTest(SamSyntConsumer.class)
 @ActiveProfiles("test")
 public class SamSyntConsumerTest {
 
     @Autowired
     private SamSyntConsumer samSyntConsumer;
+
+    @Autowired
+    private MockRestServiceServer server;
+
+    @Value("${testnorge-sam.rest-api.url}")
+    private String serverUrl;
 
     private static final Long AVSPILLERGRUPPE_ID = 123L;
     private static final String MILJOE = "t1";
@@ -50,19 +56,20 @@ public class SamSyntConsumerTest {
 
     @Test
     public void shouldStartSyntetisering() {
-        stubSamSyntConsumer();
+        String expectedUri = serverUrl + "/v1/syntetisering/generer";
+        stubSamSyntConsumer(expectedUri);
 
         ResponseEntity response = samSyntConsumer.startSyntetisering(syntetiserSamRequest);
 
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
     }
 
-    private void stubSamSyntConsumer() {
-        stubFor(post(urlPathEqualTo("/sam/api/v1/syntetisering/generer"))
-                .withRequestBody(equalToJson(
-                        "{\"avspillergruppeId\":" + AVSPILLERGRUPPE_ID
-                                + ",\"miljoe\":\"" + MILJOE + "\""
-                                + ",\"antallMeldinger\":" + fnrs.size() + "}"))
-                .willReturn(ok()));
+    private void stubSamSyntConsumer(String expectedUri) {
+        server.expect(requestToUriTemplate(expectedUri))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"avspillergruppeId\":" + AVSPILLERGRUPPE_ID
+                        + ",\"miljoe\":\"" + MILJOE + "\""
+                        + ",\"antallMeldinger\":" + fnrs.size() + "}"))
+                .andRespond(withSuccess());
     }
 }
