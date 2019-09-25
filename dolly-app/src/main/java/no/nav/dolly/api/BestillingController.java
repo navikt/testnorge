@@ -80,7 +80,7 @@ public class BestillingController {
         return mapperFacade.mapAsList(bestillingService.fetchMalBestillinger(), RsBestilling.class);
     }
 
-    @Cacheable(value = CACHE_BESTILLING)
+  //  @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/{bestillingId}/ny")
     public RsBestillingStatus getBestillingsstatus(@PathVariable("bestillingId") Long bestillingId) {
         return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestillingStatus.class);
