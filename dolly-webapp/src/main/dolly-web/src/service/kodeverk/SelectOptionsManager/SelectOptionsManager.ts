@@ -14,6 +14,10 @@ const selectOptions = {
 
 	boolean: [{ value: true, label: 'Ja' }, { value: false, label: 'Nei' }],
 	stringBoolean: [{ value: 'true', label: 'Ja' }, { value: 'false', label: 'Nei' }],
+	identhistorikkType: [
+		{ value: 'kjonn', label: 'Kjønnsskifte' },
+		{ value: 'ident', label: 'Identskifte' }
+	],
 
 	// SIGRUN
 	tjeneste: [

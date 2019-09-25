@@ -12,10 +12,12 @@ import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 import Button from '~/components/ui/button/Button'
 import _xor from 'lodash/fp/xor'
-import './FormEditor.less'
 import UtenFastBopelConnector from '../utenFastBopel/UtenFastBopelConnector'
 import Postadresse from '../postadresse/Postadresse'
 import ArrayFieldConnector from '../arrayField/ArrayFieldConnector'
+import HjelpeTekst from 'nav-frontend-hjelpetekst'
+
+import './FormEditor.less'
 
 export default class FormEditor extends Component {
 	render() {
@@ -129,7 +131,7 @@ export default class FormEditor extends Component {
 				</div>
 			)
 		}
-
+		console.log('items :', items)
 		if (items[0].subGruppe === 'true') {
 			//Hvis subKategorien skal ha flere underoverskrifter/undergrupperinger
 			const subGrupper = this._structureSubGruppe(items)
@@ -142,13 +144,18 @@ export default class FormEditor extends Component {
 						)
 						return (
 							<div key={idx}>
-								{subKategori.id === 'arena' ? (
-									formikProps.values.arenaforvalter[0].arenaBrukertype === 'MED_SERVICEBEHOV' && (
+								<div className="flexbox">
+									{subKategori.id === 'arena' ? (
+										formikProps.values.arenaforvalter[0].arenaBrukertype === 'MED_SERVICEBEHOV' && (
+											<h4 className="subgruppe">{subGruppe.navn}</h4>
+										)
+									) : (
 										<h4 className="subgruppe">{subGruppe.navn}</h4>
-									)
-								) : (
-									<h4 className="subgruppe">{subGruppe.navn}</h4>
-								)}
+									)}
+									{items[0].informasjonstekst && (
+										<HjelpeTekst>{items[0].informasjonstekst}</HjelpeTekst>
+									)}
+								</div>
 								{FormEditorFieldArray(
 									subGruppeObj,
 									formikProps,
