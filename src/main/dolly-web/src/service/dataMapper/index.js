@@ -8,7 +8,9 @@ import {
 	mapSigrunData,
 	mapAaregData,
 	mapArenaData,
-	mapInstData
+	mapInstData,
+	mapUdiData,
+	mapAliasData
 } from './mapRegistreDataToIdent'
 
 // * Mapper testperson-data for å vise under testpersonliste
@@ -65,6 +67,7 @@ const DataMapper = {
 		const arenaData =
 			testbruker.items.arenaforvalteren && testbruker.items.arenaforvalteren[personId]
 		const instData = testbruker.items.instdata && testbruker.items.instdata[personId]
+		const udiData = testbruker.items.udistub && testbruker.items.udistub[personId]
 
 		var bestillingId = _findBestillingId(gruppe, personId)
 
@@ -99,6 +102,13 @@ const DataMapper = {
 
 		if (instData) {
 			data.push(mapInstData(instData))
+		}
+
+		if (udiData) {
+			data.push(mapUdiData(udiData))
+			if (udiData.aliaser) {
+				data.push(mapAliasData(udiData.aliaser))
+			}
 		}
 
 		if (bestillingId.length > 1) {

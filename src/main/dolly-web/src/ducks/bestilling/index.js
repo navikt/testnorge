@@ -283,6 +283,7 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 
 	// * Vurdere behovet for denne i U2/prod. Uglify?
 	// console.info('POSTING BESTILLING', final_values)
+
 	return final_values
 }
 
