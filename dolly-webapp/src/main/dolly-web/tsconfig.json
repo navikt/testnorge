@@ -6,6 +6,7 @@
 		"esModuleInterop": true,
 		"module": "es6",
 		"target": "es6",
+		"outDir": "./dist",
 		"lib": ["es6", "dom", "es2017"],
 		"jsx": "react",
 		"baseUrl": ".",
