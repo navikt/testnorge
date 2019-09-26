@@ -1,17 +1,11 @@
 import React, { Fragment } from 'react'
 import Icon from '~/components/ui/icon/Icon'
-import miljoeStatusSelector from '~/utils/MiljoeStatusSelector'
+import antallIdenterOpprettet from '~/components/bestilling/utils/antallIdenterOpprettet'
+import groupMiljoeByStatus from '~/components/bestilling/utils/groupMiljoeByStatus'
 
 export default function MiljoeStatus({ bestilling }) {
-	const { successEnvs, failedEnvs, avvikEnvs } = miljoeStatusSelector(bestilling)
-
-	const _renderMiljoeStatus = () => (
-		<Fragment>
-			{successEnvs.map((env, i) => _renderMiljoe(env, i, 'feedback-check-circle'))}
-			{failedEnvs.map((env, i) => _renderMiljoe(env, i, 'report-problem-triangle'))}
-			{avvikEnvs.map((env, i) => _renderMiljoe(env, i, 'report-problem-circle'))}
-		</Fragment>
-	)
+	const { successEnvs, failedEnvs, avvikEnvs } = groupMiljoeByStatus(bestilling)
+	const antall = antallIdenterOpprettet(bestilling)
 
 	const _renderMiljoe = (env, key, iconType) => (
 		<div className="miljoe" key={key}>
@@ -20,20 +14,14 @@ export default function MiljoeStatus({ bestilling }) {
 		</div>
 	)
 
-	const _manglerIdenterOpprettet = () => {
-		const { antallIdenterOpprettet } = bestilling
-		if (antallIdenterOpprettet === bestilling.antallIdenter) return null
-		return (
-			<span className="miljoe-status error-text">
-				{antallIdenterOpprettet} av {bestilling.antallIdenter} bestilte identer ble opprettet i TPS.
-			</span>
-		)
-	}
-
 	return (
 		<Fragment>
-			{_manglerIdenterOpprettet()}
-			<span className="miljoe-container miljoe-container-rad">{_renderMiljoeStatus()}</span>
+			{antall.harMangler && <span className="error-text">{antall.tekst}</span>}
+			<span className="miljoe-container miljoe-container-rad">
+				{successEnvs.map((env, i) => _renderMiljoe(env, i, 'feedback-check-circle'))}
+				{failedEnvs.map((env, i) => _renderMiljoe(env, i, 'report-problem-triangle'))}
+				{avvikEnvs.map((env, i) => _renderMiljoe(env, i, 'report-problem-circle'))}
+			</span>
 		</Fragment>
 	)
 }
