@@ -11,6 +11,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,7 @@ public class KrrstubClient implements ClientRegister {
     private final KrrstubConsumer krrstubConsumer;
     private final KrrstubResponseHandler krrstubResponseHandler;
     private final MapperFacade mapperFacade;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
     public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
@@ -43,7 +45,7 @@ public class KrrstubClient implements ClientRegister {
             progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
 
         } catch (RuntimeException e) {
-            progress.setKrrstubStatus("Feil: " + e.getMessage());
+            progress.setKrrstubStatus(errorStatusDecoder.decodeRuntimeException(e));
             log.error("Kall til KrrStub feilet: {}", e.getMessage(), e);
         }
 
@@ -52,19 +54,23 @@ public class KrrstubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(ident -> deleteIdent(ident));
+        identer.forEach(this::deleteIdent);
     }
 
     private void deleteIdent(String ident) {
 
-        DigitalKontaktdata[] response = krrstubConsumer.readDigitalKontaktdata(ident);
+        try {
+            DigitalKontaktdata[] response = krrstubConsumer.readDigitalKontaktdata(ident);
 
-        if (response != null) {
-            asList(response).forEach(dkif -> {
-                if (nonNull(dkif.getId())) {
-                    krrstubConsumer.deleteDigitalKontaktdata(dkif.getId());
-                }
-            });
+            if (response != null) {
+                asList(response).forEach(dkif -> {
+                    if (nonNull(dkif.getId())) {
+                        krrstubConsumer.deleteDigitalKontaktdata(dkif.getId());
+                    }
+                });
+            }
+        } catch (RuntimeException e) {
+            log.error("Feilet å slette ident {} fra KRR-Stub", ident, e);
         }
     }
 }

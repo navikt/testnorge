@@ -17,9 +17,9 @@ import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -39,6 +39,7 @@ public class PdlForvalterClient implements ClientRegister {
 
     private final PdlForvalterRestConsumer pdlForvalterRestConsumer;
     private final MapperFacade mapperFacade;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
     public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
@@ -85,7 +86,6 @@ public class PdlForvalterClient implements ClientRegister {
 
                 PdlUtenlandskIdentifikasjonsnummer utenlandskId = pdldata.getUtenlandskIdentifikasjonsnummer();
                 utenlandskId.setKilde(nullcheckSetDefaultValue(utenlandskId.getKilde(), KILDE));
-
 
                 ResponseEntity<JsonNode> response =
                         pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(utenlandskId, norskIdent.getIdent());
@@ -176,17 +176,9 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void appendErrorStatus(Exception exception, StringBuilder builder) {
-        builder.append("&Feil (")
-                .append(exception.getMessage());
+    private void appendErrorStatus(RuntimeException exception, StringBuilder builder) {
 
-        if (exception instanceof HttpClientErrorException) {
-            String responseBody = ((HttpClientErrorException) exception).getResponseBodyAsString();
-            if (responseBody.contains("message")) {
-                builder.append(" - message: ")
-                        .append(responseBody.substring(responseBody.indexOf("message") + 9, responseBody.indexOf("path") - 2));
-            }
-        }
-        builder.append(')');
+        builder.append("&")
+                .append(errorStatusDecoder.decodeRuntimeException(exception));
     }
 }

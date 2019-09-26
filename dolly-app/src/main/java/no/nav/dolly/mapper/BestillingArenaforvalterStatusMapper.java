@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingArenaforvalterStatusMapper {
 

@@ -11,6 +11,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsBestilling;
+import no.nav.dolly.domain.resultset.RsBestillingStatus;
 import no.nav.dolly.service.BestillingService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -48,6 +49,13 @@ public class BestillingController {
         return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestilling.class);
     }
 
+    @Cacheable(value = CACHE_BESTILLING)
+    @GetMapping("/gruppe/{gruppeId}/ny")
+    public List<RsBestillingStatus> getStatusForBestillinger(@PathVariable("gruppeId") Long gruppeId) {
+
+        return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestillingStatus.class);
+    }
+
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
     public RsBestilling stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId) {
@@ -63,9 +71,14 @@ public class BestillingController {
         return mapperFacade.map(bestilling, RsBestilling.class);
     }
 
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @GetMapping("/malbestilling")
     public List<RsBestilling> getMalBestillinger() {
         return mapperFacade.mapAsList(bestillingService.fetchMalBestillinger(), RsBestilling.class);
+    }
+
+    @Cacheable(value = CACHE_BESTILLING)
+    @GetMapping("/{bestillingId}/ny")
+    public RsBestillingStatus getBestillingsstatus(@PathVariable("bestillingId") Long bestillingId) {
+        return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestillingStatus.class);
     }
 }

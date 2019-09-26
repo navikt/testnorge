@@ -54,7 +54,6 @@ public class ArenaForvalterClientTest {
     @Before
     public void setup() {
         when(arenaForvalterConsumer.getEnvironments()).thenReturn(singletonList(ENV));
-        when(arenaForvalterConsumer.getIdent(IDENT)).thenReturn(ResponseEntity.ok(new ArenaArbeidssokerBruker()));
         when(mapperFacade.map(any(Arenadata.class), eq(ArenaNyBruker.class))).thenReturn(new ArenaNyBruker());
     }
 
@@ -77,7 +76,6 @@ public class ArenaForvalterClientTest {
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$OK")));
         verify(arenaForvalterConsumer).getEnvironments();
-        verify(arenaForvalterConsumer).getIdent(IDENT);
         verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class));
     }
 
@@ -96,7 +94,6 @@ public class ArenaForvalterClientTest {
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo(
                 "q2$Feil: 400 Bad request (An error has occured)")));
-        verify(arenaForvalterConsumer).getIdent(IDENT);
         verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class));
     }
 

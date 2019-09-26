@@ -103,7 +103,7 @@ public class AaregWsConsumerTest {
 
         assertThat(status.get("t0"), is(equalTo(
                 "Feil, OpprettArbeidsforholdSikkerhetsbegrensning -> Ingen tilgang "
-                        + "(ForretningsmessigUnntak: feilaarsak: Manglende rolle, feilkilde: AAREG, "
+                        + "(ForretningsmessigUnntak: feilårsak: Manglende rolle, feilkilde: AAREG, "
                         + "feilmelding: Ingen tilgang, tidspunkt: 2019-03-10T12:13)")));
     }
 
@@ -142,7 +142,7 @@ public class AaregWsConsumerTest {
 
         assertThat(status.get("t1"), is(equalTo(
                 "Feil, OppdaterArbeidsforholdSikkerhetsbegrensning -> Ingen tilgang "
-                        + "(ForretningsmessigUnntak: feilaarsak: Manglende rolle, feilkilde: AAREG, "
+                        + "(ForretningsmessigUnntak: feilårsak: Manglende rolle, feilkilde: AAREG, "
                         + "feilmelding: Ingen tilgang, tidspunkt: 2019-03-10T12:13)")));
     }
 }

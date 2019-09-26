@@ -15,7 +15,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BestillingKrrStubStatusMapperTest {
+public class BestillingKrrStubStatusMapperNyTest {
 
     private static final List<BestillingProgress> RUN_STATUS = asList(
             BestillingProgress.builder().ident("IDENT_1")

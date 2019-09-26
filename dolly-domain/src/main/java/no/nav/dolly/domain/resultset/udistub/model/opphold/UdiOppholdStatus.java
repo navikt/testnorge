@@ -30,7 +30,7 @@ public class UdiOppholdStatus {
 
     private UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOppholdstilatelseIkkeVilkaarIkkeVisum;
 
-    private UdiOppholdSammeVilkaar udiOppholdSammeVilkaar;
+    private UdiOppholdSammeVilkaar oppholdSammeVilkaar;
 
     private Boolean uavklart;
 }

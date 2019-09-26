@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsStatusIdent;
+import no.nav.dolly.domain.resultset.RsStatusRapport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -15,7 +15,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BestillingSigrunStubStatusMapperTest {
+public class BestillingSigrunStubStatusMapperNyTest {
 
     private static final List<BestillingProgress> RUN_STATUS = asList(
             BestillingProgress.builder().ident("IDENT_1")
@@ -36,14 +36,14 @@ public class BestillingSigrunStubStatusMapperTest {
     );
 
     @Test
-    public void krrStubStatusMap() {
+    public void sigrunStubStatusMap() {
 
-        List<RsStatusIdent> identStatuses = BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap(RUN_STATUS);
+        List<RsStatusRapport> identStatuses = BestillingSigrunStubStatusMapperNy.buildSigrunStubStatusMap(RUN_STATUS);
 
-        assertThat(identStatuses.get(0).getStatusMelding(), is(equalTo("FEIL")));
-        assertThat(identStatuses.get(0).getIdenter(), containsInAnyOrder("IDENT_2", "IDENT_4"));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("FEIL")));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getIdenter(), containsInAnyOrder("IDENT_2", "IDENT_4"));
 
-        assertThat(identStatuses.get(1).getStatusMelding(), is(equalTo("OK")));
-        assertThat(identStatuses.get(1).getIdenter(), containsInAnyOrder("IDENT_1", "IDENT_3", "IDENT_5"));
+        assertThat(identStatuses.get(0).getStatuser().get(1).getMelding(), is(equalTo("OK")));
+        assertThat(identStatuses.get(0).getStatuser().get(1).getIdenter(), containsInAnyOrder("IDENT_1", "IDENT_3", "IDENT_5"));
     }
 }

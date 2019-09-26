@@ -1,15 +1,17 @@
 package no.nav.dolly.provider.api;
 
+import static java.util.Arrays.asList;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
 import no.nav.dolly.consumer.norg2.Norg2EnhetResponse;
 import no.nav.dolly.consumer.personoppslag.PersonoppslagConsumer;
 import no.nav.dolly.consumer.syntdata.SyntdataConsumer;
+import no.nav.dolly.domain.resultset.SystemTyper;
+import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -19,6 +21,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,5 +58,12 @@ public class OppslagController {
     @GetMapping("/syntdata")
     public ResponseEntity syntdataGenerate(@RequestParam("path") String path, @RequestParam("numToGenerate") Integer numToGenerate) {
         return syntdataConsumer.generate(path, numToGenerate);
+    }
+
+    @GetMapping("/systemer")
+    public List<SystemTyper.SystemBeskrivelse> getSystemTyper() {
+        return asList(SystemTyper.values()).stream()
+                .map(type -> SystemTyper.SystemBeskrivelse.builder().system(type.name()).beskrivelse(type.getBeskrivelse()).build())
+                .collect(Collectors.toList());
     }
 }

@@ -89,4 +89,5 @@ public class TpsfBestilling {
 
     private LocalDateTime forsvunnetDato;
 
+    private List<RsIdenthistorikk> identHistorikk;
 }

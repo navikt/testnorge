@@ -42,9 +42,7 @@ public class ArenaForvalterClient implements ClientRegister {
         environments.retainAll(bestilling.getEnvironments());
 
         if (!environments.isEmpty()) {
-
-            ResponseEntity<ArenaArbeidssokerBruker> existingServicebruker = fetchServiceBruker(norskIdent.getIdent(), environments, status);
-            deleteServicebruker(norskIdent.getIdent(), environments, status, existingServicebruker);
+            deleteServicebruker(norskIdent.getIdent(), environments);
 
             ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
             environments.forEach(environment -> {
@@ -83,42 +81,19 @@ public class ArenaForvalterClient implements ClientRegister {
         });
     }
 
-    private void deleteServicebruker(String ident, List<String> availEnvironments, StringBuilder status, ResponseEntity<ArenaArbeidssokerBruker> response) {
-
-        if (response.hasBody() && !requireNonNull(response.getBody()).getArbeidsokerList().isEmpty()) {
-            response.getBody().getArbeidsokerList().forEach(arbeidssoker -> {
-                if (availEnvironments.contains(arbeidssoker.getMiljoe())) {
-                    try {
-                        arenaForvalterConsumer.deleteIdent(ident, arbeidssoker.getMiljoe());
-
-                    } catch (RuntimeException e) {
-                        status.append(',')
-                                .append(arbeidssoker.getMiljoe())
-                                .append('$');
-                        appendErrorText(status, e);
-                        log.error("Feilet å inaktivere bruker: {}, miljø: {} i ArenaForvalter: ", arbeidssoker.getPersonident(), arbeidssoker.getMiljoe(), e);
-                    }
-                }
-            });
-        }
-    }
-
-    private ResponseEntity<ArenaArbeidssokerBruker> fetchServiceBruker(String ident, List<String> availEnvironments, StringBuilder status) {
+    private void deleteServicebruker(String ident, List<String> availEnvironments) {
 
         try {
-            return arenaForvalterConsumer.getIdent(ident);
+            availEnvironments.forEach(environment ->
+                    arenaForvalterConsumer.deleteIdent(ident, environment));
 
         } catch (RuntimeException e) {
-            availEnvironments.forEach(environment -> {
-                status.append(',')
-                        .append(environment)
-                        .append('$');
-                appendErrorText(status, e);
-            });
-            log.error("Feilet å hente bruker: {} i ArenaForvalter", ident, e);
-            return ResponseEntity.badRequest().build();
+
+            log.error("Feilet å inaktivere bruker: {} i ArenaForvalter: ", ident, e);
         }
+
     }
+
 
     private void sendArenadata(ArenaNyeBrukere arenaNyeBrukere, StringBuilder status) {
 

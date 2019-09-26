@@ -18,8 +18,12 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsTpsfUtvidetBestilling extends RsTpsfBasisBestilling {
 
-    List<RsRelasjon> barn;
     private RsSimpleRelasjoner relasjoner;
+
+    private List<RsIdenthistorikk> identHistorikk;
+
+    private List<RsRelasjon> barn;
+
     private String identtype;
 
     private LocalDateTime foedtEtter;

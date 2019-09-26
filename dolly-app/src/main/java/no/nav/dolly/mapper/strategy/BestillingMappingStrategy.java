@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
+@Deprecated
 @Component
 public class BestillingMappingStrategy implements MappingStrategy {
 

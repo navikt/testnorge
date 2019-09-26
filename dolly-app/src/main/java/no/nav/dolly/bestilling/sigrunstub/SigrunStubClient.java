@@ -1,23 +1,27 @@
 package no.nav.dolly.bestilling.sigrunstub;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SigrunStubClient implements ClientRegister {
 
     private final SigrunStubConsumer sigrunStubConsumer;
     private final SigrunStubResponseHandler sigrunStubResponseHandler;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
     public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
@@ -39,8 +43,9 @@ public class SigrunStubClient implements ClientRegister {
                             sigrunStubConsumer.createSkattegrunnlag(bestilling.getSigrunstub())));
 
         } catch (RuntimeException e) {
-            progress.setSigrunstubStatus("Feil:" + e.getMessage());
+            progress.setSigrunstubStatus(errorStatusDecoder.decodeRuntimeException(e));
         }
+
     }
 
     private void deleteExistingSkattegrunnlag(String ident) {
@@ -50,7 +55,7 @@ public class SigrunStubClient implements ClientRegister {
 
         } catch (HttpClientErrorException error) {
             if (!HttpStatus.NOT_FOUND.equals(error.getStatusCode())) {
-                throw error;
+                log.error("Feilet å slette ident {} fra Sigrunstub", ident, error);
             }
         }
     }

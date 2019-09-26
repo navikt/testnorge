@@ -65,26 +65,6 @@ public class InstdataClientTest {
     }
 
     @Test
-    public void gjenopprettNårInstdataVedAnnenFeilmeldingPaaSletting_SkalGiFeilmelding() {
-
-        BestillingProgress progress = new BestillingProgress();
-
-        when(instdataConsumer.getMiljoer()).thenReturn(singletonList("q2"));
-        when(instdataConsumer.deleteInstdata(IDENT, ENVIRONMENT)).thenReturn(ResponseEntity.ok(
-                new InstdataResponse[]{InstdataResponse.builder()
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .feilmelding("Service unavailable")
-                        .build()}));
-
-        instdataClient.gjenopprett(RsDollyBestilling.builder()
-                .instdata(newArrayList(RsInstdata.builder().build()))
-                .environments(newArrayList("q2"))
-                .build(), NORSK_IDENT, progress);
-
-        assertThat(progress.getInstdataStatus(), is(equalTo("q2:Feil: 500 (Internal Server Error) Service unavailable")));
-    }
-
-    @Test
     public void gjenopprettNårInstdataIkkeFinnesFraFoer_SkalGiOk() {
 
         BestillingProgress progress = new BestillingProgress();
