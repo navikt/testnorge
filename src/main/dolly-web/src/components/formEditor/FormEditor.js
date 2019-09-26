@@ -334,14 +334,17 @@ export default class FormEditor extends Component {
 		}
 
 		if (item.id === 'spesreg') {
+			console.log('componentPropsooooooooooo :', componentProps);
 			return (
 				<UtenFastBopelConnector
 					key={item.key || item.id}
 					item={item}
 					valgteVerdier={valgteVerdier}
+					{...componentProps}
 				/>
 			)
 		}
+		
 
 		if (
 			item.id === 'arenaforvalter[0]kvalifiseringsgruppe' &&
@@ -385,6 +388,7 @@ export default class FormEditor extends Component {
 				<ArrayFieldConnector item={item} formikProps={formikProps} valgteVerdier={valgteVerdier} />
 			)
 		}
+		console.log('componentProps :', componentProps);
 		return (
 			<Field
 				key={item.key || item.id}
