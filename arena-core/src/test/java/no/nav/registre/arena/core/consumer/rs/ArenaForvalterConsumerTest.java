@@ -21,6 +21,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
@@ -61,7 +62,7 @@ public class ArenaForvalterConsumerTest {
                 .automatiskInnsendingAvMeldekort(true)
                 .kvalifiseringsgruppe("IKVAL")
                 .aap115(Collections.singletonList(
-                         Aap115.builder()
+                        Aap115.builder()
                                 .fraDato("1998-07-02").build()))
                 .aap(Collections.singletonList(
                         Aap.builder()
@@ -77,7 +78,7 @@ public class ArenaForvalterConsumerTest {
                 .automatiskInnsendingAvMeldekort(true)
                 .kvalifiseringsgruppe("IKVAL")
                 .aap115(Collections.singletonList(
-                         Aap115.builder()
+                        Aap115.builder()
                                 .fraDato("2004-09-27").build()))
                 .aap(Collections.singletonList(
                         Aap.builder()
@@ -95,7 +96,7 @@ public class ArenaForvalterConsumerTest {
 
         List<Arbeidsoeker> response = arenaForvalterConsumer.sendTilArenaForvalter(null);
 
-       assertThat(response, is(Collections.EMPTY_LIST));
+        assertThat(response, is(Collections.EMPTY_LIST));
     }
 
     @Test
@@ -157,19 +158,131 @@ public class ArenaForvalterConsumerTest {
         assertThat(response.get(3).getPersonident(), is("20202020202"));
     }
 
+    @Test
+    public void sendTilArenaForvalterNoBodyTest() {
+        stubArenaForvalterPostBrukereNoBody();
+        List<Arbeidsoeker> response = arenaForvalterConsumer.sendTilArenaForvalter(Collections.EMPTY_LIST);
+        assertThat(response, is(Collections.EMPTY_LIST));
+    }
+
+    @Test
+    public void sendTilArenaForvalterNormalTest() {
+        stubArenaForlvalterToBrukereTest();
+        List<Arbeidsoeker> response = arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
+
+        assertThat(response.size(), is(2));
+        assertThat(response.get(0).getPersonident(), is("10101010101"));
+        assertThat(response.get(1).getEier(), is("ORKESTRATOREN"));
+    }
+
+    @Test
+    public void arbeidsoekerStatusAktivTest() {
+        stubArenaForvalterStatusAktivTest();
+        List<String> brukere = Arrays.asList("10101010101", "20202020202");
+        Map<String, Boolean> response = arenaForvalterConsumer.arbeidsoekerStatusAktiv(brukere, "q2");
+
+        assertThat(response.get("10101010101"), is(true));
+        assertThat(response.entrySet().size(), is(2));
+    }
+
+    @Test
+    public void arbeidsoekerStatusInaktivTest() {
+        stubArenaForvalterStatusInaktivTest();
+        List<String> brukere = Arrays.asList("10101010101", "20202020202");
+        Map<String, Boolean> response = arenaForvalterConsumer.arbeidsoekerStatusAktiv(brukere, "q2");
+
+        assertThat(response.get("10101010101"), is(true));
+        assertThat(response.get("20202020202"), is(false));
+        assertThat(response.entrySet().size(), is(2));
+    }
+
+    public void stubArenaForvalterStatusInaktivTest() {
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/brukerstatus/aktiv?miljoe=q2&personidenter=10101010101,20202020202"))
+        .willReturn(ok()
+        .withHeader("Content-Type", "application/json")
+        .withBody("[{" +
+                "\"personident\": \"10101010101\"," +
+                "\"miljoe\": \"q2\"," +
+                "\"status\": \"AKTIV\"},{" +
+                "\"personident\": \"20202020202\"," +
+                "\"miljoe\": \"q2\"," +
+                "\"status\": \"IKKE_REGISTRERT\"}]")));
+    }
+
+    public void stubArenaForvalterStatusAktivTest() {
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/brukerstatus/aktiv?miljoe=q2&personidenter=10101010101,20202020202"))
+        .willReturn(ok()
+        .withHeader("Content-Type", "application/json")
+        .withBody("[{" +
+                "\"personident\": \"10101010101\"," +
+                "\"miljoe\": \"q2\"," +
+                "\"status\": \"AKTIV\"},{" +
+                "\"personident\": \"20202020202\"," +
+                "\"miljoe\": \"q2\"," +
+                "\"status\": \"AKTIV\"}]")));
+    }
+
+    private void stubArenaForlvalterToBrukereTest() {
+        stubFor(post(urlEqualTo("/arena-forvalteren/api/v1/bruker?eier=ORKESTRATOREN"))
+        .withRequestBody(equalToJson("{\"nyeBrukere\": [" +
+                "{\"personident\": \"10101010101\"," +
+                "\"miljoe\": \"q2\"," +
+                "\"kvalifiseringsgruppe\": \"IKVAL\"," +
+                "\"utenServicebehov\": {\"stansDato\": \"2001-03-18\"}," +
+                "\"automatiskInnsendingAvMeldekort\": true," +
+                "\"aap115\": [{\"fraDato\": \"1998-07-02\"}]," +
+                "\"aap\": [{\"fraDato\": \"1996-11-13\", \"tilDato\": \"2002-05-24\"}]" +
+                "}," +
+                "{\"personident\": \"20202020202\"," +
+                "\"miljoe\": \"q2\"," +
+                "\"kvalifiseringsgruppe\": \"IKVAL\"," +
+                "\"utenServicebehov\": {\"stansDato\": \"2015-08-20\"}," +
+                "\"automatiskInnsendingAvMeldekort\": true," +
+                "\"aap115\": [{\"fraDato\": \"2004-09-27\"}]," +
+                "\"aap\": [{\"fraDato\": \"2008-02-28\", \"tilDato\": \"2009-05-01\"}]" +
+                "}]}"))
+        .willReturn(ok()
+        .withHeader("Content-Type", "application/json")
+        .withBody("{" +
+                "\"arbeidsokerList\": [{" +
+                "\"personident\": \"10101010101\"," +
+                "\"miljoe\": \"q2\"," +
+                "\"eier\": \"ORKESTRATOREN\"," +
+                "\"servicebehov\": false," +
+                "\"automatiskInnsendingAvMeldekort\": false," +
+                "\"aap115\": false," +
+                "\"aap\": false},{" +
+                "\"personident\": \"20202020202\"," +
+                "\"miljoe\": \"q2\"," +
+                "\"eier\": \"ORKESTRATOREN\"," +
+                "\"servicebehov\": false," +
+                "\"automatiskInnsendingAvMeldekort\": false," +
+                "\"aap115\": false," +
+                "\"aap\": false}]," +
+                "\"antallSider\": 1}")));
+    }
+
+    private void stubArenaForvalterPostBrukereNoBody() {
+        stubFor(post(urlEqualTo("/arena-forvalteren/api/v1/bruker?eier=ORKESTRATOREN"))
+                .withRequestBody(equalToJson("{\"nyeBrukere\": [] }"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{ \"arbeidsokerList\": [] }")));
+    }
+
     private void stubArenaForvalterSlettBrukereBadReq() {
         stubFor(delete(urlEqualTo("/arena-forvalteren/api/v1/bruker?miljoe=q2&personident=10101010101"))
                 .willReturn(aResponse()
-                .withStatus(400)
-                .withBody(
-                        "{" +
-                        "\"timestamp\": \"2019-07-03T07:45:19.109+0000\"," +
-                        "\"status\": 400," +
-                        "\"error\": \"Bad Request\"," +
-                        "\"message\": \"Identen er ikke registrert i arena-forvalteren\"," +
-                        "\"path\": \"/api/v1/bruker\"" +
-                        "}"
-                )));
+                        .withStatus(400)
+                        .withBody(
+                                "{" +
+                                        "\"timestamp\": \"2019-07-03T07:45:19.109+0000\"," +
+                                        "\"status\": 400," +
+                                        "\"error\": \"Bad Request\"," +
+                                        "\"message\": \"Identen er ikke registrert i arena-forvalteren\"," +
+                                        "\"path\": \"/api/v1/bruker\"" +
+                                        "}"
+                        )));
     }
 
     private void stubArenaForvalterSlettBrukere() {
@@ -179,174 +292,180 @@ public class ArenaForvalterConsumerTest {
 
     private void stubArenaForvalterFilterPersonident() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-personident=10101010101"))
-        .willReturn(ok()
-        .withHeader("Content-Type", "application/json")
-        .withBody(
-                "{"+
-                        "\"arbeidsokerList\": [{" +
-                        "\"personident\": \"10101010101\","+
-                        "\"miljoe\": \"q2\"," +
-                        "\"status\": \"OK\"," +
-                        "\"eier\": \"Dolly\"," +
-                        "\"servicebehov\": false," +
-                        "\"automatiskInnsendingAvMeldekort\": false," +
-                        "\"aap115\": false," +
-                        "\"aap\": false},{" +
-                        "\"personident\": \"10101010101\"," +
-                        "\"miljoe\": \"t1\"," +
-                        "\"status\": \"OK\"," +
-                        "\"eier\": \"Orkestratoren\"," +
-                        "\"servicebehov\": false," +
-                        "\"automatiskInnsendingAvMeldekort\": true," +
-                        "\"aap115\": false," +
-                        "\"aap\": true" +
-                        "}]," +
-                        "\"antallSider\": 2" +
-                        "}"
-        )));
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                                "{" +
+                                        "\"arbeidsokerList\": [{" +
+                                        "\"personident\": \"10101010101\"," +
+                                        "\"miljoe\": \"q2\"," +
+                                        "\"status\": \"OK\"," +
+                                        "\"eier\": \"Dolly\"," +
+                                        "\"servicebehov\": false," +
+                                        "\"automatiskInnsendingAvMeldekort\": false," +
+                                        "\"aap115\": false," +
+                                        "\"aap\": false},{" +
+                                        "\"personident\": \"10101010101\"," +
+                                        "\"miljoe\": \"t1\"," +
+                                        "\"status\": \"OK\"," +
+                                        "\"eier\": \"Orkestratoren\"," +
+                                        "\"servicebehov\": false," +
+                                        "\"automatiskInnsendingAvMeldekort\": true," +
+                                        "\"aap115\": false," +
+                                        "\"aap\": true" +
+                                        "}]," +
+                                        "\"antallSider\": 2" +
+                                        "}"
+                        )));
     }
+
     private void stubArenaForvalterFilterPersonidentPageEn() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-personident=10101010101&page=0"))
-        .willReturn(ok()
-        .withHeader("Content-Type", "application/json")
-        .withBody(
-                "{"+
-                        "\"arbeidsokerList\": [{" +
-                        "\"personident\": \"10101010101\","+
-                        "\"miljoe\": \"q2\"," +
-                        "\"status\": \"OK\"," +
-                        "\"eier\": \"Dolly\"," +
-                        "\"servicebehov\": false," +
-                        "\"automatiskInnsendingAvMeldekort\": false," +
-                        "\"aap115\": false," +
-                        "\"aap\": false},{" +
-                        "\"personident\": \"10101010101\"," +
-                        "\"miljoe\": \"t1\"," +
-                        "\"status\": \"OK\"," +
-                        "\"eier\": \"Orkestratoren\"," +
-                        "\"servicebehov\": false," +
-                        "\"automatiskInnsendingAvMeldekort\": true," +
-                        "\"aap115\": false," +
-                        "\"aap\": true" +
-                        "}]," +
-                        "\"antallSider\": 2" +
-                        "}"
-        )));
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                                "{" +
+                                        "\"arbeidsokerList\": [{" +
+                                        "\"personident\": \"10101010101\"," +
+                                        "\"miljoe\": \"q2\"," +
+                                        "\"status\": \"OK\"," +
+                                        "\"eier\": \"Dolly\"," +
+                                        "\"servicebehov\": false," +
+                                        "\"automatiskInnsendingAvMeldekort\": false," +
+                                        "\"aap115\": false," +
+                                        "\"aap\": false},{" +
+                                        "\"personident\": \"10101010101\"," +
+                                        "\"miljoe\": \"t1\"," +
+                                        "\"status\": \"OK\"," +
+                                        "\"eier\": \"Orkestratoren\"," +
+                                        "\"servicebehov\": false," +
+                                        "\"automatiskInnsendingAvMeldekort\": true," +
+                                        "\"aap115\": false," +
+                                        "\"aap\": true" +
+                                        "}]," +
+                                        "\"antallSider\": 2" +
+                                        "}"
+                        )));
     }
+
     private void stubArenaForvalterFilterPersonidentPageTo() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-personident=10101010101&page=1"))
-        .willReturn(ok()
-        .withHeader("Content-Type", "application/json")
-        .withBody(
-                "{"+
-                        "\"arbeidsokerList\": [{" +
-                        "\"personident\": \"10101010101\","+
-                        "\"miljoe\": \"q0\"," +
-                        "\"status\": \"ERROR\"," +
-                        "\"eier\": \"Dolly\"," +
-                        "\"servicebehov\": false," +
-                        "\"automatiskInnsendingAvMeldekort\": false," +
-                        "\"aap115\": false," +
-                        "\"aap\": false}]," +
-                        "\"antallSider\": 2" +
-                        "}"
-        )));
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                                "{" +
+                                        "\"arbeidsokerList\": [{" +
+                                        "\"personident\": \"10101010101\"," +
+                                        "\"miljoe\": \"q0\"," +
+                                        "\"status\": \"ERROR\"," +
+                                        "\"eier\": \"Dolly\"," +
+                                        "\"servicebehov\": false," +
+                                        "\"automatiskInnsendingAvMeldekort\": false," +
+                                        "\"aap115\": false," +
+                                        "\"aap\": false}]," +
+                                        "\"antallSider\": 2" +
+                                        "}"
+                        )));
     }
+
     private void stubArenaForvalterFilterPersonidentGuyTo() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-personident=20202020202"))
-        .willReturn(ok()
-        .withHeader("Content-Type", "application/json")
-        .withBody(
-                "{"+
-                        "\"arbeidsokerList\": [{" +
-                        "\"personident\": \"20202020202\","+
-                        "\"miljoe\": \"q1\"," +
-                        "\"status\": \"ERROR\"," +
-                        "\"eier\": \"Dolly\"," +
-                        "\"servicebehov\": false," +
-                        "\"automatiskInnsendingAvMeldekort\": false," +
-                        "\"aap115\": false," +
-                        "\"aap\": false}]," +
-                        "\"antallSider\": 1" +
-                        "}"
-        )));
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                                "{" +
+                                        "\"arbeidsokerList\": [{" +
+                                        "\"personident\": \"20202020202\"," +
+                                        "\"miljoe\": \"q1\"," +
+                                        "\"status\": \"ERROR\"," +
+                                        "\"eier\": \"Dolly\"," +
+                                        "\"servicebehov\": false," +
+                                        "\"automatiskInnsendingAvMeldekort\": false," +
+                                        "\"aap115\": false," +
+                                        "\"aap\": false}]," +
+                                        "\"antallSider\": 1" +
+                                        "}"
+                        )));
     }
-        private void stubArenaForvalterFilterPersonidentGuyToPageEn() {
+
+    private void stubArenaForvalterFilterPersonidentGuyToPageEn() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-personident=20202020202&page=0"))
-        .willReturn(ok()
-        .withHeader("Content-Type", "application/json")
-        .withBody(
-                "{"+
-                        "\"arbeidsokerList\": [{" +
-                        "\"personident\": \"20202020202\","+
-                        "\"miljoe\": \"q1\"," +
-                        "\"status\": \"ERROR\"," +
-                        "\"eier\": \"Dolly\"," +
-                        "\"servicebehov\": false," +
-                        "\"automatiskInnsendingAvMeldekort\": false," +
-                        "\"aap115\": false," +
-                        "\"aap\": false}]," +
-                        "\"antallSider\": 1" +
-                        "}"
-        )));
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                                "{" +
+                                        "\"arbeidsokerList\": [{" +
+                                        "\"personident\": \"20202020202\"," +
+                                        "\"miljoe\": \"q1\"," +
+                                        "\"status\": \"ERROR\"," +
+                                        "\"eier\": \"Dolly\"," +
+                                        "\"servicebehov\": false," +
+                                        "\"automatiskInnsendingAvMeldekort\": false," +
+                                        "\"aap115\": false," +
+                                        "\"aap\": false}]," +
+                                        "\"antallSider\": 1" +
+                                        "}"
+                        )));
     }
 
     private void stubArenaForvalterHentBrukereFilter() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-miljoe=q2&filter-eier=Dolly&filter-personident=10101010101"))
-        .willReturn(ok()
-        .withHeader("Content-Type", "application/json")
-        .withBody(
-                "{"+
-                        "\"arbeidsokerList\": [{" +
-                        "\"personident\": \"10101010101\","+
-                        "\"miljoe\": \"q2\"," +
-                        "\"status\": \"OK\"," +
-                        "\"eier\": \"Dolly\"," +
-                        "\"servicebehov\": false," +
-                        "\"automatiskInnsendingAvMeldekort\": false," +
-                        "\"aap115\": false," +
-                        "\"aap\": false}]," +
-                        "\"antallSider\": 2" +
-                        "}"
-        )));
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                                "{" +
+                                        "\"arbeidsokerList\": [{" +
+                                        "\"personident\": \"10101010101\"," +
+                                        "\"miljoe\": \"q2\"," +
+                                        "\"status\": \"OK\"," +
+                                        "\"eier\": \"Dolly\"," +
+                                        "\"servicebehov\": false," +
+                                        "\"automatiskInnsendingAvMeldekort\": false," +
+                                        "\"aap115\": false," +
+                                        "\"aap\": false}]," +
+                                        "\"antallSider\": 2" +
+                                        "}"
+                        )));
     }
-        private void stubArenaForvalterHentBrukereFilterPageEn() {
+
+    private void stubArenaForvalterHentBrukereFilterPageEn() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-miljoe=q2&filter-eier=Dolly&filter-personident=10101010101&page=0"))
-        .willReturn(ok()
-        .withHeader("Content-Type", "application/json")
-        .withBody(
-                "{"+
-                        "\"arbeidsokerList\": [{" +
-                        "\"personident\": \"10101010101\","+
-                        "\"miljoe\": \"q2\"," +
-                        "\"status\": \"OK\"," +
-                        "\"eier\": \"Dolly\"," +
-                        "\"servicebehov\": false," +
-                        "\"automatiskInnsendingAvMeldekort\": false," +
-                        "\"aap115\": false," +
-                        "\"aap\": false}]," +
-                        "\"antallSider\": 2" +
-                        "}"
-        )));
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                                "{" +
+                                        "\"arbeidsokerList\": [{" +
+                                        "\"personident\": \"10101010101\"," +
+                                        "\"miljoe\": \"q2\"," +
+                                        "\"status\": \"OK\"," +
+                                        "\"eier\": \"Dolly\"," +
+                                        "\"servicebehov\": false," +
+                                        "\"automatiskInnsendingAvMeldekort\": false," +
+                                        "\"aap115\": false," +
+                                        "\"aap\": false}]," +
+                                        "\"antallSider\": 2" +
+                                        "}"
+                        )));
     }
+
     private void stubArenaForvalterHentBrukereFilterPageTo() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?filter-miljoe=q2&filter-eier=Dolly&filter-personident=10101010101&page=1"))
-        .willReturn(ok()
-        .withHeader("Content-Type", "application/json")
-        .withBody(
-                "{"+
-                        "\"arbeidsokerList\": [{" +
-                        "\"personident\": \"10101010101\","+
-                        "\"miljoe\": \"q2\"," +
-                        "\"status\": \"ERROR\"," +
-                        "\"eier\": \"Dolly\"," +
-                        "\"servicebehov\": true," +
-                        "\"automatiskInnsendingAvMeldekort\": true," +
-                        "\"aap115\": true," +
-                        "\"aap\": true}]," +
-                        "\"antallSider\": 2" +
-                        "}"
-        )));
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                                "{" +
+                                        "\"arbeidsokerList\": [{" +
+                                        "\"personident\": \"10101010101\"," +
+                                        "\"miljoe\": \"q2\"," +
+                                        "\"status\": \"ERROR\"," +
+                                        "\"eier\": \"Dolly\"," +
+                                        "\"servicebehov\": true," +
+                                        "\"automatiskInnsendingAvMeldekort\": true," +
+                                        "\"aap115\": true," +
+                                        "\"aap\": true}]," +
+                                        "\"antallSider\": 2" +
+                                        "}"
+                        )));
     }
 
     private void stubArenaForvalterHentBrukereNoPage() {
@@ -355,93 +474,95 @@ public class ArenaForvalterConsumerTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(
                                 "{" +
-                                "  \"arbeidsokerList\": [" +
-                                "    {" +
-                                "      \"personident\": \"07098524627\"," +
-                                "      \"miljoe\": \"q2\"," +
-                                "      \"status\": \"OK\"," +
-                                "      \"eier\": \"Dolly\"," +
-                                "      \"servicebehov\": false," +
-                                "      \"automatiskInnsendingAvMeldekort\": false," +
-                                "      \"aap115\": false," +
-                                "      \"aap\": false" +
-                                "    }," +
-                                "    {" +
-                                "      \"personident\": \"13119316876\"," +
-                                "      \"miljoe\": \"t4\"," +
-                                "      \"status\": \"OK\"," +
-                                "      \"eier\": \"Dolly\"," +
-                                "      \"servicebehov\": true," +
-                                "      \"automatiskInnsendingAvMeldekort\": true," +
-                                "      \"aap115\": true," +
-                                "      \"aap\": false" +
-                                "    }" +
-                                "  ]," +
-                                "  \"antallSider\": 2" +
-                                "}"
+                                        "  \"arbeidsokerList\": [" +
+                                        "    {" +
+                                        "      \"personident\": \"07098524627\"," +
+                                        "      \"miljoe\": \"q2\"," +
+                                        "      \"status\": \"OK\"," +
+                                        "      \"eier\": \"Dolly\"," +
+                                        "      \"servicebehov\": false," +
+                                        "      \"automatiskInnsendingAvMeldekort\": false," +
+                                        "      \"aap115\": false," +
+                                        "      \"aap\": false" +
+                                        "    }," +
+                                        "    {" +
+                                        "      \"personident\": \"13119316876\"," +
+                                        "      \"miljoe\": \"t4\"," +
+                                        "      \"status\": \"OK\"," +
+                                        "      \"eier\": \"Dolly\"," +
+                                        "      \"servicebehov\": true," +
+                                        "      \"automatiskInnsendingAvMeldekort\": true," +
+                                        "      \"aap115\": true," +
+                                        "      \"aap\": false" +
+                                        "    }" +
+                                        "  ]," +
+                                        "  \"antallSider\": 2" +
+                                        "}"
                         )));
     }
+
     private void stubArenaForvalterHentBrukereFirstPage() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=0"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(
                                 "{" +
-                                "  \"arbeidsokerList\": [" +
-                                "    {" +
-                                "      \"personident\": \"07098524627\"," +
-                                "      \"miljoe\": \"q2\"," +
-                                "      \"status\": \"OK\"," +
-                                "      \"eier\": \"Dolly\"," +
-                                "      \"servicebehov\": false," +
-                                "      \"automatiskInnsendingAvMeldekort\": false," +
-                                "      \"aap115\": false," +
-                                "      \"aap\": false" +
-                                "    }," +
-                                "    {" +
-                                "      \"personident\": \"13119316876\"," +
-                                "      \"miljoe\": \"t4\"," +
-                                "      \"status\": \"OK\"," +
-                                "      \"eier\": \"Dolly\"," +
-                                "      \"servicebehov\": true," +
-                                "      \"automatiskInnsendingAvMeldekort\": true," +
-                                "      \"aap115\": false," +
-                                "      \"aap\": true" +
-                                "    }" +
-                                "  ]," +
-                                "  \"antallSider\": 2" +
-                                "}"
+                                        "  \"arbeidsokerList\": [" +
+                                        "    {" +
+                                        "      \"personident\": \"07098524627\"," +
+                                        "      \"miljoe\": \"q2\"," +
+                                        "      \"status\": \"OK\"," +
+                                        "      \"eier\": \"Dolly\"," +
+                                        "      \"servicebehov\": false," +
+                                        "      \"automatiskInnsendingAvMeldekort\": false," +
+                                        "      \"aap115\": false," +
+                                        "      \"aap\": false" +
+                                        "    }," +
+                                        "    {" +
+                                        "      \"personident\": \"13119316876\"," +
+                                        "      \"miljoe\": \"t4\"," +
+                                        "      \"status\": \"OK\"," +
+                                        "      \"eier\": \"Dolly\"," +
+                                        "      \"servicebehov\": true," +
+                                        "      \"automatiskInnsendingAvMeldekort\": true," +
+                                        "      \"aap115\": false," +
+                                        "      \"aap\": true" +
+                                        "    }" +
+                                        "  ]," +
+                                        "  \"antallSider\": 2" +
+                                        "}"
                         )));
     }
+
     private void stubArenaForvalterHentBrukereSecondPage() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=1"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(
                                 "{" +
-                                 "  \"arbeidsokerList\": [" +
-                                 "    {" +
-                                 "      \"personident\": \"09038817873\"," +
-                                 "      \"miljoe\": \"q1\"," +
-                                 "      \"status\": \"OK\"," +
-                                 "      \"eier\": \"Dolly\"," +
-                                 "      \"servicebehov\": true," +
-                                 "      \"automatiskInnsendingAvMeldekort\": true," +
-                                 "      \"aap115\": true," +
-                                 "      \"aap\": true" +
-                                 "    }" +
-                                 "  ]," +
-                                 "  \"antallSider\": 2" +
-                                 "}"
+                                        "  \"arbeidsokerList\": [" +
+                                        "    {" +
+                                        "      \"personident\": \"09038817873\"," +
+                                        "      \"miljoe\": \"q1\"," +
+                                        "      \"status\": \"OK\"," +
+                                        "      \"eier\": \"Dolly\"," +
+                                        "      \"servicebehov\": true," +
+                                        "      \"automatiskInnsendingAvMeldekort\": true," +
+                                        "      \"aap115\": true," +
+                                        "      \"aap\": true" +
+                                        "    }" +
+                                        "  ]," +
+                                        "  \"antallSider\": 2" +
+                                        "}"
                         )));
     }
+
     private void stubArenaForvalterHentBrukereNoBody() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=0"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("")));
     }
-
 
     private void stubArenaForvlaterEmptyHentBrukere() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?"))
@@ -456,7 +577,7 @@ public class ArenaForvalterConsumerTest {
                                 "    {" +
                                 "      \"personident\": \"10101010101\"," +
                                 "      \"miljoe\": \"q2\"," +
-                                "      \"kvalifiseringsgruppe\": \"IKVAL\"," +                              
+                                "      \"kvalifiseringsgruppe\": \"IKVAL\"," +
                                 "      \"utenServicebehov\": {" +
                                 "        \"stansDato\": \"2001-03-18\"" +
                                 "      }," +
@@ -500,29 +621,29 @@ public class ArenaForvalterConsumerTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(
                                 "{" +
-                                "  \"arbeidsokerList\": [" +
-                                "    {" +
-                                "      \"personident\": \"10101010101\"," +
-                                "      \"miljoe\": \"q2\"," +
-                                "      \"status\": \"ERROR\"," +
-                                "      \"eier\": \"Dolly\"," +
-                                "      \"servicebehov\": false," +
-                                "      \"automatiskInnsendingAvMeldekort\": false," +
-                                "      \"aap115\": false," +
-                                "      \"aap\": false" +
-                                "    }," +
-                                "    {" +
-                                "      \"personident\": \"20202020202\"," +
-                                "      \"miljoe\": \"q2\"," +
-                                "      \"status\": \"ERROR\"," +
-                                "      \"eier\": \"Dolly\"," +
-                                "      \"servicebehov\": false," +
-                                "      \"automatiskInnsendingAvMeldekort\": false," +
-                                "      \"aap115\": false," +
-                                "      \"aap\": false" +
-                                "    }" +
-                                "  ]" +
-                                "}"
+                                        "  \"arbeidsokerList\": [" +
+                                        "    {" +
+                                        "      \"personident\": \"10101010101\"," +
+                                        "      \"miljoe\": \"q2\"," +
+                                        "      \"status\": \"ERROR\"," +
+                                        "      \"eier\": \"Dolly\"," +
+                                        "      \"servicebehov\": false," +
+                                        "      \"automatiskInnsendingAvMeldekort\": false," +
+                                        "      \"aap115\": false," +
+                                        "      \"aap\": false" +
+                                        "    }," +
+                                        "    {" +
+                                        "      \"personident\": \"20202020202\"," +
+                                        "      \"miljoe\": \"q2\"," +
+                                        "      \"status\": \"ERROR\"," +
+                                        "      \"eier\": \"Dolly\"," +
+                                        "      \"servicebehov\": false," +
+                                        "      \"automatiskInnsendingAvMeldekort\": false," +
+                                        "      \"aap115\": false," +
+                                        "      \"aap\": false" +
+                                        "    }" +
+                                        "  ]" +
+                                        "}"
                         )));
     }
 

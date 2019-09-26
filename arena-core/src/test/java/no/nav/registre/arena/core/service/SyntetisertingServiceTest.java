@@ -23,6 +23,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetisertingServiceTest {
@@ -110,7 +111,7 @@ public class SyntetisertingServiceTest {
 
     private List<Arbeidsoeker> opprettIdenter(Integer antallNyeIdenter, String miljoe) {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
-        doReturn(toEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        //doReturn(toEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(enNyArbeisoker).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         return syntetiseringService.opprettArbeidsoekere(antallNyeIdenter, avspillergruppeId, miljoe);
@@ -126,7 +127,9 @@ public class SyntetisertingServiceTest {
     @Test
     public void fyllFraTomArenaForvalter() {
         doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
-        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        //doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(Collections.EMPTY_MAP).when(arenaForvalterConsumer).arbeidsoekerStatusAktiv(anyList(), anyString());
+        //when(arenaForvalterConsumer.arbeidsoekerStatusAktiv(anyList(), anyString())).thenReturn(Collections.EMPTY_MAP);
         doReturn(tyveNyeArbeidsokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         List<Arbeidsoeker> arbeidsokere =
@@ -156,7 +159,7 @@ public class SyntetisertingServiceTest {
     @Test
     public void fyllOppForvalterenTest() {
         doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
-        doReturn(femtenEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        //doReturn(femtenEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(opprettedeArbeidsokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         List<Arbeidsoeker> arbeidsokere =

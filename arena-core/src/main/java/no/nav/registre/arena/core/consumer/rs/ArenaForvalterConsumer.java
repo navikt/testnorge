@@ -2,11 +2,13 @@ package no.nav.registre.arena.core.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.arena.core.consumer.rs.responses.ArbeidsoekerStatus;
 import no.nav.registre.arena.domain.Arbeidsoeker;
 import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
 import no.nav.registre.arena.domain.NyBruker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -30,11 +33,15 @@ public class ArenaForvalterConsumer {
     private static final String NAV_CALL_ID = "ORKESTRATOREN";
     private static final String NAV_CONSUMER_ID = "ORKESTRATOREN";
 
+    private static final ParameterizedTypeReference<List<ArbeidsoekerStatus>> RESPONS_TYPE_ARBEIDSOEKER_STATUS = new ParameterizedTypeReference<List<ArbeidsoekerStatus>>() {
+    };
+
     @Autowired
     private RestTemplate restTemplate;
 
     private UriTemplate postBrukere;
     private UriTemplate hentBrukere;
+    private UriTemplate hentBrukerStatus;
     private UriTemplate slettBrukere;
 
 
@@ -42,6 +49,7 @@ public class ArenaForvalterConsumer {
         this.postBrukere = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker?eier=" + EIER);
         this.hentBrukere = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker");
         this.slettBrukere = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker?miljoe={miljoe}&personident={personident}");
+        this.hentBrukerStatus = new UriTemplate(arenaForvalterServerUrl + "/v1/brukerstatus/aktiv?miljoe={miljoe}&personidenter={personidenter}");
     }
 
 
@@ -87,6 +95,25 @@ public class ArenaForvalterConsumer {
         }
 
         return hentFiltrerteArbeidsoekere(baseUrl.toString());
+    }
+
+    public Map<String, Boolean> arbeidsoekerStatusAktiv(List<String> identer, String miljoe) {
+        String urlIdentList = String.join(",", identer);
+        RequestEntity getRequest = RequestEntity.get(hentBrukerStatus.expand(miljoe, urlIdentList))
+                .header("Nav-Call-Id", NAV_CALL_ID)
+                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                .build();
+
+        ResponseEntity<List<ArbeidsoekerStatus>> respons = restTemplate.exchange(getRequest, RESPONS_TYPE_ARBEIDSOEKER_STATUS);
+        if (invalidResponse(respons)) {
+            log.error("Kunne ikke hente status på arbeidsøkere i Arena Forvalteren");
+            return Collections.emptyMap();
+        }
+        Map<String, Boolean> statusListe = respons.getBody().stream()
+                .collect(Collectors.toMap(ArbeidsoekerStatus::getPersonident,
+                        x -> "AKTIV".equals(x.getStatus())));
+
+        return statusListe;
     }
 
     private List<Arbeidsoeker> hentFiltrerteArbeidsoekere(String refinedUrl) {
