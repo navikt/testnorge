@@ -190,4 +190,10 @@ public class HodejegerenControllerTest {
         hodejegerenController.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
         verify(eksisterendeIdenterService).hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
     }
+
+    @Test
+    public void shouldHenteIdenterSomKolliderer() {
+        hodejegerenController.hentIdenterSomKolliderer(avspillergruppeId);
+        verify(eksisterendeIdenterService).hentIdenterSomKolliderer(avspillergruppeId);
+    }
 }

@@ -48,7 +48,7 @@ public class TpsfConsumer {
         this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
         this.urlGetIdenter = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/identer/{avspillergruppeId}?aarsakskode={aarsakskode}&transaksjonstype={transaksjonstype}");
         this.urlServiceRoutine = new UriTemplate(serverUrl + "/v1/serviceroutine/{routineName}?aksjonsKode={aksjonskode}&environment={miljoe}&fnr={fnr}");
-        this.statusPaaIdenter = new UriTemplate(serverUrl + "/v1/serviceroutine/FS03-FDLISTER-DISKNAVN-M?aksjonsKode=A0&antallFnr={antallIdenter}&environment={miljoe}&nFnr={identer}");
+        this.statusPaaIdenter = new UriTemplate(serverUrl + "/v1/serviceroutine/FS03-FDLISTER-DISKNAVN-M?aksjonsKode={aksjonskode}&antallFnr={antallIdenter}&environment={miljoe}&nFnr={identer}");
         this.urlGetMeldingIder = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/meldinger/{avspillergruppeId}");
         this.urlSlettMeldinger = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deletemeldinger");
     }
@@ -67,9 +67,9 @@ public class TpsfConsumer {
     }
 
     @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
-    public JsonNode hentTpsStatusPaaIdenter(String miljoe, List<String> identer) throws IOException {
+    public JsonNode hentTpsStatusPaaIdenter(String aksjonskode, String miljoe, List<String> identer) throws IOException {
         String identerSomString = String.join(",", identer);
-        RequestEntity getRequest = RequestEntity.get(statusPaaIdenter.expand(identer.size(), miljoe, identerSomString)).build();
+        RequestEntity getRequest = RequestEntity.get(statusPaaIdenter.expand(aksjonskode, identer.size(), miljoe, identerSomString)).build();
         ResponseEntity<String> response = restTemplate.exchange(getRequest, String.class);
         return new ObjectMapper().readTree(response.getBody()).findValue("response");
     }

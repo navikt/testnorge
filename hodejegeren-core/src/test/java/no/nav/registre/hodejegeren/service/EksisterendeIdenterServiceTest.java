@@ -385,11 +385,29 @@ public class EksisterendeIdenterServiceTest {
         JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("tpsStatus/tps_status.json"));
 
         when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(eq(avspillergruppeId), anyList(), anyString())).thenReturn(new HashSet<>(identer));
-        when(tpsfConsumer.hentTpsStatusPaaIdenter(eq(miljoe), anyList())).thenReturn(jsonNode);
+        when(tpsfConsumer.hentTpsStatusPaaIdenter(eq("A0"), eq(miljoe), anyList())).thenReturn(jsonNode);
 
         List<String> identerIkkeITps = eksisterendeIdenterService.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
 
         assertThat(identerIkkeITps, contains(fnr2));
         assertThat(identerIkkeITps, not(contains(fnr1)));
+    }
+
+    @Test
+    public void shouldHenteIdenterSomKolliderer() throws IOException {
+        Long avspillergruppeId = 123L;
+        String fnr1 = "20092943861";
+        String fnr2 = "12345678910";
+        List<String> identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+
+        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("tpsStatus/tps_kollisjon.json"));
+
+        when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(eq(avspillergruppeId), anyList(), anyString())).thenReturn(new HashSet<>(identer));
+        when(tpsfConsumer.hentTpsStatusPaaIdenter(eq("A2"), eq("q2"), anyList())).thenReturn(jsonNode);
+
+        List<String> identerSomKolliderer = eksisterendeIdenterService.hentIdenterSomKolliderer(avspillergruppeId);
+
+        assertThat(identerSomKolliderer, contains(fnr1));
+        assertThat(identerSomKolliderer, not(contains(fnr2)));
     }
 }

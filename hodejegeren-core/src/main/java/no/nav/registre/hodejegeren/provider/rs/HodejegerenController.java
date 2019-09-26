@@ -185,4 +185,11 @@ public class HodejegerenController {
     public List<String> hentIdenterSomIkkeErITps(@PathVariable Long avspillergruppeId, @RequestParam String miljoe) {
         return eksisterendeIdenterService.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
     }
+
+    @LogExceptions
+    @ApiOperation(value = "Her kan man hente identer som er i avspillergruppe, og som kolliderer med miljø p i TPS.")
+    @GetMapping("api/v1/identer-som-kolliderer/{avspillergruppeId}")
+    public List<String> hentIdenterSomKolliderer(@PathVariable Long avspillergruppeId) {
+        return eksisterendeIdenterService.hentIdenterSomKolliderer(avspillergruppeId);
+    }
 }

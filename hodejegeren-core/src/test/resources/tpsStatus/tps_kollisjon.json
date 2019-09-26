@@ -1,0 +1,38 @@
+{
+  "response": {
+    "data1": {
+      "antallFM201": 2,
+      "AFnr": {
+        "EFnr": [
+          {
+            "mn": "",
+            "kn": "",
+            "fn": "",
+            "en": "",
+            "fnr": 20092943861,
+            "sp": ""
+          },
+          {
+            "mn": "",
+            "svarStatus": {
+              "returMelding": "S201005F",
+              "returStatus": "08",
+              "utfyllendeMelding": ""
+            },
+            "kn": "",
+            "fn": "",
+            "en": "",
+            "fnr": 12345678910,
+            "sp": ""
+          }
+        ]
+      }
+    },
+    "status": {
+      "kode": "08",
+      "melding": "S201005F",
+      "utfyllendeMelding": "Person ikke funnet"
+    },
+    "antallTotalt": 1
+  }
+}

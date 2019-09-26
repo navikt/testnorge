@@ -48,6 +48,8 @@ public class EksisterendeIdenterService {
     private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
     private static final String ROUTINE_KERNINFO = "FS03-FDNUMMER-KERNINFO-O";
     private static final String ROUTINE_PERSRELA = "FS03-FDNUMMER-PERSRELA-O";
+    private static final String AKSJONSKODE_A0 = "A0";
+    private static final String AKSJONSKODE_A2 = "A2";
     public static final String TRANSAKSJONSTYPE = "1";
 
     @Autowired
@@ -316,7 +318,7 @@ public class EksisterendeIdenterService {
         ObjectMapper objectMapper = new ObjectMapper();
         for (List<String> identer : Lists.partition(alleIdenter, 80)) {
             try {
-                JsonNode jsonNode = tpsfConsumer.hentTpsStatusPaaIdenter(miljoe, identer);
+                JsonNode jsonNode = tpsfConsumer.hentTpsStatusPaaIdenter(AKSJONSKODE_A0, miljoe, identer);
                 JsonNode status = jsonNode.findValue("status");
                 if (status != null) {
                     JsonNode kode = status.findValue("kode");
@@ -342,6 +344,29 @@ public class EksisterendeIdenterService {
             }
         }
         return identerIkkeITps;
+    }
+
+    public List<String> hentIdenterSomKolliderer(Long avspillergruppeId) {
+        List<String> alleIdenter = finnAlleIdenter(avspillergruppeId);
+        List<String> identerITps = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        for (List<String> identer : Lists.partition(alleIdenter, 80)) {
+            try {
+                JsonNode jsonNode = tpsfConsumer.hentTpsStatusPaaIdenter(AKSJONSKODE_A2, "q2", identer);
+                JsonNode statusFromTps = jsonNode.findValue("EFnr");
+                List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
+                });
+                for (Map<String, Object> map : identStatus) {
+                    if (!map.containsKey("svarStatus")) {
+                        identerITps.add(String.valueOf(map.get("fnr")));
+                    }
+                }
+            } catch (IOException e) {
+                log.error("Kunne ikke hente status fra TPS", e);
+            }
+        }
+        return identerITps;
     }
 
     private Relasjon parseRelasjonNode(JsonNode relasjonNode) {
