@@ -25,6 +25,7 @@ public class HodejegerenConsumer {
     private UriTemplate hentAlleIdenterUrl;
     private UriTemplate sendTilHodejegerenUrl;
     private UriTemplate hentIdenterSomIkkeErITpsUrl;
+    private UriTemplate hentIdenterSomKollidererITps;
 
     public HodejegerenConsumer(
             RestTemplateBuilder restTemplateBuilder,
@@ -33,10 +34,11 @@ public class HodejegerenConsumer {
         this.hentAlleIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/alle-identer/{avspillergruppeId}");
         this.sendTilHodejegerenUrl = new UriTemplate(hodejegerenServerUrl + "/v1/historikk/skd/oppdaterDokument/{ident}");
         this.hentIdenterSomIkkeErITpsUrl = new UriTemplate(hodejegerenServerUrl + "/v1/identer-ikke-i-tps/{avspillergruppeId}?miljoe={miljoe}");
+        this.hentIdenterSomKollidererITps = new UriTemplate(hodejegerenServerUrl + "/v1/identer-som-kolliderer/{avspillergruppeId}");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })
-    public List<String> finnAlleIdenter(Long avspillergruppeId) {
+    public List<String> hentAlleIdenter(Long avspillergruppeId) {
         RequestEntity getRequest = RequestEntity.get(hentAlleIdenterUrl.expand(avspillergruppeId.toString())).build();
         return restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
     }
@@ -50,6 +52,12 @@ public class HodejegerenConsumer {
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> hentIdenterSomIkkeErITps(Long avspillergruppeId, String miljoe) {
         RequestEntity requestEntity = RequestEntity.get(hentIdenterSomIkkeErITpsUrl.expand(avspillergruppeId, miljoe)).build();
+        return restTemplate.exchange(requestEntity, RESPONSE_TYPE).getBody();
+    }
+
+    @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })
+    public List<String> hentIdenterSomKollidererITps(Long avspillergruppeId) {
+        RequestEntity requestEntity = RequestEntity.get(hentIdenterSomKollidererITps.expand(avspillergruppeId)).build();
         return restTemplate.exchange(requestEntity, RESPONSE_TYPE).getBody();
     }
 }

@@ -49,4 +49,16 @@ public class IdentController {
         }
         return avspillergruppeMedFjernedeIdenter;
     }
+
+    @LogExceptions
+    @PostMapping("/rensAvspillergruppe")
+    @Scheduled(cron = "0 0 2 * * *")
+    public Map<Long, SlettedeIdenterResponse> rensAvspillergruppe() {
+        Map<Long, SlettedeIdenterResponse> avspillergruppeMedFjernedeIdenter = new HashMap<>(avspillergruppeIdMedMiljoe.size());
+        for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            avspillergruppeMedFjernedeIdenter.put(entry.getKey(), identService.fjernKolliderendeIdenter(entry.getKey(), entry.getValue()));
+
+        }
+        return avspillergruppeMedFjernedeIdenter;
+    }
 }

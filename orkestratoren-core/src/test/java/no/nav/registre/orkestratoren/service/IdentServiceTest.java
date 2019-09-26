@@ -157,4 +157,27 @@ public class IdentServiceTest {
         // TODO: Fiks arena og legg inn denne igjen
         // verify(arenaConsumer).slettIdenter(miljoe, identer);
     }
+
+    @Test
+    public void shouldFjerneIdenterSomKollidererITps() {
+        when(hodejegerenConsumer.hentIdenterSomKollidererITps(avspillergruppeId)).thenReturn(identer);
+        when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, identer)).thenReturn(expectedMeldingIder);
+        when(instSyntConsumer.slettIdenterFraInst(identer)).thenReturn(SletteInstitusjonsoppholdResponse.builder().build());
+        when(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(SletteSkattegrunnlagResponse.builder().build());
+        when(aaregSyntConsumer.slettIdenterFraAaregstub(identer)).thenReturn(SletteArbeidsforholdResponse.builder().build());
+        // TODO: Fiks arena og legg inn denne igjen
+        // when(arenaConsumer.slettIdenter(miljoe, identer)).thenReturn(SletteArenaResponse.builder().build());
+
+        SlettedeIdenterResponse response = identService.fjernKolliderendeIdenter(avspillergruppeId, miljoe);
+
+        assertThat(response.getTpsfStatus().getSlettedeMeldingIderFraTpsf(), IsIterableContainingInOrder.contains(expectedMeldingIder.get(0), expectedMeldingIder.get(1)));
+
+        verify(hodejegerenConsumer).hentIdenterSomKollidererITps(avspillergruppeId);
+        verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(avspillergruppeId, identer);
+        verify(instSyntConsumer).slettIdenterFraInst(identer);
+        verify(poppSyntConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
+        verify(aaregSyntConsumer).slettIdenterFraAaregstub(identer);
+        // TODO: Fiks arena og legg inn denne igjen
+        // verify(arenaConsumer).slettIdenter(miljoe, identer);
+    }
 }

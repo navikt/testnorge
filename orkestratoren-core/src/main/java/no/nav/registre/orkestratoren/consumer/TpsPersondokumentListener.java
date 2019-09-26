@@ -66,7 +66,7 @@ public class TpsPersondokumentListener {
     private void sjekkOmIdentLiggerICacheOgOppdater(String personIdent) {
         if (!alleOrkestrerteIdenter.contains(personIdent)) {
             for (Long avspillergruppeId : avspillergruppeIdMedMiljoe.keySet()) {
-                List<String> orkestrerteIdenter = hodejegerenConsumer.finnAlleIdenter(avspillergruppeId);
+                List<String> orkestrerteIdenter = hodejegerenConsumer.hentAlleIdenter(avspillergruppeId);
                 alleOrkestrerteIdenter.addAll(orkestrerteIdenter);
             }
         }

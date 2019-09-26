@@ -55,7 +55,7 @@ public class IdentService {
 
     public SlettedeIdenterResponse synkroniserMedTps(Long avspillergruppeId, String miljoe) {
         SlettedeIdenterResponse slettedeIdenterResponse = SlettedeIdenterResponse.builder().build();
-        List<String> identerSomIkkeErITps = hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
+        List<String> identerSomIkkeErITps = hodejegerenConsumer.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
         if (!identerSomIkkeErITps.isEmpty()) {
             slettedeIdenterResponse = slettIdenterFraAdaptere(
                     avspillergruppeId,
@@ -67,7 +67,17 @@ public class IdentService {
         return slettedeIdenterResponse;
     }
 
-    public List<String> hentIdenterSomIkkeErITps(Long avspillergruppeId, String miljoe) {
-        return hodejegerenConsumer.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
+    public SlettedeIdenterResponse fjernKolliderendeIdenter(Long avspillergruppeId, String miljoe) {
+        SlettedeIdenterResponse slettedeIdenterResponse = SlettedeIdenterResponse.builder().build();
+        List<String> identerSomKolliderer = hodejegerenConsumer.hentIdenterSomKollidererITps(avspillergruppeId);
+        if (!identerSomKolliderer.isEmpty()) {
+            slettedeIdenterResponse = slettIdenterFraAdaptere(
+                    avspillergruppeId,
+                    miljoe,
+                    TESTDATAEIER,
+                    identerSomKolliderer
+            );
+        }
+        return slettedeIdenterResponse;
     }
 }

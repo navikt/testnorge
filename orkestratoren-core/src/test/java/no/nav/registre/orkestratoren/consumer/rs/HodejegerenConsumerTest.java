@@ -40,6 +40,8 @@ public class HodejegerenConsumerTest {
 
     private TpsPersonDokumentType tpsPersonDokument;
     private String fnr = "01010101010";
+    private Long avspillergruppeId = 123L;
+    private String miljoe = "q2";
 
     @Before
     public void setUp() {
@@ -49,17 +51,65 @@ public class HodejegerenConsumerTest {
     @Test
     public void shouldSendPersondokumentTilHodejegeren() throws JsonProcessingException {
         String expectedUri = serverUrl + "/v1/historikk/skd/oppdaterDokument/{ident}";
-        stubHodejegerenConsumer(expectedUri);
+        stubSendPersondokument(expectedUri);
 
         List<String> identer = hodejegerenConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersonDokument, fnr);
 
         assertThat(identer, contains(fnr));
     }
 
-    private void stubHodejegerenConsumer(String expectedUri) throws JsonProcessingException {
+    @Test
+    public void shouldHenteAlleIdenter() {
+        String expectedUri = serverUrl + "/v1/alle-identer/{avspillergruppeId}";
+        stubHentAlleIdenter(expectedUri);
+
+        List<String> identer = hodejegerenConsumer.hentAlleIdenter(avspillergruppeId);
+
+        assertThat(identer, contains(fnr));
+    }
+
+    @Test
+    public void shouldFinneIdenterSomIkkeErITps() {
+        String expectedUri = serverUrl + "/v1/identer-ikke-i-tps/{avspillergruppeId}?miljoe={miljoe}";
+        stubHentIdenterIkkeITps(expectedUri);
+
+        List<String> identer = hodejegerenConsumer.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
+
+        assertThat(identer, contains(fnr));
+    }
+
+    @Test
+    public void shouldFinneIdenterSomKollidererITps() {
+        String expectedUri = serverUrl + "/v1/identer-som-kolliderer/{avspillergruppeId}";
+        stubHentIdenterSomKolliderer(expectedUri);
+
+        List<String> identer = hodejegerenConsumer.hentIdenterSomKollidererITps(avspillergruppeId);
+
+        assertThat(identer, contains(fnr));
+    }
+
+    private void stubSendPersondokument(String expectedUri) throws JsonProcessingException {
         server.expect(requestToUriTemplate(expectedUri, fnr))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(content().json(asJsonString(tpsPersonDokument)))
+                .andRespond(withSuccess("[\"" + fnr + "\"]", MediaType.APPLICATION_JSON));
+    }
+
+    private void stubHentAlleIdenter(String expectedUri) {
+        server.expect(requestToUriTemplate(expectedUri, avspillergruppeId))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess("[\"" + fnr + "\"]", MediaType.APPLICATION_JSON));
+    }
+
+    private void stubHentIdenterIkkeITps(String expectedUri) {
+        server.expect(requestToUriTemplate(expectedUri, avspillergruppeId, miljoe))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess("[\"" + fnr + "\"]", MediaType.APPLICATION_JSON));
+    }
+
+    private void stubHentIdenterSomKolliderer(String expectedUri) {
+        server.expect(requestToUriTemplate(expectedUri, avspillergruppeId))
+                .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess("[\"" + fnr + "\"]", MediaType.APPLICATION_JSON));
     }
 

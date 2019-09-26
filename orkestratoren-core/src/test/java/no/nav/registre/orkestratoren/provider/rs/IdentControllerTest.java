@@ -55,4 +55,11 @@ public class IdentControllerTest {
 
         verify(identService).synkroniserMedTps(avspillergruppeId, miljoe);
     }
+
+    @Test
+    public void shouldRenseAvspillergruppe() {
+        identController.rensAvspillergruppe();
+
+        verify(identService).fjernKolliderendeIdenter(avspillergruppeId, miljoe);
+    }
 }
