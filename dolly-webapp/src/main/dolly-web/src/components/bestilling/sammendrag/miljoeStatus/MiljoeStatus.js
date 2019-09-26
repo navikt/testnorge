@@ -2,10 +2,10 @@ import React from 'react'
 import Header from '~/components/bestilling/sammendrag/header/Header'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import Formatters from '~/utils/DataFormatter'
-import miljoeStatusSelector from '~/utils/MiljoeStatusSelector'
+import groupMiljoeByStatus from '~/components/bestilling/utils/groupMiljoeByStatus'
 
 export default function MiljoeStatus({ bestilling }) {
-	const { successEnvs, failedEnvs, avvikEnvs } = miljoeStatusSelector(bestilling)
+	const { successEnvs, failedEnvs, avvikEnvs } = groupMiljoeByStatus(bestilling)
 
 	const successEnvsStr = Formatters.arrayToString(successEnvs)
 	const failedEnvsStr = Formatters.arrayToString(failedEnvs)

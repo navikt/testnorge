@@ -1,7 +1,9 @@
 import _get from 'lodash/get'
 import _intersection from 'lodash/intersection'
 
-const succcesFailedAvvik = bestilling => {
+export default function groupMiljoByStatus(bestilling) {
+	if (!bestilling) return null
+
 	const miljoListe = arr => arr.map(a => a.miljo)
 
 	// For hvert fagsystem (id / navn)
@@ -30,26 +32,8 @@ const succcesFailedAvvik = bestilling => {
 	const avvik = _intersection(grouped.success, grouped.failed)
 
 	return {
-		avvik,
-		success: grouped.success.filter(o => !avvik.includes(o)),
-		failed: grouped.failed.filter(o => !avvik.includes(o))
+		successEnvs: grouped.success.filter(o => !avvik.includes(o)),
+		failedEnvs: grouped.failed.filter(o => !avvik.includes(o)),
+		avvikEnvs: avvik
 	}
 }
-
-const miljoeStatusSelector = bestilling => {
-	if (!bestilling) return null
-
-	const temp = succcesFailedAvvik(bestilling)
-
-	const obj = {
-		successEnvs: temp.success,
-		failedEnvs: temp.failed,
-		avvikEnvs: temp.avvik
-	}
-
-	console.log(obj)
-
-	return obj
-}
-
-export default miljoeStatusSelector
