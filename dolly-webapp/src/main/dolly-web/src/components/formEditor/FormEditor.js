@@ -207,11 +207,9 @@ export default class FormEditor extends Component {
 		const valgteVerdier = formikProps.values
 		const errors = formikProps.errors
 		let shouldRender = true
-
 		if (item.onlyShowAfterSelectedValue) {
 			const { parentId, idx } = parentObject
 			const attributtId = item.onlyShowAfterSelectedValue.attributtId
-
 			let dependantAttributt = items.find(attributt => attributt.id === attributtId)
 			// Spesialtilfelle fordi dependant attributt ligger i en annen subkategori
 			if (item.hovedKategori.id === 'arena' && attributtId) {

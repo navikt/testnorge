@@ -74,7 +74,6 @@ public class BestillingController {
         return mapperFacade.map(bestilling, RsBestilling.class);
     }
 
- //   @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @GetMapping("/malbestilling")
     public List<RsBestilling> getMalBestillinger() {
         return mapperFacade.mapAsList(bestillingService.fetchMalBestillinger(), RsBestilling.class);

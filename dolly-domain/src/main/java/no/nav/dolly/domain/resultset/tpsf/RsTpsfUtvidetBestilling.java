@@ -20,7 +20,7 @@ public class RsTpsfUtvidetBestilling extends RsTpsfBasisBestilling {
 
     private RsSimpleRelasjoner relasjoner;
 
-    private List<RsIdenthistorikk> identhistorikk;
+    private List<RsIdenthistorikk> identHistorikk;
 
     private List<RsRelasjon> barn;
 

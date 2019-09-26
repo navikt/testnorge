@@ -1,5 +1,6 @@
 import _groupBy from 'lodash/groupBy'
 import _set from 'lodash/set'
+import _get from 'lodash/get'
 import _isEmpty from 'lodash/isEmpty'
 import DataFormatter from '~/utils/DataFormatter'
 import DataSourceMapper from '~/utils/DataSourceMapper'
@@ -228,6 +229,108 @@ export const getValues = (attributeList, values) => {
 				)
 			})
 			return accumulator
+		}
+
+		if (pathPrefix === DataSourceMapper('UDI')) {
+			const udiData = value[0]
+			let udiObj = {}
+
+			if (attribute.id === 'arbeidsadgang') {
+				Object.keys(udiData).map(attr => {
+					if (udiData[attr]) {
+						if (attr === 'arbeidsadgangFraDato') {
+							Object.assign(udiObj, { periode: { fra: udiData[attr] } })
+						} else if (attr === 'arbeidsadgangTilDato') {
+							if (udiObj.periode) {
+								Object.assign(udiObj.periode, { til: udiData[attr] })
+							} else {
+								Object.assign(udiObj, { periode: { til: udiData[attr] } })
+							}
+						} else {
+							Object.assign(udiObj, { [attr]: udiData[attr] })
+						}
+					}
+				})
+			}
+
+			if (attribute.id === 'oppholdStatus') {
+				const oppholdsstatus = udiData.oppholdsstatus
+				if (oppholdsstatus === 'eosEllerEFTAOpphold') {
+					const typeOpphold = udiData.eosEllerEFTAtypeOpphold
+					const periode = `${typeOpphold}Periode`
+					const effektuering = `${typeOpphold}Effektuering`
+					Object.assign(udiObj, {
+						[typeOpphold]: udiData[typeOpphold]
+					})
+					if (udiData.oppholdFraDato) {
+						Object.assign(udiObj, { [periode]: { fra: udiData.oppholdFraDato } })
+					}
+					if (udiData.oppholdTilDato) {
+						if (periode in udiObj) {
+							Object.assign(udiObj[periode], { til: udiData.oppholdTilDato })
+						} else {
+							Object.assign(udiObj, { [periode]: { til: udiData.oppholdTilDato } })
+						}
+					}
+					if (udiData.effektueringsDato) {
+						Object.assign(udiObj, { [effektuering]: udiData.effektueringsDato })
+					}
+				} else if (udiData.oppholdsstatus === 'oppholdSammeVilkaar') {
+					if (udiData.tredjelandsBorgereValg === 'oppholdSammeVilkaar') {
+						Object.assign(udiObj, { [udiData.oppholdsstatus]: {} })
+						if (udiData.oppholdSammeVilkaarFraDato) {
+							Object.assign(udiObj[udiData.oppholdsstatus], {
+								oppholdSammeVilkaarPeriode: { fra: udiData.oppholdSammeVilkaarFraDato }
+							})
+						}
+						if (udiData.oppholdSammeVilkaarTilDato) {
+							if ('oppholdSammeVilkaarPeriode' in udiObj[udiData.oppholdsstatus]) {
+								Object.assign(udiObj[udiData.oppholdsstatus].oppholdSammeVilkaarPeriode, {
+									til: udiData.oppholdSammeVilkaarTilDato
+								})
+							} else {
+								Object.assign(udiObj[udiData.oppholdsstatus], {
+									oppholdSammeVilkaarPeriode: { til: udiData.oppholdSammeVilkaarTilDato }
+								})
+							}
+						}
+						if (udiData.oppholdSammeVilkaarEffektuering) {
+							Object.assign(udiObj[udiData.oppholdsstatus], {
+								oppholdSammeVilkaarEffektuering: udiData.oppholdSammeVilkaarEffektuering
+							})
+						}
+						if (udiData.oppholdstillatelseType) {
+							Object.assign(udiObj[udiData.oppholdsstatus], {
+								oppholdstillatelseType: udiData.oppholdstillatelseType
+							})
+						}
+						if (udiData.oppholdstillatelseVedtaksDato) {
+							Object.assign(udiObj[udiData.oppholdsstatus], {
+								oppholdstillatelseVedtaksDato: udiData.oppholdstillatelseVedtaksDato
+							})
+						}
+					} else if (udiData.tredjelandsBorgereValg === 'UAVKLART') {
+						Object.assign(udiObj, { uavklart: true })
+					} else if (udiData.tredjelandsBorgereValg === 'ikkeOppholdSammeVilkaar') {
+						udiObj = false
+						attribute.path = 'harOppholdsTillatelse'
+					}
+				}
+			}
+
+			if (attribute.id === 'aliaser') {
+				udiObj = []
+				value.forEach((alias, idx) => {
+					alias.nyIdent === 'navn'
+						? (udiObj[idx] = { nyIdent: false })
+						: (udiObj[idx] = { identtype: alias.identtype, nyIdent: true })
+				})
+			}
+
+			if (attribute.id === 'flyktning' || attribute.id === 'soeknadOmBeskyttelseUnderBehandling') {
+				udiObj = value
+			}
+			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, udiObj)
 		}
 
 		return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
