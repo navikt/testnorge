@@ -6,6 +6,7 @@ import Button from '~/components/button/Button'
 import { FormikDollySelect } from '../fields/Select/Select'
 import './UtenFastBopel.less'
 
+
 export default class UtenFastBopel extends Component {
 	state = {
 		harEkstraDiskresjonskode: false
@@ -35,6 +36,7 @@ export default class UtenFastBopel extends Component {
 
 	render() {
 		const { values } = this.props
+		console.log('this.props------- :', this.props);
 		const item = this.props.item
 		const valgteVerdier = this.props.valgteVerdier
 		const InputComponent = InputSelector(item.inputType)
@@ -55,6 +57,7 @@ export default class UtenFastBopel extends Component {
 						label={'Diskresjonskoder'}
 						component={InputComponent}
 						size={item.size}
+						hoydeOptions={'large'}
 						{...componentProps}
 						{...item.inputTypeAttributes}
 					/>
@@ -114,6 +117,8 @@ export default class UtenFastBopel extends Component {
 	}
 
 	_extraComponentProps = (item, type) => {
+	console.log('this.props xxxxxxxx:', this.props);
+		console.log('item xxxxxxx:', item);
 		if (item.inputType === 'select') {
 			const placeholder = !item.validation ? 'Ikke spesifisert' : 'Velg...'
 
