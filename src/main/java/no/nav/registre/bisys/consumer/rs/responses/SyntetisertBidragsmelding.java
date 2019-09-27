@@ -1,8 +1,5 @@
 package no.nav.registre.bisys.consumer.rs.responses;
 
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AccessLevel;
@@ -11,7 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.bidrag.ui.bisys.soknad.Soknad;
 
 @Getter
 @Setter
@@ -62,8 +58,18 @@ public class SyntetisertBidragsmelding {
     @JsonProperty("SOKNAD_FRA")
     private String soknadFra;
 
+    /**
+     * @deprecated
+     * 
+     *             Not required once new dataset is ready (started processing 30.09.2019).
+     */
+    @Deprecated
     @JsonProperty("SOKT_FRA")
-    private int soktFraIMndEtterMottattDato;
+    @Getter(AccessLevel.NONE)
+    private String soktFra;
+
+    @JsonProperty("SOKT_FRA_I_MND_FOER_MOTTATT")
+    private int soktFraIMndFoerMottattDato;
 
     @JsonProperty("SOKT_OM")
     private String soktOm;
@@ -78,9 +84,4 @@ public class SyntetisertBidragsmelding {
         this.barnAlderIMnd = barnAlderIMnd == null ? DEFAULT_BA_ALDER : barnAlderIMnd;
     }
 
-    public LocalDate getSoktFra() {
-        return LocalDate.parse(mottattDato, DateTimeFormat
-                .forPattern(Soknad.STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST))
-                .minusMonths(soktFraIMndEtterMottattDato).dayOfMonth().withMinimumValue();
-    }
 }
