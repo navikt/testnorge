@@ -263,6 +263,7 @@ export default class FormEditor extends Component {
 				valgteVerdier[parentId][idx][item.id] = ''
 			}
 		}
+		console.log('valgteVerdier :', valgteVerdier);
 		return shouldRender
 	}
 

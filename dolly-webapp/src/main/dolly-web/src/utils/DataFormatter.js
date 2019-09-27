@@ -86,15 +86,8 @@ Formatters.uppercaseAndUnderscoreToCapitalized = value => {
 	return _capitalize(clean)
 }
 
-<<<<<<< HEAD
-Formatters.uppercaseAndUnderscoreToLowerCase = value => {
-	if (!value) return null
-	const clean = _startCase(value)
-	return clean.toLowerCase()
-=======
 Formatters.allCapsToCapitalized = value => {
 	return _capitalize(value)
->>>>>>> d79b81fb823728b434314214a65cce54a694da08
 }
 
 Formatters.kodeverkLabel = kodeverk => {
