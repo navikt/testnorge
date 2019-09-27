@@ -3,8 +3,6 @@ package no.nav.registre.hodejegeren.provider.rs;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,17 +10,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
-import no.nav.registre.hodejegeren.provider.rs.requests.SlettIdenterRequest;
 import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
-import no.nav.registre.hodejegeren.provider.rs.responses.SlettIdenterResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
 import no.nav.registre.hodejegeren.service.EksisterendeIdenterService;
@@ -83,10 +77,9 @@ public class HodejegerenController {
     @LogExceptions
     @ApiOperation(value = "Her kan man hente ut alle levende identer over en viss alder.")
     @GetMapping("api/v1/levende-identer-over-alder/{avspillergruppeId}")
-    public List<String> hentAlleLevendeIdenterOverAlder(@PathVariable Long avspillergruppeId, @RequestParam int minimumAlder, HttpServletResponse response) {
+    public List<String> hentAlleLevendeIdenterOverAlder(@PathVariable Long avspillergruppeId, @RequestParam int minimumAlder) {
         if (minimumAlder < MIN_ALDER) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return new ArrayList<>();
+            throw new IllegalArgumentException("Minimum alder kan ikke være lavere enn " + MIN_ALDER);
         }
         return eksisterendeIdenterService.finnAlleIdenterOverAlder(avspillergruppeId, minimumAlder);
     }
@@ -94,10 +87,9 @@ public class HodejegerenController {
     @LogExceptions
     @ApiOperation(value = "Her kan man hente ut alle levende identer i en viss aldersgruppe.")
     @GetMapping("api/v1/levende-identer-i-aldersgruppe/{avspillergruppeId}")
-    public List<String> hentAlleIdenterIAldersgruppe(@PathVariable Long avspillergruppeId, @RequestParam int minimumAlder, @RequestParam int maksimumAlder, HttpServletResponse response) {
+    public List<String> hentAlleIdenterIAldersgruppe(@PathVariable Long avspillergruppeId, @RequestParam int minimumAlder, @RequestParam int maksimumAlder) {
         if (minimumAlder < MIN_ALDER || maksimumAlder < minimumAlder) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return new ArrayList<>();
+            throw new IllegalArgumentException("Minimum alder kan ikke være høyere enn maksimum alder");
         }
         return eksisterendeIdenterService.finnLevendeIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder);
     }
@@ -121,14 +113,6 @@ public class HodejegerenController {
     }
 
     @LogExceptions
-    @ApiOperation(value = "Her kan man sende inn en liste med identer og hodejegeren vil slette alle som ikke ligger i TPS (de som mangler status-quo-informasjon).")
-    @DeleteMapping("api/v1/status-quo-slett")
-    public SlettIdenterResponse slettIdenterUtenStatusQuo(@RequestParam("avspillergruppeId") Long avspillergruppeId, @RequestParam("miljoe") String miljoe, @RequestBody SlettIdenterRequest slettIdenterRequest)
-            throws IOException {
-        return eksisterendeIdenterService.slettIdenterUtenStatusQuo(avspillergruppeId, miljoe, slettIdenterRequest.getIdenterSomSkalSlettes());
-    }
-
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente en liste over identer i en gitt avspillergruppe med tilhørende status-quo "
             + "i et gitt miljø.")
     @GetMapping("api/v1/status-quo-identer/{avspillergruppeId}")
@@ -136,8 +120,7 @@ public class HodejegerenController {
             @RequestParam("miljoe") String miljoe,
             @RequestParam("antallIdenter") int antallIdenter,
             @RequestParam(value = "minimumAlder", required = false) Integer minimumAlder,
-            @RequestParam(value = "maksimumAlder", required = false) Integer maksimumAlder,
-            HttpServletResponse response) {
+            @RequestParam(value = "maksimumAlder", required = false) Integer maksimumAlder) {
         if (minimumAlder == null) {
             minimumAlder = MIN_ALDER;
         }
@@ -145,8 +128,7 @@ public class HodejegerenController {
             maksimumAlder = MAX_ALDER;
         }
         if (minimumAlder < MIN_ALDER || maksimumAlder < minimumAlder) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return new HashMap<>();
+            throw new IllegalArgumentException("Minimum alder kan ikke være høyere enn maksimum alder");
         }
         return eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, antallIdenter, minimumAlder, maksimumAlder);
     }

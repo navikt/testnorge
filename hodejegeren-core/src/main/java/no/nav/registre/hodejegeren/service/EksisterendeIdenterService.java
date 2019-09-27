@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -36,7 +35,6 @@ import java.util.stream.Collectors;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
-import no.nav.registre.hodejegeren.provider.rs.responses.SlettIdenterResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.Relasjon;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
@@ -279,37 +277,6 @@ public class EksisterendeIdenterService {
             log.error("Kunne ikke hente status quo på ident {} - ", ident, e);
         }
         return relasjonsResponse;
-    }
-
-    public SlettIdenterResponse slettIdenterUtenStatusQuo(Long avspillergruppeId, String miljoe, List<String> identer) throws IOException {
-        SlettIdenterResponse slettIdenterResponse = SlettIdenterResponse.builder()
-                .identerSomIkkeKunneBliSlettet(new ArrayList<>())
-                .identerMedGyldigStatusQuo(new ArrayList<>())
-                .build();
-
-        List<String> identerSomSkalSlettes = new ArrayList<>();
-
-        for (String ident : identer) {
-            try {
-                tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, Arrays.asList(DATO_DO, STATSBORGER), miljoe, ident);
-                slettIdenterResponse.getIdenterMedGyldigStatusQuo().add(ident);
-            } catch (ManglendeInfoITpsException e) {
-                if (e.getMessage().contains("Utfyllende melding fra TPS: PERSON IKKE FUNNET")) {
-                    identerSomSkalSlettes.add(ident);
-                } else {
-                    slettIdenterResponse.getIdenterSomIkkeKunneBliSlettet().add(ident);
-                }
-            }
-        }
-
-        List<Long> meldingIderTilhoerendeIdent = tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, identerSomSkalSlettes);
-        ResponseEntity response = tpsfConsumer.slettMeldingerFraTpsf(meldingIderTilhoerendeIdent);
-
-        if (response.getStatusCode().is2xxSuccessful()) {
-            slettIdenterResponse.setIdenterSomBleSlettetFraAvspillergruppe(identerSomSkalSlettes);
-        }
-
-        return slettIdenterResponse;
     }
 
     public List<String> hentIdenterSomIkkeErITps(Long avspillergruppeId, String miljoe) {

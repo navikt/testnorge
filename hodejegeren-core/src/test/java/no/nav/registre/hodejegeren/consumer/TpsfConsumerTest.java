@@ -3,7 +3,6 @@ package no.nav.registre.hodejegeren.consumer;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
@@ -102,21 +101,5 @@ public class TpsfConsumerTest {
         List<Long> meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(this.avspillergruppeId, fnrs);
 
         assertThat(meldingIderTilhoerendeIdenter, containsInAnyOrder(expectedMeldingId));
-    }
-
-    /**
-     * Tester om konsumenten bygger korrekt URI og request-body.
-     */
-    @Test
-    public void shouldWriteProperRequestAndDeleteMeldinger() {
-        String expectedUri = serverUrl + "/v1/endringsmelding/skd/deletemeldinger";
-        Long expectedMeldingId = 234L;
-        List<Long> expectedMeldingIds = Collections.singletonList(expectedMeldingId);
-
-        this.server.expect(requestToUriTemplate(expectedUri))
-                .andExpect(content().json("{\"ids\":[" + expectedMeldingIds.get(0) + "]}"))
-                .andRespond(withSuccess());
-
-        tpsfConsumer.slettMeldingerFraTpsf(expectedMeldingIds);
     }
 }

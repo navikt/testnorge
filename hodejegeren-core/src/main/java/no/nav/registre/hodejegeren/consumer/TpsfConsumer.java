@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import no.nav.registre.hodejegeren.consumer.requests.SlettSkdmeldingerRequest;
-
 @Component
 @Slf4j
 public class TpsfConsumer {
@@ -37,7 +35,6 @@ public class TpsfConsumer {
     private UriTemplate urlServiceRoutine;
     private UriTemplate statusPaaIdenter;
     private UriTemplate urlGetMeldingIder;
-    private UriTemplate urlSlettMeldinger;
 
     public TpsfConsumer(RestTemplateBuilder restTemplateBuilder,
             @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
@@ -50,7 +47,6 @@ public class TpsfConsumer {
         this.urlServiceRoutine = new UriTemplate(serverUrl + "/v1/serviceroutine/{routineName}?aksjonsKode={aksjonskode}&environment={miljoe}&fnr={fnr}");
         this.statusPaaIdenter = new UriTemplate(serverUrl + "/v1/serviceroutine/FS03-FDLISTER-DISKNAVN-M?aksjonsKode={aksjonskode}&antallFnr={antallIdenter}&environment={miljoe}&nFnr={identer}");
         this.urlGetMeldingIder = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/meldinger/{avspillergruppeId}");
-        this.urlSlettMeldinger = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deletemeldinger");
     }
 
     @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
@@ -78,11 +74,5 @@ public class TpsfConsumer {
     public List<Long> getMeldingIderTilhoerendeIdenter(Long avspillergruppeId, List<String> identer) {
         RequestEntity postRequest = RequestEntity.post(urlGetMeldingIder.expand(avspillergruppeId)).body(identer);
         return new ArrayList<>(Objects.requireNonNull(restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST).getBody()));
-    }
-
-    @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
-    public ResponseEntity slettMeldingerFraTpsf(List<Long> meldingIder) {
-        RequestEntity postRequest = RequestEntity.post(urlSlettMeldinger.expand()).body(SlettSkdmeldingerRequest.builder().ids(meldingIder).build());
-        return restTemplate.exchange(postRequest, ResponseEntity.class);
     }
 }
