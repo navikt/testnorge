@@ -12,6 +12,7 @@ import {
 	mapSigrunSekvensnummer
 } from './utils'
 import { DollyApi } from '~/service/Api'
+import { UdiApi } from '../../service/Api'
 
 const initialState = {
 	items: {
@@ -21,7 +22,8 @@ const initialState = {
 		arenaforvalteren: null,
 		aareg: null,
 		pdlforvalter: null,
-		instdata: null
+		instdata: null,
+		udistub: null
 	}
 }
 
@@ -140,6 +142,21 @@ export const GET_INST_TESTBRUKER = createAction(
 	})
 )
 
+export const GET_UDI_TESTBRUKER = createAction(
+	'GET_UDI_TESTBRUKER',
+	async (ident, env) => {
+		try {
+			const res = await UdiApi.getTestbruker(ident)
+			return res
+		} catch (err) {
+			return err
+		}
+	},
+	ident => ({
+		ident
+	})
+)
+
 export const GET_TESTBRUKER_PERSONOPPSLAG = createAction(
 	'GET_TESTBRUKER_PERSONOPPSLAG',
 	async (ident, env) => {
@@ -178,6 +195,7 @@ export default function testbrukerReducer(state = initialState, action) {
 					tpsf: state.items.tpsf.filter(item => item.ident !== action.meta.ident),
 					sigrunstub: { ...state.items.sigrunstub, [action.meta.ident]: null },
 					krrstub: { ...state.items.krrstub, [action.meta.ident]: null }
+					// ! udi-stub også her?
 				}
 			}
 
@@ -227,7 +245,6 @@ export default function testbrukerReducer(state = initialState, action) {
 					}
 				}
 			}
-
 		case success(GET_AAREG_TESTBRUKER):
 			return {
 				...state,
@@ -236,6 +253,17 @@ export default function testbrukerReducer(state = initialState, action) {
 					aareg: {
 						...state.items.aareg,
 						[action.meta.ident]: action.payload && action.payload.data
+					}
+				}
+			}
+		case success(GET_UDI_TESTBRUKER):
+			return {
+				...state,
+				items: {
+					...state.items,
+					udistub: {
+						...state.items.udistub,
+						[action.meta.ident]: action.payload && action.payload.data.person
 					}
 				}
 			}

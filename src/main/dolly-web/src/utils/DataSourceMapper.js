@@ -12,6 +12,8 @@ const DataSourceMapper = data => {
 			return 'arenaforvalter'
 		case 'INST':
 			return 'instdata'
+		case 'UDI':
+			return 'udistub'
 		default:
 			return 'tpsf'
 	}
