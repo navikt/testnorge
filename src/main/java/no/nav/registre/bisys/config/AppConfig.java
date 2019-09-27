@@ -15,9 +15,6 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 @Configuration
 public class AppConfig {
 
-    public static final String STANDARD_DATE_FORMAT_BISYS = "dd.MM.yyyy";
-    public static final String STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST = "yyyy-MM-dd";
-
     // Will be set to true for BMs household (forskudd)
     private final static boolean barnRegistrertPaaAdresse = false;
 

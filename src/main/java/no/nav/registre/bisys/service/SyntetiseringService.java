@@ -139,7 +139,7 @@ public class SyntetiseringService {
             List<Barn> utvalgteIdenter, List<SyntetisertBidragsmelding> bidragsmeldinger) {
         for (SyntetisertBidragsmelding bidragsMelding : bidragsmeldinger) {
             Barn barn = utvalgteIdenter.remove(0);
-            bidragsMelding.setBarnetsFnr(barn.getFnr());
+            bidragsMelding.setBarn(barn.getFnr());
             bidragsMelding.setBidragsmottaker(barn.getMorFnr());
             bidragsMelding.setBidragspliktig(barn.getFarFnr());
         }

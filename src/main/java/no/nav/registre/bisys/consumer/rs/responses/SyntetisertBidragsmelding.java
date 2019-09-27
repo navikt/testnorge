@@ -1,11 +1,17 @@
 package no.nav.registre.bisys.consumer.rs.responses;
 
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.bidrag.ui.bisys.soknad.Soknad;
 
 @Getter
 @Setter
@@ -14,8 +20,15 @@ import lombok.Setter;
 @Builder
 public class SyntetisertBidragsmelding {
 
+    private static final Integer DEFAULT_BA_ALDER = -1;
+
     @JsonProperty("BA")
-    private String barnetsFnr;
+    private String barn;
+
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    @Builder.Default
+    private Integer barnAlderIMnd = DEFAULT_BA_ALDER;
 
     @JsonProperty("BM")
     private String bidragsmottaker;
@@ -32,8 +45,14 @@ public class SyntetisertBidragsmelding {
     @JsonProperty("GEBYRFRITAK_BP")
     private String gebyrfritakBp;
 
+    @JsonProperty("GODKJENT_BELOP")
+    private String godkjentBelop;
+
     @JsonProperty("INNBETALT")
     private String innbetalt;
+
+    @JsonProperty("KRAVBELOP")
+    private String kravbelop;
 
     @JsonProperty("MOTTATT_DATO")
     private String mottattDato;
@@ -44,9 +63,28 @@ public class SyntetisertBidragsmelding {
     @JsonProperty("SOKNAD_FRA")
     private String soknadFra;
 
+    @Getter(AccessLevel.NONE)
+    private LocalDate soktFra;
+
     @JsonProperty("SOKT_FRA")
-    private String soktFra;
+    private int soktFraIMndEtterMottattDato;
 
     @JsonProperty("SOKT_OM")
     private String soktOm;
+
+    @JsonProperty(value = "BA_ALDER")
+    public int getBarnAlderIMnd() {
+        return barnAlderIMnd == null ? DEFAULT_BA_ALDER : barnAlderIMnd;
+    }
+
+    @JsonProperty(value = "BA_ALDER")
+    public void setBarnAlderIMnd(Integer barnAlderIMnd) {
+        this.barnAlderIMnd = barnAlderIMnd == null ? DEFAULT_BA_ALDER : barnAlderIMnd;
+    }
+
+    public LocalDate getSoktFra() {
+        return LocalDate.parse(mottattDato, DateTimeFormat
+                .forPattern(Soknad.STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST))
+                .minusMonths(soktFraIMndEtterMottattDato).dayOfMonth().withMinimumValue();
+    }
 }

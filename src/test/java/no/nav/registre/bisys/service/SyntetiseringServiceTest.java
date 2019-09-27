@@ -93,10 +93,10 @@ public class SyntetiseringServiceTest {
 
         List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger = syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
 
-        assertThat(syntetiserteBidragsmeldinger.get(0).getBarnetsFnr(), equalTo(barn1));
+        assertThat(syntetiserteBidragsmeldinger.get(0).getBarn(), equalTo(barn1));
         assertThat(syntetiserteBidragsmeldinger.get(0).getBidragsmottaker(), equalTo(bidragsmottaker));
         assertThat(syntetiserteBidragsmeldinger.get(0).getBidragspliktig(), equalTo(bidragspliktig));
-        assertThat(syntetiserteBidragsmeldinger.get(1).getBarnetsFnr(), equalTo(barn2));
+        assertThat(syntetiserteBidragsmeldinger.get(1).getBarn(), equalTo(barn2));
         assertThat(syntetiserteBidragsmeldinger.get(1).getBidragsmottaker(), equalTo(bidragsmottaker));
         assertThat(syntetiserteBidragsmeldinger.get(1).getBidragspliktig(), equalTo(bidragspliktig));
     }
@@ -118,7 +118,7 @@ public class SyntetiseringServiceTest {
 
         List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger = syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
 
-        assertThat(syntetiserteBidragsmeldinger.get(0).getBarnetsFnr(), equalTo(barn1));
+        assertThat(syntetiserteBidragsmeldinger.get(0).getBarn(), equalTo(barn1));
         assertThat(syntetiserteBidragsmeldinger.get(0).getBidragsmottaker(), equalTo(bidragsmottaker));
         assertThat(syntetiserteBidragsmeldinger.get(0).getBidragspliktig(), equalTo(bidragspliktig));
         assertThat(listAppender.list.size(), is(CoreMatchers.equalTo(1)));
@@ -162,7 +162,7 @@ public class SyntetiseringServiceTest {
 
         List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger = syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
         for (SyntetisertBidragsmelding bidragsmelding : syntetiserteBidragsmeldinger) {
-            if (bidragsmelding.getBarnetsFnr().equals(barn1))
+            if (bidragsmelding.getBarn().equals(barn1))
                 doThrow(BidragRequestProcessingException.class)
                         .when(bisysUiConsumer)
                         .createVedtak(bidragsmelding);
