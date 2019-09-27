@@ -107,9 +107,6 @@ public class AppConfig {
                 .inntektBpEgneOpplysninger(inntektBpEgneOpplysninger)
                 .kodeUnntForsk(kodeUnntForsk)
                 .samvarsklasse(samvarsklasse)
-                .sartilskuddKravbelop(sartilskuddKravbelop)
-                .sartilskuddGodkjentBelop(sartilskuddGodkjentBelop)
-                .sartilskuddFradrag(sartilskuddFradrag)
                 .skatteklasse(skatteklasse)
                 .sivilstandBm(sivilstandBm)
                 .build();

@@ -27,8 +27,7 @@ public class SyntetisertBidragsmelding {
 
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    @Builder.Default
-    private Integer barnAlderIMnd = DEFAULT_BA_ALDER;
+    private Integer barnAlderIMnd;
 
     @JsonProperty("BM")
     private String bidragsmottaker;
@@ -46,13 +45,13 @@ public class SyntetisertBidragsmelding {
     private String gebyrfritakBp;
 
     @JsonProperty("GODKJENT_BELOP")
-    private String godkjentBelop;
+    private int godkjentBelop;
 
     @JsonProperty("INNBETALT")
     private String innbetalt;
 
     @JsonProperty("KRAVBELOP")
-    private String kravbelop;
+    private int kravbelop;
 
     @JsonProperty("MOTTATT_DATO")
     private String mottattDato;
@@ -62,9 +61,6 @@ public class SyntetisertBidragsmelding {
 
     @JsonProperty("SOKNAD_FRA")
     private String soknadFra;
-
-    @Getter(AccessLevel.NONE)
-    private LocalDate soktFra;
 
     @JsonProperty("SOKT_FRA")
     private int soktFraIMndEtterMottattDato;
