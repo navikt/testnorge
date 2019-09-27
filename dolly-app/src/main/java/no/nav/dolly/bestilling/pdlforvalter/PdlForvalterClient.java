@@ -22,6 +22,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonF
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.util.DatoFraIdentService;
 
 @Slf4j
 @Service
@@ -40,6 +41,9 @@ public class PdlForvalterClient implements ClientRegister {
     private PdlForvalterRestConsumer pdlForvalterRestConsumer;
 
     @Autowired
+    private DatoFraIdentService datoFraIdentService;
+
+    @Autowired
     private MapperFacade mapperFacade;
 
     @Autowired
@@ -47,18 +51,21 @@ public class PdlForvalterClient implements ClientRegister {
 
     @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
-        if (nonNull(bestilling.getPdlforvalter())) {
+        if (bestilling.getEnvironments().contains(SYNTH_ENV) || nonNull(bestilling.getPdlforvalter())) {
 
             StringBuilder status = new StringBuilder();
 
             if (bestilling.getEnvironments().contains(SYNTH_ENV)) {
 
-                Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
-
                 sendDeleteIdent(norskIdent, status);
-                sendUtenlandsid(pdldata, norskIdent, status);
-                sendDoedsbo(pdldata, norskIdent, status);
-                sendFalskIdentitet(pdldata, norskIdent, status);
+                sendFoedselsmelding(norskIdent);
+
+                if (nonNull(bestilling.getPdlforvalter())) {
+                    Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
+                    sendUtenlandsid(pdldata, norskIdent, status);
+                    sendDoedsbo(pdldata, norskIdent, status);
+                    sendFalskIdentitet(pdldata, norskIdent, status);
+                }
 
             } else {
 
@@ -77,6 +84,20 @@ public class PdlForvalterClient implements ClientRegister {
     public void release(List<String> identer) {
 
         identer.forEach(ident -> pdlForvalterRestConsumer.deleteIdent(ident));
+    }
+
+    private void sendFoedselsmelding(NorskIdent ident) {
+
+        try {
+            pdlForvalterRestConsumer.postFoedsel(PdlFoedsel.builder()
+                    .foedselsdato(datoFraIdentService.extract(ident.getIdent()).toLocalDate())
+                            .kilde(KILDE)
+                            .build(),
+                    ident.getIdent());
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å sende fødselsmelding til PDL-forvalter for ");
+        }
     }
 
     private void sendUtenlandsid(Pdldata pdldata, NorskIdent norskIdent, StringBuilder status) {
