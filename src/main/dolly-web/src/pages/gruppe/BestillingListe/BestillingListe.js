@@ -43,7 +43,13 @@ export default class BestillingListe extends PureComponent {
 						</Table.Header>
 
 						{items.map((bestilling, idx) => {
-							const [id, antallIdenter, sistOppdatert, environments, status] = bestilling.listedata
+							const [
+								id,
+								antallIdenter,
+								sistOppdatert,
+								environments,
+								statusKode
+							] = bestilling.listedata
 							return (
 								<Table.Row
 									key={idx}
@@ -53,7 +59,7 @@ export default class BestillingListe extends PureComponent {
 									<Table.Column width="15" value={antallIdenter} />
 									<Table.Column width="20" value={sistOppdatert} />
 									<Table.Column width="30" value={environments} />
-									<Table.Column width="10" value={status} />
+									<Table.Column width="10" value={statusKode} />
 								</Table.Row>
 							)
 						})}
