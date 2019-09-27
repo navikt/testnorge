@@ -13,20 +13,7 @@ export default function BestillingDetaljer({ bestilling }) {
 
 	const alleredeSendtTilOpenAm = Boolean(bestilling.openamSent)
 
-	// Flytte denne?
-	const _erIdentOpprettet = () => {
-		const { statusrapport } = bestilling
-		let opprettet = false
-		if (statusrapport.length) {
-			const tpsf = statusrapport.find(f => f.id === 'tpsfStatus')
-			if (tpsf) {
-				opprettet = tpsf.statuser.some(s => s.detaljert)
-			}
-		}
-		return opprettet
-	}
-
-	const harIdenterOpprettet = _erIdentOpprettet()
+	const harIdenterOpprettet = bestilling.antallIdenterOpprettet > 0
 	const btnCss = 'flexbox--align-center'
 
 	return (
