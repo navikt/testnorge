@@ -354,12 +354,16 @@ public class EksisterendeIdenterService {
             try {
                 JsonNode jsonNode = tpsfConsumer.hentTpsStatusPaaIdenter(AKSJONSKODE_A2, "q2", identer);
                 JsonNode statusFromTps = jsonNode.findValue("EFnr");
-                List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
-                });
-                for (Map<String, Object> map : identStatus) {
-                    if (!map.containsKey("svarStatus")) {
-                        identerITps.add(String.valueOf(map.get("fnr")));
+                if (statusFromTps != null) {
+                    List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
+                    });
+                    for (Map<String, Object> map : identStatus) {
+                        if (!map.containsKey("svarStatus")) {
+                            identerITps.add(String.valueOf(map.get("fnr")));
+                        }
                     }
+                } else {
+                    log.warn("Kunne ikke ekstrahere status fra TPS.");
                 }
             } catch (IOException e) {
                 log.error("Kunne ikke hente status fra TPS", e);
