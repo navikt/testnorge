@@ -67,7 +67,7 @@ const example = {
  */
 const mapStatusStructure = data => {
 	return [
-		_extract(data.tpsfStatus, 'tpsfStatus', 'TPSF'),
+		_extract(data.tpsfStatus, 'TPSF', 'Tjenestebasert personsystem (TPS)'),
 		_extract(data.sigrunStubStatus, 'sigrunStubStatus', 'Sigrun'),
 		_extract(data.krrStubStatus, 'krrStubStatus', 'KRR'),
 		_extract(data.udiStubStatus, 'udiStubStatus', 'UDI'),
@@ -95,20 +95,38 @@ const mapStatusStructure = data => {
 	].filter(x => x) // fjern falsy values
 }
 
-const finnnesDetAvvik = statusrapport => {
-	return statusrapport.some(source => {
-		return source.statuser.some(status => status.statusMelding !== 'OK')
+const finnnesDetAvvik = status => {
+	return status.some(source => {
+		return source.statuser.some(status => status.melding !== 'OK')
 	})
 }
 
+const antallIdenterOpprettetPaaBestilling = status => {
+	let identerOpprettet = []
+	if (status.length) {
+		const tpsf = status.find(f => f.id === 'TPSF')
+		if (tpsf) {
+			tpsf.statuser.forEach(stat => {
+				stat.detaljert.forEach(miljo => {
+					identerOpprettet = identerOpprettet.concat(miljo.identer)
+				})
+			})
+		}
+	}
+
+	// Kun unike identer
+	identerOpprettet = [...new Set(identerOpprettet)]
+
+	return identerOpprettet.length
+}
+
 // Setter bestillingstatus
-const extractBestillingstatus = (data, harAvvik) => {
-	const harIkkeIdenter = item => !Boolean(item.tpsfStatus)
-	return data.stoppet
+const extractBestillingstatusKode = (bestilling, harAvvik, antallIdenterOpprettet) => {
+	return bestilling.stoppet
 		? 'Stoppet'
-		: !data.ferdig
+		: !bestilling.ferdig
 			? 'Pågår'
-			: harIkkeIdenter(data)
+			: antallIdenterOpprettet === 0
 				? 'Feilet'
 				: harAvvik
 					? 'Avvik'
@@ -119,13 +137,13 @@ const extractBestillingstatus = (data, harAvvik) => {
  * Lager et String[] med verdier som vises i bestillingsliste
  * slik at man kan enkelt søke i verdier og samtidig liste de ut
  */
-const extractValuesForBestillingListe = (data, status) => {
+const extractValuesForBestillingListe = (data, statusKode) => {
 	const values = {
 		id: data.id.toString(),
 		antallIdenter: data.antallIdenter.toString(),
 		sistOppdatert: Formatters.formatDate(data.sistOppdatert),
 		environments: Formatters.arrayToString(data.environments),
-		status
+		statusKode
 	}
 
 	return Object.values(values)
@@ -133,14 +151,15 @@ const extractValuesForBestillingListe = (data, status) => {
 
 export default function BestillingStatusMapper(data) {
 	return data.map(bestilling => {
-		const statusrapport = mapStatusStructure(bestilling)
-		const harAvvik = finnnesDetAvvik(statusrapport)
-		const status = extractBestillingstatus(bestilling, harAvvik)
-		const listedata = extractValuesForBestillingListe(bestilling, status)
+		const status = mapStatusStructure(bestilling)
+		const harAvvik = finnnesDetAvvik(status)
+		const antallIdenterOpprettet = antallIdenterOpprettetPaaBestilling(status)
+		const statusKode = extractBestillingstatusKode(bestilling, harAvvik, antallIdenterOpprettet)
+		const listedata = extractValuesForBestillingListe(bestilling, statusKode)
 		return {
 			...bestilling,
+			antallIdenterOpprettet,
 			status,
-			statusrapport,
 			listedata
 		}
 	})

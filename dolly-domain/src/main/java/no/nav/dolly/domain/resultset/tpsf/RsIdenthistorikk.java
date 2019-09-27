@@ -17,4 +17,5 @@ public class RsIdenthistorikk {
     private LocalDateTime foedtEtter;
     private LocalDateTime foedtFoer;
     private String kjonn;
+    private LocalDateTime regdato;
 }

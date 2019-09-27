@@ -1,68 +1,69 @@
-//Strukturering av feilmeldinger under bestillingsdetaljer
+@import (reference) '~lessVars';
 
-.feil-melding {
-	h5 {
-		font-size: 0.9em;
-		margin: 5px 0 3px 0;
-	}
-}
+@rightColumnWidth: 60%;
 
-// TODO: Scope disse CSS-classene
-.feil {
-	&-container {
+.feilmelding {
+	&_tabell-header {
 		display: flex;
-		flex-direction: row;
-
-		&_border {
-			border-bottom: 1px solid #d3dee3;
-		}
-	}
-	&-header {
-		flex-direction: column;
-		text-align: left;
-		margin: 0px;
-
-		&_liten {
-			flex: 3;
+		border-bottom: 1px solid @color-bg-divider;
+		h2 {
 			font-size: 0.75em;
 			margin: 0 0 5px;
 			font-weight: bold;
 			text-transform: uppercase;
 			padding-right: 35px;
-		}
-
-		&_stor {
-			flex: 5;
-			font-size: 0.75em;
-			margin: 0 0 5px;
-			font-weight: bold;
-			text-transform: uppercase;
-			padding-right: 35px;
+			flex: 1;
+			&:first-child {
+				flex: 0 0 @rightColumnWidth;
+			}
 		}
 	}
-	&-kolonne {
-		&_liten {
-			flex: 3;
-			flex-direction: column;
-			margin-bottom: 10px;
-			text-align: start;
-			padding-right: 35px;
+
+	&_generell {
+		p {
+			font-style: italic;
+		}
+		pre {
+			white-space: pre-wrap;
+			font-size: 0.8em;
+			background-color: #f2f2f2;
+			padding: 10px;
+		}
+	}
+
+	&_fagsystem {
+		h5 {
+			font-size: 0.9em;
+			margin: 0px 0 3px;
 		}
 
-		&_stor {
-			flex: 5;
-			flex-direction: column;
-			margin-bottom: 10px;
-			text-align: start;
-			padding-right: 35px;
+		&:not(:last-child) {
+			border-bottom: 1px solid #eee;
 		}
 
-		&_header {
-			flex: 5;
-			flex-direction: row;
-			margin-bottom: 0px;
+		&-container {
 			display: flex;
-			padding-right: 35px;
+
+			> div {
+				flex: 1;
+				&:first-child {
+					flex: 0 0 @rightColumnWidth;
+					padding-right: 35px;
+				}
+
+				pre {
+					white-space: pre-wrap;
+					font-size: 0.8em;
+					margin: 3px 0;
+				}
+
+				.flexbox {
+					margin: 0; // need to override global css ".bestilling-detaljer div"
+					> div {
+						flex: 1;
+					}
+				}
+			}
 		}
 	}
 }
