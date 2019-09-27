@@ -283,7 +283,11 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 	}
 
 	// * Vurdere behovet for denne i U2/prod. Uglify?
+<<<<<<< HEAD
 	//console.info('POSTING BESTILLING', final_values)
+=======
+	// console.info('POSTING BESTILLING', final_values)
+>>>>>>> d79b81fb823728b434314214a65cce54a694da08
 
 	return final_values
 }
