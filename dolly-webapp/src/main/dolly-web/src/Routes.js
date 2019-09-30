@@ -22,7 +22,7 @@ const routes = [
 		component: Bestilling
 	},
 	{
-		path: '/gruppe/:gruppeId/testbruker/:ident&:datasources',
+		path: '/gruppe/:gruppeId/testbruker/:ident',
 		exact: true,
 		breadcrumb: 'Rediger',
 		component: RedigerTestbrukerConnector

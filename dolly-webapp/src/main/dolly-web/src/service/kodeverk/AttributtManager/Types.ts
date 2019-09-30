@@ -15,7 +15,8 @@ export enum DataSource {
 	AAREG = 'AAREG',
 	PDLF = 'PDLF',
 	ARENA = 'ARENA',
-	INST = 'INST'
+	INST = 'INST',
+	UDI = 'UDI'
 }
 
 export interface Options {
@@ -76,7 +77,6 @@ export interface Attributt {
 	informasjonstekst?: String
 	subGruppe?: String
 	hoydeOptions?: String //Hvor mye plass trenger den lengste option i select. 'small', 'medium' eller 'large'.
-	genererSyntVerdier?: boolean
 }
 
 // Attributt grupper

@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusMiljoeIdentForhold;
 
+@Deprecated
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingInstdataStatusMapper {
 

@@ -10,18 +10,10 @@ import static no.nav.dolly.sts.StsOidcService.getUserIdToken;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
-import no.nav.dolly.domain.resultset.Person;
-import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
-import no.nav.dolly.domain.resultset.TpsfIdenterMiljoer;
-import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
-import no.nav.dolly.domain.resultset.tpsf.EnvironmentsResponse;
-import no.nav.dolly.domain.resultset.tpsf.RsPerson;
-import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
-import no.nav.dolly.exceptions.TpsfException;
-import no.nav.dolly.properties.ProvidersProps;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -31,11 +23,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
+import no.nav.dolly.bestilling.udistub.RsAliasRequest;
+import no.nav.dolly.bestilling.udistub.RsAliasResponse;
+import no.nav.dolly.domain.resultset.Person;
+import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
+import no.nav.dolly.domain.resultset.TpsfIdenterMiljoer;
+import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
+import no.nav.dolly.domain.resultset.tpsf.EnvironmentsResponse;
+import no.nav.dolly.domain.resultset.tpsf.RsPerson;
+import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
+import no.nav.dolly.exceptions.TpsfException;
+import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
 @Service
@@ -47,6 +49,7 @@ public class TpsfService {
     private static final String TPSF_HENT_PERSONER_URL = "/hentpersoner";
     private static final String TPSF_CHECK_IDENT_STATUS = "/checkpersoner";
     private static final String TPSF_UPDATE_PERSON_URL = "/api/v1/testdata/updatepersoner";
+    private static final String TPSF_CREATE_ALIASES =  "/api/v1/dolly/testdata/aliaser";
     private static final String TPSF_DELETE_PERSONER_URL = TPSF_BASE_URL + "/personer?identer=";
     private static final String TPSF_GET_ENVIRONMENTS = "/api/v1/environments";
 
@@ -65,10 +68,16 @@ public class TpsfService {
                 .build(), EnvironmentsResponse.class);
     }
 
-    public ResponseEntity deletePersoner(List<String> identer) {
+    public ResponseEntity deletePersones(List<String> identer) {
         return restTemplate.exchange(
                 RequestEntity.delete(URI.create(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_DELETE_PERSONER_URL, join(",", identer))))
                         .build(), Object.class);
+    }
+
+    public ResponseEntity<RsAliasResponse> createAliases(RsAliasRequest request) {
+        return restTemplate.exchange(
+                RequestEntity.post(URI.create(providersProps.getTpsf().getUrl() + TPSF_CREATE_ALIASES))
+                        .body(request), RsAliasResponse.class);
     }
 
     public CheckStatusResponse checkEksisterendeIdenter(List<String> identer) {

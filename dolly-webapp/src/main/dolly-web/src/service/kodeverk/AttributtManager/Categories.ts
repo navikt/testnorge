@@ -27,8 +27,7 @@ export const Kategorier: KategoriTypes = {
 			'Arbeidsforhold: \n' +
 			'Dataene her blir lagt til AAREG. \n\n' +
 			'Inntekt: \n' +
-			'Lignede inntekter - årlig: ' +
-			'Lignede inntekter er stemplet og godkjent. Inntektene her blir lagt i Sigrun-stub.',
+			'Skatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.',
 
 		order: 40
 	},
@@ -53,6 +52,11 @@ export const Kategorier: KategoriTypes = {
 			'Arena-data blir ikke distribuert til alle miljøer, og et eller flere av miljøene under må derfor velges i siste steg.',
 		tilgjengeligeMiljoeEndepunkt: ArenaApi.getTilgjengeligeMiljoe(),
 		order: 60
+	},
+	Udi: {
+		id: 'udi',
+		navn: 'UDI',
+		order: 70
 	}
 }
 
@@ -151,6 +155,27 @@ export const SubKategorier: KategoriTypes = {
 		id: 'arena',
 		navn: '',
 		order: 10,
+		showInSummary: true
+	},
+
+	Oppholdsstatus: {
+		id: 'oppholdsstatus',
+		navn: 'Gjeldende oppholdsstatus',
+		order: 10,
+		showInSummary: true
+	},
+
+	Arbeidsadgang: {
+		id: 'arbeidsadgang',
+		navn: 'Arbeidsadgang',
+		order: 20,
+		showInSummary: true
+	},
+
+	Alias: {
+		id: 'alias',
+		navn: 'Alias',
+		order: 30,
 		showInSummary: true
 	}
 }

@@ -10,7 +10,8 @@ describe('testBrukerReducer', () => {
 			aareg: null,
 			arenaforvalteren: null,
 			instdata: null,
-			pdlforvalter: null
+			pdlforvalter: null,
+			udistub: null
 		}
 	}
 	it('should return initial state', () => {
@@ -58,7 +59,8 @@ describe('testBrukerReducer', () => {
 				aareg: null,
 				arenaforvalteren: null,
 				instdata: null,
-				pdlforvalter: null
+				pdlforvalter: null,
+				udistub: null
 			}
 		}
 
@@ -85,7 +87,8 @@ describe('testBrukerReducer', () => {
 				aareg: null,
 				arenaforvalteren: null,
 				instdata: null,
-				pdlforvalter: null
+				pdlforvalter: null,
+				udistub: null
 			}
 		}
 
@@ -115,7 +118,8 @@ describe('testBrukerReducer', () => {
 					}
 				},
 				instdata: null,
-				pdlforvalter: null
+				pdlforvalter: null,
+				udistub: null
 			}
 		}
 

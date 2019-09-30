@@ -55,4 +55,8 @@ public class RsRelasjon {
     private Boolean erForsvunnet;
 
     private LocalDateTime forsvunnetDato;
+
+    private LocalDateTime doedsdato;
+
+    private List<RsIdenthistorikk> identHistorikk;
 }

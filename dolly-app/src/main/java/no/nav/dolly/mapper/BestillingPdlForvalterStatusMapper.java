@@ -19,6 +19,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsPdlForvalterStatus;
 import no.nav.dolly.domain.resultset.RsStatusIdent;
 
+@Deprecated
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingPdlForvalterStatusMapper {
 
