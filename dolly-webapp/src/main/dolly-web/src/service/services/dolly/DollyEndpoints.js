@@ -95,11 +95,11 @@ class DollyEndpoints {
 	}
 
 	static bestillinger(gruppeId) {
-		return `${bestillingBase}/gruppe/${gruppeId}`
+		return `${bestillingBase}/gruppe/${gruppeId}/ny`
 	}
 
 	static bestillingStatus(bestillingId) {
-		return `${bestillingBase}/${bestillingId}`
+		return `${bestillingBase}/${bestillingId}/ny`
 	}
 
 	static bestillingMal() {
