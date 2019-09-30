@@ -6,13 +6,13 @@ spring:
     password:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    properties:
-      javax:
-        persistence:
-          schema-generation:
-            create-source: metadata
-            scripts.action: create
-            scripts.create-target: create.sql
+  #    properties:
+  #      javax:
+  #        persistence:
+  #          schema-generation:
+  #            create-source: metadata
+  #            scripts.action: create
+  #            scripts.create-target: create.sql
   h2:
     console:
       enabled: true
