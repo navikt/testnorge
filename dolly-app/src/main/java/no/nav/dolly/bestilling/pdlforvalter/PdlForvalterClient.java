@@ -64,7 +64,7 @@ public class PdlForvalterClient implements ClientRegister {
 
                 status.append('$')
                         .append(PDL_FORVALTER)
-                        .append("&Feil: Bestilling ble ikke sendt til PdlForvalter da miljø '")
+                        .append("&Feil: Bestilling ble ikke sendt til Persondataløsningen (PDL) da miljø '")
                         .append(SYNTH_ENV)
                         .append("' ikke er valgt");
             }
