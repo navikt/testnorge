@@ -76,7 +76,7 @@ export default class DollySelect extends PureComponent {
 			case 'medium':
 				return 40
 			case 'large':
-				return 45
+				return 50
 			default:
 				return 35
 		}

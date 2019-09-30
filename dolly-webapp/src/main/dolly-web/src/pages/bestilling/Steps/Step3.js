@@ -297,7 +297,6 @@ export default class Step3 extends PureComponent {
 			size: item.size,
 			optionHeight: item.size
 		}
-console.log('item.size :', item.size);
 
 		return (
 			<RemoveableField
