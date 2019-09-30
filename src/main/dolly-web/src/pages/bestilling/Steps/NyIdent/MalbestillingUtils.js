@@ -274,7 +274,7 @@ const _mapInnOgUtvandret = values => {
 				return (valuesArray.utvandret[0][value[0]] = value[1])
 			}
 		}
-		if (Formatters.uppercaseAndUnderscoreToLowerCase(value).includes('forsvunnet')) { 
+		if (value[0].toLowerCase().includes('forsvunnet')) { 
 			if (value[0].includes('partner')) {
 				!valuesArray.partner_forsvunnet && (valuesArray.partner_forsvunnet = [{}])
 				return (valuesArray.partner_forsvunnet[0][value[0].split('_')[1]] = value[1])
