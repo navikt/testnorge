@@ -1,7 +1,5 @@
 package no.nav.registre.bisys.consumer.ui.vedtak;
 
-import static no.nav.registre.bisys.config.AppConfig.STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST;
-
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -17,7 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.morher.ui.connect.api.element.Label;
 import no.nav.bidrag.ui.bisys.BisysApplication;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeRolletypeConstants;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknFraConstants;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknTypeConstants;
+import no.nav.bidrag.ui.bisys.soknad.Soknad;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Barn;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Bidragsberegning;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Boforhold;
@@ -149,8 +150,7 @@ public class BisysUiYtelseberegningConsumer {
 
         inntekter.leggTilInntekslinje().click();
         Inntektslinje nyInntektslinje = inntekter.inntektslinjer().get(0);
-
-        LocalDate soktFra = LocalDate.parse(request.getSoknadRequest().getSoktFra(), DateTimeFormat.forPattern("yyyy-MM-dd"));
+        LocalDate soktFra = request.getSoknadRequest().getSoktFra();
         soktFra.monthOfYear().withMinimumValue();
         soktFra.dayOfMonth().withMaximumValue();
         nyInntektslinje.gjelderFom().setValue(soktFra.dayOfMonth().withMinimumValue().toString("dd.MM.yyyy"));
@@ -198,11 +198,10 @@ public class BisysUiYtelseberegningConsumer {
 
     private void addSkatteklasseIfMissing(Inntekter inntekter, SynthesizedBidragRequest request) {
 
-        String soktFra = getSoktFra(inntekter, request);
-        LocalDate soktFraDate = LocalDate.parse(soktFra, DateTimeFormat.forPattern(STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST));
+        LocalDate soktFra = getSoktFra(inntekter, request);
 
-        if (soktFraDate.getYear() < SKATTEKLASSE_PAAKREVD_FOER_AAR && !isSkatteklasseSetForSoktFraAr(inntekter, soktFraDate)) {
-            addSkatteklasseForSoktFraAr(inntekter, soktFraDate.getYear(), request);
+        if (soktFra.getYear() < SKATTEKLASSE_PAAKREVD_FOER_AAR && !isSkatteklasseSetForSoktFraAr(inntekter, soktFra)) {
+            addSkatteklasseForSoktFraAr(inntekter, soktFra.getYear(), request);
         }
     }
 
@@ -227,9 +226,10 @@ public class BisysUiYtelseberegningConsumer {
         return false;
     }
 
-    private String getSoktFra(Inntekter inntekter, SynthesizedBidragRequest request) {
+    private LocalDate getSoktFra(Inntekter inntekter, SynthesizedBidragRequest request) {
         try {
-            return inntekter.soktFraDato().getText();
+
+            return LocalDate.parse(inntekter.soktFraDato().getText(), DateTimeFormat.forPattern(Soknad.STANDARD_DATE_FORMAT_BISYS));
         } catch (ElementNotFoundException | NoSuchElementException e) {
             return request.getSoknadRequest().getSoktFra();
         }
@@ -251,13 +251,12 @@ public class BisysUiYtelseberegningConsumer {
             SynthesizedBidragRequest request) throws BidragRequestProcessingException {
 
         List<Barn> barna = boforhold.barn();
-        LocalDate soktFra = LocalDate.parse(request.getSoknadRequest().getSoktFra(), DateTimeFormat.forPattern("yyyy-MM-dd")).dayOfMonth().withMinimumValue();
 
         if (!requestedBarnIncludedInList(barna, request.getSoknadRequest().getFnrBa())) {
             boforhold.leggTilNyLinjeBarn().click();
             Barn newBarn = boforhold.barn().get(0);
             newBarn.medlemFnrInput().setValue(request.getSoknadRequest().getFnrBa());
-            updateBarnDetails(boforhold, request, soktFra, newBarn);
+            updateBarnDetails(boforhold, request, newBarn);
             newBarn.hentMedlem().click();
 
             return;
@@ -268,7 +267,7 @@ public class BisysUiYtelseberegningConsumer {
                 String fnrBarn = barn.medlemFnr().getText().replaceAll("\\s", "");
 
                 if (fnrBarn.equals(request.getSoknadRequest().getFnrBa())) {
-                    updateBarnDetails(boforhold, request, soktFra, barn);
+                    updateBarnDetails(boforhold, request, barn);
                     return;
                 }
             }
@@ -278,7 +277,7 @@ public class BisysUiYtelseberegningConsumer {
                 new Exception(BisysUiConsumer.PROCESSING_FAILED + " Requested barn not found"));
     }
 
-    private void updateBarnDetails(Boforhold boforhold, SynthesizedBidragRequest request, LocalDate soktFra, Barn barn) {
+    private void updateBarnDetails(Boforhold boforhold, SynthesizedBidragRequest request, Barn barn) {
         // Toggle bruk barn checkbox if not enabled
         if (!barn.inkluderMedlemCbx().isEnabled()) {
             barn.inkluderMedlemCbx().toggle();
@@ -291,7 +290,7 @@ public class BisysUiYtelseberegningConsumer {
 
         // Set FOM date to the request's SOKT_FOM date if FOM date is missing
         if (!fomDatePattern.matcher(barnFomStr).matches()) {
-            barn.medlemFom().setValue(soktFra.toString("dd.MM.yyyy"));
+            barn.medlemFom().setValue(request.getSoknadRequest().getSoktFra().toString("dd.MM.yyyy"));
         }
 
         // Toggle registrert på adresse checkbox if enabled status differs from the requested status
@@ -358,7 +357,16 @@ public class BisysUiYtelseberegningConsumer {
         bidragsberegning.selectKodeAarsak(request.getKodeVirkAarsak(request.getSoknadRequest().getSoktOm()));
 
         for (Periode periode : bidragsberegning.perioder()) {
+            if (KodeSoknFraConstants.BARN_ELDRE_ENN_18.equals(request.getSoknadRequest().getSoknadFra()) && !KodeSoknTypeConstants.OPPHOR.equals(request.getSoknadRequest().getSoknadstype())) {
+                String periodeTom = periode.tom().getValue();
+                if (periodeTom.isEmpty()) {
+                    LocalDate mottattdato = LocalDate.parse(request.getSoknadRequest().getMottattdato(), DateTimeFormat.forPattern(Soknad.STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST));
+                    LocalDate datoBarnFerdigMedVgs = mottattdato.minusMonths(request.getBarnAlderIMnd()).plusYears(19).withMonthOfYear(8).dayOfMonth().withMaximumValue();
+                    periode.tom().setValue(datoBarnFerdigMedVgs.toString(DateTimeFormat.forPattern(Soknad.STANDARD_DATE_FORMAT_BISYS)));
+                }
+            }
             periode.samvaersklasseInput().setValue(request.getSamvarsklasse());
+
         }
     }
 

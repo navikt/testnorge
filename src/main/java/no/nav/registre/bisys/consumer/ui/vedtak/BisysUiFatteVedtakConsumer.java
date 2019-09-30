@@ -67,18 +67,26 @@ public class BisysUiFatteVedtakConsumer {
         String soktOm = request.getSoknadRequest().getSoktOm();
         String soknadstype = request.getSoknadRequest().getSoknadstype();
 
-        if (KodeSoknGrKomConstants.FORSKUDD.equals(soktOm)) {
+        if (KodeSoknTypeConstants.OPPHOR.equals(soknadstype)) {
+
+            opphorExecutor.runOpphor(bisys, request);
+
+        } else if (KodeSoknGrKomConstants.FORSKUDD.equals(soktOm)) {
+
             forskuddExecutor.runForskudd(bisys, request);
+
         } else if (KodeSoknGrKomConstants.SARTILSKUDD.equals(soktOm)
                 || KodeSoknGrKomConstants.SARTILSKUDD_INNKREVING.equals(soktOm)) {
+
             sartilskuddExecutor.runSartilskudd(bisys, request);
-        } else if (KodeSoknGrKomConstants.BIDRAG.equals(soktOm)
+
+        } else if (KodeSoknGrKomConstants.BIDRAG_18_AAR.equals(soktOm)
+                || KodeSoknGrKomConstants.BIDRAG_18_AAR_INNKREVING.equals(soktOm)
+                || KodeSoknGrKomConstants.BIDRAG.equals(soktOm)
                 || KodeSoknGrKomConstants.BIDRAG_INNKREVING.equals(soktOm)) {
-            if (KodeSoknTypeConstants.OPPHOR.equals(soknadstype)) {
-                opphorExecutor.runOpphor(bisys, request);
-            } else {
-                bidragExecutor.runBidrag(bisys, request);
-            }
+
+            bidragExecutor.runBidrag(bisys, request);
+
         } else {
             throw new BidragRequestProcessingException(BisysUiSupport.getActiveBisysPage(bisys),
                     new Exception(String.format("SoktOm %s not supported",

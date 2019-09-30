@@ -70,7 +70,7 @@ public class BisysUiConsumersIntegrationTest {
 
         for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
 
-            SynthesizedBidragRequest request = testnorgeToBisysMapper.bidragsmeldingToBidragRequest(bisysRequestAugments);
+            SynthesizedBidragRequest request = testnorgeToBisysMapper.bidragsmeldingToBidragRequest(bisysRequestAugments, bidragsmelding);
             SoknadRequest soknadRequest = testnorgeToBisysMapper.bidragsmeldingToSoknadRequest(bidragsmelding);
             request.setSoknadRequest(soknadRequest);
 

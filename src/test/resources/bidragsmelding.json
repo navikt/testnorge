@@ -7,10 +7,10 @@
     "GEBYRFRITAK_BM": "",
     "GEBYRFRITAK_BP": "",
     "INNBETALT": "",
-    "MOTTATT_DATO": "2012-05-16",
+    "MOTTATT_DATO": "2018-05-16",
     "SOKNADSTYPE": "IR",
     "SOKNAD_FRA": "ET",
-    "SOKT_FRA": "2012-05-16",
+    "SOKT_FRA": "3",
     "SOKT_OM": "BI"
   },
   {
@@ -21,10 +21,10 @@
     "GEBYRFRITAK_BM": "",
     "GEBYRFRITAK_BP": "",
     "INNBETALT": "",
-    "MOTTATT_DATO": "2010-05-15",
+    "MOTTATT_DATO": "2018-05-15",
     "SOKNADSTYPE": "IR",
     "SOKNAD_FRA": "ET",
-    "SOKT_FRA": "2010-05-15",
+    "SOKT_FRA": "2",
     "SOKT_OM": "BI"
   }
 ]
