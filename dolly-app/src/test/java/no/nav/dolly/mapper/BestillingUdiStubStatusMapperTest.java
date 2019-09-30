@@ -24,7 +24,7 @@ public class BestillingUdiStubStatusMapperTest {
     @Test
     public void buildUdiStubStatusMap() {
 
-        List<RsStatusRapport> result = BestillingUdiStubStatusMapperNy.buildUdiStubStatusMap(newArrayList(BestillingProgress.builder()
+        List<RsStatusRapport> result = BestillingUdiStubStatusMapper.buildUdiStubStatusMap(newArrayList(BestillingProgress.builder()
                         .ident(IDENT1)
                         .udistubStatus(ERROR_STATUS)
                         .build(),
