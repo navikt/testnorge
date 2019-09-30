@@ -16,6 +16,7 @@ public enum SystemTyper {
     KRRSTUB("Digital kontaktinformasjon (DKIF)"),
     SIGRUNSTUB("Skatteinntekt grunnlag (SIGRUN)"),
     ARENA("Arena saksbehandling"),
+    PDL_FORVALTER("Persondata løsning (PDL)"),
     PDL_FALSKID("Falsk identitet (PDL)"),
     PDL_DODSBO("Kontaktinformasjon dødsbo (PDL)"),
     PDL_UTENLANDSID("Utenlandsid (PDL)"),

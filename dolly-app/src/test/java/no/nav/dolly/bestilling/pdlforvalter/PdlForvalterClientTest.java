@@ -225,6 +225,6 @@ public class PdlForvalterClientTest {
         verifyZeroInteractions(pdlForvalterRestConsumer);
 
         assertThat(progress.getPdlforvalterStatus(),
-                is(equalTo("PdlForvalter&Feil: Bestilling ble ikke sendt til PdlForvalter da miljø 'q2' ikke er valgt")));
+                is(equalTo("PdlForvalter&Feil: Bestilling ble ikke sendt til Persondataløsningen (PDL) da miljø 'q2' ikke er valgt")));
     }
 }
