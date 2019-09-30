@@ -1,16 +1,16 @@
 import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
+import { Field, Formik, FieldArray } from 'formik'
 import * as yup from 'yup'
+import _get from 'lodash/get'
 import RemoveableField from '~/components/fields/RemoveableField/RemoveableField'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
-import Button from '~/components/button/Button'
+import Button from '~/components/ui/button/Button'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
-import Overskrift from '~/components/overskrift/Overskrift'
+import Overskrift from '~/components/ui/overskrift/Overskrift'
 import NavigationConnector from '../Navigation/NavigationConnector'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import { AttributtManager } from '~/service/Kodeverk'
-import { Field, Formik, FieldArray } from 'formik'
-import _get from 'lodash/get'
 import Formatters from '~/utils/DataFormatter'
 import BestillingMapper from '~/utils/BestillingMapper'
 import { FormikInput } from '~/components/fields/Input/Input'
@@ -210,7 +210,6 @@ export default class Step3 extends PureComponent {
 
 	renderSubKategoriBlokk = (header, items, values) => {
 		let fieldType = 'oppsummering-multifield-uten-border'
-
 		// Legger til border hvis det finnes flere f.eks. inntekter,
 		// eller hvis f.eks. både inntekter og arbeidsforhold ligger under samme hovedkategori
 		// Gjøres mer generell?
@@ -258,7 +257,9 @@ export default class Step3 extends PureComponent {
 		return (
 			<div className={fieldType} key={header}>
 				{header && !items[0].subGruppe && <h4>{header}</h4>}
-				<div className="oppsummering-blokk">{items.map(item => this.renderItem(item, values))}</div>
+				<div className="oppsummering-blokk">
+					{items.map(item => this.renderItem(item, values, header))}
+				</div>
 			</div>
 		)
 	}
@@ -283,11 +284,12 @@ export default class Step3 extends PureComponent {
 				return this.renderSubKategoriBlokk(header, item.items, values)
 			})
 		}
+
+		const itemValue = this._formatereValue(item, stateValues)
+
 		if (!item.inputType) return null
 		if (item.onlyShowAfterSelectedValue && !itemValue) return null
 		if ((item.id === 'utenFastBopel' || item.id === 'ufb_kommunenr') && !itemValue) return null
-
-		let itemValue = this._formatereItemValue(item, _get(stateValues, item.id))
 
 		const staticValueProps = {
 			key: item.id,
@@ -347,18 +349,64 @@ export default class Step3 extends PureComponent {
 		this.props.setEnvironments({ values, goBack: true })
 	}
 
-	_formatereItemValue = (item, itemValue) => {
-		let copyItemValue = Formatters.oversettBoolean(itemValue)
+	_formatereValue = (item, stateValues) => {
+		const value = _get(stateValues, item.id)
+		if (item.dataSource === 'ARENA') {
+			return item.id === 'arenaBrukertype'
+				? Formatters.uppercaseAndUnderscoreToCapitalized(
+						_get(stateValues['arenaforvalter'][0], item.id)
+				  )
+				: Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id))
+			// item.id === 'arenaBrukertype'
+			// 	? (itemValue = Formatters.uppercaseAndUnderscoreToCapitalized(
+			// 			_get(stateValues['arenaforvalter'][0], item.id)
+			// 	  ))
+			// 	: (itemValue = Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id)))
+		}
 
-		item.options &&
-			item.options[0].value !== true &&
-			item.options[0].value !== 'true' &&
-			//Vil ikke ha med true/false -> ja/nei
-			(copyItemValue = Formatters.showLabel(item.id, copyItemValue))
+		if (item.dataSource === 'PDLF' && item.subKategori.id === 'utenlandskIdentifikasjonsnummer') {
+			return Formatters.oversettBoolean(
+				_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
+			)
+			// itemValue = Formatters.oversettBoolean(
+			// 	_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
+			// )
+		}
 
-		item.id === 'arenaBrukertype' &&
-			(copyItemValue = Formatters.uppercaseAndUnderscoreToCapitalized(copyItemValue))
+		if (item.dataSource === 'INST' && (item.id === 'institusjonstype' || item.id === 'varighet')) {
+			return Formatters.showLabel(item.id, value)
+			// itemValue = Formatters.showLabel(item.id, itemValue)
+		}
 
-		return copyItemValue
+		if (
+			item.dataSource === 'UDI' &&
+			value &&
+			(item.id === 'arbeidsOmfang' ||
+				item.id === 'typeArbeidsadgang' ||
+				item.id === 'oppholdsstatus' ||
+				item.id === 'typeOpphold' ||
+				item.id === 'ikkeOppholdGrunn' ||
+				item.id === 'tredjelandsBorgereValg' ||
+				item.id === 'oppholdstillatelseType' ||
+				item.id === 'eosEllerEFTAtypeOpphold' ||
+				item.id === 'eosEllerEFTAOppholdstillatelse' ||
+				item.id === 'eosEllerEFTABeslutningOmOppholdsrett' ||
+				item.id === 'eosEllerEFTAVedtakOmVarigOppholdsrett' ||
+				item.id === 'nyIdent')
+		) {
+			return Formatters.showLabel(item.id, value)
+			// itemValue = Formatters.showLabel(item.id, itemValue)
+		}
+
+		if (
+			value &&
+			(item.id === 'soeknadOmBeskyttelseUnderBehandling' || item.id === 'harArbeidsAdgang')
+		)
+			return Formatters.allCapsToCapitalized(value)
+		if (value === 'true') return true // Quickfix fra SelectOptions(stringBoolean)
+		if (value === 'false') return false
+		return Formatters.oversettBoolean(value)
+
+		// return itemValue
 	}
 }

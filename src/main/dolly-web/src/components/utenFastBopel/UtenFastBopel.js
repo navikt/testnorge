@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react'
+import { Field } from 'formik'
 import { DollyApi } from '~/service/Api'
 import InputSelector from '~/components/fields/InputSelector'
-import { Field } from 'formik'
-import Button from '~/components/button/Button'
-import { FormikDollySelect } from '../fields/Select/Select'
+import { FormikDollySelect } from '~/components/fields/Select/Select'
+import Button from '~/components/ui/button/Button'
 import './UtenFastBopel.less'
 
 

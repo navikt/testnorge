@@ -1,10 +1,11 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import Panel from '~/components/panel/Panel'
+import Panel from '~/components/ui/panel/Panel'
 import Input from '~/components/fields/Input/Input'
 import Utvalg from './Utvalg/Utvalg'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import { AttributtManager } from '~/service/Kodeverk'
+import TilgjengeligeMiljoer from '~/components/tilgjengeligeMiljoer/TilgjengeligeMiljoer'
 import './AttributtVelger.less'
 export default class AttributtVelger extends Component {
 	static propTypes = {
@@ -59,6 +60,19 @@ export default class AttributtVelger extends Component {
 		const hovedKategoriItems = this.AttributtManager.getParentAttributtListByHovedkategori(
 			hovedKategori
 		)
+
+		const tooltip = () => {
+			const { informasjonstekst, tilgjengeligeMiljoeEndepunkt } = hovedKategori
+			if (!informasjonstekst && !tilgjengeligeMiljoeEndepunkt) return false
+			return (
+				<Fragment>
+					{informasjonstekst}
+					<br />
+					<TilgjengeligeMiljoer endepunkt={tilgjengeligeMiljoeEndepunkt} />
+				</Fragment>
+			)
+		}
+
 		return (
 			<Panel
 				key={name}
@@ -66,8 +80,7 @@ export default class AttributtVelger extends Component {
 				startOpen
 				checkAttributeArray={() => checkAttributeArray(hovedKategoriItems)}
 				uncheckAttributeArray={() => uncheckAttributeArray(hovedKategoriItems)}
-				informasjonstekst={hovedKategori.informasjonstekst}
-				tilgjengeligeMiljoeEndepunkt={hovedKategori.tilgjengeligeMiljoeEndepunkt}
+				informasjonstekst={tooltip()}
 			>
 				<fieldset name={name}>
 					<div className="attributt-velger_panelcontent">

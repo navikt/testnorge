@@ -131,16 +131,8 @@ export default class DollyService {
 		return Request.get(Endpoints.config())
 	}
 
-	static postOpenAm(body) {
-		return Request.post(Endpoints.openAm(), body)
-	}
-
 	static postOpenAmBestilling(bestillingId) {
 		return Request.post(Endpoints.openAmBestilling(bestillingId))
-	}
-
-	static putOpenAmGroupStatus(groupId) {
-		return Request.put(Endpoints.openAmGroupStatus(groupId))
 	}
 
 	static cancelBestilling(bestillingId) {
@@ -158,10 +150,6 @@ export default class DollyService {
 
 	static getPersonFraPersonoppslag(ident) {
 		return Request.get(Endpoints.personoppslag(ident))
-	}
-
-	static getSyntData(path, numToGenerate) {
-		return Request.get(Endpoints.syntdataGenerate(path, numToGenerate))
 	}
 
 	//AAREG

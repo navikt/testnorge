@@ -1,10 +1,10 @@
 import React from 'react'
-import { shallow, render } from 'enzyme'
+import { shallow } from 'enzyme'
 import App from '../App'
 
-import Header from '~/components/header/Header'
-import Loading from '~/components/loading/Loading'
-import Breadcrumb from '~/components/breadcrumb/BreadcrumbWithHoc'
+import Header from '~/components/layout/header/Header'
+import Loading from '~/components/ui/loading/Loading'
+import Breadcrumb from '~/components/layout/breadcrumb/BreadcrumbWithHoc'
 
 describe('App.js', () => {
 	const fetchConfig = jest.fn()

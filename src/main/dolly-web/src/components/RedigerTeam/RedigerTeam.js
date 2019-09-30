@@ -6,7 +6,7 @@ import { Formik, Form, Field, getIn } from 'formik'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import Knapp from 'nav-frontend-knapper'
 import * as yup from 'yup'
-import Loading from '~/components/loading/Loading'
+import Loading from '~/components/ui/loading/Loading'
 
 export default class RedigerTeam extends PureComponent {
 	static propTypes = {}

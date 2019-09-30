@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { AttributtManager } from '~/service/Kodeverk'
-import LinkButton from '~/components/button/LinkButton/LinkButton'
+import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
 
 import './Utvalg.less'
 
