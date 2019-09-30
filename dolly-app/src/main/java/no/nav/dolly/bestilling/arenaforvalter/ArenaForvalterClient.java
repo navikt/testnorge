@@ -15,11 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @Slf4j
 @Service
@@ -32,7 +32,7 @@ public class ArenaForvalterClient implements ClientRegister {
     private MapperFacade mapperFacade;
 
     @Override
-    public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
+    public void gjenopprett(RsDollyBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         if (nonNull(bestilling.getArenaforvalter())) {
 
@@ -47,12 +47,12 @@ public class ArenaForvalterClient implements ClientRegister {
 
             if (!availEnvironments.isEmpty()) {
 
-                deleteServicebruker(norskIdent.getIdent(), availEnvironments);
+                deleteServicebruker(tpsPerson.getHovedperson(), availEnvironments);
 
                 ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
                 availEnvironments.forEach(environment -> {
                     ArenaNyBruker arenaNyBruker = mapperFacade.map(bestilling.getArenaforvalter(), ArenaNyBruker.class);
-                    arenaNyBruker.setPersonident(norskIdent.getIdent());
+                    arenaNyBruker.setPersonident(tpsPerson.getHovedperson());
                     arenaNyBruker.setMiljoe(environment);
                     arenaNyeBrukere.getNyeBrukere().add(arenaNyBruker);
                 });

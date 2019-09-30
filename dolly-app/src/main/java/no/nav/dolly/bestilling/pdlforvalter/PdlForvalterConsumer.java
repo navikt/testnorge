@@ -19,7 +19,7 @@ import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.sts.StsOidcService;
 
 @Service
-public class PdlForvalterRestConsumer {
+public class PdlForvalterConsumer {
 
     private static final String NAV_PERSONIDENT = "Nav-Personident";
     private static final String NAV_CONSUMER_TOKEN = "Nav-Consumer-Token";

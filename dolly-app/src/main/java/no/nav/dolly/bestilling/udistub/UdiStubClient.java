@@ -15,8 +15,8 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiAlias;
 import no.nav.dolly.domain.resultset.udistub.model.UdiAlias;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
@@ -40,7 +40,7 @@ public final class UdiStubClient implements ClientRegister {
     private ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
+    public void gjenopprett(RsDollyBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         if (nonNull(bestilling.getUdistub())) {
             StringBuilder status = new StringBuilder();
@@ -48,11 +48,11 @@ public final class UdiStubClient implements ClientRegister {
             try {
 
                 UdiPerson udiPerson = mapperFacade.map(bestilling.getUdistub(), UdiPerson.class);
-                udiPerson.setIdent(norskIdent.getIdent());
+                udiPerson.setIdent(tpsPerson.getHovedperson());
 
-                createAndSetAliases(udiPerson, bestilling, norskIdent.getIdent());
+                createAndSetAliases(udiPerson, bestilling, tpsPerson.getHovedperson());
 
-                deletePerson(norskIdent.getIdent());
+                deletePerson(tpsPerson.getHovedperson());
 
                 ResponseEntity<UdiPersonControllerResponse> response = udiStubConsumer.createUdiPerson(udiPerson);
                 appendOkStatus(status, response);

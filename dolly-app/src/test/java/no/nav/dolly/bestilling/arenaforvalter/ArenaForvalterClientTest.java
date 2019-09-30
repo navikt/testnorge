@@ -26,12 +26,12 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArenaForvalterClientTest {
@@ -77,7 +77,7 @@ public class ArenaForvalterClientTest {
         arenaForvalterClient.gjenopprett(RsDollyBestilling.builder()
                 .arenaforvalter(Arenadata.builder().build())
                 .environments(singletonList(ENV))
-                .build(), NorskIdent.builder().ident(IDENT).build(), progress);
+                .build(), TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$OK")));
         verify(arenaForvalterConsumer).getEnvironments();
@@ -95,7 +95,7 @@ public class ArenaForvalterClientTest {
         arenaForvalterClient.gjenopprett(RsDollyBestilling.builder()
                 .arenaforvalter(Arenadata.builder().build())
                 .environments(singletonList(ENV))
-                .build(), NorskIdent.builder().ident(IDENT).build(), progress);
+                .build(), TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo(
                 "q2$Feil: 400 Bad request (An error has occured)")));
@@ -109,7 +109,7 @@ public class ArenaForvalterClientTest {
         arenaForvalterClient.gjenopprett(RsDollyBestilling.builder()
                         .arenaforvalter(Arenadata.builder().build())
                         .environments(singletonList("t3")).build(),
-                NorskIdent.builder().ident(IDENT).build(), progress);
+                TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo("t3$Feil: Miljø ikke støttet")));
     }
@@ -119,7 +119,7 @@ public class ArenaForvalterClientTest {
 
         BestillingProgress progress = new BestillingProgress();
         arenaForvalterClient.gjenopprett(RsDollyBestilling.builder().environments(singletonList(ENV)).build(),
-                NorskIdent.builder().ident(IDENT).build(), progress);
+                TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verifyZeroInteractions(arenaForvalterConsumer);
         assertThat(progress.getArenaforvalterStatus(), is(nullValue()));

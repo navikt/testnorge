@@ -24,13 +24,13 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -48,7 +48,7 @@ public class PdlForvalterClientTest {
     private static final String HENDLSE_ID = "hendelseId";
 
     @Mock
-    private PdlForvalterRestConsumer pdlForvalterRestConsumer;
+    private PdlForvalterConsumer pdlForvalterConsumer;
 
     @Mock
     private MapperFacade mapperFacade;
@@ -61,7 +61,7 @@ public class PdlForvalterClientTest {
 
     @Before
     public void setup() {
-        when(pdlForvalterRestConsumer.deleteIdent(eq(IDENT)))
+        when(pdlForvalterConsumer.deleteIdent(eq(IDENT)))
                 .thenReturn(ResponseEntity.ok(instance.objectNode().put(HENDLSE_ID, HENDELSE_ID_SLETTING)));
     }
 
@@ -72,21 +72,20 @@ public class PdlForvalterClientTest {
 
         when(mapperFacade.map(any(RsPdldata.class), eq(Pdldata.class))).thenReturn(Pdldata.builder()
                 .kontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo.builder().build()).build());
-        when(pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class),
+        when(pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class),
                 eq(IDENT))).thenReturn(ResponseEntity.ok(instance.objectNode().put(HENDLSE_ID, HENDELSE_ID_KONTAKT_DOEDSBO)));
 
         pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
                         .environments(singletonList(ENV))
                         .pdlforvalter(RsPdldata.builder().build())
                         .build(),
-                NorskIdent.builder().ident(IDENT).build(), progress);
+                TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
-        verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
-        verify(pdlForvalterRestConsumer).postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT));
+        verify(pdlForvalterConsumer).deleteIdent(IDENT);
+        verify(pdlForvalterConsumer).postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&OK, hendelseId: \"111\""
-                + "$KontaktinformasjonForDoedsbo&OK, hendelseId: \"222\"")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("KontaktinformasjonForDoedsbo&OK, hendelseId: \"222\"")));
     }
 
     @Test
@@ -96,7 +95,7 @@ public class PdlForvalterClientTest {
 
         when(mapperFacade.map(any(RsPdldata.class), eq(Pdldata.class))).thenReturn(Pdldata.builder()
                 .kontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo.builder().build()).build());
-        when(pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT)))
+        when(pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT)))
                 .thenThrow(new HttpClientErrorException(INTERNAL_SERVER_ERROR, FEIL_KONTAKT_DOEDSBO));
         when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil: " + FEIL_KONTAKT_DOEDSBO);
 
@@ -104,14 +103,13 @@ public class PdlForvalterClientTest {
                         .environments(singletonList(ENV))
                         .pdlforvalter(RsPdldata.builder().build())
                         .build(),
-                NorskIdent.builder().ident(IDENT).build(), progress);
+                TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
-        verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
-        verify(pdlForvalterRestConsumer).postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT));
+        verify(pdlForvalterConsumer).deleteIdent(IDENT);
+        verify(pdlForvalterConsumer).postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&OK, hendelseId: \"111\""
-                + "$KontaktinformasjonForDoedsbo&Feil: En feil har oppstått")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("KontaktinformasjonForDoedsbo&Feil: En feil har oppstått")));
     }
 
     @Test
@@ -121,21 +119,20 @@ public class PdlForvalterClientTest {
 
         when(mapperFacade.map(any(RsPdldata.class), eq(Pdldata.class))).thenReturn(Pdldata.builder()
                 .utenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer.builder().build()).build());
-        when(pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT)))
+        when(pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT)))
                 .thenReturn(ResponseEntity.ok(instance.objectNode().put(HENDLSE_ID, HENDELSE_ID_UTENLANDSID)));
 
         pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
                         .environments(singletonList(ENV))
                         .pdlforvalter(RsPdldata.builder().build())
                         .build(),
-                NorskIdent.builder().ident(IDENT).build(), progress);
+                TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
-        verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
-        verify(pdlForvalterRestConsumer).postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT));
+        verify(pdlForvalterConsumer).deleteIdent(IDENT);
+        verify(pdlForvalterConsumer).postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&OK, hendelseId: \"111\""
-                + "$UtenlandskIdentifikasjonsnummer&OK, hendelseId: \"333\"")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("UtenlandskIdentifikasjonsnummer&OK, hendelseId: \"333\"")));
     }
 
     @Test
@@ -145,7 +142,7 @@ public class PdlForvalterClientTest {
 
         when(mapperFacade.map(any(RsPdldata.class), eq(Pdldata.class))).thenReturn(Pdldata.builder()
                 .utenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer.builder().build()).build());
-        when(pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT)))
+        when(pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.ALREADY_REPORTED, FEIL_UTENLANDS_IDENT));
         when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil: " + FEIL_UTENLANDS_IDENT);
 
@@ -153,14 +150,13 @@ public class PdlForvalterClientTest {
                         .environments(singletonList(ENV))
                         .pdlforvalter(RsPdldata.builder().build())
                         .build(),
-                NorskIdent.builder().ident(IDENT).build(), progress);
+                TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
-        verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
-        verify(pdlForvalterRestConsumer).postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT));
+        verify(pdlForvalterConsumer).deleteIdent(IDENT);
+        verify(pdlForvalterConsumer).postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&OK, hendelseId: \"111\""
-                + "$UtenlandskIdentifikasjonsnummer&Feil: Opplysning er allerede innmeldt")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("UtenlandskIdentifikasjonsnummer&Feil: Opplysning er allerede innmeldt")));
     }
 
     @Test
@@ -170,21 +166,20 @@ public class PdlForvalterClientTest {
 
         when(mapperFacade.map(any(RsPdldata.class), eq(Pdldata.class))).thenReturn(Pdldata.builder()
                 .falskIdentitet(PdlFalskIdentitet.builder().build()).build());
-        when(pdlForvalterRestConsumer.postFalskIdentitet(any(PdlFalskIdentitet.class), eq(IDENT)))
+        when(pdlForvalterConsumer.postFalskIdentitet(any(PdlFalskIdentitet.class), eq(IDENT)))
                 .thenReturn(ResponseEntity.ok(instance.objectNode().put(HENDLSE_ID, HENDELSE_ID_FALSKIDENTITETID)));
 
         pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
                         .environments(singletonList(ENV))
                         .pdlforvalter(RsPdldata.builder().build())
                         .build(),
-                NorskIdent.builder().ident(IDENT).build(), progress);
+                TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
-        verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
-        verify(pdlForvalterRestConsumer).postFalskIdentitet(any(PdlFalskIdentitet.class), eq(IDENT));
+        verify(pdlForvalterConsumer).deleteIdent(IDENT);
+        verify(pdlForvalterConsumer).postFalskIdentitet(any(PdlFalskIdentitet.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&OK, hendelseId: \"111\""
-                + "$FalskIdentitet&OK, hendelseId: \"444\"")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("FalskIdentitet&OK, hendelseId: \"444\"")));
     }
 
     @Test
@@ -194,7 +189,7 @@ public class PdlForvalterClientTest {
 
         when(mapperFacade.map(any(RsPdldata.class), eq(Pdldata.class))).thenReturn(Pdldata.builder()
                 .falskIdentitet(PdlFalskIdentitet.builder().build()).build());
-        when(pdlForvalterRestConsumer.postFalskIdentitet(any(PdlFalskIdentitet.class), eq(IDENT)))
+        when(pdlForvalterConsumer.postFalskIdentitet(any(PdlFalskIdentitet.class), eq(IDENT)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.NOT_ACCEPTABLE, FEIL_FALSK_IDENTITET));
         when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil: " + FEIL_FALSK_IDENTITET);
 
@@ -202,14 +197,13 @@ public class PdlForvalterClientTest {
                         .environments(singletonList(ENV))
                         .pdlforvalter(RsPdldata.builder().build())
                         .build(),
-                NorskIdent.builder().ident(IDENT).build(), progress);
+                TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
-        verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
-        verify(pdlForvalterRestConsumer).postFalskIdentitet(any(PdlFalskIdentitet.class), eq(IDENT));
+        verify(pdlForvalterConsumer).deleteIdent(IDENT);
+        verify(pdlForvalterConsumer).postFalskIdentitet(any(PdlFalskIdentitet.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&OK, hendelseId: \"111\""
-                + "$FalskIdentitet&Feil: Falsk id er fake")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("FalskIdentitet&Feil: Falsk id er fake")));
     }
 
     @Test
@@ -219,10 +213,10 @@ public class PdlForvalterClientTest {
 
         pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
                         .pdlforvalter(RsPdldata.builder().build()).build(),
-                NorskIdent.builder().build(), progress);
+                TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verifyZeroInteractions(mapperFacade);
-        verifyZeroInteractions(pdlForvalterRestConsumer);
+        verifyZeroInteractions(pdlForvalterConsumer);
 
         assertThat(progress.getPdlforvalterStatus(),
                 is(equalTo("PdlForvalter&Feil: Bestilling ble ikke sendt til PdlForvalter da miljø 'q2' ikke er valgt")));
