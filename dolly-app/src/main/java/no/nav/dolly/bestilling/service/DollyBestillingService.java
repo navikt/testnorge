@@ -249,10 +249,11 @@ public class DollyBestillingService {
         try {
             TpsfBestilling tpsfBestilling = objectMapper.readValue(bestilling.getBestKriterier(), TpsfBestilling.class);
 
-            tpsPerson.setPartner(nonNull(tpsfBestilling.getRelasjoner().getPartner()) ? leverteIdenter.get(1) : null);
-            tpsPerson.setBarn(nonNull(tpsfBestilling.getRelasjoner().getBarn()) ?
-                    harPartner(tpsfBestilling, leverteIdenter) :
-                    null);
+            if (nonNull(tpsfBestilling.getRelasjoner())) {
+                tpsPerson.setPartner(nonNull(tpsfBestilling.getRelasjoner().getPartner()) ? leverteIdenter.get(1) : null);
+                tpsPerson.setBarn(nonNull(tpsfBestilling.getRelasjoner().getBarn()) ?
+                        harPartner(tpsfBestilling, leverteIdenter) : null);
+            }
 
         } catch (IOException e) {
             log.error("Feilet å hente tpsfKriterier", e);
