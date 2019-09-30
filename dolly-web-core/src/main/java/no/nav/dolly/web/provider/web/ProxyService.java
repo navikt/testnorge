@@ -1,7 +1,10 @@
 package no.nav.dolly.web.provider.web;
 
+import static java.lang.String.format;
+
 import lombok.RequiredArgsConstructor;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import org.springframework.core.codec.EncodingException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,6 +16,8 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Enumeration;
 
 @Service
@@ -35,10 +40,18 @@ public class ProxyService {
 
         HttpEntity<String> httpEntity = new HttpEntity<>(body, headers);
         try {
-            return proxyRestTemplate.exchange(requestUrl, method, httpEntity, String.class);
+            return proxyRestTemplate.exchange(encodeUrl(requestUrl), method, httpEntity, String.class);
         } catch (HttpClientErrorException exception) {
             return ResponseEntity.status(exception.getStatusCode())
                     .body(exception.getResponseBodyAsString());
+        }
+    }
+
+    private String encodeUrl(String requestUrl) {
+        try {
+            return URLEncoder.encode(requestUrl, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new EncodingException(format("Encoding av requesturl %s feilet", requestUrl));
         }
     }
 
