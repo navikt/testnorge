@@ -20,6 +20,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsBestilling;
+import no.nav.dolly.domain.resultset.RsBestillingStatus;
 import no.nav.dolly.service.BestillingService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,7 +48,7 @@ public class BestillingControllerTest {
         when(bestillingService.fetchBestillingById(any())).thenReturn(new Bestilling());
         when(mapperFacade.map(any(), any())).thenReturn(rsBestilling);
 
-        RsBestilling res = bestillingController.checkBestillingsstatus(BESTILLING_ID);
+        RsBestillingStatus res = bestillingController.checkBestillingsstatus(BESTILLING_ID);
 
         assertThat(res, is(rsBestilling));
     }
@@ -57,7 +58,7 @@ public class BestillingControllerTest {
         when(mapperFacade.mapAsList(anyList(), eq(RsBestilling.class)))
                 .thenReturn(singletonList(RsBestilling.builder().id(BESTILLING_ID).build()));
 
-        RsBestilling bestilling = bestillingController.getBestillinger(GRUPPE_ID).get(0);
+        RsBestillingStatus bestilling = bestillingController.getBestillinger(GRUPPE_ID).get(0);
 
         verify(bestillingService).fetchBestillingerByGruppeId(GRUPPE_ID);
         verify(mapperFacade).mapAsList(anyList(), eq(RsBestilling.class));
