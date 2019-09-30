@@ -55,13 +55,13 @@ public class BestillingControllerTest {
 
     @Test
     public void getBestillingerOk() {
-        when(mapperFacade.mapAsList(anyList(), eq(RsBestilling.class)))
-                .thenReturn(singletonList(RsBestilling.builder().id(BESTILLING_ID).build()));
+        when(mapperFacade.mapAsList(anyList(), eq(RsBestillingStatus.class)))
+                .thenReturn(singletonList(RsBestillingStatus.builder().id(BESTILLING_ID).build()));
 
         RsBestillingStatus bestilling = bestillingController.getBestillinger(GRUPPE_ID).get(0);
 
         verify(bestillingService).fetchBestillingerByGruppeId(GRUPPE_ID);
-        verify(mapperFacade).mapAsList(anyList(), eq(RsBestilling.class));
+        verify(mapperFacade).mapAsList(anyList(), eq(RsBestillingStatus.class));
 
         assertThat(bestilling.getId(), is(equalTo(BESTILLING_ID)));
     }
