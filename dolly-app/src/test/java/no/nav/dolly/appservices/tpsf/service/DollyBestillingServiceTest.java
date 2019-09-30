@@ -39,6 +39,7 @@ import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
@@ -156,6 +157,8 @@ public class DollyBestillingServiceTest {
 
         when(objectMapper.readValue(anyString(), eq(TpsfBestilling.class))).thenReturn(TpsfBestilling.builder()
                 .relasjoner(RsSimpleRelasjoner.builder().build()).build());
+
+        when(objectMapper.readValue(anyString(), eq(RsDollyBestilling.class))).thenReturn(RsDollyBestilling.builder().build());
     }
 
     @Test
@@ -274,7 +277,7 @@ public class DollyBestillingServiceTest {
                         .bestKriterier("json")
                         .miljoer("t2,t3").build());
 
-        verify(bestillingService, times(4)).isStoppet(BESTILLING_ID);
+        verify(bestillingService, times(5)).isStoppet(BESTILLING_ID);
         verify(tpsfService).hentTilhoerendeIdenter(anyList());
         verify(tpsfService).sendIdenterTilTpsFraTPSF(anyList(), anyList());
         verify(tpsfResponseHandler).extractTPSFeedback(anyList());
