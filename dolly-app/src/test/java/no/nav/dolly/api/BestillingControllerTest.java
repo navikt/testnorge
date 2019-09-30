@@ -44,13 +44,13 @@ public class BestillingControllerTest {
     @Test
     public void checkBestillingsstatus_oppdatererMedPersonstatusOrReturnererBestilling() {
 
-        RsBestilling rsBestilling = new RsBestilling();
+        RsBestillingStatus bestillingStatus = RsBestillingStatus.builder().build();
         when(bestillingService.fetchBestillingById(any())).thenReturn(new Bestilling());
-        when(mapperFacade.map(any(), any())).thenReturn(rsBestilling);
+        when(mapperFacade.map(any(), any())).thenReturn(bestillingStatus);
 
         RsBestillingStatus res = bestillingController.checkBestillingsstatus(BESTILLING_ID);
 
-        assertThat(res, is(rsBestilling));
+        assertThat(res, is(bestillingStatus));
     }
 
     @Test
