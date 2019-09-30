@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Enumeration;
 
@@ -40,16 +41,16 @@ public class ProxyService {
 
         HttpEntity<String> httpEntity = new HttpEntity<>(body, headers);
         try {
-            return proxyRestTemplate.exchange(encodeUrl(requestUrl), method, httpEntity, String.class);
+            return proxyRestTemplate.exchange(decodeUrl(requestUrl), method, httpEntity, String.class);
         } catch (HttpClientErrorException exception) {
             return ResponseEntity.status(exception.getStatusCode())
                     .body(exception.getResponseBodyAsString());
         }
     }
 
-    private String encodeUrl(String requestUrl) {
+    private String decodeUrl(String requestUrl) {
         try {
-            return URLEncoder.encode(requestUrl, "UTF-8");
+            return URLDecoder.decode(requestUrl, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new EncodingException(format("Encoding av requesturl %s feilet", requestUrl));
         }
