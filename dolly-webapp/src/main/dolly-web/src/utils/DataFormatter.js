@@ -9,7 +9,7 @@ import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/Select
 const Formatters = {}
 
 Formatters.formatAlder = (alder, dodsdato) => {
-	if (!alder) return ''
+	if (!alder && alder !== 0 ) return ''
 	return `${alder.toString()}${dodsdato ? ' (død)' : ''}`
 }
 
