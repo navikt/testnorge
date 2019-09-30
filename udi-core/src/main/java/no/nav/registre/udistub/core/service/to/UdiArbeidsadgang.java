@@ -18,7 +18,7 @@ import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class UdiArbeidsadgang {
 
-    private JaNeiUavklart harArbeidsAdgang;
+    private JaNeiUavklart harArbeidsadgang;
     private ArbeidsadgangType typeArbeidsadgang;
     private ArbeidOmfangKategori arbeidsOmfang;
     private UdiPeriode periode;

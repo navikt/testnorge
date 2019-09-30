@@ -1,12 +1,13 @@
 package no.nav.registre.udistub.core.converter.ws;
 
-import no.nav.registre.udistub.core.service.to.UdiArbeidsadgang;
-import no.nav.registre.udistub.core.service.to.UdiPerson;
 import no.udi.mt_1067_nav_data.v1.Arbeidsadgang;
 import no.udi.mt_1067_nav_data.v1.Periode;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
+
+import no.nav.registre.udistub.core.service.to.UdiArbeidsadgang;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
 
 @Component
 public class ArbeidsadgangWsConverter implements Converter<UdiPerson, Arbeidsadgang> {
@@ -25,7 +26,7 @@ public class ArbeidsadgangWsConverter implements Converter<UdiPerson, Arbeidsadg
 
             resultArbeidsadgang.setArbeidsadgangsPeriode(conversionService.convert(arbeidsadgang.getPeriode(), Periode.class));
             resultArbeidsadgang.setArbeidsOmfang(arbeidsadgang.getArbeidsOmfang());
-            resultArbeidsadgang.setHarArbeidsadgang(arbeidsadgang.getHarArbeidsAdgang());
+            resultArbeidsadgang.setHarArbeidsadgang(arbeidsadgang.getHarArbeidsadgang());
             resultArbeidsadgang.setTypeArbeidsadgang(arbeidsadgang.getTypeArbeidsadgang());
 
             return resultArbeidsadgang;
