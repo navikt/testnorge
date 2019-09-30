@@ -13,95 +13,15 @@
 import _get from 'lodash/get'
 import Formatters from '~/utils/DataFormatter'
 
-const _extract = (arr, id, navn) => {
-	if (!arr) return false
-	return {
-		id,
-		navn,
-		statuser: arr.map(status => {
-			const obj = {
-				melding: status.statusMelding || status.status
-			}
-
-			if (status.identer) obj.identer = status.identer
-
-			const envNode = status.environmentIdents || status.envIdent || status.environmentIdentsForhold
-
-			if (envNode) {
-				obj.detaljert = Object.keys(envNode).map(key => {
-					const identer = envNode[key]
-					return {
-						miljo: key,
-						identer: Array.isArray(identer) ? identer : Object.keys(identer)
-					}
-				})
-			}
-
-			return obj
-		})
-	}
-}
-
-/**
- * Mapper ulike statuser som kommer fra API. Disse ligger
- * på separate noder (tpsfStatus, aaregStatus, etc.) Disse mapper om til å
- * følge et generisk statusobject 
- * 
- * Eksempel:
-const example = {
-	id: 'tpsfStatus',
-	navn: 'TPSF',
-	statuser: [
-		{
-			melding: 'OK',
-			identer: ['31106329632'], // optional
-			detaljert: [ // Optional
-				{
-					miljo: 't4',
-					identer: ['31106329632']
-				}
-			]
-		}
-	]
-}
- */
-const mapStatusStructure = data => {
-	return [
-		_extract(data.tpsfStatus, 'TPSF', 'Tjenestebasert personsystem (TPS)'),
-		_extract(data.sigrunStubStatus, 'sigrunStubStatus', 'Sigrun'),
-		_extract(data.krrStubStatus, 'krrStubStatus', 'KRR'),
-		_extract(data.udiStubStatus, 'udiStubStatus', 'UDI'),
-		_extract(data.arenaforvalterStatus, 'arenaforvalterStatus', 'ARENA'),
-		_extract(data.aaregStatus, 'aaregStatus', 'AAREG'),
-		_extract(data.instdataStatus, 'instdataStatus', 'INST'),
-
-		// PDLF
-		_extract(_get(data, 'pdlforvalterStatus.pdlForvalter'), 'pdlforvalterStatus', 'PDLF'),
-		_extract(
-			_get(data, 'pdlforvalterStatus.falskIdentitet'),
-			'pdlforvalterStatus',
-			'PDLF: Falsk Identitet'
-		),
-		_extract(
-			_get(data, 'pdlforvalterStatus.kontaktinfoDoedsbo'),
-			'pdlforvalterStatus',
-			'PDLF: Kontaktinfo Dødsbo'
-		),
-		_extract(
-			_get(data, 'pdlforvalterStatus.utenlandsid'),
-			'pdlforvalterStatus',
-			'PDLF: Utenlands ID'
-		)
-	].filter(x => x) // fjern falsy values
-}
-
 const finnnesDetAvvik = status => {
+	if (!status) return false
 	return status.some(source => {
 		return source.statuser.some(status => status.melding !== 'OK')
 	})
 }
 
 const antallIdenterOpprettetPaaBestilling = status => {
+	if (!status) return 0
 	let identerOpprettet = []
 	if (status.length) {
 		const tpsf = status.find(f => f.id === 'TPSF')
@@ -151,15 +71,13 @@ const extractValuesForBestillingListe = (data, statusKode) => {
 
 export default function BestillingStatusMapper(data) {
 	return data.map(bestilling => {
-		const status = mapStatusStructure(bestilling)
-		const harAvvik = finnnesDetAvvik(status)
-		const antallIdenterOpprettet = antallIdenterOpprettetPaaBestilling(status)
+		const harAvvik = finnnesDetAvvik(bestilling.status)
+		const antallIdenterOpprettet = antallIdenterOpprettetPaaBestilling(bestilling.status)
 		const statusKode = extractBestillingstatusKode(bestilling, harAvvik, antallIdenterOpprettet)
 		const listedata = extractValuesForBestillingListe(bestilling, statusKode)
 		return {
 			...bestilling,
 			antallIdenterOpprettet,
-			status,
 			listedata
 		}
 	})
