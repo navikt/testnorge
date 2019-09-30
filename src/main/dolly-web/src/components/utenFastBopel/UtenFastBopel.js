@@ -36,7 +36,6 @@ export default class UtenFastBopel extends Component {
 
 	render() {
 		const { values } = this.props
-		console.log('this.props------- :', this.props);
 		const item = this.props.item
 		const valgteVerdier = this.props.valgteVerdier
 		const InputComponent = InputSelector(item.inputType)
@@ -117,8 +116,6 @@ export default class UtenFastBopel extends Component {
 	}
 
 	_extraComponentProps = (item, type) => {
-	console.log('this.props xxxxxxxx:', this.props);
-		console.log('item xxxxxxx:', item);
 		if (item.inputType === 'select') {
 			const placeholder = !item.validation ? 'Ikke spesifisert' : 'Velg...'
 
