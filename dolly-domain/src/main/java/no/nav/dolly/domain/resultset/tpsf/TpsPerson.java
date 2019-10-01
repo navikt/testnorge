@@ -13,9 +13,9 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsSimpleRelasjoner {
+public class TpsPerson {
 
-    private RsRelasjon partner;
-
-    private List<RsRelasjon> barn;
+    private String hovedperson;
+    private String partner;
+    private List<String> barn;
 }

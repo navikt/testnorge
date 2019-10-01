@@ -19,7 +19,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
@@ -27,6 +26,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AaregClientTest {
@@ -53,7 +53,7 @@ public class AaregClientTest {
         aaregClient.gjenopprett(RsDollyBestilling.builder()
                         .aareg(singletonList(RsArbeidsforhold.builder().build()))
                         .environments(singletonList("u2")).build(),
-                NorskIdent.builder().ident(IDENT).build(), new BestillingProgress());
+                TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
 
         verify(aaregWsConsumer).opprettArbeidsforhold(any(RsAaregOpprettRequest.class));
     }
@@ -66,7 +66,7 @@ public class AaregClientTest {
         aaregClient.gjenopprett(RsDollyBestilling.builder()
                         .aareg(singletonList(RsArbeidsforhold.builder().build()))
                         .environments(singletonList("u2")).build(),
-                NorskIdent.builder().ident(IDENT).build(), new BestillingProgress());
+                TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
 
         verify(aaregWsConsumer).opprettArbeidsforhold(any(RsAaregOpprettRequest.class));
     }
@@ -80,7 +80,7 @@ public class AaregClientTest {
                         .arbeidsgiver(RsOrganisasjon.builder().orgnummer(ORGNUMMER).build())
                         .arbeidstaker(RsPersonAareg.builder().ident(IDENT).build())
                         .build())).environments(singletonList("u2")).build(),
-                NorskIdent.builder().ident(IDENT).build(), new BestillingProgress());
+                TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
 
         verify(aaregWsConsumer).oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class));
     }
@@ -94,7 +94,7 @@ public class AaregClientTest {
                         .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
                         .arbeidstaker(RsPersonAareg.builder().ident(IDENT).build())
                         .build())).environments(singletonList("u2")).build(),
-                NorskIdent.builder().ident(IDENT).build(), new BestillingProgress());
+                TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
 
         verify(aaregWsConsumer).oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class));
     }
@@ -113,7 +113,7 @@ public class AaregClientTest {
                         .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
                         .arbeidstaker(RsPersonAareg.builder().ident(IDENT).build())
                         .build())).environments(singletonList("u2")).build(),
-                NorskIdent.builder().ident(IDENT).build(), progress);
+                TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(aaregWsConsumer).oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class));
         assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=1$OK")));

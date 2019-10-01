@@ -10,9 +10,6 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
-import static no.nav.dolly.domain.resultset.IdentType.DNR;
-import static no.nav.dolly.domain.resultset.IdentType.FNR;
-import static no.nav.dolly.domain.resultset.IdentTypeUtil.getIdentType;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -35,7 +32,6 @@ import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -45,6 +41,7 @@ import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -155,9 +152,7 @@ public class DollyBestillingService {
 
             tpsfService.updatePerson(request.getTpsfPerson());
             sendIdenterTilTPS(request.getEnvironments(), singletonList(ident), null, progress);
-            gjenopprettNonTpsf(NorskIdent.builder().ident(ident)
-                    .identType(Character.getType(ident.charAt(0)) > 3 ? DNR : FNR)
-                    .build(), bestilling, progress);
+            gjenopprettNonTpsf(TpsPerson.builder().hovedperson(ident).build(), bestilling, progress);
 
         } catch (Exception e) {
             log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), ident, e.getMessage(), e);
@@ -181,14 +176,13 @@ public class DollyBestillingService {
 
             List<String> identer = tpsfService.hentTilhoerendeIdenter(singletonList(bestillingProgress.getIdent()));
 
-            String hovedPersonIdent = getHovedpersonAvBestillingsidenter(identer);
-            BestillingProgress progress = new BestillingProgress(bestilling.getId(), hovedPersonIdent);
+            TpsPerson tpsPerson = buildTpsPerson(bestilling, identer);
+
+            BestillingProgress progress = new BestillingProgress(bestilling.getId(), tpsPerson.getHovedperson());
 
             sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), identer, bestilling.getGruppe(), progress);
 
-            gjenopprettNonTpsf(NorskIdent.builder().ident(bestillingProgress.getIdent())
-                    .identType(getIdentType(bestillingProgress.getIdent()))
-                    .build(), bestilling, progress);
+            gjenopprettNonTpsf(tpsPerson, bestilling, progress);
 
             oppdaterProgress(bestilling, progress);
             clearCache();
@@ -197,7 +191,7 @@ public class DollyBestillingService {
         clearCache();
     }
 
-    private void gjenopprettNonTpsf(NorskIdent norskIdent, Bestilling bestilling, BestillingProgress progress) {
+    private void gjenopprettNonTpsf(TpsPerson tpsPerson, Bestilling bestilling, BestillingProgress progress) {
 
         if (nonNull(bestilling.getBestKriterier())) {
             try {
@@ -205,7 +199,7 @@ public class DollyBestillingService {
                 bestKriterier.setEnvironments(asList(bestilling.getMiljoer().split(",")));
 
                 clientRegisters.forEach(clientRegister ->
-                        clientRegister.gjenopprett(bestKriterier, norskIdent, progress));
+                        clientRegister.gjenopprett(bestKriterier, tpsPerson, progress));
 
                 oppdaterProgress(bestilling, progress);
 
@@ -233,16 +227,45 @@ public class DollyBestillingService {
 
     private void preparePerson(RsDollyBestilling request, Bestilling bestilling, Testgruppe testgruppe, TpsfBestilling tpsfBestilling) {
 
-        List<String> bestilteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
-        String ident = getHovedpersonAvBestillingsidenter(bestilteIdenter);
-        BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident);
+        List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
 
-        sendIdenterTilTPS(request.getEnvironments(), bestilteIdenter, testgruppe, progress);
+        TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter);
 
-        clientRegisters.forEach(clientRegister ->
-                clientRegister.gjenopprett(request, NorskIdent.builder().ident(ident).identType(tpsfBestilling.getIdenttype()).build(), progress));
+        BestillingProgress progress = new BestillingProgress(bestilling.getId(), tpsPerson.getHovedperson());
+
+        sendIdenterTilTPS(request.getEnvironments(), leverteIdenter, testgruppe, progress);
+
+        clientRegisters.forEach(clientRegister -> clientRegister.gjenopprett(request, tpsPerson, progress));
 
         oppdaterProgress(bestilling, progress);
+    }
+
+    private TpsPerson buildTpsPerson(Bestilling bestilling, List<String> leverteIdenter) {
+
+        TpsPerson tpsPerson = TpsPerson.builder()
+                .hovedperson(leverteIdenter.get(0))
+                .build();
+
+        try {
+            TpsfBestilling tpsfBestilling = objectMapper.readValue(bestilling.getTpsfKriterier(), TpsfBestilling.class);
+
+            if (nonNull(tpsfBestilling.getRelasjoner())) {
+                tpsPerson.setPartner(nonNull(tpsfBestilling.getRelasjoner().getPartner()) ? leverteIdenter.get(1) : null);
+                tpsPerson.setBarn(nonNull(tpsfBestilling.getRelasjoner().getBarn()) ?
+                        harPartner(tpsfBestilling, leverteIdenter) : null);
+            }
+
+        } catch (IOException e) {
+            log.error("Feilet å hente tpsfKriterier", e);
+        }
+
+        return tpsPerson;
+    }
+
+    private static List<String> harPartner(TpsfBestilling bestilling, List<String> leverteIdenter) {
+        return nonNull(bestilling.getRelasjoner().getPartner()) ?
+                leverteIdenter.subList(2, leverteIdenter.size()) :
+                leverteIdenter.subList(1, leverteIdenter.size());
     }
 
     private void oppdaterProgressFerdig(Bestilling bestilling) {

@@ -19,7 +19,7 @@ import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.sts.StsOidcService;
 
 @Service
-public class PdlForvalterRestConsumer {
+public class PdlForvalterConsumer {
 
     private static final String NAV_PERSONIDENT = "Nav-Personident";
     private static final String NAV_CONSUMER_TOKEN = "Nav-Consumer-Token";
@@ -27,6 +27,7 @@ public class PdlForvalterRestConsumer {
     private static final String PDL_BESTILL_KONTAKTINFORMASJON_FOR_DODESDBO_URL = PDL_BESTILLING_URL + "/kontaktinformasjonfordoedsbo";
     private static final String PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL = PDL_BESTILLING_URL + "/utenlandsidentifikasjonsnummer";
     private static final String PDL_BESTILLING_FALSK_IDENTITET_URL = PDL_BESTILLING_URL + "/falskidentitet";
+    private static final String PDL_BESTILLING_FOEDSEL_URL = PDL_BESTILLING_URL + "/foedsel";
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/ident";
     private static final String PREPROD_ENV = "q";
 
@@ -79,6 +80,16 @@ public class PdlForvalterRestConsumer {
                 .header(NAV_CONSUMER_TOKEN, resolveToken())
                 .header(NAV_PERSONIDENT, ident)
                 .body(falskIdentitet), JsonNode.class);
+    }
+
+    public ResponseEntity postFoedsel(PdlFoedsel pdlFoedsel, String ident) {
+        return restTemplate.exchange(RequestEntity.post(
+                URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FOEDSEL_URL))
+                .contentType(APPLICATION_JSON)
+                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                .header(NAV_CONSUMER_TOKEN, resolveToken())
+                .header(NAV_PERSONIDENT, ident)
+                .body(pdlFoedsel), JsonNode.class);
     }
 
     private String resolveToken() {

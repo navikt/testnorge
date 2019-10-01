@@ -18,10 +18,10 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,7 +47,7 @@ public class KrrstubClientTest {
 
     @Test
     public void gjenopprett_ingendata() {
-        krrstubClient.gjenopprett(new RsDollyBestilling(), NorskIdent.builder().ident(IDENT).build(), new BestillingProgress());
+        krrstubClient.gjenopprett(new RsDollyBestilling(), TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
 
         verify(krrstubConsumer, times(0)).createDigitalKontaktdata(any(DigitalKontaktdata.class));
     }
@@ -62,7 +62,7 @@ public class KrrstubClientTest {
         when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenReturn(ResponseEntity.ok(""));
 
         krrstubClient.gjenopprett(RsDollyBestilling.builder().krrstub(new RsDigitalKontaktdata()).build(),
-                NorskIdent.builder().ident(IDENT).build(),
+                TpsPerson.builder().hovedperson(IDENT).build(),
                 BestillingProgress.builder().bestillingId(BESTILLING_ID).build());
 
         verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
@@ -81,7 +81,7 @@ public class KrrstubClientTest {
 
         krrstubClient.gjenopprett(RsDollyBestilling.builder()
                 .krrstub(new RsDigitalKontaktdata())
-                .build(), NorskIdent.builder().ident(IDENT).build(), progress);
+                .build(), TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
         verify(krrStubResponseHandler, times(0)).extractResponse(any(ResponseEntity.class));

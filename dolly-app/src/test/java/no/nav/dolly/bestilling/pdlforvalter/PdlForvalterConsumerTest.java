@@ -25,7 +25,7 @@ import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.sts.StsOidcService;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PdlForvalterRestConsumerTest {
+public class PdlForvalterConsumerTest {
 
     private static final String IDENT = "11111111111";
     private static final String PDL_URL = "http://pdl.nav.no";
@@ -40,19 +40,19 @@ public class PdlForvalterRestConsumerTest {
     private StsOidcService stsOidcService;
 
     @InjectMocks
-    private PdlForvalterRestConsumer pdlForvalterRestConsumer;
+    private PdlForvalterConsumer pdlForvalterConsumer;
 
     @Before
     public void setup() {
 
-        ReflectionTestUtils.setField(pdlForvalterRestConsumer, "environment", "u2");
+        ReflectionTestUtils.setField(pdlForvalterConsumer, "environment", "u2");
         when(providersProps.getPdlForvalter()).thenReturn(ProvidersProps.PdlForvalter.builder().url(PDL_URL).build());
     }
 
     @Test
     public void postKontaktinformasjonForDoedsbo_OK() {
 
-        pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo.builder().build(), IDENT);
+        pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo.builder().build(), IDENT);
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService, times(2)).getIdToken(anyString());
@@ -62,7 +62,7 @@ public class PdlForvalterRestConsumerTest {
     @Test
     public void postUtenlandskIdentifikasjonsnummer_OK() {
 
-        pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer.builder().build(), IDENT);
+        pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer.builder().build(), IDENT);
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService, times(2)).getIdToken(anyString());
@@ -72,7 +72,7 @@ public class PdlForvalterRestConsumerTest {
     @Test
     public void postFalskIdenitet_OK() {
 
-        pdlForvalterRestConsumer.postFalskIdentitet(PdlFalskIdentitet.builder().build(), IDENT);
+        pdlForvalterConsumer.postFalskIdentitet(PdlFalskIdentitet.builder().build(), IDENT);
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService, times(2)).getIdToken(anyString());
@@ -82,7 +82,7 @@ public class PdlForvalterRestConsumerTest {
     @Test
     public void deleteIdent() {
 
-        pdlForvalterRestConsumer.deleteIdent(IDENT);
+        pdlForvalterConsumer.deleteIdent(IDENT);
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService, times(2)).getIdToken(anyString());

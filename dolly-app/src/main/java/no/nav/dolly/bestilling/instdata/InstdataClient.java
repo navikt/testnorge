@@ -17,12 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.domain.resultset.inst.InstdataInstitusjonstype;
 import no.nav.dolly.domain.resultset.inst.InstdataKategori;
 import no.nav.dolly.domain.resultset.inst.InstdataKilde;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @Slf4j
@@ -42,7 +42,7 @@ public class InstdataClient implements ClientRegister {
     private ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
+    public void gjenopprett(RsDollyBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         if (nonNull(bestilling.getInstdata())) {
 
@@ -55,18 +55,18 @@ public class InstdataClient implements ClientRegister {
             if (!environments.isEmpty()) {
 
                 environments.forEach(environment -> {
-                    deleteInstdata(norskIdent.getIdent(), environment);
+                    deleteInstdata(tpsPerson.getHovedperson(), environment);
 
                     List<Instdata> instdataListe = mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class);
                     instdataListe.forEach(instdata -> {
-                        instdata.setPersonident(norskIdent.getIdent());
+                        instdata.setPersonident(tpsPerson.getHovedperson());
                         instdata.setKategori(nullcheckSetDefaultValue(instdata.getKategori(), decideKategori(instdata.getInstitusjonstype())));
                         instdata.setKilde(nullcheckSetDefaultValue(instdata.getKilde(), decideKilde(instdata.getInstitusjonstype())));
                         instdata.setOverfoert(nullcheckSetDefaultValue(instdata.getOverfoert(), false));
                         instdata.setTssEksternId(nullcheckSetDefaultValue(instdata.getTssEksternId(), decideTssEksternId(instdata.getInstitusjonstype())));
                     });
 
-                    postInstdata(norskIdent.getIdent(), instdataListe, environment, status);
+                    postInstdata(tpsPerson.getHovedperson(), instdataListe, environment, status);
                 });
             }
 
