@@ -4,6 +4,7 @@ package no.nav.registre.arena.core.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
+import no.nav.registre.arena.core.utils.Partition;
 import no.nav.registre.arena.domain.Arbeidsoeker;
 import no.nav.registre.arena.core.provider.rs.requests.IdentMedData;
 import no.nav.registre.arena.domain.NyBruker;
@@ -36,11 +37,9 @@ public class SyntetiseringService {
     public List<Arbeidsoeker> opprettArbeidsoekere(Integer antallNyeIdenter, Long avspillergruppeId, String miljoe) {
 
         List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
-        List<String> arenaForvalterAktiveIdenter = arenaForvalterConsumer.arbeidsoekerStatusAktiv(levendeIdenter, miljoe)
-                .entrySet().stream()
-                .filter(s -> s.getValue().equals(true))
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+
+        List<String> arenaForvalterAktiveIdenter = hentAtiveIdenter(levendeIdenter, miljoe);
+
         // Mulig man må sjekke om identene er aktive i Arena også. Dersom de blir endret direkte der uten at denne endringen
         // har gått gjennom Arena Forvalteren, blir ikke dette gjenspeilet i den.
 
@@ -71,6 +70,20 @@ public class SyntetiseringService {
         return byggArbeidsoekereOgLagreIHodejegeren(nyeIdenter, miljoe);
     }
 
+    private List<String> hentAtiveIdenter(List<String> levendeIdenter, String miljoe) {
+        List<List<String>> parter = Partition.ofSize(levendeIdenter, 50);
+        List<String> aktiveIdenter = new ArrayList<>(levendeIdenter.size());
+
+        for (List<String> part : parter) {
+            aktiveIdenter.addAll(arenaForvalterConsumer.arbeidsoekerStatusAktiv(part, miljoe)
+                    .entrySet().stream()
+                    .filter(s -> s.getValue().equals(true))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList()));
+        }
+
+        return aktiveIdenter;
+    }
 
     public List<Arbeidsoeker> opprettArbeidssoeker(String ident, Long avspillergruppeId, String miljoe) {
         List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
