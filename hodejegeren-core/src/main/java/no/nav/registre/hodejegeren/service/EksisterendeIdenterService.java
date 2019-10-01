@@ -163,6 +163,7 @@ public class EksisterendeIdenterService {
 
                 navnOgAdresse.set("personnavn", infoOnRoutineName.findValue("personnavn"));
                 navnOgAdresse.set("bostedsAdresse", infoOnRoutineName.findValue("bostedsAdresse"));
+                navnOgAdresse.set("NAVenhetDetalj", infoOnRoutineName.findValue("NAVenhetDetalj"));
 
                 utvalgteIdenterMedStatusQuo.put(ident, navnOgAdresse);
             } catch (IOException e) {
