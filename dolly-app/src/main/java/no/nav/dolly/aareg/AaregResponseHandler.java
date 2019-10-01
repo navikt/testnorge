@@ -2,6 +2,7 @@ package no.nav.dolly.aareg;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,13 +27,14 @@ public final class AaregResponseHandler {
             ForretningsmessigUnntak faultInfo = (ForretningsmessigUnntak) method.invoke(exception);
             if (nonNull(faultInfo.getTidspunkt())) {
                 XMLGregorianCalendar tidspunkt = faultInfo.getTidspunkt();
-                feilbeskrivelse = format(" (ForretningsmessigUnntak: feilaarsak: %s, feilkilde: %s, feilmelding: %s, tidspunkt: %s)",
+                feilbeskrivelse = format(" (ForretningsmessigUnntak: feilårsak: %s, feilkilde: %s, feilmelding: %s, tidspunkt: %s)",
                         faultInfo.getFeilaarsak(), faultInfo.getFeilkilde(), faultInfo.getFeilmelding(),
                         LocalDateTime.of(tidspunkt.getYear(), tidspunkt.getMonth(), tidspunkt.getDay(), tidspunkt.getHour(), tidspunkt.getMinute()));
             }
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             log.error("Lesing av faultInfo fra Aaareg feilet.", e);
         }
-        return format("Feil, %s -> %s%s", exception.getClass().getSimpleName(), exception.getMessage(), feilbeskrivelse);
+        return isBlank(feilbeskrivelse) ? "Feil: " + exception.getMessage() :
+                format("Feil, %s -> %s%s", exception.getClass().getSimpleName(), exception.getMessage(), feilbeskrivelse);
     }
 }

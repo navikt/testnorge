@@ -13,102 +13,40 @@
 import _get from 'lodash/get'
 import Formatters from '~/utils/DataFormatter'
 
-const _extract = (arr, id, navn) => {
-	if (!arr) return false
-	return {
-		id,
-		navn,
-		statuser: arr.map(status => {
-			const obj = {
-				melding: status.statusMelding || status.status
-			}
-
-			if (status.identer) obj.identer = status.identer
-
-			const envNode = status.environmentIdents || status.envIdent || status.environmentIdentsForhold
-
-			if (envNode) {
-				obj.detaljert = Object.keys(envNode).map(key => {
-					const identer = envNode[key]
-					return {
-						miljo: key,
-						identer: Array.isArray(identer) ? identer : Object.keys(identer)
-					}
-				})
-			}
-
-			return obj
-		})
-	}
-}
-
-/**
- * Mapper ulike statuser som kommer fra API. Disse ligger
- * på separate noder (tpsfStatus, aaregStatus, etc.) Disse mapper om til å
- * følge et generisk statusobject 
- * 
- * Eksempel:
-const example = {
-	id: 'tpsfStatus',
-	navn: 'TPSF',
-	statuser: [
-		{
-			melding: 'OK',
-			identer: ['31106329632'], // optional
-			detaljert: [ // Optional
-				{
-					miljo: 't4',
-					identer: ['31106329632']
-				}
-			]
-		}
-	]
-}
- */
-const mapStatusStructure = data => {
-	return [
-		_extract(data.tpsfStatus, 'tpsfStatus', 'TPSF'),
-		_extract(data.sigrunStubStatus, 'sigrunStubStatus', 'Sigrun'),
-		_extract(data.krrStubStatus, 'krrStubStatus', 'KRR'),
-		_extract(data.udiStubStatus, 'udiStubStatus', 'UDI'),
-		_extract(data.arenaforvalterStatus, 'arenaforvalterStatus', 'ARENA'),
-		_extract(data.aaregStatus, 'aaregStatus', 'AAREG'),
-		_extract(data.instdataStatus, 'instdataStatus', 'INST'),
-
-		// PDLF
-		_extract(_get(data, 'pdlforvalterStatus.pdlForvalter'), 'pdlforvalterStatus', 'PDLF'),
-		_extract(
-			_get(data, 'pdlforvalterStatus.falskIdentitet'),
-			'pdlforvalterStatus',
-			'PDLF: Falsk Identitet'
-		),
-		_extract(
-			_get(data, 'pdlforvalterStatus.kontaktinfoDoedsbo'),
-			'pdlforvalterStatus',
-			'PDLF: Kontaktinfo Dødsbo'
-		),
-		_extract(
-			_get(data, 'pdlforvalterStatus.utenlandsid'),
-			'pdlforvalterStatus',
-			'PDLF: Utenlands ID'
-		)
-	].filter(x => x) // fjern falsy values
-}
-
-const finnnesDetAvvik = statusrapport => {
-	return statusrapport.some(source => {
-		return source.statuser.some(status => status.statusMelding !== 'OK')
+const finnnesDetAvvik = status => {
+	if (!status) return false
+	return status.some(source => {
+		return source.statuser.some(status => status.melding !== 'OK')
 	})
 }
 
+const antallIdenterOpprettetPaaBestilling = status => {
+	if (!status) return 0
+	let identerOpprettet = []
+	if (status.length) {
+		const tpsf = status.find(f => f.id === 'TPSF')
+		if (tpsf) {
+			tpsf.statuser.forEach(stat => {
+				stat.detaljert.forEach(miljo => {
+					identerOpprettet = identerOpprettet.concat(miljo.identer)
+				})
+			})
+		}
+	}
+
+	// Kun unike identer
+	identerOpprettet = [...new Set(identerOpprettet)]
+
+	return identerOpprettet.length
+}
+
 // Setter bestillingstatus
-const extractBestillingstatus = (data, harAvvik) => {
-	const harIkkeIdenter = item => !Boolean(item.tpsfStatus)
-	return data.stoppet
+const extractBestillingstatusKode = (bestilling, harAvvik, antallIdenterOpprettet) => {
+	return bestilling.stoppet
 		? 'Stoppet'
-		: !data.ferdig
+		: !bestilling.ferdig
 			? 'Pågår'
-			: harIkkeIdenter(data)
+			: antallIdenterOpprettet === 0
 				? 'Feilet'
 				: harAvvik
 					? 'Avvik'
@@ -119,13 +57,13 @@ const extractBestillingstatus = (data, harAvvik) => {
  * Lager et String[] med verdier som vises i bestillingsliste
  * slik at man kan enkelt søke i verdier og samtidig liste de ut
  */
-const extractValuesForBestillingListe = (data, status) => {
+const extractValuesForBestillingListe = (data, statusKode) => {
 	const values = {
 		id: data.id.toString(),
 		antallIdenter: data.antallIdenter.toString(),
 		sistOppdatert: Formatters.formatDate(data.sistOppdatert),
 		environments: Formatters.arrayToString(data.environments),
-		status
+		statusKode
 	}
 
 	return Object.values(values)
@@ -133,14 +71,13 @@ const extractValuesForBestillingListe = (data, status) => {
 
 export default function BestillingStatusMapper(data) {
 	return data.map(bestilling => {
-		const statusrapport = mapStatusStructure(bestilling)
-		const harAvvik = finnnesDetAvvik(statusrapport)
-		const status = extractBestillingstatus(bestilling, harAvvik)
-		const listedata = extractValuesForBestillingListe(bestilling, status)
+		const harAvvik = finnnesDetAvvik(bestilling.status)
+		const antallIdenterOpprettet = antallIdenterOpprettetPaaBestilling(bestilling.status)
+		const statusKode = extractBestillingstatusKode(bestilling, harAvvik, antallIdenterOpprettet)
+		const listedata = extractValuesForBestillingListe(bestilling, statusKode)
 		return {
 			...bestilling,
-			status,
-			statusrapport,
+			antallIdenterOpprettet,
 			listedata
 		}
 	})

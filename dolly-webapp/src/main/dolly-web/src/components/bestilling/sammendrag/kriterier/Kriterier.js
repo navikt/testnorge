@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import cn from 'classnames'
+import Header from '~/components/bestilling/sammendrag/header/Header'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import { mapBestillingData } from './BestillingKriterieMapper'
@@ -79,7 +80,7 @@ export default function Bestillingskriterier({ bestilling }) {
 
 	return (
 		<div>
-			<h3>Bestillingskriterier</h3>
+			<Header label="Bestillingskriterier" />
 			{_renderBestillingsDetaljer(data)}
 		</div>
 	)

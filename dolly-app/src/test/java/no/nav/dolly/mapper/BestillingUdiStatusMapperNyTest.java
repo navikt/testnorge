@@ -37,7 +37,7 @@ public class BestillingUdiStatusMapperNyTest {
 
     @Test
     public void udiStatusMapper_MapFeilmeldinger() {
-        List<RsStatusRapport> statusRapport = BestillingUdiStubStatusMapperNy.buildUdiStubStatusMap(ERROR_STATUS);
+        List<RsStatusRapport> statusRapport = BestillingUdiStubStatusMapper.buildUdiStubStatusMap(ERROR_STATUS);
 
         assertThat(statusRapport.get(0).getStatuser().get(0).getMelding(), is(equalTo("FEIL: Gjenopprett feilet for udistubclient: 500 Internal Server Error")));
         assertThat(statusRapport.get(0).getStatuser().get(0).getIdenter(), containsInAnyOrder("IDENT_2", "IDENT_4"));

@@ -10,6 +10,7 @@ import Doedsbo from './pdlf/Doedsbo'
 import Identifikasjon from './pdlf/Identifikasjon'
 import Arena from './arena/Arena'
 import Inst from './inst/Inst'
+import Udi from './udi/Udi'
 
 const AttributtListe: Attributt[] = [
 	...TpsfPersoninformasjon,
@@ -21,7 +22,8 @@ const AttributtListe: Attributt[] = [
 	...Doedsbo,
 	...Inst,
 	...Identifikasjon,
-	...Arena
+	...Arena,
+	...Udi
 ]
 
 export default AttributtListe
