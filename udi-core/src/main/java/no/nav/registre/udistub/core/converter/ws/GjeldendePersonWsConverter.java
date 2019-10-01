@@ -2,6 +2,7 @@ package no.nav.registre.udistub.core.converter.ws;
 
 
 import no.udi.mt_1067_nav_data.v1.Alias;
+import no.udi.mt_1067_nav_data.v1.AliasListe;
 import no.udi.mt_1067_nav_data.v1.GjeldendePerson;
 import no.udi.mt_1067_nav_data.v1.MangelfullDato;
 import no.udi.mt_1067_nav_data.v1.PersonNavn;
@@ -25,18 +26,20 @@ public class GjeldendePersonWsConverter implements Converter<UdiPerson, Gjeldend
             mangelfullDato.setAr(person.getFoedselsDato().getYear());
             gjeldendePerson.setFodselsdato(mangelfullDato);
         }
+        if (!person.getAliaser().isEmpty()) {
+            gjeldendePerson.setAlias(new AliasListe());
+            person.getAliaser().stream().filter(this::filterAlias).map(a -> {
+                Alias alias = new Alias();
+                PersonNavn navn = new PersonNavn();
+                navn.setFornavn(a.getNavn().getFornavn());
+                navn.setMellomnavn(a.getNavn().getMellomnavn());
+                navn.setEtternavn(a.getNavn().getEtternavn());
+                alias.setNavn(navn);
 
-        person.getAliaser().stream().filter(this::filterAlias).map(a -> {
-            Alias alias = new Alias();
-            PersonNavn navn = new PersonNavn();
-            navn.setFornavn(a.getNavn().getFornavn());
-            navn.setMellomnavn(a.getNavn().getMellomnavn());
-            navn.setEtternavn(a.getNavn().getEtternavn());
-            alias.setNavn(navn);
-
-            alias.setFodselsnummer(a.getFnr());
-            return alias;
-        }).forEach(a -> gjeldendePerson.getAlias().getAlias().add(a));
+                alias.setFodselsnummer(a.getFnr());
+                return alias;
+            }).forEach(a -> gjeldendePerson.getAlias().getAlias().add(a));
+        }
 
 
         if (person.getNavn() != null) {
@@ -51,6 +54,6 @@ public class GjeldendePersonWsConverter implements Converter<UdiPerson, Gjeldend
     }
 
     private boolean filterAlias(UdiAlias a) {
-        return a.getNavn() != null && (a.getFnr() == null || a.getFnr().isEmpty());
+        return a.getNavn() != null && (a.getFnr() != null && !a.getFnr().isEmpty());
     }
 }
