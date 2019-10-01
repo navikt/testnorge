@@ -1,10 +1,5 @@
 package no.nav.registre.udistub.core.converter;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
-import no.nav.registre.udistub.core.converter.ws.IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter;
-import no.nav.registre.udistub.core.DefaultTestData;
 import no.udi.mt_1067_nav_data.v1.AvslagEllerBortfallAvPOBOSellerTilbakekallEllerFormeltVedtak;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdsrett;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdstillatelse;
@@ -16,6 +11,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import no.nav.registre.udistub.core.DefaultTestData;
+import no.nav.registre.udistub.core.converter.ws.IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter;
+
 @ExtendWith(MockitoExtension.class)
 public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverterTest extends ConverterTestBase {
 
@@ -24,7 +25,8 @@ public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverterTe
 
 	@Test
 	public void convertFromPersonToIkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumIfPresent() {
-		IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum result = ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverter.convert(defaultTestPerson);
+		IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum result = ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverter.convert(
+				defaultTestPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum());
 
 		assertNotNull(result);
 		Assertions.assertEquals(DefaultTestData.TEST_ovrigIkkeOppholdsKategori, result.getOvrigIkkeOpphold().getArsak());

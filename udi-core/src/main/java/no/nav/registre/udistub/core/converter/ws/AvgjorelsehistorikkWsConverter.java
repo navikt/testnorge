@@ -3,14 +3,10 @@ package no.nav.registre.udistub.core.converter.ws;
 import no.udi.mt_1067_nav_data.v1.AvgjorelseListe;
 import no.udi.mt_1067_nav_data.v1.Avgjorelser;
 import no.udi.mt_1067_nav_data.v1.Avgjorelsestype;
-import no.udi.mt_1067_nav_data.v1.Periode;
 import no.udi.mt_1067_nav_data.v1.Tillatelse;
 import no.udi.mt_1067_nav_data.v1.Utfall;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import no.nav.registre.udistub.core.service.to.UdiAvgjorelse;
 import no.nav.registre.udistub.core.service.to.UdiPerson;
@@ -18,17 +14,13 @@ import no.nav.registre.udistub.core.service.to.UdiPerson;
 @Component
 public class AvgjorelsehistorikkWsConverter implements Converter<UdiPerson, Avgjorelser> {
 
-    private final ConversionService conversionService;
-
-    public AvgjorelsehistorikkWsConverter(ConversionService conversionService) {
-        this.conversionService = conversionService;
-    }
-
     @Override
     public Avgjorelser convert(UdiPerson person) {
         if (person != null) {
             Avgjorelser avgjorelser = new Avgjorelser();
-            avgjorelser.setUavklart(person.getAvgjoerelseUavklart());
+            if (person.getAvgjoerelseUavklart() != null) {
+                avgjorelser.setUavklart(person.getAvgjoerelseUavklart());
+            }
             avgjorelser.setAvgjorelseListe(new AvgjorelseListe());
             person.getAvgjoerelser().stream()
                     .map(this::converterPersonAvgjorelse)
@@ -39,42 +31,62 @@ public class AvgjorelsehistorikkWsConverter implements Converter<UdiPerson, Avgj
     }
 
     private no.udi.mt_1067_nav_data.v1.Avgjorelse converterPersonAvgjorelse(UdiAvgjorelse avgjorelse) {
-
+        XmlDateWsConverter xmlDateWsConverter = new XmlDateWsConverter();
+        PeriodeWsConverter periodeWsConverter = new PeriodeWsConverter();
         no.udi.mt_1067_nav_data.v1.Avgjorelse udiAvgjorelse = new no.udi.mt_1067_nav_data.v1.Avgjorelse();
-        udiAvgjorelse.setAvgjorelseDato(conversionService.convert(avgjorelse.getAvgjoerelsesDato(), XMLGregorianCalendar.class));
+        if (avgjorelse.getIverksettelseDato() != null) {
+            udiAvgjorelse.setAvgjorelseDato(xmlDateWsConverter.convert(avgjorelse.getAvgjoerelsesDato()));
+        }
         Avgjorelsestype avgjorelsestype = new Avgjorelsestype();
-        avgjorelsestype.setGrunntypeKode(avgjorelse.getGrunntypeKode().udiKodeverk());
-        avgjorelsestype.setTillatelseKode(avgjorelse.getTillatelseKode().udiKodeverk());
-        avgjorelsestype.setUtfallstypeKode(avgjorelse.getUtfallstypeKode().udiKodeverk());
+        if (avgjorelse.getGrunntypeKode() != null) {
+            avgjorelsestype.setGrunntypeKode(avgjorelse.getGrunntypeKode().udiKodeverk());
+        }
+        if (avgjorelse.getTillatelseKode() != null) {
+            avgjorelsestype.setTillatelseKode(avgjorelse.getTillatelseKode().udiKodeverk());
+        }
+        if (avgjorelse.getUtfallstypeKode() != null) {
+            avgjorelsestype.setUtfallstypeKode(avgjorelse.getUtfallstypeKode().udiKodeverk());
+        }
         udiAvgjorelse.setAvgjorelsestype(avgjorelsestype);
 
-        udiAvgjorelse.setEffektueringsDato(conversionService.convert(avgjorelse.getEffektueringsDato(), XMLGregorianCalendar.class));
-        udiAvgjorelse.setErPositiv(avgjorelse.getErPositiv());
-        udiAvgjorelse.setEtat(avgjorelse.getEtat());
-        udiAvgjorelse.setFlyktingstatus(avgjorelse.getHarFlyktningstatus());
-        udiAvgjorelse.setIverksettelseDato(conversionService.convert(avgjorelse.getIverksettelseDato(), XMLGregorianCalendar.class));
-        udiAvgjorelse.setSaksnummer(avgjorelse.getSaksnummer());
+        udiAvgjorelse.setEffektueringsDato(xmlDateWsConverter.convert(avgjorelse.getEffektueringsDato()));
+        if (avgjorelse.getErPositiv() != null) {
+            udiAvgjorelse.setErPositiv(avgjorelse.getErPositiv());
+        }
+        if (avgjorelse.getEtat() != null && !avgjorelse.getEtat().isEmpty()) {
+            udiAvgjorelse.setEtat(avgjorelse.getEtat());
+        }
+        if (avgjorelse.getHarFlyktningstatus() != null) {
+            udiAvgjorelse.setFlyktingstatus(avgjorelse.getHarFlyktningstatus());
+        }
+        udiAvgjorelse.setIverksettelseDato(xmlDateWsConverter.convert(avgjorelse.getIverksettelseDato()));
+
+        if (avgjorelse.getSaksnummer() != null && !avgjorelse.getSaksnummer().isEmpty()) {
+            udiAvgjorelse.setSaksnummer(avgjorelse.getSaksnummer());
+        }
 
         Tillatelse tillatelse = new Tillatelse();
-        tillatelse.setGyldighetsperiode(conversionService.convert(avgjorelse.getTillatelsePeriode(), Periode.class));
-        tillatelse.setVarighet(avgjorelse.getTillatelseVarighet());
-        tillatelse.setVarighetKode(avgjorelse.getTillatelseVarighetKode().udiKodeverk());
+        tillatelse.setGyldighetsperiode(periodeWsConverter.convert(avgjorelse.getTillatelsePeriode()));
+        if (avgjorelse.getTillatelseVarighet() != null) {
+            tillatelse.setVarighet(avgjorelse.getTillatelseVarighet());
+        }
+        if (avgjorelse.getTillatelseVarighetKode() != null) {
+            tillatelse.setVarighetKode(avgjorelse.getTillatelseVarighetKode().udiKodeverk());
+        }
         udiAvgjorelse.setTillatelse(tillatelse);
 
         udiAvgjorelse.setUavklartFlyktningstatus(avgjorelse.getUavklartFlyktningstatus());
 
         Utfall utfall = new Utfall();
-        utfall.setGjeldendePeriode(conversionService.convert(avgjorelse.getTillatelsePeriode(), Periode.class));
-        utfall.setVarighet(avgjorelse.getTillatelseVarighet());
-        utfall.setVarighetKode(avgjorelse.getTillatelseVarighetKode().udiKodeverk());
-        udiAvgjorelse.setUtfall(utfall);
-
-        if (avgjorelse.getUtreisefristDato() != null) {
-            udiAvgjorelse.setUtreisefristDato(conversionService.convert(avgjorelse.getIverksettelseDato(), XMLGregorianCalendar.class));
-        } else {
-            udiAvgjorelse.setUtreisefristDato(null);
+        utfall.setGjeldendePeriode(periodeWsConverter.convert(avgjorelse.getTillatelsePeriode()));
+        if (avgjorelse.getUtfallVarighet() != null) {
+            utfall.setVarighet(avgjorelse.getUtfallVarighet());
         }
+        if (avgjorelse.getUtfallVarighetKode() != null) {
+            utfall.setVarighetKode(avgjorelse.getUtfallVarighetKode().udiKodeverk());
+        }
+        udiAvgjorelse.setUtfall(utfall);
+        udiAvgjorelse.setUtreisefristDato(xmlDateWsConverter.convert(avgjorelse.getIverksettelseDato()));
         return udiAvgjorelse;
-
     }
 }

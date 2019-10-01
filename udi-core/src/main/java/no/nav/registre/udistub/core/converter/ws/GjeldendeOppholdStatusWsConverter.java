@@ -1,37 +1,34 @@
 package no.nav.registre.udistub.core.converter.ws;
 
-import no.nav.registre.udistub.core.service.to.UdiPerson;
-import no.nav.registre.udistub.core.service.to.opphold.UdiOppholdStatus;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTABeslutningOmOppholdsrett;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAOpphold;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAOppholdstillatelse;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAVedtakOmVarigOppholdsrett;
 import no.udi.mt_1067_nav_data.v1.GjeldendeOppholdsstatus;
-import no.udi.mt_1067_nav_data.v1.IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum;
 import no.udi.mt_1067_nav_data.v1.Oppholdstillatelse;
 import no.udi.mt_1067_nav_data.v1.OppholdstillatelseEllerOppholdsPaSammeVilkar;
-import no.udi.mt_1067_nav_data.v1.Periode;
 import no.udi.mt_1067_nav_data.v1.Uavklart;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import javax.xml.datatype.XMLGregorianCalendar;
+import no.nav.registre.udistub.core.service.to.opphold.UdiOppholdSammeVilkaar;
+import no.nav.registre.udistub.core.service.to.opphold.UdiOppholdStatus;
 
 @Component
-public class GjeldendeOppholdStatusWsConverter implements Converter<UdiPerson, GjeldendeOppholdsstatus> {
+public class GjeldendeOppholdStatusWsConverter implements Converter<UdiOppholdStatus, GjeldendeOppholdsstatus> {
 
-    private final ConversionService conversionService;
+    private XmlDateWsConverter xmlDateWsConverter = new XmlDateWsConverter();
+    private PeriodeWsConverter periodeWsConverter = new PeriodeWsConverter();
 
-    public GjeldendeOppholdStatusWsConverter(ConversionService conversionService) {
-        this.conversionService = conversionService;
+    public GjeldendeOppholdStatusWsConverter() {
     }
 
     @Override
-    public GjeldendeOppholdsstatus convert(UdiPerson person) {
-        if (person != null) {
+    public GjeldendeOppholdsstatus convert(UdiOppholdStatus oppholdStatus) {
+        if (oppholdStatus != null) {
+            IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter ikkeWsConverter;
+            ikkeWsConverter = new IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter();
             var resultatOppholdsstatus = new GjeldendeOppholdsstatus();
-            var oppholdStatus = person.getOppholdStatus();
 
             resultatOppholdsstatus.setUavklart(Boolean.TRUE.equals(oppholdStatus.getUavklart()) ? new Uavklart() : null);
 
@@ -41,9 +38,9 @@ public class GjeldendeOppholdStatusWsConverter implements Converter<UdiPerson, G
             eoSellerEFTAOpphold.setEOSellerEFTAOppholdstillatelse(getEoSellerEFTAOppholdstillatelse(oppholdStatus));
 
             resultatOppholdsstatus.setEOSellerEFTAOpphold(eoSellerEFTAOpphold);
-            resultatOppholdsstatus.setOppholdstillatelseEllerOppholdsPaSammeVilkar(getOppholdstillatelseEllerOppholdsPaSammeVilkar(oppholdStatus));
+            resultatOppholdsstatus.setOppholdstillatelseEllerOppholdsPaSammeVilkar(getOppholdstillatelseEllerOppholdsPaSammeVilkar(oppholdStatus.getOppholdSammeVilkaar()));
             resultatOppholdsstatus.setIkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum(
-                    conversionService.convert(person, IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum.class));
+                    ikkeWsConverter.convert(oppholdStatus.getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum()));
 
             return resultatOppholdsstatus;
         }
@@ -53,20 +50,20 @@ public class GjeldendeOppholdStatusWsConverter implements Converter<UdiPerson, G
     private EOSellerEFTABeslutningOmOppholdsrett getEOSellerEFTABeslutningOmOpphold(UdiOppholdStatus oppholdsStatus) {
         var eoSellerEFTABeslutningOmOppholdsrett = new EOSellerEFTABeslutningOmOppholdsrett();
         eoSellerEFTABeslutningOmOppholdsrett.setEffektueringsdato(
-                conversionService.convert(oppholdsStatus.getEosEllerEFTABeslutningOmOppholdsrettEffektuering(), XMLGregorianCalendar.class));
+                xmlDateWsConverter.convert(oppholdsStatus.getEosEllerEFTABeslutningOmOppholdsrettEffektuering()));
         eoSellerEFTABeslutningOmOppholdsrett.setEOSOppholdsgrunnlag(oppholdsStatus.getEosEllerEFTABeslutningOmOppholdsrett());
         eoSellerEFTABeslutningOmOppholdsrett.setOppholdsrettsPeriode(
-                conversionService.convert(oppholdsStatus.getEosEllerEFTABeslutningOmOppholdsrettPeriode(), Periode.class));
+                periodeWsConverter.convert(oppholdsStatus.getEosEllerEFTABeslutningOmOppholdsrettPeriode()));
         return eoSellerEFTABeslutningOmOppholdsrett;
     }
 
     private EOSellerEFTAVedtakOmVarigOppholdsrett getEOSellerEFTAVedtakOmVarigOppholdrett(UdiOppholdStatus oppholdsStatus) {
         var eoSellerEFTAVedtakOmVarigOppholdsrett = new EOSellerEFTAVedtakOmVarigOppholdsrett();
         eoSellerEFTAVedtakOmVarigOppholdsrett.setEffektueringsdato(
-                conversionService.convert(oppholdsStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettEffektuering(), XMLGregorianCalendar.class));
+                xmlDateWsConverter.convert(oppholdsStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettEffektuering()));
         eoSellerEFTAVedtakOmVarigOppholdsrett.setEOSOppholdsgrunnlag(oppholdsStatus.getEosEllerEFTAVedtakOmVarigOppholdsrett());
         eoSellerEFTAVedtakOmVarigOppholdsrett.setOppholdsrettsPeriode(
-                conversionService.convert(oppholdsStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode(), Periode.class));
+                periodeWsConverter.convert(oppholdsStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode()));
 
         return eoSellerEFTAVedtakOmVarigOppholdsrett;
     }
@@ -74,27 +71,28 @@ public class GjeldendeOppholdStatusWsConverter implements Converter<UdiPerson, G
     private EOSellerEFTAOppholdstillatelse getEoSellerEFTAOppholdstillatelse(UdiOppholdStatus oppholdStatus) {
         var eoSellerEFTAOppholdstillatelse = new EOSellerEFTAOppholdstillatelse();
         eoSellerEFTAOppholdstillatelse.setEffektueringsdato(
-                conversionService.convert(oppholdStatus.getEosEllerEFTAOppholdstillatelseEffektuering(), XMLGregorianCalendar.class));
+                xmlDateWsConverter.convert(oppholdStatus.getEosEllerEFTAOppholdstillatelseEffektuering()));
         eoSellerEFTAOppholdstillatelse.setEOSOppholdsgrunnlag(oppholdStatus.getEosEllerEFTAOppholdstillatelse());
         eoSellerEFTAOppholdstillatelse.setOppholdstillatelsePeriode(
-                conversionService.convert(oppholdStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode(), Periode.class));
+                periodeWsConverter.convert(oppholdStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode()));
 
         return eoSellerEFTAOppholdstillatelse;
     }
 
-    private OppholdstillatelseEllerOppholdsPaSammeVilkar getOppholdstillatelseEllerOppholdsPaSammeVilkar(UdiOppholdStatus oppholdStatus) {
+    private OppholdstillatelseEllerOppholdsPaSammeVilkar getOppholdstillatelseEllerOppholdsPaSammeVilkar(UdiOppholdSammeVilkaar oppholdSammeVilkaar) {
         var oppholdstillatelseEllerOppholdsPaSammeVilkar = new OppholdstillatelseEllerOppholdsPaSammeVilkar();
-        var opphold = oppholdStatus.getOppholdSammeVilkaar();
-
+        if (oppholdSammeVilkaar == null) {
+            return null;
+        }
         oppholdstillatelseEllerOppholdsPaSammeVilkar.setEffektueringsdato(
-                conversionService.convert(opphold.getOppholdSammeVilkaarEffektuering(), XMLGregorianCalendar.class));
+                xmlDateWsConverter.convert(oppholdSammeVilkaar.getOppholdSammeVilkaarEffektuering()));
         oppholdstillatelseEllerOppholdsPaSammeVilkar.setOppholdstillatelsePeriode(
-                conversionService.convert(opphold.getOppholdSammeVilkaarPeriode(), Periode.class));
+                periodeWsConverter.convert(oppholdSammeVilkaar.getOppholdSammeVilkaarPeriode()));
 
         var oppholdstilatelse = new Oppholdstillatelse();
-        oppholdstilatelse.setOppholdstillatelseType(opphold.getOppholdstillatelseType());
+        oppholdstilatelse.setOppholdstillatelseType(oppholdSammeVilkaar.getOppholdstillatelseType());
         oppholdstilatelse.setVedtaksDato(
-                conversionService.convert(opphold.getOppholdstillatelseVedtaksDato(), XMLGregorianCalendar.class));
+                xmlDateWsConverter.convert(oppholdSammeVilkaar.getOppholdstillatelseVedtaksDato()));
 
         oppholdstillatelseEllerOppholdsPaSammeVilkar.setOppholdstillatelse(oppholdstilatelse);
         return oppholdstillatelseEllerOppholdsPaSammeVilkar;

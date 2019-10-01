@@ -1,7 +1,5 @@
 package no.nav.registre.udistub.core.converter.ws;
 
-import no.nav.registre.udistub.core.service.to.UdiPerson;
-import no.nav.registre.udistub.core.service.to.opphold.UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum;
 import no.udi.mt_1067_nav_data.v1.AvslagEllerBortfallAvPOBOSellerTilbakekallEllerFormeltVedtak;
 import no.udi.mt_1067_nav_data.v1.AvslagPaSoknadOmOppholdsrettRealitetsBehandlet;
 import no.udi.mt_1067_nav_data.v1.AvslagPaSoknadOmOppholdstillatelseRealitetsBehandlet;
@@ -11,27 +9,24 @@ import no.udi.mt_1067_nav_data.v1.IkkeOppholdstillatelseIkkeOppholdsPaSammeVilka
 import no.udi.mt_1067_nav_data.v1.OvrigIkkeOpphold;
 import no.udi.mt_1067_nav_data.v1.TilbakeKall;
 import no.udi.mt_1067_nav_data.v1.UtvistMedInnreiseForbud;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import javax.xml.datatype.XMLGregorianCalendar;
+import no.nav.registre.udistub.core.service.to.opphold.UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum;
 
 @Component
 public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter
-        implements Converter<UdiPerson, IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum> {
+        implements Converter<UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum, IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum> {
 
-    private final ConversionService conversionService;
+    private XmlDateWsConverter xmlDateWsConverter = new XmlDateWsConverter();
 
-    IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter(ConversionService conversionService) {
-        this.conversionService = conversionService;
+    public IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter() {
     }
 
     @Override
-    public IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum convert(UdiPerson person) {
-        if (person != null) {
+    public IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum convert(UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOpphold) {
+        if (ikkeOpphold != null) {
             var ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum = new IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum();
-            var ikkeOpphold = person.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum();
 
             ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum
                     .setUtvistMedInnreiseForbud(getUtvistMedInnreiseForbud(ikkeOpphold));
@@ -51,7 +46,7 @@ public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter
         udiUtvistMedInnreiseForbud.setVarighet(ikkeOppholdUvistMedInnreiseForbud.getVarighet());
         udiUtvistMedInnreiseForbud.setInnreiseForbud(ikkeOppholdUvistMedInnreiseForbud.getInnreiseForbud());
         udiUtvistMedInnreiseForbud.setVedtaksDato(
-                conversionService.convert(ikkeOppholdUvistMedInnreiseForbud.getInnreiseForbudVedtaksDato(), XMLGregorianCalendar.class));
+                xmlDateWsConverter.convert(ikkeOppholdUvistMedInnreiseForbud.getInnreiseForbudVedtaksDato()));
         return udiUtvistMedInnreiseForbud;
     }
 
@@ -63,20 +58,20 @@ public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter
 
         var tilbakeKall = new TilbakeKall();
         tilbakeKall.setVirkningsDato(
-                conversionService.convert(ikkeOppholdAvslagEllerBortfall.getTilbakeKallVirkningsDato(), XMLGregorianCalendar.class));
+                xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getTilbakeKallVirkningsDato()));
         tilbakeKall.setUtreiseFrist(
-                conversionService.convert(ikkeOppholdAvslagEllerBortfall.getTilbakeKallUtreiseFrist(), XMLGregorianCalendar.class));
+                xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getTilbakeKallUtreiseFrist()));
 
         var formeltVedtak = new FormeltVedtak();
         formeltVedtak.setUtreiseFrist(
-                conversionService.convert(ikkeOppholdAvslagEllerBortfall.getFormeltVedtakUtreiseFrist(), XMLGregorianCalendar.class));
+                xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getFormeltVedtakUtreiseFrist()));
         var bortfallAvOPellerBOS = new BortfallAvPOellerBOS();
         bortfallAvOPellerBOS.setVirkningsDato(
-                conversionService.convert(ikkeOppholdAvslagEllerBortfall.getBortfallAvPOellerBOSDato(), XMLGregorianCalendar.class));
+                xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getBortfallAvPOellerBOSDato()));
 
         var avslagPaSoknadOppholdstillatelse = new AvslagPaSoknadOmOppholdstillatelseRealitetsBehandlet();
         avslagPaSoknadOppholdstillatelse.setUtreiseFrist(
-                conversionService.convert(ikkeOppholdAvslagEllerBortfall.getAvslagOppholdstillatelseBehandletUtreiseFrist(), XMLGregorianCalendar.class));
+                xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getAvslagOppholdstillatelseBehandletUtreiseFrist()));
         avslagPaSoknadOppholdstillatelse.setAvslagsGrunnlagOvrig(ikkeOppholdAvslagEllerBortfall.getAvslagOppholdstillatelseBehandletGrunnlagOvrig());
         avslagPaSoknadOppholdstillatelse.setAvslagsGrunnlagEOS(ikkeOppholdAvslagEllerBortfall.getAvslagOppholdstillatelseBehandletGrunnlagEOS());
 
@@ -85,7 +80,7 @@ public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter
 
         udiAvslagEllerBortfall.setTilbakeKall(tilbakeKall);
         udiAvslagEllerBortfall.setAvgjorelsesDato(
-                conversionService.convert(ikkeOppholdAvslagEllerBortfall.getAvgjorelsesDato(), XMLGregorianCalendar.class));
+                xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getAvgjorelsesDato()));
         udiAvslagEllerBortfall.setFormeltVedtak(formeltVedtak);
         udiAvslagEllerBortfall.setBortfallAvPOellerBOS(bortfallAvOPellerBOS);
         udiAvslagEllerBortfall.setAvslagPaSoknadOmOppholdstillatelseRealitetsBehandlet(avslagPaSoknadOppholdstillatelse);

@@ -1,47 +1,43 @@
 package no.nav.registre.udistub.core.converter.ws;
 
-import no.nav.registre.udistub.core.service.to.UdiAvgjorelse;
-import no.nav.registre.udistub.core.service.to.UdiPerson;
-import no.udi.mt_1067_nav_data.v1.Arbeidsadgang;
-import no.udi.mt_1067_nav_data.v1.Avgjorelser;
-import no.udi.mt_1067_nav_data.v1.GjeldendePerson;
 import no.udi.mt_1067_nav_data.v1.HentPersonstatusResultat;
-import no.udi.mt_1067_nav_data.v1.SoknadOmBeskyttelseUnderBehandling;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.sql.Date;
-import java.time.Instant;
+import java.time.LocalDate;
+
+import no.nav.registre.udistub.core.service.to.UdiAvgjorelse;
+import no.nav.registre.udistub.core.service.to.UdiPerson;
 
 @Component
 public class PersonWsConverter implements Converter<UdiPerson, HentPersonstatusResultat> {
-
-	private final ConversionService conversionService;
-
-	public PersonWsConverter(ConversionService conversionService) {
-		this.conversionService = conversionService;
-	}
-
 	@Override
 	public HentPersonstatusResultat convert(UdiPerson person) {
 		if (person != null) {
+			XmlDateWsConverter xmlDateWsConverter = new XmlDateWsConverter();
+			GjeldendePersonWsConverter gjeldendePersonWsConverter = new GjeldendePersonWsConverter();
+			ArbeidsadgangWsConverter arbeidsadgangWsConverter = new ArbeidsadgangWsConverter();
+			AvgjorelsehistorikkWsConverter avgjorelsehistorikkWsConverter = new AvgjorelsehistorikkWsConverter();
 			HentPersonstatusResultat hentPersonstatusResultat = new HentPersonstatusResultat();
-			hentPersonstatusResultat.setGjeldendePerson(conversionService.convert(person, GjeldendePerson.class));
-			hentPersonstatusResultat.setArbeidsadgang(conversionService.convert(person, Arbeidsadgang.class));
-			hentPersonstatusResultat.setAvgjorelsehistorikk(conversionService.convert(person, Avgjorelser.class));
+			BeskyttleseUnderBehandlingWsConverter beskyttleseUnderBehandlingWsConverter = new BeskyttleseUnderBehandlingWsConverter();
+			GjeldendeOppholdStatusWsConverter gjeldendeOppholdStatusWsConverter = new GjeldendeOppholdStatusWsConverter();
+
+			hentPersonstatusResultat.setGjeldendePerson(gjeldendePersonWsConverter.convert(person));
+			hentPersonstatusResultat.setArbeidsadgang(arbeidsadgangWsConverter.convert(person.getArbeidsadgang()));
+			hentPersonstatusResultat.setAvgjorelsehistorikk(avgjorelsehistorikkWsConverter.convert(person));
 			hentPersonstatusResultat.setForesporselsfodselsnummer(person.getIdent());
 			hentPersonstatusResultat.setHarFlyktningstatus(person.getFlyktning());
-
+			hentPersonstatusResultat.setGjeldendeOppholdsstatus(gjeldendeOppholdStatusWsConverter.convert(person.getOppholdStatus()));
 			hentPersonstatusResultat.setHistorikkHarFlyktningstatus(person.getAvgjoerelser()
 					.stream()
 					.anyMatch(UdiAvgjorelse::getHarFlyktningstatus));
 
 			hentPersonstatusResultat.setUavklartFlyktningstatus(person.getAvgjoerelseUavklart());
-			hentPersonstatusResultat.setSoknadOmBeskyttelseUnderBehandling(conversionService.convert(person, SoknadOmBeskyttelseUnderBehandling.class));
+			hentPersonstatusResultat.setSoknadOmBeskyttelseUnderBehandling(
+					beskyttleseUnderBehandlingWsConverter.convert(person)
+			);
 
-			hentPersonstatusResultat.setUttrekkstidspunkt(conversionService.convert(new Date(Instant.now().getEpochSecond()), XMLGregorianCalendar.class));
+			hentPersonstatusResultat.setUttrekkstidspunkt(xmlDateWsConverter.convert(LocalDate.now()));
 
 			return hentPersonstatusResultat;
 		}

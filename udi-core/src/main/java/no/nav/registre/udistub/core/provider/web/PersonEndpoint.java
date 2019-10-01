@@ -2,9 +2,9 @@ package no.nav.registre.udistub.core.provider.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
 import no.udi.common.v2.PingRequestType;
 import no.udi.mt_1067_nav_data.v1.HentPersonstatusResultat;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -26,7 +26,7 @@ public class PersonEndpoint {
     private static final String NAMESPACE_URI = "http://udi.no.MT_1067_NAV.v1";
 
     private final PersonService personService;
-    private final MapperFacade mapperFacade;
+    private final ConversionService conversionService;
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "HentPersonstatusRequest")
     @ResponsePayload
@@ -34,9 +34,9 @@ public class PersonEndpoint {
 
         UdiPerson foundPerson = personService.finnPerson(request.getParameter().getFodselsnummer())
                 .orElseThrow(() -> new NotFoundException(String.format("Kunne ikke finne person med fnr:%s", request.getParameter().getFodselsnummer())));
-        HentPersonstatusResultat hentPersonstatusResultat = mapperFacade.map(foundPerson, HentPersonstatusResultat.class);
+        HentPersonstatusResultat resultat = conversionService.convert(foundPerson, HentPersonstatusResultat.class);
 
-        return new JAXBElement<>(new QName("http://udi.no.MT_1067_NAV.v1", "HentPersonstatusResultat"), HentPersonstatusResultat.class, hentPersonstatusResultat);
+        return new JAXBElement<>(new QName("http://udi.no.MT_1067_NAV.v1", "HentPersonstatusResultat"), HentPersonstatusResultat.class, resultat);
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "PingRequest")

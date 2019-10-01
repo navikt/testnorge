@@ -1,10 +1,5 @@
 package no.nav.registre.udistub.core.converter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import no.nav.registre.udistub.core.converter.ws.GjeldendeOppholdStatusWsConverter;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTABeslutningOmOppholdsrett;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdsrett;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdstillatelse;
@@ -15,6 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import no.nav.registre.udistub.core.converter.ws.GjeldendeOppholdStatusWsConverter;
 
 @ExtendWith(MockitoExtension.class)
 public class GjeldeneOppholdStatusConverterTest extends ConverterTestBase {
@@ -28,7 +28,7 @@ public class GjeldeneOppholdStatusConverterTest extends ConverterTestBase {
 
 	@Test
 	public void convertFromPersonToArbeidsadgangIfPresent() {
-		GjeldendeOppholdsstatus result = gjeldeneOppholdStatusConverter.convert(defaultTestPerson);
+		GjeldendeOppholdsstatus result = gjeldeneOppholdStatusConverter.convert(defaultTestPerson.getOppholdStatus());
 		assertNotNull(result);
 		assertNotNull(result.getEOSellerEFTAOpphold());
 
