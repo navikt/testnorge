@@ -86,6 +86,10 @@ Formatters.uppercaseAndUnderscoreToCapitalized = value => {
 	return _capitalize(clean)
 }
 
+Formatters.allCapsToCapitalized = value => {
+	return _capitalize(value)
+}
+
 Formatters.kodeverkLabel = kodeverk => {
 	if (!kodeverk) return null
 	return kodeverk.substring(kodeverk.indexOf('-') + 1)

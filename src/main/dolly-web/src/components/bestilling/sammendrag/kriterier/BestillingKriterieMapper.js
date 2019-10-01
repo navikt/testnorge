@@ -424,6 +424,147 @@ export function mapBestillingData(bestillingData) {
 			})
 			data.push(instObj)
 		}
+
+		const udiStubKriterier = registreKriterier.udistub
+
+		if (udiStubKriterier) {
+			const oppholdKriterier = udiStubKriterier.oppholdStatus
+			const arbeidsadgangKriterier = udiStubKriterier.arbeidsadgang
+
+			const oppholdsrettTyper = [
+				'eosEllerEFTABeslutningOmOppholdsrett',
+				'eosEllerEFTAVedtakOmVarigOppholdsrett',
+				'eosEllerEFTAOppholdstillatelse'
+			]
+			const currentOppholdsrettType =
+				oppholdKriterier && oppholdsrettTyper.find(type => oppholdKriterier[type])
+
+			const currentTredjelandsborgereStatus =
+				oppholdKriterier && oppholdKriterier.oppholdSammeVilkaar
+					? 'Oppholdstillatelse eller opphold på samme vilkår'
+					: oppholdKriterier && oppholdKriterier.uavklart
+						? 'Uavklart'
+						: udiStubKriterier.harOppholdsTillatelse === false
+							? 'Ikke oppholdstillatalse eller ikke opphold på samme vilkår'
+							: null
+
+			const oppholdsrett = Boolean(currentOppholdsrettType)
+			const tredjelandsborger = Boolean(currentTredjelandsborgereStatus)
+
+			let aliaserListe = []
+			udiStubKriterier.aliaser &&
+				udiStubKriterier.aliaser.forEach((alias, i) => {
+					if (alias.nyIdent === false) {
+						aliaserListe.push(`#${i + 1} Navn\n`)
+					} else {
+						aliaserListe.push(`#${i + 1} ID-nummer - ${alias.identtype}\n`)
+					}
+				})
+
+			const udistub = {
+				header: 'UDI',
+				items: [
+					obj(
+						'Oppholdsstatus',
+						oppholdsrett ? 'EØS-eller EFTA-opphold' : tredjelandsborger ? 'Tredjelandsborger' : null
+					),
+					obj(
+						'Type opphold',
+						oppholdsrett &&
+							// currentOppholdsrettType !== 'oppholdSammeVilkaar' &&
+							Formatters.showLabel('eosEllerEFTAtypeOpphold', currentOppholdsrettType)
+					),
+					obj('Status', currentTredjelandsborgereStatus),
+					obj(
+						'Oppholdstillatelse fra dato',
+						Formatters.formateStringDates(
+							_get(oppholdKriterier, `${currentOppholdsrettType}Periode.fra`) ||
+								_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
+						)
+					),
+					obj(
+						'Oppholdstillatelse til dato',
+						Formatters.formateStringDates(
+							_get(oppholdKriterier, `${currentOppholdsrettType}Periode.til`) ||
+								_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
+						)
+					),
+					obj(
+						'Effektueringsdato',
+						Formatters.formateStringDates(
+							_get(oppholdKriterier, `${currentOppholdsrettType}Effektuering`) ||
+								_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdSammeVilkaarEffektuering')
+						)
+					),
+					obj(
+						'Grunnlag for opphold',
+						oppholdsrett &&
+							// currentOppholdsrettType !== 'oppholdSammeVilkaar' &&
+							Formatters.showLabel(
+								currentOppholdsrettType,
+								oppholdKriterier[currentOppholdsrettType]
+							)
+					),
+					obj(
+						'Type oppholdstillatelse',
+						Formatters.showLabel(
+							'oppholdstillatelseType',
+							_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdstillatelseType')
+						)
+					),
+					obj(
+						'Vedtaksdato',
+						Formatters.formateStringDates(
+							_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdstillatelseVedtaksDato')
+						)
+					),
+					obj(
+						'Har arbeidsadgang',
+						Formatters.allCapsToCapitalized(
+							arbeidsadgangKriterier && arbeidsadgangKriterier.harArbeidsAdgang
+						)
+					),
+					obj(
+						'Type arbeidsadgang',
+						Formatters.showLabel(
+							'typeArbeidsadgang',
+							arbeidsadgangKriterier && arbeidsadgangKriterier.typeArbeidsadgang
+						)
+					),
+					obj(
+						'Arbeidsomfang',
+						Formatters.showLabel(
+							'arbeidsOmfang',
+							arbeidsadgangKriterier && arbeidsadgangKriterier.arbeidsOmfang
+						)
+					),
+					obj(
+						'Arbeidsadgang fra dato',
+						Formatters.formateStringDates(
+							_get(arbeidsadgangKriterier, 'periode.fra')
+							// arbeidsadgangKriterier && arbeidsadgangKriterier.periode.fra
+						)
+					),
+					obj(
+						'Arbeidsadgang til dato',
+						Formatters.formateStringDates(
+							_get(arbeidsadgangKriterier, 'periode.til')
+							// arbeidsadgangKriterier && arbeidsadgangKriterier.periode.til
+						)
+					),
+					obj('Alias', aliaserListe.length > 0 && aliaserListe),
+					obj('Flyktningstatus', Formatters.oversettBoolean(udiStubKriterier.flyktning)),
+					obj(
+						'Asylsøker',
+						Formatters.showLabel(
+							'jaNeiUavklart',
+							udiStubKriterier.soeknadOmBeskyttelseUnderBehandling
+						)
+					)
+				]
+			}
+			data.push(udistub)
+		}
 	}
 	return data
 }
