@@ -198,7 +198,6 @@ public class DollyBestillingService {
             try {
                 RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
                 bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
-
                 bestKriterier.setEnvironments(asList(bestilling.getMiljoer().split(",")));
 
                 clientRegisters.forEach(clientRegister ->
@@ -241,6 +240,7 @@ public class DollyBestillingService {
 
             RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
             bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
+            bestKriterier.setEnvironments(request.getEnvironments());
 
             clientRegisters.forEach(clientRegister -> clientRegister.gjenopprett(bestKriterier, tpsPerson, progress));
 

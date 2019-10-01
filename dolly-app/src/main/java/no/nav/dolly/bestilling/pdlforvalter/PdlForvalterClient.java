@@ -122,21 +122,26 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendFoedselsmelding(TpsPerson tpsPerson) {
 
-        if (nonNull(tpsPerson.getBarn())) {
-            tpsPerson.getBarn().forEach(barn -> {
-                try {
-                    pdlForvalterConsumer.postFoedsel(PdlFoedsel.builder()
-                            .foedselsdato(datoFraIdentService.extract(barn).toLocalDate())
-                            .kilde(KILDE)
-                            .build(), barn);
+        sendFoedselsmelding(tpsPerson.getHovedperson());
+        sendFoedselsmelding(tpsPerson.getPartner());
+        tpsPerson.getBarn().forEach(barn -> sendFoedselsmelding(barn));
+    }
 
-                } catch (HttpClientErrorException e) {
-                    log.error("Feilet å sende fødselsmelding for ident {} til PDL-forvalter: {}", barn, e.getResponseBodyAsString());
+    private void sendFoedselsmelding(String ident) {
 
-                } catch (RuntimeException e) {
-                    log.error("Feilet å sende fødselsmelding for ident {} til PDL-forvalter.", barn, e);
-                }
-            });
+        if (nonNull(ident)) {
+            try {
+                pdlForvalterConsumer.postFoedsel(PdlFoedsel.builder()
+                        .foedselsdato(datoFraIdentService.extract(ident).toLocalDate())
+                        .kilde(KILDE)
+                        .build(), ident);
+
+            } catch (HttpClientErrorException e) {
+                log.error("Feilet å sende fødselsmelding for ident {} til PDL-forvalter: {}", ident, e.getResponseBodyAsString());
+
+            } catch (RuntimeException e) {
+                log.error("Feilet å sende fødselsmelding for ident {} til PDL-forvalter.", ident, e);
+            }
         }
     }
 
