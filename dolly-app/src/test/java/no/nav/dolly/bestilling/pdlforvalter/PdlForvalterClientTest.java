@@ -24,12 +24,13 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
@@ -75,11 +76,11 @@ public class PdlForvalterClientTest {
         when(pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class),
                 eq(IDENT))).thenReturn(ResponseEntity.ok(instance.objectNode().put(HENDLSE_ID, HENDELSE_ID_KONTAKT_DOEDSBO)));
 
-        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                        .environments(singletonList(ENV))
-                        .pdlforvalter(RsPdldata.builder().build())
-                        .build(),
-                TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setPdlforvalter(RsPdldata.builder().build());
+        request.setEnvironments(singletonList(ENV));
+        request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
+        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -99,11 +100,11 @@ public class PdlForvalterClientTest {
                 .thenThrow(new HttpClientErrorException(INTERNAL_SERVER_ERROR, FEIL_KONTAKT_DOEDSBO));
         when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil: " + FEIL_KONTAKT_DOEDSBO);
 
-        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                        .environments(singletonList(ENV))
-                        .pdlforvalter(RsPdldata.builder().build())
-                        .build(),
-                TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setPdlforvalter(RsPdldata.builder().build());
+        request.setEnvironments(singletonList(ENV));
+        request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
+        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -122,11 +123,11 @@ public class PdlForvalterClientTest {
         when(pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT)))
                 .thenReturn(ResponseEntity.ok(instance.objectNode().put(HENDLSE_ID, HENDELSE_ID_UTENLANDSID)));
 
-        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                        .environments(singletonList(ENV))
-                        .pdlforvalter(RsPdldata.builder().build())
-                        .build(),
-                TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setPdlforvalter(RsPdldata.builder().build());
+        request.setEnvironments(singletonList(ENV));
+        request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
+        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -146,11 +147,11 @@ public class PdlForvalterClientTest {
                 .thenThrow(new HttpClientErrorException(HttpStatus.ALREADY_REPORTED, FEIL_UTENLANDS_IDENT));
         when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil: " + FEIL_UTENLANDS_IDENT);
 
-        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                        .environments(singletonList(ENV))
-                        .pdlforvalter(RsPdldata.builder().build())
-                        .build(),
-                TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setPdlforvalter(RsPdldata.builder().build());
+        request.setEnvironments(singletonList(ENV));
+        request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
+        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -169,11 +170,11 @@ public class PdlForvalterClientTest {
         when(pdlForvalterConsumer.postFalskIdentitet(any(PdlFalskIdentitet.class), eq(IDENT)))
                 .thenReturn(ResponseEntity.ok(instance.objectNode().put(HENDLSE_ID, HENDELSE_ID_FALSKIDENTITETID)));
 
-        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                        .environments(singletonList(ENV))
-                        .pdlforvalter(RsPdldata.builder().build())
-                        .build(),
-                TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setPdlforvalter(RsPdldata.builder().build());
+        request.setEnvironments(singletonList(ENV));
+        request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
+        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -193,11 +194,11 @@ public class PdlForvalterClientTest {
                 .thenThrow(new HttpClientErrorException(HttpStatus.NOT_ACCEPTABLE, FEIL_FALSK_IDENTITET));
         when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil: " + FEIL_FALSK_IDENTITET);
 
-        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                        .environments(singletonList(ENV))
-                        .pdlforvalter(RsPdldata.builder().build())
-                        .build(),
-                TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setPdlforvalter(RsPdldata.builder().build());
+        request.setEnvironments(singletonList(ENV));
+        request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
+        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -211,9 +212,10 @@ public class PdlForvalterClientTest {
 
         BestillingProgress progress = new BestillingProgress();
 
-        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                        .pdlforvalter(RsPdldata.builder().build()).build(),
-                TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setPdlforvalter(RsPdldata.builder().build());
+        request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
+        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verifyZeroInteractions(mapperFacade);
         verifyZeroInteractions(pdlForvalterConsumer);

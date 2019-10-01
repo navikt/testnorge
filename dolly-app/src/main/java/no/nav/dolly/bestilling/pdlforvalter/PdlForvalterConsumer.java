@@ -28,6 +28,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL = PDL_BESTILLING_URL + "/utenlandsidentifikasjonsnummer";
     private static final String PDL_BESTILLING_FALSK_IDENTITET_URL = PDL_BESTILLING_URL + "/falskidentitet";
     private static final String PDL_BESTILLING_FOEDSEL_URL = PDL_BESTILLING_URL + "/foedsel";
+    private static final String PDL_BESTILLING_DOEDSFALL_URL = PDL_BESTILLING_URL + "/doedsfall";
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/ident";
     private static final String PREPROD_ENV = "q";
 
@@ -90,6 +91,16 @@ public class PdlForvalterConsumer {
                 .header(NAV_CONSUMER_TOKEN, resolveToken())
                 .header(NAV_PERSONIDENT, ident)
                 .body(pdlFoedsel), JsonNode.class);
+    }
+
+    public ResponseEntity postDoedsfall(PdlDoedsfall pdlDoedsfall, String ident) {
+        return restTemplate.exchange(RequestEntity.post(
+                URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_DOEDSFALL_URL))
+                .contentType(APPLICATION_JSON)
+                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                .header(NAV_CONSUMER_TOKEN, resolveToken())
+                .header(NAV_PERSONIDENT, ident)
+                .body(pdlDoedsfall), JsonNode.class);
     }
 
     private String resolveToken() {

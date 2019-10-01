@@ -46,7 +46,6 @@ import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
-import no.nav.dolly.domain.resultset.tpsf.RsSimpleRelasjoner;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
@@ -136,7 +135,7 @@ public class DollyBestillingServiceTest {
                 .status(singletonMap("u2", "OK"))
                 .build();
 
-        standardNyBestilling = Bestilling.builder().id(BESTILLING_ID).tpsfKriterier("json").build();
+        standardNyBestilling = Bestilling.builder().id(BESTILLING_ID).bestKriterier("json").tpsfKriterier("json").build();
 
         status_SuccU1T2_FailQ3 = new HashMap<>();
         status_SuccU1T2_FailQ3.put("u1", SUCCESS_CODE_TPS);
@@ -153,9 +152,9 @@ public class DollyBestillingServiceTest {
         when(cacheManager.getCache(anyString())).thenReturn(cache);
 
         when(mapperFacade.map(any(RsTpsfUtvidetBestilling.class), eq(TpsfBestilling.class))).thenReturn(new TpsfBestilling());
+        when(objectMapper.readValue(anyString(), eq(TpsfBestilling.class))).thenReturn(new TpsfBestilling());
 
-        when(objectMapper.readValue(anyString(), eq(TpsfBestilling.class))).thenReturn(TpsfBestilling.builder()
-                .relasjoner(RsSimpleRelasjoner.builder().build()).build());
+        when(objectMapper.readValue(anyString(), eq(RsDollyBestillingRequest.class))).thenReturn(new RsDollyBestillingRequest());
     }
 
     @Test

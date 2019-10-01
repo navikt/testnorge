@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -43,7 +43,7 @@ public class SigrunStubClientTest {
     @Test
     public void gjenopprett_ingendata() {
 
-        sigrunStubClient.gjenopprett(new RsDollyBestilling(), TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
+        sigrunStubClient.gjenopprett(new RsDollyBestillingRequest(), TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
     }
 
     @Test
@@ -53,8 +53,10 @@ public class SigrunStubClientTest {
         when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenThrow(HttpClientErrorException.class);
         when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil:");
 
-        sigrunStubClient.gjenopprett(RsDollyBestilling.builder()
-                .sigrunstub(singletonList(new RsOpprettSkattegrunnlag())).build(), TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setSigrunstub(singletonList(new RsOpprettSkattegrunnlag()));
+
+        sigrunStubClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         assertThat(progress.getSigrunstubStatus(), containsString("Feil:"));
     }
@@ -67,8 +69,9 @@ public class SigrunStubClientTest {
         when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenReturn(ResponseEntity.ok(""));
         when(sigrunStubResponseHandler.extractResponse(any())).thenReturn("OK");
 
-        sigrunStubClient.gjenopprett(RsDollyBestilling.builder()
-                .sigrunstub(singletonList(new RsOpprettSkattegrunnlag())).build(), TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setSigrunstub(singletonList(new RsOpprettSkattegrunnlag()));
+        sigrunStubClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(sigrunStubConsumer).createSkattegrunnlag(anyList());
         verify(sigrunStubResponseHandler).extractResponse(any());

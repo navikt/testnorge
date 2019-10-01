@@ -41,6 +41,7 @@ import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
@@ -195,7 +196,9 @@ public class DollyBestillingService {
 
         if (nonNull(bestilling.getBestKriterier())) {
             try {
-                RsDollyBestilling bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestilling.class);
+                RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
+                bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
+
                 bestKriterier.setEnvironments(asList(bestilling.getMiljoer().split(",")));
 
                 clientRegisters.forEach(clientRegister ->
@@ -227,17 +230,25 @@ public class DollyBestillingService {
 
     private void preparePerson(RsDollyBestilling request, Bestilling bestilling, Testgruppe testgruppe, TpsfBestilling tpsfBestilling) {
 
-        List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
+        try {
+            List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
 
-        TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter);
+            TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter);
 
-        BestillingProgress progress = new BestillingProgress(bestilling.getId(), tpsPerson.getHovedperson());
+            BestillingProgress progress = new BestillingProgress(bestilling.getId(), tpsPerson.getHovedperson());
 
-        sendIdenterTilTPS(request.getEnvironments(), leverteIdenter, testgruppe, progress);
+            sendIdenterTilTPS(request.getEnvironments(), leverteIdenter, testgruppe, progress);
 
-        clientRegisters.forEach(clientRegister -> clientRegister.gjenopprett(request, tpsPerson, progress));
+            RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
+            bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
 
-        oppdaterProgress(bestilling, progress);
+            clientRegisters.forEach(clientRegister -> clientRegister.gjenopprett(bestKriterier, tpsPerson, progress));
+
+            oppdaterProgress(bestilling, progress);
+
+        } catch (IOException e) {
+            log.error("Feilet å lese bestillingskriterier", e);
+        }
     }
 
     private TpsPerson buildTpsPerson(Bestilling bestilling, List<String> leverteIdenter) {

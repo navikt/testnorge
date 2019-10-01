@@ -26,7 +26,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
@@ -74,10 +74,10 @@ public class ArenaForvalterClientTest {
                                 .build()))
                         .build()));
 
-        arenaForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                .arenaforvalter(Arenadata.builder().build())
-                .environments(singletonList(ENV))
-                .build(), TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setArenaforvalter(Arenadata.builder().build());
+        request.setEnvironments(singletonList(ENV));
+        arenaForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$OK")));
         verify(arenaForvalterConsumer).getEnvironments();
@@ -92,10 +92,10 @@ public class ArenaForvalterClientTest {
         when(httpClientErrorException.getMessage()).thenReturn(format("%s %s", HttpStatus.BAD_REQUEST, ERROR_CAUSE));
         when(httpClientErrorException.getResponseBodyAsString()).thenReturn(ERROR_MSG);
 
-        arenaForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                .arenaforvalter(Arenadata.builder().build())
-                .environments(singletonList(ENV))
-                .build(), TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setArenaforvalter(Arenadata.builder().build());
+        request.setEnvironments(singletonList(ENV));
+        arenaForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo(
                 "q2$Feil: 400 Bad request (An error has occured)")));
@@ -106,10 +106,11 @@ public class ArenaForvalterClientTest {
     public void gjenopprett_EnvironmentForArenaNotSelected() {
 
         BestillingProgress progress = new BestillingProgress();
-        arenaForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                        .arenaforvalter(Arenadata.builder().build())
-                        .environments(singletonList("t3")).build(),
-                TpsPerson.builder().hovedperson(IDENT).build(), progress);
+
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setArenaforvalter(Arenadata.builder().build());
+        request.setEnvironments(singletonList("t3"));
+        arenaForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo("t3$Feil: Miljø ikke støttet")));
     }
@@ -118,8 +119,10 @@ public class ArenaForvalterClientTest {
     public void gjenopprett_ArenaForvalterNotIncluded() {
 
         BestillingProgress progress = new BestillingProgress();
-        arenaForvalterClient.gjenopprett(RsDollyBestilling.builder().environments(singletonList(ENV)).build(),
-                TpsPerson.builder().hovedperson(IDENT).build(), progress);
+
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setEnvironments(singletonList(ENV));
+        arenaForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verifyZeroInteractions(arenaForvalterConsumer);
         assertThat(progress.getArenaforvalterStatus(), is(nullValue()));
