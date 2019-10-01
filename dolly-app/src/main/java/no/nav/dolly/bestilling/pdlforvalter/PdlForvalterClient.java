@@ -124,7 +124,9 @@ public class PdlForvalterClient implements ClientRegister {
 
         sendFoedselsmelding(tpsPerson.getHovedperson());
         sendFoedselsmelding(tpsPerson.getPartner());
-        tpsPerson.getBarn().forEach(barn -> sendFoedselsmelding(barn));
+        if (nonNull(tpsPerson.getBarn())) {
+            tpsPerson.getBarn().forEach(barn -> sendFoedselsmelding(barn));
+        }
     }
 
     private void sendFoedselsmelding(String ident) {
