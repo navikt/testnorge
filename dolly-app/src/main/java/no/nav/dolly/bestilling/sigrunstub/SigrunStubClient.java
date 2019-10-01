@@ -9,7 +9,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import lombok.extern.log4j.Log4j2;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -27,7 +27,7 @@ public class SigrunStubClient implements ClientRegister {
     @Autowired
     private ErrorStatusDecoder errorStatusDecoder;
 
-    @Override public void gjenopprett(RsDollyBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+    @Override public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         if (!bestilling.getSigrunstub().isEmpty()) {
             try {

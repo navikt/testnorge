@@ -5,6 +5,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.NullcheckUtil.blankcheckSetDefaultValue;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.DatoFraIdentService;
@@ -49,7 +51,7 @@ public class PdlForvalterClient implements ClientRegister {
     @Autowired
     private ErrorStatusDecoder errorStatusDecoder;
 
-    @Override public void gjenopprett(RsDollyBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+    @Override public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         if (bestilling.getEnvironments().contains(SYNTH_ENV) || nonNull(bestilling.getPdlforvalter())) {
 
@@ -59,6 +61,7 @@ public class PdlForvalterClient implements ClientRegister {
 
                 sendDeleteIdent(tpsPerson);
                 sendFoedselsmelding(tpsPerson);
+                sendDoedsfall(bestilling.getTpsf(), tpsPerson);
 
                 if (nonNull(bestilling.getPdlforvalter())) {
                     Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
@@ -88,23 +91,59 @@ public class PdlForvalterClient implements ClientRegister {
         identer.forEach(ident -> pdlForvalterConsumer.deleteIdent(ident));
     }
 
+    private void sendDoedsfall(RsTpsfUtvidetBestilling bestilling, TpsPerson tpsPerson) {
+
+        sendDoedsfall(tpsPerson.getHovedperson(), bestilling.getDoedsdato());
+        if (nonNull(bestilling.getRelasjoner())) {
+            sendDoedsfall(tpsPerson.getPartner(), bestilling.getRelasjoner().getPartner().getDoedsdato());
+            for (int i = 0; i < tpsPerson.getBarn().size(); i++) {
+                sendDoedsfall(tpsPerson.getBarn().get(i), bestilling.getRelasjoner().getBarn().get(i).getDoedsdato());
+            }
+        }
+    }
+
+    private void sendDoedsfall(String ident, LocalDateTime doedsdato) {
+
+        if (nonNull(doedsdato)) {
+            try {
+                pdlForvalterConsumer.postDoedsfall(PdlDoedsfall.builder()
+                        .doedsdato(doedsdato.toLocalDate())
+                        .kilde(KILDE)
+                        .build(), ident);
+
+            } catch (HttpClientErrorException e) {
+                log.error("Feilet å sende dødsmelding for ident {} til PDL-forvalter: {}", ident, e.getResponseBodyAsString());
+
+            } catch (RuntimeException e) {
+                log.error("Feilet å sende dødsmelding for ident {} til PDL-forvalter.", ident, e);
+            }
+        }
+    }
+
     private void sendFoedselsmelding(TpsPerson tpsPerson) {
 
+        sendFoedselsmelding(tpsPerson.getHovedperson());
+        sendFoedselsmelding(tpsPerson.getPartner());
         if (nonNull(tpsPerson.getBarn())) {
-            tpsPerson.getBarn().forEach(barn -> {
-                try {
-                    pdlForvalterConsumer.postFoedsel(PdlFoedsel.builder()
-                            .foedselsdato(datoFraIdentService.extract(barn).toLocalDate())
-                            .kilde(KILDE)
-                            .build(), barn);
+            tpsPerson.getBarn().forEach(barn -> sendFoedselsmelding(barn));
+        }
+    }
 
-                } catch (HttpClientErrorException e) {
-                    log.error("Feilet å sende fødselsmelding for ident {} til PDL-forvalter: {}", barn, e.getResponseBodyAsString());
+    private void sendFoedselsmelding(String ident) {
 
-                } catch (RuntimeException e) {
-                    log.error("Feilet å sende fødselsmelding for ident {} til PDL-forvalter.", barn, e);
-                }
-            });
+        if (nonNull(ident)) {
+            try {
+                pdlForvalterConsumer.postFoedsel(PdlFoedsel.builder()
+                        .foedselsdato(datoFraIdentService.extract(ident).toLocalDate())
+                        .kilde(KILDE)
+                        .build(), ident);
+
+            } catch (HttpClientErrorException e) {
+                log.error("Feilet å sende fødselsmelding for ident {} til PDL-forvalter: {}", ident, e.getResponseBodyAsString());
+
+            } catch (RuntimeException e) {
+                log.error("Feilet å sende fødselsmelding for ident {} til PDL-forvalter.", ident, e);
+            }
         }
     }
 
@@ -181,11 +220,14 @@ public class PdlForvalterClient implements ClientRegister {
 
         try {
             pdlForvalterConsumer.deleteIdent(tpsPerson.getHovedperson());
-            //            if (nonNull(tpsPerson.getPartner())) {
-            //                pdlForvalterRestConsumer.deleteIdent(tpsPerson.getPartner());
-            //            }
-            tpsPerson.getBarn().forEach(barn ->
-                    pdlForvalterConsumer.deleteIdent(barn));
+
+            if (nonNull(tpsPerson.getPartner())) {
+                pdlForvalterConsumer.deleteIdent(tpsPerson.getPartner());
+            }
+
+            if (nonNull(tpsPerson.getBarn())) {
+                tpsPerson.getBarn().forEach(barn -> pdlForvalterConsumer.deleteIdent(barn));
+            }
 
         } catch (RuntimeException e) {
 

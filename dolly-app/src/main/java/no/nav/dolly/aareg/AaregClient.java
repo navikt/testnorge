@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAktoer;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
@@ -33,7 +33,7 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
     @Autowired
     private AaregReleaseIdentClient aaregReleaseIdentClient;
 
-    @Override public void gjenopprett(RsDollyBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+    @Override public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         StringBuilder result = new StringBuilder();
 
