@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,7 @@ public class SyntetiseringService {
 
     private static final String ARENA_FORVALTER_NAME = "arena-forvalteren";
     private static final double PROSENTANDEL_SOM_SKAL_HA_MELDEKORT = 0.2;
+    private static final int MAX_FORESPOERSEL_STOERRELSE = 50;
     private int MINIMUM_ALDER = 16;
 
     private final HodejegerenConsumer hodejegerenConsumer;
@@ -36,40 +38,52 @@ public class SyntetiseringService {
 
     public List<Arbeidsoeker> opprettArbeidsoekere(Integer antallNyeIdenter, Long avspillergruppeId, String miljoe) {
 
-        List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
+        List<String> ledigeIdenter = hentLedigeIdenter(antallNyeIdenter, avspillergruppeId, miljoe);
+        antallNyeIdenter = ledigeIdenter.size();
 
-        List<String> arenaForvalterAktiveIdenter = hentAtiveIdenter(levendeIdenter, miljoe);
-
-        // Mulig man må sjekke om identene er aktive i Arena også. Dersom de blir endret direkte der uten at denne endringen
-        // har gått gjennom Arena Forvalteren, blir ikke dette gjenspeilet i den.
-
-        int antallAktiveIdenter = arenaForvalterAktiveIdenter.size(), antallLevendeIdenter = levendeIdenter.size();
-
-        levendeIdenter.removeAll(arenaForvalterAktiveIdenter);
-
-        if (levendeIdenter.size() <= 0) {
+        if (ledigeIdenter.size() <= 0) {
             log.info("Alle identer funnet av hodejegeren er aktive i Arena Forvalteren. Ingen nye identer ble lagt til.");
             return new ArrayList<>();
         }
 
-        if (antallNyeIdenter == null) {
-            antallNyeIdenter = getAntallBrukereForAaFylleArenaForvalteren(antallLevendeIdenter, antallAktiveIdenter);
-            if (antallNyeIdenter <= 0) {
-                log.info("{}% av aktuelle identer funnet av hodejegeren er allerede aktive i Arena Forvalteren ({}/{}). Ingen nye identer ble lagt til.",
-                        (PROSENTANDEL_SOM_SKAL_HA_MELDEKORT * 100), antallAktiveIdenter, antallLevendeIdenter);
-                return new ArrayList<>();
-            }
-        }
-
         log.info("Registrerer {} nye identer som aktive i Arena Forvalteren.", antallNyeIdenter);
-        List<String> nyeIdenter = new ArrayList<>(antallNyeIdenter);
-        for (int i = 0; i < antallNyeIdenter; i++) {
-            nyeIdenter.add(levendeIdenter.remove(random.nextInt(levendeIdenter.size())));
-        }
-
-        return byggArbeidsoekereOgLagreIHodejegeren(nyeIdenter, miljoe);
+        return byggArbeidsoekereOgLagreIHodejegeren(ledigeIdenter, miljoe);
     }
 
+    private List<String> hentLedigeIdenter(Integer antallNyeIdenter, Long avspillergruppeId, String miljoe) {
+
+        List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
+
+        if (Objects.isNull(antallNyeIdenter)) {
+            log.info("Å opprette {}% identer er foreløpig foreldet grunnet tregheter i systemet.",
+                    (PROSENTANDEL_SOM_SKAL_HA_MELDEKORT * 100));
+            return new ArrayList<>();
+        }
+
+        List<String> nyeIdenter = new ArrayList<>(antallNyeIdenter);
+        List<String> forespoerselIdenter = new ArrayList<>(MAX_FORESPOERSEL_STOERRELSE);
+
+        while (nyeIdenter.size() < antallNyeIdenter) {
+            if (levendeIdenter.size() <= 0) {
+                log.info("Ingen flere kvalifiserte identer. Oppretter {} nye identer i Arena Forvalteren.", nyeIdenter.size());
+                return nyeIdenter;
+            }
+
+            for (int i = 0; i < MAX_FORESPOERSEL_STOERRELSE && levendeIdenter.size() > 0; i++) {
+                forespoerselIdenter.add(levendeIdenter.remove(random.nextInt(levendeIdenter.size())));
+            }
+
+            // TODO: SPLIT IN THREADS
+            List<String> aktiveIdenter = hentAtiveIdenter(forespoerselIdenter,  miljoe);
+            forespoerselIdenter.removeAll(aktiveIdenter);
+            nyeIdenter.addAll(forespoerselIdenter);
+        }
+
+        return nyeIdenter;
+    }
+
+    // Mulig man må sjekke om identene er aktive i Arena også. Dersom de blir endret direkte der uten at denne endringen
+    // har gått gjennom Arena Forvalteren, blir ikke dette gjenspeilet i den.
     private List<String> hentAtiveIdenter(List<String> levendeIdenter, String miljoe) {
         List<List<String>> parter = Partition.ofSize(levendeIdenter, 50);
         List<String> aktiveIdenter = new ArrayList<>(levendeIdenter.size());
