@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,6 @@ public class PdlForvalterClient implements ClientRegister {
     public static final String UTENLANDS_IDENTIFIKASJONSNUMMER = "UtenlandskIdentifikasjonsnummer";
     public static final String FALSK_IDENTITET = "FalskIdentitet";
     public static final String PDL_FORVALTER = "PdlForvalter";
-    private static final String DELETE_IDENT = "DeleteIdent";
     private static final String KILDE = "Dolly";
     private static final String SYNTH_ENV = "q2";
     private static final String HENDELSE_ID = "hendelseId";
@@ -76,7 +76,9 @@ public class PdlForvalterClient implements ClientRegister {
                         .append("' ikke er valgt");
             }
 
-            progress.setPdlforvalterStatus(status.substring(1));
+            if (status.length() > 1) {
+                progress.setPdlforvalterStatus(status.substring(1));
+            }
         }
     }
 
@@ -96,8 +98,11 @@ public class PdlForvalterClient implements ClientRegister {
                             .build(),
                     barn));
 
+        } catch (HttpClientErrorException e) {
+            log.error("Feilet å sende fødselsmelding til PDL-forvalter: {}", e.getResponseBodyAsString());
+
         } catch (RuntimeException e) {
-            log.error("Feilet å sende fødselsmelding til PDL-forvalter for ");
+            log.error("Feilet å sende fødselsmelding til PDL-forvalter.", e);
         }
     }
 

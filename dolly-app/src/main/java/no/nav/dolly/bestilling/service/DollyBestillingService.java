@@ -247,7 +247,7 @@ public class DollyBestillingService {
                 .build();
 
         try {
-            TpsfBestilling tpsfBestilling = objectMapper.readValue(bestilling.getBestKriterier(), TpsfBestilling.class);
+            TpsfBestilling tpsfBestilling = objectMapper.readValue(bestilling.getTpsfKriterier(), TpsfBestilling.class);
 
             if (nonNull(tpsfBestilling.getRelasjoner())) {
                 tpsPerson.setPartner(nonNull(tpsfBestilling.getRelasjoner().getPartner()) ? leverteIdenter.get(1) : null);
