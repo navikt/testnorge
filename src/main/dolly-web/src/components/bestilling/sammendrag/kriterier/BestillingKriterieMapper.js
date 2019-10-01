@@ -33,6 +33,27 @@ const _getTpsfBestillingData = data => {
 	]
 }
 
+const _getIdenthistorikkData = identHistorikkKriterier => {
+	if (!identHistorikkKriterier) return []
+	return {
+		header: 'Identhistorikk',
+		itemRows: identHistorikkKriterier.map((ident, idx) => {
+			return [
+				{
+					label: '',
+					value: `#${idx + 1}`,
+					width: 'x-small'
+				},
+				obj('Identtype', ident.identtype),
+				obj('Kjønn', Formatters.kjonnToString(ident.kjonn)),
+				obj('Utgått dato', Formatters.formatDate(ident.regdato)),
+				obj('Født før', Formatters.formatDate(ident.foedtFoer)),
+				obj('Født Etter', Formatters.formatDate(ident.foedtEtter))
+			]
+		})
+	}
+}
+
 export function mapBestillingData(bestillingData) {
 	if (!bestillingData) return null
 	const data = []
@@ -113,13 +134,21 @@ export function mapBestillingData(bestillingData) {
 			}
 			data.push(postadresse)
 		}
+
+		if (tpsfKriterier.identHistorikk) {
+			data.push(_getIdenthistorikkData(tpsfKriterier.identHistorikk))
+		}
+
 		if (tpsfKriterier.relasjoner) {
 			if (tpsfKriterier.relasjoner.partner) {
+				const mappedTpsfData = _getTpsfBestillingData(tpsfKriterier.relasjoner.partner)
+				const identhistorikkData = _getIdenthistorikkData(
+					tpsfKriterier.relasjoner.partner.identHistorikk
+				)
 				const partner = {
 					header: 'Partner',
-					items: _getTpsfBestillingData(tpsfKriterier.relasjoner.partner)
+					items: mappedTpsfData.concat(identhistorikkData)
 				}
-
 				data.push(partner)
 			}
 
@@ -191,7 +220,6 @@ export function mapBestillingData(bestillingData) {
 
 		if (sigrunStubKriterier) {
 			// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
-
 			let flatSigrunStubKriterier = []
 			sigrunStubKriterier.forEach(inntekt => {
 				inntekt.grunnlag.forEach(g => {
