@@ -45,6 +45,8 @@
         <jettison.version>1.3.7</jettison.version>
         <junit-platform.version>1.2.0</junit-platform.version>
         <fasit-util.version>3.1.2</fasit-util.version>
+        <wiremock.version>2.24.0</wiremock.version>
+        <spring-cloud-contract.version>2.1.2.RELEASE</spring-cloud-contract.version>
 
         <freg-security-test-oidc-tools.version>3.2.0</freg-security-test-oidc-tools.version>
         <sonar.exclusions>**/dolly/domain/**, **/dolly/regression/**, **/dolly/exceptions/**,**/main/dolly-web/**,
