@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.arenaforvalter;
 
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
+import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse.BrukerFeilstatus.DUPLIKAT;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -27,9 +28,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
@@ -67,8 +68,8 @@ public class ArenaForvalterClientTest {
 
         BestillingProgress progress = new BestillingProgress();
         when(arenaForvalterConsumer.postArenadata(any(ArenaNyeBrukere.class))).thenReturn(ResponseEntity.ok(
-                ArenaArbeidssokerBruker.builder()
-                        .arbeidsokerList(singletonList(ArenaArbeidssokerBruker.Arbeidssoker.builder()
+                ArenaNyeBrukereResponse.builder()
+                        .arbeidsokerList(singletonList(ArenaNyeBrukereResponse.Bruker.builder()
                                 .miljoe(ENV)
                                 .status("OK")
                                 .build()))
@@ -85,7 +86,30 @@ public class ArenaForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_Feil() {
+    public void gjenopprett_FunksjonellFeil() {
+
+        BestillingProgress progress = new BestillingProgress();
+        when(arenaForvalterConsumer.postArenadata(any(ArenaNyeBrukere.class))).thenReturn(ResponseEntity.ok(
+                ArenaNyeBrukereResponse.builder()
+                        .nyBrukerFeilList(singletonList(ArenaNyeBrukereResponse.NyBrukerFeilV1.builder()
+                                .miljoe(ENV)
+                                .nyBrukerFeilstatus(DUPLIKAT)
+                                .melding("Lang feilmelding uegnet til å presenteres for bruker")
+                                .build()))
+                        .build()));
+
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setArenaforvalter(Arenadata.builder().build());
+        request.setEnvironments(singletonList(ENV));
+        arenaForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
+
+        assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$Feilstatus: \"DUPLIKAT\". Se detaljer i logg.")));
+        verify(arenaForvalterConsumer).getEnvironments();
+        verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class));
+    }
+
+    @Test
+    public void gjenopprett_TekniskFeil() {
 
         BestillingProgress progress = new BestillingProgress();
         when(arenaForvalterConsumer.postArenadata(any(ArenaNyeBrukere.class))).thenThrow(httpClientErrorException);
