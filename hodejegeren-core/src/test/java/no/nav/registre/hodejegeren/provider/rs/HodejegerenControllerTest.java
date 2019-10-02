@@ -142,7 +142,7 @@ public class HodejegerenControllerTest {
 
     @Test
     public void shouldHenteIdenterMedStatusQuo() {
-        hodejegerenController.hentEksisterendeIdenterMedStatusQuo(avspillergruppeId, miljoe, 1, null, null);
+        hodejegerenController.hentEksisterendeIdenterMedStatusQuo(avspillergruppeId, miljoe, 1, MIN_ALDER, MAX_ALDER);
         verify(eksisterendeIdenterService).hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, 1, MIN_ALDER, MAX_ALDER);
     }
 
@@ -155,8 +155,8 @@ public class HodejegerenControllerTest {
 
     @Test
     public void shouldHenteAlleFoedteIdenter() {
-        hodejegerenController.hentFoedteIdenter(avspillergruppeId);
-        verify(eksisterendeIdenterService).finnFoedteIdenter(avspillergruppeId);
+        hodejegerenController.hentFoedteIdenter(avspillergruppeId, minimumAlder, maksimumAlder);
+        verify(eksisterendeIdenterService).finnFoedteIdenter(avspillergruppeId, minimumAlder, maksimumAlder);
     }
 
     @Test

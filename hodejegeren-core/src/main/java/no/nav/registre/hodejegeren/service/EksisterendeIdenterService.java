@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
@@ -180,8 +181,7 @@ public class EksisterendeIdenterService {
 
     public List<String> finnLevendeIdenterIAldersgruppe(Long avspillergruppeId, int minimumAlder, int maksimumAlder) {
         List<String> identer = finnLevendeIdenter(avspillergruppeId);
-        List<String> identerOverAlder = identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
-        return identerOverAlder.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isAfter(LocalDate.now().minusYears(maksimumAlder))).collect(Collectors.toList());
+        return filtrerIdenterIAldersgruppe(identer, minimumAlder, maksimumAlder);
     }
 
     public List<String> finnAlleIdenter(Long gruppeId) {
@@ -220,11 +220,13 @@ public class EksisterendeIdenterService {
                 TRANSAKSJONSTYPE));
     }
 
-    public List<String> finnFoedteIdenter(Long gruppeId) {
-        return new ArrayList<>(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
+    public List<String> finnFoedteIdenter(Long gruppeId, int minimumAlder, int maksimumAlder) {
+        Set<String> identer = tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
                 gruppeId, Collections.singletonList(FOEDSELSMELDING.getAarsakskode()),
                 TRANSAKSJONSTYPE
-        ));
+        );
+
+        return filtrerIdenterIAldersgruppe(new ArrayList<>(identer), minimumAlder, maksimumAlder);
     }
 
     public PersondataResponse hentPersondata(String ident, String miljoe) {
@@ -354,5 +356,10 @@ public class EksisterendeIdenterService {
                 .fnrRelasjon(relasjonNode.findValue("fnrRelasjon").asText())
                 .typeRelasjon(relasjonNode.findValue("typeRelasjon").asText())
                 .build();
+    }
+
+    private static List<String> filtrerIdenterIAldersgruppe(List<String> identer, int minimumAlder, int maksimumAlder) {
+        List<String> identerOverAlder = identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
+        return identerOverAlder.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isAfter(LocalDate.now().minusYears(maksimumAlder))).collect(Collectors.toList());
     }
 }

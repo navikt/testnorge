@@ -37,28 +37,36 @@ public class HodejegerenController {
     @LogExceptions
     @ApiOperation(value = "Her kan man hente alle identer i en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/alle-identer/{avspillergruppeId}")
-    public List<String> hentAlleIdenterIGruppe(@PathVariable("avspillergruppeId") Long avspillergruppeId) {
+    public List<String> hentAlleIdenterIGruppe(
+            @PathVariable("avspillergruppeId") Long avspillergruppeId
+    ) {
         return eksisterendeIdenterService.finnAlleIdenter(avspillergruppeId);
     }
 
     @LogExceptions
     @ApiOperation(value = "Her kan man hente alle levende identer i en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/alle-levende-identer/{avspillergruppeId}")
-    public List<String> hentLevendeIdenterIGruppe(@PathVariable("avspillergruppeId") Long avspillergruppeId) {
+    public List<String> hentLevendeIdenterIGruppe(
+            @PathVariable("avspillergruppeId") Long avspillergruppeId
+    ) {
         return eksisterendeIdenterService.finnLevendeIdenter(avspillergruppeId);
     }
 
     @LogExceptions
     @ApiOperation(value = "Her kan man hente alle døde og utvandrede identer fra en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/doede-identer/{avspillergruppeId}")
-    public List<String> hentDoedeOgUtvandredeIdenterIGruppe(@PathVariable("avspillergruppeId") Long avspillergruppeId) {
+    public List<String> hentDoedeOgUtvandredeIdenterIGruppe(
+            @PathVariable("avspillergruppeId") Long avspillergruppeId
+    ) {
         return eksisterendeIdenterService.finnDoedeOgUtvandredeIdenter(avspillergruppeId);
     }
 
     @LogExceptions
     @ApiOperation(value = "Her kan man hente et gitt antall gifte identer fra en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/gifte-identer/{avspillergruppeId}")
-    public List<String> hentGifteIdenterIGruppe(@PathVariable("avspillergruppeId") Long avspillergruppeId) {
+    public List<String> hentGifteIdenterIGruppe(
+            @PathVariable("avspillergruppeId") Long avspillergruppeId
+    ) {
         return eksisterendeIdenterService.finnGifteIdenter(avspillergruppeId);
     }
 
@@ -66,8 +74,12 @@ public class HodejegerenController {
     @ApiOperation(value = "Her kan et gitt antall levende identer hentes fra en gitt avspillergruppe i TPSF. "
             + "Systemet sjekker status-quo på personen i det angitte miljø. En minimum alder på personene kan oppgis.")
     @GetMapping("api/v1/levende-identer/{avspillergruppeId}")
-    public List<String> hentLevendeIdenter(@PathVariable("avspillergruppeId") Long avspillergruppeId, @RequestParam("miljoe") String miljoe,
-            @RequestParam(value = "antallIdenter", required = false) Integer antallIdenter, @RequestParam(value = "minimumAlder", required = false) Integer minimumAlder) {
+    public List<String> hentLevendeIdenter(
+            @PathVariable("avspillergruppeId") Long avspillergruppeId,
+            @RequestParam("miljoe") String miljoe,
+            @RequestParam(value = "antallIdenter", required = false) Integer antallIdenter,
+            @RequestParam(value = "minimumAlder", required = false) Integer minimumAlder
+    ) {
         if (minimumAlder == null || minimumAlder < MIN_ALDER) {
             minimumAlder = MIN_ALDER;
         }
@@ -77,7 +89,10 @@ public class HodejegerenController {
     @LogExceptions
     @ApiOperation(value = "Her kan man hente ut alle levende identer over en viss alder.")
     @GetMapping("api/v1/levende-identer-over-alder/{avspillergruppeId}")
-    public List<String> hentAlleLevendeIdenterOverAlder(@PathVariable Long avspillergruppeId, @RequestParam int minimumAlder) {
+    public List<String> hentAlleLevendeIdenterOverAlder(
+            @PathVariable Long avspillergruppeId,
+            @RequestParam int minimumAlder
+    ) {
         if (minimumAlder < MIN_ALDER) {
             throw new IllegalArgumentException("Minimum alder kan ikke være lavere enn " + MIN_ALDER);
         }
@@ -87,10 +102,12 @@ public class HodejegerenController {
     @LogExceptions
     @ApiOperation(value = "Her kan man hente ut alle levende identer i en viss aldersgruppe.")
     @GetMapping("api/v1/levende-identer-i-aldersgruppe/{avspillergruppeId}")
-    public List<String> hentAlleIdenterIAldersgruppe(@PathVariable Long avspillergruppeId, @RequestParam int minimumAlder, @RequestParam int maksimumAlder) {
-        if (minimumAlder < MIN_ALDER || maksimumAlder < minimumAlder) {
-            throw new IllegalArgumentException("Minimum alder kan ikke være høyere enn maksimum alder");
-        }
+    public List<String> hentAlleIdenterIAldersgruppe(
+            @PathVariable Long avspillergruppeId,
+            @RequestParam int minimumAlder,
+            @RequestParam int maksimumAlder
+    ) {
+        validerAlder(minimumAlder, maksimumAlder);
         return eksisterendeIdenterService.finnLevendeIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder);
     }
 
@@ -99,8 +116,11 @@ public class HodejegerenController {
             + "Disse er føreløpig ikke garantert til å være gyldige fnr med tilhørende arbeidsforhold for å få en sykemelding.\n"
             + "De er garantert til å være myndige.")
     @GetMapping("api/v1/fnr-med-navkontor/{avspillergruppeId}")
-    public List<NavEnhetResponse> hentEksisterendeMyndigeIdenterMedNavKontor(@PathVariable("avspillergruppeId") Long avspillergruppeId, @RequestParam("miljoe") String miljoe,
-            @RequestParam("antallIdenter") int antallIdenter) {
+    public List<NavEnhetResponse> hentEksisterendeMyndigeIdenterMedNavKontor(
+            @PathVariable("avspillergruppeId") Long avspillergruppeId,
+            @RequestParam("miljoe") String miljoe,
+            @RequestParam("antallIdenter") int antallIdenter
+    ) {
         List<String> myndigeIdenter = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallIdenter, 18);
         return eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, myndigeIdenter);
     }
@@ -108,7 +128,11 @@ public class HodejegerenController {
     @LogExceptions
     @ApiOperation(value = "Her kan man sjekke status quo på en ident i TPS.")
     @GetMapping("api/v1/status-quo")
-    public Map<String, String> hentStatusQuoFraEndringskode(@RequestParam("endringskode") String endringskode, @RequestParam("miljoe") String miljoe, @RequestParam("fnr") String fnr) throws IOException {
+    public Map<String, String> hentStatusQuoFraEndringskode(
+            @RequestParam("endringskode") String endringskode,
+            @RequestParam("miljoe") String miljoe,
+            @RequestParam("fnr") String fnr
+    ) throws IOException {
         return new HashMap<>(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskode, miljoe, fnr));
     }
 
@@ -116,62 +140,81 @@ public class HodejegerenController {
     @ApiOperation(value = "Her kan man hente en liste over identer i en gitt avspillergruppe med tilhørende status-quo "
             + "i et gitt miljø.")
     @GetMapping("api/v1/status-quo-identer/{avspillergruppeId}")
-    public Map<String, JsonNode> hentEksisterendeIdenterMedStatusQuo(@PathVariable("avspillergruppeId") Long avspillergruppeId,
+    public Map<String, JsonNode> hentEksisterendeIdenterMedStatusQuo(
+            @PathVariable("avspillergruppeId") Long avspillergruppeId,
             @RequestParam("miljoe") String miljoe,
             @RequestParam("antallIdenter") int antallIdenter,
-            @RequestParam(value = "minimumAlder", required = false) Integer minimumAlder,
-            @RequestParam(value = "maksimumAlder", required = false) Integer maksimumAlder) {
-        if (minimumAlder == null) {
-            minimumAlder = MIN_ALDER;
-        }
-        if (maksimumAlder == null) {
-            maksimumAlder = MAX_ALDER;
-        }
-        if (minimumAlder < MIN_ALDER || maksimumAlder < minimumAlder) {
-            throw new IllegalArgumentException("Minimum alder kan ikke være høyere enn maksimum alder");
-        }
+            @RequestParam(value = "minimumAlder", required = false, defaultValue = "" + MIN_ALDER) Integer minimumAlder,
+            @RequestParam(value = "maksimumAlder", required = false, defaultValue = "" + MAX_ALDER) Integer maksimumAlder
+    ) {
+        validerAlder(minimumAlder, maksimumAlder);
         return eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, antallIdenter, minimumAlder, maksimumAlder);
     }
 
     @LogExceptions
     @ApiOperation(value = "Her kan man hente navn- og adresseinformasjon til gitte identer i et gitt miljø.")
     @PostMapping("api/v1/adresse-paa-identer")
-    public Map<String, JsonNode> hentAdressePaaIdenter(@RequestParam String miljoe, @RequestBody List<String> identer) {
+    public Map<String, JsonNode> hentAdressePaaIdenter(
+            @RequestParam String miljoe,
+            @RequestBody List<String> identer
+    ) {
         return eksisterendeIdenterService.hentAdressePaaIdenter(miljoe, identer);
     }
 
     @LogExceptions
     @ApiOperation(value = "Her kan man hente alle fødte identer fra en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/foedte-identer/{avspillergruppeId}")
-    public List<String> hentFoedteIdenter(@PathVariable Long avspillergruppeId) {
-        return eksisterendeIdenterService.finnFoedteIdenter(avspillergruppeId);
+    public List<String> hentFoedteIdenter(
+            @PathVariable Long avspillergruppeId,
+            @RequestParam(required = false, defaultValue = "" + MIN_ALDER) Integer minimumAlder,
+            @RequestParam(required = false, defaultValue = "" + MAX_ALDER) Integer maksimumAlder
+    ) {
+        validerAlder(minimumAlder, maksimumAlder);
+        return eksisterendeIdenterService.finnFoedteIdenter(avspillergruppeId, minimumAlder, maksimumAlder);
     }
 
     @LogExceptions
     @ApiOperation(value = "Her kan man hente persondata til en ident i et gitt miljø i TPS.")
     @GetMapping("api/v1/persondata")
-    public PersondataResponse hentPersondataTilIdent(@RequestParam String ident, @RequestParam String miljoe) {
+    public PersondataResponse hentPersondataTilIdent(
+            @RequestParam String ident,
+            @RequestParam String miljoe
+    ) {
         return eksisterendeIdenterService.hentPersondata(ident, miljoe);
     }
 
     @LogExceptions
     @ApiOperation(value = "Her kan man hente relasjonene til en ident i et gitt miljø i TPS.")
     @GetMapping("api/v1/relasjoner-til-ident")
-    public RelasjonsResponse hentRelasjonerTilIdent(@RequestParam String ident, @RequestParam String miljoe) {
+    public RelasjonsResponse hentRelasjonerTilIdent(
+            @RequestParam String ident,
+            @RequestParam String miljoe
+    ) {
         return eksisterendeIdenterService.hentRelasjoner(ident, miljoe);
     }
 
     @LogExceptions
     @ApiOperation(value = "Her kan man hente identer som er i avspillergruppe, men ikke i TPS i gitt miljø.")
     @GetMapping("api/v1/identer-ikke-i-tps/{avspillergruppeId}")
-    public List<String> hentIdenterSomIkkeErITps(@PathVariable Long avspillergruppeId, @RequestParam String miljoe) {
+    public List<String> hentIdenterSomIkkeErITps(
+            @PathVariable Long avspillergruppeId,
+            @RequestParam String miljoe
+    ) {
         return eksisterendeIdenterService.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
     }
 
     @LogExceptions
     @ApiOperation(value = "Her kan man hente identer som er i avspillergruppe, og som kolliderer med miljø p i TPS.")
     @GetMapping("api/v1/identer-som-kolliderer/{avspillergruppeId}")
-    public List<String> hentIdenterSomKolliderer(@PathVariable Long avspillergruppeId) {
+    public List<String> hentIdenterSomKolliderer(
+            @PathVariable Long avspillergruppeId
+    ) {
         return eksisterendeIdenterService.hentIdenterSomKolliderer(avspillergruppeId);
+    }
+
+    private static void validerAlder(Integer minimumAlder, Integer maksimumAlder) {
+        if (minimumAlder < MIN_ALDER || maksimumAlder < minimumAlder) {
+            throw new IllegalArgumentException("Minimum alder kan ikke være høyere enn maksimum alder");
+        }
     }
 }

@@ -93,7 +93,7 @@ public class EksisterendeIdenterServiceTest {
         doedeIdenter.add("20044249948");
 
         Set<String> foedteIdenter = new LinkedHashSet<>();
-        foedteIdenter.add("20044251231");
+        foedteIdenter.add("20041751231");
 
         when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(1L, Arrays.asList(
                 FOEDSELSMELDING.getAarsakskode(),
@@ -213,10 +213,12 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void finnFoedteIdenterTest() {
-        List<String> foedte = eksisterendeIdenterService.finnFoedteIdenter(3L);
+        int minAlder = 0;
+        int maksAlder = 200;
+        List<String> foedte = eksisterendeIdenterService.finnFoedteIdenter(3L, minAlder, maksAlder);
         assertEquals(1, foedte.size());
         assertThat(foedte, containsInAnyOrder(
-                "20044251231"
+                "20041751231"
         ));
     }
 
