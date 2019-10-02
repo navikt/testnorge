@@ -125,6 +125,34 @@ describe('testBrukerReducer', () => {
 
 		expect(testBruker(initialState, action)).toEqual(res)
 	})
+
+	it('should add udi items on success', () => {
+		const testident = 'a'
+		const testdata = [testident]
+
+		const action = {
+			type: 'GET_UDI_TESTBRUKER_SUCCESS',
+			payload: { data: { person: testdata } },
+			meta: { ident: testident }
+		}
+
+		const res = {
+			items: {
+				tpsf: null,
+				sigrunstub: null,
+				krrstub: null,
+				aareg: null,
+				arenaforvalteren: null,
+				instdata: null,
+				pdlforvalter: null,
+				udistub: {
+					[testident]: [testident]
+				}
+			}
+		}
+
+		expect(testBruker(initialState, action)).toEqual(res)
+	})
 })
 
 describe('testBruker-sokSelector', () => {

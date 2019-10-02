@@ -42,7 +42,12 @@ describe('MiljoeStatusSelector.js', () => {
 						statusMelding: 'OK'
 					}
 				]
-			}
+			},
+			udiStubStatus: [
+				{
+					statusMelding: 'OK'
+				}
+			]
 		}
 
 		it('skal returnere en bool', () => {
@@ -87,6 +92,9 @@ describe('MiljoeStatusSelector.js', () => {
 					]
 				}
 			})
+			const notOk8 = Object.assign({}, billettStatus, {
+				udiStubStatus: [{ statusMelding: 'feiler' }]
+			})
 
 			expect(avvikStatus(notOk1)).toBe(true)
 			expect(avvikStatus(notOk2)).toBe(true)
@@ -95,6 +103,7 @@ describe('MiljoeStatusSelector.js', () => {
 			expect(avvikStatus(notOk5)).toBe(true)
 			expect(avvikStatus(notOk6)).toBe(true)
 			expect(avvikStatus(notOk7)).toBe(true)
+			expect(avvikStatus(notOk8)).toBe(true)
 		})
 	})
 
@@ -196,7 +205,13 @@ describe('MiljoeStatusSelector.js', () => {
 						identer: ['19106129722']
 					}
 				]
-			}
+			},
+			udiStubStatus: [
+				{
+					statusMelding: 'OK',
+					identer: ['19106129722']
+				}
+			]
 		}
 
 		const bestillingMockMedFailedRegister = {
@@ -249,7 +264,13 @@ describe('MiljoeStatusSelector.js', () => {
 						identer: ['19106129722']
 					}
 				]
-			}
+			},
+			udiStubStatus: [
+				{
+					statusMelding: 'Feilet',
+					identer: ['19106129722']
+				}
+			]
 		}
 
 		it('skal returnere null hvis bestillingen er undefined', () => {
@@ -272,7 +293,16 @@ describe('MiljoeStatusSelector.js', () => {
 
 		it('skal returnere mange successEnvs', () => {
 			const miljoeObjMangeSuccess = {
-				successEnvs: ['t5', 'Krr-stub', 'Sigrun-stub', 'Pdl-forvalter', 'Inst', 'AAREG', 'Arena']
+				successEnvs: [
+					't5',
+					'Krr-stub',
+					'Sigrun-stub',
+					'Pdl-forvalter',
+					'Inst',
+					'AAREG',
+					'Arena',
+					'Udi-stub'
+				]
 			}
 			expect(miljoeStatusSelector(bestillingMockMedSuccessRegister)).toMatchObject(
 				miljoeObjMangeSuccess
@@ -281,7 +311,16 @@ describe('MiljoeStatusSelector.js', () => {
 
 		it('skal returnere mange failedEnvs', () => {
 			const miljoeObjMangeFail = {
-				failedEnvs: ['t5', 'Krr-stub', 'Sigrun-stub', 'Pdl-forvalter', 'Inst', 'AAREG', 'Arena']
+				failedEnvs: [
+					't5',
+					'Krr-stub',
+					'Sigrun-stub',
+					'Pdl-forvalter',
+					'Inst',
+					'AAREG',
+					'Arena',
+					'Udi-stub'
+				]
 			}
 			expect(miljoeStatusSelector(bestillingMockMedFailedRegister)).toMatchObject(
 				miljoeObjMangeFail

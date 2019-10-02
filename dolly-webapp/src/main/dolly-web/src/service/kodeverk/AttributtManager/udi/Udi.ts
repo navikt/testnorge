@@ -267,7 +267,7 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.UDI,
 				inputType: InputType.Select,
 				options: SelectOptionsManager('nyIdent'),
-				validation: yup.string().required('Vennligst velg'),
+				validation: yup.string().required('Velg en type'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -280,7 +280,7 @@ const AttributtListe: Attributt[] = [
 				inputType: InputType.Select,
 				onlyShowAfterSelectedValue: { attributtId: 'nyIdent', valueIndex: [1] },
 				options: SelectOptionsManager('identtype'),
-				validation: yup.string().required('Vennligst velg'),
+				validation: yup.string().required('Velg en type'),
 				attributtType: AttributtType.SelectAndEdit
 			}
 		]
@@ -294,6 +294,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.UDI,
 		inputType: InputType.Select,
 		options: SelectOptionsManager('boolean'),
+		validation: yup.string().required('Velg en status'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -304,6 +305,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.UDI,
 		inputType: InputType.Select,
 		options: SelectOptionsManager('jaNeiUavklart'),
+		validation: yup.string().required('Velg en status'),
 		attributtType: AttributtType.SelectAndEdit
 	}
 ]

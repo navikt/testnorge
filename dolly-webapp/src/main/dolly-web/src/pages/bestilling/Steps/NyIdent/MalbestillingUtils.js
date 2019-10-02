@@ -420,31 +420,67 @@ const _mapRegistreValue = (key, value) => {
 									[attr[0]]: attr[1]
 								})
 							}
+						} else if (attr[0] === 'oppholdSammeVilkaar') {
+							Object.assign(oppholdObj, {
+								...oppholdObj,
+								oppholdsstatus: 'oppholdSammeVilkaar',
+								tredjelandsBorgereValg: 'oppholdSammeVilkaar'
+							})
+							Object.entries(attr[1]).forEach(subAttr => {
+								if (/\d{4}-\d{2}-\d{2}/.test(subAttr[1])) {
+									Object.assign(oppholdObj, {
+										...oppholdObj,
+										[subAttr[0]]: Formatters.formateStringDates(subAttr[1])
+									})
+								} else if (subAttr[0] === 'oppholdSammeVilkaarPeriode') {
+									Object.assign(oppholdObj, {
+										...oppholdObj,
+										oppholdSammeVilkaarFraDato: subAttr[1].fra
+											? Formatters.formateStringDates(subAttr[1].fra)
+											: '',
+										oppholdSammeVilkaarTilDato: subAttr[1].til
+											? Formatters.formateStringDates(subAttr[1].til)
+											: ''
+									})
+								} else {
+									Object.assign(oppholdObj, {
+										...oppholdObj,
+										[subAttr[0]]: subAttr[1]
+									})
+								}
+							})
+						} else if (attr[0] === 'uavklart' && attr[1] === true) {
+							Object.assign(oppholdObj, {
+								oppholdsstatus: 'oppholdSammeVilkaar',
+								tredjelandsBorgereValg: 'UAVKLART'
+							})
 						}
-						//Mangler:
-						//Tredjeland ikke oppholdstillatelse. Tredjelandsborger opphold. Tredjeland uavklart.
 					}
 				})
 				_set(mapUdiObj, 'oppholdStatus', [oppholdObj])
 			}
-			if (value.harOppholdstillatelse === false) {
-				Object.assign(mapUdiObj, {
-					oppholdStatus: [
-						{
-							oppholdsstatus: 'UdiOppholdSammeVilkaar',
-							tredjelandsBorgereValg: 'ikkeUdiOppholdSammeVilkaar'
-						}
-					]
+			if (value.harOppholdsTillatelse === false) {
+				const ikkeOpphold = {}
+				Object.assign(ikkeOpphold, {
+					oppholdsstatus: 'oppholdSammeVilkaar',
+					tredjelandsBorgereValg: 'ikkeOppholdSammeVilkaar'
 				})
+				_set(mapUdiObj, 'oppholdStatus', [ikkeOpphold])
 			}
 			if (value.arbeidsadgang) {
 				const arbAdg = {}
 				Object.entries(value.arbeidsadgang).forEach(attr => {
 					if (attr[1] && typeof attr[1] !== 'string') {
 						Object.entries(attr[1]).forEach(subAttr => {
+							let arbAdgDato = ''
+							if (subAttr[0] === 'fra') {
+								arbAdgDato = 'arbeidsadgangFraDato'
+							} else if (subAttr[0] === 'til') {
+								arbAdgDato = 'arbeidsadgangTilDato'
+							}
 							Object.assign(arbAdg, {
 								...arbAdg,
-								[subAttr[0]]: subAttr[1]
+								[arbAdgDato]: Formatters.formateStringDates(subAttr[1])
 							})
 						})
 					} else {
