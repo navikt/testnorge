@@ -194,8 +194,8 @@ export default function testbrukerReducer(state = initialState, action) {
 					...state.items,
 					tpsf: state.items.tpsf.filter(item => item.ident !== action.meta.ident),
 					sigrunstub: { ...state.items.sigrunstub, [action.meta.ident]: null },
-					krrstub: { ...state.items.krrstub, [action.meta.ident]: null }
-					// ! udi-stub også her?
+					krrstub: { ...state.items.krrstub, [action.meta.ident]: null },
+					udistub: { ...state.items.udistub, [action.meta.ident]: null }
 				}
 			}
 
