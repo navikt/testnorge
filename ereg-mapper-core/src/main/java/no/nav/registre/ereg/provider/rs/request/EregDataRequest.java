@@ -1,6 +1,5 @@
 package no.nav.registre.ereg.provider.rs.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +25,7 @@ public class EregDataRequest {
 
     @NotNull
     private String enhetstype;
-    @JsonIgnore
+
     private String endringsType = "N";
 
     @JsonProperty("adresse")
