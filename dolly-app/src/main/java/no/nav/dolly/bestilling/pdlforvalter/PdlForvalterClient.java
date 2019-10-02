@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.pdlforvalter;
 
 import static java.time.LocalDate.now;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.pdlforvalter.PdlAdressebeskyttelse.builder;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlAdressebeskyttelse.convertSpesreg;
 import static no.nav.dolly.util.NullcheckUtil.blankcheckSetDefaultValue;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
@@ -109,7 +108,7 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendAdressebeskyttelse(String ident, String spesreg) {
 
         try {
-            pdlForvalterConsumer.postAdressebeskyttelse(builder()
+            pdlForvalterConsumer.postAdressebeskyttelse(PdlAdressebeskyttelse.builder()
                     .gradering(convertSpesreg(spesreg))
                     .kilde(KILDE)
                     .build(), ident);
