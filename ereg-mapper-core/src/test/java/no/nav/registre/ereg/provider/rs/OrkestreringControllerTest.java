@@ -38,6 +38,8 @@ public class OrkestreringControllerTest {
     @InjectMocks
     private OrkestreringController orkestreringController;
 
+    private boolean update = false;
+
     @Before
     public void setUp() {
 
@@ -47,7 +49,7 @@ public class OrkestreringControllerTest {
     @Test
     public void opprettEnheterIEregOK() {
 
-        when(flatfileService.mapEreg(anyList(), anyBoolean(), anyString())).thenReturn("Ikke viktig så lenge denne ikke er tom");
+        when(flatfileService.mapEreg(anyList(), anyBoolean(), anyString(), update)).thenReturn("Ikke viktig så lenge denne ikke er tom");
 
         ResponseEntity<String> responseEntity = orkestreringController.opprettEnheterIEreg(Collections.singletonList(data), true, ENV);
 
@@ -58,7 +60,7 @@ public class OrkestreringControllerTest {
     @Test
     public void opprettEnheterIEregNotOK() {
 
-        when(flatfileService.mapEreg(anyList(), anyBoolean(), anyString())).thenReturn("");
+        when(flatfileService.mapEreg(anyList(), anyBoolean(), anyString(), update)).thenReturn("");
 
         ResponseEntity<String> responseEntity = orkestreringController.opprettEnheterIEreg(Collections.singletonList(data), true, ENV);
 

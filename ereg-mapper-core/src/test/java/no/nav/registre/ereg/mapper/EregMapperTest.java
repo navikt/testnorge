@@ -31,6 +31,8 @@ public class EregMapperTest {
     @InjectMocks
     private EregMapper eregMapper;
 
+    private boolean update = false;
+
     @Test
     public void mapEregRequests_RandomNaeringskode_Name() {
         when(nameService.getRandomNaeringskode()).thenReturn(NaeringskodeRecord.builder().code("01.120").validFrom("1900-01-01").build());
@@ -41,7 +43,7 @@ public class EregMapperTest {
                 .enhetstype("AS")
                 .endringsType("N")
                 .build();
-        String s = eregMapper.mapEregFromRequests(Collections.singletonList(request));
+        String s = eregMapper.mapEregFromRequests(Collections.singletonList(request), update);
         assertEquals("HEADER " + EregMapper.getDateNowFormatted() + "00000AA A\n" +
                 "ENH 123      AS  NNY  " + EregMapper.getDateNowFormatted() + EregMapper.getDateNowFormatted() + "J           \n" +
                 "NAVNN   Gul Bolle AS                                                                                                                                                                                                       \n" +
@@ -64,7 +66,7 @@ public class EregMapperTest {
                         .kode("0?")
                         .build())
                 .build();
-        String s = eregMapper.mapEregFromRequests(Collections.singletonList(request));
+        String s = eregMapper.mapEregFromRequests(Collections.singletonList(request), update);
         log.info(s);
         assertEquals("HEADER " + EregMapper.getDateNowFormatted() + "00000AA A", s.substring(0, 24));
         assertEquals("ENH 123      BEDRNNY  " + EregMapper.getDateNowFormatted() + EregMapper.getDateNowFormatted() + "J           ", s.substring(25, 75));
@@ -87,7 +89,7 @@ public class EregMapperTest {
                         .kode("0?")
                         .build())
                 .build();
-        String s = eregMapper.mapEregFromRequests(Collections.singletonList(request));
+        String s = eregMapper.mapEregFromRequests(Collections.singletonList(request), update);
         log.info(s);
         assertEquals("HEADER " + EregMapper.getDateNowFormatted() + "00000AA A", s.substring(0, 24));
         assertEquals("ENH 123      AS  NNY  " + EregMapper.getDateNowFormatted() + EregMapper.getDateNowFormatted() + "J           ", s.substring(25, 75));
@@ -98,7 +100,7 @@ public class EregMapperTest {
     @Test
     public void mapEregFromRequests_AllFieldsSuccess() {
 
-        String s = eregMapper.mapEregFromRequests(Collections.singletonList(TestUtil.createDefaultEregData()));
+        String s = eregMapper.mapEregFromRequests(Collections.singletonList(TestUtil.createDefaultEregData()), update);
         log.info(s);
         assertEquals("HEADER " + EregMapper.getDateNowFormatted() + "00000AA A", s.substring(0, 24));
         assertEquals("ENH 123      BEDRNNY  " + EregMapper.getDateNowFormatted() + EregMapper.getDateNowFormatted() + "J           ", s.substring(25, 75));

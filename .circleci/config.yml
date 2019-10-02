@@ -68,7 +68,6 @@ jobs:
             echo "$GITHUB_PASSWORD" | docker login -u "$GITHUB_USERNAME" --password-stdin docker.pkg.github.com
             echo $DOCKER_TAG
             docker push $DOCKER_TAG
-            # echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
       - persist_to_workspace:
           root: /tmp/workspace
           paths:

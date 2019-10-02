@@ -39,7 +39,7 @@ public class EregMapper {
         return format.format(new Date());
     }
 
-    public String mapEregFromRequests(List<EregDataRequest> data) {
+    public String mapEregFromRequests(List<EregDataRequest> data, boolean update) {
 
         StringBuilder eregFile = new StringBuilder(makeHeader());
         int units = 0;
@@ -93,7 +93,7 @@ public class EregMapper {
 
         for (EregDataRequest eregDataRequest : data) {
 
-            RecordsAndCount unit = createUnit(eregDataRequest);
+            RecordsAndCount unit = createUnit(eregDataRequest, update);
             totalRecords += unit.numRecords;
             eregFile.append(unit.val);
             units++;
@@ -104,11 +104,16 @@ public class EregMapper {
         return eregFile.toString();
     }
 
-    private RecordsAndCount createUnit(EregDataRequest data) {
+    private RecordsAndCount createUnit(EregDataRequest data, boolean update) {
         int numRecords = 0;
         String endringsType = data.getEndringsType();
+        StringBuilder file;
+        if (update) {
+            file = new StringBuilder(createENH(data.getOrgnr(), data.getEnhetstype(), "U"));
+        } else {
 
-        StringBuilder file = new StringBuilder(createENH(data.getOrgnr(), data.getEnhetstype(), endringsType));
+            file = new StringBuilder(createENH(data.getOrgnr(), data.getEnhetstype(), endringsType));
+        }
         numRecords++;
 
         Navn navn = data.getNavn();
