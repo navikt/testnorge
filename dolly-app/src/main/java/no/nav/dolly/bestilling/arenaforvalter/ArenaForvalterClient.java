@@ -108,24 +108,27 @@ public class ArenaForvalterClient implements ClientRegister {
         try {
             ResponseEntity<ArenaNyeBrukereResponse> response = arenaForvalterConsumer.postArenadata(arenaNyeBrukere);
             if (response.hasBody()) {
-                response.getBody().getArbeidsokerList().forEach(arbeidsoker -> {
-                    if ("OK".equals(arbeidsoker.getStatus())) {
+                if (nonNull((response.getBody().getArbeidsokerList()))) {
+                    response.getBody().getArbeidsokerList().forEach(arbeidsoker -> {
+                        if ("OK".equals(arbeidsoker.getStatus())) {
+                            status.append(',')
+                                    .append(arbeidsoker.getMiljoe())
+                                    .append('$')
+                                    .append(arbeidsoker.getStatus());
+                        }
+                    });
+                }
+                if (nonNull(response.getBody().getNyBrukerFeilList())) {
+                    response.getBody().getNyBrukerFeilList().forEach(brukerfeil -> {
                         status.append(',')
-                                .append(arbeidsoker.getMiljoe())
-                                .append('$')
-                                .append(arbeidsoker.getStatus());
-                    }
-                });
-                response.getBody().getNyBrukerFeilList().forEach(brukerfeil -> {
-                    status.append(',')
-                            .append(brukerfeil.getMiljoe())
-                            .append('$')
-                            .append("Feilstatus: \"")
-                            .append(brukerfeil.getNyBrukerFeilstatus())
-                            .append("\". Se detaljer i logg.");
-                    log.error("Feilet å opprette testperson {} i ArenaForvalter på miljø: {}, feilstatus: {}, melding: \"{}\"",
-                            brukerfeil.getPersonident(), brukerfeil.getMiljoe(), brukerfeil.getNyBrukerFeilstatus(), brukerfeil.getMelding());
-                });
+                                .append(brukerfeil.getMiljoe())
+                                .append("$Feilstatus: \"")
+                                .append(brukerfeil.getNyBrukerFeilstatus())
+                                .append("\". Se detaljer i logg.");
+                        log.error("Feilet å opprette testperson {} i ArenaForvalter på miljø: {}, feilstatus: {}, melding: \"{}\"",
+                                brukerfeil.getPersonident(), brukerfeil.getMiljoe(), brukerfeil.getNyBrukerFeilstatus(), brukerfeil.getMelding());
+                    });
+                }
             }
 
         } catch (RuntimeException e) {
