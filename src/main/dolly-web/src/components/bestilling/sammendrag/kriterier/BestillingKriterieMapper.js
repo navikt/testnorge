@@ -33,27 +33,6 @@ const _getTpsfBestillingData = data => {
 	]
 }
 
-const _getIdenthistorikkData = identHistorikkKriterier => {
-	if (!identHistorikkKriterier) return []
-	return {
-		header: 'Identhistorikk',
-		itemRows: identHistorikkKriterier.map((ident, idx) => {
-			return [
-				{
-					label: '',
-					value: `#${idx + 1}`,
-					width: 'x-small'
-				},
-				obj('Identtype', ident.identtype),
-				obj('Kjønn', Formatters.kjonnToString(ident.kjonn)),
-				obj('Utgått dato', Formatters.formatDate(ident.regdato)),
-				obj('Født før', Formatters.formatDate(ident.foedtFoer)),
-				obj('Født Etter', Formatters.formatDate(ident.foedtEtter))
-			]
-		})
-	}
-}
-
 export function mapBestillingData(bestillingData) {
 	if (!bestillingData) return null
 	const data = []
@@ -136,18 +115,37 @@ export function mapBestillingData(bestillingData) {
 		}
 
 		if (tpsfKriterier.identHistorikk) {
-			data.push(_getIdenthistorikkData(tpsfKriterier.identHistorikk))
+			const identhistorikkData = {
+				header: 'Identhistorikk',
+				itemRows: tpsfKriterier.identHistorikk.map((ident, idx) => {
+					return [
+						{
+							label: '',
+							value: `#${idx + 1}`,
+							width: 'x-small'
+						},
+						obj('Identtype', ident.identtype),
+						obj('Kjønn', Formatters.kjonnToString(ident.kjonn)),
+						obj('Utgått dato', Formatters.formatDate(ident.regdato)),
+						obj('Født før', Formatters.formatDate(ident.foedtFoer)),
+						obj('Født Etter', Formatters.formatDate(ident.foedtEtter))
+					]
+				})
+			}
+			data.push(identhistorikkData)
 		}
 
 		if (tpsfKriterier.relasjoner) {
 			if (tpsfKriterier.relasjoner.partner) {
 				const mappedTpsfData = _getTpsfBestillingData(tpsfKriterier.relasjoner.partner)
-				const identhistorikkData = _getIdenthistorikkData(
-					tpsfKriterier.relasjoner.partner.identHistorikk
-				)
+				if (tpsfKriterier.relasjoner.partner.identHistorikk) {
+					mappedTpsfData.push(
+						obj('Antall historiske identer', tpsfKriterier.relasjoner.partner.identHistorikk.length)
+					)
+				}
 				const partner = {
 					header: 'Partner',
-					items: mappedTpsfData.concat(identhistorikkData)
+					items: mappedTpsfData
 				}
 				data.push(partner)
 			}

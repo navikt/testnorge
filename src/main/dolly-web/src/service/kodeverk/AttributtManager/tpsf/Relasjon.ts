@@ -20,6 +20,7 @@ const partnerAttributes: any = PersoninformasjonListe.default
 
 const barnAttributes: any = PersoninformasjonListe.default
 	.filter(attributt => attributt.id !== 'sivilstand')
+	.filter(attributt => attributt.id !== 'identHistorikk')
 	.map(attributt => {
 		let copy = Object.assign({}, attributt)
 		copy.hovedKategori = Kategorier.FamilieRelasjoner
