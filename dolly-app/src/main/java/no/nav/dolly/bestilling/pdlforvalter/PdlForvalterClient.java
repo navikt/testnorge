@@ -243,7 +243,7 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendDeleteIdent(TpsPerson tpsPerson) {//NOSONAR
+    private void sendDeleteIdent(TpsPerson tpsPerson) {
 
         try {
             pdlForvalterConsumer.deleteIdent(tpsPerson.getHovedperson());
@@ -252,9 +252,7 @@ public class PdlForvalterClient implements ClientRegister {
                 pdlForvalterConsumer.deleteIdent(tpsPerson.getPartner());
             }
 
-            if (nonNull(tpsPerson.getBarn())) {
-                tpsPerson.getBarn().forEach(barn -> pdlForvalterConsumer.deleteIdent(barn));
-            }
+            tpsPerson.getBarn().forEach(barn -> pdlForvalterConsumer.deleteIdent(barn));
 
         } catch (RuntimeException e) {
 
