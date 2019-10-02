@@ -11,7 +11,6 @@ const _renderBestillingsDetaljer = data => {
 		const cssClass = cn('flexbox--align-center info-text', {
 			'bottom-border': bottomBorder
 		})
-		console.log('kategori :', kategori)
 		if (kategori.header) {
 			return (
 				<Fragment key={j}>
@@ -21,9 +20,6 @@ const _renderBestillingsDetaljer = data => {
 							{kategori.items.map((attributt, i) => {
 								if (attributt.value) {
 									return _renderStaticValue(attributt, i)
-								} else if (attributt.header) {
-									//F.eks. identhistorikk under partner
-									return <div>{_renderBestillingsDetaljer([attributt])}</div>
 								}
 							})}
 						</div>
@@ -31,7 +27,6 @@ const _renderBestillingsDetaljer = data => {
 					{kategori.itemRows && (
 						<div className={cn('info-text', { 'bottom-border': bottomBorder })}>
 							{kategori.itemRows.map((row, i) => {
-								console.log('row :', row)
 								return (
 									<div className={'flexbox--align-start flexbox--wrap'} key={i}>
 										{row.map((attributt, j) => {

@@ -1,6 +1,7 @@
 import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 import _get from 'lodash/get'
+import DataMapper from '.'
 
 export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 	if (!tpsfData) return null
@@ -424,6 +425,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 }
 
 export function mapIdenthistorikkData(data) {
+	if (!data || data.length < 1) return []
 	return {
 		id: 'identhistorikk',
 		label: 'Identhistorikk',
