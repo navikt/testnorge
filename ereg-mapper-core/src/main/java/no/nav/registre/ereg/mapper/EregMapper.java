@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import no.nav.registre.ereg.consumer.EregConsumer;
 import no.nav.registre.ereg.csv.NaeringskodeRecord;
 import no.nav.registre.ereg.provider.rs.request.Adresse;
 import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
@@ -33,6 +34,7 @@ import no.nav.registre.ereg.service.NameService;
 public class EregMapper {
 
     private final NameService nameService;
+    private final EregConsumer eregConsumer;
 
     static String getDateNowFormatted() {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
@@ -92,11 +94,12 @@ public class EregMapper {
 
 
         for (EregDataRequest eregDataRequest : data) {
-
-            RecordsAndCount unit = createUnit(eregDataRequest);
-            totalRecords += unit.numRecords;
-            eregFile.append(unit.val);
-            units++;
+            if (eregConsumer.checkExists(eregDataRequest.getOrgnr())) {
+                RecordsAndCount unit = createUnit(eregDataRequest);
+                totalRecords += unit.numRecords;
+                eregFile.append(unit.val);
+                units++;
+            }
         }
 
         eregFile.append(createTrailer(units, totalRecords));
