@@ -15,30 +15,30 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BestillingKrrStubStatusMapperNyTest {
+public class BestillingSigrunStubStatusMapperTest {
 
     private static final List<BestillingProgress> RUN_STATUS = newArrayList(
             BestillingProgress.builder().ident("IDENT_1")
-                    .krrstubStatus("OK")
+                    .sigrunstubStatus("OK")
                     .build(),
             BestillingProgress.builder().ident("IDENT_2")
-                    .krrstubStatus("FEIL")
+                    .sigrunstubStatus("FEIL")
                     .build(),
             BestillingProgress.builder().ident("IDENT_3")
-                    .krrstubStatus("OK")
+                    .sigrunstubStatus("OK")
                     .build(),
             BestillingProgress.builder().ident("IDENT_4")
-                    .krrstubStatus("FEIL")
+                    .sigrunstubStatus("FEIL")
                     .build(),
             BestillingProgress.builder().ident("IDENT_5")
-                    .krrstubStatus("OK")
+                    .sigrunstubStatus("OK")
                     .build()
     );
 
     @Test
-    public void krrStubStatusMap() {
+    public void sigrunStubStatusMap() {
 
-        List<RsStatusRapport> identStatuses = BestillingKrrStubStatusMapperNy.buildKrrStubStatusMap(RUN_STATUS);
+        List<RsStatusRapport> identStatuses = BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap(RUN_STATUS);
 
         assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("FEIL")));
         assertThat(identStatuses.get(0).getStatuser().get(0).getIdenter(), containsInAnyOrder("IDENT_2", "IDENT_4"));

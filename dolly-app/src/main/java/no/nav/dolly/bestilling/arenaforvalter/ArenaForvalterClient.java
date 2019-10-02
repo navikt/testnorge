@@ -15,11 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @Slf4j
 @Service
@@ -32,7 +32,7 @@ public class ArenaForvalterClient implements ClientRegister {
     private MapperFacade mapperFacade;
 
     @Override
-    public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
+    public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         if (nonNull(bestilling.getArenaforvalter())) {
 
@@ -47,13 +47,12 @@ public class ArenaForvalterClient implements ClientRegister {
 
             if (!availEnvironments.isEmpty()) {
 
-                ResponseEntity<ArenaArbeidssokerBruker> existingServicebruker = fetchServiceBruker(norskIdent.getIdent(), availEnvironments, status);
-                deleteServicebruker(norskIdent.getIdent(), availEnvironments, status, existingServicebruker);
+                deleteServicebruker(tpsPerson.getHovedperson(), availEnvironments);
 
                 ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
                 availEnvironments.forEach(environment -> {
                     ArenaNyBruker arenaNyBruker = mapperFacade.map(bestilling.getArenaforvalter(), ArenaNyBruker.class);
-                    arenaNyBruker.setPersonident(norskIdent.getIdent());
+                    arenaNyBruker.setPersonident(tpsPerson.getHovedperson());
                     arenaNyBruker.setMiljoe(environment);
                     arenaNyeBrukere.getNyeBrukere().add(arenaNyBruker);
                 });
@@ -88,42 +87,19 @@ public class ArenaForvalterClient implements ClientRegister {
         });
     }
 
-    private void deleteServicebruker(String ident, List<String> availEnvironments, StringBuilder status, ResponseEntity<ArenaArbeidssokerBruker> response) {
-
-        if (response.hasBody() && !response.getBody().getArbeidsokerList().isEmpty()) {
-            response.getBody().getArbeidsokerList().forEach(arbeidssoker -> {
-                if (availEnvironments.contains(arbeidssoker.getMiljoe())) {
-                    try {
-                        arenaForvalterConsumer.deleteIdent(ident, arbeidssoker.getMiljoe());
-
-                    } catch (RuntimeException e) {
-                        status.append(',')
-                                .append(arbeidssoker.getMiljoe())
-                                .append('$');
-                        appendErrorText(status, e);
-                        log.error("Feilet å inaktivere bruker: {}, miljø: {} i ArenaForvalter: ", arbeidssoker.getPersonident(), arbeidssoker.getMiljoe(), e);
-                    }
-                }
-            });
-        }
-    }
-
-    private ResponseEntity<ArenaArbeidssokerBruker> fetchServiceBruker(String ident, List<String> availEnvironments, StringBuilder status) {
+    private void deleteServicebruker(String ident, List<String> availEnvironments) {
 
         try {
-            return arenaForvalterConsumer.getIdent(ident);
+            availEnvironments.forEach(environment ->
+                    arenaForvalterConsumer.deleteIdent(ident, environment));
 
         } catch (RuntimeException e) {
-            availEnvironments.forEach(environment -> {
-                status.append(',')
-                        .append(environment)
-                        .append('$');
-                appendErrorText(status, e);
-            });
-            log.error("Feilet å hente bruker: {} i ArenaForvalter", ident, e);
-            return ResponseEntity.badRequest().build();
+
+            log.error("Feilet å inaktivere bruker: {} i ArenaForvalter: ", ident, e);
         }
+
     }
+
 
     private void sendArenadata(ArenaNyeBrukere arenaNyeBrukere, StringBuilder status) {
 
