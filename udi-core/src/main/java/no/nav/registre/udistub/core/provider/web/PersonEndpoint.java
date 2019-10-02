@@ -35,7 +35,7 @@ public class PersonEndpoint {
         UdiPerson foundPerson = personService.finnPerson(request.getParameter().getFodselsnummer())
                 .orElseThrow(() -> new NotFoundException(String.format("Kunne ikke finne person med fnr:%s", request.getParameter().getFodselsnummer())));
         HentPersonstatusResultat resultat = conversionService.convert(foundPerson, HentPersonstatusResultat.class);
-        return new JAXBElement<>(new QName("http://udi.no.MT_1067_NAV.v1", "HentPersonStatusResponse"), HentPersonstatusResultat.class, resultat);
+        return new JAXBElement<>(new QName("http://udi.no.MT_1067_NAV.v1", "HentPersonstatusResponse"), HentPersonstatusResultat.class, resultat);
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "PingRequest")
