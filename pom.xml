@@ -37,6 +37,7 @@
 		<orika.version>1.5.2</orika.version>
 		<wiremock.version>1.18</wiremock.version>
 		<spring-cloud-contract-wiremock.version>2.1.1.RELEASE</spring-cloud-contract-wiremock.version>
+		<apache.ws.security.version>1.6.19</apache.ws.security.version>
 	</properties>
 
 	<dependencyManagement>
@@ -100,6 +101,12 @@
 				<groupId>io.springfox</groupId>
 				<artifactId>springfox-swagger-ui</artifactId>
 				<version>${springfox.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.ws.security</groupId>
+				<artifactId>wss4j</artifactId>
+				<version>${apache.ws.security.version}</version>
 			</dependency>
 
 			<dependency>
