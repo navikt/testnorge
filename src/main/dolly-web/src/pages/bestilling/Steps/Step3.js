@@ -285,11 +285,11 @@ export default class Step3 extends PureComponent {
 			})
 		}
 
-		const itemValue = this._formatereValue(item, stateValues)
-
 		if (!item.inputType) return null
 		if (item.onlyShowAfterSelectedValue && !itemValue) return null
 		if ((item.id === 'utenFastBopel' || item.id === 'ufb_kommunenr') && !itemValue) return null
+
+		const itemValue = this._formatereValue(item, stateValues)
 
 		const staticValueProps = {
 			key: item.id,
@@ -350,31 +350,25 @@ export default class Step3 extends PureComponent {
 
 	_formatereValue = (item, stateValues) => {
 		const value = _get(stateValues, item.id)
+		console.log('item :', item)
+		console.log('stateValues :', stateValues)
+
 		if (item.dataSource === 'ARENA') {
 			return item.id === 'arenaBrukertype'
 				? Formatters.uppercaseAndUnderscoreToCapitalized(
 						_get(stateValues['arenaforvalter'][0], item.id)
 				  )
 				: Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id))
-			// item.id === 'arenaBrukertype'
-			// 	? (itemValue = Formatters.uppercaseAndUnderscoreToCapitalized(
-			// 			_get(stateValues['arenaforvalter'][0], item.id)
-			// 	  ))
-			// 	: (itemValue = Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id)))
 		}
 
 		if (item.dataSource === 'PDLF' && item.subKategori.id === 'utenlandskIdentifikasjonsnummer') {
 			return Formatters.oversettBoolean(
 				_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
 			)
-			// itemValue = Formatters.oversettBoolean(
-			// 	_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
-			// )
 		}
 
 		if (item.dataSource === 'INST' && (item.id === 'institusjonstype' || item.id === 'varighet')) {
 			return Formatters.showLabel(item.id, value)
-			// itemValue = Formatters.showLabel(item.id, itemValue)
 		}
 
 		if (
@@ -394,7 +388,6 @@ export default class Step3 extends PureComponent {
 				item.id === 'nyIdent')
 		) {
 			return Formatters.showLabel(item.id, value)
-			// itemValue = Formatters.showLabel(item.id, itemValue)
 		}
 
 		if (
@@ -405,7 +398,5 @@ export default class Step3 extends PureComponent {
 		if (value === 'true') return true // Quickfix fra SelectOptions(stringBoolean)
 		if (value === 'false') return false
 		return Formatters.oversettBoolean(value)
-
-		// return itemValue
 	}
 }

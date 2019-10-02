@@ -442,9 +442,7 @@ export function mapBestillingData(bestillingData) {
 					),
 					obj(
 						'Type opphold',
-						oppholdsrett &&
-							// currentOppholdsrettType !== 'oppholdSammeVilkaar' &&
-							Formatters.showLabel('eosEllerEFTAtypeOpphold', currentOppholdsrettType)
+						oppholdsrett && Formatters.showLabel('eosEllerEFTAtypeOpphold', currentOppholdsrettType)
 					),
 					obj('Status', currentTredjelandsborgereStatus),
 					obj(
@@ -471,7 +469,6 @@ export function mapBestillingData(bestillingData) {
 					obj(
 						'Grunnlag for opphold',
 						oppholdsrett &&
-							// currentOppholdsrettType !== 'oppholdSammeVilkaar' &&
 							Formatters.showLabel(
 								currentOppholdsrettType,
 								oppholdKriterier[currentOppholdsrettType]
@@ -512,17 +509,11 @@ export function mapBestillingData(bestillingData) {
 					),
 					obj(
 						'Arbeidsadgang fra dato',
-						Formatters.formateStringDates(
-							_get(arbeidsadgangKriterier, 'periode.fra')
-							// arbeidsadgangKriterier && arbeidsadgangKriterier.periode.fra
-						)
+						Formatters.formateStringDates(_get(arbeidsadgangKriterier, 'periode.fra'))
 					),
 					obj(
 						'Arbeidsadgang til dato',
-						Formatters.formateStringDates(
-							_get(arbeidsadgangKriterier, 'periode.til')
-							// arbeidsadgangKriterier && arbeidsadgangKriterier.periode.til
-						)
+						Formatters.formateStringDates(_get(arbeidsadgangKriterier, 'periode.til'))
 					),
 					obj('Alias', aliaserListe.length > 0 && aliaserListe),
 					obj('Flyktningstatus', Formatters.oversettBoolean(udiStubKriterier.flyktning)),
