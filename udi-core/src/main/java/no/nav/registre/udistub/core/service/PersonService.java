@@ -3,10 +3,12 @@ package no.nav.registre.udistub.core.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,8 +54,9 @@ public class PersonService {
                 .ident(udiPerson.getIdent())
                 .foedselsDato(udiPerson.getFoedselsDato())
                 .navn(mapperFacade.map(udiPerson.getNavn(), PersonNavn.class))
-                .soeknadOmBeskyttelseUnderBehandling(udiPerson.getSoeknadOmBeskyttelseUnderBehandling())
-                .soknadDato(udiPerson.getSoknadDato())
+                .soeknadOmBeskyttelseUnderBehandling(udiPerson.getSoeknadOmBeskyttelseUnderBehandling() != null ?
+                        udiPerson.getSoeknadOmBeskyttelseUnderBehandling() : JaNeiUavklart.UAVKLART)
+                .soknadDato(udiPerson.getSoknadDato() != null ? udiPerson.getSoknadDato() : LocalDate.now())
                 .build();
 
         Person person = personRepository.save(nyPerson);
