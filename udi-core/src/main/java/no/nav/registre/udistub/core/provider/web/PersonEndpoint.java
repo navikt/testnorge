@@ -38,7 +38,9 @@ public class PersonEndpoint {
         HentPersonstatusResultat resultat = conversionService.convert(foundPerson, HentPersonstatusResultat.class);
         HentPersonstatusResponseType hentPersonstatusResponseType = new HentPersonstatusResponseType();
         hentPersonstatusResponseType.setResultat(resultat);
-        return new JAXBElement<>(new QName("http://udi.no.MT_1067_NAV.v1", "HentPersonstatusResponse"), HentPersonstatusResponseType.class, hentPersonstatusResponseType);
+        JAXBElement<HentPersonstatusResponseType> hentPersonstatusResponse = new JAXBElement<>(new QName("http://udi.no.MT_1067_NAV.v1", "HentPersonstatusResponse"), HentPersonstatusResponseType.class, hentPersonstatusResponseType);
+        hentPersonstatusResponse.setNil(true);
+        return hentPersonstatusResponse;
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "PingRequest")

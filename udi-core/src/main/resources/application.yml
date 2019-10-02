@@ -1,4 +1,6 @@
-spring.jpa.open-in-view: false
+spring:
+  jpa:
+    open-in-view: false
 
 server:
   use-forward-headers: true

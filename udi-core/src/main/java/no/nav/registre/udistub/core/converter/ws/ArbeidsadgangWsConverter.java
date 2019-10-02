@@ -28,7 +28,7 @@ public class ArbeidsadgangWsConverter implements Converter<UdiArbeidsadgang, Arb
             if (harArbeidsadgang == null) {
                 java.util.Date til = resultArbeidsadgang.getArbeidsadgangsPeriode().getTil().toGregorianCalendar().getTime();
                 java.util.Date fra = resultArbeidsadgang.getArbeidsadgangsPeriode().getFra().toGregorianCalendar().getTime();
-                if (fra.after(Date.valueOf(now)) && til.after(Date.valueOf(now))) {
+                if (fra.after(Date.valueOf(now)) && til.before(Date.valueOf(now))) {
                     harArbeidsadgang = JaNeiUavklart.JA;
                 } else if (fra.before(Date.valueOf(now)) || til.after(Date.valueOf(now))) {
                     harArbeidsadgang = JaNeiUavklart.NEI;
