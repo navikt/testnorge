@@ -46,6 +46,14 @@ export default class Bestilling extends PureComponent {
 			currentMal
 		} = this.props
 
+		// Stygg workaround fordi  attributeIds ikke blir satt for mal med UDI tredjelandsborger uten oppholdstillatelse.
+		// Tips mottas med takk!
+		if (this.props.values.oppholdStatus) {
+			if (this.props.values.oppholdStatus[0].tredjelandsBorgereValg === 'ikkeOppholdSammeVilkaar') {
+				attributeIds.push('oppholdStatus')
+			}
+		}
+
 		return (
 			<div className="bestilling-page">
 				<Stegindikator

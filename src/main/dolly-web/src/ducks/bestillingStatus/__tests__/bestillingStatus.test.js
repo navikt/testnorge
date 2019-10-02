@@ -4,7 +4,7 @@ import { sokSelector } from '~/ducks/bestillingStatus/utils'
 
 describe('bestillingStatusReducer', () => {
 	it('should return initial state', () => {
-		expect(bestillingStatus(undefined, {})).toEqual({ ny: [] })
+		expect(bestillingStatus(undefined, {})).toEqual({ ny: [], data: [] })
 	})
 
 	// it('should handle a success action', () => {
