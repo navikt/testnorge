@@ -352,15 +352,8 @@ export default class Step3 extends PureComponent {
 		const value = _get(stateValues, item.id)
 		if (item.dataSource === 'ARENA') {
 			return item.id === 'arenaBrukertype'
-				? Formatters.uppercaseAndUnderscoreToCapitalized(
-						_get(stateValues['arenaforvalter'][0], item.id)
-				  )
-				: Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id))
-			// item.id === 'arenaBrukertype'
-			// 	? (itemValue = Formatters.uppercaseAndUnderscoreToCapitalized(
-			// 			_get(stateValues['arenaforvalter'][0], item.id)
-			// 	  ))
-			// 	: (itemValue = Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id)))
+				? Formatters.uppercaseAndUnderscoreToCapitalized(value)
+				: Formatters.oversettBoolean(value)
 		}
 
 		if (item.dataSource === 'PDLF' && item.subKategori.id === 'utenlandskIdentifikasjonsnummer') {
