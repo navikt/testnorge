@@ -10,6 +10,7 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import v1.mt_1067_nav.no.udi.HentPersonstatusRequestType;
+import v1.mt_1067_nav.no.udi.HentPersonstatusResponseType;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
@@ -30,12 +31,14 @@ public class PersonEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "HentPersonstatusRequest")
     @ResponsePayload
-    public JAXBElement<HentPersonstatusResultat> hentPersonstatusRequest(@RequestPayload HentPersonstatusRequestType request) {
+    public JAXBElement<HentPersonstatusResponseType> hentPersonstatusRequest(@RequestPayload HentPersonstatusRequestType request) {
 
         UdiPerson foundPerson = personService.finnPerson(request.getParameter().getFodselsnummer())
                 .orElseThrow(() -> new NotFoundException(String.format("Kunne ikke finne person med fnr:%s", request.getParameter().getFodselsnummer())));
         HentPersonstatusResultat resultat = conversionService.convert(foundPerson, HentPersonstatusResultat.class);
-        return new JAXBElement<>(new QName("http://udi.no.MT_1067_NAV.v1", "HentPersonstatusResponse"), HentPersonstatusResultat.class, resultat);
+        HentPersonstatusResponseType hentPersonstatusResponseType = new HentPersonstatusResponseType();
+        hentPersonstatusResponseType.setResultat(resultat);
+        return new JAXBElement<>(new QName("http://udi.no.MT_1067_NAV.v1", "HentPersonstatusResponse"), HentPersonstatusResponseType.class, hentPersonstatusResponseType);
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "PingRequest")
