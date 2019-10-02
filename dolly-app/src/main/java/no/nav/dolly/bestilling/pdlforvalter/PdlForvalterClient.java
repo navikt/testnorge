@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.pdlforvalter;
 
 import static java.time.LocalDate.now;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.pdlforvalter.PdlAdressebeskyttelse.convertSpesreg;
 import static no.nav.dolly.util.NullcheckUtil.blankcheckSetDefaultValue;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
@@ -61,6 +62,7 @@ public class PdlForvalterClient implements ClientRegister {
 
                 sendDeleteIdent(tpsPerson);
                 sendFoedselsmelding(tpsPerson);
+                sendAdressebeskyttelse(bestilling.getTpsf(), tpsPerson);
                 sendDoedsfall(bestilling.getTpsf(), tpsPerson);
 
                 if (nonNull(bestilling.getPdlforvalter())) {
@@ -89,6 +91,34 @@ public class PdlForvalterClient implements ClientRegister {
     public void release(List<String> identer) {
 
         identer.forEach(ident -> pdlForvalterConsumer.deleteIdent(ident));
+    }
+
+    private void sendAdressebeskyttelse(RsTpsfUtvidetBestilling bestilling, TpsPerson tpsPerson) {
+
+        sendAdressebeskyttelse(tpsPerson.getHovedperson(), bestilling.getSpesreg());
+        if (nonNull(bestilling.getRelasjoner())) {
+            sendAdressebeskyttelse(tpsPerson.getPartner(), bestilling.getRelasjoner().getPartner().getSpesreg());
+            for (int i = 0; i < tpsPerson.getBarn().size(); i++) {
+                sendAdressebeskyttelse(tpsPerson.getBarn().get(i), bestilling.getRelasjoner().getBarn().get(i).getSpesreg());
+            }
+        }
+
+    }
+
+    private void sendAdressebeskyttelse(String ident, String spesreg) {
+
+        try {
+            pdlForvalterConsumer.postAdressebeskyttelse(PdlAdressebeskyttelse.builder()
+                    .gradering(convertSpesreg(spesreg))
+                    .kilde(KILDE)
+                    .build(), ident);
+
+        } catch (HttpClientErrorException e) {
+            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter: {}", ident, e.getResponseBodyAsString());
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter.", ident, e);
+        }
     }
 
     private void sendDoedsfall(RsTpsfUtvidetBestilling bestilling, TpsPerson tpsPerson) {
@@ -124,9 +154,7 @@ public class PdlForvalterClient implements ClientRegister {
 
         sendFoedselsmelding(tpsPerson.getHovedperson());
         sendFoedselsmelding(tpsPerson.getPartner());
-        if (nonNull(tpsPerson.getBarn())) {
-            tpsPerson.getBarn().forEach(barn -> sendFoedselsmelding(barn));
-        }
+        tpsPerson.getBarn().forEach(this::sendFoedselsmelding);
     }
 
     private void sendFoedselsmelding(String ident) {
@@ -203,8 +231,7 @@ public class PdlForvalterClient implements ClientRegister {
                 falskIdentitet.setErFalsk(nullcheckSetDefaultValue(falskIdentitet.getErFalsk(), true));
                 falskIdentitet.setKilde(nullcheckSetDefaultValue(falskIdentitet.getKilde(), KILDE));
 
-                ResponseEntity<JsonNode> response =
-                        pdlForvalterConsumer.postFalskIdentitet(falskIdentitet, ident);
+                ResponseEntity<JsonNode> response = pdlForvalterConsumer.postFalskIdentitet(falskIdentitet, ident);
 
                 appendOkStatus(response.getBody(), status);
 
