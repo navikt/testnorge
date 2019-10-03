@@ -3,7 +3,9 @@ import Icon from '~/components/ui/icon/Icon'
 import Button from '~/components/ui/button/Button'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
-import MiljoeStatus from './MiljoeStatus/MiljoeStatus'
+import ApiFeilmelding from '~/components/ui/apiFeilmelding/ApiFeilmelding'
+import FagsystemStatus from './FagsystemStatus/FagsystemStatus'
+import antallIdenterOpprettet from '~/components/bestilling/utils/antallIdenterOpprettet'
 
 import './BestillingResultat.less'
 
@@ -14,25 +16,21 @@ export default function BestillingResultat(props) {
 
 	const { bestilling, onCloseButton } = props
 
+	const antall = antallIdenterOpprettet(bestilling)
+
 	return (
 		<div className="bestilling-resultat">
 			<div className="status-header">
 				<p>Bestilling #{bestilling.id}</p>
 				<h3>Bestillingsstatus</h3>
-				<div className="remove-button-container">
+				<div className="status-header_button-wrap">
 					<Button kind="remove-circle" onClick={() => onCloseButton(bestilling.id)} />
 				</div>
 			</div>
 			<hr />
-			<div className="miljoe-container miljoe-container-kolonne">
-				<MiljoeStatus bestilling={bestilling} />
-			</div>
-			{bestilling.feil && (
-				<div className="flexbox--all-center overall-feil-container">
-					<Icon size="16px" kind="report-problem-triangle" />
-					<p>{bestilling.feil} </p>
-				</div>
-			)}
+			<FagsystemStatus bestilling={bestilling} />
+			{antall.harMangler && <span>{antall.tekst}</span>}
+			{bestilling.feil && <ApiFeilmelding feilmelding={bestilling.feil} container />}
 			<div className="flexbox--all-center">
 				<Button onClick={openModal} className="flexbox--align-center" kind="details">
 					BESTILLINGSDETALJER
