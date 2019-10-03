@@ -296,7 +296,8 @@ export default class Step3 extends PureComponent {
 			header: item.label,
 			value: itemValue !== '' ? itemValue : null,
 			format: item.format,
-			size: item.size
+			size: item.size,
+			optionHeight: item.size
 		}
 
 		return (
