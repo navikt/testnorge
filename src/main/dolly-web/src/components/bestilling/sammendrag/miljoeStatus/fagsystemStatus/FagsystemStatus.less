@@ -1,0 +1,29 @@
+@import (reference) '~lessVars';
+
+table.fagsystemstatus {
+	width: 100%;
+	thead tr td {
+		padding-bottom: 5px;
+		font-size: 0.75em;
+		font-weight: bold;
+		text-transform: uppercase;
+		border-bottom: 1px solid @color-bg-divider;
+	}
+	tbody tr td {
+		min-width: 100px;
+		vertical-align: top;
+		padding: 8px 8px 8px 0;
+		h5 {
+			margin: 0;
+			font-size: 0.9em;
+		}
+		svg {
+			margin-right: 5px;
+			min-width: 16px;
+		}
+	}
+
+	tbody tr:not(:last-child) td {
+		border-bottom: 1px solid #eee;
+	}
+}
