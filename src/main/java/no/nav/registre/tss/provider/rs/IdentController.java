@@ -28,6 +28,11 @@ public class IdentController {
         return identService.opprettLegerITss(miljoe.toLowerCase(), identer);
     }
 
+    @PostMapping("/samhandlere")
+    public List<String> opprettSamhandlere(@RequestParam String miljoe, @RequestBody List<String> identer) {
+        return identService.opprettSamhandlereITss(miljoe.toLowerCase(), identer);
+    }
+
     @GetMapping("/hentLeger/{avspillergruppeId}")
     public Map<String, Response910> hentLegerFraTss(@PathVariable Long avspillergruppeId, @RequestParam String miljoe, @RequestParam(required = false) Integer antallLeger) throws JMSException {
         return identService.hentLegerIAvspillergruppeFraTss(avspillergruppeId, antallLeger, miljoe);

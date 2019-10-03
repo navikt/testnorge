@@ -13,6 +13,7 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.tss.consumer.rs.TssSyntetisererenConsumer;
 import no.nav.registre.tss.consumer.rs.responses.TssSyntMessage;
 import no.nav.registre.tss.domain.Person;
+import no.nav.registre.tss.domain.TssType;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 import no.nav.registre.tss.utils.RutineUtil;
 
@@ -50,12 +51,12 @@ public class SyntetiseringService {
         return identer;
     }
 
-    public List<String> opprettSyntetiskeTssRutiner(List<Person> identer) {
-        Map<String, List<TssSyntMessage>> syntetiskeTssRutiner = hentSyntetiskeTssRutiner(identer);
+    public List<String> opprettSyntetiskeTssRutiner(List<Person> identer, TssType type) {
+        Map<String, List<TssSyntMessage>> syntetiskeTssRutiner = tssSyntetisererenConsumer.hentSyntetiskeTssRutiner(identer);
         List<String> flatfiler = new ArrayList<>(syntetiskeTssRutiner.values().size());
 
         for (List<TssSyntMessage> rutiner : syntetiskeTssRutiner.values()) {
-            flatfiler.add(RutineUtil.opprettFlatfil(rutiner));
+            flatfiler.add(RutineUtil.opprettFlatfil(rutiner, type));
         }
 
         return flatfiler;
@@ -64,9 +65,5 @@ public class SyntetiseringService {
     public void sendTilTss(List<String> tssRutiner, String miljoe) {
         String koeNavn = jmsService.hentKoeNavnAjour(miljoe);
         jmsService.sendTilTss(tssRutiner, koeNavn);
-    }
-
-    private Map<String, List<TssSyntMessage>> hentSyntetiskeTssRutiner(List<Person> personer) {
-        return tssSyntetisererenConsumer.hentSyntetiskeTssRutiner(personer);
     }
 }

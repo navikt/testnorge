@@ -70,7 +70,7 @@
         <dependency>
             <groupId>no.nav.registre</groupId>
             <artifactId>testnorge-consumers</artifactId>
-            <version>1.10.3-RELEASE</version>
+            <version>1.10.7-RELEASE</version>
         </dependency>
 
         <!--> IBMMQ </!-->
