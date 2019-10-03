@@ -1,8 +1,5 @@
 package no.nav.registre.tss.provider.rs;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -13,7 +10,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import no.nav.registre.tss.domain.Person;
+import no.nav.registre.tss.domain.TssType;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 import no.nav.registre.tss.service.SyntetiseringService;
 
@@ -49,12 +49,12 @@ public class SyntetiseringsControllerTest {
         List<String> syntetiskeMeldinger = new ArrayList<>(Arrays.asList(syntetiskMelding1, syntetiskMelding2));
 
         when(syntetiseringService.hentIdenter(syntetiserTssRequest)).thenReturn(personer);
-        when(syntetiseringService.opprettSyntetiskeTssRutiner(personer)).thenReturn(syntetiskeMeldinger);
+        when(syntetiseringService.opprettSyntetiskeTssRutiner(personer, TssType.LE)).thenReturn(syntetiskeMeldinger);
 
         syntetiseringsController.opprettLegerITss(syntetiserTssRequest);
 
         verify(syntetiseringService).hentIdenter(syntetiserTssRequest);
-        verify(syntetiseringService).opprettSyntetiskeTssRutiner(personer);
+        verify(syntetiseringService).opprettSyntetiskeTssRutiner(personer, TssType.LE);
         verify(syntetiseringService).sendTilTss(syntetiskeMeldinger, miljoe);
     }
 }

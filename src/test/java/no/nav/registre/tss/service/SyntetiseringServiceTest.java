@@ -1,12 +1,5 @@
 package no.nav.registre.tss.service;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,10 +20,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.tss.consumer.rs.TssSyntetisererenConsumer;
 import no.nav.registre.tss.consumer.rs.responses.TssSyntMessage;
 import no.nav.registre.tss.domain.Person;
+import no.nav.registre.tss.domain.TssType;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -110,7 +110,7 @@ public class SyntetiseringServiceTest {
 
         when(tssSyntetisererenConsumer.hentSyntetiskeTssRutiner(anyList())).thenReturn(syntetiskeMeldinger);
 
-        List<String> syntetiskeRutiner = syntetiseringService.opprettSyntetiskeTssRutiner(personer);
+        List<String> syntetiskeRutiner = syntetiseringService.opprettSyntetiskeTssRutiner(personer, TssType.LE);
 
         assertThat(syntetiskeRutiner.get(0), equalTo(forventetResultat.get(0)));
         assertThat(syntetiskeRutiner.get(1), equalTo(forventetResultat.get(1)));

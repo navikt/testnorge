@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import no.nav.registre.tss.domain.Person;
+import no.nav.registre.tss.domain.TssType;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
 import no.nav.registre.tss.service.SyntetiseringService;
 
@@ -26,7 +27,7 @@ public class SyntetiseringsController {
     @PostMapping(value = "/opprettLeger")
     public ResponseEntity opprettLegerITss(@RequestBody SyntetiserTssRequest syntetiserTssRequest) {
         List<Person> identer = syntetiseringService.hentIdenter(syntetiserTssRequest);
-        List<String> syntetiskeTssRutiner = syntetiseringService.opprettSyntetiskeTssRutiner(identer);
+        List<String> syntetiskeTssRutiner = syntetiseringService.opprettSyntetiskeTssRutiner(identer, TssType.LE);
 
         syntetiseringService.sendTilTss(syntetiskeTssRutiner, syntetiserTssRequest.getMiljoe());
 
