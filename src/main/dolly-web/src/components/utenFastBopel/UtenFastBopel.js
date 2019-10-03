@@ -6,6 +6,7 @@ import { FormikDollySelect } from '~/components/fields/Select/Select'
 import Button from '~/components/ui/button/Button'
 import './UtenFastBopel.less'
 
+
 export default class UtenFastBopel extends Component {
 	state = {
 		harEkstraDiskresjonskode: false
@@ -55,6 +56,7 @@ export default class UtenFastBopel extends Component {
 						label={'Diskresjonskoder'}
 						component={InputComponent}
 						size={item.size}
+						hoydeOptions={'large'}
 						{...componentProps}
 						{...item.inputTypeAttributes}
 					/>
