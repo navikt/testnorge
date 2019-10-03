@@ -19,6 +19,7 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @Slf4j
@@ -67,7 +68,9 @@ public class ArenaForvalterClient implements ClientRegister {
                             .append(environment)
                             .append("$Feil: Miljø ikke støttet"));
 
-            progress.setArenaforvalterStatus(status.substring(1));
+            if (status.length() > 1) {
+                progress.setArenaforvalterStatus(status.substring(1));
+            }
         }
     }
 
@@ -95,22 +98,37 @@ public class ArenaForvalterClient implements ClientRegister {
 
         } catch (RuntimeException e) {
 
-            log.error("Feilet å inaktivere bruker: {} i ArenaForvalter: ", ident, e);
+            log.error("Feilet å inaktivere testperson: {} i ArenaForvalter: ", ident, e);
         }
 
     }
 
-
     private void sendArenadata(ArenaNyeBrukere arenaNyeBrukere, StringBuilder status) {
 
         try {
-            ResponseEntity<ArenaArbeidssokerBruker> response = arenaForvalterConsumer.postArenadata(arenaNyeBrukere);
+            ResponseEntity<ArenaNyeBrukereResponse> response = arenaForvalterConsumer.postArenadata(arenaNyeBrukere);
             if (response.hasBody()) {
-                response.getBody().getArbeidsokerList().forEach(arbeidsoker ->
+                if (nonNull((response.getBody().getArbeidsokerList()))) {
+                    response.getBody().getArbeidsokerList().forEach(arbeidsoker -> {
+                        if ("OK".equals(arbeidsoker.getStatus())) {
+                            status.append(',')
+                                    .append(arbeidsoker.getMiljoe())
+                                    .append('$')
+                                    .append(arbeidsoker.getStatus());
+                        }
+                    });
+                }
+                if (nonNull(response.getBody().getNyBrukerFeilList())) {
+                    response.getBody().getNyBrukerFeilList().forEach(brukerfeil -> {
                         status.append(',')
-                                .append(arbeidsoker.getMiljoe())
-                                .append('$')
-                                .append(arbeidsoker.getStatus()));
+                                .append(brukerfeil.getMiljoe())
+                                .append("$Feilstatus: \"")
+                                .append(brukerfeil.getNyBrukerFeilstatus())
+                                .append("\". Se detaljer i logg.");
+                        log.error("Feilet å opprette testperson {} i ArenaForvalter på miljø: {}, feilstatus: {}, melding: \"{}\"",
+                                brukerfeil.getPersonident(), brukerfeil.getMiljoe(), brukerfeil.getNyBrukerFeilstatus(), brukerfeil.getMelding());
+                    });
+                }
             }
 
         } catch (RuntimeException e) {
@@ -121,7 +139,7 @@ public class ArenaForvalterClient implements ClientRegister {
                         .append('$');
                 appendErrorText(status, e);
             });
-            log.error("Feilet å legge inn ny bruker i ArenaForvalter: ", e);
+            log.error("Feilet å legge inn ny testperson i ArenaForvalter: ", e);
         }
     }
 
