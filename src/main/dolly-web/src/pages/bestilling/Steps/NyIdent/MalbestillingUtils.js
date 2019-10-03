@@ -225,6 +225,9 @@ const mapMultipleRegistreKey = (reg, bestKriterier) => {
 			'soeknadOmBeskyttelseUnderBehandling',
 			'flyktning'
 		]
+		if (bestKriterier.udistub['harOppholdsTillatelse'] === false) {
+			bestKriterier.udistub.oppholdStatus = true
+		}
 		return Object.keys(bestKriterier.udistub).filter(
 			attr => muligeAttr.includes(attr) && bestKriterier.udistub[attr]
 		)
