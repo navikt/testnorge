@@ -279,7 +279,7 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.UDI,
 				inputType: InputType.Select,
 				onlyShowAfterSelectedValue: { attributtId: 'nyIdent', valueIndex: [1] },
-				options: SelectOptionsManager('identtype'),
+				options: SelectOptionsManager('identtypeUtenBost'),
 				validation: yup.string().required('Velg en type'),
 				attributtType: AttributtType.SelectAndEdit
 			}
