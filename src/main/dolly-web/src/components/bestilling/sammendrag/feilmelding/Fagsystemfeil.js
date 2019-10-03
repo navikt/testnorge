@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import Formatters from '~/utils/DataFormatter'
+import ApiFeilmelding from '~/components/ui/apiFeilmelding/ApiFeilmelding'
 
 export default function Fagsystemfeil({ fagsystemFeil }) {
 	if (fagsystemFeil.length <= 0) return false
@@ -16,7 +17,7 @@ export default function Fagsystemfeil({ fagsystemFeil }) {
 					<h5>{status.navn}</h5>
 					<div className="feilmelding_fagsystem-container">
 						<div>
-							<pre>{status.melding}</pre>
+							<ApiFeilmelding feilmelding={status.melding} />
 						</div>
 						<div>
 							{status.identer.map(({ miljo, identer }, idx) => (

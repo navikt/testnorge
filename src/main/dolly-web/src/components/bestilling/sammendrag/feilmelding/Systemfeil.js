@@ -1,4 +1,5 @@
 import React from 'react'
+import ApiFeilmelding from '~/components/ui/apiFeilmelding/ApiFeilmelding'
 import antallIdenterOpprettet from '~/components/bestilling/utils/antallIdenterOpprettet'
 
 export default function Systemfeil({ bestilling }) {
@@ -8,7 +9,7 @@ export default function Systemfeil({ bestilling }) {
 	return (
 		<div className="feilmelding_generell">
 			<p>{tekst}</p>
-			<pre>{bestilling.feil}</pre>
+			<ApiFeilmelding feilmelding={bestilling.feil} container />
 		</div>
 	)
 }

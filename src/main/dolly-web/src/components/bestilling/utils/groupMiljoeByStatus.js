@@ -28,12 +28,16 @@ export default function groupMiljoByStatus(bestilling) {
 		}
 	)
 
+	// Unique values
+	const success = [...new Set(grouped.success)]
+	const failed = [...new Set(grouped.failed)]
+
 	// Fjern duplikater, og legg de i et eget Avvik-array
-	const avvik = _intersection(grouped.success, grouped.failed)
+	const avvik = _intersection(success, failed)
 
 	return {
-		successEnvs: grouped.success.filter(o => !avvik.includes(o)),
-		failedEnvs: grouped.failed.filter(o => !avvik.includes(o)),
+		successEnvs: success.filter(o => !avvik.includes(o)),
+		failedEnvs: failed.filter(o => !avvik.includes(o)),
 		avvikEnvs: avvik
 	}
 }
