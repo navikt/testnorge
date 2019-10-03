@@ -16,10 +16,13 @@
 			margin: 0;
 		}
 
-		.dolly-button {
+		// Må wrappe button for å unngå at den tar opp hele bredden
+		&_button-wrap {
 			flex: 1 1 0px;
-			text-align: right;
-			padding: 0;
+			button {
+				padding: 0;
+				float: right;
+			}
 		}
 	}
 }

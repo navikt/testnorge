@@ -23,7 +23,9 @@ export default function BestillingResultat(props) {
 			<div className="status-header">
 				<p>Bestilling #{bestilling.id}</p>
 				<h3>Bestillingsstatus</h3>
-				<Button kind="remove-circle" onClick={() => onCloseButton(bestilling.id)} />
+				<div className="status-header_button-wrap">
+					<Button kind="remove-circle" onClick={() => onCloseButton(bestilling.id)} />
+				</div>
 			</div>
 			<hr />
 			<FagsystemStatus bestilling={bestilling} />
