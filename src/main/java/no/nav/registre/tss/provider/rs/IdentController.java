@@ -33,12 +33,12 @@ public class IdentController {
         return identService.opprettSamhandlereITss(miljoe.toLowerCase(), identer);
     }
 
-    @GetMapping("/hentLeger/{avspillergruppeId}")
+    @GetMapping("/samhandlere/{avspillergruppeId}")
     public Map<String, Response910> hentLegerFraTss(@PathVariable Long avspillergruppeId, @RequestParam String miljoe, @RequestParam(required = false) Integer antallLeger) throws JMSException {
         return identService.hentLegerIAvspillergruppeFraTss(avspillergruppeId, antallLeger, miljoe);
     }
 
-    @GetMapping("/hentLege/{ident}")
+    @GetMapping("/samhandler/{ident}")
     public Response910 hentLegeFraTss(@PathVariable String ident, @RequestParam String miljoe) throws JMSException {
         return identService.hentLegeFraTss(ident, miljoe);
     }

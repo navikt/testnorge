@@ -17,7 +17,7 @@ import no.nav.registre.tss.domain.Person;
 @Component
 public class TssSyntetisererenConsumer {
 
-    private static final ParameterizedTypeReference<Map<String, List<TssSyntMessage>>> RESPONSE_TYPE = new ParameterizedTypeReference<Map<String, List<TssSyntMessage>>>() {
+    private static final ParameterizedTypeReference<Map<String, List<TssSyntMessage>>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     private RestTemplate restTemplate;
