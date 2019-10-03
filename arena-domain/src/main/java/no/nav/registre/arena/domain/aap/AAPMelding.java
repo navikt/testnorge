@@ -1,13 +1,17 @@
-package no.nav.registre.arena.core.consumer.rs.responses;
+package no.nav.registre.arena.domain.aap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class AAPMelding {
 
     // OKONOM YTELSE - koder:
@@ -87,9 +91,9 @@ public class AAPMelding {
     @JsonProperty
     String INPER;
     @JsonProperty
-    String INFRA;
+    String INFRA; // inper
     @JsonProperty
-    String INTIL;
+    String INTIL; // inper
     @JsonProperty
     String REDPR;
     @JsonProperty

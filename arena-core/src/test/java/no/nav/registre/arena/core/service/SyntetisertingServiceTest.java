@@ -1,8 +1,10 @@
 package no.nav.registre.arena.core.service;
 
 
+import no.nav.registre.arena.core.consumer.rs.AAPNyRettighetSyntetisererenConsumer;
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
 import no.nav.registre.arena.domain.Arbeidsoeker;
+import no.nav.registre.arena.domain.aap.AAPMelding;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +21,7 @@ import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -36,6 +39,8 @@ public class SyntetisertingServiceTest {
     private HodejegerenConsumer hodejegerenConsumer;
     @Mock
     private ArenaForvalterConsumer arenaForvalterConsumer;
+    @Mock
+    private AAPNyRettighetSyntetisererenConsumer nyRettighetConsumer;
     @Mock
     private Random random;
 
@@ -57,6 +62,12 @@ public class SyntetisertingServiceTest {
     private List<Arbeidsoeker> toEksisterendeArbeidsokere;
     private List<Arbeidsoeker> femtenEksisterendeArbeidsokere;
 
+    private List<AAPMelding> enAapMelding;
+    private List<AAPMelding> toAapMeldinger;
+    private List<AAPMelding> tyveAapMeldinger;
+    private List<AAPMelding> femtenAapMeldinger;
+    private List<AAPMelding> hundreAapMeldinger;
+
     @Before
     public void setUp() {
         toIdenterOverAlder = new ArrayList<>(Arrays.asList(fnr1, fnr2));
@@ -69,20 +80,27 @@ public class SyntetisertingServiceTest {
                 buildArbeidsoker(fnr1),
                 buildArbeidsoker(fnr3));
 
-        femtenEksisterendeArbeidsokere = new ArrayList<>();
+        femtenEksisterendeArbeidsokere = new ArrayList<>(ANTALL_EKSISTERENDE_ARBEIDSSOKERE);
         for (int i = 1; i < ANTALL_EKSISTERENDE_ARBEIDSSOKERE +1; i++)
             femtenEksisterendeArbeidsokere.add(buildArbeidsoker(buildFnr(i)));
 
-        opprettedeArbeidsokere = new ArrayList<>();
+        opprettedeArbeidsokere = new ArrayList<>(ANTALL_OPPRETTEDE_ARBEIDSSOKERE);
         for (int i = 1; i < ANTALL_OPPRETTEDE_ARBEIDSSOKERE +1; i++)
             opprettedeArbeidsokere.add(buildArbeidsoker(buildFnr(i)));
 
-        tyveNyeArbeidsokere = new ArrayList<>();
+        tyveNyeArbeidsokere = new ArrayList<>(21);
         for (int i = 1; i < 21; i++)
             tyveNyeArbeidsokere.add(buildArbeidsoker(buildFnr(i)));
 
         for (int i = 1; i < ANTALL_LEVENDE_IDENTER +1; i++)
             hundreIdenterOverAlder.add(buildFnr(i));
+
+
+        enAapMelding = Collections.singletonList(AAPMelding.builder().build());
+
+        hundreAapMeldinger = new ArrayList<>(100);
+        for (int i = 0; i < 100; i++)
+            hundreAapMeldinger.add(AAPMelding.builder().build());
 
     }
 
@@ -112,6 +130,7 @@ public class SyntetisertingServiceTest {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
         doReturn(toEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(enNyArbeisoker).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
+        doReturn(hundreAapMeldinger).when(nyRettighetConsumer).hentAAPMeldingerFraSyntRest(anyInt());
 
         return syntetiseringService.opprettArbeidsoekere(antallNyeIdenter, avspillergruppeId, miljoe);
     }
@@ -128,6 +147,7 @@ public class SyntetisertingServiceTest {
         doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
         doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(tyveNyeArbeidsokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
+        doReturn(hundreAapMeldinger).when(nyRettighetConsumer).hentAAPMeldingerFraSyntRest(anyInt());
 
         List<Arbeidsoeker> arbeidsokere =
                 syntetiseringService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
@@ -158,6 +178,7 @@ public class SyntetisertingServiceTest {
         doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
         doReturn(femtenEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(opprettedeArbeidsokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
+        doReturn(hundreAapMeldinger).when(nyRettighetConsumer).hentAAPMeldingerFraSyntRest(anyInt());
 
         List<Arbeidsoeker> arbeidsokere =
                 syntetiseringService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
@@ -172,6 +193,7 @@ public class SyntetisertingServiceTest {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
         doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(enNyArbeisoker).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
+        doReturn(hundreAapMeldinger).when(nyRettighetConsumer).hentAAPMeldingerFraSyntRest(anyInt());
 
         List<Arbeidsoeker> arbeidsoeker = syntetiseringService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
 

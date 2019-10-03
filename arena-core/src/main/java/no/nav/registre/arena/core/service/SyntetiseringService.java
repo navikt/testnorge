@@ -5,25 +5,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.AAPNyRettighetSyntetisererenConsumer;
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
-import no.nav.registre.arena.core.consumer.rs.responses.AAPMelding;
-import no.nav.registre.arena.domain.Aap;
+import no.nav.registre.arena.domain.Aap115;
+import no.nav.registre.arena.domain.aap.AAPMelding;
 import no.nav.registre.arena.domain.Arbeidsoeker;
 import no.nav.registre.arena.core.provider.rs.requests.IdentMedData;
 import no.nav.registre.arena.domain.NyBruker;
-import no.nav.registre.arena.domain.aap.andreokonomytelser.AndreOkonomYtelserV1;
-import no.nav.registre.arena.domain.aap.andreokonomytelser.AnnenOkonomYtelseV1;
-import no.nav.registre.arena.domain.aap.andreokonomytelser.OkonomKoder;
-import no.nav.registre.arena.domain.aap.gensaksopplysninger.GensakKoder;
-import no.nav.registre.arena.domain.aap.gensaksopplysninger.Saksopplysning;
-import no.nav.registre.arena.domain.aap.institusjonsopphold.Institusjonsopphold;
-import no.nav.registre.arena.domain.aap.vilkaar.Vilkaar;
+import no.nav.registre.arena.domain.aap.AapFactory;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -105,8 +98,6 @@ public class SyntetiseringService {
         for (int i = 0; i < antallIdenter; i++) {
             nyeIdenter.add(levendeIdenter.remove(random.nextInt(levendeIdenter.size())));
         }
-
-
         return nyeIdenter;
     }
 
@@ -122,80 +113,13 @@ public class SyntetiseringService {
                 .miljoe(miljoe)
                 .kvalifiseringsgruppe("IKVAL")
                 .automatiskInnsendingAvMeldekort(true)
-                .aap(Collections.singletonList(new Aap()))
-                //.aap(Collections.singletonList(byggAAP(rettigheter.remove(0))))
+                // .aap(Collections.singletonList(new Aap()))
+                .aap(Collections.singletonList(AapFactory.byggAAP(rettigheter.remove(0))))
+                .aap115(Collections.singletonList(new Aap115()))
                 .build()).collect(Collectors.toList());
         lagreArenaBrukereIHodejegeren(nyeBrukere);
 
         return arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
-    }
-
-    private boolean validString(String s) {
-            return !Objects.isNull(s) && s.trim().isEmpty();
-    }
-
-    private void addOkonomiskYtelse(OkonomKoder kode, String verdi, List<AnnenOkonomYtelseV1> liste) {
-        if (validString(verdi)) {
-            liste.add(new AnnenOkonomYtelseV1(kode, verdi));
-        }
-    }
-
-    private void addGenerelleSaksopplysninger(GensakKoder kode, String verdi, List<Saksopplysning> liste) {
-        if (validString(verdi)) {
-            liste.add();
-        }
-    }
-
-    private Aap byggAAP(AAPMelding syntMelding) {
-
-        List<AnnenOkonomYtelseV1> okonomYtelse = new ArrayList<>();
-        List<Saksopplysning> saksopplysninger = new ArrayList<>();
-        List<Institusjonsopphold> institusjonsopphold = new ArrayList<>();
-        List<Vilkaar> vilkaar = new ArrayList<>();
-
-        // OKONOMISKE YTELSER
-        addOkonomiskYtelse(OkonomKoder.TYPE, syntMelding.getTYPE(), okonomYtelse);
-        addOkonomiskYtelse(OkonomKoder.FDATO, syntMelding.getFDATO(), okonomYtelse);
-        addOkonomiskYtelse(OkonomKoder.TDATO, syntMelding.getTDATO(), okonomYtelse);
-        addOkonomiskYtelse(OkonomKoder.GRAD, syntMelding.getGRAD(), okonomYtelse);
-        addOkonomiskYtelse(OkonomKoder.BELOP, syntMelding.getBELOP(), okonomYtelse);
-        addOkonomiskYtelse(OkonomKoder.BELPR, syntMelding.getBELPR(), okonomYtelse);
-        AndreOkonomYtelserV1 okonomYtelserLister = new AndreOkonomYtelserV1(okonomYtelse);
-
-        // SAKSOPPLYSNINGER
-        if (!Objects.isNull(syntMelding.getKDATO())) {
-            saksopplysninger.add(new Saksopplysning(GensakKoder.KDATO, syntMelding.getKDATO()));
-        }
-        if (!Objects.isNull(syntMelding.getBTID())) {
-            saksopplysninger.add(new Saksopplysning(GensakKoder.BTID, syntMelding.getBTID()));
-        }
-        if (!Objects.isNull(syntMelding.getTUUIN())) {
-            saksopplysninger.add(new Saksopplysning(GensakKoder.TUUIN, syntMelding.getTUUIN()));
-        }
-        if (!Objects.isNull(syntMelding.getUUFOR())) {
-            saksopplysninger.add(new Saksopplysning(GensakKoder.UUFOR, syntMelding.getUUFOR()));
-        }
-        if (!Objects.isNull(syntMelding.getSTUBE())) {
-            saksopplysninger.add(new Saksopplysning(GensakKoder.STUBE, syntMelding.getSTUBE()));
-        }
-        if (!Objects.isNull(syntMelding.getOTILF())) {
-            saksopplysninger.add(new Saksopplysning(GensakKoder.OTILF, syntMelding.getOTILF()));
-        }
-        if (!Objects.isNull(syntMelding.getOTSEK())) {
-            saksopplysninger.add(new Saksopplysning(GensakKoder.OTSEK, syntMelding.getOTSEK()));
-        }
-        if (!Objects.isNull(syntMelding.getOOPPL())) {
-            saksopplysninger.add(new Saksopplysning(GensakKoder.OOPPL, syntMelding.getOOPPL()));
-        }
-
-        Aap melding = Aap.builder()
-                .andreOkonomYtelser(Collections.singletonList(okonomYtelserLister))
-                .fraDato(syntMelding.getFRA_DATO())
-                .tilDato(syntMelding.getTIL_DATO())
-                .utfall(syntMelding.getUTFALL())
-                .aktivitetsfase(syntMelding.getAKTFASEKODE())
-                .vedtaksvariant(syntMelding.getVEDTAKSVARIANT())
-                .build();
     }
 
     private void lagreArenaBrukereIHodejegeren(List<NyBruker> nyeBrukere) {

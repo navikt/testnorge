@@ -1,7 +1,7 @@
 package no.nav.registre.arena.core.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
-import no.nav.registre.arena.core.consumer.rs.responses.AAPMelding;
+import no.nav.registre.arena.domain.aap.AAPMelding;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
@@ -20,9 +20,9 @@ public class AAPNyRettighetSyntetisererenConsumer {
     private UriTemplate uriTemplate;
 
     public AAPNyRettighetSyntetisererenConsumer(RestTemplate restTemplate,
-                                                @Value("{aap-ny-rettighet-syntetisereren.rest-api.url}") String syntetisererenUrl) {
+                                                @Value("{synt.rest-api.url}") String syntetisererenUrl) {
         this.restTemplate = restTemplate;
-        this.uriTemplate = new UriTemplate(syntetisererenUrl + "/api/v1/generate/aap/nyRettighet?numToGenerate={numToGenerate}");
+        this.uriTemplate = new UriTemplate(syntetisererenUrl + "/v1/generate/aap/nyRettighet?numToGenerate={numToGenerate}");
     }
 
     @Timed(value = "aap-nyRettighet.resource.latency", extraTags = {"operation", "aap-nyRettighet-syntetisereren"})

@@ -1,5 +1,5 @@
 package no.nav.registre.arena.domain.aap.institusjonsopphold;
 
-public enum OverordnetV1 {
+public enum InstOvKoder {
     INPER
 }

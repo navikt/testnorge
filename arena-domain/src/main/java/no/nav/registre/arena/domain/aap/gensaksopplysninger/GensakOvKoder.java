@@ -1,6 +1,6 @@
 package no.nav.registre.arena.domain.aap.gensaksopplysninger;
 
-public enum OverordnetV1 {
+public enum GensakOvKoder {
     OOPPL,
     TLONN
 }

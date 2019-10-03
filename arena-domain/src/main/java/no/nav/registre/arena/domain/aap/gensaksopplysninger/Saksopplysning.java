@@ -1,6 +1,5 @@
 package no.nav.registre.arena.domain.aap.gensaksopplysninger;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,14 +9,13 @@ import lombok.Setter;
 @Setter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class Saksopplysning {
     private GensakKoder kode;
-    private OverordnetV1 overordnet;
+    private GensakOvKoder overordnet;
     private String verdi;
 
-    public Saksopplysning(GensakKoder kode, String verdi) {
-        overordnet = null;
+    public Saksopplysning(GensakKoder kode, GensakOvKoder overordnet, String verdi) {
+        this.overordnet = overordnet;
         this.kode = kode;
         this.verdi = verdi;
     }

@@ -1,6 +1,6 @@
 package no.nav.registre.arena.domain.aap.institusjonsopphold;
 
-public enum KodeV1 {
+public enum InstKoder {
     STRFG,
     INSTA,
     FRIKL,
