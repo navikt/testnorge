@@ -8,30 +8,33 @@ import antallIdenterOpprettet from '~/components/bestilling/utils/antallIdenterO
 import './MiljoeStatus.less'
 
 const mapStatusrapport = bestillingstatus => {
-	return bestillingstatus.reduce((acc, curr) => {
-		return acc.concat(
-			curr.statuser.map(status => {
-				const feil = {
-					navn: curr.navn,
-					melding: status.melding !== 'OK' ? status.melding : null
-				}
+	const successFirst = a => (a.melding ? 1 : -1)
+	return bestillingstatus
+		.reduce((acc, curr) => {
+			return acc.concat(
+				curr.statuser.map(status => {
+					const feil = {
+						navn: curr.navn,
+						melding: status.melding !== 'OK' ? status.melding : null
+					}
 
-				if (status.identer) {
-					feil.miljo = null
-					feil.identer = status.identer
-				}
+					if (status.identer) {
+						feil.miljo = null
+						feil.identer = status.identer
+					}
 
-				if (status.detaljert) {
-					const miljoArray = status.detaljert.map(m => m.miljo).sort()
-					const identArray = status.detaljert[0].identer
-					feil.miljo = Formatters.arrayToString(miljoArray)
-					feil.identer = Formatters.arrayToString(identArray)
-				}
+					if (status.detaljert) {
+						const miljoArray = status.detaljert.map(m => m.miljo).sort()
+						const identArray = status.detaljert[0].identer
+						feil.miljo = Formatters.arrayToString(miljoArray)
+						feil.identer = identArray
+					}
 
-				return feil
-			})
-		)
-	}, [])
+					return feil
+				})
+			)
+		}, [])
+		.sort(successFirst)
 }
 
 export default function MiljoeStatus({ bestilling }) {

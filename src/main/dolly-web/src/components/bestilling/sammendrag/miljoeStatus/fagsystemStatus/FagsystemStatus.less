@@ -8,9 +8,18 @@ table.fagsystemstatus {
 		font-weight: bold;
 		text-transform: uppercase;
 		border-bottom: 1px solid @color-bg-divider;
+
+		// Miljø kolonne
+		&:nth-child(2) {
+			width: 150px;
+		}
+
+		// Ident kolonne
+		&:nth-child(3) {
+			width: 120px;
+		}
 	}
 	tbody tr td {
-		min-width: 100px;
 		vertical-align: top;
 		padding: 8px 8px 8px 0;
 		h5 {
@@ -20,6 +29,16 @@ table.fagsystemstatus {
 		svg {
 			margin-right: 5px;
 			min-width: 16px;
+		}
+
+		ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		i {
+			color: #ccc;
 		}
 	}
 

@@ -30,8 +30,10 @@ export default function FagsystemStatus({ statusrapport }) {
 								</div>
 							</div>
 						</td>
-						<td>{status.miljo || <i>N/A</i>}</td>
-						<td>{status.identer}</td>
+						<td>{status.miljo || <i>(N/A)</i>}</td>
+						<td>
+							<ul>{status.identer.map((ident, idx) => <li key={idx}>{ident}</li>)}</ul>
+						</td>
 					</tr>
 				))}
 			</tbody>
