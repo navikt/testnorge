@@ -22,7 +22,7 @@ public class AAPNyRettighetSyntetisererenConsumer {
     public AAPNyRettighetSyntetisererenConsumer(RestTemplate restTemplate,
                                                 @Value("${synt.rest-api.url}") String syntetisererenUrl) {
         this.restTemplate = restTemplate;
-        this.uriTemplate = new UriTemplate(syntetisererenUrl + "/v1/generate/aap/nyRettighet?numToGenerate={numToGenerate}");
+        this.uriTemplate = new UriTemplate(syntetisererenUrl + "/v1/generate/arena/aap/nyRettighet?numToGenerate={numToGenerate}");
     }
 
     @Timed(value = "aap-nyRettighet.resource.latency", extraTags = {"operation", "aap-nyRettighet-syntetisereren"})

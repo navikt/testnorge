@@ -21,7 +21,7 @@ import java.util.Objects;
 public class AapFactory {
 
     private static boolean validString(String s) {
-            return !Objects.isNull(s) && s.trim().isEmpty();
+            return !Objects.isNull(s) && !s.trim().isEmpty();
     }
 
     private static void addOkonomiskYtelse(OkonomKoder kode, String verdi, List<AnnenOkonomYtelseV1> liste) {
