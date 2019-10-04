@@ -16,7 +16,6 @@ export const getAttributesFromMal = mal => {
 		) {
 			return k
 		}
-		
 	})
 	if (tpsfKriterier.boadresse) {
 		tpsfKriterier.boadresse.flyttedato && attrArray.push('boadresse_flyttedato')
@@ -248,7 +247,7 @@ const _mapInnOgUtvandret = values => {
 		})
 	}
 
-	Object.entries(valuesArray).map(value=> {
+	Object.entries(valuesArray).map(value => {
 		if (value[0].includes('innvandret')) {
 			if (value[0].includes('partner')) {
 				!valuesArray.partner_innvandret && (valuesArray.partner_innvandret = [{}])
@@ -274,18 +273,18 @@ const _mapInnOgUtvandret = values => {
 				return (valuesArray.utvandret[0][value[0]] = value[1])
 			}
 		}
-		if (value[0].toLowerCase().includes('forsvunnet')) { 
+		if (value[0].toLowerCase().includes('forsvunnet')) {
 			if (value[0].includes('partner')) {
 				!valuesArray.partner_forsvunnet && (valuesArray.partner_forsvunnet = [{}])
-				return (valuesArray.partner_forsvunnet[0][value[0].split('_')[1]] = value[1])
+				return (valuesArray.partner_forsvunnet[0][value[0].split('_')[1]] = value[1].toString())
 			} else if (value[0].includes('barn')) {
 				!valuesArray.barn_forsvunnet && (valuesArray.barn_forsvunnet = [{}])
-				return (valuesArray.barn_forsvunnet[0][value[0].split('_')[1]] = value[1])
+				return (valuesArray.barn_forsvunnet[0][value[0].split('_')[1]] = value[1].toString())
 			} else {
 				!valuesArray.forsvunnet && (valuesArray.forsvunnet = [{}])
-				return (valuesArray.forsvunnet[0][value[0]] = value[1])
+				return (valuesArray.forsvunnet[0][value[0]] = value[1].toString())
 			}
-		}	
+		}
 	})
 	return valuesArray
 }
