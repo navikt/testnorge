@@ -56,15 +56,18 @@ public class Inst2ConsumerTest {
     @MockBean
     private Inst2FasitService inst2FasitService;
 
+    @Value("${inst2.web.api.url}")
+    private String baseUrl;
+
+    @Value("${freg-token-provider-v1.url}")
+    private String fregTokenProviderUrl;
+
     private String id = "test";
     private String fnr1 = "01010101010";
     private Map<String, Object> token;
     private String tssEksternId = "123";
     private LocalDate date = LocalDate.of(2019, 1, 1);
     private String miljoe = "t1";
-
-    @Value("${inst2.web.api.url}")
-    private String baseUrl;
 
     @Before
     public void setUp() throws IOException {
@@ -77,7 +80,7 @@ public class Inst2ConsumerTest {
     public void shouldGetTokenForInst2() {
         stubTokenProvider();
 
-        Map<String, Object> actualToken = inst2Consumer.hentTokenTilInst2();
+        Map<String, Object> actualToken = inst2Consumer.hentTokenTilInst2(fregTokenProviderUrl);
 
         assertThat(actualToken.get("idToken").toString(), containsString(token.get("idToken").toString()));
     }

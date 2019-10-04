@@ -39,21 +39,19 @@ public class Inst2Consumer {
     @Autowired
     private Inst2FasitService inst2FasitService;
 
-    private UriTemplate tokenProviderUrl;
     private String username;
     private String password;
 
     public Inst2Consumer(
-            @Value("${freg-token-provider-v1.url}") String tokenProviderServerUrl,
             @Value("${testnorges.ida.credential.inst.username}") String username,
             @Value("${testnorges.ida.credential.inst.password}") String password) {
-        this.tokenProviderUrl = new UriTemplate(tokenProviderServerUrl);
         this.username = username;
         this.password = password;
     }
 
-    public Map<String, Object> hentTokenTilInst2() {
-        RequestEntity getRequest = RequestEntity.get(tokenProviderUrl.expand())
+    public Map<String, Object> hentTokenTilInst2(String fregTokenProviderUrl) {
+        UriTemplate url = new UriTemplate(fregTokenProviderUrl);
+        RequestEntity getRequest = RequestEntity.get(url.expand())
                 .header("accept", "*/*")
                 .header("username", username)
                 .header("password", password)

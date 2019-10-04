@@ -2,6 +2,7 @@ package no.nav.registre.inst.service;
 
 import static java.util.Objects.isNull;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import no.nav.registre.inst.fasit.FasitApiConsumer;
+import no.nav.registre.inst.fasit.FasitException;
 import no.nav.registre.inst.fasit.FasitResourceWithUnmappedProperties;
 
 @Service
@@ -55,5 +57,16 @@ public class Inst2FasitService {
 
     private boolean hasExpired() {
         return (isNull(expiry) || LocalDateTime.now().isAfter(expiry));
+    }
+
+    public String getFregTokenProviderInEnvironment(String environment) {
+        FasitResourceWithUnmappedProperties[] restServices = fasitApiConsumer.fetchResources("freg-token-provider-v1", "RestService");
+        for (FasitResourceWithUnmappedProperties fasitResourceWithUnmappedProperties : restServices) {
+            if (environment.toLowerCase().substring(0, 1).equals(fasitResourceWithUnmappedProperties.getScope().getEnvironmentclass())) {
+                Map<String, String> properties = new ObjectMapper().convertValue(fasitResourceWithUnmappedProperties.getProperties(), Map.class);
+                return properties.get("url");
+            }
+        }
+        throw new FasitException("Fant ikke freg-token-provider i gitt miljø");
     }
 }

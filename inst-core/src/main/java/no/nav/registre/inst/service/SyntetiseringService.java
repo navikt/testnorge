@@ -46,6 +46,9 @@ public class SyntetiseringService {
     private Inst2Consumer inst2Consumer;
 
     @Autowired
+    private Inst2FasitService inst2FasitService;
+
+    @Autowired
     private Random rand;
 
     public Map<String, List<OppholdResponse>> finnSyntetiserteMeldingerOgLagreIInst2(String callId, String consumerId, String miljoe, SyntetiserInstRequest syntetiserInstRequest) {
@@ -57,7 +60,7 @@ public class SyntetiseringService {
             return new HashMap<>();
         }
 
-        Map<String, Object> tokenObject = inst2Consumer.hentTokenTilInst2();
+        Map<String, Object> tokenObject = inst2Consumer.hentTokenTilInst2(inst2FasitService.getFregTokenProviderInEnvironment(miljoe));
         List<Institusjonsopphold> syntetiserteMeldinger = hentSyntetiserteInstitusjonsforholdsmeldinger(tokenObject, callId, consumerId, miljoe, utvalgteIdenter.size());
         return leggTilInstitusjonsforholdIInst2(tokenObject, callId, consumerId, miljoe, utvalgteIdenter, syntetiserteMeldinger);
     }

@@ -69,7 +69,7 @@ public class IdentController {
     @ApiOperation(value = "Her kan man slette alle institusjonsoppholdene med de angitte oppholdId-ene fra inst2.")
     public Map<Long, ResponseEntity> slettInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId,
             @RequestParam String miljoe, @RequestParam List<Long> oppholdIder) {
-        Map<String, Object> tokenObject = identService.hentTokenTilInst2();
+        Map<String, Object> tokenObject = identService.hentTokenTilInst2(miljoe);
         Map<Long, ResponseEntity> status = Maps.newHashMapWithExpectedSize(oppholdIder.size());
         for (Long oppholdId : oppholdIder) {
             status.put(oppholdId, identService.slettOppholdMedId(tokenObject, navCallId, navConsumerId, miljoe, oppholdId));
@@ -87,7 +87,7 @@ public class IdentController {
                 inst2FasitService.getUrlForEnv(miljoe);
                 tilgjengeligeMiljoer.add(miljoe);
             } catch (RuntimeException e) {
-                if(!FASIT_FEILMELDING.equals(e.getMessage())) {
+                if (!FASIT_FEILMELDING.equals(e.getMessage())) {
                     throw e;
                 }
             }

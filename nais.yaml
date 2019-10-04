@@ -33,8 +33,6 @@ fasitResources:
       resourceType: restservice
     - alias: "testnorge-properties"
       resourceType: applicationProperties
-    - alias: "freg-token-provider-v1"
-      resourceType: restservice
     - alias: "testnorges.ida.credential.inst"
       resourceType: credential
   exposed:

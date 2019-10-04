@@ -19,6 +19,9 @@ public class IdentService {
     @Autowired
     private Inst2Consumer inst2Consumer;
 
+    @Autowired
+    private Inst2FasitService inst2FasitService;
+
     public List<OppholdResponse> opprettInstitusjonsopphold(String callId, String consumerId, String miljoe, List<Institusjonsopphold> oppholdene) {
         List<OppholdResponse> statusFraInst2 = new ArrayList<>(oppholdene.size());
         for (Institusjonsopphold opphold : oppholdene) {
@@ -29,13 +32,18 @@ public class IdentService {
     }
 
     public OppholdResponse sendTilInst2(String callId, String consumerId, String miljoe, Institusjonsopphold opphold) {
-        OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(inst2Consumer.hentTokenTilInst2(), callId, consumerId, miljoe, opphold);
+        OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(
+                hentTokenTilInst2(miljoe),
+                callId,
+                consumerId,
+                miljoe,
+                opphold);
         oppholdResponse.setPersonident(opphold.getPersonident());
         return oppholdResponse;
     }
 
     public List<OppholdResponse> slettInstitusjonsoppholdTilIdenter(String callId, String consumerId, String miljoe, List<String> identer) {
-        Map<String, Object> tokenObject = hentTokenTilInst2();
+        Map<String, Object> tokenObject = hentTokenTilInst2(miljoe);
 
         List<OppholdResponse> sletteOppholdResponses = new ArrayList<>(identer.size());
 
@@ -67,7 +75,7 @@ public class IdentService {
     }
 
     public ResponseEntity oppdaterInstitusjonsopphold(String callId, String consumerId, String miljoe, Long oppholdId, Institusjonsopphold institusjonsopphold) {
-        Map<String, Object> tokenObject = hentTokenTilInst2();
+        Map<String, Object> tokenObject = hentTokenTilInst2(miljoe);
         return inst2Consumer.oppdaterInstitusjonsoppholdIInst2(tokenObject, callId, consumerId, miljoe, oppholdId, institusjonsopphold);
     }
 
@@ -76,7 +84,7 @@ public class IdentService {
     }
 
     public List<Institusjonsopphold> hentOppholdTilIdenter(String callId, String consumerId, String miljoe, List<String> identer) {
-        Map<String, Object> tokenObject = hentTokenTilInst2();
+        Map<String, Object> tokenObject = hentTokenTilInst2(miljoe);
         List<Institusjonsopphold> alleInstitusjonsopphold = new ArrayList<>();
         for (String ident : identer) {
             List<Institusjonsopphold> institusjonsoppholdTilIdent = hentInstitusjonsoppholdFraInst2(tokenObject, callId, consumerId, miljoe, ident);
@@ -97,7 +105,7 @@ public class IdentService {
         }
     }
 
-    public Map<String, Object> hentTokenTilInst2() {
-        return inst2Consumer.hentTokenTilInst2();
+    public Map<String, Object> hentTokenTilInst2(String miljoe) {
+        return inst2Consumer.hentTokenTilInst2(inst2FasitService.getFregTokenProviderInEnvironment(miljoe));
     }
 }

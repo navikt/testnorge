@@ -31,9 +31,13 @@ public class IdentServiceTest {
     @Mock
     private Inst2Consumer inst2Consumer;
 
+    @Mock
+    private Inst2FasitService inst2FasitService;
+
     @InjectMocks
     private IdentService identService;
 
+    private String fregTokenProviderUrl = "dummyUrl";
     private String id = "test";
     private Long oppholdId1 = 1L;
     private Long oppholdId2 = 2L;
@@ -63,6 +67,7 @@ public class IdentServiceTest {
         String fnr2 = "02020202020";
         List<String> identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
+        when(inst2FasitService.getFregTokenProviderInEnvironment(miljoe)).thenReturn(fregTokenProviderUrl);
         when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr1))).thenReturn(Collections.singletonList(meldinger.get(0)));
         when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr2))).thenReturn(Collections.singletonList(meldinger.get(1)));
         when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId1))).thenReturn(ResponseEntity.noContent().build());
@@ -70,7 +75,7 @@ public class IdentServiceTest {
 
         List<OppholdResponse> response = identService.slettInstitusjonsoppholdTilIdenter(id, id, miljoe, identer);
 
-        verify(inst2Consumer).hentTokenTilInst2();
+        verify(inst2Consumer).hentTokenTilInst2(fregTokenProviderUrl);
         verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr1));
         verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr2));
         verify(inst2Consumer).slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId1));

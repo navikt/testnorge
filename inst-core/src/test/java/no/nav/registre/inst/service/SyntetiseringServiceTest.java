@@ -51,6 +51,9 @@ public class SyntetiseringServiceTest {
     private HodejegerenConsumer hodejegerenConsumer;
 
     @Mock
+    private Inst2FasitService inst2FasitService;
+
+    @Mock
     private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     @Mock
@@ -59,6 +62,7 @@ public class SyntetiseringServiceTest {
     @InjectMocks
     private SyntetiseringService syntetiseringService;
 
+    private String fregTokenProviderUrl = "dummyUrl";
     private Long avspillergruppeId = 123L;
     private String miljoe = "t1";
     private int antallMeldinger = 1;
@@ -82,6 +86,7 @@ public class SyntetiseringServiceTest {
 
     @Test
     public void shouldOppretteInstitusjonsmeldinger() {
+        when(inst2FasitService.getFregTokenProviderInEnvironment(miljoe)).thenReturn(fregTokenProviderUrl);
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
         when(hodejegerenConsumer.getLevende(avspillergruppeId)).thenReturn(utvalgteIdenter);
         when(inst2Consumer.leggTilInstitusjonsoppholdIInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(meldinger.get(0)))).thenReturn(OppholdResponse.builder()
@@ -93,7 +98,7 @@ public class SyntetiseringServiceTest {
 
         verify(instSyntetisererenConsumer).hentInstMeldingerFromSyntRest(antallMeldinger);
         verify(hodejegerenConsumer).getLevende(avspillergruppeId);
-        verify(inst2Consumer).hentTokenTilInst2();
+        verify(inst2Consumer).hentTokenTilInst2(fregTokenProviderUrl);
         verify(identService).hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), anyString());
         verify(hodejegerenHistorikkConsumer).saveHistory(any());
     }
@@ -105,6 +110,7 @@ public class SyntetiseringServiceTest {
         listAppender.start();
         logger.addAppender(listAppender);
 
+        when(inst2FasitService.getFregTokenProviderInEnvironment(miljoe)).thenReturn(fregTokenProviderUrl);
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
         when(hodejegerenConsumer.getLevende(avspillergruppeId)).thenReturn(utvalgteIdenter);
         when(identService.hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), anyString())).thenReturn(meldinger);
@@ -114,7 +120,7 @@ public class SyntetiseringServiceTest {
 
         verify(instSyntetisererenConsumer).hentInstMeldingerFromSyntRest(antallMeldinger);
         verify(hodejegerenConsumer).getLevende(avspillergruppeId);
-        verify(inst2Consumer).hentTokenTilInst2();
+        verify(inst2Consumer).hentTokenTilInst2(fregTokenProviderUrl);
         verify(identService).hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), anyString());
 
         assertThat(listAppender.list.get(0).toString(), containsString("Ident " + fnr1 + " har allerede fått opprettet institusjonsforhold."));
