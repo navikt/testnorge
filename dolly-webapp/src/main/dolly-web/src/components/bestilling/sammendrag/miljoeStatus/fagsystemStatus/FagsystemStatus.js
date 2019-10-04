@@ -13,7 +13,7 @@ export default function FagsystemStatus({ statusrapport }) {
 		<table className="fagsystemstatus">
 			<thead>
 				<tr>
-					<td>Melding</td>
+					<td>System</td>
 					<td>Miljø</td>
 					<td>Ident</td>
 				</tr>

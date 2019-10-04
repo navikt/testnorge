@@ -40,7 +40,7 @@ export default function MiljoeStatus({ bestilling }) {
 
 	return (
 		<div>
-			<Header label="Miljøstatus" />
+			<Header label="Bestillingsstatus" />
 			{bestilling.feil && (
 				<div className="feilmelding_generell">
 					<p>{tekst}</p>
