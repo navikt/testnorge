@@ -3,6 +3,7 @@ import cn from 'classnames'
 import './ApiFeilmelding.less'
 
 export default function ApiFeilmelding({ feilmelding, container }) {
+	if (!feilmelding) return false
 	const css = cn('api-feilmelding', {
 		'api-feilmelding-container': container
 	})
