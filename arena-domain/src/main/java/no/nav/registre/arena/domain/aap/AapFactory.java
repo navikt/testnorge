@@ -11,6 +11,7 @@ import no.nav.registre.arena.domain.aap.institusjonsopphold.InstOvKoder;
 import no.nav.registre.arena.domain.aap.institusjonsopphold.Institusjonsopphold;
 import no.nav.registre.arena.domain.aap.periode.Periode;
 import no.nav.registre.arena.domain.aap.vilkaar.Vilkaar;
+import no.nav.registre.arena.domain.utils.DateString;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -133,8 +134,9 @@ public class AapFactory {
                 .institusjonsopphold(institusjonsopphold)
                 .vilkaar(vilkaar)
                 .periode(new Periode())
-                .fraDato(syntMelding.getFRA_DATO())
-                .tilDato(syntMelding.getTIL_DATO())
+                .fraDato(DateString.dayMonthYearToYearMonthDay(syntMelding.getFRA_DATO()))
+                .tilDato(DateString.dayMonthYearToYearMonthDay(syntMelding.getTIL_DATO()))
+                .datoMottatt(DateString.dayMonthYearToYearMonthDay(syntMelding.getDATO_MOTTATT()))
                 .utfall(syntMelding.getUTFALL())
                 .aktivitetsfase(syntMelding.getAKTFASEKODE())
                 .vedtaksvariant(syntMelding.getVEDTAKSVARIANT())

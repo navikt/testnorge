@@ -20,7 +20,7 @@ public class AAPNyRettighetSyntetisererenConsumer {
     private UriTemplate uriTemplate;
 
     public AAPNyRettighetSyntetisererenConsumer(RestTemplate restTemplate,
-                                                @Value("{synt.rest-api.url}") String syntetisererenUrl) {
+                                                @Value("${synt.rest-api.url}") String syntetisererenUrl) {
         this.restTemplate = restTemplate;
         this.uriTemplate = new UriTemplate(syntetisererenUrl + "/v1/generate/aap/nyRettighet?numToGenerate={numToGenerate}");
     }

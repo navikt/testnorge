@@ -79,24 +79,26 @@ public class SyntetiseringService {
     }
 
     private List<String> hentKvalifiserteIdenter(int antallIdenter, List<String> levendeIdenter, List<String> eksisterendeArbeidsoekere) {
-        levendeIdenter = levendeIdenter.parallelStream()
+        /*levendeIdenter = levendeIdenter.parallelStream()
                 .filter(eksisterendeArbeidsoekere::contains)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+        List<String> identerIkkeIArena = new ArrayList<>(levendeIdenter);
+        identerIkkeIArena.removeAll(eksisterendeArbeidsoekere);
 
-        if (levendeIdenter.size() <= 0) {
+        if (identerIkkeIArena.size() <= 0) {
             log.info("Alle identer som ble funnet i hodejegeren eksisterer allerede i Arena Forvalter.");
             return new ArrayList<>();
         }
 
-        if (antallIdenter > levendeIdenter.size()) {
-            antallIdenter = levendeIdenter.size();
+        if (antallIdenter > identerIkkeIArena.size()) {
+            antallIdenter = identerIkkeIArena.size();
             log.info("Fant ikke nok ledige identer i avspillergruppe. Lager meldekort på {} nye identer.", antallIdenter);
         }
 
         List<String> nyeIdenter = new ArrayList<>(antallIdenter);
 
         for (int i = 0; i < antallIdenter; i++) {
-            nyeIdenter.add(levendeIdenter.remove(random.nextInt(levendeIdenter.size())));
+            nyeIdenter.add(identerIkkeIArena.remove(random.nextInt(identerIkkeIArena.size())));
         }
         return nyeIdenter;
     }
