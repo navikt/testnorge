@@ -60,10 +60,11 @@ public class Inst2FasitService {
     }
 
     public String getFregTokenProviderInEnvironment(String environment) {
+        ObjectMapper objectMapper = new ObjectMapper();
         FasitResourceWithUnmappedProperties[] restServices = fasitApiConsumer.fetchResources("freg-token-provider-v1", "RestService");
         for (FasitResourceWithUnmappedProperties fasitResourceWithUnmappedProperties : restServices) {
             if (environment.toLowerCase().substring(0, 1).equals(fasitResourceWithUnmappedProperties.getScope().getEnvironmentclass())) {
-                Map<String, String> properties = new ObjectMapper().convertValue(fasitResourceWithUnmappedProperties.getProperties(), Map.class);
+                Map<String, String> properties = objectMapper.convertValue(fasitResourceWithUnmappedProperties.getProperties(), Map.class);
                 return properties.get("url");
             }
         }
