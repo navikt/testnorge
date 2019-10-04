@@ -353,21 +353,31 @@ export default class FormEditor extends Component {
 				/>
 			)
 		}
-		
-			if(item.id === 'forsvunnet[0]forsvunnetDato' && valgteVerdier.forsvunnet[0].erForsvunnet !== true){
-				disabled = true
-				valgteVerdier.forsvunnet[0].forsvunnetDato = ''
-			}
-			if (item.id === 'partner_forsvunnet[0]forsvunnetDato' &&  _get(valgteVerdier, 'partner_forsvunnet[0].erForsvunnet') !== true ){
-				disabled = true
-				valgteVerdier.partner_forsvunnet[0].forsvunnetDato = ''
-			}
 
-			if(item.id === `barn[${barnTall}]barn_forsvunnet[0]forsvunnetDato` && valgteVerdier.barn[barnTall].barn_forsvunnet && _get(valgteVerdier, `barn[${barnTall}].barn_forsvunnet[0].erForsvunnet`) !== true){
-				disabled = true
-				valgteVerdier.barn[barnTall].barn_forsvunnet[0].forsvunnetDato = ''
-			}
-		
+		if (
+			item.id === 'forsvunnet[0]forsvunnetDato' &&
+			valgteVerdier.forsvunnet[0].erForsvunnet !== 'true'
+		) {
+			disabled = true
+			valgteVerdier.forsvunnet[0].forsvunnetDato = ''
+		}
+		if (
+			item.id === 'partner_forsvunnet[0]forsvunnetDato' &&
+			_get(valgteVerdier, 'partner_forsvunnet[0].erForsvunnet') !== 'true'
+		) {
+			disabled = true
+			valgteVerdier.partner_forsvunnet[0].forsvunnetDato = ''
+		}
+
+		if (
+			item.id === `barn[${barnTall}]barn_forsvunnet[0]forsvunnetDato` &&
+			valgteVerdier.barn[barnTall].barn_forsvunnet &&
+			_get(valgteVerdier, `barn[${barnTall}].barn_forsvunnet[0].erForsvunnet`) !== 'true'
+		) {
+			disabled = true
+			valgteVerdier.barn[barnTall].barn_forsvunnet[0].forsvunnetDato = ''
+		}
+
 		if (
 			item.id === 'arenaforvalter[0]kvalifiseringsgruppe' &&
 			valgteVerdier.arenaforvalter[0].arenaBrukertype !== 'MED_SERVICEBEHOV'
