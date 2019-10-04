@@ -1,6 +1,7 @@
 package no.nav.registre.arena.core.consumer.rs;
 
 import no.nav.registre.arena.core.config.AppConfig;
+import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
 import no.nav.registre.arena.domain.Arbeidsoeker;
 import no.nav.registre.arena.domain.aap.Aap;
 import no.nav.registre.arena.domain.Aap115;
@@ -93,9 +94,9 @@ public class ArenaForvalterConsumerTest {
     public void checkEmptyListOnBadSentTilArenaForvalterRequest() {
         stubArenaForvalterBadRequest();
 
-        List<Arbeidsoeker> response = arenaForvalterConsumer.sendTilArenaForvalter(null);
+        NyeBrukereResponse response = arenaForvalterConsumer.sendTilArenaForvalter(null);
 
-       assertThat(response, is(Collections.EMPTY_LIST));
+       assertThat(response.getArbeidsoekerList(), is(Collections.EMPTY_LIST));
     }
 
     @Test

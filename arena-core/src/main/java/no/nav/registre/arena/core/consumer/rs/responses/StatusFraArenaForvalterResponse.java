@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.registre.arena.domain.Arbeidsoeker;
+import no.nav.registre.arena.domain.NyBrukerFeil;
 
 import java.util.List;
 
@@ -12,5 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class StatusFraArenaForvalterResponse {
     private List<Arbeidsoeker> arbeidsokerList;
+    private List<NyBrukerFeil> nyBrukerFeilList;
     private int antallSider;
 }

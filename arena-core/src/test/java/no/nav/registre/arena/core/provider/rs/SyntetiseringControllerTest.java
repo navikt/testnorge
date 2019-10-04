@@ -1,5 +1,6 @@
 package no.nav.registre.arena.core.provider.rs;
 
+import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
 import no.nav.registre.arena.domain.Arbeidsoeker;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.SyntetiseringService;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -45,9 +47,17 @@ public class SyntetiseringControllerTest {
     private Arbeidsoeker arb2 = Arbeidsoeker.builder().personident(fnr2).build();
     private Arbeidsoeker arb3 = Arbeidsoeker.builder().personident(fnr3).build();
 
+    private NyeBrukereResponse response;
+    private NyeBrukereResponse singleResponse;
+
     @Before
     public void setUp() {
         syntetiserArenaRequest = new SyntetiserArenaRequest(avspillegruppeId, miljoe, antallNyeIdenter);
+        response = new NyeBrukereResponse();
+        response.setArbeidsoekerList(Arrays.asList(arb1, arb2, arb3));
+
+        singleResponse = new NyeBrukereResponse();
+        singleResponse.setArbeidsoekerList(Collections.singletonList(arb1));
     }
 
 
@@ -55,20 +65,20 @@ public class SyntetiseringControllerTest {
     public void registrerAntallIdenterIArenaForvalter() {
         when(syntetiseringService
                 .opprettArbeidsoekere(antallNyeIdenter, avspillegruppeId, miljoe))
-                .thenReturn(Arrays.asList(arb1,arb2,arb3));
+                .thenReturn(response);
 
-        ResponseEntity<List<String>> result = syntetiseringController.registrerBrukereIArenaForvalter(null, syntetiserArenaRequest);
-        assertThat(result.getBody().get(1), containsString(fnr2));
-        assertThat(result.getBody().size(), is(3));
+        ResponseEntity<NyeBrukereResponse> result = syntetiseringController.registrerBrukereIArenaForvalter(null, syntetiserArenaRequest);
+        assertThat(result.getBody().getArbeidsoekerList().get(1).getPersonident(), containsString(fnr2));
+        assertThat(result.getBody().getArbeidsoekerList().size(), is(3));
     }
 
     @Test
     public void registrerIdentIArenaForvalter() {
-        doReturn(Collections.singletonList(arb1)).when(syntetiseringService)
+        doReturn(singleResponse).when(syntetiseringService)
                 .opprettArbeidssoeker(fnr1, avspillegruppeId, miljoe);
 
-        ResponseEntity<List<String>> response = syntetiseringController.registrerBrukereIArenaForvalter(fnr1, syntetiserArenaRequest);
-        assertThat(response.getBody().size(), is(1));
-        assertThat(response.getBody().get(0), containsString(fnr1));
+        ResponseEntity<NyeBrukereResponse> response = syntetiseringController.registrerBrukereIArenaForvalter(fnr1, syntetiserArenaRequest);
+        assertThat(response.getBody().getArbeidsoekerList().size(), is(1));
+        assertThat(response.getBody().getArbeidsoekerList().get(0).getPersonident(), containsString(fnr1));
     }
 }

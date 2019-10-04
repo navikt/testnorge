@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.AAPNyRettighetSyntetisererenConsumer;
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
+import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
 import no.nav.registre.arena.domain.Aap115;
 import no.nav.registre.arena.domain.aap.AAPMelding;
 import no.nav.registre.arena.domain.Arbeidsoeker;
@@ -37,7 +38,7 @@ public class SyntetiseringService {
     private final Random random;
 
 
-    public List<Arbeidsoeker> opprettArbeidsoekere(Integer antallNyeIdenter, Long avspillergruppeId, String miljoe) {
+    public NyeBrukereResponse opprettArbeidsoekere(Integer antallNyeIdenter, Long avspillergruppeId, String miljoe) {
         List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
         log.info("Fant {} eksisternende identer i Hodejegeren.", levendeIdenter.size());
         List<String> arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
@@ -51,7 +52,7 @@ public class SyntetiseringService {
             } else {
                 log.info("{}% av gyldige brukere funnet av hodejegeren er allerede registrert i Arena.",
                         (PROSENTANDEL_SOM_SKAL_HA_MELDEKORT * 100));
-                return new ArrayList<>();
+                return new NyeBrukereResponse();
             }
             log.info("Oppretter arbeidsoekere for {} identer for aa faa {}% tilgjengelige identer i arena forvalteren.",
                     antallArbeidsoekereAaOpprette, (PROSENTANDEL_SOM_SKAL_HA_MELDEKORT * 100));
@@ -61,18 +62,18 @@ public class SyntetiseringService {
         return byggArbeidsoekereOgLagreIHodejegeren(nyeIdenter, miljoe);
     }
 
-    public List<Arbeidsoeker> opprettArbeidssoeker(String ident, Long avspillergruppeId, String miljoe) {
+    public NyeBrukereResponse opprettArbeidssoeker(String ident, Long avspillergruppeId, String miljoe) {
         List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
-        log.info("Fant {} ledige identer i hodejegeren.", levendeIdenter.size());
         List<String> arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
-        log.info("Fant {} eksisterende identer i Arena Forvalteren.", arbeidsoekerIdenter.size());
 
         if (arbeidsoekerIdenter.contains(ident)) {
             log.info("Ident {} er allerede registrert som arbeidsøker.", ident);
-            return arenaForvalterConsumer.hentArbeidsoekere(ident, null, null);
+            NyeBrukereResponse response = new NyeBrukereResponse();
+            response.setArbeidsoekerList(arenaForvalterConsumer.hentArbeidsoekere(ident, null, null));
+            return response;
         } else if (!levendeIdenter.contains(ident)) {
             log.info("Ident {} kunne ikke bli funnet av Hodejegeren, og kan derfor ikke opprettes i Arena.", ident);
-            return new ArrayList<>();
+            return new NyeBrukereResponse();
         }
 
         return byggArbeidsoekereOgLagreIHodejegeren(Collections.singletonList(ident), miljoe);
@@ -107,7 +108,7 @@ public class SyntetiseringService {
         return hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER);
     }
 
-    private List<Arbeidsoeker> byggArbeidsoekereOgLagreIHodejegeren(List<String> identer, String miljoe) {
+    private NyeBrukereResponse byggArbeidsoekereOgLagreIHodejegeren(List<String> identer, String miljoe) {
         List<AAPMelding> rettigheter = aapConsumer.hentAAPMeldingerFraSyntRest(identer.size());
 
         List<NyBruker> nyeBrukere = identer.stream().map(ident -> NyBruker.builder()

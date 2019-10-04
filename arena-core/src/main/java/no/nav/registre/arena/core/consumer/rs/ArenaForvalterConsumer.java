@@ -2,6 +2,7 @@ package no.nav.registre.arena.core.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
 import no.nav.registre.arena.domain.Arbeidsoeker;
 import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
 import no.nav.registre.arena.domain.NyBruker;
@@ -46,7 +47,7 @@ public class ArenaForvalterConsumer {
 
 
     @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
-    public List<Arbeidsoeker> sendTilArenaForvalter(List<NyBruker> nyeBrukere) {
+    public NyeBrukereResponse sendTilArenaForvalter(List<NyBruker> nyeBrukere) {
 
         RequestEntity postRequest = RequestEntity.post(postBrukere.expand())
                 .header("Nav-Call-Id", NAV_CALL_ID)
@@ -55,11 +56,15 @@ public class ArenaForvalterConsumer {
 
         ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
         if (invalidResponse(response)) {
-            log.info("Kunne ikke sende arbeidsoekere til Arena Forvalteren på addresse:\n{}.\nStatus: {}\nBody: {}",
+            log.warn("Kunne ikke sende arbeidsoekere til Arena Forvalteren på addresse:\n{}.\nStatus: {}\nBody: {}",
                     postRequest.toString(), response.getStatusCode(), response.getBody());
-            return new ArrayList<>();
+            return new NyeBrukereResponse();
         }
-        return response.getBody().getArbeidsokerList();
+
+        NyeBrukereResponse formatertResponse = new NyeBrukereResponse();
+        formatertResponse.setArbeidsoekerList(response.getBody().getArbeidsokerList());
+        formatertResponse.setNyBrukerFeilList(response.getBody().getNyBrukerFeilList());
+        return formatertResponse;
     }
 
     @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
