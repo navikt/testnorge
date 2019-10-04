@@ -159,7 +159,7 @@ public class Inst2Consumer {
             ResponseEntity<Object> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_OBJECT);
             return response.getStatusCode();
         } catch (HttpStatusCodeException e) {
-            log.warn("Institusjon med tssEksternId {} er ikke gyldig på dato {}.", tssEksternId, date);
+            log.debug("Institusjon med tssEksternId {} er ikke gyldig på dato {}.", tssEksternId, date);
             return e.getStatusCode();
         }
     }
