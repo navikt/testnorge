@@ -4,7 +4,6 @@ const selectOptions = {
 		{ value: 'DNR', label: 'DNR' },
 		{ value: 'BOST', label: 'BOST' }
 	],
-	identtypeUtenBost: [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }],
 	kjonn: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
 	kjonnBarn: [{ value: 'K', label: 'Jente' }, { value: 'M', label: 'Gutt' }],
 	sivilstand: [

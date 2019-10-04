@@ -224,7 +224,7 @@ const AttributtListe: Attributt[] = [
 				path: 'identHistorikk.identtype',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
-				options: SelectOptionsManager('identtypeUtenBost'),
+				options: SelectOptionsManager('identtype'),
 				attributtType: AttributtType.SelectOnly
 			},
 			{
