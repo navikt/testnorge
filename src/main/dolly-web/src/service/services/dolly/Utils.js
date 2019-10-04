@@ -84,7 +84,6 @@ export const SortKodeverkArray = data => {
 }
 
 export const NormalizeKodeverkForDropdown = ({ data }, showValueInLabel) => {
-	console.log('data :', data)
 	const sortedArray = SortKodeverkArray(data)
 	return {
 		options: sortedArray.filter(val => !_excludeList.includes(val.value)).map(kode => ({
