@@ -92,6 +92,7 @@ public class TeamController {
         // men kanskje burde det være opp til frontend å gjøre et kall for å rydde opp selv istedenfor å dra inn en service kun for dette?
         // Eventuelt legge opp til scheduled task som rydder opp
         // Både en unødvendig avhengighet i prodkoden og vanskeligere å teste.
-        testgruppeService.slettGruppeByTeamId(teamId);
+
+//        testgruppeService.slettGruppeByTeamId(teamId); // todo spør kristen om cascade av team slett mangler
     }
 }

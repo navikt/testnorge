@@ -70,7 +70,7 @@ class TestgruppeControllerPostTest extends TestgruppeTestBase {
     void createTpsBestilling() {
         Long gruppeId = dataFactory.createTestgruppe("Test gruppe").getId();
 
-        String url = ENDPOINT_BASE_URI + gruppeId + "/bestilling";
+        String url = ENDPOINT_BASE_URI + "/" + gruppeId + "/bestilling";
 
         RsTpsfUtvidetBestilling tpsfBestilling = RsTpsfUtvidetBestilling.builder()
                 .kjonn("M")

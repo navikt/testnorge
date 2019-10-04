@@ -129,7 +129,7 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
                 .andExpect(HttpStatus.OK, RsTestgruppeUtvidet.class);
 
         assertThat(resp.getNavn(), is("Test gruppe"));
-        assertThat(resp.getAntallIdenter(), is(2));
+        assertThat(resp.getAntallIdenter(), is(5)); //3 stk laget i createTestgruppe + 2 i addTestidenterToTestgruppe
     }
 
     @Test
@@ -150,7 +150,7 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
                 .to(HttpMethod.GET, url)
                 .andExpectList(HttpStatus.OK, expectedResponseString);
 
-        assertThat(resp.size(), is(2));
+        assertThat(resp.size(), is(5));
         assertTrue(resp.contains(ident1));
         assertTrue(resp.contains(ident2));
     }
@@ -161,6 +161,17 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
         Testgruppe testgruppe = dataFactory.createTestgruppe("Testgruppe");
 
         String url = ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/identer";
+
+
+        sendRequest()
+                .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/slettTestident?ident=123")
+                .andExpect(HttpStatus.OK, LinkedHashMap.class);
+        sendRequest()
+                .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/slettTestident?ident=234")
+                .andExpect(HttpStatus.OK, LinkedHashMap.class);
+        sendRequest()
+                .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/slettTestident?ident=345")
+                .andExpect(HttpStatus.OK, LinkedHashMap.class);
 
         List<String> resp = sendRequest()
                 .to(HttpMethod.GET, url)

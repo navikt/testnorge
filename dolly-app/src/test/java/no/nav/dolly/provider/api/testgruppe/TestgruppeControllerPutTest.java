@@ -15,8 +15,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @DisplayName("PUT /api/v1/gruppe")
 class TestgruppeControllerPutTest extends TestgruppeTestBase {
@@ -57,26 +55,6 @@ class TestgruppeControllerPutTest extends TestgruppeTestBase {
         assertThat(resp.getNavn(), is("mingruppe"));
         assertThat(resp.getHensikt(), is("hensikt"));
         assertThat(resp.getTeam().getNavn(), is("Teamnavn"));
-    }
-
-    @Test
-    @DisplayName("Fjerner TestIdenter fra Testgruppe")
-    void removeTestidents() {
-        Testgruppe testgruppe = dataFactory.createTestgruppe("Testgruppe");
-
-        List<RsTestident> testidents = testgruppe.getTestidenter().stream()
-                .map(t -> RsTestident.builder().ident(t.getIdent()).build())
-                .collect(Collectors.toList());
-
-       sendRequest(testidents)
-                .to(HttpMethod.PUT, ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/slettTestidenter")
-                .andExpect(HttpStatus.OK, LinkedHashMap.class);
-
-        RsTestgruppeUtvidet resp = sendRequest()
-                .to(HttpMethod.GET, ENDPOINT_BASE_URI + "/" + testgruppe.getId())
-                .andExpect(HttpStatus.OK, RsTestgruppeUtvidet.class);
-
-        assertThat(resp.getTestidenter().size(), is(0));
     }
 
 }

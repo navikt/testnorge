@@ -130,9 +130,7 @@ public class TestgruppeController {
     @DeleteMapping("/{gruppeId}")
     @ApiOperation("Slett Testgruppe")
     public void slettgruppe(@PathVariable("gruppeId") Long gruppeId) {
-        if (testgruppeService.slettGruppeById(gruppeId) == 0) {
-            throw new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId));
-        }
+        testgruppeService.slettGruppeById(gruppeId);
     }
 
     @Transactional

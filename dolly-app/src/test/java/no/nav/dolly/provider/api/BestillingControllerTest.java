@@ -46,7 +46,7 @@ public class BestillingControllerTest {
         when(bestillingService.fetchBestillingById(any())).thenReturn(new Bestilling());
         when(mapperFacade.map(any(), any())).thenReturn(rsBestilling);
 
-        RsBestilling res = bestillingController.checkBestillingsstatus(BESTILLING_ID);
+        RsBestilling res = bestillingController.getBestillingById(BESTILLING_ID);
 
         assertThat(res, is(rsBestilling));
     }
