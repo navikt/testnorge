@@ -81,3 +81,7 @@ This script concatinates the two csv files, but keep only the values present in 
 ### Updating the næringskode file
 Just run the above script with the two files present in the same directory and copy in the outputted `ferdigstilte_koder.csv`
 into `testnorge-ereg-mapper/ereg-mapper-core/src/main/resources/naeringskoder.csv` which contain the final values.
+
+### Generation of orgnr
+A orgnr generator can be found in ognr_generator folder. This requires the `requests` library. It checks both the synthetic environment and the production like
+environment for existsing orgnr.
