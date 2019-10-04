@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.RsBestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
 import no.nav.dolly.service.BestillingService;
 import org.junit.Test;
 import org.junit.runner.RunWith;

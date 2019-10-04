@@ -5,7 +5,7 @@ import static no.nav.dolly.util.ListUtil.listOf;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsMeldingStatusIdent;
+import no.nav.dolly.domain.resultset.arenaforvalter.RsMeldingStatusIdent;
 
 import java.util.ArrayList;
 import java.util.HashMap;

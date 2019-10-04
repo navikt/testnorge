@@ -7,9 +7,9 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsTeamMedIdOgNavn;
-import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
-import no.nav.dolly.domain.resultset.RsTestidentBestillingId;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamMedIdOgNavn;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.resultset.entity.testident.RsTestidentBestillingId;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 

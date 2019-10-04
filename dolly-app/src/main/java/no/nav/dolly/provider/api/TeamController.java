@@ -4,9 +4,9 @@ import static java.lang.String.format;
 import static no.nav.dolly.config.CachingConfig.CACHE_TEAM;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.resultset.RsOpprettTeam;
-import no.nav.dolly.domain.resultset.RsTeam;
-import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import no.nav.dolly.domain.resultset.entity.team.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.TeamService;
 import no.nav.dolly.service.TestgruppeService;

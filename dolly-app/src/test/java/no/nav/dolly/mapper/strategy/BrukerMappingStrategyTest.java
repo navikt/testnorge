@@ -13,7 +13,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerTeamAndGruppeIDs;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.common.TestidentBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;

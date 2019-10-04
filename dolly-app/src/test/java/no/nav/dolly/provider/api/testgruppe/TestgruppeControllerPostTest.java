@@ -6,11 +6,11 @@ import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.RsBestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.RsTeamMedIdOgNavn;
-import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamMedIdOgNavn;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -4,7 +4,7 @@ import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 

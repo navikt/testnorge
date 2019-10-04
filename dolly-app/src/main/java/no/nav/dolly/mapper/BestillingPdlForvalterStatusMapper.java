@@ -11,7 +11,7 @@ import static no.nav.dolly.mapper.BestillingMeldingStatusIdentMapper.resolveStat
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsPdlForvalterStatus;
+import no.nav.dolly.domain.resultset.pdlforvalter.RsPdlForvalterStatus;
 import no.nav.dolly.domain.resultset.RsStatusIdent;
 
 import java.util.ArrayList;

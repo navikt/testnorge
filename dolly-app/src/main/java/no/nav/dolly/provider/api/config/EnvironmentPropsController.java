@@ -1,7 +1,7 @@
 package no.nav.dolly.provider.api.config;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.resultset.tpsf.RsDollyProps;
+import no.nav.dolly.domain.resultset.RsDollyProps;
 import no.nav.dolly.properties.ProvidersProps;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;

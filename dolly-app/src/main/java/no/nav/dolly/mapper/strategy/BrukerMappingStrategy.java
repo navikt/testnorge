@@ -6,8 +6,8 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
-import no.nav.dolly.domain.resultset.RsTeamMedIdOgNavn;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerTeamAndGruppeIDs;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamMedIdOgNavn;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
