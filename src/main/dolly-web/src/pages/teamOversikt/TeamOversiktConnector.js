@@ -1,13 +1,9 @@
 import { connect } from 'react-redux'
 import TeamOversikt from './TeamOversikt'
-import { fetchTeams, actions, sokSelector } from '~/ducks/teams'
+import { fetchTeamsForUser, actions, sokSelector } from '~/ducks/teams'
 import { createLoadingSelector } from '~/ducks/loading'
 
-const loadingSelector = createLoadingSelector([
-	actions.api.get,
-	actions.api.getById,
-	actions.api.getByUserId
-])
+const loadingSelector = createLoadingSelector([actions.api.get, actions.api.getByUserId])
 
 const mapStateToProps = state => ({
 	isFetching: loadingSelector(state),
@@ -17,11 +13,9 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-	fetchTeams: () => dispatch(fetchTeams()),
-	setTeamVisning: visning => dispatch(actions.ui.setTeamVisning(visning)),
-	createTeam: data => dispatch(actions.api.create(data)),
-	startOpprettTeam: () => dispatch(actions.ui.startCreateTeam()),
-	closeOpprettRedigerTeam: () => dispatch(actions.ui.closeCreateEditTeam())
+	fetchTeamsForUser: () => dispatch(fetchTeamsForUser()),
+	fetchAllTeams: () => dispatch(actions.api.get()),
+	createTeam: data => dispatch(actions.api.create(data))
 })
 
 export default connect(
