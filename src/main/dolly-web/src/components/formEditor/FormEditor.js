@@ -343,9 +343,11 @@ export default class FormEditor extends Component {
 					key={item.key || item.id}
 					item={item}
 					valgteVerdier={valgteVerdier}
+					{...componentProps}
 				/>
 			)
 		}
+		
 
 		if (
 			item.id === 'arenaforvalter[0]kvalifiseringsgruppe' &&

@@ -78,7 +78,8 @@ export default function BestillingStatusMapper(data) {
 		return {
 			...bestilling,
 			antallIdenterOpprettet,
-			listedata
+			listedata,
+			status: bestilling.status || []
 		}
 	})
 }
