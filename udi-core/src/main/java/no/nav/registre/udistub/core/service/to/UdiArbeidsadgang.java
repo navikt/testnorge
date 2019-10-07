@@ -1,7 +1,6 @@
 package no.nav.registre.udistub.core.service.to;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +18,6 @@ import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class UdiArbeidsadgang {
 
-    @JsonProperty("harArbeidsadgang")
     private JaNeiUavklart harArbeidsAdgang;
     private ArbeidsadgangType typeArbeidsadgang;
     private ArbeidOmfangKategori arbeidsOmfang;
