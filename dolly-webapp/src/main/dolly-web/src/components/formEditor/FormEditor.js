@@ -131,7 +131,6 @@ export default class FormEditor extends Component {
 				</div>
 			)
 		}
-		console.log('items :', items)
 		if (items[0].subGruppe === 'true') {
 			//Hvis subKategorien skal ha flere underoverskrifter/undergrupperinger
 			const subGrupper = this._structureSubGruppe(items)
@@ -347,7 +346,6 @@ export default class FormEditor extends Component {
 				/>
 			)
 		}
-		
 
 		if (
 			item.id === 'arenaforvalter[0]kvalifiseringsgruppe' &&
