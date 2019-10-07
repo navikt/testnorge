@@ -8,32 +8,23 @@ import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
 
 export default function TestbrukerListe({
 	isFetching,
-	testidenter = [],
 	testbrukerListe,
-	editTestbruker,
 	searchActive,
-	username,
 	getTPSFTestbrukere
 }) {
-	useMount(() => {
-		if (testidenter.length) getTPSFTestbrukere()
-	})
+	useMount(getTPSFTestbrukere)
 
 	if (isFetching) return <Loading label="laster testbrukere" panel />
 
-	if (!testidenter)
+	if (!testbrukerListe || testbrukerListe.length === 0)
 		return (
 			<ContentContainer>
 				Trykk på opprett personer-knappen for å starte en bestilling.
 			</ContentContainer>
 		)
 
-	if (!testbrukerListe) return null
-
 	const testbrukereMedEnBestillingId = Formatters.flat2DArray(testbrukerListe, 5)
 	const sortedTestbrukere = Formatters.sort2DArray(testbrukereMedEnBestillingId, 5)
-
-	if (!sortedTestbrukere) return <Loading label="laster testbrukere" panel />
 
 	if (sortedTestbrukere.length <= 0 && searchActive) {
 		return <ContentContainer>Søket gav ingen resultater.</ContentContainer>
@@ -76,14 +67,7 @@ export default function TestbrukerListe({
 		<DollyTable
 			data={sortedTestbrukere}
 			columns={columns}
-			onExpand={bruker => (
-				<PersonDetaljerConnector
-					personId={bruker[0]}
-					username={username}
-					bestillingId={bruker[5]}
-					editAction={() => editTestbruker(bruker[0])}
-				/>
-			)}
+			onExpand={bruker => <PersonDetaljerConnector personId={bruker[0]} bestillingId={bruker[5]} />}
 			pagination
 		/>
 	)

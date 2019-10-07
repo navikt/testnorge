@@ -1,4 +1,4 @@
-import { createHeader, mapBestillingId } from './Utils'
+import { mapBestillingId } from './Utils'
 import { getBestillingById } from '~/ducks/bestillingStatus'
 import Formatters from '~/utils/DataFormatter'
 import { mapTpsfData } from './mapTpsDataToIdent'
