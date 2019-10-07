@@ -239,8 +239,7 @@ export default class Step3 extends PureComponent {
 						removableText={'FJERN RAD'}
 						onRemove={() => this._onRemoveSubKategori(items, header)}
 					>
-						{header &&
-							!items[0].subGruppe && <h4>{typeof header === 'number' ? `# ${header}` : header}</h4>}
+						{header && <h4>{typeof header === 'number' ? `# ${header}` : header}</h4>}
 
 						<div
 							className={
@@ -257,7 +256,7 @@ export default class Step3 extends PureComponent {
 		}
 		return (
 			<div className={fieldType} key={header}>
-				{header && <h4>{_get(items, '[0].items[0].subGruppe', header)}</h4>}
+				{header && !items[0].subGruppe && <h4>{header}</h4>}
 				<div className="oppsummering-blokk">
 					{items.map(item => this.renderItem(item, values, header))}
 				</div>
