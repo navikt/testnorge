@@ -8,7 +8,6 @@ import Loading from '~/components/ui/loading/Loading'
 import Toolbar from '~/components/ui/toolbar/Toolbar'
 import TeamListe from './TeamListe'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
-import PaginationConnector from '~/components/ui/pagination/PaginationConnector'
 
 export default class TeamOversikt extends Component {
 	static propTypes = {
@@ -25,17 +24,8 @@ export default class TeamOversikt extends Component {
 	}
 
 	render() {
-		const {
-			teamListe,
-			teams,
-			history,
-			startOpprettTeam,
-			startRedigerTeam,
-			deleteTeam,
-			searchActive,
-			isFetching
-		} = this.props
-		const { visning, visOpprettTeam, editTeamId } = teams
+		const { teamListe, teams, history, startOpprettTeam, searchActive, isFetching } = this.props
+		const { visning, visOpprettTeam } = teams
 
 		return (
 			<div className="oversikt-container">
@@ -53,23 +43,13 @@ export default class TeamOversikt extends Component {
 					</Knapp>
 				</Toolbar>
 				{visOpprettTeam && <RedigerTeamConnector />}
-				{isFetching ? (
-					<Loading label="laster teams" panel />
-				) : (
-					<PaginationConnector
-						items={teamListe}
-						render={items => (
-							<TeamListe
-								items={items}
-								history={history}
-								startRedigerTeam={startRedigerTeam}
-								editTeamId={editTeamId}
-								deleteTeam={deleteTeam}
-								searchActive={searchActive}
-							/>
-						)}
-					/>
-				)}
+
+				<TeamListe
+					isFetching={isFetching}
+					teams={teamListe}
+					history={history}
+					searchActive={searchActive}
+				/>
 			</div>
 		)
 	}

@@ -374,7 +374,7 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 
 // Selectors
 export const sokSelector = (items, searchStr) => {
-	if (!items) return null
+	if (!items) return []
 	if (!searchStr) return items
 
 	const query = searchStr.toLowerCase()

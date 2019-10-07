@@ -1,11 +1,9 @@
 import { connect } from 'react-redux'
 import _orderBy from 'lodash/orderBy'
 import GruppeOversikt from './GruppeOversikt'
-import { setSort } from '~/ducks/sort'
 import {
 	listGrupper,
 	settVisning,
-	deleteGruppe,
 	showCreateOrEditGroup,
 	getGrupper,
 	getGrupperByTeamId,
@@ -20,14 +18,9 @@ const mapStateToProps = state => {
 	return {
 		searchActive: Boolean(state.search),
 		isFetching: loadingSelector(state),
-		gruppeListe: _orderBy(
-			sokSelectorOversikt(state.gruppe.data, state.search),
-			state.sort.id,
-			state.sort.order
-		),
+		gruppeListe: _orderBy(sokSelectorOversikt(state.gruppe.data, state.search), 'id', 'desc'),
 		createOrUpdateId: state.gruppe.createOrUpdateId,
-		visning: state.gruppe.visning,
-		sort: state.sort
+		visning: state.gruppe.visning
 	}
 }
 
@@ -35,9 +28,7 @@ const mapDispatchToProps = dispatch => ({
 	listGrupper: () => dispatch(listGrupper()),
 	createGroup: () => dispatch(showCreateOrEditGroup(-1)),
 	editGroup: editId => dispatch(showCreateOrEditGroup(editId)),
-	settVisning: visning => dispatch(settVisning(visning)),
-	deleteGruppe: gruppeId => dispatch(deleteGruppe(gruppeId)),
-	setSort: sortObj => dispatch(setSort(sortObj))
+	settVisning: visning => dispatch(settVisning(visning))
 })
 
 export default connect(
