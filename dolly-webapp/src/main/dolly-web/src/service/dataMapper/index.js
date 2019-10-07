@@ -105,7 +105,8 @@ const DataMapper = {
 		}
 
 		if (udiData) {
-			data.push(mapUdiData(udiData))
+			const asylsøker = bestKriterier.udistub.soeknadOmBeskyttelseUnderBehandling
+			data.push(mapUdiData(udiData, asylsøker))
 			if (udiData.aliaser) {
 				data.push(mapAliasData(udiData.aliaser))
 			}
