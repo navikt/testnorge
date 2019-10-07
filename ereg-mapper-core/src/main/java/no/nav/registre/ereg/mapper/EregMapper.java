@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -28,7 +27,6 @@ import no.nav.registre.ereg.provider.rs.request.Telefon;
 import no.nav.registre.ereg.provider.rs.request.UnderlagtHjemland;
 import no.nav.registre.ereg.provider.rs.request.UtenlandsRegister;
 import no.nav.registre.ereg.service.NameService;
-import no.nav.registre.ereg.util.OrgnummerUtil;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -95,10 +93,6 @@ public class EregMapper {
                 );
 
         for (EregDataRequest eregDataRequest : data) {
-            if (eregDataRequest.getOrgnr() == null || eregDataRequest.getOrgnr().isEmpty()) {
-                String generertOrgnr = OrgnummerUtil.generate(new RestTemplate());
-                eregDataRequest.setOrgnr(generertOrgnr);
-            }
             if (!eregConsumer.checkExists(eregDataRequest.getOrgnr())) {
                 RecordsAndCount unit = createUnit(eregDataRequest);
                 totalRecords += unit.numRecords;

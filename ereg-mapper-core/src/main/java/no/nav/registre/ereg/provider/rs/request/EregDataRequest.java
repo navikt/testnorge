@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
@@ -18,6 +19,7 @@ import java.util.Map;
 @Setter
 public class EregDataRequest {
 
+    @NonNull
     private String orgnr;
 
     private Navn navn;
