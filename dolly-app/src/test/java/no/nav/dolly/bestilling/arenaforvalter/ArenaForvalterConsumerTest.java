@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.properties.ProvidersProps;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -59,7 +60,7 @@ public class ArenaForvalterConsumerTest {
                 .build());
 
         verify(providersProps).getArenaForvalter();
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(ArenaArbeidssokerBruker.class));
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(ArenaNyeBrukereResponse.class));
     }
 
     @Test

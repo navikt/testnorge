@@ -10,7 +10,6 @@ class TableRow extends PureComponent {
 	static propTypes = {
 		expandComponent: PropTypes.node,
 		navLink: PropTypes.func,
-		editAction: PropTypes.func,
 		deleteAction: PropTypes.func
 	}
 
@@ -29,7 +28,6 @@ class TableRow extends PureComponent {
 		const {
 			children,
 			expandComponent,
-			editAction,
 			deleteAction,
 			deleteMessage,
 			navLink,
@@ -84,7 +82,7 @@ class TableHeader extends PureComponent {
 	render() {
 		const { children, ...restProps } = this.props
 		return (
-			<div tabIndex={0} className="dot-header" {...restProps}>
+			<div className="dot-header" {...restProps}>
 				{children}
 			</div>
 		)

@@ -2,6 +2,7 @@
 
 @headerHoverColor: lighten(@color-nav-black, 7%);
 @borderColor: lighten(@color-nav-black, 40%);
+@side-padding: 128px; // temp?
 
 header.app-header {
 	background-color: @color-nav-black;
@@ -17,7 +18,7 @@ header.app-header {
 		text-decoration: none;
 
 		.img-logo {
-			width: @page-margin;
+			width: @side-padding;
 			text-align: center;
 			border-right: 2px solid #88b1d6;
 
@@ -56,9 +57,9 @@ header.app-header {
 	}
 
 	.profil-area {
+		margin-left: 66px;
 		border-left: 2px solid #88b1d6;
-
-		width: @page-margin;
+		width: @side-padding;
 		p {
 			margin: 0 10px;
 		}

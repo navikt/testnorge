@@ -1,12 +1,14 @@
 package no.nav.dolly.mapper;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.FALSK_IDENTITET;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KONTAKTINFORMASJON_DOEDSBO;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.UTENLANDS_IDENTIFIKASJONSNUMMER;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDL_DODSBO;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDL_FALSKID;
+import static no.nav.dolly.domain.resultset.SystemTyper.PDL_FORVALTER;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDL_UTENLANDSID;
 import static no.nav.dolly.mapper.BestillingMeldingStatusIdentMapper.resolveStatus;
 
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 import no.nav.dolly.domain.resultset.SystemTyper;
@@ -42,6 +45,7 @@ public final class BestillingPdlForvalterStatusMapperNy {
         statusRapporter.addAll(extractStatus(msgStatusIdents, KONTAKTINFORMASJON_DOEDSBO, PDL_DODSBO));
         statusRapporter.addAll(extractStatus(msgStatusIdents, UTENLANDS_IDENTIFIKASJONSNUMMER, PDL_UTENLANDSID));
         statusRapporter.addAll(extractStatus(msgStatusIdents, FALSK_IDENTITET, PDL_FALSKID));
+        statusRapporter.addAll(extractStatus(msgStatusIdents, PdlForvalterClient.PDL_FORVALTER, PDL_FORVALTER));
 
         return statusRapporter;
     }
@@ -52,7 +56,10 @@ public final class BestillingPdlForvalterStatusMapperNy {
                         .statuser(entry.getValue().entrySet().stream()
                                 .map(entry1 -> RsStatusRapport.Status.builder()
                                         .melding(entry1.getKey())
-                                        .identer(entry1.getValue())
+                                        .detaljert(singletonList(RsStatusRapport.Detaljert.builder()
+                                                .miljo("PDL")
+                                                .identer(entry1.getValue())
+                                                .build()))
                                         .build())
                                 .collect(Collectors.toList()))
                         .build())

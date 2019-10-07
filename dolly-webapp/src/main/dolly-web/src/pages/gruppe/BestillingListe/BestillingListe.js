@@ -59,7 +59,9 @@ export default class BestillingListe extends PureComponent {
 									<Table.Column width="15" value={antallIdenter} />
 									<Table.Column width="20" value={sistOppdatert} />
 									<Table.Column width="30" value={environments} />
-									<Table.Column width="10" value={statusKode} />
+									<Table.Column width="10">
+										<EtikettBase type={etikettTypeMap[statusKode]}>{statusKode}</EtikettBase>
+									</Table.Column>
 								</Table.Row>
 							)
 						})}

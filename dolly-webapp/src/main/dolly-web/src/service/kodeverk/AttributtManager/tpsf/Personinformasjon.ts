@@ -2,7 +2,6 @@ import { Kategorier, SubKategorier } from '../Categories'
 import { Attributt, InputType, DataSource, AttributtType } from '../Types'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import DateValidation from '~/components/fields/Datepicker/DateValidation'
-
 import * as yup from 'yup'
 
 const AttributtListe: Attributt[] = [
@@ -195,6 +194,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Diskresjonskode',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
+		hoydeOptions: 'large',
 		apiKodeverkId: 'Diskresjonskoder',
 		attributtType: AttributtType.SelectAndEdit
 	},

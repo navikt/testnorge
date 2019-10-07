@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Service
@@ -47,12 +48,12 @@ public class ArenaForvalterConsumer {
                 .build(), JsonNode.class);
     }
 
-    public ResponseEntity postArenadata(ArenaNyeBrukere arenaNyeBrukere) {
+    public ResponseEntity<ArenaNyeBrukereResponse> postArenadata(ArenaNyeBrukere arenaNyeBrukere) {
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_BRUKER))
                 .header(NAV_CALL_ID, getCallId())
                 .header(NAV_CONSUMER_ID, KILDE)
-                .body(arenaNyeBrukere), ArenaArbeidssokerBruker.class);
+                .body(arenaNyeBrukere), ArenaNyeBrukereResponse.class);
     }
 
     public ResponseEntity<List> getEnvironments() {

@@ -16,7 +16,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BestillingTpsfStatusMapperNyTest {
+public class BestillingTpsfStatusMapperTest {
 
     private static final List<BestillingProgress> ERROR_STATUS = newArrayList(
             BestillingProgress.builder().ident("IDENT_1")
@@ -37,7 +37,7 @@ public class BestillingTpsfStatusMapperNyTest {
     @Test
     public void tpsfStatusMapper_MapFeilmeldinger() {
 
-        List<RsStatusRapport> statusrapport = BestillingTpsfStatusMapperNy.buildTpsfStatusMap(ERROR_STATUS);
+        List<RsStatusRapport> statusrapport = BestillingTpsfStatusMapper.buildTpsfStatusMap(ERROR_STATUS);
 
         assertThat(statusrapport.get(0).getStatuser().get(0).getMelding(), is(equalTo("FEIL: SQL-problem i KC57308")));
         assertThat(statusrapport.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("qx")));
