@@ -9,7 +9,6 @@ import no.nav.registre.arena.domain.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.arena.domain.aap.institusjonsopphold.InstKoder;
 import no.nav.registre.arena.domain.aap.institusjonsopphold.InstOvKoder;
 import no.nav.registre.arena.domain.aap.institusjonsopphold.Institusjonsopphold;
-import no.nav.registre.arena.domain.aap.periode.Periode;
 import no.nav.registre.arena.domain.aap.vilkaar.Vilkaar;
 import no.nav.registre.arena.domain.utils.DateString;
 
