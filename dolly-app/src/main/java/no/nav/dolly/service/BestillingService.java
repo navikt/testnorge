@@ -9,6 +9,7 @@ import static java.util.stream.Collectors.toSet;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
@@ -21,10 +22,7 @@ import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BestillingKontrollRepository;
-import no.nav.dolly.repository.BestillingProgressRepository;
-import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.IdentRepository;
+import no.nav.dolly.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -37,21 +35,15 @@ import java.util.Set;
 @Slf4j
 @Service
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+@RequiredArgsConstructor
 public class BestillingService {
 
-    //FIXME Bytt @Autowired med @RequiredArgsConstructor når sirkulær avhengighet mellom PersonService, BestillingService og TestgruppeService er rettet
-    @Autowired
-    private BestillingRepository bestillingRepository;
-    @Autowired
-    private BestillingKontrollRepository bestillingKontrollRepository;
-    @Autowired
-    private IdentRepository identRepository;
-    @Autowired
-    private BestillingProgressRepository bestillingProgressRepository;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private TestgruppeService testgruppeService;
+    private final BestillingRepository bestillingRepository;
+    private final BestillingKontrollRepository bestillingKontrollRepository;
+    private final IdentRepository identRepository;
+    private final BestillingProgressRepository bestillingProgressRepository;
+    private final ObjectMapper objectMapper;
+    private final GruppeRepository testgruppeRepository;
 
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId).orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
@@ -67,7 +59,7 @@ public class BestillingService {
     }
 
     public List<Bestilling> fetchBestillingerByGruppeId(Long gruppeId) {
-        return bestillingRepository.findBestillingByGruppeOrderById(testgruppeService.fetchTestgruppeById(gruppeId));
+        return bestillingRepository.findBestillingByGruppeOrderById(testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId)));
     }
 
     public List<Bestilling> fetchMalBestillinger() {
@@ -119,7 +111,7 @@ public class BestillingService {
 
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, RsTpsfBasisBestilling tpsf, Integer antall, List<String> opprettFraIdenter) {
-        Testgruppe gruppe = testgruppeService.fetchTestgruppeById(gruppeId);
+        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)

@@ -4,6 +4,7 @@ import static java.util.Objects.isNull;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -13,7 +14,6 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.GruppeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
@@ -26,21 +26,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TestgruppeService {
 
-    //FIXME Bytt @Autowired med @RequiredArgsConstructor når sirkulær avhengighet mellom PersonService, BestillingService og TestgruppeService er rettet
-    @Autowired
-    private GruppeRepository gruppeRepository;
-    @Autowired
-    private BrukerService brukerService;
-    @Autowired
-    private TeamService teamService;
-    @Autowired
-    private IdentService identService;
-    @Autowired
-    private BestillingService bestillingService;
-    @Autowired
-    private PersonService personService;
+    private final GruppeRepository gruppeRepository;
+    private final BrukerService brukerService;
+    private final TeamService teamService;
+    private final IdentService identService;
+    private final BestillingService bestillingService;
+    private final PersonService personService;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
