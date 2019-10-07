@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+import React from 'react'
+import { useMount } from 'react-use'
+import useBoolean from '~/utils/hooks/useBoolean'
 import Overskrift from '~/components/ui/overskrift/Overskrift'
 import Toolbar from '~/components/ui/toolbar/Toolbar'
 import Knapp from 'nav-frontend-knapper'
@@ -10,99 +12,88 @@ import TeamMedlemmer from './teamMedlemmer/TeamMedlemmer'
 import TeamGrupper from './teamGrupper/TeamGrupper'
 
 import './Team.less'
-export default class Team extends Component {
-	state = {
-		leggTilBruker: false
-	}
 
-	componentDidMount() {
-		this.props.getTeam()
-		this.props.listGrupper()
-	}
+export default function Team({
+	getTeam,
+	listGrupper,
+	team,
+	grupper,
+	teamIsFetching,
+	grupperIsFetching,
+	history,
+	addMember,
+	removeMember,
+	deleteTeam,
+	isDeletingTeam
+}) {
+	const [visRedigerTeamState, visRediger, skjulRediger] = useBoolean(false)
+	const [visLeggTilBrukerState, visLeggTilBruker, skjulLeggTilBruker] = useBoolean(false)
 
-	openLeggTilBrukerHandler = () => {
-		this.setState({ leggTilBruker: true })
-	}
+	useMount(() => {
+		getTeam()
+		listGrupper()
+	})
 
-	closeLeggTilBruker = () => {
-		this.setState({ leggTilBruker: false })
-	}
+	if (!team || !grupper) return null
 
-	render() {
-		const {
-			team,
-			grupper,
-			teamFetching,
-			grupperFetching,
-			history,
-			addMember,
-			removeMember,
-			deleteTeam,
-			startRedigerTeam,
-			visRedigerTeam
-		} = this.props
+	const teamMembers = team.medlemmer.map(medlem => medlem.navIdent)
 
-		if (!team || !grupper) return null
+	const teamActions = [
+		{
+			icon: 'edit',
+			label: 'REDIGER',
+			onClick: visRediger
+		}
+	]
 
-		const teamMembers = team.medlemmer.map(medlem => medlem.navIdent)
-
-		const teamActions = [
-			{
-				icon: 'edit',
-				label: 'REDIGER',
-				onClick: startRedigerTeam
-			}
-		]
-
-		return (
-			<div className="oversikt-container">
-				<Overskrift label={team.navn} actions={teamActions}>
-					{this.props.isDeletingTeam ? (
-						<Loading label="Sletter team" panel />
-					) : (
-						<ConfirmTooltip
-							label="SLETT"
-							className="flexbox--align-center"
-							message={
-								grupper.length > 0
-									? 'Å slette dette teamet vil føre til sletting av ' +
-									  grupper.length +
-									  ' testdatagrupper . Er du sikker på dette?'
-									: 'Vil du slette dette teamet?'
-							}
-							onClick={deleteTeam}
-						/>
-					)}
-				</Overskrift>
-				<div style={{ width: '70%' }} className="Beskrivelse">
-					{team.beskrivelse}
-				</div>
-				{visRedigerTeam && <RedigerTeamConnector team={team} />}
-
-				<Toolbar title="Medlemmer">
-					<Knapp type="hoved" onClick={this.openLeggTilBrukerHandler}>
-						Nytt medlem
-					</Knapp>
-				</Toolbar>
-
-				{this.state.leggTilBruker && (
-					<LeggTilBruker
-						teamId={team.id}
-						teamMembers={teamMembers}
-						closeLeggTilBruker={this.closeLeggTilBruker}
-						addMember={addMember}
+	return (
+		<div className="oversikt-container">
+			<Overskrift label={team.navn} actions={teamActions}>
+				{isDeletingTeam ? (
+					<Loading label="Sletter team" panel />
+				) : (
+					<ConfirmTooltip
+						label="SLETT"
+						className="flexbox--align-center"
+						message={
+							grupper.length > 0
+								? 'Å slette dette teamet vil føre til sletting av ' +
+								  grupper.length +
+								  ' testdatagrupper . Er du sikker på dette?'
+								: 'Vil du slette dette teamet?'
+						}
+						onClick={deleteTeam}
 					/>
 				)}
-
-				<TeamMedlemmer
-					medlemmer={team.medlemmer}
-					isFetching={teamFetching}
-					removeMember={removeMember}
-				/>
-
-				<Overskrift label="Testdatagrupper" type="h2" />
-				<TeamGrupper isFetching={grupperFetching} grupper={grupper} history={history} />
+			</Overskrift>
+			<div style={{ width: '70%' }} className="Beskrivelse">
+				{team.beskrivelse}
 			</div>
-		)
-	}
+			{visRedigerTeamState && <RedigerTeamConnector team={team} onCancel={skjulRediger} />}
+
+			<Toolbar title="Medlemmer">
+				<Knapp type="hoved" onClick={visLeggTilBruker}>
+					Nytt medlem
+				</Knapp>
+			</Toolbar>
+
+			{visLeggTilBrukerState && (
+				<LeggTilBruker
+					teamId={team.id}
+					teamMembers={teamMembers}
+					closeLeggTilBruker={skjulLeggTilBruker}
+					addMember={addMember}
+				/>
+			)}
+
+			<TeamMedlemmer
+				medlemmer={team.medlemmer}
+				isFetching={teamIsFetching}
+				removeMember={removeMember}
+			/>
+
+			<Overskrift label="Testdatagrupper" type="h2" />
+			<TeamGrupper isFetching={grupperIsFetching} grupper={grupper} history={history} />
+		</div>
+	)
 }

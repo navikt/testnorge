@@ -4,7 +4,7 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 
 export default function TeamListe({ teams, isFetching, history, searchActive }) {
-	if (isFetching) return <Loading label="laster grupper" panel />
+	if (isFetching) return <Loading label="laster teams" panel />
 
 	if (!teams || !teams.length) {
 		return (
