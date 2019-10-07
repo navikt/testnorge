@@ -294,14 +294,14 @@ export function mapInstData(instData) {
 	}
 }
 
-export function mapUdiData(udiData) {
+export function mapUdiData(udiData, asylsøker) {
 	if (!udiData) return null
 	if (
 		udiData.arbeidsadgang == null &&
 		udiData.flyktning == null &&
 		udiData.harOppholdsTillatelse == null &&
 		udiData.oppholdStatus == null &&
-		udiData.soeknadOmBeskyttelseUnderBehandling == null
+		(udiData.soeknadOmBeskyttelseUnderBehandling == null || !asylsøker)
 	)
 		return null
 
@@ -324,7 +324,6 @@ export function mapUdiData(udiData) {
 
 	const oppholdsrett = Boolean(currentOppholdsrettType)
 	const tredjelandsborger = Boolean(currentTredjelandsborgereStatus)
-
 	return {
 		header: 'UDI',
 		data: [
@@ -445,7 +444,9 @@ export function mapUdiData(udiData) {
 			{
 				id: 'asylsøker',
 				label: 'Asylsøker',
-				value: Formatters.showLabel('jaNeiUavklart', udiData.soeknadOmBeskyttelseUnderBehandling)
+				value:
+					asylsøker &&
+					Formatters.showLabel('jaNeiUavklart', udiData.soeknadOmBeskyttelseUnderBehandling)
 			}
 		]
 	}

@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.instdata;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -19,15 +20,15 @@ import org.springframework.http.ResponseEntity;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InstdataClientTest {
 
     private static final String IDENT = "11111111111";
-    private static final NorskIdent NORSK_IDENT = NorskIdent.builder().ident(IDENT).build();
+    private static final TpsPerson TPS_IDENT = TpsPerson.builder().hovedperson(IDENT).build();
     private static final String ENVIRONMENT = "q2";
 
     @Mock
@@ -44,7 +45,7 @@ public class InstdataClientTest {
 
         BestillingProgress progress = new BestillingProgress();
 
-        instdataClient.gjenopprett(RsDollyBestilling.builder().build(), NORSK_IDENT, progress);
+        instdataClient.gjenopprett(new RsDollyBestillingRequest(), TPS_IDENT, progress);
 
         assertThat(progress.getInstdataStatus(), is(nullValue()));
     }
@@ -56,10 +57,10 @@ public class InstdataClientTest {
 
         when(instdataConsumer.getMiljoer()).thenReturn(ResponseEntity.ok(new String[]{"u5"}));
 
-        instdataClient.gjenopprett(RsDollyBestilling.builder()
-                .instdata(newArrayList(RsInstdata.builder().build()))
-                .environments(newArrayList("t2"))
-                .build(), NORSK_IDENT, progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setInstdata(newArrayList(RsInstdata.builder().build()));
+        request.setEnvironments(singletonList("t2"));
+        instdataClient.gjenopprett(request, TPS_IDENT, progress);
 
         assertThat(progress.getInstdataStatus(), is(equalTo("t2:Feil: Miljø ikke støttet")));
     }
@@ -81,10 +82,10 @@ public class InstdataClientTest {
                         .status(HttpStatus.CREATED).build() })
         );
 
-        instdataClient.gjenopprett(RsDollyBestilling.builder()
-                .instdata(newArrayList(RsInstdata.builder().build()))
-                .environments(newArrayList("q2"))
-                .build(), NORSK_IDENT, progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setInstdata(newArrayList(RsInstdata.builder().build()));
+        request.setEnvironments(singletonList("q2"));
+        instdataClient.gjenopprett(request, TPS_IDENT, progress);
 
         assertThat(progress.getInstdataStatus(), is(equalTo("q2:opphold=1$OK")));
     }

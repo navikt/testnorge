@@ -5,6 +5,14 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PaginationConnector from '~/components/ui/pagination/PaginationConnector'
 import Loading from '~/components/ui/loading/Loading'
 import BestillingDetaljer from '~/components/bestilling/detaljer/Detaljer'
+import EtikettBase from 'nav-frontend-etiketter'
+
+const etikettTypeMap = {
+	Ferdig: 'suksess',
+	Avvik: 'fokus',
+	Feilet: 'advarsel',
+	Stoppet: 'advarsel'
+}
 
 export default class BestillingListe extends PureComponent {
 	componentDidMount() {
@@ -43,7 +51,13 @@ export default class BestillingListe extends PureComponent {
 						</Table.Header>
 
 						{items.map((bestilling, idx) => {
-							const [id, antallIdenter, sistOppdatert, environments, status] = bestilling.listedata
+							const [
+								id,
+								antallIdenter,
+								sistOppdatert,
+								environments,
+								statusKode
+							] = bestilling.listedata
 							return (
 								<Table.Row
 									key={idx}
@@ -53,7 +67,9 @@ export default class BestillingListe extends PureComponent {
 									<Table.Column width="15" value={antallIdenter} />
 									<Table.Column width="20" value={sistOppdatert} />
 									<Table.Column width="30" value={environments} />
-									<Table.Column width="10" value={status} />
+									<Table.Column width="10">
+										<EtikettBase type={etikettTypeMap[statusKode]}>{statusKode}</EtikettBase>
+									</Table.Column>
 								</Table.Row>
 							)
 						})}

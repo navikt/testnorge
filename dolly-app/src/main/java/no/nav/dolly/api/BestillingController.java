@@ -41,20 +41,8 @@ public class BestillingController {
     private DollyBestillingService dollyBestillingService;
 
     @Cacheable(value = CACHE_BESTILLING)
-    @GetMapping("/{bestillingId}")
-    public RsBestilling checkBestillingsstatus(@PathVariable("bestillingId") Long bestillingId) {
-        return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestilling.class);
-    }
-
-    @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/gruppe/{gruppeId}")
-    public List<RsBestilling> getBestillinger(@PathVariable("gruppeId") Long gruppeId) {
-        return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestilling.class);
-    }
-
-    @Cacheable(value = CACHE_BESTILLING)
-    @GetMapping("/gruppe/{gruppeId}/ny")
-    public List<RsBestillingStatus> getStatusForBestillinger(@PathVariable("gruppeId") Long gruppeId) {
+    public List<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId) {
 
         return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestillingStatus.class);
     }
@@ -80,8 +68,8 @@ public class BestillingController {
     }
 
     @Cacheable(value = CACHE_BESTILLING)
-    @GetMapping("/{bestillingId}/ny")
-    public RsBestillingStatus getBestillingsstatus(@PathVariable("bestillingId") Long bestillingId) {
+    @GetMapping("/{bestillingId}")
+    public RsBestillingStatus checkBestillingsstatus(@PathVariable("bestillingId") Long bestillingId) {
         return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestillingStatus.class);
     }
 }

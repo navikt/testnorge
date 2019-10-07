@@ -41,7 +41,7 @@ describe('mapTpsDataToIdent.js', () => {
 
 		const testTpsfRes = [
 			{
-				header: 'Personlig informasjon',
+				header: 'Persondetaljer',
 				data: [
 					{
 						id: 'ident',
