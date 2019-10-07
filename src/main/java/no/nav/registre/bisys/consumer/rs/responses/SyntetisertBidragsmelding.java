@@ -58,18 +58,8 @@ public class SyntetisertBidragsmelding {
     @JsonProperty("SOKNAD_FRA")
     private String soknadFra;
 
-    /**
-     * @deprecated
-     * 
-     *             Not required once new dataset is ready (started processing 30.09.2019).
-     */
-    @Deprecated
     @JsonProperty("SOKT_FRA")
-    @Getter(AccessLevel.NONE)
     private String soktFra;
-
-    @JsonProperty("SOKT_FRA_I_MND_FOER_MOTTATT")
-    private int soktFraIMndFoerMottattDato;
 
     @JsonProperty("SOKT_OM")
     private String soktOm;

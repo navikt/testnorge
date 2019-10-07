@@ -83,7 +83,7 @@ public class BisysUiConsumersIntegrationTest {
             IOException, BidragRequestProcessingException {
         ObjectMapper mapper = new ObjectMapper();
 
-        String meldinger = getResourceFileContent("bidragsmeldingQ2.json");
+        String meldinger = getResourceFileContent("bidragsmelding18aar.json");
 
         List<SyntetisertBidragsmelding> bidragsmeldinger = mapper.readValue(meldinger, new TypeReference<List<SyntetisertBidragsmelding>>() {
         });

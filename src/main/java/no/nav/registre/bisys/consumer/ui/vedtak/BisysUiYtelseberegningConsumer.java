@@ -150,7 +150,7 @@ public class BisysUiYtelseberegningConsumer {
 
         inntekter.leggTilInntekslinje().click();
         Inntektslinje nyInntektslinje = inntekter.inntektslinjer().get(0);
-        LocalDate soktFra = request.getSoknadRequest().getSoktFra();
+        LocalDate soktFra = request.getSoknadRequest().getSoktFraDato();
         soktFra.monthOfYear().withMinimumValue();
         soktFra.dayOfMonth().withMaximumValue();
         nyInntektslinje.gjelderFom().setValue(soktFra.dayOfMonth().withMinimumValue().toString("dd.MM.yyyy"));
@@ -231,7 +231,7 @@ public class BisysUiYtelseberegningConsumer {
 
             return LocalDate.parse(inntekter.soktFraDato().getText(), DateTimeFormat.forPattern(Soknad.STANDARD_DATE_FORMAT_BISYS));
         } catch (ElementNotFoundException | NoSuchElementException e) {
-            return request.getSoknadRequest().getSoktFra();
+            return request.getSoknadRequest().getSoktFraDato();
         }
     }
 
@@ -290,7 +290,7 @@ public class BisysUiYtelseberegningConsumer {
 
         // Set FOM date to the request's SOKT_FOM date if FOM date is missing
         if (!fomDatePattern.matcher(barnFomStr).matches()) {
-            barn.medlemFom().setValue(request.getSoknadRequest().getSoktFra().toString("dd.MM.yyyy"));
+            barn.medlemFom().setValue(request.getSoknadRequest().getSoktFraDato().toString("dd.MM.yyyy"));
         }
 
         // Toggle registrert på adresse checkbox if enabled status differs from the requested status
