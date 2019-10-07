@@ -37,8 +37,9 @@ public class PdlForvalterClient implements ClientRegister {
     public static final String FALSK_IDENTITET = "FalskIdentitet";
     public static final String PDL_FORVALTER = "PdlForvalter";
     private static final String KILDE = "Dolly";
-    private static final String SYNTH_ENV = "q2";
     private static final String HENDELSE_ID = "hendelseId";
+
+    public static final String SYNTH_ENV = "q2";
 
     @Autowired
     private PdlForvalterConsumer pdlForvalterConsumer;

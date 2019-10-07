@@ -71,23 +71,25 @@ export default class Navigation extends PureComponent {
 		} else videreKnapp = <NavButton direction="forward" onClick={onClickNext} />
 
 		return (
-			<div className="step-navknapper">
-				<Knapp type="standard" onClick={abortBestilling}>
-					AVBRYT
-				</Knapp>
-				<div className="step-navknapper--right">
-					{!isPage.first(currentPage) && (
-						<NavButton direction="backward" onClick={onClickPrevious} />
-					)}
-					{!isPage.last(currentPage) &&
-						(identOpprettesFra !== BestillingMapper('EKSIDENT') ||
-							(identOpprettesFra === BestillingMapper('EKSIDENT') &&
-								eksisterendeIdentListe.length > 0)) && <span>{videreKnapp} </span>}
-					{isPage.last(currentPage) && (
-						<Knapp type="hoved" onClick={onClickNext} disabled={isSubmitting}>
-							OPPRETT
-						</Knapp>
-					)}
+			<div className="step-navknapper-wrapper">
+				<div className="step-navknapper">
+					<Knapp type="standard" onClick={abortBestilling}>
+						AVBRYT
+					</Knapp>
+					<div className="step-navknapper--right">
+						{!isPage.first(currentPage) && (
+							<NavButton direction="backward" onClick={onClickPrevious} />
+						)}
+						{!isPage.last(currentPage) &&
+							(identOpprettesFra !== BestillingMapper('EKSIDENT') ||
+								(identOpprettesFra === BestillingMapper('EKSIDENT') &&
+									eksisterendeIdentListe.length > 0)) && <span>{videreKnapp} </span>}
+						{isPage.last(currentPage) && (
+							<Knapp type="hoved" onClick={onClickNext} disabled={isSubmitting}>
+								OPPRETT
+							</Knapp>
+						)}
+					</div>
 				</div>
 			</div>
 		)

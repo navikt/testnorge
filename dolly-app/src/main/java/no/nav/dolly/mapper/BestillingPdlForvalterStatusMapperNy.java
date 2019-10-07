@@ -1,6 +1,7 @@
 package no.nav.dolly.mapper;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.FALSK_IDENTITET;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KONTAKTINFORMASJON_DOEDSBO;
@@ -55,7 +56,10 @@ public final class BestillingPdlForvalterStatusMapperNy {
                         .statuser(entry.getValue().entrySet().stream()
                                 .map(entry1 -> RsStatusRapport.Status.builder()
                                         .melding(entry1.getKey())
-                                        .identer(entry1.getValue())
+                                        .detaljert(singletonList(RsStatusRapport.Detaljert.builder()
+                                                .miljo("PDL")
+                                                .identer(entry1.getValue())
+                                                .build()))
                                         .build())
                                 .collect(Collectors.toList()))
                         .build())

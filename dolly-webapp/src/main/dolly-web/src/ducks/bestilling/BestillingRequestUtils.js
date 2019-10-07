@@ -176,8 +176,8 @@ export const getValues = (attributeList, values) => {
 		}
 		if (attribute.id === 'barn') {
 			const valueCopy = JSON.parse(JSON.stringify(value))
+
 			value.map((barn, idx) => {
-				console.log('valueCopy :', value)
 				//Loop gjennom liste med barn
 				//Samme action for begge alternativ. TODO: Skrive felles
 				if (barn.innvandret) {
@@ -200,6 +200,7 @@ export const getValues = (attributeList, values) => {
 					})
 					delete valueCopy[idx].barn_utvandret
 				}
+
 				if (barn.Statsborgerskap) {
 					Object.entries(valueCopy[idx].barn_Statsborgerskap[0]).map(attr => {
 						_set(
@@ -208,13 +209,17 @@ export const getValues = (attributeList, values) => {
 							isDate(attr[1]) ? DataFormatter.parseDate(attr[1]) : attr[1]
 						)
 					})
-					delete valueCopy[idx].barn_utvandret
+					delete valueCopy[idx].barn_Statsborgerskap
 				}
 			})
 			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, valueCopy)
 		}
 
-		if (attribute.id.includes('innvandret') || attribute.id.includes('utvandret')) {
+		if (
+			attribute.id.includes('innvandret') ||
+			attribute.id.includes('utvandret') ||
+			attribute.id.includes('statsborgerskap')
+		) {
 			// Viktig at denne ligger etter bolken med barn
 			Object.entries(value[0]).map(attr => {
 				_set(

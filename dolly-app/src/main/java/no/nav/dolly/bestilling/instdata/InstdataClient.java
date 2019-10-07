@@ -12,6 +12,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -86,7 +87,7 @@ public class InstdataClient implements ClientRegister {
 
         List<String> environments = getEnvironments();
         environments.forEach(environment ->
-                identer.forEach(ident -> instdataConsumer.deleteInstdata(ident, environment))
+                identer.forEach(ident -> deleteInstdata(ident, environment))
         );
     }
 
@@ -112,6 +113,12 @@ public class InstdataClient implements ClientRegister {
                             !OK.equals(response.getBody()[0].getStatus()))) {
 
                 log.error("Feilet å slette person: {}, i INST miljø: {}", ident, environment);
+            }
+
+        } catch (HttpClientErrorException e) {
+
+            if (!NOT_FOUND.equals(e.getStatusCode())) {
+                log.error("Feilet å slette person: {}, i INST miljø: {}", ident, environment, e);
             }
         } catch (RuntimeException e) {
 
