@@ -44,12 +44,35 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.PersInfo,
 		subKategori: SubKategorier.Nasjonalitet,
-		id: 'statsborgerskap',
+		id: 'Statsborgerskap',
 		label: 'Statsborgerskap',
 		dataSource: DataSource.TPSF,
-		inputType: InputType.Select,
-		apiKodeverkId: 'Landkoder',
-		attributtType: AttributtType.SelectAndEdit
+		attributtType: AttributtType.SelectOnly,
+		validation: yup.object(),
+		items: [
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Nasjonalitet,
+				id: 'statsborgerskap',
+				label: 'statsborgerskap',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				editPath: 'statsborgerskap',
+				//validation: yup.string().required('Vennligst velg'),
+				apiKodeverkId: 'Landkoder',
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Nasjonalitet,
+				id: 'statsborgerskapRegDato',
+				label: 'statsborgerskap reg dato',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				editPath: 'statsborgerskapRegdato',
+				attributtType: AttributtType.SelectAndEdit
+			}
+		]
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
