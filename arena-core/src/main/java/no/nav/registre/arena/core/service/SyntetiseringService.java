@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.AAPNyRettighetSyntetisererenConsumer;
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
-import no.nav.registre.arena.domain.Aap115;
+import no.nav.registre.arena.domain.aap115.Aap115;
 import no.nav.registre.arena.domain.aap.AAPMelding;
 import no.nav.registre.arena.domain.Arbeidsoeker;
 import no.nav.registre.arena.core.provider.rs.requests.IdentMedData;

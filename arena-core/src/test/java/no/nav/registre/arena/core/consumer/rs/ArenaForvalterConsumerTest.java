@@ -4,7 +4,7 @@ import no.nav.registre.arena.core.config.AppConfig;
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
 import no.nav.registre.arena.domain.Arbeidsoeker;
 import no.nav.registre.arena.domain.aap.Aap;
-import no.nav.registre.arena.domain.Aap115;
+import no.nav.registre.arena.domain.aap115.Aap115;
 import no.nav.registre.arena.domain.NyBruker;
 import no.nav.registre.arena.domain.UtenServicebehov;
 import org.junit.Test;

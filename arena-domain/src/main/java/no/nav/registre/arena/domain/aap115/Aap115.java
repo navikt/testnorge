@@ -1,4 +1,4 @@
-package no.nav.registre.arena.domain;
+package no.nav.registre.arena.domain.aap115;
 
 
 import lombok.AllArgsConstructor;

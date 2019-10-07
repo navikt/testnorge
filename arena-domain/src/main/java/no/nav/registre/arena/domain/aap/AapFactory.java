@@ -62,7 +62,8 @@ public class AapFactory {
         addOkonomiskYtelse(OkonomKoder.GRAD, syntMelding.getGRAD(), okonomYtelse);
         addOkonomiskYtelse(OkonomKoder.BELOP, syntMelding.getBELOP(), okonomYtelse);
         addOkonomiskYtelse(OkonomKoder.BELPR, syntMelding.getBELPR(), okonomYtelse);
-        AndreOkonomYtelserV1 okonomYtelserLister = new AndreOkonomYtelserV1(okonomYtelse);
+        List<AndreOkonomYtelserV1> okonomYtelserListe =
+                (okonomYtelse.isEmpty()) ? null : Collections.singletonList(new AndreOkonomYtelserV1(okonomYtelse));
 
         // SAKSOPPLYSNINGER
         addGenerelleSaksopplysninger(GensakKoder.KDATO, null, syntMelding.getKDATO(), saksopplysninger);
@@ -129,11 +130,10 @@ public class AapFactory {
         addVilkaar("AASYKSKADE", syntMelding.getAASYKSKADE(), vilkaar);
 
         return Aap.builder()
-                .andreOkonomYtelser(Collections.singletonList(okonomYtelserLister))
+                .andreOkonomYtelser(okonomYtelserListe)
                 .genSaksopplysninger(saksopplysninger)
                 .institusjonsopphold(institusjonsopphold)
                 .vilkaar(vilkaar)
-                .periode(new Periode())
                 .fraDato(DateString.dayMonthYearToYearMonthDay(syntMelding.getFRA_DATO()))
                 .tilDato(DateString.dayMonthYearToYearMonthDay(syntMelding.getTIL_DATO()))
                 .datoMottatt(DateString.dayMonthYearToYearMonthDay(syntMelding.getDATO_MOTTATT()))
