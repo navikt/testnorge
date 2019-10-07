@@ -1,0 +1,48 @@
+@import (reference) '~lessVars';
+
+table.fagsystemstatus {
+	width: 100%;
+	thead tr td {
+		padding-bottom: 5px;
+		font-size: 0.75em;
+		font-weight: bold;
+		text-transform: uppercase;
+		border-bottom: 1px solid @color-bg-divider;
+
+		// Miljø kolonne
+		&:nth-child(2) {
+			width: 150px;
+		}
+
+		// Ident kolonne
+		&:nth-child(3) {
+			width: 120px;
+		}
+	}
+	tbody tr td {
+		vertical-align: top;
+		padding: 8px 8px 8px 0;
+		h5 {
+			margin: 0;
+			font-size: 0.9em;
+		}
+		svg {
+			margin-right: 5px;
+			min-width: 16px;
+		}
+
+		ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		i {
+			color: #ccc;
+		}
+	}
+
+	tbody tr:not(:last-child) td {
+		border-bottom: 1px solid #eee;
+	}
+}
