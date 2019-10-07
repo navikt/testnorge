@@ -118,7 +118,7 @@ public class DefaultTestData {
     public static UdiArbeidsadgang createArbeidsAdgang() {
         UdiArbeidsadgang arbeidsadgang = new UdiArbeidsadgang();
         arbeidsadgang.setArbeidsOmfang(TEST_ARBEIDOMGANGKATEGORI);
-        arbeidsadgang.setHarArbeidsadgang(TEST_ARBEIDSADGANG);
+        arbeidsadgang.setHarArbeidsAdgang(TEST_ARBEIDSADGANG);
         arbeidsadgang.setTypeArbeidsadgang(TEST_ARBEIDSADGANG_TYPE);
         arbeidsadgang.setPeriode(TEST_PERIODE);
         return arbeidsadgang;

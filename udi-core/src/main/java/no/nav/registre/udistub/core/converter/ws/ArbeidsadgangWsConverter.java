@@ -23,7 +23,7 @@ public class ArbeidsadgangWsConverter implements Converter<UdiArbeidsadgang, Arb
 
             resultArbeidsadgang.setArbeidsadgangsPeriode(periodeWsConverter.convert(arbeidsadgang.getPeriode()));
             resultArbeidsadgang.setArbeidsOmfang(arbeidsadgang.getArbeidsOmfang());
-            JaNeiUavklart harArbeidsadgang = arbeidsadgang.getHarArbeidsadgang();
+            JaNeiUavklart harArbeidsadgang = arbeidsadgang.getHarArbeidsAdgang();
             LocalDate now = LocalDate.now();
             if (harArbeidsadgang == null) {
                 java.util.Date til = resultArbeidsadgang.getArbeidsadgangsPeriode().getTil().toGregorianCalendar().getTime();
