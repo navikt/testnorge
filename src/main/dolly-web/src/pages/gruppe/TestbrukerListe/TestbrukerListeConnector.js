@@ -8,7 +8,6 @@ const loadingSelector = createLoadingSelector(GET_TPSF_TESTBRUKERE)
 const frigjoerLoadingSelector = createLoadingSelector(FRIGJOER_TESTBRUKER)
 const mapStateToProps = state => ({
 	searchActive: Boolean(state.search),
-	headers: DataMapper.getHeaders(),
 	testbrukerListe: sokSelector(DataMapper.getData(state), state.search),
 	isFetching: loadingSelector(state),
 	isDeleting: frigjoerLoadingSelector(state),

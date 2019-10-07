@@ -1,17 +1,16 @@
-import React, { Component, Fragment } from 'react'
-import { TransitionGroup, CSSTransition } from 'react-transition-group'
+import React, { Component } from 'react'
 import Overskrift from '~/components/ui/overskrift/Overskrift'
-import Table from '~/components/ui/table/Table'
 import Toolbar from '~/components/ui/toolbar/Toolbar'
 import Knapp from 'nav-frontend-knapper'
 import Loading from '~/components/ui/loading/Loading'
 import LeggTilBruker from './LeggTilBruker/LeggTilBruker'
 import ConfirmTooltip from '~/components/ui/confirmTooltip/ConfirmTooltip'
 import RedigerTeamConnector from '~/components/RedigerTeam/RedigerTeamConnector'
-import PaginationConnector from '~/components/ui/pagination/PaginationConnector'
+import TeamMedlemmer from './teamMedlemmer/TeamMedlemmer'
+import TeamGrupper from './teamGrupper/TeamGrupper'
 
 import './Team.less'
-class Team extends Component {
+export default class Team extends Component {
 	state = {
 		leggTilBruker: false
 	}
@@ -40,8 +39,7 @@ class Team extends Component {
 			removeMember,
 			deleteTeam,
 			startRedigerTeam,
-			visRedigerTeam,
-			isCreateDelete
+			visRedigerTeam
 		} = this.props
 
 		if (!team || !grupper) return null
@@ -87,86 +85,24 @@ class Team extends Component {
 					</Knapp>
 				</Toolbar>
 
-				{teamFetching ? (
-					<Loading label="laster medlemmer" panel />
-				) : (
-					<Fragment>
-						{this.state.leggTilBruker && (
-							<LeggTilBruker
-								teamId={team.id}
-								teamMembers={teamMembers}
-								closeLeggTilBruker={this.closeLeggTilBruker}
-								addMember={addMember}
-							/>
-						)}
-						<PaginationConnector
-							items={team.medlemmer}
-							render={items => (
-								<Table>
-									<Table.Header>
-										<Table.Column width="30" value="Navn" />
-										<Table.Column width="20" value="Rolle" />
-										<Table.Column width="50" value="Slett" />
-									</Table.Header>
-									<TransitionGroup component={null}>
-										{items.map(medlem => (
-											<CSSTransition
-												key={medlem.navIdent}
-												timeout={isCreateDelete ? 500 : 1}
-												classNames="fade"
-											>
-												<Table.Row
-													key={medlem.navIdent}
-													deleteAction={() => removeMember(medlem.navIdent)}
-													deleteMessage={'Vil du slette ' + medlem.navIdent + ' fra dette teamet?'}
-												>
-													<Table.Column width="30" value={medlem.navIdent} />
-													<Table.Column width="10" value="Utvikler" />
-												</Table.Row>
-											</CSSTransition>
-										))}
-									</TransitionGroup>
-								</Table>
-							)}
-						/>
-					</Fragment>
-				)}
-
-				<Overskrift label="Testdatagrupper" type="h2" />
-
-				{grupperFetching ? (
-					<Loading label="laster grupper" panel />
-				) : (
-					<PaginationConnector
-						items={grupper}
-						render={items => (
-							<Table>
-								<Table.Header>
-									<Table.Column width="15" value="ID" />
-									<Table.Column width="20" value="Navn" />
-									<Table.Column width="15" value="Team" />
-									<Table.Column width="40" value="Hensikt" />
-								</Table.Header>
-
-								{items.map(gruppe => (
-									<Table.Row
-										key={gruppe.id}
-										navLink={() => history.push(`/gruppe/${gruppe.id}`)}
-										// deleteAction={() => {}}
-									>
-										<Table.Column width="15" value={gruppe.id.toString()} />
-										<Table.Column width="20" value={gruppe.navn} />
-										<Table.Column width="15" value={gruppe.team.navn} />
-										<Table.Column width="40" value={gruppe.hensikt} />
-									</Table.Row>
-								))}
-							</Table>
-						)}
+				{this.state.leggTilBruker && (
+					<LeggTilBruker
+						teamId={team.id}
+						teamMembers={teamMembers}
+						closeLeggTilBruker={this.closeLeggTilBruker}
+						addMember={addMember}
 					/>
 				)}
+
+				<TeamMedlemmer
+					medlemmer={team.medlemmer}
+					isFetching={teamFetching}
+					removeMember={removeMember}
+				/>
+
+				<Overskrift label="Testdatagrupper" type="h2" />
+				<TeamGrupper isFetching={grupperFetching} grupper={grupper} history={history} />
 			</div>
 		)
 	}
 }
-
-export default Team

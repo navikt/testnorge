@@ -7,8 +7,6 @@ import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import Toolbar from '~/components/ui/toolbar/Toolbar'
 import Liste from './Liste'
-import Loading from '~/components/ui/loading/Loading'
-import PaginationConnector from '~/components/ui/pagination/PaginationConnector'
 
 export default class GruppeOversikt extends PureComponent {
 	static propTypes = {
@@ -39,11 +37,7 @@ export default class GruppeOversikt extends PureComponent {
 			visning,
 			history,
 			createOrUpdateId,
-			editGroup,
 			createGroup,
-			deleteGruppe,
-			setSort,
-			sort,
 			searchActive
 		} = this.props
 
@@ -68,25 +62,12 @@ export default class GruppeOversikt extends PureComponent {
 
 				{createOrUpdateId === -1 && <RedigerGruppeConnector />}
 
-				{isFetching ? (
-					<Loading label="laster grupper" panel />
-				) : (
-					<PaginationConnector
-						items={gruppeListe}
-						render={items => (
-							<Liste
-								items={items}
-								editId={createOrUpdateId}
-								editGroup={editGroup}
-								history={history}
-								deleteGruppe={deleteGruppe}
-								setSort={setSort}
-								sort={sort}
-								searchActive={searchActive}
-							/>
-						)}
-					/>
-				)}
+				<Liste
+					items={gruppeListe}
+					history={history}
+					isFetching={isFetching}
+					searchActive={searchActive}
+				/>
 			</div>
 		)
 	}

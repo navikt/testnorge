@@ -15,23 +15,8 @@ import {
 
 // * Mapper testperson-data for å vise under testpersonliste
 const DataMapper = {
-	getHeaders() {
-		return [
-			createHeader('Ident', '15'),
-			createHeader('Type', '15'),
-			createHeader('Navn', '30'),
-			createHeader('Kjønn', '20'),
-			createHeader('Alder', '10'),
-			createHeader('Bestilling-ID', '10')
-		]
-	},
-
 	// Testbrukersliste
 	getData(state) {
-		/*
-        Gruppe: Dolly
-        Testbruker: TPSF
-        */
 		const { gruppe, testbruker } = state
 
 		if (!testbruker.items.tpsf) return null

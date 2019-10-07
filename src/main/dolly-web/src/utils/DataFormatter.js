@@ -3,6 +3,7 @@ import dateFnsParse from 'date-fns/parse'
 import _startCase from 'lodash/startCase'
 import _capitalize from 'lodash/capitalize'
 import _get from 'lodash/get'
+import _isNil from 'lodash/isNil'
 
 import { defaultDateFormat } from '~/components/fields/Datepicker/DateValidation'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
@@ -10,7 +11,7 @@ import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/Select
 const Formatters = {}
 
 Formatters.formatAlder = (alder, dodsdato) => {
-	if (!alder) return ''
+	if (_isNil(alder)) return ''
 	return `${alder.toString()}${dodsdato ? ' (død)' : ''}`
 }
 

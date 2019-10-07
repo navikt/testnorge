@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
-import RedigerGruppe from './RedigerGruppe'
-import { closeCreateOrEdit, createGruppe, createTeam, toggleCreateTeam, updateGruppe } from '~/ducks/gruppe'
+import { closeCreateOrEdit, createGruppe, createTeam, updateGruppe } from '~/ducks/gruppe'
 import { createLoadingSelector } from '~/ducks/loading'
 import { createErrorMessageSelector } from '~/ducks/errors'
+import RedigerGruppe from './RedigerGruppe'
 
 const loadingSelector = createLoadingSelector([createGruppe, createTeam, updateGruppe])
 const errorSelector = createErrorMessageSelector([createGruppe, createTeam, updateGruppe])
