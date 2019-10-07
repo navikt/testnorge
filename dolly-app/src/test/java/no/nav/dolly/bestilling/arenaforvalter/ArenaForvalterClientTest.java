@@ -93,7 +93,7 @@ public class ArenaForvalterClientTest {
                 .build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo(
-                "q2$Feil: 400 Bad request (An error has occured)")));
+                "q2$Feil: 400 BAD_REQUEST Bad request (An error has occured)")));
         verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class));
     }
 

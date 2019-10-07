@@ -48,6 +48,9 @@ public class TestdataFactory {
         identTestRepository.deleteAll();
         identTestRepository.flush();
 
+        bestillingTestRepository.deleteAll();
+        bestillingTestRepository.flush();
+
         gruppeTestRepository.deleteAll();
         gruppeTestRepository.flush();
 
@@ -59,9 +62,6 @@ public class TestdataFactory {
 
         bestillingProgressTestRepository.deleteAll();
         bestillingProgressTestRepository.flush();
-
-        bestillingTestRepository.deleteAll();
-        bestillingTestRepository.flush();
     }
 
     public Bruker createBruker(String navIdent) {
