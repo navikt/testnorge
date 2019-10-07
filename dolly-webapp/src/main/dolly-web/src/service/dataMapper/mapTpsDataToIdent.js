@@ -8,7 +8,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 
 	const data = [
 		{
-			header: 'Personlig informasjon',
+			header: 'Persondetaljer',
 			data: [
 				{
 					id: 'ident',

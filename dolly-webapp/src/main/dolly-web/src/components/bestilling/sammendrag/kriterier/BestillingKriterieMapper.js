@@ -54,11 +54,11 @@ export function mapBestillingData(bestillingData) {
 	if (bestillingData.tpsfKriterier) {
 		const tpsfKriterier = JSON.parse(bestillingData.tpsfKriterier)
 		const personinfo = {
-			header: 'Personlig informasjon',
+			header: 'Persondetaljer',
 			items: _getTpsfBestillingData(tpsfKriterier)
 		}
 
-		// For å mappe utenlands-ID under personlig informasjon
+		// For å mappe utenlands-ID under persondetaljer
 		if (bestillingData.bestKriterier) {
 			const registreKriterier = JSON.parse(bestillingData.bestKriterier)
 			const uidnr = _get(registreKriterier, 'pdlforvalter.utenlandskIdentifikasjonsnummer')

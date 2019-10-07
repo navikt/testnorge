@@ -50,7 +50,7 @@ public class BestillingPdlForvalterStatusMapperNyTest {
 
         assertThat(resultat.get(0).getId().name(), is(equalTo(UTENLANDS_PDL)));
         assertThat(resultat.get(0).getStatuser().get(0).getMelding(), is(equalTo("OK")));
-        assertThat(resultat.get(0).getStatuser().get(0).getIdenter(), containsInAnyOrder(IDENT_1, IDENT_2));
+        assertThat(resultat.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT_1, IDENT_2));
     }
 
     @Test
@@ -70,8 +70,8 @@ public class BestillingPdlForvalterStatusMapperNyTest {
         assertThat(resultat.get(0).getId().name(), is(equalTo(UTENLANDS_PDL)));
         assertThat(resultat.get(0).getStatuser(), hasSize(2));
         assertThat(resultat.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: Feil ved henting")));
-        assertThat(resultat.get(0).getStatuser().get(0).getIdenter(), containsInAnyOrder(IDENT_2));
+        assertThat(resultat.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT_2));
         assertThat(resultat.get(0).getStatuser().get(1).getMelding(), is(equalTo(STATUS_OK)));
-        assertThat(resultat.get(0).getStatuser().get(1).getIdenter(), containsInAnyOrder(IDENT_1));
+        assertThat(resultat.get(0).getStatuser().get(1).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT_1));
     }
 }
