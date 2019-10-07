@@ -1,4 +1,4 @@
-package no.nav.registre.ereg.consumer;
+package no.nav.registre.ereg.consumer.rs;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

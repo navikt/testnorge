@@ -18,7 +18,6 @@ import java.util.Map;
 @Setter
 public class EregDataRequest {
 
-    @NotNull
     private String orgnr;
 
     private Navn navn;
