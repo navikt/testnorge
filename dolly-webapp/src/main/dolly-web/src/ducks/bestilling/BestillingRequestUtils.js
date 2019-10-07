@@ -177,6 +177,7 @@ export const getValues = (attributeList, values) => {
 		if (attribute.id === 'barn') {
 			const valueCopy = JSON.parse(JSON.stringify(value))
 			value.map((barn, idx) => {
+				console.log('valueCopy :', value)
 				//Loop gjennom liste med barn
 				//Samme action for begge alternativ. TODO: Skrive felles
 				if (barn.innvandret) {
@@ -191,6 +192,16 @@ export const getValues = (attributeList, values) => {
 				}
 				if (barn.utvandret) {
 					Object.entries(valueCopy[idx].barn_utvandret[0]).map(attr => {
+						_set(
+							valueCopy[idx],
+							attr[0],
+							isDate(attr[1]) ? DataFormatter.parseDate(attr[1]) : attr[1]
+						)
+					})
+					delete valueCopy[idx].barn_utvandret
+				}
+				if (barn.Statsborgerskap) {
+					Object.entries(valueCopy[idx].barn_Statsborgerskap[0]).map(attr => {
 						_set(
 							valueCopy[idx],
 							attr[0],

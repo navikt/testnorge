@@ -6,12 +6,14 @@ export const getAttributesFromMal = mal => {
 	const bestKriterier = JSON.parse(mal.bestKriterier)
 	let attrArray = []
 	attrArray = Object.keys(tpsfKriterier).filter(k => {
+		console.log('k :', k)
 		if (
 			k !== 'identtype' &&
 			k !== 'relasjoner' &&
 			k !== 'regdato' &&
 			!k.includes('innvandretFraLand') &&
-			!k.includes('utvandretTilLand')
+			!k.includes('utvandretTilLand') &&
+			!k.includes('statsborgerskap')
 		) {
 			return k
 		}
@@ -33,6 +35,7 @@ export const getAttributesFromMal = mal => {
 
 	tpsfKriterier.innvandretFraLand && attrArray.push('innvandret')
 	tpsfKriterier.utvandretTilLand && attrArray.push('utvandret')
+	tpsfKriterier.statsborgerskap && attrArray.push('Statsborgerskap')
 
 	Object.keys(bestKriterier).forEach(reg => {
 		if (reg === 'udistub' || reg === 'pdlforvalter') {
@@ -71,15 +74,18 @@ export const getValuesFromMal = mal => {
 			}
 		}
 	})
-
+	console.log('reduxStateValue :', reduxStateValue)
 	if (reduxStateValue.utvandretTilLand || reduxStateValue.innvandretFraLand) {
 		const utvandretValues = _mapInnOgUtvandret(reduxStateValue)
 		reduxStateValue = utvandretValues
 	}
-
 	if (reduxStateValue.adressetype && reduxStateValue.adressetype === 'MATR') {
 		const matrikkeladresseValues = _mapAdresseValues(reduxStateValue)
 		reduxStateValue = matrikkeladresseValues
+	}
+	if (reduxStateValue.statsborgerskap) {
+		const statsborgerskapValues = _mapStatsborgerskap(reduxStateValue)
+		reduxStateValue = statsborgerskapValues
 	}
 	return reduxStateValue
 }
@@ -165,6 +171,7 @@ const _formatValueForObject = (key, value) => {
 		'tilDato',
 		'utvandretTilLandFlyttedato',
 		'innvandretFraLandFlyttedato',
+		'statsborgerskapRegdato',
 		'startdato',
 		'faktiskSluttdato',
 		'forventetSluttdato',
@@ -240,6 +247,7 @@ const _mapInnOgUtvandret = values => {
 			valuesArray.barn[idx] = _mapInnOgUtvandret(enkeltBarn)
 		})
 	}
+	console.log('values :', values)
 
 	Object.entries(valuesArray).map(value => {
 		if (value[0].includes('innvandret')) {
@@ -271,6 +279,37 @@ const _mapInnOgUtvandret = values => {
 	return valuesArray
 }
 
+const _mapStatsborgerskap = values => {
+	let statsborgerskapValuesArray = JSON.parse(JSON.stringify(values))
+	if (statsborgerskapValuesArray.barn) {
+		//Loop gjennom barn og kjør denne funksjonen for hvert barn
+		statsborgerskapValuesArray.barn.map((enkeltBarn, idx) => {
+			statsborgerskapValuesArray.barn[idx] = _mapStatsborgerskap(enkeltBarn)
+		})
+	}
+
+	Object.entries(statsborgerskapValuesArray).map(value => {
+		if (value[0].includes('statsborgerskap')) {
+			console.log('values :', values)
+			console.log('statsborgerskapValuesArray :', statsborgerskapValuesArray)
+			if (value[0].includes('partner')) {
+				!statsborgerskapValuesArray.partner_Statsborgerskap &&
+					(statsborgerskapValuesArray.partner_Statsborgerskap = [{}])
+				return (statsborgerskapValuesArray.partner_Statsborgerskap[0][value[0].split('_')[1]] =
+					value[1])
+			} else if (value[0].includes('barn')) {
+				!statsborgerskapValuesArray.barn_Statsborgerskap &&
+					(statsborgerskapValuesArray.barn_Statsborgerskap = [{}])
+				return (statsborgerskapValuesArray.barn_Statsborgerskap[0][value[0].split('_')[1]] =
+					value[1])
+			} else {
+				!statsborgerskapValuesArray.Statsborgerskap &&
+					(statsborgerskapValuesArray.Statsborgerskap = [{}])
+				return (statsborgerskapValuesArray.Statsborgerskap[0][value[0]] = value[1])
+			}
+		}
+	})
+}
 const _mapAdresseValues = values => {
 	let matrikkeladresseValues = { matrikkeladresse: [] }
 	if (values.flyttedato) {

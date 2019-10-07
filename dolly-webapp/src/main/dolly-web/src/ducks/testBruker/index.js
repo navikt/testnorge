@@ -345,6 +345,7 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 			const sigrunstubRequest = sigrunstubAtributtListe.map(attribute => {
 				const currentValues = values[attribute.id]
 				const items = attribute.items
+				console.log('currentValues :', currentValues)
 				const promises = currentValues.map(valueObject => {
 					const headerObject = items.reduce(
 						(prev, curr) => {
