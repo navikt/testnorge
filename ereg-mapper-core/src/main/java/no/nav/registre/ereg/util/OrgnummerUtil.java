@@ -3,6 +3,7 @@ package no.nav.registre.ereg.util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -26,16 +27,20 @@ public class OrgnummerUtil {
 
         String withControl = randomString + controlDigit;
 
-        ResponseEntity<Object> responseEntityq2 = restTemplate.getForEntity("https://modapp-q2.adeo.no/ereg/api/v1/organisasjon/"
-                + withControl +
-                "?inkluderHierarki=false&inkluderHistorikk=false", Object.class);
+        try {
+            ResponseEntity<Object> responseEntityq2 = restTemplate.getForEntity("https://modapp-q2.adeo.no/ereg/api/v1/organisasjon/"
+                    + withControl +
+                    "?inkluderHierarki=false&inkluderHistorikk=false", Object.class);
 
-        ResponseEntity<Object> responseEntityq0 = restTemplate.getForEntity("https://modapp-q0.adeo.no/ereg/api/v1/organisasjon/"
-                + withControl +
-                "?inkluderHierarki=false&inkluderHistorikk=false", Object.class);
+            ResponseEntity<Object> responseEntityq0 = restTemplate.getForEntity("https://modapp-q0.adeo.no/ereg/api/v1/organisasjon/"
+                    + withControl +
+                    "?inkluderHierarki=false&inkluderHistorikk=false", Object.class);
 
-        if (responseEntityq0.getStatusCode() == HttpStatus.OK || responseEntityq2.getStatusCode() == HttpStatus.OK) {
-            return generate(restTemplate);
+            if (responseEntityq0.getStatusCode() == HttpStatus.OK || responseEntityq2.getStatusCode() == HttpStatus.OK) {
+                return generate(restTemplate);
+            }
+        } catch (HttpClientErrorException e) {
+            return withControl;
         }
         return withControl;
 

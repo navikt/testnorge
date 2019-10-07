@@ -13,7 +13,7 @@ import java.util.List;
 import no.nav.registre.ereg.util.OrgnummerUtil;
 
 @RestController
-@RequestMapping("/api/orgnr")
+@RequestMapping("/api/v1/orgnr")
 public class OrgnrController {
 
     @GetMapping
