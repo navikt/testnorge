@@ -31,6 +31,7 @@ public class SyntetiseringService {
     private static final String ARENA_FORVALTER_NAME = "arena-forvalteren";
     private static final double PROSENTANDEL_SOM_SKAL_HA_MELDEKORT = 0.2;
     private int MINIMUM_ALDER = 16;
+    private int MAKSIMUM_ALDER = 67;
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final ArenaForvalterConsumer arenaForvalterConsumer;
@@ -101,7 +102,7 @@ public class SyntetiseringService {
     }
 
     private List<String> hentLevendeIdenter(Long avspillergruppeId) {
-        return hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER);
+        return hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
     }
 
     private NyeBrukereResponse byggArbeidsoekereOgLagreIHodejegeren(List<String> identer, String miljoe) {

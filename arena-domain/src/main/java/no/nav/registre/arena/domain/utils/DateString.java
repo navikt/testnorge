@@ -7,7 +7,7 @@ public class DateString {
         if (Objects.isNull(date) || date.trim().isEmpty()) {
             return null;
         }
-        String[] ddmmyyyy = date.split("-");
+        String[] ddmmyyyy = date.split("[-/.\\\\]");
         if (ddmmyyyy.length == 3) {
             return (ddmmyyyy[2] + "-" + ddmmyyyy[1] + "-" + ddmmyyyy[0]);
         }
