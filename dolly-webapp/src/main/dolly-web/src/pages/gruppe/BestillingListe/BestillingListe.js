@@ -5,13 +5,6 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PaginationConnector from '~/components/ui/pagination/PaginationConnector'
 import Loading from '~/components/ui/loading/Loading'
 import BestillingDetaljer from '~/components/bestilling/detaljer/Detaljer'
-import EtikettBase from 'nav-frontend-etiketter'
-
-const etikettTypeMap = {
-	Ferdig: 'suksess',
-	Avvik: 'fokus',
-	Feilet: 'advarsel'
-}
 
 export default class BestillingListe extends PureComponent {
 	componentDidMount() {

@@ -11,7 +11,8 @@ export const getAttributesFromMal = mal => {
 			k !== 'relasjoner' &&
 			k !== 'regdato' &&
 			!k.includes('innvandretFraLand') &&
-			!k.includes('utvandretTilLand')
+			!k.includes('utvandretTilLand') &&
+			!k.includes('erForsvunnet')
 		) {
 			return k
 		}
@@ -33,6 +34,7 @@ export const getAttributesFromMal = mal => {
 
 	tpsfKriterier.innvandretFraLand && attrArray.push('innvandret')
 	tpsfKriterier.utvandretTilLand && attrArray.push('utvandret')
+	tpsfKriterier.erForsvunnet && attrArray.push('forsvunnet')
 
 	Object.keys(bestKriterier).forEach(reg => {
 		if (reg === 'udistub' || reg === 'pdlforvalter') {
@@ -72,11 +74,14 @@ export const getValuesFromMal = mal => {
 		}
 	})
 
-	if (reduxStateValue.utvandretTilLand || reduxStateValue.innvandretFraLand) {
+	if (
+		reduxStateValue.utvandretTilLand ||
+		reduxStateValue.innvandretFraLand ||
+		reduxStateValue.erForsvunnet
+	) {
 		const utvandretValues = _mapInnOgUtvandret(reduxStateValue)
 		reduxStateValue = utvandretValues
 	}
-
 	if (reduxStateValue.adressetype && reduxStateValue.adressetype === 'MATR') {
 		const matrikkeladresseValues = _mapAdresseValues(reduxStateValue)
 		reduxStateValue = matrikkeladresseValues
@@ -164,7 +169,8 @@ const _formatValueForObject = (key, value) => {
 		'fraDato',
 		'tilDato',
 		'utvandretTilLandFlyttedato',
-		'innvandretFraLandFlyttedato',
+		'innvandretFraLandFlytteDato',
+		'forsvunnetDato',
 		'startdato',
 		'faktiskSluttdato',
 		'forventetSluttdato',
@@ -265,6 +271,23 @@ const _mapInnOgUtvandret = values => {
 			} else {
 				!valuesArray.utvandret && (valuesArray.utvandret = [{}])
 				return (valuesArray.utvandret[0][value[0]] = value[1])
+			}
+		}
+		if (value[0].toLowerCase().includes('forsvunnet')) {
+			if (value[0].toLowerCase().includes('forsvunnet')) {
+				if (value[0].includes('partner')) {
+					!valuesArray.partner_forsvunnet && (valuesArray.partner_forsvunnet = [{}])
+					return (valuesArray.partner_forsvunnet[0][value[0].split('_')[1]] = value[1])
+					return (valuesArray.partner_forsvunnet[0][value[0].split('_')[1]] = value[1].toString())
+				} else if (value[0].includes('barn')) {
+					!valuesArray.barn_forsvunnet && (valuesArray.barn_forsvunnet = [{}])
+					return (valuesArray.barn_forsvunnet[0][value[0].split('_')[1]] = value[1])
+					return (valuesArray.barn_forsvunnet[0][value[0].split('_')[1]] = value[1].toString())
+				} else {
+					!valuesArray.forsvunnet && (valuesArray.forsvunnet = [{}])
+					return (valuesArray.forsvunnet[0][value[0]] = value[1])
+					return (valuesArray.forsvunnet[0][value[0]] = value[1].toString())
+				}
 			}
 		}
 	})

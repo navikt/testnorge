@@ -46,6 +46,11 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 					apiKodeverkId: tpsfData.personStatus && 'Personstatuser'
 				},
 				{
+					id: 'ForsvunnetDato',
+					label: 'Savnet siden',
+					value: Formatters.formatDate(tpsfData.forsvunnetDato)
+				},
+				{
 					id: 'sivilstand',
 					label: 'Sivilstand',
 					value: tpsfData.sivilstand
@@ -316,6 +321,11 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 							apiKodeverkId: relasjon.personRelasjonMed.personStatus && 'Personstatuser'
 						},
 						{
+							id: 'ForsvunnetDato',
+							label: 'Savnet siden',
+							value: Formatters.formatDate(relasjon.personRelasjonMed.forsvunnetDato)
+						},
+						{
 							id: 'statsborgerskap',
 							label: 'Statsborgerskap',
 							value: relasjon.personRelasjonMed.statsborgerskap
@@ -381,5 +391,6 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 			})
 		})
 	}
+
 	return data
 }

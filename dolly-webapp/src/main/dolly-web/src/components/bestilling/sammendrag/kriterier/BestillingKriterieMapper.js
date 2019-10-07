@@ -29,7 +29,9 @@ const _getTpsfBestillingData = data => {
 		obj('Innvandret dato', Formatters.formatDate(data.innvandretFraLandFlyttedato)),
 		obj('Utvandret til land', data.utvandretTilLand, 'Landkoder'),
 		obj('Utvandret dato', Formatters.formatDate(data.utvandretTilLandFlyttedato)),
-		obj('Egenansatt', Formatters.oversettBoolean(data.egenansattDatoFom))
+		obj('Er forsvunnet', Formatters.oversettBoolean(data.erForsvunnet)),
+		obj('Forsvunnet dato', Formatters.formatDate(data.forsvunnetDato)),
+		obj('Egenansatt', Formatters.oversettBoolean(data.egenansattDatoFom)),
 	]
 }
 
