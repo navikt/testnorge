@@ -279,9 +279,7 @@ export default class Step3 extends PureComponent {
 			return (
 				valueArray &&
 				valueArray.map((values, idx) => {
-					// console.log('values :', values)
 					Object.keys(values).map(attr => {
-						// console.log('attr :', attr)
 						return !values[attr] && delete values[attr]
 					})
 
@@ -304,7 +302,8 @@ export default class Step3 extends PureComponent {
 			header: item.label,
 			value: itemValue !== '' ? itemValue : null,
 			format: item.format,
-			size: item.size
+			size: item.size,
+			optionHeight: item.size
 		}
 
 		return (
