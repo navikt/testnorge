@@ -1,6 +1,7 @@
 package no.nav.registre.ereg.mapper;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -15,6 +16,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import no.nav.registre.ereg.TestUtil;
+import no.nav.registre.ereg.consumer.rs.EregConsumer;
 import no.nav.registre.ereg.csv.NaeringskodeRecord;
 import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
 import no.nav.registre.ereg.provider.rs.request.Naeringskode;
@@ -28,8 +30,16 @@ public class EregMapperTest {
     @Mock
     private NameService nameService;
 
+    @Mock
+    private EregConsumer eregConsumer;
+
     @InjectMocks
     private EregMapper eregMapper;
+
+    @Before
+    public void setUp() {
+        when(eregConsumer.checkExists(anyString())).thenReturn(false);
+    }
 
     @Test
     public void mapEregRequests_RandomNaeringskode_Name() {

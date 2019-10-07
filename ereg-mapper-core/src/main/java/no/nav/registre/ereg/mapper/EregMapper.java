@@ -99,7 +99,7 @@ public class EregMapper {
                 String generertOrgnr = OrgnummerUtil.generate(new RestTemplate());
                 eregDataRequest.setOrgnr(generertOrgnr);
             }
-            if (eregConsumer.checkExists(eregDataRequest.getOrgnr())) {
+            if (!eregConsumer.checkExists(eregDataRequest.getOrgnr())) {
                 RecordsAndCount unit = createUnit(eregDataRequest);
                 totalRecords += unit.numRecords;
                 eregFile.append(unit.val);
