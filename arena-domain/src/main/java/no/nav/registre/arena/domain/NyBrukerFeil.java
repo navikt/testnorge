@@ -14,6 +14,6 @@ import lombok.Setter;
 public class NyBrukerFeil {
     String personident;
     String miljoe;
-    NyBrukerFeilStatus nyBrukerFeilStatus;
+    NyBrukerFeilstatus nyBrukerFeilstatus;
     String melding;
 }

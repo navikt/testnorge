@@ -115,11 +115,10 @@ public class ArenaForvalterConsumer {
 
         for (int page = 0; page < antallSider; page++) {
             RequestEntity getRequest = RequestEntity.get(hentBrukerePage.expand(page)).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
-            log.info("Henter identer fra arena forvalteren: {}", getRequest.toString());
 
             ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
             if (invalidResponse(response)) {
-                log.info("Kunne ikke hente arbeidsøkere fra Arena Forvalteren på addresse:\n{}\nStatus: {}\nBody: {}",
+                log.warn("Kunne ikke hente arbeidsøkere fra Arena Forvalteren på addresse:\n{}\nStatus: {}\nBody: {}",
                         getRequest.toString(), response.getStatusCode(), response.getBody());
                 return responseList;
             }

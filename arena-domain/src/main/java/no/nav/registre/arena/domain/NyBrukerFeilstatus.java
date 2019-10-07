@@ -1,6 +1,6 @@
 package no.nav.registre.arena.domain;
 
-public enum NyBrukerFeilStatus {
+public enum NyBrukerFeilstatus {
     DUPLIKAT,
     MILJOE_IKKE_STOETTET,
     AKTIVER_BRUKER,

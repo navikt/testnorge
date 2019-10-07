@@ -40,9 +40,7 @@ public class SyntetiseringService {
 
     public NyeBrukereResponse opprettArbeidsoekere(Integer antallNyeIdenter, Long avspillergruppeId, String miljoe) {
         List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
-        log.info("Fant {} eksisternende identer i Hodejegeren.", levendeIdenter.size());
         List<String> arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
-        log.info("Fant {} eksisternende identer i Arena Forvalteren", arbeidsoekerIdenter.size());
 
         if (antallNyeIdenter == null) {
             int antallArbeidsoekereAaOpprette = getAntallBrukereForAaFylleArenaForvalteren(levendeIdenter.size(), arbeidsoekerIdenter.size());
@@ -54,8 +52,6 @@ public class SyntetiseringService {
                         (PROSENTANDEL_SOM_SKAL_HA_MELDEKORT * 100));
                 return new NyeBrukereResponse();
             }
-            log.info("Oppretter arbeidsoekere for {} identer for aa faa {}% tilgjengelige identer i arena forvalteren.",
-                    antallArbeidsoekereAaOpprette, (PROSENTANDEL_SOM_SKAL_HA_MELDEKORT * 100));
         }
 
         List<String> nyeIdenter = hentKvalifiserteIdenter(antallNyeIdenter, levendeIdenter, arbeidsoekerIdenter);
