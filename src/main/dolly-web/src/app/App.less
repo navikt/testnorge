@@ -2,10 +2,8 @@
 
 main {
 	width: 100%;
-	padding: 20px;
+	padding: @page-padding;
 	margin-bottom: 100px;
-
-	@media @desktop, @desktop-xl {
-		padding: 20px @page-margin 0;
-	}
+	max-width: @page-max-width;
+	margin: 0 auto;
 }

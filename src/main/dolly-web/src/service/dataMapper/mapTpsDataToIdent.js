@@ -7,7 +7,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 
 	const data = [
 		{
-			header: 'Personlig informasjon',
+			header: 'Persondetaljer',
 			data: [
 				{
 					id: 'ident',
@@ -44,6 +44,11 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 					label: 'Personstatus',
 					value: tpsfData.personStatus,
 					apiKodeverkId: tpsfData.personStatus && 'Personstatuser'
+				},
+				{
+					id: 'ForsvunnetDato',
+					label: 'Savnet siden',
+					value: Formatters.formatDate(tpsfData.forsvunnetDato)
 				},
 				{
 					id: 'sivilstand',
@@ -322,6 +327,11 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 							apiKodeverkId: relasjon.personRelasjonMed.personStatus && 'Personstatuser'
 						},
 						{
+							id: 'ForsvunnetDato',
+							label: 'Savnet siden',
+							value: Formatters.formatDate(relasjon.personRelasjonMed.forsvunnetDato)
+						},
+						{
 							id: 'statsborgerskap',
 							label: 'statsborgerskap',
 							value:
@@ -405,5 +415,6 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 			})
 		})
 	}
+
 	return data
 }

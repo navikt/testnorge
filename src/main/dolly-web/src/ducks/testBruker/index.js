@@ -194,7 +194,11 @@ export default function testbrukerReducer(state = initialState, action) {
 					...state.items,
 					tpsf: state.items.tpsf.filter(item => item.ident !== action.meta.ident),
 					sigrunstub: { ...state.items.sigrunstub, [action.meta.ident]: null },
-					krrstub: { ...state.items.krrstub, [action.meta.ident]: null }
+					krrstub: { ...state.items.krrstub, [action.meta.ident]: null },
+					arenaforvalteren: { ...state.items.arenaforvalteren, [action.meta.ident]: null },
+					aareg: { ...state.items.aareg, [action.meta.ident]: null },
+					pdlforvalter: { ...state.items.aareg, [action.meta.ident]: null },
+					instdata: { ...state.items.aareg, [action.meta.ident]: null }
 					// ! udi-stub også her?
 				}
 			}
@@ -284,7 +288,7 @@ export default function testbrukerReducer(state = initialState, action) {
 				items: {
 					...state.items,
 					instdata: {
-						...state.items.inst,
+						...state.items.instdata,
 						[action.meta.ident]: action.payload && action.payload.data
 					}
 				}
@@ -345,7 +349,6 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 			const sigrunstubRequest = sigrunstubAtributtListe.map(attribute => {
 				const currentValues = values[attribute.id]
 				const items = attribute.items
-				console.log('currentValues :', currentValues)
 				const promises = currentValues.map(valueObject => {
 					const headerObject = items.reduce(
 						(prev, curr) => {
