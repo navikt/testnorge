@@ -8,6 +8,9 @@ public class DateString {
             return null;
         }
         String[] ddmmyyyy = date.split("-");
-        return (ddmmyyyy[2] + "-" + ddmmyyyy[1] + "-" + ddmmyyyy[0]);
+        if (ddmmyyyy.length == 3) {
+            return (ddmmyyyy[2] + "-" + ddmmyyyy[1] + "-" + ddmmyyyy[0]);
+        }
+        return null;
     }
 }
