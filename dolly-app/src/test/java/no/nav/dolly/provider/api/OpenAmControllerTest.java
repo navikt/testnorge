@@ -21,7 +21,7 @@ import no.nav.dolly.domain.resultset.RsOpenAmRequest;
 import no.nav.dolly.domain.resultset.RsOpenAmResponse;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.GruppeRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.OpenAmService;
 import org.junit.Before;
 import org.junit.Rule;
@@ -51,7 +51,7 @@ public class OpenAmControllerTest {
     @Mock
     private OpenAmService openAmService;
     @Mock
-    private GruppeRepository gruppeRepository;
+    private TestgruppeRepository testgruppeRepository;
     @Mock
     private BestillingRepository bestillingRepository;
     @InjectMocks
@@ -83,11 +83,11 @@ public class OpenAmControllerTest {
 
     @Test
     public void endreOpenAmSentStatusOk() {
-        when(gruppeRepository.findById(GRUPPEID)).thenReturn(Optional.of(testgruppe));
+        when(testgruppeRepository.findById(GRUPPEID)).thenReturn(Optional.of(testgruppe));
 
         openAmController.oppdaterOpenAmSentStatus(GRUPPEID, STATUS);
-        verify(gruppeRepository).findById(GRUPPEID);
-        verify(gruppeRepository).save(any(Testgruppe.class));
+        verify(testgruppeRepository).findById(GRUPPEID);
+        verify(testgruppeRepository).save(any(Testgruppe.class));
     }
 
     @Test
@@ -96,8 +96,8 @@ public class OpenAmControllerTest {
         expectedException.expectMessage(format("GruppeId %d ble ikke funnet.", GRUPPEID));
 
         openAmController.oppdaterOpenAmSentStatus(GRUPPEID, STATUS);
-        verify(gruppeRepository).findById(GRUPPEID);
-        verify(gruppeRepository).save(any(Testgruppe.class));
+        verify(testgruppeRepository).findById(GRUPPEID);
+        verify(testgruppeRepository).save(any(Testgruppe.class));
     }
 
     @Test

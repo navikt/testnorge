@@ -7,7 +7,7 @@ import org.springframework.data.repository.Repository;
 import java.util.List;
 import java.util.Optional;
 
-public interface GruppeRepository extends Repository<Testgruppe, Long> {
+public interface TestgruppeRepository extends Repository<Testgruppe, Long> {
 
     Optional<Testgruppe> findById(Long id);
 

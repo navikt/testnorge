@@ -10,7 +10,7 @@ import no.nav.dolly.domain.resultset.RsOpenAmRequest;
 import no.nav.dolly.domain.resultset.RsOpenAmResponse;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.GruppeRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.OpenAmService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
@@ -34,7 +34,7 @@ import java.util.Optional;
 public class OpenAmController {
 
     private final OpenAmService openAmService;
-    private final GruppeRepository gruppeRepository;
+    private final TestgruppeRepository testgruppeRepository;
     private final BestillingRepository bestillingRepository;
 
     @PostMapping
@@ -48,10 +48,10 @@ public class OpenAmController {
 
     @PutMapping("/gruppe/{gruppeId}")
     public void oppdaterOpenAmSentStatus(@PathVariable(value = "gruppeId") Long gruppeId, @RequestParam Boolean isOpenAmSent) {
-        Optional<Testgruppe> testgruppe = gruppeRepository.findById(gruppeId);
+        Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
         if (testgruppe.isPresent()) {
             testgruppe.get().setOpenAmSent(isOpenAmSent);
-            gruppeRepository.save(testgruppe.get());
+            testgruppeRepository.save(testgruppe.get());
         } else {
             throw new NotFoundException(format("GruppeId %s ble ikke funnet.", gruppeId));
         }

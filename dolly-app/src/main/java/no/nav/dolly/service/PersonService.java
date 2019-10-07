@@ -7,8 +7,7 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.GruppeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import no.nav.dolly.repository.TestgruppeRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,7 @@ public class PersonService {
 
     private final TpsfService tpsfService;
 
-    private final GruppeRepository testgruppeRepository;
+    private final TestgruppeRepository testgruppeRepository;
 
     private final List<ClientRegister> clientRegister;
 
