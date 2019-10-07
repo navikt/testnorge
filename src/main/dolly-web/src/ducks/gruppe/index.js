@@ -1,10 +1,10 @@
-import { DollyApi } from '~/service/Api'
 import { LOCATION_CHANGE } from 'connected-react-router'
+import { createAction, handleActions, combineActions } from 'redux-actions'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
-import { createAction, handleActions, combineActions } from 'redux-actions'
-import success from '~/utils/SuccessAction'
 import _find from 'lodash/find'
+import { DollyApi } from '~/service/Api'
+import success from '~/utils/SuccessAction'
 
 // GET
 export const getGruppe = createAction('GET_GRUPPE', DollyApi.getGruppeById)
@@ -21,13 +21,10 @@ export const deleteGruppe = createAction('DELETE_GRUPPE', DollyApi.deleteGruppe,
 export const createTeam = createAction('CREATE_TEAM', DollyApi.createTeam)
 
 // UI
-export const showCreateOrEditGroup = createAction('TOGGLE_SHOW_CREATE_OR_EDIT')
-export const closeCreateOrEdit = createAction('CANCEL_CREATE_OR_EDIT')
 export const settVisning = createAction('SETT_VISNING')
 
 const initialState = {
 	data: null,
-	createOrUpdateId: null, // null = ingen, -1 = opprett ny gruppe, '45235' (ex: 425323) = rediger
 	visning: 'mine',
 	teamId: null
 }
@@ -51,7 +48,6 @@ export default handleActions(
 		[success(updateGruppe)](state, action) {
 			return {
 				...state,
-				createOrUpdateId: null,
 				data: state.data.map((item, idx) => ({
 					...item,
 					...(item.id === action.payload.data.id && action.payload.data)
@@ -69,12 +65,6 @@ export default handleActions(
 				...state,
 				teamId: action.payload.data.id.toString()
 			}
-		},
-		[showCreateOrEditGroup](state, action) {
-			return { ...state, createOrUpdateId: action.payload }
-		},
-		[closeCreateOrEdit](state, action) {
-			return { ...state, createOrUpdateId: null }
 		},
 		[settVisning](state, action) {
 			return { ...state, visning: action.payload }
@@ -118,4 +108,11 @@ export const sokSelectorOversikt = (items, searchStr) => {
 
 		return searchValues.some(v => v.includes(query))
 	})
+}
+
+export const antallBestillingerSelector = gruppeArray => {
+	if (!gruppeArray) return 0
+	return _get(gruppeArray, '[0].testidenter', [])
+		.map(b => b.bestillingId)
+		.flat().length
 }

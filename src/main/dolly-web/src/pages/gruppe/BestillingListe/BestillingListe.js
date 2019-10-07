@@ -1,4 +1,5 @@
 import React from 'react'
+import { useMount } from 'react-use'
 import _orderBy from 'lodash/orderBy'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
@@ -13,7 +14,13 @@ const etikettTypeMap = {
 	Stoppet: 'advarsel'
 }
 
-export default function BestillingListe({ bestillinger, searchActive, isFetchingBestillinger }) {
+export default function BestillingListe({
+	getBestillinger,
+	bestillinger,
+	searchActive,
+	isFetchingBestillinger
+}) {
+	useMount(getBestillinger)
 	if (isFetchingBestillinger) return <Loading label="Laster bestillinger" panel />
 	if (!bestillinger) return null
 

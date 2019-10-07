@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 import Knapp from 'nav-frontend-knapper'
 import HjelpeTekst from 'nav-frontend-hjelpetekst'
 import Overskrift from '~/components/ui/overskrift/Overskrift'
@@ -9,19 +8,12 @@ import Toolbar from '~/components/ui/toolbar/Toolbar'
 import Liste from './Liste'
 
 export default class GruppeOversikt extends PureComponent {
-	static propTypes = {
-		isFetching: PropTypes.bool,
-		gruppeListe: PropTypes.array,
-		visning: PropTypes.string,
-		createOrUpdateId: PropTypes.number,
-		history: PropTypes.object,
-		listGrupper: PropTypes.func,
-		settVisning: PropTypes.func,
-		deleteGruppe: PropTypes.func
-	}
-
 	componentDidMount() {
 		this.hentGrupper()
+	}
+
+	state = {
+		visNyGruppe: false
 	}
 
 	hentGrupper = () => this.props.listGrupper()
@@ -30,16 +22,11 @@ export default class GruppeOversikt extends PureComponent {
 		this.props.listGrupper(e.target.value)
 	}
 
+	visNyGruppe = () => this.setState({ visNyGruppe: true })
+	skjulNyGruppe = () => this.setState({ visNyGruppe: false })
+
 	render() {
-		const {
-			isFetching,
-			gruppeListe,
-			visning,
-			history,
-			createOrUpdateId,
-			createGroup,
-			searchActive
-		} = this.props
+		const { isFetching, gruppeListe, visning, history, searchActive } = this.props
 
 		return (
 			<div className="oversikt-container">
@@ -55,12 +42,12 @@ export default class GruppeOversikt extends PureComponent {
 					toggleCurrent={visning}
 					searchField={<SearchFieldConnector />}
 				>
-					<Knapp type="hoved" onClick={createGroup}>
+					<Knapp type="hoved" onClick={this.visNyGruppe}>
 						Ny gruppe
 					</Knapp>
 				</Toolbar>
 
-				{createOrUpdateId === -1 && <RedigerGruppeConnector />}
+				{this.state.visNyGruppe && <RedigerGruppeConnector onCancel={this.skjulNyGruppe} />}
 
 				<Liste
 					items={gruppeListe}
