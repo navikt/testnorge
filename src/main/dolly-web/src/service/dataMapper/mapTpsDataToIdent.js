@@ -47,6 +47,11 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 					apiKodeverkId: tpsfData.personStatus && 'Personstatuser'
 				},
 				{
+					id: 'ForsvunnetDato',
+					label: 'Savnet siden',
+					value: Formatters.formatDate(tpsfData.forsvunnetDato)
+				},
+				{
 					id: 'sivilstand',
 					label: 'Sivilstand',
 					value: tpsfData.sivilstand
@@ -356,6 +361,11 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 							apiKodeverkId: relasjon.personRelasjonMed.personStatus && 'Personstatuser'
 						},
 						{
+							id: 'ForsvunnetDato',
+							label: 'Savnet siden',
+							value: Formatters.formatDate(relasjon.personRelasjonMed.forsvunnetDato)
+						},
+						{
 							id: 'statsborgerskap',
 							label: 'Statsborgerskap',
 							value: relasjon.personRelasjonMed.statsborgerskap
@@ -421,6 +431,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 			})
 		})
 	}
+
 	return data
 }
 
@@ -462,39 +473,3 @@ export function mapIdenthistorikkData(data) {
 		})
 	}
 }
-
-// export function mapSubItemIdenthistorikkData(data) {
-// 	let subItemArray = []
-// 	data.utenlandsopphold &&
-// 		subItemArray.push({
-// 			id: 'utenlandsopphold',
-// 			label: 'Utenlandsopphold',
-// 			subItem: true,
-// 			value: data.utenlandsopphold.map((subdata, k) => {
-// 				return [
-// 					{
-// 						id: 'id',
-// 						label: '',
-// 						value: `#${k + 1}`,
-// 						width: 'x-small'
-// 					},
-// 					{
-// 						id: 'land',
-// 						label: 'Land',
-// 						value: subdata.landkode
-// 					},
-// 					{
-// 						id: 'fom',
-// 						label: 'Startdato',
-// 						value: subdata.periode.fom
-// 					},
-// 					{
-// 						id: 'tom',
-// 						label: 'Sluttdato',
-// 						value: subdata.periode.tom
-// 					}
-// 				]
-// 			})
-// 		})
-// 	return subItemArray
-// }

@@ -34,7 +34,7 @@ const AttributtListe: Attributt[] = [
 				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'idnummer',
-				label: 'Fnr/dnr/BOST',
+				label: 'Fnr/dnr/bost',
 				path: 'adressat.idnummer',
 				subGruppe: 'Adressat',
 				dataSource: DataSource.PDLF,

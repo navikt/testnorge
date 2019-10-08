@@ -24,7 +24,7 @@ describe('DataSourceMapper.js', () => {
 		})
 
 		it('should return institusjonsopphold', () => {
-			const res = 'institusjonsopphold'
+			const res = 'instdata'
 			expect(DataSourceMapper(inst)).toBe(res)
 		})
 

@@ -2,6 +2,8 @@ import dateFnsFormat from 'date-fns/format'
 import dateFnsParse from 'date-fns/parse'
 import _startCase from 'lodash/startCase'
 import _capitalize from 'lodash/capitalize'
+import _get from 'lodash/get'
+import _isNil from 'lodash/isNil'
 
 import { defaultDateFormat } from '~/components/fields/Datepicker/DateValidation'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
@@ -9,7 +11,7 @@ import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/Select
 const Formatters = {}
 
 Formatters.formatAlder = (alder, dodsdato) => {
-	if (!alder) return ''
+	if (_isNil(alder)) return ''
 	return `${alder.toString()}${dodsdato ? ' (død)' : ''}`
 }
 
@@ -74,7 +76,6 @@ Formatters.arrayToString = (array, separator = ',') => {
 		}${nextString.toUpperCase()}`
 	}, '')
 }
-
 Formatters.camelCaseToLabel = camelCase => {
 	if (!camelCase) return null
 	return _capitalize(_startCase(camelCase))
@@ -215,7 +216,10 @@ Formatters.showLabel = (optionsGruppe, value) => {
 	optionsGruppe.includes('barn') && (copyOptionsGruppe = optionsGruppe.replace('barn_', ''))
 
 	const obj = SelectOptionsManager(copyOptionsGruppe).filter(options => options.value === value)
-	return obj.label || obj[0].label
+
+	if (_get(obj, 'label') || _get(obj, '[0].label')) {
+		return obj.label || obj[0].label
+	}
 }
 
 export default Formatters
