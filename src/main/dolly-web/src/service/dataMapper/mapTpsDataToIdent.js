@@ -456,7 +456,7 @@ export function mapIdenthistorikkData(data) {
 				{
 					id: 'regdato',
 					label: 'Utgått dato',
-					value: Formatters.formatDate(subdata.aliasPerson.regdato)
+					value: Formatters.formatDate(subdata.regdato)
 				}
 			]
 		})
