@@ -43,12 +43,12 @@ public class BisysSyntetisererenConsumerTest {
 
         List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger = bisysSyntetisererenConsumer.getSyntetiserteBidragsmeldinger(antallMeldinger);
 
-        assertThat(syntetiserteBidragsmeldinger.get(0).getBarn(), equalTo("01010101010"));
-        assertThat(syntetiserteBidragsmeldinger.get(0).getBidragsmottaker(), equalTo("02020202020"));
-        assertThat(syntetiserteBidragsmeldinger.get(0).getBidragspliktig(), equalTo("03030303030"));
-        assertThat(syntetiserteBidragsmeldinger.get(1).getBarn(), equalTo("04040404040"));
-        assertThat(syntetiserteBidragsmeldinger.get(1).getBidragsmottaker(), equalTo("05050505050"));
-        assertThat(syntetiserteBidragsmeldinger.get(1).getBidragspliktig(), equalTo("06060606060"));
+        assertThat(syntetiserteBidragsmeldinger.get(0).getBarn(), equalTo("27119626051"));
+        assertThat(syntetiserteBidragsmeldinger.get(0).getBidragsmottaker(), equalTo("28016226094"));
+        assertThat(syntetiserteBidragsmeldinger.get(0).getBidragspliktig(), equalTo("26124826941"));
+        assertThat(syntetiserteBidragsmeldinger.get(1).getBarn(), equalTo("27111726051"));
+        assertThat(syntetiserteBidragsmeldinger.get(1).getBidragsmottaker(), equalTo("24028226094"));
+        assertThat(syntetiserteBidragsmeldinger.get(1).getBidragspliktig(), equalTo("13128826941"));
     }
 
     private void stubBisysSyntetisererenConsumer() {

@@ -199,7 +199,7 @@ public class BisysUiSoknadConsumer {
 
         try {
             soknad.selectSoknadFra(request.getSoknadFra());
-            soknad.setFomDato(request.getSoktOm(), request.getSoktFra());
+            soknad.setFomDato(request.getSoktOm(), request.getSoktFraDato());
             soknad.setSoktOm(request.getFnrBa(), request.getSoktOm());
         } catch (BisysUiConnectException e) {
             throw new BidragRequestProcessingException(soknad, e);
