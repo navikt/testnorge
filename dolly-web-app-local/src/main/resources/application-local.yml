@@ -1,0 +1,3 @@
+fasit.enabled: false
+
+server.port: 8020

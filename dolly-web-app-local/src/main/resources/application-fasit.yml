@@ -1,0 +1,5 @@
+application.name: dolly-web
+
+freg.security.oidc.enabled: false
+
+fasit.url: https://fasit.adeo.no

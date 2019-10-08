@@ -18,16 +18,19 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Enumeration;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ProxyService {
 
+    private static final String NAV_CALL_ID = "Nav-Call-Id";
+    private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
+    private static final String CONTENT_TYPE = "Content-Type";
     private final RestTemplate proxyRestTemplate;
 
-    public ResponseEntity<String> proxyRequest(
+    public ResponseEntity proxyRequest(
             String body,
             HttpMethod method,
             HttpServletRequest request,
@@ -39,11 +42,24 @@ public class ProxyService {
         OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + auth.getIdToken());
 
+        headers.add(NAV_CALL_ID, String.valueOf(UUID.randomUUID()));
+        headers.add(NAV_CONSUMER_ID, "dolly-proxy");
+        headers.add(CONTENT_TYPE, "application/json");
+        headers.remove("accept-encoding");
+
+        // TODO Brukes imot eksisterende dolly som forventer cookie i header
+        Cookie idTokenCookie = getIdTokenCookie(request);
+        if (idTokenCookie != null) {
+            headers.add(HttpHeaders.COOKIE, idTokenCookie.getName() + "=" + idTokenCookie.getValue());
+        }
+
         HttpEntity<String> httpEntity = new HttpEntity<>(body, headers);
         try {
             return proxyRestTemplate.exchange(decodeUrl(requestUrl), method, httpEntity, String.class);
+
         } catch (HttpClientErrorException exception) {
             return ResponseEntity.status(exception.getStatusCode())
+                    .headers(exception.getResponseHeaders())
                     .body(exception.getResponseBodyAsString());
         }
     }
@@ -66,11 +82,19 @@ public class ProxyService {
                 headers.set(headerName, "keep-alive");
             } else if ("Cookie".equals(headerName)) {
                 headers.set(headerName, request.getHeader(headerName));
-            }
-            /* } else {
+            } else {
                 headers.set(headerName, request.getHeader(headerName));
-            } */
+            }
         }
         return headers;
+    }
+
+    private Cookie getIdTokenCookie(HttpServletRequest request) {
+        for (Cookie c : request.getCookies()) {
+            if (c.getName().equals("ID_token")) {
+                return c;
+            }
+        }
+        return null;
     }
 }

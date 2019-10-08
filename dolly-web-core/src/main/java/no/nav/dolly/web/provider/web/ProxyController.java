@@ -20,8 +20,7 @@ import java.nio.charset.StandardCharsets;
 @RequestMapping("/api/v1/**")
 public class ProxyController {
 
-    //TODO: remove default
-    @Value("${dolly.url:https://dolly-u2.nais.preprod.local/api/v1}")
+    @Value("${dolly.url}")
     private String dollyUrl;
 
     private final ProxyService proxyService;
@@ -32,7 +31,7 @@ public class ProxyController {
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL( request, dollyUrl);
+        String requestURL = createURL(request, dollyUrl);
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
@@ -49,6 +48,6 @@ public class ProxyController {
         if (request.getQueryString() != null) {
             queryString = URLDecoder.decode("?" + request.getQueryString(), StandardCharsets.UTF_8.name());
         }
-        return format("%s%s%s", host, request.getRequestURI().split(url)[1], queryString);
+        return format("%s%s%s", host, request.getRequestURI(), queryString);
     }
 }

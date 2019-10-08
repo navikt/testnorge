@@ -24,6 +24,12 @@ const outputDir = {
 	production: 'dist/production'
 }
 
+const corsHeaders = {
+	"Access-Control-Allow-Origin": "*",
+	"Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+	"Access-Control-Allow-Headers": "content-type, Authorization"
+  };
+
 const webpackConfig = {
 	mode: process.env.NODE_ENV,
 	devtool: 'source-map',
@@ -39,15 +45,10 @@ const webpackConfig = {
 		contentBase: path.join(__dirname, 'public'),
 		historyApiFallback: true,
 		proxy: {
-			'/local/dolly/api/v1': {
-				target: 'http://localhost:8080',
-				pathRewrite: { '^/local/dolly': '' }
-			},
-			'/external/tpsf': {
-				target: 'https://tps-forvalteren-u2.nais.preprod.local',
-				pathRewrite: { '^/external/tpsf': '' },
-				secure: false,
-				changeOrigin: true
+			"*": {
+				context: ["**", "!*sockjs-node*"],
+				target: 'http://localhost:8020',
+				headers: corsHeaders
 			}
 		}
 	},
@@ -68,6 +69,7 @@ const webpackConfig = {
 			filename: devMode ? '[name].css' : '[name].[contenthash:8].css'
 		}),
 		new HtmlWebpackPlugin({
+			hash: true,
 			title: 'Dolly',
 			favicon: 'src/assets/favicon.ico',
 			inject: false,

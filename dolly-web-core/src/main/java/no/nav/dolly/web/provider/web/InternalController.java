@@ -1,4 +1,4 @@
-package no.nav.dolly.web.provider.internal;
+package no.nav.dolly.web.provider.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

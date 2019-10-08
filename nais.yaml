@@ -38,3 +38,7 @@ fasitResources:
       resourceType: restservice
       propertyMap:
         url: tpsf.url
+    - alias: dollyurl
+      resourceType: BaseUrl
+      propertyMap:
+        url: dolly.url
