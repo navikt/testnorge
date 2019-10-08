@@ -1,6 +1,7 @@
 package no.nav.identpool.ajourhold;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
+import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -83,7 +84,7 @@ public class AjourholdService {
                 LocalDate.of(year, 1, 1),
                 LocalDate.of(year + 1, 1, 1),
                 type,
-                Rekvireringsstatus.LEDIG);
+                LEDIG);
         return count < antallPerDag * days;
     }
 
@@ -122,7 +123,7 @@ public class AjourholdService {
                 .collect(Collectors.toList());
 
         newIdentCount += ledig.size();
-        saveIdents(ledig, Rekvireringsstatus.LEDIG, null);
+        saveIdents(ledig, LEDIG, null);
     }
 
     private List<String> filterAgainstDatabase(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
@@ -148,7 +149,7 @@ public class AjourholdService {
                 .antall(MAX_SIZE_TPS_QUEUE)
                 .foedtEtter(LocalDate.of(1850, 1, 1))
                 .build();
-        Predicate predicate = IdentPredicateUtil.lagPredicateFraRequest(request);
+        Predicate predicate = IdentPredicateUtil.lagPredicateFraRequest(request, LEDIG);
         Page<Ident> firstPage = identRepository.findAll(predicate, PageRequest.of(0, MAX_SIZE_TPS_QUEUE));
         List<String> usedIdents = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();

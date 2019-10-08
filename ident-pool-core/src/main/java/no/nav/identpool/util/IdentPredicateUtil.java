@@ -12,11 +12,11 @@ public final class IdentPredicateUtil {
     private IdentPredicateUtil() {
     }
 
-    public static Predicate lagPredicateFraRequest(HentIdenterRequest hentIdenterRequest) {
+    public static Predicate lagPredicateFraRequest(HentIdenterRequest hentIdenterRequest, Rekvireringsstatus rekvireringsstatus) {
         QIdent qIdent = QIdent.ident;
 
         BooleanBuilder booleanBuilder = new BooleanBuilder(qIdent.isNotNull());
-        booleanBuilder.and(qIdent.rekvireringsstatus.eq(Rekvireringsstatus.LEDIG));
+        booleanBuilder.and(qIdent.rekvireringsstatus.eq(rekvireringsstatus));
         if (hentIdenterRequest.getFoedtFoer() != null) {
             booleanBuilder.and(qIdent.foedselsdato.before(hentIdenterRequest.getFoedtFoer()));
         }

@@ -1,5 +1,6 @@
 package no.nav.identpool.service;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 import static no.nav.identpool.util.PersonidentUtil.getIdentType;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
@@ -42,6 +44,7 @@ import no.nav.identpool.util.PersonidentUtil;
 public class IdentpoolService {
 
     private static final int MAKS_ANTALL_MANGLENDE_IDENTER = 80;
+    private static final int MAKS_ANTALL_OPPRETTINGER_ONTHEFLY_PER_DAG = 250;
     private static final int MAKS_ANTALL_KALL_MOT_TPS = 3;
     private static final int MAKS_ANTALL_FORSOEK_PAA_LEDIG_DATO = 3;
 
@@ -73,33 +76,13 @@ public class IdentpoolService {
     }
 
     public List<String> rekvirer(HentIdenterRequest request) throws ForFaaLedigeIdenterException {
-        Set<Ident> identEntities = new HashSet<>();
-        Page<Ident> firstPage = identRepository.findAll(IdentPredicateUtil.lagPredicateFraRequest(request), PageRequest.of(0, request.getAntall()));
+        Set<Ident> identEntities = hentLedigeIdenterFraDatabase(request);
 
-        int totalPages = firstPage.getTotalPages();
-        if (totalPages > 0) {
-            List<String> usedIdents = new ArrayList<>();
-            SecureRandom rand = new SecureRandom();
-            for (int i = 0; i < request.getAntall(); i++) {
-                int randomPageNumber = rand.nextInt(totalPages);
-
-                Page<Ident> page = identRepository.findAll(IdentPredicateUtil.lagPredicateFraRequest(request), PageRequest.of(randomPageNumber, request.getAntall()));
-                List<Ident> content = page.getContent();
-                for (Ident ident : content) {
-                    if (!usedIdents.contains(ident.getPersonidentifikator())) {
-                        usedIdents.add(ident.getPersonidentifikator());
-                        identEntities.add(ident);
-                        break;
-                    }
-                }
-            }
-        }
         List<String> identList = identEntities.stream()
                 .map(Ident::getPersonidentifikator)
                 .collect(Collectors.toList());
 
         int missingIdentCount = request.getAntall() - identList.size();
-
         if (missingIdentCount > MAKS_ANTALL_MANGLENDE_IDENTER) {
             String errMsg = "Antall etterspurte identer er større enn tilgjengelig antall. Reduser antallet med %s, " +
                     "for å få opprettet identene i TPS.";
@@ -107,9 +90,11 @@ public class IdentpoolService {
         }
 
         if (missingIdentCount > 0) {
-            List<String> newIdents = hentIdenterFraTps(request);
-            if (newIdents.size() >= missingIdentCount) {
+            // hent identer som er i bruk i ident-pool-databasen allerede, for ikke å opprette eksisterende identifikasjonsnumre:
+            List<String> usedIdents = hentBrukteIdenterFraDatabase(request);
 
+            List<String> newIdents = hentIdenterFraTps(request, usedIdents);
+            if (newIdents.size() >= missingIdentCount) {
                 saveIdents(newIdents.subList(0, missingIdentCount), I_BRUK, request.getRekvirertAv());
                 identList.addAll(newIdents.subList(0, missingIdentCount));
                 if (newIdents.size() > missingIdentCount) {
@@ -301,11 +286,11 @@ public class IdentpoolService {
         return whiteFnrs;
     }
 
-    private List<String> hentIdenterFraTps(HentIdenterRequest request) {
+    private List<String> hentIdenterFraTps(HentIdenterRequest request, List<String> identerIIdentPool) {
         Set<String> temp = new HashSet<>();
         for (int i = 1; i < MAKS_ANTALL_KALL_MOT_TPS && temp.size() < request.getAntall(); i++) {
 
-            List<String> genererteIdenter = identGeneratorService.genererIdenter(request);
+            List<String> genererteIdenter = identGeneratorService.genererIdenter(request, identerIIdentPool);
 
             // filtrer vekk eksisterende
             List<String> finnesIkkeAllerede = genererteIdenter.stream()
@@ -326,6 +311,57 @@ public class IdentpoolService {
             );
         }
         return new ArrayList<>(temp);
+    }
+
+    private Set<Ident> hentLedigeIdenterFraDatabase(HentIdenterRequest request) {
+        Set<Ident> identEntities = new HashSet<>();
+
+        HentIdenterRequest availableIdentsRequest = HentIdenterRequest.builder()
+                .identtype(request.getIdenttype())
+                .foedtEtter(request.getFoedtEtter().minusDays(1))
+                .foedtFoer(request.getFoedtFoer().plusDays(1))
+                .kjoenn(request.getKjoenn())
+                .antall(request.getAntall())
+                .build();
+
+        Page<Ident> firstPage = identRepository.findAll(IdentPredicateUtil.lagPredicateFraRequest(availableIdentsRequest, LEDIG), PageRequest.of(0, request.getAntall()));
+
+        int totalPages = firstPage.getTotalPages();
+        if (totalPages > 0) {
+            List<String> usedIdents = new ArrayList<>();
+            SecureRandom rand = new SecureRandom();
+            for (int i = 0; i < request.getAntall(); i++) {
+                int randomPageNumber = rand.nextInt(totalPages);
+
+                Page<Ident> page = identRepository.findAll(IdentPredicateUtil.lagPredicateFraRequest(availableIdentsRequest, LEDIG), PageRequest.of(randomPageNumber, request.getAntall()));
+                List<Ident> content = page.getContent();
+                for (Ident ident : content) {
+                    if (!usedIdents.contains(ident.getPersonidentifikator())) {
+                        usedIdents.add(ident.getPersonidentifikator());
+                        identEntities.add(ident);
+                        break;
+                    }
+                }
+            }
+        }
+        return identEntities;
+    }
+
+    private List<String> hentBrukteIdenterFraDatabase(HentIdenterRequest request) {
+        int daysInRange = Math.toIntExact(DAYS.between(request.getFoedtEtter(), request.getFoedtFoer())) + 1;
+
+        HentIdenterRequest usedIdentsRequest = HentIdenterRequest.builder()
+                .identtype(request.getIdenttype())
+                .foedtEtter(request.getFoedtEtter().minusDays(1))
+                .foedtFoer(request.getFoedtFoer().plusDays(1))
+                .build();
+
+        return StreamSupport.stream(
+                identRepository.findAll(
+                        IdentPredicateUtil.lagPredicateFraRequest(usedIdentsRequest, I_BRUK),
+                        PageRequest.of(0, MAKS_ANTALL_OPPRETTINGER_ONTHEFLY_PER_DAG * daysInRange)).spliterator(), false)
+                .map(Ident::getPersonidentifikator)
+                .collect(Collectors.toList());
     }
 
     private void saveIdents(List<String> pins, Rekvireringsstatus status, String rekvirertAv) {

@@ -44,7 +44,7 @@ public class IdentGeneratorService {
                         numberGenerator));
     }
 
-    public List<String> genererIdenter(HentIdenterRequest request) {
+    public List<String> genererIdenter(HentIdenterRequest request, List<String> identerIIdentPool) {
         Assert.notNull(request.getFoedtEtter(), "FOM dato ikke oppgitt");
 
         validateDates(request.getFoedtEtter(), request.getFoedtFoer());
@@ -52,11 +52,11 @@ public class IdentGeneratorService {
             request.setFoedtFoer(request.getFoedtEtter().plusDays(1));
         }
 
-        int antall = request.getAntall();
         Kjoenn kjoenn = request.getKjoenn();
         Identtype identtype = request.getIdenttype();
 
-        Set<String> identer = new HashSet<>();
+        Set<String> identer = new HashSet<>(identerIIdentPool);
+        int antall = request.getAntall() + identer.size();
         int iteratorRange = (kjoenn == null) ? 1 : 2;
         int numberOfDates = toIntExact(ChronoUnit.DAYS.between(request.getFoedtEtter(), request.getFoedtFoer()));
 

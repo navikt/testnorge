@@ -6,20 +6,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-
-import no.nav.identpool.service.IdentGeneratorService;
-import no.nav.identpool.test.mockito.MockitoExtension;
+import com.google.common.collect.Ordering;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import com.google.common.collect.Ordering;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
+import no.nav.identpool.test.mockito.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Generering av identer")
@@ -39,7 +39,7 @@ class IdentGeneratorServiceTest {
         HentIdenterRequest.HentIdenterRequestBuilder request = createRequest(Identtype.FNR, Kjoenn.MANN);
         request.foedtFoer(LOCAL_DATE.minusDays(2));
 
-        assertThrows(IllegalArgumentException.class, () -> identGeneratorService.genererIdenter(request.build()));
+        assertThrows(IllegalArgumentException.class, () -> identGeneratorService.genererIdenter(request.build(), new ArrayList<>()));
     }
 
     @Test
@@ -48,7 +48,7 @@ class IdentGeneratorServiceTest {
         HentIdenterRequest.HentIdenterRequestBuilder request = createRequest(Identtype.FNR, Kjoenn.MANN);
         request.antall(500);
 
-        assertThrows(IllegalArgumentException.class, () -> identGeneratorService.genererIdenter(request.build()));
+        assertThrows(IllegalArgumentException.class, () -> identGeneratorService.genererIdenter(request.build(), new ArrayList<>()));
     }
 
     @Test
@@ -99,7 +99,7 @@ class IdentGeneratorServiceTest {
 
     private List<String> generateIdents(Identtype identtype, Kjoenn kjoenn) {
         return identGeneratorService.genererIdenter(
-                createRequest(identtype, kjoenn).build());
+                createRequest(identtype, kjoenn).build(), new ArrayList<>());
     }
 
     private HentIdenterRequest.HentIdenterRequestBuilder createRequest(Identtype identtype, Kjoenn kjoenn) {
@@ -137,9 +137,9 @@ class IdentGeneratorServiceTest {
     }
 
     private LocalDate getBirthdate(String fnr, boolean dnr, boolean bnr) {
-        int day = parseInt(fnr.substring(0,2));
-        int month = parseInt(fnr.substring(2,4));
-        String year = fnr.substring(4,6);
+        int day = parseInt(fnr.substring(0, 2));
+        int month = parseInt(fnr.substring(2, 4));
+        String year = fnr.substring(4, 6);
         int periode = parseInt(fnr.substring(6, 9));
         String century = (periode >= START_1900 && periode <= END_1900) ? "19" : "20";
         if (dnr) {
