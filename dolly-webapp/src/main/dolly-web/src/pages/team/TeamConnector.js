@@ -4,15 +4,13 @@ import { listGrupper, getGrupperByTeamId } from '~/ducks/gruppe'
 import { createLoadingSelector } from '~/ducks/loading'
 import Team from './Team'
 
-const teamLoadingSelector = createLoadingSelector(actions.api.getById)
+const loadingSelector = createLoadingSelector([actions.api.getById, getGrupperByTeamId])
 const loadingSelectorSletteTeam = createLoadingSelector(actions.api.delete)
-const grupperLoadingSelector = createLoadingSelector(getGrupperByTeamId)
 
 const mapStateToProps = (state, ownProps) => ({
+	isFetching: loadingSelector(state),
 	team: state.teams.items && state.teams.items[0],
-	teamIsFetching: teamLoadingSelector(state),
 	grupper: state.gruppe.data,
-	grupperIsFetching: grupperLoadingSelector(state),
 	isDeletingTeam: loadingSelectorSletteTeam(state)
 })
 

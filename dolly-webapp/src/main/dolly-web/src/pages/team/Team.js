@@ -18,8 +18,7 @@ export default function Team({
 	listGrupper,
 	team,
 	grupper,
-	teamIsFetching,
-	grupperIsFetching,
+	isFetching,
 	history,
 	addMember,
 	removeMember,
@@ -34,7 +33,9 @@ export default function Team({
 		listGrupper()
 	})
 
-	if (!team || !grupper) return null
+	if (isFetching) return <Loading label="laster team og grupper" panel />
+
+	if (!team) return null
 
 	const teamMembers = team.medlemmer.map(medlem => medlem.navIdent)
 
@@ -86,14 +87,10 @@ export default function Team({
 				/>
 			)}
 
-			<TeamMedlemmer
-				medlemmer={team.medlemmer}
-				isFetching={teamIsFetching}
-				removeMember={removeMember}
-			/>
+			<TeamMedlemmer medlemmer={team.medlemmer} removeMember={removeMember} />
 
 			<Overskrift label="Testdatagrupper" type="h2" />
-			<TeamGrupper isFetching={grupperIsFetching} grupper={grupper} history={history} />
+			<TeamGrupper grupper={grupper} history={history} />
 		</div>
 	)
 }

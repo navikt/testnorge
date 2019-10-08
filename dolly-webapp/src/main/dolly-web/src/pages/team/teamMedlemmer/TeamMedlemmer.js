@@ -1,10 +1,9 @@
 import React from 'react'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
-import Loading from '~/components/ui/loading/Loading'
+
 import ConfirmTooltip from '~/components/ui/confirmTooltip/ConfirmTooltip'
 
-export default function TeamMedlemmer({ isFetching, medlemmer, removeMember }) {
-	if (isFetching) return <Loading label="laster team medlemmer" panel />
+export default function TeamMedlemmer({ medlemmer, removeMember }) {
 	if (!medlemmer) return false
 
 	const columns = [
