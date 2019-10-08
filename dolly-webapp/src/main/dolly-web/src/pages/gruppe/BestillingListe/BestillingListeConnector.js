@@ -11,11 +11,4 @@ const mapStateToProps = (state, ownProps) => ({
 	bestillinger: sokSelector(state.bestillingStatuser.data, state.search)
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-	getBestillinger: () => dispatch(getBestillinger(ownProps.gruppeId))
-})
-
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(BestillingListe)
+export default connect(mapStateToProps)(BestillingListe)

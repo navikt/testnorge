@@ -14,13 +14,7 @@ const etikettTypeMap = {
 	Stoppet: 'advarsel'
 }
 
-export default function BestillingListe({
-	getBestillinger,
-	bestillinger,
-	searchActive,
-	isFetchingBestillinger
-}) {
-	useMount(getBestillinger)
+export default function BestillingListe({ bestillinger, searchActive, isFetchingBestillinger }) {
 	if (isFetchingBestillinger) return <Loading label="Laster bestillinger" panel />
 	if (!bestillinger) return null
 
