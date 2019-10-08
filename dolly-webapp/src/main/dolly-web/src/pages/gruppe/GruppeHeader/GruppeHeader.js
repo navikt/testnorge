@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
+import Loading from '~/components/ui/loading/Loading'
 import Overskrift from '~/components/ui/overskrift/Overskrift'
 import GruppeDetaljer from '~/pages/gruppe/GruppeDetaljer/GruppeDetaljer'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
