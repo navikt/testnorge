@@ -55,7 +55,7 @@ public class TestgruppeUtvidetMappingStrategyTest {
 
     @Before
     public void setUpHappyPath() {
-        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeUtvidetMappingStrategy());
+        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeUtvidetMappingStrategy(), new TestgruppeMappingStrategy());
     }
 
     @Test

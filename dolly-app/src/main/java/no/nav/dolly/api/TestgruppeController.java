@@ -10,6 +10,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_TEAM;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -180,19 +181,19 @@ public class TestgruppeController {
         personService.releaseArtifacts(singletonList(ident));
     }
 
-    //@Cacheable(CACHE_GRUPPE)
+    @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}")
     public RsTestgruppeUtvidet getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeUtvidet.class);
     }
 
-   // @Cacheable(CACHE_GRUPPE)
+    @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}/ny")
     public RsTestgruppeMedBestillingId getTestgruppen(@PathVariable("gruppeId") Long gruppeId) {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeMedBestillingId.class);
     }
 
-    //@Cacheable(CACHE_GRUPPE)
+    @Cacheable(CACHE_GRUPPE)
     @GetMapping
     public List<RsTestgruppe> getTestgrupper(
             @RequestParam(name = "navIdent", required = false) String navIdent,
@@ -230,11 +231,5 @@ public class TestgruppeController {
 
         dollyBestillingService.opprettPersonerFraIdenterMedKriterierAsync(gruppeId, request, bestilling);
         return mapperFacade.map(bestilling, RsBestilling.class);
-    }
-
-  //  @Cacheable(CACHE_GRUPPE)
-    @GetMapping("/{gruppeId}/identer")
-    public List<String> getIdentsByGroupId(@PathVariable("gruppeId") Long gruppeId) {
-        return testgruppeService.fetchIdenterByGruppeId(gruppeId);
     }
 }

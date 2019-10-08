@@ -150,12 +150,6 @@ public class TestgruppeControllerTest {
     }
 
     @Test
-    public void getIdentsByGroupId_hentIdenter() {
-        controller.getIdentsByGroupId(anyLong());
-        verify(testgruppeService).fetchIdenterByGruppeId(anyLong());
-    }
-
-    @Test
     public void oppretteIdentBestillingFraEksisterende() {
         List<String> envir = singletonList("u");
 
