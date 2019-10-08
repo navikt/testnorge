@@ -14,6 +14,7 @@ const VISNING_BESTILLING = 'bestilling'
 
 export default function Gruppe({
 	getGruppe,
+	getBestillinger,
 	gruppeArray,
 	isFetching,
 	deleteGruppe,
@@ -23,7 +24,10 @@ export default function Gruppe({
 	history
 }) {
 	const [visning, setVisning] = useState(VISNING_TESTPERSONER)
-	useMount(getGruppe)
+	useMount(() => {
+		getGruppe()
+		getBestillinger()
+	})
 
 	if (isFetching) return <Loading label="Laster testpersoner" panel />
 

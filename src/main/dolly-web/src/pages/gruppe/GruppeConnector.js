@@ -5,7 +5,7 @@ import { createLoadingSelector } from '~/ducks/loading'
 import { resetSearch } from '~/ducks/search'
 import Gruppe from './Gruppe'
 
-const loadingSelector = createLoadingSelector(getGruppe)
+const loadingSelector = createLoadingSelector([getGruppe, getBestillinger])
 const loadingSelectorSlettGruppe = createLoadingSelector(deleteGruppe)
 
 const mapStateToProps = state => ({
