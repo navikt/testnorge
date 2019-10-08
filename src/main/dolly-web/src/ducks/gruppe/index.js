@@ -73,20 +73,10 @@ export default handleActions(
 	initialState
 )
 
-// THunk
-export const listGrupper = ({ teamId = null } = {}) => async (dispatch, getState) => {
-	const state = getState()
-
-	const { visning } = state.gruppe
-	const { navIdent } = state.bruker.brukerData
-
-	if (teamId) {
-		return dispatch(getGrupperByTeamId(teamId))
-	} else if (visning === 'mine') {
-		return dispatch(getGrupperByUserId(navIdent))
-	} else {
-		return dispatch(getGrupper())
-	}
+// Thunk
+export const fetchGrupperTilBruker = () => async (dispatch, getState) => {
+	const { navIdent } = getState().bruker.brukerData
+	return dispatch(getGrupperByUserId(navIdent))
 }
 
 // Selector

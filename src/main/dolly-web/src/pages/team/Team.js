@@ -15,7 +15,7 @@ import './Team.less'
 
 export default function Team({
 	getTeam,
-	listGrupper,
+	getGrupperByTeamId,
 	team,
 	grupper,
 	isFetching,
@@ -30,7 +30,7 @@ export default function Team({
 
 	useMount(() => {
 		getTeam()
-		listGrupper()
+		getGrupperByTeamId()
 	})
 
 	if (isFetching) return <Loading label="laster team og grupper" panel />
