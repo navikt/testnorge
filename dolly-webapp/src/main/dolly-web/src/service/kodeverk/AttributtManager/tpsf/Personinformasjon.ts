@@ -276,6 +276,39 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectOnly
 			}
 		]
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Diverse,
+		id: 'forsvunnet',
+		label: 'Forsvunnet',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Select,
+		attributtType: AttributtType.SelectOnly,
+		items: [
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Diverse,
+				id: 'erForsvunnet',
+				label: 'Forsvunnet',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				options: SelectOptionsManager('stringBoolean'),
+				attributtType: AttributtType.SelectOnly,
+				editPath: 'erForsvunnet'
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Diverse,
+				id: 'forsvunnetDato',
+				label: 'ForsvunnetDato',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				validation: DateValidation(),
+				attributtType: AttributtType.SelectOnly,
+				editPath: 'forsvunnetDato'
+			}
+		]
 	}
 ]
 

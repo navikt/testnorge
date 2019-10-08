@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import { Field } from 'formik'
 import _intersection from 'lodash/intersection'
 import _set from 'lodash/set'
+import _get from 'lodash/get'
 import { DollyApi } from '~/service/Api'
 import { AttributtType } from '~/service/kodeverk/AttributtManager/Types'
 import Panel from '~/components/ui/panel/Panel'
@@ -222,15 +223,26 @@ export default class FormEditor extends Component {
 				dependantAttributt = arenaItem.items[0].items[0].items[0]
 			}
 			let foundIndex = false
+
 			item.onlyShowAfterSelectedValue.valueIndex.map(index => {
-				valgteVerdier[parentId][idx][attributtId] === dependantAttributt.options[index].value &&
-					(foundIndex = true)
+				if (parentId === 'barn_forsvunnet') {
+					if (valgteVerdier.barn[idx][parentId][0]) {
+						valgteVerdier.barn[idx][parentId][0][attributtId] ===
+							dependantAttributt.options[index].value && (foundIndex = true)
+					}
+				} else
+					valgteVerdier[parentId][idx][attributtId] === dependantAttributt.options[index].value &&
+						(foundIndex = true)
 			})
 			if (!foundIndex) {
 				this._deleteValidation(item, valgteVerdier, errors, parentId, idx)
 				shouldRender = false
 			} else {
-				if (!([item.id] in formikProps.values[parentId][idx])) {
+				if (parentId === 'barn_forsvunnet') {
+					if (!([item.id] in formikProps.values.barn[idx][parentId][0])) {
+						valgteVerdier['barn'][idx][parentId][0][item.id] = ''
+					}
+				} else if (!([item.id] in formikProps.values[parentId][idx])) {
 					valgteVerdier[parentId][idx][item.id] = ''
 				}
 			}
@@ -261,7 +273,9 @@ export default class FormEditor extends Component {
 	}
 
 	_deleteValidation = (item, valgteVerdier, errors, parentId, idx) => {
-		delete valgteVerdier[parentId][idx][item.id]
+		if (parentId === 'barn_forsvunnet') {
+			delete valgteVerdier.barn[idx][parentId][item.id]
+		} else delete valgteVerdier[parentId][idx][item.id]
 
 		if (errors[parentId] && errors[parentId][idx] && errors[parentId][idx][item.id]) {
 			delete errors[parentId][idx][item.id]
@@ -309,7 +323,7 @@ export default class FormEditor extends Component {
 		return subGruppeArray
 	}
 
-	renderFieldComponent = (item, valgteVerdier, parentObject, formikProps) => {
+	renderFieldComponent = (item, valgteVerdier, parentObject, formikProps, barnTall) => {
 		if (!item.inputType) return null
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
@@ -345,6 +359,30 @@ export default class FormEditor extends Component {
 					{...componentProps}
 				/>
 			)
+		}
+
+		if (
+			item.id === 'forsvunnet[0]forsvunnetDato' &&
+			valgteVerdier.forsvunnet[0].erForsvunnet !== 'true'
+		) {
+			disabled = true
+			valgteVerdier.forsvunnet[0].forsvunnetDato = ''
+		}
+		if (
+			item.id === 'partner_forsvunnet[0]forsvunnetDato' &&
+			_get(valgteVerdier, 'partner_forsvunnet[0].erForsvunnet') !== 'true'
+		) {
+			disabled = true
+			valgteVerdier.partner_forsvunnet[0].forsvunnetDato = ''
+		}
+
+		if (
+			item.id === `barn[${barnTall}]barn_forsvunnet[0]forsvunnetDato` &&
+			valgteVerdier.barn[barnTall].barn_forsvunnet &&
+			_get(valgteVerdier, `barn[${barnTall}].barn_forsvunnet[0].erForsvunnet`) !== 'true'
+		) {
+			disabled = true
+			valgteVerdier.barn[barnTall].barn_forsvunnet[0].forsvunnetDato = ''
 		}
 
 		if (

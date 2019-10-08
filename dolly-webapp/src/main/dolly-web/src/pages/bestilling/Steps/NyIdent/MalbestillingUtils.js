@@ -11,7 +11,8 @@ export const getAttributesFromMal = mal => {
 			k !== 'relasjoner' &&
 			k !== 'regdato' &&
 			!k.includes('innvandretFraLand') &&
-			!k.includes('utvandretTilLand')
+			!k.includes('utvandretTilLand') &&
+			!k.includes('erForsvunnet')
 		) {
 			return k
 		}
@@ -33,6 +34,7 @@ export const getAttributesFromMal = mal => {
 
 	tpsfKriterier.innvandretFraLand && attrArray.push('innvandret')
 	tpsfKriterier.utvandretTilLand && attrArray.push('utvandret')
+	tpsfKriterier.erForsvunnet && attrArray.push('forsvunnet')
 
 	Object.keys(bestKriterier).forEach(reg => {
 		if (reg === 'udistub' || reg === 'pdlforvalter') {
@@ -72,11 +74,14 @@ export const getValuesFromMal = mal => {
 		}
 	})
 
-	if (reduxStateValue.utvandretTilLand || reduxStateValue.innvandretFraLand) {
+	if (
+		reduxStateValue.utvandretTilLand ||
+		reduxStateValue.innvandretFraLand ||
+		reduxStateValue.erForsvunnet
+	) {
 		const utvandretValues = _mapInnOgUtvandret(reduxStateValue)
 		reduxStateValue = utvandretValues
 	}
-
 	if (reduxStateValue.adressetype && reduxStateValue.adressetype === 'MATR') {
 		const matrikkeladresseValues = _mapAdresseValues(reduxStateValue)
 		reduxStateValue = matrikkeladresseValues
@@ -165,6 +170,7 @@ const _formatValueForObject = (key, value) => {
 		'tilDato',
 		'utvandretTilLandFlyttedato',
 		'innvandretFraLandFlyttedato',
+		'forsvunnetDato',
 		'startdato',
 		'faktiskSluttdato',
 		'forventetSluttdato',
@@ -239,6 +245,9 @@ const mapMultipleRegistreKey = (reg, bestKriterier) => {
 			'soeknadOmBeskyttelseUnderBehandling',
 			'flyktning'
 		]
+		if (bestKriterier.udistub['harOppholdsTillatelse'] === false) {
+			bestKriterier.udistub.oppholdStatus = true
+		}
 		return Object.keys(bestKriterier.udistub).filter(
 			attr => muligeAttr.includes(attr) && bestKriterier.udistub[attr]
 		)
@@ -279,6 +288,20 @@ const _mapInnOgUtvandret = values => {
 			} else {
 				!valuesArray.utvandret && (valuesArray.utvandret = [{}])
 				return (valuesArray.utvandret[0][value[0]] = value[1])
+			}
+		}
+		if (value[0].toLowerCase().includes('forsvunnet')) {
+			if (value[0].toLowerCase().includes('forsvunnet')) {
+				if (value[0].includes('partner')) {
+					!valuesArray.partner_forsvunnet && (valuesArray.partner_forsvunnet = [{}])
+					return (valuesArray.partner_forsvunnet[0][value[0].split('_')[1]] = value[1].toString())
+				} else if (value[0].includes('barn')) {
+					!valuesArray.barn_forsvunnet && (valuesArray.barn_forsvunnet = [{}])
+					return (valuesArray.barn_forsvunnet[0][value[0].split('_')[1]] = value[1].toString())
+				} else {
+					!valuesArray.forsvunnet && (valuesArray.forsvunnet = [{}])
+					return (valuesArray.forsvunnet[0][value[0]] = value[1].toString())
+				}
 			}
 		}
 	})
@@ -434,31 +457,67 @@ const _mapRegistreValue = (key, value) => {
 									[attr[0]]: attr[1]
 								})
 							}
+						} else if (attr[0] === 'oppholdSammeVilkaar') {
+							Object.assign(oppholdObj, {
+								...oppholdObj,
+								oppholdsstatus: 'oppholdSammeVilkaar',
+								tredjelandsBorgereValg: 'oppholdSammeVilkaar'
+							})
+							Object.entries(attr[1]).forEach(subAttr => {
+								if (/\d{4}-\d{2}-\d{2}/.test(subAttr[1])) {
+									Object.assign(oppholdObj, {
+										...oppholdObj,
+										[subAttr[0]]: Formatters.formateStringDates(subAttr[1])
+									})
+								} else if (subAttr[0] === 'oppholdSammeVilkaarPeriode') {
+									Object.assign(oppholdObj, {
+										...oppholdObj,
+										oppholdSammeVilkaarFraDato: subAttr[1].fra
+											? Formatters.formateStringDates(subAttr[1].fra)
+											: '',
+										oppholdSammeVilkaarTilDato: subAttr[1].til
+											? Formatters.formateStringDates(subAttr[1].til)
+											: ''
+									})
+								} else {
+									Object.assign(oppholdObj, {
+										...oppholdObj,
+										[subAttr[0]]: subAttr[1]
+									})
+								}
+							})
+						} else if (attr[0] === 'uavklart' && attr[1] === true) {
+							Object.assign(oppholdObj, {
+								oppholdsstatus: 'oppholdSammeVilkaar',
+								tredjelandsBorgereValg: 'UAVKLART'
+							})
 						}
-						//Mangler:
-						//Tredjeland ikke oppholdstillatelse. Tredjelandsborger opphold. Tredjeland uavklart.
 					}
 				})
 				_set(mapUdiObj, 'oppholdStatus', [oppholdObj])
 			}
-			if (value.harOppholdstillatelse === false) {
-				Object.assign(mapUdiObj, {
-					oppholdStatus: [
-						{
-							oppholdsstatus: 'UdiOppholdSammeVilkaar',
-							tredjelandsBorgereValg: 'ikkeUdiOppholdSammeVilkaar'
-						}
-					]
+			if (value.harOppholdsTillatelse === false) {
+				const ikkeOpphold = {}
+				Object.assign(ikkeOpphold, {
+					oppholdsstatus: 'oppholdSammeVilkaar',
+					tredjelandsBorgereValg: 'ikkeOppholdSammeVilkaar'
 				})
+				_set(mapUdiObj, 'oppholdStatus', [ikkeOpphold])
 			}
 			if (value.arbeidsadgang) {
 				const arbAdg = {}
 				Object.entries(value.arbeidsadgang).forEach(attr => {
 					if (attr[1] && typeof attr[1] !== 'string') {
 						Object.entries(attr[1]).forEach(subAttr => {
+							let arbAdgDato = ''
+							if (subAttr[0] === 'fra') {
+								arbAdgDato = 'arbeidsadgangFraDato'
+							} else if (subAttr[0] === 'til') {
+								arbAdgDato = 'arbeidsadgangTilDato'
+							}
 							Object.assign(arbAdg, {
 								...arbAdg,
-								[subAttr[0]]: subAttr[1]
+								[arbAdgDato]: Formatters.formateStringDates(subAttr[1])
 							})
 						})
 					} else {

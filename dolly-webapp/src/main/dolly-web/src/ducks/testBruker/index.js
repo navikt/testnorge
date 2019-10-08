@@ -1,18 +1,16 @@
-import { TpsfApi, SigrunApi, KrrApi, ArenaApi, InstApi } from '~/service/Api'
-import { LOCATION_CHANGE } from 'connected-react-router'
 import { createAction } from 'redux-actions'
-import success from '~/utils/SuccessAction'
-import { DataSource } from '~/service/kodeverk/AttributtManager/Types'
+import { LOCATION_CHANGE } from 'connected-react-router'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _merge from 'lodash/merge'
+import { DollyApi, TpsfApi, SigrunApi, KrrApi, ArenaApi, InstApi, UdiApi } from '~/service/Api'
+import success from '~/utils/SuccessAction'
+import { DataSource } from '~/service/kodeverk/AttributtManager/Types'
 import {
 	mapIdentAndEnvironementForTps,
 	mapValuesFromDataSource,
 	mapSigrunSekvensnummer
 } from './utils'
-import { DollyApi } from '~/service/Api'
-import { UdiApi } from '../../service/Api'
 
 const initialState = {
 	items: {
@@ -37,14 +35,9 @@ const updateTestbrukerRequest = () => ({ type: actionTypes.UPDATE_TESTBRUKER_REQ
 const updateTestbrukerSuccess = () => ({ type: actionTypes.UPDATE_TESTBRUKER_SUCCESS })
 const updateTestbrukerError = () => ({ type: actionTypes.UPDATE_TESTBRUKER_ERROR })
 
-export const GET_TPSF_TESTBRUKERE = createAction('GET_TPSF_TESTBRUKERE', async identArray => {
-	try {
-		const res = await TpsfApi.getTestbrukere(identArray)
-		return res
-	} catch (err) {
-		return err
-	}
-})
+export const GET_TPSF_TESTBRUKERE = createAction('GET_TPSF_TESTBRUKERE', identArray =>
+	TpsfApi.getTestbrukere(identArray)
+)
 
 export const GET_SIGRUN_TESTBRUKER = createAction(
 	'GET_SIGRUN_TESTBRUKER',
@@ -195,11 +188,11 @@ export default function testbrukerReducer(state = initialState, action) {
 					tpsf: state.items.tpsf.filter(item => item.ident !== action.meta.ident),
 					sigrunstub: { ...state.items.sigrunstub, [action.meta.ident]: null },
 					krrstub: { ...state.items.krrstub, [action.meta.ident]: null },
+					udistub: { ...state.items.udistub, [action.meta.ident]: null },
 					arenaforvalteren: { ...state.items.arenaforvalteren, [action.meta.ident]: null },
 					aareg: { ...state.items.aareg, [action.meta.ident]: null },
 					pdlforvalter: { ...state.items.aareg, [action.meta.ident]: null },
 					instdata: { ...state.items.aareg, [action.meta.ident]: null }
-					// ! udi-stub også her?
 				}
 			}
 
@@ -301,6 +294,12 @@ export default function testbrukerReducer(state = initialState, action) {
 }
 
 // Thunk
+export const fetchTpsfTestbrukere = () => (dispatch, getState) => {
+	const state = getState()
+	const identer = _get(state, 'gruppe.data[0].testidenter', []).map(ident => ident.ident)
+	if (identer && identer.length >= 1) dispatch(GET_TPSF_TESTBRUKERE(identer))
+}
+
 export const updateTestbruker = (values, attributtListe, ident) => async (dispatch, getState) => {
 	try {
 		dispatch(updateTestbrukerRequest())
@@ -374,7 +373,7 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 
 // Selectors
 export const sokSelector = (items, searchStr) => {
-	if (!items) return null
+	if (!items) return []
 	if (!searchStr) return items
 
 	const query = searchStr.toLowerCase()

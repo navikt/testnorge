@@ -84,13 +84,13 @@ describe('MalbestillingUtils.js', () => {
 				{
 					adressatType: 'PERSON_MEDID',
 					adresselinje1: 'Solveien 5',
-					gyldigFom: '2019-09-03T00:00:00',
+					gyldigFom: '03.09.2019',
 					idnummer: '12345678954',
 					landkode: 'NOR',
 					postnummer: '7318',
 					poststedsnavn: 'AGDENES',
 					skifteform: 'OFFENTLIG',
-					utstedtDato: '2019-09-03T00:00:00'
+					utstedtDato: '03.09.2019'
 				}
 			],
 			utenlandskIdentifikasjonsnummer: [

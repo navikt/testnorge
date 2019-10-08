@@ -50,6 +50,7 @@ export const FieldArrayComponent = ({
 	const { subKategori, items, subItems, id } = item
 	const parentId = id
 	const itemid = idx
+
 	let parentAttributes = items.reduce((prev, curr) => {
 		return {
 			...prev,
@@ -66,9 +67,12 @@ export const FieldArrayComponent = ({
 			parentAttributes.barn_innvandret = [
 				{ innvandretFraLand: '', innvandretFraLandFlyttedato: '' }
 			]
+		} else if ('barn_forsvunnet' in parentAttributes) {
+			parentAttributes.barn_forsvunnet = [{ erForsvunnet: '', forsvunnetDato: '' }]
 		}
 		arrayHelpers.push({ ...parentAttributes })
 	}
+
 	const createSubItem = (subitem, itemIndex) => {
 		let subItemArray = subitem.subItems
 		const subItemId = subitem.id
@@ -101,6 +105,8 @@ export const FieldArrayComponent = ({
 		formikValues = [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }]
 	} else if (item.id === 'barn_innvandret') {
 		formikValues = [{ innvandretFraLand: '', innvandretFraLandFlyttedato: '' }]
+	} else if (item.id === 'barn_forsvunnet') {
+		formikValues = [{ erForsvunnet: '', forsvunnetDato: '' }]
 	}
 	let subLabelArray = []
 
@@ -166,11 +172,13 @@ export const FieldArrayComponent = ({
 												...item,
 												id:
 													parentId.includes('barn_innvandret') ||
-													parentId.includes('barn_utvandret')
+													parentId.includes('barn_utvandret') ||
+													parentId.includes('barn_forsvunnet')
 														? //Refaktorerers. Hvordan kan vi generalisere denne typen attributter for barn?
 														  `barn[${itemid}]${parentId}[0]${item.id}`
 														: `${parentId}[${idx}]${item.id}`
 											}
+
 											return (
 												<div key={kdx} className="flexbox">
 													{renderFieldComponent(
@@ -180,7 +188,8 @@ export const FieldArrayComponent = ({
 															parentId,
 															idx
 														},
-														formikProps
+														formikProps,
+														itemid
 													)}
 												</div>
 											)

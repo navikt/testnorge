@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { getEnvironments } from '~/ducks/environments'
 import { getBestillinger, sokSelector } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
 import BestillingListe from './BestillingListe'
@@ -12,11 +11,4 @@ const mapStateToProps = (state, ownProps) => ({
 	bestillinger: sokSelector(state.bestillingStatuser.data, state.search)
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-	getEnvironments: () => dispatch(getEnvironments())
-})
-
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(BestillingListe)
+export default connect(mapStateToProps)(BestillingListe)
