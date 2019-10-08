@@ -36,7 +36,7 @@ public class IdentControllerTest {
     @Test
     public void shouldHenteLegeFraTss() throws JMSException {
         identController.hentLegeFraTss(fnr1, miljoe);
-        verify(identService).hentLegeFraTss(fnr1, miljoe);
+        verify(identService).hentSamhandlerFraTss(fnr1, miljoe);
     }
 
 }

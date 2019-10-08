@@ -11,7 +11,7 @@ import java.util.Map;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.tss.consumer.rs.TssSyntetisererenConsumer;
-import no.nav.registre.tss.consumer.rs.responses.TssSyntMessage;
+import no.nav.registre.tss.consumer.rs.responses.TssMessage;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.domain.TssType;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
@@ -52,10 +52,10 @@ public class SyntetiseringService {
     }
 
     public List<String> opprettSyntetiskeTssRutiner(List<Person> identer, TssType type) {
-        Map<String, List<TssSyntMessage>> syntetiskeTssRutiner = tssSyntetisererenConsumer.hentSyntetiskeTssRutiner(identer);
+        Map<String, List<TssMessage>> syntetiskeTssRutiner = tssSyntetisererenConsumer.hentSyntetiskeTssRutiner(identer);
         List<String> flatfiler = new ArrayList<>(syntetiskeTssRutiner.values().size());
 
-        for (List<TssSyntMessage> rutiner : syntetiskeTssRutiner.values()) {
+        for (List<TssMessage> rutiner : syntetiskeTssRutiner.values()) {
             flatfiler.add(RutineUtil.opprettFlatfil(rutiner, type));
         }
 

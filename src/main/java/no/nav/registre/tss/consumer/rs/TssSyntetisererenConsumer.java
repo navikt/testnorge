@@ -11,13 +11,13 @@ import org.springframework.web.util.UriTemplate;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.tss.consumer.rs.responses.TssSyntMessage;
+import no.nav.registre.tss.consumer.rs.responses.TssMessage;
 import no.nav.registre.tss.domain.Person;
 
 @Component
 public class TssSyntetisererenConsumer {
 
-    private static final ParameterizedTypeReference<Map<String, List<TssSyntMessage>>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<Map<String, List<TssMessage>>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     private RestTemplate restTemplate;
@@ -29,7 +29,7 @@ public class TssSyntetisererenConsumer {
         this.url = new UriTemplate(synthdataTssUrl + "/v1/generate_tss_messages/json");
     }
 
-    public Map<String, List<TssSyntMessage>> hentSyntetiskeTssRutiner(List<Person> identer) {
+    public Map<String, List<TssMessage>> hentSyntetiskeTssRutiner(List<Person> identer) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(identer);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }

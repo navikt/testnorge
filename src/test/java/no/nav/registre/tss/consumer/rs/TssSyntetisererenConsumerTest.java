@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.tss.consumer.rs.responses.TssSyntMessage;
+import no.nav.registre.tss.consumer.rs.responses.TssMessage;
 import no.nav.registre.tss.domain.Person;
 
 @RunWith(SpringRunner.class)
@@ -55,7 +55,7 @@ public class TssSyntetisererenConsumerTest {
         identer.add(person2);
 
         server.expect(requestToUriTemplate(serverUrl + "/v1/generate_tss_messages/json")).andRespond(withSuccess(getJsonResponse(), MediaType.APPLICATION_JSON));
-        Map<String, List<TssSyntMessage>> identerMedRutiner = tssSyntetisererenConsumer.hentSyntetiskeTssRutiner(identer);
+        Map<String, List<TssMessage>> identerMedRutiner = tssSyntetisererenConsumer.hentSyntetiskeTssRutiner(identer);
 
         assertThat(identerMedRutiner.get(fnr1).get(0).getNavn(), equalTo(navn1));
         assertThat(identerMedRutiner.get(fnr1).get(1).getIdAlternativ(), equalTo(fnr1));

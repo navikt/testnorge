@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.tss.consumer.rs.TssSyntetisererenConsumer;
-import no.nav.registre.tss.consumer.rs.responses.TssSyntMessage;
+import no.nav.registre.tss.consumer.rs.responses.TssMessage;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.domain.TssType;
 import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
@@ -91,7 +91,7 @@ public class SyntetiseringServiceTest {
         });
 
         resource = Resources.getResource("syntetiske_rutiner.json");
-        Map<String, List<TssSyntMessage>> syntetiskeMeldinger = new ObjectMapper().readValue(resource, new TypeReference<Map<String, List<TssSyntMessage>>>() {
+        Map<String, List<TssMessage>> syntetiskeMeldinger = new ObjectMapper().readValue(resource, new TypeReference<Map<String, List<TssMessage>>>() {
         });
 
         Person person1 = new Person(fnr1, navn1);
