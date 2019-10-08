@@ -31,6 +31,7 @@ public class RsTestgruppe {
 	private RsTeamMedIdOgNavn team;
 
 	private Integer antallIdenter;
+	private Integer antallIbruk;
 
 	private boolean erMedlemAvTeamSomEierGruppe;
 	private boolean favorittIGruppen;

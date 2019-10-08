@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.resultset;
 
+import static java.util.Objects.isNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +17,7 @@ public class RsTestgruppeUtvidet extends RsTestgruppe {
     private List<RsTestidentBestillingId> testidenter;
 
     public List<RsTestidentBestillingId> getTestidenter() {
-        if (testidenter == null) {
+        if (isNull(testidenter)) {
             testidenter = new ArrayList<>();
         }
         return testidenter;
