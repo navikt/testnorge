@@ -1,9 +1,7 @@
 import React from 'react'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
-import Loading from '~/components/ui/loading/Loading'
 
-export default function TeamMedlemmer({ isFetching, grupper, history }) {
-	if (isFetching) return <Loading label="laster grupper" panel />
+export default function TeamMedlemmer({ grupper, history }) {
 	if (!grupper) return false
 
 	const columns = [
