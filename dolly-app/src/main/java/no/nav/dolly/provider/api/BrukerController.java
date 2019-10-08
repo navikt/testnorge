@@ -2,6 +2,7 @@ package no.nav.dolly.provider.api;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
@@ -13,7 +14,6 @@ import no.nav.dolly.service.BrukerService;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +28,7 @@ import java.util.List;
 @Transactional
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/bruker", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/bruker", produces = APPLICATION_JSON_VALUE)
 public class BrukerController {
 
     private final BrukerService brukerService;
@@ -41,7 +41,7 @@ public class BrukerController {
         return mapperFacade.map(bruker, RsBrukerTeamAndGruppeIDs.class);
     }
 
-    @GetMapping("/current")
+    @GetMapping(value = "/current", produces = "application/json; charset=UTF-8", consumes = APPLICATION_JSON_VALUE)
     public RsBruker getCurrentBruker() {
         OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
         Bruker bruker = brukerService.fetchOrCreateBruker(auth.getPrincipal());
@@ -54,13 +54,13 @@ public class BrukerController {
         return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBrukerTeamAndGruppeIDs.class);
     }
 
-    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
     @PutMapping("/leggTilFavoritt")
     public RsBruker leggTilFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
         return mapperFacade.map(brukerService.leggTilFavoritt(request.getGruppeId()), RsBruker.class);
     }
 
-    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
     @PutMapping("/fjernFavoritt")
     public RsBruker fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
         return mapperFacade.map(brukerService.fjernFavoritt(request.getGruppeId()), RsBruker.class);
