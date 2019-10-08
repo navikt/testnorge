@@ -1,4 +1,6 @@
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { push } from 'connected-react-router'
 import { getBestillingById } from '~/ducks/bestillingStatus'
 import PersonDetaljer from './PersonDetaljer'
 import DataMapper from '~/service/dataMapper'
@@ -48,6 +50,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
+	console.log(ownProps)
 	return {
 		getKrrTestbruker: () => dispatch(GET_KRR_TESTBRUKER(ownProps.personId)),
 		getSigrunTestbruker: () => dispatch(GET_SIGRUN_TESTBRUKER(ownProps.personId)),
@@ -57,11 +60,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		getInstTestbruker: env => dispatch(GET_INST_TESTBRUKER(ownProps.personId, env)),
 		getPdlfTestbruker: () => dispatch(GET_TESTBRUKER_PERSONOPPSLAG(ownProps.personId)),
 		getUdiTestbruker: () => dispatch(GET_UDI_TESTBRUKER(ownProps.personId)),
-		frigjoerTestbruker: () => dispatch(FRIGJOER_TESTBRUKER(ownProps.personId))
+		frigjoerTestbruker: () => dispatch(FRIGJOER_TESTBRUKER(ownProps.personId)),
+		editAction: () => dispatch(push(`${ownProps.match.url}/testbruker/${ownProps.personId}`))
 	}
 }
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(PersonDetaljer)
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(PersonDetaljer)
+)
