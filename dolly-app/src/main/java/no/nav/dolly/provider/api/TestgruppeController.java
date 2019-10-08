@@ -56,6 +56,7 @@ public class TestgruppeController {
 
     @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}/ny")
+    @ApiOperation("Hent Testgruppe med gruppeId")
     public RsTestgruppeMedBestillingId getTestgruppen(@PathVariable("gruppeId") Long gruppeId) {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeMedBestillingId.class);
     }
@@ -78,7 +79,7 @@ public class TestgruppeController {
 
     @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}/identer")
-    @ApiOperation("Hent identer tilknyttet en gruppe")
+    @ApiOperation("Hent identer tilknyttet en Testgruppe")
     public List<String> getIdentsByGroupId(@PathVariable("gruppeId") Long gruppeId) {
         return testgruppeService.fetchIdenterByGruppeId(gruppeId);
     }
@@ -107,7 +108,7 @@ public class TestgruppeController {
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(value = "Opprett identer i TPS fra ekisterende identer", notes = BESTILLING_BESKRIVELSE)
+    @ApiOperation(value = "Opprett identer i TPS fra eksisterende identer", notes = BESTILLING_BESKRIVELSE)
     public RsBestilling opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(),
                 request.getOpprettFraIdenter().size(), request.getOpprettFraIdenter());

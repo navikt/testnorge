@@ -3,6 +3,7 @@ package no.nav.dolly.provider.api;
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -36,12 +37,14 @@ public class BrukerController {
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{navIdent}")
+    @ApiOperation("Hent Bruker med navIdent")
     public RsBrukerTeamAndGruppeIDs getBrukerByNavIdent(@PathVariable("navIdent") String navIdent) {
         Bruker bruker = brukerService.fetchBruker(navIdent);
         return mapperFacade.map(bruker, RsBrukerTeamAndGruppeIDs.class);
     }
 
     @GetMapping("/current")
+    @ApiOperation("Hent pålogget Bruker")
     public RsBruker getCurrentBruker() {
         OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
         Bruker bruker = brukerService.fetchOrCreateBruker(auth.getPrincipal());
@@ -50,18 +53,21 @@ public class BrukerController {
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping
+    @ApiOperation("Hent alle Brukerne")
     public List<RsBrukerTeamAndGruppeIDs> getAllBrukere() {
         return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBrukerTeamAndGruppeIDs.class);
     }
 
     @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
     @PutMapping("/leggTilFavoritt")
+    @ApiOperation("Legg til Favoritt-testgruppe til pålogget Bruker")
     public RsBruker leggTilFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
         return mapperFacade.map(brukerService.leggTilFavoritt(request.getGruppeId()), RsBruker.class);
     }
 
     @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
     @PutMapping("/fjernFavoritt")
+    @ApiOperation("Fjern Favoritt-testgruppe fra pålogget Bruker")
     public RsBruker fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
         return mapperFacade.map(brukerService.fjernFavoritt(request.getGruppeId()), RsBruker.class);
     }
