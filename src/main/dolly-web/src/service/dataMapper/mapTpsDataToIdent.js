@@ -296,7 +296,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 						{
 							id: 'regdato',
 							label: 'Utgått dato',
-							value: Formatters.formatDate(data.aliasPerson.regdato)
+							value: Formatters.formatDate(data.regdato)
 						}
 					]
 				}
