@@ -1,8 +1,7 @@
 package no.nav.dolly.bestilling.sigrunstub;
 
 import static java.util.Collections.singletonList;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -39,11 +38,12 @@ public class SigrunStubClientTest {
     @InjectMocks
     private SigrunStubClient sigrunStubClient;
 
-    //TODO Ikke en veldig dekkende test uten asserts av noe slag
     @Test
     public void gjenopprett_ingendata() {
+        BestillingProgress progress = new BestillingProgress();
+        sigrunStubClient.gjenopprett(new RsDollyBestilling(), NorskIdent.builder().ident(IDENT).build(), progress);
 
-        sigrunStubClient.gjenopprett(new RsDollyBestilling(), NorskIdent.builder().ident(IDENT).build(), new BestillingProgress());
+        assertThat(progress.getSigrunstubStatus(), is(nullValue()));
     }
 
     @Test
