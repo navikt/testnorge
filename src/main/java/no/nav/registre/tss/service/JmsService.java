@@ -85,6 +85,17 @@ public class JmsService {
         return null;
     }
 
+    public Object sendOgMotta990RutineFraTss(String message, String koeNavn) throws JMSException {
+        Message mottattMelding = jmsTemplate.sendAndReceive("queue:///" + koeNavn + "?targetClient=1", session -> session.createTextMessage(message));
+
+        if (mottattMelding != null) {
+            return mottattMelding.getBody(String.class);
+        } else {
+            log.warn("Fikk ikke svar fra TSS for rutine 990");
+        }
+        return null;
+    }
+
     public String hentKoeNavnAjour(String miljoe) {
         validerMiljoe(miljoe);
         if ("q1".equals(miljoe)) {
