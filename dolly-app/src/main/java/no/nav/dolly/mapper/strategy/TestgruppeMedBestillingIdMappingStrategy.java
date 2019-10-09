@@ -1,5 +1,7 @@
 package no.nav.dolly.mapper.strategy;
 
+import static java.lang.Boolean.TRUE;
+
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,8 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                         testgruppeMedBestillingId.setIdenter(testgruppe.getTestidenter().stream()
                                 .map(testident -> RsTestgruppeMedBestillingId.IdentBestilling.builder()
                                         .ident(testident.getIdent())
+                                        .iBruk(TRUE.equals(testident.getIBruk()))
+                                        .beskrivelse(testident.getBeskrivelse())
                                         .bestillingId(testident.getBestillingProgress().stream()
                                                 .map(BestillingProgress::getId)
                                                 .collect(Collectors.toList()))
