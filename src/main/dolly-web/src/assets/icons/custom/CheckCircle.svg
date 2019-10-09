@@ -1,0 +1,7 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <title>Checkmark-success</title>
+    <g>
+        <circle className="circle" cx="12" cy="12" r="11.5"/>
+        <path className="checkmark" d="M17,8.5l-7.5,7L7,13"/>
+    </g>
+</svg>
