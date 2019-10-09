@@ -60,7 +60,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		getInstTestbruker: env => dispatch(GET_INST_TESTBRUKER(ownProps.personId, env)),
 		getPdlfTestbruker: () => dispatch(GET_TESTBRUKER_PERSONOPPSLAG(ownProps.personId)),
 		getUdiTestbruker: () => dispatch(GET_UDI_TESTBRUKER(ownProps.personId)),
-		frigjoerTestbruker: () => dispatch(FRIGJOER_TESTBRUKER(ownProps.personId)),
+		frigjoerTestbruker: () =>
+			dispatch(FRIGJOER_TESTBRUKER(ownProps.match.params.gruppeId, ownProps.personId)),
 		editAction: () => dispatch(push(`${ownProps.match.url}/testbruker/${ownProps.personId}`))
 	}
 }
