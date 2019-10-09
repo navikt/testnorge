@@ -208,7 +208,7 @@ const AttributtListe: Attributt[] = [
 		attributtType: AttributtType.SelectOnly,
 		isMultiple: true,
 		informasjonstekst:
-			'Dette er en oversikt over identhistorikken, altså utdaterte identer. ' +
+			'Dette er en oversikt over utgåtte identer, der de eldste skal ligge sist. ' +
 			'Dagens identtype legges inn på forrige side. For å velge dagens kjønn må "Kjønn" hukes av på forrige side og velges under "Diverse" -> "Kjønn" her. ' +
 			'Eksempel: En testperson med DNR får FNR. Da velges FNR på forrige side. DNR legges inn i denne oversikten. ' +
 			'Hvis fødselsdatoen ble endret i overgangen kan født før og født etter fylles ut. Det samme gjelder for kjønn. ' +
