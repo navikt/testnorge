@@ -45,8 +45,8 @@ export default class Pagination extends Component {
 							pageRangeDisplayed={2}
 							marginPagesDisplayed={1}
 							onPageChange={this._pageChangeHandler}
-							previousLabel={<Icon kind="arrow-left" />}
-							nextLabel={<Icon kind="arrow-right" />}
+							previousLabel={<Icon size={11} kind="arrow-left" />}
+							nextLabel={<Icon size={11} kind="arrow-right" />}
 						/>
 					</Fragment>
 				)}
