@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { TpsfApi } from '~/service/Api'
 import Button from '~/components/ui/button/Button'
 import Loading from '~/components/ui/loading/Loading'
-import Icon from '~/components/ui/icon/Icon'
 
 import './EksporterExcel.less'
 
@@ -18,9 +17,12 @@ export default class EksportExcel extends Component {
 		if (this.state.loading) return <Loading label="Eksporterer" />
 
 		return (
-			<Button className="flexbox--align-center gruppe-exceleksport" onClick={this._onClick}>
-				<Icon size={'24px'} kind={'file-new-table'} className="excelknapp" />
-				<span className="excelknapp">EKSPORTER TIL EXCEL</span>
+			<Button
+				className="flexbox--align-center gruppe-exceleksport"
+				kind="file-new-table"
+				onClick={this._onClick}
+			>
+				EKSPORTER TIL EXCEL
 			</Button>
 		)
 	}
