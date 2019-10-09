@@ -4,6 +4,7 @@ import _set from 'lodash/set'
 export const getAttributesFromMal = mal => {
 	const tpsfKriterier = JSON.parse(mal.tpsfKriterier)
 	const bestKriterier = JSON.parse(mal.bestKriterier)
+	console.log('tpsfKriterier :', tpsfKriterier)
 	let attrArray = []
 	attrArray = Object.keys(tpsfKriterier).filter(k => {
 		if (
@@ -54,7 +55,8 @@ export const getValuesFromMal = mal => {
 	const tpsfKriterierArray = Object.entries(JSON.parse(mal.tpsfKriterier))
 	const bestKriterierArray = Object.entries(JSON.parse(mal.bestKriterier))
 	_mapValuesToObject(reduxStateValue, tpsfKriterierArray)
-
+	console.log('mal :', mal)
+	console.log('mal.tpsfKriterier :', mal.tpsfKriterier)
 	bestKriterierArray.forEach(reg => {
 		const navn = reg[0]
 		const values = reg[1]
@@ -79,8 +81,7 @@ export const getValuesFromMal = mal => {
 	if (
 		reduxStateValue.utvandretTilLand ||
 		reduxStateValue.innvandretFraLand ||
-		reduxStateValue.erForsvunnet ||
-		reduxStateValue.statsborgerskap
+		reduxStateValue.erForsvunnet
 	) {
 		const utvandretValues = _mapInnOgUtvandret(reduxStateValue)
 		reduxStateValue = utvandretValues
@@ -89,6 +90,12 @@ export const getValuesFromMal = mal => {
 		const matrikkeladresseValues = _mapAdresseValues(reduxStateValue)
 		reduxStateValue = matrikkeladresseValues
 	}
+	if (reduxStateValue.statsborgerskap) {
+		const statsborgerskapValues = _mapStatsborgerskap(reduxStateValue)
+		reduxStateValue = statsborgerskapValues
+	}
+
+	console.log('reduxStateValue :', reduxStateValue)
 	return reduxStateValue
 }
 
@@ -172,10 +179,9 @@ const _formatValueForObject = (key, value) => {
 		'fraDato',
 		'tilDato',
 		'utvandretTilLandFlyttedato',
-		'innvandretFraLandFlyttedato',
-		'statsborgerskapRegdato',
 		'innvandretFraLandFlytteDato',
 		'forsvunnetDato',
+		'statsborgerskapRegdato',
 		'startdato',
 		'faktiskSluttdato',
 		'forventetSluttdato',
@@ -251,8 +257,6 @@ const _mapInnOgUtvandret = values => {
 			valuesArray.barn[idx] = _mapInnOgUtvandret(enkeltBarn)
 		})
 	}
-	console.log('values :', values)
-	console.log('valuesArray000000 :', valuesArray)
 	Object.entries(valuesArray).map(value => {
 		if (value[0].includes('innvandret')) {
 			if (value[0].includes('partner')) {
@@ -279,29 +283,50 @@ const _mapInnOgUtvandret = values => {
 				return (valuesArray.utvandret[0][value[0]] = value[1])
 			}
 		}
+
 		if (value[0].toLowerCase().includes('forsvunnet')) {
-			if (value[0].toLowerCase().includes('forsvunnet')) {
-				if (value[0].includes('partner')) {
-					!valuesArray.partner_forsvunnet && (valuesArray.partner_forsvunnet = [{}])
-					return (valuesArray.partner_forsvunnet[0][value[0].split('_')[1]] = value[1].toString())
-				} else if (value[0].includes('barn')) {
-					!valuesArray.barn_forsvunnet && (valuesArray.barn_forsvunnet = [{}])
-					return (valuesArray.barn_forsvunnet[0][value[0].split('_')[1]] = value[1].toString())
-				} else {
-					!valuesArray.forsvunnet && (valuesArray.forsvunnet = [{}])
-					return (valuesArray.forsvunnet[0][value[0]] = value[1].toString())
-				}
+			if (value[0].includes('partner')) {
+				!valuesArray.partner_forsvunnet && (valuesArray.partner_forsvunnet = [{}])
+				return (valuesArray.partner_forsvunnet[0][value[0].split('_')[1]] = value[1].toString())
+			} else if (value[0].includes('barn')) {
+				!valuesArray.barn_forsvunnet && (valuesArray.barn_forsvunnet = [{}])
+				return (valuesArray.barn_forsvunnet[0][value[0].split('_')[1]] = value[1].toString())
+			} else {
+				!valuesArray.forsvunnet && (valuesArray.forsvunnet = [{}])
+				return (valuesArray.forsvunnet[0][value[0]] = value[1].toString())
 			}
 		}
+	})
+	return valuesArray
+}
 
-		console.log('value.barn :', value.barn)
+const _mapStatsborgerskap = values => {
+	let valuesArray = JSON.parse(JSON.stringify(values))
+	if (valuesArray.barn) {
+		console.log('values :', values)
+		//Loop gjennom barn og kjør denne funksjonen for hvert barn
+		valuesArray.barn.map((enkeltBarn, idx) => {
+			valuesArray.barn[idx] = _mapStatsborgerskap(enkeltBarn)
+			console.log('valuesArray.barn :', valuesArray.barn[idx])
+			console.log('enkeltBarn :', enkeltBarn)
+		})
+	}
+
+	Object.entries(valuesArray).map(value => {
 		if (value[0].includes('statsborgerskap')) {
 			if (value[0].includes('partner')) {
 				!valuesArray.partner_Statsborgerskap && (valuesArray.partner_Statsborgerskap = [{}])
-				return (valuesArray.partner_Statsborgerskap[0][value[0].split('_')[1]] = value[1])
+				return (valuesArray.partner_Statsborgerskap[0][
+					value[0].split('_')[1]
+				] = value[1].toString())
 			} else if (value[0].includes('barn')) {
+				//the problem is here (sarah)
+				console.log(
+					'(valuesArray.barn_Statsborgerskap[0][value[0].split()[1]] = value[1].toString()) :',
+					(valuesArray.barn_Statsborgerskap[0][value[0].split('_')[1]] = value[1].toString())
+				)
 				!valuesArray.barn_Statsborgerskap && (valuesArray.barn_Statsborgerskap = [{}])
-				return (valuesArray.barn_Statsborgerskap[0][value[0].split('_')[1]] = value[1])
+				return (valuesArray.barn_Statsborgerskap[0][value[0].split('_')[1]] = value[1].toString())
 			} else {
 				!valuesArray.Statsborgerskap && (valuesArray.Statsborgerskap = [{}])
 				return (valuesArray.Statsborgerskap[0][value[0]] = value[1])
