@@ -2,7 +2,7 @@ package no.nav.registre.tss.utils.rutine130;
 
 import static no.nav.registre.tss.utils.RutineUtil.MELDINGSLENGDE;
 
-import no.nav.registre.tss.provider.rs.requests.Rutine130Request;
+import no.nav.registre.tss.provider.rs.request.Rutine130Request;
 
 public class Rutine130Util {
 
@@ -15,12 +15,24 @@ public class Rutine130Util {
         setIdKode(rutine, message.getIdKode());
         setAvdelingnr(rutine, message.getAvdelingnr());
         setKodeAdressetype(rutine, message.getKodeAdressetype());
-        setKodeLand(rutine, message.getKodeLand());
-        setKommunenr(rutine, message.getKommunenr());
-        setPostnr(rutine, message.getPostnr());
-        setDatoAdresseFom(rutine, message.getDatoAdresseFom());
-        setDatoAdresseTom(rutine, message.getDatoAdresseTom());
-        setGyldigAdresse(rutine, message.getGyldigAdresse());
+        if (message.getKodeLand() != null) {
+            setKodeLand(rutine, message.getKodeLand());
+        }
+        if (message.getKommunenr() != null) {
+            setKommunenr(rutine, message.getKommunenr());
+        }
+        if (message.getPostnr() != null) {
+            setPostnr(rutine, message.getPostnr());
+        }
+        if (message.getDatoAdresseFom() != null) {
+            setDatoAdresseFom(rutine, message.getDatoAdresseFom());
+        }
+        if (message.getDatoAdresseTom() != null) {
+            setDatoAdresseTom(rutine, message.getDatoAdresseTom());
+        }
+        if (message.getGyldigAdresse() != null) {
+            setGyldigAdresse(rutine, message.getGyldigAdresse());
+        }
 
         return rutine.toString();
     }

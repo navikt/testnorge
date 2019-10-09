@@ -2,7 +2,7 @@ package no.nav.registre.tss.utils;
 
 import java.util.List;
 
-import no.nav.registre.tss.consumer.rs.responses.TssMessage;
+import no.nav.registre.tss.consumer.rs.response.TssMessage;
 import no.nav.registre.tss.domain.TssType;
 
 public class RutineUtil {

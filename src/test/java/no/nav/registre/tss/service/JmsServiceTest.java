@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.tss.consumer.rs.responses.Response910;
+import no.nav.registre.tss.consumer.rs.response.Response910;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JmsServiceTest {

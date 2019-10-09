@@ -1,4 +1,4 @@
-package no.nav.registre.tss.provider.rs.requests;
+package no.nav.registre.tss.provider.rs.request;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -10,7 +10,7 @@ import wiremock.com.google.common.io.Resources;
 import java.io.IOException;
 import java.net.URL;
 
-import no.nav.registre.tss.consumer.rs.responses.Response910;
+import no.nav.registre.tss.consumer.rs.response.Response910;
 
 public class Response910UtilTest {
 

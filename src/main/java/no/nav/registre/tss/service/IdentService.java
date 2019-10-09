@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.tss.consumer.rs.responses.Response110;
-import no.nav.registre.tss.consumer.rs.responses.Response910;
-import no.nav.registre.tss.consumer.rs.responses.TssMessage;
+import no.nav.registre.tss.consumer.rs.response.Response110;
+import no.nav.registre.tss.consumer.rs.response.Response910;
+import no.nav.registre.tss.consumer.rs.response.TssMessage;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.domain.TssType;
-import no.nav.registre.tss.provider.rs.requests.Rutine130Request;
+import no.nav.registre.tss.provider.rs.request.Rutine130Request;
 import no.nav.registre.tss.utils.Rutine110Util;
 import no.nav.registre.tss.utils.rutine130.Rutine130Util;
 
@@ -82,21 +82,11 @@ public class IdentService {
     public String leggTilAdresse(String ident, String miljoe, Rutine130Request message) {
         Response910 response910 = null;
         StringBuilder fullRutine = new StringBuilder();
-        // try {
-        //      response910 = hentSamhandlerFraTss(ident, miljoe);
-        //      } catch (JMSException e) {
-        //          log.error("Kunne ikke hente samhandler fra TSS", e);
-        //      }
-        response910 = Response910.builder()
-                .response110(new ArrayList<>(Collections.singletonList(
-                        Response110.builder()
-                                .idKode("110")
-                                .idOff(ident)
-                                .kodeIdenttype("FNR")
-                                .kodeSamhType("LE")
-                                .navn("NAVN")
-                                .build())))
-                .build();
+        try {
+            response910 = hentSamhandlerFraTss(ident, miljoe);
+        } catch (JMSException e) {
+            log.error("Kunne ikke hente samhandler fra TSS", e);
+        }
 
         if (response910 != null) {
             Response110 response110 = response910.getResponse110().get(0);

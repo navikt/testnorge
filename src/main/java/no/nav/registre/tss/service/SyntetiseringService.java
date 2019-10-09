@@ -11,10 +11,10 @@ import java.util.Map;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.tss.consumer.rs.TssSyntetisererenConsumer;
-import no.nav.registre.tss.consumer.rs.responses.TssMessage;
+import no.nav.registre.tss.consumer.rs.response.TssMessage;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.domain.TssType;
-import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
+import no.nav.registre.tss.provider.rs.request.SyntetiserTssRequest;
 import no.nav.registre.tss.utils.RutineUtil;
 
 @Slf4j

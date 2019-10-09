@@ -2,7 +2,7 @@ package no.nav.registre.tss.utils;
 
 import static no.nav.registre.tss.utils.RutineUtil.MELDINGSLENGDE;
 
-import no.nav.registre.tss.consumer.rs.responses.TssMessage;
+import no.nav.registre.tss.consumer.rs.response.TssMessage;
 
 public class Rutine175Util {
 

@@ -14,7 +14,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.domain.TssType;
-import no.nav.registre.tss.provider.rs.requests.SyntetiserTssRequest;
+import no.nav.registre.tss.provider.rs.request.SyntetiserTssRequest;
 import no.nav.registre.tss.service.SyntetiseringService;
 
 @RunWith(MockitoJUnitRunner.class)
