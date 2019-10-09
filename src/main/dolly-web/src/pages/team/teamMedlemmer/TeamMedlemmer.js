@@ -10,7 +10,8 @@ export default function TeamMedlemmer({ medlemmer, removeMember }) {
 		{
 			text: 'Navn',
 			width: '30',
-			dataField: 'navIdent'
+			dataField: 'navIdent',
+			unique: true
 		},
 		{
 			text: 'Rolle',

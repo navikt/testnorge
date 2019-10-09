@@ -33,7 +33,8 @@ export default function BestillingListe({ bestillinger, searchActive, isFetching
 		{
 			text: 'ID',
 			width: '15',
-			dataField: 'listedata[0]'
+			dataField: 'listedata[0]',
+			unique: true
 		},
 		{
 			text: 'Antall testpersoner',
