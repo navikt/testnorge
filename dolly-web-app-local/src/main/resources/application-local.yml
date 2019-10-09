@@ -1,3 +1,4 @@
 fasit.enabled: false
 
 server.port: 8020
+dolly.url: http://localhost:8080

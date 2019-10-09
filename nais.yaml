@@ -39,6 +39,6 @@ fasitResources:
       propertyMap:
         url: tpsf.url
     - alias: dollyurl
-      resourceType: BaseUrl
+      resourceType: baseurl
       propertyMap:
         url: dolly.url
