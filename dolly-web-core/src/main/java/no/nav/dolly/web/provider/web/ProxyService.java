@@ -45,7 +45,7 @@ public class ProxyService {
         headers.add(NAV_CALL_ID, String.valueOf(UUID.randomUUID()));
         headers.add(NAV_CONSUMER_ID, "dolly-proxy");
         headers.add(CONTENT_TYPE, "application/json");
-        headers.remove("accept-encoding");
+        headers.set(HttpHeaders.ACCEPT_ENCODING, "deflate, br");
 
         // TODO Brukes imot eksisterende dolly som forventer cookie i header
         Cookie idTokenCookie = getIdTokenCookie(request);
