@@ -13,9 +13,10 @@ public class CachingConfig {
     public static final String CACHE_GRUPPE = "gruppe";
     public static final String CACHE_KODEVERK = "kodeverk";
     public static final String CACHE_TEAM = "team";
+    public static final String CACHE_NORG2 = "norg2";
 
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager(CACHE_BESTILLING, CACHE_BRUKER, CACHE_GRUPPE, CACHE_KODEVERK, CACHE_TEAM);
+        return new ConcurrentMapCacheManager(CACHE_BESTILLING, CACHE_BRUKER, CACHE_GRUPPE, CACHE_KODEVERK, CACHE_TEAM, CACHE_NORG2);
     }
 }

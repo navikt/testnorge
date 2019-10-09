@@ -2,6 +2,7 @@ package no.nav.dolly.provider.api;
 
 import static java.util.Arrays.asList;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
+import static no.nav.dolly.config.CachingConfig.CACHE_NORG2;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -45,8 +46,7 @@ public class OppslagController {
         return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverkNavn, response.getBetydninger());
     }
 
-    //TODO Bruk egen cache
-    @Cacheable(CACHE_KODEVERK)
+    @Cacheable(CACHE_NORG2)
     @GetMapping("/norg2/enhet/{tknr}")
     @ApiOperation("Hent enhet tilhørende Tknr fra NORG")
     public Norg2EnhetResponse fetchEnhetByTknr(@PathVariable("tknr") String tknr) {
