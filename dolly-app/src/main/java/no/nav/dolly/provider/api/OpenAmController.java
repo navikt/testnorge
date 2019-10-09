@@ -3,6 +3,7 @@ package no.nav.dolly.provider.api;
 import static java.lang.String.format;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -38,6 +39,7 @@ public class OpenAmController {
     private final BestillingRepository bestillingRepository;
 
     @PostMapping
+    @ApiOperation("Opprett identer i miljøer")
     public List<RsOpenAmResponse> sendIdenterTilOpenAm(@RequestBody RsOpenAmRequest request) {
         List<RsOpenAmResponse> response = new ArrayList<>(request.getMiljoer().size());
         for (String miljoe : request.getMiljoer()) {
@@ -47,6 +49,7 @@ public class OpenAmController {
     }
 
     @PutMapping("/gruppe/{gruppeId}")
+    @ApiOperation("Oppdater OpenAmSent verdi i Testgruppe med gruppeId")
     public void oppdaterOpenAmSentStatus(@PathVariable(value = "gruppeId") Long gruppeId, @RequestParam Boolean isOpenAmSent) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
         if (testgruppe.isPresent()) {
@@ -60,6 +63,7 @@ public class OpenAmController {
     @CacheEvict(value = CACHE_BESTILLING, allEntries = true)
     @PostMapping("/bestilling/{bestillingId}")
     @Transactional
+    @ApiOperation("Opprett identer i miljøer for identer tilhørende en Bestillings Testgruppe")
     public List<RsOpenAmResponse> sendBestillingTilOpenAm(@RequestParam Long bestillingId) {
         Optional<Bestilling> bestillingOpt = bestillingRepository.findById(bestillingId);
         if (bestillingOpt.isPresent()) {

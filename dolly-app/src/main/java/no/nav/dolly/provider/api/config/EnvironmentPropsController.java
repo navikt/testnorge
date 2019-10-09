@@ -1,5 +1,6 @@
 package no.nav.dolly.provider.api.config;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.resultset.RsDollyProps;
 import no.nav.dolly.properties.ProvidersProps;
@@ -16,6 +17,7 @@ public class EnvironmentPropsController {
     private final ProvidersProps providersProps;
 
     @GetMapping
+    @ApiOperation("Hent URL til systemene")
     public RsDollyProps getEnvironmentProps() {
         return RsDollyProps.builder()
                 .tpsfUrl(providersProps.getTpsf().getUrl())

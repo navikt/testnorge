@@ -1,6 +1,6 @@
 package no.nav.dolly.integrasjonstest;
 
-import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;

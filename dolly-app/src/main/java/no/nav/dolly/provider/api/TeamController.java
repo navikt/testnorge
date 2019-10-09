@@ -40,7 +40,7 @@ public class TeamController {
 
     @Cacheable(CACHE_TEAM)
     @GetMapping
-    @ApiOperation("Hent alle Team med medlem tilhørende navIdent")
+    @ApiOperation("Hent alle Team med tilknyttet medlem med navIdent")
     public List<RsTeam> getTeams(@RequestParam(value = "navIdent", required = false) String navIdent) {
         return Optional.ofNullable(navIdent)
                 .map(teamService::fetchTeamsByMedlemskapInTeamsMapped)
