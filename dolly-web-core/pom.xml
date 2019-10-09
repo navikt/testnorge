@@ -109,21 +109,6 @@
                                     <workingDirectory>src/main/web_src</workingDirectory>
                                 </configuration>
                             </execution>
-                            <execution>
-                                <id>copy prod bundle to public folder</id>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <phase>generate-resources</phase>
-                                <configuration>
-                                    <executable>npm${script.extension}</executable>
-                                    <arguments>
-                                        <argument>run</argument>
-                                        <argument>copy-prod-build</argument>
-                                    </arguments>
-                                    <workingDirectory>src/main/web_src</workingDirectory>
-                                </configuration>
-                            </execution>
                         </executions>
                     </plugin>
                 </plugins>

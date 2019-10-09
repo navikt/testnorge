@@ -8,7 +8,6 @@
 		"build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
 		"test": "jest --watch",
 		"test-cov": "jest --coverage",
-		"copy-prod-build": "cpx \"dist/production/*\" ../resources/public",
 		"test:1": "node ./node_modules/jest-single-file-coverage"
 	},
 	"author": "",
@@ -84,7 +83,6 @@
 		"babel-preset-env": "^1.7.0",
 		"babel-preset-react": "^6.24.1",
 		"clean-webpack-plugin": "^0.1.19",
-		"cpx": "^1.5.0",
 		"cross-env": "^5.2.0",
 		"css-loader": "^0.28.11",
 		"dotenv-webpack": "^1.5.7",
