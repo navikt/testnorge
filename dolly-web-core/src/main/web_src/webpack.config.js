@@ -21,7 +21,7 @@ const devMode = process.env.NODE_ENV !== 'production'
 
 const outputDir = {
 	development: 'dist/dev',
-	production: 'dist/production'
+	production: '../../../target/classes/public'
 }
 
 const corsHeaders = {
