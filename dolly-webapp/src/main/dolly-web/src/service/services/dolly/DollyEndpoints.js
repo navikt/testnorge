@@ -13,7 +13,7 @@ const norg2Base = `${uri}/norg2`
 const aaregBase = `${uri}/aareg/arbeidsforhold`
 const personoppslagBase = `${uri}/personoppslag`
 
-class DollyEndpoints {
+export default class DollyEndpoints {
 	static gruppe() {
 		return groupBase
 	}
@@ -138,5 +138,3 @@ class DollyEndpoints {
 		return `${personoppslagBase}/ident/${ident}`
 	}
 }
-
-export default DollyEndpoints

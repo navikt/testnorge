@@ -1,32 +1,26 @@
 import Request from '../Request'
-import axios from 'axios'
 import ConfigService from '~/service/Config'
 
-export default class ArenaService {
-	static getArenaUrl() {
-		const url =
-			ConfigService.getDatesourceUrl('arena') || 'https://arena-forvalteren.nais.preprod.local'
-		return url + '/api/v1'
-	}
+const defaultUrl = 'https://arena-forvalteren.nais.preprod.local'
 
-	static getTestbruker(ident) {
-		return Request.getWithoutCredentials(
-			`${this.getArenaUrl()}/bruker?filter-personident=${ident}&page=0`,
-			{
-				headers: {
-					'Nav-Call-Id': 'dolly-frontend',
-					'Nav-Consumer-Id': 'dolly'
-				}
-			}
-		)
-	}
+const getArenaBaseUrl = () => ConfigService.getDatesourceUrl('arena') || defaultUrl
+const getArenaUrl = () => `${getArenaBaseUrl()}/api/v1`
 
-	static getTilgjengeligeMiljoe() {
-		return Request.getWithoutCredentials(`${this.getArenaUrl()}/miljoe`, {
-			headers: {
-				'Nav-Call-Id': 'dolly-frontend',
-				'Nav-Consumer-Id': 'dolly'
-			}
-		})
+const options = {
+	headers: {
+		'Nav-Call-Id': 'dolly-frontend',
+		'Nav-Consumer-Id': 'dolly'
+	}
+}
+
+export default {
+	getTestbruker(ident) {
+		const endpoint = `${getArenaUrl()}/bruker?filter-personident=${ident}&page=0`
+		return Request.getWithoutCredentials(endpoint, options)
+	},
+
+	getTilgjengeligeMiljoe() {
+		const endpoint = `${getArenaUrl()}/miljoe`
+		return Request.getWithoutCredentials(endpoint, options)
 	}
 }
