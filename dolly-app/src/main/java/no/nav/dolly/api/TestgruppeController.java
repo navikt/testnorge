@@ -11,7 +11,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -155,7 +154,7 @@ public class TestgruppeController {
     @Autowired
     private PersonService personService;
 
-    @CacheEvict(value = CACHE_GRUPPE, key = "#gruppeId")
+    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
     @PutMapping(value = "/{gruppeId}")
     public RsTestgruppeUtvidet oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettEndreTestgruppe testgruppe) {
@@ -172,10 +171,7 @@ public class TestgruppeController {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeUtvidet.class);
     }
 
-    @Caching(evict = {
-            @CacheEvict(value = CACHE_BESTILLING, allEntries = true),
-            @CacheEvict(value = CACHE_GRUPPE, key = "#gruppeId")
-    })
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @Transactional
     @DeleteMapping("/{gruppeId}/slettTestident")
     public void deleteTestident(@PathVariable Long gruppeId, @RequestParam String ident) {
@@ -187,13 +183,12 @@ public class TestgruppeController {
         personService.releaseArtifacts(singletonList(ident));
     }
 
-    @Cacheable(value = CACHE_GRUPPE, key = "#gruppeId")
+    @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}")
     public RsTestgruppeUtvidet getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeUtvidet.class);
     }
 
-    // @Cacheable(CACHE_GRUPPE) Tatt bort pga samme requeat parm som over (kan gi 500 feil)
     @GetMapping("/{gruppeId}/ny")
     public RsTestgruppeMedBestillingId getTestgruppen(@PathVariable("gruppeId") Long gruppeId) {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeMedBestillingId.class);
@@ -207,7 +202,7 @@ public class TestgruppeController {
         return mapperFacade.mapAsList(testgruppeService.getTestgruppeByNavidentOgTeamId(navIdent, teamId), RsTestgruppe.class);
     }
 
-    @CacheEvict(value = CACHE_GRUPPE, key = "#gruppeId")
+    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
     @DeleteMapping("/{gruppeId}")
     public void slettgruppe(@PathVariable("gruppeId") Long gruppeId) {
@@ -217,9 +212,7 @@ public class TestgruppeController {
     }
 
     @ApiOperation(value = "Opprett identer i TPS basert på fødselsdato, kjønn og identtype", notes = BESTILLING_BESKRIVELSE)
-    @Caching(evict = { @CacheEvict(value = CACHE_BESTILLING, allEntries = true),
-            @CacheEvict(value = CACHE_GRUPPE, key = "#gruppeId")
-    })
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
     public RsBestilling opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
@@ -230,9 +223,7 @@ public class TestgruppeController {
     }
 
     @ApiOperation(value = "Opprett identer i TPS fra ekisterende identer", notes = BESTILLING_BESKRIVELSE)
-    @Caching(evict = { @CacheEvict(value = CACHE_BESTILLING, allEntries = true),
-            @CacheEvict(value = CACHE_GRUPPE, key = "#gruppeId")
-    })
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
     public RsBestilling opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
@@ -243,7 +234,7 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestilling.class);
     }
 
-    @CacheEvict(value = CACHE_GRUPPE, key = "#gruppeId")
+    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @ApiOperation(value = "Endre status \"i-bruk\" og beskrivelse på testperson")
     @PutMapping("/{gruppeId}/identAttributter")
     @ResponseStatus(HttpStatus.OK)
