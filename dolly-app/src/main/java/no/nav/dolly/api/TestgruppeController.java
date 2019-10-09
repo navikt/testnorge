@@ -173,8 +173,8 @@ public class TestgruppeController {
     }
 
     @Caching(evict = {
-            @CacheEvict(CACHE_BESTILLING),
-            @CacheEvict(value = CACHE_GRUPPE, key= "#gruppeId")
+            @CacheEvict(value = CACHE_BESTILLING, allEntries = true),
+            @CacheEvict(value = CACHE_GRUPPE, key = "#gruppeId")
     })
     @Transactional
     @DeleteMapping("/{gruppeId}/slettTestident")
@@ -217,7 +217,9 @@ public class TestgruppeController {
     }
 
     @ApiOperation(value = "Opprett identer i TPS basert på fødselsdato, kjønn og identtype", notes = BESTILLING_BESKRIVELSE)
-    @CacheEvict(value = CACHE_GRUPPE, key = "#gruppeId")
+    @Caching(evict = { @CacheEvict(value = CACHE_BESTILLING, allEntries = true),
+            @CacheEvict(value = CACHE_GRUPPE, key = "#gruppeId")
+    })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
     public RsBestilling opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
@@ -228,7 +230,9 @@ public class TestgruppeController {
     }
 
     @ApiOperation(value = "Opprett identer i TPS fra ekisterende identer", notes = BESTILLING_BESKRIVELSE)
-    @CacheEvict(value = CACHE_GRUPPE, key = "#gruppeId")
+    @Caching(evict = { @CacheEvict(value = CACHE_BESTILLING, allEntries = true),
+            @CacheEvict(value = CACHE_GRUPPE, key = "#gruppeId")
+    })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
     public RsBestilling opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
