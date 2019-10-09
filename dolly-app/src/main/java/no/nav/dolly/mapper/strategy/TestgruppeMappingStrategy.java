@@ -19,7 +19,7 @@ import no.nav.dolly.mapper.MappingStrategy;
 public class TestgruppeMappingStrategy implements MappingStrategy {
 
     @Override
-    public void register(MapperFactory factory) {
+    public void register(MapperFactory factory) { //NOSONAR
         factory.classMap(Testgruppe.class, RsTestgruppe.class)
                 .customize(new CustomMapper<Testgruppe, RsTestgruppe>() {
                     @Override
