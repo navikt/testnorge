@@ -87,13 +87,13 @@ public class TestgruppeControllerTest {
 
     @Test(expected = NotFoundException.class)
     public void deleteTestIdentNotFound() {
-        controller.deleteTestident(IDENT);
+        controller.deleteTestident(GRUPPE_ID, IDENT);
     }
 
     @Test
     public void deleteTestIdentFound() {
         when(identService.slettTestident(IDENT)).thenReturn(1);
-        controller.deleteTestident(IDENT);
+        controller.deleteTestident(GRUPPE_ID, IDENT);
         verify(identService).slettTestident(IDENT);
     }
 
