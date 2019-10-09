@@ -40,6 +40,9 @@ public class PersonController {
     @Autowired
     private MapperFacade mapperFacade;
 
+    /**
+     * @deprecated (På vent, ikke sikkert denne funksjonen skal tilbys)
+     */
     @Deprecated
     @ApiOperation(value = "Endre/oppdatere person i TPS og øvrige systemer", notes =
             BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET)
