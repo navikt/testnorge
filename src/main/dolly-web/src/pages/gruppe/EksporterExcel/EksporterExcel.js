@@ -4,6 +4,8 @@ import Button from '~/components/ui/button/Button'
 import Loading from '~/components/ui/loading/Loading'
 import Icon from '~/components/ui/icon/Icon'
 
+import './EksporterExcel.less'
+
 export default class EksportExcel extends Component {
 	state = {
 		loading: false

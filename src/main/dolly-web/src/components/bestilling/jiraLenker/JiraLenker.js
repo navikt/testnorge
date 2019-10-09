@@ -1,4 +1,5 @@
 import React from 'react'
+import Header from '~/components/bestilling/sammendrag/header/Header'
 
 export default function JiraLenker({ openAm }) {
 	if (!openAm) return false
@@ -7,7 +8,7 @@ export default function JiraLenker({ openAm }) {
 
 	return (
 		<div>
-			<h3>Jira-lenker</h3>
+			<Header label="Jira-lenker" />
 			<div>
 				{openAm.map((link, i) => [
 					i > 0 && ', ',

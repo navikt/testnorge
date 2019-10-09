@@ -61,6 +61,25 @@ export const SortKodeverkArray = data => {
 		spesKoder.map(yrke => koderArray.unshift(yrke))
 	}
 
+	if (data.name === 'Landkoder') {
+		// Filtrerer bort land som har begrenset gyldighet. Fjernes hvis det oppstår behov for test med nye land.
+		const spesKoder = [
+			'ATF',
+			'BES',
+			'CUW',
+			'JEY',
+			'MNE',
+			'SCG',
+			'SDN',
+			'SRB',
+			'SXM',
+			'TLS',
+			'WAK',
+			'YUG'
+		]
+		return koderArray.filter(kode => !spesKoder.includes(kode.value))
+	}
+
 	return koderArray
 }
 
