@@ -69,7 +69,6 @@ const webpackConfig = {
 			filename: devMode ? '[name].css' : '[name].[contenthash:8].css'
 		}),
 		new HtmlWebpackPlugin({
-			hash: true,
 			title: 'Dolly',
 			favicon: 'src/assets/favicon.ico',
 			inject: false,

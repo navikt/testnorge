@@ -45,7 +45,9 @@ public class ProxyService {
         headers.add(NAV_CALL_ID, String.valueOf(UUID.randomUUID()));
         headers.add(NAV_CONSUMER_ID, "dolly-proxy");
         headers.add(CONTENT_TYPE, "application/json");
-        headers.set(HttpHeaders.ACCEPT_ENCODING, "deflate, br");
+
+        // Decoding exception occurs when accepted-encoding: "deflate, gzip and br" are used at the same time
+        headers.set(HttpHeaders.ACCEPT_ENCODING, "br;q=1.0, gzip;q=0.5, *;q=0.1");
 
         // TODO Brukes imot eksisterende dolly som forventer cookie i header
         Cookie idTokenCookie = getIdTokenCookie(request);
