@@ -48,6 +48,6 @@ public class ProxyController {
         if (request.getQueryString() != null) {
             queryString = URLDecoder.decode("?" + request.getQueryString(), StandardCharsets.UTF_8.name());
         }
-        return format("%s%s%s", host, request.getRequestURI(), queryString);
+        return format("%s%s%s", host, request.getRequestURI().split(url)[1], queryString);
     }
 }
