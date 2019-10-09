@@ -2,7 +2,6 @@ import { Kategorier, SubKategorier } from '../Categories'
 import { Attributt, InputType, DataSource, AttributtType } from '../Types'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import DateValidation from '~/components/fields/Datepicker/DateValidation'
-
 import * as yup from 'yup'
 
 const AttributtListe: Attributt[] = [
@@ -195,8 +194,42 @@ const AttributtListe: Attributt[] = [
 		label: 'Diskresjonskode',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
+		hoydeOptions: 'large',
 		apiKodeverkId: 'Diskresjonskoder',
 		attributtType: AttributtType.SelectAndEdit
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Diverse,
+		id: 'forsvunnet',
+		label: 'Forsvunnet',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Select,
+		attributtType: AttributtType.SelectOnly,
+		items: [
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Diverse,
+				id: 'erForsvunnet',
+				label: 'Forsvunnet',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				options: SelectOptionsManager('stringBoolean'),
+				attributtType: AttributtType.SelectOnly,
+				editPath: 'erForsvunnet'
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Diverse,
+				id: 'forsvunnetDato',
+				label: 'ForsvunnetDato',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				validation: DateValidation(),
+				attributtType: AttributtType.SelectOnly,
+				editPath: 'forsvunnetDato'
+			}
+		]
 	}
 ]
 

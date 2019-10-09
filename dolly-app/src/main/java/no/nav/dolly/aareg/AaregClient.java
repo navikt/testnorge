@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAktoer;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @Slf4j
 @Service
@@ -33,7 +33,7 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
     @Autowired
     private AaregReleaseIdentClient aaregReleaseIdentClient;
 
-    @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
+    @Override public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         StringBuilder result = new StringBuilder();
 
@@ -43,7 +43,7 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
 
                 ResponseEntity<Object[]> response = ResponseEntity.ok(new Object[] {});
                 try {
-                    response = aaregRestConsumer.readArbeidsforhold(norskIdent.getIdent(), env);
+                    response = aaregRestConsumer.readArbeidsforhold(tpsPerson.getHovedperson(), env);
                 } catch (RuntimeException e) {
                     log.error("Lesing av aareg i {} feilet, {}", env, e.getLocalizedMessage());
                 }
@@ -51,7 +51,7 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
                 for (int i = 0; i < bestilling.getAareg().size(); i++) {
                     RsArbeidsforhold arbfInput = bestilling.getAareg().get(i);
                     arbfInput.setArbeidsforholdID(Integer.toString(i + 1));
-                    arbfInput.setArbeidstaker(RsPersonAareg.builder().ident(norskIdent.getIdent()).build());
+                    arbfInput.setArbeidstaker(RsPersonAareg.builder().ident(tpsPerson.getHovedperson()).build());
 
                     boolean found = false;
                     for (int j = 0; j < response.getBody().length; j++) {
