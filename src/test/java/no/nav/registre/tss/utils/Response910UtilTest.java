@@ -1,8 +1,5 @@
 package no.nav.registre.tss.utils;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import wiremock.com.google.common.io.Resources;
@@ -10,7 +7,9 @@ import wiremock.com.google.common.io.Resources;
 import java.io.IOException;
 import java.net.URL;
 
-import no.nav.registre.tss.consumer.rs.responses.Response910;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import no.nav.registre.tss.consumer.rs.response.Response910;
 
 public class Response910UtilTest {
 

@@ -2,18 +2,17 @@ package no.nav.registre.tss.utils;
 
 import java.util.List;
 
-import no.nav.registre.tss.consumer.rs.responses.TssSyntMessage;
-import no.nav.registre.tss.domain.TssType;
+import no.nav.registre.tss.consumer.rs.response.TssSyntMessage;
 
 public class RutineUtil {
 
     public static final int MELDINGSLENGDE = 203;
 
-    public static String opprettFlatfil(List<TssSyntMessage> rutiner, TssType type) {
+    public static String opprettFlatfil(List<TssSyntMessage> rutiner) {
         StringBuilder flatfil = new StringBuilder();
         for (TssSyntMessage rutine : rutiner) {
             String idKode = rutine.getIdKode();
-            rutine.setKodeSamhType(type.toString());
+
             switch (idKode) {
             case "110":
                 flatfil.append(Rutine110Util.opprett110Rutine(rutine));

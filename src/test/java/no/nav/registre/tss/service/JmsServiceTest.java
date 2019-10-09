@@ -1,13 +1,5 @@
 package no.nav.registre.tss.service;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -23,7 +15,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.tss.consumer.rs.responses.Response910;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import no.nav.registre.tss.consumer.rs.response.Response910;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JmsServiceTest {

@@ -1,10 +1,5 @@
 package no.nav.registre.tss.consumer.rs;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -23,9 +18,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import no.nav.registre.tss.consumer.rs.responses.TssSyntMessage;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import no.nav.registre.tss.consumer.rs.response.TssSyntMessage;
 import no.nav.registre.tss.domain.Person;
+import no.nav.registre.tss.domain.Samhandler;
+import no.nav.registre.tss.domain.TssType;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(TssSyntetisererenConsumer.class)
@@ -55,7 +57,8 @@ public class TssSyntetisererenConsumerTest {
         identer.add(person2);
 
         server.expect(requestToUriTemplate(serverUrl + "/v1/generate_tss_messages/json")).andRespond(withSuccess(getJsonResponse(), MediaType.APPLICATION_JSON));
-        Map<String, List<TssSyntMessage>> identerMedRutiner = tssSyntetisererenConsumer.hentSyntetiskeTssRutiner(identer);
+        Map<String, List<TssSyntMessage>> identerMedRutiner = tssSyntetisererenConsumer.hentSyntetiskeTssRutiner(identer.stream()
+                .map(person -> new Samhandler(person, TssType.LE)).collect(Collectors.toList()));
 
         assertThat(identerMedRutiner.get(fnr1).get(0).getNavn(), equalTo(navn1));
         assertThat(identerMedRutiner.get(fnr1).get(1).getIdAlternativ(), equalTo(fnr1));

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import no.nav.registre.tss.consumer.rs.responses.Response910;
+import no.nav.registre.tss.consumer.rs.response.Response910;
 import no.nav.registre.tss.utils.Response910Util;
 import no.nav.registre.tss.utils.Rutine910Util;
 

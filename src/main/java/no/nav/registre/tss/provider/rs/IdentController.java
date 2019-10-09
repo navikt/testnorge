@@ -13,7 +13,7 @@ import javax.jms.JMSException;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.tss.consumer.rs.responses.Response910;
+import no.nav.registre.tss.consumer.rs.response.Response910;
 import no.nav.registre.tss.service.IdentService;
 
 @RestController

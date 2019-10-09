@@ -9,13 +9,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.tss.consumer.rs.responses.Response910;
+import no.nav.registre.tss.consumer.rs.response.Response910;
 import no.nav.registre.tss.domain.Person;
+import no.nav.registre.tss.domain.Samhandler;
 import no.nav.registre.tss.domain.TssType;
 
 @Service
@@ -32,7 +31,10 @@ public class IdentService {
     private JmsService jmsService;
 
     public List<String> opprettLegerITss(String miljoe, List<String> identer) {
-        return opprettSamhandler(miljoe, identer, TssType.LE);
+        List<Samhandler> leger = hentPersondataFraHodejegeren(miljoe, identer).stream()
+                .map(person -> new Samhandler(person, TssType.LE))
+                .collect(Collectors.toList());
+        return opprettSamhandler(miljoe, leger);
     }
 
     public Map<String, Response910> hentLegerIAvspillergruppeFraTss(Long avspillergruppeId, Integer antallLeger, String miljoe) throws JMSException {
@@ -55,24 +57,23 @@ public class IdentService {
 
     public List<String> opprettSamhandlereITss(String miljoe, List<String> identer) {
 
-        Map<TssType, List<String>> samhandlerMapping = Stream.of(TssType.values()).collect(Collectors.toMap(Function.identity(), f -> new ArrayList<>()));
+        List<Person> personer = hentPersondataFraHodejegeren(miljoe, identer);
 
         int chunkSize = (identer.size() / TssType.values().length) - 1;
         log.info("Lik fordeling blant samhandlere på størrelse " + chunkSize);
 
         int counter = 0;
-
-        for (Map.Entry<TssType, List<String>> entry : samhandlerMapping.entrySet()) {
-            entry.getValue().addAll(identer.subList(counter, counter + chunkSize));
+        List<Samhandler> samhandlere = new ArrayList<>();
+        for (TssType type : TssType.values()) {
+            samhandlere.addAll(personer.subList(counter, counter + chunkSize).stream()
+                    .map(person -> new Samhandler(person, type))
+                    .collect(Collectors.toList()));
             counter += chunkSize;
         }
 
         log.info("Antall identer ikke brukt: {}", identer.size() - counter);
 
-        return samhandlerMapping.entrySet().stream()
-                .map(entry -> opprettSamhandler(miljoe, entry.getValue(), entry.getKey()))
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
+        return opprettSamhandler(miljoe, samhandlere);
     }
 
     private List<Person> hentPersondataFraHodejegeren(String miljoe, List<String> identer) {
@@ -85,23 +86,21 @@ public class IdentService {
         return identerMedNavn;
     }
 
-    private List<String> opprettSamhandler(String miljoe, List<String> identer, TssType type) {
+    private List<String> opprettSamhandler(String miljoe, List<Samhandler> identer) {
         String koeNavnAjourhold = jmsService.hentKoeNavnAjour(miljoe);
         String koeNavnSamhandler = jmsService.hentKoeNavnSamhandler(miljoe);
 
-        List<Person> identerMedNavn = hentPersondataFraHodejegeren(miljoe, identer);
-
-        List<String> syntetiskeTssRutiner = syntetiseringService.opprettSyntetiskeTssRutiner(identerMedNavn, type);
+        List<String> syntetiskeTssRutiner = syntetiseringService.opprettSyntetiskeTssRutiner(identer);
 
         jmsService.sendTilTss(syntetiskeTssRutiner, koeNavnAjourhold);
 
         List<String> opprettedeSamhandlere = new ArrayList<>();
 
-        for (Person ident : identerMedNavn) {
+        for (Samhandler ident : identer) {
             try {
-                Response910 response = jmsService.sendOgMotta910RutineFraTss(ident.getFnr(), koeNavnSamhandler);
+                Response910 response = jmsService.sendOgMotta910RutineFraTss(ident.getIdent(), koeNavnSamhandler);
                 if (!response.getResponse110().isEmpty() || !response.getResponse111().isEmpty() || !response.getResponse125().isEmpty()) {
-                    opprettedeSamhandlere.add(ident.getFnr());
+                    opprettedeSamhandlere.add(ident.getIdent());
                 }
             } catch (JMSException e) {
                 log.error("Kunne ikke hente samhandler " + ident + " fra TSS", e);

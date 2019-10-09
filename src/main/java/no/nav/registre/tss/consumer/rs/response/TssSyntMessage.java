@@ -1,12 +1,12 @@
-package no.nav.registre.tss.consumer.rs.responses;
-
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+package no.nav.registre.tss.consumer.rs.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Getter
 @Setter
