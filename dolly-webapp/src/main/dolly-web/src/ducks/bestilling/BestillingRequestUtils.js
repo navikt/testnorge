@@ -176,40 +176,39 @@ export const getValues = (attributeList, values) => {
 		}
 		if (attribute.id === 'barn') {
 			const valueCopy = JSON.parse(JSON.stringify(value))
-
+			console.log('value :', value)
 			value.map((barn, idx) => {
 				//Loop gjennom liste med barn
 				//Samme action for begge alternativ. TODO: Skrive felles
 				if (barn.innvandret) {
-					Object.entries(valueCopy[idx].barn_innvandret[0]).map(attr => {
+					Object.entries(valueCopy[idx].innvandret[0]).map(attr => {
 						_set(
 							valueCopy[idx],
 							attr[0],
 							isDate(attr[1]) ? DataFormatter.parseDate(attr[1]) : attr[1]
 						)
 					})
-					delete valueCopy[idx].barn_innvandret
+					delete valueCopy[idx].innvandret
 				}
 				if (barn.utvandret) {
-					Object.entries(valueCopy[idx].barn_utvandret[0]).map(attr => {
+					Object.entries(valueCopy[idx].utvandret[0]).map(attr => {
 						_set(
 							valueCopy[idx],
 							attr[0],
 							isDate(attr[1]) ? DataFormatter.parseDate(attr[1]) : attr[1]
 						)
 					})
-					delete valueCopy[idx].barn_utvandret
+					delete valueCopy[idx].utvandret
 				}
-
-				if (barn.Statsborgerskap) {
-					Object.entries(valueCopy[idx].barn_Statsborgerskap[0]).map(attr => {
+				if (barn.forsvunnet) {
+					Object.entries(valueCopy[idx].forsvunnet[0]).map(attr => {
 						_set(
 							valueCopy[idx],
 							attr[0],
 							isDate(attr[1]) ? DataFormatter.parseDate(attr[1]) : attr[1]
 						)
 					})
-					delete valueCopy[idx].barn_Statsborgerskap
+					delete valueCopy[idx].forsvunnet
 				}
 			})
 			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, valueCopy)
@@ -218,7 +217,7 @@ export const getValues = (attributeList, values) => {
 		if (
 			attribute.id.includes('innvandret') ||
 			attribute.id.includes('utvandret') ||
-			attribute.id.includes('statsborgerskap')
+			attribute.id.includes('forsvunnet')
 		) {
 			// Viktig at denne ligger etter bolken med barn
 			Object.entries(value[0]).map(attr => {
@@ -519,7 +518,6 @@ export const parseSubItemDate = (item, rad, radTransformation) => {
 
 	return radTransformation
 }
-
 export const deletePropertiesWithoutValues = obj => {
 	Object.keys(obj).map(key => !obj[key] && delete obj[key])
 	return obj

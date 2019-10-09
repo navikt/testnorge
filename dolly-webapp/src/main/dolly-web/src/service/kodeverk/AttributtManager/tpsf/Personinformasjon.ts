@@ -64,7 +64,7 @@ const AttributtListe: Attributt[] = [
 			{
 				hovedKategori: Kategorier.PersInfo,
 				subKategori: SubKategorier.Nasjonalitet,
-				id: 'statsborgerskapRegDato',
+				id: 'statsborgerskapRegdato',
 				label: 'statsborgerskap reg dato',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Date,

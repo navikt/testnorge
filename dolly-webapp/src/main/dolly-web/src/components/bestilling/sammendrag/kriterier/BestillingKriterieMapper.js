@@ -19,7 +19,7 @@ const _getTpsfBestillingData = data => {
 		obj('Født før', Formatters.formatDate(data.foedtFoer)),
 		obj('Dødsdato', Formatters.formatDate(data.doedsdato)),
 		obj('Statsborgerskap', data.statsborgerskap, 'Landkoder'),
-		obj('StatsborgerskapRegdato', Formatters.formatDate(data.statsborgerskapRegdato)),
+		obj('Statsborgerskap dato', Formatters.formatDate(data.statsborgerskapRegdato)),
 		obj('Kjønn', Formatters.kjonnToString(data.kjonn)),
 		obj('Har mellomnavn', Formatters.oversettBoolean(data.harMellomnavn)),
 		obj('Sivilstand', data.sivilstand, 'Sivilstander'),
@@ -32,7 +32,7 @@ const _getTpsfBestillingData = data => {
 		obj('Utvandret dato', Formatters.formatDate(data.utvandretTilLandFlyttedato)),
 		obj('Er forsvunnet', Formatters.oversettBoolean(data.erForsvunnet)),
 		obj('Forsvunnet dato', Formatters.formatDate(data.forsvunnetDato)),
-		obj('Egenansatt', Formatters.oversettBoolean(data.egenansattDatoFom)),
+		obj('Egenansatt', Formatters.oversettBoolean(data.egenansattDatoFom))
 	]
 }
 
@@ -323,7 +323,7 @@ export function mapBestillingData(bestillingData) {
 							obj('Etternavn', falskIdData.personnavn.etternavn),
 							obj('Kjønn', falskIdData.kjoenn),
 							obj('Fødselsdato', Formatters.formatDate(falskIdData.foedselsdato)),
-							obj('Statsborgerskap', Formatters.arrayToString(falskIdData.statsborgerskap))
+							obj('Statsborgerskap', Formatters.arrayToString(falskIdData.Statsborgerskap))
 						]
 					}
 					data.push(falskId)

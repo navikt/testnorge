@@ -103,8 +103,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 				{
 					id: 'statsborgerskapRegdato',
 					label: 'Statsborgerskap reg dato',
-					value:
-						tpsfKriterier.statsborgerskap && Formatters.formatDate(tpsfData.statsborgerskapRegdato)
+					value: Formatters.formatDate(tpsfData.statsborgerskapRegdato)
 				},
 				{
 					id: 'sprakKode',
@@ -344,8 +343,8 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 							apiKodeverkId: 'Landkoder'
 						},
 						{
-							id: 'statsborgerskapRegdato',
-							label: 'statsborgerskap reg dato',
+							id: 'ssatsborgerskapRegdato',
+							label: 'Statsborgerskap reg dato',
 							value:
 								relasjonstype === 'Barn' &&
 								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].statsborgerskap

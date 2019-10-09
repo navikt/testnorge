@@ -59,18 +59,20 @@ export const FieldArrayComponent = ({
 				: Attributt.initValueSelector(curr)
 		}
 	}, {})
+	console.log('parentAttributes :', parentAttributes)
 	const createDefaultObject = () => {
 		// Refaktoreres. Hvordan kan vi generalisere denne typen attributter for barn?
 		if ('barn_utvandret' in parentAttributes) {
+			console.log('test :', test)
 			parentAttributes.barn_utvandret = [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }]
 		} else if ('barn_innvandret' in parentAttributes) {
 			parentAttributes.barn_innvandret = [
 				{ innvandretFraLand: '', innvandretFraLandFlyttedato: '' }
 			]
-		} else if ('barn_Statsborgerskap' in parentAttributes) {
-			parentAttributes.barn_Statsborgerskap = [{ statsborgerskap: '', statsborgerskapRegdato: '' }]
 		} else if ('barn_forsvunnet' in parentAttributes) {
 			parentAttributes.barn_forsvunnet = [{ erForsvunnet: '', forsvunnetDato: '' }]
+		} else if ('barn_Statsborgerskap' in parentAttributes) {
+			parentAttributes.barn_Statsborgerskap = [{ statsborgerskap: '', statsborgerskapRegdato: '' }]
 		}
 		arrayHelpers.push({ ...parentAttributes })
 	}
@@ -107,10 +109,11 @@ export const FieldArrayComponent = ({
 		formikValues = [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }]
 	} else if (item.id === 'barn_innvandret') {
 		formikValues = [{ innvandretFraLand: '', innvandretFraLandFlyttedato: '' }]
-	} else if (item.id === 'barn_Statsborgerskap') {
-		formikValues = [{ statsborgersksap: '', statsborgerskapRegdato: '' }]
 	} else if (item.id === 'barn_forsvunnet') {
+		console.log('test :')
 		formikValues = [{ erForsvunnet: '', forsvunnetDato: '' }]
+	} else if (item.id === 'barn_Statsborgerskap') {
+		formikValues = [{ statsborgerskap: '', statsborgerskapRegdato: '' }]
 	}
 	let subLabelArray = []
 	let antallInstanser = 0
