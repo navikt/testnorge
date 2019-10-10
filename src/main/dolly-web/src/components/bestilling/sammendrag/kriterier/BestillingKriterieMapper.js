@@ -242,7 +242,9 @@ export function mapBestillingData(bestillingData) {
 						label: 'RESERVERT MOT DIGITALKOMMUNIKASJON',
 						value: krrKriterier.reservert ? 'JA' : 'NEI',
 						width: 'medium'
-					}
+					},
+					obj('Gyldig fra', Formatters.formatDate(krrKriterier.gyldigFra)),
+					obj('Registrert i DKIF', krrKriterier.registrert ? 'JA' : 'NEI')
 				]
 			}
 

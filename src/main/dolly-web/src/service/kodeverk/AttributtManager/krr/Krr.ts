@@ -10,7 +10,7 @@ const AttributtListe: Attributt[] = [
 		hovedKategori: Kategorier.KontaktInfo,
 		subKategori: SubKategorier.Krr,
 		id: 'krr',
-		label: 'Har kontakt og reservasjon',
+		label: 'Har kontaktinformasjon',
 		dataSource: DataSource.KRR,
 		attributtType: AttributtType.SelectAndEdit,
 		validation: yup.object(),
@@ -43,7 +43,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Reservert mot digitalkommunikasjon',
 				inputType: InputType.Select,
 				validation: yup.string().required('Vennligst velg'),
-				options: SelectOptionsManager('boolean'),
+				options: SelectOptionsManager('stringBoolean'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -54,6 +54,16 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.KRR,
 				validation: DateValidation(false),
 				inputType: InputType.Date,
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.KontaktInfo,
+				subKategori: SubKategorier.Krr,
+				id: 'registrert',
+				dataSource: DataSource.KRR,
+				label: 'Registrert i DKIF',
+				inputType: InputType.Select,
+				options: SelectOptionsManager('stringBoolean'),
 				attributtType: AttributtType.SelectAndEdit
 			}
 		]
