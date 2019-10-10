@@ -1,9 +1,8 @@
-import Request from '../Request'
+import config from '~/config'
+import Request from '~/service/services/Request'
 import ConfigService from '~/service/Config'
 
-const defaultUrl = 'https://testnorge-inst.nais.preprod.local'
-
-const getInstBaseUrl = () => ConfigService.getDatesourceUrl('inst') || defaultUrl
+const getInstBaseUrl = () => ConfigService.getDatesourceUrl('inst') || config.services.instdataUrl
 const getInstUrl = () => `${getInstBaseUrl()}/api/v1`
 
 export default {

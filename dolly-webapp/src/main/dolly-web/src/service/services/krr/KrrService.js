@@ -1,8 +1,8 @@
-import Request from '../Request'
+import config from '~/config'
+import Request from '~/service/services/Request'
 import ConfigService from '~/service/Config'
 
-const defaultUrl = 'https://krr-stub.nais.preprod.local'
-const getKrrBaseUrl = () => ConfigService.getDatesourceUrl('krr') || defaultUrl
+const getKrrBaseUrl = () => ConfigService.getDatesourceUrl('krr') || config.services.krrStubUrl
 const getKrrUrl = () => `${getKrrBaseUrl()}/api/v1`
 
 export default {
