@@ -1,7 +1,5 @@
 package no.nav.registre.tss.provider.rs;
 
-import static org.mockito.Mockito.verify;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -10,6 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.jms.JMSException;
 
+import static org.mockito.Mockito.verify;
 import no.nav.registre.tss.service.IdentService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -36,7 +35,7 @@ public class IdentControllerTest {
     @Test
     public void shouldHenteLegeFraTss() throws JMSException {
         identController.hentLegeFraTss(fnr1, miljoe);
-        verify(identService).hentLegeFraTss(fnr1, miljoe);
+        verify(identService).hentSamhandlerFraTss(fnr1, miljoe);
     }
 
 }

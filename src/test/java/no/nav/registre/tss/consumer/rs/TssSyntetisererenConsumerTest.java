@@ -24,7 +24,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-import no.nav.registre.tss.consumer.rs.response.TssSyntMessage;
+import no.nav.registre.tss.consumer.rs.response.TssMessage;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.domain.Samhandler;
 import no.nav.registre.tss.domain.TssType;
@@ -57,7 +57,7 @@ public class TssSyntetisererenConsumerTest {
         identer.add(person2);
 
         server.expect(requestToUriTemplate(serverUrl + "/v1/generate_tss_messages/json")).andRespond(withSuccess(getJsonResponse(), MediaType.APPLICATION_JSON));
-        Map<String, List<TssSyntMessage>> identerMedRutiner = tssSyntetisererenConsumer.hentSyntetiskeTssRutiner(identer.stream()
+        Map<String, List<TssMessage>> identerMedRutiner = tssSyntetisererenConsumer.hentSyntetiskeTssRutiner(identer.stream()
                 .map(person -> new Samhandler(person, TssType.LE)).collect(Collectors.toList()));
 
         assertThat(identerMedRutiner.get(fnr1).get(0).getNavn(), equalTo(navn1));

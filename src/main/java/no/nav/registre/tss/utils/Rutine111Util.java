@@ -1,11 +1,11 @@
 package no.nav.registre.tss.utils;
 
 import static no.nav.registre.tss.utils.RutineUtil.MELDINGSLENGDE;
-import no.nav.registre.tss.consumer.rs.response.TssSyntMessage;
+import no.nav.registre.tss.consumer.rs.response.TssMessage;
 
 public class Rutine111Util {
 
-    public static String opprett111Rutine(TssSyntMessage message) {
+    public static String opprett111Rutine(TssMessage message) {
         StringBuilder rutine = new StringBuilder(MELDINGSLENGDE);
         for (int i = 0; i < MELDINGSLENGDE; i++) {
             rutine.replace(i, i + 1, " ");

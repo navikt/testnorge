@@ -12,10 +12,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.tss.consumer.rs.response.Response110;
 import no.nav.registre.tss.consumer.rs.response.Response910;
+import no.nav.registre.tss.consumer.rs.response.TssMessage;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.domain.Samhandler;
 import no.nav.registre.tss.domain.TssType;
+import no.nav.registre.tss.provider.rs.request.Rutine130Request;
+import no.nav.registre.tss.utils.Rutine110Util;
+import no.nav.registre.tss.utils.rutine130.Rutine130Util;
 
 @Service
 @Slf4j
@@ -50,7 +55,7 @@ public class IdentService {
         return jmsService.sendOgMotta910RutineFraTss(utvalgteLeger, koeNavn);
     }
 
-    public Response910 hentLegeFraTss(String ident, String miljoe) throws JMSException {
+    public Response910 hentSamhandlerFraTss(String ident, String miljoe) throws JMSException {
         String koeNavn = jmsService.hentKoeNavnSamhandler(miljoe);
         return jmsService.sendOgMotta910RutineFraTss(ident, koeNavn);
     }
@@ -94,6 +99,35 @@ public class IdentService {
         }
         log.info("Antall identer ikke brukt: {}", personer.size() - counter);
         return samhandlere;
+    }
+
+    public String leggTilAdresse(String ident, String miljoe, Rutine130Request message) {
+        Response910 response910 = null;
+        StringBuilder fullRutine = new StringBuilder();
+        try {
+            response910 = hentSamhandlerFraTss(ident, miljoe);
+        } catch (JMSException e) {
+            log.error("Kunne ikke hente samhandler fra TSS", e);
+        }
+
+        if (response910 != null) {
+            Response110 response110 = response910.getResponse110().get(0);
+            TssMessage rutine110 = TssMessage.builder()
+                    .idKode(response110.getIdKode())
+                    .idOff(response110.getIdOff())
+                    .kodeIdenttype(response110.getKodeIdenttype())
+                    .kodeSamhType(response110.getKodeSamhType())
+                    .navn(response110.getNavn())
+                    .oppdater("N")
+                    .build();
+            String rutine110Flatfil = Rutine110Util.opprett110Rutine(rutine110);
+            String rutine130Flatfil = Rutine130Util.opprett130Rutine(message);
+            fullRutine
+                    .append(rutine110Flatfil)
+                    .append(rutine130Flatfil);
+        }
+
+        return fullRutine.toString();
     }
 
     private List<Person> hentPersondataFraHodejegeren(String miljoe, List<String> identer) {

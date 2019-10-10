@@ -2,15 +2,15 @@ package no.nav.registre.tss.utils;
 
 import java.util.List;
 
-import no.nav.registre.tss.consumer.rs.response.TssSyntMessage;
+import no.nav.registre.tss.consumer.rs.response.TssMessage;
 
 public class RutineUtil {
 
     public static final int MELDINGSLENGDE = 203;
 
-    public static String opprettFlatfil(List<TssSyntMessage> rutiner) {
+    public static String opprettFlatfil(List<TssMessage> rutiner) {
         StringBuilder flatfil = new StringBuilder();
-        for (TssSyntMessage rutine : rutiner) {
+        for (TssMessage rutine : rutiner) {
             String idKode = rutine.getIdKode();
 
             switch (idKode) {

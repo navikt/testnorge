@@ -11,13 +11,13 @@ import org.springframework.web.util.UriTemplate;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.tss.consumer.rs.response.TssSyntMessage;
+import no.nav.registre.tss.consumer.rs.response.TssMessage;
 import no.nav.registre.tss.domain.Samhandler;
 
 @Component
 public class TssSyntetisererenConsumer {
 
-    private final ParameterizedTypeReference<Map<String, List<TssSyntMessage>>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<Map<String, List<TssMessage>>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     private RestTemplate restTemplate;
@@ -28,7 +28,7 @@ public class TssSyntetisererenConsumer {
         this.url = new UriTemplate(synthdataTssUrl + "/v1/tss");
     }
 
-    public Map<String, List<TssSyntMessage>> hentSyntetiskeTssRutiner(List<Samhandler> samhandlere) {
+    public Map<String, List<TssMessage>> hentSyntetiskeTssRutiner(List<Samhandler> samhandlere) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(samhandlere);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
