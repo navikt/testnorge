@@ -18,10 +18,10 @@ import Synchronize from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/synch
 import ReportProblemCircle from '~/assets/icons/custom/ProblemCircle.svg'
 import CheckCircle from '~/assets/icons/custom/CheckCircle.svg'
 import ProblemTriangle from '~/assets/icons/custom/ProblemTriangle.svg'
-import ChevronDown from '~/assets/icons/nav-ikoner/line/SVG/46-arrows/arrow-down-12.svg'
-import ChevronUp from '~/assets/icons/nav-ikoner/line/SVG/46-arrows/arrow-up-12.svg'
-import ChevronLeft from '~/assets/icons/nav-ikoner/line/SVG/46-arrows/arrow-left-12.svg'
-import ChevronRight from '~/assets/icons/nav-ikoner/line/SVG/46-arrows/arrow-right-12.svg'
+import ChevronDown from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-down-8.svg'
+import ChevronUp from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-up-8.svg'
+import ChevronLeft from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-left-8.svg'
+import ChevronRight from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-right-8.svg'
 
 import './Icon.less'
 
