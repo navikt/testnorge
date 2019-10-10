@@ -23,6 +23,7 @@ import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -53,6 +54,9 @@ public class BestillingServiceTest {
 
     @Mock
     private BestillingProgressRepository bestillingProgressRepository;
+
+    @Mock
+    private TestgruppeRepository testgruppeRepository;
 
     @InjectMocks
     private BestillingService bestillingService;
@@ -87,7 +91,7 @@ public class BestillingServiceTest {
     @Test
     public void fetchBestillingerByGruppeIdBlirKaltMedGittFunnetTestgruppeOgReturnererBestillinger() {
         Testgruppe gruppe = mock(Testgruppe.class);
-        when(testgruppeService.fetchTestgruppeById(any())).thenReturn(gruppe);
+        when(testgruppeRepository.findById(any())).thenReturn(Optional.of(gruppe));
 
         bestillingService.fetchBestillingerByGruppeId(1l);
         verify(bestillingRepository).findBestillingByGruppeOrderById(gruppe);
@@ -100,7 +104,7 @@ public class BestillingServiceTest {
         List<String> miljoer = asList("a1", "b2", "c3", "d4");
         int antallIdenter = 4;
 
-        when(testgruppeService.fetchTestgruppeById(gruppeId)).thenReturn(gruppe);
+        when(testgruppeRepository.findById(gruppeId)).thenReturn(Optional.of(gruppe));
 
         bestillingService.saveBestilling(gruppeId, RsDollyBestilling.builder().environments(miljoer).build(),
                 RsTpsfUtvidetBestilling.builder().build(), antallIdenter, null);

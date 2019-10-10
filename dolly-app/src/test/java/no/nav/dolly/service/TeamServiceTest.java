@@ -16,9 +16,9 @@ import static org.mockito.Mockito.when;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.RsBruker;
-import no.nav.dolly.domain.resultset.RsOpprettTeam;
-import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
+import no.nav.dolly.domain.resultset.entity.team.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
@@ -218,19 +218,6 @@ public class TeamServiceTest {
         verify(teamRepository).save(argumentCaptor.capture());
         return argumentCaptor.getValue();
     }
-
-    //TODO Erstatt med tester i ende-til-ende tester
-//    @Test(expected = ConstraintViolationException.class)
-//    public void saveTeamToDB_DataIntegrityViolationExceptionCatches() {
-//        when(teamRepository.save(any(Team.class))).thenThrow(DataIntegrityViolationException.class);
-//        teamService.saveTeamToDB(new Team());
-//    }
-//
-//    @Test(expected = DollyFunctionalException.class)
-//    public void saveTeamToDB_kasterDollyExceptionHvisDBConstraintErBrutt() {
-//        when(teamRepository.save(any(Team.class))).thenThrow(nonTransientDataAccessException);
-//        teamService.saveTeamToDB(new Team());
-//    }
 
     @Test
     public void fetchTeamsByMedlemskapInTeams_ok() {

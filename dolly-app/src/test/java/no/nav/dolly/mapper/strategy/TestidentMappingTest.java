@@ -7,7 +7,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsTestident;
+import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.common.TestidentBuilder;
 import org.junit.Before;

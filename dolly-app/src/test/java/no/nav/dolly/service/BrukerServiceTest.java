@@ -21,7 +21,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.GruppeRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class BrukerServiceTest {
     private BrukerRepository brukerRepository;
 
     @Mock
-    private GruppeRepository gruppeRepository;
+    private TestgruppeRepository testgruppeRepository;
 
     @InjectMocks
     private BrukerService brukerService;
@@ -112,7 +112,7 @@ public class BrukerServiceTest {
         Testgruppe testgruppe = Testgruppe.builder().navn("gruppe").hensikt("hen").build();
         Bruker bruker = Bruker.builder().navIdent(navIdent).favoritter(new HashSet<>()).teams(new HashSet<>()).build();
 
-        when(gruppeRepository.findById(ID)).thenReturn(ofNullable(testgruppe));
+        when(testgruppeRepository.findById(ID)).thenReturn(ofNullable(testgruppe));
         when(brukerRepository.findBrukerByNavIdent(navIdent)).thenReturn(bruker);
         when(brukerRepository.save(bruker)).thenReturn(bruker);
 
@@ -140,7 +140,7 @@ public class BrukerServiceTest {
         testgruppe.setFavorisertAv(newHashSet(singletonList(bruker)));
         testgruppe2.setFavorisertAv(newHashSet(singletonList(bruker)));
 
-        when(gruppeRepository.findById(ID)).thenReturn(ofNullable(testgruppe));
+        when(testgruppeRepository.findById(ID)).thenReturn(ofNullable(testgruppe));
         when(brukerRepository.findBrukerByNavIdent(navIdent)).thenReturn(bruker);
         when(brukerRepository.save(bruker)).thenReturn(bruker);
 

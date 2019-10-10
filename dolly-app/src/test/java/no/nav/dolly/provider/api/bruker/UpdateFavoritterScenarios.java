@@ -9,8 +9,8 @@
 //import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 //
 //import no.nav.dolly.domain.jpa.Bruker;
-//import no.nav.dolly.domain.resultset.RsBruker;
-//import no.nav.dolly.domain.resultset.RsBrukerUpdateFavoritterReq;
+//import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
+//import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 //import org.junit.Test;
 //import org.springframework.test.web.servlet.MvcResult;
 //

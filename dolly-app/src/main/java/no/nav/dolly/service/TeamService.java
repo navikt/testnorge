@@ -11,10 +11,10 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsBruker;
-import no.nav.dolly.domain.resultset.RsOpprettTeam;
-import no.nav.dolly.domain.resultset.RsTeam;
-import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
+import no.nav.dolly.domain.resultset.entity.team.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -27,8 +27,6 @@ import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-
-//TODO Burde gjore at alle returnerer team istedenfor "json/POJO" representasjonen av de.
 
 @Service
 @RequiredArgsConstructor
@@ -100,7 +98,6 @@ public class TeamService {
         return mapperFacade.map(changedTeam, RsTeamUtvidet.class);
     }
 
-    //TODO Er denne nødvendig når fjernMedlemmer gjør samme jobben?
     public RsTeamUtvidet slettMedlem(Long teamId, String navIdent) {
         Team team = fetchTeamById(teamId);
         boolean found = false;

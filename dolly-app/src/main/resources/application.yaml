@@ -37,3 +37,7 @@ dolly:
       header:
         nav-consumer-id: En ID for systemet som gjør kallet, som regel servicebrukeren til applikasjonen.
         nav-call-id: En ID som identifiserer kallkjeden som dette kallet er en del av.
+
+spring:
+  main:
+    allow-bean-definition-overriding: true

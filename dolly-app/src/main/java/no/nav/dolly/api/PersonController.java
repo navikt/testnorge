@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.RsBestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.service.BestillingService;
 import org.springframework.http.HttpStatus;

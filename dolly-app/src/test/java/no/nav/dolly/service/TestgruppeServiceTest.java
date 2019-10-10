@@ -20,11 +20,11 @@ import static org.mockito.Mockito.when;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.GruppeRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.common.TestidentBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.Before;
@@ -53,7 +53,7 @@ public class TestgruppeServiceTest {
     private static final String standardPrincipal = "PRINC";
 
     @Mock
-    private GruppeRepository gruppeRepository;
+    private TestgruppeRepository testgruppeRepository;
 
     @Mock
     private BrukerService brukerService;
@@ -104,7 +104,7 @@ public class TestgruppeServiceTest {
         testgruppeService.opprettTestgruppe(rsTestgruppe);
 
         ArgumentCaptor<Testgruppe> cap = ArgumentCaptor.forClass(Testgruppe.class);
-        verify(gruppeRepository).save(cap.capture());
+        verify(testgruppeRepository).save(cap.capture());
 
         Testgruppe res = cap.getValue();
 
@@ -116,7 +116,7 @@ public class TestgruppeServiceTest {
     @Test(expected = NotFoundException.class)
     public void fetchTestgruppeById_KasterExceptionHvisGruppeIkkeErFunnet() throws Exception {
         Optional<Testgruppe> op = Optional.empty();
-        when(gruppeRepository.findById(any())).thenReturn(op);
+        when(testgruppeRepository.findById(any())).thenReturn(op);
 
         testgruppeService.fetchTestgruppeById(1L);
     }
@@ -125,7 +125,7 @@ public class TestgruppeServiceTest {
     public void fetchTestgruppeById_ReturnererGruppeHvisGruppeMedIdFinnes() throws Exception {
         Testgruppe g = mock(Testgruppe.class);
         Optional<Testgruppe> op = Optional.of(g);
-        when(gruppeRepository.findById(any())).thenReturn(op);
+        when(testgruppeRepository.findById(any())).thenReturn(op);
 
         Testgruppe hentetGruppe = testgruppeService.fetchTestgruppeById(1L);
 
@@ -160,7 +160,7 @@ public class TestgruppeServiceTest {
     @Test
     public void saveGruppeTilDB_returnererTestgruppeHvisTestgruppeFinnes() {
         Testgruppe g = new Testgruppe();
-        when(gruppeRepository.save(any())).thenReturn(g);
+        when(testgruppeRepository.save(any())).thenReturn(g);
 
         Testgruppe res = testgruppeService.saveGruppeTilDB(new Testgruppe());
         assertThat(res, is(notNullValue()));
@@ -170,30 +170,30 @@ public class TestgruppeServiceTest {
     public void slettGruppeById_deleteBlirKaltMotRepoMedGittId() {
         testgruppeService.slettGruppeById(GROUP_ID);
         verify(brukerService).sletteBrukerFavoritterByGroupId(GROUP_ID);
-        verify(gruppeRepository).deleteTestgruppeById(GROUP_ID);
+        verify(testgruppeRepository).deleteTestgruppeById(GROUP_ID);
     }
 
     @Test(expected = ConstraintViolationException.class)
     public void saveGruppeTilDB_kasterExceptionHvisDBConstraintErBrutt() {
-        when(gruppeRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
+        when(testgruppeRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
         testgruppeService.saveGruppeTilDB(new Testgruppe());
     }
 
     @Test(expected = DollyFunctionalException.class)
     public void saveGruppeTilDB_kasterDollyExceptionHvisDBConstraintErBrutt() throws Exception {
-        when(gruppeRepository.save(any())).thenThrow(nonTransientDataAccessException);
+        when(testgruppeRepository.save(any())).thenThrow(nonTransientDataAccessException);
         testgruppeService.saveGruppeTilDB(new Testgruppe());
     }
 
     @Test(expected = ConstraintViolationException.class)
     public void saveGrupper_kasterExceptionHvisDBConstraintErBrutt() {
-        when(gruppeRepository.saveAll(any())).thenThrow(DataIntegrityViolationException.class);
+        when(testgruppeRepository.saveAll(any())).thenThrow(DataIntegrityViolationException.class);
         testgruppeService.saveGrupper(newHashSet(singletonList(new Testgruppe())));
     }
 
     @Test(expected = DollyFunctionalException.class)
     public void saveGrupper_kasterDollyExceptionHvisDBConstraintErBrutt() {
-        when(gruppeRepository.saveAll(any())).thenThrow(nonTransientDataAccessException);
+        when(testgruppeRepository.saveAll(any())).thenThrow(nonTransientDataAccessException);
         testgruppeService.saveGrupper(newHashSet(singletonList(new Testgruppe())));
     }
 
@@ -204,13 +204,13 @@ public class TestgruppeServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void fetchIdenterByGruppeId_kasterException() {
-        when(gruppeRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(testgruppeRepository.findById(anyLong())).thenReturn(Optional.empty());
         testgruppeService.fetchIdenterByGruppeId(1L);
     }
 
     @Test
     public void fetchIdenterByGruppeId_gruppeTilIdentString() {
-        when(gruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(testGruppe));
+        when(testgruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(testGruppe));
 
         List<String> identer = testgruppeService.fetchIdenterByGruppeId(GROUP_ID);
         assertThat(identer.contains(IDENT_ONE), is(true));
@@ -222,7 +222,7 @@ public class TestgruppeServiceTest {
     public void fetchIdenterByGroupId_sjekkTommeGrupper() {
         Testgruppe tg = Testgruppe.builder().id(GROUP_ID).testidenter(new HashSet<>()).build();
 
-        when(gruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(tg));
+        when(testgruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(tg));
         List<String> identer = testgruppeService.fetchIdenterByGruppeId(GROUP_ID);
 
         assertThat(identer.size(), is(0));
@@ -236,22 +236,22 @@ public class TestgruppeServiceTest {
 
         Team team = Team.builder().navn("team").id(teamId).build();
 
-        when(gruppeRepository.findById(anyLong())).thenReturn(Optional.of(testGruppe));
+        when(testgruppeRepository.findById(anyLong())).thenReturn(Optional.of(testGruppe));
         when(brukerService.fetchBruker(anyString())).thenReturn(new Bruker("navIdent"));
         doReturn(team).when(teamService).fetchTeamById(anyLong());
         testgruppeService.oppdaterTestgruppe(GROUP_ID, rsOpprettEndreTestgruppe);
-        verify(gruppeRepository).save(testGruppe);
+        verify(testgruppeRepository).save(testGruppe);
     }
 
     @Test
     public void getTestgruppeByNavidentOgTeamId() {
         testgruppeService.getTestgruppeByNavidentOgTeamId(IDENT_ONE, TEAM_ID);
-        verify(gruppeRepository).findAllByTeamtilhoerighetOrderByNavn(any(Team.class));
+        verify(testgruppeRepository).findAllByTeamtilhoerighetOrderByNavn(any(Team.class));
     }
 
     @Test
     public void getTestgrupper() {
         testgruppeService.getTestgruppeByNavidentOgTeamId(null, null);
-        verify(gruppeRepository).findAllByOrderByNavn();
+        verify(testgruppeRepository).findAllByOrderByNavn();
     }
 }

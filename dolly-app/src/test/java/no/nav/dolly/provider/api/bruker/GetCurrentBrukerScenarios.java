@@ -6,7 +6,7 @@
 //import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 //import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 //
-//import no.nav.dolly.domain.resultset.RsBruker;
+//import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 //import org.junit.Test;
 //import org.springframework.test.web.servlet.MvcResult;
 //

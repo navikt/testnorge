@@ -3,10 +3,11 @@ package no.nav.dolly.provider.api;
 import static java.lang.String.format;
 import static no.nav.dolly.config.CachingConfig.CACHE_TEAM;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.resultset.RsOpprettTeam;
-import no.nav.dolly.domain.resultset.RsTeam;
-import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import no.nav.dolly.domain.resultset.entity.team.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.TeamService;
 import no.nav.dolly.service.TestgruppeService;
@@ -39,6 +40,7 @@ public class TeamController {
 
     @Cacheable(CACHE_TEAM)
     @GetMapping
+    @ApiOperation("Hent alle Team med tilknyttet medlem med navIdent")
     public List<RsTeam> getTeams(@RequestParam(value = "navIdent", required = false) String navIdent) {
         return Optional.ofNullable(navIdent)
                 .map(teamService::fetchTeamsByMedlemskapInTeamsMapped)
@@ -47,6 +49,7 @@ public class TeamController {
 
     @Cacheable(CACHE_TEAM)
     @GetMapping("/{teamId}")
+    @ApiOperation("Hent Team med teamId")
     public RsTeamUtvidet fetchTeamById(@PathVariable("teamId") Long teamid) {
         return teamService.getTeamById(teamid);
     }
@@ -54,44 +57,45 @@ public class TeamController {
     @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("Opprett Team")
     public RsTeamUtvidet opprettTeam(@RequestBody RsOpprettTeam createTeamRequest) {
         return teamService.opprettTeam(createTeamRequest);
     }
 
     @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @PutMapping("/{teamId}/leggTilMedlemmer")
+    @ApiOperation("Legg til Brukere som medlemmer i Team")
     public RsTeamUtvidet addBrukereSomTeamMedlemmerByNavidenter(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
         return teamService.addMedlemmerByNavidenter(teamId, navIdenter);
     }
 
     @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @PutMapping("/{teamId}/fjernMedlemmer")
+    @ApiOperation("Fjern Brukere som medlemmer i Team")
     public RsTeamUtvidet fjernBrukerefraTeam(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
         return teamService.fjernMedlemmer(teamId, navIdenter);
     }
 
     @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @PutMapping("/{teamId}")
+    @ApiOperation("Oppdater informasjon om Team")
     public RsTeamUtvidet endreTeaminfo(@PathVariable("teamId") Long teamId, @RequestBody RsTeamUtvidet createTeamRequest) {
         return teamService.updateTeamInfo(teamId, createTeamRequest);
     }
 
     @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @DeleteMapping("/{teamId}/deleteMedlem")
+    @ApiOperation("Fjern Bruker som medlem i Team")
     public RsTeamUtvidet deleteMedlemfraTeam(@PathVariable("teamId") Long teamId, @RequestParam String navIdent) {
         return teamService.slettMedlem(teamId, navIdent);
     }
 
     @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @DeleteMapping("/{teamId}")
+    @ApiOperation("Slett Team")
     public void deleteTeam(@PathVariable("teamId") Long teamId) {
         if (teamService.deleteTeam(teamId) == 0) {
             throw new NotFoundException(format("Team med id %d ble ikke funnet.", teamId));
         }
-        //TODO Hører denne hjemme her? Ser hensikten for forenkling,
-        // men kanskje burde det være opp til frontend å gjøre et kall for å rydde opp selv istedenfor å dra inn en service kun for dette?
-        // Eventuelt legge opp til scheduled task som rydder opp
-        // Både en unødvendig avhengighet i prodkoden og vanskeligere å teste.
-        testgruppeService.slettGruppeByTeamId(teamId);
     }
 }

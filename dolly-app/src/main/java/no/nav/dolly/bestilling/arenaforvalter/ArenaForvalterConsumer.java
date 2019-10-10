@@ -64,8 +64,7 @@ public class ArenaForvalterConsumer {
                 .header(HEADER_NAV_CALL_ID, getCallId())
                 .header(HEADER_NAV_CONSUMER_ID, KILDE)
                 .build(), expectedResponseType);
-        //TODO Fjern resp != null når ArenaForvalterConsumerTest er skrevet om.
-        return resp != null && resp.getBody() != null ? resp.getBody() : emptyList();
+        return resp.getBody() != null ? resp.getBody() : emptyList();
     }
 
     private <T> ResponseEntity<T> doRequest(HttpMethod method, URI uri, ArenaNyeBrukere body, Class<T> clazz) {

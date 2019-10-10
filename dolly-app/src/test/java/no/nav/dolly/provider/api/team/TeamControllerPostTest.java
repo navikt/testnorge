@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.resultset.RsOpprettTeam;
-import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import no.nav.dolly.domain.resultset.entity.team.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;

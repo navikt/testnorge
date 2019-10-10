@@ -6,7 +6,7 @@ import static java.util.Objects.nonNull;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsMeldingStatusIdent;
+import no.nav.dolly.domain.resultset.arenaforvalter.RsMeldingStatusIdent;
 
 import java.util.HashMap;
 import java.util.List;

@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
 import no.nav.dolly.provider.RestTestBase;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;

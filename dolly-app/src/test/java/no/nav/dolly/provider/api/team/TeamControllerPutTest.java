@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.is;
 
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
 import no.nav.dolly.common.RsTeamUtvidetBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

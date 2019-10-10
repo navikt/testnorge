@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.RsAdresse;
-import no.nav.dolly.domain.resultset.RsPostadresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 
 @Getter
 @Setter

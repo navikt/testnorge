@@ -13,7 +13,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsTestidentBestillingId;
+import no.nav.dolly.domain.resultset.entity.testident.RsTestidentBestillingId;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 

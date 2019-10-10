@@ -1,12 +1,13 @@
 package no.nav.dolly.provider.api.testgruppe;
 
+import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
@@ -26,7 +27,7 @@ class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
                 .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/123")
                 .andExpect(HttpStatus.NOT_FOUND, LinkedHashMap.class);
 
-        assertThat(getErrMsg(resp), is("Gruppe med id 123 ble ikke funnet."));
+        assertThat(getErrMsg(resp), is("Finner ikke gruppe basert på gruppeID: 123"));
     }
 
     @Test
@@ -42,7 +43,7 @@ class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
                 .to(HttpMethod.GET, ENDPOINT_BASE_URI + "/" + testgruppe.getId())
                 .andExpect(HttpStatus.NOT_FOUND, LinkedHashMap.class);
 
-        assertThat(getErrMsg(resp), is("Finner ikke gruppe basert på gruppeID: 1"));
+        assertThat(getErrMsg(resp), is(format("Finner ikke gruppe basert på gruppeID: %d", testgruppe.getId())));
     }
 
     @Test

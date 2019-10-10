@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpMethod.GET;
 
-import no.nav.dolly.domain.resultset.tpsf.RsDollyProps;
+import no.nav.dolly.domain.resultset.RsDollyProps;
 import no.nav.dolly.provider.RestTestBase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

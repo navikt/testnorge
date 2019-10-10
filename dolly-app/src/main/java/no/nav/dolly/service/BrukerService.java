@@ -10,7 +10,7 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.GruppeRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ import java.util.List;
 public class BrukerService {
 
     private final BrukerRepository brukerRepository;
-    private final GruppeRepository gruppeRepository;
+    private final TestgruppeRepository testgruppeRepository;
 
     public Bruker fetchBruker(String navIdent) {
         Bruker bruker = brukerRepository.findBrukerByNavIdent(navIdent.toUpperCase());
@@ -94,12 +94,12 @@ public class BrukerService {
     }
 
     private Testgruppe fetchTestgruppe(Long gruppeId) {
-        return gruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+        return testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
     }
 
     private Testgruppe saveGruppe(Testgruppe testgruppe) {
         try {
-            return gruppeRepository.save(testgruppe);
+            return testgruppeRepository.save(testgruppe);
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {

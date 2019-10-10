@@ -3,6 +3,7 @@ package no.nav.dolly.provider.api;
 import static java.lang.String.format;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -10,7 +11,7 @@ import no.nav.dolly.domain.resultset.RsOpenAmRequest;
 import no.nav.dolly.domain.resultset.RsOpenAmResponse;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.GruppeRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.service.OpenAmService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
@@ -34,10 +35,11 @@ import java.util.Optional;
 public class OpenAmController {
 
     private final OpenAmService openAmService;
-    private final GruppeRepository gruppeRepository;
+    private final TestgruppeRepository testgruppeRepository;
     private final BestillingRepository bestillingRepository;
 
     @PostMapping
+    @ApiOperation("Opprett identer i miljøer")
     public List<RsOpenAmResponse> sendIdenterTilOpenAm(@RequestBody RsOpenAmRequest request) {
         List<RsOpenAmResponse> response = new ArrayList<>(request.getMiljoer().size());
         for (String miljoe : request.getMiljoer()) {
@@ -47,11 +49,12 @@ public class OpenAmController {
     }
 
     @PutMapping("/gruppe/{gruppeId}")
+    @ApiOperation("Oppdater OpenAmSent status i Testgruppe med gruppeId")
     public void oppdaterOpenAmSentStatus(@PathVariable(value = "gruppeId") Long gruppeId, @RequestParam Boolean isOpenAmSent) {
-        Optional<Testgruppe> testgruppe = gruppeRepository.findById(gruppeId);
+        Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
         if (testgruppe.isPresent()) {
             testgruppe.get().setOpenAmSent(isOpenAmSent);
-            gruppeRepository.save(testgruppe.get());
+            testgruppeRepository.save(testgruppe.get());
         } else {
             throw new NotFoundException(format("GruppeId %s ble ikke funnet.", gruppeId));
         }
@@ -60,6 +63,7 @@ public class OpenAmController {
     @CacheEvict(value = CACHE_BESTILLING, allEntries = true)
     @PostMapping("/bestilling/{bestillingId}")
     @Transactional
+    @ApiOperation("Opprett identer i miljøer for identer tilhørende en Bestillings Testgruppe")
     public List<RsOpenAmResponse> sendBestillingTilOpenAm(@RequestParam Long bestillingId) {
         Optional<Bestilling> bestillingOpt = bestillingRepository.findById(bestillingId);
         if (bestillingOpt.isPresent()) {

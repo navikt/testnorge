@@ -29,9 +29,9 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
-import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
-import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
-import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
+import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
+import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.domain.resultset.tpsf.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
@@ -62,7 +62,6 @@ public class DollyBestillingService {
     private static final String SUCCESS = "OK";
     private static final String OUT_FMT = "%s: %s";
 
-    //TODO Rydde opp i avhengigheter
     private final TpsfResponseHandler tpsfResponseHandler;
     private final TpsfService tpsfService;
     private final TestgruppeService testgruppeService;

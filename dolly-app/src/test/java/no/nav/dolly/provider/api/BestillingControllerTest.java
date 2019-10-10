@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.RsBestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
 import no.nav.dolly.service.BestillingService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +46,7 @@ public class BestillingControllerTest {
         when(bestillingService.fetchBestillingById(any())).thenReturn(new Bestilling());
         when(mapperFacade.map(any(), any())).thenReturn(rsBestilling);
 
-        RsBestilling res = bestillingController.checkBestillingsstatus(BESTILLING_ID);
+        RsBestilling res = bestillingController.getBestillingById(BESTILLING_ID);
 
         assertThat(res, is(rsBestilling));
     }

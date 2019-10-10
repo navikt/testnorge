@@ -7,7 +7,7 @@ import static org.junit.Assert.assertThat;
 
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.exceptions.TpsfException;
 import org.junit.Before;
 import org.junit.Test;

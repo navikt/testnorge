@@ -13,13 +13,13 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsBestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppeMedBestillingId;
-import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -56,6 +56,7 @@ public class TestgruppeController {
 
     @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}/ny")
+    @ApiOperation("Hent Testgruppe med gruppeId")
     public RsTestgruppeMedBestillingId getTestgruppen(@PathVariable("gruppeId") Long gruppeId) {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeMedBestillingId.class);
     }
@@ -78,7 +79,7 @@ public class TestgruppeController {
 
     @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}/identer")
-    @ApiOperation("Hent identer tilknyttet en gruppe")
+    @ApiOperation("Hent identer tilknyttet en Testgruppe")
     public List<String> getIdentsByGroupId(@PathVariable("gruppeId") Long gruppeId) {
         return testgruppeService.fetchIdenterByGruppeId(gruppeId);
     }
@@ -107,7 +108,7 @@ public class TestgruppeController {
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(value = "Opprett identer i TPS fra ekisterende identer", notes = BESTILLING_BESKRIVELSE)
+    @ApiOperation(value = "Opprett identer i TPS fra eksisterende identer", notes = BESTILLING_BESKRIVELSE)
     public RsBestilling opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(),
                 request.getOpprettFraIdenter().size(), request.getOpprettFraIdenter());
@@ -130,9 +131,7 @@ public class TestgruppeController {
     @DeleteMapping("/{gruppeId}")
     @ApiOperation("Slett Testgruppe")
     public void slettgruppe(@PathVariable("gruppeId") Long gruppeId) {
-        if (testgruppeService.slettGruppeById(gruppeId) == 0) {
-            throw new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId));
-        }
+        testgruppeService.slettGruppeById(gruppeId);
     }
 
     @Transactional

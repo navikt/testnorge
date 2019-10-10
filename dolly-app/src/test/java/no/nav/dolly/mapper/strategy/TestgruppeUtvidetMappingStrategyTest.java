@@ -11,7 +11,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.assertj.core.util.Sets;
