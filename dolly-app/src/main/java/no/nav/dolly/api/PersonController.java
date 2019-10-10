@@ -22,14 +22,14 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.TestgruppeService;
+import no.nav.dolly.service.IdentService;
 
 @RestController
 @RequestMapping(value = "api/v1/person")
 public class PersonController {
 
     @Autowired
-    private TestgruppeService testgruppeService;
+    private IdentService identService;
 
     @Autowired
     private BestillingService bestillingService;
@@ -40,7 +40,11 @@ public class PersonController {
     @Autowired
     private MapperFacade mapperFacade;
 
-    @ApiOperation(value = "Endre/oppdater person i TPS og øvrige systemer", notes =
+    /**
+     * @deprecated (På vent, ikke sikkert denne funksjonen skal tilbys)
+     */
+    @Deprecated
+    @ApiOperation(value = "Endre/oppdatere person i TPS og øvrige systemer", notes =
             BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET)
     @PutMapping("/{ident}")
     @ResponseStatus(HttpStatus.OK)

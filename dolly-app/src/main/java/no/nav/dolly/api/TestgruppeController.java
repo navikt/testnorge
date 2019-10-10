@@ -36,6 +36,8 @@ import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeMedBestillingId;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.testperson.IdentAttributes;
+import no.nav.dolly.domain.testperson.IdentAttributesResponse;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -47,7 +49,7 @@ import no.nav.dolly.service.TestgruppeService;
 public class TestgruppeController {
 
     private static final String RANDOM_ADRESSE = "For å kunne styre gyldig boadresse basert på kommunenr eller postnummer og med adressesøk i backend: <br />"
-            +"\"adresseNrInfo\": { <br />"
+            + "\"adresseNrInfo\": { <br />"
             + " &nbsp; \"nummertype\": \"KOMMUNENR/POSTNR\" <br />"
             + " &nbsp; \"nummer\": \"string\", <br />"
             + "} <br /><br />";
@@ -172,7 +174,7 @@ public class TestgruppeController {
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @Transactional
     @DeleteMapping("/{gruppeId}/slettTestident")
-    public void deleteTestident(@RequestParam String ident) {
+    public void deleteTestident(@PathVariable Long gruppeId, @RequestParam String ident) {
         if (identService.slettTestident(ident) == 0) {
             throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
         }
@@ -187,7 +189,6 @@ public class TestgruppeController {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeUtvidet.class);
     }
 
-    @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}/ny")
     public RsTestgruppeMedBestillingId getTestgruppen(@PathVariable("gruppeId") Long gruppeId) {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeMedBestillingId.class);
@@ -233,9 +234,12 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestilling.class);
     }
 
-    @Cacheable(CACHE_GRUPPE)
-    @GetMapping("/{gruppeId}/identer")
-    public List<String> getIdentsByGroupId(@PathVariable("gruppeId") Long gruppeId) {
-        return testgruppeService.fetchIdenterByGruppeId(gruppeId);
+    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
+    @ApiOperation(value = "Endre status \"i-bruk\" og beskrivelse på testperson")
+    @PutMapping("/{gruppeId}/identAttributter")
+    @ResponseStatus(HttpStatus.OK)
+    public IdentAttributesResponse oppdaterTestident(@PathVariable Long gruppeId, @RequestBody IdentAttributes attributes) {
+
+        return mapperFacade.map(identService.save(attributes), IdentAttributesResponse.class);
     }
 }

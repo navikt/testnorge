@@ -50,7 +50,6 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	console.log(ownProps)
 	return {
 		getKrrTestbruker: () => dispatch(GET_KRR_TESTBRUKER(ownProps.personId)),
 		getSigrunTestbruker: () => dispatch(GET_SIGRUN_TESTBRUKER(ownProps.personId)),
