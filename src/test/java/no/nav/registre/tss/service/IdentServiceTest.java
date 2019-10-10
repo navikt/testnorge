@@ -1,8 +1,5 @@
 package no.nav.registre.tss.service;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -13,6 +10,10 @@ import javax.jms.JMSException;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -45,6 +46,6 @@ public class IdentServiceTest {
         identService.hentLegerIAvspillergruppeFraTss(avspillergruppeId, antallNyeIdenter, miljoe);
 
         verify(hodejegerenConsumer).getLevende(avspillergruppeId);
-        verify(jmsService).sendOgMotta910RutineFraTss(identer, koeNavn);
+        verify(jmsService).sendOgMotta910RutineFraTss(anyList(), anyString());
     }
 }

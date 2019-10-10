@@ -9,6 +9,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import javax.jms.JMSException;
 
 import static org.mockito.Mockito.verify;
+import no.nav.registre.tss.domain.TssType;
 import no.nav.registre.tss.service.IdentService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,8 +35,8 @@ public class IdentControllerTest {
 
     @Test
     public void shouldHenteLegeFraTss() throws JMSException {
-        identController.hentLegeFraTss(fnr1, miljoe);
-        verify(identService).hentSamhandlerFraTss(fnr1, miljoe);
+        identController.hentLegeFraTss(fnr1, TssType.LE, miljoe);
+        verify(identService).hentSamhandlerFraTss(fnr1, TssType.LE, miljoe);
     }
 
 }

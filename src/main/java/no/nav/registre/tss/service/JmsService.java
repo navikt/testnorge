@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.Set;
 
 import no.nav.registre.tss.consumer.rs.response.Response910;
+import no.nav.registre.tss.domain.Samhandler;
+import no.nav.registre.tss.domain.TssType;
+import no.nav.registre.tss.domain.TssTypeGruppe;
 import no.nav.registre.tss.utils.Response910Util;
 import no.nav.registre.tss.utils.Rutine910Util;
 
@@ -51,36 +54,39 @@ public class JmsService {
         }
     }
 
-    public Map<String, Response910> sendOgMotta910RutineFraTss(List<String> utvalgteLeger, String koeNavn) throws JMSException {
-        Map<String, Response910> legerMedRespons = new HashMap<>(utvalgteLeger.size());
+    public Map<String, Response910> sendOgMotta910RutineFraTss(List<Samhandler> utvalgteSamhandlere, String koeNavn) throws JMSException {
+        Map<String, Response910> legerMedRespons = new HashMap<>(utvalgteSamhandlere.size());
 
-        for (String lege : utvalgteLeger) {
-            String rutine910 = Rutine910Util.opprettRutine(lege);
+        for (Samhandler samhandler : utvalgteSamhandlere) {
+
+            String ident = samhandler.getIdent();
+
+            String rutine910 = Rutine910Util.opprettRutine(ident, TssTypeGruppe.identKodeType(TssTypeGruppe.getGruppe(samhandler.getType())));
 
             Message mottattMelding = jmsTemplate.sendAndReceive("queue:///" + koeNavn + "?targetClient=1", session -> session.createTextMessage(rutine910));
 
             if (mottattMelding != null) {
                 Response910 response = Response910Util.parseResponse(mottattMelding.getBody(String.class));
                 if (!response.getResponse110().isEmpty() || !response.getResponse111().isEmpty() || !response.getResponse125().isEmpty()) {
-                    legerMedRespons.put(lege, Response910Util.parseResponse(mottattMelding.getBody(String.class)));
+                    legerMedRespons.put(ident, Response910Util.parseResponse(mottattMelding.getBody(String.class)));
                 }
             } else {
-                log.warn("Fikk ikke svar fra TSS for lege {}", lege.replaceAll("[\r\n]", ""));
+                log.warn("Fikk ikke svar fra TSS for lege {}", ident.replaceAll("[\r\n]", ""));
             }
         }
 
         return legerMedRespons;
     }
 
-    public Response910 sendOgMotta910RutineFraTss(String lege, String koeNavn) throws JMSException {
-        String rutine910 = Rutine910Util.opprettRutine(lege);
+    public Response910 sendOgMotta910RutineFraTss(String ident, TssType type, String koeNavn) throws JMSException {
+        String rutine910 = Rutine910Util.opprettRutine(ident, TssTypeGruppe.identKodeType(TssTypeGruppe.getGruppe(type)));
 
         Message mottattMelding = jmsTemplate.sendAndReceive("queue:///" + koeNavn + "?targetClient=1", session -> session.createTextMessage(rutine910));
 
         if (mottattMelding != null) {
             return Response910Util.parseResponse(mottattMelding.getBody(String.class));
         } else {
-            log.warn("Fikk ikke svar fra TSS for lege {}", lege.replaceAll("[\r\n]", ""));
+            log.warn("Fikk ikke svar fra TSS for ident {}", ident.replaceAll("[\r\n]", ""));
         }
         return null;
     }

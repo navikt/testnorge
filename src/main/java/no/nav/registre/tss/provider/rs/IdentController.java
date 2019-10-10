@@ -18,6 +18,7 @@ import java.util.Map;
 
 import no.nav.registre.tss.consumer.rs.response.Response910;
 import no.nav.registre.tss.domain.Samhandler;
+import no.nav.registre.tss.domain.TssType;
 import no.nav.registre.tss.provider.rs.request.Rutine130Request;
 import no.nav.registre.tss.service.IdentService;
 
@@ -54,12 +55,12 @@ public class IdentController {
     }
 
     @GetMapping("/samhandler/{ident}")
-    public Response910 hentLegeFraTss(@PathVariable String ident, @RequestParam String miljoe) throws JMSException {
-        return identService.hentSamhandlerFraTss(ident, miljoe);
+    public Response910 hentLegeFraTss(@PathVariable String ident, @RequestParam TssType type, @RequestParam String miljoe) throws JMSException {
+        return identService.hentSamhandlerFraTss(ident, type, miljoe);
     }
 
     @PostMapping("/adresse/{ident}")
-    public String leggTilAdresse(@PathVariable String ident, @RequestParam String miljoe, @RequestBody Rutine130Request message) {
-        return identService.leggTilAdresse(ident, miljoe, message);
+    public String leggTilAdresse(@PathVariable String ident, @RequestParam String miljoe, @RequestParam TssType type, @RequestBody Rutine130Request message) {
+        return identService.leggTilAdresse(ident, type, miljoe, message);
     }
 }

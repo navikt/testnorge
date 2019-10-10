@@ -9,7 +9,7 @@ public class Rutine910Util {
     private static final int MMEL_LENGTH = 228;
     private static final int LENGDE_PAA_910_MELDING = 63;
 
-    public static String opprettRutine(String ident) {
+    public static String opprettRutine(String ident, String identKodeType) {
         StringBuilder rutine = new StringBuilder(LENGDE_PAA_910_MELDING);
         for (int i = 0; i < LENGDE_PAA_910_MELDING; i++) {
             rutine.replace(i, i + 1, " ");
@@ -17,7 +17,7 @@ public class Rutine910Util {
 
         setIdKode(rutine, "910");
         setIdOff(rutine, ident);
-        setKodeIdenttype(rutine, "FNR");
+        setKodeIdenttype(rutine, identKodeType);
 
         leggTilHeader(rutine);
         return rutine.toString();

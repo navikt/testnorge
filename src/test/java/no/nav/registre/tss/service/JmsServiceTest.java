@@ -23,6 +23,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import no.nav.registre.tss.consumer.rs.response.Response910;
+import no.nav.registre.tss.domain.Person;
+import no.nav.registre.tss.domain.Samhandler;
+import no.nav.registre.tss.domain.TssType;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JmsServiceTest {
@@ -52,7 +55,8 @@ public class JmsServiceTest {
         when(message.getBody(String.class)).thenReturn(getSampleResponseText());
         when(jmsTemplate.sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any())).thenReturn(message);
 
-        Map<String, Response910> response = jmsService.sendOgMotta910RutineFraTss(Collections.singletonList(fnr), koeNavn);
+        Map<String, Response910> response = jmsService.sendOgMotta910RutineFraTss(
+                Collections.singletonList(new Samhandler(new Person(fnr, ""), TssType.LE)), koeNavn);
 
         verify(jmsTemplate).sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any());
 
@@ -70,7 +74,7 @@ public class JmsServiceTest {
         when(message.getBody(String.class)).thenReturn(getSampleResponseText());
         when(jmsTemplate.sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any())).thenReturn(message);
 
-        Response910 response = jmsService.sendOgMotta910RutineFraTss(fnr, koeNavn);
+        Response910 response = jmsService.sendOgMotta910RutineFraTss(fnr, TssType.LE, koeNavn);
 
         verify(jmsTemplate).sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any());
 

@@ -53,12 +53,14 @@ public class IdentService {
         } else {
             utvalgteLeger.addAll(alleLeger);
         }
-        return jmsService.sendOgMotta910RutineFraTss(utvalgteLeger, koeNavn);
+        return jmsService.sendOgMotta910RutineFraTss(utvalgteLeger.stream()
+                .map(ident -> new Samhandler(new Person(ident, ""), TssType.LE))
+                .collect(Collectors.toList()), koeNavn);
     }
 
-    public Response910 hentSamhandlerFraTss(String ident, String miljoe) throws JMSException {
+    public Response910 hentSamhandlerFraTss(String ident, TssType type, String miljoe) throws JMSException {
         String koeNavn = jmsService.hentKoeNavnSamhandler(miljoe);
-        return jmsService.sendOgMotta910RutineFraTss(ident, koeNavn);
+        return jmsService.sendOgMotta910RutineFraTss(ident, type, koeNavn);
     }
 
     public List<String> opprettSamhandlereITss(String miljoe, List<String> identer) {
@@ -104,11 +106,11 @@ public class IdentService {
         return samhandlere;
     }
 
-    public String leggTilAdresse(String ident, String miljoe, Rutine130Request message) {
+    public String leggTilAdresse(String ident, TssType type, String miljoe, Rutine130Request message) {
         Response910 response910 = null;
         StringBuilder fullRutine = new StringBuilder();
         try {
-            response910 = hentSamhandlerFraTss(ident, miljoe);
+            response910 = hentSamhandlerFraTss(ident, type, miljoe);
         } catch (JMSException e) {
             log.error("Kunne ikke hente samhandler fra TSS", e);
         }
@@ -153,17 +155,17 @@ public class IdentService {
         log.info("Sendt til TSS");
         List<String> opprettedeSamhandlere = new ArrayList<>();
 
-        for (Samhandler ident : samhandlere) {
+        for (Samhandler samhandler : samhandlere) {
             try {
-                Response910 response = jmsService.sendOgMotta910RutineFraTss(ident.getIdent(), koeNavnSamhandler);
+                Response910 response = jmsService.sendOgMotta910RutineFraTss(samhandler.getIdent(), samhandler.getType(), koeNavnSamhandler);
                 if (!response.getResponse110().isEmpty() || !response.getResponse111().isEmpty() || !response.getResponse125().isEmpty()) {
-                    opprettedeSamhandlere.add(ident.getIdent());
+                    opprettedeSamhandlere.add(samhandler.getIdent());
                 }
-                log.info("Svar fra TSS110 på ident {}: {}", ident.getIdent(), response.getResponse110());
-                log.info("Svar fra TSS111 på ident {}: {}", ident.getIdent(), response.getResponse111());
-                log.info("Svar fra TSS125 på ident {}: {}", ident.getIdent(), response.getResponse125());
+                log.info("Svar fra TSS110 på ident {}: {}", samhandler.getIdent(), response.getResponse110());
+                log.info("Svar fra TSS111 på ident {}: {}", samhandler.getIdent(), response.getResponse111());
+                log.info("Svar fra TSS125 på ident {}: {}", samhandler.getIdent(), response.getResponse125());
             } catch (JMSException e) {
-                log.error("Kunne ikke hente samhandler " + ident + " fra TSS", e);
+                log.error("Kunne ikke hente samhandler " + samhandler.getIdent() + " fra TSS", e);
             }
         }
 

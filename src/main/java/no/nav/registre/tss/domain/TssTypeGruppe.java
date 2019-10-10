@@ -179,4 +179,11 @@ public enum TssTypeGruppe {
         }
         return false;
     }
+
+    public static String identKodeType(TssTypeGruppe gruppe) {
+        if (skalHaOrgnummer(gruppe)) {
+            return "ORG";
+        }
+        return "FNR";
+    }
 }
