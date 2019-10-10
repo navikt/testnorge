@@ -35,7 +35,7 @@ export const getAttributesFromMal = mal => {
 
 	tpsfKriterier.innvandretFraLand && attrArray.push('innvandret')
 	tpsfKriterier.utvandretTilLand && attrArray.push('utvandret')
-	tpsfKriterier.statsborgerskap && attrArray.push('Statsborgerskap')
+	tpsfKriterier.statsborgerskap && attrArray.push('statsborgerskapInfo')
 	tpsfKriterier.erForsvunnet && attrArray.push('forsvunnet')
 
 	Object.keys(bestKriterier).forEach(reg => {
@@ -326,16 +326,18 @@ const _mapStatsborgerskap = values => {
 	Object.entries(valuesArray).map(value => {
 		if (value[0].includes('statsborgerskap')) {
 			if (value[0].includes('partner')) {
-				!valuesArray.partner_Statsborgerskap && (valuesArray.partner_Statsborgerskap = [{}])
-				return (valuesArray.partner_Statsborgerskap[0][
+				!valuesArray.partner_statsborgerskapInfo && (valuesArray.partner_statsborgerskapInfo = [{}])
+				return (valuesArray.partner_statsborgerskapInfo[0][
 					value[0].split('_')[1]
 				] = value[1].toString())
 			} else if (value[0].includes('barn')) {
-				!valuesArray.barn_Statsborgerskap && (valuesArray.barn_Statsborgerskap = [{}])
-				return (valuesArray.barn_Statsborgerskap[0][value[0].split('_')[1]] = value[1].toString())
+				!valuesArray.barn_statsborgerskapInfo && (valuesArray.barn_statsborgerskapInfo = [{}])
+				return (valuesArray.barn_statsborgerskapInfo[0][
+					value[0].split('_')[1]
+				] = value[1].toString())
 			} else {
-				!valuesArray.Statsborgerskap && (valuesArray.Statsborgerskap = [{}])
-				return (valuesArray.Statsborgerskap[0][value[0]] = value[1])
+				!valuesArray.statsborgerskapInfo && (valuesArray.statsborgerskapInfo = [{}])
+				return (valuesArray.statsborgerskapInfo[0][value[0]] = value[1])
 			}
 		}
 	})

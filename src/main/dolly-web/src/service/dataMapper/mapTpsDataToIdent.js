@@ -103,7 +103,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 				},
 				{
 					id: 'statsborgerskapRegdato',
-					label: 'Statsborgerskap reg dato',
+					label: 'Statsborgerskap fra',
 					value: Formatters.formatDate(tpsfData.statsborgerskapRegdato)
 				},
 				{
@@ -384,7 +384,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 						},
 						{
 							id: 'ssatsborgerskapRegdato',
-							label: 'Statsborgerskap reg dato',
+							label: 'Statsborgerskap fra',
 							value:
 								relasjonstype === 'Barn' &&
 								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].statsborgerskap

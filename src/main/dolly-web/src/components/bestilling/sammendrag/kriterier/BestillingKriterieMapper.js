@@ -19,7 +19,7 @@ const _getTpsfBestillingData = data => {
 		obj('Født før', Formatters.formatDate(data.foedtFoer)),
 		obj('Dødsdato', Formatters.formatDate(data.doedsdato)),
 		obj('Statsborgerskap', data.statsborgerskap, 'Landkoder'),
-		obj('Statsborgerskap dato', Formatters.formatDate(data.statsborgerskapRegdato)),
+		obj('Statsborgerskap fra', Formatters.formatDate(data.statsborgerskapRegdato)),
 		obj('Kjønn', Formatters.kjonnToString(data.kjonn)),
 		obj('Har mellomnavn', Formatters.oversettBoolean(data.harMellomnavn)),
 		obj('Sivilstand', data.sivilstand, 'Sivilstander'),
@@ -348,8 +348,7 @@ export function mapBestillingData(bestillingData) {
 							obj('Mellomnavn', falskIdData.personnavn.mellomnavn),
 							obj('Etternavn', falskIdData.personnavn.etternavn),
 							obj('Kjønn', falskIdData.kjoenn),
-							obj('Fødselsdato', Formatters.formatDate(falskIdData.foedselsdato)),
-							obj('Statsborgerskap', Formatters.arrayToString(falskIdData.Statsborgerskap))
+							obj('Fødselsdato', Formatters.formatDate(falskIdData.foedselsdato))
 						]
 					}
 					data.push(falskId)
