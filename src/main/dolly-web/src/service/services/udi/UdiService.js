@@ -1,8 +1,8 @@
-import Request from '../Request'
+import config from '~/config'
+import Request from '~/service/services/Request'
 import ConfigService from '~/service/Config'
 
-const defaultUrl = 'https://udi-stub.nais.preprod.local'
-const getUdiBaseUrl = () => ConfigService.getDatesourceUrl('udi') || defaultUrl
+const getUdiBaseUrl = () => ConfigService.getDatesourceUrl('udi') || config.services.udiStubUrl
 const getUdiUrl = () => `${getUdiBaseUrl()}/api/v1`
 
 export default {

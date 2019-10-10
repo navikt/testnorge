@@ -1,9 +1,9 @@
-import Request from '../Request'
+import config from '~/config'
+import Request from '~/service/services/Request'
 import ConfigService from '~/service/Config'
 
-const defaultUrl = 'https://arena-forvalteren.nais.preprod.local'
-
-const getArenaBaseUrl = () => ConfigService.getDatesourceUrl('arena') || defaultUrl
+const getArenaBaseUrl = () =>
+	ConfigService.getDatesourceUrl('arena') || config.services.arenaForvalterUrl
 const getArenaUrl = () => `${getArenaBaseUrl()}/api/v1`
 
 const options = {

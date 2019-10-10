@@ -1,8 +1,9 @@
-import Request from '../Request'
+import config from '~/config'
+import Request from '~/service/services/Request'
 import ConfigService from '~/service/Config'
 
-const defaultUrl = 'https://sigrun-skd-stub.nais.preprod.local'
-const getSigrunBaseUrl = () => ConfigService.getDatesourceUrl('sigrun') || defaultUrl
+const getSigrunBaseUrl = () =>
+	ConfigService.getDatesourceUrl('sigrun') || config.services.sigrunStubUrl
 
 export default {
 	getTestbruker(ident) {
