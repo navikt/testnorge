@@ -159,6 +159,7 @@ public class IdentService {
                 if (!response.getResponse110().isEmpty() || !response.getResponse111().isEmpty() || !response.getResponse125().isEmpty()) {
                     opprettedeSamhandlere.add(ident.getIdent());
                 }
+                log.info("Svar fra TSS på ident {}: {}", ident.getIdent(), response);
             } catch (JMSException e) {
                 log.error("Kunne ikke hente samhandler " + ident + " fra TSS", e);
             }
