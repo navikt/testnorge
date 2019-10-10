@@ -56,7 +56,7 @@ public class TssSyntetisererenConsumerTest {
         identer.add(person1);
         identer.add(person2);
 
-        server.expect(requestToUriTemplate(serverUrl + "/v1/generate_tss_messages/json")).andRespond(withSuccess(getJsonResponse(), MediaType.APPLICATION_JSON));
+        server.expect(requestToUriTemplate(serverUrl + "/v1/tss")).andRespond(withSuccess(getJsonResponse(), MediaType.APPLICATION_JSON));
         Map<String, List<TssMessage>> identerMedRutiner = tssSyntetisererenConsumer.hentSyntetiskeTssRutiner(identer.stream()
                 .map(person -> new Samhandler(person, TssType.LE)).collect(Collectors.toList()));
 
