@@ -65,6 +65,16 @@ export function mapKrrData(krrData) {
 				id: 'reservert',
 				label: 'Reservert mot digitalkommunikasjon',
 				value: krrData.reservert ? 'JA' : 'NEI'
+			},
+			{
+				id: 'gyldigFra',
+				label: 'Gyldig fra',
+				value: Formatters.formatDate(krrData.gyldigFra)
+			},
+			{
+				id: 'registrert',
+				label: 'Registrert i DKIF',
+				value: krrData.registrert ? 'JA' : 'NEI'
 			}
 		]
 	}
