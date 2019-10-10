@@ -1,5 +1,5 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
+import React, { useState, useEffect } from 'react'
+import useBoolean from '~/utils/hooks/useBoolean'
 import Knapp from 'nav-frontend-knapper'
 import HjelpeTekst from 'nav-frontend-hjelpetekst'
 import Overskrift from '~/components/ui/overskrift/Overskrift'
@@ -7,87 +7,54 @@ import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import Toolbar from '~/components/ui/toolbar/Toolbar'
 import Liste from './Liste'
-import Loading from '~/components/ui/loading/Loading'
-import PaginationConnector from '~/components/ui/pagination/PaginationConnector'
 
-export default class GruppeOversikt extends PureComponent {
-	static propTypes = {
-		isFetching: PropTypes.bool,
-		gruppeListe: PropTypes.array,
-		visning: PropTypes.string,
-		createOrUpdateId: PropTypes.number,
-		history: PropTypes.object,
-		listGrupper: PropTypes.func,
-		settVisning: PropTypes.func,
-		deleteGruppe: PropTypes.func
-	}
+export default function GruppeOversikt({
+	getGrupper,
+	getMineGrupper,
+	isFetching,
+	gruppeListe,
+	history,
+	searchActive
+}) {
+	const [visning, setVisning] = useState('mine')
+	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
 
-	componentDidMount() {
-		this.hentGrupper()
-	}
+	useEffect(
+		() => {
+			visning === 'mine' ? getMineGrupper() : getGrupper()
+		},
+		[visning]
+	)
 
-	hentGrupper = () => this.props.listGrupper()
-	byttVisning = e => {
-		this.props.settVisning(e.target.value)
-		this.props.listGrupper(e.target.value)
-	}
+	const byttVisning = event => setVisning(event.target.value)
 
-	render() {
-		const {
-			isFetching,
-			gruppeListe,
-			visning,
-			history,
-			createOrUpdateId,
-			editGroup,
-			createGroup,
-			deleteGruppe,
-			setSort,
-			sort,
-			searchActive
-		} = this.props
-
-		return (
-			<div className="oversikt-container">
-				<div className="page-header flexbox--align-center--justify-start">
-					<Overskrift label="Testdatagrupper" />
-					<HjelpeTekst>
-						Testdatagruppen inneholder alle testpersonene dine (FNR/DNR/BOST).
-					</HjelpeTekst>
-				</div>
-
-				<Toolbar
-					toggleOnChange={this.byttVisning}
-					toggleCurrent={visning}
-					searchField={<SearchFieldConnector />}
-				>
-					<Knapp type="hoved" onClick={createGroup}>
-						Ny gruppe
-					</Knapp>
-				</Toolbar>
-
-				{createOrUpdateId === -1 && <RedigerGruppeConnector />}
-
-				{isFetching ? (
-					<Loading label="laster grupper" panel />
-				) : (
-					<PaginationConnector
-						items={gruppeListe}
-						render={items => (
-							<Liste
-								items={items}
-								editId={createOrUpdateId}
-								editGroup={editGroup}
-								history={history}
-								deleteGruppe={deleteGruppe}
-								setSort={setSort}
-								sort={sort}
-								searchActive={searchActive}
-							/>
-						)}
-					/>
-				)}
+	return (
+		<div className="oversikt-container">
+			<div className="page-header flexbox--align-center--justify-start">
+				<Overskrift label="Testdatagrupper" />
+				<HjelpeTekst>
+					Testdatagruppen inneholder alle testpersonene dine (FNR/DNR/BOST).
+				</HjelpeTekst>
 			</div>
-		)
-	}
+
+			<Toolbar
+				toggleOnChange={byttVisning}
+				toggleCurrent={visning}
+				searchField={<SearchFieldConnector />}
+			>
+				<Knapp type="hoved" onClick={visNyGruppe}>
+					Ny gruppe
+				</Knapp>
+			</Toolbar>
+
+			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
+
+			<Liste
+				items={gruppeListe}
+				history={history}
+				isFetching={isFetching}
+				searchActive={searchActive}
+			/>
+		</div>
+	)
 }

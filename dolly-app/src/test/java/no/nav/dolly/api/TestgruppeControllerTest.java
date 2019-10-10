@@ -87,13 +87,13 @@ public class TestgruppeControllerTest {
 
     @Test(expected = NotFoundException.class)
     public void deleteTestIdentNotFound() {
-        controller.deleteTestident(IDENT);
+        controller.deleteTestident(GRUPPE_ID, IDENT);
     }
 
     @Test
     public void deleteTestIdentFound() {
         when(identService.slettTestident(IDENT)).thenReturn(1);
-        controller.deleteTestident(IDENT);
+        controller.deleteTestident(GRUPPE_ID, IDENT);
         verify(identService).slettTestident(IDENT);
     }
 
@@ -147,12 +147,6 @@ public class TestgruppeControllerTest {
         when(testgruppeService.slettGruppeById(anyLong())).thenReturn(1);
         controller.slettgruppe(anyLong());
         verify(testgruppeService).slettGruppeById(anyLong());
-    }
-
-    @Test
-    public void getIdentsByGroupId_hentIdenter() {
-        controller.getIdentsByGroupId(anyLong());
-        verify(testgruppeService).fetchIdenterByGruppeId(anyLong());
     }
 
     @Test

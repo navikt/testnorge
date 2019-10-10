@@ -240,6 +240,7 @@ export default class Step3 extends PureComponent {
 						removableText={'FJERN RAD'}
 						onRemove={() => this._onRemoveSubKategori(items, header)}
 					>
+						{items[0].subGruppe && header === 1 && <h4>{items[0].subGruppe}</h4>}
 						{header && <h4>{typeof header === 'number' ? `# ${header}` : header}</h4>}
 
 						<div

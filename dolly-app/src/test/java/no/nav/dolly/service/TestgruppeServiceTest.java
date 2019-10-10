@@ -17,7 +17,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -201,32 +200,6 @@ public class TestgruppeServiceTest {
     @Test(expected = NotFoundException.class)
     public void fetchGrupperByIdsIn_kasterExceptionOmGruppeIkkeFinnes() {
         testgruppeService.fetchGrupperByIdsIn(singletonList(anyLong()));
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void fetchIdenterByGruppeId_kasterException() {
-        when(gruppeRepository.findById(anyLong())).thenReturn(Optional.empty());
-        testgruppeService.fetchIdenterByGruppeId(1L);
-    }
-
-    @Test
-    public void fetchIdenterByGruppeId_gruppeTilIdentString() {
-        when(gruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(testGruppe));
-
-        List<String> identer = testgruppeService.fetchIdenterByGruppeId(GROUP_ID);
-        assertThat(identer.contains(IDENT_ONE), is(true));
-        assertThat(identer.contains(IDENT_TWO), is(true));
-        assertThat(identer.size(), is(2));
-    }
-
-    @Test
-    public void fetchIdenterByGroupId_sjekkTommeGrupper() {
-        Testgruppe tg = Testgruppe.builder().id(GROUP_ID).testidenter(new HashSet<>()).build();
-
-        when(gruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(tg));
-        List<String> identer = testgruppeService.fetchIdenterByGruppeId(GROUP_ID);
-
-        assertThat(identer.size(), is(0));
     }
 
     @Test
