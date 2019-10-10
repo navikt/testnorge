@@ -23,7 +23,7 @@ public class EregConsumer {
 
     private final RestTemplate restTemplate;
 
-    @Value("${}")
+    @Value("${ereg.url}")
     private String eregUrl;
 
     public boolean verifiserEnhet(String orgnr) {
