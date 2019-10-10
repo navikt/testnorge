@@ -15,7 +15,7 @@ Formatters.formatAlder = (alder, dodsdato) => {
 	return `${alder.toString()}${dodsdato ? ' (død)' : ''}`
 }
 
-// Format date to readable string format
+// Format date to readable string format (AAAA-MM-DDTxx:xx:xx to DD.MM.AAAA?)
 // Date ---> String
 Formatters.formatDate = date => {
 	if (!date) return date
@@ -33,7 +33,7 @@ Formatters.parseDate = date => {
 }
 
 // Format date AAAA-MM-DD to DD.MM.AAAA
-Formatters.formateStringDates = date => {
+Formatters.formatStringDates = date => {
 	if (!date) return date
 	const dateArray = date.split('-')
 	return `${dateArray[2]}.${dateArray[1]}.${dateArray[0]}`
