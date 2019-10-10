@@ -218,6 +218,8 @@ export default class SendFoedselsmelding extends PureComponent {
 										options={SelectOptionsManager('identtype')}
 										disabled={foundIdentMor ? false : true}
 									/>
+								</div>
+								<div className="tps-endring-foedselmelding-bottom">
 									<Field
 										name="foedselsdato"
 										label="BARNETS FØDSELSDATO"
@@ -239,8 +241,6 @@ export default class SendFoedselsmelding extends PureComponent {
 										multi={true}
 										disabled={foundIdentMor ? false : true}
 									/>
-								</div>
-								<div className="tps-endring-foedselmelding-bottom">
 									<Field
 										name="adresseFra"
 										label="ADRESSE"
@@ -248,6 +248,8 @@ export default class SendFoedselsmelding extends PureComponent {
 										options={adresseOptions}
 										disabled={foundIdentMor ? false : true}
 									/>
+								</div>
+								<div className="tps-endring-knapp-container">
 									<Knapp type="hoved" htmlType="submit" disabled={foundIdentMor ? false : true}>
 										Opprett fødselsmelding
 									</Knapp>
