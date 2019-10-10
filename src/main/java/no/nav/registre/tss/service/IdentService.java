@@ -1,7 +1,7 @@
 package no.nav.registre.tss.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.jms.JMSException;
@@ -19,16 +19,16 @@ import no.nav.registre.tss.domain.TssType;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class IdentService {
 
-    @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
+    private final HodejegerenConsumer hodejegerenConsumer;
 
-    @Autowired
-    private SyntetiseringService syntetiseringService;
+    private final SyntetiseringService syntetiseringService;
 
-    @Autowired
-    private JmsService jmsService;
+    private final JmsService jmsService;
+
+    private final EregService eregService;
 
     public List<String> opprettLegerITss(String miljoe, List<String> identer) {
         List<Samhandler> leger = hentPersondataFraHodejegeren(miljoe, identer).stream()
@@ -56,12 +56,34 @@ public class IdentService {
     }
 
     public List<String> opprettSamhandlereITss(String miljoe, List<String> identer) {
+        List<Samhandler> samhandlere = getSamhandlere(miljoe, identer);
+        //TODO: Hent ut samhandlere fra tss basert på navnesøk. Deretter filtrer vekk eksisterende hvis de når antallet i distribusjonen
+        Map<TssType, List<Samhandler>> samhandlerForType = samhandlere.stream()
+                .collect(Collectors.groupingBy(Samhandler::getType));
 
+        Map<TssType, List<String>> orgnrForType = eregService.opprettEregEnheter(
+                samhandlerForType.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().size()))
+        );
+
+        for (var entry : samhandlerForType.entrySet()) {
+            List<String> orgnr = orgnrForType.get(entry.getKey());
+            List<Samhandler> samhandlerListe = entry.getValue();
+            for (int i = 0; i < orgnr.size(); i++) {
+                if (samhandlerListe.size() <= i) {
+                    log.warn("Fant ikke nok orgnr til å opprette for alle samhandlere, mangler {}", i - samhandlerListe.size());
+                    break;
+                }
+                samhandlerListe.get(i).setIdent(orgnr.get(i));
+            }
+        }
+
+        return opprettSamhandler(miljoe, samhandlere);
+    }
+
+    private List<Samhandler> getSamhandlere(String miljoe, List<String> identer) {
         List<Person> personer = hentPersondataFraHodejegeren(miljoe, identer);
-
-        int chunkSize = (identer.size() / TssType.values().length) - 1;
+        Integer chunkSize = (personer.size() / TssType.values().length) - 1;
         log.info("Lik fordeling blant samhandlere på størrelse " + chunkSize);
-
         int counter = 0;
         List<Samhandler> samhandlere = new ArrayList<>();
         for (TssType type : TssType.values()) {
@@ -70,10 +92,8 @@ public class IdentService {
                     .collect(Collectors.toList()));
             counter += chunkSize;
         }
-
-        log.info("Antall identer ikke brukt: {}", identer.size() - counter);
-
-        return opprettSamhandler(miljoe, samhandlere);
+        log.info("Antall identer ikke brukt: {}", personer.size() - counter);
+        return samhandlere;
     }
 
     private List<Person> hentPersondataFraHodejegeren(String miljoe, List<String> identer) {

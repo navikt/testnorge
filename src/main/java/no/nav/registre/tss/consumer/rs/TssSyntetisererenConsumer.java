@@ -25,11 +25,11 @@ public class TssSyntetisererenConsumer {
 
     public TssSyntetisererenConsumer(RestTemplateBuilder restTemplateBuilder, @Value("${synthdata-tss-api-url}") String synthdataTssUrl) {
         this.restTemplate = restTemplateBuilder.build();
-        this.url = new UriTemplate(synthdataTssUrl + "/v1/generate_tss_messages/json");
+        this.url = new UriTemplate(synthdataTssUrl + "/v1/tss");
     }
 
-    public Map<String, List<TssSyntMessage>> hentSyntetiskeTssRutiner(List<Samhandler> identer) {
-        RequestEntity postRequest = RequestEntity.post(url.expand()).body(identer);
+    public Map<String, List<TssSyntMessage>> hentSyntetiskeTssRutiner(List<Samhandler> samhandlere) {
+        RequestEntity postRequest = RequestEntity.post(url.expand()).body(samhandlere);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }
