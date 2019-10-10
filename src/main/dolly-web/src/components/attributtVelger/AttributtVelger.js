@@ -36,7 +36,9 @@ export default class AttributtVelger extends Component {
 				/>
 				<div className="flexbox">
 					<div className="attributt-velger_panels">{this._renderPanels()}</div>
-					<Utvalg selectedIds={selectedIds} uncheckAllAttributes={uncheckAllAttributes} />
+					<div className="utvalg">
+						<Utvalg selectedIds={selectedIds} uncheckAllAttributes={uncheckAllAttributes} />
+					</div>
 				</div>
 			</div>
 		)

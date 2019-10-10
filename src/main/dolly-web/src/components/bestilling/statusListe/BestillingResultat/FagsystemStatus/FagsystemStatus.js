@@ -22,7 +22,7 @@ export default function FagsystemStatus({ bestilling }) {
 		<div className="fagsystem-status">
 			{bestilling.status.map((fagsystem, idx) => (
 				<div className="fagsystem-status_kind" key={idx}>
-					<Icon size="24px" kind={iconType(fagsystem.statuser)} />
+					<Icon kind={iconType(fagsystem.statuser)} />
 					<p>{fagsystem.navn}</p>
 				</div>
 			))}

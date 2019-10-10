@@ -1,6 +1,35 @@
-.gruppe-detaljer-chevron {
+@import (reference) '~lessVars';
+
+.gruppe-detaljer {
 	display: flex;
-	align-items: center;
-	margin-right: 5px;
-	padding: 10px 10px 0px;
+	align-items: end;
+	width: 100%;
+	background-color: white;
+	padding: 10px 10px 10px 20px;
+
+	border: 1px solid @color-bg-grey-border;
+
+	.gd-blokker {
+		display: flex;
+		flex-grow: 1;
+		flex-wrap: wrap;
+		.static-value {
+			min-width: 20%;
+			flex-grow: 1;
+			padding: 10px 0;
+
+			h2 {
+				font-size: 0.83em;
+				margin: 0;
+				font-weight: bold;
+			}
+		}
+	}
+
+	&-chevron {
+		display: flex;
+		align-items: center;
+		margin-right: 5px;
+		padding: 10px 10px 0px;
+	}
 }

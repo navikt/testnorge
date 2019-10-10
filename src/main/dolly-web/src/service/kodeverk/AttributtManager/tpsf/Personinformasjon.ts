@@ -90,7 +90,6 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
 				editPath: 'innvandretFraLand',
-				//validation: yup.string().required('Vennligst velg'),
 				apiKodeverkId: 'Landkoder',
 				attributtType: AttributtType.SelectAndEdit
 			},
@@ -123,7 +122,6 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
 				editPath: 'utvandretTilLand',
-				validation: yup.string().required('Vennligst velg'),
 				apiKodeverkId: 'Landkoder',
 				attributtType: AttributtType.SelectAndEdit
 			},
@@ -220,6 +218,85 @@ const AttributtListe: Attributt[] = [
 		hoydeOptions: 'large',
 		apiKodeverkId: 'Diskresjonskoder',
 		attributtType: AttributtType.SelectAndEdit
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Identifikasjon,
+		id: 'identHistorikk',
+		label: 'Har identhistorikk',
+		subGruppe: 'true',
+		dataSource: DataSource.TPSF,
+		attributtType: AttributtType.SelectOnly,
+		isMultiple: true,
+		informasjonstekst:
+			'Dette er en oversikt over utgåtte identer, der de eldste skal ligge sist. ' +
+			'Dagens identtype legges inn på forrige side. For å velge dagens kjønn må "Kjønn" hukes av på forrige side og velges under "Diverse" -> "Kjønn" her. ' +
+			'Eksempel: En testperson med DNR får FNR. Da velges FNR på forrige side. DNR legges inn i denne oversikten. ' +
+			'Hvis fødselsdatoen ble endret i overgangen kan født før og født etter fylles ut. Det samme gjelder for kjønn. ' +
+			'Dersom de står som "Ikke spesifisert" beholdes samme fødselsdato og/eller kjønn.',
+		validation: yup.object(),
+		items: [
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Identifikasjon,
+				id: 'identtype',
+				label: 'Identtype',
+				subGruppe: 'Identhistorikk',
+				path: 'identHistorikk.identtype',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				options: SelectOptionsManager('identtype'),
+				attributtType: AttributtType.SelectOnly
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Identifikasjon,
+				id: 'kjonn',
+				label: 'Kjønn',
+				subGruppe: 'Identhistorikk',
+				path: 'identHistorikk.kjonn',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				apiKodeverkId: 'Kjønnstyper',
+				attributtType: AttributtType.SelectOnly
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Identifikasjon,
+				id: 'regdato',
+				label: 'Utgått dato',
+				subGruppe: 'Identhistorikk',
+				path: 'identHistorikk.regdato',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				validation: DateValidation(false),
+				attributtType: AttributtType.SelectOnly
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Identifikasjon,
+				id: 'foedtFoer',
+				label: 'Født før',
+				subGruppe: 'Identhistorikk',
+				path: 'identHistorikk.foedtFoer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				validation: DateValidation(false),
+				attributtType: AttributtType.SelectOnly
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.Identifikasjon,
+				id: 'foedtEtter',
+				label: 'Født etter',
+				subGruppe: 'Identhistorikk',
+				path: 'identHistorikk.foedtEtter',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				validation: DateValidation(false),
+				attributtType: AttributtType.SelectOnly
+			}
+		]
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,

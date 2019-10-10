@@ -13,10 +13,12 @@ import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 import Button from '~/components/ui/button/Button'
 import _xor from 'lodash/fp/xor'
-import './FormEditor.less'
 import UtenFastBopelConnector from '../utenFastBopel/UtenFastBopelConnector'
 import Postadresse from '../postadresse/Postadresse'
 import ArrayFieldConnector from '../arrayField/ArrayFieldConnector'
+import HjelpeTekst from 'nav-frontend-hjelpetekst'
+
+import './FormEditor.less'
 
 export default class FormEditor extends Component {
 	render() {
@@ -130,7 +132,6 @@ export default class FormEditor extends Component {
 				</div>
 			)
 		}
-
 		if (items[0].subGruppe === 'true') {
 			//Hvis subKategorien skal ha flere underoverskrifter/undergrupperinger
 			const subGrupper = this._structureSubGruppe(items)
@@ -143,13 +144,18 @@ export default class FormEditor extends Component {
 						)
 						return (
 							<div key={idx}>
-								{subKategori.id === 'arena' ? (
-									formikProps.values.arenaforvalter[0].arenaBrukertype === 'MED_SERVICEBEHOV' && (
+								<div className="flexbox">
+									{subKategori.id === 'arena' ? (
+										formikProps.values.arenaforvalter[0].arenaBrukertype === 'MED_SERVICEBEHOV' && (
+											<h4 className="subgruppe">{subGruppe.navn}</h4>
+										)
+									) : (
 										<h4 className="subgruppe">{subGruppe.navn}</h4>
-									)
-								) : (
-									<h4 className="subgruppe">{subGruppe.navn}</h4>
-								)}
+									)}
+									{items[0].informasjonstekst && (
+										<HjelpeTekst>{items[0].informasjonstekst}</HjelpeTekst>
+									)}
+								</div>
 								{FormEditorFieldArray(
 									subGruppeObj,
 									formikProps,
@@ -377,6 +383,56 @@ export default class FormEditor extends Component {
 		) {
 			disabled = true
 			valgteVerdier.barn[barnTall].barn_forsvunnet[0].forsvunnetDato = ''
+		}
+
+		if (
+			item.id === 'innvandret[0]innvandretFraLandFlyttedato' &&
+			!valgteVerdier.innvandret[0].innvandretFraLand
+		) {
+			disabled = true
+			valgteVerdier.innvandret[0].innvandretFraLandFlyttedato = ''
+		}
+		if (
+			item.id === 'partner_innvandret[0]innvandretFraLandFlyttedato' &&
+			!valgteVerdier.partner_innvandret[0].innvandretFraLand
+		) {
+			disabled = true
+			valgteVerdier.partner_innvandret[0].innvandretFraLandFlyttedato = ''
+		}
+		if (
+			item.id === `barn[${barnTall}]barn_innvandret[0]innvandretFraLandFlyttedato` &&
+			(valgteVerdier.barn[barnTall].barn_innvandret === '' ||
+				_get(valgteVerdier, `barn[${barnTall}].barn_innvandret[0].innvandretFraLand`) === '')
+		) {
+			disabled = true
+			if (_get(valgteVerdier, `barn[${barnTall}].barn_innvandret[0].innvandretFraLandFlyttedato`)) {
+				valgteVerdier.barn[barnTall].barn_innvandret[0].innvandretFraLandFlyttedato = ''
+			}
+		}
+
+		if (
+			item.id === 'utvandret[0]utvandretTilLandFlyttedato' &&
+			!valgteVerdier.utvandret[0].utvandretTilLand
+		) {
+			disabled = true
+			valgteVerdier.utvandret[0].utvandretTilLandFlyttedato = ''
+		}
+		if (
+			item.id === 'partner_utvandret[0]utvandretTilLandFlyttedato' &&
+			!valgteVerdier.partner_utvandret[0].utvandretTilLand
+		) {
+			disabled = true
+			valgteVerdier.partner_utvandret[0].utvandretTilLandFlyttedato = ''
+		}
+		if (
+			item.id === `barn[${barnTall}]barn_utvandret[0]utvandretTilLandFlyttedato` &&
+			(valgteVerdier.barn[barnTall].barn_utvandret === '' ||
+				_get(valgteVerdier, `barn[${barnTall}].barn_utvandret[0].utvandretTilLand`) === '')
+		) {
+			disabled = true
+			if (_get(valgteVerdier, `barn[${barnTall}].barn_utvandret[0].utvandretTilLandFlyttedato`)) {
+				valgteVerdier.barn[barnTall].barn_utvandret[0].utvandretTilLandFlyttedato = ''
+			}
 		}
 
 		if (
