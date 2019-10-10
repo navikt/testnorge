@@ -13,6 +13,13 @@ const getColumnValue = (row, column) => {
 	return column.formatter ? column.formatter(value, row) : value
 }
 
+// Setter rowKey til en verdi dersom datasett har et unikt felt
+// Fallback til row index
+const getRowKey = (row, columns) => {
+	const hasUnique = columns.find(c => c.unique)
+	return hasUnique && _get(row, `${hasUnique.dataField}`).toString()
+}
+
 export default function Table({ data, columns, onRowClick, onExpand }) {
 	return (
 		<div className="dot">
@@ -23,8 +30,9 @@ export default function Table({ data, columns, onRowClick, onExpand }) {
 			{data.map((row, rowIdx) => {
 				const navLink = onRowClick ? onRowClick(row) : null
 				const expandComponent = onExpand ? onExpand(row) : null
+				const rowKey = getRowKey(row, columns) || rowIdx
 				return (
-					<Row key={rowIdx} navLink={navLink} expandComponent={expandComponent}>
+					<Row key={rowKey} navLink={navLink} expandComponent={expandComponent}>
 						{columns.map((columnCell, idx) => (
 							<Column key={idx} width={columnCell.width} value={getColumnValue(row, columnCell)} />
 						))}

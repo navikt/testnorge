@@ -14,7 +14,7 @@ export default class Pagination extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		if (prevProps.items !== this.props.items) return this.setState({ currentPage: 0 })
+		if (prevProps.items.length !== this.props.items.length) return this.setState({ currentPage: 0 })
 	}
 
 	render() {

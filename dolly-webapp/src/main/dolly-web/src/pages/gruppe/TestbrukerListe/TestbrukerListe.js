@@ -34,7 +34,8 @@ export default function TestbrukerListe({
 		{
 			text: 'Ident',
 			width: '15',
-			dataField: '[0]'
+			dataField: '[0]',
+			unique: true
 		},
 		{
 			text: 'Type',
