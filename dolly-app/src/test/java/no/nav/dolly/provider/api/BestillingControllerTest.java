@@ -15,7 +15,6 @@ import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
-import no.nav.dolly.provider.api.BestillingController;
 import no.nav.dolly.service.BestillingService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,13 +41,13 @@ public class BestillingControllerTest {
     private BestillingController bestillingController;
 
     @Test
-    public void checkBestillingsstatus_oppdatererMedPersonstatusOrReturnererBestilling() {
+    public void getBestillingById_oppdatererMedPersonstatusOrReturnererBestilling() {
 
         RsBestillingStatus bestillingStatus = RsBestillingStatus.builder().build();
         when(bestillingService.fetchBestillingById(any())).thenReturn(new Bestilling());
         when(mapperFacade.map(any(), any())).thenReturn(bestillingStatus);
 
-        RsBestilling res = bestillingController.getBestillingById(BESTILLING_ID);
+        RsBestillingStatus res = bestillingController.getBestillingById(BESTILLING_ID);
 
         assertThat(res, is(bestillingStatus));
     }
