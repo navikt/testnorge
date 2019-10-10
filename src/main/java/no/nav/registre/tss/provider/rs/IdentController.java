@@ -1,6 +1,7 @@
 package no.nav.registre.tss.provider.rs;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpServerErrorException;
 
 import javax.jms.JMSException;
 import java.util.Collections;
@@ -38,7 +40,12 @@ public class IdentController {
 
     @PostMapping("/samhandler")
     public String opprettSamhandler(@RequestParam String miljoe, @RequestBody Samhandler samhandler) {
-        return identService.opprettSamhandler(miljoe, Collections.singletonList(samhandler)).get(0);
+        List<String> opprettetSamhandler = identService.opprettSamhandler(miljoe, Collections.singletonList(samhandler));
+        if (opprettetSamhandler.size() == 0) {
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Fikk ingen samhandlere tilbake");
+        }
+        return opprettetSamhandler.get(0);
+
     }
 
     @GetMapping("/samhandlere/{avspillergruppeId}")

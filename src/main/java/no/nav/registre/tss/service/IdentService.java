@@ -148,9 +148,9 @@ public class IdentService {
         String koeNavnSamhandler = jmsService.hentKoeNavnSamhandler(miljoe);
 
         List<String> syntetiskeTssRutiner = syntetiseringService.opprettSyntetiskeTssRutiner(samhandlere);
-
+        log.info("Syntetisk rutiner hentet fra synt: {}", syntetiskeTssRutiner);
         jmsService.sendTilTss(syntetiskeTssRutiner, koeNavnAjourhold);
-
+        log.info("Sendt til TSS");
         List<String> opprettedeSamhandlere = new ArrayList<>();
 
         for (Samhandler ident : samhandlere) {
