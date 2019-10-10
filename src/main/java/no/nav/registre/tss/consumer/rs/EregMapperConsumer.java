@@ -29,6 +29,7 @@ public class EregMapperConsumer {
     private String eregMapperUrl;
 
     public boolean opprett(List<EregMapperRequest> data) {
+        log.info("Prøver å opprette følgende enheter i EREG: {}", data);
         UriTemplate uriTemplate = new UriTemplate(eregMapperUrl + "/v1/orkestrering/flatfil/jenkins?lastOpp=true&miljoe={miljoe}");
         RequestEntity<List<EregMapperRequest>> request = new RequestEntity<>(data, HttpMethod.POST, uriTemplate.expand(miljoe));
         ResponseEntity<Object> response = restTemplate.exchange(request, Object.class);

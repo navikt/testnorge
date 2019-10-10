@@ -36,19 +36,17 @@ public class EregService {
 
     public Map<TssType, List<String>> opprettEregEnheter(Map<TssType, Integer> tssTypeAntallMap) {
 
-        Integer totalAntallOrganissasjoner = tssTypeAntallMap.entrySet().stream()
-                .filter(entry -> TssTypeGruppe.skalHaOrgnummer(TssTypeGruppe.getGruppe(entry.getKey())))
-                .map(Map.Entry::getValue)
-                .reduce(0, Integer::sum);
+        Integer totalAntallOrganissasjoner = tssTypeAntallMap.values().stream().reduce(0, Integer::sum);
 
         List<String> orgnr = eregMapperConsumer.hentNyttOrgnr(totalAntallOrganissasjoner);
 
-        Map<TssType, List<String>> typeMedOrgnr = getTssTypeListMap(orgnr);
+        Map<TssType, List<String>> typeMedOrgnr = getTypeMedOrgnr(orgnr);
         boolean sendtTilJenkins = eregMapperConsumer.opprett(typeMedOrgnr.entrySet().stream()
                 .map(entry -> entry.getValue().stream()
                         .map(org -> opprettEregRequest(entry.getKey(), org))
                         .collect(Collectors.toList()))
-                .flatMap(List::stream).collect(Collectors.toList()));
+                .flatMap(List::stream).collect(Collectors.toList())
+        );
 
         if (!sendtTilJenkins)
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Kunne ikke opprette bedrifter i EREG");
@@ -65,11 +63,13 @@ public class EregService {
         return typeMedOrgnr;
     }
 
-    private Map<TssType, List<String>> getTssTypeListMap(List<String> orgnr) {
+    private Map<TssType, List<String>> getTypeMedOrgnr(List<String> orgnr) {
         int chunkSize = (orgnr.size() / TssType.values().length) - 1;
-        log.info("Lik fordeling blant samhandlere på størrelse " + chunkSize);
+        log.info("Lik fordeling blant organisasjoner på størrelse " + chunkSize);
 
-        Map<TssType, List<String>> typeMedOrgnr = Stream.of(TssType.values()).collect(Collectors.toMap(Function.identity(), e -> new ArrayList<>(chunkSize)));
+        Map<TssType, List<String>> typeMedOrgnr = Stream.of(TssType.values())
+                .filter(type -> TssTypeGruppe.skalHaOrgnummer(TssTypeGruppe.getGruppe(type)))
+                .collect(Collectors.toMap(Function.identity(), e -> new ArrayList<>(chunkSize)));
 
         int counter = 0;
         for (var entry : typeMedOrgnr.entrySet()) {

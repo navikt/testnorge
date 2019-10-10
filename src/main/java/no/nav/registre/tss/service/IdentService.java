@@ -18,6 +18,7 @@ import no.nav.registre.tss.consumer.rs.response.TssMessage;
 import no.nav.registre.tss.domain.Person;
 import no.nav.registre.tss.domain.Samhandler;
 import no.nav.registre.tss.domain.TssType;
+import no.nav.registre.tss.domain.TssTypeGruppe;
 import no.nav.registre.tss.provider.rs.request.Rutine130Request;
 import no.nav.registre.tss.utils.Rutine110Util;
 import no.nav.registre.tss.utils.rutine130.Rutine130Util;
@@ -67,7 +68,9 @@ public class IdentService {
                 .collect(Collectors.groupingBy(Samhandler::getType));
 
         Map<TssType, List<String>> orgnrForType = eregService.opprettEregEnheter(
-                samhandlerForType.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().size()))
+                samhandlerForType.entrySet().stream()
+                        .filter(e -> TssTypeGruppe.skalHaOrgnummer(TssTypeGruppe.getGruppe(e.getKey())))
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().size()))
         );
 
         for (var entry : samhandlerForType.entrySet()) {
@@ -140,17 +143,17 @@ public class IdentService {
         return identerMedNavn;
     }
 
-    private List<String> opprettSamhandler(String miljoe, List<Samhandler> identer) {
+    public List<String> opprettSamhandler(String miljoe, List<Samhandler> samhandlere) {
         String koeNavnAjourhold = jmsService.hentKoeNavnAjour(miljoe);
         String koeNavnSamhandler = jmsService.hentKoeNavnSamhandler(miljoe);
 
-        List<String> syntetiskeTssRutiner = syntetiseringService.opprettSyntetiskeTssRutiner(identer);
+        List<String> syntetiskeTssRutiner = syntetiseringService.opprettSyntetiskeTssRutiner(samhandlere);
 
         jmsService.sendTilTss(syntetiskeTssRutiner, koeNavnAjourhold);
 
         List<String> opprettedeSamhandlere = new ArrayList<>();
 
-        for (Samhandler ident : identer) {
+        for (Samhandler ident : samhandlere) {
             try {
                 Response910 response = jmsService.sendOgMotta910RutineFraTss(ident.getIdent(), koeNavnSamhandler);
                 if (!response.getResponse110().isEmpty() || !response.getResponse111().isEmpty() || !response.getResponse125().isEmpty()) {

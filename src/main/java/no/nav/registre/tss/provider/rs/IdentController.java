@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.jms.JMSException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.tss.consumer.rs.response.Response910;
+import no.nav.registre.tss.domain.Samhandler;
 import no.nav.registre.tss.provider.rs.request.Rutine130Request;
 import no.nav.registre.tss.service.IdentService;
 
@@ -32,6 +34,11 @@ public class IdentController {
     @PostMapping("/samhandlere")
     public List<String> opprettSamhandlere(@RequestParam String miljoe, @RequestBody List<String> identer) {
         return identService.opprettSamhandlereITss(miljoe.toLowerCase(), identer);
+    }
+
+    @PostMapping("/samhandler")
+    public String opprettSamhandler(@RequestParam String miljoe, @RequestBody Samhandler samhandler) {
+        return identService.opprettSamhandler(miljoe, Collections.singletonList(samhandler)).get(0);
     }
 
     @GetMapping("/samhandlere/{avspillergruppeId}")
