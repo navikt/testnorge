@@ -49,7 +49,7 @@ public class OpenAmController {
     }
 
     @PutMapping("/gruppe/{gruppeId}")
-    @ApiOperation("Oppdater OpenAmSent verdi i Testgruppe med gruppeId")
+    @ApiOperation("Oppdater OpenAmSent status i Testgruppe med gruppeId")
     public void oppdaterOpenAmSentStatus(@PathVariable(value = "gruppeId") Long gruppeId, @RequestParam Boolean isOpenAmSent) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
         if (testgruppe.isPresent()) {

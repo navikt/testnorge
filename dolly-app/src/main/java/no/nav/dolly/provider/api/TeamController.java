@@ -97,11 +97,5 @@ public class TeamController {
         if (teamService.deleteTeam(teamId) == 0) {
             throw new NotFoundException(format("Team med id %d ble ikke funnet.", teamId));
         }
-        //TODO Hører denne hjemme her? Ser hensikten for forenkling,
-        // men kanskje burde det være opp til frontend å gjøre et kall for å rydde opp selv istedenfor å dra inn en service kun for dette?
-        // Eventuelt legge opp til scheduled task som rydder opp
-        // Både en unødvendig avhengighet i prodkoden og vanskeligere å teste.
-
-//        testgruppeService.slettGruppeByTeamId(teamId); // todo spør kristen om cascade av team slett mangler
     }
 }

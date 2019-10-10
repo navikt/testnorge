@@ -219,19 +219,6 @@ public class TeamServiceTest {
         return argumentCaptor.getValue();
     }
 
-    //TODO Erstatt med tester i ende-til-ende tester
-//    @Test(expected = ConstraintViolationException.class)
-//    public void saveTeamToDB_DataIntegrityViolationExceptionCatches() {
-//        when(teamRepository.save(any(Team.class))).thenThrow(DataIntegrityViolationException.class);
-//        teamService.saveTeamToDB(new Team());
-//    }
-//
-//    @Test(expected = DollyFunctionalException.class)
-//    public void saveTeamToDB_kasterDollyExceptionHvisDBConstraintErBrutt() {
-//        when(teamRepository.save(any(Team.class))).thenThrow(nonTransientDataAccessException);
-//        teamService.saveTeamToDB(new Team());
-//    }
-
     @Test
     public void fetchTeamsByMedlemskapInTeams_ok() {
 

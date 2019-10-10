@@ -9,7 +9,7 @@
 //import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerTeamAndGruppeIDs;
 //import org.junit.Test;
 //import org.springframework.test.web.servlet.MvcResult;
-//
+// // TODO fix or delete these commented tests
 //public class GetBrukerByNavnIdentScenarios extends BrukerTestCaseBase {
 //
 //    @Test

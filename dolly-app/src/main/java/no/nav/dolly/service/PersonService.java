@@ -2,20 +2,19 @@ package no.nav.dolly.service;
 
 import static java.util.Collections.singletonList;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.TestgruppeRepository;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.TestgruppeRepository;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service

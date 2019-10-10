@@ -62,7 +62,6 @@ public class DollyBestillingService {
     private static final String SUCCESS = "OK";
     private static final String OUT_FMT = "%s: %s";
 
-    //TODO Rydde opp i avhengigheter
     private final TpsfResponseHandler tpsfResponseHandler;
     private final TpsfService tpsfService;
     private final TestgruppeService testgruppeService;

@@ -28,8 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-//TODO Burde gjore at alle returnerer team istedenfor "json/POJO" representasjonen av de.
-
 @Service
 @RequiredArgsConstructor
 public class TeamService {
@@ -100,7 +98,6 @@ public class TeamService {
         return mapperFacade.map(changedTeam, RsTeamUtvidet.class);
     }
 
-    //TODO Er denne nødvendig når fjernMedlemmer gjør samme jobben?
     public RsTeamUtvidet slettMedlem(Long teamId, String navIdent) {
         Team team = fetchTeamById(teamId);
         boolean found = false;

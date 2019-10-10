@@ -19,14 +19,18 @@ import no.nav.dolly.properties.ProvidersProps;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -81,9 +85,8 @@ public class ArenaForvalterConsumerTest {
 
     @Test
     public void getEnvironments() {
-        ParameterizedTypeReference<List<String>> expectedResponseType = new ParameterizedTypeReference<List<String>>() {
-        };
-        List<String> list = Arrays.asList(new String[]{"list", "with", "values"});
+        ParameterizedTypeReference<List<String>> expectedResponseType = new ParameterizedTypeReference<List<String>>() {};
+        List<String> list = Arrays.asList("list", "with", "values");
 
         ResponseEntity<List<String>> myEntity = new ResponseEntity<>(list, HttpStatus.ACCEPTED);
         when(restTemplate.exchange(
@@ -91,9 +94,7 @@ public class ArenaForvalterConsumerTest {
                 ArgumentMatchers.<ParameterizedTypeReference<List<String>>>any())
         ).thenReturn(myEntity);
 
-
-        List<String> resp =arenaForvalterConsumer.getEnvironments();
-
+        List<String> resp = arenaForvalterConsumer.getEnvironments();
 
         verify(providersProps).getArenaForvalter();
         verify(restTemplate).exchange(any(RequestEntity.class), eq(expectedResponseType));
