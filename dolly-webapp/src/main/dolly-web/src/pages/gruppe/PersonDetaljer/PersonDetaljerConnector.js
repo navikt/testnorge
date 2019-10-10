@@ -49,18 +49,21 @@ const mapStateToProps = (state, ownProps) => {
 	}
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-	getKrrTestbruker: () => dispatch(GET_KRR_TESTBRUKER(ownProps.personId)),
-	getSigrunTestbruker: () => dispatch(GET_SIGRUN_TESTBRUKER(ownProps.personId)),
-	getSigrunSekvensnr: () => dispatch(GET_SIGRUN_SEKVENSNR(ownProps.personId)),
-	getArenaTestbruker: () => dispatch(GET_ARENA_TESTBRUKER(ownProps.personId)),
-	getAaregTestbruker: env => dispatch(GET_AAREG_TESTBRUKER(ownProps.personId, env)),
-	getInstTestbruker: env => dispatch(GET_INST_TESTBRUKER(ownProps.personId, env)),
-	getPdlfTestbruker: () => dispatch(GET_TESTBRUKER_PERSONOPPSLAG(ownProps.personId)),
-	getUdiTestbruker: () => dispatch(GET_UDI_TESTBRUKER(ownProps.personId)),
-	frigjoerTestbruker: () => dispatch(FRIGJOER_TESTBRUKER(ownProps.personId)),
-	editAction: () => dispatch(push(`${ownProps.match.url}/testbruker/${ownProps.personId}`))
-})
+const mapDispatchToProps = (dispatch, ownProps) => {
+	return {
+		getKrrTestbruker: () => dispatch(GET_KRR_TESTBRUKER(ownProps.personId)),
+		getSigrunTestbruker: () => dispatch(GET_SIGRUN_TESTBRUKER(ownProps.personId)),
+		getSigrunSekvensnr: () => dispatch(GET_SIGRUN_SEKVENSNR(ownProps.personId)),
+		getArenaTestbruker: () => dispatch(GET_ARENA_TESTBRUKER(ownProps.personId)),
+		getAaregTestbruker: env => dispatch(GET_AAREG_TESTBRUKER(ownProps.personId, env)),
+		getInstTestbruker: env => dispatch(GET_INST_TESTBRUKER(ownProps.personId, env)),
+		getPdlfTestbruker: () => dispatch(GET_TESTBRUKER_PERSONOPPSLAG(ownProps.personId)),
+		getUdiTestbruker: () => dispatch(GET_UDI_TESTBRUKER(ownProps.personId)),
+		frigjoerTestbruker: () =>
+			dispatch(FRIGJOER_TESTBRUKER(ownProps.match.params.gruppeId, ownProps.personId)),
+		editAction: () => dispatch(push(`${ownProps.match.url}/testbruker/${ownProps.personId}`))
+	}
+}
 
 export default withRouter(
 	connect(
