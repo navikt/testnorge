@@ -281,12 +281,12 @@ export function mapInstData(instData) {
 					{
 						id: 'startdato',
 						label: 'Startdato',
-						value: Formatters.formateStringDates(data.startdato)
+						value: Formatters.formatStringDates(data.startdato)
 					},
 					{
 						id: 'faktiskSluttdato',
 						label: 'Sluttdato',
-						value: Formatters.formateStringDates(data.faktiskSluttdato)
+						value: Formatters.formatStringDates(data.faktiskSluttdato)
 					}
 				]
 			}
