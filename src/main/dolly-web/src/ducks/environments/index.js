@@ -1,11 +1,9 @@
 import { TpsfApi } from '~/service/Api'
-import { createAction, handleActions, combineActions } from 'redux-actions'
+import { createAction, handleActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 
 export const getEnvironments = createAction('GET_ENVIRONMENTS', () =>
-	TpsfApi.getTilgjengligeMiljoer().then(res => {
-		return _getEnvironmentsSortedByType(res.data.environments)
-	})
+	TpsfApi.getTilgjengligeMiljoer()
 )
 
 const initialState = {
@@ -15,7 +13,8 @@ const initialState = {
 export default handleActions(
 	{
 		[success(getEnvironments)](state, action) {
-			return { ...state, data: action.payload }
+			const envs = _getEnvironmentsSortedByType(action.payload.data.environments)
+			return { ...state, data: envs }
 		}
 	},
 	initialState
