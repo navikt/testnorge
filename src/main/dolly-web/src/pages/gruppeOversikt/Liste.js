@@ -32,7 +32,8 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 		{
 			text: 'ID',
 			width: '15',
-			dataField: 'id'
+			dataField: 'id',
+			unique: true
 		},
 		{
 			text: 'Navn',

@@ -8,7 +8,8 @@ export default function TeamMedlemmer({ grupper, history }) {
 		{
 			text: 'ID',
 			width: '15',
-			dataField: 'id'
+			dataField: 'id',
+			unique: true
 		},
 		{
 			text: 'Navn',
