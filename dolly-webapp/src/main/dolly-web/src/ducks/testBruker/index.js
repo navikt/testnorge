@@ -168,7 +168,7 @@ export const GET_TESTBRUKER_PERSONOPPSLAG = createAction(
 export const FRIGJOER_TESTBRUKER = createAction(
 	'FRIGJOER_TESTBRUKER',
 	(gruppeId, identId) => DollyApi.deleteTestIdent(gruppeId, identId),
-	ident => ({
+	(gruppeId, ident) => ({
 		ident
 	})
 )
