@@ -64,10 +64,10 @@ fasitResources:
       resourceType: baseurl
       propertyMap:
         url: jira.host
-   - alias: udiStub-host
-      resourceType: baseurl
-      propertyMap:
-        url: providers.udiStub.url
+    - alias: udiStub-host
+        resourceType: baseurl
+        propertyMap:
+          url: providers.udiStub.url
 
     - alias: fasit.host
       resourceType: baseurl
@@ -89,41 +89,41 @@ fasitResources:
       propertyMap:
         url: providers.personOppslag.url
 
-  - alias: syntdata.host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.syntdata.url
+    - alias: syntdata.host
+      resourceType: baseurl
+      propertyMap:
+        url: providers.syntdata.url
 
-  - alias: instdata.host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.instdata.url
+    - alias: instdata.host
+      resourceType: baseurl
+      propertyMap:
+        url: providers.instdata.url
 
-  - alias: srvdolly-test-env
-    resourceType: credential
-    propertyMap:
-      username: credentials.testEnv.username
-      password: credentials.testEnv.password
-
-    - alias: srvdolly-preprod-env
+    - alias: srvdolly-test-env
       resourceType: credential
       propertyMap:
-        username: credentials.preprodEnv.username
-        password: credentials.preprodEnv.password
+        username: credentials.testEnv.username
+        password: credentials.testEnv.password
 
-    - alias: srvJiraDolly
-      resourceType: credential
-      propertyMap:
-        username: jira.username
-        password: jira.password
+        - alias: srvdolly-preprod-env
+          resourceType: credential
+          propertyMap:
+            username: credentials.preprodEnv.username
+            password: credentials.preprodEnv.password
 
-    - alias: dollyDB
-      resourceType: DataSource
-      propertyMap:
-        url: spring.datasource.url
-        username: spring.datasource.username
-        password: spring.datasource.password
-        onsHosts: app.datasource.onsHosts
+        - alias: srvJiraDolly
+          resourceType: credential
+          propertyMap:
+            username: jira.username
+            password: jira.password
+
+        - alias: dollyDB
+          resourceType: DataSource
+          propertyMap:
+            url: spring.datasource.url
+            username: spring.datasource.username
+            password: spring.datasource.password
+            onsHosts: app.datasource.onsHosts
 
   exposed:
     - alias: dolly.api.v1
