@@ -24,11 +24,6 @@ describe('Panel.js', () => {
 		expect(wrapper.find('.panel-content').text()).toBe(testContent)
 	})
 
-	it('should override state when forceOpen is set', () => {
-		const wrapper = shallow(<Panel forceOpen />)
-		expect(wrapper.find('.panel-content').exists()).toBe(true)
-	})
-
 	it('should have an extra class when open', () => {
 		const wrapper = shallow(<Panel startOpen />)
 		expect(wrapper.hasClass('panel-open')).toBe(true)
