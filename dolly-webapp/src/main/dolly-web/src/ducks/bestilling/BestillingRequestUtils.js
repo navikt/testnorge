@@ -209,15 +209,15 @@ export const getValues = (attributeList, values) => {
 					})
 					delete valueCopy[idx].forsvunnet
 				}
-				if (barn.Statsborgerskap) {
-					Object.entries(valueCopy[idx].Statsborgerskap[0]).map(attr => {
+				if (barn.statsborgerskapInfo) {
+					Object.entries(valueCopy[idx].statsborgerskapInfo[0]).map(attr => {
 						_set(
 							valueCopy[idx],
 							attr[0],
 							isDate(attr[1]) ? DataFormatter.parseDate(attr[1]) : attr[1]
 						)
 					})
-					delete valueCopy[idx].Statsborgerskap
+					delete valueCopy[idx].statsborgerskapInfo
 				}
 			})
 			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, valueCopy)
@@ -227,7 +227,7 @@ export const getValues = (attributeList, values) => {
 			attribute.id.includes('innvandret') ||
 			attribute.id.includes('utvandret') ||
 			attribute.id.includes('forsvunnet') ||
-			attribute.id.includes('Statsborgerskap')
+			attribute.id.includes('statsborgerskapInfo')
 		) {
 			// Viktig at denne ligger etter bolken med barn
 			Object.entries(value[0]).map(attr => {

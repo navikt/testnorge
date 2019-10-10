@@ -8,9 +8,10 @@ import BestillingDetaljer from '~/components/bestilling/detaljer/Detaljer'
 import EtikettBase from 'nav-frontend-etiketter'
 
 const etikettTypeMap = {
-	ferdig: 'suksess',
-	avvik: 'fokus',
-	Feilet: 'advarsel'
+	Ferdig: 'suksess',
+	Avvik: 'fokus',
+	Feilet: 'advarsel',
+	Stoppet: 'advarsel'
 }
 
 export default function BestillingListe({ bestillinger, searchActive, isFetchingBestillinger }) {
