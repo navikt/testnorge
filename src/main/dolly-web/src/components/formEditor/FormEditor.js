@@ -380,6 +380,56 @@ export default class FormEditor extends Component {
 		}
 
 		if (
+			item.id === 'innvandret[0]innvandretFraLandFlyttedato' &&
+			!valgteVerdier.innvandret[0].innvandretFraLand
+		) {
+			disabled = true
+			valgteVerdier.innvandret[0].innvandretFraLandFlyttedato = ''
+		}
+		if (
+			item.id === 'partner_innvandret[0]innvandretFraLandFlyttedato' &&
+			!valgteVerdier.partner_innvandret[0].innvandretFraLand
+		) {
+			disabled = true
+			valgteVerdier.partner_innvandret[0].innvandretFraLandFlyttedato = ''
+		}
+		if (
+			item.id === `barn[${barnTall}]barn_innvandret[0]innvandretFraLandFlyttedato` &&
+			(valgteVerdier.barn[barnTall].barn_innvandret === '' ||
+				_get(valgteVerdier, `barn[${barnTall}].barn_innvandret[0].innvandretFraLand`) === '')
+		) {
+			disabled = true
+			if (_get(valgteVerdier, `barn[${barnTall}].barn_innvandret[0].innvandretFraLandFlyttedato`)) {
+				valgteVerdier.barn[barnTall].barn_innvandret[0].innvandretFraLandFlyttedato = ''
+			}
+		}
+
+		if (
+			item.id === 'utvandret[0]utvandretTilLandFlyttedato' &&
+			!valgteVerdier.utvandret[0].utvandretTilLand
+		) {
+			disabled = true
+			valgteVerdier.utvandret[0].utvandretTilLandFlyttedato = ''
+		}
+		if (
+			item.id === 'partner_utvandret[0]utvandretTilLandFlyttedato' &&
+			!valgteVerdier.partner_utvandret[0].utvandretTilLand
+		) {
+			disabled = true
+			valgteVerdier.partner_utvandret[0].utvandretTilLandFlyttedato = ''
+		}
+		if (
+			item.id === `barn[${barnTall}]barn_utvandret[0]utvandretTilLandFlyttedato` &&
+			(valgteVerdier.barn[barnTall].barn_utvandret === '' ||
+				_get(valgteVerdier, `barn[${barnTall}].barn_utvandret[0].utvandretTilLand`) === '')
+		) {
+			disabled = true
+			if (_get(valgteVerdier, `barn[${barnTall}].barn_utvandret[0].utvandretTilLandFlyttedato`)) {
+				valgteVerdier.barn[barnTall].barn_utvandret[0].utvandretTilLandFlyttedato = ''
+			}
+		}
+
+		if (
 			item.id === 'arenaforvalter[0]kvalifiseringsgruppe' &&
 			valgteVerdier.arenaforvalter[0].arenaBrukertype !== 'MED_SERVICEBEHOV'
 		) {
