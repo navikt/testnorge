@@ -273,7 +273,6 @@ export default class Step3 extends PureComponent {
 				item.id === 'barn_forsvunnet' ||
 				item.id === 'barn_Statsborgerskap'
 			) {
-				console.log('item.id :', item.id)
 				let barnIndex = 0
 				if (header) barnIndex = header - 1
 				valueArray = _get(this.props.values.barn[barnIndex], item.id)

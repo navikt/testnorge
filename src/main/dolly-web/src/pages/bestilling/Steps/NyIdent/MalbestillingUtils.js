@@ -4,7 +4,6 @@ import _set from 'lodash/set'
 export const getAttributesFromMal = mal => {
 	const tpsfKriterier = JSON.parse(mal.tpsfKriterier)
 	const bestKriterier = JSON.parse(mal.bestKriterier)
-	console.log('tpsfKriterier :', tpsfKriterier)
 	let attrArray = []
 	attrArray = Object.keys(tpsfKriterier).filter(k => {
 		if (
@@ -55,8 +54,7 @@ export const getValuesFromMal = mal => {
 	const tpsfKriterierArray = Object.entries(JSON.parse(mal.tpsfKriterier))
 	const bestKriterierArray = Object.entries(JSON.parse(mal.bestKriterier))
 	_mapValuesToObject(reduxStateValue, tpsfKriterierArray)
-	console.log('mal :', mal)
-	console.log('mal.tpsfKriterier :', mal.tpsfKriterier)
+
 	bestKriterierArray.forEach(reg => {
 		const navn = reg[0]
 		const values = reg[1]
@@ -95,7 +93,6 @@ export const getValuesFromMal = mal => {
 		reduxStateValue = statsborgerskapValues
 	}
 
-	console.log('reduxStateValue :', reduxStateValue)
 	return reduxStateValue
 }
 
@@ -303,12 +300,9 @@ const _mapInnOgUtvandret = values => {
 const _mapStatsborgerskap = values => {
 	let valuesArray = JSON.parse(JSON.stringify(values))
 	if (valuesArray.barn) {
-		console.log('values :', values)
 		//Loop gjennom barn og kjør denne funksjonen for hvert barn
 		valuesArray.barn.map((enkeltBarn, idx) => {
 			valuesArray.barn[idx] = _mapStatsborgerskap(enkeltBarn)
-			console.log('valuesArray.barn :', valuesArray.barn[idx])
-			console.log('enkeltBarn :', enkeltBarn)
 		})
 	}
 
@@ -320,11 +314,6 @@ const _mapStatsborgerskap = values => {
 					value[0].split('_')[1]
 				] = value[1].toString())
 			} else if (value[0].includes('barn')) {
-				//the problem is here (sarah)
-				console.log(
-					'(valuesArray.barn_Statsborgerskap[0][value[0].split()[1]] = value[1].toString()) :',
-					(valuesArray.barn_Statsborgerskap[0][value[0].split('_')[1]] = value[1].toString())
-				)
 				!valuesArray.barn_Statsborgerskap && (valuesArray.barn_Statsborgerskap = [{}])
 				return (valuesArray.barn_Statsborgerskap[0][value[0].split('_')[1]] = value[1].toString())
 			} else {
