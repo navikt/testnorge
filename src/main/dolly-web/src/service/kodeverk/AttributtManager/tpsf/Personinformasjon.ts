@@ -67,7 +67,6 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
 				editPath: 'innvandretFraLand',
-				//validation: yup.string().required('Vennligst velg'),
 				apiKodeverkId: 'Landkoder',
 				attributtType: AttributtType.SelectAndEdit
 			},
@@ -100,7 +99,6 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
 				editPath: 'utvandretTilLand',
-				validation: yup.string().required('Vennligst velg'),
 				apiKodeverkId: 'Landkoder',
 				attributtType: AttributtType.SelectAndEdit
 			},
