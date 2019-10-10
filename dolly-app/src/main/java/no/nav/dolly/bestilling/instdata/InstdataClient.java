@@ -11,15 +11,16 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.domain.resultset.inst.InstdataInstitusjonstype;
 import no.nav.dolly.domain.resultset.inst.InstdataKategori;
 import no.nav.dolly.domain.resultset.inst.InstdataKilde;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class InstdataClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
+    public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         if (bestilling.getInstdata() == null || bestilling.getInstdata().isEmpty()) {
             progress.setInstdataStatus(null);
@@ -52,21 +53,21 @@ public class InstdataClient implements ClientRegister {
 
         if (!environments.isEmpty()) {
 
-            environments.forEach(environment -> {
-                deleteInstdata(norskIdent.getIdent(), environment);
+                environments.forEach(environment -> {
+                    deleteInstdata(tpsPerson.getHovedperson(), environment);
 
-                List<Instdata> instdataListe = mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class);
-                instdataListe.forEach(instdata -> {
-                    instdata.setPersonident(norskIdent.getIdent());
-                    instdata.setKategori(nullcheckSetDefaultValue(instdata.getKategori(), decideKategori(instdata.getInstitusjonstype())));
-                    instdata.setKilde(nullcheckSetDefaultValue(instdata.getKilde(), decideKilde(instdata.getInstitusjonstype())));
-                    instdata.setOverfoert(nullcheckSetDefaultValue(instdata.getOverfoert(), false));
-                    instdata.setTssEksternId(nullcheckSetDefaultValue(instdata.getTssEksternId(), decideTssEksternId(instdata.getInstitusjonstype())));
+                    List<Instdata> instdataListe = mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class);
+                    instdataListe.forEach(instdata -> {
+                        instdata.setPersonident(tpsPerson.getHovedperson());
+                        instdata.setKategori(nullcheckSetDefaultValue(instdata.getKategori(), decideKategori(instdata.getInstitusjonstype())));
+                        instdata.setKilde(nullcheckSetDefaultValue(instdata.getKilde(), decideKilde(instdata.getInstitusjonstype())));
+                        instdata.setOverfoert(nullcheckSetDefaultValue(instdata.getOverfoert(), false));
+                        instdata.setTssEksternId(nullcheckSetDefaultValue(instdata.getTssEksternId(), decideTssEksternId(instdata.getInstitusjonstype())));
+                    });
+
+                    postInstdata(tpsPerson.getHovedperson(), instdataListe, environment, status);
                 });
-
-                postInstdata(norskIdent.getIdent(), instdataListe, environment, status);
-            });
-        }
+            }
 
         List<String> notSupportedEnvironments = new ArrayList<>(bestilling.getEnvironments());
         notSupportedEnvironments.removeAll(availEnvironments);
@@ -84,7 +85,7 @@ public class InstdataClient implements ClientRegister {
 
         List<String> environments = getEnvironments();
         environments.forEach(environment ->
-                identer.forEach(ident -> instdataConsumer.deleteInstdata(ident, environment))
+                identer.forEach(ident -> deleteInstdata(ident, environment))
         );
     }
 
@@ -110,6 +111,12 @@ public class InstdataClient implements ClientRegister {
                             !OK.equals(response.getBody()[0].getStatus()))) {
 
                 log.error("Feilet å slette person: {}, i INST miljø: {}", ident, environment);
+            }
+
+        } catch (HttpClientErrorException e) {
+
+            if (!NOT_FOUND.equals(e.getStatusCode())) {
+                log.error("Feilet å slette person: {}, i INST miljø: {}", ident, environment, e);
             }
         } catch (RuntimeException e) {
 

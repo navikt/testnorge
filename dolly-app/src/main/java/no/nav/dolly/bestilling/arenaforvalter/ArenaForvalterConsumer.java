@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.properties.ProvidersProps;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -51,9 +52,9 @@ public class ArenaForvalterConsumer {
         doRequest(DELETE, uri, null, JsonNode.class);
     }
 
-    public ResponseEntity<ArenaArbeidssokerBruker> postArenadata(ArenaNyeBrukere arenaNyeBrukere) {
+    public ResponseEntity<ArenaNyeBrukereResponse> postArenadata(ArenaNyeBrukere arenaNyeBrukere) {
         URI uri = URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_BRUKER);
-        return doRequest(POST, uri, arenaNyeBrukere, ArenaArbeidssokerBruker.class);
+        return doRequest(POST, uri, arenaNyeBrukere, ArenaNyeBrukereResponse.class);
     }
 
     public List<String> getEnvironments() {

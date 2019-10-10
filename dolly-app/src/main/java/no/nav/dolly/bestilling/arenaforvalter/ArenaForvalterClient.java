@@ -2,15 +2,13 @@ package no.nav.dolly.bestilling.arenaforvalter;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
@@ -20,6 +18,8 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @Slf4j
 @Component
@@ -30,7 +30,7 @@ public class ArenaForvalterClient implements ClientRegister {
     private final MapperFacade mapperFacade;
 
     @Override
-    public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
+    public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         if (bestilling.getArenaforvalter() == null) {
             progress.setArenaforvalterStatus(null);
@@ -41,16 +41,17 @@ public class ArenaForvalterClient implements ClientRegister {
         List<String> environments = new ArrayList<>(arenaForvalterConsumer.getEnvironments());
         environments.retainAll(bestilling.getEnvironments());
 
-        if (!environments.isEmpty()) {
-            deleteServicebruker(norskIdent.getIdent(), environments);
+            if (!environments.isEmpty()) {
 
-            ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
-            environments.forEach(environment -> {
-                ArenaNyBruker arenaNyBruker = mapperFacade.map(bestilling.getArenaforvalter(), ArenaNyBruker.class);
-                arenaNyBruker.setPersonident(norskIdent.getIdent());
-                arenaNyBruker.setMiljoe(environment);
-                arenaNyeBrukere.getNyeBrukere().add(arenaNyBruker);
-            });
+                deleteServicebruker(tpsPerson.getHovedperson(), environments);
+
+                ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
+                environments.forEach(environment -> {
+                    ArenaNyBruker arenaNyBruker = mapperFacade.map(bestilling.getArenaforvalter(), ArenaNyBruker.class);
+                    arenaNyBruker.setPersonident(tpsPerson.getHovedperson());
+                    arenaNyBruker.setMiljoe(environment);
+                    arenaNyeBrukere.getNyeBrukere().add(arenaNyBruker);
+                });
 
             sendArenadata(arenaNyeBrukere, status);
         }
@@ -89,22 +90,37 @@ public class ArenaForvalterClient implements ClientRegister {
 
         } catch (RuntimeException e) {
 
-            log.error("Feilet å inaktivere bruker: {} i ArenaForvalter: ", ident, e);
+            log.error("Feilet å inaktivere testperson: {} i ArenaForvalter: ", ident, e);
         }
 
     }
 
-
     private void sendArenadata(ArenaNyeBrukere arenaNyeBrukere, StringBuilder status) {
 
         try {
-            ResponseEntity<ArenaArbeidssokerBruker> response = arenaForvalterConsumer.postArenadata(arenaNyeBrukere);
+            ResponseEntity<ArenaNyeBrukereResponse> response = arenaForvalterConsumer.postArenadata(arenaNyeBrukere);
             if (response.hasBody()) {
-                requireNonNull(response.getBody()).getArbeidsokerList().forEach(arbeidsoker ->
+                if (nonNull((response.getBody().getArbeidsokerList()))) {
+                    response.getBody().getArbeidsokerList().forEach(arbeidsoker -> {
+                        if ("OK".equals(arbeidsoker.getStatus())) {
+                            status.append(',')
+                                    .append(arbeidsoker.getMiljoe())
+                                    .append('$')
+                                    .append(arbeidsoker.getStatus());
+                        }
+                    });
+                }
+                if (nonNull(response.getBody().getNyBrukerFeilList())) {
+                    response.getBody().getNyBrukerFeilList().forEach(brukerfeil -> {
                         status.append(',')
-                                .append(arbeidsoker.getMiljoe())
-                                .append('$')
-                                .append(arbeidsoker.getStatus()));
+                                .append(brukerfeil.getMiljoe())
+                                .append("$Feilstatus: \"")
+                                .append(brukerfeil.getNyBrukerFeilstatus())
+                                .append("\". Se detaljer i logg.");
+                        log.error("Feilet å opprette testperson {} i ArenaForvalter på miljø: {}, feilstatus: {}, melding: \"{}\"",
+                                brukerfeil.getPersonident(), brukerfeil.getMiljoe(), brukerfeil.getNyBrukerFeilstatus(), brukerfeil.getMelding());
+                    });
+                }
             }
 
         } catch (RuntimeException e) {
@@ -115,7 +131,7 @@ public class ArenaForvalterClient implements ClientRegister {
                         .append('$');
                 appendErrorText(status, e);
             });
-            log.error("Feilet å legge inn ny bruker i ArenaForvalter: ", e);
+            log.error("Feilet å legge inn ny testperson i ArenaForvalter: ", e);
         }
     }
 

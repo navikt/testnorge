@@ -3,11 +3,11 @@ package no.nav.dolly.mapper.strategy;
 import static no.nav.dolly.mapper.BestillingAaregStatusMapperNy.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapperNy.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingInstdataStatusMapperNy.buildInstdataStatusMap;
-import static no.nav.dolly.mapper.BestillingKrrStubStatusMapperNy.buildKrrStubStatusMap;
+import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapperNy.buildPdldataStatusMap;
-import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapperNy.buildSigrunStubStatusMap;
-import static no.nav.dolly.mapper.BestillingTpsfStatusMapperNy.buildTpsfStatusMap;
-import static no.nav.dolly.mapper.BestillingUdiStubStatusMapperNy.buildUdiStubStatusMap;
+import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
+import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
+import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 
 import java.util.Arrays;
 import org.springframework.stereotype.Component;

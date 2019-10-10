@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -23,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -128,13 +126,5 @@ public class TestgruppeService {
         }
 
         return grupper;
-    }
-
-    public List<String> fetchIdenterByGruppeId(Long gruppeId) {
-        return fetchTestgruppeById(gruppeId)
-                .getTestidenter()
-                .stream()
-                .map(Testident::getIdent)
-                .collect(Collectors.toList());
     }
 }

@@ -1,23 +1,26 @@
 package no.nav.dolly.mapper;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.resultset.SystemTyper.SIGRUNSTUB;
 import static no.nav.dolly.util.ListUtil.listOf;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsStatusIdent;
+import no.nav.dolly.domain.resultset.RsStatusRapport;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Deprecated
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingSigrunStubStatusMapper {
 
-    public static List<RsStatusIdent> buildSigrunStubStatusMap(List<BestillingProgress> progressList) {
+    public static List<RsStatusRapport> buildSigrunStubStatusMap(List<BestillingProgress> progressList) {
 
         Map<String, List<String>> statusMap = new HashMap<>();
 
@@ -31,14 +34,14 @@ public final class BestillingSigrunStubStatusMapper {
             }
         });
 
-        List<RsStatusIdent> identStatus = new ArrayList<>();
-        statusMap.forEach((key, value) ->
-                identStatus.add(RsStatusIdent.builder()
-                        .statusMelding(key)
-                        .identer(value)
-                        .build())
-        );
-        return identStatus;
+        return statusMap.isEmpty() ? emptyList() :
+                singletonList(RsStatusRapport.builder().id(SIGRUNSTUB).navn(SIGRUNSTUB.getBeskrivelse())
+                        .statuser(statusMap.entrySet().stream()
+                                .map(entry -> RsStatusRapport.Status.builder()
+                                        .melding(entry.getKey())
+                                        .identer(entry.getValue())
+                                        .build())
+                                .collect(Collectors.toList()))
+                        .build());
     }
-
 }

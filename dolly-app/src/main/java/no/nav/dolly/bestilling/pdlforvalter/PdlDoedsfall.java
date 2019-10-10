@@ -1,4 +1,6 @@
-package no.nav.dolly.domain.resultset.tpsf;
+package no.nav.dolly.bestilling.pdlforvalter;
+
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,16 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsSimpleRelasjoner {
+public class PdlDoedsfall {
 
-    private RsRelasjon partner;
-
-    private List<RsRelasjon> barn;
+    private LocalDate doedsdato;
+    private String kilde;
 }

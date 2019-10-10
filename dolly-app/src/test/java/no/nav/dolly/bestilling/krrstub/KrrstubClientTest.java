@@ -10,10 +10,10 @@ import static org.mockito.Mockito.when;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +46,7 @@ public class KrrstubClientTest {
 
     @Test
     public void gjenopprett_ingendata() {
-        krrstubClient.gjenopprett(new RsDollyBestilling(), NorskIdent.builder().ident(IDENT).build(), new BestillingProgress());
+        krrstubClient.gjenopprett(new RsDollyBestillingRequest(), TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
 
         verify(krrstubConsumer, times(0)).createDigitalKontaktdata(any(DigitalKontaktdata.class));
     }
@@ -60,8 +60,10 @@ public class KrrstubClientTest {
         when(krrstubConsumer.readDigitalKontaktdata(IDENT)).thenReturn(null);
         when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenReturn(ResponseEntity.ok(""));
 
-        krrstubClient.gjenopprett(RsDollyBestilling.builder().krrstub(new RsDigitalKontaktdata()).build(),
-                NorskIdent.builder().ident(IDENT).build(),
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setKrrstub(RsDigitalKontaktdata.builder().build());
+        krrstubClient.gjenopprett(request,
+                TpsPerson.builder().hovedperson(IDENT).build(),
                 BestillingProgress.builder().bestillingId(BESTILLING_ID).build());
 
         verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
@@ -78,9 +80,9 @@ public class KrrstubClientTest {
         when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenThrow(HttpClientErrorException.class);
         when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil:");
 
-        krrstubClient.gjenopprett(RsDollyBestilling.builder()
-                .krrstub(new RsDigitalKontaktdata())
-                .build(), NorskIdent.builder().ident(IDENT).build(), progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setKrrstub(RsDigitalKontaktdata.builder().build());
+        krrstubClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
         verify(krrStubResponseHandler, times(0)).extractResponse(any());

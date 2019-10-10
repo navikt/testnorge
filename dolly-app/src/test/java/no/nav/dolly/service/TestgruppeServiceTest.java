@@ -17,6 +17,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.dolly.common.TestidentBuilder;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -25,7 +26,6 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
-import no.nav.dolly.common.TestidentBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +38,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -200,32 +199,6 @@ public class TestgruppeServiceTest {
     @Test(expected = NotFoundException.class)
     public void fetchGrupperByIdsIn_kasterExceptionOmGruppeIkkeFinnes() {
         testgruppeService.fetchGrupperByIdsIn(singletonList(anyLong()));
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void fetchIdenterByGruppeId_kasterException() {
-        when(testgruppeRepository.findById(anyLong())).thenReturn(Optional.empty());
-        testgruppeService.fetchIdenterByGruppeId(1L);
-    }
-
-    @Test
-    public void fetchIdenterByGruppeId_gruppeTilIdentString() {
-        when(testgruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(testGruppe));
-
-        List<String> identer = testgruppeService.fetchIdenterByGruppeId(GROUP_ID);
-        assertThat(identer.contains(IDENT_ONE), is(true));
-        assertThat(identer.contains(IDENT_TWO), is(true));
-        assertThat(identer.size(), is(2));
-    }
-
-    @Test
-    public void fetchIdenterByGroupId_sjekkTommeGrupper() {
-        Testgruppe tg = Testgruppe.builder().id(GROUP_ID).testidenter(new HashSet<>()).build();
-
-        when(testgruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(tg));
-        List<String> identer = testgruppeService.fetchIdenterByGruppeId(GROUP_ID);
-
-        assertThat(identer.size(), is(0));
     }
 
     @Test

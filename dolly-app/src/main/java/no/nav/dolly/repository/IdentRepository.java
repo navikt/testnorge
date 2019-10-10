@@ -3,16 +3,14 @@ package no.nav.dolly.repository;
 import no.nav.dolly.domain.jpa.Testident;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
+public interface IdentRepository extends CrudRepository<Testident, String> {
 
-public interface IdentRepository extends Repository<Testident, String> {
+    Testident findByIdent(String ident);
 
     Testident save(Testident testident);
-
-    List<Testident> saveAll(Iterable<Testident> testidents);
 
     @Modifying
     @Query(value = "delete from Testident ti "

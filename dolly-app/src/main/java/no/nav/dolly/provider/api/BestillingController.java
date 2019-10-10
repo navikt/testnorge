@@ -55,8 +55,8 @@ public class BestillingController {
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/gruppe/{gruppeId}")
     @ApiOperation("Hent Bestillinger tilhørende en gruppe med gruppeId")
-    public List<RsBestilling> getBestillinger(@PathVariable("gruppeId") Long gruppeId) {
-        return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestilling.class);
+    public List<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId) {
+        return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestillingStatus.class);
     }
 
     @Cacheable(value = CACHE_BESTILLING)
@@ -87,5 +87,11 @@ public class BestillingController {
     @ApiOperation("Hent mal-bestilling")
     public List<RsBestilling> getMalBestillinger() {
         return mapperFacade.mapAsList(bestillingService.fetchMalBestillinger(), RsBestilling.class);
+    }
+
+    @Cacheable(value = CACHE_BESTILLING)
+    @GetMapping("/{bestillingId}")
+    public RsBestillingStatus checkBestillingsstatus(@PathVariable("bestillingId") Long bestillingId) {
+        return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestillingStatus.class);
     }
 }

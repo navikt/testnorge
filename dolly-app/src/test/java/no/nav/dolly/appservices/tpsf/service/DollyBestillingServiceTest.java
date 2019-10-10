@@ -15,6 +15,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
@@ -109,13 +110,16 @@ public class DollyBestillingServiceTest {
     private MapperFacade mapperFacade;
 
     @Mock
+    private ObjectMapper objectMapper;
+
+    @Mock
     private Cache cache;
 
     @Mock
     private RsSkdMeldingResponse skdMeldingResponse;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         standardGruppe = new Testgruppe();
 
         standardSendSkdResponse = SendSkdMeldingTilTpsResponse.builder()
@@ -130,7 +134,7 @@ public class DollyBestillingServiceTest {
                 .status(singletonMap("u2", "OK"))
                 .build();
 
-        standardNyBestilling = Bestilling.builder().id(BESTILLING_ID).build();
+        standardNyBestilling = Bestilling.builder().id(BESTILLING_ID).bestKriterier("json").tpsfKriterier("json").build();
 
         status_SuccU1T2_FailQ3 = new HashMap<>();
         status_SuccU1T2_FailQ3.put("u1", SUCCESS_CODE_TPS);
@@ -147,6 +151,9 @@ public class DollyBestillingServiceTest {
         when(cacheManager.getCache(anyString())).thenReturn(cache);
 
         when(mapperFacade.map(any(RsTpsfUtvidetBestilling.class), eq(TpsfBestilling.class))).thenReturn(new TpsfBestilling());
+        when(objectMapper.readValue(anyString(), eq(TpsfBestilling.class))).thenReturn(new TpsfBestilling());
+
+        when(objectMapper.readValue(anyString(), eq(RsDollyBestillingRequest.class))).thenReturn(new RsDollyBestillingRequest());
     }
 
     @Test
@@ -262,6 +269,7 @@ public class DollyBestillingServiceTest {
         dollyBestillingService.gjenopprettBestillingAsync(
                 Bestilling.builder().id(BESTILLING_ID)
                         .opprettetFraId(BESTILLING_ID)
+                        .tpsfKriterier("json")
                         .miljoer("t2,t3").build());
 
         verify(bestillingService, times(4)).isStoppet(BESTILLING_ID);

@@ -8,9 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,7 @@ public class KrrstubClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
+    public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         if (bestilling.getKrrstub() == null) {
             progress.setKrrstubStatus(null);
@@ -37,9 +38,9 @@ public class KrrstubClient implements ClientRegister {
 
         try {
             DigitalKontaktdata digitalKontaktdata = mapperFacade.map(bestilling.getKrrstub(), DigitalKontaktdata.class);
-            digitalKontaktdata.setPersonident(norskIdent.getIdent());
+            digitalKontaktdata.setPersonident(tpsPerson.getHovedperson());
 
-            deleteIdent(norskIdent.getIdent());
+            deleteIdent(tpsPerson.getHovedperson());
 
             ResponseEntity<Object> krrstubResponse = krrstubConsumer.createDigitalKontaktdata(digitalKontaktdata);
             progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));

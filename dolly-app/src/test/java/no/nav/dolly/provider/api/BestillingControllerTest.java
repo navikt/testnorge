@@ -14,6 +14,8 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.provider.api.BestillingController;
 import no.nav.dolly.service.BestillingService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,24 +44,24 @@ public class BestillingControllerTest {
     @Test
     public void checkBestillingsstatus_oppdatererMedPersonstatusOrReturnererBestilling() {
 
-        RsBestilling rsBestilling = new RsBestilling();
+        RsBestillingStatus bestillingStatus = RsBestillingStatus.builder().build();
         when(bestillingService.fetchBestillingById(any())).thenReturn(new Bestilling());
-        when(mapperFacade.map(any(), any())).thenReturn(rsBestilling);
+        when(mapperFacade.map(any(), any())).thenReturn(bestillingStatus);
 
         RsBestilling res = bestillingController.getBestillingById(BESTILLING_ID);
 
-        assertThat(res, is(rsBestilling));
+        assertThat(res, is(bestillingStatus));
     }
 
     @Test
     public void getBestillingerOk() {
-        when(mapperFacade.mapAsList(anyList(), eq(RsBestilling.class)))
-                .thenReturn(singletonList(RsBestilling.builder().id(BESTILLING_ID).build()));
+        when(mapperFacade.mapAsList(anyList(), eq(RsBestillingStatus.class)))
+                .thenReturn(singletonList(RsBestillingStatus.builder().id(BESTILLING_ID).build()));
 
-        RsBestilling bestilling = bestillingController.getBestillinger(GRUPPE_ID).get(0);
+        RsBestillingStatus bestilling = bestillingController.getBestillinger(GRUPPE_ID).get(0);
 
         verify(bestillingService).fetchBestillingerByGruppeId(GRUPPE_ID);
-        verify(mapperFacade).mapAsList(anyList(), eq(RsBestilling.class));
+        verify(mapperFacade).mapAsList(anyList(), eq(RsBestillingStatus.class));
 
         assertThat(bestilling.getId(), is(equalTo(BESTILLING_ID)));
     }

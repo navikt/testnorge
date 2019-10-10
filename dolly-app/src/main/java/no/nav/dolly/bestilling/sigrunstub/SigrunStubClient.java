@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -23,8 +23,7 @@ public class SigrunStubClient implements ClientRegister {
     private final SigrunStubResponseHandler sigrunStubResponseHandler;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    @Override
-    public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
+    @Override public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         if (bestilling.getSigrunstub() == null || bestilling.getSigrunstub().isEmpty()) {
             progress.setSigrunstubStatus(null);
@@ -33,7 +32,7 @@ public class SigrunStubClient implements ClientRegister {
 
         try {
             for (RsOpprettSkattegrunnlag request : bestilling.getSigrunstub()) {
-                request.setPersonidentifikator(norskIdent.getIdent());
+                request.setPersonidentifikator(tpsPerson.getHovedperson());
             }
 
             deleteExistingSkattegrunnlag(bestilling.getSigrunstub().get(0).getPersonidentifikator());
@@ -45,7 +44,6 @@ public class SigrunStubClient implements ClientRegister {
         } catch (RuntimeException e) {
             progress.setSigrunstubStatus(errorStatusDecoder.decodeRuntimeException(e));
         }
-
     }
 
     private void deleteExistingSkattegrunnlag(String ident) {

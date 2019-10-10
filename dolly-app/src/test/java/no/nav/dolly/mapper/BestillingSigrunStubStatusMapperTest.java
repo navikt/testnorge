@@ -15,7 +15,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BestillingSigrunStubStatusMapperNyTest {
+public class BestillingSigrunStubStatusMapperTest {
 
     private static final List<BestillingProgress> RUN_STATUS = asList(
             BestillingProgress.builder().ident("IDENT_1")
@@ -38,7 +38,7 @@ public class BestillingSigrunStubStatusMapperNyTest {
     @Test
     public void sigrunStubStatusMap() {
 
-        List<RsStatusRapport> identStatuses = BestillingSigrunStubStatusMapperNy.buildSigrunStubStatusMap(RUN_STATUS);
+        List<RsStatusRapport> identStatuses = BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap(RUN_STATUS);
 
         assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("FEIL")));
         assertThat(identStatuses.get(0).getStatuser().get(0).getIdenter(), containsInAnyOrder("IDENT_2", "IDENT_4"));

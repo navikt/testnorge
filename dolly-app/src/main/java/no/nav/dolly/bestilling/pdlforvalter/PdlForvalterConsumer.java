@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -26,12 +27,15 @@ import java.net.URI;
 
 @Component
 @RequiredArgsConstructor
-public class PdlForvalterRestConsumer {
+public class PdlForvalterConsumer {
 
     private static final String PDL_BESTILLING_URL = "/api/v1/bestilling";
     private static final String PDL_BESTILL_KONTAKTINFORMASJON_FOR_DODESDBO_URL = PDL_BESTILLING_URL + "/kontaktinformasjonfordoedsbo";
     private static final String PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL = PDL_BESTILLING_URL + "/utenlandsidentifikasjonsnummer";
     private static final String PDL_BESTILLING_FALSK_IDENTITET_URL = PDL_BESTILLING_URL + "/falskidentitet";
+    private static final String PDL_BESTILLING_FOEDSEL_URL = PDL_BESTILLING_URL + "/foedsel";
+    private static final String PDL_BESTILLING_DOEDSFALL_URL = PDL_BESTILLING_URL + "/doedsfall";
+    private static final String PDL_BESTILLING_ADRESSEBESKYTTELSE_URL = PDL_BESTILLING_URL + "/adressebeskyttelse";
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/ident";
     private static final String PREPROD_ENV = "q";
 
@@ -71,6 +75,37 @@ public class PdlForvalterRestConsumer {
         httpHeaders.add(HEADER_NAV_PERSON_IDENT, ident);
 
         return restTemplate.exchange(uri, method, new HttpEntity<>(body, httpHeaders), JsonNode.class);
+    }
+
+    // todo make rest calls uniform
+    public ResponseEntity postFoedsel(PdlFoedsel pdlFoedsel, String ident) {
+        return restTemplate.exchange(RequestEntity.post(
+                URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FOEDSEL_URL))
+                .contentType(APPLICATION_JSON)
+                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                .header(HEADER_NAV_CONSUMER_TOKEN, resolveToken())
+                .header(HEADER_NAV_PERSON_IDENT, ident)
+                .body(pdlFoedsel), JsonNode.class);
+    }
+
+    public ResponseEntity postDoedsfall(PdlDoedsfall pdlDoedsfall, String ident) {
+        return restTemplate.exchange(RequestEntity.post(
+                URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_DOEDSFALL_URL))
+                .contentType(APPLICATION_JSON)
+                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                .header(HEADER_NAV_CONSUMER_TOKEN, resolveToken())
+                .header(HEADER_NAV_PERSON_IDENT, ident)
+                .body(pdlDoedsfall), JsonNode.class);
+    }
+
+    public ResponseEntity postAdressebeskyttelse(PdlAdressebeskyttelse pdlAdressebeskyttelse, String ident) {
+        return restTemplate.exchange(RequestEntity.post(
+                URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_ADRESSEBESKYTTELSE_URL))
+                .contentType(APPLICATION_JSON)
+                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                .header(HEADER_NAV_CONSUMER_TOKEN, resolveToken())
+                .header(HEADER_NAV_PERSON_IDENT, ident)
+                .body(pdlAdressebeskyttelse), JsonNode.class);
     }
 
     private String resolveToken() {

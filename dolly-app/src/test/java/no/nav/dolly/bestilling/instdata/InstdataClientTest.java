@@ -12,9 +12,9 @@ import static org.mockito.Mockito.when;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -27,7 +27,7 @@ import org.springframework.http.ResponseEntity;
 public class InstdataClientTest {
 
     private static final String IDENT = "11111111111";
-    private static final NorskIdent NORSK_IDENT = NorskIdent.builder().ident(IDENT).build();
+    private static final TpsPerson TPS_IDENT = TpsPerson.builder().hovedperson(IDENT).build();
     private static final String ENVIRONMENT = "q2";
 
     @Mock
@@ -44,7 +44,7 @@ public class InstdataClientTest {
 
         BestillingProgress progress = new BestillingProgress();
 
-        instdataClient.gjenopprett(RsDollyBestilling.builder().build(), NORSK_IDENT, progress);
+        instdataClient.gjenopprett(new RsDollyBestillingRequest(), TPS_IDENT, progress);
 
         assertThat(progress.getInstdataStatus(), is(nullValue()));
     }
@@ -56,10 +56,10 @@ public class InstdataClientTest {
 
         when(instdataConsumer.getMiljoer()).thenReturn(singletonList("u5"));
 
-        instdataClient.gjenopprett(RsDollyBestilling.builder()
-                .instdata(newArrayList(RsInstdata.builder().build()))
-                .environments(newArrayList("t2"))
-                .build(), NORSK_IDENT, progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setInstdata(newArrayList(RsInstdata.builder().build()));
+        request.setEnvironments(singletonList("t2"));
+        instdataClient.gjenopprett(request, TPS_IDENT, progress);
 
         assertThat(progress.getInstdataStatus(), is(equalTo("t2:Feil: Miljø ikke støttet")));
     }
@@ -71,20 +71,20 @@ public class InstdataClientTest {
 
         when(instdataConsumer.getMiljoer()).thenReturn(singletonList("q2"));
         when(instdataConsumer.deleteInstdata(IDENT, ENVIRONMENT)).thenReturn(ResponseEntity.ok(
-                new InstdataResponse[]{InstdataResponse.builder()
+                new InstdataResponse[] { InstdataResponse.builder()
                         .status(HttpStatus.NOT_FOUND)
                         .feilmelding("Fant ingen institusjonsopphold på ident.")
-                        .build()}));
+                        .build() }));
 
         when(instdataConsumer.postInstdata(anyList(), eq(ENVIRONMENT))).thenReturn(
-                ResponseEntity.ok(new InstdataResponse[]{InstdataResponse.builder()
-                        .status(HttpStatus.CREATED).build()})
+                ResponseEntity.ok(new InstdataResponse[] { InstdataResponse.builder()
+                        .status(HttpStatus.CREATED).build() })
         );
 
-        instdataClient.gjenopprett(RsDollyBestilling.builder()
-                .instdata(newArrayList(RsInstdata.builder().build()))
-                .environments(newArrayList("q2"))
-                .build(), NORSK_IDENT, progress);
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setInstdata(newArrayList(RsInstdata.builder().build()));
+        request.setEnvironments(singletonList("q2"));
+        instdataClient.gjenopprett(request, TPS_IDENT, progress);
 
         assertThat(progress.getInstdataStatus(), is(equalTo("q2:opphold=1$OK")));
     }

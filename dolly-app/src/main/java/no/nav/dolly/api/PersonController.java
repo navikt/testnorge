@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
 import no.nav.dolly.service.BestillingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +31,11 @@ public class PersonController {
     private final DollyBestillingService dollyBestillingService;
     private final MapperFacade mapperFacade;
 
-    @ApiOperation(value = "Endre/oppdater person i TPS og øvrige systemer", notes =
+    /**
+     * @deprecated (På vent, ikke sikkert denne funksjonen skal tilbys)
+     */
+    @Deprecated
+    @ApiOperation(value = "Endre/oppdatere person i TPS og øvrige systemer", notes =
             BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET)
     @PutMapping("/{ident}")
     @ResponseStatus(HttpStatus.OK)

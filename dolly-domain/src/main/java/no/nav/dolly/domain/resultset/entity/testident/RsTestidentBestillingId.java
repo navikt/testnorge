@@ -13,5 +13,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsTestidentBestillingId extends RsTestident {
 
+    private boolean ibruk;
+    private String beskrivelse;
     private List<Long> bestillingId;
 }
