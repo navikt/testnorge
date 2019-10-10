@@ -1,5 +1,6 @@
 import React from 'react'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
+import Button from '~/components/ui/button/Button'
 
 import ConfirmTooltip from '~/components/ui/confirmTooltip/ConfirmTooltip'
 
@@ -25,10 +26,11 @@ export default function TeamMedlemmer({ medlemmer, removeMember }) {
 			dataField: 'team.navn',
 			formatter: (cell, row) => (
 				<ConfirmTooltip
-					className="flexbox--align-center"
 					onClick={() => removeMember(row.navIdent)}
 					message={`Vil du slette ${row.navIdent} fra dette teamet?`}
-				/>
+				>
+					<Button className="flexbox--align-center" iconSize={18} kind="trashcan" />
+				</ConfirmTooltip>
 			)
 		}
 	]
