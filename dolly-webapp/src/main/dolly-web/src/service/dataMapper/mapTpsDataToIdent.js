@@ -104,7 +104,8 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 				{
 					id: 'statsborgerskapRegdato',
 					label: 'Statsborgerskap fra',
-					value: Formatters.formatDate(tpsfData.statsborgerskapRegdato)
+					value: Formatters.formatDate(tpsfData.statsborgerskapRegdato),
+					apiKodeverkId: 'Landkoder'
 				},
 				{
 					id: 'sprakKode',
