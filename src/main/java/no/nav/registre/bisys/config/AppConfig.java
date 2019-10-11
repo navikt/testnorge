@@ -1,5 +1,6 @@
 package no.nav.registre.bisys.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,15 +9,14 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.registre.bisys.consumer.rs.BisysSyntetisererenConsumer;
 import no.nav.registre.bisys.consumer.rs.request.BidragsmeldingAugments;
+import no.nav.registre.bisys.consumer.ui.BisysUiConsumer;
 import no.nav.registre.bisys.consumer.ui.BisysUiSupport;
 import no.nav.registre.bisys.consumer.ui.vedtak.BisysUiFatteVedtakConsumer;
+import no.nav.registre.bisys.service.SyntetiseringService;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Configuration
 public class AppConfig {
-
-    public static final String STANDARD_DATE_FORMAT_BISYS = "dd.MM.yyyy";
-    public static final String STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST = "yyyy-MM-dd";
 
     // Will be set to true for BMs household (forskudd)
     private final static boolean barnRegistrertPaaAdresse = false;
@@ -27,14 +27,14 @@ public class AppConfig {
     @Value("${BISYS_URL}")
     private String bisysUrl;
 
-    @Value("${ENHET:4802}")
-    private int enhet;
-
     @Value("${BESLAARSAK_KODE}")
     private String beslaarsakKode;
 
+    @Value("${ENHET:4802}")
+    private int enhet;
+
     @Value("${GEBYR_BESLAARSAK_KODE_FRITATT_IKKE_SOKT}")
-    boolean gebyrBeslAarsakKodeFritattIkkeSokt;
+    private boolean gebyrBeslAarsakKodeFritattIkkeSokt;
 
     @Value("${INNTEKT_BM_EGNE_OPPLYSNINGER:0}")
     private int inntektBmEgneOpplysninger;
@@ -110,9 +110,6 @@ public class AppConfig {
                 .inntektBpEgneOpplysninger(inntektBpEgneOpplysninger)
                 .kodeUnntForsk(kodeUnntForsk)
                 .samvarsklasse(samvarsklasse)
-                .sartilskuddKravbelop(sartilskuddKravbelop)
-                .sartilskuddGodkjentBelop(sartilskuddGodkjentBelop)
-                .sartilskuddFradrag(sartilskuddFradrag)
                 .skatteklasse(skatteklasse)
                 .sivilstandBm(sivilstandBm)
                 .build();
@@ -122,5 +119,18 @@ public class AppConfig {
     @DependsOn("restTemplate")
     public HodejegerenConsumer hodejegerenConsumer() {
         return new HodejegerenConsumer(hodejegerenUrl, restTemplate());
+    }
+
+    @Bean
+    public SyntetiseringService syntetiseringService(
+            @Autowired BisysSyntetisererenConsumer bisysSyntetisererenConsumer,
+            @Autowired BisysUiConsumer bisysUiConsumer,
+            @Value("${USE_HISTORICAL_MOTTATTDATO}") boolean useHistoricalMottattdato) {
+
+        return SyntetiseringService.builder()
+                .hodejegerenConsumer(hodejegerenConsumer())
+                .bisysSyntetisererenConsumer(bisysSyntetisererenConsumer)
+                .bisysUiConsumer(bisysUiConsumer)
+                .useHistoricalMottattdato(useHistoricalMottattdato).build();
     }
 }

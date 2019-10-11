@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
+import no.nav.registre.bisys.exception.SyntetisertBidragsmeldingException;
 import no.nav.registre.bisys.provider.requests.SyntetiserBisysRequest;
 import no.nav.registre.bisys.service.SyntetiseringService;
 
@@ -25,7 +26,7 @@ public class SyntetiseringController {
     @ApiOperation(value = "Her kan man starte generering av syntetiske bidragsmeldinger på personer i en gitt TPSF-avspillergruppe i et gitt miljø.")
     @PostMapping(value = "/generer")
     public List<SyntetisertBidragsmelding> genererBidragsmeldinger(
-            @RequestBody SyntetiserBisysRequest syntetiserBisysRequest) {
+            @RequestBody SyntetiserBisysRequest syntetiserBisysRequest) throws SyntetisertBidragsmeldingException {
 
         return syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
     }

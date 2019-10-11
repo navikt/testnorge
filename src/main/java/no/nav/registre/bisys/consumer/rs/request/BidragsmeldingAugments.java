@@ -18,9 +18,6 @@ public class BidragsmeldingAugments {
     private final int inntektBpEgneOpplysninger;
     private final String kodeUnntForsk;
     private final String samvarsklasse;
-    private final int sartilskuddFradrag;
-    private final int sartilskuddGodkjentBelop;
-    private final int sartilskuddKravbelop;
     private final String sivilstandBm;
     private final int skatteklasse;
 

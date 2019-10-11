@@ -20,6 +20,8 @@ public class SynthesizedBidragRequest {
     @BidragsmeldingConstant
     private String andelForsorging;
 
+    private int barnAlderIMnd;
+
     @BidragsmeldingConstant
     private boolean barnRegistrertPaaAdresse;
 
@@ -28,6 +30,8 @@ public class SynthesizedBidragRequest {
 
     @BidragsmeldingConstant
     private String gebyrBeslAarsakKode;
+
+    private int godkjentBelop;
 
     @BidragsmeldingConstant
     private int inntektBmEgneOpplysninger;
@@ -42,17 +46,10 @@ public class SynthesizedBidragRequest {
     @Getter(AccessLevel.NONE)
     private String kodeVirkAarsak;
 
+    private int kravbelop;
+
     @BidragsmeldingConstant
     private String samvarsklasse;
-
-    @BidragsmeldingConstant
-    private int sartilskuddGodkjentBelop;
-
-    @BidragsmeldingConstant
-    private int sartilskuddFradrag;
-
-    @BidragsmeldingConstant
-    private int sartilskuddKravbelop;
 
     @BidragsmeldingConstant
     private String sivilstandBm;

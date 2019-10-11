@@ -11,23 +11,28 @@ spring:
 
 ANDEL_FORSORGING: 0.0
 BARN_REGISTRERT_PAA_ADRESSE: 0
+BESLAARSAK_KODE: OH3
 BISYS_URL: https://wasapp-q2.adeo.no/rtv-bidrag/Oppgaveliste.do
 ENHET: 4802
-FRADRAG: 0
-BESLAARSAK_KODE: OH3
 GEBYR_BESLAARSAK_KODE_FRITATT_IKKE_SOKT: 1
-GODKJENT_BELOP: 2600
 KODE_UNNT_FORSK:
-KRAVBELOP: 3500
 SAMVARSKLASSE: "00"
 SAKSBEHANDLER_ROLLE: TK_Behandler
 SIVILSTAND_BM: UGIFT
 INNTEKT_BM_EGNE_OPPLYSNINGER: 400000
 INNTEKT_BP_EGNE_OPPLYSNINGER: 5000000
     
-SYNTBISYS_USERNAME: <>		  		
-SYNTBISYS_PASSWORD: <>  
+SYNTBISYS_USERNAME: z991656	 		
+SYNTBISYS_PASSWORD: Sjalabais8
+USE_HISTORICAL_MOTTATTDATO: 0
 
 syntrest.rest.api.url: http://localhost:${wiremock.server.port}/synthdata-bisys/api
 testnorge-hodejegeren.rest-api.url: http://localhost:${wiremock.server.port}/hodejegeren/api
+
+---
+spring:
+  profiles: local-integration-test
+  
+syntrest.rest.api.url: https://syntrest.nais.preprod.local/api
+testnorge-hodejegeren.rest-api.url: https://testnorge-hodejegeren.nais.preprod.local/api
 

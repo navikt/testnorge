@@ -29,9 +29,8 @@ public class SartilskuddConsumer {
             lagreOgSartilskudd(soknad);
 
             Sartilskudd sartilskudd = (Sartilskudd) BisysUiSupport.getActiveBisysPage(bisys);
-            sartilskudd.kravbelop().setValue(Integer.toString(request.getSartilskuddKravbelop()));
-            sartilskudd.godkjentBelop().setValue(Integer.toString(request.getSartilskuddGodkjentBelop()));
-            sartilskudd.belopFradrag().setValue(Integer.toString(request.getSartilskuddFradrag()));
+            sartilskudd.kravbelop().setValue(Integer.toString(request.getKravbelop()));
+            sartilskudd.godkjentBelop().setValue(Integer.toString(request.getGodkjentBelop()));
             sartilskudd.lagreOgInntekt().click();
 
             ytelsebereging.fulfillInntekterAndBoforhold(bisys, request);

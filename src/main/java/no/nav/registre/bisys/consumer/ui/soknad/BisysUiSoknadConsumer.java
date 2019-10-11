@@ -1,10 +1,8 @@
 package no.nav.registre.bisys.consumer.ui.soknad;
 
-import static no.nav.registre.bisys.config.AppConfig.STANDARD_DATE_FORMAT_BISYS;
-import static no.nav.registre.bisys.config.AppConfig.STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST;
-
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -96,10 +94,24 @@ public class BisysUiSoknadConsumer {
             SoknadRequest request)
             throws BidragRequestProcessingException {
 
-        BisysPageTitle activePage = BisysUiSupport.checkCorrectActivePage(bisys, BisysPageTitle.SAK);
+        BisysUiSupport.checkCorrectActivePage(bisys, BisysPageTitle.SAK);
 
         Sak sak = (Sak) BisysUiSupport.getActiveBisysPage(bisys);
 
+        Optional<Soknad> existingSoknad = openExistingSoknadIfFound(bisys, request, sak);
+
+        if (!existingSoknad.isPresent()) {
+            log.info("Existing søknad not found. Creating new søknad with mottattdato {}",
+                    request.getMottattdato());
+            return createNewSoknad(bisys, request);
+
+        } else {
+            log.info("Use existing søknad.");
+            return BisysUiSupport.getBisysPageReference(bisys);
+        }
+    }
+
+    private Optional<Soknad> openExistingSoknadIfFound(BisysApplication bisys, SoknadRequest request, Sak sak) throws BidragRequestProcessingException {
         for (UnderBehandling soknadUnderBehandling : sak.soknaderUnderBehandling()) {
             try {
                 soknadUnderBehandling.mottattdato().getText();
@@ -114,12 +126,9 @@ public class BisysUiSoknadConsumer {
             String soknTypeKodeRequest = request.getSoknadstype();
             String soknTypeDekodeRequest = KodeSoknTypeConstants.dekodeMap().get(soknTypeKodeRequest);
 
-            LocalDate mottattdatoRequest = LocalDate.parse(request.getMottattDato(),
-                    DateTimeFormat.forPattern(STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST));
-
             LocalDate mottattdatoBisys = LocalDate.parse(soknadUnderBehandling.mottattdato().getText(),
-                    DateTimeFormat.forPattern(STANDARD_DATE_FORMAT_BISYS));
-
+                    DateTimeFormat.forPattern(Soknad.STANDARD_DATE_FORMAT_BISYS));
+            LocalDate mottattdatoRequest = LocalDate.parse(request.getMottattdato(), DateTimeFormat.forPattern(Soknad.STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST));
             String soknadFraBisys = soknadUnderBehandling.soknadFra().getText();
             String soknadFraDekodeRequest = KodeSoknFraConstants.dekodeMap().get(request.getSoknadFra());
 
@@ -136,23 +145,21 @@ public class BisysUiSoknadConsumer {
                         soknadUnderBehandling.typeSoknad().getText());
 
                 soknadUnderBehandling.velg().click();
-                activePage = BisysPageTitle.getPageRef(bisys.bisysPage().header().tittel()).get();
 
                 Soknad soknad = (Soknad) BisysUiSupport.getActiveBisysPage(bisys);
                 if (requestedBaIncludedInSoknad(soknad, request.getFnrBa())) {
-                    return activePage;
+                    return Optional.of(soknad);
                 }
             }
         }
 
-        log.info("Existing søknad not found. Creating new søknad with mottattdato {}",
-                request.getMottattDato());
+        BisysPageTitle activePage = BisysPageTitle.getPageRef(bisys.bisysPage().header().tittel()).get();
 
         if (activePage.equals(BisysPageTitle.SOKNAD)) {
             bisys.bisysPage().sideBarMenu().sak().click();
         }
 
-        return createNewSoknad(bisys, request);
+        return Optional.empty();
     }
 
     private boolean requestedBaIncludedInSoknad(Soknad soknad, String fnrBaRequest) {
@@ -192,13 +199,13 @@ public class BisysUiSoknadConsumer {
 
         try {
             soknad.selectSoknadFra(request.getSoknadFra());
-            soknad.setFomDato(request.getSoktOm(), request.getSoktFra());
+            soknad.setFomDato(request.getSoktOm(), request.getSoktFraDato());
             soknad.setSoktOm(request.getFnrBa(), request.getSoktOm());
         } catch (BisysUiConnectException e) {
             throw new BidragRequestProcessingException(soknad, e);
         }
 
-        soknad.setMottattDato(request.getMottattDato());
+        soknad.setMottattDato(request.getMottattdato());
 
         try {
             soknad.selectFastsattI(request.getFastsattI());
