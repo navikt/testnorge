@@ -139,8 +139,8 @@ export default class DollyService {
 		return Request.delete(Endpoints.removeBestilling(bestillingId))
 	}
 
-	static deleteTestIdent(identId) {
-		return Request.delete(Endpoints.removeTestIdent(identId))
+	static deleteTestIdent(gruppeId, identId) {
+		return Request.delete(Endpoints.removeTestIdent(gruppeId, identId))
 	}
 
 	//Oppslag

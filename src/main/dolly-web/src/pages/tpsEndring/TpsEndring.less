@@ -3,6 +3,7 @@
 .tps-endring-foedselmelding-top {
 	display: flex;
 	justify-content: space-between;
+	flex-wrap: wrap;
 
 	.skjemaelement {
 		flex: 1;
@@ -26,13 +27,20 @@
 	justify-content: space-between;
 	align-items: center;
 	margin: 10px 10px 0 0;
+	flex-wrap: wrap;
 
 	.skjemaelement {
 		margin-right: 10px;
+		flex-wrap: wrap;
 
-		.skjemaelement__label {
-			font-size: 16px;
-			margin-right: 10px;
+		.nav-datovelger__inputContainer {
+			display: flex;
+			flex: 1;
+			width: auto;
+		}
+
+		.dollyselect-input {
+			margin-bottom: 1px;
 		}
 	}
 }

@@ -3,7 +3,7 @@ import FavoriteButton from './FavoriteButton'
 import { addFavorite, removeFavorite } from '~/ducks/bruker'
 
 const mapStateToProps = (state, ownProps) => ({
-	isFavorite: state.bruker.brukerData.favoritter.find(fav => fav.id === ownProps.groupId)
+	isFavorite: state.bruker.brukerData.favoritter.some(fav => fav.id === ownProps.groupId)
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

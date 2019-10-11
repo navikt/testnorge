@@ -122,8 +122,8 @@ class DollyEndpoints {
 		return `${bestillingBase}/stop/${bestillingId}`
 	}
 
-	static removeTestIdent(identId) {
-		return `${groupBase}/{gruppeId}/slettTestident?ident=${identId}`
+	static removeTestIdent(gruppeId, identId) {
+		return `${groupBase}/${gruppeId}/slettTestident?ident=${identId}`
 	}
 
 	static enhetByTknr(tknr) {

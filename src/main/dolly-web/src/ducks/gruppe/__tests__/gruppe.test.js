@@ -4,7 +4,6 @@ import { sokSelectorOversikt } from '../index'
 describe('gruppeReducer', () => {
 	const initialState = {
 		data: null,
-		createOrUpdateId: null, // null = ingen, -1 = opprett ny gruppe, '45235' (ex: 425323) = rediger
 		visning: 'mine',
 		teamId: null
 	}
@@ -50,7 +49,6 @@ describe('gruppeReducer', () => {
 
 	it('should handle success updating a datarow', () => {
 		const prevState = {
-			createOrUpdateId: 1,
 			data: [{ id: 1, value: 'test' }]
 		}
 
@@ -62,7 +60,6 @@ describe('gruppeReducer', () => {
 		}
 
 		const res = {
-			createOrUpdateId: null,
 			data: [newData]
 		}
 
@@ -84,32 +81,6 @@ describe('gruppeReducer', () => {
 		}
 
 		expect(gruppe(prevState, action)).toEqual(res)
-	})
-
-	it('should set a id for updating/creating group', () => {
-		const testdata = 1
-
-		const action = {
-			type: 'TOGGLE_SHOW_CREATE_OR_EDIT',
-			payload: testdata
-		}
-
-		const res = {
-			createOrUpdateId: testdata
-		}
-
-		expect(gruppe({}, action)).toEqual(res)
-	})
-
-	it('should set create/update id to null', () => {
-		const action = {
-			type: 'CANCEL_CREATE_OR_EDIT'
-		}
-
-		const res = {
-			createOrUpdateId: null
-		}
-		expect(gruppe({}, action)).toEqual(res)
 	})
 
 	it('should set visning', () => {
