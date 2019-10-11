@@ -2,7 +2,7 @@ import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 import _get from 'lodash/get'
 
-export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
+export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 	if (!tpsfData) return null
 
 	const data = [
@@ -133,38 +133,36 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 		})
 	}
 
-	if (pdlfData && pdlfData.utenlandskeIdentifikasjonsnummere) {
-		let opphoert = false
-		if (pdlfData.utenlandskeIdentifikasjonsnummere[0].registrertOpphoertINAV) {
-			opphoert = true
-		}
-		data.push({
-			header: 'Utenlands-ID',
-			data: [
-				{
-					id: 'idNummer',
-					label: 'Identifikasjonsnummer',
-					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].idNummer
-				},
-				{
-					id: 'kilde',
-					label: 'Kilde',
-					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].kilde
-				},
-				{
-					id: 'opphoert',
-					label: 'Opphørt',
-					value: Formatters.oversettBoolean(opphoert)
-				},
-				{
-					id: 'utstederland',
-					label: 'Utstederland',
-					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].utstederland,
-					apiKodeverkId: 'Landkoder'
-				}
-			]
-		})
-	}
+	// if (pdlfData && pdlfData.utenlandskeIdentifikasjonsnummere) {
+	// 	data.push({
+	// 		header: 'Utenlands-ID',
+	// 		data: [
+	// 			{
+	// 				id: 'idNummer',
+	// 				label: 'Identifikasjonsnummer',
+	// 				value: pdlfData.utenlandskeIdentifikasjonsnummere[0].idNummer
+	// 			},
+	// 			{
+	// 				id: 'kilde',
+	// 				label: 'Kilde',
+	// 				value: pdlfData.utenlandskeIdentifikasjonsnummere[0].kilde
+	// 			},
+	// 			{
+	// 				id: 'opphoert',
+	// 				label: 'Opphørt',
+	// 				value: Formatters.oversettBoolean(
+	// 					Boolean(pdlfData.utenlandskeIdentifikasjonsnummere[0].registrertOpphoertINAV)
+	// 				)
+	// 			},
+	// 			{
+	// 				id: 'utstederland',
+	// 				label: 'Utstederland',
+	// 				value: pdlfData.utenlandskeIdentifikasjonsnummere[0].utstederland,
+	// 				apiKodeverkId: 'Landkoder'
+	// 			}
+	// 		]
+	// 	})
+	// }
 
 	if (tpsfData.boadresse) {
 		data.push({
