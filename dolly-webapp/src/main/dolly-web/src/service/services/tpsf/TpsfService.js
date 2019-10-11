@@ -1,90 +1,85 @@
-import Request from '../Request'
+import config from '~/config'
+import Request from '~/service/services/Request'
 import ConfigService from '~/service/Config'
 
-export default class TpsfService {
-	static getTpsfUrl() {
-		return ConfigService.getDatesourceUrl('tpsf') + '/api/v1'
-	}
+const getBaseUrl = () => ConfigService.getDatesourceUrl('tpsf') || config.services.tpsfUrl
+const getTpsfUrl = () => `${getBaseUrl()}/api/v1`
 
-	static getBaseUrl() {
-		return ConfigService.getDatesourceUrl('tpsf')
-	}
-
-	static getTestbrukere(userArray) {
+export default {
+	getTestbrukere(userArray) {
 		if (!userArray) return
-		const endpoint = this.getTpsfUrl() + '/dolly/testdata/hentpersoner'
+		const endpoint = getTpsfUrl() + '/dolly/testdata/hentpersoner'
 
 		// Må bruke post-request pga maxString-limit på en GET-request
 		return Request.post(endpoint, userArray)
-	}
+	},
 
-	static updateTestbruker(userData) {
+	updateTestbruker(userData) {
 		if (!userData) return
-		const endpoint = this.getTpsfUrl() + '/testdata/updatepersoner'
+		const endpoint = getTpsfUrl() + '/testdata/updatepersoner'
 		return Request.post(endpoint, [userData])
-	}
+	},
 
-	static checkpersoner(userArray) {
+	checkpersoner(userArray) {
 		if (!userArray) return
-		const endpoint = this.getTpsfUrl() + '/dolly/testdata/checkpersoner'
+		const endpoint = getTpsfUrl() + '/dolly/testdata/checkpersoner'
 		return Request.post(endpoint, userArray)
-	}
+	},
 
-	static sendToTps(data) {
+	sendToTps(data) {
 		if (!data) return
-		const endpoint = this.getTpsfUrl() + '/dolly/testdata/tilTpsFlere'
+		const endpoint = getTpsfUrl() + '/dolly/testdata/tilTpsFlere'
 		return Request.post(endpoint, data)
-	}
+	},
 
-	static createFoedselsmelding(userData) {
-		const endpoint = this.getTpsfUrl() + '/tpsmelding/foedselsmelding'
+	createFoedselsmelding(userData) {
+		const endpoint = getTpsfUrl() + '/tpsmelding/foedselsmelding'
 		return Request.post(endpoint, userData)
-	}
+	},
 
-	static getKontaktInformasjon(fnr, env) {
-		const endpoint =
-			this.getBaseUrl() + '/api/tps/kontaktinformasjon?fnr=' + fnr + '&environment=' + env
+	getKontaktInformasjon(fnr, env) {
+		const endpoint = getBaseUrl() + '/api/tps/kontaktinformasjon?fnr=' + fnr + '&environment=' + env
 		return Request.get(endpoint)
-	}
+	},
 
-	static createDoedsmelding(userData) {
-		const endpoint = this.getTpsfUrl() + '/tpsmelding/doedsmelding'
+	createDoedsmelding(userData) {
+		const endpoint = getTpsfUrl() + '/tpsmelding/doedsmelding'
 		return Request.post(endpoint, userData)
-	}
+	},
 
-	static getMiljoerByFnr(fnr) {
-		const endpoint = this.getTpsfUrl() + '/testdata/tpsStatus?identer=' + fnr
+	getMiljoerByFnr(fnr) {
+		const endpoint = getTpsfUrl() + '/testdata/tpsStatus?identer=' + fnr
 		return Request.get(endpoint)
-	}
+	},
 
-	static generateRandomAddress() {
-		const endpoint = `${this.getTpsfUrl()}/gyldigadresse/tilfeldig?maxAntall=5`
+	generateRandomAddress() {
+		const endpoint = `${getTpsfUrl()}/gyldigadresse/tilfeldig?maxAntall=5`
 		return Request.get(endpoint)
-	}
+	},
 
-	static generateAddress(query) {
-		const endpoint = `${this.getTpsfUrl()}/gyldigadresse/autocomplete?maxRetur=5${query}`
+	generateAddress(query) {
+		const endpoint = `${getTpsfUrl()}/gyldigadresse/autocomplete?maxRetur=5${query}`
 		return Request.get(endpoint)
-	}
+	},
 
-	static autocompleteAddress(adresseSok) {
-		const endpoint = this.getTpsfUrl() + '/gyldigadresse/autocomplete?adresseNavnsok=' + adresseSok
+	autocompleteAddress(adresseSok) {
+		const endpoint = getTpsfUrl() + '/gyldigadresse/autocomplete?adresseNavnsok=' + adresseSok
 		return Request.get(endpoint)
-	}
+	},
 
-	static checkPostnummer(postnummer) {
-		const endpoint = this.getTpsfUrl() + '/gyldigadresse/autocomplete?postNrsok=' + postnummer
+	checkPostnummer(postnummer) {
+		const endpoint = getTpsfUrl() + '/gyldigadresse/autocomplete?postNrsok=' + postnummer
 		return Request.get(endpoint)
-	}
+	},
 
-	static getTilgjengligeMiljoer() {
-		const endpoint = `${this.getTpsfUrl()}/environments`
+	getTilgjengligeMiljoer() {
+		const endpoint = `${getTpsfUrl()}/environments`
 		return Request.get(endpoint)
-	}
+	},
 
-	static getExcelForIdenter(userArray) {
+	getExcelForIdenter(userArray) {
 		if (!userArray) return
-		const endpoint = this.getTpsfUrl() + '/dolly/testdata/excel'
+		const endpoint = `${getTpsfUrl()}/dolly/testdata/excel`
 		return Request.post(endpoint, userArray)
 	}
 }

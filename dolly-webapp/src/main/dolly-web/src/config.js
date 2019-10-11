@@ -3,7 +3,13 @@ const isProdBuild = process.env.NODE_ENV === 'production'
 const config = {
 	services: {
 		dollyBackend: process.env.dollyBackend || '/local/dolly/api/v1',
-		tpsf: process.env.tpsf || '/external/tpsf/api/v1'
+		arenaForvalterUrl: 'https://arena-forvalteren.nais.preprod.local/',
+		instdataUrl: 'https://testnorge-inst.nais.preprod.local',
+		kodeverkUrl: 'https://kodeverk.nais.preprod.local',
+		krrStubUrl: 'https://krr-stub.nais.preprod.local',
+		sigrunStubUrl: 'https://sigrun-skd-stub.nais.preprod.local',
+		tpsfUrl: 'https://tps-forvalteren-u2.nais.preprod.local',
+		udiStubUrl: 'https://udi-stub.nais.preprod.local'
 	},
 	debug: true
 }
