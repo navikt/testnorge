@@ -236,7 +236,6 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 			}
 		]
 	}
-	
 
 	if (_get(final_values, 'arenaforvalter')) {
 		if (_get(final_values, 'arenaforvalter.arenaBrukertype') !== 'MED_SERVICEBEHOV') {

@@ -182,8 +182,22 @@ const _formatValueForObject = (key, value) => {
 		'oppholdSammeVilkaarEffektuering',
 		'oppholdstillatelseVedtaksDato',
 		'arbeidsadgangFraDato',
-		'arbeidsadgangTilDato'
+		'arbeidsadgangTilDato',
+		'regdato'
 	]
+	if (Array.isArray(value)) {
+		value.forEach((val, idx) =>
+			Object.entries(val).forEach(attr => {
+				if (dateAttributes.includes(attr[0])) {
+					if (attr[1]) {
+						value[idx][attr[0]] = Formatters.formatDate(attr[1])
+					} else {
+						value[idx][attr[0]] = ''
+					}
+				}
+			})
+		)
+	}
 
 	if (dateAttributes.includes(key)) {
 		value = Formatters.formatDate(value)

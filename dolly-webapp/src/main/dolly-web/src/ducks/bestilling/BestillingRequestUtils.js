@@ -180,24 +180,24 @@ export const getValues = (attributeList, values) => {
 				//Loop gjennom liste med barn
 				//Samme action for begge alternativ. TODO: Skrive felles
 				if (barn.innvandret) {
-					Object.entries(valueCopy[idx].barn_innvandret[0]).map(attr => {
+					Object.entries(valueCopy[idx].innvandret[0]).map(attr => {
 						_set(
 							valueCopy[idx],
 							attr[0],
 							isDate(attr[1]) ? DataFormatter.parseDate(attr[1]) : attr[1]
 						)
 					})
-					delete valueCopy[idx].barn_innvandret
+					delete valueCopy[idx].innvandret
 				}
 				if (barn.utvandret) {
-					Object.entries(valueCopy[idx].barn_utvandret[0]).map(attr => {
+					Object.entries(valueCopy[idx].utvandret[0]).map(attr => {
 						_set(
 							valueCopy[idx],
 							attr[0],
 							isDate(attr[1]) ? DataFormatter.parseDate(attr[1]) : attr[1]
 						)
 					})
-					delete valueCopy[idx].barn_utvandret
+					delete valueCopy[idx].utvandret
 				}
 				if (barn.forsvunnet) {
 					Object.entries(valueCopy[idx].forsvunnet[0]).map(attr => {
@@ -207,7 +207,7 @@ export const getValues = (attributeList, values) => {
 							isDate(attr[1]) ? DataFormatter.parseDate(attr[1]) : attr[1]
 						)
 					})
-					delete valueCopy[idx].barn_forsvunnet
+					delete valueCopy[idx].forsvunnet
 				}
 			})
 			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, valueCopy)
@@ -391,7 +391,7 @@ const _transformAttributt = (attribute, attributes, value) => {
 				Object.assign(
 					{},
 					...Object.entries(val).map(([key, value]) => {
-						if (!attributeList[key]) return
+						if (!attributeList[key] || !attributeList[key].path) return
 						let pathId = attributeList[key].path.split('.')
 						return {
 							//  Hente kun siste key, f.eks barn.kjønn => kjønn
