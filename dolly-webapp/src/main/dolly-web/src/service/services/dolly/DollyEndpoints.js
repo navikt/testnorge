@@ -34,10 +34,6 @@ class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/attributter`
 	}
 
-	static gruppeIdenter(gruppeId) {
-		return `${groupBase}/${gruppeId}/identer`
-	}
-
 	static gruppeBestilling(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestilling`
 	}

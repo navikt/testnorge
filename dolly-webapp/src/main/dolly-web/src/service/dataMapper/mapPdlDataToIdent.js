@@ -166,5 +166,48 @@ export function mapPdlData(pdlfData) {
 		}
 		pdlfDataArray.push(data)
 	}
+
+	if (pdlfData.personidenter.utenlandskeIdentifikasjonsnummere) {
+		pdlfDataArray.push({
+			header: 'Utenlands-ID',
+			multiple: true,
+			data: pdlfData.personidenter.utenlandskeIdentifikasjonsnummere.map((data, i) => {
+				return {
+					parent: 'id',
+					id: data.personidentifikator,
+					value: [
+						{
+							id: 'id',
+							label: '',
+							value: `#${i + 1}`,
+							width: 'x-small'
+						},
+						{
+							id: 'idNummer',
+							label: 'Identifikasjonsnummer',
+							value: data.idNummer
+						},
+						{
+							id: 'kilde',
+							label: 'Kilde',
+							value: data.kilde
+						},
+						{
+							id: 'opphoert',
+							label: 'Opphørt',
+							value: Formatters.oversettBoolean(Boolean(data.registrertOpphoertINAV))
+						},
+						{
+							id: 'utstederland',
+							label: 'Utstederland',
+							value: data.utstederland,
+							apiKodeverkId: 'Landkoder'
+						}
+					]
+				}
+			})
+		})
+	}
+
 	return pdlfDataArray
 }
