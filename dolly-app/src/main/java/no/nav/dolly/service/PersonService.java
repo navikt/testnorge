@@ -1,8 +1,17 @@
 package no.nav.dolly.service;
 
 import static java.util.Collections.singletonList;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 
 import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
@@ -22,15 +31,20 @@ import java.util.stream.Collectors;
 public class PersonService {
 
     private final TpsfService tpsfService;
-
     private final TestgruppeRepository testgruppeRepository;
-
     private final List<ClientRegister> clientRegister;
 
     public void recyclePersoner(List<String> identer) {
 
         if (!identer.isEmpty()) {
-            tpsfService.deletePersones(identer);
+            try {
+                tpsfService.deletePersones(identer);
+            } catch (HttpClientErrorException e) {
+                if (!OK.equals(e.getStatusCode()) && !NOT_FOUND.equals(e.getStatusCode())) {
+                    log.error("Sletting av identer i TPSF feilet: {}", e.getMessage(), e);
+                    throw e;
+                }
+            }
         }
     }
 

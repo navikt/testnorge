@@ -178,13 +178,15 @@ public class PdlForvalterClient implements ClientRegister {
             try {
                 appendName(UTENLANDS_IDENTIFIKASJONSNUMMER, status);
 
-                PdlUtenlandskIdentifikasjonsnummer utenlandskId = pdldata.getUtenlandskIdentifikasjonsnummer();
-                utenlandskId.setKilde(nullcheckSetDefaultValue(utenlandskId.getKilde(), KILDE));
+                List<PdlUtenlandskIdentifikasjonsnummer> utenlandskId = pdldata.getUtenlandskIdentifikasjonsnummer();
+                utenlandskId.forEach(id -> {
+                    id.setKilde(nullcheckSetDefaultValue(id.getKilde(), KILDE));
 
-                ResponseEntity<JsonNode> response =
-                        pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(utenlandskId, ident);
+                    ResponseEntity<JsonNode> response =
+                            pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(id, ident);
 
-                appendOkStatus(response.getBody(), status);
+                    appendOkStatus(response.getBody(), status);
+                });
 
             } catch (RuntimeException exception) {
 
