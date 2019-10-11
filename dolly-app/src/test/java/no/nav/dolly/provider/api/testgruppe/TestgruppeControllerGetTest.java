@@ -14,11 +14,13 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,6 +32,43 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
     };
     private static final ParameterizedTypeReference<List<RsTestgruppe>> expectedResponseRsTestgruppe = new ParameterizedTypeReference<List<RsTestgruppe>>() {
     };
+
+    @Test
+    @DisplayName("Returnerer Testgrupper tilknyttet til navIdent men uten spesifikk teamId")
+    void shouldGetTestgrupperWithNavIdentWithoutTeamId() {
+        Bruker bruker = dataFactory.createBruker("NAVIDENT");
+        Bruker annenBruker = dataFactory.createBruker("OTHER");
+
+        Team team = dataFactory.createTeam(annenBruker, "Team", "", annenBruker, bruker);
+        Team team2 = dataFactory.createTeam(annenBruker, "Team2", "", annenBruker);
+
+        Testgruppe testgruppe = dataFactory.createTestgruppe("gruppe", bruker, team);
+        Testgruppe testgruppe2 = dataFactory.createTestgruppe("gruppe2", annenBruker, team2);
+        Testgruppe testgruppe3 = dataFactory.createTestgruppe("gruppe3", annenBruker, team2);
+
+        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe.getId());
+        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe2.getId());
+        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe3.getId());
+
+        String url = UriComponentsBuilder.fromUriString(ENDPOINT_BASE_URI).queryParam("navIdent", bruker.getNavIdent()).toUriString();
+        List<RsTestgruppe> resp = sendRequest()
+                .to(HttpMethod.GET, url)
+                .andExpectList(HttpStatus.OK, expectedResponseRsTestgruppe);
+
+        assertThat(resp.size(), is(3));
+
+        assertThat(resp, hasItem(
+                hasProperty("navn", equalTo("gruppe")))
+        );
+
+        assertThat(resp, hasItem(both(
+                hasProperty("navn", equalTo("gruppe3"))).and(
+                hasProperty("opprettetAvNavIdent", equalTo(annenBruker.getNavIdent())))
+        ));
+
+        //Cleanup
+        dataFactory.clearFavourites(bruker.getNavIdent());
+    }
 
     @Test
     @DisplayName("Returnerer Testgrupper tilknyttet til navIdent gjennom favoritter og medlemskap")
@@ -48,17 +87,17 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
         dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe2.getId());
         dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe3.getId());
 
-        String url = ENDPOINT_BASE_URI + "?navIdent=" + bruker.getNavIdent();
-
+        String url = UriComponentsBuilder.fromUriString(ENDPOINT_BASE_URI).queryParam("navIdent", bruker.getNavIdent()).queryParam("teamId", team2.getId()).toUriString();
         List<RsTestgruppe> resp = sendRequest()
                 .to(HttpMethod.GET, url)
                 .andExpectList(HttpStatus.OK, expectedResponseRsTestgruppe);
 
-        assertThat(resp.size(), is(3));
+        assertThat(resp.size(), is(2));
 
-        assertThat(resp, hasItem(
-                hasProperty("navn", equalTo("gruppe")))
-        );
+        assertThat(resp, hasItem(both(
+                hasProperty("navn", equalTo("gruppe2"))).and(
+                hasProperty("opprettetAvNavIdent", equalTo(annenBruker.getNavIdent())))
+        ));
 
         assertThat(resp, hasItem(both(
                 hasProperty("navn", equalTo("gruppe3"))).and(
@@ -132,6 +171,7 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
         assertThat(resp.getAntallIdenter(), is(5)); //3 stk laget i createTestgruppe + 2 i addTestidenterToTestgruppe
     }
 
+    @Disabled // todo Think this should be removed, as /identer endpoint isn't
     @Test
     @DisplayName("Returnerer alle Testidenter i en Testgruppe")
     void shouldReturnAllTestidentsInTestgruppe() {
@@ -155,13 +195,13 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
         assertTrue(resp.contains(ident2));
     }
 
+    @Disabled // todo Think this should be removed, as /identer endpoint isn't
     @Test
     @DisplayName("Returnerer tom liste når Testgruppe ikke har registrerte Testidenter")
     void shouldReturnEmptyListWithTestidents() {
         Testgruppe testgruppe = dataFactory.createTestgruppe("Testgruppe");
 
         String url = ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/identer";
-
 
         sendRequest()
                 .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/slettTestident?ident=123")
