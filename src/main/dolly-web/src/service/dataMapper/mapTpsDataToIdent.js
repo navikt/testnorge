@@ -134,37 +134,6 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 		})
 	}
 
-	// if (pdlfData && pdlfData.utenlandskeIdentifikasjonsnummere) {
-	// 	data.push({
-	// 		header: 'Utenlands-ID',
-	// 		data: [
-	// 			{
-	// 				id: 'idNummer',
-	// 				label: 'Identifikasjonsnummer',
-	// 				value: pdlfData.utenlandskeIdentifikasjonsnummere[0].idNummer
-	// 			},
-	// 			{
-	// 				id: 'kilde',
-	// 				label: 'Kilde',
-	// 				value: pdlfData.utenlandskeIdentifikasjonsnummere[0].kilde
-	// 			},
-	// 			{
-	// 				id: 'opphoert',
-	// 				label: 'Opphørt',
-	// 				value: Formatters.oversettBoolean(
-	// 					Boolean(pdlfData.utenlandskeIdentifikasjonsnummere[0].registrertOpphoertINAV)
-	// 				)
-	// 			},
-	// 			{
-	// 				id: 'utstederland',
-	// 				label: 'Utstederland',
-	// 				value: pdlfData.utenlandskeIdentifikasjonsnummere[0].utstederland,
-	// 				apiKodeverkId: 'Landkoder'
-	// 			}
-	// 		]
-	// 	})
-	// }
-
 	if (tpsfData.boadresse) {
 		data.push({
 			header: 'Bostedadresse',

@@ -138,7 +138,6 @@ export const getValues = (attributeList, values) => {
 			}
 
 			if (attribute.id === 'utenlandskIdentifikasjonsnummer') {
-				// return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value[0])
 				return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 			}
 			if (attribute.id === 'falskIdentitet') {
