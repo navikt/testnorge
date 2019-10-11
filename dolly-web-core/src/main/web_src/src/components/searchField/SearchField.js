@@ -1,12 +1,17 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Icon from '~/components/icon/Icon'
+import Icon from '~/components/ui/icon/Icon'
 
 import './SearchField.less'
 
 // Kopi av NAV, utvides for å kunne legge til ikoner
-// TODO: utvide med onChange etc. for å håndtere søk
 export default class SearchField extends PureComponent {
+	static propTypes = {
+		searchText: PropTypes.string.isRequired,
+		placeholder: PropTypes.string,
+		setSearchText: PropTypes.func.isRequired
+	}
+
 	static defaultProps = {
 		placeholder: 'Hva leter du etter?'
 	}

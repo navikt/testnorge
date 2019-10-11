@@ -12,7 +12,6 @@ const openamBase = `${uri}/openam`
 const norg2Base = `${uri}/norg2`
 const aaregBase = `${uri}/aareg/arbeidsforhold`
 const personoppslagBase = `${uri}/personoppslag`
-const syntdataGenerateBase = `${uri}/syntdata`
 
 class DollyEndpoints {
 	static gruppe() {
@@ -115,24 +114,16 @@ class DollyEndpoints {
 		return configBase
 	}
 
-	static openAm() {
-		return openamBase
-	}
-
 	static openAmBestilling(bestillingId) {
 		return `${openamBase}/bestilling/{bestillingId}?bestillingId=${bestillingId}`
-	}
-
-	static openAmGroupStatus(groupId, isSent = true) {
-		return `${openamBase}/gruppe/${groupId}?isOpenAmSent=${isSent}`
 	}
 
 	static removeBestilling(bestillingId) {
 		return `${bestillingBase}/stop/${bestillingId}`
 	}
 
-	static removeTestIdent(identId) {
-		return `${groupBase}/{gruppeId}/slettTestident?ident=${identId}`
+	static removeTestIdent(gruppeId, identId) {
+		return `${groupBase}/${gruppeId}/slettTestident?ident=${identId}`
 	}
 
 	static enhetByTknr(tknr) {
@@ -149,11 +140,6 @@ class DollyEndpoints {
 
 	static personoppslag(ident) {
 		return `${personoppslagBase}/ident/${ident}`
-	}
-
-	static syntdataGenerate(path, numToGenerate) {
-		const formatertPath = path.replace(/\//g, '%2F')
-		return `${syntdataGenerateBase}?path=${formatertPath}&numToGenerate=${numToGenerate}`
 	}
 }
 

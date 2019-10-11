@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
-import Header from '~/components/header/Header'
-import Loading from '~/components/loading/Loading'
-import Breadcrumb from '~/components/breadcrumb/BreadcrumbWithHoc'
-import Toast from '~/components/toast/Toast'
+import Header from '~/components/layout/header/Header'
+import Loading from '~/components/ui/loading/Loading'
+import Breadcrumb from '~/components/layout/breadcrumb/BreadcrumbWithHoc'
+import Toast from '~/components/ui/toast/Toast'
 import routes from '~/Routes'
 
 import './App.less'
@@ -12,6 +12,7 @@ export default class App extends Component {
 	async componentDidMount() {
 		await this.props.fetchConfig()
 		await this.props.getCurrentBruker()
+		await this.props.getEnvironments()
 	}
 
 	componentDidUpdate() {

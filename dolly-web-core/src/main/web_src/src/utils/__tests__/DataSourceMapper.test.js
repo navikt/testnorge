@@ -6,6 +6,7 @@ describe('DataSourceMapper.js', () => {
 		const krr = 'KRR'
 		const arena = 'ARENA'
 		const inst = 'INST'
+		const udi = 'UDI'
 
 		it('should return sigrun-stub', () => {
 			const res = 'sigrunstub'
@@ -23,8 +24,13 @@ describe('DataSourceMapper.js', () => {
 		})
 
 		it('should return institusjonsopphold', () => {
-			const res = 'institusjonsopphold'
+			const res = 'instdata'
 			expect(DataSourceMapper(inst)).toBe(res)
+		})
+
+		it('should return udi-stub', () => {
+			const res = 'udistub'
+			expect(DataSourceMapper(udi)).toBe(res)
 		})
 
 		it('should return tpsf on default', () => {

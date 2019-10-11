@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
-import Loading from '~/components/loading/Loading'
+import Loading from '~/components/ui/loading/Loading'
 import Formatters from '~/utils/DataFormatter'
 
 export default class KodeverkValue extends Component {

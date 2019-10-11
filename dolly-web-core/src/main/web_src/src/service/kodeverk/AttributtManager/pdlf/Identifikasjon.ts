@@ -64,7 +64,7 @@ const AttributtListe: Attributt[] = [
 				path: 'utenlandskIdentifikasjonsnummer.utstederland',
 				inputType: InputType.Select,
 				apiKodeverkId: 'Landkoder',
-				// validation: yup.array().required('Velg et land'),
+				validation: yup.string().required('Velg et land'),
 				attributtType: AttributtType.SelectAndEdit
 			}
 		]

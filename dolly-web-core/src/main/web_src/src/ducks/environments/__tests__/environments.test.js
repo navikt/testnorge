@@ -1,5 +1,5 @@
 import environments from '../index'
-import { _getEnvironmentsSortedByType } from '../index'
+import { _getEnvironmentsSortedByType } from '../'
 
 describe('environmentsReducer', () => {
 	it('should return initial state', () => {

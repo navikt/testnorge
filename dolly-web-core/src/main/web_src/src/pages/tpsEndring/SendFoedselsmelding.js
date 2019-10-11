@@ -1,13 +1,13 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { PureComponent } from 'react'
 import { Formik, Form, Field } from 'formik'
+import Knapp from 'nav-frontend-knapper'
+import * as yup from 'yup'
 import { FormikInput } from '~/components/fields/Input/Input'
-import ContentContainer from '~/components/contentContainer/ContentContainer'
+import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { FormikDatepicker } from '~/components/fields/Datepicker/Datepicker'
 import { TpsfApi } from '~/service/Api'
-import Knapp from 'nav-frontend-knapper'
-import * as yup from 'yup'
-import Loading from '~/components/loading/Loading'
+import Loading from '~/components/ui/loading/Loading'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import DataFormatter from '~/utils/DataFormatter'
@@ -106,12 +106,10 @@ export default class SendFoedselsmelding extends PureComponent {
 			suksessMiljoer = this.state.response_success.join(', ')
 
 		return (
-			<Fragment>
-				<h3 className="tps-endring-success-message">
-					Gratulerer, {person.personNavn.gjeldendePersonnavn} med ident {person.fodselsnummer} ble
-					født i miljø {suksessMiljoer}!
-				</h3>
-			</Fragment>
+			<h3 className="tps-endring-success-message">
+				Gratulerer, {person.personNavn.gjeldendePersonnavn} med ident {person.fodselsnummer} ble
+				født i miljø {suksessMiljoer}!
+			</h3>
 		)
 	}
 
@@ -220,6 +218,8 @@ export default class SendFoedselsmelding extends PureComponent {
 										options={SelectOptionsManager('identtype')}
 										disabled={foundIdentMor ? false : true}
 									/>
+								</div>
+								<div className="tps-endring-foedselmelding-bottom">
 									<Field
 										name="foedselsdato"
 										label="BARNETS FØDSELSDATO"
@@ -241,8 +241,6 @@ export default class SendFoedselsmelding extends PureComponent {
 										multi={true}
 										disabled={foundIdentMor ? false : true}
 									/>
-								</div>
-								<div className="tps-endring-foedselmelding-bottom">
 									<Field
 										name="adresseFra"
 										label="ADRESSE"
@@ -250,6 +248,8 @@ export default class SendFoedselsmelding extends PureComponent {
 										options={adresseOptions}
 										disabled={foundIdentMor ? false : true}
 									/>
+								</div>
+								<div className="tps-endring-knapp-container">
 									<Knapp type="hoved" htmlType="submit" disabled={foundIdentMor ? false : true}>
 										Opprett fødselsmelding
 									</Knapp>

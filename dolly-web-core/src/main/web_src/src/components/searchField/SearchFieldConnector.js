@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import SearchField from './SearchField'
 import { setSearchText } from '~/ducks/search'
+import SearchField from './SearchField'
 
 const mapStateToProps = state => ({
 	searchText: state.search

@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { FormikInput } from '~/components/fields/Input/Input'
 import { Formik, Form, Field, getIn } from 'formik'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import Knapp from 'nav-frontend-knapper'
 import * as yup from 'yup'
-import Loading from '~/components/loading/Loading'
+import Loading from '~/components/ui/loading/Loading'
 
 export default class RedigerTeam extends PureComponent {
 	static propTypes = {}
@@ -33,7 +31,7 @@ export default class RedigerTeam extends PureComponent {
 		})
 
 	render() {
-		const { closeOpprettRedigerTeam, team, teamIsUpdating } = this.props
+		const { onCancel, team, teamIsUpdating } = this.props
 		if (teamIsUpdating) {
 			return (
 				<div className="opprett-tabellrad loading">
@@ -59,7 +57,7 @@ export default class RedigerTeam extends PureComponent {
 								<Field name="navn" label="NAVN" autoFocus component={FormikInput} />
 								<Field name="beskrivelse" label="BESKRIVELSE" component={FormikInput} />
 
-								<Knapp mini type="standard" htmlType="button" onClick={closeOpprettRedigerTeam}>
+								<Knapp mini type="standard" htmlType="button" onClick={onCancel}>
 									Avbryt
 								</Knapp>
 								<Knapp mini type="hoved" htmlType="submit">
