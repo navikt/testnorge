@@ -8,7 +8,8 @@ import org.springframework.stereotype.Component;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 
 import no.nav.bidrag.ui.bisys.BisysApplication;
-import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknFraConstants;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
+import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknTypeConstants;
 import no.nav.bidrag.ui.bisys.soknad.Soknad;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Bidragsberegning;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Underholdskostnad;
@@ -36,8 +37,14 @@ public class BidragConsumer {
 
             Soknad soknad = (Soknad) BisysUiSupport.getActiveBisysPage(bisys);
 
-            if (KodeSoknFraConstants.BARN_ELDRE_ENN_18.equals(request.getSoknadRequest().getSoknadFra())) {
+            if (KodeSoknGrKomConstants.bidrag18Aar().contains(request.getSoknadRequest().getSoktOm())) {
                 soknad.lagreOg18ArsBidrag().click();
+                if (request.getSoknadRequest().getSoknadstype().equals(KodeSoknTypeConstants.OPPHOR)) {
+                    Bidragsberegning bidragsberegning = (Bidragsberegning) BisysUiSupport.getActiveBisysPage(bisys);
+                    bidragsberegning.lagreOgBeregne().click();
+                    bidragsberegning.lagreOgFatteVedtak().click();
+                    return;
+                }
             } else {
                 soknad.lagreOgBidrag().click();
             }

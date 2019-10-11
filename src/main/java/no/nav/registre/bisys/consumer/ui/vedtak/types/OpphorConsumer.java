@@ -24,14 +24,21 @@ public class OpphorConsumer {
     @Autowired
     private BidragConsumer bidragConsumer;
 
+    @Autowired
+    private ForskuddConsumer forskuddConsumer;
+
     public void runOpphor(BisysApplication bisys, SynthesizedBidragRequest request) throws BidragRequestProcessingException {
         Soknad soknad = (Soknad) BisysUiSupport.getActiveBisysPage(bisys);
 
         if (KodeSoknFraConstants.BP.equals(request.getSoknadRequest().getSoknadFra())
                 && KodeSoknGrKomConstants.BIDRAG_18_AAR_INNKREVING.equals(request.getSoknadRequest().getSoktOm())) {
             bidragConsumer.runBidrag(bisys, request);
-        } else {
+        } else if (KodeSoknGrKomConstants.bidrag18Aar().contains(request.getSoknadRequest().getSoktOm())) {
+            bidragConsumer.runBidrag(bisys, request);
+        } else if (KodeSoknGrKomConstants.FORSKUDD.equals(request.getSoknadRequest().getSoktOm())) {
 
+            forskuddConsumer.runForskudd(bisys, request);
+        } else {
             lagreOgFatteVedtak(soknad);
 
             FatteVedtak fatteVedtak = (FatteVedtak) BisysUiSupport.getActiveBisysPage(bisys);
@@ -60,4 +67,5 @@ public class OpphorConsumer {
             throw new BidragRequestProcessingException("LagreOgFatteVedtak-button not visible. Check logged on enhet", soknad, e);
         }
     }
+
 }

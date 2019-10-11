@@ -1,5 +1,7 @@
 package no.nav.registre.bisys.consumer.ui.vedtak;
 
+import static no.nav.registre.bisys.consumer.ui.BisysUiSupport.feedbackMatchFound;
+
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -12,17 +14,14 @@ import org.springframework.stereotype.Component;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
-import net.morher.ui.connect.api.element.Label;
 import no.nav.bidrag.ui.bisys.BisysApplication;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeRolletypeConstants;
-import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknFraConstants;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknTypeConstants;
 import no.nav.bidrag.ui.bisys.soknad.Soknad;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Barn;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Bidragsberegning;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Boforhold;
-import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Forskuddsberegning;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Inntekter;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Inntektslinje;
 import no.nav.bidrag.ui.bisys.soknad.bidragsberegning.Periode;
@@ -52,14 +51,6 @@ public class BisysUiYtelseberegningConsumer {
         }
     }
 
-    public void fulfillForskuddsberegning(Forskuddsberegning forskuddsberegning, SynthesizedBidragRequest request) {
-
-        forskuddsberegning.selectKodeArsak(request.getKodeVirkAarsak(request.getSoknadRequest().getSoktOm()));
-        forskuddsberegning.selectSivilstand(request.getSivilstandBm());
-        forskuddsberegning.selectUnntak(request.getKodeUnntForsk());
-
-    }
-
     /**
      * Updates the Inntekter view with required information.
      * 
@@ -68,7 +59,6 @@ public class BisysUiYtelseberegningConsumer {
      *  - Expected exit page: Inntekter
      * </code>
      * 
-     * @param grKomKode
      * @param inntekter
      * @param request
      * @throws BidragRequestProcessingException
@@ -76,27 +66,44 @@ public class BisysUiYtelseberegningConsumer {
     private void fulfillInntekter(Inntekter inntekter, SynthesizedBidragRequest request)
             throws BidragRequestProcessingException {
 
-        // BMs inntekter
-        checkRegisteredInntekter(KodeRolletypeConstants.BIDRAGSMOTTAKER, inntekter, request);
+        // Hovedpartens inntekter (BM for de fleste tilfeller)
+        String rolletype = inntekter.rolletype().getText();
+        checkInntekterUpdateIfRequired(inntekter, request, rolletype);
+
+        // Motpartens inntekter (BP for de fleste tilfeller)
+        String counterpartFnr = KodeRolletypeConstants.BIDRAGSMOTTAKER.equals(rolletype) ? request.getSoknadRequest().getFnrBp() : request.getSoknadRequest().getFnrBm();
+        List<String> options = inntekter.valgtRolle().getOptions();
+        if (rolleIsSelectable(options, counterpartFnr)) {
+            rolletype = rolletype.equals(KodeRolletypeConstants.BIDRAGSMOTTAKER) ? KodeRolletypeConstants.BIDRAGSPLIKTIG : KodeRolletypeConstants.BIDRAGSMOTTAKER;
+            selectRolle(options, counterpartFnr, inntekter);
+            checkInntekterUpdateIfRequired(inntekter, request, rolletype);
+        }
+    }
+
+    private void selectRolle(List<String> options, String fnrRolle, Inntekter inntekter) {
+        for (String option : options) {
+            if (option.contains(fnrRolle)) {
+                inntekter.selectValgtRolle(option);
+            }
+        }
+    }
+
+    private void checkInntekterUpdateIfRequired(Inntekter inntekter, SynthesizedBidragRequest request, String rolletype) throws BidragRequestProcessingException {
+        checkRegisteredInntekter(rolletype, inntekter, request);
         inntekter.lagre().click();
 
         if (manualInntekterInfoRequired(inntekter)) {
-            addInntektManually(KodeRolletypeConstants.BIDRAGSMOTTAKER, inntekter, request);
+            addInntektManually(rolletype, inntekter, request);
         }
+    }
 
-        // BPs inntekter
-        if (!KodeSoknGrKomConstants.FORSKUDD.equals(request.getSoknadRequest().getSoktOm())) {
-            for (String option : inntekter.valgtRolle().getOptions()) {
-                if (option.contains(request.getSoknadRequest().getFnrBp())) {
-                    inntekter.selectValgtRolle(option);
-                    checkRegisteredInntekter(KodeRolletypeConstants.BIDRAGSPLIKTIG, inntekter, request);
-                    inntekter.lagre().click();
-                    if (manualInntekterInfoRequired(inntekter)) {
-                        addInntektManually(KodeRolletypeConstants.BIDRAGSPLIKTIG, inntekter, request);
-                    }
-                }
+    private boolean rolleIsSelectable(List<String> options, String fnr) {
+        for (String option : options) {
+            if (option.matches("(.*)" + fnr + "(.*)")) {
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -140,7 +147,7 @@ public class BisysUiYtelseberegningConsumer {
                 }
             } catch (NoSuchElementException e) {
                 if (!rolleHarInntektEgneOpplysninger(rolletype, request)) {
-                    throw new BidragRequestProcessingException("No income registered!", inntekter, e);
+                    throw new BidragRequestProcessingException("Ingen inntekter funnet!", inntekter, e);
                 }
             }
         }
@@ -183,16 +190,6 @@ public class BisysUiYtelseberegningConsumer {
             }
         }
 
-        return false;
-    }
-
-    private boolean feedbackMatchFound(String regex, List<Label> feedback) {
-        for (Label label : feedback) {
-            String labelContent = label.getText();
-            if (labelContent.matches(regex)) {
-                return true;
-            }
-        }
         return false;
     }
 
@@ -357,7 +354,7 @@ public class BisysUiYtelseberegningConsumer {
         bidragsberegning.selectKodeAarsak(request.getKodeVirkAarsak(request.getSoknadRequest().getSoktOm()));
 
         for (Periode periode : bidragsberegning.perioder()) {
-            if (KodeSoknFraConstants.BARN_ELDRE_ENN_18.equals(request.getSoknadRequest().getSoknadFra()) && !KodeSoknTypeConstants.OPPHOR.equals(request.getSoknadRequest().getSoknadstype())) {
+            if (KodeSoknGrKomConstants.bidrag18Aar().contains(request.getSoknadRequest().getSoktOm()) && !KodeSoknTypeConstants.OPPHOR.equals(request.getSoknadRequest().getSoknadstype())) {
                 String periodeTom = periode.tom().getValue();
                 if (periodeTom.isEmpty()) {
                     LocalDate mottattdato = LocalDate.parse(request.getSoknadRequest().getMottattdato(), DateTimeFormat.forPattern(Soknad.STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST));
