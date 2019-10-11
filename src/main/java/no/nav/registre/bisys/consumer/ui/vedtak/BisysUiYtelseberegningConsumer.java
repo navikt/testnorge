@@ -74,7 +74,7 @@ public class BisysUiYtelseberegningConsumer {
         String counterpartFnr = KodeRolletypeConstants.BIDRAGSMOTTAKER.equals(rolletype) ? request.getSoknadRequest().getFnrBp() : request.getSoknadRequest().getFnrBm();
         List<String> options = inntekter.valgtRolle().getOptions();
         if (rolleIsSelectable(options, counterpartFnr)) {
-            rolletype = rolletype.equals(KodeRolletypeConstants.BIDRAGSMOTTAKER) ? KodeRolletypeConstants.BIDRAGSPLIKTIG : KodeRolletypeConstants.BIDRAGSMOTTAKER;
+            rolletype = KodeRolletypeConstants.BIDRAGSMOTTAKER.equals(rolletype) ? KodeRolletypeConstants.BIDRAGSPLIKTIG : KodeRolletypeConstants.BIDRAGSMOTTAKER;
             selectRolle(options, counterpartFnr, inntekter);
             checkInntekterUpdateIfRequired(inntekter, request, rolletype);
         }

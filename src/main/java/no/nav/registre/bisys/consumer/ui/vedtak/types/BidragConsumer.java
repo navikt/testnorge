@@ -39,7 +39,7 @@ public class BidragConsumer {
 
             if (KodeSoknGrKomConstants.bidrag18Aar().contains(request.getSoknadRequest().getSoktOm())) {
                 soknad.lagreOg18ArsBidrag().click();
-                if (request.getSoknadRequest().getSoknadstype().equals(KodeSoknTypeConstants.OPPHOR)) {
+                if (KodeSoknTypeConstants.OPPHOR.equals(request.getSoknadRequest().getSoknadstype())) {
                     Bidragsberegning bidragsberegning = (Bidragsberegning) BisysUiSupport.getActiveBisysPage(bisys);
                     bidragsberegning.lagreOgBeregne().click();
                     bidragsberegning.lagreOgFatteVedtak().click();
