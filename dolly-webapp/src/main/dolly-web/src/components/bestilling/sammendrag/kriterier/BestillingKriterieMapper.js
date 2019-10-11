@@ -60,23 +60,6 @@ export function mapBestillingData(bestillingData) {
 			items: _getTpsfBestillingData(tpsfKriterier)
 		}
 
-		// For å mappe utenlands-ID under persondetaljer
-		// Ingvild
-		// if (bestillingData.bestKriterier) {
-		// 	const registreKriterier = JSON.parse(bestillingData.bestKriterier)
-		// 	const uidnr = _get(registreKriterier, 'pdlforvalter.utenlandskIdentifikasjonsnummer')
-		// 	if (uidnr) {
-		// 		const pdlf = [
-		// 			obj('Utenlands-ID', uidnr.identifikasjonsnummer),
-		// 			obj('Utenlands-ID kilde', uidnr.kilde),
-		// 			obj('Utenlands-ID opphørt', Formatters.oversettBoolean(uidnr.opphoert)),
-		// 			obj('Utstederland (ID)', uidnr.utstederland, 'Landkoder')
-		// 		]
-		// 		pdlf.forEach(item => {
-		// 			personinfo.items.push(item)
-		// 		})
-		// 	}
-		// }
 		data.push(personinfo)
 		if (tpsfKriterier.boadresse) {
 			const adr = tpsfKriterier.boadresse

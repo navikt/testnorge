@@ -39,10 +39,6 @@ export default class DollyService {
 		return Request.put(Endpoints.gruppeAttributter(gruppeId), data)
 	}
 
-	// static updateGruppeIdenter(gruppeId, data) {
-	// 	return Request.put(Endpoints.gruppeIdenter(gruppeId, data))
-	// }
-
 	static createBestilling(gruppeId, data) {
 		return Request.post(Endpoints.gruppeBestilling(gruppeId), data)
 	}
