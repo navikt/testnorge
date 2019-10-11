@@ -61,7 +61,7 @@ const DataMapper = {
 		const tpsfKriterier = JSON.parse(bestilling.tpsfKriterier)
 		const bestKriterier = JSON.parse(bestilling.bestKriterier)
 
-		let data = mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData && pdlfData.personidenter)
+		let data = mapTpsfData(tpsfData, testIdent, tpsfKriterier)
 
 		if (aaregData) {
 			data.push(mapAaregData(aaregData))
