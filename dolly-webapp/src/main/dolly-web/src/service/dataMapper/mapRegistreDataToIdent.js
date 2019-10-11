@@ -350,7 +350,7 @@ export function mapUdiData(udiData, asylsøker) {
 			{
 				id: 'oppholdFraDato',
 				label: 'Oppholdstillatelse fra dato',
-				value: Formatters.formateStringDates(
+				value: Formatters.formatStringDates(
 					_get(udiData.oppholdStatus, `${currentOppholdsrettType}Periode.fra`) ||
 						_get(udiData.oppholdStatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
 				)
@@ -358,7 +358,7 @@ export function mapUdiData(udiData, asylsøker) {
 			{
 				id: 'oppholdTilDato',
 				label: 'Oppholdstillatelse til dato',
-				value: Formatters.formateStringDates(
+				value: Formatters.formatStringDates(
 					_get(udiData.oppholdStatus, `${currentOppholdsrettType}Periode.til`) ||
 						_get(udiData.oppholdStatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
 				)
@@ -366,7 +366,7 @@ export function mapUdiData(udiData, asylsøker) {
 			{
 				id: 'effektueringsdato',
 				label: 'Effektueringsdato',
-				value: Formatters.formateStringDates(
+				value: Formatters.formatStringDates(
 					_get(udiData.oppholdStatus, `${currentOppholdsrettType}Effektuering`) ||
 						_get(udiData.oppholdStatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarEffektuering')
 				)
@@ -382,7 +382,7 @@ export function mapUdiData(udiData, asylsøker) {
 			{
 				id: 'vedtaksdato',
 				label: 'Vedtaksdato',
-				value: Formatters.formateStringDates(
+				value: Formatters.formatStringDates(
 					_get(udiData.oppholdStatus, 'oppholdSammeVilkaar.oppholdstillatelseVedtaksDato')
 				)
 			},
@@ -427,14 +427,14 @@ export function mapUdiData(udiData, asylsøker) {
 				label: 'Arbeidsadgang fra dato',
 				value:
 					_get(udiData, 'arbeidsadgang.periode.til') &&
-					Formatters.formateStringDates(udiData.arbeidsadgang.periode.fra)
+					Formatters.formatStringDates(udiData.arbeidsadgang.periode.fra)
 			},
 			{
 				id: 'arbeidsadgangTilDato',
 				label: 'Arbeidsadgang til dato',
 				value:
 					_get(udiData, 'arbeidsadgang.periode.til') &&
-					Formatters.formateStringDates(udiData.arbeidsadgang.periode.til)
+					Formatters.formatStringDates(udiData.arbeidsadgang.periode.til)
 			},
 			{
 				id: 'flyktningstatus',

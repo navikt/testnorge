@@ -49,7 +49,6 @@ const DataMapper = {
 		const krrData = testbruker.items.krrstub && testbruker.items.krrstub[personId]
 		const aaregData = testbruker.items.aareg && testbruker.items.aareg[personId]
 		const pdlfData = testbruker.items.pdlforvalter && testbruker.items.pdlforvalter[personId]
-		console.log('pdlfData :', pdlfData)
 		const arenaData =
 			testbruker.items.arenaforvalteren && testbruker.items.arenaforvalteren[personId]
 		const instData = testbruker.items.instdata && testbruker.items.instdata[personId]
@@ -62,7 +61,7 @@ const DataMapper = {
 		const tpsfKriterier = JSON.parse(bestilling.tpsfKriterier)
 		const bestKriterier = JSON.parse(bestilling.bestKriterier)
 
-		let data = mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData && pdlfData.personidenter)
+		let data = mapTpsfData(tpsfData, testIdent, tpsfKriterier)
 
 		if (aaregData) {
 			data.push(mapAaregData(aaregData))
