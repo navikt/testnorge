@@ -109,8 +109,12 @@ const webpackConfig = {
 				use: [devMode ? 'style-loader' : MiniCssExtractPlugin.loader, 'css-loader']
 			},
 			{
+				test: /\.svg$/,
+				loader: 'svg-inline-loader'
+			},
+			{
 				// images
-				test: /\.(ico|jpe?g|png|gif|woff|woff2|eot|otf|ttf|svg)$/,
+				test: /\.(ico|jpe?g|png|gif|woff|woff2|eot|otf|ttf)$/,
 				use: ['file-loader']
 			}
 		]

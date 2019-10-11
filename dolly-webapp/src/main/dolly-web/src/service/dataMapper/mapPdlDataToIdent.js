@@ -93,17 +93,17 @@ export function mapPdlData(pdlfData) {
 				{
 					id: 'utstedtDato',
 					label: 'Dato utstedt',
-					value: Formatters.formateStringDates(pdlfData.kontaktinformasjonForDoedsbo[0].utstedtDato)
+					value: Formatters.formatStringDates(pdlfData.kontaktinformasjonForDoedsbo[0].utstedtDato)
 				},
 				{
 					id: 'gyldigFom',
 					label: 'Gyldig fra',
-					value: Formatters.formateStringDates(pdlfData.kontaktinformasjonForDoedsbo[0].gyldigFom)
+					value: Formatters.formatStringDates(pdlfData.kontaktinformasjonForDoedsbo[0].gyldigFom)
 				},
 				{
 					id: 'gyldigTom',
 					label: 'Gyldig til',
-					value: Formatters.formateStringDates(pdlfData.kontaktinformasjonForDoedsbo[0].gyldigTom)
+					value: Formatters.formatStringDates(pdlfData.kontaktinformasjonForDoedsbo[0].gyldigTom)
 				}
 			]
 		}
@@ -153,7 +153,7 @@ export function mapPdlData(pdlfData) {
 				{
 					id: 'foedselsdato',
 					label: 'Fødselsdato',
-					value: opplysninger && Formatters.formateStringDates(opplysninger.foedselsdato)
+					value: opplysninger && Formatters.formatStringDates(opplysninger.foedselsdato)
 				},
 				{
 					id: 'statsborgerskap',

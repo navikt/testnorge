@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -139,13 +137,5 @@ public class TestgruppeService {
         }
 
         return grupper;
-    }
-
-    public List<String> fetchIdenterByGruppeId(Long gruppeId) {
-        return fetchTestgruppeById(gruppeId)
-                .getTestidenter()
-                .stream()
-                .map(Testident::getIdent)
-                .collect(Collectors.toList());
     }
 }

@@ -109,13 +109,11 @@ export const FieldArrayComponent = ({
 		formikValues = [{ erForsvunnet: '', forsvunnetDato: '' }]
 	}
 	let subLabelArray = []
-	let antallInstanser = 0
 
 	return (
 		<Fragment key={item.id}>
 			{formikValues && formikValues.length > 0 ? (
 				formikValues.map((faKey, idx) => {
-					antallInstanser = idx + 1
 					return (
 						<Fragment key={idx}>
 							{idx !== 0 && <div className="field-array-line" />}
@@ -206,7 +204,11 @@ export const FieldArrayComponent = ({
 												kind="remove-circle"
 												onClick={e => arrayHelpers.remove(idx)}
 												title="Fjern"
-												children={subKategori.navn.toUpperCase()}
+												children={
+													subKategori.navn === 'Partner'
+														? item.id.split('_')[1].toUpperCase()
+														: subKategori.navn.toUpperCase()
+												}
 											/>
 										)}
 								</div>
@@ -228,7 +230,12 @@ export const FieldArrayComponent = ({
 					<div>
 						{!editMode &&
 							item.isMultiple &&
-							addButton(createDefaultObject, subKategori.navn.toUpperCase())}
+							addButton(
+								createDefaultObject,
+								subKategori.navn === 'Partner'
+									? item.id.split('_')[1].toUpperCase()
+									: subKategori.navn.toUpperCase()
+							)}
 					</div>
 				</div>
 			}

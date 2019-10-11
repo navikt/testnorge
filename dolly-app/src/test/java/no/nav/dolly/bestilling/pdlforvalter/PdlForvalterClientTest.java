@@ -127,7 +127,7 @@ public class PdlForvalterClientTest {
         BestillingProgress progress = new BestillingProgress();
 
         when(mapperFacade.map(any(RsPdldata.class), eq(Pdldata.class))).thenReturn(Pdldata.builder()
-                .utenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer.builder().build()).build());
+                .utenlandskIdentifikasjonsnummer(singletonList(PdlUtenlandskIdentifikasjonsnummer.builder().build())).build());
         when(pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT)))
                 .thenReturn(ResponseEntity.ok(instance.objectNode().put(HENDLSE_ID, HENDELSE_ID_UTENLANDSID)));
 
@@ -150,7 +150,7 @@ public class PdlForvalterClientTest {
         BestillingProgress progress = new BestillingProgress();
 
         when(mapperFacade.map(any(RsPdldata.class), eq(Pdldata.class))).thenReturn(Pdldata.builder()
-                .utenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer.builder().build()).build());
+                .utenlandskIdentifikasjonsnummer(singletonList(PdlUtenlandskIdentifikasjonsnummer.builder().build())).build());
         when(pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.ALREADY_REPORTED, FEIL_UTENLANDS_IDENT));
         when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil: " + FEIL_UTENLANDS_IDENT);

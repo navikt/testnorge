@@ -1,5 +1,8 @@
 package no.nav.dolly.service;
 
+import static java.lang.String.format;
+import static java.util.Objects.nonNull;
+
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,7 +13,9 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsTestident;
+import no.nav.dolly.domain.testperson.IdentAttributes;
 import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.IdentRepository;
 
 @Service
@@ -41,10 +46,25 @@ public class IdentService {
     }
 
     public int slettTestident(String ident) {
+
         return identRepository.deleteTestidentByIdent(ident);
     }
 
     public int slettTestidenterByGruppeId(Long gruppeId) {
+
         return identRepository.deleteTestidentByTestgruppeId(gruppeId);
+    }
+
+    @Transactional
+    public Testident save(IdentAttributes attributtes) {
+
+        Testident testident = identRepository.findByIdent(attributtes.getIdent());
+        if (nonNull(testident)) {
+            testident.setIBruk(attributtes.isIbruk());
+            testident.setBeskrivelse(attributtes.getBeskrivelse());
+            return identRepository.save(testident);
+        } else {
+            throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", attributtes.getIdent()));
+        }
     }
 }

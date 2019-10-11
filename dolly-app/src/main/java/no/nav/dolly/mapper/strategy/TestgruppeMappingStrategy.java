@@ -1,6 +1,7 @@
 package no.nav.dolly.mapper.strategy;
 
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Testgruppe testgruppe, RsTestgruppe rsTestgruppe, MappingContext context) {
                         rsTestgruppe.setAntallIdenter(testgruppe.getTestidenter().size());
+                        rsTestgruppe.setAntallIbruk(((Long) testgruppe.getTestidenter().stream().filter(ident -> isTrue(ident.getIBruk())).count()).intValue()); //NOSONAR
                         rsTestgruppe.setOpprettetAvNavIdent(testgruppe.getOpprettetAv().getNavIdent());
                         rsTestgruppe.setSistEndretAvNavIdent(testgruppe.getSistEndretAv().getNavIdent());
                         rsTestgruppe.setTeam(RsTeamMedIdOgNavn.builder()
