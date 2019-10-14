@@ -84,6 +84,7 @@ public class JmsService {
         Message mottattMelding = jmsTemplate.sendAndReceive("queue:///" + koeNavn + "?targetClient=1", session -> session.createTextMessage(rutine910));
 
         if (mottattMelding != null) {
+            log.info(mottattMelding.getBody(String.class));
             return Response910Util.parseResponse(mottattMelding.getBody(String.class));
         } else {
             log.warn("Fikk ikke svar fra TSS for ident {}", ident.replaceAll("[\r\n]", ""));
