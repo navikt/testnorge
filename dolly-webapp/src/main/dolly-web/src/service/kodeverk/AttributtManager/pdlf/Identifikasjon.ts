@@ -16,6 +16,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.PDLF,
 		attributtType: AttributtType.SelectAndEdit,
 		validation: yup.object(),
+		isMultiple: true,
 		items: [
 			{
 				hovedKategori: Kategorier.PersInfo,

@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.resultset.pdlforvalter;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +19,6 @@ import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdent
 public class Pdldata {
 
     private PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo;
-    private PdlUtenlandskIdentifikasjonsnummer utenlandskIdentifikasjonsnummer;
+    private List<PdlUtenlandskIdentifikasjonsnummer> utenlandskIdentifikasjonsnummer;
     private PdlFalskIdentitet falskIdentitet;
 }

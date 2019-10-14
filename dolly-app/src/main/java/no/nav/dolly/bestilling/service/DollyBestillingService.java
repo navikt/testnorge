@@ -176,6 +176,11 @@ public class DollyBestillingService {
             BestillingProgress bestillingProgress = identIterator.next();
 
             List<String> identer = tpsfService.hentTilhoerendeIdenter(singletonList(bestillingProgress.getIdent()));
+            if (identer.isEmpty()) {
+                bestilling.setFeil(format("Gjenopprett feilet fordi ident %s har blitt slettet fra database", bestillingProgress.getIdent()));
+                bestilling.setStoppet(true);
+                break;
+            }
 
             TpsPerson tpsPerson = buildTpsPerson(bestilling, identer);
 
