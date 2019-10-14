@@ -46,11 +46,13 @@ public class JmsService {
     public void sendTilTss(List<String> meldinger, String koeNavn) {
         try {
             for (String melding : meldinger) {
-                jmsTemplate.convertAndSend("queue:///" + koeNavn + "?targetClient=1", melding);
+                Message message = jmsTemplate.sendAndReceive("queue:///" + koeNavn + "?targetClient=1", session -> session.createTextMessage(melding));
+                if (message != null)
+                    log.info(message.getBody(String.class));
             }
-        } catch (Exception e) {
+        } catch (JMSException e) {
             log.error("Kunne ikke sende til kø", e);
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 
