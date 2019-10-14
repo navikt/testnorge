@@ -3,7 +3,7 @@ const isProdBuild = process.env.NODE_ENV === 'production'
 const config = {
 	services: {
 		dollyBackend: process.env.dollyBackend || '/local/dolly/api/v1',
-		arenaForvalterUrl: 'https://arena-forvalteren.nais.preprod.local/',
+		arenaForvalterUrl: 'https://arena-forvalteren.nais.preprod.local',
 		instdataUrl: 'https://testnorge-inst.nais.preprod.local',
 		kodeverkUrl: 'https://kodeverk.nais.preprod.local',
 		krrStubUrl: 'https://krr-stub.nais.preprod.local',
