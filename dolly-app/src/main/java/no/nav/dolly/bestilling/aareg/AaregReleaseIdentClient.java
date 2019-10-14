@@ -1,4 +1,4 @@
-package no.nav.dolly.aareg;
+package no.nav.dolly.bestilling.aareg;
 
 import static java.math.BigDecimal.valueOf;
 import static java.time.LocalDate.parse;

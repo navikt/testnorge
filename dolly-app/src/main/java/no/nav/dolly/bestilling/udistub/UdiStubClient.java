@@ -4,6 +4,8 @@ import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.util.List;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,19 +28,13 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public final class UdiStubClient implements ClientRegister {
 
-    @Autowired
-    private UdiStubConsumer udiStubConsumer;
-
-    @Autowired
-    private MapperFacade mapperFacade;
-
-    @Autowired
-    private TpsfService tpsfService;
-
-    @Autowired
-    private ErrorStatusDecoder errorStatusDecoder;
+    private final UdiStubConsumer udiStubConsumer;
+    private final MapperFacade mapperFacade;
+    private final TpsfService tpsfService;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {

@@ -1,4 +1,4 @@
-package no.nav.dolly.aareg;
+package no.nav.dolly.bestilling.aareg;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.singletonList;

@@ -38,6 +38,7 @@ public abstract class RestTestBase {
     private static final String DEFAULT_CALL_ID = "CallId_1337";
     private static final String DEFAULT_CONSUMER_ID = "TestCase";
     private static final String ERR_MSG_KEY = "message";
+
     @Autowired
     protected TestdataFactory dataFactory;
 

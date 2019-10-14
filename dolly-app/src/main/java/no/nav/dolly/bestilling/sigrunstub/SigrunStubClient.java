@@ -23,7 +23,8 @@ public class SigrunStubClient implements ClientRegister {
     private final SigrunStubResponseHandler sigrunStubResponseHandler;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    @Override public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+    @Override
+    public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         if (bestilling.getSigrunstub() == null || bestilling.getSigrunstub().isEmpty()) {
             progress.setSigrunstubStatus(null);

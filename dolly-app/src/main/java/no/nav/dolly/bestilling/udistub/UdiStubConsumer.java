@@ -4,6 +4,8 @@ import static java.lang.String.format;
 
 import java.net.URI;
 import java.util.UUID;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -17,6 +19,7 @@ import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UdiStubConsumer {
 
     private static final String CONSUMER = "Dolly";
@@ -25,11 +28,8 @@ public class UdiStubConsumer {
     private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
     private static final String UDI_STUB_PERSON = "/api/v1/person";
 
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
-    private ProvidersProps providersProps;
+    private final RestTemplate restTemplate;
+    private final ProvidersProps providersProps;
 
     public ResponseEntity<UdiPersonControllerResponse> createUdiPerson(UdiPerson udiPerson) {
 

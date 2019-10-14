@@ -77,7 +77,6 @@ public class PdlForvalterConsumer {
         return restTemplate.exchange(uri, method, new HttpEntity<>(body, httpHeaders), JsonNode.class);
     }
 
-    // todo make rest calls uniform
     public ResponseEntity postFoedsel(PdlFoedsel pdlFoedsel, String ident) {
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FOEDSEL_URL))

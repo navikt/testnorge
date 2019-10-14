@@ -8,6 +8,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_TEAM;
 import static no.nav.dolly.provider.api.documentation.DocumentationNotes.AAREG_JSON_COMMENT;
 
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -26,7 +27,6 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.PersonService;
 import no.nav.dolly.service.TestgruppeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -45,6 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "api/v1/gruppe")
 public class TestgruppeController {
 
@@ -136,23 +137,12 @@ public class TestgruppeController {
 
     private static final String BESTILLING_BESKRIVELSE = RANDOM_ADRESSE + BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET;
 
-    @Autowired
-    private TestgruppeService testgruppeService;
-
-    @Autowired
-    private IdentService identService;
-
-    @Autowired
-    private MapperFacade mapperFacade;
-
-    @Autowired
-    private DollyBestillingService dollyBestillingService;
-
-    @Autowired
-    private BestillingService bestillingService;
-
-    @Autowired
-    private PersonService personService;
+    private final TestgruppeService testgruppeService;
+    private final IdentService identService;
+    private final MapperFacade mapperFacade;
+    private final DollyBestillingService dollyBestillingService;
+    private final BestillingService bestillingService;
+    private final PersonService personService;
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
@@ -171,7 +161,7 @@ public class TestgruppeController {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeUtvidet.class);
     }
 
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @Transactional
     @DeleteMapping("/{gruppeId}/slettTestident")
     public void deleteTestident(@PathVariable Long gruppeId, @RequestParam String ident) {

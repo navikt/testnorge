@@ -170,54 +170,5 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
         assertThat(resp.getNavn(), is("Test gruppe"));
         assertThat(resp.getAntallIdenter(), is(5)); //3 stk laget i createTestgruppe + 2 i addTestidenterToTestgruppe
     }
-
-    @Disabled // todo Think this should be removed, as /identer endpoint isn't
-    @Test
-    @DisplayName("Returnerer alle Testidenter i en Testgruppe")
-    void shouldReturnAllTestidentsInTestgruppe() {
-        String ident1 = "10";
-        String ident2 = "20";
-        Testgruppe testgruppe = dataFactory.createTestgruppe("Test gruppe");
-
-        Testident testident1 = dataFactory.createTestident(ident1, testgruppe);
-        Testident testident2 = dataFactory.createTestident(ident2, testgruppe);
-
-        testgruppe = dataFactory.addTestidenterToTestgruppe(testgruppe, testident1, testident2);
-
-        String url = ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/identer";
-
-        List<String> resp = sendRequest()
-                .to(HttpMethod.GET, url)
-                .andExpectList(HttpStatus.OK, expectedResponseString);
-
-        assertThat(resp.size(), is(5));
-        assertTrue(resp.contains(ident1));
-        assertTrue(resp.contains(ident2));
-    }
-
-    @Disabled // todo Think this should be removed, as /identer endpoint isn't
-    @Test
-    @DisplayName("Returnerer tom liste når Testgruppe ikke har registrerte Testidenter")
-    void shouldReturnEmptyListWithTestidents() {
-        Testgruppe testgruppe = dataFactory.createTestgruppe("Testgruppe");
-
-        String url = ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/identer";
-
-        sendRequest()
-                .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/slettTestident?ident=123")
-                .andExpect(HttpStatus.OK, LinkedHashMap.class);
-        sendRequest()
-                .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/slettTestident?ident=234")
-                .andExpect(HttpStatus.OK, LinkedHashMap.class);
-        sendRequest()
-                .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/slettTestident?ident=345")
-                .andExpect(HttpStatus.OK, LinkedHashMap.class);
-
-        List<String> resp = sendRequest()
-                .to(HttpMethod.GET, url)
-                .andExpectList(HttpStatus.OK, expectedResponseString);
-
-        assertTrue(resp.isEmpty());
-    }
 }
 

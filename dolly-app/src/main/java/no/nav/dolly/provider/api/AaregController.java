@@ -4,7 +4,7 @@ import static no.nav.dolly.provider.api.documentation.DocumentationNotes.AAREG_J
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.aareg.AaregReleaseIdentClient;
+import no.nav.dolly.bestilling.aareg.AaregReleaseIdentClient;
 import no.nav.dolly.consumer.aareg.AaregRestConsumer;
 import no.nav.dolly.consumer.aareg.AaregWsConsumer;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;

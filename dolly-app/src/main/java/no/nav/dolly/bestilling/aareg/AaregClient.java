@@ -1,18 +1,12 @@
-package no.nav.dolly.aareg;
+package no.nav.dolly.bestilling.aareg;
 
 import static java.util.Collections.singletonList;
 
-import java.util.List;
-import java.util.Map;
-
-import no.nav.dolly.consumer.aareg.AaregRestConsumer;
-import no.nav.dolly.consumer.aareg.AaregWsConsumer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.consumer.aareg.AaregRestConsumer;
+import no.nav.dolly.consumer.aareg.AaregWsConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
@@ -22,23 +16,23 @@ import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AaregClient extends AaregAbstractClient implements ClientRegister {
 
-    // TODO Check before commit
+    private final AaregWsConsumer aaregWsConsumer;
+    private final AaregRestConsumer aaregRestConsumer;
+    private final AaregReleaseIdentClient aaregReleaseIdentClient;
 
-    @Autowired
-    private AaregWsConsumer aaregWsConsumer;
-
-    @Autowired
-    private AaregRestConsumer aaregRestConsumer;
-
-    @Autowired
-    private AaregReleaseIdentClient aaregReleaseIdentClient;
-
-    @Override public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+    @Override
+    public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         StringBuilder result = new StringBuilder();
 
@@ -87,10 +81,9 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
         progress.setAaregStatus(result.length() > 1 ? result.substring(1) : null);
     }
 
-    @Override public void release(List<String> identer) {
-
-        identer.forEach(ident ->
-                aaregReleaseIdentClient.deleteArbeidsforhold(ident));
+    @Override
+    public void release(List<String> identer) {
+        identer.forEach(ident -> aaregReleaseIdentClient.deleteArbeidsforhold(ident));
     }
 
     private static String getIdentifyingNumber(Map arbfFraAareg) {
