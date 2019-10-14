@@ -454,7 +454,7 @@ const _mapRegistreValue = (key, value) => {
 			})
 			return [mapObj]
 		case 'utenlandskIdentifikasjonsnummer':
-			return [value]
+			return value
 		case 'arenaforvalter':
 			return [value]
 		case 'falskIdentitet':
@@ -477,13 +477,13 @@ const _mapRegistreValue = (key, value) => {
 							if (attr[0].includes('Periode')) {
 								Object.assign(oppholdObj, {
 									...oppholdObj,
-									oppholdFraDato: attr[1].fra ? Formatters.formateStringDates(attr[1].fra) : '',
-									oppholdTilDato: attr[1].til ? Formatters.formateStringDates(attr[1].til) : ''
+									oppholdFraDato: attr[1].fra ? Formatters.formatStringDates(attr[1].fra) : '',
+									oppholdTilDato: attr[1].til ? Formatters.formatStringDates(attr[1].til) : ''
 								})
 							} else if (attr[0].includes('Effektuering')) {
 								Object.assign(oppholdObj, {
 									...oppholdObj,
-									effektueringsDato: Formatters.formateStringDates(attr[1])
+									effektueringsDato: Formatters.formatStringDates(attr[1])
 								})
 							} else {
 								Object.assign(oppholdObj, {
@@ -503,16 +503,16 @@ const _mapRegistreValue = (key, value) => {
 								if (/\d{4}-\d{2}-\d{2}/.test(subAttr[1])) {
 									Object.assign(oppholdObj, {
 										...oppholdObj,
-										[subAttr[0]]: Formatters.formateStringDates(subAttr[1])
+										[subAttr[0]]: Formatters.formatStringDates(subAttr[1])
 									})
 								} else if (subAttr[0] === 'oppholdSammeVilkaarPeriode') {
 									Object.assign(oppholdObj, {
 										...oppholdObj,
 										oppholdSammeVilkaarFraDato: subAttr[1].fra
-											? Formatters.formateStringDates(subAttr[1].fra)
+											? Formatters.formatStringDates(subAttr[1].fra)
 											: '',
 										oppholdSammeVilkaarTilDato: subAttr[1].til
-											? Formatters.formateStringDates(subAttr[1].til)
+											? Formatters.formatStringDates(subAttr[1].til)
 											: ''
 									})
 								} else {
@@ -553,7 +553,7 @@ const _mapRegistreValue = (key, value) => {
 							}
 							Object.assign(arbAdg, {
 								...arbAdg,
-								[arbAdgDato]: Formatters.formateStringDates(subAttr[1])
+								[arbAdgDato]: Formatters.formatStringDates(subAttr[1])
 							})
 						})
 					} else {
