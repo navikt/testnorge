@@ -216,6 +216,16 @@ export const getValues = (attributeList, values) => {
 					})
 					delete valueCopy[idx].forsvunnet
 				}
+				if (barn.statsborgerskapInfo) {
+					Object.entries(valueCopy[idx].statsborgerskapInfo[0]).map(attr => {
+						_set(
+							valueCopy[idx],
+							attr[0],
+							isDate(attr[1]) ? DataFormatter.parseDate(attr[1]) : attr[1]
+						)
+					})
+					delete valueCopy[idx].statsborgerskapInfo
+				}
 			})
 			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, valueCopy)
 		}
@@ -223,7 +233,8 @@ export const getValues = (attributeList, values) => {
 		if (
 			attribute.id.includes('innvandret') ||
 			attribute.id.includes('utvandret') ||
-			attribute.id.includes('forsvunnet')
+			attribute.id.includes('forsvunnet') ||
+			attribute.id.includes('statsborgerskapInfo')
 		) {
 			// Viktig at denne ligger etter bolken med barn
 			Object.entries(value[0]).map(attr => {
@@ -524,7 +535,6 @@ export const parseSubItemDate = (item, rad, radTransformation) => {
 
 	return radTransformation
 }
-
 export const deletePropertiesWithoutValues = obj => {
 	Object.keys(obj).map(key => !obj[key] && delete obj[key])
 	return obj
