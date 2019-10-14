@@ -38,6 +38,16 @@ const AttributtListe: Attributt[] = [
 			{
 				hovedKategori: Kategorier.KontaktInfo,
 				subKategori: SubKategorier.Krr,
+				id: 'registrert',
+				dataSource: DataSource.KRR,
+				label: 'Registrert i DKIF',
+				inputType: InputType.Select,
+				options: SelectOptionsManager('stringBoolean'),
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.KontaktInfo,
+				subKategori: SubKategorier.Krr,
 				id: 'reservert',
 				dataSource: DataSource.KRR,
 				label: 'Reservert mot digitalkommunikasjon',
@@ -54,16 +64,6 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.KRR,
 				validation: DateValidation(false),
 				inputType: InputType.Date,
-				attributtType: AttributtType.SelectAndEdit
-			},
-			{
-				hovedKategori: Kategorier.KontaktInfo,
-				subKategori: SubKategorier.Krr,
-				id: 'registrert',
-				dataSource: DataSource.KRR,
-				label: 'Registrert i DKIF',
-				inputType: InputType.Select,
-				options: SelectOptionsManager('stringBoolean'),
 				attributtType: AttributtType.SelectAndEdit
 			}
 		]
