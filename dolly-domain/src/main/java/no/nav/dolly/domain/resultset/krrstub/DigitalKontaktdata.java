@@ -20,6 +20,7 @@ public class DigitalKontaktdata {
         private ZonedDateTime gyldigFra;
         private String personident;
         private boolean reservert;
+        private boolean registrert;
         private String mobil;
         private String epost;
 
