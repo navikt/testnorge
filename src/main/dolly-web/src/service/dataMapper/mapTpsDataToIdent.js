@@ -1,13 +1,14 @@
 import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 import _get from 'lodash/get'
+import DataMapper from '.'
 
-export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
+export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 	if (!tpsfData) return null
 
 	const data = [
 		{
-			header: 'Personlig informasjon',
+			header: 'Persondetaljer',
 			data: [
 				{
 					id: 'ident',
@@ -44,6 +45,11 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 					label: 'Personstatus',
 					value: tpsfData.personStatus,
 					apiKodeverkId: tpsfData.personStatus && 'Personstatuser'
+				},
+				{
+					id: 'ForsvunnetDato',
+					label: 'Savnet siden',
+					value: Formatters.formatDate(tpsfData.forsvunnetDato)
 				},
 				{
 					id: 'sivilstand',
@@ -123,39 +129,6 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 					id: 'utvandretTilLandFlyttedato',
 					label: 'Utvandret dato',
 					value: Formatters.formatDate(tpsfData.utvandretTilLandFlyttedato)
-				}
-			]
-		})
-	}
-
-	if (pdlfData && pdlfData.utenlandskeIdentifikasjonsnummere) {
-		let opphoert = false
-		if (pdlfData.utenlandskeIdentifikasjonsnummere[0].registrertOpphoertINAV) {
-			opphoert = true
-		}
-		data.push({
-			header: 'Utenlands-ID',
-			data: [
-				{
-					id: 'idNummer',
-					label: 'Identifikasjonsnummer',
-					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].idNummer
-				},
-				{
-					id: 'kilde',
-					label: 'Kilde',
-					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].kilde
-				},
-				{
-					id: 'opphoert',
-					label: 'Opphørt',
-					value: Formatters.oversettBoolean(opphoert)
-				},
-				{
-					id: 'utstederland',
-					label: 'Utstederland',
-					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].utstederland,
-					apiKodeverkId: 'Landkoder'
 				}
 			]
 		})
@@ -262,7 +235,46 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 			]
 		})
 	}
-
+	if (tpsfData.identHistorikk) {
+		data.push({
+			header: 'Identhistorikk',
+			multiple: true,
+			data: tpsfData.identHistorikk.map((data, i) => {
+				return {
+					parent: 'identhistorikk',
+					id: data.id,
+					value: [
+						{
+							id: 'id',
+							label: '',
+							value: `#${i + 1}`,
+							width: 'x-small'
+						},
+						{
+							id: 'identtype',
+							label: 'Identtype',
+							value: data.aliasPerson.identtype
+						},
+						{
+							id: 'fnrdnr',
+							label: data.aliasPerson.identtype,
+							value: data.aliasPerson.ident
+						},
+						{
+							id: 'kjonn',
+							label: 'Kjønn',
+							value: data.aliasPerson.kjonn
+						},
+						{
+							id: 'regdato',
+							label: 'Utgått dato',
+							value: Formatters.formatDate(data.regdato)
+						}
+					]
+				}
+			})
+		})
+	}
 	if (tpsfData.relasjoner && tpsfData.relasjoner.length) {
 		let numberOfChildren = 0
 		data.push({
@@ -270,7 +282,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 			multiple: true,
 			data: tpsfData.relasjoner.map(relasjon => {
 				const relasjonstype = relasjonTranslator(relasjon.relasjonTypeNavn)
-				relasjonstype === 'Barn' && (numberOfChildren += 1)
+				if (relasjonstype === 'Barn') numberOfChildren += 1
 				return {
 					parent: 'relasjoner',
 					id: relasjon.id,
@@ -314,6 +326,11 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 							label: 'Personstatus',
 							value: relasjon.personRelasjonMed.personStatus,
 							apiKodeverkId: relasjon.personRelasjonMed.personStatus && 'Personstatuser'
+						},
+						{
+							id: 'ForsvunnetDato',
+							label: 'Savnet siden',
+							value: Formatters.formatDate(relasjon.personRelasjonMed.forsvunnetDato)
 						},
 						{
 							id: 'statsborgerskap',
@@ -376,10 +393,50 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 							label: 'Egenansatt',
 							value: relasjon.personRelasjonMed.egenAnsattDatoFom && 'JA'
 						}
-					]
+					].concat(mapIdenthistorikkData(relasjon.personRelasjonMed.identHistorikk))
 				}
 			})
 		})
 	}
+
 	return data
+}
+
+export function mapIdenthistorikkData(data) {
+	if (!data || data.length < 1) return []
+	return {
+		id: 'identhistorikk',
+		label: 'Identhistorikk',
+		subItem: true,
+		value: data.map((subdata, i) => {
+			return [
+				{
+					id: 'id',
+					label: '',
+					value: `#${i + 1}`,
+					width: 'x-small'
+				},
+				{
+					id: 'identtype',
+					label: 'Identtype',
+					value: subdata.aliasPerson.identtype
+				},
+				{
+					id: 'fnrdnr',
+					label: subdata.aliasPerson.identtype,
+					value: subdata.aliasPerson.ident
+				},
+				{
+					id: 'kjonn',
+					label: 'Kjønn',
+					value: Formatters.kjonnToString(subdata.aliasPerson.kjonn)
+				},
+				{
+					id: 'regdato',
+					label: 'Utgått dato',
+					value: Formatters.formatDate(subdata.regdato)
+				}
+			]
+		})
+	}
 }

@@ -32,20 +32,19 @@ export default class AttributtManager {
 			)
 			.map(attr => {
 				if (attr.items) {
-					//Hvis dette fungerer kan sjekken egentlig bare være om attr er barn. Droppe items-sjekk.
-					if (attr.id === 'barn') {
-						//attr.id.includes('barn')) {
+						if (attr.id === 'barn') {
 						return Object.assign(Object.assign({}, attr), {
-							items: this.listAllSelectFilterItems(selectedIds, attr.items)
+						items: this.listAllSelectFilterItems(selectedIds, attr.items)
 						})
-					} else {
+						} else {
 						return attr
+						}
+						} else {
+						return attr
+						}
+						})
 					}
-				} else {
-					return attr
-				}
-			})
-	}
+			
 
 	listAllExcludingChildren(): Attributt[] {
 		return AttributtListe.filter(f => !f.parent)
@@ -143,7 +142,7 @@ export default class AttributtManager {
 			const dataPath = editPath || path || id
 
 			// Quick fix for å ikke vise utvandret som editable, fordi jeg ikke får til å redigere den
-			if (dataPath === 'utvandret') {
+			if (dataPath === 'utvandret' || dataPath === 'forsvunnet') {
 				return false
 			}
 

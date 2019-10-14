@@ -4,7 +4,9 @@ import {
 	mapArenaData,
 	mapAaregData,
 	mapSubItemAaregData,
-	mapInstData
+	mapInstData,
+	mapUdiData,
+	mapAliasData
 } from '../mapRegistreDataToIdent'
 import Formatters from '~/utils/DataFormatter'
 
@@ -546,8 +548,8 @@ describe('mapDetailedData.js', () => {
 		it('should return inst-data ', () => {
 			const testInstData = [
 				{
-					faktiskSluttdato: '2018-01-01T00:00:00',
-					startdato: '2017-02-01T00:00:00',
+					faktiskSluttdato: '2018-01-01',
+					startdato: '2017-02-01',
 					institusjonstype: 'AS',
 					varighet: 'K'
 				}
@@ -592,6 +594,212 @@ describe('mapDetailedData.js', () => {
 				})
 			}
 			expect(mapInstData(testInstData)).toEqual(res)
+		})
+	})
+
+	describe('mapUdiData', () => {
+		it('should return null without data', () => {
+			expect(mapUdiData()).toBeNull()
+		})
+
+		it('sholud return udi-data with oppholdsstatus, arbeidsadgang, flyktningstatus and asylsøker', () => {
+			const testUdiData = {
+				oppholdStatus: {
+					eosEllerEFTABeslutningOmOppholdsrett: 'VARIG',
+					eosEllerEFTABeslutningOmOppholdsrettEffektuering: '2019-09-02',
+					eosEllerEFTABeslutningOmOppholdsrettPeriode: { fra: '2019-09-01', til: '2019-09-30' }
+				},
+				arbeidsadgang: {
+					arbeidsOmfang: 'INGEN_KRAV_TIL_STILLINGSPROSENT',
+					harArbeidsAdgang: 'JA',
+					periode: { fra: '2019-09-01', til: '2019-09-30' },
+					typeArbeidsadgang: 'BESTEMT_ARBEIDSGIVER_ELLER_OPPDRAGSGIVER'
+				},
+				flyktning: true,
+				soeknadOmBeskyttelseUnderBehandling: 'JA'
+			}
+			const testRes = {
+				header: 'UDI',
+				data: [
+					{
+						id: 'oppholdsstatus',
+						label: 'Oppholdsstatus',
+						value: 'EØS- eller EFTA-opphold'
+					},
+					{
+						id: 'typeOpphold',
+						label: 'Type opphold',
+						value: 'Beslutning om oppholdsrett fra EØS eller EFTA'
+					},
+					{
+						id: 'status',
+						label: 'Status',
+						value: null
+					},
+					{
+						id: 'oppholdFraDato',
+						label: 'Oppholdstillatelse fra dato',
+						value: '01.09.2019'
+					},
+					{
+						id: 'oppholdTilDato',
+						label: 'Oppholdstillatelse til dato',
+						value: '30.09.2019'
+					},
+					{
+						id: 'effektueringsdato',
+						label: 'Effektueringsdato',
+						value: '02.09.2019'
+					},
+					{
+						id: 'typeOppholdstillatelse',
+						label: 'Type oppholdstillatelse',
+						value: undefined
+					},
+					{
+						id: 'vedtaksdato',
+						label: 'Vedtaksdato',
+						value: undefined
+					},
+					{
+						id: 'grunnlagForOpphold',
+						label: 'Grunnlag for opphold',
+						value: 'Varig'
+					},
+					{
+						id: 'uavklart',
+						label: 'Uavklart',
+						value: undefined
+					},
+					{
+						id: 'harArbeidsadgang',
+						label: 'Har arbeidsadgang',
+						value: 'Ja'
+					},
+					{
+						id: 'typeArbeidsadgang',
+						label: 'Type arbeidsadgang',
+						value: 'Bestemt arbeidsgiver eller oppdragsgiver'
+					},
+					{
+						id: 'arbeidsOmfang',
+						label: 'Arbeidsomfang',
+						value: 'Ingen krav til stillingsprosent'
+					},
+					{
+						id: 'arbeidsadgangFraDato',
+						label: 'Arbeidsadgang fra dato',
+						value: '01.09.2019'
+					},
+					{
+						id: 'arbeidsadgangTilDato',
+						label: 'Arbeidsadgang til dato',
+						value: '30.09.2019'
+					},
+					{
+						id: 'flyktningstatus',
+						label: 'Flyktningstatus',
+						value: 'Ja'
+					},
+					{
+						id: 'asylsøker',
+						label: 'Asylsøker',
+						value: 'Ja'
+					}
+				]
+			}
+			expect(mapUdiData(testUdiData)).toEqual(testRes)
+		})
+	})
+
+	describe('mapAliasData', () => {
+		it('should return null without data', () => {
+			expect(mapAliasData()).toBeNull()
+		})
+
+		it('should return udi-data with aliaser', () => {
+			const testUdiData = [
+				{
+					fnr: '07028229601',
+					navn: { etternavn: 'Maskin', fornavn: 'Frodig', mellomnavn: 'Glitrende' }
+				},
+				{
+					fnr: '07028200263',
+					navn: { etternavn: 'Tøffeldyr', fornavn: 'Slapp', mellomnavn: 'Utmattende' }
+				}
+			]
+
+			const testRes = {
+				header: 'Alias',
+				multiple: true,
+				data: [
+					{
+						id: 0,
+						parent: 'aliaser',
+						value: [
+							{
+								id: 'id',
+								label: '',
+								value: '#1',
+								width: 'x-small'
+							},
+							{
+								id: 'fnr',
+								label: 'FNR/DNR',
+								value: '07028229601'
+							},
+							{
+								id: 'fornavn',
+								label: 'Fornavn',
+								value: 'Frodig'
+							},
+							{
+								id: 'mellomnavn',
+								label: 'Mellomnavn',
+								value: 'Glitrende'
+							},
+							{
+								id: 'etternavn',
+								label: 'Etternavn',
+								value: 'Maskin'
+							}
+						]
+					},
+					{
+						id: 1,
+						parent: 'aliaser',
+						value: [
+							{
+								id: 'id',
+								label: '',
+								value: '#2',
+								width: 'x-small'
+							},
+							{
+								id: 'fnr',
+								label: 'FNR/DNR',
+								value: '07028200263'
+							},
+							{
+								id: 'fornavn',
+								label: 'Fornavn',
+								value: 'Slapp'
+							},
+							{
+								id: 'mellomnavn',
+								label: 'Mellomnavn',
+								value: 'Utmattende'
+							},
+							{
+								id: 'etternavn',
+								label: 'Etternavn',
+								value: 'Tøffeldyr'
+							}
+						]
+					}
+				]
+			}
+			expect(mapAliasData(testUdiData)).toEqual(testRes)
 		})
 	})
 })

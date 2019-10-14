@@ -1,25 +1,24 @@
-import Request from '../Request'
-import axios from 'axios'
+import config from '~/config'
+import Request from '~/service/services/Request'
 import ConfigService from '~/service/Config'
 
-export default class InstService {
-	static getInstUrl() {
-		return ConfigService.getDatesourceUrl('inst') || 'https://testnorge-inst.nais.preprod.local'
-	}
+const getInstBaseUrl = () => ConfigService.getDatesourceUrl('inst') || config.services.instdataUrl
+const getInstUrl = () => `${getInstBaseUrl()}/api/v1`
 
-	static getTestbruker(ident, env) {
-		return Request.getWithoutCredentials(
-			`${this.getInstUrl()}/api/v1/ident?identer=${ident}&miljoe=${env}`,
-			{
-				headers: {
-					NavCallId: 'dolly',
-					NavConsumerId: 'dolly-frontend'
-				}
+export default {
+	getTestbruker(ident, env) {
+		const endpoint = `${getInstUrl()}/ident?identer=${ident}&miljoe=${env}`
+		const options = {
+			headers: {
+				NavCallId: 'dolly',
+				NavConsumerId: 'dolly-frontend'
 			}
-		)
-	}
+		}
+		return Request.getWithoutCredentials(endpoint, options)
+	},
 
-	static getTilgjengeligeMiljoer() {
-		return Request.getWithoutCredentials(`${this.getInstUrl()}/api/v1/miljoer`)
+	getTilgjengeligeMiljoer() {
+		const endpoint = `${getInstUrl()}/miljoer`
+		return Request.getWithoutCredentials(endpoint)
 	}
 }

@@ -48,7 +48,7 @@ export function mapPdlData(pdlfData) {
 				},
 				{
 					id: 'idNummer',
-					label: 'Fnr/dnr/BOST',
+					label: 'Fnr/dnr/bost',
 					value: pdlfData.kontaktinformasjonForDoedsbo[0].adressat[adressatType].idNummer
 				},
 				{
@@ -93,17 +93,17 @@ export function mapPdlData(pdlfData) {
 				{
 					id: 'utstedtDato',
 					label: 'Dato utstedt',
-					value: Formatters.formateStringDates(pdlfData.kontaktinformasjonForDoedsbo[0].utstedtDato)
+					value: Formatters.formatStringDates(pdlfData.kontaktinformasjonForDoedsbo[0].utstedtDato)
 				},
 				{
 					id: 'gyldigFom',
 					label: 'Gyldig fra',
-					value: Formatters.formateStringDates(pdlfData.kontaktinformasjonForDoedsbo[0].gyldigFom)
+					value: Formatters.formatStringDates(pdlfData.kontaktinformasjonForDoedsbo[0].gyldigFom)
 				},
 				{
 					id: 'gyldigTom',
 					label: 'Gyldig til',
-					value: Formatters.formateStringDates(pdlfData.kontaktinformasjonForDoedsbo[0].gyldigTom)
+					value: Formatters.formatStringDates(pdlfData.kontaktinformasjonForDoedsbo[0].gyldigTom)
 				}
 			]
 		}
@@ -128,7 +128,7 @@ export function mapPdlData(pdlfData) {
 				},
 				{
 					id: 'identitetsnummer',
-					label: 'Rett fnr/dnr/BOST',
+					label: 'Rett fnr/dnr/bost',
 					value: pdlfData.falskIdentitet.rettIdentitetVedIdentifikasjonsnummer
 				},
 				{
@@ -153,7 +153,7 @@ export function mapPdlData(pdlfData) {
 				{
 					id: 'foedselsdato',
 					label: 'Fødselsdato',
-					value: opplysninger && Formatters.formateStringDates(opplysninger.foedselsdato)
+					value: opplysninger && Formatters.formatStringDates(opplysninger.foedselsdato)
 				},
 				{
 					id: 'statsborgerskap',
@@ -166,5 +166,48 @@ export function mapPdlData(pdlfData) {
 		}
 		pdlfDataArray.push(data)
 	}
+
+	if (pdlfData.personidenter.utenlandskeIdentifikasjonsnummere) {
+		pdlfDataArray.push({
+			header: 'Utenlands-ID',
+			multiple: true,
+			data: pdlfData.personidenter.utenlandskeIdentifikasjonsnummere.map((data, i) => {
+				return {
+					parent: 'id',
+					id: data.personidentifikator,
+					value: [
+						{
+							id: 'id',
+							label: '',
+							value: `#${i + 1}`,
+							width: 'x-small'
+						},
+						{
+							id: 'idNummer',
+							label: 'Identifikasjonsnummer',
+							value: data.idNummer
+						},
+						{
+							id: 'kilde',
+							label: 'Kilde',
+							value: data.kilde
+						},
+						{
+							id: 'opphoert',
+							label: 'Opphørt',
+							value: Formatters.oversettBoolean(Boolean(data.registrertOpphoertINAV))
+						},
+						{
+							id: 'utstederland',
+							label: 'Utstederland',
+							value: data.utstederland,
+							apiKodeverkId: 'Landkoder'
+						}
+					]
+				}
+			})
+		})
+	}
+
 	return pdlfDataArray
 }
