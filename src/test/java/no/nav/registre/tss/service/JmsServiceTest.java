@@ -20,6 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import no.nav.registre.tss.consumer.rs.response.Response910;
@@ -43,8 +44,7 @@ public class JmsServiceTest {
         List<String> syntetiskeMeldinger = new ArrayList<>(Arrays.asList("Some melding", "Some other melding"));
         jmsService.sendTilTss(syntetiskeMeldinger, koeNavn);
 
-        verify(jmsTemplate).convertAndSend("queue:///" + koeNavn + "?targetClient=1", "Some melding");
-        verify(jmsTemplate).convertAndSend("queue:///" + koeNavn + "?targetClient=1", "Some other melding");
+        verify(jmsTemplate, times(2)).sendAndReceive(eq("queue:///" + koeNavn + "?targetClient=1"), any());
     }
 
     @Test
