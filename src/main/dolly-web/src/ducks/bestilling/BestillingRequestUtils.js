@@ -85,6 +85,13 @@ export const getValues = (attributeList, values) => {
 		}
 
 		if (pathPrefix === DataSourceMapper('KRR')) {
+			Object.entries(value[0]).forEach(attr => {
+				if (attr[1] === 'true') {
+					value[0][attr[0]] = true
+				} else if (attr[1] === 'false') {
+					value[0][attr[0]] = false
+				}
+			})
 			return _set(accumulator, pathPrefix, value[0])
 		}
 
