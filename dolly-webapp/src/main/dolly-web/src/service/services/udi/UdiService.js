@@ -1,14 +1,13 @@
-import Request from '../Request'
-import axios from 'axios'
+import config from '~/config'
+import Request from '~/service/services/Request'
 import ConfigService from '~/service/Config'
 
-export default class UdiService {
-	static getUdiUrl() {
-		const url = ConfigService.getDatesourceUrl('udi') || 'https://udi-stub.nais.preprod.local'
-		return url + '/api/v1'
-	}
+const getUdiBaseUrl = () => ConfigService.getDatesourceUrl('udi') || config.services.udiStubUrl
+const getUdiUrl = () => `${getUdiBaseUrl()}/api/v1`
 
-	static getTestbruker(ident) {
-		return Request.getWithoutCredentials(`${this.getUdiUrl()}/person/${ident}`)
+export default {
+	getTestbruker(ident) {
+		const endpoint = `${getUdiUrl()}/person/${ident}`
+		return Request.getWithoutCredentials(endpoint)
 	}
 }

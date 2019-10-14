@@ -37,8 +37,9 @@ public class PdlForvalterClient implements ClientRegister {
     public static final String FALSK_IDENTITET = "FalskIdentitet";
     public static final String PDL_FORVALTER = "PdlForvalter";
     private static final String KILDE = "Dolly";
-    private static final String SYNTH_ENV = "q2";
     private static final String HENDELSE_ID = "hendelseId";
+
+    public static final String SYNTH_ENV = "q2";
 
     @Autowired
     private PdlForvalterConsumer pdlForvalterConsumer;
@@ -181,13 +182,15 @@ public class PdlForvalterClient implements ClientRegister {
             try {
                 appendName(UTENLANDS_IDENTIFIKASJONSNUMMER, status);
 
-                PdlUtenlandskIdentifikasjonsnummer utenlandskId = pdldata.getUtenlandskIdentifikasjonsnummer();
-                utenlandskId.setKilde(nullcheckSetDefaultValue(utenlandskId.getKilde(), KILDE));
+                List<PdlUtenlandskIdentifikasjonsnummer> utenlandskId = pdldata.getUtenlandskIdentifikasjonsnummer();
+                utenlandskId.forEach(id -> {
+                    id.setKilde(nullcheckSetDefaultValue(id.getKilde(), KILDE));
 
-                ResponseEntity<JsonNode> response =
-                        pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(utenlandskId, ident);
+                    ResponseEntity<JsonNode> response =
+                            pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(id, ident);
 
-                appendOkStatus(response.getBody(), status);
+                    appendOkStatus(response.getBody(), status);
+                });
 
             } catch (RuntimeException exception) {
 

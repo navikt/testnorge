@@ -291,12 +291,12 @@ export function mapInstData(instData) {
 					{
 						id: 'startdato',
 						label: 'Startdato',
-						value: Formatters.formateStringDates(data.startdato)
+						value: Formatters.formatStringDates(data.startdato)
 					},
 					{
 						id: 'faktiskSluttdato',
 						label: 'Sluttdato',
-						value: Formatters.formateStringDates(data.faktiskSluttdato)
+						value: Formatters.formatStringDates(data.faktiskSluttdato)
 					}
 				]
 			}
@@ -304,14 +304,14 @@ export function mapInstData(instData) {
 	}
 }
 
-export function mapUdiData(udiData) {
+export function mapUdiData(udiData, asylsøker) {
 	if (!udiData) return null
 	if (
 		udiData.arbeidsadgang == null &&
 		udiData.flyktning == null &&
 		udiData.harOppholdsTillatelse == null &&
 		udiData.oppholdStatus == null &&
-		udiData.soeknadOmBeskyttelseUnderBehandling == null
+		(udiData.soeknadOmBeskyttelseUnderBehandling == null || !asylsøker)
 	)
 		return null
 
@@ -334,7 +334,6 @@ export function mapUdiData(udiData) {
 
 	const oppholdsrett = Boolean(currentOppholdsrettType)
 	const tredjelandsborger = Boolean(currentTredjelandsborgereStatus)
-
 	return {
 		header: 'UDI',
 		data: [
@@ -361,7 +360,7 @@ export function mapUdiData(udiData) {
 			{
 				id: 'oppholdFraDato',
 				label: 'Oppholdstillatelse fra dato',
-				value: Formatters.formateStringDates(
+				value: Formatters.formatStringDates(
 					_get(udiData.oppholdStatus, `${currentOppholdsrettType}Periode.fra`) ||
 						_get(udiData.oppholdStatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
 				)
@@ -369,7 +368,7 @@ export function mapUdiData(udiData) {
 			{
 				id: 'oppholdTilDato',
 				label: 'Oppholdstillatelse til dato',
-				value: Formatters.formateStringDates(
+				value: Formatters.formatStringDates(
 					_get(udiData.oppholdStatus, `${currentOppholdsrettType}Periode.til`) ||
 						_get(udiData.oppholdStatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
 				)
@@ -377,7 +376,7 @@ export function mapUdiData(udiData) {
 			{
 				id: 'effektueringsdato',
 				label: 'Effektueringsdato',
-				value: Formatters.formateStringDates(
+				value: Formatters.formatStringDates(
 					_get(udiData.oppholdStatus, `${currentOppholdsrettType}Effektuering`) ||
 						_get(udiData.oppholdStatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarEffektuering')
 				)
@@ -393,7 +392,7 @@ export function mapUdiData(udiData) {
 			{
 				id: 'vedtaksdato',
 				label: 'Vedtaksdato',
-				value: Formatters.formateStringDates(
+				value: Formatters.formatStringDates(
 					_get(udiData.oppholdStatus, 'oppholdSammeVilkaar.oppholdstillatelseVedtaksDato')
 				)
 			},
@@ -438,14 +437,14 @@ export function mapUdiData(udiData) {
 				label: 'Arbeidsadgang fra dato',
 				value:
 					_get(udiData, 'arbeidsadgang.periode.til') &&
-					Formatters.formateStringDates(udiData.arbeidsadgang.periode.fra)
+					Formatters.formatStringDates(udiData.arbeidsadgang.periode.fra)
 			},
 			{
 				id: 'arbeidsadgangTilDato',
 				label: 'Arbeidsadgang til dato',
 				value:
 					_get(udiData, 'arbeidsadgang.periode.til') &&
-					Formatters.formateStringDates(udiData.arbeidsadgang.periode.til)
+					Formatters.formatStringDates(udiData.arbeidsadgang.periode.til)
 			},
 			{
 				id: 'flyktningstatus',
@@ -455,7 +454,9 @@ export function mapUdiData(udiData) {
 			{
 				id: 'asylsøker',
 				label: 'Asylsøker',
-				value: Formatters.showLabel('jaNeiUavklart', udiData.soeknadOmBeskyttelseUnderBehandling)
+				value:
+					asylsøker &&
+					Formatters.showLabel('jaNeiUavklart', udiData.soeknadOmBeskyttelseUnderBehandling)
 			}
 		]
 	}

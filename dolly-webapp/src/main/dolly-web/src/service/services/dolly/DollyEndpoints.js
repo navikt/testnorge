@@ -13,7 +13,7 @@ const norg2Base = `${uri}/norg2`
 const aaregBase = `${uri}/aareg/arbeidsforhold`
 const personoppslagBase = `${uri}/personoppslag`
 
-class DollyEndpoints {
+export default class DollyEndpoints {
 	static gruppe() {
 		return groupBase
 	}
@@ -32,10 +32,6 @@ class DollyEndpoints {
 
 	static gruppeAttributter(gruppeId) {
 		return `${groupBase}/${gruppeId}/attributter`
-	}
-
-	static gruppeIdenter(gruppeId) {
-		return `${groupBase}/${gruppeId}/identer`
 	}
 
 	static gruppeBestilling(gruppeId) {
@@ -122,8 +118,8 @@ class DollyEndpoints {
 		return `${bestillingBase}/stop/${bestillingId}`
 	}
 
-	static removeTestIdent(identId) {
-		return `${groupBase}/{gruppeId}/slettTestident?ident=${identId}`
+	static removeTestIdent(gruppeId, identId) {
+		return `${groupBase}/${gruppeId}/slettTestident?ident=${identId}`
 	}
 
 	static enhetByTknr(tknr) {
@@ -142,5 +138,3 @@ class DollyEndpoints {
 		return `${personoppslagBase}/ident/${ident}`
 	}
 }
-
-export default DollyEndpoints

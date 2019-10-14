@@ -83,7 +83,7 @@ public final class UdiStubClient implements ClientRegister {
 
     @Override public void release(List<String> identer) {
 
-        identer.forEach(ident -> udiStubConsumer.deleteUdiPerson(ident));
+        identer.forEach(this::deletePerson);
     }
 
     private void deletePerson(String ident) {

@@ -1,18 +1,16 @@
-import { TpsfApi, SigrunApi, KrrApi, ArenaApi, InstApi } from '~/service/Api'
-import { LOCATION_CHANGE } from 'connected-react-router'
 import { createAction } from 'redux-actions'
-import success from '~/utils/SuccessAction'
-import { DataSource } from '~/service/kodeverk/AttributtManager/Types'
+import { LOCATION_CHANGE } from 'connected-react-router'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _merge from 'lodash/merge'
+import { DollyApi, TpsfApi, SigrunApi, KrrApi, ArenaApi, InstApi, UdiApi } from '~/service/Api'
+import success from '~/utils/SuccessAction'
+import { DataSource } from '~/service/kodeverk/AttributtManager/Types'
 import {
 	mapIdentAndEnvironementForTps,
 	mapValuesFromDataSource,
 	mapSigrunSekvensnummer
 } from './utils'
-import { DollyApi } from '~/service/Api'
-import { UdiApi } from '../../service/Api'
 
 const initialState = {
 	items: {
@@ -37,26 +35,11 @@ const updateTestbrukerRequest = () => ({ type: actionTypes.UPDATE_TESTBRUKER_REQ
 const updateTestbrukerSuccess = () => ({ type: actionTypes.UPDATE_TESTBRUKER_SUCCESS })
 const updateTestbrukerError = () => ({ type: actionTypes.UPDATE_TESTBRUKER_ERROR })
 
-export const GET_TPSF_TESTBRUKERE = createAction('GET_TPSF_TESTBRUKERE', async identArray => {
-	try {
-		const res = await TpsfApi.getTestbrukere(identArray)
-		return res
-	} catch (err) {
-		return err
-	}
-})
+export const GET_TPSF_TESTBRUKERE = createAction('GET_TPSF_TESTBRUKERE', TpsfApi.getTestbrukere)
 
 export const GET_SIGRUN_TESTBRUKER = createAction(
 	'GET_SIGRUN_TESTBRUKER',
-	async ident => {
-		try {
-			const res = await SigrunApi.getTestbruker(ident)
-
-			return res
-		} catch (err) {
-			return err
-		}
-	},
+	SigrunApi.getTestbruker,
 	ident => ({
 		ident
 	})
@@ -64,14 +47,7 @@ export const GET_SIGRUN_TESTBRUKER = createAction(
 
 export const GET_SIGRUN_SEKVENSNR = createAction(
 	'GET_SIGRUN_SEKVENSNR',
-	async ident => {
-		try {
-			const res = await SigrunApi.getSekvensnummer(ident)
-			return res
-		} catch (err) {
-			return err
-		}
-	},
+	SigrunApi.getSekvensnummer,
 	ident => ({
 		ident
 	})
@@ -99,14 +75,7 @@ export const GET_KRR_TESTBRUKER = createAction(
 
 export const GET_ARENA_TESTBRUKER = createAction(
 	'GET_ARENA_TESTBRUKER',
-	async ident => {
-		try {
-			const res = await ArenaApi.getTestbruker(ident)
-			return res
-		} catch (err) {
-			return err
-		}
-	},
+	ArenaApi.getTestbruker,
 	ident => ({
 		ident
 	})
@@ -114,14 +83,7 @@ export const GET_ARENA_TESTBRUKER = createAction(
 
 export const GET_AAREG_TESTBRUKER = createAction(
 	'GET_AAREG_TESTBRUKER',
-	async (ident, env) => {
-		try {
-			const res = await DollyApi.getArbeidsforhold(ident, env)
-			return res
-		} catch (err) {
-			return err
-		}
-	},
+	DollyApi.getArbeidsforhold,
 	ident => ({
 		ident
 	})
@@ -129,14 +91,7 @@ export const GET_AAREG_TESTBRUKER = createAction(
 
 export const GET_INST_TESTBRUKER = createAction(
 	'GET_INST_TESTBRUKER',
-	async (ident, env) => {
-		try {
-			const res = await InstApi.getTestbruker(ident, env)
-			return res
-		} catch (err) {
-			return err
-		}
-	},
+	InstApi.getTestbruker,
 	ident => ({
 		ident
 	})
@@ -144,14 +99,7 @@ export const GET_INST_TESTBRUKER = createAction(
 
 export const GET_UDI_TESTBRUKER = createAction(
 	'GET_UDI_TESTBRUKER',
-	async (ident, env) => {
-		try {
-			const res = await UdiApi.getTestbruker(ident)
-			return res
-		} catch (err) {
-			return err
-		}
-	},
+	UdiApi.getTestbruker,
 	ident => ({
 		ident
 	})
@@ -159,14 +107,7 @@ export const GET_UDI_TESTBRUKER = createAction(
 
 export const GET_TESTBRUKER_PERSONOPPSLAG = createAction(
 	'GET_TESTBRUKER_PERSONOPPSLAG',
-	async (ident, env) => {
-		try {
-			const res = await DollyApi.getPersonFraPersonoppslag(ident)
-			return res
-		} catch (err) {
-			return err
-		}
-	},
+	DollyApi.getPersonFraPersonoppslag,
 	ident => ({
 		ident
 	})
@@ -174,8 +115,8 @@ export const GET_TESTBRUKER_PERSONOPPSLAG = createAction(
 
 export const FRIGJOER_TESTBRUKER = createAction(
 	'FRIGJOER_TESTBRUKER',
-	identId => DollyApi.deleteTestIdent(identId),
-	ident => ({
+	DollyApi.deleteTestIdent,
+	(gruppeId, ident) => ({
 		ident
 	})
 )
@@ -194,8 +135,12 @@ export default function testbrukerReducer(state = initialState, action) {
 					...state.items,
 					tpsf: state.items.tpsf.filter(item => item.ident !== action.meta.ident),
 					sigrunstub: { ...state.items.sigrunstub, [action.meta.ident]: null },
-					krrstub: { ...state.items.krrstub, [action.meta.ident]: null }
-					// ! udi-stub også her?
+					krrstub: { ...state.items.krrstub, [action.meta.ident]: null },
+					udistub: { ...state.items.udistub, [action.meta.ident]: null },
+					arenaforvalteren: { ...state.items.arenaforvalteren, [action.meta.ident]: null },
+					aareg: { ...state.items.aareg, [action.meta.ident]: null },
+					pdlforvalter: { ...state.items.aareg, [action.meta.ident]: null },
+					instdata: { ...state.items.aareg, [action.meta.ident]: null }
 				}
 			}
 
@@ -284,7 +229,7 @@ export default function testbrukerReducer(state = initialState, action) {
 				items: {
 					...state.items,
 					instdata: {
-						...state.items.inst,
+						...state.items.instdata,
 						[action.meta.ident]: action.payload && action.payload.data
 					}
 				}
@@ -297,6 +242,12 @@ export default function testbrukerReducer(state = initialState, action) {
 }
 
 // Thunk
+export const fetchTpsfTestbrukere = () => (dispatch, getState) => {
+	const state = getState()
+	const identer = _get(state, 'gruppe.data[0].testidenter', []).map(ident => ident.ident)
+	if (identer && identer.length >= 1) dispatch(GET_TPSF_TESTBRUKERE(identer))
+}
+
 export const updateTestbruker = (values, attributtListe, ident) => async (dispatch, getState) => {
 	try {
 		dispatch(updateTestbrukerRequest())
@@ -370,7 +321,7 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 
 // Selectors
 export const sokSelector = (items, searchStr) => {
-	if (!items) return null
+	if (!items) return []
 	if (!searchStr) return items
 
 	const query = searchStr.toLowerCase()

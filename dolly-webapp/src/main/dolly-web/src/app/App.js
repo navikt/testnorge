@@ -12,6 +12,7 @@ export default class App extends Component {
 	async componentDidMount() {
 		await this.props.fetchConfig()
 		await this.props.getCurrentBruker()
+		await this.props.getEnvironments()
 	}
 
 	componentDidUpdate() {

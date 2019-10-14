@@ -1,4 +1,4 @@
-import { createHeader, mapBestillingId } from './Utils'
+import { mapBestillingId } from './Utils'
 import { getBestillingById } from '~/ducks/bestillingStatus'
 import Formatters from '~/utils/DataFormatter'
 import { mapTpsfData } from './mapTpsDataToIdent'
@@ -15,23 +15,8 @@ import {
 
 // * Mapper testperson-data for å vise under testpersonliste
 const DataMapper = {
-	getHeaders() {
-		return [
-			createHeader('Ident', '15'),
-			createHeader('Type', '15'),
-			createHeader('Navn', '30'),
-			createHeader('Kjønn', '20'),
-			createHeader('Alder', '10'),
-			createHeader('Bestilling-ID', '10')
-		]
-	},
-
 	// Testbrukersliste
 	getData(state) {
-		/*
-        Gruppe: Dolly
-        Testbruker: TPSF
-        */
 		const { gruppe, testbruker } = state
 
 		if (!testbruker.items.tpsf) return null
@@ -76,7 +61,7 @@ const DataMapper = {
 		const tpsfKriterier = JSON.parse(bestilling.tpsfKriterier)
 		const bestKriterier = JSON.parse(bestilling.bestKriterier)
 
-		let data = mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData && pdlfData.personidenter)
+		let data = mapTpsfData(tpsfData, testIdent, tpsfKriterier)
 
 		if (aaregData) {
 			data.push(mapAaregData(aaregData))
@@ -105,7 +90,8 @@ const DataMapper = {
 		}
 
 		if (udiData) {
-			data.push(mapUdiData(udiData))
+			const asylsøker = bestKriterier.udistub.soeknadOmBeskyttelseUnderBehandling
+			data.push(mapUdiData(udiData, asylsøker))
 			if (udiData.aliaser) {
 				data.push(mapAliasData(udiData.aliaser))
 			}

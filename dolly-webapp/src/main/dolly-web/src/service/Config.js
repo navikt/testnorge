@@ -1,4 +1,3 @@
-import Request from './services/Request'
 import { DollyApi } from './Api'
 
 const ConfigService = {

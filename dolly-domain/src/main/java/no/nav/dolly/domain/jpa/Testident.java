@@ -2,6 +2,7 @@ package no.nav.dolly.domain.jpa;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -27,6 +28,12 @@ public class Testident {
 
     @Id
     private String ident;
+
+    @Column (name = "IBRUK")
+    private Boolean iBruk;
+
+    @Column (name = "BESKRIVELSE")
+    private String beskrivelse;
 
     @ManyToOne
     @JoinColumn(name = "TILHOERER_GRUPPE", nullable = false)

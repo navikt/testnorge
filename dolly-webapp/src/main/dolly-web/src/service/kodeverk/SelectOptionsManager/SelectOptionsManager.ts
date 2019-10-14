@@ -165,7 +165,9 @@ const selectOptions = {
 		{ value: 'UAVKLART', label: 'Uavklart' }
 	],
 
-	nyIdent: [{ value: 'navn', label: 'Navn' }, { value: 'idnummer', label: 'ID-nummer' }]
+	nyIdent: [{ value: 'navn', label: 'Navn' }, { value: 'idnummer', label: 'ID-nummer' }],
+
+	identtypeUtenBost: [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }]
 }
 
 const SelectOptionsManager = attributeId => {

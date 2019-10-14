@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.resultset.pdlforvalter;
 
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +21,6 @@ import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdent
 public class RsPdldata {
 
     private RsPdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo;
-    private PdlUtenlandskIdentifikasjonsnummer utenlandskIdentifikasjonsnummer;
+    private List<PdlUtenlandskIdentifikasjonsnummer> utenlandskIdentifikasjonsnummer;
     private RsPdlFalskIdentitet falskIdentitet;
 }

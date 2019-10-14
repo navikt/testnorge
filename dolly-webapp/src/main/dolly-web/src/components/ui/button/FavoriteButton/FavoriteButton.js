@@ -15,6 +15,7 @@ export default class FavoriteButton extends PureComponent {
 			<Button
 				className="flexbox--align-center"
 				title={isFavorite ? 'Fjern fra favoritter' : 'Legg til som favoritt'}
+				iconSize={hideLabel && 18}
 				kind={isFavorite ? 'star-filled' : 'star'}
 				onClick={isFavorite ? removeFavorite : addFavorite}
 				onMouseEnter={this._handleOnMouseHover}

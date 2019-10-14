@@ -210,6 +210,7 @@ export default class Step3 extends PureComponent {
 
 	renderSubKategoriBlokk = (header, items, values) => {
 		let fieldType = 'oppsummering-multifield-uten-border'
+
 		// Legger til border hvis det finnes flere f.eks. inntekter,
 		// eller hvis f.eks. både inntekter og arbeidsforhold ligger under samme hovedkategori
 		// Gjøres mer generell?
@@ -239,6 +240,7 @@ export default class Step3 extends PureComponent {
 						removableText={'FJERN RAD'}
 						onRemove={() => this._onRemoveSubKategori(items, header)}
 					>
+						{items[0].subGruppe && header === 1 && <h4>{items[0].subGruppe}</h4>}
 						{header && <h4>{typeof header === 'number' ? `# ${header}` : header}</h4>}
 
 						<div
@@ -267,7 +269,12 @@ export default class Step3 extends PureComponent {
 	renderItem = (item, stateValues, header) => {
 		if (item.items) {
 			let valueArray = _get(this.props.values, item.id)
-			if (item.id === 'barn_utvandret' || item.id === 'barn_innvandret') {
+
+			if (
+				item.id === 'barn_utvandret' ||
+				item.id === 'barn_innvandret' ||
+				item.id === 'barn_forsvunnet'
+			) {
 				let barnIndex = 0
 				if (header) barnIndex = header - 1
 				valueArray = _get(this.props.values.barn[barnIndex], item.id)
@@ -285,7 +292,7 @@ export default class Step3 extends PureComponent {
 			})
 		}
 
-		const itemValue = this._formatereValue(item, stateValues)
+		const itemValue = this._formatereValue(item, _get(stateValues, item.id))
 
 		if (!item.inputType) return null
 		if (item.onlyShowAfterSelectedValue && !itemValue) return null
@@ -349,8 +356,7 @@ export default class Step3 extends PureComponent {
 		this.props.setEnvironments({ values, goBack: true })
 	}
 
-	_formatereValue = (item, stateValues) => {
-		const value = _get(stateValues, item.id)
+	_formatereValue = (item, value) => {
 		if (item.dataSource === 'ARENA') {
 			return item.id === 'arenaBrukertype'
 				? Formatters.uppercaseAndUnderscoreToCapitalized(value)
@@ -361,14 +367,10 @@ export default class Step3 extends PureComponent {
 			return Formatters.oversettBoolean(
 				_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
 			)
-			// itemValue = Formatters.oversettBoolean(
-			// 	_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
-			// )
 		}
 
 		if (item.dataSource === 'INST' && (item.id === 'institusjonstype' || item.id === 'varighet')) {
 			return Formatters.showLabel(item.id, value)
-			// itemValue = Formatters.showLabel(item.id, itemValue)
 		}
 
 		if (
@@ -388,7 +390,6 @@ export default class Step3 extends PureComponent {
 				item.id === 'nyIdent')
 		) {
 			return Formatters.showLabel(item.id, value)
-			// itemValue = Formatters.showLabel(item.id, itemValue)
 		}
 
 		if (
@@ -396,10 +397,9 @@ export default class Step3 extends PureComponent {
 			(item.id === 'soeknadOmBeskyttelseUnderBehandling' || item.id === 'harArbeidsAdgang')
 		)
 			return Formatters.allCapsToCapitalized(value)
-		if (value === 'true') return true // Quickfix fra SelectOptions(stringBoolean)
-		if (value === 'false') return false
-		return Formatters.oversettBoolean(value)
 
-		// return itemValue
+		if (value === 'true') return Formatters.oversettBoolean(true) // Quickfix fra SelectOptions(stringBoolean)
+		if (value === 'false') return Formatters.oversettBoolean(false)
+		return Formatters.oversettBoolean(value)
 	}
 }
