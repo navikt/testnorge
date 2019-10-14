@@ -176,7 +176,7 @@ const _formatValueForObject = (key, value) => {
 		'fraDato',
 		'tilDato',
 		'utvandretTilLandFlyttedato',
-		'innvandretFraLandFlytteDato',
+		'innvandretFraLandFlyttedato',
 		'forsvunnetDato',
 		'statsborgerskapRegdato',
 		'startdato',

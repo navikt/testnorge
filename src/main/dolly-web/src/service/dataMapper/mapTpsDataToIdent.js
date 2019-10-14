@@ -99,13 +99,13 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 				{
 					id: 'statsborgerskap',
 					label: 'Statsborgerskap',
-					value: tpsfData.statsborgerskap
+					value: tpsfData.statsborgerskap,
+					apiKodeverkId: 'Landkoder'
 				},
 				{
 					id: 'statsborgerskapRegdato',
 					label: 'Statsborgerskap fra',
-					value: Formatters.formatDate(tpsfData.statsborgerskapRegdato),
-					apiKodeverkId: 'Landkoder'
+					value: Formatters.formatDate(tpsfData.statsborgerskapRegdato)
 				},
 				{
 					id: 'sprakKode',

@@ -348,7 +348,8 @@ export function mapBestillingData(bestillingData) {
 							obj('Mellomnavn', falskIdData.personnavn.mellomnavn),
 							obj('Etternavn', falskIdData.personnavn.etternavn),
 							obj('Kjønn', falskIdData.kjoenn),
-							obj('Fødselsdato', Formatters.formatDate(falskIdData.foedselsdato))
+							obj('Fødselsdato', Formatters.formatDate(falskIdData.foedselsdato)),
+							obj('Statsborgerskap', Formatters.arrayToString(falskIdData.statsborgerskap))
 						]
 					}
 					data.push(falskId)
