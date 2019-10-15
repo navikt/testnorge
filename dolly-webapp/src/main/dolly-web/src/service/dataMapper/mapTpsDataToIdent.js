@@ -99,7 +99,13 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 				{
 					id: 'statsborgerskap',
 					label: 'Statsborgerskap',
-					value: tpsfData.statsborgerskap
+					value: tpsfData.statsborgerskap,
+					apiKodeverkId: 'Landkoder'
+				},
+				{
+					id: 'statsborgerskapRegdato',
+					label: 'Statsborgerskap fra',
+					value: Formatters.formatDate(tpsfData.statsborgerskapRegdato)
 				},
 				{
 					id: 'sprakKode',
@@ -334,8 +340,26 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 						},
 						{
 							id: 'statsborgerskap',
-							label: 'Statsborgerskap',
-							value: relasjon.personRelasjonMed.statsborgerskap
+							label: 'statsborgerskap',
+							value:
+								relasjonstype === 'Barn' &&
+								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].statsborgerskap
+									? relasjon.personRelasjonMed.statsborgerskap
+									: relasjonstype === 'Partner' && tpsfKriterier.relasjoner.partner.statsborgerskap
+										? relasjon.personRelasjonMed.statsborgerskap
+										: null,
+							apiKodeverkId: 'Landkoder'
+						},
+						{
+							id: 'ssatsborgerskapRegdato',
+							label: 'Statsborgerskap fra',
+							value:
+								relasjonstype === 'Barn' &&
+								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].statsborgerskap
+									? Formatters.formatDate(relasjon.personRelasjonMed.statsborgerskapRegdato)
+									: relasjonstype === 'Partner' && tpsfKriterier.relasjoner.partner.statsborgerskap
+										? Formatters.formatDate(relasjon.personRelasjonMed.statsborgerskapRegdato)
+										: null
 						},
 						{
 							id: 'innvandretFraLand',

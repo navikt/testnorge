@@ -19,6 +19,7 @@ const _getTpsfBestillingData = data => {
 		obj('Født før', Formatters.formatDate(data.foedtFoer)),
 		obj('Dødsdato', Formatters.formatDate(data.doedsdato)),
 		obj('Statsborgerskap', data.statsborgerskap, 'Landkoder'),
+		obj('Statsborgerskap fra', Formatters.formatDate(data.statsborgerskapRegdato)),
 		obj('Kjønn', Formatters.kjonnToString(data.kjonn)),
 		obj('Har mellomnavn', Formatters.oversettBoolean(data.harMellomnavn)),
 		obj('Sivilstand', data.sivilstand, 'Sivilstander'),
@@ -253,7 +254,9 @@ export function mapBestillingData(bestillingData) {
 						label: 'RESERVERT MOT DIGITALKOMMUNIKASJON',
 						value: krrKriterier.reservert ? 'JA' : 'NEI',
 						width: 'medium'
-					}
+					},
+					obj('Gyldig fra', Formatters.formatDate(krrKriterier.gyldigFra)),
+					obj('Registrert i DKIF', krrKriterier.registrert ? 'JA' : 'NEI')
 				]
 			}
 
