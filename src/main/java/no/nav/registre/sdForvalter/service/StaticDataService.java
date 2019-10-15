@@ -111,14 +111,14 @@ public class StaticDataService {
 
     public Set<EregModel> saveInEreg(Set<EregModel> data, String eier) {
         Varighet.VarighetBuilder varighetBuilder = getDefaultVarighetBuilder();
-        return data.stream().filter(eregModel -> eregRepository.findByOrgnr(eregModel.getOrgnr()).isPresent())
+        return data.stream().filter(eregModel -> !eregRepository.findByOrgnr(eregModel.getOrgnr()).isPresent())
                 .map(eregModel -> (EregModel) saveIfNotPresent(eregModel, eregRepository, varighetBuilder, eier))
                 .collect(Collectors.toSet());
     }
 
     public Set<KrrModel> saveInKrr(Set<KrrModel> data, String eier) {
         Varighet.VarighetBuilder varighetBuilder = getDefaultVarighetBuilder();
-        return data.stream().filter(krrModel -> krrRepository.findByFnr(krrModel.getFnr()).isPresent())
+        return data.stream().filter(krrModel -> !krrRepository.findByFnr(krrModel.getFnr()).isPresent())
                 .map(krrModel -> (KrrModel) saveIfNotPresent(krrModel, krrRepository, varighetBuilder, eier))
                 .collect(Collectors.toSet());
     }
