@@ -57,7 +57,6 @@ public class IdentController {
         Map<Long, SlettedeIdenterResponse> avspillergruppeMedFjernedeIdenter = new HashMap<>(avspillergruppeIdMedMiljoe.size());
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             avspillergruppeMedFjernedeIdenter.put(entry.getKey(), identService.fjernKolliderendeIdenter(entry.getKey(), entry.getValue()));
-
         }
         return avspillergruppeMedFjernedeIdenter;
     }

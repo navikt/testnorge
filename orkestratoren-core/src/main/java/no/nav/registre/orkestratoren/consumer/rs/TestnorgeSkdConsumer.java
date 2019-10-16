@@ -36,7 +36,7 @@ public class TestnorgeSkdConsumer {
             @Value("${testnorge-skd.rest-api.url}") String skdServerUrl) {
         this.restTemplate = restTemplateBuilder.build();
         this.startSyntetiseringUrl = new UriTemplate(skdServerUrl + "/v1/syntetisering/generer");
-        this.slettIdenterUrl = new UriTemplate(skdServerUrl + "/v1/ident/{avspillergruppeId}");
+        this.slettIdenterUrl = new UriTemplate(skdServerUrl + "/v1/ident/{avspillergruppeId}?miljoer={miljoer}");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "skd" })
@@ -46,8 +46,9 @@ public class TestnorgeSkdConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "skd" })
-    public List<Long> slettIdenterFraAvspillerguppe(Long avspillergruppeId, List<String> identer) {
-        RequestEntity deleteRequest = RequestEntity.method(HttpMethod.DELETE, slettIdenterUrl.expand(avspillergruppeId)).contentType(MediaType.APPLICATION_JSON).body(identer);
+    public List<Long> slettIdenterFraAvspillerguppe(Long avspillergruppeId, List<String> miljoer, List<String> identer) {
+        String miljoerSomString = String.join(",", miljoer);
+        RequestEntity deleteRequest = RequestEntity.method(HttpMethod.DELETE, slettIdenterUrl.expand(avspillergruppeId, miljoerSomString)).contentType(MediaType.APPLICATION_JSON).body(identer);
         return restTemplate.exchange(deleteRequest, RESPONSE_TYPE_DELETE).getBody();
     }
 }

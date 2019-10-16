@@ -3,6 +3,7 @@ package no.nav.registre.orkestratoren.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.rs.AaregSyntConsumer;
@@ -43,7 +44,7 @@ public class IdentService {
                         .build())
                 .build();
 
-        slettedeIdenterResponse.getTpsfStatus().setSlettedeMeldingIderFraTpsf(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, identer));
+        slettedeIdenterResponse.getTpsfStatus().setSlettedeMeldingIderFraTpsf(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, Collections.singletonList(miljoe), identer));
         slettedeIdenterResponse.setInstStatus(instSyntConsumer.slettIdenterFraInst(identer));
         slettedeIdenterResponse.setSigrunStatus(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer));
         slettedeIdenterResponse.setAaregStatus(aaregSyntConsumer.slettIdenterFraAaregstub(identer));

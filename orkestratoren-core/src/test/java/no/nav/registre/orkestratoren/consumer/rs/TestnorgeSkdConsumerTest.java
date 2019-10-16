@@ -23,6 +23,7 @@ import org.springframework.test.web.client.MockRestServiceServer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,10 +83,10 @@ public class TestnorgeSkdConsumerTest {
 
     @Test
     public void shouldDeleteIdenterFromAvspillergruppe() {
-        String expectedUri = serverUrl + "/v1/ident/{avspillergruppeId}";
+        String expectedUri = serverUrl + "/v1/ident/{avspillergruppeId}?miljoer={miljoer}";
         stubSkdConsumerSlettIdenter(expectedUri);
 
-        List<Long> response = testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, identer);
+        List<Long> response = testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, Collections.singletonList(miljoe), identer);
 
         assertThat(response, IsIterableContainingInOrder.contains(expectedMeldingsIds.get(0), expectedMeldingsIds.get(1)));
     }
@@ -108,7 +109,7 @@ public class TestnorgeSkdConsumerTest {
     }
 
     private void stubSkdConsumerSlettIdenter(String expectedUri) {
-        server.expect(requestToUriTemplate(expectedUri, avspillergruppeId))
+        server.expect(requestToUriTemplate(expectedUri, avspillergruppeId, miljoe))
                 .andExpect(method(HttpMethod.DELETE))
                 .andExpect(content().json("[\"" + identer.get(0) + "\", \"" + identer.get(1) + "\"]"))
                 .andRespond(withSuccess("[" + expectedMeldingsIds.get(0) + ", " + expectedMeldingsIds.get(1) + "]", MediaType.APPLICATION_JSON));

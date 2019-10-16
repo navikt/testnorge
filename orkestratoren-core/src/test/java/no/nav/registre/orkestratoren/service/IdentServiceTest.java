@@ -2,6 +2,8 @@ package no.nav.registre.orkestratoren.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -99,7 +101,7 @@ public class IdentServiceTest {
 
     @Test
     public void shouldSletteIdenterFraAdaptere() {
-        when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, identer)).thenReturn(expectedMeldingIder);
+        when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer))).thenReturn(expectedMeldingIder);
         when(instSyntConsumer.slettIdenterFraInst(identer)).thenReturn(sletteInstitusjonsoppholdResponse);
         when(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(sletteSkattegrunnlagResponse);
         when(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(sletteSkattegrunnlagResponse);
@@ -109,7 +111,7 @@ public class IdentServiceTest {
 
         SlettedeIdenterResponse response = identService.slettIdenterFraAdaptere(avspillergruppeId, miljoe, testdataEier, identer);
 
-        verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(avspillergruppeId, identer);
+        verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer));
         verify(instSyntConsumer).slettIdenterFraInst(identer);
         verify(poppSyntConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
         verify(aaregSyntConsumer).slettIdenterFraAaregstub(identer);
@@ -138,7 +140,7 @@ public class IdentServiceTest {
     @Test
     public void shouldSynkronisereMedTps() {
         when(hodejegerenConsumer.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe)).thenReturn(identer);
-        when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, identer)).thenReturn(expectedMeldingIder);
+        when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer))).thenReturn(expectedMeldingIder);
         when(instSyntConsumer.slettIdenterFraInst(identer)).thenReturn(SletteInstitusjonsoppholdResponse.builder().build());
         when(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(SletteSkattegrunnlagResponse.builder().build());
         when(aaregSyntConsumer.slettIdenterFraAaregstub(identer)).thenReturn(SletteArbeidsforholdResponse.builder().build());
@@ -150,7 +152,7 @@ public class IdentServiceTest {
         assertThat(response.getTpsfStatus().getSlettedeMeldingIderFraTpsf(), IsIterableContainingInOrder.contains(expectedMeldingIder.get(0), expectedMeldingIder.get(1)));
 
         verify(hodejegerenConsumer).hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
-        verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(avspillergruppeId, identer);
+        verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer));
         verify(instSyntConsumer).slettIdenterFraInst(identer);
         verify(poppSyntConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
         verify(aaregSyntConsumer).slettIdenterFraAaregstub(identer);
@@ -161,7 +163,7 @@ public class IdentServiceTest {
     @Test
     public void shouldFjerneIdenterSomKollidererITps() {
         when(hodejegerenConsumer.hentIdenterSomKollidererITps(avspillergruppeId)).thenReturn(identer);
-        when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, identer)).thenReturn(expectedMeldingIder);
+        when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer))).thenReturn(expectedMeldingIder);
         when(instSyntConsumer.slettIdenterFraInst(identer)).thenReturn(SletteInstitusjonsoppholdResponse.builder().build());
         when(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(SletteSkattegrunnlagResponse.builder().build());
         when(aaregSyntConsumer.slettIdenterFraAaregstub(identer)).thenReturn(SletteArbeidsforholdResponse.builder().build());
@@ -173,7 +175,7 @@ public class IdentServiceTest {
         assertThat(response.getTpsfStatus().getSlettedeMeldingIderFraTpsf(), IsIterableContainingInOrder.contains(expectedMeldingIder.get(0), expectedMeldingIder.get(1)));
 
         verify(hodejegerenConsumer).hentIdenterSomKollidererITps(avspillergruppeId);
-        verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(avspillergruppeId, identer);
+        verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer));
         verify(instSyntConsumer).slettIdenterFraInst(identer);
         verify(poppSyntConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
         verify(aaregSyntConsumer).slettIdenterFraAaregstub(identer);
