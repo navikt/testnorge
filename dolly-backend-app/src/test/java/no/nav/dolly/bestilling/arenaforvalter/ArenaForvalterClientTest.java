@@ -27,6 +27,7 @@ import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -120,7 +121,7 @@ public class ArenaForvalterClientTest {
         arenaForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo(
-                "q2$Feil: 400 BAD_REQUEST Bad request (An error has occured)")));
+                "q2$Feil: 400 Bad request (An error has occured)")));
         verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class));
     }
 

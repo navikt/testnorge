@@ -36,7 +36,8 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>repackage</id>
+<!--                        <id>repackage</id>-->
+<!--                        for spring boot 2.1.x-->
                         <goals>
                             <goal>repackage</goal>
                         </goals>

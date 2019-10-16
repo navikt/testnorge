@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
@@ -71,7 +72,7 @@ public class ArenaForvalterConsumerTest {
                 .build());
 
         verify(providersProps).getArenaForvalter();
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(ArenaNyeBrukereResponse.class));
+        verify(restTemplate).exchange(any(URI.class), eq(POST), any(HttpEntity.class), eq(ArenaNyeBrukereResponse.class));
     }
 
     @Test

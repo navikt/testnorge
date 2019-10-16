@@ -38,12 +38,12 @@ public class BestillingKrrStubStatusMapperTest {
     @Test
     public void krrStubStatusMap() {
 
-        List<RsStatusRapport> rsStatusRapporter = BestillingKrrStubStatusMapper.buildKrrStubStatusMap(RUN_STATUS);
+        List<RsStatusRapport> identStatuses = BestillingKrrStubStatusMapper.buildKrrStubStatusMap(RUN_STATUS);
 
-        assertThat(rsStatusRapporter.get(0).getStatuser().get(0).getMelding(), is(equalTo("FEIL")));
-        assertThat(rsStatusRapporter.get(0).getStatuser().get(0).getIdenter(), containsInAnyOrder("IDENT_2", "IDENT_4"));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("FEIL")));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getIdenter(), containsInAnyOrder("IDENT_2", "IDENT_4"));
 
-        assertThat(rsStatusRapporter.get(0).getStatuser().get(1).getIdenter(), is(equalTo("OK")));
-        assertThat(rsStatusRapporter.get(0).getStatuser().get(1).getIdenter(), containsInAnyOrder("IDENT_1", "IDENT_3", "IDENT_5"));
+        assertThat(identStatuses.get(0).getStatuser().get(1).getMelding(), is(equalTo("OK")));
+        assertThat(identStatuses.get(0).getStatuser().get(1).getIdenter(), containsInAnyOrder("IDENT_1", "IDENT_3", "IDENT_5"));
     }
 }
