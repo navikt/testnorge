@@ -127,6 +127,6 @@ fasitResources:
       onsHosts: app.datasource.onsHosts
 
   exposed:
-  - alias: dolly.api.v1
+  - alias: dolly-backend.api.v1
     resourceType: restservice
     path: /api/v1
