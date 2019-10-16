@@ -3,7 +3,7 @@ agileApplicationPipeline {
     javaVersion = "1.8"
     environment = "Q1"
     branchDeployments = [
-        [branch: "bugfix-example", namespace: "U2", environment: "U2"]
+        [branch: "feature/bugfix-example", namespace: "U2", environment: "U2"]
     ]
     hasSmoketests = false
     hasPerformanceTest = false
