@@ -144,6 +144,9 @@ public class AjourholdService {
                 .collect(Collectors.toList()));
     }
 
+    /**
+     * Fjerner FNR/DNR/BNR fra ident-pool-databasen som finnes i prod
+     */
     public void getIdentsAndCheckProd() {
         HentIdenterRequest request = HentIdenterRequest.builder()
                 .antall(MAX_SIZE_TPS_QUEUE)
