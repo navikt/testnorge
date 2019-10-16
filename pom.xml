@@ -34,7 +34,6 @@
         <freg-spring-boot-starters.version>2.0.0</freg-spring-boot-starters.version>
         <springfox.version>2.9.2</springfox.version>
         <kodeverk.version>1.2</kodeverk.version>
-        <logstash-logback-encoder.version>5.1</logstash-logback-encoder.version>
         <ojdbc.version>12.2.0.1</ojdbc.version>
         <orika.version>1.5.2</orika.version>
         <cxf.version>3.2.4</cxf.version>
@@ -52,6 +51,9 @@
         <sonar.exclusions>**/dolly/domain/**, **/dolly/regression/**, **/dolly/exceptions/**,**/main/dolly-web/**,
             **/dolly/testdata/builder/**
         </sonar.exclusions>
+
+        <papertrailapp.version>1.0.0</papertrailapp.version>
+        <logstash-logback-encoder.version>5.1</logstash-logback-encoder.version>
     </properties>
 
     <dependencies>
@@ -88,6 +90,12 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>${logstash-logback-encoder.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>no.nav.freg</groupId>
                 <artifactId>freg-security-oidc</artifactId>
                 <version>${freg-security-oidc.version}</version>
@@ -103,12 +111,6 @@
                 <groupId>no.nav.tjenester</groupId>
                 <artifactId>kodeverk-api-v1</artifactId>
                 <version>${kodeverk.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>net.logstash.logback</groupId>
-                <artifactId>logstash-logback-encoder</artifactId>
-                <version>${logstash-logback-encoder.version}</version>
             </dependency>
 
             <dependency>
