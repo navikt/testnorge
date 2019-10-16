@@ -1,7 +1,6 @@
 package no.nav.registre.ereg.mapper;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -35,11 +34,6 @@ public class EregMapperTest {
 
     @InjectMocks
     private EregMapper eregMapper;
-
-    @Before
-    public void setUp() {
-        when(eregConsumer.checkExists(anyString())).thenReturn(false);
-    }
 
     @Test
     public void mapEregRequests_RandomNaeringskode_Name() {
