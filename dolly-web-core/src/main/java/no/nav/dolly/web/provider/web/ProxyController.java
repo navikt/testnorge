@@ -20,6 +20,8 @@ import java.nio.charset.StandardCharsets;
 @RequestMapping("/api/v1/**")
 public class ProxyController {
 
+    public static final String API_URI = "/api/v1";
+
     @Value("${dolly.url}")
     private String dollyUrl;
 
@@ -39,15 +41,14 @@ public class ProxyController {
     private static String createURL(HttpServletRequest request, String host)
             throws UnsupportedEncodingException {
 
-        String url = "/api/v1";
 
-        if (request.getRequestURI().split(url).length < 2) {
-            throw new UnsupportedEncodingException(format("Incomplete url: %s", url));
+        if (request.getRequestURI().split(API_URI).length < 2) {
+            throw new UnsupportedEncodingException(format("Incomplete url: %s", request.getRequestURI()));
         }
         String queryString = "";
         if (request.getQueryString() != null) {
             queryString = URLDecoder.decode("?" + request.getQueryString(), StandardCharsets.UTF_8.name());
         }
-        return format("%s%s%s", host, request.getRequestURI().split(url)[1], queryString);
+        return format("%s%s%s", host, request.getRequestURI().split(API_URI)[1], queryString);
     }
 }
