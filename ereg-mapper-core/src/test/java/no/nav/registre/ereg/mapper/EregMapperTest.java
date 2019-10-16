@@ -51,7 +51,7 @@ public class EregMapperTest {
                 .enhetstype("AS")
                 .endringsType("N")
                 .build();
-        String s = eregMapper.mapEregFromRequests(Collections.singletonList(request));
+        String s = eregMapper.mapEregFromRequests(Collections.singletonList(request), "", false);
         assertEquals("HEADER " + EregMapper.getDateNowFormatted() + "00000AA A\n" +
                 "ENH 123      AS  NNY  " + EregMapper.getDateNowFormatted() + EregMapper.getDateNowFormatted() + "J           \n" +
                 "NAVNN   Gul Bolle AS                                                                                                                                                                                                       \n" +
@@ -74,7 +74,7 @@ public class EregMapperTest {
                         .kode("0?")
                         .build())
                 .build();
-        String s = eregMapper.mapEregFromRequests(Collections.singletonList(request));
+        String s = eregMapper.mapEregFromRequests(Collections.singletonList(request), "", false);
         log.info(s);
         assertEquals("HEADER " + EregMapper.getDateNowFormatted() + "00000AA A", s.substring(0, 24));
         assertEquals("ENH 123      BEDRNNY  " + EregMapper.getDateNowFormatted() + EregMapper.getDateNowFormatted() + "J           ", s.substring(25, 75));
@@ -97,7 +97,7 @@ public class EregMapperTest {
                         .kode("0?")
                         .build())
                 .build();
-        String s = eregMapper.mapEregFromRequests(Collections.singletonList(request));
+        String s = eregMapper.mapEregFromRequests(Collections.singletonList(request), "", false);
         log.info(s);
         assertEquals("HEADER " + EregMapper.getDateNowFormatted() + "00000AA A", s.substring(0, 24));
         assertEquals("ENH 123      AS  NNY  " + EregMapper.getDateNowFormatted() + EregMapper.getDateNowFormatted() + "J           ", s.substring(25, 75));
@@ -108,7 +108,7 @@ public class EregMapperTest {
     @Test
     public void mapEregFromRequests_AllFieldsSuccess() {
 
-        String s = eregMapper.mapEregFromRequests(Collections.singletonList(TestUtil.createDefaultEregData()));
+        String s = eregMapper.mapEregFromRequests(Collections.singletonList(TestUtil.createDefaultEregData()), "", false);
         log.info(s);
         assertEquals("HEADER " + EregMapper.getDateNowFormatted() + "00000AA A", s.substring(0, 24));
         assertEquals("ENH 123      BEDRNNY  " + EregMapper.getDateNowFormatted() + EregMapper.getDateNowFormatted() + "J           ", s.substring(25, 75));
