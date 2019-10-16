@@ -137,17 +137,13 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 
-# Generated web bundle
-/dolly-app/src/main/resources/public/
-/dolly-webapp/src/main/resources/
-
 # Start scripts
 start-dolly-maven.cmd
 start-dolly.cmd
 clean-install-run-app.sh
 clean-install-lite-run-app.sh
 run-app.sh
-/dolly-app/src/test/resources/application-h2.yaml
-/dolly-app/src/main/resources/application-h2.yaml
-/dolly-app/src/test/resources/application-u.yaml
-dolly-app/src/main/resources/application-u.yaml
+/dolly-backend-app/src/test/resources/application-h2.yaml
+/dolly-backend-app/src/main/resources/application-h2.yaml
+/dolly-backend-app/src/test/resources/application-u.yaml
+dolly-backend-app/src/main/resources/application-u.yaml

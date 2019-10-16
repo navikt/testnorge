@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>no.nav.dolly</groupId>
-        <artifactId>dolly</artifactId>
+        <groupId>no.nav.dolly-backend</groupId>
+        <artifactId>dolly-backend</artifactId>
         <version>1.18.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dolly-domain</artifactId>
+    <artifactId>dolly-backend-domain</artifactId>
 
     <dependencies>
         <dependency>

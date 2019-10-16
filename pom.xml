@@ -9,19 +9,19 @@
 		<version>2.1.8.RELEASE</version>
 	</parent>
 
-	<groupId>no.nav.dolly</groupId>
-	<artifactId>dolly</artifactId>
+	<groupId>no.nav.dolly-backend</groupId>
+	<artifactId>dolly-backend</artifactId>
 	<version>1.18.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>dolly</name>
+	<name>dolly-backend</name>
 	<description>Applikasjon for oppretting av testpersoner</description>
 
     <modules>
-        <module>dolly-app</module>
-        <module>dolly-domain</module>
-        <module>dolly-app-local</module>
-        <module>dolly-app-nais</module>
+        <module>dolly-backend-app</module>
+        <module>dolly-backend-domain</module>
+        <module>dolly-backend-app-local</module>
+        <module>dolly-backend-app-nais</module>
     </modules>
 
     <properties>
