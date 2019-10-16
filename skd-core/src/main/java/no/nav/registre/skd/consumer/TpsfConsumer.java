@@ -96,7 +96,7 @@ public class TpsfConsumer {
         try {
             response = restTemplate.exchange(deleteRequest, ResponseEntity.class);
         } catch (HttpClientErrorException e) {
-            log.error("Kunne ikke slette ident fra TPS. ", e.getMessage());
+            log.error("Kunne ikke slette ident fra TPS. ", e);
         }
         return response;
     }
