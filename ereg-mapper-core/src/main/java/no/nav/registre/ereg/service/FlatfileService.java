@@ -21,7 +21,7 @@ public class FlatfileService {
     private final JenkinsConsumer jenkinsConsumer;
 
     public String mapEreg(List<EregDataRequest> data, boolean sendToEreg, String env) {
-        String eregData = mapper.mapEregFromRequests(data);
+        String eregData = mapper.mapEregFromRequests(data, env, sendToEreg);
 
         if (sendToEreg) {
 

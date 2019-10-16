@@ -41,7 +41,7 @@ public class EregMapper {
         return format.format(new Date());
     }
 
-    public String mapEregFromRequests(List<EregDataRequest> data) {
+    public String mapEregFromRequests(List<EregDataRequest> data, String miljoe, boolean validate) {
 
         StringBuilder eregFile = new StringBuilder(makeHeader());
         int units = 0;
@@ -93,12 +93,15 @@ public class EregMapper {
                 );
 
         for (EregDataRequest eregDataRequest : data) {
-            if (!eregConsumer.checkExists(eregDataRequest.getOrgnr())) {
-                RecordsAndCount unit = createUnit(eregDataRequest);
-                totalRecords += unit.numRecords;
-                eregFile.append(unit.val);
-                units++;
+            if (validate) {
+                if (eregConsumer.checkExists(eregDataRequest.getOrgnr())) {
+                    continue;
+                }
             }
+            RecordsAndCount unit = createUnit(eregDataRequest);
+            totalRecords += unit.numRecords;
+            eregFile.append(unit.val);
+            units++;
         }
 
         eregFile.append(createTrailer(units, totalRecords));

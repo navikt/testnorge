@@ -20,6 +20,7 @@ public class EregConsumer {
     @Value("${EREG_API_URL}")
     private String eregApiUrl;
 
+    //TODO: Check per miljø, og kun hvis det er på oppretting
     public boolean checkExists(String orgnummer) {
         UriTemplate uriTemplate = new UriTemplate(eregApiUrl + "/v1/organisasjon/{orgnummer}");
         try {
