@@ -1,22 +1,24 @@
-import React, { PureComponent, Component, Fragment } from 'react'
-import { Field, FieldArray } from 'formik'
+import React, { Component, Fragment } from 'react'
+import { Field } from 'formik'
 import _intersection from 'lodash/intersection'
 import _set from 'lodash/set'
+import _get from 'lodash/get'
 import { DollyApi } from '~/service/Api'
 import { AttributtType } from '~/service/kodeverk/AttributtManager/Types'
-import Panel from '~/components/panel/Panel'
+import Panel from '~/components/ui/panel/Panel'
 import InputSelector from '~/components/fields/InputSelector'
 import FormEditorFieldArray from './FormEditorFieldArray'
-import { FieldArrayComponent } from './FormEditorFieldArray'
 import AutofillAddressConnector from '~/components/autofillAddress/AutofillAddressConnector'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
-import Button from '~/components/button/Button'
+import Button from '~/components/ui/button/Button'
 import _xor from 'lodash/fp/xor'
-import './FormEditor.less'
 import UtenFastBopelConnector from '../utenFastBopel/UtenFastBopelConnector'
 import Postadresse from '../postadresse/Postadresse'
 import ArrayFieldConnector from '../arrayField/ArrayFieldConnector'
+import HjelpeTekst from 'nav-frontend-hjelpetekst'
+
+import './FormEditor.less'
 
 export default class FormEditor extends Component {
 	render() {
@@ -130,7 +132,6 @@ export default class FormEditor extends Component {
 				</div>
 			)
 		}
-
 		if (items[0].subGruppe === 'true') {
 			//Hvis subKategorien skal ha flere underoverskrifter/undergrupperinger
 			const subGrupper = this._structureSubGruppe(items)
@@ -143,13 +144,18 @@ export default class FormEditor extends Component {
 						)
 						return (
 							<div key={idx}>
-								{subKategori.id === 'arena' ? (
-									formikProps.values.arenaforvalter[0].arenaBrukertype === 'MED_SERVICEBEHOV' && (
+								<div className="flexbox">
+									{subKategori.id === 'arena' ? (
+										formikProps.values.arenaforvalter[0].arenaBrukertype === 'MED_SERVICEBEHOV' && (
+											<h4 className="subgruppe">{subGruppe.navn}</h4>
+										)
+									) : (
 										<h4 className="subgruppe">{subGruppe.navn}</h4>
-									)
-								) : (
-									<h4 className="subgruppe">{subGruppe.navn}</h4>
-								)}
+									)}
+									{items[0].informasjonstekst && (
+										<HjelpeTekst>{items[0].informasjonstekst}</HjelpeTekst>
+									)}
+								</div>
 								{FormEditorFieldArray(
 									subGruppeObj,
 									formikProps,
@@ -207,11 +213,9 @@ export default class FormEditor extends Component {
 		const valgteVerdier = formikProps.values
 		const errors = formikProps.errors
 		let shouldRender = true
-
 		if (item.onlyShowAfterSelectedValue) {
 			const { parentId, idx } = parentObject
 			const attributtId = item.onlyShowAfterSelectedValue.attributtId
-
 			let dependantAttributt = items.find(attributt => attributt.id === attributtId)
 			// Spesialtilfelle fordi dependant attributt ligger i en annen subkategori
 			if (item.hovedKategori.id === 'arena' && attributtId) {
@@ -219,15 +223,26 @@ export default class FormEditor extends Component {
 				dependantAttributt = arenaItem.items[0].items[0].items[0]
 			}
 			let foundIndex = false
+
 			item.onlyShowAfterSelectedValue.valueIndex.map(index => {
-				valgteVerdier[parentId][idx][attributtId] === dependantAttributt.options[index].value &&
-					(foundIndex = true)
+				if (parentId === 'barn_forsvunnet') {
+					if (valgteVerdier.barn[idx][parentId][0]) {
+						valgteVerdier.barn[idx][parentId][0][attributtId] ===
+							dependantAttributt.options[index].value && (foundIndex = true)
+					}
+				} else
+					valgteVerdier[parentId][idx][attributtId] === dependantAttributt.options[index].value &&
+						(foundIndex = true)
 			})
 			if (!foundIndex) {
 				this._deleteValidation(item, valgteVerdier, errors, parentId, idx)
 				shouldRender = false
 			} else {
-				if (!([item.id] in formikProps.values[parentId][idx])) {
+				if (parentId === 'barn_forsvunnet') {
+					if (!([item.id] in formikProps.values.barn[idx][parentId][0])) {
+						valgteVerdier['barn'][idx][parentId][0][item.id] = ''
+					}
+				} else if (!([item.id] in formikProps.values[parentId][idx])) {
 					valgteVerdier[parentId][idx][item.id] = ''
 				}
 			}
@@ -258,7 +273,9 @@ export default class FormEditor extends Component {
 	}
 
 	_deleteValidation = (item, valgteVerdier, errors, parentId, idx) => {
-		delete valgteVerdier[parentId][idx][item.id]
+		if (parentId === 'barn_forsvunnet') {
+			delete valgteVerdier.barn[idx][parentId][item.id]
+		} else delete valgteVerdier[parentId][idx][item.id]
 
 		if (errors[parentId] && errors[parentId][idx] && errors[parentId][idx][item.id]) {
 			delete errors[parentId][idx][item.id]
@@ -306,7 +323,7 @@ export default class FormEditor extends Component {
 		return subGruppeArray
 	}
 
-	renderFieldComponent = (item, valgteVerdier, parentObject, formikProps) => {
+	renderFieldComponent = (item, valgteVerdier, parentObject, formikProps, barnTall) => {
 		if (!item.inputType) return null
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
@@ -339,8 +356,83 @@ export default class FormEditor extends Component {
 					key={item.key || item.id}
 					item={item}
 					valgteVerdier={valgteVerdier}
+					{...componentProps}
 				/>
 			)
+		}
+
+		if (
+			item.id === 'forsvunnet[0]forsvunnetDato' &&
+			valgteVerdier.forsvunnet[0].erForsvunnet !== 'true'
+		) {
+			disabled = true
+			valgteVerdier.forsvunnet[0].forsvunnetDato = ''
+		}
+		if (
+			item.id === 'partner_forsvunnet[0]forsvunnetDato' &&
+			_get(valgteVerdier, 'partner_forsvunnet[0].erForsvunnet') !== 'true'
+		) {
+			disabled = true
+			valgteVerdier.partner_forsvunnet[0].forsvunnetDato = ''
+		}
+
+		if (
+			item.id === `barn[${barnTall}]barn_forsvunnet[0]forsvunnetDato` &&
+			valgteVerdier.barn[barnTall].barn_forsvunnet &&
+			_get(valgteVerdier, `barn[${barnTall}].barn_forsvunnet[0].erForsvunnet`) !== 'true'
+		) {
+			disabled = true
+			valgteVerdier.barn[barnTall].barn_forsvunnet[0].forsvunnetDato = ''
+		}
+
+		if (
+			item.id === 'innvandret[0]innvandretFraLandFlyttedato' &&
+			!valgteVerdier.innvandret[0].innvandretFraLand
+		) {
+			disabled = true
+			valgteVerdier.innvandret[0].innvandretFraLandFlyttedato = ''
+		}
+		if (
+			item.id === 'partner_innvandret[0]innvandretFraLandFlyttedato' &&
+			!valgteVerdier.partner_innvandret[0].innvandretFraLand
+		) {
+			disabled = true
+			valgteVerdier.partner_innvandret[0].innvandretFraLandFlyttedato = ''
+		}
+		if (
+			item.id === `barn[${barnTall}]barn_innvandret[0]innvandretFraLandFlyttedato` &&
+			(valgteVerdier.barn[barnTall].barn_innvandret === '' ||
+				_get(valgteVerdier, `barn[${barnTall}].barn_innvandret[0].innvandretFraLand`) === '')
+		) {
+			disabled = true
+			if (_get(valgteVerdier, `barn[${barnTall}].barn_innvandret[0].innvandretFraLandFlyttedato`)) {
+				valgteVerdier.barn[barnTall].barn_innvandret[0].innvandretFraLandFlyttedato = ''
+			}
+		}
+
+		if (
+			item.id === 'utvandret[0]utvandretTilLandFlyttedato' &&
+			!valgteVerdier.utvandret[0].utvandretTilLand
+		) {
+			disabled = true
+			valgteVerdier.utvandret[0].utvandretTilLandFlyttedato = ''
+		}
+		if (
+			item.id === 'partner_utvandret[0]utvandretTilLandFlyttedato' &&
+			!valgteVerdier.partner_utvandret[0].utvandretTilLand
+		) {
+			disabled = true
+			valgteVerdier.partner_utvandret[0].utvandretTilLandFlyttedato = ''
+		}
+		if (
+			item.id === `barn[${barnTall}]barn_utvandret[0]utvandretTilLandFlyttedato` &&
+			(valgteVerdier.barn[barnTall].barn_utvandret === '' ||
+				_get(valgteVerdier, `barn[${barnTall}].barn_utvandret[0].utvandretTilLand`) === '')
+		) {
+			disabled = true
+			if (_get(valgteVerdier, `barn[${barnTall}].barn_utvandret[0].utvandretTilLandFlyttedato`)) {
+				valgteVerdier.barn[barnTall].barn_utvandret[0].utvandretTilLandFlyttedato = ''
+			}
 		}
 
 		if (

@@ -17,6 +17,7 @@
     <modules>
         <module>dolly-web-app</module>
         <module>dolly-web-core</module>
+        <module>dolly-web-app-local</module>
     </modules>
 
     <distributionManagement>

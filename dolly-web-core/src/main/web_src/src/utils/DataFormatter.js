@@ -2,6 +2,8 @@ import dateFnsFormat from 'date-fns/format'
 import dateFnsParse from 'date-fns/parse'
 import _startCase from 'lodash/startCase'
 import _capitalize from 'lodash/capitalize'
+import _get from 'lodash/get'
+import _isNil from 'lodash/isNil'
 
 import { defaultDateFormat } from '~/components/fields/Datepicker/DateValidation'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
@@ -9,11 +11,11 @@ import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/Select
 const Formatters = {}
 
 Formatters.formatAlder = (alder, dodsdato) => {
-	if (!alder) return ''
+	if (_isNil(alder)) return ''
 	return `${alder.toString()}${dodsdato ? ' (død)' : ''}`
 }
 
-// Format date to readable string format
+// Format date to readable string format (AAAA-MM-DDTxx:xx:xx to DD.MM.AAAA?)
 // Date ---> String
 Formatters.formatDate = date => {
 	if (!date) return date
@@ -31,7 +33,7 @@ Formatters.parseDate = date => {
 }
 
 // Format date AAAA-MM-DD to DD.MM.AAAA
-Formatters.formateStringDates = date => {
+Formatters.formatStringDates = date => {
 	if (!date) return date
 	const dateArray = date.split('-')
 	return `${dateArray[2]}.${dateArray[1]}.${dateArray[0]}`
@@ -74,7 +76,6 @@ Formatters.arrayToString = (array, separator = ',') => {
 		}${nextString.toUpperCase()}`
 	}, '')
 }
-
 Formatters.camelCaseToLabel = camelCase => {
 	if (!camelCase) return null
 	return _capitalize(_startCase(camelCase))
@@ -84,6 +85,10 @@ Formatters.uppercaseAndUnderscoreToCapitalized = value => {
 	if (!value) return null
 	const clean = _startCase(value)
 	return _capitalize(clean)
+}
+
+Formatters.allCapsToCapitalized = value => {
+	return _capitalize(value)
 }
 
 Formatters.kodeverkLabel = kodeverk => {
@@ -211,7 +216,10 @@ Formatters.showLabel = (optionsGruppe, value) => {
 	optionsGruppe.includes('barn') && (copyOptionsGruppe = optionsGruppe.replace('barn_', ''))
 
 	const obj = SelectOptionsManager(copyOptionsGruppe).filter(options => options.value === value)
-	return obj.label || obj[0].label
+
+	if (_get(obj, 'label') || _get(obj, '[0].label')) {
+		return obj.label || obj[0].label
+	}
 }
 
 export default Formatters

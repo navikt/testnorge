@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 import Stegindikator from 'nav-frontend-stegindikator'
 import Steg1 from './Steps/Step1'
 import Steg2 from './Steps/Step2'
@@ -9,16 +8,7 @@ import { isPage } from './Utils'
 import './Bestilling.less'
 
 export default class Bestilling extends PureComponent {
-	static propTypes = {}
-
-	componentDidMount() {
-		this.props.getEnvironments()
-	}
-
-	lagIdentListe = () => {
-		let identListe = this.props.eksisterendeIdentListe.join(', ')
-		return identListe
-	}
+	lagIdentListe = () => this.props.eksisterendeIdentListe.join(', ')
 
 	render() {
 		const {

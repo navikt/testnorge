@@ -2,7 +2,7 @@ const isProdBuild = process.env.NODE_ENV === 'production'
 
 const config = {
 	services: {
-		dollyBackend: process.env.dollyBackend || '/local/dolly/api/v1',
+		dollyBackend: '/api/v1',
 		tpsf: process.env.tpsf || '/external/tpsf/api/v1'
 	},
 	debug: true

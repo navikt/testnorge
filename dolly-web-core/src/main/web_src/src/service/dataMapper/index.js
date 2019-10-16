@@ -1,4 +1,5 @@
-import { createHeader, mapBestillingId } from './Utils'
+import { mapBestillingId } from './Utils'
+import { getBestillingById } from '~/ducks/bestillingStatus'
 import Formatters from '~/utils/DataFormatter'
 import { mapTpsfData } from './mapTpsDataToIdent'
 import { mapPdlData } from './mapPdlDataToIdent'
@@ -7,28 +8,15 @@ import {
 	mapSigrunData,
 	mapAaregData,
 	mapArenaData,
-	mapInstData
+	mapInstData,
+	mapUdiData,
+	mapAliasData
 } from './mapRegistreDataToIdent'
 
 // * Mapper testperson-data for å vise under testpersonliste
 const DataMapper = {
-	getHeaders() {
-		return [
-			createHeader('Ident', '15'),
-			createHeader('Type', '15'),
-			createHeader('Navn', '30'),
-			createHeader('Kjønn', '20'),
-			createHeader('Alder', '10'),
-			createHeader('Bestilling-ID', '10')
-		]
-	},
-
 	// Testbrukersliste
 	getData(state) {
-		/*
-        Gruppe: Dolly
-        Testbruker: TPSF
-        */
 		const { gruppe, testbruker } = state
 
 		if (!testbruker.items.tpsf) return null
@@ -48,10 +36,9 @@ const DataMapper = {
 	},
 
 	// Viser under expand
-	getDetailedData(state, ownProps) {
+	getDetailedData(state, personId) {
 		const { gruppe, testbruker, bestillingStatuser } = state
 
-		const { personId } = ownProps
 		if (!testbruker.items || !testbruker.items.tpsf) return null
 
 		const testIdent = gruppe.data[0].testidenter.find(testIdent => testIdent.ident === personId)
@@ -65,11 +52,15 @@ const DataMapper = {
 		const arenaData =
 			testbruker.items.arenaforvalteren && testbruker.items.arenaforvalteren[personId]
 		const instData = testbruker.items.instdata && testbruker.items.instdata[personId]
+		const udiData = testbruker.items.udistub && testbruker.items.udistub[personId]
 
 		var bestillingId = _findBestillingId(gruppe, personId)
-		const tpsfKriterier = JSON.parse(
-			bestillingStatuser.data.find(bestilling => bestilling.id === bestillingId[0]).tpsfKriterier
-		)
+
+		const bestilling = getBestillingById(bestillingStatuser.data, bestillingId[0])
+
+		const tpsfKriterier = JSON.parse(bestilling.tpsfKriterier)
+		const bestKriterier = JSON.parse(bestilling.bestKriterier)
+
 		let data = mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData && pdlfData.personidenter)
 
 		if (aaregData) {
@@ -85,10 +76,8 @@ const DataMapper = {
 			data.push(...mapPdlData(pdlfData))
 		}
 		if (arenaData) {
-			// Workaround for å hente servicebehov-type, inaktiveringsdato, AAP og AAP115 fra bestilling så lenge vi ikke kan få den fra arenaforvalteren
-			const bestKriterier = JSON.parse(
-				bestillingStatuser.data.find(bestilling => bestilling.id === bestillingId[0]).bestKriterier
-			)
+			// Workaround for å hente servicebehov-type, inaktiveringsdato, AAP og AAP115
+			// fra bestilling så lenge vi ikke kan få den fra arenaforvalteren
 			var kvalifiseringsgruppe = bestKriterier.arenaforvalter.kvalifiseringsgruppe
 			var inaktiveringDato = bestKriterier.arenaforvalter.inaktiveringDato
 			var aap115 = bestKriterier.arenaforvalter.aap115
@@ -98,6 +87,14 @@ const DataMapper = {
 
 		if (instData) {
 			data.push(mapInstData(instData))
+		}
+
+		if (udiData) {
+			const asylsøker = bestKriterier.udistub.soeknadOmBeskyttelseUnderBehandling
+			data.push(mapUdiData(udiData, asylsøker))
+			if (udiData.aliaser) {
+				data.push(mapAliasData(udiData.aliaser))
+			}
 		}
 
 		if (bestillingId.length > 1) {

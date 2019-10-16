@@ -1,12 +1,7 @@
 import React, { Fragment } from 'react'
-import GenererSyntVerdier from '~/components/genererSyntVerdier/GenererSyntVerdier'
-import { Field, FieldArray } from 'formik'
-import { DollyApi } from '~/service/Api'
-import Button from '~/components/button/Button'
+import { FieldArray } from 'formik'
+import Button from '~/components/ui/button/Button'
 import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManager'
-import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
-import cn from 'classnames'
-import InputSelector from '~/components/fields/InputSelector'
 
 const Attributt = new AttributtManager()
 
@@ -55,6 +50,7 @@ export const FieldArrayComponent = ({
 	const { subKategori, items, subItems, id } = item
 	const parentId = id
 	const itemid = idx
+
 	let parentAttributes = items.reduce((prev, curr) => {
 		return {
 			...prev,
@@ -71,9 +67,12 @@ export const FieldArrayComponent = ({
 			parentAttributes.barn_innvandret = [
 				{ innvandretFraLand: '', innvandretFraLandFlyttedato: '' }
 			]
+		} else if ('barn_forsvunnet' in parentAttributes) {
+			parentAttributes.barn_forsvunnet = [{ erForsvunnet: '', forsvunnetDato: '' }]
 		}
 		arrayHelpers.push({ ...parentAttributes })
 	}
+
 	const createSubItem = (subitem, itemIndex) => {
 		let subItemArray = subitem.subItems
 		const subItemId = subitem.id
@@ -106,15 +105,15 @@ export const FieldArrayComponent = ({
 		formikValues = [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }]
 	} else if (item.id === 'barn_innvandret') {
 		formikValues = [{ innvandretFraLand: '', innvandretFraLandFlyttedato: '' }]
+	} else if (item.id === 'barn_forsvunnet') {
+		formikValues = [{ erForsvunnet: '', forsvunnetDato: '' }]
 	}
 	let subLabelArray = []
-	let antallInstanser = 0
 
 	return (
 		<Fragment key={item.id}>
 			{formikValues && formikValues.length > 0 ? (
 				formikValues.map((faKey, idx) => {
-					antallInstanser = idx + 1
 					return (
 						<Fragment key={idx}>
 							{idx !== 0 && <div className="field-array-line" />}
@@ -173,11 +172,13 @@ export const FieldArrayComponent = ({
 												...item,
 												id:
 													parentId.includes('barn_innvandret') ||
-													parentId.includes('barn_utvandret')
+													parentId.includes('barn_utvandret') ||
+													parentId.includes('barn_forsvunnet')
 														? //Refaktorerers. Hvordan kan vi generalisere denne typen attributter for barn?
 														  `barn[${itemid}]${parentId}[0]${item.id}`
 														: `${parentId}[${idx}]${item.id}`
 											}
+
 											return (
 												<div key={kdx} className="flexbox">
 													{renderFieldComponent(
@@ -187,7 +188,8 @@ export const FieldArrayComponent = ({
 															parentId,
 															idx
 														},
-														formikProps
+														formikProps,
+														itemid
 													)}
 												</div>
 											)
@@ -202,7 +204,11 @@ export const FieldArrayComponent = ({
 												kind="remove-circle"
 												onClick={e => arrayHelpers.remove(idx)}
 												title="Fjern"
-												children={subKategori.navn.toUpperCase()}
+												children={
+													subKategori.navn === 'Partner'
+														? item.id.split('_')[1].toUpperCase()
+														: subKategori.navn.toUpperCase()
+												}
 											/>
 										)}
 								</div>
@@ -224,17 +230,13 @@ export const FieldArrayComponent = ({
 					<div>
 						{!editMode &&
 							item.isMultiple &&
-							addButton(createDefaultObject, subKategori.navn.toUpperCase())}
+							addButton(
+								createDefaultObject,
+								subKategori.navn === 'Partner'
+									? item.id.split('_')[1].toUpperCase()
+									: subKategori.navn.toUpperCase()
+							)}
 					</div>
-					{/* <div>
-						{item.genererSyntVerdier && (
-							<GenererSyntVerdier
-								type={item.id}
-								formikValues={formikValues}
-								antall={antallInstanser}
-							/>
-						)}
-					</div> */}
 				</div>
 			}
 		</Fragment>

@@ -26,7 +26,7 @@ resources:
     memory: 2054Mi
 fasitResources:
   used:
-    - alias: dolly-oidc
+    - alias: dolly-web-oidc
       resourceType: OpenIdConnect
       propertyMap:
         agentName: idp.openAm.clientId
@@ -38,3 +38,7 @@ fasitResources:
       resourceType: restservice
       propertyMap:
         url: tpsf.url
+    - alias: dollyurl
+      resourceType: baseurl
+      propertyMap:
+        url: dolly.url

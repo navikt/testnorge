@@ -1,49 +1,50 @@
-import React, { Component, Fragment } from 'react'
-import Table from '~/components/table/Table'
-import Loading from '~/components/loading/Loading'
-import RedigerTeamConnector from '~/components/RedigerTeam/RedigerTeamConnector'
-import ContentContainer from '~/components/contentContainer/ContentContainer'
+import React from 'react'
+import DollyTable from '~/components/ui/dollyTable/DollyTable'
+import Loading from '~/components/ui/loading/Loading'
+import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 
-class TeamListe extends Component {
-	render() {
-		const { items, history, startRedigerTeam, editTeamId, deleteTeam, searchActive } = this.props
-		if (!items || !items.length) {
-			return (
-				<ContentContainer>
-					{searchActive
-						? 'Søket gav ingen resultater.'
-						: 'Du har ingen teams. Trykke på opprett knappen for å opprette ett nytt team.'}
-				</ContentContainer>
-			)
-		}
+export default function TeamListe({ teams, isFetching, history, searchActive }) {
+	if (isFetching) return <Loading label="laster teams" panel />
 
+	if (!teams || !teams.length) {
 		return (
-			<Table>
-				<Table.Header>
-					<Table.Column width="20" value="Navn" />
-					<Table.Column width="30" value="Beskrivelse" />
-					<Table.Column width="20" value="Eier" />
-					<Table.Column width="20" value="Personer" />
-					<Table.Column width="10" value="" />
-				</Table.Header>
-
-				{items.map(team => {
-					if (editTeamId === team.id) {
-						return <RedigerTeamConnector key={team.id} team={team} />
-					}
-
-					return (
-						<Table.Row key={team.id} navLink={() => history.push(`team/${team.id}`)}>
-							<Table.Column width="20" value={team.navn} />
-							<Table.Column width="30" value={team.beskrivelse} />
-							<Table.Column width="20" value={team.eierNavIdent} />
-							<Table.Column width="10" value={team.antallMedlemmer.toString()} />
-						</Table.Row>
-					)
-				})}
-			</Table>
+			<ContentContainer>
+				{searchActive
+					? 'Søket gav ingen resultater.'
+					: 'Du har ingen teams. Trykke på opprett knappen for å opprette ett nytt team.'}
+			</ContentContainer>
 		)
 	}
-}
 
-export default TeamListe
+	const columns = [
+		{
+			text: 'Navn',
+			width: '20',
+			dataField: 'navn'
+		},
+		{
+			text: 'Beskrivelse',
+			width: '30',
+			dataField: 'beskrivelse'
+		},
+		{
+			text: 'Eier',
+			width: '20',
+			dataField: 'eierNavIdent'
+		},
+		{
+			text: 'Personer',
+			width: '20',
+			dataField: 'antallMedlemmer'
+		}
+	]
+
+	return (
+		<DollyTable
+			data={teams}
+			columns={columns}
+			onRowClick={row => () => history.push(`team/${row.id}`)}
+			pagination
+		/>
+	)
+}

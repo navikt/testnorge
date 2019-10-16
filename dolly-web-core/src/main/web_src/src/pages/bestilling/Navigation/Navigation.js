@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Knapp from 'nav-frontend-knapper'
-import NavButton from '~/components/button/NavButton/NavButton'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { isPage } from '~/pages/bestilling/Utils'
 import BestillingMapper from '~/utils/BestillingMapper'
 import { sjekkPostadresse } from '~/utils/SjekkPostadresse'
@@ -71,23 +71,25 @@ export default class Navigation extends PureComponent {
 		} else videreKnapp = <NavButton direction="forward" onClick={onClickNext} />
 
 		return (
-			<div className="step-navknapper">
-				<Knapp type="standard" onClick={abortBestilling}>
-					AVBRYT
-				</Knapp>
-				<div className="step-navknapper--right">
-					{!isPage.first(currentPage) && (
-						<NavButton direction="backward" onClick={onClickPrevious} />
-					)}
-					{!isPage.last(currentPage) &&
-						(identOpprettesFra !== BestillingMapper('EKSIDENT') ||
-							(identOpprettesFra === BestillingMapper('EKSIDENT') &&
-								eksisterendeIdentListe.length > 0)) && <span>{videreKnapp} </span>}
-					{isPage.last(currentPage) && (
-						<Knapp type="hoved" onClick={onClickNext} disabled={isSubmitting}>
-							OPPRETT
-						</Knapp>
-					)}
+			<div className="step-navknapper-wrapper">
+				<div className="step-navknapper">
+					<Knapp type="standard" onClick={abortBestilling}>
+						AVBRYT
+					</Knapp>
+					<div className="step-navknapper--right">
+						{!isPage.first(currentPage) && (
+							<NavButton direction="backward" onClick={onClickPrevious} />
+						)}
+						{!isPage.last(currentPage) &&
+							(identOpprettesFra !== BestillingMapper('EKSIDENT') ||
+								(identOpprettesFra === BestillingMapper('EKSIDENT') &&
+									eksisterendeIdentListe.length > 0)) && <span>{videreKnapp} </span>}
+						{isPage.last(currentPage) && (
+							<Knapp type="hoved" onClick={onClickNext} disabled={isSubmitting}>
+								OPPRETT
+							</Knapp>
+						)}
+					</div>
 				</div>
 			</div>
 		)
