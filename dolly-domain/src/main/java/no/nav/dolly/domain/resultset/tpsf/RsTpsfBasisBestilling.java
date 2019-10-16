@@ -35,8 +35,6 @@ public class RsTpsfBasisBestilling {
 
     private String sivilstand;
 
-    private List<Sivilstatus> sivilstatus;
-
     private LocalDateTime regdato;
 
     private LocalDateTime egenAnsattDatoFom;

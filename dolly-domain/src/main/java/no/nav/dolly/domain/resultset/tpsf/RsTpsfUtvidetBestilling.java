@@ -22,8 +22,6 @@ public class RsTpsfUtvidetBestilling extends RsTpsfBasisBestilling {
 
     private List<RsIdenthistorikk> identHistorikk;
 
-    private List<RsRelasjon> barn;
-
     private String identtype;
 
     private LocalDateTime foedtEtter;
