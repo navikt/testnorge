@@ -29,8 +29,8 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.dolly</groupId>
-            <artifactId>dolly-domain</artifactId>
+            <groupId>no.nav.dolly-backend</groupId>
+            <artifactId>dolly-backend-domain</artifactId>
             <version>${project.version}</version>
         </dependency>
 
