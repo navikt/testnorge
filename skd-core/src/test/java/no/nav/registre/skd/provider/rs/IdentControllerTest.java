@@ -24,11 +24,12 @@ public class IdentControllerTest {
     private IdentController identController;
 
     private Long avspillergruppeId = 123L;
+    private List<String> miljoer = new ArrayList<>(Collections.singletonList("t1"));
 
     @Test
     public void shouldSletteIdenterFraAvspillergruppe() {
         List<String> identer = new ArrayList<>(Collections.singletonList("01010101010"));
-        identController.slettIdenterFraAvspillergruppe(avspillergruppeId, identer);
-        verify(identService).slettIdenterFraAvspillergruppe(avspillergruppeId, identer);
+        identController.slettIdenterFraAvspillergruppe(avspillergruppeId, miljoer, identer);
+        verify(identService).slettIdenterFraAvspillergruppe(avspillergruppeId, miljoer, identer);
     }
 }

@@ -1,6 +1,7 @@
 package no.nav.registre.skd.consumer;
 
 import io.micrometer.core.annotation.Timed;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -8,6 +9,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
@@ -22,6 +24,7 @@ import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 
 @Component
+@Slf4j
 public class TpsfConsumer {
 
     private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Long>>() {
@@ -35,6 +38,7 @@ public class TpsfConsumer {
     private UriTemplate uriTemplateGetMeldingIder;
     private UriTemplate urlGetMeldingIder;
     private UriTemplate urlSlettMeldinger;
+    private UriTemplate urlSlettIdenterFraTps;
 
     public TpsfConsumer(RestTemplateBuilder restTemplateBuilder,
             @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
@@ -48,6 +52,7 @@ public class TpsfConsumer {
         this.uriTemplateGetMeldingIder = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/meldinger/{gruppeId}");
         this.urlGetMeldingIder = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/meldinger/{avspillergruppeId}");
         this.urlSlettMeldinger = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deletemeldinger");
+        this.urlSlettIdenterFraTps = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deleteFromTps?miljoer={miljoer}&identer={identer}");
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
@@ -80,5 +85,19 @@ public class TpsfConsumer {
     public ResponseEntity slettMeldingerFraTpsf(List<Long> meldingIder) {
         RequestEntity postRequest = RequestEntity.post(urlSlettMeldinger.expand()).body(SlettSkdmeldingerRequest.builder().ids(meldingIder).build());
         return restTemplate.exchange(postRequest, ResponseEntity.class);
+    }
+
+    @Timed
+    public ResponseEntity slettIdenterFraTps(List<String> miljoer, List<String> identer) {
+        String miljoerSomString = String.join(",", miljoer);
+        String identerSomString = String.join(",", identer);
+        RequestEntity deleteRequest = RequestEntity.delete(urlSlettIdenterFraTps.expand(miljoerSomString, identerSomString)).build();
+        ResponseEntity response = null;
+        try {
+            response = restTemplate.exchange(deleteRequest, ResponseEntity.class);
+        } catch (HttpClientErrorException e) {
+            log.error("Kunne ikke slette ident fra TPS. ", e.getMessage());
+        }
+        return response;
     }
 }

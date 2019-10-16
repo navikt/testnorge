@@ -1,9 +1,11 @@
 package no.nav.registre.skd.consumer;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
@@ -23,6 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
@@ -102,6 +105,17 @@ public class TpsfConsumerTest {
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
+    @Test
+    public void shouldDeleteIdenterFromTps() {
+        List<String> identer = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
+
+        stubTpsfConsumerSlettIdenterFraTps(identer);
+
+        ResponseEntity response = tpsfConsumer.slettIdenterFraTps(Collections.singletonList(environment), identer);
+
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+    }
+
     private void stubTpsfConsumerSendSkdMelding() {
         stubFor(post(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/send/" + avspillergruppeId))
                 .withRequestBody(equalToJson(
@@ -131,5 +145,11 @@ public class TpsfConsumerTest {
                         "{\"ids\": [" + slettSkdmeldingerRequest.getIds().get(0) + ", " + slettSkdmeldingerRequest.getIds().get(1) + "]}"))
                 .willReturn(ok()
                         .withHeader("content-type", "application/json")));
+    }
+
+    private void stubTpsfConsumerSlettIdenterFraTps(List<String> identer) {
+        stubFor(delete(urlEqualTo("/tpsf/api/v1/endringsmelding/skd/deleteFromTps?miljoer=" + environment + "&identer=" + identer.get(0) + "," + identer.get(1)))
+                .willReturn(ok())
+        );
     }
 }

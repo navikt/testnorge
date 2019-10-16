@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -23,7 +24,10 @@ public class IdentController {
     @LogExceptions
     @ApiOperation(value = "Her kan man slette alle skd-meldinger tilhørende identer fra en gitt avspillergruppe. Returnerer en liste av melding-idene som er sendt til sletting.")
     @DeleteMapping("{avspillergruppeId}")
-    public List<Long> slettIdenterFraAvspillergruppe(@PathVariable Long avspillergruppeId, @RequestBody List<String> identer) {
-        return identService.slettIdenterFraAvspillergruppe(avspillergruppeId, identer);
+    public List<Long> slettIdenterFraAvspillergruppe(
+            @PathVariable Long avspillergruppeId,
+            @RequestParam(required = false, defaultValue = "") List<String> miljoer,
+            @RequestBody List<String> identer) {
+        return identService.slettIdenterFraAvspillergruppe(avspillergruppeId, miljoer, identer);
     }
 }

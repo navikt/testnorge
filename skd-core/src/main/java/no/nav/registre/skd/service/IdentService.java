@@ -15,10 +15,11 @@ public class IdentService {
     @Autowired
     private TpsfConsumer tpsfConsumer;
 
-    public List<Long> slettIdenterFraAvspillergruppe(Long avspillergruppeId, List<String> identer) {
+    public List<Long> slettIdenterFraAvspillergruppe(Long avspillergruppeId, List<String> miljoer, List<String> identer) {
         List<Long> meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, identer);
         ResponseEntity tpsfResponse = tpsfConsumer.slettMeldingerFraTpsf(meldingIderTilhoerendeIdenter);
         if (tpsfResponse.getStatusCode().is2xxSuccessful()) {
+            tpsfConsumer.slettIdenterFraTps(miljoer, identer);
             return meldingIderTilhoerendeIdenter;
         } else {
             return new ArrayList<>();
