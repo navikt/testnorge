@@ -32,13 +32,3 @@ freg:
 ### CORS ###
 dolly-web.security.cors.origins: http://localhost:3000
 
-freg.security.oidc.idp.openAm:
-  hostUrl: https://isso-t.adeo.no:443/isso
-  issuerUrl: https://isso-t.adeo.no:443/isso/oauth2
-  jwksUrl: https://isso-t.adeo.no/isso/oauth2/connect/jwk_uri
-
-freg.security.oidc.idp.navSts:
-  hostUrl: https://security-token-service-q4.nais.preprod.local
-  issuerUrl: https://security-token-service-q4.nais.preprod.local
-  jwksUrl: https://security-token-service-q4.nais.preprod.local/rest/v1/sts/jwks
-

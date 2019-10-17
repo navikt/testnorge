@@ -34,10 +34,6 @@ fasitResources:
         hostUrl: idp.openAm.hostUrl
         issuerUrl: idp.openAm.issuerUrl
         jwksUrl: idp.openAm.jwksUrl
-    - alias: tps-forvalteren.rest-api
-      resourceType: restservice
-      propertyMap:
-        url: tpsf.url
     - alias: dollyurl
       resourceType: baseurl
       propertyMap:

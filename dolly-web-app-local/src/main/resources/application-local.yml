@@ -1,4 +1,5 @@
 fasit.enabled: false
 
 server.port: 8020
-dolly.url: http://localhost:8080/api/v1
+#dolly.url: http://localhost:8080/api/v1
+dolly.url: https://dolly-u2.nais.preprod.local/api/v1

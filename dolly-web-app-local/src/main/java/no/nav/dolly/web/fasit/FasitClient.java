@@ -31,10 +31,7 @@ public class FasitClient {
     public Map<String, Object> resolveFasitProperties() {
         Map<String, Object> properties = new HashMap<>();
 
-        RestService tpfsRest = fasitService.find("tps-forvalteren.rest-api", REST_SERVICE, environmentName, applicationName, FSS, RestService.class);
-        properties.put("tpsf.url", tpfsRest.getEndpointUrl());
-
-        OpenIdConnect oidc = fasitService.find("dolly-web-oidc-local", OPEN_ID_CONNECT, environmentName, applicationName, FSS, OpenIdConnect.class);
+        OpenIdConnect oidc = fasitService.find("dolly-web-oidc", OPEN_ID_CONNECT, environmentName, applicationName, FSS, OpenIdConnect.class);
 
         properties.put("idp.openAm.clientId", oidc.getAgentName());
         properties.put("idp.openAm.clientSecret", fasitService.findSecret(oidc.getPasswordUrl()));
