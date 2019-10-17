@@ -1,12 +1,10 @@
 package no.nav.dolly.web.fasit;
 
 import static no.nav.freg.fasit.utils.domain.ResourceType.OPEN_ID_CONNECT;
-import static no.nav.freg.fasit.utils.domain.ResourceType.REST_SERVICE;
 import static no.nav.freg.fasit.utils.domain.Zone.FSS;
 
 import no.nav.freg.fasit.utils.FasitService;
 import no.nav.freg.fasit.utils.domain.OpenIdConnect;
-import no.nav.freg.fasit.utils.domain.RestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -31,7 +29,7 @@ public class FasitClient {
     public Map<String, Object> resolveFasitProperties() {
         Map<String, Object> properties = new HashMap<>();
 
-        OpenIdConnect oidc = fasitService.find("dolly-web-oidc", OPEN_ID_CONNECT, environmentName, applicationName, FSS, OpenIdConnect.class);
+        OpenIdConnect oidc = fasitService.find("dolly-web-oidc-local", OPEN_ID_CONNECT, environmentName, applicationName, FSS, OpenIdConnect.class);
 
         properties.put("idp.openAm.clientId", oidc.getAgentName());
         properties.put("idp.openAm.clientSecret", fasitService.findSecret(oidc.getPasswordUrl()));

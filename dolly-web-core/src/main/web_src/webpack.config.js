@@ -45,10 +45,11 @@ const webpackConfig = {
 		contentBase: path.join(__dirname, 'public'),
 		historyApiFallback: true,
 		proxy: {
-			"*": {
-				context: ["**", "!*sockjs-node*"],
-				target: 'http://localhost:8020',
-				headers: corsHeaders
+			"/api": {
+				secure: false,
+				target: 'https://dolly-web-u2.nais.preprod.local', 
+				headers: corsHeaders,
+				changeOrigin: true,
 			}
 		}
 	},

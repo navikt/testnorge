@@ -5,12 +5,7 @@ const config = {
 		dollyBackend: '/api/v1',
 		tpsf: process.env.tpsf || '/external/tpsf/api/v1'
 	},
-	debug: true
-}
-
-// Force values in production build
-if (isProdBuild) {
-	config.debug = false
+	debug: !isProdBuild
 }
 
 export default config

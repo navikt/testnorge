@@ -38,3 +38,5 @@ fasitResources:
       resourceType: baseurl
       propertyMap:
         url: dolly.url
+    - alias: dolly-web-properties
+      resourceType: ApplicationProperties
