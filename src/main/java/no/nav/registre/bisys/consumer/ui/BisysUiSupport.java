@@ -1,5 +1,6 @@
 package no.nav.registre.bisys.consumer.ui;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
@@ -7,6 +8,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 
 import lombok.AllArgsConstructor;
 import net.morher.ui.connect.api.ApplicationDefinition;
+import net.morher.ui.connect.api.element.Label;
 import net.morher.ui.connect.api.listener.ActionLogger;
 import net.morher.ui.connect.html.HtmlMapper;
 import net.morher.ui.connect.html.listener.WaitForJavaScriptListener;
@@ -116,6 +118,24 @@ public class BisysUiSupport {
         } catch (ElementNotFoundException | NoSuchElementException e) {
             throw new BidragRequestRuntimeException(bisys.bisysPage(), e);
         }
+    }
+
+    /**
+     * Check if feedback matches predefined regex
+     * 
+     * @param regex
+     * @param feedback
+     * @return
+     */
+    public static boolean feedbackMatchFound(String regex, List<Label> feedback) {
+
+        for (Label label : feedback) {
+            String labelContent = label.getText();
+            if (!labelContent.isEmpty() && labelContent.matches(regex)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
