@@ -69,6 +69,10 @@ export const FieldArrayComponent = ({
 			]
 		} else if ('barn_forsvunnet' in parentAttributes) {
 			parentAttributes.barn_forsvunnet = [{ erForsvunnet: '', forsvunnetDato: '' }]
+		} else if ('barn_statsborgerskapInfo' in parentAttributes) {
+			parentAttributes.barn_statsborgerskapInfo = [
+				{ statsborgerskap: '', statsborgerskapRegdato: '' }
+			]
 		}
 		arrayHelpers.push({ ...parentAttributes })
 	}
@@ -107,6 +111,8 @@ export const FieldArrayComponent = ({
 		formikValues = [{ innvandretFraLand: '', innvandretFraLandFlyttedato: '' }]
 	} else if (item.id === 'barn_forsvunnet') {
 		formikValues = [{ erForsvunnet: '', forsvunnetDato: '' }]
+	} else if (item.id === 'barn_statsborgerskapInfo') {
+		formikValues = [{ statsborgerskap: '', statsborgerskapRegdato: '' }]
 	}
 	let subLabelArray = []
 
@@ -173,7 +179,8 @@ export const FieldArrayComponent = ({
 												id:
 													parentId.includes('barn_innvandret') ||
 													parentId.includes('barn_utvandret') ||
-													parentId.includes('barn_forsvunnet')
+													parentId.includes('barn_forsvunnet') ||
+													parentId.includes('barn_statsborgerskapInfo')
 														? //Refaktorerers. Hvordan kan vi generalisere denne typen attributter for barn?
 														  `barn[${itemid}]${parentId}[0]${item.id}`
 														: `${parentId}[${idx}]${item.id}`

@@ -1,33 +1,29 @@
-import Request from '../Request'
-import axios from 'axios'
+import config from '~/config'
+import Request from '~/service/services/Request'
 import ConfigService from '~/service/Config'
 
-export default class KrrService {
-	static getKrrUrl() {
-		const url = ConfigService.getDatesourceUrl('krr') || 'https://krr-stub.nais.preprod.local'
-		return url + '/api/v1'
-	}
+const getKrrBaseUrl = () => ConfigService.getDatesourceUrl('krr') || config.services.krrStubUrl
+const getKrrUrl = () => `${getKrrBaseUrl()}/api/v1`
 
-	static getTestbruker(ident) {
-		return Request.getWithoutCredentials(`${this.getKrrUrl()}/person/kontaktinformasjon`, {
+export default {
+	getTestbruker(ident) {
+		const endpoint = `${getKrrUrl()}/person/kontaktinformasjon`
+		return Request.getWithoutCredentials(endpoint, {
 			headers: {
 				'Nav-Personident': ident,
 				'Nav-Call-Id': 'dolly',
 				'Nav-Consumer-Id': 'dolly-frontend'
 			}
 		})
-	}
+	},
 
-	static updateTestbruker(krrstubId, data) {
-		return Request.putWithoutCredentials(
-			`${this.getKrrUrl()}/kontaktinformasjon/${krrstubId}`,
-			data,
-			{
-				headers: {
-					'Nav-Call-Id': 'dolly',
-					'Nav-Consumer-Id': 'dolly-frontend'
-				}
+	updateTestbruker(krrstubId, data) {
+		const endpoint = `${getKrrUrl()}/kontaktinformasjon/${krrstubId}`
+		return Request.putWithoutCredentials(endpoint, data, {
+			headers: {
+				'Nav-Call-Id': 'dolly',
+				'Nav-Consumer-Id': 'dolly-frontend'
 			}
-		)
+		})
 	}
 }

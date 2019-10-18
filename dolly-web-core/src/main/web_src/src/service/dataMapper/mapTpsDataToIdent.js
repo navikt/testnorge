@@ -3,7 +3,7 @@ import Formatters from '~/utils/DataFormatter'
 import _get from 'lodash/get'
 import DataMapper from '.'
 
-export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
+export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 	if (!tpsfData) return null
 
 	const data = [
@@ -99,7 +99,13 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 				{
 					id: 'statsborgerskap',
 					label: 'Statsborgerskap',
-					value: tpsfData.statsborgerskap
+					value: tpsfData.statsborgerskap,
+					apiKodeverkId: 'Landkoder'
+				},
+				{
+					id: 'statsborgerskapRegdato',
+					label: 'Statsborgerskap fra',
+					value: Formatters.formatDate(tpsfData.statsborgerskapRegdato)
 				},
 				{
 					id: 'sprakKode',
@@ -129,39 +135,6 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 					id: 'utvandretTilLandFlyttedato',
 					label: 'Utvandret dato',
 					value: Formatters.formatDate(tpsfData.utvandretTilLandFlyttedato)
-				}
-			]
-		})
-	}
-
-	if (pdlfData && pdlfData.utenlandskeIdentifikasjonsnummere) {
-		let opphoert = false
-		if (pdlfData.utenlandskeIdentifikasjonsnummere[0].registrertOpphoertINAV) {
-			opphoert = true
-		}
-		data.push({
-			header: 'Utenlands-ID',
-			data: [
-				{
-					id: 'idNummer',
-					label: 'Identifikasjonsnummer',
-					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].idNummer
-				},
-				{
-					id: 'kilde',
-					label: 'Kilde',
-					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].kilde
-				},
-				{
-					id: 'opphoert',
-					label: 'Opphørt',
-					value: Formatters.oversettBoolean(opphoert)
-				},
-				{
-					id: 'utstederland',
-					label: 'Utstederland',
-					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].utstederland,
-					apiKodeverkId: 'Landkoder'
 				}
 			]
 		})
@@ -367,8 +340,26 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier, pdlfData) {
 						},
 						{
 							id: 'statsborgerskap',
-							label: 'Statsborgerskap',
-							value: relasjon.personRelasjonMed.statsborgerskap
+							label: 'statsborgerskap',
+							value:
+								relasjonstype === 'Barn' &&
+								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].statsborgerskap
+									? relasjon.personRelasjonMed.statsborgerskap
+									: relasjonstype === 'Partner' && tpsfKriterier.relasjoner.partner.statsborgerskap
+										? relasjon.personRelasjonMed.statsborgerskap
+										: null,
+							apiKodeverkId: 'Landkoder'
+						},
+						{
+							id: 'ssatsborgerskapRegdato',
+							label: 'Statsborgerskap fra',
+							value:
+								relasjonstype === 'Barn' &&
+								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].statsborgerskap
+									? Formatters.formatDate(relasjon.personRelasjonMed.statsborgerskapRegdato)
+									: relasjonstype === 'Partner' && tpsfKriterier.relasjoner.partner.statsborgerskap
+										? Formatters.formatDate(relasjon.personRelasjonMed.statsborgerskapRegdato)
+										: null
 						},
 						{
 							id: 'innvandretFraLand',

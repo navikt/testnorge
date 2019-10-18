@@ -35,21 +35,11 @@ const updateTestbrukerRequest = () => ({ type: actionTypes.UPDATE_TESTBRUKER_REQ
 const updateTestbrukerSuccess = () => ({ type: actionTypes.UPDATE_TESTBRUKER_SUCCESS })
 const updateTestbrukerError = () => ({ type: actionTypes.UPDATE_TESTBRUKER_ERROR })
 
-export const GET_TPSF_TESTBRUKERE = createAction('GET_TPSF_TESTBRUKERE', identArray =>
-	TpsfApi.getTestbrukere(identArray)
-)
+export const GET_TPSF_TESTBRUKERE = createAction('GET_TPSF_TESTBRUKERE', TpsfApi.getTestbrukere)
 
 export const GET_SIGRUN_TESTBRUKER = createAction(
 	'GET_SIGRUN_TESTBRUKER',
-	async ident => {
-		try {
-			const res = await SigrunApi.getTestbruker(ident)
-
-			return res
-		} catch (err) {
-			return err
-		}
-	},
+	SigrunApi.getTestbruker,
 	ident => ({
 		ident
 	})
@@ -57,14 +47,7 @@ export const GET_SIGRUN_TESTBRUKER = createAction(
 
 export const GET_SIGRUN_SEKVENSNR = createAction(
 	'GET_SIGRUN_SEKVENSNR',
-	async ident => {
-		try {
-			const res = await SigrunApi.getSekvensnummer(ident)
-			return res
-		} catch (err) {
-			return err
-		}
-	},
+	SigrunApi.getSekvensnummer,
 	ident => ({
 		ident
 	})
@@ -92,14 +75,7 @@ export const GET_KRR_TESTBRUKER = createAction(
 
 export const GET_ARENA_TESTBRUKER = createAction(
 	'GET_ARENA_TESTBRUKER',
-	async ident => {
-		try {
-			const res = await ArenaApi.getTestbruker(ident)
-			return res
-		} catch (err) {
-			return err
-		}
-	},
+	ArenaApi.getTestbruker,
 	ident => ({
 		ident
 	})
@@ -107,14 +83,7 @@ export const GET_ARENA_TESTBRUKER = createAction(
 
 export const GET_AAREG_TESTBRUKER = createAction(
 	'GET_AAREG_TESTBRUKER',
-	async (ident, env) => {
-		try {
-			const res = await DollyApi.getArbeidsforhold(ident, env)
-			return res
-		} catch (err) {
-			return err
-		}
-	},
+	DollyApi.getArbeidsforhold,
 	ident => ({
 		ident
 	})
@@ -122,14 +91,7 @@ export const GET_AAREG_TESTBRUKER = createAction(
 
 export const GET_INST_TESTBRUKER = createAction(
 	'GET_INST_TESTBRUKER',
-	async (ident, env) => {
-		try {
-			const res = await InstApi.getTestbruker(ident, env)
-			return res
-		} catch (err) {
-			return err
-		}
-	},
+	InstApi.getTestbruker,
 	ident => ({
 		ident
 	})
@@ -137,14 +99,7 @@ export const GET_INST_TESTBRUKER = createAction(
 
 export const GET_UDI_TESTBRUKER = createAction(
 	'GET_UDI_TESTBRUKER',
-	async (ident, env) => {
-		try {
-			const res = await UdiApi.getTestbruker(ident)
-			return res
-		} catch (err) {
-			return err
-		}
-	},
+	UdiApi.getTestbruker,
 	ident => ({
 		ident
 	})
@@ -152,14 +107,7 @@ export const GET_UDI_TESTBRUKER = createAction(
 
 export const GET_TESTBRUKER_PERSONOPPSLAG = createAction(
 	'GET_TESTBRUKER_PERSONOPPSLAG',
-	async (ident, env) => {
-		try {
-			const res = await DollyApi.getPersonFraPersonoppslag(ident)
-			return res
-		} catch (err) {
-			return err
-		}
-	},
+	DollyApi.getPersonFraPersonoppslag,
 	ident => ({
 		ident
 	})
@@ -167,7 +115,7 @@ export const GET_TESTBRUKER_PERSONOPPSLAG = createAction(
 
 export const FRIGJOER_TESTBRUKER = createAction(
 	'FRIGJOER_TESTBRUKER',
-	(gruppeId, identId) => DollyApi.deleteTestIdent(gruppeId, identId),
+	DollyApi.deleteTestIdent,
 	(gruppeId, ident) => ({
 		ident
 	})

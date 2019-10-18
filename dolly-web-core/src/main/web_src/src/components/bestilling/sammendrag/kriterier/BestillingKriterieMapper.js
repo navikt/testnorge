@@ -19,6 +19,7 @@ const _getTpsfBestillingData = data => {
 		obj('Født før', Formatters.formatDate(data.foedtFoer)),
 		obj('Dødsdato', Formatters.formatDate(data.doedsdato)),
 		obj('Statsborgerskap', data.statsborgerskap, 'Landkoder'),
+		obj('Statsborgerskap fra', Formatters.formatDate(data.statsborgerskapRegdato)),
 		obj('Kjønn', Formatters.kjonnToString(data.kjonn)),
 		obj('Har mellomnavn', Formatters.oversettBoolean(data.harMellomnavn)),
 		obj('Sivilstand', data.sivilstand, 'Sivilstander'),
@@ -31,7 +32,7 @@ const _getTpsfBestillingData = data => {
 		obj('Utvandret dato', Formatters.formatDate(data.utvandretTilLandFlyttedato)),
 		obj('Er forsvunnet', Formatters.oversettBoolean(data.erForsvunnet)),
 		obj('Forsvunnet dato', Formatters.formatDate(data.forsvunnetDato)),
-		obj('Egenansatt', Formatters.oversettBoolean(data.egenansattDatoFom)),
+		obj('Egenansatt', Formatters.oversettBoolean(data.egenansattDatoFom))
 	]
 }
 
@@ -60,23 +61,6 @@ export function mapBestillingData(bestillingData) {
 			items: _getTpsfBestillingData(tpsfKriterier)
 		}
 
-		// For å mappe utenlands-ID under persondetaljer
-		if (bestillingData.bestKriterier) {
-			const registreKriterier = JSON.parse(bestillingData.bestKriterier)
-			const uidnr = _get(registreKriterier, 'pdlforvalter.utenlandskIdentifikasjonsnummer')
-
-			if (uidnr) {
-				const pdlf = [
-					obj('Utenlands-ID', uidnr.identifikasjonsnummer),
-					obj('Utenlands-ID kilde', uidnr.kilde),
-					obj('Utenlands-ID opphørt', Formatters.oversettBoolean(uidnr.opphoert)),
-					obj('Utstederland (ID)', uidnr.utstederland, 'Landkoder')
-				]
-				pdlf.forEach(item => {
-					personinfo.items.push(item)
-				})
-			}
-		}
 		data.push(personinfo)
 		if (tpsfKriterier.boadresse) {
 			const adr = tpsfKriterier.boadresse
@@ -270,7 +254,9 @@ export function mapBestillingData(bestillingData) {
 						label: 'RESERVERT MOT DIGITALKOMMUNIKASJON',
 						value: krrKriterier.reservert ? 'JA' : 'NEI',
 						width: 'medium'
-					}
+					},
+					obj('Gyldig fra', Formatters.formatDate(krrKriterier.gyldigFra)),
+					obj('Registrert i DKIF', krrKriterier.registrert ? 'JA' : 'NEI')
 				]
 			}
 
@@ -311,6 +297,40 @@ export function mapBestillingData(bestillingData) {
 					]
 				}
 				data.push(doedsbo)
+			}
+
+			if (pdlforvalterKriterier.utenlandskIdentifikasjonsnummer) {
+				const uidnr = pdlforvalterKriterier.utenlandskIdentifikasjonsnummer
+
+				const flatUidnrKriterier = []
+				uidnr.forEach(ui => {
+					flatUidnrKriterier.push({
+						identifikasjonsnummer: ui.identifikasjonsnummer,
+						kilde: ui.kilde,
+						opphoert: ui.opphoert,
+						utstederland: ui.utstederland
+					})
+				})
+
+				const uidnrObj = {
+					header: 'Utenlandsk identifikasjonsnummer',
+					itemRows: []
+				}
+
+				flatUidnrKriterier.forEach((uidr, i) => {
+					uidnrObj.itemRows.push([
+						{
+							label: '',
+							value: `#${i + 1}`,
+							width: 'x-small'
+						},
+						obj('Utenlands-ID', uidr.identifikasjonsnummer),
+						obj('Kilde', uidr.kilde),
+						obj('Utenlands-ID opphørt', Formatters.oversettBoolean(uidr.opphoert)),
+						obj('Utstederland', uidr.utstederland, 'Landkoder')
+					])
+				})
+				data.push(uidnrObj)
 			}
 
 			if (pdlforvalterKriterier.falskIdentitet) {
@@ -475,21 +495,21 @@ export function mapBestillingData(bestillingData) {
 					obj('Status', currentTredjelandsborgereStatus),
 					obj(
 						'Oppholdstillatelse fra dato',
-						Formatters.formateStringDates(
+						Formatters.formatStringDates(
 							_get(oppholdKriterier, `${currentOppholdsrettType}Periode.fra`) ||
 								_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
 						)
 					),
 					obj(
 						'Oppholdstillatelse til dato',
-						Formatters.formateStringDates(
+						Formatters.formatStringDates(
 							_get(oppholdKriterier, `${currentOppholdsrettType}Periode.til`) ||
 								_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
 						)
 					),
 					obj(
 						'Effektueringsdato',
-						Formatters.formateStringDates(
+						Formatters.formatStringDates(
 							_get(oppholdKriterier, `${currentOppholdsrettType}Effektuering`) ||
 								_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdSammeVilkaarEffektuering')
 						)
@@ -511,7 +531,7 @@ export function mapBestillingData(bestillingData) {
 					),
 					obj(
 						'Vedtaksdato',
-						Formatters.formateStringDates(
+						Formatters.formatStringDates(
 							_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdstillatelseVedtaksDato')
 						)
 					),
@@ -537,11 +557,11 @@ export function mapBestillingData(bestillingData) {
 					),
 					obj(
 						'Arbeidsadgang fra dato',
-						Formatters.formateStringDates(_get(arbeidsadgangKriterier, 'periode.fra'))
+						Formatters.formatStringDates(_get(arbeidsadgangKriterier, 'periode.fra'))
 					),
 					obj(
 						'Arbeidsadgang til dato',
-						Formatters.formateStringDates(_get(arbeidsadgangKriterier, 'periode.til'))
+						Formatters.formatStringDates(_get(arbeidsadgangKriterier, 'periode.til'))
 					),
 					obj('Alias', aliaserListe.length > 0 && aliaserListe),
 					obj('Flyktningstatus', Formatters.oversettBoolean(udiStubKriterier.flyktning)),

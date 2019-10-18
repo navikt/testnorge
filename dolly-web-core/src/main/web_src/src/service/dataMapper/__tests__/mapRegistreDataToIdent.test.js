@@ -79,7 +79,13 @@ describe('mapDetailedData.js', () => {
 			expect(mapKrrData()).toBeNull()
 		})
 
-		const testKrrData = { mobil: '987654312', epost: 'nav@nav.no', reservert: true }
+		const testKrrData = {
+			mobil: '987654312',
+			epost: 'nav@nav.no',
+			reservert: true,
+			gyldigFra: '2019-10-10T00:00:00',
+			registrert: false
+		}
 
 		it('should return krr-data with reservert', () => {
 			const testRes = {
@@ -99,6 +105,16 @@ describe('mapDetailedData.js', () => {
 						id: 'reservert',
 						label: 'Reservert mot digitalkommunikasjon',
 						value: 'JA'
+					},
+					{
+						id: 'gyldigFra',
+						label: 'Gyldig fra',
+						value: '10.10.2019'
+					},
+					{
+						id: 'registrert',
+						label: 'Registrert i DKIF',
+						value: 'NEI'
 					}
 				]
 			}
@@ -123,6 +139,16 @@ describe('mapDetailedData.js', () => {
 					{
 						id: 'reservert',
 						label: 'Reservert mot digitalkommunikasjon',
+						value: 'NEI'
+					},
+					{
+						id: 'gyldigFra',
+						label: 'Gyldig fra',
+						value: '10.10.2019'
+					},
+					{
+						id: 'registrert',
+						label: 'Registrert i DKIF',
 						value: 'NEI'
 					}
 				]

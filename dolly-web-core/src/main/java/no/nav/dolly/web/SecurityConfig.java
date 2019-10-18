@@ -12,6 +12,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 @Order(1)
 public class SecurityConfig implements HttpSecurityConfigurer {
 
+    @Value("${dolly-web.security.cors.origins:''}")
+    private String[] allowedOrigins;
+
     @Value("${security.frame.disable.localhost: false}")
     private boolean disableFrameOptions;
 
