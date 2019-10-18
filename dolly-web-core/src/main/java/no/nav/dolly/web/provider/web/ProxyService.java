@@ -38,7 +38,6 @@ public class ProxyService {
 
         HttpHeaders headers = copyHeaders(request);
 
-        //TODO Brukes når Dolly tar imot token i header
         OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + auth.getIdToken());
 
@@ -46,12 +45,6 @@ public class ProxyService {
         headers.add(NAV_CONSUMER_ID, "dolly-proxy");
         headers.add(CONTENT_TYPE, "application/json");
         headers.set(HttpHeaders.ACCEPT_ENCODING, "identity=1.0");
-
-        // TODO Brukes imot eksisterende dolly som forventer cookie i header
-        Cookie idTokenCookie = getIdTokenCookie(request);
-        if (idTokenCookie != null) {
-            headers.add(HttpHeaders.COOKIE, idTokenCookie.getName() + "=" + idTokenCookie.getValue());
-        }
 
         HttpEntity<String> httpEntity = new HttpEntity<>(body, headers);
         try {
