@@ -34,18 +34,18 @@ public class EiaSyntConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${eias-emottakstub.rest-api.url}")
+    @Value("${testnorge-eia.rest-api.url}")
     private String serverUrl;
 
     private long gruppeId = 10L;
     private String miljoe = "t9";
-    private int antallMeldinger = 2;
+    private int antallIdenter = 2;
     private SyntetiserEiaRequest syntetiserEiaRequest;
     private List<String> expectedIdenter;
 
     @Before
     public void setUp() {
-        syntetiserEiaRequest = new SyntetiserEiaRequest(gruppeId, miljoe, antallMeldinger);
+        syntetiserEiaRequest = new SyntetiserEiaRequest(gruppeId, miljoe, antallIdenter);
         expectedIdenter = new ArrayList<>();
         expectedIdenter.add("01010101010");
         expectedIdenter.add("02020202020");
@@ -53,7 +53,7 @@ public class EiaSyntConsumerTest {
 
     /**
      * Scenario: Tester happypath til {@link EiaSyntConsumer#startSyntetisering} - forventer at metoden returnerer identene til de
-     * opprettede sykemeldingene - forventer at metoden kaller eias-emottakstub med de rette parametrene (se stub)
+     * opprettede sykemeldingene - forventer at metoden kaller testnorge-eia med de rette parametrene (se stub)
      */
     @Test
     public void shouldStartSyntetisering() {
@@ -70,7 +70,7 @@ public class EiaSyntConsumerTest {
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(content().json("{\"avspillergruppeId\":" + gruppeId
                         + ",\"miljoe\":\"" + miljoe + "\""
-                        + ",\"antallMeldinger\":" + antallMeldinger + "}"))
+                        + ",\"antallIdenter\":" + antallIdenter + "}"))
                 .andRespond(withSuccess("[\"" + expectedIdenter.get(0) + "\", \"" + expectedIdenter.get(1) + "\"]", MediaType.APPLICATION_JSON));
     }
 }

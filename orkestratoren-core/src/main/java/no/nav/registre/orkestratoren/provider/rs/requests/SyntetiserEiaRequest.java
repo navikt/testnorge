@@ -16,6 +16,6 @@ public class SyntetiserEiaRequest {
     private Long avspillergruppeId;
     @JsonProperty("miljoe")
     private String miljoe;
-    @JsonProperty("antallMeldinger")
-    private int antallMeldinger;
+    @JsonProperty("antallIdenter")
+    private int antallIdenter;
 }

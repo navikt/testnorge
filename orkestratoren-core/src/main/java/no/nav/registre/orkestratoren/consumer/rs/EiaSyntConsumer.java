@@ -27,7 +27,7 @@ public class EiaSyntConsumer {
 
     public EiaSyntConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${eias-emottakstub.rest-api.url}") String baseUrl,
+            @Value("${testnorge-eia.rest-api.url}") String baseUrl,
             @Value("${eiabatch.queue}") String queueName) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(baseUrl + "/v1/syntetisering/generer/" + queueName);
