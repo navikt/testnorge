@@ -47,7 +47,8 @@ const webpackConfig = {
 		proxy: {
 			"/api": {
 				secure: false,
-				target: 'https://dolly-web-u2.nais.preprod.local', 
+				target: 'http://localhost:8020', 
+				// target: 'https://dolly-web-u2.nais.preprod.local', 
 				headers: corsHeaders,
 				changeOrigin: true,
 			}
