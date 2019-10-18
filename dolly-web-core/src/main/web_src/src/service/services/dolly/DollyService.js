@@ -1,159 +1,155 @@
-import Request from '../Request'
+import Request from '~/service/services/Request'
 import Endpoints from './DollyEndpoints'
 import Utils from './Utils'
 
-export default class DollyService {
+export default {
 	// UTILS
-	static Utils = Utils
+	Utils,
 
 	// Grupper
-	static getGrupper() {
+	getGrupper() {
 		return Request.get(Endpoints.gruppe())
-	}
+	},
 
-	static getGruppeById(gruppeId) {
+	getGruppeById(gruppeId) {
 		return Request.get(Endpoints.gruppeById(gruppeId))
-	}
+	},
 
-	static getGruppeByUserId(userId) {
+	getGruppeByUserId(userId) {
 		return Request.get(Endpoints.gruppeByUser(userId))
-	}
+	},
 
-	static getGruppeByTeamId(teamId) {
+	getGruppeByTeamId(teamId) {
 		return Request.get(Endpoints.gruppeByTeam(teamId))
-	}
+	},
 
-	static createGruppe(data) {
+	createGruppe(data) {
 		return Request.post(Endpoints.gruppe(), data)
-	}
+	},
 
-	static updateGruppe(gruppeId, data) {
+	updateGruppe(gruppeId, data) {
 		return Request.put(Endpoints.gruppeById(gruppeId), data)
-	}
+	},
 
-	static deleteGruppe(gruppeId) {
+	deleteGruppe(gruppeId) {
 		return Request.delete(Endpoints.gruppeById(gruppeId))
-	}
+	},
 
-	static updateGruppeAttributter(gruppeId, data) {
+	updateGruppeAttributter(gruppeId, data) {
 		return Request.put(Endpoints.gruppeAttributter(gruppeId), data)
-	}
+	},
 
-	static updateGruppeIdenter(gruppeId, data) {
-		return Request.put(Endpoints.gruppeIdenter(gruppeId, data))
-	}
-
-	static createBestilling(gruppeId, data) {
+	createBestilling(gruppeId, data) {
 		return Request.post(Endpoints.gruppeBestilling(gruppeId), data)
-	}
+	},
 
-	static createBestillingFraEksisterendeIdenter(gruppeId, data) {
+	createBestillingFraEksisterendeIdenter(gruppeId, data) {
 		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
-	}
+	},
 
 	// Team
-	static getTeams() {
+	getTeams() {
 		return Request.get(Endpoints.team())
-	}
+	},
 
-	static getTeamsByUserId(userId) {
+	getTeamsByUserId(userId) {
 		return Request.get(Endpoints.teamByUser(userId))
-	}
+	},
 
-	static getTeamById(teamId) {
+	getTeamById(teamId) {
 		return Request.get(Endpoints.teamById(teamId))
-	}
+	},
 
-	static createTeam(data) {
+	createTeam(data) {
 		return Request.post(Endpoints.team(), data)
-	}
+	},
 
-	static updateTeam(teamId, data) {
+	updateTeam(teamId, data) {
 		return Request.put(Endpoints.teamById(teamId), data)
-	}
+	},
 
-	static deleteTeam(teamId) {
+	deleteTeam(teamId) {
 		return Request.delete(Endpoints.teamById(teamId))
-	}
+	},
 
-	static addTeamMedlemmer(teamId, userArray) {
+	addTeamMedlemmer(teamId, userArray) {
 		return Request.put(Endpoints.teamAddMember(teamId), userArray)
-	}
+	},
 
-	static removeTeamMedlemmer(teamId, user) {
+	removeTeamMedlemmer(teamId, user) {
 		return Request.delete(Endpoints.teamRemoveMember(teamId, user))
-	}
+	},
 
 	// Bruker
-	static getBrukere() {
+	getBrukere() {
 		return Request.get(Endpoints.bruker())
-	}
+	},
 
-	static getBrukereById(brukerId) {
+	getBrukereById(brukerId) {
 		return Request.get(Endpoints.brukerById())
-	}
+	},
 
-	static getCurrentBruker() {
+	getCurrentBruker() {
 		return Request.get(Endpoints.currentBruker())
-	}
+	},
 
-	static addFavorite(groupId) {
+	addFavorite(groupId) {
 		return Request.put(Endpoints.addFavorite(), { gruppeId: groupId })
-	}
+	},
 
-	static removeFavorite(groupId) {
+	removeFavorite(groupId) {
 		return Request.put(Endpoints.removeFavorite(), { gruppeId: groupId })
-	}
+	},
 
 	//* Kodeverk
-	static getKodeverkByNavn(kodeverkNavn) {
+	getKodeverkByNavn(kodeverkNavn) {
 		return Request.get(Endpoints.kodeverkByNavn(kodeverkNavn))
-	}
+	},
 
 	//* Bestilling
-	static getBestillinger(gruppeId) {
+	getBestillinger(gruppeId) {
 		return Request.get(Endpoints.bestillinger(gruppeId))
-	}
+	},
 
-	static getBestillingMaler() {
+	getBestillingMaler() {
 		return Request.get(Endpoints.bestillingMal())
-	}
+	},
 
-	static getBestillingStatus(bestillingId) {
+	getBestillingStatus(bestillingId) {
 		return Request.get(Endpoints.bestillingStatus(bestillingId))
-	}
+	},
 
-	static gjenopprettBestilling(bestillingId, envs) {
+	gjenopprettBestilling(bestillingId, envs) {
 		return Request.post(Endpoints.gjenopprettBestilling(bestillingId, envs))
-	}
+	},
 
-	static getConfig() {
+	getConfig() {
 		return Request.get(Endpoints.config())
-	}
+	},
 
-	static postOpenAmBestilling(bestillingId) {
+	postOpenAmBestilling(bestillingId) {
 		return Request.post(Endpoints.openAmBestilling(bestillingId))
-	}
+	},
 
-	static cancelBestilling(bestillingId) {
+	cancelBestilling(bestillingId) {
 		return Request.delete(Endpoints.removeBestilling(bestillingId))
-	}
+	},
 
-	static deleteTestIdent(gruppeId, identId) {
+	deleteTestIdent(gruppeId, identId) {
 		return Request.delete(Endpoints.removeTestIdent(gruppeId, identId))
-	}
+	},
 
 	//Oppslag
-	static getEnhetByTknr(tknr) {
+	getEnhetByTknr(tknr) {
 		return Request.get(Endpoints.enhetByTknr(tknr))
-	}
+	},
 
-	static getPersonFraPersonoppslag(ident) {
+	getPersonFraPersonoppslag(ident) {
 		return Request.get(Endpoints.personoppslag(ident))
-	}
+	},
 
 	//AAREG
-	static getArbeidsforhold(ident, env) {
+	getArbeidsforhold(ident, env) {
 		return Request.get(Endpoints.arbeidsforholdByIdent(ident, env))
 	}
 }

@@ -12,6 +12,7 @@ export const getAttributesFromMal = mal => {
 			k !== 'regdato' &&
 			!k.includes('innvandretFraLand') &&
 			!k.includes('utvandretTilLand') &&
+			!k.includes('statsborgerskap') &&
 			!k.includes('erForsvunnet')
 		) {
 			return k
@@ -34,6 +35,7 @@ export const getAttributesFromMal = mal => {
 
 	tpsfKriterier.innvandretFraLand && attrArray.push('innvandret')
 	tpsfKriterier.utvandretTilLand && attrArray.push('utvandret')
+	tpsfKriterier.statsborgerskap && attrArray.push('statsborgerskapInfo')
 	tpsfKriterier.erForsvunnet && attrArray.push('forsvunnet')
 
 	Object.keys(bestKriterier).forEach(reg => {
@@ -86,6 +88,11 @@ export const getValuesFromMal = mal => {
 		const matrikkeladresseValues = _mapAdresseValues(reduxStateValue)
 		reduxStateValue = matrikkeladresseValues
 	}
+	if (reduxStateValue.statsborgerskap) {
+		const statsborgerskapValues = _mapStatsborgerskap(reduxStateValue)
+		reduxStateValue = statsborgerskapValues
+	}
+
 	return reduxStateValue
 }
 
@@ -171,6 +178,7 @@ const _formatValueForObject = (key, value) => {
 		'utvandretTilLandFlyttedato',
 		'innvandretFraLandFlyttedato',
 		'forsvunnetDato',
+		'statsborgerskapRegdato',
 		'startdato',
 		'faktiskSluttdato',
 		'forventetSluttdato',
@@ -263,7 +271,6 @@ const _mapInnOgUtvandret = values => {
 			valuesArray.barn[idx] = _mapInnOgUtvandret(enkeltBarn)
 		})
 	}
-
 	Object.entries(valuesArray).map(value => {
 		if (value[0].includes('innvandret')) {
 			if (value[0].includes('partner')) {
@@ -290,18 +297,47 @@ const _mapInnOgUtvandret = values => {
 				return (valuesArray.utvandret[0][value[0]] = value[1])
 			}
 		}
+
 		if (value[0].toLowerCase().includes('forsvunnet')) {
-			if (value[0].toLowerCase().includes('forsvunnet')) {
-				if (value[0].includes('partner')) {
-					!valuesArray.partner_forsvunnet && (valuesArray.partner_forsvunnet = [{}])
-					return (valuesArray.partner_forsvunnet[0][value[0].split('_')[1]] = value[1].toString())
-				} else if (value[0].includes('barn')) {
-					!valuesArray.barn_forsvunnet && (valuesArray.barn_forsvunnet = [{}])
-					return (valuesArray.barn_forsvunnet[0][value[0].split('_')[1]] = value[1].toString())
-				} else {
-					!valuesArray.forsvunnet && (valuesArray.forsvunnet = [{}])
-					return (valuesArray.forsvunnet[0][value[0]] = value[1].toString())
-				}
+			if (value[0].includes('partner')) {
+				!valuesArray.partner_forsvunnet && (valuesArray.partner_forsvunnet = [{}])
+				return (valuesArray.partner_forsvunnet[0][value[0].split('_')[1]] = value[1].toString())
+			} else if (value[0].includes('barn')) {
+				!valuesArray.barn_forsvunnet && (valuesArray.barn_forsvunnet = [{}])
+				return (valuesArray.barn_forsvunnet[0][value[0].split('_')[1]] = value[1].toString())
+			} else {
+				!valuesArray.forsvunnet && (valuesArray.forsvunnet = [{}])
+				return (valuesArray.forsvunnet[0][value[0]] = value[1].toString())
+			}
+		}
+	})
+	return valuesArray
+}
+
+const _mapStatsborgerskap = values => {
+	let valuesArray = JSON.parse(JSON.stringify(values))
+	if (valuesArray.barn) {
+		//Loop gjennom barn og kjør denne funksjonen for hvert barn
+		valuesArray.barn.map((enkeltBarn, idx) => {
+			valuesArray.barn[idx] = _mapStatsborgerskap(enkeltBarn)
+		})
+	}
+
+	Object.entries(valuesArray).map(value => {
+		if (value[0].includes('statsborgerskap')) {
+			if (value[0].includes('partner')) {
+				!valuesArray.partner_statsborgerskapInfo && (valuesArray.partner_statsborgerskapInfo = [{}])
+				return (valuesArray.partner_statsborgerskapInfo[0][
+					value[0].split('_')[1]
+				] = value[1].toString())
+			} else if (value[0].includes('barn')) {
+				!valuesArray.barn_statsborgerskapInfo && (valuesArray.barn_statsborgerskapInfo = [{}])
+				return (valuesArray.barn_statsborgerskapInfo[0][
+					value[0].split('_')[1]
+				] = value[1].toString())
+			} else {
+				!valuesArray.statsborgerskapInfo && (valuesArray.statsborgerskapInfo = [{}])
+				return (valuesArray.statsborgerskapInfo[0][value[0]] = value[1])
 			}
 		}
 	})
@@ -418,7 +454,7 @@ const _mapRegistreValue = (key, value) => {
 			})
 			return [mapObj]
 		case 'utenlandskIdentifikasjonsnummer':
-			return [value]
+			return value
 		case 'arenaforvalter':
 			return [value]
 		case 'falskIdentitet':
@@ -441,13 +477,13 @@ const _mapRegistreValue = (key, value) => {
 							if (attr[0].includes('Periode')) {
 								Object.assign(oppholdObj, {
 									...oppholdObj,
-									oppholdFraDato: attr[1].fra ? Formatters.formateStringDates(attr[1].fra) : '',
-									oppholdTilDato: attr[1].til ? Formatters.formateStringDates(attr[1].til) : ''
+									oppholdFraDato: attr[1].fra ? Formatters.formatStringDates(attr[1].fra) : '',
+									oppholdTilDato: attr[1].til ? Formatters.formatStringDates(attr[1].til) : ''
 								})
 							} else if (attr[0].includes('Effektuering')) {
 								Object.assign(oppholdObj, {
 									...oppholdObj,
-									effektueringsDato: Formatters.formateStringDates(attr[1])
+									effektueringsDato: Formatters.formatStringDates(attr[1])
 								})
 							} else {
 								Object.assign(oppholdObj, {
@@ -467,16 +503,16 @@ const _mapRegistreValue = (key, value) => {
 								if (/\d{4}-\d{2}-\d{2}/.test(subAttr[1])) {
 									Object.assign(oppholdObj, {
 										...oppholdObj,
-										[subAttr[0]]: Formatters.formateStringDates(subAttr[1])
+										[subAttr[0]]: Formatters.formatStringDates(subAttr[1])
 									})
 								} else if (subAttr[0] === 'oppholdSammeVilkaarPeriode') {
 									Object.assign(oppholdObj, {
 										...oppholdObj,
 										oppholdSammeVilkaarFraDato: subAttr[1].fra
-											? Formatters.formateStringDates(subAttr[1].fra)
+											? Formatters.formatStringDates(subAttr[1].fra)
 											: '',
 										oppholdSammeVilkaarTilDato: subAttr[1].til
-											? Formatters.formateStringDates(subAttr[1].til)
+											? Formatters.formatStringDates(subAttr[1].til)
 											: ''
 									})
 								} else {
@@ -517,7 +553,7 @@ const _mapRegistreValue = (key, value) => {
 							}
 							Object.assign(arbAdg, {
 								...arbAdg,
-								[arbAdgDato]: Formatters.formateStringDates(subAttr[1])
+								[arbAdgDato]: Formatters.formatStringDates(subAttr[1])
 							})
 						})
 					} else {

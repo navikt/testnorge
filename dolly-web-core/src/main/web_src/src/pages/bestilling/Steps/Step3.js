@@ -273,7 +273,8 @@ export default class Step3 extends PureComponent {
 			if (
 				item.id === 'barn_utvandret' ||
 				item.id === 'barn_innvandret' ||
-				item.id === 'barn_forsvunnet'
+				item.id === 'barn_forsvunnet' ||
+				item.id === 'barn_statsborgerskapInfo'
 			) {
 				let barnIndex = 0
 				if (header) barnIndex = header - 1
@@ -391,7 +392,6 @@ export default class Step3 extends PureComponent {
 		) {
 			return Formatters.showLabel(item.id, value)
 		}
-
 		if (
 			value &&
 			(item.id === 'soeknadOmBeskyttelseUnderBehandling' || item.id === 'harArbeidsAdgang')
