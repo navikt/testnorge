@@ -25,7 +25,7 @@
     </modules>
 
     <properties>
-        <application.name>dolly</application.name>
+        <application.name>dolly-backend</application.name>
         <application.version>${project.version}</application.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

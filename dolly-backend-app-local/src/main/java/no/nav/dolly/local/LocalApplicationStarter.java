@@ -37,7 +37,7 @@ public class LocalApplicationStarter {
                 .logStartupInfo(true)
                 .bannerMode(Banner.Mode.OFF)
                 .profiles("fasit")
-                .properties("fasit.url=https://fasit.adeo.no", "application.name=dolly")
+                .properties("fasit.url=https://fasit.adeo.no", "application.name=dolly-backend")
                 .run(arguments);
     }
 }
