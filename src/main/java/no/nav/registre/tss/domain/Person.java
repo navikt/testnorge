@@ -1,7 +1,5 @@
 package no.nav.registre.tss.domain;
 
-import static java.lang.Integer.parseInt;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,10 +7,15 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
+import static java.lang.Integer.parseInt;
+
 @Slf4j
 @Getter
 @NoArgsConstructor
 public class Person {
+
+    public static final int MIN_ALDER = 25;
+    public static final int MAX_ALDER = 70;
 
     private String fnr;
     private String navn;
@@ -21,7 +24,10 @@ public class Person {
     public Person(String fnr, String navn) {
         this.fnr = fnr;
         this.navn = navn;
-        this.alder = Math.toIntExact(ChronoUnit.YEARS.between(hentBursdag(fnr), LocalDate.now()));
+        if (!fnr.isEmpty())
+            this.alder = Math.toIntExact(ChronoUnit.YEARS.between(hentBursdag(fnr), LocalDate.now()));
+        else
+            this.alder = MIN_ALDER;
     }
 
     /**

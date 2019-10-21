@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static no.nav.registre.tss.domain.Person.MAX_ALDER;
+import static no.nav.registre.tss.domain.Person.MIN_ALDER;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.tss.consumer.rs.TssSyntetisererenConsumer;
 import no.nav.registre.tss.consumer.rs.response.TssMessage;
@@ -21,9 +23,6 @@ import no.nav.registre.tss.utils.RutineUtil;
 @Service
 @RequiredArgsConstructor
 public class SyntetiseringService {
-
-    private static final int MIN_ALDER = 25;
-    private static final int MAX_ALDER = 70;
 
     private final HodejegerenConsumer hodejegerenConsumer;
 
