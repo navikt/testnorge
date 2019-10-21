@@ -35,7 +35,7 @@ public class CsvFileService {
     public Map<TssType, List<String>> findExistingFromFile() {
         HashMap<TssType, List<String>> result = new HashMap<>();
         File file = new File(orgnrFilePath);
-        if (file.exists()) {
+        if (!file.exists()) {
             return result;
         }
         try {
