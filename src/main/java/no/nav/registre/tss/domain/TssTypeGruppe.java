@@ -165,7 +165,7 @@ public enum TssTypeGruppe {
             case UTL:
                 return UTL;
         }
-        throw new RuntimeException("Ukjent samhandler gruppe");
+        throw new RuntimeException("Ukjent samhandler gruppe: " + type);
     }
 
     public static boolean skalHaOrgnummer(TssTypeGruppe gruppe) {
