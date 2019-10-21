@@ -38,6 +38,9 @@ public class IdentController {
     @PostMapping("/samhandlere")
     public List<String> opprettSamhandlere(@RequestParam String miljoe, @RequestParam(required = false)
             List<TssTypeGruppe> eksluderteGrupper, @RequestBody List<String> identer) throws JMSException {
+        if (eksluderteGrupper == null) {
+            eksluderteGrupper = Collections.emptyList();
+        }
         return identService.opprettSamhandlereITss(miljoe.toLowerCase(), eksluderteGrupper, identer);
     }
 
