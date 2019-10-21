@@ -13,6 +13,8 @@ public class EregMapperRequest {
 
     private String orgnr;
     private Navn navn;
+    @Builder.Default
+    private String enhetstype = "BEDR";
     private List<Knytning> knytninger;
 
 }

@@ -90,6 +90,7 @@ public class EregService {
     private EregMapperRequest opprettEregRequest(TssType type, String orgnr) {
         return EregMapperRequest.builder()
                 .orgnr(orgnr)
+                .enhetstype("BEDR")
                 .knytninger(Collections.singletonList(Knytning.builder().orgnr(ASEnhet).build()))
                 .navn(Navn.builder()
                         .navneListe(Collections.singletonList(type.beskrivelse))
