@@ -61,6 +61,7 @@ public enum TssTypeGruppe {
             case AT:
             case AU:
             case BI:
+            case R:
             case ET:
             case FA:
             case FB:
@@ -79,6 +80,7 @@ public enum TssTypeGruppe {
             case OR:
             case PE:
             case PF:
+            case PS:
             case RA:
             case SP:
             case TH:
@@ -87,6 +89,7 @@ public enum TssTypeGruppe {
             case TT:
             case VE:
             case VP:
+            case MT:
                 return HPER;
             case INST:
                 return INST;
@@ -118,6 +121,7 @@ public enum TssTypeGruppe {
             case NK:
             case REGO:
             case RKK:
+            case RTK:
             case SK:
             case TK:
                 return NAV;
