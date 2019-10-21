@@ -38,7 +38,7 @@ public class EregService {
         var eksiterendeEnheter = csvFileService.findExistingFromFile();
 
         Map<TssType, Integer> oppdatertAntall = tssTypeAntallMap.entrySet().stream()
-                .peek(entry -> entry.setValue(entry.getValue() - eksiterendeEnheter.get(entry.getKey()).size()))
+                .peek(entry -> entry.setValue(entry.getValue() - eksiterendeEnheter.getOrDefault(entry.getKey(), new ArrayList<>()).size()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         Integer totalAntallOrganissasjoner = oppdatertAntall.values().stream().reduce(0, Integer::sum);
