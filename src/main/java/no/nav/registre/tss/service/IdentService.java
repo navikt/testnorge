@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.tss.consumer.rs.response.Response110;
@@ -63,8 +64,14 @@ public class IdentService {
         return jmsService.sendOgMotta910RutineFraTss(ident, type, koeNavn);
     }
 
-    public List<String> opprettSamhandlereITss(String miljoe, List<String> identer) {
-        List<Samhandler> samhandlere = getSamhandlere(miljoe, identer);
+    public List<String> opprettSamhandlereITss(String miljoe, List<TssTypeGruppe> eksluderteGrupper, List<String> identer) throws JMSException {
+
+        var tssResponse = jmsService.sendOgMotta910RutineFraTss(identer.stream()
+                .map(ident -> new Samhandler(new Person(ident, ""), TssType.LE)).collect(Collectors.toList()), jmsService.hentKoeNavnSamhandler(miljoe));
+
+        var ikkeEksisterendeIdenter = identer.stream().filter(ident -> !tssResponse.containsKey(ident)).collect(Collectors.toList());
+
+        List<Samhandler> samhandlere = getSamhandlere(miljoe, eksluderteGrupper, ikkeEksisterendeIdenter);
         Map<TssType, List<Samhandler>> samhandlerForType = samhandlere.stream()
                 .collect(Collectors.groupingBy(Samhandler::getType));
 
@@ -96,19 +103,29 @@ public class IdentService {
         return opprettSamhandler(miljoe, samhandlere);
     }
 
-    private List<Samhandler> getSamhandlere(String miljoe, List<String> identer) {
+    private List<Samhandler> getSamhandlere(String miljoe, List<TssTypeGruppe> eksluderteGrupper, List<String> identer) {
         List<Person> personer = hentPersondataFraHodejegeren(miljoe, identer);
-        Integer chunkSize = (personer.size() / TssType.values().length) - 1;
+        int size = (int) List.of(TssType.values()).stream().filter(type -> !TssTypeGruppe.skalHaOrgnummer(TssTypeGruppe.getGruppe(type))).count();
+
+        Integer chunkSize = (personer.size() / size);
         log.info("Lik fordeling blant samhandlere på størrelse " + chunkSize);
         int counter = 0;
         List<Samhandler> samhandlere = new ArrayList<>();
         for (TssType type : TssType.values()) {
-            samhandlere.addAll(personer.subList(counter, counter + chunkSize).stream()
-                    .map(person -> new Samhandler(person, type))
-                    .collect(Collectors.toList()));
-            counter += chunkSize;
+            TssTypeGruppe gruppe = TssTypeGruppe.getGruppe(type);
+            if (eksluderteGrupper.contains(gruppe)) {
+                continue;
+            }
+            if (!TssTypeGruppe.skalHaOrgnummer(gruppe)) {
+                samhandlere.addAll(personer.subList(counter, counter + chunkSize).stream()
+                        .map(person -> new Samhandler(person, type))
+                        .collect(Collectors.toList()));
+                counter += chunkSize;
+            } else if (TssTypeGruppe.skalHaOrgnummer(gruppe)) {
+                samhandlere.addAll(IntStream.range(0, chunkSize).mapToObj(ignored -> new Samhandler(new Person("", ""), type)).collect(Collectors.toList()));
+            }
         }
-        log.info("Antall identer ikke brukt: {}", personer.size() - counter);
+        log.info("Prøver å opprette {} antall samhandlere", samhandlere.size());
         return samhandlere;
     }
 

@@ -19,6 +19,7 @@ import java.util.Map;
 import no.nav.registre.tss.consumer.rs.response.Response910;
 import no.nav.registre.tss.domain.Samhandler;
 import no.nav.registre.tss.domain.TssType;
+import no.nav.registre.tss.domain.TssTypeGruppe;
 import no.nav.registre.tss.provider.rs.request.Rutine130Request;
 import no.nav.registre.tss.service.IdentService;
 
@@ -35,8 +36,9 @@ public class IdentController {
     }
 
     @PostMapping("/samhandlere")
-    public List<String> opprettSamhandlere(@RequestParam String miljoe, @RequestBody List<String> identer) {
-        return identService.opprettSamhandlereITss(miljoe.toLowerCase(), identer);
+    public List<String> opprettSamhandlere(@RequestParam String miljoe, @RequestParam(required = false)
+            List<TssTypeGruppe> eksluderteGrupper, @RequestBody List<String> identer) throws JMSException {
+        return identService.opprettSamhandlereITss(miljoe.toLowerCase(), eksluderteGrupper, identer);
     }
 
     @PostMapping("/samhandler")
