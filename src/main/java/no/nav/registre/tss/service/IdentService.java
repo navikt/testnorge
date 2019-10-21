@@ -75,20 +75,25 @@ public class IdentService {
                         .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().size()))
         );
 
-//        for (var entry : samhandlerForType.entrySet()) {
-//            List<String> orgnr = orgnrForType.get(entry.getKey());
-//            List<Samhandler> samhandlerListe = entry.getValue();
-//            for (int i = 0; i < orgnr.size(); i++) {
-//                if (samhandlerListe.size() <= i) {
-//                    log.warn("Fant ikke nok orgnr til å opprette for alle samhandlere, mangler {}", i - samhandlerListe.size());
-//                    break;
-//                }
-//                samhandlerListe.get(i).setIdent(orgnr.get(i));
-//            }
-//        }
-//
-//        return opprettSamhandler(miljoe, samhandlere);
-        return Collections.emptyList();
+        for (var entry : samhandlerForType.entrySet()) {
+            if (!TssTypeGruppe.skalHaOrgnummer(TssTypeGruppe.getGruppe(entry.getKey()))) {
+                continue;
+            }
+
+            List<String> orgnr = orgnrForType.get(entry.getKey());
+            List<Samhandler> samhandlerListe = entry.getValue();
+            for (int i = 0; i < samhandlerListe.size(); i++) {
+                if (orgnr.size() <= i) {
+                    log.info("Ikke nok orgnummere i forhold til samhandlere. Fjerner {} samhandlere", samhandlerListe.size() - orgnr.size());
+                    samhandlerListe = samhandlerListe.subList(0, i);
+                    break;
+                }
+                samhandlerListe.get(i).setIdent(orgnr.get(i));
+            }
+            entry.setValue(samhandlerListe);
+        }
+
+        return opprettSamhandler(miljoe, samhandlere);
     }
 
     private List<Samhandler> getSamhandlere(String miljoe, List<String> identer) {
