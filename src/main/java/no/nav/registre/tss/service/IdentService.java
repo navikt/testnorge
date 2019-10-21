@@ -65,9 +65,9 @@ public class IdentService {
 
     public List<String> opprettSamhandlereITss(String miljoe, List<String> identer) {
         List<Samhandler> samhandlere = getSamhandlere(miljoe, identer);
-        //TODO: Hent ut samhandlere fra tss basert på navnesøk. Deretter filtrer vekk eksisterende hvis de når antallet i distribusjonen
         Map<TssType, List<Samhandler>> samhandlerForType = samhandlere.stream()
                 .collect(Collectors.groupingBy(Samhandler::getType));
+
 
         Map<TssType, List<String>> orgnrForType = eregService.opprettEregEnheter(
                 samhandlerForType.entrySet().stream()
@@ -75,19 +75,20 @@ public class IdentService {
                         .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().size()))
         );
 
-        for (var entry : samhandlerForType.entrySet()) {
-            List<String> orgnr = orgnrForType.get(entry.getKey());
-            List<Samhandler> samhandlerListe = entry.getValue();
-            for (int i = 0; i < orgnr.size(); i++) {
-                if (samhandlerListe.size() <= i) {
-                    log.warn("Fant ikke nok orgnr til å opprette for alle samhandlere, mangler {}", i - samhandlerListe.size());
-                    break;
-                }
-                samhandlerListe.get(i).setIdent(orgnr.get(i));
-            }
-        }
-
-        return opprettSamhandler(miljoe, samhandlere);
+//        for (var entry : samhandlerForType.entrySet()) {
+//            List<String> orgnr = orgnrForType.get(entry.getKey());
+//            List<Samhandler> samhandlerListe = entry.getValue();
+//            for (int i = 0; i < orgnr.size(); i++) {
+//                if (samhandlerListe.size() <= i) {
+//                    log.warn("Fant ikke nok orgnr til å opprette for alle samhandlere, mangler {}", i - samhandlerListe.size());
+//                    break;
+//                }
+//                samhandlerListe.get(i).setIdent(orgnr.get(i));
+//            }
+//        }
+//
+//        return opprettSamhandler(miljoe, samhandlere);
+        return Collections.emptyList();
     }
 
     private List<Samhandler> getSamhandlere(String miljoe, List<String> identer) {

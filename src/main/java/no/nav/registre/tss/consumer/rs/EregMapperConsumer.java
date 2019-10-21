@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.tss.consumer.rs.request.EregMapperRequest;
 
@@ -29,7 +30,7 @@ public class EregMapperConsumer {
     private String eregMapperUrl;
 
     public boolean opprett(List<EregMapperRequest> data) {
-        log.info("Prøver å opprette følgende enheter i EREG: {}", data);
+        log.info("Prøver å opprette følgende enheter i EREG: {}", data.stream().map(EregMapperRequest::getOrgnr).collect(Collectors.toList()));
         UriTemplate uriTemplate = new UriTemplate(eregMapperUrl + "/v1/orkestrering/flatfil/jenkins?lastOpp=true&miljoe={miljoe}");
         RequestEntity<List<EregMapperRequest>> request = new RequestEntity<>(data, HttpMethod.POST, uriTemplate.expand(miljoe));
         ResponseEntity<Object> response = restTemplate.exchange(request, Object.class);

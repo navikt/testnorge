@@ -22,6 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
+        <opencsv.version>4.6</opencsv.version>
     </properties>
 
     <dependencies>
@@ -42,12 +43,6 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${springfox.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>3.8</version>
         </dependency>
 
         <!--Utility-->
@@ -107,6 +102,11 @@
             <artifactId>commons-codec</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>${opencsv.version}</version>
+        </dependency>
     </dependencies>
 
 

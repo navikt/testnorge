@@ -3,12 +3,11 @@ package no.nav.registre.tss.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -30,37 +29,53 @@ public class EregService {
 
     private final EregMapperConsumer eregMapperConsumer;
     private final EregConsumer eregConsumer;
+    private final CsvFileService csvFileService;
 
     @Value("${testnorge.ereg.enhet.as}")
     private String ASEnhet;
 
     public Map<TssType, List<String>> opprettEregEnheter(Map<TssType, Integer> tssTypeAntallMap) {
+        var eksiterendeEnheter = csvFileService.findExistingFromFile();
 
-        Integer totalAntallOrganissasjoner = tssTypeAntallMap.values().stream().reduce(0, Integer::sum);
-
-        List<String> orgnr = eregMapperConsumer.hentNyttOrgnr(totalAntallOrganissasjoner);
-
-        Map<TssType, List<String>> typeMedOrgnr = getTypeMedOrgnr(orgnr);
-        boolean sendtTilJenkins = eregMapperConsumer.opprett(typeMedOrgnr.entrySet().stream()
-                .map(entry -> entry.getValue().stream()
-                        .map(org -> opprettEregRequest(entry.getKey(), org))
-                        .collect(Collectors.toList()))
-                .flatMap(List::stream).collect(Collectors.toList())
-        );
-
-        if (!sendtTilJenkins)
-            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Kunne ikke opprette bedrifter i EREG");
-
-        Map<String, Boolean> enhetStatus = typeMedOrgnr.values().stream()
-                .map(orgnummere -> orgnummere.stream().collect(Collectors.toMap(Function.identity(), eregConsumer::verifiserEnhet)))
-                .flatMap(m -> m.entrySet().stream())
+        Map<TssType, Integer> oppdatertAntall = tssTypeAntallMap.entrySet().stream()
+                .peek(entry -> entry.setValue(entry.getValue() - eksiterendeEnheter.get(entry.getKey()).size()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        for (var entry : typeMedOrgnr.entrySet()) {
-            entry.setValue(entry.getValue().stream().filter(enhetStatus::get).collect(Collectors.toList()));
-        }
+        Integer totalAntallOrganissasjoner = oppdatertAntall.values().stream().reduce(0, Integer::sum);
 
-        return typeMedOrgnr;
+        List<String> orgnr = eregMapperConsumer.hentNyttOrgnr(totalAntallOrganissasjoner);
+        Map<TssType, List<String>> typeMedOrgnr = setOrgnrForType(orgnr, oppdatertAntall);
+
+        typeMedOrgnr.entrySet().stream().peek(entry -> log.info(entry.getKey().name() + " : " + entry.getValue().toString()));
+
+//        boolean sendtTilJenkins = eregMapperConsumer.opprett(typeMedOrgnr.entrySet().stream()
+//                .map(entry -> entry.getValue().stream()
+//                        .map(org -> opprettEregRequest(entry.getKey(), org))
+//                        .collect(Collectors.toList()))
+//                .flatMap(List::stream).collect(Collectors.toList())
+//        );
+//
+//        if (!sendtTilJenkins)
+//            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Kunne ikke opprette bedrifter i EREG");
+//
+//        Map<String, Boolean> enhetStatus = typeMedOrgnr.values().stream()
+//                .map(orgnummere -> orgnummere.stream().collect(Collectors.toMap(Function.identity(), eregConsumer::verifiserEnhet)))
+//                .flatMap(m -> m.entrySet().stream())
+//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+//
+//
+//        for (var entry : typeMedOrgnr.entrySet()) {
+//            entry.setValue(entry.getValue().stream().filter(enhetStatus::get).collect(Collectors.toList()));
+//        }
+
+//        Map<TssType, List<String>> opprettedeEnheter = typeMedOrgnr.entrySet().stream()
+//                .collect(Collectors.toMap(Map.Entry::getKey,
+//                        entry -> entry.getValue().stream().filter(enhetStatus::get).collect(Collectors.toList())));
+//
+//        csvFileService.writeIfNotExist(opprettedeEnheter);
+
+//        return typeMedOrgnr;
+        return Collections.emptyMap();
     }
 
     private Map<TssType, List<String>> getTypeMedOrgnr(List<String> orgnr) {
@@ -77,6 +92,16 @@ public class EregService {
             counter += chunkSize;
         }
         return typeMedOrgnr;
+    }
+
+    private Map<TssType, List<String>> setOrgnrForType(List<String> orgnr, Map<TssType, Integer> antallPrType) {
+        int counter = 0;
+        Map<TssType, List<String>> result = new HashMap<>();
+        for (Map.Entry<TssType, Integer> entry : antallPrType.entrySet()) {
+            result.put(entry.getKey(), orgnr.subList(counter, counter + entry.getValue()));
+            counter += entry.getValue();
+        }
+        return result;
     }
 
     private EregMapperRequest opprettEregRequest(TssType type, String orgnr) {
