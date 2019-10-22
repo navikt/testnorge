@@ -48,6 +48,12 @@ public class CsvFileService {
             while ((nextRecord = csvReader.readNext()) != null) {
                 for (int i = 0; i < typesAsString.size(); i++) {
                     var key = TssType.valueOf(typesAsString.get(i));
+                    if (nextRecord.length <= i) {
+                        continue;
+                    }
+                    if (nextRecord[i] == null || nextRecord[i].isEmpty()) {
+                        continue;
+                    }
                     result.get(key).add(nextRecord[i]);
                 }
             }
