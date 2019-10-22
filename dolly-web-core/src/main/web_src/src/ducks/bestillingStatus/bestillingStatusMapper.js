@@ -45,12 +45,12 @@ const extractBestillingstatusKode = (bestilling, harAvvik, antallIdenterOpprette
 	return bestilling.stoppet
 		? 'Stoppet'
 		: !bestilling.ferdig
-			? 'Pågår'
-			: antallIdenterOpprettet === 0
-				? 'Feilet'
-				: harAvvik
-					? 'Avvik'
-					: 'Ferdig'
+		? 'Pågår'
+		: antallIdenterOpprettet === 0
+		? 'Feilet'
+		: harAvvik
+		? 'Avvik'
+		: 'Ferdig'
 }
 
 /**

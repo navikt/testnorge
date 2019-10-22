@@ -327,10 +327,10 @@ export function mapUdiData(udiData, asylsøker) {
 		udiData.oppholdStatus && udiData.oppholdStatus.oppholdSammeVilkaar
 			? 'Oppholdstillatelse eller opphold på samme vilkår'
 			: udiData.oppholdStatus && udiData.oppholdStatus.uavklart
-				? 'Uavklart'
-				: udiData.harOppholdsTillatelse === false
-					? 'Ikke oppholdstillatalse eller ikke opphold på samme vilkår'
-					: null
+			? 'Uavklart'
+			: udiData.harOppholdsTillatelse === false
+			? 'Ikke oppholdstillatalse eller ikke opphold på samme vilkår'
+			: null
 
 	const oppholdsrett = Boolean(currentOppholdsrettType)
 	const tredjelandsborger = Boolean(currentTredjelandsborgereStatus)
@@ -343,8 +343,8 @@ export function mapUdiData(udiData, asylsøker) {
 				value: oppholdsrett
 					? 'EØS- eller EFTA-opphold'
 					: tredjelandsborger
-						? 'Tredjelandsborger'
-						: null
+					? 'Tredjelandsborger'
+					: null
 			},
 			{
 				id: 'typeOpphold',

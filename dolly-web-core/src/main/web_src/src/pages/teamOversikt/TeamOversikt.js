@@ -19,12 +19,9 @@ export default function TeamOversikt({
 	const [visning, setVisning] = useState('mine')
 	const [opprettTeamState, visOpprettTeam, skjulOpprettTeam] = useBoolean(false)
 
-	useEffect(
-		() => {
-			visning === 'mine' ? fetchTeamsForUser() : fetchAllTeams()
-		},
-		[visning]
-	)
+	useEffect(() => {
+		visning === 'mine' ? fetchTeamsForUser() : fetchAllTeams()
+	}, [visning])
 
 	const byttVisning = event => setVisning(event.target.value)
 

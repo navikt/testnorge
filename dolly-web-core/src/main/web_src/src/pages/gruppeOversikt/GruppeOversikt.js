@@ -19,12 +19,9 @@ export default function GruppeOversikt({
 	const [visning, setVisning] = useState('mine')
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
 
-	useEffect(
-		() => {
-			visning === 'mine' ? getMineGrupper() : getGrupper()
-		},
-		[visning]
-	)
+	useEffect(() => {
+		visning === 'mine' ? getMineGrupper() : getGrupper()
+	}, [visning])
 
 	const byttVisning = event => setVisning(event.target.value)
 

@@ -15,7 +15,7 @@ export const redirectReducer = (state = null, action) => {
 		case success(bestillingActions.postBestilling):
 			return `/gruppe/${action.payload.data.gruppeId}`
 		case success(bestillingActions.postBestillingFraEksisterendeIdenter):
-			return `/gruppe/${action.payload.data.gruppeId}` 
+			return `/gruppe/${action.payload.data.gruppeId}`
 		case success(deleteGruppe):
 			return '/'
 		case success(teamActions.api.delete):

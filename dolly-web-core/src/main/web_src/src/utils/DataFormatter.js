@@ -101,8 +101,8 @@ Formatters.oversettBoolean = value => {
 	return value === true || value === 'true'
 		? 'Ja'
 		: value === false || value === 'false'
-			? 'Nei'
-			: value
+		? 'Nei'
+		: value
 }
 
 Formatters.booleanToServicebehov = value => {

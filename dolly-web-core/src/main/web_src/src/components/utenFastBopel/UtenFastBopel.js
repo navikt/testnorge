@@ -6,7 +6,6 @@ import { FormikDollySelect } from '~/components/fields/Select/Select'
 import Button from '~/components/ui/button/Button'
 import './UtenFastBopel.less'
 
-
 export default class UtenFastBopel extends Component {
 	state = {
 		harEkstraDiskresjonskode: false
@@ -60,30 +59,28 @@ export default class UtenFastBopel extends Component {
 						{...componentProps}
 						{...item.inputTypeAttributes}
 					/>
-					{valgteVerdier.spesreg === 'UFB' &&
-						!this.state.harEkstraDiskresjonskode && (
-							<Button
-								className="flexbox--align-center field-group-add"
-								kind="add-circle"
-								onClick={this._onClickEkstraDiskresjonskode}
-							>
-								DISKRESJONSKODE
-							</Button>
-						)}
-					{valgteVerdier.spesreg === 'UFB' &&
-						this.state.harEkstraDiskresjonskode && (
-							<div className="ekstra-diskresjonskode">
-								<Field
-									key={'spesreg'}
-									name={'spesreg2'}
-									label={''}
-									component={InputComponent}
-									size={item.size}
-									{...componentPropsUtenUfb}
-								/>
-								<Button className="x-knapp" kind="remove-circle" onClick={this._onRemoveButton} />
-							</div>
-						)}
+					{valgteVerdier.spesreg === 'UFB' && !this.state.harEkstraDiskresjonskode && (
+						<Button
+							className="flexbox--align-center field-group-add"
+							kind="add-circle"
+							onClick={this._onClickEkstraDiskresjonskode}
+						>
+							DISKRESJONSKODE
+						</Button>
+					)}
+					{valgteVerdier.spesreg === 'UFB' && this.state.harEkstraDiskresjonskode && (
+						<div className="ekstra-diskresjonskode">
+							<Field
+								key={'spesreg'}
+								name={'spesreg2'}
+								label={''}
+								component={InputComponent}
+								size={item.size}
+								{...componentPropsUtenUfb}
+							/>
+							<Button className="x-knapp" kind="remove-circle" onClick={this._onRemoveButton} />
+						</div>
+					)}
 				</div>
 
 				{valgteVerdier.spesreg === 'UFB' && (

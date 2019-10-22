@@ -271,8 +271,8 @@ export function mapBestillingData(bestillingData) {
 				const navnType = doedsboKriterier.adressat.navn
 					? 'navn'
 					: doedsboKriterier.adressat.kontaktperson
-						? 'kontaktperson'
-						: null
+					? 'kontaktperson'
+					: null
 				const doedsbo = {
 					header: 'Kontaktinformasjon for dødsbo',
 					items: [
@@ -463,10 +463,10 @@ export function mapBestillingData(bestillingData) {
 				oppholdKriterier && oppholdKriterier.oppholdSammeVilkaar
 					? 'Oppholdstillatelse eller opphold på samme vilkår'
 					: oppholdKriterier && oppholdKriterier.uavklart
-						? 'Uavklart'
-						: udiStubKriterier.harOppholdsTillatelse === false
-							? 'Ikke oppholdstillatalse eller ikke opphold på samme vilkår'
-							: null
+					? 'Uavklart'
+					: udiStubKriterier.harOppholdsTillatelse === false
+					? 'Ikke oppholdstillatalse eller ikke opphold på samme vilkår'
+					: null
 
 			const oppholdsrett = Boolean(currentOppholdsrettType)
 			const tredjelandsborger = Boolean(currentTredjelandsborgereStatus)
