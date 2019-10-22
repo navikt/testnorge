@@ -2,7 +2,9 @@ package no.nav.registre.tss.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.jms.JMSException;
 import java.util.ArrayList;
@@ -77,13 +79,8 @@ public class IdentService {
 
 
         Map<TssType, List<String>> orgnrForType = eregService.hentEnheterIEreg();
-
         if (orgnrForType.isEmpty()) {
-            orgnrForType = eregService.opprettEregEnheter(
-                    samhandlerForType.entrySet().stream()
-                            .filter(e -> TssTypeGruppe.skalHaOrgnummer(TssTypeGruppe.getGruppe(e.getKey())))
-                            .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().size()))
-            );
+            throw new HttpClientErrorException(HttpStatus.FAILED_DEPENDENCY, "Bedrifter må eksistere i EREG og være lagt til i csv fil lokalt i testnorge-tss. Kontakt administrator av applikasjonen");
         }
 
         for (var entry : samhandlerForType.entrySet()) {

@@ -77,9 +77,6 @@ public class EregService {
         Map<TssType, List<String>> opprettedeEnheter = typeMedOrgnr.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
                         entry -> entry.getValue().stream().filter(enhetStatus::get).collect(Collectors.toList())));
-
-        csvFileService.writeIfNotExist(opprettedeEnheter);
-
         return typeMedOrgnr;
     }
 
