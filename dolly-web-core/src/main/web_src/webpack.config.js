@@ -4,7 +4,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
-const Dotenv = require('dotenv-webpack')
 const pkg = require('./package.json')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 
@@ -111,12 +110,7 @@ const webpackConfig = {
 
 // If webpack dev server
 if (TARGET === 'start') {
-	webpackConfig.plugins = [
-		new Dotenv({
-			path: path.resolve(__dirname, '.env'),
-			systemvars: true
-		})
-	].concat(webpackConfig.plugins)
+	// Ingen endringer
 }
 
 // If dev build
@@ -126,13 +120,9 @@ if (TARGET === 'build-dev') {
 		filename: 'bundle.js',
 		publicPath: '/'
 	}
-	webpackConfig.plugins = [
-		new CleanWebpackPlugin([outputDir.development]),
-		new Dotenv({
-			path: path.resolve(__dirname, '.env'),
-			systemvars: true
-		})
-	].concat(webpackConfig.plugins)
+	webpackConfig.plugins = [new CleanWebpackPlugin([outputDir.development])].concat(
+		webpackConfig.plugins
+	)
 }
 
 // If production build
@@ -144,13 +134,7 @@ if (TARGET === 'build') {
 		filename: 'bundle.[contenthash:8].js',
 		publicPath: '/'
 	}
-	webpackConfig.plugins = [
-		new CleanWebpackPlugin([outputDir.production]),
-		new Dotenv({
-			path: path.resolve(__dirname, '.env'),
-			systemvars: true
-		})
-	]
+	webpackConfig.plugins = [new CleanWebpackPlugin([outputDir.production])]
 		.concat(webpackConfig.plugins)
 		.concat([
 			new OptimizeCssAssetsPlugin({

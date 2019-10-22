@@ -36,9 +36,6 @@ const configureReduxStore = history => {
 		routerMiddleware(history)
 	]
 
-	// * Trenger ikke denne hvis du foretrekker redux chrome-extension.
-	// addReduxLoggerToConsole(allMiddleware)
-
 	const rootReducer = history =>
 		combineReducers({
 			router: connectRouter(history),
@@ -57,14 +54,6 @@ const configureReduxStore = history => {
 		})
 
 	return createStore(rootReducer(history), composeWithDevTools(applyMiddleware(...allMiddleware)))
-}
-
-const addReduxLoggerToConsole = allMiddleware => {
-	if (process.env.NODE_ENV !== `production`) {
-		const createLogger = require(`redux-logger`).createLogger
-		const logger = createLogger({ collapsed: true })
-		allMiddleware.push(logger)
-	}
 }
 
 export default configureReduxStore(history)
