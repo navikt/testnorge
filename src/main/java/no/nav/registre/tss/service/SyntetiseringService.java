@@ -3,7 +3,9 @@ package no.nav.registre.tss.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +53,10 @@ public class SyntetiseringService {
 
     public List<String> opprettSyntetiskeTssRutiner(List<Samhandler> samhandlere) {
         Map<String, List<TssMessage>> syntetiskeTssRutiner = tssSyntetisererenConsumer.hentSyntetiskeTssRutiner(samhandlere);
+        if (syntetiskeTssRutiner == null) {
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Kunne ikke hente rutiner fra synt");
+        }
+        log.info("Størrelse på rutiner hentet fra synt: {}", syntetiskeTssRutiner.size());
         List<String> flatfiler = new ArrayList<>(syntetiskeTssRutiner.values().size());
 
         for (List<TssMessage> rutiner : syntetiskeTssRutiner.values()) {
