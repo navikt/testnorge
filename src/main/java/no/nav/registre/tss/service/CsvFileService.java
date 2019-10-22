@@ -51,7 +51,7 @@ public class CsvFileService {
                     if (nextRecord.length <= i) {
                         continue;
                     }
-                    if (nextRecord[i] == null || nextRecord[i].isEmpty()) {
+                    if (nextRecord[i] == null || nextRecord[i].isEmpty() || nextRecord[i].trim().isEmpty()) {
                         continue;
                     }
                     result.get(key).add(nextRecord[i]);
