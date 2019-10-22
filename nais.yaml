@@ -35,11 +35,6 @@ fasitResources:
       issuerUrl: freg.security.oidc.idp.openam.issuerUrl
       jwksUrl: freg.security.oidc.idp.openam.jwksUrl
 
-  - alias: jira.host
-    resourceType: baseurl
-    propertyMap:
-      url: jira.host
-
   - alias: srvdolly-test-env
     resourceType: credential
     propertyMap:
