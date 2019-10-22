@@ -11,9 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,7 +41,8 @@ public class CsvFileService {
             return result;
         }
         try {
-            FileReader reader = new FileReader(file.getFile());
+            Reader reader = Files.newBufferedReader(Paths.get(
+                    ClassLoader.getSystemResource(orgnrFilePath).toURI()));
             CSVReader csvReader = new CSVReader(reader);
             List<String> typesAsString = Arrays.asList(csvReader.readNext());
             String[] nextRecord;
@@ -57,6 +61,8 @@ public class CsvFileService {
         } catch (IOException e) {
             log.error(e.getLocalizedMessage(), e);
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        } catch (URISyntaxException e) {
+            log.error(e.getMessage());
         }
         return result;
     }
@@ -85,7 +91,8 @@ public class CsvFileService {
             }
         }
         try {
-            FileWriter outputfile = new FileWriter(file.getFile());
+            Writer outputfile = Files.newBufferedWriter(Paths.get(
+                    ClassLoader.getSystemResource(orgnrFilePath).toURI()));
             CSVWriter writer = new CSVWriter(outputfile);
 
             writer.writeNext((String[]) types.toArray());
@@ -93,8 +100,8 @@ public class CsvFileService {
                 writer.writeNext((String[]) row.toArray());
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | URISyntaxException e) {
+            log.error(e.getMessage());
         }
 
     }
