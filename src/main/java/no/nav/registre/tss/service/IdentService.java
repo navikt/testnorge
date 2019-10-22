@@ -101,7 +101,7 @@ public class IdentService {
             entry.setValue(samhandlerListe);
         }
 
-        return opprettSamhandler(miljoe, samhandlere);
+        return opprettSamhandler(miljoe, samhandlerForType.values().stream().flatMap(List::stream).collect(Collectors.toList()));
     }
 
     private List<Samhandler> getSamhandlere(String miljoe, List<TssTypeGruppe> eksluderteGrupper, List<String> identer) {
