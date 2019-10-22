@@ -1,5 +1,5 @@
 agileApplicationPipeline {
-    applicationName = "dolly-web"
+    applicationName = "dolly"
     javaVersion = "1.8"
     environment = "Q1"
     branchDeployments = [
