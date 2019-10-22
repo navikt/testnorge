@@ -111,7 +111,7 @@ export default class DollyEndpoints {
 	}
 
 	static openAmBestilling(bestillingId) {
-		return `${openamBase}/bestilling/{bestillingId}?bestillingId=${bestillingId}`
+		return `${openamBase}/bestilling/${bestillingId}?bestillingId=${bestillingId}`
 	}
 
 	static removeBestilling(bestillingId) {

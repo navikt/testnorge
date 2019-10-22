@@ -24,12 +24,6 @@ const outputDir = {
 	production: '../../../target/classes/public'
 }
 
-const corsHeaders = {
-	"Access-Control-Allow-Origin": "*",
-	"Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-	"Access-Control-Allow-Headers": "content-type, Authorization"
-  };
-
 const webpackConfig = {
 	mode: process.env.NODE_ENV,
 	devtool: 'source-map',
@@ -43,16 +37,7 @@ const webpackConfig = {
 	devServer: {
 		stats: 'minimal',
 		contentBase: path.join(__dirname, 'public'),
-		historyApiFallback: true,
-		proxy: {
-			"/api": {
-				secure: false,
-				target: 'http://localhost:8020', 
-				// target: 'https://dolly-web-u2.nais.preprod.local', 
-				headers: corsHeaders,
-				changeOrigin: true,
-			}
-		}
+		historyApiFallback: true
 	},
 	plugins: [
 		new webpack.DefinePlugin({
@@ -128,7 +113,7 @@ const webpackConfig = {
 if (TARGET === 'start') {
 	webpackConfig.plugins = [
 		new Dotenv({
-			path: path.resolve(__dirname, '.env.utv'),
+			path: path.resolve(__dirname, '.env'),
 			systemvars: true
 		})
 	].concat(webpackConfig.plugins)
@@ -144,7 +129,7 @@ if (TARGET === 'build-dev') {
 	webpackConfig.plugins = [
 		new CleanWebpackPlugin([outputDir.development]),
 		new Dotenv({
-			path: path.resolve(__dirname, '.env.utv'),
+			path: path.resolve(__dirname, '.env'),
 			systemvars: true
 		})
 	].concat(webpackConfig.plugins)
@@ -162,7 +147,7 @@ if (TARGET === 'build') {
 	webpackConfig.plugins = [
 		new CleanWebpackPlugin([outputDir.production]),
 		new Dotenv({
-			path: path.resolve(__dirname, '.env.prod'),
+			path: path.resolve(__dirname, '.env'),
 			systemvars: true
 		})
 	]
