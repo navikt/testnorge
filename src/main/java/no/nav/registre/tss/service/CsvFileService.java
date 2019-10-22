@@ -5,16 +5,15 @@ import com.opencsv.CSVWriter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 
-import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,12 +33,12 @@ public class CsvFileService {
 
     public Map<TssType, List<String>> findExistingFromFile() {
         HashMap<TssType, List<String>> result = new HashMap<>();
-        File file = new File(orgnrFilePath);
+        Resource file = new ClassPathResource(orgnrFilePath);
         if (!file.exists()) {
             return result;
         }
         try {
-            Reader reader = Files.newBufferedReader(Paths.get(orgnrFilePath));
+            FileReader reader = new FileReader(file.getFile());
             CSVReader csvReader = new CSVReader(reader);
             List<String> typesAsString = Arrays.asList(csvReader.readNext());
             String[] nextRecord;
@@ -64,7 +63,7 @@ public class CsvFileService {
 
     public void writeIfNotExist(Map<TssType, List<String>> orgnrByType) {
 
-        File file = new File(orgnrFilePath);
+        Resource file = new ClassPathResource(orgnrFilePath);
         if (file.exists()) {
             return;
         }
@@ -86,7 +85,7 @@ public class CsvFileService {
             }
         }
         try {
-            FileWriter outputfile = new FileWriter(file);
+            FileWriter outputfile = new FileWriter(file.getFile());
             CSVWriter writer = new CSVWriter(outputfile);
 
             writer.writeNext((String[]) types.toArray());

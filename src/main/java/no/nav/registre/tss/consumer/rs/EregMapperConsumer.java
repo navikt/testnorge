@@ -33,7 +33,7 @@ public class EregMapperConsumer {
         log.info("Prøver å opprette følgende enheter i EREG: {}", data.stream().map(EregMapperRequest::getOrgnr).collect(Collectors.toList()));
         UriTemplate uriTemplate = new UriTemplate(eregMapperUrl + "/v1/orkestrering/opprett?lastOpp=true&miljoe={miljoe}");
         RequestEntity<List<EregMapperRequest>> request = new RequestEntity<>(data, HttpMethod.POST, uriTemplate.expand(miljoe));
-        ResponseEntity<Object> response = restTemplate.exchange(request, Object.class);
+        ResponseEntity<String> response = restTemplate.exchange(request, String.class);
         if (response.getStatusCode().is2xxSuccessful()) {
             log.info("Oppretting av EREG enheter er sendt til ereg i {}", miljoe);
         }

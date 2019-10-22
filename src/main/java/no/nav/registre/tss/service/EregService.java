@@ -35,6 +35,10 @@ public class EregService {
     @Value("${testnorge.ereg.enhet.as}")
     private String ASEnhet;
 
+    Map<TssType, List<String>> hentEnheterIEreg() {
+        return csvFileService.findExistingFromFile();
+    }
+
     Map<TssType, List<String>> opprettEregEnheter(Map<TssType, Integer> tssTypeAntallMap) {
         var eksiterendeEnheter = csvFileService.findExistingFromFile();
 
