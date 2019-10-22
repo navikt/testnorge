@@ -59,7 +59,12 @@ public class SyntetiseringService {
         log.info("Størrelse på rutiner hentet fra synt: {}", syntetiskeTssRutiner.size());
         List<String> flatfiler = new ArrayList<>(syntetiskeTssRutiner.values().size());
 
-        for (List<TssMessage> rutiner : syntetiskeTssRutiner.values()) {
+        for (var entry : syntetiskeTssRutiner.entrySet()) {
+            List<TssMessage> rutiner = entry.getValue();
+            if (rutiner == null) {
+                log.warn("Fikk ingen rutine for ident: {}", entry.getKey());
+                continue;
+            }
             flatfiler.add(RutineUtil.opprettFlatfil(rutiner));
         }
 
