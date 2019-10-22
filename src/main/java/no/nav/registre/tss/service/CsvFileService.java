@@ -42,7 +42,7 @@ public class CsvFileService {
             String[] nextRecord;
 
             for (String type : typesAsString) {
-                result.put(TssType.valueOf(type), new ArrayList<>());
+                result.put(TssType.valueOf(type.trim()), new ArrayList<>());
             }
 
             while ((nextRecord = csvReader.readNext()) != null) {
