@@ -76,11 +76,15 @@ public class IdentService {
                 .collect(Collectors.groupingBy(Samhandler::getType));
 
 
-        Map<TssType, List<String>> orgnrForType = eregService.opprettEregEnheter(
-                samhandlerForType.entrySet().stream()
-                        .filter(e -> TssTypeGruppe.skalHaOrgnummer(TssTypeGruppe.getGruppe(e.getKey())))
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().size()))
-        );
+        Map<TssType, List<String>> orgnrForType = eregService.hentEnheterIEreg();
+
+        if (orgnrForType.isEmpty()) {
+            orgnrForType = eregService.opprettEregEnheter(
+                    samhandlerForType.entrySet().stream()
+                            .filter(e -> TssTypeGruppe.skalHaOrgnummer(TssTypeGruppe.getGruppe(e.getKey())))
+                            .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().size()))
+            );
+        }
 
         for (var entry : samhandlerForType.entrySet()) {
             if (!TssTypeGruppe.skalHaOrgnummer(TssTypeGruppe.getGruppe(entry.getKey()))) {
