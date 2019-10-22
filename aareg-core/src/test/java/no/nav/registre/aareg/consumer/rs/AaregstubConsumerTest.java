@@ -5,7 +5,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static no.nav.registre.aareg.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -28,8 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
-import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -43,7 +41,6 @@ public class AaregstubConsumerTest {
     private String fnr1 = "01010101010";
     private String fnr2 = "02020202020";
     private String fnr3 = "02020202020";
-    private Boolean lagreIAareg = false;
 
     @Test
     public void shouldGetAlleArbeidstakere() {
@@ -58,29 +55,15 @@ public class AaregstubConsumerTest {
 
     @Test
     public void shouldSendSyntetiskeMeldinger() {
-        List<ArbeidsforholdsResponse> syntetiserteMeldinger = new ArrayList<>();
+        List<RsAaregOpprettRequest> syntetiserteMeldinger = new ArrayList<>();
 
         stubAaregstubLagreConsumer();
 
-        StatusFraAaregstubResponse statusFraAaregstubResponse = aaregstubConsumer.sendTilAaregstub(syntetiserteMeldinger, lagreIAareg);
+        List<String> statusFraAaregstubResponse = aaregstubConsumer.sendTilAaregstub(syntetiserteMeldinger);
 
-        assertThat(statusFraAaregstubResponse.getIdenterLagretIStub().size(), equalTo(2));
-        assertThat(statusFraAaregstubResponse.getIdenterLagretIStub().get(0), equalTo(fnr1));
-        assertThat(statusFraAaregstubResponse.getIdenterLagretIStub().get(1), equalTo(fnr2));
-    }
-
-    @Test
-    public void shouldSendAndSaveSyntetiskeMeldinger() {
-        List<ArbeidsforholdsResponse> syntetiserteMeldinger = new ArrayList<>();
-        lagreIAareg = true;
-
-        stubAaregstubLagreIAaregConsumer();
-
-        StatusFraAaregstubResponse statusFraAaregstubResponse = aaregstubConsumer.sendTilAaregstub(syntetiserteMeldinger, lagreIAareg);
-
-        assertThat(statusFraAaregstubResponse.getIdenterLagretIAareg().size(), equalTo(2));
-        assertThat(statusFraAaregstubResponse.getIdenterLagretIAareg().get(0), equalTo(fnr1));
-        assertThat(statusFraAaregstubResponse.getIdenterLagretIAareg().get(1), equalTo(fnr2));
+        assertThat(statusFraAaregstubResponse.size(), equalTo(2));
+        assertThat(statusFraAaregstubResponse.get(0), equalTo(fnr1));
+        assertThat(statusFraAaregstubResponse.get(1), equalTo(fnr2));
     }
 
     @Test
@@ -110,15 +93,7 @@ public class AaregstubConsumerTest {
                 .withRequestBody(equalToJson("[]"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("statusFraAaregstub.json"))));
-    }
-
-    private void stubAaregstubLagreIAaregConsumer() {
-        stubFor(post(urlEqualTo("/aaregstub/api/v1/lagreArbeidsforhold?lagreIAareg=" + lagreIAareg))
-                .withRequestBody(equalToJson("[]"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("statusFraAaregstub.json"))));
+                        .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
     }
 
     private void stubAaregstubWithEmptyBody() {

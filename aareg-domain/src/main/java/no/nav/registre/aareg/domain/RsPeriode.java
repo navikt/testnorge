@@ -10,12 +10,11 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class AnsettelsesPeriode {
+public class RsPeriode {
 
     private LocalDateTime fom;
-
     private LocalDateTime tom;
 }

@@ -1,6 +1,5 @@
 package no.nav.registre.aareg.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,17 +8,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Arbeidstaker {
+public class RsPersonAareg {
 
-    @JsonProperty("aktoertype")
     private String aktoertype;
-
-    @JsonProperty("ident")
     private String ident;
-
-    @JsonProperty("identtype")
     private String identtype;
 }

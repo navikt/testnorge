@@ -6,16 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class AnsettelsesPeriode {
+public class RsOrganisasjon implements RsAktoer {
 
-    private LocalDateTime fom;
-
-    private LocalDateTime tom;
+    private String orgnummer;
 }

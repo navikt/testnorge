@@ -1,17 +1,21 @@
 package no.nav.registre.aareg.service;
 
+import static no.nav.registre.aareg.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,23 +26,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
-import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
-import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
-import no.nav.registre.aareg.domain.Arbeidsforhold;
-import no.nav.registre.aareg.domain.Arbeidsgiver;
-import no.nav.registre.aareg.domain.Arbeidstaker;
+import no.nav.registre.aareg.consumer.rs.HodejegerenHistorikkConsumer;
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
+import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -58,6 +60,12 @@ public class SyntetiseringServiceTest {
     @Mock
     private AaregstubConsumer aaregstubConsumer;
 
+    @Mock
+    private AaregService aaregService;
+
+    @Mock
+    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
+
     @InjectMocks
     private SyntetiseringService syntetiseringService;
 
@@ -68,14 +76,23 @@ public class SyntetiseringServiceTest {
     private String fnr2 = "02020202020";
     private SyntetiserAaregRequest syntetiserAaregRequest;
     private List<String> fnrs;
-    private List<ArbeidsforholdsResponse> syntetiserteMeldinger;
-    private Boolean lagreIAareg = false;
+    private List<RsAaregOpprettRequest> syntetiserteMeldinger;
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, antallMeldinger);
         fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2));
         syntetiserteMeldinger = new ArrayList<>();
+
+        String resourceFileContent = getResourceFileContent("arbeidsforholdsmelding.json");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        List list = objectMapper.readValue(resourceFileContent, List.class);
+        for (Object o : list) {
+            syntetiserteMeldinger.add(objectMapper.convertValue(o, RsAaregOpprettRequest.class));
+        }
+
         when(hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER)).thenReturn(fnrs);
         when(aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(anyList())).thenReturn(syntetiserteMeldinger);
         when(aaregstubConsumer.hentEksisterendeIdenter()).thenReturn(new ArrayList<>());
@@ -83,29 +100,21 @@ public class SyntetiseringServiceTest {
 
     @Test
     public void shouldOppretteArbeidshistorikk() {
-        when(aaregstubConsumer.sendTilAaregstub(anyList(), eq(lagreIAareg))).thenReturn(StatusFraAaregstubResponse.builder()
-                .identerLagretIStub(Collections.singletonList(fnr1))
-                .build());
+        Map<String, String> status = new HashMap<>();
+        status.put(miljoe, HttpStatus.CREATED.toString());
+        RsAaregResponse rsAaregResponse = RsAaregResponse.builder()
+                .statusPerMiljoe(status)
+                .build();
 
-        ResponseEntity response = syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, lagreIAareg);
+        when(aaregService.opprettArbeidsforhold(any())).thenReturn(rsAaregResponse);
+        when(aaregstubConsumer.sendTilAaregstub(anyList())).thenReturn(Collections.singletonList(fnr1));
 
-        verify(aaregstubConsumer).sendTilAaregstub(syntetiserteMeldinger, lagreIAareg);
+        ResponseEntity response = syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest);
+
+        verify(aaregstubConsumer).sendTilAaregstub(Collections.singletonList(syntetiserteMeldinger.get(0)));
+        verify(aaregstubConsumer).sendTilAaregstub(Collections.singletonList(syntetiserteMeldinger.get(1)));
+        verify(hodejegerenHistorikkConsumer, times(2)).saveHistory(any());
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
-    }
-
-    @Test
-    public void shouldReturnErrorOnPartialResult() {
-        Map<String, String> identerSomIkkeKunneLagres = new HashMap<>();
-        identerSomIkkeKunneLagres.put(fnr2, "Feil, OpprettArbeidsforholdUgyldigInput -> Ugyldig input");
-        when(aaregstubConsumer.sendTilAaregstub(anyList(), eq(lagreIAareg))).thenReturn(StatusFraAaregstubResponse.builder()
-                .identerSomIkkeKunneLagresIAareg(identerSomIkkeKunneLagres)
-                .build());
-
-        ResponseEntity response = syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, lagreIAareg);
-
-        verify(aaregstubConsumer).sendTilAaregstub(syntetiserteMeldinger, lagreIAareg);
-        assertThat(response.getStatusCode(), is(HttpStatus.CONFLICT));
-        assertThat(Objects.requireNonNull(response.getBody()).toString(), containsString(fnr2));
     }
 
     @Test
@@ -115,55 +124,11 @@ public class SyntetiseringServiceTest {
         listAppender.start();
         logger.addAppender(listAppender);
 
-        when(aaregstubConsumer.sendTilAaregstub(anyList(), eq(lagreIAareg))).thenReturn(StatusFraAaregstubResponse.builder().build());
-
         syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, 3);
 
-        syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, lagreIAareg);
+        syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest);
 
         assertThat(listAppender.list.size(), is(equalTo(2)));
         assertThat(listAppender.list.get(0).toString(), containsString("Fant ikke nok ledige identer i avspillergruppe. Lager arbeidsforhold på " + antallMeldinger + " identer."));
-    }
-
-    @Test
-    public void shouldSendArbeidsforholdToAareg() {
-        String arbeidsforholdId = "123";
-        List<ArbeidsforholdsResponse> arbeidsforhold = new ArrayList<>();
-        ArbeidsforholdsResponse nyttArbeidsforhold = ArbeidsforholdsResponse.builder()
-                .environments(Collections.singletonList(miljoe))
-                .arbeidsforhold(Arbeidsforhold.builder()
-                        .arbeidsgiver(Arbeidsgiver.builder()
-                                .aktoertype("ORG")
-                                .orgnummer("111222333")
-                                .build())
-                        .arbeidstaker(Arbeidstaker.builder()
-                                .aktoertype("PERS")
-                                .ident(fnr1)
-                                .identtype("FNR")
-                                .build())
-                        .build())
-                .build();
-        arbeidsforhold.add(nyttArbeidsforhold);
-
-        ArbeidsforholdsResponse syntetisertArbeidsforhold = ArbeidsforholdsResponse.builder()
-                .arbeidsforhold(Arbeidsforhold.builder()
-                        .arbeidsforholdID(arbeidsforholdId)
-                        .arbeidsgiver(Arbeidsgiver.builder()
-                                .aktoertype("ORG")
-                                .orgnummer("111222333")
-                                .build())
-                        .arbeidstaker(Arbeidstaker.builder()
-                                .aktoertype("PERS")
-                                .ident(fnr2)
-                                .identtype("FNR")
-                                .build())
-                        .build())
-                .build();
-
-        when(aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(anyList())).thenReturn(Collections.singletonList(syntetisertArbeidsforhold));
-
-        syntetiseringService.sendArbeidsforholdTilAareg(arbeidsforhold, true);
-
-        verify(aaregstubConsumer).sendTilAaregstub(arbeidsforhold, true);
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
-import no.nav.registre.aareg.provider.rs.responses.SletteArbeidsforholdResponse;
+import no.nav.registre.aareg.provider.rs.response.SletteArbeidsforholdResponse;
 
 @Service
 public class IdentService {

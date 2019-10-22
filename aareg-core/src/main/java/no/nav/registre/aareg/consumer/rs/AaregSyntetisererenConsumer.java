@@ -14,13 +14,13 @@ import org.springframework.web.util.UriTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 
 @Component
 @Slf4j
 public class AaregSyntetisererenConsumer {
 
-    private static final ParameterizedTypeReference<List<ArbeidsforholdsResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<List<ArbeidsforholdsResponse>>() {
+    private static final ParameterizedTypeReference<List<RsAaregOpprettRequest>> RESPONSE_TYPE = new ParameterizedTypeReference<List<RsAaregOpprettRequest>>() {
     };
 
     @Value("${aareg.pageSize}")
@@ -36,8 +36,8 @@ public class AaregSyntetisererenConsumer {
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aareg-syntetisereren" })
-    public List<ArbeidsforholdsResponse> getSyntetiserteArbeidsforholdsmeldinger(List<String> identer) {
-        List<ArbeidsforholdsResponse> syntetiserteMeldinger = new ArrayList<>();
+    public List<RsAaregOpprettRequest> getSyntetiserteArbeidsforholdsmeldinger(List<String> identer) {
+        List<RsAaregOpprettRequest> syntetiserteMeldinger = new ArrayList<>();
         RequestEntity postRequest;
 
         if (identer.size() > pageSize) {
@@ -60,8 +60,8 @@ public class AaregSyntetisererenConsumer {
         return syntetiserteMeldinger;
     }
 
-    private void insertSyntetiskeArbeidsforhold(List<ArbeidsforholdsResponse> syntetiserteMeldinger, RequestEntity postRequest) {
-        ResponseEntity<List<ArbeidsforholdsResponse>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
+    private void insertSyntetiskeArbeidsforhold(List<RsAaregOpprettRequest> syntetiserteMeldinger, RequestEntity postRequest) {
+        ResponseEntity<List<RsAaregOpprettRequest>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
         if (response.getBody() != null) {
             syntetiserteMeldinger.addAll(response.getBody());
         } else {

@@ -1,28 +1,23 @@
-package no.nav.registre.aareg.consumer.rs.responses;
+package no.nav.registre.aareg.consumer.ws.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.registre.aareg.domain.Arbeidsforhold;
 
 import java.util.List;
 
+import no.nav.registre.aareg.domain.Arbeidsforhold;
+
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class ArbeidsforholdsResponse {
+public class RsAaregOpprettRequest {
 
-    @JsonProperty("arbeidsforhold")
     private Arbeidsforhold arbeidsforhold;
-
-    @JsonProperty("arkivreferanse")
     private String arkivreferanse;
-
-    @JsonProperty("environments")
     private List<String> environments;
 }

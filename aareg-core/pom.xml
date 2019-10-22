@@ -13,6 +13,11 @@
     <artifactId>aareg-core</artifactId>
 
     <dependencies>
+        <!-- JACKSON -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
@@ -78,6 +83,53 @@
             <artifactId>testnorge-consumers</artifactId>
             <version>1.8.0-RELEASE</version>
         </dependency>
+
+        <!-- ARBEIDSFORHOLD -->
+        <dependency>
+            <groupId>no.nav.tjenester.domene.arbeidsforhold</groupId>
+            <artifactId>nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon</artifactId>
+            <version>${behandle.arbeidsforhold.version}</version>
+            <classifier>jaxws</classifier>
+        </dependency>
+
+        <!-- SECURITY -->
+        <dependency>
+            <groupId>org.apache.neethi</groupId>
+            <artifactId>neethi</artifactId>
+            <version>${neethi.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- CXF -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-ws-security</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+
+        <!-- STRING UTILS -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <!-- OIDC-TOKEN -->
+        <dependency>
+            <groupId>no.nav.freg</groupId>
+            <artifactId>freg-security-oidc</artifactId>
+            <version>${freg-security-oidc.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

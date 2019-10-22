@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import no.nav.registre.aareg.provider.rs.responses.SletteArbeidsforholdResponse;
+import no.nav.registre.aareg.provider.rs.response.SletteArbeidsforholdResponse;
 import no.nav.registre.aareg.service.IdentService;
 
 @RestController

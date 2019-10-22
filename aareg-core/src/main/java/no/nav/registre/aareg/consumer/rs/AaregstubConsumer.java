@@ -16,21 +16,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
-import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
-import no.nav.registre.aareg.provider.rs.responses.SletteArbeidsforholdResponse;
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
+import no.nav.registre.aareg.provider.rs.response.SletteArbeidsforholdResponse;
 
 @Component
 @Slf4j
 public class AaregstubConsumer {
 
-    private static final ParameterizedTypeReference<StatusFraAaregstubResponse> RESPONSE_TYPE_LAGRE = new ParameterizedTypeReference<StatusFraAaregstubResponse>() {
+    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE_LIST_STRING = new ParameterizedTypeReference<List<String>>() {
     };
 
-    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE_HENT_ARBEIDSTAKERE = new ParameterizedTypeReference<List<String>>() {
-    };
-
-    private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE_SLETT = new ParameterizedTypeReference<List<Long>>() {
+    private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE_LIST_LONG = new ParameterizedTypeReference<List<Long>>() {
     };
 
     @Autowired
@@ -41,7 +37,7 @@ public class AaregstubConsumer {
     private UriTemplate slettIdentUrl;
 
     public AaregstubConsumer(@Value("${aaregstub.rest.api.url}") String aaregstubServerUrl) {
-        this.sendTilAaregstubUrl = new UriTemplate(aaregstubServerUrl + "/v1/lagreArbeidsforhold?lagreIAareg={lagreIAareg}");
+        this.sendTilAaregstubUrl = new UriTemplate(aaregstubServerUrl + "/v1/lagreArbeidsforhold");
         this.hentAlleArbeidstakereUrl = new UriTemplate(aaregstubServerUrl + "/v1/hentAlleArbeidstakere");
         this.slettIdentUrl = new UriTemplate(aaregstubServerUrl + "/v1/slettIdent/{ident}");
     }
@@ -50,7 +46,7 @@ public class AaregstubConsumer {
     public List<String> hentEksisterendeIdenter() {
         RequestEntity getRequest = RequestEntity.get(hentAlleArbeidstakereUrl.expand()).build();
         List<String> eksisterendeIdenter = new ArrayList<>();
-        ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_HENT_ARBEIDSTAKERE);
+        ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_LIST_STRING);
 
         if (response.getBody() != null) {
             eksisterendeIdenter.addAll(response.getBody());
@@ -62,17 +58,16 @@ public class AaregstubConsumer {
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })
-    public StatusFraAaregstubResponse sendTilAaregstub(List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold, Boolean lagreIAareg) {
-        RequestEntity postRequest = RequestEntity.post(sendTilAaregstubUrl.expand(lagreIAareg)).body(syntetiserteArbeidsforhold);
-        ResponseEntity<StatusFraAaregstubResponse> response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LAGRE);
+    public List<String> sendTilAaregstub(List<RsAaregOpprettRequest> syntetiserteArbeidsforhold) {
+        RequestEntity postRequest = RequestEntity.post(sendTilAaregstubUrl.expand()).body(syntetiserteArbeidsforhold);
+        ResponseEntity<List<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST_STRING);
 
         if (response.getBody() != null) {
             return response.getBody();
         } else {
             log.error("AaregstubConsumer.sendTilAaregstub: Kunne ikke hente response body fra Aaregstub: NullPointerException");
+            throw new RuntimeException("Kunne ikke lagre i aaregstub");
         }
-
-        return StatusFraAaregstubResponse.builder().build();
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })
@@ -84,7 +79,7 @@ public class AaregstubConsumer {
         for (String ident : identer) {
             RequestEntity deleteRequest = RequestEntity.delete(slettIdentUrl.expand(ident)).build();
             try {
-                sletteArbeidsforholdResponse.getIdentermedArbeidsforholdIdSomBleSlettet().put(ident, restTemplate.exchange(deleteRequest, RESPONSE_TYPE_SLETT).getBody());
+                sletteArbeidsforholdResponse.getIdentermedArbeidsforholdIdSomBleSlettet().put(ident, restTemplate.exchange(deleteRequest, RESPONSE_TYPE_LIST_LONG).getBody());
             } catch (HttpStatusCodeException e) {
                 sletteArbeidsforholdResponse.getIdenterSomIkkeKunneSlettes().add(ident);
                 log.error("Kunne ikke slette ident {} fra aaregstub", ident, e);

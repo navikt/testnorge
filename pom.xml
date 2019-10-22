@@ -45,6 +45,10 @@
         <spring-boot-admin.version>2.0.2</spring-boot-admin.version>
         <springfox.version>2.4.0</springfox.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
+        <behandle.arbeidsforhold.version>1.2.1</behandle.arbeidsforhold.version>
+        <neethi.version>3.1.1</neethi.version>
+        <cxf.version>3.3.2</cxf.version>
+        <freg-security-oidc.version>3.0.5</freg-security-oidc.version>
     </properties>
 
     <dependencyManagement>
@@ -67,5 +71,5 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
 </project>

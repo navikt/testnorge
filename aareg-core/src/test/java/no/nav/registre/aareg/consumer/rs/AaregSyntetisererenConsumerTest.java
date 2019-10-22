@@ -23,11 +23,13 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
+import no.nav.registre.aareg.domain.RsOrganisasjon;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -48,15 +50,14 @@ public class AaregSyntetisererenConsumerTest {
 
         stubAaregSyntetisererenConsumer();
 
-        List<ArbeidsforholdsResponse> result = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(fnrs);
+        List<RsAaregOpprettRequest> result = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(fnrs);
 
         assertThat(result.get(0).getArbeidsforhold().getArbeidstaker().getIdent(), equalTo(fnrs.get(0)));
         assertThat(result.get(0).getArbeidsforhold().getArbeidsavtale().getArbeidstidsordning(), equalTo("doegnkontinuerligSkiftOgTurnus355"));
         assertThat(result.get(0).getArbeidsforhold().getArbeidsavtale().getAvtaltArbeidstimerPerUke(), equalTo(35.5));
-        assertThat(result.get(0).getArbeidsforhold().getArbeidsavtale().getEndringsdatoStillingsprosent(), equalTo("1985-08-01T00:00:00"));
+        assertThat(result.get(0).getArbeidsforhold().getArbeidsavtale().getEndringsdatoStillingsprosent(), equalTo(LocalDateTime.of(1985, 8, 1, 0, 0, 0)));
         assertThat(result.get(0).getArbeidsforhold().getArbeidsavtale().getStillingsprosent(), equalTo(0.01));
-        assertThat(result.get(0).getArbeidsforhold().getAnsettelsesPeriode().getFom(), equalTo("1985-08-01T00:00:00"));
-        assertThat(result.get(0).getArbeidsforhold().getArbeidsgiver().getOrgnummer(), equalTo("990458162"));
+        assertThat(result.get(0).getArbeidsforhold().getAnsettelsesPeriode().getFom(), equalTo(LocalDateTime.of(1985, 8, 1, 0, 0, 0)));
         assertThat(result.get(0).getArbeidsforhold().getPermisjon().get(0).getPermisjonsId(), equalTo("a1b2c3"));
         assertThat(result.get(0).getArbeidsforhold().getPermisjon().get(0).getPermisjonsprosent(), equalTo(10.5));
         assertThat(result.get(0).getArbeidsforhold().getUtenlandsopphold().get(0).getLand(), equalTo("NOR"));
@@ -72,7 +73,7 @@ public class AaregSyntetisererenConsumerTest {
 
         stubAaregSyntetisererenConsumerWithPaging();
 
-        List<ArbeidsforholdsResponse> result = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(fnrs);
+        List<RsAaregOpprettRequest> result = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(fnrs);
 
         assertThat(result.get(0).getArbeidsforhold().getArbeidstaker().getIdent(), equalTo(fnrs.get(0)));
         assertThat(result.get(1).getArbeidsforhold().getArbeidstaker().getIdent(), equalTo(fnrs.get(1)));

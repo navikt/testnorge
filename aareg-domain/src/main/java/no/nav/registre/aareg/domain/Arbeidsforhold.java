@@ -29,16 +29,16 @@ public class Arbeidsforhold {
     private String arbeidsforholdID;
 
     @JsonProperty("arbeidsforholdIDnav")
-    private Integer arbeidsforholdIDnav;
+    private Long arbeidsforholdIDnav;
 
     @JsonProperty("arbeidsforholdstype")
     private String arbeidsforholdstype;
 
     @JsonProperty("arbeidsgiver")
-    private Arbeidsgiver arbeidsgiver;
+    private RsAktoer arbeidsgiver;
 
     @JsonProperty("arbeidstaker")
-    private Arbeidstaker arbeidstaker;
+    private RsPersonAareg arbeidstaker;
 
     @JsonProperty("permisjon")
     private List<Permisjon> permisjon;
