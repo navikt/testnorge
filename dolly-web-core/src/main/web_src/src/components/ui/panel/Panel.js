@@ -33,7 +33,8 @@ export default function Panel({
 				{informasjonstekst && <HjelpeTekst>{informasjonstekst}</HjelpeTekst>}
 				{errors && (
 					<div className="panel-heading_error">
-						<Icon kind="report-problem-triangle" />Feil i felter
+						<Icon kind="report-problem-triangle" />
+						Feil i felter
 					</div>
 				)}
 				<span className="panel-heading_buttons">

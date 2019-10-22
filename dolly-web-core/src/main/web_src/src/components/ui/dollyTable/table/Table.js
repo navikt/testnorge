@@ -24,7 +24,9 @@ export default function Table({ data, columns, onRowClick, onExpand }) {
 	return (
 		<div className="dot">
 			<div className="dot-header">
-				{columns.map((cell, idx) => <Column key={idx} width={cell.width} value={cell.text} />)}
+				{columns.map((cell, idx) => (
+					<Column key={idx} width={cell.width} value={cell.text} />
+				))}
 				{onExpand && <Column />}
 			</div>
 			{data.map((row, rowIdx) => {

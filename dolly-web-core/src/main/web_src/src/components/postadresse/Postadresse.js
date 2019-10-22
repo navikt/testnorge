@@ -38,12 +38,11 @@ export default class Postadresse extends Component {
 					</div>
 					<div className="postadresse-group">
 						{adressefelter.map(item => this.renderFieldComponent(item))}
-						{!this.state.gyldig &&
-							this.state.isChecking && (
-								<div>
-									<Loading label="Validerer postadresse..." />
-								</div>
-							)}
+						{!this.state.gyldig && this.state.isChecking && (
+							<div>
+								<Loading label="Validerer postadresse..." />
+							</div>
+						)}
 					</div>
 				</div>
 				<div>

@@ -204,20 +204,19 @@ export const FieldArrayComponent = ({
 									})}
 								</div>
 								<div>
-									{!editMode &&
-										item.isMultiple && (
-											<Button
-												className="field-group-remove"
-												kind="remove-circle"
-												onClick={e => arrayHelpers.remove(idx)}
-												title="Fjern"
-												children={
-													subKategori.navn === 'Partner'
-														? item.id.split('_')[1].toUpperCase()
-														: subKategori.navn.toUpperCase()
-												}
-											/>
-										)}
+									{!editMode && item.isMultiple && (
+										<Button
+											className="field-group-remove"
+											kind="remove-circle"
+											onClick={e => arrayHelpers.remove(idx)}
+											title="Fjern"
+											children={
+												subKategori.navn === 'Partner'
+													? item.id.split('_')[1].toUpperCase()
+													: subKategori.navn.toUpperCase()
+											}
+										/>
+									)}
 								</div>
 							</div>
 							{items.map((item, ndx) => {

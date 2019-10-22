@@ -346,8 +346,8 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].statsborgerskap
 									? relasjon.personRelasjonMed.statsborgerskap
 									: relasjonstype === 'Partner' && tpsfKriterier.relasjoner.partner.statsborgerskap
-										? relasjon.personRelasjonMed.statsborgerskap
-										: null,
+									? relasjon.personRelasjonMed.statsborgerskap
+									: null,
 							apiKodeverkId: 'Landkoder'
 						},
 						{
@@ -358,8 +358,8 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].statsborgerskap
 									? Formatters.formatDate(relasjon.personRelasjonMed.statsborgerskapRegdato)
 									: relasjonstype === 'Partner' && tpsfKriterier.relasjoner.partner.statsborgerskap
-										? Formatters.formatDate(relasjon.personRelasjonMed.statsborgerskapRegdato)
-										: null
+									? Formatters.formatDate(relasjon.personRelasjonMed.statsborgerskapRegdato)
+									: null
 						},
 						{
 							id: 'innvandretFraLand',
@@ -370,8 +370,8 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 									? relasjon.personRelasjonMed.innvandretFraLand
 									: relasjonstype === 'Partner' &&
 									  tpsfKriterier.relasjoner.partner.innvandretFraLand
-										? relasjon.personRelasjonMed.innvandretFraLand
-										: null,
+									? relasjon.personRelasjonMed.innvandretFraLand
+									: null,
 							apiKodeverkId: 'Landkoder'
 						},
 						{
@@ -383,8 +383,8 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 									? Formatters.formatDate(relasjon.personRelasjonMed.innvandretFraLandFlyttedato)
 									: relasjonstype === 'Partner' &&
 									  tpsfKriterier.relasjoner.partner.innvandretFraLand
-										? Formatters.formatDate(relasjon.personRelasjonMed.innvandretFraLandFlyttedato)
-										: null
+									? Formatters.formatDate(relasjon.personRelasjonMed.innvandretFraLandFlyttedato)
+									: null
 						},
 						{
 							id: 'utvandretTilLand',

@@ -37,7 +37,10 @@ export default function errorReducer(state = initialState, action) {
 	if (!matches) return state
 
 	const [requestNameFull, requestName, requestState] = matches
-	if (requestNameFull === failure(teamsActions.api.create) || requestNameFull === failure(gruppeCreateTeam)) {
+	if (
+		requestNameFull === failure(teamsActions.api.create) ||
+		requestNameFull === failure(gruppeCreateTeam)
+	) {
 		if (payload.response.status === 500) {
 			payload.customMessage = 'Kan ikke opprette team. Teamnavn er allerede i bruk.'
 		}

@@ -284,8 +284,8 @@ export default class SendDoedsmelding extends PureComponent {
 							handlingsType === 'D'
 								? 'Annulerer dødsmelding'
 								: handlingsType === 'U'
-									? 'Endrer dødsdato'
-									: 'Sender dødsmelding'
+								? 'Endrer dødsdato'
+								: 'Sender dødsmelding'
 						}
 					/>
 				)}

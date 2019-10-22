@@ -32,7 +32,11 @@ export default function FagsystemStatus({ statusrapport }) {
 						</td>
 						<td>{status.miljo || <i>(N/A)</i>}</td>
 						<td>
-							<ul>{status.identer.map((ident, idx) => <li key={idx}>{ident}</li>)}</ul>
+							<ul>
+								{status.identer.map((ident, idx) => (
+									<li key={idx}>{ident}</li>
+								))}
+							</ul>
 						</td>
 					</tr>
 				))}

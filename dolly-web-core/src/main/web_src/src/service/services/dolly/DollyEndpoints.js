@@ -1,6 +1,6 @@
 import config from '~/config'
 
-const uri = config.services.dollyBackend
+const uri = `${config.services.dollyBackend}/api/v1`
 
 const groupBase = `${uri}/gruppe`
 const teamBase = `${uri}/team`
@@ -111,7 +111,7 @@ export default class DollyEndpoints {
 	}
 
 	static openAmBestilling(bestillingId) {
-		return `${openamBase}/bestilling/{bestillingId}?bestillingId=${bestillingId}`
+		return `${openamBase}/bestilling/${bestillingId}?bestillingId=${bestillingId}`
 	}
 
 	static removeBestilling(bestillingId) {

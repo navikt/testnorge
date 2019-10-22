@@ -75,8 +75,9 @@ export default class Step2 extends PureComponent {
 						<Fragment>
 							{selectedAttributeIds.length === 0 ? (
 								<ContentContainer className="">
-									<Icon kind="report-problem-circle" />Du har valgt ingen attributter. Dolly vil
-									opprette testpersoner med tilfeldige verdier.
+									<Icon kind="report-problem-circle" />
+									Du har valgt ingen attributter. Dolly vil opprette testpersoner med tilfeldige
+									verdier.
 								</ContentContainer>
 							) : (
 								<FormEditor
