@@ -22,7 +22,7 @@ public class FlatfileService {
 
     public String mapEreg(List<EregDataRequest> data, boolean sendToEreg, String env) {
         String eregData = mapper.mapEregFromRequests(data, env, sendToEreg);
-
+        log.info(eregData);
         if (sendToEreg) {
 
             if ("".equals(env)) {
