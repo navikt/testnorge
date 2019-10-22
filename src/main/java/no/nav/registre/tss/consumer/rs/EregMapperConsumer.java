@@ -31,7 +31,7 @@ public class EregMapperConsumer {
 
     public boolean opprett(List<EregMapperRequest> data) {
         log.info("Prøver å opprette følgende enheter i EREG: {}", data.stream().map(EregMapperRequest::getOrgnr).collect(Collectors.toList()));
-        UriTemplate uriTemplate = new UriTemplate(eregMapperUrl + "/v1/orkestrering/flatfil/jenkins?lastOpp=true&miljoe={miljoe}");
+        UriTemplate uriTemplate = new UriTemplate(eregMapperUrl + "/v1/orkestrering/opprett?lastOpp=true&miljoe={miljoe}");
         RequestEntity<List<EregMapperRequest>> request = new RequestEntity<>(data, HttpMethod.POST, uriTemplate.expand(miljoe));
         ResponseEntity<Object> response = restTemplate.exchange(request, Object.class);
         if (response.getStatusCode().is2xxSuccessful()) {
