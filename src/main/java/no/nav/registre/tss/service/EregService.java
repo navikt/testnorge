@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class EregService {
     @Value("${testnorge.ereg.enhet.as}")
     private String ASEnhet;
 
-    public Map<TssType, List<String>> opprettEregEnheter(Map<TssType, Integer> tssTypeAntallMap) {
+    Map<TssType, List<String>> opprettEregEnheter(Map<TssType, Integer> tssTypeAntallMap) {
         var eksiterendeEnheter = csvFileService.findExistingFromFile();
 
         Map<TssType, Integer> oppdatertAntall = tssTypeAntallMap.entrySet().stream()
@@ -46,6 +47,7 @@ public class EregService {
         List<String> orgnr = eregMapperConsumer.hentNyttOrgnr(totalAntallOrganissasjoner);
         Map<TssType, List<String>> typeMedOrgnr = setOrgnrForType(orgnr, oppdatertAntall);
 
+        //noinspection ResultOfMethodCallIgnored
         typeMedOrgnr.entrySet().stream().peek(entry -> log.info(entry.getKey().name() + " : " + entry.getValue().toString()));
 
         boolean sendtTilJenkins = eregMapperConsumer.opprett(typeMedOrgnr.entrySet().stream()
@@ -93,7 +95,7 @@ public class EregService {
                 .enhetstype("BEDR")
                 .knytninger(Collections.singletonList(Knytning.builder().orgnr(ASEnhet).build()))
                 .navn(Navn.builder()
-                        .navneListe(Collections.singletonList(type.beskrivelse))
+                        .navneListe(Collections.singletonList(type.beskrivelse + "-" + UUID.randomUUID().toString().substring(0, 5)))
                         .build())
                 .build();
     }

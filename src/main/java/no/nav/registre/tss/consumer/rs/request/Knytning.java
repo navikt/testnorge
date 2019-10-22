@@ -12,16 +12,6 @@ import lombok.NonNull;
 @AllArgsConstructor
 public class Knytning {
 
-    @Builder.Default
-    private String type = "BEDRNSSY";
-    @Builder.Default
-    private String ansvarsandel = "";
-    @Builder.Default
-    private String fratreden = "";
     @NonNull
     private String orgnr;
-    @Builder.Default
-    private String valgtAv = "";
-    @Builder.Default
-    private String korrektOrgNr = "";
 }
