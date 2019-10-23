@@ -23,7 +23,6 @@ export default ({ brukerData }) => {
 				<NavLink isActive={isGruppePathActive} to="/">
 					Testdatagrupper
 				</NavLink>
-				<NavLink to="/team">Team</NavLink>
 				<NavLink to="/tpsendring">Endringsmelding</NavLink>
 				<a href="/swagger-ui.html" target="_blank">
 					API-dok

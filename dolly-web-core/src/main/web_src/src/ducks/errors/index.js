@@ -3,9 +3,6 @@ import { createSelector } from 'reselect'
 import _filter from 'lodash/filter'
 import failure from '~/utils/FailureAction'
 
-import { actions as teamsActions } from '~/ducks/teams'
-import { createTeam as gruppeCreateTeam } from '~/ducks/gruppe'
-
 export const clearAllErrors = createAction('ERRORS/CLEAR_ALL_ERRORS')
 
 // SELECTORS
@@ -27,6 +24,7 @@ export const applicationErrorSelector = createSelector(
 )
 
 const initialState = {}
+
 export default function errorReducer(state = initialState, action) {
 	const { type, payload } = action
 	const matches = /(.*)_(REQUEST|FAILURE)/.exec(type)
@@ -37,14 +35,6 @@ export default function errorReducer(state = initialState, action) {
 	if (!matches) return state
 
 	const [requestNameFull, requestName, requestState] = matches
-	if (
-		requestNameFull === failure(teamsActions.api.create) ||
-		requestNameFull === failure(gruppeCreateTeam)
-	) {
-		if (payload.response.status === 500) {
-			payload.customMessage = 'Kan ikke opprette team. Teamnavn er allerede i bruk.'
-		}
-	}
 	return {
 		...state,
 		// Store errorMessage

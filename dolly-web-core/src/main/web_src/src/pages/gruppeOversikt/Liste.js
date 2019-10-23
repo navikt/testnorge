@@ -41,11 +41,6 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 			dataField: 'navn'
 		},
 		{
-			text: 'Team',
-			width: '15',
-			dataField: 'team.navn'
-		},
-		{
 			text: 'Hensikt',
 			width: '20',
 			dataField: 'hensikt'

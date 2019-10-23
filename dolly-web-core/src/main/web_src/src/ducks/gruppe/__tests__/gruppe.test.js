@@ -4,8 +4,7 @@ import { sokSelectorOversikt } from '../index'
 describe('gruppeReducer', () => {
 	const initialState = {
 		data: null,
-		visning: 'mine',
-		teamId: null
+		visning: 'mine'
 	}
 
 	it('should return gruppe with initialstate', () => {

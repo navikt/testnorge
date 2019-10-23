@@ -15,7 +15,7 @@ export default class Breadcrumb extends PureComponent {
 		if (
 			breadcrumbs[0].key === '/' &&
 			breadcrumbs.length > 1 &&
-			(breadcrumbs[1].key === '/team' || breadcrumbs[1].key === '/tpsendring')
+			breadcrumbs[1].key === '/tpsendring'
 		) {
 			breadcrumbs[0] = null
 		}

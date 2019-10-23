@@ -19,10 +19,6 @@ export default {
 		return Request.get(Endpoints.gruppeByUser(userId))
 	},
 
-	getGruppeByTeamId(teamId) {
-		return Request.get(Endpoints.gruppeByTeam(teamId))
-	},
-
 	createGruppe(data) {
 		return Request.post(Endpoints.gruppe(), data)
 	},
@@ -45,39 +41,6 @@ export default {
 
 	createBestillingFraEksisterendeIdenter(gruppeId, data) {
 		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
-	},
-
-	// Team
-	getTeams() {
-		return Request.get(Endpoints.team())
-	},
-
-	getTeamsByUserId(userId) {
-		return Request.get(Endpoints.teamByUser(userId))
-	},
-
-	getTeamById(teamId) {
-		return Request.get(Endpoints.teamById(teamId))
-	},
-
-	createTeam(data) {
-		return Request.post(Endpoints.team(), data)
-	},
-
-	updateTeam(teamId, data) {
-		return Request.put(Endpoints.teamById(teamId), data)
-	},
-
-	deleteTeam(teamId) {
-		return Request.delete(Endpoints.teamById(teamId))
-	},
-
-	addTeamMedlemmer(teamId, userArray) {
-		return Request.put(Endpoints.teamAddMember(teamId), userArray)
-	},
-
-	removeTeamMedlemmer(teamId, user) {
-		return Request.delete(Endpoints.teamRemoveMember(teamId, user))
 	},
 
 	// Bruker
