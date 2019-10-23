@@ -17,11 +17,13 @@ public class CredentialsProps {
     private TestEnv testEnv = new TestEnv();
 
     public String getUsername(Environment env) {
-        return env == PREPROD ? getPreprodEnv().getUsername() : getTestEnv().getUsername();
+        return "srvdolly";
+//        return env == PREPROD ? getPreprodEnv().getUsername() : getTestEnv().getUsername();
     }
 
     public String getPassword(Environment env) {
-        return env == PREPROD ? getPreprodEnv().getPassword() : getTestEnv().getPassword();
+        return "0z1sMeNEjAXN1Hd";
+//        return env == PREPROD ? getPreprodEnv().getPassword() : getTestEnv().getPassword();
     }
 
     @Getter

@@ -3,6 +3,7 @@ package no.nav.registre.aareg.fasit;
 import static java.lang.String.format;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -20,8 +21,11 @@ public class FasitApiConsumer {
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
 
+    @Value("${fasit.url}")
+    private String fasitServerUrl;
+
     public FasitResourceWithUnmappedProperties[] fetchResources(String alias, String type) {
-        String url = providersProps.getFasit().getUrl() + format(FASIT_RESOURCE, alias, type);
+        String url = fasitServerUrl + format(FASIT_RESOURCE, alias, type);
 
         try {
             ResponseEntity<FasitResourceWithUnmappedProperties[]> properties = restTemplate.getForEntity(url, FasitResourceWithUnmappedProperties[].class);
