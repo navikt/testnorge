@@ -13,7 +13,9 @@ import static no.nav.registre.aareg.service.AaregAbstractClient.getPeriodeFom;
 import static no.nav.registre.aareg.service.AaregAbstractClient.getPersonnummer;
 import static no.nav.registre.aareg.service.AaregAbstractClient.getYrkeskode;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,7 @@ import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 
 @Service
+@Slf4j
 public class AaregService {
 
     @Autowired
@@ -49,6 +52,9 @@ public class AaregService {
     @Autowired
     private TpsfConsumer tpsfConsumer;
 
+    @Value("${srvtestnorge-aareg.username}")
+    private String username;
+
     public RsAaregResponse opprettArbeidsforhold(RsAaregOpprettRequest request) {
         return aaregWsConsumer.opprettArbeidsforhold(request);
     }
@@ -58,6 +64,7 @@ public class AaregService {
     }
 
     public ResponseEntity hentArbeidsforhold(String ident, String miljoe) {
+        log.info("User: {}", username);
         return aaregRestConsumer.hentArbeidsforhold(ident, miljoe);
     }
 
