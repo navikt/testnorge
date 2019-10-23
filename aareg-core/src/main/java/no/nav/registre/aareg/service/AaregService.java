@@ -52,7 +52,7 @@ public class AaregService {
     @Autowired
     private TpsfConsumer tpsfConsumer;
 
-    @Value("${vault.srvtestnorge-aareg.username}")
+    @Value("${testnorge-aareg_srvuser}")
     private String username;
 
     public RsAaregResponse opprettArbeidsforhold(RsAaregOpprettRequest request) {
@@ -64,7 +64,7 @@ public class AaregService {
     }
 
     public ResponseEntity hentArbeidsforhold(String ident, String miljoe) {
-        log.info("User: {}", username);
+        log.info("user: {}", username);
         return aaregRestConsumer.hentArbeidsforhold(ident, miljoe);
     }
 
