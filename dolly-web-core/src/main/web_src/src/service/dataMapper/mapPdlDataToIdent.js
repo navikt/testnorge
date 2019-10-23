@@ -167,7 +167,7 @@ export function mapPdlData(pdlfData) {
 		pdlfDataArray.push(data)
 	}
 
-	if (pdlfData.personidenter.utenlandskeIdentifikasjonsnummere) {
+	if (pdlfData.personidenter && pdlfData.personidenter.utenlandskeIdentifikasjonsnummere) {
 		pdlfDataArray.push({
 			header: 'Utenlands-ID',
 			multiple: true,
