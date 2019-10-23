@@ -1,8 +1,8 @@
-const isProdBuild = process.env.NODE_ENV === 'production'
+const isDevMode = process.env.NODE_ENV !== 'production'
 
 const config = {
 	services: {
-		dollyBackend: 'https://dolly-web-u2.nais.preprod.local',
+		dollyBackend: '/api/v1',
 		arenaForvalterUrl: 'https://arena-forvalteren.nais.preprod.local',
 		instdataUrl: 'https://testnorge-inst.nais.preprod.local',
 		kodeverkUrl: 'https://kodeverk.nais.preprod.local',
@@ -11,12 +11,13 @@ const config = {
 		tpsfUrl: 'https://tps-forvalteren-u2.nais.preprod.local',
 		udiStubUrl: 'https://udi-stub.nais.preprod.local'
 	},
-	debug: true
+	debug: false
 }
 
-// Force values in production build
-if (isProdBuild) {
-	config.debug = false
+// !DEVELOPMENT
+if (isDevMode) {
+	config.debug = true
+	config.services.dollyBackend = 'https://dolly-u2.nais.preprod.local/api/v1'
 }
 
 export default config

@@ -9,7 +9,7 @@
 		"outDir": "./dist",
 		"lib": ["es6", "dom", "es2017"],
 		"jsx": "react",
-		"baseUrl": "../../../../src/main/dolly-web",
+		"baseUrl": ".",
 		"paths": {
 			"~/*": ["./src/*"]
 		}

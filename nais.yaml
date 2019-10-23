@@ -1,6 +1,6 @@
-name: dolly-web
+name: dolly
 team: registre
-image: "docker.adeo.no:5000/registre/dolly-web"
+image: "docker.adeo.no:5000/registre/dolly"
 replicas:
   min: 1
   max: 1
@@ -26,7 +26,7 @@ resources:
     memory: 2054Mi
 fasitResources:
   used:
-    - alias: dolly-web-oidc
+    - alias: dolly-oidc
       resourceType: OpenIdConnect
       propertyMap:
         agentName: idp.openAm.clientId
