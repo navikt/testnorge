@@ -27,13 +27,13 @@ public class AaregRestConsumer {
 
     public ResponseEntity<Map[]> hentArbeidsforhold(String ident, String miljoe) {
 
-        return restTemplate.exchange(RequestEntity
-                        .get(URI.create(aaregArbeidsforholdFasitConsumer.getUrlForEnv(miljoe)))
-                        .header(ACCEPT, APPLICATION_JSON_VALUE)
-                        .header(AUTHORIZATION, stsOidcService.getIdToken(miljoe))
-                        .header(HEADER_NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(miljoe))
-                        .header(HEADER_NAV_PERSON_IDENT, ident)
-                        .build(),
-                Map[].class);
+        RequestEntity getRequest = RequestEntity
+                .get(URI.create(aaregArbeidsforholdFasitConsumer.getUrlForEnv(miljoe)))
+                .header(ACCEPT, APPLICATION_JSON_VALUE)
+                .header(AUTHORIZATION, stsOidcService.getIdToken(miljoe))
+                .header(HEADER_NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(miljoe))
+                .header(HEADER_NAV_PERSON_IDENT, ident)
+                .build();
+        return restTemplate.exchange(getRequest, Map[].class);
     }
 }

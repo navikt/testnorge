@@ -83,15 +83,15 @@ public class StsOidcService {
     }
 
     private void updateToken(Environment env) {
-
-        ResponseEntity responseEntity = restTemplate.exchange(RequestEntity
+        RequestEntity getRequest = RequestEntity
                 .get(URI.create(stsOidcFasitConsumer.getStsOidcService(env).concat("?grant_type=client_credentials&scope=openid")))
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header(AUTHORIZATION, "Basic " +
                         Base64.getEncoder().encodeToString((
                                 credentialsProps.getUsername(env) + ":" +
                                         credentialsProps.getPassword(env)).getBytes(UTF_8)))
-                .build(), JsonNode.class);
+                .build();
+        ResponseEntity responseEntity = restTemplate.exchange(getRequest, JsonNode.class);
 
         if (isNull(responseEntity.getBody())) {
             return;

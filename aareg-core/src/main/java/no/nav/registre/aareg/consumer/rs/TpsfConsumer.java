@@ -21,8 +21,7 @@ public class TpsfConsumer {
     private final ProvidersProps providersProps;
 
     public ResponseEntity<MiljoerResponse> hentMiljoer() {
-        return restTemplate.exchange(
-                RequestEntity.get(URI.create(providersProps.getTpsf().getUrl() + TPSF_GET_ENVIRONMENTS))
-                        .build(), MiljoerResponse.class);
+        RequestEntity getRequest = RequestEntity.get(URI.create(providersProps.getTpsf().getUrl() + TPSF_GET_ENVIRONMENTS)).build();
+        return restTemplate.exchange(getRequest, MiljoerResponse.class);
     }
 }
