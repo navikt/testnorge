@@ -30,9 +30,7 @@ public class AaregstubControllerTest {
 
     private Long id = 2L;
     private String fnr = "01010101010";
-    private String miljoe = "t1";
     private List<ArbeidsforholdsResponse> arbeidsforholdsmeldinger;
-    private Boolean lagreIAareg = false;
 
     @Before
     public void setUp() {
@@ -41,8 +39,8 @@ public class AaregstubControllerTest {
 
     @Test
     public void shouldSaveArbeidsforhold() {
-        aaregstubController.lagreArbeidsforhold(lagreIAareg, arbeidsforholdsmeldinger);
-        verify(arbeidsforholdService).lagreArbeidsforhold(arbeidsforholdsmeldinger, lagreIAareg);
+        aaregstubController.lagreArbeidsforhold(arbeidsforholdsmeldinger);
+        verify(arbeidsforholdService).lagreArbeidsforhold(arbeidsforholdsmeldinger);
     }
 
     @Test
@@ -88,24 +86,5 @@ public class AaregstubControllerTest {
         aaregstubController.slettIdent(fnr);
         verify(arbeidsforholdService).hentIdentMedArbeidsforhold(fnr);
         verify(arbeidsforholdService).slettArbeidsforhold(id);
-    }
-
-    @Test
-    public void shouldSendArbeidsforholdTilAareg() {
-        aaregstubController.sendArbeidsforholdTilAareg(arbeidsforholdsmeldinger);
-        verify(arbeidsforholdService).sendArbeidsforholdTilAareg(arbeidsforholdsmeldinger);
-    }
-
-    @Test
-    public void shouldGetArbeidsforholdFromAareg() {
-        aaregstubController.hentArbeidsforholdFraAareg(fnr, miljoe);
-        verify(arbeidsforholdService).hentArbeidsforholdFraAareg(fnr, miljoe);
-    }
-
-    @Test
-    public void shouldCheckStatusInAareg() {
-        List<String> identer = new ArrayList<>(Collections.singleton(fnr));
-        aaregstubController.sjekkStatusMotAareg(miljoe, identer);
-        verify(arbeidsforholdService).sjekkStatusMotAareg(identer, miljoe);
     }
 }

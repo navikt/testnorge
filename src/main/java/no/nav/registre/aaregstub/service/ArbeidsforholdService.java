@@ -2,27 +2,21 @@ package no.nav.registre.aaregstub.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import no.nav.registre.aaregstub.arbeidsforhold.ArbeidsforholdsResponse;
 import no.nav.registre.aaregstub.arbeidsforhold.Ident;
-import no.nav.registre.aaregstub.arbeidsforhold.consumer.rs.DollyConsumer;
-import no.nav.registre.aaregstub.arbeidsforhold.consumer.rs.responses.DollyResponse;
 import no.nav.registre.aaregstub.arbeidsforhold.contents.AntallTimerForTimeloennet;
 import no.nav.registre.aaregstub.arbeidsforhold.contents.Arbeidsavtale;
 import no.nav.registre.aaregstub.arbeidsforhold.contents.Arbeidsforhold;
 import no.nav.registre.aaregstub.arbeidsforhold.contents.Permisjon;
 import no.nav.registre.aaregstub.arbeidsforhold.contents.Utenlandsopphold;
-import no.nav.registre.aaregstub.provider.rs.responses.StatusResponse;
 import no.nav.registre.aaregstub.repository.AntallTimerForTimeloennetRepository;
 import no.nav.registre.aaregstub.repository.ArbeidsavtaleRepository;
 import no.nav.registre.aaregstub.repository.ArbeidsforholdRepository;
@@ -52,43 +46,16 @@ public class ArbeidsforholdService {
     @Autowired
     private UtenlandsoppholdRepository utenlandsoppholdRepository;
 
-    @Autowired
-    private DollyConsumer dollyConsumer;
-
-    public StatusResponse lagreArbeidsforhold(List<ArbeidsforholdsResponse> arbeidsforholdsmeldinger, Boolean lagreIAareg) {
+    public List<String> lagreArbeidsforhold(List<ArbeidsforholdsResponse> arbeidsforholdsmeldinger) {
         behandleNyttArbeidsforhold(arbeidsforholdsmeldinger);
         List<String> identerLagretIStub = new ArrayList<>(arbeidsforholdsmeldinger.size());
-        List<String> identerLagretIAareg = new ArrayList<>();
-        Map<String, String> identerIkkeLagretIAareg = new HashMap<>();
-        Map<String, Object> tokenObject = null;
-
-        if (lagreIAareg) {
-            tokenObject = hentTokenTilDolly();
-        }
 
         for (ArbeidsforholdsResponse arbeidsforholdsResponse : arbeidsforholdsmeldinger) {
             String ident = arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent();
             identerLagretIStub.add(ident);
-
-            if (lagreIAareg) {
-                DollyResponse dollyResponse = dollyConsumer.sendArbeidsforholdTilAareg(tokenObject, arbeidsforholdsResponse);
-                if (HttpStatus.CREATED.equals(dollyResponse.getHttpStatus())) {
-                    for (String miljoe : arbeidsforholdsResponse.getEnvironments()) {
-                        if ("OK".equals(dollyResponse.getStatusPerMiljoe().get(miljoe))) {
-                            identerLagretIAareg.add(ident);
-                        } else {
-                            identerIkkeLagretIAareg.put(ident, dollyResponse.getStatusPerMiljoe().get(miljoe));
-                        }
-                    }
-                }
-            }
         }
 
-        return StatusResponse.builder()
-                .identerLagretIStub(sjekkOmIdenterErLagret(identerLagretIStub))
-                .identerLagretIAareg(identerLagretIAareg)
-                .identerSomIkkeKunneLagresIAareg(identerIkkeLagretIAareg)
-                .build();
+        return sjekkOmIdenterErLagret(identerLagretIStub);
     }
 
     public Ident hentIdentMedArbeidsforhold(String ident) {
@@ -159,56 +126,6 @@ public class ArbeidsforholdService {
         return identRepository.getAllDistinctIdents();
     }
 
-    public List<DollyResponse> sendArbeidsforholdTilAareg(List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
-        List<DollyResponse> responses = new ArrayList<>(syntetiserteArbeidsforhold.size());
-        Map<String, Object> tokenObject = hentTokenTilDolly();
-        for (ArbeidsforholdsResponse syntetisertArbeidsforhold : syntetiserteArbeidsforhold) {
-            responses.add(dollyConsumer.sendArbeidsforholdTilAareg(tokenObject, syntetisertArbeidsforhold));
-        }
-        return responses;
-    }
-
-    public Object hentArbeidsforholdFraAareg(String ident, String miljoe) {
-        Map<String, Object> tokenObject = hentTokenTilDolly();
-        return dollyConsumer.hentArbeidsforholdFraAareg(tokenObject, ident, miljoe).getBody();
-    }
-
-    public List<String> sjekkStatusMotAareg(List<String> identer, String miljoe) {
-        Map<String, Object> tokenObject = hentTokenTilDolly();
-        List<String> identerIAareg = new ArrayList<>();
-        for (String ident : identer) {
-            if (dollyConsumer.hentArbeidsforholdFraAareg(tokenObject, ident, miljoe).getStatusCode().is2xxSuccessful()) {
-                identerIAareg.add(ident);
-            }
-        }
-        return identerIAareg;
-    }
-
-    public List<String> synkroniserMedAareg(String miljoe) {
-        List<String> identerIStub = hentAlleArbeidstakere();
-        List<String> identerIAareg = sjekkStatusMotAareg(identerIStub, miljoe);
-
-        identerIStub.removeAll(identerIAareg);
-
-        List<Long> arbeidsforholdSomSkalFjernes = new ArrayList<>();
-
-        for (String ident : identerIStub) {
-            Ident identMedArbeidsforhold = hentIdentMedArbeidsforhold(ident);
-            if (identMedArbeidsforhold != null) {
-                List<Arbeidsforhold> arbeidsforholdeneTilIdent = identMedArbeidsforhold.getArbeidsforhold();
-                for (Arbeidsforhold arbeidsforhold : arbeidsforholdeneTilIdent) {
-                    arbeidsforholdSomSkalFjernes.add(arbeidsforhold.getId());
-                }
-            }
-        }
-
-        for (Long id : arbeidsforholdSomSkalFjernes) {
-            slettArbeidsforhold(id);
-        }
-
-        return identerIStub;
-    }
-
     private void behandleNyttArbeidsforhold(List<ArbeidsforholdsResponse> arbeidsforholdsmeldinger) {
         for (ArbeidsforholdsResponse arbeidsforholdsResponse : arbeidsforholdsmeldinger) {
             Arbeidsforhold arbeidsforhold = arbeidsforholdsResponse.getArbeidsforhold();
@@ -243,7 +160,7 @@ public class ArbeidsforholdService {
             if (ident != null) {
                 ident.getArbeidsforhold().add(arbeidsforhold);
             } else {
-                ident = Ident.builder().fnr(nyIdent).arbeidsforhold(new ArrayList<>(Arrays.asList(arbeidsforhold))).build();
+                ident = Ident.builder().fnr(nyIdent).arbeidsforhold(new ArrayList<>(Collections.singletonList(arbeidsforhold))).build();
             }
 
             arbeidsforhold.setIdenten(ident);
@@ -260,9 +177,5 @@ public class ArbeidsforholdService {
             }
         }
         return lagredeIdenter;
-    }
-
-    private Map<String, Object> hentTokenTilDolly() {
-        return dollyConsumer.hentTokenTilDolly();
     }
 }

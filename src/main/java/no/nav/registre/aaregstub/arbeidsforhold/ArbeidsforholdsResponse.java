@@ -20,12 +20,7 @@ import no.nav.registre.aaregstub.arbeidsforhold.contents.Arbeidsforhold;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ArbeidsforholdsResponse {
 
-    @JsonProperty("arbeidsforhold")
     private Arbeidsforhold arbeidsforhold;
-
-    @JsonProperty("arkivreferanse")
     private String arkivreferanse;
-
-    @JsonProperty("environments")
     private ArrayList<String> environments;
 }

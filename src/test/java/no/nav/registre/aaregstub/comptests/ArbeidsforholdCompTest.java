@@ -1,5 +1,9 @@
 package no.nav.registre.aaregstub.comptests;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,9 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import no.nav.registre.aaregstub.arbeidsforhold.ArbeidsforholdsResponse;
 import no.nav.registre.aaregstub.arbeidsforhold.Ident;
 import no.nav.registre.aaregstub.arbeidsforhold.contents.AnsettelsesPeriode;
@@ -179,6 +180,6 @@ public class ArbeidsforholdCompTest {
     }
 
     private void saveArbeidsforhold() {
-        aaregstubController.lagreArbeidsforhold(false, arbeidsforholdsResponse);
+        aaregstubController.lagreArbeidsforhold(arbeidsforholdsResponse);
     }
 }
