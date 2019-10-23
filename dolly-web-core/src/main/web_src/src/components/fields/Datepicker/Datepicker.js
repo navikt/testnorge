@@ -48,7 +48,7 @@ export default class Datepicker extends Component {
 		let date = str
 		if (DateUtils.isDate(date)) {
 			this.setState({ validDate: date })
-			date = dateFnsFormat(date, defaultDateFormat, new Date())
+			date = dateFnsFormat(date, defaultDateFormat)
 		}
 		return this.props.onChange(date)
 	}
@@ -68,7 +68,7 @@ export default class Datepicker extends Component {
 	}
 
 	// Format date when clicking on a date in popup
-	formatDate = (str, format) => dateFnsFormat(str, format, new Date())
+	formatDate = (str, format) => dateFnsFormat(str, format)
 
 	// Parse all inputs
 	parseDate = (str, format) => {
