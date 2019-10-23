@@ -7,4 +7,8 @@ Det er opprettet en flat distribusjon av samhandlere i TSS i Q2, med små varias
 
 For samhandlere med ORGnummer er det definert en csv fil som inneholder de forskjellige ORGnummerene pr samhandlertype. 
 
-NAV samhandlere inneholder et orgnr og et tknummer som er hentet basert på adressen som er registrert i EREG
+### NAV samhandlere
+NAV samhandlere vil bli hentet ut fra q0. Disse blir ikke opprettet av applikasjonen.
+
+### INST 
+INST samhandlere er ikke mulig å opprette via applikasjonen ettersom de krever en institusjons id som ikke enda er støttet.
