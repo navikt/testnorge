@@ -44,7 +44,9 @@ export function mapPdlData(pdlfData) {
 				{
 					id: 'foedselsdato',
 					label: 'Fødselsdato',
-					value: pdlfData.kontaktinformasjonForDoedsbo[0].adressat[adressatType].foedselsdato
+					value: Formatters.formatStringDates(
+						pdlfData.kontaktinformasjonForDoedsbo[0].adressat[adressatType].foedselsdato
+					)
 				},
 				{
 					id: 'idNummer',
