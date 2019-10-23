@@ -19,7 +19,7 @@
 		"connected-react-router": "^6.5.2",
 		"date-fns": "^2.0.0-alpha.21",
 		"font-awesome": "^4.7.0",
-		"formik": "^1.2.0",
+		"formik": "^1.5.8",
 		"history": "^4.7.2",
 		"less": "^3.0.4",
 		"lodash": "^4.17.10",
@@ -44,8 +44,6 @@
 		"nav-frontend-skjema-style": "^0.3.20",
 		"nav-frontend-stegindikator": "0.0.26",
 		"nav-frontend-stegindikator-style": "^1.0.12",
-		"nav-frontend-tabs": "0.0.13",
-		"nav-frontend-tabs-style": "0.0.4",
 		"nav-frontend-typografi": "^2.0.6",
 		"nav-frontend-typografi-style": "^1.0.10",
 		"prop-types": "^15.6.2",
@@ -108,9 +106,9 @@
 		"ts-jest": "^23.10.4",
 		"ts-loader": "^6.1.0",
 		"typescript": "^3.6.3",
-		"webpack": "^4.10.2",
-		"webpack-cli": "^2.1.4",
-		"webpack-dev-server": "^3.1.10"
+		"webpack": "^4.41.2",
+		"webpack-cli": "^3.3.9",
+		"webpack-dev-server": "^3.9.0"
 	},
 	"prettier": {
 		"singleQuote": true,
