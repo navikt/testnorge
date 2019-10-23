@@ -13,6 +13,9 @@ import no.nav.registre.aareg.service.AaregService;
 @RequestMapping("/internal")
 public class InternalController {
 
+    @Autowired
+    private AaregService aaregService;
+
     @GetMapping("/isReady")
     public String isReady() {
         return "OK";
@@ -22,9 +25,6 @@ public class InternalController {
     public String isAlive() {
         return "OK";
     }
-
-    @Autowired
-    private AaregService aaregService;
 
     @GetMapping("/arb")
     public ResponseEntity hentArbeidsforhold(
