@@ -1,6 +1,6 @@
-name: dolly-v2
+name: dolly
 team: registre
-image: "docker.adeo.no:5000/registre/dolly-v2"
+image: "docker.adeo.no:5000/registre/dolly"
 replicas:
   min: 1
   max: 1
