@@ -10,7 +10,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.registre.aareg.exception.FasitException;
-import no.nav.registre.aareg.properties.ProvidersProps;
 
 @Component
 @RequiredArgsConstructor
@@ -18,7 +17,6 @@ public class FasitApiConsumer {
 
     private static final String FASIT_RESOURCE = "/api/v2/resources?alias=%s&type=%s&usage=false&page=0&pr_page=100";
 
-    private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
 
     @Value("${fasit.url}")
