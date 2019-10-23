@@ -52,7 +52,7 @@ public class AaregService {
     @Autowired
     private TpsfConsumer tpsfConsumer;
 
-    @Value("${srvtestnorge-aareg.username}")
+    @Value("${vault.srvtestnorge-aareg.username}")
     private String username;
 
     public RsAaregResponse opprettArbeidsforhold(RsAaregOpprettRequest request) {
