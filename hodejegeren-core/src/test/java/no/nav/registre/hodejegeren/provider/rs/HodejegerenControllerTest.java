@@ -11,14 +11,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.hodejegeren.provider.rs.requests.SlettIdenterRequest;
 import no.nav.registre.hodejegeren.service.EksisterendeIdenterService;
 import no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService;
 import no.nav.registre.hodejegeren.service.Endringskoder;
@@ -131,30 +129,20 @@ public class HodejegerenControllerTest {
     }
 
     @Test
-    public void shouldSletteIdenterUtenStatusQuo() throws IOException {
-        SlettIdenterRequest slettIdenterRequest = new SlettIdenterRequest(myndigeIdenter);
-        hodejegerenController.slettIdenterUtenStatusQuo(avspillergruppeId, miljoe, slettIdenterRequest);
-        verify(eksisterendeIdenterService).slettIdenterUtenStatusQuo(avspillergruppeId, miljoe, myndigeIdenter);
-    }
-
-    @Test
     public void hentAlleLevendeOverAlderTest() {
-        MockHttpServletResponse resp = new MockHttpServletResponse();
-        hodejegerenController.hentAlleLevendeIdenterOverAlder(avspillergruppeId, 13, resp);
+        hodejegerenController.hentAlleLevendeIdenterOverAlder(avspillergruppeId, 13);
         verify(eksisterendeIdenterService).finnAlleIdenterOverAlder(avspillergruppeId, 13);
     }
 
     @Test
     public void shouldHenteAlleIdenterIAldersgruppe() {
-        MockHttpServletResponse resp = new MockHttpServletResponse();
-        hodejegerenController.hentAlleIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder, resp);
+        hodejegerenController.hentAlleIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder);
         verify(eksisterendeIdenterService).finnLevendeIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder);
     }
 
     @Test
     public void shouldHenteIdenterMedStatusQuo() {
-        MockHttpServletResponse resp = new MockHttpServletResponse();
-        hodejegerenController.hentEksisterendeIdenterMedStatusQuo(avspillergruppeId, miljoe, 1, null, null, resp);
+        hodejegerenController.hentEksisterendeIdenterMedStatusQuo(avspillergruppeId, miljoe, 1, MIN_ALDER, MAX_ALDER);
         verify(eksisterendeIdenterService).hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, 1, MIN_ALDER, MAX_ALDER);
     }
 
@@ -167,8 +155,15 @@ public class HodejegerenControllerTest {
 
     @Test
     public void shouldHenteAlleFoedteIdenter() {
-        hodejegerenController.hentFoedteIdenter(avspillergruppeId);
-        verify(eksisterendeIdenterService).finnFoedteIdenter(avspillergruppeId);
+        hodejegerenController.hentFoedteIdenter(avspillergruppeId, minimumAlder, maksimumAlder);
+        verify(eksisterendeIdenterService).finnFoedteIdenter(avspillergruppeId, minimumAlder, maksimumAlder);
+    }
+
+    @Test
+    public void shouldHentePersondataTilIdent() {
+        String ident = "01010101010";
+        hodejegerenController.hentPersondataTilIdent(ident, miljoe);
+        verify(eksisterendeIdenterService).hentPersondata(ident, miljoe);
     }
 
     @Test
@@ -176,5 +171,17 @@ public class HodejegerenControllerTest {
         String ident = "01010101010";
         hodejegerenController.hentRelasjonerTilIdent(ident, miljoe);
         verify(eksisterendeIdenterService).hentRelasjoner(ident, miljoe);
+    }
+
+    @Test
+    public void shouldHenteIdenterSomIkkeErITps() {
+        hodejegerenController.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
+        verify(eksisterendeIdenterService).hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
+    }
+
+    @Test
+    public void shouldHenteIdenterSomKolliderer() {
+        hodejegerenController.hentIdenterSomKolliderer(avspillergruppeId);
+        verify(eksisterendeIdenterService).hentIdenterSomKolliderer(avspillergruppeId);
     }
 }

@@ -11,9 +11,11 @@ import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
 import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -34,7 +36,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.ResponseEntity;
 import wiremock.com.google.common.io.Resources;
 
 import java.io.IOException;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,9 +52,8 @@ import java.util.Random;
 import java.util.Set;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
-import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
-import no.nav.registre.hodejegeren.provider.rs.responses.SlettIdenterResponse;
+import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -92,7 +93,7 @@ public class EksisterendeIdenterServiceTest {
         doedeIdenter.add("20044249948");
 
         Set<String> foedteIdenter = new LinkedHashSet<>();
-        foedteIdenter.add("20044251231");
+        foedteIdenter.add("20041751231");
 
         when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(1L, Arrays.asList(
                 FOEDSELSMELDING.getAarsakskode(),
@@ -212,10 +213,12 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void finnFoedteIdenterTest() {
-        List<String> foedte = eksisterendeIdenterService.finnFoedteIdenter(3L);
+        int minAlder = 0;
+        int maksAlder = 200;
+        List<String> foedte = eksisterendeIdenterService.finnFoedteIdenter(3L, minAlder, maksAlder);
         assertEquals(1, foedte.size());
         assertThat(foedte, containsInAnyOrder(
-                "20044251231"
+                "20041751231"
         ));
     }
 
@@ -288,6 +291,22 @@ public class EksisterendeIdenterServiceTest {
     }
 
     @Test
+    public void shouldHentePersondataPaaIdent() throws IOException {
+        String fnr = "12101816735";
+        String miljoe = "t1";
+
+        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("persondata/persondata.json"));
+
+        when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
+        PersondataResponse response = eksisterendeIdenterService.hentPersondata(fnr, miljoe);
+
+        assertThat(response.getFnr(), equalTo(fnr));
+        assertThat(response.getFornavn(), equalTo("USTABIL"));
+        assertThat(response.getEtternavn(), equalTo("PARASOLL"));
+        assertThat(response.getStatsborger(), equalTo("NORGE"));
+    }
+
+    @Test
     public void shouldHandleEmptyRelasjon() throws IOException {
         String fnr = "12090080405";
         String miljoe = "t1";
@@ -333,25 +352,38 @@ public class EksisterendeIdenterServiceTest {
     }
 
     @Test
-    public void shouldSletteIdenterUtenStatusQuo() throws IOException {
+    public void shouldHenteIdenterNotInTps() throws IOException {
         Long avspillergruppeId = 123L;
-        String fnr = "01010101010";
-        List<String> identer = Collections.singletonList(fnr);
-        Long meldingId = 123L;
-        List<Long> meldingIds = Collections.singletonList(meldingId);
+        String fnr1 = "20092943861";
+        String fnr2 = "12345678910";
+        List<String> identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
-        ManglendeInfoITpsException manglendeInfoITpsException = new ManglendeInfoITpsException(
-                "Kunne ikke finne status quo på person med fnr " + fnr + " for felt 'datoDo'. Utfyllende melding fra TPS: PERSON IKKE FUNNET");
+        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("tpsStatus/tps_status.json"));
 
-        when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, Arrays.asList(DATO_DO, STATSBORGER), miljoe, fnr)).thenThrow(manglendeInfoITpsException);
-        when(tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, identer)).thenReturn(meldingIds);
-        when(tpsfConsumer.slettMeldingerFraTpsf(meldingIds)).thenReturn(ResponseEntity.ok().build());
+        when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(eq(avspillergruppeId), anyList(), anyString())).thenReturn(new HashSet<>(identer));
+        when(tpsfConsumer.hentTpsStatusPaaIdenter(eq("A0"), eq(miljoe), anyList())).thenReturn(jsonNode);
 
-        SlettIdenterResponse slettIdenterResponse = eksisterendeIdenterService.slettIdenterUtenStatusQuo(avspillergruppeId, miljoe, identer);
+        List<String> identerIkkeITps = eksisterendeIdenterService.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
 
-        assertThat(slettIdenterResponse.getIdenterSomBleSlettetFraAvspillergruppe(), containsInAnyOrder(fnr));
-        verify(tpsStatusQuoService).hentStatusQuo(ROUTINE_PERSDATA, Arrays.asList(DATO_DO, STATSBORGER), miljoe, fnr);
-        verify(tpsfConsumer).getMeldingIderTilhoerendeIdenter(avspillergruppeId, identer);
-        verify(tpsfConsumer).slettMeldingerFraTpsf(meldingIds);
+        assertThat(identerIkkeITps, contains(fnr2));
+        assertThat(identerIkkeITps, not(contains(fnr1)));
+    }
+
+    @Test
+    public void shouldHenteIdenterSomKolliderer() throws IOException {
+        Long avspillergruppeId = 123L;
+        String fnr1 = "20092943861";
+        String fnr2 = "12345678910";
+        List<String> identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+
+        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("tpsStatus/tps_kollisjon.json"));
+
+        when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(eq(avspillergruppeId), anyList(), anyString())).thenReturn(new HashSet<>(identer));
+        when(tpsfConsumer.hentTpsStatusPaaIdenter(eq("A2"), eq("q2"), anyList())).thenReturn(jsonNode);
+
+        List<String> identerSomKolliderer = eksisterendeIdenterService.hentIdenterSomKolliderer(avspillergruppeId);
+
+        assertThat(identerSomKolliderer, contains(fnr1));
+        assertThat(identerSomKolliderer, not(contains(fnr2)));
     }
 }

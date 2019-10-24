@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import no.nav.registre.hodejegeren.consumer.requests.SlettSkdmeldingerRequest;
-
 @Component
 @Slf4j
 public class TpsfConsumer {
@@ -35,8 +33,8 @@ public class TpsfConsumer {
     private RestTemplate restTemplate;
     private UriTemplate urlGetIdenter;
     private UriTemplate urlServiceRoutine;
+    private UriTemplate statusPaaIdenter;
     private UriTemplate urlGetMeldingIder;
-    private UriTemplate urlSlettMeldinger;
 
     public TpsfConsumer(RestTemplateBuilder restTemplateBuilder,
             @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
@@ -46,9 +44,9 @@ public class TpsfConsumer {
         this.restTemplate = restTemplateBuilder.build();
         this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
         this.urlGetIdenter = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/identer/{avspillergruppeId}?aarsakskode={aarsakskode}&transaksjonstype={transaksjonstype}");
-        this.urlServiceRoutine = new UriTemplate(serverUrl + "/v1/serviceroutine/{routineName}?aksjonsKode={aksjonskode}&environment={environment}&fnr={fnr}");
+        this.urlServiceRoutine = new UriTemplate(serverUrl + "/v1/serviceroutine/{routineName}?aksjonsKode={aksjonskode}&environment={miljoe}&fnr={fnr}");
+        this.statusPaaIdenter = new UriTemplate(serverUrl + "/v1/serviceroutine/FS03-FDLISTER-DISKNAVN-M?aksjonsKode={aksjonskode}&antallFnr={antallIdenter}&environment={miljoe}&nFnr={identer}");
         this.urlGetMeldingIder = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/meldinger/{avspillergruppeId}");
-        this.urlSlettMeldinger = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deletemeldinger");
     }
 
     @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
@@ -58,21 +56,23 @@ public class TpsfConsumer {
     }
 
     @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
-    public JsonNode getTpsServiceRoutine(String routineName, String aksjonsKode, String environment, String fnr) throws IOException {
-        RequestEntity getRequest = RequestEntity.get(urlServiceRoutine.expand(routineName, aksjonsKode, environment, fnr)).build();
+    public JsonNode getTpsServiceRoutine(String routineName, String aksjonsKode, String miljoe, String fnr) throws IOException {
+        RequestEntity getRequest = RequestEntity.get(urlServiceRoutine.expand(routineName, aksjonsKode, miljoe, fnr)).build();
         ResponseEntity<String> response = restTemplate.exchange(getRequest, String.class);
         return new ObjectMapper().readTree(response.getBody());
+    }
+
+    @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
+    public JsonNode hentTpsStatusPaaIdenter(String aksjonskode, String miljoe, List<String> identer) throws IOException {
+        String identerSomString = String.join(",", identer);
+        RequestEntity getRequest = RequestEntity.get(statusPaaIdenter.expand(aksjonskode, identer.size(), miljoe, identerSomString)).build();
+        ResponseEntity<String> response = restTemplate.exchange(getRequest, String.class);
+        return new ObjectMapper().readTree(response.getBody()).findValue("response");
     }
 
     @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
     public List<Long> getMeldingIderTilhoerendeIdenter(Long avspillergruppeId, List<String> identer) {
         RequestEntity postRequest = RequestEntity.post(urlGetMeldingIder.expand(avspillergruppeId)).body(identer);
         return new ArrayList<>(Objects.requireNonNull(restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST).getBody()));
-    }
-
-    @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
-    public ResponseEntity slettMeldingerFraTpsf(List<Long> meldingIder) {
-        RequestEntity postRequest = RequestEntity.post(urlSlettMeldinger.expand()).body(SlettSkdmeldingerRequest.builder().ids(meldingIder).build());
-        return restTemplate.exchange(postRequest, ResponseEntity.class);
     }
 }
