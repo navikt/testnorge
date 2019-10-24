@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnorge-statisk-data-forvalter
+  name: testnorge-inst
   namespace: default
   labels:
     team: orkestrator
@@ -30,4 +30,4 @@ spec:
       cpu: 200m
       memory: 1024Mi
   ingresses:
-    - "https://testnorge-medl.nais.preprod.local"
+    - "https://testnorge-inst.nais.preprod.local"
