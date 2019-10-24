@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.krrstub;
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
 
 import java.net.URI;
 import java.util.UUID;
@@ -23,7 +24,6 @@ import no.nav.dolly.properties.ProvidersProps;
 public class KrrstubConsumer {
 
     private static final String CONSUMER = "Dolly";
-    private static final String HEADER_NAV_PERSON_IDENT = "Nav-Personident";
     private static final String DIGITAL_KONTAKT_URL = "/api/v1/kontaktinformasjon";
     private static final String PERSON_DIGITAL_KONTAKT_URL = "/api/v1/person/kontaktinformasjon";
 
