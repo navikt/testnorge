@@ -52,13 +52,9 @@ public class SyntetiseringService {
     private Random rand;
 
     public ResponseEntity opprettArbeidshistorikkOgSendTilAaregstub(SyntetiserAaregRequest syntetiserAaregRequest) {
-        //        Set<String> levendeIdenter = new HashSet<>(hentLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId(), MINIMUM_ALDER));
-        // for testing:
-        Set<String> levendeIdenter = new HashSet<>(Collections.singletonList("19100380016"));
+        Set<String> levendeIdenter = new HashSet<>(hentLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId(), MINIMUM_ALDER));
         Set<String> nyeIdenter = new HashSet<>(syntetiserAaregRequest.getAntallNyeIdenter());
-        //        Set<String> identerIAaregstub = new HashSet<>(aaregstubConsumer.hentEksisterendeIdenter());
-        // for testing:
-        Set<String> identerIAaregstub = new HashSet<>();
+        Set<String> identerIAaregstub = new HashSet<>(aaregstubConsumer.hentEksisterendeIdenter());
         levendeIdenter.removeAll(identerIAaregstub);
         List<String> utvalgteIdenter = new ArrayList<>(levendeIdenter);
 
@@ -99,7 +95,9 @@ public class SyntetiseringService {
                     .append(". ");
         }
 
-        log.info(statusFraAareg.toString());
+        if (!statusFraAareg.toString().isEmpty()) {
+            log.info(statusFraAareg.toString());
+        }
 
         return ResponseEntity.ok().body(statusFraAareg.toString());
     }

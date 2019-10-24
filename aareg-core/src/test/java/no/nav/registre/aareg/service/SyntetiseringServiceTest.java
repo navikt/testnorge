@@ -1,9 +1,8 @@
 package no.nav.registre.aareg.service;
 
+import static no.nav.registre.aareg.consumer.ws.AaregWsConsumer.STATUS_OK;
 import static no.nav.registre.aareg.testutils.ResourceUtils.getResourceFileContent;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -11,19 +10,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -99,11 +93,10 @@ public class SyntetiseringServiceTest {
         when(aaregstubConsumer.hentEksisterendeIdenter()).thenReturn(new ArrayList<>());
     }
 
-    @Ignore
     @Test
     public void shouldOppretteArbeidshistorikk() {
         Map<String, String> status = new HashMap<>();
-        status.put(miljoe, HttpStatus.CREATED.toString());
+        status.put(miljoe, STATUS_OK);
         RsAaregResponse rsAaregResponse = RsAaregResponse.builder()
                 .statusPerMiljoe(status)
                 .build();
@@ -117,21 +110,5 @@ public class SyntetiseringServiceTest {
         verify(aaregstubConsumer).sendTilAaregstub(Collections.singletonList(syntetiserteMeldinger.get(1)));
         verify(hodejegerenHistorikkConsumer, times(2)).saveHistory(any());
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
-    }
-
-    @Ignore
-    @Test
-    public void shouldLogOnTooFewAvailableIdents() {
-        Logger logger = (Logger) LoggerFactory.getLogger(SyntetiseringService.class);
-        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
-        listAppender.start();
-        logger.addAppender(listAppender);
-
-        syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, 3);
-
-        syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest);
-
-        assertThat(listAppender.list.size(), is(equalTo(2)));
-        assertThat(listAppender.list.get(0).toString(), containsString("Fant ikke nok ledige identer i avspillergruppe. Lager arbeidsforhold på " + antallMeldinger + " identer."));
     }
 }
