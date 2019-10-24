@@ -84,6 +84,8 @@ public class SyntetiseringService {
                     lagredeIdenter.add(opprettRequest.getArbeidsforhold().getArbeidstaker().getIdent());
                     aaregstubConsumer.sendTilAaregstub(Collections.singletonList(opprettRequest));
                     lagreArbeidsforholdIHodejegeren(opprettRequest);
+                } else {
+                    log.error("Kunne ikke opprette arbeidsforhold: {}", response.getStatusPerMiljoe().get(syntetiserAaregRequest.getMiljoe()));
                 }
             }
         }
