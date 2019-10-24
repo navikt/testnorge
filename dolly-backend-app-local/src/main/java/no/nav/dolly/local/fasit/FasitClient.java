@@ -44,9 +44,6 @@ public class FasitClient {
         properties.put("credentials.preprodEnv.username", preprodEnvCredentials.getUsername());
         properties.put("credentials.preprodEnv.password", fasitService.findSecret(preprodEnvCredentials.getPasswordUrl()));
 
-
-
         return properties;
-
     }
 }

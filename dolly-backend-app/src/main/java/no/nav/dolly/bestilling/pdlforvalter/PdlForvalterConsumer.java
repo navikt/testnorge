@@ -1,5 +1,7 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_TOKEN;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -22,8 +24,6 @@ import no.nav.dolly.security.sts.StsOidcService;
 @RequiredArgsConstructor
 public class PdlForvalterConsumer {
 
-    private static final String HEADER_NAV_PERSON_IDENT = "Nav-Personident";
-    private static final String HEADER_NAV_CONSUMER_TOKEN = "Nav-Consumer-Token";
     private static final String PDL_BESTILLING_URL = "/api/v1/bestilling";
     private static final String PDL_BESTILL_KONTAKTINFORMASJON_FOR_DODESDBO_URL = PDL_BESTILLING_URL + "/kontaktinformasjonfordoedsbo";
     private static final String PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL = PDL_BESTILLING_URL + "/utenlandsidentifikasjonsnummer";

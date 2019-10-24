@@ -1,6 +1,8 @@
 package no.nav.dolly.bestilling.krrstub;
 
 import static java.lang.String.format;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 
 import java.net.URI;
 import java.util.UUID;
@@ -21,8 +23,6 @@ import no.nav.dolly.properties.ProvidersProps;
 public class KrrstubConsumer {
 
     private static final String CONSUMER = "Dolly";
-    private static final String NAV_CALL_ID = "Nav-Call-Id";
-    private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
     private static final String HEADER_NAV_PERSON_IDENT = "Nav-Personident";
     private static final String DIGITAL_KONTAKT_URL = "/api/v1/kontaktinformasjon";
     private static final String PERSON_DIGITAL_KONTAKT_URL = "/api/v1/person/kontaktinformasjon";
@@ -34,8 +34,8 @@ public class KrrstubConsumer {
 
         return restTemplate.exchange(
                 RequestEntity.get(URI.create(providersProps.getKrrStub().getUrl() + PERSON_DIGITAL_KONTAKT_URL))
-                        .header(NAV_CALL_ID, getNavCallId())
-                        .header(NAV_CONSUMER_ID, CONSUMER)
+                        .header(HEADER_NAV_CALL_ID, getNavCallId())
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .header(HEADER_NAV_PERSON_IDENT, ident)
                         .build(), DigitalKontaktdata[].class);
     }
@@ -45,8 +45,8 @@ public class KrrstubConsumer {
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getKrrStub().getUrl() + DIGITAL_KONTAKT_URL))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(NAV_CALL_ID, getNavCallId())
-                        .header(NAV_CONSUMER_ID, CONSUMER)
+                        .header(HEADER_NAV_CALL_ID, getNavCallId())
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .body(digitalKontaktdata), Object.class);
     }
 
@@ -54,8 +54,8 @@ public class KrrstubConsumer {
 
         return restTemplate.exchange(
                 RequestEntity.delete(URI.create(format("%s%s/%s", providersProps.getKrrStub().getUrl(), DIGITAL_KONTAKT_URL, id.toString())))
-                        .header(NAV_CALL_ID, getNavCallId())
-                        .header(NAV_CONSUMER_ID, CONSUMER)
+                        .header(HEADER_NAV_CALL_ID, getNavCallId())
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .build(), Object.class);
     }
 
