@@ -1,5 +1,4 @@
-import dateFnsFormat from 'date-fns/format'
-import dateFnsParse from 'date-fns/parse'
+import { format, isDate } from 'date-fns'
 import _startCase from 'lodash/startCase'
 import _capitalize from 'lodash/capitalize'
 import _get from 'lodash/get'
@@ -20,7 +19,9 @@ Formatters.formatAlder = (alder, dodsdato) => {
 Formatters.formatDate = date => {
 	if (!date) return date
 	if (date.length == 10) return date
-	return dateFnsFormat(date, defaultDateFormat, new Date())
+	// Parse date if not date
+	if (!isDate(date)) date = new Date(date)
+	return format(date, defaultDateFormat)
 }
 
 // Format string to Date format
@@ -101,8 +102,8 @@ Formatters.oversettBoolean = value => {
 	return value === true || value === 'true'
 		? 'Ja'
 		: value === false || value === 'false'
-		? 'Nei'
-		: value
+			? 'Nei'
+			: value
 }
 
 Formatters.booleanToServicebehov = value => {

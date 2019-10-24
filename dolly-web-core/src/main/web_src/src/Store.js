@@ -1,6 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
-import promiseMiddleware from 'redux-promise-middleware'
+import { createPromise } from 'redux-promise-middleware'
 import { connectRouter, routerMiddleware, LOCATION_CHANGE } from 'connected-react-router'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import bestillingReducer from './ducks/bestilling'
@@ -32,7 +32,7 @@ const configureReduxStore = history => {
 	const allMiddleware = [
 		locationMiddleware,
 		thunkMiddleware,
-		promiseMiddleware({ promiseTypeSuffixes: ['REQUEST', 'SUCCESS', 'FAILURE'] }),
+		createPromise({ promiseTypeSuffixes: ['REQUEST', 'SUCCESS', 'FAILURE'] }),
 		routerMiddleware(history)
 	]
 
