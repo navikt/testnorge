@@ -2,7 +2,8 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { push } from 'connected-react-router'
 import { getBestillingById } from '~/ducks/bestillingStatus'
-import PersonDetaljer from './PersonDetaljer'
+// import PersonDetaljer from './PersonDetaljer'
+import PersonDetaljer from '~/components/personDetaljer/PersonDetaljer'
 import DataMapper from '~/service/dataMapper'
 import {
 	GET_KRR_TESTBRUKER,

@@ -38,7 +38,7 @@ const DataMapper = {
 	// Viser under expand
 	getDetailedData(state, personId) {
 		const { gruppe, testbruker, bestillingStatuser } = state
-
+		console.log('state :', state)
 		if (!testbruker.items || !testbruker.items.tpsf) return null
 
 		const testIdent = gruppe.data[0].testidenter.find(testIdent => testIdent.ident === personId)
