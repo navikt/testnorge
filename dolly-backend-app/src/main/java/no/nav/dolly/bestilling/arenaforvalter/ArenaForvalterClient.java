@@ -6,11 +6,11 @@ import static java.util.Objects.nonNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -24,13 +24,11 @@ import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ArenaForvalterClient implements ClientRegister {
 
-    @Autowired
-    private ArenaForvalterConsumer arenaForvalterConsumer;
-
-    @Autowired
-    private MapperFacade mapperFacade;
+    private final ArenaForvalterConsumer arenaForvalterConsumer;
+    private final MapperFacade mapperFacade;
 
     @Override
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {

@@ -4,9 +4,9 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
@@ -18,12 +18,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -52,41 +52,23 @@ import no.nav.dolly.service.TestgruppeService;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class DollyBestillingService {
 
     private static final String FEIL_KUNNE_IKKE_UTFORES = "FEIL: Bestilling kunne ikke utføres: %s";
     private static final String SUCCESS = "OK";
     private static final String OUT_FMT = "%s: %s";
 
-    @Autowired
-    private TpsfResponseHandler tpsfResponseHandler;
-
-    @Autowired
-    private TpsfService tpsfService;
-
-    @Autowired
-    private TestgruppeService testgruppeService;
-
-    @Autowired
-    private IdentService identService;
-
-    @Autowired
-    private BestillingProgressRepository bestillingProgressRepository;
-
-    @Autowired
-    private BestillingService bestillingService;
-
-    @Autowired
-    private MapperFacade mapperFacade;
-
-    @Autowired
-    private CacheManager cacheManager;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private List<ClientRegister> clientRegisters;
+    private final TpsfResponseHandler tpsfResponseHandler;
+    private final TpsfService tpsfService;
+    private final TestgruppeService testgruppeService;
+    private final IdentService identService;
+    private final BestillingProgressRepository bestillingProgressRepository;
+    private final BestillingService bestillingService;
+    private final MapperFacade mapperFacade;
+    private final CacheManager cacheManager;
+    private final ObjectMapper objectMapper;
+    private final List<ClientRegister> clientRegisters;
 
     @Async
     public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingRequest request, Bestilling bestilling) {
@@ -203,7 +185,7 @@ public class DollyBestillingService {
             try {
                 RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
                 bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
-                bestKriterier.setEnvironments(asList(bestilling.getMiljoer().split(",")));
+                bestKriterier.setEnvironments(newArrayList(bestilling.getMiljoer().split(",")));
 
                 clientRegisters.forEach(clientRegister ->
                         clientRegister.gjenopprett(bestKriterier, tpsPerson, progress));
@@ -302,10 +284,10 @@ public class DollyBestillingService {
 
     private void clearCache() {
         if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
-            cacheManager.getCache(CACHE_BESTILLING).clear();
+            requireNonNull(cacheManager.getCache(CACHE_BESTILLING)).clear();
         }
         if (nonNull(cacheManager.getCache(CACHE_GRUPPE))) {
-            cacheManager.getCache(CACHE_GRUPPE).clear();
+            requireNonNull(cacheManager.getCache(CACHE_GRUPPE)).clear();
         }
     }
 

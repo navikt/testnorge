@@ -6,7 +6,13 @@ import static no.nav.dolly.bestilling.pdlforvalter.PdlAdressebeskyttelse.convert
 import static no.nav.dolly.util.NullcheckUtil.blankcheckSetDefaultValue;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -21,39 +27,29 @@ import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.DatoFraIdentService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Slf4j
-@Component
+@Service
 @RequiredArgsConstructor
 public class PdlForvalterClient implements ClientRegister {
 
+    public static final String SYNTH_ENV = "q2";
     public static final String KONTAKTINFORMASJON_DOEDSBO = "KontaktinformasjonForDoedsbo";
     public static final String UTENLANDS_IDENTIFIKASJONSNUMMER = "UtenlandskIdentifikasjonsnummer";
     public static final String FALSK_IDENTITET = "FalskIdentitet";
     public static final String PDL_FORVALTER = "PdlForvalter";
+
     private static final String KILDE = "Dolly";
     private static final String HENDELSE_ID = "hendelseId";
 
-    public static final String SYNTH_ENV = "q2";
-
     private final PdlForvalterConsumer pdlForvalterConsumer;
+    private final DatoFraIdentService datoFraIdentService;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
-    private final DatoFraIdentService datoFraIdentService;
 
     @Override public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         if (bestilling.getEnvironments().contains(SYNTH_ENV) || nonNull(bestilling.getPdlforvalter())) {
-            if (bestilling.getPdlforvalter() == null) {
-                progress.setPdlforvalterStatus(null);
-                return;
-            }
 
             StringBuilder status = new StringBuilder();
 
@@ -80,7 +76,9 @@ public class PdlForvalterClient implements ClientRegister {
                         .append("' ikke er valgt");
             }
 
-            progress.setPdlforvalterStatus(status.substring(1));
+            if (status.length() > 1) {
+                progress.setPdlforvalterStatus(status.substring(1));
+            }
         }
     }
 
@@ -259,12 +257,12 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
+    private static void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
         builder.append('$')
                 .append(utenlandsIdentifikasjonsnummer);
     }
 
-    private void appendOkStatus(JsonNode jsonNode, StringBuilder builder) {
+    private static void appendOkStatus(JsonNode jsonNode, StringBuilder builder) {
         builder.append("&OK");
         if (nonNull(jsonNode) && nonNull(jsonNode.get(HENDELSE_ID))) {
             builder.append(", ")

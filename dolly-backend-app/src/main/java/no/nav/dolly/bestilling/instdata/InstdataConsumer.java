@@ -1,22 +1,20 @@
 package no.nav.dolly.bestilling.instdata;
 
 import static java.lang.String.format;
-import static java.util.Collections.emptyList;
-
-import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.resultset.inst.Instdata;
-import no.nav.dolly.properties.ProvidersProps;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-@Component
+import lombok.RequiredArgsConstructor;
+import no.nav.dolly.domain.resultset.inst.Instdata;
+import no.nav.dolly.properties.ProvidersProps;
+
+@Service
 @RequiredArgsConstructor
 public class InstdataConsumer {
 
@@ -31,15 +29,12 @@ public class InstdataConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
-    public List<String> getMiljoer() {
-        ParameterizedTypeReference<List<String>> expectedResponseType = new ParameterizedTypeReference<List<String>>() {
-        };
-        ResponseEntity<List<String>> resp = restTemplate.exchange(
+    public ResponseEntity getMiljoer() {
+        return restTemplate.exchange(
                 RequestEntity.get(URI.create(format(INSTMILJO_URL, providersProps.getInstdata().getUrl())))
                         .header(NAV_CALL_ID, getNavCallId())
                         .header(NAV_CONSUMER_ID, CONSUMER)
-                        .build(), expectedResponseType);
-        return resp.getBody() != null ? resp.getBody() : emptyList();
+                        .build(), String[].class);
     }
 
     public ResponseEntity deleteInstdata(String ident, String environment) {

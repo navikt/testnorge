@@ -5,19 +5,20 @@ import static java.lang.String.format;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import lombok.AllArgsConstructor;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Service
+@AllArgsConstructor
 public class ArenaForvalterConsumer {
 
     private static final String ARENAFORVALTER_BRUKER = "/api/v1/bruker";
@@ -26,10 +27,7 @@ public class ArenaForvalterConsumer {
     private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
     private static final String KILDE = "Dolly";
 
-    @Autowired
     private RestTemplate restTemplate;
-
-    @Autowired
     private ProvidersProps providersProps;
 
     public ResponseEntity getIdent(String ident) {
