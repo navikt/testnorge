@@ -23,7 +23,7 @@ spec:
     vault:
       enabled: true
       paths:
-        - kvPath: "kv/preprod/fss/testnorge-aareg/default"
+        - kvPath: "/kv/preprod/fss/testnorge-aareg/default"
           mountPath: "/var/run/secrets/nais.io/vault"
     resources:
       requests:
