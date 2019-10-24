@@ -1,18 +1,29 @@
 package no.nav.dolly.bestilling.service;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -25,12 +36,12 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
-import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
-import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
-import no.nav.dolly.domain.resultset.tpsf.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
+import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
+import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.domain.resultset.tpsf.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
@@ -38,38 +49,44 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
-import org.springframework.cache.CacheManager;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class DollyBestillingService {
 
     private static final String FEIL_KUNNE_IKKE_UTFORES = "FEIL: Bestilling kunne ikke utføres: %s";
     private static final String SUCCESS = "OK";
     private static final String OUT_FMT = "%s: %s";
 
-    private final TpsfResponseHandler tpsfResponseHandler;
-    private final TpsfService tpsfService;
-    private final TestgruppeService testgruppeService;
-    private final IdentService identService;
-    private final BestillingProgressRepository bestillingProgressRepository;
-    private final BestillingService bestillingService;
-    private final MapperFacade mapperFacade;
-    private final CacheManager cacheManager;
-    private final ObjectMapper objectMapper;
-    private final List<ClientRegister> clientRegisters;
+    @Autowired
+    private TpsfResponseHandler tpsfResponseHandler;
+
+    @Autowired
+    private TpsfService tpsfService;
+
+    @Autowired
+    private TestgruppeService testgruppeService;
+
+    @Autowired
+    private IdentService identService;
+
+    @Autowired
+    private BestillingProgressRepository bestillingProgressRepository;
+
+    @Autowired
+    private BestillingService bestillingService;
+
+    @Autowired
+    private MapperFacade mapperFacade;
+
+    @Autowired
+    private CacheManager cacheManager;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private List<ClientRegister> clientRegisters;
 
     @Async
     public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingRequest request, Bestilling bestilling) {
@@ -114,7 +131,7 @@ public class DollyBestillingService {
 
             int loopCount = 0;
             while (!bestillingService.isStoppet(bestilling.getId()) && loopCount < identer.size()) {
-                tpsfBestilling.setOpprettFraIdenter(asList(identer.get(loopCount)));
+                tpsfBestilling.setOpprettFraIdenter(newArrayList(identer.get(loopCount)));
                 preparePerson(request, bestilling, testgruppe, tpsfBestilling);
                 clearCache();
                 loopCount++;
@@ -169,7 +186,7 @@ public class DollyBestillingService {
 
             BestillingProgress progress = new BestillingProgress(bestilling.getId(), tpsPerson.getHovedperson());
 
-            sendIdenterTilTPS(asList(bestilling.getMiljoer().split(",")), identer, bestilling.getGruppe(), progress);
+            sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), identer, bestilling.getGruppe(), progress);
 
             gjenopprettNonTpsf(tpsPerson, bestilling, progress);
 
@@ -285,10 +302,10 @@ public class DollyBestillingService {
 
     private void clearCache() {
         if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
-            requireNonNull(cacheManager.getCache(CACHE_BESTILLING)).clear();
+            cacheManager.getCache(CACHE_BESTILLING).clear();
         }
         if (nonNull(cacheManager.getCache(CACHE_GRUPPE))) {
-            requireNonNull(cacheManager.getCache(CACHE_GRUPPE)).clear();
+            cacheManager.getCache(CACHE_GRUPPE).clear();
         }
     }
 
@@ -324,7 +341,7 @@ public class DollyBestillingService {
     }
 
     private List<String> extraxtSuccessMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
-        Set<String> successMiljoer = new TreeSet<>();
+        Set<String> successMiljoer = new TreeSet();
 
         // Add successful messages
         addSuccessfulMessages(hovedperson, response, successMiljoer);
@@ -332,7 +349,7 @@ public class DollyBestillingService {
         // Remove unsuccessful messages
         removeUnsuccessfulMessages(hovedperson, response, successMiljoer);
 
-        return new ArrayList<>(successMiljoer);
+        return newArrayList(successMiljoer);
     }
 
     private void removeUnsuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
@@ -360,13 +377,13 @@ public class DollyBestillingService {
     }
 
     private List<String> extraxtFailureMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
-        Map<String, List<String>> failures = new TreeMap<>();
+        Map<String, List<String>> failures = new TreeMap();
 
         addFeilmeldingSkdMeldinger(hovedperson, response.getSendSkdMeldingTilTpsResponsene(), failures);
 
         addFeilmeldingServicerutiner(hovedperson, response.getServiceRoutineStatusResponsene(), failures);
 
-        List<String> errors = new ArrayList<>();
+        List<String> errors = newArrayList();
         failures.keySet().forEach(miljoe -> errors.add(format(OUT_FMT, miljoe, join(" + ", failures.get(miljoe)))));
 
         return errors;
@@ -377,7 +394,7 @@ public class DollyBestillingService {
             if (hovedperson.equals(response.getPersonId())) {
                 for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
                     if (!entry.getValue().contains(SUCCESS) && !failures.containsKey(entry.getKey())) {
-                        failures.put(entry.getKey(), singletonList(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue())));
+                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue())));
                     } else if (!entry.getValue().contains(SUCCESS)) {
                         failures.get(entry.getKey()).add(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue()));
                     }
@@ -391,7 +408,7 @@ public class DollyBestillingService {
             if (hovedperson.equals(response.getPersonId())) {
                 for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
                     if (!SUCCESS.equals(entry.getValue()) && !failures.containsKey(entry.getKey())) {
-                        failures.put(entry.getKey(), singletonList(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue())));
+                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue())));
                     } else if (!SUCCESS.equals(entry.getValue())) {
                         failures.get(entry.getKey()).add(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue()));
                     }

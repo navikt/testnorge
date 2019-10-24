@@ -4,16 +4,16 @@ import static no.nav.freg.fasit.utils.domain.ResourceType.CREDENTIAL;
 import static no.nav.freg.fasit.utils.domain.ResourceType.DATASOURCE;
 import static no.nav.freg.fasit.utils.domain.Zone.FSS;
 
-import lombok.RequiredArgsConstructor;
-import no.nav.freg.fasit.utils.FasitService;
-import no.nav.freg.fasit.utils.domain.Credentials;
-import no.nav.freg.fasit.utils.domain.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import no.nav.freg.fasit.utils.FasitService;
+import no.nav.freg.fasit.utils.domain.Credentials;
+import no.nav.freg.fasit.utils.domain.DataSource;
 
 @Component
 @RequiredArgsConstructor
@@ -43,6 +43,8 @@ public class FasitClient {
         Credentials preprodEnvCredentials = fasitService.find("srvdolly-preprod-env", CREDENTIAL, environmentName, applicationName, FSS, Credentials.class);
         properties.put("credentials.preprodEnv.username", preprodEnvCredentials.getUsername());
         properties.put("credentials.preprodEnv.password", fasitService.findSecret(preprodEnvCredentials.getPasswordUrl()));
+
+
 
         return properties;
 
