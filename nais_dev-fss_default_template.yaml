@@ -12,25 +12,22 @@ spec:
     path: /internal/isAlive
     periodSeconds: 30
     initialDelay: 30
-    readiness:
-      path: /internal/isReady
-      initialDelay: 30
-    prometheus:
-      path: /internal/prometheus
-    replicas:
-      min: 1
-      max: 1
-    vault:
-      enabled: true
-      paths:
-        - kvPath: "/kv/preprod/fss/testnorge-aareg/default"
-          mountPath: "/var/run/secrets/nais.io/vault"
-    resources:
-      requests:
-        cpu: 200m
-        memory: 1024Mi
-      limits:
-        cpu: 500m
-        memory: 2048Mi
+  readiness:
+    path: /internal/isReady
+    initialDelay: 30
+  prometheus:
+    path: /internal/prometheus
+  replicas:
+    min: 1
+    max: 1
+  vault:
+    enabled: true
+  resources:
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+    limits:
+      cpu: 500m
+      memory: 2048Mi
   ingresses:
     - "https://testnorge-aareg.nais.preprod.local"
