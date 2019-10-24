@@ -2,43 +2,26 @@ package no.nav.registre.aareg.properties;
 
 import static no.nav.registre.aareg.properties.Environment.PREPROD;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
-@Getter
-@Setter
-@Configuration
-@ConfigurationProperties(prefix = "credentials")
+@Service
 public class CredentialsProps {
 
-    private PreprodEnv preprodEnv = new PreprodEnv();
-    private TestEnv testEnv = new TestEnv();
+    @Value("${testnorge-aareg.srvuser.username}")
+    private String usernamePreprod;
+
+    @Value("${testnorge-aareg.srvuser.password}")
+    private String passwordPreprod;
+
+    private String usernameTest = null;
+    private String passwordTest = null;
 
     public String getUsername(Environment env) {
-        return env == PREPROD ? getPreprodEnv().getUsername() : getTestEnv().getUsername();
+        return env == PREPROD ? usernamePreprod : usernameTest;
     }
 
     public String getPassword(Environment env) {
-        return env == PREPROD ? getPreprodEnv().getPassword() : getTestEnv().getPassword();
-    }
-
-    @Getter
-    @Setter
-    public static class PreprodEnv {
-
-        private String username;
-        private String password;
-
-    }
-
-    @Getter
-    @Setter
-    public static class TestEnv {
-
-        private String username;
-        private String password;
-
+        return env == PREPROD ? passwordPreprod : passwordTest;
     }
 }

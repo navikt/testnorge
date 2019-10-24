@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,7 +21,6 @@ import java.util.Base64;
 import java.util.EnumMap;
 import java.util.Map;
 
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.properties.CredentialsProps;
 import no.nav.registre.aareg.properties.Environment;
@@ -37,14 +35,6 @@ public class StsOidcService {
 
     private Map<Environment, String> idToken = new EnumMap<>(Environment.class);
     private Map<Environment, LocalDateTime> expiry = new EnumMap<>(Environment.class);
-
-    public static String getUserIdToken() {
-        return "Bearer " + ((OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication()).getIdToken();
-    }
-
-    public static String getUserPrinciple() {
-        return ((OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication()).getPrincipal();
-    }
 
     public String getIdToken(String environment) {
 
