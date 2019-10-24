@@ -116,7 +116,7 @@ export default class EksisterendeIdent extends Component {
 									this.renderIdentliste(eksisterendeIdentListe)
 								) : (
 									<div className="ingen-gyldige-identer">
-										<Icon size={'14px'} kind={'report-problem-triangle'} />
+										<Icon size={14} kind="report-problem-triangle" />
 										<span className="feilmelding">Ingen gyldige identer. Vennligst fyll ut</span>
 									</div>
 								)}
@@ -127,27 +127,29 @@ export default class EksisterendeIdent extends Component {
 						REDIGER
 					</Button>
 				</div>
-				{ugyldigIdentListe.length > 0 && eksisterendeIdentListe.length > 0 && (
-					<div className="status-container">
-						<div className="plassering">
-							<div className="tekst-container ugyldig">
-								<div className="ugyldig-container">
-									<div className="flexbox">
-										<Icon size={'14px'} kind={'report-problem-triangle'} />
-										{eksisterendeIdentListe && eksisterendeIdentListe.length > 0 && (
-											<div className="feilmelding">
-												Noen av identene som ble lagt inn kan ikke opprettes:
-											</div>
-										)}
-									</div>
-									<div className="identliste-container">
-										{this.renderIdentliste(ugyldigIdentListe)}
+				{ugyldigIdentListe.length > 0 &&
+					eksisterendeIdentListe.length > 0 && (
+						<div className="status-container">
+							<div className="plassering">
+								<div className="tekst-container ugyldig">
+									<div className="ugyldig-container">
+										<div className="flexbox">
+											<Icon size={14} kind="report-problem-triangle" />
+											{eksisterendeIdentListe &&
+												eksisterendeIdentListe.length > 0 && (
+													<div className="feilmelding">
+														Noen av identene som ble lagt inn kan ikke opprettes:
+													</div>
+												)}
+										</div>
+										<div className="identliste-container">
+											{this.renderIdentliste(ugyldigIdentListe)}
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-				)}
+					)}
 				<AttributtVelgerConnector
 					onToggle={toggleAttributeSelection}
 					uncheckAllAttributes={uncheckAllAttributes}
