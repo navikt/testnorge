@@ -8,14 +8,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class CredentialsProps {
 
-    @Value("${testnorge-aareg.srvuser.username}")
+    @Value("${testnorge-aareg.srvuser.username.dev}")
     private String usernamePreprod;
 
-    @Value("${testnorge-aareg.srvuser.password}")
+    @Value("${testnorge-aareg.srvuser.password.dev}")
     private String passwordPreprod;
 
-    private String usernameTest = null;
-    private String passwordTest = null;
+    @Value("${testnorge-aareg.srvuser.username.test}")
+    private String usernameTest;
+
+    @Value("${testnorge-aareg.srvuser.password.test}")
+    private String passwordTest;
 
     public String getUsername(Environment env) {
         return env == PREPROD ? usernamePreprod : usernameTest;
