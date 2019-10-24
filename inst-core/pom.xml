@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.registre</groupId>
         <artifactId>testnorge-inst</artifactId>
-        <version>1.2.1</version>
+        <version>1.8.4</version>
     </parent>
 
     <artifactId>inst-core</artifactId>
@@ -83,8 +83,42 @@
         <dependency>
             <groupId>no.nav.registre</groupId>
             <artifactId>inst-domain</artifactId>
-            <version>1.2.1</version>
+            <version>1.8.4</version>
             <scope>compile</scope>
+        </dependency>
+        <!--DOCUMENTATION-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.javassist</groupId>
+                    <artifactId>javassist</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <!--FASIT-->
+        <dependency>
+            <groupId>no.nav.freg</groupId>
+            <artifactId>fasit-util</artifactId>
+            <version>${fasit-util.version}</version>
+        </dependency>
+        <!--HODEJEGEREN-->
+        <dependency>
+            <groupId>no.nav.registre</groupId>
+            <artifactId>testnorge-consumers</artifactId>
+            <version>1.8.0-RELEASE</version>
+        </dependency>
+        <!--CORS-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
     </dependencies>
 

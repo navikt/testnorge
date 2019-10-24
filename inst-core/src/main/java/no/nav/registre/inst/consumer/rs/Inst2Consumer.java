@@ -1,5 +1,6 @@
 package no.nav.registre.inst.consumer.rs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,11 +13,14 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.inst.Institusjonsforholdsmelding;
+import no.nav.registre.inst.Institusjonsopphold;
+import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
+import no.nav.registre.inst.service.Inst2FasitService;
 
 @Component
 @Slf4j
@@ -24,40 +28,30 @@ public class Inst2Consumer {
 
     private static final ParameterizedTypeReference<Map<String, Object>> RESPONSE_TYPE_HENT_TOKEN = new ParameterizedTypeReference<Map<String, Object>>() {
     };
-    private static final ParameterizedTypeReference<List<Institusjonsforholdsmelding>> RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<List<Institusjonsforholdsmelding>>() {
+    private static final ParameterizedTypeReference<List<Institusjonsopphold>> RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<List<Institusjonsopphold>>() {
     };
     private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_OBJECT = new ParameterizedTypeReference<Object>() {
     };
-    private static final String NAV_CALL_ID = "orkestratoren";
-    private static final String NAV_CONSUMER_ID = "orkestratoren";
 
     @Autowired
     private RestTemplate restTemplate;
 
-    private UriTemplate tokenProviderUrl;
+    @Autowired
+    private Inst2FasitService inst2FasitService;
+
     private String username;
     private String password;
-    private UriTemplate hentInstitusjonsoppholdUrl;
-    private UriTemplate leggTilInstitusjonsforholdUrl;
-    private UriTemplate slettInstitusjonsforholdUrl;
-    private UriTemplate sjekkInstitusjonUrl;
 
     public Inst2Consumer(
-            @Value("${freg-token-provider-v1.url}") String tokenProviderServerUrl,
             @Value("${testnorges.ida.credential.inst.username}") String username,
-            @Value("${testnorges.ida.credential.inst.password}") String password,
-            @Value("${inst2.web.api.url}") String inst2ServerUrl) {
-        this.tokenProviderUrl = new UriTemplate(tokenProviderServerUrl);
+            @Value("${testnorges.ida.credential.inst.password}") String password) {
         this.username = username;
         this.password = password;
-        this.hentInstitusjonsoppholdUrl = new UriTemplate(inst2ServerUrl + "/person/institusjonsopphold");
-        this.leggTilInstitusjonsforholdUrl = new UriTemplate(inst2ServerUrl + "/person/institusjonsopphold?validatePeriod=true");
-        this.slettInstitusjonsforholdUrl = new UriTemplate(inst2ServerUrl + "/person/institusjonsopphold/{oppholdId}");
-        this.sjekkInstitusjonUrl = new UriTemplate(inst2ServerUrl + "/institusjon/oppslag/tssEksternId/{tssEksternId}?date={date}");
     }
 
-    public Map<String, Object> hentTokenTilInst2() {
-        RequestEntity getRequest = RequestEntity.get(tokenProviderUrl.expand())
+    public Map<String, Object> hentTokenTilInst2(String fregTokenProviderUrl) {
+        UriTemplate url = new UriTemplate(fregTokenProviderUrl);
+        RequestEntity getRequest = RequestEntity.get(url.expand())
                 .header("accept", "*/*")
                 .header("username", username)
                 .header("password", password)
@@ -67,15 +61,17 @@ public class Inst2Consumer {
         return response.getBody();
     }
 
-    public List<Institusjonsforholdsmelding> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String ident) {
-        RequestEntity getRequest = RequestEntity.get(hentInstitusjonsoppholdUrl.expand())
+    public List<Institusjonsopphold> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, String ident) {
+        UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold");
+
+        RequestEntity getRequest = RequestEntity.get(url.expand())
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
-                .header("Nav-Call-Id", NAV_CALL_ID)
-                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId)
                 .header("Nav-Personident", ident)
                 .build();
-        List<Institusjonsforholdsmelding> response = null;
+        List<Institusjonsopphold> response;
         try {
             response = restTemplate.exchange(getRequest, RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD).getBody();
         } catch (HttpStatusCodeException e) {
@@ -84,55 +80,84 @@ public class Inst2Consumer {
                 return new ArrayList<>();
             } else {
                 log.error("Kunne ikke hente ident fra inst2", e);
+                throw new RuntimeException("Kunne ikke hente ident fra inst2", e);
             }
         }
         return response;
     }
 
-    public ResponseEntity leggTilInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, Institusjonsforholdsmelding institusjonsforholdsmelding) {
-        RequestEntity postRequest = RequestEntity.post(leggTilInstitusjonsforholdUrl.expand())
+    public OppholdResponse leggTilInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, Institusjonsopphold institusjonsopphold) {
+        UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold?validatePeriod=true");
+        RequestEntity postRequest = RequestEntity.post(url.expand())
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
-                .header("Nav-Call-Id", NAV_CALL_ID)
-                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
-                .body(institusjonsforholdsmelding);
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId)
+                .body(institusjonsopphold);
         try {
-            return restTemplate.exchange(postRequest, RESPONSE_TYPE_OBJECT);
+            ResponseEntity<Object> exchange = restTemplate.exchange(postRequest, RESPONSE_TYPE_OBJECT);
+            Institusjonsopphold institusjonsoppholdResponse = new ObjectMapper().convertValue(exchange.getBody(), Institusjonsopphold.class);
+            return OppholdResponse.builder()
+                    .status(exchange.getStatusCode())
+                    .institusjonsopphold(institusjonsoppholdResponse)
+                    .build();
         } catch (HttpStatusCodeException e) {
-            log.error("Kunne ikke legge til institusjonsopphold i inst2 på ident {} med tssEksternId {} - {}",
-                    institusjonsforholdsmelding.getPersonident(), institusjonsforholdsmelding.getTssEksternId(), e.getResponseBodyAsString(), e);
-            return ResponseEntity.status(e.getStatusCode()).headers(e.getResponseHeaders()).body(e.getResponseBodyAsString());
+            log.error("Kunne ikke legge til institusjonsopphold i inst2 på ident - {}", e.getResponseBodyAsString(), e);
+            return OppholdResponse.builder()
+                    .status(e.getStatusCode())
+                    .feilmelding(e.getResponseBodyAsString())
+                    .build();
         }
     }
 
-    public ResponseEntity slettInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String oppholdId) {
-        RequestEntity deleteRequest = RequestEntity.delete(slettInstitusjonsforholdUrl.expand(oppholdId))
+    public ResponseEntity oppdaterInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, Long oppholdId, Institusjonsopphold institusjonsopphold) {
+        UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold/{oppholdId}");
+        RequestEntity putRequest = RequestEntity.put(url.expand(oppholdId))
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
-                .header("Nav-Call-Id", NAV_CALL_ID)
-                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId)
+                .body(institusjonsopphold);
+        try {
+            ResponseEntity<Object> response = restTemplate.exchange(putRequest, RESPONSE_TYPE_OBJECT);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (HttpStatusCodeException e) {
+            log.error("Kunne ikke oppdatere institusjonsopphold - {}", e.getResponseBodyAsString(), e);
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+        }
+    }
+
+    public ResponseEntity slettInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, Long oppholdId) {
+        UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold/{oppholdId}");
+        RequestEntity deleteRequest = RequestEntity.delete(url.expand(oppholdId))
+                .header("accept", "*/*")
+                .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId)
                 .build();
         try {
-            return restTemplate.exchange(deleteRequest, RESPONSE_TYPE_OBJECT);
+            ResponseEntity<Object> response = restTemplate.exchange(deleteRequest, RESPONSE_TYPE_OBJECT);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (HttpStatusCodeException e) {
-            log.error("Kunne ikke slette institusjonsopphold med oppholdId {} - {}", oppholdId, e.getResponseBodyAsString(), e);
-            return ResponseEntity.status(e.getStatusCode()).headers(e.getResponseHeaders()).body(e.getResponseBodyAsString());
+            log.error("Kunne ikke slette institusjonsopphold - {}", e.getResponseBodyAsString(), e);
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         }
     }
 
-    public HttpStatus finnesInstitusjonPaaDato(Map<String, Object> tokenObject, String tssEksternId, String date) {
-        RequestEntity getRequest = RequestEntity.get(sjekkInstitusjonUrl.expand(tssEksternId, date))
+    public HttpStatus finnesInstitusjonPaaDato(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, String tssEksternId, LocalDate date) {
+        UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/institusjon/oppslag/tssEksternId/{tssEksternId}?date={date}");
+        RequestEntity getRequest = RequestEntity.get(url.expand(tssEksternId, date))
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
-                .header("Nav-Call-Id", NAV_CALL_ID)
-                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId)
                 .build();
 
         try {
             ResponseEntity<Object> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_OBJECT);
             return response.getStatusCode();
         } catch (HttpStatusCodeException e) {
-            log.warn("Institusjon med tssEksternId {} er ikke gyldig på dato {}", tssEksternId, date, e);
+            log.debug("Institusjon med tssEksternId {} er ikke gyldig på dato {}.", tssEksternId, date);
             return e.getStatusCode();
         }
     }

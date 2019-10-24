@@ -11,7 +11,7 @@
 
     <groupId>no.nav.registre</groupId>
     <artifactId>testnorge-inst</artifactId>
-    <version>1.2.1</version>
+    <version>1.8.4</version>
     <packaging>pom</packaging>
 
     <name>testnorge-inst</name>
@@ -43,8 +43,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <spring-boot-admin.version>2.0.2</spring-boot-admin.version>
-        <springfox.version>2.4.0</springfox.version>
+        <swagger.version>2.9.0</swagger.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
+        <fasit-util.version>3.1.2</fasit-util.version>
     </properties>
 
     <dependencyManagement>
@@ -57,5 +58,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 </project>

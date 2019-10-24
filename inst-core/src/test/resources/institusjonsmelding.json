@@ -1,6 +1,6 @@
 [
   {
-    "dato_fom": "03.07.2013",
+    "dato_fom": "2013-07-03",
     "dato_tom": "",
     "dato_tom_forventet": "",
     "k_kilde_inst_t": "IT",
@@ -11,9 +11,9 @@
     "tss_ekstern_id_fk": 440
   },
   {
-    "dato_fom": "04.04.2012",
+    "dato_fom": "2012-04-04",
     "dato_tom": "",
-    "dato_tom_forventet": "21.09.2009",
+    "dato_tom_forventet": "2009-09-21",
     "k_kilde_inst_t": "IT",
     "k_opphold_inst_t": "AS",
     "k_pas_ka_inst_t": "A",
