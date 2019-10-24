@@ -1,9 +1,16 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
-import static java.util.Arrays.asList;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -12,58 +19,59 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-
-import java.util.ArrayList;
-import java.util.List;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
+@Service
 public class ArenaForvalterClient implements ClientRegister {
 
-    private final ArenaForvalterConsumer arenaForvalterConsumer;
-    private final MapperFacade mapperFacade;
+    @Autowired
+    private ArenaForvalterConsumer arenaForvalterConsumer;
+
+    @Autowired
+    private MapperFacade mapperFacade;
 
     @Override
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
-        if (bestilling.getArenaforvalter() == null) {
-            progress.setArenaforvalterStatus(null);
-            return;
-        }
+        if (nonNull(bestilling.getArenaforvalter())) {
 
-        StringBuilder status = new StringBuilder();
-        List<String> environments = new ArrayList<>(arenaForvalterConsumer.getEnvironments());
-        environments.retainAll(bestilling.getEnvironments());
+            StringBuilder status = new StringBuilder();
 
-            if (!environments.isEmpty()) {
+            ResponseEntity<List> envResponse = arenaForvalterConsumer.getEnvironments();
+            List<String> environments = envResponse.hasBody() ? envResponse.getBody() : emptyList();
 
-                deleteServicebruker(tpsPerson.getHovedperson(), environments);
+            List<String> availEnvironments = new ArrayList(environments);
+
+            availEnvironments.retainAll(bestilling.getEnvironments());
+
+            if (!availEnvironments.isEmpty()) {
+
+                deleteServicebruker(tpsPerson.getHovedperson(), availEnvironments);
 
                 ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
-                environments.forEach(environment -> {
+                availEnvironments.forEach(environment -> {
                     ArenaNyBruker arenaNyBruker = mapperFacade.map(bestilling.getArenaforvalter(), ArenaNyBruker.class);
                     arenaNyBruker.setPersonident(tpsPerson.getHovedperson());
                     arenaNyBruker.setMiljoe(environment);
                     arenaNyeBrukere.getNyeBrukere().add(arenaNyBruker);
                 });
 
-            sendArenadata(arenaNyeBrukere, status);
+                sendArenadata(arenaNyeBrukere, status);
+            }
+
+            List<String> notSupportedEnvironments = new ArrayList(bestilling.getEnvironments());
+            notSupportedEnvironments.removeAll(environments);
+            notSupportedEnvironments.forEach(environment ->
+                    status.append(',')
+                            .append(environment)
+                            .append("$Feil: Miljø ikke støttet"));
+
+            if (status.length() > 1) {
+                progress.setArenaforvalterStatus(status.substring(1));
+            }
         }
-
-        List<String> notSupportedEnvironments = new ArrayList<>(bestilling.getEnvironments());
-        notSupportedEnvironments.removeAll(environments);
-        notSupportedEnvironments.forEach(environment ->
-                status.append(',')
-                        .append(environment)
-                        .append("$Feil: Miljø ikke støttet"));
-
-        progress.setArenaforvalterStatus(status.substring(1));
     }
 
     @Override
@@ -74,7 +82,7 @@ public class ArenaForvalterClient implements ClientRegister {
             if (existingServicebruker.hasBody()) {
                 existingServicebruker.getBody().getArbeidsokerList().forEach(list -> {
                     if (nonNull(list.getMiljoe())) {
-                        asList(list.getMiljoe().split(",")).forEach(
+                        newArrayList(list.getMiljoe().split(",")).forEach(
                                 environment -> arenaForvalterConsumer.deleteIdent(ident, environment));
                     }
                 });
