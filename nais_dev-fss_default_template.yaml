@@ -1,0 +1,30 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnorge-hodejegeren
+  namespace: default
+  labels:
+    team: orkestrator
+spec:
+  image: "docker.adeo.no:5000/registre/testnorge-hodejegeren"
+  liveness:
+    path: /internal/isAlive
+    periodSeconds: 30
+  readiness:
+    path: /internal/isReady
+  prometheus:
+    path: /internal/prometheus
+  replicas:
+    min: 1
+    max: 1
+  vault:
+    enabled: true
+  resources:
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+    limits:
+      cpu: 500m
+      memory: 2048Mi
+  ingresses:
+    - "https://testnorge-hodejegeren.nais.preprod.local"
