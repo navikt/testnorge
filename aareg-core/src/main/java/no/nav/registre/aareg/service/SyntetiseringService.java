@@ -1,17 +1,20 @@
 package no.nav.registre.aareg.service;
 
+import static no.nav.registre.aareg.consumer.ws.AaregWsConsumer.STATUS_OK;
+
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
 import no.nav.registre.aareg.IdentMedData;
@@ -49,32 +52,39 @@ public class SyntetiseringService {
     private Random rand;
 
     public ResponseEntity opprettArbeidshistorikkOgSendTilAaregstub(SyntetiserAaregRequest syntetiserAaregRequest) {
-        List<String> levendeIdenter = hentLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId(), MINIMUM_ALDER);
-        List<String> nyeIdenter = new ArrayList<>(syntetiserAaregRequest.getAntallNyeIdenter());
-        List<String> utvalgteIdenter = new ArrayList<>(aaregstubConsumer.hentEksisterendeIdenter());
-        levendeIdenter.removeAll(utvalgteIdenter);
+        //        Set<String> levendeIdenter = new HashSet<>(hentLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId(), MINIMUM_ALDER));
+        // for testing:
+        Set<String> levendeIdenter = new HashSet<>(Collections.singletonList("19100380016"));
+        Set<String> nyeIdenter = new HashSet<>(syntetiserAaregRequest.getAntallNyeIdenter());
+        //        Set<String> identerIAaregstub = new HashSet<>(aaregstubConsumer.hentEksisterendeIdenter());
+        // for testing:
+        Set<String> identerIAaregstub = new HashSet<>();
+        levendeIdenter.removeAll(identerIAaregstub);
+        List<String> utvalgteIdenter = new ArrayList<>(levendeIdenter);
 
         int antallNyeIdenter = syntetiserAaregRequest.getAntallNyeIdenter();
-        if (antallNyeIdenter > levendeIdenter.size()) {
-            antallNyeIdenter = levendeIdenter.size();
+        if (antallNyeIdenter > utvalgteIdenter.size()) {
+            antallNyeIdenter = utvalgteIdenter.size();
             log.info("Fant ikke nok ledige identer i avspillergruppe. Lager arbeidsforhold på {} identer.", antallNyeIdenter);
         }
 
         for (int i = 0; i < antallNyeIdenter; i++) {
-            nyeIdenter.add(levendeIdenter.remove(rand.nextInt(levendeIdenter.size())));
+            nyeIdenter.add(utvalgteIdenter.remove(rand.nextInt(utvalgteIdenter.size())));
         }
 
-        utvalgteIdenter.addAll(nyeIdenter);
+        identerIAaregstub.addAll(nyeIdenter);
         List<String> lagredeIdenter = new ArrayList<>();
-        List<RsAaregOpprettRequest> syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(utvalgteIdenter);
+        List<RsAaregOpprettRequest> syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(new ArrayList<>(identerIAaregstub));
         for (RsAaregOpprettRequest opprettRequest : syntetiserteArbeidsforhold) {
             opprettRequest.setEnvironments(Collections.singletonList(syntetiserAaregRequest.getMiljoe()));
             RsAaregResponse response = aaregService.opprettArbeidsforhold(opprettRequest);
 
-            if (response != null && HttpStatus.valueOf(Integer.parseInt(response.getStatusPerMiljoe().get(syntetiserAaregRequest.getMiljoe()))).is2xxSuccessful()) {
-                lagredeIdenter.add(opprettRequest.getArbeidsforhold().getArbeidstaker().getIdent());
-                aaregstubConsumer.sendTilAaregstub(Collections.singletonList(opprettRequest));
-                lagreArbeidsforholdIHodejegeren(opprettRequest);
+            if (response != null) {
+                if (STATUS_OK.equals(response.getStatusPerMiljoe().get(syntetiserAaregRequest.getMiljoe()))) {
+                    lagredeIdenter.add(opprettRequest.getArbeidsforhold().getArbeidstaker().getIdent());
+                    aaregstubConsumer.sendTilAaregstub(Collections.singletonList(opprettRequest));
+                    lagreArbeidsforholdIHodejegeren(opprettRequest);
+                }
             }
         }
 

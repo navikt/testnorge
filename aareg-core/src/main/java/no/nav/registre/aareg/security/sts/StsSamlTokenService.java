@@ -55,7 +55,6 @@ public class StsSamlTokenService {
     }
 
     public void configureStsRequestSamlToken(Object port, String env) {
-
         Client client = ClientProxy.getClient(port);
         STSClient stsClient = new STSClient(client.getBus());
         configureSTSClient(stsClient, convertEnv(env));
@@ -68,7 +67,6 @@ public class StsSamlTokenService {
     }
 
     private void configureSTSClient(STSClient stsClient, Environment env) {
-
         stsClient.setEnableAppliesTo(false);
         stsClient.setAllowRenewing(false);
         stsClient.setLocation(stsSamlFasitConsumer.getStsSamlService(env));

@@ -130,6 +130,13 @@
             <version>${freg-security-oidc.version}</version>
         </dependency>
 
+        <!-- ORIKA-MAPPER -->
+        <dependency>
+            <groupId>ma.glasnost.orika</groupId>
+            <artifactId>orika-core</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+
     </dependencies>
 
     <build>

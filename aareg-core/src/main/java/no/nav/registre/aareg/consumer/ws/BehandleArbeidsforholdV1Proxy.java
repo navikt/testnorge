@@ -34,7 +34,6 @@ public class BehandleArbeidsforholdV1Proxy {
     private LocalDateTime expiry;
 
     public BehandleArbeidsforholdPortType getServiceByEnvironment(String environment) {
-
         if (hasExpired()) {
             synchronized (this) {
                 if (hasExpired()) {

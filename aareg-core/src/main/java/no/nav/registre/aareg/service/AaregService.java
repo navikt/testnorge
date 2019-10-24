@@ -62,7 +62,6 @@ public class AaregService {
     }
 
     public Map<String, String> slettArbeidsforhold(String ident) {
-
         Map<String, String> resultMap = new HashMap<>();
         ResponseEntity<MiljoerResponse> miljoer = tpsfConsumer.hentMiljoer();
 

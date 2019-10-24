@@ -2,9 +2,9 @@ package no.nav.registre.aareg.consumer.ws;
 
 import static java.util.Objects.nonNull;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import org.springframework.stereotype.Component;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -17,6 +17,7 @@ import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdArbeidsforholdIkkeFunnet;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdSikkerhetsbegrensning;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdUgyldigInput;
@@ -31,13 +32,13 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeids
 @RequiredArgsConstructor
 public class AaregWsConsumer {
 
-    private static final String STATUS_OK = "OK";
+    public static final String STATUS_OK = "OK";
     private static final String TEKNISK_FEIL_OPPRETTING = "Feil: Teknisk feil ved oppretting mot AAREG";
     private static final String TEKNISK_FEIL_OPPDATERING = "Feil: Teknisk feil ved oppdatering mot AAREG";
     private static final String SOAP_FAULT_EXCEPTION = "Feil: AAREG teknisk feil/unntak: ";
 
     private final BehandleArbeidsforholdV1Proxy behandleArbeidsforholdV1Proxy;
-    private final ObjectMapper objectMapper;
+    private final MapperFacade mapperFacade;
 
     private static String getUuid(String referanse) {
 
@@ -46,13 +47,14 @@ public class AaregWsConsumer {
 
     public RsAaregResponse opprettArbeidsforhold(RsAaregOpprettRequest request) {
         OpprettArbeidsforholdRequest arbeidsforholdRequest = new OpprettArbeidsforholdRequest();
-        arbeidsforholdRequest.setArbeidsforhold(objectMapper.convertValue(request.getArbeidsforhold(), Arbeidsforhold.class));
+        arbeidsforholdRequest.setArbeidsforhold(mapperFacade.map(request.getArbeidsforhold(), Arbeidsforhold.class));
         arbeidsforholdRequest.setArkivreferanse(getUuid(request.getArkivreferanse()));
 
         Map<String, String> status = new HashMap<>(request.getEnvironments().size());
         request.getEnvironments().forEach(env -> {
             try {
-                behandleArbeidsforholdV1Proxy.getServiceByEnvironment(env).opprettArbeidsforhold(arbeidsforholdRequest);
+                BehandleArbeidsforholdPortType serviceByEnvironment = behandleArbeidsforholdV1Proxy.getServiceByEnvironment(env);
+                serviceByEnvironment.opprettArbeidsforhold(arbeidsforholdRequest);
                 status.put(env, STATUS_OK);
             } catch (OpprettArbeidsforholdSikkerhetsbegrensning | OpprettArbeidsforholdUgyldigInput | TestnorgeAaregFunctionalException error) {
                 status.put(env, AaregResponseHandler.extractError(error));
@@ -70,9 +72,9 @@ public class AaregWsConsumer {
 
     public Map<String, String> oppdaterArbeidsforhold(RsAaregOppdaterRequest request) {
         OppdaterArbeidsforholdRequest arbeidsforholdRequest = new OppdaterArbeidsforholdRequest();
-        arbeidsforholdRequest.setArbeidsforhold(objectMapper.convertValue(request.getArbeidsforhold(), Arbeidsforhold.class));
+        arbeidsforholdRequest.setArbeidsforhold(mapperFacade.map(request.getArbeidsforhold(), Arbeidsforhold.class));
         arbeidsforholdRequest.setArkivreferanse(getUuid(request.getArkivreferanse()));
-        arbeidsforholdRequest.setRapporteringsperiode(objectMapper.convertValue(request.getRapporteringsperiode(), XMLGregorianCalendar.class));
+        arbeidsforholdRequest.setRapporteringsperiode(mapperFacade.map(request.getRapporteringsperiode(), XMLGregorianCalendar.class));
 
         Map<String, String> status = new HashMap<>(request.getEnvironments().size());
         request.getEnvironments().forEach(env -> {
