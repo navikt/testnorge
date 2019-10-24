@@ -1,9 +1,18 @@
-applicationPipeline {
+naiseratorApplicationPipeline {
+
+    // Navnet på applikasjonen.
     applicationName = "testnorge-tp"
-    javaVersion = "1.8"
-    environment = "q2"
+
+    // Navnet på Azure AD-teamet som eier denne applikasjonen. Default er registre.
+    team = "orkestrator"
+
+    // Hvilken Javaversjon som kodebasen er lagd for. Gyldige verdier er 7, 8 og 11.
+    javaVersion = "8"
+
+    // Hvilket Kubernetes namespace applikasjonen skal deployes til. Dersom det ikke er strengt
+    // behov for dette, så ikke bruk dette feltet.
     namespace = "default"
-    hasPerformanceTest = false
-    hasSmoketests = false
+
+    // Hvorvidt denne applikasjonen kun skal eksistere i dev-fss og IKKE i prod-fss.
     isTestApplication = true
 }
