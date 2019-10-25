@@ -15,7 +15,7 @@ export const getValues = (attributeList, values) => {
 		if (pathPrefix == DataSourceMapper('SIGRUN')) {
 			const groupByTjeneste = _groupBy(value, 'tjeneste')
 			const tjenester = Object.keys(groupByTjeneste)
-			console.log('tjenester :', tjenester)
+
 			let dataArr = []
 			tjenester.forEach(tjeneste => {
 				const groupedByInntektsaar = _groupBy(groupByTjeneste[tjeneste], 'inntektsaar')
