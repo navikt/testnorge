@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import java.util.List;
 
-import no.nav.registre.aareg.domain.Arbeidsforhold;
+import no.nav.registre.aareg.domain.RsArbeidsforhold;
 
 @Getter
 @Setter
@@ -17,7 +17,7 @@ import no.nav.registre.aareg.domain.Arbeidsforhold;
 @AllArgsConstructor
 public class RsAaregOpprettRequest {
 
-    private Arbeidsforhold arbeidsforhold;
+    private RsArbeidsforhold arbeidsforhold;
     private String arkivreferanse;
     private List<String> environments;
 }

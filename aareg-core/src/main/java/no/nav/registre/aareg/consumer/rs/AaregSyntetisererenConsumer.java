@@ -2,7 +2,6 @@ package no.nav.registre.aareg.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
@@ -26,12 +25,13 @@ public class AaregSyntetisererenConsumer {
     @Value("${aareg.pageSize}")
     private int pageSize;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-    private UriTemplate url;
+    private final UriTemplate url;
 
-    public AaregSyntetisererenConsumer(@Value("${syntrest.rest.api.url}") String syntrestServerUrl) {
+    public AaregSyntetisererenConsumer(
+            @Value("${syntrest.rest.api.url}") String syntrestServerUrl) {
+        this.restTemplate = new RestTemplate();
         this.url = new UriTemplate(syntrestServerUrl + "/v1/generate/aareg");
     }
 

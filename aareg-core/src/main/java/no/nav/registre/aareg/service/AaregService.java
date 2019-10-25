@@ -13,7 +13,7 @@ import static no.nav.registre.aareg.service.AaregAbstractClient.getPeriodeFom;
 import static no.nav.registre.aareg.service.AaregAbstractClient.getPersonnummer;
 import static no.nav.registre.aareg.service.AaregAbstractClient.getYrkeskode;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,26 +28,22 @@ import no.nav.registre.aareg.consumer.rs.responses.MiljoerResponse;
 import no.nav.registre.aareg.consumer.ws.AaregWsConsumer;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
-import no.nav.registre.aareg.domain.AnsettelsesPeriode;
-import no.nav.registre.aareg.domain.Arbeidsavtale;
-import no.nav.registre.aareg.domain.Arbeidsforhold;
 import no.nav.registre.aareg.domain.RsAktoerPerson;
+import no.nav.registre.aareg.domain.RsArbeidsavtale;
+import no.nav.registre.aareg.domain.RsArbeidsforhold;
 import no.nav.registre.aareg.domain.RsOrganisasjon;
+import no.nav.registre.aareg.domain.RsPeriode;
 import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 
 @Service
+@RequiredArgsConstructor
 public class AaregService {
 
-    @Autowired
-    private AaregWsConsumer aaregWsConsumer;
-
-    @Autowired
-    private AaregRestConsumer aaregRestConsumer;
-
-    @Autowired
-    private TpsfConsumer tpsfConsumer;
+    private final AaregWsConsumer aaregWsConsumer;
+    private final AaregRestConsumer aaregRestConsumer;
+    private final TpsfConsumer tpsfConsumer;
 
     public RsAaregResponse opprettArbeidsforhold(
             RsAaregOpprettRequest request
@@ -83,7 +79,7 @@ public class AaregService {
 
                         asList(arbeidforhold.getBody()).forEach(
                                 forhold -> {
-                                    Arbeidsforhold arbeidsforhold = Arbeidsforhold.builder()
+                                    RsArbeidsforhold arbeidsforhold = RsArbeidsforhold.builder()
                                             .arbeidsforholdIDnav(getNavArbfholdId(forhold))
                                             .arbeidsforholdID(getArbforholdId(forhold))
                                             .arbeidsgiver("Person".equals(getArbeidsgiverType(forhold)) ?
@@ -97,11 +93,11 @@ public class AaregService {
                                             .arbeidstaker(RsPersonAareg.builder()
                                                     .ident(getOffentligIdent(forhold))
                                                     .build())
-                                            .ansettelsesPeriode(AnsettelsesPeriode.builder()
+                                            .ansettelsesPeriode(RsPeriode.builder()
                                                     .fom(parse(getPeriodeFom(forhold)).atStartOfDay())
                                                     .tom(parse(getPeriodeFom(forhold)).atStartOfDay())
                                                     .build())
-                                            .arbeidsavtale(Arbeidsavtale.builder()
+                                            .arbeidsavtale(RsArbeidsavtale.builder()
                                                     .yrke(getYrkeskode(forhold))
                                                     .stillingsprosent(0.0)
                                                     .endringsdatoStillingsprosent(parse(getPeriodeFom(forhold)).atStartOfDay())

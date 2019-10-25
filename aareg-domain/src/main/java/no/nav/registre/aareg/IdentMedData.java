@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.registre.aareg.domain.Arbeidsforhold;
+import no.nav.registre.aareg.domain.RsArbeidsforhold;
 
 import java.util.List;
 
@@ -17,5 +17,5 @@ import java.util.List;
 
 public class IdentMedData {
     private String id;
-    private List<Arbeidsforhold> data;
+    private List<RsArbeidsforhold> data;
 }

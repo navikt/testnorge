@@ -3,8 +3,8 @@ package no.nav.registre.aareg.service;
 import static no.nav.registre.aareg.consumer.ws.AaregWsConsumer.STATUS_OK;
 
 import io.micrometer.core.annotation.Timed;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -28,28 +28,18 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SyntetiseringService {
 
     private static final String AAREG_NAME = "aareg";
     private static final int MINIMUM_ALDER = 13;
 
-    @Autowired
-    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
-
-    @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
-
-    @Autowired
-    private AaregSyntetisererenConsumer aaregSyntetisererenConsumer;
-
-    @Autowired
-    private AaregstubConsumer aaregstubConsumer;
-
-    @Autowired
-    private AaregService aaregService;
-
-    @Autowired
-    private Random rand;
+    private final HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
+    private final HodejegerenConsumer hodejegerenConsumer;
+    private final AaregSyntetisererenConsumer aaregSyntetisererenConsumer;
+    private final AaregstubConsumer aaregstubConsumer;
+    private final AaregService aaregService;
+    private final Random rand;
 
     public ResponseEntity opprettArbeidshistorikkOgSendTilAaregstub(SyntetiserAaregRequest syntetiserAaregRequest) {
         Set<String> levendeIdenter = new HashSet<>(hentLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId(), MINIMUM_ALDER));

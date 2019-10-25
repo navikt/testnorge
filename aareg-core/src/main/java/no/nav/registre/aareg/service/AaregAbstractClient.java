@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
-import no.nav.registre.aareg.domain.Arbeidsforhold;
+import no.nav.registre.aareg.domain.RsArbeidsforhold;
 
 public abstract class AaregAbstractClient {
 
     protected static final String ARBEIDSGIVER = "arbeidsgiver";
     protected static final String ARBEIDSTAKER = "arbeidstaker";
 
-    protected static RsAaregOppdaterRequest buildRequest(Arbeidsforhold arbfInput, String env) {
+    protected static RsAaregOppdaterRequest buildRequest(RsArbeidsforhold arbfInput, String env) {
         RsAaregOppdaterRequest request = new RsAaregOppdaterRequest();
         request.setRapporteringsperiode(now());
         request.setArbeidsforhold(arbfInput);

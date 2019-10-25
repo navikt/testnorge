@@ -41,7 +41,7 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringServiceTest {
 
-    private static int MINIMUM_ALDER = 13;
+    private static final int MINIMUM_ALDER = 13;
 
     @Mock
     private Random rand;
@@ -64,11 +64,11 @@ public class SyntetiseringServiceTest {
     @InjectMocks
     private SyntetiseringService syntetiseringService;
 
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
-    private int antallMeldinger = 2;
-    private String fnr1 = "01010101010";
-    private String fnr2 = "02020202020";
+    private final Long avspillergruppeId = 123L;
+    private final String miljoe = "t1";
+    private final int antallMeldinger = 2;
+    private final String fnr1 = "01010101010";
+    private final String fnr2 = "02020202020";
     private SyntetiserAaregRequest syntetiserAaregRequest;
     private List<String> fnrs;
     private List<RsAaregOpprettRequest> syntetiserteMeldinger;

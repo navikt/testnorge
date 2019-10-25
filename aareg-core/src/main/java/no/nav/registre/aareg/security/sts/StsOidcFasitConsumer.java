@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ public class StsOidcFasitConsumer {
                 if (hasExpired()) {
                     FasitResourceWithUnmappedProperties[] fasitResources = fasitApiConsumer.fetchResources(OIDC_ALIAS, REST_SERVICE);
 
-                    urlOidcPerEnv = asList(fasitResources).stream()
+                    urlOidcPerEnv = Arrays.stream(fasitResources)
                             .filter(resource -> OIDC_ALIAS.equals(resource.getAlias()) &&
                                     FAGSYSTEM.equals(resource.getScope().getZone()) &&
                                     isNull(resource.getScope().getApplication()) &&

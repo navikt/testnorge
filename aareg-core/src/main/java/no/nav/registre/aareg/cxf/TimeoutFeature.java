@@ -9,8 +9,8 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 
 public class TimeoutFeature extends AbstractFeature {
 
-    private int receiveTimeout;
-    private int connectionTimeout;
+    private final int receiveTimeout;
+    private final int connectionTimeout;
 
     public TimeoutFeature(int receiveTimeout, int connectionTimeout) {
         this.receiveTimeout = receiveTimeout;

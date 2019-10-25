@@ -5,6 +5,7 @@ import static java.util.Arrays.asList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,7 @@ public class AaregBehandleArbeidsforholdFasitConsumer {
 
         FasitResourceWithUnmappedProperties[] fasitResources = fasitApiConsumer.fetchResources(BEHANDLE_ARBEIDFORHOLD_ALIAS, BASE_URL);
 
-        return asList(fasitResources).stream()
+        return Arrays.stream(fasitResources)
                 .filter(resource -> FAGSYSTEM.equals(resource.getScope().getZone()))
                 .collect(Collectors.toMap(
                         resource -> resource.getScope().getEnvironment(),

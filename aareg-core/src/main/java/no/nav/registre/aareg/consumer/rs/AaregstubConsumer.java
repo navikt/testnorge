@@ -2,7 +2,6 @@ package no.nav.registre.aareg.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
@@ -29,17 +28,20 @@ public class AaregstubConsumer {
     private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE_LIST_LONG = new ParameterizedTypeReference<List<Long>>() {
     };
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-    private UriTemplate sendTilAaregstubUrl;
-    private UriTemplate hentAlleArbeidstakereUrl;
-    private UriTemplate slettIdentUrl;
+    private final UriTemplate sendTilAaregstubUrl;
+    private final UriTemplate hentAlleArbeidstakereUrl;
+    private final UriTemplate slettIdentUrl;
 
-    public AaregstubConsumer(@Value("${aaregstub.rest.api.url}") String aaregstubServerUrl) {
+    public AaregstubConsumer(
+            @Value("${aaregstub.rest.api.url}") String aaregstubServerUrl,
+            RestTemplate restTemplate
+    ) {
         this.sendTilAaregstubUrl = new UriTemplate(aaregstubServerUrl + "/v1/lagreArbeidsforhold");
         this.hentAlleArbeidstakereUrl = new UriTemplate(aaregstubServerUrl + "/v1/hentAlleArbeidstakere");
         this.slettIdentUrl = new UriTemplate(aaregstubServerUrl + "/v1/slettIdent/{ident}");
+        this.restTemplate = restTemplate;
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })

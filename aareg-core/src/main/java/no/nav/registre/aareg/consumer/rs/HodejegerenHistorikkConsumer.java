@@ -2,7 +2,6 @@ package no.nav.registre.aareg.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
@@ -21,12 +20,15 @@ public class HodejegerenHistorikkConsumer {
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
     };
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     private UriTemplate hodejegerenSaveHistorikk;
 
-    public HodejegerenHistorikkConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
+    public HodejegerenHistorikkConsumer(
+            RestTemplate restTemplate,
+            @Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl
+    ) {
+        this.restTemplate = restTemplate;
         this.hodejegerenSaveHistorikk = new UriTemplate(hodejegerenServerUrl + "/v1/historikk/");
     }
 

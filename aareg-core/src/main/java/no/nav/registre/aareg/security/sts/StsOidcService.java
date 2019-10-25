@@ -33,8 +33,8 @@ public class StsOidcService {
     private final StsOidcFasitConsumer stsOidcFasitConsumer;
     private final CredentialsProps credentialsProps;
 
-    private Map<Environment, String> idToken = new EnumMap<>(Environment.class);
-    private Map<Environment, LocalDateTime> expiry = new EnumMap<>(Environment.class);
+    private final Map<Environment, String> idToken = new EnumMap<>(Environment.class);
+    private final Map<Environment, LocalDateTime> expiry = new EnumMap<>(Environment.class);
 
     public String getIdToken(String environment) {
 

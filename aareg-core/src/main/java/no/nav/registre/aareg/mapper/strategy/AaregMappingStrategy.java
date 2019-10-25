@@ -7,8 +7,12 @@ import org.springframework.stereotype.Component;
 
 import no.nav.registre.aareg.config.MappingStrategy;
 import no.nav.registre.aareg.domain.RsAktoerPerson;
+import no.nav.registre.aareg.domain.RsArbeidsavtale;
+import no.nav.registre.aareg.domain.RsArbeidsforhold;
 import no.nav.registre.aareg.domain.RsOrganisasjon;
+import no.nav.registre.aareg.domain.RsPermisjon;
 import no.nav.registre.aareg.domain.RsPersonAareg;
+import no.nav.registre.aareg.domain.RsUtenlandsopphold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsavtale;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforholdstyper;
@@ -35,10 +39,10 @@ public class AaregMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(no.nav.registre.aareg.domain.Arbeidsforhold.class, Arbeidsforhold.class)
-                .customize(new CustomMapper<no.nav.registre.aareg.domain.Arbeidsforhold, Arbeidsforhold>() {
+        factory.classMap(RsArbeidsforhold.class, Arbeidsforhold.class)
+                .customize(new CustomMapper<RsArbeidsforhold, Arbeidsforhold>() {
                     @Override
-                    public void mapAtoB(no.nav.registre.aareg.domain.Arbeidsforhold rsArbeidsforhold, Arbeidsforhold arbeidsforhold, MappingContext context) {
+                    public void mapAtoB(RsArbeidsforhold rsArbeidsforhold, Arbeidsforhold arbeidsforhold, MappingContext context) {
 
                         arbeidsforhold.setArbeidsforholdstype(mapKodeverdi(new Arbeidsforholdstyper(), rsArbeidsforhold.getArbeidsforholdstype()));
                         arbeidsforhold.setArbeidstaker(mapPerson(rsArbeidsforhold.getArbeidstaker()));
@@ -52,10 +56,10 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(no.nav.registre.aareg.domain.Arbeidsavtale.class, Arbeidsavtale.class)
-                .customize(new CustomMapper<no.nav.registre.aareg.domain.Arbeidsavtale, Arbeidsavtale>() {
+        factory.classMap(RsArbeidsavtale.class, Arbeidsavtale.class)
+                .customize(new CustomMapper<RsArbeidsavtale, Arbeidsavtale>() {
                     @Override
-                    public void mapAtoB(no.nav.registre.aareg.domain.Arbeidsavtale rsArbeidsavtale, Arbeidsavtale arbeidsavtale, MappingContext context) {
+                    public void mapAtoB(RsArbeidsavtale rsArbeidsavtale, Arbeidsavtale arbeidsavtale, MappingContext context) {
 
                         arbeidsavtale.setArbeidstidsordning(mapKodeverdi(new Arbeidstidsordninger(), rsArbeidsavtale.getArbeidstidsordning()));
                         arbeidsavtale.setAvloenningstype(mapKodeverdi(new Avloenningstyper(), rsArbeidsavtale.getAvloenningstype()));
@@ -65,10 +69,10 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(no.nav.registre.aareg.domain.Permisjon.class, Permisjon.class)
-                .customize(new CustomMapper<no.nav.registre.aareg.domain.Permisjon, Permisjon>() {
+        factory.classMap(RsPermisjon.class, Permisjon.class)
+                .customize(new CustomMapper<RsPermisjon, Permisjon>() {
                     @Override
-                    public void mapAtoB(no.nav.registre.aareg.domain.Permisjon rsPermisjon, Permisjon permisjon, MappingContext context) {
+                    public void mapAtoB(RsPermisjon rsPermisjon, Permisjon permisjon, MappingContext context) {
 
                         permisjon.setPermisjonOgPermittering(mapKodeverdi(new PermisjonsOgPermitteringsBeskrivelse(), rsPermisjon.getPermisjonOgPermittering()));
                     }
@@ -76,10 +80,10 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(no.nav.registre.aareg.domain.Utenlandsopphold.class, Utenlandsopphold.class)
-                .customize(new CustomMapper<no.nav.registre.aareg.domain.Utenlandsopphold, Utenlandsopphold>() {
+        factory.classMap(RsUtenlandsopphold.class, Utenlandsopphold.class)
+                .customize(new CustomMapper<RsUtenlandsopphold, Utenlandsopphold>() {
                     @Override
-                    public void mapAtoB(no.nav.registre.aareg.domain.Utenlandsopphold rsUtenlandsopphold, Utenlandsopphold utenlandsopphold, MappingContext context) {
+                    public void mapAtoB(RsUtenlandsopphold rsUtenlandsopphold, Utenlandsopphold utenlandsopphold, MappingContext context) {
 
                         utenlandsopphold.setLand(mapKodeverdi(new Landkoder(), rsUtenlandsopphold.getLand()));
                     }

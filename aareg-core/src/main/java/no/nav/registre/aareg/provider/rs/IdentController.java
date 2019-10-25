@@ -1,6 +1,6 @@
 package no.nav.registre.aareg.provider.rs;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +13,10 @@ import no.nav.registre.aareg.service.IdentService;
 
 @RestController
 @RequestMapping("api/v1/ident")
+@RequiredArgsConstructor
 public class IdentController {
 
-    @Autowired
-    private IdentService identService;
+    private final IdentService identService;
 
     @DeleteMapping
     public SletteArbeidsforholdResponse slettArbeidsforholdFraAaregstub(

@@ -26,10 +26,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
-import no.nav.registre.aareg.domain.RsOrganisasjon;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -40,9 +40,9 @@ public class AaregSyntetisererenConsumerTest {
     @Autowired
     private AaregSyntetisererenConsumer aaregSyntetisererenConsumer;
 
-    private String fnr1 = "01010101010";
-    private String fnr2 = "02020202020";
-    private String fnr3 = "03030303030";
+    private final String fnr1 = "01010101010";
+    private final String fnr2 = "02020202020";
+    private final String fnr3 = "03030303030";
 
     @Test
     public void shouldGetSyntetiserteMeldinger() {
@@ -82,7 +82,7 @@ public class AaregSyntetisererenConsumerTest {
 
     @Test
     public void shouldLogOnEmptyResponse() {
-        List<String> fnrs = new ArrayList<>(Arrays.asList(fnr1));
+        List<String> fnrs = new ArrayList<>(Collections.singletonList(fnr1));
 
         Logger logger = (Logger) LoggerFactory.getLogger(AaregSyntetisererenConsumer.class);
         ListAppender<ILoggingEvent> listAppender = new ListAppender<>();

@@ -6,7 +6,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static no.nav.registre.aareg.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -38,9 +37,9 @@ public class AaregstubConsumerTest {
     @Autowired
     private AaregstubConsumer aaregstubConsumer;
 
-    private String fnr1 = "01010101010";
-    private String fnr2 = "02020202020";
-    private String fnr3 = "02020202020";
+    private final String fnr1 = "01010101010";
+    private final String fnr2 = "02020202020";
+    private final String fnr3 = "02020202020";
 
     @Test
     public void shouldGetAlleArbeidstakere() {

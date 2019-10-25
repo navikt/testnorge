@@ -1,6 +1,6 @@
 package no.nav.registre.aareg.provider.rs;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,10 +22,10 @@ import no.nav.registre.aareg.service.AaregService;
 
 @RestController
 @RequestMapping("api/v1/arbeidsforhold")
+@RequiredArgsConstructor
 public class ArbeidsforholdController {
 
-    @Autowired
-    private AaregService aaregService;
+    private final AaregService aaregService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

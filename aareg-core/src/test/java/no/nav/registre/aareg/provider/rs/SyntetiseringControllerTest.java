@@ -14,11 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
-import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.aareg.service.SyntetiseringService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -31,16 +27,13 @@ public class SyntetiseringControllerTest {
     private SyntetiseringController syntetiseringController;
 
     private SyntetiserAaregRequest syntetiserAaregRequest;
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
-    private int antallMeldinger = 2;
-    private List<RsAaregResponse> arbeidsforhold;
+    private final Long avspillergruppeId = 123L;
+    private final String miljoe = "t1";
+    private final int antallMeldinger = 2;
 
     @Before
     public void setUp() {
         syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, antallMeldinger);
-        arbeidsforhold = new ArrayList<>();
-        arbeidsforhold.add(new RsAaregResponse());
     }
 
     @Test

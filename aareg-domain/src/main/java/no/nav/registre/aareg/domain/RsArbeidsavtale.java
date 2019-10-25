@@ -16,11 +16,15 @@ import no.nav.registre.aareg.util.JsonDateSerializer;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AnsettelsesPeriode {
+public class RsArbeidsavtale {
+
+    private Integer antallKonverterteTimer;
+    private String arbeidstidsordning;
+    private String avloenningstype;
+    private Double avtaltArbeidstimerPerUke;
 
     @JsonSerialize(using = JsonDateSerializer.class)
-    private LocalDateTime fom;
-
-    @JsonSerialize(using = JsonDateSerializer.class)
-    private LocalDateTime tom;
+    private LocalDateTime endringsdatoStillingsprosent;
+    private Double stillingsprosent;
+    private String yrke;
 }

@@ -1,6 +1,6 @@
 package no.nav.registre.aareg.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,10 +9,10 @@ import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.provider.rs.response.SletteArbeidsforholdResponse;
 
 @Service
+@RequiredArgsConstructor
 public class IdentService {
 
-    @Autowired
-    private AaregstubConsumer aaregstubConsumer;
+    private final AaregstubConsumer aaregstubConsumer;
 
     public SletteArbeidsforholdResponse slettArbeidsforholdFraAaregstub(
             List<String> identer

@@ -30,7 +30,7 @@ public class BehandleArbeidsforholdV1Proxy {
     private final StsSamlTokenService stsSamlTokenService;
     private final AaregBehandleArbeidsforholdFasitConsumer behandleArbeidsforholdFasitConsumer;
 
-    private Map<String, BehandleArbeidsforholdPortType> wsServiceByEnvironment = new HashMap<>();
+    private final Map<String, BehandleArbeidsforholdPortType> wsServiceByEnvironment = new HashMap<>();
     private LocalDateTime expiry;
 
     public BehandleArbeidsforholdPortType getServiceByEnvironment(String environment) {

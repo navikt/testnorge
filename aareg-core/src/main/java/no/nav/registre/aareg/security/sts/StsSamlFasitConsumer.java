@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -54,7 +55,7 @@ public class StsSamlFasitConsumer {
             if (hasExpired()) {
                 FasitResourceWithUnmappedProperties[] fasitResources = fasitApiConsumer.fetchResources(SAML_ALIAS, BASE_URL);
 
-                urlSamlPerEnv = asList(fasitResources).stream()
+                urlSamlPerEnv = Arrays.stream(fasitResources)
                         .filter(resource -> SAML_ALIAS.equals(resource.getAlias()) &&
                                 FAGSYSTEM.equals(resource.getScope().getZone()) &&
                                 isNull(resource.getScope().getApplication()) &&

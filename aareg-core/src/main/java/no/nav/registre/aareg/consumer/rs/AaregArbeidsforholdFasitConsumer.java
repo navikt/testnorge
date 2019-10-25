@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,7 @@ public class AaregArbeidsforholdFasitConsumer {
                 if (hasExpired()) {
                     FasitResourceWithUnmappedProperties[] fasitResources = fasitApiConsumer.fetchResources(AAREG_REST_ALIAS, REST_SERVICE);
 
-                    urlPerEnv = asList(fasitResources).stream()
+                    urlPerEnv = Arrays.stream(fasitResources)
                             .filter(resource -> FAGSYSTEM.equals(resource.getScope().getZone()))
                             .collect(Collectors.toMap(
                                     resource -> resource.getScope().getEnvironment(),
