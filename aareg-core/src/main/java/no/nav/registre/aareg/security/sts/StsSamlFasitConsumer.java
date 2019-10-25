@@ -1,6 +1,5 @@
 package no.nav.registre.aareg.security.sts;
 
-import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.registre.aareg.properties.Environment.PREPROD;

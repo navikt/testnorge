@@ -13,8 +13,7 @@ import java.time.LocalDateTime;
 
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.feil.ForretningsmessigUnntak;
 
-@Slf4j
-public final class AaregResponseHandler {
+@Slf4j final class AaregResponseHandler {
 
     private AaregResponseHandler() {
 

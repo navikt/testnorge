@@ -1,7 +1,5 @@
 package no.nav.registre.aareg.consumer.ws;
 
-import static java.util.Arrays.asList;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -8,8 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class RsAntallTimerForTimeloennet {
+@AllArgsConstructor class RsAntallTimerForTimeloennet {
 
     private Integer antallTimer;
     private RsPeriode periode;

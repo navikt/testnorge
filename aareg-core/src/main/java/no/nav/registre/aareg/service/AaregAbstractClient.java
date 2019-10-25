@@ -9,12 +9,12 @@ import java.util.Map;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
 
-public abstract class AaregAbstractClient {
+abstract class AaregAbstractClient {
 
-    protected static final String ARBEIDSGIVER = "arbeidsgiver";
-    protected static final String ARBEIDSTAKER = "arbeidstaker";
+    private static final String ARBEIDSGIVER = "arbeidsgiver";
+    private static final String ARBEIDSTAKER = "arbeidstaker";
 
-    protected static RsAaregOppdaterRequest buildRequest(RsArbeidsforhold arbfInput, String env) {
+    static RsAaregOppdaterRequest buildRequest(RsArbeidsforhold arbfInput, String env) {
         RsAaregOppdaterRequest request = new RsAaregOppdaterRequest();
         request.setRapporteringsperiode(now());
         request.setArbeidsforhold(arbfInput);
@@ -22,39 +22,39 @@ public abstract class AaregAbstractClient {
         return request;
     }
 
-    protected static String getOrgnummer(Map arbeidsforhold) {
+    static String getOrgnummer(Map arbeidsforhold) {
         return (String) ((Map) arbeidsforhold.get(ARBEIDSGIVER)).get("organisasjonsnummer");
     }
 
-    protected static String getPersonnummer(Map arbeidsforhold) {
+    static String getPersonnummer(Map arbeidsforhold) {
         return (String) ((Map) arbeidsforhold.get(ARBEIDSGIVER)).get("offentligIdent");
     }
 
-    protected static String getArbeidsgiverType(Map arbeidsforhold) {
+    static String getArbeidsgiverType(Map arbeidsforhold) {
         return (String) ((Map) arbeidsforhold.get(ARBEIDSGIVER)).get("type");
     }
 
-    protected static Long getNavArbfholdId(Map arbeidsforhold) {
+    static Long getNavArbfholdId(Map arbeidsforhold) {
         return Long.valueOf((Integer) arbeidsforhold.get("navArbeidsforholdId"));
     }
 
-    protected static String getArbforholdId(Map arbeidsforhold) {
+    static String getArbforholdId(Map arbeidsforhold) {
         return (String) arbeidsforhold.get("arbeidsforholdId");
     }
 
-    protected static String getArbeidsforholdType(Map arbeidsforhold) {
+    static String getArbeidsforholdType(Map arbeidsforhold) {
         return (String) arbeidsforhold.get("type");
     }
 
-    protected static String getPeriodeFom(Map arbeidsforhold) {
+    static String getPeriodeFom(Map arbeidsforhold) {
         return (String) ((Map) ((Map) arbeidsforhold.get("ansettelsesperiode")).get("periode")).get("fom");
     }
 
-    protected static String getOffentligIdent(Map arbeidforhold) {
+    static String getOffentligIdent(Map arbeidforhold) {
         return (String) ((Map) arbeidforhold.get(ARBEIDSTAKER)).get("offentligIdent");
     }
 
-    protected static String getYrkeskode(Map arbeidforhold) {
+    static String getYrkeskode(Map arbeidforhold) {
         return (String) ((Map) ((List) arbeidforhold.get("arbeidsavtaler")).get(0)).get("yrke");
     }
 }

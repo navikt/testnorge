@@ -22,7 +22,7 @@ public class HodejegerenHistorikkConsumer {
 
     private final RestTemplate restTemplate;
 
-    private UriTemplate hodejegerenSaveHistorikk;
+    private final UriTemplate hodejegerenSaveHistorikk;
 
     public HodejegerenHistorikkConsumer(
             RestTemplate restTemplate,
@@ -33,10 +33,10 @@ public class HodejegerenHistorikkConsumer {
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "hodejegeren" })
-    public List<String> saveHistory(AaregSaveInHodejegerenRequest request) {
+    public void saveHistory(AaregSaveInHodejegerenRequest request) {
 
         RequestEntity<AaregSaveInHodejegerenRequest> postRequest = RequestEntity.post(hodejegerenSaveHistorikk.expand()).body(request);
 
-        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
+        restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }
