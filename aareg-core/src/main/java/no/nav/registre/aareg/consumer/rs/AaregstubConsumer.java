@@ -3,6 +3,7 @@ package no.nav.registre.aareg.consumer.rs;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -36,12 +37,12 @@ public class AaregstubConsumer {
 
     public AaregstubConsumer(
             @Value("${aaregstub.rest.api.url}") String aaregstubServerUrl,
-            RestTemplate restTemplate
+            RestTemplateBuilder restTemplateBuilder
     ) {
         this.sendTilAaregstubUrl = new UriTemplate(aaregstubServerUrl + "/v1/lagreArbeidsforhold");
         this.hentAlleArbeidstakereUrl = new UriTemplate(aaregstubServerUrl + "/v1/hentAlleArbeidstakere");
         this.slettIdentUrl = new UriTemplate(aaregstubServerUrl + "/v1/slettIdent/{ident}");
-        this.restTemplate = restTemplate;
+        this.restTemplate = restTemplateBuilder.build();
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })

@@ -3,6 +3,7 @@ package no.nav.registre.aareg.consumer.rs;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
@@ -25,18 +26,17 @@ public class HodejegerenHistorikkConsumer {
     private final UriTemplate hodejegerenSaveHistorikk;
 
     public HodejegerenHistorikkConsumer(
-            RestTemplate restTemplate,
+            RestTemplateBuilder restTemplateBuilder,
             @Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl
     ) {
-        this.restTemplate = restTemplate;
+        this.restTemplate = restTemplateBuilder.build();
         this.hodejegerenSaveHistorikk = new UriTemplate(hodejegerenServerUrl + "/v1/historikk/");
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "hodejegeren" })
-    public void saveHistory(AaregSaveInHodejegerenRequest request) {
-
+    public List<String> saveHistory(AaregSaveInHodejegerenRequest request) {
         RequestEntity<AaregSaveInHodejegerenRequest> postRequest = RequestEntity.post(hodejegerenSaveHistorikk.expand()).body(request);
 
-        restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
+        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }
