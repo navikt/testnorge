@@ -1,6 +1,7 @@
 package no.nav.registre.aareg.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,8 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor class RsAntallTimerForTimeloennet {
+@AllArgsConstructor
+@Builder
+public class RsAntallTimerForTimeloennet {
 
-    private Integer antallTimer;
-    private RsPeriode periode;
+    public Integer antallTimer;
+    public RsPeriode periode;
 }

@@ -7,6 +7,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = RsOrganisasjon.class, name = "ORG"),
         @JsonSubTypes.Type(value = RsAktoerPerson.class, name = "PERS")
-}) interface RsAktoer {
+}) public interface RsAktoer {
 
 }
