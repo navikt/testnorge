@@ -28,4 +28,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnorge-orkestratoren.nais.preprod.local"
+    - "https://orkestratoren.nais.preprod.local"
