@@ -23,7 +23,7 @@ public class TpsfConsumer {
 
     public TpsfConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${tps-forvalteren.rest-api.url}") String serverUrl
+            @Value("${tps-forvalteren.rest.api.url}") String serverUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(serverUrl + "/v1/serviceroutine/FS03-FDLISTER-DISKNAVN-M?aksjonsKode=A2&antallFnr={numberOfIdents}&environment={environment}&nFnr={idents}");

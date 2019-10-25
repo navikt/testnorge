@@ -1,49 +1,33 @@
-name: ident-pool
-team: registre
-image: "docker.adeo.no:5000/registre/ident-pool"
-replicas:
-  min: 1
-  max: 1
-  cpuThresholdPercentage: 80
-port: 8080
-healthcheck:
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: ident-pool
+  namespace: default
+  labels:
+    team: orkestrator
+spec:
+  image: "docker.adeo.no:5000/registre/ident-pool"
+  port: 8080
   liveness:
     path: /internal/isAlive
+    periodSeconds: 30
     initialDelay: 30
-    periodSeconds: 2
-    failureThreshold: 140
   readiness:
     path: /internal/isReady
     initialDelay: 30
-    periodSeconds: 2
-    failureThreshold: 140
-leaderElection: true
-prometheus:
-  enabled: true
-  path: /internal/prometheus
-resources:
-  requests:
-    cpu: 1
-    memory: 1024Mi
-  limits:
-    cpu: 2
-    memory: 2048Mi
-fasitResources:
-  exposed:
-  - alias: ident-pool.rest-api
-    resourceType: restservice
-    path: /api
-  used:
-  - alias: "ident-poolDB"
-    resourceType: datasource
-    propertyMap:
-      url: spring.datasource.url
-      username: spring.datasource.username
-      password: spring.datasource.password
-  - alias: nav-sts-oidc
-    resourceType: OpenIdConnect
-    propertyMap:
-      issuerUrl: freg.security.oidc.idp.navSts.issuerUrl
-      jwksUrl: freg.security.oidc.idp.navSts.jwksUrl
-  - alias: "tps-forvalteren.rest-api"
-    resourceType: restservice
+  prometheus:
+    path: /internal/prometheus
+  replicas:
+    min: 1
+    max: 1
+  vault:
+    enabled: true
+  resources:
+    limits:
+      cpu: 500m
+      memory: 2048Mi
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+  ingresses:
+    - "https://ident-pool.nais.preprod.local"
