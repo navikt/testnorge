@@ -42,8 +42,4 @@ fasit:
   url: https://fasit.adeo.no
   environment.name: u2
 
-spring:
-  flyway:
-    enabled: false # Disabled by default as you should probably think twice before running Flyway-migrations
-
 dolly.security.cors.origins: http://localhost:3050,http://localhost:3000,http://localhost:8020
