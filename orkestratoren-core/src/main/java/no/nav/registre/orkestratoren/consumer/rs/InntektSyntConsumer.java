@@ -28,7 +28,7 @@ public class InntektSyntConsumer {
 
     public InntektSyntConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${inntekt.rest.api.url}") String inntektServerUrl) {
+            @Value("${testnorge-inntekt.rest.api.url}") String inntektServerUrl) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(inntektServerUrl + "/v1/syntetisering/generer");
     }

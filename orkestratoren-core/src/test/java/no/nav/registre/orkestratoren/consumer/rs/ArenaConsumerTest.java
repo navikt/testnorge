@@ -38,7 +38,7 @@ public class ArenaConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${testnorge.arena.rest.api.url}")
+    @Value("${testnorge-arena.rest.api.url}")
     private String serverUrl;
 
     private static final Long AVSPILLERGRUPPE_ID = 10L;

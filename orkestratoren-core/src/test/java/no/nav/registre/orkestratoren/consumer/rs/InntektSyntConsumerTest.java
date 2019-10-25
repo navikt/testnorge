@@ -39,7 +39,7 @@ public class InntektSyntConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${inntekt.rest.api.url}")
+    @Value("${testnorge-inntekt.rest.api.url}")
     private String serverUrl;
 
     private long gruppeId = 10L;

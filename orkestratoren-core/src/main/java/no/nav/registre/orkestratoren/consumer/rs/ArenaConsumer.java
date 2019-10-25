@@ -35,7 +35,7 @@ public class ArenaConsumer {
 
     public ArenaConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge.arena.rest.api.url}") String arenaServerUrl) {
+            @Value("${testnorge-arena.rest.api.url}") String arenaServerUrl) {
         this.restTemplate = restTemplateBuilder.build();
         this.arenaOpprettArbeidsoekereUrl = new UriTemplate(arenaServerUrl + "/v1/syntetisering/generer");
         this.arenaSlettArbeidsoekereUrl = new UriTemplate(arenaServerUrl + "/v1/ident/slett?miljoe={miljoe}");
