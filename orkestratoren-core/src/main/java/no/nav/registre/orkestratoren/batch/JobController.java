@@ -25,17 +25,17 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldinger
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
-import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
-import no.nav.registre.orkestratoren.service.InntektSyntPakkenService;
-import no.nav.registre.orkestratoren.service.ArenaSyntPakkenService;
-import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
-import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
-import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
-import no.nav.registre.orkestratoren.service.MedlSyntPakkenService;
-import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
-import no.nav.registre.orkestratoren.service.SamSyntPakkenService;
-import no.nav.registre.orkestratoren.service.TpSyntPakkenService;
-import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
+import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
+import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
+import no.nav.registre.orkestratoren.service.TesnorgeArenaService;
+import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
+import no.nav.registre.orkestratoren.service.TestnorgeEiaService;
+import no.nav.registre.orkestratoren.service.TestnorgeInstService;
+import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
+import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
+import no.nav.registre.orkestratoren.service.TestnorgeSamService;
+import no.nav.registre.orkestratoren.service.TestnorgeTpService;
+import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 
 @Component
 @EnableScheduling
@@ -89,43 +89,43 @@ public class JobController {
     private double medlProsentfaktor;
 
     @Autowired
-    private TpsSyntPakkenService tpsSyntPakkenService;
+    private TestnorgeSkdService testnorgeSkdService;
 
     @Autowired
-    private InntektSyntPakkenService inntektSyntPakkenService;
+    private TestnorgeInntektService testnorgeInntektService;
 
     @Autowired
-    private EiaSyntPakkenService eiaSyntPakkenService;
+    private TestnorgeEiaService testnorgeEiaService;
 
     @Autowired
-    private PoppSyntPakkenService poppSyntPakkenService;
+    private TestnorgeSigrunService testnorgeSigrunService;
 
     @Autowired
-    private AaregSyntPakkenService aaregSyntPakkenService;
+    private TestnorgeAaregService testnorgeAaregService;
 
     @Autowired
-    private InstSyntPakkenService instSyntPakkenService;
+    private TestnorgeInstService testnorgeInstService;
 
     @Autowired
-    private BisysSyntPakkenService bisysSyntPakkenService;
+    private TestnorgeBisysService testnorgeBisysService;
 
     @Autowired
-    private TpSyntPakkenService tpSyntPakkenService;
+    private TestnorgeTpService testnorgeTpService;
 
     @Autowired
-    private SamSyntPakkenService samSyntPakkenService;
+    private TestnorgeSamService testnorgeSamService;
 
     @Autowired
-    private ArenaSyntPakkenService arenaSyntPakkenService;
+    private TesnorgeArenaService tesnorgeArenaService;
 
     @Autowired
-    private MedlSyntPakkenService medlSyntPakkenService;
+    private TestnorgeMedlService testnorgeMedlService;
 
     @Scheduled(cron = "0 0 0 * * *")
     public void tpsSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             try {
-                tpsSyntPakkenService.genererSkdmeldinger(entry.getKey(), entry.getValue(), antallSkdmeldingerPerEndringskode);
+                testnorgeSkdService.genererSkdmeldinger(entry.getKey(), entry.getValue(), antallSkdmeldingerPerEndringskode);
             } catch (HttpStatusCodeException e) {
                 log.warn(e.getResponseBodyAsString(), e);
             }
@@ -140,21 +140,21 @@ public class JobController {
                     .miljoe(entry.getValue())
                     .antallMeldingerPerEndringskode(antallNavmeldingerPerEndringskode)
                     .build();
-            tpsSyntPakkenService.genererNavmeldinger(syntetiserNavmeldingerRequest);
+            testnorgeSkdService.genererNavmeldinger(syntetiserNavmeldingerRequest);
         }
     }
 
     @Scheduled(cron = "0 0 1 1 * *")
     public void inntektSyntBatch() {
         SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(inntektbatchAvspillergruppeId);
-        Map<String, List<Object>> feiledeInntektsmeldinger = inntektSyntPakkenService.genererInntektsmeldinger(request);
+        Map<String, List<Object>> feiledeInntektsmeldinger = testnorgeInntektService.genererInntektsmeldinger(request);
         log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger. Meldinger som feilet: {}.", feiledeInntektsmeldinger.keySet().toString());
     }
 
     public void eiaSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserEiaRequest request = new SyntetiserEiaRequest(entry.getKey(), entry.getValue(), antallSykemeldinger);
-            List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(request);
+            List<String> fnrMedGenererteMeldinger = testnorgeEiaService.genererEiaSykemeldinger(request);
             log.info("eiabatch har opprettet {} sykemeldinger i miljø {}. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), entry.getValue(),
                     Arrays.toString(fnrMedGenererteMeldinger.toArray()));
         }
@@ -165,7 +165,7 @@ public class JobController {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(entry.getKey(), entry.getValue(), poppbatchAntallNyeIdenter);
             String testdataEier = "synt_test";
-            poppSyntPakkenService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
+            testnorgeSigrunService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
         }
     }
 
@@ -173,7 +173,7 @@ public class JobController {
     public void aaregSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(entry.getKey(), entry.getValue(), aaregbatchAntallNyeIdenter);
-            aaregSyntPakkenService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, true);
+            testnorgeAaregService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, true);
         }
     }
 
@@ -181,14 +181,14 @@ public class JobController {
     public void instSyntBatch() {
         for (String miljoe : instbatchMiljoe) {
             SyntetiserInstRequest syntetiserInstRequest = new SyntetiserInstRequest(instbatchAvspillergruppeId, miljoe, instbatchAntallNyeIdenter);
-            instSyntPakkenService.genererInstitusjonsforhold(syntetiserInstRequest);
+            testnorgeInstService.genererInstitusjonsforhold(syntetiserInstRequest);
         }
     }
 
     public void bisysSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserBisysRequest syntetiserBisysRequest = new SyntetiserBisysRequest(entry.getKey(), entry.getValue(), bisysbatchAntallNyeIdenter);
-            bisysSyntPakkenService.genererBistandsmeldinger(syntetiserBisysRequest);
+            testnorgeBisysService.genererBistandsmeldinger(syntetiserBisysRequest);
         }
     }
 
@@ -196,7 +196,7 @@ public class JobController {
     public void tpSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserTpRequest request = new SyntetiserTpRequest(entry.getKey(), entry.getValue(), tpAntallPersoner);
-            ResponseEntity entity = tpSyntPakkenService.genererTp(request);
+            ResponseEntity entity = testnorgeTpService.genererTp(request);
             if (!entity.getStatusCode().is2xxSuccessful()) {
                 log.error("Klarte ikke å fullføre syntetisering i TP batch kjøring");
             }
@@ -207,14 +207,14 @@ public class JobController {
     public void samSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserSamRequest syntetiserSamRequest = new SyntetiserSamRequest(entry.getKey(), entry.getValue(), samAntallMeldinger);
-            samSyntPakkenService.genererSamordningsmeldinger(syntetiserSamRequest);
+            testnorgeSamService.genererSamordningsmeldinger(syntetiserSamRequest);
         }
     }
 
     public void arenaSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserArenaRequest syntetiserArenaRequest = new SyntetiserArenaRequest(entry.getKey(), entry.getValue(), arenaAnallNyeIdenter);
-            arenaSyntPakkenService.opprettArbeidssokereIArena(syntetiserArenaRequest);
+            tesnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest);
         }
     }
 
@@ -222,7 +222,7 @@ public class JobController {
     public void medlSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserMedlRequest syntetiserMedlRequest = new SyntetiserMedlRequest(entry.getKey(), entry.getValue(), medlProsentfaktor);
-            medlSyntPakkenService.genererMedlemskap(syntetiserMedlRequest);
+            testnorgeMedlService.genererMedlemskap(syntetiserMedlRequest);
         }
     }
 }

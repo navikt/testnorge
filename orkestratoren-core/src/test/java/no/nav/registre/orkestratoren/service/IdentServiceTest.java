@@ -22,11 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.orkestratoren.consumer.rs.AaregSyntConsumer;
-import no.nav.registre.orkestratoren.consumer.rs.ArenaConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.TestnorgeAaregConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
-import no.nav.registre.orkestratoren.consumer.rs.InstSyntConsumer;
-import no.nav.registre.orkestratoren.consumer.rs.PoppSyntConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.TestnorgeInstConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSigrunConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.response.InstitusjonsoppholdResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SigrunSkattegrunnlagResponse;
@@ -43,16 +43,16 @@ public class IdentServiceTest {
     private TestnorgeSkdConsumer testnorgeSkdConsumer;
 
     @Mock
-    private InstSyntConsumer instSyntConsumer;
+    private TestnorgeInstConsumer testnorgeInstConsumer;
 
     @Mock
-    private PoppSyntConsumer poppSyntConsumer;
+    private TestnorgeSigrunConsumer testnorgeSigrunConsumer;
 
     @Mock
-    private AaregSyntConsumer aaregSyntConsumer;
+    private TestnorgeAaregConsumer testnorgeAaregConsumer;
 
     @Mock
-    private ArenaConsumer arenaConsumer;
+    private TestnorgeArenaConsumer testnorgeArenaConsumer;
 
     @Mock
     private HodejegerenConsumer hodejegerenConsumer;
@@ -102,19 +102,19 @@ public class IdentServiceTest {
     @Test
     public void shouldSletteIdenterFraAdaptere() {
         when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer))).thenReturn(expectedMeldingIder);
-        when(instSyntConsumer.slettIdenterFraInst(identer)).thenReturn(sletteInstitusjonsoppholdResponse);
-        when(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(sletteSkattegrunnlagResponse);
-        when(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(sletteSkattegrunnlagResponse);
-        when(aaregSyntConsumer.slettIdenterFraAaregstub(identer)).thenReturn(sletteArbeidsforholdResponse);
+        when(testnorgeInstConsumer.slettIdenterFraInst(identer)).thenReturn(sletteInstitusjonsoppholdResponse);
+        when(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(sletteSkattegrunnlagResponse);
+        when(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(sletteSkattegrunnlagResponse);
+        when(testnorgeAaregConsumer.slettIdenterFraAaregstub(identer)).thenReturn(sletteArbeidsforholdResponse);
         // TODO: Fiks arena og legg inn denne igjen
         // when(arenaConsumer.slettIdenter(miljoe, identer)).thenReturn(sletteArenaResponse);
 
         SlettedeIdenterResponse response = identService.slettIdenterFraAdaptere(avspillergruppeId, miljoe, testdataEier, identer);
 
         verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer));
-        verify(instSyntConsumer).slettIdenterFraInst(identer);
-        verify(poppSyntConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
-        verify(aaregSyntConsumer).slettIdenterFraAaregstub(identer);
+        verify(testnorgeInstConsumer).slettIdenterFraInst(identer);
+        verify(testnorgeSigrunConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
+        verify(testnorgeAaregConsumer).slettIdenterFraAaregstub(identer);
         // TODO: Fiks arena og legg inn denne igjen
         // verify(arenaConsumer).slettIdenter(miljoe, identer);
 
@@ -141,9 +141,9 @@ public class IdentServiceTest {
     public void shouldSynkronisereMedTps() {
         when(hodejegerenConsumer.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe)).thenReturn(identer);
         when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer))).thenReturn(expectedMeldingIder);
-        when(instSyntConsumer.slettIdenterFraInst(identer)).thenReturn(SletteInstitusjonsoppholdResponse.builder().build());
-        when(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(SletteSkattegrunnlagResponse.builder().build());
-        when(aaregSyntConsumer.slettIdenterFraAaregstub(identer)).thenReturn(SletteArbeidsforholdResponse.builder().build());
+        when(testnorgeInstConsumer.slettIdenterFraInst(identer)).thenReturn(SletteInstitusjonsoppholdResponse.builder().build());
+        when(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(SletteSkattegrunnlagResponse.builder().build());
+        when(testnorgeAaregConsumer.slettIdenterFraAaregstub(identer)).thenReturn(SletteArbeidsforholdResponse.builder().build());
         // TODO: Fiks arena og legg inn denne igjen
         // when(arenaConsumer.slettIdenter(miljoe, identer)).thenReturn(SletteArenaResponse.builder().build());
 
@@ -153,9 +153,9 @@ public class IdentServiceTest {
 
         verify(hodejegerenConsumer).hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
         verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer));
-        verify(instSyntConsumer).slettIdenterFraInst(identer);
-        verify(poppSyntConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
-        verify(aaregSyntConsumer).slettIdenterFraAaregstub(identer);
+        verify(testnorgeInstConsumer).slettIdenterFraInst(identer);
+        verify(testnorgeSigrunConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
+        verify(testnorgeAaregConsumer).slettIdenterFraAaregstub(identer);
         // TODO: Fiks arena og legg inn denne igjen
         // verify(arenaConsumer).slettIdenter(miljoe, identer);
     }
@@ -164,9 +164,9 @@ public class IdentServiceTest {
     public void shouldFjerneIdenterSomKollidererITps() {
         when(hodejegerenConsumer.hentIdenterSomKollidererITps(avspillergruppeId)).thenReturn(identer);
         when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer))).thenReturn(expectedMeldingIder);
-        when(instSyntConsumer.slettIdenterFraInst(identer)).thenReturn(SletteInstitusjonsoppholdResponse.builder().build());
-        when(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(SletteSkattegrunnlagResponse.builder().build());
-        when(aaregSyntConsumer.slettIdenterFraAaregstub(identer)).thenReturn(SletteArbeidsforholdResponse.builder().build());
+        when(testnorgeInstConsumer.slettIdenterFraInst(identer)).thenReturn(SletteInstitusjonsoppholdResponse.builder().build());
+        when(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(SletteSkattegrunnlagResponse.builder().build());
+        when(testnorgeAaregConsumer.slettIdenterFraAaregstub(identer)).thenReturn(SletteArbeidsforholdResponse.builder().build());
         // TODO: Fiks arena og legg inn denne igjen
         // when(arenaConsumer.slettIdenter(miljoe, identer)).thenReturn(SletteArenaResponse.builder().build());
 
@@ -176,9 +176,9 @@ public class IdentServiceTest {
 
         verify(hodejegerenConsumer).hentIdenterSomKollidererITps(avspillergruppeId);
         verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer));
-        verify(instSyntConsumer).slettIdenterFraInst(identer);
-        verify(poppSyntConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
-        verify(aaregSyntConsumer).slettIdenterFraAaregstub(identer);
+        verify(testnorgeInstConsumer).slettIdenterFraInst(identer);
+        verify(testnorgeSigrunConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
+        verify(testnorgeAaregConsumer).slettIdenterFraAaregstub(identer);
         // TODO: Fiks arena og legg inn denne igjen
         // verify(arenaConsumer).slettIdenter(miljoe, identer);
     }

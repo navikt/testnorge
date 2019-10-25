@@ -22,53 +22,53 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
-import no.nav.registre.orkestratoren.service.InntektSyntPakkenService;
-import no.nav.registre.orkestratoren.service.ArenaSyntPakkenService;
-import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
-import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
-import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
-import no.nav.registre.orkestratoren.service.MedlSyntPakkenService;
-import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
-import no.nav.registre.orkestratoren.service.SamSyntPakkenService;
-import no.nav.registre.orkestratoren.service.TpSyntPakkenService;
-import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
+import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
+import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
+import no.nav.registre.orkestratoren.service.TesnorgeArenaService;
+import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
+import no.nav.registre.orkestratoren.service.TestnorgeEiaService;
+import no.nav.registre.orkestratoren.service.TestnorgeInstService;
+import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
+import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
+import no.nav.registre.orkestratoren.service.TestnorgeSamService;
+import no.nav.registre.orkestratoren.service.TestnorgeTpService;
+import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JobControllerTest {
 
     @Mock
-    private TpsSyntPakkenService tpsSyntPakkenService;
+    private TestnorgeSkdService testnorgeSkdService;
 
     @Mock
-    private InntektSyntPakkenService inntektSyntPakkenService;
+    private TestnorgeInntektService testnorgeInntektService;
 
     @Mock
-    private EiaSyntPakkenService eiaSyntPakkenService;
+    private TestnorgeEiaService testnorgeEiaService;
 
     @Mock
-    private PoppSyntPakkenService poppSyntPakkenService;
+    private TestnorgeSigrunService testnorgeSigrunService;
 
     @Mock
-    private AaregSyntPakkenService aaregSyntPakkenService;
+    private TestnorgeAaregService testnorgeAaregService;
 
     @Mock
-    private InstSyntPakkenService instSyntPakkenService;
+    private TestnorgeInstService testnorgeInstService;
 
     @Mock
-    private BisysSyntPakkenService bisysSyntPakkenService;
+    private TestnorgeBisysService testnorgeBisysService;
 
     @Mock
-    private TpSyntPakkenService tpSyntPakkenService;
+    private TestnorgeTpService testnorgeTpService;
 
     @Mock
-    private SamSyntPakkenService samSyntPakkenService;
+    private TestnorgeSamService testnorgeSamService;
 
     @Mock
-    private ArenaSyntPakkenService arenaSyntPakkenService;
+    private TesnorgeArenaService tesnorgeArenaService;
 
     @Mock
-    private MedlSyntPakkenService medlSyntPakkenService;
+    private TestnorgeMedlService testnorgeMedlService;
 
     @InjectMocks
     private JobController jobController;
@@ -92,78 +92,78 @@ public class JobControllerTest {
         antallMeldingerPerEndringskode.put("0110", 2);
         ReflectionTestUtils.setField(jobController, "antallSkdmeldingerPerEndringskode", antallMeldingerPerEndringskode);
 
-        when(tpSyntPakkenService.genererTp(any())).thenReturn(new ResponseEntity(HttpStatus.OK));
+        when(testnorgeTpService.genererTp(any())).thenReturn(new ResponseEntity(HttpStatus.OK));
     }
 
     @Test
     public void shouldStartTpsBatch() {
         jobController.tpsSyntBatch();
-        verify(tpsSyntPakkenService).genererSkdmeldinger(avspillergruppeId, miljoer.get(0), antallMeldingerPerEndringskode);
+        verify(testnorgeSkdService).genererSkdmeldinger(avspillergruppeId, miljoer.get(0), antallMeldingerPerEndringskode);
     }
 
     @Test
     public void shouldStartNavBatch() {
         jobController.navSyntBatch();
-        verify(tpsSyntPakkenService).genererNavmeldinger(any());
+        verify(testnorgeSkdService).genererNavmeldinger(any());
     }
 
     @Test
     public void shouldStartInntektBatch() {
         jobController.inntektSyntBatch();
-        verify(inntektSyntPakkenService).genererInntektsmeldinger(any());
+        verify(testnorgeInntektService).genererInntektsmeldinger(any());
     }
 
     @Test
     public void shouldStartEiaBatch() {
         jobController.eiaSyntBatch();
-        verify(eiaSyntPakkenService).genererEiaSykemeldinger(any());
+        verify(testnorgeEiaService).genererEiaSykemeldinger(any());
     }
 
     @Test
     public void shouldStartPoppBatch() {
         jobController.poppSyntBatch();
-        verify(poppSyntPakkenService).genererSkattegrunnlag(any(), anyString());
+        verify(testnorgeSigrunService).genererSkattegrunnlag(any(), anyString());
     }
 
     @Test
     public void shouldStartAaregBatch() {
         jobController.aaregSyntBatch();
-        verify(aaregSyntPakkenService).genererArbeidsforholdsmeldinger(any(), eq(true));
+        verify(testnorgeAaregService).genererArbeidsforholdsmeldinger(any(), eq(true));
     }
 
     @Test
     public void shouldStartInstBatch() {
         jobController.instSyntBatch();
-        verify(instSyntPakkenService).genererInstitusjonsforhold(any());
+        verify(testnorgeInstService).genererInstitusjonsforhold(any());
     }
 
     @Test
     public void shouldStartBisysBatch() {
         jobController.bisysSyntBatch();
-        verify(bisysSyntPakkenService).genererBistandsmeldinger(any());
+        verify(testnorgeBisysService).genererBistandsmeldinger(any());
     }
 
     @Test
     public void shouldStartTpBatch() {
         jobController.tpSyntBatch();
-        verify(tpSyntPakkenService).genererTp(any());
+        verify(testnorgeTpService).genererTp(any());
     }
 
     @Test
     public void shouldStartSamBatch() {
         jobController.samSyntBatch();
-        verify(samSyntPakkenService).genererSamordningsmeldinger(any());
+        verify(testnorgeSamService).genererSamordningsmeldinger(any());
     }
 
     @Test
     public void shouldStartArenaBatch() {
         jobController.arenaSyntBatch();
-        verify(arenaSyntPakkenService).opprettArbeidssokereIArena(any());
+        verify(tesnorgeArenaService).opprettArbeidssokereIArena(any());
     }
 
     @Test
     public void shouldStartMedlBatch() {
         jobController.medlSyntBatch();
-        verify(medlSyntPakkenService).genererMedlemskap(any());
+        verify(testnorgeMedlService).genererMedlemskap(any());
     }
 }

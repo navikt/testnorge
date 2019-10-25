@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.orkestratoren.consumer.rs.AaregSyntConsumer;
-import no.nav.registre.orkestratoren.consumer.rs.ArenaConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.TestnorgeAaregConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
-import no.nav.registre.orkestratoren.consumer.rs.InstSyntConsumer;
-import no.nav.registre.orkestratoren.consumer.rs.PoppSyntConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.TestnorgeInstConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSigrunConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
 import no.nav.registre.orkestratoren.provider.rs.responses.SletteFraAvspillerguppeResponse;
 import no.nav.registre.orkestratoren.provider.rs.responses.SlettedeIdenterResponse;
@@ -24,16 +24,16 @@ public class IdentService {
     private TestnorgeSkdConsumer testnorgeSkdConsumer;
 
     @Autowired
-    private InstSyntConsumer instSyntConsumer;
+    private TestnorgeInstConsumer testnorgeInstConsumer;
 
     @Autowired
-    private PoppSyntConsumer poppSyntConsumer;
+    private TestnorgeSigrunConsumer testnorgeSigrunConsumer;
 
     @Autowired
-    private AaregSyntConsumer aaregSyntConsumer;
+    private TestnorgeAaregConsumer testnorgeAaregConsumer;
 
     @Autowired
-    private ArenaConsumer arenaConsumer;
+    private TestnorgeArenaConsumer testnorgeArenaConsumer;
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
@@ -45,9 +45,9 @@ public class IdentService {
                 .build();
 
         slettedeIdenterResponse.getTpsfStatus().setSlettedeMeldingIderFraTpsf(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, Collections.singletonList(miljoe), identer));
-        slettedeIdenterResponse.setInstStatus(instSyntConsumer.slettIdenterFraInst(identer));
-        slettedeIdenterResponse.setSigrunStatus(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer));
-        slettedeIdenterResponse.setAaregStatus(aaregSyntConsumer.slettIdenterFraAaregstub(identer));
+        slettedeIdenterResponse.setInstStatus(testnorgeInstConsumer.slettIdenterFraInst(identer));
+        slettedeIdenterResponse.setSigrunStatus(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer));
+        slettedeIdenterResponse.setAaregStatus(testnorgeAaregConsumer.slettIdenterFraAaregstub(identer));
         // TODO: Fiks arena og legg inn denne igjen
         // slettedeIdenterResponse.setArenaForvalterStatus(arenaConsumer.slettIdenter(miljoe, identer));
 

@@ -30,17 +30,17 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
-import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
-import no.nav.registre.orkestratoren.service.InntektSyntPakkenService;
-import no.nav.registre.orkestratoren.service.ArenaSyntPakkenService;
-import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
-import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
-import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
-import no.nav.registre.orkestratoren.service.MedlSyntPakkenService;
-import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
-import no.nav.registre.orkestratoren.service.SamSyntPakkenService;
-import no.nav.registre.orkestratoren.service.TpSyntPakkenService;
-import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
+import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
+import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
+import no.nav.registre.orkestratoren.service.TesnorgeArenaService;
+import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
+import no.nav.registre.orkestratoren.service.TestnorgeEiaService;
+import no.nav.registre.orkestratoren.service.TestnorgeInstService;
+import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
+import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
+import no.nav.registre.orkestratoren.service.TestnorgeSamService;
+import no.nav.registre.orkestratoren.service.TestnorgeTpService;
+import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
@@ -48,42 +48,42 @@ import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 public class SyntetiseringsController {
 
     @Autowired
-    private TpsSyntPakkenService tpsSyntPakkenService;
+    private TestnorgeSkdService testnorgeSkdService;
 
     @Autowired
-    private InntektSyntPakkenService inntektSyntPakkenService;
+    private TestnorgeInntektService testnorgeInntektService;
 
     @Autowired
-    private EiaSyntPakkenService eiaSyntPakkenService;
+    private TestnorgeEiaService testnorgeEiaService;
 
     @Autowired
-    private PoppSyntPakkenService poppSyntPakkenService;
+    private TestnorgeSigrunService testnorgeSigrunService;
 
     @Autowired
-    private AaregSyntPakkenService aaregSyntPakkenService;
+    private TestnorgeAaregService testnorgeAaregService;
 
     @Autowired
-    private InstSyntPakkenService instSyntPakkenService;
+    private TestnorgeInstService testnorgeInstService;
 
     @Autowired
-    private BisysSyntPakkenService bisysSyntPakkenService;
+    private TestnorgeBisysService testnorgeBisysService;
 
     @Autowired
-    private TpSyntPakkenService tpSyntPakkenService;
+    private TestnorgeTpService testnorgeTpService;
 
     @Autowired
-    private SamSyntPakkenService samSyntPakkenService;
+    private TestnorgeSamService testnorgeSamService;
 
     @Autowired
-    private ArenaSyntPakkenService arenaSyntPakkenService;
+    private TesnorgeArenaService tesnorgeArenaService;
 
     @Autowired
-    private MedlSyntPakkenService medlSyntPakkenService;
+    private TestnorgeMedlService testnorgeMedlService;
 
     @LogExceptions
     @PostMapping(value = "/tps/skdmeldinger/generer")
     public ResponseEntity opprettSkdmeldingerITPS(@RequestBody SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest) {
-        return tpsSyntPakkenService.genererSkdmeldinger(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
+        return testnorgeSkdService.genererSkdmeldinger(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
                 syntetiserSkdmeldingerRequest.getMiljoe(),
                 syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode());
     }
@@ -91,20 +91,20 @@ public class SyntetiseringsController {
     @LogExceptions
     @PostMapping(value = "/nav/endringsmeldinger/generer")
     public List<RsPureXmlMessageResponse> opprettNavmeldingerITPS(@RequestBody SyntetiserNavmeldingerRequest syntetiserNavmeldingerRequest) {
-        return tpsSyntPakkenService.genererNavmeldinger(syntetiserNavmeldingerRequest);
+        return testnorgeSkdService.genererNavmeldinger(syntetiserNavmeldingerRequest);
     }
 
     @LogExceptions
     @PostMapping(value = "/inntekt/generer")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public Map<String, List<Object>> opprettSyntetiskInntektsmeldingIInntektstub(@RequestBody SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
-        return inntektSyntPakkenService.genererInntektsmeldinger(syntetiserInntektsmeldingRequest);
+        return testnorgeInntektService.genererInntektsmeldinger(syntetiserInntektsmeldingRequest);
     }
 
     @LogExceptions
     @PostMapping(value = "/eia/sykemeldinger/generer")
     public List<String> opprettSykemeldingerIEia(@RequestBody SyntetiserEiaRequest syntetiserEiaRequest) {
-        List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(syntetiserEiaRequest);
+        List<String> fnrMedGenererteMeldinger = testnorgeEiaService.genererEiaSykemeldinger(syntetiserEiaRequest);
         log.info("eia har opprettet {} sykemeldinger. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
         return fnrMedGenererteMeldinger;
     }
@@ -113,48 +113,48 @@ public class SyntetiseringsController {
     @PostMapping(value = "/popp/skattegrunnlag/generer")
     public ResponseEntity opprettSkattegrunnlagISigrun(@RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,
             @RequestBody SyntetiserPoppRequest syntetiserPoppRequest) {
-        return poppSyntPakkenService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
+        return testnorgeSigrunService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
     }
 
     @LogExceptions
     @PostMapping(value = "/aareg/arbeidsforhold/generer")
     public ResponseEntity opprettArbeidsforholdIAareg(@RequestParam boolean lagreIAareg, @RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
-        return aaregSyntPakkenService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, lagreIAareg);
+        return testnorgeAaregService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, lagreIAareg);
     }
 
     @LogExceptions
     @PostMapping(value = "/inst/institusjonsforhold/generer")
     public Object opprettInstitutjonsforholdIInst(@RequestBody SyntetiserInstRequest syntetiserInstRequest) {
-        return instSyntPakkenService.genererInstitusjonsforhold(syntetiserInstRequest);
+        return testnorgeInstService.genererInstitusjonsforhold(syntetiserInstRequest);
     }
 
     @LogExceptions
     @PostMapping(value = "/bisys/bistandsmeldinger/generer")
     public Object opprettBistandsmeldingerIBisys(@RequestBody SyntetiserBisysRequest syntetiserBisysRequest) {
-        return bisysSyntPakkenService.genererBistandsmeldinger(syntetiserBisysRequest);
+        return testnorgeBisysService.genererBistandsmeldinger(syntetiserBisysRequest);
     }
 
     @LogExceptions
     @PostMapping(value = "/tp/ytelser/generer")
     public ResponseEntity opprettYtelserITp(@RequestBody SyntetiserTpRequest request) {
-        return tpSyntPakkenService.genererTp(request);
+        return testnorgeTpService.genererTp(request);
     }
 
     @LogExceptions
     @PostMapping(value = "/sam/samordningsmeldinger/generer")
     public ResponseEntity opprettSamordningsmeldingerISam(@RequestBody SyntetiserSamRequest syntetiserSamRequest) {
-        return samSyntPakkenService.genererSamordningsmeldinger(syntetiserSamRequest);
+        return testnorgeSamService.genererSamordningsmeldinger(syntetiserSamRequest);
     }
 
     @LogExceptions
     @PostMapping(value = "/arena/arbeidsoeker/generer")
     public List<String> opprettArbeidssoekereIArena(@RequestBody SyntetiserArenaRequest syntetiserArenaRequest) {
-        return arenaSyntPakkenService.opprettArbeidssokereIArena(syntetiserArenaRequest);
+        return tesnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest);
     }
 
     @LogExceptions
     @PostMapping(value = "/medl/medlemskap/generer")
     public Object opprettMedlemskapIMedl(@RequestBody SyntetiserMedlRequest syntetiserMedlRequest) {
-        return medlSyntPakkenService.genererMedlemskap(syntetiserMedlRequest);
+        return testnorgeMedlService.genererMedlemskap(syntetiserMedlRequest);
     }
 }
