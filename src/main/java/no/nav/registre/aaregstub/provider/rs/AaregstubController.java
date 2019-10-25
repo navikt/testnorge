@@ -22,9 +22,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.aaregstub.arbeidsforhold.ArbeidsforholdsResponse;
 import no.nav.registre.aaregstub.arbeidsforhold.Ident;
-import no.nav.registre.aaregstub.arbeidsforhold.consumer.rs.responses.DollyResponse;
 import no.nav.registre.aaregstub.arbeidsforhold.contents.Arbeidsforhold;
-import no.nav.registre.aaregstub.provider.rs.responses.StatusResponse;
 import no.nav.registre.aaregstub.service.ArbeidsforholdService;
 
 //import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
@@ -37,10 +35,10 @@ public class AaregstubController {
     private ArbeidsforholdService arbeidsforholdService;
 
     //    @LogExceptions
-    @ApiOperation(value = "Her kan man lagre arbeidsforhold i stubben. Boolean-verdien 'lagreIAareg' bestemmer om arbeidsforholdene også skal sendes til aareg.")
+    @ApiOperation(value = "Her kan man lagre arbeidsforhold i stubben")
     @PostMapping(value = "/lagreArbeidsforhold")
-    public StatusResponse lagreArbeidsforhold(@RequestParam("lagreIAareg") Boolean lagreIAareg, @RequestBody List<ArbeidsforholdsResponse> arbeidsforholdsmeldinger) {
-        return arbeidsforholdService.lagreArbeidsforhold(arbeidsforholdsmeldinger, lagreIAareg);
+    public List<String> lagreArbeidsforhold(@RequestBody List<ArbeidsforholdsResponse> arbeidsforholdsmeldinger) {
+        return arbeidsforholdService.lagreArbeidsforhold(arbeidsforholdsmeldinger);
     }
 
     //    @LogExceptions
@@ -108,34 +106,5 @@ public class AaregstubController {
         }
 
         return forholdSomSkalSlettes;
-    }
-
-    //    @LogExceptions
-    @ApiOperation(value = "Her kan man sende arbeidsforhold til aareg, uten at de lagres i stubben.")
-    @PostMapping(value = "/sendArbeidsforholdTilAareg")
-    public List<DollyResponse> sendArbeidsforholdTilAareg(@RequestBody List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
-        return arbeidsforholdService.sendArbeidsforholdTilAareg(syntetiserteArbeidsforhold);
-    }
-
-    //    @LogExceptions
-    @ApiOperation(value = "Her kan man hente arbeidsforholdene på en ident direkte fra aareg, gitt identifikasjonsnummer og miljø.")
-    @GetMapping(value = "hentArbeidsforholdFraAareg")
-    public Object hentArbeidsforholdFraAareg(@RequestParam String ident, @RequestParam String miljoe) {
-        return arbeidsforholdService.hentArbeidsforholdFraAareg(ident, miljoe);
-    }
-
-    //    @LogExceptions
-    @ApiOperation(value = "Gitt en liste med identer og miljø, returnerer endepunktet identene som ligger lagret i aareg.")
-    @PostMapping(value = "sjekkStatusMotAareg")
-    public List<String> sjekkStatusMotAareg(@RequestParam String miljoe, @RequestBody List<String> identer) {
-        return arbeidsforholdService.sjekkStatusMotAareg(identer, miljoe);
-    }
-
-    //    @LogExceptions
-    @ApiOperation(value = "I det gitte miljøet vil metoden rydde opp i stubben, slik at kun arbeidsforhold som også ligger i aareg beholdes. "
-            + "Returnerer listen over identer som er fjernet fra stubben.")
-    @PostMapping(value = "synkroniserMedAareg")
-    public List<String> synkroniserMedAareg(@RequestParam String miljoe) {
-        return arbeidsforholdService.synkroniserMedAareg(miljoe);
     }
 }
