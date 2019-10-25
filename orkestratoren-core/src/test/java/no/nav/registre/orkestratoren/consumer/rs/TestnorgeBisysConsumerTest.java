@@ -37,7 +37,7 @@ public class TestnorgeBisysConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${testnorge-bisys.rest-api.url}")
+    @Value("${testnorge-bisys.rest.api.url}")
     private String serverUrl;
 
     private static final Long AVSPILLERGRUPPE_ID = 123L;

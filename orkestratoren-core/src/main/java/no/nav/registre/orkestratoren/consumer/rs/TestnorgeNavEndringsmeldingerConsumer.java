@@ -27,7 +27,7 @@ public class TestnorgeNavEndringsmeldingerConsumer {
 
     public TestnorgeNavEndringsmeldingerConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-nav-endringsmeldinger.rest-api.url}") String skdServerUrl) {
+            @Value("${testnorge-nav-endringsmeldinger.rest.api.url}") String skdServerUrl) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(skdServerUrl + "/v1/syntetisering/generer");
     }

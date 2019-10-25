@@ -39,7 +39,7 @@ public class TestnorgeNavEndringsmeldingerConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${testnorge-nav-endringsmeldinger.rest-api.url}")
+    @Value("${testnorge-nav-endringsmeldinger.rest.api.url}")
     private String serverUrl;
 
     private long gruppeId = 10L;

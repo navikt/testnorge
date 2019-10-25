@@ -35,7 +35,7 @@ public class HodejegerenConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${testnorge-hodejegeren.rest-api.url}")
+    @Value("${testnorge-hodejegeren.rest.api.url}")
     private String serverUrl;
 
     private TpsPersonDokumentType tpsPersonDokument;

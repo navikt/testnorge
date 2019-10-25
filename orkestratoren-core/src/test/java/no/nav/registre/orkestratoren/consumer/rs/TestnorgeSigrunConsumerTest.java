@@ -41,7 +41,7 @@ public class TestnorgeSigrunConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${testnorge-sigrun.rest-api.url}")
+    @Value("${testnorge-sigrun.rest.api.url}")
     private String serverUrl;
 
     private static final Long AVSPILLERGRUPPE_ID = 123L;

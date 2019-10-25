@@ -34,7 +34,7 @@ public class TestnorgeAaregConsumer {
 
     public TestnorgeAaregConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-aareg.rest-api.url}") String aaregServerUrl) {
+            @Value("${testnorge-aareg.rest.api.url}") String aaregServerUrl) {
         this.restTemplate = restTemplateBuilder.build();
         this.startSyntetiseringUrl = new UriTemplate(aaregServerUrl + "/v1/syntetisering/generer?lagreIAareg={lagreIAareg}");
         this.slettIdenterUrl = new UriTemplate(aaregServerUrl + "/v1/ident");

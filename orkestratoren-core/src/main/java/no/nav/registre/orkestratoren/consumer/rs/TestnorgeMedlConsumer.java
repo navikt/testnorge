@@ -18,7 +18,7 @@ public class TestnorgeMedlConsumer {
 
     public TestnorgeMedlConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-medl.rest-api.url}") String baseUrl) {
+            @Value("${testnorge-medl.rest.api.url}") String baseUrl) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(baseUrl + "/v1/syntetisering/generer/");
     }

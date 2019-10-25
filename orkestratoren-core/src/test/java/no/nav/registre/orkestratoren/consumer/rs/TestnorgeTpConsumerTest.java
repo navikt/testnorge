@@ -31,7 +31,7 @@ public class TestnorgeTpConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${testnorge-tp.rest-api.url}")
+    @Value("${testnorge-tp.rest.api.url}")
     private String serverUrl;
 
     private Long gruppeId = 10L;

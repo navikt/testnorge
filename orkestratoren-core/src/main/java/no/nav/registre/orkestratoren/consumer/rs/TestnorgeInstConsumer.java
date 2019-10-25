@@ -38,7 +38,7 @@ public class TestnorgeInstConsumer {
 
     public TestnorgeInstConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-inst.rest-api.url}") String instServerUrl) {
+            @Value("${testnorge-inst.rest.api.url}") String instServerUrl) {
         this.restTemplate = restTemplateBuilder.build();
         this.startSyntetiseringUrl = new UriTemplate(instServerUrl + "/v1/syntetisering/generer?miljoe={miljoe}");
         this.sletteIdenterUrl = new UriTemplate(instServerUrl + "/v1/ident/batch?miljoe={miljoe}&identer={identer}");

@@ -22,7 +22,7 @@ public class TestnorgeTpConsumer {
 
     public TestnorgeTpConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-tp.rest-api.url}") String baseUrl) {
+            @Value("${testnorge-tp.rest.api.url}") String baseUrl) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(baseUrl + "/v1/syntetisering/generer/");
     }

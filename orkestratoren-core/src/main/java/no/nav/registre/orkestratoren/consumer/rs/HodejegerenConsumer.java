@@ -29,7 +29,7 @@ public class HodejegerenConsumer {
 
     public HodejegerenConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
+            @Value("${testnorge-hodejegeren.rest.api.url}") String hodejegerenServerUrl) {
         this.restTemplate = restTemplateBuilder.build();
         this.hentAlleIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/alle-identer/{avspillergruppeId}");
         this.sendTilHodejegerenUrl = new UriTemplate(hodejegerenServerUrl + "/v1/historikk/skd/oppdaterDokument/{ident}");

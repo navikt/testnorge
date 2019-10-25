@@ -33,7 +33,7 @@ public class TestnorgeSkdConsumer {
 
     public TestnorgeSkdConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-skd.rest-api.url}") String skdServerUrl) {
+            @Value("${testnorge-skd.rest.api.url}") String skdServerUrl) {
         this.restTemplate = restTemplateBuilder.build();
         this.startSyntetiseringUrl = new UriTemplate(skdServerUrl + "/v1/syntetisering/generer");
         this.slettIdenterUrl = new UriTemplate(skdServerUrl + "/v1/ident/{avspillergruppeId}?miljoer={miljoer}");

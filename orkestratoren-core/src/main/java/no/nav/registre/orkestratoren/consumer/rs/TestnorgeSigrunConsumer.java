@@ -31,7 +31,7 @@ public class TestnorgeSigrunConsumer {
 
     public TestnorgeSigrunConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-sigrun.rest-api.url}") String sigrunServerUrl) {
+            @Value("${testnorge-sigrun.rest.api.url}") String sigrunServerUrl) {
         this.restTemplate = restTemplateBuilder.build();
         this.startSyntetiseringUrl = new UriTemplate(sigrunServerUrl + "/v1/syntetisering/generer");
         this.slettIdenterUrl = new UriTemplate(sigrunServerUrl + "/v1/ident?miljoe={miljoe}");

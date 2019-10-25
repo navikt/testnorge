@@ -23,7 +23,7 @@ public class TestnorgeBisysConsumer {
 
     public TestnorgeBisysConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-bisys.rest-api.url}") String bisysServerUrl) {
+            @Value("${testnorge-bisys.rest.api.url}") String bisysServerUrl) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(bisysServerUrl + "/v1/syntetisering/generer");
     }

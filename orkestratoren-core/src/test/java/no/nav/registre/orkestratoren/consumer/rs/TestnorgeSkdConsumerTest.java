@@ -42,7 +42,7 @@ public class TestnorgeSkdConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${testnorge-skd.rest-api.url}")
+    @Value("${testnorge-skd.rest.api.url}")
     private String serverUrl;
 
     private long avspillergruppeId = 10L;
