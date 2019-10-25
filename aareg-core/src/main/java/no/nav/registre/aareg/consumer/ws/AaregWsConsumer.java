@@ -17,7 +17,6 @@ import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdArbeidsforholdIkkeFunnet;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdSikkerhetsbegrensning;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdUgyldigInput;
@@ -45,7 +44,9 @@ public class AaregWsConsumer {
         return nonNull(referanse) ? referanse : "testnorge-aareg: " + UUID.randomUUID().toString();
     }
 
-    public RsAaregResponse opprettArbeidsforhold(RsAaregOpprettRequest request) {
+    public RsAaregResponse opprettArbeidsforhold(
+            RsAaregOpprettRequest request
+    ) {
         OpprettArbeidsforholdRequest arbeidsforholdRequest = new OpprettArbeidsforholdRequest();
         arbeidsforholdRequest.setArbeidsforhold(mapperFacade.map(request.getArbeidsforhold(), Arbeidsforhold.class));
         arbeidsforholdRequest.setArkivreferanse(getUuid(request.getArkivreferanse()));
@@ -53,8 +54,7 @@ public class AaregWsConsumer {
         Map<String, String> status = new HashMap<>(request.getEnvironments().size());
         request.getEnvironments().forEach(env -> {
             try {
-                BehandleArbeidsforholdPortType serviceByEnvironment = behandleArbeidsforholdV1Proxy.getServiceByEnvironment(env);
-                serviceByEnvironment.opprettArbeidsforhold(arbeidsforholdRequest);
+                behandleArbeidsforholdV1Proxy.getServiceByEnvironment(env).opprettArbeidsforhold(arbeidsforholdRequest);
                 status.put(env, STATUS_OK);
             } catch (OpprettArbeidsforholdSikkerhetsbegrensning | OpprettArbeidsforholdUgyldigInput | TestnorgeAaregFunctionalException error) {
                 status.put(env, AaregResponseHandler.extractError(error));
@@ -70,7 +70,9 @@ public class AaregWsConsumer {
         return RsAaregResponse.builder().statusPerMiljoe(status).build();
     }
 
-    public Map<String, String> oppdaterArbeidsforhold(RsAaregOppdaterRequest request) {
+    public Map<String, String> oppdaterArbeidsforhold(
+            RsAaregOppdaterRequest request
+    ) {
         OppdaterArbeidsforholdRequest arbeidsforholdRequest = new OppdaterArbeidsforholdRequest();
         arbeidsforholdRequest.setArbeidsforhold(mapperFacade.map(request.getArbeidsforhold(), Arbeidsforhold.class));
         arbeidsforholdRequest.setArkivreferanse(getUuid(request.getArkivreferanse()));

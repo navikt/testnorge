@@ -58,7 +58,9 @@ public class AaregstubConsumer {
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })
-    public List<String> sendTilAaregstub(List<RsAaregOpprettRequest> syntetiserteArbeidsforhold) {
+    public List<String> sendTilAaregstub(
+            List<RsAaregOpprettRequest> syntetiserteArbeidsforhold
+    ) {
         RequestEntity postRequest = RequestEntity.post(sendTilAaregstubUrl.expand()).body(syntetiserteArbeidsforhold);
         ResponseEntity<List<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST_STRING);
 
@@ -71,7 +73,9 @@ public class AaregstubConsumer {
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })
-    public SletteArbeidsforholdResponse slettIdenterFraAaregstub(List<String> identer) {
+    public SletteArbeidsforholdResponse slettIdenterFraAaregstub(
+            List<String> identer
+    ) {
         SletteArbeidsforholdResponse sletteArbeidsforholdResponse = SletteArbeidsforholdResponse.builder()
                 .identermedArbeidsforholdIdSomBleSlettet(new HashMap<>())
                 .identerSomIkkeKunneSlettes(new ArrayList<>())

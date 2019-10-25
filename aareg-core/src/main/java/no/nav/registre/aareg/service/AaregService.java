@@ -49,19 +49,28 @@ public class AaregService {
     @Autowired
     private TpsfConsumer tpsfConsumer;
 
-    public RsAaregResponse opprettArbeidsforhold(RsAaregOpprettRequest request) {
+    public RsAaregResponse opprettArbeidsforhold(
+            RsAaregOpprettRequest request
+    ) {
         return aaregWsConsumer.opprettArbeidsforhold(request);
     }
 
-    public Map<String, String> oppdaterArbeidsforhold(RsAaregOppdaterRequest request) {
+    public Map<String, String> oppdaterArbeidsforhold(
+            RsAaregOppdaterRequest request
+    ) {
         return aaregWsConsumer.oppdaterArbeidsforhold(request);
     }
 
-    public ResponseEntity hentArbeidsforhold(String ident, String miljoe) {
+    public ResponseEntity hentArbeidsforhold(
+            String ident,
+            String miljoe
+    ) {
         return aaregRestConsumer.hentArbeidsforhold(ident, miljoe);
     }
 
-    public Map<String, String> slettArbeidsforhold(String ident) {
+    public Map<String, String> slettArbeidsforhold(
+            String ident
+    ) {
         Map<String, String> resultMap = new HashMap<>();
         ResponseEntity<MiljoerResponse> miljoer = tpsfConsumer.hentMiljoer();
 

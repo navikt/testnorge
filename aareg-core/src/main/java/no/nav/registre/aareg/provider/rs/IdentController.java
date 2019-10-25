@@ -19,7 +19,9 @@ public class IdentController {
     private IdentService identService;
 
     @DeleteMapping
-    public SletteArbeidsforholdResponse slettArbeidsforholdFraAaregstub(@RequestBody List<String> identer) {
+    public SletteArbeidsforholdResponse slettArbeidsforholdFraAaregstub(
+            @RequestBody List<String> identer
+    ) {
         return identService.slettArbeidsforholdFraAaregstub(identer);
     }
 }

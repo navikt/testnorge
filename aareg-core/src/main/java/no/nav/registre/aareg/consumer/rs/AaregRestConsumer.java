@@ -25,8 +25,9 @@ public class AaregRestConsumer {
     private final RestTemplate restTemplate;
     private final StsOidcService stsOidcService;
 
-    public ResponseEntity<Map[]> hentArbeidsforhold(String ident, String miljoe) {
-
+    public ResponseEntity<Map[]> hentArbeidsforhold(
+            String ident, String miljoe
+    ) {
         RequestEntity getRequest = RequestEntity
                 .get(URI.create(aaregArbeidsforholdFasitConsumer.getUrlForEnv(miljoe)))
                 .header(ACCEPT, APPLICATION_JSON_VALUE)

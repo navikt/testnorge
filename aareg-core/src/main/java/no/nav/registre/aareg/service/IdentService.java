@@ -14,7 +14,9 @@ public class IdentService {
     @Autowired
     private AaregstubConsumer aaregstubConsumer;
 
-    public SletteArbeidsforholdResponse slettArbeidsforholdFraAaregstub(List<String> identer) {
+    public SletteArbeidsforholdResponse slettArbeidsforholdFraAaregstub(
+            List<String> identer
+    ) {
         List<String> identerIAaregstub = aaregstubConsumer.hentEksisterendeIdenter();
         identer.retainAll(identerIAaregstub);
 
