@@ -2,17 +2,17 @@ package no.nav.dolly.domain.resultset.entity.bestilling;
 
 import static java.util.Objects.isNull;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -26,6 +26,7 @@ public class RsBestilling {
     private Integer antallIdenter;
     private boolean ferdig;
     private LocalDateTime sistOppdatert;
+    private String userId;
     private long gruppeId;
     private boolean stoppet;
     private String feil;

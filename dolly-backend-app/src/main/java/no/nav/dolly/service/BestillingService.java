@@ -5,10 +5,18 @@ import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
+import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -27,13 +35,6 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -83,6 +84,7 @@ public class BestillingService {
         bestilling.setStoppet(true);
         bestilling.setFerdig(true);
         bestilling.setSistOppdatert(now());
+        bestilling.setUserId(getUserPrinciple());
         saveBestillingToDB(bestilling);
         identRepository.deleteTestidentsByBestillingId(bestillingId);
         bestillingProgressRepository.deleteByBestillingId(bestillingId);
@@ -109,6 +111,7 @@ public class BestillingService {
                                 .pdlforvalter(request.getPdlforvalter())
                                 .instdata(request.getInstdata())
                                 .build()))
+                        .userId(getUserPrinciple())
                         .build());
     }
 
@@ -133,6 +136,7 @@ public class BestillingService {
                                 .build()))
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .malBestillingNavn(request.getMalBestillingNavn())
+                        .userId(getUserPrinciple())
                         .build());
     }
 
@@ -156,6 +160,7 @@ public class BestillingService {
                         .opprettetFraId(bestillingId)
                         .tpsfKriterier(bestilling.getTpsfKriterier())
                         .bestKriterier(bestilling.getBestKriterier())
+                        .userId(getUserPrinciple())
                         .build()
         );
     }
