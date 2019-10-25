@@ -34,7 +34,7 @@ public class EiaSyntConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${testnorge-eia.rest-api.url}")
+    @Value("${testnorge-eia.rest.api.url}")
     private String serverUrl;
 
     private long gruppeId = 10L;
