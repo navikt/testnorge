@@ -1,10 +1,17 @@
 package no.nav.dolly.bestilling.instdata;
 
-import static java.util.Arrays.asList;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,20 +26,14 @@ import no.nav.dolly.domain.resultset.inst.InstdataKategori;
 import no.nav.dolly.domain.resultset.inst.InstdataKilde;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
-@Component
+@Service
 @RequiredArgsConstructor
 public class InstdataClient implements ClientRegister {
 
     public static final String OK_RESULT = "OK";
-    private static final String[] DEFAULT_ENV = {"q2"};
+    private static final String[] DEFAULT_ENV = { "q2" };
 
     private final MapperFacade mapperFacade;
     private final InstdataConsumer instdataConsumer;
@@ -42,18 +43,15 @@ public class InstdataClient implements ClientRegister {
     @Timed(name = "providers", tags={"operation", "gjenopprettInstdata"})
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
-        if (bestilling.getInstdata() == null || bestilling.getInstdata().isEmpty()) {
-            progress.setInstdataStatus(null);
-            return;
-        }
+        if (nonNull(bestilling.getInstdata())) {
 
-        StringBuilder status = new StringBuilder();
-        List<String> availEnvironments = getEnvironments();
+            StringBuilder status = new StringBuilder();
+            List<String> availEnvironments = getEnvironments();
 
-        List<String> environments = new ArrayList<>(availEnvironments);
-        environments.retainAll(bestilling.getEnvironments());
+            List<String> environments = newArrayList(availEnvironments);
+            environments.retainAll(bestilling.getEnvironments());
 
-        if (!environments.isEmpty()) {
+            if (!environments.isEmpty()) {
 
                 environments.forEach(environment -> {
                     deleteInstdata(tpsPerson.getHovedperson(), environment);
@@ -71,15 +69,15 @@ public class InstdataClient implements ClientRegister {
                 });
             }
 
-        List<String> notSupportedEnvironments = new ArrayList<>(bestilling.getEnvironments());
-        notSupportedEnvironments.removeAll(availEnvironments);
-        notSupportedEnvironments.forEach(environment ->
-                status.append(',')
-                        .append(environment)
-                        .append(":Feil: Miljø ikke støttet"));
+            List<String> notSupportedEnvironments = new ArrayList(bestilling.getEnvironments());
+            notSupportedEnvironments.removeAll(availEnvironments);
+            notSupportedEnvironments.forEach(environment ->
+                    status.append(',')
+                            .append(environment)
+                            .append(":Feil: Miljø ikke støttet"));
 
-        progress.setInstdataStatus(status.substring(1));
-
+            progress.setInstdataStatus(status.substring(1));
+        }
     }
 
     @Override
@@ -94,12 +92,12 @@ public class InstdataClient implements ClientRegister {
     private List<String> getEnvironments() {
 
         try {
-            List<String> envResponse = instdataConsumer.getMiljoer();
-            return envResponse.isEmpty() ? asList(DEFAULT_ENV) : envResponse;
+            ResponseEntity<String[]> envResponse = instdataConsumer.getMiljoer();
+            return newArrayList(envResponse.hasBody() ? envResponse.getBody() : DEFAULT_ENV);
 
         } catch (RuntimeException e) {
             log.error("Kunne ikke lese fra endepunkt for å hente miljøer: {} ", e.getMessage(), e);
-            return asList(DEFAULT_ENV);
+            return newArrayList(DEFAULT_ENV);
         }
     }
 
@@ -159,39 +157,39 @@ public class InstdataClient implements ClientRegister {
     private static InstdataKategori decideKategori(InstdataInstitusjonstype type) {
 
         switch (type) {
-            case AS:
-                return InstdataKategori.A;
-            case FO:
-                return InstdataKategori.S;
-            case HS:
-            default:
-                return InstdataKategori.R;
+        case AS:
+            return InstdataKategori.A;
+        case FO:
+            return InstdataKategori.S;
+        case HS:
+        default:
+            return InstdataKategori.R;
         }
     }
 
     private static InstdataKilde decideKilde(InstdataInstitusjonstype type) {
 
         switch (type) {
-            case AS:
-                return InstdataKilde.PP01;
-            case FO:
-                return InstdataKilde.IT;
-            case HS:
-            default:
-                return InstdataKilde.INST;
+        case AS:
+            return InstdataKilde.PP01;
+        case FO:
+            return InstdataKilde.IT;
+        case HS:
+        default:
+            return InstdataKilde.INST;
         }
     }
 
     private static String decideTssEksternId(InstdataInstitusjonstype type) {
 
         switch (type) {
-            case AS:
-                return "80000464106"; // ADAMSTUEN SYKEHJEM
-            case FO:
-                return "80000465653"; // INDRE ØSTFOLD FENGSEL
-            case HS:
-            default:
-                return "80000464241"; // HELGELANDSSYKEHUSET HF
+        case AS:
+            return "80000464106"; // ADAMSTUEN SYKEHJEM
+        case FO:
+            return "80000465653"; // INDRE ØSTFOLD FENGSEL
+        case HS:
+        default:
+            return "80000464241"; // HELGELANDSSYKEHUSET HF
         }
     }
 }

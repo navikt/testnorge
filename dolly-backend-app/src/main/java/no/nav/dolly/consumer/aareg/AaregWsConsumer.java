@@ -1,8 +1,16 @@
 package no.nav.dolly.consumer.aareg;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.consumer.aareg.AaregResponseHandler.extractError;
 
-import lombok.RequiredArgsConstructor;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.ws.soap.SOAPFaultException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
@@ -16,17 +24,9 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OpprettArbeidsforholdUgy
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OppdaterArbeidsforholdRequest;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeidsforholdRequest;
-import org.springframework.stereotype.Component;
 
-import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.ws.soap.SOAPFaultException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
+@Service
 @Slf4j
-@Component
-@RequiredArgsConstructor
 public class AaregWsConsumer {
 
     private static final String STATUS_OK = "OK";
@@ -34,13 +34,11 @@ public class AaregWsConsumer {
     private static final String TEKNISK_FEIL_OPPDATERING = "Feil: Teknisk feil ved oppdatering mot AAREG";
     private static final String SOAP_FAULT_EXCEPTION = "Feil: AAREG teknisk feil/unntak: ";
 
-    private final BehandleArbeidsforholdV1Proxy behandleArbeidsforholdV1Proxy;
-    private final MapperFacade mapperFacade;
+    @Autowired
+    private BehandleArbeidsforholdV1Proxy behandleArbeidsforholdV1Proxy;
 
-    private static String getUuid(String referanse) {
-
-        return nonNull(referanse) ? referanse : "Dolly: " + UUID.randomUUID().toString();
-    }
+    @Autowired
+    private MapperFacade mapperFacade;
 
     public Map<String, String> opprettArbeidsforhold(RsAaregOpprettRequest request) {
 
@@ -48,13 +46,13 @@ public class AaregWsConsumer {
         arbeidsforholdRequest.setArbeidsforhold(mapperFacade.map(request.getArbeidsforhold(), Arbeidsforhold.class));
         arbeidsforholdRequest.setArkivreferanse(getUuid(request.getArkivreferanse()));
 
-        Map<String, String> status = new HashMap<>(request.getEnvironments().size());
+        Map<String, String> status = new HashMap(request.getEnvironments().size());
         request.getEnvironments().forEach(env -> {
             try {
                 behandleArbeidsforholdV1Proxy.getServiceByEnvironment(env).opprettArbeidsforhold(arbeidsforholdRequest);
                 status.put(env, STATUS_OK);
             } catch (OpprettArbeidsforholdSikkerhetsbegrensning | OpprettArbeidsforholdUgyldigInput | DollyFunctionalException error) {
-                status.put(env, AaregResponseHandler.extractError(error));
+                status.put(env, extractError(error));
             } catch (SOAPFaultException sfe) {
                 status.put(env, SOAP_FAULT_EXCEPTION + sfe.getMessage());
                 log.error(TEKNISK_FEIL_OPPRETTING, sfe);
@@ -74,13 +72,13 @@ public class AaregWsConsumer {
         arbeidsforholdRequest.setArkivreferanse(getUuid(request.getArkivreferanse()));
         arbeidsforholdRequest.setRapporteringsperiode(mapperFacade.map(request.getRapporteringsperiode(), XMLGregorianCalendar.class));
 
-        Map<String, String> status = new HashMap<>(request.getEnvironments().size());
+        Map<String, String> status = new HashMap(request.getEnvironments().size());
         request.getEnvironments().forEach(env -> {
             try {
                 behandleArbeidsforholdV1Proxy.getServiceByEnvironment(env).oppdaterArbeidsforhold(arbeidsforholdRequest);
                 status.put(env, STATUS_OK);
             } catch (OppdaterArbeidsforholdArbeidsforholdIkkeFunnet | OppdaterArbeidsforholdSikkerhetsbegrensning | OppdaterArbeidsforholdUgyldigInput | DollyFunctionalException error) {
-                status.put(env, AaregResponseHandler.extractError(error));
+                status.put(env, extractError(error));
             } catch (SOAPFaultException sfe) {
                 status.put(env, SOAP_FAULT_EXCEPTION + sfe.getMessage());
                 log.error(TEKNISK_FEIL_OPPDATERING, sfe);
@@ -91,5 +89,10 @@ public class AaregWsConsumer {
         });
 
         return status;
+    }
+
+    private static String getUuid(String referanse) {
+
+        return nonNull(referanse) ? referanse : "Dolly: " + UUID.randomUUID().toString();
     }
 }

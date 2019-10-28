@@ -4,14 +4,12 @@ import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -25,7 +23,6 @@ import no.nav.dolly.domain.resultset.udistub.model.RsUdiAlias;
 import no.nav.dolly.domain.resultset.udistub.model.UdiAlias;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPersonNavn;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @Slf4j
 @Service
@@ -35,7 +32,6 @@ public class UdiStubClient implements ClientRegister {
     private final UdiStubConsumer udiStubConsumer;
     private final MapperFacade mapperFacade;
     private final TpsfService tpsfService;
-    private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
     @Timed(name = "providers", tags={"operation", "gjenopprettUdiStub"})
