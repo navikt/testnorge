@@ -123,6 +123,8 @@ public class FeilhaandteringCompTest {
         stubFor(post("/identpool/api/v1/identifikator?finnNaermesteLedigeDato=false")
                 .withRequestBody(equalToJson(replace(getResourceFileContent(path), placeholderValues)))
                 .willReturn(okJson(expectedFnrFromIdentpool.toString())));
+
+        stubFor(get("/identpool/api/v1/fiktive-navn/tilfeldig?antall=1").willReturn(okJson("{\"fornavn\": \"A\", \"etternavn\": \"B\"}")));
     }
 
     private void stubTpsSynt(String endringskode, Integer antallMeldinger, String responseBodyFile) {

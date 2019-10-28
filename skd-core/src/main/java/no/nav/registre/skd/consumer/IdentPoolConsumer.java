@@ -36,7 +36,7 @@ public class IdentPoolConsumer {
                 .registerModule(new JavaTimeModule())
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         this.restTemplate.setMessageConverters(Collections.singletonList(new MappingJackson2HttpMessageConverter(objectMapper)));
-
+        this.baseUrl = serverUrl;
 
     }
 

@@ -65,11 +65,8 @@ private IdentPoolConsumer identPoolConsumer;
 
     @Test
     public void shouldOppretteMeldingerOgLeggeIGruppe() {
-        when(identPoolConsumer.hentNavn()).thenReturn(new Navn("A", "B"));
-
         fasteMeldingerService.opprettMeldingerOgLeggIGruppe(avspillergruppeId, fasteMeldinger);
 
-        verify(identPoolConsumer).hentNavn();
         verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), 1);
         verify(validationService).logAndRemoveInvalidMessages(anyList(), eq(Endringskoder.INNVANDRING));
         verify(tpsfConsumer).saveSkdEndringsmeldingerInTPSF(eq(avspillergruppeId), anyList());
