@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import no.nav.registre.skd.consumer.IdentPoolConsumer;
 import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
+import no.nav.registre.skd.consumer.response.Navn;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
@@ -24,6 +26,9 @@ public class FasteMeldingerService {
 
     @Autowired
     private TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
+
+    @Autowired
+    private IdentPoolConsumer identPoolConsumer;
 
     @Autowired
     private ValidationService validationService;
@@ -58,6 +63,18 @@ public class FasteMeldingerService {
                     .adressenavn(fastMelding.getAdresse())
                     .adresse3(fastMelding.getBy())
                     .build();
+
+
+
+            if (nyMelding.getSlektsnavn() == null || nyMelding.getSlektsnavn().isEmpty() || nyMelding.getFornavn() == null || nyMelding.getFornavn().isEmpty()) {
+                Navn navn = identPoolConsumer.hentNavn();
+                if (nyMelding.getFornavn() == null || nyMelding.getFornavn().isEmpty()) {
+                    nyMelding.setFornavn(navn.getFornavn());
+                }
+                if (nyMelding.getSlektsnavn() == null || nyMelding.getSlektsnavn().isEmpty()) {
+                    nyMelding.setSlektsnavn(navn.getEtternavn());
+                }
+            }
 
             nyMelding.setTranstype(syntetisertMelding.getTranstype());
             nyMelding.setMaskindato(syntetisertMelding.getMaskindato());

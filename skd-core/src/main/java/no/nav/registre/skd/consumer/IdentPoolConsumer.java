@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.micrometer.core.annotation.Timed;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
@@ -15,30 +16,48 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import no.nav.registre.skd.consumer.requests.HentIdenterRequest;
+import no.nav.registre.skd.consumer.response.Navn;
 
+@Slf4j
 @Component
 public class IdentPoolConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
     };
-    private URI url;
+    private String baseUrl;
     private RestTemplate restTemplate;
 
-    public IdentPoolConsumer(@Value("${ident-pool.rest-api.url}") String serverUrl) throws URISyntaxException {
+    public IdentPoolConsumer(@Value("${ident-pool.rest-api.url}") String serverUrl) {
         this.restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         this.restTemplate.setMessageConverters(Collections.singletonList(new MappingJackson2HttpMessageConverter(objectMapper)));
 
-        this.url = new URI(serverUrl + "/v1/identifikator?finnNaermesteLedigeDato=false");
+
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "identpool" })
     public List<String> hentNyeIdenter(HentIdenterRequest hentIdenterRequest) {
-        RequestEntity postRequest = RequestEntity.post(url).body(hentIdenterRequest);
-        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
+        RequestEntity postRequest = null;
+        try {
+            postRequest = RequestEntity.post(new URI(this.baseUrl + "/v1/identifikator?finnNaermesteLedigeDato=false")).body(hentIdenterRequest);
+        } catch (URISyntaxException e) {
+            log.error(e.getMessage(), e);
+        }
+        return restTemplate.exchange(Objects.requireNonNull(postRequest), RESPONSE_TYPE).getBody();
+    }
+
+    public Navn hentNavn() {
+        RequestEntity request = null;
+        try {
+            request = RequestEntity.get(new URI(this.baseUrl + "/v1/fiktive-navn/tilfeldig?antall=1")).build();
+        } catch (URISyntaxException e) {
+            log.error(e.getMessage(), e);
+        }
+        return restTemplate.exchange(Objects.requireNonNull(request), Navn.class).getBody();
     }
 }
