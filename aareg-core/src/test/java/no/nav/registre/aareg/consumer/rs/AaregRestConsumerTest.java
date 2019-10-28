@@ -38,13 +38,12 @@ public class AaregRestConsumerTest {
 
     @Test
     public void readArbeidsforhold() {
-
         when(aaregArbeidsforholdFasitConsumer.getUrlForEnv(ENV)).thenReturn("baseurl");
 
         aaregRestConsumer.hentArbeidsforhold(IDENT, ENV);
 
         verify(stsOidcService, times(2)).getIdToken(ENV);
         verify(aaregArbeidsforholdFasitConsumer).getUrlForEnv(ENV);
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(Map[].class));
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(Map.class));
     }
 }

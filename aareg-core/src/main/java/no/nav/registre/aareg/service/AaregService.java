@@ -74,9 +74,8 @@ public class AaregService {
             miljoer.getBody().getMiljoer().forEach(environment -> {
 
                 try {
-                    ResponseEntity<Map[]> arbeidforhold = aaregRestConsumer.hentArbeidsforhold(ident, environment);
+                    ResponseEntity<Map> arbeidforhold = aaregRestConsumer.hentArbeidsforhold(ident, environment);
                     if (arbeidforhold.hasBody()) {
-
                         asList(arbeidforhold.getBody()).forEach(
                                 forhold -> {
                                     RsArbeidsforhold arbeidsforhold = RsArbeidsforhold.builder()

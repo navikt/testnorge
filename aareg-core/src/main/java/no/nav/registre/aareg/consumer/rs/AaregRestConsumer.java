@@ -25,7 +25,7 @@ public class AaregRestConsumer {
     private final RestTemplate restTemplate;
     private final StsOidcService stsOidcService;
 
-    public ResponseEntity<Map[]> hentArbeidsforhold(
+    public ResponseEntity<Map> hentArbeidsforhold(
             String ident, String miljoe
     ) {
         RequestEntity getRequest = RequestEntity
@@ -35,6 +35,6 @@ public class AaregRestConsumer {
                 .header(HEADER_NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(miljoe))
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .build();
-        return restTemplate.exchange(getRequest, Map[].class);
+        return restTemplate.exchange(getRequest, Map.class);
     }
 }
