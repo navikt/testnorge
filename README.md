@@ -3,6 +3,12 @@
 Statisk data forvalter er en applikasjon som har som ansvar å forvalte faste test-data i NAV. 
 Denne applikasjonen belager seg på flere andre applikasjoner for å kunne legge inn data. 
 
+## Varighet og varslinger
+For å unngå at databasen legger inn utdaterte og ubrukte data etter hver eneste produksjonslast vil faste testdata ha en default varighet på 1 år etter opprettelse. Når disse dataene er på vei til å gå ut vil det bli gitt en varsling på Slack kanalen som ble lagt til med teamet som bestilte dataen. Hvis denne kanalen er fjernet eller slettet vil det bli sendt en mail til mail adressen som ble lagt til. 
+### Fornying av gyldighetsperiode
+For å fornye perioden må teamene ta kontakt med administratoren av faste testdata som for nå er Orkestrator teamet. Pr. 23.10.2019 kan teamet bli nådd på #Dolly.
+
+
 ## Avhengigheter
 
 De følgende applikasjonene må være kjørende for å kunne legge inn all data i et miljø. 
