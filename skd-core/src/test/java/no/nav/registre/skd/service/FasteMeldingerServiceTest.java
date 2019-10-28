@@ -69,6 +69,7 @@ private IdentPoolConsumer identPoolConsumer;
 
         fasteMeldingerService.opprettMeldingerOgLeggIGruppe(avspillergruppeId, fasteMeldinger);
 
+        verify(identPoolConsumer).hentNavn();
         verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), 1);
         verify(validationService).logAndRemoveInvalidMessages(anyList(), eq(Endringskoder.INNVANDRING));
         verify(tpsfConsumer).saveSkdEndringsmeldingerInTPSF(eq(avspillergruppeId), anyList());
