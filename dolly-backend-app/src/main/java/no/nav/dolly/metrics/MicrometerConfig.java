@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 
 @Configuration
@@ -15,10 +14,7 @@ public class MicrometerConfig {
 
     @Bean
     public MeterRegistryCustomizer<MeterRegistry> commonTags() {
-        return registry -> registry.config().commonTags("domain", "registre")
-                .meterFilter(MeterFilter.denyNameStartsWith("hikaricp"))
-                .meterFilter(MeterFilter.denyNameStartsWith("tomcat"))
-                .meterFilter(MeterFilter.denyNameStartsWith("jvm"));
+        return registry -> registry.config().commonTags("domain", "registre", "app", "dolly_backend");
     }
 
     @Bean
