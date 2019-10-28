@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import Button from '~/components/ui/button/Button'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Loading from '~/components/ui/loading/Loading'
 import Overskrift from '~/components/ui/overskrift/Overskrift'
@@ -13,21 +14,18 @@ import './GruppeHeader.less'
 export default function GruppeHeader({ gruppe, isDeletingGruppe, deleteGruppe }) {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 
-	const groupActions = []
-
-	// Vise redigeringsknapp eller stjerne
-	if (gruppe.erMedlemAvTeamSomEierGruppe) {
-		groupActions.push({
-			icon: 'edit',
-			label: 'REDIGER',
-			onClick: visRediger
-		})
-	}
-
 	return (
 		<Fragment>
 			<div className="header-valg">
-				<Overskrift label={gruppe.navn} actions={groupActions}>
+				<Overskrift label={gruppe.navn}>
+					{gruppe.erMedlemAvTeamSomEierGruppe ? (
+						// Vise redigeringsknapp eller favoriseringsstjerne
+						<Button className="flexbox--align-center" kind="edit" onClick={visRediger}>
+							REDIGER
+						</Button>
+					) : (
+						<FavoriteButtonConnector groupId={gruppe.id} />
+					)}
 					{isDeletingGruppe ? (
 						<Loading label="Sletter gruppe" panel />
 					) : (
@@ -38,7 +36,6 @@ export default function GruppeHeader({ gruppe, isDeletingGruppe, deleteGruppe })
 							onClick={deleteGruppe}
 						/>
 					)}
-					{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 				</Overskrift>
 				<div className="hoyre">
 					<EksporterExcel testidenter={gruppe.testidenter} gruppeId={gruppe.id} />
