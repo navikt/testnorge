@@ -96,6 +96,7 @@ public class StaticDataService {
     public Set<TpsModel> saveInTps(Set<TpsModel> data, String eier) {
         Varighet.VarighetBuilder varighetBuilder = getDefaultVarighetBuilder();
         return data.stream()
+                .peek(tpsModel -> log.info(tpsModel.getFnr()))
                 .filter(tpsModel -> !tpsRepository.findById(tpsModel.getFnr()).isPresent())
                 .map(tpsModel -> (TpsModel) saveIfNotPresent(tpsModel, tpsRepository, varighetBuilder, eier))
                 .collect(Collectors.toSet());
