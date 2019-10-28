@@ -1,0 +1,1 @@
+# inntektsmelding-stub
