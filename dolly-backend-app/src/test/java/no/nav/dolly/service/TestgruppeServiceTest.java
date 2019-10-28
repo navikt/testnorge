@@ -12,21 +12,13 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.dolly.common.TestidentBuilder;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
-import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.TestgruppeRepository;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,15 +30,20 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import no.nav.dolly.common.TestidentBuilder;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
+import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestgruppeServiceTest {
 
     private static final long GROUP_ID = 1L;
-    private static final long TEAM_ID = 11L;
     private static final String IDENT_ONE = "1";
     private static final String IDENT_TWO = "2";
     private static final String standardPrincipal = "PRINC";
@@ -59,9 +56,6 @@ public class TestgruppeServiceTest {
 
     @Mock
     private BestillingService bestillingService;
-
-    @Mock
-    private TeamService teamService;
 
     @Mock
     private IdentService identService;
@@ -94,10 +88,8 @@ public class TestgruppeServiceTest {
     @Test
     public void opprettTestgruppe_HappyPath() {
         RsOpprettEndreTestgruppe rsTestgruppe = mock(RsOpprettEndreTestgruppe.class);
-        Team team = mock(Team.class);
         Bruker bruker = mock(Bruker.class);
 
-        when(teamService.fetchTeamOrOpprettBrukerteam(any())).thenReturn(team);
         when(brukerService.fetchBruker(standardPrincipal)).thenReturn(bruker);
 
         testgruppeService.opprettTestgruppe(rsTestgruppe);
@@ -107,7 +99,6 @@ public class TestgruppeServiceTest {
 
         Testgruppe res = cap.getValue();
 
-        assertThat(res.getTeamtilhoerighet(), is(team));
         assertThat(res.getOpprettetAv(), is(bruker));
         assertThat(res.getSistEndretAv(), is(bruker));
     }
@@ -137,19 +128,14 @@ public class TestgruppeServiceTest {
         Testgruppe tg2 = Testgruppe.builder().id(2L).navn("test2").build();
         Testgruppe tg3 = Testgruppe.builder().id(3L).navn("test3").build();
 
-        Team t1 = Team.builder()
-                .grupper(singletonList(tg3))
-                .build();
-
         Bruker bruker = Bruker.builder()
-                .favoritter(newHashSet(asList(tg1, tg2)))
-                .teams(newHashSet(singletonList(t1)))
-                .navIdent(standardPrincipal)
+                .favoritter(newHashSet(asList(tg1, tg2, tg3)))
+                .brukerId(standardPrincipal)
                 .build();
 
         when(brukerService.fetchBruker(any())).thenReturn(bruker);
 
-        List<Testgruppe> grupper = testgruppeService.fetchTestgrupperByNavIdent(standardPrincipal);
+        List<Testgruppe> grupper = testgruppeService.fetchTestgrupperByBrukerId(standardPrincipal);
 
         assertThat(grupper, hasItem(hasProperty("id", equalTo(1L))));
         assertThat(grupper, hasItem(hasProperty("id", equalTo(2L))));
@@ -207,24 +193,15 @@ public class TestgruppeServiceTest {
 
         RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder().hensikt("test").navn("navn").teamId(1L).build();
 
-        Team team = Team.builder().navn("team").id(teamId).build();
-
         when(testgruppeRepository.findById(anyLong())).thenReturn(Optional.of(testGruppe));
-        when(brukerService.fetchBruker(anyString())).thenReturn(new Bruker("navIdent"));
-        doReturn(team).when(teamService).fetchTeamById(anyLong());
+        when(brukerService.fetchBruker(anyString())).thenReturn( Bruker.builder().brukerId("brukerId").build());
         testgruppeService.oppdaterTestgruppe(GROUP_ID, rsOpprettEndreTestgruppe);
         verify(testgruppeRepository).save(testGruppe);
     }
 
     @Test
-    public void getTestgruppeByNavidentOgTeamId() {
-        testgruppeService.getTestgruppeByNavidentOgTeamId(IDENT_ONE, TEAM_ID);
-        verify(testgruppeRepository).findAllByTeamtilhoerighetOrderByNavn(any(Team.class));
-    }
-
-    @Test
     public void getTestgrupper() {
-        testgruppeService.getTestgruppeByNavidentOgTeamId(null, null);
+        testgruppeService.getTestgruppeByBrukerId(null);
         verify(testgruppeRepository).findAllByOrderByNavn();
     }
 }

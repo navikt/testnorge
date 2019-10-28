@@ -4,16 +4,15 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
+import java.util.LinkedHashMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
-import java.util.LinkedHashMap;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
 
 @DisplayName("PUT /api/v1/gruppe")
 class TestgruppeControllerPutTest extends TestgruppeTestBase {
@@ -38,12 +37,10 @@ class TestgruppeControllerPutTest extends TestgruppeTestBase {
     @DisplayName("Oppdaterer informasjon om Testgruppe")
     void updateTestgruppe() {
         Testgruppe testgruppe = dataFactory.createTestgruppe("Testgruppe");
-        Team team = dataFactory.createTeam("Teamnavn");
 
         RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder()
                 .navn("mingruppe")
                 .hensikt("hensikt")
-                .teamId(team.getId())
                 .build();
 
         RsTestgruppeUtvidet resp = sendRequest(rsOpprettEndreTestgruppe)
@@ -53,7 +50,6 @@ class TestgruppeControllerPutTest extends TestgruppeTestBase {
         assertThat(resp.getId(), is(notNullValue()));
         assertThat(resp.getNavn(), is("mingruppe"));
         assertThat(resp.getHensikt(), is("hensikt"));
-        assertThat(resp.getTeam().getNavn(), is("Teamnavn"));
     }
 
 }

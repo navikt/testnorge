@@ -1,27 +1,25 @@
 package no.nav.dolly.service;
 
-import static java.util.Objects.isNull;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-
-import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
-import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.TestgruppeRepository;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
+import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.TestgruppeRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +27,6 @@ public class TestgruppeService {
 
     private final TestgruppeRepository testgruppeRepository;
     private final BrukerService brukerService;
-    private final TeamService teamService;
     private final IdentService identService;
     private final BestillingService bestillingService;
     private final PersonService personService;
@@ -40,7 +37,6 @@ public class TestgruppeService {
         return saveGruppeTilDB(Testgruppe.builder()
                 .navn(rsTestgruppe.getNavn())
                 .hensikt(rsTestgruppe.getHensikt())
-                .teamtilhoerighet(teamService.fetchTeamOrOpprettBrukerteam(rsTestgruppe.getTeamId()))
                 .datoEndret(LocalDate.now())
                 .opprettetAv(bruker)
                 .sistEndretAv(bruker)
@@ -60,10 +56,10 @@ public class TestgruppeService {
         throw new NotFoundException("Finner ikke grupper basert på IDer : " + grupperIDer);
     }
 
-    public List<Testgruppe> fetchTestgrupperByNavIdent(String navIdent) {
-        Bruker bruker = brukerService.fetchBruker(navIdent);
+    public List<Testgruppe> fetchTestgrupperByBrukerId(String brukerId) {
+        Bruker bruker = brukerService.fetchBruker(brukerId);
         Set<Testgruppe> testgrupper = bruker.getFavoritter();
-        bruker.getTeams().forEach(team -> testgrupper.addAll(team.getGrupper()));
+        testgrupper.addAll(bruker.getTestgrupper());
 
         List<Testgruppe> unikeTestgrupper = new ArrayList<>(testgrupper);
         unikeTestgrupper.sort((Testgruppe tg1, Testgruppe tg2) -> tg1.getNavn().compareToIgnoreCase(tg2.getNavn()));
@@ -100,31 +96,19 @@ public class TestgruppeService {
         return testgruppeRepository.deleteTestgruppeById(gruppeId);
     }
 
-    public void slettGruppeByTeamId(Long teamId) {
-        Team team = teamService.fetchTeamById(teamId);
-        team.getGrupper().forEach(gruppe -> slettGruppeById(gruppe.getId()));
-    }
-
     public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {
         Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
 
         testgruppe.setHensikt(endreGruppe.getHensikt());
         testgruppe.setNavn(endreGruppe.getNavn());
         testgruppe.setSistEndretAv(brukerService.fetchBruker(getLoggedInNavIdent()));
-        testgruppe.setTeamtilhoerighet(teamService.fetchTeamById(endreGruppe.getTeamId()));
         testgruppe.setDatoEndret(LocalDate.now());
 
         return saveGruppeTilDB(testgruppe);
     }
 
-    public List<Testgruppe> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId) {
-        List<Testgruppe> grupper;
-        if (isNull(teamId)) {
-            grupper = isBlank(navIdent) ? testgruppeRepository.findAllByOrderByNavn() : fetchTestgrupperByNavIdent(navIdent);
-        } else {
-            grupper = testgruppeRepository.findAllByTeamtilhoerighetOrderByNavn(Team.builder().id(teamId).build());
-        }
+    public List<Testgruppe> getTestgruppeByBrukerId(String brukerId) {
 
-        return grupper;
+        return  isBlank(brukerId) ? testgruppeRepository.findAllByOrderByNavn() : fetchTestgrupperByBrukerId(brukerId);
     }
 }

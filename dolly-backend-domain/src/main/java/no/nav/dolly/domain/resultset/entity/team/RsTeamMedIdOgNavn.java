@@ -14,5 +14,4 @@ import lombok.Setter;
 public class RsTeamMedIdOgNavn {
     private Long id;
     private String navn;
-
 }

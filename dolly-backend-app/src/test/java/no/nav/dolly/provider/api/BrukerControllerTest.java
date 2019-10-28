@@ -6,19 +6,19 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerTeamAndGruppeIDs;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
-import no.nav.dolly.service.BrukerService;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
+import no.nav.dolly.service.BrukerService;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BrukerControllerTest {
@@ -34,14 +34,13 @@ public class BrukerControllerTest {
 
     @Test
     public void getBrukerByNavIdent() {
-        RsBrukerTeamAndGruppeIDs bruker = new RsBrukerTeamAndGruppeIDs();
-        bruker.setNavIdent("navident");
+        RsBruker bruker = RsBruker.builder().navIdent("navident").build();
         Bruker b = new Bruker();
 
         when(brukerService.fetchBruker("navident")).thenReturn(b);
-        when(mapperFacade.map(b, RsBrukerTeamAndGruppeIDs.class)).thenReturn(bruker);
+        when(mapperFacade.map(b, RsBruker.class)).thenReturn(bruker);
 
-        RsBrukerTeamAndGruppeIDs res = controller.getBrukerByNavIdent("navident");
+        RsBruker res = controller.getBrukerByNavIdent("navident");
 
         assertThat(res.getNavIdent(), is("navident"));
     }

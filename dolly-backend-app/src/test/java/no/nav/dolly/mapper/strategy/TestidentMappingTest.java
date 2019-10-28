@@ -3,17 +3,17 @@ package no.nav.dolly.mapper.strategy;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.time.LocalDate;
+import org.junit.Before;
+import org.junit.Test;
+
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.common.TestidentBuilder;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.dolly.common.TestidentBuilder;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.time.LocalDate;
 
 public class TestidentMappingTest {
 
@@ -21,12 +21,12 @@ public class TestidentMappingTest {
 
     @Before
     public void setUpHappyPath() {
-        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeMappingStrategy(), new TeamMappingStrategy());
+        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeMappingStrategy());
     }
 
     @Test
     public void mapToRsTestidentIncludingTestgruppe() {
-        Bruker bruker = Bruker.builder().navIdent("ident").build();
+        Bruker bruker = Bruker.builder().brukerId("ident").build();
 
         Testgruppe testgruppe = Testgruppe.builder()
                 .sistEndretAv(bruker)
