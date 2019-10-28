@@ -44,7 +44,9 @@ export function mapPdlData(pdlfData) {
 				{
 					id: 'foedselsdato',
 					label: 'Fødselsdato',
-					value: pdlfData.kontaktinformasjonForDoedsbo[0].adressat[adressatType].foedselsdato
+					value: Formatters.formatStringDates(
+						pdlfData.kontaktinformasjonForDoedsbo[0].adressat[adressatType].foedselsdato
+					)
 				},
 				{
 					id: 'idNummer',
@@ -167,7 +169,7 @@ export function mapPdlData(pdlfData) {
 		pdlfDataArray.push(data)
 	}
 
-	if (pdlfData.personidenter.utenlandskeIdentifikasjonsnummere) {
+	if (pdlfData.personidenter && pdlfData.personidenter.utenlandskeIdentifikasjonsnummere) {
 		pdlfDataArray.push({
 			header: 'Utenlands-ID',
 			multiple: true,
