@@ -7,9 +7,11 @@ import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -26,6 +28,8 @@ import no.nav.registre.skd.consumer.response.Navn;
 public class IdentPoolConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
+    };
+    private static final ParameterizedTypeReference<List<Navn>> RESPONSE_TYPE_NAVN = new ParameterizedTypeReference<List<Navn>>() {
     };
     private String baseUrl;
     private RestTemplate restTemplate;
@@ -58,6 +62,14 @@ public class IdentPoolConsumer {
         } catch (URISyntaxException e) {
             log.error(e.getMessage(), e);
         }
-        return restTemplate.exchange(Objects.requireNonNull(request), Navn.class).getBody();
+        List<Navn> navn = restTemplate.exchange(Objects.requireNonNull(request), RESPONSE_TYPE_NAVN).getBody();
+        if (navn == null) {
+            log.error("Kunne ikke hente navn");
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Kunne ikke hente navn");
+        }
+        if (navn.size() != 1) {
+            log.error("Fikk feil antall navn - størrelse: {}", navn.size());
+        }
+        return navn.get(0);
     }
 }
