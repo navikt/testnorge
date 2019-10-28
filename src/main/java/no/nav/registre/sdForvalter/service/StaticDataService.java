@@ -97,7 +97,7 @@ public class StaticDataService {
         Varighet.VarighetBuilder varighetBuilder = getDefaultVarighetBuilder();
         return data.stream()
                 .peek(tpsModel -> log.info(tpsModel.getFnr()))
-                .filter(tpsModel -> !tpsRepository.findById(tpsModel.getFnr()).isPresent())
+                .filter(tpsModel -> !tpsRepository.existsById(tpsModel.getFnr()))
                 .map(tpsModel -> (TpsModel) saveIfNotPresent(tpsModel, tpsRepository, varighetBuilder, eier))
                 .collect(Collectors.toSet());
     }
