@@ -5,6 +5,7 @@ import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.exceptions.KodeverkException;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
@@ -28,6 +29,8 @@ public class KodeverkConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
+
+    @Timed(name = "providers", tags={"operation", "hentKodeverk"})
     public GetKodeverkKoderBetydningerResponse fetchKodeverkByName(String navn) {
         String url = providersProps.getKodeverk().getUrl() + getKodeverksnavnUrl(navn) + KODEVERK_URL_QUERY_PARAMS_EKSKLUDER_UGYLDIGE_SPRAAK_NB;
         HttpEntity entity = buildKodeverkEntityForGET();

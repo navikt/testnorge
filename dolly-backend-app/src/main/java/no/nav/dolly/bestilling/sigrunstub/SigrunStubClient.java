@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.sigrunstub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
@@ -23,6 +24,7 @@ public class SigrunStubClient implements ClientRegister {
     private final SigrunStubResponseHandler sigrunStubResponseHandler;
     private final ErrorStatusDecoder errorStatusDecoder;
 
+    @Timed(name = "providers", tags={"operation", "gjenopprettSigrunStub"})
     @Override
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
