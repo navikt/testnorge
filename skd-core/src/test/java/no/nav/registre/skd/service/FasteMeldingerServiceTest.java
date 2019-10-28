@@ -17,8 +17,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import no.nav.registre.skd.consumer.IdentPoolConsumer;
 import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
+import no.nav.registre.skd.consumer.response.Navn;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -32,6 +34,9 @@ public class FasteMeldingerServiceTest {
 
     @Mock
     private ValidationService validationService;
+
+    @Mock
+private IdentPoolConsumer identPoolConsumer;
 
     @InjectMocks
     private FasteMeldingerService fasteMeldingerService;
@@ -60,6 +65,8 @@ public class FasteMeldingerServiceTest {
 
     @Test
     public void shouldOppretteMeldingerOgLeggeIGruppe() {
+        when(identPoolConsumer.hentNavn()).thenReturn(new Navn("A", "B"));
+
         fasteMeldingerService.opprettMeldingerOgLeggIGruppe(avspillergruppeId, fasteMeldinger);
 
         verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), 1);
