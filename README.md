@@ -26,11 +26,11 @@ De filene som må endres når man legger til synt-pakkene er:
  - [SyntetiseringService](src/main/java/no/nav/registre/syntrest/services/SyntetiseringService.java)
    - Generer kallet for consumerManager
    - Noen generiske metoder er laget for request-typer som blir brukt ofte
- - [SyntConsumerManager](/src/main/java/no/nav/registre/syntrest/SyntConsumerManager.java)
+ - [SyntConsumerManager](src/main/java/no/nav/registre/syntrest/consumer/SyntConsumerManager.java)
    - Legger til en ny konsument av den nye synt-pakke typen
  - [application.properties](src/main/resources/application.properties)
    - Lenke til nais-applikasjonen som blir startet (ingressen i nais-yaml'en)
- - [NAIS-fil](/src/main/resources/nais)
+ - [NAIS-fil](src/main/resources/nais)
    - NAIS yaml for den nye pakken. Navngivningskonvensjon {appName}.yaml
  - [SyntAppNames](src/main/java/no/nav/registre/syntrest/utils/SyntAppNames.java)
  - Evt. legge til klasser for spesifiserte [Respons-meldinger](src/main/java/no/nav/registre/syntrest/response).
