@@ -12,9 +12,9 @@ import no.nav.registre.aareg.domain.RsArbeidsforhold;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class RsAaregOpprettRequest {
 
     private RsArbeidsforhold arbeidsforhold;

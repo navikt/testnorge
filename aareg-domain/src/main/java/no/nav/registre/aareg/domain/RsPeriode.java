@@ -13,9 +13,9 @@ import no.nav.registre.aareg.util.JsonDateSerializer;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class RsPeriode {
 
     @JsonSerialize(using = JsonDateSerializer.class)

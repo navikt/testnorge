@@ -8,9 +8,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class RsPersonAareg {
 
     private String aktoertype;
