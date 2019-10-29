@@ -1,6 +1,7 @@
 package no.nav.registre.aareg.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+import no.nav.registre.aareg.util.JsonDateDeserializer;
 import no.nav.registre.aareg.util.JsonDateSerializer;
 
 @Getter
@@ -26,9 +28,11 @@ public class RsArbeidsavtale {
     private Double avtaltArbeidstimerPerUke;
 
     @JsonSerialize(using = JsonDateSerializer.class)
+    @JsonDeserialize(using = JsonDateDeserializer.class)
     private LocalDateTime endringsdatoStillingsprosent;
 
     @JsonSerialize(using = JsonDateSerializer.class)
+    @JsonDeserialize(using = JsonDateDeserializer.class)
     private LocalDateTime sisteLoennsendringsdato;
 
     private Double stillingsprosent;

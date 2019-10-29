@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
@@ -20,7 +21,7 @@ public class SyntetiseringController {
 
     @LogExceptions
     @PostMapping("/generer")
-    public ResponseEntity genererArbeidsforholdsmeldinger(@RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
-        return syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest);
+    public ResponseEntity genererArbeidsforholdsmeldinger(@RequestParam(defaultValue = "true") Boolean sendAlleEksisterende, @RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
+        return syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, sendAlleEksisterende);
     }
 }

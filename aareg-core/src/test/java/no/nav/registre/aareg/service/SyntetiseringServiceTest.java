@@ -72,6 +72,7 @@ public class SyntetiseringServiceTest {
     private SyntetiserAaregRequest syntetiserAaregRequest;
     private List<String> fnrs;
     private List<RsAaregOpprettRequest> syntetiserteMeldinger;
+    private boolean sendAlleEksisterende = true;
 
     @Before
     public void setUp() throws IOException {
@@ -104,7 +105,7 @@ public class SyntetiseringServiceTest {
         when(aaregService.opprettArbeidsforhold(any())).thenReturn(rsAaregResponse);
         when(aaregstubConsumer.sendTilAaregstub(anyList())).thenReturn(Collections.singletonList(fnr1));
 
-        ResponseEntity response = syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest);
+        ResponseEntity response = syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, sendAlleEksisterende);
 
         verify(aaregstubConsumer).sendTilAaregstub(Collections.singletonList(syntetiserteMeldinger.get(0)));
         verify(aaregstubConsumer).sendTilAaregstub(Collections.singletonList(syntetiserteMeldinger.get(1)));

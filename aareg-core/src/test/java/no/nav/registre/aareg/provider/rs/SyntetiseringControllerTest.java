@@ -30,6 +30,7 @@ public class SyntetiseringControllerTest {
     private final Long avspillergruppeId = 123L;
     private final String miljoe = "t1";
     private final int antallMeldinger = 2;
+    private boolean sendAlleEksisterende = false;
 
     @Before
     public void setUp() {
@@ -38,11 +39,11 @@ public class SyntetiseringControllerTest {
 
     @Test
     public void shouldStartSyntetisering() {
-        when(syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest)).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
+        when(syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, sendAlleEksisterende)).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
-        ResponseEntity result = syntetiseringController.genererArbeidsforholdsmeldinger(syntetiserAaregRequest);
+        ResponseEntity result = syntetiseringController.genererArbeidsforholdsmeldinger(sendAlleEksisterende, syntetiserAaregRequest);
 
-        verify(syntetiseringService).opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest);
+        verify(syntetiseringService).opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, sendAlleEksisterende);
 
         assertThat(result.getStatusCode(), is(HttpStatus.OK));
     }

@@ -41,10 +41,13 @@ public class SyntetiseringService {
     private final AaregService aaregService;
     private final Random rand;
 
-    public ResponseEntity opprettArbeidshistorikkOgSendTilAaregstub(SyntetiserAaregRequest syntetiserAaregRequest) {
+    public ResponseEntity opprettArbeidshistorikkOgSendTilAaregstub(SyntetiserAaregRequest syntetiserAaregRequest, Boolean sendAlleEksisterende) {
         Set<String> levendeIdenter = new HashSet<>(hentLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId(), MINIMUM_ALDER));
         Set<String> nyeIdenter = new HashSet<>(syntetiserAaregRequest.getAntallNyeIdenter());
-        Set<String> identerIAaregstub = new HashSet<>(aaregstubConsumer.hentEksisterendeIdenter());
+        Set<String> identerIAaregstub = new HashSet<>();
+        if (sendAlleEksisterende) {
+            identerIAaregstub.addAll(aaregstubConsumer.hentEksisterendeIdenter());
+        }
         levendeIdenter.removeAll(identerIAaregstub);
         List<String> utvalgteIdenter = new ArrayList<>(levendeIdenter);
 
