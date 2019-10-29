@@ -12,7 +12,6 @@ import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 public abstract class AaregAbstractClient {
 
     protected static final String ARBEIDSGIVER = "arbeidsgiver";
-    protected static final String ARBEIDSTAKER = "arbeidstaker";
 
     protected static RsAaregOppdaterRequest buildRequest(RsArbeidsforhold arbfInput, String env) {
         RsAaregOppdaterRequest request = new RsAaregOppdaterRequest();
@@ -40,21 +39,5 @@ public abstract class AaregAbstractClient {
 
     protected static String getArbforholdId(Map arbeidsforhold) {
         return (String) arbeidsforhold.get("arbeidsforholdId");
-    }
-
-    protected static String getArbeidsforholdType(Map arbeidsforhold) {
-        return (String) arbeidsforhold.get("type");
-    }
-
-    protected static String getPeriodeFom(Map arbeidsforhold) {
-        return (String) ((Map) ((Map) arbeidsforhold.get("ansettelsesperiode")).get("periode")).get("fom");
-    }
-
-    protected static String getOffentligIdent(Map arbeidforhold) {
-        return (String) ((Map) arbeidforhold.get(ARBEIDSTAKER)).get("offentligIdent");
-    }
-
-    protected static String getYrkeskode(Map arbeidforhold) {
-        return (String) ((Map) ((List) arbeidforhold.get("arbeidsavtaler")).get(0)).get("yrke");
     }
 }

@@ -57,7 +57,7 @@ public class TestnorgeAaregConsumer {
         return restTemplate.exchange(getRequest, Map[].class);
     }
 
-    public Map<String, String> slettArbeidsforhold(String ident) {
+    public Map<String, String> slettArbeidsforholdFraAlleMiljoer(String ident) {
         RequestEntity deleteRequest = RequestEntity.delete(slettArbeidsforholdUrl.expand(ident)).build();
         return restTemplate.exchange(deleteRequest, new ParameterizedTypeReference<Map<String, String>>() {
         }).getBody();

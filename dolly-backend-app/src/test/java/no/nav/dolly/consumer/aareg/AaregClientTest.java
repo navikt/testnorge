@@ -13,6 +13,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
+import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
@@ -37,9 +38,6 @@ public class AaregClientTest {
     private static final Integer NAV_ARBFORHOLD_ID = 333333333;
 
     @Mock
-    private AaregWsConsumer aaregWsConsumer;
-
-    @Mock
     private TestnorgeAaregConsumer testnorgeAaregConsumer;
 
     @InjectMocks
@@ -47,8 +45,14 @@ public class AaregClientTest {
 
     @Test
     public void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_OK() {
+        Map<String, String> status = new HashMap<>();
+        status.put(ENV, "OK");
+        RsAaregResponse rsAaregResponse = RsAaregResponse.builder()
+                .statusPerMiljoe(status)
+                .build();
 
         when(testnorgeAaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(new Map[]{}));
+        when(testnorgeAaregConsumer.opprettArbeidsforhold(any(RsAaregOpprettRequest.class))).thenReturn(rsAaregResponse);
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsArbeidsforhold.builder().build()));
@@ -56,13 +60,19 @@ public class AaregClientTest {
         aaregClient.gjenopprett(request,
                 TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
 
-        verify(aaregWsConsumer).opprettArbeidsforhold(any(RsAaregOpprettRequest.class));
+        verify(testnorgeAaregConsumer).opprettArbeidsforhold(any(RsAaregOpprettRequest.class));
     }
 
     @Test
     public void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_lesKasterException() {
+        Map<String, String> status = new HashMap<>();
+        status.put(ENV, "OK");
+        RsAaregResponse rsAaregResponse = RsAaregResponse.builder()
+                .statusPerMiljoe(status)
+                .build();
 
         when(testnorgeAaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenThrow(new RuntimeException());
+        when(testnorgeAaregConsumer.opprettArbeidsforhold(any(RsAaregOpprettRequest.class))).thenReturn(rsAaregResponse);
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsArbeidsforhold.builder().build()));
@@ -70,13 +80,19 @@ public class AaregClientTest {
         aaregClient.gjenopprett(request,
                 TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
 
-        verify(aaregWsConsumer).opprettArbeidsforhold(any(RsAaregOpprettRequest.class));
+        verify(testnorgeAaregConsumer).opprettArbeidsforhold(any(RsAaregOpprettRequest.class));
     }
 
     @Test
     public void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnes_arbeidsgiverHarOrgnummer() {
+        Map<String, String> status = new HashMap<>();
+        status.put(ENV, "OK");
+        RsAaregResponse rsAaregResponse = RsAaregResponse.builder()
+                .statusPerMiljoe(status)
+                .build();
 
         when(testnorgeAaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(buildArbeidsforhold(true)));
+        when(testnorgeAaregConsumer.oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class))).thenReturn(rsAaregResponse);
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsArbeidsforhold.builder()
@@ -86,13 +102,19 @@ public class AaregClientTest {
         request.setEnvironments(singletonList("u2"));
         aaregClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
 
-        verify(aaregWsConsumer).oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class));
+        verify(testnorgeAaregConsumer).oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class));
     }
 
     @Test
     public void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnes_arbeidsgiverHarPersonnr() {
+        Map<String, String> status = new HashMap<>();
+        status.put(ENV, "OK");
+        RsAaregResponse rsAaregResponse = RsAaregResponse.builder()
+                .statusPerMiljoe(status)
+                .build();
 
         when(testnorgeAaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(buildArbeidsforhold(false)));
+        when(testnorgeAaregConsumer.oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class))).thenReturn(rsAaregResponse);
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsArbeidsforhold.builder()
@@ -103,7 +125,7 @@ public class AaregClientTest {
         aaregClient.gjenopprett(request,
                 TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
 
-        verify(aaregWsConsumer).oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class));
+        verify(testnorgeAaregConsumer).oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class));
     }
 
     @Test
@@ -112,7 +134,10 @@ public class AaregClientTest {
         when(testnorgeAaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(buildArbeidsforhold(false)));
         Map<String, String> status = new HashMap<>();
         status.put(ENV, "OK");
-        when(aaregWsConsumer.oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class))).thenReturn(status);
+        RsAaregResponse rsAaregResponse = RsAaregResponse.builder()
+                .statusPerMiljoe(status)
+                .build();
+        when(testnorgeAaregConsumer.oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class))).thenReturn(rsAaregResponse);
 
         BestillingProgress progress = new BestillingProgress();
 
@@ -124,7 +149,7 @@ public class AaregClientTest {
         request.setEnvironments(singletonList("u2"));
         aaregClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
-        verify(aaregWsConsumer).oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class));
+        verify(testnorgeAaregConsumer).oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class));
         assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=1$OK")));
     }
 

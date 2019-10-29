@@ -8,7 +8,6 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.dolly.consumer.aareg.AaregWsConsumer;
 import no.nav.dolly.consumer.aareg.TestnorgeAaregConsumer;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
@@ -28,13 +27,18 @@ import java.util.Map;
 public class AaregControllerTest {
 
     private static Map<String, String> status = new HashMap<>();
+    private static RsAaregResponse opprettArbeidsforholdResponse;
+    private static RsAaregResponse oppdaterArbeidsforholdResponse;
 
     static {
         status.put("t0", "OK");
+        opprettArbeidsforholdResponse = RsAaregResponse.builder()
+                .statusPerMiljoe(status)
+                .build();
+        oppdaterArbeidsforholdResponse = RsAaregResponse.builder()
+                .statusPerMiljoe(status)
+                .build();
     }
-
-    @Mock
-    private AaregWsConsumer aaregWsConsumer;
 
     @Mock
     private TestnorgeAaregConsumer testnorgeAaregConsumer;
@@ -45,23 +49,23 @@ public class AaregControllerTest {
     @Test
     public void opprettArbeidsforhold_OK() {
 
-        when(aaregWsConsumer.opprettArbeidsforhold(any(RsAaregOpprettRequest.class))).thenReturn(status);
+        when(testnorgeAaregConsumer.opprettArbeidsforhold(any(RsAaregOpprettRequest.class))).thenReturn(opprettArbeidsforholdResponse);
 
         RsAaregResponse response = aaregController.opprettArbeidsforhold(new RsAaregOpprettRequest());
 
         assertThat(response.getStatusPerMiljoe().get("t0"), is(equalTo("OK")));
-        verify(aaregWsConsumer).opprettArbeidsforhold(any(RsAaregOpprettRequest.class));
+        verify(testnorgeAaregConsumer).opprettArbeidsforhold(any(RsAaregOpprettRequest.class));
     }
 
     @Test
     public void oppdaterArbeidsforhold_OK() {
 
-        when(aaregWsConsumer.oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class))).thenReturn(status);
+        when(testnorgeAaregConsumer.oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class))).thenReturn(oppdaterArbeidsforholdResponse);
 
         RsAaregResponse response = aaregController.oppdaterArbeidsforhold(new RsAaregOppdaterRequest());
 
         assertThat(response.getStatusPerMiljoe().get("t0"), is(equalTo("OK")));
-        verify(aaregWsConsumer).oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class));
+        verify(testnorgeAaregConsumer).oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class));
     }
 
     @Test

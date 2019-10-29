@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.consumer.aareg.AaregWsConsumer;
 import no.nav.dolly.consumer.aareg.TestnorgeAaregConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -27,8 +26,6 @@ import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 @RequiredArgsConstructor
 public class AaregClient extends AaregAbstractClient implements ClientRegister {
 
-    private final AaregWsConsumer aaregWsConsumer;
-    private final AaregReleaseIdentClient aaregReleaseIdentClient;
     private final TestnorgeAaregConsumer testnorgeAaregConsumer;
 
     @Override
@@ -61,7 +58,10 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
                                 arbfInput.getArbeidsforholdID().equals(getArbforholdId(arbfFraAareg))) {
 
                             arbfInput.setArbeidsforholdIDnav(getNavArbfholdId(arbfFraAareg));
-                            appendResult(aaregWsConsumer.oppdaterArbeidsforhold(buildRequest(arbfInput, env)), arbfInput.getArbeidsforholdID(), result);
+                            appendResult(
+                                    testnorgeAaregConsumer.oppdaterArbeidsforhold(buildRequest(arbfInput, env)).getStatusPerMiljoe(),
+                                    arbfInput.getArbeidsforholdID(),
+                                    result);
 
                             found = true;
                             break;
@@ -69,10 +69,10 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
                     }
 
                     if (!found) {
-                        appendResult(aaregWsConsumer.opprettArbeidsforhold(RsAaregOpprettRequest.builder()
+                        appendResult(testnorgeAaregConsumer.opprettArbeidsforhold(RsAaregOpprettRequest.builder()
                                 .arbeidsforhold(arbfInput)
                                 .environments(singletonList(env))
-                                .build()), arbfInput.getArbeidsforholdID(), result);
+                                .build()).getStatusPerMiljoe(), arbfInput.getArbeidsforholdID(), result);
                     }
                 }
             });
@@ -83,7 +83,7 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
 
     @Override
     public void release(List<String> identer) {
-        identer.forEach(ident -> aaregReleaseIdentClient.deleteArbeidsforhold(ident));
+        identer.forEach(testnorgeAaregConsumer::slettArbeidsforholdFraAlleMiljoer);
     }
 
     private static String getIdentifyingNumber(Map arbfFraAareg) {
