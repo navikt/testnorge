@@ -7,6 +7,7 @@ import no.nav.registre.syntrest.consumer.SyntConsumerManager;
 import no.nav.registre.syntrest.controllers.request.InntektsmeldingInntekt;
 import no.nav.registre.syntrest.response.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.response.Barnebidragsmelding;
+import no.nav.registre.syntrest.response.FrikortKvittering;
 import no.nav.registre.syntrest.response.InntektsmeldingPopp;
 import no.nav.registre.syntrest.response.Medlemskapsmelding;
 import no.nav.registre.syntrest.response.AAP115Melding;
@@ -66,6 +67,9 @@ public class SyntetiseringService {
 
     @Value("${synth-tps-url}")
     private String tpsUrl;
+
+    @Value("synth-frikort-url")
+    private String frikortUrl;
 
     private final SyntConsumerManager consumerManager;
 
@@ -134,6 +138,13 @@ public class SyntetiseringService {
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-tps" })
     public List<SkdMelding> generateTPSData(int numToGenerate, String endringskode) {
         return (List<SkdMelding>) generateForCodeAndNumber(endringskode, numToGenerate, tpsUrl, consumerManager.get(SyntAppNames.TPS));
+    }
+
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-frikort" })
+    public Map<String, List<FrikortKvittering>> generateFrikortData(Map<String, Integer> fnrAntMeldingMap){
+        UriTemplate uri = new UriTemplate(frikortUrl);
+        RequestEntity request = RequestEntity.post(uri.expand()).body(fnrAntMeldingMap);
+        return (Map<String, List<FrikortKvittering>>) consumerManager.get(SyntAppNames.FRIKORT).synthesizeData(request);
     }
 
     ///////////// COMMON FUNCTIONS /////////////

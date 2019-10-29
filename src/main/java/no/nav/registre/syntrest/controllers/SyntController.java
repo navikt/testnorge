@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.controllers.request.InntektsmeldingInntekt;
 import no.nav.registre.syntrest.response.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.response.Barnebidragsmelding;
+import no.nav.registre.syntrest.response.FrikortKvittering;
 import no.nav.registre.syntrest.response.InntektsmeldingPopp;
 import no.nav.registre.syntrest.response.Medlemskapsmelding;
 import no.nav.registre.syntrest.response.AAP115Melding;
@@ -231,6 +232,20 @@ public class SyntController {
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE, endringskode);
         InputValidator.validateInput(numToGenerate);
         List<SkdMelding> response = syntetiseringService.generateTPSData(numToGenerate, endringskode);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/frikort")
+    @ApiOperation(value = "Generer kvitteringer for frikort", notes = "Lager et spesifisert antall kvitteringer for " +
+            "hvert personnummersom sendes inn.")
+    public ResponseEntity<Map<String, List<FrikortKvittering>>> generateFrikortMeling(
+            @ApiParam(value = "Map der key=fødselsnummer og value er antall kvitteringer man ønsker å lage for denne identen.", required = true)
+            @RequestBody Map<String, Integer> fnrAntMeldingMap
+    ) {
+        InputValidator.validateInput(new ArrayList<>(fnrAntMeldingMap.keySet()));
+        Map<String, List<FrikortKvittering>> response = syntetiseringService.generateFrikortData(fnrAntMeldingMap);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);

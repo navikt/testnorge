@@ -18,7 +18,8 @@ public enum SyntAppNames {
     NAV("synthdata-nav"),
     PEN("synthdata-pen"),
     BA("synthdata-ba"),
-    SAM("synthdata-sam");
+    SAM("synthdata-sam"),
+    FRIKORT("synthdata-frikort");
 
     private String name;
     SyntAppNames(String name) {

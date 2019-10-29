@@ -45,8 +45,12 @@ public class KubernetesController {
                                 @Value("${alive-retry-delay}") int retryDelay) {
 
         this.restTemplate = restTemplate;
-        this.manifestPath = "/nais/{}.yaml";
+        this.manifestPath = "/nais/{appName}.yaml";
         this.isAliveUri = new UriTemplate(isAliveUrl);
+        this.dockerImagePath = dockerImagePath;
+        this.isAliveUrl = isAliveUrl;
+        this.maxRetries = maxRetries;
+        this.retryDelay = retryDelay;
 
         this.api = new CustomObjectsApi();
         api.setApiClient(apiClient);
@@ -144,12 +148,12 @@ public class KubernetesController {
     private Map<String, Object> prepareYaml(String appName) {
         Yaml yaml = new Yaml();
         Map<String, Object> manifestFile = yaml.load(
-                getClass().getResourceAsStream(String.format(manifestPath, appName)));
+                getClass().getResourceAsStream(manifestPath.replace("{appName}", appName)));
 
-        Map<String, Object> spec = (Map) manifestFile.get("spec");
+        /*Map<String, Object> spec = (Map) manifestFile.get("spec");
         String imageBase = spec.get("image").toString();
         String latestImage = imageBase.replace("latest", getLatestImageVersion(appName));
-        spec.put("image", latestImage);
+        spec.put("image", latestImage);*/
 
         return manifestFile;
     }

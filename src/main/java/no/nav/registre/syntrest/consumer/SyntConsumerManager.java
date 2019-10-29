@@ -26,6 +26,7 @@ public class SyntConsumerManager {
     private final SyntConsumer tpsConsumer;
     private final SyntConsumer navConsumer;
     private final SyntConsumer samConsumer;
+    private final SyntConsumer frikortConsumer;
 
     public SyntConsumerManager(ApplicationManager applicationManager, RestTemplate restTemplate, ScheduledExecutorService scheduledExecutorService) {
 
@@ -41,6 +42,7 @@ public class SyntConsumerManager {
         tpsConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.TPS);
         navConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.NAV);
         samConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.SAM);
+        frikortConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.FRIKORT);
     }
 
     public SyntConsumer get(SyntAppNames type) {
@@ -70,6 +72,8 @@ public class SyntConsumerManager {
                 return navConsumer;
             case SAM:
                 return samConsumer;
+            case FRIKORT:
+                return frikortConsumer;
             default:
                 log.error("No bean of type {} is defined. Returning null.", type);
                 return null;
