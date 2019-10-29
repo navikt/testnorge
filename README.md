@@ -16,7 +16,7 @@ Løsningen på dette problemet er en egen SyntRest-applikasjon som dynamisk depl
 til endepunkter i synt-applikasjonene.
 
 ## Struktur
-![Arkitektur](/doc/images/architecture.png "Bilde av arkitektur")
+![Arkitektur](doc/images/architecture.png "Bilde av arkitektur")
 
 ## Hvordan legge til Synt-Pakker
 De filene som må endres når man legger til synt-pakkene er:
@@ -30,7 +30,7 @@ De filene som må endres når man legger til synt-pakkene er:
    - Legger til en ny konsument av den nye synt-pakke typen
  - [application.properties](src/main/resources/application.properties)
    - Lenke til nais-applikasjonen som blir startet (ingressen i nais-yaml'en)
- - [NAIS-fil](/src/main/resources/nais/)
+ - [NAIS-fil](/src/main/resources/nais)
    - NAIS yaml for den nye pakken. Navngivningskonvensjon {appName}.yaml
  - [SyntAppNames](src/main/java/no/nav/registre/syntrest/utils/SyntAppNames.java)
- - Evt. legge til klasser for spesifiserte Respons-meldinger.
+ - Evt. legge til klasser for spesifiserte [Respons-meldinger](src/main/java/no/nav/registre/syntrest/response).
