@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.consumer.aareg.AaregRestConsumer;
 import no.nav.dolly.consumer.aareg.AaregWsConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -32,6 +33,7 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
     private final AaregReleaseIdentClient aaregReleaseIdentClient;
 
     @Override
+    @Timed(name = "providers", tags={"operation", "gjenopprettAareg"})
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         StringBuilder result = new StringBuilder();
