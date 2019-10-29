@@ -1,4 +1,4 @@
-@import '~react-select/less/select';
+// @import '~react-select/less/select';
 @import (reference) '~lessVars';
 
 // override to make sure Select-dropdown is placed in front.
@@ -7,8 +7,6 @@
 }
 
 .dollyselect {
-	min-width: @default-input-size;
-
 	&.small {
 		width: @default-input-size-small;
 	}
@@ -43,7 +41,7 @@
 	}
 
 	&.error .Select-control {
-		border-color: @color-error-border !important;
+		border-color: @color-error !important;
 		background-color: @color-error-background;
 	}
 

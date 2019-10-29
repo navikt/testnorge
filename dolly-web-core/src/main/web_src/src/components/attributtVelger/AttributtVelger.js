@@ -78,7 +78,7 @@ export default class AttributtVelger extends Component {
 		return (
 			<Panel
 				key={name}
-				heading={<h2>{name}</h2>}
+				heading={name}
 				startOpen
 				checkAttributeArray={() => checkAttributeArray(hovedKategoriItems)}
 				uncheckAttributeArray={() => uncheckAttributeArray(hovedKategoriItems)}

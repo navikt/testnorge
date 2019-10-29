@@ -5,6 +5,7 @@ import cn from 'classnames'
 import Trashcan from '~/assets/icons/nav-ikoner/line/SVG/01-edition/bin-1.svg'
 import EditIcon from '~/assets/icons/nav-ikoner/line/SVG/01-edition/pencil-2.svg'
 import Search from '~/assets/icons/nav-ikoner/line/SVG/01-edition/search.svg'
+import Calendar from '~/assets/icons/nav-ikoner/line/SVG/22-time/calendar-3.svg'
 import AddCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/add-circle.svg'
 import RemoveCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/remove-circle.svg'
 import Star from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/rank-army-star-1.svg'
@@ -35,6 +36,7 @@ const icons = {
 	eraser: Eraser,
 	user: AccountCircle,
 	search: Search,
+	calendar: Calendar,
 	'file-new-table': NewFileTable,
 	'arrow-left': ArrowLeft,
 	'arrow-right': ArrowRight,

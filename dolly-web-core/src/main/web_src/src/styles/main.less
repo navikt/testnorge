@@ -28,10 +28,22 @@ h1 {
 
 // NAV skjema override
 .skjemaelement {
+	.skjemaelement__input {
+		width: 100%;
+		padding: 7px 10px;
+	}
 	.skjemaelement__label {
 		font-size: 0.75em;
 		text-transform: uppercase;
 	}
+
+	.svg-icon {
+		pointer-events: none;
+		position: absolute;
+		top: 9px;
+		right: 8px;
+	}
+
 	&__staticvalue {
 		padding: 0.45rem 0;
 		min-width: 200px;

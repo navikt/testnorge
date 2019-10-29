@@ -54,6 +54,21 @@ const initialState = {
 	currentMal: ''
 }
 
+// const initialState = {
+// 	antall: 1,
+// 	page: 1,
+// 	attributeIds: ['foedtFoer', 'foedtEtter', 'kjonn'],
+// 	environments: [],
+// 	identtype: '',
+// 	values: {},
+// 	identOpprettesFra: BestillingMapper(),
+// 	eksisterendeIdentListe: [],
+// 	ugyldigIdentListe: [],
+// 	maler: [],
+// 	malBestillingNavn: '',
+// 	currentMal: ''
+// }
+
 export default handleActions(
 	{
 		[actions.nextPage](state, action) {

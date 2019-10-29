@@ -74,9 +74,9 @@ export default class FormEditor extends Component {
 		return (
 			<Panel
 				key={hovedKategori.id}
-				heading={<h3>{hovedKategori.navn}</h3>}
+				heading={hovedKategori.navn}
 				startOpen={!closePanels}
-				errors={hasError}
+				hasErrors={hasError}
 			>
 				{items.map((item, idx) => {
 					return this.renderFieldContainer(item, idx, formikProps)

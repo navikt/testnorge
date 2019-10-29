@@ -10,10 +10,10 @@ import './Panel.less'
 
 export default function Panel({
 	startOpen = false,
+	hasErrors = false,
 	heading = 'Panel',
 	content,
 	children,
-	errors,
 	checkAttributeArray,
 	uncheckAttributeArray,
 	informasjonstekst
@@ -29,9 +29,9 @@ export default function Panel({
 	return (
 		<div className={panelClass}>
 			<div className="panel-heading">
-				{heading}
+				<h2>{heading}</h2>
 				{informasjonstekst && <HjelpeTekst>{informasjonstekst}</HjelpeTekst>}
-				{errors && (
+				{hasErrors && (
 					<div className="panel-heading_error">
 						<Icon kind="report-problem-triangle" />
 						Feil i felter

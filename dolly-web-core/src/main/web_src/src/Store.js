@@ -14,6 +14,7 @@ import commonReducer from './ducks/common'
 import bestillingStatusReducer from './ducks/bestillingStatus'
 import environmentsReducer from './ducks/environments'
 import oppslagReducer from './ducks/oppslag'
+import kodeverkReducer from './ducks/kodeverk'
 import history from './history'
 
 const locationMiddleware = store => next => action => {
@@ -48,7 +49,8 @@ const configureReduxStore = history => {
 			errors: errorsReducer,
 			common: commonReducer,
 			environments: environmentsReducer,
-			oppslag: oppslagReducer
+			oppslag: oppslagReducer,
+			kodeverk: kodeverkReducer
 		})
 
 	return createStore(rootReducer(history), composeWithDevTools(applyMiddleware(...allMiddleware)))
