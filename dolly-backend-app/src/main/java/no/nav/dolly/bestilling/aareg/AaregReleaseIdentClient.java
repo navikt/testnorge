@@ -6,8 +6,8 @@ import static java.util.Arrays.asList;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
-import no.nav.dolly.consumer.aareg.AaregRestConsumer;
 import no.nav.dolly.consumer.aareg.AaregWsConsumer;
+import no.nav.dolly.consumer.aareg.TestnorgeAaregConsumer;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsavtale;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
@@ -29,7 +29,7 @@ import java.util.Map;
 public class AaregReleaseIdentClient extends AaregAbstractClient {
 
     private final AaregWsConsumer aaregWsConsumer;
-    private final AaregRestConsumer aaregRestConsumer;
+    private final TestnorgeAaregConsumer testnorgeAaregConsumer;
     private final TpsfService tpsfService;
 
     public Map<String, String> deleteArbeidsforhold(String ident) {
@@ -41,7 +41,7 @@ public class AaregReleaseIdentClient extends AaregAbstractClient {
             environments.getBody().getEnvironments().forEach(environment -> {
 
                 try {
-                    ResponseEntity<Map[]> arbeidforhold = aaregRestConsumer.readArbeidsforhold(ident, environment);
+                    ResponseEntity<Map[]> arbeidforhold = testnorgeAaregConsumer.hentArbeidsforhold(ident, environment);
                     if (arbeidforhold.hasBody()) {
 
                         asList(arbeidforhold.getBody()).forEach(

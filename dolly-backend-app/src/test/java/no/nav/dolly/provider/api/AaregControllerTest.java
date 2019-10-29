@@ -8,8 +8,8 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.dolly.consumer.aareg.AaregRestConsumer;
 import no.nav.dolly.consumer.aareg.AaregWsConsumer;
+import no.nav.dolly.consumer.aareg.TestnorgeAaregConsumer;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
@@ -37,7 +37,7 @@ public class AaregControllerTest {
     private AaregWsConsumer aaregWsConsumer;
 
     @Mock
-    private AaregRestConsumer aaregRestConsumer;
+    private TestnorgeAaregConsumer testnorgeAaregConsumer;
 
     @InjectMocks
     private AaregController aaregController;
@@ -67,10 +67,10 @@ public class AaregControllerTest {
     @Test
     public void lesArbeidsforhold_OK() {
 
-        when(aaregRestConsumer.readArbeidsforhold(anyString(), anyString())).thenReturn(new ResponseEntity("Innhold fra tjenesten", HttpStatus.OK));
+        when(testnorgeAaregConsumer.hentArbeidsforhold(anyString(), anyString())).thenReturn(new ResponseEntity("Innhold fra tjenesten", HttpStatus.OK));
 
         aaregController.lesArbeidsforhold(anyString(), anyString());
 
-        verify(aaregRestConsumer).readArbeidsforhold(anyString(), anyString());
+        verify(testnorgeAaregConsumer).hentArbeidsforhold(anyString(), anyString());
     }
 }

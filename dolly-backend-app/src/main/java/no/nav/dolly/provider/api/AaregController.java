@@ -5,8 +5,8 @@ import static no.nav.dolly.provider.api.documentation.DocumentationNotes.AAREG_J
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.aareg.AaregReleaseIdentClient;
-import no.nav.dolly.consumer.aareg.AaregRestConsumer;
 import no.nav.dolly.consumer.aareg.AaregWsConsumer;
+import no.nav.dolly.consumer.aareg.TestnorgeAaregConsumer;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
@@ -31,8 +31,8 @@ import java.util.Map;
 public class AaregController {
 
     private final AaregWsConsumer aaregWsConsumer;
-    private final AaregRestConsumer aaregRestConsumer;
     private final AaregReleaseIdentClient releaseIdentClient;
+    private final TestnorgeAaregConsumer testnorgeAaregConsumer;
 
     @ApiOperation(value = "Opprett arbeidsforhold mot Aareg", notes = AAREG_JSON_COMMENT)
     @PostMapping("/arbeidsforhold")
@@ -54,7 +54,7 @@ public class AaregController {
     @GetMapping("/arbeidsforhold")
     public ResponseEntity lesArbeidsforhold(@RequestParam String ident, @RequestParam String environment) {
 
-        return aaregRestConsumer.readArbeidsforhold(ident, environment);
+        return testnorgeAaregConsumer.hentArbeidsforhold(ident, environment);
     }
 
     @ApiOperation(value = "Slett arbeidsforhold fra Aareg", notes = "Arbeidsforhold blir ikke slettet, men eksisterende forhold blir satt inaktive")

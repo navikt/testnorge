@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.consumer.aareg.AaregRestConsumer;
 import no.nav.dolly.consumer.aareg.AaregWsConsumer;
+import no.nav.dolly.consumer.aareg.TestnorgeAaregConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
@@ -28,8 +28,8 @@ import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 public class AaregClient extends AaregAbstractClient implements ClientRegister {
 
     private final AaregWsConsumer aaregWsConsumer;
-    private final AaregRestConsumer aaregRestConsumer;
     private final AaregReleaseIdentClient aaregReleaseIdentClient;
+    private final TestnorgeAaregConsumer testnorgeAaregConsumer;
 
     @Override
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
@@ -42,7 +42,7 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
 
                 ResponseEntity<Map[]> response = ResponseEntity.ok(new Map[] {});
                 try {
-                    response = aaregRestConsumer.readArbeidsforhold(tpsPerson.getHovedperson(), env);
+                    response = testnorgeAaregConsumer.hentArbeidsforhold(tpsPerson.getHovedperson(), env);
                 } catch (RuntimeException e) {
                     log.error("Lesing av aareg i {} feilet, {}", env, e.getLocalizedMessage());
                 }

@@ -40,7 +40,7 @@ public class AaregClientTest {
     private AaregWsConsumer aaregWsConsumer;
 
     @Mock
-    private AaregRestConsumer aaregRestConsumer;
+    private TestnorgeAaregConsumer testnorgeAaregConsumer;
 
     @InjectMocks
     private AaregClient aaregClient;
@@ -48,7 +48,7 @@ public class AaregClientTest {
     @Test
     public void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_OK() {
 
-        when(aaregRestConsumer.readArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(new Map[]{}));
+        when(testnorgeAaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(new Map[]{}));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsArbeidsforhold.builder().build()));
@@ -62,7 +62,7 @@ public class AaregClientTest {
     @Test
     public void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_lesKasterException() {
 
-        when(aaregRestConsumer.readArbeidsforhold(IDENT, ENV)).thenThrow(new RuntimeException());
+        when(testnorgeAaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenThrow(new RuntimeException());
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsArbeidsforhold.builder().build()));
@@ -76,7 +76,7 @@ public class AaregClientTest {
     @Test
     public void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnes_arbeidsgiverHarOrgnummer() {
 
-        when(aaregRestConsumer.readArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(buildArbeidsforhold(true)));
+        when(testnorgeAaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(buildArbeidsforhold(true)));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsArbeidsforhold.builder()
@@ -92,7 +92,7 @@ public class AaregClientTest {
     @Test
     public void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnes_arbeidsgiverHarPersonnr() {
 
-        when(aaregRestConsumer.readArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(buildArbeidsforhold(false)));
+        when(testnorgeAaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(buildArbeidsforhold(false)));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsArbeidsforhold.builder()
@@ -109,7 +109,7 @@ public class AaregClientTest {
     @Test
     public void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnes_sjekkReturStatus() {
 
-        when(aaregRestConsumer.readArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(buildArbeidsforhold(false)));
+        when(testnorgeAaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(buildArbeidsforhold(false)));
         Map<String, String> status = new HashMap<>();
         status.put(ENV, "OK");
         when(aaregWsConsumer.oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class))).thenReturn(status);
