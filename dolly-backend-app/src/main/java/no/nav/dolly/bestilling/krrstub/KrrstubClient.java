@@ -28,7 +28,7 @@ public class KrrstubClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    @Timed(name = "gjenopprett", tags={"operation", "gjenopprettKrrStub"})
+    @Timed(name = "providers", tags={"operation", "gjenopprettKrrStub"})
     @Override public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         if (nonNull(bestilling.getKrrstub())) {

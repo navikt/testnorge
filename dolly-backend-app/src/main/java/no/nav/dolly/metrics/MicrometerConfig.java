@@ -14,7 +14,7 @@ public class MicrometerConfig {
 
     @Bean
     public MeterRegistryCustomizer<MeterRegistry> commonTags() {
-        return registry -> registry.config().commonTags("domain", "registre", "app", "dolly_backend");
+        return registry -> registry.config().commonTags("domain", "registre");
     }
 
     @Bean
