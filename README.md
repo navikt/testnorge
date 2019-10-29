@@ -16,9 +16,21 @@ Løsningen på dette problemet er en egen SyntRest-applikasjon som dynamisk depl
 til endepunkter i synt-applikasjonene.
 
 ## Struktur
-
+![Arkitektur](/doc/images/architecture.png "Bilde av arkitektur")
 
 ## Hvordan legge til Synt-Pakker
 De filene som må endres når man legger til synt-pakkene er:
 
  - [SyntController](src/main/java/no/nav/registre/syntrest/controllers/SyntController.java)
+   - Nytt endepunkt for SyntRest
+ - [SyntetiseringService](src/main/java/no/nav/registre/syntrest/services/SyntetiseringService.java)
+   - Generer kallet for consumerManager
+   - Noen generiske metoder er laget for request-typer som blir brukt ofte
+ - [SyntConsumerManager](/src/main/java/no/nav/registre/syntrest/SyntConsumerManager.java)
+   - Legger til en ny konsument av den nye synt-pakke typen
+ - [application.properties](src/main/resources/application.properties)
+   - Lenke til nais-applikasjonen som blir startet (ingressen i nais-yaml'en)
+ - [NAIS-fil](/src/main/resources/nais/)
+   - NAIS yaml for den nye pakken. Navngivningskonvensjon {appName}.yaml
+ - [SyntAppNames](src/main/java/no/nav/registre/syntrest/utils/SyntAppNames.java)
+ - Evt. legge til klasser for spesifiserte Respons-meldinger.
