@@ -7,12 +7,14 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.aareg.security.sts.StsOidcService;
@@ -25,7 +27,7 @@ public class AaregRestConsumer {
     private final RestTemplate restTemplate;
     private final StsOidcService stsOidcService;
 
-    public ResponseEntity<Map> hentArbeidsforhold(
+    public ResponseEntity<List<Map>> hentArbeidsforhold(
             String ident, String miljoe
     ) {
         RequestEntity getRequest = RequestEntity
@@ -35,6 +37,7 @@ public class AaregRestConsumer {
                 .header(HEADER_NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(miljoe))
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .build();
-        return restTemplate.exchange(getRequest, Map.class);
+        return restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<Map>>() {
+        });
     }
 }

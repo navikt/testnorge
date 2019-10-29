@@ -11,9 +11,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.aareg.security.sts.StsOidcService;
@@ -37,13 +39,14 @@ public class AaregRestConsumerTest {
     private AaregRestConsumer aaregRestConsumer;
 
     @Test
-    public void readArbeidsforhold() {
+    public void hentArbeidsforhold() {
         when(aaregArbeidsforholdFasitConsumer.getUrlForEnv(ENV)).thenReturn("baseurl");
 
         aaregRestConsumer.hentArbeidsforhold(IDENT, ENV);
 
         verify(stsOidcService, times(2)).getIdToken(ENV);
         verify(aaregArbeidsforholdFasitConsumer).getUrlForEnv(ENV);
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(Map.class));
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(new ParameterizedTypeReference<List<Map>>() {
+        }));
     }
 }

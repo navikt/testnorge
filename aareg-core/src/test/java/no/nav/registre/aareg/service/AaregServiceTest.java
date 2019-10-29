@@ -1,7 +1,6 @@
 package no.nav.registre.aareg.service;
 
 import static no.nav.registre.aareg.consumer.ws.AaregWsConsumer.STATUS_OK;
-import static no.nav.registre.aareg.service.AaregAbstractClient.getNavArbfholdId;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
@@ -81,7 +80,7 @@ public class AaregServiceTest {
         Map<String, String> status = new HashMap<>();
         status.put(miljoe, STATUS_OK);
         when(tpsfConsumer.hentMiljoer()).thenReturn(ResponseEntity.ok(miljoerResponse));
-        when(aaregRestConsumer.hentArbeidsforhold(ident, miljoe)).thenReturn(ResponseEntity.ok(arbeidsforhold));
+        when(aaregRestConsumer.hentArbeidsforhold(ident, miljoe)).thenReturn(ResponseEntity.ok(Collections.singletonList(arbeidsforhold)));
         when(aaregWsConsumer.oppdaterArbeidsforhold(any())).thenReturn(status);
 
         Map<String, String> result = aaregService.slettArbeidsforhold(ident);

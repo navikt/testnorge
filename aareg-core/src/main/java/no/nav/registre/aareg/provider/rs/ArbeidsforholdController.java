@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
@@ -45,7 +46,7 @@ public class ArbeidsforholdController {
     }
 
     @GetMapping
-    public ResponseEntity hentArbeidsforhold(
+    public ResponseEntity<List<Map>> hentArbeidsforhold(
             @RequestParam String ident,
             @RequestParam String miljoe
     ) {
