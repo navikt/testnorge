@@ -1,6 +1,7 @@
 package no.nav.registre.syntrest.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class InntektsmeldingPopp {
 
+    @ApiModelProperty("Liste med grunnlag")
     @JsonProperty("grunnlag")
     private List<Grunnlag> grunnlag;
 

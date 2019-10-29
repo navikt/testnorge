@@ -96,6 +96,8 @@ public class KubernetesController {
         return "1".equals(response);
     }
 
+
+    /////////// PRIVATE ///////////
     private boolean existsOnCluster(String appName) throws ApiException {
         List<String> applications = listApplicationsOnCluster();
         return applications.contains(appName);

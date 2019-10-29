@@ -3,6 +3,7 @@ package no.nav.registre.syntrest.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AAP115Melding {
+    // legge til dato
     @JsonProperty("18-67AAR")
     String attenTilSekstisyvAar;
     @JsonProperty
@@ -28,5 +29,7 @@ public class AAP115Melding {
     @JsonProperty
     String UTFALL;
     @JsonProperty
-    String VEDTAK_ID;
+    String VEDTAK_ID; // ikke nødvwndig
+    // Generelle saksopplysninger -- kode.verdi, KRAV(DATO) BTID(DATO)
+    // disse datoene må ha sammenheng med fraDato og tilDato
 }
