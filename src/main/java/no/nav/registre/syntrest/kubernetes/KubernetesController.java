@@ -8,6 +8,8 @@ import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
@@ -96,8 +98,11 @@ public class KubernetesController {
     }
 
     public boolean isAlive(String appName) {
-        String response = restTemplate.getForObject(isAliveUri.expand(appName), String.class);
-        return "1".equals(response);
+        RequestEntity request = RequestEntity.get(isAliveUri.expand(appName)).build();
+        ResponseEntity response = restTemplate.exchange(request, String.class);
+        return "1".equals(response.getBody());
+        // String response = restTemplate.getForObject(isAliveUri.expand(appName), String.class);
+        // return "1".equals(response);
     }
 
 

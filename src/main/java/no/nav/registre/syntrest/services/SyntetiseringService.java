@@ -68,7 +68,7 @@ public class SyntetiseringService {
     @Value("${synth-tps-url}")
     private String tpsUrl;
 
-    @Value("synth-frikort-url")
+    @Value("${synth-frikort-url}")
     private String frikortUrl;
 
     private final SyntConsumerManager consumerManager;
