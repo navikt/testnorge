@@ -10,11 +10,6 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.inst.RsInstdata;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -22,6 +17,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.inst.RsInstdata;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InstdataClientTest {
@@ -54,7 +55,7 @@ public class InstdataClientTest {
 
         BestillingProgress progress = new BestillingProgress();
 
-        when(instdataConsumer.getMiljoer()).thenReturn(singletonList("u5"));
+        when(instdataConsumer.getMiljoer()).thenReturn(ResponseEntity.ok(new String[]{"u5"}));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setInstdata(newArrayList(RsInstdata.builder().build()));
@@ -69,7 +70,7 @@ public class InstdataClientTest {
 
         BestillingProgress progress = new BestillingProgress();
 
-        when(instdataConsumer.getMiljoer()).thenReturn(singletonList("q2"));
+        when(instdataConsumer.getMiljoer()).thenReturn(ResponseEntity.ok(new String[]{"q2"}));
         when(instdataConsumer.deleteInstdata(IDENT, ENVIRONMENT)).thenReturn(ResponseEntity.ok(
                 new InstdataResponse[] { InstdataResponse.builder()
                         .status(HttpStatus.NOT_FOUND)

@@ -26,6 +26,7 @@ public class RsBestillingStatus {
     private Integer antallIdenter;
     private boolean ferdig;
     private LocalDateTime sistOppdatert;
+    private String userId;
     private long gruppeId;
     private boolean stoppet;
     private String feil;
