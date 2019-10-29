@@ -98,11 +98,8 @@ public class KubernetesController {
     }
 
     public boolean isAlive(String appName) {
-        RequestEntity request = RequestEntity.get(isAliveUri.expand(appName)).build();
-        ResponseEntity response = restTemplate.exchange(request, String.class);
-        return "1".equals(response.getBody());
-        // String response = restTemplate.getForObject(isAliveUri.expand(appName), String.class);
-        // return "1".equals(response);
+        String response = restTemplate.getForObject(isAliveUri.expand(appName), String.class);
+        return "1".equals(response);
     }
 
 
