@@ -2,13 +2,14 @@ package no.nav.dolly.bestilling.aareg;
 
 import static java.util.Collections.singletonList;
 
-import java.util.List;
-import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Map;
+
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.consumer.aareg.TestnorgeAaregConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;

@@ -26,13 +26,13 @@ import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/aareg", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/aareg/arbeidsforhold", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AaregController {
 
     private final TestnorgeAaregConsumer testnorgeAaregConsumer;
 
     @ApiOperation(value = "Opprett arbeidsforhold mot Aareg", notes = AAREG_JSON_COMMENT)
-    @PostMapping("/arbeidsforhold")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RsAaregResponse opprettArbeidsforhold(@RequestBody RsAaregOpprettRequest request) {
         return testnorgeAaregConsumer.opprettArbeidsforhold(request);
@@ -40,19 +40,19 @@ public class AaregController {
 
     @ApiOperation(value = "Oppdater arbeidsforhold mot Aareg", notes = AAREG_JSON_COMMENT
             + "Rapporteringsperiode formidler innhold for måned og år kun.")
-    @PutMapping("/arbeidsforhold")
+    @PutMapping
     public RsAaregResponse oppdaterArbeidsforhold(@RequestBody RsAaregOppdaterRequest request) {
         return testnorgeAaregConsumer.oppdaterArbeidsforhold(request);
     }
 
     @ApiOperation(value = "Les arbeidsforhold fra Aareg")
-    @GetMapping("/arbeidsforhold")
+    @GetMapping
     public ResponseEntity lesArbeidsforhold(@RequestParam String ident, @RequestParam String environment) {
         return testnorgeAaregConsumer.hentArbeidsforhold(ident, environment);
     }
 
     @ApiOperation(value = "Slett arbeidsforhold fra Aareg", notes = "Arbeidsforhold blir ikke slettet, men eksisterende forhold blir satt inaktive")
-    @DeleteMapping("/arbeidsforhold")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public Map<String, String> slettArbeidsforhold(@RequestParam String ident) {
         return testnorgeAaregConsumer.slettArbeidsforholdFraAlleMiljoer(ident);

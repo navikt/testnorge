@@ -39,7 +39,6 @@ public class TestnorgeAaregConsumer {
         this.oppdaterArbeidsforholdUrl = new UriTemplate(testnorgeAaregServerUrl + OPPDATER_ARBEIDSFORHOLD);
         this.hentArbeidsforholdUrl = new UriTemplate(testnorgeAaregServerUrl + HENT_ARBEIDSFORHOLD);
         this.slettArbeidsforholdUrl = new UriTemplate(testnorgeAaregServerUrl + SLETT_ARBEIDSFORHOLD);
-
     }
 
     public RsAaregResponse opprettArbeidsforhold(RsAaregOpprettRequest request) {
