@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import no.nav.registre.inntektsmeldingstub.MeldingsType;
 import no.nav.registre.inntektsmeldingstub.database.model.Arbeidsforhold;
 import no.nav.registre.inntektsmeldingstub.database.model.Arbeidsgiver;
 import no.nav.registre.inntektsmeldingstub.database.model.GraderingIForeldrepenger;
@@ -43,10 +44,20 @@ public class InntektsmeldingService {
     private final RefusjonsEndringRepository refusjonsEndringRepository;
     private final UtsettelseAvForeldrepengerRepository utsettelseAvForeldrepengerRepository;
 
-    public List<Inntektsmelding> saveMeldinger(List<Inntektsmelding> inntektsmeldinger) {
+    public List<Inntektsmelding> saveMeldinger(List<Inntektsmelding> inntektsmeldinger, MeldingsType type) {
         List<Inntektsmelding> lagredeMeldinger = new ArrayList<>(inntektsmeldinger.size());
         for (Inntektsmelding inntektsmelding : inntektsmeldinger) {
-            inntektsmelding.setArbeidsgiver(createOrFindArbeidsgiver(inntektsmelding.getArbeidsgiver()));
+            if (inntektsmelding.getArbeidsgiver() == null && inntektsmelding.getPrivatArbeidsgiver() == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Inntektsmeldingen må inneholde en arbeidsgiver");
+            }
+            if (inntektsmelding.getArbeidsgiver() != null) {
+                inntektsmelding.setArbeidsgiver(createOrFindArbeidsgiver(inntektsmelding.getArbeidsgiver()));
+            }
+            if (type == MeldingsType.TYPE_2018_12) {
+                if (inntektsmelding.getPrivatArbeidsgiver() != null) {
+                    inntektsmelding.setPrivatArbeidsgiver(createOrFindArbeidsgiver(inntektsmelding.getPrivatArbeidsgiver()));
+                }
+            }
             inntektsmelding.setArbeidsforhold(createOrFindArbeidsforhold(inntektsmelding.getArbeidsforhold()));
             inntektsmelding.setRefusjonsEndringListe(Lists.newArrayList(refusjonsEndringRepository.saveAll(inntektsmelding.getRefusjonsEndringListe())));
             inntektsmelding.setSykepengerPerioder(Lists.newArrayList(periodeRepository.saveAll(inntektsmelding.getSykepengerPerioder())));
@@ -72,9 +83,6 @@ public class InntektsmeldingService {
     }
 
     private Arbeidsgiver createOrFindArbeidsgiver(Arbeidsgiver arbeidsgiver) {
-        if (arbeidsgiver == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Inntektsmeldingen må inneholde en arbeidsgiver");
-        }
         Optional<Arbeidsgiver> optionalArbeidsgiver = arbeidsgiverRepository.findByVirksomhetsnummer(arbeidsgiver.getVirksomhetsnummer());
         return optionalArbeidsgiver.orElseGet(() -> arbeidsgiverRepository.save(Arbeidsgiver.builder()
                 .kontaktinformasjonNavn(arbeidsgiver.getKontaktinformasjonNavn())

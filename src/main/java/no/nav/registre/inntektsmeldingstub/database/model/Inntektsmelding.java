@@ -31,9 +31,11 @@ public class Inntektsmelding {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "opphoer_av_naturalytelse_id", referencedColumnName = "id")
+    @Builder.Default
     List<NaturalytelseDetaljer> opphoerAvNaturalytelseListe = Collections.emptyList();
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "gjenopptakelse_naturalytelse_id", referencedColumnName = "id")
+    @Builder.Default
     List<NaturalytelseDetaljer> gjenopptakelseNaturalytelseListe = Collections.emptyList();
     @Id
     @GeneratedValue
@@ -45,6 +47,10 @@ public class Inntektsmelding {
     @JoinColumn(name = "arbeidsgiver_id", referencedColumnName = "id")
     private Arbeidsgiver arbeidsgiver;
 
+    @ManyToOne
+    @JoinColumn(name = "privat_arbeidsgiver_id", referencedColumnName = "id")
+    private Arbeidsgiver privatArbeidsgiver;
+
     private String arbeidstakerFnr;
     private boolean naerRelasjon;
     @OneToOne(cascade = CascadeType.ALL)
@@ -54,11 +60,13 @@ public class Inntektsmelding {
     private LocalDate refusjonsopphoersdato;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "refusjon_endring_id", referencedColumnName = "id")
+    @Builder.Default
     private List<RefusjonsEndring> refusjonsEndringListe = Collections.emptyList();
     private double sykepengerBruttoUtbetalt;
     private String sykepengerBegrunnelseForReduksjonEllerIkkeUtbetalt;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "sykepenger_periode_id", referencedColumnName = "id")
+    @Builder.Default
     private List<Periode> sykepengerPerioder = Collections.emptyList();
     private LocalDate startdatoForeldrepengeperiode;
     private String avsendersystemNavn;
@@ -67,16 +75,19 @@ public class Inntektsmelding {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "pleiepenger_periode_id", referencedColumnName = "id")
+    @Builder.Default
     private List<Periode> pleiepengerPeriodeListe = Collections.emptyList();
 
 
     private boolean omsorgHarUtbetaltPliktigeDager;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "omsorgspenger_fravaers_periode_id", referencedColumnName = "id")
+    @Builder.Default
     private List<Periode> omsorgspengerFravaersPeriodeListe = Collections.emptyList();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "omsorgspenger_delvis_fravaers_id", referencedColumnName = "id")
+    @Builder.Default
     private List<DelvisFravaer> omsorgspengerDelvisFravaersListe = Collections.emptyList();
 
 }

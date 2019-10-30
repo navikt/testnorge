@@ -12,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDate;
 
-import no.nav.inntektsmelding.xml.kodeliste._20190409.XMLNaturalytelseKodeliste;
-
 @Entity
 @Table(name = "naturalytelse_detaljer")
 @Getter
@@ -27,7 +25,7 @@ public class NaturalytelseDetaljer {
     @GeneratedValue
     private Integer id;
 
-    private XMLNaturalytelseKodeliste type;
+    private String type;
     private LocalDate fom;
     private double beloepPrMnd;
 
