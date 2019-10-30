@@ -1,5 +1,10 @@
 package no.nav.registre.aareg.config;
 
+import static java.util.Arrays.asList;
+import static no.nav.registre.aareg.domain.CommonKeys.HEADER_NAV_CALL_ID;
+import static no.nav.registre.aareg.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,11 +16,14 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.annotations.ApiIgnore;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.schema.AlternateTypeRules;
+import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.Parameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -32,6 +40,9 @@ import java.util.Map;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig implements WebMvcConfigurer {
+
+    private static final String PARAM_TYPE = "header";
+    private static final String MODEL_TYPE_STRING = "string";
 
     @Value("${application.version}")
     private String appVersion;
@@ -58,6 +69,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .apiInfo(apiInfo())
                 .produces(contentTypeJson)
                 .consumes(contentTypeJson)
+                .globalOperationParameters(globalHeaders())
                 .useDefaultResponseMessages(false);
     }
 
@@ -76,5 +88,30 @@ public class SwaggerConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/api").setViewName("redirect:/swagger-ui.html");
+    }
+
+    private List<Parameter> globalHeaders() {
+        return asList(
+                new ParameterBuilder()
+                        .name(AUTHORIZATION)
+                        .description("\"Bearer \" + OIDC token")
+                        .modelRef(new ModelRef(MODEL_TYPE_STRING))
+                        .parameterType(PARAM_TYPE)
+                        .required(true)
+                        .build(),
+                new ParameterBuilder()
+                        .name(HEADER_NAV_CONSUMER_ID)
+                        .description("En ID for systemet som gjør kallet, som regel servicebrukeren til applikasjonen.")
+                        .modelRef(new ModelRef(MODEL_TYPE_STRING))
+                        .parameterType(PARAM_TYPE)
+                        .required(true)
+                        .build(),
+                new ParameterBuilder()
+                        .name(HEADER_NAV_CALL_ID)
+                        .description("En ID som identifiserer kallkjeden som dette kallet er en del av.")
+                        .modelRef(new ModelRef(MODEL_TYPE_STRING))
+                        .parameterType(PARAM_TYPE)
+                        .required(true)
+                        .build());
     }
 }
