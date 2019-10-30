@@ -21,6 +21,7 @@ import no.nav.registre.inntektsmeldingstub.util.XmlInntektsmelding201812;
 @RestController
 @RequestMapping("/api/v1/inntektsmelding")
 @RequiredArgsConstructor
+//TODO: Fiks xml representasjon av output, nå klarer den ikke konvertere
 public class InntektsmeldingProvider {
 
     private final InntektsmeldingService service;

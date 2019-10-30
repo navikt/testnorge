@@ -57,6 +57,8 @@ public class InntektsmeldingService {
                 if (inntektsmelding.getPrivatArbeidsgiver() != null) {
                     inntektsmelding.setPrivatArbeidsgiver(createOrFindArbeidsgiver(inntektsmelding.getPrivatArbeidsgiver()));
                 }
+            } else {
+                inntektsmelding.setPrivatArbeidsgiver(null);
             }
             inntektsmelding.setArbeidsforhold(createOrFindArbeidsforhold(inntektsmelding.getArbeidsforhold()));
             inntektsmelding.setRefusjonsEndringListe(Lists.newArrayList(refusjonsEndringRepository.saveAll(inntektsmelding.getRefusjonsEndringListe())));
