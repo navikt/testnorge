@@ -7,7 +7,7 @@ naiseratorApplicationPipeline {
     team = "orkestrator"
 
     // Hvilken Javaversjon som kodebasen er lagd for. Gyldige verdier er 7, 8 og 11.
-    javaVersion = "8"
+    javaVersion = "11"
 
     // Hvilket Kubernetes namespace applikasjonen skal deployes til. Dersom det ikke er strengt
     // behov for dette, så ikke bruk dette feltet.

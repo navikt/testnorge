@@ -1,4 +1,4 @@
-FROM navikt/java:8
+FROM navikt/java:11
 LABEL maintainer="Team Registre"
 
 ADD "aareg-core/target/testnorge-aareg-app.jar" /app/app.jar

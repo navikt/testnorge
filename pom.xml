@@ -41,14 +41,15 @@
         <application.version>${project.version}</application.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <spring-boot-admin.version>2.0.2</spring-boot-admin.version>
         <swagger.version>2.9.0</swagger.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <behandle.arbeidsforhold.version>1.2.1</behandle.arbeidsforhold.version>
         <neethi.version>3.1.1</neethi.version>
-        <cxf.version>3.3.2</cxf.version>
+        <cxf.version>3.3.3</cxf.version>
         <freg-security-oidc.version>3.0.5</freg-security-oidc.version>
+        <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
     </properties>
 
     <dependencyManagement>
