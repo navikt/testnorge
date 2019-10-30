@@ -43,18 +43,21 @@ public class SyntConsumer {
         try {
             return synthesizedData;
         } finally {
+            this.numClients.decrementAndGet();
             if (this.numClients.get() <= 0) {
+                log.info("Scheduling shutdown of {}", this.appName);
                 scheduledExecutorService.schedule(this::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS);
             }
         }
     }
 
     private void shutdownApplication() {
-        this.numClients.decrementAndGet();
-
+        /*this.numClients.decrementAndGet();*/
         if (this.numClients.get() > 0) {
+            log.info("More clients were connected to {} before shutdown.", this.appName);
             return;
         }
+        log.info("Shutting down {}", this.appName);
         applicationManager.shutdownApplication(appName);
     }
 
