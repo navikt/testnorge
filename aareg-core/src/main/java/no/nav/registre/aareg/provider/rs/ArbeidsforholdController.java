@@ -1,5 +1,6 @@
 package no.nav.registre.aareg.provider.rs;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ public class ArbeidsforholdController {
     private final TpsfConsumer tpsfConsumer;
 
     @PostMapping
+    @ApiOperation(value = "Legg arbeidsforhold inn i aareg.")
     @ResponseStatus(HttpStatus.CREATED)
     public RsAaregResponse opprettArbeidsforhold(
             @RequestBody RsAaregOpprettRequest request
@@ -39,6 +41,7 @@ public class ArbeidsforholdController {
     }
 
     @PutMapping
+    @ApiOperation(value = "Oppdater arbeidsforhold i aareg.")
     public RsAaregResponse oppdaterArbeidsforhold(
             @RequestBody RsAaregOppdaterRequest request
     ) {
@@ -48,6 +51,7 @@ public class ArbeidsforholdController {
     }
 
     @GetMapping
+    @ApiOperation(value = "Hent arbeidsforhold fra aareg.")
     public ResponseEntity<List<Map>> hentArbeidsforhold(
             @RequestParam String ident,
             @RequestParam String miljoe
@@ -56,6 +60,8 @@ public class ArbeidsforholdController {
     }
 
     @DeleteMapping
+    @ApiOperation(value = "Slett arbeidsforhold fra Aareg", notes = "Arbeidsforhold blir ikke slettet, men eksisterende forhold blir satt inaktive. Hvis miljøer ikke blir oppgitt,"
+            + "vil applikasjonen utføre operasjonen i alle miljøer.")
     @ResponseStatus(HttpStatus.OK)
     public RsAaregResponse slettArbeidsforhold(
             @RequestParam String ident,

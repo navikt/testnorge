@@ -12,7 +12,7 @@
 
     <groupId>no.nav.registre</groupId>
     <artifactId>testnorge-aareg</artifactId>
-    <version>1.8.0-SNAPSHOT</version>
+    <version>1.8.0</version>
     <packaging>pom</packaging>
 
     <name>testnorge-aareg</name>
@@ -43,7 +43,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <spring-boot-admin.version>2.0.2</spring-boot-admin.version>
-        <springfox.version>2.4.0</springfox.version>
+        <swagger.version>2.9.0</swagger.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <behandle.arbeidsforhold.version>1.2.1</behandle.arbeidsforhold.version>
         <neethi.version>3.1.1</neethi.version>
@@ -53,16 +53,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${springfox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${springfox.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-contract-wiremock</artifactId>
