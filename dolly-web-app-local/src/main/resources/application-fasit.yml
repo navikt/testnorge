@@ -1,4 +1,4 @@
-application.name: dolly-web
+application.name: dolly
 
 freg.security.oidc.enabled: false
 

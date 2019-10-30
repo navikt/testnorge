@@ -1,13 +1,13 @@
 package no.nav.dolly.web;
 
-import no.nav.dolly.web.fasit.FasitClient;
-import no.nav.dolly.web.fasit.FasitClientApplicationConfig;
+import java.util.Map;
 import org.springframework.boot.Banner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import java.util.Map;
+import no.nav.dolly.web.fasit.FasitClient;
+import no.nav.dolly.web.fasit.FasitClientApplicationConfig;
 
 public class LocalAppStarter {
     public static void main(String... arguments) {
@@ -33,7 +33,7 @@ public class LocalAppStarter {
                 .logStartupInfo(false)
                 .bannerMode(Banner.Mode.OFF)
                 .profiles("fasit")
-                .properties("fasit.url=https://fasit.adeo.no", "application.name=dolly-web")
+                .properties("fasit.url=https://fasit.adeo.no", "application.name=dolly")
                 .run(arguments);
     }
 }
