@@ -29,6 +29,8 @@ const loadingSelectorUdi = createLoadingSelector(GET_UDI_TESTBRUKER)
 const loadingSelectorFrigjoer = createLoadingSelector(FRIGJOER_TESTBRUKER)
 
 const mapStateToProps = (state, ownProps) => {
+	console.log('state :', state)
+	console.log('ownProps :', ownProps)
 	return {
 		username: state.bruker.brukerData.navIdent,
 		isFetchingKrr: loadingSelectorKrr(state),

@@ -70,7 +70,10 @@ export default function TestbrukerListe({
 			data={sortedTestbrukere}
 			columns={columns}
 			onExpand={bruker => <PersonDetaljerConnector personId={bruker[0]} bestillingId={bruker[5]} />}
-			// onExpand={bruker => <PersonDetaljer />}
+			// onExpand={bruker => (
+			// 	<PersonDetaljer personId={bruker[0]} bestillingId={bruker[5]} />
+			// 	// <PersonDetaljer personId={bruker[0]} bestillingId={bruker[5]} test={bruker} />
+			// )}
 			pagination
 		/>
 	)
