@@ -4,7 +4,7 @@ metadata:
   name: dolly-backend
   namespace: default
   labels:
-    team: Dolly
+    team: dolly
 replicas:
   min: 2
   max: 2
