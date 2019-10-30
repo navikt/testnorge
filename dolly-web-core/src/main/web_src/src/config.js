@@ -17,7 +17,8 @@ const config = {
 // !DEVELOPMENT
 if (isDevMode) {
 	config.debug = true
-	config.services.dollyBackend = 'https://dolly-u2.nais.preprod.local/api/v1'
+	// config.services.dollyBackend = 'https://dolly-u2.nais.preprod.local/api/v1'
+	config.services.dollyBackend = 'http://localhost:8080'
 }
 
 export default config
