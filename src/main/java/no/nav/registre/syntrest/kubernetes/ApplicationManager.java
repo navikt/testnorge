@@ -23,12 +23,16 @@ public class ApplicationManager {
         return kubernetesController.isAlive(appId);
     }
 
-    public synchronized void startApplication(String appId) {
+    public synchronized int startApplication(String appId) {
+        int returnValue = -1;
         try {
             kubernetesController.deployImage(appId);
+            returnValue = 0;
         } catch (ApiException | InterruptedException e) {
             log.error("Could not create application \'{}\'!", appId);
         }
+
+        return returnValue;
     }
 
     public synchronized void shutdownApplication(String appId) {

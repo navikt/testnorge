@@ -23,6 +23,7 @@ public class KubernetesConfig {
     ApiClient apiClient() {
         try {
             KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader(kubeConfigPath));
+            kc.setContext("dev-fss");
             return Config.fromConfig(kc);
         } catch (IOException e) {
             String errormsg = String.format("Could not apply configuration from %s", kubeConfigPath);

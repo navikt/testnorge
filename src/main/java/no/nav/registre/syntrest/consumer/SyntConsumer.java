@@ -3,6 +3,8 @@ package no.nav.registre.syntrest.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 import no.nav.registre.syntrest.utils.SyntAppNames;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -35,7 +37,11 @@ public class SyntConsumer {
         this.numClients.incrementAndGet();
 
         if (!applicationManager.applicationIsAlive(appName)) {
-            applicationManager.startApplication(appName);
+            int started = applicationManager.startApplication(appName);
+            if (started == -1) {
+                log.error("Could not start synth package {}", this.appName);
+                return new ResponseEntity<>("Something went wrong when trying to deploy the synth pacakge.", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
 
         Object synthesizedData = accessSyntPackage(request);
@@ -44,6 +50,7 @@ public class SyntConsumer {
             return synthesizedData;
         } finally {
             this.numClients.decrementAndGet();
+            System.out.println("Number of connected clients after this: " + this.numClients.get());
             if (this.numClients.get() <= 0) {
                 log.info("Scheduling shutdown of {}", this.appName);
                 scheduledExecutorService.schedule(this::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS);

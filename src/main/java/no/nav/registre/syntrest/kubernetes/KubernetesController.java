@@ -12,6 +12,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 import org.yaml.snakeyaml.Yaml;
@@ -102,7 +103,7 @@ public class KubernetesController {
         String response = "404";
         try {
             response = restTemplate.getForObject(isAliveUri.expand(appName), String.class);
-        } catch (HttpClientErrorException ignored) {}
+        } catch (HttpClientErrorException | HttpServerErrorException ignored) {}
         return "1".equals(response);
     }
 
