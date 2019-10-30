@@ -22,7 +22,6 @@ freg:
       ignoredPaths: ${app.ignoredPaths}
       codeFlow:
         enabled: true
-        login-path: /dolly/login
       idToken:
         refresh-on-seconds-left: 300
         cookie-enabled: true
