@@ -23,22 +23,22 @@ export const TextInput = React.forwardRef(
 )
 
 export const DollyTextInput = props => (
-	<Label name={props.name} label={props.label} feil={props.feil}>
-		<TextInput {...props} />
-	</Label>
+	<InputWrapper {...props}>
+		<Label name={props.name} label={props.label} feil={props.feil}>
+			<TextInput {...props} />
+		</Label>
+	</InputWrapper>
 )
 
 export const FormikTextInput = props => {
 	const [field, meta] = useField(props)
 	return (
-		<InputWrapper {...props}>
-			<DollyTextInput
-				value={field.value}
-				onChange={field.onChange}
-				onBlur={field.onBlur}
-				feil={fieldError(meta)}
-				{...props}
-			/>
-		</InputWrapper>
+		<DollyTextInput
+			value={field.value}
+			onChange={field.onChange}
+			onBlur={field.onBlur}
+			feil={fieldError(meta)}
+			{...props}
+		/>
 	)
 }

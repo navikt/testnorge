@@ -1,5 +1,6 @@
 import React from 'react'
-import ReactSelect from 'react-select'
+// import ReactSelect from 'react-select'
+import { Select as ReactSelect } from 'react-select-virtualized'
 import { useField } from 'formik'
 import _get from 'lodash/get'
 import cn from 'classnames'
@@ -20,6 +21,7 @@ export const Select = ({
 	isDisabled = false,
 	isLoading = false,
 	isSearchable = true,
+	isClearable = true,
 	placeholder = 'Velg..',
 	options = []
 }) => {
@@ -37,7 +39,7 @@ export const Select = ({
 			isDisabled={isDisabled}
 			isSearchable={isSearchable}
 			isLoading={isLoading}
-			isClearable
+			isClearable={isClearable}
 		/>
 	)
 }
@@ -56,9 +58,11 @@ export const SelectMedKodeverk = ({ kodeverk, ...rest }) => (
 )
 
 export const DollySelect = props => (
-	<Label containerClass="dollyselect" name={props.name} label={props.label} feil={props.feil}>
-		{props.kodeverk ? <SelectMedKodeverk {...props} /> : <Select {...props} />}
-	</Label>
+	<InputWrapper {...props}>
+		<Label containerClass="dollyselect" name={props.name} label={props.label} feil={props.feil}>
+			{props.kodeverk ? <SelectMedKodeverk {...props} /> : <Select {...props} />}
+		</Label>
+	</InputWrapper>
 )
 
 export const FormikSelect = props => {
@@ -69,15 +73,13 @@ export const FormikSelect = props => {
 	const handleBlur = () => field.onBlur(SyntEvent(field.name))
 
 	return (
-		<InputWrapper {...props}>
-			<DollySelect
-				name={field.name}
-				value={field.value}
-				onChange={handleChange}
-				onBlur={handleBlur}
-				feil={fieldError(meta)}
-				{...props}
-			/>
-		</InputWrapper>
+		<DollySelect
+			name={field.name}
+			value={field.value}
+			onChange={handleChange}
+			onBlur={handleBlur}
+			feil={fieldError(meta)}
+			{...props}
+		/>
 	)
 }

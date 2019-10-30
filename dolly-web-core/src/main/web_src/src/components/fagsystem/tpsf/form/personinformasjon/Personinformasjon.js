@@ -9,7 +9,7 @@ import { Diverse } from './partials/Diverse'
 
 export const Personinformasjon = ({ formikProps }) => {
 	return (
-		<Panel heading="Personinformasjon" hasErrors={panelError(formikProps)} startOpen>
+		<Panel heading="Personinformasjon" hasErrors={panelError(formikProps)}>
 			<Kategori title="Alder">
 				<FormikDatepicker name="tpsf.foedtEtter" label="Født etter" />
 				<FormikDatepicker name="tpsf.foedtFoer" label="Født før" />

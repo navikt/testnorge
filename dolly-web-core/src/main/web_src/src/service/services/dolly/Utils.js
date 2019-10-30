@@ -36,6 +36,14 @@ export const SortKodeverkArray = data => {
 		})
 	}
 
+	if (data.name === 'Postnummer' || data.name === 'Kommuner') {
+		return koderArray.map(kode => ({
+			label: `${kode.value} - ${kode.label}`,
+			value: kode.value,
+			data: kode.label
+		}))
+	}
+
 	if (data.name === 'Yrker') {
 		// Noen utvalgte yrker der koden fra yrkeskodeverk tilsvarer STYRK-kode
 		const spesKoder = [
@@ -80,10 +88,12 @@ export const SortKodeverkArray = data => {
 export const NormalizeKodeverkForDropdown = ({ data }, showValueInLabel) => {
 	const sortedArray = SortKodeverkArray(data)
 	return {
-		options: sortedArray.filter(val => !_excludeList.includes(val.value)).map(kode => ({
-			value: kode.value,
-			label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
-		}))
+		options: sortedArray
+			.filter(val => !_excludeList.includes(val.value))
+			.map(kode => ({
+				value: kode.value,
+				label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
+			}))
 	}
 }
 
@@ -97,10 +107,12 @@ export const NormalizeKodeverkForDropdownUtenUfb = ({ data }, showValueInLabel) 
 			filteredSortedArray.push(diskresjonskode)
 	)
 	return {
-		options: filteredSortedArray.filter(val => !_excludeList.includes(val.value)).map(kode => ({
-			value: kode.value,
-			label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
-		}))
+		options: filteredSortedArray
+			.filter(val => !_excludeList.includes(val.value))
+			.map(kode => ({
+				value: kode.value,
+				label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
+			}))
 	}
 }
 

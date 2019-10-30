@@ -29,7 +29,8 @@ export default handleActions(
 	{
 		[success(getKodeverk)](state, action) {
 			const kodeverk = SortKodeverkArray(action.payload.data)
-			const mappedToKey = keyIndex(kodeverk)
+			// const mappedToKey = keyIndex(kodeverk)
+			const mappedToKey = kodeverk
 			return {
 				...state,
 				[action.meta.kodeverkNavn]: mappedToKey
@@ -47,14 +48,27 @@ export const fetchKodeverk = kodeverkNavn => (dispatch, getState) => {
 }
 
 ///* SELECTORS
+//* Selectors når det er lagret som array
 export const getKodeverkSelector = (state, kodeverk) => {
-	const path = state.kodeverk[kodeverk]
-	return path && Object.values(path)
+	return state.kodeverk[kodeverk]
 }
 
 export const getKodeverkByIdSelector = (state, kodeverk, value) => {
 	const defaultResponse = {
 		label: `${value} - Finnes ikke i kodeverk`
 	}
-	return _get(state.kodeverk, `${kodeverk}.${value}`, defaultResponse)
+	return state.kodeverk[kodeverk].find(y => y.value === value) || defaultResponse
 }
+
+//* Selectors dersom verdier lagres key-mapped
+// export const getKodeverkSelector = (state, kodeverk) => {
+// 	const path = state.kodeverk[kodeverk]
+// 	return path && Object.values(path)
+// }
+
+// export const getKodeverkByIdSelector = (state, kodeverk, value) => {
+// 	const defaultResponse = {
+// 		label: `${value} - Finnes ikke i kodeverk`
+// 	}
+// 	return _get(state.kodeverk, `${kodeverk}.${value}`, defaultResponse)
+// }

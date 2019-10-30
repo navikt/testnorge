@@ -47,9 +47,11 @@ export const Datepicker = ({
 }
 
 export const DollyDatepicker = props => (
-	<Label name={props.name} label={props.label} feil={props.feil}>
-		<Datepicker {...props} />
-	</Label>
+	<InputWrapper {...props}>
+		<Label name={props.name} label={props.label} feil={props.feil}>
+			<Datepicker {...props} />
+		</Label>
+	</InputWrapper>
 )
 
 export const FormikDatepicker = props => {
@@ -59,14 +61,12 @@ export const FormikDatepicker = props => {
 	const handleBlur = () => field.onBlur(SyntEvent(field.name, field.value))
 
 	return (
-		<InputWrapper {...props}>
-			<DollyDatepicker
-				value={field.value}
-				onChange={handleChange}
-				onBlur={handleBlur}
-				feil={fieldError(meta)}
-				{...props}
-			/>
-		</InputWrapper>
+		<DollyDatepicker
+			value={field.value}
+			onChange={handleChange}
+			onBlur={handleBlur}
+			feil={fieldError(meta)}
+			{...props}
+		/>
 	)
 }
