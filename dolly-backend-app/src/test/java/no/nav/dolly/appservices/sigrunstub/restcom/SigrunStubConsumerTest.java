@@ -9,7 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubConsumer;
-import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.Before;
@@ -56,7 +56,7 @@ public class SigrunStubConsumerTest {
 
     @Test
     public void createSkattegrunnlag() {
-        sigrunStubConsumer.createSkattegrunnlag(singletonList(new RsOpprettSkattegrunnlag()));
+        sigrunStubConsumer.createSkattegrunnlag(singletonList(new OpprettSkattegrunnlag()));
 
         ArgumentCaptor<RequestEntity> argCap = ArgumentCaptor.forClass(RequestEntity.class);
         verify(restTemplate).exchange(argCap.capture(), eq(Object.class));
@@ -71,7 +71,7 @@ public class SigrunStubConsumerTest {
     public void createSkattegrunnlag_kasterSigrunExceptionHvisKallKasterClientException() {
 
         when(restTemplate.exchange(any(RequestEntity.class), eq(Object.class))).thenReturn(ResponseEntity.badRequest().build());
-        ResponseEntity entity = sigrunStubConsumer.createSkattegrunnlag(singletonList(new RsOpprettSkattegrunnlag()));
+        ResponseEntity entity = sigrunStubConsumer.createSkattegrunnlag(singletonList(new OpprettSkattegrunnlag()));
 
         assertThat(entity.getStatusCode().value(), is(HttpStatus.BAD_REQUEST.value()));
         assertThat(entity.getStatusCode().getReasonPhrase(), is(HttpStatus.BAD_REQUEST.getReasonPhrase()));

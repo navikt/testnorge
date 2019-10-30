@@ -184,7 +184,9 @@ public class DollyBestillingService {
         if (nonNull(bestilling.getBestKriterier())) {
             try {
                 RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
-                bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
+                if (nonNull(bestilling.getTpsfKriterier())) {
+                    bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
+                }
                 bestKriterier.setEnvironments(newArrayList(bestilling.getMiljoer().split(",")));
 
                 clientRegisters.forEach(clientRegister ->
@@ -226,8 +228,10 @@ public class DollyBestillingService {
             sendIdenterTilTPS(request.getEnvironments(), leverteIdenter, testgruppe, progress);
 
             RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
-            bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
             bestKriterier.setEnvironments(request.getEnvironments());
+            if (nonNull(bestilling.getTpsfKriterier())) {
+                bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
+            }
 
             clientRegisters.forEach(clientRegister -> clientRegister.gjenopprett(bestKriterier, tpsPerson, progress));
 
@@ -244,17 +248,18 @@ public class DollyBestillingService {
                 .hovedperson(leverteIdenter.get(0))
                 .build();
 
-        try {
-            TpsfBestilling tpsfBestilling = objectMapper.readValue(bestilling.getTpsfKriterier(), TpsfBestilling.class);
+        if (nonNull(bestilling.getTpsfKriterier())) {
+            try {
+                TpsfBestilling tpsfBestilling = objectMapper.readValue(bestilling.getTpsfKriterier(), TpsfBestilling.class);
 
-            if (nonNull(tpsfBestilling.getRelasjoner())) {
-                tpsPerson.setPartner(nonNull(tpsfBestilling.getRelasjoner().getPartner()) ? leverteIdenter.get(1) : null);
-                tpsPerson.setBarn(nonNull(tpsfBestilling.getRelasjoner().getBarn()) ?
-                        harPartner(tpsfBestilling, leverteIdenter) : null);
+                if (nonNull(tpsfBestilling.getRelasjoner())) {
+                    tpsPerson.setPartner(nonNull(tpsfBestilling.getRelasjoner().getPartner()) ? leverteIdenter.get(1) : null);
+                    tpsPerson.setBarn(nonNull(tpsfBestilling.getRelasjoner().getBarn()) ?
+                            harPartner(tpsfBestilling, leverteIdenter) : null);
+                }
+            } catch (IOException e) {
+                log.error("Feilet å hente tpsfKriterier", e);
             }
-
-        } catch (IOException e) {
-            log.error("Feilet å hente tpsfKriterier", e);
         }
 
         return tpsPerson;
