@@ -8,14 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import no.nav.registre.inntektsmeldingstub.database.model.Arbeidsforhold;
 import no.nav.registre.inntektsmeldingstub.database.model.Arbeidsgiver;
 import no.nav.registre.inntektsmeldingstub.database.model.GraderingIForeldrepenger;
 import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
-import no.nav.registre.inntektsmeldingstub.database.model.Periode;
 import no.nav.registre.inntektsmeldingstub.database.model.UtsettelseAvForeldrepenger;
 import no.nav.registre.inntektsmeldingstub.database.repository.ArbeidsforholdRepository;
 import no.nav.registre.inntektsmeldingstub.database.repository.ArbeidsgiverRepository;
@@ -54,14 +55,14 @@ public class InntektsmeldingService {
             inntektsmelding.setPleiepengerPeriodeListe(Lists.newArrayList(periodeRepository.saveAll(inntektsmelding.getPleiepengerPeriodeListe())));
             inntektsmelding.setOmsorgspengerFravaersPeriodeListe(Lists.newArrayList(periodeRepository.saveAll(inntektsmelding.getOmsorgspengerFravaersPeriodeListe())));
             inntektsmelding.setOmsorgspengerDelvisFravaersListe(Lists.newArrayList(delvisFravaerRepository.saveAll(inntektsmelding.getOmsorgspengerDelvisFravaersListe())));
-            lagredeMeldinger.add(inntektsmeldingRepository.save(inntektsmelding));
-            List<Inntektsmelding> arbeidsgiverInntektsmeldinger = inntektsmelding.getArbeidsgiver().getInntektsmeldinger();
-            if (arbeidsgiverInntektsmeldinger == null) {
-                arbeidsgiverInntektsmeldinger = new ArrayList<>();
-            }
+            Inntektsmelding lagret = inntektsmeldingRepository.save(inntektsmelding);
+            List<Inntektsmelding> arbeidsgiverInntektsmeldinger = Lists.newArrayList(inntektsmeldingRepository.findAllById(
+                    lagret.getArbeidsgiver().getInntektsmeldinger().stream().map(Inntektsmelding::getId).collect(Collectors.toList())
+            ));
             arbeidsgiverInntektsmeldinger.add(inntektsmelding);
             inntektsmelding.getArbeidsgiver().setInntektsmeldinger(arbeidsgiverInntektsmeldinger);
-            arbeidsgiverRepository.save(inntektsmelding.getArbeidsgiver());
+            lagret.setArbeidsgiver(arbeidsgiverRepository.save(inntektsmelding.getArbeidsgiver()));
+            lagredeMeldinger.add(lagret);
         }
         return lagredeMeldinger;
     }
@@ -78,6 +79,8 @@ public class InntektsmeldingService {
         return optionalArbeidsgiver.orElseGet(() -> arbeidsgiverRepository.save(Arbeidsgiver.builder()
                 .kontaktinformasjonNavn(arbeidsgiver.getKontaktinformasjonNavn())
                 .telefonnummer(arbeidsgiver.getTelefonnummer())
+                .virksomhetsnummer(arbeidsgiver.getVirksomhetsnummer())
+                .inntektsmeldinger(Collections.emptyList())
                 .build())
         );
     }
@@ -110,11 +113,13 @@ public class InntektsmeldingService {
             }
             arbeidsforhold.setUtsettelseAvForeldrepengerListe(Lists.newArrayList(utsettelseAvForeldrepengerRepository.saveAll(arbeidsforhold.getUtsettelseAvForeldrepengerListe())));
         }
-        List<Periode> avtaltFerieListe = Lists.newArrayList(periodeRepository.saveAll(arbeidsforhold.getAvtaltFerieListe()));
+        if (arbeidsforhold.getAvtaltFerieListe() != null) {
+            arbeidsforhold.setAvtaltFerieListe(Lists.newArrayList(periodeRepository.saveAll(arbeidsforhold.getAvtaltFerieListe())));
+        }
 
         return optionalArbeidsforhold.orElseGet(() -> arbeidsforholdRepository.save(Arbeidsforhold.builder()
                 .aarsakVedEndring(arbeidsforhold.getAarsakVedEndring())
-                .avtaltFerieListe(avtaltFerieListe)
+                .avtaltFerieListe(arbeidsforhold.getAvtaltFerieListe())
                 .beloep(arbeidsforhold.getBeloep())
                 .foersteFravaersdag(arbeidsforhold.getFoersteFravaersdag())
                 .graderingIForeldrepengerListe(arbeidsforhold.getGraderingIForeldrepengerListe())

@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -27,7 +28,7 @@ public class Arbeidsforhold {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "avtalt_ferie_periode_id", referencedColumnName = "id")
-    List<Periode> avtaltFerieListe;
+    List<Periode> avtaltFerieListe = Collections.emptyList();
     @Id
     @GeneratedValue
     private Integer id;
@@ -37,11 +38,11 @@ public class Arbeidsforhold {
     private String aarsakVedEndring;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "utsettelse_av_foreldrepenger_id", referencedColumnName = "id")
-    private List<UtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
+    private List<UtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe = Collections.emptyList();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "gradering_i_foreldrepenger_id", referencedColumnName = "id")
-    private List<GraderingIForeldrepenger> graderingIForeldrepengerListe;
+    private List<GraderingIForeldrepenger> graderingIForeldrepengerListe = Collections.emptyList();
 
 
 }

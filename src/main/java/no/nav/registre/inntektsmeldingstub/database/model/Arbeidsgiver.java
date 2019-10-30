@@ -1,6 +1,6 @@
 package no.nav.registre.inntektsmeldingstub.database.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -25,9 +26,9 @@ import java.util.List;
 @NoArgsConstructor
 public class Arbeidsgiver {
 
-    @JsonManagedReference("inntektsmeldinger")
+    @JsonIgnore
     @OneToMany(mappedBy = "arbeidsgiver", cascade = CascadeType.ALL)
-    List<Inntektsmelding> inntektsmeldinger;
+    List<Inntektsmelding> inntektsmeldinger = Collections.emptyList();
     @Id
     @GeneratedValue
     private Integer id;
