@@ -41,10 +41,6 @@ public class BrukerService {
         }
     }
 
-    public List<Bruker> findByNavIdentInOrderByNavIdent(List<String> navIdenter) {
-        return brukerRepository.findByBrukerIdInOrderByBrukerId(navIdenter);
-    }
-
     public Bruker leggTilFavoritt(Long gruppeId) {
         Testgruppe grupper = fetchTestgruppe(gruppeId);
 

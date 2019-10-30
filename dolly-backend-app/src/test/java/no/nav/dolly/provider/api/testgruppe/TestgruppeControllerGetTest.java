@@ -81,7 +81,7 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
                 .to(HttpMethod.GET, url)
                 .andExpectList(HttpStatus.OK, expectedResponseRsTestgruppe);
 
-        assertThat(resp.size(), is(2));
+        assertThat(resp.size(), is(3));
 
         assertThat(resp, hasItem(both(
                 hasProperty("navn", equalTo("gruppe2"))).and(

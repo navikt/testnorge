@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.service.BrukerService;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
@@ -33,16 +34,16 @@ public class BrukerControllerTest {
     private BrukerController controller;
 
     @Test
-    public void getBrukerByNavIdent() {
-        RsBruker bruker = RsBruker.builder().navIdent("navident").build();
+    public void getBrukerByBrukerId() {
+        RsBruker bruker = RsBruker.builder().brukerId("brukerId").build();
         Bruker b = new Bruker();
 
-        when(brukerService.fetchBruker("navident")).thenReturn(b);
+        when(brukerService.fetchBruker("brukerId")).thenReturn(b);
         when(mapperFacade.map(b, RsBruker.class)).thenReturn(bruker);
 
-        RsBruker res = controller.getBrukerByNavIdent("navident");
+        RsBrukerAndGruppeId res = controller.getBrukerBybrukerId("brukerId");
 
-        assertThat(res.getNavIdent(), is("navident"));
+        assertThat(res.getBrukerId(), is("brukerId"));
     }
 
     @Test
@@ -58,7 +59,6 @@ public class BrukerControllerTest {
         when(mapperFacade.map(b, RsBruker.class)).thenReturn(rsBruker);
 
         assertThat(controller.getCurrentBruker(), is(rsBruker));
-
     }
 
     @Test

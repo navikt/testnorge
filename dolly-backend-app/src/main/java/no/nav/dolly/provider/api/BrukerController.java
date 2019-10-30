@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.service.BrukerService;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
@@ -35,11 +36,11 @@ public class BrukerController {
     private final MapperFacade mapperFacade;
 
     @Cacheable(CACHE_BRUKER)
-    @GetMapping("/{navIdent}")
+    @GetMapping("/{brukerId}")
     @ApiOperation("Hent Bruker med brukerId")
-    public RsBruker getBrukerByNavIdent(@PathVariable("navIdent") String navIdent) {
-        Bruker bruker = brukerService.fetchBruker(navIdent);
-        return mapperFacade.map(bruker, RsBruker.class);
+    public RsBrukerAndGruppeId getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
+        Bruker bruker = brukerService.fetchBruker(brukerId);
+        return mapperFacade.map(bruker, RsBrukerAndGruppeId.class);
     }
 
     @GetMapping("/current")
@@ -53,8 +54,8 @@ public class BrukerController {
     @Cacheable(CACHE_BRUKER)
     @GetMapping
     @ApiOperation("Hent alle Brukerne")
-    public List<RsBruker> getAllBrukere() {
-        return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBruker.class);
+    public List<RsBrukerAndGruppeId> getAllBrukere() {
+        return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBrukerAndGruppeId.class);
     }
 
     @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)

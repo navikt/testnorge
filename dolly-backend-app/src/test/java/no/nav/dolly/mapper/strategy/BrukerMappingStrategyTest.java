@@ -47,17 +47,16 @@ public class BrukerMappingStrategyTest {
     @Test
     public void mapBruker() {
 
-        Bruker bruker1 = Bruker.builder().brukerId("ident").build();
-        Bruker bruker2 = Bruker.builder().brukerId("ident")
+        Bruker bruker = Bruker.builder().brukerId("ident")
                 .favoritter(newHashSet(singletonList(Testgruppe.builder()
                         .id(2L)
                         .testidenter(singleton(TestidentBuilder.builder().ident("1").build().convertToRealTestident()))
                         .build())))
                 .build();
 
-        RsBruker rsBruker = mapper.map(bruker2, RsBruker.class);
+        RsBruker rsBruker = mapper.map(bruker, RsBruker.class);
 
-        assertThat(rsBruker.getNavIdent(), is("ident"));
-        assertThat(rsBruker.getFavoritter().get(0), is("2"));
+        assertThat(rsBruker.getBrukerId(), is("ident"));
+        assertThat(rsBruker.getFavoritter().get(0), is(2L));
     }
 }
