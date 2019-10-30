@@ -38,71 +38,6 @@ fasitResources:
       issuerUrl: freg.security.oidc.idp.openam.issuerUrl
       jwksUrl: freg.security.oidc.idp.openam.jwksUrl
 
-  - alias: tpsf-host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.tpsf.url
-
-  - alias: kodeverk-host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.kodeverk.url
-
-  - alias: norg2-host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.norg2.url
-
-  - alias: sigrunStub-host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.sigrunStub.url
-
-  - alias: krrStub-host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.krrStub.url
-
-  - alias: udiStub-host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.udiStub.url
-
-  - alias: jira.host
-    resourceType: baseurl
-    propertyMap:
-      url: jira.host
-
-  - alias: fasit.host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.fasit.url
-
-  - alias: arenaForvalter.host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.arenaForvalter.url
-
-  - alias: pdlForvalter.host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.pdlForvalter.url
-
-  - alias: personOppslag.host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.personOppslag.url
-
-  - alias: syntdata.host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.syntdata.url
-
-  - alias: instdata.host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.instdata.url
-
   - alias: srvdolly-test-env
     resourceType: credential
     propertyMap:
@@ -128,6 +63,9 @@ fasitResources:
       username: spring.datasource.username
       password: spring.datasource.password
       onsHosts: app.datasource.onsHosts
+
+  - alias: dolly-backend.application.properties
+    resourceType: ApplicationProperties
 
   exposed:
   - alias: dolly-backend.api.v1
