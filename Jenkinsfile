@@ -3,8 +3,8 @@ agileApplicationPipeline {
     javaVersion = "1.8"
     environment = "Q1"
     branchDeployments = [
-        [branch: "feature/bugfix-example", namespace: "U2", environment: "U2"],
-                [branch: "feature/dolly-test-t1", namespace: "T1", environment: "T1"]
+        [branch: "dolly-test-u2", namespace: "U2", environment: "U2"],
+        [branch: "feature/dolly-test-t1", namespace: "T1", environment: "T1"]
     ]
     hasSmoketests = false
     hasPerformanceTest = false
