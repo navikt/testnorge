@@ -34,3 +34,7 @@ De filene som må endres når man legger til synt-pakkene er:
    - NAIS yaml for den nye pakken. Navngivningskonvensjon {appName}.yaml
  - [SyntAppNames](src/main/java/no/nav/registre/syntrest/utils/SyntAppNames.java)
  - Evt. legge til klasser for spesifiserte [Respons-meldinger](src/main/java/no/nav/registre/syntrest/response).
+ 
+## TODOs
+ - [ ] 
+ - [ ]
