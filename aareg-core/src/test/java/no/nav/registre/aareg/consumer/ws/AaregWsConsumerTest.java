@@ -11,7 +11,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -39,19 +40,8 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeids
 @RunWith(MockitoJUnitRunner.class)
 public class AaregWsConsumerTest {
 
-    private static XMLGregorianCalendar calendar = new XMLGregorianCalendarImpl();
-    private static Sikkerhetsbegrensning faultInfo = new Sikkerhetsbegrensning();
-
-    static {
-        calendar.setTime(12, 13, 0);
-        calendar.setYear(2019);
-        calendar.setMonth(3);
-        calendar.setDay(10);
-        faultInfo.setTidspunkt(calendar);
-        faultInfo.setFeilaarsak("Manglende rolle");
-        faultInfo.setFeilkilde("AAREG");
-        faultInfo.setFeilmelding("Ingen tilgang");
-    }
+    private Sikkerhetsbegrensning faultInfo = new Sikkerhetsbegrensning();
+    private DatatypeFactory datatypeFactory;
 
     @Mock
     private BehandleArbeidsforholdV1Proxy behandleArbeidsforholdV1Proxy;
@@ -66,7 +56,17 @@ public class AaregWsConsumerTest {
     private AaregWsConsumer aaregWsConsumer;
 
     @Before
-    public void setuo() {
+    public void setUp() throws DatatypeConfigurationException {
+        datatypeFactory = DatatypeFactory.newInstance();
+        XMLGregorianCalendar calendar = datatypeFactory.newXMLGregorianCalendar();
+        calendar.setTime(12, 13, 0);
+        calendar.setYear(2019);
+        calendar.setMonth(3);
+        calendar.setDay(10);
+        faultInfo.setTidspunkt(calendar);
+        faultInfo.setFeilaarsak("Manglende rolle");
+        faultInfo.setFeilkilde("AAREG");
+        faultInfo.setFeilmelding("Ingen tilgang");
 
         when(behandleArbeidsforholdV1Proxy.getServiceByEnvironment(anyString())).thenReturn(behandleArbeidsforholdPortType);
     }
