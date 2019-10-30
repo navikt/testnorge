@@ -1,12 +1,9 @@
-agileApplicationPipeline {
+naiseratorApplicationPipeline {
     applicationName = "dolly-backend"
-    javaVersion = "1.8"
-    environment = "Q1"
-    branchDeployments = [
-        [branch: "dolly-backend-test-u2", namespace: "U2", environment: "U2"]
+    additionalDeployments = [
+        [namespace: "q1"]
     ]
-    hasSmoketests = false
-    hasPerformanceTest = false
-    isWhitelisted = false
-    isTestApplication = true
+    branchDeployments = [
+        [branch: "feature/REG-5940-naiserator-og-vault-overgang", namespace: "u2"]
+    ]
 }

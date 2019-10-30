@@ -1,0 +1,39 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: dolly-backend
+  namespace: u2
+  labels:
+    team: registre
+replicas:
+  min: 2
+  max: 2
+spec:
+  port: 8080
+  ingresses:
+    - https://dolly-backend-u2.nais.preprod.local
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 20
+    periodSeconds: 2
+    failureThreshold: 140
+  readiness:
+    path: /internal/isReady
+    initialDelay: 20
+    periodSeconds: 2
+    failureThreshold: 140
+  prometheus:
+    enabled: true
+    path: /internal/metrics
+  resources:
+    requests:
+      cpu: 0.5
+      memory: 1024Mi
+    limits:
+      cpu: 1.5
+      memory: 2048Mi
+  vault:
+    enabled: true
+    paths:
+      - kvPath: /kv/preprod/fss/dolly-backend/u2
+        mountPath: /var/run/secrets/nais.io/vault
