@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.aareg.consumer.rs.AaregRestConsumer;
-import no.nav.registre.aareg.consumer.rs.TpsfConsumer;
-import no.nav.registre.aareg.consumer.rs.responses.MiljoerResponse;
 import no.nav.registre.aareg.consumer.ws.AaregWsConsumer;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
@@ -44,7 +42,6 @@ public class AaregService {
 
     private final AaregWsConsumer aaregWsConsumer;
     private final AaregRestConsumer aaregRestConsumer;
-    private final TpsfConsumer tpsfConsumer;
 
     public RsAaregResponse opprettArbeidsforhold(
             RsAaregOpprettRequest request
@@ -65,61 +62,61 @@ public class AaregService {
         return aaregRestConsumer.hentArbeidsforhold(ident, miljoe);
     }
 
-    public Map<String, String> slettArbeidsforhold(
-            String ident
+    public RsAaregResponse slettArbeidsforhold(
+            String ident,
+            List<String> miljoer
     ) {
         Map<String, String> resultMap = new HashMap<>();
-        ResponseEntity<MiljoerResponse> miljoer = tpsfConsumer.hentMiljoer();
 
-        if (miljoer.hasBody()) {
-            miljoer.getBody().getMiljoer().forEach(environment -> {
-                try {
-                    ResponseEntity<List<Map>> arbeidsforholdResponse = aaregRestConsumer.hentArbeidsforhold(ident, environment);
-                    if (arbeidsforholdResponse.hasBody()) {
-                        List<Map> responseBody = arbeidsforholdResponse.getBody();
-                        if (responseBody != null) {
-                            responseBody.forEach(map -> Collections.singletonList(map).forEach(
-                                    forhold -> {
-                                        RsArbeidsforhold arbeidsforhold = RsArbeidsforhold.builder()
-                                                .arbeidsforholdIDnav(getNavArbfholdId(forhold))
-                                                .arbeidsforholdID(getArbforholdId(forhold))
-                                                .arbeidsgiver("Person".equals(getArbeidsgiverType(forhold)) ?
-                                                        RsAktoerPerson.builder()
-                                                                .ident(getPersonnummer(forhold))
-                                                                .build() :
-                                                        RsOrganisasjon.builder()
-                                                                .orgnummer(getOrgnummer(forhold))
-                                                                .build())
-                                                .arbeidsforholdstype(getArbeidsforholdType(forhold))
-                                                .arbeidstaker(RsPersonAareg.builder()
-                                                        .ident(getOffentligIdent(forhold))
-                                                        .build())
-                                                .ansettelsesPeriode(RsPeriode.builder()
-                                                        .fom(parse(getPeriodeFom(forhold)).atStartOfDay())
-                                                        .tom(parse(getPeriodeFom(forhold)).atStartOfDay())
-                                                        .build())
-                                                .arbeidsavtale(RsArbeidsavtale.builder()
-                                                        .yrke(getYrkeskode(forhold))
-                                                        .stillingsprosent(0.0)
-                                                        .endringsdatoStillingsprosent(parse(getPeriodeFom(forhold)).atStartOfDay())
-                                                        .build())
-                                                .build();
-                                        resultMap.putAll(aaregWsConsumer.oppdaterArbeidsforhold(buildRequest(arbeidsforhold, environment)));
-                                    }
-                            ));
-                        }
-                    }
-                } catch (HttpClientErrorException e) {
-                    if (HttpStatus.NOT_FOUND.value() != e.getStatusCode().value()) {
-                        throw e;
-                    }
-                } catch (TestnorgeAaregFunctionalException e) {
-                    if (!e.getMessage().contains("Ugyldig miljø")) {
-                        throw e;
+        miljoer.forEach(environment -> {
+            try {
+                ResponseEntity<List<Map>> arbeidsforholdResponse = aaregRestConsumer.hentArbeidsforhold(ident, environment);
+                if (arbeidsforholdResponse.hasBody()) {
+                    List<Map> responseBody = arbeidsforholdResponse.getBody();
+                    if (responseBody != null) {
+                        responseBody.forEach(map -> Collections.singletonList(map).forEach(
+                                forhold -> {
+                                    RsArbeidsforhold arbeidsforhold = RsArbeidsforhold.builder()
+                                            .arbeidsforholdIDnav(getNavArbfholdId(forhold))
+                                            .arbeidsforholdID(getArbforholdId(forhold))
+                                            .arbeidsgiver("Person".equals(getArbeidsgiverType(forhold)) ?
+                                                    RsAktoerPerson.builder()
+                                                            .ident(getPersonnummer(forhold))
+                                                            .build() :
+                                                    RsOrganisasjon.builder()
+                                                            .orgnummer(getOrgnummer(forhold))
+                                                            .build())
+                                            .arbeidsforholdstype(getArbeidsforholdType(forhold))
+                                            .arbeidstaker(RsPersonAareg.builder()
+                                                    .ident(getOffentligIdent(forhold))
+                                                    .build())
+                                            .ansettelsesPeriode(RsPeriode.builder()
+                                                    .fom(parse(getPeriodeFom(forhold)).atStartOfDay())
+                                                    .tom(parse(getPeriodeFom(forhold)).atStartOfDay())
+                                                    .build())
+                                            .arbeidsavtale(RsArbeidsavtale.builder()
+                                                    .yrke(getYrkeskode(forhold))
+                                                    .stillingsprosent(0.0)
+                                                    .endringsdatoStillingsprosent(parse(getPeriodeFom(forhold)).atStartOfDay())
+                                                    .build())
+                                            .build();
+                                    resultMap.putAll(aaregWsConsumer.oppdaterArbeidsforhold(buildRequest(arbeidsforhold, environment)));
+                                }
+                        ));
                     }
                 }
-            });
-        }
-        return resultMap;
+            } catch (HttpClientErrorException e) {
+                if (HttpStatus.NOT_FOUND.value() != e.getStatusCode().value()) {
+                    throw e;
+                }
+            } catch (TestnorgeAaregFunctionalException e) {
+                if (!e.getMessage().contains("Ugyldig miljø")) {
+                    throw e;
+                }
+            }
+        });
+        return RsAaregResponse.builder()
+                .statusPerMiljoe(resultMap)
+                .build();
     }
 }

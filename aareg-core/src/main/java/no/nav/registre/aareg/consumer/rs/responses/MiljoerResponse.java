@@ -13,5 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 public class MiljoerResponse {
 
-    private List<String> miljoer;
+    private List<String> environments;
 }

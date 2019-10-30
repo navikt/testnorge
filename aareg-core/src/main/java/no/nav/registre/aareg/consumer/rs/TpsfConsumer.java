@@ -15,7 +15,7 @@ import no.nav.registre.aareg.consumer.rs.responses.MiljoerResponse;
 @RequiredArgsConstructor
 public class TpsfConsumer {
 
-    private static final String TPSF_GET_ENVIRONMENTS = "/api/v1/miljoer";
+    private static final String TPSF_GET_ENVIRONMENTS = "/v1/environments";
 
     private final RestTemplate restTemplate;
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.aareg.consumer.rs.TpsfConsumer;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
@@ -27,6 +28,7 @@ import no.nav.registre.aareg.service.AaregService;
 public class ArbeidsforholdController {
 
     private final AaregService aaregService;
+    private final TpsfConsumer tpsfConsumer;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -55,9 +57,13 @@ public class ArbeidsforholdController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public Map<String, String> slettArbeidsforhold(
-            @RequestParam String ident
+    public RsAaregResponse slettArbeidsforhold(
+            @RequestParam String ident,
+            @RequestParam(required = false, defaultValue = "") List<String> miljoer
     ) {
-        return aaregService.slettArbeidsforhold(ident);
+        if (miljoer == null || miljoer.isEmpty()) {
+            miljoer = tpsfConsumer.hentMiljoer().getBody().getEnvironments();
+        }
+        return aaregService.slettArbeidsforhold(ident, miljoer);
     }
 }
