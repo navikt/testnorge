@@ -14,7 +14,8 @@ export const getValues = (attributeList, values) => {
 
 		if (pathPrefix == DataSourceMapper('SIGRUN')) {
 			const groupByTjeneste = _groupBy(value, 'tjeneste')
-			let tjenester = Object.keys(groupByTjeneste)
+			const tjenester = Object.keys(groupByTjeneste)
+
 			let dataArr = []
 			tjenester.forEach(tjeneste => {
 				const groupedByInntektsaar = _groupBy(groupByTjeneste[tjeneste], 'inntektsaar')
@@ -27,7 +28,7 @@ export const getValues = (attributeList, values) => {
 							verdi: temp.beloep
 						})),
 						inntektsaar: key,
-						tjeneste: tjeneste
+						tjeneste: DataFormatter.CapitalizedToUppercaseAndUnderscore(tjeneste)
 					})
 				})
 			})
@@ -473,17 +474,15 @@ export const _filterArrayAttributes = (values, selectedIds, filter, index) => {
 	let attributeIds = selectedIds.slice()
 	const AttributtManagerInstance = new AttributtManager()
 	let deletedIds = []
-	attributeIds
-		.filter(key => filter.includes(key))
-		.forEach(key => {
-			copy[key].splice(index, 1)
-			if (copy[key].length == 0) {
-				let ind = attributeIds.indexOf(key)
-				deletedIds.push(attributeIds[ind])
-				attributeIds.splice(ind, 1)
-				delete copy[key]
-			}
-		})
+	attributeIds.filter(key => filter.includes(key)).forEach(key => {
+		copy[key].splice(index, 1)
+		if (copy[key].length == 0) {
+			let ind = attributeIds.indexOf(key)
+			deletedIds.push(attributeIds[ind])
+			attributeIds.splice(ind, 1)
+			delete copy[key]
+		}
+	})
 	let dependencies = AttributtManagerInstance.listDependencies(deletedIds)
 	return {
 		values:
