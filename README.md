@@ -9,6 +9,8 @@ Stub for lagring og innsending av inntektsmeldinger.
 - Migrasjonscript er ikke på plass
 - Testing
 - Bedre støtte for enkelt å legge til nye endringer i meldingene
+- CircleCI prosjekt er ikke satt opp
+- Deploy access er ikke satt opp
 
 ## XSD
 https://github.com/navikt/tjenestespesifikasjoner/blob/master/nav-altinn-inntektsmelding/src/main/xsd/Inntektsmelding20181211.xsd
