@@ -210,7 +210,7 @@ export function mapBestillingData(bestillingData) {
 					flatSigrunStubKriterier.push({
 						grunnlag: g.tekniskNavn,
 						inntektsaar: inntekt.inntektsaar,
-						tjeneste: inntekt.tjeneste,
+						tjeneste: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste),
 						verdi: g.verdi
 					})
 				})
