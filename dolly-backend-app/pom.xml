@@ -149,14 +149,6 @@
             <version>${freg-security-test-oidc-tools.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- JMOCKIT -->
-        <dependency>
-            <groupId>org.jmockit</groupId>
-            <artifactId>jmockit</artifactId>
-            <version>${jmockit.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 </project>

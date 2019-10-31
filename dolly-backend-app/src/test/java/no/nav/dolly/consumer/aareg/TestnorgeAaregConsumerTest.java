@@ -10,8 +10,6 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mockit.Mock;
-import mockit.MockUp;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
@@ -35,11 +34,15 @@ import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(TestnorgeAaregConsumer.class)
 @ActiveProfiles("test")
 public class TestnorgeAaregConsumerTest {
+
+    private static final String STANDARD_PRINCIPAL = "brukernavn";
+    private static final String STANDARD_IDTOKEN = "idtoken";
 
     @Autowired
     private TestnorgeAaregConsumer testnorgeAaregConsumer;
@@ -49,6 +52,7 @@ public class TestnorgeAaregConsumerTest {
 
     @Value("${providers.aaregdata.url}")
     private String serverUrl;
+
 
     private String ident = "01010101010";
     private String miljoe = "t0";
@@ -82,12 +86,9 @@ public class TestnorgeAaregConsumerTest {
         slettResponse = new HashMap<>();
         slettResponse.put(miljoe, "OK");
 
-        new MockUp<TestnorgeAaregConsumer>() {
-            @Mock
-            public String getUserIdToken() {
-                return "testToken";
-            }
-        };
+        SecurityContextHolder.getContext().setAuthentication(
+                new OidcTokenAuthentication(STANDARD_PRINCIPAL, null, STANDARD_IDTOKEN, null)
+        );
     }
 
     @Test
