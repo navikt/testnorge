@@ -30,7 +30,7 @@ export const GyldigAdresseVelger = ({ settBoadresse }) => {
 	}, [])
 
 	return (
-		<div style={{ backgroundColor: '#edf2ff', padding: '10px 20px' }}>
+		<div style={{ backgroundColor: '#edf2ff', padding: '10px 20px', marginBottom: '20px' }}>
 			<SokAdresseForm onSearch={fetch} />
 			{state.loading && <Loading label="henter gyldig adresser" />}
 			{!feilmelding && adresser && (

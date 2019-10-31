@@ -28,7 +28,8 @@ export const initialValues = {
 				kjonn: '',
 				regdato: ''
 			}
-		]
+		],
+		boadresse: {}
 	}
 }
 

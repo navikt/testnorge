@@ -40,7 +40,9 @@ export const SokAdresseForm = ({ onSearch }) => {
 					onChange={v => setKommunenummer((v && v.value) || '')}
 				/>
 			</div>
-			<Button onClick={sokAdresse}>Hent gyldig adresser</Button>
+			<Button style={{ backgroundColor: '#ccd9ff' }} onClick={sokAdresse}>
+				Hent gyldig adresser
+			</Button>
 		</div>
 	)
 }

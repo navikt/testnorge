@@ -7,7 +7,18 @@ export const VelgAdresseForm = ({ adresser, velgAdresse }) => {
 	const [valgtAdresse, setValgtAdresse] = useState(mappedAdresser[0])
 	const [valgtHusnummer, setValgtHusnummer] = useState(mappedAdresser[0].husnrfra)
 
-	const onVelgAdresse = () => velgAdresse(valgtAdresse, valgtHusnummer)
+	const onVelgAdresse = () => {
+		console.log(valgtAdresse)
+		return velgAdresse({
+			adressetype: 'GATE',
+			gateadresse: valgtAdresse.adrnavn,
+			postnr: valgtAdresse.pnr,
+			poststed: valgtAdresse.psted,
+			kommunenr: valgtAdresse.knr,
+			gatekode: valgtAdresse.gkode,
+			husnummer: valgtHusnummer
+		})
+	}
 
 	const handleChangeAdress = adresse => {
 		setValgtAdresse(adresse)
@@ -36,7 +47,9 @@ export const VelgAdresseForm = ({ adresser, velgAdresse }) => {
 					isClearable={false}
 				/>
 			</div>
-			<Button onClick={onVelgAdresse}>Velg adresse</Button>
+			<Button style={{ backgroundColor: '#ccd9ff' }} onClick={onVelgAdresse}>
+				Velg adresse
+			</Button>
 		</div>
 	)
 }
