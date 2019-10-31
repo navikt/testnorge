@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import no.nav.registre.aareg.consumer.rs.TpsfConsumer;
 import no.nav.registre.aareg.consumer.rs.responses.MiljoerResponse;
@@ -34,18 +33,19 @@ public class ArbeidsforholdControllerTest {
 
     private final String ident = "01010101010";
     private final String miljoe = "t0";
+    private String navCallId = "test";
 
     @Test
     public void shouldOppretteArbeidsforhold() {
         var opprettRequest = RsAaregOpprettRequest.builder().build();
-        arbeidsforholdController.opprettArbeidsforhold(opprettRequest);
+        arbeidsforholdController.opprettArbeidsforhold(navCallId, opprettRequest);
         verify(aaregService).opprettArbeidsforhold(opprettRequest);
     }
 
     @Test
     public void shouldOppdatereArbeidsforhold() {
         var oppdaterRequest = new RsAaregOppdaterRequest();
-        arbeidsforholdController.oppdaterArbeidsforhold(oppdaterRequest);
+        arbeidsforholdController.oppdaterArbeidsforhold(navCallId, oppdaterRequest);
         verify(aaregService).oppdaterArbeidsforhold(oppdaterRequest);
     }
 
@@ -58,8 +58,8 @@ public class ArbeidsforholdControllerTest {
     @Test
     public void shouldSletteArbeidsforholdFraEttMiljoe() {
         var miljoer = Collections.singletonList(miljoe);
-        arbeidsforholdController.slettArbeidsforhold(ident, miljoer);
-        verify(aaregService).slettArbeidsforhold(ident, miljoer);
+        arbeidsforholdController.slettArbeidsforhold(navCallId, ident, miljoer);
+        verify(aaregService).slettArbeidsforhold(ident, miljoer, navCallId);
     }
 
     @Test
@@ -69,9 +69,9 @@ public class ArbeidsforholdControllerTest {
         miljoerResponse.setEnvironments(miljoer);
         when(tpsfConsumer.hentMiljoer()).thenReturn(ResponseEntity.ok(miljoerResponse));
 
-        arbeidsforholdController.slettArbeidsforhold(ident, null);
+        arbeidsforholdController.slettArbeidsforhold(navCallId, ident, null);
 
         verify(tpsfConsumer).hentMiljoer();
-        verify(aaregService).slettArbeidsforhold(ident, miljoer);
+        verify(aaregService).slettArbeidsforhold(ident, miljoer, navCallId);
     }
 }

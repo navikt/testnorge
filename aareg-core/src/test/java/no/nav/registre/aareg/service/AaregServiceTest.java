@@ -42,6 +42,7 @@ public class AaregServiceTest {
     private RsAaregOppdaterRequest rsAaregOppdaterRequest;
     private String ident = "01010101010";
     private String miljoe = "t1";
+    private String navCallId = "test";
 
     @Before
     public void setUp() {
@@ -75,7 +76,7 @@ public class AaregServiceTest {
         when(aaregRestConsumer.hentArbeidsforhold(ident, miljoe)).thenReturn(ResponseEntity.ok(Collections.singletonList(arbeidsforhold)));
         when(aaregWsConsumer.oppdaterArbeidsforhold(any())).thenReturn(status);
 
-        var result = aaregService.slettArbeidsforhold(ident, Collections.singletonList(miljoe));
+        var result = aaregService.slettArbeidsforhold(ident, Collections.singletonList(miljoe), navCallId);
 
         assertThat(result.getStatusPerMiljoe().get(miljoe), equalTo(STATUS_OK));
 

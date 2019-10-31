@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -35,16 +36,24 @@ public class ArbeidsforholdController {
     @ApiOperation(value = "Legg arbeidsforhold inn i aareg.")
     @ResponseStatus(HttpStatus.CREATED)
     public RsAaregResponse opprettArbeidsforhold(
+            @RequestHeader("Nav-Call-Id") String navCallId,
             @RequestBody RsAaregOpprettRequest request
     ) {
+        if (request.getArkivreferanse() == null) {
+            request.setArkivreferanse(navCallId);
+        }
         return aaregService.opprettArbeidsforhold(request);
     }
 
     @PutMapping
     @ApiOperation(value = "Oppdater arbeidsforhold i aareg.")
     public RsAaregResponse oppdaterArbeidsforhold(
+            @RequestHeader("Nav-Call-Id") String navCallId,
             @RequestBody RsAaregOppdaterRequest request
     ) {
+        if (request.getArkivreferanse() == null) {
+            request.setArkivreferanse(navCallId);
+        }
         return RsAaregResponse.builder()
                 .statusPerMiljoe(aaregService.oppdaterArbeidsforhold(request))
                 .build();
@@ -64,12 +73,13 @@ public class ArbeidsforholdController {
             + "vil applikasjonen utføre operasjonen i alle miljøer.")
     @ResponseStatus(HttpStatus.OK)
     public RsAaregResponse slettArbeidsforhold(
+            @RequestHeader("Nav-Call-Id") String navCallId,
             @RequestParam String ident,
             @RequestParam(required = false, defaultValue = "") List<String> miljoer
     ) {
         if (miljoer == null || miljoer.isEmpty()) {
             miljoer = tpsfConsumer.hentMiljoer().getBody().getEnvironments();
         }
-        return aaregService.slettArbeidsforhold(ident, miljoer);
+        return aaregService.slettArbeidsforhold(ident, miljoer, navCallId);
     }
 }

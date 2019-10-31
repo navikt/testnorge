@@ -14,11 +14,12 @@ abstract class AaregAbstractClient {
     private static final String ARBEIDSGIVER = "arbeidsgiver";
     private static final String ARBEIDSTAKER = "arbeidstaker";
 
-    static RsAaregOppdaterRequest buildRequest(RsArbeidsforhold arbfInput, String env) {
+    static RsAaregOppdaterRequest buildRequest(RsArbeidsforhold arbfInput, String env, String arkivreferanse) {
         var request = new RsAaregOppdaterRequest();
         request.setRapporteringsperiode(now());
         request.setArbeidsforhold(arbfInput);
         request.setEnvironments(singletonList(env));
+        request.setArkivreferanse(arkivreferanse);
         return request;
     }
 

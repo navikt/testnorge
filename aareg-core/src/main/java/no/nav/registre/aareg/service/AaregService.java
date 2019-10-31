@@ -64,7 +64,8 @@ public class AaregService {
 
     public RsAaregResponse slettArbeidsforhold(
             String ident,
-            List<String> miljoer
+            List<String> miljoer,
+            String navCallId
     ) {
         Map<String, String> resultMap = new HashMap<>();
 
@@ -100,7 +101,7 @@ public class AaregService {
                                                     .endringsdatoStillingsprosent(parse(getPeriodeFom(forhold)).atStartOfDay())
                                                     .build())
                                             .build();
-                                    resultMap.putAll(aaregWsConsumer.oppdaterArbeidsforhold(buildRequest(arbeidsforhold, environment)));
+                                    resultMap.putAll(aaregWsConsumer.oppdaterArbeidsforhold(buildRequest(arbeidsforhold, environment, navCallId)));
                                 }
                         ));
                     }
