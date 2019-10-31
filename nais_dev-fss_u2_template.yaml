@@ -4,7 +4,7 @@ metadata:
   name: dolly-backend
   namespace: u2
   labels:
-    team: dolly
+    team: registre
 replicas:
   min: 2
   max: 2
