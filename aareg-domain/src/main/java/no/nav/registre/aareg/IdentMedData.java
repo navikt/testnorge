@@ -5,17 +5,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.registre.aareg.domain.RsArbeidsforhold;
 
 import java.util.List;
 
+import no.nav.registre.aareg.domain.RsArbeidsforhold;
+
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
-
 public class IdentMedData {
+
     private String id;
     private List<RsArbeidsforhold> data;
 }

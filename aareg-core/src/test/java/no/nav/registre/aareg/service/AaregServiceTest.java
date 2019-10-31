@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.aareg.consumer.rs.AaregRestConsumer;
-import no.nav.registre.aareg.consumer.rs.TpsfConsumer;
-import no.nav.registre.aareg.consumer.rs.responses.MiljoerResponse;
 import no.nav.registre.aareg.consumer.ws.AaregWsConsumer;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
@@ -37,9 +35,6 @@ public class AaregServiceTest {
     @Mock
     private AaregRestConsumer aaregRestConsumer;
 
-    @Mock
-    private TpsfConsumer tpsfConsumer;
-
     @InjectMocks
     private AaregService aaregService;
 
@@ -47,13 +42,11 @@ public class AaregServiceTest {
     private RsAaregOppdaterRequest rsAaregOppdaterRequest;
     private String ident = "01010101010";
     private String miljoe = "t1";
-    private MiljoerResponse miljoerResponse;
 
     @Before
     public void setUp() {
         rsAaregOpprettRequest = new RsAaregOpprettRequest();
         rsAaregOppdaterRequest = new RsAaregOppdaterRequest();
-        miljoerResponse = new MiljoerResponse(Collections.singletonList(miljoe));
     }
 
     @Test

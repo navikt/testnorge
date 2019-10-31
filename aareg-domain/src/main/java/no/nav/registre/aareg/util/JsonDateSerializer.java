@@ -14,7 +14,7 @@ public class JsonDateSerializer extends JsonSerializer<LocalDateTime> {
 
     @Override
     public void serialize(LocalDateTime date, JsonGenerator generator, SerializerProvider arg2) throws IOException {
-        final String dateString = date.format(this.formatter);
+        final var dateString = date.format(this.formatter);
         generator.writeString(dateString);
     }
 }
