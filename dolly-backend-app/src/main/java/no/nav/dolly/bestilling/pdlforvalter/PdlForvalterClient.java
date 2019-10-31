@@ -1,6 +1,8 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
 import static java.time.LocalDate.now;
+import static java.util.Collections.singletonList;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlAdressebeskyttelse.convertSpesreg;
 import static no.nav.dolly.util.NullcheckUtil.blankcheckSetDefaultValue;
@@ -17,12 +19,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
+import no.nav.dolly.domain.resultset.pdlforvalter.navn.PdlNavn;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -43,6 +48,7 @@ public class PdlForvalterClient implements ClientRegister {
     private static final String HENDELSE_ID = "hendelseId";
 
     private final PdlForvalterConsumer pdlForvalterConsumer;
+    private final TpsfService tpsfService;
     private final DatoFraIdentService datoFraIdentService;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -55,8 +61,10 @@ public class PdlForvalterClient implements ClientRegister {
 
             if (bestilling.getEnvironments().contains(SYNTH_ENV)) {
 
+                hentPersondetaljer(tpsPerson);
                 sendDeleteIdent(tpsPerson);
                 sendFoedselsmelding(tpsPerson);
+                sendNavn(tpsPerson);
                 sendAdressebeskyttelse(bestilling.getTpsf(), tpsPerson);
                 sendDoedsfall(bestilling.getTpsf(), tpsPerson);
 
@@ -85,7 +93,21 @@ public class PdlForvalterClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(ident -> pdlForvalterConsumer.deleteIdent(ident));
+        try {
+            identer.forEach(pdlForvalterConsumer::deleteIdent);
+
+        } catch (RuntimeException e){
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    private void hentPersondetaljer(TpsPerson tpsPerson) {
+        if (isNull(tpsPerson.getPersondetalj())) {
+            List<Person> personer = tpsfService.hentTestpersoner(singletonList(tpsPerson.getHovedperson()));
+            if (!personer.isEmpty()) {
+                tpsPerson.setPersondetalj(personer.get(0));
+            }
+        }
     }
 
     private void sendAdressebeskyttelse(RsTpsfUtvidetBestilling bestilling, TpsPerson tpsPerson) {
@@ -98,6 +120,26 @@ public class PdlForvalterClient implements ClientRegister {
             }
         }
 
+    }
+
+    private void sendNavn(TpsPerson tpsPerson) {
+
+        if (nonNull(tpsPerson.getPersondetalj())) {
+            sendNavn(tpsPerson.getPersondetalj());
+            tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> sendNavn(relasjon.getPersonRelasjonMed()));
+        }
+    }
+
+    private void sendNavn(Person person) {
+
+        try {
+            pdlForvalterConsumer.postNavn(mapperFacade.map(person, PdlNavn.class), person.getIdent());
+        } catch (HttpClientErrorException e) {
+            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter.", person.getIdent(), e);
+        }
     }
 
     private void sendAdressebeskyttelse(String ident, String spesreg) {
@@ -249,7 +291,7 @@ public class PdlForvalterClient implements ClientRegister {
                 pdlForvalterConsumer.deleteIdent(tpsPerson.getPartner());
             }
 
-            tpsPerson.getBarn().forEach(barn -> pdlForvalterConsumer.deleteIdent(barn));
+            tpsPerson.getBarn().forEach(pdlForvalterConsumer::deleteIdent);
 
         } catch (RuntimeException e) {
 

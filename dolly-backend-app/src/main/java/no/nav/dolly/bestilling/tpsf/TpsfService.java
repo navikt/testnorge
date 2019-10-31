@@ -1,9 +1,10 @@
 package no.nav.dolly.bestilling.tpsf;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
@@ -11,21 +12,9 @@ import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
-import no.nav.dolly.bestilling.udistub.RsAliasRequest;
-import no.nav.dolly.bestilling.udistub.RsAliasResponse;
-import no.nav.dolly.domain.resultset.tpsf.Person;
-import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
-import no.nav.dolly.domain.resultset.tpsf.TpsfIdenterMiljoer;
-import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
-import no.nav.dolly.domain.resultset.tpsf.EnvironmentsResponse;
-import no.nav.dolly.domain.resultset.tpsf.RsPerson;
-import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
-import no.nav.dolly.exceptions.TpsfException;
-import no.nav.dolly.properties.ProvidersProps;
+import java.io.IOException;
+import java.net.URI;
+import java.util.List;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
@@ -34,11 +23,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
+import no.nav.dolly.bestilling.udistub.RsAliasRequest;
+import no.nav.dolly.bestilling.udistub.RsAliasResponse;
+import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
+import no.nav.dolly.domain.resultset.tpsf.EnvironmentsResponse;
+import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.RsPerson;
+import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
+import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
+import no.nav.dolly.domain.resultset.tpsf.TpsfIdenterMiljoer;
+import no.nav.dolly.exceptions.TpsfException;
+import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
 @Service
@@ -93,18 +93,12 @@ public class TpsfService {
         return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class) : null;
     }
 
-    public List<String> hentTilhoerendeIdenter(List<String> identer) {
-        List<String> identerMedFamilie = new ArrayList<>();
+    public List<Person> hentTestpersoner(List<String> identer) {
         ResponseEntity<Object> response = postToTpsf(TPSF_HENT_PERSONER_URL, new HttpEntity<List>(identer));
         if (isBodyNotNull(response)) {
-            Person[] personer = objectMapper.convertValue(response.getBody(), Person[].class);
-
-            asList(personer).forEach(person -> {
-                identerMedFamilie.add(person.getIdent());
-                person.getRelasjoner().forEach(relasjon -> identerMedFamilie.add(relasjon.getPersonRelasjonMed().getIdent()));
-            });
+            return newArrayList(objectMapper.convertValue(response.getBody(), Person[].class));
         }
-        return identerMedFamilie;
+        return emptyList();
     }
 
     public ResponseEntity updatePerson(RsPerson tpsfPerson) {
