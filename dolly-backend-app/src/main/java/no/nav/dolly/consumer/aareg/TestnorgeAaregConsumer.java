@@ -3,7 +3,6 @@ package no.nav.dolly.consumer.aareg;
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +20,7 @@ import java.util.UUID;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
+import no.nav.dolly.security.sts.StsOidcService;
 
 @Component
 public class TestnorgeAaregConsumer {
@@ -88,6 +88,10 @@ public class TestnorgeAaregConsumer {
                         .build();
         return restTemplate.exchange(deleteRequest, new ParameterizedTypeReference<Map<String, String>>() {
         }).getBody();
+    }
+
+    private static String getUserIdToken() {
+        return StsOidcService.getUserIdToken();
     }
 
     private static String getNavCallId() {

@@ -10,6 +10,8 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mockit.Mock;
+import mockit.MockUp;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,6 +81,13 @@ public class TestnorgeAaregConsumerTest {
 
         slettResponse = new HashMap<>();
         slettResponse.put(miljoe, "OK");
+
+        new MockUp<TestnorgeAaregConsumer>() {
+            @Mock
+            public String getUserIdToken() {
+                return "testToken";
+            }
+        };
     }
 
     @Test
