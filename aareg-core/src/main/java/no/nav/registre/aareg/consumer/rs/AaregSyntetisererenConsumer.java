@@ -1,11 +1,11 @@
 package no.nav.registre.aareg.consumer.rs;
 
+import static no.nav.registre.aareg.domain.CommonKeys.RESPONSE_TYPE_LIST_AAREG_REQUEST;
+
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
@@ -18,9 +18,6 @@ import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 @Component
 @Slf4j
 public class AaregSyntetisererenConsumer {
-
-    private static final ParameterizedTypeReference<List<RsAaregOpprettRequest>> RESPONSE_TYPE = new ParameterizedTypeReference<List<RsAaregOpprettRequest>>() {
-    };
 
     @Value("${aareg.pageSize}")
     private int pageSize;
@@ -61,7 +58,7 @@ public class AaregSyntetisererenConsumer {
     }
 
     private void insertSyntetiskeArbeidsforhold(List<RsAaregOpprettRequest> syntetiserteMeldinger, RequestEntity postRequest) {
-        ResponseEntity<List<RsAaregOpprettRequest>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
+        var response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST_AAREG_REQUEST);
         if (response.getBody() != null) {
             syntetiserteMeldinger.addAll(response.getBody());
         } else {

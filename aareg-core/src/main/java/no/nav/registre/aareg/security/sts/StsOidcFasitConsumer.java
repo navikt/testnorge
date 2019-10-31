@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.fasit.FasitApiConsumer;
-import no.nav.registre.aareg.fasit.FasitResourceWithUnmappedProperties;
 import no.nav.registre.aareg.properties.Environment;
 
 @Component
@@ -33,11 +32,10 @@ public class StsOidcFasitConsumer {
     private LocalDateTime expiry;
 
     public String getStsOidcService(Environment environment) {
-
         if (hasExpired()) {
             synchronized (this) {
                 if (hasExpired()) {
-                    FasitResourceWithUnmappedProperties[] fasitResources = fasitApiConsumer.fetchResources(OIDC_ALIAS, REST_SERVICE);
+                    var fasitResources = fasitApiConsumer.fetchResources(OIDC_ALIAS, REST_SERVICE);
 
                     urlOidcPerEnv = Arrays.stream(fasitResources)
                             .filter(resource -> OIDC_ALIAS.equals(resource.getAlias()) &&

@@ -3,7 +3,6 @@ package no.nav.registre.aareg.cxf;
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.feature.AbstractFeature;
-import org.apache.cxf.transport.Conduit;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 
@@ -19,11 +18,11 @@ public class TimeoutFeature extends AbstractFeature {
 
     @Override
     public void initialize(Client client, Bus bus) {
-        Conduit conduit = client.getConduit();
+        var conduit = client.getConduit();
         if (conduit instanceof HTTPConduit) {
-            HTTPConduit httpConduit = (HTTPConduit) conduit;
+            var httpConduit = (HTTPConduit) conduit;
             if (httpConduit.getClient() == null) {
-                HTTPClientPolicy policy = new HTTPClientPolicy();
+                var policy = new HTTPClientPolicy();
                 policy.setReceiveTimeout(receiveTimeout);
                 policy.setConnectionTimeout(connectionTimeout);
                 httpConduit.setClient(policy);

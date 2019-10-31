@@ -23,7 +23,7 @@ public class TpsfConsumer {
     private String tpsfServerUrl;
 
     public ResponseEntity<MiljoerResponse> hentMiljoer() {
-        RequestEntity getRequest = RequestEntity.get(URI.create(tpsfServerUrl + TPSF_GET_ENVIRONMENTS)).build();
+        var getRequest = RequestEntity.get(URI.create(tpsfServerUrl + TPSF_GET_ENVIRONMENTS)).build();
         return restTemplate.exchange(getRequest, MiljoerResponse.class);
     }
 }

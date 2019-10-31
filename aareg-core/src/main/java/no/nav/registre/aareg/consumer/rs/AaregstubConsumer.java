@@ -1,12 +1,13 @@
 package no.nav.registre.aareg.consumer.rs;
 
+import static no.nav.registre.aareg.domain.CommonKeys.RESPONSE_TYPE_LIST_LONG;
+import static no.nav.registre.aareg.domain.CommonKeys.RESPONSE_TYPE_LIST_STRING;
+
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
@@ -22,12 +23,6 @@ import no.nav.registre.aareg.provider.rs.response.SletteArbeidsforholdResponse;
 @Component
 @Slf4j
 public class AaregstubConsumer {
-
-    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE_LIST_STRING = new ParameterizedTypeReference<List<String>>() {
-    };
-
-    private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE_LIST_LONG = new ParameterizedTypeReference<List<Long>>() {
-    };
 
     private final RestTemplate restTemplate;
 
@@ -47,9 +42,9 @@ public class AaregstubConsumer {
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })
     public List<String> hentEksisterendeIdenter() {
-        RequestEntity getRequest = RequestEntity.get(hentAlleArbeidstakereUrl.expand()).build();
+        var getRequest = RequestEntity.get(hentAlleArbeidstakereUrl.expand()).build();
         List<String> eksisterendeIdenter = new ArrayList<>();
-        ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_LIST_STRING);
+        var response = restTemplate.exchange(getRequest, RESPONSE_TYPE_LIST_STRING);
 
         if (response.getBody() != null) {
             eksisterendeIdenter.addAll(response.getBody());
@@ -64,8 +59,8 @@ public class AaregstubConsumer {
     public List<String> sendTilAaregstub(
             List<RsAaregOpprettRequest> syntetiserteArbeidsforhold
     ) {
-        RequestEntity postRequest = RequestEntity.post(sendTilAaregstubUrl.expand()).body(syntetiserteArbeidsforhold);
-        ResponseEntity<List<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST_STRING);
+        var postRequest = RequestEntity.post(sendTilAaregstubUrl.expand()).body(syntetiserteArbeidsforhold);
+        var response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST_STRING);
 
         if (response.getBody() != null) {
             return response.getBody();
@@ -79,12 +74,12 @@ public class AaregstubConsumer {
     public SletteArbeidsforholdResponse slettIdenterFraAaregstub(
             List<String> identer
     ) {
-        SletteArbeidsforholdResponse sletteArbeidsforholdResponse = SletteArbeidsforholdResponse.builder()
+        var sletteArbeidsforholdResponse = SletteArbeidsforholdResponse.builder()
                 .identermedArbeidsforholdIdSomBleSlettet(new HashMap<>())
                 .identerSomIkkeKunneSlettes(new ArrayList<>())
                 .build();
-        for (String ident : identer) {
-            RequestEntity deleteRequest = RequestEntity.delete(slettIdentUrl.expand(ident)).build();
+        for (var ident : identer) {
+            var deleteRequest = RequestEntity.delete(slettIdentUrl.expand(ident)).build();
             try {
                 sletteArbeidsforholdResponse.getIdentermedArbeidsforholdIdSomBleSlettet().put(ident, restTemplate.exchange(deleteRequest, RESPONSE_TYPE_LIST_LONG).getBody());
             } catch (HttpStatusCodeException e) {

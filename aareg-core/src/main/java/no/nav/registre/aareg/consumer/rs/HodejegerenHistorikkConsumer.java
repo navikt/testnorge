@@ -1,10 +1,11 @@
 package no.nav.registre.aareg.consumer.rs;
 
+import static no.nav.registre.aareg.domain.CommonKeys.RESPONSE_TYPE_LIST_STRING;
+
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -17,9 +18,6 @@ import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
 @Component
 @Slf4j
 public class HodejegerenHistorikkConsumer {
-
-    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
-    };
 
     private final RestTemplate restTemplate;
 
@@ -35,8 +33,8 @@ public class HodejegerenHistorikkConsumer {
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> saveHistory(AaregSaveInHodejegerenRequest request) {
-        RequestEntity<AaregSaveInHodejegerenRequest> postRequest = RequestEntity.post(hodejegerenSaveHistorikk.expand()).body(request);
+        var postRequest = RequestEntity.post(hodejegerenSaveHistorikk.expand()).body(request);
 
-        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
+        return restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST_STRING).getBody();
     }
 }

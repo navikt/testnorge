@@ -39,15 +39,16 @@ public class AaregWsConsumer {
     private final BehandleArbeidsforholdV1Proxy behandleArbeidsforholdV1Proxy;
     private final MapperFacade mapperFacade;
 
-    private static String getUuid(String referanse) {
-
+    private static String getUuid(
+            String referanse
+    ) {
         return nonNull(referanse) ? referanse : "testnorge-aareg: " + UUID.randomUUID().toString();
     }
 
     public RsAaregResponse opprettArbeidsforhold(
             RsAaregOpprettRequest request
     ) {
-        OpprettArbeidsforholdRequest arbeidsforholdRequest = new OpprettArbeidsforholdRequest();
+        var arbeidsforholdRequest = new OpprettArbeidsforholdRequest();
         arbeidsforholdRequest.setArbeidsforhold(mapperFacade.map(request.getArbeidsforhold(), Arbeidsforhold.class));
         arbeidsforholdRequest.setArkivreferanse(getUuid(request.getArkivreferanse()));
 
@@ -73,7 +74,7 @@ public class AaregWsConsumer {
     public Map<String, String> oppdaterArbeidsforhold(
             RsAaregOppdaterRequest request
     ) {
-        OppdaterArbeidsforholdRequest arbeidsforholdRequest = new OppdaterArbeidsforholdRequest();
+        var arbeidsforholdRequest = new OppdaterArbeidsforholdRequest();
         arbeidsforholdRequest.setArbeidsforhold(mapperFacade.map(request.getArbeidsforhold(), Arbeidsforhold.class));
         arbeidsforholdRequest.setArkivreferanse(getUuid(request.getArkivreferanse()));
         arbeidsforholdRequest.setRapporteringsperiode(mapperFacade.map(request.getRapporteringsperiode(), XMLGregorianCalendar.class));

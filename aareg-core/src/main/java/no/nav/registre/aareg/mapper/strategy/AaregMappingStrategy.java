@@ -119,12 +119,12 @@ public class AaregMappingStrategy implements MappingStrategy {
 
     private Person mapPerson(RsPersonAareg rsPerson) {
 
-        NorskIdent norskIdent = new NorskIdent();
+        var norskIdent = new NorskIdent();
         norskIdent.setIdent(rsPerson.getIdent());
 
         norskIdent.setType(mapKodeverdi(new Personidenter(), rsPerson.getIdenttype()));
 
-        Person person = new Person();
+        var person = new Person();
         person.setIdent(norskIdent);
 
         return person;

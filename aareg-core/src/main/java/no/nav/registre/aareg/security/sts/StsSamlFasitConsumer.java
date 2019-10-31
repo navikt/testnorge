@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.fasit.FasitApiConsumer;
-import no.nav.registre.aareg.fasit.FasitResourceWithUnmappedProperties;
 import no.nav.registre.aareg.properties.Environment;
 
 @Component
@@ -33,12 +32,11 @@ public class StsSamlFasitConsumer {
     private LocalDateTime expiry;
 
     public String getStsSamlService(Environment environment) {
-
         if (hasExpired()) {
             updateInventory();
         }
 
-        for (Map.Entry<String, String> entry : urlSamlPerEnv.entrySet()) {
+        for (var entry : urlSamlPerEnv.entrySet()) {
             if ((environment == PREPROD && (entry.getKey().contains("q"))) ||
                     (environment == TEST && (entry.getKey().contains("t")))) {
                 return entry.getValue();
@@ -49,10 +47,9 @@ public class StsSamlFasitConsumer {
     }
 
     private void updateInventory() {
-
         synchronized (this) {
             if (hasExpired()) {
-                FasitResourceWithUnmappedProperties[] fasitResources = fasitApiConsumer.fetchResources(SAML_ALIAS, BASE_URL);
+                var fasitResources = fasitApiConsumer.fetchResources(SAML_ALIAS, BASE_URL);
 
                 urlSamlPerEnv = Arrays.stream(fasitResources)
                         .filter(resource -> SAML_ALIAS.equals(resource.getAlias()) &&
@@ -69,7 +66,6 @@ public class StsSamlFasitConsumer {
     }
 
     private boolean hasExpired() {
-
         return (isNull(expiry) || LocalDateTime.now().isAfter(expiry));
     }
 }

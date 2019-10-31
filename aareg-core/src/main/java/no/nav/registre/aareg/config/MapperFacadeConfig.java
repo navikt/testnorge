@@ -30,7 +30,5 @@ public class MapperFacadeConfig {
         }
 
         return mapperFactory.getMapperFacade();
-
     }
-
 }

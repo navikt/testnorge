@@ -15,7 +15,7 @@ abstract class AaregAbstractClient {
     private static final String ARBEIDSTAKER = "arbeidstaker";
 
     static RsAaregOppdaterRequest buildRequest(RsArbeidsforhold arbfInput, String env) {
-        RsAaregOppdaterRequest request = new RsAaregOppdaterRequest();
+        var request = new RsAaregOppdaterRequest();
         request.setRapporteringsperiode(now());
         request.setArbeidsforhold(arbfInput);
         request.setEnvironments(singletonList(env));

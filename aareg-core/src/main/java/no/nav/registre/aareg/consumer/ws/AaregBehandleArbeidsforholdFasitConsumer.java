@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import no.nav.registre.aareg.fasit.FasitApiConsumer;
-import no.nav.registre.aareg.fasit.FasitResourceWithUnmappedProperties;
 
 @Component
 @RequiredArgsConstructor
@@ -24,7 +23,7 @@ public class AaregBehandleArbeidsforholdFasitConsumer {
 
     public Map<String, String> fetchWsUrlsAllEnvironments() {
 
-        FasitResourceWithUnmappedProperties[] fasitResources = fasitApiConsumer.fetchResources(BEHANDLE_ARBEIDFORHOLD_ALIAS, BASE_URL);
+        var fasitResources = fasitApiConsumer.fetchResources(BEHANDLE_ARBEIDFORHOLD_ALIAS, BASE_URL);
 
         return Arrays.stream(fasitResources)
                 .filter(resource -> FAGSYSTEM.equals(resource.getScope().getZone()))

@@ -17,15 +17,13 @@ public class XmlGregorianCalendarCustomMapping extends BidirectionalConverter<XM
 
     @Override
     public LocalDateTime convertTo(XMLGregorianCalendar calendar, Type<LocalDateTime> type, MappingContext mappingContext) {
-
         return LocalDateTime.of(calendar.getYear(), calendar.getMonth(), calendar.getDay(), calendar.getHour(), calendar.getMinute(), calendar.getSecond());
     }
 
     @Override
     public XMLGregorianCalendar convertFrom(LocalDateTime dateTime, Type<XMLGregorianCalendar> type, MappingContext mappingContext) {
-
         try {
-            XMLGregorianCalendar xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+            var xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar();
             xmlGregorianCalendar.setYear(dateTime.getYear());
             xmlGregorianCalendar.setMonth(dateTime.getMonthValue());
             xmlGregorianCalendar.setDay(dateTime.getDayOfMonth());

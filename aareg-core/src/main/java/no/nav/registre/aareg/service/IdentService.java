@@ -17,7 +17,7 @@ public class IdentService {
     public SletteArbeidsforholdResponse slettArbeidsforholdFraAaregstub(
             List<String> identer
     ) {
-        List<String> identerIAaregstub = aaregstubConsumer.hentEksisterendeIdenter();
+        var identerIAaregstub = aaregstubConsumer.hentEksisterendeIdenter();
         identer.retainAll(identerIAaregstub);
 
         return aaregstubConsumer.slettIdenterFraAaregstub(identer);

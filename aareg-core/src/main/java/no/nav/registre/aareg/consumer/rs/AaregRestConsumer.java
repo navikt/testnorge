@@ -2,12 +2,12 @@ package no.nav.registre.aareg.consumer.rs;
 
 import static no.nav.registre.aareg.domain.CommonKeys.HEADER_NAV_CONSUMER_TOKEN;
 import static no.nav.registre.aareg.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
+import static no.nav.registre.aareg.domain.CommonKeys.RESPONSE_TYPE_LIST_MAP;
 import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -28,16 +28,16 @@ public class AaregRestConsumer {
     private final StsOidcService stsOidcService;
 
     public ResponseEntity<List<Map>> hentArbeidsforhold(
-            String ident, String miljoe
+            String ident,
+            String miljoe
     ) {
-        RequestEntity getRequest = RequestEntity
+        var getRequest = RequestEntity
                 .get(URI.create(aaregArbeidsforholdFasitConsumer.getUrlForEnv(miljoe)))
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header(AUTHORIZATION, stsOidcService.getIdToken(miljoe))
                 .header(HEADER_NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(miljoe))
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .build();
-        return restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<Map>>() {
-        });
+        return restTemplate.exchange(getRequest, RESPONSE_TYPE_LIST_MAP);
     }
 }

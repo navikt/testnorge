@@ -11,7 +11,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -37,8 +36,7 @@ public class StsOidcService {
     private final Map<Environment, LocalDateTime> expiry = new EnumMap<>(Environment.class);
 
     public String getIdToken(String environment) {
-
-        Environment env = getEnv(environment);
+        var env = getEnv(environment);
         updateTokenIfNeeded(env);
 
         return idToken.get(env);
@@ -73,7 +71,7 @@ public class StsOidcService {
     }
 
     private void updateToken(Environment env) {
-        RequestEntity getRequest = RequestEntity
+        var getRequest = RequestEntity
                 .get(URI.create(stsOidcFasitConsumer.getStsOidcService(env).concat("?grant_type=client_credentials&scope=openid")))
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header(AUTHORIZATION, "Basic " +
@@ -81,12 +79,12 @@ public class StsOidcService {
                                 credentialsProps.getUsername(env) + ":" +
                                         credentialsProps.getPassword(env)).getBytes(UTF_8)))
                 .build();
-        ResponseEntity responseEntity = restTemplate.exchange(getRequest, JsonNode.class);
+        var responseEntity = restTemplate.exchange(getRequest, JsonNode.class);
 
         if (isNull(responseEntity.getBody())) {
             return;
         }
-        expiry.put(env, LocalDateTime.now().plusSeconds(((JsonNode) responseEntity.getBody()).get("expires_in").asLong()));
-        idToken.put(env, "Bearer " + ((JsonNode) responseEntity.getBody()).get("access_token").asText());
+        expiry.put(env, LocalDateTime.now().plusSeconds((responseEntity.getBody()).get("expires_in").asLong()));
+        idToken.put(env, "Bearer " + (responseEntity.getBody()).get("access_token").asText());
     }
 }

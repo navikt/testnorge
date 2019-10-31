@@ -21,7 +21,10 @@ public class SyntetiseringController {
 
     @LogExceptions
     @PostMapping("/generer")
-    public ResponseEntity genererArbeidsforholdsmeldinger(@RequestParam(defaultValue = "true") Boolean sendAlleEksisterende, @RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
+    public ResponseEntity genererArbeidsforholdsmeldinger(
+            @RequestParam(defaultValue = "true") Boolean sendAlleEksisterende,
+            @RequestBody SyntetiserAaregRequest syntetiserAaregRequest
+    ) {
         return syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, sendAlleEksisterende);
     }
 }

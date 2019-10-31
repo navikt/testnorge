@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.fasit.FasitApiConsumer;
-import no.nav.registre.aareg.fasit.FasitResourceWithUnmappedProperties;
 
 @Component
 @RequiredArgsConstructor
@@ -31,12 +30,10 @@ public class AaregArbeidsforholdFasitConsumer {
     private LocalDateTime expiry;
 
     public String getUrlForEnv(String environment) {
-
         if (hasExpired()) {
-
             synchronized (this) {
                 if (hasExpired()) {
-                    FasitResourceWithUnmappedProperties[] fasitResources = fasitApiConsumer.fetchResources(AAREG_REST_ALIAS, REST_SERVICE);
+                    var fasitResources = fasitApiConsumer.fetchResources(AAREG_REST_ALIAS, REST_SERVICE);
 
                     urlPerEnv = Arrays.stream(fasitResources)
                             .filter(resource -> FAGSYSTEM.equals(resource.getScope().getZone()))

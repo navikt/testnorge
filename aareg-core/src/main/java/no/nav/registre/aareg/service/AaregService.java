@@ -70,13 +70,13 @@ public class AaregService {
 
         miljoer.forEach(environment -> {
             try {
-                ResponseEntity<List<Map>> arbeidsforholdResponse = aaregRestConsumer.hentArbeidsforhold(ident, environment);
+                var arbeidsforholdResponse = aaregRestConsumer.hentArbeidsforhold(ident, environment);
                 if (arbeidsforholdResponse.hasBody()) {
-                    List<Map> responseBody = arbeidsforholdResponse.getBody();
+                    var responseBody = arbeidsforholdResponse.getBody();
                     if (responseBody != null) {
                         responseBody.forEach(map -> Collections.singletonList(map).forEach(
                                 forhold -> {
-                                    RsArbeidsforhold arbeidsforhold = RsArbeidsforhold.builder()
+                                    var arbeidsforhold = RsArbeidsforhold.builder()
                                             .arbeidsforholdIDnav(getNavArbfholdId(forhold))
                                             .arbeidsforholdID(getArbforholdId(forhold))
                                             .arbeidsgiver("Person".equals(getArbeidsgiverType(forhold)) ?

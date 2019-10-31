@@ -23,7 +23,6 @@ import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
-import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Service
@@ -63,10 +62,10 @@ public class SyntetiseringService {
 
         identerIAaregstub.addAll(nyeIdenter);
         List<String> lagredeIdenter = new ArrayList<>();
-        List<RsAaregOpprettRequest> syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(new ArrayList<>(identerIAaregstub));
-        for (RsAaregOpprettRequest opprettRequest : syntetiserteArbeidsforhold) {
+        var syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(new ArrayList<>(identerIAaregstub));
+        for (var opprettRequest : syntetiserteArbeidsforhold) {
             opprettRequest.setEnvironments(Collections.singletonList(syntetiserAaregRequest.getMiljoe()));
-            RsAaregResponse response = aaregService.opprettArbeidsforhold(opprettRequest);
+            var response = aaregService.opprettArbeidsforhold(opprettRequest);
 
             if (response != null) {
                 if (STATUS_OK.equals(response.getStatusPerMiljoe().get(syntetiserAaregRequest.getMiljoe()))) {
@@ -96,8 +95,8 @@ public class SyntetiseringService {
     }
 
     private void lagreArbeidsforholdIHodejegeren(RsAaregOpprettRequest opprettRequest) {
-        IdentMedData identMedData = new IdentMedData(opprettRequest.getArbeidsforhold().getArbeidstaker().getIdent(), Collections.singletonList(opprettRequest.getArbeidsforhold()));
-        AaregSaveInHodejegerenRequest hodejegerenRequest = new AaregSaveInHodejegerenRequest(AAREG_NAME, Collections.singletonList(identMedData));
+        var identMedData = new IdentMedData(opprettRequest.getArbeidsforhold().getArbeidstaker().getIdent(), Collections.singletonList(opprettRequest.getArbeidsforhold()));
+        var hodejegerenRequest = new AaregSaveInHodejegerenRequest(AAREG_NAME, Collections.singletonList(identMedData));
         hodejegerenHistorikkConsumer.saveHistory(hodejegerenRequest);
     }
 
