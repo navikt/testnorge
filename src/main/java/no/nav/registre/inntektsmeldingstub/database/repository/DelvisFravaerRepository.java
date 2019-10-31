@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import no.nav.registre.inntektsmeldingstub.database.model.DelvisFravaer;
 
 @Repository
-public interface DelvisFravaerRepository extends CrudRepository<DelvisFravaer, Integer> {
+public interface DelvisFravaerRepository extends CrudRepository<DelvisFravaer, Long> {
 }

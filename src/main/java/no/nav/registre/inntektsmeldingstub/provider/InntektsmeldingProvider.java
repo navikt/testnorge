@@ -27,12 +27,12 @@ public class InntektsmeldingProvider {
     private final InntektsmeldingService service;
 
     @GetMapping(value = "/2018/09/xml/{id}", produces = "application/xml")
-    public XMLInntektsmeldingM hentInntektsmelding201809(@PathVariable Integer id) {
+    public XMLInntektsmeldingM hentInntektsmelding201809(@PathVariable Long id) {
         return XmlInntektsmelding201809.createInntektsmelding(service.findInntektsmelding(id));
     }
 
     @GetMapping("/2018/09/json/{id}")
-    public ResponseEntity<Inntektsmelding> hentInntektsmeldingJSON201809(@PathVariable Integer id) {
+    public ResponseEntity<Inntektsmelding> hentInntektsmeldingJSON201809(@PathVariable Long id) {
         return ResponseEntity.ok(service.findInntektsmelding(id));
     }
 
@@ -44,12 +44,12 @@ public class InntektsmeldingProvider {
     }
 
     @GetMapping(value = "/2018/12/xml/{id}", produces = "application/xml")
-    public no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM hentInntektsmelding201812(@PathVariable Integer id) {
+    public no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM hentInntektsmelding201812(@PathVariable Long id) {
         return XmlInntektsmelding201812.createInntektsmelding(service.findInntektsmelding(id));
     }
 
     @GetMapping("/2018/12/json/{id}")
-    public ResponseEntity<Inntektsmelding> hentInntektsmeldingJSON201812(@PathVariable Integer id) {
+    public ResponseEntity<Inntektsmelding> hentInntektsmeldingJSON201812(@PathVariable Long id) {
         return ResponseEntity.ok(service.findInntektsmelding(id));
     }
 

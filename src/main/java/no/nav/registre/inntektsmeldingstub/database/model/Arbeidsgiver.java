@@ -33,7 +33,7 @@ public class Arbeidsgiver {
     List<Inntektsmelding> inntektsmeldinger = Collections.emptyList();
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
     @Column(unique = true)
     @JsonProperty("ident")
     private String virksomhetsnummer;

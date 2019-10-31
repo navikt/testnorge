@@ -23,7 +23,7 @@ public class Periode {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
     private LocalDate fom;
     private LocalDate tom;

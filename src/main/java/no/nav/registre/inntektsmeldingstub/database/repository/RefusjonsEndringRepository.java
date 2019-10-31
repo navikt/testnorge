@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import no.nav.registre.inntektsmeldingstub.database.model.RefusjonsEndring;
 
 @Repository
-public interface RefusjonsEndringRepository extends CrudRepository<RefusjonsEndring, Integer> {
+public interface RefusjonsEndringRepository extends CrudRepository<RefusjonsEndring, Long> {
 }

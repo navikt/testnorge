@@ -80,7 +80,7 @@ public class InntektsmeldingService {
         return lagredeMeldinger;
     }
 
-    public Inntektsmelding findInntektsmelding(Integer id) {
+    public Inntektsmelding findInntektsmelding(Long id) {
         return inntektsmeldingRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Kunne ikke finne inntektsmeldingen"));
     }
 

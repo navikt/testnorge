@@ -31,7 +31,7 @@ public class Arbeidsforhold {
     List<Periode> avtaltFerieListe = Collections.emptyList();
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
     private String arbeidforholdsId;
     private LocalDate foersteFravaersdag;
     private double beloep;

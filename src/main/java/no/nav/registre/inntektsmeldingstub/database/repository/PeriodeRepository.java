@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import no.nav.registre.inntektsmeldingstub.database.model.Periode;
 
 @Repository
-public interface PeriodeRepository extends CrudRepository<Periode, Integer> {
+public interface PeriodeRepository extends CrudRepository<Periode, Long> {
 }

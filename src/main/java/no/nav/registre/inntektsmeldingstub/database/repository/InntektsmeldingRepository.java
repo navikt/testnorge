@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
 
 @Repository
-public interface InntektsmeldingRepository extends CrudRepository<Inntektsmelding, Integer> {
+public interface InntektsmeldingRepository extends CrudRepository<Inntektsmelding, Long> {
 }

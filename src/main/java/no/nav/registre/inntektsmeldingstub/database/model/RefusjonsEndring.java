@@ -24,7 +24,7 @@ public class RefusjonsEndring {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
     private LocalDate endringsDato;
     private double refusjonsbeloepPrMnd;

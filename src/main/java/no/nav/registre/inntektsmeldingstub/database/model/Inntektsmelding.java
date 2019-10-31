@@ -39,7 +39,7 @@ public class Inntektsmelding {
     List<NaturalytelseDetaljer> gjenopptakelseNaturalytelseListe = Collections.emptyList();
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
     private String ytelse;
     private String aarsakTilInnsending;
 
@@ -89,5 +89,9 @@ public class Inntektsmelding {
     @JoinColumn(name = "omsorgspenger_delvis_fravaers_id", referencedColumnName = "id")
     @Builder.Default
     private List<DelvisFravaer> omsorgspengerDelvisFravaersListe = Collections.emptyList();
+
+    @ManyToOne
+    @JoinColumn(name = "eier_id", referencedColumnName = "id")
+    private Eier eier;
 
 }

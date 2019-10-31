@@ -24,7 +24,7 @@ public class GraderingIForeldrepenger {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "periode_id", referencedColumnName = "id")

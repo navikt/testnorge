@@ -8,6 +8,6 @@ import java.util.Optional;
 import no.nav.registre.inntektsmeldingstub.database.model.Arbeidsgiver;
 
 @Repository
-public interface ArbeidsgiverRepository extends CrudRepository<Arbeidsgiver, Integer> {
+public interface ArbeidsgiverRepository extends CrudRepository<Arbeidsgiver, Long> {
     Optional<Arbeidsgiver> findByVirksomhetsnummer(String virksomhetsnummer);
 }

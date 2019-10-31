@@ -1,34 +1,38 @@
 package no.nav.registre.inntektsmeldingstub.database.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
-@Table(name = "utsettelse_av_foreldrepenger")
 @Getter
 @Setter
 @Builder
+@Table(name = "eier")
 @AllArgsConstructor
 @NoArgsConstructor
-public class UtsettelseAvForeldrepenger {
+public class Eier {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "periode_id", referencedColumnName = "id")
-    private Periode periode;
-
-    private String aarsakTilUtsettelse;
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "inntektsmelding_id", referencedColumnName = "id")
+    @Builder.Default
+    private List<Inntektsmelding> inntektsmeldinger = Collections.emptyList();
 }

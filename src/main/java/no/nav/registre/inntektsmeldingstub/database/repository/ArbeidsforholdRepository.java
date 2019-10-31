@@ -8,6 +8,6 @@ import java.util.Optional;
 import no.nav.registre.inntektsmeldingstub.database.model.Arbeidsforhold;
 
 @Repository
-public interface ArbeidsforholdRepository extends CrudRepository<Arbeidsforhold, Integer> {
+public interface ArbeidsforholdRepository extends CrudRepository<Arbeidsforhold, Long> {
     Optional<Arbeidsforhold> findByArbeidforholdsId(String arbeidforholdsId);
 }
