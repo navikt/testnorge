@@ -90,10 +90,10 @@ public class HodejegerenHistorikkConsumerTest {
 
     @Test
     public void shouldSendHistorikkToHodejegeren() throws JsonProcessingException {
-        String expectedUri = serverUrl + "/v1/historikk/";
+        var expectedUri = serverUrl + "/v1/historikk/";
         stubSaveInHodejegeren(expectedUri);
 
-        List<String> response = hodejegerenHistorikkConsumer.saveHistory(aaregSaveInHodejegerenRequest);
+        var response = hodejegerenHistorikkConsumer.saveHistory(aaregSaveInHodejegerenRequest);
 
         assertThat(response.get(0), equalTo(fnr));
     }

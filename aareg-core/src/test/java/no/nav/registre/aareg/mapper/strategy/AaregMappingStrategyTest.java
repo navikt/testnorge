@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-
 import java.math.BigDecimal;
 
 import no.nav.registre.aareg.config.MappingStrategy;
@@ -25,12 +24,8 @@ import no.nav.registre.aareg.domain.RsPermisjon;
 import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.domain.RsUtenlandsopphold;
 import no.nav.registre.aareg.testutils.MapperTestUtils;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.AntallTimerIPerioden;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsavtale;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Organisasjon;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Permisjon;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Utenlandsopphold;
 
 public class AaregMappingStrategyTest {
 
@@ -46,8 +41,7 @@ public class AaregMappingStrategyTest {
 
     @Test
     public void mapAaregArbeidsforholdHoveddel_OK() {
-
-        Arbeidsforhold arbeidsforhold = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class);
+        var arbeidsforhold = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class);
 
         assertThat(arbeidsforhold.getAnsettelsesPeriode().getFom(), is(equalTo(mapper.map(rsArbeidsforhold.getAnsettelsesPeriode().getFom(), XMLGregorianCalendar.class))));
         assertThat(arbeidsforhold.getAnsettelsesPeriode().getTom(), is(equalTo(mapper.map(rsArbeidsforhold.getAnsettelsesPeriode().getTom(), XMLGregorianCalendar.class))));
@@ -61,8 +55,7 @@ public class AaregMappingStrategyTest {
 
     @Test
     public void mapAaregArbeidsforholdArbeidsavtale_OK() {
-
-        Arbeidsavtale arbeidsavtale = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class).getArbeidsavtale();
+        var arbeidsavtale = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class).getArbeidsavtale();
 
         assertThat(arbeidsavtale.getAntallKonverterteTimer(), equalTo(BigDecimal.valueOf(rsArbeidsforhold.getArbeidsavtale().getAntallKonverterteTimer())));
         assertThat(arbeidsavtale.getAvtaltArbeidstimerPerUke(), equalTo(BigDecimal.valueOf(rsArbeidsforhold.getArbeidsavtale().getAvtaltArbeidstimerPerUke())));
@@ -78,8 +71,7 @@ public class AaregMappingStrategyTest {
 
     @Test
     public void mapAaregArbeidsforholdAntallTimerForTimeloennede_OK() {
-
-        AntallTimerIPerioden antallTimerIPerioden = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class).getAntallTimerForTimeloennet().get(0);
+        var antallTimerIPerioden = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class).getAntallTimerForTimeloennet().get(0);
 
         assertThat(antallTimerIPerioden.getAntallTimer(), equalTo(BigDecimal.valueOf(rsArbeidsforhold.getAntallTimerForTimeloennet().get(0).getAntallTimer())));
         assertThat(antallTimerIPerioden.getPeriode().getFom(),
@@ -90,8 +82,7 @@ public class AaregMappingStrategyTest {
 
     @Test
     public void mapAaregArbeidsforholdPermisjon_OK() {
-
-        Permisjon permisjon = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class).getPermisjon().get(0);
+        var permisjon = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class).getPermisjon().get(0);
 
         assertThat(permisjon.getPermisjonsId(), is(equalTo(rsArbeidsforhold.getPermisjon().get(0).getPermisjonsId())));
         assertThat(permisjon.getPermisjonsprosent(), equalTo(BigDecimal.valueOf(rsArbeidsforhold.getPermisjon().get(0).getPermisjonsprosent())));
@@ -105,8 +96,7 @@ public class AaregMappingStrategyTest {
 
     @Test
     public void mapAaregArbeidsforholdUtenlandsopphold_OK() {
-
-        Utenlandsopphold utenlandsopphold = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class).getUtenlandsopphold().get(0);
+        var utenlandsopphold = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class).getUtenlandsopphold().get(0);
 
         assertThat(utenlandsopphold.getLand().getKodeRef(), is(equalTo(rsArbeidsforhold.getUtenlandsopphold().get(0).getLand())));
         assertThat(utenlandsopphold.getPeriode().getFom(),
@@ -116,7 +106,6 @@ public class AaregMappingStrategyTest {
     }
 
     private static RsArbeidsforhold buildRsArbeidforhold() {
-
         return RsArbeidsforhold.builder()
                 .ansettelsesPeriode(RsPeriode.builder()
                         .fom(of(2010, 11, 4, 0, 0))

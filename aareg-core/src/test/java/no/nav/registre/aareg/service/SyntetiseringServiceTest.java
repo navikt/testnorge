@@ -19,7 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -80,11 +79,11 @@ public class SyntetiseringServiceTest {
         fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2));
         syntetiserteMeldinger = new ArrayList<>();
 
-        String resourceFileContent = getResourceFileContent("arbeidsforholdsmelding.json");
+        var resourceFileContent = getResourceFileContent("arbeidsforholdsmelding.json");
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        var objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        List list = objectMapper.readValue(resourceFileContent, List.class);
+        var list = objectMapper.readValue(resourceFileContent, List.class);
         for (Object o : list) {
             syntetiserteMeldinger.add(objectMapper.convertValue(o, RsAaregOpprettRequest.class));
         }
@@ -98,14 +97,14 @@ public class SyntetiseringServiceTest {
     public void shouldOppretteArbeidshistorikk() {
         Map<String, String> status = new HashMap<>();
         status.put(miljoe, STATUS_OK);
-        RsAaregResponse rsAaregResponse = RsAaregResponse.builder()
+        var rsAaregResponse = RsAaregResponse.builder()
                 .statusPerMiljoe(status)
                 .build();
 
         when(aaregService.opprettArbeidsforhold(any())).thenReturn(rsAaregResponse);
         when(aaregstubConsumer.sendTilAaregstub(anyList())).thenReturn(Collections.singletonList(fnr1));
 
-        ResponseEntity response = syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, sendAlleEksisterende);
+        var response = syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, sendAlleEksisterende);
 
         verify(aaregstubConsumer).sendTilAaregstub(Collections.singletonList(syntetiserteMeldinger.get(0)));
         verify(aaregstubConsumer).sendTilAaregstub(Collections.singletonList(syntetiserteMeldinger.get(1)));

@@ -37,18 +37,16 @@ public class BehandleArbeidsforholdV1ProxyTest {
 
     @Test
     public void getServiceByEnvironment_OK() {
-
         Map<String, String> fasitEntry = new HashMap<>();
         fasitEntry.put("t0", "BaseUrl/aareg-core/BehandleArbeidsforholdService/v1");
         when(behandleArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments()).thenReturn(fasitEntry);
-        Object portType = behandleArbeidsforholdV1Proxy.getServiceByEnvironment("t0");
+        var portType = behandleArbeidsforholdV1Proxy.getServiceByEnvironment("t0");
 
         assertThat(portType, is(instanceOf(BehandleArbeidsforholdPortType.class)));
     }
 
     @Test
     public void getServiceByEnvironment_ugyldigMiljoe() {
-
         expectedException.expect(TestnorgeAaregFunctionalException.class);
         expectedException.expectMessage("Ugyldig miljø/miljø ikke funnet.");
         behandleArbeidsforholdV1Proxy.getServiceByEnvironment("t0");

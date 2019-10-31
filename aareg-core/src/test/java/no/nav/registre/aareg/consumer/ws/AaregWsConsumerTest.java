@@ -23,12 +23,10 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
-import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdSikkerhetsbegrensning;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OpprettArbeidsforholdSikkerhetsbegrensning;
@@ -58,7 +56,7 @@ public class AaregWsConsumerTest {
     @Before
     public void setUp() throws DatatypeConfigurationException {
         datatypeFactory = DatatypeFactory.newInstance();
-        XMLGregorianCalendar calendar = datatypeFactory.newXMLGregorianCalendar();
+        var calendar = datatypeFactory.newXMLGregorianCalendar();
         calendar.setTime(12, 13, 0);
         calendar.setYear(2019);
         calendar.setMonth(3);
@@ -73,7 +71,7 @@ public class AaregWsConsumerTest {
 
     @Test
     public void opprettArbeidsforhold_OK() throws Exception {
-        RsAaregResponse response = aaregWsConsumer.opprettArbeidsforhold(RsAaregOpprettRequest
+        var response = aaregWsConsumer.opprettArbeidsforhold(RsAaregOpprettRequest
                 .builder()
                 .arbeidsforhold(RsArbeidsforhold.builder().build())
                 .environments(singletonList("t0"))
@@ -87,13 +85,13 @@ public class AaregWsConsumerTest {
 
     @Test
     public void opprettArbeidsforhold_throwSikkerhetsbegrensning() throws Exception {
-        OpprettArbeidsforholdSikkerhetsbegrensning sikkerhetsbegrensning =
+        var sikkerhetsbegrensning =
                 new OpprettArbeidsforholdSikkerhetsbegrensning("Ingen tilgang", faultInfo);
 
         doThrow(sikkerhetsbegrensning).when(behandleArbeidsforholdPortType)
                 .opprettArbeidsforhold(any(OpprettArbeidsforholdRequest.class));
 
-        RsAaregResponse response = aaregWsConsumer.opprettArbeidsforhold(RsAaregOpprettRequest
+        var response = aaregWsConsumer.opprettArbeidsforhold(RsAaregOpprettRequest
                 .builder()
                 .arbeidsforhold(RsArbeidsforhold.builder().build())
                 .environments(singletonList("t0"))
@@ -107,12 +105,12 @@ public class AaregWsConsumerTest {
 
     @Test
     public void oppdaterArbeidsforhold_OK() throws Exception {
-        RsAaregOppdaterRequest rsAaregOppdaterRequest = new RsAaregOppdaterRequest();
+        var rsAaregOppdaterRequest = new RsAaregOppdaterRequest();
         rsAaregOppdaterRequest.setEnvironments(singletonList("t1"));
         rsAaregOppdaterRequest.setArbeidsforhold(RsArbeidsforhold.builder().build());
         rsAaregOppdaterRequest.setRapporteringsperiode(LocalDateTime.now());
 
-        Map<String, String> status = aaregWsConsumer.oppdaterArbeidsforhold(rsAaregOppdaterRequest);
+        var status = aaregWsConsumer.oppdaterArbeidsforhold(rsAaregOppdaterRequest);
 
         assertThat(status.get("t1"), is(equalTo("OK")));
         verify(mapperFacade).map(any(RsArbeidsforhold.class), eq(Arbeidsforhold.class));
@@ -123,18 +121,18 @@ public class AaregWsConsumerTest {
 
     @Test
     public void oppdaterArbeidsforhold_throwsSikkerhetsbegrensning() throws Exception {
-        OppdaterArbeidsforholdSikkerhetsbegrensning sikkerhetsbegrensning =
+        var sikkerhetsbegrensning =
                 new OppdaterArbeidsforholdSikkerhetsbegrensning("Ingen tilgang", faultInfo);
 
         doThrow(sikkerhetsbegrensning).when(behandleArbeidsforholdPortType)
                 .oppdaterArbeidsforhold(any(OppdaterArbeidsforholdRequest.class));
 
-        RsAaregOppdaterRequest rsAaregOppdaterRequest = new RsAaregOppdaterRequest();
+        var rsAaregOppdaterRequest = new RsAaregOppdaterRequest();
         rsAaregOppdaterRequest.setEnvironments(singletonList("t1"));
         rsAaregOppdaterRequest.setArbeidsforhold(RsArbeidsforhold.builder().build());
         rsAaregOppdaterRequest.setRapporteringsperiode(LocalDateTime.now());
 
-        Map<String, String> status = aaregWsConsumer.oppdaterArbeidsforhold(rsAaregOppdaterRequest);
+        var status = aaregWsConsumer.oppdaterArbeidsforhold(rsAaregOppdaterRequest);
 
         assertThat(status.get("t1"), is(equalTo(
                 "Feil, OppdaterArbeidsforholdSikkerhetsbegrensning -> Ingen tilgang "

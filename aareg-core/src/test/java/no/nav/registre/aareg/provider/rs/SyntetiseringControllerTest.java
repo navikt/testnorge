@@ -41,7 +41,7 @@ public class SyntetiseringControllerTest {
     public void shouldStartSyntetisering() {
         when(syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, sendAlleEksisterende)).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
-        ResponseEntity result = syntetiseringController.genererArbeidsforholdsmeldinger(sendAlleEksisterende, syntetiserAaregRequest);
+        var result = syntetiseringController.genererArbeidsforholdsmeldinger(sendAlleEksisterende, syntetiserAaregRequest);
 
         verify(syntetiseringService).opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, sendAlleEksisterende);
 

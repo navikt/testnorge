@@ -48,7 +48,7 @@ public class AaregBehandleArbeidsforholdFasitConsumerTest {
 
     @Test
     public void fetchWsUrslAllEnvironments_OK() {
-        Map<String, String> fasitConsumers = behandleArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments();
+        var fasitConsumers = behandleArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments();
 
         assertThat(fasitConsumers.get("t0"), is(equalTo("BaseUrl/aareg-core/BehandleArbeidsforholdService/v1")));
     }

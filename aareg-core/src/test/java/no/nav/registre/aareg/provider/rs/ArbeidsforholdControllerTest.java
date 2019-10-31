@@ -37,14 +37,14 @@ public class ArbeidsforholdControllerTest {
 
     @Test
     public void shouldOppretteArbeidsforhold() {
-        RsAaregOpprettRequest opprettRequest = RsAaregOpprettRequest.builder().build();
+        var opprettRequest = RsAaregOpprettRequest.builder().build();
         arbeidsforholdController.opprettArbeidsforhold(opprettRequest);
         verify(aaregService).opprettArbeidsforhold(opprettRequest);
     }
 
     @Test
     public void shouldOppdatereArbeidsforhold() {
-        RsAaregOppdaterRequest oppdaterRequest = new RsAaregOppdaterRequest();
+        var oppdaterRequest = new RsAaregOppdaterRequest();
         arbeidsforholdController.oppdaterArbeidsforhold(oppdaterRequest);
         verify(aaregService).oppdaterArbeidsforhold(oppdaterRequest);
     }
@@ -57,15 +57,15 @@ public class ArbeidsforholdControllerTest {
 
     @Test
     public void shouldSletteArbeidsforholdFraEttMiljoe() {
-        List<String> miljoer = Collections.singletonList(miljoe);
+        var miljoer = Collections.singletonList(miljoe);
         arbeidsforholdController.slettArbeidsforhold(ident, miljoer);
         verify(aaregService).slettArbeidsforhold(ident, miljoer);
     }
 
     @Test
     public void shouldSletteArbeidsforholdFraAlleMiljoer() {
-        List<String> miljoer = Arrays.asList("t0", "t1", "t2");
-        MiljoerResponse miljoerResponse = new MiljoerResponse();
+        var miljoer = Arrays.asList("t0", "t1", "t2");
+        var miljoerResponse = new MiljoerResponse();
         miljoerResponse.setEnvironments(miljoer);
         when(tpsfConsumer.hentMiljoer()).thenReturn(ResponseEntity.ok(miljoerResponse));
 

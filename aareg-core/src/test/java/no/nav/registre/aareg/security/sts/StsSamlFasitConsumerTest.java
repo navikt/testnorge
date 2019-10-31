@@ -51,7 +51,7 @@ public class StsSamlFasitConsumerTest {
 
     @Test
     public void getStsSamlService_ok() {
-        String stsService = "sts saml service";
+        var stsService = "sts saml service";
         Map<String, String> properties = new HashMap<>();
         properties.put("url", stsService);
 
@@ -67,7 +67,7 @@ public class StsSamlFasitConsumerTest {
                                 .build()
                 });
 
-        String service = stsSamlFasitConsumer.getStsSamlService(ENV);
+        var service = stsSamlFasitConsumer.getStsSamlService(ENV);
         assertThat(service, is(equalTo(stsService)));
     }
 }

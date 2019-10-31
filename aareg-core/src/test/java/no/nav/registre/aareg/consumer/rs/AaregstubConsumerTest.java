@@ -57,10 +57,10 @@ public class AaregstubConsumerTest {
 
     @Test
     public void shouldGetAlleArbeidstakere() {
-        String expectedUri = serverUrl + "/v1/hentAlleArbeidstakere";
+        var expectedUri = serverUrl + "/v1/hentAlleArbeidstakere";
         stubAaregstubHentArbeidstakereConsumer(expectedUri);
 
-        List<String> response = aaregstubConsumer.hentEksisterendeIdenter();
+        var response = aaregstubConsumer.hentEksisterendeIdenter();
 
         assertThat(response.get(0), equalTo(fnr1));
         assertThat(response.get(1), equalTo(fnr2));
@@ -85,10 +85,10 @@ public class AaregstubConsumerTest {
                                 .build())
                         .build()));
 
-        String expectedUri = serverUrl + "/v1/lagreArbeidsforhold";
+        var expectedUri = serverUrl + "/v1/lagreArbeidsforhold";
         stubAaregstubLagreConsumer(expectedUri, syntetiserteMeldinger);
 
-        List<String> statusFraAaregstubResponse = aaregstubConsumer.sendTilAaregstub(syntetiserteMeldinger);
+        var statusFraAaregstubResponse = aaregstubConsumer.sendTilAaregstub(syntetiserteMeldinger);
 
         assertThat(statusFraAaregstubResponse.size(), equalTo(2));
         assertThat(statusFraAaregstubResponse.get(0), equalTo(fnr1));
@@ -97,10 +97,10 @@ public class AaregstubConsumerTest {
 
     @Test
     public void shouldLogOnEmptyResponse() {
-        String expectedUri = serverUrl + "/v1/hentAlleArbeidstakere";
+        var expectedUri = serverUrl + "/v1/hentAlleArbeidstakere";
         stubAaregstubWithEmptyBody(expectedUri);
 
-        Logger logger = (Logger) LoggerFactory.getLogger(AaregstubConsumer.class);
+        var logger = (Logger) LoggerFactory.getLogger(AaregstubConsumer.class);
         ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
         listAppender.start();
         logger.addAppender(listAppender);
@@ -115,10 +115,10 @@ public class AaregstubConsumerTest {
     public void shouldDeleteIdenter() throws JsonProcessingException {
         List<Long> expectedIds = new ArrayList<>(Arrays.asList(123L, 234L));
 
-        String expectedUri = serverUrl + "/v1/slettIdent/{ident}";
+        var expectedUri = serverUrl + "/v1/slettIdent/{ident}";
         stubAaregstubSlettIdenter(expectedUri, fnr1, expectedIds);
 
-        SletteArbeidsforholdResponse response = aaregstubConsumer.slettIdenterFraAaregstub(Collections.singletonList(fnr1));
+        var response = aaregstubConsumer.slettIdenterFraAaregstub(Collections.singletonList(fnr1));
 
         assertThat(response.getIdentermedArbeidsforholdIdSomBleSlettet().get(fnr1),
                 IsIterableContainingInOrder.contains(expectedIds.get(0), expectedIds.get(1)));

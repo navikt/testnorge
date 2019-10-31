@@ -27,9 +27,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-
-import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -46,11 +43,11 @@ public class AaregSyntetisererenConsumerTest {
 
     @Test
     public void shouldGetSyntetiserteMeldinger() {
-        List<String> fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+        var fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
         stubAaregSyntetisererenConsumer();
 
-        List<RsAaregOpprettRequest> result = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(fnrs);
+        var result = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(fnrs);
 
         assertThat(result.get(0).getArbeidsforhold().getArbeidstaker().getIdent(), equalTo(fnrs.get(0)));
         assertThat(result.get(0).getArbeidsforhold().getArbeidsavtale().getArbeidstidsordning(), equalTo("doegnkontinuerligSkiftOgTurnus355"));
@@ -69,11 +66,11 @@ public class AaregSyntetisererenConsumerTest {
 
     @Test
     public void shouldGetSyntetiserteMeldingerWithPaging() {
-        List<String> fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2, fnr3));
+        var fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2, fnr3));
 
         stubAaregSyntetisererenConsumerWithPaging();
 
-        List<RsAaregOpprettRequest> result = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(fnrs);
+        var result = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(fnrs);
 
         assertThat(result.get(0).getArbeidsforhold().getArbeidstaker().getIdent(), equalTo(fnrs.get(0)));
         assertThat(result.get(1).getArbeidsforhold().getArbeidstaker().getIdent(), equalTo(fnrs.get(1)));
@@ -82,9 +79,9 @@ public class AaregSyntetisererenConsumerTest {
 
     @Test
     public void shouldLogOnEmptyResponse() {
-        List<String> fnrs = new ArrayList<>(Collections.singletonList(fnr1));
+        var fnrs = new ArrayList<>(Collections.singletonList(fnr1));
 
-        Logger logger = (Logger) LoggerFactory.getLogger(AaregSyntetisererenConsumer.class);
+        var logger = (Logger) LoggerFactory.getLogger(AaregSyntetisererenConsumer.class);
         ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
         listAppender.start();
         logger.addAppender(listAppender);

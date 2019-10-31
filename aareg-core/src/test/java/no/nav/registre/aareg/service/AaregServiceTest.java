@@ -27,7 +27,6 @@ import no.nav.registre.aareg.consumer.rs.responses.MiljoerResponse;
 import no.nav.registre.aareg.consumer.ws.AaregWsConsumer;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
-import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AaregServiceTest {
@@ -77,13 +76,13 @@ public class AaregServiceTest {
 
     @Test
     public void shouldSletteArbeidsforhold() {
-        Map arbeidsforhold = buildArbeidsforhold();
+        var arbeidsforhold = buildArbeidsforhold();
         Map<String, String> status = new HashMap<>();
         status.put(miljoe, STATUS_OK);
         when(aaregRestConsumer.hentArbeidsforhold(ident, miljoe)).thenReturn(ResponseEntity.ok(Collections.singletonList(arbeidsforhold)));
         when(aaregWsConsumer.oppdaterArbeidsforhold(any())).thenReturn(status);
 
-        RsAaregResponse result = aaregService.slettArbeidsforhold(ident, Collections.singletonList(miljoe));
+        var result = aaregService.slettArbeidsforhold(ident, Collections.singletonList(miljoe));
 
         assertThat(result.getStatusPerMiljoe().get(miljoe), equalTo(STATUS_OK));
 

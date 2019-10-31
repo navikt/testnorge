@@ -51,7 +51,7 @@ public class StsOidcFasitConsumerTest {
 
     @Test
     public void getStsOidcService_ok() {
-        String serviceUrl = "sts oidc service url";
+        var serviceUrl = "sts oidc service url";
         Map<String, String> properties = new HashMap<>();
         properties.put("url", serviceUrl);
 
@@ -67,7 +67,7 @@ public class StsOidcFasitConsumerTest {
                                 .build()
                 });
 
-        String service = stsOidcFasitConsumer.getStsOidcService(ENV);
+        var service = stsOidcFasitConsumer.getStsOidcService(ENV);
 
         MatcherAssert.assertThat(service, is(equalTo(serviceUrl)));
     }

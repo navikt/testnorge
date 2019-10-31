@@ -67,7 +67,7 @@ public class StsOidcServiceTest {
 
         when(stsOidcFasitConsumer.getStsOidcService(TEST)).thenReturn("baseUrl");
 
-        String token = stsOidcService.getIdToken(ENV);
+        var token = stsOidcService.getIdToken(ENV);
 
         assertThat(token, containsString("Bearer"));
     }

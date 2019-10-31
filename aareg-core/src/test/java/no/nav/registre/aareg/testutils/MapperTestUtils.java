@@ -10,14 +10,10 @@ import no.nav.registre.aareg.config.MappingStrategy;
 
 public class MapperTestUtils {
 
-    public static MapperFacade createMapperFacadeForMappingStrategy(MappingStrategy... strategies) {
-        return createMapperFacadeForMappingStrategy(null, strategies);
-    }
-
     public static MapperFacade createMapperFacadeForMappingStrategy(CustomConverter converter, MappingStrategy... strategies) {
-        DefaultMapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+        var mapperFactory = new DefaultMapperFactory.Builder().build();
 
-        for (MappingStrategy strategy : strategies) {
+        for (var strategy : strategies) {
             strategy.register(mapperFactory);
         }
 

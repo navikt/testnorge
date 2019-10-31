@@ -48,8 +48,7 @@ public class AaregArbeidsforholdFasitConsumerTest {
 
     @Test
     public void fetchWsUrslAllEnvironments_OK() {
-
-        String urlResult = aaregArbeidsforholdFasitConsumer.getUrlForEnv("t0");
+        var urlResult = aaregArbeidsforholdFasitConsumer.getUrlForEnv("t0");
 
         assertThat(urlResult, is(equalTo("BaseUrl/v1/arbeidstaker/arbeidsforhold")));
     }
