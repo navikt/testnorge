@@ -1,6 +1,6 @@
 naiseratorApplicationPipeline {
     applicationName = "dolly-backend"
-    team = "dolly"
+    team = "registre"
     javaVersion = "1.8"
     additionalDeployments = [
         [namespace: "q1"]
