@@ -57,6 +57,6 @@ public class BrukerMappingStrategyTest {
         RsBruker rsBruker = mapper.map(bruker, RsBruker.class);
 
         assertThat(rsBruker.getBrukerId(), is("ident"));
-        assertThat(rsBruker.getFavoritter().get(0), is(2L));
+        assertThat(rsBruker.getFavoritter().get(0).getId(), is(2L));
     }
 }

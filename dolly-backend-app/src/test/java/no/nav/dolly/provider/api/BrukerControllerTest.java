@@ -35,11 +35,11 @@ public class BrukerControllerTest {
 
     @Test
     public void getBrukerByBrukerId() {
-        RsBruker bruker = RsBruker.builder().brukerId("brukerId").build();
+        RsBrukerAndGruppeId bruker = RsBrukerAndGruppeId.builder().brukerId("brukerId").build();
         Bruker b = new Bruker();
 
         when(brukerService.fetchBruker("brukerId")).thenReturn(b);
-        when(mapperFacade.map(b, RsBruker.class)).thenReturn(bruker);
+        when(mapperFacade.map(b, RsBrukerAndGruppeId.class)).thenReturn(bruker);
 
         RsBrukerAndGruppeId res = controller.getBrukerBybrukerId("brukerId");
 

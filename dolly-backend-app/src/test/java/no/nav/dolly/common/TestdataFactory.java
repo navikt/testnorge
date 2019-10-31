@@ -62,7 +62,7 @@ public class TestdataFactory {
     }
 
     public Testgruppe createTestgruppe(String navn) {
-        Bruker creator = createBruker("CREATOR");
+        Bruker creator = createBruker("NAVIDENT");
         return createTestgruppe(navn, creator);
     }
 

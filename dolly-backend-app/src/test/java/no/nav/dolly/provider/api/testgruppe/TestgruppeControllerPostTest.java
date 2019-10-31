@@ -24,6 +24,8 @@ class TestgruppeControllerPostTest extends TestgruppeTestBase {
     @DisplayName("Returnerer opprettet Testgruppe med innlogget bruker som eier")
     void createTestgruppeAndSetCurrentUserAsOwner() {
 
+        dataFactory.createBruker("NAVIDENT");
+
         RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder()
                 .navn("mingruppe")
                 .hensikt("hensikt")
@@ -37,25 +39,6 @@ class TestgruppeControllerPostTest extends TestgruppeTestBase {
         assertThat(resp.getNavn(), is("mingruppe"));
         assertThat(resp.getHensikt(), is("hensikt"));
         assertThat(resp.getOpprettetAvNavIdent(), is("NAVIDENT"));
-    }
-
-    @Test
-    @DisplayName("Returnerer opprettet Testgruppe med automatisk opprettet tilknyttet Team")
-    void createTestgruppeWithoutSpecifyingTeam() {
-        dataFactory.createBruker("NAVIDENT");
-
-        RsOpprettEndreTestgruppe rsOpprettTestgruppe = RsOpprettEndreTestgruppe.builder()
-                .navn("mingruppe")
-                .hensikt("hensikt")
-                .build();
-
-        RsTestgruppeUtvidet resp = sendRequest(rsOpprettTestgruppe)
-                .to(HttpMethod.POST, ENDPOINT_BASE_URI)
-                .andExpect(HttpStatus.CREATED, RsTestgruppeUtvidet.class);
-
-        assertThat(resp.getId(), is(notNullValue()));
-        assertThat(resp.getNavn(), is("mingruppe"));
-        assertThat(resp.getHensikt(), is("hensikt"));
     }
 
     @Test
