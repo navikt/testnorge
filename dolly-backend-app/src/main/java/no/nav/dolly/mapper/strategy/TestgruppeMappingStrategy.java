@@ -1,5 +1,6 @@
 package no.nav.dolly.mapper.strategy;
 
+import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import org.springframework.stereotype.Component;
@@ -25,6 +26,7 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                         rsTestgruppe.setOpprettetAvNavIdent(testgruppe.getOpprettetAv().getBrukerId());
                         rsTestgruppe.setSistEndretAvNavIdent(testgruppe.getSistEndretAv().getBrukerId());
                         rsTestgruppe.setFavorittIGruppen(!testgruppe.getFavorisertAv().isEmpty());
+                        rsTestgruppe.setErEierAvGruppe(getUserPrinciple().equalsIgnoreCase(testgruppe.getOpprettetAv().getBrukerId()));
                     }
                 })
                 .byDefault()
