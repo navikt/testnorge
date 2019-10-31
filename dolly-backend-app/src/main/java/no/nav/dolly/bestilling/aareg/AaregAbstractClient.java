@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.aareg;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.singletonList;
 
-import java.util.List;
 import java.util.Map;
 
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
