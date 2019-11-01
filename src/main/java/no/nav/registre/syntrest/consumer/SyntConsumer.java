@@ -40,7 +40,7 @@ public class SyntConsumer {
         // this.scheduledFutureTakedownApplication = null;
     }
 
-    public Object synthesizeData(RequestEntity request) throws InterruptedException, ExecutionException {
+    public Object synthesizeData(RequestEntity request) {
         // this.numClients.incrementAndGet();
 
         if (!applicationManager.applicationIsAlive(appName)) {
