@@ -4,15 +4,16 @@ server:
 freg.security.oidc.auth:
   securedPath: /**
   ignoredPaths: /internal/**
-#  codeFlow:
-#    enabled: true
-#    login-path: /dolly/login
-#  idToken:
-#    refresh-on-seconds-left: 300
-#    cookie-enabled: true
-#    header-enabled: false
-#    validation:
-#      type: refreshing
+  codeFlow:
+    enabled: true
+    login-path: /dolly/login
+    default-idp: OPENAM
+  idToken:
+    refresh-on-seconds-left: 300
+    cookie-enabled: true
+    header-enabled: false
+    validation:
+      type: refreshing
 
 ### CORS ###
 dolly-web.security.cors.origins: http://localhost:3000
