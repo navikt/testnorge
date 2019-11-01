@@ -1,49 +1,44 @@
 package no.nav.dolly.mapper;
 
-import static java.util.Collections.singleton;
+import static com.google.common.collect.Sets.newHashSet;
+import static java.lang.String.format;
+import static no.nav.dolly.bestilling.instdata.InstdataClient.OK_RESULT;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.apache.commons.collections4.list.TreeList;
+import java.util.Set;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-@Deprecated
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AbstractRsStatusMiljoeIdentForhold {
 
-    public static void checkAndUpdateStatus(Map<String, Map<String, Map<String, List<String>>>> errorEnvIdents, String ident, String environ, String errMsg) {
+    public static void checkAndUpdateStatus(Map<String, Map<String, Set<String>>> statusEnvIdents, String ident, String environ, String errMsg) {
 
-        String forhold = "opphold: alle";
         String status;
 
         if (errMsg.contains("$")) {
-            forhold = errMsg.split("\\$")[0];
-            status = errMsg.split("\\$")[1].replace('&', ',').replace('=', ':');
+            String[] forholdStatus = errMsg.split("\\$");
+            String forhold = forholdStatus[0];
+            status = (forholdStatus.length > 1 ? forholdStatus[1] : "").replace('&', ',').replace('=', ':');
+            if (!OK_RESULT.equals(status)) {
+                status = format("%s: %s", forhold, status);
+            }
         } else {
             status = errMsg.replace('&', ',').replace('=', ':');
         }
 
-        if (errorEnvIdents.containsKey(status)) {
-            if (errorEnvIdents.get(status).containsKey(environ)) {
-                if (errorEnvIdents.get(status).get(environ).containsKey(ident)) {
-                    errorEnvIdents.get(status).get(environ).get(ident).add(forhold);
-                } else {
-                    errorEnvIdents.get(status).get(environ).put(ident, new TreeList(singleton(forhold)));
-                }
+        if (statusEnvIdents.containsKey(status)) {
+            if (statusEnvIdents.get(status).containsKey(environ)) {
+                statusEnvIdents.get(status).get(environ).add(ident);
             } else {
-                Map<String, List<String>> identEntry = new HashMap();
-                identEntry.put(ident, new TreeList(singleton(forhold)));
-                errorEnvIdents.get(status).put(environ, identEntry);
+                statusEnvIdents.get(status).put(environ, newHashSet(ident));
             }
         } else {
-            Map<String, Map<String, List<String>>> environEntry = new HashMap();
-            Map<String, List<String>> identEntry = new HashMap();
-            environEntry.put(environ, identEntry);
-            identEntry.put(ident, new TreeList(singleton(forhold)));
-            errorEnvIdents.put(status, environEntry);
+            Map envIdent = new HashMap();
+            envIdent.put(environ, newHashSet(ident));
+            statusEnvIdents.put(status, envIdent);
         }
     }
 }

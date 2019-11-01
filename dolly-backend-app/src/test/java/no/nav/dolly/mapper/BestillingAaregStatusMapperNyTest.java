@@ -26,7 +26,7 @@ public class BestillingAaregStatusMapperNyTest {
                 .ident(IDENT)
                 .build();
 
-        List<RsStatusRapport> aaregStatus = BestillingAaregStatusMapperNy.buildAaregStatusMap(singletonList(progress));
+        List<RsStatusRapport> aaregStatus = BestillingAaregStatusMapper.buildAaregStatusMap(singletonList(progress));
 
         assertThat(aaregStatus.get(0).getStatuser().get(0).getMelding(), is(equalTo("arbforhold=2: Feil, OpprettArbeidsforholdSikkerhetsbegrensning -> Bruker har ikke rettighet til å opprette denne personen.")));
         assertThat(aaregStatus.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("t0")));

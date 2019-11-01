@@ -26,7 +26,7 @@ public class BestillingArenaforvalterStatusMapperNyTest {
     @Test
     public void buildArenaForvalterStatusMap_OK() {
 
-        List<RsStatusRapport> identStatuses = BestillingArenaforvalterStatusMapperNy.buildArenaStatusMap(RUN_STATUS);
+        List<RsStatusRapport> identStatuses = BestillingArenaforvalterStatusMapper.buildArenaStatusMap(RUN_STATUS);
 
         assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: Miljø ikke støttet")));
         assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("t3")));
