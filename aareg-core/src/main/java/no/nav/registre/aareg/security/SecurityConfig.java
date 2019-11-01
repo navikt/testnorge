@@ -18,7 +18,10 @@ public class SecurityConfig implements HttpSecurityConfigurer {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.cors();
-        http.csrf().disable();
+        http
+                .httpBasic()
+                .and()
+                .csrf().disable()
+                .formLogin().disable();
     }
 }
