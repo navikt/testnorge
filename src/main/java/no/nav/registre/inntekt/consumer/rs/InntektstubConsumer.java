@@ -1,8 +1,15 @@
 package no.nav.registre.inntekt.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -15,6 +22,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import javax.net.ssl.SSLContext;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 
@@ -45,12 +54,31 @@ public class InntektstubConsumer {
     public InntektstubConsumer(@Value("${inntektstub.rest.api.url}") String inntektstubUrl,
             @Value("${testnorges.ida.credential.inntektstub.username}") String username,
             @Value("${testnorges.ida.credential.inntektstub.password}") String password) {
-        CloseableHttpClient httpClient = HttpClientBuilder
-                .create()
+
+        final SSLConnectionSocketFactory sslsf;
+        try {
+            sslsf = new SSLConnectionSocketFactory(SSLContext.getDefault(), NoopHostnameVerifier.INSTANCE);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+        final Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", new PlainConnectionSocketFactory())
+                .register("https", sslsf)
                 .build();
+
+        final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(registry);
+        cm.setMaxTotal(100);
+
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setSSLSocketFactory(sslsf)
+                .setConnectionManager(cm)
+                .build();
+
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
         this.restTemplate = new RestTemplate(factory);
         this.restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
+
         this.leggTilInntektUrl = new UriTemplate(inntektstubUrl + "/v1/personer/inntekt");
         this.hentEksisterendeIdenterUrl = new UriTemplate(inntektstubUrl + "/v1/personer");
         this.hentEksisterendeInntekterUrl = new UriTemplate(inntektstubUrl + "/v1/person/{ident}/inntekter");
