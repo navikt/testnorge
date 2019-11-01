@@ -3,9 +3,12 @@ import { LOCATION_CHANGE } from 'connected-react-router'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _merge from 'lodash/merge'
+import config from '~/config'
 import { DollyApi, TpsfApi, SigrunApi, KrrApi, ArenaApi, InstApi, UdiApi } from '~/service/Api'
 import success from '~/utils/SuccessAction'
 import { DataSource } from '~/service/kodeverk/AttributtManager/Types'
+import { getIdentByIdSelector } from '~/ducks/gruppe'
+import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
 import {
 	mapIdentAndEnvironementForTps,
 	mapValuesFromDataSource,
@@ -244,8 +247,55 @@ export default function testbrukerReducer(state = initialState, action) {
 // Thunk
 export const fetchTpsfTestbrukere = () => (dispatch, getState) => {
 	const state = getState()
-	const identer = _get(state, 'gruppe.data[0].testidenter', []).map(ident => ident.ident)
+	const identer = _get(state, 'gruppe.data[0].identer', []).map(ident => ident.ident)
 	if (identer && identer.length >= 1) dispatch(GET_TPSF_TESTBRUKERE(identer))
+}
+
+/**
+ * Sjekke hvilke fagsystemer som har bestillingsstatus satt til 'OK'.
+ * De systeme som har OK fetches
+ */
+export const getDataFraFagsystemer = personId => (dispatch, getState) => {
+	const state = getState()
+
+	// Person fra gruppe
+	const person = getIdentByIdSelector(state, personId)
+
+	// Bestillingen(e) fra bestillingStatuser
+	const bestillinger = person.bestillingId.map(id =>
+		getBestillingById(state.bestillingStatuser.data, id)
+	)
+
+	// Samlet liste over alle statuser
+	const statusArray = bestillinger.reduce((acc, curr) => acc.concat(curr.status), [])
+
+	// Liste over systemer som har data
+	const success = successMiljoSelector(statusArray)
+
+	// Samle alt fra PDL under en ID
+	if (Object.keys(success).some(a => a.substring(0, 3) === 'PDL')) {
+		success.PDL = 'PDL'
+	}
+
+	Object.keys(success).forEach(system => {
+		switch (system) {
+			case 'KRRSTUB':
+				return dispatch(GET_KRR_TESTBRUKER(personId))
+			case 'SIGRUNSTUB':
+				dispatch(GET_SIGRUN_TESTBRUKER(personId))
+				return dispatch(GET_SIGRUN_SEKVENSNR(personId))
+			case 'ARENA':
+				return dispatch(GET_ARENA_TESTBRUKER(personId))
+			case 'PDL':
+				return dispatch(GET_TESTBRUKER_PERSONOPPSLAG(personId))
+			case 'UDISTUB':
+				return dispatch(GET_UDI_TESTBRUKER(personId))
+			case 'AAREG':
+				return dispatch(GET_AAREG_TESTBRUKER(personId, success[system][0]))
+			case 'INST2':
+				return dispatch(GET_INST_TESTBRUKER(personId, success[system][0]))
+		}
+	})
 }
 
 export const updateTestbruker = (values, attributtListe, ident) => async (dispatch, getState) => {
