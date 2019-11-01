@@ -15,7 +15,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BestillingArenaforvalterStatusMapperNyTest {
+public class BestillingArenaforvalterStatusMapperTest {
 
     private static final List<BestillingProgress> RUN_STATUS = newArrayList(
             BestillingProgress.builder().ident("IDENT_1")
@@ -26,7 +26,7 @@ public class BestillingArenaforvalterStatusMapperNyTest {
     @Test
     public void buildArenaForvalterStatusMap_OK() {
 
-        List<RsStatusRapport> identStatuses = BestillingArenaforvalterStatusMapperNy.buildArenaStatusMap(RUN_STATUS);
+        List<RsStatusRapport> identStatuses = BestillingArenaforvalterStatusMapper.buildArenaStatusMap(RUN_STATUS);
 
         assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: Miljø ikke støttet")));
         assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("t3")));
