@@ -28,8 +28,9 @@ public class PersonoppslagConsumer {
     private static final String PERSONOPPSLAG_URL = "/api/v1/oppslag?historikk=true";
     private static final String PREPROD_ENV = "q1";
 
-    @Value("${fasit.environment.name}")
-    private String environment;
+    //    @Value("${fasit.environment.name}")
+    // todo find vault alternative
+    private String environment = "u2";
 
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;

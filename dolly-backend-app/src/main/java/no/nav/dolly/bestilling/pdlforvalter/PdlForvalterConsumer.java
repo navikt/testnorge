@@ -34,8 +34,9 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/ident";
     private static final String PREPROD_ENV = "q";
 
-    @Value("${fasit.environment.name}")
-    private String environment;
+//    @Value("${fasit.environment.name}")
+    // todo find vault alternative
+    private String environment = "u2";
 
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
