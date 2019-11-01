@@ -12,7 +12,7 @@ import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
-import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class RsDollyBestilling {
     private List<String> environments;
     private String malBestillingNavn;
 
-    private List<RsOpprettSkattegrunnlag> sigrunstub;
+    private List<OpprettSkattegrunnlag> sigrunstub;
     private RsDigitalKontaktdata krrstub;
     private RsUdiPerson udistub;
     private List<RsArbeidsforhold> aareg;
@@ -50,7 +50,7 @@ public class RsDollyBestilling {
         return environments;
     }
 
-    public List<RsOpprettSkattegrunnlag> getSigrunstub() {
+    public List<OpprettSkattegrunnlag> getSigrunstub() {
         if (isNull(sigrunstub)) {
             sigrunstub = new ArrayList<>();
         }

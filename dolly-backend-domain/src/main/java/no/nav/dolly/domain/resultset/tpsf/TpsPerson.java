@@ -18,6 +18,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TpsPerson {
 
+    private Person persondetalj;
+
     private String hovedperson;
     private String partner;
     private List<String> barn;

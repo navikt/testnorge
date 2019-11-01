@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RsKodeverknavnGrunnlag {
+public class KodeverknavnGrunnlag {
     private String tekniskNavn;
     private String verdi;
 }
