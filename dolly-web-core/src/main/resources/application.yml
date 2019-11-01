@@ -4,6 +4,9 @@ server:
 freg.security.oidc.auth:
   securedPath: /**
   ignoredPaths: /internal/**
+  openam:
+    loginUrl: ${idp.openAm.hostUrl}/oauth2/authorize
+    authorizationUrl: ${idp.openAm.hostUrl}/oauth2/access_token
   codeFlow:
     enabled: true
     login-path: /dolly/login
