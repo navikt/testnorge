@@ -1,5 +1,7 @@
 import _set from 'lodash/set'
 import DataFormatter from '~/utils/DataFormatter'
+import { getIdentByIdSelector } from '~/ducks/gruppe'
+import { getBestillingById } from '~/ducks/bestillingStatus'
 
 export const mapValuesFromDataSource = (values, attributtListe, dataSource) => {
 	let temp = false
@@ -38,18 +40,14 @@ export const mapIdentAndEnvironementForTps = (state, ident) => {
 }
 
 const _findEnvironmentsForIdent = (state, ident) => {
-	const { gruppe, bestillingStatuser } = state
-	if (!gruppe.data) return null
+	const { bestillingStatuser } = state
+	const person = getIdentByIdSelector(state, ident)
 
-	const identArray = gruppe.data[0].testidenter
-	const personObj = identArray.find(item => item.ident === ident)
-	if (!personObj) return null
+	if (!person) return null
 
-	const bestillingObj = bestillingStatuser.data.find(bestilling => {
-		return personObj.bestillingId.some(id => bestilling.id === id)
-	})
+	const { environments } = getBestillingById(bestillingStatuser.data, person.bestillingId[0])
 
-	return bestillingObj.environments
+	return environments
 }
 
 export const mapSigrunSekvensnummer = (inntektData, sekvensData) => {

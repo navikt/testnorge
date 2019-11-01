@@ -15,7 +15,7 @@ export default function GruppeDetaljer({ gruppe }) {
 				<StaticValue header="TEAM" value={gruppe.team.navn} />
 				<StaticValue
 					header="ANTALL OPPRETTEDE TESTPERSONER"
-					value={String(gruppe.testidenter ? gruppe.testidenter.length : 0)}
+					value={String(gruppe.identer ? gruppe.identer.length : 0)}
 				/>
 				<StaticValue header="SIST ENDRET" value={gruppe.datoEndret} />
 				{isExpanded && <StaticValue header="HENSIKT" value={gruppe.hensikt} />}
