@@ -28,6 +28,7 @@ public class Person {
     private String mellomnavn;
     private String forkortetNavn;
     private LocalDateTime regdato;
+    private LocalDateTime foedselsdato;
     private List<Relasjon> relasjoner;
     private String spesreg;
     private LocalDateTime spesregDato;

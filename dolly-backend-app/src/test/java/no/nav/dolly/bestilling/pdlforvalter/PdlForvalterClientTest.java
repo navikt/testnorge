@@ -5,7 +5,6 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
@@ -13,7 +12,6 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
-import java.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +34,6 @@ import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdent
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.util.DatoFraIdentService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PdlForvalterClientTest {
@@ -64,9 +61,6 @@ public class PdlForvalterClientTest {
     @Mock
     private ErrorStatusDecoder errorStatusDecoder;
 
-    @Mock
-    private DatoFraIdentService datoFraIdentService;
-
     @InjectMocks
     private PdlForvalterClient pdlForvalterClient;
 
@@ -74,8 +68,6 @@ public class PdlForvalterClientTest {
     public void setup() {
         when(pdlForvalterConsumer.deleteIdent(eq(IDENT)))
                 .thenReturn(ResponseEntity.ok(instance.objectNode().put(HENDLSE_ID, HENDELSE_ID_SLETTING)));
-
-        when(datoFraIdentService.extract(anyString())).thenReturn(LocalDateTime.now());
     }
 
     @Test
