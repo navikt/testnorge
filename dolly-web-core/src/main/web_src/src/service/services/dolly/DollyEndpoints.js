@@ -19,7 +19,7 @@ export default class DollyEndpoints {
 	}
 
 	static gruppeById(gruppeId) {
-		return `${groupBase}/${gruppeId}`
+		return `${groupBase}/${gruppeId}/ny`
 	}
 
 	static gruppeByUser(userId) {

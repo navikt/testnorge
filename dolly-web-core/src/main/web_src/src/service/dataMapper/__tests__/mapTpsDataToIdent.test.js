@@ -192,8 +192,7 @@ describe('mapTpsDataToIdent.js', () => {
 		]
 
 		const testIdent = {
-			ident: '123456789',
-			tpsfSuccessEnv: 't0,t1'
+			ident: '123456789'
 		}
 
 		const tpsfKriterier = {}
