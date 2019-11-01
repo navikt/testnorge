@@ -28,7 +28,6 @@ import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentit
 import no.nav.dolly.domain.resultset.pdlforvalter.navn.PdlNavn;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.domain.resultset.tpsf.Person;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.DatoFraIdentService;
@@ -65,8 +64,8 @@ public class PdlForvalterClient implements ClientRegister {
                 sendDeleteIdent(tpsPerson);
                 sendFoedselsmelding(tpsPerson);
                 sendNavn(tpsPerson);
-                sendAdressebeskyttelse(bestilling.getTpsf(), tpsPerson);
-                sendDoedsfall(bestilling.getTpsf(), tpsPerson);
+                sendAdressebeskyttelse(tpsPerson);
+                sendDoedsfall(tpsPerson);
 
                 if (nonNull(bestilling.getPdlforvalter())) {
                     Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
@@ -96,7 +95,7 @@ public class PdlForvalterClient implements ClientRegister {
         try {
             identer.forEach(pdlForvalterConsumer::deleteIdent);
 
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             log.error(e.getMessage(), e);
         }
     }
@@ -110,16 +109,12 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendAdressebeskyttelse(RsTpsfUtvidetBestilling bestilling, TpsPerson tpsPerson) {
+    private void sendAdressebeskyttelse(TpsPerson tpsPerson) {
 
-        sendAdressebeskyttelse(tpsPerson.getHovedperson(), bestilling.getSpesreg());
-        if (nonNull(bestilling.getRelasjoner())) {
-            sendAdressebeskyttelse(tpsPerson.getPartner(), bestilling.getRelasjoner().getPartner().getSpesreg());
-            for (int i = 0; i < tpsPerson.getBarn().size(); i++) {
-                sendAdressebeskyttelse(tpsPerson.getBarn().get(i), bestilling.getRelasjoner().getBarn().get(i).getSpesreg());
-            }
-        }
+        sendAdressebeskyttelse(tpsPerson.getPersondetalj().getSpesreg(), tpsPerson.getPersondetalj().getIdent());
 
+        tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon ->
+                sendAdressebeskyttelse(relasjon.getPersonRelasjonMed().getSpesreg(), relasjon.getPersonRelasjonMed().getIdent()));
     }
 
     private void sendNavn(TpsPerson tpsPerson) {
@@ -133,7 +128,9 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendNavn(Person person) {
 
         try {
-            pdlForvalterConsumer.postNavn(mapperFacade.map(person, PdlNavn.class), person.getIdent());
+            PdlNavn pdlNavn = mapperFacade.map(person, PdlNavn.class);
+            pdlNavn.setKilde(KILDE);
+            pdlForvalterConsumer.postNavn(pdlNavn, person.getIdent());
         } catch (HttpClientErrorException e) {
             log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
 
@@ -142,7 +139,7 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendAdressebeskyttelse(String ident, String spesreg) {
+    private void sendAdressebeskyttelse(String spesreg, String ident) {
 
         try {
             pdlForvalterConsumer.postAdressebeskyttelse(PdlAdressebeskyttelse.builder()
@@ -158,18 +155,15 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendDoedsfall(RsTpsfUtvidetBestilling bestilling, TpsPerson tpsPerson) {
+    private void sendDoedsfall(TpsPerson tpsPerson) {
 
-        sendDoedsfall(tpsPerson.getHovedperson(), bestilling.getDoedsdato());
-        if (nonNull(bestilling.getRelasjoner())) {
-            sendDoedsfall(tpsPerson.getPartner(), bestilling.getRelasjoner().getPartner().getDoedsdato());
-            for (int i = 0; i < tpsPerson.getBarn().size(); i++) {
-                sendDoedsfall(tpsPerson.getBarn().get(i), bestilling.getRelasjoner().getBarn().get(i).getDoedsdato());
-            }
-        }
+        sendDoedsfall(tpsPerson.getPersondetalj().getDoedsdato(), tpsPerson.getPersondetalj().getIdent());
+        tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon ->
+            sendDoedsfall(relasjon.getPersonRelasjonMed().getDoedsdato(), relasjon.getPersonRelasjonMed().getIdent())
+        );
     }
 
-    private void sendDoedsfall(String ident, LocalDateTime doedsdato) {
+    private void sendDoedsfall(LocalDateTime doedsdato, String ident) {
 
         if (nonNull(doedsdato)) {
             try {

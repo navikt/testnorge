@@ -29,10 +29,13 @@ public class Person {
     private String forkortetNavn;
     private LocalDateTime regdato;
     private List<Relasjon> relasjoner;
+    private String spesreg;
+    private LocalDateTime spesregDato;
+    private LocalDateTime doedsdato;
 
     public List<Relasjon> getRelasjoner() {
         if (isNull(relasjoner)) {
-            relasjoner = new ArrayList<>();
+            relasjoner = new ArrayList();
         }
         return relasjoner;
     }
