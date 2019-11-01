@@ -95,6 +95,7 @@ public class KubernetesController {
             }
 
         } else {
+            log.info("No application named \'{}\' found. Unable to delete.", appName);
             throw new IllegalArgumentException("No application named \'" + appName + "\' found. Unable to delete.");
         }
     }

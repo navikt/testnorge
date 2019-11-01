@@ -39,7 +39,8 @@ public class ApplicationManager {
         try {
             kubernetesController.takedownImage(appId);
         } catch (ApiException e) {
-            log.error("Could not delete application \'{}\'.", appId);
+            e.printStackTrace();
+            log.error("Could not delete application \'{}\'.\n{}", appId, e.getMessage());
         }
     }
 }

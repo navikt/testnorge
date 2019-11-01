@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,6 +23,7 @@ public class SyntConsumer {
     private final ApplicationManager applicationManager;
     private final RestTemplate restTemplate;
     private final ScheduledExecutorService scheduledExecutorService;
+    private final ScheduledFuture<Integer> scheduledFutureTakedownApplication;
     private final String appName;
     private final AtomicInteger numClients;
 
@@ -31,6 +33,7 @@ public class SyntConsumer {
         this.scheduledExecutorService = scheduledExecutorService;
         this.appName = name.getName();
         this.numClients = new AtomicInteger(0);
+        this.scheduledFutureTakedownApplication = null;
     }
 
     public Object synthesizeData(RequestEntity request) {
@@ -53,7 +56,13 @@ public class SyntConsumer {
             System.out.println("Number of connected clients after this: " + this.numClients.get());
             if (this.numClients.get() <= 0) {
                 log.info("Scheduling shutdown of {}", this.appName);
-                scheduledExecutorService.schedule(this::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS);
+                if (!this.scheduledExecutorService.isShutdown()) {
+                    this.scheduledExecutorService.schedule(this::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS);
+                } else {
+                    log.info("More clients were connected to \'{}\' before shutdown. Resetting shutdown timer.", this.appName);
+                    this.scheduledExecutorService.shutdown();
+                    this.scheduledExecutorService.schedule(this::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS);
+                }
             }
         }
     }
