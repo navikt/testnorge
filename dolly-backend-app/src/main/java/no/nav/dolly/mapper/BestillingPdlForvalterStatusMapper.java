@@ -1,69 +1,69 @@
 package no.nav.dolly.mapper;
 
-import static java.util.Arrays.asList;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.FALSK_IDENTITET;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KONTAKTINFORMASJON_DOEDSBO;
-import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.PDL_FORVALTER;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.UTENLANDS_IDENTIFIKASJONSNUMMER;
+import static no.nav.dolly.domain.resultset.SystemTyper.PDL_DODSBO;
+import static no.nav.dolly.domain.resultset.SystemTyper.PDL_FALSKID;
+import static no.nav.dolly.domain.resultset.SystemTyper.PDL_FORVALTER;
+import static no.nav.dolly.domain.resultset.SystemTyper.PDL_UTENLANDSID;
 import static no.nav.dolly.mapper.BestillingMeldingStatusIdentMapper.resolveStatus;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.pdlforvalter.RsPdlForvalterStatus;
-import no.nav.dolly.domain.resultset.RsStatusIdent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-@Deprecated
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsStatusRapport;
+import no.nav.dolly.domain.resultset.SystemTyper;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingPdlForvalterStatusMapper {
 
-    public static RsPdlForvalterStatus buildPdldataStatusMap(List<BestillingProgress> progressList) {
+    public static List<RsStatusRapport> buildPdldataStatusMap(List<BestillingProgress> progressList) {
 
         //  melding     status      ident
-        Map<String, Map<String, List<String>>> msgStatusIdents = new HashMap<>();
+        Map<String, Map<String, List<String>>> msgStatusIdents = new HashMap();
 
         progressList.forEach(progress -> {
             if (nonNull(progress.getPdlforvalterStatus())) {
-                asList(progress.getPdlforvalterStatus().split("\\$")).forEach(
+                newArrayList(progress.getPdlforvalterStatus().split("\\$")).forEach(
                         resolveStatus(msgStatusIdents, progress)
                 );
             }
         });
 
-        return prepareResult(msgStatusIdents);
+        List<RsStatusRapport> statusRapporter = new ArrayList();
+        statusRapporter.addAll(extractStatus(msgStatusIdents, KONTAKTINFORMASJON_DOEDSBO, PDL_DODSBO));
+        statusRapporter.addAll(extractStatus(msgStatusIdents, UTENLANDS_IDENTIFIKASJONSNUMMER, PDL_UTENLANDSID));
+        statusRapporter.addAll(extractStatus(msgStatusIdents, FALSK_IDENTITET, PDL_FALSKID));
+        statusRapporter.addAll(extractStatus(msgStatusIdents, PdlForvalterClient.PDL_FORVALTER, PDL_FORVALTER));
+
+        return statusRapporter;
     }
 
-    private static RsPdlForvalterStatus prepareResult(Map<String, Map<String, List<String>>> msgStatusIdents) {
+    private static List<RsStatusRapport> extractStatus(Map<String, Map<String, List<String>>> msgStatusIdents, String clientid, SystemTyper type) {
+        return msgStatusIdents.entrySet().stream().filter(entry -> clientid.equals(entry.getKey()))
+                .map(entry -> RsStatusRapport.builder().id(type).navn(type.getBeskrivelse())
+                        .statuser(entry.getValue().entrySet().stream()
+                                .map(entry1 -> RsStatusRapport.Status.builder()
+                                        .melding(entry1.getKey())
+                                        .detaljert(singletonList(RsStatusRapport.Detaljert.builder()
+                                                .miljo("PDL")
+                                                .identer(entry1.getValue())
+                                                .build()))
+                                        .build())
+                                .collect(Collectors.toList()))
+                        .build())
+                .collect(Collectors.toList());
 
-        return msgStatusIdents.containsKey(KONTAKTINFORMASJON_DOEDSBO) || isIdentitet(msgStatusIdents) || msgStatusIdents.containsKey(PDL_FORVALTER) ?
-                RsPdlForvalterStatus.builder()
-                        .kontaktinfoDoedsbo(buildMessageStatus(msgStatusIdents.get(KONTAKTINFORMASJON_DOEDSBO)))
-                        .utenlandsid(buildMessageStatus(msgStatusIdents.get(UTENLANDS_IDENTIFIKASJONSNUMMER)))
-                        .falskIdentitet(buildMessageStatus(msgStatusIdents.get(FALSK_IDENTITET)))
-                        .pdlForvalter(buildMessageStatus(msgStatusIdents.get(PDL_FORVALTER)))
-                        .build()
-                : null;
-    }
-
-    private static List<RsStatusIdent> buildMessageStatus(Map<String, List<String>> statusIdent) {
-        List<RsStatusIdent> result = new ArrayList<>();
-        if (nonNull(statusIdent)) {
-            statusIdent.entrySet().forEach(entry ->
-                    result.add(RsStatusIdent.builder()
-                            .statusMelding(entry.getKey())
-                            .identer(entry.getValue())
-                            .build()));
-        }
-        return result;
-    }
-
-    private static boolean isIdentitet(Map msgStatusIdents) {
-        return msgStatusIdents.containsKey(UTENLANDS_IDENTIFIKASJONSNUMMER) || msgStatusIdents.containsKey(FALSK_IDENTITET);
     }
 }
