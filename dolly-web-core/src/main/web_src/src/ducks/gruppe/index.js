@@ -91,7 +91,7 @@ export const sokSelectorOversikt = (items, searchStr) => {
 			_get(item, 'navn'),
 			_get(item, 'hensikt'),
 			_get(item, 'team.navn'),
-			_get(item, 'testidenter', []).length
+			_get(item, 'identer', []).length
 		]
 			.filter(v => !_isNil(v))
 			.map(v => v.toString().toLowerCase())
@@ -100,9 +100,13 @@ export const sokSelectorOversikt = (items, searchStr) => {
 	})
 }
 
+export const getIdentByIdSelector = (state, personId) => {
+	return _get(state, 'gruppe.data[0].identer', []).find(v => v.ident === personId)
+}
+
 export const antallBestillingerSelector = gruppeArray => {
 	if (!gruppeArray) return 0
-	return _get(gruppeArray, '[0].testidenter', [])
+	return _get(gruppeArray, '[0].identer', [])
 		.map(b => b.bestillingId)
 		.flat().length
 }
