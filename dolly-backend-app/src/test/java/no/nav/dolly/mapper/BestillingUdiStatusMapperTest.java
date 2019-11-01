@@ -15,7 +15,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BestillingUdiStatusMapperNyTest {
+public class BestillingUdiStatusMapperTest {
 
     private static final List<BestillingProgress> ERROR_STATUS = newArrayList(
             BestillingProgress.builder().ident("IDENT_1")
