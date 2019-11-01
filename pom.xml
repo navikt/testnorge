@@ -35,7 +35,6 @@
     </distributionManagement>
 
     <properties>
-        <fasit-util.version>3.2.0</fasit-util.version>
         <jsoup.version>1.11.3</jsoup.version>
         <logstash-logback-encoder.version>6.0</logstash-logback-encoder.version>
         <freg-security-oidc.version>3.3.5</freg-security-oidc.version>
