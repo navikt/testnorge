@@ -35,7 +35,6 @@ import java.util.List;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
 import no.nav.registre.aareg.domain.RsPersonAareg;
-import no.nav.registre.aareg.provider.rs.response.SletteArbeidsforholdResponse;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(AaregstubConsumer.class)
