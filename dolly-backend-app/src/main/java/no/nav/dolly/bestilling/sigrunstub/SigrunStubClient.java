@@ -11,7 +11,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
@@ -29,7 +29,7 @@ public class SigrunStubClient implements ClientRegister {
 
         if (!bestilling.getSigrunstub().isEmpty()) {
             try {
-                for (RsOpprettSkattegrunnlag request : bestilling.getSigrunstub()) {
+                for (OpprettSkattegrunnlag request : bestilling.getSigrunstub()) {
                     request.setPersonidentifikator(tpsPerson.getHovedperson());
                 }
 

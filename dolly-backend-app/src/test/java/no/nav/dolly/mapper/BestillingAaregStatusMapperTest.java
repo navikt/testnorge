@@ -12,7 +12,7 @@ import org.junit.Test;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
-public class BestillingAaregStatusMapperNyTest {
+public class BestillingAaregStatusMapperTest {
 
     private static final String IDENT = "111111111";
 
@@ -26,7 +26,7 @@ public class BestillingAaregStatusMapperNyTest {
                 .ident(IDENT)
                 .build();
 
-        List<RsStatusRapport> aaregStatus = BestillingAaregStatusMapperNy.buildAaregStatusMap(singletonList(progress));
+        List<RsStatusRapport> aaregStatus = BestillingAaregStatusMapper.buildAaregStatusMap(singletonList(progress));
 
         assertThat(aaregStatus.get(0).getStatuser().get(0).getMelding(), is(equalTo("arbforhold=2: Feil, OpprettArbeidsforholdSikkerhetsbegrensning -> Bruker har ikke rettighet til å opprette denne personen.")));
         assertThat(aaregStatus.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("t0")));

@@ -1,9 +1,10 @@
 package no.nav.dolly.bestilling.tpsf;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
@@ -11,21 +12,9 @@ import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
-import no.nav.dolly.bestilling.udistub.RsAliasRequest;
-import no.nav.dolly.bestilling.udistub.RsAliasResponse;
-import no.nav.dolly.domain.resultset.tpsf.Person;
-import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
-import no.nav.dolly.domain.resultset.tpsf.TpsfIdenterMiljoer;
-import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
-import no.nav.dolly.domain.resultset.tpsf.EnvironmentsResponse;
-import no.nav.dolly.domain.resultset.tpsf.RsPerson;
-import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
-import no.nav.dolly.exceptions.TpsfException;
-import no.nav.dolly.properties.ProvidersProps;
+import java.io.IOException;
+import java.net.URI;
+import java.util.List;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
@@ -34,11 +23,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
+import no.nav.dolly.bestilling.udistub.RsAliasRequest;
+import no.nav.dolly.bestilling.udistub.RsAliasResponse;
+import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
+import no.nav.dolly.domain.resultset.tpsf.EnvironmentsResponse;
+import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.RsPerson;
+import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
+import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
+import no.nav.dolly.domain.resultset.tpsf.TpsfIdenterMiljoer;
+import no.nav.dolly.exceptions.TpsfException;
+import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
 @Service
@@ -59,54 +60,56 @@ public class TpsfService {
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
 
+    @Timed(name="providers", tags={"operation", "motTPSF"})
     public ResponseEntity<EnvironmentsResponse> getEnvironments() {
         return restTemplate.exchange(
                 RequestEntity.get(URI.create(providersProps.getTpsf().getUrl() + TPSF_GET_ENVIRONMENTS))
                         .build(), EnvironmentsResponse.class);
     }
 
+    @Timed(name="providers", tags={"operation", "motTPSF"})
     public ResponseEntity deletePersones(List<String> identer) {
         return restTemplate.exchange(
                 RequestEntity.delete(URI.create(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_DELETE_PERSONER_URL, join(",", identer))))
                         .build(), Object.class);
     }
 
+    @Timed(name="providers", tags={"operation", "motTPSF"})
     public ResponseEntity<RsAliasResponse> createAliases(RsAliasRequest request) {
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getTpsf().getUrl() + TPSF_CREATE_ALIASES))
                         .body(request), RsAliasResponse.class);
     }
 
+    @Timed(name="providers", tags={"operation", "motTPSF"})
     public CheckStatusResponse checkEksisterendeIdenter(List<String> identer) {
         ResponseEntity<Object> response = postToTpsf(TPSF_CHECK_IDENT_STATUS, new HttpEntity<>(identer));
         return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), CheckStatusResponse.class) : null;
     }
 
+    @Timed(name="providers", tags={"operation", "motTPSF"})
     public List<String> opprettIdenterTpsf(TpsfBestilling request) {
         ResponseEntity<Object> response = postToTpsf(TPSF_OPPRETT_URL, new HttpEntity<>(request));
         return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), List.class) : null;
     }
 
+    @Timed(name="providers", tags={"operation", "motTPSF"})
     public RsSkdMeldingResponse sendIdenterTilTpsFraTPSF(List<String> identer, List<String> environments) {
         validateEnvironments(environments);
         ResponseEntity<Object> response = postToTpsf(TPSF_SEND_TPS_FLERE_URL, new HttpEntity<>(new TpsfIdenterMiljoer(identer, environments)));
         return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class) : null;
     }
 
-    public List<String> hentTilhoerendeIdenter(List<String> identer) {
-        List<String> identerMedFamilie = new ArrayList<>();
+    @Timed(name="providers", tags={"operation", "motTPSF"})
+    public List<Person> hentTestpersoner(List<String> identer) {
         ResponseEntity<Object> response = postToTpsf(TPSF_HENT_PERSONER_URL, new HttpEntity<List>(identer));
         if (isBodyNotNull(response)) {
-            Person[] personer = objectMapper.convertValue(response.getBody(), Person[].class);
-
-            asList(personer).forEach(person -> {
-                identerMedFamilie.add(person.getIdent());
-                person.getRelasjoner().forEach(relasjon -> identerMedFamilie.add(relasjon.getPersonRelasjonMed().getIdent()));
-            });
+            return newArrayList(objectMapper.convertValue(response.getBody(), Person[].class));
         }
-        return identerMedFamilie;
+        return emptyList();
     }
 
+    @Timed(name="providers", tags={"operation", "motTPSF"})
     public ResponseEntity updatePerson(RsPerson tpsfPerson) {
         return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getTpsf().getUrl() + TPSF_UPDATE_PERSON_URL))
                 .header(AUTHORIZATION, getUserIdToken())

@@ -15,7 +15,20 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
@@ -27,31 +40,19 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
-import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
-import no.nav.dolly.domain.resultset.tpsf.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
+import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
+import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.domain.resultset.tpsf.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DollyBestillingServiceTest {
@@ -263,7 +264,7 @@ public class DollyBestillingServiceTest {
 
         when(bestillingProgressRepository.findBestillingProgressByBestillingIdOrderByBestillingId(BESTILLING_ID)).thenReturn(
                 singletonList(BestillingProgress.builder().ident(IDENT_1).build()));
-        when(tpsfService.hentTilhoerendeIdenter(singletonList(IDENT_1))).thenReturn(singletonList(IDENT_1));
+        when(tpsfService.hentTestpersoner(singletonList(IDENT_1))).thenReturn(singletonList(Person.builder().ident(IDENT_1).build()));
         when(tpsfService.sendIdenterTilTpsFraTPSF(anyList(), anyList())).thenReturn(skdMeldingResponse);
 
         dollyBestillingService.gjenopprettBestillingAsync(
@@ -273,7 +274,7 @@ public class DollyBestillingServiceTest {
                         .miljoer("t2,t3").build());
 
         verify(bestillingService, times(4)).isStoppet(BESTILLING_ID);
-        verify(tpsfService).hentTilhoerendeIdenter(anyList());
+        verify(tpsfService).hentTestpersoner(anyList());
         verify(tpsfService).sendIdenterTilTpsFraTPSF(anyList(), anyList());
         verify(tpsfResponseHandler).extractTPSFeedback(anyList());
     }
