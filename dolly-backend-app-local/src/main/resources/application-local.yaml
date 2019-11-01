@@ -12,8 +12,6 @@ freg.security.oidc.idp.navSts:
 freg.security.oidc.enabled: true
 
 providers:
-  fasit:
-    url: https://fasit.adeo.no
   tpsf:
     url: https://tps-forvalteren-u2.nais.preprod.local
 #    url: http://localhost:8050
@@ -37,9 +35,5 @@ providers:
     url: https://syntrest.nais.preprod.local
   instdata:
     url: https://testnorge-inst.nais.preprod.local
-
-fasit:
-  url: https://fasit.adeo.no
-  environment.name: u2
 
 dolly.security.cors.origins: http://localhost:3050,http://localhost:3000,http://localhost:8020
