@@ -45,7 +45,6 @@ public class InntektstubConsumer {
     private String token;
 
     private RestTemplate restTemplate;
-    private RestTemplate restTemplateUser;
 
     private UriTemplate leggTilInntektUrl;
     private UriTemplate hentEksisterendeIdenterUrl;
@@ -56,7 +55,6 @@ public class InntektstubConsumer {
             @Value("${testnorges.ida.credential.inntektstub.username}") String username,
             @Value("${testnorges.ida.credential.inntektstub.password}") String password) {
 
-        /////////
         final SSLConnectionSocketFactory sslsf;
         try {
             sslsf = new SSLConnectionSocketFactory(SSLContext.getDefault(), NoopHostnameVerifier.INSTANCE);
@@ -80,10 +78,6 @@ public class InntektstubConsumer {
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
         this.restTemplate = new RestTemplate(factory);
         this.restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
-        /////////
-
-        this.restTemplateUser = new RestTemplate();
-        restTemplateUser.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
 
         this.leggTilInntektUrl = new UriTemplate(inntektstubUrl + "/v1/personer/inntekt");
         this.hentEksisterendeIdenterUrl = new UriTemplate(inntektstubUrl + "/v1/personer");
@@ -93,23 +87,8 @@ public class InntektstubConsumer {
 
     public Map<String, List<RsInntekt>> leggInntekterIInntektstub(Map<String, List<RsInntekt>> inntekter) {
         try {
-
-            //httpHeaders.add("Cookie", "XSRF-TOKEN=" + entity.getHeaders().get("X-XSRF-TOKEN"));
-            //            httpHeaders.add("Cookie", "XSRF-TOKEN=77fcbad6-5cfc-4e5c-826f-f1858f960c7e; JSESSIONID=D91AC0B62DBC2A47A5F67CA17A4DF60C");
-            HttpHeaders headers = getHeaders();
-            List<String> xsrf = headers.get("X-XSRF-TOKEN");
-            List<String> jsession = headers.get("JSESSIONID");
-
-            HttpHeaders head = new HttpHeaders();
-            //            head.add("Cookie", "XSRF-TOKEN=" + xsrf.get(0) + "; JSESSIONID=" + jsession.get(0));
-            head.add("X-XSRF-TOKEN", xsrf.get(0));
-            head.add("Content-Type", "application/json;charset=UTF-8");
-
-            HttpEntity<Map<String, List<RsInntekt>>> ht = new HttpEntity<>(inntekter, head);
-
-            //            HttpEntity<Map<String, List<RsInntekt>>> entity = new HttpEntity<>(inntekter, getHeaders());
-
-            return restTemplate.exchange(leggTilInntektUrl.expand(), HttpMethod.POST, ht, RESPONSE_TYPE_OPPRETT_INNTEKT).getBody();
+            HttpEntity<Map<String, List<RsInntekt>>> entity = new HttpEntity<>(inntekter, getHeaders());
+            return restTemplate.exchange(leggTilInntektUrl.expand(), HttpMethod.POST, entity, RESPONSE_TYPE_OPPRETT_INNTEKT).getBody();
         } catch (HttpClientErrorException e) {
             log.warn(e.getMessage(), e);
             throw e;
@@ -153,9 +132,9 @@ public class InntektstubConsumer {
     private HttpHeaders getSession() {
         HttpEntity request = new HttpEntity("", new HttpHeaders());
         //Have to call this twice to get a valid token
-        HttpEntity<RsUser> response1 = restTemplateUser.exchange(hentTokenUrl.expand(), HttpMethod.GET, request, RsUser.class);
+        HttpEntity<RsUser> response1 = restTemplate.exchange(hentTokenUrl.expand(), HttpMethod.GET, request, RsUser.class);
         request = new HttpEntity("", getHeaders(response1));
-        HttpEntity<RsUser> response = restTemplateUser.exchange(hentTokenUrl.expand(), HttpMethod.GET, request, RsUser.class);
+        HttpEntity<RsUser> response = restTemplate.exchange(hentTokenUrl.expand(), HttpMethod.GET, request, RsUser.class);
         return getHeaders(response);
     }
 
@@ -172,9 +151,6 @@ public class InntektstubConsumer {
                 StringBuilder buf = new StringBuilder(name);
                 buf.insert(0, "X-");
                 headersRet.add(buf.toString(), token);
-                //                headersRet.add(name, token);
-            } else if (name.contains("JSESSIONID")) {
-                //                headersRet.add(name, token);
             }
         }
         return headersRet;
