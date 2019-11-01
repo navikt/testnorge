@@ -12,6 +12,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
+import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
@@ -157,18 +159,18 @@ public class DollyBestillingService {
         while (!bestillingService.isStoppet(bestilling.getId()) && identIterator.hasNext()) {
             BestillingProgress bestillingProgress = identIterator.next();
 
-            List<String> identer = tpsfService.hentTilhoerendeIdenter(singletonList(bestillingProgress.getIdent()));
-            if (identer.isEmpty()) {
+            List<Person> personer = tpsfService.hentTestpersoner(singletonList(bestillingProgress.getIdent()));
+            if (personer.isEmpty()) {
                 bestilling.setFeil(format("Gjenopprett feilet fordi ident %s har blitt slettet fra database", bestillingProgress.getIdent()));
                 bestilling.setStoppet(true);
                 break;
             }
 
-            TpsPerson tpsPerson = buildTpsPerson(bestilling, identer);
+            TpsPerson tpsPerson = buildTpsPerson(bestilling, extractIdenter(personer), personer);
 
             BestillingProgress progress = new BestillingProgress(bestilling.getId(), tpsPerson.getHovedperson());
 
-            sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), identer, bestilling.getGruppe(), progress);
+            sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), extractIdenter(personer), bestilling.getGruppe(), progress);
 
             gjenopprettNonTpsf(tpsPerson, bestilling, progress);
 
@@ -221,7 +223,7 @@ public class DollyBestillingService {
         try {
             List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
 
-            TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter);
+            TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter, null);
 
             BestillingProgress progress = new BestillingProgress(bestilling.getId(), tpsPerson.getHovedperson());
 
@@ -242,10 +244,11 @@ public class DollyBestillingService {
         }
     }
 
-    private TpsPerson buildTpsPerson(Bestilling bestilling, List<String> leverteIdenter) {
+    private TpsPerson buildTpsPerson(Bestilling bestilling, List<String> leverteIdenter, List<Person> personer) {
 
         TpsPerson tpsPerson = TpsPerson.builder()
                 .hovedperson(leverteIdenter.get(0))
+                .persondetalj(nonNull(personer) ? personer.get(0) : null)
                 .build();
 
         if (nonNull(bestilling.getTpsfKriterier())) {
@@ -294,6 +297,18 @@ public class DollyBestillingService {
         if (nonNull(cacheManager.getCache(CACHE_GRUPPE))) {
             requireNonNull(cacheManager.getCache(CACHE_GRUPPE)).clear();
         }
+    }
+
+    private List<String> extractIdenter(List<Person> personer) {
+
+        List<String> identerMedFamilie = new ArrayList();
+        personer.forEach(person -> {
+            identerMedFamilie.add(person.getIdent());
+            person.getRelasjoner().forEach(relasjon -> identerMedFamilie.add(relasjon.getPersonRelasjonMed().getIdent()));
+
+        });
+
+        return identerMedFamilie;
     }
 
     private void sendIdenterTilTPS(List<String> environments, List<String> identer, Testgruppe testgruppe, BestillingProgress progress) {
