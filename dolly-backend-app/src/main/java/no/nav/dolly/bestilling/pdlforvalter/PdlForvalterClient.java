@@ -1,10 +1,8 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
-import static java.time.LocalDate.now;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.util.NullcheckUtil.blankcheckSetDefaultValue;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import java.util.List;
@@ -26,8 +24,6 @@ import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
-import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
-import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
@@ -132,10 +128,10 @@ public class PdlForvalterClient implements ClientRegister {
             pdlForvalterConsumer.postNavn(mapperFacade.map(person, PdlNavn.class), person.getIdent());
 
         } catch (HttpClientErrorException e) {
-            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
+            log.error("Feilet å sende navn for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
 
         } catch (RuntimeException e) {
-            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter.", person.getIdent(), e);
+            log.error("Feilet å sende navn for ident {} til PDL-forvalter.", person.getIdent(), e);
         }
     }
 
@@ -145,10 +141,10 @@ public class PdlForvalterClient implements ClientRegister {
             pdlForvalterConsumer.postKjoenn(mapperFacade.map(person, PdlKjoenn.class), person.getIdent());
 
         } catch (HttpClientErrorException e) {
-            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
+            log.error("Feilet å sende kjønn for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
 
         } catch (RuntimeException e) {
-            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter.", person.getIdent(), e);
+            log.error("Feilet å sende kjønn for ident {} til PDL-forvalter.", person.getIdent(), e);
         }
     }
 
@@ -223,13 +219,8 @@ public class PdlForvalterClient implements ClientRegister {
             try {
                 appendName(KONTAKTINFORMASJON_DOEDSBO, status);
 
-                PdlKontaktinformasjonForDoedsbo kontaktinformasjon = pdldata.getKontaktinformasjonForDoedsbo();
-                kontaktinformasjon.setKilde(KILDE);
-                kontaktinformasjon.setUtstedtDato(nullcheckSetDefaultValue(kontaktinformasjon.getUtstedtDato(), now()));
-                kontaktinformasjon.setLandkode(blankcheckSetDefaultValue(kontaktinformasjon.getLandkode(), "NOR"));
-
                 ResponseEntity<JsonNode> response =
-                        pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(kontaktinformasjon, ident);
+                        pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(pdldata.getKontaktinformasjonForDoedsbo(), ident);
 
                 appendOkStatus(response.getBody(), status);
 
@@ -247,11 +238,7 @@ public class PdlForvalterClient implements ClientRegister {
             try {
                 appendName(FALSK_IDENTITET, status);
 
-                PdlFalskIdentitet falskIdentitet = pdldata.getFalskIdentitet();
-                falskIdentitet.setErFalsk(nullcheckSetDefaultValue(falskIdentitet.getErFalsk(), true));
-                falskIdentitet.setKilde(nullcheckSetDefaultValue(falskIdentitet.getKilde(), KILDE));
-
-                ResponseEntity<JsonNode> response = pdlForvalterConsumer.postFalskIdentitet(falskIdentitet, ident);
+                ResponseEntity<JsonNode> response = pdlForvalterConsumer.postFalskIdentitet(pdldata.getFalskIdentitet(), ident);
 
                 appendOkStatus(response.getBody(), status);
 
