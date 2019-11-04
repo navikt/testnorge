@@ -27,7 +27,7 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                                         .iBruk(TRUE.equals(testident.getIBruk()))
                                         .beskrivelse(testident.getBeskrivelse())
                                         .bestillingId(testident.getBestillingProgress().stream()
-                                                .map(BestillingProgress::getId)
+                                                .map(BestillingProgress::getBestillingId)
                                                 .collect(Collectors.toList()))
                                         .build())
                                 .collect(Collectors.toList()));
