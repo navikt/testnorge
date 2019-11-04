@@ -26,7 +26,7 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -100,17 +100,17 @@ public class TestgruppeControllerTest {
 
     @Test
     public void getTestgruppe() {
-        RsTestgruppeUtvidet testgruppeUtvidet = new RsTestgruppeUtvidet();
-        testgruppeUtvidet.setId(GRUPPE_ID);
+        RsTestgruppeMedBestillingId testgruppeMedBestillingId = new RsTestgruppeMedBestillingId();
+        testgruppeMedBestillingId.setId(GRUPPE_ID);
         when(testgruppeService.fetchTestgruppeById(GRUPPE_ID)).thenReturn(new Testgruppe());
-        when(mapperFacade.map(any(Testgruppe.class), eq(RsTestgruppeUtvidet.class))).thenReturn(testgruppeUtvidet);
+        when(mapperFacade.map(any(Testgruppe.class), eq(RsTestgruppeMedBestillingId.class))).thenReturn(testgruppeMedBestillingId);
 
-        RsTestgruppeUtvidet result = controller.getTestgruppe(GRUPPE_ID);
+        RsTestgruppeMedBestillingId result = controller.getTestgruppe(GRUPPE_ID);
 
         assertThat(result.getId(), is(equalTo(GRUPPE_ID)));
 
         verify(testgruppeService).fetchTestgruppeById(GRUPPE_ID);
-        verify(mapperFacade).map(any(Testgruppe.class), eq(RsTestgruppeUtvidet.class));
+        verify(mapperFacade).map(any(Testgruppe.class), eq(RsTestgruppeMedBestillingId.class));
     }
 
     @Test

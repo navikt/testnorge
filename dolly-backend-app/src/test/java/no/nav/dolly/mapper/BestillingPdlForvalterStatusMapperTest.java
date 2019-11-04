@@ -14,7 +14,7 @@ import org.junit.Test;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
-public class BestillingPdlForvalterStatusMapperNyTest {
+public class BestillingPdlForvalterStatusMapperTest {
 
     private static final String IDENT_1 = "111";
     private static final String IDENT_2 = "222";
@@ -29,7 +29,7 @@ public class BestillingPdlForvalterStatusMapperNyTest {
     @Test
     public void buildPdldataStatusMap_emptyList() {
 
-        List<RsStatusRapport> resultat = BestillingPdlForvalterStatusMapperNy.buildPdldataStatusMap(newArrayList(BestillingProgress.builder().build()));
+        List<RsStatusRapport> resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(newArrayList(BestillingProgress.builder().build()));
 
         assertThat(resultat, is(empty()));
     }
@@ -37,7 +37,7 @@ public class BestillingPdlForvalterStatusMapperNyTest {
     @Test
     public void buildPdldataStatusMap_UtenlandsId() {
 
-        List<RsStatusRapport> resultat = BestillingPdlForvalterStatusMapperNy.buildPdldataStatusMap(
+        List<RsStatusRapport> resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(
                 newArrayList(BestillingProgress.builder()
                                 .pdlforvalterStatus(PDL_STATUS_OK)
                                 .ident(IDENT_1)
@@ -56,7 +56,7 @@ public class BestillingPdlForvalterStatusMapperNyTest {
     @Test
     public void buildPdldataStatusMap_MultipleStatus() {
 
-        List<RsStatusRapport> resultat = BestillingPdlForvalterStatusMapperNy.buildPdldataStatusMap(
+        List<RsStatusRapport> resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(
                 newArrayList(BestillingProgress.builder()
                                 .pdlforvalterStatus(PDL_STATUS_OK)
                                 .ident(IDENT_1)
