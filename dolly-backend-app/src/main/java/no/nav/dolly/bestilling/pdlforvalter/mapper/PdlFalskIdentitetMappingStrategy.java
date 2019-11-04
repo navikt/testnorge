@@ -1,4 +1,6 @@
-package no.nav.dolly.mapper.strategy;
+package no.nav.dolly.bestilling.pdlforvalter.mapper;
+
+import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
@@ -10,7 +12,6 @@ import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlRettIdentite
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.RsPdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.RsPdlRettIdentitetVedOpplysninger;
 import no.nav.dolly.mapper.MappingStrategy;
-import org.springframework.stereotype.Component;
 
 @Component
 public class PdlFalskIdentitetMappingStrategy implements MappingStrategy {

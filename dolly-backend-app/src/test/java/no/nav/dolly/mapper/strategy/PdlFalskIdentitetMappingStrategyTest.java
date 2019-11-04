@@ -7,6 +7,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.pdlforvalter.mapper.PdlFalskIdentitetMappingStrategy;
 import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlKjoenn;

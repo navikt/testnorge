@@ -1,6 +1,8 @@
-package no.nav.dolly.mapper.strategy;
+package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo.Adressat;
+
+import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
@@ -13,7 +15,6 @@ import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlOrganisasjon;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.RsPdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.RsPdlKontaktpersonUtenIdNummer;
 import no.nav.dolly.mapper.MappingStrategy;
-import org.springframework.stereotype.Component;
 
 @Component
 public class PdlDoedsboMappingStrategy implements MappingStrategy {
