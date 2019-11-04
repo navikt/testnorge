@@ -29,9 +29,6 @@ public class Bruker {
     @Column(name = "NAV_IDENT", length = 10)
     private String brukerId;
 
-//    @OneToMany(mappedBy = "opprettetAv")
-//    private Set<Testgruppe> testgrupper;
-
     @ManyToMany
     @JoinTable(name = "T_BRUKER_FAVORITTER",
             joinColumns = @JoinColumn(name = "bruker_id"),
@@ -44,11 +41,4 @@ public class Bruker {
         }
         return favoritter;
     }
-//
-//    public Set<Testgruppe> getTestgrupper() {
-//        if (isNull(testgrupper)) {
-//            testgrupper = new HashSet();
-//        }
-//        return testgrupper;
-//    }
 }

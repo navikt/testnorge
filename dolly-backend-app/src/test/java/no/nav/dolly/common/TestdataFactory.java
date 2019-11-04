@@ -56,8 +56,8 @@ public class TestdataFactory {
         bestillingProgressTestRepository.flush();
     }
 
-    public Bruker createBruker(String navIdent) {
-        Bruker bruker = Bruker.builder().brukerId(navIdent).build();
+    public Bruker createBruker(String brukerId) {
+        Bruker bruker = Bruker.builder().brukerId(brukerId).build();
         return brukerTestRepository.save(bruker);
     }
 
@@ -99,16 +99,16 @@ public class TestdataFactory {
         return identTestRepository.save(testident);
     }
 
-    public void addToBrukerFavourites(String navIdent, Long testgruppeId) {
-        Bruker brukerByNavIdent = brukerTestRepository.findBrukerByBrukerId(navIdent);
+    public void addToBrukerFavourites(String brukerId, Long testgruppeId) {
+        Bruker bruker = brukerTestRepository.findBrukerByBrukerId(brukerId);
         Testgruppe testgruppe = gruppeTestRepository.findById(testgruppeId).get();
-        brukerByNavIdent.getFavoritter().add(testgruppe);
-        brukerTestRepository.save(brukerByNavIdent);
+        bruker.getFavoritter().add(testgruppe);
+        brukerTestRepository.save(bruker);
     }
 
-    public void clearFavourites(String navIdent) {
-        Bruker brukerByNavIdent = brukerTestRepository.findBrukerByBrukerId(navIdent);
-        brukerByNavIdent.getFavoritter().clear();
-        brukerTestRepository.save(brukerByNavIdent);
+    public void clearFavourites(String brukerId) {
+        Bruker bruker = brukerTestRepository.findBrukerByBrukerId(brukerId);
+        bruker.getFavoritter().clear();
+        brukerTestRepository.save(bruker);
     }
 }
