@@ -1,5 +1,6 @@
 import { mapBestillingId } from './Utils'
 import { getBestillingById } from '~/ducks/bestillingStatus'
+import { getIdentByIdSelector } from '~/ducks/gruppe'
 import Formatters from '~/utils/DataFormatter'
 import { mapTpsfData } from './mapTpsDataToIdent'
 import { mapPdlData } from './mapPdlDataToIdent'
@@ -38,10 +39,10 @@ const DataMapper = {
 	// Viser under expand
 	getDetailedData(state, personId) {
 		const { gruppe, testbruker, bestillingStatuser } = state
-		console.log('state :', state)
+
 		if (!testbruker.items || !testbruker.items.tpsf) return null
 
-		const testIdent = gruppe.data[0].testidenter.find(testIdent => testIdent.ident === personId)
+		const testIdent = gruppe.data[0].identer.find(testIdent => testIdent.ident === personId)
 		const tpsfData = testbruker.items.tpsf.find(item => item.ident === personId)
 		if (!tpsfData) return null
 
@@ -61,7 +62,7 @@ const DataMapper = {
 		const tpsfKriterier = JSON.parse(bestilling.tpsfKriterier)
 		const bestKriterier = JSON.parse(bestilling.bestKriterier)
 
-		let data = mapTpsfData(tpsfData, testIdent, tpsfKriterier)
+		let data = mapTpsfData(tpsfData, tpsfKriterier)
 
 		if (aaregData) {
 			data.push(mapAaregData(aaregData))
@@ -105,7 +106,7 @@ const DataMapper = {
 }
 
 const _findBestillingId = (gruppe, personId) => {
-	const identArray = gruppe.data[0].testidenter
+	const identArray = gruppe.data[0].identer
 	const personObj = identArray.find(item => item.ident === personId)
 	return personObj ? personObj.bestillingId : ''
 }

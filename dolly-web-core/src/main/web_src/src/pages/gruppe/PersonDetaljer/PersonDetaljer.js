@@ -8,7 +8,6 @@ import ConfirmTooltip from '~/components/ui/confirmTooltip/ConfirmTooltip'
 import Loading from '~/components/ui/loading/Loading'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
-import { getSuccessEnv, getPdlforvalterStatusOK } from '~/ducks/bestillingStatus/utils'
 import './PersonDetaljer.less'
 
 const AttributtManagerInstance = new AttributtManager()
@@ -26,19 +25,7 @@ export default class PersonDetaljer extends PureComponent {
 	}
 
 	componentDidMount() {
-		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunTestbruker()
-		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunSekvensnr()
-		this.props.testIdent.krrstubStatus === 'OK' && this.props.getKrrTestbruker()
-		this.props.testIdent.pdlforvalterStatus &&
-			getPdlforvalterStatusOK(this.props.testIdent.pdlforvalterStatus) &&
-			this.props.getPdlfTestbruker()
-		this.props.testIdent.arenaforvalterStatus && this.props.getArenaTestbruker()
-		this.props.testIdent.udistubStatus === 'OK' && this.props.getUdiTestbruker()
-		const aaregSuccessEnvs = getSuccessEnv(this.props.testIdent.aaregStatus)
-		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
-
-		const instSuccessEnvs = getSuccessEnv(this.props.testIdent.instdataStatus)
-		instSuccessEnvs.length > 0 && this.props.getInstTestbruker(instSuccessEnvs[0])
+		this.props.getDataFraFagsystemer()
 	}
 
 	render() {
@@ -48,7 +35,6 @@ export default class PersonDetaljer extends PureComponent {
 		return (
 			<div className="person-details">
 				{personData.map((i, idx) => {
-					console.log('i :', i)
 					if (i === null) return null
 					if (i === undefined) return null
 					if (i.data.length < 0) return null

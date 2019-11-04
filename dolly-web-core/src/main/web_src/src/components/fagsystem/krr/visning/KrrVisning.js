@@ -11,11 +11,12 @@ export default function KrrVisning(props) {
 	const data = useSelector(state => state)
 	console.log('KRR data :', data)
 
-	useEffect(() => {
-		props.getKrrTestbruker()
-	}, [])
+	// useEffect(() => {
+	// 	props.getKrrTestbruker()
+	// }, [])
 
 	const krrData = data.testbruker.items.krrstub && data.testbruker.items.krrstub[props.personId]
+	// const krrData = props.krrData
 	console.log('krrData :', krrData)
 
 	return (

@@ -14,7 +14,7 @@ export default {
 	},
 
 	getSekvensnummer(ident) {
-		const endpoint = getSigrunBaseUrl() + '/api/v0/sekvensnummer/' + ident
+		const endpoint = getSigrunBaseUrl() + '/api/v1/sekvensnummer/' + ident
 		return Request.getWithoutCredentials(endpoint, {
 			headers: { personidentifikator: ident }
 		})
