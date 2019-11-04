@@ -2,7 +2,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { push } from 'connected-react-router'
 import { getBestillingById } from '~/ducks/bestillingStatus'
-import PersonDetaljer from './PersonDetaljer'
 import DataMapper from '~/service/dataMapper'
 import {
 	GET_KRR_TESTBRUKER,
@@ -12,14 +11,16 @@ import {
 	GET_TESTBRUKER_PERSONOPPSLAG,
 	GET_ARENA_TESTBRUKER,
 	GET_INST_TESTBRUKER,
-	GET_UDI_TESTBRUKER
+	GET_UDI_TESTBRUKER,
+	getDataFraFagsystemer
 } from '~/ducks/testBruker'
 import { FRIGJOER_TESTBRUKER } from '~/ducks/testBruker'
 import { createLoadingSelector } from '~/ducks/loading'
 import Formatters from '~/utils/DataFormatter'
+import PersonDetaljer from './PersonDetaljer'
 
 const loadingSelectorKrr = createLoadingSelector(GET_KRR_TESTBRUKER)
-const loadingSelectorSigrun = createLoadingSelector(GET_SIGRUN_TESTBRUKER)
+const loadingSelectorSigrun = createLoadingSelector([GET_SIGRUN_TESTBRUKER, GET_SIGRUN_SEKVENSNR])
 const loadingSelectorAareg = createLoadingSelector(GET_AAREG_TESTBRUKER)
 const loadingSelectorPdlf = createLoadingSelector(GET_TESTBRUKER_PERSONOPPSLAG)
 const loadingSelectorArena = createLoadingSelector(GET_ARENA_TESTBRUKER)
@@ -39,9 +40,7 @@ const mapStateToProps = (state, ownProps) => {
 		isFetchingUdi: loadingSelectorUdi(state),
 		isFrigjoering: loadingSelectorFrigjoer(state),
 		personData: DataMapper.getDetailedData(state, ownProps.personId),
-		testIdent: state.gruppe.data[0].testidenter.find(
-			testIdent => testIdent.ident === ownProps.personId
-		),
+		testIdent: state.gruppe.data[0].identer.find(v => v.ident === ownProps.personId),
 		bestilling: getBestillingById(
 			state.bestillingStatuser.data,
 			Formatters.idUtenEllipse(ownProps.bestillingId)
@@ -51,14 +50,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
-		getKrrTestbruker: () => dispatch(GET_KRR_TESTBRUKER(ownProps.personId)),
-		getSigrunTestbruker: () => dispatch(GET_SIGRUN_TESTBRUKER(ownProps.personId)),
-		getSigrunSekvensnr: () => dispatch(GET_SIGRUN_SEKVENSNR(ownProps.personId)),
-		getArenaTestbruker: () => dispatch(GET_ARENA_TESTBRUKER(ownProps.personId)),
-		getAaregTestbruker: env => dispatch(GET_AAREG_TESTBRUKER(ownProps.personId, env)),
-		getInstTestbruker: env => dispatch(GET_INST_TESTBRUKER(ownProps.personId, env)),
-		getPdlfTestbruker: () => dispatch(GET_TESTBRUKER_PERSONOPPSLAG(ownProps.personId)),
-		getUdiTestbruker: () => dispatch(GET_UDI_TESTBRUKER(ownProps.personId)),
+		getDataFraFagsystemer: () => dispatch(getDataFraFagsystemer(ownProps.personId)),
 		frigjoerTestbruker: () =>
 			dispatch(FRIGJOER_TESTBRUKER(ownProps.match.params.gruppeId, ownProps.personId)),
 		editAction: () => dispatch(push(`${ownProps.match.url}/testbruker/${ownProps.personId}`))

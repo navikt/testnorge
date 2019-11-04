@@ -1,9 +1,8 @@
 import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 import _get from 'lodash/get'
-import DataMapper from '.'
 
-export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
+export function mapTpsfData(tpsfData, tpsfKriterier) {
 	if (!tpsfData) return null
 
 	const data = [
@@ -55,11 +54,6 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 					id: 'sivilstand',
 					label: 'Sivilstand',
 					value: tpsfData.sivilstand
-				},
-				{
-					id: 'miljoer',
-					label: 'Miljøer',
-					value: Formatters.commaToSpace(testIdent.tpsfSuccessEnv)
 				},
 				{
 					id: 'spesreg',

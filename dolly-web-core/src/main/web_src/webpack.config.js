@@ -120,9 +120,7 @@ if (TARGET === 'build-dev') {
 		filename: 'bundle.js',
 		publicPath: '/'
 	}
-	webpackConfig.plugins = [new CleanWebpackPlugin([outputDir.development])].concat(
-		webpackConfig.plugins
-	)
+	webpackConfig.plugins = [new CleanWebpackPlugin()].concat(webpackConfig.plugins)
 }
 
 // If production build
@@ -134,18 +132,16 @@ if (TARGET === 'build') {
 		filename: 'bundle.[contenthash:8].js',
 		publicPath: '/'
 	}
-	webpackConfig.plugins = [new CleanWebpackPlugin([outputDir.production])]
-		.concat(webpackConfig.plugins)
-		.concat([
-			new OptimizeCssAssetsPlugin({
-				assetNameRegExp: /\.css$/g,
-				cssProcessor: require('cssnano'),
-				cssProcessorPluginOptions: {
-					preset: ['default', { discardComments: { removeAll: true } }]
-				},
-				canPrint: true
-			})
-		])
+	webpackConfig.plugins = [new CleanWebpackPlugin()].concat(webpackConfig.plugins).concat([
+		new OptimizeCssAssetsPlugin({
+			assetNameRegExp: /\.css$/g,
+			cssProcessor: require('cssnano'),
+			cssProcessorPluginOptions: {
+				preset: ['default', { discardComments: { removeAll: true } }]
+			},
+			canPrint: true
+		})
+	])
 }
 
 module.exports = webpackConfig
