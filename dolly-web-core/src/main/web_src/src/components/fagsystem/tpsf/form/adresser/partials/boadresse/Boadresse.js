@@ -5,7 +5,8 @@ import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 
 export const Boadresse = ({ formikProps }) => {
 	const settBoadresse = adresse => {
-		formikProps.setFieldValue('tpsf.boadresse.adressetype', adresse.adressetype)
+		formikProps.setFieldValue('tpsf.boadresse', {})
+		formikProps.setFieldValue('tpsf.boadresse.adressetype', 'GATE')
 		formikProps.setFieldValue('tpsf.boadresse.gateadresse', adresse.gateadresse)
 		formikProps.setFieldValue('tpsf.boadresse.postnr', adresse.postnr)
 		formikProps.setFieldValue('tpsf.boadresse.poststed', adresse.poststed)

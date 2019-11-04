@@ -8,7 +8,6 @@ export const VelgAdresseForm = ({ adresser, velgAdresse }) => {
 	const [valgtHusnummer, setValgtHusnummer] = useState(mappedAdresser[0].husnrfra)
 
 	const onVelgAdresse = () => {
-		console.log(valgtAdresse)
 		return velgAdresse({
 			adressetype: 'GATE',
 			gateadresse: valgtAdresse.adrnavn,
