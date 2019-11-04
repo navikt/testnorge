@@ -154,10 +154,10 @@ public class PdlForvalterClient implements ClientRegister {
             pdlForvalterConsumer.postAdressebeskyttelse(mapperFacade.map(person, PdlAdressebeskyttelse.class), person.getIdent());
 
         } catch (HttpClientErrorException e) {
-            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter: {}", person.getSpesreg(), e.getResponseBodyAsString());
+            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
 
         } catch (RuntimeException e) {
-            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter.", person.getSpesreg(), e);
+            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter.", person.getIdent(), e);
         }
     }
 
