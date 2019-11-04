@@ -3,7 +3,6 @@ import config from '~/config'
 const uri = `${config.services.dollyBackend}`
 
 const groupBase = `${uri}/gruppe`
-const teamBase = `${uri}/team`
 const brukerBase = `${uri}/bruker`
 const kodeverkBase = `${uri}/kodeverk`
 const bestillingBase = `${uri}/bestilling`
@@ -26,10 +25,6 @@ export default class DollyEndpoints {
 		return `${groupBase}?navIdent=${userId}`
 	}
 
-	static gruppeByTeam(teamId) {
-		return `${groupBase}?teamId=${teamId}`
-	}
-
 	static gruppeAttributter(gruppeId) {
 		return `${groupBase}/${gruppeId}/attributter`
 	}
@@ -44,26 +39,6 @@ export default class DollyEndpoints {
 
 	static gruppeBestillingStatus(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestillingStatus`
-	}
-
-	static team() {
-		return teamBase
-	}
-
-	static teamByUser(userId) {
-		return `${teamBase}?navIdent=${userId}`
-	}
-
-	static teamById(teamId) {
-		return `${teamBase}/${teamId}`
-	}
-
-	static teamAddMember(teamId) {
-		return `${teamBase}/${teamId}/leggTilMedlemmer`
-	}
-
-	static teamRemoveMember(teamId, userId) {
-		return `${teamBase}/${teamId}/deleteMedlem?navIdent=${userId}`
 	}
 
 	static bruker() {

@@ -1,11 +1,5 @@
-import DataFormatter from '~/utils/DataFormatter'
-
 //liste over koder som må eksludert pga ingen støtte i TPSF/dolly
 const _excludeList = ['NULL', 'GLAD']
-
-export const NormalizeTeamListForDropdown = ({ data }) => ({
-	options: data.map(team => ({ value: team.id, label: team.navn }))
-})
 
 // Specialbehov for modifisering og sortering av kodeverk
 export const SortKodeverkArray = data => {
@@ -86,12 +80,10 @@ export const SortKodeverkArray = data => {
 export const NormalizeKodeverkForDropdown = ({ data }, showValueInLabel) => {
 	const sortedArray = SortKodeverkArray(data)
 	return {
-		options: sortedArray
-			.filter(val => !_excludeList.includes(val.value))
-			.map(kode => ({
-				value: kode.value,
-				label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
-			}))
+		options: sortedArray.filter(val => !_excludeList.includes(val.value)).map(kode => ({
+			value: kode.value,
+			label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
+		}))
 	}
 }
 
@@ -105,27 +97,21 @@ export const NormalizeKodeverkForDropdownUtenUfb = ({ data }, showValueInLabel) 
 			filteredSortedArray.push(diskresjonskode)
 	)
 	return {
-		options: filteredSortedArray
-			.filter(val => !_excludeList.includes(val.value))
-			.map(kode => ({
-				value: kode.value,
-				label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
-			}))
+		options: filteredSortedArray.filter(val => !_excludeList.includes(val.value)).map(kode => ({
+			value: kode.value,
+			label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
+		}))
 	}
 }
 
-export const NormalizeBrukerListForDropdown = (data, teamMembers) => {
+export const NormalizeBrukerListForDropdown = data => {
 	const options = data.reduce((filtered, bruker) => {
-		if (!teamMembers.includes(bruker.navIdent)) {
-			filtered.push({ value: bruker.navIdent, label: bruker.navIdent })
-		}
 		return filtered
 	}, [])
 	return { options }
 }
 
 export default {
-	NormalizeTeamListForDropdown,
 	NormalizeBrukerListForDropdown,
 	NormalizeKodeverkForDropdown,
 	NormalizeKodeverkForDropdownUtenUfb
