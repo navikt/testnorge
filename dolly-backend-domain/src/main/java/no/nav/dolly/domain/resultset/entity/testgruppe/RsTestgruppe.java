@@ -1,16 +1,15 @@
 package no.nav.dolly.domain.resultset.entity.testgruppe;
 
+import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.entity.team.RsTeamMedIdOgNavn;
-
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -29,11 +28,9 @@ public class RsTestgruppe {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate datoEndret;
 
-    private RsTeamMedIdOgNavn team;
-
     private Integer antallIdenter;
     private Integer antallIBruk;
 
-    private boolean erMedlemAvTeamSomEierGruppe;
+    private boolean erEierAvGruppe;
     private boolean favorittIGruppen;
 }

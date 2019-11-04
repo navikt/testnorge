@@ -4,6 +4,7 @@ import static java.util.Objects.isNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -11,7 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 
 @Setter
 @Getter
@@ -19,12 +19,12 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 @AllArgsConstructor
 @Builder
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-public class RsBruker {
+public class RsBrukerAndGruppeId {
 
     private String brukerId;
-    private List<RsTestgruppe> favoritter;
+    private List<String> favoritter;
 
-    public List<RsTestgruppe> getFavoritter() {
+    public List<String> getFavoritter() {
         if (isNull(favoritter)) {
             favoritter = new ArrayList();
         }

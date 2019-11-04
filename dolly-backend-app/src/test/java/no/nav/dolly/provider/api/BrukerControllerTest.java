@@ -6,19 +6,20 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerTeamAndGruppeIDs;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
-import no.nav.dolly.service.BrukerService;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
+import no.nav.dolly.service.BrukerService;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BrukerControllerTest {
@@ -33,17 +34,16 @@ public class BrukerControllerTest {
     private BrukerController controller;
 
     @Test
-    public void getBrukerByNavIdent() {
-        RsBrukerTeamAndGruppeIDs bruker = new RsBrukerTeamAndGruppeIDs();
-        bruker.setNavIdent("navident");
+    public void getBrukerByBrukerId() {
+        RsBrukerAndGruppeId bruker = RsBrukerAndGruppeId.builder().brukerId("brukerId").build();
         Bruker b = new Bruker();
 
-        when(brukerService.fetchBruker("navident")).thenReturn(b);
-        when(mapperFacade.map(b, RsBrukerTeamAndGruppeIDs.class)).thenReturn(bruker);
+        when(brukerService.fetchBruker("brukerId")).thenReturn(b);
+        when(mapperFacade.map(b, RsBrukerAndGruppeId.class)).thenReturn(bruker);
 
-        RsBrukerTeamAndGruppeIDs res = controller.getBrukerByNavIdent("navident");
+        RsBrukerAndGruppeId res = controller.getBrukerBybrukerId("brukerId");
 
-        assertThat(res.getNavIdent(), is("navident"));
+        assertThat(res.getBrukerId(), is("brukerId"));
     }
 
     @Test
@@ -59,7 +59,6 @@ public class BrukerControllerTest {
         when(mapperFacade.map(b, RsBruker.class)).thenReturn(rsBruker);
 
         assertThat(controller.getCurrentBruker(), is(rsBruker));
-
     }
 
     @Test

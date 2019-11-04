@@ -5,19 +5,17 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.entity.team.RsTeamMedIdOgNavn;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDate;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 
 @DisplayName("POST /api/v1/gruppe")
 class TestgruppeControllerPostTest extends TestgruppeTestBase {
@@ -25,12 +23,12 @@ class TestgruppeControllerPostTest extends TestgruppeTestBase {
     @Test
     @DisplayName("Returnerer opprettet Testgruppe med innlogget bruker som eier")
     void createTestgruppeAndSetCurrentUserAsOwner() {
-        Team team = dataFactory.createTeam("Teamnavn");
+
+        dataFactory.createBruker("NAVIDENT");
 
         RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder()
                 .navn("mingruppe")
                 .hensikt("hensikt")
-                .teamId(team.getId())
                 .build();
 
         RsTestgruppeUtvidet resp = sendRequest(rsOpprettEndreTestgruppe)
@@ -41,28 +39,6 @@ class TestgruppeControllerPostTest extends TestgruppeTestBase {
         assertThat(resp.getNavn(), is("mingruppe"));
         assertThat(resp.getHensikt(), is("hensikt"));
         assertThat(resp.getOpprettetAvNavIdent(), is("NAVIDENT"));
-    }
-
-    @Test
-    @DisplayName("Returnerer opprettet Testgruppe med automatisk opprettet tilknyttet Team")
-    void createTestgruppeWithoutSpecifyingTeam() {
-        dataFactory.createBruker("NAVIDENT");
-
-        RsOpprettEndreTestgruppe rsOpprettTestgruppe = RsOpprettEndreTestgruppe.builder()
-                .navn("mingruppe")
-                .hensikt("hensikt")
-                .build();
-
-        RsTestgruppeUtvidet resp = sendRequest(rsOpprettTestgruppe)
-                .to(HttpMethod.POST, ENDPOINT_BASE_URI)
-                .andExpect(HttpStatus.CREATED, RsTestgruppeUtvidet.class);
-
-        RsTeamMedIdOgNavn team = resp.getTeam();
-
-        assertThat(resp.getId(), is(notNullValue()));
-        assertThat(resp.getNavn(), is("mingruppe"));
-        assertThat(resp.getHensikt(), is("hensikt"));
-        assertThat(team.getNavn(), is("NAVIDENT"));
     }
 
     @Test

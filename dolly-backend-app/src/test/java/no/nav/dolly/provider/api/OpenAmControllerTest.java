@@ -13,16 +13,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsOpenAmRequest;
-import no.nav.dolly.domain.resultset.RsOpenAmResponse;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.TestgruppeRepository;
-import no.nav.dolly.service.OpenAmService;
+import java.util.List;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,8 +25,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.List;
-import java.util.Optional;
+import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.RsOpenAmResponse;
+import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.service.OpenAmService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OpenAmControllerTest {
@@ -43,21 +40,19 @@ public class OpenAmControllerTest {
     private static final String IDENT2 = "22222222222";
     private static final String MILJOE1 = "t0";
     private static final String MILJOE2 = "t1";
-    private static final long GRUPPEID = 1L;
-    private static final Boolean STATUS = true;
     private static final Long BESTILLING_ID = 1L;
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+
     @Mock
     private OpenAmService openAmService;
-    @Mock
-    private TestgruppeRepository testgruppeRepository;
+
     @Mock
     private BestillingRepository bestillingRepository;
+
     @InjectMocks
     private OpenAmController openAmController;
-    @Mock
-    private Testgruppe testgruppe;
 
     @Mock
     private RsOpenAmResponse openAmResponse;
@@ -67,37 +62,6 @@ public class OpenAmControllerTest {
     @Before
     public void setup() {
         captor = ArgumentCaptor.forClass(List.class);
-    }
-
-    @Test
-    public void sendIdenterTilOpenAmOk() {
-        openAmController.sendIdenterTilOpenAm(RsOpenAmRequest.builder()
-                .identer(asList(IDENT1, IDENT2))
-                .miljoer(asList(MILJOE1, MILJOE2))
-                .build());
-
-        verify(openAmService).opprettIdenter(captor.capture(), eq(MILJOE1));
-        verify(openAmService).opprettIdenter(captor.capture(), eq(MILJOE2));
-        assertThat(captor.getValue(), containsInAnyOrder(IDENT1, IDENT2));
-    }
-
-    @Test
-    public void endreOpenAmSentStatusOk() {
-        when(testgruppeRepository.findById(GRUPPEID)).thenReturn(Optional.of(testgruppe));
-
-        openAmController.oppdaterOpenAmSentStatus(GRUPPEID, STATUS);
-        verify(testgruppeRepository).findById(GRUPPEID);
-        verify(testgruppeRepository).save(any(Testgruppe.class));
-    }
-
-    @Test
-    public void endreOpenAmSentStatusGruppeNotFound() {
-        expectedException.expect(NotFoundException.class);
-        expectedException.expectMessage(format("GruppeId %d ble ikke funnet.", GRUPPEID));
-
-        openAmController.oppdaterOpenAmSentStatus(GRUPPEID, STATUS);
-        verify(testgruppeRepository).findById(GRUPPEID);
-        verify(testgruppeRepository).save(any(Testgruppe.class));
     }
 
     @Test

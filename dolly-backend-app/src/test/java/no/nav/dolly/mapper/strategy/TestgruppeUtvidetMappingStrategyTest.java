@@ -1,19 +1,11 @@
 package no.nav.dolly.mapper.strategy;
 
-import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
-import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import java.util.Arrays;
 import org.assertj.core.util.Sets;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -24,7 +16,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Arrays;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
+import no.nav.dolly.mapper.utils.MapperTestUtils;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestgruppeUtvidetMappingStrategyTest {
@@ -54,13 +52,8 @@ public class TestgruppeUtvidetMappingStrategyTest {
     private static Testgruppe buildTestgruppe() {
         return Testgruppe.builder()
                 .testidenter(Sets.newHashSet(Arrays.asList(TESTIDENT1, TESTIDENT2)))
-                .opprettetAv(Bruker.builder().navIdent(IDENT1).build())
-                .sistEndretAv(Bruker.builder().navIdent(IDENT2).build())
-                .teamtilhoerighet(Team.builder().navn(TEAM_NAME).id(TEAM_ID)
-                        .medlemmer(singletonList(Bruker.builder()
-                                .navIdent(IDENT1)
-                                .build()))
-                        .build())
+                .opprettetAv(Bruker.builder().brukerId(IDENT1).build())
+                .sistEndretAv(Bruker.builder().brukerId(IDENT2).build())
                 .build();
     }
 
@@ -77,8 +70,6 @@ public class TestgruppeUtvidetMappingStrategyTest {
         assertThat(testgruppeUtvidet.getOpprettetAvNavIdent(), is(equalTo(IDENT1)));
         assertThat(testgruppeUtvidet.getSistEndretAvNavIdent(), is(equalTo(IDENT2)));
         assertThat(testgruppeUtvidet.getTestidenter(), hasSize(2));
-        assertThat(testgruppeUtvidet.getTeam().getNavn(), is(equalTo(TEAM_NAME)));
         assertThat(testgruppeUtvidet.getAntallIdenter(), is(equalTo(2)));
-        assertThat(testgruppeUtvidet.isErMedlemAvTeamSomEierGruppe(), is(true));
     }
 }
