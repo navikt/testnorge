@@ -1,11 +1,8 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
-import static java.time.LocalDate.now;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.pdlforvalter.PdlAdressebeskyttelse.convertSpesreg;
-import static no.nav.dolly.util.NullcheckUtil.blankcheckSetDefaultValue;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import java.util.List;
@@ -18,13 +15,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
-import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
-import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
-import no.nav.dolly.domain.resultset.pdlforvalter.navn.PdlNavn;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
@@ -35,13 +34,13 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 @RequiredArgsConstructor
 public class PdlForvalterClient implements ClientRegister {
 
+    public static final String KILDE = "Dolly";
     public static final String SYNTH_ENV = "q2";
     public static final String KONTAKTINFORMASJON_DOEDSBO = "KontaktinformasjonForDoedsbo";
     public static final String UTENLANDS_IDENTIFIKASJONSNUMMER = "UtenlandskIdentifikasjonsnummer";
     public static final String FALSK_IDENTITET = "FalskIdentitet";
     public static final String PDL_FORVALTER = "PdlForvalter";
 
-    private static final String KILDE = "Dolly";
     private static final String HENDELSE_ID = "hendelseId";
 
     private final PdlForvalterConsumer pdlForvalterConsumer;
@@ -57,12 +56,9 @@ public class PdlForvalterClient implements ClientRegister {
 
             if (bestilling.getEnvironments().contains(SYNTH_ENV)) {
 
-                hentPersondetaljer(tpsPerson);
+                hentTpsPersondetaljer(tpsPerson);
                 sendDeleteIdent(tpsPerson);
-                sendFoedselsmelding(tpsPerson);
-                sendNavn(tpsPerson);
-                sendAdressebeskyttelse(tpsPerson);
-                sendDoedsfall(tpsPerson);
+                sendPdlPersondetaljer(tpsPerson);
 
                 if (nonNull(bestilling.getPdlforvalter())) {
                     Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
@@ -97,7 +93,7 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void hentPersondetaljer(TpsPerson tpsPerson) {
+    private void hentTpsPersondetaljer(TpsPerson tpsPerson) {
 
         if (isNull(tpsPerson.getPersondetalj())) {
             List<Person> personer = tpsfService.hentTestpersoner(singletonList(tpsPerson.getHovedperson()));
@@ -107,29 +103,56 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendAdressebeskyttelse(TpsPerson tpsPerson) {
+    private void sendPdlPersondetaljer(TpsPerson tpsPerson) {
 
         if (nonNull(tpsPerson.getPersondetalj())) {
-            sendAdressebeskyttelse(tpsPerson.getPersondetalj());
-            tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon ->
-                    sendAdressebeskyttelse(relasjon.getPersonRelasjonMed()));
-        }
-    }
-
-    private void sendNavn(TpsPerson tpsPerson) {
-
-        if (nonNull(tpsPerson.getPersondetalj())) {
+            sendFoedselsmelding(tpsPerson.getPersondetalj());
             sendNavn(tpsPerson.getPersondetalj());
-            tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> sendNavn(relasjon.getPersonRelasjonMed()));
+            sendKjoenn(tpsPerson.getPersondetalj());
+            sendAdressebeskyttelse(tpsPerson.getPersondetalj());
+            sendDoedsfall(tpsPerson.getPersondetalj());
+
+            tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
+                sendFoedselsmelding(relasjon.getPersonRelasjonMed());
+                sendNavn(relasjon.getPersonRelasjonMed());
+                sendKjoenn(relasjon.getPersonRelasjonMed());
+                sendAdressebeskyttelse(relasjon.getPersonRelasjonMed());
+                sendDoedsfall(relasjon.getPersonRelasjonMed());
+            });
         }
     }
 
     private void sendNavn(Person person) {
 
         try {
-            PdlNavn pdlNavn = mapperFacade.map(person, PdlNavn.class);
-            pdlNavn.setKilde(KILDE);
-            pdlForvalterConsumer.postNavn(pdlNavn, person.getIdent());
+            pdlForvalterConsumer.postNavn(mapperFacade.map(person, PdlNavn.class), person.getIdent());
+
+        } catch (HttpClientErrorException e) {
+            log.error("Feilet å sende navn for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å sende navn for ident {} til PDL-forvalter.", person.getIdent(), e);
+        }
+    }
+
+    private void sendKjoenn(Person person) {
+
+        try {
+            pdlForvalterConsumer.postKjoenn(mapperFacade.map(person, PdlKjoenn.class), person.getIdent());
+
+        } catch (HttpClientErrorException e) {
+            log.error("Feilet å sende kjønn for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å sende kjønn for ident {} til PDL-forvalter.", person.getIdent(), e);
+        }
+    }
+
+    private void sendAdressebeskyttelse(Person person) {
+
+        try {
+            pdlForvalterConsumer.postAdressebeskyttelse(mapperFacade.map(person, PdlAdressebeskyttelse.class), person.getIdent());
+
         } catch (HttpClientErrorException e) {
             log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
 
@@ -138,40 +161,11 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendAdressebeskyttelse(Person person) {
-
-        try {
-            pdlForvalterConsumer.postAdressebeskyttelse(PdlAdressebeskyttelse.builder()
-                    .gradering(convertSpesreg(person.getSpesreg()))
-                    .kilde(KILDE)
-                    .build(), person.getSpesreg());
-
-        } catch (HttpClientErrorException e) {
-            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter: {}", person.getSpesreg(), e.getResponseBodyAsString());
-
-        } catch (RuntimeException e) {
-            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter.", person.getSpesreg(), e);
-        }
-    }
-
-    private void sendDoedsfall(TpsPerson tpsPerson) {
-
-        if (nonNull(tpsPerson.getPersondetalj())) {
-            sendDoedsfall(tpsPerson.getPersondetalj());
-            tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon ->
-                    sendDoedsfall(relasjon.getPersonRelasjonMed())
-            );
-        }
-    }
-
     private void sendDoedsfall(Person person) {
 
         if (nonNull(person.getDoedsdato())) {
             try {
-                pdlForvalterConsumer.postDoedsfall(PdlDoedsfall.builder()
-                        .doedsdato(person.getDoedsdato().toLocalDate())
-                        .kilde(KILDE)
-                        .build(), person.getIdent());
+                pdlForvalterConsumer.postDoedsfall(mapperFacade.map(person, PdlDoedsfall.class), person.getIdent());
 
             } catch (HttpClientErrorException e) {
                 log.error("Feilet å sende dødsmelding for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
@@ -182,22 +176,10 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendFoedselsmelding(TpsPerson tpsPerson) {
-
-        if (nonNull(tpsPerson.getPersondetalj())) {
-            sendFoedselsmelding(tpsPerson.getPersondetalj());
-            tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon ->
-                    sendFoedselsmelding(relasjon.getPersonRelasjonMed()));
-        }
-    }
-
     private void sendFoedselsmelding(Person person) {
 
         try {
-            pdlForvalterConsumer.postFoedsel(PdlFoedsel.builder()
-                    .foedselsdato(person.getFoedselsdato().toLocalDate())
-                    .kilde(KILDE)
-                    .build(), person.getIdent());
+            pdlForvalterConsumer.postFoedsel(mapperFacade.map(person, PdlFoedsel.class), person.getIdent());
 
         } catch (HttpClientErrorException e) {
             log.error("Feilet å sende fødselsmelding for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
@@ -237,13 +219,8 @@ public class PdlForvalterClient implements ClientRegister {
             try {
                 appendName(KONTAKTINFORMASJON_DOEDSBO, status);
 
-                PdlKontaktinformasjonForDoedsbo kontaktinformasjon = pdldata.getKontaktinformasjonForDoedsbo();
-                kontaktinformasjon.setKilde(KILDE);
-                kontaktinformasjon.setUtstedtDato(nullcheckSetDefaultValue(kontaktinformasjon.getUtstedtDato(), now()));
-                kontaktinformasjon.setLandkode(blankcheckSetDefaultValue(kontaktinformasjon.getLandkode(), "NOR"));
-
                 ResponseEntity<JsonNode> response =
-                        pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(kontaktinformasjon, ident);
+                        pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(pdldata.getKontaktinformasjonForDoedsbo(), ident);
 
                 appendOkStatus(response.getBody(), status);
 
@@ -261,11 +238,7 @@ public class PdlForvalterClient implements ClientRegister {
             try {
                 appendName(FALSK_IDENTITET, status);
 
-                PdlFalskIdentitet falskIdentitet = pdldata.getFalskIdentitet();
-                falskIdentitet.setErFalsk(nullcheckSetDefaultValue(falskIdentitet.getErFalsk(), true));
-                falskIdentitet.setKilde(nullcheckSetDefaultValue(falskIdentitet.getKilde(), KILDE));
-
-                ResponseEntity<JsonNode> response = pdlForvalterConsumer.postFalskIdentitet(falskIdentitet, ident);
+                ResponseEntity<JsonNode> response = pdlForvalterConsumer.postFalskIdentitet(pdldata.getFalskIdentitet(), ident);
 
                 appendOkStatus(response.getBody(), status);
 

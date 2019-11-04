@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.pdlforvalter;
+package no.nav.dolly.bestilling.pdlforvalter.domain;
 
 import java.time.LocalDate;
 
@@ -13,12 +13,8 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlFoedsel {
+public class PdlDoedsfall {
 
-    private String fodekommune;
-    private String foedeland;
-    private String foedested;
-    private Integer foedselsaar;
-    private LocalDate foedselsdato;
+    private LocalDate doedsdato;
     private String kilde;
 }
