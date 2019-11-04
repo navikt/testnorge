@@ -42,10 +42,6 @@ fasit:
   url: https://fasit.adeo.no
   environment.name: t1
 
-#spring:
-#  flyway:
-#    enabled: false # Disabled by default as you should probably think twice before running Flyway-migrations
-
 spring:
   flyway:
     enabled: false # Disabled by default as you should probably think twice before running Flyway-migrations
