@@ -18,6 +18,24 @@ til endepunkter i synt-applikasjonene.
 ## Struktur
 ![Arkitektur](doc/images/architecture.png "Bilde av arkitektur")
 
+Consumere gjør kall til SyntController endepunktene, som gjør enkel validering av input fra consumenten. 
+
+De i sin tur kaller på en litt ukonvensjonell syntetisering-service. Den henter og manipulerer URL'er fra 
+`application.properties` ettersom hvilken synt-pakke man kaller på og innholdet i kallet. Den klargjør da også selve 
+request'en vi vil sende til synt-pakken, siden dette kan være litt forskjellig fra pakke til pakke. 
+
+Deretter blir den klargjorte requesten sendt til den aktuelle synt-consumeren som blir opprettet av SyntConsumerManager.
+
+SyntConsumer sørger sjekker om applikasjonen finnes på NAIS gjennom ApplicationManager (som igjen spør 
+kubernetesController, siden denne kjører kubectl kommandoer på clusteret). Dersom den ikke finnes, starter 
+Application manager en ny innstanse av pakken, som syntConsumeren kobler seg på.
+
+Hver gang en synt-pakke blir aksessert gjennom ApplicationManager tar den eierskap for pakken og slår den av 5min
+etter siste kall til pakken. Pakker som blir startet av andre prosesser blir ikke rørt av ApplicationManager inntil 
+noen aksesserer den aktuelle pakken gjennom denne.
+
+SyntConsumer gjør så selve utvekslingen mot synt-pakken og returnerer de syntetiske verdiene.
+
 ## Hvordan legge til Synt-Pakker
 De filene som må endres når man legger til synt-pakkene er:
 

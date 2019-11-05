@@ -3,14 +3,10 @@ package no.nav.registre.syntrest.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 import no.nav.registre.syntrest.utils.SyntAppNames;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.concurrent.ScheduledExecutorService;
-
 @Component
-@DependsOn("appConfig")
 @Slf4j
 public class SyntConsumerManager {
 
@@ -28,21 +24,21 @@ public class SyntConsumerManager {
     private final SyntConsumer samConsumer;
     private final SyntConsumer frikortConsumer;
 
-    public SyntConsumerManager(ApplicationManager applicationManager, RestTemplate restTemplate, ScheduledExecutorService scheduledExecutorService) {
+    public SyntConsumerManager(ApplicationManager applicationManager, RestTemplate restTemplate) {
 
-        aaregConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.AAREG);
-        bisysConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.BISYS);
-        meldekortConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.MELDEKORT);
-        aapConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.AAP);
-        instConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.INST);
-        inntektConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.INNTEKT);
-        medlConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.MEDL);
-        poppConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.POPP);
-        tpConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.TP);
-        tpsConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.TPS);
-        navConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.NAV);
-        samConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.SAM);
-        frikortConsumer = new SyntConsumer(applicationManager, restTemplate, scheduledExecutorService, SyntAppNames.FRIKORT);
+        aaregConsumer = new SyntConsumer(applicationManager, restTemplate, SyntAppNames.AAREG);
+        bisysConsumer = new SyntConsumer(applicationManager, restTemplate, SyntAppNames.BISYS);
+        meldekortConsumer = new SyntConsumer(applicationManager, restTemplate, SyntAppNames.MELDEKORT);
+        aapConsumer = new SyntConsumer(applicationManager, restTemplate, SyntAppNames.AAP);
+        instConsumer = new SyntConsumer(applicationManager, restTemplate, SyntAppNames.INST);
+        inntektConsumer = new SyntConsumer(applicationManager, restTemplate, SyntAppNames.INNTEKT);
+        medlConsumer = new SyntConsumer(applicationManager, restTemplate, SyntAppNames.MEDL);
+        poppConsumer = new SyntConsumer(applicationManager, restTemplate, SyntAppNames.POPP);
+        tpConsumer = new SyntConsumer(applicationManager, restTemplate, SyntAppNames.TP);
+        tpsConsumer = new SyntConsumer(applicationManager, restTemplate, SyntAppNames.TPS);
+        navConsumer = new SyntConsumer(applicationManager, restTemplate, SyntAppNames.NAV);
+        samConsumer = new SyntConsumer(applicationManager, restTemplate, SyntAppNames.SAM);
+        frikortConsumer = new SyntConsumer(applicationManager, restTemplate, SyntAppNames.FRIKORT);
     }
 
     public SyntConsumer get(SyntAppNames type) {

@@ -8,8 +8,6 @@ import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -37,10 +35,9 @@ public class KubernetesController {
     private final UriTemplate isAliveUri;
     private final CustomObjectsApi api;
 
-    private String isAliveUrl;
-    private String dockerImagePath;
-    private int maxRetries;
-    private int retryDelay;
+    private final String dockerImagePath;
+    private final int maxRetries;
+    private final int retryDelay;
 
     public KubernetesController(RestTemplate restTemplate, ApiClient apiClient,
                                 @Value("${isAlive}") String isAliveUrl,
@@ -52,7 +49,6 @@ public class KubernetesController {
         this.manifestPath = "/nais/{appName}.yaml";
         this.isAliveUri = new UriTemplate(isAliveUrl);
         this.dockerImagePath = dockerImagePath;
-        this.isAliveUrl = isAliveUrl;
         this.maxRetries = maxRetries;
         this.retryDelay = retryDelay;
 
@@ -139,10 +135,10 @@ public class KubernetesController {
         log.info("Checking \'{}\'s deployment status...", appName);
         int numRetries = 0;
 
+        log.info("Waiting for \'{}\' to deploy... (max {} seconds)", appName, (maxRetries * retryDelay));
         while (!isAlive(appName)) {
             if (numRetries < maxRetries) {
                 TimeUnit.SECONDS.sleep(retryDelay);
-                log.info("Waiting for \'{}\' to deploy...", appName);
             } else {
                 log.error("Application \'{}\' failed to deploy. Terminating...", appName);
                 takedownImage(appName);
@@ -158,6 +154,7 @@ public class KubernetesController {
         Map<String, Object> manifestFile = yaml.load(
                 getClass().getResourceAsStream(manifestPath.replace("{appName}", appName)));
 
+        // Don't need to edit the 'latest' tag. deploy.sh always makes sure the latest tag is applied to the latest image.
         /*Map<String, Object> spec = (Map) manifestFile.get("spec");
         String imageBase = spec.get("image").toString();
         String latestImage = imageBase.replace("latest", getLatestImageVersion(appName));

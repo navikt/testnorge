@@ -116,6 +116,20 @@
             <version>2.1.2.RELEASE</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>net.jodah</groupId>
+            <artifactId>concurrentunit</artifactId>
+            <version>0.4.6</version>
+            <scope>test</scope>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>com.googlecode.thread-weaver</groupId>
+            <artifactId>threadweaver</artifactId>
+            <version>0.1</version>
+            <scope>test</scope>
+        </dependency>
+        -->
     </dependencies>
 
     <build>

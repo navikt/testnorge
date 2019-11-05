@@ -1,10 +1,9 @@
 package no.nav.registre.syntrest.kubernetes;
 
 import io.kubernetes.client.ApiException;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
-import no.nav.registre.syntrest.utils.SyntAppNames;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +14,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
+@Getter
 @Component
 /**
  * Manages lifecycle of the app. Abstracts away the call to the KubernetesController,
@@ -22,6 +22,14 @@ import java.util.concurrent.TimeUnit;
  * Is created as a Bean which means that only *one* synt package can be started/stopped at a time
  * on the NAIS cluster.
  * Does NOT ensure that only one call is given to a specific package at a time. This is done in the
+ * syntConsumer.
+ *
+ * The application manager will only manage apps that is accessed through it, although the isAlive
+ * method will check any application available on the NAIS cluster.
+ *
+ * There is also an unsatisfying pattern where the scheduledExecutorService calls a shutdown signal
+ * for an app, which the calls the shutdown for itself in the Application manager. This was done
+ * because no arguments can be given to a callable function.
  */
 public class ApplicationManager {
 
@@ -38,13 +46,16 @@ public class ApplicationManager {
         this.activeApplications = new HashMap<>();
     }
 
-    public synchronized int startApplication(String appId) {
+    public synchronized int startApplication(SyntConsumer app) {
         int returnValue = -1;
         try {
-            kubernetesController.deployImage(appId);
+            kubernetesController.deployImage(app.getAppName());
+            activeApplications.put(
+                    app.getAppName(),
+                    scheduledExecutorService.schedule(app::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS));
             returnValue = 0;
         } catch (ApiException | InterruptedException e) {
-            log.error("Could not create application \'{}\'!", appId);
+            log.error("Could not create application \'{}\'!", app.getAppName());
         }
 
         return returnValue;
@@ -52,21 +63,19 @@ public class ApplicationManager {
 
     public synchronized void updateAccessedPackages(SyntConsumer app) {
         if (activeApplications.containsKey(app.getAppName())) {
-
             log.info("Updating termination timer for \'{}\'", app.getAppName());
             activeApplications.get(app.getAppName()).cancel(true);
-            activeApplications.put(app.getAppName(), scheduledExecutorService.schedule(app::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS));
-
+            activeApplications.put(
+                    app.getAppName(),
+                    scheduledExecutorService.schedule(app::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS));
         } else {
-
             log.info("Starting termination timer for \'{}\'", app.getAppName());
-            activeApplications.put(app.getAppName(), scheduledExecutorService.schedule(app::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS));
+            activeApplications.put(
+                    app.getAppName(),
+                    scheduledExecutorService.schedule(app::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS));
         }
     }
 
-    // If the application is in the activeApplications-list, this should return true without having to call
-    // the isAlive for the kubernetesController. However, if it is done that way, we will not have control over
-    // the applications started on the cluster in some other ways...
     public boolean applicationIsAlive(String appId) {
         return kubernetesController.isAlive(appId);
     }
@@ -74,6 +83,7 @@ public class ApplicationManager {
     public synchronized void shutdownApplication(String appId) {
         try {
             kubernetesController.takedownImage(appId);
+            activeApplications.remove(appId);
         } catch (ApiException e) {
             e.printStackTrace();
             log.error("Could not delete application \'{}\'.\n{}", appId, e.getMessage());
