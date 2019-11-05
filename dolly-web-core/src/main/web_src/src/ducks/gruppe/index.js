@@ -65,8 +65,8 @@ export default handleActions(
 
 // Thunk
 export const fetchGrupperTilBruker = () => async (dispatch, getState) => {
-	const { navIdent } = getState().bruker.brukerData
-	return dispatch(getGrupperByUserId(navIdent))
+	const { brukerId } = getState().bruker.brukerData
+	return dispatch(getGrupperByUserId(brukerId))
 }
 
 // Selector

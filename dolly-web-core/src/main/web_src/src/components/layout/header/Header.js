@@ -31,7 +31,7 @@ export default ({ brukerData }) => {
 
 			<div className="profil-area flexbox--all-center">
 				<Icon kind="user" size="20" />
-				<p>{brukerData.navIdent}</p>
+				<p>{brukerData.brukerId}</p>
 			</div>
 		</header>
 	)

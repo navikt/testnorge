@@ -22,7 +22,7 @@ export default class DollyEndpoints {
 	}
 
 	static gruppeByUser(userId) {
-		return `${groupBase}?navIdent=${userId}`
+		return `${groupBase}?brukerId=${userId}`
 	}
 
 	static gruppeAttributter(gruppeId) {
