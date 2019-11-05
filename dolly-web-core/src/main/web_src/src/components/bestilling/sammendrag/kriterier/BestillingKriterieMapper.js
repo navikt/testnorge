@@ -206,14 +206,23 @@ export function mapBestillingData(bestillingData) {
 			// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
 			let flatSigrunStubKriterier = []
 			sigrunStubKriterier.forEach(inntekt => {
-				inntekt.grunnlag.forEach(g => {
-					flatSigrunStubKriterier.push({
-						grunnlag: g.tekniskNavn,
-						inntektsaar: inntekt.inntektsaar,
-						tjeneste: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste),
-						verdi: g.verdi
+				if (inntekt.svalbardGrunnlag != null) {
+					inntekt.svalbardGrunnlag.forEach(g => {
+						flatSigrunStubKriterier.push({
+							svalbardGrunnlag: g.tekniskNavn,
+							inntektsaar: inntekt.inntektsaar,
+							tjeneste: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
+						})
 					})
-				})
+				} else {
+					inntekt.grunnlag.forEach(s => {
+						flatSigrunStubKriterier.push({
+							grunnlag: s.tekniskNavn,
+							inntektsaar: inntekt.inntektsaar,
+							tjeneste: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
+						})
+					})
+				}
 			})
 
 			const sigrunStub = {
@@ -231,14 +240,29 @@ export function mapBestillingData(bestillingData) {
 					obj('År', inntekt.inntektsaar),
 					obj('Beløp', inntekt.verdi),
 					obj('Tjeneste', inntekt.tjeneste),
-					{
-						label: 'grunnlag',
-						value: inntekt.grunnlag,
-						width: 'xlarge',
-						apiKodeverkId: inntekt.tjeneste
-					}
+					obj('Tjeneste', inntekt.inntektssted)
 				])
+				if (inntekt.svalbardGrunnlag != null) {
+					sigrunStub.itemRows.push([
+						{
+							label: 'Svalbard Grunnlag',
+							value: inntekt.svalbardGrunnlag,
+							width: 'xlarge',
+							apiKodeverkId: inntekt.tjeneste
+						}
+					])
+				} else {
+					sigrunStub.itemRows.push([
+						{
+							label: 'grunnlag',
+							value: inntekt.grunnlag,
+							width: 'xlarge',
+							apiKodeverkId: inntekt.tjeneste
+						}
+					])
+				}
 			})
+
 			data.push(sigrunStub)
 		}
 

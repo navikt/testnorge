@@ -407,14 +407,25 @@ const _mapRegistreValue = (key, value) => {
 			return mappedValue
 		case 'sigrunstub':
 			value.forEach(inntekt => {
-				inntekt.grunnlag.forEach(g => {
-					mappedValue.push({
-						typeinntekt: g.tekniskNavn,
-						inntektsaar: inntekt.inntektsaar,
-						tjeneste: inntekt.tjeneste,
-						beloep: g.verdi
+				if (inntekt.svalbardGrunnlag) {
+					inntekt.Svalbardrunnlag.forEach(s => {
+						mappedValue.push({
+							typeinntekt: s.tekniskNavn,
+							inntektsaar: inntekt.inntektsaar,
+							tjeneste: inntekt.tjeneste,
+							beloep: s.verdi
+						})
 					})
-				})
+				} else {
+					inntekt.grunnlag.forEach(g => {
+						mappedValue.push({
+							typeinntekt: g.tekniskNavn,
+							inntektsaar: inntekt.inntektsaar,
+							tjeneste: inntekt.tjeneste,
+							beloep: g.verdi
+						})
+					})
+				}
 			})
 			return mappedValue
 		case 'krrstub':

@@ -20,6 +20,10 @@ const selectOptions = {
 		{ value: 'Beregnet skatt', label: 'Beregnet skatt' },
 		{ value: 'Summert skattegrunnlag', label: 'Summert skattegrunnlag' }
 	],
+	inntektssted: [
+		{ value: 'Fastlandet', label: 'Fastlandet' },
+		{ value: 'Svalbard', label: 'Svalbard' }
+	],
 
 	// AAREG
 	aktoertype: [

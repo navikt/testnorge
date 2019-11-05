@@ -164,10 +164,7 @@ export default class RedigerGruppe extends PureComponent {
 				.trim()
 				.required('Navn er et påkrevd felt')
 				.max(30, 'Maksimalt 30 bokstaver'),
-			teamId: yup
-				.number()
-				.required('Team er et påkrevd felt')
-				.nullable(),
+			teamId: yup.number().nullable(),
 			hensikt: yup // .required('Du må velge hvilket team gruppen skal knyttes til'),
 				.string()
 				.trim()

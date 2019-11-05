@@ -46,6 +46,23 @@ const AttributtListe: Attributt[] = [
 			{
 				hovedKategori: Kategorier.Inntekt,
 				subKategori: SubKategorier.Inntekt,
+				id: 'inntektssted',
+				label: 'inntektssted',
+				path: 'inntektssted',
+				editPath: 'inntektssted',
+				dataSource: DataSource.SIGRUN,
+				inputType: InputType.Select,
+				options: SelectOptionsManager('inntektssted'),
+				onlyShowDependentOnOtherValue: {
+					attributtId: 'tjeneste',
+					value: ['Summert skattegrunnlag']
+				},
+				validation: yup.string().required('Velg et grunnlag.'),
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.Inntekt,
+				subKategori: SubKategorier.Inntekt,
 				path: 'verdi',
 				id: 'beloep',
 				label: 'Beløp',

@@ -27,7 +27,6 @@ export function mapSigrunData(sigrunData) {
 						label: 'Beløp',
 						value: data.verdi
 					},
-					,
 					{
 						id: 'tjeneste',
 						label: 'Tjeneste',
