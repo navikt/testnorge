@@ -11,6 +11,19 @@ const config = {
 		tpsfUrl: 'https://tps-forvalteren-u2.nais.preprod.local',
 		udiStubUrl: 'https://udi-stub.nais.preprod.local'
 	},
+	systems: {
+		AAREG: 'Arbeidsregister (AAREG)',
+		TPSF: 'Tjenestebasert personsystem (TPS)',
+		INST2: 'Institusjonsopphold (INST2)',
+		KRRSTUB: 'Digital kontaktinformasjon (DKIF)',
+		SIGRUNSTUB: 'Skatteinntekt grunnlag (SIGRUN)',
+		ARENA: 'Arena fagsystem',
+		PDL_FORVALTER: 'Persondataløsningen (PDL)',
+		PDL_FALSKID: 'Falsk identitet (PDL)',
+		PDL_DODSBO: 'Kontaktinformasjon dødsbo (PDL)',
+		PDL_UTENLANDSID: 'Utenlandsk id (PDL)',
+		UDISTUB: 'Utlendingsdirektoratet (UDI)'
+	},
 	debug: false
 }
 
