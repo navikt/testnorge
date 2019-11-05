@@ -37,15 +37,15 @@ import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(SpringRunner.class)
-@RestClientTest(TestnorgeAaregConsumer.class)
+@RestClientTest(AaregConsumer.class)
 @ActiveProfiles("test")
-public class TestnorgeAaregConsumerTest {
+public class AaregConsumerTest {
 
     private static final String STANDARD_PRINCIPAL = "brukernavn";
     private static final String STANDARD_IDTOKEN = "idtoken";
 
     @Autowired
-    private TestnorgeAaregConsumer testnorgeAaregConsumer;
+    private AaregConsumer aaregConsumer;
 
     @Autowired
     private MockRestServiceServer server;
@@ -96,7 +96,7 @@ public class TestnorgeAaregConsumerTest {
         String expectedUri = serverUrl + "/v1/arbeidsforhold";
         stubOpprettArbeidsforhold(expectedUri, opprettResponse);
 
-        RsAaregResponse response = testnorgeAaregConsumer.opprettArbeidsforhold(opprettRequest);
+        RsAaregResponse response = aaregConsumer.opprettArbeidsforhold(opprettRequest);
 
         assertThat(response.getStatusPerMiljoe().get(miljoe), equalTo("OK"));
     }
@@ -106,7 +106,7 @@ public class TestnorgeAaregConsumerTest {
         String expectedUri = serverUrl + "/v1/arbeidsforhold";
         stubOppdaterArbeidsforhold(expectedUri, oppdaterResponse);
 
-        RsAaregResponse response = testnorgeAaregConsumer.oppdaterArbeidsforhold(oppdaterRequest);
+        RsAaregResponse response = aaregConsumer.oppdaterArbeidsforhold(oppdaterRequest);
 
         assertThat(response.getStatusPerMiljoe().get(miljoe), equalTo("OK"));
     }
@@ -116,7 +116,7 @@ public class TestnorgeAaregConsumerTest {
         String expectedUri = serverUrl + "/v1/arbeidsforhold?ident={ident}&miljoe={miljoe}";
         stubHentArbeidsforhold(expectedUri);
 
-        testnorgeAaregConsumer.hentArbeidsforhold(ident, miljoe);
+        aaregConsumer.hentArbeidsforhold(ident, miljoe);
     }
 
     @Test
@@ -124,7 +124,7 @@ public class TestnorgeAaregConsumerTest {
         String expectedUri = serverUrl + "/v1/arbeidsforhold?ident={ident}";
         stubSlettIdentFraAlleMiljoer(expectedUri, slettResponse);
 
-        Map<String, String> response = testnorgeAaregConsumer.slettArbeidsforholdFraAlleMiljoer(ident);
+        Map<String, String> response = aaregConsumer.slettArbeidsforholdFraAlleMiljoer(ident);
 
         assertThat(response.get(miljoe), equalTo("OK"));
     }

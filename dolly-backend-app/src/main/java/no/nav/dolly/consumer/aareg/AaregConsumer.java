@@ -23,7 +23,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
 
 @Component
-public class TestnorgeAaregConsumer {
+public class AaregConsumer {
 
     private static final String CONSUMER = "Dolly";
     private static final String OPPRETT_ARBEIDSFORHOLD = "/v1/arbeidsforhold";
@@ -38,7 +38,7 @@ public class TestnorgeAaregConsumer {
     private UriTemplate hentArbeidsforholdUrl;
     private UriTemplate slettArbeidsforholdUrl;
 
-    public TestnorgeAaregConsumer(
+    public AaregConsumer(
             RestTemplateBuilder restTemplateBuilder,
             @Value("${providers.aaregdata.url}") String testnorgeAaregServerUrl
     ) {
