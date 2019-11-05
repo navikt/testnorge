@@ -16,6 +16,7 @@ import no.nav.registre.syntrest.response.Institusjonsmelding;
 import no.nav.registre.syntrest.response.SamMelding;
 import no.nav.registre.syntrest.response.SkdMelding;
 import no.nav.registre.syntrest.response.TPmelding;
+import no.nav.registre.syntrest.response.eia.SyntLegeerklaering;
 import no.nav.registre.syntrest.utils.SyntAppNames;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
@@ -70,6 +71,9 @@ public class SyntetiseringService {
 
     @Value("${synth-frikort-url}")
     private String frikortUrl;
+
+    @Value("${synth-eia-url}")
+    private String eiaUrl;
 
     private final SyntConsumerManager consumerManager;
 
@@ -145,6 +149,13 @@ public class SyntetiseringService {
         UriTemplate uri = new UriTemplate(frikortUrl);
         RequestEntity request = RequestEntity.post(uri.expand()).body(fnrAntMeldingMap);
         return (Map<String, List<FrikortKvittering>>) consumerManager.get(SyntAppNames.FRIKORT).synthesizeData(request);
+    }
+
+    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-eia"})
+    public Map<String, String> generateEia(List<SyntLegeerklaering> erklaering) {
+        UriTemplate uri = new UriTemplate(eiaUrl);
+        RequestEntity request = RequestEntity.post(uri.expand()).body(erklaering);
+        return (Map<String, String>) consumerManager.get(SyntAppNames.EIA).synthesizeData(request);
     }
 
     ///////////// COMMON FUNCTIONS /////////////

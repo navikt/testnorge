@@ -17,6 +17,8 @@ import no.nav.registre.syntrest.response.Institusjonsmelding;
 import no.nav.registre.syntrest.response.SamMelding;
 import no.nav.registre.syntrest.response.SkdMelding;
 import no.nav.registre.syntrest.response.TPmelding;
+import no.nav.registre.syntrest.response.eia.Pasient;
+import no.nav.registre.syntrest.response.eia.SyntLegeerklaering;
 import no.nav.registre.syntrest.services.SyntetiseringService;
 import no.nav.registre.syntrest.utils.InputValidator;
 import org.springframework.http.HttpStatus;
@@ -34,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -251,6 +254,22 @@ public class SyntController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/eia")
+    @ApiOperation(value = "Generer legeerklæring", notes = "Lager en legeerklæring for hvert objekt i forespørselen. Returnerer et map med " +
+            "key=personnummer for pasienten, value=xml for legeerklæringen")
+    public ResponseEntity<Map<String, String>> generateLegeerklaeringer(
+            @ApiParam(value = "Skjema som må lages for hver person man skal ha en legeerklæring på.", required = true)
+            @RequestBody List<SyntLegeerklaering> input
+    ) {
+        InputValidator.validateInput(input.stream()
+                .map(SyntLegeerklaering::getPasient)
+                .map(Pasient::getFnr)
+                .collect(Collectors.toList()));
+        Map<String, String> response = syntetiseringService.generateEia(input);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
 
 
 
