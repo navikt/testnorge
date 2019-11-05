@@ -13,9 +13,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-@Slf4j
-@Getter
-@Component
+
 /**
  * Manages lifecycle of the app. Abstracts away the call to the KubernetesController,
  * and make sure the calls to start/end applications happens one at a time.
@@ -31,6 +29,9 @@ import java.util.concurrent.TimeUnit;
  * for an app, which the calls the shutdown for itself in the Application manager. This was done
  * because no arguments can be given to a callable function.
  */
+@Slf4j
+@Getter
+@Component
 public class ApplicationManager {
 
     @Value("${synth-package-unused-uptime}")

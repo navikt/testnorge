@@ -49,8 +49,7 @@ import static wiremock.com.github.jknack.handlebars.helper.ConditionalHelpers.eq
 @TestPropertySource(locations = "classpath:application-test.properties")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 8082)
-@ContextConfiguration(classes = {
-        KubernetesController.class, AppConfig.class, KubernetesConfig.class})
+@ContextConfiguration(classes = {KubernetesController.class, AppConfig.class, KubernetesConfig.class})
 @EnableAutoConfiguration
 public class KubernetesControllerTest {
 
