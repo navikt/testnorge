@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.jpa;
 
+import static java.util.Objects.isNull;
+
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
@@ -8,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -29,6 +32,9 @@ public class Bruker {
     @Column(name = "NAV_IDENT", length = 10)
     private String brukerId;
 
+    @OneToMany(mappedBy = "opprettetAv")
+    private Set<Testgruppe> testgrupper;
+
     @ManyToMany
     @JoinTable(name = "T_BRUKER_FAVORITTER",
             joinColumns = @JoinColumn(name = "bruker_id"),
@@ -36,9 +42,16 @@ public class Bruker {
     private Set<Testgruppe> favoritter;
 
     public Set<Testgruppe> getFavoritter() {
-        if (favoritter == null) {
-            favoritter = new HashSet<>();
+        if (isNull(favoritter)) {
+            favoritter = new HashSet();
         }
         return favoritter;
+    }
+
+    public Set<Testgruppe> getTestgrupper() {
+        if (isNull(testgrupper)) {
+            testgrupper = new HashSet();
+        }
+        return testgrupper;
     }
 }

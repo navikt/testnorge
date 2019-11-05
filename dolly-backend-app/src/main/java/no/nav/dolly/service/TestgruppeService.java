@@ -59,6 +59,7 @@ public class TestgruppeService {
     public List<Testgruppe> fetchTestgrupperByBrukerId(String brukerId) {
         Bruker bruker = brukerService.fetchBruker(brukerId);
         Set<Testgruppe> testgrupper = bruker.getFavoritter();
+        testgrupper.addAll(bruker.getTestgrupper());
 
         List<Testgruppe> unikeTestgrupper = new ArrayList<>(testgrupper);
         unikeTestgrupper.sort((Testgruppe tg1, Testgruppe tg2) -> tg1.getNavn().compareToIgnoreCase(tg2.getNavn()));
