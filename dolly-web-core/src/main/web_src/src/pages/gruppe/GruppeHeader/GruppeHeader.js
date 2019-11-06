@@ -18,7 +18,7 @@ export default function GruppeHeader({ gruppe, isDeletingGruppe, deleteGruppe })
 		<Fragment>
 			<div className="header-valg">
 				<Overskrift label={gruppe.navn}>
-					{gruppe.erMedlemAvTeamSomEierGruppe ? (
+					{gruppe.erEierAvGruppe ? (
 						// Vise redigeringsknapp eller favoriseringsstjerne
 						<Button className="flexbox--align-center" kind="edit" onClick={visRediger}>
 							REDIGER

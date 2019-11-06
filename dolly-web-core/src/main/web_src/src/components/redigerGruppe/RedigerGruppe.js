@@ -80,8 +80,8 @@ export default class RedigerGruppe extends PureComponent {
 			hensikt: values.hensikt,
 			navn: values.navn
 		}
-
-		return this.erRedigering ? updateGruppe(gruppe.id, groupValues) : createGruppe(groupValues)
+		this.erRedigering ? await updateGruppe(gruppe.id, groupValues) : await createGruppe(groupValues)
+		return this.onCancel()
 	}
 
 	onCancel() {
