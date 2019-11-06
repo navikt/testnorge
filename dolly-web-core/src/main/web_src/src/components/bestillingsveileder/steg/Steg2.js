@@ -4,8 +4,13 @@ import { Formik } from 'formik'
 import {
 	TpsfForm,
 	initialValues as tpsfInit,
-	validation
+	validation as tpsfValidation
 } from '~/components/fagsystem/tpsf/form/Form'
+import {
+	KrrstubForm,
+	initialValues as krrstubInit,
+	validation as krrstubValidation
+} from '~/components/fagsystem/krrstub/form/Form'
 import * as Yup from 'yup'
 
 export const Steg2 = props => {
@@ -13,9 +18,9 @@ export const Steg2 = props => {
 		console.log('submit values')
 	}
 
-	const initialValues = Object.assign({}, tpsfInit)
+	const initialValues = Object.assign({}, { ...tpsfInit, ...krrstubInit })
 
-	const validationListe = Yup.object(validation)
+	const validationListe = Yup.object({ ...tpsfValidation, ...krrstubValidation })
 
 	return (
 		<div>
@@ -29,6 +34,7 @@ export const Steg2 = props => {
 				{formikProps => (
 					<div>
 						<TpsfForm formikProps={formikProps} />
+						<KrrstubForm formikProps={formikProps} />
 					</div>
 				)}
 			</Formik>
