@@ -1,7 +1,7 @@
 create sequence hibernate_sequence start with 1 increment by 1;
 create table arbeidsforhold
 (
-  id                  bigint not null,
+  id                  bigint           not null,
   aarsak_ved_endring  varchar(255),
   arbeidforholds_id   varchar(255),
   beloep              double precision not null,
@@ -18,7 +18,7 @@ create table arbeidsgiver
 );
 create table delvis_fravaer
 (
-  id                               bigint not null,
+  id                               bigint           not null,
   dato                             date,
   timer                            double precision not null,
   omsorgspenger_delvis_fravaers_id bigint,
@@ -26,7 +26,8 @@ create table delvis_fravaer
 );
 create table eier
 (
-  id bigint not null,
+  id   bigint not null,
+  navn varchar(255),
   primary key (id)
 );
 create table gradering_i_foreldrepenger
@@ -39,14 +40,14 @@ create table gradering_i_foreldrepenger
 );
 create table inntektsmelding
 (
-  id                                                       bigint  not null,
+  id                                                       bigint           not null,
   aarsak_til_innsending                                    varchar(255),
   arbeidstaker_fnr                                         varchar(255),
   avsendersystem_navn                                      varchar(255),
   avsendersystem_versjon                                   varchar(255),
   innsendingstidspunkt                                     timestamp,
-  naer_relasjon                                            boolean not null,
-  omsorg_har_utbetalt_pliktige_dager                       boolean not null,
+  naer_relasjon                                            boolean          not null,
+  omsorg_har_utbetalt_pliktige_dager                       boolean          not null,
   refusjonsbeloep_pr_mnd                                   double precision not null,
   refusjonsopphoersdato                                    date,
   startdato_foreldrepengeperiode                           date,
@@ -62,7 +63,7 @@ create table inntektsmelding
 );
 create table naturalytelse_detaljer
 (
-  id                              bigint not null,
+  id                              bigint           not null,
   beloep_pr_mnd                   double precision not null,
   fom                             date,
   type                            varchar(255),
@@ -83,7 +84,7 @@ create table periode
 );
 create table refusjons_endring
 (
-  id                     bigint not null,
+  id                     bigint           not null,
   endrings_dato          date,
   refusjonsbeloep_pr_mnd double precision not null,
   refusjon_endring_id    bigint,

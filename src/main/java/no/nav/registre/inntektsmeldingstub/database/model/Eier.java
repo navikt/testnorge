@@ -30,6 +30,8 @@ public class Eier {
     @GeneratedValue
     private Long id;
 
+    private String navn;
+
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "inntektsmelding_id", referencedColumnName = "id")

@@ -16,12 +16,14 @@ import java.util.stream.Collectors;
 import no.nav.registre.inntektsmeldingstub.MeldingsType;
 import no.nav.registre.inntektsmeldingstub.database.model.Arbeidsforhold;
 import no.nav.registre.inntektsmeldingstub.database.model.Arbeidsgiver;
+import no.nav.registre.inntektsmeldingstub.database.model.Eier;
 import no.nav.registre.inntektsmeldingstub.database.model.GraderingIForeldrepenger;
 import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
 import no.nav.registre.inntektsmeldingstub.database.model.UtsettelseAvForeldrepenger;
 import no.nav.registre.inntektsmeldingstub.database.repository.ArbeidsforholdRepository;
 import no.nav.registre.inntektsmeldingstub.database.repository.ArbeidsgiverRepository;
 import no.nav.registre.inntektsmeldingstub.database.repository.DelvisFravaerRepository;
+import no.nav.registre.inntektsmeldingstub.database.repository.EierRepository;
 import no.nav.registre.inntektsmeldingstub.database.repository.GraderingIForeldrePengerRepository;
 import no.nav.registre.inntektsmeldingstub.database.repository.InntektsmeldingRepository;
 import no.nav.registre.inntektsmeldingstub.database.repository.NaturalytelseDetaljerRepository;
@@ -43,8 +45,15 @@ public class InntektsmeldingService {
     private final PeriodeRepository periodeRepository;
     private final RefusjonsEndringRepository refusjonsEndringRepository;
     private final UtsettelseAvForeldrepengerRepository utsettelseAvForeldrepengerRepository;
+    private final EierRepository eierRepository;
 
-    public List<Inntektsmelding> saveMeldinger(List<Inntektsmelding> inntektsmeldinger, MeldingsType type) {
+    public List<Inntektsmelding> saveMeldinger(List<Inntektsmelding> inntektsmeldinger, MeldingsType type, String eier) {
+        Eier opprettetAv = eierRepository.findEierByNavn(eier).orElse(null);
+        if (opprettetAv == null && !inntektsmeldinger.isEmpty()) {
+            opprettetAv = new Eier();
+            opprettetAv.setNavn(eier);
+            eierRepository.save(opprettetAv);
+        }
         List<Inntektsmelding> lagredeMeldinger = new ArrayList<>(inntektsmeldinger.size());
         for (Inntektsmelding inntektsmelding : inntektsmeldinger) {
             if (inntektsmelding.getArbeidsgiver() == null && inntektsmelding.getPrivatArbeidsgiver() == null) {
@@ -68,6 +77,7 @@ public class InntektsmeldingService {
             inntektsmelding.setPleiepengerPeriodeListe(Lists.newArrayList(periodeRepository.saveAll(inntektsmelding.getPleiepengerPeriodeListe())));
             inntektsmelding.setOmsorgspengerFravaersPeriodeListe(Lists.newArrayList(periodeRepository.saveAll(inntektsmelding.getOmsorgspengerFravaersPeriodeListe())));
             inntektsmelding.setOmsorgspengerDelvisFravaersListe(Lists.newArrayList(delvisFravaerRepository.saveAll(inntektsmelding.getOmsorgspengerDelvisFravaersListe())));
+            inntektsmelding.setEier(opprettetAv);
             Inntektsmelding lagret = inntektsmeldingRepository.save(inntektsmelding);
             List<Inntektsmelding> arbeidsgiverInntektsmeldinger = Lists.newArrayList(inntektsmeldingRepository.findAllById(
                     lagret.getArbeidsgiver().getInntektsmeldinger().stream().map(Inntektsmelding::getId).collect(Collectors.toList())
@@ -115,7 +125,6 @@ public class InntektsmeldingService {
             }
             arbeidsforhold.setGraderingIForeldrepengerListe(Lists.newArrayList(graderingIForeldrePengerRepository.saveAll(arbeidsforhold.getGraderingIForeldrepengerListe())));
         }
-
 
         if (arbeidsforhold.getUtsettelseAvForeldrepengerListe() != null) {
             for (UtsettelseAvForeldrepenger utsettelseAvForeldrepenger : arbeidsforhold.getUtsettelseAvForeldrepengerListe()) {
