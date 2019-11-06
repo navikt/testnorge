@@ -3,7 +3,6 @@ import { subYears } from 'date-fns'
 import * as Yup from 'yup'
 import { Personinformasjon } from './personinformasjon/Personinformasjon'
 import { Adresser } from './adresser/Adresser'
-import DisplayFormikState from '~/utils/DisplayFormikState'
 
 export const initialValues = {
 	tpsf: {
@@ -55,8 +54,6 @@ export const TpsfForm = ({ formikProps }) => {
 		<React.Fragment>
 			<Personinformasjon formikProps={formikProps} />
 			<Adresser formikProps={formikProps} />
-
-			<DisplayFormikState {...formikProps} />
 		</React.Fragment>
 	)
 }
