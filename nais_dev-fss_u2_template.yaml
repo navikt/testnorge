@@ -2,7 +2,7 @@ apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
   name: testnorge-aareg
-  namespace: default
+  namespace: u2
   labels:
     team: orkestrator
 spec:
