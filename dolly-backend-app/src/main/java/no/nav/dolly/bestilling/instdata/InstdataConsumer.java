@@ -7,17 +7,16 @@ import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Service
-@RequiredArgsConstructor
 public class InstdataConsumer {
 
     private static final String INSTDATA_URL = "/api/v1/ident";
@@ -26,8 +25,13 @@ public class InstdataConsumer {
     private static final String POST_FMT_BLD = "%s" + INSTDATA_URL + "/batch?miljoe=%s";
     private static final String INSTMILJO_URL = "%s/api/v1/miljoer";
 
-    private final RestTemplate restTemplate;
-    private final ProvidersProps providersProps;
+    private RestTemplate restTemplate;
+    private ProvidersProps providersProps;
+
+    public InstdataConsumer(RestTemplateBuilder restTemplateBuilder, ProvidersProps providersProps) {
+        restTemplate = restTemplateBuilder.build();
+        this.providersProps = providersProps;
+    }
 
     public ResponseEntity getMiljoer() {
         return restTemplate.exchange(
