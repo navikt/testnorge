@@ -13,7 +13,6 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -109,7 +108,6 @@ public class AaregConsumerTest {
         verify(stsOidcService).getIdToken("q");
     }
 
-    @Ignore
     @Test
     public void oppdaterArbeidsforhold() throws JsonProcessingException {
         String expectedUri = serverUrl + "/v1/arbeidsforhold";
