@@ -9,18 +9,18 @@ import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
-import no.nav.dolly.properties.ProvidersProps;
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.util.List;
-import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
+import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
 @Component
@@ -28,8 +28,9 @@ import java.util.UUID;
 public class SigrunStubConsumer {
 
     private static final String CONSUMER = "Dolly";
-    private static final String SIGRUN_STUB_DELETE_GRUNNLAG = "/testdata/slett";
-    private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = "/testdata/opprettBolk";
+    private static final String URL_VERSION = "/api/v1";
+    private static final String SIGRUN_STUB_DELETE_GRUNNLAG = URL_VERSION + "/slett";
+    private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = URL_VERSION + "/lignetinntekt";
 
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
@@ -45,7 +46,7 @@ public class SigrunStubConsumer {
                 String.class);
     }
 
-    public ResponseEntity createSkattegrunnlag(List<RsOpprettSkattegrunnlag> request) {
+    public ResponseEntity createSkattegrunnlag(List<OpprettSkattegrunnlag> request) {
 
         return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getSigrunStub().getUrl() + SIGRUN_STUB_OPPRETT_GRUNNLAG))
                         .header(ACCEPT, APPLICATION_JSON_VALUE)

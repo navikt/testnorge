@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class SigrunStubClientTest {
         when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil:");
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
-        request.setSigrunstub(singletonList(new RsOpprettSkattegrunnlag()));
+        request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
 
         sigrunStubClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
@@ -72,7 +72,7 @@ public class SigrunStubClientTest {
         when(sigrunStubResponseHandler.extractResponse(any())).thenReturn("OK");
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
-        request.setSigrunstub(singletonList(new RsOpprettSkattegrunnlag()));
+        request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
         sigrunStubClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         verify(sigrunStubConsumer).createSkattegrunnlag(anyList());
