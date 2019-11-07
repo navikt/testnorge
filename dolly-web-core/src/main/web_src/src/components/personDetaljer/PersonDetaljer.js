@@ -1,45 +1,23 @@
-// import React from 'react'
-import React, { PureComponent, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useReducer } from 'react-redux'
 import TpsfVisning from '~/components/fagsystem/tpsf/visning/TpsfVisning'
 import KrrVisning from '~/components/fagsystem/krr/visning/KrrVisning'
-import '~/pages/gruppe/PersonDetaljer/PersonDetaljer.less' // flytte denne
+import Button from '~/components/ui/button/Button'
+import '~/pages/gruppe/PersonDetaljer/PersonDetaljer.less' // Flytte denne?
 
 export default function PersonDetaljer(props) {
-	// const data = useSelector(state => state)
-	// console.log('data :', data)
-	// console.log('props 1:', props)
-	// const [state, dispatch] = useReducer(reducer, initialArg, init)
-	// console.log('state :', state)
-	// console.log('dispatch :', dispatch)
-
-	// Sjekk først om statuser på ulike miljøer er ok?
-	// typ this.props.testIdent.sigrunstubStatus === 'OK &&
-
-	// Sjekke status her?
-	// data.gruppe.data[0].testidenter.find(testIdent => testident.ident === props.personId)
-
-	// ta inn flere greier fra persondetaljerconnector??
-
-	// const status = data.gruppe.data[0].identer.find(testIdent => testIdent.ident === props.personId)
-	// console.log('status :', status)
-
-	// useEffect(() => {
-	// 	if (props.testIdent.sigrunstubStatus === 'OK' && data.testbruker.items.sigrunstub === null) {
-	// 		props.getSigrunTestbruker()
-	// 	}
-	// })
 	useEffect(() => {
 		props.getDataFraFagsystemer()
 	}, [])
 
+	const tidligereBestilling = props.personData.find(
+		data => data.header === 'Tidligere bestilling-ID'
+	)
+
 	const krrstub = props.bestilling.status.find(status => status.id === 'KRRSTUB')
 	const krrstubStatus = krrstub && krrstub.statuser[0].melding
-	// Må man sjekke flere statuser her???
-	console.log('krrstubStatus :', krrstubStatus)
-	// const krrData = props.personData.find(data => data.header === 'Kontaktinformasjon og reservasjon')
 
-	console.log('props:', props)
+	// Sjekk resten av statusene!
 
 	return (
 		<div className="person-details">
@@ -51,15 +29,29 @@ export default function PersonDetaljer(props) {
 					personId={props.personId}
 					bestillingId={props.bestillingId}
 					isFetchingKrr={props.isFetchingKrr}
-					// krrData={krrData}
-					// getKrrTestbruker={props.getKrrTestbruker}
 				/>
 			)}
 			{/* <AaregVisning /> */}
-			{/* {props.testIdent.krrstubStatus === 'OK' && ( */}
 			{/* <InstVisning /> */}
 			{/* <ArenaVisning /> */}
 			{/* <UdiVisning /> */}
+			{tidligereBestilling && (
+				<div className="tidligere-bestilling-panel">
+					<h4>Tidligere bestilling-ID</h4>
+					<div>{tidligereBestilling.data[0].value}</div>
+				</div>
+			)}
+			<div className="flexbox--align-center--justify-end">
+				<Button className="flexbox--align-center" kind="details">
+					BESTILLINGSDETALJER
+				</Button>
+				<Button className="flexbox--align-center" kind="edit">
+					REDIGER
+				</Button>
+				<Button className="flexbox--align-center" kind="trashcan">
+					SLETT
+				</Button>
+			</div>
 		</div>
 	)
 }

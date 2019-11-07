@@ -1,0 +1,77 @@
+@import (reference) '~lessVars';
+
+.person-details-block {
+	h3 {
+		font-size: 1em;
+		background-color: @color-bg-divider;
+		padding: 6px 6px 6px 6px;
+		margin: 8px 0 10px 0px;
+	}
+
+	span {
+		word-break: break-word;
+	}
+
+	.person-info-block {
+		padding: 3px 6px;
+		display: flex;
+		flex-wrap: wrap;
+
+		.person-info-content {
+			flex: 0 1 160px;
+			margin-bottom: 10px;
+			padding-right: 10px;
+			word-break: break-word;
+
+			&_small {
+				flex: 0 1 80px;
+			}
+		}
+
+		h4 {
+			font-size: 0.75em;
+			margin: 0 0 5px;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+
+		&_bottomborder {
+			padding: 3px 6px;
+			display: flex;
+			flex-wrap: wrap;
+			margin-bottom: 8px;
+			border-bottom: 1px solid @color-bg-divider;
+
+			.person-info-content {
+				flex: 0 1 160px;
+				margin-bottom: 10px;
+				padding-right: 10px;
+				word-break: break-word;
+
+				&_small {
+					flex: 0 1 80px;
+				}
+			}
+
+			h4 {
+				font-size: 0.75em;
+				margin: 0 0 5px;
+				font-weight: bold;
+				text-transform: uppercase;
+			}
+		}
+	}
+
+	.title-multiple {
+		display: block;
+		padding: 3px 6px;
+
+		h3 {
+			display: block;
+			font-size: 1em;
+			background-color: white;
+			padding: 0px;
+			margin: 0px;
+		}
+	}
+}
