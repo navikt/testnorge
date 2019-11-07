@@ -38,8 +38,10 @@ providers:
   instdata:
     url: https://testnorge-inst.nais.preprod.local
   aaregdata:
-    url: https://testnorge-aareg.nais.preprod.local/api
-
+    u2:
+      url: https://testnorge-aareg-u2.nais.preprod.local/api
+    q2:
+      url: https://testnorge-aareg.nais.preprod.local/api
 fasit:
   url: https://fasit.adeo.no
   environment.name: t1
