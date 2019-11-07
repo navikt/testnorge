@@ -17,7 +17,7 @@ naiseratorApplicationPipeline {
     // i namespace-attributtet ovenfor. Dersom det ikke strengt behov for dette, så ikke bruk
     // dette feltet. Eksempelet nedenfor vil deploye applikasjonen til henholdsvis q0- og q1-
     // namespacene.
-    branchDeployments = [[branch: "testnorge-aareg-u2", namespace: "u2"]]
+    branchDeployments = [[branch: "testnorge_aareg_u2", namespace: "u2"]]
 
     // Hvorvidt denne applikasjonen kun skal eksistere i dev-fss og IKKE i prod-fss.
     isTestApplication = true
