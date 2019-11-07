@@ -6,7 +6,7 @@ metadata:
   labels:
     team: synt
 spec:
-  image: "docker.adeo.no:5000/registre/synthdata-popp:latest"
+  image: "docker.pkg.github.com/navikt/synt/synthdata-popp:latest"
   port: 8080
   liveness:
     path: /internal/isAlive

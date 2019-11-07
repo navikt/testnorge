@@ -6,7 +6,7 @@ metadata:
   labels:
     team: synt
 spec:
-  image: "docker.adeo.no:5000/registre/synthdata-eia:latest"
+  image: "docker.pkg.github.com/navikt/synt/synthdata-eia:latest"
   port: 8080
   liveness:
     path: /internal/isAlive
