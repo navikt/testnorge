@@ -23,6 +23,7 @@ class Step1 extends Component {
 
 	_onSubmitForm = () => {
 		this.props.submitForm()
+		// Scroller til toppen dersom det finnes error i skjemaet (antall person 0 feks)
 		animateScroll.scrollToTop({ duration: 250 })
 	}
 

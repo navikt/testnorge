@@ -5,7 +5,6 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Formatters from '~/utils/DataFormatter'
 import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
-// import PersonDetaljer from '~/components/personDetaljer/PersonDetaljer'
 
 export default function TestbrukerListe({
 	isFetching,
@@ -70,10 +69,6 @@ export default function TestbrukerListe({
 			data={sortedTestbrukere}
 			columns={columns}
 			onExpand={bruker => <PersonDetaljerConnector personId={bruker[0]} bestillingId={bruker[5]} />}
-			// onExpand={bruker => (
-			// 	<PersonDetaljer personId={bruker[0]} bestillingId={bruker[5]} />
-			// 	// <PersonDetaljer personId={bruker[0]} bestillingId={bruker[5]} test={bruker} />
-			// )}
 			pagination
 		/>
 	)

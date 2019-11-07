@@ -54,6 +54,21 @@ const initialState = {
 	currentMal: ''
 }
 
+// const initialState = {
+// 	antall: 1,
+// 	page: 1,
+// 	attributeIds: ['foedtFoer', 'foedtEtter', 'kjonn'],
+// 	environments: [],
+// 	identtype: '',
+// 	values: {},
+// 	identOpprettesFra: BestillingMapper(),
+// 	eksisterendeIdentListe: [],
+// 	ugyldigIdentListe: [],
+// 	maler: [],
+// 	malBestillingNavn: '',
+// 	currentMal: ''
+// }
+
 export default handleActions(
 	{
 		[actions.nextPage](state, action) {
@@ -281,18 +296,16 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 		})
 	}
 
-	// * Vurdere behovet for denne i U2/prod. Uglify?
-	// console.info('POSTING BESTILLING', final_values)
-
 	return final_values
 }
 
 export const sendBestilling = gruppeId => async (dispatch, getState) => {
 	const { currentBestilling, oppslag } = getState()
 	const values = bestillingFormatter(currentBestilling, oppslag)
-	if (currentBestilling.identOpprettesFra === BestillingMapper('EKSIDENT')) {
-		return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
-	} else {
-		return dispatch(actions.postBestilling(gruppeId, values))
-	}
+	console.log(values)
+	// if (currentBestilling.identOpprettesFra === BestillingMapper('EKSIDENT')) {
+	// 	return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
+	// } else {
+	// 	return dispatch(actions.postBestilling(gruppeId, values))
+	// }
 }

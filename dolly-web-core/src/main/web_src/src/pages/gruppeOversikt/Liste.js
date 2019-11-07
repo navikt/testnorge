@@ -41,11 +41,6 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 			dataField: 'navn'
 		},
 		{
-			text: 'Team',
-			width: '15',
-			dataField: 'team.navn'
-		},
-		{
 			text: 'Hensikt',
 			width: '20',
 			dataField: 'hensikt'
@@ -60,9 +55,7 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 			width: '10',
 			dataField: 'id',
 			formatter: (cell, row) =>
-				!row.erMedlemAvTeamSomEierGruppe && (
-					<FavoriteButtonConnector hideLabel={true} groupId={row.id} />
-				)
+				!row.erEierAvGruppe && <FavoriteButtonConnector hideLabel={true} groupId={row.id} />
 		}
 	]
 	return (

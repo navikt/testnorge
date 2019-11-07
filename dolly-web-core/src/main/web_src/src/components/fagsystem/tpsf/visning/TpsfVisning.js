@@ -192,7 +192,6 @@ export default function TpsfVisning(props) {
 							)}
 							<KodeverkValueConnector
 								apiKodeverkId="Postnummer"
-								extraLabel={tpsfData.boadresse.postnr}
 								value={tpsfData.boadresse.postnr}
 							/>
 						</div>

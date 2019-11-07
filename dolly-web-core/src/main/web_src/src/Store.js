@@ -5,7 +5,6 @@ import { connectRouter, routerMiddleware, LOCATION_CHANGE } from 'connected-reac
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import bestillingReducer from './ducks/bestilling'
 import gruppeReducer from './ducks/gruppe'
-import teamsReducer from './ducks/teams'
 import brukerReducer from './ducks/bruker'
 import testbrukerReducer from './ducks/testBruker'
 import searchReducer from './ducks/search'
@@ -15,6 +14,7 @@ import commonReducer from './ducks/common'
 import bestillingStatusReducer from './ducks/bestillingStatus'
 import environmentsReducer from './ducks/environments'
 import oppslagReducer from './ducks/oppslag'
+import kodeverkReducer from './ducks/kodeverk'
 import history from './history'
 
 const locationMiddleware = store => next => action => {
@@ -42,7 +42,6 @@ const configureReduxStore = history => {
 			currentBestilling: bestillingReducer,
 			bestillingStatuser: bestillingStatusReducer,
 			gruppe: gruppeReducer,
-			teams: teamsReducer,
 			bruker: brukerReducer,
 			testbruker: testbrukerReducer,
 			search: searchReducer,
@@ -50,7 +49,8 @@ const configureReduxStore = history => {
 			errors: errorsReducer,
 			common: commonReducer,
 			environments: environmentsReducer,
-			oppslag: oppslagReducer
+			oppslag: oppslagReducer,
+			kodeverk: kodeverkReducer
 		})
 
 	return createStore(rootReducer(history), composeWithDevTools(applyMiddleware(...allMiddleware)))

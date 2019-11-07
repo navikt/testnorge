@@ -1,11 +1,5 @@
-import DataFormatter from '~/utils/DataFormatter'
-
 //liste over koder som må eksludert pga ingen støtte i TPSF/dolly
 const _excludeList = ['NULL', 'GLAD']
-
-export const NormalizeTeamListForDropdown = ({ data }) => ({
-	options: data.map(team => ({ value: team.id, label: team.navn }))
-})
 
 // Specialbehov for modifisering og sortering av kodeverk
 export const SortKodeverkArray = data => {
@@ -40,6 +34,14 @@ export const SortKodeverkArray = data => {
 				}
 			}
 		})
+	}
+
+	if (data.name === 'Postnummer' || data.name === 'Kommuner') {
+		return koderArray.map(kode => ({
+			label: `${kode.value} - ${kode.label}`,
+			value: kode.value,
+			data: kode.label
+		}))
 	}
 
 	if (data.name === 'Yrker') {
@@ -114,18 +116,14 @@ export const NormalizeKodeverkForDropdownUtenUfb = ({ data }, showValueInLabel) 
 	}
 }
 
-export const NormalizeBrukerListForDropdown = (data, teamMembers) => {
+export const NormalizeBrukerListForDropdown = data => {
 	const options = data.reduce((filtered, bruker) => {
-		if (!teamMembers.includes(bruker.navIdent)) {
-			filtered.push({ value: bruker.navIdent, label: bruker.navIdent })
-		}
 		return filtered
 	}, [])
 	return { options }
 }
 
 export default {
-	NormalizeTeamListForDropdown,
 	NormalizeBrukerListForDropdown,
 	NormalizeKodeverkForDropdown,
 	NormalizeKodeverkForDropdownUtenUfb

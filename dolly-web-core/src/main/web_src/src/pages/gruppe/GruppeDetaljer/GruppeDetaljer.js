@@ -12,7 +12,6 @@ export default function GruppeDetaljer({ gruppe }) {
 		<div className="gruppe-detaljer">
 			<div className="gd-blokker">
 				<StaticValue header="EIER" value={gruppe.opprettetAvNavIdent} />
-				<StaticValue header="TEAM" value={gruppe.team.navn} />
 				<StaticValue
 					header="ANTALL OPPRETTEDE TESTPERSONER"
 					value={String(gruppe.identer ? gruppe.identer.length : 0)}

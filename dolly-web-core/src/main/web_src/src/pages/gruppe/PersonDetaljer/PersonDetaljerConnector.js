@@ -31,7 +31,7 @@ const loadingSelectorFrigjoer = createLoadingSelector(FRIGJOER_TESTBRUKER)
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		username: state.bruker.brukerData.navIdent,
+		username: state.bruker.brukerData.brukerId,
 		isFetchingKrr: loadingSelectorKrr(state),
 		isFetchingSigrun: loadingSelectorSigrun(state),
 		isFetchingAareg: loadingSelectorAareg(state),

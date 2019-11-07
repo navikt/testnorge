@@ -1,8 +1,18 @@
 import React from 'react'
+import { useToggle } from 'react-use'
 
-export default function DisplayFormikState(props) {
+const FormikState = props => (
+	<pre>
+		<strong>props</strong> = {JSON.stringify(props, null, 2)}
+	</pre>
+)
+
+export default function DisplayFormikState({ visState = false, ...props }) {
+	const [showState, toggleShowState] = useToggle(visState)
+
 	return (
-		<pre
+		<div
+			onClick={toggleShowState}
 			style={{
 				position: 'absolute',
 				top: 0,
@@ -11,12 +21,13 @@ export default function DisplayFormikState(props) {
 				fontSize: '.7rem',
 				margin: 0,
 				padding: '.8rem',
-				borderTop: '1px solid',
+				borderBottom: '1px solid',
 				borderLeft: '1px solid',
 				borderColor: '#ccc'
 			}}
 		>
-			<strong>props</strong> = {JSON.stringify(props, null, 2)}
-		</pre>
+			{showState && <FormikState {...props} />}
+			{!showState && <span>Vis state</span>}
+		</div>
 	)
 }

@@ -23,7 +23,6 @@ export default ({ brukerData }) => {
 				<NavLink isActive={isGruppePathActive} to="/">
 					Testdatagrupper
 				</NavLink>
-				<NavLink to="/team">Team</NavLink>
 				<NavLink to="/tpsendring">Endringsmelding</NavLink>
 				<a href="/swagger-ui.html" target="_blank">
 					API-dok
@@ -32,7 +31,7 @@ export default ({ brukerData }) => {
 
 			<div className="profil-area flexbox--all-center">
 				<Icon kind="user" size="20" />
-				<p>{brukerData.navIdent}</p>
+				<p>{brukerData.brukerId}</p>
 			</div>
 		</header>
 	)

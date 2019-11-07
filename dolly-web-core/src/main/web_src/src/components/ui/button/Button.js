@@ -21,12 +21,12 @@ export default class Button extends PureComponent {
 	}
 
 	render() {
-		const { kind, iconSize, children, className, type = 'button', title } = this.props
+		const { kind, onClick, iconSize, children, className, type = 'button', ...rest } = this.props
 
 		const cssClass = cn('dolly-button', className)
 
 		return (
-			<button type={type} className={cssClass} onClick={this.onClickHandler} title={title}>
+			<button type={type} className={cssClass} onClick={this.onClickHandler} {...rest}>
 				{kind && <Icon size={iconSize} kind={kind} />}
 				{children && <p>{children}</p>}
 			</button>

@@ -9,7 +9,6 @@ import success from '~/utils/SuccessAction'
 // GET
 export const getGruppe = createAction('GET_GRUPPE', DollyApi.getGruppeById)
 export const getGrupper = createAction('GET_GRUPPER', DollyApi.getGrupper)
-export const getGrupperByTeamId = createAction('GET_GRUPPER_BY_TEAM_ID', DollyApi.getGruppeByTeamId)
 export const getGrupperByUserId = createAction('GET_GRUPPER_BY_USER_ID', DollyApi.getGruppeByUserId)
 
 // CRUD
@@ -18,21 +17,18 @@ export const updateGruppe = createAction('UPDATE_GRUPPE', DollyApi.updateGruppe)
 export const deleteGruppe = createAction('DELETE_GRUPPE', DollyApi.deleteGruppe, gruppeId => ({
 	gruppeId
 }))
-export const createTeam = createAction('CREATE_TEAM', DollyApi.createTeam)
 
 // UI
 export const settVisning = createAction('SETT_VISNING')
 
 const initialState = {
 	data: null,
-	visning: 'mine',
-	teamId: null
+	visning: 'mine'
 }
 
 const getSuccess = combineActions(
 	success(getGruppe),
 	success(getGrupper),
-	success(getGrupperByTeamId),
 	success(getGrupperByUserId)
 )
 
@@ -60,12 +56,6 @@ export default handleActions(
 				data: state.data.filter(item => item.id !== action.meta.gruppeId)
 			}
 		},
-		[success(createTeam)](state, action) {
-			return {
-				...state,
-				teamId: action.payload.data.id.toString()
-			}
-		},
 		[settVisning](state, action) {
 			return { ...state, visning: action.payload }
 		}
@@ -75,8 +65,8 @@ export default handleActions(
 
 // Thunk
 export const fetchGrupperTilBruker = () => async (dispatch, getState) => {
-	const { navIdent } = getState().bruker.brukerData
-	return dispatch(getGrupperByUserId(navIdent))
+	const { brukerId } = getState().bruker.brukerData
+	return dispatch(getGrupperByUserId(brukerId))
 }
 
 // Selector
@@ -90,7 +80,6 @@ export const sokSelectorOversikt = (items, searchStr) => {
 			_get(item, 'id'),
 			_get(item, 'navn'),
 			_get(item, 'hensikt'),
-			_get(item, 'team.navn'),
 			_get(item, 'identer', []).length
 		]
 			.filter(v => !_isNil(v))
