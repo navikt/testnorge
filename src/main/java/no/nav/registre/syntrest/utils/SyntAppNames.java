@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum SyntAppNames {
+    NOAPPLICATION("no-application"),
     AAREG("synthdata-aareg"),
     BISYS("synthdata-arena-bisys"),
     MELDEKORT("synthdata-arena-meldekort"),

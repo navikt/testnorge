@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.response.eia;
+package no.nav.registre.syntrest.domain.eia;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,9 +10,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Fylke {
+public class SyntLegeerklaering {
     @JsonProperty
-    String dn;
+    Pasient pasient;
     @JsonProperty
-    String v;
+    Lege lege;
 }

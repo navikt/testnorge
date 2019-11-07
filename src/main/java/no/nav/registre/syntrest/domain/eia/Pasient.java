@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.response.eia;
+package no.nav.registre.syntrest.domain.eia;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

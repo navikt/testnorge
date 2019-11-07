@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.response.eia;
+package no.nav.registre.syntrest.domain.eia;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,13 +10,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Legekontor {
+public class Arbeidsgiver {
     @JsonProperty
     String navn;
-    @JsonProperty("ereg_id")
-    String eregId;
-    @JsonProperty("her_id")
-    long herId;
     @JsonProperty
-    LegeAddresse addresse;
+    String yrkesbetegnelse;
+    @JsonProperty
+    int stillingsprosent;
 }

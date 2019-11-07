@@ -1,12 +1,13 @@
 package no.nav.registre.syntrest.kubernetes;
 
 import io.kubernetes.client.ApiException;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,7 +31,6 @@ import java.util.concurrent.TimeUnit;
  * because no arguments can be given to a callable function.
  */
 @Slf4j
-@Getter
 @Component
 public class ApplicationManager {
 
@@ -48,37 +48,22 @@ public class ApplicationManager {
     }
 
     public synchronized int startApplication(SyntConsumer app) {
-        int returnValue = -1;
-        try {
-            kubernetesController.deployImage(app.getAppName());
-            activeApplications.put(
-                    app.getAppName(),
-                    scheduledExecutorService.schedule(app::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS));
-            returnValue = 0;
-        } catch (ApiException | InterruptedException e) {
-            log.error("Could not create application \'{}\'!", app.getAppName());
+        if (!applicationIsAlive(app.getAppName())) {
+            try {
+                kubernetesController.deployImage(app.getAppName());
+            } catch (ApiException | InterruptedException e) {
+                log.error("Could not create application \'{}\'!", app.getAppName());
+                return -1;
+            }
         }
 
-        return returnValue;
-    }
-
-    public synchronized void updateAccessedPackages(SyntConsumer app) {
-        if (activeApplications.containsKey(app.getAppName())) {
-            log.info("Updating termination timer for \'{}\'", app.getAppName());
-            activeApplications.get(app.getAppName()).cancel(true);
-            activeApplications.put(
-                    app.getAppName(),
-                    scheduledExecutorService.schedule(app::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS));
-        } else {
-            log.info("Starting termination timer for \'{}\'", app.getAppName());
-            activeApplications.put(
-                    app.getAppName(),
-                    scheduledExecutorService.schedule(app::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS));
-        }
-    }
-
-    public boolean applicationIsAlive(String appId) {
-        return kubernetesController.isAlive(appId);
+        log.info("Scheduling shutdown for \'{}\' at {}.",
+                app.getAppName(),
+                DateUtils.addSeconds(new Date(), (int) SHUTDOWN_TIME_DELAY_SECONDS));
+        activeApplications.put(
+                app.getAppName(),
+                scheduledExecutorService.schedule(app::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS));
+        return 0;
     }
 
     public synchronized void shutdownApplication(String appId) {
@@ -86,8 +71,16 @@ public class ApplicationManager {
             kubernetesController.takedownImage(appId);
             activeApplications.remove(appId);
         } catch (ApiException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             log.error("Could not delete application \'{}\'.\n{}", appId, e.getMessage());
         }
+    }
+
+    public boolean applicationIsAlive(String appId) {
+        return kubernetesController.isAlive(appId);
+    }
+
+    public Map<String, ScheduledFuture<?>> getActiveApplications() {
+        return this.activeApplications;
     }
 }

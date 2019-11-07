@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.response.eia;
+package no.nav.registre.syntrest.domain.eia;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,15 +10,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PasientAddresse {
+public class LegeAddresse {
     @JsonProperty
     String gate;
     @JsonProperty
     String postnummer;
     @JsonProperty
     String by;
-    @JsonProperty
-    Fylke fylke;
-    @JsonProperty("land_kode")
-    String landKode;
 }

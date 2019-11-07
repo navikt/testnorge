@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.response;
+package no.nav.registre.syntrest.domain.aap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

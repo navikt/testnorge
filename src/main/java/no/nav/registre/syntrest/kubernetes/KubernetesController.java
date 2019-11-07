@@ -39,7 +39,7 @@ public class KubernetesController {
     private final int maxRetries;
     private final int retryDelay;
 
-    public KubernetesController(RestTemplate restTemplate, ApiClient apiClient,
+    public KubernetesController(RestTemplate restTemplate, CustomObjectsApi customObjectsApi,
                                 @Value("${isAlive}") String isAliveUrl,
                                 @Value("${docker-image-path}") String dockerImagePath,
                                 @Value("${max-alive-retries}") int maxRetries,
@@ -51,9 +51,7 @@ public class KubernetesController {
         this.dockerImagePath = dockerImagePath;
         this.maxRetries = maxRetries;
         this.retryDelay = retryDelay;
-
-        this.api = new CustomObjectsApi();
-        api.setApiClient(apiClient);
+        this.api = customObjectsApi;
     }
 
     public void deployImage(String appName) throws ApiException, InterruptedException {
@@ -104,13 +102,12 @@ public class KubernetesController {
         return "1".equals(response);
     }
 
-
-    /////////// PRIVATE ///////////
-    private boolean existsOnCluster(String appName) throws ApiException {
+    public boolean existsOnCluster(String appName) throws ApiException {
         List<String> applications = listApplicationsOnCluster();
         return applications.contains(appName);
     }
 
+    /////////// PRIVATE ///////////
     // TODO: REFACTOR?
     private List<String> listApplicationsOnCluster() throws ApiException{
 
