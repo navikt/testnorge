@@ -30,4 +30,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnorge-aareg.nais.preprod.local"
+    - "https://testnorge-aareg-u2.nais.preprod.local"
