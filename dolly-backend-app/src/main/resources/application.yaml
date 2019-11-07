@@ -24,6 +24,8 @@ providers:
     url: http://localhost:8050
   sigrun:
     url: http://localhost:8040
+  aaregdata:
+    url: https://testnorge-aareg.nais.preprod.local/api
 
 
 ### CORS ###
