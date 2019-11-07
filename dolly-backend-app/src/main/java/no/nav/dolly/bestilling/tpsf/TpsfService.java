@@ -15,8 +15,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,6 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
 import no.nav.dolly.bestilling.udistub.RsAliasRequest;
@@ -42,7 +41,6 @@ import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class TpsfService {
 
     private static final String TPSF_BASE_URL = "/api/v1/dolly/testdata";
@@ -55,9 +53,15 @@ public class TpsfService {
     private static final String TPSF_DELETE_PERSONER_URL = TPSF_BASE_URL + "/personer?identer=";
     private static final String TPSF_GET_ENVIRONMENTS = "/api/v1/environments";
 
-    private final ObjectMapper objectMapper;
-    private final ProvidersProps providersProps;
-    private final RestTemplate restTemplate;
+    private RestTemplate restTemplate;
+    private ObjectMapper objectMapper;
+    private ProvidersProps providersProps;
+
+    public TpsfService(RestTemplateBuilder restTemplateBuilder, ObjectMapper objectMapper, ProvidersProps providersProps) {
+        restTemplate = restTemplateBuilder.build();
+        this.objectMapper = objectMapper;
+        this.providersProps = providersProps;
+    }
 
     public ResponseEntity<EnvironmentsResponse> getEnvironments() {
         return restTemplate.exchange(
@@ -78,23 +82,23 @@ public class TpsfService {
     }
 
     public CheckStatusResponse checkEksisterendeIdenter(List<String> identer) {
-        ResponseEntity<Object> response = postToTpsf(TPSF_CHECK_IDENT_STATUS, new HttpEntity<>(identer));
+        ResponseEntity<Object> response = postToTpsf(TPSF_CHECK_IDENT_STATUS, identer);
         return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), CheckStatusResponse.class) : null;
     }
 
     public List<String> opprettIdenterTpsf(TpsfBestilling request) {
-        ResponseEntity<Object> response = postToTpsf(TPSF_OPPRETT_URL, new HttpEntity<>(request));
+        ResponseEntity<Object> response = postToTpsf(TPSF_OPPRETT_URL, request);
         return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), List.class) : null;
     }
 
     public RsSkdMeldingResponse sendIdenterTilTpsFraTPSF(List<String> identer, List<String> environments) {
         validateEnvironments(environments);
-        ResponseEntity<Object> response = postToTpsf(TPSF_SEND_TPS_FLERE_URL, new HttpEntity<>(new TpsfIdenterMiljoer(identer, environments)));
+        ResponseEntity<Object> response = postToTpsf(TPSF_SEND_TPS_FLERE_URL, new TpsfIdenterMiljoer(identer, environments));
         return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class) : null;
     }
 
     public List<Person> hentTestpersoner(List<String> identer) {
-        ResponseEntity<Object> response = postToTpsf(TPSF_HENT_PERSONER_URL, new HttpEntity<List>(identer));
+        ResponseEntity<Object> response = postToTpsf(TPSF_HENT_PERSONER_URL, identer);
         if (isBodyNotNull(response)) {
             return newArrayList(objectMapper.convertValue(response.getBody(), Person[].class));
         }
@@ -107,11 +111,15 @@ public class TpsfService {
                 .body(singletonList(tpsfPerson)), Object.class);
     }
 
-    private ResponseEntity<Object> postToTpsf(String addtionalUrl, HttpEntity request) {
+    private ResponseEntity<Object> postToTpsf(String addtionalUrl, Object request) {
         String url = format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_BASE_URL, addtionalUrl);
 
         try {
-            ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, request, Object.class);
+            ResponseEntity<Object> response = restTemplate.exchange(
+                    RequestEntity.post(URI.create(url))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(request), Object.class);
+
             if (isBodyNotNull(response) && (requireNonNull(response.getBody()).toString().contains("error="))) {
                 RestTemplateFailure rs = objectMapper.convertValue(response.getBody(), RestTemplateFailure.class);
                 log.error("Tps-forvalteren kall feilet mot url <{}> grunnet {}", url, rs.getMessage());

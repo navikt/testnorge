@@ -7,26 +7,25 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.net.URI;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.sts.StsOidcService;
 
 @Service
-@RequiredArgsConstructor
 public class PdlForvalterConsumer {
 
     private static final String PDL_BESTILLING_URL = "/api/v1/bestilling";
@@ -44,9 +43,15 @@ public class PdlForvalterConsumer {
     @Value("${fasit.environment.name}")
     private String environment;
 
-    private final RestTemplate restTemplate;
-    private final ProvidersProps providersProps;
-    private final StsOidcService stsOidcService;
+    private RestTemplate restTemplate;
+    private ProvidersProps providersProps;
+    private StsOidcService stsOidcService;
+
+    public PdlForvalterConsumer(RestTemplateBuilder restTemplateBuilder, ProvidersProps providersProps, StsOidcService stsOidcService) {
+        restTemplate = restTemplateBuilder.build();
+        this.providersProps = providersProps;
+        this.stsOidcService = stsOidcService;
+    }
 
     public ResponseEntity deleteIdent(String ident) {
         return restTemplate.exchange(RequestEntity.delete(
