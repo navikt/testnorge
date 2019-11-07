@@ -54,22 +54,22 @@ De filene som må endres når man legger til synt-pakkene er:
  - Evt. legge til klasser for spesifiserte [Respons-meldinger](src/main/java/no/nav/registre/syntrest/response).
  
 ## Oversikt over synt-pakker
- - *Aareg*\
+ - **Aareg**\
    _Genererer syntetiske arbeidshistorikker bestående av meldinger på AAREG format._
- - *Aap* 
-   - *11_5*\
+ - **Aap** 
+   - **11_5**\
    _Generer et antall AAP11_5 meldinger_
-   - *NyRettighet*\
+   - **NyRettighet**\
    _Generer et antall nye rettigheter_
- - *Bisys*\
+ - **Bisys**\
    _API for å generere syntetiserte bisysmeldinger._
- - *Inst*\
+ - **Inst**\
    _Generer et antall institusjonsforholdsmeldinger._
- - *Medl*\
+ - **Medl**\
    _Generer MEDL meldinger. For info om selve syntetiseringen og_
    _[datagrunnlag](https://confluence.adeo.no/display/FEL/Syntetisering+-+MEDL)._\
    _OBS! Veldig Treg!_
- - *Meldekort*\
+ - **Meldekort**\
    _Opprett et antall meldekort for meldegruppen_\
    _APIet genererer meldekort i XML format som kan settes inn i arena. Merk at denne metoden genererer kun bodyen til_
    _XML-meldingen til et meldekort, og er avhengig av å få satt på et hode for at denne kan legges inn i Arena._\
@@ -81,30 +81,30 @@ De filene som må endres når man legger til synt-pakkene er:
    _Merk at dette ikke er mulig med dagens NAIS oppsett da dette_
    _tar lang tid og applikasjonen timer ut. Dette må enten gjøres lokalt med samme python versjon som blir_
    _kjørt på NAIS (3.7.1 per dags dato), eller så må NAIS instillingene oppdateres._
- - *Nav*\
+ - **Nav**\
    _Opprett et antall meldinger med endringskode fra path variabelen._\
    _Returenterer en liste med strenger der hvert element er en endringsmelding-xml._
- - *Popp*\
+ - **Popp**\
    _Genererer syntetiske inntektsmeldinger til Sigrunstub._
    _Inntektsmeldingene blir returnert på et format som kan bli lagret i sigrunstub, og vil generere en ny_
    _inntektsmelding basert på personens inntektsmelding forrige år. Hvis personen ikke har en inntektsmelding_
    _vil det bli samplet en ny inntektsmelding fra en BeAn/CART-modell._
- - *Sam*\
+ - **Sam**\
    _API for å generere syntetiserte SAM data._
- - *Inntekt*\
+ - **Inntekt**\
    _Generer inntektsmeldinger på et map med fødselsnumre og_
    _inntektsmeldinger på samme format som i inntektstub. Hvis man legger ved en liste med inntektsmeldinger_
    _per fødselsnummer, (altså forrige måneds inntektsmelding) blir den nye inntektsmeldingen basert på disse._
    _Hvis man legger ved en tom liste til fødselsnummeret blir en inntektsmelding generert basert på en kernel_
    _density model._
- - *TP*\
+ - **TP**\
    _Generer antall tjenestepensjonsmeldinger. For info om_
    _selve syntetiseringen av TP, se [her](https://confluence.adeo.no/display/FEL/Syntetisering+-+TP)_
- - *TPS*\
+ - **TPS**\
    _Lager SKD meldinger for ulike endringskoder_
- - *Frikort*\
+ - **Frikort**\
    _Lager et spesifisert antall kvitteringer for hvert personnummersom sendes inn._
- - *Eia*\
+ - **Eia**\
    _Lager en legeerklæring for hvert objekt i forespørselen. Returnerer et map med_
    _key=personnummer for pasienten, value=xml for legeerklæringen_
  
