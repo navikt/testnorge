@@ -4,7 +4,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
-export const Diverse = ({ formikProps }) => {
+export const Diverse = ({ formikBag }) => {
 	return (
 		<Kategori title="Diverse">
 			<FormikSelect name="tpsf.kjonn" label="Kjønn" kodeverk="Kjønnstyper" />
@@ -24,7 +24,7 @@ export const Diverse = ({ formikProps }) => {
 			<FormikDatepicker
 				name="tpsf.forsvunnetDato"
 				label="Forsvunnet dato"
-				disabled={!formikProps.values.tpsf.erForsvunnet}
+				disabled={!formikBag.values.tpsf.erForsvunnet}
 			/>
 		</Kategori>
 	)

@@ -1,0 +1,41 @@
+@import (reference) '~lessVars';
+
+.attributt-velger {
+	&_search {
+		width: 40%;
+	}
+
+	&_panels {
+		width: 65%;
+		padding-right: 30px;
+		border-right: 1px solid @color-darkblue;
+
+		h3 {
+			font-size: 1rem;
+			margin: 0 0 12px;
+		}
+	}
+
+	&_panelsubcontent {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	&_panelsubcontent:not(:last-child) {
+		margin-bottom: 20px;
+	}
+
+	&_radiogruppe {
+		display: flex;
+		width: 100%;
+		flex-wrap: wrap;
+		> * {
+			margin-right: 30px;
+		}
+	}
+
+	.skjemaelement__label {
+		font-size: 1rem;
+		text-transform: none;
+	}
+}

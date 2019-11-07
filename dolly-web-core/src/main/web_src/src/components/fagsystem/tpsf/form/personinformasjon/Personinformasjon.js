@@ -7,9 +7,9 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { IdentHistorikk } from './partials/IdentHistorikk'
 import { Diverse } from './partials/Diverse'
 
-export const Personinformasjon = ({ formikProps }) => {
+export const Personinformasjon = ({ formikBag }) => {
 	return (
-		<Panel heading="Personinformasjon" hasErrors={panelError(formikProps)}>
+		<Panel heading="Personinformasjon" hasErrors={panelError(formikBag)}>
 			<Kategori title="Alder">
 				<FormikDatepicker name="tpsf.foedtEtter" label="Født etter" />
 				<FormikDatepicker name="tpsf.foedtFoer" label="Født før" />
@@ -27,9 +27,9 @@ export const Personinformasjon = ({ formikProps }) => {
 				<FormikDatepicker name="tpsf.utvandretTilLandFlyttedato" label="Utvandret dato" />
 			</Kategori>
 
-			<IdentHistorikk formikProps={formikProps} />
+			<IdentHistorikk formikBag={formikBag} />
 
-			<Diverse formikProps={formikProps} />
+			<Diverse formikBag={formikBag} />
 		</Panel>
 	)
 }

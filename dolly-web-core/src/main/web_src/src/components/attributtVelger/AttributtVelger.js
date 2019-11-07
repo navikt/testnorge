@@ -6,7 +6,7 @@ import Utvalg from './Utvalg/Utvalg'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import { AttributtManager } from '~/service/Kodeverk'
 import TilgjengeligeMiljoer from '~/components/tilgjengeligeMiljoer/TilgjengeligeMiljoer'
-import './AttributtVelger.less'
+// import './AttributtVelger.less'
 export default class AttributtVelger extends Component {
 	static propTypes = {
 		onToggle: PropTypes.func.isRequired,
