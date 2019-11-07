@@ -10,6 +10,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+import java.util.Optional;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -24,27 +36,16 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.dao.DataIntegrityViolationException;
-
-import java.util.List;
-import java.util.Optional;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingServiceTest {
 
+    private static final String CURRENT_BRUKER_IDENT = "NAV1";
     private static final long BEST_ID = 1L;
 
     @Mock
     private BestillingRepository bestillingRepository;
-
-    @Mock
-    private TestgruppeService testgruppeService;
 
     @Mock
     private BestillingKontrollRepository bestillingKontrollRepository;
@@ -60,6 +61,12 @@ public class BestillingServiceTest {
 
     @InjectMocks
     private BestillingService bestillingService;
+
+    @BeforeClass
+    public static void beforeClass() {
+        SecurityContextHolder.getContext().setAuthentication(
+                new OidcTokenAuthentication(CURRENT_BRUKER_IDENT, null, null, null));
+    }
 
     @Test(expected = NotFoundException.class)
     public void fetchBestillingByIdKasterExceptionHvisBestillingIkkeFunnet() {

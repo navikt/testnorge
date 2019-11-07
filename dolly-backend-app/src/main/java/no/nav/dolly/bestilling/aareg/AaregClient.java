@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.consumer.aareg.AaregConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -22,6 +21,7 @@ import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.metrics.Timed;
 
 @Slf4j
 @Service
@@ -31,7 +31,7 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
     private final AaregConsumer aaregConsumer;
 
     @Override
-    @Timed(name = "providers", tags={"operation", "gjenopprettAareg"})
+    @Timed(name = "providers", tags = { "operation", "gjenopprettAareg" })
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         StringBuilder result = new StringBuilder();

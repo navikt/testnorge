@@ -2,6 +2,8 @@ package no.nav.dolly.consumer.aareg;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
@@ -13,16 +15,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,25 +38,27 @@ import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import no.nav.dolly.security.sts.StsOidcService;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(AaregConsumer.class)
 @ActiveProfiles("test")
 public class AaregConsumerTest {
 
-    private static final String STANDARD_PRINCIPAL = "brukernavn";
-    private static final String STANDARD_IDTOKEN = "idtoken";
-
     @Autowired
     private AaregConsumer aaregConsumer;
 
     @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
     private MockRestServiceServer server;
+
+    @MockBean
+    private StsOidcService stsOidcService;
 
     @Value("${providers.aaregdata.url}")
     private String serverUrl;
-
 
     private String ident = "01010101010";
     private String miljoe = "t0";
@@ -64,6 +70,10 @@ public class AaregConsumerTest {
 
     @Before
     public void setUp() {
+        server = MockRestServiceServer.createServer(restTemplate);
+
+        Mockito.when(stsOidcService.getIdToken(anyString())).thenReturn("mocktoken");
+
         opprettRequest = RsAaregOpprettRequest.builder()
                 .arbeidsforhold(RsArbeidsforhold.builder()
                         .build())
@@ -85,10 +95,6 @@ public class AaregConsumerTest {
 
         slettResponse = new HashMap<>();
         slettResponse.put(miljoe, "OK");
-
-        SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(STANDARD_PRINCIPAL, null, STANDARD_IDTOKEN, null)
-        );
     }
 
     @Test
@@ -99,6 +105,7 @@ public class AaregConsumerTest {
         RsAaregResponse response = aaregConsumer.opprettArbeidsforhold(opprettRequest);
 
         assertThat(response.getStatusPerMiljoe().get(miljoe), equalTo("OK"));
+        verify(stsOidcService).getIdToken("q");
     }
 
     @Test
@@ -109,6 +116,7 @@ public class AaregConsumerTest {
         RsAaregResponse response = aaregConsumer.oppdaterArbeidsforhold(oppdaterRequest);
 
         assertThat(response.getStatusPerMiljoe().get(miljoe), equalTo("OK"));
+        verify(stsOidcService).getIdToken("q");
     }
 
     @Test
@@ -117,6 +125,7 @@ public class AaregConsumerTest {
         stubHentArbeidsforhold(expectedUri);
 
         aaregConsumer.hentArbeidsforhold(ident, miljoe);
+        verify(stsOidcService).getIdToken("q");
     }
 
     @Test
@@ -127,6 +136,7 @@ public class AaregConsumerTest {
         Map<String, String> response = aaregConsumer.slettArbeidsforholdFraAlleMiljoer(ident);
 
         assertThat(response.get(miljoe), equalTo("OK"));
+        verify(stsOidcService).getIdToken("q");
     }
 
     private void stubOpprettArbeidsforhold(String expectedUri, RsAaregResponse response) throws JsonProcessingException {

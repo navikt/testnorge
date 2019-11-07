@@ -1,6 +1,4 @@
-package no.nav.dolly.bestilling.pdlforvalter;
-
-import java.time.LocalDate;
+package no.nav.dolly.bestilling.pdlforvalter.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +11,10 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlDoedsfall {
+public class PdlAdressebeskyttelse {
 
-    private LocalDate doedsdato;
+    public enum AdresseBeskyttelse {STRENGT_FORTROLIG, FORTROLIG, UGRADERT}
+
+    private AdresseBeskyttelse gradering;
     private String kilde;
 }

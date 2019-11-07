@@ -3,7 +3,6 @@ package no.nav.dolly.consumer.aareg;
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +20,7 @@ import java.util.UUID;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
+import no.nav.dolly.security.sts.StsOidcService;
 
 @Component
 @RequiredArgsConstructor
@@ -31,16 +31,21 @@ public class AaregConsumer {
     private static final String OPPDATER_ARBEIDSFORHOLD = "/v1/arbeidsforhold";
     private static final String HENT_ARBEIDSFORHOLD = "/v1/arbeidsforhold?ident={ident}&miljoe={miljoe}";
     private static final String SLETT_ARBEIDSFORHOLD = "/v1/arbeidsforhold?ident={ident}";
+    private static final String PREPROD_ENV = "q";
 
     private final RestTemplate restTemplate;
+    private final StsOidcService stsOidcService;
 
     @Value("${providers.aaregdata.url}")
     private String aaregServerUrl;
 
+    @Value("${fasit.environment.name}")
+    private String environment;
+
     public RsAaregResponse opprettArbeidsforhold(RsAaregOpprettRequest request) {
         RequestEntity postRequest =
                 RequestEntity.post(new UriTemplate(aaregServerUrl + OPPRETT_ARBEIDSFORHOLD).expand())
-                        .header(AUTHORIZATION, getUserIdToken())
+                        .header(AUTHORIZATION, resolveToken())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .body(request);
@@ -50,7 +55,7 @@ public class AaregConsumer {
     public RsAaregResponse oppdaterArbeidsforhold(RsAaregOppdaterRequest request) {
         RequestEntity putRequest =
                 RequestEntity.put(new UriTemplate(aaregServerUrl + OPPDATER_ARBEIDSFORHOLD).expand())
-                        .header(AUTHORIZATION, getUserIdToken())
+                        .header(AUTHORIZATION, resolveToken())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .body(request);
@@ -60,7 +65,7 @@ public class AaregConsumer {
     public ResponseEntity<Map[]> hentArbeidsforhold(String ident, String miljoe) {
         RequestEntity getRequest =
                 RequestEntity.get(new UriTemplate(aaregServerUrl + HENT_ARBEIDSFORHOLD).expand(ident, miljoe))
-                        .header(AUTHORIZATION, getUserIdToken())
+                        .header(AUTHORIZATION, resolveToken())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .build();
@@ -70,7 +75,7 @@ public class AaregConsumer {
     public Map<String, String> slettArbeidsforholdFraAlleMiljoer(String ident) {
         RequestEntity deleteRequest =
                 RequestEntity.delete(new UriTemplate(aaregServerUrl + SLETT_ARBEIDSFORHOLD).expand(ident))
-                        .header(AUTHORIZATION, getUserIdToken())
+                        .header(AUTHORIZATION, resolveToken())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .build();
@@ -80,5 +85,9 @@ public class AaregConsumer {
 
     private static String getNavCallId() {
         return format("%s %s", CONSUMER, UUID.randomUUID().toString());
+    }
+
+    private String resolveToken() {
+        return environment.toLowerCase().contains(PREPROD_ENV) ? StsOidcService.getUserIdToken() : stsOidcService.getIdToken(PREPROD_ENV);
     }
 }
