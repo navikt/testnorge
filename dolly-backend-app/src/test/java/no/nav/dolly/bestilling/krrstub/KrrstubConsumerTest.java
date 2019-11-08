@@ -1,45 +1,56 @@
 package no.nav.dolly.bestilling.krrstub;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.RequestEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-@RunWith(MockitoJUnitRunner.class)
+import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
+import no.nav.dolly.properties.ProvidersProps;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+
+@RunWith(SpringRunner.class)
+@RestClientTest(KrrstubConsumer.class)
 public class KrrstubConsumerTest {
 
     private static final String CURRENT_BRUKER_IDENT = "user";
-    private static final Long BEST_ID = 1L;
     private static final String EPOST = "morro.pa@landet.no";
     private static final String MOBIL = "11111111";
     private static final boolean RESVERT = true;
     private static final String BASE_URL = "baseUrl";
     private static Authentication authentication;
+
+    private MockRestServiceServer server;
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-    @Mock
+
+    @Autowired
     private RestTemplate restTemplate;
-    @Mock
+
+    @MockBean
     private ProvidersProps providersProps;
-    @InjectMocks
+
+    @Autowired
     private KrrstubConsumer krrStubConsumer;
 
     @BeforeClass
@@ -54,11 +65,20 @@ public class KrrstubConsumerTest {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
+    @Before
+    public void setup() {
+        server = MockRestServiceServer.createServer(restTemplate);
+    }
+
     @Test
     public void createDigitalKontaktdata_Ok() {
 
         when(providersProps.getKrrStub()).thenReturn(ProvidersProps.KrrStub.builder()
                 .url(BASE_URL).build());
+
+        server.expect(requestTo("baseUrl/api/v1/kontaktinformasjon"))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withSuccess());
 
         krrStubConsumer.createDigitalKontaktdata(DigitalKontaktdata.builder()
                 .epost(EPOST)
@@ -67,7 +87,6 @@ public class KrrstubConsumerTest {
                 .build());
 
         verify(providersProps).getKrrStub();
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(Object.class));
     }
 
     @Test
@@ -84,6 +103,5 @@ public class KrrstubConsumerTest {
                 .build());
 
         verify(providersProps).getKrrStub();
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(Object.class));
     }
 }

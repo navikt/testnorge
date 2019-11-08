@@ -41,3 +41,16 @@ dolly:
 spring:
   main:
     allow-bean-definition-overriding: true
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
