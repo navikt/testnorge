@@ -57,6 +57,10 @@ public class ApplicationManager {
             }
         }
 
+        if (activeApplications.containsKey(app.getAppName())) {
+            activeApplications.get(app.getAppName()).cancel(true);
+        }
+
         log.info("Scheduling shutdown for \'{}\' at {}.",
                 app.getAppName(),
                 DateUtils.addSeconds(new Date(), (int) SHUTDOWN_TIME_DELAY_SECONDS));

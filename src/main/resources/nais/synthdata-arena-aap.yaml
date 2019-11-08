@@ -28,9 +28,9 @@ spec:
   resources:
     requests:
       cpu: 200m
-      memory: 8000Mi
+      memory: 10000Mi
     limits:
       cpu: 500m
-      memory: 9000Mi
+      memory: 11000Mi
   ingresses:
     - "https://nais-synthdata-arena-aap.nais.preprod.local"

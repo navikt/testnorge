@@ -34,9 +34,9 @@ public class SyntetiseringService {
     @Value("${synth-aareg-url}")
     private String aaregUrl;
 
-    @Value("synth-arena-aap-115-url")
+    @Value("${synth-arena-aap-115-url}")
     private String aap115Url;
-    @Value("synth-arena-aap-nyRettighet-url")
+    @Value("${synth-arena-aap-nyRettighet-url}")
     private String aapUrl;
 
     @Value("${synth-arena-bisys-url}")

@@ -44,13 +44,13 @@ public class InputValidator {
                 }
                 break;
             case ENDRINGSKODE:
-                if (endringskoder.stream().anyMatch(s -> !s.equals(value))) {
+                if (!endringskoder.contains(value)) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                             String.format("Ikke en gyldig endringskode (!). Må være en av %s.", endringskoder.toString()));
                 }
                 break;
             case ENDRINGSKODE_NAV:
-                if (navEndringskoder.stream().anyMatch(s -> !s.equals(value))) {
+                if (!navEndringskoder.contains(value)) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                             String.format("Ikke en gyldig nav endringskode (!). Må være en av %s.", navEndringskoder.toString()));
                 }
