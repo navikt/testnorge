@@ -9,7 +9,8 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 
 export const Adresser = ({ formikProps }) => {
 	return (
-		<Panel heading="Adresser" startOpen>
+		<Panel heading="Adresser">
+			{/* <Panel heading="Adresser" startOpen> */}
 			<Boadresse formikProps={formikProps} />
 			<MatrikkelAdresse formikProps={formikProps} />
 			<FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
