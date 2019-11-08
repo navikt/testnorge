@@ -5,26 +5,32 @@ import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.IdentType.FNR;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -36,7 +42,6 @@ import no.nav.dolly.domain.resultset.tpsf.TpsfIdenterMiljoer;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.properties.ProvidersProps;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @RestClientTest(TpsfService.class)
 public class TpsfServiceTest {
@@ -47,8 +52,10 @@ public class TpsfServiceTest {
     private static final List<String> standardIdenter = new ArrayList<>(singleton(standardIdent));
     private static final List<String> standardMiljoer_u1_t1 = Arrays.asList("u1", "t1");
 
-    @Autowired
     private MockRestServiceServer server;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Autowired
     private TpsfService tpsfService;
@@ -64,59 +71,54 @@ public class TpsfServiceTest {
 
         when(providersProps.getTpsf())
                 .thenReturn(ProvidersProps.Tpsf.builder()
-                        .url("baseurl")
+                        .url("https://localhost:8080")
                         .build());
+        server = MockRestServiceServer.createServer(restTemplate);
     }
 
     @Test
-    public void opprettPersonerTpsf_hvisSuksessfultKallReturnerListeAvStringIdenter() {
+    public void opprettPersonerTpsf_hvisSuksessfultKallReturnerListeAvStringIdenter() throws Exception {
         standardTpsfBestilling.setIdenttype(FNR);
+        ResponseEntity<Object> ob = new ResponseEntity<>("body", HttpStatus.OK);
 
-        Object s = "body";
-        ResponseEntity<Object> ob = new ResponseEntity<>(s, HttpStatus.OK);
+        server.expect(requestTo("https://localhost:8080/api/v1/dolly/testdata/personer"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().string(asJsonString(standardTpsfBestilling)))
+                .andRespond(withSuccess(asJsonString(ob), MediaType.APPLICATION_JSON));
 
-        ArgumentCaptor<String> endpointCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<HttpMethod> httpMethodCaptor = ArgumentCaptor.forClass(HttpMethod.class);
-        ArgumentCaptor<HttpEntity> httpEntityCaptor = ArgumentCaptor.forClass(HttpEntity.class);
+        when(objectMapper.convertValue(anyMap(), eq(List.class))).thenReturn(singletonList(FNR));
 
-        //        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(Object.class))).thenReturn(ob);
-        when(objectMapper.convertValue("body", List.class)).thenReturn(singletonList("test"));
+        List<String> response = tpsfService.opprettIdenterTpsf(standardTpsfBestilling);
 
-        List<String> res = tpsfService.opprettIdenterTpsf(standardTpsfBestilling);
-        //        verify(restTemplate).exchange(endpointCaptor.capture(), httpMethodCaptor.capture(), httpEntityCaptor.capture(), eq(Object.class));
-
-        HttpEntity entity = httpEntityCaptor.getValue();
-
-        assertThat(res.get(0), is("test"));
-        assertThat(endpointCaptor.getValue(), is(url));
-        assertThat(entity.getBody(), is(standardTpsfBestilling));
-        assertThat((entity.getBody()), is(standardTpsfBestilling));
+        assertThat(response.get(0), is(FNR));
     }
 
     @Test(expected = TpsfException.class)
-    public void opprettPersonerTpsf_hvisTpsfKasterExceptionSaaKastesTpsfException() {
-        Object s = "error=Feil";
-        ResponseEntity<Object> ob = new ResponseEntity<>(s, HttpStatus.OK);
-        RestTemplateFailure resExp = new RestTemplateFailure();
-        resExp.setMessage("msg");
-        resExp.setError("err");
+    public void opprettPersonerTpsf_hvisTpsfKasterExceptionSaaKastesTpsfException() throws Exception{
 
-        //        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(Object.class))).thenReturn(ob);
-        when(objectMapper.convertValue(s, RestTemplateFailure.class)).thenReturn(resExp);
+        RestTemplateFailure failure = RestTemplateFailure.builder().error("tekst").status("feil").message("melding").build();
+
+        server.expect(requestTo("https://localhost:8080/api/v1/dolly/testdata/personer"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().string(asJsonString(standardTpsfBestilling)))
+                .andRespond(withServerError());
+
+        when(objectMapper.readValue(any(byte[].class), eq(RestTemplateFailure.class))).thenReturn(failure);
 
         tpsfService.opprettIdenterTpsf(standardTpsfBestilling);
     }
 
     @Test(expected = TpsfException.class)
-    public void sendIdenterTilTpsFraTPSF_hvisTpsfKasterExceptionSaaKastesTpsfException() {
-        Object s = "error=Feil";
-        ResponseEntity<Object> ob = new ResponseEntity<>(s, HttpStatus.OK);
-        RestTemplateFailure resExp = new RestTemplateFailure();
-        resExp.setMessage("msg");
-        resExp.setError("err");
+    public void sendIdenterTilTpsFraTPSF_hvisTpsfKasterExceptionSaaKastesTpsfException() throws Exception {
 
-        //        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(Object.class))).thenReturn(ob);
-        when(objectMapper.convertValue(s, RestTemplateFailure.class)).thenReturn(resExp);
+        RestTemplateFailure failure = RestTemplateFailure.builder().error("tekst").status("feil").message("melding").build();
+
+        server.expect(requestTo("https://localhost:8080/api/v1/dolly/testdata/tilTpsFlere"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().string(asJsonString(new TpsfIdenterMiljoer(standardIdenter, standardMiljoer_u1_t1))))
+                .andRespond(withServerError());
+
+        when(objectMapper.readValue(any(byte[].class), eq(RestTemplateFailure.class))).thenReturn(failure);
 
         tpsfService.sendIdenterTilTpsFraTPSF(standardIdenter, standardMiljoer_u1_t1);
     }
@@ -129,26 +131,20 @@ public class TpsfServiceTest {
 
     @Test
     public void sendTilTpsFraTPSF_happyPath() throws Exception {
-        ArgumentCaptor<String> endpointCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<HttpMethod> httpMethodCaptor = ArgumentCaptor.forClass(HttpMethod.class);
-        ArgumentCaptor<HttpEntity> httpEntityCaptor = ArgumentCaptor.forClass(HttpEntity.class);
 
-        Object s = "body";
-        ResponseEntity<Object> ob = new ResponseEntity<>(s, HttpStatus.OK);
-        RsSkdMeldingResponse res = new RsSkdMeldingResponse();
+        ResponseEntity<Object> ob = new ResponseEntity<>("{\"gruppeid\":\"1\"}", HttpStatus.OK);
+        RsSkdMeldingResponse meldingResponse = RsSkdMeldingResponse.builder().gruppeid(1L).build();
 
-        //        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(Object.class))).thenReturn(ob);
-        when(objectMapper.convertValue(s, RsSkdMeldingResponse.class)).thenReturn(res);
+        server.expect(requestTo("https://localhost:8080/api/v1/dolly/testdata/tilTpsFlere"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().string(asJsonString(new TpsfIdenterMiljoer(standardIdenter, standardMiljoer_u1_t1))))
+                .andRespond(withSuccess(asJsonString(ob), MediaType.APPLICATION_JSON));
 
-//        server.expect(requestTo("https://localhost:8080/api/v1/dolly/testdata/tilTpsFlere"))
-//                .andExpect(method(HttpMethod.POST))
-//                .andRespond(withSuccess(asJsonString(ob), MediaType.APPLICATION_JSON));
+        when(objectMapper.convertValue(anyMap(), eq(RsSkdMeldingResponse.class))).thenReturn(meldingResponse);
 
         RsSkdMeldingResponse response = tpsfService.sendIdenterTilTpsFraTPSF(standardIdenter, standardMiljoer_u1_t1);
-        //        verify(restTemplate).exchange(endpointCaptor.capture(), httpMethodCaptor.capture(), httpEntityCaptor.capture(), eq(Object.class));
 
-        assertThat(((TpsfIdenterMiljoer) httpEntityCaptor.getValue().getBody()).getMiljoer(), Matchers.containsInAnyOrder("u1", "t1"));
-        assertThat(response, is(res));
+        assertThat(response, is(meldingResponse));
     }
 
     private static String asJsonString(final Object object) throws JsonProcessingException {

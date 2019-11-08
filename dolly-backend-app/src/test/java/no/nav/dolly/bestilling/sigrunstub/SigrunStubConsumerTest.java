@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,8 +40,10 @@ public class SigrunStubConsumerTest {
     private static final String standardEierHeaderName = "testdataEier";
     private static final String IDENT = "111111111";
 
-    @Autowired
     private MockRestServiceServer server;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @MockBean
     private ProvidersProps providersProps;
@@ -66,6 +69,8 @@ public class SigrunStubConsumerTest {
         skattegrunnlag = OpprettSkattegrunnlag.builder()
                 .inntektsaar("1978")
                 .build();
+
+        server = MockRestServiceServer.createServer(restTemplate);
     }
 
     @Test

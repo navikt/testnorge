@@ -8,6 +8,7 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestTemplate;
 
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
@@ -34,8 +36,10 @@ public class ArenaForvalterConsumerTest {
     private static final String IDENT = "12423353";
     private static final String ENV = "u2";
 
-    @Autowired
     private MockRestServiceServer server;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @MockBean
     private ProvidersProps providersProps;
@@ -43,14 +47,20 @@ public class ArenaForvalterConsumerTest {
     @Autowired
     private ArenaForvalterConsumer arenaForvalterConsumer;
 
+    @BeforeClass
+    public static void beforeClass() {
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new OidcTokenAuthentication(STANDARD_PRINCIPAL, null, STANDARD_IDTOKEN, null)
+        );
+    }
+
     @Before
     public void setup() {
 
         when(providersProps.getArenaForvalter()).thenReturn(ProvidersProps.ArenaForvalter.builder().url("baseUrl").build());
 
-        SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(STANDARD_PRINCIPAL, null, STANDARD_IDTOKEN, null)
-        );
+        server = MockRestServiceServer.createServer(restTemplate);
     }
 
     @Test

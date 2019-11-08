@@ -7,32 +7,28 @@ import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
 
 import java.net.URI;
 import java.util.UUID;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class KrrstubConsumer {
 
     private static final String CONSUMER = "Dolly";
     private static final String DIGITAL_KONTAKT_URL = "/api/v1/kontaktinformasjon";
     private static final String PERSON_DIGITAL_KONTAKT_URL = "/api/v1/person/kontaktinformasjon";
 
-    private RestTemplate restTemplate;
-    private ProvidersProps providersProps;
-
-    public KrrstubConsumer(RestTemplateBuilder restTemplateBuilder, ProvidersProps providersProps) {
-        restTemplate = restTemplateBuilder.build();
-        this.providersProps =providersProps;
-    }
+    private final RestTemplate restTemplate;
+    private final ProvidersProps providersProps;
 
     public ResponseEntity readDigitalKontaktdata(String ident) {
 

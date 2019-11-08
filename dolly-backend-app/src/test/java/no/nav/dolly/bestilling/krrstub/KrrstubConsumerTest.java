@@ -7,6 +7,7 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -21,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.properties.ProvidersProps;
@@ -31,18 +33,19 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 public class KrrstubConsumerTest {
 
     private static final String CURRENT_BRUKER_IDENT = "user";
-    private static final Long BEST_ID = 1L;
     private static final String EPOST = "morro.pa@landet.no";
     private static final String MOBIL = "11111111";
     private static final boolean RESVERT = true;
     private static final String BASE_URL = "baseUrl";
     private static Authentication authentication;
 
+    private MockRestServiceServer server;
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
     @Autowired
-    private MockRestServiceServer server;
+    private RestTemplate restTemplate;
 
     @MockBean
     private ProvidersProps providersProps;
@@ -60,6 +63,11 @@ public class KrrstubConsumerTest {
     @AfterClass
     public static void afterClass() {
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    @Before
+    public void setup() {
+        server = MockRestServiceServer.createServer(restTemplate);
     }
 
     @Test

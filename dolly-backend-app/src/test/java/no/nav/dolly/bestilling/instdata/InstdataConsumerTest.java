@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestTemplate;
 
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.properties.ProvidersProps;
@@ -30,11 +31,13 @@ public class InstdataConsumerTest {
     @MockBean
     private ProvidersProps providersProps;
 
-    @Autowired
     private MockRestServiceServer server;
 
     @Autowired
     private InstdataConsumer instdataConsumer;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Before
     public void setup() {
@@ -42,6 +45,8 @@ public class InstdataConsumerTest {
                 ProvidersProps.Instdata.builder()
                         .url("localhost")
                         .build());
+
+        server = MockRestServiceServer.createServer(restTemplate);
     }
 
     @Test

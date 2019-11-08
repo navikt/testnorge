@@ -15,7 +15,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +24,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
 import no.nav.dolly.bestilling.udistub.RsAliasRequest;
@@ -41,6 +41,7 @@ import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TpsfService {
 
     private static final String TPSF_BASE_URL = "/api/v1/dolly/testdata";
@@ -53,15 +54,9 @@ public class TpsfService {
     private static final String TPSF_DELETE_PERSONER_URL = TPSF_BASE_URL + "/personer?identer=";
     private static final String TPSF_GET_ENVIRONMENTS = "/api/v1/environments";
 
-    private RestTemplate restTemplate;
-    private ObjectMapper objectMapper;
-    private ProvidersProps providersProps;
-
-    public TpsfService(RestTemplateBuilder restTemplateBuilder, ObjectMapper objectMapper, ProvidersProps providersProps) {
-        restTemplate = restTemplateBuilder.build();
-        this.objectMapper = objectMapper;
-        this.providersProps = providersProps;
-    }
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
+    private final ProvidersProps providersProps;
 
     public ResponseEntity<EnvironmentsResponse> getEnvironments() {
         return restTemplate.exchange(
