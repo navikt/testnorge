@@ -13,22 +13,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ArenaForvalterConsumer {
 
     private static final String ARENAFORVALTER_BRUKER = "/api/v1/bruker";
     private static final String ARENAFORVALTER_ENVIRONMENTS = "/api/v1/miljoe";
     private static final String KILDE = "Dolly";
 
-    private RestTemplate restTemplate;
-    private ProvidersProps providersProps;
+    private final RestTemplate restTemplate;
+    private final ProvidersProps providersProps;
 
     public ResponseEntity getIdent(String ident) {
         return restTemplate.exchange(RequestEntity.get(

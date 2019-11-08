@@ -54,7 +54,7 @@ class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
                 .map(Testident::getIdent)
                 .collect(Collectors.toList());
 
-       sendRequest()
+        sendRequest()
                 .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/slettTestident?ident=" + idents.get(0))
                 .andExpect(HttpStatus.OK, LinkedHashMap.class);
 
