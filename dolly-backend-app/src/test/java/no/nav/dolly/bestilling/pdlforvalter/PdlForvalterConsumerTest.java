@@ -18,6 +18,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestTemplate;
 
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
@@ -32,8 +33,10 @@ public class PdlForvalterConsumerTest {
     private static final String IDENT = "11111111111";
     private static final String PDL_URL = "http://pdl.nav.no";
 
-    @Autowired
     private MockRestServiceServer server;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @MockBean
     private ProvidersProps providersProps;
@@ -49,6 +52,8 @@ public class PdlForvalterConsumerTest {
 
         ReflectionTestUtils.setField(pdlForvalterConsumer, "environment", "u2");
         when(providersProps.getPdlForvalter()).thenReturn(ProvidersProps.PdlForvalter.builder().url(PDL_URL).build());
+
+        server = MockRestServiceServer.createServer(restTemplate);
     }
 
     @Test

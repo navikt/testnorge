@@ -7,32 +7,28 @@ import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Service
+@RequiredArgsConstructor
 public class ArenaForvalterConsumer {
 
     private static final String ARENAFORVALTER_BRUKER = "/api/v1/bruker";
     private static final String ARENAFORVALTER_ENVIRONMENTS = "/api/v1/miljoe";
     private static final String KILDE = "Dolly";
 
-    private RestTemplate restTemplate;
-    private ProvidersProps providersProps;
-
-    public ArenaForvalterConsumer(RestTemplateBuilder restTemplateBuilder, ProvidersProps providersProps) {
-        restTemplate = restTemplateBuilder.build();
-        this.providersProps = providersProps;
-    }
+    private final RestTemplate restTemplate;
+    private final ProvidersProps providersProps;
 
     public ResponseEntity getIdent(String ident) {
         return restTemplate.exchange(RequestEntity.get(
