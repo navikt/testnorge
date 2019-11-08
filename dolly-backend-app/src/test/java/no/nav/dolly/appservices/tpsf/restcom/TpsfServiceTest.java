@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ import no.nav.dolly.domain.resultset.tpsf.TpsfIdenterMiljoer;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.properties.ProvidersProps;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @RestClientTest(TpsfService.class)
 public class TpsfServiceTest {
