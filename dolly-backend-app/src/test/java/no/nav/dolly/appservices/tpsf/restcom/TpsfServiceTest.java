@@ -48,7 +48,6 @@ import no.nav.dolly.properties.ProvidersProps;
 @RestClientTest(TpsfService.class)
 public class TpsfServiceTest {
 
-    private static final String url = "https://localhost:8080/api/v1/dolly/testdata/personer";
     private static final TpsfBestilling standardTpsfBestilling = new TpsfBestilling();
     private static final String standardIdent = "123";
     private static final List<String> standardIdenter = new ArrayList<>(singleton(standardIdent));
