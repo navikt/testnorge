@@ -20,6 +20,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
@@ -106,5 +108,28 @@ public class PdlForvalterConsumerTest {
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService, times(2)).getIdToken(anyString());
+    }
+
+    @Test
+    public void opprettPerson() {
+
+        server.expect(requestTo("http://pdl.nav.no/api/v1/bestilling/opprettperson"))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withSuccess());
+
+        pdlForvalterConsumer.postOpprettPerson(PdlOpprettPerson.builder().opprettetIdent(IDENT).build(), IDENT);
+
+        verify(providersProps).getPdlForvalter();
+        verify(stsOidcService, times(2)).getIdToken(anyString());
+    }
+
+    @Test
+    public void leggTillNavn() {
+
+        server.expect(requestTo("http://pdl.nav.no/api/v1/bestilling/navn"))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withSuccess());
+
+        pdlForvalterConsumer.postNavn(PdlNavn.builder().build(), IDENT);
     }
 }

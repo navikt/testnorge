@@ -17,6 +17,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.mapper.MappingStrategy;
 
@@ -25,6 +26,16 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
+
+        factory.classMap(Person.class, PdlOpprettPerson.class)
+                .customize(new CustomMapper<Person, PdlOpprettPerson>() {
+                    @Override
+                    public void mapAtoB(Person person, PdlOpprettPerson pdlOpprettPerson, MappingContext context) {
+
+                        pdlOpprettPerson.setOpprettetIdent(person.getIdent());
+                    }
+                })
+                .register();
 
         factory.classMap(Person.class, PdlFoedsel.class)
                 .customize(new CustomMapper<Person, PdlFoedsel>() {
