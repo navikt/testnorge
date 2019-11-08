@@ -20,6 +20,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -106,6 +107,7 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendPdlPersondetaljer(TpsPerson tpsPerson) {
 
         if (nonNull(tpsPerson.getPersondetalj())) {
+            sendOpprettPerson(tpsPerson.getPersondetalj());
             sendFoedselsmelding(tpsPerson.getPersondetalj());
             sendNavn(tpsPerson.getPersondetalj());
             sendKjoenn(tpsPerson.getPersondetalj());
@@ -113,12 +115,26 @@ public class PdlForvalterClient implements ClientRegister {
             sendDoedsfall(tpsPerson.getPersondetalj());
 
             tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
+                sendOpprettPerson(relasjon.getPersonRelasjonMed());
                 sendFoedselsmelding(relasjon.getPersonRelasjonMed());
                 sendNavn(relasjon.getPersonRelasjonMed());
                 sendKjoenn(relasjon.getPersonRelasjonMed());
                 sendAdressebeskyttelse(relasjon.getPersonRelasjonMed());
                 sendDoedsfall(relasjon.getPersonRelasjonMed());
             });
+        }
+    }
+
+    private void sendOpprettPerson(Person person) {
+
+        try {
+            pdlForvalterConsumer.postOpprettPerson(mapperFacade.map(person, PdlOpprettPerson.class), person.getIdent());
+
+        } catch (HttpClientErrorException e) {
+            log.error("Feilet å sende opprett person for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å sende opprett person for ident {} til PDL-forvalter.", person.getIdent(), e);
         }
     }
 
