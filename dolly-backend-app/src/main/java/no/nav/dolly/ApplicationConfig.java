@@ -15,8 +15,9 @@ import org.springframework.web.client.RestTemplate;
 public class ApplicationConfig {
 
     private static final int TIMEOUT = 120_000;
+
     @Bean
-    RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder
                 .requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
                         .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
