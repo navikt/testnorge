@@ -1,6 +1,6 @@
 package no.nav.dolly.provider.api.testgruppe;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -45,7 +45,6 @@ class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
         assertThat(getErrMsg(resp), is(format("Finner ikke gruppe basert på gruppeID: %d", testgruppe.getId())));
     }
 
-
     @Test
     @DisplayName("Fjerner TestIdent fra Testgruppe")
     void deleteTestident() {
@@ -55,7 +54,7 @@ class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
                 .map(Testident::getIdent)
                 .collect(Collectors.toList());
 
-       sendRequest()
+        sendRequest()
                 .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/slettTestident?ident=" + idents.get(0))
                 .andExpect(HttpStatus.OK, LinkedHashMap.class);
 
