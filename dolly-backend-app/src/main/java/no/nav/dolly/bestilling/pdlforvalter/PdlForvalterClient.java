@@ -15,15 +15,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-
-import no.nav.dolly.metrics.Timed;
-
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
-
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -32,6 +29,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdent
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.metrics.Timed;
 
 @Slf4j
 @Service
@@ -52,7 +50,7 @@ public class PdlForvalterClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    @Timed(name = "providers", tags={"operation", "gjenopprettPdlForvalter"})
+    @Timed(name = "providers", tags = { "operation", "gjenopprettPdlForvalter" })
     @Override
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
@@ -112,6 +110,7 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendPdlPersondetaljer(TpsPerson tpsPerson) {
 
         if (nonNull(tpsPerson.getPersondetalj())) {
+            sendOpprettPerson(tpsPerson.getPersondetalj());
             sendFoedselsmelding(tpsPerson.getPersondetalj());
             sendNavn(tpsPerson.getPersondetalj());
             sendKjoenn(tpsPerson.getPersondetalj());
@@ -119,12 +118,26 @@ public class PdlForvalterClient implements ClientRegister {
             sendDoedsfall(tpsPerson.getPersondetalj());
 
             tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
+                sendOpprettPerson(relasjon.getPersonRelasjonMed());
                 sendFoedselsmelding(relasjon.getPersonRelasjonMed());
                 sendNavn(relasjon.getPersonRelasjonMed());
                 sendKjoenn(relasjon.getPersonRelasjonMed());
                 sendAdressebeskyttelse(relasjon.getPersonRelasjonMed());
                 sendDoedsfall(relasjon.getPersonRelasjonMed());
             });
+        }
+    }
+
+    private void sendOpprettPerson(Person person) {
+
+        try {
+            pdlForvalterConsumer.postOpprettPerson(mapperFacade.map(person, PdlOpprettPerson.class), person.getIdent());
+
+        } catch (HttpClientErrorException e) {
+            log.error("Feilet å sende opprett person for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å sende opprett person for ident {} til PDL-forvalter.", person.getIdent(), e);
         }
     }
 
