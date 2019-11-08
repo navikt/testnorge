@@ -12,19 +12,18 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class SigrunStubConsumer {
 
     private static final String CONSUMER = "Dolly";
@@ -32,8 +31,13 @@ public class SigrunStubConsumer {
     private static final String SIGRUN_STUB_DELETE_GRUNNLAG = URL_VERSION + "/slett";
     private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = URL_VERSION + "/lignetinntekt";
 
-    private final ProvidersProps providersProps;
-    private final RestTemplate restTemplate;
+    private RestTemplate restTemplate;
+    private ProvidersProps providersProps;
+
+    public SigrunStubConsumer(RestTemplateBuilder restTemplateBuilder, ProvidersProps providersProps) {
+        restTemplate = restTemplateBuilder.build();
+        this.providersProps = providersProps;
+    }
 
     public void deleteSkattegrunnlag(String ident) {
 
