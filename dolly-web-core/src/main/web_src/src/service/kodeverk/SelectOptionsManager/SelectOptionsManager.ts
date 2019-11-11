@@ -17,8 +17,8 @@ const selectOptions = {
 
 	// SIGRUN
 	tjeneste: [
-		{ value: 'Beregnet skatt', label: 'Beregnet skatt' },
-		{ value: 'Summert skattegrunnlag', label: 'Summert skattegrunnlag' }
+		{ value: 'BEREGNET_SKATT', label: 'Beregnet skatt' },
+		{ value: 'SUMMERT_SKATTEGRUNNLAG', label: 'Summert skattegrunnlag' }
 	],
 	inntektssted: [
 		{ value: 'Fastlandet', label: 'Fastlandet' },

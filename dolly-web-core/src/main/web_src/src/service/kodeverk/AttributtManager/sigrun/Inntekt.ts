@@ -18,6 +18,38 @@ const AttributtListe: Attributt[] = [
 			{
 				hovedKategori: Kategorier.Inntekt,
 				subKategori: SubKategorier.Inntekt,
+				id: 'inntektsaar',
+				label: 'År',
+				path: 'inntektsaar',
+				dataSource: DataSource.SIGRUN,
+				inputType: InputType.Number,
+				inputTypeAttributes: {
+					min: 0
+				},
+				validation: yup
+					.number()
+					.integer('Ugyldig årstall')
+					.required('Tast inn et gyldig år')
+					.min(1968, 'Inntektsår må være 1968 eller senere')
+					.max(2100, 'Inntektsår må være tidligere enn 2100'),
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.Inntekt,
+				subKategori: SubKategorier.Inntekt,
+				id: 'inntektssted',
+				label: 'inntektssted',
+				path: 'inntektssted',
+				editPath: 'inntektssted',
+				dataSource: DataSource.SIGRUN,
+				inputType: InputType.Select,
+				options: SelectOptionsManager('inntektssted'),
+				validation: yup.string().required('Velg et grunnlag.'),
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.Inntekt,
+				subKategori: SubKategorier.Inntekt,
 				id: 'tjeneste',
 				label: 'Tjeneste',
 				path: 'tekniskNavn',
@@ -25,6 +57,10 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Select,
 				options: SelectOptionsManager('tjeneste'),
+				/*onlyShowDependentOnOtherValue: {
+					attributtId: 'inntektssted',
+					value: ['Fastlandet']
+				},*/
 				validation: yup.string().required('Velg en type tjeneste.'),
 				attributtType: AttributtType.SelectAndRead
 			},
@@ -40,24 +76,7 @@ const AttributtListe: Attributt[] = [
 				size: 'xlarge',
 				hoydeOptions: 'medium',
 				dependentOn: 'tjeneste',
-				validation: yup.string().required('Velg en type inntekt.'),
-				attributtType: AttributtType.SelectAndRead
-			},
-			{
-				hovedKategori: Kategorier.Inntekt,
-				subKategori: SubKategorier.Inntekt,
-				id: 'inntektssted',
-				label: 'inntektssted',
-				path: 'inntektssted',
-				editPath: 'inntektssted',
-				dataSource: DataSource.SIGRUN,
-				inputType: InputType.Select,
-				options: SelectOptionsManager('inntektssted'),
-				onlyShowDependentOnOtherValue: {
-					attributtId: 'tjeneste',
-					value: ['Summert skattegrunnlag']
-				},
-				validation: yup.string().required('Velg et grunnlag.'),
+				//validation: yup.string().required('Velg en type inntekt.'),
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
@@ -76,25 +95,6 @@ const AttributtListe: Attributt[] = [
 					.min(0, 'Tast inn et gyldig beløp')
 					.required('Oppgi beløpet'),
 				attributtType: AttributtType.SelectAndEdit
-			},
-			{
-				hovedKategori: Kategorier.Inntekt,
-				subKategori: SubKategorier.Inntekt,
-				id: 'inntektsaar',
-				label: 'År',
-				path: 'inntektsaar',
-				dataSource: DataSource.SIGRUN,
-				inputType: InputType.Number,
-				inputTypeAttributes: {
-					min: 0
-				},
-				validation: yup
-					.number()
-					.integer('Ugyldig årstall')
-					.required('Tast inn et gyldig år')
-					.min(1968, 'Inntektsår må være 1968 eller senere')
-					.max(2100, 'Inntektsår må være tidligere enn 2100'),
-				attributtType: AttributtType.SelectAndRead
 			}
 		]
 	}

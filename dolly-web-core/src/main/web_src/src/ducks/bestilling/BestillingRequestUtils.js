@@ -28,8 +28,7 @@ export const getValues = (attributeList, values) => {
 								verdi: temp.beloep
 							})),
 							inntektsaar: value[i].inntektsaar,
-							tjeneste: DataFormatter.CapitalizedToUppercaseAndUnderscore(tjeneste),
-							inntektssted: value[i].inntekttsted
+							tjeneste: 'SUMMERT_SKATTEGRUNNLAG'
 						})
 					} else {
 						dataArr.push({
@@ -38,7 +37,7 @@ export const getValues = (attributeList, values) => {
 								verdi: temp.beloep
 							})),
 							inntektsaar: value[i].inntektsaar,
-							tjeneste: DataFormatter.CapitalizedToUppercaseAndUnderscore(tjeneste)
+							tjeneste: value[i].tjeneste
 						})
 					}
 				})

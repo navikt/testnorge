@@ -406,27 +406,44 @@ const _mapRegistreValue = (key, value) => {
 
 			return mappedValue
 		case 'sigrunstub':
-			value.forEach(inntekt => {
-				if (inntekt.svalbardGrunnlag) {
-					inntekt.Svalbardrunnlag.forEach(s => {
+			value.forEach((inntekt, i) => {
+				if (inntekt.grunnlag && value[i].tjeneste == 'SUMMERT_SKATTEGRUNNLAG') {
+					inntekt.grunnlag.forEach(g => {
 						mappedValue.push({
-							typeinntekt: s.tekniskNavn,
+							tjeneste: value[i].tjeneste,
+							typeinntekt: g.tekniskNavn,
 							inntektsaar: inntekt.inntektsaar,
-							tjeneste: inntekt.tjeneste,
-							beloep: s.verdi
+							beloep: g.verdi,
+							inntektssted: value.inntektssted,
+							inntektssted: 'Fastlandet'
 						})
 					})
-				} else {
+				}
+				if (inntekt.grunnlag && value[i].tjeneste == 'BEREGNET_SKATT') {
 					inntekt.grunnlag.forEach(g => {
+						mappedValue.push({
+							tjeneste: value[i].tjeneste,
+							typeinntekt: g.tekniskNavn,
+							inntektsaar: inntekt.inntektsaar,
+							beloep: g.verdi,
+							inntektssted: value.inntektssted,
+							inntektssted: 'Fastlandet'
+						})
+					})
+				}
+				if (inntekt.svalbardGrunnlag && value[i].tjeneste == 'SUMMERT_SKATTEGRUNNLAG') {
+					inntekt.svalbardGrunnlag.forEach(g => {
 						mappedValue.push({
 							typeinntekt: g.tekniskNavn,
 							inntektsaar: inntekt.inntektsaar,
-							tjeneste: inntekt.tjeneste,
-							beloep: g.verdi
+							tjeneste: value[i].tjeneste,
+							beloep: g.verdi,
+							inntektssted: 'Svalbard'
 						})
 					})
 				}
 			})
+
 			return mappedValue
 		case 'krrstub':
 			return [value]

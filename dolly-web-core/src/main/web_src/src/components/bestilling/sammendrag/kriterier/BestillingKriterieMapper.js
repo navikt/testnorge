@@ -211,7 +211,7 @@ export function mapBestillingData(bestillingData) {
 						flatSigrunStubKriterier.push({
 							svalbardGrunnlag: g.tekniskNavn,
 							inntektsaar: inntekt.inntektsaar,
-							tjeneste: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
+							tjeneste: inntekt.tjeneste
 						})
 					})
 				} else {
@@ -219,7 +219,7 @@ export function mapBestillingData(bestillingData) {
 						flatSigrunStubKriterier.push({
 							grunnlag: s.tekniskNavn,
 							inntektsaar: inntekt.inntektsaar,
-							tjeneste: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
+							tjeneste: inntekt.tjeneste
 						})
 					})
 				}
@@ -239,25 +239,24 @@ export function mapBestillingData(bestillingData) {
 					},
 					obj('År', inntekt.inntektsaar),
 					obj('Beløp', inntekt.verdi),
-					obj('Tjeneste', inntekt.tjeneste),
-					obj('Tjeneste', inntekt.inntektssted)
+					obj('Tjeneste', Formatters.allCapsToCapitalized(inntekt.tjeneste))
 				])
 				if (inntekt.svalbardGrunnlag != null) {
 					sigrunStub.itemRows.push([
 						{
-							label: 'Svalbard Grunnlag',
+							label: 'grunnlag (Svalbard)',
 							value: inntekt.svalbardGrunnlag,
 							width: 'xlarge',
-							apiKodeverkId: inntekt.tjeneste
+							apiKodeverkId: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
 						}
 					])
 				} else {
 					sigrunStub.itemRows.push([
 						{
-							label: 'grunnlag',
+							label: 'grunnlag (Fastlandet)',
 							value: inntekt.grunnlag,
 							width: 'xlarge',
-							apiKodeverkId: inntekt.tjeneste
+							apiKodeverkId: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
 						}
 					])
 				}
