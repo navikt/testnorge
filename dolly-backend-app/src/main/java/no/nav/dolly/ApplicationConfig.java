@@ -1,5 +1,6 @@
 package no.nav.dolly;
 
+import java.net.ProxySelector;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -10,21 +11,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.ProxySelector;
-
 @SpringBootApplication
 public class ApplicationConfig {
 
+    private static final int TIMEOUT = 120_000;
+
     @Bean
-    RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder
                 .requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
                         .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
                         .setSSLHostnameVerifier(new DefaultHostnameVerifier())
                         .setDefaultRequestConfig(RequestConfig.custom()
-                                .setConnectTimeout(5000)
-                                .setSocketTimeout(5000)
-                                .setConnectionRequestTimeout(5000)
+                                .setConnectTimeout(TIMEOUT)
+                                .setSocketTimeout(TIMEOUT)
+                                .setConnectionRequestTimeout(TIMEOUT)
                                 .build())
                         .setMaxConnPerRoute(2000)
                         .setMaxConnTotal(5000)

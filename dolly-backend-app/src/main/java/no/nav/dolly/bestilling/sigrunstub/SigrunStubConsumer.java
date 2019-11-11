@@ -32,8 +32,8 @@ public class SigrunStubConsumer {
     private static final String SIGRUN_STUB_DELETE_GRUNNLAG = URL_VERSION + "/slett";
     private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = URL_VERSION + "/lignetinntekt";
 
-    private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
+    private final ProvidersProps providersProps;
 
     public void deleteSkattegrunnlag(String ident) {
 

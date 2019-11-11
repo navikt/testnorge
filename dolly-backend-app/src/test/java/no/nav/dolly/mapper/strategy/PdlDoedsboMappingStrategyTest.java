@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.pdlforvalter.mapper.PdlDoedsboMappingStrategy;
 import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;

@@ -14,9 +14,14 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
-import no.nav.dolly.domain.resultset.pdlforvalter.navn.PdlNavn;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.sts.StsOidcService;
@@ -29,10 +34,12 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILL_KONTAKTINFORMASJON_FOR_DODESDBO_URL = PDL_BESTILLING_URL + "/kontaktinformasjonfordoedsbo";
     private static final String PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL = PDL_BESTILLING_URL + "/utenlandsidentifikasjonsnummer";
     private static final String PDL_BESTILLING_FALSK_IDENTITET_URL = PDL_BESTILLING_URL + "/falskidentitet";
+    private static final String PDL_BESTILLING_OPPRETT_PERSON = PDL_BESTILLING_URL + "/opprettperson";
     private static final String PDL_BESTILLING_FOEDSEL_URL = PDL_BESTILLING_URL + "/foedsel";
     private static final String PDL_BESTILLING_DOEDSFALL_URL = PDL_BESTILLING_URL + "/doedsfall";
     private static final String PDL_BESTILLING_ADRESSEBESKYTTELSE_URL = PDL_BESTILLING_URL + "/adressebeskyttelse";
     private static final String PDL_BESTILLING_NAVN_URL = PDL_BESTILLING_URL + "/navn";
+    private static final String PDL_BESTILLING_KJOENN = PDL_BESTILLING_URL + "/kjoenn";
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/ident";
     private static final String PREPROD_ENV = "q";
 
@@ -53,10 +60,24 @@ public class PdlForvalterConsumer {
                 .build(), JsonNode.class);
     }
 
+    public ResponseEntity postOpprettPerson(PdlOpprettPerson pdlNavn, String ident) {
+
+        return postRequest(
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_OPPRETT_PERSON,
+                pdlNavn, ident);
+    }
+
     public ResponseEntity postNavn(PdlNavn pdlNavn, String ident) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_NAVN_URL,
+                pdlNavn, ident);
+    }
+
+    public ResponseEntity postKjoenn(PdlKjoenn pdlNavn, String ident) {
+
+        return postRequest(
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_KJOENN,
                 pdlNavn, ident);
     }
 
@@ -77,7 +98,7 @@ public class PdlForvalterConsumer {
     public ResponseEntity postFalskIdentitet(PdlFalskIdentitet falskIdentitet, String ident) {
 
         return postRequest(
-               providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FALSK_IDENTITET_URL, falskIdentitet, ident);
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FALSK_IDENTITET_URL, falskIdentitet, ident);
     }
 
     public ResponseEntity postFoedsel(PdlFoedsel pdlFoedsel, String ident) {

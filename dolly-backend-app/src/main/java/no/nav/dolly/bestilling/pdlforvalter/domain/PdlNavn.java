@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.pdlforvalter.navn;
+package no.nav.dolly.bestilling.pdlforvalter.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
