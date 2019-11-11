@@ -4,16 +4,7 @@ import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _merge from 'lodash/merge'
 import config from '~/config'
-import {
-	DollyApi,
-	TpsfApi,
-	SigrunApi,
-	KrrApi,
-	ArenaApi,
-	InstApi,
-	UdiApi,
-	AaregApi
-} from '~/service/Api'
+import { DollyApi, TpsfApi, SigrunApi, KrrApi, ArenaApi, InstApi, UdiApi } from '~/service/Api'
 import success from '~/utils/SuccessAction'
 import { DataSource } from '~/service/kodeverk/AttributtManager/Types'
 import { getIdentByIdSelector } from '~/ducks/gruppe'
@@ -95,7 +86,7 @@ export const GET_ARENA_TESTBRUKER = createAction(
 
 export const GET_AAREG_TESTBRUKER = createAction(
 	'GET_AAREG_TESTBRUKER',
-	AaregApi.getArbeidsforhold,
+	DollyApi.getArbeidsforhold,
 	ident => ({
 		ident
 	})
