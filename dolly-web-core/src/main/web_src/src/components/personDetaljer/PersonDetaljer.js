@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useReducer } from 'react-redux'
 import TpsfVisning from '~/components/fagsystem/tpsf/visning/TpsfVisning'
-import KrrVisning from '~/components/fagsystem/krr/visning/KrrVisning'
+import KrrVisning from '~/components/fagsystem/krrstub/visning/KrrVisning'
 import Button from '~/components/ui/button/Button'
 import '~/pages/gruppe/PersonDetaljer/PersonDetaljer.less' // Flytte denne?
 
