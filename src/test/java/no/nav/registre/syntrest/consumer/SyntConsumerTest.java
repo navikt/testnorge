@@ -1,5 +1,6 @@
 package no.nav.registre.syntrest.consumer;
 
+import io.kubernetes.client.ApiException;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,7 +9,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 @ActiveProfiles("ConsumerTest")
 @RunWith(SpringRunner.class)
@@ -44,38 +45,28 @@ public class SyntConsumerTest {
         testConsumer = new SyntConsumer(applicationManager, restTemplate, "test-consumer");
     }
 
-
-    @Test
-    public void applicationNotAlive() {
-        Mockito.when(applicationManager.applicationIsAlive(Mockito.anyString())).thenReturn(false);
-        Mockito.when(applicationManager.startApplication(Mockito.any(SyntConsumer.class))).thenReturn(-1);
-
-        ResponseEntity result = (ResponseEntity) testConsumer.generateForNumbers(numberUrl, 2);
-
-        assertEquals(result.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
-        Mockito.verify(applicationManager).startApplication(Mockito.any(SyntConsumer.class));
-    }
-
     @Test
     public void applicationNotAliveStartedOk() {
         Mockito.when(applicationManager.applicationIsAlive(Mockito.anyString())).thenReturn(false);
-        Mockito.when(applicationManager.startApplication(Mockito.any(SyntConsumer.class))).thenReturn(0);
         Mockito.when(restTemplate.exchange(RequestEntity.get(new UriTemplate(numberAndCodeUrl).expand(2, "dummyCode")).build(), Object.class)).thenReturn(ResponseEntity.ok().body("OK"));
 
         String result = (String) testConsumer.generateForCodeAndNumber(numberAndCodeUrl,"dummyCode", 2);
 
-        Mockito.verify(applicationManager, Mockito.atLeastOnce()).startApplication(Mockito.any(SyntConsumer.class));
+        try {
+            Mockito.verify(applicationManager, Mockito.atLeastOnce()).startApplication(Mockito.any(SyntConsumer.class));
+        } catch (ApiException | InterruptedException e) { fail(); }
         assertEquals("OK", result);
     }
 
     @Test
     public void applicationAliveReturnData() {
-        Mockito.when(applicationManager.startApplication(Mockito.any(SyntConsumer.class))).thenReturn(0);
         Mockito.when(restTemplate.exchange(RequestEntity.post(new UriTemplate("dummyUrl").expand()).body("Somebody To Love"), Object.class)).thenReturn(ResponseEntity.ok().body("OK"));
 
         String result = (String) testConsumer.synthesizeDataPostRequest("dummyUrl","Somebody To Love");
 
-        Mockito.verify(applicationManager).startApplication(testConsumer);
+        try {
+            Mockito.verify(applicationManager).startApplication(testConsumer);
+        } catch (ApiException | InterruptedException e) { fail();}
         assertEquals("OK", result);
     }
 

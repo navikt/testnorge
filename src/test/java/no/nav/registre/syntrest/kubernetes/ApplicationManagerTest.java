@@ -23,6 +23,7 @@ import java.util.concurrent.TimeoutException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.eq;
 
 @ActiveProfiles("ApplicationManagerTest")
@@ -71,10 +72,13 @@ public class ApplicationManagerTest {
         ApplicationManager manager = new ApplicationManager(kubernetesController, scheduledExecutorService);
         Mockito.when(kubernetesController.isAlive(Mockito.anyString())).thenReturn(true);
 
-        int res  = manager.startApplication(syntConsumerFrikort);
+        try {
+            manager.startApplication(syntConsumerFrikort);
+        } catch (InterruptedException e) {
+            fail();
+        }
         assertEquals(1, manager.getActiveApplications().size());
         assertTrue(manager.getActiveApplications().containsKey(syntConsumerFrikort.getAppName()));
-        assertEquals(0, res);
         Mockito.verify(kubernetesController).takedownImage("synthdata-frikort");
     }
 
@@ -85,10 +89,10 @@ public class ApplicationManagerTest {
         Mockito.doThrow(ApiException.class).when(kubernetesController).deployImage(Mockito.anyString());
         ApplicationManager manager = new ApplicationManager(kubernetesController, scheduledExecutorService);
 
-        int res = manager.startApplication(syntConsumerFrikort);
+        try {
+            manager.startApplication(syntConsumerFrikort);
+        } catch (ApiException | InterruptedException e) { assertTrue(true); }
         assertEquals(0, manager.getActiveApplications().size());
-        assertEquals(-1, res);
-        Mockito.verify(kubernetesController).takedownImage("synthdata-frikort");
     }
 
 
@@ -102,11 +106,19 @@ public class ApplicationManagerTest {
 
         Waiter waiter = new Waiter();
         new Thread(() -> {
-            manager.startApplication(syntConsumerMeldekort);
+            try {
+                manager.startApplication(syntConsumerMeldekort);
+            } catch (InterruptedException | ApiException e) {
+                fail();
+            }
             waiter.resume();
         }).start();
         new Thread(() -> {
-            manager.startApplication(syntConsumerMeldekort);
+            try {
+                manager.startApplication(syntConsumerMeldekort);
+            } catch (InterruptedException | ApiException e) {
+                fail();
+            }
             waiter.resume();
         }).start();
         waiter.await(1, TimeUnit.SECONDS, 2);
