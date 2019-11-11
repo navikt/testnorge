@@ -7,6 +7,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.dolly.consumer.aareg.AaregConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
@@ -21,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
@@ -64,6 +66,9 @@ public class OppslagControllerTest {
 
     @Mock
     private SyntdataConsumer syntdataConsumer;
+
+    @Mock
+    private AaregConsumer aaregConsumer;
 
     @Test
     public void fetchKodeverkByName_happyPath() {
@@ -116,5 +121,16 @@ public class OppslagControllerTest {
 
         verify(syntdataConsumer).generate(PATH, AMOUNT);
         assertThat(response.getBody(), is(equalTo(OPPLYSNINGER)));
+    }
+
+    @Test
+    public void aareg_happyPath() {
+        String miljoe = "t1";
+        when(aaregConsumer.hentArbeidsforhold(IDENT, miljoe)).thenReturn(ResponseEntity.ok().build());
+
+        ResponseEntity response = oppslagController.getArbeidsforhold(IDENT, miljoe);
+
+        verify(aaregConsumer).hentArbeidsforhold(IDENT, miljoe);
+        assertThat(response.getStatusCode(), is(equalTo(HttpStatus.OK)));
     }
 }
