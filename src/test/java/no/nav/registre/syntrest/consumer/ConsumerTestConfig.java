@@ -6,10 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.client.RestTemplate;
 
 @Profile("ConsumerTest")
 @Configuration
+@PropertySource(value = "classpath:application-test.properties")
 public class ConsumerTestConfig {
 
     @Bean
@@ -22,9 +24,4 @@ public class ConsumerTestConfig {
         return Mockito.mock(RestTemplate.class);
     }
 
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    public SyntConsumerManager syntConsumerManager(ApplicationManager manager, RestTemplate template) {
-        return new SyntConsumerManager(manager, template);
-    }
 }

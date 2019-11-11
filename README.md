@@ -18,21 +18,21 @@ til endepunkter i synt-applikasjonene.
 ## Struktur
 ![Arkitektur](doc/images/architecture.png "Bilde av arkitektur")
 
-Consumere gjør kall til SyntController endepunktene, som gjør enkel validering av input fra consumenten. 
+Konsumenter gjør kall til SyntController endepunktene, som gjør enkel validering av input fra consumenten. 
 
-De i sin tur kaller på en litt ukonvensjonell syntetisering-service. Den henter og manipulerer URL'er fra 
-`application.properties` ettersom hvilken synt-pakke man kaller på og innholdet i kallet. Den klargjør da også selve 
-request'en vi vil sende til synt-pakken, siden dette kan være litt forskjellig fra pakke til pakke. 
+I denne applikasjonen har vi valgt å droppe service-laget, da ingen business-logikk vil bli gjort der. URL'er for hver 
+python-synt-applikasjon blir definert direkte i controller-laget, men blir lagret i `application.properties`. Vi kaller 
+deretter direkte på forskjellige bønner av SyntConsumer klassen.
 
-Deretter blir den klargjorte requesten sendt til den aktuelle synt-consumeren som blir opprettet av SyntConsumerManager.
-
-SyntConsumer sørger sjekker om applikasjonen finnes på NAIS gjennom ApplicationManager (som igjen spør 
+SyntConsumer sjekker om applikasjonen finnes på NAIS gjennom ApplicationManager (som igjen spør 
 kubernetesController, siden denne kjører kubectl kommandoer på clusteret). Dersom den ikke finnes, starter 
 Application manager en ny innstanse av pakken, som syntConsumeren kobler seg på.
 
-Hver gang en synt-pakke blir aksessert gjennom ApplicationManager tar den eierskap for pakken og slår den av 5min
-etter siste kall til pakken. Pakker som blir startet av andre prosesser blir ikke rørt av ApplicationManager inntil 
-noen aksesserer den aktuelle pakken gjennom denne.
+Hver gang en synt-pakke blir aksessert gjennom ApplicationManager tar den eierskap for pakken, og slår den av 5min
+etter siste kall til pakken (lengden på denne tiden blir styrt gjennom `synth-package-unused-uptime` i .properties filen 
+for den kjørende profilen). 
+Pakker som blir startet av andre prosesser blir ikke rørt av ApplicationManager inntil noen aksesserer den aktuelle 
+pakken gjennom denne.
 
 SyntConsumer gjør så selve utvekslingen mot synt-pakken og returnerer de syntetiske verdiene.
 
@@ -40,18 +40,15 @@ SyntConsumer gjør så selve utvekslingen mot synt-pakken og returnerer de synte
 De filene som må endres når man legger til synt-pakkene er:
 
  - [SyntController](src/main/java/no/nav/registre/syntrest/controllers/SyntController.java)
+   - Legg til URL'en for din nye syntpakke
    - Nytt endepunkt for SyntRest
- - [SyntetiseringService](src/main/java/no/nav/registre/syntrest/services/SyntetiseringService.java)
-   - Generer kallet for consumerManager
-   - Noen generiske metoder er laget for request-typer som blir brukt ofte
- - [SyntConsumerManager](src/main/java/no/nav/registre/syntrest/consumer/SyntConsumerManager.java)
-   - Legger til en ny konsument av den nye synt-pakke typen
+ - [AppConfig](src/main/java/no/nav/registre/syntrest/config/AppConfig.java)
+   - Legg til en ny bean for ditt nye endepunkt, dersom det ikke er en del av en allerede eksisterende bean.
  - [application.properties](src/main/resources/application.properties)
    - Lenke til nais-applikasjonen som blir startet (ingressen i nais-yaml'en)
  - [NAIS-fil](src/main/resources/nais)
    - NAIS yaml for den nye pakken. Navngivningskonvensjon {appName}.yaml
- - [SyntAppNames](src/main/java/no/nav/registre/syntrest/utils/SyntAppNames.java)
- - Evt. legge til klasser for spesifiserte [Respons-meldinger](src/main/java/no/nav/registre/syntrest/response).
+ - Evt. legge til klasser for spesifiserte [domain-meldinger](src/main/java/no/nav/registre/syntrest/domain).
  
 ## Oversikt over synt-pakker
  - **Aareg**\
