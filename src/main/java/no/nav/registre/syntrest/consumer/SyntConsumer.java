@@ -71,6 +71,8 @@ public class SyntConsumer {
             return response.getBody();
         } catch (RestClientException e) {
             log.error("Unexpected client-side error: {}", Arrays.toString(e.getStackTrace()));
+            shutdownApplication();
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     String.format("Unexpected client side error: \n%s",
                             Arrays.toString(e.getStackTrace())));
