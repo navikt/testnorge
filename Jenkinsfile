@@ -6,7 +6,6 @@ naiseratorApplicationPipeline {
         [namespace: "q1"]
     ]
     branchDeployments = [
-        [branch: "dolly-backend-test-u2", namespace: "u2"],
-        [branch: "feature/REG-5940-naiserator-og-vault-overgang", namespace: "u2"]
+        [branch: "dolly-backend-test-u2", namespace: "u2"]
     ]
 }
