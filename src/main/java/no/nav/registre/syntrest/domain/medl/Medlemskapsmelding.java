@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.domain;
+package no.nav.registre.syntrest.domain.medl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

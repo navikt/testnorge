@@ -4,18 +4,17 @@ import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
 import no.nav.registre.syntrest.consumer.SyntConsumerManager;
-import no.nav.registre.syntrest.controllers.request.InntektsmeldingInntekt;
-import no.nav.registre.syntrest.domain.Arbeidsforholdsmelding;
-import no.nav.registre.syntrest.domain.Barnebidragsmelding;
-import no.nav.registre.syntrest.domain.FrikortKvittering;
-import no.nav.registre.syntrest.domain.InntektsmeldingPopp;
-import no.nav.registre.syntrest.domain.Medlemskapsmelding;
+import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
+import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
+import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
+import no.nav.registre.syntrest.domain.popp.Inntektsmelding;
+import no.nav.registre.syntrest.domain.medl.Medlemskapsmelding;
 import no.nav.registre.syntrest.domain.aap.AAP115Melding;
 import no.nav.registre.syntrest.domain.aap.AAPMelding;
-import no.nav.registre.syntrest.domain.Institusjonsmelding;
-import no.nav.registre.syntrest.domain.SamMelding;
-import no.nav.registre.syntrest.domain.SkdMelding;
-import no.nav.registre.syntrest.domain.TPmelding;
+import no.nav.registre.syntrest.domain.inst.Institusjonsmelding;
+import no.nav.registre.syntrest.domain.sam.SamMelding;
+import no.nav.registre.syntrest.domain.tps.SkdMelding;
+import no.nav.registre.syntrest.domain.tp.TPmelding;
 import no.nav.registre.syntrest.domain.eia.SyntLegeerklaering;
 import no.nav.registre.syntrest.utils.SyntAppNames;
 import org.springframework.beans.factory.annotation.Value;
@@ -118,8 +117,8 @@ public class SyntetiseringService {
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-popp" })
-    public List<InntektsmeldingPopp> generatePoppData(List<String> fnrs) {
-        return (List<InntektsmeldingPopp>) generateForFnrs(fnrs, poppUrl, consumerManager.get(SyntAppNames.POPP));
+    public List<Inntektsmelding> generatePoppData(List<String> fnrs) {
+        return (List<Inntektsmelding>) generateForFnrs(fnrs, poppUrl, consumerManager.get(SyntAppNames.POPP));
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-sam" })
@@ -128,10 +127,10 @@ public class SyntetiseringService {
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-inntekt" })
-    public Map<String, List<InntektsmeldingInntekt>> generateInntektData(Map<String, List<InntektsmeldingInntekt>> map) {
+    public Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>> generateInntektData(Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>> map) {
         UriTemplate uri = new UriTemplate(inntektUrl);
         RequestEntity request = RequestEntity.post(uri.expand()).body(map);
-        return (Map<String, List<InntektsmeldingInntekt>>) consumerManager.get(SyntAppNames.INNTEKT).synthesizeData(request);
+        return (Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>) consumerManager.get(SyntAppNames.INNTEKT).synthesizeData(request);
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-tp" })

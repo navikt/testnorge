@@ -5,18 +5,17 @@ import io.swagger.annotations.ApiParam;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.controllers.request.InntektsmeldingInntekt;
-import no.nav.registre.syntrest.domain.Arbeidsforholdsmelding;
-import no.nav.registre.syntrest.domain.Barnebidragsmelding;
-import no.nav.registre.syntrest.domain.FrikortKvittering;
-import no.nav.registre.syntrest.domain.InntektsmeldingPopp;
-import no.nav.registre.syntrest.domain.Medlemskapsmelding;
+import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
+import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
+import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
+import no.nav.registre.syntrest.domain.popp.Inntektsmelding;
+import no.nav.registre.syntrest.domain.medl.Medlemskapsmelding;
 import no.nav.registre.syntrest.domain.aap.AAP115Melding;
 import no.nav.registre.syntrest.domain.aap.AAPMelding;
-import no.nav.registre.syntrest.domain.Institusjonsmelding;
-import no.nav.registre.syntrest.domain.SamMelding;
-import no.nav.registre.syntrest.domain.SkdMelding;
-import no.nav.registre.syntrest.domain.TPmelding;
+import no.nav.registre.syntrest.domain.inst.Institusjonsmelding;
+import no.nav.registre.syntrest.domain.sam.SamMelding;
+import no.nav.registre.syntrest.domain.tps.SkdMelding;
+import no.nav.registre.syntrest.domain.tp.TPmelding;
 import no.nav.registre.syntrest.domain.eia.Pasient;
 import no.nav.registre.syntrest.domain.eia.SyntLegeerklaering;
 import no.nav.registre.syntrest.services.SyntetiseringService;
@@ -169,12 +168,12 @@ public class SyntController {
             "Inntektsmeldingene blir returnert på et format som kan bli lagret i sigrunstub, og vil generere en ny " +
             "inntektsmelding basert på personens inntektsmelding forrige år. Hvis personen ikke har en inntektsmelding " +
             "vil det bli samplet en ny inntektsmelding fra en BeAn/CART-modell.")
-    public ResponseEntity<List<InntektsmeldingPopp>> generateInntektsmelding(
+    public ResponseEntity<List<Inntektsmelding>> generateInntektsmelding(
             @ApiParam(value = "Fnrs å opprette inntektsmeldinger på", required = true)
             @RequestBody List<String> fnrs
     ) {
         InputValidator.validateInput(fnrs);
-        List<InntektsmeldingPopp> response = syntetiseringService.generatePoppData(fnrs);
+        List<Inntektsmelding> response = syntetiseringService.generatePoppData(fnrs);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -199,12 +198,12 @@ public class SyntController {
             "per fødselsnummer, (altså forrige måneds inntektsmelding) blir den nye inntektsmeldingen basert på disse. " +
             "Hvis man legger ved en tom liste til fødselsnummeret blir en inntektsmelding generert basert på en kernel " +
             "density model.")
-    public ResponseEntity<Map<String, List<InntektsmeldingInntekt>>> generateInntektsMelding(
+    public ResponseEntity<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> generateInntektsMelding(
             @ApiParam(value = "Map der key=fødselsnummer, value=liste med inntektsmeldinger", required = true)
-            @RequestBody Map<String, List<InntektsmeldingInntekt>> fnrInntektMap
+            @RequestBody Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>> fnrInntektMap
     ) {
         InputValidator.validateInput(new ArrayList<>(fnrInntektMap.keySet()));
-        Map<String, List<InntektsmeldingInntekt>> response = syntetiseringService.generateInntektData(fnrInntektMap);
+        Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>> response = syntetiseringService.generateInntektData(fnrInntektMap);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);

@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.domain;
+package no.nav.registre.syntrest.domain.popp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class InntektsmeldingPopp {
+public class Inntektsmelding {
 
     @ApiModelProperty("Liste med grunnlag")
     @JsonProperty("grunnlag")
@@ -33,12 +33,10 @@ public class InntektsmeldingPopp {
     @Setter
     @AllArgsConstructor
     private static class Grunnlag {
-
         @JsonProperty("tekniskNavn")
         private String tekniskNavn;
 
         @JsonProperty("verdi")
         private String verdi;
-
     }
 }

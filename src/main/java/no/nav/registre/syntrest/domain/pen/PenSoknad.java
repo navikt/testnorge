@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.domain;
+package no.nav.registre.syntrest.domain.pen;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PenResponse {
+public class PenSoknad {
 
     @JsonProperty("FLYKTNING")
     private int flyktning;

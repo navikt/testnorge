@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.controllers.request;
+package no.nav.registre.syntrest.domain.inntekt;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class InntektsmeldingInntekt {
+public class Inntektsmelding {
     @JsonProperty
     private int aar;
     @JsonProperty
