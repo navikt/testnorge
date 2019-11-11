@@ -9,8 +9,7 @@ const config = {
 		krrStubUrl: 'https://krr-stub.nais.preprod.local',
 		sigrunStubUrl: 'https://sigrun-skd-stub.nais.preprod.local',
 		tpsfUrl: 'https://tps-forvalteren-u2.nais.preprod.local',
-		udiStubUrl: 'https://udi-stub.nais.preprod.local',
-		aaregUrl: 'https://testnorge-aareg.nais.preprod.local'
+		udiStubUrl: 'https://udi-stub.nais.preprod.local'
 	},
 	systems: {
 		AAREG: 'Arbeidsregister (AAREG)',
