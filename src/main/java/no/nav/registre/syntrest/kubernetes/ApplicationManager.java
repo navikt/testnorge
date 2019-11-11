@@ -47,14 +47,9 @@ public class ApplicationManager {
         this.activeApplications = new HashMap<>();
     }
 
-    public synchronized int startApplication(SyntConsumer app) {
+    public synchronized void startApplication(SyntConsumer app) throws ApiException, InterruptedException {
         if (!applicationIsAlive(app.getAppName())) {
-            try {
-                kubernetesController.deployImage(app.getAppName());
-            } catch (ApiException | InterruptedException e) {
-                log.error("Could not create application \'{}\'!", app.getAppName());
-                return -1;
-            }
+            kubernetesController.deployImage(app.getAppName());
         }
 
         if (activeApplications.containsKey(app.getAppName())) {
@@ -67,7 +62,6 @@ public class ApplicationManager {
         activeApplications.put(
                 app.getAppName(),
                 scheduledExecutorService.schedule(app::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS));
-        return 0;
     }
 
     public synchronized void shutdownApplication(String appId) {

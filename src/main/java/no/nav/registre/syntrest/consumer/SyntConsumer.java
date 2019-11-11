@@ -1,5 +1,6 @@
 package no.nav.registre.syntrest.consumer;
 
+import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriTemplate;
 
 @Slf4j
@@ -22,40 +24,51 @@ public class SyntConsumer {
         this.appName = name;
     }
 
-    public Object generateForCodeAndNumber(String url, String code, int numToGenerate) {
+    public Object generateForCodeAndNumber(String url, String code, int numToGenerate) throws ResponseStatusException {
         UriTemplate uri = new UriTemplate(url);
         return synthesizeData(RequestEntity.get(uri.expand(numToGenerate, code)).build());
     }
 
-    public Object generateForNumbers(String url, int numToGenerate) {
+    public Object generateForNumbers(String url, int numToGenerate) throws ResponseStatusException {
         UriTemplate uri = new UriTemplate(url);
         return synthesizeData(RequestEntity.get(uri.expand(numToGenerate)).build());
     }
 
-    public Object synthesizeDataPostRequest(String url, Object body) {
+    public Object synthesizeDataPostRequest(String url, Object body) throws ResponseStatusException {
         UriTemplate uri = new UriTemplate(url);
         return synthesizeData(RequestEntity.post(uri.expand()).body(body));
     }
 
-    private Object synthesizeData(RequestEntity request) {
+    private Object synthesizeData(RequestEntity request) throws ResponseStatusException {
 
-        if (applicationManager.startApplication(this) == -1) {
-            log.error("Could not start synth package {}", this.appName);
+        try {
+            applicationManager.startApplication(this);
+        } catch (ApiException | InterruptedException e) {
+            log.error("Could not start synth package {}.", this.appName);
             return new ResponseEntity<>("Something went wrong when trying to deploy the synth pacakge.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return accessSyntPackage(request);
-    }
-
-    public void shutdownApplication() {
-        applicationManager.shutdownApplication(appName);
+        return getDataFromSyntPackage(request);
     }
 
     // In the syntConsumer because we will allow synt packages of other types to be accessed asynchronously,
     // but calls to the *same SyntPackage* should happen one at a time.
-    private synchronized Object accessSyntPackage(RequestEntity request) {
+    private synchronized Object getDataFromSyntPackage(RequestEntity request) throws ResponseStatusException {
         ResponseEntity response = restTemplate.exchange(request, Object.class);
+
+        if (response.getStatusCode() != HttpStatus.OK) {
+            log.warn("Unexpected synth response: {}\n{}", response.getStatusCode(), response.getBody());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    String.format("Unexpected synth response: %s\n%s",
+                            response.getStatusCode().toString(),
+                            response.getBody().toString()));
+        }
+
         return response.getBody();
+    }
+
+    public void shutdownApplication() {
+        applicationManager.shutdownApplication(appName);
     }
 
     public String getAppName() {
