@@ -100,11 +100,6 @@ fasitResources:
     propertyMap:
       url: providers.instdata.url
 
-  - alias: aaregdata.host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.aaregdata.url
-
   - alias: srvdolly-test-env
     resourceType: credential
     propertyMap:
