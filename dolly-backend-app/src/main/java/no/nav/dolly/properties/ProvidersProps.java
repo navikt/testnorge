@@ -26,6 +26,7 @@ public class ProvidersProps {
     private PersonOppslag personOppslag = new PersonOppslag();
     private Syntdata syntdata = new Syntdata();
     private Instdata instdata = new Instdata();
+    private Aaregdata aaregdata = new Aaregdata();
 
     @Getter
     @Setter
@@ -142,6 +143,16 @@ public class ProvidersProps {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Instdata {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Aaregdata {
 
         private String url;
     }

@@ -17,4 +17,5 @@ public class RsDollyProps {
     private String norg2;
     private String arenaForvalterUrl;
     private String instdataUrl;
+    private String aaregdataUrl;
 }

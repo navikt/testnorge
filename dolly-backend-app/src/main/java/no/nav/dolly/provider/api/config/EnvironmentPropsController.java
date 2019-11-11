@@ -29,6 +29,7 @@ public class EnvironmentPropsController {
                 .kodeverkUrl(providersProps.getKodeverk().getUrl())
                 .arenaForvalterUrl(providersProps.getArenaForvalter().getUrl())
                 .instdataUrl(providersProps.getInstdata().getUrl())
+                .aaregdataUrl(providersProps.getAaregdata().getUrl())
                 .build();
     }
 }
