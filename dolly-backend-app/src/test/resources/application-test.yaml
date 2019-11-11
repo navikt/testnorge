@@ -52,10 +52,7 @@ providers:
   arenaforvalter:
     url: http://arenaforvalterdummy
   aaregdata:
-    u2:
-      url: http://aaregdatadummyu2
-    q2:
-      url: http://aaregdatadummyq2
+    url: http://aaregdatadummy
 
 ### CORS ###
 dolly.security.cors.origins: http://localhost:3050,http://localhost:3000
