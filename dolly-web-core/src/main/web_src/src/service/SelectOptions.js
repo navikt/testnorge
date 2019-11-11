@@ -7,7 +7,7 @@ const selectOptions = {
 	// kjonn: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
 	// kjonnBarn: [{ value: 'K', label: 'Jente' }, { value: 'M', label: 'Gutt' }],
 
-	boolean: [{ value: true, label: 'Ja' }, { value: false, label: 'Nei' }]
+	boolean: [{ value: true, label: 'Ja' }, { value: false, label: 'Nei' }],
 	// stringBoolean: [{ value: 'true', label: 'Ja' }, { value: 'false', label: 'Nei' }],
 
 	// SIGRUN
@@ -45,18 +45,18 @@ const selectOptions = {
 	// 	{ value: 'UBESTEMT', label: 'Ubestemt' }
 	// ],
 
-	// // Arena
-	// arenaBrukertype: [
-	// 	{ value: 'UTEN_SERVICEBEHOV', label: 'Uten servicebehov' },
-	// 	{ value: 'MED_SERVICEBEHOV', label: 'Med servicebehov' }
-	// ],
+	// Arena
+	arenaBrukertype: [
+		{ value: 'UTEN_SERVICEBEHOV', label: 'Uten servicebehov' },
+		{ value: 'MED_SERVICEBEHOV', label: 'Med servicebehov' }
+	],
 
-	// kvalifiseringsgruppe: [
-	// 	{ value: 'IKVAL', label: 'IKVAL - Standardinnsats' },
-	// 	{ value: 'BFORM', label: 'BFORM - Situasjonsbestemt innsats' },
-	// 	{ value: 'BATT', label: 'BATT - Spesielt tilpasset innsats' },
-	// 	{ value: 'VARIG', label: 'VARIG - Varig tilpasset innsats' }
-	// ],
+	kvalifiseringsgruppe: [
+		{ value: 'IKVAL', label: 'IKVAL - Standardinnsats' },
+		{ value: 'BFORM', label: 'BFORM - Situasjonsbestemt innsats' },
+		{ value: 'BATT', label: 'BATT - Spesielt tilpasset innsats' },
+		{ value: 'VARIG', label: 'VARIG - Varig tilpasset innsats' }
+	]
 
 	// // INST
 	// institusjonstype: [

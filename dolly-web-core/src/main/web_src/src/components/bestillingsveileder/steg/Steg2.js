@@ -12,6 +12,11 @@ import {
 	initialValues as krrstubInit,
 	validation as krrstubValidation
 } from '~/components/fagsystem/krrstub/form/Form'
+import {
+	ArenaForm,
+	initialValues as arenaInit,
+	validation as arenaValidation
+} from '~/components/fagsystem/arena/form/Form'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 
 export const Steg2 = props => {
@@ -19,9 +24,13 @@ export const Steg2 = props => {
 		console.log('submit values')
 	}
 
-	const initialValues = Object.assign({}, { ...tpsfInit, ...krrstubInit })
+	const initialValues = Object.assign({}, { ...tpsfInit, ...krrstubInit, ...arenaInit })
 
-	const validationListe = Yup.object({ ...tpsfValidation, ...krrstubValidation })
+	const validationListe = Yup.object({
+		...tpsfValidation,
+		...krrstubValidation,
+		...arenaValidation
+	})
 
 	return (
 		<div>
@@ -36,6 +45,7 @@ export const Steg2 = props => {
 					<div>
 						<TpsfForm formikProps={formikProps} />
 						<KrrstubForm formikProps={formikProps} />
+						<ArenaForm formikProps={formikProps} />
 						<DisplayFormikState {...formikProps} />
 					</div>
 				)}
