@@ -31,7 +31,6 @@ import java.util.concurrent.TimeUnit;
  * because no arguments can be given to a callable function.
  */
 @Slf4j
-@Component
 public class ApplicationManager {
 
     @Value("${synth-package-unused-uptime}")

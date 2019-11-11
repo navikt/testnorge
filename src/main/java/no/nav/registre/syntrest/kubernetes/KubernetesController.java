@@ -22,7 +22,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-@Component
 public class KubernetesController {
 
     private final String GROUP = "nais.io";

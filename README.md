@@ -104,6 +104,12 @@ De filene som må endres når man legger til synt-pakkene er:
  - **Eia**\
    _Lager en legeerklæring for hvert objekt i forespørselen. Returnerer et map med_
    _key=personnummer for pasienten, value=xml for legeerklæringen_
+   
+## Kjente problemer
+Dersom inntekt eller en av arena-pakkene blir kalt på samtidig med andre pakker, hender det at disse krasjer.
+Man må da vente i _minst_ 5 minutter før man prøver å akksessere disse pakkene på nytt.
+
+Et annet kjent problem er at meldekort-_applikasjonen_ blir slettet, men ikke pod'en. 
  
 ## TODOs
  - [ ] 
