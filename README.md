@@ -42,7 +42,7 @@ De filene som må endres når man legger til synt-pakkene er:
  - [SyntController](src/main/java/no/nav/registre/syntrest/controllers/SyntController.java)
    - Legg til URL'en for din nye syntpakke
    - Nytt endepunkt for SyntRest
- - [AppConfig](src/main/java/no/nav/registre/syntrest/config/AppConfig.java)
+ - [SyntConsumerConfig](src/main/java/no/nav/registre/syntrest/config/SyntConsumerConfig.java)
    - Legg til en ny bean for ditt nye endepunkt, dersom det ikke er en del av en allerede eksisterende bean.
  - [application.properties](src/main/resources/application.properties)
    - Lenke til nais-applikasjonen som blir startet (ingressen i nais-yaml'en)
