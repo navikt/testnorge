@@ -11,37 +11,53 @@ export const getValues = (attributeList, values) => {
 	return attributeList.reduce((accumulator, attribute) => {
 		let value = _transformAttributt(attribute, attributeList, values[attribute.id])
 		const pathPrefix = DataSourceMapper(attribute.dataSource)
+
 		if (pathPrefix == DataSourceMapper('SIGRUN')) {
 			const groupByTjeneste = _groupBy(value, 'tjeneste')
-			const tjenester = Object.keys(groupByTjeneste)
+			let tjenester = Object.keys(groupByTjeneste)
 			let dataArr = []
 			tjenester.forEach(tjeneste => {
-				const groupedByInntektssted = _groupBy(groupByTjeneste[tjeneste], 'inntektssted')
-				const keys = Object.keys(groupedByInntektssted)
+				const groupedByInntektsaar = _groupBy(groupByTjeneste[tjeneste], 'inntektsaar')
+				const keys = Object.keys(groupedByInntektsaar)
 				keys.forEach((key, i) => {
-					const current = groupedByInntektssted[key]
-					if (value[i].inntektssted && value[i].inntektssted == 'Svalbard') {
-						//here
-						dataArr.push({
-							svalbardGrunnlag: current.map(temp => ({
-								tekniskNavn: temp.typeinntekt,
-								verdi: temp.beloep
-							})),
-							inntektsaar: value[i].inntektsaar,
-							tjeneste: 'SUMMERT_SKATTEGRUNNLAG'
-						})
-					} else {
+					const current = groupedByInntektsaar[key]
+					if (tjeneste == 'BEREGNET_SKATT') {
+						console.log('test')
 						dataArr.push({
 							grunnlag: current.map(temp => ({
 								tekniskNavn: temp.typeinntekt,
 								verdi: temp.beloep
 							})),
-							inntektsaar: value[i].inntektsaar,
-							tjeneste: value[i].tjeneste
+							inntektsaar: key,
+							tjeneste: tjeneste
 						})
+					}
+					if (tjeneste == 'SUMMERT_SKATTEGRUNNLAG') {
+						if (value[i].inntektssted == 'Svalbard') {
+							console.log('a')
+							dataArr.push({
+								svalbardGrunnlag: current.map(temp => ({
+									tekniskNavn: temp.typeinntekt,
+									verdi: temp.beloep
+								})),
+								inntektsaar: key,
+								tjeneste: tjeneste
+							})
+						} else {
+							console.log('b')
+							dataArr.push({
+								grunnlag: current.map(temp => ({
+									tekniskNavn: temp.typeinntekt,
+									verdi: temp.beloep
+								})),
+								inntektsaar: key,
+								tjeneste: tjeneste
+							})
+						}
 					}
 				})
 			})
+			console.log('dataArr :', dataArr)
 			return _set(accumulator, pathPrefix, dataArr)
 		}
 
