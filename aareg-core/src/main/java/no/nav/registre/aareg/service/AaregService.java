@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -75,8 +76,13 @@ public class AaregService {
         miljoer.forEach(environment -> {
             try {
                 log.info("Sletter arbeidsforhold til ident {} i miljø {}", ident, environment);
-                var arbeidsforholdResponse = aaregRestConsumer.hentArbeidsforhold(ident, environment);
-                if (arbeidsforholdResponse.hasBody()) {
+                ResponseEntity<List<Map>> arbeidsforholdResponse = null;
+                try {
+                    arbeidsforholdResponse = aaregRestConsumer.hentArbeidsforhold(ident, environment);
+                } catch (ResourceAccessException e) {
+                    log.warn("Kunne ikke hente ident {} i miljø {}", ident, environment, e);
+                }
+                if (arbeidsforholdResponse != null && arbeidsforholdResponse.hasBody()) {
                     var responseBody = arbeidsforholdResponse.getBody();
                     if (responseBody != null) {
                         responseBody.forEach(map -> Collections.singletonList(map).forEach(
