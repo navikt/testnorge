@@ -62,7 +62,6 @@ public class AaregService {
             String ident,
             String miljoe
     ) {
-        log.info("Henter arbeidsforhold til ident {} i miljø {}", ident, miljoe);
         return aaregRestConsumer.hentArbeidsforhold(ident, miljoe);
     }
 
@@ -75,7 +74,6 @@ public class AaregService {
 
         miljoer.forEach(environment -> {
             try {
-                log.info("Sletter arbeidsforhold til ident {} i miljø {}", ident, environment);
                 ResponseEntity<List<Map>> arbeidsforholdResponse = null;
                 try {
                     arbeidsforholdResponse = aaregRestConsumer.hentArbeidsforhold(ident, environment);
