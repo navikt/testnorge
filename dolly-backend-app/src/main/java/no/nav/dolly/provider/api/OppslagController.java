@@ -6,6 +6,8 @@ import static no.nav.dolly.config.CachingConfig.CACHE_NORG2;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+
+import no.nav.dolly.consumer.aareg.AaregConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
@@ -37,6 +39,7 @@ public class OppslagController {
     private final Norg2Consumer norg2Consumer;
     private final PersonoppslagConsumer personoppslagConsumer;
     private final SyntdataConsumer syntdataConsumer;
+    private final AaregConsumer aaregConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -71,5 +74,11 @@ public class OppslagController {
         return asList(SystemTyper.values()).stream()
                 .map(type -> SystemTyper.SystemBeskrivelse.builder().system(type.name()).beskrivelse(type.getBeskrivelse()).build())
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/aareg/arbeidsforhold")
+    @ApiOperation("Hent arbeidsforhold fra aareg")
+    public ResponseEntity getArbeidsforhold(@RequestParam String ident, @RequestParam String miljoe) {
+        return aaregConsumer.hentArbeidsforhold(ident, miljoe);
     }
 }
