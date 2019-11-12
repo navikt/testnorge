@@ -51,9 +51,9 @@ public class ApplicationManagerTest {
     @Before
     public void setUp() {
         globalManager = new ApplicationManager(kubernetesController, scheduledExecutorService);
-        syntConsumerFrikort = new SyntConsumer(globalManager, restTemplate, "synthdata-frikort");
+        syntConsumerFrikort = new SyntConsumer(globalManager, "synthdata-frikort");
         // Meldekort is reserved for only being deployed ONCE
-        syntConsumerMeldekort = new SyntConsumer(globalManager, restTemplate, "synthdata-meldekort");
+        syntConsumerMeldekort = new SyntConsumer(globalManager, "synthdata-meldekort");
     }
 
 
@@ -133,7 +133,7 @@ public class ApplicationManagerTest {
     @Test
     public void startAndShutdownApplication() throws InterruptedException, ApiException {
         ApplicationManager manager = new ApplicationManager(kubernetesController, scheduledExecutorService);
-        SyntConsumer syntConsumerInntekt = new SyntConsumer(manager, restTemplate, "synthdata-inntekt");
+        SyntConsumer syntConsumerInntekt = new SyntConsumer(manager, "synthdata-inntekt");
         Mockito.when(kubernetesController.isAlive(Mockito.anyString())).thenReturn(true);
 
         manager.startApplication(syntConsumerInntekt);

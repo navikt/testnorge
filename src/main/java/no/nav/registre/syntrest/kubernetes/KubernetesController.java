@@ -7,6 +7,7 @@ import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptions;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -29,8 +30,10 @@ public class KubernetesController {
     private final String NAMESPACE = "q2";
     private final String PLURAL = "applications";
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     private final String manifestPath;
-    private final RestTemplate restTemplate;
     private final UriTemplate isAliveUri;
     private final CustomObjectsApi api;
 
@@ -38,13 +41,12 @@ public class KubernetesController {
     private final int maxRetries;
     private final int retryDelay;
 
-    public KubernetesController(RestTemplate restTemplate, CustomObjectsApi customObjectsApi,
+    public KubernetesController(CustomObjectsApi customObjectsApi,
                                 @Value("${isAlive}") String isAliveUrl,
                                 @Value("${docker-image-path}") String dockerImagePath,
                                 @Value("${max-alive-retries}") int maxRetries,
                                 @Value("${alive-retry-delay}") int retryDelay) {
 
-        this.restTemplate = restTemplate;
         this.manifestPath = "/nais/{appName}.yaml";
         this.isAliveUri = new UriTemplate(isAliveUrl);
         this.dockerImagePath = dockerImagePath;

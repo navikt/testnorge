@@ -10,13 +10,20 @@ import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 import no.nav.registre.syntrest.kubernetes.KubernetesController;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.ProxySelector;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -27,15 +34,30 @@ public class AppConfig {
     @Value("${kube-config-path}")
     private String kubeConfigPath;
     private final int EXECUTOR_POOL_SIZE = 4;
+    private static final int TIMEOUT = 120_000;
 
     @Bean
     ScheduledExecutorService scheduledExecutorService() {
         return Executors.newScheduledThreadPool(EXECUTOR_POOL_SIZE);
     }
 
+
+
     @Bean
-    RestTemplate restTemplate() {
-        return new RestTemplate();
+    RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+        return restTemplateBuilder
+                .requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
+                        .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
+                        .setSSLHostnameVerifier(new DefaultHostnameVerifier())
+                        .setDefaultRequestConfig(RequestConfig.custom()
+                                .setConnectTimeout(TIMEOUT)
+                                .setSocketTimeout(TIMEOUT)
+                                .setConnectionRequestTimeout(TIMEOUT)
+                                .build())
+                        .setMaxConnPerRoute(2000)
+                        .setMaxConnTotal(5000)
+                        .build()))
+                .build();
     }
 
     @Bean
@@ -70,9 +92,11 @@ public class AppConfig {
     @Bean
     @DependsOn({"restTemplate", "customObjectsApi"})
     public KubernetesController kubernetesController() {
-        return new KubernetesController(restTemplate(), customObjectsApi(),
+        return new KubernetesController(customObjectsApi(),
                isAliveUrl, dockerImagePath, maxRetries, retryDelay);
     }
+
+
 
     @Bean
     @DependsOn({"kubernetesController", "scheduledExecutorService"})
@@ -84,90 +108,90 @@ public class AppConfig {
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
     SyntConsumer aaregConsumer() {
-        return new SyntConsumer(applicationManager(), restTemplate(), "synthdata-aareg");
+        return new SyntConsumer(applicationManager(), "synthdata-aareg");
     }
 
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
     SyntConsumer aapConsumer() {
-        return new SyntConsumer(applicationManager(), restTemplate(), "synthdata-arena-aap");
+        return new SyntConsumer(applicationManager(), "synthdata-arena-aap");
     }
 
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
     SyntConsumer bisysConsumer() {
-        return new SyntConsumer(applicationManager(), restTemplate(), "synthdata-arena-bisys");
+        return new SyntConsumer(applicationManager(), "synthdata-arena-bisys");
     }
 
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
     SyntConsumer instConsumer() {
-        return new SyntConsumer(applicationManager(), restTemplate(), "synthdata-inst");
+        return new SyntConsumer(applicationManager(), "synthdata-inst");
     }
 
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
     SyntConsumer medlConsumer() {
-        return new SyntConsumer(applicationManager(), restTemplate(), "synthdata-medl");
+        return new SyntConsumer(applicationManager(), "synthdata-medl");
     }
 
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
     SyntConsumer meldekortConsumer() {
-        return new SyntConsumer(applicationManager(), restTemplate(), "synthdata-arena-meldekort");
+        return new SyntConsumer(applicationManager(), "synthdata-arena-meldekort");
     }
 
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
     SyntConsumer navConsumer() {
-        return new SyntConsumer(applicationManager(), restTemplate(), "synthdata-nav");
+        return new SyntConsumer(applicationManager(), "synthdata-nav");
     }
 
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
     SyntConsumer poppConsumer() {
-        return new SyntConsumer(applicationManager(), restTemplate(), "synthdata-popp");
+        return new SyntConsumer(applicationManager(), "synthdata-popp");
     }
 
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
     SyntConsumer samConsumer() {
-        return new SyntConsumer(applicationManager(), restTemplate(), "synthdata-sam");
+        return new SyntConsumer(applicationManager(), "synthdata-sam");
     }
 
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
     SyntConsumer inntektConsumer() {
-        return new SyntConsumer(applicationManager(), restTemplate(), "synthdata-inntekt");
+        return new SyntConsumer(applicationManager(), "synthdata-inntekt");
     }
 
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
     SyntConsumer tpConsumer() {
-        return new SyntConsumer(applicationManager(), restTemplate(), "synthdata-tp");
+        return new SyntConsumer(applicationManager(), "synthdata-tp");
     }
 
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
     SyntConsumer tpsConsumer() {
-        return new SyntConsumer(applicationManager(), restTemplate(), "synthdata-tps");
+        return new SyntConsumer(applicationManager(), "synthdata-tps");
     }
 
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
     SyntConsumer frikortConsumer() {
-        return new SyntConsumer(applicationManager(), restTemplate(), "synthdata-frikort");
+        return new SyntConsumer(applicationManager(), "synthdata-frikort");
     }
 
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
     SyntConsumer eiaConsumer() {
-        return new SyntConsumer(applicationManager(), restTemplate(), "synthdata-eia");
+        return new SyntConsumer(applicationManager(), "synthdata-eia");
     }
 
 //    @Bean
-//    @DependsOn({"applicationManager", "restTemplate"})
+//    @DependsOn({"applicationManager"})
 //    SyntConsumer Consumer() {
-//        return new SyntConsumer(applicationManager(), restTemplate(), );
+//        return new SyntConsumer(applicationManager(), );
 //    }
 }

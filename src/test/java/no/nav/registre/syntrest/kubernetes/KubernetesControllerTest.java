@@ -67,7 +67,7 @@ public class KubernetesControllerTest {
 
     @Before
     public void setup() throws ApiException {
-        kubernetesController = new KubernetesController(restTemplate, customObjectsApi, isAliveUrl, dockerImagePath, maxRetries, retryDelay);
+        kubernetesController = new KubernetesController(customObjectsApi, isAliveUrl, dockerImagePath, maxRetries, retryDelay);
         applicationsOnCluster = new LinkedTreeMap<String, List<LinkedTreeMap<String, String>>>();
         isAliveUri = new UriTemplate(isAliveUrl);
 

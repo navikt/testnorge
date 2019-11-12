@@ -4,10 +4,11 @@ import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,13 +19,14 @@ import java.util.Arrays;
 @Slf4j
 public class SyntConsumer {
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     private final ApplicationManager applicationManager;
-    private final RestTemplate restTemplate;
     private final String appName;
 
-    public SyntConsumer(ApplicationManager applicationManager, RestTemplate restTemplate, String name) {
+    public SyntConsumer(ApplicationManager applicationManager, String name) {
         this.applicationManager = applicationManager;
-        this.restTemplate = restTemplate;
         this.appName = name;
     }
 
@@ -57,7 +59,7 @@ public class SyntConsumer {
 
     // In the syntConsumer because we will allow synt packages of other types to be accessed asynchronously,
     // but calls to the *same SyntPackage* should happen one at a time.
-    private synchronized Object getDataFromSyntPackage(RequestEntity request) throws ResponseStatusException {
+    private synchronized Object getDataFromSyntPackage(RequestEntity request) throws RestClientException {
         try {
             ResponseEntity response = restTemplate.exchange(request, Object.class);
 
@@ -70,16 +72,17 @@ public class SyntConsumer {
             }
             return response.getBody();
         } catch (RestClientException e) {
-            log.error("Unexpected client-side error: {}", Arrays.toString(e.getStackTrace()));
+            log.error("Unexpected Rest Client Exception: {}", Arrays.toString(e.getStackTrace()));
             shutdownApplication();
             e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+            throw e;
+            /*throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     String.format("Unexpected client side error: \n%s",
-                            Arrays.toString(e.getStackTrace())));
+                            Arrays.toString(e.getStackTrace())));*/
         }
     }
 
-    public void shutdownApplication() {
+    public synchronized void shutdownApplication() {
         applicationManager.shutdownApplication(appName);
     }
 

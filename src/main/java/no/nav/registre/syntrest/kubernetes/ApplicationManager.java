@@ -46,7 +46,7 @@ public class ApplicationManager {
         this.activeApplications = new HashMap<>();
     }
 
-    public synchronized void startApplication(SyntConsumer app) throws ApiException, InterruptedException {
+    public void startApplication(SyntConsumer app) throws ApiException, InterruptedException {
         if (!applicationIsAlive(app.getAppName())) {
             kubernetesController.deployImage(app.getAppName());
         }
@@ -63,7 +63,7 @@ public class ApplicationManager {
                 scheduledExecutorService.schedule(app::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 
-    public synchronized void shutdownApplication(String appId) {
+    public void shutdownApplication(String appId) {
         try {
             kubernetesController.takedownImage(appId);
             activeApplications.remove(appId);

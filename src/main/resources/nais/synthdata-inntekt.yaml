@@ -26,11 +26,11 @@ spec:
   vault:
     enabled: true
   resources:
-    limits:
-      cpu: 500m
-      memory: 5200Mi
     requests:
       cpu: 200m
       memory: 5000Mi
+    limits:
+      cpu: 500m
+      memory: 5200Mi
   ingresses:
     - "https://nais-synthdata-inntekt.nais.preprod.local"

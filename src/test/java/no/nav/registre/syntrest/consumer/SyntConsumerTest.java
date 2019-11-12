@@ -42,7 +42,7 @@ public class SyntConsumerTest {
     @Before
     public void setup() {
         request = new RequestEntity(HttpMethod.GET, new UriTemplate("dummy").expand());
-        testConsumer = new SyntConsumer(applicationManager, restTemplate, "test-consumer");
+        testConsumer = new SyntConsumer(applicationManager, "test-consumer");
     }
 
     @Test
