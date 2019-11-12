@@ -7,11 +7,14 @@ import io.kubernetes.client.models.V1DeleteOptions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -48,14 +51,13 @@ public class KubernetesControllerTest {
 
     @Autowired
     private CustomObjectsApi customObjectsApi;
+
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
     private KubernetesController kubernetesController;
     @Value("${isAlive}") String isAliveUrl;
-    @Value("${docker-image-path}") String dockerImagePath;
-    @Value("${max-alive-retries}") int maxRetries;
-    @Value("${alive-retry-delay}") int retryDelay;
 
     private String GROUP = "nais.io",
             VERSION = "v1alpha1",
@@ -67,7 +69,7 @@ public class KubernetesControllerTest {
 
     @Before
     public void setup() throws ApiException {
-        kubernetesController = new KubernetesController(customObjectsApi, isAliveUrl, dockerImagePath, maxRetries, retryDelay);
+        // kubernetesController = new KubernetesController(customObjectsApi, isAliveUrl, dockerImagePath, maxRetries, retryDelay);
         applicationsOnCluster = new LinkedTreeMap<String, List<LinkedTreeMap<String, String>>>();
         isAliveUri = new UriTemplate(isAliveUrl);
 

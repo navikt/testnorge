@@ -5,9 +5,12 @@ import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -28,21 +31,23 @@ import static org.junit.Assert.fail;
 @EnableAutoConfiguration
 public class SyntConsumerTest {
 
-    @Autowired
+    @MockBean
     private ApplicationManager applicationManager;
-    @Autowired
+    @MockBean
     private RestTemplate restTemplate;
 
     private static RequestEntity request;
     private static final String numberUrl = "generateNumbers/{numToGenerate}";
     private static final String numberAndCodeUrl = "generateNumberAndConde/{code}/{number}";
 
+    @InjectMocks
     private SyntConsumer testConsumer;
 
     @Before
     public void setup() {
         request = new RequestEntity(HttpMethod.GET, new UriTemplate("dummy").expand());
         testConsumer = new SyntConsumer(applicationManager, "test-consumer");
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
