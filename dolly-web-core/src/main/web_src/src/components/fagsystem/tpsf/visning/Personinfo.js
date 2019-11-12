@@ -2,7 +2,7 @@ import React from 'react'
 import Formatters from '~/utils/DataFormatter'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 
-const Persondetaljer = ({ tpsfData, tpsfKriterier }) => {
+const Personinfo = ({ tpsfData, tpsfKriterier }) => {
 	const {
 		identtype,
 		ident,
@@ -115,4 +115,4 @@ const Persondetaljer = ({ tpsfData, tpsfKriterier }) => {
 	)
 }
 
-export default Persondetaljer
+export default Personinfo

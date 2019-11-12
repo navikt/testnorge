@@ -18,7 +18,6 @@ import { FRIGJOER_TESTBRUKER } from '~/ducks/testBruker'
 import { createLoadingSelector } from '~/ducks/loading'
 import Formatters from '~/utils/DataFormatter'
 import PersonDetaljer from '~/components/personDetaljer/PersonDetaljer'
-// import PersonDetaljer from './PersonDetaljer'
 
 const loadingSelectorKrr = createLoadingSelector(GET_KRR_TESTBRUKER)
 const loadingSelectorSigrun = createLoadingSelector([GET_SIGRUN_TESTBRUKER, GET_SIGRUN_SEKVENSNR])
