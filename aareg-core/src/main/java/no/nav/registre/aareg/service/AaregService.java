@@ -13,6 +13,7 @@ import static no.nav.registre.aareg.service.AaregAbstractClient.getPersonnummer;
 import static no.nav.registre.aareg.service.AaregAbstractClient.getYrkeskode;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AaregService {
@@ -59,6 +61,7 @@ public class AaregService {
             String ident,
             String miljoe
     ) {
+        log.info("Henter arbeidsforhold til ident {} i miljø {}", ident, miljoe);
         return aaregRestConsumer.hentArbeidsforhold(ident, miljoe);
     }
 
@@ -71,6 +74,7 @@ public class AaregService {
 
         miljoer.forEach(environment -> {
             try {
+                log.info("Sletter arbeidsforhold til ident {} i miljø {}", ident, environment);
                 var arbeidsforholdResponse = aaregRestConsumer.hentArbeidsforhold(ident, environment);
                 if (arbeidsforholdResponse.hasBody()) {
                     var responseBody = arbeidsforholdResponse.getBody();
