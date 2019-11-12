@@ -4,6 +4,7 @@ import static java.lang.String.format;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.exceptions.FasitException;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ public class FasitApiConsumer {
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
 
+    @Timed(name = "providers", tags={"operation", "fetchResourcesFasit"})
     public FasitResourceWithUnmappedProperties[] fetchResources(String alias, String type) {
         String url = providersProps.getFasit().getUrl() + format(FASIT_RESOURCE, alias, type);
 

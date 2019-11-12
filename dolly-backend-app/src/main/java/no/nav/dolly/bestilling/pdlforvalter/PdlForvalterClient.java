@@ -30,6 +30,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdent
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.metrics.Timed;
 
 @Slf4j
 @Order(1)
@@ -51,7 +52,9 @@ public class PdlForvalterClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    @Override public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+    @Timed(name = "providers", tags = { "operation", "gjenopprettPdlForvalter" })
+    @Override
+    public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         if (bestilling.getEnvironments().contains(SYNTH_ENV) || nonNull(bestilling.getPdlforvalter())) {
 

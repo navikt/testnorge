@@ -149,6 +149,16 @@
             <version>${freg-security-test-oidc-tools.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>no.nav.freg</groupId>
+            <artifactId>metrics-annotations</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>no.nav.freg</groupId>
+            <artifactId>metrics-spring</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
