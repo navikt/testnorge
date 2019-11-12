@@ -45,7 +45,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SyntController {
 
-    ///////////// SYNT CONSUMERS //////////////
     private final SyntConsumer aaregConsumer;
     private final SyntConsumer aapConsumer;
     private final SyntConsumer bisysConsumer;
@@ -61,8 +60,6 @@ public class SyntController {
     private final SyntConsumer frikortConsumer;
     private final SyntConsumer eiaConsumer;
 
-
-    ///////////// URLs //////////////
     @Value("${synth-aareg-url}") private String aaregUrl;
     @Value("${synth-arena-aap-115-url}") private String aap115Url;
     @Value("${synth-arena-aap-nyRettighet-url}") private String aapUrl;

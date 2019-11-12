@@ -108,7 +108,6 @@ public class KubernetesController {
         return applications.contains(appName);
     }
 
-    /////////// PRIVATE ///////////
     private List<String> listApplicationsOnCluster() throws ApiException{
 
         List<String> applications = new ArrayList<>();
@@ -151,20 +150,6 @@ public class KubernetesController {
         Map<String, Object> manifestFile = yaml.load(
                 getClass().getResourceAsStream(manifestPath.replace("{appName}", appName)));
 
-        // Don't need to edit the 'latest' tag. deploy.sh always makes sure the latest tag is applied to the latest image.
-        /*Map<String, Object> spec = (Map) manifestFile.get("spec");
-        String imageBase = spec.get("image").toString();
-        String latestImage = imageBase.replace("latest", getLatestImageVersion(appName));
-        spec.put("image", latestImage);*/
-
         return manifestFile;
     }
-
-    // Lar denne stå, i tilfelle vi må bytte ut tags
-//    private String getLatestImageVersion(String appName) {
-//        String query = String.format(dockerImagePath, appName);
-//        Map<String, Object> repositoryMap = (Map) restTemplate.getForObject(query, Object.class);
-//        List<String> tags = (List) repositoryMap.get("tags");
-//        return tags.get(tags.size() -1);
-//    }
 }
