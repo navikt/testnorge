@@ -16,12 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * Manages lifecycle of the app. Abstracts away the call to the KubernetesController,
- * and make sure the calls to start/end applications happens one at a time.
- * Is created as a Bean which means that only *one* synt package can be started/stopped at a time
- * on the NAIS cluster.
- * Does NOT ensure that only one call is given to a specific package at a time. This is done in the
- * syntConsumer.
+ * Manages lifecycle of the app. Abstracts away the call to the KubernetesController.
  *
  * The application manager will only manage apps that is accessed through it, although the isAlive
  * method will check any application available on the NAIS cluster.
@@ -68,7 +63,6 @@ public class ApplicationManager {
             kubernetesController.takedownImage(appId);
             activeApplications.remove(appId);
         } catch (ApiException e) {
-            // e.printStackTrace();
             log.error("Could not delete application \'{}\'.\n{}", appId, e.getMessage());
         }
     }

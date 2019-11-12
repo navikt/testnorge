@@ -56,8 +56,6 @@ public class SyntConsumer {
         return getDataFromSyntPackage(request);
     }
 
-    // In the syntConsumer because we will allow synt packages of other types to be accessed asynchronously,
-    // but calls to the *same SyntPackage* should happen one at a time.
     private synchronized Object getDataFromSyntPackage(RequestEntity request) throws RestClientException {
         try {
             ResponseEntity response = restTemplate.exchange(request, Object.class);
@@ -75,9 +73,6 @@ public class SyntConsumer {
             shutdownApplication();
             e.printStackTrace();
             throw e;
-            /*throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    String.format("Unexpected client side error: \n%s",
-                            Arrays.toString(e.getStackTrace())));*/
         }
     }
 
