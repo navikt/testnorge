@@ -7,7 +7,23 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
 
-export const initialValues = {
+export const KrrstubForm = ({ formikBag }) => {
+	return (
+		<Panel heading="Kontakt- og reservasjonsregisteret" hasErrors={panelError(formikBag)}>
+			<FormikTextInput name="krrstub.epost" label="E-post" />
+			<FormikTextInput name="krrstub.mobil" label="Mobilnummer" />
+			<FormikSelect
+				name="krrstub.registrert"
+				label="Registrert i DKIF"
+				options={Options('boolean')}
+			/>
+			<FormikSelect name="krrstub.reservert" label="Reservert" options={Options('boolean')} />
+			<FormikDatepicker name="krrstub.gyldigFra" label="Reservasjon gyldig fra" />
+		</Panel>
+	)
+}
+
+KrrstubForm.initialValues = {
 	krrstub: {
 		epost: '',
 		gyldigFra: new Date(),
@@ -17,7 +33,7 @@ export const initialValues = {
 	}
 }
 
-export const validation = {
+KrrstubForm.validation = {
 	krrstub: Yup.object({
 		epost: '',
 		gyldigFra: Yup.string().typeError('Formatet må være DD.MM.YYYY.'),
@@ -25,22 +41,4 @@ export const validation = {
 		registrert: '',
 		reservert: Yup.string().required('Vennligst velg')
 	})
-}
-
-export const KrrstubForm = ({ formikProps }) => {
-	return (
-		<React.Fragment>
-			<Panel heading="Kontakt- og reservasjonsregisteret" hasErrors={panelError(formikProps)}>
-				<FormikTextInput name="krrstub.epost" label="E-post" />
-				<FormikTextInput name="krrstub.mobil" label="Mobilnummer" />
-				<FormikSelect
-					name="krrstub.registrert"
-					label="Registrert i DKIF"
-					options={Options('boolean')}
-				/>
-				<FormikSelect name="krrstub.reservert" label="Reservert" options={Options('boolean')} />
-				<FormikDatepicker name="krrstub.gyldigFra" label="Reservasjon gyldig fra" />
-			</Panel>
-		</React.Fragment>
-	)
 }

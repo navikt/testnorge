@@ -111,7 +111,6 @@ export default {
 		return Request.get(Endpoints.personoppslag(ident))
 	},
 
-	//AAREG
 	getArbeidsforhold(ident, env) {
 		return Request.get(Endpoints.arbeidsforholdByIdent(ident, env))
 	}

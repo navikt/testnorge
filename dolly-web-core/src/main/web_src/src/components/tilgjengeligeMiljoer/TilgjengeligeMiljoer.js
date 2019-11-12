@@ -6,7 +6,7 @@ export default function TilgjengeligeMiljoer({ endepunkt }) {
 	if (!endepunkt) return false
 
 	const state = useAsync(async () => {
-		const response = await endepunkt
+		const response = await endepunkt()
 		return response
 	}, [endepunkt])
 
