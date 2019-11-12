@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
+import no.nav.registre.syntrest.consumer.UriExpander;
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
 import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
@@ -89,7 +90,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(fnrs);
         List<Arbeidsforholdsmelding> response = (List<Arbeidsforholdsmelding>)
-                aaregConsumer.synthesizeDataPostRequest(aaregUrl, fnrs);
+                aaregConsumer.synthesizeData(UriExpander.getRequestEntity(aaregUrl, fnrs));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -104,7 +105,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<AAP115Melding> response = (List<AAP115Melding>)
-                aapConsumer.generateForNumbers(aap115Url, numToGenerate);
+                aapConsumer.synthesizeData(UriExpander.getRequestEntity(aap115Url, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -119,7 +120,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<AAPMelding> response = (List<AAPMelding>)
-                aapConsumer.generateForNumbers(aapUrl, numToGenerate);
+                aapConsumer.synthesizeData(UriExpander.getRequestEntity(aapUrl, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -134,7 +135,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<Barnebidragsmelding> response = (List<Barnebidragsmelding>)
-                bisysConsumer.generateForNumbers(bisysUrl, numToGenerate);
+                bisysConsumer.synthesizeData(UriExpander.getRequestEntity(bisysUrl, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -149,7 +150,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<Institusjonsmelding> response = (List<Institusjonsmelding>)
-                instConsumer.generateForNumbers(instUrl, numToGenerate);
+                instConsumer.synthesizeData(UriExpander.getRequestEntity(instUrl, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -165,7 +166,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<Medlemskapsmelding> response = (List<Medlemskapsmelding>)
-                medlConsumer.generateForNumbers(medlUrl, numToGenerate);
+                medlConsumer.synthesizeData(UriExpander.getRequestEntity(medlUrl, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -190,7 +191,7 @@ public class SyntController {
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.MELDEGRUPPE, meldegruppe);
         List<String> response = (List<String>)
-                meldekortConsumer.generateForCodeAndNumber(arenaMeldekortUrl, meldegruppe, numToGenerate);
+                meldekortConsumer.synthesizeData(UriExpander.getRequestEntity(arenaMeldekortUrl, meldegruppe, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -209,7 +210,7 @@ public class SyntController {
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE_NAV, endringskode);
         List<String> response = (List<String>)
-                navConsumer.generateForCodeAndNumber(navEndringsmeldingUrl, endringskode, numToGenerate);
+                navConsumer.synthesizeData(UriExpander.getRequestEntity(navEndringsmeldingUrl, endringskode, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -227,7 +228,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(fnrs);
         List<Inntektsmelding> response = (List<Inntektsmelding>)
-                poppConsumer.synthesizeDataPostRequest(poppUrl, fnrs);
+                poppConsumer.synthesizeData(UriExpander.getRequestEntity(poppUrl, fnrs));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -242,7 +243,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<SamMelding> response = (List<SamMelding>)
-                samConsumer.generateForNumbers(samUrl, numToGenerate);
+                samConsumer.synthesizeData(UriExpander.getRequestEntity(samUrl, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -262,7 +263,7 @@ public class SyntController {
         InputValidator.validateInput(new ArrayList<>(fnrInntektMap.keySet()));
         Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>> response =
                 (Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>)
-                        inntektConsumer.synthesizeDataPostRequest(inntektUrl, fnrInntektMap);
+                        inntektConsumer.synthesizeData(UriExpander.getRequestEntity(inntektUrl, fnrInntektMap));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -278,7 +279,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<TPmelding> response = (List<TPmelding>)
-                tpConsumer.generateForNumbers(tpUrl, numToGenerate);
+                tpConsumer.synthesizeData(UriExpander.getRequestEntity(tpUrl, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -296,7 +297,7 @@ public class SyntController {
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE, endringskode);
         InputValidator.validateInput(numToGenerate);
         List<SkdMelding> response = (List<SkdMelding>)
-                tpsConsumer.generateForCodeAndNumber(tpsUrl, endringskode, numToGenerate);
+                tpsConsumer.synthesizeData(UriExpander.getRequestEntity(tpsUrl, endringskode, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -312,7 +313,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(new ArrayList<>(fnrAntMeldingMap.keySet()));
         Map<String, List<FrikortKvittering>> response = (Map<String, List<FrikortKvittering>>)
-                frikortConsumer.synthesizeDataPostRequest(frikortUrl, fnrAntMeldingMap);
+                frikortConsumer.synthesizeData(UriExpander.getRequestEntity(frikortUrl, fnrAntMeldingMap));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -331,7 +332,7 @@ public class SyntController {
                 .map(Pasient::getFnr)
                 .collect(Collectors.toList()));
         Map<String, String> response = (Map<String, String>)
-                eiaConsumer.synthesizeDataPostRequest(eiaUrl, input);
+                eiaConsumer.synthesizeData(UriExpander.getRequestEntity(eiaUrl, input));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);

@@ -29,22 +29,7 @@ public class SyntConsumer {
         this.appName = name;
     }
 
-    public Object generateForCodeAndNumber(String url, String code, int numToGenerate) throws ResponseStatusException {
-        UriTemplate uri = new UriTemplate(url);
-        return synthesizeData(RequestEntity.get(uri.expand(numToGenerate, code)).build());
-    }
-
-    public Object generateForNumbers(String url, int numToGenerate) throws ResponseStatusException {
-        UriTemplate uri = new UriTemplate(url);
-        return synthesizeData(RequestEntity.get(uri.expand(numToGenerate)).build());
-    }
-
-    public Object synthesizeDataPostRequest(String url, Object body) throws ResponseStatusException {
-        UriTemplate uri = new UriTemplate(url);
-        return synthesizeData(RequestEntity.post(uri.expand()).body(body));
-    }
-
-    private Object synthesizeData(RequestEntity request) throws ResponseStatusException {
+    public Object synthesizeData(RequestEntity request) throws ResponseStatusException {
 
         try {
             applicationManager.startApplication(this);
