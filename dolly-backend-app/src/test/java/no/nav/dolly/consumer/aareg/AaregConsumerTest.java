@@ -69,7 +69,7 @@ public class AaregConsumerTest {
     private RsAaregOppdaterRequest oppdaterRequest;
     private RsAaregResponse opprettResponse;
     private RsAaregResponse oppdaterResponse;
-    private Map<String, String> slettResponse;
+    private RsAaregResponse slettResponse;
 
     @Before
     public void setUp() {
@@ -96,8 +96,9 @@ public class AaregConsumerTest {
                 .statusPerMiljoe(status)
                 .build();
 
-        slettResponse = new HashMap<>();
-        slettResponse.put(miljoe, "OK");
+        slettResponse = RsAaregResponse.builder()
+                .statusPerMiljoe(status)
+                .build();
 
         SecurityContextHolder.getContext().setAuthentication(
                 new OidcTokenAuthentication(STANDARD_PRINCIPAL, null, STANDARD_IDTOKEN, null)
@@ -137,9 +138,9 @@ public class AaregConsumerTest {
         String expectedUri = serverUrl + "/api/v1/arbeidsforhold?ident={ident}";
         stubSlettIdentFraAlleMiljoer(expectedUri, slettResponse);
 
-        Map<String, String> response = aaregConsumer.slettArbeidsforholdFraAlleMiljoer(ident);
+        RsAaregResponse response = aaregConsumer.slettArbeidsforholdFraAlleMiljoer(ident);
 
-        assertThat(response.get(miljoe), equalTo("OK"));
+        assertThat(response.getStatusPerMiljoe().get(miljoe), equalTo("OK"));
     }
 
     private void stubOpprettArbeidsforhold(String expectedUri, RsAaregResponse response) throws JsonProcessingException {
@@ -172,7 +173,7 @@ public class AaregConsumerTest {
                 .andRespond(withSuccess("[{}]", MediaType.APPLICATION_JSON));
     }
 
-    private void stubSlettIdentFraAlleMiljoer(String expectedUri, Map<String, String> response) throws JsonProcessingException {
+    private void stubSlettIdentFraAlleMiljoer(String expectedUri, RsAaregResponse response) throws JsonProcessingException {
         server.expect(requestToUriTemplate(expectedUri, ident))
                 .andExpect(method(HttpMethod.DELETE))
                 .andRespond(withSuccess(asJsonString(response), MediaType.APPLICATION_JSON));

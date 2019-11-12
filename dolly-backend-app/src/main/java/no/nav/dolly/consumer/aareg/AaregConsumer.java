@@ -7,7 +7,6 @@ import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -66,15 +65,14 @@ public class AaregConsumer {
         return restTemplate.exchange(getRequest, Map[].class);
     }
 
-    public Map<String, String> slettArbeidsforholdFraAlleMiljoer(String ident) {
+    public RsAaregResponse slettArbeidsforholdFraAlleMiljoer(String ident) {
         RequestEntity deleteRequest =
                 RequestEntity.delete(URI.create(format(SLETT_ARBEIDSFORHOLD, providersProps.getAaregdata().getUrl(), ident)))
                         .header(AUTHORIZATION, getUserIdToken())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .build();
-        return restTemplate.exchange(deleteRequest, new ParameterizedTypeReference<Map<String, String>>() {
-        }).getBody();
+        return restTemplate.exchange(deleteRequest, RsAaregResponse.class).getBody();
     }
 
     private static String getNavCallId() {
