@@ -10,34 +10,36 @@ export default function KrrVisning(props) {
 
 	if (!krrData) return null
 
+	const { mobil, epost, reservert, gyldigFra, registrert } = krrData
+
 	return (
 		<div className="person-details-block">
 			<h3>Kontaktinformasjon og reservasjon</h3>
 			{props.isFetchingKrr && <Loading label="Henter data fra Krr" panel />}
 			<div className="person-info-block">
-				{krrData.mobil && (
+				{mobil && (
 					<div className="person-info-content">
 						<h4>Mobilnummer</h4>
-						<span>{krrData.mobil}</span>
+						<span>{mobil}</span>
 					</div>
 				)}
-				{krrData.epost && (
+				{epost && (
 					<div className="person-info-content">
 						<h4>E-post</h4>
-						<span>{krrData.epost}</span>
+						<span>{epost}</span>
 					</div>
 				)}
 				<div className="person-info-content">
 					<h4>Reservert mot digitalkommunikasjon</h4>
-					<span>{Formatters.oversettBoolean(krrData.reservert)}</span>
+					<span>{Formatters.oversettBoolean(reservert)}</span>
 				</div>
 				<div className="person-info-content">
 					<h4>Gyldig fra</h4>
-					<span>{Formatters.formatDate(krrData.gyldigFra)}</span>
+					<span>{Formatters.formatDate(gyldigFra)}</span>
 				</div>
 				<div className="person-info-content">
 					<h4>Registrert i DKIF</h4>
-					<span>{Formatters.oversettBoolean(krrData.registrert)}</span>
+					<span>{Formatters.oversettBoolean(registrert)}</span>
 				</div>
 			</div>
 		</div>

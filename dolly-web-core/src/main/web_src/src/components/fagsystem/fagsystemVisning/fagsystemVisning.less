@@ -62,6 +62,36 @@
 		}
 	}
 
+	.person-info-subItems {
+		padding-left: 50px;
+		width: 800px;
+
+		h3 {
+			display: block;
+			font-size: 1em;
+			background-color: white;
+			padding: 0px;
+			margin: 20px 0 20px 0px;
+		}
+
+		.subitems {
+			display: flex;
+			flex-wrap: wrap;
+			margin-bottom: 10px;
+
+			.person-info-content {
+				flex: 0 1 160px;
+				margin-bottom: 10px;
+				padding-right: 10px;
+				word-break: break-word;
+
+				&_small {
+					flex: 0 1 80px;
+				}
+			}
+		}
+	}
+
 	.title-multiple {
 		display: block;
 		padding: 3px 6px;
