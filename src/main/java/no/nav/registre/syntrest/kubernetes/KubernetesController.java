@@ -67,7 +67,7 @@ public class KubernetesController {
         }
     }
 
-    // TODO: REFACTOR
+
     public void takedownImage(String appName) throws ApiException, JsonSyntaxException {
 
         if (existsOnCluster(appName)) {
@@ -109,7 +109,6 @@ public class KubernetesController {
     }
 
     /////////// PRIVATE ///////////
-    // TODO: REFACTOR?
     private List<String> listApplicationsOnCluster() throws ApiException{
 
         List<String> applications = new ArrayList<>();
@@ -146,7 +145,7 @@ public class KubernetesController {
         } // wend
     }
 
-    // TODO: REFACTOR?
+
     private Map<String, Object> prepareYaml(String appName) {
         Yaml yaml = new Yaml();
         Map<String, Object> manifestFile = yaml.load(
@@ -161,11 +160,11 @@ public class KubernetesController {
         return manifestFile;
     }
 
-    // TODO: REFACTOR?
-    private String getLatestImageVersion(String appName) {
-        String query = String.format(dockerImagePath, appName);
-        Map<String, Object> repositoryMap = (Map) restTemplate.getForObject(query, Object.class);
-        List<String> tags = (List) repositoryMap.get("tags");
-        return tags.get(tags.size() -1);
-    }
+    // Lar denne stå, i tilfelle vi må bytte ut tags
+//    private String getLatestImageVersion(String appName) {
+//        String query = String.format(dockerImagePath, appName);
+//        Map<String, Object> repositoryMap = (Map) restTemplate.getForObject(query, Object.class);
+//        List<String> tags = (List) repositoryMap.get("tags");
+//        return tags.get(tags.size() -1);
+//    }
 }
