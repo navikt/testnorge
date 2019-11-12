@@ -3,6 +3,7 @@ package no.nav.dolly.service;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
@@ -63,11 +64,13 @@ public class BestillingService {
     }
 
     public List<Bestilling> fetchBestillingerByGruppeId(Long gruppeId) {
-        return bestillingRepository.findBestillingByGruppeOrderById(testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId)));
+        Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
+        return testgruppe.isPresent() ?
+            bestillingRepository.findBestillingByGruppeOrderById(testgruppe.get()) : emptyList();
     }
 
     public List<Bestilling> fetchMalBestillinger() {
-        return bestillingRepository.findMalBestilling().orElseThrow(() -> new NotFoundException("Ingen mal-bestilling funnet"));
+        return bestillingRepository.findMalBestilling().orElse(emptyList());
     }
 
     @Transactional
