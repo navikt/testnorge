@@ -4,6 +4,10 @@ import '~/components/fagsystem/fagsystemVisning/fagsystemVisning.less'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 import Formatters from '~/utils/DataFormatter'
 import { relasjonTranslator } from '~/service/dataMapper/Utils'
+import Nasjonalitet from './Nasjonalitet'
+import Boadresse from './Boadresse'
+import Postadresse from './Postadresse'
+import Identhistorikk from './Identhistorikk'
 
 export default function TpsfVisning(props) {
 	const data = useSelector(state => state)
@@ -15,6 +19,7 @@ export default function TpsfVisning(props) {
 	const tpsfKriterier = JSON.parse(bestillingData.tpsfKriterier)
 
 	if (!tpsfData) return null
+	console.log('tpsfData :', tpsfData)
 
 	return (
 		<div>
@@ -113,153 +118,16 @@ export default function TpsfVisning(props) {
 			</div>
 
 			{/* NASJONALITET */}
-			<div className="person-details-block">
-				<h3>Nasjonalitet</h3>
-				<div className="person-info-block">
-					<div className="person-info-content">
-						<h4>Statsborgerskap</h4>
-						<span>
-							<KodeverkValueConnector apiKodeverkId="Landkoder" value={tpsfData.statsborgerskap} />
-						</span>
-					</div>
-					<div className="person-info-content">
-						<h4>Statsborgerskap fra</h4>
-						<span>{Formatters.formatDate(tpsfData.statsborgerskapRegdato)}</span>
-					</div>
-					<div className="person-info-content">
-						<h4>Språk</h4>
-						<span>
-							<KodeverkValueConnector apiKodeverkId="Språk" value={tpsfData.sprakKode} />
-						</span>
-					</div>
-					{tpsfKriterier.innvandretFraLand && (
-						<div className="person-info-content">
-							<h4>Innvandret fra land</h4>
-							<span>
-								<KodeverkValueConnector
-									apiKodeverkId="Landkoder"
-									value={tpsfData.innvandretFraLand}
-								/>
-							</span>
-						</div>
-					)}
-					{tpsfKriterier.innvandretFraLand && (
-						<div className="person-info-content">
-							<h4>Innvandret dato</h4>
-							<span>{Formatters.formatDate(tpsfData.innvandretFraLandFlyttedato)}</span>
-						</div>
-					)}
-					{tpsfData.utvandretTilLand && (
-						<div className="person-info-content">
-							<h4>Utvandret til land</h4>
-							<span>
-								<KodeverkValueConnector
-									apiKodeverkId="Landkoder"
-									value={tpsfData.utvandretTilLand}
-								/>
-							</span>
-						</div>
-					)}
-					{tpsfData.utvandretTilLandFlyttedato && (
-						<div className="person-info-content">
-							<h4>Utvandret dato</h4>
-							<span>{Formatters.formatDate(tpsfData.utvandretTilLandFlyttedato)}</span>
-						</div>
-					)}
-				</div>
-			</div>
+			<Nasjonalitet tpsfData={tpsfData} tpsfKriterier={tpsfKriterier} />
 
 			{/* BOADRESSE */}
-			{tpsfData.boadresse && (
-				<div className="person-details-block">
-					<h3>Bostedadresse</h3>
-					<div className="person-info-block">
-						<div className="person-info-content">
-							<h4>{Formatters.adressetypeToString(tpsfData.boadresse.adressetype)}</h4>
-							{tpsfData.boadresse.adressetype === 'GATE' && (
-								<div>{`${tpsfData.boadresse.gateadresse} ${tpsfData.boadresse.husnummer}\n`}</div>
-							)}
-							{tpsfData.boadresse.adressetype === 'MATR' && (
-								<div>
-									{tpsfData.boadresse.mellomnavn && (
-										<span>{`${tpsfData.boadresse.mellomnavn}, `}</span>
-									)}
-									<span>{`${tpsfData.boadresse.gardsnr}`}</span>
-									<span>{`/${tpsfData.boadresse.bruksnr}`}</span>
-									{tpsfData.boadresse.festenr && <span>{`/${tpsfData.boadresse.festenr}`}</span>}
-									{tpsfData.boadresse.undernr && <span>{`-${tpsfData.boadresse.undernr}`}</span>}
-								</div>
-							)}
-							<KodeverkValueConnector
-								apiKodeverkId="Postnummer"
-								value={tpsfData.boadresse.postnr}
-							/>
-						</div>
-						<div className="person-info-content">
-							<h4>Flyttedato</h4>
-							<span>{Formatters.formatDate(tpsfData.boadresse.flyttedato)}</span>
-						</div>
-					</div>
-				</div>
-			)}
+			<Boadresse boadresse={tpsfData.boadresse} />
 
 			{/* POSTADRESSE */}
-			{tpsfData.postadresse && (
-				<div className="person-details-block">
-					<h3>Postadresse</h3>
-					<div className="person-info-block">
-						<div className="person-info-content">
-							<h4>Adresse</h4>
-							<div>{tpsfData.postadresse[0].postLinje1}</div>
-							<div>{tpsfData.postadresse[0].postLinje2}</div>
-							<div>{tpsfData.postadresse[0].postLinje3}</div>
-						</div>
-						<div className="person-info-content">
-							<h4>Land</h4>
-							<span>
-								<KodeverkValueConnector
-									apiKodeverkId="Landkoder"
-									value={tpsfData.postadresse[0].postLand}
-								/>
-							</span>
-						</div>
-					</div>
-				</div>
-			)}
+			<Postadresse postadresse={tpsfData.postadresse && tpsfData.postadresse[0]} />
 
 			{/* IDENTHISTORIKK */}
-			{tpsfData.identHistorikk && (
-				<div className="person-details-block">
-					<h3>Identhistorikk</h3>
-					{tpsfData.identHistorikk.map((ident, i, arr) => {
-						let className = 'person-info-block'
-						if (i !== arr.length - 1) className = 'person-info-block_bottomborder'
-						return (
-							<div className={className}>
-								<div className="person-info-content_small">
-									<span>{`#${i + 1}`}</span>
-								</div>
-								<div className="person-info-content">
-									<h4>Identtype</h4>
-									<span>{ident.aliasPerson.identtype}</span>
-								</div>
-								<div className="person-info-content">
-									<h4>{ident.aliasPerson.identtype}</h4>
-									<span>{ident.aliasPerson.ident}</span>
-								</div>
-								<div className="person-info-content">
-									<h4>Kjønn</h4>
-									<span>{Formatters.kjonnToString(ident.aliasPerson.kjonn)}</span>
-								</div>
-								<div className="person-info-content">
-									<h4>Utgått dato</h4>
-									<span>{Formatters.formatDate(ident.regdato)}</span>
-								</div>
-							</div>
-						)
-					})}
-				</div>
-			)}
+			<Identhistorikk identhistorikk={tpsfData.identHistorikk} />
 
 			{/* RELASJONER */}
 			{tpsfData.relasjoner && (
