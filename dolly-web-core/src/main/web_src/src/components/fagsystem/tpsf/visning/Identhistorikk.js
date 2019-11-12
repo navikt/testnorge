@@ -12,7 +12,7 @@ const Identhistorikk = ({ identhistorikk }) => {
 				let className = 'person-info-block'
 				if (i !== arr.length - 1) className = 'person-info-block_bottomborder'
 				return (
-					<div className={className}>
+					<div className={className} key={i}>
 						<div className="person-info-content_small">
 							<span>{`#${i + 1}`}</span>
 						</div>

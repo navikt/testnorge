@@ -5,7 +5,7 @@ import { relasjonTranslator } from '~/service/dataMapper/Utils'
 
 const Relasjoner = ({ relasjoner, tpsfKriterier }) => {
 	if (!relasjoner) return false
-	console.log('tpsfKriterier :', tpsfKriterier)
+
 	return (
 		<div className="person-details-block">
 			<h3>Familierelasjoner</h3>
@@ -44,7 +44,7 @@ const Relasjoner = ({ relasjoner, tpsfKriterier }) => {
 						{identHistorikk.map((alias, i) => {
 							const { identtype, ident, kjonn } = alias.aliasPerson
 							return (
-								<div className="subitems">
+								<div className="subitems" key={i}>
 									<div className="person-info-content_small">
 										<span>{`#${i + 1}`}</span>
 									</div>
@@ -73,7 +73,7 @@ const Relasjoner = ({ relasjoner, tpsfKriterier }) => {
 				)
 
 				return (
-					<div>
+					<div key={i}>
 						<div className="title-multiple">
 							<h3>{relasjonstype}</h3>
 						</div>
@@ -187,7 +187,6 @@ const Relasjoner = ({ relasjoner, tpsfKriterier }) => {
 									<span>JA</span>
 								</div>
 							)}
-							{/* Tilpass denne når bestilling med relasjoner er fikset! */}
 							{identHistorikk && identHistorikk.length > 0 && identHistorikkVisning}
 						</div>
 					</div>
@@ -198,33 +197,3 @@ const Relasjoner = ({ relasjoner, tpsfKriterier }) => {
 }
 
 export default Relasjoner
-
-// {relasjon.personRelasjonMed.innvandretFraLand &&
-//     ((relasjonstype === 'Barn' &&
-//         tpsfKriterier.relasjoner.barn[i].innvandretFraLand) ||
-//         (relasjonstype === 'Partner' &&
-//             tpsfKriterier.relasjoner.partner.innvandretFraLand)) && (
-//         <div className="person-info-content">
-//             <h4>Innvandret fra land</h4>
-//             <span>
-//                 <KodeverkValueConnector
-//                     apiKodeverkId="Landkoder"
-//                     value={relasjon.personRelasjonMed.innvandretFraLand}
-//                 />
-//             </span>
-//         </div>
-//     )}
-// {relasjon.personRelasjonMed.innvandretFraLand &&
-//     ((relasjonstype === 'Barn' &&
-//         tpsfKriterier.relasjoner.barn[i].innvandretFraLandFlyttedato) ||
-//         (relasjonstype === 'Partner' &&
-//             tpsfKriterier.relasjoner.partner.innvandretFraLandFlyttedato)) && (
-//         <div className="person-info-content">
-//             <h4>Innvandret dato</h4>
-//             <span>
-//                 {Formatters.formatDate(
-//                     relasjon.personRelasjonMed.innvandretFraLandFlyttedato
-//                 )}
-//             </span>
-//         </div>
-//     )}
