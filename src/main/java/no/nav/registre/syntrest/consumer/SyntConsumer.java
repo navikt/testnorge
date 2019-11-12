@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.UriTemplate;
 
 import java.util.Arrays;
 
@@ -29,7 +28,7 @@ public class SyntConsumer {
         this.appName = name;
     }
 
-    public Object synthesizeData(RequestEntity request) throws ResponseStatusException {
+    public synchronized Object synthesizeData(RequestEntity request) throws ResponseStatusException {
 
         try {
             applicationManager.startApplication(this);
