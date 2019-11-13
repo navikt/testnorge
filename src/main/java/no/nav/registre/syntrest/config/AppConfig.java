@@ -27,21 +27,11 @@ import java.net.ProxySelector;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+
 @Configuration
 @Slf4j
 public class AppConfig {
-
-    @Value("${kube-config-path}")
-    private String kubeConfigPath;
-    private final int EXECUTOR_POOL_SIZE = 4;
     private static final int TIMEOUT = 120_000;
-
-    @Bean
-    ScheduledExecutorService scheduledExecutorService() {
-        return Executors.newScheduledThreadPool(EXECUTOR_POOL_SIZE);
-    }
-
-
 
     @Bean
     RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
@@ -59,6 +49,12 @@ public class AppConfig {
                         .build()))
                 .build();
     }
+
+    private final int EXECUTOR_POOL_SIZE = 4;
+
+
+    @Value("${kube-config-path}")
+    private String kubeConfigPath;
 
     @Bean
     ApiClient apiClient() {
@@ -97,6 +93,10 @@ public class AppConfig {
     }
 
 
+    @Bean
+    ScheduledExecutorService scheduledExecutorService() {
+        return Executors.newScheduledThreadPool(EXECUTOR_POOL_SIZE);
+    }
 
     @Bean
     @DependsOn({"kubernetesController", "scheduledExecutorService"})
@@ -189,9 +189,4 @@ public class AppConfig {
         return new SyntConsumer(applicationManager(), "synthdata-eia");
     }
 
-//    @Bean
-//    @DependsOn({"applicationManager"})
-//    SyntConsumer Consumer() {
-//        return new SyntConsumer(applicationManager(), );
-//    }
 }
