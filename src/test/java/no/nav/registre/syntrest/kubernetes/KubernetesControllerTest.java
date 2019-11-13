@@ -26,6 +26,7 @@ import org.springframework.web.util.UriTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -140,12 +141,12 @@ public class KubernetesControllerTest {
 
     @Test
     public void deployedButNotUp() throws InterruptedException, ApiException {
-        /*stubFor(get(urlEqualTo("/synthdata-frikort/internal/isAlive"))
-                .willReturn(ok("1")));*/
         stubFor(get(urlEqualTo("/synthdata-frikort/internal/isAlive"))
                 .willReturn(aResponse()
                         .withStatus(404)
                         .withBody("404 Not Found")));
+        stubFor(delete(urlEqualTo("/dummyDelete/app/" + NAMESPACE + "/synthdata-frikort"))
+                .willReturn(ok()));
 
         kubernetesController.deployImage("synthdata-frikort");
         Mockito.verify(customObjectsApi, times(0))

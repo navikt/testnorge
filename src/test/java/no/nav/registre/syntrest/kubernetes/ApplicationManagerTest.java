@@ -10,6 +10,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -29,6 +31,8 @@ import static org.mockito.ArgumentMatchers.eq;
 @ActiveProfiles("ApplicationManagerTest")
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWireMock(port = 8082)
 @ContextConfiguration(classes = ApplicationManagerTestConfig.class)
 @EnableAutoConfiguration
 public class ApplicationManagerTest {
@@ -37,13 +41,12 @@ public class ApplicationManagerTest {
     private KubernetesController kubernetesController;
     @Autowired
     private ScheduledExecutorService scheduledExecutorService;
-    @Autowired
-    private RestTemplate restTemplate;
-
-    ApplicationManager globalManager;
 
     @Value("${synth-package-unused-uptime}")
     private long SHUTDOWN_TIME_DELAY_SECONDS;
+
+
+    private ApplicationManager globalManager;
 
     private SyntConsumer syntConsumerFrikort;
     private SyntConsumer syntConsumerMeldekort;
@@ -77,9 +80,9 @@ public class ApplicationManagerTest {
         } catch (InterruptedException e) {
             fail();
         }
+        manager.scheduleShutdown(syntConsumerFrikort);
         assertEquals(1, manager.getActiveApplications().size());
         assertTrue(manager.getActiveApplications().containsKey(syntConsumerFrikort.getAppName()));
-        // Mockito.verify(kubernetesController, Mockito.atLeastOnce()).takedownImage("synthdata-frikort");
     }
 
 
@@ -96,39 +99,6 @@ public class ApplicationManagerTest {
     }
 
 
-    // RACE CONDITION IN THIS THREAD...
-    /*@Test
-    public void startSameApplicationAtSameTime() throws InterruptedException, ApiException, TimeoutException {
-        ApplicationManager manager = new ApplicationManager(kubernetesController, scheduledExecutorService);
-        Mockito.when(kubernetesController.isAlive(Mockito.anyString()))
-                .thenReturn(false)
-                .thenReturn(true);
-
-        Waiter waiter = new Waiter();
-        new Thread(() -> {
-            try {
-                manager.startApplication(syntConsumerMeldekort);
-            } catch (InterruptedException | ApiException e) {
-                fail();
-            }
-            waiter.resume();
-        }).start();
-        new Thread(() -> {
-            try {
-                manager.startApplication(syntConsumerMeldekort);
-            } catch (InterruptedException | ApiException e) {
-                fail();
-            }
-            waiter.resume();
-        }).start();
-        waiter.await(2, TimeUnit.SECONDS, 2);
-
-        assertEquals(1, manager.getActiveApplications().size());
-        Mockito.verify(kubernetesController, Mockito.times(1)).deployImage("synthdata-meldekort");
-        Mockito.verify(kubernetesController, Mockito.times(2)).takedownImage("synthdata-meldekort");
-    }*/
-
-
     // Possible race condition?
     @Test
     public void startAndShutdownApplication() throws InterruptedException, ApiException {
@@ -137,6 +107,7 @@ public class ApplicationManagerTest {
         Mockito.when(kubernetesController.isAlive(Mockito.anyString())).thenReturn(true);
 
         manager.startApplication(syntConsumerInntekt);
+        manager.scheduleShutdown(syntConsumerInntekt);
         assertEquals(1, manager.getActiveApplications().size());
         assertTrue(manager.getActiveApplications().keySet().contains("synthdata-inntekt"));
         Thread.sleep((SHUTDOWN_TIME_DELAY_SECONDS * 1000) + 100);

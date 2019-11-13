@@ -13,15 +13,15 @@ import java.util.concurrent.ScheduledExecutorService;
 @Configuration
 public class ApplicationManagerTestConfig {
     @Bean
+    RestTemplate restTemplate() {
+        return Mockito.mock(RestTemplate.class);
+    }
+    @Bean
     KubernetesController kubernetesController() {
         return Mockito.mock(KubernetesController.class);
     }
     @Bean
     ScheduledExecutorService scheduledExecutorService() {
         return Executors.newScheduledThreadPool(4);
-    }
-    @Bean
-    RestTemplate restTemplate() {
-        return Mockito.mock(RestTemplate.class);
     }
 }
