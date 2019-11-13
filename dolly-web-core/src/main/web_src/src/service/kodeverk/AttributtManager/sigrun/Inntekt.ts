@@ -41,6 +41,7 @@ const AttributtListe: Attributt[] = [
 				label: 'inntektssted',
 				path: 'inntektssted',
 				editPath: 'inntektssted',
+				defaultValue: 'Fastlandet',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Select,
 				options: SelectOptionsManager('inntektssted'),

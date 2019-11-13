@@ -14,15 +14,23 @@ export const getValues = (attributeList, values) => {
 
 		if (pathPrefix == DataSourceMapper('SIGRUN')) {
 			const groupByTjeneste = _groupBy(value, 'tjeneste')
-			let tjenester = Object.keys(groupByTjeneste)
+			const tjenester = Object.keys(groupByTjeneste)
 			let dataArr = []
 			tjenester.forEach(tjeneste => {
 				const groupedByInntektsaar = _groupBy(groupByTjeneste[tjeneste], 'inntektsaar')
 				const keys = Object.keys(groupedByInntektsaar)
 				keys.forEach((key, i) => {
 					const current = groupedByInntektsaar[key]
-					if (tjeneste == 'BEREGNET_SKATT') {
-						console.log('test')
+					if (value[i].inntektssted == 'Svalbard') {
+						dataArr.push({
+							svalbardGrunnlag: current.map(temp => ({
+								tekniskNavn: temp.typeinntekt,
+								verdi: temp.beloep
+							})),
+							inntektsaar: key,
+							tjeneste: tjeneste
+						})
+					} else {
 						dataArr.push({
 							grunnlag: current.map(temp => ({
 								tekniskNavn: temp.typeinntekt,
@@ -32,32 +40,8 @@ export const getValues = (attributeList, values) => {
 							tjeneste: tjeneste
 						})
 					}
-					if (tjeneste == 'SUMMERT_SKATTEGRUNNLAG') {
-						if (value[i].inntektssted == 'Svalbard') {
-							console.log('a')
-							dataArr.push({
-								svalbardGrunnlag: current.map(temp => ({
-									tekniskNavn: temp.typeinntekt,
-									verdi: temp.beloep
-								})),
-								inntektsaar: key,
-								tjeneste: tjeneste
-							})
-						} else {
-							console.log('b')
-							dataArr.push({
-								grunnlag: current.map(temp => ({
-									tekniskNavn: temp.typeinntekt,
-									verdi: temp.beloep
-								})),
-								inntektsaar: key,
-								tjeneste: tjeneste
-							})
-						}
-					}
 				})
 			})
-			console.log('dataArr :', dataArr)
 			return _set(accumulator, pathPrefix, dataArr)
 		}
 

@@ -207,19 +207,21 @@ export function mapBestillingData(bestillingData) {
 			let flatSigrunStubKriterier = []
 			sigrunStubKriterier.forEach(inntekt => {
 				if (inntekt.svalbardGrunnlag != null) {
-					inntekt.svalbardGrunnlag.forEach(g => {
+					inntekt.svalbardGrunnlag.forEach(s => {
 						flatSigrunStubKriterier.push({
-							svalbardGrunnlag: g.tekniskNavn,
+							svalbardGrunnlag: s.tekniskNavn,
 							inntektsaar: inntekt.inntektsaar,
-							tjeneste: inntekt.tjeneste
+							tjeneste: inntekt.tjeneste,
+							verdi: s.verdi
 						})
 					})
 				} else {
-					inntekt.grunnlag.forEach(s => {
+					inntekt.grunnlag.forEach(g => {
 						flatSigrunStubKriterier.push({
-							grunnlag: s.tekniskNavn,
+							grunnlag: g.tekniskNavn,
 							inntektsaar: inntekt.inntektsaar,
-							tjeneste: inntekt.tjeneste
+							tjeneste: inntekt.tjeneste,
+							verdi: g.verdi
 						})
 					})
 				}
