@@ -67,7 +67,7 @@ public class TestnorgeSigrunConsumerTest {
 
         ResponseEntity response = testnorgeSigrunConsumer.startSyntetisering(syntetiserPoppRequest, testdataEier);
 
-        assertThat(response.getBody().toString(), containsString(HttpStatus.OK.toString()));
+        assertThat(response.getBody().toString(), containsString(String.valueOf(HttpStatus.OK.value())));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class TestnorgeSigrunConsumerTest {
                 .andExpect(content().json("{\"avspillergruppeId\":" + AVSPILLERGRUPPE_ID
                         + ",\"miljoe\":\"" + MILJOE + "\""
                         + ",\"antallNyeIdenter\":" + identer.size() + "}"))
-                .andRespond(withSuccess("[\"" + HttpStatus.OK + "\", \"" + HttpStatus.INTERNAL_SERVER_ERROR + "\"]", MediaType.APPLICATION_JSON));
+                .andRespond(withSuccess("[\"" + HttpStatus.OK.value() + "\", \"" + HttpStatus.INTERNAL_SERVER_ERROR.value() + "\"]", MediaType.APPLICATION_JSON));
     }
 
     private void stubPoppConsumerSlettIdenter(String expectedUri) {

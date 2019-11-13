@@ -56,6 +56,7 @@ public class TpsPersondokumentListener {
 
                 if (alleOrkestrerteIdenter.contains(personIdent)) {
                     hodejegerenConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersondokument, personIdent);
+                    log.info("Sendte ident {} til hodejegeren", personIdent);
                 }
             }
         } catch (RuntimeException e) {

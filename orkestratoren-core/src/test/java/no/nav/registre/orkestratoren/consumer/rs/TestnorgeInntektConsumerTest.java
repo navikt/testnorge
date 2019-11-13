@@ -1,6 +1,7 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
@@ -40,7 +41,7 @@ public class TestnorgeInntektConsumerTest {
 
     private long gruppeId = 10L;
     private String fnr = "01010101010";
-    private double beloep = 10000;
+    private Double beloep = 10000.0;
     private SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest;
 
     @Before
@@ -60,8 +61,8 @@ public class TestnorgeInntektConsumerTest {
         Map<String, List<Object>> feiledeInntektsmeldinger = testnorgeInntektConsumer.startSyntetisering(syntetiserInntektsmeldingRequest);
 
         assertThat(feiledeInntektsmeldinger.keySet(), Matchers.contains(fnr));
-        Map<String, String> inntekt = (Map<String, String>) feiledeInntektsmeldinger.get(fnr).get(0);
-        assertThat(inntekt.get("beloep"), Matchers.is(beloep));
+        Map<String, Object> inntekt = (Map<String, Object>) feiledeInntektsmeldinger.get(fnr).get(0);
+        assertThat(inntekt.get("beloep").toString(), equalTo(beloep.toString()));
     }
 
     private void stubInntektConsumer(String expectedUri) {
