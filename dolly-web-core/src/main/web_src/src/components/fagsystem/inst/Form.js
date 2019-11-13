@@ -38,14 +38,16 @@ export const InstForm = ({ formikBag }) => {
 	)
 }
 
-InstForm.initialValues = {
-	instdata: [
-		{
-			institusjonstype: '',
-			startdato: '',
-			faktiskSluttdato: ''
-		}
-	]
+InstForm.initialValues = attrs => {
+	return {
+		instdata: [
+			{
+				institusjonstype: '',
+				startdato: '',
+				faktiskSluttdato: ''
+			}
+		]
+	}
 }
 
 InstForm.validation = {

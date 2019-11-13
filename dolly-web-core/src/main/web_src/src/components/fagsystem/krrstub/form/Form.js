@@ -23,14 +23,17 @@ export const KrrstubForm = ({ formikBag }) => {
 	)
 }
 
-KrrstubForm.initialValues = {
-	krrstub: {
-		epost: '',
-		gyldigFra: new Date(),
-		mobil: '',
-		registrert: true,
-		reservert: ''
+KrrstubForm.initialValues = attrs => {
+	const initial = {
+		krrstub: {
+			epost: '',
+			gyldigFra: new Date(),
+			mobil: '',
+			registrert: true,
+			reservert: ''
+		}
 	}
+	return attrs.kontaktinformasjon ? initial : {}
 }
 
 KrrstubForm.validation = {

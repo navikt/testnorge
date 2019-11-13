@@ -18,8 +18,10 @@ export const SigrunstubForm = ({ formikBag }) => (
 	</Panel>
 )
 
-SigrunstubForm.initialValues = {
-	sigrunstub: [initialValuesInntektsaar]
+SigrunstubForm.initialValues = attrs => {
+	return {
+		sigrunstub: [initialValuesInntektsaar]
+	}
 }
 
 SigrunstubForm.validation = {

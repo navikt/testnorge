@@ -20,16 +20,18 @@ export const Steg2 = ({ formikBag }) => {
 }
 
 Steg2.label = 'Velg verdier'
-Steg2.initialValues = Object.assign(
-	{},
-	{
-		...TpsfForm.initialValues,
-		...KrrstubForm.initialValues,
-		...SigrunstubForm.initialValues,
-		...InstForm.initialValues
-	}
-)
-Steg2.validationSchema = Yup.object({
+Steg2.initialValues = attrs => {
+	return Object.assign(
+		{},
+		{
+			...TpsfForm.initialValues(attrs),
+			...KrrstubForm.initialValues(attrs),
+			...SigrunstubForm.initialValues(attrs),
+			...InstForm.initialValues(attrs)
+		}
+	)
+}
+Steg2.validation = Yup.object({
 	...TpsfForm.validation,
 	...KrrstubForm.validation,
 	...InstForm.validation
