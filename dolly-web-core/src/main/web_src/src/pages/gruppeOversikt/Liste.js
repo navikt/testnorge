@@ -51,6 +51,11 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 			dataField: 'antallIdenter'
 		},
 		{
+			text: 'I bruk',
+			width: '15',
+			dataField: 'antallIBruk'
+		},
+		{
 			text: 'Favoritt',
 			width: '10',
 			dataField: 'id',
