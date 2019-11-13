@@ -34,7 +34,8 @@ public class SyntConsumer {
             applicationManager.startApplication(this);
         } catch (ApiException | InterruptedException e) {
             log.error("Could not start synth package {}.", this.appName);
-            return new ResponseEntity<>("Something went wrong when trying to deploy the synth pacakge.", HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return null;
         }
 
         return getDataFromSyntPackage(request);
