@@ -34,31 +34,34 @@ public class SyntConsumer {
             applicationManager.startApplication(this);
         } catch (ApiException | InterruptedException e) {
             log.error("Could not start synth package {}.", this.appName);
-            e.printStackTrace();
             return null;
         }
 
         return getDataFromSyntPackage(request);
     }
 
+
     private synchronized Object getDataFromSyntPackage(RequestEntity request) throws RestClientException {
         try {
             ResponseEntity response = restTemplate.exchange(request, Object.class);
 
             if (response.getStatusCode() != HttpStatus.OK) {
-            log.warn("Unexpected synth response: {}\n{}", response.getStatusCode(), response.getBody());
+            log.warn("Unexpected synth response: {}", response.getStatusCode());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    String.format("Unexpected synth response: %s\n%s",
-                            response.getStatusCode().toString(),
-                            response.getBody().toString()));
+                    String.format("Unexpected synth response: %s",
+                            response.getStatusCode().toString()));
             }
             return response.getBody();
         } catch (RestClientException e) {
             log.error("Unexpected Rest Client Exception: {}", Arrays.toString(e.getStackTrace()));
-            shutdownApplication();
-            e.printStackTrace();
             throw e;
+        } finally {
+            scheduleShutdown();
         }
+    }
+
+    private synchronized void scheduleShutdown() {
+        applicationManager.scheduleShutdown(this);
     }
 
     public synchronized void shutdownApplication() {

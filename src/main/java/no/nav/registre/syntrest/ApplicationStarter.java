@@ -26,5 +26,4 @@ public class ApplicationStarter {
         executor.initialize();
         return executor;
     }
-
 }
