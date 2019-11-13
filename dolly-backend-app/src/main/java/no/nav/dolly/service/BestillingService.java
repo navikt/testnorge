@@ -7,6 +7,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
+import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -70,7 +71,8 @@ public class BestillingService {
     }
 
     public List<Bestilling> fetchMalBestillinger() {
-        return bestillingRepository.findMalBestilling().orElse(emptyList());
+        String userId = getContext().getAuthentication().getPrincipal().toString();
+        return bestillingRepository.findMalBestilling(userId).orElse(emptyList());
     }
 
     @Transactional
