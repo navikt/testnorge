@@ -28,7 +28,7 @@ import no.nav.registre.sam.domain.database.TSamHendelse;
 import no.nav.registre.sam.domain.database.TSamMelding;
 import no.nav.registre.sam.domain.database.TSamVedtak;
 import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
-import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Service
 @Slf4j

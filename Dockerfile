@@ -1,4 +1,4 @@
-FROM navikt/java:8
+FROM navikt/java:11
 LABEL maintainer="Team Registre"
 
 ADD "sam-core/target/testnorge-sam-app.jar" /app/app.jar
