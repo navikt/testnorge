@@ -5,11 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +37,7 @@ public class ApplicationManager {
     public ApplicationManager(KubernetesController kubernetesController, ScheduledExecutorService scheduledExecutorService) {
         this.kubernetesController = kubernetesController;
         this.scheduledExecutorService = scheduledExecutorService;
-        this.activeApplications = new HashMap<>();
+        this.activeApplications = new ConcurrentHashMap<>();
     }
 
     public void startApplication(SyntConsumer app) throws ApiException, InterruptedException {
@@ -47,7 +46,7 @@ public class ApplicationManager {
         }
 
         if (activeApplications.containsKey(app.getAppName())) {
-            activeApplications.get(app.getAppName()).cancel(true);
+            activeApplications.get(app.getAppName()).cancel(false);
         }
 
         log.info("Scheduling shutdown for \'{}\' at {}.",
@@ -62,9 +61,7 @@ public class ApplicationManager {
         try {
             kubernetesController.takedownImage(appId);
             activeApplications.remove(appId);
-        } catch (ApiException e) {
-            log.error("Could not delete application \'{}\'.\n{}", appId, e.getMessage());
-        }
+        } catch (ApiException ignored) {}
     }
 
     public boolean applicationIsAlive(String appId) {

@@ -9,6 +9,8 @@ import io.kubernetes.client.models.V1DeleteOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -24,6 +26,9 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class KubernetesController {
+
+    @Value("${delete-application-url}")
+    private String deleteApplicaitonUrl;
 
     private final String GROUP = "nais.io";
     private final String VERSION = "v1alpha1";
@@ -70,12 +75,16 @@ public class KubernetesController {
 
     public void takedownImage(String appName) throws ApiException, JsonSyntaxException {
 
+        RequestEntity deleteRequest = RequestEntity.delete(new UriTemplate(deleteApplicaitonUrl).expand(NAMESPACE, appName)).build();
+
         if (existsOnCluster(appName)) {
             V1DeleteOptions deleteOptions = new V1DeleteOptions();
 
             try {
                 api.deleteNamespacedCustomObject(GROUP, VERSION, NAMESPACE, PLURAL, appName, deleteOptions,
                         null, null, null);
+
+                ResponseEntity<String> result = restTemplate.exchange(deleteRequest, String.class);
                 log.info("Successfully deleted application \'{}\'", appName);
 
             } catch (JsonSyntaxException e) { // TODO: When does this happen?
@@ -90,6 +99,8 @@ public class KubernetesController {
             }
 
         } else {
+
+            ResponseEntity<String> result = restTemplate.exchange(deleteRequest, String.class);
             log.info("No application named \'{}\' found. Unable to delete.", appName);
             throw new IllegalArgumentException("No application named \'" + appName + "\' found. Unable to delete.");
         }

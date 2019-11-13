@@ -101,7 +101,7 @@ public class SyntController {
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-arena-aap" })
     public ResponseEntity<List<AAP115Melding>> generateAAP11_5(
             @ApiParam(value = "Antall AAP11_5 meldinger", required = true)
-            @RequestParam Integer numToGenerate
+            @RequestParam int numToGenerate
     ) {
         InputValidator.validateInput(numToGenerate);
         List<AAP115Melding> response = (List<AAP115Melding>)
@@ -116,7 +116,7 @@ public class SyntController {
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-arena-aap" })
     public ResponseEntity<List<AAPMelding>> generateAAPNyRettighet(
             @ApiParam(value = "Antall AAP meldinger/nye rettigheter", required = true)
-            @RequestParam Integer numToGenerate
+            @RequestParam int numToGenerate
     ) {
         InputValidator.validateInput(numToGenerate);
         List<AAPMelding> response = (List<AAPMelding>)
