@@ -12,7 +12,7 @@ import './bestillingsveileder.less'
 const steps = [Steg1, Steg2]
 
 export const Bestillingsveileder = () => {
-	const [step, setStep] = useState(0)
+	const [step, setStep] = useState(1)
 
 	const isLastStep = () => step === steps.length - 1
 	const handleBack = () => step !== 0 && setStep(step - 1)

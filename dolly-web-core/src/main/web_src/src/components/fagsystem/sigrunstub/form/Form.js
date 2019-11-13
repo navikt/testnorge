@@ -1,39 +1,41 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FieldArray, Field } from 'formik'
 import * as Yup from 'yup'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FieldArrayAddButton, FieldArrayRemoveButton } from '~/components/ui/form/formUtils'
+import _get from 'lodash/get'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
-import { Grunnlag } from './grunnlag'
+import { InntektsaarForm } from './inntektsaarForm'
+import { VisAlleInntektsaar } from './visAlleInntektsaar'
 
-export const initialValues = {
+export const SigrunstubForm = ({ formikBag }) => {
+	const [alleInntekter, setAlleInntekter] = useState([])
+	return (
+		<React.Fragment>
+			<Panel heading="Inntekt" hasErrors={panelError(formikBag)}>
+				<InntektsaarForm alleInntekter={alleInntekter} setAlleInntekter={setAlleInntekter} />
+
+				<button onClick={() => leggTilInntektsaar(formikBag, alleInntekter, setAlleInntekter)}>
+					Legg til år
+				</button>
+				{/* Vis frem formikBag */}
+				<VisAlleInntektsaar formikBag={formikBag} />
+			</Panel>
+		</React.Fragment>
+	)
+}
+
+SigrunstubForm.initialValues = {
 	sigrunstub: [
 		{
-			// grunnlag: [{
-			//     tekniskNavn: '',
-			//     verdi: ''
-			// }],
+			grunnlag: [],
 			inntektsaar: '',
-			// svalbardGrunnlag: [{
-			//     tekniskNavn: '',
-			//     verdi: ''
-			// }],
+			svalbardGrunnlag: [],
 			tjeneste: ''
 		}
 	]
 }
 
-const initialGrunnlag = {
-	tekniskNavn: '',
-	verdi: ''
-}
-
-export const validation = {
+SigrunstubForm.validation = {
 	sigrunstub: Yup.object({
 		grunnlag: [
 			{
@@ -60,130 +62,40 @@ export const validation = {
 	})
 }
 
-export const SigrunstubForm = ({ formikProps }) => {
-	return (
-		<React.Fragment>
-			<Panel heading="Inntekt" hasErrors={panelError(formikProps)}>
-				<FieldArray
-					name="sigrunstub"
-					render={arrayHelpers => (
-						<Kategori>
-							{formikProps.values.sigrunstub.map((curr, idx) => (
-								<div key={idx}>
-									<FormikTextInput name={`sigrunstub.${idx}.inntektsaar`} label="År" />
-									<FormikSelect
-										name={`sigrunstub[${idx}].tjeneste`}
-										label="Tjeneste"
-										options={Options('tjeneste')}
-									/>
-									{formikProps.values.sigrunstub[idx].tjeneste !== '' &&
-										renderGrunnlag(`${arrayHelpers.name}[${idx}]`, idx)}
-									{formikProps.values.sigrunstub[idx].tjeneste === 'SUMMERT_SKATTEGRUNNLAG' &&
-										renderGrunnlag(`${arrayHelpers.name}[${idx}]`, idx, true)}
-									<FieldArrayRemoveButton
-										title="fjern inntekt"
-										onClick={e => arrayHelpers.remove(idx)}
-									/>
-								</div>
-							))}
-							<FieldArrayAddButton
-								title="Inntekt"
-								onClick={e => arrayHelpers.push(initialValues.sigrunstub[0])}
-							/>
-						</Kategori>
-					)}
-				/>
-			</Panel>
-		</React.Fragment>
-	)
+const leggTilInntektsaar = (formikBag, alleInntekter, setAlleInntekter) => {
+	//TODO: Finne en bedre måte å hente counts på (idx og kdx)
+	const idx =
+		formikBag.values.sigrunstub[0].grunnlag.length === 0 &&
+		formikBag.values.sigrunstub[0].svalbardGrunnlag.length === 0
+			? 0
+			: formikBag.values.sigrunstub.length
+
+	formikBag.setFieldValue(`sigrunstub[${idx}].inntektsaar`, alleInntekter[0].inntektsaar)
+	formikBag.setFieldValue(`sigrunstub[${idx}].tjeneste`, alleInntekter[0].tjeneste)
+
+	let grunnlagCount = -1
+	let svalbardGrunnlagCount = -1
+
+	alleInntekter.forEach((inntekt, jdx) => {
+		let grunnlag = ''
+		let kdx = ''
+
+		if (inntekt.inntektssted === 'Svalbard') {
+			grunnlag = 'svalbardGrunnlag'
+			svalbardGrunnlagCount++
+			kdx = svalbardGrunnlagCount
+		} else {
+			grunnlag = 'grunnlag'
+			grunnlagCount++
+			kdx = grunnlagCount
+		}
+
+		formikBag.setFieldValue(
+			`sigrunstub[${idx}].${grunnlag}[${kdx}].tekniskNavn`,
+			inntekt.tekniskNavn
+		)
+		formikBag.setFieldValue(`sigrunstub[${idx}].${grunnlag}[${kdx}].verdi`, inntekt.verdi)
+	})
+
+	setAlleInntekter([])
 }
-
-const renderGrunnlag = (name, idx, svalbard = false) => {
-	const inntektssted = svalbard ? 'svalbardGrunnlag' : 'grunnlag'
-	return (
-		<Field name={name}>
-			{fieldProps => {
-				return (
-					<FieldArray name={`${fieldProps.field.name}.${inntektssted}`}>
-						{arrayHelpers => (
-							<React.Fragment>
-								{fieldProps.field.value[inntektssted] && (
-									<div>
-										{fieldProps.field.value[inntektssted].map((grunnlag, index) => {
-											return (
-												<div>
-													<FormikSelect
-														name={`sigrunstub[${idx}].${inntektssted}[${index}].tekniskNavn`}
-														label="Type inntekt"
-														kodeverk={grunnlag.tjeneste}
-													/>
-													<FormikTextInput
-														name={`sigrunstub.${idx}.${inntektssted}[0].verdi`}
-														label="Beløp"
-													/>
-													<FieldArrayRemoveButton
-														title="fjern inntekt"
-														onClick={e => arrayHelpers.remove(index)}
-													/>
-												</div>
-											)
-										})}
-									</div>
-								)}
-
-								<FieldArrayAddButton
-									//Lager to knapper: Fastland og svalbard, men vil jo egentlig helst ha 1 knapp
-									title={`Inntekt fra ${svalbard ? 'Svalbard' : 'fastlandet'}`}
-									onClick={e => arrayHelpers.push({ [inntektssted]: initialGrunnlag })}
-								/>
-
-								{/* Eventuelt kan vi lage en felles knapp der bruker først velger fastland 
-                                eller svalbard (som ikke blir lagret i formik) 
-                                og initiell grunnlag eller svalbardGrunnlag blir lagt til med arrayHelpers */}
-								{/* Denne fungerer ikke. Bare pseudokode 
-                                (vet at jeg ikke kan returnere en knapp til onClick. Bare for å vise tankegangen).  */}
-								{/* {addButtonFastlandEllerSvalbard(arrayHelpers)}  */}
-							</React.Fragment>
-						)}
-					</FieldArray>
-				)
-			}}
-		</Field>
-	)
-}
-
-//Disse er bare brukt i forslaget under "Eventuelt" over her.
-
-// const addButtonFastland = (arrayHelpers) => {
-//     <FieldArrayAddButton
-//         title= 'Inntekt'
-//         onClick={e => arrayHelpers.push({ [grunnlag]: initialGrunnlag })}
-//     />
-// }
-
-// const addButtonFastlandEllerSvalbard = (arrayHelpers) => {
-//     return <FieldArrayAddButton
-//         title= 'Inntekt'
-//         onClick={fastlandEllerSvalbard(arrayHelpers)}
-//     />
-// }
-
-// const fastlandEllerSvalbard = (arrayHelpers) => {
-//     const svalbardEllerEi
-//     <DollySelect
-//         name="inntektssted"
-//         label="Inntektssted"
-//         options={Options('inntektssted')}
-//         value={svalbardEllerEi}
-//         onChange={handleFastlandEllerSvalbard} //--> skulle ha sendt arrayHelpers
-//         isClearable={false}
-//     />
-// }
-
-// const handleFastlandEllerSvalbard = (fastlandEllerSvalbard) => {
-//     if(fastlandEllerSvalbard === 'Svalbard'){
-//         //her trenger jeg arrayHelper for å arrayHelpers.push({ [svalbardGrunnlag]: initialGrunnlag })
-//     } else {
-//          //her trenger jeg arrayHelper for å arrayHelpers.push({ [grunnlag]: initialGrunnlag })
-//     }
-// }

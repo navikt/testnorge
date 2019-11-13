@@ -6,7 +6,9 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 
 export const Adresser = ({ formikBag }) => {
 	return (
-		<Panel heading="Adresser" startOpen>
+		<Panel heading="Adresser">
+			{' '}
+			{/* startOpen */}
 			<Boadresse formikBag={formikBag} />
 			<MatrikkelAdresse formikBag={formikBag} />
 			<FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
