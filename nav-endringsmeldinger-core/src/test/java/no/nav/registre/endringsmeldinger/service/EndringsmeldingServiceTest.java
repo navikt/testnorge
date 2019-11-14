@@ -34,7 +34,7 @@ import no.nav.registre.endringsmeldinger.consumer.rs.NavEndringsmeldingerSynteti
 import no.nav.registre.endringsmeldinger.consumer.rs.TpsfConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageResponse;
 import no.nav.registre.endringsmeldinger.provider.rs.requests.SyntetiserNavEndringsmeldingerRequest;
-import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EndringsmeldingServiceTest {

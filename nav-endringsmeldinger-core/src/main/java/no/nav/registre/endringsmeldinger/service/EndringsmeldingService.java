@@ -32,7 +32,7 @@ import no.nav.registre.endringsmeldinger.consumer.rs.exceptions.SyntetiseringsEx
 import no.nav.registre.endringsmeldinger.consumer.rs.requests.SendTilTpsRequest;
 import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageResponse;
 import no.nav.registre.endringsmeldinger.provider.rs.requests.SyntetiserNavEndringsmeldingerRequest;
-import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Service
 @Slf4j

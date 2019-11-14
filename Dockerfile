@@ -1,4 +1,4 @@
-FROM navikt/java:8
+FROM navikt/java:11
 LABEL maintainer="Team Registre"
 
 ADD "nav-endringsmeldinger-core/target/testnorge-nav-endringsmeldinger-app.jar" /app/app.jar
