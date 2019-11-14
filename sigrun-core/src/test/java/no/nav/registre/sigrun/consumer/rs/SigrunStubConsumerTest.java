@@ -89,8 +89,8 @@ public class SigrunStubConsumerTest {
 
         assertThat(result.getStatusCode(), equalTo(HttpStatus.OK));
         assertNotNull(result.getBody());
-        assertThat(result.getBody().toString(), containsString(statusCodeOk.toString()));
-        assertThat(result.getBody().toString(), containsString(statusCodeInternalServerError.toString()));
+        assertThat(result.getBody().toString(), containsString(String.valueOf(statusCodeOk.value())));
+        assertThat(result.getBody().toString(), containsString(String.valueOf(statusCodeInternalServerError.value())));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class SigrunStubConsumerTest {
                 .withRequestBody(equalToJson(getResourceFileContent("inntektsmeldinger_test.json")))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
-                        .withBody(("[" + statusCodeOk + ", " + statusCodeInternalServerError + "]"))));
+                        .withBody(("[" + statusCodeOk.value() + ", " + statusCodeInternalServerError.value() + "]"))));
     }
 
     private void stubSigrunStubConsumerHentSkattegrunnlag() {

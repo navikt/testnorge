@@ -14,21 +14,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -70,6 +57,25 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- METRICS -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
+        <!--LOMBOK -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- LOGGING -->
         <dependency>
             <groupId>no.nav.freg</groupId>
             <artifactId>freg-spring-boot-starter-log-exceptions</artifactId>
@@ -80,17 +86,19 @@
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash.logback.encoder.version}</version>
         </dependency>
+
+        <!--HODEJEGEREN-->
+        <dependency>
+            <groupId>no.nav.registre</groupId>
+            <artifactId>testnorge-consumers</artifactId>
+            <version>1.10.7-RELEASE</version>
+        </dependency>
+
         <dependency>
             <groupId>no.nav.registre</groupId>
             <artifactId>sigrun-domain</artifactId>
             <version>1.5.4</version>
             <scope>compile</scope>
-        </dependency>
-        <!--HODEJEGEREN-->
-        <dependency>
-            <groupId>no.nav.registre</groupId>
-            <artifactId>testnorge-consumers</artifactId>
-            <version>1.8.0-RELEASE</version>
         </dependency>
     </dependencies>
 
@@ -100,14 +108,16 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>repackage</id>
-                        <configuration>
-                            <classifier>exec</classifier>
-                        </configuration>
-                    </execution>
-                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler-plugin.version}</version>
+                <configuration>
+                    <source>1.11</source>
+                    <target>1.11</target>
+                    <release>11</release>
+                </configuration>
             </plugin>
         </plugins>
     </build>
