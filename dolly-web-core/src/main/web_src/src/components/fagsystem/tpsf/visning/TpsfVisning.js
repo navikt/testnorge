@@ -1,12 +1,12 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import '~/components/fagsystem/fagsystemVisning/fagsystemVisning.less'
-import Personinfo from './Personinfo'
-import Nasjonalitet from './Nasjonalitet'
-import Boadresse from './Boadresse'
-import Postadresse from './Postadresse'
-import Identhistorikk from './Identhistorikk'
-import Relasjoner from './Relasjoner'
+import Personinfo from './partials/Personinfo'
+import Nasjonalitet from './partials/Nasjonalitet'
+import Boadresse from './partials/Boadresse'
+import Postadresse from './partials/Postadresse'
+import Identhistorikk from './partials/Identhistorikk'
+import Relasjoner from './partials/Relasjoner'
 
 export default function TpsfVisning(props) {
 	const data = useSelector(state => state)
