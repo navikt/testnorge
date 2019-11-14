@@ -1,8 +1,8 @@
-import { useEffectOnce } from 'react-use'
+import { useEffect } from 'react'
 
 export const KodeverkWrapper = ({ navn, kodeverk, fetchKodeverk, children }) => {
-	useEffectOnce(() => {
+	useEffect(() => {
 		fetchKodeverk(navn)
-	}, [])
+	})
 	return children(kodeverk)
 }

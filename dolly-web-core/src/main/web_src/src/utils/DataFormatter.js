@@ -102,8 +102,8 @@ Formatters.oversettBoolean = value => {
 	return value === true || value === 'true'
 		? 'Ja'
 		: value === false || value === 'false'
-			? 'Nei'
-			: value
+		? 'Nei'
+		: value
 }
 
 Formatters.booleanToServicebehov = value => {
@@ -223,4 +223,11 @@ Formatters.showLabel = (optionsGruppe, value) => {
 	}
 }
 
+Formatters.getYearRangeOptions = (start, stop) => {
+	let years = []
+	for (let i = start; i <= stop; i++) {
+		years.push({ value: i, label: i.toString() })
+	}
+	return years.reverse()
+}
 export default Formatters
