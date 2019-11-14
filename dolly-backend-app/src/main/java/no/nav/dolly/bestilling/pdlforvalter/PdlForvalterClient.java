@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.pdlforvalter;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.StausResponse.DONE;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import java.util.List;
@@ -38,6 +39,8 @@ import no.nav.dolly.metrics.Timed;
 @RequiredArgsConstructor
 public class PdlForvalterClient implements ClientRegister {
 
+    public enum StausResponse {DONE, PENDING, DELETING}
+
     public static final String KILDE = "Dolly";
     public static final String SYNTH_ENV = "q2";
     public static final String KONTAKTINFORMASJON_DOEDSBO = "KontaktinformasjonForDoedsbo";
@@ -46,11 +49,14 @@ public class PdlForvalterClient implements ClientRegister {
     public static final String PDL_FORVALTER = "PdlForvalter";
 
     private static final String HENDELSE_ID = "hendelseId";
+    private static final int MAX_COUNT = 20;
+    private static final int TIMEOUT = 50;
 
     private final PdlForvalterConsumer pdlForvalterConsumer;
     private final TpsfService tpsfService;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final PdlSyncDeterminator pdlSyncDeterminator;
 
     @Timed(name = "providers", tags = { "operation", "gjenopprettPdlForvalter" })
     @Override
@@ -64,7 +70,7 @@ public class PdlForvalterClient implements ClientRegister {
 
                 hentTpsPersondetaljer(tpsPerson);
                 sendDeleteIdent(tpsPerson);
-                sendPdlPersondetaljer(tpsPerson);
+                sendPdlPersondetaljer(pdlSyncDeterminator.isRequiredSync(bestilling), tpsPerson);
 
                 if (nonNull(bestilling.getPdlforvalter())) {
                     Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
@@ -109,7 +115,7 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendPdlPersondetaljer(TpsPerson tpsPerson) {
+    private void sendPdlPersondetaljer(boolean isRequiredSync, TpsPerson tpsPerson) {
 
         if (nonNull(tpsPerson.getPersondetalj())) {
             sendOpprettPerson(tpsPerson.getPersondetalj());
@@ -118,6 +124,7 @@ public class PdlForvalterClient implements ClientRegister {
             sendKjoenn(tpsPerson.getPersondetalj());
             sendAdressebeskyttelse(tpsPerson.getPersondetalj());
             sendDoedsfall(tpsPerson.getPersondetalj());
+            optionalSyncMedPdl(isRequiredSync, tpsPerson.getPersondetalj().getIdent());
 
             tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
                 sendOpprettPerson(relasjon.getPersonRelasjonMed());
@@ -127,6 +134,28 @@ public class PdlForvalterClient implements ClientRegister {
                 sendAdressebeskyttelse(relasjon.getPersonRelasjonMed());
                 sendDoedsfall(relasjon.getPersonRelasjonMed());
             });
+        }
+    }
+
+    private void optionalSyncMedPdl(boolean isRequiredSync, String ident) {
+
+        if (isRequiredSync) {
+            int count = 0;
+            try {
+                while (count++ < MAX_COUNT && !DONE.name().equals(pdlForvalterConsumer.getPersonstatus(ident).getBody().get("status").asText())) {
+                    Thread.sleep(TIMEOUT);
+                }
+            } catch (InterruptedException e) {
+                log.error("Sync mot PDL-forvalter ble avbrutt.");
+            } catch (RuntimeException e) {
+                log.error("Feilet å lese personstatus for ident {} fra PDL-forvalter.", ident, e);
+            }
+
+            if (count < MAX_COUNT) {
+                log.info("Synkronisering mot PDL-forvalter tok {} ms.", count * TIMEOUT);
+            } else {
+                log.warn("Synkronisering mot PDL-forvalter gitt opp etter 1000 ms.");
+            }
         }
     }
 
