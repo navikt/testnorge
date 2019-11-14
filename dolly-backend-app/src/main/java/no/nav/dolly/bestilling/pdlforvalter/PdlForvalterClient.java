@@ -48,6 +48,8 @@ public class PdlForvalterClient implements ClientRegister {
     public static final String PDL_FORVALTER = "PdlForvalter";
 
     private static final String HENDELSE_ID = "hendelseId";
+    private static final int MAX_COUNT = 20;
+    private static final int TIMEOUT = 50;
 
     private final PdlForvalterConsumer pdlForvalterConsumer;
     private final TpsfService tpsfService;
@@ -133,9 +135,6 @@ public class PdlForvalterClient implements ClientRegister {
     }
 
     private void optionalSyncMedPdl(boolean isRequiredSync, String ident) {
-
-        final int MAX_COUNT = 20;
-        final int TIMEOUT = 50;
 
         if (isRequiredSync) {
             int count = 0;
