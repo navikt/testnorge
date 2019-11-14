@@ -6,7 +6,6 @@ metadata:
   labels:
     team: orkestrator
 spec:
-  image: "docker.adeo.no:5000/registre/testnorge-tp"
   port: 8080
   liveness:
     path: /internal/isAlive

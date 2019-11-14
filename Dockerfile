@@ -1,4 +1,4 @@
-FROM navikt/java:8
+FROM navikt/java:11
 LABEL maintainer="Team Registre"
 
 ADD "tp-core/target/testnorge-tp-app-exec.jar" /app/app.jar

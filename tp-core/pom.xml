@@ -11,7 +11,6 @@
         <version>1.4.0-SNAPSHOT</version>
     </parent>
 
-
     <artifactId>tp-core</artifactId>
 
     <dependencies>
@@ -72,6 +71,7 @@
         <dependency>
             <groupId>no.nav.freg</groupId>
             <artifactId>freg-spring-boot-starter-log-exceptions</artifactId>
+            <version>${log.exceptions.version}</version>
         </dependency>
 
         <dependency>
@@ -96,10 +96,12 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger.version}</version>
         </dependency>
 
         <!--HODEJEGEREN-->
@@ -110,21 +112,22 @@
         </dependency>
     </dependencies>
 
-
     <build>
         <finalName>testnorge-tp-app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>repackage</id>
-                        <configuration>
-                            <classifier>exec</classifier>
-                        </configuration>
-                    </execution>
-                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler-plugin.version}</version>
+                <configuration>
+                    <source>1.11</source>
+                    <target>1.11</target>
+                    <release>11</release>
+                </configuration>
             </plugin>
         </plugins>
     </build>
