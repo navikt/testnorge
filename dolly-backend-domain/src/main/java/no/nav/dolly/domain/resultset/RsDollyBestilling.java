@@ -2,6 +2,9 @@ package no.nav.dolly.domain.resultset;
 
 import static java.util.Objects.isNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,14 +12,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
+import no.nav.dolly.domain.resultset.inntektsstub.RsInntektsinformasjon;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -28,6 +29,7 @@ public class RsDollyBestilling {
     private List<String> environments;
     private String malBestillingNavn;
 
+    private RsInntektsinformasjon inntektsstub;
     private List<OpprettSkattegrunnlag> sigrunstub;
     private RsDigitalKontaktdata krrstub;
     private RsUdiPerson udistub;
