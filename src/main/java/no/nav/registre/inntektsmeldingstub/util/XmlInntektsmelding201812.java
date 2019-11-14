@@ -36,6 +36,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import no.nav.registre.inntektsmeldingstub.database.model.Arbeidsforhold;
@@ -45,7 +46,7 @@ import no.nav.registre.inntektsmeldingstub.database.model.GraderingIForeldrepeng
 import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
 import no.nav.registre.inntektsmeldingstub.database.model.NaturalytelseDetaljer;
 import no.nav.registre.inntektsmeldingstub.database.model.Periode;
-import no.nav.registre.inntektsmeldingstub.database.model.RefusjonsEndring;
+import no.nav.registre.inntektsmeldingstub.database.model.EndringIRefusjon;
 import no.nav.registre.inntektsmeldingstub.database.model.UtsettelseAvForeldrepenger;
 
 public class XmlInntektsmelding201812 {
@@ -56,33 +57,33 @@ public class XmlInntektsmelding201812 {
         return new XMLInntektsmeldingM(new XMLSkjemainnhold(
                 inntektsmelding.getYtelse(),
                 inntektsmelding.getAarsakTilInnsending(),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsgiver"), XMLArbeidsgiver.class, createArbeidsgiver(inntektsmelding.getArbeidsgiver())),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsgiverPrivat"), XMLArbeidsgiverPrivat.class, createPrivatArbeidsgiver(inntektsmelding.getPrivatArbeidsgiver())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsgiver"), XMLArbeidsgiver.class, createArbeidsgiver(inntektsmelding.getArbeidsgiver())), // nillable
+                new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsgiverPrivat"), XMLArbeidsgiverPrivat.class, createPrivatArbeidsgiver(inntektsmelding.getPrivatArbeidsgiver())), // nillable
                 inntektsmelding.getArbeidstakerFnr(),
                 inntektsmelding.isNaerRelasjon(),
-                createArbeidsforhold(inntektsmelding.getArbeidsforhold()),
+                createArbeidsforhold(inntektsmelding.getArbeidsforhold()), // nillable
                 createRefusjon(inntektsmelding.getRefusjonsbeloepPrMnd(),
                         inntektsmelding.getRefusjonsopphoersdato(),
-                        inntektsmelding.getRefusjonsEndringListe()
-                ),
+                        inntektsmelding.getEndringIRefusjonListe()
+                ), // nillable
                 createSykepengerIArbeidsgiverperioden(inntektsmelding.getSykepengerBegrunnelseForReduksjonEllerIkkeUtbetalt(),
                         inntektsmelding.getSykepengerBruttoUtbetalt(),
                         inntektsmelding.getSykepengerPerioder()
-                ),
+                ), // nillable
                 new JAXBElement<>(new QName(NAMESPACE_URI, "startdatoForeldrepengeperiode"), LocalDate.class, inntektsmelding.getStartdatoForeldrepengeperiode()),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "OpphoerAvNaturalytelseListe"), XMLOpphoerAvNaturalytelseListe.class, new XMLOpphoerAvNaturalytelseListe(
                         inntektsmelding.getOpphoerAvNaturalytelseListe().stream().map(XmlInntektsmelding201812::createNaturalytelse).collect(Collectors.toList())
-                )),
+                )), // nillable
                 new JAXBElement<>(new QName(NAMESPACE_URI, "GjenopptakelseNaturalytelseListe"), XMLGjenopptakelseNaturalytelseListe.class, new XMLGjenopptakelseNaturalytelseListe(
                         inntektsmelding.getGjenopptakelseNaturalytelseListe().stream().map(XmlInntektsmelding201812::createNaturalytelse).collect(Collectors.toList())
-                )),
+                )), // nillable
                 new XMLAvsendersystem(inntektsmelding.getAvsendersystemNavn(), inntektsmelding.getAvsendersystemVersjon(),
                         new JAXBElement<>(new QName(NAMESPACE_URI, "innsendingstidspunkt"), LocalDateTime.class, inntektsmelding.getInnsendingstidspunkt())
                 ),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "PleiepengerPeriodeListe"), XMLPleiepengerPeriodeListe.class, new XMLPleiepengerPeriodeListe(
                         inntektsmelding.getPleiepengerPeriodeListe().stream().map(XmlInntektsmelding201812::createPeriode).collect(Collectors.toList())
-                )),
-                createOmsorgspenger(inntektsmelding.isOmsorgHarUtbetaltPliktigeDager(), inntektsmelding.getOmsorgspengerFravaersPeriodeListe(), inntektsmelding.getOmsorgspengerDelvisFravaersListe())
+                )), // nillable
+                createOmsorgspenger(inntektsmelding.isOmsorgHarUtbetaltPliktigeDager(), inntektsmelding.getOmsorgspengerFravaersPeriodeListe(), inntektsmelding.getOmsorgspengerDelvisFravaersListe()) // nillable
         ), Collections.emptyMap());
     }
 
@@ -115,7 +116,7 @@ public class XmlInntektsmelding201812 {
                 ));
     }
 
-    private static JAXBElement<XMLRefusjon> createRefusjon(double refusjonsbeloepPrMnd, LocalDate refusjonsopphoersdato, List<RefusjonsEndring> endringer) {
+    private static JAXBElement<XMLRefusjon> createRefusjon(double refusjonsbeloepPrMnd, LocalDate refusjonsopphoersdato, List<EndringIRefusjon> endringer) {
         return new JAXBElement<>(new QName(NAMESPACE_URI, "Refusjon"), XMLRefusjon.class, new XMLRefusjon(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsbeloepPrMnd"), BigDecimal.class, new BigDecimal(refusjonsbeloepPrMnd)),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsopphoersdato"), LocalDate.class, refusjonsopphoersdato),
@@ -123,24 +124,27 @@ public class XmlInntektsmelding201812 {
         ));
     }
 
-    private static JAXBElement<XMLEndringIRefusjonsListe> createEndringIRefusjonsListe(List<RefusjonsEndring> endringer) {
+    private static JAXBElement<XMLEndringIRefusjonsListe> createEndringIRefusjonsListe(List<EndringIRefusjon> endringer) {
         return new JAXBElement<>(new QName(NAMESPACE_URI, "endringIRefusjonListe"), XMLEndringIRefusjonsListe.class,
                 new XMLEndringIRefusjonsListe(endringer.stream().map(XmlInntektsmelding201812::createEndringIRefusjon).collect(Collectors.toList()))
         );
     }
 
     private static XMLArbeidsgiver createArbeidsgiver(Arbeidsgiver arbeidsgiver) {
+        if (Objects.isNull(arbeidsgiver)) { return null; }
         return new XMLArbeidsgiver(arbeidsgiver.getVirksomhetsnummer(),
                 new XMLKontaktinformasjon(arbeidsgiver.getKontaktinformasjonNavn(), arbeidsgiver.getTelefonnummer())
         );
     }
 
     private static XMLArbeidsgiverPrivat createPrivatArbeidsgiver(Arbeidsgiver arbeidsgiver) {
+        if (Objects.isNull(arbeidsgiver)) { return null; }
         return new XMLArbeidsgiverPrivat(arbeidsgiver.getVirksomhetsnummer(),
                 new XMLKontaktinformasjon(arbeidsgiver.getKontaktinformasjonNavn(), arbeidsgiver.getTelefonnummer()));
     }
 
     private static JAXBElement<XMLArbeidsforhold> createArbeidsforhold(Arbeidsforhold arbeidsforhold) {
+        if (Objects.isNull(arbeidsforhold)) { return null; }
         return new JAXBElement<>(new QName(NAMESPACE_URI, "Arbeidsforhold"), XMLArbeidsforhold.class, new XMLArbeidsforhold(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsforholdId"), String.class, arbeidsforhold.getArbeidforholdsId()),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "foersteFravaersdag"), LocalDate.class, arbeidsforhold.getFoersteFravaersdag()),
@@ -199,7 +203,7 @@ public class XmlInntektsmelding201812 {
         );
     }
 
-    private static XMLEndringIRefusjon createEndringIRefusjon(RefusjonsEndring endring) {
+    private static XMLEndringIRefusjon createEndringIRefusjon(EndringIRefusjon endring) {
         return new XMLEndringIRefusjon(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "endringsdato"), LocalDate.class, endring.getEndringsDato()),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsbeloepPrMnd"), BigDecimal.class, new BigDecimal(endring.getRefusjonsbeloepPrMnd()))

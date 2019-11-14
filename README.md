@@ -4,7 +4,7 @@ Stub for lagring og innsending av inntektsmeldinger.
 
 ## Mangler
 - [ ] Foreløpig ikke implementert innsending av meldingene
-- [ ] XMl output feiler, se todo i koden
+- [x] XML output feiler, se todo i koden
 - [x] Datbase er ikke satt opp i vault
 - [x] Migrasjonscript er ikke på plass
 - [ ] Testing

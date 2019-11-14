@@ -46,7 +46,7 @@ import no.nav.registre.inntektsmeldingstub.database.model.GraderingIForeldrepeng
 import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
 import no.nav.registre.inntektsmeldingstub.database.model.NaturalytelseDetaljer;
 import no.nav.registre.inntektsmeldingstub.database.model.Periode;
-import no.nav.registre.inntektsmeldingstub.database.model.RefusjonsEndring;
+import no.nav.registre.inntektsmeldingstub.database.model.EndringIRefusjon;
 import no.nav.registre.inntektsmeldingstub.database.model.UtsettelseAvForeldrepenger;
 
 public class XmlInntektsmelding201809 {
@@ -62,7 +62,7 @@ public class XmlInntektsmelding201809 {
                 createArbeidsgiver(inntektsmelding.getArbeidsgiver()),
                 inntektsmelding.getArbeidstakerFnr(), inntektsmelding.isNaerRelasjon(),
                 createArbeidsforhold(inntektsmelding.getArbeidsforhold()),
-                createRefusjon(inntektsmelding.getRefusjonsbeloepPrMnd(), inntektsmelding.getRefusjonsopphoersdato(), inntektsmelding.getRefusjonsEndringListe()),
+                createRefusjon(inntektsmelding.getRefusjonsbeloepPrMnd(), inntektsmelding.getRefusjonsopphoersdato(), inntektsmelding.getEndringIRefusjonListe()),
                 createSykepengerIArbeidsgiverperioden(inntektsmelding.getSykepengerBegrunnelseForReduksjonEllerIkkeUtbetalt(),
                         inntektsmelding.getSykepengerBruttoUtbetalt(),
                         inntektsmelding.getSykepengerPerioder()),
@@ -112,7 +112,7 @@ public class XmlInntektsmelding201809 {
                 ));
     }
 
-    private static JAXBElement<XMLRefusjon> createRefusjon(double refusjonsbeloepPrMnd, LocalDate refusjonsopphoersdato, List<RefusjonsEndring> endringer) {
+    private static JAXBElement<XMLRefusjon> createRefusjon(double refusjonsbeloepPrMnd, LocalDate refusjonsopphoersdato, List<EndringIRefusjon> endringer) {
         return new JAXBElement<>(new QName(NAMESPACE_URI, "Refusjon"), XMLRefusjon.class, new XMLRefusjon(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsbeloepPrMnd"), BigDecimal.class, new BigDecimal(refusjonsbeloepPrMnd)),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsopphoersdato"), LocalDate.class, refusjonsopphoersdato),
@@ -120,7 +120,7 @@ public class XmlInntektsmelding201809 {
         ));
     }
 
-    private static JAXBElement<XMLEndringIRefusjonsListe> createEndringIRefusjonsListe(List<RefusjonsEndring> endringer) {
+    private static JAXBElement<XMLEndringIRefusjonsListe> createEndringIRefusjonsListe(List<EndringIRefusjon> endringer) {
         return new JAXBElement<>(new QName(NAMESPACE_URI, "endringIRefusjonListe"), XMLEndringIRefusjonsListe.class,
                 new XMLEndringIRefusjonsListe(endringer.stream().map(XmlInntektsmelding201809::createEndringIRefusjon).collect(Collectors.toList()))
         );
@@ -191,7 +191,7 @@ public class XmlInntektsmelding201809 {
         );
     }
 
-    private static XMLEndringIRefusjon createEndringIRefusjon(RefusjonsEndring endring) {
+    private static XMLEndringIRefusjon createEndringIRefusjon(EndringIRefusjon endring) {
         return new XMLEndringIRefusjon(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "endringsdato"), LocalDate.class, endring.getEndringsDato()),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsbeloepPrMnd"), BigDecimal.class, new BigDecimal(endring.getRefusjonsbeloepPrMnd()))

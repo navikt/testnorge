@@ -2,6 +2,7 @@ package no.nav.registre.inntektsmeldingstub.provider;
 
 import lombok.RequiredArgsConstructor;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLInntektsmeldingM;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +23,6 @@ import no.nav.registre.inntektsmeldingstub.util.XmlInntektsmelding201812;
 @RestController
 @RequestMapping("/api/v1/inntektsmelding")
 @RequiredArgsConstructor
-//TODO: Fiks xml representasjon av output, nå klarer den ikke konvertere
 public class InntektsmeldingController {
 
     private final InntektsmeldingService service;
@@ -51,9 +51,11 @@ public class InntektsmeldingController {
         );
     }
 
-    @GetMapping(value = "/2018/12/xml/{id}", produces = "application/xml")
+    @GetMapping(value = "/2018/12/xml/{id}", produces = MediaType.APPLICATION_XML_VALUE)
     public no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM hentInntektsmelding201812(@PathVariable Long id) {
-        return XmlInntektsmelding201812.createInntektsmelding(service.findInntektsmelding(id));
+    // public String hentInntektsmelding201812(@PathVariable Long id) {
+        var tmp = XmlInntektsmelding201812.createInntektsmelding(service.findInntektsmelding(id));
+        return tmp;
     }
 
     @GetMapping("/2018/12/json/{id}")

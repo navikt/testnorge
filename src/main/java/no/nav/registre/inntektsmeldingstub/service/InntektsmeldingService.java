@@ -28,7 +28,7 @@ import no.nav.registre.inntektsmeldingstub.database.repository.GraderingIForeldr
 import no.nav.registre.inntektsmeldingstub.database.repository.InntektsmeldingRepository;
 import no.nav.registre.inntektsmeldingstub.database.repository.NaturalytelseDetaljerRepository;
 import no.nav.registre.inntektsmeldingstub.database.repository.PeriodeRepository;
-import no.nav.registre.inntektsmeldingstub.database.repository.RefusjonsEndringRepository;
+import no.nav.registre.inntektsmeldingstub.database.repository.EndringIRefusjonRepository;
 import no.nav.registre.inntektsmeldingstub.database.repository.UtsettelseAvForeldrepengerRepository;
 
 @Slf4j
@@ -43,7 +43,7 @@ public class InntektsmeldingService {
     private final InntektsmeldingRepository inntektsmeldingRepository;
     private final NaturalytelseDetaljerRepository naturalytelseDetaljerRepository;
     private final PeriodeRepository periodeRepository;
-    private final RefusjonsEndringRepository refusjonsEndringRepository;
+    private final EndringIRefusjonRepository endringIRefusjonRepository;
     private final UtsettelseAvForeldrepengerRepository utsettelseAvForeldrepengerRepository;
     private final EierRepository eierRepository;
 
@@ -59,9 +59,11 @@ public class InntektsmeldingService {
             if (inntektsmelding.getArbeidsgiver() == null && inntektsmelding.getPrivatArbeidsgiver() == null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Inntektsmeldingen må inneholde en arbeidsgiver");
             }
+
             if (inntektsmelding.getArbeidsgiver() != null) {
                 inntektsmelding.setArbeidsgiver(createOrFindArbeidsgiver(inntektsmelding.getArbeidsgiver()));
             }
+
             if (type == MeldingsType.TYPE_2018_12) {
                 if (inntektsmelding.getPrivatArbeidsgiver() != null) {
                     inntektsmelding.setPrivatArbeidsgiver(createOrFindArbeidsgiver(inntektsmelding.getPrivatArbeidsgiver()));
@@ -69,8 +71,9 @@ public class InntektsmeldingService {
             } else {
                 inntektsmelding.setPrivatArbeidsgiver(null);
             }
+
             inntektsmelding.setArbeidsforhold(createOrFindArbeidsforhold(inntektsmelding.getArbeidsforhold()));
-            inntektsmelding.setRefusjonsEndringListe(Lists.newArrayList(refusjonsEndringRepository.saveAll(inntektsmelding.getRefusjonsEndringListe())));
+            inntektsmelding.setEndringIRefusjonListe(Lists.newArrayList(endringIRefusjonRepository.saveAll(inntektsmelding.getEndringIRefusjonListe())));
             inntektsmelding.setSykepengerPerioder(Lists.newArrayList(periodeRepository.saveAll(inntektsmelding.getSykepengerPerioder())));
             inntektsmelding.setOpphoerAvNaturalytelseListe(Lists.newArrayList(naturalytelseDetaljerRepository.saveAll(inntektsmelding.getOpphoerAvNaturalytelseListe())));
             inntektsmelding.setGjenopptakelseNaturalytelseListe(Lists.newArrayList(naturalytelseDetaljerRepository.saveAll(inntektsmelding.getGjenopptakelseNaturalytelseListe())));

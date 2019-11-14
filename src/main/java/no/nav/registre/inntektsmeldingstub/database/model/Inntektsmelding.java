@@ -61,7 +61,7 @@ public class Inntektsmelding {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "refusjon_endring_id", referencedColumnName = "id")
     @Builder.Default
-    private List<RefusjonsEndring> refusjonsEndringListe = Collections.emptyList();
+    private List<EndringIRefusjon> endringIRefusjonListe = Collections.emptyList();
     private double sykepengerBruttoUtbetalt;
     private String sykepengerBegrunnelseForReduksjonEllerIkkeUtbetalt;
     @OneToMany(cascade = CascadeType.ALL)

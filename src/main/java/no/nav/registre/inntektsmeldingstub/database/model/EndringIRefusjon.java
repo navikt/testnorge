@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RefusjonsEndring {
+public class EndringIRefusjon {
 
     @Id
     @GeneratedValue
