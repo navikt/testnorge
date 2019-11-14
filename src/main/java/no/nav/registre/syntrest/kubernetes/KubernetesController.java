@@ -2,7 +2,6 @@ package no.nav.registre.syntrest.kubernetes;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
-import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptions;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -27,24 +25,20 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class KubernetesController {
 
-    @Value("${delete-application-url}")
-    private String deleteApplicaitonUrl;
-
     private final String GROUP = "nais.io";
     private final String VERSION = "v1alpha1";
     private final String NAMESPACE = "q2";
     private final String PLURAL = "applications";
-
-    @Autowired
-    private RestTemplate restTemplate;
-
     private final String manifestPath;
     private final UriTemplate isAliveUri;
     private final CustomObjectsApi api;
-
     private final String dockerImagePath;
     private final int maxRetries;
     private final int retryDelay;
+    @Value("${delete-application-url}")
+    private String deleteApplicaitonUrl;
+    @Autowired
+    private RestTemplate restTemplate;
 
     public KubernetesController(CustomObjectsApi customObjectsApi,
                                 @Value("${isAlive}") String isAliveUrl,
@@ -93,8 +87,12 @@ public class KubernetesController {
                     IllegalStateException ise = (IllegalStateException) e.getCause();
                     if (!Objects.isNull(ise.getMessage()) && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")) {
                         log.info("Successfully deleted application \'{}\'", appName);
-                    } else { throw e; }
-                } else { throw e; }
+                    } else {
+                        throw e;
+                    }
+                } else {
+                    throw e;
+                }
 
             }
 
@@ -110,7 +108,8 @@ public class KubernetesController {
         String response = "404";
         try {
             response = restTemplate.getForObject(isAliveUri.expand(appName), String.class);
-        } catch (HttpClientErrorException | HttpServerErrorException ignored) {}
+        } catch (HttpClientErrorException | HttpServerErrorException ignored) {
+        }
         return "1".equals(response);
     }
 
@@ -120,7 +119,7 @@ public class KubernetesController {
     }
 
 
-    private List<String> listApplicationsOnCluster() throws ApiException{
+    private List<String> listApplicationsOnCluster() throws ApiException {
 
         List<String> applications = new ArrayList<>();
 

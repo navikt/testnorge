@@ -3,6 +3,7 @@ package no.nav.registre.syntrest.domain.aap;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AAP115Melding {
+
     // legge til dato
     @JsonProperty("18-67AAR")
     String attenTilSekstisyvAar;

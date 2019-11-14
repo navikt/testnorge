@@ -13,7 +13,9 @@ public class Arbeidsforholdsmelding {
     @JsonProperty
     Arbeidsforhold arbeidsforhold;
 
-    @Getter @Setter @AllArgsConstructor
+    @Getter
+    @Setter
+    @AllArgsConstructor
     private class Arbeidsforhold {
         @JsonProperty
         AnsettelsesPeriode ansettelsesPeriode;
@@ -28,12 +30,18 @@ public class Arbeidsforholdsmelding {
         @JsonProperty
         Arbeidstaker arbeidstaker;
     }
-    @Getter @Setter @AllArgsConstructor
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
     private static class AnsettelsesPeriode {
         @JsonProperty
         String fom;
     }
-    @Getter @Setter @AllArgsConstructor
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
     private static class Arbeidsavtale {
         @JsonProperty
         String arbeidstidsordning;
@@ -46,14 +54,20 @@ public class Arbeidsforholdsmelding {
         @JsonProperty
         String yrke;
     }
-    @Getter @Setter @AllArgsConstructor
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
     private static class Arbeidsgiver {
         @JsonProperty
         String aktoertype;
         @JsonProperty
         String orgnummer;
     }
-    @Getter @Setter @AllArgsConstructor
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
     private static class Arbeidstaker {
         @JsonProperty
         String aktoertype;

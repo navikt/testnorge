@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FrikortKvittering {
+
     @JsonProperty
     String betalt;
     @JsonProperty

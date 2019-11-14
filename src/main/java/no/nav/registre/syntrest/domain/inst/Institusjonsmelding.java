@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Institusjonsmelding {
 
-    @JsonProperty("tss_ekstern_id_fk" )
+    @JsonProperty("tss_ekstern_id_fk")
     private Long tssEksternId;
 
     @JsonProperty("k_opphold_inst_t")
     private String institusjonstype;
 
-    @JsonProperty("k_pas_ka_inst_t" )
+    @JsonProperty("k_pas_ka_inst_t")
     private String kategori;
 
     @JsonProperty("dato_fom")

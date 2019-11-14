@@ -1,7 +1,7 @@
 package no.nav.registre.syntrest.consumer;
 
 import org.springframework.http.RequestEntity;
-        import org.springframework.web.util.UriTemplate;
+import org.springframework.web.util.UriTemplate;
 
 public class UriExpander {
 

@@ -8,6 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 import no.nav.registre.syntrest.kubernetes.KubernetesController;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -16,10 +20,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -31,17 +31,23 @@ import java.util.concurrent.ScheduledExecutorService;
 @Slf4j
 public class AppConfig {
 
+    private static final int TIMEOUT = 120_000;
+    private final int EXECUTOR_POOL_SIZE = 4;
     @Value("${kube-config-path}")
     private String kubeConfigPath;
-    private final int EXECUTOR_POOL_SIZE = 4;
-    private static final int TIMEOUT = 120_000;
+    @Value("${isAlive}")
+    private String isAliveUrl;
+    @Value("${docker-image-path}")
+    private String dockerImagePath;
+    @Value("${max-alive-retries}")
+    private int maxRetries;
+    @Value("${alive-retry-delay}")
+    private int retryDelay;
 
     @Bean
     ScheduledExecutorService scheduledExecutorService() {
         return Executors.newScheduledThreadPool(EXECUTOR_POOL_SIZE);
     }
-
-
 
     @Bean
     RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
@@ -81,21 +87,12 @@ public class AppConfig {
         return api;
     }
 
-    @Value("${isAlive}")
-    private String isAliveUrl;
-    @Value("${docker-image-path}")
-    private String dockerImagePath;
-    @Value("${max-alive-retries}")
-    private int maxRetries;
-    @Value("${alive-retry-delay}")
-    private int retryDelay;
     @Bean
     @DependsOn({"restTemplate", "customObjectsApi"})
     public KubernetesController kubernetesController() {
         return new KubernetesController(customObjectsApi(),
-               isAliveUrl, dockerImagePath, maxRetries, retryDelay);
+                isAliveUrl, dockerImagePath, maxRetries, retryDelay);
     }
-
 
 
     @Bean

@@ -16,10 +16,10 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Manages lifecycle of the app. Abstracts away the call to the KubernetesController.
- *
+ * <p>
  * The application manager will only manage apps that is accessed through it, although the isAlive
  * method will check any application available on the NAIS cluster.
- *
+ * <p>
  * There is also an unsatisfying pattern where the scheduledExecutorService calls a shutdown signal
  * for an app, which the calls the shutdown for itself in the Application manager. This was done
  * because no arguments can be given to a callable function.
@@ -27,11 +27,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class ApplicationManager {
 
-    @Value("${synth-package-unused-uptime}")
-    private long SHUTDOWN_TIME_DELAY_SECONDS;
-
     private final KubernetesController kubernetesController;
     private final ScheduledExecutorService scheduledExecutorService;
+    @Value("${synth-package-unused-uptime}")
+    private long SHUTDOWN_TIME_DELAY_SECONDS;
     private Map<String, ScheduledFuture<?>> activeApplications;
 
     public ApplicationManager(KubernetesController kubernetesController, ScheduledExecutorService scheduledExecutorService) {
@@ -63,7 +62,8 @@ public class ApplicationManager {
         try {
             kubernetesController.takedownImage(appId);
             activeApplications.remove(appId);
-        } catch (ApiException ignored) {}
+        } catch (ApiException ignored) {
+        }
     }
 
     public boolean applicationIsAlive(String appId) {
