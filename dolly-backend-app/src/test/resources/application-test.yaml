@@ -51,6 +51,8 @@ providers:
     url: http://krrstubdummy
   arenaforvalter:
     url: http://arenaforvalterdummy
+  aaregdata:
+    url: http://aaregdatadummy
 
 ### CORS ###
 dolly.security.cors.origins: http://localhost:3050,http://localhost:3000
