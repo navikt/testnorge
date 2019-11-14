@@ -1,9 +1,11 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -63,6 +65,7 @@ public class PdlForvalterConsumerTest {
 
         server.expect(requestTo("http://pdl.nav.no/api/v1/bestilling/kontaktinformasjonfordoedsbo"))
                 .andExpect(method(HttpMethod.POST))
+                .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
                 .andRespond(withSuccess());
 
         pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo.builder().build(), IDENT);
@@ -89,6 +92,7 @@ public class PdlForvalterConsumerTest {
 
         server.expect(requestTo("http://pdl.nav.no/api/v1/bestilling/falskidentitet"))
                 .andExpect(method(HttpMethod.POST))
+                .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
                 .andRespond(withSuccess());
 
         pdlForvalterConsumer.postFalskIdentitet(PdlFalskIdentitet.builder().build(), IDENT);
@@ -102,6 +106,7 @@ public class PdlForvalterConsumerTest {
 
         server.expect(requestTo("http://pdl.nav.no/api/v1/ident"))
                 .andExpect(method(HttpMethod.DELETE))
+                .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
                 .andRespond(withSuccess());
 
         pdlForvalterConsumer.deleteIdent(IDENT);
@@ -115,6 +120,7 @@ public class PdlForvalterConsumerTest {
 
         server.expect(requestTo("http://pdl.nav.no/api/v1/bestilling/opprettperson"))
                 .andExpect(method(HttpMethod.POST))
+                .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
                 .andRespond(withSuccess());
 
         pdlForvalterConsumer.postOpprettPerson(PdlOpprettPerson.builder().opprettetIdent(IDENT).build(), IDENT);
@@ -128,8 +134,20 @@ public class PdlForvalterConsumerTest {
 
         server.expect(requestTo("http://pdl.nav.no/api/v1/bestilling/navn"))
                 .andExpect(method(HttpMethod.POST))
+                .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
                 .andRespond(withSuccess());
 
         pdlForvalterConsumer.postNavn(PdlNavn.builder().build(), IDENT);
+    }
+
+    @Test
+    public void getPersonstatus() {
+
+        server.expect(requestTo("http://pdl.nav.no/api/v1/personstatus"))
+                .andExpect(method(HttpMethod.GET))
+                .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
+                .andRespond(withSuccess());
+
+        pdlForvalterConsumer.getPersonstatus(IDENT);
     }
 }

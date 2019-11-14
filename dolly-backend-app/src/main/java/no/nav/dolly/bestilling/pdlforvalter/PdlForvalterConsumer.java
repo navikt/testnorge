@@ -41,6 +41,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_NAVN_URL = PDL_BESTILLING_URL + "/navn";
     private static final String PDL_BESTILLING_KJOENN = PDL_BESTILLING_URL + "/kjoenn";
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/ident";
+    private static final String PDL_PERSONSTATUS = "/api/v1/personstatus";
     private static final String PREPROD_ENV = "q";
 
     @Value("${fasit.environment.name}")
@@ -53,6 +54,15 @@ public class PdlForvalterConsumer {
     public ResponseEntity deleteIdent(String ident) {
         return restTemplate.exchange(RequestEntity.delete(
                 URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_SLETTING_URL))
+                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                .header(HEADER_NAV_CONSUMER_TOKEN, resolveToken())
+                .header(HEADER_NAV_PERSON_IDENT, ident)
+                .build(), JsonNode.class);
+    }
+
+    public ResponseEntity getPersonstatus(String ident) {
+        return restTemplate.exchange(RequestEntity.get(
+                URI.create(providersProps.getPdlForvalter().getUrl() + PDL_PERSONSTATUS))
                 .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                 .header(HEADER_NAV_CONSUMER_TOKEN, resolveToken())
                 .header(HEADER_NAV_PERSON_IDENT, ident)

@@ -37,6 +37,8 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 @RequiredArgsConstructor
 public class PdlForvalterClient implements ClientRegister {
 
+    public enum StausResponse {DONE, PENDING, DELETING}
+
     public static final String KILDE = "Dolly";
     public static final String SYNTH_ENV = "q2";
     public static final String KONTAKTINFORMASJON_DOEDSBO = "KontaktinformasjonForDoedsbo";
@@ -50,6 +52,7 @@ public class PdlForvalterClient implements ClientRegister {
     private final TpsfService tpsfService;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final PdlSyncDeterminator pdlSyncDeterminator;
 
     @Override public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
@@ -61,7 +64,7 @@ public class PdlForvalterClient implements ClientRegister {
 
                 hentTpsPersondetaljer(tpsPerson);
                 sendDeleteIdent(tpsPerson);
-                sendPdlPersondetaljer(tpsPerson);
+                sendPdlPersondetaljer(pdlSyncDeterminator.isRequiredSync(bestilling), tpsPerson);
 
                 if (nonNull(bestilling.getPdlforvalter())) {
                     Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
@@ -106,7 +109,7 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendPdlPersondetaljer(TpsPerson tpsPerson) {
+    private void sendPdlPersondetaljer(boolean isRequiredSync, TpsPerson tpsPerson) {
 
         if (nonNull(tpsPerson.getPersondetalj())) {
             sendOpprettPerson(tpsPerson.getPersondetalj());
@@ -115,6 +118,7 @@ public class PdlForvalterClient implements ClientRegister {
             sendKjoenn(tpsPerson.getPersondetalj());
             sendAdressebeskyttelse(tpsPerson.getPersondetalj());
             sendDoedsfall(tpsPerson.getPersondetalj());
+            optionalSyncMedPdl(isRequiredSync, tpsPerson.getPersondetalj().getIdent());
 
             tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
                 sendOpprettPerson(relasjon.getPersonRelasjonMed());
@@ -124,6 +128,19 @@ public class PdlForvalterClient implements ClientRegister {
                 sendAdressebeskyttelse(relasjon.getPersonRelasjonMed());
                 sendDoedsfall(relasjon.getPersonRelasjonMed());
             });
+        }
+    }
+
+    private void optionalSyncMedPdl(boolean isRequiredSync, String ident) {
+
+        if (isRequiredSync) {
+            while (StausResponse.DONE != pdlForvalterConsumer.getPersonstatus(ident).getBody()) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    log.error("Pdl sync interrupted");
+                }
+            }
         }
     }
 
