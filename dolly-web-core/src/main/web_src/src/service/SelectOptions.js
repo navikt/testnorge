@@ -7,14 +7,19 @@ const selectOptions = {
 	// kjonn: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
 	// kjonnBarn: [{ value: 'K', label: 'Jente' }, { value: 'M', label: 'Gutt' }],
 
-	boolean: [{ value: true, label: 'Ja' }, { value: false, label: 'Nei' }]
+	boolean: [{ value: true, label: 'Ja' }, { value: false, label: 'Nei' }],
 	// stringBoolean: [{ value: 'true', label: 'Ja' }, { value: 'false', label: 'Nei' }],
 
 	// SIGRUN
-	// tjeneste: [
-	// 	{ value: 'Beregnet skatt', label: 'Beregnet skatt' },
-	// 	{ value: 'Summert skattegrunnlag', label: 'Summert skattegrunnlag' }
-	// ],
+	tjeneste: [
+		{ value: 'BEREGNET_SKATT', label: 'Beregnet skatt' },
+		{ value: 'SUMMERT_SKATTEGRUNNLAG', label: 'Summert skattegrunnlag' }
+	],
+
+	inntektssted: [
+		{ value: 'Fastlandet', label: 'Fastlandet' },
+		{ value: 'Svalbard', label: 'Svalbard' }
+	]
 
 	// AAREG
 	// aktoertype: [
