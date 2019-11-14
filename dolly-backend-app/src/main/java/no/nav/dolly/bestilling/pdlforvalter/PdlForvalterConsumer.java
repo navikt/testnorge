@@ -60,7 +60,7 @@ public class PdlForvalterConsumer {
                 .build(), JsonNode.class);
     }
 
-    public ResponseEntity getPersonstatus(String ident) {
+    public ResponseEntity<JsonNode> getPersonstatus(String ident) {
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(providersProps.getPdlForvalter().getUrl() + PDL_PERSONSTATUS))
                 .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))

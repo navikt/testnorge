@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.pdlforvalter;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.StausResponse.DONE;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import java.util.List;
@@ -133,13 +134,25 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void optionalSyncMedPdl(boolean isRequiredSync, String ident) {
 
+        final int MAX_COUNT = 20;
+        final int TIMEOUT = 50;
+
         if (isRequiredSync) {
-            while (StausResponse.DONE != pdlForvalterConsumer.getPersonstatus(ident).getBody()) {
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    log.error("Pdl sync interrupted");
+            int count = 0;
+            try {
+                while (count++ < MAX_COUNT && !DONE.name().equals(pdlForvalterConsumer.getPersonstatus(ident).getBody().get("status").asText())) {
+                    Thread.sleep(TIMEOUT);
                 }
+            } catch (InterruptedException e) {
+                log.error("Sync mot PDL-forvalter ble avbrutt.");
+            } catch (RuntimeException e) {
+                log.error("Feilet å lese personstatus for ident {} fra PDL-forvalter.", ident, e);
+            }
+
+            if (count < MAX_COUNT) {
+                log.info("Synkronisering mot PDL-forvalter tok {} ms.", count * TIMEOUT);
+            } else {
+                log.warn("Synkronisering mot PDL-forvalter gitt opp etter 1000 ms.");
             }
         }
     }
