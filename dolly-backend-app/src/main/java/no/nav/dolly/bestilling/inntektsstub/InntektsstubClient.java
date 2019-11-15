@@ -51,9 +51,9 @@ public class InntektsstubClient implements ClientRegister {
         try {
             ResponseEntity<Inntektsinformasjon> response = inntektsstubConsumer.postInntekter(inntektsinformasjon);
 
-            if (nonNull(response) && response.hasBody()) {
+            if (nonNull(response) && nonNull(response.getBody())) {
 
-                progress.setInntektsstubStatus(nonNull(response.getBody()) && isBlank(response.getBody().getFeilmelding()) ? "OK" : response.getBody().getFeilmelding());
+                progress.setInntektsstubStatus(isBlank(response.getBody().getFeilmelding()) ? "OK" : response.getBody().getFeilmelding());
 
             } else {
 
