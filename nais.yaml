@@ -11,8 +11,10 @@ spec:
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
+    initialDelay: 30
   readiness:
     path: /internal/isReady
+    initialDelay: 30
   prometheus:
     path: /internal/prometheus
   replicas:
