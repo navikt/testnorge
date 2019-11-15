@@ -96,6 +96,7 @@ public class CacheService {
     @Scheduled(cron = "0 0 * * * *")
     public List<Long> oppdaterAlleCacher() {
         log.info("Oppdaterer cacher til avspillergrupper: {}", fasteAvspillergrupper.toString());
+        sjekkOmCacherErNull();
 
         for (Long avspillergruppeId : alleIdenterCache.keySet()) {
             if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
@@ -126,6 +127,14 @@ public class CacheService {
                 gifteIdenterCache.remove(avspillergruppeId);
             } else {
                 oppdaterGifteIdenterCache(avspillergruppeId);
+            }
+        }
+
+        for (Long avspillergruppeId : foedteIdenterCache.keySet()) {
+            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
+                foedteIdenterCache.remove(avspillergruppeId);
+            } else {
+                oppdaterFoedteIdenterCache(avspillergruppeId);
             }
         }
 
@@ -182,5 +191,23 @@ public class CacheService {
         }
         cache.put(avspillergruppeId, innhold);
         return cache;
+    }
+
+    private void sjekkOmCacherErNull() {
+        if (alleIdenterCache == null) {
+            alleIdenterCache = new HashMap<>();
+        }
+        if(levendeIdenterCache == null) {
+            levendeIdenterCache = new HashMap<>();
+        }
+        if(doedeOgUtvandredeIdenterCache== null) {
+            doedeOgUtvandredeIdenterCache = new HashMap<>();
+        }
+        if(gifteIdenterCache == null) {
+            gifteIdenterCache = new HashMap<>();
+        }
+        if(foedteIdenterCache == null) {
+            foedteIdenterCache = new HashMap<>();
+        }
     }
 }
