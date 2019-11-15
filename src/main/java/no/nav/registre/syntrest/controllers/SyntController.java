@@ -102,7 +102,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(fnrs);
         List<Arbeidsforholdsmelding> response = (List<Arbeidsforholdsmelding>)
-                aaregConsumer.synthesizeData(UriExpander.getRequestEntity(aaregUrl, fnrs));
+                aaregConsumer.synthesizeData(UriExpander.createRequestEntity(aaregUrl, fnrs));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -117,7 +117,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<AAP115Melding> response = (List<AAP115Melding>)
-                aapConsumer.synthesizeData(UriExpander.getRequestEntity(aap115Url, numToGenerate));
+                aapConsumer.synthesizeData(UriExpander.createRequestEntity(aap115Url, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -132,7 +132,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<AAPMelding> response = (List<AAPMelding>)
-                aapConsumer.synthesizeData(UriExpander.getRequestEntity(aapUrl, numToGenerate));
+                aapConsumer.synthesizeData(UriExpander.createRequestEntity(aapUrl, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -147,7 +147,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<Barnebidragsmelding> response = (List<Barnebidragsmelding>)
-                bisysConsumer.synthesizeData(UriExpander.getRequestEntity(bisysUrl, numToGenerate));
+                bisysConsumer.synthesizeData(UriExpander.createRequestEntity(bisysUrl, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -162,7 +162,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<Institusjonsmelding> response = (List<Institusjonsmelding>)
-                instConsumer.synthesizeData(UriExpander.getRequestEntity(instUrl, numToGenerate));
+                instConsumer.synthesizeData(UriExpander.createRequestEntity(instUrl, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -178,7 +178,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<Medlemskapsmelding> response = (List<Medlemskapsmelding>)
-                medlConsumer.synthesizeData(UriExpander.getRequestEntity(medlUrl, numToGenerate));
+                medlConsumer.synthesizeData(UriExpander.createRequestEntity(medlUrl, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -203,7 +203,7 @@ public class SyntController {
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.MELDEGRUPPE, meldegruppe);
         List<String> response = (List<String>)
-                meldekortConsumer.synthesizeData(UriExpander.getRequestEntity(arenaMeldekortUrl, meldegruppe, numToGenerate));
+                meldekortConsumer.synthesizeData(UriExpander.createRequestEntity(arenaMeldekortUrl, meldegruppe, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -222,7 +222,7 @@ public class SyntController {
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE_NAV, endringskode);
         List<String> response = (List<String>)
-                navConsumer.synthesizeData(UriExpander.getRequestEntity(navEndringsmeldingUrl, endringskode, numToGenerate));
+                navConsumer.synthesizeData(UriExpander.createRequestEntity(navEndringsmeldingUrl, endringskode, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -240,7 +240,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(fnrs);
         List<Inntektsmelding> response = (List<Inntektsmelding>)
-                poppConsumer.synthesizeData(UriExpander.getRequestEntity(poppUrl, fnrs));
+                poppConsumer.synthesizeData(UriExpander.createRequestEntity(poppUrl, fnrs));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -255,7 +255,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<SamMelding> response = (List<SamMelding>)
-                samConsumer.synthesizeData(UriExpander.getRequestEntity(samUrl, numToGenerate));
+                samConsumer.synthesizeData(UriExpander.createRequestEntity(samUrl, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -275,7 +275,7 @@ public class SyntController {
         InputValidator.validateInput(new ArrayList<>(fnrInntektMap.keySet()));
         Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>> response =
                 (Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>)
-                        inntektConsumer.synthesizeData(UriExpander.getRequestEntity(inntektUrl, fnrInntektMap));
+                        inntektConsumer.synthesizeData(UriExpander.createRequestEntity(inntektUrl, fnrInntektMap));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -291,7 +291,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<TPmelding> response = (List<TPmelding>)
-                tpConsumer.synthesizeData(UriExpander.getRequestEntity(tpUrl, numToGenerate));
+                tpConsumer.synthesizeData(UriExpander.createRequestEntity(tpUrl, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -309,7 +309,7 @@ public class SyntController {
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE, endringskode);
         InputValidator.validateInput(numToGenerate);
         List<SkdMelding> response = (List<SkdMelding>)
-                tpsConsumer.synthesizeData(UriExpander.getRequestEntity(tpsUrl, endringskode, numToGenerate));
+                tpsConsumer.synthesizeData(UriExpander.createRequestEntity(tpsUrl, endringskode, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -319,13 +319,14 @@ public class SyntController {
     @ApiOperation(value = "Generer kvitteringer for frikort", notes = "Lager et spesifisert antall kvitteringer for " +
             "hvert personnummersom sendes inn.")
     @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-frikort"})
-    public ResponseEntity<Map<String, List<FrikortKvittering>>> generateFrikortMeling(
+    public ResponseEntity<Map<String, List<FrikortKvittering>>> generateFrikort(
             @ApiParam(value = "Map der key=fødselsnummer og value er antall kvitteringer man ønsker å lage for denne identen.", required = true)
             @RequestBody Map<String, Integer> fnrAntMeldingMap
     ) {
         InputValidator.validateInput(new ArrayList<>(fnrAntMeldingMap.keySet()));
+        fnrAntMeldingMap.forEach((key, value) -> InputValidator.validateInput(value));
         Map<String, List<FrikortKvittering>> response = (Map<String, List<FrikortKvittering>>)
-                frikortConsumer.synthesizeData(UriExpander.getRequestEntity(frikortUrl, fnrAntMeldingMap));
+                frikortConsumer.synthesizeData(UriExpander.createRequestEntity(frikortUrl, fnrAntMeldingMap));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -334,14 +335,14 @@ public class SyntController {
     @PostMapping("/eia")
     @ApiOperation(value = "Generer sykemelding-historie", notes = "Lager en sykemeldings-historie per person som blir sendt inn. ")
     @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-eia"})
-    public ResponseEntity<Map<String, Historikk>> generateLegeerklaeringer(
-            @ApiParam(value = "Fnr for personen som skal ha sykemeldinger. Startdato for sykemeldingene.", required = true)
+    public ResponseEntity<Map<String, Historikk>> generateSykemeldingHistorikk(
+            @ApiParam(value = "Fnr for personen som skal ha sykemeldinger. Startdato for sykemeldingene.", required = true, example = "")
             @RequestBody Map<String, String> fnrStartdatoMap
     ) {
         InputValidator.validateInput(new ArrayList<>(fnrStartdatoMap.keySet()));
 
         Map<String, Historikk> response = (Map<String, Historikk>)
-                eiaConsumer.synthesizeData(UriExpander.getRequestEntity(eiaUrl, fnrStartdatoMap));
+                eiaConsumer.synthesizeData(UriExpander.createRequestEntity(eiaUrl, fnrStartdatoMap));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
