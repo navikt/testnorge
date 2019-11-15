@@ -9,33 +9,6 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
-export const initialValues = {
-	arenaforvalter: {
-		arenaBrukertype: '',
-		inaktiveringDato: '',
-		kvalifiseringsgruppe: ''
-	}
-}
-
-export const validation = {
-	arenaforvalter: Yup.object({
-		aap: Yup.array().of(
-			Yup.object({
-				fraDato: Yup.string().typeError('Formatet må være DD.MM.YYYY.'),
-				tilDato: Yup.string().typeError('Formatet må være DD.MM.YYYY.')
-			})
-		),
-		aap115: Yup.array().of(
-			Yup.object({
-				fraDato: Yup.string().typeError('Formatet må være DD.MM.YYYY.')
-			})
-		),
-		arenaBrukertype: Yup.string().required('Vennligst velg'),
-		inaktiveringDato: Yup.string().typeError('Formatet må være DD.MM.YYYY.'),
-		kvalifiseringsgruppe: ''
-	})
-}
-
 export const ArenaForm = ({ formikBag }) => {
 	const [har115vedtak, setHar115vedtak] = useState(Boolean(formikBag.values.arenaforvalter.aap115))
 	const [harAAPvedtak, setHarAAPvedtak] = useState(Boolean(formikBag.values.arenaforvalter.aap))
@@ -133,4 +106,31 @@ export const ArenaForm = ({ formikBag }) => {
 			</Panel>
 		</React.Fragment>
 	)
+}
+
+ArenaForm.initialValues = {
+	arenaforvalter: {
+		arenaBrukertype: '',
+		inaktiveringDato: '',
+		kvalifiseringsgruppe: ''
+	}
+}
+
+ArenaForm.validation = {
+	arenaforvalter: Yup.object({
+		aap: Yup.array().of(
+			Yup.object({
+				fraDato: Yup.string().typeError('Formatet må være DD.MM.YYYY.'),
+				tilDato: Yup.string().typeError('Formatet må være DD.MM.YYYY.')
+			})
+		),
+		aap115: Yup.array().of(
+			Yup.object({
+				fraDato: Yup.string().typeError('Formatet må være DD.MM.YYYY.')
+			})
+		),
+		arenaBrukertype: Yup.string().required('Vennligst velg'),
+		inaktiveringDato: Yup.string().typeError('Formatet må være DD.MM.YYYY.'),
+		kvalifiseringsgruppe: ''
+	})
 }

@@ -4,10 +4,10 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 
-export const MatrikkelAdresse = ({ formikProps }) => {
+export const MatrikkelAdresse = ({ formikBag }) => {
 	const settMatrikkeladresse = adresse => {
 		// Denne bør nok settes fra initalValues i stedet
-		formikProps.setFieldValue('tpsf.boadresse.adressetype', 'MATR')
+		formikBag.setFieldValue('tpsf.boadresse.adressetype', 'MATR')
 	}
 
 	return (
