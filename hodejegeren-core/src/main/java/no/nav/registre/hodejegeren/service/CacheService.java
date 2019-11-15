@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,10 @@ import java.util.Map;
 @Service
 @Getter
 @RequiredArgsConstructor
+@EnableScheduling
 public class CacheService {
 
-    private final EksisterendeIdenterService eksisterendeIdenterService;
+    private final TpsfFiltreringService tpsfFiltreringService;
 
     @Value("#{'${cache.avspillergrupper}'.split(',')}")
     private List<Long> fasteAvspillergrupper;
@@ -31,6 +33,7 @@ public class CacheService {
     private Map<Long, List<String>> levendeIdenterCache;
     private Map<Long, List<String>> doedeOgUtvandredeIdenterCache;
     private Map<Long, List<String>> gifteIdenterCache;
+    private Map<Long, List<String>> foedteIdenterCache;
 
     public List<String> hentAlleIdenterCache(Long avspillergruppeId) {
         List<String> alleIdenter;
@@ -74,6 +77,17 @@ public class CacheService {
             oppdaterGifteIdenterCache(avspillergruppeId);
         }
         return gifteIdenter;
+    }
+
+    public List<String> hentFoedteIdenterCache(Long avspillergruppeId) {
+        List<String> foedteIdenter;
+        if (foedteIdenterCache == null || !foedteIdenterCache.containsKey(avspillergruppeId) || foedteIdenterCache.get(avspillergruppeId).isEmpty()) {
+            foedteIdenter = oppdaterFoedteIdenterCache(avspillergruppeId);
+        } else {
+            foedteIdenter = foedteIdenterCache.get(avspillergruppeId);
+            oppdaterFoedteIdenterCache(avspillergruppeId);
+        }
+        return foedteIdenter;
     }
 
     /**
@@ -131,28 +145,35 @@ public class CacheService {
         if (alleIdenterCache == null) {
             alleIdenterCache = new HashMap<>();
         }
-        return oppdaterCache(alleIdenterCache, avspillergruppeId, eksisterendeIdenterService.finnAlleIdenter(avspillergruppeId)).get(avspillergruppeId);
+        return oppdaterCache(alleIdenterCache, avspillergruppeId, tpsfFiltreringService.finnAlleIdenter(avspillergruppeId)).get(avspillergruppeId);
     }
 
     private List<String> oppdaterLevendeIdenterCache(Long avspillergruppeId) {
         if (levendeIdenterCache == null) {
             levendeIdenterCache = new HashMap<>();
         }
-        return oppdaterCache(levendeIdenterCache, avspillergruppeId, eksisterendeIdenterService.finnLevendeIdenter(avspillergruppeId)).get(avspillergruppeId);
+        return oppdaterCache(levendeIdenterCache, avspillergruppeId, tpsfFiltreringService.finnLevendeIdenter(avspillergruppeId)).get(avspillergruppeId);
     }
 
     private List<String> oppdaterDoedeOgUtvandredeIdenterCache(Long avspillergruppeId) {
         if (doedeOgUtvandredeIdenterCache == null) {
             doedeOgUtvandredeIdenterCache = new HashMap<>();
         }
-        return oppdaterCache(doedeOgUtvandredeIdenterCache, avspillergruppeId, eksisterendeIdenterService.finnDoedeOgUtvandredeIdenter(avspillergruppeId)).get(avspillergruppeId);
+        return oppdaterCache(doedeOgUtvandredeIdenterCache, avspillergruppeId, tpsfFiltreringService.finnDoedeOgUtvandredeIdenter(avspillergruppeId)).get(avspillergruppeId);
     }
 
     private List<String> oppdaterGifteIdenterCache(Long avspillergruppeId) {
         if (gifteIdenterCache == null) {
             gifteIdenterCache = new HashMap<>();
         }
-        return oppdaterCache(gifteIdenterCache, avspillergruppeId, eksisterendeIdenterService.finnGifteIdenter(avspillergruppeId)).get(avspillergruppeId);
+        return oppdaterCache(gifteIdenterCache, avspillergruppeId, tpsfFiltreringService.finnGifteIdenter(avspillergruppeId)).get(avspillergruppeId);
+    }
+
+    private List<String> oppdaterFoedteIdenterCache(Long avspillergruppeId) {
+        if (foedteIdenterCache == null) {
+            foedteIdenterCache = new HashMap<>();
+        }
+        return oppdaterCache(foedteIdenterCache, avspillergruppeId, tpsfFiltreringService.finnFoedteIdenter(avspillergruppeId)).get(avspillergruppeId);
     }
 
     private Map<Long, List<String>> oppdaterCache(Map<Long, List<String>> cache, Long avspillergruppeId, List<String> innhold) {

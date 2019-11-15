@@ -2,15 +2,10 @@ package no.nav.registre.hodejegeren.service;
 
 import static no.nav.registre.hodejegeren.provider.rs.HodejegerenController.MAX_ALDER;
 import static no.nav.registre.hodejegeren.provider.rs.HodejegerenController.MIN_ALDER;
-import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.TRANSAKSJONSTYPE;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET_BESKRIVELSE;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
-import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
-import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
-import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
-import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
@@ -21,10 +16,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,12 +37,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
@@ -77,39 +67,31 @@ public class EksisterendeIdenterServiceTest {
     @Mock
     private TpsfConsumer tpsfConsumer;
 
+    @Mock
+    private TpsfFiltreringService tpsfFiltreringService;
+
+    @Mock
+    private CacheService cacheService;
+
     @InjectMocks
     private EksisterendeIdenterService eksisterendeIdenterService;
 
+    private Long avspillergruppeId1 = 1L;
+    private Long avspillergruppeId2 = 2L;
+    private List<String> levendeIdenter;
+
     @Before
     public void setUp() throws IOException {
-
-        Set<String> levendeIdenter = new LinkedHashSet<>();
+        levendeIdenter = new ArrayList<>();
         levendeIdenter.add("20044249945");
         levendeIdenter.add("20044249946");
         levendeIdenter.add("20044249947");
         levendeIdenter.add("20044249948");
 
-        Set<String> doedeIdenter = new LinkedHashSet<>();
-        doedeIdenter.add("20044249948");
-
-        Set<String> foedteIdenter = new LinkedHashSet<>();
+        List<String> foedteIdenter = new ArrayList<>();
         foedteIdenter.add("20041751231");
 
-        when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(1L, Arrays.asList(
-                FOEDSELSMELDING.getAarsakskode(),
-                INNVANDRING.getAarsakskode(),
-                FOEDSELSNUMMERKORREKSJON.getAarsakskode(),
-                TILDELING_DNUMMER.getAarsakskode()), TRANSAKSJONSTYPE)).thenReturn(levendeIdenter);
-        when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(3L, Arrays.asList(
-                FOEDSELSMELDING.getAarsakskode(),
-                INNVANDRING.getAarsakskode(),
-                FOEDSELSNUMMERKORREKSJON.getAarsakskode(),
-                TILDELING_DNUMMER.getAarsakskode()), TRANSAKSJONSTYPE)).thenReturn(levendeIdenter);
-        when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(3L, Arrays.asList(
-                Endringskoder.DOEDSMELDING.getAarsakskode(),
-                Endringskoder.UTVANDRING.getAarsakskode()), TRANSAKSJONSTYPE)).thenReturn(doedeIdenter);
-        when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(3L, Arrays.asList(
-                FOEDSELSMELDING.getAarsakskode()), TRANSAKSJONSTYPE)).thenReturn(foedteIdenter);
+        when(cacheService.hentFoedteIdenterCache(avspillergruppeId2)).thenReturn(foedteIdenter);
 
         Map<String, String> status = new HashMap<>();
         status.put(DATO_DO, "");
@@ -126,8 +108,9 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void hentMyndigeIdenterIGruppeTest() {
+        when(cacheService.hentLevendeIdenterCache(avspillergruppeId1)).thenReturn(levendeIdenter);
         for (int i = 0; i < 3; i++) {
-            List<String> identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(1L, miljoe, i, MINIMUM_ALDER);
+            List<String> identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId1, miljoe, i, MINIMUM_ALDER);
             assertEquals(i, identer.size());
         }
     }
@@ -148,7 +131,8 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void hentMyndigeIdenterIGruppeForMangeAaHenteTest() {
-        List<String> identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(1L, miljoe, 6, MINIMUM_ALDER);
+        when(cacheService.hentLevendeIdenterCache(avspillergruppeId1)).thenReturn(levendeIdenter);
+        List<String> identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId1, miljoe, 6, MINIMUM_ALDER);
         assertEquals(4, identer.size());
         assertThat(identer, containsInAnyOrder(
                 "20044249945",
@@ -168,8 +152,9 @@ public class EksisterendeIdenterServiceTest {
     public void hentMyndigeIdenterIGruppeEnDoedITPS() throws IOException {
         Map<String, String> statusDoed = new HashMap<>();
         statusDoed.put(DATO_DO, "12312");
+        when(cacheService.hentLevendeIdenterCache(avspillergruppeId1)).thenReturn(levendeIdenter);
         when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249948")).thenReturn(statusDoed);
-        List<String> identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(1L, miljoe, 10, MINIMUM_ALDER);
+        List<String> identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId1, miljoe, 10, MINIMUM_ALDER);
         assertEquals(3, identer.size());
         assertThat(identer, containsInAnyOrder(
                 "20044249945",
@@ -181,41 +166,13 @@ public class EksisterendeIdenterServiceTest {
 
     /**
      * Scenario:
-     * Finn levende identer
-     */
-    @Test
-    public void finnLevendeIdenterTest() {
-        List<String> levende = eksisterendeIdenterService.finnLevendeIdenter(3L);
-        assertEquals(3, levende.size());
-        assertThat(levende, containsInAnyOrder(
-                "20044249945",
-                "20044249946",
-                "20044249947"
-        ));
-    }
-
-    /**
-     * Scenario:
-     * Finn døde og utvandrede identer
-     */
-    @Test
-    public void finnDoedeOgUtvandredeIdenterTest() {
-        List<String> doede = eksisterendeIdenterService.finnDoedeOgUtvandredeIdenter(3L);
-        assertEquals(1, doede.size());
-        assertThat(doede, containsInAnyOrder(
-                "20044249948"
-        ));
-    }
-
-    /**
-     * Scenario:
      * Finn fødte identer
      */
     @Test
     public void finnFoedteIdenterTest() {
         int minAlder = 0;
         int maksAlder = 200;
-        List<String> foedte = eksisterendeIdenterService.finnFoedteIdenter(3L, minAlder, maksAlder);
+        List<String> foedte = eksisterendeIdenterService.finnFoedteIdenter(avspillergruppeId2, minAlder, maksAlder);
         assertEquals(1, foedte.size());
         assertThat(foedte, containsInAnyOrder(
                 "20041751231"
@@ -255,22 +212,15 @@ public class EksisterendeIdenterServiceTest {
         URL jsonContent = Resources.getResource("FS03-FDNUMMER-KERNINFO-O.json");
         JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
         String fnr1 = "23048801390";
-        Set<String> identSet = new LinkedHashSet<>();
-        identSet.add(fnr1);
+        List<String> identer = new ArrayList<>();
+        identer.add(fnr1);
 
-        when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(anyLong(), anyList(), anyString())).thenReturn(identSet);
-        when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
-                anyLong(),
-                eq(Arrays.asList(
-                        Endringskoder.DOEDSMELDING.getAarsakskode(),
-                        Endringskoder.UTVANDRING.getAarsakskode())),
-                anyString()))
-                .thenReturn(Collections.emptySet());
+        when(cacheService.hentLevendeIdenterCache(avspillergruppeId1)).thenReturn(identer);
         when(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1)).thenReturn(jsonNode);
 
-        Map<String, JsonNode> fnrMedStatusQuo = eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(1L, miljoe, identSet.size(), MIN_ALDER, MAX_ALDER);
+        Map<String, JsonNode> fnrMedStatusQuo = eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(avspillergruppeId1, miljoe, identer.size(), MIN_ALDER, MAX_ALDER);
 
-        verify(tpsfConsumer, times(2)).getIdenterFiltrertPaaAarsakskode(anyLong(), anyList(), anyString());
+        verify(cacheService).hentLevendeIdenterCache(avspillergruppeId1);
         verify(tpsStatusQuoService).getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1);
 
         assertThat(fnrMedStatusQuo.get(fnr1), equalTo(jsonNode));
@@ -360,7 +310,7 @@ public class EksisterendeIdenterServiceTest {
 
         JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("tpsStatus/tps_status.json"));
 
-        when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(eq(avspillergruppeId), anyList(), anyString())).thenReturn(new HashSet<>(identer));
+        when(tpsfFiltreringService.finnAlleIdenter(avspillergruppeId)).thenReturn(identer);
         when(tpsfConsumer.hentTpsStatusPaaIdenter(eq("A0"), eq(miljoe), anyList())).thenReturn(jsonNode);
 
         List<String> identerIkkeITps = eksisterendeIdenterService.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
@@ -378,7 +328,7 @@ public class EksisterendeIdenterServiceTest {
 
         JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("tpsStatus/tps_kollisjon.json"));
 
-        when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(eq(avspillergruppeId), anyList(), anyString())).thenReturn(new HashSet<>(identer));
+        when(tpsfFiltreringService.finnAlleIdenter(avspillergruppeId)).thenReturn(identer);
         when(tpsfConsumer.hentTpsStatusPaaIdenter(eq("A2"), eq("q2"), anyList())).thenReturn(jsonNode);
 
         List<String> identerSomKolliderer = eksisterendeIdenterService.hentIdenterSomKolliderer(avspillergruppeId);

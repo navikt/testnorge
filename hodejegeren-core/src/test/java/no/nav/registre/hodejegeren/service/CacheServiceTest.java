@@ -20,7 +20,7 @@ import java.util.List;
 public class CacheServiceTest {
 
     @Mock
-    private EksisterendeIdenterService eksisterendeIdenterService;
+    private TpsfFiltreringService tpsfFiltreringService;
 
     @InjectMocks
     private CacheService cacheService;
@@ -37,11 +37,11 @@ public class CacheServiceTest {
 
     @Test
     public void shouldHenteAlleIdenterAndUpdateCache() {
-        when(eksisterendeIdenterService.finnAlleIdenter(avspillergruppeId)).thenReturn(identer);
+        when(tpsfFiltreringService.finnAlleIdenter(avspillergruppeId)).thenReturn(identer);
 
         cacheService.hentAlleIdenterCache(avspillergruppeId);
 
-        verify(eksisterendeIdenterService).finnAlleIdenter(avspillergruppeId);
+        verify(tpsfFiltreringService).finnAlleIdenter(avspillergruppeId);
 
         assertThat(cacheService.getAlleIdenterCache().get(avspillergruppeId).get(0), Matchers.equalTo(fnr1));
         assertThat(cacheService.getAlleIdenterCache().get(avspillergruppeId).get(1), Matchers.equalTo(fnr2));
@@ -49,11 +49,11 @@ public class CacheServiceTest {
 
     @Test
     public void shouldHenteLevendeIdenterAndUpdateCache() {
-        when(eksisterendeIdenterService.finnLevendeIdenter(avspillergruppeId)).thenReturn(identer);
+        when(tpsfFiltreringService.finnLevendeIdenter(avspillergruppeId)).thenReturn(identer);
 
         cacheService.hentLevendeIdenterCache(avspillergruppeId);
 
-        verify(eksisterendeIdenterService).finnLevendeIdenter(avspillergruppeId);
+        verify(tpsfFiltreringService).finnLevendeIdenter(avspillergruppeId);
 
         assertThat(cacheService.getLevendeIdenterCache().get(avspillergruppeId).get(0), Matchers.equalTo(fnr1));
         assertThat(cacheService.getLevendeIdenterCache().get(avspillergruppeId).get(1), Matchers.equalTo(fnr2));
@@ -61,11 +61,11 @@ public class CacheServiceTest {
 
     @Test
     public void shouldHenteDoedeOgUtvandredeIdenterAndUpdateCache() {
-        when(eksisterendeIdenterService.finnDoedeOgUtvandredeIdenter(avspillergruppeId)).thenReturn(identer);
+        when(tpsfFiltreringService.finnDoedeOgUtvandredeIdenter(avspillergruppeId)).thenReturn(identer);
 
         cacheService.hentDoedeOgUtvandredeIdenterCache(avspillergruppeId);
 
-        verify(eksisterendeIdenterService).finnDoedeOgUtvandredeIdenter(avspillergruppeId);
+        verify(tpsfFiltreringService).finnDoedeOgUtvandredeIdenter(avspillergruppeId);
 
         assertThat(cacheService.getDoedeOgUtvandredeIdenterCache().get(avspillergruppeId).get(0), Matchers.equalTo(fnr1));
         assertThat(cacheService.getDoedeOgUtvandredeIdenterCache().get(avspillergruppeId).get(1), Matchers.equalTo(fnr2));
@@ -73,13 +73,25 @@ public class CacheServiceTest {
 
     @Test
     public void shouldHenteGifteIdenterAndUpdateCache() {
-        when(eksisterendeIdenterService.finnGifteIdenter(avspillergruppeId)).thenReturn(identer);
+        when(tpsfFiltreringService.finnGifteIdenter(avspillergruppeId)).thenReturn(identer);
 
         cacheService.hentGifteIdenterCache(avspillergruppeId);
 
-        verify(eksisterendeIdenterService).finnGifteIdenter(avspillergruppeId);
+        verify(tpsfFiltreringService).finnGifteIdenter(avspillergruppeId);
 
         assertThat(cacheService.getGifteIdenterCache().get(avspillergruppeId).get(0), Matchers.equalTo(fnr1));
         assertThat(cacheService.getGifteIdenterCache().get(avspillergruppeId).get(1), Matchers.equalTo(fnr2));
+    }
+
+    @Test
+    public void shouldHenteFoedteIdenterAndUpdateCache() {
+        when(tpsfFiltreringService.finnFoedteIdenter(avspillergruppeId)).thenReturn(identer);
+
+        cacheService.hentFoedteIdenterCache(avspillergruppeId);
+
+        verify(tpsfFiltreringService).finnFoedteIdenter(avspillergruppeId);
+
+        assertThat(cacheService.getFoedteIdenterCache().get(avspillergruppeId).get(0), Matchers.equalTo(fnr1));
+        assertThat(cacheService.getFoedteIdenterCache().get(avspillergruppeId).get(1), Matchers.equalTo(fnr2));
     }
 }

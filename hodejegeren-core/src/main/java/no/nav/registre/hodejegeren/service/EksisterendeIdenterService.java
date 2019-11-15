@@ -4,10 +4,6 @@ import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperS
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET_BESKRIVELSE;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
-import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
-import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
-import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
-import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
 import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
 import static no.nav.registre.hodejegeren.service.utilities.IdentUtility.getFoedselsdatoFraFnr;
 
@@ -30,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
@@ -56,6 +51,12 @@ public class EksisterendeIdenterService {
 
     @Autowired
     private TpsStatusQuoService tpsStatusQuoService;
+
+    @Autowired
+    private CacheService cacheService;
+
+    @Autowired
+    private TpsfFiltreringService tpsfFiltreringService;
 
     @Autowired
     private Random rand;
@@ -175,57 +176,17 @@ public class EksisterendeIdenterService {
     }
 
     public List<String> finnAlleIdenterOverAlder(Long avspillergruppeId, int minimumAlder) {
-        List<String> identer = finnLevendeIdenter(avspillergruppeId);
+        List<String> identer = cacheService.hentLevendeIdenterCache(avspillergruppeId);
         return identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
     }
 
     public List<String> finnLevendeIdenterIAldersgruppe(Long avspillergruppeId, int minimumAlder, int maksimumAlder) {
-        List<String> identer = finnLevendeIdenter(avspillergruppeId);
+        List<String> identer = cacheService.hentLevendeIdenterCache(avspillergruppeId);
         return filtrerIdenterIAldersgruppe(identer, minimumAlder, maksimumAlder);
     }
 
-    public List<String> finnAlleIdenter(Long gruppeId) {
-        return new ArrayList<>(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
-                gruppeId, Arrays.asList(
-                        FOEDSELSMELDING.getAarsakskode(),
-                        INNVANDRING.getAarsakskode(),
-                        FOEDSELSNUMMERKORREKSJON.getAarsakskode(),
-                        TILDELING_DNUMMER.getAarsakskode()),
-                TRANSAKSJONSTYPE));
-    }
-
-    public List<String> finnLevendeIdenter(Long gruppeId) {
-
-        List<String> opprettedeIdenterITpsf = finnAlleIdenter(gruppeId);
-        List<String> doedeOgUtvandredeIdenter = finnDoedeOgUtvandredeIdenter(gruppeId);
-
-        List<String> levendeIdenterINorge = new ArrayList<>(opprettedeIdenterITpsf);
-        levendeIdenterINorge.removeAll(doedeOgUtvandredeIdenter);
-
-        return levendeIdenterINorge;
-    }
-
-    public List<String> finnDoedeOgUtvandredeIdenter(Long gruppeId) {
-        return new ArrayList<>(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
-                gruppeId, Arrays.asList(
-                        Endringskoder.DOEDSMELDING.getAarsakskode(),
-                        Endringskoder.UTVANDRING.getAarsakskode()),
-                TRANSAKSJONSTYPE));
-    }
-
-    public List<String> finnGifteIdenter(Long gruppeId) {
-        return new ArrayList<>(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
-                gruppeId, Collections.singletonList(
-                        Endringskoder.VIGSEL.getAarsakskode()),
-                TRANSAKSJONSTYPE));
-    }
-
-    public List<String> finnFoedteIdenter(Long gruppeId, int minimumAlder, int maksimumAlder) {
-        Set<String> identer = tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
-                gruppeId, Collections.singletonList(FOEDSELSMELDING.getAarsakskode()),
-                TRANSAKSJONSTYPE
-        );
-
+    public List<String> finnFoedteIdenter(Long avspillergruppeId, int minimumAlder, int maksimumAlder) {
+        List<String> identer = cacheService.hentFoedteIdenterCache(avspillergruppeId);
         return filtrerIdenterIAldersgruppe(new ArrayList<>(identer), minimumAlder, maksimumAlder);
     }
 
@@ -283,7 +244,7 @@ public class EksisterendeIdenterService {
     }
 
     public List<String> hentIdenterSomIkkeErITps(Long avspillergruppeId, String miljoe) {
-        List<String> alleIdenter = finnAlleIdenter(avspillergruppeId);
+        List<String> alleIdenter = tpsfFiltreringService.finnAlleIdenter(avspillergruppeId);
         List<String> identerIkkeITps = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         for (List<String> identer : Lists.partition(alleIdenter, 80)) {
@@ -316,7 +277,7 @@ public class EksisterendeIdenterService {
     }
 
     public List<String> hentIdenterSomKolliderer(Long avspillergruppeId) {
-        List<String> alleIdenter = finnAlleIdenter(avspillergruppeId);
+        List<String> alleIdenter = tpsfFiltreringService.finnAlleIdenter(avspillergruppeId);
         List<String> identerITps = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
