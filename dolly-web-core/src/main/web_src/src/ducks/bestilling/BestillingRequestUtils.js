@@ -21,25 +21,20 @@ export const getValues = (attributeList, values) => {
 				const keys = Object.keys(groupedByInntektsaar)
 				keys.forEach((key, i) => {
 					const current = groupedByInntektsaar[key]
-					if (value[i].inntektssted == 'Svalbard') {
-						dataArr.push({
-							svalbardGrunnlag: current.map(temp => ({
-								tekniskNavn: temp.typeinntekt,
-								verdi: temp.beloep
-							})),
-							inntektsaar: key,
-							tjeneste: tjeneste
-						})
-					} else {
-						dataArr.push({
-							grunnlag: current.map(temp => ({
-								tekniskNavn: temp.typeinntekt,
-								verdi: temp.beloep
-							})),
-							inntektsaar: key,
-							tjeneste: tjeneste
-						})
-					}
+					const svalbardGrunnlag = current.filter(curr => curr.inntektssted === 'Svalbard')
+					const grunnlag = current.filter(curr => curr.inntektssted === 'Fastlandet')
+					dataArr.push({
+						grunnlag: grunnlag.map(temp => ({
+							tekniskNavn: temp.typeinntekt,
+							verdi: temp.beloep
+						})),
+						svalbardGrunnlag: svalbardGrunnlag.map(temp => ({
+							tekniskNavn: temp.typeinntekt,
+							verdi: temp.beloep
+						})),
+						inntektsaar: key,
+						tjeneste: tjeneste
+					})
 				})
 			})
 			return _set(accumulator, pathPrefix, dataArr)

@@ -206,25 +206,23 @@ export function mapBestillingData(bestillingData) {
 			// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
 			let flatSigrunStubKriterier = []
 			sigrunStubKriterier.forEach(inntekt => {
-				if (inntekt.svalbardGrunnlag != null) {
-					inntekt.svalbardGrunnlag.forEach(s => {
-						flatSigrunStubKriterier.push({
-							svalbardGrunnlag: s.tekniskNavn,
-							inntektsaar: inntekt.inntektsaar,
-							tjeneste: inntekt.tjeneste,
-							verdi: s.verdi
-						})
+				const inntektObj = { inntektsaar: inntekt.inntektsaar, tjeneste: inntekt.tjeneste }
+				inntekt.grunnlag.forEach(gr => {
+					flatSigrunStubKriterier.push({
+						...inntektObj,
+						grunnlag: gr.tekniskNavn,
+						verdi: gr.verdi,
+						inntektssted: 'Fastlands-Norge'
 					})
-				} else {
-					inntekt.grunnlag.forEach(g => {
-						flatSigrunStubKriterier.push({
-							grunnlag: g.tekniskNavn,
-							inntektsaar: inntekt.inntektsaar,
-							tjeneste: inntekt.tjeneste,
-							verdi: g.verdi
-						})
+				})
+				inntekt.svalbardGrunnlag.forEach(gr => {
+					flatSigrunStubKriterier.push({
+						...inntektObj,
+						svalbardGrunnlag: gr.tekniskNavn,
+						verdi: gr.verdi,
+						inntektssted: 'Svalbard'
 					})
-				}
+				})
 			})
 
 			const sigrunStub = {
@@ -241,27 +239,20 @@ export function mapBestillingData(bestillingData) {
 					},
 					obj('År', inntekt.inntektsaar),
 					obj('Beløp', inntekt.verdi),
-					obj('Tjeneste', Formatters.allCapsToCapitalized(inntekt.tjeneste))
+					obj('Tjeneste', Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)),
+					{
+						label: 'Grunnlag (Fastlands-Norge)',
+						value: inntekt.grunnlag,
+						width: 'xlarge',
+						apiKodeverkId: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
+					},
+					{
+						label: 'Grunnlag (Svalbard)',
+						value: inntekt.svalbardGrunnlag,
+						width: 'xlarge',
+						apiKodeverkId: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
+					}
 				])
-				if (inntekt.svalbardGrunnlag != null) {
-					sigrunStub.itemRows.push([
-						{
-							label: 'grunnlag (Svalbard)',
-							value: inntekt.svalbardGrunnlag,
-							width: 'xlarge',
-							apiKodeverkId: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
-						}
-					])
-				} else {
-					sigrunStub.itemRows.push([
-						{
-							label: 'grunnlag (Fastlandet)',
-							value: inntekt.grunnlag,
-							width: 'xlarge',
-							apiKodeverkId: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
-						}
-					])
-				}
 			})
 
 			data.push(sigrunStub)
