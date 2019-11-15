@@ -1,7 +1,9 @@
 package no.nav.registre.arena.core.provider.rs;
 
-import no.nav.registre.arena.core.service.IdentService;
-import no.nav.registre.arena.domain.Arbeidsoeker;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,15 +12,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
-import javax.xml.ws.Response;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.when;
+import no.nav.registre.arena.core.service.IdentService;
+import no.nav.registre.arena.domain.Arbeidsoeker;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentControllerTest {

@@ -84,6 +84,7 @@
     </dependencies>
 
     <build>
+        <finalName>testnorge-arena-core</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -92,6 +93,14 @@
                     <skipTests>false</skipTests>
                     <forkMode>once</forkMode>
                     <useSystemClassLoader>false</useSystemClassLoader>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler-plugin.version}</version>
+                <configuration>
+                    <release>11</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -126,5 +135,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
