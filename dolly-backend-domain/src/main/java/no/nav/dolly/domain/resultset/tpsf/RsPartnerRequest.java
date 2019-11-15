@@ -3,20 +3,17 @@ package no.nav.dolly.domain.resultset.tpsf;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsSimpleRelasjoner {
+public class RsPartnerRequest extends RsRelasjon{
 
-    private RsPartnerRequest partner;
-    private List<RsPartnerRequest> partnere;
-
-    private List<RsBarnRequest> barn;
+    private Integer partnerNr;
+    private List<RsSivilstandRequest> sivilstander;
+    private Boolean harFellesAdresse;
 }

@@ -1,6 +1,6 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,10 +13,8 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsSimpleRelasjoner {
+public class RsSivilstandRequest {
 
-    private RsPartnerRequest partner;
-    private List<RsPartnerRequest> partnere;
-
-    private List<RsBarnRequest> barn;
+    private String sivilstand;
+    private LocalDateTime sivilstandRegdato;
 }
