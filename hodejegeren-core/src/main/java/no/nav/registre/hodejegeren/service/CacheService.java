@@ -181,33 +181,17 @@ public class CacheService {
     }
 
     private void fjernUregistrerteCacher() {
-        for (Long avspillergruppeId : alleIdenterCache.keySet()) {
-            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
-                alleIdenterCache.remove(avspillergruppeId);
-            }
-        }
+        fjernCache(alleIdenterCache);
+        fjernCache(levendeIdenterCache);
+        fjernCache(doedeOgUtvandredeIdenterCache);
+        fjernCache(gifteIdenterCache);
+        fjernCache(foedteIdenterCache);
+    }
 
-        for (Long avspillergruppeId : levendeIdenterCache.keySet()) {
+    private void fjernCache(Map<Long, List<String>> cache) {
+        for (Long avspillergruppeId : cache.keySet()) {
             if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
-                levendeIdenterCache.remove(avspillergruppeId);
-            }
-        }
-
-        for (Long avspillergruppeId : doedeOgUtvandredeIdenterCache.keySet()) {
-            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
-                doedeOgUtvandredeIdenterCache.remove(avspillergruppeId);
-            }
-        }
-
-        for (Long avspillergruppeId : gifteIdenterCache.keySet()) {
-            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
-                gifteIdenterCache.remove(avspillergruppeId);
-            }
-        }
-
-        for (Long avspillergruppeId : foedteIdenterCache.keySet()) {
-            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
-                foedteIdenterCache.remove(avspillergruppeId);
+                cache.remove(avspillergruppeId);
             }
         }
     }
