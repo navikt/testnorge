@@ -41,12 +41,12 @@ export const Steg2 = props => {
 				initialValues={initialValues}
 				validationSchema={validationListe}
 			>
-				{formikProps => (
+				{formikBag => (
 					<div>
-						<TpsfForm formikProps={formikProps} />
-						<KrrstubForm formikProps={formikProps} />
-						<ArenaForm formikProps={formikProps} />
-						<DisplayFormikState {...formikProps} />
+						<TpsfForm formikProps={formikBag} />
+						<KrrstubForm formikProps={formikBag} />
+						<ArenaForm formikBag={formikBag} />
+						<DisplayFormikState {...formikBag} />
 					</div>
 				)}
 			</Formik>
