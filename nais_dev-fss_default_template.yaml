@@ -6,7 +6,6 @@ metadata:
   labels:
     team: orkestrator
 spec:
-  image: "docker.adeo.no:5000/registre/testnorge-hodejegeren"
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
