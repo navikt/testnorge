@@ -1,7 +1,8 @@
 package no.nav.dolly.bestilling.inntektsstub;
 
+import static java.lang.String.*;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -50,11 +51,13 @@ public class InntektsstubClient implements ClientRegister {
         try {
             ResponseEntity<Inntektsinformasjon> response = inntektsstubConsumer.postInntekter(inntektsinformasjon);
 
-            if (response.hasBody() && isNotBlank(response.getBody().getFeilmelding())) {
-                progress.setInntektsstubStatus(response.getBody().getFeilmelding());
+            if (nonNull(response) && response.hasBody()) {
+
+                progress.setInntektsstubStatus(isBlank(response.getBody().getFeilmelding()) ? "OK" : response.getBody().getFeilmelding());
 
             } else {
-                progress.setInntektsstubStatus("OK");
+
+                progress.setInntektsstubStatus(format("Feilet å opprette inntekter i Inntektsstub for ident %s.", inntektsinformasjon.getNorskIdent()));
             }
 
         } catch (HttpClientErrorException e) {
@@ -65,7 +68,7 @@ public class InntektsstubClient implements ClientRegister {
 
             progress.setInntektsstubStatus("Teknisk feil, se logg!");
 
-            log.error("Feilet å opprette inntekter i Inntektsstub for ident {}. Feilmelding: ", inntektsinformasjon.getNorskIdent(), e.getMessage(), e);
+            log.error("Feilet å opprette inntekter i Inntektsstub for ident {}. Feilmelding: {}", inntektsinformasjon.getNorskIdent(), e.getMessage(), e);
         }
 
     }
@@ -76,11 +79,11 @@ public class InntektsstubClient implements ClientRegister {
             inntektsstubConsumer.deleteInntekter(hovedperson);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
 
-            log.error("Feilet å slette informasjon om ident {} i Inntektsstub. Feilmelding: ", hovedperson, e.getResponseBodyAsString());
+            log.error("Feilet å slette informasjon om ident {} i Inntektsstub. Feilmelding: {}", hovedperson, e.getResponseBodyAsString());
 
         } catch (RuntimeException e) {
 
-            log.error("Feilet å slette informasjon om ident {} i Inntektsstub. Feilmelding: ", hovedperson, e.getMessage());
+            log.error("Feilet å slette informasjon om ident {} i Inntektsstub. Feilmelding: {}", hovedperson, e.getMessage());
         }
     }
 }
