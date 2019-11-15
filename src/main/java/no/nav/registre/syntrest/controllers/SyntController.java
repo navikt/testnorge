@@ -11,8 +11,7 @@ import no.nav.registre.syntrest.domain.aap.AAP115Melding;
 import no.nav.registre.syntrest.domain.aap.AAPMelding;
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
-import no.nav.registre.syntrest.domain.eia.Pasient;
-import no.nav.registre.syntrest.domain.eia.SyntLegeerklaering;
+import no.nav.registre.syntrest.domain.eia.Historikk;
 import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
 import no.nav.registre.syntrest.domain.inst.Institusjonsmelding;
 import no.nav.registre.syntrest.domain.medl.Medlemskapsmelding;
@@ -37,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -99,8 +97,8 @@ public class SyntController {
     @ApiOperation(value = "Aareg", notes = "Genererer syntetiske arbeidshistorikker bestående av meldinger på AAREG format.")
     @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-aareg"})
     public ResponseEntity<List<Arbeidsforholdsmelding>> generateAareg(
-            @ApiParam(value = "Liste med identifikasjonnumre for fikitve personer", required = true)
-            @RequestBody(required = false) List<String> fnrs
+            @ApiParam(value = "Liste med identifikasjonsnumre for fikitve personer", required = true)
+            @RequestBody List<String> fnrs
     ) {
         InputValidator.validateInput(fnrs);
         List<Arbeidsforholdsmelding> response = (List<Arbeidsforholdsmelding>)
@@ -334,19 +332,16 @@ public class SyntController {
     }
 
     @PostMapping("/eia")
-    @ApiOperation(value = "Generer legeerklæring", notes = "Lager en legeerklæring for hvert objekt i forespørselen. Returnerer et map med " +
-            "key=personnummer for pasienten, value=xml for legeerklæringen")
+    @ApiOperation(value = "Generer sykemelding-historie", notes = "Lager en sykemeldings-historie per person som blir sendt inn. ")
     @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-eia"})
-    public ResponseEntity<Map<String, String>> generateLegeerklaeringer(
-            @ApiParam(value = "Skjema som må lages for hver person man skal ha en legeerklæring på.", required = true)
-            @RequestBody List<SyntLegeerklaering> input
+    public ResponseEntity<Map<String, Historikk>> generateLegeerklaeringer(
+            @ApiParam(value = "Fnr for personen som skal ha sykemeldinger. Startdato for sykemeldingene.", required = true)
+            @RequestBody Map<String, String> fnrStartdatoMap
     ) {
-        InputValidator.validateInput(input.stream()
-                .map(SyntLegeerklaering::getPasient)
-                .map(Pasient::getFnr)
-                .collect(Collectors.toList()));
-        Map<String, String> response = (Map<String, String>)
-                eiaConsumer.synthesizeData(UriExpander.getRequestEntity(eiaUrl, input));
+        InputValidator.validateInput(new ArrayList<>(fnrStartdatoMap.keySet()));
+
+        Map<String, Historikk> response = (Map<String, Historikk>)
+                eiaConsumer.synthesizeData(UriExpander.getRequestEntity(eiaUrl, fnrStartdatoMap));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
