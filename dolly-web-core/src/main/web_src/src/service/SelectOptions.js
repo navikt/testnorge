@@ -19,7 +19,7 @@ const selectOptions = {
 	inntektssted: [
 		{ value: 'Fastlandet', label: 'Fastlandet' },
 		{ value: 'Svalbard', label: 'Svalbard' }
-	]
+	],
 
 	// AAREG
 	// aktoertype: [
@@ -37,12 +37,12 @@ const selectOptions = {
 
 	// skifteform: [{ value: 'OFFENTLIG', label: 'Offentlig' }, { value: 'ANNET', label: 'Annet' }],
 
-	// // PDLF - falsk identitet
-	// identitetType: [
-	// 	{ value: 'UKJENT', label: 'Ukjent' },
-	// 	{ value: 'ENTYDIG', label: 'Ved identifikasjonsnummer' },
-	// 	{ value: 'OMTRENTLIG', label: 'Ved personopplysninger' }
-	// ],
+	// PDLF - falsk identitet
+	identitetType: [
+		{ value: 'UKJENT', label: 'Ukjent' },
+		{ value: 'ENTYDIG', label: 'Ved identifikasjonsnummer' },
+		{ value: 'OMTRENTLIG', label: 'Ved personopplysninger' }
+	]
 
 	// kjonnFalskIdentitet: [
 	// 	{ value: 'KVINNE', label: 'Kvinne' },
