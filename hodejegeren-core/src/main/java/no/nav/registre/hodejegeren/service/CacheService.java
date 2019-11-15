@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -26,66 +27,67 @@ public class CacheService {
 
     private final TpsfFiltreringService tpsfFiltreringService;
 
+    private final AsyncCache asyncCache;
+
     @Value("#{'${cache.avspillergrupper}'.split(',')}")
     private List<Long> fasteAvspillergrupper;
 
-    private Map<Long, List<String>> alleIdenterCache;
-    private Map<Long, List<String>> levendeIdenterCache;
-    private Map<Long, List<String>> doedeOgUtvandredeIdenterCache;
-    private Map<Long, List<String>> gifteIdenterCache;
-    private Map<Long, List<String>> foedteIdenterCache;
-
     public List<String> hentAlleIdenterCache(Long avspillergruppeId) {
         List<String> alleIdenter;
+        Map<Long, List<String>> alleIdenterCache = asyncCache.getAlleIdenterCache();
         if (alleIdenterCache == null || !alleIdenterCache.containsKey(avspillergruppeId) || alleIdenterCache.get(avspillergruppeId).isEmpty()) {
             alleIdenter = oppdaterAlleIdenterCache(avspillergruppeId);
         } else {
             alleIdenter = alleIdenterCache.get(avspillergruppeId);
-            oppdaterAlleIdenterCache(avspillergruppeId);
+            asyncCache.asyncOppdaterAlleIdenterCache(avspillergruppeId);
         }
         return alleIdenter;
     }
 
     public List<String> hentLevendeIdenterCache(Long avspillergruppeId) {
         List<String> levendeIdenter;
+        Map<Long, List<String>> levendeIdenterCache = asyncCache.getLevendeIdenterCache();
         if (levendeIdenterCache == null || !levendeIdenterCache.containsKey(avspillergruppeId) || levendeIdenterCache.get(avspillergruppeId).isEmpty()) {
             levendeIdenter = oppdaterLevendeIdenterCache(avspillergruppeId);
         } else {
             levendeIdenter = levendeIdenterCache.get(avspillergruppeId);
-            oppdaterLevendeIdenterCache(avspillergruppeId);
+            asyncCache.asyncOppdaterLevendeIdenterCache(avspillergruppeId);
         }
         return levendeIdenter;
     }
 
     public List<String> hentDoedeOgUtvandredeIdenterCache(Long avspillergruppeId) {
         List<String> doedeOgUtvandredeIdenter;
+        Map<Long, List<String>> doedeOgUtvandredeIdenterCache = asyncCache.getDoedeOgUtvandredeIdenterCache();
         if (doedeOgUtvandredeIdenterCache == null || !doedeOgUtvandredeIdenterCache.containsKey(avspillergruppeId) || doedeOgUtvandredeIdenterCache.get(avspillergruppeId).isEmpty()) {
             doedeOgUtvandredeIdenter = oppdaterDoedeOgUtvandredeIdenterCache(avspillergruppeId);
         } else {
             doedeOgUtvandredeIdenter = doedeOgUtvandredeIdenterCache.get(avspillergruppeId);
-            oppdaterDoedeOgUtvandredeIdenterCache(avspillergruppeId);
+            asyncCache.asyncOppdaterDoedeOgUtvandredeIdenterCache(avspillergruppeId);
         }
         return doedeOgUtvandredeIdenter;
     }
 
     public List<String> hentGifteIdenterCache(Long avspillergruppeId) {
         List<String> gifteIdenter;
+        Map<Long, List<String>> gifteIdenterCache = asyncCache.getGifteIdenterCache();
         if (gifteIdenterCache == null || !gifteIdenterCache.containsKey(avspillergruppeId) || gifteIdenterCache.get(avspillergruppeId).isEmpty()) {
             gifteIdenter = oppdaterGifteIdenterCache(avspillergruppeId);
         } else {
             gifteIdenter = gifteIdenterCache.get(avspillergruppeId);
-            oppdaterGifteIdenterCache(avspillergruppeId);
+            asyncCache.asyncOppdaterGifteIdenterCache(avspillergruppeId);
         }
         return gifteIdenter;
     }
 
     public List<String> hentFoedteIdenterCache(Long avspillergruppeId) {
         List<String> foedteIdenter;
+        Map<Long, List<String>> foedteIdenterCache = asyncCache.getFoedteIdenterCache();
         if (foedteIdenterCache == null || !foedteIdenterCache.containsKey(avspillergruppeId) || foedteIdenterCache.get(avspillergruppeId).isEmpty()) {
             foedteIdenter = oppdaterFoedteIdenterCache(avspillergruppeId);
         } else {
             foedteIdenter = foedteIdenterCache.get(avspillergruppeId);
-            oppdaterFoedteIdenterCache(avspillergruppeId);
+            asyncCache.asyncOppdaterFoedteIdenterCache(avspillergruppeId);
         }
         return foedteIdenter;
     }
@@ -96,8 +98,8 @@ public class CacheService {
     @Scheduled(cron = "0 0 * * * *")
     public List<Long> oppdaterAlleCacher() {
         log.info("Oppdaterer cacher til avspillergrupper: {}", fasteAvspillergrupper.toString());
-        sjekkOmCacherErNull();
-        fjernUregistrerteCacher();
+        asyncCache.sjekkOmCacherErNull();
+        asyncCache.fjernUregistrerteCacher();
 
         for (Long avspillergruppeId : fasteAvspillergrupper) {
             oppdaterAlleIdenterCache(avspillergruppeId);
@@ -107,6 +109,7 @@ public class CacheService {
             oppdaterFoedteIdenterCache(avspillergruppeId);
         }
 
+        log.info("Faste cacher har blitt oppdatert");
         return fasteAvspillergrupper;
     }
 
@@ -120,38 +123,38 @@ public class CacheService {
     }
 
     private List<String> oppdaterAlleIdenterCache(Long avspillergruppeId) {
-        if (alleIdenterCache == null) {
-            alleIdenterCache = new HashMap<>();
+        if (asyncCache.getAlleIdenterCache()== null) {
+            asyncCache.setAlleIdenterCache(new HashMap<>());
         }
-        return oppdaterCache(alleIdenterCache, avspillergruppeId, tpsfFiltreringService.finnAlleIdenter(avspillergruppeId)).get(avspillergruppeId);
+        return oppdaterCache(asyncCache.getAlleIdenterCache(), avspillergruppeId, tpsfFiltreringService.finnAlleIdenter(avspillergruppeId)).get(avspillergruppeId);
     }
 
     private List<String> oppdaterLevendeIdenterCache(Long avspillergruppeId) {
-        if (levendeIdenterCache == null) {
-            levendeIdenterCache = new HashMap<>();
+        if (asyncCache.getLevendeIdenterCache() == null) {
+            asyncCache.setLevendeIdenterCache(new HashMap<>());
         }
-        return oppdaterCache(levendeIdenterCache, avspillergruppeId, tpsfFiltreringService.finnLevendeIdenter(avspillergruppeId)).get(avspillergruppeId);
+        return oppdaterCache(asyncCache.getLevendeIdenterCache(), avspillergruppeId, tpsfFiltreringService.finnLevendeIdenter(avspillergruppeId)).get(avspillergruppeId);
     }
 
     private List<String> oppdaterDoedeOgUtvandredeIdenterCache(Long avspillergruppeId) {
-        if (doedeOgUtvandredeIdenterCache == null) {
-            doedeOgUtvandredeIdenterCache = new HashMap<>();
+        if (asyncCache.getDoedeOgUtvandredeIdenterCache() == null) {
+            asyncCache.setDoedeOgUtvandredeIdenterCache(new HashMap<>());
         }
-        return oppdaterCache(doedeOgUtvandredeIdenterCache, avspillergruppeId, tpsfFiltreringService.finnDoedeOgUtvandredeIdenter(avspillergruppeId)).get(avspillergruppeId);
+        return oppdaterCache(asyncCache.getDoedeOgUtvandredeIdenterCache(), avspillergruppeId, tpsfFiltreringService.finnDoedeOgUtvandredeIdenter(avspillergruppeId)).get(avspillergruppeId);
     }
 
     private List<String> oppdaterGifteIdenterCache(Long avspillergruppeId) {
-        if (gifteIdenterCache == null) {
-            gifteIdenterCache = new HashMap<>();
+        if (asyncCache.getGifteIdenterCache() == null) {
+            asyncCache.setGifteIdenterCache(new HashMap<>());
         }
-        return oppdaterCache(gifteIdenterCache, avspillergruppeId, tpsfFiltreringService.finnGifteIdenter(avspillergruppeId)).get(avspillergruppeId);
+        return oppdaterCache(asyncCache.getGifteIdenterCache(), avspillergruppeId, tpsfFiltreringService.finnGifteIdenter(avspillergruppeId)).get(avspillergruppeId);
     }
 
     private List<String> oppdaterFoedteIdenterCache(Long avspillergruppeId) {
-        if (foedteIdenterCache == null) {
-            foedteIdenterCache = new HashMap<>();
+        if (asyncCache.getFoedteIdenterCache() == null) {
+            asyncCache.setFoedteIdenterCache(new HashMap<>());
         }
-        return oppdaterCache(foedteIdenterCache, avspillergruppeId, tpsfFiltreringService.finnFoedteIdenter(avspillergruppeId)).get(avspillergruppeId);
+        return oppdaterCache(asyncCache.getFoedteIdenterCache(), avspillergruppeId, tpsfFiltreringService.finnFoedteIdenter(avspillergruppeId)).get(avspillergruppeId);
     }
 
     private Map<Long, List<String>> oppdaterCache(Map<Long, List<String>> cache, Long avspillergruppeId, List<String> innhold) {
@@ -160,39 +163,5 @@ public class CacheService {
         }
         cache.put(avspillergruppeId, innhold);
         return cache;
-    }
-
-    private void sjekkOmCacherErNull() {
-        if (alleIdenterCache == null) {
-            alleIdenterCache = new HashMap<>();
-        }
-        if (levendeIdenterCache == null) {
-            levendeIdenterCache = new HashMap<>();
-        }
-        if (doedeOgUtvandredeIdenterCache == null) {
-            doedeOgUtvandredeIdenterCache = new HashMap<>();
-        }
-        if (gifteIdenterCache == null) {
-            gifteIdenterCache = new HashMap<>();
-        }
-        if (foedteIdenterCache == null) {
-            foedteIdenterCache = new HashMap<>();
-        }
-    }
-
-    private void fjernUregistrerteCacher() {
-        fjernCache(alleIdenterCache);
-        fjernCache(levendeIdenterCache);
-        fjernCache(doedeOgUtvandredeIdenterCache);
-        fjernCache(gifteIdenterCache);
-        fjernCache(foedteIdenterCache);
-    }
-
-    private void fjernCache(Map<Long, List<String>> cache) {
-        for (Long avspillergruppeId : cache.keySet()) {
-            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
-                cache.remove(avspillergruppeId);
-            }
-        }
     }
 }
