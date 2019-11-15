@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import no.nav.registre.hodejegeren.service.CacheService;
 import no.nav.registre.hodejegeren.service.EksisterendeIdenterService;
 import no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService;
 import no.nav.registre.hodejegeren.service.Endringskoder;
@@ -26,6 +27,9 @@ public class HodejegerenControllerTest {
 
     @Mock
     private EksisterendeIdenterService eksisterendeIdenterService;
+
+    @Mock
+    private CacheService cacheService;
 
     @Mock
     private EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
@@ -62,7 +66,7 @@ public class HodejegerenControllerTest {
     @Test
     public void shouldHenteAlleIdenterIGruppe() {
         hodejegerenController.hentAlleIdenterIGruppe(avspillergruppeId);
-        verify(eksisterendeIdenterService).finnAlleIdenter(avspillergruppeId);
+        verify(cacheService).hentAlleIdenterCache(avspillergruppeId);
     }
 
     /**
@@ -72,7 +76,7 @@ public class HodejegerenControllerTest {
     @Test
     public void shouldHenteLevendeIdenterIGruppe() {
         hodejegerenController.hentLevendeIdenterIGruppe(avspillergruppeId);
-        verify(eksisterendeIdenterService).finnLevendeIdenter(avspillergruppeId);
+        verify(cacheService).hentLevendeIdenterCache(avspillergruppeId);
     }
 
     /**
@@ -82,7 +86,7 @@ public class HodejegerenControllerTest {
     @Test
     public void shouldHenteDoedeOgUtvandredeIdenterIGruppe() {
         hodejegerenController.hentDoedeOgUtvandredeIdenterIGruppe(avspillergruppeId);
-        verify(eksisterendeIdenterService).finnDoedeOgUtvandredeIdenter(avspillergruppeId);
+        verify(cacheService).hentDoedeOgUtvandredeIdenterCache(avspillergruppeId);
     }
 
     /**
@@ -92,7 +96,7 @@ public class HodejegerenControllerTest {
     @Test
     public void shouldHenteGifteIdenterIGruppe() {
         hodejegerenController.hentGifteIdenterIGruppe(avspillergruppeId);
-        verify(eksisterendeIdenterService).finnGifteIdenter(avspillergruppeId);
+        verify(cacheService).hentGifteIdenterCache(avspillergruppeId);
     }
 
     /**

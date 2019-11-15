@@ -19,6 +19,7 @@ import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
+import no.nav.registre.hodejegeren.service.CacheService;
 import no.nav.registre.hodejegeren.service.EksisterendeIdenterService;
 import no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService;
 
@@ -32,6 +33,9 @@ public class HodejegerenController {
     private EksisterendeIdenterService eksisterendeIdenterService;
 
     @Autowired
+    private CacheService cacheService;
+
+    @Autowired
     private EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
 
     @LogExceptions
@@ -40,7 +44,7 @@ public class HodejegerenController {
     public List<String> hentAlleIdenterIGruppe(
             @PathVariable("avspillergruppeId") Long avspillergruppeId
     ) {
-        return eksisterendeIdenterService.finnAlleIdenter(avspillergruppeId);
+        return cacheService.hentAlleIdenterCache(avspillergruppeId);
     }
 
     @LogExceptions
@@ -49,7 +53,7 @@ public class HodejegerenController {
     public List<String> hentLevendeIdenterIGruppe(
             @PathVariable("avspillergruppeId") Long avspillergruppeId
     ) {
-        return eksisterendeIdenterService.finnLevendeIdenter(avspillergruppeId);
+        return cacheService.hentLevendeIdenterCache(avspillergruppeId);
     }
 
     @LogExceptions
@@ -58,7 +62,7 @@ public class HodejegerenController {
     public List<String> hentDoedeOgUtvandredeIdenterIGruppe(
             @PathVariable("avspillergruppeId") Long avspillergruppeId
     ) {
-        return eksisterendeIdenterService.finnDoedeOgUtvandredeIdenter(avspillergruppeId);
+        return cacheService.hentDoedeOgUtvandredeIdenterCache(avspillergruppeId);
     }
 
     @LogExceptions
@@ -67,7 +71,7 @@ public class HodejegerenController {
     public List<String> hentGifteIdenterIGruppe(
             @PathVariable("avspillergruppeId") Long avspillergruppeId
     ) {
-        return eksisterendeIdenterService.finnGifteIdenter(avspillergruppeId);
+        return cacheService.hentGifteIdenterCache(avspillergruppeId);
     }
 
     @LogExceptions
