@@ -2,6 +2,7 @@ package no.nav.dolly.mapper.strategy;
 
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
+import static no.nav.dolly.mapper.BestillingInntektsstubStatusMapper.buildInntektsstubStatusMap;
 import static no.nav.dolly.mapper.BestillingInstdataStatusMapper.buildInstdataStatusMap;
 import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdldataStatusMap;
@@ -36,6 +37,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildPdldataStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildInstdataStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildUdiStubStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildInntektsstubStatusMap(bestilling.getProgresser()));
                     }
                 })
                 .byDefault()
