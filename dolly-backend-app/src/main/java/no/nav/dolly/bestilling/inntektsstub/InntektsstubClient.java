@@ -43,7 +43,7 @@ public class InntektsstubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(ident -> deleteInntekter(ident));
+        identer.forEach(this::deleteInntekter);
     }
 
     private void opprettInntekter(Inntektsinformasjon inntektsinformasjon, BestillingProgress progress) {
@@ -53,7 +53,7 @@ public class InntektsstubClient implements ClientRegister {
 
             if (nonNull(response) && response.hasBody()) {
 
-                progress.setInntektsstubStatus(isBlank(response.getBody().getFeilmelding()) ? "OK" : response.getBody().getFeilmelding());
+                progress.setInntektsstubStatus(nonNull(response.getBody()) && isBlank(response.getBody().getFeilmelding()) ? "OK" : response.getBody().getFeilmelding());
 
             } else {
 
