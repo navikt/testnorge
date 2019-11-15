@@ -97,45 +97,14 @@ public class CacheService {
     public List<Long> oppdaterAlleCacher() {
         log.info("Oppdaterer cacher til avspillergrupper: {}", fasteAvspillergrupper.toString());
         sjekkOmCacherErNull();
+        fjernUregistrerteCacher();
 
-        for (Long avspillergruppeId : alleIdenterCache.keySet()) {
-            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
-                alleIdenterCache.remove(avspillergruppeId);
-            } else {
-                oppdaterAlleIdenterCache(avspillergruppeId);
-            }
-        }
-
-        for (Long avspillergruppeId : levendeIdenterCache.keySet()) {
-            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
-                levendeIdenterCache.remove(avspillergruppeId);
-            } else {
-                oppdaterLevendeIdenterCache(avspillergruppeId);
-            }
-        }
-
-        for (Long avspillergruppeId : doedeOgUtvandredeIdenterCache.keySet()) {
-            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
-                doedeOgUtvandredeIdenterCache.remove(avspillergruppeId);
-            } else {
-                oppdaterDoedeOgUtvandredeIdenterCache(avspillergruppeId);
-            }
-        }
-
-        for (Long avspillergruppeId : gifteIdenterCache.keySet()) {
-            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
-                gifteIdenterCache.remove(avspillergruppeId);
-            } else {
-                oppdaterGifteIdenterCache(avspillergruppeId);
-            }
-        }
-
-        for (Long avspillergruppeId : foedteIdenterCache.keySet()) {
-            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
-                foedteIdenterCache.remove(avspillergruppeId);
-            } else {
-                oppdaterFoedteIdenterCache(avspillergruppeId);
-            }
+        for (Long avspillergruppeId : fasteAvspillergrupper) {
+            oppdaterAlleIdenterCache(avspillergruppeId);
+            oppdaterLevendeIdenterCache(avspillergruppeId);
+            oppdaterDoedeOgUtvandredeIdenterCache(avspillergruppeId);
+            oppdaterGifteIdenterCache(avspillergruppeId);
+            oppdaterFoedteIdenterCache(avspillergruppeId);
         }
 
         return fasteAvspillergrupper;
@@ -197,17 +166,49 @@ public class CacheService {
         if (alleIdenterCache == null) {
             alleIdenterCache = new HashMap<>();
         }
-        if(levendeIdenterCache == null) {
+        if (levendeIdenterCache == null) {
             levendeIdenterCache = new HashMap<>();
         }
-        if(doedeOgUtvandredeIdenterCache== null) {
+        if (doedeOgUtvandredeIdenterCache == null) {
             doedeOgUtvandredeIdenterCache = new HashMap<>();
         }
-        if(gifteIdenterCache == null) {
+        if (gifteIdenterCache == null) {
             gifteIdenterCache = new HashMap<>();
         }
-        if(foedteIdenterCache == null) {
+        if (foedteIdenterCache == null) {
             foedteIdenterCache = new HashMap<>();
+        }
+    }
+
+    private void fjernUregistrerteCacher() {
+        for (Long avspillergruppeId : alleIdenterCache.keySet()) {
+            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
+                alleIdenterCache.remove(avspillergruppeId);
+            }
+        }
+
+        for (Long avspillergruppeId : levendeIdenterCache.keySet()) {
+            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
+                levendeIdenterCache.remove(avspillergruppeId);
+            }
+        }
+
+        for (Long avspillergruppeId : doedeOgUtvandredeIdenterCache.keySet()) {
+            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
+                doedeOgUtvandredeIdenterCache.remove(avspillergruppeId);
+            }
+        }
+
+        for (Long avspillergruppeId : gifteIdenterCache.keySet()) {
+            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
+                gifteIdenterCache.remove(avspillergruppeId);
+            }
+        }
+
+        for (Long avspillergruppeId : foedteIdenterCache.keySet()) {
+            if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
+                foedteIdenterCache.remove(avspillergruppeId);
+            }
         }
     }
 }
