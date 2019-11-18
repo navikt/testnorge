@@ -17,7 +17,7 @@ public class Inntekt {
 
     public enum InntektType {LOENNSINNTEKT, YTELSE_FRA_OFFENTLIGE, PENSJON_ELLER_TRYGD, NAERINGSINNTEKT}
 
-    private Integer id;
+    private Long id;
     private Double antall;
     private Double beloep;
     private String beskrivelse;
