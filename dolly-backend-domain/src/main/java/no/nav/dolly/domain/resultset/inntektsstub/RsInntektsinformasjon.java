@@ -1,6 +1,5 @@
 package no.nav.dolly.domain.resultset.inntektsstub;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RsInntektsinformasjon {
 
-    private LocalDate aarMaaned;
+    private LocalDateTime aarMaaned;
     private String opplysningspliktig;
     private String virksomhet;
 
@@ -25,7 +24,6 @@ public class RsInntektsinformasjon {
     private List<Fradrag> fradragsliste;
     private List<Forskuddstrekk> forskuddstrekksliste;
     private List<Arbeidsforhold> arbeidsforholdsliste;
-    private Integer versjon;
 
     private LocalDateTime Innleveringstidspunkt;
     private String feilmelding;
@@ -70,10 +68,10 @@ public class RsInntektsinformasjon {
         private String avloenningstype;
         private String feilmelding;
 
-        private LocalDate sisteDatoForStillingsprosentendring;
-        private LocalDate sisteLoennsendringsdato;
-        private LocalDate sluttdato;
-        private LocalDate startdato;
+        private LocalDateTime sisteDatoForStillingsprosentendring;
+        private LocalDateTime sisteLoennsendringsdato;
+        private LocalDateTime sluttdato;
+        private LocalDateTime startdato;
 
         private Double stillingsprosent;
         private String yrke;

@@ -1,6 +1,6 @@
-package no.nav.dolly.domain.resultset.inntektsstub;
+package no.nav.dolly.bestilling.inntektsstub.domain;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,8 +57,8 @@ public class Tilleggsinformasjon {
     @AllArgsConstructor
     private static class Periode {
 
-        private LocalDateTime startdato;
-        private LocalDateTime sluttdato;
+        private LocalDate startdato;
+        private LocalDate sluttdato;
     }
 
     @Getter

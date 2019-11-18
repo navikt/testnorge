@@ -1,6 +1,6 @@
-package no.nav.dolly.domain.resultset.inntektsstub;
+package no.nav.dolly.bestilling.inntektsstub.domain;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +28,7 @@ public class Inntekt {
     private String opptjeningsland;
     private String skatteOgAvgiftsregel;
     private String skattemessigBosattILand;
-    private LocalDateTime sluttOpptjeningsperiode;
+    private LocalDate sluttOpptjeningsperiode;
     private String spesifikasjon;
     private String startOpptjeningsperiode;
     private Tilleggsinformasjon tilleggsinformasjon;

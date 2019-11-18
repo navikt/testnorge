@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.resultset.inntektsstub.Inntektsinformasjon;
+import no.nav.dolly.bestilling.inntektsstub.domain.Inntektsinformasjon;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Service
@@ -26,7 +26,7 @@ public class InntektsstubConsumer {
         return restTemplate.exchange(RequestEntity.delete(
                 URI.create(providersProps.getInntektsstub().getUrl() + BESTILLING_INNTEKTER_URL))
                 .header(HEADER_NAV_PERSON_IDENT, ident)
-                .build(),Inntektsinformasjon.class);
+                .build(), Inntektsinformasjon.class);
     }
 
     public ResponseEntity<Inntektsinformasjon> postInntekter(Inntektsinformasjon inntektsinformasjon) {

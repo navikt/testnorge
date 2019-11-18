@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.inntektsstub;
+package no.nav.dolly.bestilling.inntektsstub.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
