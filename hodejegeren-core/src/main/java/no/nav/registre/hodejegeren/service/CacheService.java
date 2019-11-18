@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Klasse som håndterer caching av avspillergrupper for å gjøre hodejegeren mer responsiv.
@@ -31,6 +31,10 @@ public class CacheService {
 
     @Value("#{'${cache.avspillergrupper}'.split(',')}")
     private List<Long> fasteAvspillergrupper;
+
+    public Set<Long> hentCachedeAvspillergruppeIder() {
+        return asyncCache.getAlleIdenterCache().keySet();
+    }
 
     public List<String> hentAlleIdenterCache(Long avspillergruppeId) {
         List<String> alleIdenter;
