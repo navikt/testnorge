@@ -1,18 +1,27 @@
 import React from 'react'
 import * as Yup from 'yup'
-import { Identifikasjon } from './identifikasjon/Identifikasjon'
+import Panel from '~/components/ui/panel/Panel'
+import { panelError } from '~/components/ui/form/formUtils'
+import { FalskIdentitet } from './falskIdentitet/FalskIdentitet'
+import { UtenlandsId } from './utenlandsId/UtenlandsId'
 
 export const PdlfForm = ({ formikBag }) => {
 	return (
 		<React.Fragment>
-			<Identifikasjon formikBag={formikBag} />
+			<Panel heading="Identifikasjon" hasErrors={panelError(formikBag)} startOpen>
+				<FalskIdentitet formikBag={formikBag} />
+				<UtenlandsId formikBag={formikBag} />
+			</Panel>
 		</React.Fragment>
 	)
 }
 
 PdlfForm.initialValues = {
 	pdlforvalter: {
-		falskIdentitet: { rettIdentitet: { identitetType: '' } }
+		falskIdentitet: { rettIdentitet: { identitetType: '' } },
+		utenlandskIdentifikasjonsnummer: [
+			{ identifikasjonsnummer: '', kilde: '', opphoert: '', utstederland: '' }
+		]
 	}
 }
 
@@ -35,6 +44,14 @@ PdlfForm.validation = {
 				kjoenn: Yup.string().required('Vennligst velg'),
 				statsborgerskap: Yup.string().required('Vennligst velg')
 			})
-		})
+		}),
+		utenlandskIdentifikasjonsnummer: Yup.array().of(
+			Yup.object({
+				identifikasjonsnummer: Yup.string().required('Skriv inn identifikasjonsnummer'),
+				kilde: Yup.string().required('Skriv inn kilde'),
+				opphoert: Yup.string().required('Vennligst velg'),
+				utstederland: Yup.string().required('Vennligst velg')
+			})
+		)
 	})
 }
