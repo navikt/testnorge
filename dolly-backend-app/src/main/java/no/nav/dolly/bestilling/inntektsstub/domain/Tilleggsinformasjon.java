@@ -1,8 +1,7 @@
-package no.nav.dolly.domain.resultset.inntektsstub;
+package no.nav.dolly.bestilling.inntektsstub.domain;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -58,19 +57,8 @@ public class Tilleggsinformasjon {
     @AllArgsConstructor
     private static class Periode {
 
-        @ApiModelProperty(
-                dataType = "LocalDateTime",
-                example = "yyyy-MM-dd",
-                position = 1
-        )
-        private LocalDateTime startdato;
-
-        @ApiModelProperty(
-                dataType = "LocalDateTime",
-                example = "yyyy-MM-dd",
-                position = 2
-        )
-        private LocalDateTime sluttdato;
+        private LocalDate startdato;
+        private LocalDate sluttdato;
     }
 
     @Getter

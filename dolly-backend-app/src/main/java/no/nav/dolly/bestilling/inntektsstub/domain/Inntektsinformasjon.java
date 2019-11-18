@@ -1,7 +1,6 @@
-package no.nav.dolly.domain.resultset.inntektsstub;
+package no.nav.dolly.bestilling.inntektsstub.domain;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -29,7 +28,6 @@ public class Inntektsinformasjon {
     private List<Arbeidsforhold> arbeidsforholdsliste;
     private Integer versjon;
 
-    private LocalDateTime Innleveringstidspunkt;
     private String feilmelding;
 
     @Getter
@@ -39,7 +37,7 @@ public class Inntektsinformasjon {
     @AllArgsConstructor
     public static class Fradrag {
 
-        private Integer id;
+        private Long id;
         private Double beloep;
         private String beskrivelse;
         private String feilmelding;
@@ -52,7 +50,7 @@ public class Inntektsinformasjon {
     @AllArgsConstructor
     public static class Forskuddstrekk {
 
-        private Integer id;
+        private Long id;
         private Double beloep;
         private String beskrivelse;
         private String feilmelding;
@@ -65,7 +63,7 @@ public class Inntektsinformasjon {
     @AllArgsConstructor
     public static class Arbeidsforhold {
 
-        private Integer id;
+        private Long id;
         private Double antallTimerPerUkeSomEnFullStillingTilsvarer;
         private String arbeidsforholdstype;
         private String arbeidstidsordning;
