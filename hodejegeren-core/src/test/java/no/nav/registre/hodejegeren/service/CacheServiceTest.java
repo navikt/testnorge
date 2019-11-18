@@ -1,10 +1,8 @@
 package no.nav.registre.hodejegeren.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,8 +43,8 @@ public class CacheServiceTest {
 
         verify(tpsfFiltreringService).finnAlleIdenter(avspillergruppeId);
 
-//        assertThat(cacheService.getAlleIdenterCache().get(avspillergruppeId).get(0), Matchers.equalTo(fnr1));
-//        assertThat(cacheService.getAlleIdenterCache().get(avspillergruppeId).get(1), Matchers.equalTo(fnr2));
+        //        assertThat(cacheService.getAlleIdenterCache().get(avspillergruppeId).get(0), Matchers.equalTo(fnr1));
+        //        assertThat(cacheService.getAlleIdenterCache().get(avspillergruppeId).get(1), Matchers.equalTo(fnr2));
     }
 
     @Ignore
@@ -58,8 +56,8 @@ public class CacheServiceTest {
 
         verify(tpsfFiltreringService).finnLevendeIdenter(avspillergruppeId);
 
-//        assertThat(cacheService.getLevendeIdenterCache().get(avspillergruppeId).get(0), Matchers.equalTo(fnr1));
-//        assertThat(cacheService.getLevendeIdenterCache().get(avspillergruppeId).get(1), Matchers.equalTo(fnr2));
+        //        assertThat(cacheService.getLevendeIdenterCache().get(avspillergruppeId).get(0), Matchers.equalTo(fnr1));
+        //        assertThat(cacheService.getLevendeIdenterCache().get(avspillergruppeId).get(1), Matchers.equalTo(fnr2));
     }
 
     @Ignore
@@ -71,8 +69,8 @@ public class CacheServiceTest {
 
         verify(tpsfFiltreringService).finnDoedeOgUtvandredeIdenter(avspillergruppeId);
 
-//        assertThat(cacheService.getDoedeOgUtvandredeIdenterCache().get(avspillergruppeId).get(0), Matchers.equalTo(fnr1));
-//        assertThat(cacheService.getDoedeOgUtvandredeIdenterCache().get(avspillergruppeId).get(1), Matchers.equalTo(fnr2));
+        //        assertThat(cacheService.getDoedeOgUtvandredeIdenterCache().get(avspillergruppeId).get(0), Matchers.equalTo(fnr1));
+        //        assertThat(cacheService.getDoedeOgUtvandredeIdenterCache().get(avspillergruppeId).get(1), Matchers.equalTo(fnr2));
     }
 
     @Ignore
@@ -84,8 +82,8 @@ public class CacheServiceTest {
 
         verify(tpsfFiltreringService).finnGifteIdenter(avspillergruppeId);
 
-//        assertThat(cacheService.getGifteIdenterCache().get(avspillergruppeId).get(0), Matchers.equalTo(fnr1));
-//        assertThat(cacheService.getGifteIdenterCache().get(avspillergruppeId).get(1), Matchers.equalTo(fnr2));
+        //        assertThat(cacheService.getGifteIdenterCache().get(avspillergruppeId).get(0), Matchers.equalTo(fnr1));
+        //        assertThat(cacheService.getGifteIdenterCache().get(avspillergruppeId).get(1), Matchers.equalTo(fnr2));
     }
 
     @Ignore
@@ -97,7 +95,7 @@ public class CacheServiceTest {
 
         verify(tpsfFiltreringService).finnFoedteIdenter(avspillergruppeId);
 
-//        assertThat(cacheService.getFoedteIdenterCache().get(avspillergruppeId).get(0), Matchers.equalTo(fnr1));
-//        assertThat(cacheService.getFoedteIdenterCache().get(avspillergruppeId).get(1), Matchers.equalTo(fnr2));
+        //        assertThat(cacheService.getFoedteIdenterCache().get(avspillergruppeId).get(0), Matchers.equalTo(fnr1));
+        //        assertThat(cacheService.getFoedteIdenterCache().get(avspillergruppeId).get(1), Matchers.equalTo(fnr2));
     }
 }
