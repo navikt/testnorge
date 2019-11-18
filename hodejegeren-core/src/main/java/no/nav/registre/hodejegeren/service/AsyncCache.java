@@ -87,7 +87,7 @@ public class AsyncCache {
     }
 
     public Long oppdaterAlleCacher(Long avspillergruppeId) {
-        log.info("Oppdaterer cacher til avspillergruppe: {}", avspillergruppeId);
+        log.info("Oppdaterer cacher til avspillergruppe: " + avspillergruppeId.toString().replaceAll("[\r\n]",""));
         oppdaterAlleIdenterCache(avspillergruppeId);
         oppdaterLevendeIdenterCache(avspillergruppeId);
         oppdaterDoedeOgUtvandredeIdenterCache(avspillergruppeId);
