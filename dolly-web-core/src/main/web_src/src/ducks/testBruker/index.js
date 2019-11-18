@@ -159,7 +159,7 @@ export default function testbrukerReducer(state = initialState, action) {
 				}
 			}
 		case success(GET_SIGRUN_SEKVENSNR):
-			const inntektData = state.items.sigrunstub[action.meta.ident]
+			const inntektData = state.items.sigrunstub[action.meta.ident].responseList
 			const sekvensData = action.payload && action.payload.data
 			return {
 				...state,
