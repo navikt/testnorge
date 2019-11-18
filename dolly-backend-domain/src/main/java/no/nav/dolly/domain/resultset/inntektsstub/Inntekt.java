@@ -2,6 +2,7 @@ package no.nav.dolly.domain.resultset.inntektsstub;
 
 import java.time.LocalDateTime;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,20 +18,87 @@ public class Inntekt {
 
     public enum InntektType {LOENNSINNTEKT, YTELSE_FRA_OFFENTLIGE, PENSJON_ELLER_TRYGD, NAERINGSINNTEKT}
 
-    private Integer id;
-    private Double antall;
-    private Double beloep;
-    private String beskrivelse;
-    private String feilmelding;
-    private String fordel;
-    private Boolean inngaarIGrunnlagForTrekk;
+    @ApiModelProperty(
+            position = 1
+    )
     private InntektType inntektstype;
-    private String opptjeningsland;
-    private String skatteOgAvgiftsregel;
-    private String skattemessigBosattILand;
+
+    @ApiModelProperty(
+            position = 2
+    )
+    private double beloep;
+
+    @ApiModelProperty(
+            value = "Startdato på perioden inntekten var opptjent",
+            example = "yyyy-MM-dd",
+            dataType = "LocalDateTime",
+            position = 3
+    )
+    private LocalDateTime startOpptjeningsperiode;
+
+    @ApiModelProperty(
+            value = "Sluttdato på perioden inntekten var opptjent",
+            example = "yyyy-MM-dd",
+            dataType = "LocalDateTime",
+            position = 4
+    )
     private LocalDateTime sluttOpptjeningsperiode;
-    private String spesifikasjon;
-    private String startOpptjeningsperiode;
+
+    @ApiModelProperty(
+            position = 5
+    )
+    private boolean inngaarIGrunnlagForTrekk;
+
+    @ApiModelProperty(
+            position = 6
+    )
+    private boolean utloeserArbeidsgiveravgift;
+
+    @ApiModelProperty(
+            value = "Gyldige verdier finnes i kodeverket 'Fordel'",
+            position = 7
+    )
+    private String fordel;
+
+    @ApiModelProperty(
+            value = "Gyldige verdier finnes i kodeverket 'SkatteOgAvgiftsregel'",
+            position = 8
+    )
+    private String skatteOgAvgiftsregel;
+
+    @ApiModelProperty(
+            value = "Gyldige verdier finnes i kodeverket 'LandkoderISO2'",
+            position = 9
+    )
+    private String skattemessigBosattILand;
+
+    @ApiModelProperty(
+            value = "Gyldige verdier finnes i kodeverket 'LandkoderISO2'",
+            position = 10
+    )
+    private String opptjeningsland;
+
+    @ApiModelProperty(
+            value = "Gyldige verdier avhenger av inntektstypen, og finnes i kodeverkene 'Loennsbeskrivelse', 'YtelseFraOffentligeBeskrivelse', 'PensjonEllerTrygdeBeskrivelse', 'Naeringsinntektsbeskrivelse'",
+            position = 11
+    )
+    private String beskrivelse;
+
+    @ApiModelProperty(
+            value = "OBS! kun ett av feltene i tilleggsinformasjon skal være satt",
+            position = 12
+    )
     private Tilleggsinformasjon tilleggsinformasjon;
-    private Boolean utloeserArbeidsgiveravgift;
+
+    @ApiModelProperty(
+            position = 13
+    )
+    private String spesifikasjon;
+
+    @ApiModelProperty(
+            value = "F.eks. antall kilometer i kilometergodtgjørelsen",
+            position = 14
+    )
+    private double antall;
 }
+
