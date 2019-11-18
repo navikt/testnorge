@@ -68,7 +68,9 @@ public class EksisterendeIdenterService {
         if (henteAntall != null) {
             Collections.shuffle(gyldigeIdenter);
             if (gyldigeIdenter.size() < henteAntall) {
-                log.info("Antall ønskede identer å hente er større enn identer over alder i avspillergruppe. - HenteAntall:{} GyldigeIdenter:{}", henteAntall, gyldigeIdenter.size());
+                log.info("Antall ønskede identer å hente er større enn identer over alder i avspillergruppe. - HenteAntall:{} GyldigeIdenter:{}",
+                        henteAntall.toString().replaceAll("[\r\n]", ""),
+                        gyldigeIdenter.size());
                 henteAntall = gyldigeIdenter.size();
             }
             utvalgteIdenter = gyldigeIdenter.subList(0, henteAntall);
