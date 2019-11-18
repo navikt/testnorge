@@ -30,8 +30,11 @@ const config = {
 // !DEVELOPMENT
 if (isDevMode) {
 	config.debug = true
+	// For connecting to dolly i u2
 	config.services.dollyBackend = 'https://dolly-u2.nais.preprod.local/api/v1'
-	// config.services.dollyBackend = 'http://localhost:8080'
+
+	// For running proxy locally
+	// config.services.dollyBackend = 'http://localhost:8020/api/v1'
 }
 
 export default config

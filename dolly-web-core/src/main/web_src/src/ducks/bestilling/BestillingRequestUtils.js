@@ -15,24 +15,28 @@ export const getValues = (attributeList, values) => {
 		if (pathPrefix == DataSourceMapper('SIGRUN')) {
 			const groupByTjeneste = _groupBy(value, 'tjeneste')
 			const tjenester = Object.keys(groupByTjeneste)
-
 			let dataArr = []
 			tjenester.forEach(tjeneste => {
 				const groupedByInntektsaar = _groupBy(groupByTjeneste[tjeneste], 'inntektsaar')
 				const keys = Object.keys(groupedByInntektsaar)
-				keys.forEach(key => {
+				keys.forEach((key, i) => {
 					const current = groupedByInntektsaar[key]
+					const svalbardGrunnlag = current.filter(curr => curr.inntektssted === 'Svalbard')
+					const grunnlag = current.filter(curr => curr.inntektssted === 'Fastlandet')
 					dataArr.push({
-						grunnlag: current.map(temp => ({
+						grunnlag: grunnlag.map(temp => ({
+							tekniskNavn: temp.typeinntekt,
+							verdi: temp.beloep
+						})),
+						svalbardGrunnlag: svalbardGrunnlag.map(temp => ({
 							tekniskNavn: temp.typeinntekt,
 							verdi: temp.beloep
 						})),
 						inntektsaar: key,
-						tjeneste: DataFormatter.CapitalizedToUppercaseAndUnderscore(tjeneste)
+						tjeneste: tjeneste
 					})
 				})
 			})
-
 			return _set(accumulator, pathPrefix, dataArr)
 		}
 
@@ -474,15 +478,17 @@ export const _filterArrayAttributes = (values, selectedIds, filter, index) => {
 	let attributeIds = selectedIds.slice()
 	const AttributtManagerInstance = new AttributtManager()
 	let deletedIds = []
-	attributeIds.filter(key => filter.includes(key)).forEach(key => {
-		copy[key].splice(index, 1)
-		if (copy[key].length == 0) {
-			let ind = attributeIds.indexOf(key)
-			deletedIds.push(attributeIds[ind])
-			attributeIds.splice(ind, 1)
-			delete copy[key]
-		}
-	})
+	attributeIds
+		.filter(key => filter.includes(key))
+		.forEach(key => {
+			copy[key].splice(index, 1)
+			if (copy[key].length == 0) {
+				let ind = attributeIds.indexOf(key)
+				deletedIds.push(attributeIds[ind])
+				attributeIds.splice(ind, 1)
+				delete copy[key]
+			}
+		})
 	let dependencies = AttributtManagerInstance.listDependencies(deletedIds)
 	return {
 		values:

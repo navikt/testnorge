@@ -17,6 +17,7 @@ import UtenFastBopelConnector from '../utenFastBopel/UtenFastBopelConnector'
 import Postadresse from '../postadresse/Postadresse'
 import ArrayFieldConnector from '../arrayField/ArrayFieldConnector'
 import HjelpeTekst from 'nav-frontend-hjelpetekst'
+import Formatters from '~/utils/DataFormatter'
 
 import './FormEditor.less'
 
@@ -328,7 +329,6 @@ export default class FormEditor extends Component {
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
 		let disabled = false
-
 		if (this.props.editMode && AttributtType.SelectAndRead === item.attributtType) {
 			let valgtVerdi = valgteVerdier[item.id]
 			if (parentObject) {
@@ -359,6 +359,13 @@ export default class FormEditor extends Component {
 					{...componentProps}
 				/>
 			)
+		}
+
+		if (item.id === `${parentObject.parentId}[${parentObject.idx}]tjeneste`) {
+			if (valgteVerdier.inntekt[parentObject.idx].inntektssted === 'Svalbard') {
+				valgteVerdier.inntekt[parentObject.idx].tjeneste = 'SUMMERT_SKATTEGRUNNLAG'
+				disabled = true
+			}
 		}
 
 		if (
@@ -544,19 +551,28 @@ export default class FormEditor extends Component {
 				const props = {
 					placeholder: !item.validation ? 'Ikke spesifisert' : 'Velg..'
 				}
-
 				if (item.dependentOn) {
 					if (parentObject) {
 						// Sjekk if item er avhengig av en valgt verdi
 						const { parentId, idx } = parentObject
 						const valgtVerdi = valgteVerdier[parentId][idx][item.dependentOn]
-						item.apiKodeverkId = valgtVerdi
-						// Override for force rerender av react select
-						item.key = valgtVerdi
+						if (
+							valgteVerdier.inntekt[idx].tjeneste === 'BEREGNET_SKATT' ||
+							valgteVerdier.inntekt[idx].tjeneste === 'SUMMERT_SKATTEGRUNNLAG'
+						) {
+							item.apiKodeverkId = Formatters.uppercaseAndUnderscoreToCapitalized(valgtVerdi)
+							// Override for force rerender av react select
+							item.key = Formatters.uppercaseAndUnderscoreToCapitalized(valgtVerdi)
+						} else {
+							item.apiKodeverkId = valgtVerdi
+							// Override for force rerender av react select
+							item.key = valgtVerdi
+						}
 					} else {
 						// ? Implement når vi trenger avhengighet mellom flat attributter
 					}
 				}
+
 				if (item.apiKodeverkId) {
 					const showValueInLabel = item.apiKodeverkShowValueInLabel ? true : false
 					props.loadOptions = async () => {
