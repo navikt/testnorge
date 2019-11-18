@@ -46,7 +46,7 @@ public class TestnorgeAaregConsumerTest {
     private SyntetiserAaregRequest syntetiserAaregRequest;
     private String fnr1 = "01010101010";
     private String fnr2 = "02020202020";
-    private boolean lagreIAareg = false;
+    private boolean sendAlleEksisterende = false;
 
     @Before
     public void setUp() {
@@ -57,16 +57,16 @@ public class TestnorgeAaregConsumerTest {
 
     @Test
     public void shouldStartSyntetisering() {
-        String expectedUri = serverUrl + "/v1/syntetisering/generer?lagreIAareg={lagreIAareg}";
+        String expectedUri = serverUrl + "/v1/syntetisering/generer?sendAlleEksisterende={sendAlleEksisterende}";
         stubAaregSyntConsumer(expectedUri);
 
-        ResponseEntity response = testnorgeAaregConsumer.startSyntetisering(syntetiserAaregRequest, lagreIAareg);
+        ResponseEntity response = testnorgeAaregConsumer.startSyntetisering(syntetiserAaregRequest, sendAlleEksisterende);
 
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
     }
 
     private void stubAaregSyntConsumer(String expectedUri) {
-        server.expect(requestToUriTemplate(expectedUri, lagreIAareg))
+        server.expect(requestToUriTemplate(expectedUri, sendAlleEksisterende))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(content().json("{\"avspillergruppeId\":" + AVSPILLERGRUPPE_ID
                         + ",\"miljoe\":\"" + MILJOE + "\""

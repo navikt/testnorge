@@ -13,7 +13,7 @@ public class TestnorgeAaregService {
     @Autowired
     private TestnorgeAaregConsumer testnorgeAaregConsumer;
 
-    public ResponseEntity genererArbeidsforholdsmeldinger(SyntetiserAaregRequest syntetiserAaregRequest, boolean lagreIAareg) {
-        return testnorgeAaregConsumer.startSyntetisering(syntetiserAaregRequest, lagreIAareg);
+    public ResponseEntity genererArbeidsforholdsmeldinger(SyntetiserAaregRequest syntetiserAaregRequest, boolean sendAlleEksisterende) {
+        return testnorgeAaregConsumer.startSyntetisering(syntetiserAaregRequest, sendAlleEksisterende);
     }
 }

@@ -118,8 +118,8 @@ public class SyntetiseringsController {
 
     @LogExceptions
     @PostMapping(value = "/aareg/arbeidsforhold/generer")
-    public ResponseEntity opprettArbeidsforholdIAareg(@RequestParam boolean lagreIAareg, @RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
-        return testnorgeAaregService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, lagreIAareg);
+    public ResponseEntity opprettArbeidsforholdIAareg(@RequestParam boolean sendAlleEksisterende, @RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
+        return testnorgeAaregService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, sendAlleEksisterende);
     }
 
     @LogExceptions

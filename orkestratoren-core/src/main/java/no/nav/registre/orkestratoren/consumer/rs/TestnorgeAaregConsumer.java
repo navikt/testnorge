@@ -23,9 +23,9 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest
 @Component
 public class TestnorgeAaregConsumer {
 
-    private static final ParameterizedTypeReference<ResponseEntity> RESPONSE_TYPE = new ParameterizedTypeReference<ResponseEntity>() {
+    private static final ParameterizedTypeReference<ResponseEntity> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<SletteArbeidsforholdResponse> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<SletteArbeidsforholdResponse>() {
+    private static final ParameterizedTypeReference<SletteArbeidsforholdResponse> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<>() {
     };
 
     private RestTemplate restTemplate;
@@ -36,13 +36,13 @@ public class TestnorgeAaregConsumer {
             RestTemplateBuilder restTemplateBuilder,
             @Value("${testnorge-aareg.rest.api.url}") String aaregServerUrl) {
         this.restTemplate = restTemplateBuilder.build();
-        this.startSyntetiseringUrl = new UriTemplate(aaregServerUrl + "/v1/syntetisering/generer?lagreIAareg={lagreIAareg}");
+        this.startSyntetiseringUrl = new UriTemplate(aaregServerUrl + "/v1/syntetisering/generer?sendAlleEksisterende={sendAlleEksisterende}");
         this.slettIdenterUrl = new UriTemplate(aaregServerUrl + "/v1/ident");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "aareg" })
-    public ResponseEntity startSyntetisering(SyntetiserAaregRequest syntetiserAaregRequest, boolean lagreIAareg) {
-        RequestEntity postRequest = RequestEntity.post(startSyntetiseringUrl.expand(lagreIAareg)).contentType(MediaType.APPLICATION_JSON).body(syntetiserAaregRequest);
+    public ResponseEntity startSyntetisering(SyntetiserAaregRequest syntetiserAaregRequest, boolean sendAlleEksisterende) {
+        RequestEntity postRequest = RequestEntity.post(startSyntetiseringUrl.expand(sendAlleEksisterende)).contentType(MediaType.APPLICATION_JSON).body(syntetiserAaregRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }
 

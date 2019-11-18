@@ -28,18 +28,18 @@ public class TestnorgeAaregServiceTest {
     private Long avspillergruppeId = 123L;
     private String miljoe = "t1";
     private int antallNyeIdenter = 2;
-    private boolean lagreIAareg = false;
+    private boolean sendAlleEksisterende = false;
 
     @Test
     public void shouldGenerereArbeidsforhold() {
         SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        when(testnorgeAaregConsumer.startSyntetisering(syntetiserAaregRequest, lagreIAareg)).thenReturn(ResponseEntity.ok().build());
+        when(testnorgeAaregConsumer.startSyntetisering(syntetiserAaregRequest, sendAlleEksisterende)).thenReturn(ResponseEntity.ok().build());
 
-        ResponseEntity response = testnorgeAaregService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, lagreIAareg);
+        ResponseEntity response = testnorgeAaregService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, sendAlleEksisterende);
 
         assertThat(response.getStatusCode(), Matchers.is(HttpStatus.OK));
-        verify(testnorgeAaregConsumer).startSyntetisering(syntetiserAaregRequest, lagreIAareg);
+        verify(testnorgeAaregConsumer).startSyntetisering(syntetiserAaregRequest, sendAlleEksisterende);
 
     }
 }
