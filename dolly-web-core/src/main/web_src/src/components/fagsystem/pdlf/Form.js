@@ -12,7 +12,7 @@ export const PdlfForm = ({ formikBag }) => {
 
 PdlfForm.initialValues = {
 	pdlforvalter: {
-		falskIdentitet: { rettIdentitet: { identitetType: 'UKJENT' } }
+		falskIdentitet: { rettIdentitet: { identitetType: '' } }
 	}
 }
 
