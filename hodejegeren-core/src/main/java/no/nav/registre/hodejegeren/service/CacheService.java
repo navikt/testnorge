@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +34,12 @@ public class CacheService {
     private List<Long> fasteAvspillergrupper;
 
     public Set<Long> hentCachedeAvspillergruppeIder() {
-        return asyncCache.getAlleIdenterCache().keySet();
+        Map<Long, List<String>> alleIdenterCache = asyncCache.getAlleIdenterCache();
+        if (alleIdenterCache == null) {
+            return new HashSet<>();
+        } else {
+            return alleIdenterCache.keySet();
+        }
     }
 
     public List<String> hentAlleIdenterCache(Long avspillergruppeId) {
@@ -127,7 +133,7 @@ public class CacheService {
     }
 
     private List<String> oppdaterAlleIdenterCache(Long avspillergruppeId) {
-        if (asyncCache.getAlleIdenterCache()== null) {
+        if (asyncCache.getAlleIdenterCache() == null) {
             asyncCache.setAlleIdenterCache(new HashMap<>());
         }
         return oppdaterCache(asyncCache.getAlleIdenterCache(), avspillergruppeId, tpsfFiltreringService.finnAlleIdenter(avspillergruppeId)).get(avspillergruppeId);
