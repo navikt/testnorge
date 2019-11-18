@@ -19,7 +19,7 @@ const selectOptions = {
 	inntektssted: [
 		{ value: 'Fastlandet', label: 'Fastlandet' },
 		{ value: 'Svalbard', label: 'Svalbard' }
-	]
+	],
 
 	// AAREG
 	// aktoertype: [
@@ -63,12 +63,12 @@ const selectOptions = {
 	// 	{ value: 'VARIG', label: 'VARIG - Varig tilpasset innsats' }
 	// ],
 
-	// // INST
-	// institusjonstype: [
-	// 	{ value: 'AS', label: 'Alders- og sykehjem' },
-	// 	{ value: 'HS', label: 'Helseinstitusjon' },
-	// 	{ value: 'FO', label: 'Fengsel' }
-	// ],
+	// INST
+	institusjonstype: [
+		{ value: 'AS', label: 'Alders- og sykehjem' },
+		{ value: 'HS', label: 'Helseinstitusjon' },
+		{ value: 'FO', label: 'Fengsel' }
+	]
 
 	// varighet: [
 	// 	{ value: 'L', label: 'Langvarig' },
