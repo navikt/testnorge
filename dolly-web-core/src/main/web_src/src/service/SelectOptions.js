@@ -28,12 +28,12 @@ const selectOptions = {
 	// ],
 
 	//PDLF - kontaktinformasjon dødsbo
-	// adressatType: [
-	// 	{ value: 'ADVOKAT', label: 'Advokat' },
-	// 	{ value: 'ORGANISASJON', label: 'Organisasjon' },
-	// 	{ value: 'PERSON_MEDID', label: 'Kontaktperson med id' },
-	// 	{ value: 'PERSON_UTENID', label: 'Kontaktperson uten id' }
-	// ],
+	adressatType: [
+		{ value: 'ADVOKAT', label: 'Advokat' },
+		{ value: 'ORGANISASJON', label: 'Organisasjon' },
+		{ value: 'PERSON_MEDID', label: 'Kontaktperson med id' },
+		{ value: 'PERSON_UTENID', label: 'Kontaktperson uten id' }
+	],
 
 	// skifteform: [{ value: 'OFFENTLIG', label: 'Offentlig' }, { value: 'ANNET', label: 'Annet' }],
 

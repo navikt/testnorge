@@ -4,13 +4,17 @@ import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
 import { FalskIdentitet } from './falskIdentitet/FalskIdentitet'
 import { UtenlandsId } from './utenlandsId/UtenlandsId'
+import { KontaktinformasjonForDoedsbo } from './kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
 
 export const PdlfForm = ({ formikBag }) => {
 	return (
 		<React.Fragment>
-			<Panel heading="Identifikasjon" hasErrors={panelError(formikBag)} startOpen>
+			<Panel heading="Identifikasjon" hasErrors={panelError(formikBag)}>
 				<FalskIdentitet formikBag={formikBag} />
 				<UtenlandsId formikBag={formikBag} />
+			</Panel>
+			<Panel heading="Kontaktinformasjon for dødsbo" hasErrors={panelError(formikBag)}>
+				<KontaktinformasjonForDoedsbo formikBag={formikBag} />
 			</Panel>
 		</React.Fragment>
 	)
@@ -21,7 +25,19 @@ PdlfForm.initialValues = {
 		falskIdentitet: { rettIdentitet: { identitetType: '' } },
 		utenlandskIdentifikasjonsnummer: [
 			{ identifikasjonsnummer: '', kilde: '', opphoert: '', utstederland: '' }
-		]
+		],
+		kontaktinformasjonForDoedsbo: {
+			adressat: { adressatType: '' },
+			adresselinje1: '',
+			adresselinje2: '',
+			postnummer: '',
+			poststed: '',
+			landkode: '',
+			skifteform: '',
+			utstedtDato: '',
+			gyldigFom: '',
+			gyldigTom: ''
+		}
 	}
 }
 
@@ -52,6 +68,7 @@ PdlfForm.validation = {
 				opphoert: Yup.string().required('Vennligst velg'),
 				utstederland: Yup.string().required('Vennligst velg')
 			})
-		)
+		),
+		kontaktinformasjonForDoedsbo: {} //TODO: LEGG INN VALIDERINGER
 	})
 }
