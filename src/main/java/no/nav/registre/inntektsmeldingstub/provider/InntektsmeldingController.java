@@ -53,9 +53,7 @@ public class InntektsmeldingController {
 
     @GetMapping(value = "/2018/12/xml/{id}", produces = MediaType.APPLICATION_XML_VALUE)
     public no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM hentInntektsmelding201812(@PathVariable Long id) {
-    // public String hentInntektsmelding201812(@PathVariable Long id) {
-        var tmp = XmlInntektsmelding201812.createInntektsmelding(service.findInntektsmelding(id));
-        return tmp;
+        return XmlInntektsmelding201812.createInntektsmelding(service.findInntektsmelding(id));
     }
 
     @GetMapping("/2018/12/json/{id}")

@@ -144,7 +144,6 @@ public class XmlInntektsmelding201812 {
     }
 
     private static JAXBElement<XMLArbeidsforhold> createArbeidsforhold(Arbeidsforhold arbeidsforhold) {
-        if (Objects.isNull(arbeidsforhold)) { return null; }
         return new JAXBElement<>(new QName(NAMESPACE_URI, "Arbeidsforhold"), XMLArbeidsforhold.class, new XMLArbeidsforhold(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsforholdId"), String.class, arbeidsforhold.getArbeidforholdsId()),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "foersteFravaersdag"), LocalDate.class, arbeidsforhold.getFoersteFravaersdag()),
@@ -163,6 +162,7 @@ public class XmlInntektsmelding201812 {
     }
 
     private static JAXBElement<XMLUtsettelseAvForeldrepengerListe> createUtsettelseAvForeldrepengerListe(List<UtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe) {
+        if (utsettelseAvForeldrepengerListe.isEmpty()) {return null;}
         return new JAXBElement<>(new QName(NAMESPACE_URI, "utsettelseAvForeldrepengerListe"),
                 XMLUtsettelseAvForeldrepengerListe.class, new XMLUtsettelseAvForeldrepengerListe(
                 utsettelseAvForeldrepengerListe.stream().map(XmlInntektsmelding201812::createUtsettelseAvForeldrepenger).collect(Collectors.toList())

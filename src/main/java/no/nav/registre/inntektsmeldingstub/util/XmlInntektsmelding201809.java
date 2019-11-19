@@ -58,11 +58,15 @@ public class XmlInntektsmelding201809 {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Må ha en inntektsmelding");
         }
         return new XMLInntektsmeldingM(new XMLSkjemainnhold(
-                inntektsmelding.getYtelse(), inntektsmelding.getAarsakTilInnsending(),
+                inntektsmelding.getYtelse(),
+                inntektsmelding.getAarsakTilInnsending(),
                 createArbeidsgiver(inntektsmelding.getArbeidsgiver()),
-                inntektsmelding.getArbeidstakerFnr(), inntektsmelding.isNaerRelasjon(),
+                inntektsmelding.getArbeidstakerFnr(),
+                inntektsmelding.isNaerRelasjon(),
                 createArbeidsforhold(inntektsmelding.getArbeidsforhold()),
-                createRefusjon(inntektsmelding.getRefusjonsbeloepPrMnd(), inntektsmelding.getRefusjonsopphoersdato(), inntektsmelding.getEndringIRefusjonListe()),
+                createRefusjon(inntektsmelding.getRefusjonsbeloepPrMnd(),
+                        inntektsmelding.getRefusjonsopphoersdato(),
+                        inntektsmelding.getEndringIRefusjonListe()),
                 createSykepengerIArbeidsgiverperioden(inntektsmelding.getSykepengerBegrunnelseForReduksjonEllerIkkeUtbetalt(),
                         inntektsmelding.getSykepengerBruttoUtbetalt(),
                         inntektsmelding.getSykepengerPerioder()),
@@ -79,7 +83,9 @@ public class XmlInntektsmelding201809 {
                 new JAXBElement<>(new QName(NAMESPACE_URI, "PleiepengerPeriodeListe"), XMLPleiepengerPeriodeListe.class, new XMLPleiepengerPeriodeListe(
                         inntektsmelding.getPleiepengerPeriodeListe().stream().map(XmlInntektsmelding201809::createPeriode).collect(Collectors.toList())
                 )),
-                createOmsorgspenger(inntektsmelding.isOmsorgHarUtbetaltPliktigeDager(), inntektsmelding.getOmsorgspengerFravaersPeriodeListe(), inntektsmelding.getOmsorgspengerDelvisFravaersListe())
+                createOmsorgspenger(inntektsmelding.isOmsorgHarUtbetaltPliktigeDager(),
+                        inntektsmelding.getOmsorgspengerFravaersPeriodeListe(),
+                        inntektsmelding.getOmsorgspengerDelvisFravaersListe())
         ), Collections.emptyMap());
     }
 

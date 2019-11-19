@@ -1,17 +1,27 @@
-# inntektsmelding-stub
+# Inntektsmelding-stub
 
-Stub for lagring og innsending av inntektsmeldinger. 
+Stub for lagring og innsending av inntektsmeldinger.
+Meldingene skal sendes inn til ...(inntektstub?)... på altinns XML-format for inntektsmeldinger, der formatet er definert av [denne 
+XSD'en](https://github.com/navikt/tjenestespesifikasjoner/blob/master/nav-altinn-inntektsmelding/src/main/xsd/Inntektsmelding20181211.xsd).
+ 
+Den har endepunkter for å opprette 
 
 ## Mangler
-- [ ] Foreløpig ikke implementert innsending av meldingene
+- [ ] Foreløpig ikke implementert innsending av meldingene (hvor? inntektstub?)
 - [x] XML output feiler, se todo i koden
 - [x] Datbase er ikke satt opp i vault
 - [x] Migrasjonscript er ikke på plass
 - [ ] Testing
-- [ ] Bedre støtte for enkelt å legge til nye endringer i meldingene
+- [ ] Bedre støtte for enkelt å legge til nye endringer i meldingene (?) 
 - [x] CircleCI prosjekt er ikke satt opp
 - [x] Deploy access er ikke satt opp
+- [ ] Oversettelse fra inntektstub v2-format til altinn inntektsmelding
 
+### Implementeres i adapteret testnorge-inntekt
+- [ ] Hente data fra inntektstub (Må vente på inntektstub v.2)
+- [ ] Hente syntetisk data fra synt-rest
+
+## REG-5838
 Trenger tre funksjonaliteter til inntektsmelding-stub (mest ryddig med egen adapter)
  - 1a: motta FNR og litt info om arbeidsforhold fra requesten, hent fra inntektstub inntektsdata på fnr og 
        arbeidsforhold, og legg dette i inntektsmeldingen.
@@ -21,6 +31,3 @@ Trenger tre funksjonaliteter til inntektsmelding-stub (mest ryddig med egen adap
       er noe i inntektstub, syntetiser data som avviker fra det som ble sendt inn i requesten.
  - 3: motta json med gitt antall felt, så syntetiserer vi resten og legger i inntektsmeldingen (trenger ikke sende til 
       inntektstub i dette tilfellet)
-
-## XSD
-https://github.com/navikt/tjenestespesifikasjoner/blob/master/nav-altinn-inntektsmelding/src/main/xsd/Inntektsmelding20181211.xsd
