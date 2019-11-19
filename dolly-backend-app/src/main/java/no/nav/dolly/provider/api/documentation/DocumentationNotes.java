@@ -1,9 +1,10 @@
 package no.nav.dolly.provider.api.documentation;
 
-public final class DocumentationNotes {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-    private DocumentationNotes() {
-    }
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class DocumentationNotes {
 
     private static final String RANDOM_ADRESSE = "For å kunne styre gyldig boadresse basert på kommunenr eller postnummer og med adressesøk i backend: <br />"
             +"\"adresseNrInfo\": { <br />"
@@ -41,8 +42,8 @@ public final class DocumentationNotes {
 
     private static final String ADRESSAT = "&nbsp;   \"adressat\": {<br />";
 
-    private static final String EPILOG = "     &nbsp; } </br /></br />";
-    private static final String EPILOG_2 = "     &nbsp; &nbsp; }, </br />";
+    private static final String EPILOG = "     &nbsp; } <br /><br />";
+    private static final String EPILOG_2 = "     &nbsp; &nbsp; }, <br />";
     private static final String FALSK_IDENTITET_TYPE = "     &nbsp; \"falskIdentitet\": {<br />";
 
     private static final String KONTAKTINFORMASJON_DOEDSBO = "For kontakinformasjon for dødsbo kan feltet <b>adressat</b> ha en av fire objekttyper: <br />"

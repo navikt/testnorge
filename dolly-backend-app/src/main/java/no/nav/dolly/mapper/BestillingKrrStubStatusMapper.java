@@ -6,17 +6,16 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.KRRSTUB;
 import static no.nav.dolly.util.ListUtil.listOf;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsStatusRapport;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Deprecated
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsStatusRapport;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingKrrStubStatusMapper {
 

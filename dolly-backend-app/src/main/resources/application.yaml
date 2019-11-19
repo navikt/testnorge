@@ -42,7 +42,6 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
-
 management:
   endpoints:
     enabled-by-default: false

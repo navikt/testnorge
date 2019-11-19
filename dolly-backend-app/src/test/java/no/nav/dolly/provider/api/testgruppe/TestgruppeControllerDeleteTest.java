@@ -2,20 +2,19 @@ package no.nav.dolly.provider.api.testgruppe;
 
 import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.stream.Collectors;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
 
 @DisplayName("DELETE /api/v1/gruppe")
 class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
@@ -55,7 +54,7 @@ class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
                 .map(Testident::getIdent)
                 .collect(Collectors.toList());
 
-       sendRequest()
+        sendRequest()
                 .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/slettTestident?ident=" + idents.get(0))
                 .andExpect(HttpStatus.OK, LinkedHashMap.class);
 
