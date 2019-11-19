@@ -361,7 +361,7 @@ export default class FormEditor extends Component {
 			)
 		}
 
-		if (item.id === `${parentObject.parentId}[${parentObject.idx}]tjeneste`) {
+		if (parentObject && item.id === `${parentObject.parentId}[${parentObject.idx}]tjeneste`) {
 			if (valgteVerdier.inntekt[parentObject.idx].inntektssted === 'Svalbard') {
 				valgteVerdier.inntekt[parentObject.idx].tjeneste = 'SUMMERT_SKATTEGRUNNLAG'
 				disabled = true
