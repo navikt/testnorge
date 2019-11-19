@@ -37,6 +37,7 @@ import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfIdenterMiljoer;
 import no.nav.dolly.exceptions.TpsfException;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
@@ -58,40 +59,47 @@ public class TpsfService {
     private final ObjectMapper objectMapper;
     private final ProvidersProps providersProps;
 
+    @Timed(name="providers", tags={"operation", "motTPSF"})
     public ResponseEntity<EnvironmentsResponse> getEnvironments() {
         return restTemplate.exchange(
                 RequestEntity.get(URI.create(providersProps.getTpsf().getUrl() + TPSF_GET_ENVIRONMENTS))
                         .build(), EnvironmentsResponse.class);
     }
 
+    @Timed(name="providers", tags={"operation", "motTPSF"})
     public ResponseEntity deletePersones(List<String> identer) {
         return restTemplate.exchange(
                 RequestEntity.delete(URI.create(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_DELETE_PERSONER_URL, join(",", identer))))
                         .build(), Object.class);
     }
 
+    @Timed(name="providers", tags={"operation", "motTPSF"})
     public ResponseEntity<RsAliasResponse> createAliases(RsAliasRequest request) {
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getTpsf().getUrl() + TPSF_CREATE_ALIASES))
                         .body(request), RsAliasResponse.class);
     }
 
+    @Timed(name="providers", tags={"operation", "motTPSF"})
     public CheckStatusResponse checkEksisterendeIdenter(List<String> identer) {
         ResponseEntity<Object> response = postToTpsf(TPSF_CHECK_IDENT_STATUS, identer);
         return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), CheckStatusResponse.class) : null;
     }
 
+    @Timed(name="providers", tags={"operation", "motTPSF"})
     public List<String> opprettIdenterTpsf(TpsfBestilling request) {
         ResponseEntity<Object> response = postToTpsf(TPSF_OPPRETT_URL, request);
         return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), List.class) : null;
     }
 
+    @Timed(name="providers", tags={"operation", "motTPSF"})
     public RsSkdMeldingResponse sendIdenterTilTpsFraTPSF(List<String> identer, List<String> environments) {
         validateEnvironments(environments);
         ResponseEntity<Object> response = postToTpsf(TPSF_SEND_TPS_FLERE_URL, new TpsfIdenterMiljoer(identer, environments));
         return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class) : null;
     }
 
+    @Timed(name="providers", tags={"operation", "motTPSF"})
     public List<Person> hentTestpersoner(List<String> identer) {
         ResponseEntity<Object> response = postToTpsf(TPSF_HENT_PERSONER_URL, identer);
         if (isBodyNotNull(response)) {
@@ -100,6 +108,7 @@ public class TpsfService {
         return emptyList();
     }
 
+    @Timed(name="providers", tags={"operation", "motTPSF"})
     public ResponseEntity updatePerson(RsPerson tpsfPerson) {
         return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getTpsf().getUrl() + TPSF_UPDATE_PERSON_URL))
                 .header(AUTHORIZATION, getUserIdToken())
