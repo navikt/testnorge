@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Set;
 
 import no.nav.registre.hodejegeren.service.CacheService;
@@ -22,7 +21,7 @@ public class CacheController {
     @GetMapping("/oppdaterGruppe/{avspillergruppeId}")
     @ApiOperation(value = "Her kan man manuelt trigge oppdatering av en cache med en gitt avspillergruppeId.")
     public String oppdaterGruppeCache(@PathVariable Long avspillergruppeId) {
-        Long oppdatertAvspillergruppe = cacheService.oppdaterAlleCacher(avspillergruppeId);
+        var oppdatertAvspillergruppe = cacheService.oppdaterAlleCacher(avspillergruppeId);
         return "Avspillergruppe " + oppdatertAvspillergruppe + " har oppdatert sine cacher.";
     }
 
@@ -30,7 +29,7 @@ public class CacheController {
     @ApiOperation(value = "Her kan man manuelt trigge oppdatering av cachene til alle registrerte avspillergrupper. Endepunktet vil også fjerne "
             + "cacher til uregsitrerte avspillergrupper.")
     public String oppdaterAlleCaches() {
-        List<Long> oppdaterteAvspillergrupper = cacheService.oppdaterAlleCacher();
+        var oppdaterteAvspillergrupper = cacheService.oppdaterAlleCacher();
         return "Avspillergrupper " + oppdaterteAvspillergrupper.toString() + " har oppdatert sine cacher";
     }
 

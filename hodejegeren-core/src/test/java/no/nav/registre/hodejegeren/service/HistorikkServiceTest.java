@@ -60,7 +60,7 @@ public class HistorikkServiceTest {
 
     @Before
     public void setUp() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
+        var objectMapper = new ObjectMapper();
         syntHistorikk1 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/historikk1.json")), SyntHistorikk.class);
         syntHistorikk2 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/historikk2.json")), SyntHistorikk.class);
 
@@ -81,7 +81,7 @@ public class HistorikkServiceTest {
 
     @Test
     public void shouldHenteAllHistorikk() {
-        List<SyntHistorikk> historikk = historikkService.hentAllHistorikk();
+        var historikk = historikkService.hentAllHistorikk();
 
         assertThat(historikk.get(0).getId(), equalTo(id1));
         assertThat(historikk.get(1).getId(), equalTo(id2));
@@ -89,8 +89,8 @@ public class HistorikkServiceTest {
 
     @Test
     public void shouldHenteHistorikkMedId() {
-        SyntHistorikk historikk1 = historikkService.hentHistorikkMedId(id1);
-        SyntHistorikk historikk2 = historikkService.hentHistorikkMedId(id2);
+        var historikk1 = historikkService.hentHistorikkMedId(id1);
+        var historikk2 = historikkService.hentHistorikkMedId(id2);
 
         assertThat(historikk1.getId(), equalTo(id1));
         assertThat(historikk2.getId(), equalTo(id2));
@@ -98,23 +98,23 @@ public class HistorikkServiceTest {
 
     @Test
     public void shouldHenteHistorikkMedKilde() {
-        List<SyntHistorikk> historikkMedKilde = historikkService.hentHistorikkMedKilder(Collections.singletonList("aareg"));
+        var historikkMedKilde = historikkService.hentHistorikkMedKilder(Collections.singletonList("aareg"));
 
-        List<String> historikkIds = new ArrayList<>(Arrays.asList(historikkMedKilde.get(0).getId(), historikkMedKilde.get(1).getId()));
+        var historikkIds = new ArrayList<>(Arrays.asList(historikkMedKilde.get(0).getId(), historikkMedKilde.get(1).getId()));
         assertThat(historikkIds, containsInAnyOrder(id1, id2));
     }
 
     @Test
     public void shouldHenteIdsMedKilde() {
-        Set<String> idsMedKilde = historikkService.hentIdsMedKilder(Collections.singletonList("aareg"));
+        var idsMedKilde = historikkService.hentIdsMedKilder(Collections.singletonList("aareg"));
 
         assertThat(idsMedKilde, containsInAnyOrder(id1, id2));
     }
 
     @Test
     public void shouldOppretteHistorikk() {
-        SyntHistorikk historikk1 = historikkService.opprettHistorikk(syntHistorikk1);
-        SyntHistorikk historikk2 = historikkService.opprettHistorikk(syntHistorikk2);
+        var historikk1 = historikkService.opprettHistorikk(syntHistorikk1);
+        var historikk2 = historikkService.opprettHistorikk(syntHistorikk2);
 
         assertThat(historikk1.getId(), equalTo(syntHistorikk1.getId()));
         assertThat(historikk1.getKilder().get(0).getNavn(), is(equalTo("aareg")));
@@ -128,7 +128,7 @@ public class HistorikkServiceTest {
 
     @Test
     public void shouldLeggeTilHistorikkPaaIdent() {
-        List<String> identerLagtTil = historikkService.leggTilHistorikkPaaIdent(historikkRequest1);
+        var identerLagtTil = historikkService.leggTilHistorikkPaaIdent(historikkRequest1);
         assertThat(identerLagtTil, contains(id1));
 
         identerLagtTil = historikkService.leggTilHistorikkPaaIdent(historikkRequest2);
@@ -139,8 +139,8 @@ public class HistorikkServiceTest {
 
     @Test
     public void shouldOppdatereTpsPersonDokument() throws IOException {
-        LocalDateTime datoOpprettet = LocalDateTime.of(2000, 1, 1, 1, 1);
-        String skdFnr = "19040979827";
+        var datoOpprettet = LocalDateTime.of(2000, 1, 1, 1, 1);
+        var skdFnr = "19040979827";
         List<Data> data = new ArrayList<>();
         data.add(Data.builder().datoOpprettet(datoOpprettet).datoEndret(datoOpprettet).build());
         List<Kilde> kilder = new ArrayList<>();
@@ -148,7 +148,7 @@ public class HistorikkServiceTest {
                 .navn("skd")
                 .data(data)
                 .build());
-        SyntHistorikk skdHistorikk = SyntHistorikk.builder()
+        var skdHistorikk = SyntHistorikk.builder()
                 .id(skdFnr)
                 .kilder(kilder)
                 .build();
@@ -156,11 +156,11 @@ public class HistorikkServiceTest {
         when(syntHistorikkRepository.findById(skdFnr)).thenReturn(Optional.ofNullable(skdHistorikk));
         when(syntHistorikkRepository.save(any())).thenReturn(skdHistorikk);
 
-        URL resource = Resources.getResource("historikk/TpsPersonDokumentType.xml");
-        XmlMapper xmlMapper = new XmlMapper();
-        TpsPersonDokumentType tpsPersonDokumentType = xmlMapper.readValue(resource, TpsPersonDokumentType.class);
+        var resource = Resources.getResource("historikk/TpsPersonDokumentType.xml");
+        var xmlMapper = new XmlMapper();
+        var tpsPersonDokumentType = xmlMapper.readValue(resource, TpsPersonDokumentType.class);
 
-        List<String> identerOppdatert = historikkService.oppdaterTpsPersonDokument(skdFnr, tpsPersonDokumentType);
+        var identerOppdatert = historikkService.oppdaterTpsPersonDokument(skdFnr, tpsPersonDokumentType);
 
         assertThat(identerOppdatert, contains(skdFnr));
 
@@ -170,12 +170,12 @@ public class HistorikkServiceTest {
 
     @Test
     public void shouldOppretteNyttSkdDokument() throws IOException {
-        String skdFnr = "03030303030";
+        var skdFnr = "03030303030";
         List<Kilde> kilder = new ArrayList<>();
         kilder.add(Kilde.builder()
                 .navn("skd")
                 .build());
-        SyntHistorikk skdHistorikk = SyntHistorikk.builder()
+        var skdHistorikk = SyntHistorikk.builder()
                 .id(skdFnr)
                 .kilder(kilder)
                 .build();
@@ -183,11 +183,11 @@ public class HistorikkServiceTest {
         when(syntHistorikkRepository.findById(skdFnr)).thenReturn(Optional.empty());
         when(syntHistorikkRepository.save(any())).thenReturn(skdHistorikk);
 
-        URL resource = Resources.getResource("historikk/TpsPersonDokumentType.xml");
-        XmlMapper xmlMapper = new XmlMapper();
-        TpsPersonDokumentType tpsPersonDokumentType = xmlMapper.readValue(resource, TpsPersonDokumentType.class);
+        var resource = Resources.getResource("historikk/TpsPersonDokumentType.xml");
+        var xmlMapper = new XmlMapper();
+        var tpsPersonDokumentType = xmlMapper.readValue(resource, TpsPersonDokumentType.class);
 
-        List<String> identerLagtTil = historikkService.oppdaterTpsPersonDokument(skdFnr, tpsPersonDokumentType);
+        var identerLagtTil = historikkService.oppdaterTpsPersonDokument(skdFnr, tpsPersonDokumentType);
 
         assertThat(identerLagtTil, contains(skdFnr));
 
@@ -197,7 +197,7 @@ public class HistorikkServiceTest {
 
     @Test
     public void shouldSletteHistorikk() {
-        ResponseEntity response = historikkService.slettHistorikk(id1);
+        var response = historikkService.slettHistorikk(id1);
         verify(syntHistorikkRepository).deleteById(id1);
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
         assertThat(response.getBody().toString(), containsString("Historikk tilhørende id '" + id1 + "' ble slettet"));
@@ -205,21 +205,21 @@ public class HistorikkServiceTest {
 
     @Test
     public void shouldReturnErrorOnUnsuccessfulDeleteOfHistorikk() {
-        ResponseEntity response = historikkService.slettHistorikk("03030303030");
+        var response = historikkService.slettHistorikk("03030303030");
         assertThat(response.getStatusCode(), equalTo(HttpStatus.NOT_FOUND));
         assertThat(response.getBody().toString(), containsString("Fant ingen historikk tilhørende id '03030303030'"));
     }
 
     @Test
     public void shouldSletteKilde() {
-        ResponseEntity response = historikkService.slettKilde(id1, "aareg");
+        var response = historikkService.slettKilde(id1, "aareg");
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
         assertThat(response.getBody().toString(), containsString("Kilde 'aareg' tilhørende id '" + id1 + "' ble slettet"));
     }
 
     @Test
     public void shouldReturnErrorOnUnsuccessfulDeleteOfKilde() {
-        ResponseEntity response = historikkService.slettKilde(id1, "bisys");
+        var response = historikkService.slettKilde(id1, "bisys");
         assertThat(response.getStatusCode(), equalTo(HttpStatus.NOT_FOUND));
         assertThat(response.getBody().toString(), containsString("Fant ingen identMedData med navn 'bisys' tilhørende id '" + id1 + "'"));
     }

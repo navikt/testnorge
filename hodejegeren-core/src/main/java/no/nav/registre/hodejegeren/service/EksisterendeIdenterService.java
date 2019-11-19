@@ -62,7 +62,7 @@ public class EksisterendeIdenterService {
     private Random rand;
 
     public List<String> hentLevendeIdenterIGruppeOgSjekkStatusQuo(Long gruppeId, String miljoe, Integer henteAntall, Integer minimumAlder) {
-        List<String> gyldigeIdenter = finnAlleIdenterOverAlder(gruppeId, minimumAlder);
+        var gyldigeIdenter = finnAlleIdenterOverAlder(gruppeId, minimumAlder);
         List<String> utvalgteIdenter;
 
         if (henteAntall != null) {
@@ -103,9 +103,9 @@ public class EksisterendeIdenterService {
 
         for (String ident : identer) {
             try {
-                Map<String, String> feltMedStatusQuo = tpsStatusQuoService.hentStatusQuo(ROUTINE_KERNINFO, Arrays.asList(NAV_ENHET, NAV_ENHET_BESKRIVELSE), miljoe, ident);
-                String navEnhet = feltMedStatusQuo.get(NAV_ENHET);
-                String navEnhetBeskrivelse = feltMedStatusQuo.get(NAV_ENHET_BESKRIVELSE);
+                var feltMedStatusQuo = tpsStatusQuoService.hentStatusQuo(ROUTINE_KERNINFO, Arrays.asList(NAV_ENHET, NAV_ENHET_BESKRIVELSE), miljoe, ident);
+                var navEnhet = feltMedStatusQuo.get(NAV_ENHET);
+                var navEnhetBeskrivelse = feltMedStatusQuo.get(NAV_ENHET_BESKRIVELSE);
                 if (!navEnhet.isEmpty() && !navEnhetBeskrivelse.isEmpty()) {
                     navEnhetResponseListe.add(
                             NavEnhetResponse.builder()
@@ -134,7 +134,7 @@ public class EksisterendeIdenterService {
     }
 
     public Map<String, JsonNode> hentGittAntallIdenterMedStatusQuo(Long avspillergruppeId, String miljoe, int antallIdenter, int minimumAlder, int maksimumAlder) {
-        List<String> alleIdenter = finnLevendeIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder);
+        var alleIdenter = finnLevendeIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder);
         if (alleIdenter.size() < antallIdenter) {
             log.info("Antall ønskede identer å hente er større enn tilgjengelige identer i avspillergruppe. - HenteAntall:{} TilgjengeligeIdenter:{}", antallIdenter, alleIdenter.size());
             antallIdenter = alleIdenter.size();
@@ -142,7 +142,7 @@ public class EksisterendeIdenterService {
 
         Map<String, JsonNode> utvalgteIdenterMedStatusQuo = new HashMap<>(antallIdenter);
         for (int i = 0; i < antallIdenter; i++) {
-            String tilfeldigIdent = alleIdenter.remove(rand.nextInt(alleIdenter.size()));
+            var tilfeldigIdent = alleIdenter.remove(rand.nextInt(alleIdenter.size()));
             try {
                 tpsStatusQuoService.resetCache();
                 utvalgteIdenterMedStatusQuo.put(tilfeldigIdent, tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, tilfeldigIdent));
@@ -159,11 +159,11 @@ public class EksisterendeIdenterService {
 
         ObjectNode navnOgAdresse;
         ObjectMapper mapper = new ObjectMapper();
-        for (String ident : identer) {
+        for (var ident : identer) {
             tpsStatusQuoService.resetCache();
             navnOgAdresse = mapper.createObjectNode();
             try {
-                JsonNode infoOnRoutineName = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident);
+                var infoOnRoutineName = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident);
 
                 navnOgAdresse.set("personnavn", infoOnRoutineName.findValue("personnavn"));
                 navnOgAdresse.set("bostedsAdresse", infoOnRoutineName.findValue("bostedsAdresse"));
@@ -178,24 +178,24 @@ public class EksisterendeIdenterService {
     }
 
     public List<String> finnAlleIdenterOverAlder(Long avspillergruppeId, int minimumAlder) {
-        List<String> identer = cacheService.hentLevendeIdenterCache(avspillergruppeId);
+        var identer = cacheService.hentLevendeIdenterCache(avspillergruppeId);
         return identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
     }
 
     public List<String> finnLevendeIdenterIAldersgruppe(Long avspillergruppeId, int minimumAlder, int maksimumAlder) {
-        List<String> identer = cacheService.hentLevendeIdenterCache(avspillergruppeId);
+        var identer = cacheService.hentLevendeIdenterCache(avspillergruppeId);
         return filtrerIdenterIAldersgruppe(identer, minimumAlder, maksimumAlder);
     }
 
     public List<String> finnFoedteIdenter(Long avspillergruppeId, int minimumAlder, int maksimumAlder) {
-        List<String> identer = cacheService.hentFoedteIdenterCache(avspillergruppeId);
+        var identer = cacheService.hentFoedteIdenterCache(avspillergruppeId);
         return filtrerIdenterIAldersgruppe(new ArrayList<>(identer), minimumAlder, maksimumAlder);
     }
 
     public PersondataResponse hentPersondata(String ident, String miljoe) {
         try {
             tpsStatusQuoService.resetCache();
-            JsonNode statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident);
+            var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident);
             return PersondataResponse.builder()
                     .fnr(statusQuoTilIdent.findValue("fnr").asText())
                     .kortnavn(statusQuoTilIdent.findValue("kortnavn").asText())
@@ -222,17 +222,17 @@ public class EksisterendeIdenterService {
         RelasjonsResponse relasjonsResponse = null;
         try {
             tpsStatusQuoService.resetCache();
-            JsonNode statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, ident);
-            int antallRelasjoner = statusQuoTilIdent.findValue("antallRelasjoner").asInt();
+            var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, ident);
+            var antallRelasjoner = statusQuoTilIdent.findValue("antallRelasjoner").asInt();
 
             if (antallRelasjoner == 1) {
                 relasjonsResponse = RelasjonsResponse.builder()
                         .fnr(statusQuoTilIdent.findValue("fnr").asText())
                         .relasjoner(Collections.singletonList(parseRelasjonNode(statusQuoTilIdent.findValue("relasjon")))).build();
             } else if (antallRelasjoner > 1) {
-                ArrayNode relasjonNode = (ArrayNode) statusQuoTilIdent.findValue("relasjon");
+                var relasjonNode = (ArrayNode) statusQuoTilIdent.findValue("relasjon");
                 List<Relasjon> relasjoner = new ArrayList<>(relasjonNode.size());
-                for (JsonNode relasjonselement : relasjonNode) {
+                for (var relasjonselement : relasjonNode) {
                     relasjoner.add(parseRelasjonNode(relasjonselement));
                 }
                 relasjonsResponse = RelasjonsResponse.builder().fnr(statusQuoTilIdent.findValue("fnr").asText()).relasjoner(relasjoner).build();
@@ -246,20 +246,20 @@ public class EksisterendeIdenterService {
     }
 
     public List<String> hentIdenterSomIkkeErITps(Long avspillergruppeId, String miljoe) {
-        List<String> alleIdenter = tpsfFiltreringService.finnAlleIdenter(avspillergruppeId);
+        var alleIdenter = tpsfFiltreringService.finnAlleIdenter(avspillergruppeId);
         List<String> identerIkkeITps = new ArrayList<>();
-        ObjectMapper objectMapper = new ObjectMapper();
-        for (List<String> identer : Lists.partition(alleIdenter, 80)) {
+        var objectMapper = new ObjectMapper();
+        for (var identer : Lists.partition(alleIdenter, 80)) {
             try {
-                JsonNode jsonNode = tpsfConsumer.hentTpsStatusPaaIdenter(AKSJONSKODE_A0, miljoe, identer);
-                JsonNode status = jsonNode.findValue("status");
+                var jsonNode = tpsfConsumer.hentTpsStatusPaaIdenter(AKSJONSKODE_A0, miljoe, identer);
+                var status = jsonNode.findValue("status");
                 if (status != null) {
-                    JsonNode kode = status.findValue("kode");
+                    var kode = status.findValue("kode");
                     if (kode != null && !"00".equals(kode.asText())) {
-                        JsonNode statusFromTps = jsonNode.findValue("EFnr");
+                        var statusFromTps = jsonNode.findValue("EFnr");
                         List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
                         });
-                        for (Map<String, Object> map : identStatus) {
+                        for (var map : identStatus) {
                             if (map.containsKey("svarStatus")) {
                                 Map<String, String> svarStatus = objectMapper.convertValue(map.get("svarStatus"), new TypeReference<Map<String, String>>() {
                                 });
@@ -279,18 +279,18 @@ public class EksisterendeIdenterService {
     }
 
     public List<String> hentIdenterSomKolliderer(Long avspillergruppeId) {
-        List<String> alleIdenter = tpsfFiltreringService.finnAlleIdenter(avspillergruppeId);
+        var alleIdenter = tpsfFiltreringService.finnAlleIdenter(avspillergruppeId);
         List<String> identerITps = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
-        for (List<String> identer : Lists.partition(alleIdenter, 80)) {
+        for (var identer : Lists.partition(alleIdenter, 80)) {
             try {
-                JsonNode jsonNode = tpsfConsumer.hentTpsStatusPaaIdenter(AKSJONSKODE_A2, "q2", identer);
-                JsonNode statusFromTps = jsonNode.findValue("EFnr");
+                var jsonNode = tpsfConsumer.hentTpsStatusPaaIdenter(AKSJONSKODE_A2, "q2", identer);
+                var statusFromTps = jsonNode.findValue("EFnr");
                 if (statusFromTps != null) {
                     List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
                     });
-                    for (Map<String, Object> map : identStatus) {
+                    for (var map : identStatus) {
                         if (!map.containsKey("svarStatus")) {
                             identerITps.add(String.valueOf(map.get("fnr")));
                         }
@@ -322,7 +322,7 @@ public class EksisterendeIdenterService {
     }
 
     private static List<String> filtrerIdenterIAldersgruppe(List<String> identer, int minimumAlder, int maksimumAlder) {
-        List<String> identerOverAlder = identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
+        var identerOverAlder = identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
         return identerOverAlder.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isAfter(LocalDate.now().minusYears(maksimumAlder))).collect(Collectors.toList());
     }
 }

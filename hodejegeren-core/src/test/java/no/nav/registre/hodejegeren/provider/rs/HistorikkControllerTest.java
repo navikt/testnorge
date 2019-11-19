@@ -34,14 +34,14 @@ public class HistorikkControllerTest {
 
     @Test
     public void shouldHenteHistorikkMedKilder() {
-        List<String> kilder = new ArrayList<>(Arrays.asList("aareg", "inst"));
+        var kilder = new ArrayList<>(Arrays.asList("aareg", "inst"));
         historikkController.hentHistorikkMedKilde(kilder);
         verify(historikkService).hentHistorikkMedKilder(kilder);
     }
 
     @Test
     public void shouldHenteIdsMedKilder() {
-        List<String> kilder = new ArrayList<>(Arrays.asList("aareg", "inst"));
+        var kilder = new ArrayList<>(Arrays.asList("aareg", "inst"));
         historikkController.hentIdsMedKilde(kilder);
         verify(historikkService).hentIdsMedKilder(kilder);
     }
@@ -54,7 +54,7 @@ public class HistorikkControllerTest {
 
     @Test
     public void shouldLeggeTilHistorikk() {
-        HistorikkRequest historikkRequest = HistorikkRequest.builder().build();
+        var historikkRequest = HistorikkRequest.builder().build();
         historikkController.leggTilHistorikk(historikkRequest);
         verify(historikkService).leggTilHistorikkPaaIdent(historikkRequest);
     }
@@ -67,7 +67,7 @@ public class HistorikkControllerTest {
 
     @Test
     public void shouldSletteKilde() {
-        String navnPaaKilde = "identMedData";
+        var navnPaaKilde = "identMedData";
         historikkController.slettKilde(id, navnPaaKilde);
         verify(historikkService).slettKilde(id, navnPaaKilde);
     }

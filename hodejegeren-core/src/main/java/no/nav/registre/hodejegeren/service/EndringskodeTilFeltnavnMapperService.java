@@ -29,7 +29,7 @@ public class EndringskodeTilFeltnavnMapperService {
         Map<String, String> personStatusQuo = new HashMap<>();
         List<String> feltnavn;
 
-        Endringskoder endringskoden = Endringskoder.getEndringskodeFraVerdi(endringskode);
+        var endringskoden = Endringskoder.getEndringskodeFraVerdi(endringskode);
 
         switch (endringskoden) {
         case NAVNEENDRING_FOERSTE:

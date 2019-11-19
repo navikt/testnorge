@@ -53,38 +53,38 @@ public class PersonDokumentUtility {
         List<Foreldreansvar> foreldreansvar = new ArrayList<>();
         List<Relasjon> relasjoner = new ArrayList<>();
 
-        PersonIdentType personIdentType = extractPersonIdent(tpsPersonDokumentType);
-        PersonIdentStatusType personIdentStatusType = extractPersonIdentStatus(tpsPersonDokumentType);
-        PersonInfoType personInfoType = extractPersonInfoType(tpsPersonDokumentType);
-        PersonStatusType personStatusType = extractPersonStatusType(tpsPersonDokumentType);
-        NavnType navnType = extractNavnType(tpsPersonDokumentType);
-        SivilstandType sivilstandType = extractSivilstandType(tpsPersonDokumentType);
-        StatsborgerType statsborgerType = extractStatsborgerType(tpsPersonDokumentType);
-        DodType dodType = extractDodType(tpsPersonDokumentType);
-        TelefonPrivatType telefonPrivatType = extractTelefonPrivatType(tpsPersonDokumentType);
-        TelefonJobbType telefonJobbType = extractTelefonJobbType(tpsPersonDokumentType);
-        TelefonMobilType telefonMobilType = extractTelefonmobilType(tpsPersonDokumentType);
-        BoadresseType boadresseType = extractBoadresseType(tpsPersonDokumentType);
-        PrioritertadresseType prioritertadresseType = extractPrioritertadresseType(tpsPersonDokumentType);
+        var personIdentType = extractPersonIdent(tpsPersonDokumentType);
+        var personIdentStatusType = extractPersonIdentStatus(tpsPersonDokumentType);
+        var personInfoType = extractPersonInfoType(tpsPersonDokumentType);
+        var personStatusType = extractPersonStatusType(tpsPersonDokumentType);
+        var navnType = extractNavnType(tpsPersonDokumentType);
+        var sivilstandType = extractSivilstandType(tpsPersonDokumentType);
+        var statsborgerType = extractStatsborgerType(tpsPersonDokumentType);
+        var dodType = extractDodType(tpsPersonDokumentType);
+        var telefonPrivatType = extractTelefonPrivatType(tpsPersonDokumentType);
+        var telefonJobbType = extractTelefonJobbType(tpsPersonDokumentType);
+        var telefonMobilType = extractTelefonmobilType(tpsPersonDokumentType);
+        var boadresseType = extractBoadresseType(tpsPersonDokumentType);
+        var prioritertadresseType = extractPrioritertadresseType(tpsPersonDokumentType);
 
-        List<ForeldreansvarType> foreldreansvarTypeListe = extractForeldreansvarType(tpsPersonDokumentType);
-        for (ForeldreansvarType foreldreansvarType : foreldreansvarTypeListe) {
+        var foreldreansvarTypeListe = extractForeldreansvarType(tpsPersonDokumentType);
+        for (var foreldreansvarType : foreldreansvarTypeListe) {
 
-            Foreldreansvar foreldreansvaret = buildForeldreansvar(foreldreansvarType);
+            var foreldreansvaret = buildForeldreansvar(foreldreansvarType);
             if (!foreldreansvaret.getIdent().isEmpty()) {
                 foreldreansvar.add(foreldreansvaret);
             }
         }
 
-        OppholdstillatelseType oppholdstillatelseType = extractOppholdstillatelseType(tpsPersonDokumentType);
-        GironummerType gironummerType = extractGironummerType(tpsPersonDokumentType);
-        TilleggType tilleggType = extractTilleggType(tpsPersonDokumentType);
-        PostType postType = extractPostType(tpsPersonDokumentType);
-        MigrasjonType migrasjonType = extractmigrasjonType(tpsPersonDokumentType);
+        var oppholdstillatelseType = extractOppholdstillatelseType(tpsPersonDokumentType);
+        var gironummerType = extractGironummerType(tpsPersonDokumentType);
+        var tilleggType = extractTilleggType(tpsPersonDokumentType);
+        var postType = extractPostType(tpsPersonDokumentType);
+        var migrasjonType = extractmigrasjonType(tpsPersonDokumentType);
 
-        List<RelasjonType> relasjonTypeListe = extractRelasjonType(tpsPersonDokumentType);
-        for (RelasjonType relasjonType : relasjonTypeListe) {
-            Relasjon relasjonen = buildRelasjon(relasjonType);
+        var relasjonTypeListe = extractRelasjonType(tpsPersonDokumentType);
+        for (var relasjonType : relasjonTypeListe) {
+            var relasjonen = buildRelasjon(relasjonType);
             if (!relasjonen.getIdent().isEmpty() && !relasjonen.getType().isEmpty() && !relasjonen.getStatus().isEmpty() && !relasjonen.getRolle().isEmpty()) {
                 relasjoner.add(relasjonen);
             }

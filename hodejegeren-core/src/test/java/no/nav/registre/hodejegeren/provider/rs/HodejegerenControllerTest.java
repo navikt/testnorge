@@ -61,7 +61,7 @@ public class HodejegerenControllerTest {
 
     /**
      * Scenario: HVIS hodejeger-controlleren får et request om å hente identer i gruppe, skal metoden kalle på
-     * {@link EksisterendeIdenterService#finnAlleIdenter}
+     * {@link CacheService#hentAlleIdenterCache(Long)}
      */
     @Test
     public void shouldHenteAlleIdenterIGruppe() {
@@ -71,7 +71,7 @@ public class HodejegerenControllerTest {
 
     /**
      * Scenario: HVIS hodejeger-controlleren får et request om å hente levende identer i gruppe, skal metoden kalle på
-     * {@link EksisterendeIdenterService#finnLevendeIdenter}
+     * {@link CacheService#hentLevendeIdenterCache(Long)}
      */
     @Test
     public void shouldHenteLevendeIdenterIGruppe() {
@@ -81,7 +81,7 @@ public class HodejegerenControllerTest {
 
     /**
      * Scenario: HVIS hodejeger-controlleren får et request om å hente døde og utvandrede identer i gruppe, skal metoden kalle på
-     * {@link EksisterendeIdenterService#finnDoedeOgUtvandredeIdenter}
+     * {@link CacheService#hentDoedeOgUtvandredeIdenterCache(Long)}
      */
     @Test
     public void shouldHenteDoedeOgUtvandredeIdenterIGruppe() {
@@ -91,7 +91,7 @@ public class HodejegerenControllerTest {
 
     /**
      * Scenario: HVIS hodejeger-controlleren får et request om å hente gifte identer i gruppe, skal metoden kalle på
-     * {@link EksisterendeIdenterService#finnGifteIdenter}
+     * {@link CacheService#hentGifteIdenterCache(Long)}
      */
     @Test
     public void shouldHenteGifteIdenterIGruppe() {

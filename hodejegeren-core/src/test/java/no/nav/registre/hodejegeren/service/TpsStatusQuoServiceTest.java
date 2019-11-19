@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -49,14 +50,14 @@ public class TpsStatusQuoServiceTest {
      */
     @Test
     public void shouldGetStatusQuoForFeltnavn() throws IOException {
-        JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
+        var jsonNode = new ObjectMapper().readTree(jsonContent);
 
         List<String> feltNavn = new ArrayList<>();
         feltNavn.add(STATSBORGERSKAP);
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any(), any(), any())).thenReturn(jsonNode);
 
-        Map<String, String> statusQuoValues = tpsStatusQuoService.hentStatusQuo(routineName, feltNavn, environment, fnr);
+        var statusQuoValues = tpsStatusQuoService.hentStatusQuo(routineName, feltNavn, environment, fnr);
 
         assertEquals(1, statusQuoValues.size());
         assertEquals("NOR", statusQuoValues.get(STATSBORGERSKAP));
@@ -68,14 +69,14 @@ public class TpsStatusQuoServiceTest {
      */
     @Test
     public void shouldGetStatusQuoForFeltnavnRelasjon() throws IOException {
-        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("FS02-FDNUMMER-PERSRELA-O.json"));
+        var jsonNode = new ObjectMapper().readTree(Resources.getResource("FS02-FDNUMMER-PERSRELA-O.json"));
 
         List<String> feltNavn = new ArrayList<>();
         feltNavn.add(FNR_RELASJON);
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any(), any(), any())).thenReturn(jsonNode);
 
-        Map<String, String> statusQuoValues = tpsStatusQuoService.hentStatusQuo(routineName, feltNavn, environment, fnr);
+        var statusQuoValues = tpsStatusQuoService.hentStatusQuo(routineName, feltNavn, environment, fnr);
 
         assertEquals(1, statusQuoValues.size());
         assertEquals("01065500791", statusQuoValues.get(FNR_RELASJON));
@@ -88,7 +89,7 @@ public class TpsStatusQuoServiceTest {
      */
     @Test
     public void shouldGetStatusQuoForFeltnavnPath() throws IOException {
-        JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
+        var jsonNode = new ObjectMapper().readTree(jsonContent);
 
         List<String> feltNavn = new ArrayList<>();
         feltNavn.add("$..bostedsAdresse.fullBostedsAdresse.adrSaksbehandler");
@@ -96,7 +97,7 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any(), any(), any())).thenReturn(jsonNode);
 
-        Map<String, String> statusQuoValues = tpsStatusQuoService.hentStatusQuo(routineName, feltNavn, environment, fnr);
+        var statusQuoValues = tpsStatusQuoService.hentStatusQuo(routineName, feltNavn, environment, fnr);
 
         assertEquals(2, statusQuoValues.size());
         assertEquals("AJOURHD", statusQuoValues.get("$..bostedsAdresse.fullBostedsAdresse.adrSaksbehandler"));
@@ -112,7 +113,7 @@ public class TpsStatusQuoServiceTest {
         final String aksjonsKode = "B0";
         final String environment = "Q11";
 
-        JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
+        var jsonNode = new ObjectMapper().readTree(jsonContent);
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any(), any(), any())).thenReturn(jsonNode);
 
@@ -120,13 +121,13 @@ public class TpsStatusQuoServiceTest {
 
         tpsStatusQuoService.getInfoOnRoutineName(routineName, aksjonsKode, environment, fnr);
 
-        Map<String, JsonNode> tpsServiceRoutineCache = tpsStatusQuoService.getTpsServiceRoutineCache();
+        var tpsServiceRoutineCache = tpsStatusQuoService.getTpsServiceRoutineCache();
 
         assertNotNull(tpsServiceRoutineCache);
         assertTrue(tpsServiceRoutineCache.containsKey(routineName));
         assertEquals(jsonNode, tpsServiceRoutineCache.get(routineName));
 
-        tpsStatusQuoService.hentStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList(DATO_DO), environment, fnr);
+        tpsStatusQuoService.hentStatusQuo("FS03-FDNUMMER-PERSDATA-O", Collections.singletonList(DATO_DO), environment, fnr);
         assertNotEquals(tpsServiceRoutineCache, tpsStatusQuoService.getTpsServiceRoutineCache());
     }
 }

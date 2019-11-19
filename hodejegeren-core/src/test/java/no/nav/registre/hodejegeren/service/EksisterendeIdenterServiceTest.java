@@ -110,7 +110,7 @@ public class EksisterendeIdenterServiceTest {
     public void hentMyndigeIdenterIGruppeTest() {
         when(cacheService.hentLevendeIdenterCache(avspillergruppeId1)).thenReturn(levendeIdenter);
         for (int i = 0; i < 3; i++) {
-            List<String> identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId1, miljoe, i, MINIMUM_ALDER);
+            var identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId1, miljoe, i, MINIMUM_ALDER);
             assertEquals(i, identer.size());
         }
     }
@@ -121,7 +121,7 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void hentMyndigeIdenterIGruppeIngenIdenterTest() {
-        List<String> identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(2L, miljoe, 2, MINIMUM_ALDER);
+        var identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(2L, miljoe, 2, MINIMUM_ALDER);
         assertTrue(identer.isEmpty());
     }
 
@@ -132,7 +132,7 @@ public class EksisterendeIdenterServiceTest {
     @Test
     public void hentMyndigeIdenterIGruppeForMangeAaHenteTest() {
         when(cacheService.hentLevendeIdenterCache(avspillergruppeId1)).thenReturn(levendeIdenter);
-        List<String> identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId1, miljoe, 6, MINIMUM_ALDER);
+        var identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId1, miljoe, 6, MINIMUM_ALDER);
         assertEquals(4, identer.size());
         assertThat(identer, containsInAnyOrder(
                 "20044249945",
@@ -154,7 +154,7 @@ public class EksisterendeIdenterServiceTest {
         statusDoed.put(DATO_DO, "12312");
         when(cacheService.hentLevendeIdenterCache(avspillergruppeId1)).thenReturn(levendeIdenter);
         when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249948")).thenReturn(statusDoed);
-        List<String> identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId1, miljoe, 10, MINIMUM_ALDER);
+        var identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId1, miljoe, 10, MINIMUM_ALDER);
         assertEquals(3, identer.size());
         assertThat(identer, containsInAnyOrder(
                 "20044249945",
@@ -170,9 +170,9 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void finnFoedteIdenterTest() {
-        int minAlder = 0;
-        int maksAlder = 200;
-        List<String> foedte = eksisterendeIdenterService.finnFoedteIdenter(avspillergruppeId2, minAlder, maksAlder);
+        var minAlder = 0;
+        var maksAlder = 200;
+        var foedte = eksisterendeIdenterService.finnFoedteIdenter(avspillergruppeId2, minAlder, maksAlder);
         assertEquals(1, foedte.size());
         assertThat(foedte, containsInAnyOrder(
                 "20041751231"
@@ -193,7 +193,7 @@ public class EksisterendeIdenterServiceTest {
         levendeIdenter.add("20044249945");
         levendeIdenter.add("20044249946");
 
-        List<NavEnhetResponse> navEnhetResponse = eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, levendeIdenter);
+        var navEnhetResponse = eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, levendeIdenter);
 
         assertThat(navEnhetResponse.get(0).getIdent(), equalTo(levendeIdenter.get(0)));
         assertThat(navEnhetResponse.get(0).getNavEnhet(), equalTo("123"));
@@ -209,16 +209,16 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void hentGittAntallIdenterMedStatusQuoTest() throws IOException {
-        URL jsonContent = Resources.getResource("FS03-FDNUMMER-KERNINFO-O.json");
-        JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
-        String fnr1 = "23048801390";
+        var jsonContent = Resources.getResource("FS03-FDNUMMER-KERNINFO-O.json");
+        var jsonNode = new ObjectMapper().readTree(jsonContent);
+        var fnr1 = "23048801390";
         List<String> identer = new ArrayList<>();
         identer.add(fnr1);
 
         when(cacheService.hentLevendeIdenterCache(avspillergruppeId1)).thenReturn(identer);
         when(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1)).thenReturn(jsonNode);
 
-        Map<String, JsonNode> fnrMedStatusQuo = eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(avspillergruppeId1, miljoe, identer.size(), MIN_ALDER, MAX_ALDER);
+        var fnrMedStatusQuo = eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(avspillergruppeId1, miljoe, identer.size(), MIN_ALDER, MAX_ALDER);
 
         verify(cacheService).hentLevendeIdenterCache(avspillergruppeId1);
         verify(tpsStatusQuoService).getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1);
@@ -228,27 +228,27 @@ public class EksisterendeIdenterServiceTest {
 
     @Test
     public void shouldHenteAdresserPaaIdent() throws IOException {
-        URL jsonContent = Resources.getResource("FS03-FDNUMMER-KERNINFO-O.json");
-        JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
-        String fnr1 = "23048801390";
-        List<String> identer = new ArrayList<>(Collections.singleton(fnr1));
+        var jsonContent = Resources.getResource("FS03-FDNUMMER-KERNINFO-O.json");
+        var jsonNode = new ObjectMapper().readTree(jsonContent);
+        var fnr1 = "23048801390";
+        var identer = new ArrayList<>(Collections.singleton(fnr1));
 
         when(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, identer.get(0))).thenReturn(jsonNode);
 
-        Map<String, JsonNode> adressePaaIdenter = eksisterendeIdenterService.hentAdressePaaIdenter(miljoe, identer);
+        var adressePaaIdenter = eksisterendeIdenterService.hentAdressePaaIdenter(miljoe, identer);
 
         assertThat(adressePaaIdenter.get("23048801390").findValue("boAdresse1").asText(), equalTo("WALLDORFERSTRABE 1289"));
     }
 
     @Test
     public void shouldHentePersondataPaaIdent() throws IOException {
-        String fnr = "12101816735";
-        String miljoe = "t1";
+        var fnr = "12101816735";
+        var miljoe = "t1";
 
-        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("persondata/persondata.json"));
+        var jsonNode = new ObjectMapper().readTree(Resources.getResource("persondata/persondata.json"));
 
         when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
-        PersondataResponse response = eksisterendeIdenterService.hentPersondata(fnr, miljoe);
+        var response = eksisterendeIdenterService.hentPersondata(fnr, miljoe);
 
         assertThat(response.getFnr(), equalTo(fnr));
         assertThat(response.getFornavn(), equalTo("USTABIL"));
@@ -258,13 +258,13 @@ public class EksisterendeIdenterServiceTest {
 
     @Test
     public void shouldHandleEmptyRelasjon() throws IOException {
-        String fnr = "12090080405";
-        String miljoe = "t1";
+        var fnr = "12090080405";
+        var miljoe = "t1";
 
-        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("relasjoner/tom_relasjon.json"));
+        var jsonNode = new ObjectMapper().readTree(Resources.getResource("relasjoner/tom_relasjon.json"));
 
         when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
-        RelasjonsResponse response = eksisterendeIdenterService.hentRelasjoner(fnr, miljoe);
+        var response = eksisterendeIdenterService.hentRelasjoner(fnr, miljoe);
 
         assertThat(response.getFnr(), equalTo(fnr));
         assertThat(response.getRelasjoner().size(), is(0));
@@ -272,13 +272,13 @@ public class EksisterendeIdenterServiceTest {
 
     @Test
     public void shouldHandleSingleRelasjon() throws IOException {
-        String fnr = "12090080405";
-        String miljoe = "t1";
+        var fnr = "12090080405";
+        var miljoe = "t1";
 
-        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("relasjoner/relasjon.json"));
+        var jsonNode = new ObjectMapper().readTree(Resources.getResource("relasjoner/relasjon.json"));
 
         when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
-        RelasjonsResponse response = eksisterendeIdenterService.hentRelasjoner(fnr, miljoe);
+        var response = eksisterendeIdenterService.hentRelasjoner(fnr, miljoe);
 
         assertThat(response.getFnr(), equalTo(fnr));
         assertThat(response.getRelasjoner().size(), is(1));
@@ -287,13 +287,13 @@ public class EksisterendeIdenterServiceTest {
 
     @Test
     public void shouldHandleMultipleRelasjoner() throws IOException {
-        String fnr = "12090080405";
-        String miljoe = "t1";
+        var fnr = "12090080405";
+        var miljoe = "t1";
 
-        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("relasjoner/relasjoner.json"));
+        var jsonNode = new ObjectMapper().readTree(Resources.getResource("relasjoner/relasjoner.json"));
 
         when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
-        RelasjonsResponse response = eksisterendeIdenterService.hentRelasjoner(fnr, miljoe);
+        var response = eksisterendeIdenterService.hentRelasjoner(fnr, miljoe);
 
         assertThat(response.getFnr(), equalTo(fnr));
         assertThat(response.getRelasjoner().size(), is(2));
@@ -303,17 +303,17 @@ public class EksisterendeIdenterServiceTest {
 
     @Test
     public void shouldHenteIdenterNotInTps() throws IOException {
-        Long avspillergruppeId = 123L;
-        String fnr1 = "20092943861";
-        String fnr2 = "12345678910";
-        List<String> identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+        var avspillergruppeId = 123L;
+        var fnr1 = "20092943861";
+        var fnr2 = "12345678910";
+        var identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
-        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("tpsStatus/tps_status.json"));
+        var jsonNode = new ObjectMapper().readTree(Resources.getResource("tpsStatus/tps_status.json"));
 
         when(tpsfFiltreringService.finnAlleIdenter(avspillergruppeId)).thenReturn(identer);
         when(tpsfConsumer.hentTpsStatusPaaIdenter(eq("A0"), eq(miljoe), anyList())).thenReturn(jsonNode);
 
-        List<String> identerIkkeITps = eksisterendeIdenterService.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
+        var identerIkkeITps = eksisterendeIdenterService.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
 
         assertThat(identerIkkeITps, contains(fnr2));
         assertThat(identerIkkeITps, not(contains(fnr1)));
@@ -321,17 +321,17 @@ public class EksisterendeIdenterServiceTest {
 
     @Test
     public void shouldHenteIdenterSomKolliderer() throws IOException {
-        Long avspillergruppeId = 123L;
-        String fnr1 = "20092943861";
-        String fnr2 = "12345678910";
-        List<String> identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+        var avspillergruppeId = 123L;
+        var fnr1 = "20092943861";
+        var fnr2 = "12345678910";
+        var identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
-        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("tpsStatus/tps_kollisjon.json"));
+        var jsonNode = new ObjectMapper().readTree(Resources.getResource("tpsStatus/tps_kollisjon.json"));
 
         when(tpsfFiltreringService.finnAlleIdenter(avspillergruppeId)).thenReturn(identer);
         when(tpsfConsumer.hentTpsStatusPaaIdenter(eq("A2"), eq("q2"), anyList())).thenReturn(jsonNode);
 
-        List<String> identerSomKolliderer = eksisterendeIdenterService.hentIdenterSomKolliderer(avspillergruppeId);
+        var identerSomKolliderer = eksisterendeIdenterService.hentIdenterSomKolliderer(avspillergruppeId);
 
         assertThat(identerSomKolliderer, contains(fnr1));
         assertThat(identerSomKolliderer, not(contains(fnr2)));

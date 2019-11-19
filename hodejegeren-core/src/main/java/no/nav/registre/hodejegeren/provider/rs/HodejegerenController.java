@@ -125,7 +125,7 @@ public class HodejegerenController {
             @RequestParam("miljoe") String miljoe,
             @RequestParam("antallIdenter") int antallIdenter
     ) {
-        List<String> myndigeIdenter = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallIdenter, 18);
+        var myndigeIdenter = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallIdenter, 18);
         return eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, myndigeIdenter);
     }
 

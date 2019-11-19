@@ -48,17 +48,17 @@ public class TpsfConsumerTest {
      */
     @Test
     public void shouldSendCorrectRequestParametersAndGetIdenterFiltrertPaaAarsakskode() {
-        String transaksjonskode = "1";
+        var transaksjonskode = "1";
         Set<String> expectedIdenter = new HashSet<>();
         expectedIdenter.add("12345678901");
         expectedIdenter.add("12345678902");
 
-        String expectedUri = serverUrl + "/v1/endringsmelding/skd/identer/{avspillergruppeId}?"
+        var expectedUri = serverUrl + "/v1/endringsmelding/skd/identer/{avspillergruppeId}?"
                 + "aarsakskode={aarsakskode}&transaksjonstype={transaksjonstype}";
         this.server.expect(requestToUriTemplate(expectedUri, avspillergruppeId, "01,02", transaksjonskode))
                 .andRespond(withSuccess("[\"12345678901\",\"12345678902\"]", MediaType.APPLICATION_JSON));
 
-        Set<String> identer = tpsfConsumer.getIdenterFiltrertPaaAarsakskode(avspillergruppeId, Arrays.asList("01", "02"), transaksjonskode);
+        var identer = tpsfConsumer.getIdenterFiltrertPaaAarsakskode(avspillergruppeId, Arrays.asList("01", "02"), transaksjonskode);
         assertThat(identer, hasSize(2));
         assertThat(identer, IsIterableContainingInOrder.contains(expectedIdenter.toArray()));
     }
@@ -70,12 +70,12 @@ public class TpsfConsumerTest {
      */
     @Test
     public void shouldWriteProperRequestWhenGettingTpsServiceRoutine() throws IOException {
-        String aksjonskode = "B0";
-        String miljoe = "env";
-        String fnr = "bla";
+        var aksjonskode = "B0";
+        var miljoe = "env";
+        var fnr = "bla";
 
-        String rutinenavn = "a";
-        String expectedUri = serverUrl + "/v1/serviceroutine/{routineName}?aksjonsKode={aksjonskode}&environment={miljoe}&fnr={fnr}";
+        var rutinenavn = "a";
+        var expectedUri = serverUrl + "/v1/serviceroutine/{routineName}?aksjonsKode={aksjonskode}&environment={miljoe}&fnr={fnr}";
 
         this.server.expect(requestToUriTemplate(expectedUri, rutinenavn, aksjonskode, miljoe, fnr))
                 .andRespond(request -> new MockClientHttpResponse("[]".getBytes(), HttpStatus.OK));
@@ -89,16 +89,16 @@ public class TpsfConsumerTest {
      */
     @Test
     public void shouldWriteProperRequestAndGetMeldingIds() {
-        Long avspillergruppeId = 123L;
-        String fnr = "01010101010";
-        List<String> fnrs = Collections.singletonList(fnr);
-        String expectedUri = serverUrl + "/v1/endringsmelding/skd/meldinger/{avspillergruppeId}";
-        Long expectedMeldingId = 234L;
+        var avspillergruppeId = 123L;
+        var fnr = "01010101010";
+        var fnrs = Collections.singletonList(fnr);
+        var expectedUri = serverUrl + "/v1/endringsmelding/skd/meldinger/{avspillergruppeId}";
+        var expectedMeldingId = 234L;
 
         this.server.expect(requestToUriTemplate(expectedUri, avspillergruppeId))
                 .andRespond(withSuccess("[" + expectedMeldingId + "]", MediaType.APPLICATION_JSON));
 
-        List<Long> meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(this.avspillergruppeId, fnrs);
+        var meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(this.avspillergruppeId, fnrs);
 
         assertThat(meldingIderTilhoerendeIdenter, containsInAnyOrder(expectedMeldingId));
     }

@@ -51,28 +51,28 @@ public class TpsfConsumer {
 
     @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
     public Set<String> getIdenterFiltrertPaaAarsakskode(Long avspillergruppeId, List<String> aarsakskode, String transaksjonstype) {
-        RequestEntity getRequest = RequestEntity.get(urlGetIdenter.expand(avspillergruppeId, StringUtils.join(aarsakskode, ','), transaksjonstype)).build();
+        var getRequest = RequestEntity.get(urlGetIdenter.expand(avspillergruppeId, StringUtils.join(aarsakskode, ','), transaksjonstype)).build();
         return restTemplate.exchange(getRequest, RESPONSE_TYPE_SET).getBody();
     }
 
     @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
     public JsonNode getTpsServiceRoutine(String routineName, String aksjonsKode, String miljoe, String fnr) throws IOException {
-        RequestEntity getRequest = RequestEntity.get(urlServiceRoutine.expand(routineName, aksjonsKode, miljoe, fnr)).build();
-        ResponseEntity<String> response = restTemplate.exchange(getRequest, String.class);
+        var getRequest = RequestEntity.get(urlServiceRoutine.expand(routineName, aksjonsKode, miljoe, fnr)).build();
+        var response = restTemplate.exchange(getRequest, String.class);
         return new ObjectMapper().readTree(response.getBody());
     }
 
     @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
     public JsonNode hentTpsStatusPaaIdenter(String aksjonskode, String miljoe, List<String> identer) throws IOException {
-        String identerSomString = String.join(",", identer);
-        RequestEntity getRequest = RequestEntity.get(statusPaaIdenter.expand(aksjonskode, identer.size(), miljoe, identerSomString)).build();
-        ResponseEntity<String> response = restTemplate.exchange(getRequest, String.class);
+        var identerSomString = String.join(",", identer);
+        var getRequest = RequestEntity.get(statusPaaIdenter.expand(aksjonskode, identer.size(), miljoe, identerSomString)).build();
+        var response = restTemplate.exchange(getRequest, String.class);
         return new ObjectMapper().readTree(response.getBody()).findValue("response");
     }
 
     @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
     public List<Long> getMeldingIderTilhoerendeIdenter(Long avspillergruppeId, List<String> identer) {
-        RequestEntity postRequest = RequestEntity.post(urlGetMeldingIder.expand(avspillergruppeId)).body(identer);
+        var postRequest = RequestEntity.post(urlGetMeldingIder.expand(avspillergruppeId)).body(identer);
         return new ArrayList<>(Objects.requireNonNull(restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST).getBody()));
     }
 }

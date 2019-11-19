@@ -9,9 +9,9 @@ import java.time.LocalDate;
 public class IdentUtility {
 
     public static LocalDate getFoedselsdatoFraFnr(String ident) {
-        int year = getFullYear(ident);
-        int month = parseInt(ident.substring(2, 4));
-        int day = parseInt(ident.substring(0, 2));
+        var year = getFullYear(ident);
+        var month = parseInt(ident.substring(2, 4));
+        var day = parseInt(ident.substring(0, 2));
 
         if (DNR.equals(getIdentType(ident))) {
             day = day - 40;
@@ -39,8 +39,8 @@ public class IdentUtility {
      * INDIVID(POS 7-9) 500-999 OG ÅR < 40 => ÅRHUNDRE = 2000
      */
     private static int getFullYear(String ident) {
-        int year = parseInt(ident.substring(4, 6));
-        int individ = parseInt(ident.substring(6, 9));
+        var year = parseInt(ident.substring(4, 6));
+        var individ = parseInt(ident.substring(6, 9));
 
         // Find century
         int century;

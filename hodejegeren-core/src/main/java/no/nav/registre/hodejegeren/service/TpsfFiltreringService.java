@@ -33,10 +33,10 @@ public class TpsfFiltreringService {
     }
 
     public List<String> finnLevendeIdenter(Long gruppeId) {
-        List<String> opprettedeIdenterITpsf = finnAlleIdenter(gruppeId);
-        List<String> doedeOgUtvandredeIdenter = finnDoedeOgUtvandredeIdenter(gruppeId);
+        var opprettedeIdenterITpsf = finnAlleIdenter(gruppeId);
+        var doedeOgUtvandredeIdenter = finnDoedeOgUtvandredeIdenter(gruppeId);
 
-        List<String> levendeIdenterINorge = new ArrayList<>(opprettedeIdenterITpsf);
+        var levendeIdenterINorge = new ArrayList<>(opprettedeIdenterITpsf);
         levendeIdenterINorge.removeAll(doedeOgUtvandredeIdenter);
 
         return levendeIdenterINorge;

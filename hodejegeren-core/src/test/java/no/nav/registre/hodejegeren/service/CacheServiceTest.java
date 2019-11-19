@@ -44,7 +44,7 @@ public class CacheServiceTest {
 
         when(asyncCache.getAlleIdenterCache()).thenReturn(alleIdenterCache);
 
-        List<String> result = cacheService.hentAlleIdenterCache(avspillergruppeId);
+        var result = cacheService.hentAlleIdenterCache(avspillergruppeId);
 
         assertThat(result, Matchers.containsInAnyOrder(fnr1));
 
@@ -67,7 +67,7 @@ public class CacheServiceTest {
 
         when(asyncCache.getLevendeIdenterCache()).thenReturn(levendeIdenterCache);
 
-        List<String> result = cacheService.hentLevendeIdenterCache(avspillergruppeId);
+        var result = cacheService.hentLevendeIdenterCache(avspillergruppeId);
 
         assertThat(result, Matchers.containsInAnyOrder(fnr1));
 
@@ -90,7 +90,7 @@ public class CacheServiceTest {
 
         when(asyncCache.getDoedeOgUtvandredeIdenterCache()).thenReturn(doedeOgUtvandredeIdenterCache);
 
-        List<String> result = cacheService.hentDoedeOgUtvandredeIdenterCache(avspillergruppeId);
+        var result = cacheService.hentDoedeOgUtvandredeIdenterCache(avspillergruppeId);
 
         assertThat(result, Matchers.containsInAnyOrder(fnr1));
 
@@ -113,7 +113,7 @@ public class CacheServiceTest {
 
         when(asyncCache.getGifteIdenterCache()).thenReturn(gifteIdenterCache);
 
-        List<String> result = cacheService.hentGifteIdenterCache(avspillergruppeId);
+        var result = cacheService.hentGifteIdenterCache(avspillergruppeId);
 
         assertThat(result, Matchers.containsInAnyOrder(fnr1));
 
@@ -136,7 +136,7 @@ public class CacheServiceTest {
 
         when(asyncCache.getFoedteIdenterCache()).thenReturn(foedteIdenterCache);
 
-        List<String> result = cacheService.hentFoedteIdenterCache(avspillergruppeId);
+        var result = cacheService.hentFoedteIdenterCache(avspillergruppeId);
 
         assertThat(result, Matchers.containsInAnyOrder(fnr1));
 

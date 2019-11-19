@@ -21,7 +21,7 @@ public class CacheControllerTest {
 
     @Test
     public void shouldOppdatereCacheTilGruppe() {
-        Long avspillergruppeId = 123L;
+        var avspillergruppeId = 123L;
         cacheController.oppdaterGruppeCache(123L);
         verify(cacheService).oppdaterAlleCacher(avspillergruppeId);
     }

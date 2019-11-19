@@ -39,7 +39,7 @@ public class HistorikkService {
     }
 
     public List<SyntHistorikk> hentHistorikkMedKilder(List<String> kilder) {
-        Set<String> idsMedAlleKilder = hentIdsMedKilder(kilder);
+        var idsMedAlleKilder = hentIdsMedKilder(kilder);
         List<SyntHistorikk> historikkMedAlleKilder = new ArrayList<>(idsMedAlleKilder.size());
         for (String id : idsMedAlleKilder) {
             historikkMedAlleKilder.add(hentHistorikkMedId(id));
@@ -50,9 +50,9 @@ public class HistorikkService {
     public Set<String> hentIdsMedKilder(List<String> kilder) {
         Set<String> idsMedAlleKilder = new HashSet<>();
         for (String kilde : kilder) {
-            List<SyntHistorikk> historikkByKildenavn = syntHistorikkRepository.findAllIdsByKildenavn(kilde);
+            var historikkByKildenavn = syntHistorikkRepository.findAllIdsByKildenavn(kilde);
             Set<String> ids = new HashSet<>(historikkByKildenavn.size());
-            for (SyntHistorikk historikk : historikkByKildenavn) {
+            for (var historikk : historikkByKildenavn) {
                 ids.add(historikk.getId());
             }
             if (idsMedAlleKilder.isEmpty()) {
@@ -65,9 +65,9 @@ public class HistorikkService {
     }
 
     public SyntHistorikk opprettHistorikk(SyntHistorikk syntHistorikk) {
-        List<Kilde> kilder = syntHistorikk.getKilder();
-        for (Kilde kilde : kilder) {
-            for (Data d : kilde.getData()) {
+        var kilder = syntHistorikk.getKilder();
+        for (var kilde : kilder) {
+            for (var d : kilde.getData()) {
                 if (d.getDatoOpprettet() == null) {
                     d.setDatoOpprettet(LocalDateTime.now());
                 }
@@ -81,25 +81,25 @@ public class HistorikkService {
 
     public List<String> leggTilHistorikkPaaIdent(HistorikkRequest historikkRequest) {
         List<String> opprettedeIder = new ArrayList<>();
-        List<DataRequest> kilder = historikkRequest.getIdentMedData();
+        var kilder = historikkRequest.getIdentMedData();
 
-        for (DataRequest kilde : kilder) {
-            String id = kilde.getId();
+        for (var kilde : kilder) {
+            var id = kilde.getId();
             List<Data> nyData = new ArrayList<>(kilde.getData().size());
 
-            LocalDateTime opprettelsesTidspunkt = LocalDateTime.now();
-            for (Object o : kilde.getData()) {
+            var opprettelsesTidspunkt = LocalDateTime.now();
+            for (var o : kilde.getData()) {
                 nyData.add(Data.builder()
                         .innhold(o)
                         .datoOpprettet(opprettelsesTidspunkt)
                         .datoEndret(opprettelsesTidspunkt)
                         .build());
             }
-            SyntHistorikk eksisterendeHistorikk = hentHistorikkMedId(id);
+            var eksisterendeHistorikk = hentHistorikkMedId(id);
             if (eksisterendeHistorikk != null) {
-                List<Kilde> eksisterendeKilder = eksisterendeHistorikk.getKilder();
+                var eksisterendeKilder = eksisterendeHistorikk.getKilder();
                 List<Data> eksisterendeData = null;
-                for (Kilde k : eksisterendeKilder) {
+                for (var k : eksisterendeKilder) {
                     if (historikkRequest.getKilde().equals(k.getNavn())) {
                         eksisterendeData = k.getData();
                         break;
@@ -114,7 +114,7 @@ public class HistorikkService {
 
                 opprettedeIder.add(syntHistorikkRepository.save(eksisterendeHistorikk).getId());
             } else {
-                Kilde nyKilde = Kilde.builder().navn(historikkRequest.getKilde()).data(nyData).build();
+                var nyKilde = Kilde.builder().navn(historikkRequest.getKilde()).data(nyData).build();
                 opprettedeIder.add(opprettHistorikk(SyntHistorikk.builder().id(id).kilder(Collections.singletonList(nyKilde)).build()).getId());
             }
         }
@@ -122,18 +122,18 @@ public class HistorikkService {
     }
 
     public List<String> oppdaterTpsPersonDokument(String ident, TpsPersonDokumentType tpsPersonDokument) {
-        SyntHistorikk syntHistorikk = hentHistorikkMedId(ident);
-        PersonDokumentWrapper personDokumentWrapper = PersonDokumentUtility.convertToPersonDokumentWrapper(tpsPersonDokument);
+        var syntHistorikk = hentHistorikkMedId(ident);
+        var personDokumentWrapper = PersonDokumentUtility.convertToPersonDokumentWrapper(tpsPersonDokument);
         if (syntHistorikk != null) {
             Kilde kilde = null;
-            for (Kilde k : syntHistorikk.getKilder()) {
+            for (var k : syntHistorikk.getKilder()) {
                 if ("skd".equals(k.getNavn())) {
                     kilde = k;
                     break;
                 }
             }
             if (kilde != null) {
-                Data eksisterendeSkdData = kilde.getData().get(0);
+                var eksisterendeSkdData = kilde.getData().get(0);
                 eksisterendeSkdData.setInnhold(personDokumentWrapper);
                 eksisterendeSkdData.setDatoEndret(LocalDateTime.now());
                 return Collections.singletonList(syntHistorikkRepository.save(syntHistorikk).getId());
@@ -146,7 +146,7 @@ public class HistorikkService {
     }
 
     public ResponseEntity slettHistorikk(String id) {
-        SyntHistorikk historikk = syntHistorikkRepository.findById(id).orElse(null);
+        var historikk = syntHistorikkRepository.findById(id).orElse(null);
         if (historikk != null) {
             syntHistorikkRepository.deleteById(id);
             return ResponseEntity.ok(String.format("Historikk tilhørende id '%s' ble slettet", id));
@@ -156,7 +156,7 @@ public class HistorikkService {
     }
 
     public ResponseEntity slettKilde(String id, String navnPaaKilde) {
-        SyntHistorikk historikk = syntHistorikkRepository.findById(id).orElse(null);
+        var historikk = syntHistorikkRepository.findById(id).orElse(null);
 
         if (historikk != null) {
             List<Kilde> kilder = historikk.getKilder();
@@ -184,7 +184,7 @@ public class HistorikkService {
     }
 
     private List<String> leggTilSkdData(String ident, PersonDokumentWrapper personDokumentWrapper) {
-        HistorikkRequest historikkRequest = HistorikkRequest.builder()
+        var historikkRequest = HistorikkRequest.builder()
                 .kilde("skd")
                 .identMedData(Collections.singletonList(DataRequest.builder()
                         .id(ident)

@@ -34,7 +34,7 @@ public class TpsStatusQuoService {
         resetCache();
 
         for (String felt : feltnavn) {
-            JsonNode root = getInfoOnRoutineName(routineName, AKSJONSKODE, environment, fnr);
+            var root = getInfoOnRoutineName(routineName, AKSJONSKODE, environment, fnr);
 
             if (root == null) {
                 log.error("Fant ikke rutine {} på fnr {}", routineName.replaceAll("[\r\n]",""), fnr.replaceAll("[\r\n]",""));
@@ -50,16 +50,16 @@ public class TpsStatusQuoService {
 
     public String extractStatusQuoInfoFromTps(JsonNode root, String felt, String fnr) {
         if (felt.contains("$")) {
-            Object document = Configuration.defaultConfiguration().jsonProvider().parse(root.toString());
+            var document = Configuration.defaultConfiguration().jsonProvider().parse(root.toString());
             JSONArray jsonArray = JsonPath.read(document, felt);
             if (jsonArray.isEmpty()) {
                 return "";
             }
             return jsonArray.get(0).toString();
         } else {
-            JsonNode statusQuoFromTPS = root.findValue(felt);
+            var statusQuoFromTPS = root.findValue(felt);
             if (statusQuoFromTPS == null) {
-                JsonNode utfyllendeMelding = root.findValue("utfyllendeMelding");
+                var utfyllendeMelding = root.findValue("utfyllendeMelding");
                 if (utfyllendeMelding == null) {
                     throw new ManglendeInfoITpsException(
                             "Kunne ikke finne status quo på person med fnr " + fnr + " for felt '" + felt);
@@ -78,7 +78,7 @@ public class TpsStatusQuoService {
         }
 
         if (!tpsServiceRoutineCache.containsKey(routineName)) {
-            JsonNode response = tpsfConsumer.getTpsServiceRoutine(routineName, aksjonsKode, environment, fnr);
+            var response = tpsfConsumer.getTpsServiceRoutine(routineName, aksjonsKode, environment, fnr);
             tpsServiceRoutineCache.put(routineName, response);
         }
         return tpsServiceRoutineCache.get(routineName);

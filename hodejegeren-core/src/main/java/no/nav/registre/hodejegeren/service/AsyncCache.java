@@ -159,7 +159,7 @@ public class AsyncCache {
     }
 
     private void fjernCache(Map<Long, List<String>> cache) {
-        for (Long avspillergruppeId : cache.keySet()) {
+        for (var avspillergruppeId : cache.keySet()) {
             if (!fasteAvspillergrupper.contains(avspillergruppeId)) {
                 cache.remove(avspillergruppeId);
             }

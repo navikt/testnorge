@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -21,7 +20,7 @@ public class CacheService {
     private final AsyncCache asyncCache;
 
     public Set<Long> hentCachedeAvspillergruppeIder() {
-        Map<Long, List<String>> alleIdenterCache = asyncCache.getAlleIdenterCache();
+        var alleIdenterCache = asyncCache.getAlleIdenterCache();
         if (alleIdenterCache == null) {
             return new HashSet<>();
         } else {
@@ -31,7 +30,7 @@ public class CacheService {
 
     public List<String> hentAlleIdenterCache(Long avspillergruppeId) {
         List<String> alleIdenter;
-        Map<Long, List<String>> alleIdenterCache = asyncCache.getAlleIdenterCache();
+        var alleIdenterCache = asyncCache.getAlleIdenterCache();
         if (alleIdenterCache == null || !alleIdenterCache.containsKey(avspillergruppeId) || alleIdenterCache.get(avspillergruppeId).isEmpty()) {
             alleIdenter = asyncCache.oppdaterAlleIdenterCache(avspillergruppeId);
         } else {
@@ -43,7 +42,7 @@ public class CacheService {
 
     public List<String> hentLevendeIdenterCache(Long avspillergruppeId) {
         List<String> levendeIdenter;
-        Map<Long, List<String>> levendeIdenterCache = asyncCache.getLevendeIdenterCache();
+        var levendeIdenterCache = asyncCache.getLevendeIdenterCache();
         if (levendeIdenterCache == null || !levendeIdenterCache.containsKey(avspillergruppeId) || levendeIdenterCache.get(avspillergruppeId).isEmpty()) {
             levendeIdenter = asyncCache.oppdaterLevendeIdenterCache(avspillergruppeId);
         } else {
@@ -55,7 +54,7 @@ public class CacheService {
 
     public List<String> hentDoedeOgUtvandredeIdenterCache(Long avspillergruppeId) {
         List<String> doedeOgUtvandredeIdenter;
-        Map<Long, List<String>> doedeOgUtvandredeIdenterCache = asyncCache.getDoedeOgUtvandredeIdenterCache();
+        var doedeOgUtvandredeIdenterCache = asyncCache.getDoedeOgUtvandredeIdenterCache();
         if (doedeOgUtvandredeIdenterCache == null || !doedeOgUtvandredeIdenterCache.containsKey(avspillergruppeId) || doedeOgUtvandredeIdenterCache.get(avspillergruppeId).isEmpty()) {
             doedeOgUtvandredeIdenter = asyncCache.oppdaterDoedeOgUtvandredeIdenterCache(avspillergruppeId);
         } else {
@@ -67,7 +66,7 @@ public class CacheService {
 
     public List<String> hentGifteIdenterCache(Long avspillergruppeId) {
         List<String> gifteIdenter;
-        Map<Long, List<String>> gifteIdenterCache = asyncCache.getGifteIdenterCache();
+        var gifteIdenterCache = asyncCache.getGifteIdenterCache();
         if (gifteIdenterCache == null || !gifteIdenterCache.containsKey(avspillergruppeId) || gifteIdenterCache.get(avspillergruppeId).isEmpty()) {
             gifteIdenter = asyncCache.oppdaterGifteIdenterCache(avspillergruppeId);
         } else {
@@ -79,7 +78,7 @@ public class CacheService {
 
     public List<String> hentFoedteIdenterCache(Long avspillergruppeId) {
         List<String> foedteIdenter;
-        Map<Long, List<String>> foedteIdenterCache = asyncCache.getFoedteIdenterCache();
+        var foedteIdenterCache = asyncCache.getFoedteIdenterCache();
         if (foedteIdenterCache == null || !foedteIdenterCache.containsKey(avspillergruppeId) || foedteIdenterCache.get(avspillergruppeId).isEmpty()) {
             foedteIdenter = asyncCache.oppdaterFoedteIdenterCache(avspillergruppeId);
         } else {

@@ -69,7 +69,7 @@ public class TpsfFiltreringServiceTest {
 
     @Test
     public void finnAlleIdenterTest() {
-        List<String> alle = tpsfFiltreringService.finnAlleIdenter(avspillergruppeId);
+        var alle = tpsfFiltreringService.finnAlleIdenter(avspillergruppeId);
         assertEquals(4, alle.size());
         assertThat(alle, containsInAnyOrder(
                 "20044249945",
@@ -81,7 +81,7 @@ public class TpsfFiltreringServiceTest {
 
     @Test
     public void finnLevendeIdenterTest() {
-        List<String> levende = tpsfFiltreringService.finnLevendeIdenter(avspillergruppeId);
+        var levende = tpsfFiltreringService.finnLevendeIdenter(avspillergruppeId);
         assertEquals(3, levende.size());
         assertThat(levende, containsInAnyOrder(
                 "20044249945",
@@ -92,7 +92,7 @@ public class TpsfFiltreringServiceTest {
 
     @Test
     public void finnDoedeOgUtvandredeIdenterTest() {
-        List<String> doede = tpsfFiltreringService.finnDoedeOgUtvandredeIdenter(avspillergruppeId);
+        var doede = tpsfFiltreringService.finnDoedeOgUtvandredeIdenter(avspillergruppeId);
         assertEquals(1, doede.size());
         assertThat(doede, containsInAnyOrder(
                 "20044249948"
@@ -101,7 +101,7 @@ public class TpsfFiltreringServiceTest {
 
     @Test
     public void finnGifteIdenterTest() {
-        List<String> gifte = tpsfFiltreringService.finnGifteIdenter(avspillergruppeId);
+        var gifte = tpsfFiltreringService.finnGifteIdenter(avspillergruppeId);
         assertEquals(1, gifte.size());
         assertThat(gifte, containsInAnyOrder(
                 "20041751231"
@@ -110,7 +110,7 @@ public class TpsfFiltreringServiceTest {
 
     @Test
     public void finnFoedteIdenterTest() {
-        List<String> foedte = tpsfFiltreringService.finnFoedteIdenter(avspillergruppeId);
+        var foedte = tpsfFiltreringService.finnFoedteIdenter(avspillergruppeId);
         assertEquals(1, foedte.size());
         assertThat(foedte, containsInAnyOrder(
                 "20041751231"

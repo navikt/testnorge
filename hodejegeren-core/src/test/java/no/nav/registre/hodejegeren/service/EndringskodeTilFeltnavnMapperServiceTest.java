@@ -36,7 +36,7 @@ public class EndringskodeTilFeltnavnMapperServiceTest {
      */
     @Test
     public void shouldFindFeltnavnAndServiceRoutineFromAarsakskode() throws IOException {
-        String endringskode = Endringskoder.NAVNEENDRING_FOERSTE.getEndringskode();
+        var endringskode = Endringskoder.NAVNEENDRING_FOERSTE.getEndringskode();
 
         endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskode, environment, fnr);
 
