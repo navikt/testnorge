@@ -20,7 +20,6 @@ import java.util.List;
 import no.nav.registre.skd.consumer.IdentPoolConsumer;
 import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
-import no.nav.registre.skd.consumer.response.Navn;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,9 +33,6 @@ public class FasteMeldingerServiceTest {
 
     @Mock
     private ValidationService validationService;
-
-    @Mock
-private IdentPoolConsumer identPoolConsumer;
 
     @InjectMocks
     private FasteMeldingerService fasteMeldingerService;

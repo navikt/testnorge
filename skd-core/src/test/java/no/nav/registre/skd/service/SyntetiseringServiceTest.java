@@ -35,6 +35,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -83,7 +84,7 @@ public class SyntetiseringServiceTest {
         final HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put(Endringskoder.FOEDSELSMELDING.getEndringskode(), 3);
         antallMeldingerPerEndringskode.put(Endringskoder.INNVANDRING.getEndringskode(), 4);
-        final long GRUPPE_ID = 123L;
+        final var GRUPPE_ID = 123L;
 
         List<RsMeldingstype> treSkdmeldinger = Arrays.asList(new RsMeldingstype1Felter(), new RsMeldingstype1Felter(), new RsMeldingstype1Felter());
         List<RsMeldingstype> fireSkdmeldinger = Arrays.asList(new RsMeldingstype1Felter(), new RsMeldingstype1Felter(), new RsMeldingstype1Felter(), new RsMeldingstype1Felter());
@@ -117,20 +118,20 @@ public class SyntetiseringServiceTest {
         antallMeldingerPerEndringskode.put("0310", 1); // stikkprøve - endringskoder som ikke skal ha nye identer
         antallMeldingerPerEndringskode.put("0410", 1); // stikkprøve - endringskoder som ikke skal ha nye identer
 
-        List<RsMeldingstype> meldinger01 = Arrays.asList(new RsMeldingstype1Felter());
-        List<RsMeldingstype> meldinger02 = Arrays.asList(new RsMeldingstype1Felter());
-        List<RsMeldingstype> meldinger39 = Arrays.asList(new RsMeldingstype1Felter());
-        List<RsMeldingstype> meldinger91 = Arrays.asList(new RsMeldingstype1Felter());
-        List<RsMeldingstype> meldinger03 = Arrays.asList(new RsMeldingstype1Felter());
-        List<RsMeldingstype> meldinger04 = Arrays.asList(new RsMeldingstype1Felter());
+        List<RsMeldingstype> meldinger01 = Collections.singletonList(new RsMeldingstype1Felter());
+        List<RsMeldingstype> meldinger02 = Collections.singletonList(new RsMeldingstype1Felter());
+        List<RsMeldingstype> meldinger39 = Collections.singletonList(new RsMeldingstype1Felter());
+        List<RsMeldingstype> meldinger91 = Collections.singletonList(new RsMeldingstype1Felter());
+        List<RsMeldingstype> meldinger03 = Collections.singletonList(new RsMeldingstype1Felter());
+        List<RsMeldingstype> meldinger04 = Collections.singletonList(new RsMeldingstype1Felter());
 
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.FOEDSELSMELDING.getEndringskode(), 1)).thenReturn(meldinger01);
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), 1)).thenReturn(meldinger02);
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.FOEDSELSNUMMERKORREKSJON.getEndringskode(), 1)).thenReturn(meldinger39);
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.TILDELING_DNUMMER.getEndringskode(), 1)).thenReturn(meldinger91);
 
-        final String fodselsdato = "111111";
-        final String personnummer = "22222";
+        final var fodselsdato = "111111";
+        final var personnummer = "22222";
 
         Answer<Object> setFnrInFirstSkdmeldingAndReturnFnr = invocation -> {
             List<RsMeldingstype> melding = invocation.getArgument(1);
@@ -163,10 +164,10 @@ public class SyntetiseringServiceTest {
      */
     @Test
     public void shouldFiltrereEndringskodeneSomBestillesFraTpsSyntetisereren() {
-        List<String> requestedEndringskoder = Arrays.asList("tull", "0010", "0x", "100", "9110", "5110", "5610", "8110", "9810",
+        var requestedEndringskoder = Arrays.asList("tull", "0010", "0x", "100", "9110", "5110", "5610", "8110", "9810",
                 "4310", "3210", "0211", "0110", "3910", "0610", "0710", "1010", "1110", "1410", "1810");
         final HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
-        for (String requestedEndringskode : requestedEndringskoder) {
+        for (var requestedEndringskode : requestedEndringskoder) {
             antallMeldingerPerEndringskode.put(requestedEndringskode, 0);
         }
 
@@ -174,8 +175,8 @@ public class SyntetiseringServiceTest {
 
         syntetiseringService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
 
-        final InOrder inOrder = Mockito.inOrder(tpsSyntetisererenConsumer);
-        for (String endringskode : Arrays.asList("9110", "0211", "0110", "3910",
+        final var inOrder = Mockito.inOrder(tpsSyntetisererenConsumer);
+        for (var endringskode : Arrays.asList("9110", "0211", "0110", "3910",
                 "0610", "0710", "1010", "1110", "1410", "1810", "5110", "5610", "8110", "9810", "4310", "3210")) {
             inOrder.verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(eq(endringskode), any());
         }
@@ -197,15 +198,15 @@ public class SyntetiseringServiceTest {
         listAppender.start();
         logger.addAppender(listAppender);
 
-        RsMeldingstype melding = new RsMeldingstype1Felter();
-        ((RsMeldingstype1Felter) melding).setFodselsdato("010101");
-        ((RsMeldingstype1Felter) melding).setPersonnummer("01010");
+        RsMeldingstype1Felter melding = new RsMeldingstype1Felter();
+        melding.setFodselsdato("010101");
+        melding.setPersonnummer("01010");
 
         when(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(any(), any())).thenThrow(RuntimeException.class);
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), anyInt())).thenReturn(Arrays.asList(melding));
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), anyInt())).thenReturn(Collections.singletonList(melding));
 
         syntetiseringService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
-        verify(tpsfConsumer, times(2)).saveSkdEndringsmeldingerInTPSF(any(), eq(Arrays.asList(melding)));
+        verify(tpsfConsumer, times(2)).saveSkdEndringsmeldingerInTPSF(any(), eq(Collections.singletonList(melding)));
 
         assertTrue(listAppender.list.toString().contains("Noe feilet under lagring til TPSF"));
         assertTrue(listAppender.list.toString().contains("01010101010"));
@@ -219,18 +220,18 @@ public class SyntetiseringServiceTest {
     @Test
     public void generellFeilhaandteringBurdeLoggfoereLagredeSkdmeldingenesIdMedRange() {
         ListAppender<ILoggingEvent> listAppender = testLoggingInClass(SyntetiseringService.class);
-        List<Long> ids = Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 8L, 10L, 11L, 13L, 14L, 15L, 17L, 18L);
+        var ids = Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 8L, 10L, 11L, 13L, 14L, 15L, 17L, 18L);
         final HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put(Endringskoder.INNFLYTTING_ANNEN_KOMMUNE.getEndringskode(), ids.size());
         antallMeldingerPerEndringskode.put(ENDRING_OPPHOLDSTILLATELSE.getEndringskode(), 1);
 
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), any())).thenReturn(new ArrayList<>());
-        String testfeilmelding = "testfeilmelding";
+        var testfeilmelding = "testfeilmelding";
         doThrow(new RuntimeException(testfeilmelding))
                 .when(eksisterendeIdenterService).behandleEksisterendeIdenter(any(), any(), eq(ENDRING_OPPHOLDSTILLATELSE), any());
         when(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(any(), any())).thenReturn(ids);
 
-        ResponseEntity response = syntetiseringService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
+        var response = syntetiseringService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
 
         assertThat(response.getStatusCode(), is(equalTo(HttpStatus.CONFLICT)));
         assertThat(listAppender.list.size(), is(equalTo(6)));

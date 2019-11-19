@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.Size;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "meldingstype")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "meldingstype")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = RsMeldingstype1Felter.class, name = "t1"),
         @JsonSubTypes.Type(value = RsMeldingstype2Felter.class, name = "t2")

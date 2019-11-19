@@ -43,10 +43,10 @@ public class EksisterendeIdenterService {
     private static final String STATSBORGER_NORGE = "NORGE";
     private static final String SIVILSTANDSENDRING_AARSAKSKODE = "85";
     private static final int ANTALL_FORSOEK_PER_AARSAK = 3;
-    public static final String DATO_DO = "datoDo";
-    public static final String FNR_RELASJON = "$..relasjon[?(@.typeRelasjon=='EKTE')].fnrRelasjon";
-    public static final String SIVILSTAND = "sivilstand";
-    public static final String STATSBORGER = "statsborger";
+    static final String DATO_DO = "datoDo";
+    static final String FNR_RELASJON = "$..relasjon[?(@.typeRelasjon=='EKTE')].fnrRelasjon";
+    static final String SIVILSTAND = "sivilstand";
+    static final String STATSBORGER = "statsborger";
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
@@ -54,9 +54,12 @@ public class EksisterendeIdenterService {
     @Autowired
     private Random rand;
 
-    public void behandleEksisterendeIdenter(List<RsMeldingstype> meldinger, Map<String, List<String>> listerMedIdenter,
-            Endringskoder endringskode, String environment) {
-
+    void behandleEksisterendeIdenter(
+            List<RsMeldingstype> meldinger,
+            Map<String, List<String>> listerMedIdenter,
+            Endringskoder endringskode,
+            String environment
+    ) {
         switch (endringskode) {
         case NAVNEENDRING_FOERSTE:
         case NAVNEENDRING_MELDING:
@@ -102,7 +105,7 @@ public class EksisterendeIdenterService {
         }
     }
 
-    public void behandleVigsel(List<RsMeldingstype> meldinger, List<String> singleIdenterINorge, List<String> brukteIdenterIDenneBolken,
+    void behandleVigsel(List<RsMeldingstype> meldinger, List<String> singleIdenterINorge, List<String> brukteIdenterIDenneBolken,
             Endringskoder endringskode, String environment) {
         List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
 
@@ -124,15 +127,15 @@ public class EksisterendeIdenterService {
                             || KoderForSivilstand.SEPARERT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
                             || ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(a.get(IDENT)), LocalDate.now()) < 18);
 
-            String ident = statusQuoIdent.get(IDENT);
-            String identPartner = statusQuoPartnerIdent.get(IDENT);
+            var ident = statusQuoIdent.get(IDENT);
+            var identPartner = statusQuoPartnerIdent.get(IDENT);
 
             if (ident != null && identPartner != null) {
                 putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
                 putEktefellePartnerFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
                 ((RsMeldingstype1Felter) meldinger.get(i)).setSivilstand(KoderForSivilstand.GIFT.getSivilstandKodeSKD());
 
-                RsMeldingstype1Felter meldingPartner = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
+                var meldingPartner = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
                 putEktefellePartnerFnrInnIMelding(meldingPartner, ident);
                 meldingPartner.setSivilstand(KoderForSivilstand.GIFT.getSivilstandKodeSKD());
                 meldingerForPartnere.add(meldingPartner);
@@ -143,35 +146,38 @@ public class EksisterendeIdenterService {
         meldinger.addAll(meldingerForPartnere);
     }
 
-    public void behandleSeperasjonSkilsmisse(List<RsMeldingstype> meldinger, List<String> gifteIdenterINorge, List<String> brukteIdenterIDenneBolken,
-            Endringskoder endringskode, String environment) {
+    void behandleSeperasjonSkilsmisse(
+            List<RsMeldingstype> meldinger,
+            List<String> gifteIdenterINorge,
+            List<String> brukteIdenterIDenneBolken,
+            Endringskoder endringskode,
+            String environment
+    ) {
         List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
 
-        int antallMeldingerFoerKjoering = meldinger.size();
-        int i = 0;
+        var antallMeldingerFoerKjoering = meldinger.size();
+        var i = 0;
         while (i < antallMeldingerFoerKjoering) {
             if (i >= gifteIdenterINorge.size() - 1) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
                         + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen gifteIdenterINorge fra TPSF avspillergruppen.");
             }
 
-            Map<String, String> statusQuoIdent = getIdentWithStatus(gifteIdenterINorge, endringskode, environment,
+            var statusQuoIdent = getIdentWithStatus(gifteIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> !KoderForSivilstand.GIFT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
                             && !KoderForSivilstand.SEPARERT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND)));
 
-            String ident = statusQuoIdent.get(IDENT);
+            var ident = statusQuoIdent.get(IDENT);
+            var identPartner = statusQuoIdent.get(FNR_RELASJON);
+
             Map<String, String> statusQuoPartnerIdent;
-            String identPartner;
-
-            identPartner = statusQuoIdent.get(FNR_RELASJON);
-
             statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskode, environment, identPartner);
 
             if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND))
                     && statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
                 putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
 
-                RsMeldingstype1Felter meldingPartner = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
+                var meldingPartner = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
 
                 if (endringskode.getEndringskode().equals(Endringskoder.SEPERASJON.getEndringskode())) {
                     meldingPartner.setSivilstand(KoderForSivilstand.SEPARERT.getSivilstandKodeSKD());
@@ -196,26 +202,29 @@ public class EksisterendeIdenterService {
         meldinger.addAll(meldingerForPartnere);
     }
 
-    public void behandleDoedsmelding(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
-            Endringskoder endringskode, String environment) {
+    void behandleDoedsmelding(
+            List<RsMeldingstype> meldinger,
+            List<String> levendeIdenterINorge,
+            List<String> brukteIdenterIDenneBolken,
+            Endringskoder endringskode,
+            String environment
+    ) {
         List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
 
-        int antallMeldingerFoerKjoering = meldinger.size();
+        var antallMeldingerFoerKjoering = meldinger.size();
         for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
             if (i >= levendeIdenterINorge.size()) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
                         + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge fra TPSF avspillergruppen.");
             }
 
-            Map<String, String> statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
+            var statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> (a.get(DATO_DO) != null && !a.get(DATO_DO).isEmpty()) || !STATSBORGER_NORGE.equals(a.get(STATSBORGER)));
 
-            String ident = statusQuoIdent.get(IDENT);
-            Map<String, String> statusQuoPartnerIdent;
-            String identPartner;
+            var ident = statusQuoIdent.get(IDENT);
 
             if (KoderForSivilstand.GIFT.getAlleSivilstandkodene().contains(statusQuoIdent.get(SIVILSTAND))) {
-                identPartner = statusQuoIdent.get(FNR_RELASJON);
+                var identPartner = statusQuoIdent.get(FNR_RELASJON);
 
                 if (identPartner.length() != 11) {
                     log.warn("behandleDoedsmelding: Feil på fnr {} fra FNR_RELASJON. Fnr har en lengde på {}. Hopper over sivilstandendringsmelding på partner.",
@@ -223,7 +232,7 @@ public class EksisterendeIdenterService {
                     putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
                     oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident));
                 } else {
-                    statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskode, environment, identPartner);
+                    var statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskode, environment, identPartner);
 
                     if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND))) {
                         if (statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
@@ -247,18 +256,23 @@ public class EksisterendeIdenterService {
         meldinger.addAll(meldingerForPartnere);
     }
 
-    public void behandleGenerellAarsak(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
-            Endringskoder endringskode, String environment) {
+    void behandleGenerellAarsak(
+            List<RsMeldingstype> meldinger,
+            List<String> levendeIdenterINorge,
+            List<String> brukteIdenterIDenneBolken,
+            Endringskoder endringskode,
+            String environment
+    ) {
         for (int i = 0; i < meldinger.size(); i++) {
             if (i >= levendeIdenterINorge.size()) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
                         + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge fra TPSF avspillergruppen.");
             }
 
-            Map<String, String> statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
+            var statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> (a.get(DATO_DO) != null && !a.get(DATO_DO).isEmpty()) || !STATSBORGER_NORGE.equals(a.get(STATSBORGER)));
 
-            String ident = statusQuoIdent.get(IDENT);
+            var ident = statusQuoIdent.get(IDENT);
 
             if (ident != null) {
                 putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
@@ -267,8 +281,12 @@ public class EksisterendeIdenterService {
         }
     }
 
-    private Map<String, String> getIdentWithStatus(List<String> identer, Endringskoder endringskode, String environment,
-            Predicate<Map<String, String>> predicate) {
+    private Map<String, String> getIdentWithStatus(
+            List<String> identer,
+            Endringskoder endringskode,
+            String environment,
+            Predicate<Map<String, String>> predicate
+    ) {
         Map<String, String> statusQuoIdent;
         do {
             statusQuoIdent = findExistingPersonStatusInTps(identer, endringskode, environment);
@@ -280,9 +298,13 @@ public class EksisterendeIdenterService {
      * Metoden prøver å hente ut statusQuo på identer. Den prøver inntil den finner noen som eksisterer i TPS (ikke kaster
      * ManglerEksisterendeIdentException) eller antall forsøk overstiger et gitt antall.
      */
-    private Map<String, String> findExistingPersonStatusInTps(List<String> identer, Endringskoder endringskode, String environment) {
+    private Map<String, String> findExistingPersonStatusInTps(
+            List<String> identer,
+            Endringskoder endringskode,
+            String environment
+    ) {
         Map<String, String> statusQuoIdent = new HashMap<>();
-        String randomIdent = "";
+        var randomIdent = "";
         int randomIndex;
 
         for (int i = 1; i <= ANTALL_FORSOEK_PER_AARSAK; i++) {
@@ -307,12 +329,19 @@ public class EksisterendeIdenterService {
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
-    private Map<String, String> getStatusQuoPaaIdent(Endringskoder endringskode, String environment, String fnr) {
+    private Map<String, String> getStatusQuoPaaIdent(
+            Endringskoder endringskode,
+            String environment,
+            String fnr
+    ) {
         return new HashMap<>(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(endringskode.getEndringskode(), environment, fnr));
     }
 
-    private RsMeldingstype1Felter opprettSivilstandsendringsmelding(RsMeldingstype identMelding, String identPartner) {
-        RsMeldingstype1Felter melding = RsMeldingstype1Felter.builder()
+    private RsMeldingstype1Felter opprettSivilstandsendringsmelding(
+            RsMeldingstype identMelding,
+            String identPartner
+    ) {
+        var melding = RsMeldingstype1Felter.builder()
                 .regdatoSivilstand(((RsMeldingstype1Felter) identMelding).getRegDato())
                 .fodselsdato(identPartner.substring(0, 6))
                 .personnummer(identPartner.substring(6))
@@ -332,7 +361,10 @@ public class EksisterendeIdenterService {
         return melding;
     }
 
-    private void oppdaterBolk(List<String> brukteIdenterIDenneBolken, List<String> identer) {
+    private void oppdaterBolk(
+            List<String> brukteIdenterIDenneBolken,
+            List<String> identer
+    ) {
         brukteIdenterIDenneBolken.addAll(identer);
     }
 }

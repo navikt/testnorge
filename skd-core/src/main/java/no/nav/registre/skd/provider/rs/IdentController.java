@@ -27,7 +27,8 @@ public class IdentController {
     public List<Long> slettIdenterFraAvspillergruppe(
             @PathVariable Long avspillergruppeId,
             @RequestParam(required = false, defaultValue = "") List<String> miljoer,
-            @RequestBody List<String> identer) {
+            @RequestBody List<String> identer
+    ) {
         return identService.slettIdenterFraAvspillergruppe(avspillergruppeId, miljoer, identer);
     }
 }

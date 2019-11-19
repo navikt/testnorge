@@ -26,15 +26,15 @@ public class NyeIdenterService {
     private IdentPoolConsumer identPoolConsumer;
 
     public List<String> settInnNyeIdenterITrans1Meldinger(HentIdenterRequest.IdentType identType, List<RsMeldingstype> meldinger) {
-        int antallNyeIdenter = meldinger.size();
-        HentIdenterRequest request = HentIdenterRequest.builder()
+        var antallNyeIdenter = meldinger.size();
+        var request = HentIdenterRequest.builder()
                 .antall(antallNyeIdenter)
                 .identtype(identType)
                 .foedtEtter(LocalDate.now().minusYears(90))
                 .foedtFoer(LocalDate.now())
                 .rekvirertAv("orkestratoren")
                 .build();
-        List<String> identer = identPoolConsumer.hentNyeIdenter(request);
+        var identer = identPoolConsumer.hentNyeIdenter(request);
         for (int i = 0; i < antallNyeIdenter; i++) {
             putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), identer.get(i));
             if (Endringskoder.INNVANDRING.getAarsakskode().equals(meldinger.get(i).getAarsakskode())) {

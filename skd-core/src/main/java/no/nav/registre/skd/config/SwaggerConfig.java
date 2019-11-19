@@ -1,4 +1,4 @@
-package no.nav.registre.skd.provider.rs;
+package no.nav.registre.skd.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

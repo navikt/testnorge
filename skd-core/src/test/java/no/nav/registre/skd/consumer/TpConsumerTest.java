@@ -47,7 +47,7 @@ public class TpConsumerTest {
     public void shouldSendIdenterToTp() {
         stubTpConsumer();
 
-        ResponseEntity<List<String>> response = tpConsumer.leggTilIdenterITp(identer, miljoe);
+        var response = tpConsumer.leggTilIdenterITp(identer, miljoe);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assert response.getBody() != null;

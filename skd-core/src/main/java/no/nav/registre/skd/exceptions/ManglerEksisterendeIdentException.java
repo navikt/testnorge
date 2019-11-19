@@ -6,10 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.CONFLICT)
 public class ManglerEksisterendeIdentException extends SkdFunctionalException{
 
-    public ManglerEksisterendeIdentException() {
-        super();
-    }
-
     public ManglerEksisterendeIdentException(String message) {
         super(message);
     }

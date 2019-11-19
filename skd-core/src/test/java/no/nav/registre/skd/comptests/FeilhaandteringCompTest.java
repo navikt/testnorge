@@ -91,7 +91,7 @@ public class FeilhaandteringCompTest {
         HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
         antallMeldingerPerAarsakskode.put(INNVANDRING.getEndringskode(), antallMeldinger);
         antallMeldingerPerAarsakskode.put(NAVNEENDRING_FOERSTE.getEndringskode(), antallMeldinger);
-        long gruppeId = 123L;
+        var gruppeId = 123L;
 
         stubIdentpool();
         stubHodejegeren(gruppeId);
@@ -102,24 +102,24 @@ public class FeilhaandteringCompTest {
         stubTpsSynt(INNVANDRING.getEndringskode(), antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode02_2meldinger_Response.json");
         stubTpsSynt(NAVNEENDRING_FOERSTE.getEndringskode(), antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode06_2meldinger_Response.json");
 
-        GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, miljoe, antallMeldingerPerAarsakskode);
-        ResponseEntity response = syntetiseringController.genererSkdMeldinger(ordreRequest);
+        var ordreRequest = new GenereringsOrdreRequest(gruppeId, miljoe, antallMeldingerPerAarsakskode);
+        var response = syntetiseringController.genererSkdMeldinger(ordreRequest);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertEquals(5, listAppender.list.size());
-        SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
+        var skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
         assertThat(skdMeldingerTilTpsRespons.getAntallSendte(), is(equalTo(2)));
         assertThat(listAppender.list.toString(), containsString("Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: []"));
     }
 
     private void stubIdentpool() {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        var formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
         HashMap<String, String> placeholderValues = new HashMap<>();
         placeholderValues.put("foedtEtter", LocalDate.now().minusYears(90).format(formatter));
         placeholderValues.put("foedtFoer", LocalDate.now().format(formatter));
 
-        String path = "__files/comptest/identpool/identpool_hent2Identer_request.json";
+        var path = "__files/comptest/identpool/identpool_hent2Identer_request.json";
         stubFor(post("/identpool/api/v1/identifikator?finnNaermesteLedigeDato=false")
                 .withRequestBody(equalToJson(replace(getResourceFileContent(path), placeholderValues)))
                 .willReturn(okJson(expectedFnrFromIdentpool.toString())));
@@ -134,7 +134,7 @@ public class FeilhaandteringCompTest {
     }
 
     private void stubHodejegeren(long gruppeId) {
-        List<String> fnrs = new ArrayList<>(Arrays.asList("01010101010", "02020202020", "33333333333", "44444444444", "55555555555", "66666666666"));
+        var fnrs = new ArrayList<>(Arrays.asList("01010101010", "02020202020", "33333333333", "44444444444", "55555555555", "66666666666"));
         // Henter alle identer i avspillergruppa hos TPSF:
         stubHodejegerenHentLevendeIdenter(gruppeId,
                 "["
@@ -151,7 +151,7 @@ public class FeilhaandteringCompTest {
         // Henter liste over alle gifte identer i avspillergruppa hos TPSF:
         stubHodejegerenHentGifteIdenter(gruppeId, "[\n\"" + fnrs.get(4) + "\",\n\"" + fnrs.get(5) + "\"\n]");
 
-        for (String fnr : fnrs) {
+        for (var fnr : fnrs) {
             stubHodejegerenHentStatusQuo(fnr, NAVNEENDRING_FOERSTE.getEndringskode());
         }
     }
@@ -162,7 +162,7 @@ public class FeilhaandteringCompTest {
                 .withRequestBody(equalToJson(getResourceFileContent("__files/comptest/tpsf/tpsf_save_aarsakskode02_2ferdigeMeldinger_request.json")))
                 .willReturn(okJson(expectedMeldingsIdsITpsf.toString())));
 
-        int expectedAntallFeilet = 0;
+        var expectedAntallFeilet = 0;
 
         // Sender skdmeldingene til TPS
         stubFor(post(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/send/" + gruppeId))

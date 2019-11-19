@@ -20,31 +20,32 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype;
 @Slf4j
 public class TpsSyntetisererenConsumer {
 
-    private static final ParameterizedTypeReference<List<RsMeldingstype>> RESPONSE_TYPE = new ParameterizedTypeReference<List<RsMeldingstype>>() {
+    private static final ParameterizedTypeReference<List<RsMeldingstype>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     private String serverUrl;
 
     private RestTemplate restTemplate;
 
-    public TpsSyntetisererenConsumer(RestTemplateBuilder restTemplateBuilder,
-            @Value("${syntrest.rest.api.url}") String syntrestServerUrl) {
+    public TpsSyntetisererenConsumer(
+            RestTemplateBuilder restTemplateBuilder,
+            @Value("${syntrest.rest.api.url}") String syntrestServerUrl
+    ) {
         this.restTemplate = restTemplateBuilder.build();
         this.serverUrl = syntrestServerUrl;
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tps-syntetisereren" })
     public List<RsMeldingstype> getSyntetiserteSkdmeldinger(String endringskode, Integer antallMeldinger) {
-        UriTemplate uriTemplate = new UriTemplate(serverUrl + "/v1/generate/tps/{endringskode}?numToGenerate={antallMeldinger}");
-        URI url = uriTemplate.expand(endringskode, antallMeldinger);
-        RequestEntity getRequest = RequestEntity.get(url).build();
-        ResponseEntity<List<RsMeldingstype>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
+        var uriTemplate = new UriTemplate(serverUrl + "/v1/generate/tps/{endringskode}?numToGenerate={antallMeldinger}");
+        var getRequest = RequestEntity.get(uriTemplate.expand(endringskode, antallMeldinger)).build();
+        var response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
             log.warn("Fikk statuskode {} fra TPS-Syntetisereren", response.getStatusCode());
         }
 
-        List<RsMeldingstype> responseBody = response.getBody();
+        var responseBody = response.getBody();
 
         if (responseBody != null && responseBody.size() != antallMeldinger) {
             log.warn("Feil antall meldinger mottatt fra TPS-Syntetisereren. Forventet {}, men mottok {} meldinger.", antallMeldinger, responseBody.size());

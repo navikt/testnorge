@@ -28,7 +28,7 @@ public class IdentControllerTest {
 
     @Test
     public void shouldSletteIdenterFraAvspillergruppe() {
-        List<String> identer = new ArrayList<>(Collections.singletonList("01010101010"));
+        var identer = new ArrayList<>(Collections.singletonList("01010101010"));
         identController.slettIdenterFraAvspillergruppe(avspillergruppeId, miljoer, identer);
         verify(identService).slettIdenterFraAvspillergruppe(avspillergruppeId, miljoer, identer);
     }

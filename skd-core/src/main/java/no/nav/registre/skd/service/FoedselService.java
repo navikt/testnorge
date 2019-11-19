@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
 import no.nav.registre.skd.consumer.IdentPoolConsumer;
 import no.nav.registre.skd.consumer.requests.HentIdenterRequest;
+import no.nav.registre.skd.consumer.requests.HentIdenterRequest.IdentType;
 import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
@@ -37,26 +37,30 @@ public class FoedselService {
     @Autowired
     private Random rand;
 
-    public List<String> behandleFoedselsmeldinger(HentIdenterRequest.IdentType identType, List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge) {
+    public List<String> behandleFoedselsmeldinger(
+            IdentType identType,
+            List<RsMeldingstype> meldinger,
+            List<String> levendeIdenterINorge
+    ) {
         if (levendeIdenterINorge.isEmpty()) {
             throw new ManglerEksisterendeIdentException("Kunne ikke finne mor til ident for SkdMelding med meldingsnummer "
                     + meldinger.get(0).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge.");
         }
 
-        List<String> moedre = findMoedre(meldinger.size(), levendeIdenterINorge, meldinger.get(0).getMeldingsnrHosTpsSynt());
+        var moedre = findMoedre(meldinger.size(), levendeIdenterINorge, meldinger.get(0).getMeldingsnrHosTpsSynt());
         List<String> barn = new ArrayList<>(meldinger.size());
 
-        Iterator<RsMeldingstype> meldingIterator = meldinger.iterator();
+        var meldingIterator = meldinger.iterator();
         int i = 0;
         while (meldingIterator.hasNext()) {
-            RsMeldingstype melding = meldingIterator.next();
+            var melding = meldingIterator.next();
 
-            String morFnr = moedre.get(i++);
-            LocalDate morFoedselsdato = getFoedselsdatoFraFnr(morFnr);
+            var morFnr = moedre.get(i++);
+            var morFoedselsdato = getFoedselsdatoFraFnr(morFnr);
 
             String barnFnr;
             try {
-                LocalDate foedtFoer = morFoedselsdato.plusYears(MAKS_FORELDER_ALDER);
+                var foedtFoer = morFoedselsdato.plusYears(MAKS_FORELDER_ALDER);
                 if (foedtFoer.isAfter(LocalDate.now())) {
                     foedtFoer = LocalDate.now();
                 }
@@ -80,7 +84,7 @@ public class FoedselService {
             ((RsMeldingstype1Felter) melding).setMorsFodselsdato(morFnr.substring(0, 6));
             ((RsMeldingstype1Felter) melding).setMorsPersonnummer(morFnr.substring(6));
 
-            String farFnr = findFar(morFnr, barnFnr, levendeIdenterINorge, moedre);
+            var farFnr = findFar(morFnr, barnFnr, levendeIdenterINorge, moedre);
             if (farFnr != null) {
                 ((RsMeldingstype1Felter) melding).setFarsFodselsdato(farFnr.substring(0, 6));
                 ((RsMeldingstype1Felter) melding).setFarsPersonnummer(farFnr.substring(6));
@@ -94,7 +98,11 @@ public class FoedselService {
         return barn;
     }
 
-    public List<String> findMoedre(int antallNyeIdenter, List<String> levendeIdenterINorge, String meldingsnrHosTpsSynt) {
+    public List<String> findMoedre(
+            int antallNyeIdenter,
+            List<String> levendeIdenterINorge,
+            String meldingsnrHosTpsSynt
+    ) {
         List<String> moedre = new ArrayList<>(antallNyeIdenter);
         List<String> potensielleMoedre = new ArrayList<>(levendeIdenterINorge);
 
@@ -120,19 +128,24 @@ public class FoedselService {
      * @param moedre
      * @return Fnr til far til barn. Far kan være yngre, like gammel eller eldre enn mor, og minst MIN_FORELDER_ALDER år eldre enn barnet. Far vil alltid være mann
      */
-    public String findFar(String morsFnr, String barnFnr, List<String> levendeIdenterINorge, List<String> moedre) {
+    public String findFar(
+            String morsFnr,
+            String barnFnr,
+            List<String> levendeIdenterINorge,
+            List<String> moedre
+    ) {
         List<String> potensielleFedre = new ArrayList<>(levendeIdenterINorge);
         potensielleFedre.removeIf(potensiellFar -> !"13579".contains(String.valueOf(potensiellFar.charAt(8)))); // menn har oddetall på index 8 i FNR
         Collections.shuffle(potensielleFedre);
 
-        LocalDate foedselsdatoTilMor = getFoedselsdatoFraFnr(morsFnr);
-        LocalDate foedselsdatoTilBarn = getFoedselsdatoFraFnr(barnFnr);
-        LocalDate dagensDato = LocalDate.now();
+        var foedselsdatoTilMor = getFoedselsdatoFraFnr(morsFnr);
+        var foedselsdatoTilBarn = getFoedselsdatoFraFnr(barnFnr);
+        var dagensDato = LocalDate.now();
 
-        int morAlder = dagensDato.minusYears(foedselsdatoTilMor.getYear()).getYear();
-        int barnAlder = dagensDato.minusYears(foedselsdatoTilBarn.getYear()).getYear();
-        int gyldigMinimumFarAlder = morAlder - 30;
-        int gyldigMaksimumFarAlder = morAlder + 30;
+        var morAlder = dagensDato.minusYears(foedselsdatoTilMor.getYear()).getYear();
+        var barnAlder = dagensDato.minusYears(foedselsdatoTilBarn.getYear()).getYear();
+        var gyldigMinimumFarAlder = morAlder - 30;
+        var gyldigMaksimumFarAlder = morAlder + 30;
 
         if (gyldigMinimumFarAlder < barnAlder + MIN_FORELDER_ALDER) {
             gyldigMinimumFarAlder = barnAlder + MIN_FORELDER_ALDER;
@@ -142,10 +155,10 @@ public class FoedselService {
             gyldigMaksimumFarAlder = barnAlder + MAKS_FORELDER_ALDER;
         }
 
-        for (String far : potensielleFedre) {
+        for (var far : potensielleFedre) {
             if (!moedre.contains(far)) {
-                LocalDate foedselsdatoTilFar = getFoedselsdatoFraFnr(far);
-                int farAlder = dagensDato.minusYears(foedselsdatoTilFar.getYear()).getYear();
+                var foedselsdatoTilFar = getFoedselsdatoFraFnr(far);
+                var farAlder = dagensDato.minusYears(foedselsdatoTilFar.getYear()).getYear();
                 if (farAlder >= gyldigMinimumFarAlder && farAlder <= gyldigMaksimumFarAlder) {
                     return far;
                 }

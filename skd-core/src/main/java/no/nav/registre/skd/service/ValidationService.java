@@ -27,28 +27,34 @@ public class ValidationService {
         factory.close();
     }
 
-    public void logAndRemoveInvalidMessages(List<RsMeldingstype> meldinger, Endringskoder endringskode) {
-        List<RsMeldingstype> removeTheseMessages = new ArrayList<>();
+    public void logAndRemoveInvalidMessages(
+            List<RsMeldingstype> meldinger,
+            Endringskoder endringskode
+    ) {
+        List<RsMeldingstype> messagesToRemove = new ArrayList<>();
         meldinger.removeAll(Collections.singleton(null));
         if (meldinger.isEmpty()) {
             throw new TomResponsFraTpsSyntException("Fikk tom respons fra TPS-Synt for endringskode " + endringskode.getEndringskode());
         }
 
-        for (RsMeldingstype melding : meldinger) {
-            final Set<ConstraintViolation<RsMeldingstype>> violations = validator.validate(melding);
+        for (var melding : meldinger) {
+            final var violations = validator.validate(melding);
             if (!violations.isEmpty()) {
-                removeTheseMessages.add(melding);
+                messagesToRemove.add(melding);
                 logValidation(melding, violations);
             }
         }
-        meldinger.removeAll(removeTheseMessages);
+        meldinger.removeAll(messagesToRemove);
     }
 
-    private void logValidation(RsMeldingstype melding, Set<ConstraintViolation<RsMeldingstype>> violations) {
-        StringBuilder messageBuilder = new StringBuilder()
+    private void logValidation(
+            RsMeldingstype melding,
+            Set<ConstraintViolation<RsMeldingstype>> violations
+    ) {
+        var messageBuilder = new StringBuilder()
                 .append("Valideringsfeil for melding med aarsakskode ")
                 .append(melding.getAarsakskode()).append(". ");
-        for (ConstraintViolation violation : violations) {
+        for (var violation : violations) {
             messageBuilder
                     .append(violation.getMessage())
                     .append(" for variabelen ")

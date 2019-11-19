@@ -5,7 +5,7 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 
 public class RedigereSkdmeldingerUtility {
 
-    public static final String STATSBORGER_KODE_NORGE = "000";
+    private static final String STATSBORGER_KODE_NORGE = "000";
 
     public static void putFnrInnIMelding(RsMeldingstype1Felter melding, String fnr) {
         melding.setFodselsdato(fnr.substring(0, 6));
@@ -18,19 +18,23 @@ public class RedigereSkdmeldingerUtility {
     }
 
     public static RsMeldingstype1Felter opprettKopiAvSkdMelding(RsMeldingstype1Felter originalMelding, String fnr) {
-        RsMeldingstype1Felter kopi = originalMelding.toBuilder()
+        var kopi = originalMelding.toBuilder()
                 .fodselsdato(fnr.substring(0, 6))
                 .personnummer(fnr.substring(6)).build();
+        setObligatoriskeFelt(originalMelding, kopi);
+        return kopi;
+    }
+
+    public static void setObligatoriskeFelt(RsMeldingstype1Felter originalMelding, RsMeldingstype1Felter kopi) {
         kopi.setTranstype(originalMelding.getTranstype());
         kopi.setMaskindato(originalMelding.getMaskindato());
         kopi.setMaskintid(originalMelding.getMaskintid());
         kopi.setAarsakskode(originalMelding.getAarsakskode());
         kopi.setSekvensnr(originalMelding.getSekvensnr());
-        return kopi;
     }
 
     public static RsMeldingstype1Felter opprettStatsborgerendringsmelding(RsMeldingstype1Felter innflyttingsMelding) {
-        RsMeldingstype1Felter endringAvStatsborgerskap = new RsMeldingstype1Felter().toBuilder()
+        var endringAvStatsborgerskap = new RsMeldingstype1Felter().toBuilder()
                 .fodselsdato(innflyttingsMelding.getFodselsdato())
                 .personnummer(innflyttingsMelding.getPersonnummer())
                 .statuskode("1")

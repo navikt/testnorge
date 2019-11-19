@@ -70,7 +70,7 @@ public class TpsfConsumerTest {
 
         stubTpsfConsumerSendSkdMelding();
 
-        SkdMeldingerTilTpsRespons response = tpsfConsumer.sendSkdmeldingerToTps(avspillergruppeId, sendToTpsRequest);
+        var response = tpsfConsumer.sendSkdmeldingerToTps(avspillergruppeId, sendToTpsRequest);
 
         assertEquals(expectedAntallSendte, response.getAntallSendte());
         assertEquals(expectedAntallFeilet, response.getAntallFeilet());
@@ -81,37 +81,37 @@ public class TpsfConsumerTest {
 
     @Test
     public void shouldGetMeldingIdsTilhoerendeIdenterFromTpsf() {
-        List<String> identer = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
+        var identer = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
 
-        List<Long> expectedMeldingIds = new ArrayList<>(Arrays.asList(1L, 2L));
+        var expectedMeldingIds = new ArrayList<>(Arrays.asList(1L, 2L));
 
         stubTpsfConsumerGetMeldingIdsTilhoerendeIdenter(identer, expectedMeldingIds);
 
-        List<Long> meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, identer);
+        var meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, identer);
         assertThat(meldingIderTilhoerendeIdenter, hasSize(2));
         assertThat(meldingIderTilhoerendeIdenter, hasItems(expectedMeldingIds.get(0), expectedMeldingIds.get(1)));
     }
 
     @Test
     public void shouldDeleteMeldingerFromTpsf() {
-        List<Long> meldingIder = new ArrayList<>(Arrays.asList(1L, 2L));
-        SlettSkdmeldingerRequest slettSkdmeldingerRequest = SlettSkdmeldingerRequest.builder()
+        var meldingIder = new ArrayList<>(Arrays.asList(1L, 2L));
+        var slettSkdmeldingerRequest = SlettSkdmeldingerRequest.builder()
                 .ids(meldingIder)
                 .build();
         stubTpsfConsumerDeleteMeldinger(slettSkdmeldingerRequest);
 
-        ResponseEntity response = tpsfConsumer.slettMeldingerFraTpsf(meldingIder);
+        var response = tpsfConsumer.slettMeldingerFraTpsf(meldingIder);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test
     public void shouldDeleteIdenterFromTps() {
-        List<String> identer = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
+        var identer = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
 
         stubTpsfConsumerSlettIdenterFraTps(identer);
 
-        ResponseEntity response = tpsfConsumer.slettIdenterFraTps(Collections.singletonList(environment), identer);
+        var response = tpsfConsumer.slettIdenterFraTps(Collections.singletonList(environment), identer);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }

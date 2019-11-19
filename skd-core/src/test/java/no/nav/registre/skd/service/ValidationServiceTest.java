@@ -16,14 +16,14 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 
 public class ValidationServiceTest {
 
-    ValidationService validator = new ValidationService();
+    private ValidationService validator = new ValidationService();
 
     @Test
     public void shouldLogValidationOfInvalidMessage() {
         ListAppender<ILoggingEvent> listAppender = testLoggingInClass(ValidationService.class);
 
-        RsMeldingstype1Felter melding1 = RsMeldingstype1Felter.builder().antallBarn("2421234").build();
-        RsMeldingstype1Felter melding2 = RsMeldingstype1Felter.builder().antallBarn("4").build();
+        var melding1 = RsMeldingstype1Felter.builder().antallBarn("2421234").build();
+        var melding2 = RsMeldingstype1Felter.builder().antallBarn("4").build();
         final ArrayList<RsMeldingstype> liste = new ArrayList<>();
         liste.add(melding1);
         liste.add(melding2);

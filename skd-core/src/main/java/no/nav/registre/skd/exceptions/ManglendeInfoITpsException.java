@@ -6,10 +6,6 @@ public class ManglendeInfoITpsException extends RuntimeException {
         super();
     }
 
-    public ManglendeInfoITpsException(String message) {
-        super(message);
-    }
-
     public ManglendeInfoITpsException(String message, Throwable cause) {
         super(message, cause);
     }

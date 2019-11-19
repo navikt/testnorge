@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 public class ResourceUtils {
 
     public static String getResourceFileContent(String path) {
-        URL fileUrl = Resources.getResource(path);
+        var fileUrl = Resources.getResource(path);
         try {
             return Resources.toString(fileUrl, StandardCharsets.UTF_8);
         } catch (IOException e) {

@@ -27,16 +27,18 @@ import no.nav.registre.skd.consumer.response.Navn;
 @Component
 public class IdentPoolConsumer {
 
-    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
+    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<List<Navn>> RESPONSE_TYPE_NAVN = new ParameterizedTypeReference<List<Navn>>() {
+
+    private static final ParameterizedTypeReference<List<Navn>> RESPONSE_TYPE_NAVN = new ParameterizedTypeReference<>() {
     };
+
     private String baseUrl;
     private RestTemplate restTemplate;
 
     public IdentPoolConsumer(@Value("${ident-pool.rest-api.url}") String serverUrl) {
         this.restTemplate = new RestTemplate();
-        ObjectMapper objectMapper = new ObjectMapper()
+        var objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         this.restTemplate.setMessageConverters(Collections.singletonList(new MappingJackson2HttpMessageConverter(objectMapper)));
@@ -62,7 +64,7 @@ public class IdentPoolConsumer {
         } catch (URISyntaxException e) {
             log.error(e.getMessage(), e);
         }
-        List<Navn> navn = restTemplate.exchange(Objects.requireNonNull(request), RESPONSE_TYPE_NAVN).getBody();
+        var navn = restTemplate.exchange(Objects.requireNonNull(request), RESPONSE_TYPE_NAVN).getBody();
         if (navn == null) {
             log.error("Kunne ikke hente navn");
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Kunne ikke hente navn");

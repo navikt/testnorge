@@ -9,11 +9,11 @@ public class StrSubstitutor {
     private static final Pattern p = Pattern.compile("\\$\\{(.+?)\\}");
 
     public static String replace(String text, Map<String, String> placeholderValues) {
-        Matcher m = p.matcher(text);
-        StringBuffer sb = new StringBuffer();
+        var m = p.matcher(text);
+        var sb = new StringBuffer();
         while (m.find()) {
-            String var = m.group(1);
-            String replacement = placeholderValues.get(var);
+            var var = m.group(1);
+            var replacement = placeholderValues.get(var);
             m.appendReplacement(sb, replacement);
         }
         m.appendTail(sb);

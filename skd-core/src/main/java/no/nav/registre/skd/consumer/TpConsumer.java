@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class TpConsumer {
 
-    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
+    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     @Autowired
@@ -27,7 +27,7 @@ public class TpConsumer {
     }
 
     public ResponseEntity<List<String>> leggTilIdenterITp(List<String> identer, String miljoe) {
-        RequestEntity postRequest = RequestEntity.post(leggTilIdentUrl.expand(miljoe)).body(identer);
+        var postRequest = RequestEntity.post(leggTilIdentUrl.expand(miljoe)).body(identer);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }
 }

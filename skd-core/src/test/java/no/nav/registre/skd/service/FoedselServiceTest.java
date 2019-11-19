@@ -57,7 +57,7 @@ public class FoedselServiceTest {
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
-        List<String> potensielleMoedre = foedselService.findMoedre(1, levendeIdenterINorge, "0");
+        var potensielleMoedre = foedselService.findMoedre(1, levendeIdenterINorge, "0");
 
         assertEquals(levendeIdenterINorge.get(1), potensielleMoedre.get(0));
     }
@@ -68,18 +68,13 @@ public class FoedselServiceTest {
      */
     @Test
     public void shouldFindChildForMother() {
-        List<RsMeldingstype> meldinger;
-        meldinger = new ArrayList<>();
-        meldinger.add(new RsMeldingstype1Felter());
-
-        List<String> levendeIdenterINorge = new ArrayList<>();
-        levendeIdenterINorge.add("01010101010");
-
-        String barnFnr = "10101054321";
+        List<RsMeldingstype> meldinger = new ArrayList<>(Collections.singletonList(new RsMeldingstype1Felter()));
+        var levendeIdenterINorge = new ArrayList<>(Collections.singletonList("01010101010"));
+        var barnFnr = "10101054321";
 
         when(identPoolConsumer.hentNyeIdenter(any())).thenReturn(Collections.singletonList(barnFnr));
 
-        List<String> opprettedeBarn = foedselService.behandleFoedselsmeldinger(FNR, meldinger, levendeIdenterINorge);
+        var opprettedeBarn = foedselService.behandleFoedselsmeldinger(FNR, meldinger, levendeIdenterINorge);
 
         assertTrue(opprettedeBarn.contains(barnFnr));
         assertEquals(barnFnr, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
@@ -91,11 +86,11 @@ public class FoedselServiceTest {
      */
     @Test
     public void shouldFindFatherForChild() {
-        String morFnr = "22060156889";
-        List<String> levendeIdenterINorge = new ArrayList<>(Arrays.asList("22060156889", "22050167791", "30111757809", "26101767990"));
-        List<String> moedre = new ArrayList<>(Arrays.asList("22060156889", "30111657809"));
-        String barnFnr = "21051767891";
-        String farFnr = foedselService.findFar(morFnr, barnFnr, levendeIdenterINorge, moedre);
+        var morFnr = "22060156889";
+        var levendeIdenterINorge = new ArrayList<>(Arrays.asList("22060156889", "22050167791", "30111757809", "26101767990"));
+        var moedre = new ArrayList<>(Arrays.asList("22060156889", "30111657809"));
+        var barnFnr = "21051767891";
+        var farFnr = foedselService.findFar(morFnr, barnFnr, levendeIdenterINorge, moedre);
 
         assertThat(farFnr, equalTo("22050167791"));
     }
@@ -105,8 +100,7 @@ public class FoedselServiceTest {
      */
     @Test
     public void shouldLogWarningAndRemoveMessage() {
-        List<RsMeldingstype> meldinger;
-        meldinger = new ArrayList<>();
+        List<RsMeldingstype> meldinger = new ArrayList<>();
         meldinger.add(new RsMeldingstype1Felter());
         meldinger.add(new RsMeldingstype1Felter());
         meldinger.add(new RsMeldingstype1Felter());
@@ -123,7 +117,7 @@ public class FoedselServiceTest {
 
         when(identPoolConsumer.hentNyeIdenter(any())).thenThrow(HttpClientErrorException.class);
 
-        List<String> opprettedeBarn = foedselService.behandleFoedselsmeldinger(FNR, meldinger, levendeIdenterINorge);
+        var opprettedeBarn = foedselService.behandleFoedselsmeldinger(FNR, meldinger, levendeIdenterINorge);
 
         assertEquals(0, opprettedeBarn.size());
         assertEquals(0, meldinger.size());

@@ -40,8 +40,8 @@ public class TpsSyntetisererenConsumerITest {
      */
     @Test
     public void testRequestKonsumeringAvTpsSynt() {
-        String endringskode = "0211";
-        int antallMeldinger = 1;
+        var endringskode = "0211";
+        var antallMeldinger = 1;
 
         this.server.expect(requestToUriTemplate(serverUrl + "/v1/generate/tps/" + endringskode + "?numToGenerate=" + antallMeldinger))
                 .andRespond(withSuccess("[null]", MediaType.APPLICATION_JSON));
@@ -57,15 +57,15 @@ public class TpsSyntetisererenConsumerITest {
      */
     @Test
     public void shouldDeserialiseAllFieldsInTheResponse() throws InvocationTargetException, IllegalAccessException {
-        String endringskode = "0211";
-        int antallMeldinger = 1;
+        var endringskode = "0211";
+        var antallMeldinger = 1;
         this.server.expect(requestToUriTemplate(serverUrl +
                 "/v1/generate/tps/" + endringskode + "?numToGenerate=" + antallMeldinger))
                 .andRespond(withSuccess(getResourceFileContent("__files/tpssynt/tpsSynt_NotNullFields_Response.json"), MediaType.APPLICATION_JSON));
 
-        List<RsMeldingstype> skdmeldinger = consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);
+        var skdmeldinger = consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);
 
-        List<String> ignoredFields = Arrays.asList("getSaksid", "getEmbete", "getSakstype",
+        var ignoredFields = Arrays.asList("getSaksid", "getEmbete", "getSakstype",
                 "getVedtaksdato", "getInternVergeid", "getVergeFnrDnr", "getVergetype",
                 "getMandattype", "getMandatTekst", "getReserverFramtidigBruk");
         AssertionUtils.assertAllFieldsNotNull(skdmeldinger.get(0), ignoredFields);

@@ -15,7 +15,7 @@ public class TpService {
     private TpConsumer tpConsumer;
 
     public List<String> leggTilIdenterITp(List<String> identer, String miljoe) {
-        ResponseEntity<List<String>> tpResponse = tpConsumer.leggTilIdenterITp(identer, miljoe);
+        var tpResponse = tpConsumer.leggTilIdenterITp(identer, miljoe);
         return tpResponse.getBody();
     }
 }

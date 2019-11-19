@@ -29,7 +29,6 @@ import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
-import no.nav.registre.skd.consumer.response.StatusPaaAvspiltSkdMelding;
 import no.nav.registre.skd.exceptions.KunneIkkeSendeTilTpsException;
 import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
@@ -74,25 +73,27 @@ public class SyntetiseringService {
 
     private List<String> feiledeEndringskoder;
 
-    public ResponseEntity puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
-        final Map<String, Integer> antallMeldingerPerEndringskode = genereringsOrdreRequest.getAntallMeldingerPerEndringskode();
-        final List<Endringskoder> sorterteEndringskoder = filtrerOgSorterBestilteEndringskoder(antallMeldingerPerEndringskode.keySet());
-        SkdMeldingerTilTpsRespons skdMeldingerTilTpsResponsTotal = new SkdMeldingerTilTpsRespons();
+    public ResponseEntity puttIdenterIMeldingerOgLagre(
+            GenereringsOrdreRequest genereringsOrdreRequest
+    ) {
+        final var antallMeldingerPerEndringskode = genereringsOrdreRequest.getAntallMeldingerPerEndringskode();
+        final var sorterteEndringskoder = filtrerOgSorterBestilteEndringskoder(antallMeldingerPerEndringskode.keySet());
+        var skdMeldingerTilTpsResponsTotal = new SkdMeldingerTilTpsRespons();
 
-        String miljoe = genereringsOrdreRequest.getMiljoe();
+        var miljoe = genereringsOrdreRequest.getMiljoe();
 
-        Map<String, List<String>> listerMedIdenter = opprettListerMedIdenter(genereringsOrdreRequest);
+        var listerMedIdenter = opprettListerMedIdenter(genereringsOrdreRequest);
 
-        HttpStatus httpStatus = HttpStatus.CREATED;
+        var httpStatus = HttpStatus.CREATED;
         List<Long> idsLagretITpsfMenIkkeTps = new ArrayList<>();
         feiledeEndringskoder = new ArrayList<>();
 
         List<String> nyeIdenterDenneEndringskoden;
 
-        for (Endringskoder endringskode : sorterteEndringskoder) {
+        for (var endringskode : sorterteEndringskoder) {
             List<Long> ids = new ArrayList<>();
             try {
-                List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(),
+                var syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(),
                         antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
                 validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger, endringskode);
 
@@ -111,10 +112,10 @@ public class SyntetiseringService {
                 ids = lagreSkdEndringsmeldingerITpsf(endringskode, syntetiserteSkdmeldinger, genereringsOrdreRequest);
                 idsLagretITpsfMenIkkeTps.addAll(ids);
 
-                SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = sendSkdEndringsmeldingerTilTps(ids, genereringsOrdreRequest);
+                var skdMeldingerTilTpsRespons = sendSkdEndringsmeldingerTilTps(ids, genereringsOrdreRequest);
                 skdMeldingerTilTpsResponsTotal.setAntallSendte(skdMeldingerTilTpsResponsTotal.getAntallSendte() + skdMeldingerTilTpsRespons.getAntallSendte());
                 skdMeldingerTilTpsResponsTotal.setAntallFeilet(skdMeldingerTilTpsResponsTotal.getAntallFeilet() + skdMeldingerTilTpsRespons.getAntallFeilet());
-                for (StatusPaaAvspiltSkdMelding status : skdMeldingerTilTpsRespons.getStatusFraFeilendeMeldinger()) {
+                for (var status : skdMeldingerTilTpsRespons.getStatusFraFeilendeMeldinger()) {
                     if (skdMeldingerTilTpsResponsTotal.getStatusFraFeilendeMeldinger() == null) {
                         skdMeldingerTilTpsResponsTotal.setStatusFraFeilendeMeldinger(new ArrayList<>());
                     }
@@ -125,7 +126,7 @@ public class SyntetiseringService {
                 idsLagretITpsfMenIkkeTps.removeAll(ids);
 
                 if (!nyeIdenterDenneEndringskoden.isEmpty()) {
-                    List<String> feiledeTpIdenter = tpService.leggTilIdenterITp(nyeIdenterDenneEndringskoden, miljoe);
+                    var feiledeTpIdenter = tpService.leggTilIdenterITp(nyeIdenterDenneEndringskoden, miljoe);
                     if (!feiledeTpIdenter.isEmpty()) {
                         log.error("Følgende identer kunne ikke lagres i TP: {}", feiledeTpIdenter.toString());
                     }
@@ -165,20 +166,28 @@ public class SyntetiseringService {
         return ResponseEntity.status(httpStatus).body(skdMeldingerTilTpsResponsTotal);
     }
 
-    private void fjernBrukteIdenterFraListerMedIdenter(Map<String, List<String>> listerMedIdenter) {
+    private void fjernBrukteIdenterFraListerMedIdenter(
+            Map<String, List<String>> listerMedIdenter
+    ) {
         listerMedIdenter.get(GIFTE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
         listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
         listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
     }
 
-    private HttpStatus loggExceptionOgLeggTilFeiletEndringskode(Exception e, String feilmeldingTekst, String endringskode) {
+    private HttpStatus loggExceptionOgLeggTilFeiletEndringskode(
+            Exception e,
+            String feilmeldingTekst,
+            String endringskode
+    ) {
         feiledeEndringskoder.add(endringskode);
         log.error(e.getMessage(), e);
         log.warn(feilmeldingTekst);
         return HttpStatus.CONFLICT;
     }
 
-    private String hentMeldingFraJson(String responseBody) {
+    private String hentMeldingFraJson(
+            String responseBody
+    ) {
         try {
             return objectMapper.readTree(responseBody).findValue("message").asText();
         } catch (IOException e) {
@@ -192,22 +201,28 @@ public class SyntetiseringService {
      * @param endringskode
      * @return sortert liste over endringskoder. Sortert på rekkefølge gitt i enumklasse {@link Endringskoder}
      */
-    private List<Endringskoder> filtrerOgSorterBestilteEndringskoder(Set<String> endringskode) {
-        List<Endringskoder> sorterteEndringskoder = Arrays.asList(Endringskoder.values());
+    private List<Endringskoder> filtrerOgSorterBestilteEndringskoder(
+            Set<String> endringskode
+    ) {
+        var sorterteEndringskoder = Arrays.asList(Endringskoder.values());
         return sorterteEndringskoder.stream().filter(kode -> endringskode.contains(kode.getEndringskode())).collect(Collectors.toList());
     }
 
-    private List<Long> lagreSkdEndringsmeldingerITpsf(Endringskoder endringskode, List<RsMeldingstype> syntetiserteSkdmeldinger, GenereringsOrdreRequest genereringsOrdreRequest) {
+    private List<Long> lagreSkdEndringsmeldingerITpsf(
+            Endringskoder endringskode,
+            List<RsMeldingstype> syntetiserteSkdmeldinger,
+            GenereringsOrdreRequest genereringsOrdreRequest
+    ) {
         try {
             return new ArrayList<>(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getAvspillergruppeId(), syntetiserteSkdmeldinger));
         } catch (Exception e) {
-            StringBuilder message = new StringBuilder(120).append("Noe feilet under lagring til TPSF: ")
+            var message = new StringBuilder(120).append("Noe feilet under lagring til TPSF: ")
                     .append(e.getMessage())
                     .append(" - Endringskode: ")
                     .append(endringskode.getEndringskode());
             if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON, TILDELING_DNUMMER, FOEDSELSMELDING).contains(endringskode)) {
                 message.append(" - Rekvirerte fødselsnumre i denne batchen: ");
-                for (RsMeldingstype rs : syntetiserteSkdmeldinger) {
+                for (var rs : syntetiserteSkdmeldinger) {
                     message.append(((RsMeldingstype1Felter) rs).getFodselsdato())
                             .append(((RsMeldingstype1Felter) rs).getPersonnummer())
                             .append(", ");
@@ -218,8 +233,11 @@ public class SyntetiseringService {
         }
     }
 
-    private SkdMeldingerTilTpsRespons sendSkdEndringsmeldingerTilTps(List<Long> ids, GenereringsOrdreRequest genereringsOrdreRequest) {
-        SendToTpsRequest sendToTpsRequest = new SendToTpsRequest(genereringsOrdreRequest.getMiljoe(), ids);
+    private SkdMeldingerTilTpsRespons sendSkdEndringsmeldingerTilTps(
+            List<Long> ids,
+            GenereringsOrdreRequest genereringsOrdreRequest
+    ) {
+        var sendToTpsRequest = new SendToTpsRequest(genereringsOrdreRequest.getMiljoe(), ids);
         try {
             return tpsfConsumer.sendSkdmeldingerToTps(genereringsOrdreRequest.getAvspillergruppeId(), sendToTpsRequest);
         } catch (HttpStatusCodeException e) {
@@ -227,26 +245,28 @@ public class SyntetiseringService {
         }
     }
 
-    private Map<String, List<String>> opprettListerMedIdenter(GenereringsOrdreRequest genereringsOrdreRequest) {
+    private Map<String, List<String>> opprettListerMedIdenter(
+            GenereringsOrdreRequest genereringsOrdreRequest
+    ) {
         Map<String, List<String>> listerMedIdenter = new HashMap<>();
 
-        List<String> levendeIdenterINorge = finnLevendeIdenter(genereringsOrdreRequest.getAvspillergruppeId());
+        var levendeIdenterINorge = finnLevendeIdenter(genereringsOrdreRequest.getAvspillergruppeId());
         listerMedIdenter.put(LEVENDE_IDENTER_I_NORGE, levendeIdenterINorge);
-        StringBuilder message = new StringBuilder("Antall identer i lister fra TPSF: - ")
+        var message = new StringBuilder("Antall identer i lister fra TPSF: - ")
                 .append(LEVENDE_IDENTER_I_NORGE)
                 .append(": ")
                 .append(levendeIdenterINorge.size());
 
-        List<String> doedeIdenterINorge = finnDoedeOgUtvandredeIdenter(genereringsOrdreRequest.getAvspillergruppeId());
+        var doedeIdenterINorge = finnDoedeOgUtvandredeIdenter(genereringsOrdreRequest.getAvspillergruppeId());
 
-        List<String> gifteIdenterINorge = finnGifteIdenter(genereringsOrdreRequest.getAvspillergruppeId());
+        var gifteIdenterINorge = finnGifteIdenter(genereringsOrdreRequest.getAvspillergruppeId());
         gifteIdenterINorge.removeAll(doedeIdenterINorge);
         listerMedIdenter.put(GIFTE_IDENTER_I_NORGE, gifteIdenterINorge);
         message.append(" - ")
                 .append(GIFTE_IDENTER_I_NORGE)
                 .append(": ").append(gifteIdenterINorge.size());
 
-        List<String> singleIdenterINorge = new ArrayList<>(levendeIdenterINorge);
+        var singleIdenterINorge = new ArrayList<>(levendeIdenterINorge);
         singleIdenterINorge.removeAll(gifteIdenterINorge);
         listerMedIdenter.put(SINGLE_IDENTER_I_NORGE, singleIdenterINorge);
         message.append(" - ")
@@ -265,10 +285,12 @@ public class SyntetiseringService {
      * Metoden tar inn en liste av id-er og oppretter en ny liste der inkrementerende id-er er skrevet som range for å spare plass
      * (f.eks vil 1, 2, 3 skrives som 1 - 3)
      */
-    private List<String> lagGrupperAvIder(List<Long> ids) {
+    private List<String> lagGrupperAvIder(
+            List<Long> ids
+    ) {
         List<String> idsWithRange = new ArrayList<>();
-        boolean rangeStarted = false;
-        StringBuilder rangeToAdd = new StringBuilder();
+        var rangeStarted = false;
+        var rangeToAdd = new StringBuilder();
 
         for (int i = 0; i < ids.size(); i++) {
             if (i >= ids.size() - 1) {
@@ -299,17 +321,23 @@ public class SyntetiseringService {
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
-    private List<String> finnLevendeIdenter(Long avspillergruppeId) {
+    private List<String> finnLevendeIdenter(
+            Long avspillergruppeId
+    ) {
         return hodejegerenConsumer.getLevende(avspillergruppeId);
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
-    private List<String> finnDoedeOgUtvandredeIdenter(Long avspillergruppeId) {
+    private List<String> finnDoedeOgUtvandredeIdenter(
+            Long avspillergruppeId
+    ) {
         return hodejegerenConsumer.getDoedeOgUtvandrede(avspillergruppeId);
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
-    private List<String> finnGifteIdenter(Long avspillergruppeId) {
+    private List<String> finnGifteIdenter(
+            Long avspillergruppeId
+    ) {
         return hodejegerenConsumer.getGifte(avspillergruppeId);
     }
 }

@@ -92,7 +92,7 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void shouldFindLevendeNordmannAndUpdateBrukteIdenter() {
-        Endringskoder endringskode = Endringskoder.NAVNEENDRING_FOERSTE;
+        var endringskode = Endringskoder.NAVNEENDRING_FOERSTE;
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
@@ -114,7 +114,7 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void shouldHandleIdenterWithNullValuesInStatusQuoFields() {
-        Endringskoder endringskode = Endringskoder.NAVNEENDRING_FOERSTE;
+        var endringskode = Endringskoder.NAVNEENDRING_FOERSTE;
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
@@ -137,7 +137,7 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void shouldFindUgiftMyndigPersonAndCreateVigselsmelding() {
-        Endringskoder endringskode = Endringskoder.VIGSEL;
+        var endringskode = Endringskoder.VIGSEL;
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
@@ -165,7 +165,7 @@ public class EksisterendeIdenterServiceTest {
         ListAppender<ILoggingEvent> listAppender = testLoggingInClass(EksisterendeIdenterService.class);
         when(rand.nextInt(anyInt())).thenReturn(0);
 
-        List<String> identerIRekkefølge = opprettEkteparMedKorruptDataMock(); // Første paret har data som feiler. Andre paret er fungerende og vanlig.
+        var identerIRekkefølge = opprettEkteparMedKorruptDataMock(); // Første paret har data som feiler. Andre paret er fungerende og vanlig.
 
         eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identerIRekkefølge, brukteIdenter, SKILSMISSE, environment);
 
@@ -259,7 +259,7 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void shouldFindPartnerOfDoedsmeldingIdentAndCreateSivilstandendringsmelding() {
-        Endringskoder endringskode = Endringskoder.DOEDSMELDING;
+        var endringskode = Endringskoder.DOEDSMELDING;
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
@@ -281,13 +281,13 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void shouldThrowExceptionForTooFewIdents() {
-        String meldingsnummer = "123";
+        var meldingsnummer = "123";
 
         expectedException.expect(ManglerEksisterendeIdentException.class);
         expectedException.expectMessage("Kunne ikke finne ident for SkdMelding med meldingsnummer "
                 + meldingsnummer + ". For få identer i listen singleIdenterINorge fra TPSF avspillergruppen.");
 
-        Endringskoder endringskode = Endringskoder.VIGSEL;
+        var endringskode = Endringskoder.VIGSEL;
 
         meldinger.get(0).setMeldingsnrHosTpsSynt(meldingsnummer);
 
@@ -319,10 +319,10 @@ public class EksisterendeIdenterServiceTest {
     }
 
     private void opprettMultipleUgifteIdenterMock() {
-        LocalDate fodselsdato = LocalDate.now();
-        String year = String.valueOf(fodselsdato.getYear()).substring(2);
+        var fodselsdato = LocalDate.now();
+        var year = String.valueOf(fodselsdato.getYear()).substring(2);
 
-        String fnrUmyndig = "1010" + year + "51010";
+        var fnrUmyndig = "1010" + year + "51010";
         identer.add(0, fnrUmyndig);
 
         Map<String, String> statusQuo = new HashMap<>();

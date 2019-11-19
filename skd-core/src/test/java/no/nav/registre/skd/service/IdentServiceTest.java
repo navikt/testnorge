@@ -29,15 +29,15 @@ public class IdentServiceTest {
 
     @Test
     public void shouldDeleteIdents() {
-        Long avspilergruppeId = 123L;
-        List<String> miljoer = new ArrayList<>(Collections.singletonList("t1"));
-        List<String> identer = new ArrayList<>(Collections.singletonList("01010101010"));
-        List<Long> meldingIder = new ArrayList<>(Collections.singletonList(1L));
+        var avspilergruppeId = 123L;
+        var miljoer = new ArrayList<>(Collections.singletonList("t1"));
+        var identer = new ArrayList<>(Collections.singletonList("01010101010"));
+        var meldingIder = new ArrayList<>(Collections.singletonList(1L));
 
         when(tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspilergruppeId, identer)).thenReturn(meldingIder);
         when(tpsfConsumer.slettMeldingerFraTpsf(meldingIder)).thenReturn(ResponseEntity.ok().build());
 
-        List<Long> response = identService.slettIdenterFraAvspillergruppe(avspilergruppeId, miljoer, identer);
+        var response = identService.slettIdenterFraAvspillergruppe(avspilergruppeId, miljoer, identer);
 
         verify(tpsfConsumer).getMeldingIderTilhoerendeIdenter(avspilergruppeId, identer);
         verify(tpsfConsumer).slettMeldingerFraTpsf(meldingIder);

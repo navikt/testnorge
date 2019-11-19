@@ -90,9 +90,9 @@ public class GenererSyntetiskeMeldingerCompTest {
         stubTpsf(gruppeId);
         stubTp();
 
-        GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, miljoe, antallMeldingerPerAarsakskode);
+        var ordreRequest = new GenereringsOrdreRequest(gruppeId, miljoe, antallMeldingerPerAarsakskode);
 
-        SkdMeldingerTilTpsRespons respons = (SkdMeldingerTilTpsRespons) syntetiseringController.genererSkdMeldinger(ordreRequest).getBody();
+        var respons = (SkdMeldingerTilTpsRespons) syntetiseringController.genererSkdMeldinger(ordreRequest).getBody();
 
         assert respons != null;
         assertEquals(4, expectedMeldingsIdsITpsf.size());
@@ -102,13 +102,13 @@ public class GenererSyntetiskeMeldingerCompTest {
     }
 
     private void stubIdentpool() {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        var formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
         HashMap<String, String> placeholderValues = new HashMap<>();
         placeholderValues.put("foedtEtter", LocalDate.now().minusYears(90).format(formatter));
         placeholderValues.put("foedtFoer", LocalDate.now().format(formatter));
 
-        String path = "__files/comptest/identpool/identpool_hent2Identer_request.json";
+        var path = "__files/comptest/identpool/identpool_hent2Identer_request.json";
         stubFor(post("/identpool/api/v1/identifikator?finnNaermesteLedigeDato=false")
                 .withRequestBody(equalToJson(replace(getResourceFileContent(path), placeholderValues)))
                 .willReturn(okJson(expectedFnrFromIdentpool.toString())));

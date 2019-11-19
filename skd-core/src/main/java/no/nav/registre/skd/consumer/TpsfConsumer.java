@@ -27,9 +27,10 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype;
 @Slf4j
 public class TpsfConsumer {
 
-    private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Long>>() {
+    private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<SkdMeldingerTilTpsRespons> RESPONSE_TYPE_TPS = new ParameterizedTypeReference<SkdMeldingerTilTpsRespons>() {
+
+    private static final ParameterizedTypeReference<SkdMeldingerTilTpsRespons> RESPONSE_TYPE_TPS = new ParameterizedTypeReference<>() {
     };
 
     private RestTemplate restTemplate;
@@ -57,41 +58,39 @@ public class TpsfConsumer {
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public List<Long> saveSkdEndringsmeldingerInTPSF(Long gruppeId, List<RsMeldingstype> skdmeldinger) {
-        URI url = uriTemplateSaveToTpsf.expand(gruppeId);
-        RequestEntity postRequest = RequestEntity.post(url).body(skdmeldinger);
+        var postRequest = RequestEntity.post(uriTemplateSaveToTpsf.expand(gruppeId)).body(skdmeldinger);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public SkdMeldingerTilTpsRespons sendSkdmeldingerToTps(Long gruppeId, SendToTpsRequest sendToTpsRequest) {
-        RequestEntity postRequest = RequestEntity.post(uriTemplateSaveToTps.expand(gruppeId)).body(sendToTpsRequest);
+        var postRequest = RequestEntity.post(uriTemplateSaveToTps.expand(gruppeId)).body(sendToTpsRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE_TPS).getBody();
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public List<Long> getMeldingIdsFromAvspillergruppe(Long gruppeId) {
-        URI url = uriTemplateGetMeldingIder.expand(gruppeId);
-        RequestEntity getRequest = RequestEntity.get(url).build();
+        var getRequest = RequestEntity.get(uriTemplateGetMeldingIder.expand(gruppeId)).build();
         return restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public List<Long> getMeldingIderTilhoerendeIdenter(Long avspillergruppeId, List<String> identer) {
-        RequestEntity postRequest = RequestEntity.post(urlGetMeldingIder.expand(avspillergruppeId)).body(identer);
+        var postRequest = RequestEntity.post(urlGetMeldingIder.expand(avspillergruppeId)).body(identer);
         return new ArrayList<>(Objects.requireNonNull(restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody()));
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public ResponseEntity slettMeldingerFraTpsf(List<Long> meldingIder) {
-        RequestEntity postRequest = RequestEntity.post(urlSlettMeldinger.expand()).body(SlettSkdmeldingerRequest.builder().ids(meldingIder).build());
+        var postRequest = RequestEntity.post(urlSlettMeldinger.expand()).body(SlettSkdmeldingerRequest.builder().ids(meldingIder).build());
         return restTemplate.exchange(postRequest, ResponseEntity.class);
     }
 
     @Timed
     public ResponseEntity slettIdenterFraTps(List<String> miljoer, List<String> identer) {
-        String miljoerSomString = String.join(",", miljoer);
-        String identerSomString = String.join(",", identer);
-        RequestEntity deleteRequest = RequestEntity.delete(urlSlettIdenterFraTps.expand(miljoerSomString, identerSomString)).build();
+        var miljoerSomString = String.join(",", miljoer);
+        var identerSomString = String.join(",", identer);
+        var deleteRequest = RequestEntity.delete(urlSlettIdenterFraTps.expand(miljoerSomString, identerSomString)).build();
         ResponseEntity response = null;
         try {
             response = restTemplate.exchange(deleteRequest, ResponseEntity.class);

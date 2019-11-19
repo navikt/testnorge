@@ -1,5 +1,7 @@
 package no.nav.registre.skd.service;
 
+import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.setObligatoriskeFelt;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.response.Navn;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
+import no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 
@@ -33,14 +36,20 @@ public class FasteMeldingerService {
     @Autowired
     private ValidationService validationService;
 
-    public SkdMeldingerTilTpsRespons startAvspillingAvTpsfAvspillergruppe(Long avspillergruppeId, String miljoe) {
-        List<Long> meldingIdsFromAvspillergruppe = tpsfConsumer.getMeldingIdsFromAvspillergruppe(avspillergruppeId);
-        SendToTpsRequest sendToTpsRequest = new SendToTpsRequest(miljoe, meldingIdsFromAvspillergruppe);
+    public SkdMeldingerTilTpsRespons startAvspillingAvTpsfAvspillergruppe(
+            Long avspillergruppeId,
+            String miljoe
+    ) {
+        var meldingIdsFromAvspillergruppe = tpsfConsumer.getMeldingIdsFromAvspillergruppe(avspillergruppeId);
+        var sendToTpsRequest = new SendToTpsRequest(miljoe, meldingIdsFromAvspillergruppe);
         return tpsfConsumer.sendSkdmeldingerToTps(avspillergruppeId, sendToTpsRequest);
     }
 
-    public List<Long> opprettMeldingerOgLeggIGruppe(Long avspillergruppeId, List<FastMeldingRequest> fasteMeldinger) {
-        List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), fasteMeldinger.size());
+    public List<Long> opprettMeldingerOgLeggIGruppe(
+            Long avspillergruppeId,
+            List<FastMeldingRequest> fasteMeldinger
+    ) {
+        var syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), fasteMeldinger.size());
         validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger, Endringskoder.INNVANDRING);
 
         if (syntetiserteSkdmeldinger.size() < fasteMeldinger.size()) {
@@ -51,10 +60,10 @@ public class FasteMeldingerService {
         List<RsMeldingstype> nyeFasteMeldinger = new ArrayList<>(fasteMeldinger.size());
 
         for (int i = 0; i < fasteMeldinger.size() && i < syntetiserteSkdmeldinger.size(); i++) {
-            RsMeldingstype1Felter syntetisertMelding = (RsMeldingstype1Felter) syntetiserteSkdmeldinger.get(i);
-            FastMeldingRequest fastMelding = fasteMeldinger.get(i);
+            var syntetisertMelding = (RsMeldingstype1Felter) syntetiserteSkdmeldinger.get(i);
+            var fastMelding = fasteMeldinger.get(i);
 
-            RsMeldingstype1Felter nyMelding = RsMeldingstype1Felter.builder()
+            var nyMelding = RsMeldingstype1Felter.builder()
                     .fodselsdato(fastMelding.getFoedselsdato())
                     .personnummer(fastMelding.getPersonnummer())
                     .fornavn(fastMelding.getFornavn())
@@ -67,7 +76,7 @@ public class FasteMeldingerService {
 
 
             if (nyMelding.getSlektsnavn() == null || nyMelding.getSlektsnavn().isEmpty() || nyMelding.getFornavn() == null || nyMelding.getFornavn().isEmpty()) {
-                Navn navn = identPoolConsumer.hentNavn();
+                var navn = identPoolConsumer.hentNavn();
                 if (nyMelding.getFornavn() == null || nyMelding.getFornavn().isEmpty()) {
                     nyMelding.setFornavn(navn.getFornavn());
                 }
@@ -76,11 +85,7 @@ public class FasteMeldingerService {
                 }
             }
 
-            nyMelding.setTranstype(syntetisertMelding.getTranstype());
-            nyMelding.setMaskindato(syntetisertMelding.getMaskindato());
-            nyMelding.setMaskintid(syntetisertMelding.getMaskintid());
-            nyMelding.setAarsakskode(syntetisertMelding.getAarsakskode());
-            nyMelding.setSekvensnr(syntetisertMelding.getSekvensnr());
+            setObligatoriskeFelt(syntetisertMelding, nyMelding);
             nyMelding.setStatuskode(syntetisertMelding.getStatuskode());
             nyMelding.setTildelingskode(syntetisertMelding.getTildelingskode());
             nyMelding.setRegDato(syntetisertMelding.getRegDato());

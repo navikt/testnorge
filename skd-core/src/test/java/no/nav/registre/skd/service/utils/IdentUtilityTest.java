@@ -16,7 +16,7 @@ public class IdentUtilityTest {
 
     @Test
     public void extractDateFromFnr1900Century() {
-        LocalDate target = getFoedselsdatoFraFnr("13035830234");
+        var target = getFoedselsdatoFraFnr("13035830234");
 
         assertThat(target.getYear(), is(equalTo(1958)));
         assertThat(target.getMonthValue(), is(equalTo(3)));
@@ -25,7 +25,7 @@ public class IdentUtilityTest {
 
     @Test
     public void extractDateFromFnr2000Century() {
-        LocalDate target = getFoedselsdatoFraFnr("21050556234");
+        var target = getFoedselsdatoFraFnr("21050556234");
 
         assertThat(target.getYear(), is(equalTo(2005)));
         assertThat(target.getMonthValue(), is(equalTo(5)));
@@ -34,7 +34,7 @@ public class IdentUtilityTest {
 
     @Test
     public void extractDateFromDnr1900Century() {
-        LocalDate target = getFoedselsdatoFraFnr("61039596234");
+        var target = getFoedselsdatoFraFnr("61039596234");
 
         assertThat(target.getYear(), is(equalTo(1995)));
         assertThat(target.getMonthValue(), is(equalTo(3)));
@@ -43,7 +43,7 @@ public class IdentUtilityTest {
 
     @Test
     public void extractDateFromDnr2000Century() {
-        LocalDate target = getFoedselsdatoFraFnr("51050586534");
+        var target = getFoedselsdatoFraFnr("51050586534");
 
         assertThat(target.getYear(), is(equalTo(2005)));
         assertThat(target.getMonthValue(), is(equalTo(5)));
@@ -52,7 +52,7 @@ public class IdentUtilityTest {
 
     @Test
     public void extractDateFromBost1900Century() {
-        LocalDate target = getFoedselsdatoFraFnr("21250546234");
+        var target = getFoedselsdatoFraFnr("21250546234");
 
         assertThat(target.getYear(), is(equalTo(1905)));
         assertThat(target.getMonthValue(), is(equalTo(5)));
@@ -61,7 +61,7 @@ public class IdentUtilityTest {
 
     @Test
     public void extractDateFromBost2000Century() {
-        LocalDate target = getFoedselsdatoFraFnr("21250556234");
+        var target = getFoedselsdatoFraFnr("21250556234");
 
         assertThat(target.getYear(), is(equalTo(2005)));
         assertThat(target.getMonthValue(), is(equalTo(5)));
@@ -70,7 +70,7 @@ public class IdentUtilityTest {
 
     @Test
     public void extractDateFromFnr1800Century() {
-        LocalDate target = getFoedselsdatoFraFnr("21256556234");
+        var target = getFoedselsdatoFraFnr("21256556234");
 
         assertThat(target.getYear(), is(equalTo(1865)));
         assertThat(target.getMonthValue(), is(equalTo(5)));

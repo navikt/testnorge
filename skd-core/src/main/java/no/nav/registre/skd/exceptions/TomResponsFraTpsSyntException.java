@@ -6,10 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.CONFLICT)
 public class TomResponsFraTpsSyntException extends SkdFunctionalException {
 
-    public TomResponsFraTpsSyntException() {
-        super();
-    }
-
     public TomResponsFraTpsSyntException(String message) {
         super(message);
     }
