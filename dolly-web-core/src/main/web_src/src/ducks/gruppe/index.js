@@ -17,6 +17,7 @@ export const updateGruppe = createAction('UPDATE_GRUPPE', DollyApi.updateGruppe)
 export const deleteGruppe = createAction('DELETE_GRUPPE', DollyApi.deleteGruppe, gruppeId => ({
 	gruppeId
 }))
+export const testpersonIBruk = createAction('UPDATE_BRUKT_TESTPERSON', DollyApi.testpersonIBruk)
 
 // UI
 export const settVisning = createAction('SETT_VISNING')
@@ -50,6 +51,7 @@ export default handleActions(
 				}))
 			}
 		},
+		//you need to do something here
 		[success(deleteGruppe)](state, action) {
 			return {
 				...state,
