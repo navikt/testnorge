@@ -29,7 +29,3 @@ freg:
         header-enabled: false
         validation:
           type: refreshing
-
-### CORS ###
-dolly-web.security.cors.origins: http://localhost:3000
-
