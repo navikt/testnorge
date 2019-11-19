@@ -8,9 +8,11 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static springfox.documentation.builders.PathSelectors.ant;
 import static springfox.documentation.builders.RequestHandlerSelectors.any;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
@@ -21,8 +23,6 @@ import springfox.documentation.swagger.web.DocExpansion;
 import springfox.documentation.swagger.web.UiConfiguration;
 import springfox.documentation.swagger.web.UiConfigurationBuilder;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import java.util.List;
 
 /**
  * Configure automated swagger API documentation
@@ -46,7 +46,6 @@ public class SwaggerConfig {
 
     @Value("${dolly.api.v1.header.nav-call-id}")
     private String apiV1CallIdDescription;
-
 
     @Bean
     public Docket v1ApiDocket() {

@@ -92,26 +92,9 @@ public final class DocumentationNotes {
             + "     &nbsp; &nbsp; \"statsborgerskap\": \"[AUS,GER,FRA,etc]\" <br />"
             + EPILOG;
 
-    public static final String AAREG_JSON_COMMENT = "For AAREG-integrasjon er følgende felter kodeverksfelter med kodeverksdomene i parentes: <br />"
-            + "&nbsp;&nbsp;&nbsp; arbeidsforholdstype: (Arbeidsforholdstyper) <br />"
-            + "&nbsp;&nbsp;&nbsp; arbeidstidsordning: (Arbeidstidsordninger) <br />"
-            + "&nbsp;&nbsp;&nbsp; avlønningstype: (Avlønningstyper) <br />"
-            + "&nbsp;&nbsp;&nbsp; identtype: (Personidenter) <br />"
-            + "&nbsp;&nbsp;&nbsp; land: (LandkoderISO2) <br />"
-            + "&nbsp;&nbsp;&nbsp; permisjonOgPermittering: (PermisjonsOgPermitteringsBeskrivelse) <br />"
-            + "&nbsp;&nbsp;&nbsp; yrke: (Yrker) <br /><br />"
-            + "Alle datofelter har forventet innhold \"yyyy-MM-ddT00:00:00\". <br /> <br />"
-            + "Attributt aktoer er abstrakt og kan ha et av følgende objekttyper: <br />"
-            + "For organisajon: <br />"
-            + "&nbsp; \"aktoer\": { <br />"
-            + "&nbsp;&nbsp;&nbsp; \"aktoertype\": \"ORG\", <br />"
-            + "&nbsp;&nbsp;&nbsp; \"orgnummer\": \"<orgnummer>\" <br />"
-            + "&nbsp; } <br />"
-            + "For person: <br />"
-            + "&nbsp; \"aktoer\": { <br />"
-            + "&nbsp;&nbsp;&nbsp; \"aktoertype\": \"PERS\", <br />"
-            + "&nbsp;&nbsp;&nbsp; \"ident\": \"<ident>\" <br />"
-            + "&nbsp; } <br /><br />";
+    public static final String AAREG_JSON_COMMENT = "AAREG-integrasjon har abstrakt klasse <b>arbeidsgiver</b> med ORG eller PERS typer: <br />"
+            + "Enten { \"aktoertype\": \"ORG\", \"orgnummer\": \"999999999\" } <br />"
+            + "Eller: { \"aktoertype\": \"PERS\", \"ident\": \"0102199012345\" } <br /><br />";
 
     public static final String BESTILLING_BESKRIVELSE = RANDOM_ADRESSE + BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET;
 
