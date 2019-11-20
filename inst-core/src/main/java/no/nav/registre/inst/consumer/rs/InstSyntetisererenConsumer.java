@@ -18,7 +18,7 @@ import no.nav.registre.inst.Institusjonsopphold;
 @Slf4j
 public class InstSyntetisererenConsumer {
 
-    private static final ParameterizedTypeReference<List<Institusjonsopphold>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Institusjonsopphold>>() {
+    private static final ParameterizedTypeReference<List<Institusjonsopphold>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     @Autowired
@@ -32,8 +32,7 @@ public class InstSyntetisererenConsumer {
 
     @Timed(value = "inst.resource.latency", extraTags = { "operation", "inst-syntetisereren" })
     public List<Institusjonsopphold> hentInstMeldingerFromSyntRest(int numToGenerate) {
-        RequestEntity getRequest = RequestEntity.get(url.expand(numToGenerate)).build();
-
+        var getRequest = RequestEntity.get(url.expand(numToGenerate)).build();
         return restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
     }
 }

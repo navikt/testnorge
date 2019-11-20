@@ -31,17 +31,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.inst.Institusjonsopphold;
-import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import no.nav.registre.inst.service.Inst2FasitService;
 
 @RunWith(SpringRunner.class)
@@ -80,7 +77,7 @@ public class Inst2ConsumerTest {
     public void shouldGetTokenForInst2() {
         stubTokenProvider();
 
-        Map<String, Object> actualToken = inst2Consumer.hentTokenTilInst2(fregTokenProviderUrl);
+        var actualToken = inst2Consumer.hentTokenTilInst2(fregTokenProviderUrl);
 
         assertThat(actualToken.get("idToken").toString(), containsString(token.get("idToken").toString()));
     }
@@ -89,7 +86,7 @@ public class Inst2ConsumerTest {
     public void shouldGetInstitusjonsmeldingerFromInst2() {
         stubGetInstitusjonsopphold();
 
-        List<Institusjonsopphold> result = inst2Consumer.hentInstitusjonsoppholdFraInst2(token, id, id, miljoe, fnr1);
+        var result = inst2Consumer.hentInstitusjonsoppholdFraInst2(token, id, id, miljoe, fnr1);
 
         assertThat(result.get(0).getTssEksternId(), is("440"));
         assertThat(result.get(0).getStartdato(), Matchers.equalTo(LocalDate.of(2013, 7, 3)));
@@ -101,41 +98,41 @@ public class Inst2ConsumerTest {
     public void shouldGetEmptyListOnBadRequest() {
         stubGetInstitusjonsoppholdWithBadRequest();
 
-        List<Institusjonsopphold> result = inst2Consumer.hentInstitusjonsoppholdFraInst2(token, id, id, miljoe, fnr1);
+        var result = inst2Consumer.hentInstitusjonsoppholdFraInst2(token, id, id, miljoe, fnr1);
 
         assertThat(result, is(empty()));
     }
 
     @Test
     public void shouldAddInstitusjonsoppholdTilInst2() throws JsonProcessingException {
-        Institusjonsopphold institusjonsopphold = Institusjonsopphold.builder().build();
+        var institusjonsopphold = Institusjonsopphold.builder().build();
 
         stubAddInstitusjonsopphold(institusjonsopphold);
 
-        OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(token, id, id, miljoe, institusjonsopphold);
+        var oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(token, id, id, miljoe, institusjonsopphold);
 
         assertThat(oppholdResponse.getStatus(), is(HttpStatus.CREATED));
     }
 
     @Test
     public void shouldUpdateInstitusjonsoppholdIInst2() throws JsonProcessingException {
-        Institusjonsopphold institusjonsopphold = Institusjonsopphold.builder().build();
-        Long oppholdId = 123L;
+        var institusjonsopphold = Institusjonsopphold.builder().build();
+        var oppholdId = 123L;
 
         stubUpdateInstitusjonsopphold(oppholdId, institusjonsopphold);
 
-        ResponseEntity response = inst2Consumer.oppdaterInstitusjonsoppholdIInst2(token, id, id, miljoe, oppholdId, institusjonsopphold);
+        var response = inst2Consumer.oppdaterInstitusjonsoppholdIInst2(token, id, id, miljoe, oppholdId, institusjonsopphold);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test
     public void shouldDeleteOpphold() {
-        Long oppholdId = 123L;
+        var oppholdId = 123L;
 
         stubDeleteOpphold(oppholdId);
 
-        ResponseEntity result = inst2Consumer.slettInstitusjonsoppholdFraInst2(token, id, id, miljoe, oppholdId);
+        var result = inst2Consumer.slettInstitusjonsoppholdFraInst2(token, id, id, miljoe, oppholdId);
 
         assertThat(result.getStatusCode(), is(HttpStatus.NO_CONTENT));
     }
@@ -144,7 +141,7 @@ public class Inst2ConsumerTest {
     public void shouldCheckWhetherInstitusjonIsValidOnDate() {
         stubFindInstitusjon();
 
-        HttpStatus responseStatus = inst2Consumer.finnesInstitusjonPaaDato(token, id, id, miljoe, tssEksternId, date);
+        var responseStatus = inst2Consumer.finnesInstitusjonPaaDato(token, id, id, miljoe, tssEksternId, date);
 
         assertThat(responseStatus, is(HttpStatus.OK));
     }

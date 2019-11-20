@@ -44,14 +44,14 @@ public class SyntetiseringControllerTest {
 
     @Test
     public void shouldStartSyntetisering() {
-        String fnr = "01010101010";
+        var fnr = "01010101010";
         Map<String, List<OppholdResponse>> expectedResponse = new HashMap<>();
         expectedResponse.put(fnr, Collections.singletonList(OppholdResponse.builder()
                 .status(HttpStatus.OK)
                 .build()));
         when(syntetiseringService.finnSyntetiserteMeldingerOgLagreIInst2(id, id, miljoe, syntetiserInstRequest)).thenReturn(expectedResponse);
 
-        Map<String, List<OppholdResponse>> result = syntetiseringController.genererInstitusjonsmeldinger(id, id, miljoe, syntetiserInstRequest);
+        var result = syntetiseringController.genererInstitusjonsmeldinger(id, id, miljoe, syntetiserInstRequest);
 
         verify(syntetiseringService).finnSyntetiserteMeldingerOgLagreIInst2(id, id, miljoe, syntetiserInstRequest);
 

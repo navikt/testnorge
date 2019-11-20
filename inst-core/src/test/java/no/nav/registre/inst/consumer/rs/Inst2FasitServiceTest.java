@@ -49,7 +49,7 @@ public class Inst2FasitServiceTest {
 
     @Test
     public void fetchWsUrslAllEnvironments_OK() {
-        String urlResult = inst2FasitService.getUrlForEnv("t1");
+        var urlResult = inst2FasitService.getUrlForEnv("t1");
 
         assertThat(urlResult, is(equalTo("BaseUrl")));
     }

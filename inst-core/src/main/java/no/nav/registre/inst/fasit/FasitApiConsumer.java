@@ -24,7 +24,7 @@ public class FasitApiConsumer {
     private ProvidersProps providersProps;
 
     public FasitResourceWithUnmappedProperties[] fetchResources(String alias, String type) {
-        String url = providersProps.getFasit().getUrl() + format(FASIT_RESOURCE, alias, type);
+        var url = providersProps.getFasit().getUrl() + format(FASIT_RESOURCE, alias, type);
 
         try {
             ResponseEntity<FasitResourceWithUnmappedProperties[]> properties = restTemplate.getForEntity(url, FasitResourceWithUnmappedProperties[].class);

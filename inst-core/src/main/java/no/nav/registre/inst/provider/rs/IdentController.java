@@ -46,32 +46,49 @@ public class IdentController {
 
     @PostMapping("/ident")
     @ApiOperation(value = "Her kan man opprette ett institusjonsopphold i inst2.")
-    public OppholdResponse opprettInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam String miljoe,
-            @RequestBody Institusjonsopphold institusjonsopphold) {
+    public OppholdResponse opprettInstitusjonsopphold(
+            @RequestHeader String navCallId,
+            @RequestHeader String navConsumerId,
+            @RequestParam String miljoe,
+            @RequestBody Institusjonsopphold institusjonsopphold
+    ) {
         return identService.sendTilInst2(navCallId, navConsumerId, miljoe, institusjonsopphold);
     }
 
     @GetMapping("/ident")
     @ApiOperation(value = "Her kan man hente alle institusjonsoppholdene tilhørende angitte identer fra inst2.")
-    public List<Institusjonsopphold> hentInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam String miljoe,
-            @RequestParam List<String> identer) {
+    public List<Institusjonsopphold> hentInstitusjonsopphold(
+            @RequestHeader String navCallId,
+            @RequestHeader String navConsumerId,
+            @RequestParam String miljoe,
+            @RequestParam List<String> identer
+    ) {
         return identService.hentOppholdTilIdenter(navCallId, navConsumerId, miljoe, identer);
     }
 
     @PutMapping("/ident/{oppholdId}")
     @ApiOperation(value = "Her kan man oppdatere et institusjonsopphold med angitt oppholdId i inst2.")
-    public ResponseEntity oppdaterInstitusjonsopphold(@PathVariable Long oppholdId, @RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam String miljoe,
-            @RequestBody Institusjonsopphold institusjonsopphold) {
+    public ResponseEntity oppdaterInstitusjonsopphold(
+            @PathVariable Long oppholdId,
+            @RequestHeader String navCallId,
+            @RequestHeader String navConsumerId,
+            @RequestParam String miljoe,
+            @RequestBody Institusjonsopphold institusjonsopphold
+    ) {
         return identService.oppdaterInstitusjonsopphold(navCallId, navConsumerId, miljoe, oppholdId, institusjonsopphold);
     }
 
     @DeleteMapping("/ident")
     @ApiOperation(value = "Her kan man slette alle institusjonsoppholdene med de angitte oppholdId-ene fra inst2.")
-    public Map<Long, ResponseEntity> slettInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId,
-            @RequestParam String miljoe, @RequestParam List<Long> oppholdIder) {
-        Map<String, Object> tokenObject = identService.hentTokenTilInst2(miljoe);
+    public Map<Long, ResponseEntity> slettInstitusjonsopphold(
+            @RequestHeader String navCallId,
+            @RequestHeader String navConsumerId,
+            @RequestParam String miljoe,
+            @RequestParam List<Long> oppholdIder
+    ) {
+        var tokenObject = identService.hentTokenTilInst2(miljoe);
         Map<Long, ResponseEntity> status = Maps.newHashMapWithExpectedSize(oppholdIder.size());
-        for (Long oppholdId : oppholdIder) {
+        for (var oppholdId : oppholdIder) {
             status.put(oppholdId, identService.slettOppholdMedId(tokenObject, navCallId, navConsumerId, miljoe, oppholdId));
         }
         return status;
@@ -80,9 +97,9 @@ public class IdentController {
     @GetMapping("/miljoer")
     @ApiOperation(value = "Her kan man sjekke hvilke miljøer Inst2 er tilgjengelig i.")
     public List<String> hentTilgjengeligeMiljoer() {
-        List<String> alleMiljoer = fasitClient.getAllEnvironments("u", "t", "q");
+        var alleMiljoer = fasitClient.getAllEnvironments("u", "t", "q");
         List<String> tilgjengeligeMiljoer = new ArrayList<>();
-        for (String miljoe : alleMiljoer) {
+        for (var miljoe : alleMiljoer) {
             try {
                 inst2FasitService.getUrlForEnv(miljoe);
                 tilgjengeligeMiljoer.add(miljoe);
@@ -97,14 +114,23 @@ public class IdentController {
 
     @PostMapping("/ident/batch")
     @ApiOperation(value = "Her kan man opprette flere institusjonsopphold i inst2.")
-    public List<OppholdResponse> opprettFlereInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam String miljoe,
-            @RequestBody List<Institusjonsopphold> institusjonsopphold) {
+    public List<OppholdResponse> opprettFlereInstitusjonsopphold(
+            @RequestHeader String navCallId,
+            @RequestHeader String navConsumerId,
+            @RequestParam String miljoe,
+            @RequestBody List<Institusjonsopphold> institusjonsopphold
+    ) {
         return identService.opprettInstitusjonsopphold(navCallId, navConsumerId, miljoe, institusjonsopphold);
     }
 
     @DeleteMapping("/ident/batch")
     @ApiOperation(value = "Her kan man slette alle institusjonsoppholdene til de angitte identene fra inst2.")
-    public List<OppholdResponse> slettIdenter(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam String miljoe, @RequestParam List<String> identer) {
+    public List<OppholdResponse> slettIdenter(
+            @RequestHeader String navCallId,
+            @RequestHeader String navConsumerId,
+            @RequestParam String miljoe,
+            @RequestParam List<String> identer
+    ) {
         return identService.slettInstitusjonsoppholdTilIdenter(navCallId, navConsumerId, miljoe, identer);
     }
 }

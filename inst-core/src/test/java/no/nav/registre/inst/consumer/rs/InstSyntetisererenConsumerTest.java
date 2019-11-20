@@ -9,7 +9,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.List;
-
-import no.nav.registre.inst.Institusjonsopphold;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -36,7 +31,7 @@ public class InstSyntetisererenConsumerTest {
     @Test
     public void shouldGetMeldinger() {
         stubInstSyntetisererenConsumer();
-        List<Institusjonsopphold> result = instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(numToGenerate);
+        var result = instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(numToGenerate);
 
         assertThat(result.size(), is(numToGenerate));
         assertThat(result.get(0).getTssEksternId(), equalTo("440"));

@@ -29,7 +29,8 @@ public class SyntetiseringController {
             @RequestHeader String navCallId,
             @RequestHeader String navConsumerId,
             @RequestParam String miljoe,
-            @RequestBody SyntetiserInstRequest syntetiserInstRequest) {
+            @RequestBody SyntetiserInstRequest syntetiserInstRequest
+    ) {
         return syntetiseringService.finnSyntetiserteMeldingerOgLagreIInst2(navCallId, navConsumerId, miljoe, syntetiserInstRequest);
     }
 }

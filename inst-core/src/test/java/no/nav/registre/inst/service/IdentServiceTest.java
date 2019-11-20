@@ -23,7 +23,6 @@ import java.util.List;
 
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
-import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentServiceTest {
@@ -37,12 +36,9 @@ public class IdentServiceTest {
     @InjectMocks
     private IdentService identService;
 
-    private String fregTokenProviderUrl = "dummyUrl";
-    private String id = "test";
     private Long oppholdId1 = 1L;
     private Long oppholdId2 = 2L;
     private List<Institusjonsopphold> meldinger;
-    private String miljoe = "t1";
 
     @Before
     public void setUp() {
@@ -63,9 +59,12 @@ public class IdentServiceTest {
 
     @Test
     public void shouldSletteInstitusjonsforhold() {
-        String fnr1 = "01010101010";
-        String fnr2 = "02020202020";
-        List<String> identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+        var fnr1 = "01010101010";
+        var fnr2 = "02020202020";
+        var identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+        var fregTokenProviderUrl = "dummyUrl";
+        var miljoe = "t1";
+        var id = "test";
 
         when(inst2FasitService.getFregTokenProviderInEnvironment(miljoe)).thenReturn(fregTokenProviderUrl);
         when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr1))).thenReturn(Collections.singletonList(meldinger.get(0)));
@@ -73,7 +72,7 @@ public class IdentServiceTest {
         when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId1))).thenReturn(ResponseEntity.noContent().build());
         when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId2))).thenReturn(ResponseEntity.noContent().build());
 
-        List<OppholdResponse> response = identService.slettInstitusjonsoppholdTilIdenter(id, id, miljoe, identer);
+        var response = identService.slettInstitusjonsoppholdTilIdenter(id, id, miljoe, identer);
 
         verify(inst2Consumer).hentTokenTilInst2(fregTokenProviderUrl);
         verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr1));

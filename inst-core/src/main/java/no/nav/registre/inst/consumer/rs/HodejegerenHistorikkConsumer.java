@@ -18,7 +18,7 @@ import no.nav.registre.inst.InstSaveInHodejegerenRequest;
 @Slf4j
 public class HodejegerenHistorikkConsumer {
 
-    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
+    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     @Autowired
@@ -32,9 +32,7 @@ public class HodejegerenHistorikkConsumer {
 
     @Timed(value = "inst.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> saveHistory(InstSaveInHodejegerenRequest request) {
-
-        RequestEntity<InstSaveInHodejegerenRequest> postRequest = RequestEntity.post(hodejegerenSaveHistorikk.expand()).body(request);
-
+        var postRequest = RequestEntity.post(hodejegerenSaveHistorikk.expand()).body(request);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }

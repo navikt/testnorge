@@ -26,11 +26,13 @@ import no.nav.registre.inst.service.Inst2FasitService;
 @Slf4j
 public class Inst2Consumer {
 
-    private static final ParameterizedTypeReference<Map<String, Object>> RESPONSE_TYPE_HENT_TOKEN = new ParameterizedTypeReference<Map<String, Object>>() {
+    private static final ParameterizedTypeReference<Map<String, Object>> RESPONSE_TYPE_HENT_TOKEN = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<List<Institusjonsopphold>> RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<List<Institusjonsopphold>>() {
+
+    private static final ParameterizedTypeReference<List<Institusjonsopphold>> RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_OBJECT = new ParameterizedTypeReference<Object>() {
+
+    private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_OBJECT = new ParameterizedTypeReference<>() {
     };
 
     @Autowired
@@ -50,8 +52,7 @@ public class Inst2Consumer {
     }
 
     public Map<String, Object> hentTokenTilInst2(String fregTokenProviderUrl) {
-        UriTemplate url = new UriTemplate(fregTokenProviderUrl);
-        RequestEntity getRequest = RequestEntity.get(url.expand())
+        var getRequest = RequestEntity.get(new UriTemplate(fregTokenProviderUrl).expand())
                 .header("accept", "*/*")
                 .header("username", username)
                 .header("password", password)
@@ -62,9 +63,7 @@ public class Inst2Consumer {
     }
 
     public List<Institusjonsopphold> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, String ident) {
-        UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold");
-
-        RequestEntity getRequest = RequestEntity.get(url.expand())
+        var getRequest = RequestEntity.get(new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold").expand())
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
                 .header("Nav-Call-Id", callId)
@@ -87,18 +86,17 @@ public class Inst2Consumer {
     }
 
     public OppholdResponse leggTilInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, Institusjonsopphold institusjonsopphold) {
-        UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold?validatePeriod=true");
-        RequestEntity postRequest = RequestEntity.post(url.expand())
+        var postRequest = RequestEntity.post(new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold?validatePeriod=true").expand())
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
                 .body(institusjonsopphold);
         try {
-            ResponseEntity<Object> exchange = restTemplate.exchange(postRequest, RESPONSE_TYPE_OBJECT);
-            Institusjonsopphold institusjonsoppholdResponse = new ObjectMapper().convertValue(exchange.getBody(), Institusjonsopphold.class);
+            var response = restTemplate.exchange(postRequest, RESPONSE_TYPE_OBJECT);
+            Institusjonsopphold institusjonsoppholdResponse = new ObjectMapper().convertValue(response.getBody(), Institusjonsopphold.class);
             return OppholdResponse.builder()
-                    .status(exchange.getStatusCode())
+                    .status(response.getStatusCode())
                     .institusjonsopphold(institusjonsoppholdResponse)
                     .build();
         } catch (HttpStatusCodeException e) {
@@ -111,15 +109,14 @@ public class Inst2Consumer {
     }
 
     public ResponseEntity oppdaterInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, Long oppholdId, Institusjonsopphold institusjonsopphold) {
-        UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold/{oppholdId}");
-        RequestEntity putRequest = RequestEntity.put(url.expand(oppholdId))
+        var putRequest = RequestEntity.put(new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold/{oppholdId}").expand(oppholdId))
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
                 .body(institusjonsopphold);
         try {
-            ResponseEntity<Object> response = restTemplate.exchange(putRequest, RESPONSE_TYPE_OBJECT);
+            var response = restTemplate.exchange(putRequest, RESPONSE_TYPE_OBJECT);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (HttpStatusCodeException e) {
             log.error("Kunne ikke oppdatere institusjonsopphold - {}", e.getResponseBodyAsString(), e);
@@ -128,15 +125,14 @@ public class Inst2Consumer {
     }
 
     public ResponseEntity slettInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, Long oppholdId) {
-        UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold/{oppholdId}");
-        RequestEntity deleteRequest = RequestEntity.delete(url.expand(oppholdId))
+        var deleteRequest = RequestEntity.delete(new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold/{oppholdId}").expand(oppholdId))
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
                 .build();
         try {
-            ResponseEntity<Object> response = restTemplate.exchange(deleteRequest, RESPONSE_TYPE_OBJECT);
+            var response = restTemplate.exchange(deleteRequest, RESPONSE_TYPE_OBJECT);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (HttpStatusCodeException e) {
             log.error("Kunne ikke slette institusjonsopphold - {}", e.getResponseBodyAsString(), e);
@@ -145,8 +141,8 @@ public class Inst2Consumer {
     }
 
     public HttpStatus finnesInstitusjonPaaDato(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, String tssEksternId, LocalDate date) {
-        UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/institusjon/oppslag/tssEksternId/{tssEksternId}?date={date}");
-        RequestEntity getRequest = RequestEntity.get(url.expand(tssEksternId, date))
+        var getRequest = RequestEntity.get(new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/institusjon/oppslag/tssEksternId/{tssEksternId}?date={date}")
+                .expand(tssEksternId, date))
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
                 .header("Nav-Call-Id", callId)
@@ -154,7 +150,7 @@ public class Inst2Consumer {
                 .build();
 
         try {
-            ResponseEntity<Object> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_OBJECT);
+            var response = restTemplate.exchange(getRequest, RESPONSE_TYPE_OBJECT);
             return response.getStatusCode();
         } catch (HttpStatusCodeException e) {
             log.debug("Institusjon med tssEksternId {} er ikke gyldig på dato {}.", tssEksternId, date);

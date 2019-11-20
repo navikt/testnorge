@@ -29,7 +29,7 @@ public class FasitClientTest {
     public void findEnvironmentNamesTest() {
         when(fasitService.findEnvironmentNames("q")).thenReturn(environments);
 
-        List<String> environments = fasitClient.getAllEnvironments("q");
+        var environments = fasitClient.getAllEnvironments("q");
         assertFalse(environments.isEmpty());
     }
 }
