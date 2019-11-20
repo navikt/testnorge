@@ -22,8 +22,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
-import java.util.List;
-
 @RunWith(SpringRunner.class)
 @RestClientTest(HodejegerenConsumer.class)
 @ActiveProfiles("test")
@@ -50,42 +48,50 @@ public class HodejegerenConsumerTest {
 
     @Test
     public void shouldSendPersondokumentTilHodejegeren() throws JsonProcessingException {
-        String expectedUri = serverUrl + "/v1/historikk/skd/oppdaterDokument/{ident}";
+        var expectedUri = serverUrl + "/v1/historikk/skd/oppdaterDokument/{ident}";
         stubSendPersondokument(expectedUri);
 
-        List<String> identer = hodejegerenConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersonDokument, fnr);
+        var identer = hodejegerenConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersonDokument, fnr);
 
         assertThat(identer, contains(fnr));
     }
 
     @Test
     public void shouldHenteAlleIdenter() {
-        String expectedUri = serverUrl + "/v1/alle-identer/{avspillergruppeId}";
+        var expectedUri = serverUrl + "/v1/alle-identer/{avspillergruppeId}";
         stubHentAlleIdenter(expectedUri);
 
-        List<String> identer = hodejegerenConsumer.hentAlleIdenter(avspillergruppeId);
+        var identer = hodejegerenConsumer.hentAlleIdenter(avspillergruppeId);
 
         assertThat(identer, contains(fnr));
     }
 
     @Test
     public void shouldFinneIdenterSomIkkeErITps() {
-        String expectedUri = serverUrl + "/v1/identer-ikke-i-tps/{avspillergruppeId}?miljoe={miljoe}";
+        var expectedUri = serverUrl + "/v1/identer-ikke-i-tps/{avspillergruppeId}?miljoe={miljoe}";
         stubHentIdenterIkkeITps(expectedUri);
 
-        List<String> identer = hodejegerenConsumer.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
+        var identer = hodejegerenConsumer.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
 
         assertThat(identer, contains(fnr));
     }
 
     @Test
     public void shouldFinneIdenterSomKollidererITps() {
-        String expectedUri = serverUrl + "/v1/identer-som-kolliderer/{avspillergruppeId}";
+        var expectedUri = serverUrl + "/v1/identer-som-kolliderer/{avspillergruppeId}";
         stubHentIdenterSomKolliderer(expectedUri);
 
-        List<String> identer = hodejegerenConsumer.hentIdenterSomKollidererITps(avspillergruppeId);
+        var identer = hodejegerenConsumer.hentIdenterSomKollidererITps(avspillergruppeId);
 
         assertThat(identer, contains(fnr));
+    }
+
+    @Test
+    public void shouldOppdatereHodejegerenCache() {
+        var expectedUri = serverUrl + "/v1/cache/oppdaterGruppe/{avspillergruppeId}";
+        stubOppdaterCache(expectedUri);
+
+        hodejegerenConsumer.oppdaterHodejegerenCache(avspillergruppeId);
     }
 
     private void stubSendPersondokument(String expectedUri) throws JsonProcessingException {
@@ -108,6 +114,12 @@ public class HodejegerenConsumerTest {
     }
 
     private void stubHentIdenterSomKolliderer(String expectedUri) {
+        server.expect(requestToUriTemplate(expectedUri, avspillergruppeId))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess("[\"" + fnr + "\"]", MediaType.APPLICATION_JSON));
+    }
+
+    private void stubOppdaterCache(String expectedUri) {
         server.expect(requestToUriTemplate(expectedUri, avspillergruppeId))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess("[\"" + fnr + "\"]", MediaType.APPLICATION_JSON));

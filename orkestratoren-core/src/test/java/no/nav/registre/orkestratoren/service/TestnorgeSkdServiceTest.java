@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.HashMap;
 import java.util.Map;
 
+import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeNavEndringsmeldingerConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
@@ -33,6 +34,9 @@ public class TestnorgeSkdServiceTest {
     @Mock
     private TestnorgeNavEndringsmeldingerConsumer testnorgeNavEndringsmeldingerConsumer;
 
+    @Mock
+    private HodejegerenConsumer hodejegerenConsumer;
+
     @InjectMocks
     private TestnorgeSkdService testnorgeSkdService;
 
@@ -40,13 +44,12 @@ public class TestnorgeSkdServiceTest {
     private String miljoe = "t1";
     private Map<String, Integer> antallMeldingerPerEndringskodeSkd = new HashMap<>();
     private Map<String, Integer> antallMeldingerPerEndringskodeNav = new HashMap<>();
-    private SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons;
     private ResponseEntity expectedResponseSkd;
     private ResponseEntity expectedResponseNav;
 
     @Before
     public void setUp() {
-        skdMeldingerTilTpsRespons = new SkdMeldingerTilTpsRespons();
+        SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = new SkdMeldingerTilTpsRespons();
         skdMeldingerTilTpsRespons.setAntallSendte(2);
         skdMeldingerTilTpsRespons.setAntallFeilet(0);
 
@@ -58,17 +61,18 @@ public class TestnorgeSkdServiceTest {
     public void shouldGenerereSkdmeldinger() {
         when(testnorgeSkdConsumer.startSyntetisering(any(SyntetiserSkdmeldingerRequest.class))).thenReturn(expectedResponseSkd);
 
-        SkdMeldingerTilTpsRespons response = (SkdMeldingerTilTpsRespons) testnorgeSkdService.genererSkdmeldinger(avspillergruppeId, miljoe, antallMeldingerPerEndringskodeSkd).getBody();
+        var response = (SkdMeldingerTilTpsRespons) testnorgeSkdService.genererSkdmeldinger(avspillergruppeId, miljoe, antallMeldingerPerEndringskodeSkd).getBody();
 
         assert response != null;
         assertThat(response.getAntallSendte(), equalTo(2));
         assertThat(response.getAntallFeilet(), equalTo(0));
         verify(testnorgeSkdConsumer).startSyntetisering(any(SyntetiserSkdmeldingerRequest.class));
+        verify(hodejegerenConsumer).oppdaterHodejegerenCache(avspillergruppeId);
     }
 
     @Test
     public void shouldGenerereNavmeldinger() {
-        SyntetiserNavmeldingerRequest syntetiserNavmeldingerRequest = new SyntetiserNavmeldingerRequest(avspillergruppeId, miljoe, antallMeldingerPerEndringskodeNav);
+        var syntetiserNavmeldingerRequest = new SyntetiserNavmeldingerRequest(avspillergruppeId, miljoe, antallMeldingerPerEndringskodeNav);
 
         when(testnorgeNavEndringsmeldingerConsumer.startSyntetisering(syntetiserNavmeldingerRequest)).thenReturn(expectedResponseNav);
 

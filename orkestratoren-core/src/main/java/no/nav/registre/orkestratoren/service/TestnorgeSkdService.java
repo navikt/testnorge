@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeNavEndringsmeldingerConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.response.RsPureXmlMessageResponse;
@@ -26,25 +27,34 @@ public class TestnorgeSkdService {
     @Autowired
     private TestnorgeNavEndringsmeldingerConsumer testnorgeNavEndringsmeldingerConsumer;
 
-    public ResponseEntity genererSkdmeldinger(Long avspillergruppeId,
-            String miljoe,
-            Map<String, Integer> antallMeldingerPerEndringskode) {
+    @Autowired
+    private HodejegerenConsumer hodejegerenConsumer;
 
-        ResponseEntity response = testnorgeSkdConsumer.startSyntetisering(new SyntetiserSkdmeldingerRequest(avspillergruppeId, miljoe, antallMeldingerPerEndringskode));
+    public ResponseEntity genererSkdmeldinger(
+            Long avspillergruppeId,
+            String miljoe,
+            Map<String, Integer> antallMeldingerPerEndringskode
+    ) {
+
+        var response = testnorgeSkdConsumer.startSyntetisering(new SyntetiserSkdmeldingerRequest(avspillergruppeId, miljoe, antallMeldingerPerEndringskode));
         if (!response.getStatusCode().equals(HttpStatus.CREATED)) {
             log.warn("Noe feilet under syntetisering av skd-meldinger. Vennligst se loggene til Testnorge-Skd for mer informasjon");
         } else {
-            SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
+            var skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
             if (skdMeldingerTilTpsRespons != null) {
                 log.info("{} skd-meldinger sendt til TPS.", skdMeldingerTilTpsRespons.getAntallSendte());
+                hodejegerenConsumer.oppdaterHodejegerenCache(avspillergruppeId);
+            } else {
+                log.warn("Fikk ingen response fra testnorge-skd. Ingen meldinger sendt til TPS.");
             }
         }
         return response;
     }
 
-    public List<RsPureXmlMessageResponse> genererNavmeldinger(SyntetiserNavmeldingerRequest syntetiserNavmeldingerRequest) {
-        ResponseEntity<List<RsPureXmlMessageResponse>> response = testnorgeNavEndringsmeldingerConsumer.startSyntetisering(syntetiserNavmeldingerRequest);
-
+    public List<RsPureXmlMessageResponse> genererNavmeldinger(
+            SyntetiserNavmeldingerRequest syntetiserNavmeldingerRequest
+    ) {
+        var response = testnorgeNavEndringsmeldingerConsumer.startSyntetisering(syntetiserNavmeldingerRequest);
         return response.getBody();
     }
 }

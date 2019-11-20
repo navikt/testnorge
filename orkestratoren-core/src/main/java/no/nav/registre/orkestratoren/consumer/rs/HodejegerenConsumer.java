@@ -18,14 +18,15 @@ import java.util.List;
 @Slf4j
 public class HodejegerenConsumer {
 
-    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
+    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     private RestTemplate restTemplate;
     private UriTemplate hentAlleIdenterUrl;
     private UriTemplate sendTilHodejegerenUrl;
     private UriTemplate hentIdenterSomIkkeErITpsUrl;
-    private UriTemplate hentIdenterSomKollidererITps;
+    private UriTemplate hentIdenterSomKollidererITpsUrl;
+    private UriTemplate oppdaterHodejegerenCacheUrl;
 
     public HodejegerenConsumer(
             RestTemplateBuilder restTemplateBuilder,
@@ -34,30 +35,37 @@ public class HodejegerenConsumer {
         this.hentAlleIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/alle-identer/{avspillergruppeId}");
         this.sendTilHodejegerenUrl = new UriTemplate(hodejegerenServerUrl + "/v1/historikk/skd/oppdaterDokument/{ident}");
         this.hentIdenterSomIkkeErITpsUrl = new UriTemplate(hodejegerenServerUrl + "/v1/identer-ikke-i-tps/{avspillergruppeId}?miljoe={miljoe}");
-        this.hentIdenterSomKollidererITps = new UriTemplate(hodejegerenServerUrl + "/v1/identer-som-kolliderer/{avspillergruppeId}");
+        this.hentIdenterSomKollidererITpsUrl = new UriTemplate(hodejegerenServerUrl + "/v1/identer-som-kolliderer/{avspillergruppeId}");
+        this.oppdaterHodejegerenCacheUrl = new UriTemplate(hodejegerenServerUrl + "/v1/cache/oppdaterGruppe/{avspillergruppeId}");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> hentAlleIdenter(Long avspillergruppeId) {
-        RequestEntity getRequest = RequestEntity.get(hentAlleIdenterUrl.expand(avspillergruppeId.toString())).build();
+        var getRequest = RequestEntity.get(hentAlleIdenterUrl.expand(avspillergruppeId.toString())).build();
         return restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> sendTpsPersondokumentTilHodejegeren(TpsPersonDokumentType tpsPersonDokument, String personIdent) {
-        RequestEntity postRequest = RequestEntity.post(sendTilHodejegerenUrl.expand(personIdent)).contentType(MediaType.APPLICATION_JSON).body(tpsPersonDokument);
+        var postRequest = RequestEntity.post(sendTilHodejegerenUrl.expand(personIdent)).contentType(MediaType.APPLICATION_JSON).body(tpsPersonDokument);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> hentIdenterSomIkkeErITps(Long avspillergruppeId, String miljoe) {
-        RequestEntity requestEntity = RequestEntity.get(hentIdenterSomIkkeErITpsUrl.expand(avspillergruppeId, miljoe)).build();
-        return restTemplate.exchange(requestEntity, RESPONSE_TYPE).getBody();
+        var getRequest = RequestEntity.get(hentIdenterSomIkkeErITpsUrl.expand(avspillergruppeId, miljoe)).build();
+        return restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> hentIdenterSomKollidererITps(Long avspillergruppeId) {
-        RequestEntity requestEntity = RequestEntity.get(hentIdenterSomKollidererITps.expand(avspillergruppeId)).build();
-        return restTemplate.exchange(requestEntity, RESPONSE_TYPE).getBody();
+        var getRequest = RequestEntity.get(hentIdenterSomKollidererITpsUrl.expand(avspillergruppeId)).build();
+        return restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
+    }
+
+    @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })
+    public void oppdaterHodejegerenCache(Long avspillergruppeId) {
+        var getRequest = RequestEntity.get(oppdaterHodejegerenCacheUrl.expand(avspillergruppeId)).build();
+        restTemplate.exchange(getRequest, RESPONSE_TYPE);
     }
 }
