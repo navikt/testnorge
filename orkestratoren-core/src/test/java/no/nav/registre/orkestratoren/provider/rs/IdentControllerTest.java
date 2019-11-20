@@ -29,21 +29,20 @@ public class IdentControllerTest {
 
     private Long avspillergruppeId = 100000445L;
     private String miljoe = "t9";
-    private String testdataEier = "orkestratoren";
     private List<String> identer;
-    private Map<Long, String> avspillergruppeIdMedMiljoe;
 
     @Before
     public void setUp() {
         identer = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
 
-        avspillergruppeIdMedMiljoe = new HashMap<>();
+        Map<Long, String> avspillergruppeIdMedMiljoe = new HashMap<>();
         avspillergruppeIdMedMiljoe.put(avspillergruppeId, miljoe);
         ReflectionTestUtils.setField(identController, "avspillergruppeIdMedMiljoe", avspillergruppeIdMedMiljoe);
     }
 
     @Test
     public void shouldSletteIdenterFraAdaptere() {
+        var testdataEier = "orkestratoren";
         identController.slettIdenterFraAdaptere(avspillergruppeId, miljoe, testdataEier, identer);
 
         verify(identService).slettIdenterFraAdaptere(avspillergruppeId, miljoe, testdataEier, identer);

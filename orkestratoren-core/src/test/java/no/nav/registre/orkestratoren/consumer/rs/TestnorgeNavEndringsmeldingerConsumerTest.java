@@ -16,16 +16,13 @@ import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.orkestratoren.consumer.rs.response.RsPureXmlMessageResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldingerRequest;
 
 @RunWith(SpringRunner.class)
@@ -46,7 +43,6 @@ public class TestnorgeNavEndringsmeldingerConsumerTest {
     private String miljoe = "t9";
     private String endringskode = "Z010";
     private int antallPerEndringskode = 2;
-    private String fnr = "01010101010";
     private SyntetiserNavmeldingerRequest syntetiserNavmeldingerRequest;
 
     @Before
@@ -62,15 +58,16 @@ public class TestnorgeNavEndringsmeldingerConsumerTest {
 
     @Test
     public void shouldStartSyntetisering() {
-        String expectedUri = serverUrl + "/v1/syntetisering/generer";
+        var expectedUri = serverUrl + "/v1/syntetisering/generer";
         stubNavSyntConsumer(expectedUri);
 
-        ResponseEntity<List<RsPureXmlMessageResponse>> response = testnorgeNavEndringsmeldingerConsumer.startSyntetisering(syntetiserNavmeldingerRequest);
+        var response = testnorgeNavEndringsmeldingerConsumer.startSyntetisering(syntetiserNavmeldingerRequest);
 
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
     }
 
     private void stubNavSyntConsumer(String expectedUri) {
+        var fnr = "01010101010";
         server.expect(requestToUriTemplate(expectedUri))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(content().json("{\"avspillergruppeId\":" + gruppeId

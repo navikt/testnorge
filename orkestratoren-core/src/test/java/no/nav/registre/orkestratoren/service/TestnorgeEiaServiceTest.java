@@ -27,22 +27,20 @@ public class TestnorgeEiaServiceTest {
     @InjectMocks
     private TestnorgeEiaService testnorgeEiaService;
 
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
-    private int antallNyeIdenter = 2;
-    private String fnr1 = "01010101010";
-    private String fnr2 = "02020202020";
-    private List<String> expectedIdenter = new ArrayList<>(Arrays.asList(fnr1, fnr2));
-
     @Test
     public void shouldGenerereEiaSykemeldinger() {
-        SyntetiserEiaRequest syntetiserEiaRequest = new SyntetiserEiaRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+        var expectedIdenter = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
+        var avspillergruppeId = 123L;
+        var miljoe = "t1";
+        var antallNyeIdenter = 2;
+
+        var syntetiserEiaRequest = new SyntetiserEiaRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
         when(testnorgeEiaConsumer.startSyntetisering(syntetiserEiaRequest)).thenReturn(expectedIdenter);
 
         List<String> response = testnorgeEiaService.genererEiaSykemeldinger(syntetiserEiaRequest);
 
-        assertThat(response, IsIterableContainingInOrder.contains(fnr1, fnr2));
+        assertThat(response, IsIterableContainingInOrder.contains(expectedIdenter.get(0), expectedIdenter.get(1)));
         verify(testnorgeEiaConsumer).startSyntetisering(syntetiserEiaRequest);
     }
 }

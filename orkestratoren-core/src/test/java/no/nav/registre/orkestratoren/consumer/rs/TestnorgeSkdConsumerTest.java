@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
@@ -70,12 +69,12 @@ public class TestnorgeSkdConsumerTest {
      */
     @Test
     public void shouldStartSyntetisering() {
-        String expectedUri = serverUrl + "/v1/syntetisering/generer";
+        var expectedUri = serverUrl + "/v1/syntetisering/generer";
         stubSkdConsumerStartSyntetisering(expectedUri);
 
-        ResponseEntity response = testnorgeSkdConsumer.startSyntetisering(ordreRequest);
+        var response = testnorgeSkdConsumer.startSyntetisering(ordreRequest);
 
-        SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
+        var skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
 
         assert skdMeldingerTilTpsRespons != null;
         assertThat(skdMeldingerTilTpsRespons.getAntallSendte(), equalTo(2));
@@ -83,10 +82,10 @@ public class TestnorgeSkdConsumerTest {
 
     @Test
     public void shouldDeleteIdenterFromAvspillergruppe() {
-        String expectedUri = serverUrl + "/v1/ident/{avspillergruppeId}?miljoer={miljoer}";
+        var expectedUri = serverUrl + "/v1/ident/{avspillergruppeId}?miljoer={miljoer}";
         stubSkdConsumerSlettIdenter(expectedUri);
 
-        List<Long> response = testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, Collections.singletonList(miljoe), identer);
+        var response = testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, Collections.singletonList(miljoe), identer);
 
         assertThat(response, IsIterableContainingInOrder.contains(expectedMeldingsIds.get(0), expectedMeldingsIds.get(1)));
     }

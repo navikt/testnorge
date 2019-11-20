@@ -36,11 +36,11 @@ public class TesnorgeArenaServiceTest {
 
     @Test
     public void shouldOppretteArbeidssokereIArena() {
-        SyntetiserArenaRequest syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+        var syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
         when(testnorgeArenaConsumer.opprettArbeidsoekere(syntetiserArenaRequest)).thenReturn(expectedIdenter);
 
-        List<String> response = tesnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest);
+        var response = tesnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest);
 
         assertThat(response, IsIterableContainingInOrder.contains(fnr1, fnr2));
         verify(testnorgeArenaConsumer).opprettArbeidsoekere(syntetiserArenaRequest);

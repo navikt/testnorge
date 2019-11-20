@@ -18,7 +18,6 @@ import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.orkestratoren.consumer.rs.response.SletteSkattegrunnlagResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 
 @RunWith(SpringRunner.class)
@@ -62,20 +60,20 @@ public class TestnorgeSigrunConsumerTest {
      */
     @Test
     public void shouldStartSyntetisering() {
-        String expectedUri = serverUrl + "/v1/syntetisering/generer";
+        var expectedUri = serverUrl + "/v1/syntetisering/generer";
         stubPoppConsumerStartSyntetisering(expectedUri);
 
-        ResponseEntity response = testnorgeSigrunConsumer.startSyntetisering(syntetiserPoppRequest, testdataEier);
+        var response = testnorgeSigrunConsumer.startSyntetisering(syntetiserPoppRequest, testdataEier);
 
         assertThat(response.getBody().toString(), containsString(String.valueOf(HttpStatus.OK.value())));
     }
 
     @Test
     public void shouldDeleteIdenterFromSigrun() {
-        String expectedUri = serverUrl + "/v1/ident?miljoe={miljoe}";
+        var expectedUri = serverUrl + "/v1/ident?miljoe={miljoe}";
         stubPoppConsumerSlettIdenter(expectedUri);
 
-        SletteSkattegrunnlagResponse response = testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, MILJOE, identer);
+        var response = testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, MILJOE, identer);
 
         assertThat(response.getGrunnlagSomIkkeKunneSlettes().get(0).getPersonidentifikator(), equalTo(identer.get(0)));
         assertThat(response.getGrunnlagSomBleSlettet().get(0).getPersonidentifikator(), equalTo(identer.get(1)));

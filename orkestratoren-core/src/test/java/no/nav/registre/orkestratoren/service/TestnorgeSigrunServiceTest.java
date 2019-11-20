@@ -25,19 +25,18 @@ public class TestnorgeSigrunServiceTest {
     @InjectMocks
     private TestnorgeSigrunService testnorgeSigrunService;
 
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
-    private int antallNyeIdenter = 2;
-    private String testdataEier = "test";
-    private ResponseEntity expectedResponse = ResponseEntity.ok().build();
-
     @Test
     public void shouldGenerereSkattegrunnlag() {
-        SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+        var avspillergruppeId = 123L;
+        var miljoe = "t1";
+        var antallNyeIdenter = 2;
+        var testdataEier = "test";
+        var expectedResponse = ResponseEntity.ok().build();
+        var syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
         when(testnorgeSigrunConsumer.startSyntetisering(syntetiserPoppRequest, testdataEier)).thenReturn(expectedResponse);
 
-        ResponseEntity response = testnorgeSigrunService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
+        var response = testnorgeSigrunService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
 
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
         verify(testnorgeSigrunConsumer).startSyntetisering(syntetiserPoppRequest, testdataEier);

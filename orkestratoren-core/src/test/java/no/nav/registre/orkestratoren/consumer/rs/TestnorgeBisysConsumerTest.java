@@ -44,22 +44,19 @@ public class TestnorgeBisysConsumerTest {
     private static final String MILJOE = "t1";
     private List<String> fnrs;
     private SyntetiserBisysRequest syntetiserBisysRequest;
-    private String fnr1 = "01010101010";
-    private String fnr2 = "02020202020";
 
     @Before
     public void setUp() {
-        fnrs = new ArrayList<>();
-        fnrs.addAll(Arrays.asList(fnr1, fnr2));
+        fnrs = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
         syntetiserBisysRequest = new SyntetiserBisysRequest(AVSPILLERGRUPPE_ID, MILJOE, fnrs.size());
     }
 
     @Test
     public void shouldStartSyntetisering() {
-        String expectedUri = serverUrl + "/v1/syntetisering/generer";
+        var expectedUri = serverUrl + "/v1/syntetisering/generer";
         stubBisysSyntConsumer(expectedUri);
 
-        ResponseEntity response = (ResponseEntity) testnorgeBisysConsumer.startSyntetisering(syntetiserBisysRequest);
+        var response = (ResponseEntity) testnorgeBisysConsumer.startSyntetisering(syntetiserBisysRequest);
 
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
     }

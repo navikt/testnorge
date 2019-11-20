@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.orkestratoren.consumer.rs.response.SletteInstitusjonsoppholdResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 
 @RunWith(SpringRunner.class)
@@ -55,20 +54,20 @@ public class TestnorgeInstConsumerTest {
 
     @Test
     public void shouldStartSyntetisering() {
-        String expectedUri = serverUrl + "/v1/syntetisering/generer?miljoe={miljoe}";
+        var expectedUri = serverUrl + "/v1/syntetisering/generer?miljoe={miljoe}";
         stubInstConsumerStartSyntetisering(expectedUri);
 
-        ResponseEntity response = (ResponseEntity) testnorgeInstConsumer.startSyntetisering(syntetiserInstRequest);
+        var response = (ResponseEntity) testnorgeInstConsumer.startSyntetisering(syntetiserInstRequest);
 
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
     }
 
     @Test
     public void shouldDeleteIdenterFromInst() {
-        String expectedUri = serverUrl + "/v1/ident/batch?miljoe={miljoe}&identer={identer}";
+        var expectedUri = serverUrl + "/v1/ident/batch?miljoe={miljoe}&identer={identer}";
         stubInstConsumerSlettIdenter(expectedUri);
 
-        SletteInstitusjonsoppholdResponse response = testnorgeInstConsumer.slettIdenterFraInst(identer);
+        var response = testnorgeInstConsumer.slettIdenterFraInst(identer);
 
         assertThat(response.getInstStatus().get(0).getPersonident(), equalTo(identer.get(0)));
         assertThat(response.getInstStatus().get(0).getStatus(), equalTo(HttpStatus.OK));
@@ -86,7 +85,7 @@ public class TestnorgeInstConsumerTest {
     }
 
     private void stubInstConsumerSlettIdenter(String expectedUri) {
-        String identerAsString = String.join(",", identer);
+        var identerAsString = String.join(",", identer);
         server.expect(requestToUriTemplate(expectedUri, MILJOE, identerAsString))
                 .andExpect(method(HttpMethod.DELETE))
                 .andRespond(withSuccess("[\n"

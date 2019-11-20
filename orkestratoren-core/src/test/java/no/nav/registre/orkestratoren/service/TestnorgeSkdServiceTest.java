@@ -49,7 +49,7 @@ public class TestnorgeSkdServiceTest {
 
     @Before
     public void setUp() {
-        SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = new SkdMeldingerTilTpsRespons();
+        var skdMeldingerTilTpsRespons = new SkdMeldingerTilTpsRespons();
         skdMeldingerTilTpsRespons.setAntallSendte(2);
         skdMeldingerTilTpsRespons.setAntallFeilet(0);
 

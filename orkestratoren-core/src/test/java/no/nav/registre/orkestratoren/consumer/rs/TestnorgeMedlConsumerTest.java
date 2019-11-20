@@ -41,12 +41,12 @@ public class TestnorgeMedlConsumerTest {
 
     @Test
     public void shouldStartSyntetisering() {
-        String expectedUri = serverUrl + "/v1/syntetisering/generer/";
+        var expectedUri = serverUrl + "/v1/syntetisering/generer/";
         stubMedlConsumer(expectedUri);
 
-        SyntetiserMedlRequest syntetiserMedlRequest = new SyntetiserMedlRequest(AVSPILLERGRUPPE_ID, MILJOE, prosentfaktor);
+        var syntetiserMedlRequest = new SyntetiserMedlRequest(AVSPILLERGRUPPE_ID, MILJOE, prosentfaktor);
 
-        Object response = testnorgeMedlConsumer.startSyntetisering(syntetiserMedlRequest);
+        var response = testnorgeMedlConsumer.startSyntetisering(syntetiserMedlRequest);
 
         assertThat(response, equalTo(expectedBody));
     }

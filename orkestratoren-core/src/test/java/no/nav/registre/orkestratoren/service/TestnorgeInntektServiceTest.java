@@ -30,7 +30,6 @@ public class TestnorgeInntektServiceTest {
     @InjectMocks
     private TestnorgeInntektService testnorgeInntektService;
 
-    private Long avspillergruppeId = 123L;
     private String fnr1 = "01010101010";
     private Map<String, List<Object>> expectedFeiledeInntektsmeldinger = new HashMap<>();
     private String inntektsmelding = "Feilet inntektsmelding";
@@ -42,11 +41,12 @@ public class TestnorgeInntektServiceTest {
 
     @Test
     public void shouldGenerereInntektsmeldinger() {
-        SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
+        var avspillergruppeId = 123L;
+        var syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
 
         when(testnorgeInntektConsumer.startSyntetisering(syntetiserInntektsmeldingRequest)).thenReturn(expectedFeiledeInntektsmeldinger);
 
-        Map<String, List<Object>> response = testnorgeInntektService.genererInntektsmeldinger(syntetiserInntektsmeldingRequest);
+        var response = testnorgeInntektService.genererInntektsmeldinger(syntetiserInntektsmeldingRequest);
 
         assertThat(response.get(fnr1), IsIterableContainingInOrder.contains(inntektsmelding));
         verify(testnorgeInntektConsumer).startSyntetisering(syntetiserInntektsmeldingRequest);

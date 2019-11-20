@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
@@ -40,10 +39,10 @@ public class TestnorgeTpConsumerTest {
 
     @Test
     public void startSyntetisering() {
-        String expectedUri = serverUrl + "/v1/syntetisering/generer/";
+        var expectedUri = serverUrl + "/v1/syntetisering/generer/";
         stubTp(expectedUri);
 
-        ResponseEntity entity = testnorgeTpConsumer.startSyntetisering(new SyntetiserTpRequest(gruppeId, miljoe, antallPersoner));
+        var entity = testnorgeTpConsumer.startSyntetisering(new SyntetiserTpRequest(gruppeId, miljoe, antallPersoner));
         assertEquals(HttpStatus.OK, entity.getStatusCode());
     }
 

@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
@@ -57,10 +56,10 @@ public class TestnorgeAaregConsumerTest {
 
     @Test
     public void shouldStartSyntetisering() {
-        String expectedUri = serverUrl + "/v1/syntetisering/generer?sendAlleEksisterende={sendAlleEksisterende}";
+        var expectedUri = serverUrl + "/v1/syntetisering/generer?sendAlleEksisterende={sendAlleEksisterende}";
         stubAaregSyntConsumer(expectedUri);
 
-        ResponseEntity response = testnorgeAaregConsumer.startSyntetisering(syntetiserAaregRequest, sendAlleEksisterende);
+        var response = testnorgeAaregConsumer.startSyntetisering(syntetiserAaregRequest, sendAlleEksisterende);
 
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
     }

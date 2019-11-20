@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
@@ -56,10 +55,10 @@ public class TestnorgeSamConsumerTest {
 
     @Test
     public void shouldStartSyntetisering() {
-        String expectedUri = serverUrl + "/v1/syntetisering/generer";
+        var expectedUri = serverUrl + "/v1/syntetisering/generer";
         stubSamSyntConsumer(expectedUri);
 
-        ResponseEntity response = testnorgeSamConsumer.startSyntetisering(syntetiserSamRequest);
+        var response = testnorgeSamConsumer.startSyntetisering(syntetiserSamRequest);
 
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
     }

@@ -22,13 +22,12 @@ public class TestnorgeBisysServiceTest {
     @InjectMocks
     private TestnorgeBisysService testnorgeBisysService;
 
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
-    private int antallNyeIdenter = 2;
-
     @Test
     public void shouldGenerereBistandsmeldinger() {
-        SyntetiserBisysRequest syntetiserBisysRequest = new SyntetiserBisysRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+        var avspillergruppeId = 123L;
+        var miljoe = "t1";
+        var antallNyeIdenter = 2;
+        var syntetiserBisysRequest = new SyntetiserBisysRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
         when(testnorgeBisysConsumer.startSyntetisering(syntetiserBisysRequest)).thenReturn(ResponseEntity.ok().build());
 

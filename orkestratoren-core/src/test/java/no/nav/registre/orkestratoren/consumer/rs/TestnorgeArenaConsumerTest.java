@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.orkestratoren.consumer.rs.response.SletteArenaResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 
 @RunWith(SpringRunner.class)
@@ -58,21 +57,21 @@ public class TestnorgeArenaConsumerTest {
 
     @Test
     public void shouldSendTilArenaForvalteren() {
-        String expectedUri = serverUrl + "/v1/syntetisering/generer";
+        var expectedUri = serverUrl + "/v1/syntetisering/generer";
         stubArenaConsumerLeggTilIdenter(expectedUri);
 
-        List<String> opprettedeIdenter = testnorgeArenaConsumer.opprettArbeidsoekere(syntetiserArenaRequest);
+        var opprettedeIdenter = testnorgeArenaConsumer.opprettArbeidsoekere(syntetiserArenaRequest);
         assertThat(opprettedeIdenter.size(), is(2));
         assertThat(opprettedeIdenter.get(1), containsString(fnr3));
     }
 
     @Test
     public void shouldDeleteIdenter() {
-        String expectedUri = serverUrl + "/v1/ident/slett?miljoe={miljoe}";
+        var expectedUri = serverUrl + "/v1/ident/slett?miljoe={miljoe}";
         stubArenaConsumerSlettIdenter(expectedUri);
 
-        List<String> identerToBeSlettet = Arrays.asList(fnr2, fnr3);
-        SletteArenaResponse response = testnorgeArenaConsumer.slettIdenter(MILJOE, identerToBeSlettet);
+        var identerToBeSlettet = Arrays.asList(fnr2, fnr3);
+        var response = testnorgeArenaConsumer.slettIdenter(MILJOE, identerToBeSlettet);
         assertThat(response.getSlettet().size(), is(2));
         assertThat(response.getIkkeSlettet().size(), is(0));
         assertThat(response.getSlettet().get(0), containsString(fnr2));

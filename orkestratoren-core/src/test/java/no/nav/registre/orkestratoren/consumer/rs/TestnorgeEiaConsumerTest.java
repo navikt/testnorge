@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
@@ -46,9 +47,7 @@ public class TestnorgeEiaConsumerTest {
     @Before
     public void setUp() {
         syntetiserEiaRequest = new SyntetiserEiaRequest(gruppeId, miljoe, antallIdenter);
-        expectedIdenter = new ArrayList<>();
-        expectedIdenter.add("01010101010");
-        expectedIdenter.add("02020202020");
+        expectedIdenter = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
     }
 
     /**
@@ -57,10 +56,10 @@ public class TestnorgeEiaConsumerTest {
      */
     @Test
     public void shouldStartSyntetisering() {
-        String expectedUri = serverUrl + "/v1/syntetisering/generer/QA.Q414.FS06_EIA_MELDINGER";
+        var expectedUri = serverUrl + "/v1/syntetisering/generer/QA.Q414.FS06_EIA_MELDINGER";
         stubEiaSyntConsumer(expectedUri);
 
-        List<String> identer = testnorgeEiaConsumer.startSyntetisering(syntetiserEiaRequest);
+        var identer = testnorgeEiaConsumer.startSyntetisering(syntetiserEiaRequest);
 
         assertEquals(expectedIdenter.toString(), identer.toString());
     }

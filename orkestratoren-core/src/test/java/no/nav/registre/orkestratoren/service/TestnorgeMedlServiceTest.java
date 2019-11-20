@@ -23,12 +23,12 @@ public class TestnorgeMedlServiceTest {
 
     private Long avspillergruppeId = 123L;
     private String miljoe = "t1";
-    private double prosentfaktor = 0.1;
-    private String expectedResponse = "someResponse";
 
     @Test
     public void shouldGenerereMedlemskap() {
-        SyntetiserMedlRequest syntetiserMedlRequest = new SyntetiserMedlRequest(avspillergruppeId, miljoe, prosentfaktor);
+        var prosentfaktor = 0.1;
+        var expectedResponse = "someResponse";
+        var syntetiserMedlRequest = new SyntetiserMedlRequest(avspillergruppeId, miljoe, prosentfaktor);
 
         when(testnorgeMedlConsumer.startSyntetisering(syntetiserMedlRequest)).thenReturn(expectedResponse);
 
@@ -39,7 +39,7 @@ public class TestnorgeMedlServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionOnUgyldigProsentfaktor() {
-        SyntetiserMedlRequest syntetiserMedlRequest = new SyntetiserMedlRequest(avspillergruppeId, miljoe, 1.2);
+        var syntetiserMedlRequest = new SyntetiserMedlRequest(avspillergruppeId, miljoe, 1.2);
         testnorgeMedlService.genererMedlemskap(syntetiserMedlRequest);
     }
 }

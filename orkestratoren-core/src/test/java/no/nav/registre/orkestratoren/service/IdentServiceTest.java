@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeAaregConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaConsumer;
-import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeInstConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSigrunConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
@@ -34,7 +34,6 @@ import no.nav.registre.orkestratoren.consumer.rs.response.SletteArbeidsforholdRe
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteArenaResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteInstitusjonsoppholdResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteSkattegrunnlagResponse;
-import no.nav.registre.orkestratoren.provider.rs.responses.SlettedeIdenterResponse;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentServiceTest {
@@ -77,7 +76,7 @@ public class IdentServiceTest {
         identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
         expectedMeldingIder = new ArrayList<>(Arrays.asList(123L, 456L));
 
-        List<InstitusjonsoppholdResponse> responses = new ArrayList<>(Arrays.asList(
+        var responses = new ArrayList<>(Arrays.asList(
                 InstitusjonsoppholdResponse.builder()
                         .personident(fnr1)
                         .status(HttpStatus.OK)
@@ -90,8 +89,8 @@ public class IdentServiceTest {
 
         sletteArenaResponse = SletteArenaResponse.builder().slettet(identer).ikkeSlettet(new ArrayList<>()).build();
 
-        SigrunSkattegrunnlagResponse skattegrunnlagFnr1 = SigrunSkattegrunnlagResponse.builder().personidentifikator(fnr1).build();
-        SigrunSkattegrunnlagResponse skattegrunnlagFnr2 = SigrunSkattegrunnlagResponse.builder().personidentifikator(fnr2).build();
+        var skattegrunnlagFnr1 = SigrunSkattegrunnlagResponse.builder().personidentifikator(fnr1).build();
+        var skattegrunnlagFnr2 = SigrunSkattegrunnlagResponse.builder().personidentifikator(fnr2).build();
         sletteSkattegrunnlagResponse = SletteSkattegrunnlagResponse.builder().grunnlagSomBleSlettet(Arrays.asList(skattegrunnlagFnr1, skattegrunnlagFnr2)).build();
 
         Map<String, List<Long>> identerMedArbeidsforholdSomBleSlettet = new HashMap<>();
@@ -109,7 +108,7 @@ public class IdentServiceTest {
         // TODO: Fiks arena og legg inn denne igjen
         // when(arenaConsumer.slettIdenter(miljoe, identer)).thenReturn(sletteArenaResponse);
 
-        SlettedeIdenterResponse response = identService.slettIdenterFraAdaptere(avspillergruppeId, miljoe, testdataEier, identer);
+        var response = identService.slettIdenterFraAdaptere(avspillergruppeId, miljoe, testdataEier, identer);
 
         verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer));
         verify(testnorgeInstConsumer).slettIdenterFraInst(identer);
@@ -147,7 +146,7 @@ public class IdentServiceTest {
         // TODO: Fiks arena og legg inn denne igjen
         // when(arenaConsumer.slettIdenter(miljoe, identer)).thenReturn(SletteArenaResponse.builder().build());
 
-        SlettedeIdenterResponse response = identService.synkroniserMedTps(avspillergruppeId, miljoe);
+        var response = identService.synkroniserMedTps(avspillergruppeId, miljoe);
 
         assertThat(response.getTpsfStatus().getSlettedeMeldingIderFraTpsf(), IsIterableContainingInOrder.contains(expectedMeldingIder.get(0), expectedMeldingIder.get(1)));
 
@@ -170,7 +169,7 @@ public class IdentServiceTest {
         // TODO: Fiks arena og legg inn denne igjen
         // when(arenaConsumer.slettIdenter(miljoe, identer)).thenReturn(SletteArenaResponse.builder().build());
 
-        SlettedeIdenterResponse response = identService.fjernKolliderendeIdenter(avspillergruppeId, miljoe);
+        var response = identService.fjernKolliderendeIdenter(avspillergruppeId, miljoe);
 
         assertThat(response.getTpsfStatus().getSlettedeMeldingIderFraTpsf(), IsIterableContainingInOrder.contains(expectedMeldingIder.get(0), expectedMeldingIder.get(1)));
 

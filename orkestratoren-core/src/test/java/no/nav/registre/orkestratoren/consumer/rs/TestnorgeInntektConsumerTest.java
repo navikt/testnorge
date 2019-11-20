@@ -20,7 +20,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
-import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
@@ -55,10 +54,10 @@ public class TestnorgeInntektConsumerTest {
      */
     @Test
     public void shouldStartSyntetisering() {
-        String expectedUri = serverUrl + "/v1/syntetisering/generer";
+        var expectedUri = serverUrl + "/v1/syntetisering/generer";
         stubInntektConsumer(expectedUri);
 
-        Map<String, List<Object>> feiledeInntektsmeldinger = testnorgeInntektConsumer.startSyntetisering(syntetiserInntektsmeldingRequest);
+        var feiledeInntektsmeldinger = testnorgeInntektConsumer.startSyntetisering(syntetiserInntektsmeldingRequest);
 
         assertThat(feiledeInntektsmeldinger.keySet(), Matchers.contains(fnr));
         Map<String, Object> inntekt = (Map<String, Object>) feiledeInntektsmeldinger.get(fnr).get(0);

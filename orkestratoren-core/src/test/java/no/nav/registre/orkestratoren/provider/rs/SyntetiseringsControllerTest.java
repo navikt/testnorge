@@ -22,16 +22,16 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldinger
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
-import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TesnorgeArenaService;
+import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
 import no.nav.registre.orkestratoren.service.TestnorgeEiaService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
 import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
-import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
+import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringsControllerTest {
@@ -81,7 +81,7 @@ public class SyntetiseringsControllerTest {
         Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 20);
 
-        SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest = new SyntetiserSkdmeldingerRequest(avspillergruppeId,
+        var syntetiserSkdmeldingerRequest = new SyntetiserSkdmeldingerRequest(avspillergruppeId,
                 miljoe,
                 antallMeldingerPerEndringskode);
 
@@ -99,7 +99,7 @@ public class SyntetiseringsControllerTest {
         Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("Z010", 20);
 
-        SyntetiserNavmeldingerRequest syntetiserNavmeldingerRequest = new SyntetiserNavmeldingerRequest(avspillergruppeId,
+        var syntetiserNavmeldingerRequest = new SyntetiserNavmeldingerRequest(avspillergruppeId,
                 miljoe,
                 antallMeldingerPerEndringskode);
 
@@ -114,7 +114,7 @@ public class SyntetiseringsControllerTest {
      */
     @Test
     public void shouldProduceInntektsmeldinger() {
-        SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
+        var syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
 
         syntetiseringsController.opprettSyntetiskInntektsmeldingIInntektstub(syntetiserInntektsmeldingRequest);
 
@@ -127,9 +127,9 @@ public class SyntetiseringsControllerTest {
      */
     @Test
     public void shouldTriggerGenereringAvSykemeldingerIEia() {
-        int antallMeldinger = 20;
+        var antallMeldinger = 20;
 
-        SyntetiserEiaRequest syntetiserEiaRequest = new SyntetiserEiaRequest(avspillergruppeId, miljoe, antallMeldinger);
+        var syntetiserEiaRequest = new SyntetiserEiaRequest(avspillergruppeId, miljoe, antallMeldinger);
 
         syntetiseringsController.opprettSykemeldingerIEia(syntetiserEiaRequest);
 
@@ -142,9 +142,9 @@ public class SyntetiseringsControllerTest {
      */
     @Test
     public void shouldProduceSkattegrunnlagISigrun() {
-        int antallNyeIdenter = 20;
+        var antallNyeIdenter = 20;
 
-        SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+        var syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
         syntetiseringsController.opprettSkattegrunnlagISigrun("test", syntetiserPoppRequest);
 
@@ -157,9 +157,9 @@ public class SyntetiseringsControllerTest {
      */
     @Test
     public void shouldProduceArbeidsforholdIAareg() {
-        int antallNyeIdenter = 20;
+        var antallNyeIdenter = 20;
 
-        SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+        var syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
         syntetiseringsController.opprettArbeidsforholdIAareg(false, syntetiserAaregRequest);
 
@@ -172,9 +172,9 @@ public class SyntetiseringsControllerTest {
      */
     @Test
     public void shouldProduceInstitusjonsmeldingIInst() {
-        int antallNyeIdenter = 20;
+        var antallNyeIdenter = 20;
 
-        SyntetiserInstRequest syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+        var syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
         syntetiseringsController.opprettInstitutjonsforholdIInst(syntetiserInstRequest);
 
@@ -187,9 +187,9 @@ public class SyntetiseringsControllerTest {
      */
     @Test
     public void shouldProduceBistandsmeldingerInBisys() {
-        int antallNyeIdenter = 2;
+        var antallNyeIdenter = 2;
 
-        SyntetiserBisysRequest syntetiserBisysRequest = new SyntetiserBisysRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+        var syntetiserBisysRequest = new SyntetiserBisysRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
         syntetiseringsController.opprettBistandsmeldingerIBisys(syntetiserBisysRequest);
 
@@ -202,15 +202,15 @@ public class SyntetiseringsControllerTest {
      */
     @Test
     public void shouldProduceYtelserInTp() {
-        int antallIdenter = 10;
-        SyntetiserTpRequest request = new SyntetiserTpRequest(avspillergruppeId, miljoe, antallIdenter);
+        var antallIdenter = 10;
+        var request = new SyntetiserTpRequest(avspillergruppeId, miljoe, antallIdenter);
         syntetiseringsController.opprettYtelserITp(request);
         verify(testnorgeTpService).genererTp(request);
     }
 
     @Test
     public void shouldOppretteArbeidssoekereIArena() {
-        SyntetiserArenaRequest syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 2);
+        var syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 2);
         syntetiseringsController.opprettArbeidssoekereIArena(syntetiserArenaRequest);
 
         verify(tesnorgeArenaService).opprettArbeidssokereIArena(syntetiserArenaRequest);
@@ -218,7 +218,7 @@ public class SyntetiseringsControllerTest {
 
     @Test
     public void shouldProduceMedlemskapInMedl() {
-        SyntetiserMedlRequest syntetiserMedlRequest = new SyntetiserMedlRequest(avspillergruppeId, miljoe, 0.1);
+        var syntetiserMedlRequest = new SyntetiserMedlRequest(avspillergruppeId, miljoe, 0.1);
         syntetiseringsController.opprettMedlemskapIMedl(syntetiserMedlRequest);
 
         verify(testnorgeMedlService).genererMedlemskap(syntetiserMedlRequest);

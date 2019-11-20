@@ -43,7 +43,7 @@ public class IdentController {
     @Scheduled(cron = "0 0 1 1 * *")
     public Map<Long, SlettedeIdenterResponse> synkroniserMedTps() {
         Map<Long, SlettedeIdenterResponse> avspillergruppeMedFjernedeIdenter = new HashMap<>(avspillergruppeIdMedMiljoe.size());
-        for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
             avspillergruppeMedFjernedeIdenter.put(entry.getKey(), identService.synkroniserMedTps(entry.getKey(), entry.getValue()));
 
         }
@@ -55,7 +55,7 @@ public class IdentController {
     @Scheduled(cron = "0 0 2 * * *")
     public Map<Long, SlettedeIdenterResponse> rensAvspillergruppe() {
         Map<Long, SlettedeIdenterResponse> avspillergruppeMedFjernedeIdenter = new HashMap<>(avspillergruppeIdMedMiljoe.size());
-        for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
             avspillergruppeMedFjernedeIdenter.put(entry.getKey(), identService.fjernKolliderendeIdenter(entry.getKey(), entry.getValue()));
         }
         return avspillergruppeMedFjernedeIdenter;

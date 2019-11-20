@@ -21,14 +21,13 @@ public class TestnorgeInstServiceTest {
     @InjectMocks
     private TestnorgeInstService testnorgeInstService;
 
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
-    private int antallNyeIdenter = 2;
-    private String expectedResponse = "someResponse";
-
     @Test
     public void shouldGenerereInstitusjonsforhold() {
-        SyntetiserInstRequest syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+        var avspillergruppeId = 123L;
+        var miljoe = "t1";
+        var antallNyeIdenter = 2;
+        var expectedResponse = "someResponse";
+        var syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
         when(testnorgeInstConsumer.startSyntetisering(syntetiserInstRequest)).thenReturn(expectedResponse);
 

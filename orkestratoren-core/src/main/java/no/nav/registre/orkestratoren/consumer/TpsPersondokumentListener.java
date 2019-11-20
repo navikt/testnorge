@@ -4,7 +4,6 @@ import static java.lang.String.format;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import no.rtv.namespacetps.TpsPersonDokumentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
@@ -14,7 +13,6 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,13 +42,13 @@ public class TpsPersondokumentListener {
             alleOrkestrerteIdenter = new HashSet<>();
         }
         try {
-            String persondokumentAsXml = ((TextMessage) message).getText();
-            TpsPersonDokumentType tpsPersondokument = persondokumentConverter.convert(persondokumentAsXml);
+            var persondokumentAsXml = ((TextMessage) message).getText();
+            var tpsPersondokument = persondokumentConverter.convert(persondokumentAsXml);
 
             if (tpsPersondokument.getPerson().getPersonIdent().isEmpty()) {
                 log.warn("Persondokument fra tps inneholder ingen identer");
             } else {
-                String personIdent = tpsPersondokument.getPerson().getPersonIdent().get(0).getPersonIdent();
+                var personIdent = tpsPersondokument.getPerson().getPersonIdent().get(0).getPersonIdent();
 
                 sjekkOmIdentLiggerICacheOgOppdater(personIdent);
 
@@ -66,7 +64,7 @@ public class TpsPersondokumentListener {
     private void sjekkOmIdentLiggerICacheOgOppdater(String personIdent) {
         if (!alleOrkestrerteIdenter.contains(personIdent)) {
             for (Long avspillergruppeId : avspillergruppeIdMedMiljoe.keySet()) {
-                List<String> orkestrerteIdenter = hodejegerenConsumer.hentAlleIdenter(avspillergruppeId);
+                var orkestrerteIdenter = hodejegerenConsumer.hentAlleIdenter(avspillergruppeId);
                 alleOrkestrerteIdenter.addAll(orkestrerteIdenter);
             }
         }

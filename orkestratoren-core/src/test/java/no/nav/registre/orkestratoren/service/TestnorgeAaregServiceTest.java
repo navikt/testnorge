@@ -25,18 +25,18 @@ public class TestnorgeAaregServiceTest {
     @InjectMocks
     private TestnorgeAaregService testnorgeAaregService;
 
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
-    private int antallNyeIdenter = 2;
-    private boolean sendAlleEksisterende = false;
-
     @Test
     public void shouldGenerereArbeidsforhold() {
-        SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+        var avspillergruppeId = 123L;
+        var miljoe = "t1";
+        var antallNyeIdenter = 2;
+        var sendAlleEksisterende = false;
+
+        var syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
         when(testnorgeAaregConsumer.startSyntetisering(syntetiserAaregRequest, sendAlleEksisterende)).thenReturn(ResponseEntity.ok().build());
 
-        ResponseEntity response = testnorgeAaregService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, sendAlleEksisterende);
+        var response = testnorgeAaregService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, sendAlleEksisterende);
 
         assertThat(response.getStatusCode(), Matchers.is(HttpStatus.OK));
         verify(testnorgeAaregConsumer).startSyntetisering(syntetiserAaregRequest, sendAlleEksisterende);

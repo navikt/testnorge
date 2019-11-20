@@ -19,7 +19,7 @@ public class TestnorgeSigrunService {
     private TestnorgeSigrunConsumer testnorgeSigrunConsumer;
 
     public ResponseEntity genererSkattegrunnlag(SyntetiserPoppRequest syntetiserPoppRequest, String testdataEier) {
-        ResponseEntity response = testnorgeSigrunConsumer.startSyntetisering(syntetiserPoppRequest, testdataEier);
+        var response = testnorgeSigrunConsumer.startSyntetisering(syntetiserPoppRequest, testdataEier);
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
             log.warn("Noe feilet under syntetisering av skattegrunnlag. Vennligst se loggene til Testnorge-Sigrun for mer informasjon");
         } else {
