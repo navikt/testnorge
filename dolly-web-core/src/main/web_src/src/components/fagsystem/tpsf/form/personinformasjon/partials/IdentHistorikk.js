@@ -13,14 +13,14 @@ const hjelpetekst =
 	'Hvis fødselsdatoen ble endret i overgangen kan født før og født etter fylles ut. Det samme gjelder for kjønn. ' +
 	'Dersom de står som "Ikke spesifisert" beholdes samme fødselsdato og/eller kjønn.'
 
-export const IdentHistorikk = ({ formikProps }) => {
-	const initialValues = formikProps.initialValues.tpsf.identHistorikk[0]
+export const IdentHistorikk = ({ formikBag }) => {
+	const initialValues = formikBag.initialValues.tpsf.identHistorikk[0]
 	return (
 		<FieldArray
 			name="tpsf.identHistorikk"
 			render={arrayHelpers => (
 				<Kategori title="Identhistorikk" hjelpetekst={hjelpetekst}>
-					{formikProps.values.tpsf.identHistorikk.map((curr, idx) => (
+					{formikBag.values.tpsf.identHistorikk.map((curr, idx) => (
 						<div key={idx}>
 							<FormikSelect
 								name={`tpsf.identHistorikk.${idx}.identtype`}

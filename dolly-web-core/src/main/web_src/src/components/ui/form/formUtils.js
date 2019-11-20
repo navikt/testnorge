@@ -5,7 +5,7 @@ export const fieldError = meta => {
 	return !!meta.touched && !!meta.error ? { feilmelding: meta.error } : null
 }
 
-export const panelError = formikProps => {
+export const panelError = formikBag => {
 	// Sjekk feil for panelet. Krever at det sendes inn hvilke attributter
 	// som ligger under hvilket panel.
 	return false

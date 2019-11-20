@@ -106,7 +106,7 @@ export default class DollyEndpoints {
 	}
 
 	static arbeidsforholdByIdent(ident, env) {
-		return `${aaregBase}?ident=${ident}&environment=${env}`
+		return `${aaregBase}?ident=${ident}&miljoe=${env}`
 	}
 
 	static personoppslag(ident) {
