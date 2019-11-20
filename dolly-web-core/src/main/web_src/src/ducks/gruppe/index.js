@@ -4,7 +4,7 @@ import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 import _find from 'lodash/find'
 import { DollyApi } from '~/service/Api'
-import success from '~/utils/SuccessAction'
+import { onSuccess } from '~/ducks/utils/requestActions'
 
 // GET
 export const getGruppe = createAction('GET_GRUPPE', DollyApi.getGruppeById)
@@ -27,9 +27,9 @@ const initialState = {
 }
 
 const getSuccess = combineActions(
-	success(getGruppe),
-	success(getGrupper),
-	success(getGrupperByUserId)
+	onSuccess(getGruppe),
+	onSuccess(getGrupper),
+	onSuccess(getGrupperByUserId)
 )
 
 export default handleActions(
@@ -41,7 +41,7 @@ export default handleActions(
 			const { data } = action.payload
 			return { ...state, data: Array.isArray(data) ? data : [data] }
 		},
-		[success(updateGruppe)](state, action) {
+		[onSuccess(updateGruppe)](state, action) {
 			return {
 				...state,
 				data: state.data.map((item, idx) => ({
@@ -50,7 +50,7 @@ export default handleActions(
 				}))
 			}
 		},
-		[success(deleteGruppe)](state, action) {
+		[onSuccess(deleteGruppe)](state, action) {
 			return {
 				...state,
 				data: state.data.filter(item => item.id !== action.meta.gruppeId)

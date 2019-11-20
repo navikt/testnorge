@@ -1,8 +1,9 @@
 import React from 'react'
+import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 
-const Nasjonalitet = ({ tpsfData, tpsfKriterier }) => {
+export const Nasjonalitet = ({ data, visTittel = true }) => {
 	const {
 		statsborgerskap,
 		statsborgerskapRegdato,
@@ -11,61 +12,29 @@ const Nasjonalitet = ({ tpsfData, tpsfKriterier }) => {
 		innvandretFraLandFlyttedato,
 		utvandretTilLand,
 		utvandretTilLandFlyttedato
-	} = tpsfData
-
-	const innvandretFraLandBestilt = tpsfKriterier.innvandretFraLand
+	} = data
 
 	return (
-		<div className="person-details-block">
-			<h3>Nasjonalitet</h3>
-			<div className="person-info-block">
-				<div className="person-info-content">
-					<h4>Statsborgerskap</h4>
-					<span>
-						<KodeverkValueConnector apiKodeverkId="Landkoder" value={statsborgerskap} />
-					</span>
-				</div>
-				<div className="person-info-content">
-					<h4>Statsborgerskap fra</h4>
-					<span>{Formatters.formatDate(statsborgerskapRegdato)}</span>
-				</div>
-				<div className="person-info-content">
-					<h4>Språk</h4>
-					<span>
-						<KodeverkValueConnector apiKodeverkId="Språk" value={sprakKode} />
-					</span>
-				</div>
-				{innvandretFraLandBestilt && (
-					<div className="person-info-content">
-						<h4>Innvandret fra land</h4>
-						<span>
-							<KodeverkValueConnector apiKodeverkId="Landkoder" value={innvandretFraLand} />
-						</span>
-					</div>
-				)}
-				{innvandretFraLandBestilt && (
-					<div className="person-info-content">
-						<h4>Innvandret dato</h4>
-						<span>{Formatters.formatDate(innvandretFraLandFlyttedato)}</span>
-					</div>
-				)}
-				{utvandretTilLand && (
-					<div className="person-info-content">
-						<h4>Utvandret til land</h4>
-						<span>
-							<KodeverkValueConnector apiKodeverkId="Landkoder" value={utvandretTilLand} />
-						</span>
-					</div>
-				)}
-				{utvandretTilLandFlyttedato && (
-					<div className="person-info-content">
-						<h4>Utvandret dato</h4>
-						<span>{Formatters.formatDate(utvandretTilLandFlyttedato)}</span>
-					</div>
-				)}
+		<div>
+			{visTittel && <SubOverskrift label="Nasjonalitet" />}
+			<div className="person-visning_content">
+				<TitleValue title="Statsborgerskap" kodeverk="Landkoder" value={statsborgerskap} />
+				<TitleValue
+					title="Statsborgerskap fra"
+					value={Formatters.formatDate(statsborgerskapRegdato)}
+				/>
+				<TitleValue title="Språk" kodeverk="Språk" value={sprakKode} />
+				<TitleValue title="Innvandret fra land" kodeverk="Landkoder" value={innvandretFraLand} />
+				<TitleValue
+					title="Innvandret dato"
+					value={Formatters.formatDate(innvandretFraLandFlyttedato)}
+				/>
+				<TitleValue title="Utvandret til land" kodeverk="Landkoder" value={utvandretTilLand} />
+				<TitleValue
+					title="Utvandret dato"
+					value={Formatters.formatDate(utvandretTilLandFlyttedato)}
+				/>
 			</div>
 		</div>
 	)
 }
-
-export default Nasjonalitet

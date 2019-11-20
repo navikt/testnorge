@@ -98,7 +98,7 @@ Formatters.kodeverkLabel = kodeverk => {
 }
 
 Formatters.oversettBoolean = value => {
-	if (value === null) return null
+	if (_isNil(value)) return value
 	return value === true || value === 'true'
 		? 'Ja'
 		: value === false || value === 'false'

@@ -1,30 +1,24 @@
 import React from 'react'
-import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
+import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
-const Postadresse = ({ postadresse }) => {
-	if (!postadresse) return false
+export const Postadresse = ({ postadresse }) => {
+	if (!postadresse || postadresse.length) return false
 
-	const { postLinje1, postLinje2, postLinje3, postLand } = postadresse
+	const { postLinje1, postLinje2, postLinje3, postLand } = postadresse[0]
 
 	return (
-		<div className="person-details-block">
-			<h3>Postadresse</h3>
-			<div className="person-info-block">
-				<div className="person-info-content">
-					<h4>Adresse</h4>
+		<div>
+			<SubOverskrift label="Postadresse" />
+			<div className="person-visning_content">
+				<TitleValue title="Postadresse">
 					<div>{postLinje1}</div>
 					<div>{postLinje2}</div>
 					<div>{postLinje3}</div>
-				</div>
-				<div className="person-info-content">
-					<h4>Land</h4>
-					<span>
-						<KodeverkValueConnector apiKodeverkId="Landkoder" value={postLand} />
-					</span>
-				</div>
+				</TitleValue>
+
+				<TitleValue title="Land" kodeverk="Landkoder" value={postLand} />
 			</div>
 		</div>
 	)
 }
-
-export default Postadresse

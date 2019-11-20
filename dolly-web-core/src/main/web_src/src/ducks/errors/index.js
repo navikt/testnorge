@@ -1,7 +1,6 @@
 import { createAction } from 'redux-actions'
 import { createSelector } from 'reselect'
 import _filter from 'lodash/filter'
-import failure from '~/utils/FailureAction'
 
 export const clearAllErrors = createAction('ERRORS/CLEAR_ALL_ERRORS')
 

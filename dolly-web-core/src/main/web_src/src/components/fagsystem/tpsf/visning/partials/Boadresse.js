@@ -1,8 +1,10 @@
 import React from 'react'
 import Formatters from '~/utils/DataFormatter'
-import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
+import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 
-const Boadresse = ({ boadresse }) => {
+export const Boadresse = ({ boadresse }) => {
 	if (!boadresse) return false
 
 	const {
@@ -29,22 +31,18 @@ const Boadresse = ({ boadresse }) => {
 	)
 
 	return (
-		<div className="person-details-block">
-			<h3>Bostedadresse</h3>
-			<div className="person-info-block">
-				<div className="person-info-content">
-					<h4>{Formatters.adressetypeToString(adressetype)}</h4>
-					{adressetype === 'GATE' && <div>{`${gateadresse} ${husnummer}\n`}</div>}
+		<div>
+			<SubOverskrift label="Boadresse" />
+			<div className="person-visning_content">
+				<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
+					{adressetype === 'GATE' && <div>{`${gateadresse} ${husnummer}`}</div>}
 					{adressetype === 'MATR' && matrikkelVisning}
-					<KodeverkValueConnector apiKodeverkId="Postnummer" value={postnr} />
-				</div>
-				<div className="person-info-content">
-					<h4>Flyttedato</h4>
-					<span>{Formatters.formatDate(flyttedato)}</span>
-				</div>
+					<KodeverkConnector navn="Postnummer" value={postnr}>
+						{(v, verdi) => <span>{verdi ? verdi.label : postnr}</span>}
+					</KodeverkConnector>
+				</TitleValue>
+				<TitleValue title="Flyttedato" value={Formatters.formatDate(flyttedato)} />
 			</div>
 		</div>
 	)
 }
-
-export default Boadresse
