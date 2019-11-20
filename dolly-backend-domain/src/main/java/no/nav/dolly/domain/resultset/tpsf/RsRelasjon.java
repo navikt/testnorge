@@ -1,68 +1,48 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
-import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsRelasjon {
+public class RsRelasjon extends RsTpsfBasisBestilling{
 
+    @ApiModelProperty(
+            position = 6,
+            value = "Identtype FNR/DNR/BOST, default er FNR"
+    )
     private String identtype;
 
-    private String kjonn;
-
+    @ApiModelProperty(
+            position = 7,
+            value = "Født etter denne dato. Dafault velges voksne personer i alder 30-60, mens barn får alder 0-18"
+    )
     private LocalDateTime foedtEtter;
 
+    @ApiModelProperty(
+            position = 8,
+            value = "Født før denne dato. Dafault velges voksne personer i alder 30-60, mens barn får alder 0-18"
+    )
     private LocalDateTime foedtFoer;
 
-    private String sprakKode;
+    @ApiModelProperty(
+            position = 9,
+            value = "Kjønn på testperson. Gyldige verdier: 'K', 'M' og 'U'. Ubestemt betyr at systemet velger for deg og generert person blir mann eller kvinne"
+    )
+    private String kjonn;
 
-    private LocalDateTime datoSprak;
-
-    private String spesreg;
-
-    private LocalDateTime spesregDato;
-
-    private String statsborgerskap;
-
-    private LocalDateTime statsborgerskapRegdato;
-
-    private LocalDateTime egenAnsattDatoFom;
-
-    private LocalDateTime egenAnsattDatoTom;
-
-    private Boolean utenFastBopel;
-
-    private RsAdresse boadresse;
-
-    private List<RsPostadresse> postadresse;
-
-    private String utvandretTilLand;
-
-    private LocalDateTime utvandretTilLandFlyttedato;
-
-    private Boolean harMellomnavn;
-
-    private String innvandretFraLand;
-
-    private LocalDateTime innvandretFraLandFlyttedato;
-
-    private Boolean erForsvunnet;
-
-    private LocalDateTime forsvunnetDato;
-
-    private LocalDateTime doedsdato;
-
+    @ApiModelProperty(
+            position = 100
+    )
     private List<RsIdenthistorikk> identHistorikk;
 }

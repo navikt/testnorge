@@ -39,7 +39,7 @@ public class RsTpsfUtvidetBestilling extends RsTpsfBasisBestilling {
 
     @ApiModelProperty(
             position = 5,
-            value = "Kjønn på testperson. Gyldige verdier: 'K', 'M' og 'U'. Ubestemt betyr at systemet velger for deg og generet person blir mann eller kvinne"
+            value = "Kjønn på testperson. Gyldige verdier: 'K', 'M' og 'U'. Ubestemt betyr at systemet velger for deg og generert person blir mann eller kvinne"
     )
     private String kjonn;
 
