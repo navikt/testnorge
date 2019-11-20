@@ -18,7 +18,7 @@ import java.util.Arrays;
 @Order(1)
 public class SecurityConfig implements HttpSecurityConfigurer {
 
-    @Value("${dolly-web.security.cors.origins:''}")
+    @Value("${dolly.web.security.cors.origins:''}")
     private String[] allowedOrigins;
 
     @Value("${security.frame.disable.localhost: false}")
