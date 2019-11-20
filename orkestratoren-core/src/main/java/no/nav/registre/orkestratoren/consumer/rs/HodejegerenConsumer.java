@@ -8,6 +8,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
@@ -64,8 +65,9 @@ public class HodejegerenConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })
+    @Async
     public void oppdaterHodejegerenCache(Long avspillergruppeId) {
         var getRequest = RequestEntity.get(oppdaterHodejegerenCacheUrl.expand(avspillergruppeId)).build();
-        restTemplate.exchange(getRequest, RESPONSE_TYPE);
+        restTemplate.exchange(getRequest, String.class);
     }
 }

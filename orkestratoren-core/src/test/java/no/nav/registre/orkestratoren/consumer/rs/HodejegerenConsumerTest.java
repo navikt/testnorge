@@ -122,7 +122,7 @@ public class HodejegerenConsumerTest {
     private void stubOppdaterCache(String expectedUri) {
         server.expect(requestToUriTemplate(expectedUri, avspillergruppeId))
                 .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess("[\"" + fnr + "\"]", MediaType.APPLICATION_JSON));
+                .andRespond(withSuccess("Avspillergruppe " + avspillergruppeId + " ble oppdatert", MediaType.APPLICATION_JSON));
     }
 
     private static String asJsonString(final Object object) throws JsonProcessingException {
