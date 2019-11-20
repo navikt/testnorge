@@ -30,7 +30,7 @@ const config = {
 // !DEVELOPMENT
 if (isDevMode) {
 	config.debug = true
-	config.services.dollyBackend = 'https://dolly-t2.nais.preprod.local/api/v1'
+	config.services.dollyBackend = 'https://dolly-u2.nais.preprod.local/api/v1'
 }
 
 export default config

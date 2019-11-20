@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import cn from 'classnames'
-import Header from '~/components/bestilling/sammendrag/header/Header'
+import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import { mapBestillingData } from './BestillingKriterieMapper'
@@ -75,7 +75,7 @@ export default function Bestillingskriterier({ bestilling }) {
 
 	return (
 		<div>
-			<Header label="Bestillingskriterier" />
+			<SubOverskrift label="Bestillingskriterier" />
 			{_renderBestillingsDetaljer(data)}
 		</div>
 	)

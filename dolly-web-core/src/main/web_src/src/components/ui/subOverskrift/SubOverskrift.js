@@ -1,11 +1,11 @@
 import React from 'react'
 import Icon from '~/components/ui/icon/Icon'
-import './Header.less'
+import './SubOverskrift.less'
 
-export default function SammendragHeader({ iconKind, label }) {
+export default function SubOverskrift({ iconKind, label }) {
 	if (!label) return false
 	return (
-		<div className="sammendrag-header">
+		<div className="sub-overskrift">
 			{iconKind && <Icon size={18} kind={iconKind} />}
 			<h3>{label}</h3>
 		</div>
