@@ -5,6 +5,7 @@ import static java.util.Objects.isNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,17 +27,58 @@ import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 @AllArgsConstructor
 public class RsDollyBestilling {
 
+    @ApiModelProperty(
+            position = 1,
+            value = "Liste av miljøer bestillingen gjelder for",
+            required = true
+    )
     private List<String> environments;
+
+    @ApiModelProperty(
+            position = 2,
+            value = "Navn på malbestillling"
+    )
     private String malBestillingNavn;
 
-    private RsInntektsinformasjon inntektsstub;
-    private List<OpprettSkattegrunnlag> sigrunstub;
-    private RsDigitalKontaktdata krrstub;
-    private RsUdiPerson udistub;
-    private List<RsArbeidsforhold> aareg;
-    private Arenadata arenaforvalter;
+    @ApiModelProperty(
+            position = 3
+    )
     private RsPdldata pdlforvalter;
+
+    @ApiModelProperty(
+            position = 4
+    )
+    private RsDigitalKontaktdata krrstub;
+
+    @ApiModelProperty(
+            position = 5
+    )
     private List<RsInstdata> instdata;
+
+    @ApiModelProperty(
+            position =6
+    )
+    private List<RsArbeidsforhold> aareg;
+
+    @ApiModelProperty(
+            position = 7
+    )
+    private List<OpprettSkattegrunnlag> sigrunstub;
+
+    @ApiModelProperty(
+            position = 8
+    )
+    private RsInntektsinformasjon inntektsstub;
+
+    @ApiModelProperty(
+            position = 9
+    )
+    private Arenadata arenaforvalter;
+
+    @ApiModelProperty(
+            position = 10
+    )
+    private RsUdiPerson udistub;
 
     public List<RsArbeidsforhold> getAareg() {
         if (isNull(aareg)) {

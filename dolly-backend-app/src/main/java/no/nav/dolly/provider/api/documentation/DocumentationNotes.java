@@ -11,27 +11,6 @@ public final class DocumentationNotes {
             + " &nbsp; \"nummertype\": \"KOMMUNENR/POSTNR\" <br />"
             + " &nbsp; \"nummer\": \"string\", <br />"
             + "} <br /><br />";
-    private static final String ADRESSE_COMMON =
-            "       &nbsp; &nbsp; \"postnr\": \"string\", <br />"
-                    + "     &nbsp; &nbsp; \"kommunenr\": \"string\", <br />"
-                    + "     &nbsp; &nbsp; \"flyttedato\": \"string\" <br />";
-    public static final String BOADRESSE_COMMENT = "Alternativt har Json-parametere for boadresse følgende parametre: <br />"
-            + " For gateadresse:  <br />"
-            + "     &nbsp; \"boadresse\": {<br />"
-            + "     &nbsp; &nbsp; \"adressetype\": \"GATE\", <br />"
-            + "     &nbsp; &nbsp; \"gateadresse\": \"string\", <br />"
-            + "     &nbsp; &nbsp; \"husnummer\": \"string\", <br />"
-            + "     &nbsp; &nbsp; \"gatekode\": \"string\",<br />"
-            + ADRESSE_COMMON + "} <br />"
-            + " For matrikkeladresse: <br />"
-            + "     &nbsp;   \"boadresse\": {<br />"
-            + "     &nbsp; &nbsp; \"adressetype\": \"MATR\", <br />"
-            + "     &nbsp; &nbsp; \"mellomnavn\": \"string\", <br />"
-            + "     &nbsp; &nbsp; \"gardsnr\": \"string\", <br />"
-            + "     &nbsp; &nbsp; \"bruksnr\": \"string\", <br />"
-            + "     &nbsp; &nbsp; \"festenr\": \"string\", <br />"
-            + "     &nbsp; &nbsp; \"undernr\": \"string\", <br />"
-            + ADRESSE_COMMON + "} <br /> <br />";
 
     public static final String UTEN_ARBEIDSTAKER = "I bestilling benyttes ikke feltet for arbeidstaker. <br /><br />";
 
@@ -92,10 +71,6 @@ public final class DocumentationNotes {
             + "     &nbsp; &nbsp; \"statsborgerskap\": \"[AUS,GER,FRA,etc]\" <br />"
             + EPILOG;
 
-    public static final String AAREG_JSON_COMMENT = "AAREG-integrasjon har abstrakt klasse <b>arbeidsgiver</b> med ORG eller PERS typer: <br />"
-            + "Enten { \"aktoertype\": \"ORG\", \"orgnummer\": \"999999999\" } <br />"
-            + "Eller: { \"aktoertype\": \"PERS\", \"ident\": \"0102199012345\" } <br /><br />";
-
-    public static final String BESTILLING_BESKRIVELSE = RANDOM_ADRESSE + BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET;
+    public static final String BESTILLING_BESKRIVELSE = RANDOM_ADRESSE + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET;
 
 }

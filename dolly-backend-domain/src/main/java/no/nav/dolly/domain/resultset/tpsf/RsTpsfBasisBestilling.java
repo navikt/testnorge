@@ -1,6 +1,10 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,9 +13,6 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.AdresseNrInfo;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,55 +20,149 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsTpsfBasisBestilling {
 
-    private RsAdresse boadresse;
-
-    private List<RsPostadresse> postadresse;
-
-    private String statsborgerskap;
-
-    private LocalDateTime statsborgerskapRegdato;
-
-    private String spesreg;
-
-    private LocalDateTime spesregDato;
-
-    private LocalDateTime doedsdato;
-
-    private String sivilstand;
-
+    @ApiModelProperty(
+            position = 10,
+            dataType = "LocalDateTime",
+            value = "Registreringsdato på personopplysningene. Hvis blankt settes dagens dato."
+    )
     private LocalDateTime regdato;
 
-    private LocalDateTime egenAnsattDatoFom;
-
-    private LocalDateTime egenAnsattDatoTom;
-
-    private String typeSikkerhetsTiltak;
-
-    private LocalDateTime sikkerhetsTiltakDatoFom;
-
-    private LocalDateTime sikkerhetsTiltakDatoTom;
-
-    private String beskrSikkerhetsTiltak;
-
-    private String sprakKode;
-
-    private LocalDateTime datoSprak;
-
-    private Boolean utenFastBopel;
-
-    private String utvandretTilLand;
-
-    private LocalDateTime utvandretTilLandFlyttedato;
-
+    @ApiModelProperty(
+            position = 11,
+            value = "Når satt genereres mellomnavn på testpersonen"
+    )
     private Boolean harMellomnavn;
 
-    private String innvandretFraLand;
-
-    private LocalDateTime innvandretFraLandFlyttedato;
-  
+    @ApiModelProperty(
+            position = 12
+    )
     private AdresseNrInfo adresseNrInfo;
 
+    @ApiModelProperty(
+            position = 13
+    )
+    private RsAdresse boadresse;
+
+    @ApiModelProperty(
+            position = 14
+    )
+    private List<RsPostadresse> postadresse;
+
+    @ApiModelProperty(
+            position = 15,
+            value = "Når satt får personen ikke boadresse, men kan ha en postadresse."
+    )
+    private Boolean utenFastBopel;
+
+    @ApiModelProperty(
+            position = 16,
+            value = "Diskresjonskoder i hht. kodeverk 'Diskresjonskoder'"
+    )
+    private String spesreg;
+
+    @ApiModelProperty(
+            position = 17,
+            dataType = "LocalDateTime",
+            value = "Diskresjonsdato, hvis blankt settes verdi lik fødselsdato"
+    )
+    private LocalDateTime spesregDato;
+
+    @ApiModelProperty(
+            position = 18,
+            value = "Når satt får personstatus verdien FOSV (forsvunnet/savnet)"
+    )
     private Boolean erForsvunnet;
 
+    @ApiModelProperty(
+            position = 19,
+            dataType = "LocalDateTime",
+            value = "Forsvunnet dato, hvis blankt settes verdi lik fødselsdato"
+    )
     private LocalDateTime forsvunnetDato;
+
+    @ApiModelProperty(
+            position = 20,
+            dataType = "LocalDateTime",
+            value = "Egenansatt dato fra"
+    )
+    private LocalDateTime egenAnsattDatoFom;
+
+    @ApiModelProperty(
+            position = 21,
+            dataType = "LocalDateTime",
+            value = "Egenansatt dato til. Hvis tomt og egeneansatt-dato-fra er satt indikerer dette et nåværende NAV-ansatt forhold"
+    )
+    private LocalDateTime egenAnsattDatoTom;
+
+    @ApiModelProperty(
+            position = 22,
+            value = "Statsborgerskap. Hvis blankt velges Norge for FNR person og et tilfeldig annet land for DNR/BOST-person"
+    )
+    private String statsborgerskap;
+
+    @ApiModelProperty(
+            position = 23,
+            dataType = "LocalDateTime",
+            value = "Statsborgerskap registeringsdato. Hvis blankt settes dato lik fødselsdato"
+    )
+    private LocalDateTime statsborgerskapRegdato;
+
+    @ApiModelProperty(
+            position = 24,
+            value = "Målform og språk i hht kodevek 'Språk'. Hvis blankt settes Norsk bokmål til FNR-person og tilfeldig språk for DNR-person"
+    )
+    private String sprakKode;
+
+    @ApiModelProperty(
+            position = 25,
+            dataType = "LocalDateTime",
+            value = "Dato språk. Hvis tomt settes dato lik fødselsdato"
+    )
+    private LocalDateTime datoSprak;
+
+    @ApiModelProperty(
+            position = 26,
+            value = "Sivilstand i hht kodeverk 'Sivilstander'"
+    )
+    private String sivilstand;
+
+    @ApiModelProperty(
+            position = 27,
+            dataType = "LocalDateTime",
+            value = "Dato sivilstand. Hvis blankt settes dagens dato"
+    )
+    private LocalDateTime sivilstandRegdato;
+
+    @ApiModelProperty(
+            position = 28,
+            value = "Innvandret fra land i hht kodeverk 'Landkoder'. Hvis tomt settes et tilfeldig land"
+    )
+    private String innvandretFraLand;
+
+    @ApiModelProperty(
+            position = 29,
+            dataType = "LocalDateTime",
+            value = "Innvandret fra land flyttedato. Hvis blankt settes dato lik fødselsdato"
+    )
+    private LocalDateTime innvandretFraLandFlyttedato;
+
+    @ApiModelProperty(
+            position = 30,
+            value = "Utvandret til land i hht kodeverk 'Landkoder'"
+    )
+    private String utvandretTilLand;
+
+    @ApiModelProperty(
+            position = 31,
+            dataType = "LocalDateTime",
+            value = "Utvandret til land flyttedato. Hvis blankt og utvandret til land er satt benyttes dagens dato"
+    )
+    private LocalDateTime utvandretTilLandFlyttedato;
+
+    @ApiModelProperty(
+            position = 32,
+            dataType = "LocalDateTime",
+            value = "Sette dødsdato på person"
+    )
+    private LocalDateTime doedsdato;
 }

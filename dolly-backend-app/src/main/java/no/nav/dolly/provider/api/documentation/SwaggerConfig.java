@@ -12,7 +12,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import com.fasterxml.classmate.TypeResolver;
 
+import no.nav.dolly.domain.resultset.aareg.RsAktoer;
+import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
@@ -49,7 +52,11 @@ public class SwaggerConfig {
 
     @Bean
     public Docket v1ApiDocket() {
+        TypeResolver typeResolver = new TypeResolver();
         return new Docket(DocumentationType.SWAGGER_2)
+                .additionalModels(
+                        typeResolver.resolve(RsAdresse.class),
+                        typeResolver.resolve(RsAktoer.class))
                 .apiInfo(new ApiInfo(apiV1Name, apiV1Description, null, null, null, null, null, emptyList()))
                 .select().apis(any()).paths(ant("/api/v1/**")).build()
                 .globalOperationParameters(globalHeaders());
