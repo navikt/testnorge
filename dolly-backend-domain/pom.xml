@@ -23,9 +23,8 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.tjenester.domene.arbeidsforhold</groupId>
-            <artifactId>nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon</artifactId>
-            <classifier>jaxws</classifier>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
         </dependency>
     </dependencies>
 

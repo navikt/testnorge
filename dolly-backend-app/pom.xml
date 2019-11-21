@@ -133,12 +133,6 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.tjenester.domene.arbeidsforhold</groupId>
-            <artifactId>nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon</artifactId>
-            <classifier>jaxws</classifier>
-        </dependency>
-
-        <dependency>
             <groupId>org.codehaus.jettison</groupId>
             <artifactId>jettison</artifactId>
         </dependency>
