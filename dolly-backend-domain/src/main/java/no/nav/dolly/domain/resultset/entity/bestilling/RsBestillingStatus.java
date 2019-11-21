@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
+import springfox.documentation.spring.web.json.Json;
 
 @Getter
 @Setter
@@ -34,8 +35,8 @@ public class RsBestillingStatus {
     private List<RsStatusRapport> status;
 
     private Long opprettetFraId;
-    private String tpsfKriterier;
-    private String bestKriterier;
+    private Json tpsfKriterier;
+    private Json bestKriterier;
     private String openamSent;
     private String opprettFraIdenter;
 
