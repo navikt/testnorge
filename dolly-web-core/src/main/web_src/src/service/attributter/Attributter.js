@@ -23,11 +23,6 @@ export const getAttributterForUtvalgListe = (valgte = {}) => {
 }
 
 const createPathAttrs = _memoize(() => ({
-	panel: _mapValues(PANELER, (value, key) => {
-		return getAttributter()
-			.filter(a => a.panel.id === key)
-			.map(m => m.path)
-	}),
 	kategori: _mapValues(KATEGORIER, (value, key) => {
 		return getAttributter()
 			.filter(a => a.kategori.id === key)

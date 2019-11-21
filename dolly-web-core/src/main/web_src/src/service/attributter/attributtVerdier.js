@@ -43,7 +43,7 @@ export const PANELER = addId({
 export const KATEGORIER = addId({
 	alder: { label: 'Alder' },
 	nasjonalitet: { label: 'Nasjonalitet' },
-	instopphold: { label: 'Instutisjonsopphold' },
+	instdata: { label: 'Instutisjonsopphold' },
 	identifikasjon: { label: 'Identifikasjon' },
 	diverse: { label: 'Diverse' },
 	boadresse: { label: 'Boadresse' },
@@ -106,10 +106,10 @@ export const ATTRIBUTTER = [
 	},
 	{
 		panel: PANELER.personinfo,
-		kategori: KATEGORIER.instopphold,
-		path: 'tpsf.instutisjonsopphold',
+		kategori: KATEGORIER.instdata,
+		path: 'instdata',
 		label: 'Har instutisjonsopphold',
-		name: 'instutisjonsopphold'
+		name: 'instdata'
 	},
 	{
 		panel: PANELER.personinfo,

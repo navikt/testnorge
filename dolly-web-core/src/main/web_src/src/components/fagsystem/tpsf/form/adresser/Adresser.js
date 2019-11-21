@@ -6,11 +6,13 @@ import { Boadresse } from './partials/boadresse/Boadresse'
 import { MatrikkelAdresse } from './partials/MatrikkelAdresse'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 
+const paths = [pathAttrs.kategori.boadresse, pathAttrs.kategori.postadresse].flat()
+
 export const Adresser = ({ formikBag }) => {
 	const [type, setOn, setOff] = useBoolean(true)
 
 	return (
-		<Vis attributt={pathAttrs.panel.adresser}>
+		<Vis attributt={paths}>
 			<Panel heading="Adresser" startOpen>
 				<Vis attributt="tpsf.boadresse">
 					<button onClick={setOn}>Gateadresse</button>

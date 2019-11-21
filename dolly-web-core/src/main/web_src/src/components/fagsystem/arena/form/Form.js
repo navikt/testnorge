@@ -1,8 +1,8 @@
 import React from 'react'
 import * as Yup from 'yup'
 import _get from 'lodash/get'
+import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { panelError } from '~/components/ui/form/formUtils'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -10,7 +10,8 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { MedServicebehov } from './partials/MedServicebehov'
 
 export const ArenaForm = ({ formikBag }) => {
-	const servicebehovAktiv = formikBag.values.arenaforvalter.arenaBrukertype === 'MED_SERVICEBEHOV'
+	const servicebehovAktiv =
+		_get(formikBag, 'values.arenaforvalter.arenaBrukertype') === 'MED_SERVICEBEHOV'
 
 	// Bytter struktur på hele skjema
 	const handleAfterChange = val => {
@@ -22,34 +23,37 @@ export const ArenaForm = ({ formikBag }) => {
 	}
 
 	return (
-		<Panel heading="Arena" hasErrors={panelError(formikBag)} startOpen>
-			<FormikSelect
-				name="arenaforvalter.arenaBrukertype"
-				label="Brukertype"
-				afterChange={handleAfterChange}
-				options={Options('arenaBrukertype')}
-				isClearable={false}
-			/>
-			{!servicebehovAktiv && (
-				<FormikDatepicker
-					name="arenaforvalter.inaktiveringDato"
-					label="Inaktiv fra dato"
-					disabled={servicebehovAktiv}
+		<Vis attributt={pathAttrs.kategori.arena}>
+			<Panel heading="Arena" hasErrors={panelError(formikBag)} startOpen>
+				<FormikSelect
+					name="arenaforvalter.arenaBrukertype"
+					label="Brukertype"
+					afterChange={handleAfterChange}
+					options={Options('arenaBrukertype')}
+					isClearable={false}
 				/>
-			)}
-			{servicebehovAktiv && <MedServicebehov formikBag={formikBag} />}
-		</Panel>
+				{!servicebehovAktiv && (
+					<FormikDatepicker
+						name="arenaforvalter.inaktiveringDato"
+						label="Inaktiv fra dato"
+						disabled={servicebehovAktiv}
+					/>
+				)}
+				{servicebehovAktiv && <MedServicebehov formikBag={formikBag} />}
+			</Panel>
+		</Vis>
 	)
 }
 
-ArenaForm.initialValues = () => {
-	return {
+ArenaForm.initialValues = attrs => {
+	const initial = {
 		arenaforvalter: {
 			arenaBrukertype: Options('arenaBrukertype')[0].value,
 			inaktiveringDato: null,
 			kvalifiseringsgruppe: null
 		}
 	}
+	return attrs.arenaforvalter ? initial : {}
 }
 
 ArenaForm.validation = {

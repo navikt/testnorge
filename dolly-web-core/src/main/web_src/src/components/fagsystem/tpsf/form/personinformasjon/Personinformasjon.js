@@ -8,8 +8,15 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { IdentHistorikk } from './partials/IdentHistorikk'
 import { Diverse } from './partials/Diverse'
 
+const attrPaths = [
+	pathAttrs.kategori.alder,
+	pathAttrs.kategori.nasjonalitet,
+	pathAttrs.kategori.diverse,
+	['tpsf.identHistorikk']
+].flat()
+
 export const Personinformasjon = ({ formikBag }) => (
-	<Vis attributt={pathAttrs.panel.personinfo}>
+	<Vis attributt={attrPaths}>
 		<Panel heading="Personinformasjon" hasErrors={panelError(formikBag)}>
 			<Kategori title="Alder" vis={pathAttrs.kategori.alder}>
 				<FormikDatepicker name="tpsf.foedtEtter" label="Født etter" />
