@@ -1,4 +1,6 @@
 create sequence hibernate_sequence start with 1 increment by 1;
+
+
 create table arbeidsforhold
 (
   id                  bigint           not null,
@@ -8,6 +10,8 @@ create table arbeidsforhold
   foerste_fravaersdag date,
   primary key (id)
 );
+
+
 create table arbeidsgiver
 (
   id                      bigint not null,
@@ -16,6 +20,8 @@ create table arbeidsgiver
   virksomhetsnummer       varchar(255),
   primary key (id)
 );
+
+
 create table delvis_fravaer
 (
   id                               bigint           not null,
@@ -24,12 +30,16 @@ create table delvis_fravaer
   omsorgspenger_delvis_fravaers_id bigint,
   primary key (id)
 );
+
+
 create table eier
 (
   id   bigint not null,
   navn varchar(255),
   primary key (id)
 );
+
+
 create table gradering_i_foreldrepenger
 (
   id                            bigint not null,
@@ -38,6 +48,8 @@ create table gradering_i_foreldrepenger
   gradering_i_foreldrepenger_id bigint,
   primary key (id)
 );
+
+
 create table inntektsmelding
 (
   id                                                       bigint           not null,
@@ -61,6 +73,8 @@ create table inntektsmelding
   inntektsmelding_id                                       bigint,
   primary key (id)
 );
+
+
 create table naturalytelse_detaljer
 (
   id                              bigint           not null,
@@ -71,6 +85,8 @@ create table naturalytelse_detaljer
   gjenopptakelse_naturalytelse_id bigint,
   primary key (id)
 );
+
+
 create table periode
 (
   id                                bigint not null,
@@ -82,6 +98,8 @@ create table periode
   avtalt_ferie_periode_id           bigint,
   primary key (id)
 );
+
+
 create table refusjons_endring
 (
   id                     bigint           not null,
@@ -90,6 +108,8 @@ create table refusjons_endring
   refusjon_endring_id    bigint,
   primary key (id)
 );
+
+
 create table utsettelse_av_foreldrepenger
 (
   id                              bigint not null,
@@ -98,6 +118,8 @@ create table utsettelse_av_foreldrepenger
   utsettelse_av_foreldrepenger_id bigint,
   primary key (id)
 );
+
+
 alter table arbeidsgiver
   add constraint UK_g28nsmh4sbr8rvakxjrpcq4cb unique (virksomhetsnummer);
 alter table delvis_fravaer

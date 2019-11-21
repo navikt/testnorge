@@ -1,6 +1,5 @@
 package no.nav.registre.inntektsmeldingstub.database.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,7 +31,6 @@ public class Eier {
 
     private String navn;
 
-    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "inntektsmelding_id", referencedColumnName = "id")
     @Builder.Default

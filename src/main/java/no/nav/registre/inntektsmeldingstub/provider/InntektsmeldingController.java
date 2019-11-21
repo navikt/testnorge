@@ -1,7 +1,9 @@
 package no.nav.registre.inntektsmeldingstub.provider;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.inntektsmeldingstub.provider.validation.InntektsmeldingRequestValidator;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLInntektsmeldingM;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import no.nav.registre.inntektsmeldingstub.MeldingsType;
-import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
+// import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
 import no.nav.registre.inntektsmeldingstub.service.InntektsmeldingService;
 import no.nav.registre.inntektsmeldingstub.util.XmlInntektsmelding201809;
 import no.nav.registre.inntektsmeldingstub.util.XmlInntektsmelding201812;
+import no.nav.registre.inntektsmeldingstub.provider.validation.ValidationException;
+import no.nav.registre.inntektsmeldingstub.service.rs.Inntektsmelding;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/v1/inntektsmelding")
@@ -46,6 +51,13 @@ public class InntektsmeldingController {
             @RequestParam String eier,
             @RequestBody List<Inntektsmelding> meldinger
     ) {
+        try {
+            InntektsmeldingRequestValidator.validate(meldinger, MeldingsType.TYPE_2018_09, eier);
+        } catch (ValidationException e) {
+            String errorstring = "Kunne ikke opprette inntektsmelding:\n" + e.getErrors();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorstring);
+        }
+
         return ResponseEntity.ok(
                 service.saveMeldinger(meldinger, MeldingsType.TYPE_2018_09, eier)
         );
@@ -68,6 +80,13 @@ public class InntektsmeldingController {
             @RequestParam String eier,
             @RequestBody List<Inntektsmelding> meldinger
     ) {
+        try {
+            InntektsmeldingRequestValidator.validate(meldinger, MeldingsType.TYPE_2018_12, eier);
+        } catch (ValidationException e) {
+            String errorstring = "Kunne ikke opprette inntektsmelding:\n" + e.getErrors();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorstring);
+        }
+
         return ResponseEntity.ok(
                 service.saveMeldinger(meldinger, MeldingsType.TYPE_2018_12, eier)
         );

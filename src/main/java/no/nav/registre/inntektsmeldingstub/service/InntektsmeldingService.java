@@ -3,6 +3,7 @@ package no.nav.registre.inntektsmeldingstub.service;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inntektsmeldingstub.service.rs.Inntekt;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -56,9 +57,6 @@ public class InntektsmeldingService {
         }
         List<Inntektsmelding> lagredeMeldinger = new ArrayList<>(inntektsmeldinger.size());
         for (Inntektsmelding inntektsmelding : inntektsmeldinger) {
-            if (inntektsmelding.getArbeidsgiver() == null && inntektsmelding.getPrivatArbeidsgiver() == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Inntektsmeldingen må inneholde en arbeidsgiver");
-            }
 
             if (inntektsmelding.getArbeidsgiver() != null) {
                 inntektsmelding.setArbeidsgiver(createOrFindArbeidsgiver(inntektsmelding.getArbeidsgiver()));
@@ -81,16 +79,71 @@ public class InntektsmeldingService {
             inntektsmelding.setOmsorgspengerFravaersPeriodeListe(Lists.newArrayList(periodeRepository.saveAll(inntektsmelding.getOmsorgspengerFravaersPeriodeListe())));
             inntektsmelding.setOmsorgspengerDelvisFravaersListe(Lists.newArrayList(delvisFravaerRepository.saveAll(inntektsmelding.getOmsorgspengerDelvisFravaersListe())));
             inntektsmelding.setEier(opprettetAv);
+
             Inntektsmelding lagret = inntektsmeldingRepository.save(inntektsmelding);
             List<Inntektsmelding> arbeidsgiverInntektsmeldinger = Lists.newArrayList(inntektsmeldingRepository.findAllById(
-                    lagret.getArbeidsgiver().getInntektsmeldinger().stream().map(Inntektsmelding::getId).collect(Collectors.toList())
+                    lagret.getArbeidsgiver().getInntektsmeldinger().stream()
+                            .map(Inntektsmelding::getId)
+                            .collect(Collectors.toList())
             ));
+
             arbeidsgiverInntektsmeldinger.add(inntektsmelding);
             inntektsmelding.getArbeidsgiver().setInntektsmeldinger(arbeidsgiverInntektsmeldinger);
             lagret.setArbeidsgiver(arbeidsgiverRepository.save(inntektsmelding.getArbeidsgiver()));
             lagredeMeldinger.add(lagret);
         }
         return lagredeMeldinger;
+    }
+
+    public List<Inntektsmelding> save201812Melding(List<no.nav.registre.inntektsmeldingstub.service.rs.Inntektsmelding> inntektsmeldinger, Eier eier) {
+
+        List<Inntektsmelding> lagredeMeldinger = new ArrayList<>(inntektsmeldinger.size());
+
+        for (no.nav.registre.inntektsmeldingstub.service.rs.Inntektsmelding melding : inntektsmeldinger) {
+            Inntektsmelding databaseInntektsMelding = Inntektsmelding.builder()
+                    .eier(eier)
+                    .ytelse(melding.getYtelse())
+                    .arbeidstakerFnr(melding.getArbeidstakerFnr())
+                    .aarsakTilInnsending(melding.getAarsakTilInnsending())
+                    .avsendersystemNavn(melding.getAvsendersystem().getSystemnavn())
+                    .avsendersystemVersjon(melding.getAvsendersystem().getSystemversjon())
+                    .innsendingstidspunkt(melding.getAvsendersystem().getInnsendingstidspunkt())
+                    .naerRelasjon(melding.isNaerRelasjon())
+
+                    .privatArbeidsgiver()
+                    .arbeidsgiver()
+                    .arbeidsforhold()
+
+                    .endringIRefusjonListe()
+                    .refusjonsbeloepPrMnd()
+                    .refusjonsopphoersdato()
+
+                    .gjenopptakelseNaturalytelseListe()
+                    .opphoerAvNaturalytelseListe()
+
+                    .omsorgHarUtbetaltPliktigeDager()
+                    .omsorgspengerDelvisFravaersListe()
+                    .omsorgspengerFravaersPeriodeListe()
+
+                    .pleiepengerPeriodeListe()
+
+                    .startdatoForeldrepengeperiode()
+
+                    .sykepengerBegrunnelseForReduksjonEllerIkkeUtbetalt()
+                    .sykepengerBruttoUtbetalt()
+                    .sykepengerPerioder()
+                    .build();
+
+
+        }
+
+
+        return null;
+    }
+
+    public List<Inntektsmelding> save201809Melding(List<Inntektsmelding> inntektsmeldinger, Eier eier) {
+
+        return null;
     }
 
     public Inntektsmelding findInntektsmelding(Long id) {
@@ -109,9 +162,7 @@ public class InntektsmeldingService {
     }
 
     private Arbeidsforhold createOrFindArbeidsforhold(Arbeidsforhold arbeidsforhold) {
-        if (arbeidsforhold == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Inntektsmeldingen må inneholde et arbeidsforhold");
-        }
+
         Optional<Arbeidsforhold> optionalArbeidsforhold = Optional.empty();
         if (arbeidsforhold.getId() != null) {
 

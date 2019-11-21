@@ -1,7 +1,5 @@
 package no.nav.registre.inntektsmeldingstub.database.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +25,6 @@ import java.util.List;
 @NoArgsConstructor
 public class Arbeidsgiver {
 
-    @JsonIgnore
     @OneToMany(mappedBy = "arbeidsgiver", cascade = CascadeType.ALL)
     @Builder.Default
     List<Inntektsmelding> inntektsmeldinger = Collections.emptyList();
@@ -35,7 +32,6 @@ public class Arbeidsgiver {
     @GeneratedValue
     private Long id;
     @Column(unique = true)
-    @JsonProperty("ident")
     private String virksomhetsnummer;
     private String kontaktinformasjonNavn;
     private String telefonnummer;
