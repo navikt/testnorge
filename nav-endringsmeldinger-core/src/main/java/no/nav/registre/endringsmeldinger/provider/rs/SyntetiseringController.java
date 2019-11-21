@@ -25,7 +25,9 @@ public class SyntetiseringController {
     @LogExceptions
     @ApiOperation(value = "Her bestilles generering av syntetiske meldinger for eksisterende identer. Disse meldingene sendes til TPS gjennom TPSF.")
     @PostMapping(value = "/generer")
-    public List<RsPureXmlMessageResponse> genererNavMeldinger(@RequestBody SyntetiserNavEndringsmeldingerRequest syntetiserNavEndringsmeldingerRequest) throws TransformerException {
+    public List<RsPureXmlMessageResponse> genererNavMeldinger(
+            @RequestBody SyntetiserNavEndringsmeldingerRequest syntetiserNavEndringsmeldingerRequest
+    ) throws TransformerException {
         return endringsmeldingService.opprettSyntetiskeNavEndringsmeldinger(syntetiserNavEndringsmeldingerRequest);
     }
 }

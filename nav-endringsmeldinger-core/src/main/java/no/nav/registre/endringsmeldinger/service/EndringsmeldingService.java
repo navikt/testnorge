@@ -55,29 +55,31 @@ public class EndringsmeldingService {
     @Value("${SFE_ENDRINGSMELDING.queueName}")
     private String queueName;
 
-    public List<RsPureXmlMessageResponse> opprettSyntetiskeNavEndringsmeldinger(SyntetiserNavEndringsmeldingerRequest syntetiserNavEndringsmeldingerRequest) throws TransformerException {
-        final Map<String, Integer> antallMeldingerPerEndringskode = syntetiserNavEndringsmeldingerRequest.getAntallMeldingerPerEndringskode();
-        final List<Endringskoder> filtrerteEndringskoder = filtrerEndringskoder(antallMeldingerPerEndringskode.keySet());
-        List<String> utvalgteIdenter = hentLevendeIdenter(syntetiserNavEndringsmeldingerRequest);
+    public List<RsPureXmlMessageResponse> opprettSyntetiskeNavEndringsmeldinger(
+            SyntetiserNavEndringsmeldingerRequest syntetiserNavEndringsmeldingerRequest
+    ) throws TransformerException {
+        final var antallMeldingerPerEndringskode = syntetiserNavEndringsmeldingerRequest.getAntallMeldingerPerEndringskode();
+        final var filtrerteEndringskoder = filtrerEndringskoder(antallMeldingerPerEndringskode.keySet());
+        var utvalgteIdenter = hentLevendeIdenter(syntetiserNavEndringsmeldingerRequest);
         List<SendTilTpsRequest> sendTilTpsRequests = new ArrayList<>(utvalgteIdenter.size());
 
-        TransformerFactory tf = TransformerFactory.newInstance();
+        var tf = TransformerFactory.newInstance();
         Transformer transformer = tf.newTransformer();
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         transformer.setOutputProperty(OutputKeys.INDENT, "no");
 
-        for (Endringskoder endringskode : filtrerteEndringskoder) {
+        for (var endringskode : filtrerteEndringskoder) {
             try {
-                List<Document> syntetiserteNavEndringsmeldinger = navEndringsmeldingerSyntetisererenConsumer
+                var syntetiserteNavEndringsmeldinger = navEndringsmeldingerSyntetisererenConsumer
                         .getSyntetiserteNavEndringsmeldinger(endringskode.getEndringskode(), antallMeldingerPerEndringskode.get(endringskode.getEndringskode())).getBody();
 
                 if (syntetiserteNavEndringsmeldinger != null) {
-                    for (Document document : syntetiserteNavEndringsmeldinger) {
-                        Node offentligIdent = document.getElementsByTagName("offentligIdent").item(0);
+                    for (var document : syntetiserteNavEndringsmeldinger) {
+                        var offentligIdent = document.getElementsByTagName("offentligIdent").item(0);
                         offentligIdent.setTextContent(utvalgteIdenter.remove(rand.nextInt(utvalgteIdenter.size())));
-                        StringWriter stringWriter = new StringWriter();
+                        var stringWriter = new StringWriter();
                         transformer.transform(new DOMSource(document), new StreamResult(stringWriter));
-                        String output = stringWriter.toString().replaceAll("\n|\r", "");
+                        var output = stringWriter.toString().replaceAll("\n|\r", "");
                         sendTilTpsRequests.add(SendTilTpsRequest.builder()
                                 .miljoe(syntetiserNavEndringsmeldingerRequest.getMiljoe())
                                 .ko(queueName)
@@ -93,12 +95,12 @@ public class EndringsmeldingService {
 
         List<RsPureXmlMessageResponse> responsFraTps = new ArrayList<>(sendTilTpsRequests.size());
 
-        for (SendTilTpsRequest sendTilTpsRequest : sendTilTpsRequests) {
+        for (var sendTilTpsRequest : sendTilTpsRequests) {
             responsFraTps.add(sendEndringsmeldingerTilTps(sendTilTpsRequest));
         }
 
         try {
-            List<String> statusFraFeiledeMeldinger = trekkUtStatusFraTps(responsFraTps).getOffentligIdentMedUtfyllendeMelding();
+            var statusFraFeiledeMeldinger = trekkUtStatusFraTps(responsFraTps).getOffentligIdentMedUtfyllendeMelding();
             log.info("Antall meldinger sendt til TPS: {}. Antall feilede meldinger: {}. Status på feilede meldinger: {}", responsFraTps.size(), statusFraFeiledeMeldinger.size(), statusFraFeiledeMeldinger.toString());
         } catch (ParserConfigurationException e) {
             log.warn("Kunne ikke opprette XML-parser", e);
@@ -107,17 +109,21 @@ public class EndringsmeldingService {
         return responsFraTps;
     }
 
-    private RsPureXmlMessageResponse sendEndringsmeldingerTilTps(SendTilTpsRequest sendTilTpsRequest) {
+    private RsPureXmlMessageResponse sendEndringsmeldingerTilTps(
+            SendTilTpsRequest sendTilTpsRequest
+    ) {
         return tpsfConsumer.sendEndringsmeldingTilTps(sendTilTpsRequest);
     }
 
-    private List<String> hentLevendeIdenter(SyntetiserNavEndringsmeldingerRequest syntetiserNavEndringsmeldingerRequest) {
-        int antallMeldingerTotalt = 0;
-        for (Integer antallMeldinger : syntetiserNavEndringsmeldingerRequest.getAntallMeldingerPerEndringskode().values()) {
+    private List<String> hentLevendeIdenter(
+            SyntetiserNavEndringsmeldingerRequest syntetiserNavEndringsmeldingerRequest
+    ) {
+        var antallMeldingerTotalt = 0;
+        for (var antallMeldinger : syntetiserNavEndringsmeldingerRequest.getAntallMeldingerPerEndringskode().values()) {
             antallMeldingerTotalt += antallMeldinger;
         }
 
-        List<String> levendeIdenter = getLevendeIdenter(syntetiserNavEndringsmeldingerRequest.getAvspillergruppeId());
+        var levendeIdenter = getLevendeIdenter(syntetiserNavEndringsmeldingerRequest.getAvspillergruppeId());
         List<String> utvalgteIdenter = new ArrayList<>(antallMeldingerTotalt);
 
         for (int i = 0; i < antallMeldingerTotalt; i++) {
@@ -127,13 +133,17 @@ public class EndringsmeldingService {
         return utvalgteIdenter;
     }
 
-    private List<Endringskoder> filtrerEndringskoder(Set<String> endringskoder) {
-        List<Endringskoder> filtrerteEndringskoder = Arrays.asList(Endringskoder.values());
+    private List<Endringskoder> filtrerEndringskoder(
+            Set<String> endringskoder
+    ) {
+        var filtrerteEndringskoder = Arrays.asList(Endringskoder.values());
         return filtrerteEndringskoder.stream().filter(kode -> endringskoder.contains(kode.getEndringskode())).collect(Collectors.toList());
     }
 
     @Timed(value = "nav-endringsmeldinger.resource.latency", extraTags = { "operation", "hodejegeren" })
-    private List<String> getLevendeIdenter(Long avspillergruppeId) {
+    private List<String> getLevendeIdenter(
+            Long avspillergruppeId
+    ) {
         return hodejegerenConsumer.getLevende(avspillergruppeId);
     }
 }

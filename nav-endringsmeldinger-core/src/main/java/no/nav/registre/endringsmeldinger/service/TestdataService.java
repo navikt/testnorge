@@ -10,7 +10,6 @@ import org.w3c.dom.Document;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -34,12 +33,12 @@ public class TestdataService {
     private TpsfConsumer tpsfConsumer;
 
     public List<RsPureXmlMessageResponse> genererKontonummerOgSendTilTps(String koeNavn, GenererKontonummerRequest genererKontonummerRequest) throws TransformerException {
-        List<String> identer = genererKontonummerRequest.getIdenter();
-        String kontonummer = genererKontonummerRequest.getKontonummer();
+        var identer = genererKontonummerRequest.getIdenter();
+        var kontonummer = genererKontonummerRequest.getKontonummer();
 
         List<Document> kontonummerEndringsmeldinger = new ArrayList<>();
 
-        for (String ident : identer) {
+        for (var ident : identer) {
             try {
                 kontonummerEndringsmeldinger.add(opprettDokumentForNyttKontonummer(ident, kontonummer));
             } catch (ParserConfigurationException e) {
@@ -49,17 +48,17 @@ public class TestdataService {
 
         List<RsPureXmlMessageResponse> responsFraTps = new ArrayList<>(kontonummerEndringsmeldinger.size());
 
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer transformer = tf.newTransformer();
+        var tf = TransformerFactory.newInstance();
+        var transformer = tf.newTransformer();
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         transformer.setOutputProperty(OutputKeys.INDENT, "no");
         transformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
 
-        for (Document endringsmelding : kontonummerEndringsmeldinger) {
-            StringWriter stringWriter = new StringWriter();
+        for (var endringsmelding : kontonummerEndringsmeldinger) {
+            var stringWriter = new StringWriter();
             transformer.transform(new DOMSource(endringsmelding), new StreamResult(stringWriter));
-            String output = stringWriter.toString().replaceAll("\n|\r", "");
-            SendTilTpsRequest sendTilTpsRequest = SendTilTpsRequest.builder()
+            var output = stringWriter.toString().replaceAll("\n|\r", "");
+            var sendTilTpsRequest = SendTilTpsRequest.builder()
                     .miljoe(genererKontonummerRequest.getMiljoe())
                     .ko(koeNavn)
                     .melding(output)
@@ -70,10 +69,10 @@ public class TestdataService {
         }
 
         try {
-            List<String> statusFraFeiledeMeldinger = trekkUtStatusFraTps(responsFraTps).getOffentligIdentMedUtfyllendeMelding();
+            var statusFraFeiledeMeldinger = trekkUtStatusFraTps(responsFraTps).getOffentligIdentMedUtfyllendeMelding();
             log.info("Antall meldinger sendt til TPS: {}. Antall feilede meldinger: {}. Status på feilede meldinger: ", responsFraTps.size(), statusFraFeiledeMeldinger.size());
-            StringBuilder sb = new StringBuilder("\r\n");
-            for (String status : statusFraFeiledeMeldinger) {
+            var sb = new StringBuilder("\r\n");
+            for (var status : statusFraFeiledeMeldinger) {
                 sb.append(status).append("\r\n");
             }
             log.info(sb.toString());

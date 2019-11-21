@@ -14,16 +14,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.w3c.dom.Document;
 
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
-import java.util.List;
 
 import no.nav.registre.endringsmeldinger.service.Endringskoder;
 
@@ -43,15 +40,15 @@ public class NavEndringsmeldingerSyntetisererenConsumerTest {
     public void shouldGetSyntetiserteMeldinger() throws TransformerException {
         stubBisysSyntetisererenConsumer();
 
-        List<Document> syntetiserteNavEndringsmeldinger = syntetisererenConsumer.getSyntetiserteNavEndringsmeldinger(endringskode, antallMeldinger).getBody();
+        var syntetiserteNavEndringsmeldinger = syntetisererenConsumer.getSyntetiserteNavEndringsmeldinger(endringskode, antallMeldinger).getBody();
 
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer transformer = tf.newTransformer();
+        var tf = TransformerFactory.newInstance();
+        var transformer = tf.newTransformer();
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         transformer.setOutputProperty(OutputKeys.INDENT, "no");
-        StringWriter stringWriter = new StringWriter();
+        var stringWriter = new StringWriter();
         transformer.transform(new DOMSource(syntetiserteNavEndringsmeldinger.get(0)), new StreamResult(stringWriter));
-        String output = stringWriter.toString().replaceAll("\n|\r", "");
+        var output = stringWriter.toString().replaceAll("\n|\r", "");
 
         assertThat(output, containsString("69328480"));
     }

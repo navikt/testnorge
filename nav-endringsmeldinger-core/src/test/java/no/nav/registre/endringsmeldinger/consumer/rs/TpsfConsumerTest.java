@@ -18,7 +18,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import no.nav.registre.endringsmeldinger.consumer.rs.requests.SendTilTpsRequest;
-import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageResponse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -65,7 +64,7 @@ public class TpsfConsumerTest {
     public void shouldSendEndringsmeldingTilTps() {
         stubTpsfConsumer();
 
-        RsPureXmlMessageResponse response = tpsfConsumer.sendEndringsmeldingTilTps(sendTilTpsRequest);
+        var response = tpsfConsumer.sendEndringsmeldingTilTps(sendTilTpsRequest);
 
         assertThat(response.getXml(), containsString(fnr));
     }

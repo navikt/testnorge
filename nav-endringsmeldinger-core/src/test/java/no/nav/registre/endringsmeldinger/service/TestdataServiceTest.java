@@ -52,8 +52,7 @@ public class TestdataServiceTest {
 
     @Before
     public void setUp() {
-        LocalDate tidspunkt = LocalDate.now();
-        String dato = tidspunkt.getYear() + " - " + tidspunkt.getMonthValue() + "-" + tidspunkt.getDayOfMonth();
+        var dato = LocalDate.now().toString();
         meldingFnr1 = ""
                 + "<sfePersonData>\n"
                 + "    <sfeAjourforing>\n"
@@ -135,7 +134,7 @@ public class TestdataServiceTest {
     public void shouldGenerereKontonummerAndSendToTpsSuccess() throws TransformerException {
         setUpSuccess();
         when(tpsfConsumer.sendEndringsmeldingTilTps(any())).thenReturn(rsPureXmlMessageResponseSuccess);
-        List<RsPureXmlMessageResponse> response = testdataService.genererKontonummerOgSendTilTps(koeNavn, genererKontonummerRequest);
+        var response = testdataService.genererKontonummerOgSendTilTps(koeNavn, genererKontonummerRequest);
 
         verify(tpsfConsumer).sendEndringsmeldingTilTps(captor.capture());
 
@@ -147,7 +146,7 @@ public class TestdataServiceTest {
     public void shouldGenerereKontonummerAndSendToTpsFailure() throws TransformerException {
         setUpFailure();
         when(tpsfConsumer.sendEndringsmeldingTilTps(any())).thenReturn(rsPureXmlMessageResponseFail);
-        List<RsPureXmlMessageResponse> response = testdataService.genererKontonummerOgSendTilTps(koeNavn, genererKontonummerRequest);
+        var response = testdataService.genererKontonummerOgSendTilTps(koeNavn, genererKontonummerRequest);
 
         verify(tpsfConsumer).sendEndringsmeldingTilTps(captor.capture());
 

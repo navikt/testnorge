@@ -55,12 +55,9 @@ public class EndringsmeldingServiceTest {
     private EndringsmeldingService endringsmeldingService;
 
     private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
-    private Map<String, Integer> antallMeldingerPerEndringskode;
     private Endringskoder endringskode;
     private int antallMeldinger;
     private SyntetiserNavEndringsmeldingerRequest syntetiserNavEndringsmeldingerRequest;
-    private Document document;
     private String fnr1 = "01010101010";
     private String fnr2 = "02020202020";
     private List<String> levendeIdenter;
@@ -70,18 +67,19 @@ public class EndringsmeldingServiceTest {
         endringskode = Endringskoder.TELEFONNUMMER;
         antallMeldinger = 1;
 
-        antallMeldingerPerEndringskode = new HashMap<>();
+        Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put(endringskode.getEndringskode(), antallMeldinger);
 
+        var miljoe = "t1";
         syntetiserNavEndringsmeldingerRequest = SyntetiserNavEndringsmeldingerRequest.builder()
                 .avspillergruppeId(avspillergruppeId)
                 .miljoe(miljoe)
                 .antallMeldingerPerEndringskode(antallMeldingerPerEndringskode)
                 .build();
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        String xmlStringBuilder = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+        var factory = DocumentBuilderFactory.newInstance();
+        var builder = factory.newDocumentBuilder();
+        var xmlStringBuilder = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                 + "<sfePersonData>\n"
                 + "    <sfeAjourforing>\n"
                 + "        <systemInfo>\n"
@@ -96,10 +94,10 @@ public class EndringsmeldingServiceTest {
                 + "        </endreTelefon>\n"
                 + "    </sfeAjourforing>\n"
                 + "</sfePersonData>");
-        ByteArrayInputStream input = new ByteArrayInputStream(xmlStringBuilder.getBytes());
-        document = builder.parse(input);
+        var input = new ByteArrayInputStream(xmlStringBuilder.getBytes());
+        var document = builder.parse(input);
 
-        RsPureXmlMessageResponse rsPureXmlMessageResponse = RsPureXmlMessageResponse.builder()
+        var rsPureXmlMessageResponse = RsPureXmlMessageResponse.builder()
                 .xml("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                         + "<sfePersonData>\n"
                         + "    <sfeAjourforing>\n"
@@ -124,6 +122,7 @@ public class EndringsmeldingServiceTest {
                         + "</sfePersonData>")
                 .build();
 
+
         levendeIdenter = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
         when(syntConsumer.getSyntetiserteNavEndringsmeldinger(endringskode.getEndringskode(), antallMeldinger))
@@ -136,7 +135,7 @@ public class EndringsmeldingServiceTest {
 
     @Test
     public void shouldOppretteSyntetiskeNavEndringsmeldinger() throws TransformerException {
-        List<RsPureXmlMessageResponse> responses = endringsmeldingService.opprettSyntetiskeNavEndringsmeldinger(syntetiserNavEndringsmeldingerRequest);
+        var responses = endringsmeldingService.opprettSyntetiskeNavEndringsmeldinger(syntetiserNavEndringsmeldingerRequest);
 
         verify(syntConsumer).getSyntetiserteNavEndringsmeldinger(endringskode.getEndringskode(), antallMeldinger);
         verify(hodejegerenConsumer).getLevende(avspillergruppeId);

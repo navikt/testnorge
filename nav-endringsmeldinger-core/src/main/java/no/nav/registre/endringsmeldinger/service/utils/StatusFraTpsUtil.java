@@ -1,7 +1,6 @@
 package no.nav.registre.endringsmeldinger.service.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -20,19 +19,21 @@ import no.nav.registre.endringsmeldinger.provider.rs.responses.StatusFraFeiledeM
 @Slf4j
 public final class StatusFraTpsUtil {
 
-    public static StatusFraFeiledeMeldingerTpsResponse trekkUtStatusFraTps(List<RsPureXmlMessageResponse> responses) throws ParserConfigurationException {
-        StatusFraFeiledeMeldingerTpsResponse statusFraFeiledeMeldinger = StatusFraFeiledeMeldingerTpsResponse.builder().offentligIdentMedUtfyllendeMelding(new ArrayList<>()).build();
+    public static StatusFraFeiledeMeldingerTpsResponse trekkUtStatusFraTps(
+            List<RsPureXmlMessageResponse> responses
+    ) throws ParserConfigurationException {
+        var statusFraFeiledeMeldinger = StatusFraFeiledeMeldingerTpsResponse.builder().offentligIdentMedUtfyllendeMelding(new ArrayList<>()).build();
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        var factory = DocumentBuilderFactory.newInstance();
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         DocumentBuilder builder;
-        for (RsPureXmlMessageResponse rsPureXmlMessageResponse : responses) {
+        for (var rsPureXmlMessageResponse : responses) {
             try {
                 builder = factory.newDocumentBuilder();
-                Document document = builder.parse(new InputSource(new StringReader(rsPureXmlMessageResponse.getXml())));
+                var document = builder.parse(new InputSource(new StringReader(rsPureXmlMessageResponse.getXml())));
                 if (!"00".equals(document.getElementsByTagName("returStatus").item(0).getTextContent())) {
-                    String offentligIdent = document.getElementsByTagName("offentligIdent").item(0).getTextContent();
-                    String utfyllendeMelding = document.getElementsByTagName("utfyllendeMelding").item(0).getTextContent();
+                    var offentligIdent = document.getElementsByTagName("offentligIdent").item(0).getTextContent();
+                    var utfyllendeMelding = document.getElementsByTagName("utfyllendeMelding").item(0).getTextContent();
                     statusFraFeiledeMeldinger.getOffentligIdentMedUtfyllendeMelding().add(String.format("%s - %s", offentligIdent, utfyllendeMelding));
                 }
             } catch (ParserConfigurationException | SAXException | IOException e) {

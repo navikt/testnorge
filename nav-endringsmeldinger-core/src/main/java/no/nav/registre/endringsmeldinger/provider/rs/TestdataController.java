@@ -26,7 +26,10 @@ public class TestdataController {
     @LogExceptions
     @ApiOperation(value = "Her opprettes det meldinger for endring av norsk gironummer på en liste med identer. Alle identer får det gitte gironummeret, og endringsmeldingene sendes til angitt kø i det angitte miljøet.")
     @PostMapping(value = "/genererKontonummer")
-    public List<RsPureXmlMessageResponse> genererKontonummerPaaIdenter(@RequestParam String koeNavn, @RequestBody GenererKontonummerRequest genererKontonummerRequest) throws TransformerException {
+    public List<RsPureXmlMessageResponse> genererKontonummerPaaIdenter(
+            @RequestParam String koeNavn,
+            @RequestBody GenererKontonummerRequest genererKontonummerRequest
+    ) throws TransformerException {
         return testdataService.genererKontonummerOgSendTilTps(koeNavn, genererKontonummerRequest);
     }
 }

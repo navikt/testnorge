@@ -19,7 +19,7 @@ import no.nav.registre.endringsmeldinger.consumer.rs.exceptions.SyntetiseringsEx
 @Component
 public class NavEndringsmeldingerSyntetisererenConsumer {
 
-    private static final ParameterizedTypeReference<List<Document>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Document>>() {
+    private static final ParameterizedTypeReference<List<Document>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     @Autowired
@@ -32,7 +32,7 @@ public class NavEndringsmeldingerSyntetisererenConsumer {
     }
 
     public ResponseEntity<List<Document>> getSyntetiserteNavEndringsmeldinger(String endringskode, int antallMeldinger) {
-        RequestEntity getRequest = RequestEntity.get(serverUrl.expand(endringskode, antallMeldinger)).build();
+        var getRequest = RequestEntity.get(serverUrl.expand(endringskode, antallMeldinger)).build();
         ResponseEntity<List<Document>> response;
         try {
             response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
