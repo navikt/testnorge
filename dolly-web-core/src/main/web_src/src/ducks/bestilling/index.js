@@ -300,7 +300,7 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 }
 
 export const sendBestilling = (values, gruppeId) => async (dispatch, getState) => {
-	const { currentBestilling, oppslag } = getState()
+	const { currentBestilling, oppslag } = getState() //Fjernes når identOpprettesFra flyttes
 	// const values = bestillingFormatter(values, oppslag)
 	values.antall = 1
 	console.log('Send bestilling', values)

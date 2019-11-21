@@ -10,7 +10,7 @@ import { panelError } from '~/components/ui/form/formUtils'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 
 export const MalForm = ({ formikBag }) => {
-	const [nyMal, setNyMal] = useState('')
+	const [nyMal, setNyMal] = useState(Boolean(formikBag.values.malBestillingNavn))
 	//TODO: Sjekke om malnavn allerede finnes
 	return (
 		<div className="input-mal-field">
@@ -19,7 +19,7 @@ export const MalForm = ({ formikBag }) => {
 				<DollySelect
 					name="nyMal"
 					label="Lagrer som mal"
-					value={nyMal || Boolean(formikBag.values.malBestillingNavn)}
+					value={nyMal}
 					options={Options('boolean')}
 					isClearable={false}
 					onChange={e => setNyMal(e.value)}

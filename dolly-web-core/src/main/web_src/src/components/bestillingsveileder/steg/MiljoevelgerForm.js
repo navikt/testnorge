@@ -1,12 +1,6 @@
 import React from 'react'
 import * as Yup from 'yup'
 import { FieldArray } from 'formik'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import Panel from '~/components/ui/panel/Panel'
-import { panelError } from '~/components/ui/form/formUtils'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 
 export const MiljoeVelgerForm = ({ formikBag }) => {
@@ -27,4 +21,6 @@ export const MiljoeVelgerForm = ({ formikBag }) => {
 	)
 }
 
-MiljoeVelgerForm.validation = { environments: Yup.array().required('Velg minst ett miljø') }
+MiljoeVelgerForm.validation = {
+	environments: Yup.array().of(Yup.string().required('Velg minst ett miljø'))
+}

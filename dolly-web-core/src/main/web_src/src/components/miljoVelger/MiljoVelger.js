@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import _mapValues from 'lodash/mapValues'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
+import { FormikCheckbox, DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
 
 import './MiljoVelger.less'
@@ -31,6 +32,8 @@ export default class MiljoVelger extends Component {
 
 	onClickHandler = e => {
 		const { id } = e.target
+		console.log('id :', id)
+		console.log('this.isChecked(id) :', this.isChecked(id))
 		return this.isChecked(id) ? this.remove(id) : this.add(id)
 	}
 
@@ -70,7 +73,7 @@ export default class MiljoVelger extends Component {
 	}
 
 	renderCheckbox = ({ id, label, disabled }) => (
-		<Checkbox
+		<DollyCheckbox
 			key={id}
 			id={id}
 			disabled={disabled}
@@ -82,6 +85,8 @@ export default class MiljoVelger extends Component {
 	)
 
 	renderError = ({ name, form }) => {
+		console.log('name :', name)
+		console.log('form :', form)
 		if (form.touched[name] && form.errors[name]) {
 			return (
 				<span className="miljo-velger_error" style={{ color: 'red' }}>
