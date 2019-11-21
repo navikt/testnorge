@@ -122,7 +122,7 @@ public class ArenaForvalterClientTest {
         arenaForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo(
-                "q2$Feil: 400 BAD_REQUEST Bad request (An error has occured)")));
+                "q2$Feil: 400 Bad request (An error has occured)")));
         verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class));
     }
 
