@@ -61,7 +61,7 @@ const selectOptions = {
 		{ value: 'BFORM', label: 'BFORM - Situasjonsbestemt innsats' },
 		{ value: 'BATT', label: 'BATT - Spesielt tilpasset innsats' },
 		{ value: 'VARIG', label: 'VARIG - Varig tilpasset innsats' }
-	]
+	],
 
 	// INST
 	institusjonstype: [

@@ -13,7 +13,7 @@ const initialValuesInntektsaar = {
 }
 
 export const SigrunstubForm = ({ formikBag }) => (
-	<Panel heading="Inntekt" hasErrors={panelError(formikBag)} startOpen>
+	<Panel heading="Inntekt" hasErrors={panelError(formikBag)}>
 		<InntektsaarForm formikBag={formikBag} initial={initialValuesInntektsaar} />
 	</Panel>
 )

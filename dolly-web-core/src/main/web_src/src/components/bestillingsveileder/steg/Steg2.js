@@ -37,5 +37,6 @@ Steg2.initialValues = attrs => {
 Steg2.validation = Yup.object({
 	...TpsfForm.validation,
 	...KrrstubForm.validation,
-	...InstForm.validation
+	...InstForm.validation,
+	...ArenaForm.validation
 })
