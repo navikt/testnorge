@@ -22,9 +22,7 @@ export default class BestillingProgresjon extends PureComponent {
 
 		this.state = {
 			ferdig: props.bestilling.ferdig,
-			antallKlare: props.bestilling.bestillingProgress
-				? props.bestilling.bestillingProgress.length
-				: 0,
+			antallKlare: props.bestilling.antallLevert,
 			failureIntervalCounter: 0,
 			failed: false,
 			sistOppdatert: props.bestilling.sistOppdatert
@@ -63,7 +61,7 @@ export default class BestillingProgresjon extends PureComponent {
 		// en kort melding som sier at prosessen er ferdig
 		let newState = {
 			ferdig: false,
-			antallKlare: data.bestillingProgress ? data.bestillingProgress.length : 0,
+			antallKlare: props.bestilling.antallLevert,
 			sistOppdatert: data.sistOppdatert
 		}
 		this.setState(newState)
