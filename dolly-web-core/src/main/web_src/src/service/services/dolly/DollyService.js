@@ -42,8 +42,8 @@ export default {
 	createBestillingFraEksisterendeIdenter(gruppeId, data) {
 		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
 	},
-	testpersonIBruk(gruppeId) {
-		return Request.put(Endpoints.gruppeById(gruppeId))
+	testpersonIBruk(gruppeId, data) {
+		return Request.put(Endpoints.gruppeById(gruppeId), data)
 	},
 
 	// Bruker

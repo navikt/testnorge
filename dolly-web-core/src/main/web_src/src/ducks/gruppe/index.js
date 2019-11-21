@@ -51,7 +51,17 @@ export default handleActions(
 				}))
 			}
 		},
-		//you need to do something here
+		[success(testpersonIBruk)](state, action) {
+			console.log('test :')
+			return {
+				...state,
+				data: state.data.map((item, idx) => ({
+					...item,
+					...(item.id === action.payload.data.id && action.payload.data)
+				}))
+			}
+		},
+		//another success thing for testpersonIBruk?
 		[success(deleteGruppe)](state, action) {
 			return {
 				...state,

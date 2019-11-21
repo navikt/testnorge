@@ -17,8 +17,8 @@ export default function GruppeDetaljer({ gruppe }) {
 					value={String(gruppe.identer ? gruppe.identer.length : 0)}
 				/>
 				<StaticValue header="SIST ENDRET" value={gruppe.datoEndret} />
+				<StaticValue header="Antall i bruk" value={String(gruppe.antallIBruk)} />
 				{isExpanded && <StaticValue header="HENSIKT" value={gruppe.hensikt} />}
-				{isExpanded && <StaticValue header="Antall i bruk" value={String(gruppe.antallIBruk)} />}
 			</div>
 			<div className="gruppe-detaljer-chevron">
 				<ExpandButton onClick={toggleExpanded} expanded={isExpanded} />

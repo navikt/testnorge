@@ -5,8 +5,6 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Formatters from '~/utils/DataFormatter'
 import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
-import Checkbox from '~/components/fields/Checkbox/Checkbox'
-import { testpersonIBruk } from '~/ducks/gruppe'
 
 export default function TestbrukerListe({
 	isFetching,
@@ -67,9 +65,7 @@ export default function TestbrukerListe({
 		{
 			text: 'I bruk',
 			width: '10',
-			formatter: item => (
-				<Checkbox label={item.label} id={'brukt'} onClick={() => this.testpersonIBruk()} />
-			)
+			dataField: '[6]'
 		}
 	]
 
