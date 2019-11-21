@@ -299,14 +299,14 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 	return final_values
 }
 
-export const sendBestilling = gruppeId => async (dispatch, getState) => {
+export const sendBestilling = (values, gruppeId) => async (dispatch, getState) => {
 	const { currentBestilling, oppslag } = getState()
-	const values = bestillingFormatter(currentBestilling, oppslag)
-
+	// const values = bestillingFormatter(values, oppslag)
+	values.antall = 1
 	console.log('Send bestilling', values)
-	// if (currentBestilling.identOpprettesFra === BestillingMapper('EKSIDENT')) {
-	// 	return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
-	// } else {
-	// 	return dispatch(actions.postBestilling(gruppeId, values))
-	// }
+	if (currentBestilling.identOpprettesFra === BestillingMapper('EKSIDENT')) {
+		return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
+	} else {
+		return dispatch(actions.postBestilling(gruppeId, values))
+	}
 }
