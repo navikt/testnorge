@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @ApiModel
 @Builder
+@Getter
 @NoArgsConstructor
 public class Arbeidsforhold {
 

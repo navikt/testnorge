@@ -3,7 +3,6 @@ package no.nav.registre.inntektsmeldingstub.service;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.inntektsmeldingstub.service.rs.Inntekt;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -71,13 +70,13 @@ public class InntektsmeldingService {
             }
 
             inntektsmelding.setArbeidsforhold(createOrFindArbeidsforhold(inntektsmelding.getArbeidsforhold()));
-            inntektsmelding.setEndringIRefusjonListe(Lists.newArrayList(endringIRefusjonRepository.saveAll(inntektsmelding.getEndringIRefusjonListe())));
-            inntektsmelding.setSykepengerPerioder(Lists.newArrayList(periodeRepository.saveAll(inntektsmelding.getSykepengerPerioder())));
-            inntektsmelding.setOpphoerAvNaturalytelseListe(Lists.newArrayList(naturalytelseDetaljerRepository.saveAll(inntektsmelding.getOpphoerAvNaturalytelseListe())));
-            inntektsmelding.setGjenopptakelseNaturalytelseListe(Lists.newArrayList(naturalytelseDetaljerRepository.saveAll(inntektsmelding.getGjenopptakelseNaturalytelseListe())));
-            inntektsmelding.setPleiepengerPeriodeListe(Lists.newArrayList(periodeRepository.saveAll(inntektsmelding.getPleiepengerPeriodeListe())));
-            inntektsmelding.setOmsorgspengerFravaersPeriodeListe(Lists.newArrayList(periodeRepository.saveAll(inntektsmelding.getOmsorgspengerFravaersPeriodeListe())));
-            inntektsmelding.setOmsorgspengerDelvisFravaersListe(Lists.newArrayList(delvisFravaerRepository.saveAll(inntektsmelding.getOmsorgspengerDelvisFravaersListe())));
+            inntektsmelding.setEndringIRefusjonListe(             Lists.newArrayList(endringIRefusjonRepository.saveAll(      inntektsmelding.getEndringIRefusjonListe())));
+            inntektsmelding.setSykepengerPerioder(                Lists.newArrayList(periodeRepository.saveAll(               inntektsmelding.getSykepengerPerioder())));
+            inntektsmelding.setOpphoerAvNaturalytelseListe(       Lists.newArrayList(naturalytelseDetaljerRepository.saveAll( inntektsmelding.getOpphoerAvNaturalytelseListe())));
+            inntektsmelding.setGjenopptakelseNaturalytelseListe(  Lists.newArrayList(naturalytelseDetaljerRepository.saveAll( inntektsmelding.getGjenopptakelseNaturalytelseListe())));
+            inntektsmelding.setPleiepengerPeriodeListe(           Lists.newArrayList(periodeRepository.saveAll(               inntektsmelding.getPleiepengerPeriodeListe())));
+            inntektsmelding.setOmsorgspengerFravaersPeriodeListe( Lists.newArrayList(periodeRepository.saveAll(               inntektsmelding.getOmsorgspengerFravaersPeriodeListe())));
+            inntektsmelding.setOmsorgspengerDelvisFravaersListe(  Lists.newArrayList(delvisFravaerRepository.saveAll(         inntektsmelding.getOmsorgspengerDelvisFravaersListe())));
             inntektsmelding.setEier(opprettetAv);
 
             Inntektsmelding lagret = inntektsmeldingRepository.save(inntektsmelding);
@@ -110,8 +109,8 @@ public class InntektsmeldingService {
                     .innsendingstidspunkt(melding.getAvsendersystem().getInnsendingstidspunkt())
                     .naerRelasjon(melding.isNaerRelasjon())
 
-                    .privatArbeidsgiver()
-                    .arbeidsgiver()
+                    .privatArbeidsgiver(createOrFindArbeidsgiverPrivat(melding.getArbeidsgiverPrivat()))
+                    .arbeidsgiver(createOrFindArbeidsgiver(melding.getArbeidsgiver()))
                     .arbeidsforhold()
 
                     .endringIRefusjonListe()
@@ -133,8 +132,6 @@ public class InntektsmeldingService {
                     .sykepengerBruttoUtbetalt()
                     .sykepengerPerioder()
                     .build();
-
-
         }
 
 
@@ -150,16 +147,33 @@ public class InntektsmeldingService {
         return inntektsmeldingRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Kunne ikke finne inntektsmeldingen"));
     }
 
-    private Arbeidsgiver createOrFindArbeidsgiver(Arbeidsgiver arbeidsgiver) {
+    private Arbeidsgiver createOrFindArbeidsgiverPrivat(no.nav.registre.inntektsmeldingstub.service.rs.ArbeidsgiverPrivat arbeidsgiver) {
+        Optional<Arbeidsgiver> optionalArbeidsgiver = arbeidsgiverRepository.findByVirksomhetsnummer(arbeidsgiver.getArbeidsgiverFnr());
+        return optionalArbeidsgiver.orElseGet(() -> arbeidsgiverRepository.save(Arbeidsgiver.builder()
+                .kontaktinformasjonNavn(arbeidsgiver.getKontaktinformasjon().getKontaktinformasjonNavn())
+                .telefonnummer(arbeidsgiver.getKontaktinformasjon().getTelefonnummer())
+                .virksomhetsnummer(arbeidsgiver.getArbeidsgiverFnr())
+                .inntektsmeldinger(Collections.EMPTY_LIST)
+                .build()));
+    }
+
+    private Arbeidsgiver createOrFindArbeidsgiver(no.nav.registre.inntektsmeldingstub.service.rs.Arbeidsgiver arbeidsgiver) {
         Optional<Arbeidsgiver> optionalArbeidsgiver = arbeidsgiverRepository.findByVirksomhetsnummer(arbeidsgiver.getVirksomhetsnummer());
         return optionalArbeidsgiver.orElseGet(() -> arbeidsgiverRepository.save(Arbeidsgiver.builder()
-                .kontaktinformasjonNavn(arbeidsgiver.getKontaktinformasjonNavn())
-                .telefonnummer(arbeidsgiver.getTelefonnummer())
+                .kontaktinformasjonNavn(arbeidsgiver.getKontaktinformasjon().getKontaktinformasjonNavn())
+                .telefonnummer(arbeidsgiver.getKontaktinformasjon().getTelefonnummer())
                 .virksomhetsnummer(arbeidsgiver.getVirksomhetsnummer())
-                .inntektsmeldinger(Collections.emptyList())
-                .build())
-        );
+                .inntektsmeldinger(Collections.EMPTY_LIST)
+                .build()));
     }
+
+    private Arbeidsforhold createOrFindArbeidsforhold(no.nav.registre.inntektsmeldingstub.service.rs.Arbeidsforhold arbeidsforhold) {
+        Optional<Arbeidsforhold> optionalArbeidsforhold = arbeidsforholdRepository.findByArbeidforholdsId(arbeidsforhold.getArbeidsforholdId());
+        return optionalArbeidsforhold.orElseGet(() -> arbeidsforholdRepository.save(Arbeidsforhold.builder()
+
+                .build()));
+    }
+
 
     private Arbeidsforhold createOrFindArbeidsforhold(Arbeidsforhold arbeidsforhold) {
 
