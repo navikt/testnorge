@@ -4,7 +4,7 @@ import _has from 'lodash/has'
 export { pathAttrs } from '~/service/attributter/Attributter'
 
 export const Vis = ({ attributt, children }) => {
-	const { initialValues } = useFormikContext()
+	const { values } = useFormikContext()
 
 	const isChecked = (initial, attributtPath) => {
 		// Ignore if values ikke er satt
@@ -16,5 +16,5 @@ export const Vis = ({ attributt, children }) => {
 		return attributtPath.some(v => _has(initial, v))
 	}
 
-	return isChecked(initialValues, attributt) && children
+	return isChecked(values, attributt) && children
 }

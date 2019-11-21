@@ -68,8 +68,11 @@ export const DollySelect = props => (
 
 const P_FormikSelect = props => {
 	const [field, meta] = useField(props)
-	const handleChange = selected =>
-		field.onChange(SyntEvent(field.name, _get(selected, 'value', '')))
+	const handleChange = selected => {
+		const val = _get(selected, 'value', '')
+		field.onChange(SyntEvent(field.name, val))
+		if (props.afterChange) props.afterChange(val)
+	}
 
 	const handleBlur = () => field.onBlur(SyntEvent(field.name))
 
