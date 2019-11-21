@@ -5,23 +5,6 @@ import static java.util.Collections.singletonList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.config.CachingConfig.CACHE_TEAM;
-import static no.nav.dolly.provider.api.documentation.DocumentationNotes.BESTILLING_BESKRIVELSE;
-
-import java.util.List;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import org.springframework.cache.annotation.CacheEvict;
@@ -123,7 +106,7 @@ public class TestgruppeController {
         }
     }
 
-    @ApiOperation(value = "Opprett identer i TPS basert på fødselsdato, kjønn og identtype", notes = BESTILLING_BESKRIVELSE)
+    @ApiOperation(value = "Opprett identer i TPS basert på fødselsdato, kjønn og identtype")
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
@@ -134,7 +117,7 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestilling.class);
     }
 
-    @ApiOperation(value = "Opprett identer i TPS fra ekisterende identer", notes = BESTILLING_BESKRIVELSE)
+    @ApiOperation(value = "Opprett identer i TPS fra ekisterende identer")
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")

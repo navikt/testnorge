@@ -12,7 +12,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlOrganisasjon implements PdlSomAdressat {
+public class PdlOrganisasjon extends PdlSomAdressat {
 
     private PdlPersonnavn kontaktperson;
     private String organisasjonsnavn;

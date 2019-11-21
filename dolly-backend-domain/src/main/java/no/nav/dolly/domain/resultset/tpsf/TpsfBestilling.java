@@ -1,6 +1,9 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,9 +13,6 @@ import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.tpsf.adresse.AdresseNrInfo;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -53,6 +53,8 @@ public class TpsfBestilling {
     private LocalDateTime doedsdato;
 
     private String sivilstand;
+
+    private LocalDateTime sivilstandRegdato;
 
     private LocalDateTime regdato;
 
