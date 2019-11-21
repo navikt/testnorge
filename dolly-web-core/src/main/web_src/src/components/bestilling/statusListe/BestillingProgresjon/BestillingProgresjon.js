@@ -22,7 +22,7 @@ export default class BestillingProgresjon extends PureComponent {
 
 		this.state = {
 			ferdig: props.bestilling.ferdig,
-			antallKlare: props.bestilling.antallLevert,
+			antallLevert: props.bestilling.antallLevert,
 			failureIntervalCounter: 0,
 			failed: false,
 			sistOppdatert: props.bestilling.sistOppdatert
@@ -52,7 +52,7 @@ export default class BestillingProgresjon extends PureComponent {
 			}
 			this.updateStatus(data)
 		} catch (error) {
-			console.error(err)
+			console.error(error)
 		}
 	}
 
@@ -61,7 +61,7 @@ export default class BestillingProgresjon extends PureComponent {
 		// en kort melding som sier at prosessen er ferdig
 		let newState = {
 			ferdig: false,
-			antallKlare: props.bestilling.antallLevert,
+			antallLevert: data.antallLevert,
 			sistOppdatert: data.sistOppdatert
 		}
 		this.setState(newState)
@@ -93,16 +93,16 @@ export default class BestillingProgresjon extends PureComponent {
 
 	calculateStatus = () => {
 		const total = this.props.bestilling.antallIdenter
-		const { antallKlare } = this.state
+		const { antallLevert } = this.state
 
 		// Percent
-		let percent = (100 / total) * antallKlare
-		let text = `Oppretter ${antallKlare + 1} av ${total}`
+		let percent = (100 / total) * antallLevert
+		let text = `Opprettet ${antallLevert} av ${total}`
 
 		// To indicate progress hvis ingenting har skjedd enda
 		if (percent === 0) percent += 10
 
-		if (antallKlare === total) text = `Ferdigstiller bestilling`
+		if (antallLevert === total) text = `Ferdigstiller bestilling`
 
 		const title = percent === 100 ? 'FERDIG' : 'AKTIV BESTILLING'
 
