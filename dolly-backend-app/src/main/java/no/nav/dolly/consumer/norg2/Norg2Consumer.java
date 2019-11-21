@@ -6,6 +6,7 @@ import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.properties.ProvidersProps;
 import org.springframework.http.HttpEntity;
@@ -27,6 +28,7 @@ public class Norg2Consumer {
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
 
+    @Timed(name = "providers", tags = {"operation", "hentEnhetfraNorg2"})
     public Norg2EnhetResponse fetchEnhetByEnhetNr(String enhetNr) {
         String url = providersProps.getNorg2().getUrl() + NORG2_URL_BASE.replace("{enhetNr}", enhetNr);
         HttpEntity entity = buildKodeverkEntityForGET();

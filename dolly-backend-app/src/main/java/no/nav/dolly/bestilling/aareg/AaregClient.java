@@ -12,6 +12,7 @@ import java.util.Map;
 
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.consumer.aareg.AaregConsumer;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
@@ -30,6 +31,7 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
     private final AaregConsumer aaregConsumer;
 
     @Override
+    @Timed(name = "providers", tags={"operation", "gjenopprettAareg"})
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
         StringBuilder result = new StringBuilder();

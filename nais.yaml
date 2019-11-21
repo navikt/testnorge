@@ -17,6 +17,9 @@ healthcheck:
     initialDelay: 20
     periodSeconds: 2
     failureThreshold: 140
+prometheus:
+  enabled: true
+  path: /internal/metrics
 resources:
   requests:
     cpu: 0.5

@@ -45,7 +45,7 @@
         <fasit-util.version>3.1.2</fasit-util.version>
         <wiremock.version>2.24.0</wiremock.version>
         <spring-cloud-contract.version>2.1.2.RELEASE</spring-cloud-contract.version>
-
+        <freg-metrics.version>1.0.0</freg-metrics.version>
         <freg-security-test-oidc-tools.version>3.2.0</freg-security-test-oidc-tools.version>
         <sonar.exclusions>**/dolly/domain/**, **/dolly/regression/**, **/dolly/exceptions/**,**/main/dolly-web/**,
             **/dolly/testdata/builder/**
@@ -170,6 +170,18 @@
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-security-ws</artifactId>
                 <version>${modig-security.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>no.nav.freg</groupId>
+                <artifactId>metrics-spring</artifactId>
+                <version>${freg-metrics.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>no.nav.freg</groupId>
+                <artifactId>metrics-annotations</artifactId>
+                <version>${freg-metrics.version}</version>
             </dependency>
 		</dependencies>
 
