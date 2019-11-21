@@ -352,6 +352,7 @@ public class EksisterendeIdenterService {
                 .build();
 
         melding.setAarsakskode(SIVILSTANDSENDRING_AARSAKSKODE);
+        melding.setTranstype("1");
         melding.setMaskindato(identMelding.getMaskindato());
         melding.setMaskintid(identMelding.getMaskintid());
         melding.setRegDato(((RsMeldingstype1Felter) identMelding).getRegDato());
