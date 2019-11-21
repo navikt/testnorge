@@ -26,6 +26,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
         factory.classMap(Bestilling.class, RsBestillingStatus.class)
                 .customize(new CustomMapper<Bestilling, RsBestillingStatus>() {
                     @Override public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
+                        bestillingStatus.setAntallLevert(bestilling.getProgresser().size());
                         bestillingStatus.setEnvironments(Arrays.asList(bestilling.getMiljoer().split(",")));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
                         bestillingStatus.getStatus().addAll(buildTpsfStatusMap(bestilling.getProgresser()));
