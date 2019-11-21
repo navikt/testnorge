@@ -30,7 +30,6 @@ export default function Table({ data, columns, onRowClick, onExpand }) {
 				{onExpand && <Column />}
 			</div>
 			{data.map((row, rowIdx) => {
-				console.log('row :', row)
 				const navLink = onRowClick ? onRowClick(row) : null
 				const expandComponent = onExpand ? onExpand(row) : null
 				const ident = row[0]

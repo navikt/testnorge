@@ -5,6 +5,7 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Formatters from '~/utils/DataFormatter'
 import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
+import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 
 export default function TestbrukerListe({
 	isFetching,
@@ -65,7 +66,8 @@ export default function TestbrukerListe({
 		{
 			text: 'I bruk',
 			width: '10',
-			dataField: '[6]'
+			dataField: '[6]',
+			formatter: (cell, row) => <PersonIBrukButtonConnector personId={row[0]} />
 		}
 	]
 

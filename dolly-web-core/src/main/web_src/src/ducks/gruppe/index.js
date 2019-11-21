@@ -17,7 +17,10 @@ export const updateGruppe = createAction('UPDATE_GRUPPE', DollyApi.updateGruppe)
 export const deleteGruppe = createAction('DELETE_GRUPPE', DollyApi.deleteGruppe, gruppeId => ({
 	gruppeId
 }))
-export const testpersonIBruk = createAction('UPDATE_BRUKT_TESTPERSON', DollyApi.testpersonIBruk)
+export const updateIdentAttributter = createAction(
+	'UPDATE_IDENTATTRIBUTTER',
+	DollyApi.updateIdentAttributter
+)
 
 // UI
 export const settVisning = createAction('SETT_VISNING')
@@ -51,16 +54,9 @@ export default handleActions(
 				}))
 			}
 		},
-		[success(testpersonIBruk)](state, action) {
-			console.log('test :')
-			return {
-				...state,
-				data: state.data.map((item, idx) => ({
-					...item,
-					...(item.id === action.payload.data.id && action.payload.data)
-				}))
-			}
-		},
+		[success(updateIdentAttributter)](state, action) {
+			return { ...state }
+		}, //! MÅ FIKSES SÅNN AT BUTTON BLIR OPPDATERT MED RIKTIG STATE
 		//another success thing for testpersonIBruk?
 		[success(deleteGruppe)](state, action) {
 			return {

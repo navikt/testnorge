@@ -41,8 +41,8 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/bestillingStatus`
 	}
 
-	static testpersonIBruk(gruppeId) {
-		return `${groupBase}/${gruppeId}/identAttributer`
+	static identAttributter(gruppeId) {
+		return `${groupBase}/${gruppeId}/identAttributter`
 	}
 
 	static bruker() {
