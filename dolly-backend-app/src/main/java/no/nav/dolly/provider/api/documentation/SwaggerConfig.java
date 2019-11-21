@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Configuration;
 import com.fasterxml.classmate.TypeResolver;
 
 import no.nav.dolly.domain.resultset.aareg.RsAktoer;
+import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlSomAdressat;
+import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.RsPdlRettIdentitet;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.schema.ModelRef;
@@ -56,7 +58,9 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .additionalModels(
                         typeResolver.resolve(RsAdresse.class),
-                        typeResolver.resolve(RsAktoer.class))
+                        typeResolver.resolve(RsAktoer.class),
+                        typeResolver.resolve(PdlSomAdressat.class),
+                        typeResolver.resolve(RsPdlRettIdentitet.class))
                 .apiInfo(new ApiInfo(apiV1Name, apiV1Description, null, null, null, null, null, emptyList()))
                 .select().apis(any()).paths(ant("/api/v1/**")).build()
                 .globalOperationParameters(globalHeaders());
