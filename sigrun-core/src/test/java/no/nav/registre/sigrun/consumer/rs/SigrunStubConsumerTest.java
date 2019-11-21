@@ -16,7 +16,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,13 +24,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import wiremock.com.google.common.io.Resources;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
 import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
@@ -48,7 +45,6 @@ public class SigrunStubConsumerTest {
     private String fnr1 = "01010101010";
     private String fnr2 = "02020202020";
     private List meldinger;
-    private JsonNode jsonNode;
     private HttpStatus statusCodeOk = HttpStatus.OK;
     private HttpStatus statusCodeInternalServerError = HttpStatus.INTERNAL_SERVER_ERROR;
     private String miljoe = "t1";
@@ -56,9 +52,9 @@ public class SigrunStubConsumerTest {
 
     @Before
     public void setUp() throws IOException {
-        URL jsonContent = Resources.getResource("inntektsmeldinger_test.json");
-        ObjectMapper objectMapper = new ObjectMapper();
-        jsonNode = objectMapper.readTree(jsonContent);
+        var jsonContent = Resources.getResource("inntektsmeldinger_test.json");
+        var objectMapper = new ObjectMapper();
+        var jsonNode = objectMapper.readTree(jsonContent);
         meldinger = objectMapper.treeToValue(jsonNode, List.class);
     }
 
@@ -66,7 +62,7 @@ public class SigrunStubConsumerTest {
     public void shouldGetPersonidentifikatorer() {
         stubSigrunStubConsumerHentPersonidentifikatorer();
 
-        List<String> result = sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe, null);
+        var result = sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe, null);
         assertThat(result.toString(), containsString(fnr1));
         assertThat(result.toString(), containsString(fnr2));
     }
@@ -75,7 +71,7 @@ public class SigrunStubConsumerTest {
     public void shouldGetPersonidentifikatorerMedTestdataEier() {
         stubSigrunStubConsumerHentPersonidentifikatorerMedTestdataEier();
 
-        List<String> result = sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe, testdataEier);
+        var result = sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe, testdataEier);
 
         assertThat(result.toString(), containsString(fnr1));
         assertThat(result.toString(), containsString(fnr2));
@@ -85,7 +81,7 @@ public class SigrunStubConsumerTest {
     public void shouldSendDataToSigrunStub() {
         stubSigrunStubConsumerOpprettBolk();
 
-        ResponseEntity result = sigrunStubConsumer.sendDataTilSigrunstub(meldinger, "test", miljoe);
+        var result = sigrunStubConsumer.sendDataTilSigrunstub(meldinger, "test", miljoe);
 
         assertThat(result.getStatusCode(), equalTo(HttpStatus.OK));
         assertNotNull(result.getBody());
@@ -97,14 +93,14 @@ public class SigrunStubConsumerTest {
     public void shouldGetEksisterendeSkattegrunnlag() {
         stubSigrunStubConsumerHentSkattegrunnlag();
 
-        List<SigrunSkattegrunnlagResponse> response = sigrunStubConsumer.hentEksisterendeSkattegrunnlag(fnr1, miljoe);
+        var response = sigrunStubConsumer.hentEksisterendeSkattegrunnlag(fnr1, miljoe);
 
         assertThat(response.get(0).getPersonidentifikator(), equalTo(fnr1));
     }
 
     @Test
     public void shouldDeleteEksisterendeSkattegrunnlag() {
-        SigrunSkattegrunnlagResponse sigrunSkattegrunnlag = SigrunSkattegrunnlagResponse.builder()
+        var sigrunSkattegrunnlag = SigrunSkattegrunnlagResponse.builder()
                 .personidentifikator(fnr1)
                 .grunnlag("personinntektFiskeFangstFamiliebarnehage")
                 .inntektsaar("1968")
@@ -113,7 +109,7 @@ public class SigrunStubConsumerTest {
 
         stubSigrunStubConsumerSlettSkattegrunnlag(sigrunSkattegrunnlag);
 
-        ResponseEntity response = sigrunStubConsumer.slettEksisterendeSkattegrunnlag(sigrunSkattegrunnlag, miljoe);
+        var response = sigrunStubConsumer.slettEksisterendeSkattegrunnlag(sigrunSkattegrunnlag, miljoe);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }

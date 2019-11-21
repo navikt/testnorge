@@ -17,7 +17,7 @@ import no.nav.registre.sigrun.PoppSyntetisererenResponse;
 @Slf4j
 public class PoppSyntetisererenConsumer {
 
-    private static final ParameterizedTypeReference<List<PoppSyntetisererenResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<List<PoppSyntetisererenResponse>>() {
+    private static final ParameterizedTypeReference<List<PoppSyntetisererenResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     @Autowired
@@ -30,8 +30,7 @@ public class PoppSyntetisererenConsumer {
     }
 
     public List<PoppSyntetisererenResponse> hentPoppMeldingerFromSyntRest(List<String> fnrs) {
-        RequestEntity postRequest = RequestEntity.post(url.expand()).body(fnrs);
-
+        var postRequest = RequestEntity.post(url.expand()).body(fnrs);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }

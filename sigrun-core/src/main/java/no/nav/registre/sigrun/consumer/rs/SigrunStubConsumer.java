@@ -21,10 +21,12 @@ import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse
 @Slf4j
 public class SigrunStubConsumer {
 
-    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
+    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<List<SigrunSkattegrunnlagResponse>> RESPONSE_TYPE_HENT_SKATTEGRUNNLAG = new ParameterizedTypeReference<List<SigrunSkattegrunnlagResponse>>() {
+
+    private static final ParameterizedTypeReference<List<SigrunSkattegrunnlagResponse>> RESPONSE_TYPE_HENT_SKATTEGRUNNLAG = new ParameterizedTypeReference<>() {
     };
+
     private static final String NAV_CALL_ID = "orkestratoren";
     private static final String NAV_CONSUMER_ID = "orkestratoren";
 
@@ -54,7 +56,7 @@ public class SigrunStubConsumer {
                     .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                     .build();
         }
-        ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
+        var response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
 
         List<String> identer = new ArrayList<>();
 
@@ -69,8 +71,8 @@ public class SigrunStubConsumer {
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
     public ResponseEntity sendDataTilSigrunstub(List<PoppSyntetisererenResponse> meldinger, String testdataEier, String miljoe) {
-        UriTemplate sendDataUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/opprettBolk");
-        RequestEntity postRequest = RequestEntity.post(sendDataUrl.expand())
+        var sendDataUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/opprettBolk");
+        var postRequest = RequestEntity.post(sendDataUrl.expand())
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                 .header("testdataEier", testdataEier)
@@ -80,8 +82,8 @@ public class SigrunStubConsumer {
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
     public List<SigrunSkattegrunnlagResponse> hentEksisterendeSkattegrunnlag(String ident, String miljoe) {
-        UriTemplate hentSkattegrunnlagUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/les");
-        RequestEntity getRequest = RequestEntity.get(hentSkattegrunnlagUrl.expand())
+        var hentSkattegrunnlagUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/les");
+        var getRequest = RequestEntity.get(hentSkattegrunnlagUrl.expand())
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                 .header("personidentifikator", ident)
@@ -91,8 +93,8 @@ public class SigrunStubConsumer {
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
     public ResponseEntity slettEksisterendeSkattegrunnlag(SigrunSkattegrunnlagResponse skattegrunnlag, String miljoe) {
-        UriTemplate slettSkattegrunnlagUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/slett");
-        RequestEntity deleteRequest = RequestEntity.delete(slettSkattegrunnlagUrl.expand())
+        var slettSkattegrunnlagUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/slett");
+        var deleteRequest = RequestEntity.delete(slettSkattegrunnlagUrl.expand())
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                 .header("personidentifikator", skattegrunnlag.getPersonidentifikator())

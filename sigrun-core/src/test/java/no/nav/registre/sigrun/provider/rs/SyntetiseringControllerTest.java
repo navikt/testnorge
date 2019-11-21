@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.sigrun.service.SigrunService;
@@ -29,15 +28,15 @@ public class SyntetiseringControllerTest {
 
     @Test
     public void shouldStartSyntetisering() {
-        List<String> fnrs = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
-        SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(123L, "t1", fnrs.size());
+        var identer = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
+        var testdataEier = "test";
+        var syntetiserPoppRequest = new SyntetiserPoppRequest(123L, "t1", identer.size());
 
-        String testdataEier = "test";
-        when(sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest, testdataEier)).thenReturn(fnrs);
-        when(sigrunService.genererPoppmeldingerOgSendTilSigrunStub(fnrs, testdataEier, syntetiserPoppRequest.getMiljoe())).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
+        when(sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest, testdataEier)).thenReturn(identer);
+        when(sigrunService.genererPoppmeldingerOgSendTilSigrunStub(identer, testdataEier, syntetiserPoppRequest.getMiljoe())).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
         syntetiseringController.generatePopp(testdataEier, syntetiserPoppRequest);
 
-        verify(sigrunService).genererPoppmeldingerOgSendTilSigrunStub(fnrs, testdataEier, syntetiserPoppRequest.getMiljoe());
+        verify(sigrunService).genererPoppmeldingerOgSendTilSigrunStub(identer, testdataEier, syntetiserPoppRequest.getMiljoe());
     }
 }

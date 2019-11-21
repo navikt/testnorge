@@ -26,7 +26,8 @@ public class IdentController {
     public SletteGrunnlagResponse slettIdenterFraSigrun(
             @RequestHeader(value = "testdataEier") String testdataEier,
             @RequestParam String miljoe,
-            @RequestBody List<String> identer) {
+            @RequestBody List<String> identer
+    ) {
         return sigrunService.slettSkattegrunnlagTilIdenter(identer, testdataEier, miljoe);
     }
 }

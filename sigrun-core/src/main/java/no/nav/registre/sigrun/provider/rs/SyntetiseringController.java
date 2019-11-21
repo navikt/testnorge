@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.sigrun.service.SigrunService;
@@ -23,9 +21,11 @@ public class SyntetiseringController {
 
     @LogExceptions
     @PostMapping(value = "/generer")
-    public ResponseEntity generatePopp(@RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,
-            @RequestBody SyntetiserPoppRequest syntetiserPoppRequest) {
-        List<String> identer = sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest, testdataEier);
+    public ResponseEntity generatePopp(
+            @RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,
+            @RequestBody SyntetiserPoppRequest syntetiserPoppRequest
+    ) {
+        var identer = sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest, testdataEier);
         return sigrunService.genererPoppmeldingerOgSendTilSigrunStub(identer, testdataEier, syntetiserPoppRequest.getMiljoe());
     }
 }

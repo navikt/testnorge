@@ -22,7 +22,6 @@ import wiremock.com.google.common.io.Resources;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import no.nav.registre.sigrun.PoppSyntetisererenResponse;
 
@@ -40,13 +39,13 @@ public class PoppSyntetisererenConsumerTest {
 
     @Test
     public void shouldGetMeldinger() throws IOException {
-        List<String> fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+        var fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
-        List<PoppSyntetisererenResponse> expectedResponse = Arrays.asList(new ObjectMapper().readValue(Resources.getResource("inntektsmeldinger_test.json"), PoppSyntetisererenResponse[].class));
+        var expectedResponse = Arrays.asList(new ObjectMapper().readValue(Resources.getResource("inntektsmeldinger_test.json"), PoppSyntetisererenResponse[].class));
 
         stubPoppSyntetisererenConsumer();
 
-        List<PoppSyntetisererenResponse> result = poppSyntetisererenConsumer.hentPoppMeldingerFromSyntRest(fnrs);
+        var result = poppSyntetisererenConsumer.hentPoppMeldingerFromSyntRest(fnrs);
 
         assertThat(result.get(0).getPersonidentifikator(), equalTo(expectedResponse.get(0).getPersonidentifikator()));
         assertThat(result.get(0).getInntektsaar(), equalTo(expectedResponse.get(0).getInntektsaar()));

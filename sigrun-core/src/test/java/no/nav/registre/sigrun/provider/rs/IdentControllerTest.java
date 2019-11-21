@@ -10,7 +10,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import no.nav.registre.sigrun.service.SigrunService;
 
@@ -23,12 +22,12 @@ public class IdentControllerTest {
     @InjectMocks
     private IdentController identController;
 
-    private String testdataEier = "test";
-    private String miljoe = "t1";
-
     @Test
     public void shouldDeleteIdentsFromSigrun() {
-        List<String> identer = new ArrayList<>(Collections.singletonList("01010101010"));
+        var identer = new ArrayList<>(Collections.singletonList("01010101010"));
+        var testdataEier = "test";
+        var miljoe = "t1";
+
         identController.slettIdenterFraSigrun(testdataEier, miljoe, identer);
 
         verify(sigrunService).slettSkattegrunnlagTilIdenter(identer, testdataEier, miljoe);

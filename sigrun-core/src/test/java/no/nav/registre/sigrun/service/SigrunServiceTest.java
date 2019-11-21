@@ -32,7 +32,6 @@ import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
 import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
 import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
 import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
-import no.nav.registre.sigrun.provider.rs.responses.SletteGrunnlagResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -64,16 +63,16 @@ public class SigrunServiceTest {
 
     @Test
     public void shouldCallPoppSyntetisererenAndSigrunStubConsumer() {
-        String fnr1 = "01010101010";
-        String fnr2 = "02020202020";
-        List<String> fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+        var fnr1 = "01010101010";
+        var fnr2 = "02020202020";
+        var identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
-        when(poppSyntetisererenConsumer.hentPoppMeldingerFromSyntRest(fnrs)).thenReturn(poppSyntetisererenResponse);
+        when(poppSyntetisererenConsumer.hentPoppMeldingerFromSyntRest(identer)).thenReturn(poppSyntetisererenResponse);
         when(sigrunStubConsumer.sendDataTilSigrunstub(poppSyntetisererenResponse, testdataEier, miljoe)).thenReturn(ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK));
 
-        ResponseEntity actualResponse = sigrunService.genererPoppmeldingerOgSendTilSigrunStub(fnrs, testdataEier, miljoe);
+        var actualResponse = sigrunService.genererPoppmeldingerOgSendTilSigrunStub(identer, testdataEier, miljoe);
 
-        verify(poppSyntetisererenConsumer).hentPoppMeldingerFromSyntRest(fnrs);
+        verify(poppSyntetisererenConsumer).hentPoppMeldingerFromSyntRest(identer);
         verify(sigrunStubConsumer).sendDataTilSigrunstub(poppSyntetisererenResponse, testdataEier, miljoe);
         verify(hodejegerenHistorikkConsumer).saveHistory(any());
         assertThat(actualResponse.getBody(), equalTo(HttpStatus.OK));
@@ -81,27 +80,27 @@ public class SigrunServiceTest {
 
     @Test
     public void shouldNotAddIdenticalId() {
-        List<String> eksisterendeIdenter = new ArrayList<>(Arrays.asList("01010101010", "02020202020", "03030303030", "04040404040"));
-        List<String> nyeIdenter = new ArrayList<>(Arrays.asList("02020202020", "05050505050"));
-        Long avspillergruppeId = 123L;
-        String miljoe = "t1";
-        int antallNyeIdenter = 2;
+        var eksisterendeIdenter = new ArrayList<>(Arrays.asList("01010101010", "02020202020", "03030303030", "04040404040"));
+        var nyeIdenter = new ArrayList<>(Arrays.asList("02020202020", "05050505050"));
+        var avspillergruppeId = 123L;
+        var miljoe = "t1";
+        var antallNyeIdenter = 2;
 
-        SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+        var syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
         when(sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe, testdataEier)).thenReturn(eksisterendeIdenter);
         when(hodejegerenConsumer.getLevende(avspillergruppeId, miljoe, antallNyeIdenter, null)).thenReturn(nyeIdenter);
 
-        List<String> resultat = sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest, testdataEier);
+        var resultat = sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest, testdataEier);
 
         assertThat(resultat.size(), is(5));
     }
 
     @Test
     public void shouldDeleteIdentsFromSigrun() {
-        String fnr1 = "01010101010";
-        String fnr2 = "02020202020";
-        List<String> identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+        var fnr1 = "01010101010";
+        var fnr2 = "02020202020";
+        var identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
         when(sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe, testdataEier)).thenReturn(identer);
         when(sigrunStubConsumer.hentEksisterendeSkattegrunnlag(fnr1, miljoe)).thenReturn(Collections.singletonList(SigrunSkattegrunnlagResponse.builder()
@@ -114,7 +113,7 @@ public class SigrunServiceTest {
                 .build()));
         when(sigrunStubConsumer.slettEksisterendeSkattegrunnlag(any(), anyString())).thenReturn(ResponseEntity.ok().build());
 
-        SletteGrunnlagResponse response = sigrunService.slettSkattegrunnlagTilIdenter(identer, testdataEier, miljoe);
+        var response = sigrunService.slettSkattegrunnlagTilIdenter(identer, testdataEier, miljoe);
 
         assertThat(response.getGrunnlagSomBleSlettet(), hasSize(1));
         assertThat(response.getGrunnlagSomBleSlettet().get(0).getPersonidentifikator(), equalTo(fnr1));

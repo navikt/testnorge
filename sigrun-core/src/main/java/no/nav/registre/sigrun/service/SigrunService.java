@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import no.nav.registre.sigrun.IdentMedData;
@@ -16,7 +15,6 @@ import no.nav.registre.sigrun.SigrunSaveInHodejegerenRequest;
 import no.nav.registre.sigrun.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
 import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
-import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
 import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.sigrun.provider.rs.responses.SletteGrunnlagResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
@@ -39,13 +37,15 @@ public class SigrunService {
 
     private static final String SIGRUN_NAME = "sigrun";
 
-    public List<String> finnEksisterendeOgNyeIdenter(SyntetiserPoppRequest syntetiserPoppRequest, String testdataEier) {
-        List<String> eksisterendeIdenter = finnEksisterendeIdenter(syntetiserPoppRequest.getMiljoe(), testdataEier);
-        List<String> nyeIdenter = finnLevendeIdenter(syntetiserPoppRequest);
+    public List<String> finnEksisterendeOgNyeIdenter(
+            SyntetiserPoppRequest syntetiserPoppRequest,
+            String testdataEier
+    ) {
+        var eksisterendeIdenter = finnEksisterendeIdenter(syntetiserPoppRequest.getMiljoe(), testdataEier);
+        var nyeIdenter = finnLevendeIdenter(syntetiserPoppRequest);
+        var antallIdenterAlleredeIStub = 0;
 
-        int antallIdenterAlleredeIStub = 0;
-
-        for (String ident : nyeIdenter) {
+        for (var ident : nyeIdenter) {
             if (eksisterendeIdenter.contains(ident)) {
                 antallIdenterAlleredeIStub++;
             } else {
@@ -60,24 +60,27 @@ public class SigrunService {
         return eksisterendeIdenter;
     }
 
-    public ResponseEntity genererPoppmeldingerOgSendTilSigrunStub(List<String> identer, String testdataEier, String miljoe) {
-        List<PoppSyntetisererenResponse> syntetiserteMeldinger = finnSyntetiserteMeldinger(identer);
-        ResponseEntity response = sigrunStubConsumer.sendDataTilSigrunstub(syntetiserteMeldinger, testdataEier, miljoe);
+    public ResponseEntity genererPoppmeldingerOgSendTilSigrunStub(
+            List<String> identer,
+            String testdataEier,
+            String miljoe
+    ) {
+        var syntetiserteMeldinger = finnSyntetiserteMeldinger(identer);
+        var response = sigrunStubConsumer.sendDataTilSigrunstub(syntetiserteMeldinger, testdataEier, miljoe);
         if (response.getStatusCode().is2xxSuccessful()) {
             List<IdentMedData> identerMedData = new ArrayList<>(identer.size());
 
-            for (String ident : identer) {
-                IdentMedData identMedData = IdentMedData.builder()
+            for (var ident : identer) {
+                var identMedData = IdentMedData.builder()
                         .id(ident)
                         .data(new ArrayList<>())
                         .build();
                 identerMedData.add(identMedData);
 
-                Iterator<PoppSyntetisererenResponse> syntetiserteMeldingerIterator = syntetiserteMeldinger.iterator();
+                var syntetiserteMeldingerIterator = syntetiserteMeldinger.iterator();
                 while (syntetiserteMeldingerIterator.hasNext()) {
-                    PoppSyntetisererenResponse melding = syntetiserteMeldingerIterator.next();
-
-                    String personidentifikator = melding.getPersonidentifikator();
+                    var melding = syntetiserteMeldingerIterator.next();
+                    var personidentifikator = melding.getPersonidentifikator();
                     if (ident.equals(personidentifikator)) {
                         identMedData.getData().add(melding);
                         syntetiserteMeldingerIterator.remove();
@@ -87,9 +90,9 @@ public class SigrunService {
                 }
             }
 
-            SigrunSaveInHodejegerenRequest hodejegerenRequest = new SigrunSaveInHodejegerenRequest(SIGRUN_NAME, identerMedData);
+            var hodejegerenRequest = new SigrunSaveInHodejegerenRequest(SIGRUN_NAME, identerMedData);
 
-            List<String> lagredeIdenter = hodejegerenHistorikkConsumer.saveHistory(hodejegerenRequest);
+            var lagredeIdenter = hodejegerenHistorikkConsumer.saveHistory(hodejegerenRequest);
 
             if (lagredeIdenter.size() < identerMedData.size()) {
                 List<String> identerSomIkkeBleLagret = new ArrayList<>(identerMedData.size());
@@ -103,22 +106,26 @@ public class SigrunService {
         return response;
     }
 
-    public SletteGrunnlagResponse slettSkattegrunnlagTilIdenter(List<String> identer, String testdataEier, String miljoe) {
-        List<String> eksisterendeIdenter = finnEksisterendeIdenter(miljoe, testdataEier);
+    public SletteGrunnlagResponse slettSkattegrunnlagTilIdenter(
+            List<String> identer,
+            String testdataEier,
+            String miljoe
+    ) {
+        var eksisterendeIdenter = finnEksisterendeIdenter(miljoe, testdataEier);
         eksisterendeIdenter.retainAll(identer);
 
-        SletteGrunnlagResponse sletteGrunnlagResponse = SletteGrunnlagResponse.builder()
+        var sletteGrunnlagResponse = SletteGrunnlagResponse.builder()
                 .grunnlagSomIkkeKunneSlettes(new ArrayList<>())
                 .grunnlagSomBleSlettet(new ArrayList<>())
                 .identerMedGrunnlagFraAnnenTestdataEier(new ArrayList<>())
                 .build();
 
-        for (String ident : eksisterendeIdenter) {
-            List<SigrunSkattegrunnlagResponse> skattegrunnlagTilIdent = sigrunStubConsumer.hentEksisterendeSkattegrunnlag(ident, miljoe);
+        for (var ident : eksisterendeIdenter) {
+            var skattegrunnlagTilIdent = sigrunStubConsumer.hentEksisterendeSkattegrunnlag(ident, miljoe);
 
-            for (SigrunSkattegrunnlagResponse skattegrunnlag : skattegrunnlagTilIdent) {
+            for (var skattegrunnlag : skattegrunnlagTilIdent) {
                 if (testdataEier.equals(skattegrunnlag.getTestdataEier())) {
-                    ResponseEntity response = sigrunStubConsumer.slettEksisterendeSkattegrunnlag(skattegrunnlag, miljoe);
+                    var response = sigrunStubConsumer.slettEksisterendeSkattegrunnlag(skattegrunnlag, miljoe);
                     if (response.getStatusCode().is2xxSuccessful()) {
                         sletteGrunnlagResponse.getGrunnlagSomBleSlettet().add(skattegrunnlag);
                     } else {
