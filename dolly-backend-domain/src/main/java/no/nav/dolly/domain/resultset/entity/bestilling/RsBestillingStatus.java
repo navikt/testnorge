@@ -25,6 +25,7 @@ public class RsBestillingStatus {
 
     private Long id;
     private Integer antallIdenter;
+    private Integer antallLevert;
     private boolean ferdig;
     private LocalDateTime sistOppdatert;
     private String userId;
