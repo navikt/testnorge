@@ -4,6 +4,7 @@ import { Select as ReactSelect } from 'react-select-virtualized'
 import { useField } from 'formik'
 import _get from 'lodash/get'
 import cn from 'classnames'
+import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { Label } from '~/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
 import { fieldError, SyntEvent } from '~/components/ui/form/formUtils'
@@ -65,7 +66,7 @@ export const DollySelect = props => (
 	</InputWrapper>
 )
 
-export const FormikSelect = props => {
+const P_FormikSelect = props => {
 	const [field, meta] = useField(props)
 	const handleChange = selected =>
 		field.onChange(SyntEvent(field.name, _get(selected, 'value', '')))
@@ -82,4 +83,9 @@ export const FormikSelect = props => {
 			{...props}
 		/>
 	)
+}
+
+export const FormikSelect = ({ visHvisAvhuket, ...props }) => {
+	const component = <P_FormikSelect {...props} />
+	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
 }

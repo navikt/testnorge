@@ -1,11 +1,12 @@
 import React from 'react'
-import { getAttributterForUtvalgListe } from '~/service/Attributter'
+import { getAttributterForUtvalgListe } from '~/service/attributter/Attributter'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
 
 import './Utvalg.less'
 
 export const Utvalg = ({ valgteAttributter, checkAttributter }) => {
 	const utvalgListe = getAttributterForUtvalgListe(valgteAttributter)
+
 	const attrValues = Object.keys(valgteAttributter).filter(key => valgteAttributter[key])
 
 	const renderUtvalg = () => {
@@ -13,16 +14,16 @@ export const Utvalg = ({ valgteAttributter, checkAttributter }) => {
 
 		return (
 			<React.Fragment>
-				{utvalgListe.map(panel => renderPanel(panel))}
+				{utvalgListe.map(renderPanel)}
 				<LinkButton text="Fjern alle" onClick={() => checkAttributter(attrValues, false)} />
 			</React.Fragment>
 		)
 	}
 
 	const renderPanel = ({ panel, values }) => (
-		<ul key={panel}>
+		<ul key={panel.id}>
 			<li>
-				<span>{panel}</span>
+				<span>{panel.label}</span>
 				<ul>{values.map(item => renderItem(item))}</ul>
 			</li>
 		</ul>

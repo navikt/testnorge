@@ -13,22 +13,32 @@ export const TpsfForm = ({ formikBag }) => {
 	)
 }
 
-TpsfForm.initialValues = {
-	tpsf: {
-		foedtEtter: subYears(new Date(), 80),
-		foedtFoer: new Date(),
-		doedsdato: '',
-		statsborgerskap: '',
-		statsborgerskapRegdato: '',
-		innvandretFraLand: '',
-		innvandretFraLandFlyttedato: '',
-		utvandretTilLand: '',
-		utvandretTilLandFlyttedato: '',
-		harMellomnavn: true,
-		sivilstand: '',
-		egenAnsattDatoFom: new Date(),
-		erForsvunnet: false,
-		identHistorikk: [
+TpsfForm.initialValues = attrs => {
+	const initial = {
+		tpsf: {}
+	}
+
+	if (attrs.foedtEtter) initial.tpsf.foedtEtter = subYears(new Date(), 80)
+	if (attrs.foedtFoer) initial.tpsf.foedtFoer = new Date()
+	if (attrs.doedsdato) initial.tpsf.doedsdato = null
+
+	if (attrs.statsborgerskap) {
+		initial.tpsf.statsborgerskap = ''
+		initial.tpsf.statsborgerskapRegdato = null
+	}
+
+	if (attrs.innvandretFraLand) {
+		initial.tpsf.innvandretFraLand = ''
+		initial.tpsf.innvandretFraLandFlyttedato = null
+	}
+
+	if (attrs.utvandretTilLand) {
+		initial.tpsf.utvandretTilLand = ''
+		initial.tpsf.utvandretTilLandFlyttedato = null
+	}
+
+	if (attrs.identHistorikk)
+		initial.tpsf.identHistorikk = [
 			{
 				foedtEtter: '',
 				foedtFoer: '',
@@ -36,9 +46,22 @@ TpsfForm.initialValues = {
 				kjonn: '',
 				regdato: ''
 			}
-		],
-		boadresse: {}
+		]
+
+	if (attrs.kjonn) initial.tpsf.kjonn = ''
+	if (attrs.harMellomnavn) initial.tpsf.harMellomnavn = true
+	if (attrs.sivilstand) initial.tpsf.sivilstand = ''
+	if (attrs.sprakKode) initial.tpsf.sprakKode = ''
+	if (attrs.egenAnsattDatoFom) initial.tpsf.egenAnsattDatoFom = new Date()
+	if (attrs.erForsvunnet) {
+		initial.tpsf.erForsvunnet = true
+		initial.tpsf.forsvunnetDato = null
 	}
+
+	if (attrs.boadresse) initial.tpsf.boadresse = {}
+	if (attrs.postadresse) initial.tpsf.postadresse = {}
+
+	return initial
 }
 
 TpsfForm.validation = {

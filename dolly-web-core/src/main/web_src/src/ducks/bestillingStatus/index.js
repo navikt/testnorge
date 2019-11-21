@@ -4,7 +4,7 @@ import _mapValues from 'lodash/mapValues'
 import _uniq from 'lodash/uniq'
 import { DollyApi } from '~/service/Api'
 import bestillingStatusMapper from './bestillingStatusMapper'
-import success from '~/utils/SuccessAction'
+import { onSuccess } from '~/ducks/utils/requestActions'
 
 export const getBestillinger = createAction('GET_BESTILLINGER', gruppeID =>
 	DollyApi.getBestillinger(gruppeID)
@@ -23,7 +23,7 @@ const initialState = { ny: [], data: [] }
 
 export default handleActions(
 	{
-		[success(getBestillinger)](state, action) {
+		[onSuccess(getBestillinger)](state, action) {
 			const { data } = action.payload
 			const nyeBestillinger = data
 				.filter(bestilling => !bestilling.ferdig && !state.ny.includes(bestilling.id))
