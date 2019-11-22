@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisMedSivilstandBestilling;
 
 @Getter
 @Setter
@@ -28,7 +28,7 @@ public class RsDollyBestillingFraIdenterRequest extends RsDollyBestilling {
     @ApiModelProperty(
             position = 2
     )
-    private RsTpsfBasisBestilling tpsf;
+    private RsTpsfBasisMedSivilstandBestilling tpsf;
 
     public List<String> getOpprettFraIdenter() {
         if (isNull(opprettFraIdenter)) {

@@ -17,7 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class RsTpsfUtvidetBestilling extends RsTpsfBasisBestilling {
+public class RsTpsfUtvidetBestilling extends RsTpsfBasisMedSivilstandBestilling {
 
     @ApiModelProperty(
             position = 1,

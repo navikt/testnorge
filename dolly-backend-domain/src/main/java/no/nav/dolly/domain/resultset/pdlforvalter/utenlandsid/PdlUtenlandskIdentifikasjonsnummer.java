@@ -23,19 +23,20 @@ public class PdlUtenlandskIdentifikasjonsnummer {
 
     @ApiModelProperty(
             position = 2,
-            value = "Dataens opprinnelse. Default verdi er 'Dolly'"
+            required = true,
+            value = "Dataens opprinnelse"
     )
     private String kilde;
 
     @ApiModelProperty(
-            position = 1,
+            position = 3,
             required = true,
             value = "Er det utenlandske identifikasjonsnummeret opphørt?"
     )
     private Boolean opphoert;
 
     @ApiModelProperty(
-            position = 1,
+            position = 4,
             required = true,
             value = "Land i hht kodeverk 'Landkoder'"
     )

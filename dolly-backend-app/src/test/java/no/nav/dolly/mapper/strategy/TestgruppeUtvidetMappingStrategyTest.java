@@ -28,12 +28,10 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 public class TestgruppeUtvidetMappingStrategyTest {
 
     private static final String CURRENT_BRUKER_IDENT = "1";
-    private static final Long TEAM_ID = 22L;
     private static final String IDENT1 = "1";
     private static final String IDENT2 = "2";
     private static final Testident TESTIDENT1 = Testident.builder().ident(IDENT1).build();
     private static final Testident TESTIDENT2 = Testident.builder().ident(IDENT2).build();
-    private static final String TEAM_NAME = "Testerson";
     private static Authentication authentication;
     private MapperFacade mapper;
 

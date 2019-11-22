@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "adressetype")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "adressetype")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = RsGateadresse.class, name = "GATE"),
         @JsonSubTypes.Type(value = RsMatrikkeladresse.class, name = "MATR")
@@ -26,22 +26,20 @@ public abstract class RsAdresse {
             required = true,
             value = "Angir adressetype, GATE eller MATR.\n" +
                     "For gateadresse, inkluder: \n" +
-                    " \"gateadresse\": \"string\"\n" +
-                    " \"husnummer\": \"string\"\n" +
-                    " \"gatekode\": \"string\"\n" +
+                    " \"gateadresse\": \"string\" Forstås som gatenavn\n" +
+                    " \"husnummer\": \"string\" * \n" +
+                    " \"gatekode\": \"string\" * Hentes fra adressesøk\n" +
                     "For matrikkeladresse inkluder:\n" +
-                    " \"mellomnavn\": \"string\" Dette er forståes som gårdsnavn\n" +
-                    " \"gardsnr\": \"string\"\n" +
-                    " \"bruksnr\": \"string\"\n" +
+                    " \"mellomnavn\": \"string\" Forståes som gårdsnavn\n" +
+                    " \"gardsnr\": \"string\" *\n" +
+                    " \"bruksnr\": \"string\" *\n" +
                     " \"festenr\": \"string\"\n" +
                     " \"undernr\": \"string\""
-
     )
     private String adressetype;
 
     @ApiModelProperty(
             position = 1,
-            required = true,
             value = "Postnummer på adresse"
     )
     private String postnr;

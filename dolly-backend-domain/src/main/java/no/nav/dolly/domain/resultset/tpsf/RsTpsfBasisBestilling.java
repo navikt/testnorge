@@ -39,18 +39,21 @@ public class RsTpsfBasisBestilling {
     private AdresseNrInfo adresseNrInfo;
 
     @ApiModelProperty(
-            position = 13
+            position = 13,
+            value = "Merknad: Boadresse er enten gateadresse (GATE) eller matrikkeladresse (MATR)"
     )
     private RsAdresse boadresse;
 
     @ApiModelProperty(
-            position = 14
+            position = 14,
+            value = "Merknad: Foreløbig benyttes kun første postadresse i tabell"
     )
     private List<RsPostadresse> postadresse;
 
     @ApiModelProperty(
             position = 15,
-            value = "Når satt får personen ikke boadresse, men kan ha en postadresse."
+            value = "Når satt vil personen ikke få boadresse. Må kompletteres med kommunenummer i boadresse.\n"
+                    + "Feltet benyttes kun når UFB kommer i tillegg til annen diskresjonskode (spesreg)"
     )
     private Boolean utenFastBopel;
 
@@ -119,19 +122,6 @@ public class RsTpsfBasisBestilling {
             value = "Dato språk. Hvis tomt settes dato lik fødselsdato"
     )
     private LocalDateTime datoSprak;
-
-    @ApiModelProperty(
-            position = 26,
-            value = "Sivilstand i hht kodeverk 'Sivilstander'"
-    )
-    private String sivilstand;
-
-    @ApiModelProperty(
-            position = 27,
-            dataType = "LocalDateTime",
-            value = "Dato sivilstand. Hvis blankt settes dagens dato"
-    )
-    private LocalDateTime sivilstandRegdato;
 
     @ApiModelProperty(
             position = 28,
