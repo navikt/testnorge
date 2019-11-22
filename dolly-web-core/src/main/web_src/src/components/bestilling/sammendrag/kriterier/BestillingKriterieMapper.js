@@ -55,7 +55,7 @@ const _findBestillingskriterier = bestillingData => {
 
 export function mapBestillingData(bestillingData) {
 	if (!bestillingData) return null
-	//TODO: Skrives litt om slik at ulike kriterier allerede er skilt?
+	//TODO: Skrives om slik at ulike kriterier allerede er skilt?
 	//Kan hende det som kalles bestillingsinformasjon under her burde være en egen greie
 	const { tpsfKriterier, registreKriterier, ...bestillingsinformasjon } = _findBestillingskriterier(
 		bestillingData

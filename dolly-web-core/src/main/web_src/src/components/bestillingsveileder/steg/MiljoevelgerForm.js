@@ -4,7 +4,6 @@ import { FieldArray } from 'formik'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 
 export const MiljoeVelgerForm = ({ formikBag }) => {
-	//TODO: Test om miljø fortsatt er huket av om vi går tilbake til steg 2 og frem igjen
 	return (
 		<FieldArray
 			name="environments"
@@ -22,5 +21,5 @@ export const MiljoeVelgerForm = ({ formikBag }) => {
 }
 
 MiljoeVelgerForm.validation = {
-	environments: Yup.array().of(Yup.string().required('Velg minst ett miljø'))
+	environments: Yup.array().of(Yup.string().required('Velg et navn'))
 }

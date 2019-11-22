@@ -66,17 +66,14 @@ TpsfForm.initialValues = attrs => {
 
 TpsfForm.validation = {
 	tpsf: Yup.object({
-		foedtEtter: Yup.string()
-			.typeError('Formatet må være DD.MM.YYYY.')
-			.required(),
-		foedtFoer: Yup.string().typeError('Formatet må være DD.MM.YYYY.'),
-		doedsdato: Yup.string().typeError('Formatet må være DD.MM.YYYY.'),
-		statsborgerskap: Yup.string().required(),
-		testtest: Yup.string().required(),
-		statsborgerskapRegdato: Yup.string().required(),
-		innvandretFraLand: '',
-		innvandretFraLandFlyttedato: '',
-		utvandretTilLand: '',
-		utvandretTilLandFlyttedato: ''
+		foedtEtter: Yup.date().nullable(),
+		foedtFoer: Yup.date().nullable(),
+		doedsdato: Yup.date().nullable(),
+		statsborgerskap: Yup.string(),
+		statsborgerskapRegdato: Yup.date().nullable(),
+		innvandretFraLand: Yup.string(),
+		innvandretFraLandFlyttedato: Yup.date().nullable(),
+		utvandretTilLand: Yup.string(),
+		utvandretTilLandFlyttedato: Yup.date().nullable()
 	})
 }

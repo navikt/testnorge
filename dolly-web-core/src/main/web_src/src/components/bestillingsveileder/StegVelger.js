@@ -9,7 +9,10 @@ export const StegVelger = ({ steps, initialValues, onSubmit, copyValues, childre
 	const [step, setStep] = useState(0)
 
 	const isLastStep = () => step === steps.length - 1
-	const handleNext = () => setStep(step + 1)
+	const handleNext = (values, formikBag) => {
+		setStep(step + 1)
+		formikBag.setTouched({})
+	}
 	const handleBack = values => {
 		if (step !== 0) {
 			setStep(step - 1)
@@ -22,7 +25,7 @@ export const StegVelger = ({ steps, initialValues, onSubmit, copyValues, childre
 
 		if (!isLastStep()) {
 			setSubmitting(false)
-			handleNext()
+			handleNext(values, formikBag)
 			return
 		}
 

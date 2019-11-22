@@ -32,8 +32,6 @@ export default class MiljoVelger extends Component {
 
 	onClickHandler = e => {
 		const { id } = e.target
-		console.log('id :', id)
-		console.log('this.isChecked(id) :', this.isChecked(id))
 		return this.isChecked(id) ? this.remove(id) : this.add(id)
 	}
 
@@ -85,8 +83,6 @@ export default class MiljoVelger extends Component {
 	)
 
 	renderError = ({ name, form }) => {
-		console.log('name :', name)
-		console.log('form :', form)
 		if (form.touched[name] && form.errors[name]) {
 			return (
 				<span className="miljo-velger_error" style={{ color: 'red' }}>

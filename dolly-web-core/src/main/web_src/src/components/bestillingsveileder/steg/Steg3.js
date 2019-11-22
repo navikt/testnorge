@@ -22,12 +22,12 @@ export const Steg3 = ({ formikBag, attributter, checkAttributter }) => {
 Steg3.label = 'Oppsummering'
 Steg3.initialValues = attrs => {
 	const initial = {
-		environments: '',
+		environments: [],
 		malBestillingNavn: ''
 	}
 	return initial
 }
 
 Steg3.validation = Yup.object({
-	...MiljoeVelgerForm.validation
+	// ...MiljoeVelgerForm.validation
 })
