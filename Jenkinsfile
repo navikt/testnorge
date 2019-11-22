@@ -4,7 +4,7 @@ naiseratorApplicationPipeline {
     applicationName = "syntrest"
 
     // Navnet på Azure AD-teamet som eier denne applikasjonen. Default er registre.
-    team = "synt"
+    team = "orkestrator"
 
     // Hvilken Javaversjon som kodebasen er lagd for. Gyldige verdier er 7, 8 og 11.
     javaVersion = "8"
