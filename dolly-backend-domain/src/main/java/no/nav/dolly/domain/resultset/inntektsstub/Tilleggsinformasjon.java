@@ -21,7 +21,7 @@ public class Tilleggsinformasjon {
     private DagmammaIEgenBolig dagmammaIEgenBolig;
     private Periode etterbetalingsperiode;
     private NorskKontinentalsokkel inntektPaaNorskKontinentalsokkel;
-    private Inntjeningsforhold inntjeningsforhold;
+    private SpesielleInntjeningsforhold  spesielleInntjeningsforhold ;
     private Livrente livrente;
     private LottOgPartInnenFiske lottOgPart;
     private Nettoloennsordning nettoloenn;
@@ -84,9 +84,9 @@ public class Tilleggsinformasjon {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class Inntjeningsforhold {
+    private static class SpesielleInntjeningsforhold  {
 
-        private String inntjeningsforhold;
+        private String spesielleInntjeningsforhold ;
     }
 
     @Getter
@@ -129,6 +129,10 @@ public class Tilleggsinformasjon {
     @AllArgsConstructor
     private static class ReiseKostOgLosji {
 
+        @ApiModelProperty(
+                position = 1,
+                value = "Verdier hentes fra kodeverk 'PersontypeForReiseKostLosji'"
+        )
         private String persontype;
     }
 

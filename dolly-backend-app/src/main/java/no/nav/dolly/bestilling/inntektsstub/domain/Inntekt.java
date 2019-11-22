@@ -29,7 +29,6 @@ public class Inntekt {
     private String skatteOgAvgiftsregel;
     private String skattemessigBosattILand;
     private LocalDate sluttOpptjeningsperiode;
-    private String spesifikasjon;
     private String startOpptjeningsperiode;
     private Tilleggsinformasjon tilleggsinformasjon;
     private Boolean utloeserArbeidsgiveravgift;
