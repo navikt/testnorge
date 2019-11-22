@@ -30,7 +30,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
@@ -110,23 +110,23 @@ public class TestgruppeController {
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
-    public RsBestilling opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
+    public RsBestillingStatus opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(), request.getAntall(), null);
 
         dollyBestillingService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling);
-        return mapperFacade.map(bestilling, RsBestilling.class);
+        return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
     @ApiOperation(value = "Opprett identer i TPS fra ekisterende identer")
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
-    public RsBestilling opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
+    public RsBestillingStatus opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(),
                 request.getOpprettFraIdenter().size(), request.getOpprettFraIdenter());
 
         dollyBestillingService.opprettPersonerFraIdenterMedKriterierAsync(gruppeId, request, bestilling);
-        return mapperFacade.map(bestilling, RsBestilling.class);
+        return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)

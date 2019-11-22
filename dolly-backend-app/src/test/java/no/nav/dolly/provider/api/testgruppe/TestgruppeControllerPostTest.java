@@ -12,7 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
@@ -57,9 +57,9 @@ class TestgruppeControllerPostTest extends TestgruppeTestBase {
 
         rsDollyBestillingRequest.setTpsf(tpsfBestilling);
 
-        RsBestilling resp = sendRequest(rsDollyBestillingRequest)
+        RsBestillingStatus resp = sendRequest(rsDollyBestillingRequest)
                 .to(HttpMethod.POST, url)
-                .andExpect(HttpStatus.CREATED, RsBestilling.class);
+                .andExpect(HttpStatus.CREATED, RsBestillingStatus.class);
 
         assertNotNull(resp.getTpsfKriterier());
     }
