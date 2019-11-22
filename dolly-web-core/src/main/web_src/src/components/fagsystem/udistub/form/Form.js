@@ -16,7 +16,6 @@ const attrPaths = [
 ].flat()
 
 export const UdistubForm = ({ formikBag }) => {
-	console.log('formikBag :', formikBag)
 	return (
 		<Vis attributt={attrPaths}>
 			<Panel heading="UDI" hasErrors={panelError(formikBag)} startOpen>
@@ -31,28 +30,43 @@ export const UdistubForm = ({ formikBag }) => {
 
 UdistubForm.initialValues = attrs => {
 	const initial = {
-		udistub: {
-			aliaser: [
-				{
-					identtype: '',
-					nyIdent: ''
-				}
-			],
-			arbeidsadgang: {
-				arbeidsOmfang: '',
-				harArbeidsAdgang: '',
-				periode: {
-					fra: '',
-					til: ''
-				},
-				typeArbeidsadgang: ''
+		udistub: {}
+	}
+
+	if (attrs.arbeidsadgang) {
+		initial.udistub.arbeidsadgang = {
+			arbeidsOmfang: '',
+			harArbeidsAdgang: '',
+			periode: {
+				fra: '',
+				til: ''
 			},
-			flyktning: '',
-			oppholdStatus: {},
-			soeknadOmBeskyttelseUnderBehandling: ''
+			typeArbeidsadgang: ''
 		}
 	}
-	return attrs.udistub ? initial : {}
+
+	if (attrs.oppholdStatus) {
+		initial.udistub.oppholdStatus = {}
+	}
+
+	if (attrs.aliaser) {
+		initial.udistub.aliaser = [
+			{
+				identtype: '',
+				nyIdent: ''
+			}
+		]
+	}
+
+	if (attrs.flyktning) {
+		initial.udistub.flyktning = ''
+	}
+
+	if (attrs.asylsoker) {
+		initial.udistub.soeknadOmBeskyttelseUnderBehandling = ''
+	}
+
+	return initial
 }
 
 UdistubForm.validation = {

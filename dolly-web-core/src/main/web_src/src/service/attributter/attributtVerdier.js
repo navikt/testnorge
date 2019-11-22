@@ -277,6 +277,6 @@ export const ATTRIBUTTER = [
 		kategori: KATEGORIER.annet,
 		path: 'udistub.soeknadOmBeskyttelseUnderBehandling',
 		label: 'Asylsøker',
-		name: 'soeknadOmBeskyttelseUnderBehandling'
+		name: 'asylsoker'
 	}
 ]
