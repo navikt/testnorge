@@ -31,7 +31,6 @@ const createPathAttrs = _memoize(() => ({
 }))
 
 export const pathAttrs = createPathAttrs()
-console.log('pathAttrs :', pathAttrs)
 
 const groupByValue = _memoize(() => {
 	return getAttributter().reduce((acc, curr) => {

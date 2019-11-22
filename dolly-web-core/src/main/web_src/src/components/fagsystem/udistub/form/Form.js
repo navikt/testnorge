@@ -16,12 +16,13 @@ const attrPaths = [
 ].flat()
 
 export const UdistubForm = ({ formikBag }) => {
+	const values = formikBag.values.udistub
 	return (
 		<Vis attributt={attrPaths}>
 			<Panel heading="UDI" hasErrors={panelError(formikBag)} startOpen>
-				<Oppholdsstatus formikBag={formikBag} />
-				<Arbeidsadgang formikBag={formikBag} />
-				<Alias formikBag={formikBag} />
+				{values.oppholdStatus && <Oppholdsstatus formikBag={formikBag} />}
+				{values.arbeidsadgang && <Arbeidsadgang formikBag={formikBag} />}
+				{values.aliaser && <Alias formikBag={formikBag} />}
 				<Annet formikBag={formikBag} />
 			</Panel>
 		</Vis>
@@ -71,15 +72,17 @@ UdistubForm.initialValues = attrs => {
 
 UdistubForm.validation = {
 	udistub: Yup.object({
-		aliaser: Yup.array().of(
-			Yup.object({
-				identtype: Yup.string().when('nyIdent', {
-					is: true,
-					then: Yup.string().required('Vennligst velg')
-				}),
-				nyIdent: Yup.boolean().required('Vennligst velg')
-			})
-		),
+		aliaser: Yup.array()
+			.of(
+				Yup.object({
+					identtype: Yup.string().when('nyIdent', {
+						is: true,
+						then: Yup.string().required('Vennligst velg')
+					}),
+					nyIdent: Yup.boolean().required('Vennligst velg')
+				})
+			)
+			.nullable(),
 		arbeidsadgang: Yup.object({
 			arbeidsOmfang: Yup.string(),
 			harArbeidsAdgang: Yup.string().required('Vennligst velg'),
@@ -88,17 +91,13 @@ UdistubForm.validation = {
 				til: Yup.string().typeError('Formatet må være DD.MM.YYYY')
 			},
 			typeArbeidsadgang: Yup.string()
-		}),
-		flyktning: Yup.boolean().required('Vennligst velg'),
-		oppholdStatus: Yup.object({}), //TODO fiks denne!
-		soeknadOmBeskyttelseUnderBehandling: Yup.string().required('Vennligst velg')
+		}).nullable(),
+		flyktning: Yup.boolean()
+			.required('Vennligst velg')
+			.nullable(),
+		oppholdStatus: Yup.object({}).nullable(), //TODO fiks denne!
+		soeknadOmBeskyttelseUnderBehandling: Yup.string()
+			.required('Vennligst velg')
+			.nullable()
 	})
 }
-
-// required:
-// --- OPPHOLDSSTATUS
-// 	oppholdsstatus
-// 	eøs eller efta type opphold
-// 	eøs eller efta beslutning om oppholdsrett (grunnlag) (x3 (???) pga av ulike dropdowns)
-// 	tredjelands borgere valg
-// 	type oppholdstillatelse

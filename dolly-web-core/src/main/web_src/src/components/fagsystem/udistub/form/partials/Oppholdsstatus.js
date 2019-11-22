@@ -14,12 +14,19 @@ export const Oppholdsstatus = ({ formikBag }) => {
 
 	const endreOppholdsstatus = value => {
 		setOppholdsstatus(value)
+		setEosEllerEFTAtypeOpphold('')
+		setTredjelandsBorgereValg('')
 		formikBag.setFieldValue('udistub.oppholdStatus', oppholdsstatusInitialValues)
 	}
 
 	const endreEosEllerEFTAtypeOpphold = value => {
 		setEosEllerEFTAtypeOpphold(value)
 		formikBag.setFieldValue('udistub.oppholdStatus', oppholdsstatusInitialValues)
+		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Periode`, {
+			fra: '',
+			til: ''
+		})
+		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Effektuering`, '')
 	}
 
 	const endreTredjelandsBorgereValg = value => {
@@ -27,6 +34,11 @@ export const Oppholdsstatus = ({ formikBag }) => {
 		formikBag.setFieldValue('udistub.oppholdStatus', oppholdsstatusInitialValues)
 		if (value === 'oppholdSammeVilkaar') {
 			formikBag.setFieldValue('udistub.harOppholdsTillatelse', '')
+			formikBag.setFieldValue('udistub.oppholdStatus.oppholdSammeVilkaar', {
+				oppholdSammeVilkaarPeriode: { fra: '', til: '' },
+				oppholdSammeVilkaarEffektuering: '',
+				oppholdstillatelseVedtaksDato: ''
+			})
 		} else if (value === 'ikkeOppholdSammeVilkaar') {
 			formikBag.setFieldValue('udistub.harOppholdsTillatelse', false)
 			formikBag.setFieldValue('udistub.oppholdStatus', oppholdsstatusInitialValues)
@@ -46,7 +58,6 @@ export const Oppholdsstatus = ({ formikBag }) => {
 				onChange={v => endreOppholdsstatus(v.value)}
 				isClearable={false}
 			/>
-			{console.log('oppholdsstatus :', oppholdsstatus)}
 			{oppholdsstatus === 'eosEllerEFTAOpphold' && (
 				<React.Fragment>
 					<DollySelect

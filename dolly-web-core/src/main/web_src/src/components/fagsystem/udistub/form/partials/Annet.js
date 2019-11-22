@@ -6,11 +6,15 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 export const Annet = ({ formikBag }) => (
 	<Kategori title="Annet" vis={pathAttrs.kategori.annet}>
-		<FormikSelect name="udistub.flyktning" label="Flyktningstatus" options={Options('boolean')} />
-		<FormikSelect
-			name="udistub.soeknadOmBeskyttelseUnderBehandling"
-			label="Asylsøker"
-			options={Options('jaNeiUavklart')}
-		/>
+		<Vis attributt="udistub.flyktning">
+			<FormikSelect name="udistub.flyktning" label="Flyktningstatus" options={Options('boolean')} />
+		</Vis>
+		<Vis attributt="udistub.soeknadOmBeskyttelseUnderBehandling">
+			<FormikSelect
+				name="udistub.soeknadOmBeskyttelseUnderBehandling"
+				label="Asylsøker"
+				options={Options('jaNeiUavklart')}
+			/>
+		</Vis>
 	</Kategori>
 )

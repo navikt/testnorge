@@ -242,7 +242,7 @@ export const ATTRIBUTTER = [
 		kategori: KATEGORIER.arena,
 		path: 'arenaforvalter',
 		label: 'Aktiver/inaktiver bruker',
-		name: 'arenaAktiverBruker'
+		name: 'arenaforvalter'
 	},
 	{
 		panel: PANELER.udi,
