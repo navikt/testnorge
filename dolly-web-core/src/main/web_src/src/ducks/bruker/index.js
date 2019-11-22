@@ -1,6 +1,6 @@
 import { DollyApi } from '~/service/Api'
 import { createAction, handleActions, combineActions } from 'redux-actions'
-import success from '~/utils/SuccessAction'
+import { onSuccess } from '~/ducks/utils/requestActions'
 
 export const getCurrentBruker = createAction('GET_CURRENT_BRUKER', DollyApi.getCurrentBruker)
 export const addFavorite = createAction('ADD_FAVORITE', DollyApi.addFavorite)
@@ -11,9 +11,9 @@ const initialState = {
 }
 
 const successActions = combineActions(
-	success(getCurrentBruker),
-	success(addFavorite),
-	success(removeFavorite)
+	onSuccess(getCurrentBruker),
+	onSuccess(addFavorite),
+	onSuccess(removeFavorite)
 )
 
 export default handleActions(

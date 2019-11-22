@@ -1,44 +1,58 @@
 import React from 'react'
 import * as Yup from 'yup'
+import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
 import { Oppholdsstatus } from './partials/Oppholdsstatus'
 import { Arbeidsadgang } from './partials/Arbeidsadgang'
 import { Alias } from './partials/Alias'
-import { Diverse } from './partials/Diverse'
+import { Annet } from './partials/Annet'
+
+const attrPaths = [
+	pathAttrs.kategori.opphold,
+	pathAttrs.kategori.arbeidsadgang,
+	pathAttrs.kategori.alias,
+	pathAttrs.kategori.annet
+].flat()
 
 export const UdistubForm = ({ formikBag }) => {
+	console.log('formikBag :', formikBag)
 	return (
-		<Panel heading="UDI" hasErrors={panelError(formikBag)} startOpen>
-			<Oppholdsstatus formikBag={formikBag} />
-			<Arbeidsadgang formikBag={formikBag} />
-			<Alias formikBag={formikBag} />
-			<Diverse formikBag={formikBag} />
-		</Panel>
+		<Vis attributt={attrPaths}>
+			<Panel heading="UDI" hasErrors={panelError(formikBag)} startOpen>
+				<Oppholdsstatus formikBag={formikBag} />
+				<Arbeidsadgang formikBag={formikBag} />
+				<Alias formikBag={formikBag} />
+				<Annet formikBag={formikBag} />
+			</Panel>
+		</Vis>
 	)
 }
 
-UdistubForm.initialValues = {
-	udistub: {
-		aliaser: [
-			{
-				identtype: '',
-				nyIdent: ''
-			}
-		],
-		arbeidsadgang: {
-			arbeidsOmfang: '',
-			harArbeidsAdgang: '',
-			periode: {
-				fra: '',
-				til: ''
+UdistubForm.initialValues = attrs => {
+	const initial = {
+		udistub: {
+			aliaser: [
+				{
+					identtype: '',
+					nyIdent: ''
+				}
+			],
+			arbeidsadgang: {
+				arbeidsOmfang: '',
+				harArbeidsAdgang: '',
+				periode: {
+					fra: '',
+					til: ''
+				},
+				typeArbeidsadgang: ''
 			},
-			typeArbeidsadgang: ''
-		},
-		flyktning: '',
-		oppholdStatus: {},
-		soeknadOmBeskyttelseUnderBehandling: ''
+			flyktning: '',
+			oppholdStatus: {},
+			soeknadOmBeskyttelseUnderBehandling: ''
+		}
 	}
+	return attrs.udistub ? initial : {}
 }
 
 UdistubForm.validation = {
@@ -62,7 +76,7 @@ UdistubForm.validation = {
 			typeArbeidsadgang: Yup.string()
 		}),
 		flyktning: Yup.boolean().required('Vennligst velg'),
-		oppholdStatus: Yup.object({}),
+		oppholdStatus: Yup.object({}), //TODO fiks denne!
 		soeknadOmBeskyttelseUnderBehandling: Yup.string().required('Vennligst velg')
 	})
 }
@@ -74,19 +88,3 @@ UdistubForm.validation = {
 // 	eøs eller efta beslutning om oppholdsrett (grunnlag) (x3 (???) pga av ulike dropdowns)
 // 	tredjelands borgere valg
 // 	type oppholdstillatelse
-
-// {
-// 	requiredField: boolean(),
-// 	nested: object().when('requiredField', {
-// 	  is: true,
-// 	  then: object({
-// 		foo: string.required(),
-// 		// ...etc
-// 	  })
-//   }
-// }
-
-// validation: yup.string().when('arenaBrukertype', {
-// 	is: val => val === 'MED_SERVICEBEHOV',
-// 	then: yup.string().required('Velg et servicebehov')
-// })

@@ -50,25 +50,25 @@ const selectOptions = {
 	// 	{ value: 'UBESTEMT', label: 'Ubestemt' }
 	// ],
 
-	// // Arena
-	// arenaBrukertype: [
-	// 	{ value: 'UTEN_SERVICEBEHOV', label: 'Uten servicebehov' },
-	// 	{ value: 'MED_SERVICEBEHOV', label: 'Med servicebehov' }
-	// ],
+	// Arena
+	arenaBrukertype: [
+		{ value: 'UTEN_SERVICEBEHOV', label: 'Uten servicebehov' },
+		{ value: 'MED_SERVICEBEHOV', label: 'Med servicebehov' }
+	],
 
-	// kvalifiseringsgruppe: [
-	// 	{ value: 'IKVAL', label: 'IKVAL - Standardinnsats' },
-	// 	{ value: 'BFORM', label: 'BFORM - Situasjonsbestemt innsats' },
-	// 	{ value: 'BATT', label: 'BATT - Spesielt tilpasset innsats' },
-	// 	{ value: 'VARIG', label: 'VARIG - Varig tilpasset innsats' }
-	// ],
+	kvalifiseringsgruppe: [
+		{ value: 'IKVAL', label: 'IKVAL - Standardinnsats' },
+		{ value: 'BFORM', label: 'BFORM - Situasjonsbestemt innsats' },
+		{ value: 'BATT', label: 'BATT - Spesielt tilpasset innsats' },
+		{ value: 'VARIG', label: 'VARIG - Varig tilpasset innsats' }
+	],
 
-	// // INST
-	// institusjonstype: [
-	// 	{ value: 'AS', label: 'Alders- og sykehjem' },
-	// 	{ value: 'HS', label: 'Helseinstitusjon' },
-	// 	{ value: 'FO', label: 'Fengsel' }
-	// ],
+	// INST
+	institusjonstype: [
+		{ value: 'AS', label: 'Alders- og sykehjem' },
+		{ value: 'HS', label: 'Helseinstitusjon' },
+		{ value: 'FO', label: 'Fengsel' }
+	],
 
 	// varighet: [
 	// 	{ value: 'L', label: 'Langvarig' },
@@ -76,7 +76,7 @@ const selectOptions = {
 	// 	{ value: 'U', label: 'Ubestemt' }
 	// ],
 
-	// // UDI
+	// UDI
 	oppholdsstatus: [
 		{ value: 'eosEllerEFTAOpphold', label: 'EØS- eller EFTA-opphold' },
 		{ value: 'tredjelandsBorgere', label: 'Tredjelandsborgere' }

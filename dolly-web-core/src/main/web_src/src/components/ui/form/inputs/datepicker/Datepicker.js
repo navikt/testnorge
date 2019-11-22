@@ -6,6 +6,7 @@ import locale_nb from 'date-fns/locale/nb'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { Label } from '~/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
+import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { fieldError, SyntEvent } from '~/components/ui/form/formUtils'
 registerLocale('nb', locale_nb)
 
@@ -54,7 +55,7 @@ export const DollyDatepicker = props => (
 	</InputWrapper>
 )
 
-export const FormikDatepicker = props => {
+const P_FormikDatepicker = props => {
 	const [field, meta] = useField(props)
 
 	const handleChange = date => field.onChange(SyntEvent(field.name, date))
@@ -69,4 +70,9 @@ export const FormikDatepicker = props => {
 			{...props}
 		/>
 	)
+}
+
+export const FormikDatepicker = ({ visHvisAvhuket = true, ...props }) => {
+	const component = <P_FormikDatepicker {...props} />
+	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
 }

@@ -46,6 +46,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 				onChange={v => endreOppholdsstatus(v.value)}
 				isClearable={false}
 			/>
+			{console.log('oppholdsstatus :', oppholdsstatus)}
 			{oppholdsstatus === 'eosEllerEFTAOpphold' && (
 				<React.Fragment>
 					<DollySelect

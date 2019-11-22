@@ -4,6 +4,7 @@ import { useField } from 'formik'
 import { Label } from '~/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
 import { fieldError } from '~/components/ui/form/formUtils'
+import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Icon from '~/components/ui/icon/Icon'
 
 export const TextInput = React.forwardRef(
@@ -28,7 +29,7 @@ export const DollyTextInput = props => (
 	</InputWrapper>
 )
 
-export const FormikTextInput = props => {
+const P_FormikTextInput = props => {
 	const [field, meta] = useField(props)
 	return (
 		<DollyTextInput
@@ -39,4 +40,9 @@ export const FormikTextInput = props => {
 			{...props}
 		/>
 	)
+}
+
+export const FormikTextInput = ({ visHvisAvhuket = true, ...props }) => {
+	const component = <P_FormikTextInput {...props} />
+	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
 }
