@@ -1,37 +1,33 @@
-﻿apiVersion: "nais.io/v1alpha1"
-kind: "Application"
+﻿apiVersion: nais.io/v1alpha1
+kind: Application
 metadata:
   name: syntrest
   namespace: q2
   labels:
     team: synt
 spec:
-  image: "repo.adeo.no:5443/syntrest:1.0.0-1"
   port: 8080
   liveness:
     path: /internal/isAlive
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 15
+    initialDelay: 30
+    periodSeconds: 30
   readiness:
     path: /internal/isReady
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 15
+    initialDelay: 30
   prometheus:
     enabled: true
     path: /internal/prometheus
   replicas:
     min: 1
-    max: 2
+    max: 1
   vault:
     enabled: true
   resources:
-    limits:
-      cpu: 500m
-      memory: 800Mi
     requests:
       cpu: 200m
-      memory: 200Mi
+      memory: 1024Mi
+    limits:
+      cpu: 500m
+      memory: 2048Mi
   ingresses:
     - "https://syntrest.nais.preprod.local"
