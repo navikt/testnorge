@@ -3,17 +3,20 @@ package no.nav.registre.inntektsmeldingstub.service.rs;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @ApiModel
 @Builder
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class RsInntektsmelding {
 
     @JsonProperty
@@ -23,7 +26,8 @@ public class RsInntektsmelding {
     @ApiModelProperty(required = true)
     private String aarsakTilInnsending;
     @JsonProperty
-    @ApiModelProperty(required = true)
+    @Size(min = 11, max = 11)
+    @ApiModelProperty(value = "Arbeidstakers fødselsnummer", required = true)
     private String arbeidstakerFnr;
     @JsonProperty
     @ApiModelProperty(required = true)
@@ -32,16 +36,17 @@ public class RsInntektsmelding {
     @ApiModelProperty(required = true)
     private RsAvsendersystem avsendersystem;
 
-    // en av disse må være satt
     @JsonProperty
-    @ApiModelProperty()
+    @ApiModelProperty("For inntektsmeldingstype 201812 må enten arbeidsgiver eller arbeidsgiverPrivat være satt." +
+            "For inntektsmeldingstype 201809 må arbeidsgiver være satt.")
     private RsArbeidsgiver arbeidsgiver;
     @JsonProperty
-    @ApiModelProperty()
+    @ApiModelProperty("For inntektsmeldingstype 201812 må enten arbeidsgiver eller arbeidsgiverPrivat være satt." +
+            "For inntektsmeldingstype 201809 må arbeidsgiver være satt.")
     private RsArbeidsgiverPrivat arbeidsgiverPrivat;
 
     @JsonProperty
-    @ApiModelProperty()
+    @ApiModelProperty(value = "Gjeldende arbeidsforhold. \'nillable\' i XSD skjema.", required = true)
     private RsArbeidsforhold arbeidsforhold;
 
     @JsonProperty
@@ -54,8 +59,8 @@ public class RsInntektsmelding {
     @ApiModelProperty()
     private RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
     @JsonProperty
-    @ApiModelProperty()
-    private Date startdatoForeldrepengeperiode;
+    @ApiModelProperty(example = "YYYY-MM-DD")
+    private LocalDateTime startdatoForeldrepengeperiode;
     @JsonProperty
     @ApiModelProperty()
     private List<RsNaturaYtelseDetaljer> opphoerAvNaturalytelseListe;

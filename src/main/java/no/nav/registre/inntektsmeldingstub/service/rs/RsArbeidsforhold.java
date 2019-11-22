@@ -3,30 +3,32 @@ package no.nav.registre.inntektsmeldingstub.service.rs;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @ApiModel
 @Builder
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class RsArbeidsforhold {
 
     @JsonProperty
-    @ApiModelProperty()
+    @ApiModelProperty("Unik ID for det gjeldende arbeidsforholdet")
     private String arbeidsforholdId;
     @JsonProperty
-    @ApiModelProperty()
-    private Date foersteFravaersdag;
+    @ApiModelProperty(value = "Første fraværsdag", example = "YYYY-MM-DD")
+    private LocalDateTime foersteFravaersdag;
     @JsonProperty
-    @ApiModelProperty()
+    @ApiModelProperty("Beregnet inntekt")
     private double beregnetInntekt;
     @JsonProperty
-    @ApiModelProperty()
+    @ApiModelProperty("Ferieliste bestående av perioder med ferie")
     private List<RsPeriode> avtaltFerieListe;
     @JsonProperty
     @ApiModelProperty()
