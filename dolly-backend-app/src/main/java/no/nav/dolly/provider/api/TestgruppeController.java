@@ -35,8 +35,9 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
-import no.nav.dolly.domain.testperson.IdentAttributes;
 import no.nav.dolly.domain.testperson.IdentAttributesResponse;
+import no.nav.dolly.domain.testperson.IdentBeskrivelse;
+import no.nav.dolly.domain.testperson.IdentIbruk;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -130,10 +131,19 @@ public class TestgruppeController {
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
-    @ApiOperation(value = "Endre status \"i-bruk\" og beskrivelse på testperson")
-    @PutMapping("/{gruppeId}/identAttributter")
+    @ApiOperation(value = "Endre status beskrivelse på testperson")
+    @PutMapping("/{gruppeId}/beskrivelse")
     @ResponseStatus(HttpStatus.OK)
-    public IdentAttributesResponse oppdaterTestident(@PathVariable Long gruppeId, @RequestBody IdentAttributes attributes) {
+    public IdentAttributesResponse oppdaterTestidentBeskrivelse(@PathVariable Long gruppeId, @RequestBody IdentBeskrivelse attributes) {
+
+        return mapperFacade.map(identService.save(attributes), IdentAttributesResponse.class);
+    }
+
+    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
+    @ApiOperation(value = "Endre status \"i-bruk\" på testperson")
+    @PutMapping("/{gruppeId}/ibruk")
+    @ResponseStatus(HttpStatus.OK)
+    public IdentAttributesResponse oppdaterTestidentIbruk(@PathVariable Long gruppeId, @RequestBody IdentIbruk attributes) {
 
         return mapperFacade.map(identService.save(attributes), IdentAttributesResponse.class);
     }
