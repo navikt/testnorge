@@ -29,40 +29,6 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
     };
 
     @Test
-    @DisplayName("Returnerer Testgrupper tilknyttet til brukerId men uten spesifikk teamId")
-    void shouldGetTestgrupperWithNavIdentWithoutTeamId() {
-        Bruker bruker = dataFactory.createBruker("NAVIDENT");
-        Bruker annenBruker = dataFactory.createBruker("OTHER");
-
-        Testgruppe testgruppe = dataFactory.createTestgruppe("gruppe", bruker);
-        Testgruppe testgruppe2 = dataFactory.createTestgruppe("gruppe2", annenBruker);
-        Testgruppe testgruppe3 = dataFactory.createTestgruppe("gruppe3", annenBruker);
-
-        dataFactory.addToBrukerFavourites(bruker.getBrukerId(), testgruppe.getId());
-        dataFactory.addToBrukerFavourites(bruker.getBrukerId(), testgruppe2.getId());
-        dataFactory.addToBrukerFavourites(bruker.getBrukerId(), testgruppe3.getId());
-
-        String url = UriComponentsBuilder.fromUriString(ENDPOINT_BASE_URI).queryParam("brukerId", bruker.getBrukerId()).toUriString();
-        List<RsTestgruppe> resp = sendRequest()
-                .to(HttpMethod.GET, url)
-                .andExpectList(HttpStatus.OK, expectedResponseRsTestgruppe);
-
-        assertThat(resp.size(), is(3));
-
-        assertThat(resp, hasItem(
-                hasProperty("navn", equalTo("gruppe")))
-        );
-
-        assertThat(resp, hasItem(both(
-                hasProperty("navn", equalTo("gruppe3"))).and(
-                hasProperty("opprettetAvNavIdent", equalTo(annenBruker.getBrukerId())))
-        ));
-
-        //Cleanup
-        dataFactory.clearFavourites(bruker.getBrukerId());
-    }
-
-    @Test
     @DisplayName("Returnerer Testgrupper tilknyttet til brukerId gjennom favoritter og medlemskap")
     void shouldGetTestgrupperWithNavIdent() {
         Bruker bruker = dataFactory.createBruker("NAVIDENT");
@@ -76,7 +42,7 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
         dataFactory.addToBrukerFavourites(bruker.getBrukerId(), testgruppe2.getId());
         dataFactory.addToBrukerFavourites(bruker.getBrukerId(), testgruppe3.getId());
 
-        String url = UriComponentsBuilder.fromUriString(ENDPOINT_BASE_URI).queryParam("brukerId", bruker.getBrukerId()).queryParam("teamId").toUriString();
+        String url = UriComponentsBuilder.fromUriString(ENDPOINT_BASE_URI).queryParam("brukerId", bruker.getBrukerId()).toUriString();
         List<RsTestgruppe> resp = sendRequest()
                 .to(HttpMethod.GET, url)
                 .andExpectList(HttpStatus.OK, expectedResponseRsTestgruppe);

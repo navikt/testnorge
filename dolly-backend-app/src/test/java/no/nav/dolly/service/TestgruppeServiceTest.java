@@ -123,7 +123,7 @@ public class TestgruppeServiceTest {
     }
 
     @Test
-    public void fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker() {
+    public void fetchTestgrupperByTFavoritterOfBruker() {
         Testgruppe tg1 = Testgruppe.builder().id(1L).navn("test1").build();
         Testgruppe tg2 = Testgruppe.builder().id(2L).navn("test2").build();
         Testgruppe tg3 = Testgruppe.builder().id(3L).navn("test3").build();
@@ -189,9 +189,8 @@ public class TestgruppeServiceTest {
 
     @Test
     public void oppdaterTestgruppe_sjekkAtDBKalles() {
-        long teamId = 2L;
 
-        RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder().hensikt("test").navn("navn").teamId(1L).build();
+        RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder().hensikt("test").navn("navn").build();
 
         when(testgruppeRepository.findById(anyLong())).thenReturn(Optional.of(testGruppe));
         when(brukerService.fetchBruker(anyString())).thenReturn( Bruker.builder().brukerId("brukerId").build());

@@ -121,19 +121,6 @@ public class RsTpsfBasisBestilling {
     private LocalDateTime datoSprak;
 
     @ApiModelProperty(
-            position = 26,
-            value = "Sivilstand i hht kodeverk 'Sivilstander'"
-    )
-    private String sivilstand;
-
-    @ApiModelProperty(
-            position = 27,
-            dataType = "LocalDateTime",
-            value = "Dato sivilstand. Hvis blankt settes dagens dato"
-    )
-    private LocalDateTime sivilstandRegdato;
-
-    @ApiModelProperty(
             position = 28,
             value = "Innvandret fra land i hht kodeverk 'Landkoder'. Hvis tomt settes et tilfeldig land"
     )
