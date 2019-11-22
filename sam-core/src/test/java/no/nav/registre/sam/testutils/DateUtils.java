@@ -13,7 +13,7 @@ public class DateUtils {
         } else if ("".equals(dateString)) {
             return new Timestamp(System.currentTimeMillis());
         } else {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+            var dateFormat = new SimpleDateFormat("dd.MM.yyyy");
             return new Timestamp(dateFormat.parse(dateString).getTime());
         }
     }
@@ -24,7 +24,7 @@ public class DateUtils {
         } else if ("".equals(dateString)) {
             return new Date(new Timestamp(System.currentTimeMillis()).getTime());
         } else {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+            var dateFormat = new SimpleDateFormat("dd.MM.yyyy");
             return new Date(dateFormat.parse(dateString).getTime());
         }
     }

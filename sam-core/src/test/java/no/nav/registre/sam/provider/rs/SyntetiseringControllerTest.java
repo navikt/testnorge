@@ -31,16 +31,16 @@ public class SyntetiseringControllerTest {
     private SyntetiseringController syntetiseringController;
 
     private SyntetiserSamRequest syntetiserSamRequest;
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
-    private int antallMeldinger = 2;
-    private String fnr1 = "01010101010";
-    private String fnr2 = "02020202020";
     private List<String> identer;
 
     @Before
     public void setUp() {
+        var avspillergruppeId = 123L;
+        var miljoe = "t1";
+        var antallMeldinger = 2;
         syntetiserSamRequest = new SyntetiserSamRequest(avspillergruppeId, miljoe, antallMeldinger);
+        var fnr1 = "01010101010";
+        var fnr2 = "02020202020";
         identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
     }
 
@@ -49,7 +49,7 @@ public class SyntetiseringControllerTest {
         when(syntetiseringService.finnLevendeIdenter(syntetiserSamRequest)).thenReturn(identer);
         when(syntetiseringService.opprettOgLagreSyntetiserteSamordningsmeldinger(identer)).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
-        ResponseEntity response = syntetiseringController.genererSamordningsmeldinger(syntetiserSamRequest);
+        var response = syntetiseringController.genererSamordningsmeldinger(syntetiserSamRequest);
 
         verify(syntetiseringService).finnLevendeIdenter(syntetiserSamRequest);
         verify(syntetiseringService).opprettOgLagreSyntetiserteSamordningsmeldinger(identer);

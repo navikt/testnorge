@@ -1,16 +1,16 @@
 package no.nav.registre.sam.comptests;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static no.nav.registre.sam.service.SyntetiseringService.ENDRET_OPPRETTET_AV;
+import static no.nav.registre.sam.testutils.DateUtils.formatDate;
+import static no.nav.registre.sam.testutils.DateUtils.formatTimestamp;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.registre.sam.SyntetisertSamordningsmelding;
-import no.nav.registre.sam.database.TPersonRepository;
-import no.nav.registre.sam.database.TSamHendelseRepository;
-import no.nav.registre.sam.database.TSamMeldingRepository;
-import no.nav.registre.sam.database.TSamVedtakRepository;
-import no.nav.registre.sam.domain.database.TPerson;
-import no.nav.registre.sam.domain.database.TSamHendelse;
-import no.nav.registre.sam.domain.database.TSamMelding;
-import no.nav.registre.sam.domain.database.TSamVedtak;
-import no.nav.registre.sam.service.SyntetiseringService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,15 +26,12 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static no.nav.registre.sam.service.SyntetiseringService.ENDRET_OPPRETTET_AV;
-import static no.nav.registre.sam.testutils.DateUtils.formatDate;
-import static no.nav.registre.sam.testutils.DateUtils.formatTimestamp;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import no.nav.registre.sam.SyntetisertSamordningsmelding;
+import no.nav.registre.sam.database.TPersonRepository;
+import no.nav.registre.sam.database.TSamHendelseRepository;
+import no.nav.registre.sam.database.TSamMeldingRepository;
+import no.nav.registre.sam.database.TSamVedtakRepository;
+import no.nav.registre.sam.service.SyntetiseringService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -70,9 +67,9 @@ public class SamordningCompTest {
 
         syntetiserteSamordningsmeldinger = new ArrayList<>();
 
-        List samMeldingerFraJson = new ObjectMapper().treeToValue(new ObjectMapper().readTree(Resources.getResource("samordningsmelding.json")), List.class);
-        for (Object l : samMeldingerFraJson) {
-            syntetiserteSamordningsmeldinger.add(new ObjectMapper().convertValue(l, SyntetisertSamordningsmelding.class));
+        var samMeldingerFraJson = new ObjectMapper().treeToValue(new ObjectMapper().readTree(Resources.getResource("samordningsmelding.json")), List.class);
+        for (var melding : samMeldingerFraJson) {
+            syntetiserteSamordningsmeldinger.add(new ObjectMapper().convertValue(melding, SyntetisertSamordningsmelding.class));
         }
     }
 
@@ -82,14 +79,14 @@ public class SamordningCompTest {
 
         syntetiseringService.lagreSyntetiserteMeldinger(syntetiserteSamordningsmeldinger, identer);
 
-        TPerson person1 = tPersonRepository.findByFnrFK(fnr1);
-        TPerson person2 = tPersonRepository.findByFnrFK(fnr2);
+        var person1 = tPersonRepository.findByFnrFK(fnr1);
+        var person2 = tPersonRepository.findByFnrFK(fnr2);
         assertThat(person1.getFnrFK(), equalTo(fnr1));
         assertThat(person1.getEndretAv(), equalTo(ENDRET_OPPRETTET_AV));
         assertThat(person1.getOpprettetAv(), equalTo(ENDRET_OPPRETTET_AV));
         assertThat(person2.getFnrFK(), equalTo(fnr2));
 
-        TSamHendelse tSamHendelse = tSamHendelseRepository.findById(1L).orElse(null);
+        var tSamHendelse = tSamHendelseRepository.findById(1L).orElse(null);
         assertThat(tSamHendelse, notNullValue());
         assertThat(tSamHendelse.getKTpArt(), equalTo(syntetiserteSamordningsmeldinger.get(0).getKTPArt()));
         assertThat(tSamHendelse.getKSamHendelseT(), equalTo(syntetiserteSamordningsmeldinger.get(0).getKSamHendelseT()));
@@ -100,7 +97,7 @@ public class SamordningCompTest {
         assertThat(tSamHendelse.getDatoEndret().toString(), equalTo(formatTimestamp(syntetiserteSamordningsmeldinger.get(0).getDatoEndret()).toString()));
         assertThat(tSamHendelse.getDatoOpprettet().toString(), equalTo(formatTimestamp(syntetiserteSamordningsmeldinger.get(0).getDatoOpprettet()).toString()));
 
-        TSamMelding tSamMelding = tSamMeldingRepository.findById(1L).orElse(null);
+        var tSamMelding = tSamMeldingRepository.findById(1L).orElse(null);
         assertThat(tSamMelding, notNullValue());
         assertThat(tSamMelding.getEndretAv(), equalTo(ENDRET_OPPRETTET_AV));
         assertThat(tSamMelding.getOpprettetAv(), equalTo(ENDRET_OPPRETTET_AV));
@@ -114,7 +111,7 @@ public class SamordningCompTest {
         assertThat(tSamMelding.getDatoSendt().toString(), equalTo(formatDate(syntetiserteSamordningsmeldinger.get(0).getDatoSendt()).toString()));
         assertThat(tSamMelding.getDatoSvart().toString(), equalTo(formatDate(syntetiserteSamordningsmeldinger.get(0).getDatoSvart()).toString()));
 
-        TSamVedtak tSamVedtak = tSamVedtakRepository.findById(1L).orElse(null);
+        var tSamVedtak = tSamVedtakRepository.findById(1L).orElse(null);
         assertThat(tSamVedtak, notNullValue());
         assertThat(tSamVedtak.getEndretAv(), equalTo(ENDRET_OPPRETTET_AV));
         assertThat(tSamVedtak.getOpprettetAv(), equalTo(ENDRET_OPPRETTET_AV));

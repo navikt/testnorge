@@ -18,7 +18,7 @@ import no.nav.registre.sam.SamSaveInHodejegerenRequest;
 @Slf4j
 public class HodejegerenHistorikkConsumer {
 
-    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
+    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     @Autowired
@@ -31,10 +31,10 @@ public class HodejegerenHistorikkConsumer {
     }
 
     @Timed(value = "sam.resource.latency", extraTags = { "operation", "hodejegeren" })
-    public List<String> saveHistory(SamSaveInHodejegerenRequest request) {
-
-        RequestEntity<SamSaveInHodejegerenRequest> postRequest = RequestEntity.post(hodejegerenSaveHistorikk.expand()).body(request);
-
+    public List<String> saveHistory(
+            SamSaveInHodejegerenRequest request
+    ) {
+        var postRequest = RequestEntity.post(hodejegerenSaveHistorikk.expand()).body(request);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }

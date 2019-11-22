@@ -2,12 +2,10 @@ package no.nav.registre.sam.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sam.SyntetisertSamordningsmelding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
@@ -15,11 +13,13 @@ import org.springframework.web.util.UriTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+import no.nav.registre.sam.SyntetisertSamordningsmelding;
+
 @Component
 @Slf4j
 public class SamSyntetisererenConsumer {
 
-    private static final ParameterizedTypeReference<List<SyntetisertSamordningsmelding>> RESPONSE_TYPE = new ParameterizedTypeReference<List<SyntetisertSamordningsmelding>>() {
+    private static final ParameterizedTypeReference<List<SyntetisertSamordningsmelding>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     @Autowired
@@ -32,12 +32,14 @@ public class SamSyntetisererenConsumer {
     }
 
     @Timed(value = "sam.resource.latency", extraTags = { "operation", "sam-syntetisereren" })
-    public List<SyntetisertSamordningsmelding> hentSammeldingerFromSyntRest(int numToGenerate) {
-        RequestEntity getRequest = RequestEntity.get(url.expand(numToGenerate)).build();
+    public List<SyntetisertSamordningsmelding> hentSammeldingerFromSyntRest(
+            int numToGenerate
+    ) {
+        var getRequest = RequestEntity.get(url.expand(numToGenerate)).build();
 
         List<SyntetisertSamordningsmelding> syntetiserteMeldinger = new ArrayList<>();
 
-        ResponseEntity<List<SyntetisertSamordningsmelding>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
+        var response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
         if (response != null && response.getBody() != null) {
             syntetiserteMeldinger.addAll(response.getBody());
         } else {

@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.sam.service.SyntetiseringService;
@@ -24,8 +22,10 @@ public class SyntetiseringController {
     @LogExceptions
     @ApiOperation(value = "Her kan man starte generering av syntetiske samordningsmeldinger på personer i en gitt TPSF-avspillergruppe i et gitt miljø.")
     @PostMapping(value = "/generer")
-    public ResponseEntity genererSamordningsmeldinger(@RequestBody SyntetiserSamRequest syntetiserSamRequest) {
-        List<String> identer = syntetiseringService.finnLevendeIdenter(syntetiserSamRequest);
+    public ResponseEntity genererSamordningsmeldinger(
+            @RequestBody SyntetiserSamRequest syntetiserSamRequest
+    ) {
+        var identer = syntetiseringService.finnLevendeIdenter(syntetiserSamRequest);
         return syntetiseringService.opprettOgLagreSyntetiserteSamordningsmeldinger(identer);
     }
 }

@@ -9,10 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import no.nav.registre.sam.IdentMedData;
 import no.nav.registre.sam.SamSaveInHodejegerenRequest;
@@ -59,31 +58,38 @@ public class SyntetiseringService {
     @Autowired
     private TSamVedtakRepository tSamVedtakRepository;
 
-    public ResponseEntity opprettOgLagreSyntetiserteSamordningsmeldinger(List<String> identer) {
-        List<SyntetisertSamordningsmelding> syntetiserteMeldinger = samSyntetisererenConsumer.hentSammeldingerFromSyntRest(identer.size());
+    public ResponseEntity opprettOgLagreSyntetiserteSamordningsmeldinger(
+            List<String> identer
+    ) {
+        var syntetiserteMeldinger = samSyntetisererenConsumer.hentSammeldingerFromSyntRest(identer.size());
         lagreSyntetiserteMeldinger(syntetiserteMeldinger, identer);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Timed(value = "sam.resource.latency", extraTags = { "operation", "hodejegeren" })
-    public List<String> finnLevendeIdenter(SyntetiserSamRequest request) {
+    public List<String> finnLevendeIdenter(
+            SyntetiserSamRequest request
+    ) {
         return hodejegerenConsumer.getLevende(request.getAvspillergruppeId(), request.getMiljoe(), request.getAntallMeldinger(), null);
     }
 
-    public void lagreSyntetiserteMeldinger(List<SyntetisertSamordningsmelding> syntetiserteMeldinger, List<String> identer) {
+    public void lagreSyntetiserteMeldinger(
+            List<SyntetisertSamordningsmelding> syntetiserteMeldinger,
+            List<String> identer
+    ) {
         HashMap<String, SyntetisertSamordningsmelding> historikkSomSkalLagres = new HashMap<>();
         if (syntetiserteMeldinger.size() != identer.size()) {
             log.warn("Mottok ikke riktig antall syntetiske samordningsmeldinger fra sam-syntetisereren. Antall forespurt: {}, antall mottatt: {}", identer.size(), syntetiserteMeldinger.size());
         }
 
         for (int i = 0; i < identer.size() && i < syntetiserteMeldinger.size(); i++) {
-            TPerson person = tPersonRepository.findByFnrFK(identer.get(i));
+            var person = tPersonRepository.findByFnrFK(identer.get(i));
             if (person == null) {
                 person = tPersonRepository.save(new TPerson(identer.get(i)));
             }
             try {
                 tSamHendelseRepository.save(new TSamHendelse(syntetiserteMeldinger.get(i), person));
-                TSamVedtak tSamVedtak = tSamVedtakRepository.save(new TSamVedtak(syntetiserteMeldinger.get(i), person));
+                var tSamVedtak = tSamVedtakRepository.save(new TSamVedtak(syntetiserteMeldinger.get(i), person));
                 tSamMeldingRepository.save(new TSamMelding(syntetiserteMeldinger.get(i), tSamVedtak));
                 historikkSomSkalLagres.put(identer.get(i), syntetiserteMeldinger.get(i));
             } catch (ParseException e) {
@@ -92,16 +98,16 @@ public class SyntetiseringService {
         }
 
         List<IdentMedData> identerMedData = new ArrayList<>(historikkSomSkalLagres.size());
-        for (Map.Entry<String, SyntetisertSamordningsmelding> personInfo : historikkSomSkalLagres.entrySet()) {
-            identerMedData.add(new IdentMedData(personInfo.getKey(), new ArrayList<>(Arrays.asList(personInfo.getValue()))));
+        for (var personInfo : historikkSomSkalLagres.entrySet()) {
+            identerMedData.add(new IdentMedData(personInfo.getKey(), new ArrayList<>(Collections.singletonList(personInfo.getValue()))));
         }
-        SamSaveInHodejegerenRequest hodejegerenRequests = new SamSaveInHodejegerenRequest(SAM_NAME, identerMedData);
+        var hodejegerenRequests = new SamSaveInHodejegerenRequest(SAM_NAME, identerMedData);
 
-        List<String> lagredeIdenter = hodejegerenHistorikkConsumer.saveHistory(hodejegerenRequests);
+        var lagredeIdenter = hodejegerenHistorikkConsumer.saveHistory(hodejegerenRequests);
 
         if (lagredeIdenter.size() < identerMedData.size()) {
             List<String> identerSomIkkeBleLagret = new ArrayList<>(identerMedData.size());
-            for (IdentMedData ident : identerMedData) {
+            for (var ident : identerMedData) {
                 identerSomIkkeBleLagret.add(ident.getId());
             }
             identerSomIkkeBleLagret.removeAll(lagredeIdenter);

@@ -1,4 +1,4 @@
-package no.nav.registre.sam.provider;
+package no.nav.registre.sam.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

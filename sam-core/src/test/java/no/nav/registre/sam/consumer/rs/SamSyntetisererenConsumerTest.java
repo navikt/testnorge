@@ -1,21 +1,5 @@
 package no.nav.registre.sam.consumer.rs;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
-import no.nav.registre.sam.SyntetisertSamordningsmelding;
-import org.hamcrest.CoreMatchers;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.List;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -26,6 +10,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import org.hamcrest.CoreMatchers;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
+
 @RunWith(SpringRunner.class)
 @AutoConfigureWireMock(port = 0)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,14 +32,13 @@ public class SamSyntetisererenConsumerTest {
     @Autowired
     private SamSyntetisererenConsumer samSyntetisererenConsumer;
 
-    int antallMeldinger = 2;
-
+    private int antallMeldinger = 2;
 
     @Test
     public void shouldGetSyntetiserteMeldinger() {
         stubSamSyntetisererenConsumer();
 
-        List<SyntetisertSamordningsmelding> response = samSyntetisererenConsumer.hentSammeldingerFromSyntRest(antallMeldinger);
+        var response = samSyntetisererenConsumer.hentSammeldingerFromSyntRest(antallMeldinger);
 
         assertThat(response.get(0).getDatoEndret(), equalTo("10.02.2010"));
         assertThat(response.get(0).getKSamHendelseT(), equalTo("VEDTAKNAV"));
