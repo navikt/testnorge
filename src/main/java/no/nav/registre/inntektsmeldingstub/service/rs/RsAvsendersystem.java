@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @NoArgsConstructor
-public class Avsendersystem {
+public class RsAvsendersystem {
 
     @JsonProperty
     @ApiModelProperty(required = true)

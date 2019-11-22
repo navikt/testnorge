@@ -3,18 +3,18 @@ package no.nav.registre.inntektsmeldingstub.service.rs;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Date;
+import java.util.List;
 
-public class NaturaYtelseDetaljer {
+public class RsSykepengerIArbeidsgiverperioden {
 
     @JsonProperty
     @ApiModelProperty()
-    private String naturaytelseType;
+    private List<RsPeriode> arbeidsgiverperiodeListe;
     @JsonProperty
     @ApiModelProperty()
-    private Date fom;
+    private double bruttoUtbetalt;
     @JsonProperty
     @ApiModelProperty()
-    private double beloepPrMnd;
+    private String begrunnelseForReduksjonEllerIkkeUtbetalt;
 
 }

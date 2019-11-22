@@ -5,13 +5,13 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
-public class Periode {
+public class RsEndringIRefusjon {
 
     @JsonProperty
-    @ApiModelProperty(value = "Dato fra og med", example = "YYYY-MM-DD")
-    private Date fom;
+    @ApiModelProperty()
+    private Date endringsdato;
     @JsonProperty
-    @ApiModelProperty(value = "Dato til og med", example = "YYYY-MM-DD")
-    private Date tom;
+    @ApiModelProperty()
+    private double refusjonsbeloepPrMnd;
 
 }

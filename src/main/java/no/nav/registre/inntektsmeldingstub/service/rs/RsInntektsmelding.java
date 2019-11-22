@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @Getter
 @NoArgsConstructor
-public class Inntektsmelding {
+public class RsInntektsmelding {
 
     @JsonProperty
     @ApiModelProperty(required = true)
@@ -30,40 +30,40 @@ public class Inntektsmelding {
     private boolean naerRelasjon;
     @JsonProperty
     @ApiModelProperty(required = true)
-    private Avsendersystem avsendersystem;
+    private RsAvsendersystem avsendersystem;
 
     // en av disse må være satt
     @JsonProperty
     @ApiModelProperty()
-    private Arbeidsgiver arbeidsgiver;
+    private RsArbeidsgiver arbeidsgiver;
     @JsonProperty
     @ApiModelProperty()
-    private ArbeidsgiverPrivat arbeidsgiverPrivat;
+    private RsArbeidsgiverPrivat arbeidsgiverPrivat;
 
     @JsonProperty
     @ApiModelProperty()
-    private Arbeidsforhold arbeidsforhold;
+    private RsArbeidsforhold arbeidsforhold;
 
     @JsonProperty
     @ApiModelProperty()
-    private Refusjon refusjon;
+    private RsRefusjon refusjon;
     @JsonProperty
     @ApiModelProperty()
-    private Omsorgspenger omsorgspenger;
+    private RsOmsorgspenger omsorgspenger;
     @JsonProperty
     @ApiModelProperty()
-    private SykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
+    private RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
     @JsonProperty
     @ApiModelProperty()
     private Date startdatoForeldrepengeperiode;
     @JsonProperty
     @ApiModelProperty()
-    private List<NaturaYtelseDetaljer> opphoerAvNaturalytelseListe;
+    private List<RsNaturaYtelseDetaljer> opphoerAvNaturalytelseListe;
     @JsonProperty
     @ApiModelProperty()
-    private List<NaturaYtelseDetaljer> gjenopptakelseNaturalytelseListe;
+    private List<RsNaturaYtelseDetaljer> gjenopptakelseNaturalytelseListe;
     @JsonProperty
     @ApiModelProperty()
-    private List<Periode> pleiepengerPerioder;
+    private List<RsPeriode> pleiepengerPerioder;
 
 }

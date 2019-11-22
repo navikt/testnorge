@@ -7,17 +7,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Size;
+
 @ApiModel
 @Builder
 @Getter
 @NoArgsConstructor
-public class Kontaktinformasjon {
+public class RsArbeidsgiver {
 
     @JsonProperty
-    @ApiModelProperty(required = true)
-    private String kontaktinformasjonNavn;
+    @ApiModelProperty(required = true, value = "Virksomhetsnummer for arbeidsgiver, 9 siffer", example = "001100110")
+    @Size(min = 9, max = 9)
+    private String virksomhetsnummer;
     @JsonProperty
     @ApiModelProperty(required = true)
-    private String telefonnummer;
+    private RsKontaktinformasjon kontaktinformasjon;
 
 }

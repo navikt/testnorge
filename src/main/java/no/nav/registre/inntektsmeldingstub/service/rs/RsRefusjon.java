@@ -4,14 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
+import java.util.List;
 
-public class DelvisFravaer {
+public class RsRefusjon {
 
     @JsonProperty
     @ApiModelProperty()
-    private Date dato;
+    private double refusjonsbeloepPrMnd;
     @JsonProperty
     @ApiModelProperty()
-    private double timer;
+    private Date refusjonsopphoersdato;
+    @JsonProperty
+    @ApiModelProperty()
+    private List<RsEndringIRefusjon> endringIRefusjonListe;
 
 }

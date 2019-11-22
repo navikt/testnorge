@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @Getter
 @NoArgsConstructor
-public class Arbeidsforhold {
+public class RsArbeidsforhold {
 
     @JsonProperty
     @ApiModelProperty()
@@ -27,12 +27,12 @@ public class Arbeidsforhold {
     private double beregnetInntekt;
     @JsonProperty
     @ApiModelProperty()
-    private List<Periode> avtaltFerieListe;
+    private List<RsPeriode> avtaltFerieListe;
     @JsonProperty
     @ApiModelProperty()
-    private List<UtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
+    private List<RsUtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
     @JsonProperty
     @ApiModelProperty()
-    private List<GraderingAvForeldrepenger> graderingIForeldrepengerListe;
+    private List<RsGraderingAvForeldrepenger> graderingIForeldrepengerListe;
 
 }

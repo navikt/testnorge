@@ -1,6 +1,6 @@
 package no.nav.registre.inntektsmeldingstub.provider.validation;
 
-import no.nav.registre.inntektsmeldingstub.service.rs.Inntektsmelding;
+import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class XML201812Validator {
 
-    public static void validate(Inntektsmelding inntektsmelding) throws ValidationException {
+    public static void validate(RsInntektsmelding inntektsmelding) throws ValidationException {
 
         Map<String, Boolean> rules = new HashMap<>();
 

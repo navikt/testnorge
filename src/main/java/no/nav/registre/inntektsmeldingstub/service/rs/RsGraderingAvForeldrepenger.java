@@ -3,13 +3,13 @@ package no.nav.registre.inntektsmeldingstub.service.rs;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 
-public class UtsettelseAvForeldrepenger {
+public class RsGraderingAvForeldrepenger {
 
     @JsonProperty
     @ApiModelProperty()
-    private Periode periode;
+    private RsPeriode periode;
     @JsonProperty
     @ApiModelProperty()
-    private String aarsakTilUtsettelse;
+    private Integer arbeidstidprosent;
 
 }

@@ -1,6 +1,6 @@
 package no.nav.registre.inntektsmeldingstub.provider.validation;
 
-import no.nav.registre.inntektsmeldingstub.service.rs.Inntektsmelding;
+import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Component
 public class XML201809Validator {
 
-    public static void validate(Inntektsmelding inntektsmelding) throws ValidationException {
+    public static void validate(RsInntektsmelding inntektsmelding) throws ValidationException {
 
         Map<String, Boolean> rules = new HashMap<>();
 

@@ -3,6 +3,10 @@ package no.nav.registre.inntektsmeldingstub.service;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inntektsmeldingstub.service.rs.RsArbeidsforhold;
+import no.nav.registre.inntektsmeldingstub.service.rs.RsArbeidsgiver;
+import no.nav.registre.inntektsmeldingstub.service.rs.RsArbeidsgiverPrivat;
+import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -94,11 +98,11 @@ public class InntektsmeldingService {
         return lagredeMeldinger;
     }
 
-    public List<Inntektsmelding> save201812Melding(List<no.nav.registre.inntektsmeldingstub.service.rs.Inntektsmelding> inntektsmeldinger, Eier eier) {
+    public List<Inntektsmelding> save201812Melding(List<RsInntektsmelding> inntektsmeldinger, Eier eier) {
 
         List<Inntektsmelding> lagredeMeldinger = new ArrayList<>(inntektsmeldinger.size());
 
-        for (no.nav.registre.inntektsmeldingstub.service.rs.Inntektsmelding melding : inntektsmeldinger) {
+        for (RsInntektsmelding melding : inntektsmeldinger) {
             Inntektsmelding databaseInntektsMelding = Inntektsmelding.builder()
                     .eier(eier)
                     .ytelse(melding.getYtelse())
@@ -147,7 +151,7 @@ public class InntektsmeldingService {
         return inntektsmeldingRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Kunne ikke finne inntektsmeldingen"));
     }
 
-    private Arbeidsgiver createOrFindArbeidsgiverPrivat(no.nav.registre.inntektsmeldingstub.service.rs.ArbeidsgiverPrivat arbeidsgiver) {
+    private Arbeidsgiver createOrFindArbeidsgiverPrivat(RsArbeidsgiverPrivat arbeidsgiver) {
         Optional<Arbeidsgiver> optionalArbeidsgiver = arbeidsgiverRepository.findByVirksomhetsnummer(arbeidsgiver.getArbeidsgiverFnr());
         return optionalArbeidsgiver.orElseGet(() -> arbeidsgiverRepository.save(Arbeidsgiver.builder()
                 .kontaktinformasjonNavn(arbeidsgiver.getKontaktinformasjon().getKontaktinformasjonNavn())
@@ -157,7 +161,7 @@ public class InntektsmeldingService {
                 .build()));
     }
 
-    private Arbeidsgiver createOrFindArbeidsgiver(no.nav.registre.inntektsmeldingstub.service.rs.Arbeidsgiver arbeidsgiver) {
+    private Arbeidsgiver createOrFindArbeidsgiver(RsArbeidsgiver arbeidsgiver) {
         Optional<Arbeidsgiver> optionalArbeidsgiver = arbeidsgiverRepository.findByVirksomhetsnummer(arbeidsgiver.getVirksomhetsnummer());
         return optionalArbeidsgiver.orElseGet(() -> arbeidsgiverRepository.save(Arbeidsgiver.builder()
                 .kontaktinformasjonNavn(arbeidsgiver.getKontaktinformasjon().getKontaktinformasjonNavn())
@@ -167,7 +171,7 @@ public class InntektsmeldingService {
                 .build()));
     }
 
-    private Arbeidsforhold createOrFindArbeidsforhold(no.nav.registre.inntektsmeldingstub.service.rs.Arbeidsforhold arbeidsforhold) {
+    private Arbeidsforhold createOrFindArbeidsforhold(RsArbeidsforhold arbeidsforhold) {
         Optional<Arbeidsforhold> optionalArbeidsforhold = arbeidsforholdRepository.findByArbeidforholdsId(arbeidsforhold.getArbeidsforholdId());
         return optionalArbeidsforhold.orElseGet(() -> arbeidsforholdRepository.save(Arbeidsforhold.builder()
 

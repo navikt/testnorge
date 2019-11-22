@@ -79,7 +79,7 @@
                       seres:guid="http://seres.no/guid/NAV/Dataegenskap/kontaktinformasjon/641131"/>
       </xsd:sequence>
    </xsd:complexType>
-   <xsd:complexType name="Kontaktinformasjon" seres:elementtype="Datakomplekstype"
+   <xsd:complexType name="RsKontaktinformasjon" seres:elementtype="Datakomplekstype"
                     seres:guid="http://seres.no/guid/NAV/Datakomplekstype/Kontaktinformasjon/641161">
       <xsd:sequence>
          <xsd:element name="kontaktinformasjonNavn" type="Tekst" seres:elementtype="DataTypeegenskap"
@@ -88,7 +88,7 @@
                       seres:guid="http://seres.no/guid/NAV/DataTypeegenskap/telefonnummer/641159"/>
       </xsd:sequence>
    </xsd:complexType>
-   <xsd:complexType name="ArbeidsgiverPrivat" seres:elementtype="Dataobjekttype"
+   <xsd:complexType name="RsArbeidsgiverPrivat" seres:elementtype="Dataobjekttype"
                     seres:guid="http://seres.no/guid/NAV/Dataobjekttype/ArbeidsgiverPrivat/663390">
       <xsd:sequence>
          <xsd:element name="arbeidsgiverFnr" type="IDnummerPerson" seres:elementtype="Dataegenskap"
@@ -125,7 +125,7 @@
                       seres:guid="http://seres.no/guid/NAV/Relasjonsegenskap/graderingIForeldrepenger/641125"/>
       </xsd:sequence>
    </xsd:complexType>
-   <xsd:complexType name="Inntekt" seres:elementtype="Datakomplekstype"
+   <xsd:complexType name="RsInntekt" seres:elementtype="Datakomplekstype"
                     seres:guid="http://seres.no/guid/NAV/Datakomplekstype/Inntekt/641158">
       <xsd:sequence>
          <xsd:element name="beloep" type="Beloep" nillable="true" minOccurs="0"
@@ -199,7 +199,7 @@
                       seres:guid="http://seres.no/guid/NAV/DataTypeegenskap/arbeidstidprosent/659892"/>
       </xsd:sequence>
    </xsd:complexType>
-   <xsd:complexType name="Refusjon" seres:elementtype="Datakomplekstype"
+   <xsd:complexType name="RsRefusjon" seres:elementtype="Datakomplekstype"
                     seres:guid="http://seres.no/guid/NAV/Datakomplekstype/Refusjon/641152">
       <xsd:sequence>
          <xsd:element name="refusjonsbeloepPrMnd" type="Beloep" nillable="true" minOccurs="0"
@@ -234,7 +234,7 @@
                       seres:guid="http://seres.no/guid/NAV/DataTypeegenskap/refusjonsbeloepPrMnd/659653"/>
       </xsd:sequence>
    </xsd:complexType>
-   <xsd:complexType name="SykepengerIArbeidsgiverperioden" seres:elementtype="Dataobjekttype"
+   <xsd:complexType name="RsSykepengerIArbeidsgiverperioden" seres:elementtype="Dataobjekttype"
                     seres:guid="http://seres.no/guid/NAV/Dataobjekttype/SykepengerIArbeidsgiverperioden/641118">
       <xsd:sequence>
          <xsd:element name="arbeidsgiverperiodeListe" type="ArbeidsgiverperiodeListe" nillable="true"
@@ -292,7 +292,7 @@
                       seres:guid="http://seres.no/guid/NAV/DataTypeegenskap/naturalytelseDetaljer/643923"/>
       </xsd:sequence>
    </xsd:complexType>
-   <xsd:complexType name="Avsendersystem" seres:elementtype="Dataobjekttype"
+   <xsd:complexType name="RsAvsendersystem" seres:elementtype="Dataobjekttype"
                     seres:guid="http://seres.no/guid/NAV/Dataobjekttype/Avsendersystem/643059">
       <xsd:sequence>
          <xsd:element name="systemnavn" type="Tekst" seres:elementtype="Dataegenskap"
@@ -313,7 +313,7 @@
                       seres:guid="http://seres.no/guid/NAV/Dataegenskap/periode/659635"/>
       </xsd:sequence>
    </xsd:complexType>
-   <xsd:complexType name="Omsorgspenger" seres:elementtype="Dataobjekttype"
+   <xsd:complexType name="RsOmsorgspenger" seres:elementtype="Dataobjekttype"
                     seres:guid="http://seres.no/guid/NAV/Dataobjekttype/Omsorgspenger/659647">
       <xsd:sequence>
          <xsd:element name="harUtbetaltPliktigeDager" type="SvaralternativJaNei" nillable="true"

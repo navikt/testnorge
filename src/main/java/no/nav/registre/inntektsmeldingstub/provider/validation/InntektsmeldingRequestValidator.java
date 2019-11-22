@@ -1,7 +1,7 @@
 package no.nav.registre.inntektsmeldingstub.provider.validation;
 
 import no.nav.registre.inntektsmeldingstub.MeldingsType;
-import no.nav.registre.inntektsmeldingstub.service.rs.Inntektsmelding;
+import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class InntektsmeldingRequestValidator {
 
-    public static void validate(List<Inntektsmelding> meldinger, MeldingsType type, String eier) throws ValidationException {
+    public static void validate(List<RsInntektsmelding> meldinger, MeldingsType type, String eier) throws ValidationException {
 
         Map<String, Boolean> rules = new HashMap<>();
         List<String> errors = new ArrayList<>();

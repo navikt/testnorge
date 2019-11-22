@@ -3,19 +3,18 @@ package no.nav.registre.inntektsmeldingstub.service.rs;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Date;
 import java.util.List;
 
-public class Refusjon {
+public class RsOmsorgspenger {
 
     @JsonProperty
     @ApiModelProperty()
-    private double refusjonsbeloepPrMnd;
+    private boolean harUtbetaltPliktigeDager;
     @JsonProperty
     @ApiModelProperty()
-    private Date refusjonsopphoersdato;
+    private List<RsPeriode> fravaersPerioder;
     @JsonProperty
     @ApiModelProperty()
-    private List<EndringIRefusjon> endringIRefusjonListe;
+    private List<RsDelvisFravaer> delvisFravaersListe;
 
 }

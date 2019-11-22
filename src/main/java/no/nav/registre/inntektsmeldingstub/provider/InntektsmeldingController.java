@@ -22,7 +22,7 @@ import no.nav.registre.inntektsmeldingstub.service.InntektsmeldingService;
 import no.nav.registre.inntektsmeldingstub.util.XmlInntektsmelding201809;
 import no.nav.registre.inntektsmeldingstub.util.XmlInntektsmelding201812;
 import no.nav.registre.inntektsmeldingstub.provider.validation.ValidationException;
-import no.nav.registre.inntektsmeldingstub.service.rs.Inntektsmelding;
+import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
@@ -40,16 +40,16 @@ public class InntektsmeldingController {
     }
 
     @GetMapping("/2018/09/json/{id}")
-    public ResponseEntity<Inntektsmelding> hentInntektsmeldingJSON201809(
+    public ResponseEntity<RsInntektsmelding> hentInntektsmeldingJSON201809(
             @PathVariable Long id
     ) {
         return ResponseEntity.ok(service.findInntektsmelding(id));
     }
 
     @PostMapping("/2018/09")
-    public ResponseEntity<List<Inntektsmelding>> opprettInntektsmeldinger201809(
+    public ResponseEntity<List<RsInntektsmelding>> opprettInntektsmeldinger201809(
             @RequestParam String eier,
-            @RequestBody List<Inntektsmelding> meldinger
+            @RequestBody List<RsInntektsmelding> meldinger
     ) {
         try {
             InntektsmeldingRequestValidator.validate(meldinger, MeldingsType.TYPE_2018_09, eier);
@@ -69,16 +69,16 @@ public class InntektsmeldingController {
     }
 
     @GetMapping("/2018/12/json/{id}")
-    public ResponseEntity<Inntektsmelding> hentInntektsmeldingJSON201812(
+    public ResponseEntity<RsInntektsmelding> hentInntektsmeldingJSON201812(
             @PathVariable Long id
     ) {
         return ResponseEntity.ok(service.findInntektsmelding(id));
     }
 
     @PostMapping("/2018/12")
-    public ResponseEntity<List<Inntektsmelding>> opprettInntektsmeldinger201812(
+    public ResponseEntity<List<RsInntektsmelding>> opprettInntektsmeldinger201812(
             @RequestParam String eier,
-            @RequestBody List<Inntektsmelding> meldinger
+            @RequestBody List<RsInntektsmelding> meldinger
     ) {
         try {
             InntektsmeldingRequestValidator.validate(meldinger, MeldingsType.TYPE_2018_12, eier);

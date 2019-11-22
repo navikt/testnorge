@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 @NoArgsConstructor
-public class ArbeidsgiverPrivat {
+public class RsArbeidsgiverPrivat {
 
     @JsonProperty
     @ApiModelProperty(required = true)
     private String arbeidsgiverFnr;
     @JsonProperty
     @ApiModelProperty(required = true)
-    private Kontaktinformasjon kontaktinformasjon;
+    private RsKontaktinformasjon kontaktinformasjon;
 
 }
