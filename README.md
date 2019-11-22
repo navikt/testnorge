@@ -49,6 +49,7 @@ De filene som må endres når man legger til synt-pakkene er:
  - [NAIS-fil](src/main/resources/nais)
    - NAIS yaml for den nye pakken. Navngivningskonvensjon {appName}.yaml
  - Evt. legge til klasser for spesifiserte [domain-meldinger](src/main/java/no/nav/registre/syntrest/domain).
+ - Legge til tester i [SyntControllerTest](src/test/java/no/nav/registre/syntrest/SyntControllerTest)
  
 ## Oversikt over synt-pakker
  - **Aareg**\
@@ -106,10 +107,7 @@ De filene som må endres når man legger til synt-pakkene er:
    _key=personnummer for pasienten, value=xml for legeerklæringen_
    
 ## Kjente problemer
-Dersom inntekt eller en av arena-pakkene blir kalt på samtidig med andre pakker, hender det at disse krasjer.
-Man må da vente i _minst_ 5 minutter før man prøver å akksessere disse pakkene på nytt.
 
-Et annet kjent problem er at meldekort-_applikasjonen_ blir slettet, men ikke pod'en. 
  
 ## TODOs
  - [ ] 
