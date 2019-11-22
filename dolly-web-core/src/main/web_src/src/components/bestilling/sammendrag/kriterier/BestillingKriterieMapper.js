@@ -55,7 +55,7 @@ export function mapBestillingData(bestillingData) {
 
 	// Gamle bestillinger har ikke tpsfKriterie
 	if (bestillingData.tpsfKriterier) {
-		const tpsfKriterier = JSON.parse(bestillingData.tpsfKriterier)
+		const tpsfKriterier = bestillingData.tpsfKriterier
 		const personinfo = {
 			header: 'Persondetaljer',
 			items: _getTpsfBestillingData(tpsfKriterier)
@@ -159,7 +159,7 @@ export function mapBestillingData(bestillingData) {
 	}
 
 	if (bestillingData.bestKriterier) {
-		const registreKriterier = JSON.parse(bestillingData.bestKriterier)
+		const registreKriterier = bestillingData.bestKriterier
 		const aaregKriterier = registreKriterier.aareg
 		if (aaregKriterier) {
 			const aareg = {
