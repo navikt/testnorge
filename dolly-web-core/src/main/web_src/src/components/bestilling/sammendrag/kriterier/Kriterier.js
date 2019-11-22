@@ -68,14 +68,14 @@ const _renderStaticValue = (attributt, key) => {
 	)
 }
 
-export default function Bestillingskriterier({ bestilling }) {
+export default function Bestillingskriterier({ bestilling, header }) {
 	const data = mapBestillingData(bestilling)
 
 	if (!data) return <p>Kunne ikke hente bestillingsdata</p>
 
 	return (
 		<div>
-			<SubOverskrift label="Bestillingskriterier" />
+			{header && <SubOverskrift label={header} />}
 			{_renderBestillingsDetaljer(data)}
 		</div>
 	)

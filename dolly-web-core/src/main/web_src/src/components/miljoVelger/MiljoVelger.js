@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import _mapValues from 'lodash/mapValues'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
+import { FormikCheckbox, DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
 
 import './MiljoVelger.less'
@@ -70,7 +71,7 @@ export default class MiljoVelger extends Component {
 	}
 
 	renderCheckbox = ({ id, label, disabled }) => (
-		<Checkbox
+		<DollyCheckbox
 			key={id}
 			id={id}
 			disabled={disabled}

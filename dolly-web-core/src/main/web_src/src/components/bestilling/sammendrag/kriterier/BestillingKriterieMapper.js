@@ -36,26 +36,51 @@ const _getTpsfBestillingData = data => {
 	]
 }
 
+const _findBestillingskriterier = bestillingData => {
+	//TODO: Skrives om!! Sender helst inn riktig før vi kommer til denne fila
+	if (bestillingData.tpsfKriterier || bestillingData.bestKriterier) {
+		//Bestillingskriterier etter bestilling
+		return {
+			tpsfKriterier: bestillingData.tpsfKriterier,
+			registreKriterier: bestillingData.bestKriterier,
+			antallIdenter: bestillingData.antallIdenter,
+			sistOppdatert: bestillingData.sistOppdatert,
+			opprettetFraId: bestillingData.opprettetFraId
+		}
+	}
+	const { tpsf, antallIdenter, ...registreKriterier } = bestillingData
+	//Bestillingskriterier under bestilling
+	return { tpsfKriterier: tpsf, registreKriterier, antallIdenter }
+}
+
 export function mapBestillingData(bestillingData) {
 	if (!bestillingData) return null
+	//TODO: Skrives om slik at ulike kriterier allerede er skilt?
+	//Kan hende det som kalles bestillingsinformasjon under her burde være en egen greie
+	const { tpsfKriterier, registreKriterier, ...bestillingsinformasjon } = _findBestillingskriterier(
+		bestillingData
+	)
+
 	const data = []
 
 	const bestillingsInfo = {
 		header: 'Bestillingsinformasjon',
 		items: [
-			obj('Antall', bestillingData.antallIdenter.toString()),
-			obj('Sist Oppdatert', Formatters.formatDate(bestillingData.sistOppdatert)),
+			obj(
+				'Antall',
+				bestillingsinformasjon.antallIdenter && bestillingsinformasjon.antallIdenter.toString()
+			),
+			obj('Sist Oppdatert', Formatters.formatDate(bestillingsinformasjon.sistOppdatert)),
 			obj(
 				'Gjenopprett fra',
-				bestillingData.opprettetFraId && `Bestilling # ${bestillingData.opprettetFraId}`
+				bestillingsinformasjon.opprettetFraId &&
+					`Bestilling # ${bestillingsinformasjon.opprettetFraId}`
 			)
 		]
 	}
 	data.push(bestillingsInfo)
 
-	// Gamle bestillinger har ikke tpsfKriterie
-	if (bestillingData.tpsfKriterier) {
-		const tpsfKriterier = bestillingData.tpsfKriterier
+	if (tpsfKriterier) {
 		const personinfo = {
 			header: 'Persondetaljer',
 			items: _getTpsfBestillingData(tpsfKriterier)
@@ -158,8 +183,7 @@ export function mapBestillingData(bestillingData) {
 		}
 	}
 
-	if (bestillingData.bestKriterier) {
-		const registreKriterier = bestillingData.bestKriterier
+	if (registreKriterier) {
 		const aaregKriterier = registreKriterier.aareg
 		if (aaregKriterier) {
 			const aareg = {
