@@ -21,7 +21,8 @@ public class RsPartnerRequest extends RsRelasjon{
     private Integer partnerNr;
 
     @ApiModelProperty(
-            position = 2
+            position = 2,
+            value = "Liste av sivilstander beskriver forhold mellom hovedperson og partner"
     )
     private List<RsSivilstandRequest> sivilstander;
 
