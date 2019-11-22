@@ -23,16 +23,6 @@
         <module>tp-domain</module>
     </modules>
 
-    <properties>
-        <application.version>${project.version}</application.version>
-        <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
-        <application.version>${project.version}</application.version>
-        <java.version>11</java.version>
-        <swagger.version>2.9.2</swagger.version>
-        <log.exceptions.version>1.5.0</log.exceptions.version>
-        <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
-    </properties>
-
     <distributionManagement>
         <repository>
             <id>m2internal</id>
@@ -46,6 +36,16 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
+
+    <properties>
+        <application.version>${project.version}</application.version>
+        <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
+        <application.version>${project.version}</application.version>
+        <java.version>11</java.version>
+        <swagger.version>2.9.2</swagger.version>
+        <log.exceptions.version>1.5.0</log.exceptions.version>
+        <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
