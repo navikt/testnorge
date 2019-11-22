@@ -60,9 +60,9 @@ public class IdentService {
 
         Testident testident = identRepository.findByIdent(attributtes.getIdent());
         if (nonNull(testident)) {
-            if (attributtes instanceof IdentIbruk)
-            testident.setIBruk(((IdentIbruk) attributtes).isIbruk());
-            else if (attributtes instanceof IdentBeskrivelse) {
+            if (attributtes instanceof IdentIbruk) {
+                testident.setIBruk(((IdentIbruk) attributtes).isIbruk());
+            } else if (attributtes instanceof IdentBeskrivelse) {
                 testident.setBeskrivelse(((IdentBeskrivelse) attributtes).getBeskrivelse());
             }
             return identRepository.save(testident);
