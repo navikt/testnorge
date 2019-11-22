@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @ApiModel
 @Builder
@@ -19,9 +19,9 @@ public class RsPeriode {
 
     @JsonProperty
     @ApiModelProperty(value = "Dato fra og med", example = "YYYY-MM-DD")
-    private Date fom;
+    private LocalDate fom;
     @JsonProperty
     @ApiModelProperty(value = "Dato til og med", example = "YYYY-MM-DD")
-    private Date tom;
+    private LocalDate tom;
 
 }

@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @ApiModel
 @Builder
@@ -19,7 +19,7 @@ public class RsEndringIRefusjon {
 
     @JsonProperty
     @ApiModelProperty(example = "YYYY-MM-DD")
-    private LocalDateTime endringsdato;
+    private LocalDate endringsdato;
     @JsonProperty
     @ApiModelProperty("Nytt refusjonsbeløp per måned")
     private double refusjonsbeloepPrMnd;

@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @ApiModel
 @Builder
@@ -22,7 +22,7 @@ public class RsNaturaYtelseDetaljer {
     private String naturaytelseType;
     @JsonProperty
     @ApiModelProperty(value = "Startdato for naturaytelse", example = "YYYY-MM-DD")
-    private LocalDateTime fom;
+    private LocalDate fom;
     @JsonProperty
     @ApiModelProperty("Samlet månedlig beløp for naturaytelsen")
     private double beloepPrMnd;

@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @ApiModel
 @Builder
@@ -19,7 +19,7 @@ public class RsDelvisFravaer {
 
     @JsonProperty
     @ApiModelProperty(example = "YYYY-MM-DD")
-    private LocalDateTime dato;
+    private LocalDate dato;
     @JsonProperty
     @ApiModelProperty("Antall timer delvis fravær")
     private double timer;

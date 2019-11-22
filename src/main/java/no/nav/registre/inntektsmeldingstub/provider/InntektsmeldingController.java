@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import no.nav.registre.inntektsmeldingstub.MeldingsType;
-// import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
 import no.nav.registre.inntektsmeldingstub.service.InntektsmeldingService;
 import no.nav.registre.inntektsmeldingstub.util.XmlInntektsmelding201809;
 import no.nav.registre.inntektsmeldingstub.util.XmlInntektsmelding201812;

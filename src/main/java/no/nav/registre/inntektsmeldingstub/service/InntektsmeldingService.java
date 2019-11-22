@@ -3,10 +3,18 @@ package no.nav.registre.inntektsmeldingstub.service;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.inntektsmelding.xml.kodeliste._20190122.XMLÅrsakBeregnetInntektEndringKodeliste;
+import no.nav.registre.inntektsmeldingstub.database.model.DelvisFravaer;
+import no.nav.registre.inntektsmeldingstub.database.model.EndringIRefusjon;
+import no.nav.registre.inntektsmeldingstub.database.model.NaturalytelseDetaljer;
+import no.nav.registre.inntektsmeldingstub.database.model.Periode;
 import no.nav.registre.inntektsmeldingstub.service.rs.RsArbeidsforhold;
 import no.nav.registre.inntektsmeldingstub.service.rs.RsArbeidsgiver;
 import no.nav.registre.inntektsmeldingstub.service.rs.RsArbeidsgiverPrivat;
+import no.nav.registre.inntektsmeldingstub.service.rs.RsEndringIRefusjon;
 import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
+import no.nav.registre.inntektsmeldingstub.service.rs.RsNaturaYtelseDetaljer;
+import no.nav.registre.inntektsmeldingstub.service.rs.RsRefusjon;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -51,13 +59,26 @@ public class InntektsmeldingService {
     private final UtsettelseAvForeldrepengerRepository utsettelseAvForeldrepengerRepository;
     private final EierRepository eierRepository;
 
-    public List<Inntektsmelding> saveMeldinger(List<Inntektsmelding> inntektsmeldinger, MeldingsType type, String eier) {
+    public List<Inntektsmelding> saveMeldinger(List<RsInntektsmelding> inntektsmeldinger, MeldingsType type, String eier) {
+
         Eier opprettetAv = eierRepository.findEierByNavn(eier).orElse(null);
         if (opprettetAv == null && !inntektsmeldinger.isEmpty()) {
             opprettetAv = new Eier();
             opprettetAv.setNavn(eier);
             eierRepository.save(opprettetAv);
         }
+
+        switch(type) {
+            case TYPE_2018_12:
+                return save201812Melding(inntektsmeldinger, opprettetAv);
+            case TYPE_2018_09:
+                return save201809Melding(inntektsmeldinger, opprettetAv);
+            default:
+                log.warn("Prøvde å hente ugyldig meldingstype. Returenerer \'null\'");
+                return null;
+        }
+
+/*
         List<Inntektsmelding> lagredeMeldinger = new ArrayList<>(inntektsmeldinger.size());
         for (Inntektsmelding inntektsmelding : inntektsmeldinger) {
 
@@ -96,53 +117,87 @@ public class InntektsmeldingService {
             lagredeMeldinger.add(lagret);
         }
         return lagredeMeldinger;
+
+         */
     }
 
-    public List<Inntektsmelding> save201812Melding(List<RsInntektsmelding> inntektsmeldinger, Eier eier) {
+    private List<Inntektsmelding> mapInntektsmeldinger(List<RsInntektsmelding> inntektsmeldinger) {
 
-        List<Inntektsmelding> lagredeMeldinger = new ArrayList<>(inntektsmeldinger.size());
+        /*
+        Mandag: problemet er å sette 'riktig' PrivatArbeidsgiver etter at vi har kjørt byggingen/mappingen her.
+        Ønsket er å slippe å duplisere denne store kodebolken.
+         */
+        return inntektsmeldinger.stream().map(melding -> Inntektsmelding.builder()
+                .ytelse(melding.getYtelse())
+                .arbeidstakerFnr(melding.getArbeidstakerFnr())
+                .aarsakTilInnsending(melding.getAarsakTilInnsending())
+                .avsendersystemNavn(melding.getAvsendersystem().getSystemnavn())
+                .avsendersystemVersjon(melding.getAvsendersystem().getSystemversjon())
+                .innsendingstidspunkt(melding.getAvsendersystem().getInnsendingstidspunkt())
+                .naerRelasjon(melding.isNaerRelasjon())
 
-        for (RsInntektsmelding melding : inntektsmeldinger) {
-            Inntektsmelding databaseInntektsMelding = Inntektsmelding.builder()
-                    .eier(eier)
-                    .ytelse(melding.getYtelse())
-                    .arbeidstakerFnr(melding.getArbeidstakerFnr())
-                    .aarsakTilInnsending(melding.getAarsakTilInnsending())
-                    .avsendersystemNavn(melding.getAvsendersystem().getSystemnavn())
-                    .avsendersystemVersjon(melding.getAvsendersystem().getSystemversjon())
-                    .innsendingstidspunkt(melding.getAvsendersystem().getInnsendingstidspunkt())
-                    .naerRelasjon(melding.isNaerRelasjon())
+                .arbeidsgiver(createOrFindArbeidsgiver(melding.getArbeidsgiver()))
+                .arbeidsforhold(createOrFindArbeidsforhold(melding.getArbeidsforhold()))
 
-                    .privatArbeidsgiver(createOrFindArbeidsgiverPrivat(melding.getArbeidsgiverPrivat()))
-                    .arbeidsgiver(createOrFindArbeidsgiver(melding.getArbeidsgiver()))
-                    .arbeidsforhold()
+                .endringIRefusjonListe(Lists.newArrayList(endringIRefusjonRepository.saveAll(
+                        melding.getRefusjon().getEndringIRefusjonListe().stream().map(e -> EndringIRefusjon.builder()
+                                .refusjonsbeloepPrMnd(e.getRefusjonsbeloepPrMnd())
+                                .endringsDato(e.getEndringsdato())
+                                .build()).collect(Collectors.toList()))))
+                .refusjonsbeloepPrMnd(melding.getRefusjon().getRefusjonsbeloepPrMnd())
+                .refusjonsopphoersdato(melding.getRefusjon().getRefusjonsopphoersdato())
 
-                    .endringIRefusjonListe()
-                    .refusjonsbeloepPrMnd()
-                    .refusjonsopphoersdato()
+                .gjenopptakelseNaturalytelseListe(Lists.newArrayList(naturalytelseDetaljerRepository.saveAll(
+                        melding.getGjenopptakelseNaturalytelseListe().stream().map(e -> NaturalytelseDetaljer.builder()
+                                .beloepPrMnd(e.getBeloepPrMnd())
+                                .fom(e.getFom())
+                                .type(e.getNaturaytelseType())
+                                .build()).collect(Collectors.toList()))))
+                .opphoerAvNaturalytelseListe(Lists.newArrayList(naturalytelseDetaljerRepository.saveAll(
+                        melding.getOpphoerAvNaturalytelseListe().stream().map(e -> NaturalytelseDetaljer.builder()
+                                .beloepPrMnd(e.getBeloepPrMnd())
+                                .fom(e.getFom())
+                                .type(e.getNaturaytelseType())
+                                .build()).collect(Collectors.toList()))))
 
-                    .gjenopptakelseNaturalytelseListe()
-                    .opphoerAvNaturalytelseListe()
+                .omsorgHarUtbetaltPliktigeDager(melding.getOmsorgspenger().isHarUtbetaltPliktigeDager())
+                .omsorgspengerDelvisFravaersListe(Lists.newArrayList(delvisFravaerRepository.saveAll(
+                        melding.getOmsorgspenger().getDelvisFravaersListe().stream().map(e -> DelvisFravaer.builder()
+                                .dato(e.getDato()).timer(e.getTimer()).build()).collect(Collectors.toList()))))
+                .omsorgspengerFravaersPeriodeListe(Lists.newArrayList(periodeRepository.saveAll(
+                        melding.getOmsorgspenger().getFravaersPerioder().stream().map(e -> Periode.builder()
+                                .fom(e.getFom()).tom(e.getTom()).build()).collect(Collectors.toList()))))
 
-                    .omsorgHarUtbetaltPliktigeDager()
-                    .omsorgspengerDelvisFravaersListe()
-                    .omsorgspengerFravaersPeriodeListe()
+                .pleiepengerPeriodeListe(Lists.newArrayList(periodeRepository.saveAll(
+                        melding.getPleiepengerPerioder().stream().map(e -> Periode.builder()
+                                .tom(e.getTom()).fom(e.getFom()).build()).collect(Collectors.toList()))))
 
-                    .pleiepengerPeriodeListe()
+                .startdatoForeldrepengeperiode(melding.getStartdatoForeldrepengeperiode())
 
-                    .startdatoForeldrepengeperiode()
+                .sykepengerBegrunnelseForReduksjonEllerIkkeUtbetalt(melding.getSykepengerIArbeidsgiverperioden().getBegrunnelseForReduksjonEllerIkkeUtbetalt())
+                .sykepengerBruttoUtbetalt(melding.getSykepengerIArbeidsgiverperioden().getBruttoUtbetalt())
+                .sykepengerPerioder(Lists.newArrayList(periodeRepository.saveAll(
+                        melding.getSykepengerIArbeidsgiverperioden().getArbeidsgiverperiodeListe().stream().map(e -> Periode.builder()
+                                .fom(e.getFom()).tom(e.getTom()).build()).collect(Collectors.toList()))))
+                .build()).collect(Collectors.toList());
+    }
 
-                    .sykepengerBegrunnelseForReduksjonEllerIkkeUtbetalt()
-                    .sykepengerBruttoUtbetalt()
-                    .sykepengerPerioder()
-                    .build();
-        }
+
+
+    private List<Inntektsmelding> save201812Melding(List<RsInntektsmelding> inntektsmeldinger, Eier eier) {
+
+        List<Inntektsmelding> lagredeMeldinger = mapInntektsmeldinger(inntektsmeldinger);
+        lagredeMeldinger.forEach(m -> m.setEier(eier));
+
+
+        inntektsmeldingRepository.saveAll(lagredeMeldinger);
+
 
 
         return null;
     }
 
-    public List<Inntektsmelding> save201809Melding(List<Inntektsmelding> inntektsmeldinger, Eier eier) {
+    public List<Inntektsmelding> save201809Melding(List<RsInntektsmelding> inntektsmeldinger, Eier eier) {
 
         return null;
     }

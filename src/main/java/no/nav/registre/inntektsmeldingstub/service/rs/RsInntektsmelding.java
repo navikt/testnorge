@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @ApiModel
@@ -60,7 +60,7 @@ public class RsInntektsmelding {
     private RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
     @JsonProperty
     @ApiModelProperty(example = "YYYY-MM-DD")
-    private LocalDateTime startdatoForeldrepengeperiode;
+    private LocalDate startdatoForeldrepengeperiode;
     @JsonProperty
     @ApiModelProperty()
     private List<RsNaturaYtelseDetaljer> opphoerAvNaturalytelseListe;

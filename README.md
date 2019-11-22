@@ -1,10 +1,13 @@
 # Inntektsmelding-stub
 
 Stub for lagring og innsending av inntektsmeldinger.
-Meldingene skal sendes inn til ...(inntektstub?)... på altinns XML-format for inntektsmeldinger, der formatet er definert av [denne 
-XSD'en](https://github.com/navikt/tjenestespesifikasjoner/blob/master/nav-altinn-inntektsmelding/src/main/xsd/Inntektsmelding20181211.xsd).
+Meldingene skal sendes inn til ...(inntektstub?)... på altinns XML-format for inntektsmeldinger, der formatet er 
+definert av [denne XSD'en](https://github.com/navikt/tjenestespesifikasjoner/blob/master/nav-altinn-inntektsmelding/src/main/xsd/Inntektsmelding20181211.xsd).
  
-Den har endepunkter for å opprette 
+Den har endepunkter for å opprette inntektsmeldinger på 201809- og 201812-formater, og lagrer dem i en database. Man 
+kan også hente opp inntektsmeldinger man allerede har laget.
+
+![databasemodell](databasemodell.png)
 
 ## Mangler
 - [ ] Foreløpig ikke implementert innsending av meldingene (hvor? inntektstub?)
