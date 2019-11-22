@@ -20,7 +20,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
@@ -70,21 +71,20 @@ public class TpServiceTest {
 
     @Before
     public void setUp() {
-        ArrayList<String> fnrs = new ArrayList<>();
-        fnrs.add("123");
-        fnrs.add("132");
-        fnrs.add("321");
-        ArrayList<TYtelse> ytelser = new ArrayList<>();
-        ytelser.add(TYtelse.builder()
-                .ytelseId(3)
-                .erGyldig("0")
-                .funkYtelseId("10637556")
-                .kYtelseT("UKJENT")
-                .endretAv("")
-                .versjon("2")
-                .build());
-        ytelser.add(TYtelse.builder().build());
-        ytelser.add(TYtelse.builder().build());
+        var fnrs = new ArrayList<>(Arrays.asList("123", "132", "321"));
+        var ytelser = new ArrayList<>(
+                Arrays.asList(
+                        TYtelse.builder()
+                                .ytelseId(3)
+                                .erGyldig("0")
+                                .funkYtelseId("10637556")
+                                .kYtelseT("UKJENT")
+                                .endretAv("")
+                                .versjon("2")
+                                .build(),
+                        TYtelse.builder().build(),
+                        TYtelse.builder().build()
+                ));
         when(hodejegerenConsumer.getLevende(anyLong())).thenReturn(fnrs);
         when(hodejegerenConsumer.getLevende(anyLong(), anyString(), anyInt(), anyInt())).thenReturn(fnrs);
         when(tPersonRepository.save(any())).thenReturn(TPerson.builder().personId(1).fnrFk("123").build());
@@ -100,8 +100,9 @@ public class TpServiceTest {
                 .build());
         when(tForholdYtelseHistorikkRepository.save(any())).thenReturn(new TForholdYtelseHistorikk(new HistorikkComposityKey(2, 3)));
 
-        ArrayList<TForhold> forhold = new ArrayList<>();
-        forhold.add(TForhold.builder().personId(1).forholdId(2).endretAv("").build());
+        var forhold = new ArrayList<>(Collections.singletonList(
+                TForhold.builder().personId(1).forholdId(2).endretAv("").build()
+        ));
         when(tForholdRepository.findAll()).thenReturn(forhold);
 
         when(hodejegerenHistorikkConsumer.saveHistory(any())).thenReturn(fnrs);
@@ -122,22 +123,24 @@ public class TpServiceTest {
      */
     @Test
     public void syntetiserForMangeForhold() {
-        ArrayList<TYtelse> ytelser = new ArrayList<>();
-        ytelser.add(TYtelse.builder()
-                .ytelseId(3)
-                .erGyldig("0")
-                .funkYtelseId("10637556")
-                .kYtelseT("UKJENT")
-                .endretAv("")
-                .versjon("2")
-                .build());
-        ytelser.add(TYtelse.builder().build());
-        ytelser.add(TYtelse.builder().build());
-        ytelser.add(TYtelse.builder().build());
-        ytelser.add(TYtelse.builder().build());
-        ytelser.add(TYtelse.builder().build());
-        ytelser.add(TYtelse.builder().build());
-        ytelser.add(TYtelse.builder().build());
+        var ytelser = new ArrayList<>(Arrays.asList(
+                TYtelse.builder()
+                        .ytelseId(3)
+                        .erGyldig("0")
+                        .funkYtelseId("10637556")
+                        .kYtelseT("UKJENT")
+                        .endretAv("")
+                        .versjon("2")
+                        .build(),
+                TYtelse.builder().build(),
+                TYtelse.builder().build(),
+                TYtelse.builder().build(),
+                TYtelse.builder().build(),
+                TYtelse.builder().build(),
+                TYtelse.builder().build(),
+                TYtelse.builder().build()
+        ));
+
         when(tpSyntConsumer.getSyntYtelser(3)).thenReturn(ytelser);
         tpService.syntetiser(request);
 
@@ -149,13 +152,14 @@ public class TpServiceTest {
      */
     @Test(expected = HttpServerErrorException.class)
     public void syntetiserForMangeFNR() {
-        ArrayList<String> fnrs = new ArrayList<>();
-        fnrs.add("123");
-        fnrs.add("132");
-        fnrs.add("321");
-        fnrs.add("312");
-        fnrs.add("213");
-        fnrs.add("231");
+        var fnrs = new ArrayList<>(Arrays.asList(
+                "123",
+                "132",
+                "321",
+                "312",
+                "213",
+                "231"
+        ));
         when(hodejegerenConsumer.getLevende(anyLong(), anyString(), anyInt(), eq(MIN_AGE))).thenReturn(fnrs);
 
         tpService.syntetiser(request);
@@ -164,8 +168,8 @@ public class TpServiceTest {
 
     @Test
     public void getForhold() {
-        List<TForhold> forhold = tpService.getForhold();
-        TForhold tForhold = forhold.get(0);
+        var forhold = tpService.getForhold();
+        var tForhold = forhold.get(0);
         assertEquals(1, (int) tForhold.getPersonId());
         assertEquals(2, (int) tForhold.getForholdId());
     }
@@ -178,38 +182,39 @@ public class TpServiceTest {
 
     @Test
     public void createPeopleAllCreated() {
-        ArrayList<String> fnrs = new ArrayList<>();
-        fnrs.add("123");
-        fnrs.add("132");
-        fnrs.add("321");
-        fnrs.add("312");
-        fnrs.add("213");
-        fnrs.add("231");
+        var fnrs = new ArrayList<>(Arrays.asList(
+                "123",
+                "132",
+                "321",
+                "312",
+                "213",
+                "231"
+        ));
 
-        List<TPerson> people = fnrs.parallelStream().map(fnr -> TPerson.builder().fnrFk(fnr).build()).collect(Collectors.toList());
+        var people = fnrs.parallelStream().map(fnr -> TPerson.builder().fnrFk(fnr).build()).collect(Collectors.toList());
 
-        for (String s : fnrs) {
+        for (var s : fnrs) {
             when(tPersonRepository.findByFnrFk(s)).thenReturn(null);
         }
 
         when(tPersonRepository.saveAll(any())).thenReturn(people);
-        List<String> created = tpService.createPeople(fnrs);
+        var created = tpService.createPeople(fnrs);
 
-        for (String s : fnrs) {
+        for (var s : fnrs) {
             assertTrue(created.contains(s));
         }
-
     }
 
     @Test
     public void createPeopleTwoExists() {
-        ArrayList<String> fnrs = new ArrayList<>();
-        fnrs.add("123");
-        fnrs.add("132");
-        fnrs.add("321");
-        fnrs.add("312");
-        fnrs.add("213");
-        fnrs.add("231");
+        ArrayList<String> fnrs = new ArrayList<>(Arrays.asList(
+                "123",
+                "132",
+                "321",
+                "312",
+                "213",
+                "231"
+        ));
 
         when(tPersonRepository.findByFnrFk("123")).thenReturn(TPerson.builder().fnrFk("123").build());
         when(tPersonRepository.findByFnrFk("132")).thenReturn(TPerson.builder().fnrFk("132").build());
@@ -217,16 +222,17 @@ public class TpServiceTest {
             when(tPersonRepository.findByFnrFk(fnrs.get(i))).thenReturn(null);
         }
 
-        List<TPerson> people = fnrs.parallelStream().filter(fnr -> !fnr.equals("123") && !fnr.equals("132")).map(fnr -> TPerson.builder().fnrFk(fnr).build()).collect(Collectors.toList());
+        var people = fnrs.parallelStream().filter(
+                fnr -> !fnr.equals("123") && !fnr.equals("132"))
+                .map(fnr -> TPerson.builder().fnrFk(fnr).build()).collect(Collectors.toList());
         when(tPersonRepository.saveAll(any())).thenReturn(people);
-        List<String> created = tpService.createPeople(fnrs);
+        var created = tpService.createPeople(fnrs);
 
-        for (String s : fnrs) {
+        for (var s : fnrs) {
             if (s.equals("123") || s.equals("132")) {
                 continue;
             }
             assertTrue(created.contains(s));
         }
-
     }
 }

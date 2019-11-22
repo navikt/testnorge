@@ -30,7 +30,6 @@ public class OrkestreringControllerTest {
 
     @Test
     public void initializeDatabase() {
-
         when(tpService.initializeTpDbForEnvironment(anyLong())).thenReturn(1);
         ResponseEntity entity = orkestreringController.initializeDatabase(new OrkestreringRequest(1L, "q2"));
         assertEquals(1, entity.getBody());
@@ -38,7 +37,6 @@ public class OrkestreringControllerTest {
 
     @Test
     public void addPeople() {
-
         List<String> fnrs = new ArrayList<>();
         fnrs.add("123");
         fnrs.add("132");
@@ -47,7 +45,7 @@ public class OrkestreringControllerTest {
         List<String> feiletPersoner = new ArrayList<>(1);
         feiletPersoner.add("123");
         when(tpService.createPeople(any())).thenReturn(feiletPersoner);
-        ResponseEntity<List<String>> entity = orkestreringController.addPeople(fnrs, "q");
+        var entity = orkestreringController.addPeople(fnrs, "q");
         assertEquals(2, Objects.requireNonNull(entity.getBody()).size());
 
     }

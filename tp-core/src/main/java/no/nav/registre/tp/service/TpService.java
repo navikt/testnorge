@@ -13,7 +13,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -66,26 +65,25 @@ public class TpService {
 
     private static final String TP_NAME = "tp";
 
-    public int initializeTpDbForEnvironment(Long id) {
-        List<String> allIdentities = getLivingIdentities(id);
-
-        List<TPerson> allInDb = (List<TPerson>) tPersonRepository.findAll();
-
-        Set<String> fnrsInDb = allInDb.parallelStream().map(TPerson::getFnrFk).collect(Collectors.toSet());
-
-        Set<String> missing = allIdentities.parallelStream().filter(fnr -> !fnrsInDb.contains(fnr)).collect(Collectors.toSet());
-
-        List<TPerson> created = createPeopleFromStream(missing.parallelStream());
+    public int initializeTpDbForEnvironment(
+            Long id
+    ) {
+        var allIdentities = getLivingIdentities(id);
+        var allInDb = (List<TPerson>) tPersonRepository.findAll();
+        var fnrsInDb = allInDb.parallelStream().map(TPerson::getFnrFk).collect(Collectors.toSet());
+        var missing = allIdentities.parallelStream().filter(fnr -> !fnrsInDb.contains(fnr)).collect(Collectors.toSet());
+        var created = createPeopleFromStream(missing.parallelStream());
 
         log.info("Opprettet {} personer i tp", created.size());
         return created.size();
     }
 
-    public void syntetiser(@Valid SyntetiseringsRequest request) {
+    public void syntetiser(
+            @Valid SyntetiseringsRequest request
+    ) {
+        var ids = getLivingIdentities(request.getAvspillergruppeId(), request.getMiljoe(), request.getAntallPersoner(), MIN_AGE);
 
-        List<String> ids = getLivingIdentities(request.getAvspillergruppeId(), request.getMiljoe(), request.getAntallPersoner(), MIN_AGE);
-
-        List<TYtelse> ytelser = tpSyntConsumer.getSyntYtelser(ids.size());
+        var ytelser = tpSyntConsumer.getSyntYtelser(ids.size());
         if (ytelser.size() != ids.size()) {
             log.warn("Fikk ikke riktig antall ytelser i forhold til forventet antall. Ytelser: {} Fnrs: {}", ytelser.size(), ids.size());
             log.warn("Fortsetter execution men sløyfer de siste ytelsene");
@@ -102,7 +100,7 @@ public class TpService {
             savedForhold.add(createFullRelation(ids.get(i), ytelser.get(i)));
         }
 
-        List<IdentMedData> identerMedData = savedForhold.parallelStream().map(f -> IdentMedData.builder()
+        var identerMedData = savedForhold.parallelStream().map(f -> IdentMedData.builder()
                 .id(f.tPerson.getFnrFk())
                 .data(
                         Collections.singletonList(
@@ -154,16 +152,16 @@ public class TpService {
                 ).build()
         ).collect(Collectors.toList());
 
-        TpSaveInHodejegerenRequest tpSaveInHodejegerenRequest = TpSaveInHodejegerenRequest.builder()
+        var tpSaveInHodejegerenRequest = TpSaveInHodejegerenRequest.builder()
                 .kilde(TP_NAME)
                 .identMedData(identerMedData)
                 .build();
 
-        List<String> savedIds = hodejegerenHistorikkConsumer.saveHistory(tpSaveInHodejegerenRequest);
+        var savedIds = hodejegerenHistorikkConsumer.saveHistory(tpSaveInHodejegerenRequest);
 
         if (savedIds.size() < identerMedData.size()) {
             List<String> identerSomIkkeBleLagret = new ArrayList<>(identerMedData.size());
-            for (IdentMedData ident : identerMedData) {
+            for (var ident : identerMedData) {
                 identerSomIkkeBleLagret.add(ident.getId());
             }
             identerSomIkkeBleLagret.removeAll(savedIds);
@@ -175,16 +173,20 @@ public class TpService {
         return (List<TForhold>) tForholdRepository.findAll();
     }
 
-    public List<String> createPeople(List<String> fnrs) {
-        List<String> notFound = fnrs.parallelStream().filter(fnr -> tPersonRepository.findByFnrFk(fnr) == null).collect(Collectors.toList());
-        List<TPerson> saved = createPeopleFromStream(notFound.parallelStream());
+    public List<String> createPeople(
+            List<String> fnrs
+    ) {
+        var notFound = fnrs.parallelStream().filter(fnr -> tPersonRepository.findByFnrFk(fnr) == null).collect(Collectors.toList());
+        var saved = createPeopleFromStream(notFound.parallelStream());
         return saved.parallelStream().map(TPerson::getFnrFk).collect(Collectors.toList());
     }
 
-    private List<TPerson> createPeopleFromStream(Stream<String> stringStream) {
-        Timestamp timestamp = Timestamp.from(Instant.now());
+    private List<TPerson> createPeopleFromStream(
+            Stream<String> stringStream
+    ) {
+        var timestamp = Timestamp.from(Instant.now());
 
-        Set<TPerson> toCreate = stringStream.map(fnr -> TPerson.builder()
+        var toCreate = stringStream.map(fnr -> TPerson.builder()
                 .fnrFk(fnr)
                 .datoOpprettet(timestamp)
                 .datoEndret(timestamp)
@@ -197,31 +199,37 @@ public class TpService {
         return (List<TPerson>) tPersonRepository.saveAll(toCreate);
     }
 
-    private TYtelse saveYtelse(TYtelse ytelse) {
+    private TYtelse saveYtelse(
+            TYtelse ytelse
+    ) {
         ytelse.setOpprettetAv("synt");
         ytelse.setEndretAv("synt");
         return tYtelseRepository.save(ytelse);
     }
 
-    private TPerson savePerson(TPerson person) {
-        TPerson funnet = tPersonRepository.findByFnrFk(person.getFnrFk());
+    private TPerson savePerson(
+            TPerson person
+    ) {
+        var funnet = tPersonRepository.findByFnrFk(person.getFnrFk());
         if (funnet != null) {
             return funnet;
         }
         return tPersonRepository.save(person);
     }
 
-    private TForhold saveForhold(TPerson person, TYtelse ytelse) {
-
-        String endretAv = "INFOTRYGD";
+    private TForhold saveForhold(
+            TPerson person,
+            TYtelse ytelse
+    ) {
+        var endretAv = "INFOTRYGD";
 
         if (ytelse.getEndretAv().contains("srvElsam")) {
             endretAv = "TPLEV";
         }
 
-        Timestamp now = Timestamp.from(Instant.now());
+        var now = Timestamp.from(Instant.now());
 
-        TForhold savedForhold = tForholdRepository.save(TForhold.builder()
+        var savedForhold = tForholdRepository.save(TForhold.builder()
                 .personId(person.getPersonId())
                 .datoBrukFom(ytelse.getDatoBrukFom())
                 .datoBrukTom(ytelse.getDatoBrukTom())
@@ -244,12 +252,13 @@ public class TpService {
         return savedForhold;
     }
 
-    private FullSavedForhold createFullRelation(String fnr, TYtelse ytelse) {
-
-        FullSavedForhold fullSavedForhold = new FullSavedForhold();
-
-        Timestamp timestamp = Timestamp.from(Instant.now());
-        TPerson tPerson = savePerson(TPerson.builder()
+    private FullSavedForhold createFullRelation(
+            String fnr,
+            TYtelse ytelse
+    ) {
+        var fullSavedForhold = new FullSavedForhold();
+        var timestamp = Timestamp.from(Instant.now());
+        var tPerson = savePerson(TPerson.builder()
                 .fnrFk(fnr)
                 .datoOpprettet(timestamp)
                 .datoEndret(timestamp)
@@ -257,8 +266,8 @@ public class TpService {
                 .versjon(ytelse.getVersjon())
                 .opprettetAv("synt")
                 .build());
-        TYtelse tYtelse = saveYtelse(ytelse);
-        TForhold tForhold = saveForhold(tPerson, tYtelse);
+        var tYtelse = saveYtelse(ytelse);
+        var tForhold = saveForhold(tPerson, tYtelse);
 
         fullSavedForhold.tPerson = tPerson;
         fullSavedForhold.tForhold = tForhold;
@@ -268,12 +277,19 @@ public class TpService {
     }
 
     @Timed(value = "tp.resource.latency", extraTags = { "operation", "hodejegeren" })
-    private List<String> getLivingIdentities(Long id, String env, int numberOfIdents, int minAge) {
+    private List<String> getLivingIdentities(
+            Long id,
+            String env,
+            int numberOfIdents,
+            int minAge
+    ) {
         return hodejegerenConsumer.getLevende(id, env, numberOfIdents, minAge);
     }
 
     @Timed(value = "tp.resource.latency", extraTags = { "operation", "hodejegeren" })
-    private List<String> getLivingIdentities(Long id) {
+    private List<String> getLivingIdentities(
+            Long id
+    ) {
         return hodejegerenConsumer.getLevende(id);
     }
 

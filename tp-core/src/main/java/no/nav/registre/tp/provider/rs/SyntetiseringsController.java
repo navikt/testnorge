@@ -27,7 +27,9 @@ public class SyntetiseringsController {
     @LogExceptions
     @ApiOperation(value = "Dette endepunktet kan benyttes for å generere syntetiserte ytelser på tilfeldige personer i en gitt avspillergruppe som er definert i TPS-Forvalteren.")
     @PostMapping(value = "/generer")
-    public ResponseEntity createYtelseWithRelations(@RequestBody @Valid SyntetiseringsRequest request) {
+    public ResponseEntity createYtelseWithRelations(
+            @RequestBody @Valid SyntetiseringsRequest request
+    ) {
         TenantContext.setTenant(request.getMiljoe());
         tpService.syntetiser(request);
         return ResponseEntity.ok().build();
@@ -36,7 +38,9 @@ public class SyntetiseringsController {
     @LogExceptions
     @ApiOperation(value = "Dette endepunktet kan benyttes for å hente ut alle forhold i et gitt miljø.")
     @GetMapping(value = "/forhold/{miljoe}")
-    public ResponseEntity getForhold(@PathVariable String miljoe) {
+    public ResponseEntity getForhold(
+            @PathVariable String miljoe
+    ) {
         TenantContext.setTenant(miljoe);
         return ResponseEntity.ok(tpService.getForhold());
     }

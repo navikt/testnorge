@@ -17,21 +17,25 @@ import no.nav.registre.tp.TpSaveInHodejegerenRequest;
 @Slf4j
 public class HodejegerenHistorikkConsumer {
 
-    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
+    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
+
     private final RestTemplate restTemplate;
     private final String hodejegerenSaveHistorikk;
 
-    public HodejegerenHistorikkConsumer(RestTemplate restTemplate, @Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenUrl) {
+    public HodejegerenHistorikkConsumer(
+            RestTemplate restTemplate,
+            @Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenUrl
+    ) {
         this.restTemplate = restTemplate;
         this.hodejegerenSaveHistorikk = hodejegerenUrl + "/v1/historikk/";
     }
 
     @Timed(value = "tp.resource.latency", extraTags = { "operation", "hodejegeren" })
-    public List<String> saveHistory(TpSaveInHodejegerenRequest request) {
-
-        RequestEntity<TpSaveInHodejegerenRequest> postRequest = RequestEntity.post(URI.create(hodejegerenSaveHistorikk)).body(request);
-
+    public List<String> saveHistory(
+            TpSaveInHodejegerenRequest request
+    ) {
+        var postRequest = RequestEntity.post(URI.create(hodejegerenSaveHistorikk)).body(request);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 

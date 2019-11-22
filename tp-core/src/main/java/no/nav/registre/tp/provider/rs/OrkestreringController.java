@@ -30,21 +30,24 @@ public class OrkestreringController {
     @ApiOperation(value = "Dette endepunktet kan benyttes for å initialisere en database i et gitt miljø. Identer som ikke finnes i TJPEN databasen, men i avspillergruppen på det gitte miljøet vil bli "
             + "opprettet uten noen tilhørende ytelser.")
     @PostMapping("/init")
-    public ResponseEntity<Integer> initializeDatabase(@RequestBody OrkestreringRequest request) {
+    public ResponseEntity<Integer> initializeDatabase(
+            @RequestBody OrkestreringRequest request
+    ) {
         TenantContext.setTenant(request.getMiljoe());
-
-        int count = tpService.initializeTpDbForEnvironment(request.getAvspillergruppeId());
-
+        var count = tpService.initializeTpDbForEnvironment(request.getAvspillergruppeId());
         return ResponseEntity.ok(count);
     }
 
     @LogExceptions
     @ApiOperation(value = "Dette endepunktet kan benyttes for å opprette gitte personer. De vil bli opprettet i TJPEN. Det er ikke noen verifikasjon av FNR mot TPS eller om det er et gyldig FNR.")
     @PostMapping("/opprettPersoner/{miljoe}")
-    public ResponseEntity<List<String>> addPeople(@RequestBody List<String> fnrs, @PathVariable String miljoe) {
+    public ResponseEntity<List<String>> addPeople(
+            @RequestBody List<String> fnrs,
+            @PathVariable String miljoe
+    ) {
         TenantContext.setTenant(miljoe);
-        List<String> people = tpService.createPeople(fnrs);
-        List<String> feilet = fnrs.parallelStream().filter(fnr -> !people.contains(fnr)).collect(Collectors.toList());
+        var people = tpService.createPeople(fnrs);
+        var feilet = fnrs.parallelStream().filter(fnr -> !people.contains(fnr)).collect(Collectors.toList());
         return ResponseEntity.ok(feilet);
     }
 }

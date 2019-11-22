@@ -13,10 +13,6 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-
-import no.nav.registre.tp.database.models.TYtelse;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
@@ -31,7 +27,7 @@ public class TpSyntConsumerTest {
     @Test
     public void getYtelser() {
         stubForTpSynt();
-        List<TYtelse> ytelser = tpSyntConsumer.getSyntYtelser(numToGen);
+        var ytelser = tpSyntConsumer.getSyntYtelser(numToGen);
         assertEquals(3, ytelser.size());
         assertEquals("UKJENT", ytelser.get(0).getKYtelseT());
         assertEquals("0", ytelser.get(0).getErGyldig());
