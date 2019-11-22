@@ -27,3 +27,4 @@
 ### mvnw ###
 mvnw
 mvnw.cmd
+*.ps1
