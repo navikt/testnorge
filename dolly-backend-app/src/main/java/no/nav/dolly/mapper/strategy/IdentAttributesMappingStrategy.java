@@ -19,6 +19,7 @@ public class IdentAttributesMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Testident testident, IdentAttributesResponse attributesResponse, MappingContext context) {
 
                         attributesResponse.setGruppeId(testident.getTestgruppe().getId());
+                        attributesResponse.setIbruk(testident.getIBruk());
                     }
                 })
                 .byDefault()
