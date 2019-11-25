@@ -325,6 +325,8 @@ public class IdentpoolService {
                 .build();
 
         Page<Ident> firstPage = identRepository.findAll(IdentPredicateUtil.lagPredicateFraRequest(availableIdentsRequest, LEDIG), PageRequest.of(0, request.getAntall()));
+        Map<Integer, Page<Ident>> pageCache = new HashMap<>();
+        pageCache.put(0, firstPage);
 
         int totalPages = firstPage.getTotalPages();
         if (totalPages > 0) {
@@ -332,9 +334,11 @@ public class IdentpoolService {
             SecureRandom rand = new SecureRandom();
             for (int i = 0; i < request.getAntall(); i++) {
                 int randomPageNumber = rand.nextInt(totalPages);
+                if (!pageCache.containsKey(randomPageNumber)) {
+                    pageCache.put(randomPageNumber, identRepository.findAll(IdentPredicateUtil.lagPredicateFraRequest(availableIdentsRequest, LEDIG), PageRequest.of(randomPageNumber, request.getAntall())));
+                }
 
-                Page<Ident> page = identRepository.findAll(IdentPredicateUtil.lagPredicateFraRequest(availableIdentsRequest, LEDIG), PageRequest.of(randomPageNumber, request.getAntall()));
-                List<Ident> content = page.getContent();
+                List<Ident> content = pageCache.get(randomPageNumber).getContent();
                 for (Ident ident : content) {
                     if (!usedIdents.contains(ident.getPersonidentifikator())) {
                         usedIdents.add(ident.getPersonidentifikator());
