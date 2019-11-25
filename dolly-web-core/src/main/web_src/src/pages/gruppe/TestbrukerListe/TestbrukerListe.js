@@ -30,7 +30,6 @@ export default function TestbrukerListe({
 	if (sortedTestbrukere.length <= 0 && searchActive) {
 		return <ContentContainer>Søket gav ingen resultater.</ContentContainer>
 	}
-
 	const columns = [
 		{
 			text: 'Ident',

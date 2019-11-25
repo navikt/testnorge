@@ -3,7 +3,8 @@ import PersonIBrukButton from './PersonIBrukButton'
 import { updateIdentAttributter } from '~/ducks/gruppe'
 
 const mapStateToProps = (state, ownProps) => ({
-	erIBruk: state.gruppe.data[0].identer.find(v => v.ident === ownProps.personId).ibruk
+	erIBruk: state.gruppe.data[0].identer.find(v => v.ident === ownProps.personId).ibruk,
+	Id: state.gruppe.data[0].id
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

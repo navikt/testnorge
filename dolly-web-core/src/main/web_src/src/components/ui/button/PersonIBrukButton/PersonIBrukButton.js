@@ -8,26 +8,27 @@ export default class PersonIBrukButton extends PureComponent {
 		updateIdentAttributter: PropTypes.func
 	}
 
+	settIBruk = async () => {
+		const { erIBruk, updateIdentAttributter, personId, Id } = this.props
+		const gruppeId = Id
+		const fjern = { ibruk: false, ident: personId }
+		const leggtil = { ibruk: true, ident: personId }
+
+		erIBruk
+			? await updateIdentAttributter(gruppeId, fjern)
+			: await updateIdentAttributter(gruppeId, leggtil)
+	}
+
 	render() {
 		const { erIBruk, updateIdentAttributter } = this.props
 		return (
 			<Button
 				className="flexbox--align-center"
 				title={erIBruk ? 'Marker som ikke i bruk' : 'Marker som i bruk'}
-				kind={erIBruk ? 'star-filled' : 'star'} //! FINN ET BEDRE ICON F.EKS. EN BOX
+				kind={erIBruk ? 'line-version-expanded-button-empty' : 'filled-version-button-empty'}
 				onClick={this.settIBruk}
 				onMouseEnter={this._handleOnMouseHover}
 			/>
 		)
-	}
-
-	settIBruk = async () => {
-		const { erIBruk, updateIdentAttributter, personId } = this.props
-		const gruppeID = 24 //! MÅ HENTE RIKTIG GRUPPEID
-		const fjern = { ibruk: false, ident: personId }
-		const leggtil = { ibruk: true, ident: personId }
-		erIBruk
-			? await updateIdentAttributter(gruppeID, fjern)
-			: await updateIdentAttributter(gruppeID, leggtil)
 	}
 }

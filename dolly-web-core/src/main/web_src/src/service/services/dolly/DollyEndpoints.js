@@ -41,8 +41,12 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/bestillingStatus`
 	}
 
-	static identAttributter(gruppeId) {
-		return `${groupBase}/${gruppeId}/identAttributter`
+	static ibruk(gruppeId) {
+		return `${groupBase}/${gruppeId}/ibruk`
+	}
+
+	static beskrivelse(gruppeId) {
+		return `${groupBase}/${gruppeId}/beskrivelse`
 	}
 
 	static bruker() {

@@ -44,7 +44,11 @@ export default {
 	},
 
 	updateIdentAttributter(gruppeId, data) {
-		return Request.put(Endpoints.identAttributter(gruppeId), data)
+		return Request.put(Endpoints.ibruk(gruppeId), data)
+	},
+
+	updateBeskrivelse(gruppeId, data) {
+		return Request.put(Endpoints.beskrivelse(gruppeId), data)
 	},
 
 	// Bruker

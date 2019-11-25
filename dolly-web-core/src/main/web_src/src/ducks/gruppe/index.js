@@ -55,9 +55,15 @@ export default handleActions(
 			}
 		},
 		[success(updateIdentAttributter)](state, action) {
-			return { ...state }
+			return {
+				...state,
+				data: state.data.map((item, idx) => ({
+					...item,
+					...(item.identer[idx].ibruk === action.payload.data.ibruk && action.payload.data)
+				}))
+			}
 		}, //! MÅ FIKSES SÅNN AT BUTTON BLIR OPPDATERT MED RIKTIG STATE
-		//another success thing for testpersonIBruk?
+
 		[success(deleteGruppe)](state, action) {
 			return {
 				...state,
