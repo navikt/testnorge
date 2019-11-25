@@ -31,7 +31,7 @@ KrrstubForm.initialValues = attrs => {
 			gyldigFra: new Date(),
 			mobil: '',
 			registrert: true,
-			reservert: ''
+			reservert: false
 		}
 	}
 	return attrs.kontaktinformasjon ? initial : {}
@@ -43,6 +43,6 @@ KrrstubForm.validation = {
 		gyldigFra: Yup.date(),
 		mobil: Yup.string().matches(/^[0-9]*$/, 'Ugyldig mobilnummer'),
 		registrert: '',
-		reservert: Yup.string().required('Vennligst velg')
+		reservert: ''
 	})
 }

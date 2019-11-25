@@ -73,7 +73,7 @@ ArenaForm.validation = {
 				})
 			)
 			.nullable(),
-		arenaBrukertype: Yup.string().required('Vennligst velg'),
+		arenaBrukertype: Yup.string(),
 		inaktiveringDato: Yup.date().nullable(),
 		kvalifiseringsgruppe: Yup.string()
 			.nullable()
