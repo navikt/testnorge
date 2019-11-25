@@ -58,7 +58,10 @@ TpsfForm.initialValues = attrs => {
 		initial.tpsf.forsvunnetDato = null
 	}
 
-	if (attrs.boadresse) initial.tpsf.boadresse = {}
+	if (attrs.boadresse) {
+		initial.tpsf.boadresse = null
+		initial.tpsf.adresseNrInfo = null
+	}
 	if (attrs.postadresse) initial.tpsf.postadresse = {}
 
 	return initial

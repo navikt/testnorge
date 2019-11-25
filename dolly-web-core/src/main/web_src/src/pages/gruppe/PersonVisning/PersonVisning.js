@@ -10,12 +10,9 @@ import './PersonVisning.less'
 export const PersonVisning = ({ getDataFraFagsystemer, data, testIdent, bestilling, loading }) => {
 	useMount(getDataFraFagsystemer)
 
-	// TODO: FLYTT DENNE TIL BACKEND!
-	const tpsfKriterier = JSON.parse(bestilling.tpsfKriterier)
-
 	return (
 		<div className="person-visning">
-			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, tpsfKriterier)} />
+			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.tpsfKriterier)} />
 			{/* <PdlVisning /> */}
 			{/* <SigrunVisning /> */}
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
