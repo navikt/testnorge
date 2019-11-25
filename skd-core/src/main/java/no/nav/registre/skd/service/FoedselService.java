@@ -80,6 +80,7 @@ public class FoedselService {
             }
 
             putFnrInnIMelding((RsMeldingstype1Felter) melding, barnFnr);
+            ((RsMeldingstype1Felter) melding).setRegDato(getFoedselsdatoFraFnr(barnFnr).toString().replaceAll("-", ""));
 
             ((RsMeldingstype1Felter) melding).setMorsFodselsdato(morFnr.substring(0, 6));
             ((RsMeldingstype1Felter) melding).setMorsPersonnummer(morFnr.substring(6));
