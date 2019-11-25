@@ -6,6 +6,7 @@ import { KrrstubForm } from '~/components/fagsystem/krrstub/form/Form'
 import { SigrunstubForm } from '~/components/fagsystem/sigrunstub/form/Form'
 import { ArenaForm } from '~/components/fagsystem/arena/form/Form'
 import { InstForm } from '~/components/fagsystem/inst/Form'
+import { UdistubForm } from '~/components/fagsystem/udistub/form/Form'
 
 export const Steg2 = ({ formikBag }) => {
 	return (
@@ -17,6 +18,7 @@ export const Steg2 = ({ formikBag }) => {
 			<KrrstubForm formikBag={formikBag} />
 			<SigrunstubForm formikBag={formikBag} />
 			<ArenaForm formikBag={formikBag} />
+			<UdistubForm formikBag={formikBag} />
 		</div>
 	)
 }
@@ -30,7 +32,8 @@ Steg2.initialValues = attrs => {
 			...KrrstubForm.initialValues(attrs),
 			...SigrunstubForm.initialValues(attrs),
 			...InstForm.initialValues(attrs),
-			...ArenaForm.initialValues(attrs)
+			...ArenaForm.initialValues(attrs),
+			...UdistubForm.initialValues(attrs)
 		}
 	)
 }
@@ -38,5 +41,6 @@ Steg2.validation = Yup.object({
 	...TpsfForm.validation,
 	...KrrstubForm.validation,
 	...InstForm.validation,
-	...ArenaForm.validation
+	...ArenaForm.validation,
+	...UdistubForm.validation
 })
