@@ -3,7 +3,6 @@ package no.nav.registre.inntektsmeldingstub.service;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.inntektsmelding.xml.kodeliste._20190122.XMLÅrsakBeregnetInntektEndringKodeliste;
 import no.nav.registre.inntektsmeldingstub.database.model.DelvisFravaer;
 import no.nav.registre.inntektsmeldingstub.database.model.EndringIRefusjon;
 import no.nav.registre.inntektsmeldingstub.database.model.NaturalytelseDetaljer;
@@ -11,18 +10,15 @@ import no.nav.registre.inntektsmeldingstub.database.model.Periode;
 import no.nav.registre.inntektsmeldingstub.service.rs.RsArbeidsforhold;
 import no.nav.registre.inntektsmeldingstub.service.rs.RsArbeidsgiver;
 import no.nav.registre.inntektsmeldingstub.service.rs.RsArbeidsgiverPrivat;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsEndringIRefusjon;
 import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsNaturaYtelseDetaljer;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsRefusjon;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import no.nav.registre.inntektsmeldingstub.MeldingsType;
@@ -70,9 +66,9 @@ public class InntektsmeldingService {
 
         switch(type) {
             case TYPE_2018_12:
-                return save201812Melding(inntektsmeldinger, opprettetAv);
+                return saveMeldinger(inntektsmeldinger, opprettetAv, this::bygg201812Inntektsmelding);
             case TYPE_2018_09:
-                return save201809Melding(inntektsmeldinger, opprettetAv);
+                return saveMeldinger(inntektsmeldinger, opprettetAv, this::bygg201809Inntektsmelding);
             default:
                 log.warn("Prøvde å hente ugyldig meldingstype. Returenerer \'null\'");
                 return null;
@@ -121,13 +117,15 @@ public class InntektsmeldingService {
          */
     }
 
-    private List<Inntektsmelding> mapInntektsmeldinger(List<RsInntektsmelding> inntektsmeldinger) {
+    private Inntektsmelding bygg201812Inntektsmelding(RsInntektsmelding melding) {
+        Inntektsmelding basisMelding = bygg201809Inntektsmelding(melding);
+        basisMelding.setPrivatArbeidsgiver(createOrFindArbeidsgiverPrivat(melding.getArbeidsgiverPrivat()));
 
-        /*
-        Mandag: problemet er å sette 'riktig' PrivatArbeidsgiver etter at vi har kjørt byggingen/mappingen her.
-        Ønsket er å slippe å duplisere denne store kodebolken.
-         */
-        return inntektsmeldinger.stream().map(melding -> Inntektsmelding.builder()
+        return basisMelding;
+    }
+
+    private Inntektsmelding bygg201809Inntektsmelding(RsInntektsmelding melding) {
+        return Inntektsmelding.builder()
                 .ytelse(melding.getYtelse())
                 .arbeidstakerFnr(melding.getArbeidstakerFnr())
                 .aarsakTilInnsending(melding.getAarsakTilInnsending())
@@ -179,27 +177,26 @@ public class InntektsmeldingService {
                 .sykepengerPerioder(Lists.newArrayList(periodeRepository.saveAll(
                         melding.getSykepengerIArbeidsgiverperioden().getArbeidsgiverperiodeListe().stream().map(e -> Periode.builder()
                                 .fom(e.getFom()).tom(e.getTom()).build()).collect(Collectors.toList()))))
-                .build()).collect(Collectors.toList());
+                .build();
     }
 
+    private List<Inntektsmelding> saveMeldinger(List<RsInntektsmelding> inntektsmeldinger, Eier eier, Function<RsInntektsmelding, Inntektsmelding> byggemetode) {
+        List<Inntektsmelding> lagredeMeldinger = inntektsmeldinger.stream()
+                .map(byggemetode).collect(Collectors.toList());
+        lagredeMeldinger.forEach(m -> {
+            m.setEier(eier);
 
+            Inntektsmelding lagretMelding = inntektsmeldingRepository.save(m);
+            List<Inntektsmelding> arbeidsgiverInntektsmeldinger = Lists.newArrayList(inntektsmeldingRepository.findAllById(
+                    lagretMelding.getArbeidsgiver().getInntektsmeldinger().stream()
+                    .map(Inntektsmelding::getId).collect(Collectors.toList())));
 
-    private List<Inntektsmelding> save201812Melding(List<RsInntektsmelding> inntektsmeldinger, Eier eier) {
+            arbeidsgiverInntektsmeldinger.add(m);
+            m.getArbeidsgiver().setInntektsmeldinger(arbeidsgiverInntektsmeldinger);
+            lagretMelding.setArbeidsgiver(arbeidsgiverRepository.save(m.getArbeidsgiver()));
+        });
 
-        List<Inntektsmelding> lagredeMeldinger = mapInntektsmeldinger(inntektsmeldinger);
-        lagredeMeldinger.forEach(m -> m.setEier(eier));
-
-
-        inntektsmeldingRepository.saveAll(lagredeMeldinger);
-
-
-
-        return null;
-    }
-
-    public List<Inntektsmelding> save201809Melding(List<RsInntektsmelding> inntektsmeldinger, Eier eier) {
-
-        return null;
+        return lagredeMeldinger;
     }
 
     public Inntektsmelding findInntektsmelding(Long id) {
@@ -228,8 +225,36 @@ public class InntektsmeldingService {
 
     private Arbeidsforhold createOrFindArbeidsforhold(RsArbeidsforhold arbeidsforhold) {
         Optional<Arbeidsforhold> optionalArbeidsforhold = arbeidsforholdRepository.findByArbeidforholdsId(arbeidsforhold.getArbeidsforholdId());
-        return optionalArbeidsforhold.orElseGet(() -> arbeidsforholdRepository.save(Arbeidsforhold.builder()
 
+
+        return optionalArbeidsforhold.orElseGet(() -> arbeidsforholdRepository.save(Arbeidsforhold.builder()
+                .aarsakVedEndring(arbeidsforhold.getBeregnetInntekt().getAarsakVedEndring())
+                .beloep(arbeidsforhold.getBeregnetInntekt().getBeloep())
+                .arbeidforholdsId(arbeidsforhold.getArbeidsforholdId())
+                .foersteFravaersdag(arbeidsforhold.getFoersteFravaersdag())
+
+                .graderingIForeldrepengerListe(Lists.newArrayList(graderingIForeldrePengerRepository.saveAll(
+                        arbeidsforhold.getGraderingIForeldrepengerListe().stream().map(e -> GraderingIForeldrepenger.builder()
+                                .gradering(e.getArbeidstidprosent())
+                                .periode(periodeRepository.save(Periode.builder()
+                                        .fom(e.getPeriode().getFom())
+                                        .tom(e.getPeriode().getTom())
+                                        .build()))
+                                .build()).collect(Collectors.toList()))))
+
+                .utsettelseAvForeldrepengerListe(Lists.newArrayList(utsettelseAvForeldrepengerRepository.saveAll(
+                        arbeidsforhold.getUtsettelseAvForeldrepengerListe().stream().map(e -> UtsettelseAvForeldrepenger.builder()
+                                .aarsakTilUtsettelse(e.getAarsakTilUtsettelse())
+                                .periode(periodeRepository.save(Periode.builder()
+                                        .fom(e.getPeriode().getFom())
+                                        .tom(e.getPeriode().getTom())
+                                        .build()))
+                                .build()).collect(Collectors.toList()))))
+
+                .avtaltFerieListe(Lists.newArrayList(periodeRepository.saveAll(
+                        arbeidsforhold.getAvtaltFerieListe().stream().map(e -> Periode.builder()
+                                .fom(e.getFom()).tom(e.getTom()).build())
+                        .collect(Collectors.toList()))))
                 .build()));
     }
 

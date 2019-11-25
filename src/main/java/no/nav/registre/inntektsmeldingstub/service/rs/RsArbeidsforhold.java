@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @ApiModel
@@ -23,10 +23,10 @@ public class RsArbeidsforhold {
     private String arbeidsforholdId;
     @JsonProperty
     @ApiModelProperty(value = "Første fraværsdag", example = "YYYY-MM-DD")
-    private LocalDateTime foersteFravaersdag;
+    private LocalDate foersteFravaersdag;
     @JsonProperty
     @ApiModelProperty("Beregnet inntekt")
-    private double beregnetInntekt;
+    private RsInntekt beregnetInntekt;
     @JsonProperty
     @ApiModelProperty("Ferieliste bestående av perioder med ferie")
     private List<RsPeriode> avtaltFerieListe;
