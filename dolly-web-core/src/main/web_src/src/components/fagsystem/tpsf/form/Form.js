@@ -3,6 +3,7 @@ import { subYears } from 'date-fns'
 import * as Yup from 'yup'
 import { Personinformasjon } from './personinformasjon/Personinformasjon'
 import { Adresser } from './adresser/Adresser'
+import { requiredDate } from '~/utils/YupValidations'
 
 export const TpsfForm = ({ formikBag }) => {
 	return (
@@ -69,7 +70,7 @@ TpsfForm.initialValues = attrs => {
 
 TpsfForm.validation = {
 	tpsf: Yup.object({
-		foedtEtter: Yup.date().nullable(),
+		foedtEtter: requiredDate,
 		foedtFoer: Yup.date().nullable(),
 		doedsdato: Yup.date().nullable(),
 		statsborgerskap: Yup.string(),
