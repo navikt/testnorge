@@ -16,13 +16,13 @@ const attrPaths = [
 ].flat()
 
 export const UdistubForm = ({ formikBag }) => {
-	const values = formikBag.values.udistub
+	const { udistub } = formikBag.values
 	return (
 		<Vis attributt={attrPaths}>
 			<Panel heading="UDI" hasErrors={panelError(formikBag)} startOpen>
-				{values.oppholdStatus && <Oppholdsstatus formikBag={formikBag} />}
-				{values.arbeidsadgang && <Arbeidsadgang formikBag={formikBag} />}
-				{values.aliaser && <Alias formikBag={formikBag} />}
+				{udistub.oppholdStatus && <Oppholdsstatus formikBag={formikBag} />}
+				{udistub.arbeidsadgang && <Arbeidsadgang formikBag={formikBag} />}
+				{udistub.aliaser && <Alias formikBag={formikBag} />}
 				<Annet formikBag={formikBag} />
 			</Panel>
 		</Vis>
@@ -75,11 +75,11 @@ UdistubForm.validation = {
 		aliaser: Yup.array()
 			.of(
 				Yup.object({
+					nyIdent: Yup.boolean().required('Vennligst velg'),
 					identtype: Yup.string().when('nyIdent', {
 						is: true,
 						then: Yup.string().required('Vennligst velg')
-					}),
-					nyIdent: Yup.boolean().required('Vennligst velg')
+					})
 				})
 			)
 			.nullable(),
@@ -87,15 +87,15 @@ UdistubForm.validation = {
 			arbeidsOmfang: Yup.string(),
 			harArbeidsAdgang: Yup.string().required('Vennligst velg'),
 			periode: {
-				fra: Yup.string().typeError('Formatet må være DD.MM.YYYY'),
-				til: Yup.string().typeError('Formatet må være DD.MM.YYYY')
+				fra: Yup.date().required('Vennligst velg'),
+				til: Yup.date().required('Vennligst velg')
 			},
 			typeArbeidsadgang: Yup.string()
 		}).nullable(),
 		flyktning: Yup.boolean()
 			.required('Vennligst velg')
 			.nullable(),
-		oppholdStatus: Yup.object({}).nullable(), //TODO fiks denne!
+		oppholdStatus: Yup.object({}).nullable(),
 		soeknadOmBeskyttelseUnderBehandling: Yup.string()
 			.required('Vennligst velg')
 			.nullable()

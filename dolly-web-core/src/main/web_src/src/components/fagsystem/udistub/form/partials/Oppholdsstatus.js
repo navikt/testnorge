@@ -40,8 +40,8 @@ export const Oppholdsstatus = ({ formikBag }) => {
 				oppholdstillatelseVedtaksDato: ''
 			})
 		} else if (value === 'ikkeOppholdSammeVilkaar') {
-			formikBag.setFieldValue('udistub.harOppholdsTillatelse', false)
 			formikBag.setFieldValue('udistub.oppholdStatus', oppholdsstatusInitialValues)
+			formikBag.setFieldValue('udistub.harOppholdsTillatelse', false)
 		} else if (value === 'UAVKLART') {
 			formikBag.setFieldValue('udistub.oppholdStatus', { uavklart: true })
 			formikBag.setFieldValue('udistub.harOppholdsTillatelse', '')
@@ -66,6 +66,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 						value={eosEllerEFTAtypeOpphold}
 						options={Options('eosEllerEFTAtypeOpphold')}
 						onChange={v => endreEosEllerEFTAtypeOpphold(v.value)}
+						size="xxlarge"
 						isClearable={false}
 					/>
 					<FormikDatepicker
@@ -80,14 +81,13 @@ export const Oppholdsstatus = ({ formikBag }) => {
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Effektuering`}
 						label="Effektueringsdato"
 					/>
-					{eosEllerEFTAtypeOpphold && (
-						<FormikSelect
-							name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}`}
-							label="Grunnlag for opphold"
-							options={Options(eosEllerEFTAtypeOpphold)}
-							isClearable={false}
-						/>
-					)}
+
+					<FormikSelect
+						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}`}
+						label="Grunnlag for opphold"
+						options={Options(eosEllerEFTAtypeOpphold)}
+						isClearable={false}
+					/>
 				</React.Fragment>
 			)}
 			{oppholdsstatus === 'tredjelandsBorgere' && (
@@ -96,6 +96,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 						name="tredjelandsBorgereValg"
 						label="Status"
 						value={tredjelandsBorgereValg}
+						size="xxlarge"
 						options={Options('tredjelandsBorgereValg')}
 						onChange={v => endreTredjelandsBorgereValg(v.value)}
 					/>
