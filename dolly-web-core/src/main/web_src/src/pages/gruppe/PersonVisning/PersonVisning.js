@@ -3,6 +3,7 @@ import { useMount } from 'react-use'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
+import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
 import Button from '~/components/ui/button/Button'
 
 import './PersonVisning.less'
@@ -18,7 +19,11 @@ export const PersonVisning = ({ getDataFraFagsystemer, data, testIdent, bestilli
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			{/* <AaregVisning /> */}
 			{/* <InstVisning /> */}
-			{/* <ArenaVisning /> */}
+			<ArenaVisning
+				data={data.arenaforvalteren}
+				bestData={bestilling.bestKriterier.arenaforvalter}
+				loading={loading.arenaforvalteren}
+			/>
 			{/* <UdiVisning /> */}
 			<TidligereBestillinger ids={testIdent.bestillingId} />
 			<div className="flexbox--align-center--justify-end">
