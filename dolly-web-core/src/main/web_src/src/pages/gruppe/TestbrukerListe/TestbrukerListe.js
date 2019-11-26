@@ -11,7 +11,8 @@ export default function TestbrukerListe({
 	isFetching,
 	testbrukerListe,
 	searchActive,
-	getTPSFTestbrukere
+	getTPSFTestbrukere,
+	gruppeId
 }) {
 	useMount(getTPSFTestbrukere)
 
@@ -66,10 +67,11 @@ export default function TestbrukerListe({
 	]
 
 	return (
+		
 		<DollyTable
 			data={sortedTestbrukere}
 			columns={columns}
-			onExpand={bruker => <PersonVisningConnector personId={bruker[0]} bestillingId={bruker[5]} />}
+			onExpand={bruker => <PersonVisningConnector personId={bruker[0]} bestillingId={bruker[5]} gruppeId={gruppeId}/>}
 			pagination
 		/>
 	)

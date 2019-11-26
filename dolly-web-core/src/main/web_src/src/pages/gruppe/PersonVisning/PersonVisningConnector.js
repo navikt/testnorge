@@ -43,7 +43,8 @@ const loadingSelector = createSelector(
 	}
 )
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = (state, ownProps) => (
+	{
 	loading: loadingSelector(state),
 	testIdent: getIdentByIdSelector(state, ownProps.personId),
 	data: getDataForIdent(state, ownProps.personId),
