@@ -34,24 +34,30 @@ public class TestnorgeAaregConsumer {
 
     public TestnorgeAaregConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-aareg.rest.api.url}") String aaregServerUrl) {
+            @Value("${testnorge-aareg.rest.api.url}") String aaregServerUrl
+    ) {
         this.restTemplate = restTemplateBuilder.build();
         this.startSyntetiseringUrl = new UriTemplate(aaregServerUrl + "/v1/syntetisering/generer?sendAlleEksisterende={sendAlleEksisterende}");
         this.slettIdenterUrl = new UriTemplate(aaregServerUrl + "/v1/ident");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "aareg" })
-    public ResponseEntity startSyntetisering(SyntetiserAaregRequest syntetiserAaregRequest, boolean sendAlleEksisterende) {
-        RequestEntity postRequest = RequestEntity.post(startSyntetiseringUrl.expand(sendAlleEksisterende)).contentType(MediaType.APPLICATION_JSON).body(syntetiserAaregRequest);
+    public ResponseEntity startSyntetisering(
+            SyntetiserAaregRequest syntetiserAaregRequest,
+            boolean sendAlleEksisterende
+    ) {
+        var postRequest = RequestEntity.post(startSyntetiseringUrl.expand(sendAlleEksisterende)).contentType(MediaType.APPLICATION_JSON).body(syntetiserAaregRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "aareg" })
-    public SletteArbeidsforholdResponse slettIdenterFraAaregstub(List<String> identer) {
-        RequestEntity deleteRequest = RequestEntity.method(HttpMethod.DELETE, slettIdenterUrl.expand())
+    public SletteArbeidsforholdResponse slettIdenterFraAaregstub(
+            List<String> identer
+    ) {
+        var deleteRequest = RequestEntity.method(HttpMethod.DELETE, slettIdenterUrl.expand())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(identer);
-        SletteArbeidsforholdResponse response = SletteArbeidsforholdResponse.builder().build();
+        var response = SletteArbeidsforholdResponse.builder().build();
         try {
             response = restTemplate.exchange(deleteRequest, RESPONSE_TYPE_DELETE).getBody();
         } catch (HttpStatusCodeException e) {

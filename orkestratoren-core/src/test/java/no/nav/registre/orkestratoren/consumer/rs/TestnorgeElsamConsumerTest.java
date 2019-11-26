@@ -22,49 +22,49 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserElsamRequest;
 
 @RunWith(SpringRunner.class)
-@RestClientTest(TestnorgeEiaConsumer.class)
+@RestClientTest(TestnorgeElsamConsumer.class)
 @ActiveProfiles("test")
-public class TestnorgeEiaConsumerTest {
+public class TestnorgeElsamConsumerTest {
 
     @Autowired
-    private TestnorgeEiaConsumer testnorgeEiaConsumer;
+    private TestnorgeElsamConsumer testnorgeElsamConsumer;
 
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${testnorge-eia.rest.api.url}")
+    @Value("${testnorge-elsam.rest.api.url}")
     private String serverUrl;
 
     private long gruppeId = 10L;
     private String miljoe = "t9";
     private int antallIdenter = 2;
-    private SyntetiserEiaRequest syntetiserEiaRequest;
+    private SyntetiserElsamRequest syntetiserElsamRequest;
     private List<String> expectedIdenter;
 
     @Before
     public void setUp() {
-        syntetiserEiaRequest = new SyntetiserEiaRequest(gruppeId, miljoe, antallIdenter);
+        syntetiserElsamRequest = new SyntetiserElsamRequest(gruppeId, miljoe, antallIdenter);
         expectedIdenter = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
     }
 
     /**
-     * Scenario: Tester happypath til {@link TestnorgeEiaConsumer#startSyntetisering} - forventer at metoden returnerer identene til de
-     * opprettede sykemeldingene - forventer at metoden kaller testnorge-eia med de rette parametrene (se stub)
+     * Scenario: Tester happypath til {@link TestnorgeElsamConsumer#startSyntetisering} - forventer at metoden returnerer identene til de
+     * opprettede sykemeldingene - forventer at metoden kaller testnorge-elsam med de rette parametrene (se adapter)
      */
     @Test
     public void shouldStartSyntetisering() {
-        var expectedUri = serverUrl + "/v1/syntetisering/generer/QA.Q414.FS06_EIA_MELDINGER";
-        stubEiaSyntConsumer(expectedUri);
+        var expectedUri = serverUrl + "/v1/syntetisering/generer";
+        stubElsamSyntConsumer(expectedUri);
 
-        var identer = testnorgeEiaConsumer.startSyntetisering(syntetiserEiaRequest);
+        var identer = testnorgeElsamConsumer.startSyntetisering(syntetiserElsamRequest);
 
         assertEquals(expectedIdenter.toString(), identer.toString());
     }
 
-    private void stubEiaSyntConsumer(String expectedUri) {
+    private void stubElsamSyntConsumer(String expectedUri) {
         server.expect(requestToUriTemplate(expectedUri))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(content().json("{\"avspillergruppeId\":" + gruppeId

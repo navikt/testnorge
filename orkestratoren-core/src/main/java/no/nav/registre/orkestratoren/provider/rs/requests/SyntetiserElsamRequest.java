@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SyntetiserEiaRequest {
+public class SyntetiserElsamRequest {
 
     @JsonProperty("avspillergruppeId")
     private Long avspillergruppeId;

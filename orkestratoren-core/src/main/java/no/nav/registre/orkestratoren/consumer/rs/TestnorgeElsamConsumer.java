@@ -13,29 +13,31 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserElsamRequest;
 
 @Component
 @Slf4j
-public class TestnorgeEiaConsumer {
+public class TestnorgeElsamConsumer {
 
-    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
+    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     private RestTemplate restTemplate;
     private UriTemplate url;
 
-    public TestnorgeEiaConsumer(
+    public TestnorgeElsamConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-eia.rest.api.url}") String baseUrl,
-            @Value("${eiabatch.queue}") String queueName) {
+            @Value("${testnorge-elsam.rest.api.url}") String baseUrl
+    ) {
         this.restTemplate = restTemplateBuilder.build();
-        this.url = new UriTemplate(baseUrl + "/v1/syntetisering/generer/" + queueName);
+        this.url = new UriTemplate(baseUrl + "/v1/syntetisering/generer");
     }
 
-    @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "eia" })
-    public List<String> startSyntetisering(SyntetiserEiaRequest syntetiserEiaRequest) {
-        RequestEntity postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserEiaRequest);
+    @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "elsam" })
+    public List<String> startSyntetisering(
+            SyntetiserElsamRequest syntetiserElsamRequest
+    ) {
+        var postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserElsamRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }

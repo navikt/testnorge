@@ -14,7 +14,7 @@ import java.util.Map;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserElsamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
@@ -25,7 +25,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.TesnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
-import no.nav.registre.orkestratoren.service.TestnorgeEiaService;
+import no.nav.registre.orkestratoren.service.TestnorgeElsamService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
@@ -43,7 +43,7 @@ public class SyntetiseringsControllerTest {
     private TestnorgeInntektService testnorgeInntektService;
 
     @Mock
-    private TestnorgeEiaService testnorgeEiaService;
+    private TestnorgeElsamService testnorgeElsamService;
 
     @Mock
     private TestnorgeSigrunService testnorgeSigrunService;
@@ -122,18 +122,18 @@ public class SyntetiseringsControllerTest {
     }
 
     /**
-     * Scenario: HVIS syntetiseringskontrolleren får et request om å generere sykemeldinger til EIA, skal metoden kalle på
-     * {@link TestnorgeEiaService#genererEiaSykemeldinger}.
+     * Scenario: HVIS syntetiseringskontrolleren får et request om å generere sykemeldinger til ELSAM, skal metoden kalle på
+     * {@link TestnorgeElsamService#genererElsamSykemeldinger}.
      */
     @Test
-    public void shouldTriggerGenereringAvSykemeldingerIEia() {
+    public void shouldTriggerGenereringAvSykemeldingerIElsam() {
         var antallMeldinger = 20;
 
-        var syntetiserEiaRequest = new SyntetiserEiaRequest(avspillergruppeId, miljoe, antallMeldinger);
+        var syntetiserElsamRequest = new SyntetiserElsamRequest(avspillergruppeId, miljoe, antallMeldinger);
 
-        syntetiseringsController.opprettSykemeldingerIEia(syntetiserEiaRequest);
+        syntetiseringsController.opprettSykemeldingerIElsam(syntetiserElsamRequest);
 
-        verify(testnorgeEiaService).genererEiaSykemeldinger(syntetiserEiaRequest);
+        verify(testnorgeElsamService).genererElsamSykemeldinger(syntetiserElsamRequest);
     }
 
     /**

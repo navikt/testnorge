@@ -15,32 +15,32 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.orkestratoren.consumer.rs.TestnorgeEiaConsumer;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
+import no.nav.registre.orkestratoren.consumer.rs.TestnorgeElsamConsumer;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserElsamRequest;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TestnorgeEiaServiceTest {
+public class TestnorgeElsamServiceTest {
 
     @Mock
-    private TestnorgeEiaConsumer testnorgeEiaConsumer;
+    private TestnorgeElsamConsumer testnorgeElsamConsumer;
 
     @InjectMocks
-    private TestnorgeEiaService testnorgeEiaService;
+    private TestnorgeElsamService testnorgeElsamService;
 
     @Test
-    public void shouldGenerereEiaSykemeldinger() {
+    public void shouldGenerereElsamSykemeldinger() {
         var expectedIdenter = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
         var avspillergruppeId = 123L;
         var miljoe = "t1";
         var antallNyeIdenter = 2;
 
-        var syntetiserEiaRequest = new SyntetiserEiaRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+        var syntetiserElsamRequest = new SyntetiserElsamRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        when(testnorgeEiaConsumer.startSyntetisering(syntetiserEiaRequest)).thenReturn(expectedIdenter);
+        when(testnorgeElsamConsumer.startSyntetisering(syntetiserElsamRequest)).thenReturn(expectedIdenter);
 
-        List<String> response = testnorgeEiaService.genererEiaSykemeldinger(syntetiserEiaRequest);
+        List<String> response = testnorgeElsamService.genererElsamSykemeldinger(syntetiserElsamRequest);
 
         assertThat(response, IsIterableContainingInOrder.contains(expectedIdenter.get(0), expectedIdenter.get(1)));
-        verify(testnorgeEiaConsumer).startSyntetisering(syntetiserEiaRequest);
+        verify(testnorgeElsamConsumer).startSyntetisering(syntetiserElsamRequest);
     }
 }

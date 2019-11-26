@@ -26,7 +26,7 @@ import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TesnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
-import no.nav.registre.orkestratoren.service.TestnorgeEiaService;
+import no.nav.registre.orkestratoren.service.TestnorgeElsamService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
 import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
@@ -44,7 +44,7 @@ public class JobControllerTest {
     private TestnorgeInntektService testnorgeInntektService;
 
     @Mock
-    private TestnorgeEiaService testnorgeEiaService;
+    private TestnorgeElsamService testnorgeElsamService;
 
     @Mock
     private TestnorgeSigrunService testnorgeSigrunService;
@@ -114,9 +114,9 @@ public class JobControllerTest {
     }
 
     @Test
-    public void shouldStartEiaBatch() {
-        jobController.eiaSyntBatch();
-        verify(testnorgeEiaService).genererEiaSykemeldinger(any());
+    public void shouldStartElsamBatch() {
+        jobController.elsamSyntBatch();
+        verify(testnorgeElsamService).genererElsamSykemeldinger(any());
     }
 
     @Test

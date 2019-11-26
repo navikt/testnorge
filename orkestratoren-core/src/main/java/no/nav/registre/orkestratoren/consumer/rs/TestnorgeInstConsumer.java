@@ -24,10 +24,12 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 @Component
 public class TestnorgeInstConsumer {
 
-    private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_START_SYNT = new ParameterizedTypeReference<Object>() {
+    private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_START_SYNT = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<List<InstitusjonsoppholdResponse>> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<List<InstitusjonsoppholdResponse>>() {
+
+    private static final ParameterizedTypeReference<List<InstitusjonsoppholdResponse>> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<>() {
     };
+
     private static final String NAV_CALL_ID = "orkestratoren";
     private static final String NAV_CONSUMER_ID = "orkestratoren";
     private static final String MILJOE = "q2";
@@ -38,15 +40,18 @@ public class TestnorgeInstConsumer {
 
     public TestnorgeInstConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-inst.rest.api.url}") String instServerUrl) {
+            @Value("${testnorge-inst.rest.api.url}") String instServerUrl
+    ) {
         this.restTemplate = restTemplateBuilder.build();
         this.startSyntetiseringUrl = new UriTemplate(instServerUrl + "/v1/syntetisering/generer?miljoe={miljoe}");
         this.sletteIdenterUrl = new UriTemplate(instServerUrl + "/v1/ident/batch?miljoe={miljoe}&identer={identer}");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "inst" })
-    public Object startSyntetisering(SyntetiserInstRequest syntetiserInstRequest) {
-        RequestEntity postRequest = RequestEntity.post(startSyntetiseringUrl.expand(MILJOE))
+    public Object startSyntetisering(
+            SyntetiserInstRequest syntetiserInstRequest
+    ) {
+        var postRequest = RequestEntity.post(startSyntetiseringUrl.expand(MILJOE))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("navCallId", NAV_CALL_ID)
                 .header("navConsumerId", NAV_CONSUMER_ID)
@@ -55,16 +60,18 @@ public class TestnorgeInstConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "inst" })
-    public SletteInstitusjonsoppholdResponse slettIdenterFraInst(List<String> identer) {
+    public SletteInstitusjonsoppholdResponse slettIdenterFraInst(
+            List<String> identer
+    ) {
         List<InstitusjonsoppholdResponse> response = new ArrayList<>();
 
-        for (List<String> partisjonerteIdenter : Lists.partition(identer, 80)) {
-            RequestEntity deleteRequest = RequestEntity.delete(sletteIdenterUrl.expand(MILJOE, convertListToString(partisjonerteIdenter)))
+        for (var partisjonerteIdenter : Lists.partition(identer, 80)) {
+            var deleteRequest = RequestEntity.delete(sletteIdenterUrl.expand(MILJOE, convertListToString(partisjonerteIdenter)))
                     .header("navCallId", NAV_CALL_ID)
                     .header("navConsumerId", NAV_CONSUMER_ID)
                     .build();
             try {
-                List<InstitusjonsoppholdResponse> body = restTemplate.exchange(deleteRequest, RESPONSE_TYPE_DELETE).getBody();
+                var body = restTemplate.exchange(deleteRequest, RESPONSE_TYPE_DELETE).getBody();
                 if (body != null) {
                     response.addAll(body);
                 }

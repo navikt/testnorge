@@ -18,14 +18,15 @@ public class TestnorgeMedlConsumer {
 
     public TestnorgeMedlConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-medl.rest.api.url}") String baseUrl) {
+            @Value("${testnorge-medl.rest.api.url}") String baseUrl
+    ) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(baseUrl + "/v1/syntetisering/generer/");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "medl" })
     public Object startSyntetisering(SyntetiserMedlRequest syntetiserMedlRequest) {
-        RequestEntity postRequest = RequestEntity.post(url.expand())
+        var postRequest = RequestEntity.post(url.expand())
                 .header("Content-Type", "application/json")
                 .body(syntetiserMedlRequest);
         return restTemplate.exchange(postRequest, Object.class).getBody();

@@ -19,7 +19,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldinger
 @Component
 public class TestnorgeNavEndringsmeldingerConsumer {
 
-    private static final ParameterizedTypeReference<List<RsPureXmlMessageResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<List<RsPureXmlMessageResponse>>() {
+    private static final ParameterizedTypeReference<List<RsPureXmlMessageResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     private RestTemplate restTemplate;
@@ -27,14 +27,17 @@ public class TestnorgeNavEndringsmeldingerConsumer {
 
     public TestnorgeNavEndringsmeldingerConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-nav-endringsmeldinger.rest.api.url}") String skdServerUrl) {
+            @Value("${testnorge-nav-endringsmeldinger.rest.api.url}") String skdServerUrl
+    ) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(skdServerUrl + "/v1/syntetisering/generer");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "nav-endringsmeldinger" })
-    public ResponseEntity<List<RsPureXmlMessageResponse>> startSyntetisering(SyntetiserNavmeldingerRequest syntetiserNavmeldingerRequest) {
-        RequestEntity postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserNavmeldingerRequest);
+    public ResponseEntity<List<RsPureXmlMessageResponse>> startSyntetisering(
+            SyntetiserNavmeldingerRequest syntetiserNavmeldingerRequest
+    ) {
+        var postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserNavmeldingerRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }
 }

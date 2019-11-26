@@ -16,7 +16,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 @Component
 public class TestnorgeSamConsumer {
 
-    private static final ParameterizedTypeReference<ResponseEntity> RESPONSE_TYPE = new ParameterizedTypeReference<ResponseEntity>() {
+    private static final ParameterizedTypeReference<ResponseEntity> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     private RestTemplate restTemplate;
@@ -24,14 +24,17 @@ public class TestnorgeSamConsumer {
 
     public TestnorgeSamConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-sam.rest.api.url}") String samServerUrl) {
+            @Value("${testnorge-sam.rest.api.url}") String samServerUrl
+    ) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(samServerUrl + "/v1/syntetisering/generer");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "sam" })
-    public ResponseEntity startSyntetisering(SyntetiserSamRequest syntetiserSamRequest) {
-        RequestEntity postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserSamRequest);
+    public ResponseEntity startSyntetisering(
+            SyntetiserSamRequest syntetiserSamRequest
+    ) {
+        var postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserSamRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }
 }

@@ -20,7 +20,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeld
 @Component
 public class TestnorgeInntektConsumer {
 
-    private static final ParameterizedTypeReference<Map<String, List<Object>>> RESPONSE_TYPE = new ParameterizedTypeReference<Map<String, List<Object>>>() {
+    private static final ParameterizedTypeReference<Map<String, List<Object>>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     private RestTemplate restTemplate;
@@ -28,14 +28,17 @@ public class TestnorgeInntektConsumer {
 
     public TestnorgeInntektConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-inntekt.rest.api.url}") String inntektServerUrl) {
+            @Value("${testnorge-inntekt.rest.api.url}") String inntektServerUrl
+    ) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(inntektServerUrl + "/v1/syntetisering/generer");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "inntekt" })
-    public Map<String, List<Object>> startSyntetisering(SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
-        RequestEntity postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserInntektsmeldingRequest);
+    public Map<String, List<Object>> startSyntetisering(
+            SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest
+    ) {
+        var postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserInntektsmeldingRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }

@@ -22,9 +22,9 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldinger
 @Slf4j
 public class TestnorgeSkdConsumer {
 
-    private static final ParameterizedTypeReference<SkdMeldingerTilTpsRespons> RESPONSE_TYPE_START_SYNT = new ParameterizedTypeReference<SkdMeldingerTilTpsRespons>() {
+    private static final ParameterizedTypeReference<SkdMeldingerTilTpsRespons> RESPONSE_TYPE_START_SYNT = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<List<Long>>() {
+    private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<>() {
     };
 
     private RestTemplate restTemplate;
@@ -33,22 +33,29 @@ public class TestnorgeSkdConsumer {
 
     public TestnorgeSkdConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-skd.rest.api.url}") String skdServerUrl) {
+            @Value("${testnorge-skd.rest.api.url}") String skdServerUrl
+    ) {
         this.restTemplate = restTemplateBuilder.build();
         this.startSyntetiseringUrl = new UriTemplate(skdServerUrl + "/v1/syntetisering/generer");
         this.slettIdenterUrl = new UriTemplate(skdServerUrl + "/v1/ident/{avspillergruppeId}?miljoer={miljoer}");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "skd" })
-    public ResponseEntity startSyntetisering(SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest) {
-        RequestEntity postRequest = RequestEntity.post(startSyntetiseringUrl.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserSkdmeldingerRequest);
+    public ResponseEntity startSyntetisering(
+            SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest
+    ) {
+        var postRequest = RequestEntity.post(startSyntetiseringUrl.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserSkdmeldingerRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE_START_SYNT);
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "skd" })
-    public List<Long> slettIdenterFraAvspillerguppe(Long avspillergruppeId, List<String> miljoer, List<String> identer) {
-        String miljoerSomString = String.join(",", miljoer);
-        RequestEntity deleteRequest = RequestEntity.method(HttpMethod.DELETE, slettIdenterUrl.expand(avspillergruppeId, miljoerSomString)).contentType(MediaType.APPLICATION_JSON).body(identer);
+    public List<Long> slettIdenterFraAvspillerguppe(
+            Long avspillergruppeId,
+            List<String> miljoer,
+            List<String> identer
+    ) {
+        var miljoerSomString = String.join(",", miljoer);
+        var deleteRequest = RequestEntity.method(HttpMethod.DELETE, slettIdenterUrl.expand(avspillergruppeId, miljoerSomString)).contentType(MediaType.APPLICATION_JSON).body(identer);
         return restTemplate.exchange(deleteRequest, RESPONSE_TYPE_DELETE).getBody();
     }
 }

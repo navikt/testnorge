@@ -21,7 +21,7 @@ import no.nav.registre.orkestratoren.consumer.rs.response.RsPureXmlMessageRespon
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserElsamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
@@ -33,7 +33,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.TesnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
-import no.nav.registre.orkestratoren.service.TestnorgeEiaService;
+import no.nav.registre.orkestratoren.service.TestnorgeElsamService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
@@ -54,7 +54,7 @@ public class SyntetiseringsController {
     private TestnorgeInntektService testnorgeInntektService;
 
     @Autowired
-    private TestnorgeEiaService testnorgeEiaService;
+    private TestnorgeElsamService testnorgeElsamService;
 
     @Autowired
     private TestnorgeSigrunService testnorgeSigrunService;
@@ -108,12 +108,12 @@ public class SyntetiseringsController {
     }
 
     @LogExceptions
-    @PostMapping(value = "/eia/sykemeldinger/generer")
-    public List<String> opprettSykemeldingerIEia(
-            @RequestBody SyntetiserEiaRequest syntetiserEiaRequest
+    @PostMapping(value = "/elsam/sykemeldinger/generer")
+    public List<String> opprettSykemeldingerIElsam(
+            @RequestBody SyntetiserElsamRequest syntetiserElsamRequest
     ) {
-        var fnrMedGenererteMeldinger = testnorgeEiaService.genererEiaSykemeldinger(syntetiserEiaRequest);
-        log.info("eia har opprettet {} sykemeldinger. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
+        var fnrMedGenererteMeldinger = testnorgeElsamService.genererElsamSykemeldinger(syntetiserElsamRequest);
+        log.info("elsam har opprettet {} sykemeldinger. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
         return fnrMedGenererteMeldinger;
     }
 

@@ -22,14 +22,17 @@ public class TestnorgeTpConsumer {
 
     public TestnorgeTpConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-tp.rest.api.url}") String baseUrl) {
+            @Value("${testnorge-tp.rest.api.url}") String baseUrl
+    ) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(baseUrl + "/v1/syntetisering/generer/");
     }
 
-    public ResponseEntity startSyntetisering(SyntetiserTpRequest request) {
-        RequestEntity postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(request);
-        ResponseEntity<String> response = restTemplate.exchange(postRequest, String.class);
+    public ResponseEntity startSyntetisering(
+            SyntetiserTpRequest request
+    ) {
+        var postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(request);
+        var response = restTemplate.exchange(postRequest, String.class);
         if (response.getStatusCode() != HttpStatus.OK) {
             log.error("Klarte ikke syntetisere tp");
         }

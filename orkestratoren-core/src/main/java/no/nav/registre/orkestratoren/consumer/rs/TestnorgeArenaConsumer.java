@@ -8,7 +8,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
@@ -24,9 +23,10 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest
 @Component
 public class TestnorgeArenaConsumer {
 
-    private static final ParameterizedTypeReference<GenererArenaResponse> RESPONSE_TYPE = new ParameterizedTypeReference<GenererArenaResponse>() {
+    private static final ParameterizedTypeReference<GenererArenaResponse> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<SletteArenaResponse> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<SletteArenaResponse>() {
+
+    private static final ParameterizedTypeReference<SletteArenaResponse> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<>() {
     };
 
     private RestTemplate restTemplate;
@@ -35,26 +35,32 @@ public class TestnorgeArenaConsumer {
 
     public TestnorgeArenaConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-arena.rest.api.url}") String arenaServerUrl) {
+            @Value("${testnorge-arena.rest.api.url}") String arenaServerUrl
+    ) {
         this.restTemplate = restTemplateBuilder.build();
         this.arenaOpprettArbeidsoekereUrl = new UriTemplate(arenaServerUrl + "/v1/syntetisering/generer");
         this.arenaSlettArbeidsoekereUrl = new UriTemplate(arenaServerUrl + "/v1/ident/slett?miljoe={miljoe}");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public List<String> opprettArbeidsoekere(SyntetiserArenaRequest syntetiserArenaRequest) {
-        RequestEntity postRequest = RequestEntity.post(arenaOpprettArbeidsoekereUrl.expand())
+    public List<String> opprettArbeidsoekere(
+            SyntetiserArenaRequest syntetiserArenaRequest
+    ) {
+        var postRequest = RequestEntity.post(arenaOpprettArbeidsoekereUrl.expand())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(syntetiserArenaRequest);
 
-        ResponseEntity<GenererArenaResponse> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
+        var response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
 
         return Objects.requireNonNull(response.getBody()).getRegistrerteIdenter();
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public SletteArenaResponse slettIdenter(String miljoe, List<String> identer) {
-        RequestEntity deleteRequest = RequestEntity.method(HttpMethod.DELETE, arenaSlettArbeidsoekereUrl.expand(miljoe))
+    public SletteArenaResponse slettIdenter(
+            String miljoe,
+            List<String> identer
+    ) {
+        var deleteRequest = RequestEntity.method(HttpMethod.DELETE, arenaSlettArbeidsoekereUrl.expand(miljoe))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(identer);
 
