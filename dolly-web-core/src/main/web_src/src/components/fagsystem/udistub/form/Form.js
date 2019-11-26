@@ -68,7 +68,7 @@ UdistubForm.initialValues = attrs => {
 		initial.udistub.soeknadOmBeskyttelseUnderBehandling = ''
 	}
 
-	return _isEmpty(initial.udistub) ? null : initial
+	return initial
 }
 
 UdistubForm.validation = {
