@@ -2,7 +2,7 @@ import { createAction, handleActions } from 'redux-actions'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 import { DollyApi } from '~/service/Api'
-import success from '~/utils/SuccessAction'
+import { onSuccess } from '~/ducks/utils/requestActions'
 import { SortKodeverkArray } from '~/service/services/dolly/Utils'
 
 export const getKodeverk = createAction(
@@ -27,10 +27,10 @@ const initialState = {}
 
 export default handleActions(
 	{
-		[success(getKodeverk)](state, action) {
+		[onSuccess(getKodeverk)](state, action) {
 			return { ...state, [action.meta.kodeverkNavn]: action.payload.data }
 		},
-		[success(getEnhetByTknr)](state, action) {
+		[onSuccess(getEnhetByTknr)](state, action) {
 			const { data } = action.payload
 			let tknrData = { nr: data.enhetNr, sted: data.navn }
 			if (!state.tknr) return { ...state, tknr: [tknrData] }

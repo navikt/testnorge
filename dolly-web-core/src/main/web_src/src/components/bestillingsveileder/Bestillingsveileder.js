@@ -1,65 +1,63 @@
 import React, { useState } from 'react'
-import { Formik } from 'formik'
-import Stegindikator from 'nav-frontend-stegindikator'
-import { Navigation } from './Navigation/Navigation'
+import { getInitialValues } from '~/service/attributter/Attributter'
+import { StegVelger } from './StegVelger'
 import { Steg1 } from './steg/Steg1'
 import { Steg2 } from './steg/Steg2'
-
-import DisplayFormikState from '~/utils/DisplayFormikState'
+import { Steg3 } from './steg/Steg3'
+import { mergeKeepShape } from '~/utils/Merge'
 
 import './bestillingsveileder.less'
 
-const steps = [Steg1, Steg2]
+const steps = [Steg1, Steg2, Steg3]
 
-export const Bestillingsveileder = () => {
-	const [step, setStep] = useState(1)
+export const Bestillingsveileder = props => {
+	const [attributter, setAttributter] = useState(getInitialValues())
+	const [savedValues, setSavedValues] = useState({})
 
-	const isLastStep = () => step === steps.length - 1
-	const handleBack = () => step !== 0 && setStep(step - 1)
-	const handleNext = () => setStep(step + 1)
+	const checkAttributter = attrs => setAttributter(Object.assign({}, attributter, attrs))
 
 	const handleSubmit = (values, formikBag) => {
-		const { setSubmitting } = formikBag
-
-		if (!isLastStep()) {
-			setSubmitting(false)
-			handleNext()
-			return
-		}
-
-		// TODO - handle final submit
-		setSubmitting(false)
+		props.createBestillingMal(values.malNavn) //Nå sjekkes ikke malnavn
+		props.sendBestilling(values)
 	}
 
-	const CurrentStep = steps[step]
-	const { validationSchema } = CurrentStep
+	const initialValuesSteps = steps.reduce(
+		(acc, curr) => Object.assign({}, acc, curr.initialValues(attributter)),
+		{}
+	)
 
-	const initialValues = steps.reduce((acc, curr) => Object.assign({}, acc, curr.initialValues), {})
-
-	const labels = steps.map(v => ({ label: v.label }))
+	// Merge with savedValues
+	const initialValues = mergeKeepShape(initialValuesSteps, savedValues)
 
 	return (
-		<Formik
-			initialValues={initialValues}
-			validationSchema={validationSchema}
-			onSubmit={handleSubmit}
-		>
-			{formikBag => (
-				<div className="bestillingsveileder">
-					<Stegindikator aktivtSteg={step} steg={labels} visLabel kompakt />
-
-					<CurrentStep formikBag={formikBag} />
-
-					<Navigation
-						showPrevious={step > 0}
-						onPrevious={handleBack}
-						isLastStep={isLastStep()}
+		<div className="bestillingsveileder">
+			<StegVelger
+				steps={steps}
+				initialValues={initialValues}
+				copyValues={setSavedValues}
+				onSubmit={handleSubmit}
+			>
+				{(CurrentStep, formikBag) => (
+					<CurrentStep
 						formikBag={formikBag}
+						attributter={attributter}
+						checkAttributter={checkAttributter}
+						props={props}
 					/>
-
-					<DisplayFormikState {...formikBag} />
-				</div>
-			)}
-		</Formik>
+				)}
+			</StegVelger>
+		</div>
 	)
 }
+
+// Hvis vi skal sjekke om et malnavn er brukt før
+// const _submit = values => {
+// const { maler } = this.props
+// if (values.malNavn && values.malNavn !== '') {
+//     this.setState({ showMalNavnError: false })
+//     maler.forEach(mal => {
+//         if (mal.malBestillingNavn === values.malNavn) {
+//             this.setState({ showMalNavnError: true })
+//         }
+//     })
+// }

@@ -4,7 +4,8 @@ import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Formatters from '~/utils/DataFormatter'
-import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
+// import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
+import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
 
 export default function TestbrukerListe({
 	isFetching,
@@ -68,7 +69,7 @@ export default function TestbrukerListe({
 		<DollyTable
 			data={sortedTestbrukere}
 			columns={columns}
-			onExpand={bruker => <PersonDetaljerConnector personId={bruker[0]} bestillingId={bruker[5]} />}
+			onExpand={bruker => <PersonVisningConnector personId={bruker[0]} bestillingId={bruker[5]} />}
 			pagination
 		/>
 	)

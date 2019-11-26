@@ -5,8 +5,7 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import './Navigation.less'
 
 export const Navigation = ({ showPrevious, onPrevious, isLastStep, formikBag }) => {
-	const { isValid, isSubmitting, handleSubmit } = formikBag
-	const isDisabled = !isValid || isSubmitting
+	const { isSubmitting, handleSubmit } = formikBag
 
 	const onAbort = () => {
 		console.log('handleAbort() - flytt denn til en logisk plass')
@@ -21,10 +20,10 @@ export const Navigation = ({ showPrevious, onPrevious, isLastStep, formikBag }) 
 				<div className="step-navknapper--right">
 					{showPrevious && <NavButton direction="backward" onClick={onPrevious} />}
 					{!isLastStep && (
-						<NavButton direction="forward" disabled={isDisabled} onClick={handleSubmit} />
+						<NavButton direction="forward" disabled={isSubmitting} onClick={handleSubmit} />
 					)}
 					{isLastStep && (
-						<Knapp type="hoved" onClick={handleSubmit} disabled={isDisabled}>
+						<Knapp type="hoved" onClick={handleSubmit} disabled={isSubmitting}>
 							OPPRETT
 						</Knapp>
 					)}

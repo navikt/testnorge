@@ -1,5 +1,5 @@
 import React from 'react'
-import Header from '~/components/bestilling/sammendrag/header/Header'
+import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 
 export default function JiraLenker({ openAm }) {
 	if (!openAm) return false
@@ -8,7 +8,7 @@ export default function JiraLenker({ openAm }) {
 
 	return (
 		<div>
-			<Header label="Jira-lenker" />
+			<SubOverskrift label="Jira-lenker" />
 			<div>
 				{openAm.map((link, i) => [
 					i > 0 && ', ',

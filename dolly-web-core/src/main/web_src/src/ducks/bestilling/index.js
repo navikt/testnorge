@@ -1,4 +1,5 @@
 import { LOCATION_CHANGE } from 'connected-react-router'
+import { handleActions, createActions, combineActions } from 'redux-actions'
 import { DollyApi } from '~/service/Api'
 import _xor from 'lodash/fp/xor'
 import _get from 'lodash/get'
@@ -6,8 +7,7 @@ import _set from 'lodash/set'
 import _union from 'lodash/union'
 import _difference from 'lodash/difference'
 import BestillingMapper from '~/utils/BestillingMapper'
-import { handleActions, createActions, combineActions } from 'redux-actions'
-import success from '~/utils/SuccessAction'
+import { onSuccess } from '~/ducks/utils/requestActions'
 import { AttributtManager } from '~/service/Kodeverk'
 import { getValues, _filterAttributes, _filterArrayAttributes } from './BestillingRequestUtils'
 import Formatters from '~/utils/DataFormatter'
@@ -110,7 +110,7 @@ export default handleActions(
 				page: state.page + 1
 			}
 		},
-		[success(actions.getBestillingMaler)](state, action) {
+		[onSuccess(actions.getBestillingMaler)](state, action) {
 			return { ...state, maler: action.payload.data }
 		},
 		[actions.setEnvironments](state, action) {
@@ -180,8 +180,8 @@ export default handleActions(
 		[combineActions(
 			actions.abortBestilling,
 			LOCATION_CHANGE,
-			success(actions.postBestilling),
-			success(actions.postBestillingFraEksisterendeIdenter)
+			onSuccess(actions.postBestilling),
+			onSuccess(actions.postBestillingFraEksisterendeIdenter)
 		)](state, action) {
 			return initialState
 		}
@@ -299,10 +299,11 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 	return final_values
 }
 
-export const sendBestilling = gruppeId => async (dispatch, getState) => {
-	const { currentBestilling, oppslag } = getState()
-	const values = bestillingFormatter(currentBestilling, oppslag)
-	console.log(values)
+export const sendBestilling = (values, gruppeId) => async (dispatch, getState) => {
+	const { currentBestilling, oppslag } = getState() //Fjernes når identOpprettesFra flyttes
+	// const values = bestillingFormatter(values, oppslag)
+	values.antall = 1
+	console.log('Send bestilling', values)
 	if (currentBestilling.identOpprettesFra === BestillingMapper('EKSIDENT')) {
 		return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
 	} else {

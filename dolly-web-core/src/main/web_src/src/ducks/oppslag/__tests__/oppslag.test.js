@@ -1,5 +1,5 @@
 import oppslagReducer, { oppslagLabelSelector } from '../index'
-import success from '~/utils/SuccessAction'
+import { onSuccess } from '~/ducks/utils/requestActions'
 
 describe('oppslagReducer', () => {
 	it('should return state with initial state', () => {
@@ -10,7 +10,7 @@ describe('oppslagReducer', () => {
 	// it('should handle success action', () => {
 	// 	const testdata = 'test'
 	// 	const action = {
-	// 		type: success('GET_KODEVERK'),
+	// 		type: onSuccess('GET_KODEVERK'),
 	// 		payload: { data: testdata },
 	// 		meta: { kodeverkNavn: testdata }
 	// 	}

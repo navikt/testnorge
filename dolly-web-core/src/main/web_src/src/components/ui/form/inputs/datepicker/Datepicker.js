@@ -6,6 +6,7 @@ import locale_nb from 'date-fns/locale/nb'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { Label } from '~/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
+import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { fieldError, SyntEvent } from '~/components/ui/form/formUtils'
 registerLocale('nb', locale_nb)
 
@@ -18,11 +19,12 @@ export const Datepicker = ({
 	placeholder = 'Ikke spesifisert',
 	onChange,
 	onBlur,
-	disabled = false
+	disabled = false,
+	feil
 }) => {
 	const preSave = selectedDate => {
 		// Vi bryr oss ikke om klokkeslett. Legger til 3 timer for å slippe å ta hensyn til tidsforskjeller
-		const modDateTime = isDate(selectedDate) ? addHours(selectedDate, 3) : ''
+		const modDateTime = isDate(selectedDate) ? addHours(selectedDate, 3) : null
 		return onChange(modDateTime)
 	}
 	return (
@@ -41,7 +43,7 @@ export const Datepicker = ({
 			onBlur={onBlur}
 			name={name}
 			id={name}
-			customInput={<TextInput icon="calendar" />}
+			customInput={<TextInput icon="calendar" feil={feil} />}
 		/>
 	)
 }
@@ -54,7 +56,7 @@ export const DollyDatepicker = props => (
 	</InputWrapper>
 )
 
-export const FormikDatepicker = props => {
+const P_FormikDatepicker = props => {
 	const [field, meta] = useField(props)
 
 	const handleChange = date => field.onChange(SyntEvent(field.name, date))
@@ -69,4 +71,9 @@ export const FormikDatepicker = props => {
 			{...props}
 		/>
 	)
+}
+
+export const FormikDatepicker = ({ visHvisAvhuket = true, ...props }) => {
+	const component = <P_FormikDatepicker {...props} />
+	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
 }

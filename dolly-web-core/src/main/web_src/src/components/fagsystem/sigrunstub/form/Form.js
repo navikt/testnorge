@@ -1,6 +1,7 @@
 import React from 'react'
 import * as Yup from 'yup'
 import _get from 'lodash/get'
+import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
 import { InntektsaarForm } from './partials/inntektsaarForm'
@@ -13,13 +14,18 @@ const initialValuesInntektsaar = {
 }
 
 export const SigrunstubForm = ({ formikBag }) => (
-	<Panel heading="Inntekt" hasErrors={panelError(formikBag)}>
-		<InntektsaarForm formikBag={formikBag} initial={initialValuesInntektsaar} />
-	</Panel>
+	<Vis attributt={pathAttrs.kategori.inntekt}>
+		<Panel heading="Inntekt" hasErrors={panelError(formikBag)}>
+			<InntektsaarForm formikBag={formikBag} initial={initialValuesInntektsaar} />
+		</Panel>
+	</Vis>
 )
 
-SigrunstubForm.initialValues = {
-	sigrunstub: [initialValuesInntektsaar]
+SigrunstubForm.initialValues = attrs => {
+	const initial = {
+		sigrunstub: [initialValuesInntektsaar]
+	}
+	return attrs.inntekt ? initial : {}
 }
 
 SigrunstubForm.validation = {
