@@ -1,5 +1,6 @@
 package no.nav.registre.skd.consumer;
 
+import com.google.common.collect.Lists;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +14,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +32,8 @@ public class TpsfConsumer {
 
     private static final ParameterizedTypeReference<SkdMeldingerTilTpsRespons> RESPONSE_TYPE_TPS = new ParameterizedTypeReference<>() {
     };
+
+    private static final int PAGE_SIZE = 100;
 
     private RestTemplate restTemplate;
     private UriTemplate uriTemplateSaveToTpsf;
@@ -88,14 +90,18 @@ public class TpsfConsumer {
 
     @Timed
     public ResponseEntity slettIdenterFraTps(List<String> miljoer, List<String> identer) {
+        var response = ResponseEntity.ok().build();
         var miljoerSomString = String.join(",", miljoer);
-        var identerSomString = String.join(",", identer);
-        var deleteRequest = RequestEntity.delete(urlSlettIdenterFraTps.expand(miljoerSomString, identerSomString)).build();
-        ResponseEntity response = null;
-        try {
-            response = restTemplate.exchange(deleteRequest, ResponseEntity.class);
-        } catch (HttpClientErrorException e) {
-            log.error("Kunne ikke slette ident fra TPS. ", e);
+
+        List<List<String>> identerPartisjonert = Lists.partition(identer, PAGE_SIZE);
+        for (var partisjon : identerPartisjonert) {
+            var identerSomString = String.join(",", partisjon);
+            var deleteRequest = RequestEntity.delete(urlSlettIdenterFraTps.expand(miljoerSomString, identerSomString)).build();
+            try {
+                restTemplate.exchange(deleteRequest, ResponseEntity.class);
+            } catch (HttpClientErrorException e) {
+                log.error("Kunne ikke slette ident fra TPS. ", e);
+            }
         }
         return response;
     }
