@@ -35,14 +35,14 @@ const selectOptions = {
 		{ value: 'PERSON_UTENID', label: 'Kontaktperson uten id' }
 	],
 
-	// skifteform: [{ value: 'OFFENTLIG', label: 'Offentlig' }, { value: 'ANNET', label: 'Annet' }],
+	skifteform: [{ value: 'OFFENTLIG', label: 'Offentlig' }, { value: 'ANNET', label: 'Annet' }],
 
 	// PDLF - falsk identitet
 	identitetType: [
 		{ value: 'UKJENT', label: 'Ukjent' },
 		{ value: 'ENTYDIG', label: 'Ved identifikasjonsnummer' },
 		{ value: 'OMTRENTLIG', label: 'Ved personopplysninger' }
-	]
+	],
 
 	// kjonnFalskIdentitet: [
 	// 	{ value: 'KVINNE', label: 'Kvinne' },

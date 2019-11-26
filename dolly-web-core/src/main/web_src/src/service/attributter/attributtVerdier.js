@@ -26,7 +26,7 @@ export const PANELER = addId({
 		infotekst:
 			'KRR - benyttes for offentlige virksomheter for å avklare om den enkelte bruker har reservert seg mot digital kommunikasjon eller ikke. I tillegg skal varslene som sendes til bruker benytte den kontaktinformasjonen som ligger i registeret. Dette kan enten være mobiltelefonnummer for utsendelse av sms, eller epostadresse for utsendelse av epost.'
 	},
-	krrdod: {
+	kontaktinformasjonForDoedsbo: {
 		label: 'Kontaktinformasjon for dødsbo',
 		infotekst:
 			'Kontaktinformasjon for dødsbo blir kun distribuert til Q2, og dette miljøet må derfor velges i siste steg.'
@@ -53,7 +53,7 @@ export const KATEGORIER = addId({
 	arbeidsforhold: { label: 'Arbeidsforhold' },
 	inntekt: { label: 'Inntekt' },
 	krr: { label: 'Kontakt- og reservasjonsregisteret' },
-	krrdod: { label: 'Kontaktinformasjon for dødsbo' },
+	kontaktinformasjonForDoedsbo: { label: 'Kontaktinformasjon for dødsbo' },
 	arena: { label: 'Arena' },
 	opphold: { label: 'Gjeldende oppholdsstatus' },
 	arbeidsadgang: { label: 'Arbeidsadgang' },
@@ -121,16 +121,16 @@ export const ATTRIBUTTER = [
 	{
 		panel: PANELER.personinfo,
 		kategori: KATEGORIER.identifikasjon,
-		path: 'tpsf.utenlandsid',
+		path: 'pdlforvalter.utenlandskIdentifikasjonsnummer',
 		label: 'Har utenlands-id',
-		name: 'utenlandsid'
+		name: 'utenlandskIdentifikasjonsnummer'
 	},
 	{
 		panel: PANELER.personinfo,
 		kategori: KATEGORIER.identifikasjon,
-		path: 'tpsf.falskidentitet',
+		path: 'pdlforvalter.falskIdentitet',
 		label: 'Har falsk identitet',
-		name: 'falskidentitet'
+		name: 'falskIdentitet'
 	},
 	{
 		panel: PANELER.personinfo,
@@ -231,8 +231,8 @@ export const ATTRIBUTTER = [
 		name: 'kontaktinformasjon'
 	},
 	{
-		panel: PANELER.krrdod,
-		kategori: KATEGORIER.krrdod,
+		panel: PANELER.kontaktinformasjonForDoedsbo,
+		kategori: KATEGORIER.kontaktinformasjonForDoedsbo,
 		path: 'pdlforvalter.kontaktinformasjonForDoedsbo',
 		label: 'Har kontaktinformasjon for dødsbo',
 		name: 'kontaktinformasjonForDoedsbo'

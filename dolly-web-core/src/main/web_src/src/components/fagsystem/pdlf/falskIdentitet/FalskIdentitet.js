@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import _get from 'lodash'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -13,14 +12,24 @@ export const FalskIdentitet = ({ formikBag }) => {
 	const settIdentitetType = e => {
 		if (e.value === 'UKJENT') {
 			formikBag.setFieldValue(falskIdPath, { identitetType: e.value, rettIdentitetErUkjent: true })
+		} else if (e.value === 'ENTYDIG') {
+			formikBag.setFieldValue(falskIdPath, {
+				identitetType: e.value,
+				rettIdentitetVedIdentifikasjonsnummer: ''
+			})
 		} else {
-			formikBag.setFieldValue(falskIdPath, { identitetType: e.value })
+			formikBag.setFieldValue(falskIdPath, {
+				identitetType: e.value,
+				foedselsdato: '',
+				kjoenn: '',
+				personnavn: { fornavn: '', mellomnavn: '', etternavn: '' },
+				statsborgerskap: ''
+			})
 		}
 		return e.value
 	}
-
 	return (
-		<Kategori title="Falsk identitet">
+		<React.Fragment>
 			<FormikSelect
 				name={`${falskIdPath}.identitetType`}
 				label="Opplysninger om rett identitet"
@@ -57,6 +66,6 @@ export const FalskIdentitet = ({ formikBag }) => {
 					/>
 				</div>
 			)}
-		</Kategori>
+		</React.Fragment>
 	)
 }

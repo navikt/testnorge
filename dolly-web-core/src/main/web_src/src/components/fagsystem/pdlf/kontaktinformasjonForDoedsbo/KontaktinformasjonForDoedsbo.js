@@ -1,20 +1,29 @@
-import React, { useState } from 'react'
+import React from 'react'
 import _get from 'lodash'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
+import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { Adressat } from './Adressat'
 import { Adresse } from './Adresse'
-import { Diverse } from './Diverse'
 
-export const KontaktinformasjonForDoedsbo = ({ formikBag }) => {
+export const KontaktinformasjonForDoedsbo = ({ formikBag, props }) => {
 	return (
-		<div>
+		<React.Fragment>
 			<Adressat formikBag={formikBag} />
-			<Adresse formikBag={formikBag} />
-			<Diverse formikBag={formikBag} />
-		</div>
+			<Adresse formikBag={formikBag} props={props} />
+
+			<Kategori title="Diverse">
+				<FormikSelect
+					name="pdlforvalter.kontaktinformasjonForDoedsbo.skifteform"
+					label="Skifteform"
+					options={Options('skifteform')}
+				/>
+				<FormikDatepicker
+					name="pdlforvalter.kontaktinformasjonForDoedsbo.utstedtDato"
+					label="Skifteform utstedt"
+				/>
+			</Kategori>
+		</React.Fragment>
 	)
 }

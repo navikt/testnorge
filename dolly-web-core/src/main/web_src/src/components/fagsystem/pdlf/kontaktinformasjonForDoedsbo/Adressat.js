@@ -7,33 +7,79 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 
 export const Adressat = ({ formikBag }) => {
-	//TODO HER MANGLER CONDITIONALS ETTERSOM HVILKEN ADRESSATTYPE
-	// INKLUDERT FUNKSJONALITET FOR Å HÅNDTERE ENDRING AV ADRESSATTYPE UNDERVEIS
+	const adressatType =
+		formikBag.values.pdlforvalter.kontaktinformasjonForDoedsbo.adressat.adressatType
+
+	const handleAfterChange = val => {
+		if (val === 'ADVOKAT' || val === 'ORGANISASJON')
+			formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.adressat', {
+				adressatType: val,
+				kontaktperson: { fornavn: '', mellomnavn: '', etternavn: '' },
+				organisasjonsnavn: '',
+				organisasjonsnummer: ''
+			})
+		else if (val === 'PERSON_UTENID')
+			formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.adressat', {
+				adressatType: val,
+				navn: { fornavn: '', mellomnavn: '', etternavn: '' },
+				foedselsdato: ''
+			})
+		else
+			formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.adressat', {
+				adressatType: val,
+				idnummer: ''
+			})
+	}
+
 	return (
 		<Kategori title="Adressat">
 			<FormikSelect
-				name="kontaktinformasjonForDoedsbo.adressat.adressatType"
+				name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.adressatType"
 				label="Adressattype"
 				options={Options('adressatType')}
+				afterChange={handleAfterChange}
+				isClearable={false}
 			/>
 
-			<FormikTextInput name="kontaktinformasjonForDoedsbo.adressat.idnummer" label="Fnr/dnr/bost" />
+			{(adressatType === 'ADVOKAT' || adressatType === 'ORGANISASJON') && (
+				<React.Fragment>
+					{navnForm('pdlforvalter.kontaktinformasjonForDoedsbo.adressat.kontaktperson')}
+					<FormikTextInput
+						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.organisasjonsnavn"
+						label="Organisasjonsnavn"
+					/>
+					<FormikTextInput
+						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.organisasjonsnummer"
+						label="Organisasjonsnummer"
+					/>
+				</React.Fragment>
+			)}
 
-			<FormikDatepicker
-				name="kontaktinformasjonForDoedsbo.adressat.foedselsdato"
-				label="Fødselsdato"
-			/>
-			<FormikTextInput name="kontaktinformasjonForDoedsbo.adressat.fornavn" label="Fornavn" />
-			<FormikTextInput name="kontaktinformasjonForDoedsbo.adressat.mellomnavn" label="Mellomnavn" />
-			<FormikTextInput name="kontaktinformasjonForDoedsbo.adressat.etternavn" label="Etternavn" />
-			<FormikTextInput
-				name="kontaktinformasjonForDoedsbo.adressat.organisajonsnavn"
-				label="Organisasjonsnavn"
-			/>
-			<FormikTextInput
-				name="kontaktinformasjonForDoedsbo.adressat.organisajonsnummer"
-				label="Organisasjonsnummer"
-			/>
+			{adressatType === 'PERSON_MEDID' && (
+				<FormikTextInput
+					name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.idnummer"
+					label="Fnr/dnr/bost"
+				/>
+			)}
+			{adressatType === 'PERSON_UTENID' && (
+				<React.Fragment>
+					{navnForm('pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn')}
+					<FormikDatepicker
+						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.foedselsdato"
+						label="Fødselsdato"
+					/>
+				</React.Fragment>
+			)}
 		</Kategori>
+	)
+}
+
+const navnForm = path => {
+	return (
+		<div>
+			<FormikTextInput name={`${path}.fornavn`} label="Fornavn" />
+			<FormikTextInput name={`${path}.mellomnavn`} label="Mellomnavn" />
+			<FormikTextInput name={`${path}.etternavn`} label="Etternavn" />
+		</div>
 	)
 }

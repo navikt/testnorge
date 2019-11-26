@@ -1,7 +1,6 @@
 import React from 'react'
 import { FieldArray } from 'formik'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FieldArrayAddButton, FieldArrayRemoveButton } from '~/components/ui/form/formUtils'
@@ -12,7 +11,7 @@ export const UtenlandsId = ({ formikBag }) => {
 		<FieldArray
 			name="pdlforvalter.utenlandskIdentifikasjonsnummer"
 			render={arrayHelpers => (
-				<Kategori title="Utenlandsk identifikasjonsnummer">
+				<React.Fragment>
 					{formikBag.values.pdlforvalter.utenlandskIdentifikasjonsnummer.map((curr, idx) => (
 						<div key={idx}>
 							<FormikTextInput
@@ -44,7 +43,7 @@ export const UtenlandsId = ({ formikBag }) => {
 						title="Utenlandsk identifikasjonsnummer"
 						onClick={e => arrayHelpers.push(initialValues)}
 					/>
-				</Kategori>
+				</React.Fragment>
 			)}
 		/>
 	)
