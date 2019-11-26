@@ -56,8 +56,8 @@ export default handleActions(
 			}
 		},
 		[onSuccess(updateBeskrivelse)](state, action) {
-			console.log('state :', state)
-			console.log('action :', action)
+			// console.log('state :', state)
+			// console.log('action :', action)
 			const testobject = {
 				...state,
 				data: state.data.map((item, idx) => ({
@@ -69,7 +69,7 @@ export default handleActions(
 					}))
 				}))
 			}
-			console.log('testobject :', testobject)
+			// console.log('testobject :', testobject)
 			return testobject
 		},
 		[onSuccess(deleteGruppe)](state, action) {

@@ -1,31 +1,27 @@
 import React, { useState } from 'react'
+import useBoolean from '~/utils/hooks/useBoolean'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import BeskrivelseEditor from './BeskrivelseEditor'
-import BeskrivelseFelt from './BeskrivelseFelt'
+import { BeskrivelseEditor } from './BeskrivelseEditor'
+import { BeskrivelseFelt } from './BeskrivelseFelt'
 
 import './Beskrivelse.less'
 
-export default function Beskrivelse({ beskrivelse, updateBeskrivelse }) {
-	const [isEditing, setIsEditing] = useState(false)
+export default function Beskrivelse({ gruppe, updateBeskrivelse }) {
+	const [isEditing, turnOnEditing, turnOffEditing] = useBoolean(false)
 
-	const toggleIsEditing = () => {
-		setIsEditing(!isEditing)
-	}
+	const { beskrivelse } = gruppe
 
 	return (
 		<div className="beskrivelse-visning">
 			<SubOverskrift label="Kommentarer" />
 			{isEditing ? (
 				<BeskrivelseEditor
-					toggleIsEditing={toggleIsEditing}
+					turnOffEditing={turnOffEditing}
 					beskrivelse={beskrivelse}
 					updateBeskrivelse={updateBeskrivelse}
 				/>
 			) : (
-				<BeskrivelseFelt
-					toggleIsEditing={toggleIsEditing}
-					beskrivelse={beskrivelse ? beskrivelse : 'Fant ingen beskrivelser for denne testpersonen'}
-				/>
+				<BeskrivelseFelt turnOnEditing={turnOnEditing} beskrivelse={beskrivelse} />
 			)}
 		</div>
 	)

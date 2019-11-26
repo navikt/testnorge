@@ -1,12 +1,9 @@
 import { connect } from 'react-redux'
 import Beskrivelse from './Beskrivelse'
-import { updateBeskrivelse } from '~/ducks/gruppe'
+import { updateBeskrivelse, getIdentByIdSelector } from '~/ducks/gruppe'
 
 const mapStateToProps = (state, ownProps) => ({
-	gruppe: state.gruppe.data[0],
-	ident: state.gruppe.data[0].identer.find(ident => ident.ident === ownProps.ident),
-	beskrivelse: state.gruppe.data[0].identer.find(ident => ident.ident === ownProps.ident)
-		.beskrivelse
+	gruppe: getIdentByIdSelector(state, ownProps.ident)
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {

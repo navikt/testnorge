@@ -1,26 +1,18 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Button from '~/components/ui/button/Button'
 
-import './Beskrivelse.less'
-
-export default class BeskrivelseFelt extends Component {
-	constructor(props) {
-		super(props)
-		this.state = { value: props ? props.beskrivelse : '' }
-	}
-
-	render() {
-		return (
-			<div className="beskrivelse-felt">
-				<form>
-					<div>
-						{this.state.value}
-						<Button onClick={this.props.toggleIsEditing} className="beskrivelse-button-leggtil">
-							Rediger
-						</Button>
-					</div>
-				</form>
+export const BeskrivelseFelt = ({
+	beskrivelse = 'Fant ingen beskrivelser for denne testpersonen',
+	turnOnEditing
+}) => {
+	return (
+		<div className="beskrivelse-felt">
+			<div>
+				{beskrivelse}
+				<Button onClick={turnOnEditing} className="beskrivelse-button-leggtil">
+					Rediger
+				</Button>
 			</div>
-		)
-	}
+		</div>
+	)
 }

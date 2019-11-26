@@ -1,19 +1,16 @@
 import React, { useState } from 'react'
 import Button from '~/components/ui/button/Button'
 
-export default function BeskrivelseEditor({ beskrivelse, updateBeskrivelse, toggleIsEditing }) {
-	const [value, setValue] = useState(beskrivelse ? beskrivelse : '')
+export const BeskrivelseEditor = ({ beskrivelse, updateBeskrivelse, turnOffEditing }) => {
+	const [value, setValue] = useState(beskrivelse || '')
 
 	const handleChange = event => {
 		setValue(event.target.value)
 	}
 
 	const handleSubmit = () => {
-		console.log('value :', value)
-		console.log('toggleIsEditing :', toggleIsEditing)
-		console.log('updateBeskrivelse :', updateBeskrivelse)
 		updateBeskrivelse(value)
-		toggleIsEditing()
+		turnOffEditing()
 	}
 
 	return (
