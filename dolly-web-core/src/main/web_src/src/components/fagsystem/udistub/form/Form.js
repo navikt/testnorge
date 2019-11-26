@@ -1,4 +1,5 @@
 import React from 'react'
+import _isEmpty from 'lodash/isEmpty'
 import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
@@ -67,7 +68,7 @@ UdistubForm.initialValues = attrs => {
 		initial.udistub.soeknadOmBeskyttelseUnderBehandling = ''
 	}
 
-	return initial
+	return _isEmpty(initial.udistub) ? null : initial
 }
 
 UdistubForm.validation = {
