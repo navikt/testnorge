@@ -67,11 +67,12 @@ export default function TestbrukerListe({
 	]
 
 	return (
-		
 		<DollyTable
 			data={sortedTestbrukere}
 			columns={columns}
-			onExpand={bruker => <PersonVisningConnector personId={bruker[0]} bestillingId={bruker[5]} gruppeId={gruppeId}/>}
+			onExpand={bruker => (
+				<PersonVisningConnector personId={bruker[0]} bestillingId={bruker[5]} gruppeId={gruppeId} />
+			)}
 			pagination
 		/>
 	)

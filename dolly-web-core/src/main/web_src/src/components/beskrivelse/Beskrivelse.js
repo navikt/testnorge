@@ -5,10 +5,7 @@ import BeskrivelseFelt from './BeskrivelseFelt'
 
 import './Beskrivelse.less'
 
-export default function Beskrivelse({
-	beskrivelse,
-	updateBeskrivelse
-}) {
+export default function Beskrivelse({ beskrivelse, updateBeskrivelse }) {
 	const [isEditing, setIsEditing] = useState(false)
 
 	const toggleIsEditing = () => {
@@ -18,19 +15,18 @@ export default function Beskrivelse({
 	return (
 		<div className="beskrivelse-visning">
 			<SubOverskrift label="Kommentarer" />
-				{ isEditing ? (
-					<BeskrivelseEditor 
+			{isEditing ? (
+				<BeskrivelseEditor
 					toggleIsEditing={toggleIsEditing}
 					beskrivelse={beskrivelse}
 					updateBeskrivelse={updateBeskrivelse}
-					/>
-				) : (
-					<BeskrivelseFelt 
+				/>
+			) : (
+				<BeskrivelseFelt
 					toggleIsEditing={toggleIsEditing}
-					beskrivelse={beskrivelse ? (beskrivelse) : ("Fant ingen beskrivelser for denne testpersonen")}
-					/>
-				)
-			}	
+					beskrivelse={beskrivelse ? beskrivelse : 'Fant ingen beskrivelser for denne testpersonen'}
+				/>
+			)}
 		</div>
-	);
+	)
 }

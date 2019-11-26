@@ -8,7 +8,14 @@ import Button from '~/components/ui/button/Button'
 
 import './PersonVisning.less'
 
-export const PersonVisning = ({ getDataFraFagsystemer, data, testIdent, bestilling, loading, gruppeId }) => {
+export const PersonVisning = ({
+	getDataFraFagsystemer,
+	data,
+	testIdent,
+	bestilling,
+	loading,
+	gruppeId
+}) => {
 	useMount(getDataFraFagsystemer)
 
 	// TODO: FLYTT DENNE TIL BACKEND!
@@ -24,7 +31,7 @@ export const PersonVisning = ({ getDataFraFagsystemer, data, testIdent, bestilli
 			{/* <ArenaVisning /> */}
 			{/* <UdiVisning /> */}
 			<TidligereBestillinger ids={testIdent.bestillingId} />
-			<Beskrivelse ident={testIdent.ident} gruppeId={gruppeId}/>
+			<Beskrivelse ident={testIdent.ident} gruppeId={gruppeId} />
 			<div className="flexbox--align-center--justify-end">
 				<Button className="flexbox--align-center" kind="details">
 					BESTILLINGSDETALJER

@@ -1,45 +1,37 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import Button from '~/components/ui/button/Button'
 
-import './Beskrivelse.less'
+export default function BeskrivelseEditor({ beskrivelse, updateBeskrivelse, toggleIsEditing }) {
+	const [value, setValue] = useState(beskrivelse ? beskrivelse : '')
 
-export default class BeskrivelseEditor extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {value: props ? props.beskrivelse : ''};
-		this.handleChange = this.handleChange.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
-	  }
-	
-	  handleChange(event) {
-		this.setState({value: event.target.value});
-	  }
-	
-	  handleSubmit() {
-		console.log('this.props :', this.props);
-		this.props.updateBeskrivelse(this.state.value);
-		this.props.toggleIsEditing()
-	  }
-	
-	  render() {
-		return (
-			<div className="beskrivelse-editor">
-				<form>
-					<textarea
+	const handleChange = event => {
+		setValue(event.target.value)
+	}
+
+	const handleSubmit = () => {
+		console.log('value :', value)
+		console.log('toggleIsEditing :', toggleIsEditing)
+		console.log('updateBeskrivelse :', updateBeskrivelse)
+		updateBeskrivelse(value)
+		toggleIsEditing()
+	}
+
+	return (
+		<div className="beskrivelse-editor">
+			<form>
+				<textarea
 					className="beskrivelse-editor-textarea"
-					type="text" 
-					value={this.state.value}
+					type="text"
+					value={value}
 					placeholder="Skriv inn en beskrivelse"
-					onChange={this.handleChange} />
-					<br/>
+					onChange={handleChange}
+				/>
+				<br />
 
-					<Button
-					onClick={this.handleSubmit}
-					className="beskrivelse-button-leggtil">
+				<Button onClick={handleSubmit} className="beskrivelse-button-leggtil">
 					Legg til
-					</Button>
-				</form>
-		  	</div>
-		);
-	  }
+				</Button>
+			</form>
+		</div>
+	)
 }

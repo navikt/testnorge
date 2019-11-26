@@ -5,24 +5,22 @@ import './Beskrivelse.less'
 
 export default class BeskrivelseFelt extends Component {
 	constructor(props) {
-		super(props);
-		this.state = { value: props ? props.beskrivelse : '' };
-	  }
-	
+		super(props)
+		this.state = { value: props ? props.beskrivelse : '' }
+	}
+
 	render() {
 		return (
 			<div className="beskrivelse-felt">
 				<form>
-					<div> 
+					<div>
 						{this.state.value}
-						<Button
-						onClick={this.props.toggleIsEditing}
-						className="beskrivelse-button-leggtil">
-						Rediger
+						<Button onClick={this.props.toggleIsEditing} className="beskrivelse-button-leggtil">
+							Rediger
 						</Button>
 					</div>
 				</form>
-		  	</div>
-		);
+			</div>
+		)
 	}
 }

@@ -76,7 +76,7 @@ export default function Gruppe({
 				</Knapp>
 			</Toolbar>
 
-			{visning === VISNING_TESTPERSONER && <TestbrukerListeConnector gruppeId={gruppe.id}/>}
+			{visning === VISNING_TESTPERSONER && <TestbrukerListeConnector gruppeId={gruppe.id} />}
 			{visning === VISNING_BESTILLING && <BestillingListeConnector gruppeId={gruppe.id} />}
 		</div>
 	)
