@@ -5,7 +5,6 @@ import { AttributtVelger } from '~/components/attributtVelger-ny/AttributtVelger
 export const Steg1 = ({ formikBag, attributter, checkAttributter }) => {
 	return (
 		<div>
-			<Overskrift label="Velg egenskaper" />
 			<AttributtVelger valgteAttributter={attributter} checkAttributter={checkAttributter} />
 		</div>
 	)

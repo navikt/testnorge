@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
+import { Header, headerFromInitialValues } from './Header/Header'
 import { getInitialValues } from '~/service/attributter/Attributter'
 import { StegVelger } from './StegVelger'
 import { Steg1 } from './steg/Steg1'
 import { Steg2 } from './steg/Steg2'
 import { Steg3 } from './steg/Steg3'
-import { mergeKeepShape } from '~/utils/Merge'
+import { createInitialValues } from './initialValues'
 
 import './bestillingsveileder.less'
 
@@ -14,6 +15,8 @@ export const Bestillingsveileder = props => {
 	const [attributter, setAttributter] = useState(getInitialValues())
 	const [savedValues, setSavedValues] = useState({})
 
+	const baseBestilling = props.location.state
+
 	const checkAttributter = attrs => setAttributter(Object.assign({}, attributter, attrs))
 
 	const handleSubmit = (values, formikBag) => {
@@ -21,13 +24,15 @@ export const Bestillingsveileder = props => {
 		props.sendBestilling(values)
 	}
 
-	const initialValuesSteps = steps.reduce(
-		(acc, curr) => Object.assign({}, acc, curr.initialValues(attributter)),
-		{}
-	)
+	const initialValues = createInitialValues(steps, attributter, savedValues, baseBestilling)
 
-	// Merge with savedValues
-	const initialValues = mergeKeepShape(initialValuesSteps, savedValues)
+	// Denne er litt verbos nå, men må nok endre litt etterhvert hvor disse data kommer fra
+	const headerData = headerFromInitialValues(
+		baseBestilling.antall,
+		baseBestilling.identtype,
+		baseBestilling.mal,
+		baseBestilling.opprettFraIdenter
+	)
 
 	return (
 		<div className="bestillingsveileder">
@@ -38,26 +43,17 @@ export const Bestillingsveileder = props => {
 				onSubmit={handleSubmit}
 			>
 				{(CurrentStep, formikBag) => (
-					<CurrentStep
-						formikBag={formikBag}
-						attributter={attributter}
-						checkAttributter={checkAttributter}
-						props={props}
-					/>
+					<React.Fragment>
+						<Header data={headerData} />
+						<CurrentStep
+							formikBag={formikBag}
+							attributter={attributter}
+							checkAttributter={checkAttributter}
+							props={props}
+						/>
+					</React.Fragment>
 				)}
 			</StegVelger>
 		</div>
 	)
 }
-
-// Hvis vi skal sjekke om et malnavn er brukt før
-// const _submit = values => {
-// const { maler } = this.props
-// if (values.malNavn && values.malNavn !== '') {
-//     this.setState({ showMalNavnError: false })
-//     maler.forEach(mal => {
-//         if (mal.malBestillingNavn === values.malNavn) {
-//             this.setState({ showMalNavnError: true })
-//         }
-//     })
-// }
