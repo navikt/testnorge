@@ -4,6 +4,7 @@ import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestilli
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
 import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
+import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
 import Button from '~/components/ui/button/Button'
 
 import './PersonVisning.less'
@@ -24,7 +25,10 @@ export const PersonVisning = ({ getDataFraFagsystemer, data, testIdent, bestilli
 				bestData={bestilling.bestKriterier.arenaforvalter}
 				loading={loading.arenaforvalteren}
 			/>
-			{/* <UdiVisning /> */}
+			<UdiVisning
+				data={UdiVisning.filterValues(data.udistub, bestilling.bestKriterier.udistub)}
+				loading={loading.udistub}
+			/>
 			<TidligereBestillinger ids={testIdent.bestillingId} />
 			<div className="flexbox--align-center--justify-end">
 				<Button className="flexbox--align-center" kind="details">
