@@ -70,7 +70,7 @@ TpsfForm.initialValues = attrs => {
 
 TpsfForm.validation = {
 	tpsf: Yup.object({
-		foedtEtter: requiredDate,
+		foedtEtter: Yup.date().nullable(),
 		foedtFoer: Yup.date().nullable(),
 		doedsdato: Yup.date().nullable(),
 		statsborgerskap: Yup.string(),

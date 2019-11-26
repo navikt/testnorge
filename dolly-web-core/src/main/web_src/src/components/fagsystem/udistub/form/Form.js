@@ -1,8 +1,8 @@
 import React from 'react'
-import * as Yup from 'yup'
 import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
+import { validation } from './validation'
 import { Oppholdsstatus } from './partials/Oppholdsstatus'
 import { Arbeidsadgang } from './partials/Arbeidsadgang'
 import { Alias } from './partials/Alias'
@@ -54,7 +54,7 @@ UdistubForm.initialValues = attrs => {
 		initial.udistub.aliaser = [
 			{
 				identtype: '',
-				nyIdent: ''
+				nyIdent: false
 			}
 		]
 	}
@@ -71,33 +71,5 @@ UdistubForm.initialValues = attrs => {
 }
 
 UdistubForm.validation = {
-	udistub: Yup.object({
-		aliaser: Yup.array()
-			.of(
-				Yup.object({
-					nyIdent: Yup.boolean().required('Vennligst velg'),
-					identtype: Yup.string().when('nyIdent', {
-						is: true,
-						then: Yup.string().required('Vennligst velg')
-					})
-				})
-			)
-			.nullable(),
-		arbeidsadgang: Yup.object({
-			arbeidsOmfang: Yup.string(),
-			harArbeidsAdgang: Yup.string().required('Vennligst velg'),
-			periode: {
-				fra: Yup.date().required('Vennligst velg'),
-				til: Yup.date().required('Vennligst velg')
-			},
-			typeArbeidsadgang: Yup.string()
-		}).nullable(),
-		flyktning: Yup.boolean()
-			.required('Vennligst velg')
-			.nullable(),
-		oppholdStatus: Yup.object({}).nullable(),
-		soeknadOmBeskyttelseUnderBehandling: Yup.string()
-			.required('Vennligst velg')
-			.nullable()
-	})
+	udistub: validation
 }

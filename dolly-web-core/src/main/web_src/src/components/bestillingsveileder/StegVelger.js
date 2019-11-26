@@ -35,7 +35,12 @@ export const StegVelger = ({ steps, initialValues, onSubmit, copyValues, childre
 
 	const _validate = async (values, schema) => {
 		if (!schema) return
-		return schema.validate(values, { abortEarly: false, context: values }).catch(yupToFormErrors)
+		try {
+			await schema.validate(values, { abortEarly: false, context: values })
+			return {}
+		} catch (err) {
+			return yupToFormErrors(err)
+		}
 	}
 
 	const CurrentStep = steps[step]
