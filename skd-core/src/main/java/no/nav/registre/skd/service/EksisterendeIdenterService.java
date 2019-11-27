@@ -340,14 +340,12 @@ public class EksisterendeIdenterService {
                 } else {
                     var statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskode, environment, identPartner);
 
-                    if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND))) {
-                        if (statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
-                            putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
+                    if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND)) && statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
+                        putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
 
-                            meldingerForPartnere.add(opprettSivilstandsendringsmelding(meldinger.get(i), identPartner));
+                        meldingerForPartnere.add(opprettSivilstandsendringsmelding(meldinger.get(i), identPartner));
 
-                            oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
-                        }
+                        oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
                     }
                 }
             } else {
