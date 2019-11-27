@@ -7,7 +7,7 @@ const getSigrunBaseUrl = () =>
 
 export default {
 	getTestbruker(ident) {
-		const endpoint = getSigrunBaseUrl() + '/testdata/les'
+		const endpoint = getSigrunBaseUrl() + '/api/v1/lignetinntekt'
 		return Request.getWithoutCredentials(endpoint, {
 			headers: { personidentifikator: ident }
 		})

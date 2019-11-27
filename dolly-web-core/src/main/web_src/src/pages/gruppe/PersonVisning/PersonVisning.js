@@ -3,6 +3,7 @@ import { useMount } from 'react-use'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
+import { SigrunstubVisning } from '~/components/fagsystem/sigrunstub/visning/Visning'
 import Button from '~/components/ui/button/Button'
 
 import './PersonVisning.less'
@@ -14,7 +15,7 @@ export const PersonVisning = ({ getDataFraFagsystemer, data, testIdent, bestilli
 		<div className="person-visning">
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.tpsfKriterier)} />
 			{/* <PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} /> */}
-			{/* <SigrunVisning /> */}
+			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			{/* <AaregVisning /> */}
 			{/* <InstVisning /> */}
