@@ -23,7 +23,8 @@ export default function DisplayFormikState({ visState = false, ...props }) {
 				padding: '.8rem',
 				borderBottom: '1px solid',
 				borderLeft: '1px solid',
-				borderColor: '#ccc'
+				borderColor: '#ccc',
+				zIndex: 99
 			}}
 		>
 			{showState && <FormikState {...props} />}

@@ -3,6 +3,7 @@ import { subYears } from 'date-fns'
 import * as Yup from 'yup'
 import { Personinformasjon } from './personinformasjon/Personinformasjon'
 import { Adresser } from './adresser/Adresser'
+import { requiredDate } from '~/utils/YupValidations'
 
 export const TpsfForm = ({ formikBag }) => {
 	return (
@@ -58,7 +59,10 @@ TpsfForm.initialValues = attrs => {
 		initial.tpsf.forsvunnetDato = null
 	}
 
-	if (attrs.boadresse) initial.tpsf.boadresse = {}
+	if (attrs.boadresse) {
+		initial.tpsf.boadresse = null
+		initial.tpsf.adresseNrInfo = null
+	}
 	if (attrs.postadresse) initial.tpsf.postadresse = {}
 
 	return initial

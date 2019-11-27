@@ -1,20 +1,20 @@
-import { useFormikContext } from 'formik'
+import { connect } from 'formik'
 import _isNil from 'lodash/isNil'
 import _has from 'lodash/has'
 export { pathAttrs } from '~/service/attributter/Attributter'
 
-export const Vis = ({ attributt, children }) => {
-	const { values } = useFormikContext()
-
-	const isChecked = (initial, attributtPath) => {
+const InternalVis = ({ formik, attributt, children }) => {
+	const isChecked = (values, attributtPath) => {
 		// Ignore if values ikke er satt
 		if (_isNil(attributtPath)) return false
 
 		// Strings er akseptert, men konverter til Array
-		if (!_isNil(attributtPath) && !Array.isArray(attributtPath)) attributtPath = [attributtPath]
+		if (!Array.isArray(attributtPath)) attributtPath = [attributtPath]
 
-		return attributtPath.some(v => _has(initial, v))
+		return attributtPath.some(v => _has(values, v))
 	}
 
-	return isChecked(values, attributt) && children
+	return isChecked(formik.values, attributt) && children
 }
+
+export const Vis = connect(InternalVis)

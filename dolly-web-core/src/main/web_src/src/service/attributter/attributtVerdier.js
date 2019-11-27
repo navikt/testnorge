@@ -242,14 +242,21 @@ export const ATTRIBUTTER = [
 		kategori: KATEGORIER.arena,
 		path: 'arenaforvalter',
 		label: 'Aktiver/inaktiver bruker',
-		name: 'arenaAktiverBruker'
+		name: 'arenaforvalter'
 	},
 	{
 		panel: PANELER.udi,
 		kategori: KATEGORIER.opphold,
 		path: 'udistub.oppholdStatus',
-		label: 'Har oppholdsstatus',
+		label: 'Oppholdsstatus',
 		name: 'oppholdStatus'
+	},
+	{
+		panel: PANELER.udi,
+		kategori: KATEGORIER.arbeidsadgang,
+		path: 'udistub.arbeidsadgang',
+		label: 'Arbeidsadgang',
+		name: 'arbeidsadgang'
 	},
 	{
 		panel: PANELER.udi,
@@ -260,9 +267,16 @@ export const ATTRIBUTTER = [
 	},
 	{
 		panel: PANELER.udi,
-		kategori: KATEGORIER.alias,
-		path: 'udistub.annet',
-		label: 'Annet',
-		name: 'annet'
+		kategori: KATEGORIER.annet,
+		path: 'udistub.flyktning',
+		label: 'Flyktningstatus',
+		name: 'flyktning'
+	},
+	{
+		panel: PANELER.udi,
+		kategori: KATEGORIER.annet,
+		path: 'udistub.soeknadOmBeskyttelseUnderBehandling',
+		label: 'Asylsøker',
+		name: 'asylsoker'
 	}
 ]

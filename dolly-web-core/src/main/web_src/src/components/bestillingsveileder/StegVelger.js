@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from 'react'
-import { Formik } from 'formik'
+import { Formik, yupToFormErrors } from 'formik'
 import Stegindikator from 'nav-frontend-stegindikator'
 import { Navigation } from './Navigation/Navigation'
 
@@ -33,15 +33,24 @@ export const StegVelger = ({ steps, initialValues, onSubmit, copyValues, childre
 		return onSubmit(values, formikBag)
 	}
 
+	const _validate = async (values, schema) => {
+		if (!schema) return
+		try {
+			await schema.validate(values, { abortEarly: false, context: values })
+			return {}
+		} catch (err) {
+			return yupToFormErrors(err)
+		}
+	}
+
 	const CurrentStep = steps[step]
-	const { validation } = CurrentStep
 
 	const labels = steps.map(v => ({ label: v.label }))
 
 	return (
 		<Formik
 			initialValues={initialValues}
-			validationSchema={validation}
+			validate={async values => await _validate(values, CurrentStep.validation)}
 			onSubmit={_handleSubmit}
 			enableReinitialize
 		>

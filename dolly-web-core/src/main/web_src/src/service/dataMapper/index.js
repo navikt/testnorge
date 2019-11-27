@@ -59,8 +59,8 @@ const DataMapper = {
 
 		const bestilling = getBestillingById(bestillingStatuser.data, bestillingId[0])
 
-		const tpsfKriterier = JSON.parse(bestilling.tpsfKriterier)
-		const bestKriterier = JSON.parse(bestilling.bestKriterier)
+		const tpsfKriterier = bestilling.tpsfKriterier
+		const bestKriterier = bestilling.bestKriterier
 
 		let data = mapTpsfData(tpsfData, tpsfKriterier)
 

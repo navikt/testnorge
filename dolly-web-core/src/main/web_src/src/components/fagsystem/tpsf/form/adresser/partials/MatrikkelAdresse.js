@@ -5,11 +5,6 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 
 export const MatrikkelAdresse = ({ formikBag }) => {
-	const settMatrikkeladresse = adresse => {
-		// Denne bør nok settes fra initalValues i stedet
-		formikBag.setFieldValue('tpsf.boadresse.adressetype', 'MATR')
-	}
-
 	return (
 		<Kategori title="Matrikkeladresse">
 			<FormikTextInput name="tpsf.boadresse.mellomnavn" label="Stedsnavn" />

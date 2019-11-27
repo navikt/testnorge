@@ -7,7 +7,9 @@ import './Utvalg.less'
 export const Utvalg = ({ valgteAttributter, checkAttributter }) => {
 	const utvalgListe = getAttributterForUtvalgListe(valgteAttributter)
 
-	const attrValues = Object.keys(valgteAttributter).filter(key => valgteAttributter[key])
+	const attrsToFalse = Object.keys(valgteAttributter)
+		.filter(key => valgteAttributter[key])
+		.reduce((acc, curr) => ({ ...acc, [curr]: false }), {})
 
 	const renderUtvalg = () => {
 		if (!utvalgListe.length) return renderEmptyResult()
@@ -15,7 +17,7 @@ export const Utvalg = ({ valgteAttributter, checkAttributter }) => {
 		return (
 			<React.Fragment>
 				{utvalgListe.map(renderPanel)}
-				<LinkButton text="Fjern alle" onClick={() => checkAttributter(attrValues, false)} />
+				<LinkButton text="Fjern alle" onClick={() => checkAttributter(attrsToFalse)} />
 			</React.Fragment>
 		)
 	}
