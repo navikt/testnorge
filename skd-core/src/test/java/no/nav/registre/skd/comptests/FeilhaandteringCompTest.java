@@ -55,11 +55,11 @@ import no.nav.registre.skd.service.SyntetiseringService;
 @ActiveProfiles("itest")
 public class FeilhaandteringCompTest {
 
-    private String testfeilmelding = "testfeilmelding";
-    private List<String> expectedFnrFromIdentpool = Arrays.asList("11111111111", "22222222222");
-    private List<Long> expectedMeldingsIdsITpsf = Arrays.asList(120421016L, 110156008L);
-    private Integer antallMeldinger = 2;
-    private String miljoe = "t10";
+    private final String testfeilmelding = "testfeilmelding";
+    private final List<String> expectedFnrFromIdentpool = Arrays.asList("11111111111", "22222222222");
+    private final List<Long> expectedMeldingsIdsITpsf = Arrays.asList(120421016L, 110156008L);
+    private final Integer antallMeldinger = 2;
+    private final String miljoe = "t10";
 
     @Autowired
     private SyntetiseringController syntetiseringController;
@@ -107,6 +107,7 @@ public class FeilhaandteringCompTest {
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertEquals(5, listAppender.list.size());
         var skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
+        assert skdMeldingerTilTpsRespons != null;
         assertThat(skdMeldingerTilTpsRespons.getAntallSendte(), is(equalTo(2)));
         assertThat(listAppender.list.toString(), containsString("Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: []"));
     }

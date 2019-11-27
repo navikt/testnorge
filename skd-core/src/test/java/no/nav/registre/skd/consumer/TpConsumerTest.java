@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -33,9 +32,9 @@ public class TpConsumerTest {
     @Autowired
     private TpConsumer tpConsumer;
 
-    private String miljoe = "t1";
-    private String fnr1 = "01010101010";
-    private String fnr2 = "02020202020";
+    private final String miljoe = "t1";
+    private final String fnr1 = "01010101010";
+    private final String fnr2 = "02020202020";
     private List<String> identer;
 
     @Before

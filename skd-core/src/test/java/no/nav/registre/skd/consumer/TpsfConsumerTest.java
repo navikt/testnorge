@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -30,7 +29,6 @@ import java.util.List;
 
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.requests.SlettSkdmeldingerRequest;
-import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -43,8 +41,8 @@ public class TpsfConsumerTest {
 
     private SendToTpsRequest sendToTpsRequest;
 
-    private long avspillergruppeId = 10L;
-    private String environment = "t9";
+    private final long avspillergruppeId = 10L;
+    private final String environment = "t9";
     private List<Long> ids;
     private int expectedAntallSendte;
     private int expectedAntallFeilet;

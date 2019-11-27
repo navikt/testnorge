@@ -16,7 +16,7 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 
 public class ValidationServiceTest {
 
-    private ValidationService validator = new ValidationService();
+    private final ValidationService validator = new ValidationService();
 
     @Test
     public void shouldLogValidationOfInvalidMessage() {

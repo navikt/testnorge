@@ -33,8 +33,8 @@ public class IdentPoolConsumer {
     private static final ParameterizedTypeReference<List<Navn>> RESPONSE_TYPE_NAVN = new ParameterizedTypeReference<>() {
     };
 
-    private String baseUrl;
-    private RestTemplate restTemplate;
+    private final String baseUrl;
+    private final RestTemplate restTemplate;
 
     public IdentPoolConsumer(@Value("${ident-pool.rest-api.url}") String serverUrl) {
         this.restTemplate = new RestTemplate();

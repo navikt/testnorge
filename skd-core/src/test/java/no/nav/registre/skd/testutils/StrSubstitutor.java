@@ -1,12 +1,11 @@
 package no.nav.registre.skd.testutils;
 
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StrSubstitutor {
 
-    private static final Pattern p = Pattern.compile("\\$\\{(.+?)\\}");
+    private static final Pattern p = Pattern.compile("\\$\\{(.+?)}");
 
     public static String replace(String text, Map<String, String> placeholderValues) {
         var m = p.matcher(text);

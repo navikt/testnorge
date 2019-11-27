@@ -6,12 +6,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.net.URI;
 import java.util.List;
 
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
@@ -23,9 +21,9 @@ public class TpsSyntetisererenConsumer {
     private static final ParameterizedTypeReference<List<RsMeldingstype>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
-    private String serverUrl;
+    private final String serverUrl;
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     public TpsSyntetisererenConsumer(
             RestTemplateBuilder restTemplateBuilder,

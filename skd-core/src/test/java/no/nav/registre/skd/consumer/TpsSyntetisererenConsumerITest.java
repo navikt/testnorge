@@ -16,9 +16,7 @@ import org.springframework.test.web.client.MockRestServiceServer;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.List;
 
-import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.testutils.AssertionUtils;
 
 @RunWith(SpringRunner.class)

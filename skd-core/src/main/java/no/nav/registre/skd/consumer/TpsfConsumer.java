@@ -8,7 +8,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.support.BasicAuthorizationInterceptor;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -35,13 +35,13 @@ public class TpsfConsumer {
 
     private static final int PAGE_SIZE = 100;
 
-    private RestTemplate restTemplate;
-    private UriTemplate uriTemplateSaveToTpsf;
-    private UriTemplate uriTemplateSaveToTps;
-    private UriTemplate uriTemplateGetMeldingIder;
-    private UriTemplate urlGetMeldingIder;
-    private UriTemplate urlSlettMeldinger;
-    private UriTemplate urlSlettIdenterFraTps;
+    private final RestTemplate restTemplate;
+    private final UriTemplate uriTemplateSaveToTpsf;
+    private final UriTemplate uriTemplateSaveToTps;
+    private final UriTemplate uriTemplateGetMeldingIder;
+    private final UriTemplate urlGetMeldingIder;
+    private final UriTemplate urlSlettMeldinger;
+    private final UriTemplate urlSlettIdenterFraTps;
 
     public TpsfConsumer(RestTemplateBuilder restTemplateBuilder,
             @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
@@ -49,7 +49,7 @@ public class TpsfConsumer {
             @Value("${testnorges.ida.credential.tpsf.password}") String password
     ) {
         this.restTemplate = restTemplateBuilder.build();
-        this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
+        this.restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
         this.uriTemplateSaveToTpsf = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/save/{gruppeId}");
         this.uriTemplateSaveToTps = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/send/{gruppeId}");
         this.uriTemplateGetMeldingIder = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/meldinger/{gruppeId}");

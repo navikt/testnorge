@@ -1,6 +1,6 @@
 package no.nav.registre.skd.testutils;
 
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;

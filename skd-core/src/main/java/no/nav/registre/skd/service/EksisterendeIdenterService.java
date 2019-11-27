@@ -336,7 +336,7 @@ public class EksisterendeIdenterService {
                     log.warn("behandleDoedsmelding: Feil på fnr {} fra FNR_RELASJON. Fnr har en lengde på {}. Hopper over sivilstandendringsmelding på partner.",
                             identPartner, identPartner.length());
                     putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
-                    oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident));
+                    oppdaterBolk(brukteIdenterIDenneBolken, Collections.singletonList(ident));
                 } else {
                     var statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskode, environment, identPartner);
 
@@ -347,16 +347,12 @@ public class EksisterendeIdenterService {
                             meldingerForPartnere.add(opprettSivilstandsendringsmelding(meldinger.get(i), identPartner));
 
                             oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
-                        } else {
-                            // personnummer i fnrRelasjon til partner matcher ikke
                         }
-                    } else {
-                        // ulik sivilstand på identene
                     }
                 }
             } else {
                 putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
-                oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident));
+                oppdaterBolk(brukteIdenterIDenneBolken, Collections.singletonList(ident));
             }
         }
         meldinger.addAll(meldingerForPartnere);
@@ -409,11 +405,11 @@ public class EksisterendeIdenterService {
             Endringskoder endringskode,
             String environment
     ) {
-        Map<String, String> statusQuoIdent = new HashMap<>();
+        Map<String, String> statusQuoIdent;
         var randomIdent = "";
         int randomIndex;
 
-        for (int i = 1; i <= ANTALL_FORSOEK_PER_AARSAK; i++) {
+        for (int i = 1; true; i++) {
             if (identer.isEmpty()) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding. For få identer i " +
                         "listen av identer fra TPSF avspillergruppen.");

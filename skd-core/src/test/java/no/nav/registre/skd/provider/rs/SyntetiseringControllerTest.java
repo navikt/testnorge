@@ -31,8 +31,8 @@ public class SyntetiseringControllerTest {
     @InjectMocks
     private SyntetiseringController syntetiseringController;
 
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
+    private final Long avspillergruppeId = 123L;
+    private final String miljoe = "t1";
     private Map<String, Integer> antallMeldingerPerEndringskode;
     private GenereringsOrdreRequest genereringsOrdreRequest;
     private List<FastMeldingRequest> fasteMeldinger;

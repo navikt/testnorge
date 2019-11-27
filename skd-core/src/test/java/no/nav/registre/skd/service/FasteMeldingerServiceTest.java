@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.skd.consumer.IdentPoolConsumer;
 import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
@@ -37,8 +36,8 @@ public class FasteMeldingerServiceTest {
     @InjectMocks
     private FasteMeldingerService fasteMeldingerService;
 
-    private Long avspillergruppeId = 10L;
-    private String miljoe = "t1";
+    private final Long avspillergruppeId = 10L;
+    private final String miljoe = "t1";
     private List<Long> avspillergruppeIder;
     private List<FastMeldingRequest> fasteMeldinger;
 

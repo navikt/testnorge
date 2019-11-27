@@ -13,10 +13,8 @@ import no.nav.registre.skd.consumer.IdentPoolConsumer;
 import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
-import no.nav.registre.skd.consumer.response.Navn;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
-import no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 
@@ -72,8 +70,6 @@ public class FasteMeldingerService {
                     .adressenavn(fastMelding.getAdresse())
                     .adresse3(fastMelding.getBy())
                     .build();
-
-
 
             if (nyMelding.getSlektsnavn() == null || nyMelding.getSlektsnavn().isEmpty() || nyMelding.getFornavn() == null || nyMelding.getFornavn().isEmpty()) {
                 var navn = identPoolConsumer.hentNavn();

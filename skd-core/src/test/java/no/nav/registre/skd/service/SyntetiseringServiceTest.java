@@ -23,7 +23,6 @@ import ch.qos.logback.core.read.ListAppender;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -31,7 +30,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -140,7 +138,7 @@ public class SyntetiseringServiceTest {
             }
             ((RsMeldingstype1Felter) melding.get(0)).setFodselsdato(fodselsdato);
             ((RsMeldingstype1Felter) melding.get(0)).setPersonnummer(personnummer);
-            return Arrays.asList(fodselsdato + personnummer);
+            return Collections.singletonList(fodselsdato + personnummer);
         };
 
         when(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(any(), any())).thenAnswer(setFnrInFirstSkdmeldingAndReturnFnr);

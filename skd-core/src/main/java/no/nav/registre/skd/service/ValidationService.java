@@ -19,7 +19,7 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype;
 @Service
 public class ValidationService {
 
-    private Validator validator;
+    private final Validator validator;
 
     public ValidationService() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();

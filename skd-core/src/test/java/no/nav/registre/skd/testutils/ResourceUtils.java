@@ -3,7 +3,6 @@ package no.nav.registre.skd.testutils;
 import com.google.common.io.Resources;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class ResourceUtils {

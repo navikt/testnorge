@@ -20,7 +20,7 @@ public class TpConsumer {
     @Autowired
     private RestTemplate restTemplate;
 
-    private UriTemplate leggTilIdentUrl;
+    private final UriTemplate leggTilIdentUrl;
 
     public TpConsumer(@Value("${testnorge-tp.rest-api.url}") String serverUrl) {
         this.leggTilIdentUrl = new UriTemplate(serverUrl + "/v1/orkestrering/opprettPersoner/{miljoe}");

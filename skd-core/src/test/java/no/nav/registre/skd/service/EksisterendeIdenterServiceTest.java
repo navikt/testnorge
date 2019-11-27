@@ -56,7 +56,7 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsRespons
 public class EksisterendeIdenterServiceTest {
 
     @Rule
-    public ExpectedException expectedException = ExpectedException.none();
+    public final ExpectedException expectedException = ExpectedException.none();
 
     @Mock
     private HodejegerenConsumer hodejegerenConsumer;
@@ -74,11 +74,11 @@ public class EksisterendeIdenterServiceTest {
     private List<String> identer;
     private List<String> brukteIdenter;
     private String environment;
-    private String fnr1 = "01010101010";
-    private String fnr2 = "02020202020";
-    private String fnr3 = "03030303030";
-    private String fnr4 = "04040404040";
-    private String fnr5 = "05050505050";
+    private final String fnr1 = "01010101010";
+    private final String fnr2 = "02020202020";
+    private final String fnr3 = "03030303030";
+    private final String fnr4 = "04040404040";
+    private final String fnr5 = "05050505050";
 
     @Before
     public void setUp() {
@@ -176,9 +176,9 @@ public class EksisterendeIdenterServiceTest {
         ListAppender<ILoggingEvent> listAppender = testLoggingInClass(EksisterendeIdenterService.class);
         when(rand.nextInt(anyInt())).thenReturn(0);
 
-        var identerIRekkefølge = opprettEkteparMedKorruptDataMock(); // Første paret har data som feiler. Andre paret er fungerende og vanlig.
+        var identerIRekkefoelge = opprettEkteparMedKorruptDataMock(); // Første paret har data som feiler. Andre paret er fungerende og vanlig.
 
-        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identerIRekkefølge, brukteIdenter, SKILSMISSE, environment);
+        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identerIRekkefoelge, brukteIdenter, SKILSMISSE, environment);
 
         assertEquals(1, listAppender.list.size());
         assertTrue(listAppender.list.get(0).toString().contains("Korrupte data i TPS - personnummeret eller sivilstanden stemmer ikke for personene med fødselsnumrene: "
@@ -339,7 +339,7 @@ public class EksisterendeIdenterServiceTest {
 
         meldinger.get(0).setMeldingsnrHosTpsSynt(meldingsnummer);
 
-        eksisterendeIdenterService.behandleVigsel(meldinger, Arrays.asList("01010101010"), brukteIdenter, endringskode, environment);
+        eksisterendeIdenterService.behandleVigsel(meldinger, Collections.singletonList("01010101010"), brukteIdenter, endringskode, environment);
     }
 
     private void opprettLevendeNordmennMock() {

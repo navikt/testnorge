@@ -41,12 +41,12 @@ import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
 @ActiveProfiles("itest")
 public class GenererSyntetiskeMeldingerCompTest {
 
-    private List<Long> expectedMeldingsIdsITpsf = new ArrayList<>();
-    private List<String> expectedFnrFromIdentpool = Arrays.asList("11111111111", "22222222222");
-    private long gruppeId = 123L;
-    private String miljoe = "t10";
-    private Integer antallMeldinger = 2;
-    private String endringskodeInnvandringsmelding = "0211";
+    private final List<Long> expectedMeldingsIdsITpsf = new ArrayList<>();
+    private final List<String> expectedFnrFromIdentpool = Arrays.asList("11111111111", "22222222222");
+    private final long gruppeId = 123L;
+    private final String miljoe = "t10";
+    private final Integer antallMeldinger = 2;
+    private final String endringskodeInnvandringsmelding = "0211";
 
     @Autowired
     private SyntetiseringController syntetiseringController;

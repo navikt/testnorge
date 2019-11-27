@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import no.nav.registre.skd.consumer.TpsfConsumer;
 
