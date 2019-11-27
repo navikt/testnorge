@@ -9,9 +9,11 @@ export const BeskrivelseFelt = ({
 		<div className="beskrivelse-felt">
 			<div>
 				{beskrivelse}
-				<Button onClick={turnOnEditing} className="beskrivelse-button-leggtil">
-					Rediger
-				</Button>
+				<div className="beskrivelse-button-container">
+					<Button onClick={turnOnEditing} className="beskrivelse-button">
+						Rediger
+					</Button>
+				</div>
 			</div>
 		</div>
 	)

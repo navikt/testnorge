@@ -13,6 +13,10 @@ export const BeskrivelseEditor = ({ beskrivelse, updateBeskrivelse, turnOffEditi
 		turnOffEditing()
 	}
 
+	const handleCancel = () => {
+		turnOffEditing()
+	}
+
 	return (
 		<div className="beskrivelse-editor">
 			<form>
@@ -25,9 +29,14 @@ export const BeskrivelseEditor = ({ beskrivelse, updateBeskrivelse, turnOffEditi
 				/>
 				<br />
 
-				<Button onClick={handleSubmit} className="beskrivelse-button-leggtil">
-					Legg til
-				</Button>
+				<div className="beskrivelse-button-container">
+					<Button onClick={handleCancel} className="beskrivelse-button">
+						Avbryt
+					</Button>
+					<Button onClick={handleSubmit} className="beskrivelse-button">
+						Legg til
+					</Button>
+				</div>
 			</form>
 		</div>
 	)
