@@ -4,7 +4,6 @@ import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestilli
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
 import Beskrivelse from '~/components/beskrivelse/BeskrivelseConnector'
-import { PdlfVisning } from '~/components/fagsystem/pdlf/visning/PdlfVisning'
 import Button from '~/components/ui/button/Button'
 
 import './PersonVisning.less'
