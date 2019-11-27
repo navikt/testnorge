@@ -1,5 +1,7 @@
 package no.nav.dolly.mapper.strategy;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+
 import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
@@ -19,7 +21,7 @@ public class IdentAttributesMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Testident testident, IdentAttributesResponse attributesResponse, MappingContext context) {
 
                         attributesResponse.setGruppeId(testident.getTestgruppe().getId());
-                        attributesResponse.setIbruk(testident.getIBruk());
+                        attributesResponse.setIbruk(isTrue(testident.getIBruk()));
                     }
                 })
                 .byDefault()
