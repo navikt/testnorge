@@ -24,7 +24,8 @@ export const Select = ({
 	isSearchable = true,
 	isClearable = true,
 	placeholder = 'Velg..',
-	options = []
+	options = [],
+	multi = false
 }) => {
 	return (
 		<ReactSelect
@@ -41,6 +42,7 @@ export const Select = ({
 			isSearchable={isSearchable}
 			isLoading={isLoading}
 			isClearable={isClearable}
+			multi={multi}
 		/>
 	)
 }

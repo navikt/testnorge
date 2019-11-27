@@ -63,6 +63,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 						label="Statsborgerskap"
 						kodeverk="Landkoder"
 						isClearable={false}
+						multi={true}
 					/>
 				</div>
 			)}
