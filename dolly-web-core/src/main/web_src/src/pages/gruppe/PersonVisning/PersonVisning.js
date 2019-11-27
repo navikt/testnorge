@@ -3,7 +3,7 @@ import { useMount } from 'react-use'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
-import { PdlfVisning } from '~/components/fagsystem/pdlf/visning/PdlfVisning'
+import { PdlfVisning } from '~/components/fagsystem/pdlf/visning/Visning'
 import Button from '~/components/ui/button/Button'
 
 import './PersonVisning.less'
@@ -11,10 +11,29 @@ import './PersonVisning.less'
 export const PersonVisning = ({ getDataFraFagsystemer, data, testIdent, bestilling, loading }) => {
 	useMount(getDataFraFagsystemer)
 
+	data.pdlforvalter = {
+		falskIdentitet: {
+			erFalsk: true,
+			rettIdentitetVedIdentifikasjonsnummer: '12345678901',
+			rettIdentitetErUkjent: false,
+			rettIdentitetVedOpplysninger: {
+				personnavn: {
+					fornavn: 'Johnny',
+					mellomnavn: 'Testus',
+					etternavn: 'Bravo'
+				},
+				foedselsdato: '2015-03-25',
+				statsborgerskap: 'Uzbekistan',
+				kjoenn: 'Ukjent'
+			}
+		}
+	}
+
 	return (
 		<div className="person-visning">
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.tpsfKriterier)} />
-			{/* <PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} /> */}
+			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
+
 			{/* <SigrunVisning /> */}
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			{/* <AaregVisning /> */}
