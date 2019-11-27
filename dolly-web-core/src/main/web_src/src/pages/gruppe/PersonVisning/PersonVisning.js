@@ -11,23 +11,37 @@ import './PersonVisning.less'
 export const PersonVisning = ({ getDataFraFagsystemer, data, testIdent, bestilling, loading }) => {
 	useMount(getDataFraFagsystemer)
 
-	data.pdlforvalter = {
-		falskIdentitet: {
-			erFalsk: true,
-			rettIdentitetVedIdentifikasjonsnummer: '12345678901',
-			rettIdentitetErUkjent: false,
-			rettIdentitetVedOpplysninger: {
-				personnavn: {
-					fornavn: 'Johnny',
-					mellomnavn: 'Testus',
-					etternavn: 'Bravo'
-				},
-				foedselsdato: '2015-03-25',
-				statsborgerskap: 'Uzbekistan',
-				kjoenn: 'Ukjent'
-			}
-		}
-	}
+	// data.pdlforvalter = {
+	// 	falskIdentitet: {
+	// 		erFalsk: true,
+	// 		rettIdentitetErUkjent: true,
+	// 	}
+	// }
+
+	// data.pdlforvalter = {
+	// 	falskIdentitet: {
+	// 		erFalsk: true,
+	// 		rettIdentitetErUkjent: false,
+	// 		rettIdentitetVedIdentifikasjonsnummer: '12345678901'
+	// 	}
+	// }
+
+	// data.pdlforvalter = {
+	// 	falskIdentitet: {
+	// 		erFalsk: true,
+	// 		rettIdentitetErUkjent: false,
+	// 		rettIdentitetVedOpplysninger: {
+	// 			personnavn: {
+	// 				fornavn: 'Johnny',
+	// 				mellomnavn: 'Testus',
+	// 				etternavn: 'Bravo'
+	// 			},
+	// 			foedselsdato: '2015-03-25',
+	// 			statsborgerskap: 'Uzbekistan',
+	// 			kjoenn: 'Ukjent'
+	// 		}
+	// 	}
+	// }
 
 	return (
 		<div className="person-visning">
