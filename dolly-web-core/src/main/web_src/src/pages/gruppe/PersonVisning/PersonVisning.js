@@ -3,7 +3,6 @@ import { useMount } from 'react-use'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
-import { PdlfVisning } from '~/components/fagsystem/pdlf/visning/PdlfVisning'
 import Button from '~/components/ui/button/Button'
 
 import './PersonVisning.less'
