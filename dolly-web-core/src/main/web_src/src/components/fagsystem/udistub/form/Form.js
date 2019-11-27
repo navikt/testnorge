@@ -1,8 +1,9 @@
 import React from 'react'
-import * as Yup from 'yup'
+import _isEmpty from 'lodash/isEmpty'
 import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
+import { validation } from './validation'
 import { Oppholdsstatus } from './partials/Oppholdsstatus'
 import { Arbeidsadgang } from './partials/Arbeidsadgang'
 import { Alias } from './partials/Alias'
@@ -15,27 +16,22 @@ const attrPaths = [
 	pathAttrs.kategori.annet
 ].flat()
 
-export const UdistubForm = ({ formikBag }) => {
-	const { udistub } = formikBag.values
-	return (
-		<Vis attributt={attrPaths}>
-			<Panel heading="UDI" hasErrors={panelError(formikBag)} startOpen>
-				{udistub.oppholdStatus && <Oppholdsstatus formikBag={formikBag} />}
-				{udistub.arbeidsadgang && <Arbeidsadgang formikBag={formikBag} />}
-				{udistub.aliaser && <Alias formikBag={formikBag} />}
-				<Annet formikBag={formikBag} />
-			</Panel>
-		</Vis>
-	)
-}
+export const UdistubForm = ({ formikBag }) => (
+	<Vis attributt={attrPaths}>
+		<Panel heading="UDI" hasErrors={panelError(formikBag)} startOpen>
+			<Oppholdsstatus formikBag={formikBag} />
+			<Arbeidsadgang formikBag={formikBag} />
+			<Alias formikBag={formikBag} />
+			<Annet formikBag={formikBag} />
+		</Panel>
+	</Vis>
+)
 
 UdistubForm.initialValues = attrs => {
-	const initial = {
-		udistub: {}
-	}
+	const initial = {}
 
 	if (attrs.arbeidsadgang) {
-		initial.udistub.arbeidsadgang = {
+		initial.arbeidsadgang = {
 			arbeidsOmfang: '',
 			harArbeidsAdgang: '',
 			periode: {
@@ -47,57 +43,29 @@ UdistubForm.initialValues = attrs => {
 	}
 
 	if (attrs.oppholdStatus) {
-		initial.udistub.oppholdStatus = {}
+		initial.oppholdStatus = {}
 	}
 
 	if (attrs.aliaser) {
-		initial.udistub.aliaser = [
+		initial.aliaser = [
 			{
 				identtype: '',
-				nyIdent: ''
+				nyIdent: false
 			}
 		]
 	}
 
 	if (attrs.flyktning) {
-		initial.udistub.flyktning = ''
+		initial.flyktning = ''
 	}
 
 	if (attrs.asylsoker) {
-		initial.udistub.soeknadOmBeskyttelseUnderBehandling = ''
+		initial.soeknadOmBeskyttelseUnderBehandling = ''
 	}
 
-	return initial
+	return !_isEmpty(initial) && { udistub: initial }
 }
 
 UdistubForm.validation = {
-	udistub: Yup.object({
-		aliaser: Yup.array()
-			.of(
-				Yup.object({
-					nyIdent: Yup.boolean().required('Vennligst velg'),
-					identtype: Yup.string().when('nyIdent', {
-						is: true,
-						then: Yup.string().required('Vennligst velg')
-					})
-				})
-			)
-			.nullable(),
-		arbeidsadgang: Yup.object({
-			arbeidsOmfang: Yup.string(),
-			harArbeidsAdgang: Yup.string().required('Vennligst velg'),
-			periode: {
-				fra: Yup.date().required('Vennligst velg'),
-				til: Yup.date().required('Vennligst velg')
-			},
-			typeArbeidsadgang: Yup.string()
-		}).nullable(),
-		flyktning: Yup.boolean()
-			.required('Vennligst velg')
-			.nullable(),
-		oppholdStatus: Yup.object({}).nullable(),
-		soeknadOmBeskyttelseUnderBehandling: Yup.string()
-			.required('Vennligst velg')
-			.nullable()
-	})
+	udistub: validation
 }

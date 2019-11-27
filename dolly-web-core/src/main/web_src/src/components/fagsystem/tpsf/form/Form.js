@@ -1,4 +1,5 @@
 import React from 'react'
+import _isEmpty from 'lodash/isEmpty'
 import { subYears } from 'date-fns'
 import * as Yup from 'yup'
 import { Personinformasjon } from './personinformasjon/Personinformasjon'
@@ -15,31 +16,29 @@ export const TpsfForm = ({ formikBag }) => {
 }
 
 TpsfForm.initialValues = attrs => {
-	const initial = {
-		tpsf: {}
-	}
+	const initial = {}
 
-	if (attrs.foedtEtter) initial.tpsf.foedtEtter = subYears(new Date(), 80)
-	if (attrs.foedtFoer) initial.tpsf.foedtFoer = new Date()
-	if (attrs.doedsdato) initial.tpsf.doedsdato = null
+	if (attrs.foedtEtter) initial.foedtEtter = subYears(new Date(), 80)
+	if (attrs.foedtFoer) initial.foedtFoer = new Date()
+	if (attrs.doedsdato) initial.doedsdato = null
 
 	if (attrs.statsborgerskap) {
-		initial.tpsf.statsborgerskap = ''
-		initial.tpsf.statsborgerskapRegdato = null
+		initial.statsborgerskap = ''
+		initial.statsborgerskapRegdato = null
 	}
 
 	if (attrs.innvandretFraLand) {
-		initial.tpsf.innvandretFraLand = ''
-		initial.tpsf.innvandretFraLandFlyttedato = null
+		initial.innvandretFraLand = ''
+		initial.innvandretFraLandFlyttedato = null
 	}
 
 	if (attrs.utvandretTilLand) {
-		initial.tpsf.utvandretTilLand = ''
-		initial.tpsf.utvandretTilLandFlyttedato = null
+		initial.utvandretTilLand = ''
+		initial.utvandretTilLandFlyttedato = null
 	}
 
 	if (attrs.identHistorikk)
-		initial.tpsf.identHistorikk = [
+		initial.identHistorikk = [
 			{
 				foedtEtter: '',
 				foedtFoer: '',
@@ -49,28 +48,28 @@ TpsfForm.initialValues = attrs => {
 			}
 		]
 
-	if (attrs.kjonn) initial.tpsf.kjonn = ''
-	if (attrs.harMellomnavn) initial.tpsf.harMellomnavn = true
-	if (attrs.sivilstand) initial.tpsf.sivilstand = ''
-	if (attrs.sprakKode) initial.tpsf.sprakKode = ''
-	if (attrs.egenAnsattDatoFom) initial.tpsf.egenAnsattDatoFom = new Date()
+	if (attrs.kjonn) initial.kjonn = ''
+	if (attrs.harMellomnavn) initial.harMellomnavn = true
+	if (attrs.sivilstand) initial.sivilstand = ''
+	if (attrs.sprakKode) initial.sprakKode = ''
+	if (attrs.egenAnsattDatoFom) initial.egenAnsattDatoFom = new Date()
 	if (attrs.erForsvunnet) {
-		initial.tpsf.erForsvunnet = true
-		initial.tpsf.forsvunnetDato = null
+		initial.erForsvunnet = true
+		initial.forsvunnetDato = null
 	}
 
 	if (attrs.boadresse) {
-		initial.tpsf.boadresse = null
-		initial.tpsf.adresseNrInfo = null
+		initial.boadresse = null
+		initial.adresseNrInfo = null
 	}
-	if (attrs.postadresse) initial.tpsf.postadresse = {}
+	if (attrs.postadresse) initial.postadresse = {}
 
-	return initial
+	return !_isEmpty(initial) && { tpsf: initial }
 }
 
 TpsfForm.validation = {
 	tpsf: Yup.object({
-		foedtEtter: requiredDate,
+		foedtEtter: Yup.date().nullable(),
 		foedtFoer: Yup.date().nullable(),
 		doedsdato: Yup.date().nullable(),
 		statsborgerskap: Yup.string(),
