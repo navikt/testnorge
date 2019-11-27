@@ -32,7 +32,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -151,6 +150,9 @@ public class FeilhaandteringCompTest {
         // Henter liste over alle gifte identer i avspillergruppa hos TPSF:
         stubHodejegerenHentGifteIdenter(gruppeId, "[\n\"" + fnrs.get(4) + "\",\n\"" + fnrs.get(5) + "\"\n]");
 
+        // Henter liste over alle foedte identer i avspillergruppa hos TPSF:
+        stubHodejegerenHentFoedteIdenter(gruppeId, "[]");
+
         for (var fnr : fnrs) {
             stubHodejegerenHentStatusQuo(fnr, NAVNEENDRING_FOERSTE.getEndringskode());
         }
@@ -195,6 +197,11 @@ public class FeilhaandteringCompTest {
 
     private void stubHodejegerenHentGifteIdenter(long gruppeId, String okJsonResponse) {
         stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/gifte-identer/" + gruppeId))
+                .willReturn(okJson(okJsonResponse)));
+    }
+
+    private void stubHodejegerenHentFoedteIdenter(long gruppeId, String okJsonResponse) {
+        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/foedte-identer/" + gruppeId))
                 .willReturn(okJson(okJsonResponse)));
     }
 

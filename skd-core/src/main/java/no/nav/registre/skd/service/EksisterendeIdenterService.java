@@ -1,6 +1,7 @@
 package no.nav.registre.skd.service;
 
 import static no.nav.registre.skd.service.SyntetiseringService.BRUKTE_IDENTER_I_DENNE_BOLKEN;
+import static no.nav.registre.skd.service.SyntetiseringService.FOEDTE_IDENTER;
 import static no.nav.registre.skd.service.SyntetiseringService.GIFTE_IDENTER_I_NORGE;
 import static no.nav.registre.skd.service.SyntetiseringService.LEVENDE_IDENTER_I_NORGE;
 import static no.nav.registre.skd.service.SyntetiseringService.SINGLE_IDENTER_I_NORGE;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +45,8 @@ public class EksisterendeIdenterService {
     private static final String STATSBORGER_NORGE = "NORGE";
     private static final String SIVILSTANDSENDRING_AARSAKSKODE = "85";
     private static final int ANTALL_FORSOEK_PER_AARSAK = 3;
+    static final String RELASJON_FAR = "FARA";
+    static final String RELASJON_MOR = "MORA";
     static final String DATO_DO = "datoDo";
     static final String FNR_RELASJON = "$..relasjon[?(@.typeRelasjon=='EKTE')].fnrRelasjon";
     static final String SIVILSTAND = "sivilstand";
@@ -50,6 +54,9 @@ public class EksisterendeIdenterService {
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
+
+    @Autowired
+    private FoedselService foedselService;
 
     @Autowired
     private Random rand;
@@ -67,7 +74,6 @@ public class EksisterendeIdenterService {
         case ADRESSEENDRING_UTEN_FLYTTING:
         case ADRESSEKORREKSJON:
         case UTVANDRING:
-        case FARSKAP_MEDMORSKAP:
         case ENDRING_STATSBORGERSKAP_BIBEHOLD:
         case ENDRING_FAMILIENUMMER:
         case ENDRING_FORELDREANSVAR:
@@ -82,21 +88,51 @@ public class EksisterendeIdenterService {
         case UREGISTRERT_PERSON:
         case ANNULERING_FLYTTING_ADRESSEENDRING:
         case INNFLYTTING_ANNEN_KOMMUNE:
-            behandleGenerellAarsak(meldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                    endringskode, environment);
+            behandleGenerellAarsak(
+                    meldinger,
+                    listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE),
+                    listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                    endringskode,
+                    environment
+            );
             break;
         case VIGSEL:
-            behandleVigsel(meldinger, listerMedIdenter.get(SINGLE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                    endringskode, environment);
+            behandleVigsel(
+                    meldinger,
+                    listerMedIdenter.get(SINGLE_IDENTER_I_NORGE),
+                    listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                    endringskode,
+                    environment
+            );
             break;
         case SEPERASJON:
         case SKILSMISSE:
-            behandleSeperasjonSkilsmisse(meldinger, listerMedIdenter.get(GIFTE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                    endringskode, environment);
+            behandleSeperasjonSkilsmisse(
+                    meldinger,
+                    listerMedIdenter.get(GIFTE_IDENTER_I_NORGE),
+                    listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                    endringskode,
+                    environment
+            );
+            break;
+        case FARSKAP_MEDMORSKAP:
+            behandleFarskapMedmorskap(
+                    meldinger,
+                    listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE),
+                    listerMedIdenter.get(FOEDTE_IDENTER),
+                    listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                    endringskode,
+                    environment
+            );
             break;
         case DOEDSMELDING:
-            behandleDoedsmelding(meldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                    endringskode, environment);
+            behandleDoedsmelding(
+                    meldinger,
+                    listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE),
+                    listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                    endringskode,
+                    environment
+            );
             break;
         case KORREKSJON_FAMILIEOPPLYSNINGER:
             break;
@@ -105,8 +141,13 @@ public class EksisterendeIdenterService {
         }
     }
 
-    void behandleVigsel(List<RsMeldingstype> meldinger, List<String> singleIdenterINorge, List<String> brukteIdenterIDenneBolken,
-            Endringskoder endringskode, String environment) {
+    void behandleVigsel(
+            List<RsMeldingstype> meldinger,
+            List<String> singleIdenterINorge,
+            List<String> brukteIdenterIDenneBolken,
+            Endringskoder endringskode,
+            String environment
+    ) {
         List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
 
         for (int i = 0; i < meldinger.size(); i++) {
@@ -202,6 +243,71 @@ public class EksisterendeIdenterService {
         meldinger.addAll(meldingerForPartnere);
     }
 
+    void behandleFarskapMedmorskap(
+            List<RsMeldingstype> meldinger,
+            List<String> levendeIdenterINorge,
+            List<String> foedteIdenter,
+            List<String> brukteIdenterIDenneBolken,
+            Endringskoder endringskode,
+            String environment
+    ) {
+        var antallMeldinger = meldinger.size();
+        Map<String, String> barnMedFedre = new HashMap<>();
+
+        iterateFoedteIdenter:
+        for (String foedtIdent : foedteIdenter) {
+            var relasjonerTilBarn = hodejegerenConsumer.getRelasjoner(foedtIdent, environment);
+            var morFnr = "";
+
+            for (var relasjon : relasjonerTilBarn.getRelasjoner()) {
+                if (RELASJON_FAR.equals(relasjon.getTypeRelasjon())) {
+                    continue iterateFoedteIdenter;
+                } else if (RELASJON_MOR.equals(relasjon.getTypeRelasjon())) {
+                    morFnr = relasjon.getFnrRelasjon();
+                }
+            }
+
+            var farFnr = foedselService.findFar(morFnr, foedtIdent, levendeIdenterINorge, new ArrayList<>());
+            if (farFnr != null) {
+                barnMedFedre.put(foedtIdent, farFnr);
+            }
+
+            if (barnMedFedre.size() >= meldinger.size()) {
+                break;
+            }
+        }
+
+        if (barnMedFedre.isEmpty()) {
+            throw new ManglerEksisterendeIdentException("Kunne ikke finne identer for SkdMelding med endringskode "
+                    + endringskode.getEndringskode() + ". Ingen identer i TPSF avspillergruppen mangler far til farskapsmelding eller ingen gyldige fedre funnet.");
+        }
+
+        if (barnMedFedre.size() < meldinger.size()) {
+            log.info("Fant ikke nok barn uten far-relasjon. Oppretter " + barnMedFedre.size() + " farskapsmeldinger.");
+            antallMeldinger = barnMedFedre.size();
+        }
+
+        var meldingIterator = meldinger.iterator();
+        var i = 0;
+        var barn = new ArrayList<>(barnMedFedre.keySet());
+        while (meldingIterator.hasNext()) {
+            var melding = meldingIterator.next();
+
+            if (i >= antallMeldinger) {
+                meldingIterator.remove();
+                break;
+            }
+
+            var barnFnr = barn.get(i++);
+            var farFnr = barnMedFedre.remove(barnFnr);
+
+            putFnrInnIMelding((RsMeldingstype1Felter) melding, barnFnr);
+            ((RsMeldingstype1Felter) melding).setFarsFodselsdato(farFnr.substring(0, 6));
+            ((RsMeldingstype1Felter) melding).setFarsPersonnummer(farFnr.substring(6));
+            oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(farFnr, barnFnr));
+        }
+    }
+
     void behandleDoedsmelding(
             List<RsMeldingstype> meldinger,
             List<String> levendeIdenterINorge,
@@ -276,7 +382,7 @@ public class EksisterendeIdenterService {
 
             if (ident != null) {
                 putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
-                oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident));
+                oppdaterBolk(brukteIdenterIDenneBolken, Collections.singletonList(ident));
             }
         }
     }

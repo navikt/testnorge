@@ -85,12 +85,15 @@ public class FoedselService {
             ((RsMeldingstype1Felter) melding).setMorsFodselsdato(morFnr.substring(0, 6));
             ((RsMeldingstype1Felter) melding).setMorsPersonnummer(morFnr.substring(6));
 
-            var farFnr = findFar(morFnr, barnFnr, levendeIdenterINorge, moedre);
-            if (farFnr != null) {
-                ((RsMeldingstype1Felter) melding).setFarsFodselsdato(farFnr.substring(0, 6));
-                ((RsMeldingstype1Felter) melding).setFarsPersonnummer(farFnr.substring(6));
-            } else {
-                log.info("Kunne ikke finne far til barn med fnr {}. morFnr: {}", barnFnr, morFnr);
+            var shouldFindFar = rand.nextBoolean(); // noen får farskapsmelding senere
+            if (shouldFindFar) {
+                var farFnr = findFar(morFnr, barnFnr, levendeIdenterINorge, moedre);
+                if (farFnr != null) {
+                    ((RsMeldingstype1Felter) melding).setFarsFodselsdato(farFnr.substring(0, 6));
+                    ((RsMeldingstype1Felter) melding).setFarsPersonnummer(farFnr.substring(6));
+                } else {
+                    log.info("Kunne ikke finne far til barn med fnr {}. morFnr: {}", barnFnr, morFnr);
+                }
             }
 
             barn.add(barnFnr);

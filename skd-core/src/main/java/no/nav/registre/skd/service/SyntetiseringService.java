@@ -42,6 +42,7 @@ public class SyntetiseringService {
 
     static final String LEVENDE_IDENTER_I_NORGE = "levendeIdenterINorge";
     static final String GIFTE_IDENTER_I_NORGE = "gifteIdenterINorge";
+    static final String FOEDTE_IDENTER = "foedteIdenter";
     static final String SINGLE_IDENTER_I_NORGE = "singleIdenterINorge";
     static final String BRUKTE_IDENTER_I_DENNE_BOLKEN = "brukteIdenterIDenneBolken";
 
@@ -273,6 +274,13 @@ public class SyntetiseringService {
                 .append(SINGLE_IDENTER_I_NORGE)
                 .append(": ").append(singleIdenterINorge.size());
 
+        var foedteIdenter = finnFoedteIdenter(genereringsOrdreRequest.getAvspillergruppeId());
+        foedteIdenter.removeAll(doedeIdenterINorge);
+        listerMedIdenter.put(FOEDTE_IDENTER, foedteIdenter);
+        message.append(" - ")
+                .append(FOEDTE_IDENTER)
+                .append(": ").append(foedteIdenter.size());
+
         List<String> brukteIdenterIDenneBolken = new ArrayList<>();
         listerMedIdenter.put(BRUKTE_IDENTER_I_DENNE_BOLKEN, brukteIdenterIDenneBolken);
 
@@ -339,5 +347,11 @@ public class SyntetiseringService {
             Long avspillergruppeId
     ) {
         return hodejegerenConsumer.getGifte(avspillergruppeId);
+    }
+
+    private List<String> finnFoedteIdenter(
+            Long avspillergruppeId
+    ) {
+        return hodejegerenConsumer.getFoedte(avspillergruppeId, 0, 18);
     }
 }

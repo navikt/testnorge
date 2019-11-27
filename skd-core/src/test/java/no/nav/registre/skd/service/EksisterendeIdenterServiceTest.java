@@ -2,14 +2,19 @@ package no.nav.registre.skd.service;
 
 import static no.nav.registre.skd.service.EksisterendeIdenterService.DATO_DO;
 import static no.nav.registre.skd.service.EksisterendeIdenterService.FNR_RELASJON;
+import static no.nav.registre.skd.service.EksisterendeIdenterService.RELASJON_MOR;
 import static no.nav.registre.skd.service.EksisterendeIdenterService.SIVILSTAND;
 import static no.nav.registre.skd.service.EksisterendeIdenterService.STATSBORGER;
+import static no.nav.registre.skd.service.Endringskoder.FARSKAP_MEDMORSKAP;
 import static no.nav.registre.skd.service.Endringskoder.SKILSMISSE;
 import static no.nav.registre.skd.service.KoderForSivilstand.GIFT;
 import static no.nav.registre.skd.service.KoderForSivilstand.SKILT;
 import static no.nav.registre.skd.testutils.Utils.testLoggingInClass;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.anyInt;
@@ -32,6 +37,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +48,8 @@ import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.response.Relasjon;
+import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;
 
 @RunWith(MockitoJUnitRunner.class)
 @Slf4j
@@ -52,6 +60,9 @@ public class EksisterendeIdenterServiceTest {
 
     @Mock
     private HodejegerenConsumer hodejegerenConsumer;
+
+    @Mock
+    private FoedselService foedselService;
 
     @Mock
     private Random rand;
@@ -223,6 +234,43 @@ public class EksisterendeIdenterServiceTest {
         assertEquals(fnr3, ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(1)).getPersonnummer());
         assertEquals(fnr3, ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerFdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerPnr());
         assertEquals(SKILT.getSivilstandKodeSKD(), ((RsMeldingstype1Felter) meldinger.get(1)).getSivilstand());
+    }
+
+    @Test
+    public void shouldFindFarForFarskapsmeldingAndRemoveInvalidMeldinger() {
+        var foedteIdenter = new ArrayList<>(Collections.singletonList(
+                "01011953456"
+        ));
+
+        var levendeIdenter = new ArrayList<>(Arrays.asList(
+                "01029153465",
+                "02058762345"
+        ));
+
+        meldinger.add(new RsMeldingstype1Felter());
+        meldinger.get(0).setAarsakskode(FARSKAP_MEDMORSKAP.getAarsakskode());
+
+        var relasjon = Relasjon.builder()
+                .typeRelasjon(RELASJON_MOR)
+                .fnrRelasjon(levendeIdenter.get(0))
+                .build();
+        var relasjonsResponse = RelasjonsResponse.builder()
+                .fnr(foedteIdenter.get(0))
+                .relasjoner(new ArrayList<>(Collections.singletonList(relasjon)))
+                .build();
+        when(hodejegerenConsumer.getRelasjoner(foedteIdenter.get(0), environment)).thenReturn(relasjonsResponse);
+
+        when(foedselService.findFar(eq(levendeIdenter.get(0)), eq(foedteIdenter.get(0)), eq(levendeIdenter), anyList())).thenReturn(levendeIdenter.get(1));
+
+        eksisterendeIdenterService.behandleFarskapMedmorskap(meldinger, levendeIdenter, foedteIdenter, brukteIdenter, FARSKAP_MEDMORSKAP, environment);
+
+        verify(hodejegerenConsumer).getRelasjoner(foedteIdenter.get(0), environment);
+        verify(foedselService).findFar(eq(levendeIdenter.get(0)), eq(foedteIdenter.get(0)), eq(levendeIdenter), anyList());
+        assertThat(((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato(), equalTo(foedteIdenter.get(0).substring(0, 6)));
+        assertThat(((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer(), equalTo(foedteIdenter.get(0).substring(6)));
+        assertThat(((RsMeldingstype1Felter) meldinger.get(0)).getFarsFodselsdato(), equalTo(levendeIdenter.get(1).substring(0, 6)));
+        assertThat(((RsMeldingstype1Felter) meldinger.get(0)).getFarsPersonnummer(), equalTo(levendeIdenter.get(1).substring(6)));
+        assertThat(meldinger.size(), equalTo(1));
     }
 
     /**
