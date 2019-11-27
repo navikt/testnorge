@@ -61,9 +61,6 @@ public class PdlForvalterClientTest {
     @Mock
     private ErrorStatusDecoder errorStatusDecoder;
 
-    @Mock
-    private PdlSyncDeterminator pdlSyncDeterminator;
-
     @InjectMocks
     private PdlForvalterClient pdlForvalterClient;
 
