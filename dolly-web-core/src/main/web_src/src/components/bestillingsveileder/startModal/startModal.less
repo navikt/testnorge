@@ -1,0 +1,30 @@
+@import (reference) '~lessVars';
+@import (reference) '~lessUtils';
+
+.start-bestilling-modal {
+	h1 {
+		text-align: center;
+		padding: 0px 0px 20px;
+	}
+	.inputPanelGruppe {
+		legend {
+			.offscreen;
+		}
+		.inputPanelGruppe__inner {
+			display: flex;
+			justify-content: space-between;
+			label {
+				width: 48%;
+			}
+		}
+	}
+
+	&_actions {
+		display: flex;
+		justify-content: center;
+		padding: 20px 0 0;
+		button {
+			margin: 0 10px;
+		}
+	}
+}

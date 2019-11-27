@@ -1,15 +1,16 @@
 import React from 'react'
-import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
+import _get from 'lodash/get'
+import { pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 export const Arbeidsadgang = ({ formikBag }) => {
-	const arbeidsadgangObj = formikBag.values.udistub.arbeidsadgang
-	const arbeidsadgangInitialValues = formikBag.initialValues.udistub.arbeidsadgang
+	const harArbeidsAdgang = _get(formikBag.values, 'udistub.arbeidsadgang.harArbeidsAdgang')
 
 	const endreArbeidsadgang = v => {
+		const arbeidsadgangInitialValues = formikBag.initialValues.udistub.arbeidsadgang
 		formikBag.setFieldValue('udistub.arbeidsadgang.harArbeidsAdgang', v.value)
 		if (v.value !== 'JA') {
 			formikBag.setFieldValue('udistub.arbeidsadgang.arbeidsOmfang', '')
@@ -19,16 +20,16 @@ export const Arbeidsadgang = ({ formikBag }) => {
 	}
 
 	return (
-		<Kategori title="Arbeidsadgang">
+		<Kategori title="Arbeidsadgang" vis={pathAttrs.kategori.arbeidsadgang}>
 			<FormikSelect
 				name="udistub.arbeidsadgang.harArbeidsAdgang"
 				label="Har arbeidsadgang"
 				options={Options('jaNeiUavklart')}
-				value={arbeidsadgangObj.harArbeidsAdgang}
+				value={harArbeidsAdgang}
 				onChange={endreArbeidsadgang}
 				isClearable={false}
 			/>
-			{formikBag.values.udistub.arbeidsadgang.harArbeidsAdgang === 'JA' && (
+			{harArbeidsAdgang === 'JA' && (
 				<React.Fragment>
 					<FormikSelect
 						name="udistub.arbeidsadgang.typeArbeidsadgang"

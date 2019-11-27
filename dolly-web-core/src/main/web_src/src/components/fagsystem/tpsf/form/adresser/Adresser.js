@@ -5,7 +5,6 @@ import Panel from '~/components/ui/panel/Panel'
 import { Boadresse } from './partials/boadresse/Boadresse'
 import { MatrikkelAdresse } from './partials/MatrikkelAdresse'
 import { AdresseNr } from './partials/AdresseNr'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 
 const paths = [pathAttrs.kategori.boadresse, pathAttrs.kategori.postadresse].flat()
 

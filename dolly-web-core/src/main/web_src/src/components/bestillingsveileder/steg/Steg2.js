@@ -2,7 +2,6 @@ import React from 'react'
 import * as Yup from 'yup'
 import _values from 'lodash/values'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
-import Overskrift from '~/components/ui/overskrift/Overskrift'
 import { TpsfForm } from '~/components/fagsystem/tpsf/form/Form'
 import { KrrstubForm } from '~/components/fagsystem/krrstub/form/Form'
 import { SigrunstubForm } from '~/components/fagsystem/sigrunstub/form/Form'
@@ -15,7 +14,6 @@ export const Steg2 = ({ formikBag, attributter }) => {
 
 	return (
 		<div>
-			<Overskrift label="Velg verdier" />
 			{avhukedeAttributter ? (
 				<div>
 					<TpsfForm formikBag={formikBag} />

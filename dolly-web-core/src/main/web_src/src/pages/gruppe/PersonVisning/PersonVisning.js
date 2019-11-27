@@ -3,7 +3,10 @@ import { useMount } from 'react-use'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
+<<<<<<< HEAD
 import Beskrivelse from '~/components/beskrivelse/BeskrivelseConnector'
+=======
+>>>>>>> dolly-v2
 import Button from '~/components/ui/button/Button'
 
 import './PersonVisning.less'
