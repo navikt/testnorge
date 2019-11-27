@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
@@ -32,6 +31,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdent
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.metrics.Timed;
 
 @Slf4j
 @Order(1)
@@ -56,9 +56,8 @@ public class PdlForvalterClient implements ClientRegister {
     private final TpsfService tpsfService;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
-    private final PdlSyncDeterminator pdlSyncDeterminator;
 
-    @Timed(name = "providers", tags={"operation", "gjenopprettPdlForvalter"})
+    @Timed(name = "providers", tags = { "operation", "gjenopprettPdlForvalter" })
     @Override
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
@@ -70,7 +69,7 @@ public class PdlForvalterClient implements ClientRegister {
 
                 hentTpsPersondetaljer(tpsPerson);
                 sendDeleteIdent(tpsPerson);
-                sendPdlPersondetaljer(pdlSyncDeterminator.isRequiredSync(bestilling), tpsPerson);
+                sendPdlPersondetaljer(tpsPerson, status);
 
                 if (nonNull(bestilling.getPdlforvalter())) {
                     Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
@@ -115,7 +114,7 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendPdlPersondetaljer(boolean isRequiredSync, TpsPerson tpsPerson) {
+    private void sendPdlPersondetaljer(TpsPerson tpsPerson, StringBuilder status) {
 
         if (nonNull(tpsPerson.getPersondetalj())) {
             sendOpprettPerson(tpsPerson.getPersondetalj());
@@ -124,7 +123,7 @@ public class PdlForvalterClient implements ClientRegister {
             sendKjoenn(tpsPerson.getPersondetalj());
             sendAdressebeskyttelse(tpsPerson.getPersondetalj());
             sendDoedsfall(tpsPerson.getPersondetalj());
-            optionalSyncMedPdl(isRequiredSync, tpsPerson.getPersondetalj().getIdent());
+            syncMedPdl(tpsPerson.getPersondetalj().getIdent(), status);
 
             tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
                 sendOpprettPerson(relasjon.getPersonRelasjonMed());
@@ -137,25 +136,27 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void optionalSyncMedPdl(boolean isRequiredSync, String ident) {
+    private void syncMedPdl(String ident, StringBuilder status) {
 
-        if (isRequiredSync) {
-            int count = 0;
-            try {
-                while (count++ < MAX_COUNT && !DONE.name().equals(pdlForvalterConsumer.getPersonstatus(ident).getBody().get("status").asText())) {
-                    Thread.sleep(TIMEOUT);
-                }
-            } catch (InterruptedException e) {
-                log.error("Sync mot PDL-forvalter ble avbrutt.");
-            } catch (RuntimeException e) {
-                log.error("Feilet å lese personstatus for ident {} fra PDL-forvalter.", ident, e);
-            }
+        status.append('$').append(PDL_FORVALTER);
 
-            if (count < MAX_COUNT) {
-                log.info("Synkronisering mot PDL-forvalter tok {} ms.", count * TIMEOUT);
-            } else {
-                log.warn("Synkronisering mot PDL-forvalter gitt opp etter 1000 ms.");
+        int count = 0;
+        try {
+            while (count++ < MAX_COUNT && !DONE.name().equals(pdlForvalterConsumer.getPersonstatus(ident).getBody().get("status").asText())) {
+                Thread.sleep(TIMEOUT);
             }
+        } catch (InterruptedException e) {
+            log.error("Sync mot PDL-forvalter ble avbrutt.");
+        } catch (RuntimeException e) {
+            log.error("Feilet å lese personstatus for ident {} fra PDL-forvalter.", ident, e);
+        }
+
+        if (count < MAX_COUNT) {
+            status.append("&OK");
+            log.info("Synkronisering mot PDL-forvalter tok {} ms.", count * TIMEOUT);
+        } else {
+            status.append("&Synkronisering av person i PDL tok for lang tid");
+            log.warn("Synkronisering mot PDL-forvalter gitt opp etter 1000 ms.");
         }
     }
 
