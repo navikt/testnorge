@@ -9,13 +9,13 @@ import { ArenaForm } from '~/components/fagsystem/arena/form/Form'
 import { InstForm } from '~/components/fagsystem/inst/Form'
 import { UdistubForm } from '~/components/fagsystem/udistub/form/Form'
 
-export const Steg2 = ({ formikBag, props }) => {
+export const Steg2 = ({ formikBag }) => {
 	return (
 		<div>
 			<Overskrift label="Velg verdier" />
 
 			<TpsfForm formikBag={formikBag} />
-			<PdlfForm formikBag={formikBag} props={props} />
+			<PdlfForm formikBag={formikBag} />
 			<InstForm formikBag={formikBag} />
 			<KrrstubForm formikBag={formikBag} />
 			<SigrunstubForm formikBag={formikBag} />

@@ -7,11 +7,11 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { Adressat } from './Adressat'
 import { Adresse } from './Adresse'
 
-export const KontaktinformasjonForDoedsbo = ({ formikBag, props }) => {
+export const KontaktinformasjonForDoedsbo = ({ formikBag }) => {
 	return (
 		<React.Fragment>
 			<Adressat formikBag={formikBag} />
-			<Adresse formikBag={formikBag} props={props} />
+			<Adresse formikBag={formikBag} />
 
 			<Kategori title="Diverse">
 				<FormikSelect
