@@ -153,7 +153,7 @@ export default function testbrukerReducer(state = initialState, action) {
 					...state.items,
 					sigrunstub: {
 						...state.items.sigrunstub,
-						[action.meta.ident]: action.payload && action.payload.data
+						[action.meta.ident]: action.payload && action.payload.data.responseList
 					}
 				}
 			}
