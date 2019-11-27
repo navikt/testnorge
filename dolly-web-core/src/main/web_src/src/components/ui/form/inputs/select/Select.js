@@ -25,11 +25,22 @@ export const Select = ({
 	isClearable = true,
 	placeholder = 'Velg..',
 	options = [],
-	multi = false
+	isMulti = false
 }) => {
+	let _value = options.filter(o => o.value === value)
+
+	/**
+	 * CUSTOM MULTI LOGIC
+	 * react-select-virtualized støtter foreløpig ikke multi-select
+	 * så denne biten må gjøres litt manuelt
+	 */
+	if (isMulti) {
+		_value = Array.isArray(value) ? options.filter(o => value.includes(o.value)) : []
+	}
+
 	return (
 		<ReactSelect
-			value={options.filter(o => o.value === value)}
+			value={_value}
 			options={options}
 			name={name}
 			inputId={name}
@@ -42,7 +53,7 @@ export const Select = ({
 			isSearchable={isSearchable}
 			isLoading={isLoading}
 			isClearable={isClearable}
-			multi={multi}
+			isMulti={isMulti}
 		/>
 	)
 }
@@ -70,10 +81,24 @@ export const DollySelect = props => (
 
 const P_FormikSelect = props => {
 	const [field, meta] = useField(props)
-	const handleChange = selected => {
-		const val = _get(selected, 'value', '')
-		field.onChange(SyntEvent(field.name, val))
-		if (props.afterChange) props.afterChange(val)
+
+	const handleChange = (selected, meta) => {
+		let value
+		if (props.isMulti) {
+			if (meta.action === 'set-value') {
+				value = Array.isArray(field.value) ? field.value.concat(selected.value) : [selected.value]
+			}
+			if (meta.action === 'remove-value') {
+				// When removing last value, value is null
+				value = selected ? selected.map(v => v.value) : []
+			}
+		} else {
+			value = selected.value
+		}
+
+		field.onChange(SyntEvent(field.name, value))
+
+		if (props.afterChange) props.afterChange(selected)
 	}
 
 	const handleBlur = () => field.onBlur(SyntEvent(field.name))

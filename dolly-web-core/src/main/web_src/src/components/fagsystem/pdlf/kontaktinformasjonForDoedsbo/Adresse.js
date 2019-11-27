@@ -3,11 +3,13 @@ import _get from 'lodash'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 
 export const Adresse = ({ formikBag }) => {
-	const handleAfterChange = poststed => {
-		return formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.poststed', poststed)
+	const handleAfterChange = selected => {
+		return formikBag.setFieldValue(
+			'pdlforvalter.kontaktinformasjonForDoedsbo.poststed',
+			selected.data
+		)
 	}
 
 	return (
@@ -28,17 +30,13 @@ export const Adresse = ({ formikBag }) => {
 				/>
 			</div>
 			{formikBag.values.pdlforvalter.kontaktinformasjonForDoedsbo.landkode === 'NOR' ? (
-				<KodeverkConnector navn="Postnummer">
-					{kodeverk => (
-						<FormikSelect
-							name="pdlforvalter.kontaktinformasjonForDoedsbo.postnummer"
-							label="Postnummer og -sted"
-							kodeverk="Postnummer"
-							afterChange={val => handleAfterChange(kodeverk.find(v => v.value === val).data)}
-							isClearable={false}
-						/>
-					)}
-				</KodeverkConnector>
+				<FormikSelect
+					name="pdlforvalter.kontaktinformasjonForDoedsbo.postnummer"
+					label="Postnummer og -sted"
+					kodeverk="Postnummer"
+					afterChange={handleAfterChange}
+					isClearable={false}
+				/>
 			) : (
 				<div>
 					<FormikTextInput

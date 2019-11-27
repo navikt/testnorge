@@ -23,6 +23,7 @@ export const Steg2 = ({ formikBag, attributter }) => {
 					<SigrunstubForm formikBag={formikBag} />
 					<ArenaForm formikBag={formikBag} />
 					<UdistubForm formikBag={formikBag} />
+					<PdlfForm formikBag={formikBag} />
 				</div>
 			) : (
 				<AlertStripeInfo>

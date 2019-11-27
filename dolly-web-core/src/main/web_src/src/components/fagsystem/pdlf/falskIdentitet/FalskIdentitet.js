@@ -29,7 +29,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 		return e.value
 	}
 	return (
-		<React.Fragment>
+		<div>
 			<FormikSelect
 				name={`${falskIdPath}.identitetType`}
 				label="Opplysninger om rett identitet"
@@ -63,10 +63,11 @@ export const FalskIdentitet = ({ formikBag }) => {
 						label="Statsborgerskap"
 						kodeverk="Landkoder"
 						isClearable={false}
-						multi={true}
+						isMulti={true}
+						size="grow"
 					/>
 				</div>
 			)}
-		</React.Fragment>
+		</div>
 	)
 }

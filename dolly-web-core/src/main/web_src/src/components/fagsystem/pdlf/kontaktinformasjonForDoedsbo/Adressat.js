@@ -10,23 +10,23 @@ export const Adressat = ({ formikBag }) => {
 	const adressatType =
 		formikBag.values.pdlforvalter.kontaktinformasjonForDoedsbo.adressat.adressatType
 
-	const handleAfterChange = val => {
-		if (val === 'ADVOKAT' || val === 'ORGANISASJON')
+	const handleAfterChange = ({ value }) => {
+		if (value === 'ADVOKAT' || value === 'ORGANISASJON')
 			formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.adressat', {
-				adressatType: val,
+				adressatType: value,
 				kontaktperson: { fornavn: '', mellomnavn: '', etternavn: '' },
 				organisasjonsnavn: '',
 				organisasjonsnummer: ''
 			})
-		else if (val === 'PERSON_UTENID')
+		else if (value === 'PERSON_UTENID')
 			formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.adressat', {
-				adressatType: val,
+				adressatType: value,
 				navn: { fornavn: '', mellomnavn: '', etternavn: '' },
 				foedselsdato: ''
 			})
 		else
 			formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.adressat', {
-				adressatType: val,
+				adressatType: value,
 				idnummer: ''
 			})
 	}
