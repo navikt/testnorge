@@ -1,12 +1,13 @@
 package no.nav.dolly.properties;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 @Getter
 @Setter
@@ -27,6 +28,7 @@ public class ProvidersProps {
     private Syntdata syntdata = new Syntdata();
     private Instdata instdata = new Instdata();
     private Aaregdata aaregdata = new Aaregdata();
+    private PdlPerson pdlPerson = new PdlPerson();
 
     @Getter
     @Setter
@@ -153,6 +155,16 @@ public class ProvidersProps {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Aaregdata {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PdlPerson {
 
         private String url;
     }

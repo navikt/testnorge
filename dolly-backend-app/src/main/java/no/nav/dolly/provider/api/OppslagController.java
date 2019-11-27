@@ -4,19 +4,8 @@ import static java.util.Arrays.asList;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 import static no.nav.dolly.config.CachingConfig.CACHE_NORG2;
 
-import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
-
-import no.nav.dolly.consumer.aareg.AaregConsumer;
-import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
-import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
-import no.nav.dolly.consumer.norg2.Norg2Consumer;
-import no.nav.dolly.consumer.norg2.Norg2EnhetResponse;
-import no.nav.dolly.consumer.personoppslag.PersonoppslagConsumer;
-import no.nav.dolly.consumer.syntdata.SyntdataConsumer;
-import no.nav.dolly.domain.resultset.SystemTyper;
-import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
-import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +15,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import no.nav.dolly.consumer.aareg.AaregConsumer;
+import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
+import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
+import no.nav.dolly.consumer.norg2.Norg2Consumer;
+import no.nav.dolly.consumer.norg2.Norg2EnhetResponse;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.consumer.personoppslag.PersonoppslagConsumer;
+import no.nav.dolly.consumer.syntdata.SyntdataConsumer;
+import no.nav.dolly.domain.resultset.SystemTyper;
+import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
+import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,6 +40,7 @@ public class OppslagController {
     private final PersonoppslagConsumer personoppslagConsumer;
     private final SyntdataConsumer syntdataConsumer;
     private final AaregConsumer aaregConsumer;
+    private final PdlPersonConsumer pdlPersonConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -60,6 +61,12 @@ public class OppslagController {
     @ApiOperation("Hent person tilhørende ident fra personoppslag")
     public ResponseEntity personoppslag(@PathVariable("ident") String ident) {
         return personoppslagConsumer.fetchPerson(ident);
+    }
+
+    @GetMapping("/pdlperson/ident/{ident}")
+    @ApiOperation("Hent person tilhørende ident fra pdlperson")
+    public ResponseEntity pdlPerson(@PathVariable("ident") String ident) {
+        return pdlPersonConsumer.getPdlPerson(ident);
     }
 
     @GetMapping("/syntdata")

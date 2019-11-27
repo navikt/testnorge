@@ -39,6 +39,9 @@ providers:
     url: https://testnorge-inst.nais.preprod.local
   aaregdata:
     url: https://testnorge-aareg.nais.preprod.local
+  pdlPerson:
+    url: https://pdl-api.nais.preprod.local
+
 fasit:
   url: https://fasit.adeo.no
   environment.name: t1
