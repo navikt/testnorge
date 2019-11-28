@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 @ApiModel
 @Builder
@@ -19,7 +20,7 @@ public class RsOmsorgspenger {
 
     @JsonProperty
     @ApiModelProperty()
-    private boolean harUtbetaltPliktigeDager;
+    private Boolean harUtbetaltPliktigeDager;
     @JsonProperty
     @ApiModelProperty()
     private List<RsPeriode> fravaersPerioder;
@@ -27,4 +28,7 @@ public class RsOmsorgspenger {
     @ApiModelProperty()
     private List<RsDelvisFravaer> delvisFravaersListe;
 
+    public Optional<Boolean> getHarUtbetaltPliktigeDager() { return Optional.ofNullable(harUtbetaltPliktigeDager); }
+    public Optional<List<RsPeriode>> getFravaersPerioder() { return Optional.ofNullable(fravaersPerioder); }
+    public Optional<List<RsDelvisFravaer>> getDelvisFravaersListe() { return Optional.ofNullable(delvisFravaersListe); }
 }

@@ -18,8 +18,8 @@ import javax.validation.constraints.Size;
 public class RsArbeidsgiver {
 
     @JsonProperty
-    @ApiModelProperty(required = true, value = "Virksomhetsnummer for arbeidsgiver, 9 siffer", example = "001100110")
     @Size(min = 9, max = 9)
+    @ApiModelProperty(required = true, value = "Virksomhetsnummer for arbeidsgiver, 9 siffer", example = "001100110")
     private String virksomhetsnummer;
     @JsonProperty
     @ApiModelProperty(required = true)

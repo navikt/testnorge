@@ -1,6 +1,7 @@
 package no.nav.registre.inntektsmeldingstub.provider;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
 import no.nav.registre.inntektsmeldingstub.provider.validation.InntektsmeldingRequestValidator;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLInntektsmeldingM;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,8 @@ import no.nav.registre.inntektsmeldingstub.provider.validation.ValidationExcepti
 import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/inntektsmelding")
 @RequiredArgsConstructor
@@ -39,14 +42,14 @@ public class InntektsmeldingController {
     }
 
     @GetMapping("/2018/09/json/{id}")
-    public ResponseEntity<RsInntektsmelding> hentInntektsmeldingJSON201809(
+    public ResponseEntity<Inntektsmelding> hentInntektsmeldingJSON201809(
             @PathVariable Long id
     ) {
         return ResponseEntity.ok(service.findInntektsmelding(id));
     }
 
     @PostMapping("/2018/09")
-    public ResponseEntity<List<RsInntektsmelding>> opprettInntektsmeldinger201809(
+    public ResponseEntity<List<Inntektsmelding>> opprettInntektsmeldinger201809(
             @RequestParam String eier,
             @RequestBody List<RsInntektsmelding> meldinger
     ) {
@@ -68,14 +71,14 @@ public class InntektsmeldingController {
     }
 
     @GetMapping("/2018/12/json/{id}")
-    public ResponseEntity<RsInntektsmelding> hentInntektsmeldingJSON201812(
+    public ResponseEntity<Inntektsmelding> hentInntektsmeldingJSON201812(
             @PathVariable Long id
     ) {
         return ResponseEntity.ok(service.findInntektsmelding(id));
     }
 
     @PostMapping("/2018/12")
-    public ResponseEntity<List<RsInntektsmelding>> opprettInntektsmeldinger201812(
+    public ResponseEntity<List<Inntektsmelding>> opprettInntektsmeldinger201812(
             @RequestParam String eier,
             @RequestBody List<RsInntektsmelding> meldinger
     ) {

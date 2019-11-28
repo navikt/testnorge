@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @ApiModel
 @Builder
@@ -25,6 +26,9 @@ public class RsNaturaYtelseDetaljer {
     private LocalDate fom;
     @JsonProperty
     @ApiModelProperty("Samlet månedlig beløp for naturaytelsen")
-    private double beloepPrMnd;
+    private Double beloepPrMnd;
 
+    public Optional<String> getNaturaytelseType() { return Optional.ofNullable(naturaytelseType); }
+    public Optional<LocalDate> getFom() { return Optional.ofNullable(fom); }
+    public Optional<Double> getBeloepPrMnd() { return Optional.ofNullable(beloepPrMnd); }
 }

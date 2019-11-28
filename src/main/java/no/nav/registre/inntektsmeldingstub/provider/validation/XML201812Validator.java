@@ -15,7 +15,7 @@ public class XML201812Validator {
         Map<String, Boolean> rules = new HashMap<>();
 
         rules.put("En inntektsmelding kan kun ha én og bare én arbeidsgiver.",
-                Objects.isNull(inntektsmelding.getArbeidsgiver()) == Objects.isNull(inntektsmelding.getArbeidsgiverPrivat()));
+                inntektsmelding.getArbeidsgiver().isPresent() && inntektsmelding.getArbeidsgiverPrivat().isPresent());
 
         List<String> errors = rules.entrySet().stream()
                 .filter(s -> s.getValue().equals(true))

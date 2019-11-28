@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 @ApiModel
 @Builder
 @Getter
@@ -17,9 +19,11 @@ public class RsInntekt {
 
     @JsonProperty
     @ApiModelProperty("Månedsinntekt")
-    private double beloep;
+    private Double beloep;
     @JsonProperty
     @ApiModelProperty
     private String aarsakVedEndring;
 
+    public Optional<Double> getBeloep() { return Optional.ofNullable(beloep); }
+    public Optional<String> getAarsakVedEndring() { return Optional.ofNullable(aarsakVedEndring); }
 }

@@ -16,7 +16,7 @@ public class XML201809Validator {
 
         Map<String, Boolean> rules = new HashMap<>();
 
-        rules.put("Må ha en arbeidsgiver.", Objects.isNull(inntektsmelding.getArbeidsgiver()));
+        rules.put("Må ha en arbeidsgiver.", inntektsmelding.getArbeidsgiver().isEmpty());
 
         List<String> errors = rules.entrySet().stream()
                 .filter(s -> s.getValue().equals(true))

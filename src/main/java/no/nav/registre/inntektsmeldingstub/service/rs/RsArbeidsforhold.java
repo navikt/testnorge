@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @ApiModel
 @Builder
@@ -35,6 +36,12 @@ public class RsArbeidsforhold {
     private List<RsUtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
     @JsonProperty
     @ApiModelProperty()
-    private List<RsGraderingAvForeldrepenger> graderingIForeldrepengerListe;
+    private List<RsGraderingIForeldrepenger> graderingIForeldrepengerListe;
 
+    public Optional<String> getArbeidsforholdId() { return Optional.ofNullable(arbeidsforholdId); }
+    public Optional<LocalDate> getFoersteFravaersdag() { return Optional.ofNullable(foersteFravaersdag); }
+    public Optional<RsInntekt> getBeregnetInntekt() { return Optional.ofNullable(beregnetInntekt); }
+    public Optional<List<RsPeriode>> getAvtaltFerieListe() { return Optional.ofNullable(avtaltFerieListe); }
+    public Optional<List<RsUtsettelseAvForeldrepenger>> getUtsettelseAvForeldrepengerListe() { return Optional.ofNullable(utsettelseAvForeldrepengerListe); }
+    public Optional<List<RsGraderingIForeldrepenger>> getGraderingIForeldrepengerListe() { return Optional.ofNullable(graderingIForeldrepengerListe); }
 }

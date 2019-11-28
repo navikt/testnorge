@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -22,7 +23,8 @@ public class RsAvsendersystem {
     @ApiModelProperty(required = true)
     private String systemversjon;
     @JsonProperty
-    @ApiModelProperty(required = true, example = "YYYY-MM-DD")
+    @ApiModelProperty(example = "yyyy-MM-ddThh:mm:ss")
     private LocalDateTime innsendingstidspunkt;
 
+    public Optional<LocalDateTime> getInnsendingstidspunkt() { return Optional.ofNullable(innsendingstidspunkt); }
 }

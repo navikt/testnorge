@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @ApiModel
 @Builder
@@ -20,7 +21,7 @@ public class RsRefusjon {
 
     @JsonProperty
     @ApiModelProperty("Samlet månedlig beløp på refusjon")
-    private double refusjonsbeloepPrMnd;
+    private Double refusjonsbeloepPrMnd;
     @JsonProperty
     @ApiModelProperty(value = "Opphørsdato for refusjon", example = "YYYY-MM-DD")
     private LocalDate refusjonsopphoersdato;
@@ -28,4 +29,7 @@ public class RsRefusjon {
     @ApiModelProperty()
     private List<RsEndringIRefusjon> endringIRefusjonListe;
 
+    public Optional<Double> getRefusjonsbeloepPrMnd() { return Optional.ofNullable(refusjonsbeloepPrMnd); }
+    public Optional<LocalDate> getRefusjonsopphoersdato() { return Optional.ofNullable(refusjonsopphoersdato); }
+    public Optional<List<RsEndringIRefusjon>> getEndringIRefusjonListe() { return Optional.ofNullable(endringIRefusjonListe); }
 }

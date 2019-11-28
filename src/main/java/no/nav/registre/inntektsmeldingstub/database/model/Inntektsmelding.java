@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -94,4 +95,6 @@ public class Inntektsmelding {
     @JoinColumn(name = "eier_id", referencedColumnName = "id")
     private Eier eier;
 
+    public Optional<Arbeidsgiver> getArbeidsgiver() { return Optional.ofNullable(arbeidsgiver); }
+    public Optional<Arbeidsgiver> getPrivatArbeidsgiver() { return Optional.ofNullable(privatArbeidsgiver); }
 }

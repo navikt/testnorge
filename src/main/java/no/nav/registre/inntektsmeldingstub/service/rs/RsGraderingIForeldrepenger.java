@@ -8,12 +8,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 @ApiModel
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsGraderingAvForeldrepenger {
+public class RsGraderingIForeldrepenger {
 
     @JsonProperty
     @ApiModelProperty("Periode med foreldrepenger")
@@ -22,4 +24,6 @@ public class RsGraderingAvForeldrepenger {
     @ApiModelProperty("Heltall med arbeidstidsprosent")
     private Integer arbeidstidprosent;
 
+    public Optional<RsPeriode> getPeriode() { return Optional.ofNullable(periode); }
+    public Optional<Integer> getArbeidstidprosent() { return Optional.ofNullable(arbeidstidprosent); }
 }

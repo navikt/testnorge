@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 @ApiModel
 @Builder
 @Getter
@@ -22,4 +24,6 @@ public class RsUtsettelseAvForeldrepenger {
     @ApiModelProperty()
     private String aarsakTilUtsettelse;
 
+    public Optional<RsPeriode> getPeriode() { return Optional.ofNullable(periode); }
+    public Optional<String> getAarsakTilUtsettelse() { return Optional.ofNullable(aarsakTilUtsettelse); }
 }

@@ -37,6 +37,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import no.nav.registre.inntektsmeldingstub.database.model.Arbeidsforhold;
@@ -60,7 +61,7 @@ public class XmlInntektsmelding201809 {
         return new XMLInntektsmeldingM(new XMLSkjemainnhold(
                 inntektsmelding.getYtelse(),
                 inntektsmelding.getAarsakTilInnsending(),
-                createArbeidsgiver(inntektsmelding.getArbeidsgiver()),
+                createArbeidsgiver(Objects.requireNonNull(inntektsmelding.getArbeidsgiver().orElse(null))),
                 inntektsmelding.getArbeidstakerFnr(),
                 inntektsmelding.isNaerRelasjon(),
                 createArbeidsforhold(inntektsmelding.getArbeidsforhold()),

@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 @ApiModel
 @Builder
@@ -18,13 +19,16 @@ import java.util.List;
 public class RsSykepengerIArbeidsgiverperioden {
 
     @JsonProperty
-    @ApiModelProperty("")
+    @ApiModelProperty()
     private List<RsPeriode> arbeidsgiverperiodeListe;
     @JsonProperty
     @ApiModelProperty("Brutto utbetalt sykepenger")
-    private double bruttoUtbetalt;
+    private Double bruttoUtbetalt;
     @JsonProperty
     @ApiModelProperty("Begrunnelse for reduksjon eller ikke utbetalt")
     private String begrunnelseForReduksjonEllerIkkeUtbetalt;
 
+    public Optional<List<RsPeriode>> getArbeidsgiverperiodeListe() { return Optional.ofNullable(arbeidsgiverperiodeListe); }
+    public Optional<Double> getBruttoUtbetalt() { return Optional.ofNullable(bruttoUtbetalt); }
+    public Optional<String> getBegrunnelseForReduksjonEllerIkkeUtbetalt() { return Optional.ofNullable(begrunnelseForReduksjonEllerIkkeUtbetalt); }
 }

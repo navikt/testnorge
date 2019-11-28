@@ -3,20 +3,17 @@ package no.nav.registre.inntektsmeldingstub.service.rs;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @ApiModel
 @Builder
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class RsInntektsmelding {
 
     @JsonProperty
@@ -30,7 +27,7 @@ public class RsInntektsmelding {
     @ApiModelProperty(value = "Arbeidstakers fødselsnummer", required = true)
     private String arbeidstakerFnr;
     @JsonProperty
-    @ApiModelProperty(required = true)
+    @ApiModelProperty(value = "default = \'false\'", required = true)
     private boolean naerRelasjon;
     @JsonProperty
     @ApiModelProperty(required = true)
@@ -71,4 +68,13 @@ public class RsInntektsmelding {
     @ApiModelProperty()
     private List<RsPeriode> pleiepengerPerioder;
 
+    public Optional<RsArbeidsgiver> getArbeidsgiver() { return Optional.ofNullable(arbeidsgiver); }
+    public Optional<RsArbeidsgiverPrivat> getArbeidsgiverPrivat() { return Optional.ofNullable(arbeidsgiverPrivat); }
+    public Optional<RsRefusjon> getRefusjon() { return Optional.ofNullable(refusjon); }
+    public Optional<RsOmsorgspenger> getOmsorgspenger() { return Optional.ofNullable(omsorgspenger); }
+    public Optional<RsSykepengerIArbeidsgiverperioden> getSykepengerIArbeidsgiverPerioden() { return Optional.ofNullable(sykepengerIArbeidsgiverperioden); }
+    public Optional<LocalDate> getStartdatoForeldrepengeperiode() { return Optional.ofNullable(startdatoForeldrepengeperiode); }
+    public Optional<List<RsNaturaYtelseDetaljer>> getOpphoerAvNaturalytelseListe() { return Optional.ofNullable(opphoerAvNaturalytelseListe); }
+    public Optional<List<RsNaturaYtelseDetaljer>> getGjenopptakelseNaturalytelseListe() { return Optional.ofNullable(gjenopptakelseNaturalytelseListe); }
+    public Optional<List<RsPeriode>> getPleiepengerPerioder() { return Optional.ofNullable(pleiepengerPerioder); }
 }

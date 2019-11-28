@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @ApiModel
 @Builder
@@ -24,4 +25,6 @@ public class RsPeriode {
     @ApiModelProperty(value = "Dato til og med", example = "YYYY-MM-DD")
     private LocalDate tom;
 
+    public Optional<LocalDate> getFom() { return Optional.ofNullable(fom); }
+    public Optional<LocalDate> getTom() { return Optional.ofNullable(tom); }
 }
