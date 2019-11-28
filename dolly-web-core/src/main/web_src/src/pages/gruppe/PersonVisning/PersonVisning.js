@@ -11,37 +11,70 @@ import './PersonVisning.less'
 export const PersonVisning = ({ getDataFraFagsystemer, data, testIdent, bestilling, loading }) => {
 	useMount(getDataFraFagsystemer)
 
-	// data.pdlforvalter = {
-	// 	falskIdentitet: {
-	// 		erFalsk: true,
-	// 		rettIdentitetErUkjent: true,
-	// 	}
-	// }
-
-	// data.pdlforvalter = {
-	// 	falskIdentitet: {
-	// 		erFalsk: true,
-	// 		rettIdentitetErUkjent: false,
-	// 		rettIdentitetVedIdentifikasjonsnummer: '12345678901'
-	// 	}
-	// }
-
-	// data.pdlforvalter = {
-	// 	falskIdentitet: {
-	// 		erFalsk: true,
-	// 		rettIdentitetErUkjent: false,
-	// 		rettIdentitetVedOpplysninger: {
-	// 			personnavn: {
-	// 				fornavn: 'Johnny',
-	// 				mellomnavn: 'Testus',
-	// 				etternavn: 'Bravo'
-	// 			},
-	// 			foedselsdato: '2015-03-25',
-	// 			statsborgerskap: 'Uzbekistan',
-	// 			kjoenn: 'Ukjent'
-	// 		}
-	// 	}
-	// }
+	data.pdlforvalter = {
+		kontaktinformasjonForDoedsbo: [
+			{
+				skifteform: 'OFFENTLIG',
+				attestutstedelsesdato: '2015-03-25',
+				personSomKontakt: {
+					foedselsdato: '2015-03-25',
+					personnavn: {
+						fornavn: 'Johnny',
+						mellomnavn: 'Testus',
+						etternavn: 'Bravo'
+					},
+					identifikasjonsnummer: '12345678901'
+				},
+				adresse: {
+					adresselinje1: 'Eksempelveien 1234A',
+					adresselinje2: 'Eksempelveien 5678B',
+					poststedsnavn: 'Westeros',
+					postnummer: '5432',
+					landkode: 'NOR'
+				}
+			},
+			{
+				skifteform: 'OFFENTLIG',
+				attestutstedelsesdato: '2015-03-25',
+				advokatSomKontakt: {
+					organisasjonsnavn: 'Fantasifabrikken',
+					organisasjonsnummer: '87654321',
+					personnavn: {
+						fornavn: 'Johnny',
+						mellomnavn: 'Testus',
+						etternavn: 'Bravo'
+					}
+				},
+				adresse: {
+					adresselinje1: 'Eksempelveien 1234A',
+					adresselinje2: 'Eksempelveien 5678B',
+					poststedsnavn: 'Westeros',
+					postnummer: '5432',
+					landkode: 'NOR'
+				}
+			},
+			{
+				skifteform: 'OFFENTLIG',
+				attestutstedelsesdato: '2015-03-25',
+				organisasjonSomKontakt: {
+					organisasjonsnavn: 'Evilcorp INC',
+					organisasjonsnummer: '87654321',
+					kontaktperson: {
+						fornavn: 'Johnny',
+						mellomnavn: 'Testus',
+						etternavn: 'Bravo'
+					}
+				},
+				adresse: {
+					adresselinje1: 'Eksempelveien 1234A',
+					adresselinje2: 'Eksempelveien 5678B',
+					poststedsnavn: 'Westeros',
+					postnummer: '5432',
+					landkode: 'NOR'
+				}
+			}
+		]
+	}
 
 	return (
 		<div className="person-visning">
