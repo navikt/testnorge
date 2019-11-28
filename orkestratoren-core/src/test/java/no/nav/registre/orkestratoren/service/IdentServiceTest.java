@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeAaregConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeInstConsumer;
@@ -34,6 +34,7 @@ import no.nav.registre.orkestratoren.consumer.rs.response.SletteArbeidsforholdRe
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteArenaResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteInstitusjonsoppholdResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteSkattegrunnlagResponse;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentServiceTest {
@@ -52,6 +53,9 @@ public class IdentServiceTest {
 
     @Mock
     private TestnorgeArenaConsumer testnorgeArenaConsumer;
+
+    @Mock
+    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     @Mock
     private HodejegerenConsumer hodejegerenConsumer;
@@ -138,7 +142,7 @@ public class IdentServiceTest {
 
     @Test
     public void shouldSynkronisereMedTps() {
-        when(hodejegerenConsumer.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe)).thenReturn(identer);
+        when(hodejegerenConsumer.getIdenterSomIkkeErITps(avspillergruppeId, miljoe)).thenReturn(identer);
         when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer))).thenReturn(expectedMeldingIder);
         when(testnorgeInstConsumer.slettIdenterFraInst(identer)).thenReturn(SletteInstitusjonsoppholdResponse.builder().build());
         when(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(SletteSkattegrunnlagResponse.builder().build());
@@ -150,7 +154,7 @@ public class IdentServiceTest {
 
         assertThat(response.getTpsfStatus().getSlettedeMeldingIderFraTpsf(), IsIterableContainingInOrder.contains(expectedMeldingIder.get(0), expectedMeldingIder.get(1)));
 
-        verify(hodejegerenConsumer).hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
+        verify(hodejegerenConsumer).getIdenterSomIkkeErITps(avspillergruppeId, miljoe);
         verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer));
         verify(testnorgeInstConsumer).slettIdenterFraInst(identer);
         verify(testnorgeSigrunConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
@@ -161,7 +165,7 @@ public class IdentServiceTest {
 
     @Test
     public void shouldFjerneIdenterSomKollidererITps() {
-        when(hodejegerenConsumer.hentIdenterSomKollidererITps(avspillergruppeId)).thenReturn(identer);
+        when(hodejegerenConsumer.getIdenterSomKolliderer(avspillergruppeId)).thenReturn(identer);
         when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer))).thenReturn(expectedMeldingIder);
         when(testnorgeInstConsumer.slettIdenterFraInst(identer)).thenReturn(SletteInstitusjonsoppholdResponse.builder().build());
         when(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(SletteSkattegrunnlagResponse.builder().build());
@@ -173,7 +177,7 @@ public class IdentServiceTest {
 
         assertThat(response.getTpsfStatus().getSlettedeMeldingIderFraTpsf(), IsIterableContainingInOrder.contains(expectedMeldingIder.get(0), expectedMeldingIder.get(1)));
 
-        verify(hodejegerenConsumer).hentIdenterSomKollidererITps(avspillergruppeId);
+        verify(hodejegerenConsumer).getIdenterSomKolliderer(avspillergruppeId);
         verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer));
         verify(testnorgeInstConsumer).slettIdenterFraInst(identer);
         verify(testnorgeSigrunConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);

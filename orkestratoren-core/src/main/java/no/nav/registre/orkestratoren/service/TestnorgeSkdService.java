@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeNavEndringsmeldingerConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.response.RsPureXmlMessageResponse;
@@ -28,7 +28,7 @@ public class TestnorgeSkdService {
     private TestnorgeNavEndringsmeldingerConsumer testnorgeNavEndringsmeldingerConsumer;
 
     @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
+    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     public ResponseEntity genererSkdmeldinger(
             Long avspillergruppeId,
@@ -43,7 +43,7 @@ public class TestnorgeSkdService {
             var skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
             if (skdMeldingerTilTpsRespons != null) {
                 log.info("{} skd-meldinger sendt til TPS.", skdMeldingerTilTpsRespons.getAntallSendte());
-                hodejegerenConsumer.oppdaterHodejegerenCache(avspillergruppeId);
+                hodejegerenHistorikkConsumer.oppdaterHodejegerenCache(avspillergruppeId);
             } else {
                 log.warn("Fikk ingen response fra testnorge-skd. Ingen meldinger sendt til TPS.");
             }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeAaregConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeInstConsumer;
@@ -14,6 +14,7 @@ import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSigrunConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
 import no.nav.registre.orkestratoren.provider.rs.responses.SletteFraAvspillerguppeResponse;
 import no.nav.registre.orkestratoren.provider.rs.responses.SlettedeIdenterResponse;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Service
 public class IdentService {
@@ -38,6 +39,9 @@ public class IdentService {
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
 
+    @Autowired
+    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
+
     public SlettedeIdenterResponse slettIdenterFraAdaptere(Long avspillergruppeId, String miljoe, String testdataEier, List<String> identer) {
         var slettedeIdenterResponse = SlettedeIdenterResponse.builder()
                 .tpsfStatus(SletteFraAvspillerguppeResponse.builder()
@@ -56,7 +60,7 @@ public class IdentService {
 
     public SlettedeIdenterResponse synkroniserMedTps(Long avspillergruppeId, String miljoe) {
         var slettedeIdenterResponse = SlettedeIdenterResponse.builder().build();
-        var identerSomIkkeErITps = hodejegerenConsumer.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
+        var identerSomIkkeErITps = hodejegerenConsumer.getIdenterSomIkkeErITps(avspillergruppeId, miljoe);
         if (!identerSomIkkeErITps.isEmpty()) {
             slettedeIdenterResponse = slettIdenterFraAdaptere(
                     avspillergruppeId,
@@ -70,7 +74,7 @@ public class IdentService {
 
     public SlettedeIdenterResponse fjernKolliderendeIdenter(Long avspillergruppeId, String miljoe) {
         var slettedeIdenterResponse = SlettedeIdenterResponse.builder().build();
-        var identerSomKolliderer = hodejegerenConsumer.hentIdenterSomKollidererITps(avspillergruppeId);
+        var identerSomKolliderer = hodejegerenConsumer.getIdenterSomKolliderer(avspillergruppeId);
         if (!identerSomKolliderer.isEmpty()) {
             slettedeIdenterResponse = slettIdenterFraAdaptere(
                     avspillergruppeId,

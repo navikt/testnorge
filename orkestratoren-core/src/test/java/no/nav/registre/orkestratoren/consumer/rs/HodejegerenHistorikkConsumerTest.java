@@ -23,12 +23,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
 @RunWith(SpringRunner.class)
-@RestClientTest(HodejegerenConsumer.class)
+@RestClientTest(HodejegerenHistorikkConsumer.class)
 @ActiveProfiles("test")
-public class HodejegerenConsumerTest {
+public class HodejegerenHistorikkConsumerTest {
 
     @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
+    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     @Autowired
     private MockRestServiceServer server;
@@ -51,37 +51,7 @@ public class HodejegerenConsumerTest {
         var expectedUri = serverUrl + "/v1/historikk/skd/oppdaterDokument/{ident}";
         stubSendPersondokument(expectedUri);
 
-        var identer = hodejegerenConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersonDokument, fnr);
-
-        assertThat(identer, contains(fnr));
-    }
-
-    @Test
-    public void shouldHenteAlleIdenter() {
-        var expectedUri = serverUrl + "/v1/alle-identer/{avspillergruppeId}";
-        stubHentAlleIdenter(expectedUri);
-
-        var identer = hodejegerenConsumer.hentAlleIdenter(avspillergruppeId);
-
-        assertThat(identer, contains(fnr));
-    }
-
-    @Test
-    public void shouldFinneIdenterSomIkkeErITps() {
-        var expectedUri = serverUrl + "/v1/identer-ikke-i-tps/{avspillergruppeId}?miljoe={miljoe}";
-        stubHentIdenterIkkeITps(expectedUri);
-
-        var identer = hodejegerenConsumer.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
-
-        assertThat(identer, contains(fnr));
-    }
-
-    @Test
-    public void shouldFinneIdenterSomKollidererITps() {
-        var expectedUri = serverUrl + "/v1/identer-som-kolliderer/{avspillergruppeId}";
-        stubHentIdenterSomKolliderer(expectedUri);
-
-        var identer = hodejegerenConsumer.hentIdenterSomKollidererITps(avspillergruppeId);
+        var identer = hodejegerenHistorikkConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersonDokument, fnr);
 
         assertThat(identer, contains(fnr));
     }
@@ -91,7 +61,7 @@ public class HodejegerenConsumerTest {
         var expectedUri = serverUrl + "/v1/cache/oppdaterGruppe/{avspillergruppeId}";
         stubOppdaterCache(expectedUri);
 
-        hodejegerenConsumer.oppdaterHodejegerenCache(avspillergruppeId);
+        hodejegerenHistorikkConsumer.oppdaterHodejegerenCache(avspillergruppeId);
     }
 
     private void stubSendPersondokument(String expectedUri) throws JsonProcessingException {

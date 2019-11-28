@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.HashMap;
 import java.util.Map;
 
-import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeNavEndringsmeldingerConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
@@ -35,7 +35,7 @@ public class TestnorgeSkdServiceTest {
     private TestnorgeNavEndringsmeldingerConsumer testnorgeNavEndringsmeldingerConsumer;
 
     @Mock
-    private HodejegerenConsumer hodejegerenConsumer;
+    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     @InjectMocks
     private TestnorgeSkdService testnorgeSkdService;
@@ -67,7 +67,7 @@ public class TestnorgeSkdServiceTest {
         assertThat(response.getAntallSendte(), equalTo(2));
         assertThat(response.getAntallFeilet(), equalTo(0));
         verify(testnorgeSkdConsumer).startSyntetisering(any(SyntetiserSkdmeldingerRequest.class));
-        verify(hodejegerenConsumer).oppdaterHodejegerenCache(avspillergruppeId);
+        verify(hodejegerenHistorikkConsumer).oppdaterHodejegerenCache(avspillergruppeId);
     }
 
     @Test
