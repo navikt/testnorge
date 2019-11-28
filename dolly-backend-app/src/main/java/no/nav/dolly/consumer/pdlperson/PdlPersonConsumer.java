@@ -19,6 +19,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.io.CharStreams;
 
 import lombok.RequiredArgsConstructor;
@@ -46,12 +47,13 @@ public class PdlPersonConsumer {
 
         Map<String, Object> variables = new HashMap();
         variables.put("ident", ident);
+        variables.put("historikk", true);
 
         String query = null;
-        InputStream queryStream = getClass().getClassLoader().getResourceAsStream("pdlperson/pdlquery.query");
+        InputStream queryStream = getClass().getClassLoader().getResourceAsStream("pdlperson/pdlquery.graphql");
         try {
             Reader reader = new InputStreamReader(queryStream);
-             query = CharStreams.toString(reader);
+            query = CharStreams.toString(reader);
         } catch (IOException e) {
             log.error("Lesing av query ressurs feilet");
         }
@@ -61,16 +63,14 @@ public class PdlPersonConsumer {
                 .variables(variables)
                 .build();
 
-        ResponseEntity<PdlApiResponse> response = restTemplate.exchange(RequestEntity.post(
+        return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getPdlPerson().getUrl() + GRAPHQL_URL))
                 .header(AUTHORIZATION, resolveToken())
                 .header(HEADER_NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(PREPROD_ENV))
                 .header(HEADER_NAV_CALL_ID, "Dolly: " + UUID.randomUUID().toString())
                 .header(TEMA, GEN.name())
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(graphQLRequest), PdlApiResponse.class);
-
-        return response;
+                .body(graphQLRequest), JsonNode.class);
     }
 
     private String resolveToken() {
