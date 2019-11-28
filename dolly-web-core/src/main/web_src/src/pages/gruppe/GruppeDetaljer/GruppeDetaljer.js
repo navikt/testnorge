@@ -7,6 +7,7 @@ import './GruppeDetaljer.less'
 
 export default function GruppeDetaljer({ gruppe }) {
 	const [isExpanded, toggleExpanded] = useToggle(false)
+	const antallIBruk = gruppe.identer.map(p => p.ibruk).filter(Boolean).length
 
 	return (
 		<div className="gruppe-detaljer">
@@ -17,7 +18,7 @@ export default function GruppeDetaljer({ gruppe }) {
 					value={String(gruppe.identer ? gruppe.identer.length : 0)}
 				/>
 				<StaticValue header="SIST ENDRET" value={gruppe.datoEndret} />
-				<StaticValue header="Antall i bruk" value={String(gruppe.antallIBruk)} />
+				<StaticValue header="Antall i bruk" value={String(antallIBruk)} />
 				{isExpanded && <StaticValue header="HENSIKT" value={gruppe.hensikt} />}
 			</div>
 			<div className="gruppe-detaljer-chevron">

@@ -8,17 +8,6 @@ export default class PersonIBrukButton extends PureComponent {
 		updateIdentAttributter: PropTypes.func
 	}
 
-	settIBruk = async () => {
-		const { erIBruk, updateIdentAttributter, personId, Id } = this.props
-		const gruppeId = Id
-		const fjern = { ibruk: false, ident: personId }
-		const leggtil = { ibruk: true, ident: personId }
-
-		erIBruk
-			? await updateIdentAttributter(gruppeId, fjern)
-			: await updateIdentAttributter(gruppeId, leggtil)
-	}
-
 	render() {
 		const { erIBruk, updateIdentAttributter } = this.props
 		return (
@@ -30,5 +19,15 @@ export default class PersonIBrukButton extends PureComponent {
 				onMouseEnter={this._handleOnMouseHover}
 			/>
 		)
+	}
+
+	settIBruk = async () => {
+		const { erIBruk, updateIdentAttributter, personId, Id } = this.props
+		const gruppeId = Id
+		const fjern = { ibruk: false, ident: personId }
+		const leggtil = { ibruk: true, ident: personId }
+		erIBruk
+			? await updateIdentAttributter(gruppeId, fjern)
+			: await updateIdentAttributter(gruppeId, leggtil)
 	}
 }
