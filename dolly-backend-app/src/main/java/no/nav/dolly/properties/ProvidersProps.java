@@ -28,6 +28,7 @@ public class ProvidersProps {
     private Instdata instdata = new Instdata();
     private Aaregdata aaregdata = new Aaregdata();
     private Inntektsstub inntektsstub = new Inntektsstub();
+    private PdlPerson pdlPerson = new PdlPerson();
 
     @Getter
     @Setter
