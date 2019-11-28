@@ -20,7 +20,7 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 @Import({ InternalController.class, JobController.class })
 public class AppConfig {
 
-    @Value("${testnorge-hodejegeren.rest-api.url}")
+    @Value("${testnorge-hodejegeren.rest.api.url}")
     private String hodejegerenUrl;
 
     @Bean
