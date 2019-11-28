@@ -239,9 +239,9 @@ public class EksisterendeIdenterService {
                 for (var relasjonselement : relasjonNode) {
                     relasjoner.add(parseRelasjonNode(relasjonselement));
                 }
-                relasjonsResponse = RelasjonsResponse.builder().fnr(statusQuoTilIdent.findValue("fnr").asText()).relasjoner(relasjoner).build();
+                relasjonsResponse = RelasjonsResponse.builder().fnr(ident).relasjoner(relasjoner).build();
             } else {
-                relasjonsResponse = RelasjonsResponse.builder().fnr(statusQuoTilIdent.findValue("fnr").asText()).relasjoner(new ArrayList<>()).build();
+                relasjonsResponse = RelasjonsResponse.builder().fnr(ident).relasjoner(new ArrayList<>()).build();
             }
         } catch (IOException e) {
             log.error("Kunne ikke hente status quo på ident {} - ", ident, e);
