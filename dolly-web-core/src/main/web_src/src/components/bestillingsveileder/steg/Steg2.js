@@ -1,6 +1,5 @@
 import React from 'react'
 import * as Yup from 'yup'
-import _values from 'lodash/values'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { TpsfForm } from '~/components/fagsystem/tpsf/form/Form'
 import { KrrstubForm } from '~/components/fagsystem/krrstub/form/Form'
@@ -11,7 +10,7 @@ import { InstForm } from '~/components/fagsystem/inst/Form'
 import { UdistubForm } from '~/components/fagsystem/udistub/form/Form'
 
 export const Steg2 = ({ formikBag, attributter }) => {
-	const avhukedeAttributter = _values(attributter).some(a => a)
+	const avhukedeAttributter = Object.values(attributter).some(a => a)
 
 	return (
 		<div>
