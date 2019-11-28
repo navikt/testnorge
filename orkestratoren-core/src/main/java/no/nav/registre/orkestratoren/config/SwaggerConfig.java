@@ -51,7 +51,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                         + "slik at de blir tilgjengelige i registrene (eller deres stub-versjon) i det miljøet som denne orkestratoren er konfigurert for.")
                 .version(appVersion)
                 .termsOfServiceUrl("https://nav.no")
-                .contact(new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/testnorge-hodejegeren/browse", null))
+                .contact(new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/orkestratoren/browse", null))
                 .license("Super Strict Licence")
                 .licenseUrl("https://opensource.org/licenses/super-strict-license")
                 .build();
