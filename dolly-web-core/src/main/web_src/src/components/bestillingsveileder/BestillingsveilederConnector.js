@@ -5,7 +5,8 @@ import { Bestillingsveileder } from './Bestillingsveileder'
 
 const mapStateToProps = state => {
 	return {
-		maler: state.currentBestilling.maler
+		maler: state.currentBestilling.maler,
+		kodeverk: state.kodeverk.data
 	}
 }
 

@@ -1,15 +1,16 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
+import { go } from 'connected-react-router'
 import Knapp from 'nav-frontend-knapper'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 
 import './Navigation.less'
 
 export const Navigation = ({ showPrevious, onPrevious, isLastStep, formikBag }) => {
+	const dispatch = useDispatch()
 	const { isSubmitting, handleSubmit } = formikBag
 
-	const onAbort = () => {
-		console.log('handleAbort() - flytt denn til en logisk plass')
-	}
+	const onAbort = () => dispatch(go(-1))
 
 	return (
 		<div className="step-navknapper-wrapper">

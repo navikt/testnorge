@@ -29,7 +29,6 @@ export const StegVelger = ({ steps, initialValues, onSubmit, copyValues, childre
 			return
 		}
 
-		// TODO - handle final submit
 		return onSubmit(values, formikBag)
 	}
 

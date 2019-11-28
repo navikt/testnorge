@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import _get from 'lodash/get'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -10,7 +11,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 	const [eosEllerEFTAtypeOpphold, setEosEllerEFTAtypeOpphold] = useState('')
 	const [tredjelandsBorgereValg, setTredjelandsBorgereValg] = useState('')
 
-	const oppholdsstatusInitialValues = formikBag.initialValues.udistub.oppholdStatus
+	const oppholdsstatusInitialValues = _get(formikBag.initialValues, 'udistub.oppholdStatus')
 
 	const endreOppholdsstatus = value => {
 		setOppholdsstatus(value)
@@ -49,7 +50,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 	}
 
 	return (
-		<Kategori title="Gjeldende oppholdsstatus">
+		<Kategori title="Gjeldende oppholdsstatus" vis={pathAttrs.kategori.opphold}>
 			<DollySelect
 				name="oppholdsstatus"
 				label="Oppholdsstatus"
