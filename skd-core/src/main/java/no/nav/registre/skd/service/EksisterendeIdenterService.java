@@ -257,6 +257,11 @@ public class EksisterendeIdenterService {
         iterateFoedteIdenter:
         for (String foedtIdent : foedteIdenter) {
             var relasjonerTilBarn = hodejegerenConsumer.getRelasjoner(foedtIdent, environment);
+
+            if(relasjonerTilBarn.getRelasjoner().isEmpty()) {
+                continue;
+            }
+
             var morFnr = "";
 
             for (var relasjon : relasjonerTilBarn.getRelasjoner()) {
