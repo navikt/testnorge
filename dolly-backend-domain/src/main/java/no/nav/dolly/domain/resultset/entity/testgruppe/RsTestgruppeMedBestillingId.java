@@ -1,7 +1,6 @@
 package no.nav.dolly.domain.resultset.entity.testgruppe;
 
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,14 +13,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RsTestgruppeMedBestillingId extends RsTestgruppe {
 
-    List<IdentBestilling> identer;
+    private List<IdentBestilling> identer;
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class IdentBestilling {
 
         private String ident;
