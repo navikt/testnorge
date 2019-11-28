@@ -24,7 +24,7 @@ export const ArenaForm = ({ formikBag }) => {
 
 	// Bytter struktur på hele skjema
 	const handleAfterChange = val => {
-		if (val === 'MED_SERVICEBEHOV') {
+		if (val.value === 'MED_SERVICEBEHOV') {
 			formikBag.setFieldValue('arenaforvalter.inaktiveringDato', null)
 		} else {
 			formikBag.setFieldValue('arenaforvalter', _initialValues.arenaforvalter)

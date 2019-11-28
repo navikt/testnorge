@@ -20,3 +20,10 @@ export const ifPresent = (key, schema) =>
 		then: schema,
 		otherwise: Yup.mixed().notRequired()
 	})
+
+export const ifKeyHasValue = (key, values, schema) =>
+	Yup.mixed().when(key, {
+		is: v => values.includes(v),
+		then: schema,
+		otherwise: Yup.mixed().notRequired()
+	})
