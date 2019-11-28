@@ -13,6 +13,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import org.apache.http.Consts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -50,9 +51,9 @@ public class PdlPersonConsumer {
         variables.put("historikk", true);
 
         String query = null;
-        InputStream queryStream = getClass().getClassLoader().getResourceAsStream("pdlperson/pdlquery.graphql");
+        InputStream queryStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("pdlperson/pdlquery.graphql");
         try {
-            Reader reader = new InputStreamReader(queryStream);
+            Reader reader = new InputStreamReader(queryStream, Consts.UTF_8);
             query = CharStreams.toString(reader);
         } catch (IOException e) {
             log.error("Lesing av query ressurs feilet");
