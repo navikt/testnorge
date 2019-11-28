@@ -39,6 +39,7 @@ import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsRespo
 @Slf4j
 public class EksisterendeIdenterService {
 
+    private static final int TPSF_PAGE_SIZE = 80;
     private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
     private static final String ROUTINE_KERNINFO = "FS03-FDNUMMER-KERNINFO-O";
     private static final String ROUTINE_PERSRELA = "FS03-FDNUMMER-PERSRELA-O";
@@ -253,7 +254,7 @@ public class EksisterendeIdenterService {
         var alleIdenter = tpsfFiltreringService.finnAlleIdenter(avspillergruppeId);
         List<String> identerIkkeITps = new ArrayList<>();
         var objectMapper = new ObjectMapper();
-        for (var identer : Lists.partition(alleIdenter, 80)) {
+        for (var identer : Lists.partition(alleIdenter, TPSF_PAGE_SIZE)) {
             try {
                 var jsonNode = tpsfConsumer.hentTpsStatusPaaIdenter(AKSJONSKODE_A0, miljoe, identer);
                 var status = jsonNode.findValue("status");
@@ -287,7 +288,7 @@ public class EksisterendeIdenterService {
         List<String> identerITps = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
-        for (var identer : Lists.partition(alleIdenter, 80)) {
+        for (var identer : Lists.partition(alleIdenter, TPSF_PAGE_SIZE)) {
             try {
                 var jsonNode = tpsfConsumer.hentTpsStatusPaaIdenter(AKSJONSKODE_A2, "q2", identer);
                 var statusFromTps = jsonNode.findValue("EFnr");
