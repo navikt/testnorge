@@ -223,7 +223,11 @@ public class EksisterendeIdenterService {
         try {
             tpsStatusQuoService.resetCache();
             var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, ident);
-            var antallRelasjoner = statusQuoTilIdent.findValue("antallRelasjoner").asInt();
+            var antallRelasjoner = 0;
+            JsonNode antallRelasjonerJsonNode = statusQuoTilIdent.findValue("antallRelasjoner");
+            if (antallRelasjonerJsonNode != null) {
+                antallRelasjoner = antallRelasjonerJsonNode.asInt();
+            }
 
             if (antallRelasjoner == 1) {
                 relasjonsResponse = RelasjonsResponse.builder()
