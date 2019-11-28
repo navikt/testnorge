@@ -1,0 +1,311 @@
+query($ident: ID!, $historikk: Boolean!) {
+    hentPerson(ident: $ident) {
+        falskIdentitet {
+            erFalsk,
+            rettIdentitetErUkjent,
+            rettIdentitetVedIdentifikasjonsnummer,
+            rettIdentitetVedOpplysninger {
+                personnavn {
+                    fornavn,
+                    mellomnavn,
+                    etternavn
+                }
+                foedselsdato,
+                statsborgerskap,
+                kjoenn
+            },
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        },
+
+        kontaktinformasjonForDoedsbo(historikk: $historikk) {
+            skifteform,
+            attestutstedelsesdato,
+            folkeregistermetadata {
+                ajourholdstidspunkt,
+                gyldighetstidspunkt,
+                opphoerstidspunkt,
+                aarsak,
+                kilde
+            }
+            personSomKontakt {
+                foedselsdato,
+                personnavn {
+                    fornavn,
+                    mellomnavn,
+                    etternavn
+                },
+                identifikasjonsnummer
+            },
+            advokatSomKontakt {
+                personnavn {
+                    fornavn,
+                    mellomnavn,
+                    etternavn
+                },
+                organisasjonsnavn,
+                organisasjonsnummer
+            },
+            organisasjonSomKontakt {
+                kontaktperson {
+                    fornavn,
+                    mellomnavn,
+                    etternavn
+                },
+                organisasjonsnavn,
+                organisasjonsnummer
+            },
+            adresse {
+                adresselinje1,
+                adresselinje2,
+                poststedsnavn,
+                postnummer,
+                landkode
+            },
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        },
+
+        utenlandskIdentifikasjonsnummer(historikk: $historikk) {
+            identifikasjonsnummer,
+            utstederland,
+            opphoert,
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        },
+        adressebeskyttelse(historikk: $historikk) {
+            gradering,
+            folkeregistermetadata {
+                ajourholdstidspunkt,
+                gyldighetstidspunkt,
+                opphoerstidspunkt,
+                aarsak,
+                kilde
+            }
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        },
+        foedsel {
+            foedselsaar,
+            foedselsdato,
+            foedeland,
+            foedested,
+            foedekommune,
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        },
+        doedsfall {
+            doedsdato,
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        },
+        kjoenn(historikk: $historikk) {
+            kjoenn,
+            folkeregistermetadata {
+                ajourholdstidspunkt,
+                gyldighetstidspunkt,
+                opphoerstidspunkt,
+                aarsak,
+                kilde
+            }
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        },
+        navn(historikk: $historikk) {
+            fornavn,
+            mellomnavn,
+            etternavn,
+            forkortetNavn,
+            originaltNavn {
+                fornavn,
+                mellomnavn,
+                etternavn
+            },
+            folkeregistermetadata {
+                ajourholdstidspunkt,
+                gyldighetstidspunkt,
+                opphoerstidspunkt,
+                aarsak,
+                kilde,
+                sekvens
+            }
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        },
+        folkeregisterpersonstatus(historikk: $historikk) {
+            status,
+            forenkletStatus,
+            folkeregistermetadata {
+                ajourholdstidspunkt,
+                gyldighetstidspunkt,
+                opphoerstidspunkt,
+                aarsak,
+                kilde
+            }
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        },
+        identitetsgrunnlag(historikk: $historikk) {
+            status,
+            folkeregistermetadata {
+                ajourholdstidspunkt,
+                gyldighetstidspunkt,
+                opphoerstidspunkt,
+                aarsak,
+                kilde
+            }
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        },
+        tilrettelagtKommunikasjon {
+            muntlig,
+            skriftlig,
+            tolk {
+                spraak,
+                tegnspraak
+            }
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        },
+        fullmakt(historikk: $historikk) {
+            motpartsPersonident,
+            motpartsRolle,
+            omraader,
+            gyldigFraOgMed,
+            gyldigTilOgMed
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        },
+        folkeregisteridentifikator(historikk: $historikk) {
+            identifikasjonsnummer,
+            status,
+            type,
+            folkeregistermetadata {
+                ajourholdstidspunkt,
+                gyldighetstidspunkt,
+                opphoerstidspunkt,
+                aarsak,
+                kilde
+            }
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        }
+    }
+}
