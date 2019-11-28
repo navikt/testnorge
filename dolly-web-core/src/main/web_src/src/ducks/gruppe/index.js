@@ -56,21 +56,19 @@ export default handleActions(
 			}
 		},
 		[onSuccess(updateBeskrivelse)](state, action) {
-			// console.log('state :', state)
-			// console.log('action :', action)
-			const testobject = {
+			return {
 				...state,
 				data: state.data.map((item, idx) => ({
 					...item,
 					identer: item.identer.map((ident, id) => ({
 						...ident,
 						beskrivelse:
-							ident.ident === action.payload.data.ident && action.payload.data.beskrivelse
+							ident.ident === action.payload.data.ident
+								? action.payload.data.beskrivelse
+								: ident.beskrivelse
 					}))
 				}))
 			}
-			// console.log('testobject :', testobject)
-			return testobject
 		},
 		[onSuccess(deleteGruppe)](state, action) {
 			return {
