@@ -61,7 +61,7 @@ ArenaForm.initialValues = attrs => {
 const validation = Yup.object({
 	aap: Yup.array().of(
 		Yup.object({
-			fraDato: Yup.date(),
+			fraDato: requiredDate,
 			tilDato: requiredDate
 		})
 	),
