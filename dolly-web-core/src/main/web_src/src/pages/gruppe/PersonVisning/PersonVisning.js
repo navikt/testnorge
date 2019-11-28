@@ -12,66 +12,16 @@ export const PersonVisning = ({ getDataFraFagsystemer, data, testIdent, bestilli
 	useMount(getDataFraFagsystemer)
 
 	data.pdlforvalter = {
-		kontaktinformasjonForDoedsbo: [
+		utenlandskIdentifikasjonsnummer: [
 			{
-				skifteform: 'OFFENTLIG',
-				attestutstedelsesdato: '2015-03-25',
-				personSomKontakt: {
-					foedselsdato: '2015-03-25',
-					personnavn: {
-						fornavn: 'Johnny',
-						mellomnavn: 'Testus',
-						etternavn: 'Bravo'
-					},
-					identifikasjonsnummer: '12345678901'
-				},
-				adresse: {
-					adresselinje1: 'Eksempelveien 1234A',
-					adresselinje2: 'Eksempelveien 5678B',
-					poststedsnavn: 'Westeros',
-					postnummer: '5432',
-					landkode: 'NOR'
-				}
+				identifikasjonsnummer: '13371337101',
+				utstederland: 'NOR',
+				opphoert: false
 			},
 			{
-				skifteform: 'OFFENTLIG',
-				attestutstedelsesdato: '2015-03-25',
-				advokatSomKontakt: {
-					organisasjonsnavn: 'Fantasifabrikken',
-					organisasjonsnummer: '87654321',
-					personnavn: {
-						fornavn: 'Johnny',
-						mellomnavn: 'Testus',
-						etternavn: 'Bravo'
-					}
-				},
-				adresse: {
-					adresselinje1: 'Eksempelveien 1234A',
-					adresselinje2: 'Eksempelveien 5678B',
-					poststedsnavn: 'Westeros',
-					postnummer: '5432',
-					landkode: 'NOR'
-				}
-			},
-			{
-				skifteform: 'OFFENTLIG',
-				attestutstedelsesdato: '2015-03-25',
-				organisasjonSomKontakt: {
-					organisasjonsnavn: 'Evilcorp INC',
-					organisasjonsnummer: '87654321',
-					kontaktperson: {
-						fornavn: 'Johnny',
-						mellomnavn: 'Testus',
-						etternavn: 'Bravo'
-					}
-				},
-				adresse: {
-					adresselinje1: 'Eksempelveien 1234A',
-					adresselinje2: 'Eksempelveien 5678B',
-					poststedsnavn: 'Westeros',
-					postnummer: '5432',
-					landkode: 'NOR'
-				}
+				identifikasjonsnummer: '71137113101',
+				utstederland: 'SWE',
+				opphoert: true
 			}
 		]
 	}
