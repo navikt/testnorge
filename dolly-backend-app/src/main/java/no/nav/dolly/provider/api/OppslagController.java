@@ -24,7 +24,6 @@ import no.nav.dolly.consumer.norg2.Norg2Consumer;
 import no.nav.dolly.consumer.norg2.Norg2EnhetResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.consumer.personoppslag.PersonoppslagConsumer;
-import no.nav.dolly.consumer.syntdata.SyntdataConsumer;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
@@ -38,7 +37,6 @@ public class OppslagController {
     private final KodeverkConsumer kodeverkConsumer;
     private final Norg2Consumer norg2Consumer;
     private final PersonoppslagConsumer personoppslagConsumer;
-    private final SyntdataConsumer syntdataConsumer;
     private final AaregConsumer aaregConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
 
@@ -67,12 +65,6 @@ public class OppslagController {
     @ApiOperation("Hent person tilhørende ident fra pdlperson")
     public ResponseEntity pdlPerson(@PathVariable("ident") String ident) {
         return pdlPersonConsumer.getPdlPerson(ident);
-    }
-
-    @GetMapping("/syntdata")
-    @ApiOperation("Hent syntetisk data")
-    public ResponseEntity syntdataGenerate(@RequestParam("path") String path, @RequestParam("numToGenerate") Integer numToGenerate) {
-        return syntdataConsumer.generate(path, numToGenerate);
     }
 
     @GetMapping("/systemer")
