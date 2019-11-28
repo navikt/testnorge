@@ -1,13 +1,13 @@
 import { connect } from 'react-redux'
-import Beskrivelse from './Beskrivelse'
 import { updateBeskrivelse, getIdentByIdSelector } from '~/ducks/gruppe'
 import { createLoadingSelector } from '~/ducks/loading'
+import { Beskrivelse } from './Beskrivelse'
 
 const loadingSelector = createLoadingSelector([updateBeskrivelse])
 
 const mapStateToProps = (state, ownProps) => ({
 	isUpdatingBeskrivelse: loadingSelector(state),
-	gruppe: getIdentByIdSelector(state, ownProps.ident)
+	beskrivelse: getIdentByIdSelector(state, ownProps.ident).beskrivelse
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {

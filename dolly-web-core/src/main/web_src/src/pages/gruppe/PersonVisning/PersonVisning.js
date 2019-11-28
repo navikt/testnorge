@@ -6,7 +6,7 @@ import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
 import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
 import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
 import { SigrunstubVisning } from '~/components/fagsystem/sigrunstub/visning/Visning'
-import Beskrivelse from '~/components/beskrivelse/BeskrivelseConnector'
+import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import Button from '~/components/ui/button/Button'
 
 import './PersonVisning.less'
@@ -39,7 +39,7 @@ export const PersonVisning = ({
 				loading={loading.udistub}
 			/>
 			<TidligereBestillinger ids={testIdent.bestillingId} />
-			<Beskrivelse ident={testIdent.ident} gruppeId={gruppeId} />
+			<BeskrivelseConnector ident={testIdent.ident} gruppeId={gruppeId} />
 			<div className="flexbox--align-center--justify-end">
 				<Button className="flexbox--align-center" kind="details">
 					BESTILLINGSDETALJER

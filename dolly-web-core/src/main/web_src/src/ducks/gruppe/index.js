@@ -58,9 +58,9 @@ export default handleActions(
 		[onSuccess(updateBeskrivelse)](state, action) {
 			return {
 				...state,
-				data: state.data.map((item, idx) => ({
+				data: state.data.map(item => ({
 					...item,
-					identer: item.identer.map((ident, id) => ({
+					identer: item.identer.map(ident => ({
 						...ident,
 						beskrivelse:
 							ident.ident === action.payload.data.ident
