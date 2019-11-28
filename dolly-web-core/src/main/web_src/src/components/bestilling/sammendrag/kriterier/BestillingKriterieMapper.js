@@ -36,26 +36,51 @@ const _getTpsfBestillingData = data => {
 	]
 }
 
+const _findBestillingskriterier = bestillingData => {
+	//TODO: Skrives om!! Sender helst inn riktig før vi kommer til denne fila
+	if (bestillingData.tpsfKriterier || bestillingData.bestKriterier) {
+		//Bestillingskriterier etter bestilling
+		return {
+			tpsfKriterier: bestillingData.tpsfKriterier,
+			registreKriterier: bestillingData.bestKriterier,
+			antallIdenter: bestillingData.antallIdenter,
+			sistOppdatert: bestillingData.sistOppdatert,
+			opprettetFraId: bestillingData.opprettetFraId
+		}
+	}
+	const { tpsf, antallIdenter, ...registreKriterier } = bestillingData
+	//Bestillingskriterier under bestilling
+	return { tpsfKriterier: tpsf, registreKriterier, antallIdenter }
+}
+
 export function mapBestillingData(bestillingData) {
 	if (!bestillingData) return null
+	//TODO: Skrives om slik at ulike kriterier allerede er skilt?
+	//Kan hende det som kalles bestillingsinformasjon under her burde være en egen greie
+	const { tpsfKriterier, registreKriterier, ...bestillingsinformasjon } = _findBestillingskriterier(
+		bestillingData
+	)
+
 	const data = []
 
 	const bestillingsInfo = {
 		header: 'Bestillingsinformasjon',
 		items: [
-			obj('Antall', bestillingData.antallIdenter.toString()),
-			obj('Sist Oppdatert', Formatters.formatDate(bestillingData.sistOppdatert)),
+			obj(
+				'Antall',
+				bestillingsinformasjon.antallIdenter && bestillingsinformasjon.antallIdenter.toString()
+			),
+			obj('Sist Oppdatert', Formatters.formatDate(bestillingsinformasjon.sistOppdatert)),
 			obj(
 				'Gjenopprett fra',
-				bestillingData.opprettetFraId && `Bestilling # ${bestillingData.opprettetFraId}`
+				bestillingsinformasjon.opprettetFraId &&
+					`Bestilling # ${bestillingsinformasjon.opprettetFraId}`
 			)
 		]
 	}
 	data.push(bestillingsInfo)
 
-	// Gamle bestillinger har ikke tpsfKriterie
-	if (bestillingData.tpsfKriterier) {
-		const tpsfKriterier = JSON.parse(bestillingData.tpsfKriterier)
+	if (tpsfKriterier) {
 		const personinfo = {
 			header: 'Persondetaljer',
 			items: _getTpsfBestillingData(tpsfKriterier)
@@ -158,8 +183,7 @@ export function mapBestillingData(bestillingData) {
 		}
 	}
 
-	if (bestillingData.bestKriterier) {
-		const registreKriterier = JSON.parse(bestillingData.bestKriterier)
+	if (registreKriterier) {
 		const aaregKriterier = registreKriterier.aareg
 		if (aaregKriterier) {
 			const aareg = {
@@ -206,14 +230,25 @@ export function mapBestillingData(bestillingData) {
 			// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
 			let flatSigrunStubKriterier = []
 			sigrunStubKriterier.forEach(inntekt => {
-				inntekt.grunnlag.forEach(g => {
-					flatSigrunStubKriterier.push({
-						grunnlag: g.tekniskNavn,
-						inntektsaar: inntekt.inntektsaar,
-						tjeneste: inntekt.tjeneste,
-						verdi: g.verdi
+				const inntektObj = { inntektsaar: inntekt.inntektsaar, tjeneste: inntekt.tjeneste }
+				inntekt.grunnlag &&
+					inntekt.grunnlag.forEach(gr => {
+						flatSigrunStubKriterier.push({
+							...inntektObj,
+							grunnlag: gr.tekniskNavn,
+							verdi: gr.verdi,
+							inntektssted: 'Fastlands-Norge'
+						})
 					})
-				})
+				inntekt.svalbardGrunnlag &&
+					inntekt.svalbardGrunnlag.forEach(gr => {
+						flatSigrunStubKriterier.push({
+							...inntektObj,
+							svalbardGrunnlag: gr.tekniskNavn,
+							verdi: gr.verdi,
+							inntektssted: 'Svalbard'
+						})
+					})
 			})
 
 			const sigrunStub = {
@@ -230,15 +265,22 @@ export function mapBestillingData(bestillingData) {
 					},
 					obj('År', inntekt.inntektsaar),
 					obj('Beløp', inntekt.verdi),
-					obj('Tjeneste', inntekt.tjeneste),
+					obj('Tjeneste', Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)),
 					{
-						label: 'grunnlag',
+						label: 'Grunnlag (Fastlands-Norge)',
 						value: inntekt.grunnlag,
 						width: 'xlarge',
-						apiKodeverkId: inntekt.tjeneste
+						apiKodeverkId: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
+					},
+					{
+						label: 'Grunnlag (Svalbard)',
+						value: inntekt.svalbardGrunnlag,
+						width: 'xlarge',
+						apiKodeverkId: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
 					}
 				])
 			})
+
 			data.push(sigrunStub)
 		}
 

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import cn from 'classnames'
-import Header from '~/components/bestilling/sammendrag/header/Header'
+import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import { mapBestillingData } from './BestillingKriterieMapper'
@@ -68,14 +68,14 @@ const _renderStaticValue = (attributt, key) => {
 	)
 }
 
-export default function Bestillingskriterier({ bestilling }) {
+export default function Bestillingskriterier({ bestilling, header }) {
 	const data = mapBestillingData(bestilling)
 
 	if (!data) return <p>Kunne ikke hente bestillingsdata</p>
 
 	return (
 		<div>
-			<Header label="Bestillingskriterier" />
+			{header && <SubOverskrift label={header} />}
 			{_renderBestillingsDetaljer(data)}
 		</div>
 	)

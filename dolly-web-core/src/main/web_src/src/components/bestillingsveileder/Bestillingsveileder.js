@@ -1,65 +1,58 @@
 import React, { useState } from 'react'
-import { Formik } from 'formik'
-import Stegindikator from 'nav-frontend-stegindikator'
-import { Navigation } from './Navigation/Navigation'
+import { Header, headerFromInitialValues } from './Header/Header'
+import { getInitialValues } from '~/service/attributter/Attributter'
+import { StegVelger } from './StegVelger'
 import { Steg1 } from './steg/Steg1'
 import { Steg2 } from './steg/Steg2'
-
-import DisplayFormikState from '~/utils/DisplayFormikState'
+import { Steg3 } from './steg/Steg3'
+import { createInitialValues } from './initialValues'
 
 import './bestillingsveileder.less'
 
-const steps = [Steg1, Steg2]
+const steps = [Steg1, Steg2, Steg3]
 
-export const Bestillingsveileder = () => {
-	const [step, setStep] = useState(0)
+export const Bestillingsveileder = props => {
+	const [attributter, setAttributter] = useState(getInitialValues())
+	const [savedValues, setSavedValues] = useState({})
 
-	const isLastStep = () => step === steps.length - 1
-	const handleBack = () => step !== 0 && setStep(step - 1)
-	const handleNext = () => setStep(step + 1)
+	const baseBestilling = props.location.state
+
+	const checkAttributter = attrs => setAttributter(Object.assign({}, attributter, attrs))
 
 	const handleSubmit = (values, formikBag) => {
-		const { setSubmitting } = formikBag
-
-		if (!isLastStep()) {
-			setSubmitting(false)
-			handleNext()
-			return
-		}
-
-		// TODO - handle final submit
-		setSubmitting(false)
+		props.createBestillingMal(values.malNavn) //Nå sjekkes ikke malnavn
+		props.sendBestilling(values)
 	}
 
-	const CurrentStep = steps[step]
-	const { validationSchema } = CurrentStep
+	const initialValues = createInitialValues(steps, attributter, savedValues, baseBestilling)
 
-	const initialValues = steps.reduce((acc, curr) => Object.assign({}, acc, curr.initialValues), {})
-
-	const labels = steps.map(v => ({ label: v.label }))
+	// Denne er litt verbos nå, men må nok endre litt etterhvert hvor disse data kommer fra
+	const headerData = headerFromInitialValues(
+		baseBestilling.antall,
+		baseBestilling.identtype,
+		baseBestilling.mal,
+		baseBestilling.opprettFraIdenter
+	)
 
 	return (
-		<Formik
-			initialValues={initialValues}
-			validationSchema={validationSchema}
-			onSubmit={handleSubmit}
-		>
-			{formikBag => (
-				<div className="bestillingsveileder">
-					<Stegindikator aktivtSteg={step} steg={labels} visLabel kompakt />
-
-					<CurrentStep formikBag={formikBag} />
-
-					<Navigation
-						showPrevious={step > 0}
-						onPrevious={handleBack}
-						isLastStep={isLastStep()}
-						formikBag={formikBag}
-					/>
-
-					<DisplayFormikState {...formikBag} />
-				</div>
-			)}
-		</Formik>
+		<div className="bestillingsveileder">
+			<StegVelger
+				steps={steps}
+				initialValues={initialValues}
+				copyValues={setSavedValues}
+				onSubmit={handleSubmit}
+			>
+				{(CurrentStep, formikBag) => (
+					<React.Fragment>
+						<Header data={headerData} />
+						<CurrentStep
+							formikBag={formikBag}
+							attributter={attributter}
+							checkAttributter={checkAttributter}
+						/>
+					</React.Fragment>
+				)}
+			</StegVelger>
+		</div>
 	)
 }

@@ -3,9 +3,8 @@ import { LOCATION_CHANGE } from 'connected-react-router'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _merge from 'lodash/merge'
-import config from '~/config'
 import { DollyApi, TpsfApi, SigrunApi, KrrApi, ArenaApi, InstApi, UdiApi } from '~/service/Api'
-import success from '~/utils/SuccessAction'
+import { onSuccess } from '~/ducks/utils/requestActions'
 import { DataSource } from '~/service/kodeverk/AttributtManager/Types'
 import { getIdentByIdSelector } from '~/ducks/gruppe'
 import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
@@ -129,9 +128,9 @@ export default function testbrukerReducer(state = initialState, action) {
 		case LOCATION_CHANGE:
 			if (!action.payload.location.pathname.match(/testbruker/gi)) return initialState
 			else return state
-		case success(GET_TPSF_TESTBRUKERE):
+		case onSuccess(GET_TPSF_TESTBRUKERE):
 			return { ...state, items: { ...state.items, tpsf: action.payload.data } }
-		case success(FRIGJOER_TESTBRUKER):
+		case onSuccess(FRIGJOER_TESTBRUKER):
 			return {
 				...state,
 				items: {
@@ -147,18 +146,18 @@ export default function testbrukerReducer(state = initialState, action) {
 				}
 			}
 
-		case success(GET_SIGRUN_TESTBRUKER):
+		case onSuccess(GET_SIGRUN_TESTBRUKER):
 			return {
 				...state,
 				items: {
 					...state.items,
 					sigrunstub: {
 						...state.items.sigrunstub,
-						[action.meta.ident]: action.payload && action.payload.data
+						[action.meta.ident]: action.payload && action.payload.data.responseList
 					}
 				}
 			}
-		case success(GET_SIGRUN_SEKVENSNR):
+		case onSuccess(GET_SIGRUN_SEKVENSNR):
 			const inntektData = state.items.sigrunstub[action.meta.ident]
 			const sekvensData = action.payload && action.payload.data
 			return {
@@ -171,7 +170,7 @@ export default function testbrukerReducer(state = initialState, action) {
 					}
 				}
 			}
-		case success(GET_KRR_TESTBRUKER):
+		case onSuccess(GET_KRR_TESTBRUKER):
 			return {
 				...state,
 				items: {
@@ -182,18 +181,18 @@ export default function testbrukerReducer(state = initialState, action) {
 					}
 				}
 			}
-		case success(GET_ARENA_TESTBRUKER):
+		case onSuccess(GET_ARENA_TESTBRUKER):
 			return {
 				...state,
 				items: {
 					...state.items,
 					arenaforvalteren: {
 						...state.items.arenaforvalteren,
-						[action.meta.ident]: action.payload && action.payload
+						[action.meta.ident]: action.payload && action.payload.data
 					}
 				}
 			}
-		case success(GET_AAREG_TESTBRUKER):
+		case onSuccess(GET_AAREG_TESTBRUKER):
 			return {
 				...state,
 				items: {
@@ -204,7 +203,7 @@ export default function testbrukerReducer(state = initialState, action) {
 					}
 				}
 			}
-		case success(GET_UDI_TESTBRUKER):
+		case onSuccess(GET_UDI_TESTBRUKER):
 			return {
 				...state,
 				items: {
@@ -215,7 +214,7 @@ export default function testbrukerReducer(state = initialState, action) {
 					}
 				}
 			}
-		case success(GET_TESTBRUKER_PERSONOPPSLAG):
+		case onSuccess(GET_TESTBRUKER_PERSONOPPSLAG):
 			return {
 				...state,
 				items: {
@@ -226,7 +225,7 @@ export default function testbrukerReducer(state = initialState, action) {
 					}
 				}
 			}
-		case success(GET_INST_TESTBRUKER):
+		case onSuccess(GET_INST_TESTBRUKER):
 			return {
 				...state,
 				items: {
@@ -253,7 +252,7 @@ export const fetchTpsfTestbrukere = () => (dispatch, getState) => {
 
 /**
  * Sjekke hvilke fagsystemer som har bestillingsstatus satt til 'OK'.
- * De systeme som har OK fetches
+ * De systemene som har OK fetches
  */
 export const getDataFraFagsystemer = personId => (dispatch, getState) => {
 	const state = getState()
@@ -378,4 +377,18 @@ export const sokSelector = (items, searchStr) => {
 	return items.filter(item => {
 		return item.some(v => v.toLowerCase().includes(query))
 	})
+}
+
+export const getDataForIdent = (state, ident) => {
+	const { items } = state.testbruker
+	return {
+		tpsf: items.tpsf.find(v => v.ident === ident),
+		sigrunstub: _get(items.sigrunstub, ident),
+		krrstub: _get(items.krrstub, ident),
+		arenaforvalteren: _get(items.arenaforvalteren, ident),
+		aareg: _get(items.aareg, ident),
+		pdlforvalter: _get(items.pdlforvalter, ident),
+		instdata: _get(items.instdata, ident),
+		udistub: _get(items.udistub, ident)
+	}
 }

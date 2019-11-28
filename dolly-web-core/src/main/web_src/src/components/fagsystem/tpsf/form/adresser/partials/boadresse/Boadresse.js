@@ -22,7 +22,7 @@ export const Boadresse = ({ formikBag }) => {
 	}
 
 	return (
-		<Kategori title="Boadresse">
+		<Kategori title="Gateadresse">
 			<div style={{ width: '100%' }}>
 				<GyldigAdresseVelger settBoadresse={settBoadresse} />
 				<DollyTextInput

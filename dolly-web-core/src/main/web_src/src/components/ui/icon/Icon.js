@@ -25,6 +25,7 @@ import ChevronLeft from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-le
 import ChevronRight from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-right-8.svg'
 import ButtonEmpty from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/filled-version-button-empty.svg'
 import ButtonFilled from '~/assets/icons/nav-ikoner/line/SVG/19-interface/line-version-expanded-button-empty.svg'
+import Man from '~/assets/icons/nav-ikoner/line/SVG/11-users/man.svg'
 
 import './Icon.less'
 
@@ -52,7 +53,8 @@ const icons = {
 	'chevron-left': ChevronLeft,
 	'chevron-right': ChevronRight,
 	'line-version-expanded-button-empty': ButtonEmpty,
-	'filled-version-button-empty': ButtonFilled
+	'filled-version-button-empty': ButtonFilled,
+	man: Man
 }
 
 const px = v => `${v}px`

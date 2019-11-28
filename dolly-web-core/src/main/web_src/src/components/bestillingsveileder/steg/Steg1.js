@@ -1,23 +1,16 @@
 import React from 'react'
 import Overskrift from '~/components/ui/overskrift/Overskrift'
-import { getInitialValues } from '~/service/Attributter'
-import { FormikAttributtVelger } from '~/components/attributtVelger-ny/AttributtVelger'
+import { AttributtVelger } from '~/components/attributtVelger-ny/AttributtVelger'
 
-export const Steg1 = ({ formikBag }) => {
+export const Steg1 = ({ formikBag, attributter, checkAttributter }) => {
 	return (
 		<div>
-			<Overskrift label="Velg egenskaper" />
-			<FormikAttributtVelger formikBag={formikBag} />
+			<AttributtVelger valgteAttributter={attributter} checkAttributter={checkAttributter} />
 		</div>
 	)
 }
 
-const initialValues = Object.assign(
-	{},
-	{
-		attributter: getInitialValues()
-	}
-)
-
 Steg1.label = 'Velg egenskaper'
-Steg1.initialValues = initialValues
+Steg1.initialValues = attrs => {
+	return {}
+}

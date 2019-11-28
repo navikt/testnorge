@@ -2,8 +2,8 @@ import Formatters from '~/utils/DataFormatter'
 import _set from 'lodash/set'
 
 export const getAttributesFromMal = mal => {
-	const tpsfKriterier = JSON.parse(mal.tpsfKriterier)
-	const bestKriterier = JSON.parse(mal.bestKriterier)
+	const tpsfKriterier = mal.tpsfKriterier
+	const bestKriterier = mal.bestKriterier
 	let attrArray = []
 	attrArray = Object.keys(tpsfKriterier).filter(k => {
 		if (
@@ -51,8 +51,8 @@ export const getAttributesFromMal = mal => {
 
 export const getValuesFromMal = mal => {
 	let reduxStateValue = {}
-	const tpsfKriterierArray = Object.entries(JSON.parse(mal.tpsfKriterier))
-	const bestKriterierArray = Object.entries(JSON.parse(mal.bestKriterier))
+	const tpsfKriterierArray = Object.entries(mal.tpsfKriterier)
+	const bestKriterierArray = Object.entries(mal.bestKriterier)
 	_mapValuesToObject(reduxStateValue, tpsfKriterierArray)
 
 	bestKriterierArray.forEach(reg => {

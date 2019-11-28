@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useMount } from 'react-use'
+import useBoolean from '~/utils/hooks/useBoolean'
 import Knapp from 'nav-frontend-knapper'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import Loading from '~/components/ui/loading/Loading'
@@ -8,6 +9,7 @@ import BestillingListeConnector from './BestillingListe/BestillingListeConnector
 import GruppeHeader from './GruppeHeader/GruppeHeader'
 import Toolbar from '~/components/ui/toolbar/Toolbar'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
+import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
 
 const VISNING_TESTPERSONER = 'testpersoner'
 const VISNING_BESTILLING = 'bestilling'
@@ -24,6 +26,7 @@ export default function Gruppe({
 	history
 }) {
 	const [visning, setVisning] = useState(VISNING_TESTPERSONER)
+	const [startBestillingAktiv, visStartBestilling, skjulStarBestilling] = useBoolean(false)
 	useMount(() => {
 		getGruppe()
 		getBestillinger()
@@ -48,7 +51,8 @@ export default function Gruppe({
 		}
 	]
 
-	const startBestilling = () => history.push(`/gruppe/${match.params.gruppeId}/bestilling`)
+	const startBestilling = values =>
+		history.push(`/gruppe/${match.params.gruppeId}/bestilling-ny`, values)
 
 	const searchfieldPlaceholderSelector = () => {
 		if (visning === VISNING_BESTILLING) return 'Søk i bestillinger'
@@ -71,10 +75,14 @@ export default function Gruppe({
 				toggleCurrent={visning}
 				toggleValues={toggleValues}
 			>
-				<Knapp type="hoved" onClick={startBestilling}>
+				<Knapp type="hoved" onClick={visStartBestilling}>
 					Opprett personer
 				</Knapp>
 			</Toolbar>
+
+			{startBestillingAktiv && (
+				<BestillingsveilederModal onSubmit={startBestilling} onAvbryt={skjulStarBestilling} />
+			)}
 
 			{visning === VISNING_TESTPERSONER && <TestbrukerListeConnector />}
 			{visning === VISNING_BESTILLING && <BestillingListeConnector gruppeId={gruppe.id} />}
