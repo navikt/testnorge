@@ -31,8 +31,8 @@ export default {
 		return Request.delete(Endpoints.gruppeById(gruppeId))
 	},
 
-	updateGruppeAttributter(gruppeId, data) {
-		return Request.put(Endpoints.gruppeAttributter(gruppeId), data)
+	updateBeskrivelse(gruppeId, data) {
+		return Request.put(Endpoints.gruppeBeskrivelse(gruppeId), data)
 	},
 
 	createBestilling(gruppeId, data) {

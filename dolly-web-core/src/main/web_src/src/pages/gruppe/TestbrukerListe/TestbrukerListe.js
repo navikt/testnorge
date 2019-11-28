@@ -4,19 +4,17 @@ import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Formatters from '~/utils/DataFormatter'
-<<<<<<< HEAD
 import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
-=======
 // import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
->>>>>>> c3498ca91a5cd2c219f321681d4e395bc3de7d6b
 
 export default function TestbrukerListe({
 	isFetching,
 	testbrukerListe,
 	searchActive,
-	getTPSFTestbrukere
+	getTPSFTestbrukere,
+	gruppeId
 }) {
 	useMount(getTPSFTestbrukere)
 
@@ -79,7 +77,9 @@ export default function TestbrukerListe({
 		<DollyTable
 			data={sortedTestbrukere}
 			columns={columns}
-			onExpand={bruker => <PersonVisningConnector personId={bruker[0]} bestillingId={bruker[5]} />}
+			onExpand={bruker => (
+				<PersonVisningConnector personId={bruker[0]} bestillingId={bruker[5]} gruppeId={gruppeId} />
+			)}
 			pagination
 		/>
 	)

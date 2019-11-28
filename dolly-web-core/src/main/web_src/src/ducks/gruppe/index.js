@@ -14,6 +14,11 @@ export const getGrupperByUserId = createAction('GET_GRUPPER_BY_USER_ID', DollyAp
 // CRUD
 export const createGruppe = createAction('CREATE_GRUPPE', DollyApi.createGruppe)
 export const updateGruppe = createAction('UPDATE_GRUPPE', DollyApi.updateGruppe)
+export const updateBeskrivelse = createAction(
+	'UPDATE_BESKRIVELSE',
+	DollyApi.updateBeskrivelse,
+	(gruppeId, data) => ({ gruppeId, data })
+)
 export const deleteGruppe = createAction('DELETE_GRUPPE', DollyApi.deleteGruppe, gruppeId => ({
 	gruppeId
 }))
@@ -54,11 +59,13 @@ export default handleActions(
 				}))
 			}
 		},
-		[success(updateIdentAttributter)](state, action) {
+
+		[onSuccess(updateIdentAttributter)](state, action) {
 			return {
 				...state,
 				data: state.data.map(item => ({
 					...item,
+
 					identer: item.identer.map((identer, idx) => ({
 						...identer,
 						ibruk:
@@ -70,7 +77,22 @@ export default handleActions(
 			}
 		},
 
-		[success(deleteGruppe)](state, action) {
+		[onSuccess(updateBeskrivelse)](state, action) {
+			return {
+				...state,
+				data: state.data.map(item => ({
+					...item,
+					identer: item.identer.map(ident => ({
+						...ident,
+						beskrivelse:
+							ident.ident === action.payload.data.ident
+								? action.payload.data.beskrivelse
+								: ident.beskrivelse
+					}))
+				}))
+			}
+		},
+		[onSuccess(deleteGruppe)](state, action) {
 			return {
 				...state,
 				data: state.data.filter(item => item.id !== action.meta.gruppeId)
