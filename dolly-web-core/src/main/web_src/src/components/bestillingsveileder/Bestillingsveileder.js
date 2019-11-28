@@ -49,7 +49,6 @@ export const Bestillingsveileder = props => {
 							formikBag={formikBag}
 							attributter={attributter}
 							checkAttributter={checkAttributter}
-							props={props}
 						/>
 					</React.Fragment>
 				)}

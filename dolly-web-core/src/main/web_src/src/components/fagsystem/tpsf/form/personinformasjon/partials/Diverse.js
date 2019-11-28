@@ -7,17 +7,32 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 export const Diverse = ({ formikBag }) => (
 	<Kategori title="Diverse" vis={pathAttrs.kategori.diverse}>
-		<FormikSelect name="tpsf.kjonn" label="Kjønn" kodeverk="Kjønnstyper" />
+		<FormikSelect name="tpsf.kjonn" label="Kjønn" kodeverk="Kjønnstyper" visHvisAvhuket />
 
-		<FormikSelect name="tpsf.harMellomnavn" label="Mellomnavn" options={Options('boolean')} />
+		<FormikSelect
+			name="tpsf.harMellomnavn"
+			label="Mellomnavn"
+			options={Options('boolean')}
+			visHvisAvhuket
+		/>
 
-		<FormikSelect name="tpsf.sivilstand" label="Sivilstand" kodeverk="Sivilstander" />
+		<FormikSelect
+			name="tpsf.sivilstand"
+			label="Sivilstand"
+			kodeverk="Sivilstander"
+			visHvisAvhuket
+		/>
 
-		<FormikSelect name="tpsf.sprakKode" label="Språk" kodeverk="Språk" />
+		<FormikSelect name="tpsf.sprakKode" label="Språk" kodeverk="Språk" visHvisAvhuket />
 
-		<FormikDatepicker name="tpsf.egenAnsattDatoFom" label="Egenansatt fra" />
+		<FormikDatepicker name="tpsf.egenAnsattDatoFom" label="Egenansatt fra" visHvisAvhuket />
 
-		<FormikSelect name="tpsf.spesreg" label="Diskresjonskode" kodeverk="Diskresjonskoder" />
+		<FormikSelect
+			name="tpsf.spesreg"
+			label="Diskresjonskode"
+			kodeverk="Diskresjonskoder"
+			visHvisAvhuket
+		/>
 
 		<Vis attributt="tpsf.erForsvunnet">
 			<FormikSelect name="tpsf.erForsvunnet" label="Er forsvunnet" options={Options('boolean')} />
