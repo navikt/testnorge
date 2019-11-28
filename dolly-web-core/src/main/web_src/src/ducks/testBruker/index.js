@@ -188,7 +188,7 @@ export default function testbrukerReducer(state = initialState, action) {
 					...state.items,
 					arenaforvalteren: {
 						...state.items.arenaforvalteren,
-						[action.meta.ident]: action.payload && action.payload
+						[action.meta.ident]: action.payload && action.payload.data
 					}
 				}
 			}
