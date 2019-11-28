@@ -9,7 +9,7 @@ export const ArenaVisning = ({ data, bestData, loading }) => {
 	if (!data) return false
 
 	// Areneforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
-	const brukertype = data.data.arbeidsokerList[0].servicebehov
+	const brukertype = data.arbeidsokerList[0].servicebehov
 	const { kvalifiseringsgruppe, inaktiveringDato, aap115, aap } = bestData
 
 	return (
