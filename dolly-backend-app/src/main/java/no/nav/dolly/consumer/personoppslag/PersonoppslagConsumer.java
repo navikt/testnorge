@@ -6,18 +6,18 @@ import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
 import static no.nav.dolly.domain.resultset.pdlforvalter.TemaGrunnlag.GEN;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import lombok.RequiredArgsConstructor;
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.dolly.security.sts.StsOidcService;
+import java.net.URI;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.JsonNode;
 
-import java.net.URI;
-import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import no.nav.dolly.properties.ProvidersProps;
+import no.nav.dolly.security.sts.StsOidcService;
 
 @Component
 @RequiredArgsConstructor
@@ -40,8 +40,8 @@ public class PersonoppslagConsumer {
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(providersProps.getPersonOppslag().getUrl() + PERSONOPPSLAG_URL))
                 .header(AUTHORIZATION, resolveToken())
-                .header(HEADER_NAV_CALL_ID, "Dolly: " + UUID.randomUUID().toString())
                 .header(HEADER_NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(PREPROD_ENV))
+                .header(HEADER_NAV_CALL_ID, "Dolly: " + UUID.randomUUID().toString())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .header(OPPLYSNINGSTYPER, "FalskIdentitet,KontaktinformasjonForDoedsbo,UtenlandskIdentifikasjonsnummer")
                 .header(TEMA, GEN.name())
