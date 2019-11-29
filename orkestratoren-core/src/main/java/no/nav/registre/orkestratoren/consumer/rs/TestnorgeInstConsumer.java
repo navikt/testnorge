@@ -30,6 +30,8 @@ public class TestnorgeInstConsumer {
     private static final ParameterizedTypeReference<List<InstitusjonsoppholdResponse>> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<>() {
     };
 
+    private static final String HEADER_NAV_CALL_ID = "Nav-Call-Id";
+    private static final String HEADER_NAV_CONSUMER_ID = "Nav-Consumer-Id";
     private static final String NAV_CALL_ID = "orkestratoren";
     private static final String NAV_CONSUMER_ID = "orkestratoren";
     private static final String MILJOE = "q2";
@@ -53,8 +55,8 @@ public class TestnorgeInstConsumer {
     ) {
         var postRequest = RequestEntity.post(startSyntetiseringUrl.expand(MILJOE))
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("navCallId", NAV_CALL_ID)
-                .header("navConsumerId", NAV_CONSUMER_ID)
+                .header(HEADER_NAV_CALL_ID, NAV_CALL_ID)
+                .header(HEADER_NAV_CONSUMER_ID, NAV_CONSUMER_ID)
                 .body(syntetiserInstRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE_START_SYNT);
     }
@@ -67,8 +69,8 @@ public class TestnorgeInstConsumer {
 
         for (var partisjonerteIdenter : Lists.partition(identer, 80)) {
             var deleteRequest = RequestEntity.delete(sletteIdenterUrl.expand(MILJOE, convertListToString(partisjonerteIdenter)))
-                    .header("navCallId", NAV_CALL_ID)
-                    .header("navConsumerId", NAV_CONSUMER_ID)
+                    .header(HEADER_NAV_CALL_ID, NAV_CALL_ID)
+                    .header(HEADER_NAV_CONSUMER_ID, NAV_CONSUMER_ID)
                     .build();
             try {
                 var body = restTemplate.exchange(deleteRequest, RESPONSE_TYPE_DELETE).getBody();
