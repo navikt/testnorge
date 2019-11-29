@@ -17,10 +17,9 @@ const VISNING_BESTILLING = 'bestilling'
 export default function Gruppe({
 	getGruppe,
 	getBestillinger,
-	gruppeArray,
+	gruppe,
 	isFetching,
 	deleteGruppe,
-	antallBestillinger,
 	isDeletingGruppe,
 	match,
 	history
@@ -34,11 +33,9 @@ export default function Gruppe({
 
 	if (isFetching) return <Loading label="Laster testpersoner" panel />
 
-	if (!gruppeArray) return null
+	if (!gruppe) return null
 
 	const byttVisning = event => setVisning(event.target.value)
-
-	const gruppe = gruppeArray[0]
 
 	const toggleValues = [
 		{
@@ -47,12 +44,12 @@ export default function Gruppe({
 		},
 		{
 			value: VISNING_BESTILLING,
-			label: `Bestillinger (${antallBestillinger})`
+			label: `Bestillinger (${gruppe.identer.map(b => b.bestillingId).flat().length})`
 		}
 	]
 
 	const startBestilling = values =>
-		history.push(`/gruppe/${match.params.gruppeId}/bestilling-ny`, values)
+		history.push(`/gruppe/${match.params.gruppeId}/bestilling`, values)
 
 	const searchfieldPlaceholderSelector = () => {
 		if (visning === VISNING_BESTILLING) return 'Søk i bestillinger'
@@ -79,12 +76,11 @@ export default function Gruppe({
 					Opprett personer
 				</Knapp>
 			</Toolbar>
-
-			{visning === VISNING_TESTPERSONER && <TestbrukerListeConnector gruppeId={gruppe.id} />}
 			{startBestillingAktiv && (
 				<BestillingsveilederModal onSubmit={startBestilling} onAvbryt={skjulStarBestilling} />
 			)}
 
+			{visning === VISNING_TESTPERSONER && <TestbrukerListeConnector gruppeId={gruppe.id} />}
 			{visning === VISNING_BESTILLING && <BestillingListeConnector gruppeId={gruppe.id} />}
 		</div>
 	)

@@ -1,25 +1,24 @@
 import { connect } from 'react-redux'
-import { getGruppe, deleteGruppe, antallBestillingerSelector } from '~/ducks/gruppe'
+import { actions, selectGruppeById } from '~/ducks/gruppe'
 import { getBestillinger } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
 import { resetSearch } from '~/ducks/search'
 import Gruppe from './Gruppe'
 
-const loadingSelector = createLoadingSelector([getGruppe, getBestillinger])
-const loadingSelectorSlettGruppe = createLoadingSelector(deleteGruppe)
+const loadingSelector = createLoadingSelector([actions.getById, getBestillinger])
+const loadingSelectorSlettGruppe = createLoadingSelector(actions.remove)
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
 	isFetching: loadingSelector(state),
 	isDeletingGruppe: loadingSelectorSlettGruppe(state),
-	gruppeArray: state.gruppe.data,
-	antallBestillinger: antallBestillingerSelector(state.gruppe.data)
+	gruppe: selectGruppeById(state, ownProps.match.params.gruppeId)
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	const { gruppeId } = ownProps.match.params
 	return {
-		getGruppe: () => dispatch(getGruppe(gruppeId)),
-		deleteGruppe: () => dispatch(deleteGruppe(gruppeId)),
+		getGruppe: () => dispatch(actions.getById(gruppeId)),
+		deleteGruppe: () => dispatch(actions.remove(gruppeId)),
 		getBestillinger: () => dispatch(getBestillinger(gruppeId)),
 		resetSearch: () => dispatch(resetSearch())
 	}

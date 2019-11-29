@@ -10,9 +10,10 @@ import Liste from './Liste'
 
 export default function GruppeOversikt({
 	getGrupper,
-	getMineGrupper,
+	fetchMineGrupper,
 	isFetching,
 	gruppeListe,
+	mineIds,
 	history,
 	searchActive
 }) {
@@ -20,10 +21,12 @@ export default function GruppeOversikt({
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
 
 	useEffect(() => {
-		visning === 'mine' ? getMineGrupper() : getGrupper()
+		visning === 'mine' ? fetchMineGrupper() : getGrupper()
 	}, [visning])
 
 	const byttVisning = event => setVisning(event.target.value)
+
+	const items = visning === 'mine' ? gruppeListe.filter(v => mineIds.includes(v.id)) : gruppeListe
 
 	return (
 		<div className="oversikt-container">
@@ -46,12 +49,7 @@ export default function GruppeOversikt({
 
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
 
-			<Liste
-				items={gruppeListe}
-				history={history}
-				isFetching={isFetching}
-				searchActive={searchActive}
-			/>
+			<Liste items={items} history={history} isFetching={isFetching} searchActive={searchActive} />
 		</div>
 	)
 }

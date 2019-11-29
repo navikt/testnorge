@@ -168,28 +168,6 @@ Formatters.gtTypeLabel = gtType => {
 	return gtTypeLabel
 }
 
-Formatters.sort2DArray = (array, i) => {
-	// i er indexen av verdi som man ønsker å sortere på
-	return array.sort((a, b) => {
-		var lengde = Formatters.getIdLengde(a[i])
-		var aSub = a[i].substr(0, lengde)
-		var bSub = b[i].substr(0, lengde)
-		return bSub - aSub
-	})
-}
-
-Formatters.flat2DArray = (array, i) => {
-	if (!array) return null
-
-	array.forEach(person => {
-		if (person[i].includes(',')) {
-			const arrayValues = person[i].split(',')
-			person[i] = Math.max(...arrayValues).toString() + ' ...'
-		}
-	})
-	return array
-}
-
 Formatters.getIdLengde = id => {
 	if (!id) return null
 

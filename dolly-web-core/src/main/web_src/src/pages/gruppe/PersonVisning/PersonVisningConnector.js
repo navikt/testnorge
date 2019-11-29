@@ -3,30 +3,18 @@ import { withRouter } from 'react-router-dom'
 import { createSelector } from 'reselect'
 import { push } from 'connected-react-router'
 import { getBestillingById } from '~/ducks/bestillingStatus'
-import { getIdentByIdSelector } from '~/ducks/gruppe'
-import {
-	getDataFraFagsystemer,
-	getDataForIdent,
-	GET_KRR_TESTBRUKER,
-	GET_SIGRUN_TESTBRUKER,
-	GET_SIGRUN_SEKVENSNR,
-	GET_AAREG_TESTBRUKER,
-	GET_TESTBRUKER_PERSONOPPSLAG,
-	GET_ARENA_TESTBRUKER,
-	GET_INST_TESTBRUKER,
-	GET_UDI_TESTBRUKER
-} from '~/ducks/testBruker'
-import { FRIGJOER_TESTBRUKER } from '~/ducks/testBruker'
+import { selectIdentById } from '~/ducks/gruppe'
+import { fetchDataFraFagsystemer, selectDataForIdent, actions } from '~/ducks/fagsystem'
 import { createLoadingSelector } from '~/ducks/loading'
 import { PersonVisning } from './PersonVisning'
 
-const loadingSelectorKrr = createLoadingSelector(GET_KRR_TESTBRUKER)
-const loadingSelectorSigrun = createLoadingSelector([GET_SIGRUN_TESTBRUKER, GET_SIGRUN_SEKVENSNR])
-const loadingSelectorAareg = createLoadingSelector(GET_AAREG_TESTBRUKER)
-const loadingSelectorPdlf = createLoadingSelector(GET_TESTBRUKER_PERSONOPPSLAG)
-const loadingSelectorArena = createLoadingSelector(GET_ARENA_TESTBRUKER)
-const loadingSelectorInst = createLoadingSelector(GET_INST_TESTBRUKER)
-const loadingSelectorUdi = createLoadingSelector(GET_UDI_TESTBRUKER)
+const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
+const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
+const loadingSelectorAareg = createLoadingSelector(actions.getAareg)
+const loadingSelectorPdlf = createLoadingSelector(actions.getPDL)
+const loadingSelectorArena = createLoadingSelector(actions.getArena)
+const loadingSelectorInst = createLoadingSelector(actions.getInst)
+const loadingSelectorUdi = createLoadingSelector(actions.getUdi)
 
 const loadingSelector = createSelector(
 	state => state.loading,
@@ -45,15 +33,15 @@ const loadingSelector = createSelector(
 
 const mapStateToProps = (state, ownProps) => ({
 	loading: loadingSelector(state),
-	testIdent: getIdentByIdSelector(state, ownProps.personId),
-	data: getDataForIdent(state, ownProps.personId),
+	testIdent: selectIdentById(state, ownProps.personId),
+	data: selectDataForIdent(state, ownProps.personId),
 	bestilling: getBestillingById(state.bestillingStatuser.data, ownProps.bestillingId)
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-	getDataFraFagsystemer: () => dispatch(getDataFraFagsystemer(ownProps.personId)),
+	fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
 	frigjoerTestbruker: () =>
-		dispatch(FRIGJOER_TESTBRUKER(ownProps.match.params.gruppeId, ownProps.personId)),
+		dispatch(actions.frigjoerTestbruker(ownProps.match.params.gruppeId, ownProps.personId)),
 	editAction: () => dispatch(push(`${ownProps.match.url}/testbruker/${ownProps.personId}`))
 })
 

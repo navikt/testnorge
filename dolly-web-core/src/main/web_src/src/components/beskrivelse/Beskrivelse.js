@@ -7,7 +7,7 @@ import Loading from '~/components/ui/loading/Loading'
 
 import './Beskrivelse.less'
 
-export const Beskrivelse = ({ beskrivelse, updateBeskrivelse, isUpdatingBeskrivelse }) => {
+export const Beskrivelse = ({ ident, updateBeskrivelse, isUpdatingBeskrivelse }) => {
 	const [isEditing, turnOnEditing, turnOffEditing] = useBoolean(false)
 
 	if (isUpdatingBeskrivelse) return <Loading label="oppdaterer beskrivelse" />
@@ -18,11 +18,11 @@ export const Beskrivelse = ({ beskrivelse, updateBeskrivelse, isUpdatingBeskrive
 			{isEditing ? (
 				<BeskrivelseEditor
 					turnOffEditing={turnOffEditing}
-					beskrivelse={beskrivelse}
+					beskrivelse={ident.beskrivelse}
 					updateBeskrivelse={updateBeskrivelse}
 				/>
 			) : (
-				<BeskrivelseFelt turnOnEditing={turnOnEditing} beskrivelse={beskrivelse} />
+				<BeskrivelseFelt turnOnEditing={turnOnEditing} beskrivelse={ident.beskrivelse} />
 			)}
 		</div>
 	)

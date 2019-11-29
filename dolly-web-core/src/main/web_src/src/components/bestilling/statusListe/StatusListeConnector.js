@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { getGruppe } from '~/ducks/gruppe'
+import { actions } from '~/ducks/gruppe'
 import { createLoadingSelector } from '~/ducks/loading'
 import {
 	getBestillinger,
@@ -19,7 +19,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-	getGruppe: () => dispatch(getGruppe(ownProps.gruppeId)),
+	getGruppe: () => dispatch(actions.getById(ownProps.gruppeId)),
 	getBestillinger: () => dispatch(getBestillinger(ownProps.gruppeId)),
 	removeNyBestillingStatus: bestillingId => dispatch(removeNyBestillingStatus(bestillingId)),
 	cancelBestilling: bestillingId => dispatch(cancelBestilling(bestillingId))
