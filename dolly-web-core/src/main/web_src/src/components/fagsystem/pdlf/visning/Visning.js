@@ -8,7 +8,10 @@ export const PdlfVisning = ({ data, loading }) => {
 
 	return (
 		<div>
-			<UtenlandsId data={data.utenlandskIdentifikasjonsnummer} loading={loading} />
+			<UtenlandsId
+				data={data.personidenter && data.personidenter.utenlandskeIdentifikasjonsnummere}
+				loading={loading}
+			/>
 			<FalskIdentitet data={data.falskIdentitet} />
 			<DoedsboKontaktinfo data={data.kontaktinformasjonForDoedsbo} />
 			{/* IKKE FERDIG */}
