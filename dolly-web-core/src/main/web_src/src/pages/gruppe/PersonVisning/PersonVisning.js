@@ -11,42 +11,13 @@ import './PersonVisning.less'
 export const PersonVisning = ({ getDataFraFagsystemer, data, testIdent, bestilling, loading }) => {
 	useMount(getDataFraFagsystemer)
 
-	// data.pdlforvalter = {
-	// 	falskIdentitet: {
-	// 		erFalsk: true,
-	// 		rettIdentitetErUkjent: true,
-	// 	}
-	// }
-
-	// data.pdlforvalter = {
-	// 	falskIdentitet: {
-	// 		erFalsk: true,
-	// 		rettIdentitetErUkjent: false,
-	// 		rettIdentitetVedIdentifikasjonsnummer: '12345678901'
-	// 	}
-	// }
-
-	// data.pdlforvalter = {
-	// 	falskIdentitet: {
-	// 		erFalsk: true,
-	// 		rettIdentitetErUkjent: false,
-	// 		rettIdentitetVedOpplysninger: {
-	// 			personnavn: {
-	// 				fornavn: 'Johnny',
-	// 				mellomnavn: 'Testus',
-	// 				etternavn: 'Bravo'
-	// 			},
-	// 			foedselsdato: '2015-03-25',
-	// 			statsborgerskap: 'Uzbekistan',
-	// 			kjoenn: 'Ukjent'
-	// 		}
-	// 	}
-	// }
-
 	return (
 		<div className="person-visning">
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.tpsfKriterier)} />
-			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
+			<PdlfVisning
+				data={(console.log('data :', data), data.pdlforvalter)}
+				loading={loading.pdlforvalter}
+			/>
 
 			{/* <SigrunVisning /> */}
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
