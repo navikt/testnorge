@@ -12,62 +12,74 @@ export const DoedsboKontaktinfo = ({ data, loading }) => {
 		<div>
 			<SubOverskrift label="Kontaktinformasjon for dødsbo" />
 			<div>
-				{data.map((id, idx) => (
-					<div className="person-visning_content" key={idx}>
-						{id.personSomKontakt && (
-							<Fragment>
-								{id.personSomKontakt.personnavn && (
-									<Personnavn data={id.personSomKontakt.personnavn} />
-								)}
-								<TitleValue title="Fødselsdato" value={id.personSomKontakt.foedselsdato} />
+				{
+					(console.log('data :', data),
+					data.map((id, idx) => (
+						<div className="person-visning_content" key={(console.log('id ,', id), idx)}>
+							{/* Addressat eksistenssjekk */}
+							{id.adressat && id.adressat.kontaktpersonUtenIdNummerSomAdressat && (
+								<Fragment>
+									{id.adressat.kontaktpersonUtenIdNummerSomAdressat.navn && (
+										<Personnavn data={id.adressat.kontaktpersonUtenIdNummerSomAdressat.navn} />
+									)}
+									<TitleValue
+										title="Fødselsdato"
+										value={id.adressat.kontaktpersonUtenIdNummerSomAdressat.foedselsdato}
+									/>
+								</Fragment>
+							)}
+
+							{id.adressat && id.adressat.kontaktpersonMedIdNummerSomAdressat && (
 								<TitleValue
-									title="Identifikasjonsnummer"
-									value={id.personSomKontakt.identifikasjonsnummer}
+									title="FNR/DNR/BOST"
+									value={id.adressat.kontaktpersonMedIdNummerSomAdressat.idNummer}
 								/>
-							</Fragment>
-						)}
-						{id.advokatSomKontakt && (
-							<Fragment>
-								<TitleValue
-									title="Organisasjonsnavn"
-									value={id.advokatSomKontakt.organisasjonsnavn}
-								/>
-								<TitleValue
-									title="Organisasjonsnummer"
-									value={id.advokatSomKontakt.organisasjonsnummer}
-								/>
-								{id.advokatSomKontakt.personnavn && (
-									<Personnavn data={id.advokatSomKontakt.personnavn} />
-								)}
-							</Fragment>
-						)}
-						{id.organisasjonSomKontakt && (
-							<Fragment>
-								<TitleValue
-									title="Organisasjonsnavn"
-									value={id.organisasjonSomKontakt.organisasjonsnavn}
-								/>
-								<TitleValue
-									title="Organisasjonsnummer"
-									value={id.organisasjonSomKontakt.organisasjonsnummer}
-								/>
-								{id.organisasjonSomKontakt.kontaktperson && (
-									<Personnavn data={id.organisasjonSomKontakt.kontaktperson} />
-								)}
-							</Fragment>
-						)}
-						{id.adresse && (
-							<Fragment>
-								<TitleValue title="Adresselinje 1" value={id.adresse.adresselinje1} />
-								<TitleValue title="Adresselinje 2" value={id.adresse.adresselinje2} />
-								<TitleValue title="Landkode" value={id.adresse.landkode} />
-								<TitleValue title="Postnummer" value={id.adresse.postnummer} />
-								<TitleValue title="Poststedsnavn" value={id.adresse.poststedsnavn} />
-							</Fragment>
-						)}
-						<TitleValue title="Skifteform" value={id.skifteform} />
-					</div>
-				))}
+							)}
+							{id.adressat && id.adressat.advokatSomAdressat && (
+								<Fragment>
+									{/* Hvor har disse blitt av? */}
+									<TitleValue
+										title="Organisasjonsnavn"
+										value={id.adressat.advokatSomAdressat.organisasjonsnavn}
+									/>
+									<TitleValue
+										title="Organisasjonsnummer"
+										value={id.adressat.advokatSomAdressat.organisasjonsnummer}
+									/>
+									{id.adressat.advokatSomAdressat.kontaktperson && (
+										<Personnavn data={id.adressat.advokatSomAdressat.kontaktperson} />
+									)}
+								</Fragment>
+							)}
+							{/* Bestilling fungerer ikke imot organisasjon som kontakt */}
+							{id.organisasjonSomKontakt && (
+								<Fragment>
+									<TitleValue
+										title="Organisasjonsnavn"
+										value={id.organisasjonSomKontakt.organisasjonsnavn}
+									/>
+									<TitleValue
+										title="Organisasjonsnummer"
+										value={id.organisasjonSomKontakt.organisasjonsnummer}
+									/>
+									{id.organisasjonSomKontakt.kontaktperson && (
+										<Personnavn data={id.organisasjonSomKontakt.kontaktperson} />
+									)}
+								</Fragment>
+							)}
+							<TitleValue title="Adresselinje 1" value={id.adresselinje1} />
+							<TitleValue title="Adresselinje 2" value={id.adresselinje2} />
+							<TitleValue
+								title="Postnummer og -sted"
+								value={id.postnummer + ' ' + id.poststedsnavn}
+							/>
+							<TitleValue title="Landkode" value={id.landkode} />
+							<TitleValue title="Skifteform" value={id.skifteform} />
+							<TitleValue title="Dato Utstedt" value={id.utstedtDato} />
+							<TitleValue title="Gyldig Fra" value={id.gyldigFom} />
+						</div>
+					)))
+				}
 			</div>
 		</div>
 	)
