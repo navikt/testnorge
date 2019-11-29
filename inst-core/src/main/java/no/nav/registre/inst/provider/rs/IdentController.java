@@ -1,5 +1,7 @@
 package no.nav.registre.inst.provider.rs;
 
+import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
+import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
 import static no.nav.registre.inst.service.Inst2FasitService.FASIT_FEILMELDING;
 
 import com.google.common.collect.Maps;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +50,8 @@ public class IdentController {
     @PostMapping("/ident")
     @ApiOperation(value = "Her kan man opprette ett institusjonsopphold i inst2.")
     public OppholdResponse opprettInstitusjonsopphold(
-            @RequestHeader String navCallId,
-            @RequestHeader String navConsumerId,
+            @RequestHeader (HEADER_NAV_CALL_ID) @NotBlank String navCallId,
+            @RequestHeader (HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
             @RequestParam String miljoe,
             @RequestBody Institusjonsopphold institusjonsopphold
     ) {
@@ -58,8 +61,8 @@ public class IdentController {
     @GetMapping("/ident")
     @ApiOperation(value = "Her kan man hente alle institusjonsoppholdene tilhørende angitte identer fra inst2.")
     public List<Institusjonsopphold> hentInstitusjonsopphold(
-            @RequestHeader String navCallId,
-            @RequestHeader String navConsumerId,
+            @RequestHeader (HEADER_NAV_CALL_ID) @NotBlank String navCallId,
+            @RequestHeader (HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
             @RequestParam String miljoe,
             @RequestParam List<String> identer
     ) {
@@ -70,8 +73,8 @@ public class IdentController {
     @ApiOperation(value = "Her kan man oppdatere et institusjonsopphold med angitt oppholdId i inst2.")
     public ResponseEntity oppdaterInstitusjonsopphold(
             @PathVariable Long oppholdId,
-            @RequestHeader String navCallId,
-            @RequestHeader String navConsumerId,
+            @RequestHeader (HEADER_NAV_CALL_ID) @NotBlank String navCallId,
+            @RequestHeader (HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
             @RequestParam String miljoe,
             @RequestBody Institusjonsopphold institusjonsopphold
     ) {
@@ -81,8 +84,8 @@ public class IdentController {
     @DeleteMapping("/ident")
     @ApiOperation(value = "Her kan man slette alle institusjonsoppholdene med de angitte oppholdId-ene fra inst2.")
     public Map<Long, ResponseEntity> slettInstitusjonsopphold(
-            @RequestHeader String navCallId,
-            @RequestHeader String navConsumerId,
+            @RequestHeader (HEADER_NAV_CALL_ID) @NotBlank String navCallId,
+            @RequestHeader (HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
             @RequestParam String miljoe,
             @RequestParam List<Long> oppholdIder
     ) {
@@ -115,8 +118,8 @@ public class IdentController {
     @PostMapping("/ident/batch")
     @ApiOperation(value = "Her kan man opprette flere institusjonsopphold i inst2.")
     public List<OppholdResponse> opprettFlereInstitusjonsopphold(
-            @RequestHeader String navCallId,
-            @RequestHeader String navConsumerId,
+            @RequestHeader (HEADER_NAV_CALL_ID) @NotBlank String navCallId,
+            @RequestHeader (HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
             @RequestParam String miljoe,
             @RequestBody List<Institusjonsopphold> institusjonsopphold
     ) {
@@ -126,8 +129,8 @@ public class IdentController {
     @DeleteMapping("/ident/batch")
     @ApiOperation(value = "Her kan man slette alle institusjonsoppholdene til de angitte identene fra inst2.")
     public List<OppholdResponse> slettIdenter(
-            @RequestHeader String navCallId,
-            @RequestHeader String navConsumerId,
+            @RequestHeader (HEADER_NAV_CALL_ID) @NotBlank String navCallId,
+            @RequestHeader (HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
             @RequestParam String miljoe,
             @RequestParam List<String> identer
     ) {

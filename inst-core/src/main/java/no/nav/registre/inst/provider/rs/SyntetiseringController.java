@@ -1,5 +1,8 @@
 package no.nav.registre.inst.provider.rs;
 
+import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
+import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +30,8 @@ public class SyntetiseringController {
     @LogExceptions
     @PostMapping(value = "/generer")
     public Map<String, List<OppholdResponse>> genererInstitusjonsmeldinger(
-            @RequestHeader String navCallId,
-            @RequestHeader String navConsumerId,
+            @RequestHeader (HEADER_NAV_CALL_ID) @NotBlank String navCallId,
+            @RequestHeader (HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
             @RequestParam String miljoe,
             @RequestBody SyntetiserInstRequest syntetiserInstRequest
     ) {
