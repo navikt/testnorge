@@ -1,15 +1,38 @@
 import React, { useState } from 'react'
 import _get from 'lodash/get'
+import { pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
+const findInitialStatus = formikBag => {
+	const oppholdsstatusObj = formikBag.values.udistub.oppholdStatus
+	const eosEllerEFTAOpphold = Object.keys(oppholdsstatusObj).some(key =>
+		key.includes('eosEllerEFTA')
+	)
+	if (eosEllerEFTAOpphold) {
+		if (oppholdsstatusObj.eosEllerEFTABeslutningOmOppholdsrettPeriode)
+			return ['eosEllerEFTAOpphold', 'eosEllerEFTABeslutningOmOppholdsrett', '']
+		if (oppholdsstatusObj.eosEllerEFTAVedtakOmVarigOppholdsrettPeriode)
+			return ['eosEllerEFTAOpphold', 'eosEllerEFTAVedtakOmVarigOppholdsrett', '']
+		if (oppholdsstatusObj.eosEllerEFTAOppholdstillatelsePeriode)
+			return ['eosEllerEFTAOpphold', 'eosEllerEFTAOppholdstillatelse', '']
+	}
+	if (oppholdsstatusObj.oppholdSammeVilkaar)
+		return ['tredjelandsBorgere', '', 'oppholdSammeVilkaar']
+	if (oppholdsstatusObj.uavklart) return ['tredjelandsBorgere', '', 'UAVKLART']
+	if (formikBag.values.udistub.harOppholdsTillatelse === false)
+		return ['tredjelandsBorgere', '', 'ikkeOppholdSammeVilkaar']
+	return ['', '', '']
+}
+
 export const Oppholdsstatus = ({ formikBag }) => {
-	const [oppholdsstatus, setOppholdsstatus] = useState('')
-	const [eosEllerEFTAtypeOpphold, setEosEllerEFTAtypeOpphold] = useState('')
-	const [tredjelandsBorgereValg, setTredjelandsBorgereValg] = useState('')
+	const initialStatus = findInitialStatus(formikBag)
+	const [oppholdsstatus, setOppholdsstatus] = useState(initialStatus[0])
+	const [eosEllerEFTAtypeOpphold, setEosEllerEFTAtypeOpphold] = useState(initialStatus[1])
+	const [tredjelandsBorgereValg, setTredjelandsBorgereValg] = useState(initialStatus[2])
 
 	const oppholdsstatusInitialValues = _get(formikBag.initialValues, 'udistub.oppholdStatus')
 
@@ -100,6 +123,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 						size="xxlarge"
 						options={Options('tredjelandsBorgereValg')}
 						onChange={v => endreTredjelandsBorgereValg(v.value)}
+						isClearable={false}
 					/>
 					{tredjelandsBorgereValg === 'oppholdSammeVilkaar' && (
 						<React.Fragment>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { RadioPanelGruppe } from 'nav-frontend-skjema'
+import _get from 'lodash/get'
 import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { Boadresse } from './partials/boadresse/Boadresse'
@@ -8,8 +9,17 @@ import { AdresseNr } from './partials/AdresseNr'
 
 const paths = [pathAttrs.kategori.boadresse, pathAttrs.kategori.postadresse].flat()
 
+const initialBoType = formikBag => {
+	const adresseType = _get(formikBag.values.tpsf.boadresse, 'adressetype')
+	const nummertype = _get(formikBag.values.tpsf.adresseNrInfo, 'nummertype')
+
+	if (adresseType) return adresseType === 'GATE' ? 'gate' : 'matrikkel'
+	else if (nummertype) return nummertype === 'POSTNR' ? 'postnr' : 'kommunenr'
+	else return
+}
+
 export const Adresser = ({ formikBag }) => {
-	const [boType, setBoType] = useState()
+	const [boType, setBoType] = useState(initialBoType(formikBag))
 
 	const handleRadioChange = e => {
 		const nyType = e.target.value
@@ -42,9 +52,10 @@ export const Adresser = ({ formikBag }) => {
 					gatekode: '',
 					husnummer: ''
 				})
+				break
 			case 'matrikkel':
 				formikBag.setFieldValue('tpsf.boadresse', {
-					adressetype: 'GATE',
+					adressetype: 'MATR',
 					mellomnavn: '',
 					gardsnr: '',
 					bruksnr: '',
@@ -52,7 +63,7 @@ export const Adresser = ({ formikBag }) => {
 					undernr: '',
 					postnr: ''
 				})
-
+				break
 			default:
 				break
 		}

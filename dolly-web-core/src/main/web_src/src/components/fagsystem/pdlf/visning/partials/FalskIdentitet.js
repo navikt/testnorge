@@ -14,27 +14,21 @@ export const FalskIdentitet = ({ data, loading }) => {
 		<div>
 			<SubOverskrift label="Falsk identitet" />
 			<div className="person-visning_content">
-				{rettIdentitetErUkjent && <TitleValue title="Rett identitet" value={'Ukjent'} />}
+				{rettIdentitetErUkjent && <TitleValue title="Rett identitet" value={'UKJENT'} />}
 				{rettIdentitetVedIdentifikasjonsnummer && (
 					<TitleValue title="Rett fnr/dnr/bost" value={rettIdentitetVedIdentifikasjonsnummer} />
 				)}
 				{rettIdentitetVedOpplysninger && (
 					<Fragment>
 						<TitleValue title="Rett identitet" value={'Kjent ved personopplysninger'} />
-						{rettIdentitetVedOpplysninger.personnavn && (
+						{rettIdentitetVedOpplysninger.navn && (
 							<Fragment>
-								<TitleValue
-									title="Fornavn"
-									value={rettIdentitetVedOpplysninger.personnavn.fornavn}
-								/>
+								<TitleValue title="Fornavn" value={rettIdentitetVedOpplysninger.navn.fornavn} />
 								<TitleValue
 									title="Mellomnavn"
-									value={rettIdentitetVedOpplysninger.personnavn.mellomnavn}
+									value={rettIdentitetVedOpplysninger.navn.mellomnavn}
 								/>
-								<TitleValue
-									title="Etternavn"
-									value={rettIdentitetVedOpplysninger.personnavn.etternavn}
-								/>
+								<TitleValue title="Etternavn" value={rettIdentitetVedOpplysninger.navn.etternavn} />
 							</Fragment>
 						)}
 

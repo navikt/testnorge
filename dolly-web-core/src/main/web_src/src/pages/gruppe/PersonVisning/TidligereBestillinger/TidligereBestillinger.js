@@ -8,7 +8,7 @@ export const TidligereBestillinger = ({ ids }) => {
 	return (
 		<div className="tidligere-bestilling-panel">
 			<h4>Tidligere bestilling-ID</h4>
-			<div>{Formatters.arrayToString(ids)}</div>
+			<div>{ids.slice(1).join(', ')}</div>
 		</div>
 	)
 }

@@ -25,8 +25,8 @@ export default class DollyEndpoints {
 		return `${groupBase}?brukerId=${userId}`
 	}
 
-	static gruppeAttributter(gruppeId) {
-		return `${groupBase}/${gruppeId}/attributter`
+	static gruppeBeskrivelse(gruppeId) {
+		return `${groupBase}/${gruppeId}/beskrivelse`
 	}
 
 	static gruppeBestilling(gruppeId) {

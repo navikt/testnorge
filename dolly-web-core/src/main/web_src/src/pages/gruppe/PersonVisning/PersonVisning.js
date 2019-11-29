@@ -4,77 +4,23 @@ import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestilli
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
 import { PdlfVisning } from '~/components/fagsystem/pdlf/visning/Visning'
+import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
+import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
+import { SigrunstubVisning } from '~/components/fagsystem/sigrunstub/visning/Visning'
+import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import Button from '~/components/ui/button/Button'
 
 import './PersonVisning.less'
 
-export const PersonVisning = ({ getDataFraFagsystemer, data, testIdent, bestilling, loading }) => {
+export const PersonVisning = ({
+	getDataFraFagsystemer,
+	data,
+	testIdent,
+	bestilling,
+	loading,
+	gruppeId
+}) => {
 	useMount(getDataFraFagsystemer)
-
-	data.pdlforvalter = {
-		kontaktinformasjonForDoedsbo: [
-			{
-				skifteform: 'OFFENTLIG',
-				attestutstedelsesdato: '2015-03-25',
-				personSomKontakt: {
-					foedselsdato: '2015-03-25',
-					personnavn: {
-						fornavn: 'Johnny',
-						mellomnavn: 'Testus',
-						etternavn: 'Bravo'
-					},
-					identifikasjonsnummer: '12345678901'
-				},
-				adresse: {
-					adresselinje1: 'Eksempelveien 1234A',
-					adresselinje2: 'Eksempelveien 5678B',
-					poststedsnavn: 'Westeros',
-					postnummer: '5432',
-					landkode: 'NOR'
-				}
-			},
-			{
-				skifteform: 'OFFENTLIG',
-				attestutstedelsesdato: '2015-03-25',
-				advokatSomKontakt: {
-					organisasjonsnavn: 'Fantasifabrikken',
-					organisasjonsnummer: '87654321',
-					personnavn: {
-						fornavn: 'Johnny',
-						mellomnavn: 'Testus',
-						etternavn: 'Bravo'
-					}
-				},
-				adresse: {
-					adresselinje1: 'Eksempelveien 1234A',
-					adresselinje2: 'Eksempelveien 5678B',
-					poststedsnavn: 'Westeros',
-					postnummer: '5432',
-					landkode: 'NOR'
-				}
-			},
-			{
-				skifteform: 'OFFENTLIG',
-				attestutstedelsesdato: '2015-03-25',
-				organisasjonSomKontakt: {
-					organisasjonsnavn: 'Evilcorp INC',
-					organisasjonsnummer: '87654321',
-					kontaktperson: {
-						fornavn: 'Johnny',
-						mellomnavn: 'Testus',
-						etternavn: 'Bravo'
-					}
-				},
-				adresse: {
-					adresselinje1: 'Eksempelveien 1234A',
-					adresselinje2: 'Eksempelveien 5678B',
-					poststedsnavn: 'Westeros',
-					postnummer: '5432',
-					landkode: 'NOR'
-				}
-			}
-		]
-	}
 
 	return (
 		<div className="person-visning">
@@ -82,12 +28,21 @@ export const PersonVisning = ({ getDataFraFagsystemer, data, testIdent, bestilli
 			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 
 			{/* <SigrunVisning /> */}
+			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			{/* <AaregVisning /> */}
 			{/* <InstVisning /> */}
-			{/* <ArenaVisning /> */}
-			{/* <UdiVisning /> */}
+			<ArenaVisning
+				data={data.arenaforvalteren}
+				bestData={bestilling.bestKriterier.arenaforvalter}
+				loading={loading.arenaforvalteren}
+			/>
+			<UdiVisning
+				data={UdiVisning.filterValues(data.udistub, bestilling.bestKriterier.udistub)}
+				loading={loading.udistub}
+			/>
 			<TidligereBestillinger ids={testIdent.bestillingId} />
+			<BeskrivelseConnector ident={testIdent.ident} gruppeId={gruppeId} />
 			<div className="flexbox--align-center--justify-end">
 				<Button className="flexbox--align-center" kind="details">
 					BESTILLINGSDETALJER

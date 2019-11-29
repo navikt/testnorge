@@ -230,14 +230,25 @@ export function mapBestillingData(bestillingData) {
 			// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
 			let flatSigrunStubKriterier = []
 			sigrunStubKriterier.forEach(inntekt => {
-				inntekt.grunnlag.forEach(g => {
-					flatSigrunStubKriterier.push({
-						grunnlag: g.tekniskNavn,
-						inntektsaar: inntekt.inntektsaar,
-						tjeneste: inntekt.tjeneste,
-						verdi: g.verdi
+				const inntektObj = { inntektsaar: inntekt.inntektsaar, tjeneste: inntekt.tjeneste }
+				inntekt.grunnlag &&
+					inntekt.grunnlag.forEach(gr => {
+						flatSigrunStubKriterier.push({
+							...inntektObj,
+							grunnlag: gr.tekniskNavn,
+							verdi: gr.verdi,
+							inntektssted: 'Fastlands-Norge'
+						})
 					})
-				})
+				inntekt.svalbardGrunnlag &&
+					inntekt.svalbardGrunnlag.forEach(gr => {
+						flatSigrunStubKriterier.push({
+							...inntektObj,
+							svalbardGrunnlag: gr.tekniskNavn,
+							verdi: gr.verdi,
+							inntektssted: 'Svalbard'
+						})
+					})
 			})
 
 			const sigrunStub = {
@@ -254,15 +265,22 @@ export function mapBestillingData(bestillingData) {
 					},
 					obj('År', inntekt.inntektsaar),
 					obj('Beløp', inntekt.verdi),
-					obj('Tjeneste', inntekt.tjeneste),
+					obj('Tjeneste', Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)),
 					{
-						label: 'grunnlag',
+						label: 'Grunnlag (Fastlands-Norge)',
 						value: inntekt.grunnlag,
 						width: 'xlarge',
-						apiKodeverkId: inntekt.tjeneste
+						apiKodeverkId: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
+					},
+					{
+						label: 'Grunnlag (Svalbard)',
+						value: inntekt.svalbardGrunnlag,
+						width: 'xlarge',
+						apiKodeverkId: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
 					}
 				])
 			})
+
 			data.push(sigrunStub)
 		}
 
