@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
 export const Personnavn = ({ data }) => {
+	if (!data) return false
 	const { fornavn, mellomnavn, etternavn } = data
 	return (
 		<Fragment>

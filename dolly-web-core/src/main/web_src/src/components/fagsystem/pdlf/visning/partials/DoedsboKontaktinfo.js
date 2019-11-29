@@ -2,7 +2,9 @@ import React, { Fragment } from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Loading from '~/components/ui/loading/Loading'
+import Formatters from '~/utils/DataFormatter'
 import { Personnavn } from './Personnavn'
+import { Adressat } from './Adressat'
 
 export const DoedsboKontaktinfo = ({ data, loading }) => {
 	if (loading) return <Loading label="laster PDL-data" />
@@ -16,42 +18,7 @@ export const DoedsboKontaktinfo = ({ data, loading }) => {
 					(console.log('data :', data),
 					data.map((id, idx) => (
 						<div className="person-visning_content" key={idx}>
-							{/* Addressat eksistenssjekk */}
-							{id.adressat && id.adressat.kontaktpersonUtenIdNummerSomAdressat && (
-								<Fragment>
-									{id.adressat.kontaktpersonUtenIdNummerSomAdressat.navn && (
-										<Personnavn data={id.adressat.kontaktpersonUtenIdNummerSomAdressat.navn} />
-									)}
-									<TitleValue
-										title="Fødselsdato"
-										value={id.adressat.kontaktpersonUtenIdNummerSomAdressat.foedselsdato}
-									/>
-								</Fragment>
-							)}
-
-							{id.adressat && id.adressat.kontaktpersonMedIdNummerSomAdressat && (
-								<TitleValue
-									title="FNR/DNR/BOST"
-									value={id.adressat.kontaktpersonMedIdNummerSomAdressat.idNummer}
-								/>
-							)}
-							{id.adressat && id.adressat.advokatSomAdressat && (
-								<Fragment>
-									{/* Hvor har disse blitt av? */}
-									<TitleValue
-										title="Organisasjonsnavn"
-										value={id.adressat.advokatSomAdressat.organisasjonsnavn}
-									/>
-									<TitleValue
-										title="Organisasjonsnummer"
-										value={id.adressat.advokatSomAdressat.organisasjonsnummer}
-									/>
-									{id.adressat.advokatSomAdressat.kontaktperson && (
-										<Personnavn data={id.adressat.advokatSomAdressat.kontaktperson} />
-									)}
-								</Fragment>
-							)}
-							{/* Bestilling fungerer ikke imot organisasjon som kontakt */}
+							<Adressat adressat={id.adressat} />
 							{id.organisasjonSomKontakt && (
 								<Fragment>
 									<TitleValue
@@ -75,8 +42,11 @@ export const DoedsboKontaktinfo = ({ data, loading }) => {
 							/>
 							<TitleValue title="Landkode" value={id.landkode} />
 							<TitleValue title="Skifteform" value={id.skifteform} />
-							<TitleValue title="Dato Utstedt" value={id.utstedtDato} />
-							<TitleValue title="Gyldig Fra" value={id.gyldigFom} />
+							<TitleValue
+								title="Dato Utstedt"
+								value={Formatters.formatStringDates(id.utstedtDato)}
+							/>
+							<TitleValue title="Gyldig Fra" value={Formatters.formatStringDates(id.gyldigFom)} />
 						</div>
 					)))
 				}

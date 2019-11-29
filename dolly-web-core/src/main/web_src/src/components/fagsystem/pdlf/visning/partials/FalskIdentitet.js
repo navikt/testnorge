@@ -1,6 +1,9 @@
 import React, { Fragment } from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import { Personnavn } from './Personnavn'
+import Formatters from '~/utils/DataFormatter'
+
 export const FalskIdentitet = ({ data, loading }) => {
 	if (loading) return <Loading label="laster PDL-data" />
 	if (!data) return false
@@ -15,24 +18,19 @@ export const FalskIdentitet = ({ data, loading }) => {
 			<SubOverskrift label="Falsk identitet" />
 			<div className="person-visning_content">
 				{rettIdentitetErUkjent && <TitleValue title="Rett identitet" value={'UKJENT'} />}
-				{rettIdentitetVedIdentifikasjonsnummer && (
-					<TitleValue title="Rett fnr/dnr/bost" value={rettIdentitetVedIdentifikasjonsnummer} />
-				)}
+
+				<TitleValue title="Rett fnr/dnr/bost" value={rettIdentitetVedIdentifikasjonsnummer} />
+
 				{rettIdentitetVedOpplysninger && (
 					<Fragment>
 						<TitleValue title="Rett identitet" value={'Kjent ved personopplysninger'} />
-						{rettIdentitetVedOpplysninger.navn && (
-							<Fragment>
-								<TitleValue title="Fornavn" value={rettIdentitetVedOpplysninger.navn.fornavn} />
-								<TitleValue
-									title="Mellomnavn"
-									value={rettIdentitetVedOpplysninger.navn.mellomnavn}
-								/>
-								<TitleValue title="Etternavn" value={rettIdentitetVedOpplysninger.navn.etternavn} />
-							</Fragment>
-						)}
 
-						<TitleValue title="Fødselsdato" value={rettIdentitetVedOpplysninger.foedselsdato} />
+						<Personnavn data={rettIdentitetVedOpplysninger.navn} />
+
+						<TitleValue
+							title="Fødselsdato"
+							value={Formatters.formatStringDates(rettIdentitetVedOpplysninger.foedselsdato)}
+						/>
 						<TitleValue
 							title="Statsborgerskap"
 							value={rettIdentitetVedOpplysninger.statsborgerskap}
