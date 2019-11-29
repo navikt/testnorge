@@ -9,17 +9,21 @@ const addId = obj =>
 
 export const PANELER = addId({
 	personinfo: {
-		label: 'Personinformasjon',
-		infotekst:
-			'Data om institusjonsopphold blir ikke distribuert til alle miljøer, og et eller flere av miljøene under må derfor velges i siste steg.',
-		tilgjengeligeMiljoeEndepunkt: InstApi.getTilgjengeligeMiljoer
+		label: 'Personinformasjon'
 	},
+	identifikasjon: { label: 'Identifikasjon' },
 	adresser: { label: 'Adresser' },
 	relasjoner: { label: 'Familierelasjoner' },
 	arbeidInntekt: {
 		label: 'Arbeid og inntekt',
 		infotekst:
 			'Arbeidsforhold: \nDataene her blir lagt til AAREG. \n\nInntekt: \nSkatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.'
+	},
+	instdata: {
+		label: 'Institusjonsopphold',
+		infotekst:
+			'Data om institusjonsopphold blir ikke distribuert til alle miljøer, og et eller flere av miljøene under må derfor velges i siste steg.',
+		tilgjengeligeMiljoeEndepunkt: InstApi.getTilgjengeligeMiljoer
 	},
 	krr: {
 		label: 'Kontakt- og reservasjonsregisteret',
@@ -43,7 +47,7 @@ export const PANELER = addId({
 export const KATEGORIER = addId({
 	alder: { label: 'Alder' },
 	nasjonalitet: { label: 'Nasjonalitet' },
-	instdata: { label: 'Instutisjonsopphold' },
+	instdata: { label: 'Institusjonsopphold' },
 	identifikasjon: { label: 'Identifikasjon' },
 	diverse: { label: 'Diverse' },
 	boadresse: { label: 'Boadresse' },
@@ -105,28 +109,28 @@ export const ATTRIBUTTER = [
 		name: 'utvandretTilLand'
 	},
 	{
-		panel: PANELER.personinfo,
+		panel: PANELER.instdata,
 		kategori: KATEGORIER.instdata,
 		path: 'instdata',
-		label: 'Har instutisjonsopphold',
+		label: 'Har institusjonsopphold',
 		name: 'instdata'
 	},
 	{
 		panel: PANELER.personinfo,
-		kategori: KATEGORIER.identifikasjon,
+		kategori: KATEGORIER.diverse,
 		path: 'tpsf.identHistorikk',
-		label: 'Har identhistorikk',
+		label: 'Identhistorikk',
 		name: 'identHistorikk'
 	},
 	{
-		panel: PANELER.personinfo,
+		panel: PANELER.identifikasjon,
 		kategori: KATEGORIER.identifikasjon,
 		path: 'pdlforvalter.utenlandskIdentifikasjonsnummer',
 		label: 'Har utenlands-id',
 		name: 'utenlandskIdentifikasjonsnummer'
 	},
 	{
-		panel: PANELER.personinfo,
+		panel: PANELER.identifikasjon,
 		kategori: KATEGORIER.identifikasjon,
 		path: 'pdlforvalter.falskIdentitet',
 		label: 'Har falsk identitet',

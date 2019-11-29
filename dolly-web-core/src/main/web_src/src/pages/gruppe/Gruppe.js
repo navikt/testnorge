@@ -80,11 +80,11 @@ export default function Gruppe({
 				</Knapp>
 			</Toolbar>
 
+			{visning === VISNING_TESTPERSONER && <TestbrukerListeConnector gruppeId={gruppe.id} />}
 			{startBestillingAktiv && (
 				<BestillingsveilederModal onSubmit={startBestilling} onAvbryt={skjulStarBestilling} />
 			)}
 
-			{visning === VISNING_TESTPERSONER && <TestbrukerListeConnector />}
 			{visning === VISNING_BESTILLING && <BestillingListeConnector gruppeId={gruppe.id} />}
 		</div>
 	)
