@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import { pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
