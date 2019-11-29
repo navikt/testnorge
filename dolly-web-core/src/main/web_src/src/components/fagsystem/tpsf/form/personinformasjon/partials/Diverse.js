@@ -4,9 +4,14 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { IdentHistorikk } from './IdentHistorikk'
 
 export const Diverse = ({ formikBag }) => (
 	<Kategori title="Diverse" vis={pathAttrs.kategori.diverse}>
+		<Vis attributt="tpsf.identHistorikk">
+			<IdentHistorikk formikBag={formikBag} />
+		</Vis>
+
 		<FormikSelect name="tpsf.kjonn" label="Kjønn" kodeverk="Kjønnstyper" visHvisAvhuket />
 
 		<FormikSelect

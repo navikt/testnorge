@@ -5,7 +5,6 @@ import { panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { IdentHistorikk } from './partials/IdentHistorikk'
 import { Diverse } from './partials/Diverse'
 
 const attrPaths = [
@@ -40,10 +39,6 @@ export const Personinformasjon = ({ formikBag }) => (
 					<FormikDatepicker name="tpsf.utvandretTilLandFlyttedato" label="Utvandret dato" />
 				</Vis>
 			</Kategori>
-
-			<Vis attributt="tpsf.identHistorikk">
-				<IdentHistorikk formikBag={formikBag} />
-			</Vis>
 
 			<Diverse formikBag={formikBag} />
 		</Panel>
