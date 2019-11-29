@@ -15,7 +15,7 @@ export const DoedsboKontaktinfo = ({ data, loading }) => {
 				{
 					(console.log('data :', data),
 					data.map((id, idx) => (
-						<div className="person-visning_content" key={(console.log('id ,', id), idx)}>
+						<div className="person-visning_content" key={idx}>
 							{/* Addressat eksistenssjekk */}
 							{id.adressat && id.adressat.kontaktpersonUtenIdNummerSomAdressat && (
 								<Fragment>
