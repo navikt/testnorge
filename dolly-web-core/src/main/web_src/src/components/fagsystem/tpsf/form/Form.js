@@ -53,6 +53,7 @@ TpsfForm.initialValues = attrs => {
 	if (attrs.sivilstand) initial.sivilstand = ''
 	if (attrs.sprakKode) initial.sprakKode = ''
 	if (attrs.egenAnsattDatoFom) initial.egenAnsattDatoFom = new Date()
+	if (attrs.spesreg) initial.spesreg = ''
 	if (attrs.erForsvunnet) {
 		initial.erForsvunnet = true
 		initial.forsvunnetDato = null
