@@ -21,6 +21,10 @@ const initialBoType = formikBag => {
 export const Adresser = ({ formikBag }) => {
 	const [boType, setBoType] = useState(initialBoType(formikBag))
 
+	// Unngå at Adresse-panel vises når kommunenr blir satt på diskresjonskoder
+	const harBoadresse = Boolean('boadresse' in formikBag.initialValues.tpsf)
+	if (!harBoadresse) return null
+
 	const handleRadioChange = e => {
 		const nyType = e.target.value
 		setBoType(nyType)
@@ -71,7 +75,7 @@ export const Adresser = ({ formikBag }) => {
 
 	return (
 		<Vis attributt={paths}>
-			<Panel heading="Adresser" startOpen>
+			<Panel heading="Adresser">
 				<Vis attributt="tpsf.boadresse">
 					<RadioPanelGruppe
 						name="botype"

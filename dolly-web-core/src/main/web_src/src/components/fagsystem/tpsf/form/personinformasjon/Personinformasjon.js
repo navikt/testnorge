@@ -17,7 +17,7 @@ const attrPaths = [
 
 export const Personinformasjon = ({ formikBag }) => (
 	<Vis attributt={attrPaths}>
-		<Panel heading="Personinformasjon" hasErrors={panelError(formikBag)}>
+		<Panel heading="Personinformasjon" hasErrors={panelError(formikBag)} startOpen>
 			<Kategori title="Alder" vis={pathAttrs.kategori.alder}>
 				<FormikDatepicker name="tpsf.foedtEtter" label="Født etter" />
 				<FormikDatepicker name="tpsf.foedtFoer" label="Født før" />
