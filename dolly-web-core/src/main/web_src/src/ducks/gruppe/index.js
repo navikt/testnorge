@@ -21,7 +21,7 @@ export const actions = createActions(
 				gruppeId
 			})
 		],
-		updateBeskrivelse: [DollyApi.updateBeskrivelse, (gruppeId, data) => ({ gruppeId, data })]
+		updateBeskrivelse: DollyApi.updateBeskrivelse
 	},
 	{
 		prefix: 'gruppe' // String used to prefix each type

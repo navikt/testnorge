@@ -4,8 +4,8 @@ import _capitalize from 'lodash/capitalize'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 
-import { defaultDateFormat } from '~/components/fields/Datepicker/DateValidation'
-import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
+export const defaultDateFormat = 'dd.MM.yyyy'
+import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 const Formatters = {}
 
@@ -194,7 +194,7 @@ Formatters.showLabel = (optionsGruppe, value) => {
 	optionsGruppe.includes('partner') && (copyOptionsGruppe = optionsGruppe.replace('partner_', ''))
 	optionsGruppe.includes('barn') && (copyOptionsGruppe = optionsGruppe.replace('barn_', ''))
 
-	const obj = SelectOptionsManager(copyOptionsGruppe).filter(options => options.value === value)
+	const obj = Options(copyOptionsGruppe).filter(options => options.value === value)
 
 	if (_get(obj, 'label') || _get(obj, '[0].label')) {
 		return obj.label || obj[0].label

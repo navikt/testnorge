@@ -14,7 +14,7 @@ const loadingBestillingerSelector = createLoadingSelector(getBestillinger)
 
 const mapStateToProps = state => ({
 	isFetchingBestillinger: loadingBestillingerSelector(state),
-	nyeBestillinger: nyeBestillingerSelector(state.bestillingStatuser),
+	nyeBestillinger: nyeBestillingerSelector(state),
 	isCanceling: loadingCancelSelector(state)
 })
 

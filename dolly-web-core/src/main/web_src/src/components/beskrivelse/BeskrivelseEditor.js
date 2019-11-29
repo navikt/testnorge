@@ -1,16 +1,10 @@
 import React, { useState } from 'react'
 import Button from '~/components/ui/button/Button'
 
-export const BeskrivelseEditor = ({ beskrivelse, updateBeskrivelse, turnOffEditing }) => {
+export const BeskrivelseEditor = ({ beskrivelse, handleSubmit, turnOffEditing }) => {
 	const [value, setValue] = useState(beskrivelse || '')
 
 	const handleChange = e => setValue(e.target.value)
-	const handleCancel = () => turnOffEditing()
-
-	const handleSubmit = () => {
-		updateBeskrivelse(value)
-		turnOffEditing()
-	}
 
 	const focusEndOfStringHack = e => {
 		e.target.value = ''
@@ -31,10 +25,10 @@ export const BeskrivelseEditor = ({ beskrivelse, updateBeskrivelse, turnOffEditi
 			<br />
 
 			<div className="beskrivelse-button-container">
-				<Button onClick={handleCancel} className="beskrivelse-button">
+				<Button onClick={turnOffEditing} className="beskrivelse-button">
 					Avbryt
 				</Button>
-				<Button onClick={handleSubmit} className="beskrivelse-button">
+				<Button onClick={() => handleSubmit(value)} className="beskrivelse-button">
 					Legg til
 				</Button>
 			</div>

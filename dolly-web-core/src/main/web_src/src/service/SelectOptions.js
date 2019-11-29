@@ -5,7 +5,7 @@ const selectOptions = {
 		{ value: 'BOST', label: 'BOST' }
 	],
 	// kjonn: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
-	// kjonnBarn: [{ value: 'K', label: 'Jente' }, { value: 'M', label: 'Gutt' }],
+	kjonnBarn: [{ value: 'K', label: 'Jente' }, { value: 'M', label: 'Gutt' }],
 
 	boolean: [{ value: true, label: 'Ja' }, { value: false, label: 'Nei' }],
 	// stringBoolean: [{ value: 'true', label: 'Ja' }, { value: 'false', label: 'Nei' }],

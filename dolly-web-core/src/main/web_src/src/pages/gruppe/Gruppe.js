@@ -8,7 +8,7 @@ import TestbrukerListeConnector from './TestbrukerListe/TestbrukerListeConnector
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
 import GruppeHeader from './GruppeHeader/GruppeHeader'
 import Toolbar from '~/components/ui/toolbar/Toolbar'
-import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
+import { SearchField } from '~/components/searchField/SearchField'
 import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
 
 const VISNING_TESTPERSONER = 'testpersoner'
@@ -67,7 +67,7 @@ export default function Gruppe({
 			<StatusListeConnector gruppeId={gruppe.id} />
 
 			<Toolbar
-				searchField={<SearchFieldConnector placeholder={searchfieldPlaceholderSelector()} />}
+				searchField={<SearchField placeholder={searchfieldPlaceholderSelector()} />}
 				toggleOnChange={byttVisning}
 				toggleCurrent={visning}
 				toggleValues={toggleValues}

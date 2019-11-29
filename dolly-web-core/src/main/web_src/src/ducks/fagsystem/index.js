@@ -176,9 +176,7 @@ export const fetchDataFraFagsystemer = personId => (dispatch, getState) => {
 	const person = selectIdentById(state, personId)
 
 	// Bestillingen(e) fra bestillingStatuser
-	const bestillinger = person.bestillingId.map(id =>
-		getBestillingById(state.bestillingStatuser.data, id)
-	)
+	const bestillinger = person.bestillingId.map(id => getBestillingById(state, id))
 
 	// Samlet liste over alle statuser
 	const statusArray = bestillinger.reduce((acc, curr) => acc.concat(curr.status), [])
@@ -219,7 +217,12 @@ export const sokSelector = (items, searchStr) => {
 
 	const query = searchStr.toLowerCase()
 	return items.filter(item => {
-		return Object.values(item).some(v => v.toLowerCase().includes(query))
+		return Object.values(item).some(v =>
+			v
+				.toString()
+				.toLowerCase()
+				.includes(query)
+		)
 	})
 }
 
@@ -230,7 +233,7 @@ export const selectTestbrukerListe = state => {
 
 	return Object.values(fagsystem.tpsf).map(ident => ({
 		ident: ident.ident,
-		gruppeId: gruppe.id,
+		gruppeId: gruppe.ident[ident.ident].gruppeId,
 		identtype: ident.identtype,
 		navn: `${ident.fornavn} ${ident.mellomnavn || ''} ${ident.etternavn}`,
 		kjonn: Formatters.kjonnToString(ident.kjonn),

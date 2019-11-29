@@ -3,7 +3,7 @@ import useBoolean from '~/utils/hooks/useBoolean'
 import Knapp from 'nav-frontend-knapper'
 import HjelpeTekst from 'nav-frontend-hjelpetekst'
 import Overskrift from '~/components/ui/overskrift/Overskrift'
-import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
+import { SearchField } from '~/components/searchField/SearchField'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import Toolbar from '~/components/ui/toolbar/Toolbar'
 import Liste from './Liste'
@@ -37,11 +37,7 @@ export default function GruppeOversikt({
 				</HjelpeTekst>
 			</div>
 
-			<Toolbar
-				toggleOnChange={byttVisning}
-				toggleCurrent={visning}
-				searchField={<SearchFieldConnector />}
-			>
+			<Toolbar toggleOnChange={byttVisning} toggleCurrent={visning} searchField={<SearchField />}>
 				<Knapp type="hoved" onClick={visNyGruppe}>
 					Ny gruppe
 				</Knapp>

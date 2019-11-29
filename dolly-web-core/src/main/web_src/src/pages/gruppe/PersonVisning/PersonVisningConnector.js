@@ -35,7 +35,7 @@ const mapStateToProps = (state, ownProps) => ({
 	loading: loadingSelector(state),
 	testIdent: selectIdentById(state, ownProps.personId),
 	data: selectDataForIdent(state, ownProps.personId),
-	bestilling: getBestillingById(state.bestillingStatuser.data, ownProps.bestillingId)
+	bestilling: getBestillingById(state, ownProps.bestillingId)
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
