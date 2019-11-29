@@ -8,13 +8,12 @@ export const UtenlandsId = ({ data, loading }) => {
 	if (loading) return <Loading label="laster PDL-data" />
 	if (!data) return false
 
-	//IKKE FERDIG
 	return (
 		<div>
 			<SubOverskrift label="Utenlandsk identifikasjonsnummer" />
 			<div className="person-visning_content">
 				{data.map((id, idx) => (
-					<div>
+					<div key={id.opplysningsId}>
 						<TitleValue title="" value={`#${idx + 1}`} size="x-small" />
 						<TitleValue title="Identifikasjonsnummer" value={id.idnummer} />
 						<TitleValue title="Kilde" value={id.kilde} />
