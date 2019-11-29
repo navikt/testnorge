@@ -27,7 +27,6 @@ export const PersonVisning = ({
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.tpsfKriterier)} />
 			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 
-			{/* <SigrunVisning /> */}
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			{/* <AaregVisning /> */}
