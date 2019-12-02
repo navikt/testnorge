@@ -17,11 +17,6 @@ import lombok.Setter;
 public class RsPermisjon {
 
     @ApiModelProperty(
-            position = 1
-    )
-    private String permisjonsId;
-
-    @ApiModelProperty(
             required = true,
             position = 2
     )

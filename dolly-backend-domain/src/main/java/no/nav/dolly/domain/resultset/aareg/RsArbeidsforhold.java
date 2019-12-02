@@ -1,8 +1,5 @@
 package no.nav.dolly.domain.resultset.aareg;
 
-import static java.util.Objects.isNull;
-
-import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -20,16 +17,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 public class RsArbeidsforhold {
-
-    @ApiModelProperty(
-            position = 1
-    )
-    private String arbeidsforholdID;
-
-    @ApiModelProperty(
-            position = 2
-    )
-    private Long arbeidsforholdIDnav;
 
     @ApiModelProperty(
             required = true,
@@ -70,30 +57,4 @@ public class RsArbeidsforhold {
             position = 9
     )
     private RsAktoer arbeidsgiver;
-
-    @ApiModelProperty(
-            position = 10
-    )
-    private RsPersonAareg arbeidstaker;
-
-    public List<RsAntallTimerIPerioden> getAntallTimerForTimeloennet() {
-        if (isNull(antallTimerForTimeloennet)) {
-            antallTimerForTimeloennet = new ArrayList<>();
-        }
-        return antallTimerForTimeloennet;
-    }
-
-    public List<RsUtenlandsopphold> getUtenlandsopphold() {
-        if (isNull(utenlandsopphold)) {
-            utenlandsopphold = new ArrayList<>();
-        }
-        return utenlandsopphold;
-    }
-
-    public List<RsPermisjon> getPermisjon() {
-        if (isNull(permisjon)) {
-            permisjon = new ArrayList<>();
-        }
-        return permisjon;
-    }
 }
