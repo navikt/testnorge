@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 
 @DisplayName("PUT /api/v1/gruppe")
 class TestgruppeControllerPutTest extends TestgruppeTestBase {
@@ -43,9 +43,9 @@ class TestgruppeControllerPutTest extends TestgruppeTestBase {
                 .hensikt("hensikt")
                 .build();
 
-        RsTestgruppeUtvidet resp = sendRequest(rsOpprettEndreTestgruppe)
+        RsTestgruppeMedBestillingId resp = sendRequest(rsOpprettEndreTestgruppe)
                 .to(HttpMethod.PUT, ENDPOINT_BASE_URI + "/" + testgruppe.getId())
-                .andExpect(HttpStatus.OK, RsTestgruppeUtvidet.class);
+                .andExpect(HttpStatus.OK, RsTestgruppeMedBestillingId.class);
 
         assertThat(resp.getId(), is(notNullValue()));
         assertThat(resp.getNavn(), is("mingruppe"));

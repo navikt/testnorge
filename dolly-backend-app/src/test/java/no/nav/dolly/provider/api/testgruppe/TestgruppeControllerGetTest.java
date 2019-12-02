@@ -20,7 +20,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 
 @DisplayName("GET /api/v1/gruppe")
 class TestgruppeControllerGetTest extends TestgruppeTestBase {
@@ -89,9 +89,9 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
 
         String url = ENDPOINT_BASE_URI + "/" + testgruppe.getId();
 
-        RsTestgruppeUtvidet resp = sendRequest()
+        RsTestgruppeMedBestillingId resp = sendRequest()
                 .to(HttpMethod.GET, url)
-                .andExpect(HttpStatus.OK, RsTestgruppeUtvidet.class);
+                .andExpect(HttpStatus.OK, RsTestgruppeMedBestillingId.class);
 
         assertThat(resp.getNavn(), is("Test gruppe"));
         assertThat(resp.getAntallIdenter(), is(5)); //3 stk laget i createTestgruppe + 2 i addTestidenterToTestgruppe

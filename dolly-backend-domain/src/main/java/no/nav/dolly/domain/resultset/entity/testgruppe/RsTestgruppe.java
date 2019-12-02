@@ -21,7 +21,6 @@ public class RsTestgruppe {
     private String hensikt;
     private String opprettetAvNavIdent;
     private String sistEndretAvNavIdent;
-    private Boolean openAmSent;
 
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate datoEndret;
