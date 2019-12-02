@@ -66,9 +66,9 @@ public class FasteMeldingerService {
                     .personnummer(fastMelding.getPersonnummer())
                     .fornavn(fastMelding.getFornavn())
                     .slektsnavn(fastMelding.getEtternavn())
-                    .postnummer(fastMelding.getPostnr())
-                    .adressenavn(fastMelding.getAdresse())
-                    .adresse3(fastMelding.getBy())
+                    .postnummer(fastMelding.getPostnr() != null ? fastMelding.getPostnr() : syntetisertMelding.getPostnummer())
+                    .adressenavn(fastMelding.getAdresse() != null ? fastMelding.getAdresse() : syntetisertMelding.getAdressenavn())
+                    .adresse3(fastMelding.getBy() != null ? fastMelding.getBy() : syntetisertMelding.getAdresse3())
                     .build();
 
             if (nyMelding.getSlektsnavn() == null || nyMelding.getSlektsnavn().isEmpty() || nyMelding.getFornavn() == null || nyMelding.getFornavn().isEmpty()) {
