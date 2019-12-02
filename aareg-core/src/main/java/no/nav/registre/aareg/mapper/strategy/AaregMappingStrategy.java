@@ -118,7 +118,6 @@ public class AaregMappingStrategy implements MappingStrategy {
     }
 
     private Person mapPerson(RsPersonAareg rsPerson) {
-
         var norskIdent = new NorskIdent();
         norskIdent.setIdent(rsPerson.getIdent());
 

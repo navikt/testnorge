@@ -19,8 +19,7 @@
       },
       "arbeidstaker": {
         "ident": "01010101010",
-        "identtype": "FNR",
-        "aktoertype": "PERS"
+        "identtype": "FNR"
       },
       "permisjon": [
         {
@@ -59,8 +58,7 @@
       },
       "arbeidstaker": {
         "ident": "02020202020",
-        "identtype": "FNR",
-        "aktoertype": "PERS"
+        "identtype": "FNR"
       }
     }
   }
