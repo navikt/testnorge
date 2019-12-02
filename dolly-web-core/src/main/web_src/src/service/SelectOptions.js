@@ -9,6 +9,10 @@ const selectOptions = {
 
 	boolean: [{ value: true, label: 'Ja' }, { value: false, label: 'Nei' }],
 	// stringBoolean: [{ value: 'true', label: 'Ja' }, { value: 'false', label: 'Nei' }],
+	adresseNrType: [
+		{ value: 'POSTNR', label: 'postnummer' },
+		{ value: 'KOMMUNENR', label: 'kommunenummer' }
+	],
 
 	// SIGRUN
 	tjeneste: [
