@@ -265,11 +265,15 @@ export const getDataFraFagsystemer = personId => (dispatch, getState) => {
 		getBestillingById(state.bestillingStatuser.data, id)
 	)
 
+	console.log('bestillinger :', bestillinger)
+
 	// Samlet liste over alle statuser
 	const statusArray = bestillinger.reduce((acc, curr) => acc.concat(curr.status), [])
 
 	// Liste over systemer som har data
 	const success = successMiljoSelector(statusArray)
+
+	console.log('success :', success)
 
 	// Samle alt fra PDL under en ID
 	if (Object.keys(success).some(a => a.substring(0, 3) === 'PDL')) {

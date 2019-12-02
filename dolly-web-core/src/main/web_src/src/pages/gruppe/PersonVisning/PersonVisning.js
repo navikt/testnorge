@@ -4,6 +4,7 @@ import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestilli
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
 import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
+import { AaregVisning } from '~/components/fagsystem/aareg/visning/Visning'
 import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
 import { SigrunstubVisning } from '~/components/fagsystem/sigrunstub/visning/Visning'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
@@ -27,7 +28,8 @@ export const PersonVisning = ({
 			{/* <PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} /> */}
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
-			{/* <AaregVisning /> */}
+			<AaregVisning data={data.aareg} loading={loading.aareg} />
+			{/* <AaregVisning data={data.aareg} /> */}
 			{/* <InstVisning /> */}
 			<ArenaVisning
 				data={data.arenaforvalteren}
