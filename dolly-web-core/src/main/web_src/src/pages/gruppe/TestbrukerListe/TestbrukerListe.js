@@ -3,7 +3,6 @@ import { useMount } from 'react-use'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
-import Formatters from '~/utils/DataFormatter'
 // import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
 
@@ -11,10 +10,10 @@ export default function TestbrukerListe({
 	isFetching,
 	testbrukerListe,
 	searchActive,
-	getTPSFTestbrukere,
+	fetchTpsfTestbrukere,
 	gruppeId
 }) {
-	useMount(getTPSFTestbrukere)
+	useMount(fetchTpsfTestbrukere)
 
 	if (isFetching) return <Loading label="laster testbrukere" panel />
 
@@ -25,10 +24,7 @@ export default function TestbrukerListe({
 			</ContentContainer>
 		)
 
-	const testbrukereMedEnBestillingId = Formatters.flat2DArray(testbrukerListe, 5)
-	const sortedTestbrukere = Formatters.sort2DArray(testbrukereMedEnBestillingId, 5)
-
-	if (sortedTestbrukere.length <= 0 && searchActive) {
+	if (testbrukerListe.length <= 0 && searchActive) {
 		return <ContentContainer>Søket gav ingen resultater.</ContentContainer>
 	}
 
@@ -36,42 +32,46 @@ export default function TestbrukerListe({
 		{
 			text: 'Ident',
 			width: '15',
-			dataField: '[0]',
+			dataField: 'ident',
 			unique: true
 		},
 		{
 			text: 'Type',
 			width: '15',
-			dataField: '[1]'
+			dataField: 'identtype'
 		},
 		{
 			text: 'Navn',
 			width: '30',
-			dataField: '[2]'
+			dataField: 'navn'
 		},
 		{
 			text: 'Kjønn',
 			width: '20',
-			dataField: '[3]'
+			dataField: 'kjonn'
 		},
 		{
 			text: 'Alder',
 			width: '10',
-			dataField: '[4]'
+			dataField: 'alder'
 		},
 		{
 			text: 'Bestilling-ID',
 			width: '10',
-			dataField: '[5]'
+			dataField: 'bestillingId'
 		}
 	]
 
 	return (
 		<DollyTable
-			data={sortedTestbrukere}
+			data={testbrukerListe}
 			columns={columns}
 			onExpand={bruker => (
-				<PersonVisningConnector personId={bruker[0]} bestillingId={bruker[5]} gruppeId={gruppeId} />
+				<PersonVisningConnector
+					personId={bruker.ident}
+					bestillingId={bruker.bestillingId}
+					gruppeId={bruker.gruppeId}
+				/>
 			)}
 			pagination
 		/>

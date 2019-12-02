@@ -85,18 +85,6 @@ export const SortKodeverkArray = data => {
 	return koderArray
 }
 
-export const NormalizeKodeverkForDropdown = ({ data }, showValueInLabel) => {
-	const sortedArray = SortKodeverkArray(data)
-	return {
-		options: sortedArray
-			.filter(val => !_excludeList.includes(val.value))
-			.map(kode => ({
-				value: kode.value,
-				label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
-			}))
-	}
-}
-
 export const NormalizeKodeverkForDropdownUtenUfb = ({ data }, showValueInLabel) => {
 	const sortedArray = SortKodeverkArray(data)
 	let filteredSortedArray = []
@@ -114,17 +102,4 @@ export const NormalizeKodeverkForDropdownUtenUfb = ({ data }, showValueInLabel) 
 				label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
 			}))
 	}
-}
-
-export const NormalizeBrukerListForDropdown = data => {
-	const options = data.reduce((filtered, bruker) => {
-		return filtered
-	}, [])
-	return { options }
-}
-
-export default {
-	NormalizeBrukerListForDropdown,
-	NormalizeKodeverkForDropdown,
-	NormalizeKodeverkForDropdownUtenUfb
 }

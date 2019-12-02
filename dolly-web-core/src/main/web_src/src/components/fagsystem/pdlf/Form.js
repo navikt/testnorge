@@ -51,7 +51,7 @@ PdlfForm.initialValues = attrs => {
 			adresselinje1: '',
 			adresselinje2: '',
 			postnummer: '',
-			poststed: '',
+			poststedsnavn: '',
 			landkode: 'NOR',
 			skifteform: '',
 			utstedtDato: ''
