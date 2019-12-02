@@ -2,6 +2,7 @@ package no.nav.registre.inntekt.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import no.nav.registre.inntekt.domain.RsInntekt;
@@ -37,7 +38,7 @@ public class DatoParser {
     }
 
     public static int hentMaanedsnummerFraMaanedsnavn(String maaned) {
-        if (!MAANEDER.contains(maaned)) {
+        if (!new HashSet<>(MAANEDER).contains(maaned)) {
             throw new IllegalArgumentException("Ugyldig maaned " + maaned);
         }
 

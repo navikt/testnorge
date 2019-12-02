@@ -200,7 +200,7 @@ public class SyntetiseringService {
             m++;
         }
 
-        List<List<String>> partisjoner = new ArrayList<>();
+        List<List<String>> partisjoner = new ArrayList<>(m);
         for (int i = 0; i < m; i++) {
             int fromIndex = i * PAGE_SIZE;
             int toIndex = (i * PAGE_SIZE + PAGE_SIZE < size) ? (i * PAGE_SIZE + PAGE_SIZE) : size;
