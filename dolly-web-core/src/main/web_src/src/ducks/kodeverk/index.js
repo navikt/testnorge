@@ -1,16 +1,20 @@
-import { createAction, handleActions } from 'redux-actions'
+import { createActions, handleActions } from 'redux-actions'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 import { DollyApi } from '~/service/Api'
 import { onSuccess, onRequest } from '~/ducks/utils/requestActions'
 import { SortKodeverkArray } from '~/service/services/dolly/Utils'
 
-export const getKodeverk = createAction(
-	'GET_KODEVERK',
-	kodeverkNavn => DollyApi.getKodeverkByNavn(kodeverkNavn),
-	kodeverkNavn => ({
-		kodeverkNavn
-	})
+export const { getKodeverk } = createActions(
+	{
+		getKodeverk: [
+			DollyApi.getKodeverkByNavn,
+			kodeverkNavn => ({
+				kodeverkNavn
+			})
+		]
+	},
+	{ prefix: 'kodeverk' }
 )
 
 const initialState = {
@@ -18,6 +22,9 @@ const initialState = {
 	data: {}
 }
 
+/**
+ * Note: Bruker *ikke* immer (immutable state) her, da noen av kodeverkene kan
+ */
 export default handleActions(
 	{
 		[onRequest(getKodeverk)](state, action) {

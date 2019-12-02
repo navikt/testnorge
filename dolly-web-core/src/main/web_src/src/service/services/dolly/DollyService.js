@@ -31,8 +31,8 @@ export default {
 		return Request.delete(Endpoints.gruppeById(gruppeId))
 	},
 
-	updateBeskrivelse(gruppeId, data) {
-		return Request.put(Endpoints.gruppeBeskrivelse(gruppeId), data)
+	updateBeskrivelse(gruppeId, ident, beskrivelse) {
+		return Request.put(Endpoints.gruppeBeskrivelse(gruppeId), { ident, beskrivelse })
 	},
 
 	createBestilling(gruppeId, data) {
@@ -103,9 +103,6 @@ export default {
 	},
 
 	//Oppslag
-	getEnhetByTknr(tknr) {
-		return Request.get(Endpoints.enhetByTknr(tknr))
-	},
 
 	getPersonFraPersonoppslag(ident) {
 		return Request.get(Endpoints.personoppslag(ident))

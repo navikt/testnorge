@@ -1,4 +1,5 @@
 import _get from 'lodash/get'
+import _isEmpty from 'lodash/isEmpty'
 import Formatters from '~/utils/DataFormatter'
 
 // TODO: Flytte til selector?
@@ -37,7 +38,7 @@ const _getTpsfBestillingData = data => {
 }
 
 const _findBestillingskriterier = bestillingData => {
-	//TODO: Skrives om!! Sender helst inn riktig før vi kommer til denne fila
+	//TODO: Sender helst inn ferdigsortert bestillingsdata
 	if (bestillingData.tpsfKriterier || bestillingData.bestKriterier) {
 		//Bestillingskriterier etter bestilling
 		return {
@@ -48,46 +49,58 @@ const _findBestillingskriterier = bestillingData => {
 			opprettetFraId: bestillingData.opprettetFraId
 		}
 	}
-	const { tpsf, antallIdenter, ...registreKriterier } = bestillingData
-	//Bestillingskriterier under bestilling
-	return { tpsfKriterier: tpsf, registreKriterier, antallIdenter }
+
+	//Bestillingskriterier i steg 3 under bestilling
+	const { tpsf, ...registreKriterier } = bestillingData
+	const { identtype, ...tpsfData } = tpsf
+	return { tpsfKriterier: tpsfData, registreKriterier }
 }
 
 export function mapBestillingData(bestillingData) {
 	if (!bestillingData) return null
-	//TODO: Skrives om slik at ulike kriterier allerede er skilt?
-	//Kan hende det som kalles bestillingsinformasjon under her burde være en egen greie
 	const { tpsfKriterier, registreKriterier, ...bestillingsinformasjon } = _findBestillingskriterier(
 		bestillingData
 	)
-
 	const data = []
 
-	const bestillingsInfo = {
-		header: 'Bestillingsinformasjon',
-		items: [
-			obj(
-				'Antall',
-				bestillingsinformasjon.antallIdenter && bestillingsinformasjon.antallIdenter.toString()
-			),
-			obj('Sist Oppdatert', Formatters.formatDate(bestillingsinformasjon.sistOppdatert)),
-			obj(
-				'Gjenopprett fra',
-				bestillingsinformasjon.opprettetFraId &&
-					`Bestilling # ${bestillingsinformasjon.opprettetFraId}`
-			)
-		]
+	if (!_isEmpty(bestillingsinformasjon)) {
+		const bestillingsInfo = {
+			header: 'Bestillingsinformasjon',
+			items: [
+				obj(
+					'Antall',
+					bestillingsinformasjon.antallIdenter && bestillingsinformasjon.antallIdenter.toString()
+				),
+				obj('Sist Oppdatert', Formatters.formatDate(bestillingsinformasjon.sistOppdatert)),
+				obj(
+					'Gjenopprett fra',
+					bestillingsinformasjon.opprettetFraId &&
+						`Bestilling # ${bestillingsinformasjon.opprettetFraId}`
+				)
+			]
+		}
+		data.push(bestillingsInfo)
 	}
-	data.push(bestillingsInfo)
 
 	if (tpsfKriterier) {
-		const personinfo = {
-			header: 'Persondetaljer',
-			items: _getTpsfBestillingData(tpsfKriterier)
-		}
+		const {
+			boadresse,
+			postadresse,
+			adresseNrInfo,
+			identHistorikk,
+			relasjoner,
+			...persondetaljer
+		} = tpsfKriterier
 
-		data.push(personinfo)
-		if (tpsfKriterier.boadresse) {
+		if (!_isEmpty(persondetaljer)) {
+			const personinfo = {
+				header: 'Persondetaljer',
+				items: _getTpsfBestillingData(tpsfKriterier)
+			}
+
+			data.push(personinfo)
+		}
+		if (boadresse) {
 			const adr = tpsfKriterier.boadresse
 			const adresse = {
 				header: 'Bostedadresse',
@@ -111,7 +124,7 @@ export function mapBestillingData(bestillingData) {
 			data.push(adresse)
 		}
 
-		if (tpsfKriterier.postadresse) {
+		if (postadresse) {
 			const postadr = tpsfKriterier.postadresse[0]
 			const postadresse = {
 				header: 'Postadresse',
@@ -125,7 +138,23 @@ export function mapBestillingData(bestillingData) {
 			data.push(postadresse)
 		}
 
-		if (tpsfKriterier.identHistorikk) {
+		if (adresseNrInfo) {
+			const adresseNrInfoObj = {
+				header: `Boadresse basert på ${Formatters.showLabel(
+					'adresseNrType',
+					adresseNrInfo.nummertype
+				)}`,
+				items: [
+					obj(
+						`${Formatters.showLabel('adresseNrType', adresseNrInfo.nummertype)}`,
+						adresseNrInfo.nummer
+					)
+				]
+			}
+			data.push(adresseNrInfoObj)
+		}
+
+		if (identHistorikk) {
 			const identhistorikkData = {
 				header: 'Identhistorikk',
 				itemRows: tpsfKriterier.identHistorikk.map((ident, idx) => {
@@ -146,7 +175,7 @@ export function mapBestillingData(bestillingData) {
 			data.push(identhistorikkData)
 		}
 
-		if (tpsfKriterier.relasjoner) {
+		if (relasjoner) {
 			if (tpsfKriterier.relasjoner.partner) {
 				const mappedTpsfData = _getTpsfBestillingData(tpsfKriterier.relasjoner.partner)
 				if (tpsfKriterier.relasjoner.partner.identHistorikk) {

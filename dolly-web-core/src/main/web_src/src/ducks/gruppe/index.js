@@ -1,100 +1,102 @@
 import { LOCATION_CHANGE } from 'connected-react-router'
-import { createAction, handleActions, combineActions } from 'redux-actions'
+import { createActions, combineActions } from 'redux-actions'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 import _find from 'lodash/find'
 import { DollyApi } from '~/service/Api'
+import { createLoadingSelector } from '~/ducks/loading'
 import { onSuccess } from '~/ducks/utils/requestActions'
+import { handleActions } from '~/ducks/utils/immerHandleActions'
 
-// GET
-export const getGruppe = createAction('GET_GRUPPE', DollyApi.getGruppeById)
-export const getGrupper = createAction('GET_GRUPPER', DollyApi.getGrupper)
-export const getGrupperByUserId = createAction('GET_GRUPPER_BY_USER_ID', DollyApi.getGruppeByUserId)
-
-// CRUD
-export const createGruppe = createAction('CREATE_GRUPPE', DollyApi.createGruppe)
-export const updateGruppe = createAction('UPDATE_GRUPPE', DollyApi.updateGruppe)
-export const updateBeskrivelse = createAction(
-	'UPDATE_BESKRIVELSE',
-	DollyApi.updateBeskrivelse,
-	(gruppeId, data) => ({ gruppeId, data })
+export const actions = createActions(
+	{
+		getById: DollyApi.getGruppeById,
+		getAlle: DollyApi.getGrupper,
+		getByUserId: DollyApi.getGruppeByUserId,
+		create: DollyApi.createGruppe,
+		update: DollyApi.updateGruppe,
+		remove: [
+			DollyApi.deleteGruppe,
+			gruppeId => ({
+				gruppeId
+			})
+		],
+		updateBeskrivelse: DollyApi.updateBeskrivelse
+	},
+	{
+		prefix: 'gruppe' // String used to prefix each type
+	}
 )
-export const deleteGruppe = createAction('DELETE_GRUPPE', DollyApi.deleteGruppe, gruppeId => ({
-	gruppeId
-}))
-
-// UI
-export const settVisning = createAction('SETT_VISNING')
 
 const initialState = {
-	data: null,
-	visning: 'mine'
+	ident: {},
+	byId: {},
+	mineIds: []
 }
-
-const getSuccess = combineActions(
-	onSuccess(getGruppe),
-	onSuccess(getGrupper),
-	onSuccess(getGrupperByUserId)
-)
 
 export default handleActions(
 	{
 		[LOCATION_CHANGE](state, action) {
 			return initialState
 		},
-		[getSuccess](state, action) {
-			const { data } = action.payload
-			return { ...state, data: Array.isArray(data) ? data : [data] }
+		[onSuccess(actions.getById)](state, action) {
+			const gruppe = action.payload.data
+			state.ident = gruppe.identer.reduce((acc, curr) => {
+				acc[curr.ident] = { ...curr, gruppeId: gruppe.id }
+				return acc
+			}, {})
+			state.byId[gruppe.id] = gruppe
 		},
-		[onSuccess(updateGruppe)](state, action) {
-			return {
-				...state,
-				data: state.data.map((item, idx) => ({
-					...item,
-					...(item.id === action.payload.data.id && action.payload.data)
-				}))
-			}
+		[onSuccess(actions.getAlle)](state, action) {
+			action.payload.data.forEach(gruppe => {
+				state.byId[gruppe.id] = gruppe
+			})
 		},
-		[onSuccess(updateBeskrivelse)](state, action) {
-			return {
-				...state,
-				data: state.data.map(item => ({
-					...item,
-					identer: item.identer.map(ident => ({
-						...ident,
-						beskrivelse:
-							ident.ident === action.payload.data.ident
-								? action.payload.data.beskrivelse
-								: ident.beskrivelse
-					}))
-				}))
-			}
+		[onSuccess(actions.getByUserId)](state, action) {
+			state.mineIds = action.payload.data.map(v => v.id)
+			action.payload.data.forEach(gruppe => {
+				state.byId[gruppe.id] = gruppe
+			})
 		},
-		[onSuccess(deleteGruppe)](state, action) {
-			return {
-				...state,
-				data: state.data.filter(item => item.id !== action.meta.gruppeId)
-			}
+		[onSuccess(actions.update)](state, action) {
+			state.byId[action.payload.data.id] = action.payload.data
 		},
-		[settVisning](state, action) {
-			return { ...state, visning: action.payload }
+		[onSuccess(actions.updateBeskrivelse)](state, action) {
+			const { ident, beskrivelse } = action.payload.data
+			state.ident[ident].beskrivelse = beskrivelse
+		},
+		[onSuccess(actions.remove)](state, action) {
+			delete state.byId[action.meta.gruppeId]
+			state.mineIds = state.mineIds.filter(v => v !== action.meta.gruppeId)
 		}
 	},
 	initialState
 )
 
 // Thunk
-export const fetchGrupperTilBruker = () => async (dispatch, getState) => {
+export const fetchMineGrupper = () => async (dispatch, getState) => {
 	const { brukerId } = getState().bruker.brukerData
-	return dispatch(getGrupperByUserId(brukerId))
+	return dispatch(actions.getByUserId(brukerId))
 }
 
 // Selector
-export const sokSelectorOversikt = (items, searchStr) => {
-	if (!items) return null
-	if (!searchStr) return items
+export const loadingGrupper = createLoadingSelector([
+	actions.getById,
+	actions.getAlle,
+	actions.getByUserId
+])
 
-	const query = searchStr.toLowerCase()
+export const selectGruppeById = (state, gruppeId) => state.gruppe.byId[gruppeId]
+export const selectIdentById = (state, ident) => state.gruppe.ident[ident]
+
+export const sokSelectorGruppeOversikt = state => {
+	const { search, gruppe } = state
+	let items = Object.values(gruppe.byId)
+
+	if (!items) return null
+	if (!search) return items
+
+	const query = search.toLowerCase()
 	return items.filter(item => {
 		const searchValues = [
 			_get(item, 'id'),
@@ -107,15 +109,4 @@ export const sokSelectorOversikt = (items, searchStr) => {
 
 		return searchValues.some(v => v.includes(query))
 	})
-}
-
-export const getIdentByIdSelector = (state, personId) => {
-	return _get(state, 'gruppe.data[0].identer', []).find(v => v.ident === personId)
-}
-
-export const antallBestillingerSelector = gruppeArray => {
-	if (!gruppeArray) return 0
-	return _get(gruppeArray, '[0].identer', [])
-		.map(b => b.bestillingId)
-		.flat().length
 }

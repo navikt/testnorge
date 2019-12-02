@@ -12,14 +12,13 @@ import Button from '~/components/ui/button/Button'
 import './PersonVisning.less'
 
 export const PersonVisning = ({
-	getDataFraFagsystemer,
+	fetchDataFraFagsystemer,
 	data,
 	testIdent,
 	bestilling,
-	loading,
-	gruppeId
+	loading
 }) => {
-	useMount(getDataFraFagsystemer)
+	useMount(fetchDataFraFagsystemer)
 
 	return (
 		<div className="person-visning">
@@ -39,7 +38,7 @@ export const PersonVisning = ({
 				loading={loading.udistub}
 			/>
 			<TidligereBestillinger ids={testIdent.bestillingId} />
-			<BeskrivelseConnector ident={testIdent.ident} gruppeId={gruppeId} />
+			<BeskrivelseConnector ident={testIdent} />
 			<div className="flexbox--align-center--justify-end">
 				<Button className="flexbox--align-center" kind="details">
 					BESTILLINGSDETALJER

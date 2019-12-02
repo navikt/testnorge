@@ -7,8 +7,13 @@ import Loading from '~/components/ui/loading/Loading'
 
 import './Beskrivelse.less'
 
-export const Beskrivelse = ({ beskrivelse, updateBeskrivelse, isUpdatingBeskrivelse }) => {
+export const Beskrivelse = ({ ident, updateBeskrivelse, isUpdatingBeskrivelse }) => {
 	const [isEditing, turnOnEditing, turnOffEditing] = useBoolean(false)
+
+	const handleSubmit = value => {
+		updateBeskrivelse(ident.gruppeId, ident.ident, value)
+		turnOffEditing()
+	}
 
 	if (isUpdatingBeskrivelse) return <Loading label="oppdaterer beskrivelse" />
 
@@ -18,11 +23,11 @@ export const Beskrivelse = ({ beskrivelse, updateBeskrivelse, isUpdatingBeskrive
 			{isEditing ? (
 				<BeskrivelseEditor
 					turnOffEditing={turnOffEditing}
-					beskrivelse={beskrivelse}
-					updateBeskrivelse={updateBeskrivelse}
+					beskrivelse={ident.beskrivelse}
+					handleSubmit={handleSubmit}
 				/>
 			) : (
-				<BeskrivelseFelt turnOnEditing={turnOnEditing} beskrivelse={beskrivelse} />
+				<BeskrivelseFelt turnOnEditing={turnOnEditing} beskrivelse={ident.beskrivelse} />
 			)}
 		</div>
 	)
