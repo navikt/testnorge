@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.aareg;
+package no.nav.dolly.bestilling.aareg.domain;
 
 import static java.util.Objects.isNull;
 
@@ -16,7 +16,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsAaregResponse {
+public class AaregResponse {
 
     private Map<String, String> statusPerMiljoe;
 

@@ -6,19 +6,18 @@ import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import lombok.RequiredArgsConstructor;
+import java.net.URI;
+import java.util.Map;
+import java.util.UUID;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.util.Map;
-import java.util.UUID;
-
-import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
-import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
-import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
+import lombok.RequiredArgsConstructor;
+import no.nav.dolly.bestilling.aareg.domain.AaregOppdaterRequest;
+import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
+import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Component
@@ -35,24 +34,24 @@ public class AaregConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
-    public RsAaregResponse opprettArbeidsforhold(RsAaregOpprettRequest request) {
+    public AaregResponse opprettArbeidsforhold(AaregOpprettRequest request) {
         RequestEntity postRequest =
                 RequestEntity.post(URI.create(format(OPPRETT_ARBEIDSFORHOLD, providersProps.getAaregdata().getUrl())))
                         .header(AUTHORIZATION, getUserIdToken())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .body(request);
-        return restTemplate.exchange(postRequest, RsAaregResponse.class).getBody();
+        return restTemplate.exchange(postRequest, AaregResponse.class).getBody();
     }
 
-    public RsAaregResponse oppdaterArbeidsforhold(RsAaregOppdaterRequest request) {
+    public AaregResponse oppdaterArbeidsforhold(AaregOppdaterRequest request) {
         RequestEntity putRequest =
                 RequestEntity.put(URI.create(format(OPPDATER_ARBEIDSFORHOLD, providersProps.getAaregdata().getUrl())))
                         .header(AUTHORIZATION, getUserIdToken())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .body(request);
-        return restTemplate.exchange(putRequest, RsAaregResponse.class).getBody();
+        return restTemplate.exchange(putRequest, AaregResponse.class).getBody();
     }
 
     public ResponseEntity<Map[]> hentArbeidsforhold(String ident, String miljoe) {
@@ -65,14 +64,14 @@ public class AaregConsumer {
         return restTemplate.exchange(getRequest, Map[].class);
     }
 
-    public RsAaregResponse slettArbeidsforholdFraAlleMiljoer(String ident) {
+    public AaregResponse slettArbeidsforholdFraAlleMiljoer(String ident) {
         RequestEntity deleteRequest =
                 RequestEntity.delete(URI.create(format(SLETT_ARBEIDSFORHOLD, providersProps.getAaregdata().getUrl(), ident)))
                         .header(AUTHORIZATION, getUserIdToken())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .build();
-        return restTemplate.exchange(deleteRequest, RsAaregResponse.class).getBody();
+        return restTemplate.exchange(deleteRequest, AaregResponse.class).getBody();
     }
 
     private static String getNavCallId() {

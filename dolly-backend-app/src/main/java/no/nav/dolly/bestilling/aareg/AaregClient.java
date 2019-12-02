@@ -2,22 +2,24 @@ package no.nav.dolly.bestilling.aareg;
 
 import static java.util.Collections.singletonList;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
+import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
 import no.nav.dolly.consumer.aareg.AaregConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAktoer;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
-import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
@@ -28,6 +30,7 @@ import no.nav.dolly.metrics.Timed;
 @RequiredArgsConstructor
 public class AaregClient extends AaregAbstractClient implements ClientRegister {
 
+    private final MapperFacade mapperFacade;
     private final AaregConsumer aaregConsumer;
 
     @Override
@@ -48,13 +51,14 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
                 }
 
                 for (int i = 0; i < bestilling.getAareg().size(); i++) {
-                    RsArbeidsforhold arbfInput = bestilling.getAareg().get(i);
+                    Arbeidsforhold arbfInput = mapperFacade.map(bestilling.getAareg().get(i), Arbeidsforhold.class);
                     arbfInput.setArbeidsforholdID(Integer.toString(i + 1));
                     arbfInput.setArbeidstaker(RsPersonAareg.builder().ident(tpsPerson.getHovedperson()).build());
+                    setPermisjonId(arbfInput);
 
                     boolean found = false;
                     for (int j = 0; j < response.getBody().length; j++) {
-                        Map arbfFraAareg = (Map) response.getBody()[j];
+                        Map arbfFraAareg = response.getBody()[j];
 
                         if ((isMatchArbgivOrgnummer(arbfInput.getArbeidsgiver(), getIdentifyingNumber(arbfFraAareg)) ||
                                 isMatchArbgivPersonnummer(arbfInput.getArbeidsgiver(), getIdentifyingNumber(arbfFraAareg))) &&
@@ -72,7 +76,7 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
                     }
 
                     if (!found) {
-                        appendResult(aaregConsumer.opprettArbeidsforhold(RsAaregOpprettRequest.builder()
+                        appendResult(aaregConsumer.opprettArbeidsforhold(AaregOpprettRequest.builder()
                                 .arbeidsforhold(arbfInput)
                                 .environments(singletonList(env))
                                 .build()).getStatusPerMiljoe(), arbfInput.getArbeidsforholdID(), result);
@@ -82,6 +86,14 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
         }
 
         progress.setAaregStatus(result.length() > 1 ? result.substring(1) : null);
+    }
+
+    private void setPermisjonId(Arbeidsforhold arbfInput) {
+        if (!arbfInput.getPermisjon().isEmpty()) {
+            arbfInput.getPermisjon().sort(Comparator.comparing(perm -> perm.getPermisjonsPeriode().getFom()));
+            AtomicInteger id = new AtomicInteger(1);
+            arbfInput.getPermisjon().forEach(perm -> perm.setPermisjonsId(Integer.toString(id.getAndAdd(1))));
+        }
     }
 
     @Override

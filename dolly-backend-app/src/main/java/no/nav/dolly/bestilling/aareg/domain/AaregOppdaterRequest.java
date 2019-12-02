@@ -1,14 +1,13 @@
-package no.nav.dolly.domain.resultset.aareg;
+package no.nav.dolly.bestilling.aareg.domain;
 
+import java.time.LocalDateTime;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-
 import no.nav.dolly.domain.resultset.aareg.util.JsonDateDeserializer;
 import no.nav.dolly.domain.resultset.aareg.util.JsonDateSerializer;
 
@@ -16,7 +15,7 @@ import no.nav.dolly.domain.resultset.aareg.util.JsonDateSerializer;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RsAaregOppdaterRequest extends RsAaregOpprettRequest {
+public class AaregOppdaterRequest extends AaregOpprettRequest {
 
     @JsonSerialize(using = JsonDateSerializer.class)
     @JsonDeserialize(using = JsonDateDeserializer.class)
