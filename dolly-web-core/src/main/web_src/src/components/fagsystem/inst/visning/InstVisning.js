@@ -11,13 +11,17 @@ export const InstVisning = ({ data, loading }) => {
 	return (
 		<div>
 			<SubOverskrift label="Institusjonsopphold" />
-			{data.map((curr, idx) => (
+			{data.map((inst, idx) => (
 				<div className="person-visning_content" key={idx}>
-					<TitleValue title="Institusjonstype" value={data[idx].institusjonstype} />
-					<TitleValue title="Start dato" value={Formatters.formatDate(data[idx].startdato)} />
+					<TitleValue title="" value={`#${idx + 1}`} size="x-small" />
 					<TitleValue
-						title="Slutt dato"
-						value={Formatters.formatDate(data[idx].faktiskSluttdato)}
+						title="Institusjonstype"
+						value={Formatters.showLabel('institusjonstype', data[idx].institusjonstype)}
+					/>
+					<TitleValue title="Startdato" value={Formatters.formatStringDates(data[idx].startdato)} />
+					<TitleValue
+						title="Sluttdato"
+						value={Formatters.formatStringDates(data[idx].faktiskSluttdato)}
 					/>
 				</div>
 			))}
