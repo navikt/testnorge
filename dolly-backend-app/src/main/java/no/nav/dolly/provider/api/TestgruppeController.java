@@ -143,7 +143,7 @@ public class TestgruppeController {
     }
 
     /**
-     * @deprecated Eenne erstattes av /api/v1/ident/{ident}/ibruk
+     * @deprecated Erstattes av /api/v1/ident/{ident}/ibruk
      */
     @Deprecated
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)

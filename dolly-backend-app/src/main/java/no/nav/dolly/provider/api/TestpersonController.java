@@ -39,7 +39,7 @@ public class TestpersonController {
      * @deprecated (På vent, ikke sikkert denne funksjonen skal tilbys)
      */
     @Deprecated
-    @ApiOperation(value = "Endre/oppdatere person i TPS og øvrige systemer")
+    @ApiOperation(value = "Legge egenskaper på person/endre person i TPS og øvrige systemer")
     @PutMapping("/{ident}/leggtilpaaperson")
     @ResponseStatus(HttpStatus.OK)
     public RsBestillingStatus oppdaterPerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
