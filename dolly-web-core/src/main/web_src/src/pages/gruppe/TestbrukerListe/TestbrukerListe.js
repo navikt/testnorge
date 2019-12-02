@@ -30,7 +30,7 @@ export default function TestbrukerListe({
 		{
 			text: 'Ident',
 			width: '15',
-			dataField: 'ident',
+			dataField: 'ident.ident',
 			unique: true
 		},
 		{
@@ -56,13 +56,13 @@ export default function TestbrukerListe({
 		{
 			text: 'Bestilling-ID',
 			width: '10',
-			dataField: 'bestillingId'
+			dataField: 'ident.bestillingId'
 		},
 		{
 			text: 'I bruk',
 			width: '10',
 			dataField: 'ibruk',
-			formatter: (cell, row) => <PersonIBrukButtonConnector personId={row.ident} />
+			formatter: (cell, row) => <PersonIBrukButtonConnector ident={row.ident} />
 		}
 	]
 

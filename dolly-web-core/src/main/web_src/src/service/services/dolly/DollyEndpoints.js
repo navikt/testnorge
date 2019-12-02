@@ -3,6 +3,7 @@ import config from '~/config'
 const uri = `${config.services.dollyBackend}`
 
 const groupBase = `${uri}/gruppe`
+const identBase = `${uri}/ident`
 const brukerBase = `${uri}/bruker`
 const kodeverkBase = `${uri}/kodeverk`
 const bestillingBase = `${uri}/bestilling`
@@ -41,8 +42,8 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/bestillingStatus`
 	}
 
-	static ibruk(gruppeId) {
-		return `${groupBase}/${gruppeId}/ibruk`
+	static ibruk(ident, ibruk) {
+		return `${identBase}/${ident}/ibruk?iBruk=${ibruk}`
 	}
 
 	static beskrivelse(gruppeId) {

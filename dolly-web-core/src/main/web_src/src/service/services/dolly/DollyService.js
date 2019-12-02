@@ -45,8 +45,8 @@ export default {
 		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
 	},
 
-	updateIdentAttributter(gruppeId, data) {
-		return Request.put(Endpoints.ibruk(gruppeId), data)
+	updateIdentIbruk(ident, ibruk) {
+		return Request.put(Endpoints.ibruk(ident, ibruk))
 	},
 
 	updateBeskrivelse(gruppeId, data) {

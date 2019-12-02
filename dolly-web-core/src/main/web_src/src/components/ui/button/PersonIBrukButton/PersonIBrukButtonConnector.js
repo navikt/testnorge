@@ -1,17 +1,12 @@
 import { connect } from 'react-redux'
-import PersonIBrukButton from './PersonIBrukButton'
-import { updateIdentAttributter } from '~/ducks/gruppe'
+import { actions } from '~/ducks/gruppe'
+import { PersonIBrukButton } from './PersonIBrukButton'
 
-const mapStateToProps = (state, ownProps) => ({
-	erIBruk: state.gruppe.data[0].identer.find(v => v.ident === ownProps.personId).ibruk,
-	Id: state.gruppe.data[0].id
-})
-
-const mapDispatchToProps = (dispatch, ownProps) => ({
-	updateIdentAttributter: (id, values) => dispatch(updateIdentAttributter(id, values))
-})
+const mapDispatchToProps = {
+	updateIdentIbruk: actions.updateIdentIbruk
+}
 
 export default connect(
-	mapStateToProps,
+	null,
 	mapDispatchToProps
 )(PersonIBrukButton)
