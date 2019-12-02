@@ -6,7 +6,7 @@ export const PersonIBrukButton = ({ ident, updateIdentIbruk }) => {
 		<Button
 			className="flexbox--align-center"
 			title={ident.ibruk ? 'Marker som ikke i bruk' : 'Marker som i bruk'}
-			kind={ident.ibruk ? 'line-version-expanded-button-empty' : 'filled-version-button-empty'}
+			kind={ident.ibruk ? 'rectangle-filled' : 'rectangle-empty'}
 			onClick={() => updateIdentIbruk(ident.ident, !ident.ibruk)}
 		/>
 	)
