@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RsOrganisasjon implements RsAktoer {
+public class RsOrganisasjon extends RsAktoer {
 
     private String orgnummer;
 }
