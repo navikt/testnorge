@@ -30,7 +30,7 @@ export const Diskresjonskoder = ({ formikBag }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			const res = await DollyApi.getKodeverkByNavn('Diskresjonskoder')
-			setOptions(DollyApi.Utils.NormalizeKodeverkForDropdownUtenUfb(res, true).options)
+			setOptions(DollyApi.utils.NormalizeKodeverkForDropdownUtenUfb(res, true).options)
 		}
 		fetchData()
 	}, [])
