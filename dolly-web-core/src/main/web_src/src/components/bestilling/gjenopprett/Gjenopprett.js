@@ -5,7 +5,7 @@ import Knapp from 'nav-frontend-knapper'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import Formatters from '~/utils/DataFormatter'
-import StaticValue from '~/components/fields/StaticValue/StaticValue'
+import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
 export default function GjenopprettBestilling(props) {
 	const { bestilling, closeModal } = props
@@ -28,7 +28,7 @@ export default function GjenopprettBestilling(props) {
 		<DollyModal isOpen={true} closeModal={closeModal}>
 			<div style={{ paddingLeft: 20, paddingRight: 20 }}>
 				<h1>Bestilling #{bestilling.id}</h1>
-				<StaticValue header="Bestilt miljø" value={Formatters.arrayToString(environments)} />
+				<TitleValue title="Bestilt miljø" value={Formatters.arrayToString(environments)} />
 				<br />
 				<hr />
 			</div>

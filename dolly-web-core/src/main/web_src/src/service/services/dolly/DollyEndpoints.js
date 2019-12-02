@@ -105,10 +105,6 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/slettTestident?ident=${identId}`
 	}
 
-	static enhetByTknr(tknr) {
-		return `${norg2Base}/enhet/${tknr}`
-	}
-
 	static aareg() {
 		return aaregBase
 	}

@@ -1,25 +1,29 @@
-import { createAction, handleActions } from 'redux-actions'
+import { createActions } from 'redux-actions'
 import _isNil from 'lodash/isNil'
 import _mapValues from 'lodash/mapValues'
 import _uniq from 'lodash/uniq'
 import { DollyApi } from '~/service/Api'
 import bestillingStatusMapper from './bestillingStatusMapper'
 import { onSuccess } from '~/ducks/utils/requestActions'
+import { handleActions } from '~/ducks/utils/immerHandleActions'
 
-export const getBestillinger = createAction('GET_BESTILLINGER', gruppeID =>
-	DollyApi.getBestillinger(gruppeID)
-)
-
-export const removeNyBestillingStatus = createAction('REMOVE_NY_BESTILLING_STATUS')
-export const cancelBestilling = createAction('CANCEL_BESTILLING', id =>
-	DollyApi.cancelBestilling(id)
-)
-export const gjenopprettBestilling = createAction('GJENOPPRETT_BESTILLING', (id, envs) =>
-	DollyApi.gjenopprettBestilling(id, envs)
+export const {
+	getBestillinger,
+	cancelBestilling,
+	gjenopprettBestilling,
+	removeNyBestillingStatus
+} = createActions(
+	{
+		getBestillinger: DollyApi.getBestillinger,
+		cancelBestilling: DollyApi.cancelBestilling,
+		gjenopprettBestilling: DollyApi.gjenopprettBestilling
+	},
+	'removeNyBestillingStatus',
+	{ prefix: 'bestillingStatus' }
 )
 
 // ny-array holder oversikt over nye bestillinger i en session
-const initialState = { ny: [], data: [] }
+const initialState = { ny: [], byId: {} }
 
 export default handleActions(
 	{
@@ -29,14 +33,16 @@ export default handleActions(
 				.filter(bestilling => !bestilling.ferdig && !state.ny.includes(bestilling.id))
 				.map(bestilling => bestilling.id)
 
-			return {
-				...state,
-				data: bestillingStatusMapper(data),
-				ny: nyeBestillinger.length > 0 ? [...state.ny, ...nyeBestillinger] : state.ny
+			if (nyeBestillinger.length > 0) {
+				state.ny = state.ny.concat(nyeBestillinger)
 			}
+
+			bestillingStatusMapper(data).map(best => {
+				state.byId[best.id] = best
+			})
 		},
 		[removeNyBestillingStatus](state, action) {
-			return { ...state, ny: state.ny.filter(id => id !== action.payload) }
+			state.ny = state.ny.filter(id => id !== action.payload)
 		}
 	},
 	initialState
@@ -47,21 +53,17 @@ export default handleActions(
  * @param {array} bestillingStatuser
  * @param {string|number} id
  */
-export const getBestillingById = (bestillinger, id) => {
-	if (!bestillinger) return null
-	return bestillinger.find(bestilling => bestilling.id === parseInt(id))
-}
+export const getBestillingById = (state, id) => state.bestillingStatuser.byId[id]
 
 // Henter bestilling objecter basert på nye bestillinger (Array av ID'er)
-export const nyeBestillingerSelector = bestillinger => {
-	if (!bestillinger.data) return null
-
+export const nyeBestillingerSelector = state => {
 	// Filter() -> Fjerner non-truthy values hvis find funksjon feiler
-	return bestillinger.ny.map(id => getBestillingById(bestillinger.data, id)).filter(x => Boolean(x))
+	return state.bestillingStatuser.ny.map(id => getBestillingById(state, id)).filter(x => Boolean(x))
 }
 
 // Filtrer bestillinger basert på søkestreng
-export const sokSelector = (items, searchStr) => {
+export const sokSelector = (state, searchStr) => {
+	const items = Object.values(state.bestillingStatuser.byId)
 	if (!searchStr || !items) return items
 
 	return items.filter(({ listedata }) => {
