@@ -232,13 +232,11 @@ export const selectTestbrukerListe = state => {
 	if (!fagsystem.tpsf) return null
 
 	return Object.values(fagsystem.tpsf).map(ident => ({
-		ident: ident.ident,
-		gruppeId: gruppe.ident[ident.ident].gruppeId,
+		ident: gruppe.ident[ident.ident],
 		identtype: ident.identtype,
 		navn: `${ident.fornavn} ${ident.mellomnavn || ''} ${ident.etternavn}`,
 		kjonn: Formatters.kjonnToString(ident.kjonn),
-		alder: Formatters.formatAlder(ident.alder, ident.doedsdato),
-		bestillingId: gruppe.ident[ident.ident].bestillingId.toString()
+		alder: Formatters.formatAlder(ident.alder, ident.doedsdato)
 	}))
 }
 

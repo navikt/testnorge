@@ -23,6 +23,8 @@ import ChevronDown from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-do
 import ChevronUp from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-up-8.svg'
 import ChevronLeft from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-left-8.svg'
 import ChevronRight from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-right-8.svg'
+import RectFilled from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/filled-version-button-empty.svg'
+import RectEmpty from '~/assets/icons/nav-ikoner/line/SVG/19-interface/line-version-expanded-button-empty.svg'
 import Man from '~/assets/icons/nav-ikoner/line/SVG/11-users/man.svg'
 
 import './Icon.less'
@@ -50,6 +52,8 @@ const icons = {
 	'chevron-up': ChevronUp,
 	'chevron-left': ChevronLeft,
 	'chevron-right': ChevronRight,
+	'rectangle-empty': RectEmpty,
+	'rectangle-filled': RectFilled,
 	man: Man
 }
 

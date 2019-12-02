@@ -16,10 +16,11 @@ const VISNING_BESTILLING = 'bestilling'
 
 export default function Gruppe({
 	getGruppe,
+	deleteGruppe,
 	getBestillinger,
 	gruppe,
+	identer,
 	isFetching,
-	deleteGruppe,
 	isDeletingGruppe,
 	match,
 	history
@@ -37,14 +38,16 @@ export default function Gruppe({
 
 	const byttVisning = event => setVisning(event.target.value)
 
+	const identArray = Object.values(identer)
+
 	const toggleValues = [
 		{
 			value: VISNING_TESTPERSONER,
-			label: `Testpersoner (${gruppe.identer ? gruppe.identer.length : 0})`
+			label: `Testpersoner (${identArray.length})`
 		},
 		{
 			value: VISNING_BESTILLING,
-			label: `Bestillinger (${gruppe.identer.map(b => b.bestillingId).flat().length})`
+			label: `Bestillinger (${identArray.map(b => b.bestillingId).flat().length})`
 		}
 	]
 
@@ -60,6 +63,7 @@ export default function Gruppe({
 		<div className="gruppe-container">
 			<GruppeHeader
 				gruppe={gruppe}
+				identArray={identArray}
 				deleteGruppe={deleteGruppe}
 				isDeletingGruppe={isDeletingGruppe}
 			/>
@@ -80,8 +84,8 @@ export default function Gruppe({
 				<BestillingsveilederModal onSubmit={startBestilling} onAvbryt={skjulStarBestilling} />
 			)}
 
-			{visning === VISNING_TESTPERSONER && <TestbrukerListeConnector gruppeId={gruppe.id} />}
-			{visning === VISNING_BESTILLING && <BestillingListeConnector gruppeId={gruppe.id} />}
+			{visning === VISNING_TESTPERSONER && <TestbrukerListeConnector />}
+			{visning === VISNING_BESTILLING && <BestillingListeConnector />}
 		</div>
 	)
 }
