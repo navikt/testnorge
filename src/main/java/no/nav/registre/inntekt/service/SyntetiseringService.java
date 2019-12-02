@@ -125,8 +125,9 @@ public class SyntetiseringService {
 
             SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(identerMedInntekt);
 
-            if (!leggTilHvisGyldig(feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, inntektsmeldingerFraSynt))
+            if (!leggTilHvisGyldig(feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, inntektsmeldingerFraSynt)) {
                 continue;
+            }
 
             log.info("La til page {} av {} med inntekter til eksisterende identer i inntektstub", i + 1, partisjonerteIdenterIInntektstub.size());
         }
@@ -137,8 +138,9 @@ public class SyntetiseringService {
         for (int i = 0; i < paginerteIdenterMedInntekt.size(); i++) {
             SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(paginerteIdenterMedInntekt.get(i));
 
-            if (!leggTilHvisGyldig(feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, inntektsmeldingerFraSynt))
+            if (!leggTilHvisGyldig(feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, inntektsmeldingerFraSynt)) {
                 continue;
+            }
 
             log.info("La til page {} av {} med inntekter til nye identer i inntektstub", i + 1, paginerteIdenterMedInntekt.size());
         }

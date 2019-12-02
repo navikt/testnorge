@@ -66,19 +66,19 @@ public class InntektstubConsumer {
             @Value("${testnorges.ida.credential.inntektstub.username}") String username,
             @Value("${testnorges.ida.credential.inntektstub.password}") String password) {
 
-        final SSLConnectionSocketFactory sslsf;
+        SSLConnectionSocketFactory sslsf;
         try {
             sslsf = new SSLConnectionSocketFactory(SSLContext.getDefault(), NoopHostnameVerifier.INSTANCE);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
 
-        final Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
+        Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", new PlainConnectionSocketFactory())
                 .register("https", sslsf)
                 .build();
 
-        final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(registry);
+        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(registry);
         cm.setMaxTotal(100);
 
         CloseableHttpClient httpClient = HttpClients.custom()
@@ -180,12 +180,12 @@ public class InntektstubConsumer {
             return headersRet;
         }
         for (String entry : headers.get("Set-Cookie")) {
-            String token = entry.substring(entry.indexOf('=') + 1, entry.indexOf(';'));
+            String newToken = entry.substring(entry.indexOf('=') + 1, entry.indexOf(';'));
             String name = entry.substring(0, entry.indexOf('='));
             if (name.contains("XSRF")) {
                 StringBuilder buf = new StringBuilder(name);
                 buf.insert(0, "X-");
-                headersRet.add(buf.toString(), token);
+                headersRet.add(buf.toString(), newToken);
             }
         }
         return headersRet;

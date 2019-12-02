@@ -1,5 +1,6 @@
 package no.nav.registre.inntekt.provider.rs;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -51,7 +52,7 @@ public class SyntetiseringsControllerTest {
         feilet.put("123", new ArrayList<>());
         when(syntetiseringService.startSyntetisering(any())).thenReturn(feilet);
         Map<String, List<RsInntekt>> response = syntetiseringsController.genererSyntetiserteInntektsmeldinger(new SyntetiseringsRequest(gruppeId));
-        assertTrue(!response.isEmpty());
+        assertFalse(response.isEmpty());
     }
 }
 
