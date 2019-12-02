@@ -38,7 +38,7 @@ export const DoedsboKontaktinfo = ({ data, loading }) => {
 							title="Postnummer og -sted"
 							value={id.postnummer + ' ' + id.poststedsnavn}
 						/>
-						<TitleValue title="Landkode" value={id.landkode} />
+						<TitleValue title="Land" value={id.landkode} kodeverk="Landkoder" />
 						<TitleValue title="Skifteform" value={id.skifteform} />
 						<TitleValue title="Dato Utstedt" value={Formatters.formatStringDates(id.utstedtDato)} />
 						<TitleValue title="Gyldig Fra" value={Formatters.formatStringDates(id.gyldigFom)} />
