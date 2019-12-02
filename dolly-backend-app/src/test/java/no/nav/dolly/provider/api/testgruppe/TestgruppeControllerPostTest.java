@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 
 @DisplayName("POST /api/v1/gruppe")
@@ -31,9 +31,9 @@ class TestgruppeControllerPostTest extends TestgruppeTestBase {
                 .hensikt("hensikt")
                 .build();
 
-        RsTestgruppeUtvidet resp = sendRequest(rsOpprettEndreTestgruppe)
+        RsTestgruppeMedBestillingId resp = sendRequest(rsOpprettEndreTestgruppe)
                 .to(HttpMethod.POST, ENDPOINT_BASE_URI)
-                .andExpect(HttpStatus.CREATED, RsTestgruppeUtvidet.class);
+                .andExpect(HttpStatus.CREATED, RsTestgruppeMedBestillingId.class);
 
         assertThat(resp.getId(), is(notNullValue()));
         assertThat(resp.getNavn(), is("mingruppe"));

@@ -34,7 +34,6 @@ import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
 import no.nav.dolly.domain.testperson.IdentAttributesResponse;
 import no.nav.dolly.domain.testperson.IdentBeskrivelse;
 import no.nav.dolly.domain.testperson.IdentIbruk;
@@ -59,18 +58,18 @@ public class TestgruppeController {
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
     @PutMapping(value = "/{gruppeId}")
-    public RsTestgruppeUtvidet oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettEndreTestgruppe testgruppe) {
+    public RsTestgruppeMedBestillingId oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettEndreTestgruppe testgruppe) {
         Testgruppe gruppe = testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
-        return mapperFacade.map(gruppe, RsTestgruppeUtvidet.class);
+        return mapperFacade.map(gruppe, RsTestgruppeMedBestillingId.class);
     }
 
     @CacheEvict(value = { CACHE_GRUPPE, CACHE_TEAM }, allEntries = true)
     @PostMapping
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
-    public RsTestgruppeUtvidet opprettTestgruppe(@RequestBody RsOpprettEndreTestgruppe createTestgruppeRequest) {
+    public RsTestgruppeMedBestillingId opprettTestgruppe(@RequestBody RsOpprettEndreTestgruppe createTestgruppeRequest) {
         Testgruppe gruppe = testgruppeService.opprettTestgruppe(createTestgruppeRequest);
-        return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeUtvidet.class);
+        return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeMedBestillingId.class);
     }
 
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
