@@ -48,11 +48,11 @@ const selectOptions = {
 		{ value: 'OMTRENTLIG', label: 'Ved personopplysninger' }
 	],
 
-	// kjonnFalskIdentitet: [
-	// 	{ value: 'KVINNE', label: 'Kvinne' },
-	// 	{ value: 'MANN', label: 'Mann' },
-	// 	{ value: 'UBESTEMT', label: 'Ubestemt' }
-	// ],
+	kjoennFalskIdentitet: [
+		{ value: 'KVINNE', label: 'Kvinne' },
+		{ value: 'MANN', label: 'Mann' },
+		{ value: 'UBESTEMT', label: 'Ubestemt' }
+	],
 
 	// Arena
 	arenaBrukertype: [
