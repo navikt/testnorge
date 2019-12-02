@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.pdlforvalter.mapper;
+package no.nav.dolly.bestilling.aareg.mapper;
 
 import org.springframework.stereotype.Component;
 
