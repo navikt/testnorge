@@ -1,13 +1,7 @@
 import Request from '~/service/services/Request'
 import Endpoints from './DollyEndpoints'
-import { NormalizeKodeverkForDropdownUtenUfb } from './Utils'
 
 export default {
-	// UTILS
-	utils: {
-		NormalizeKodeverkForDropdownUtenUfb
-	},
-
 	// Grupper
 	getGrupper() {
 		return Request.get(Endpoints.gruppe())

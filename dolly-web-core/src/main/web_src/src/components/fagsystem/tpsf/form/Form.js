@@ -4,7 +4,7 @@ import { subYears } from 'date-fns'
 import * as Yup from 'yup'
 import { Personinformasjon } from './personinformasjon/Personinformasjon'
 import { Adresser } from './adresser/Adresser'
-import { requiredDate } from '~/utils/YupValidations'
+import { requiredDate, requiredString } from '~/utils/YupValidations'
 
 export const TpsfForm = ({ formikBag }) => {
 	return (
@@ -81,6 +81,15 @@ TpsfForm.validation = {
 		innvandretFraLand: Yup.string(),
 		innvandretFraLandFlyttedato: Yup.date().nullable(),
 		utvandretTilLand: Yup.string(),
-		utvandretTilLandFlyttedato: Yup.date().nullable()
+		utvandretTilLandFlyttedato: Yup.date().nullable(),
+		spesreg: Yup.string().when('utenFastBopel', {
+			is: true,
+			then: Yup.string().test(
+				'is-not-kode6',
+				'Kan ikke være "Kode 6" når "Uten fast bopel" er valgt.',
+				value => value !== 'SPSF'
+			),
+			otherwise: requiredString
+		})
 	})
 }

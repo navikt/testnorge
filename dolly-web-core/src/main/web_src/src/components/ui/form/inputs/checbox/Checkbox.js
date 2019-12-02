@@ -16,10 +16,13 @@ export const DollyCheckbox = props => (
 	</InputWrapper>
 )
 
-export const FormikCheckbox = props => {
+export const FormikCheckbox = ({ afterChange, ...props }) => {
 	const [field, meta] = useField(props)
 
-	const handleChange = event => field.onChange(SyntEvent(field.name, event.target.checked))
+	const handleChange = event => {
+		field.onChange(SyntEvent(field.name, event.target.checked))
+		if (afterChange) afterChange(event.target.checked)
+	}
 
 	return <DollyCheckbox checked={field.value} onChange={handleChange} {...props} />
 }

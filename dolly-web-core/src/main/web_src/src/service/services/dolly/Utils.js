@@ -3,41 +3,38 @@ const _excludeList = ['NULL', 'GLAD']
 
 // Specialbehov for modifisering og sortering av kodeverk
 export const SortKodeverkArray = data => {
-	const koderArray = data.koder
+	const kodeverk = data.koder
 	if (data.name == 'Språk') {
 		const spesKoder = ['ES', 'EN', 'NN', 'NB']
 
 		spesKoder.forEach(value => {
-			for (var i = 0; i < koderArray.length - 1; i++) {
-				const temp = koderArray[i]
+			for (var i = 0; i < kodeverk.length - 1; i++) {
+				const temp = kodeverk[i]
 				if (value == temp.value) {
 					if (value == 'NB') temp.label = 'Norwegian, Bokmål'
 					if (value == 'NN') temp.label = 'Norwegian, Nynorsk'
-					koderArray.splice(i, 1) && koderArray.unshift(temp)
+					kodeverk.splice(i, 1) && kodeverk.unshift(temp)
 				}
 			}
 		})
 	}
 
 	if (data.name == 'Diskresjonskoder') {
-		const spesKoder = [
-			{ value: 'SPFO', label: 'KODE 7 - Sperret adresse, fortrolig' },
-			{ value: 'SPSF', label: 'KODE 6 - Sperret adresse, strengt fortrolig' }
-		]
-
-		spesKoder.forEach(kode => {
-			for (var i = 0; i < koderArray.length - 1; i++) {
-				const temp = koderArray[i]
-				if (kode.value == temp.value) {
-					temp.label = kode.label
-					koderArray.splice(i, 1) && koderArray.unshift(temp)
+		return kodeverk
+			.map(kode => {
+				if (kode.value === 'SPFO') {
+					kode.label = 'KODE 7 - Sperret adresse, fortrolig'
 				}
-			}
-		})
+				if (kode.value === 'SPSF') {
+					kode.label = 'KODE 6 - Sperret adresse, strengt fortrolig'
+				}
+				return kode
+			})
+			.filter(kode => kode.value !== 'UFB')
 	}
 
 	if (data.name === 'Postnummer' || data.name === 'Kommuner') {
-		return koderArray.map(kode => ({
+		return kodeverk.map(kode => ({
 			label: `${kode.value} - ${kode.label}`,
 			value: kode.value,
 			data: kode.label
@@ -60,7 +57,7 @@ export const SortKodeverkArray = data => {
 			{ value: '3310101', label: 'ALLMENNLÆRER' },
 			{ value: '2521106', label: 'ADVOKAT' }
 		]
-		spesKoder.map(yrke => koderArray.unshift(yrke))
+		spesKoder.map(yrke => kodeverk.unshift(yrke))
 	}
 
 	if (data.name === 'Landkoder') {
@@ -79,27 +76,8 @@ export const SortKodeverkArray = data => {
 			'WAK',
 			'YUG'
 		]
-		return koderArray.filter(kode => !spesKoder.includes(kode.value))
+		return kodeverk.filter(kode => !spesKoder.includes(kode.value))
 	}
 
-	return koderArray
-}
-
-export const NormalizeKodeverkForDropdownUtenUfb = ({ data }, showValueInLabel) => {
-	const sortedArray = SortKodeverkArray(data)
-	let filteredSortedArray = []
-	sortedArray.map(
-		diskresjonskode =>
-			diskresjonskode.value !== 'UFB' &&
-			diskresjonskode.value !== 'SPSF' &&
-			filteredSortedArray.push(diskresjonskode)
-	)
-	return {
-		options: filteredSortedArray
-			.filter(val => !_excludeList.includes(val.value))
-			.map(kode => ({
-				value: kode.value,
-				label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
-			}))
-	}
+	return kodeverk
 }
