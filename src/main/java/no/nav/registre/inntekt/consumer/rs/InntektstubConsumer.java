@@ -1,5 +1,7 @@
 package no.nav.registre.inntekt.consumer.rs;
 
+import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnummerFraMaanedsnavn;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -24,22 +26,31 @@ import org.springframework.web.util.UriTemplate;
 
 import javax.net.ssl.SSLContext;
 import java.security.NoSuchAlgorithmException;
+import java.time.Month;
+import java.time.YearMonth;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.inntekt.domain.RsInntekt;
+import no.nav.registre.inntekt.domain.RsInntektsinformasjonsType;
 import no.nav.registre.inntekt.domain.RsPerson;
 import no.nav.registre.inntekt.domain.RsUser;
+import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntekt;
+import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
+import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype;
 
 @Slf4j
 @Component
 public class InntektstubConsumer {
 
-    private static final ParameterizedTypeReference<Map<String, List<RsInntekt>>> RESPONSE_TYPE_OPPRETT_INNTEKT = new ParameterizedTypeReference<Map<String, List<RsInntekt>>>() {
+    private static final ParameterizedTypeReference<Map<String, List<RsInntekt>>> RESPONSE_TYPE_OPPRETT_INNTEKT = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<List<RsInntekt>> RESPONSE_TYPE_HENT_INNTEKT = new ParameterizedTypeReference<List<RsInntekt>>() {
+
+    private static final ParameterizedTypeReference<List<RsInntekt>> RESPONSE_TYPE_HENT_INNTEKT = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<List<RsPerson>> RESPONSE_TYPE_PERSON = new ParameterizedTypeReference<List<RsPerson>>() {
+
+    private static final ParameterizedTypeReference<List<RsPerson>> RESPONSE_TYPE_PERSON = new ParameterizedTypeReference<>() {
     };
 
     private String token;
@@ -93,6 +104,30 @@ public class InntektstubConsumer {
             log.warn(e.getMessage(), e);
             throw e;
         }
+    }
+
+    public void leggInntekterIInntektstubV2(String ident, RsInntekt inntekt) {
+        String inntektstype = inntekt.getInntektstype();
+        Double beloep = inntekt.getBeloep();
+        Boolean inngaarIGrunnlagForTrekk = inntekt.getInngaarIGrunnlagForTrekk();
+        Boolean utloeserArbeidsgiveravgift = inntekt.getUtloeserArbeidsgiveravgift();
+        RsInntektsinformasjonsType inntektsinformasjonsType = inntekt.getInntektsinformasjonsType();
+
+        Inntektsinformasjon inntektsinformasjon =
+                Inntektsinformasjon.builder()
+                        .norskIdent(ident)
+                        .inntektsliste(Collections.singletonList(
+                                Inntekt.builder()
+                                        .inntektstype(Inntektstype.valueOf(inntektstype))
+                                        .utloeserArbeidsgiveravgift(utloeserArbeidsgiveravgift)
+                                        .inngaarIGrunnlagForTrekk(inngaarIGrunnlagForTrekk)
+                                        .beloep(beloep)
+                                        .build()
+                                )
+                        )
+                        .aarMaaned(YearMonth.of(Integer.parseInt(inntekt.getAar()), Month.of(hentMaanedsnummerFraMaanedsnavn(inntekt.getMaaned()))))
+                        .virksomhet(inntekt.getVirksomhet())
+                        .build();
     }
 
     public List<RsPerson> hentEksisterendeIdenter() {

@@ -18,11 +18,13 @@
 
     <properties>
         <application.version>${project.version}</application.version>
+        <java.version>11</java.version>
         <springfox.version>2.9.2</springfox.version>
         <springframework.cloud.version>2.1.2.RELEASE</springframework.cloud.version>
         <fasterxml.jackson.version>2.9.9</fasterxml.jackson.version>
         <testnorge-consumers.version>1.8.0-RELEASE</testnorge-consumers.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
+        <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
     </properties>
 
     <dependencies>
@@ -80,6 +82,13 @@
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash.logback.encoder.version}</version>
         </dependency>
+
+        <!-- INNTEKTSTUB -->
+        <dependency>
+            <groupId>no.nav.tjenester</groupId>
+            <artifactId>stub-aordningen-inntektsinformasjon-v2</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -88,6 +97,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler-plugin.version}</version>
+                <configuration>
+                    <release>11</release>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
