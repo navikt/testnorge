@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import _mapValues from 'lodash/mapValues'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
 import { FormikCheckbox, DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import Checkbox from '~/components/fields/Checkbox/Checkbox'
 
 import './MiljoVelger.less'
 

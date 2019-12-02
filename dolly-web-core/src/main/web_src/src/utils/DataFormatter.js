@@ -4,8 +4,9 @@ import _capitalize from 'lodash/capitalize'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 
-import { defaultDateFormat } from '~/components/fields/Datepicker/DateValidation'
+export const defaultDateFormat = 'dd.MM.yyyy'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+
 const Formatters = {}
 
 Formatters.formatAlder = (alder, dodsdato) => {
@@ -165,28 +166,6 @@ Formatters.gtTypeLabel = gtType => {
 	}
 
 	return gtTypeLabel
-}
-
-Formatters.sort2DArray = (array, i) => {
-	// i er indexen av verdi som man ønsker å sortere på
-	return array.sort((a, b) => {
-		var lengde = Formatters.getIdLengde(a[i])
-		var aSub = a[i].substr(0, lengde)
-		var bSub = b[i].substr(0, lengde)
-		return bSub - aSub
-	})
-}
-
-Formatters.flat2DArray = (array, i) => {
-	if (!array) return null
-
-	array.forEach(person => {
-		if (person[i].includes(',')) {
-			const arrayValues = person[i].split(',')
-			person[i] = Math.max(...arrayValues).toString() + ' ...'
-		}
-	})
-	return array
 }
 
 Formatters.getIdLengde = id => {
