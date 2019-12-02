@@ -129,6 +129,10 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
+    /**
+     * @deprecated Erstattes av /api/v1/ident/{ident}/beskrivelse
+     */
+    @Deprecated
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @ApiOperation(value = "Endre status beskrivelse på testperson")
     @PutMapping("/{gruppeId}/beskrivelse")
@@ -138,6 +142,10 @@ public class TestgruppeController {
         return mapperFacade.map(identService.save(attributes), IdentAttributesResponse.class);
     }
 
+    /**
+     * @deprecated Eenne erstattes av /api/v1/ident/{ident}/ibruk
+     */
+    @Deprecated
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @ApiOperation(value = "Endre status \"i-bruk\" på testperson")
     @PutMapping("/{gruppeId}/ibruk")
