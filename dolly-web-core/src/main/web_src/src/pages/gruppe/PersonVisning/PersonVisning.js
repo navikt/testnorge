@@ -6,6 +6,7 @@ import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
 import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
 import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
 import { SigrunstubVisning } from '~/components/fagsystem/sigrunstub/visning/Visning'
+import { InstVisning } from '~/components/fagsystem/inst/visning/InstVisning'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import Button from '~/components/ui/button/Button'
 
@@ -28,7 +29,7 @@ export const PersonVisning = ({
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			{/* <AaregVisning /> */}
-			{/* <InstVisning /> */}
+			<InstVisning data={data.instdata} loading={loading.instdata} />
 			<ArenaVisning
 				data={data.arenaforvalteren}
 				bestData={bestilling.bestKriterier.arenaforvalter}
