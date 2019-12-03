@@ -107,9 +107,9 @@ export const GET_UDI_TESTBRUKER = createAction(
 	})
 )
 
-export const GET_TESTBRUKER_PERSONOPPSLAG = createAction(
-	'GET_TESTBRUKER_PERSONOPPSLAG',
-	DollyApi.getPersonFraPersonoppslag,
+export const GET_TESTBRUKER_PDLPERSON = createAction(
+	'GET_TESTBRUKER_PDLPERSON',
+	DollyApi.getPersonFraPdlperson,
 	ident => ({
 		ident
 	})
@@ -214,7 +214,7 @@ export default function testbrukerReducer(state = initialState, action) {
 					}
 				}
 			}
-		case onSuccess(GET_TESTBRUKER_PERSONOPPSLAG):
+		case onSuccess(GET_TESTBRUKER_PDLPERSON):
 			return {
 				...state,
 				items: {
@@ -286,7 +286,7 @@ export const getDataFraFagsystemer = personId => (dispatch, getState) => {
 			case 'ARENA':
 				return dispatch(GET_ARENA_TESTBRUKER(personId))
 			case 'PDL':
-				return dispatch(GET_TESTBRUKER_PERSONOPPSLAG(personId))
+				return dispatch(GET_TESTBRUKER_PDLPERSON(personId))
 			case 'UDISTUB':
 				return dispatch(GET_UDI_TESTBRUKER(personId))
 			case 'AAREG':

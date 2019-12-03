@@ -21,7 +21,6 @@ export const PersonVisning = ({
 	gruppeId
 }) => {
 	useMount(getDataFraFagsystemer)
-
 	return (
 		<div className="person-visning">
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.tpsfKriterier)} />

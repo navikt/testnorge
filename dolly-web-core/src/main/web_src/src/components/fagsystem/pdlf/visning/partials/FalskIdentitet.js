@@ -25,7 +25,7 @@ export const FalskIdentitet = ({ data, loading }) => {
 					<Fragment>
 						<TitleValue title="Rett identitet" value={'Kjent ved personopplysninger'} />
 
-						<Personnavn data={rettIdentitetVedOpplysninger.navn} />
+						<Personnavn data={rettIdentitetVedOpplysninger.personnavn} />
 
 						<TitleValue
 							title="Fødselsdato"
@@ -33,8 +33,12 @@ export const FalskIdentitet = ({ data, loading }) => {
 						/>
 						<TitleValue
 							title="Statsborgerskap"
-							value={rettIdentitetVedOpplysninger.statsborgerskap}
+							value={
+								rettIdentitetVedOpplysninger.statsborgerskap &&
+								rettIdentitetVedOpplysninger.statsborgerskap.join(', ')
+							}
 						/>
+
 						<TitleValue title="Kjønn" value={rettIdentitetVedOpplysninger.kjoenn} />
 					</Fragment>
 				)}

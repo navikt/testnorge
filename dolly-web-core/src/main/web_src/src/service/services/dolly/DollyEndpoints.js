@@ -10,7 +10,7 @@ const configBase = `${uri}/config`
 const openamBase = `${uri}/openam`
 const norg2Base = `${uri}/norg2`
 const aaregBase = `${uri}/aareg/arbeidsforhold`
-const personoppslagBase = `${uri}/personoppslag`
+const personoppslagBase = `${uri}/pdlperson`
 
 export default class DollyEndpoints {
 	static gruppe() {
