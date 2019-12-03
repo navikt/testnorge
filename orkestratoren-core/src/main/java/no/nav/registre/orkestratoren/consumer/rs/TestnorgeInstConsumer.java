@@ -78,7 +78,7 @@ public class TestnorgeInstConsumer {
                     response.addAll(body);
                 }
             } catch (HttpStatusCodeException e) {
-                log.error("Kunne ikke slette identer fra aaregstub", e);
+                log.error("Kunne ikke slette identer fra inst", e);
             }
         }
 
