@@ -2,7 +2,7 @@ import React from 'react'
 import Button from '~/components/ui/button/Button'
 
 export const BeskrivelseFelt = ({
-	beskrivelse = 'Fant ingen beskrivelser for denne testpersonen',
+	beskrivelse = 'Fant ingen beskrivelser for denne personen',
 	turnOnEditing
 }) => {
 	return (

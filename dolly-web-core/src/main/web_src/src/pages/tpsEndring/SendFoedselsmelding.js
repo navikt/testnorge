@@ -253,7 +253,7 @@ export default class SendFoedselsmelding extends PureComponent {
 				{this.state.isFetchingMiljoer && <Loading label="Søker etter person" />}
 				{this.state.showErrorMessageFoundIdent && (
 					<h3 className="tps-endring-error-message">
-						Finner ikke testperson med ident: {this.state.currentFnrMor}
+						Finner ikke person med ident: {this.state.currentFnrMor}
 					</h3>
 				)}
 				{this.state.errorMessage && (

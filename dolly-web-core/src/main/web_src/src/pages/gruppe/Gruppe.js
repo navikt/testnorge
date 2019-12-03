@@ -32,7 +32,7 @@ export default function Gruppe({
 		getBestillinger()
 	})
 
-	if (isFetching) return <Loading label="Laster testpersoner" panel />
+	if (isFetching) return <Loading label="Laster personer" panel />
 
 	if (!gruppe) return null
 
@@ -43,7 +43,7 @@ export default function Gruppe({
 	const toggleValues = [
 		{
 			value: VISNING_TESTPERSONER,
-			label: `Testpersoner (${identArray.length})`
+			label: `Personer (${identArray.length})`
 		},
 		{
 			value: VISNING_BESTILLING,
@@ -56,7 +56,7 @@ export default function Gruppe({
 
 	const searchfieldPlaceholderSelector = () => {
 		if (visning === VISNING_BESTILLING) return 'Søk i bestillinger'
-		return 'Søk etter testpersoner'
+		return 'Søk etter personer'
 	}
 
 	return (

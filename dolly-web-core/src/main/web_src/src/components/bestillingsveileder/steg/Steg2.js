@@ -26,7 +26,7 @@ export const Steg2 = ({ formikBag, attributter }) => {
 				</div>
 			) : (
 				<AlertStripeInfo>
-					Du har ikke valgt noen attributter. Dolly oppretter testpersoner med tilfeldige verdier.
+					Du har ikke valgt noen attributter. Dolly oppretter personer med tilfeldige verdier.
 				</AlertStripeInfo>
 			)}
 		</div>
