@@ -13,14 +13,14 @@ import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.service.SyntetiseringService;
 
 @RestController
-@RequestMapping("api/v1/syntetisering")
+@RequestMapping("api/v1/syntetisering/generer")
 @RequiredArgsConstructor
 public class SyntetiseringController {
 
     private final SyntetiseringService syntetiseringService;
 
     @LogExceptions
-    @PostMapping("/generer")
+    @PostMapping
     public ResponseEntity genererArbeidsforholdsmeldinger(
             @RequestParam(defaultValue = "true") Boolean sendAlleEksisterende,
             @RequestBody SyntetiserAaregRequest syntetiserAaregRequest
