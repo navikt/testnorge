@@ -4,7 +4,7 @@ import { subYears } from 'date-fns'
 import * as Yup from 'yup'
 import { Personinformasjon } from './personinformasjon/Personinformasjon'
 import { Adresser } from './adresser/Adresser'
-import { requiredDate, requiredString } from '~/utils/YupValidations'
+import { requiredDate, requiredString, ifPresent } from '~/utils/YupValidations'
 
 export const TpsfForm = ({ formikBag }) => {
 	return (
@@ -40,11 +40,11 @@ TpsfForm.initialValues = attrs => {
 	if (attrs.identHistorikk)
 		initial.identHistorikk = [
 			{
-				foedtEtter: '',
-				foedtFoer: '',
-				identtype: '',
-				kjonn: '',
-				regdato: ''
+				foedtEtter: null,
+				foedtFoer: null,
+				identtype: null,
+				kjonn: null,
+				regdato: null
 			}
 		]
 
@@ -88,8 +88,7 @@ TpsfForm.validation = {
 				'is-not-kode6',
 				'Kan ikke være "Kode 6" når "Uten fast bopel" er valgt.',
 				value => value !== 'SPSF'
-			),
-			otherwise: requiredString
+			)
 		})
 	})
 }

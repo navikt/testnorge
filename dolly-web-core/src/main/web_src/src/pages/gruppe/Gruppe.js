@@ -4,14 +4,14 @@ import useBoolean from '~/utils/hooks/useBoolean'
 import Knapp from 'nav-frontend-knapper'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import Loading from '~/components/ui/loading/Loading'
-import TestbrukerListeConnector from './TestbrukerListe/TestbrukerListeConnector'
+import PersonListeConnector from './PersonListe/PersonListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
 import GruppeHeader from './GruppeHeader/GruppeHeader'
 import Toolbar from '~/components/ui/toolbar/Toolbar'
 import { SearchField } from '~/components/searchField/SearchField'
 import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
 
-const VISNING_TESTPERSONER = 'testpersoner'
+const VISNING_PERSONER = 'personer'
 const VISNING_BESTILLING = 'bestilling'
 
 export default function Gruppe({
@@ -25,14 +25,14 @@ export default function Gruppe({
 	match,
 	history
 }) {
-	const [visning, setVisning] = useState(VISNING_TESTPERSONER)
+	const [visning, setVisning] = useState(VISNING_PERSONER)
 	const [startBestillingAktiv, visStartBestilling, skjulStarBestilling] = useBoolean(false)
 	useMount(() => {
 		getGruppe()
 		getBestillinger()
 	})
 
-	if (isFetching) return <Loading label="Laster testpersoner" panel />
+	if (isFetching) return <Loading label="Laster personer" panel />
 
 	if (!gruppe) return null
 
@@ -42,8 +42,8 @@ export default function Gruppe({
 
 	const toggleValues = [
 		{
-			value: VISNING_TESTPERSONER,
-			label: `Testpersoner (${identArray.length})`
+			value: VISNING_PERSONER,
+			label: `Personer (${identArray.length})`
 		},
 		{
 			value: VISNING_BESTILLING,
@@ -56,7 +56,7 @@ export default function Gruppe({
 
 	const searchfieldPlaceholderSelector = () => {
 		if (visning === VISNING_BESTILLING) return 'Søk i bestillinger'
-		return 'Søk etter testpersoner'
+		return 'Søk etter personer'
 	}
 
 	return (
@@ -84,7 +84,7 @@ export default function Gruppe({
 				<BestillingsveilederModal onSubmit={startBestilling} onAvbryt={skjulStarBestilling} />
 			)}
 
-			{visning === VISNING_TESTPERSONER && <TestbrukerListeConnector />}
+			{visning === VISNING_PERSONER && <PersonListeConnector />}
 			{visning === VISNING_BESTILLING && <BestillingListeConnector />}
 		</div>
 	)

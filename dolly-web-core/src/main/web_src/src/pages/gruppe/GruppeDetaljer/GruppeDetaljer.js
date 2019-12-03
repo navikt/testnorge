@@ -13,7 +13,7 @@ export default function GruppeDetaljer({ gruppe, identArray }) {
 		<div className="gruppe-detaljer">
 			<div className="gd-blokker">
 				<TitleValue title="EIER" value={gruppe.opprettetAvNavIdent} />
-				<TitleValue title="ANTALL OPPRETTEDE TESTPERSONER" value={String(identArray.length)} />
+				<TitleValue title="ANTALL OPPRETTEDE PERSONER" value={String(identArray.length)} />
 				<TitleValue title="SIST ENDRET" value={gruppe.datoEndret} />
 				<TitleValue title="Antall i bruk" value={String(antallIBruk)} />
 				{isExpanded && <TitleValue title="HENSIKT" value={gruppe.hensikt} />}
