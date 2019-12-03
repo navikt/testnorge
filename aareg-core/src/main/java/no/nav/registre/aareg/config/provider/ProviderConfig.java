@@ -22,7 +22,7 @@ public class ProviderConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(restMdcInterceptor)
-                .excludePathPatterns("/api")
+                .excludePathPatterns("/api", "/api/v1/syntetisering/**")
                 .addPathPatterns("/api/**");
     }
 

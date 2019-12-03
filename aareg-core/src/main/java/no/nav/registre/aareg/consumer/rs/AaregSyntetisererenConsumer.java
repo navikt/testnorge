@@ -6,6 +6,7 @@ import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
+import no.nav.registre.aareg.exception.SyntetiseringException;
 
 @Component
 @Slf4j
@@ -58,8 +60,14 @@ public class AaregSyntetisererenConsumer {
     }
 
     private void insertSyntetiskeArbeidsforhold(List<RsAaregOpprettRequest> syntetiserteMeldinger, RequestEntity postRequest) {
-        var response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST_AAREG_REQUEST);
-        if (response.getBody() != null) {
+        ResponseEntity<List<RsAaregOpprettRequest>> response;
+        try {
+            response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST_AAREG_REQUEST);
+        } catch (Exception e) {
+            log.error("Feil under syntetisering", e);
+            throw new SyntetiseringException(e.getMessage(), e.getCause());
+        }
+        if (response != null && response.getBody() != null) {
             syntetiserteMeldinger.addAll(response.getBody());
         } else {
             log.error("Kunne ikke hente response body fra synthdata-aareg: NullPointerException");
