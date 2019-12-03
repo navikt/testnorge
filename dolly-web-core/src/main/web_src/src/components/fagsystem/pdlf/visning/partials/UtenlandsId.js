@@ -8,6 +8,7 @@ export const UtenlandsId = ({ data, loading }) => {
 	if (loading) return <Loading label="laster PDL-data" />
 	if (!data || data.length === 0) return false
 
+	console.log('data :', data)
 	return (
 		<div>
 			<SubOverskrift label="Utenlandsk identifikasjonsnummer" />
@@ -16,7 +17,9 @@ export const UtenlandsId = ({ data, loading }) => {
 					<div key={idx}>
 						<TitleValue title="" value={`#${idx + 1}`} size="x-small" />
 						<TitleValue title="Identifikasjonsnummer" value={id.identifikasjonsnummer} />
-						{id.metadata && <TitleValue title="Kilde" value={id.metadata.master} />}
+						{id.metadata && id.metadata.endringer && (
+							<TitleValue title="Kilde" value={id.metadata.endringer[0].kilde} />
+						)}
 						<TitleValue title="Opphørt" value={Formatters.oversettBoolean(Boolean(id.opphoert))} />
 						<TitleValue title="Utstederland" value={id.utstederland} kodeverk="Landkoder" />
 					</div>
