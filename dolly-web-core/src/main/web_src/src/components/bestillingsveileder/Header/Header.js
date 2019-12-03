@@ -24,7 +24,7 @@ export const Header = ({ data = [] }) => {
 	)
 }
 
-export const headerFromInitialValues = (antall, identtype, malBrukt, opprettFraIdenter) => {
+export const headerFromInitialValues = (antall, identtype, mal, opprettFraIdenter) => {
 	if (opprettFraIdenter) {
 		return [
 			{
@@ -47,10 +47,10 @@ export const headerFromInitialValues = (antall, identtype, malBrukt, opprettFraI
 				value: identtype
 			}
 		]
-		if (malBrukt) {
+		if (mal) {
 			arr.push({
 				title: 'Basert på mal',
-				value: malBrukt
+				value: mal.malNavn
 			})
 		}
 		return arr

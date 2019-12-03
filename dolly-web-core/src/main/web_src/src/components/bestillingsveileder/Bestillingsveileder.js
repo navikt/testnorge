@@ -6,7 +6,7 @@ import { StegVelger } from './StegVelger'
 import { Steg1 } from './steg/steg1/Steg1'
 import { Steg2 } from './steg/Steg2'
 import { Steg3 } from './steg/Steg3'
-import { stateModifierFns } from './initialValues'
+import { stateModifierFns } from './stateModifier'
 import { mergeKeepShape } from '~/utils/Merge'
 
 import './bestillingsveileder.less'
@@ -14,19 +14,27 @@ import './bestillingsveileder.less'
 const steps = [Steg1, Steg2, Steg3]
 
 const createInitialValues = (locState = {}) => {
-	const base = {
+	let iv = {
 		antall: locState.antall || 1,
 		environments: []
 	}
 
-	return base
+	if (locState.mal) {
+		iv = Object.assign(iv, locState.mal.mal)
+	}
+
+	return {
+		iv,
+		identtype: locState.identtype || 'FNR',
+		mal: locState.mal,
+		opprettFraIdenter: locState.opprettFraIdenter
+	}
 }
 
 export const Bestillingsveileder = ({ location, sendBestilling }) => {
-	const [initialValues, setInitialValues] = useState(createInitialValues(location.state))
+	const { identtype, iv, mal, opprettFraIdenter } = createInitialValues(location.state)
+	const [initialValues, setInitialValues] = useState(iv)
 	const [savedValues, setSavedValues] = useState({})
-
-	const identtype = _get(location, 'state.identtype', 'FNR')
 
 	const handleSubmit = (values, formikBag) => {
 		// props.createBestillingMal(values.malNavn) //Nå sjekkes ikke malnavn
@@ -43,7 +51,12 @@ export const Bestillingsveileder = ({ location, sendBestilling }) => {
 	const stateModifier = stateModifierFns(initialValues, setInitialValues)
 
 	// Denne er litt verbos nå, men må nok endre litt etterhvert hvor disse data kommer fra
-	const headerData = headerFromInitialValues(initialValues.antall, identtype, null, null)
+	const headerData = headerFromInitialValues(
+		initialValues.antall,
+		identtype,
+		mal,
+		opprettFraIdenter
+	)
 
 	return (
 		<div className="bestillingsveileder">
