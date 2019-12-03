@@ -10,8 +10,8 @@ export default {
 		const endpoint = `${getInstUrl()}/ident?identer=${ident}&miljoe=${env}`
 		const options = {
 			headers: {
-				NavCallId: 'dolly',
-				NavConsumerId: 'dolly-frontend'
+				'Nav-Call-Id': 'dolly',
+				'Nav-Consumer-Id': 'dolly-frontend'
 			}
 		}
 		return Request.getWithoutCredentials(endpoint, options)

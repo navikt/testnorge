@@ -1,12 +1,10 @@
 import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { Formik, Form, Field, getIn } from 'formik'
+import { Formik, Form, getIn } from 'formik'
 import Knapp from 'nav-frontend-knapper'
 import * as yup from 'yup'
-import { FormikDollySelect } from '~/components/fields/Select/Select'
-import { FormikInput } from '~/components/fields/Input/Input'
-import { DollyApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
+import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 
 export default class RedigerGruppe extends PureComponent {
 	static propTypes = {
@@ -24,7 +22,7 @@ export default class RedigerGruppe extends PureComponent {
 	erRedigering = Boolean(getIn(this.props.gruppe, 'id', false))
 
 	render() {
-		const { currentUserId, gruppe, createOrUpdateFetching, error } = this.props
+		const { gruppe, createOrUpdateFetching, error } = this.props
 
 		if (createOrUpdateFetching) {
 			return <Loading label="oppdaterer gruppe" />
@@ -32,8 +30,7 @@ export default class RedigerGruppe extends PureComponent {
 
 		let initialValues = {
 			navn: getIn(gruppe, 'navn', ''),
-			hensikt: getIn(gruppe, 'hensikt', ''),
-			beskrivelse: getIn(gruppe, 'beskrivelse', '')
+			hensikt: getIn(gruppe, 'hensikt', '')
 		}
 
 		let buttons = (
@@ -52,24 +49,22 @@ export default class RedigerGruppe extends PureComponent {
 				initialValues={initialValues}
 				validationSchema={this.validation}
 				onSubmit={this.onHandleSubmit}
-				render={props => {
-					// const { values, touched, errors, dirty, isSubmitting } = props
-					return (
-						<Form className="opprett-tabellrad" autoComplete="off">
-							<div className="fields">
-								<Field name="navn" label="NAVN" autoFocus component={FormikInput} />
-								<Field name="hensikt" label="HENSIKT" component={FormikInput} />
-								{buttons}
+			>
+				{() => (
+					<Form className="opprett-tabellrad" autoComplete="off">
+						<div className="fields">
+							<FormikTextInput name="navn" label="NAVN" size="grow" autoFocus />
+							<FormikTextInput name="hensikt" label="HENSIKT" size="grow" />
+							{buttons}
+						</div>
+						{error && (
+							<div className="opprett-error">
+								<span>{error.message}</span>
 							</div>
-							{error && (
-								<div className="opprett-error">
-									<span>{error.message}</span>
-								</div>
-							)}
-						</Form>
-					)
-				}}
-			/>
+						)}
+					</Form>
+				)}
+			</Formik>
 		)
 	}
 

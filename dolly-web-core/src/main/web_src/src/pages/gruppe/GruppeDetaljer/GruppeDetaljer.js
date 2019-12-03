@@ -1,23 +1,22 @@
 import React from 'react'
 import { useToggle } from 'react-use'
 import ExpandButton from '~/components/ui/button/ExpandButton'
-import StaticValue from '~/components/fields/StaticValue/StaticValue'
+import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
 import './GruppeDetaljer.less'
 
-export default function GruppeDetaljer({ gruppe }) {
+export default function GruppeDetaljer({ gruppe, identArray }) {
 	const [isExpanded, toggleExpanded] = useToggle(false)
+	const antallIBruk = identArray.map(p => p.ibruk).filter(Boolean).length
 
 	return (
 		<div className="gruppe-detaljer">
 			<div className="gd-blokker">
-				<StaticValue header="EIER" value={gruppe.opprettetAvNavIdent} />
-				<StaticValue
-					header="ANTALL OPPRETTEDE TESTPERSONER"
-					value={String(gruppe.identer ? gruppe.identer.length : 0)}
-				/>
-				<StaticValue header="SIST ENDRET" value={gruppe.datoEndret} />
-				{isExpanded && <StaticValue header="HENSIKT" value={gruppe.hensikt} />}
+				<TitleValue title="EIER" value={gruppe.opprettetAvNavIdent} />
+				<TitleValue title="ANTALL OPPRETTEDE TESTPERSONER" value={String(identArray.length)} />
+				<TitleValue title="SIST ENDRET" value={gruppe.datoEndret} />
+				<TitleValue title="Antall i bruk" value={String(antallIBruk)} />
+				{isExpanded && <TitleValue title="HENSIKT" value={gruppe.hensikt} />}
 			</div>
 			<div className="gruppe-detaljer-chevron">
 				<ExpandButton onClick={toggleExpanded} expanded={isExpanded} />

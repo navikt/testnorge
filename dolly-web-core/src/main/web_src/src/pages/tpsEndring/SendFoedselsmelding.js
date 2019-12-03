@@ -1,17 +1,17 @@
 import React, { PureComponent } from 'react'
-import { Formik, Form, Field } from 'formik'
+import { Formik, Form } from 'formik'
 import Knapp from 'nav-frontend-knapper'
 import * as yup from 'yup'
-import { FormikInput } from '~/components/fields/Input/Input'
-import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
-import { FormikDollySelect } from '~/components/fields/Select/Select'
-import { FormikDatepicker } from '~/components/fields/Datepicker/Datepicker'
 import { TpsfApi } from '~/service/Api'
+import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
+import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import Loading from '~/components/ui/loading/Loading'
-import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
-import DisplayFormikState from '~/utils/DisplayFormikState'
+import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import DataFormatter from '~/utils/DataFormatter'
-import DateValidation from '~/components/fields/Datepicker/DateValidation'
+import { requiredDate } from '~/utils/YupValidations'
+import DisplayFormikState from '~/utils/DisplayFormikState'
 
 export default class SendFoedselsmelding extends PureComponent {
 	state = {
@@ -41,7 +41,7 @@ export default class SendFoedselsmelding extends PureComponent {
 			identtype: yup.string().required('Identtype er ett påkrevd felt.'),
 			kjonn: yup.string().required('Kjønn er et påkrevd felt.'),
 			miljoer: yup.string().required('Miljø er et påkrevd felt.'),
-			foedselsdato: DateValidation(),
+			foedselsdato: requiredDate,
 			adresseFra: yup.string().required('Adresse er et påkrevd felt.')
 		})
 
@@ -193,64 +193,54 @@ export default class SendFoedselsmelding extends PureComponent {
 					validationSchema={this.validation}
 					initialValues={initialValues}
 					enableReinitialize
-					render={props => {
+				>
+					{props => {
 						const { values, touched, errors, dirty, isSubmitting } = props
 						return (
 							<Form autoComplete="off">
 								<h2>Send fødselsmelding</h2>
 								<div className="tps-endring-foedselmelding-top">
-									<Field
+									<FormikTextInput
 										name="identMor"
 										label="MORS IDENT"
-										component={FormikInput}
 										onBlur={this._handleOnBlurInput}
 									/>
-									<Field
-										name="identFar"
-										label="FARS IDENT"
-										component={FormikInput}
-										disabled={foundIdentMor ? false : true}
-									/>
-									<Field
+									<FormikTextInput name="identFar" label="FARS IDENT" disabled={!foundIdentMor} />
+									<FormikSelect
 										name="identtype"
 										label="BARNETS IDENTTYPE"
-										component={FormikDollySelect}
-										options={SelectOptionsManager('identtype')}
-										disabled={foundIdentMor ? false : true}
+										options={Options('identtype')}
+										disabled={!foundIdentMor}
 									/>
 								</div>
 								<div className="tps-endring-foedselmelding-bottom">
-									<Field
+									<FormikDatepicker
 										name="foedselsdato"
 										label="BARNETS FØDSELSDATO"
-										component={FormikDatepicker}
-										disabled={foundIdentMor ? false : true}
+										disabled={!foundIdentMor}
 									/>
-									<Field
+									<FormikSelect
 										name="kjonn"
 										label="BARNETS KJØNN"
-										component={FormikDollySelect}
-										options={SelectOptionsManager('kjonnBarn')}
-										disabled={foundIdentMor ? false : true}
+										options={Options('kjonnBarn')}
+										disabled={!foundIdentMor}
 									/>
-									<Field
+									<FormikSelect
 										name="miljoer"
 										label="SEND TIL MILJØ"
 										options={environments}
-										component={FormikDollySelect}
-										multi={true}
-										disabled={foundIdentMor ? false : true}
+										isMulti={true}
+										disabled={!foundIdentMor}
 									/>
-									<Field
+									<FormikSelect
 										name="adresseFra"
 										label="ADRESSE"
-										component={FormikDollySelect}
 										options={adresseOptions}
-										disabled={foundIdentMor ? false : true}
+										disabled={!foundIdentMor}
 									/>
 								</div>
 								<div className="tps-endring-knapp-container">
-									<Knapp type="hoved" htmlType="submit" disabled={foundIdentMor ? false : true}>
+									<Knapp type="hoved" htmlType="submit" disabled={!foundIdentMor}>
 										Opprett fødselsmelding
 									</Knapp>
 								</div>
@@ -258,7 +248,7 @@ export default class SendFoedselsmelding extends PureComponent {
 							</Form>
 						)
 					}}
-				/>
+				</Formik>
 				{this.state.isFetching && <Loading label="Sender fødselsmelding" />}
 				{this.state.isFetchingMiljoer && <Loading label="Søker etter testbruker" />}
 				{this.state.showErrorMessageFoundIdent && (

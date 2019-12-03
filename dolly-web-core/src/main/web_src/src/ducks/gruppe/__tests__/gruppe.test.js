@@ -1,5 +1,5 @@
 import gruppe from '../index'
-import { sokSelectorOversikt } from '../index'
+import { sokSelectorGruppeOversikt } from '../index'
 
 describe('gruppeReducer', () => {
 	const initialState = {
@@ -101,14 +101,14 @@ describe('gruppeReducer-sokSelector', () => {
 	const testdata = [{ id: 'a' }, { id: 'b' }]
 	it('should return a filtered list', () => {
 		const res = [{ id: 'a' }]
-		expect(sokSelectorOversikt(testdata, 'a')).toEqual(res)
+		expect(sokSelectorGruppeOversikt(testdata, 'a')).toEqual(res)
 	})
 
 	it('should return whole list', () => {
-		expect(sokSelectorOversikt(testdata)).toEqual(testdata)
+		expect(sokSelectorGruppeOversikt(testdata)).toEqual(testdata)
 	})
 
 	it('should return null when list is undefined', () => {
-		expect(sokSelectorOversikt(null)).toEqual(null)
+		expect(sokSelectorGruppeOversikt(null)).toEqual(null)
 	})
 })

@@ -1,9 +1,28 @@
 import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { relasjonTranslator } from '~/service/dataMapper/Utils'
 
 import { Identhistorikk } from './Identhistorikk'
 import { Personinfo } from './Personinfo'
+
+// TODO: Flyttes et mer logisk sted hvis den trengs flere steder
+const relasjonTranslator = relasjon => {
+	switch (relasjon) {
+		case 'EKTEFELLE':
+			return 'Partner'
+		case 'PARTNER':
+			return 'Partner'
+		case 'MOR':
+			return 'Mor'
+		case 'FAR':
+			return 'Far'
+		case 'BARN':
+			return 'Barn'
+		case 'FOEDSEL':
+			return 'Barn'
+		default:
+			return 'Ukjent relasjon'
+	}
+}
 
 export const Relasjoner = ({ relasjoner }) => {
 	if (!relasjoner) return false

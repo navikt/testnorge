@@ -5,10 +5,14 @@ const selectOptions = {
 		{ value: 'BOST', label: 'BOST' }
 	],
 	// kjonn: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
-	// kjonnBarn: [{ value: 'K', label: 'Jente' }, { value: 'M', label: 'Gutt' }],
+	kjonnBarn: [{ value: 'K', label: 'Jente' }, { value: 'M', label: 'Gutt' }],
 
 	boolean: [{ value: true, label: 'Ja' }, { value: false, label: 'Nei' }],
 	// stringBoolean: [{ value: 'true', label: 'Ja' }, { value: 'false', label: 'Nei' }],
+	adresseNrType: [
+		{ value: 'POSTNR', label: 'postnummer' },
+		{ value: 'KOMMUNENR', label: 'kommunenummer' }
+	],
 
 	// SIGRUN
 	tjeneste: [
@@ -44,11 +48,11 @@ const selectOptions = {
 		{ value: 'OMTRENTLIG', label: 'Ved personopplysninger' }
 	],
 
-	// kjonnFalskIdentitet: [
-	// 	{ value: 'KVINNE', label: 'Kvinne' },
-	// 	{ value: 'MANN', label: 'Mann' },
-	// 	{ value: 'UBESTEMT', label: 'Ubestemt' }
-	// ],
+	kjoennFalskIdentitet: [
+		{ value: 'KVINNE', label: 'Kvinne' },
+		{ value: 'MANN', label: 'Mann' },
+		{ value: 'UBESTEMT', label: 'Ubestemt' }
+	],
 
 	// Arena
 	arenaBrukertype: [

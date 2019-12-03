@@ -7,9 +7,7 @@ const mapStateToProps = (state, ownProps) => ({
 	kodeverk: getKodeverkSelector(state, ownProps.navn)
 })
 
-const mapDispatchToProps = dispatch => ({
-	fetchKodeverk: kodeverk => dispatch(fetchKodeverk(kodeverk))
-})
+const mapDispatchToProps = { fetchKodeverk }
 
 export default connect(
 	mapStateToProps,

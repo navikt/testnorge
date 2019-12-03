@@ -1,8 +1,7 @@
 import React, { Fragment } from 'react'
 import cn from 'classnames'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
-import StaticValue from '~/components/fields/StaticValue/StaticValue'
+import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { mapBestillingData } from './BestillingKriterieMapper'
 
 const _renderBestillingsDetaljer = data => {
@@ -16,27 +15,15 @@ const _renderBestillingsDetaljer = data => {
 				<Fragment key={j}>
 					<h4>{kategori.header} </h4>
 					{kategori.items && (
-						<div className={cssClass}>
-							{kategori.items.map((attributt, i) => {
-								if (attributt.value) {
-									return _renderStaticValue(attributt, i)
-								}
-							})}
-						</div>
+						<div className={cssClass}>{kategori.items.map(_renderStaticValue)}</div>
 					)}
 					{kategori.itemRows && (
 						<div className={cn('info-text', { 'bottom-border': bottomBorder })}>
-							{kategori.itemRows.map((row, i) => {
-								return (
-									<div className={'flexbox--align-start flexbox--wrap'} key={i}>
-										{row.map((attributt, j) => {
-											if (attributt.value) {
-												return _renderStaticValue(attributt, j)
-											}
-										})}
-									</div>
-								)
-							})}
+							{kategori.itemRows.map((row, i) => (
+								<div className={'flexbox--align-start flexbox--wrap'} key={i}>
+									{row.map(_renderStaticValue)}
+								</div>
+							))}
 						</div>
 					)}
 				</Fragment>
@@ -46,24 +33,14 @@ const _renderBestillingsDetaljer = data => {
 }
 
 const _renderStaticValue = (attributt, key) => {
-	if (attributt.apiKodeverkId) {
-		return (
-			<KodeverkValueConnector
-				apiKodeverkId={attributt.apiKodeverkId}
-				showValue={attributt.showKodeverkValue}
-				header={attributt.label}
-				size={attributt.width ? attributt.width : 'small'}
-				value={attributt.value}
-				key={key}
-			/>
-		)
-	}
+	if (!attributt.value) return false
 	return (
-		<StaticValue
-			header={attributt.label}
-			size={attributt.width ? attributt.width : 'small'}
-			value={attributt.value}
+		<TitleValue
 			key={key}
+			title={attributt.label}
+			value={attributt.value}
+			kodeverk={attributt.apiKodeverkId}
+			size={attributt.width ? attributt.width : 'small'}
 		/>
 	)
 }

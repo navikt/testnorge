@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
-import { createGruppe, updateGruppe } from '~/ducks/gruppe'
+import { actions } from '~/ducks/gruppe'
 import { createLoadingSelector } from '~/ducks/loading'
 import { createErrorMessageSelector } from '~/ducks/errors'
 import RedigerGruppe from './RedigerGruppe'
 
-const loadingSelector = createLoadingSelector([createGruppe, updateGruppe])
-const errorSelector = createErrorMessageSelector([createGruppe, updateGruppe])
+const loadingSelector = createLoadingSelector([actions.createGruppe, actions.updateGruppe])
+const errorSelector = createErrorMessageSelector([actions.createGruppe, actions.updateGruppe])
 
 const mapStateToProps = state => ({
 	createOrUpdateFetching: loadingSelector(state),
@@ -13,10 +13,10 @@ const mapStateToProps = state => ({
 	error: errorSelector(state)
 })
 
-const mapDispatchToProps = dispatch => ({
-	createGruppe: nyGruppe => dispatch(createGruppe(nyGruppe)),
-	updateGruppe: (id, values) => dispatch(updateGruppe(id, values))
-})
+const mapDispatchToProps = {
+	createGruppe: actions.create,
+	updateGruppe: actions.update
+}
 
 export default connect(
 	mapStateToProps,
