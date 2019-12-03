@@ -54,9 +54,9 @@ public class TestpersonController {
     @ApiOperation(value = "Endre status beskrivelse på testperson")
     @PutMapping("/{ident}/beskrivelse")
     @ResponseStatus(HttpStatus.OK)
-    public IdentAttributesResponse oppdaterTestidentBeskrivelse(@PathVariable String ident, @RequestBody RsIdentBeskrivelse rsBeskrivelse) {
+    public IdentAttributesResponse oppdaterTestidentBeskrivelse(@PathVariable String ident, @RequestBody RsIdentBeskrivelse beskrivelse) {
 
-        IdentBeskrivelse identBeskrivelse = IdentBeskrivelse.builder().beskrivelse(rsBeskrivelse.getBeskrivelse()).build();
+        IdentBeskrivelse identBeskrivelse = IdentBeskrivelse.builder().beskrivelse(beskrivelse.getBeskrivelse()).build();
         identBeskrivelse.setIdent(ident);
         return mapperFacade.map(identService.save(identBeskrivelse), IdentAttributesResponse.class);
     }
