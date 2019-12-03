@@ -1,8 +1,11 @@
 import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Arbeidsavtaler from './partials/Arbeidsavtaler'
-import Permisjon from './partials/Permisjon'
+import { Arbeidsavtaler } from './partials/Arbeidsavtaler'
+import { Arbeidsgiver } from './partials/Arbeidsgiver'
+import { PermisjonPermitteringer } from './partials/PermisjonPermitteringer'
+import { AntallTimerForTimeloennet } from './partials/AntallTimerForTimeloennet'
+import { Utenlandsopphold } from './partials/Utenlandsopphold'
 
 export const AaregVisning = ({ data, loading }) => {
 	if (!data) return false
@@ -11,48 +14,41 @@ export const AaregVisning = ({ data, loading }) => {
 	return (
 		<div>
 			<SubOverskrift label="Arbeidsforhold" />
-			<div className="person-visning_content">
+			<div>
 				{data.map((id, idx) => (
 					<div key={idx}>
-						<TitleValue title="" value={`#${idx + 1}`} size="x-small" />
+						<h4>{`Arbeidsforhold #${idx + 1}`}</h4>
 
-						{id.ansettelsesperiode && (
-							<TitleValue title="Startdato" value={id.ansettelsesperiode.periode.fom} />
-						)}
-						{id.ansettelsesperiode && (
-							<TitleValue title="Startdato" value={id.ansettelsesperiode.periode.tom} />
-						)}
-						{/* antallTimerForTimeLoennet:
-						 antall timer
-						 periode fra og med
-						 kanLeggeTilPerioderPerArbeidsforhold ??   MÅ VEL KANSKJE BESTILLES EKSPLISITT */}
+						<div className="person-visning_content">
+							{id.ansettelsesperiode && (
+								<TitleValue
+									title="Arbeidsforhold type"
+									value={id.type}
+									kodeverk="Arbeidsforholdstyper"
+								/>
+							)}
+
+							{id.ansettelsesperiode && id.ansettelsesperiode.periode && (
+								<TitleValue title="Startdato" value={id.ansettelsesperiode.periode.fom} />
+							)}
+							{id.ansettelsesperiode && id.ansettelsesperiode.periode && (
+								<TitleValue title="Sluttdato" value={id.ansettelsesperiode.periode.tom} />
+							)}
+						</div>
+
+						<AntallTimerForTimeloennet data={id.antallTimerForTimeloennet} />
 
 						<Arbeidsavtaler data={id.arbeidsavtaler} />
-						{/* <Permisjon data={id.permisjon} /> MÅ VEL KANSKJE BESTILLES EKSPLISITT */}
+
+						<Arbeidsgiver data={id.arbeidsgiver} />
+
+						<PermisjonPermitteringer data={id.permisjonPermitteringer} />
+
+						<Utenlandsopphold data={id.utenlandsopphold} />
 
 						{/* {id.arbeidsforholdtype && (
 							<TitleValue title="Startdato" value={id.ansettelsesperiode.periode.tom} />
 						)} HVOR ER DENNE? BURDE EKSISTERT*/}
-
-						{id.arbeidsgiver && (
-							<TitleValue title="Startdato" value={id.ansettelsesperiode.periode.tom} />
-						)}
-
-						{/* 
-						X ansettelseperiode fra og med
-						X arbeidsforholdtype (kodeverk)
-						
-						arbeidsgiver:
-						 ORGNR vs PERS
-
-						utenlandsopphold (kun en per arbeidsforhold)
-						 land
-						 periode fom og tom
-						*/}
-
-						{/* <TitleValue title="Stillingsprosent" value={id.arbeidsavtaler[0].bruksperiode.tom} /> */}
-						<TitleValue title="Type av arbeidsgiver" value={id.ansettelsesperiode.periode.tom} />
-						<TitleValue title="Arbeidsgiver ident" value={id.ansettelsesperiode.periode.tom} />
 					</div>
 				))}
 			</div>
