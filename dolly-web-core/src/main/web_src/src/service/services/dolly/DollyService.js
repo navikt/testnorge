@@ -31,16 +31,21 @@ export default {
 		return Request.delete(Endpoints.gruppeById(gruppeId))
 	},
 
-	updateBeskrivelse(gruppeId, data) {
-		return Request.put(Endpoints.gruppeBeskrivelse(gruppeId), data)
-	},
-
 	createBestilling(gruppeId, data) {
 		return Request.post(Endpoints.gruppeBestilling(gruppeId), data)
 	},
 
 	createBestillingFraEksisterendeIdenter(gruppeId, data) {
 		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
+	},
+
+	// Ident
+	updateIdentBeskrivelse(ident, beskrivelse) {
+		return Request.put(Endpoints.identBeskrivelse(ident), { beskrivelse })
+	},
+
+	updateIdentIbruk(ident, ibruk) {
+		return Request.put(Endpoints.identIbruk(ident, ibruk))
 	},
 
 	// Bruker
