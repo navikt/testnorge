@@ -11,7 +11,7 @@ import Toolbar from '~/components/ui/toolbar/Toolbar'
 import { SearchField } from '~/components/searchField/SearchField'
 import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
 
-const VISNING_TESTPERSONER = 'testpersoner'
+const VISNING_PERSONER = 'personer'
 const VISNING_BESTILLING = 'bestilling'
 
 export default function Gruppe({
@@ -25,7 +25,7 @@ export default function Gruppe({
 	match,
 	history
 }) {
-	const [visning, setVisning] = useState(VISNING_TESTPERSONER)
+	const [visning, setVisning] = useState(VISNING_PERSONER)
 	const [startBestillingAktiv, visStartBestilling, skjulStarBestilling] = useBoolean(false)
 	useMount(() => {
 		getGruppe()
@@ -42,7 +42,7 @@ export default function Gruppe({
 
 	const toggleValues = [
 		{
-			value: VISNING_TESTPERSONER,
+			value: VISNING_PERSONER,
 			label: `Personer (${identArray.length})`
 		},
 		{
@@ -84,7 +84,7 @@ export default function Gruppe({
 				<BestillingsveilederModal onSubmit={startBestilling} onAvbryt={skjulStarBestilling} />
 			)}
 
-			{visning === VISNING_TESTPERSONER && <PersonListeConnector />}
+			{visning === VISNING_PERSONER && <PersonListeConnector />}
 			{visning === VISNING_BESTILLING && <BestillingListeConnector />}
 		</div>
 	)
