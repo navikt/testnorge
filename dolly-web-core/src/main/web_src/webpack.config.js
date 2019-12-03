@@ -26,7 +26,7 @@ const outputDir = {
 const webpackConfig = {
 	mode: process.env.NODE_ENV,
 	devtool: 'source-map',
-	entry: ['babel-polyfill', './src/index.js'],
+	entry: ['./src/index.js'],
 	output: {
 		filename: 'bundle.js',
 		publicPath: '/',
@@ -73,11 +73,6 @@ const webpackConfig = {
 	},
 	module: {
 		rules: [
-			{
-				test: /\.ts(x?)$/,
-				exclude: /node_modules/,
-				use: ['babel-loader', 'ts-loader']
-			},
 			{
 				test: /\.js$/,
 				exclude: /node_modules/,
