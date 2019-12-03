@@ -1,5 +1,6 @@
 import React from 'react'
 import _has from 'lodash/has'
+import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
@@ -17,28 +18,30 @@ export const Diskresjonskoder = ({ formikBag }) => {
 	}
 
 	return (
-		<div>
-			<FormikSelect
-				name="tpsf.spesreg"
-				label="Diskresjonskode"
-				kodeverk="Diskresjonskoder"
-				size="large"
-			/>
-
-			<FormikCheckbox
-				name="tpsf.utenFastBopel"
-				label="Uten fast bopel"
-				afterChange={handleChangeUFB}
-			/>
-
-			{formikBag.values.tpsf.utenFastBopel && (
+		<Vis attributt="tpsf.spesreg">
+			<div>
 				<FormikSelect
-					name="tpsf.boadresse.kommunenr"
-					label="Kommunenummer"
-					afterChange={handleChangeKommunenr}
-					kodeverk="Kommuner"
+					name="tpsf.spesreg"
+					label="Diskresjonskode"
+					kodeverk="Diskresjonskoder"
+					size="large"
 				/>
-			)}
-		</div>
+
+				<FormikCheckbox
+					name="tpsf.utenFastBopel"
+					label="Uten fast bopel"
+					afterChange={handleChangeUFB}
+				/>
+
+				{formikBag.values.tpsf.utenFastBopel && (
+					<FormikSelect
+						name="tpsf.boadresse.kommunenr"
+						label="Kommunenummer"
+						afterChange={handleChangeKommunenr}
+						kodeverk="Kommuner"
+					/>
+				)}
+			</div>
+		</Vis>
 	)
 }
