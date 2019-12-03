@@ -6,24 +6,19 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
 
-export default function TestbrukerListe({
-	isFetching,
-	testbrukerListe,
-	searchActive,
-	fetchTpsfTestbrukere
-}) {
-	useMount(fetchTpsfTestbrukere)
+export default function PersonListe({ isFetching, personListe, searchActive, fetchTpsfPersoner }) {
+	useMount(fetchTpsfPersoner)
 
-	if (isFetching) return <Loading label="laster testbrukere" panel />
+	if (isFetching) return <Loading label="laster personer" panel />
 
-	if (!testbrukerListe || testbrukerListe.length === 0)
+	if (!personListe || personListe.length === 0)
 		return (
 			<ContentContainer>
 				Trykk på opprett personer-knappen for å starte en bestilling.
 			</ContentContainer>
 		)
 
-	if (testbrukerListe.length <= 0 && searchActive) {
+	if (personListe.length <= 0 && searchActive) {
 		return <ContentContainer>Søket gav ingen resultater.</ContentContainer>
 	}
 	const columns = [
@@ -68,7 +63,7 @@ export default function TestbrukerListe({
 
 	return (
 		<DollyTable
-			data={testbrukerListe}
+			data={personListe}
 			columns={columns}
 			pagination
 			onExpand={bruker => (

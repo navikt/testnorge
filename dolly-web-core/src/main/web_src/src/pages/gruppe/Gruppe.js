@@ -4,7 +4,7 @@ import useBoolean from '~/utils/hooks/useBoolean'
 import Knapp from 'nav-frontend-knapper'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import Loading from '~/components/ui/loading/Loading'
-import TestbrukerListeConnector from './TestbrukerListe/TestbrukerListeConnector'
+import PersonListeConnector from './PersonListe/PersonListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
 import GruppeHeader from './GruppeHeader/GruppeHeader'
 import Toolbar from '~/components/ui/toolbar/Toolbar'
@@ -84,7 +84,7 @@ export default function Gruppe({
 				<BestillingsveilederModal onSubmit={startBestilling} onAvbryt={skjulStarBestilling} />
 			)}
 
-			{visning === VISNING_TESTPERSONER && <TestbrukerListeConnector />}
+			{visning === VISNING_TESTPERSONER && <PersonListeConnector />}
 			{visning === VISNING_BESTILLING && <BestillingListeConnector />}
 		</div>
 	)

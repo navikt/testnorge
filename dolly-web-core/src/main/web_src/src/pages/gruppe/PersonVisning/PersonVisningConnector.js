@@ -33,15 +33,15 @@ const loadingSelector = createSelector(
 
 const mapStateToProps = (state, ownProps) => ({
 	loading: loadingSelector(state),
-	testIdent: selectIdentById(state, ownProps.personId),
+	ident: selectIdentById(state, ownProps.personId),
 	data: selectDataForIdent(state, ownProps.personId),
 	bestilling: getBestillingById(state, ownProps.bestillingId)
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
-	frigjoerTestbruker: () =>
-		dispatch(actions.frigjoerTestbruker(ownProps.match.params.gruppeId, ownProps.personId)),
+	slettPerson: () =>
+		dispatch(actions.slettPerson(ownProps.match.params.gruppeId, ownProps.personId)),
 	editAction: () => dispatch(push(`${ownProps.match.url}/testbruker/${ownProps.personId}`))
 })
 

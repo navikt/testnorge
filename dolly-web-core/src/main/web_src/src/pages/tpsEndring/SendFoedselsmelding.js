@@ -250,7 +250,7 @@ export default class SendFoedselsmelding extends PureComponent {
 					}}
 				</Formik>
 				{this.state.isFetching && <Loading label="Sender fødselsmelding" />}
-				{this.state.isFetchingMiljoer && <Loading label="Søker etter testbruker" />}
+				{this.state.isFetchingMiljoer && <Loading label="Søker etter person" />}
 				{this.state.showErrorMessageFoundIdent && (
 					<h3 className="tps-endring-error-message">
 						Finner ikke testperson med ident: {this.state.currentFnrMor}
