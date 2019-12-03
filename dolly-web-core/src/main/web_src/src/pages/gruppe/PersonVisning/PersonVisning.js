@@ -20,6 +20,8 @@ export const PersonVisning = ({
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
+	console.log(testIdent)
+
 	return (
 		<div className="person-visning">
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.tpsfKriterier)} />

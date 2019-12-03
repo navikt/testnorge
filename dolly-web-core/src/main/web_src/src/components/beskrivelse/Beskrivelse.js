@@ -11,7 +11,7 @@ export const Beskrivelse = ({ ident, updateBeskrivelse, isUpdatingBeskrivelse })
 	const [isEditing, turnOnEditing, turnOffEditing] = useBoolean(false)
 
 	const handleSubmit = value => {
-		updateBeskrivelse(ident.gruppeId, ident.ident, value)
+		updateBeskrivelse(ident.ident, value)
 		turnOffEditing()
 	}
 

@@ -26,10 +26,6 @@ export default class DollyEndpoints {
 		return `${groupBase}?brukerId=${userId}`
 	}
 
-	static gruppeBeskrivelse(gruppeId) {
-		return `${groupBase}/${gruppeId}/beskrivelse`
-	}
-
 	static gruppeBestilling(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestilling`
 	}
@@ -42,12 +38,12 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/bestillingStatus`
 	}
 
-	static ibruk(ident, ibruk) {
-		return `${identBase}/${ident}/ibruk?iBruk=${ibruk}`
+	static identBeskrivelse(ident) {
+		return `${identBase}/${ident}/beskrivelse`
 	}
 
-	static beskrivelse(gruppeId) {
-		return `${groupBase}/${gruppeId}/beskrivelse`
+	static identIbruk(ident, ibruk) {
+		return `${identBase}/${ident}/ibruk?iBruk=${ibruk}`
 	}
 
 	static bruker() {

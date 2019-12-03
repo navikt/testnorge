@@ -228,7 +228,6 @@ export const sokSelector = (items, searchStr) => {
 
 export const selectTestbrukerListe = state => {
 	const { gruppe, fagsystem } = state
-	console.log('fagsystem :', fagsystem)
 	if (!fagsystem.tpsf) return null
 
 	return Object.values(fagsystem.tpsf).map(ident => ({

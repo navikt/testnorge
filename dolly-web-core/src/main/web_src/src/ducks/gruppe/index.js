@@ -23,7 +23,7 @@ export const actions = createActions(
 			})
 		],
 		updateIdentIbruk: DollyApi.updateIdentIbruk,
-		updateBeskrivelse: DollyApi.updateBeskrivelse
+		updateBeskrivelse: DollyApi.updateIdentBeskrivelse
 	},
 	{
 		prefix: 'gruppe' // String used to prefix each type
