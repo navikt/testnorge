@@ -27,10 +27,6 @@ export default {
 		return Request.delete(Endpoints.gruppeById(gruppeId))
 	},
 
-	updateBeskrivelse(gruppeId, ident, beskrivelse) {
-		return Request.put(Endpoints.gruppeBeskrivelse(gruppeId), { ident, beskrivelse })
-	},
-
 	createBestilling(gruppeId, data) {
 		return Request.post(Endpoints.gruppeBestilling(gruppeId), data)
 	},
@@ -39,12 +35,13 @@ export default {
 		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
 	},
 
-	updateIdentIbruk(ident, ibruk) {
-		return Request.put(Endpoints.ibruk(ident, ibruk))
+	// Ident
+	updateIdentBeskrivelse(ident, beskrivelse) {
+		return Request.put(Endpoints.identBeskrivelse(ident), { beskrivelse })
 	},
 
-	updateBeskrivelse(gruppeId, data) {
-		return Request.put(Endpoints.beskrivelse(gruppeId), data)
+	updateIdentIbruk(ident, ibruk) {
+		return Request.put(Endpoints.identIbruk(ident, ibruk))
 	},
 
 	// Bruker
