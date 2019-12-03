@@ -38,7 +38,7 @@ export default function GruppeHeader({ gruppe, identArray, isDeletingGruppe, del
 					)}
 				</Overskrift>
 				<div className="hoyre">
-					<EksporterExcel identer={gruppe.identer} gruppeId={gruppe.id} />
+					<EksporterExcel identer={identArray} gruppeId={gruppe.id} />
 				</div>
 			</div>
 
