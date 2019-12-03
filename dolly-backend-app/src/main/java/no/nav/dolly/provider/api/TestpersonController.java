@@ -18,6 +18,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.testperson.IdentAttributesResponse;
 import no.nav.dolly.domain.testperson.IdentBeskrivelse;
@@ -53,9 +54,9 @@ public class TestpersonController {
     @ApiOperation(value = "Endre status beskrivelse på testperson")
     @PutMapping("/{ident}/beskrivelse")
     @ResponseStatus(HttpStatus.OK)
-    public IdentAttributesResponse oppdaterTestidentBeskrivelse(@PathVariable String ident, @RequestBody String beskrivelse) {
+    public IdentAttributesResponse oppdaterTestidentBeskrivelse(@PathVariable String ident, @RequestBody RsIdentBeskrivelse beskrivelse) {
 
-        IdentBeskrivelse identBeskrivelse = IdentBeskrivelse.builder().beskrivelse(beskrivelse).build();
+        IdentBeskrivelse identBeskrivelse = IdentBeskrivelse.builder().beskrivelse(beskrivelse.getBeskrivelse()).build();
         identBeskrivelse.setIdent(ident);
         return mapperFacade.map(identService.save(identBeskrivelse), IdentAttributesResponse.class);
     }
