@@ -17,8 +17,8 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.RsBeskrivelse;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.testperson.IdentAttributesResponse;
 import no.nav.dolly.domain.testperson.IdentBeskrivelse;
@@ -54,7 +54,7 @@ public class TestpersonController {
     @ApiOperation(value = "Endre status beskrivelse på testperson")
     @PutMapping("/{ident}/beskrivelse")
     @ResponseStatus(HttpStatus.OK)
-    public IdentAttributesResponse oppdaterTestidentBeskrivelse(@PathVariable String ident, @RequestBody RsBeskrivelse rsBeskrivelse) {
+    public IdentAttributesResponse oppdaterTestidentBeskrivelse(@PathVariable String ident, @RequestBody RsIdentBeskrivelse rsBeskrivelse) {
 
         IdentBeskrivelse identBeskrivelse = IdentBeskrivelse.builder().beskrivelse(rsBeskrivelse.getBeskrivelse()).build();
         identBeskrivelse.setIdent(ident);
