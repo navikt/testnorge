@@ -40,11 +40,11 @@ TpsfForm.initialValues = attrs => {
 	if (attrs.identHistorikk)
 		initial.identHistorikk = [
 			{
-				foedtEtter: '',
-				foedtFoer: '',
-				identtype: '',
-				kjonn: '',
-				regdato: ''
+				foedtEtter: null,
+				foedtFoer: null,
+				identtype: null,
+				kjonn: null,
+				regdato: null
 			}
 		]
 
