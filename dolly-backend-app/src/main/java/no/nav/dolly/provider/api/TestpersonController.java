@@ -53,7 +53,7 @@ public class TestpersonController {
     @ApiOperation(value = "Endre status beskrivelse på testperson")
     @PutMapping("/{ident}/beskrivelse")
     @ResponseStatus(HttpStatus.OK)
-    public IdentAttributesResponse oppdaterTestidentBeskrivelse(@PathVariable String ident, @RequestParam String beskrivelse) {
+    public IdentAttributesResponse oppdaterTestidentBeskrivelse(@PathVariable String ident, @RequestBody String beskrivelse) {
 
         IdentBeskrivelse identBeskrivelse = IdentBeskrivelse.builder().beskrivelse(beskrivelse).build();
         identBeskrivelse.setIdent(ident);
