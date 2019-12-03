@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { RadioPanelGruppe } from 'nav-frontend-skjema'
 import _get from 'lodash/get'
 import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
+import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import Panel from '~/components/ui/panel/Panel'
 import { Boadresse } from './partials/boadresse/Boadresse'
 import { MatrikkelAdresse } from './partials/MatrikkelAdresse'
@@ -54,7 +55,8 @@ export const Adresser = ({ formikBag }) => {
 					poststed: '',
 					kommunenr: '',
 					gatekode: '',
-					husnummer: ''
+					husnummer: '',
+					flyttedato: formikBag.values.tpsf.boadresse.flyttedato
 				})
 				break
 			case 'matrikkel':
@@ -65,7 +67,8 @@ export const Adresser = ({ formikBag }) => {
 					bruksnr: '',
 					festnr: '',
 					undernr: '',
-					postnr: ''
+					postnr: '',
+					flyttedato: formikBag.values.tpsf.boadresse.flyttedato
 				})
 				break
 			default:
@@ -95,11 +98,11 @@ export const Adresser = ({ formikBag }) => {
 					)}
 					{boType === 'gate' && <Boadresse formikBag={formikBag} />}
 					{boType === 'matrikkel' && <MatrikkelAdresse formikBag={formikBag} />}
+					<FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
 				</Vis>
 
 				{/* <Vis attributt="tpsf.postadresse">
 					<span>postadresse komponent</span>
-                    <FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
 				</Vis> */}
 			</Panel>
 		</Vis>
