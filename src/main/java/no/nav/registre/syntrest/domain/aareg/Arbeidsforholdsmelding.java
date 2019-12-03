@@ -16,7 +16,7 @@ public class Arbeidsforholdsmelding {
     @Getter
     @Setter
     @AllArgsConstructor
-    private class Arbeidsforhold {
+    private static class Arbeidsforhold {
         @JsonProperty
         AnsettelsesPeriode ansettelsesPeriode;
         @JsonProperty
