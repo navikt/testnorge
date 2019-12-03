@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.service.BestillingService;
 
@@ -70,7 +71,7 @@ public class BestillingController {
 
     @GetMapping("/malbestilling")
     @ApiOperation("Hent mal-bestilling")
-    public List<RsBestillingStatus> getMalBestillinger() {
-        return mapperFacade.mapAsList(bestillingService.fetchMalBestillinger(), RsBestillingStatus.class);
+    public List<RsMalBestillingWrapper> getMalBestillinger() {
+        return mapperFacade.mapAsList(bestillingService.fetchMalBestillinger(), RsMalBestillingWrapper.class);
     }
 }
