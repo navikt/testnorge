@@ -40,8 +40,8 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
-	frigjoerTestbruker: () =>
-		dispatch(actions.frigjoerTestbruker(ownProps.match.params.gruppeId, ownProps.personId)),
+	slettPerson: () =>
+		dispatch(actions.slettPerson(ownProps.match.params.gruppeId, ownProps.personId)),
 	editAction: () => dispatch(push(`${ownProps.match.url}/testbruker/${ownProps.personId}`))
 })
 

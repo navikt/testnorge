@@ -99,8 +99,8 @@ export default {
 		return Request.delete(Endpoints.removeBestilling(bestillingId))
 	},
 
-	deleteTestIdent(gruppeId, identId) {
-		return Request.delete(Endpoints.removeTestIdent(gruppeId, identId))
+	slettPerson(gruppeId, identId) {
+		return Request.delete(Endpoints.slettPerson(gruppeId, identId))
 	},
 
 	//Oppslag

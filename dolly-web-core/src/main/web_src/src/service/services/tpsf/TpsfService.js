@@ -6,7 +6,7 @@ const getBaseUrl = () => ConfigService.getDatesourceUrl('tpsf') || config.servic
 const getTpsfUrl = () => `${getBaseUrl()}/api/v1`
 
 export default {
-	getTestbrukere(userArray) {
+	getPersoner(userArray) {
 		if (!userArray) return
 		const endpoint = getTpsfUrl() + '/dolly/testdata/hentpersoner'
 
@@ -14,7 +14,7 @@ export default {
 		return Request.post(endpoint, userArray)
 	},
 
-	updateTestbruker(userData) {
+	updatePersoner(userData) {
 		if (!userData) return
 		const endpoint = getTpsfUrl() + '/testdata/updatepersoner'
 		return Request.post(endpoint, [userData])

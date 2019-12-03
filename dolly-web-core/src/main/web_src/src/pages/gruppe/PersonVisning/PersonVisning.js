@@ -13,9 +13,7 @@ import './PersonVisning.less'
 
 export const PersonVisning = ({ fetchDataFraFagsystemer, data, ident, bestilling, loading }) => {
 	useMount(fetchDataFraFagsystemer)
-
-	console.log(testIdent)
-
+	console.log('bestilliing :', bestilling)
 	return (
 		<div className="person-visning">
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.tpsfKriterier)} />
