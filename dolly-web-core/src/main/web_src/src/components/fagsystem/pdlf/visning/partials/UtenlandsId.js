@@ -8,7 +8,6 @@ export const UtenlandsId = ({ data, loading }) => {
 	if (loading) return <Loading label="laster PDL-data" />
 	if (!data || data.length === 0) return false
 
-	console.log('data :', data)
 	return (
 		<div>
 			<SubOverskrift label="Utenlandsk identifikasjonsnummer" />
