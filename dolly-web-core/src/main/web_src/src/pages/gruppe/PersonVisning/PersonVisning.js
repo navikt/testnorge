@@ -3,6 +3,7 @@ import { useMount } from 'react-use'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
+import { PdlfVisning } from '~/components/fagsystem/pdlf/visning/Visning'
 import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
 import { AaregVisning } from '~/components/fagsystem/aareg/visning/Visning'
 import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
@@ -18,7 +19,8 @@ export const PersonVisning = ({ fetchDataFraFagsystemer, data, ident, bestilling
 	return (
 		<div className="person-visning">
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.tpsfKriterier)} />
-			{/* <PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} /> */}
+			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
+
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			<AaregVisning data={data.aareg} loading={loading.aareg} />
