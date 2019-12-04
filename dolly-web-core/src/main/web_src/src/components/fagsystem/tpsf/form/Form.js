@@ -17,6 +17,7 @@ export const TpsfForm = ({ formikBag }) => {
 
 TpsfForm.initialValues = attrs => {
 	const initial = {}
+	console.log('attrs :', attrs)
 
 	if (attrs.foedtEtter) initial.foedtEtter = subYears(new Date(), 80)
 	if (attrs.foedtFoer) initial.foedtFoer = new Date()
@@ -36,7 +37,6 @@ TpsfForm.initialValues = attrs => {
 		initial.utvandretTilLand = ''
 		initial.utvandretTilLandFlyttedato = null
 	}
-
 	if (attrs.identHistorikk)
 		initial.identHistorikk = [
 			{
@@ -63,8 +63,17 @@ TpsfForm.initialValues = attrs => {
 		initial.boadresse = null
 		initial.adresseNrInfo = null
 	}
-	if (attrs.postadresse) initial.postadresse = {}
-
+	if (attrs.postadresse) {
+		initial.postLand = ''
+		initial.postadresse = [
+			{
+				postLinje1: null,
+				postLinje2: '',
+				postLinje3: ''
+			}
+		]
+	}
+	console.log('initial.postadresse :', initial.postadresse)
 	return !_isEmpty(initial) && { tpsf: initial }
 }
 

@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { RadioPanelGruppe } from 'nav-frontend-skjema'
 import _get from 'lodash/get'
+import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { Boadresse } from './partials/boadresse/Boadresse'
+import { Postadresser } from './Postadresser'
 import { MatrikkelAdresse } from './partials/MatrikkelAdresse'
 import { AdresseNr } from './partials/AdresseNr'
 
@@ -93,10 +95,12 @@ export const Adresser = ({ formikBag }) => {
 					{boType === 'matrikkel' && <MatrikkelAdresse formikBag={formikBag} />}
 				</Vis>
 
-				{/* <Vis attributt="tpsf.postadresse">
-					<span>postadresse komponent</span>
-                    <FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
-				</Vis> */}
+				{
+					<Vis attributt="tpsf.postadresse">
+						<Postadresser formikBag={formikBag} />
+						<FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
+					</Vis>
+				}
 			</Panel>
 		</Vis>
 	)
