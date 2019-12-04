@@ -9,7 +9,6 @@ import { Utenlandsopphold } from './partials/Utenlandsopphold'
 
 export const AaregVisning = ({ data, loading }) => {
 	if (!data) return false
-	console.log('aareg visning data :', data)
 
 	return (
 		<div>
@@ -45,10 +44,6 @@ export const AaregVisning = ({ data, loading }) => {
 						<PermisjonPermitteringer data={id.permisjonPermitteringer} />
 
 						<Utenlandsopphold data={id.utenlandsopphold} />
-
-						{/* {id.arbeidsforholdtype && (
-							<TitleValue title="Startdato" value={id.ansettelsesperiode.periode.tom} />
-						)} HVOR ER DENNE? BURDE EKSISTERT*/}
 					</div>
 				))}
 			</div>

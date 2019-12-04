@@ -18,7 +18,6 @@ export const PermisjonPermitteringer = ({ data, loading }) => {
 						{id.periode && (
 							<TitleValue title="Sluttdato" value={Formatters.formatStringDates(id.periode.tom)} />
 						)}
-						{/*  TODO: bestillinger med permisjon.tom kaster BAP0603  http://stash.devillo.no/projects/INFOPL/repos/aareg/browse/aareg-core/aareg-core-service/src/main/java/no/nav/aareg/service/validator/DefaultArbeidsforholdValidator.java#209,220*/}
 						<TitleValue title="Permisjonsprosent" value={id.prosent} />
 					</div>
 				))}
