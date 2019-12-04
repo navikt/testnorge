@@ -23,7 +23,7 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.oracle</groupId>
+            <groupId>com.oracle.jdbc</groupId>
             <artifactId>ojdbc8</artifactId>
         </dependency>
         <dependency>

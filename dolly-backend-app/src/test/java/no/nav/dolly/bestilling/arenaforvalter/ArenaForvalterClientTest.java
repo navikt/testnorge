@@ -9,7 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
@@ -22,7 +22,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
 
 import ma.glasnost.orika.MapperFacade;
@@ -34,13 +33,11 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
-@ActiveProfiles("test")
 @RunWith(MockitoJUnitRunner.class)
 public class ArenaForvalterClientTest {
 
     private static final String IDENT = "12423353112";
     private static final String ENV = "q2";
-    private static final String ERROR_CAUSE = "Bad request";
     private static final String ERROR_MSG = "An error has occured";
 
     @Mock
@@ -149,7 +146,7 @@ public class ArenaForvalterClientTest {
         request.setEnvironments(singletonList(ENV));
         arenaForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
-        verifyZeroInteractions(arenaForvalterConsumer);
+        verifyNoInteractions(arenaForvalterConsumer);
         assertThat(progress.getArenaforvalterStatus(), is(nullValue()));
     }
 }
