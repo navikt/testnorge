@@ -1,61 +1,66 @@
 import React, { useState } from 'react'
+import _set from 'lodash/fp/set';
 import { Header, headerFromInitialValues } from './Header/Header'
-import { getInitialValues } from '~/service/attributter/Attributter'
 import { StegVelger } from './StegVelger'
-import { Steg1 } from './steg/Steg1'
+import { Steg1 } from './steg/steg1/Steg1'
 import { Steg2 } from './steg/Steg2'
 import { Steg3 } from './steg/Steg3'
-import { createInitialValues } from './initialValues'
+import { stateModifierFns } from './initialValues'
+import { mergeKeepShape } from '~/utils/Merge'
 
 import './bestillingsveileder.less'
 
 const steps = [Steg1, Steg2, Steg3]
 
-export const Bestillingsveileder = props => {
-	const [attributter, setAttributter] = useState(getInitialValues())
-	const [savedValues, setSavedValues] = useState({})
+const createInitialValues = (locState) => {
+    const base = {
+        antall: locState.antall || 1,
+        environments: [],
+    }
 
-	const baseBestilling = Object.assign(
-		{
-			antall: 1,
-			identtype: 'FNR'
-		},
-		props.location.state
-	)
+    return base
+}
 
-	const checkAttributter = attrs => setAttributter(Object.assign({}, attributter, attrs))
+export const Bestillingsveileder = ({location, sendBestilling}) => {
+	const [initialValues, setInitialValues] = useState(createInitialValues(location.state))
+    const [savedValues, setSavedValues] = useState({})
+    
+    const identtype = location.state.identtype || "FNR"
 
 	const handleSubmit = (values, formikBag) => {
-		// props.createBestillingMal(values.malNavn) //Nå sjekkes ikke malnavn
-		props.sendBestilling(values)
+        // props.createBestillingMal(values.malNavn) //Nå sjekkes ikke malnavn
+
+        // Sett identType (denne blir ikke satt tidligere grunnet at den sitter inne i tpsf-noden)
+        values = _set("tpsf.identtype", identtype, values)
+
+		sendBestilling(values)
 	}
 
-	const initialValues = createInitialValues(steps, attributter, savedValues, baseBestilling)
+	// Merge with savedValues
+	const initial = mergeKeepShape(initialValues, savedValues)
+
+	const stateModifier = stateModifierFns(initialValues, setInitialValues)
 
 	// Denne er litt verbos nå, men må nok endre litt etterhvert hvor disse data kommer fra
 	const headerData = headerFromInitialValues(
-		baseBestilling.antall,
-		baseBestilling.identtype,
-		baseBestilling.mal,
-		baseBestilling.opprettFraIdenter
+		initialValues.antall,
+		identtype,
+		null,
+		null
 	)
 
 	return (
 		<div className="bestillingsveileder">
 			<StegVelger
 				steps={steps}
-				initialValues={initialValues}
+				initialValues={initial}
 				copyValues={setSavedValues}
 				onSubmit={handleSubmit}
 			>
 				{(CurrentStep, formikBag) => (
 					<React.Fragment>
 						<Header data={headerData} />
-						<CurrentStep
-							formikBag={formikBag}
-							attributter={attributter}
-							checkAttributter={checkAttributter}
-						/>
+						<CurrentStep formikBag={formikBag} stateModifier={stateModifier} />
 					</React.Fragment>
 				)}
 			</StegVelger>

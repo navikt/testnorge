@@ -1,18 +1,19 @@
 import React, { useState } from 'react'
 import { RadioPanelGruppe } from 'nav-frontend-skjema'
 import _get from 'lodash/get'
-import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
+import _has from 'lodash/has'
+import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import Panel from '~/components/ui/panel/Panel'
 import { Boadresse } from './partials/boadresse/Boadresse'
 import { MatrikkelAdresse } from './partials/MatrikkelAdresse'
 import { AdresseNr } from './partials/AdresseNr'
 
-const paths = [pathAttrs.kategori.boadresse, pathAttrs.kategori.postadresse].flat()
+const paths = ['tpsf.boadresse', 'tpsf.postadresse']
 
 const initialBoType = formikBag => {
-	const adresseType = _get(formikBag.values.tpsf.boadresse, 'adressetype')
-	const nummertype = _get(formikBag.values.tpsf.adresseNrInfo, 'nummertype')
+	const adresseType = _get(formikBag.values, 'tpsf.boadresse.adressetype')
+	const nummertype = _get(formikBag.values, 'tpsf.adresseNrInfo.nummertype')
 
 	if (adresseType) return adresseType === 'GATE' ? 'gate' : 'matrikkel'
 	else if (nummertype) return nummertype === 'POSTNR' ? 'postnr' : 'kommunenr'
@@ -23,7 +24,7 @@ export const Adresser = ({ formikBag }) => {
 	const [boType, setBoType] = useState(initialBoType(formikBag))
 
 	// Unngå at Adresse-panel vises når kommunenr blir satt på diskresjonskoder
-	const harBoadresse = Boolean('boadresse' in formikBag.initialValues.tpsf)
+	const harBoadresse = _has(formikBag.initialValues, 'tpsf.boadresse')
 	if (!harBoadresse) return null
 
 	const handleRadioChange = e => {

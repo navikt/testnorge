@@ -1,5 +1,5 @@
 import React from 'react'
-import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
+import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -7,8 +7,19 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Diskresjonskoder } from './Diskresjonskoder'
 import { IdentHistorikk } from './IdentHistorikk'
 
+const paths = [
+	'tpsf.identHistorikk',
+	'tpsf.kjonn',
+	'tpsf.harMellomnavn',
+	'tpsf.sivilstand',
+	'tpsf.sprakKode',
+	'tpsf.egenAnsattDatoFom',
+	'tpsf.spesreg',
+	'tpsf.erForsvunnet'
+]
+
 export const Diverse = ({ formikBag }) => (
-	<Kategori title="Diverse" vis={pathAttrs.kategori.diverse}>
+	<Kategori title="Diverse" vis={paths}>
 		<Vis attributt="tpsf.identHistorikk">
 			<IdentHistorikk formikBag={formikBag} />
 		</Vis>

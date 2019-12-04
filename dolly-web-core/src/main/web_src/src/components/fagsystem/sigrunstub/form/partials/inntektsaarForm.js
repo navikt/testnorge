@@ -8,7 +8,7 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { EnkeltinntektForm } from './enkeltinntektForm'
 import Formatters from '~/utils/DataFormatter'
 
-export const InntektsaarForm = ({ formikBag, initial }) => {
+export const InntektsaarForm = ({ formikBag }) => {
 	const initialGrunnlag = {
 		tekniskNavn: '',
 		verdi: ''
@@ -82,7 +82,10 @@ export const InntektsaarForm = ({ formikBag, initial }) => {
 							/>
 						</React.Fragment>
 					))}
-					<FieldArrayAddButton title="Legg til inntektsår" onClick={() => push(initial)} />
+					<FieldArrayAddButton
+						title="Legg til inntektsår"
+						onClick={() => push(formikBag.initialValues.sigrunstub)}
+					/>
 				</div>
 			)}
 		</FieldArray>
