@@ -8,10 +8,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
+import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +23,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -221,8 +221,8 @@ public class PdlForvalterClientTest {
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
         pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
-        verifyZeroInteractions(mapperFacade);
-        verifyZeroInteractions(pdlForvalterConsumer);
+        verifyNoInteractions(mapperFacade);
+        verifyNoInteractions(pdlForvalterConsumer);
 
         assertThat(progress.getPdlforvalterStatus(),
                 is(equalTo("PdlForvalter&Feil: Bestilling ble ikke sendt til Persondataløsningen (PDL) da miljø 'q2' ikke er valgt")));
