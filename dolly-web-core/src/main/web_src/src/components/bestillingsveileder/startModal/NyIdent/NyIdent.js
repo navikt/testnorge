@@ -18,8 +18,8 @@ const validationSchema = yup.object({
 	antall: yup
 		.number()
 		.positive('Må være et positivt tall')
-		.min(1, 'Må minst opprette 1 testperson')
-		.required('Oppgi antall testbrukere'),
+		.min(1, 'Må minst opprette 1 person')
+		.required('Oppgi antall personer'),
 	identtype: yup.string().required('Velg en identtype')
 })
 

@@ -3,6 +3,7 @@ import { useMount } from 'react-use'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
+import { PdlfVisning } from '~/components/fagsystem/pdlf/visning/Visning'
 import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
 import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
 import { SigrunstubVisning } from '~/components/fagsystem/sigrunstub/visning/Visning'
@@ -12,19 +13,14 @@ import Button from '~/components/ui/button/Button'
 
 import './PersonVisning.less'
 
-export const PersonVisning = ({
-	fetchDataFraFagsystemer,
-	data,
-	testIdent,
-	bestilling,
-	loading
-}) => {
+export const PersonVisning = ({ fetchDataFraFagsystemer, data, ident, bestilling, loading }) => {
 	useMount(fetchDataFraFagsystemer)
 
 	return (
 		<div className="person-visning">
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.tpsfKriterier)} />
-			{/* <PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} /> */}
+			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
+
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			{/* <AaregVisning /> */}
@@ -38,8 +34,8 @@ export const PersonVisning = ({
 				data={UdiVisning.filterValues(data.udistub, bestilling.bestKriterier.udistub)}
 				loading={loading.udistub}
 			/>
-			<TidligereBestillinger ids={testIdent.bestillingId} />
-			<BeskrivelseConnector ident={testIdent} />
+			<TidligereBestillinger ids={ident.bestillingId} />
+			<BeskrivelseConnector ident={ident} />
 			<div className="flexbox--align-center--justify-end">
 				<Button className="flexbox--align-center" kind="details">
 					BESTILLINGSDETALJER

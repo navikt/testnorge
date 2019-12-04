@@ -37,7 +37,7 @@ export default function BestillingListe({ bestillinger, searchActive, isFetching
 			unique: true
 		},
 		{
-			text: 'Antall testpersoner',
+			text: 'Antall personer',
 			width: '15',
 			dataField: 'listedata[1]'
 		},

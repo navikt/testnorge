@@ -22,8 +22,8 @@ export default function SendOpenAm({ closeModal, bestilling, getBestillinger }) 
 
 			{!requestState.value && (
 				<p>
-					Dolly vil sende alle testidenter i bestillingen til OpenAm. Er du sikker på at du vil
-					utføre dette?
+					Dolly vil sende alle personer i bestillingen til OpenAm. Er du sikker på at du vil utføre
+					dette?
 				</p>
 			)}
 

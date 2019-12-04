@@ -11,7 +11,7 @@ import EksporterExcel from '~/pages/gruppe/EksporterExcel/EksporterExcel'
 
 import './GruppeHeader.less'
 
-export default function GruppeHeader({ gruppe, isDeletingGruppe, deleteGruppe }) {
+export default function GruppeHeader({ gruppe, identArray, isDeletingGruppe, deleteGruppe }) {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 
 	return (
@@ -38,13 +38,13 @@ export default function GruppeHeader({ gruppe, isDeletingGruppe, deleteGruppe })
 					)}
 				</Overskrift>
 				<div className="hoyre">
-					<EksporterExcel identer={gruppe.identer} gruppeId={gruppe.id} />
+					<EksporterExcel identer={identArray} gruppeId={gruppe.id} />
 				</div>
 			</div>
 
 			{visRedigerState && <RedigerGruppeConnector gruppe={gruppe} onCancel={skjulRediger} />}
 
-			<GruppeDetaljer gruppe={gruppe} />
+			<GruppeDetaljer gruppe={gruppe} identArray={identArray} />
 		</Fragment>
 	)
 }

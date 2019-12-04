@@ -6,7 +6,7 @@ const getInstBaseUrl = () => ConfigService.getDatesourceUrl('inst') || config.se
 const getInstUrl = () => `${getInstBaseUrl()}/api/v1`
 
 export default {
-	getTestbruker(ident, env) {
+	getPerson(ident, env) {
 		const endpoint = `${getInstUrl()}/ident?identer=${ident}&miljoe=${env}`
 		const options = {
 			headers: {

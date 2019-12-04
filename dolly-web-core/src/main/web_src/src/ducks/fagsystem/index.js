@@ -12,9 +12,9 @@ import Formatters from '~/utils/DataFormatter'
 
 export const actions = createActions(
 	{
-		getTpsf: TpsfApi.getTestbrukere,
+		getTpsf: TpsfApi.getPersoner,
 		getSigrun: [
-			SigrunApi.getTestbruker,
+			SigrunApi.getPerson,
 			ident => ({
 				ident
 			})
@@ -26,13 +26,13 @@ export const actions = createActions(
 			})
 		],
 		getKrr: [
-			KrrApi.getTestbruker,
+			KrrApi.getPerson,
 			ident => ({
 				ident
 			})
 		],
 		getArena: [
-			ArenaApi.getTestbruker,
+			ArenaApi.getPerson,
 			ident => ({
 				ident
 			})
@@ -44,25 +44,25 @@ export const actions = createActions(
 			})
 		],
 		getInst: [
-			InstApi.getTestbruker,
+			InstApi.getPerson,
 			ident => ({
 				ident
 			})
 		],
 		getUdi: [
-			UdiApi.getTestbruker,
+			UdiApi.getPerson,
 			ident => ({
 				ident
 			})
 		],
 		getPDL: [
-			DollyApi.getPersonFraPersonoppslag,
+			DollyApi.getPersonFraPdlperson,
 			ident => ({
 				ident
 			})
 		],
-		frigjoerTestbruker: [
-			DollyApi.deleteTestIdent,
+		slettPerson: [
+			DollyApi.slettPerson,
 			(gruppeId, ident) => ({
 				ident
 			})
@@ -74,11 +74,11 @@ export const actions = createActions(
 )
 
 // TODO: DENNE MÅ FIKSES
-// export const GET_KRR_TESTBRUKER = createAction(
-// 	'GET_KRR_TESTBRUKER',
+// export const GET_KRR_PERSON = createAction(
+// 	'GET_KRR_PERSON',
 // 	async ident => {
 // 		try {
-// 			const res = await KrrApi.getTestbruker(ident)
+// 			const res = await KrrApi.getPerson(ident)
 // 			return res
 // 		} catch (err) {
 // 			if (err.response && err.response.status === 404) {
@@ -144,7 +144,7 @@ export default handleActions(
 		[onSuccess(actions.getInst)](state, action) {
 			state.instdata[action.meta.ident] = action.payload.data
 		},
-		[onSuccess(actions.frigjoerTestbruker)](state, action) {
+		[onSuccess(actions.slettPerson)](state, action) {
 			delete state.tpsf[action.mate.ident]
 			delete state.sigrunstub[action.mate.ident]
 			delete state.krrstub[action.mate.ident]
@@ -159,7 +159,7 @@ export default handleActions(
 )
 
 // Thunk
-export const fetchTpsfTestbrukere = () => (dispatch, getState) => {
+export const fetchTpsfPersoner = () => (dispatch, getState) => {
 	const state = getState()
 	const identer = Object.keys(state.gruppe.ident)
 	if (identer && identer.length >= 1) dispatch(actions.getTpsf(identer))
@@ -226,19 +226,17 @@ export const sokSelector = (items, searchStr) => {
 	})
 }
 
-export const selectTestbrukerListe = state => {
+export const selectPersonListe = state => {
 	const { gruppe, fagsystem } = state
 
 	if (!fagsystem.tpsf) return null
 
 	return Object.values(fagsystem.tpsf).map(ident => ({
-		ident: ident.ident,
-		gruppeId: gruppe.ident[ident.ident].gruppeId,
+		ident: gruppe.ident[ident.ident],
 		identtype: ident.identtype,
 		navn: `${ident.fornavn} ${ident.mellomnavn || ''} ${ident.etternavn}`,
 		kjonn: Formatters.kjonnToString(ident.kjonn),
-		alder: Formatters.formatAlder(ident.alder, ident.doedsdato),
-		bestillingId: gruppe.ident[ident.ident].bestillingId.toString()
+		alder: Formatters.formatAlder(ident.alder, ident.doedsdato)
 	}))
 }
 

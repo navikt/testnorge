@@ -14,7 +14,7 @@ const options = {
 }
 
 export default {
-	getTestbruker(ident) {
+	getPerson(ident) {
 		const endpoint = `${getArenaUrl()}/bruker?filter-personident=${ident}&page=0`
 		return Request.getWithoutCredentials(endpoint, options)
 	},

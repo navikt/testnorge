@@ -250,10 +250,10 @@ export default class SendDoedsmelding extends PureComponent {
 						)
 					}}
 				</Formik>
-				{this.state.isFetchingMiljoer && <Loading label="Søker etter testbruker" />}
+				{this.state.isFetchingMiljoer && <Loading label="Søker etter person" />}
 				{this.state.showErrorMessageFoundIdent && (
 					<h3 className="tps-endring-tps-endring-error-message">
-						Finner ikke testperson med ident: {this.state.currentfnr}
+						Finner ikke person med ident: {this.state.currentfnr}
 					</h3>
 				)}
 				{this.state.isFetching && (

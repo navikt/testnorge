@@ -3,36 +3,29 @@ import { useMount } from 'react-use'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
-// import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
+import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
 
-export default function TestbrukerListe({
-	isFetching,
-	testbrukerListe,
-	searchActive,
-	fetchTpsfTestbrukere,
-	gruppeId
-}) {
-	useMount(fetchTpsfTestbrukere)
+export default function PersonListe({ isFetching, personListe, searchActive, fetchTpsfPersoner }) {
+	useMount(fetchTpsfPersoner)
 
-	if (isFetching) return <Loading label="laster testbrukere" panel />
+	if (isFetching) return <Loading label="laster personer" panel />
 
-	if (!testbrukerListe || testbrukerListe.length === 0)
+	if (!personListe || personListe.length === 0)
 		return (
 			<ContentContainer>
 				Trykk på opprett personer-knappen for å starte en bestilling.
 			</ContentContainer>
 		)
 
-	if (testbrukerListe.length <= 0 && searchActive) {
+	if (personListe.length <= 0 && searchActive) {
 		return <ContentContainer>Søket gav ingen resultater.</ContentContainer>
 	}
-
 	const columns = [
 		{
 			text: 'Ident',
 			width: '15',
-			dataField: 'ident',
+			dataField: 'ident.ident',
 			unique: true
 		},
 		{
@@ -58,22 +51,28 @@ export default function TestbrukerListe({
 		{
 			text: 'Bestilling-ID',
 			width: '10',
-			dataField: 'bestillingId'
+			dataField: 'ident.bestillingId'
+		},
+		{
+			text: 'I bruk',
+			width: '10',
+			dataField: 'ibruk',
+			formatter: (cell, row) => <PersonIBrukButtonConnector ident={row.ident} />
 		}
 	]
 
 	return (
 		<DollyTable
-			data={testbrukerListe}
+			data={personListe}
 			columns={columns}
+			pagination
 			onExpand={bruker => (
 				<PersonVisningConnector
-					personId={bruker.ident}
-					bestillingId={bruker.bestillingId}
-					gruppeId={bruker.gruppeId}
+					personId={bruker.ident.ident}
+					bestillingId={bruker.ident.bestillingId}
+					gruppeId={bruker.ident.gruppeId}
 				/>
 			)}
-			pagination
 		/>
 	)
 }
