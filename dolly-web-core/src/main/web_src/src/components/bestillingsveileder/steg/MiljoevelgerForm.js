@@ -10,7 +10,7 @@ export const MiljoeVelgerForm = ({ formikBag }) => {
 			render={arrayHelpers => (
 				<div className="input-container">
 					<MiljoVelgerConnector
-						heading="Hvilke testmiljø vil du opprette testpersonene i?"
+						heading="Hvilke testmiljø vil du opprette personene i?"
 						arrayHelpers={arrayHelpers}
 						arrayValues={formikBag.values.environments}
 					/>

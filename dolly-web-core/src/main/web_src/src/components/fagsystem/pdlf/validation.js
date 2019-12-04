@@ -77,7 +77,7 @@ const kontaktDoedsbo = Yup.object({
 	adresselinje1: requiredString,
 	adresselinje2: Yup.string(),
 	postnummer: requiredString,
-	poststed: requiredString,
+	poststedsnavn: requiredString,
 	landkode: requiredString,
 	skifteform: requiredString,
 	utstedtDato: requiredDate

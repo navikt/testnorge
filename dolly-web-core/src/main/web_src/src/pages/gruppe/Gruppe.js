@@ -4,65 +4,66 @@ import useBoolean from '~/utils/hooks/useBoolean'
 import Knapp from 'nav-frontend-knapper'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import Loading from '~/components/ui/loading/Loading'
-import TestbrukerListeConnector from './TestbrukerListe/TestbrukerListeConnector'
+import PersonListeConnector from './PersonListe/PersonListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
 import GruppeHeader from './GruppeHeader/GruppeHeader'
 import Toolbar from '~/components/ui/toolbar/Toolbar'
-import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
+import { SearchField } from '~/components/searchField/SearchField'
 import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
 
-const VISNING_TESTPERSONER = 'testpersoner'
+const VISNING_PERSONER = 'personer'
 const VISNING_BESTILLING = 'bestilling'
 
 export default function Gruppe({
 	getGruppe,
-	getBestillinger,
-	gruppeArray,
-	isFetching,
 	deleteGruppe,
-	antallBestillinger,
+	getBestillinger,
+	gruppe,
+	identer,
+	isFetching,
 	isDeletingGruppe,
 	match,
 	history
 }) {
-	const [visning, setVisning] = useState(VISNING_TESTPERSONER)
+	const [visning, setVisning] = useState(VISNING_PERSONER)
 	const [startBestillingAktiv, visStartBestilling, skjulStarBestilling] = useBoolean(false)
 	useMount(() => {
 		getGruppe()
 		getBestillinger()
 	})
 
-	if (isFetching) return <Loading label="Laster testpersoner" panel />
+	if (isFetching) return <Loading label="Laster personer" panel />
 
-	if (!gruppeArray) return null
+	if (!gruppe) return null
 
 	const byttVisning = event => setVisning(event.target.value)
 
-	const gruppe = gruppeArray[0]
+	const identArray = Object.values(identer)
 
 	const toggleValues = [
 		{
-			value: VISNING_TESTPERSONER,
-			label: `Testpersoner (${gruppe.identer ? gruppe.identer.length : 0})`
+			value: VISNING_PERSONER,
+			label: `Personer (${identArray.length})`
 		},
 		{
 			value: VISNING_BESTILLING,
-			label: `Bestillinger (${antallBestillinger})`
+			label: `Bestillinger (${identArray.map(b => b.bestillingId).flat().length})`
 		}
 	]
 
 	const startBestilling = values =>
-		history.push(`/gruppe/${match.params.gruppeId}/bestilling-ny`, values)
+		history.push(`/gruppe/${match.params.gruppeId}/bestilling`, values)
 
 	const searchfieldPlaceholderSelector = () => {
 		if (visning === VISNING_BESTILLING) return 'Søk i bestillinger'
-		return 'Søk etter testpersoner'
+		return 'Søk etter personer'
 	}
 
 	return (
 		<div className="gruppe-container">
 			<GruppeHeader
 				gruppe={gruppe}
+				identArray={identArray}
 				deleteGruppe={deleteGruppe}
 				isDeletingGruppe={isDeletingGruppe}
 			/>
@@ -70,7 +71,7 @@ export default function Gruppe({
 			<StatusListeConnector gruppeId={gruppe.id} />
 
 			<Toolbar
-				searchField={<SearchFieldConnector placeholder={searchfieldPlaceholderSelector()} />}
+				searchField={<SearchField placeholder={searchfieldPlaceholderSelector()} />}
 				toggleOnChange={byttVisning}
 				toggleCurrent={visning}
 				toggleValues={toggleValues}
@@ -79,13 +80,12 @@ export default function Gruppe({
 					Opprett personer
 				</Knapp>
 			</Toolbar>
-
-			{visning === VISNING_TESTPERSONER && <TestbrukerListeConnector gruppeId={gruppe.id} />}
 			{startBestillingAktiv && (
 				<BestillingsveilederModal onSubmit={startBestilling} onAvbryt={skjulStarBestilling} />
 			)}
 
-			{visning === VISNING_BESTILLING && <BestillingListeConnector gruppeId={gruppe.id} />}
+			{visning === VISNING_PERSONER && <PersonListeConnector />}
+			{visning === VISNING_BESTILLING && <BestillingListeConnector />}
 		</div>
 	)
 }

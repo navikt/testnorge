@@ -71,7 +71,12 @@ const validation = Yup.object({
 		})
 	),
 	arenaBrukertype: requiredString,
-	inaktiveringDato: requiredDate,
+	inaktiveringDato: Yup.mixed()
+		.nullable()
+		.when('arenaBrukertype', {
+			is: 'UTEN_SERVICEBEHOV',
+			then: requiredDate
+		}),
 	kvalifiseringsgruppe: Yup.string()
 		.nullable()
 		.when('arenaBrukertype', {

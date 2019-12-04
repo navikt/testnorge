@@ -93,7 +93,7 @@ const P_FormikSelect = props => {
 				value = selected ? selected.map(v => v.value) : []
 			}
 		} else {
-			value = selected.value
+			value = selected && selected.value
 		}
 
 		field.onChange(SyntEvent(field.name, value))

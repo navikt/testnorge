@@ -7,7 +7,7 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 export const Adresse = ({ formikBag }) => {
 	const handleAfterChange = selected => {
 		return formikBag.setFieldValue(
-			'pdlforvalter.kontaktinformasjonForDoedsbo.poststed',
+			'pdlforvalter.kontaktinformasjonForDoedsbo.poststedsnavn',
 			selected.data
 		)
 	}
@@ -44,7 +44,7 @@ export const Adresse = ({ formikBag }) => {
 						label="Postnummer"
 					/>
 					<FormikTextInput
-						name="pdlforvalter.kontaktinformasjonForDoedsbo.poststed"
+						name="pdlforvalter.kontaktinformasjonForDoedsbo.poststedsnavn"
 						label="Poststed"
 					/>
 				</div>

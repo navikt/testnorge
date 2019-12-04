@@ -15,12 +15,18 @@ export const Bestillingsveileder = props => {
 	const [attributter, setAttributter] = useState(getInitialValues())
 	const [savedValues, setSavedValues] = useState({})
 
-	const baseBestilling = props.location.state
+	const baseBestilling = Object.assign(
+		{
+			antall: 1,
+			identtype: 'FNR'
+		},
+		props.location.state
+	)
 
 	const checkAttributter = attrs => setAttributter(Object.assign({}, attributter, attrs))
 
 	const handleSubmit = (values, formikBag) => {
-		props.createBestillingMal(values.malNavn) //Nå sjekkes ikke malnavn
+		// props.createBestillingMal(values.malNavn) //Nå sjekkes ikke malnavn
 		props.sendBestilling(values)
 	}
 

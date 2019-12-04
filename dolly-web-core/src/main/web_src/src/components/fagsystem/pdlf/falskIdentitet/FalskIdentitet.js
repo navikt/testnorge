@@ -55,7 +55,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 					<FormikSelect
 						name={`${falskIdPath}.kjoenn`}
 						label="Kjønn"
-						kodeverk="Kjønnstyper"
+						options={Options('kjoennFalskIdentitet')}
 						isClearable={false}
 					/>
 					<FormikSelect

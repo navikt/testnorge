@@ -17,8 +17,8 @@ export const createInitialValues = (steps, attributter, savedValues, base) => {
 		initial = _set(initial, 'opprettFraIdenter', base.opprettFraIdenter)
 	} else {
 		// Ny ident eller Default (dersom man går rett til siden via URL)
-		initial = _set(initial, 'antall', base.antall || 1)
-		initial = _set(initial, 'tpsf.identtype', base.identtype || 'FNR')
+		initial = _set(initial, 'antall', base.antall)
+		initial = _set(initial, 'tpsf.identtype', base.identtype)
 	}
 
 	return initial
