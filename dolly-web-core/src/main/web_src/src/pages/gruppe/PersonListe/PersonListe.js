@@ -1,5 +1,6 @@
 import React from 'react'
 import { useMount } from 'react-use'
+import _last from 'lodash/last'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
@@ -69,7 +70,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			onExpand={bruker => (
 				<PersonVisningConnector
 					personId={bruker.ident.ident}
-					bestillingId={bruker.ident.bestillingId}
+					bestillingId={_last(bruker.ident.bestillingId)}
 					gruppeId={bruker.ident.gruppeId}
 				/>
 			)}
