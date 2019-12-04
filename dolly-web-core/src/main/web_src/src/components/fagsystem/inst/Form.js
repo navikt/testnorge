@@ -1,7 +1,7 @@
 import React from 'react'
 import { FieldArray } from 'formik'
 import * as Yup from 'yup'
-import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
+import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'
 import Panel from '~/components/ui/panel/Panel'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -10,7 +10,7 @@ import { FieldArrayAddButton, FieldArrayRemoveButton } from '~/components/ui/for
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 export const InstForm = ({ formikBag }) => (
-	<Vis attributt={pathAttrs.kategori.instdata}>
+	<Vis attributt="instdata">
 		<Panel heading="Institusjonsopphold" hasErrors={panelError(formikBag)}>
 			<FieldArray
 				name="instdata"
@@ -42,19 +42,6 @@ export const InstForm = ({ formikBag }) => (
 		</Panel>
 	</Vis>
 )
-
-InstForm.initialValues = attrs => {
-	const initial = {
-		instdata: [
-			{
-				institusjonstype: '',
-				startdato: '',
-				faktiskSluttdato: ''
-			}
-		]
-	}
-	return attrs.instdata ? initial : {}
-}
 
 InstForm.validation = {
 	instdata: Yup.array().of(
