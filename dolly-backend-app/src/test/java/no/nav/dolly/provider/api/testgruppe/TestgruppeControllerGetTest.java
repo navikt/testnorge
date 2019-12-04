@@ -64,13 +64,13 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
     }
 
     @Test
-    @DisplayName("Returnerer HTTP 404 Not Found  Testgruppe")
+    @DisplayName("Returnerer HTTP 200 med feilmelding Not Found i body")
     void shouldFail404NotFound() {
         String url = ENDPOINT_BASE_URI + "/123";
 
         LinkedHashMap resp = sendRequest()
                 .to(HttpMethod.GET, url)
-                .andExpect(HttpStatus.NOT_FOUND, LinkedHashMap.class);
+                .andExpect(HttpStatus.OK, LinkedHashMap.class);
 
         assertThat(getErrMsg(resp), is("Finner ikke gruppe basert på gruppeID: 123"));
     }
