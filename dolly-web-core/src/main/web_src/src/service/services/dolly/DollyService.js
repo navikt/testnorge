@@ -1,7 +1,11 @@
 import Request from '~/service/services/Request'
 import Endpoints from './DollyEndpoints'
+import Utils from './Utils'
 
 export default {
+	// UTILS
+	Utils,
+
 	// Grupper
 	getGrupper() {
 		return Request.get(Endpoints.gruppe())
@@ -104,8 +108,11 @@ export default {
 	},
 
 	//Oppslag
+	getEnhetByTknr(tknr) {
+		return Request.get(Endpoints.enhetByTknr(tknr))
+	},
 
-	getPersonFraPersonoppslag(ident) {
+	getPersonFraPdlperson(ident) {
 		return Request.get(Endpoints.personoppslag(ident))
 	},
 

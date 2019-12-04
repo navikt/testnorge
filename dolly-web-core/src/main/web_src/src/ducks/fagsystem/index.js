@@ -56,7 +56,7 @@ export const actions = createActions(
 			})
 		],
 		getPDL: [
-			DollyApi.getPersonFraPersonoppslag,
+			DollyApi.getPersonFraPdlperson,
 			ident => ({
 				ident
 			})
