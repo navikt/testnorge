@@ -26,10 +26,23 @@ const selectOptions = {
 	],
 
 	// AAREG
-	// aktoertype: [
-	// 	{ value: 'ORG', label: 'Organisasjon' },
-	// 	{ value: 'PERS', label: 'Enkeltmannsforetak' }
-	// ],
+	aktoertype: [
+		{ value: 'ORG', label: 'Organisasjon' },
+		{ value: 'PERS', label: 'Enkeltmannsforetak' }
+	],
+
+	orgnummer: [
+		{ value: '972674812', label: 'Pengeløs Sparebank' },
+		{ value: '900668490', label: 'Lama Utleiren' },
+		{ value: '907670200', label: 'Klonelabben' },
+		{ value: '824771334', label: 'Sjokkerende Elektriker' },
+		{ value: '839942902', label: 'Hårreisende Frisør' },
+		{ value: '896929113', label: 'Sauefabrikk' },
+		{ value: '967170234', label: 'Snill Torpedo' },
+		{ value: '805824354', label: 'Vegansk Slakteri' },
+		{ value: '980477643', label: 'Sofakroken Treningssenter' },
+		{ value: '985675143', label: 'Stumtjener Butlerservice' }
+	],
 
 	//PDLF - kontaktinformasjon dødsbo
 	adressatType: [

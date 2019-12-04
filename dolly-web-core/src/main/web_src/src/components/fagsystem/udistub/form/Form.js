@@ -18,7 +18,7 @@ const attrPaths = [
 
 export const UdistubForm = ({ formikBag }) => (
 	<Vis attributt={attrPaths}>
-		<Panel heading="UDI" hasErrors={panelError(formikBag)} startOpen>
+		<Panel heading="UDI" hasErrors={panelError(formikBag)}>
 			<Oppholdsstatus formikBag={formikBag} />
 			<Arbeidsadgang formikBag={formikBag} />
 			<Alias formikBag={formikBag} />

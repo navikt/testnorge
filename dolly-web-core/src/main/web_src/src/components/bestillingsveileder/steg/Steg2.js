@@ -4,6 +4,7 @@ import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { TpsfForm } from '~/components/fagsystem/tpsf/form/Form'
 import { KrrstubForm } from '~/components/fagsystem/krrstub/form/Form'
 import { SigrunstubForm } from '~/components/fagsystem/sigrunstub/form/Form'
+import { AaregForm } from '~/components/fagsystem/aareg/form/Form'
 import { PdlfForm } from '~/components/fagsystem/pdlf/Form'
 import { ArenaForm } from '~/components/fagsystem/arena/form/Form'
 import { InstForm } from '~/components/fagsystem/inst/Form'
@@ -19,6 +20,7 @@ export const Steg2 = ({ formikBag, attributter }) => {
 					<TpsfForm formikBag={formikBag} />
 					<InstForm formikBag={formikBag} />
 					<KrrstubForm formikBag={formikBag} />
+					<AaregForm formikBag={formikBag} />
 					<SigrunstubForm formikBag={formikBag} />
 					<ArenaForm formikBag={formikBag} />
 					<UdistubForm formikBag={formikBag} />
@@ -40,6 +42,7 @@ Steg2.initialValues = attrs => {
 		{
 			...TpsfForm.initialValues(attrs),
 			...KrrstubForm.initialValues(attrs),
+			...AaregForm.initialValues(attrs),
 			...SigrunstubForm.initialValues(attrs),
 			...InstForm.initialValues(attrs),
 			...ArenaForm.initialValues(attrs),
@@ -51,6 +54,7 @@ Steg2.initialValues = attrs => {
 Steg2.validation = Yup.object({
 	...TpsfForm.validation,
 	...KrrstubForm.validation,
+	// ...AaregForm.validation,
 	...InstForm.validation,
 	...ArenaForm.validation,
 	...UdistubForm.validation,

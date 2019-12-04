@@ -216,7 +216,7 @@ export const ATTRIBUTTER = [
 	{
 		panel: PANELER.arbeidInntekt,
 		kategori: KATEGORIER.arbeidsforhold,
-		path: 'tpsf.arbeidsforhold',
+		path: 'aareg',
 		label: 'Har arbeidsforhold',
 		name: 'arbeidsforhold'
 	},
