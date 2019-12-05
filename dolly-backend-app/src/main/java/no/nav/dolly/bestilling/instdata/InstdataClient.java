@@ -76,7 +76,7 @@ public class InstdataClient implements ClientRegister {
                             .append(environment)
                             .append(":Feil: Miljø ikke støttet"));
 
-            progress.setInstdataStatus(status.substring(1));
+            progress.setInstdataStatus(status.length() > 1 ? status.substring(1) : null);
         }
     }
 
