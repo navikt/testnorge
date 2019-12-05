@@ -13,7 +13,6 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.mapper.MappingStrategy;
 import springfox.documentation.spring.web.json.Json;
@@ -31,24 +30,23 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Bestilling bestilling, RsMalBestillingWrapper malBestilling, MappingContext context) {
 
-                        malBestilling.setMalNavn(bestilling.getMalBestillingNavn());
-                        RsMalBestilling rsMalBestilling = new RsMalBestilling();
-
                         RsDollyBestillingRequest bestillingRequest = mapBestillingRequest(bestilling.getBestKriterier());
-                        rsMalBestilling.setEnvironments(newArrayList(bestilling.getMiljoer().split(",")));
-                        rsMalBestilling.setPdlforvalter(bestillingRequest.getPdlforvalter());
-                        rsMalBestilling.setAareg(bestillingRequest.getAareg());
-                        rsMalBestilling.setKrrstub(bestillingRequest.getKrrstub());
-                        rsMalBestilling.setArenaforvalter(bestillingRequest.getArenaforvalter());
-                        rsMalBestilling.setInstdata(bestillingRequest.getInstdata());
-                        rsMalBestilling.setInntektsstub(bestillingRequest.getInntektsstub());
-                        rsMalBestilling.setSigrunstub(bestillingRequest.getSigrunstub());
-                        rsMalBestilling.setUdistub(bestillingRequest.getUdistub());
-                        rsMalBestilling.setTpsf(mapperFacade.map(bestilling.getTpsfKriterier(), Json.class));
-                        rsMalBestilling.setAntallIdenter(bestilling.getAntallIdenter());
-                        rsMalBestilling.setOpprettFraIdenter(bestilling.getOpprettFraIdenter());
 
-                        malBestilling.setMal(rsMalBestilling);
+                        malBestilling.setMalNavn(bestilling.getMalBestillingNavn());
+                        malBestilling.setMal(RsMalBestillingWrapper.RsMalBestilling.builder()
+                                .environments(newArrayList(bestilling.getMiljoer().split(",")))
+                                .pdlforvalter(bestillingRequest.getPdlforvalter())
+                                .aareg(bestillingRequest.getAareg())
+                                .krrstub(bestillingRequest.getKrrstub())
+                                .arenaforvalter(bestillingRequest.getArenaforvalter())
+                                .instdata(bestillingRequest.getInstdata())
+                                .inntektsstub(bestillingRequest.getInntektsstub())
+                                .sigrunstub(bestillingRequest.getSigrunstub())
+                                .udistub(bestillingRequest.getUdistub())
+                                .tpsf(mapperFacade.map(bestilling.getTpsfKriterier(), Json.class))
+                                .antallIdenter(bestilling.getAntallIdenter())
+                                .opprettFraIdenter(bestilling.getOpprettFraIdenter())
+                                .build());
                     }
 
                     private RsDollyBestillingRequest mapBestillingRequest(String jsonInput) {
