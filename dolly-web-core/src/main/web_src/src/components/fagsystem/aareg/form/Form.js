@@ -45,5 +45,3 @@ AaregForm.initialValues = attrs => {
 }
 
 AaregForm.validation = validation
-
-//TODO validation

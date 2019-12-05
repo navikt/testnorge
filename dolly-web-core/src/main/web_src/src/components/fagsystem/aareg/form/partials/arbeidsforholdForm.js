@@ -73,20 +73,20 @@ export const ArbeidsforholdForm = ({ formikBag, initial }) => {
 									label="Type arbeidsgiver"
 									options={Options('aktoertype')}
 									size="medium"
-									// onChange={() => formikBag.setFieldValue(arbeidsforhold.arbeidsgiver.aktoerId, '')}
-									// bør på en eller annen måte nullstille aktørtype når den endres!
 								/>
 								{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
 									<FormikSelect // evt. felt man kan skrive i også?
-										name={`aareg[${idx}].arbeidsgiver.aktoerId`} //ident?
+										name={`aareg[${idx}].arbeidsgiver.aktoerId`}
 										label="Arbeidsgiver orgnummer"
 										options={Options('orgnummer')}
+										type="text"
+										size="large"
 									/>
 								)}
 								{/* Skal vise value (kode) i tillegg */}
 								{arbeidsforhold.arbeidsgiver.aktoertype === 'PERS' && (
 									<FormikTextInput
-										name={`aareg[${idx}].arbeidsgiver.aktoerId`} //ident?
+										name={`aareg[${idx}].arbeidsgiver.aktoerId`}
 										label="Arbeidsgiver ident"
 									/>
 								)}

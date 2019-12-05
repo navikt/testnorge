@@ -15,10 +15,10 @@ export const ArbeidsavtaleForm = ({ formikBag, idx }) => {
 					kodeverk="Yrker"
 					size="xxlarge"
 				/>
-				{/* Skal være number +- ting */}
 				<FormikTextInput
 					name={`aareg[${idx}].arbeidsavtale.stillingsprosent`}
 					label="Stillingsprosent"
+					type="number"
 				/>
 				<FormikDatepicker
 					name={`aareg[${idx}].arbeidsavtale.endringsdatoStillingsprosent`}
@@ -30,14 +30,15 @@ export const ArbeidsavtaleForm = ({ formikBag, idx }) => {
 					kodeverk="Arbeidstidsordninger"
 					size="xxlarge"
 				/>
-				{/* Skal være number +- ting */}
 				<FormikTextInput
 					name={`aareg[${idx}].arbeidsavtale.antallKonverterteTimer`}
 					label="Antall konverterte timer"
+					type="number"
 				/>
 				<FormikTextInput
 					name={`aareg[${idx}].arbeidsavtale.avtaltArbeidstimerPerUke`}
 					label="Avtalte timer per uke"
+					type="number"
 				/>
 			</div>
 		</div>

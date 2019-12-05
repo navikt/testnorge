@@ -32,16 +32,16 @@ const selectOptions = {
 	],
 
 	orgnummer: [
-		{ value: '972674812', label: 'Pengeløs Sparebank' },
-		{ value: '900668490', label: 'Lama Utleiren' },
-		{ value: '907670200', label: 'Klonelabben' },
-		{ value: '824771334', label: 'Sjokkerende Elektriker' },
-		{ value: '839942902', label: 'Hårreisende Frisør' },
-		{ value: '896929113', label: 'Sauefabrikk' },
-		{ value: '967170234', label: 'Snill Torpedo' },
-		{ value: '805824354', label: 'Vegansk Slakteri' },
-		{ value: '980477643', label: 'Sofakroken Treningssenter' },
-		{ value: '985675143', label: 'Stumtjener Butlerservice' }
+		{ value: '972674812', label: '972674812 - Pengeløs Sparebank' },
+		{ value: '900668490', label: '900668490 - Lama Utleiren' },
+		{ value: '907670200', label: '907670200 - Klonelabben' },
+		{ value: '824771334', label: '824771334 - Sjokkerende Elektriker' },
+		{ value: '839942902', label: '839942902 - Hårreisende Frisør' },
+		{ value: '896929113', label: '896929113 - Sauefabrikk' },
+		{ value: '967170234', label: '967170234 - Snill Torpedo' },
+		{ value: '805824354', label: '805824354 - Vegansk Slakteri' },
+		{ value: '980477643', label: '980477643 - Sofakroken Treningssenter' },
+		{ value: '985675143', label: '985675143 - Stumtjener Butlerservice' }
 	],
 
 	//PDLF - kontaktinformasjon dødsbo

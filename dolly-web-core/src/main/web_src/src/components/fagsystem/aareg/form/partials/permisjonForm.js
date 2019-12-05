@@ -4,6 +4,7 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FieldArrayRemoveButton } from '~/components/ui/form/formUtils'
+import HjelpeTekst from 'nav-frontend-hjelpetekst'
 
 export const PermisjonForm = ({ name, formikBag, fjern }) => {
 	const permisjonArray = _get(formikBag.values, name, [])
@@ -11,7 +12,14 @@ export const PermisjonForm = ({ name, formikBag, fjern }) => {
 
 	return (
 		<div>
-			{harPermisjon && <h4>Permisjon</h4>}
+			{harPermisjon && (
+				<div className="flexbox--align-center">
+					<h4>Permisjon</h4>
+					<HjelpeTekst>
+						Start- og sluttdato må være innenfor perioden til arbeidsforholdet
+					</HjelpeTekst>
+				</div>
+			)}
 			{permisjonArray.map((permisjon, idx) => (
 				<div key={idx} className="flexbox">
 					<h5 className="nummer">{`#${idx + 1}`}</h5>
@@ -22,8 +30,11 @@ export const PermisjonForm = ({ name, formikBag, fjern }) => {
 					/>
 					<FormikDatepicker name={`${name}[${idx}].permisjonsPeriode.fom`} label="Permisjon fra" />
 					<FormikDatepicker name={`${name}[${idx}].permisjonsPeriode.tom`} label="Permisjon til" />
-					{/* Skal være number +- ting */}
-					<FormikTextInput name={`${name}[${idx}].permisjonsprosent`} label="Permisjonsprosent" />
+					<FormikTextInput
+						name={`${name}[${idx}].permisjonsprosent`}
+						label="Permisjonsprosent"
+						type="number"
+					/>
 					<FieldArrayRemoveButton onClick={() => fjern(idx, name, permisjonArray)} />
 				</div>
 			))}
