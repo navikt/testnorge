@@ -1,5 +1,6 @@
 package no.nav.registre.sigrun.provider.rs;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,9 +20,10 @@ public class SyntetiseringController {
     @Autowired
     private SigrunService sigrunService;
 
+    @ApiOperation(value = "Start syntetisering av personsopptjeningsmeldinger")
     @LogExceptions
     @PostMapping(value = "/generer")
-    public ResponseEntity generatePopp(
+    public ResponseEntity startSyntetisering(
             @RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,
             @RequestBody SyntetiserPoppRequest syntetiserPoppRequest
     ) {

@@ -35,7 +35,7 @@ public class SyntetiseringControllerTest {
         when(sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest, testdataEier)).thenReturn(identer);
         when(sigrunService.genererPoppmeldingerOgSendTilSigrunStub(identer, testdataEier, syntetiserPoppRequest.getMiljoe())).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
-        syntetiseringController.generatePopp(testdataEier, syntetiserPoppRequest);
+        syntetiseringController.startSyntetisering(testdataEier, syntetiserPoppRequest);
 
         verify(sigrunService).genererPoppmeldingerOgSendTilSigrunStub(identer, testdataEier, syntetiserPoppRequest.getMiljoe());
     }

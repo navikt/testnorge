@@ -75,6 +75,18 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- SWAGGER -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
+
         <!-- LOGGING -->
         <dependency>
             <groupId>no.nav.freg</groupId>
