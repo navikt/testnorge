@@ -9,7 +9,7 @@ import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
 import { SigrunstubVisning } from '~/components/fagsystem/sigrunstub/visning/Visning'
 import { InstVisning } from '~/components/fagsystem/inst/visning/InstVisning'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
-import { SlettModal } from '~/components/ui/slettModal/SlettModal'
+import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/SammendragModal'
 
 import './PersonVisning.less'
@@ -47,7 +47,9 @@ export const PersonVisning = ({
 
 			<div className="flexbox--align-center--justify-end">
 				<BestillingSammendragModal bestilling={bestilling} />
-				<SlettModal tekst="testpersonen" action={slettPerson} loading={loading.slettPerson} />
+				<SlettButton action={slettPerson} loading={loading.slettPerson}>
+					Er du sikker på at du vil slette denne personen?
+				</SlettButton>
 			</div>
 		</div>
 	)
