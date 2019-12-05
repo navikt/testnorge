@@ -33,7 +33,8 @@ export const Adresser = ({ formikBag }) => {
 
 		formikBag.setFieldValue('tpsf.adresseNrInfo', null)
 		formikBag.setFieldValue('tpsf.boadresse', {
-			flyttedato: _get(formikBag.values.tpsf.boadresse, 'flyttedato') || ''
+			flyttedato: _get(formikBag.values.tpsf.boadresse, 'flyttedato') || '',
+			adressetype: 'GATE'
 		})
 
 		// Set and clear values
