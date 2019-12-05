@@ -26,9 +26,6 @@ import java.util.HashSet;
 @EnableSwagger2
 public class SwaggerConfig implements WebMvcConfigurer {
 
-    @Value("${application.version}")
-    private String appVersion;
-
     @Bean
     public Docket api() {
         HashSet contentTypeJson = new HashSet(Arrays.asList("application/json"));
@@ -48,7 +45,6 @@ public class SwaggerConfig implements WebMvcConfigurer {
         return new ApiInfoBuilder()
                 .title("Testnorge-Inntekt")
                 .description("Testnorge-Inntekt er adapteren for opprettelse av inntektsmeldinger som legges inn i inntektstub.")
-                .version(appVersion)
                 .termsOfServiceUrl("https://nav.no")
                 .contact(new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/testnorge-inntekt/browse", null))
                 .license("Super Strict Licence")
