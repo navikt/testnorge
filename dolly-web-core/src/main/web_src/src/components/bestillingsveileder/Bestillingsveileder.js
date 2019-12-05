@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import _set from 'lodash/fp/set';
+import _set from 'lodash/fp/set'
+import _get from 'lodash/get'
 import { Header, headerFromInitialValues } from './Header/Header'
 import { StegVelger } from './StegVelger'
 import { Steg1 } from './steg/steg1/Steg1'
@@ -12,26 +13,26 @@ import './bestillingsveileder.less'
 
 const steps = [Steg1, Steg2, Steg3]
 
-const createInitialValues = (locState) => {
-    const base = {
-        antall: locState.antall || 1,
-        environments: [],
-    }
+const createInitialValues = (locState = {}) => {
+	const base = {
+		antall: locState.antall || 1,
+		environments: []
+	}
 
-    return base
+	return base
 }
 
-export const Bestillingsveileder = ({location, sendBestilling}) => {
+export const Bestillingsveileder = ({ location, sendBestilling }) => {
 	const [initialValues, setInitialValues] = useState(createInitialValues(location.state))
-    const [savedValues, setSavedValues] = useState({})
-    
-    const identtype = location.state.identtype || "FNR"
+	const [savedValues, setSavedValues] = useState({})
+
+	const identtype = _get(location, 'state.identtype', 'FNR')
 
 	const handleSubmit = (values, formikBag) => {
-        // props.createBestillingMal(values.malNavn) //Nå sjekkes ikke malnavn
+		// props.createBestillingMal(values.malNavn) //Nå sjekkes ikke malnavn
 
-        // Sett identType (denne blir ikke satt tidligere grunnet at den sitter inne i tpsf-noden)
-        values = _set("tpsf.identtype", identtype, values)
+		// Sett identType (denne blir ikke satt tidligere grunnet at den sitter inne i tpsf-noden)
+		values = _set('tpsf.identtype', identtype, values)
 
 		sendBestilling(values)
 	}
@@ -42,12 +43,7 @@ export const Bestillingsveileder = ({location, sendBestilling}) => {
 	const stateModifier = stateModifierFns(initialValues, setInitialValues)
 
 	// Denne er litt verbos nå, men må nok endre litt etterhvert hvor disse data kommer fra
-	const headerData = headerFromInitialValues(
-		initialValues.antall,
-		identtype,
-		null,
-		null
-	)
+	const headerData = headerFromInitialValues(initialValues.antall, identtype, null, null)
 
 	return (
 		<div className="bestillingsveileder">
