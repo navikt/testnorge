@@ -1,13 +1,12 @@
 import React, { Fragment } from 'react'
 import Button from '~/components/ui/button/Button'
 import useBoolean from '~/utils/hooks/useBoolean'
-import Loading from '~/components/ui/loading/Loading'
 import Overskrift from '~/components/ui/overskrift/Overskrift'
 import GruppeDetaljer from '~/pages/gruppe/GruppeDetaljer/GruppeDetaljer'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
-import ConfirmTooltip from '~/components/ui/confirmTooltip/ConfirmTooltip'
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
 import EksporterExcel from '~/pages/gruppe/EksporterExcel/EksporterExcel'
+import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 
 import './GruppeHeader.less'
 
@@ -26,16 +25,9 @@ export default function GruppeHeader({ gruppe, identArray, isDeletingGruppe, del
 					) : (
 						<FavoriteButtonConnector groupId={gruppe.id} />
 					)}
-					{isDeletingGruppe ? (
-						<Loading label="Sletter gruppe" panel />
-					) : (
-						<ConfirmTooltip
-							label="SLETT"
-							className="flexbox--align-center"
-							message="Vil du slette denne testdatagruppen?"
-							onClick={deleteGruppe}
-						/>
-					)}
+					<SlettButton action={deleteGruppe} loading={isDeletingGruppe}>
+						Er du sikker på at du vil slette denne gruppen?
+					</SlettButton>
 				</Overskrift>
 				<div className="hoyre">
 					<EksporterExcel identer={identArray} gruppeId={gruppe.id} />

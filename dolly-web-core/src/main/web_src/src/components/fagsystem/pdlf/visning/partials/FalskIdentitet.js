@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { Personnavn } from './Personnavn'
+import Loading from '~/components/ui/loading/Loading'
 import Formatters from '~/utils/DataFormatter'
 
 export const FalskIdentitet = ({ data, loading }) => {

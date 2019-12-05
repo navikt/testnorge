@@ -145,14 +145,14 @@ export default handleActions(
 			state.instdata[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.slettPerson)](state, action) {
-			delete state.tpsf[action.mate.ident]
-			delete state.sigrunstub[action.mate.ident]
-			delete state.krrstub[action.mate.ident]
-			delete state.arenaforvalteren[action.mate.ident]
-			delete state.aareg[action.mate.ident]
-			delete state.pdlforvalter[action.mate.ident]
-			delete state.instdata[action.mate.ident]
-			delete state.udistub[action.mate.ident]
+			delete state.tpsf[action.meta.ident]
+			delete state.sigrunstub[action.meta.ident]
+			delete state.krrstub[action.meta.ident]
+			delete state.arenaforvalteren[action.meta.ident]
+			delete state.aareg[action.meta.ident]
+			delete state.pdlforvalter[action.meta.ident]
+			delete state.instdata[action.meta.ident]
+			delete state.udistub[action.meta.ident]
 		}
 	},
 	initialState

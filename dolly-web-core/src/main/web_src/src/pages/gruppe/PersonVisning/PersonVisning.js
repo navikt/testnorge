@@ -9,11 +9,19 @@ import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
 import { SigrunstubVisning } from '~/components/fagsystem/sigrunstub/visning/Visning'
 import { InstVisning } from '~/components/fagsystem/inst/visning/InstVisning'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
-import Button from '~/components/ui/button/Button'
+import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
+import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/SammendragModal'
 
 import './PersonVisning.less'
 
-export const PersonVisning = ({ fetchDataFraFagsystemer, data, ident, bestilling, loading }) => {
+export const PersonVisning = ({
+	fetchDataFraFagsystemer,
+	data,
+	ident,
+	bestilling,
+	loading,
+	slettPerson
+}) => {
 	useMount(fetchDataFraFagsystemer)
 
 	return (
@@ -36,18 +44,12 @@ export const PersonVisning = ({ fetchDataFraFagsystemer, data, ident, bestilling
 			/>
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} />
-			<div className="flexbox--align-center--justify-end">
-				<Button className="flexbox--align-center" kind="details">
-					BESTILLINGSDETALJER
-				</Button>
-				<Button className="flexbox--align-center" kind="edit">
-					REDIGER
-				</Button>
 
-				{/* Slett kan være modal med egen komponent */}
-				<Button className="flexbox--align-center" kind="trashcan">
-					SLETT
-				</Button>
+			<div className="flexbox--align-center--justify-end">
+				<BestillingSammendragModal bestilling={bestilling} />
+				<SlettButton action={slettPerson} loading={loading.slettPerson}>
+					Er du sikker på at du vil slette denne personen?
+				</SlettButton>
 			</div>
 		</div>
 	)
