@@ -4,6 +4,7 @@ import static java.util.Objects.isNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsDollyBestilling {
 
     @ApiModelProperty(
@@ -56,7 +58,7 @@ public class RsDollyBestilling {
     private List<RsInstdata> instdata;
 
     @ApiModelProperty(
-            position =6
+            position = 6
     )
     private List<RsArbeidsforhold> aareg;
 
@@ -82,22 +84,29 @@ public class RsDollyBestilling {
 
     public List<RsArbeidsforhold> getAareg() {
         if (isNull(aareg)) {
-            aareg = new ArrayList<>();
+            aareg = new ArrayList();
         }
         return aareg;
     }
 
     public List<String> getEnvironments() {
         if (isNull(environments)) {
-            environments = new ArrayList<>();
+            environments = new ArrayList();
         }
         return environments;
     }
 
     public List<OpprettSkattegrunnlag> getSigrunstub() {
         if (isNull(sigrunstub)) {
-            sigrunstub = new ArrayList<>();
+            sigrunstub = new ArrayList();
         }
         return sigrunstub;
+    }
+
+    public List<RsInstdata> getInstdata() {
+        if (isNull(instdata)) {
+            instdata = new ArrayList();
+        }
+        return instdata;
     }
 }
