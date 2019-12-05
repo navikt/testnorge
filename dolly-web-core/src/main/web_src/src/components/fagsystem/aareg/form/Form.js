@@ -1,42 +1,32 @@
 import React from 'react'
-import * as Yup from 'yup'
 import _get from 'lodash/get'
 import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
+import { validation } from './validation'
 import { ArbeidsforholdForm } from './partials/arbeidsforholdForm'
 
-//TODO dele opp denne?
-//TODO få denne til å gjenspeile faktisk skjema
 const initialValuesArbeidsforhold = {
 	ansettelsesPeriode: {
-		fom: '',
-		tom: ''
+		fom: new Date(new Date().setFullYear(new Date().getFullYear() - 20)),
+		tom: null
 	},
 	arbeidsforholdstype: 'ordinaertArbeidsforhold',
-	antallTimerForTimeloennet: [
-		{
-			periode: {
-				fom: '',
-				tom: ''
-			},
-			antallTimer: ''
-		}
-	],
-	arbeidsavtale: {
-		yrke: '',
-		stillingsprosent: '',
-		arbeidstidsordning: 'ikkeSkift',
-		antallKonverterteTimer: '0',
-		// avloenningstype: '',
-		avtaltArbeidstimerPerUke: '37,5'
-	},
-	permisjon: [],
-	utenlandsopphold: [],
 	arbeidsgiver: {
 		aktoertype: '',
 		aktoerId: ''
-	}
+	},
+	arbeidsavtale: {
+		yrke: '',
+		stillingsprosent: 100,
+		endringsdatoStillingsprosent: null,
+		arbeidstidsordning: 'ikkeSkift',
+		antallKonverterteTimer: 0,
+		avtaltArbeidstimerPerUke: 37.5
+	},
+	antallTimerForTimeloennet: [],
+	permisjon: [],
+	utenlandsopphold: []
 }
 
 export const AaregForm = ({ formikBag }) => (
@@ -53,5 +43,7 @@ AaregForm.initialValues = attrs => {
 	}
 	return attrs.arbeidsforhold ? initial : {}
 }
+
+AaregForm.validation = validation
 
 //TODO validation

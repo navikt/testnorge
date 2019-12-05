@@ -16,8 +16,8 @@ export const TimeloennetForm = ({ name, formikBag, fjern }) => {
 					<h5 className="nummer">{`#${idx + 1}`}</h5>
 					{/* Skal være number +- ting */}
 					<FormikTextInput name={`${name}[${idx}].antallTimer`} label="Antall timer" />
-					<FormikDatepicker name={`${name}[${idx}].periode.fom`} label="Fra" />
-					<FormikDatepicker name={`${name}[${idx}].periode.tom`} label="Til" />
+					<FormikDatepicker name={`${name}[${idx}].periode.fom`} label="Periode fra" />
+					<FormikDatepicker name={`${name}[${idx}].periode.tom`} label="Periode til" />
 					<FieldArrayRemoveButton onClick={() => fjern(idx, name, timeloennArray)} />
 				</div>
 			))}
