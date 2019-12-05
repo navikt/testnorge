@@ -1,11 +1,7 @@
 import Request from '~/service/services/Request'
 import Endpoints from './DollyEndpoints'
-import Utils from './Utils'
 
 export default {
-	// UTILS
-	Utils,
-
 	// Grupper
 	getGrupper() {
 		return Request.get(Endpoints.gruppe())
