@@ -19,6 +19,4 @@ export const Steg3 = ({ formikBag }) => {
 
 Steg3.label = 'Oppsummering'
 
-Steg3.validation = Yup.object({
-	// ...MiljoeVelgerForm.validation
-})
+Steg3.validation = Yup.object(Object.assign({}, MalForm.validation))

@@ -16,7 +16,9 @@ const steps = [Steg1, Steg2, Steg3]
 const createInitialValues = (locState = {}) => {
 	let iv = {
 		antall: locState.antall || 1,
-		environments: []
+		environments: [],
+		__lagreSomNyMal: false,
+		malBestillingNavn: ''
 	}
 
 	if (locState.mal) {
