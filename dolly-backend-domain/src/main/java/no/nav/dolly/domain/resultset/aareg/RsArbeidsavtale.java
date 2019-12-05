@@ -26,14 +26,6 @@ public class RsArbeidsavtale {
     private String arbeidstidsordning;
 
     @ApiModelProperty(
-            value = "Gyldige verdier finnes i kodeverk 'Avlønningstyper'",
-            dataType = "String",
-            required = true,
-            position = 2
-    )
-    private String avloenningstype;
-
-    @ApiModelProperty(
             value = "Gyldige verdier finnes i kodeverk 'Yrker'",
             dataType = "String",
             required = true,
@@ -61,10 +53,4 @@ public class RsArbeidsavtale {
             position = 7
     )
     private LocalDateTime endringsdatoStillingsprosent;
-
-    @ApiModelProperty(
-            dataType = "LocalDateTime",
-            position = 8
-    )
-    private LocalDateTime sisteLoennsendringsdato;
 }
