@@ -3,6 +3,8 @@ import { LOCATION_CHANGE } from 'connected-react-router'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _merge from 'lodash/merge'
+import _last from 'lodash/last'
+import _isEmpty from 'lodash/isEmpty'
 import { DollyApi, TpsfApi, SigrunApi, KrrApi, ArenaApi, InstApi, UdiApi } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
@@ -229,15 +231,23 @@ export const sokSelector = (items, searchStr) => {
 export const selectPersonListe = state => {
 	const { gruppe, fagsystem } = state
 
-	if (!fagsystem.tpsf) return null
+	if (_isEmpty(fagsystem.tpsf)) return null
 
-	return Object.values(fagsystem.tpsf).map(ident => ({
-		ident: gruppe.ident[ident.ident],
-		identtype: ident.identtype,
-		navn: `${ident.fornavn} ${ident.mellomnavn || ''} ${ident.etternavn}`,
-		kjonn: Formatters.kjonnToString(ident.kjonn),
-		alder: Formatters.formatAlder(ident.alder, ident.doedsdato)
-	}))
+	// Sortert etter bestillingsId
+	const identer = Object.values(gruppe.ident).sort(
+		(a, b) => _last(b.bestillingId) - _last(a.bestillingId)
+	)
+
+	return identer.map(ident => {
+		const tpsfIdent = fagsystem.tpsf[ident.ident]
+		return {
+			ident,
+			identtype: tpsfIdent.identtype,
+			navn: `${tpsfIdent.fornavn} ${tpsfIdent.mellomnavn || ''} ${tpsfIdent.etternavn}`,
+			kjonn: Formatters.kjonnToString(tpsfIdent.kjonn),
+			alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato)
+		}
+	})
 }
 
 export const selectDataForIdent = (state, ident) => {
