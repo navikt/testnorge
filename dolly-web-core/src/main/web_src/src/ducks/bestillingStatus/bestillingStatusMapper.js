@@ -13,7 +13,7 @@
 import _get from 'lodash/get'
 import Formatters from '~/utils/DataFormatter'
 
-const finnnesDetAvvik = status => {
+const finnesDetAvvikForBestillinger = status => {
 	if (!status) return false
 	return status.some(source => {
 		return source.statuser.some(status => status.melding !== 'OK')
@@ -69,9 +69,9 @@ const extractValuesForBestillingListe = (data, statusKode) => {
 	return Object.values(values)
 }
 
-export default function BestillingStatusMapper(data) {
+export function BestillingStatusMapper(data) {
 	return data.map(bestilling => {
-		const harAvvik = finnnesDetAvvik(bestilling.status)
+		const harAvvik = finnesDetAvvikForBestillinger(bestilling.status)
 		const antallIdenterOpprettet = antallIdenterOpprettetPaaBestilling(bestilling.status)
 		const statusKode = extractBestillingstatusKode(bestilling, harAvvik, antallIdenterOpprettet)
 		const listedata = extractValuesForBestillingListe(bestilling, statusKode)
@@ -82,4 +82,76 @@ export default function BestillingStatusMapper(data) {
 			status: bestilling.status || []
 		}
 	})
+}
+
+const appendAvvikmeldingIfPresent = (status, source, personStatus) => {
+	let nyMelding = {
+		id: source.id,
+		melding: status.melding
+	}
+	return {
+		statusKode: 'Avvik',
+		meldinger: personStatus.meldinger ? personStatus.meldinger.concat(nyMelding) : [nyMelding]
+	}
+}
+
+const extractNewestBestillingstatusForPerson = (
+	personStatusMap,
+	bestilling,
+	source,
+	sourceStatus,
+	ident
+) => {
+	// hvis bruker allerede finnes, og bestillingsid er nyere enn den forrige
+	// bestillingen på brukeren, så skal den overskrives med
+	if (personStatusMap.has(ident) && bestilling.id > personStatusMap.get(ident).bestillingId) {
+		personStatusMap.delete(ident)
+	}
+
+	if (sourceStatus.melding === 'OK') {
+		!personStatusMap.has(ident) &&
+			personStatusMap.set(ident, {
+				bestillingId: bestilling.id,
+				statusKode: bestilling.stoppet
+					? 'Stoppet'
+					: !bestilling.ferdig
+					? 'Pågår'
+					: antallIdenterOpprettetPaaBestilling(bestilling.status) === 0
+					? 'Feilet'
+					: 'Ferdig'
+			})
+	} else {
+		personStatusMap.set(ident, {
+			...appendAvvikmeldingIfPresent(sourceStatus, source, personStatusMap.get(ident)),
+			bestillingId: bestilling.id
+		})
+	}
+}
+
+export function ExtractBestillingStatusForPersoner(data) {
+	const personStatusMap = new Map()
+
+	data.forEach(
+		bestilling =>
+			bestilling.status &&
+			bestilling.status.forEach(source => {
+				source.statuser &&
+					source.statuser.forEach(sourceStatus => {
+						sourceStatus.detaljert.forEach(detalje => {
+							detalje.identer &&
+								detalje.identer.forEach(ident => {
+									extractNewestBestillingstatusForPerson(
+										personStatusMap,
+										bestilling,
+										source,
+										sourceStatus,
+										ident
+									)
+								})
+						})
+					})
+			})
+	)
+
+	return personStatusMap
 }

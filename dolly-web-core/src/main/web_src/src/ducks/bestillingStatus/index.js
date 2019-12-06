@@ -3,7 +3,10 @@ import _isNil from 'lodash/isNil'
 import _mapValues from 'lodash/mapValues'
 import _uniq from 'lodash/uniq'
 import { DollyApi } from '~/service/Api'
-import bestillingStatusMapper from './bestillingStatusMapper'
+import {
+	BestillingStatusMapper,
+	ExtractBestillingStatusForPersoner
+} from './bestillingStatusMapper'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 
@@ -23,7 +26,7 @@ export const {
 )
 
 // ny-array holder oversikt over nye bestillinger i en session
-const initialState = { ny: [], byId: {} }
+const initialState = { ny: [], byId: {}, byIdent: {} }
 
 export default handleActions(
 	{
@@ -37,8 +40,15 @@ export default handleActions(
 				state.ny = state.ny.concat(nyeBestillinger)
 			}
 
-			bestillingStatusMapper(data).map(best => {
+			BestillingStatusMapper(data).map(best => {
 				state.byId[best.id] = best
+			})
+
+			ExtractBestillingStatusForPersoner(data).forEach((statusAggregat, ident) => {
+				state.byIdent[ident] = {
+					statusKode: statusAggregat.statusKode,
+					meldinger: statusAggregat.meldinger
+				}
 			})
 		},
 		[removeNyBestillingStatus](state, action) {

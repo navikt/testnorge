@@ -9,6 +9,7 @@ import { selectIdentById } from '~/ducks/gruppe'
 import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import Formatters from '~/utils/DataFormatter'
+import _last from 'lodash/last'
 
 export const actions = createActions(
 	{
@@ -226,18 +227,22 @@ export const sokSelector = (items, searchStr) => {
 	})
 }
 
+// Dette er også før sortering, så det burde være greit å legge på status her
+// Denne kommer med persondatalisten som vises i Personer, her må vi linke inn tilsvarende som i bestillinger
 export const selectPersonListe = state => {
 	const { gruppe, fagsystem } = state
 
 	if (!fagsystem.tpsf) return null
 
-	return Object.values(fagsystem.tpsf).map(ident => ({
-		ident: gruppe.ident[ident.ident],
-		identtype: ident.identtype,
-		navn: `${ident.fornavn} ${ident.mellomnavn || ''} ${ident.etternavn}`,
-		kjonn: Formatters.kjonnToString(ident.kjonn),
-		alder: Formatters.formatAlder(ident.alder, ident.doedsdato)
+	let personListe = Object.values(fagsystem.tpsf).map(tpsfIdent => ({
+		ident: gruppe.ident[tpsfIdent.ident],
+		identtype: tpsfIdent.identtype,
+		navn: `${tpsfIdent.fornavn} ${tpsfIdent.mellomnavn || ''} ${tpsfIdent.etternavn}`,
+		kjonn: Formatters.kjonnToString(tpsfIdent.kjonn),
+		alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
+		status: state.bestillingStatuser.byIdent[tpsfIdent.ident].statusKode
 	}))
+	return personListe
 }
 
 export const selectDataForIdent = (state, ident) => {

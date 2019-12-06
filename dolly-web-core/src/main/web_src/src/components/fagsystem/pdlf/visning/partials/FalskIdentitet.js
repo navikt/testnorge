@@ -3,6 +3,7 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { Personnavn } from './Personnavn'
 import Formatters from '~/utils/DataFormatter'
+import Loading from '~/components/ui/loading/Loading'
 
 export const FalskIdentitet = ({ data, loading }) => {
 	if (loading) return <Loading label="laster PDL-data" />
