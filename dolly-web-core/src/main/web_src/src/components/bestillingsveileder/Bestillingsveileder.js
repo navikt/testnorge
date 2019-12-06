@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import _set from 'lodash/fp/set'
 import _get from 'lodash/get'
-import { Header, headerFromInitialValues } from './Header/Header'
+import Formatter from '~/utils/DataFormatter'
+import { Header } from '~/components/ui/Header/Header'
 import { StegVelger } from './StegVelger'
 import { Steg1 } from './steg/steg1/Steg1'
 import { Steg2 } from './steg/Steg2'
@@ -52,13 +53,7 @@ export const Bestillingsveileder = ({ location, sendBestilling }) => {
 
 	const stateModifier = stateModifierFns(initialValues, setInitialValues)
 
-	// Denne er litt verbos nå, men må nok endre litt etterhvert hvor disse data kommer fra
-	const headerData = headerFromInitialValues(
-		initialValues.antall,
-		identtype,
-		mal,
-		opprettFraIdenter
-	)
+	const antall = (opprettFraIdenter && opprettFraIdenter.length) || initialValues.antall
 
 	return (
 		<div className="bestillingsveileder">
@@ -70,7 +65,21 @@ export const Bestillingsveileder = ({ location, sendBestilling }) => {
 			>
 				{(CurrentStep, formikBag) => (
 					<React.Fragment>
-						<Header data={headerData} />
+						<Header>
+							<Header.TitleValue
+								title="Antall"
+								value={`${antall} ${antall > 1 ? 'personer' : 'person'}`}
+							/>
+							{!opprettFraIdenter && <Header.TitleValue title="Identtype" value={identtype} />}
+							{opprettFraIdenter && (
+								<Header.TitleValue
+									title="Opprett fra eksisterende personer"
+									value={Formatter.arrayToString(opprettFraIdenter)}
+								/>
+							)}
+							{mal && <Header.TitleValue title="Basert på mal" value={mal.malNavn} />}
+						</Header>
+
 						<CurrentStep formikBag={formikBag} stateModifier={stateModifier} />
 					</React.Fragment>
 				)}
