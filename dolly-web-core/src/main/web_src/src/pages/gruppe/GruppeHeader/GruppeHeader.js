@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react'
 import Button from '~/components/ui/button/Button'
 import useBoolean from '~/utils/hooks/useBoolean'
-import Overskrift from '~/components/ui/overskrift/Overskrift'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
 import EksporterExcel from '~/pages/gruppe/EksporterExcel/EksporterExcel'
@@ -15,7 +14,7 @@ export default function GruppeHeader({ gruppe, identArray, isDeletingGruppe, del
 
 	return (
 		<Fragment>
-			<Overskrift label={gruppe.navn} />
+			<h1>{gruppe.navn}</h1>
 			<Header className="gruppe-header" icon="group">
 				<div className="flexbox">
 					<Header.TitleValue title="Eier" value={gruppe.opprettetAvNavIdent} />
