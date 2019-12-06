@@ -1,9 +1,8 @@
 import React from 'react'
-import Loading from '~/components/ui/loading/Loading'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import Formatters from '~/utils/DataFormatter'
 
-export const PermisjonPermitteringer = ({ data, loading }) => {
-	if (loading) return <Loading label="laster Aareg-data" />
+export const PermisjonPermitteringer = ({ data }) => {
 	if (!data) return false
 
 	return (

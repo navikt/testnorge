@@ -1,9 +1,7 @@
 import React, { Fragment } from 'react'
-import Loading from '~/components/ui/loading/Loading'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
-export const Arbeidsgiver = ({ data, loading }) => {
-	if (loading) return <Loading label="laster Aareg-data" />
+export const Arbeidsgiver = ({ data }) => {
 	if (!data || data.length === 0) return false
 
 	return (
@@ -13,7 +11,7 @@ export const Arbeidsgiver = ({ data, loading }) => {
 				{data.type === 'Organisasjon' && (
 					<Fragment>
 						<TitleValue title="Aktørtype" value={data.type} />
-						<TitleValue title="Antall timer per uke" value={data.organisasjonsnummer} />
+						<TitleValue title="Organisasjonsnummer" value={data.organisasjonsnummer} />
 					</Fragment>
 				)}
 				{data.type === 'Person' && (

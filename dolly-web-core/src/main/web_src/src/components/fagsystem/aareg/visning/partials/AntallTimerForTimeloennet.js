@@ -1,10 +1,8 @@
 import React from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import Loading from '~/components/ui/loading/Loading'
 
-export const AntallTimerForTimeloennet = ({ data, loading }) => {
-	if (loading) return <Loading label="laster Aareg-data" />
+export const AntallTimerForTimeloennet = ({ data }) => {
 	if (!data || data.length === 0) return false
 
 	return (

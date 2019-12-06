@@ -1,10 +1,8 @@
 import React from 'react'
-import Loading from '~/components/ui/loading/Loading'
 import Formatters from '~/utils/DataFormatter'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
-export const Utenlandsopphold = ({ data, loading }) => {
-	if (loading) return <Loading label="laster Aareg-data" />
+export const Utenlandsopphold = ({ data }) => {
 	if (!data) return false
 
 	return (
@@ -12,6 +10,7 @@ export const Utenlandsopphold = ({ data, loading }) => {
 			<h4>Utenlandsopphold</h4>
 			{data.map((id, idx) => (
 				<div key={idx} className="person-visning_content">
+					<TitleValue title="" value={`#${idx + 1}`} size="x-small" />
 					<TitleValue title="Land" value={id.landkode} kodeverk="LandkoderISO2" />
 					{id.periode && (
 						<TitleValue title="Startdato" value={Formatters.formatStringDates(id.periode.fom)} />

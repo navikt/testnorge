@@ -1,5 +1,7 @@
 import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import Loading from '~/components/ui/loading/Loading'
+import Formatters from '~/utils/DataFormatter'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { Arbeidsavtaler } from './partials/Arbeidsavtaler'
 import { Arbeidsgiver } from './partials/Arbeidsgiver'
@@ -8,6 +10,7 @@ import { AntallTimerForTimeloennet } from './partials/AntallTimerForTimeloennet'
 import { Utenlandsopphold } from './partials/Utenlandsopphold'
 
 export const AaregVisning = ({ data, loading }) => {
+	if (loading) return <Loading label="Laster Aareg-data" />
 	if (!data) return false
 
 	return (
@@ -28,10 +31,16 @@ export const AaregVisning = ({ data, loading }) => {
 							)}
 
 							{id.ansettelsesperiode && id.ansettelsesperiode.periode && (
-								<TitleValue title="Startdato" value={id.ansettelsesperiode.periode.fom} />
+								<TitleValue
+									title="Startdato"
+									value={Formatters.formatStringDates(id.ansettelsesperiode.periode.fom)}
+								/>
 							)}
 							{id.ansettelsesperiode && id.ansettelsesperiode.periode && (
-								<TitleValue title="Sluttdato" value={id.ansettelsesperiode.periode.tom} />
+								<TitleValue
+									title="Sluttdato"
+									value={Formatters.formatStringDates(id.ansettelsesperiode.periode.tom)}
+								/>
 							)}
 						</div>
 
