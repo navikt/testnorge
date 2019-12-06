@@ -5,6 +5,8 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 
 export const ArbeidsavtaleForm = ({ formikBag, idx }) => {
+	const arbeidsavtale = formikBag.values.aareg[idx].arbeidsavtale
+
 	return (
 		<div>
 			<h4>Arbeidsavtale</h4>
@@ -34,11 +36,13 @@ export const ArbeidsavtaleForm = ({ formikBag, idx }) => {
 					name={`aareg[${idx}].arbeidsavtale.antallKonverterteTimer`}
 					label="Antall konverterte timer"
 					type="number"
+					disabled={arbeidsavtale.stillingsprosent && arbeidsavtale.avtaltArbeidstimerPerUke}
 				/>
 				<FormikTextInput
 					name={`aareg[${idx}].arbeidsavtale.avtaltArbeidstimerPerUke`}
 					label="Avtalte timer per uke"
 					type="number"
+					disabled={arbeidsavtale.stillingsprosent && arbeidsavtale.antallKonverterteTimer}
 				/>
 			</div>
 		</div>

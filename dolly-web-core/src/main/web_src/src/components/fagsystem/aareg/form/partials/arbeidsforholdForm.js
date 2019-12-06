@@ -76,19 +76,19 @@ export const ArbeidsforholdForm = ({ formikBag, initial }) => {
 								/>
 								{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
 									<FormikSelect // evt. felt man kan skrive i også?
-										name={`aareg[${idx}].arbeidsgiver.aktoerId`}
+										name={`aareg[${idx}].arbeidsgiver.orgnummer`}
 										label="Arbeidsgiver orgnummer"
 										options={Options('orgnummer')}
 										type="text"
 										size="large"
 									/>
 								)}
-								{/* Skal vise value (kode) i tillegg */}
 								{arbeidsforhold.arbeidsgiver.aktoertype === 'PERS' && (
 									<FormikTextInput
-										name={`aareg[${idx}].arbeidsgiver.aktoerId`}
+										name={`aareg[${idx}].arbeidsgiver.ident`}
 										label="Arbeidsgiver ident"
 									/>
+									// Identtype????
 								)}
 							</div>
 							<ArbeidsavtaleForm formikBag={formikBag} idx={idx} />

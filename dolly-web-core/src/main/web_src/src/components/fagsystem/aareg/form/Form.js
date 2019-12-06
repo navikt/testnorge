@@ -14,15 +14,16 @@ const initialValuesArbeidsforhold = {
 	arbeidsforholdstype: 'ordinaertArbeidsforhold',
 	arbeidsgiver: {
 		aktoertype: '',
-		aktoerId: ''
+		orgnummer: '',
+		ident: ''
 	},
 	arbeidsavtale: {
 		yrke: '',
-		stillingsprosent: 100,
+		stillingsprosent: 100, //:b
 		endringsdatoStillingsprosent: null,
 		arbeidstidsordning: 'ikkeSkift',
-		antallKonverterteTimer: 0,
-		avtaltArbeidstimerPerUke: 37.5
+		antallKonverterteTimer: '', //:b
+		avtaltArbeidstimerPerUke: 37.5 //:b skal være satt
 	},
 	antallTimerForTimeloennet: [],
 	permisjon: [],

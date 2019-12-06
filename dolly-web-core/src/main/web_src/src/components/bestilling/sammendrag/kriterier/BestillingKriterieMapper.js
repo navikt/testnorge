@@ -227,11 +227,11 @@ export function mapBestillingData(bestillingData) {
 						value: `#${i + 1}`,
 						width: 'x-small'
 					},
-					obj('Startdato', arbeidsforhold.ansettelsesPeriode.fom.split('T')[0]),
+					obj('Startdato', Formatters.formatDate(arbeidsforhold.ansettelsesPeriode.fom)),
 					obj(
 						'Sluttdato',
 						arbeidsforhold.ansettelsesPeriode.tom &&
-							arbeidsforhold.ansettelsesPeriode.tom.split('T')[0]
+							Formatters.formatDate(arbeidsforhold.ansettelsesPeriode.tom)
 					),
 					obj('Stillingprosent', arbeidsforhold.arbeidsavtale.stillingsprosent),
 					obj('Type av arbeidsgiver', arbeidsforhold.arbeidsgiver.aktoertype),
