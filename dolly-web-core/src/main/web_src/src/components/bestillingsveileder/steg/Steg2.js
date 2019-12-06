@@ -7,7 +7,7 @@ import { KrrstubForm } from '~/components/fagsystem/krrstub/form/Form'
 import { SigrunstubForm } from '~/components/fagsystem/sigrunstub/form/Form'
 import { PdlfForm } from '~/components/fagsystem/pdlf/form/Form'
 import { ArenaForm } from '~/components/fagsystem/arena/form/Form'
-import { InstForm } from '~/components/fagsystem/inst/Form'
+import { InstForm } from '~/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '~/components/fagsystem/udistub/form/Form'
 
 export const Steg2 = ({ formikBag }) => {
