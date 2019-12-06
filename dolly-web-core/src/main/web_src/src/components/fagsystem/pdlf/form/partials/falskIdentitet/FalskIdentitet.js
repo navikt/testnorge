@@ -28,7 +28,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 		}
 		return e.value
 	}
-	console.log('falskIdObj :', falskIdObj)
+
 	return (
 		<div>
 			<FormikSelect

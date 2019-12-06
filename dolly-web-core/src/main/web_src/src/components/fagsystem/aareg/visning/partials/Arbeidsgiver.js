@@ -17,7 +17,7 @@ export const Arbeidsgiver = ({ data }) => {
 				{data.type === 'Person' && (
 					<Fragment>
 						<TitleValue title="Aktørtype" value={data.type} />
-						<TitleValue title="Antall timer per uke" value={data.offentligIdent} />
+						<TitleValue title="Arbeidsgiverident" value={data.offentligIdent} />
 					</Fragment>
 				)}
 			</div>

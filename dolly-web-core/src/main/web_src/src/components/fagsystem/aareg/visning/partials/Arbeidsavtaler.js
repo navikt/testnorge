@@ -5,7 +5,6 @@ import Formatters from '~/utils/DataFormatter'
 export const Arbeidsavtaler = ({ data }) => {
 	if (!data || data.length === 0) return false
 
-	console.log('data arbeidsavtaler :', data)
 	return (
 		<div>
 			<h4>Arbeidsavtaler</h4>
