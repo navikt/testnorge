@@ -4,7 +4,6 @@ import {
 	Attributt,
 	AttributtKategori
 } from '~/components/bestillingsveileder/AttributtVelger/Attributt'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 export const ArenaPanel = ({ stateModifier }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
@@ -31,7 +30,7 @@ ArenaPanel.initialValues = ({ set, del, has }) => ({
 		checked: has('arenaforvalter'),
 		add() {
 			set('arenaforvalter', {
-				arenaBrukertype: Options('arenaBrukertype')[0].value,
+				arenaBrukertype: 'UTEN_SERVICEBEHOV',
 				inaktiveringDato: null,
 				kvalifiseringsgruppe: null
 			})

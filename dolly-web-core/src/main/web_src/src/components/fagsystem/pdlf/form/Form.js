@@ -14,7 +14,7 @@ export const PdlfForm = ({ formikBag }) => (
 		<Vis
 			attributt={['pdlforvalter.falskIdentitet', 'pdlforvalter.utenlandskIdentifikasjonsnummer']}
 		>
-			<Panel heading="Identifikasjon" hasErrors={panelError(formikBag)}>
+			<Panel heading="Identifikasjon" startOpen hasErrors={panelError(formikBag)}>
 				<Kategori title="Falsk identitet" vis="pdlforvalter.falskIdentitet">
 					<FalskIdentitet formikBag={formikBag} />
 				</Kategori>

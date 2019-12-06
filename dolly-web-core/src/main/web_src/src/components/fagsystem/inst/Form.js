@@ -8,36 +8,40 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FieldArrayAddButton, FieldArrayRemoveButton } from '~/components/ui/form/formUtils'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { requiredDate, requiredString } from '~/utils/YupValidations'
+
+const initialValues = {
+	institusjonstype: '',
+	startdato: '',
+	faktiskSluttdato: ''
+}
 
 export const InstForm = ({ formikBag }) => (
 	<Vis attributt="instdata">
-		<Panel heading="Institusjonsopphold" hasErrors={panelError(formikBag)}>
+		<Panel heading="Institusjonsopphold" startOpen hasErrors={panelError(formikBag)}>
 			<FieldArray
 				name="instdata"
-				render={arrayHelpers => {
-					const initialValues = formikBag.initialValues.instdata[0]
-					return (
-						<div>
-							{formikBag.values.instdata.map((curr, idx) => (
-								<div className="flexbox" key={idx}>
-									<FormikSelect
-										name={`instdata[${idx}].institusjonstype`}
-										label="Institusjonstype"
-										options={Options('institusjonstype')}
-									/>
-									<FormikDatepicker name={`instdata[${idx}].startdato`} label="Startdato" />
-									<FormikDatepicker name={`instdata[${idx}].faktiskSluttdato`} label="Sluttdato" />
-									<FieldArrayRemoveButton onClick={e => arrayHelpers.remove(idx)} />
-								</div>
-							))}
+				render={arrayHelpers => (
+					<div>
+						{formikBag.values.instdata.map((curr, idx) => (
+							<div className="flexbox" key={idx}>
+								<FormikSelect
+									name={`instdata[${idx}].institusjonstype`}
+									label="Institusjonstype"
+									options={Options('institusjonstype')}
+								/>
+								<FormikDatepicker name={`instdata[${idx}].startdato`} label="Startdato" />
+								<FormikDatepicker name={`instdata[${idx}].faktiskSluttdato`} label="Sluttdato" />
+								<FieldArrayRemoveButton onClick={e => arrayHelpers.remove(idx)} />
+							</div>
+						))}
 
-							<FieldArrayAddButton
-								title="Institusjonsopphold"
-								onClick={e => arrayHelpers.push(initialValues)}
-							/>
-						</div>
-					)
-				}}
+						<FieldArrayAddButton
+							title="Institusjonsopphold"
+							onClick={e => arrayHelpers.push(initialValues)}
+						/>
+					</div>
+				)}
 			/>
 		</Panel>
 	</Vis>
@@ -46,11 +50,9 @@ export const InstForm = ({ formikBag }) => (
 InstForm.validation = {
 	instdata: Yup.array().of(
 		Yup.object({
-			institusjonstype: Yup.string().required('Velg institusjonstype'),
-			startdato: Yup.string()
-				.typeError('Formatet må være DD.MM.YYYY.')
-				.required(),
-			faktiskSluttdato: Yup.string().typeError('Formatet må være DD.MM.YYYY.')
+			institusjonstype: requiredString,
+			startdato: requiredDate,
+			faktiskSluttdato: requiredDate
 		})
 	)
 }
