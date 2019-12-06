@@ -2,11 +2,11 @@ import React, { Fragment } from 'react'
 import Button from '~/components/ui/button/Button'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Overskrift from '~/components/ui/overskrift/Overskrift'
-import GruppeDetaljer from '~/pages/gruppe/GruppeDetaljer/GruppeDetaljer'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
 import EksporterExcel from '~/pages/gruppe/EksporterExcel/EksporterExcel'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
+import { Header } from '~/components/ui/header/Header'
 
 import './GruppeHeader.less'
 
@@ -15,28 +15,33 @@ export default function GruppeHeader({ gruppe, identArray, isDeletingGruppe, del
 
 	return (
 		<Fragment>
-			<div className="header-valg">
-				<Overskrift label={gruppe.navn}>
-					{gruppe.erEierAvGruppe ? (
-						// Vise redigeringsknapp eller favoriseringsstjerne
+			<Overskrift label={gruppe.navn} />
+			<Header className="gruppe-header" icon="group">
+				<div className="flexbox">
+					<Header.TitleValue title="Eier" value={gruppe.opprettetAvNavIdent} />
+					<Header.TitleValue title="Antall personer" value={identArray.length} />
+					<Header.TitleValue title="Sist endret" value={gruppe.datoEndret} />
+					<Header.TitleValue
+						title="Antall i bruk"
+						value={identArray.map(p => p.ibruk).filter(Boolean).length}
+					/>
+					<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
+				</div>
+				<div className="gruppe-header_actions">
+					{gruppe.erEierAvGruppe && (
 						<Button className="flexbox--align-center" kind="edit" onClick={visRediger}>
 							REDIGER
 						</Button>
-					) : (
-						<FavoriteButtonConnector groupId={gruppe.id} />
 					)}
 					<SlettButton action={deleteGruppe} loading={isDeletingGruppe}>
 						Er du sikker på at du vil slette denne gruppen?
 					</SlettButton>
-				</Overskrift>
-				<div className="hoyre">
 					<EksporterExcel identer={identArray} gruppeId={gruppe.id} />
+					{!gruppe.erEierAvGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 				</div>
-			</div>
+			</Header>
 
 			{visRedigerState && <RedigerGruppeConnector gruppe={gruppe} onCancel={skjulRediger} />}
-
-			<GruppeDetaljer gruppe={gruppe} identArray={identArray} />
 		</Fragment>
 	)
 }

@@ -52,18 +52,20 @@ export const Bestillingsveileder = ({ location, sendBestilling }) => {
 				{(CurrentStep, formikBag, stateModifier) => (
 					<React.Fragment>
 						<Header>
-							<Header.TitleValue
-								title="Antall"
-								value={`${antall} ${antall > 1 ? 'personer' : 'person'}`}
-							/>
-							{!opprettFraIdenter && <Header.TitleValue title="Identtype" value={identtype} />}
-							{opprettFraIdenter && (
+							<div className="flexbox">
 								<Header.TitleValue
-									title="Opprett fra eksisterende personer"
-									value={Formatter.arrayToString(opprettFraIdenter)}
+									title="Antall"
+									value={`${antall} ${antall > 1 ? 'personer' : 'person'}`}
 								/>
-							)}
-							{mal && <Header.TitleValue title="Basert på mal" value={mal.malNavn} />}
+								{!opprettFraIdenter && <Header.TitleValue title="Identtype" value={identtype} />}
+								{opprettFraIdenter && (
+									<Header.TitleValue
+										title="Opprett fra eksisterende personer"
+										value={Formatter.arrayToString(opprettFraIdenter)}
+									/>
+								)}
+								{mal && <Header.TitleValue title="Basert på mal" value={mal.malNavn} />}
+							</div>
 						</Header>
 
 						<CurrentStep formikBag={formikBag} stateModifier={stateModifier} />
