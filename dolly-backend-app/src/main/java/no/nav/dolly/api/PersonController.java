@@ -12,7 +12,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.service.BestillingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,10 +39,10 @@ public class PersonController {
             BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET)
     @PutMapping("/{ident}")
     @ResponseStatus(HttpStatus.OK)
-    public RsBestilling oppdaterPerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
+    public RsBestillingStatus oppdaterPerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
         Bestilling bestilling = bestillingService.saveBestilling(ident, request);
 
         dollyBestillingService.oppdaterPersonAsync(ident, request, bestilling);
-        return mapperFacade.map(bestilling, RsBestilling.class);
+        return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 }

@@ -1,14 +1,14 @@
 package no.nav.dolly.repository;
 
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.Testgruppe;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-import java.util.Optional;
+import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.Testgruppe;
 
 public interface BestillingRepository extends Repository<Bestilling, Long> {
 
@@ -18,8 +18,9 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
 
     List<Bestilling> findBestillingByGruppeOrderById(Testgruppe gruppe);
 
-    @Query(value = "from Bestilling b where b.malBestillingNavn is not null order by b.malBestillingNavn")
-    Optional<List<Bestilling>> findMalBestilling();
+    @Query(value = "from Bestilling b where b.malBestillingNavn is not null and "
+            + "(b.userId is null or b.userId is not null and b.userId = :userId) order by b.malBestillingNavn")
+    Optional<List<Bestilling>> findMalBestilling(@Param("userId") String userId);
 
     int deleteByGruppeId(Long gruppeId);
 

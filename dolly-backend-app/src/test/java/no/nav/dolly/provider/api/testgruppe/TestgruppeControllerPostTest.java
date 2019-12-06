@@ -5,19 +5,19 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.entity.team.RsTeamMedIdOgNavn;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDate;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamMedIdOgNavn;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 
 @DisplayName("POST /api/v1/gruppe")
 class TestgruppeControllerPostTest extends TestgruppeTestBase {
@@ -81,9 +81,9 @@ class TestgruppeControllerPostTest extends TestgruppeTestBase {
 
         rsDollyBestillingRequest.setTpsf(tpsfBestilling);
 
-        RsBestilling resp = sendRequest(rsDollyBestillingRequest)
+        RsBestillingStatus resp = sendRequest(rsDollyBestillingRequest)
                 .to(HttpMethod.POST, url)
-                .andExpect(HttpStatus.CREATED, RsBestilling.class);
+                .andExpect(HttpStatus.CREATED, RsBestillingStatus.class);
 
         assertNotNull(resp.getTpsfKriterier());
     }

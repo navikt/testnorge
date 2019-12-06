@@ -2,17 +2,17 @@ package no.nav.dolly.bestilling.aareg;
 
 import static java.util.Collections.singletonList;
 
-import java.util.List;
-import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Map;
+
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.consumer.aareg.AaregConsumer;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.consumer.aareg.AaregRestConsumer;
-import no.nav.dolly.consumer.aareg.AaregWsConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
@@ -28,9 +28,7 @@ import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 @RequiredArgsConstructor
 public class AaregClient extends AaregAbstractClient implements ClientRegister {
 
-    private final AaregWsConsumer aaregWsConsumer;
-    private final AaregRestConsumer aaregRestConsumer;
-    private final AaregReleaseIdentClient aaregReleaseIdentClient;
+    private final AaregConsumer aaregConsumer;
 
     @Override
     @Timed(name = "providers", tags={"operation", "gjenopprettAareg"})
@@ -44,7 +42,7 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
 
                 ResponseEntity<Map[]> response = ResponseEntity.ok(new Map[] {});
                 try {
-                    response = aaregRestConsumer.readArbeidsforhold(tpsPerson.getHovedperson(), env);
+                    response = aaregConsumer.hentArbeidsforhold(tpsPerson.getHovedperson(), env);
                 } catch (RuntimeException e) {
                     log.error("Lesing av aareg i {} feilet, {}", env, e.getLocalizedMessage());
                 }
@@ -63,7 +61,10 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
                                 arbfInput.getArbeidsforholdID().equals(getArbforholdId(arbfFraAareg))) {
 
                             arbfInput.setArbeidsforholdIDnav(getNavArbfholdId(arbfFraAareg));
-                            appendResult(aaregWsConsumer.oppdaterArbeidsforhold(buildRequest(arbfInput, env)), arbfInput.getArbeidsforholdID(), result);
+                            appendResult(
+                                    aaregConsumer.oppdaterArbeidsforhold(buildRequest(arbfInput, env)).getStatusPerMiljoe(),
+                                    arbfInput.getArbeidsforholdID(),
+                                    result);
 
                             found = true;
                             break;
@@ -71,10 +72,10 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
                     }
 
                     if (!found) {
-                        appendResult(aaregWsConsumer.opprettArbeidsforhold(RsAaregOpprettRequest.builder()
+                        appendResult(aaregConsumer.opprettArbeidsforhold(RsAaregOpprettRequest.builder()
                                 .arbeidsforhold(arbfInput)
                                 .environments(singletonList(env))
-                                .build()), arbfInput.getArbeidsforholdID(), result);
+                                .build()).getStatusPerMiljoe(), arbfInput.getArbeidsforholdID(), result);
                     }
                 }
             });
@@ -85,7 +86,7 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
 
     @Override
     public void release(List<String> identer) {
-        identer.forEach(ident -> aaregReleaseIdentClient.deleteArbeidsforhold(ident));
+        identer.forEach(aaregConsumer::slettArbeidsforholdFraAlleMiljoer);
     }
 
     private static String getIdentifyingNumber(Map arbfFraAareg) {

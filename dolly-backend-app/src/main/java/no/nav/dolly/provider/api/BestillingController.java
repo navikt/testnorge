@@ -24,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.service.BestillingService;
 
@@ -55,23 +54,23 @@ public class BestillingController {
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
     @ApiOperation("Stopp en Bestilling med bestillingsId")
-    public RsBestilling stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId) {
+    public RsBestillingStatus stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId) {
         Bestilling bestilling = bestillingService.cancelBestilling(bestillingId);
-        return mapperFacade.map(bestilling, RsBestilling.class);
+        return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @PostMapping("/gjenopprett/{bestillingId}")
     @ApiOperation("Gjenopprett en bestilling med bestillingsId, for en liste med miljoer")
-    public RsBestilling gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
+    public RsBestillingStatus gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
         Bestilling bestilling = bestillingService.createBestillingForGjenopprett(bestillingId, nonNull(miljoer) ? asList(miljoer.split(",")) : emptyList());
         dollyBestillingService.gjenopprettBestillingAsync(bestilling);
-        return mapperFacade.map(bestilling, RsBestilling.class);
+        return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
     @GetMapping("/malbestilling")
     @ApiOperation("Hent mal-bestilling")
-    public List<RsBestilling> getMalBestillinger() {
-        return mapperFacade.mapAsList(bestillingService.fetchMalBestillinger(), RsBestilling.class);
+    public List<RsBestillingStatus> getMalBestillinger() {
+        return mapperFacade.mapAsList(bestillingService.fetchMalBestillinger(), RsBestillingStatus.class);
     }
 }

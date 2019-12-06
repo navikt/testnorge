@@ -10,17 +10,17 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.service.DollyBestillingService;
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestilling;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
-import no.nav.dolly.service.BestillingService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.service.DollyBestillingService;
+import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.service.BestillingService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingControllerTest {
@@ -71,7 +71,7 @@ public class BestillingControllerTest {
         bestillingController.stopBestillingProgress(BESTILLING_ID);
 
         verify(bestillingService).cancelBestilling(BESTILLING_ID);
-        verify(mapperFacade).map(any(Bestilling.class), eq(RsBestilling.class));
+        verify(mapperFacade).map(any(Bestilling.class), eq(RsBestillingStatus.class));
     }
 
     @Test
@@ -79,14 +79,14 @@ public class BestillingControllerTest {
 
         when(bestillingService.createBestillingForGjenopprett(eq(BESTILLING_ID), anyList()))
                 .thenReturn(Bestilling.builder().build());
-        when(mapperFacade.map(any(Bestilling.class), eq(RsBestilling.class)))
-                .thenReturn(RsBestilling.builder().id(BESTILLING_ID).build());
+        when(mapperFacade.map(any(Bestilling.class), eq(RsBestillingStatus.class)))
+                .thenReturn(RsBestillingStatus.builder().id(BESTILLING_ID).build());
 
-        RsBestilling bestilling = bestillingController.gjenopprettBestilling(BESTILLING_ID, null);
+        RsBestillingStatus bestilling = bestillingController.gjenopprettBestilling(BESTILLING_ID, null);
 
         assertThat(bestilling.getId(), is(equalTo(BESTILLING_ID)));
         verify(dollyBestillingService).gjenopprettBestillingAsync(any(Bestilling.class));
-        verify(mapperFacade).map(any(Bestilling.class), eq(RsBestilling.class));
+        verify(mapperFacade).map(any(Bestilling.class), eq(RsBestillingStatus.class));
     }
 
     @Test
@@ -94,6 +94,6 @@ public class BestillingControllerTest {
         bestillingController.getMalBestillinger();
 
         verify(bestillingService).fetchMalBestillinger();
-        verify(mapperFacade).mapAsList(anyList(), eq(RsBestilling.class));
+        verify(mapperFacade).mapAsList(anyList(), eq(RsBestillingStatus.class));
     }
 }
