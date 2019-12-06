@@ -84,7 +84,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 					))}
 					<FieldArrayAddButton
 						title="Legg til inntektsår"
-						onClick={() => push(formikBag.initialValues.sigrunstub)}
+						onClick={() => push(formikBag.initialValues.sigrunstub[0])}
 					/>
 				</div>
 			)}

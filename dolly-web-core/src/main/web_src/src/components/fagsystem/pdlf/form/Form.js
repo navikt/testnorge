@@ -5,9 +5,9 @@ import { validation } from './validation'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { FalskIdentitet } from './falskIdentitet/FalskIdentitet'
-import { UtenlandsId } from './utenlandsId/UtenlandsId'
-import { KontaktinformasjonForDoedsbo } from './kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
+import { FalskIdentitet } from './partials/falskIdentitet/FalskIdentitet'
+import { UtenlandsId } from './partials/utenlandsId/UtenlandsId'
+import { KontaktinformasjonForDoedsbo } from './partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
 
 export const PdlfForm = ({ formikBag }) => (
 	<React.Fragment>
