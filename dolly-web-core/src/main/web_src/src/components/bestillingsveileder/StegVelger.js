@@ -2,22 +2,19 @@ import React, { useState, Fragment } from 'react'
 import { Formik, yupToFormErrors } from 'formik'
 import Stegindikator from 'nav-frontend-stegindikator'
 import { Navigation } from './Navigation/Navigation'
+import { stateModifierFns } from './stateModifier'
 
 import DisplayFormikState from '~/utils/DisplayFormikState'
 
-export const StegVelger = ({ steps, initialValues, onSubmit, copyValues, children }) => {
+export const StegVelger = ({ steps, initialValues, onSubmit, children }) => {
 	const [step, setStep] = useState(0)
 
 	const isLastStep = () => step === steps.length - 1
 	const handleNext = (values, formikBag) => {
 		setStep(step + 1)
-		formikBag.setTouched({})
 	}
-	const handleBack = values => {
-		if (step !== 0) {
-			setStep(step - 1)
-			copyValues(values)
-		}
+	const handleBack = () => {
+		if (step !== 0) setStep(step - 1)
 	}
 
 	const _handleSubmit = (values, formikBag) => {
@@ -38,6 +35,7 @@ export const StegVelger = ({ steps, initialValues, onSubmit, copyValues, childre
 			await schema.validate(values, { abortEarly: false, context: values })
 			return {}
 		} catch (err) {
+			// TODO: SJEKK AT ER AV TYPEN VALIDATEERROR
 			return yupToFormErrors(err)
 		}
 	}
@@ -53,22 +51,25 @@ export const StegVelger = ({ steps, initialValues, onSubmit, copyValues, childre
 			onSubmit={_handleSubmit}
 			enableReinitialize
 		>
-			{formikBag => (
-				<Fragment>
-					<Stegindikator aktivtSteg={step} steg={labels} visLabel kompakt />
+			{formikBag => {
+				const stateModifier = stateModifierFns(formikBag.values, formikBag.setValues)
+				return (
+					<Fragment>
+						<Stegindikator aktivtSteg={step} steg={labels} visLabel kompakt />
 
-					{children(CurrentStep, formikBag)}
+						{children(CurrentStep, formikBag, stateModifier)}
 
-					<Navigation
-						showPrevious={step > 0}
-						onPrevious={() => handleBack(formikBag.values)}
-						isLastStep={isLastStep()}
-						formikBag={formikBag}
-					/>
+						<Navigation
+							showPrevious={step > 0}
+							onPrevious={handleBack}
+							isLastStep={isLastStep()}
+							formikBag={formikBag}
+						/>
 
-					<DisplayFormikState {...formikBag} />
-				</Fragment>
-			)}
+						<DisplayFormikState {...formikBag} />
+					</Fragment>
+				)
+			}}
 		</Formik>
 	)
 }

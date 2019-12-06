@@ -67,6 +67,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			data={personListe}
 			columns={columns}
 			pagination
+			rowIcon={bruker => (bruker.kjonn === 'MANN' ? 'man' : 'woman')}
 			onExpand={bruker => (
 				<PersonVisningConnector
 					personId={bruker.ident.ident}

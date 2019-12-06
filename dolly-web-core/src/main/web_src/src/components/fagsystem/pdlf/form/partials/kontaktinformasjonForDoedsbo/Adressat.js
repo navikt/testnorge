@@ -24,7 +24,7 @@ export const Adressat = ({ formikBag }) => {
 				navn: { fornavn: '', mellomnavn: '', etternavn: '' },
 				foedselsdato: ''
 			})
-		else
+		else if (value === 'PERSON_MEDID')
 			formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.adressat', {
 				adressatType: value,
 				idnummer: ''
@@ -37,7 +37,7 @@ export const Adressat = ({ formikBag }) => {
 				name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.adressatType"
 				label="Adressattype"
 				options={Options('adressatType')}
-				afterChange={handleAfterChange}
+				onChange={handleAfterChange}
 				isClearable={false}
 			/>
 

@@ -68,6 +68,7 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 			data={items}
 			columns={columns}
 			onRowClick={row => () => history.push(`gruppe/${row.id}`)}
+			rowIcon="group"
 			pagination
 		/>
 	)

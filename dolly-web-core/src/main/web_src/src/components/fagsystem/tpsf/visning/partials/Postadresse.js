@@ -3,7 +3,7 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
 export const Postadresse = ({ postadresse }) => {
-	if (!postadresse || postadresse.length) return false
+	if (!postadresse || postadresse.length < 1) return false
 
 	const { postLinje1, postLinje2, postLinje3, postLand } = postadresse[0]
 

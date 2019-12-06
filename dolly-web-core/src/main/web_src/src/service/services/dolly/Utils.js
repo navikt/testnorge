@@ -1,6 +1,3 @@
-//liste over koder som må eksludert pga ingen støtte i TPSF/dolly
-const _excludeList = ['NULL', 'GLAD']
-
 // Specialbehov for modifisering og sortering av kodeverk
 export const SortKodeverkArray = data => {
 	const kodeverk = data.koder
