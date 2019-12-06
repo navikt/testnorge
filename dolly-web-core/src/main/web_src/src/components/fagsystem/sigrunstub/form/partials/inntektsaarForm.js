@@ -8,6 +8,13 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { EnkeltinntektForm } from './enkeltinntektForm'
 import Formatters from '~/utils/DataFormatter'
 
+const initialValues = {
+	inntektsaar: new Date().getFullYear(),
+	tjeneste: '',
+	grunnlag: [],
+	svalbardGrunnlag: []
+}
+
 export const InntektsaarForm = ({ formikBag }) => {
 	const initialGrunnlag = {
 		tekniskNavn: '',
@@ -82,10 +89,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 							/>
 						</React.Fragment>
 					))}
-					<FieldArrayAddButton
-						title="Legg til inntektsår"
-						onClick={() => push(formikBag.initialValues.sigrunstub[0])}
-					/>
+					<FieldArrayAddButton title="Legg til inntektsår" onClick={() => push(initialValues)} />
 				</div>
 			)}
 		</FieldArray>

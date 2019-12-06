@@ -19,7 +19,11 @@ export const ArenaForm = ({ formikBag }) => {
 		if (val.value === 'MED_SERVICEBEHOV') {
 			formikBag.setFieldValue('arenaforvalter.inaktiveringDato', null)
 		} else {
-			formikBag.setFieldValue('arenaforvalter', formikBag.initialValues.arenaforvalter)
+			formikBag.setFieldValue('arenaforvalter', {
+				arenaBrukertype: 'UTEN_SERVICEBEHOV',
+				inaktiveringDato: null,
+				kvalifiseringsgruppe: null
+			})
 		}
 	}
 

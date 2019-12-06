@@ -1,21 +1,19 @@
-import React, { useState } from 'react'
+import React from 'react'
 import _set from 'lodash/fp/set'
 import _get from 'lodash/get'
 import Formatter from '~/utils/DataFormatter'
-import { Header } from '~/components/ui/Header/Header'
+import { Header } from '~/components/ui/header/Header'
 import { StegVelger } from './StegVelger'
 import { Steg1 } from './steg/steg1/Steg1'
 import { Steg2 } from './steg/Steg2'
 import { Steg3 } from './steg/Steg3'
-import { stateModifierFns } from './stateModifier'
-import { mergeKeepShape } from '~/utils/Merge'
 
 import './bestillingsveileder.less'
 
 const steps = [Steg1, Steg2, Steg3]
 
 const createInitialValues = (locState = {}) => {
-	let iv = {
+	let initialValues = {
 		antall: locState.antall || 1,
 		environments: [],
 		__lagreSomNyMal: false,
@@ -23,11 +21,11 @@ const createInitialValues = (locState = {}) => {
 	}
 
 	if (locState.mal) {
-		iv = Object.assign(iv, locState.mal.mal)
+		initialValues = Object.assign(initialValues, locState.mal.mal)
 	}
 
 	return {
-		iv,
+		initialValues,
 		identtype: locState.identtype || 'FNR',
 		mal: locState.mal,
 		opprettFraIdenter: locState.opprettFraIdenter
@@ -35,9 +33,7 @@ const createInitialValues = (locState = {}) => {
 }
 
 export const Bestillingsveileder = ({ location, sendBestilling }) => {
-	const { identtype, iv, mal, opprettFraIdenter } = createInitialValues(location.state)
-	const [initialValues, setInitialValues] = useState(iv)
-	const [savedValues, setSavedValues] = useState({})
+	const { initialValues, identtype, mal, opprettFraIdenter } = createInitialValues(location.state)
 
 	const handleSubmit = (values, formikBag) => {
 		// props.createBestillingMal(values.malNavn) //Nå sjekkes ikke malnavn
@@ -48,22 +44,12 @@ export const Bestillingsveileder = ({ location, sendBestilling }) => {
 		sendBestilling(values)
 	}
 
-	// Merge with savedValues
-	const initial = mergeKeepShape(initialValues, savedValues)
-
-	const stateModifier = stateModifierFns(initialValues, setInitialValues)
-
 	const antall = (opprettFraIdenter && opprettFraIdenter.length) || initialValues.antall
 
 	return (
 		<div className="bestillingsveileder">
-			<StegVelger
-				steps={steps}
-				initialValues={initial}
-				copyValues={setSavedValues}
-				onSubmit={handleSubmit}
-			>
-				{(CurrentStep, formikBag) => (
+			<StegVelger steps={steps} initialValues={initialValues} onSubmit={handleSubmit}>
+				{(CurrentStep, formikBag, stateModifier) => (
 					<React.Fragment>
 						<Header>
 							<Header.TitleValue

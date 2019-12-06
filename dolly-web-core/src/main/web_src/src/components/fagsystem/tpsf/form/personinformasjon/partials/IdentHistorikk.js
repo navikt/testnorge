@@ -14,7 +14,13 @@ const hjelpetekst =
 	'Dersom de står som "Ikke spesifisert" beholdes samme fødselsdato og/eller kjønn.'
 
 export const IdentHistorikk = ({ formikBag }) => {
-	const initialValues = formikBag.initialValues.tpsf.identHistorikk[0]
+	const initialValues = {
+		foedtEtter: null,
+		foedtFoer: null,
+		identtype: null,
+		kjonn: null,
+		regdato: null
+	}
 	return (
 		<FieldArray
 			name="tpsf.identHistorikk"

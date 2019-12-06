@@ -6,31 +6,29 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { FieldArrayAddButton, FieldArrayRemoveButton } from '~/components/ui/form/formUtils'
 
 export const UtenlandsId = ({ formikBag }) => {
-	const initialValues = formikBag.initialValues.pdlforvalter.utenlandskIdentifikasjonsnummer[0]
+	const path = 'pdlforvalter.utenlandskIdentifikasjonsnummer'
+	const initialValues = { identifikasjonsnummer: '', kilde: '', opphoert: '', utstederland: '' }
 	return (
 		<FieldArray
-			name="pdlforvalter.utenlandskIdentifikasjonsnummer"
+			name={path}
 			render={arrayHelpers => (
 				<React.Fragment>
 					{formikBag.values.pdlforvalter.utenlandskIdentifikasjonsnummer.map((curr, idx) => (
 						<div key={idx}>
 							<FormikTextInput
-								name={`pdlforvalter.utenlandskIdentifikasjonsnummer[${idx}].identifikasjonsnummer`}
+								name={`${path}[${idx}].identifikasjonsnummer`}
 								label="Identifikasjonsnummer"
 							/>
-							<FormikTextInput
-								name={`pdlforvalter.utenlandskIdentifikasjonsnummer[${idx}].kilde`}
-								label="Kilde"
-							/>
+							<FormikTextInput name={`${path}[${idx}].kilde`} label="Kilde" />
 							<FormikSelect
-								name={`pdlforvalter.utenlandskIdentifikasjonsnummer[${idx}].opphoert`}
+								name={`${path}[${idx}].opphoert`}
 								label="Opphørt"
 								options={Options('boolean')}
 								isClearable={false}
 								size="grow"
 							/>
 							<FormikSelect
-								name={`pdlforvalter.utenlandskIdentifikasjonsnummer[${idx}].utstederland`}
+								name={`${path}[${idx}].utstederland`}
 								label="Utstederland"
 								kodeverk="Landkoder"
 								isClearable={false}

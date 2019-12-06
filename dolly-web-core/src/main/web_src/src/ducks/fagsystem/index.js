@@ -236,9 +236,9 @@ export const selectPersonListe = state => {
 	if (_isEmpty(fagsystem.tpsf)) return null
 
 	// Sortert etter bestillingsId
-	const identer = Object.values(gruppe.ident).sort(
-		(a, b) => _last(b.bestillingId) - _last(a.bestillingId)
-	)
+	const identer = Object.values(gruppe.ident)
+		.sort((a, b) => _last(b.bestillingId) - _last(a.bestillingId))
+		.filter(gruppeIdent => Object.keys(fagsystem.tpsf).includes(gruppeIdent.ident))
 
 	return identer.map(ident => {
 		const tpsfIdent = fagsystem.tpsf[ident.ident]

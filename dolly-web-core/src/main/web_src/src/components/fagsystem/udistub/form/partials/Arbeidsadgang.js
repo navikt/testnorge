@@ -9,11 +9,13 @@ export const Arbeidsadgang = ({ formikBag }) => {
 	const harArbeidsAdgang = _get(formikBag.values, 'udistub.arbeidsadgang.harArbeidsAdgang')
 
 	const endreArbeidsadgang = v => {
-		const arbeidsadgangInitialValues = formikBag.initialValues.udistub.arbeidsadgang
 		formikBag.setFieldValue('udistub.arbeidsadgang.harArbeidsAdgang', v.value)
 		if (v.value !== 'JA') {
 			formikBag.setFieldValue('udistub.arbeidsadgang.arbeidsOmfang', '')
-			formikBag.setFieldValue('udistub.arbeidsadgang.periode', arbeidsadgangInitialValues.periode)
+			formikBag.setFieldValue('udistub.arbeidsadgang.periode', {
+				fra: '',
+				til: ''
+			})
 			formikBag.setFieldValue('udistub.arbeidsadgang.typeArbeidsadgang', '')
 		}
 	}
