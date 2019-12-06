@@ -79,7 +79,7 @@ export default class DollyEndpoints {
 	}
 
 	static bestillingMal() {
-		return bestillingBase + '/malbestilling'
+		return `${bestillingBase}/malbestilling`
 	}
 
 	static gjenopprettBestilling(bestillingId, envs) {

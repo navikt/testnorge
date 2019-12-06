@@ -91,7 +91,10 @@ const appendAvvikmeldingIfPresent = (status, source, personStatus) => {
 	}
 	return {
 		statusKode: 'Avvik',
-		meldinger: personStatus.meldinger ? personStatus.meldinger.concat(nyMelding) : [nyMelding]
+		meldinger:
+			personStatus && personStatus.meldinger
+				? personStatus.meldinger.concat(nyMelding)
+				: [nyMelding]
 	}
 }
 

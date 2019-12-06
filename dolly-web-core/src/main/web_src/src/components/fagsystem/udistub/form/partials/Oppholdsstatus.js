@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import _get from 'lodash/get'
-import { pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -73,7 +72,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 	}
 
 	return (
-		<Kategori title="Gjeldende oppholdsstatus" vis={pathAttrs.kategori.opphold}>
+		<Kategori title="Gjeldende oppholdsstatus" vis="udistub.oppholdStatus">
 			<DollySelect
 				name="oppholdsstatus"
 				label="Oppholdsstatus"

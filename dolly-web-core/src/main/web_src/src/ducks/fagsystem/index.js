@@ -3,13 +3,14 @@ import { LOCATION_CHANGE } from 'connected-react-router'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _merge from 'lodash/merge'
+import _last from 'lodash/last'
+import _isEmpty from 'lodash/isEmpty'
 import { DollyApi, TpsfApi, SigrunApi, KrrApi, ArenaApi, InstApi, UdiApi } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
 import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import Formatters from '~/utils/DataFormatter'
-import _last from 'lodash/last'
 
 export const actions = createActions(
 	{
@@ -146,14 +147,14 @@ export default handleActions(
 			state.instdata[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.slettPerson)](state, action) {
-			delete state.tpsf[action.mate.ident]
-			delete state.sigrunstub[action.mate.ident]
-			delete state.krrstub[action.mate.ident]
-			delete state.arenaforvalteren[action.mate.ident]
-			delete state.aareg[action.mate.ident]
-			delete state.pdlforvalter[action.mate.ident]
-			delete state.instdata[action.mate.ident]
-			delete state.udistub[action.mate.ident]
+			delete state.tpsf[action.meta.ident]
+			delete state.sigrunstub[action.meta.ident]
+			delete state.krrstub[action.meta.ident]
+			delete state.arenaforvalteren[action.meta.ident]
+			delete state.aareg[action.meta.ident]
+			delete state.pdlforvalter[action.meta.ident]
+			delete state.instdata[action.meta.ident]
+			delete state.udistub[action.meta.ident]
 		}
 	},
 	initialState
@@ -232,17 +233,24 @@ export const sokSelector = (items, searchStr) => {
 export const selectPersonListe = state => {
 	const { gruppe, fagsystem } = state
 
-	if (!fagsystem.tpsf) return null
+	if (_isEmpty(fagsystem.tpsf)) return null
 
-	let personListe = Object.values(fagsystem.tpsf).map(tpsfIdent => ({
-		ident: gruppe.ident[tpsfIdent.ident],
-		identtype: tpsfIdent.identtype,
-		navn: `${tpsfIdent.fornavn} ${tpsfIdent.mellomnavn || ''} ${tpsfIdent.etternavn}`,
-		kjonn: Formatters.kjonnToString(tpsfIdent.kjonn),
-		alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
-		status: state.bestillingStatuser.byIdent[tpsfIdent.ident].statusKode
-	}))
-	return personListe
+	// Sortert etter bestillingsId
+	const identer = Object.values(gruppe.ident).sort(
+		(a, b) => _last(b.bestillingId) - _last(a.bestillingId)
+	)
+
+	return identer.map(ident => {
+		const tpsfIdent = fagsystem.tpsf[ident.ident]
+		return {
+			ident,
+			identtype: tpsfIdent.identtype,
+			navn: `${tpsfIdent.fornavn} ${tpsfIdent.mellomnavn || ''} ${tpsfIdent.etternavn}`,
+			kjonn: Formatters.kjonnToString(tpsfIdent.kjonn),
+			alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
+			status: state.bestillingStatuser.byIdent[tpsfIdent.ident].statusKode
+		}
+	})
 }
 
 export const selectDataForIdent = (state, ident) => {

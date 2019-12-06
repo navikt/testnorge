@@ -1,6 +1,5 @@
 import React from 'react'
 import _get from 'lodash/get'
-import { pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -20,7 +19,7 @@ export const Arbeidsadgang = ({ formikBag }) => {
 	}
 
 	return (
-		<Kategori title="Arbeidsadgang" vis={pathAttrs.kategori.arbeidsadgang}>
+		<Kategori title="Arbeidsadgang" vis="udistub.arbeidsadgang">
 			<FormikSelect
 				name="udistub.arbeidsadgang.harArbeidsAdgang"
 				label="Har arbeidsadgang"

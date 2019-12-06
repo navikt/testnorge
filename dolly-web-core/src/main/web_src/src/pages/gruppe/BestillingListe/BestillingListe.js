@@ -64,6 +64,7 @@ export default function BestillingListe({ bestillinger, searchActive, isFetching
 		<DollyTable
 			data={sortedBestillinger}
 			columns={columns}
+			rowIcon="bestilling"
 			onExpand={bestilling => <BestillingDetaljer bestilling={bestilling} />}
 			pagination
 		/>

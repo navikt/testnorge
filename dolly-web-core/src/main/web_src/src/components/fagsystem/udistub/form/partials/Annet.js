@@ -1,11 +1,14 @@
 import React from 'react'
-import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
+import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 export const Annet = ({ formikBag }) => (
-	<Kategori title="Annet" vis={pathAttrs.kategori.annet}>
+	<Kategori
+		title="Annet"
+		vis={['udistub.flyktning', 'udistub.soeknadOmBeskyttelseUnderBehandling']}
+	>
 		<Vis attributt="udistub.flyktning">
 			<FormikSelect name="udistub.flyktning" label="Flyktningstatus" options={Options('boolean')} />
 		</Vis>

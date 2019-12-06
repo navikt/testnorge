@@ -15,6 +15,7 @@ const loadingSelectorPdlf = createLoadingSelector(actions.getPDL)
 const loadingSelectorArena = createLoadingSelector(actions.getArena)
 const loadingSelectorInst = createLoadingSelector(actions.getInst)
 const loadingSelectorUdi = createLoadingSelector(actions.getUdi)
+const loadingSelectorSlettPerson = createLoadingSelector(actions.slettPerson)
 
 const loadingSelector = createSelector(
 	state => state.loading,
@@ -26,7 +27,8 @@ const loadingSelector = createSelector(
 			pdlforvalter: loadingSelectorPdlf({ loading }),
 			arenaforvalteren: loadingSelectorArena({ loading }),
 			instdata: loadingSelectorInst({ loading }),
-			udistub: loadingSelectorUdi({ loading })
+			udistub: loadingSelectorUdi({ loading }),
+			slettPerson: loadingSelectorSlettPerson({ loading })
 		}
 	}
 )
@@ -45,9 +47,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	editAction: () => dispatch(push(`${ownProps.match.url}/testbruker/${ownProps.personId}`))
 })
 
-export default withRouter(
-	connect(
-		mapStateToProps,
-		mapDispatchToProps
-	)(PersonVisning)
-)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PersonVisning))
