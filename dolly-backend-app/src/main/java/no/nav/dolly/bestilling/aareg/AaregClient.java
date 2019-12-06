@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.el.MethodNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
 import no.nav.dolly.consumer.aareg.AaregConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAktoer;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
@@ -88,17 +90,24 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
         progress.setAaregStatus(result.length() > 1 ? result.substring(1) : null);
     }
 
-    private void setPermisjonId(Arbeidsforhold arbfInput) {
-        if (!arbfInput.getPermisjon().isEmpty()) {
-            arbfInput.getPermisjon().sort(Comparator.comparing(perm -> perm.getPermisjonsPeriode().getFom()));
-            AtomicInteger id = new AtomicInteger(1);
-            arbfInput.getPermisjon().forEach(perm -> perm.setPermisjonsId(Integer.toString(id.getAndAdd(1))));
+    @Override
+    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
+        if (!bestilling.getAareg().isEmpty()) {
+            throw new MethodNotFoundException("Aareg mangler denne funksjonen");
         }
     }
 
     @Override
     public void release(List<String> identer) {
         identer.forEach(aaregConsumer::slettArbeidsforholdFraAlleMiljoer);
+    }
+
+    private void setPermisjonId(Arbeidsforhold arbfInput) {
+        if (!arbfInput.getPermisjon().isEmpty()) {
+            arbfInput.getPermisjon().sort(Comparator.comparing(perm -> perm.getPermisjonsPeriode().getFom()));
+            AtomicInteger id = new AtomicInteger(1);
+            arbfInput.getPermisjon().forEach(perm -> perm.setPermisjonsId(Integer.toString(id.getAndAdd(1))));
+        }
     }
 
     private static String getIdentifyingNumber(Map arbfFraAareg) {

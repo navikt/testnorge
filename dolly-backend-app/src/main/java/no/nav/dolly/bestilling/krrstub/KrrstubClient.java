@@ -4,6 +4,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 
 import java.util.List;
+import javax.el.MethodNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -54,6 +56,13 @@ public class KrrstubClient implements ClientRegister {
     public void release(List<String> identer) {
 
         identer.forEach(this::deleteIdent);
+    }
+
+    @Override
+    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
+        if (nonNull(bestilling.getKrrstub())) {
+            throw new MethodNotFoundException("Krrstub mangler denne funksjonen");
+        }
     }
 
     private void deleteIdent(String ident) {

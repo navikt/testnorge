@@ -1,10 +1,11 @@
 package no.nav.dolly.bestilling.inntektsstub;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.util.List;
+import javax.el.MethodNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -17,6 +18,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektsstub.domain.Inntektsinformasjon;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @Slf4j
@@ -44,6 +46,13 @@ public class InntektsstubClient implements ClientRegister {
     public void release(List<String> identer) {
 
         identer.forEach(this::deleteInntekter);
+    }
+
+    @Override
+    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
+        if (nonNull(bestilling.getInntektsstub())) {
+            throw new MethodNotFoundException("Inntektsstub mangler denne funksjonen");
+        }
     }
 
     private void opprettInntekter(Inntektsinformasjon inntektsinformasjon, BestillingProgress progress) {
