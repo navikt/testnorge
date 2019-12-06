@@ -115,13 +115,7 @@ const extractNewestBestillingstatusForPerson = (
 		!personStatusMap.has(ident) &&
 			personStatusMap.set(ident, {
 				bestillingId: bestilling.id,
-				statusKode: bestilling.stoppet
-					? 'Stoppet'
-					: !bestilling.ferdig
-					? 'Pågår'
-					: antallIdenterOpprettetPaaBestilling(bestilling.status) === 0
-					? 'Feilet'
-					: 'Ferdig'
+				statusKode: !bestilling.ferdig ? 'Pågår' : 'Ferdig'
 			})
 	} else {
 		personStatusMap.set(ident, {
