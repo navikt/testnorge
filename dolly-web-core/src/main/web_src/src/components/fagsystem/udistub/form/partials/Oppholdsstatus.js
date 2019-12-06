@@ -33,18 +33,16 @@ export const Oppholdsstatus = ({ formikBag }) => {
 	const [eosEllerEFTAtypeOpphold, setEosEllerEFTAtypeOpphold] = useState(initialStatus[1])
 	const [tredjelandsBorgereValg, setTredjelandsBorgereValg] = useState(initialStatus[2])
 
-	const oppholdsstatusInitialValues = _get(formikBag.initialValues, 'udistub.oppholdStatus')
-
 	const endreOppholdsstatus = value => {
 		setOppholdsstatus(value)
 		setEosEllerEFTAtypeOpphold('')
 		setTredjelandsBorgereValg('')
-		formikBag.setFieldValue('udistub.oppholdStatus', oppholdsstatusInitialValues)
+		formikBag.setFieldValue('udistub.oppholdStatus', {})
 	}
 
 	const endreEosEllerEFTAtypeOpphold = value => {
 		setEosEllerEFTAtypeOpphold(value)
-		formikBag.setFieldValue('udistub.oppholdStatus', oppholdsstatusInitialValues)
+		formikBag.setFieldValue('udistub.oppholdStatus', {})
 		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Periode`, {
 			fra: '',
 			til: ''
@@ -54,7 +52,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 
 	const endreTredjelandsBorgereValg = value => {
 		setTredjelandsBorgereValg(value)
-		formikBag.setFieldValue('udistub.oppholdStatus', oppholdsstatusInitialValues)
+		formikBag.setFieldValue('udistub.oppholdStatus', {})
 		if (value === 'oppholdSammeVilkaar') {
 			formikBag.setFieldValue('udistub.harOppholdsTillatelse', '')
 			formikBag.setFieldValue('udistub.oppholdStatus.oppholdSammeVilkaar', {
@@ -63,7 +61,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 				oppholdstillatelseVedtaksDato: ''
 			})
 		} else if (value === 'ikkeOppholdSammeVilkaar') {
-			formikBag.setFieldValue('udistub.oppholdStatus', oppholdsstatusInitialValues)
+			formikBag.setFieldValue('udistub.oppholdStatus', {})
 			formikBag.setFieldValue('udistub.harOppholdsTillatelse', false)
 		} else if (value === 'UAVKLART') {
 			formikBag.setFieldValue('udistub.oppholdStatus', { uavklart: true })
