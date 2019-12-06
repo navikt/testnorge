@@ -2,6 +2,7 @@ package no.nav.dolly.mapper.strategy;
 
 import static java.lang.Boolean.TRUE;
 
+import java.util.Comparator;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,7 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                                         .beskrivelse(testident.getBeskrivelse())
                                         .bestillingId(testident.getBestillingProgress().stream()
                                                 .map(BestillingProgress::getBestillingId)
+                                                .sorted(Comparator.reverseOrder())
                                                 .collect(Collectors.toList()))
                                         .build())
                                 .collect(Collectors.toList()));
