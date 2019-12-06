@@ -135,6 +135,7 @@ export function mapTpsfData(tpsfData, tpsfKriterier) {
 	}
 
 	if (tpsfData.boadresse) {
+		const boadresse = tpsfData.boadresse[0]
 		data.push({
 			header: 'Bostedadresse',
 			data: [
@@ -142,63 +143,63 @@ export function mapTpsfData(tpsfData, tpsfKriterier) {
 					parent: 'boadresse',
 					id: 'adressetype',
 					label: 'Adressetype',
-					value: Formatters.adressetypeToString(tpsfData.boadresse.adressetype)
+					value: Formatters.adressetypeToString(boadresse.adressetype)
 				},
 				{
 					parent: 'boadresse',
 					id: 'gateadresse',
 					label: 'Gatenavn',
-					value: tpsfData.boadresse.gateadresse
+					value: boadresse.gateadresse
 				},
 				{
 					parent: 'boadresse',
 					id: 'husnummer',
 					label: 'Husnummer',
-					value: tpsfData.boadresse.husnummer
+					value: boadresse.husnummer
 				},
 				{
 					parent: 'boadresse',
 					id: 'mellomnavn',
 					label: 'Stedsnavn',
-					value: tpsfData.boadresse.mellomnavn
+					value: boadresse.mellomnavn
 				},
 				{
 					parent: 'boadresse',
 					id: 'gardsnr',
 					label: 'Gårdsnummer',
-					value: tpsfData.boadresse.gardsnr
+					value: boadresse.gardsnr
 				},
 				{
 					parent: 'boadresse',
 					id: 'bruksnr',
 					label: 'Bruksnummer',
-					value: tpsfData.boadresse.bruksnr
+					value: boadresse.bruksnr
 				},
 				{
 					parent: 'boadresse',
 					id: 'festenr',
 					label: 'Festenummer',
-					value: tpsfData.boadresse.festenr
+					value: boadresse.festenr
 				},
 				{
 					parent: 'boadresse',
 					id: 'undernr',
 					label: 'Undernummer',
-					value: tpsfData.boadresse.undernr
+					value: boadresse.undernr
 				},
 				{
 					parent: 'boadresse',
 					id: 'postnr',
 					label: 'Postnummer',
-					extraLabel: tpsfData.boadresse.postnr,
+					extraLabel: boadresse.postnr,
 					apiKodeverkId: 'Postnummer',
-					value: tpsfData.boadresse.postnr
+					value: boadresse.postnr
 				},
 				{
 					parent: 'boadresse',
 					id: 'flyttedato',
 					label: 'Flyttedato',
-					value: Formatters.formatDate(tpsfData.boadresse.flyttedato)
+					value: Formatters.formatDate(boadresse.flyttedato)
 				}
 			]
 		})
