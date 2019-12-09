@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
-import no.nav.registre.inntekt.consumer.rs.InntektstubConsumer;
+import no.nav.registre.inntekt.consumer.rs.v1.InntektstubConsumer;
 import no.nav.registre.inntekt.domain.IdentMedData;
 import no.nav.registre.inntekt.domain.InntektSaveInHodejegerenRequest;
 import no.nav.registre.inntekt.domain.RsInntekt;

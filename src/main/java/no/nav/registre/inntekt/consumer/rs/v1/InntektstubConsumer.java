@@ -1,4 +1,4 @@
-package no.nav.registre.inntekt.consumer.rs;
+package no.nav.registre.inntekt.consumer.rs.v1;
 
 import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnummerFraMaanedsnavn;
 
