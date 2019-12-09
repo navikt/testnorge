@@ -37,7 +37,7 @@ export default function BestillingListe({ bestillinger, searchActive, isFetching
 			unique: true
 		},
 		{
-			text: 'Antall testpersoner',
+			text: 'Antall personer',
 			width: '15',
 			dataField: 'listedata[1]'
 		},
@@ -62,6 +62,7 @@ export default function BestillingListe({ bestillinger, searchActive, isFetching
 		<DollyTable
 			data={sortedBestillinger}
 			columns={columns}
+			rowIcon="bestilling"
 			onExpand={bestilling => <BestillingDetaljer bestilling={bestilling} />}
 			pagination
 		/>

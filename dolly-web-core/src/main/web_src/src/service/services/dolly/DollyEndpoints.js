@@ -3,6 +3,7 @@ import config from '~/config'
 const uri = `${config.services.dollyBackend}`
 
 const groupBase = `${uri}/gruppe`
+const identBase = `${uri}/ident`
 const brukerBase = `${uri}/bruker`
 const kodeverkBase = `${uri}/kodeverk`
 const bestillingBase = `${uri}/bestilling`
@@ -10,7 +11,7 @@ const configBase = `${uri}/config`
 const openamBase = `${uri}/openam`
 const norg2Base = `${uri}/norg2`
 const aaregBase = `${uri}/aareg/arbeidsforhold`
-const personoppslagBase = `${uri}/personoppslag`
+const personoppslagBase = `${uri}/pdlperson`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -25,10 +26,6 @@ export default class DollyEndpoints {
 		return `${groupBase}?brukerId=${userId}`
 	}
 
-	static gruppeBeskrivelse(gruppeId) {
-		return `${groupBase}/${gruppeId}/beskrivelse`
-	}
-
 	static gruppeBestilling(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestilling`
 	}
@@ -39,6 +36,14 @@ export default class DollyEndpoints {
 
 	static gruppeBestillingStatus(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestillingStatus`
+	}
+
+	static identBeskrivelse(ident) {
+		return `${identBase}/${ident}/beskrivelse`
+	}
+
+	static identIbruk(ident, ibruk) {
+		return `${identBase}/${ident}/ibruk?iBruk=${ibruk}`
 	}
 
 	static bruker() {
@@ -74,7 +79,7 @@ export default class DollyEndpoints {
 	}
 
 	static bestillingMal() {
-		return bestillingBase + '/malbestilling'
+		return `${bestillingBase}/malbestilling`
 	}
 
 	static gjenopprettBestilling(bestillingId, envs) {
@@ -93,7 +98,7 @@ export default class DollyEndpoints {
 		return `${bestillingBase}/stop/${bestillingId}`
 	}
 
-	static removeTestIdent(gruppeId, identId) {
+	static slettPerson(gruppeId, identId) {
 		return `${groupBase}/${gruppeId}/slettTestident?ident=${identId}`
 	}
 

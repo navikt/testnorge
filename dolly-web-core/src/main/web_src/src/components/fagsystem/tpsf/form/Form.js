@@ -1,10 +1,10 @@
 import React from 'react'
 import _isEmpty from 'lodash/isEmpty'
-import { subYears } from 'date-fns'
 import * as Yup from 'yup'
+import { validation } from './validation'
 import { Personinformasjon } from './personinformasjon/Personinformasjon'
 import { Adresser } from './adresser/Adresser'
-import { requiredDate } from '~/utils/YupValidations'
+import { requiredDate, requiredString, ifPresent } from '~/utils/YupValidations'
 
 export const TpsfForm = ({ formikBag }) => {
 	return (
@@ -15,78 +15,4 @@ export const TpsfForm = ({ formikBag }) => {
 	)
 }
 
-TpsfForm.initialValues = attrs => {
-	const initial = {}
-	console.log('attrs :', attrs)
-
-	if (attrs.foedtEtter) initial.foedtEtter = subYears(new Date(), 80)
-	if (attrs.foedtFoer) initial.foedtFoer = new Date()
-	if (attrs.doedsdato) initial.doedsdato = null
-
-	if (attrs.statsborgerskap) {
-		initial.statsborgerskap = ''
-		initial.statsborgerskapRegdato = null
-	}
-
-	if (attrs.innvandretFraLand) {
-		initial.innvandretFraLand = ''
-		initial.innvandretFraLandFlyttedato = null
-	}
-
-	if (attrs.utvandretTilLand) {
-		initial.utvandretTilLand = ''
-		initial.utvandretTilLandFlyttedato = null
-	}
-	if (attrs.identHistorikk)
-		initial.identHistorikk = [
-			{
-				foedtEtter: '',
-				foedtFoer: '',
-				identtype: '',
-				kjonn: '',
-				regdato: ''
-			}
-		]
-
-	if (attrs.kjonn) initial.kjonn = ''
-	if (attrs.harMellomnavn) initial.harMellomnavn = true
-	if (attrs.sivilstand) initial.sivilstand = ''
-	if (attrs.sprakKode) initial.sprakKode = ''
-	if (attrs.egenAnsattDatoFom) initial.egenAnsattDatoFom = new Date()
-	if (attrs.spesreg) initial.spesreg = ''
-	if (attrs.erForsvunnet) {
-		initial.erForsvunnet = true
-		initial.forsvunnetDato = null
-	}
-
-	if (attrs.boadresse) {
-		initial.boadresse = null
-		initial.adresseNrInfo = null
-	}
-	if (attrs.postadresse) {
-		initial.postLand = ''
-		initial.postadresse = [
-			{
-				postLinje1: null,
-				postLinje2: '',
-				postLinje3: ''
-			}
-		]
-	}
-	console.log('initial.postadresse :', initial.postadresse)
-	return !_isEmpty(initial) && { tpsf: initial }
-}
-
-TpsfForm.validation = {
-	tpsf: Yup.object({
-		foedtEtter: Yup.date().nullable(),
-		foedtFoer: Yup.date().nullable(),
-		doedsdato: Yup.date().nullable(),
-		statsborgerskap: Yup.string(),
-		statsborgerskapRegdato: Yup.date().nullable(),
-		innvandretFraLand: Yup.string(),
-		innvandretFraLandFlyttedato: Yup.date().nullable(),
-		utvandretTilLand: Yup.string(),
-		utvandretTilLandFlyttedato: Yup.date().nullable()
-	})
-}
+TpsfForm.validation = validation

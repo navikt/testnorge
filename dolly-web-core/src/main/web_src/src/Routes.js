@@ -12,7 +12,7 @@ const routes = [
 	{
 		path: '/gruppe/:gruppeId/bestilling',
 		exact: true,
-		breadcrumb: 'Legg til testpersoner',
+		breadcrumb: 'Legg til personer',
 		component: BestillingsveilederConnector
 	},
 	{ path: '/tpsendring', exact: true, breadcrumb: 'TPSEndring', component: TPSEndring }

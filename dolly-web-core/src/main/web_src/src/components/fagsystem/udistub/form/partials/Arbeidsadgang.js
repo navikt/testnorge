@@ -1,6 +1,5 @@
 import React from 'react'
 import _get from 'lodash/get'
-import { pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -10,17 +9,19 @@ export const Arbeidsadgang = ({ formikBag }) => {
 	const harArbeidsAdgang = _get(formikBag.values, 'udistub.arbeidsadgang.harArbeidsAdgang')
 
 	const endreArbeidsadgang = v => {
-		const arbeidsadgangInitialValues = formikBag.initialValues.udistub.arbeidsadgang
 		formikBag.setFieldValue('udistub.arbeidsadgang.harArbeidsAdgang', v.value)
 		if (v.value !== 'JA') {
 			formikBag.setFieldValue('udistub.arbeidsadgang.arbeidsOmfang', '')
-			formikBag.setFieldValue('udistub.arbeidsadgang.periode', arbeidsadgangInitialValues.periode)
+			formikBag.setFieldValue('udistub.arbeidsadgang.periode', {
+				fra: '',
+				til: ''
+			})
 			formikBag.setFieldValue('udistub.arbeidsadgang.typeArbeidsadgang', '')
 		}
 	}
 
 	return (
-		<Kategori title="Arbeidsadgang" vis={pathAttrs.kategori.arbeidsadgang}>
+		<Kategori title="Arbeidsadgang" vis="udistub.arbeidsadgang">
 			<FormikSelect
 				name="udistub.arbeidsadgang.harArbeidsAdgang"
 				label="Har arbeidsadgang"

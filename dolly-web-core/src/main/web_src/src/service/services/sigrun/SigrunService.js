@@ -6,7 +6,7 @@ const getSigrunBaseUrl = () =>
 	ConfigService.getDatesourceUrl('sigrun') || config.services.sigrunStubUrl
 
 export default {
-	getTestbruker(ident) {
+	getPerson(ident) {
 		const endpoint = getSigrunBaseUrl() + '/api/v1/lignetinntekt'
 		return Request.getWithoutCredentials(endpoint, {
 			headers: { personidentifikator: ident }
@@ -20,7 +20,7 @@ export default {
 		})
 	},
 
-	updateTestbruker(data) {
+	updatePerson(data) {
 		const endpoint = `${getSigrunBaseUrl()}/testdata/oppdater`
 		return Request.postWithoutCredentials(endpoint, null, {
 			headers: data

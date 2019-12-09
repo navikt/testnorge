@@ -1,7 +1,6 @@
 import { connect } from 'formik'
 import _isNil from 'lodash/isNil'
 import _has from 'lodash/has'
-export { pathAttrs } from '~/service/attributter/Attributter'
 
 const InternalVis = ({ formik, attributt, children }) => {
 	const isChecked = (values, attributtPath) => {

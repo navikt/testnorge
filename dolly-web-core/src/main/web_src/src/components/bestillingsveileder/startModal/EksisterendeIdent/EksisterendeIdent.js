@@ -33,18 +33,18 @@ export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
 			{!state.value && !state.loading && (
 				<React.Fragment>
 					<Textarea
-						label="Testidenter"
+						label="Identer"
 						placeholder="fnr/dnr/bost"
 						value={text}
 						onChange={e => setText(e.target.value)}
 					/>
 
 					<Alertstripe type="info">
-						Skriv inn fnr/dnr/bost. Disse identene kan ikke eksistere i prod, eller finnes i Dolly
+						Skriv inn fnr/dnr/bost. Disse personene kan ikke eksistere i prod, eller finnes i Dolly
 						fra før.
 					</Alertstripe>
 					<Knapp type="hoved" onClick={() => fetch()} disabled={!text.length}>
-						Hent testidenter
+						Sjekk gyldige personer
 					</Knapp>
 				</React.Fragment>
 			)}

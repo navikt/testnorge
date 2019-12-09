@@ -10,7 +10,7 @@ export const MatrikkelAdresse = ({ formikBag }) => {
 			<FormikTextInput name="tpsf.boadresse.mellomnavn" label="Stedsnavn" />
 			<FormikTextInput name="tpsf.boadresse.gardsnr" label="Gårdsnummer" />
 			<FormikTextInput name="tpsf.boadresse.bruksnr" label="Bruksnummer" />
-			<FormikTextInput name="tpsf.boadresse.festnr" label="Festnummer" />
+			<FormikTextInput name="tpsf.boadresse.festnr" label="Festenummer" />
 			<FormikTextInput name="tpsf.boadresse.undernr" label="Undernummer" />
 			<FormikTextInput name="tpsf.boadresse.postnr" label="Postnummer" />
 			<FormikTextInput name="tpsf.boadresse.kommunenr" label="Kommunenummer" />

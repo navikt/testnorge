@@ -1,32 +1,18 @@
 import React from 'react'
 import * as Yup from 'yup'
 import _get from 'lodash/get'
-import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
+import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
 import { InntektsaarForm } from './partials/inntektsaarForm'
 
-const initialValuesInntektsaar = {
-	inntektsaar: new Date().getFullYear(),
-	tjeneste: '',
-	grunnlag: [],
-	svalbardGrunnlag: []
-}
-
 export const SigrunstubForm = ({ formikBag }) => (
-	<Vis attributt={pathAttrs.kategori.inntekt}>
+	<Vis attributt="sigrunstub">
 		<Panel heading="Inntekt" hasErrors={panelError(formikBag)}>
-			<InntektsaarForm formikBag={formikBag} initial={initialValuesInntektsaar} />
+			<InntektsaarForm formikBag={formikBag} />
 		</Panel>
 	</Vis>
 )
-
-SigrunstubForm.initialValues = attrs => {
-	const initial = {
-		sigrunstub: [initialValuesInntektsaar]
-	}
-	return attrs.inntekt ? initial : {}
-}
 
 SigrunstubForm.validation = {
 	sigrunstub: Yup.array().of(
