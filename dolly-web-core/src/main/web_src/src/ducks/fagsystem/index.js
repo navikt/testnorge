@@ -10,6 +10,7 @@ import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
 import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
+import { hentPersonStatus } from './fagsystemMapper'
 import Formatters from '~/utils/DataFormatter'
 
 export const actions = createActions(
@@ -240,12 +241,14 @@ export const selectPersonListe = state => {
 
 	return identer.map(ident => {
 		const tpsfIdent = fagsystem.tpsf[ident.ident]
+
 		return {
 			ident,
 			identtype: tpsfIdent.identtype,
 			navn: `${tpsfIdent.fornavn} ${tpsfIdent.mellomnavn || ''} ${tpsfIdent.etternavn}`,
 			kjonn: Formatters.kjonnToString(tpsfIdent.kjonn),
-			alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato)
+			alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
+			status: hentPersonStatus(ident.ident, state.bestillingStatuser.byId[ident.bestillingId[0]])
 		}
 	})
 }
