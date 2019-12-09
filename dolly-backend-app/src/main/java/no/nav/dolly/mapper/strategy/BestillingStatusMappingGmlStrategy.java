@@ -17,16 +17,16 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingGmlStatus;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
 public class BestillingStatusMappingGmlStrategy implements MappingStrategy {
 
     @Override public void register(MapperFactory factory) {
-        factory.classMap(Bestilling.class, RsBestillingStatus.class)
-                .customize(new CustomMapper<Bestilling, RsBestillingStatus>() {
-                    @Override public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
+        factory.classMap(Bestilling.class, RsBestillingGmlStatus.class)
+                .customize(new CustomMapper<Bestilling, RsBestillingGmlStatus>() {
+                    @Override public void mapAtoB(Bestilling bestilling, RsBestillingGmlStatus bestillingStatus, MappingContext context) {
                         bestillingStatus.setAntallLevert(bestilling.getProgresser().size());
                         bestillingStatus.setEnvironments(Arrays.asList(bestilling.getMiljoer().split(",")));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
