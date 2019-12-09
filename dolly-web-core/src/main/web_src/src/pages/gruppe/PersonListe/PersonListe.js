@@ -10,9 +10,7 @@ import EtikettBase from 'nav-frontend-etiketter'
 
 const etikettTypeMap = {
 	Ferdig: 'suksess',
-	Avvik: 'fokus',
-	Feilet: 'advarsel',
-	Stoppet: 'advarsel'
+	Avvik: 'fokus'
 }
 
 export default function PersonListe({ isFetching, personListe, searchActive, fetchTpsfPersoner }) {
@@ -75,6 +73,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			dataField: 'ibruk',
 			formatter: (cell, row) => <PersonIBrukButtonConnector ident={row.ident} />
 		}
+		// { text: 'Forsøk', width: '10', dataField: 'status2' }
 	]
 
 	return (

@@ -69,7 +69,7 @@ const extractValuesForBestillingListe = (data, statusKode) => {
 	return Object.values(values)
 }
 
-export function BestillingStatusMapper(data) {
+export default function BestillingStatusMapper(data) {
 	return data.map(bestilling => {
 		const harAvvik = finnesDetAvvikForBestillinger(bestilling.status)
 		const antallIdenterOpprettet = antallIdenterOpprettetPaaBestilling(bestilling.status)
@@ -82,68 +82,4 @@ export function BestillingStatusMapper(data) {
 			status: bestilling.status || []
 		}
 	})
-}
-
-const appendAvvikmeldingIfPresent = (status, source, personStatus) => {
-	let nyMelding = {
-		id: source.id,
-		melding: status.melding
-	}
-	return {
-		statusKode: 'Avvik',
-		meldinger:
-			personStatus && personStatus.meldinger
-				? personStatus.meldinger.concat(nyMelding)
-				: [nyMelding]
-	}
-}
-
-const extractNewestBestillingstatusForPerson = (
-	personStatusMap,
-	bestilling,
-	source,
-	sourceStatus,
-	ident
-) => {
-	// hvis bruker allerede finnes, og bestillingsid er nyere enn den forrige
-	// bestillingen på brukeren, så skal den overskrives med
-	if (personStatusMap.has(ident) && bestilling.id > personStatusMap.get(ident).bestillingId) {
-		personStatusMap.delete(ident)
-	}
-
-	if (sourceStatus.melding === 'OK') {
-		!personStatusMap.has(ident) &&
-			personStatusMap.set(ident, {
-				bestillingId: bestilling.id,
-				statusKode: !bestilling.ferdig ? 'Pågår' : 'Ferdig'
-			})
-	} else {
-		personStatusMap.set(ident, {
-			...appendAvvikmeldingIfPresent(sourceStatus, source, personStatusMap.get(ident)),
-			bestillingId: bestilling.id
-		})
-	}
-}
-
-export function ExtractBestillingStatusForPersoner(data) {
-	const personStatusMap = new Map()
-	data.forEach(bestilling =>
-		_get(bestilling, 'status', []).forEach(source => {
-			_get(source, 'statuser', []).forEach(sourceStatus => {
-				_get(sourceStatus, 'detaljert', []).forEach(detalj => {
-					_get(detalj, 'identer', []).forEach(ident => {
-						extractNewestBestillingstatusForPerson(
-							personStatusMap,
-							bestilling,
-							source,
-							sourceStatus,
-							ident
-						)
-					})
-				})
-			})
-		})
-	)
-
-	return personStatusMap
 }

@@ -10,6 +10,7 @@ import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
 import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
+import { hentPersonStatus } from './fagsystemMapper'
 import Formatters from '~/utils/DataFormatter'
 
 export const actions = createActions(
@@ -228,8 +229,6 @@ export const sokSelector = (items, searchStr) => {
 	})
 }
 
-// Dette er også før sortering, så det burde være greit å legge på status her
-// Denne kommer med persondatalisten som vises i Personer, her må vi linke inn tilsvarende som i bestillinger
 export const selectPersonListe = state => {
 	const { gruppe, fagsystem } = state
 
@@ -242,13 +241,14 @@ export const selectPersonListe = state => {
 
 	return identer.map(ident => {
 		const tpsfIdent = fagsystem.tpsf[ident.ident]
+
 		return {
 			ident,
 			identtype: tpsfIdent.identtype,
 			navn: `${tpsfIdent.fornavn} ${tpsfIdent.mellomnavn || ''} ${tpsfIdent.etternavn}`,
 			kjonn: Formatters.kjonnToString(tpsfIdent.kjonn),
 			alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
-			status: state.bestillingStatuser.byIdent[tpsfIdent.ident].statusKode
+			status: hentPersonStatus(ident.ident, state.bestillingStatuser.byId[ident.bestillingId[0]])
 		}
 	})
 }
