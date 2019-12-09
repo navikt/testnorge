@@ -127,27 +127,22 @@ const extractNewestBestillingstatusForPerson = (
 
 export function ExtractBestillingStatusForPersoner(data) {
 	const personStatusMap = new Map()
-
-	data.forEach(
-		bestilling =>
-			bestilling.status &&
-			bestilling.status.forEach(source => {
-				source.statuser &&
-					source.statuser.forEach(sourceStatus => {
-						sourceStatus.detaljert.forEach(detalje => {
-							detalje.identer &&
-								detalje.identer.forEach(ident => {
-									extractNewestBestillingstatusForPerson(
-										personStatusMap,
-										bestilling,
-										source,
-										sourceStatus,
-										ident
-									)
-								})
-						})
+	data.forEach(bestilling =>
+		_get(bestilling, 'status', []).forEach(source => {
+			_get(source, 'statuser', []).forEach(sourceStatus => {
+				_get(sourceStatus, 'detaljert', []).forEach(detalj => {
+					_get(detalj, 'identer', []).forEach(ident => {
+						extractNewestBestillingstatusForPerson(
+							personStatusMap,
+							bestilling,
+							source,
+							sourceStatus,
+							ident
+						)
 					})
+				})
 			})
+		})
 	)
 
 	return personStatusMap
