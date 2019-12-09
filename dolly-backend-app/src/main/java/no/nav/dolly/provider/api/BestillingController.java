@@ -24,8 +24,9 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingGmlStatus;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.service.BestillingService;
 
 @Transactional
@@ -41,29 +42,60 @@ public class BestillingController {
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/{bestillingId}")
     @ApiOperation("Hent Bestilling med bestillingsId")
-    public RsBestillingStatus getBestillingById(@PathVariable("bestillingId") Long bestillingId) {
-        return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestillingStatus.class);
+    public RsBestillingGmlStatus getBestillingById(@PathVariable("bestillingId") Long bestillingId) {
+        return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestillingGmlStatus.class);
     }
 
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/gruppe/{gruppeId}")
     @ApiOperation("Hent Bestillinger tilhørende en gruppe med gruppeId")
-    public List<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId) {
-        return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestillingStatus.class);
+    public List<RsBestillingGmlStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId) {
+        return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestillingGmlStatus.class);
     }
 
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
     @ApiOperation("Stopp en Bestilling med bestillingsId")
-    public RsBestillingStatus stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId) {
+    public RsBestillingGmlStatus stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId) {
         Bestilling bestilling = bestillingService.cancelBestilling(bestillingId);
-        return mapperFacade.map(bestilling, RsBestillingStatus.class);
+        return mapperFacade.map(bestilling, RsBestillingGmlStatus.class);
     }
 
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @PostMapping("/gjenopprett/{bestillingId}")
     @ApiOperation("Gjenopprett en bestilling med bestillingsId, for en liste med miljoer")
-    public RsBestillingStatus gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
+    public RsBestillingGmlStatus gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
+        Bestilling bestilling = bestillingService.createBestillingForGjenopprett(bestillingId, nonNull(miljoer) ? asList(miljoer.split(",")) : emptyList());
+        dollyBestillingService.gjenopprettBestillingAsync(bestilling);
+        return mapperFacade.map(bestilling, RsBestillingGmlStatus.class);
+    }
+
+    @Cacheable(value = CACHE_BESTILLING)
+    @GetMapping("/{bestillingId}/ny")
+    @ApiOperation("Hent Bestilling med bestillingsId")
+    public RsBestillingStatus getBestillingById_ny(@PathVariable("bestillingId") Long bestillingId) {
+        return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestillingStatus.class);
+    }
+
+    @Cacheable(value = CACHE_BESTILLING)
+    @GetMapping("/gruppe/{gruppeId}/ny")
+    @ApiOperation("Hent Bestillinger tilhørende en gruppe med gruppeId")
+    public List<RsBestillingStatus> getBestillinger_ny(@PathVariable("gruppeId") Long gruppeId) {
+        return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestillingStatus.class);
+    }
+
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @DeleteMapping("/stop/{bestillingId}/ny")
+    @ApiOperation("Stopp en Bestilling med bestillingsId")
+    public RsBestillingStatus stopBestillingProgress_ny(@PathVariable("bestillingId") Long bestillingId) {
+        Bestilling bestilling = bestillingService.cancelBestilling(bestillingId);
+        return mapperFacade.map(bestilling, RsBestillingStatus.class);
+    }
+
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @PostMapping("/gjenopprett/{bestillingId}/ny")
+    @ApiOperation("Gjenopprett en bestilling med bestillingsId, for en liste med miljoer")
+    public RsBestillingStatus gjenopprettBestilling_ny(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
         Bestilling bestilling = bestillingService.createBestillingForGjenopprett(bestillingId, nonNull(miljoer) ? asList(miljoer.split(",")) : emptyList());
         dollyBestillingService.gjenopprettBestillingAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
