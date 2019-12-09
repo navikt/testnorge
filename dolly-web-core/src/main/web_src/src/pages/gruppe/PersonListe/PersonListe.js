@@ -73,7 +73,6 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			dataField: 'ibruk',
 			formatter: (cell, row) => <PersonIBrukButtonConnector ident={row.ident} />
 		}
-		// { text: 'Forsøk', width: '10', dataField: 'status2' }
 	]
 
 	return (

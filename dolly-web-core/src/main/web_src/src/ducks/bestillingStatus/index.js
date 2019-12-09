@@ -3,7 +3,7 @@ import _isNil from 'lodash/isNil'
 import _mapValues from 'lodash/mapValues'
 import _uniq from 'lodash/uniq'
 import { DollyApi } from '~/service/Api'
-import BestillingStatusMapper from './bestillingStatusMapper'
+import bestillingStatusMapper from './bestillingStatusMapper'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 
@@ -37,7 +37,7 @@ export default handleActions(
 				state.ny = state.ny.concat(nyeBestillinger)
 			}
 
-			BestillingStatusMapper(data).map(best => {
+			bestillingStatusMapper(data).map(best => {
 				state.byId[best.id] = best
 			})
 		},

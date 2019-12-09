@@ -69,7 +69,7 @@ const extractValuesForBestillingListe = (data, statusKode) => {
 	return Object.values(values)
 }
 
-export default function BestillingStatusMapper(data) {
+export default function bestillingStatusMapper(data) {
 	return data.map(bestilling => {
 		const harAvvik = finnesDetAvvikForBestillinger(bestilling.status)
 		const antallIdenterOpprettet = antallIdenterOpprettetPaaBestilling(bestilling.status)
