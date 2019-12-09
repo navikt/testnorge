@@ -46,6 +46,7 @@ export const Steg2 = ({ formikBag }) => {
 }
 
 Steg2.label = 'Velg verdier'
+
 Steg2.validation = Yup.object({
 	...TpsfForm.validation,
 	...KrrstubForm.validation,

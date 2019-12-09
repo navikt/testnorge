@@ -36,12 +36,14 @@ export const ArbeidsavtaleForm = ({ formikBag, idx }) => {
 					name={`aareg[${idx}].arbeidsavtale.antallKonverterteTimer`}
 					label="Antall konverterte timer"
 					type="number"
+					// Kun to av feltene (stillingsprosent, antall konverterte timer, avtalte timer per uke) kan settes pr arbeidsforhold
 					disabled={arbeidsavtale.stillingsprosent && arbeidsavtale.avtaltArbeidstimerPerUke}
 				/>
 				<FormikTextInput
 					name={`aareg[${idx}].arbeidsavtale.avtaltArbeidstimerPerUke`}
 					label="Avtalte timer per uke"
 					type="number"
+					// Kun to av feltene (stillingsprosent, antall konverterte timer, avtalte timer per uke) kan settes pr arbeidsforhold
 					disabled={arbeidsavtale.stillingsprosent && arbeidsavtale.antallKonverterteTimer}
 				/>
 			</div>

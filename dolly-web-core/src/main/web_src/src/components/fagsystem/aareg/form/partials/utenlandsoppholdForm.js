@@ -23,7 +23,7 @@ export const UtenlandsoppholdForm = ({ name, formikBag, fjern }) => {
 			{utenlandsoppholdArray.map((utenlandsopphold, idx) => (
 				<div key={idx} className="flexbox">
 					<h5 className="nummer">{`#${idx + 1}`}</h5>
-					<FormikSelect name={`${name}[${idx}].land`} label="Land" kodeverk="Landkoder" />
+					<FormikSelect name={`${name}[${idx}].land`} label="Land" kodeverk="LandkoderISO2" />
 					<FormikDatepicker name={`${name}[${idx}].periode.fom`} label="Opphold fra" />
 					<FormikDatepicker name={`${name}[${idx}].periode.tom`} label="Opphold til" />
 					<FieldArrayRemoveButton onClick={() => fjern(idx, name, utenlandsoppholdArray)} />

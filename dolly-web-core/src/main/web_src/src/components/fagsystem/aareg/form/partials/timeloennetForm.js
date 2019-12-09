@@ -15,7 +15,8 @@ export const TimeloennetForm = ({ name, formikBag, fjern }) => {
 				<div className="flexbox--align-center">
 					<h4>Antall timer for timelønnet</h4>
 					<HjelpeTekst>
-						Start- og sluttdato må være innenfor perioden til arbeidsforholdet
+						Start- og sluttdato må både være innenfor samme kalendermåned i samme år og perioden til
+						arbeidsforholdet
 					</HjelpeTekst>
 				</div>
 			)}

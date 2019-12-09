@@ -68,10 +68,6 @@ export const validation = {
 					.required('Feltet er påkrevd'),
 				endringsdatoStillingsprosent: Yup.date().nullable(),
 				arbeidstidsordning: requiredString
-				// antallKonverterteTimer: Yup.number().nullable(),
-				// min(0, 'Kan ikke være et negativt tall'),
-				// avtaltArbeidstimerPerUke: Yup.number().nullable()
-				// .min(1, 'Kan ikke være mindre enn 1')
 			}),
 			antallTimerForTimeloennet: ifPresent(
 				'$aareg[0].antallTimerForTimeloennet',
