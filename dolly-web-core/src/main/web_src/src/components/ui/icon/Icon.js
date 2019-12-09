@@ -13,6 +13,8 @@ import Eraser from '~/assets/icons/nav-ikoner/filled/SVG/36-text/eraser.svg'
 import AccountCircle from '~/assets/icons/nav-ikoner/filled/SVG/11-users/account-circle.svg'
 import NewFileTable from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-table.svg'
 import FileChecklist from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklist.svg'
+// import NewFile from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-new-1.svg'
+import NewFile from '~/assets/icons/nav-ikoner/filled/SVG/17-files/file-add.svg'
 import ArrowLeft from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-left-10.svg'
 import ArrowRight from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-right-10.svg'
 import Details from '~/assets/icons/custom/Details.svg'
@@ -60,7 +62,8 @@ const icons = {
 	man: Man,
 	woman: Woman,
 	group: Group,
-	bestilling: FileChecklist
+	bestilling: FileChecklist,
+	newFile: NewFile
 }
 
 const px = v => `${v}px`
