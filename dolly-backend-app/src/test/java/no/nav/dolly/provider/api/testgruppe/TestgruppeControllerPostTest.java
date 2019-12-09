@@ -61,6 +61,6 @@ class TestgruppeControllerPostTest extends TestgruppeTestBase {
                 .to(HttpMethod.POST, url)
                 .andExpect(HttpStatus.CREATED, RsBestillingStatus.class);
 
-        assertNotNull(resp.getTpsfKriterier());
+        assertNotNull(resp.getBestilling().getTpsf());
     }
 }
