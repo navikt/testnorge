@@ -1,29 +1,42 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
-import { Vis, pathAttrs } from '~/components/bestillingsveileder/VisAttributt'
+import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Diverse } from './partials/Diverse'
 
-const attrPaths = [
-	pathAttrs.kategori.alder,
-	pathAttrs.kategori.nasjonalitet,
-	pathAttrs.kategori.diverse,
-	['tpsf.identHistorikk']
-].flat()
+const alderPaths = ['tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
+
+const nasjonalitetPaths = [
+	'tpsf.statsborgerskap',
+	'tpsf.innvandretFraLand',
+	'tpsf.utvandretTilLand'
+]
+const diversePaths = [
+	'tpsf.identHistorikk',
+	'tpsf.kjonn',
+	'tpsf.harMellomnavn',
+	'tpsf.sivilstand',
+	'tpsf.sprakKode',
+	'tpsf.egenAnsattDatoFom',
+	'tpsf.spesreg',
+	'tpsf.erForsvunnet'
+]
+
+const panelPaths = [alderPaths, nasjonalitetPaths, diversePaths].flat()
 
 export const Personinformasjon = ({ formikBag }) => (
-	<Vis attributt={attrPaths}>
-		<Panel heading="Personinformasjon" hasErrors={panelError(formikBag)}>
-			<Kategori title="Alder" vis={pathAttrs.kategori.alder}>
+	<Vis attributt={panelPaths}>
+		<Panel heading="Personinformasjon" hasErrors={panelError(formikBag)} startOpen>
+			<Kategori title="Alder" vis={alderPaths}>
 				<FormikDatepicker name="tpsf.foedtEtter" label="Født etter" />
 				<FormikDatepicker name="tpsf.foedtFoer" label="Født før" />
 				<FormikDatepicker name="tpsf.doedsdato" label="Dødsdato" />
 			</Kategori>
 
-			<Kategori title="Nasjonalitet" vis={pathAttrs.kategori.nasjonalitet}>
+			<Kategori title="Nasjonalitet" vis={nasjonalitetPaths}>
 				<Vis attributt="tpsf.statsborgerskap">
 					<FormikSelect name="tpsf.statsborgerskap" label="Statsborgerskap" kodeverk="Landkoder" />
 					<FormikDatepicker name="tpsf.statsborgerskapRegdato" label="Statsborgerskap fra" />

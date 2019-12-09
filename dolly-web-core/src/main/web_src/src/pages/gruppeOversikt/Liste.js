@@ -51,6 +51,11 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 			dataField: 'antallIdenter'
 		},
 		{
+			text: 'Antall i bruk',
+			width: '15',
+			dataField: 'antallIBruk'
+		},
+		{
 			text: 'Favoritt',
 			width: '10',
 			dataField: 'id',
@@ -63,6 +68,7 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 			data={items}
 			columns={columns}
 			onRowClick={row => () => history.push(`gruppe/${row.id}`)}
+			rowIcon="group"
 			pagination
 		/>
 	)

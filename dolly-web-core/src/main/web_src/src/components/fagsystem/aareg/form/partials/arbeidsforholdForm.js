@@ -11,7 +11,31 @@ import { PermisjonForm } from './permisjonForm'
 import { UtenlandsoppholdForm } from './utenlandsoppholdForm'
 import { ArbeidsavtaleForm } from './arbeidsavtaleForm'
 
-export const ArbeidsforholdForm = ({ formikBag, initial }) => {
+const initialValues = {
+	ansettelsesPeriode: {
+		fom: new Date(new Date().setFullYear(new Date().getFullYear() - 20)),
+		tom: null
+	},
+	arbeidsforholdstype: 'ordinaertArbeidsforhold',
+	arbeidsgiver: {
+		aktoertype: '',
+		orgnummer: '',
+		ident: ''
+	},
+	arbeidsavtale: {
+		yrke: '',
+		stillingsprosent: 100,
+		endringsdatoStillingsprosent: null,
+		arbeidstidsordning: 'ikkeSkift',
+		antallKonverterteTimer: '',
+		avtaltArbeidstimerPerUke: 37.5
+	},
+	antallTimerForTimeloennet: [],
+	permisjon: [],
+	utenlandsopphold: []
+}
+
+export const ArbeidsforholdForm = ({ formikBag }) => {
 	const initialTimeloennet = {
 		periode: {
 			fom: null,
@@ -88,7 +112,6 @@ export const ArbeidsforholdForm = ({ formikBag, initial }) => {
 										name={`aareg[${idx}].arbeidsgiver.ident`}
 										label="Arbeidsgiver ident"
 									/>
-									// Identtype????
 								)}
 							</div>
 							<ArbeidsavtaleForm formikBag={formikBag} idx={idx} />
@@ -130,7 +153,10 @@ export const ArbeidsforholdForm = ({ formikBag, initial }) => {
 							<FieldArrayRemoveButton onClick={() => fjern(idx, 'aareg', arbeidsforholdArray)} />
 						</React.Fragment>
 					))}
-					<FieldArrayAddButton title="Legg til arbeidsforhold" onClick={() => push(initial)} />
+					<FieldArrayAddButton
+						title="Legg til arbeidsforhold"
+						onClick={() => push(initialValues)}
+					/>
 				</div>
 			)}
 		</FieldArray>

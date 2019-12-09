@@ -407,7 +407,7 @@ export function mapBestillingData(bestillingData) {
 			if (pdlforvalterKriterier.falskIdentitet) {
 				const falskIdData = pdlforvalterKriterier.falskIdentitet.rettIdentitet
 
-				if (falskIdData.identitetType === 'UKJENT') {
+				if (falskIdData.rettIdentitetErUkjent === true) {
 					const falskId = {
 						header: 'Falsk identitet',
 						items: [
@@ -418,7 +418,7 @@ export function mapBestillingData(bestillingData) {
 						]
 					}
 					data.push(falskId)
-				} else if (falskIdData.identitetType === 'ENTYDIG') {
+				} else if (falskIdData.rettIdentitetVedIdentifikasjonsnummer) {
 					const falskId = {
 						header: 'Falsk identitet',
 						items: [

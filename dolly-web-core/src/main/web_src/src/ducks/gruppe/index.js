@@ -3,6 +3,7 @@ import { createActions, combineActions } from 'redux-actions'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 import _find from 'lodash/find'
+import _omit from 'lodash/omit'
 import { DollyApi } from '~/service/Api'
 import { createLoadingSelector } from '~/ducks/loading'
 import { onSuccess } from '~/ducks/utils/requestActions'
@@ -21,7 +22,8 @@ export const actions = createActions(
 				gruppeId
 			})
 		],
-		updateBeskrivelse: DollyApi.updateBeskrivelse
+		updateIdentIbruk: DollyApi.updateIdentIbruk,
+		updateBeskrivelse: DollyApi.updateIdentBeskrivelse
 	},
 	{
 		prefix: 'gruppe' // String used to prefix each type
@@ -45,7 +47,7 @@ export default handleActions(
 				acc[curr.ident] = { ...curr, gruppeId: gruppe.id }
 				return acc
 			}, {})
-			state.byId[gruppe.id] = gruppe
+			state.byId[gruppe.id] = _omit(gruppe, 'identer')
 		},
 		[onSuccess(actions.getAlle)](state, action) {
 			action.payload.data.forEach(gruppe => {
@@ -60,6 +62,10 @@ export default handleActions(
 		},
 		[onSuccess(actions.update)](state, action) {
 			state.byId[action.payload.data.id] = action.payload.data
+		},
+		[onSuccess(actions.updateIdentIbruk)](state, action) {
+			const { ident, ibruk } = action.payload.data
+			state.ident[ident].ibruk = ibruk
 		},
 		[onSuccess(actions.updateBeskrivelse)](state, action) {
 			const { ident, beskrivelse } = action.payload.data
