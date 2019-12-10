@@ -1,48 +1,36 @@
 import React from 'react'
-import { FieldArray } from 'formik'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FieldArrayAddButton, FieldArrayRemoveButton } from '~/components/ui/form/formUtils'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
-export const UtenlandsId = ({ formikBag }) => {
-	const path = 'pdlforvalter.utenlandskIdentifikasjonsnummer'
-	const initialValues = { identifikasjonsnummer: '', kilde: '', opphoert: '', utstederland: '' }
-	return (
-		<FieldArray
-			name={path}
-			render={arrayHelpers => (
-				<React.Fragment>
-					{formikBag.values.pdlforvalter.utenlandskIdentifikasjonsnummer.map((curr, idx) => (
-						<div key={idx}>
-							<FormikTextInput
-								name={`${path}[${idx}].identifikasjonsnummer`}
-								label="Identifikasjonsnummer"
-							/>
-							<FormikTextInput name={`${path}[${idx}].kilde`} label="Kilde" />
-							<FormikSelect
-								name={`${path}[${idx}].opphoert`}
-								label="Opphørt"
-								options={Options('boolean')}
-								isClearable={false}
-								size="grow"
-							/>
-							<FormikSelect
-								name={`${path}[${idx}].utstederland`}
-								label="Utstederland"
-								kodeverk="Landkoder"
-								isClearable={false}
-								size="grow"
-							/>
-							<FieldArrayRemoveButton onClick={e => arrayHelpers.remove(idx)} />
-						</div>
-					))}
-					<FieldArrayAddButton
-						title="Utenlandsk identifikasjonsnummer"
-						onClick={e => arrayHelpers.push(initialValues)}
-					/>
-				</React.Fragment>
-			)}
-		/>
-	)
-}
+const initialValues = { identifikasjonsnummer: '', kilde: '', opphoert: '', utstederland: '' }
+
+export const UtenlandsId = ({ formikBag }) => (
+	<DollyFieldArray
+		name="pdlforvalter.utenlandskIdentifikasjonsnummer"
+		title="Utenlandsk ID"
+		newEntry={initialValues}
+	>
+		{(path, idx) => (
+			<React.Fragment key={idx}>
+				<FormikTextInput name={`${path}.identifikasjonsnummer`} label="Identifikasjonsnummer" />
+				<FormikTextInput name={`${path}.kilde`} label="Kilde" />
+				<FormikSelect
+					name={`${path}.opphoert`}
+					label="Opphørt"
+					options={Options('boolean')}
+					isClearable={false}
+					size="grow"
+				/>
+				<FormikSelect
+					name={`${path}.utstederland`}
+					label="Utstederland"
+					kodeverk="Landkoder"
+					isClearable={false}
+					size="grow"
+				/>
+			</React.Fragment>
+		)}
+	</DollyFieldArray>
+)

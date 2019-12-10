@@ -1,12 +1,11 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
-import { FieldArray } from 'formik'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FieldArrayAddButton, FieldArrayRemoveButton } from '~/components/ui/form/formUtils'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 const initialValues = {
@@ -32,38 +31,25 @@ export const Identhistorikk = ({ formikBag }) => (
 			informasjonstekst={hjelpetekst}
 			startOpen
 		>
-			<FieldArray name="tpsf.identHistorikk">
-				{arrayHelpers => (
-					<React.Fragment>
-						{formikBag.values.tpsf.identHistorikk.map((curr, idx) => (
-							<div key={idx} style={{ display: 'flex', flexWrap: 'wrap' }}>
-								<FormikSelect
-									name={`tpsf.identHistorikk.${idx}.identtype`}
-									label="Identtype"
-									options={Options('identtype')}
-								/>
-								<FormikSelect
-									name={`tpsf.identHistorikk.${idx}.kjonn`}
-									label="Kjønn"
-									kodeverk="Kjønnstyper"
-								/>
-								<FormikDatepicker name={`tpsf.identHistorikk.${idx}.regdato`} label="Utgått dato" />
-								<FormikDatepicker
-									name={`tpsf.identHistorikk.${idx}.foedtEtter`}
-									label="Født etter"
-								/>
-								<FormikDatepicker name={`tpsf.identHistorikk.${idx}.foedtFoer`} label="Født før" />
-								<FieldArrayRemoveButton onClick={e => arrayHelpers.remove(idx)} />
-							</div>
-						))}
-
-						<FieldArrayAddButton
-							title="Identhistorikk"
-							onClick={e => arrayHelpers.push(initialValues)}
+			<DollyFieldArray name="tpsf.identHistorikk" title="Historikk">
+				{(path, idx) => (
+					<React.Fragment key={idx}>
+						<FormikSelect
+							name={`${path}.identtype`}
+							label="Identtype"
+							options={Options('identtype')}
 						/>
+						<FormikSelect name={`${path}.kjonn`} label="Kjønn" kodeverk="Kjønnstyper" />
+						<FormikDatepicker name={`${path}.regdato`} label="Utgått dato" visHvisAvhuket={false} />
+						<FormikDatepicker
+							name={`${path}.foedtEtter`}
+							label="Født etter"
+							visHvisAvhuket={false}
+						/>
+						<FormikDatepicker name={`${path}.foedtFoer`} label="Født før" visHvisAvhuket={false} />
 					</React.Fragment>
 				)}
-			</FieldArray>
+			</DollyFieldArray>
 		</Panel>
 	</Vis>
 )

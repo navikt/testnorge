@@ -1,6 +1,7 @@
 import React from 'react'
 import _isEmpty from 'lodash/isEmpty'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
+import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
 import { validation } from './validation'
@@ -20,9 +21,13 @@ const attrPaths = [
 export const UdistubForm = ({ formikBag }) => (
 	<Vis attributt={attrPaths}>
 		<Panel heading="UDI" hasErrors={panelError(formikBag)} startOpen>
-			<Oppholdsstatus formikBag={formikBag} />
+			<Kategori title="Gjeldende oppholdsstatus" vis="udistub.oppholdStatus">
+				<Oppholdsstatus formikBag={formikBag} />
+			</Kategori>
 			<Arbeidsadgang formikBag={formikBag} />
-			<Alias formikBag={formikBag} />
+			<Kategori title="Alias" vis="udistub.aliaser" flex={false}>
+				<Alias formikBag={formikBag} />
+			</Kategori>
 			<Annet formikBag={formikBag} />
 		</Panel>
 	</Vis>

@@ -2,7 +2,10 @@ import React from 'react'
 import { FieldArray } from 'formik'
 import { subYears } from 'date-fns'
 import _get from 'lodash/get'
-import { FieldArrayAddButton, FieldArrayRemoveButton } from '~/components/ui/form/formUtils'
+import {
+	FieldArrayAddButton,
+	FieldArrayRemoveButton
+} from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { EnkeltinntektForm } from './enkeltinntektForm'
