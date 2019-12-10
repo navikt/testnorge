@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.instdata;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -17,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.inst.Instdata;
@@ -26,6 +24,7 @@ import no.nav.dolly.domain.resultset.inst.InstdataKategori;
 import no.nav.dolly.domain.resultset.inst.InstdataKilde;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.metrics.Timed;
 
 @Slf4j
 @Service
@@ -43,7 +42,7 @@ public class InstdataClient implements ClientRegister {
     @Timed(name = "providers", tags={"operation", "gjenopprettInstdata"})
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
-        if (nonNull(bestilling.getInstdata())) {
+        if (!bestilling.getInstdata().isEmpty()) {
 
             StringBuilder status = new StringBuilder();
             List<String> availEnvironments = getEnvironments();
