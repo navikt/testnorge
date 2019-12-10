@@ -3,7 +3,7 @@ import _get from 'lodash/get'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FieldArrayRemoveButton } from '~/components/ui/form/formUtils'
+import { FieldArrayRemoveButton } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import HjelpeTekst from 'nav-frontend-hjelpetekst'
 
 export const PermisjonForm = ({ name, formikBag, fjern }) => {

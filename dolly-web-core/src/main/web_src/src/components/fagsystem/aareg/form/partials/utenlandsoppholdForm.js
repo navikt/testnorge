@@ -2,7 +2,7 @@ import React from 'react'
 import _get from 'lodash/get'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FieldArrayRemoveButton } from '~/components/ui/form/formUtils'
+import { FieldArrayRemoveButton } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import HjelpeTekst from 'nav-frontend-hjelpetekst'
 
 export const UtenlandsoppholdForm = ({ name, formikBag, fjern }) => {

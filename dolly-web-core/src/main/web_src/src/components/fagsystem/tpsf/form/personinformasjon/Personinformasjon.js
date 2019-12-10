@@ -15,7 +15,6 @@ const nasjonalitetPaths = [
 	'tpsf.utvandretTilLand'
 ]
 const diversePaths = [
-	'tpsf.identHistorikk',
 	'tpsf.kjonn',
 	'tpsf.harMellomnavn',
 	'tpsf.sivilstand',

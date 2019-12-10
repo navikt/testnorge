@@ -29,6 +29,7 @@ export default function BestillingListe({ bestillinger, searchActive, isFetching
 	}
 
 	const sortedBestillinger = _orderBy(bestillinger, ['id'], ['desc'])
+
 	const columns = [
 		{
 			text: 'ID',
@@ -58,6 +59,7 @@ export default function BestillingListe({ bestillinger, searchActive, isFetching
 			formatter: (cell, row) => <EtikettBase type={etikettTypeMap[cell]}>{cell}</EtikettBase>
 		}
 	]
+
 	return (
 		<DollyTable
 			data={sortedBestillinger}

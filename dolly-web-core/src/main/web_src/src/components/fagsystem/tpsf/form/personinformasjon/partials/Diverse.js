@@ -5,10 +5,8 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Diskresjonskoder } from './Diskresjonskoder'
-import { IdentHistorikk } from './IdentHistorikk'
 
 const paths = [
-	'tpsf.identHistorikk',
 	'tpsf.kjonn',
 	'tpsf.harMellomnavn',
 	'tpsf.sivilstand',
@@ -20,10 +18,6 @@ const paths = [
 
 export const Diverse = ({ formikBag }) => (
 	<Kategori title="Diverse" vis={paths}>
-		<Vis attributt="tpsf.identHistorikk">
-			<IdentHistorikk formikBag={formikBag} />
-		</Vis>
-
 		<FormikSelect name="tpsf.kjonn" label="Kjønn" kodeverk="Kjønnstyper" visHvisAvhuket />
 
 		<FormikSelect

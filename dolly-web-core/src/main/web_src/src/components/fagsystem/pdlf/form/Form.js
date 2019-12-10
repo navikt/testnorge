@@ -21,6 +21,7 @@ export const PdlfForm = ({ formikBag }) => (
 				<Kategori
 					title="Utenlandsk identifikasjonsnummer"
 					vis="pdlforvalter.utenlandskIdentifikasjonsnummer"
+					flex={false}
 				>
 					<UtenlandsId formikBag={formikBag} />
 				</Kategori>

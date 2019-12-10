@@ -8,7 +8,6 @@ export const actions = createActions({
 })
 
 export const sendBestilling = (values, gruppeId) => async (dispatch, getState) => {
-	console.log('Send bestilling', values)
 	if (values.opprettFraIdenter) {
 		return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
 	} else {

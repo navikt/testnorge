@@ -3,6 +3,7 @@ import _isEmpty from 'lodash/isEmpty'
 import * as Yup from 'yup'
 import { Personinformasjon } from './personinformasjon/Personinformasjon'
 import { Adresser } from './adresser/Adresser'
+import { Identhistorikk } from './Identhistorikk'
 import { requiredDate, requiredString, ifPresent } from '~/utils/YupValidations'
 
 export const TpsfForm = ({ formikBag }) => {
@@ -10,6 +11,7 @@ export const TpsfForm = ({ formikBag }) => {
 		<React.Fragment>
 			<Personinformasjon formikBag={formikBag} />
 			<Adresser formikBag={formikBag} />
+			<Identhistorikk formikBag={formikBag} />
 		</React.Fragment>
 	)
 }

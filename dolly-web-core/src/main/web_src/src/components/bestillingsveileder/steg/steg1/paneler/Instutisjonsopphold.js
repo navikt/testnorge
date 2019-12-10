@@ -4,14 +4,26 @@ import {
 	Attributt,
 	AttributtKategori
 } from '~/components/bestillingsveileder/AttributtVelger/Attributt'
+import TilgjengeligeMiljoer from '~/components/tilgjengeligeMiljoer/TilgjengeligeMiljoer'
+import { InstApi } from '~/service/Api'
 
 export const InstutisjonsoppholdPanel = ({ stateModifier }) => {
 	const sm = stateModifier(InstutisjonsoppholdPanel.initialValues)
+
+	const infoTekst = (
+		<React.Fragment>
+			Data om institusjonsopphold blir ikke distribuert til alle miljøer, og et eller flere av
+			miljøene under må derfor velges i siste steg.
+			<br />
+			<TilgjengeligeMiljoer endepunkt={InstApi.getTilgjengeligeMiljoer} />
+		</React.Fragment>
+	)
 
 	return (
 		<Panel
 			heading={InstutisjonsoppholdPanel.heading}
 			startOpen
+			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 		>

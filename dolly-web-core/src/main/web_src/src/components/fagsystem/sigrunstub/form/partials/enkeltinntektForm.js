@@ -2,7 +2,7 @@ import React from 'react'
 import _get from 'lodash/get'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FieldArrayRemoveButton } from '~/components/ui/form/formUtils'
+import { FieldArrayRemoveButton } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import Formatters from '~/utils/DataFormatter'
 
 export const EnkeltinntektForm = ({ name, tjeneste, formikBag, fjern }) => {
