@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import _isUndefined from 'lodash/isUndefined'
-import { isDate } from 'date-fns'
+import { isDate, isWithinInterval } from 'date-fns'
 
 /**
  * Valideringsmeldinger
@@ -27,3 +27,8 @@ export const ifKeyHasValue = (key, values, schema) =>
 		then: schema,
 		otherwise: Yup.mixed().notRequired()
 	})
+
+// export const validDate = () =>
+// 	Yup.date().test('range', 'Feilmelding', val =>
+// 		isWithinInterval(val, { start: new Date(2014, 1, 1), end: new Date(2014, 12, 7) })
+// 	)

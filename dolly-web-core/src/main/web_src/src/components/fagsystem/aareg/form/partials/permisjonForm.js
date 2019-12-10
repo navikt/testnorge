@@ -25,7 +25,7 @@ export const PermisjonForm = ({ name, formikBag, fjern }) => {
 					<h5 className="nummer">{`#${idx + 1}`}</h5>
 					<FormikSelect
 						name={`${name}[${idx}].permisjonOgPermittering`}
-						label="Beskrivelse"
+						label="Permisjonstype"
 						kodeverk="PermisjonsOgPermitteringsBeskrivelse"
 					/>
 					<FormikDatepicker name={`${name}[${idx}].permisjonsPeriode.fom`} label="Permisjon fra" />

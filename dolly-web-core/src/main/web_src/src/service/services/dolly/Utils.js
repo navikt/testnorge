@@ -57,6 +57,16 @@ export const SortKodeverkArray = data => {
 		spesKoder.map(yrke => kodeverk.unshift(yrke))
 	}
 
+	if (data.name === 'Arbeidsforholdstyper') {
+		// Kodeverket for arbeidsforholdstyper har to verdier som AAREG per i dag ikke støtter
+		const arbeidsforhold = kodeverk.filter(
+			kode =>
+				kode.value !== 'frilanserOppdragstakerHonorarPersonerMm' &&
+				kode.value !== 'pensjonOgAndreTyperYtelserUtenAnsettelsesforhold'
+		)
+		return arbeidsforhold
+	}
+
 	if (data.name === 'Landkoder') {
 		// Filtrerer bort land som har begrenset gyldighet. Fjernes hvis det oppstår behov for test med nye land.
 		const spesKoder = [

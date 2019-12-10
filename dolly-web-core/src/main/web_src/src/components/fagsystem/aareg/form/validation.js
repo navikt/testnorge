@@ -1,5 +1,12 @@
 import * as Yup from 'yup'
-import { requiredDate, requiredString, requiredNumber, ifPresent } from '~/utils/YupValidations'
+import { isWithinInterval } from 'date-fns'
+import {
+	requiredDate,
+	requiredString,
+	requiredNumber,
+	ifPresent,
+	validDate
+} from '~/utils/YupValidations'
 
 const antallTimerForTimeloennet = Yup.array().of(
 	Yup.object({
@@ -16,6 +23,14 @@ const antallTimerForTimeloennet = Yup.array().of(
 const permisjon = Yup.array().of(
 	Yup.object({
 		permisjonsPeriode: Yup.object({
+			// fom: Yup.date().test('range', 'Feil dato!!!', val =>
+			// 	isWithinInterval(val, { start: new Date(2014, 1, 1), end: new Date(2014, 12, 7) })
+			// ),
+			// fom: Yup.date()
+			//     .when('$aareg[0].ansettelsesPeriode.fom')
+			//     .test('interval', 'Feil dato!!!', val =>
+			// 	isWithinInterval(val, { start: new Date(2014, 1, 1), end: new Date(2014, 12, 7) })
+			// ),
 			fom: requiredDate,
 			tom: Yup.date().nullable()
 		}),

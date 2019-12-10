@@ -90,7 +90,7 @@ export const ArbeidsforholdForm = ({ formikBag }) => {
 									name={`aareg[${idx}].arbeidsforholdstype`}
 									label="Type arbeidsforhold"
 									kodeverk="Arbeidsforholdstyper"
-									size="xxlarge"
+									size="large"
 								/>
 								<FormikSelect
 									name={`aareg[${idx}].arbeidsgiver.aktoertype`}

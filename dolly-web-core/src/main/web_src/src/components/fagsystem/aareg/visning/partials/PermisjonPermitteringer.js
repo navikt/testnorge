@@ -11,6 +11,11 @@ export const PermisjonPermitteringer = ({ data }) => {
 			<div className="person-visning_content">
 				{data.map((id, idx) => (
 					<div key={idx}>
+						<TitleValue
+							title="Permisjonstype"
+							value={id.type}
+							kodeverk="PermisjonsOgPermitteringsBeskrivelse"
+						/>
 						{id.periode && (
 							<TitleValue title="Startdato" value={Formatters.formatStringDates(id.periode.fom)} />
 						)}

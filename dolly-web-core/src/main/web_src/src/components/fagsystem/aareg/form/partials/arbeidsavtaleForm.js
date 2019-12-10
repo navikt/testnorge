@@ -37,14 +37,32 @@ export const ArbeidsavtaleForm = ({ formikBag, idx }) => {
 					label="Antall konverterte timer"
 					type="number"
 					// Kun to av feltene (stillingsprosent, antall konverterte timer, avtalte timer per uke) kan settes pr arbeidsforhold
-					disabled={arbeidsavtale.stillingsprosent && arbeidsavtale.avtaltArbeidstimerPerUke}
+					disabled={
+						(arbeidsavtale.stillingsprosent || arbeidsavtale.stillingsprosent === 0) &&
+						(arbeidsavtale.avtaltArbeidstimerPerUke || arbeidsavtale.avtaltArbeidstimerPerUke === 0)
+					}
+					title={
+						(arbeidsavtale.stillingsprosent || arbeidsavtale.stillingsprosent === 0) &&
+						(arbeidsavtale.avtaltArbeidstimerPerUke || arbeidsavtale.avtaltArbeidstimerPerUke === 0)
+							? 'Antall konverterte timer og avtalte timer per uke kan ikke være satt samtidig.'
+							: undefined
+					}
 				/>
 				<FormikTextInput
 					name={`aareg[${idx}].arbeidsavtale.avtaltArbeidstimerPerUke`}
 					label="Avtalte timer per uke"
 					type="number"
 					// Kun to av feltene (stillingsprosent, antall konverterte timer, avtalte timer per uke) kan settes pr arbeidsforhold
-					disabled={arbeidsavtale.stillingsprosent && arbeidsavtale.antallKonverterteTimer}
+					disabled={
+						(arbeidsavtale.stillingsprosent || arbeidsavtale.stillingsprosent === 0) &&
+						(arbeidsavtale.antallKonverterteTimer || arbeidsavtale.antallKonverterteTimer === 0)
+					}
+					title={
+						(arbeidsavtale.stillingsprosent || arbeidsavtale.stillingsprosent === 0) &&
+						(arbeidsavtale.antallKonverterteTimer || arbeidsavtale.antallKonverterteTimer === 0)
+							? 'Antall konverterte timer og avtalte timer per uke kan ikke være satt samtidig.'
+							: undefined
+					}
 				/>
 			</div>
 		</div>
