@@ -18,7 +18,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestilling
 class TestgruppeControllerPutTest extends TestgruppeTestBase {
 
     @Test
-    @DisplayName("Returnerer HTTP 404 Not Found når Testgruppe ikke finnes")
+    @DisplayName("Returnerer HTTP 200 med feilmelding Not Found i body når Testgruppe ikke finnes")
     void shouldFail404WhenTestgruppeDontExist() {
 
         RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder()
@@ -28,7 +28,7 @@ class TestgruppeControllerPutTest extends TestgruppeTestBase {
 
         LinkedHashMap resp = sendRequest(rsOpprettEndreTestgruppe)
                 .to(HttpMethod.PUT, ENDPOINT_BASE_URI + "/123")
-                .andExpect(HttpStatus.NOT_FOUND, LinkedHashMap.class);
+                .andExpect(HttpStatus.OK, LinkedHashMap.class);
 
         assertThat(getErrMsg(resp), is("Finner ikke gruppe basert på gruppeID: 123"));
     }
