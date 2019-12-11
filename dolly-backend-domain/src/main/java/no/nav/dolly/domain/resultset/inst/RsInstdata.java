@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.inst;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.util.JsonZonedDateTimeDeserializer;
 
 @Getter
 @Setter
@@ -29,22 +31,25 @@ public class RsInstdata {
             dataType = "LocalDateTime",
             value = "Dato for begynnelsen av oppholdet"
     )
-    private LocalDateTime startdato;
+    @JsonDeserialize(using = JsonZonedDateTimeDeserializer.class)
+    private ZonedDateTime startdato;
 
     @ApiModelProperty(
             position = 3,
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             value = "Dato oppholdet er forventet å være avsluttet"
 
     )
-    private LocalDateTime forventetSluttdato;
+    @JsonDeserialize(using = JsonZonedDateTimeDeserializer.class)
+    private ZonedDateTime forventetSluttdato;
 
     @ApiModelProperty(
             position = 4,
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             value = "Dato oppholdet var avsluttet"
     )
-    private LocalDateTime faktiskSluttdato;
+    @JsonDeserialize(using = JsonZonedDateTimeDeserializer.class)
+    private ZonedDateTime faktiskSluttdato;
 
     @ApiModelProperty(
             position = 5,

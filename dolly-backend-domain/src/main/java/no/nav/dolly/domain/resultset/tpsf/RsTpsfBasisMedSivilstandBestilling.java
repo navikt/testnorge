@@ -1,6 +1,6 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -24,8 +24,8 @@ public class RsTpsfBasisMedSivilstandBestilling extends RsTpsfBasisBestilling {
 
     @ApiModelProperty(
             position = 27,
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             value = "Dato sivilstand. Hvis blankt settes dagens dato"
     )
-    private LocalDateTime sivilstandRegdato;
+    private ZonedDateTime sivilstandRegdato;
 }

@@ -1,12 +1,14 @@
 package no.nav.dolly.domain.resultset.udistub.model;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.util.JsonZonedDateTimeDeserializer;
 
 @Getter
 @Setter
@@ -14,6 +16,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UdiPeriode {
-    private LocalDate fra;
-    private LocalDate til;
+    @JsonDeserialize(using = JsonZonedDateTimeDeserializer.class)
+    private ZonedDateTime fra;
+    @JsonDeserialize(using = JsonZonedDateTimeDeserializer.class)
+    private ZonedDateTime til;
 }

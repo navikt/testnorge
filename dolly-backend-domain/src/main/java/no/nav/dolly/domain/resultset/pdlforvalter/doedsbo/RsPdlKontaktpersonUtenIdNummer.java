@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.pdlforvalter.doedsbo;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
+import no.nav.dolly.domain.resultset.util.JsonZonedDateTimeDeserializer;
 
 @Getter
 @Setter
@@ -16,6 +18,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
 @AllArgsConstructor
 public class RsPdlKontaktpersonUtenIdNummer extends PdlSomAdressat {
 
-    private LocalDateTime foedselsdato;
+    @JsonDeserialize(using = JsonZonedDateTimeDeserializer.class)
+    private ZonedDateTime foedselsdato;
     private PdlPersonnavn navn;
 }

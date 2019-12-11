@@ -10,31 +10,33 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap115;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import java.time.LocalDateTime;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArenaMappingStrategyTest {
 
-    private static final LocalDateTime TIME_NOW = LocalDateTime.now();
-    private static final LocalDateTime OLD_TIMES = LocalDateTime.of(2018, 1, 1, 0, 0);
-    private static final LocalDateTime PAST_TIME = LocalDateTime.of(2018, 3, 1, 0, 0);
+    private static final ZonedDateTime TIME_NOW = ZonedDateTime.now();
+    private static final ZonedDateTime OLD_TIMES = LocalDateTime.of(2018, 1, 1, 0, 0).atZone(ZoneId.systemDefault());
+    private static final ZonedDateTime PAST_TIME = LocalDateTime.of(2018, 3, 1, 0, 0).atZone(ZoneId.systemDefault());
 
     private MapperFacade mapperFacade;
 
     @Before
     public void setup() {
-        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new ArenaMappingStrategy());
+        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new ZonedDateTime2LocalDateCustomMapping(), new ArenaMappingStrategy());
     }
 
     @Test

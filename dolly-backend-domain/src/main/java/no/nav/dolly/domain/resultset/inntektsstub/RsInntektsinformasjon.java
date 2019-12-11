@@ -1,7 +1,8 @@
 package no.nav.dolly.domain.resultset.inntektsstub;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.util.JsonZonedDateTimeDeserializer;
 
 @Getter
 @Setter
@@ -20,11 +22,12 @@ public class RsInntektsinformasjon {
     @ApiModelProperty(
             value = "Året/måneden inntektsinformasjonen gjelder for",
             example = "yyyy-MM",
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             required = true,
             position = 1
     )
-    private LocalDateTime aarMaaned;
+    @JsonDeserialize(using = JsonZonedDateTimeDeserializer.class)
+    private ZonedDateTime aarMaaned;
 
     @ApiModelProperty(
             value = "Organisasjonsnummer/norskIdent",
@@ -112,18 +115,18 @@ public class RsInntektsinformasjon {
         private String arbeidsforholdstype;
 
         @ApiModelProperty(
-                dataType = "LocalDateTime",
+                dataType = "ZonedDateTime",
                 example = "yyyy-MM-dd",
                 position = 2
         )
-        private LocalDateTime startdato;
+        private ZonedDateTime startdato;
 
         @ApiModelProperty(
-                dataType = "LocalDateTime",
+                dataType = "ZonedDateTime",
                 example = "yyyy-MM-dd",
                 position = 3
         )
-        private LocalDateTime sluttdato;
+        private ZonedDateTime sluttdato;
 
         @ApiModelProperty(
                 position = 4
@@ -154,17 +157,17 @@ public class RsInntektsinformasjon {
         private Double stillingsprosent;
 
         @ApiModelProperty(
-                dataType = "LocalDateTime",
+                dataType = "ZonedDateTime",
                 example = "yyyy-MM-dd",
                 position = 9
         )
-        private LocalDateTime sisteLoennsendringsdato;
+        private ZonedDateTime sisteLoennsendringsdato;
 
         @ApiModelProperty(
-                dataType = "LocalDateTime",
+                dataType = "ZonedDateTime",
                 example = "yyyy-MM-dd",
                 position = 10
         )
-        private LocalDateTime sisteDatoForStillingsprosentendring;
+        private ZonedDateTime sisteDatoForStillingsprosentendring;
     }
 }
