@@ -2,10 +2,6 @@ package no.nav.registre.arena.core.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
-import no.nav.registre.arena.domain.Arbeidsoeker;
-import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
-import no.nav.registre.arena.domain.NyBruker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,6 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
+import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
+import no.nav.registre.arena.domain.Arbeidsoeker;
+import no.nav.registre.arena.domain.NyBruker;
 
 @Component
 @Slf4j
@@ -38,17 +38,18 @@ public class ArenaForvalterConsumer {
     private UriTemplate hentBrukere;
     private UriTemplate slettBrukere;
 
-
-    public ArenaForvalterConsumer(@Value("${arena-forvalteren.rest-api.url}") String arenaForvalterServerUrl) {
+    public ArenaForvalterConsumer(
+            @Value("${arena-forvalteren.rest-api.url}") String arenaForvalterServerUrl
+    ) {
         this.postBrukere = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker?eier=" + EIER);
         this.hentBrukere = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker");
         this.slettBrukere = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker?miljoe={miljoe}&personident={personident}");
     }
 
-
-    @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
-    public NyeBrukereResponse sendTilArenaForvalter(List<NyBruker> nyeBrukere) {
-
+    @Timed(value = "testnorge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
+    public NyeBrukereResponse sendTilArenaForvalter(
+            List<NyBruker> nyeBrukere
+    ) {
         RequestEntity postRequest = RequestEntity.post(postBrukere.expand())
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
@@ -67,8 +68,12 @@ public class ArenaForvalterConsumer {
         return formatertResponse;
     }
 
-    @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
-    public List<Arbeidsoeker> hentArbeidsoekere(String personident, String eier, String miljoe) {
+    @Timed(value = "testnorge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
+    public List<Arbeidsoeker> hentArbeidsoekere(
+            String personident,
+            String eier,
+            String miljoe
+    ) {
 
         Map<String, String> filters = new HashMap<>();
         if (!"".equals(eier)) {
@@ -94,22 +99,27 @@ public class ArenaForvalterConsumer {
         return hentFiltrerteArbeidsoekere(baseUrl.toString());
     }
 
-    private List<Arbeidsoeker> hentFiltrerteArbeidsoekere(String refinedUrl) {
+    private List<Arbeidsoeker> hentFiltrerteArbeidsoekere(
+            String refinedUrl
+    ) {
         UriTemplate uri = new UriTemplate(refinedUrl);
 
         RequestEntity getRequest = RequestEntity.get(uri.expand()).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
         ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
         if (invalidResponse(response)) {
             log.info("Kunne ikke hente arbeidsøkere fra Arena Forvalteren på addresse:\n{}\nStatus: {}\nBody: {}",
-                        getRequest.toString(), response.getStatusCode(), response.getBody());
+                    getRequest.toString(), response.getStatusCode(), response.getBody());
             return new ArrayList<>();
         }
 
         return gaaGjennomSider(refinedUrl, response.getBody().getAntallSider(), response.getBody().getArbeidsokerList().size());
     }
 
-    private List<Arbeidsoeker> gaaGjennomSider(String baseUri, int antallSider, int initialLength) {
-
+    private List<Arbeidsoeker> gaaGjennomSider(
+            String baseUri,
+            int antallSider,
+            int initialLength
+    ) {
         List<Arbeidsoeker> responseList = new ArrayList<>(antallSider * initialLength);
         UriTemplate hentBrukerePage = new UriTemplate(baseUri + "page={page}");
 
@@ -129,8 +139,11 @@ public class ArenaForvalterConsumer {
         return responseList;
     }
 
-    @Timed(value = "testnroge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
-    public Boolean slettBrukerSuccessful(String personident, String miljoe) {
+    @Timed(value = "testnroge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
+    public Boolean slettBrukerSuccessful(
+            String personident,
+            String miljoe
+    ) {
         RequestEntity deleteRequest = RequestEntity.delete(slettBrukere.expand(miljoe, personident))
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();

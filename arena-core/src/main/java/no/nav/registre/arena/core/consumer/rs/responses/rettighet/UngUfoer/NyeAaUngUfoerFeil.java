@@ -1,4 +1,4 @@
-package no.nav.registre.arena.domain;
+package no.nav.registre.arena.core.consumer.rs.responses.rettighet.UngUfoer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,14 +11,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Arbeidsoeker {
+public class NyeAaUngUfoerFeil {
 
     private String personident;
     private String miljoe;
-    private String status;
-    private String eier;
-    private Boolean servicebehov;
-    private Boolean automatiskInnsendingAvMeldekort;
-    private Boolean aap115;
-    private Boolean aap;
+    private String nyAaunguforFeilstatus;
+    private String melding;
 }

@@ -5,14 +5,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
+
 import no.nav.registre.arena.domain.aap.andreokonomytelser.AndreOkonomYtelserV1;
+import no.nav.registre.arena.domain.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.arena.domain.aap.institusjonsopphold.Institusjonsopphold;
 import no.nav.registre.arena.domain.aap.medlemfolketrygden.MedlemFolketrygden;
 import no.nav.registre.arena.domain.aap.periode.Periode;
-import no.nav.registre.arena.domain.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.arena.domain.aap.vilkaar.Vilkaar;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -20,7 +21,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Aap {
-    private String aktivitetsfase;
+
+//    private String aktivitetsfase;
     private List<AndreOkonomYtelserV1> andreOkonomYtelser;
     private String avbruddKode;
     private String begrunnelse;

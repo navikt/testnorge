@@ -23,12 +23,13 @@
     </modules>
 
     <properties>
+        <java.version>11</java.version>
+        <application.version>${project.version}</application.version>
         <springfox.version>2.9.2</springfox.version>
         <springframework.cloud.version>2.1.2.RELEASE</springframework.cloud.version>
         <fasterxml.jackson.version>2.9.9</fasterxml.jackson.version>
-        <testnorge-consumers.version>1.8.0-RELEASE</testnorge-consumers.version>
+        <testnorge-consumers.version>1.10.8-RELEASE</testnorge-consumers.version>
         <jacoco.version>0.8.3</jacoco.version>
-        <application.version>${project.version}</application.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
     </properties>
@@ -71,8 +72,6 @@
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${springfox.version}</version>
             </dependency>
-
-            <!-- PAGINATION -->
         </dependencies>
     </dependencyManagement>
 

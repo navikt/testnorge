@@ -137,7 +137,7 @@ public class AapFactory {
                 .tilDato(DateString.dayMonthYearToYearMonthDay(syntMelding.getTIL_DATO()))
                 .datoMottatt(DateString.dayMonthYearToYearMonthDay(syntMelding.getDATO_MOTTATT()))
                 .utfall(syntMelding.getUTFALL())
-                .aktivitetsfase(syntMelding.getAKTFASEKODE())
+//                .aktivitetsfase(syntMelding.getAKTFASEKODE())
                 .vedtaksvariant(syntMelding.getVEDTAKSVARIANT())
                 .build();
     }

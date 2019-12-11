@@ -21,6 +21,7 @@
             <groupId>no.nav.registre.arena</groupId>
             <artifactId>arena-core</artifactId>
             <version>${project.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!--Metrics-->
@@ -32,7 +33,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>

@@ -153,8 +153,8 @@ public class AAPMelding {
 
 
     // Ytterst i AAP
-    @JsonProperty
-    String AKTFASEKODE; // aktivitetsfase
+//    @JsonProperty
+//    String AKTFASEKODE; // aktivitetsfase
     @JsonProperty
     String DATO_MOTTATT; // datoMottatt
     @JsonProperty

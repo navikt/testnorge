@@ -12,6 +12,7 @@ import no.nav.registre.arena.domain.NyBrukerFeil;
 @Getter
 @Setter
 public class NyeBrukereResponse {
+
     List<Arbeidsoeker> arbeidsoekerList;
     List<NyBrukerFeil> nyBrukerFeilList;
 
