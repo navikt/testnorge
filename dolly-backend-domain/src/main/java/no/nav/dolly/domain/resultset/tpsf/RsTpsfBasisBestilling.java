@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -22,10 +23,10 @@ public class RsTpsfBasisBestilling {
 
     @ApiModelProperty(
             position = 10,
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             value = "Registreringsdato på personopplysningene. Hvis blankt settes dagens dato."
     )
-    private LocalDateTime regdato;
+    private ZonedDateTime regdato;
 
     @ApiModelProperty(
             position = 11,
@@ -65,10 +66,10 @@ public class RsTpsfBasisBestilling {
 
     @ApiModelProperty(
             position = 17,
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             value = "Diskresjonsdato, hvis blankt settes verdi lik fødselsdato"
     )
-    private LocalDateTime spesregDato;
+    private ZonedDateTime spesregDato;
 
     @ApiModelProperty(
             position = 18,
@@ -78,24 +79,24 @@ public class RsTpsfBasisBestilling {
 
     @ApiModelProperty(
             position = 19,
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             value = "Forsvunnet dato, hvis blankt settes verdi lik fødselsdato"
     )
-    private LocalDateTime forsvunnetDato;
+    private ZonedDateTime forsvunnetDato;
 
     @ApiModelProperty(
             position = 20,
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             value = "Egenansatt dato fra"
     )
-    private LocalDateTime egenAnsattDatoFom;
+    private ZonedDateTime egenAnsattDatoFom;
 
     @ApiModelProperty(
             position = 21,
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             value = "Egenansatt dato til. Hvis tomt og egeneansatt-dato-fra er satt indikerer dette et nåværende NAV-ansatt forhold"
     )
-    private LocalDateTime egenAnsattDatoTom;
+    private ZonedDateTime egenAnsattDatoTom;
 
     @ApiModelProperty(
             position = 22,
@@ -105,10 +106,10 @@ public class RsTpsfBasisBestilling {
 
     @ApiModelProperty(
             position = 23,
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             value = "Statsborgerskap registeringsdato. Hvis blankt settes dato lik fødselsdato"
     )
-    private LocalDateTime statsborgerskapRegdato;
+    private ZonedDateTime statsborgerskapRegdato;
 
     @ApiModelProperty(
             position = 24,
@@ -118,10 +119,10 @@ public class RsTpsfBasisBestilling {
 
     @ApiModelProperty(
             position = 25,
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             value = "Dato språk. Hvis tomt settes dato lik fødselsdato"
     )
-    private LocalDateTime datoSprak;
+    private ZonedDateTime datoSprak;
 
     @ApiModelProperty(
             position = 28,
@@ -131,10 +132,10 @@ public class RsTpsfBasisBestilling {
 
     @ApiModelProperty(
             position = 29,
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             value = "Innvandret fra land flyttedato. Hvis blankt settes dato lik fødselsdato"
     )
-    private LocalDateTime innvandretFraLandFlyttedato;
+    private ZonedDateTime innvandretFraLandFlyttedato;
 
     @ApiModelProperty(
             position = 30,
@@ -144,14 +145,14 @@ public class RsTpsfBasisBestilling {
 
     @ApiModelProperty(
             position = 31,
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             value = "Utvandret til land flyttedato. Hvis blankt og utvandret til land er satt benyttes dagens dato"
     )
-    private LocalDateTime utvandretTilLandFlyttedato;
+    private ZonedDateTime utvandretTilLandFlyttedato;
 
     @ApiModelProperty(
             position = 32,
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             value = "Sette dødsdato på person"
     )
     private LocalDateTime doedsdato;

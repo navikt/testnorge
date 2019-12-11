@@ -1,6 +1,6 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -26,8 +26,8 @@ public class RsSivilstandRequest {
     @ApiModelProperty(
             position = 2,
             required = true,
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             value = "Sivilstand gjelder fra denne dato"
     )
-    private LocalDateTime sivilstandRegdato;
+    private ZonedDateTime sivilstandRegdato;
 }

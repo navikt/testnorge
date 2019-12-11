@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
@@ -52,7 +53,7 @@ class TestgruppeControllerPostTest extends TestgruppeTestBase {
 
         RsTpsfUtvidetBestilling tpsfBestilling = RsTpsfUtvidetBestilling.builder()
                 .kjonn("M")
-                .foedtEtter(LocalDate.of(2000, 1, 1).atStartOfDay())
+                .foedtEtter(LocalDate.of(2000, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()))
                 .build();
 
         RsDollyBestillingRequest rsDollyBestillingRequest = new RsDollyBestillingRequest();

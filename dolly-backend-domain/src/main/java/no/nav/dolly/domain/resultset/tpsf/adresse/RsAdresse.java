@@ -1,6 +1,6 @@
 package no.nav.dolly.domain.resultset.tpsf.adresse;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -53,9 +53,9 @@ public abstract class RsAdresse {
 
     @ApiModelProperty(
             position = 1,
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             value = "Flyttedato for adresse. Hvis tomt blir flyttedato identisk med fødselsdato"
     )
-    private LocalDateTime flyttedato;
+    private ZonedDateTime flyttedato;
 
 }

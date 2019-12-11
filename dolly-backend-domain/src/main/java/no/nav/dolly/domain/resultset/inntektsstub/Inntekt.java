@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.inntektsstub;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.util.JsonZonedDateTimeDeserializer;
 
 @Getter
 @Setter
@@ -31,18 +33,20 @@ public class Inntekt {
     @ApiModelProperty(
             value = "Startdato på perioden inntekten var opptjent",
             example = "yyyy-MM-dd",
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             position = 3
     )
-    private LocalDateTime startOpptjeningsperiode;
+    @JsonDeserialize(using = JsonZonedDateTimeDeserializer.class)
+    private ZonedDateTime startOpptjeningsperiode;
 
     @ApiModelProperty(
             value = "Sluttdato på perioden inntekten var opptjent",
             example = "yyyy-MM-dd",
-            dataType = "LocalDateTime",
+            dataType = "ZonedDateTime",
             position = 4
     )
-    private LocalDateTime sluttOpptjeningsperiode;
+    @JsonDeserialize(using = JsonZonedDateTimeDeserializer.class)
+    private ZonedDateTime sluttOpptjeningsperiode;
 
     @ApiModelProperty(
             position = 5

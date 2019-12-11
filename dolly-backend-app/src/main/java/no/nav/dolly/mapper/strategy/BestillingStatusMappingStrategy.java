@@ -21,7 +21,6 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.mapper.MappingStrategy;
 import springfox.documentation.spring.web.json.Json;
@@ -38,7 +37,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<Bestilling, RsBestillingStatus>() {
                     @Override public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
 
-                        RsDollyBestillingRequest bestillingRequest = mapBestillingRequest(bestilling.getBestKriterier());
+                        RsBestillingStatus.RsBestilling rsBestilling = mapBestillingRequest(bestilling.getBestKriterier());
                         bestillingStatus.setAntallLevert(bestilling.getProgresser().size());
                         bestillingStatus.setEnvironments(Arrays.asList(bestilling.getMiljoer().split(",")));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
@@ -52,25 +51,25 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildUdiStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildInntektsstubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
-                                .pdlforvalter(bestillingRequest.getPdlforvalter())
-                                .aareg(bestillingRequest.getAareg())
-                                .krrstub(bestillingRequest.getKrrstub())
-                                .arenaforvalter(bestillingRequest.getArenaforvalter())
-                                .instdata(bestillingRequest.getInstdata())
-                                .inntektsstub(bestillingRequest.getInntektsstub())
-                                .sigrunstub(bestillingRequest.getSigrunstub())
-                                .udistub(bestillingRequest.getUdistub())
+                                .pdlforvalter(rsBestilling.getPdlforvalter())
+                                .aareg(rsBestilling.getAareg())
+                                .krrstub(rsBestilling.getKrrstub())
+                                .arenaforvalter(rsBestilling.getArenaforvalter())
+                                .instdata(rsBestilling.getInstdata())
+                                .inntektsstub(rsBestilling.getInntektsstub())
+                                .sigrunstub(rsBestilling.getSigrunstub())
+                                .udistub(rsBestilling.getUdistub())
                                 .tpsf(mapperFacade.map(bestilling.getTpsfKriterier(), Json.class))
                                 .build());
                     }
 
-                    private RsDollyBestillingRequest mapBestillingRequest(String jsonInput) {
+                    private RsBestillingStatus.RsBestilling mapBestillingRequest(String jsonInput) {
                         try {
-                            return objectMapper.readValue(jsonInput, RsDollyBestillingRequest.class);
+                            return objectMapper.readValue(jsonInput, RsBestillingStatus.RsBestilling.class);
                         } catch (IOException e) {
                             log.error("Mapping av JSON fra database bestKriterier feilet.");
                         }
-                        return new RsDollyBestillingRequest();
+                        return new RsBestillingStatus.RsBestilling();
                     }
                 })
                 .byDefault()

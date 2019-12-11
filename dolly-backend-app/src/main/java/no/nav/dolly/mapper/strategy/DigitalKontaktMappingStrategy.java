@@ -1,6 +1,10 @@
 package no.nav.dolly.mapper.strategy;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
+
+import java.time.ZonedDateTime;
+import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
@@ -8,10 +12,6 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.mapper.MappingStrategy;
-import org.springframework.stereotype.Component;
-
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 @Component
 public class DigitalKontaktMappingStrategy implements MappingStrategy {
@@ -37,9 +37,7 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
                     }
 
                     private ZonedDateTime getDato(RsDigitalKontaktdata digitalKontaktdata) {
-                        return nonNull(digitalKontaktdata.getGyldigFra()) ?
-                                ZonedDateTime.of(digitalKontaktdata.getGyldigFra(), ZoneId.systemDefault()) :
-                                ZonedDateTime.now();
+                        return nullcheckSetDefaultValue(digitalKontaktdata.getGyldigFra(), ZonedDateTime.now());
                     }
                 })
                 .exclude("gyldigFra")

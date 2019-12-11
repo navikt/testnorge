@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Getter
@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RsPdlRettIdentitetVedOpplysninger extends RsPdlRettIdentitet {
 
-    private LocalDateTime foedselsdato;
+    private ZonedDateTime foedselsdato;
     private PdlKjoenn kjoenn;
     private PdlPersonnavn personnavn;
     private List<String> statsborgerskap;
