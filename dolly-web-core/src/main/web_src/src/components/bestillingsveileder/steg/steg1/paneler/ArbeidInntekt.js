@@ -8,10 +8,14 @@ import {
 export const ArbeidInntektPanel = ({ stateModifier }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
 
+	const infoTekst =
+		'Arbeidsforhold: \nDataene her blir lagt til AAREG. \n\nInntekt: \nSkatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.'
+
 	return (
 		<Panel
 			heading={ArbeidInntektPanel.heading}
 			startOpen
+			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 		>

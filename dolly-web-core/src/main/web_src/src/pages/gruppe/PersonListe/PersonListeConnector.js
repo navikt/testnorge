@@ -13,7 +13,4 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = { fetchTpsfPersoner }
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(personListe)
+export default connect(mapStateToProps, mapDispatchToProps)(personListe)

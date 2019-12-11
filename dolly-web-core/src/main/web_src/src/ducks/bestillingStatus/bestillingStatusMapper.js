@@ -13,7 +13,7 @@
 import _get from 'lodash/get'
 import Formatters from '~/utils/DataFormatter'
 
-const finnnesDetAvvik = status => {
+const finnesDetAvvikForBestillinger = status => {
 	if (!status) return false
 	return status.some(source => {
 		return source.statuser.some(status => status.melding !== 'OK')
@@ -69,9 +69,9 @@ const extractValuesForBestillingListe = (data, statusKode) => {
 	return Object.values(values)
 }
 
-export default function BestillingStatusMapper(data) {
+export default function bestillingStatusMapper(data) {
 	return data.map(bestilling => {
-		const harAvvik = finnnesDetAvvik(bestilling.status)
+		const harAvvik = finnesDetAvvikForBestillinger(bestilling.status)
 		const antallIdenterOpprettet = antallIdenterOpprettetPaaBestilling(bestilling.status)
 		const statusKode = extractBestillingstatusKode(bestilling, harAvvik, antallIdenterOpprettet)
 		const listedata = extractValuesForBestillingListe(bestilling, statusKode)

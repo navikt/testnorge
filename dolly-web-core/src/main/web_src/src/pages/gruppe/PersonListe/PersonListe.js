@@ -6,6 +6,12 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
+import EtikettBase from 'nav-frontend-etiketter'
+
+const etikettTypeMap = {
+	Ferdig: 'suksess',
+	Avvik: 'fokus'
+}
 
 export default function PersonListe({ isFetching, personListe, searchActive, fetchTpsfPersoner }) {
 	useMount(fetchTpsfPersoner)
@@ -22,6 +28,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 	if (personListe.length <= 0 && searchActive) {
 		return <ContentContainer>Søket gav ingen resultater.</ContentContainer>
 	}
+
 	const columns = [
 		{
 			text: 'Ident',
@@ -53,6 +60,12 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			text: 'Bestilling-ID',
 			width: '10',
 			dataField: 'ident.bestillingId'
+		},
+		{
+			text: 'Status',
+			width: '10',
+			dataField: 'status',
+			formatter: (cell, row) => <EtikettBase type={etikettTypeMap[cell]}>{cell}</EtikettBase>
 		},
 		{
 			text: 'I bruk',

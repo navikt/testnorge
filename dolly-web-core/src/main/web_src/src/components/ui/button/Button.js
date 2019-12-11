@@ -27,7 +27,7 @@ export default class Button extends PureComponent {
 
 		return (
 			<button type={type} className={cssClass} onClick={this.onClickHandler} {...rest}>
-				{kind && <Icon size={iconSize} kind={kind} />}
+				{kind && <Icon size={iconSize || 16} kind={kind} />}
 				{children && <p>{children}</p>}
 			</button>
 		)

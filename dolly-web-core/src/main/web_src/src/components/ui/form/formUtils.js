@@ -12,13 +12,3 @@ export const panelError = formikBag => {
 }
 
 export const SyntEvent = (name, value) => ({ target: { name, value } })
-
-export const FieldArrayAddButton = ({ title, onClick }) => (
-	<Button className="flexbox--align-center field-group-add" kind="add-circle" onClick={onClick}>
-		{title}
-	</Button>
-)
-
-export const FieldArrayRemoveButton = ({ onClick }) => (
-	<Button className="field-group-remove" kind="remove-circle" onClick={onClick} title="Fjern" />
-)
