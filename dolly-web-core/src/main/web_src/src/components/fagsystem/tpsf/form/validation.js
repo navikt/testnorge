@@ -1,8 +1,6 @@
 import * as Yup from 'yup'
 import { requiredString, ifKeyHasValue, ifPresent } from '~/utils/YupValidations'
-import { isPromise } from 'formik'
 
-console.log('test :')
 export const validation = {
 	tpsf: Yup.object({
 		foedtEtter: Yup.date().nullable(),
@@ -25,30 +23,13 @@ export const validation = {
 		postadresse: Yup.array().of(
 			Yup.object({
 				postLand: requiredString,
-				/*postLinje3: Yup.string().when('postLinje2', {
-					is: ifPresent,
-					then: Yup.string()
-						.matches(/^\d{4}(\s|$)/, 'a')
-						.nullable(), //how to empty the textbox
-					otherwise: Yup.string().notRequired(),
-					validateOnBlur: true
-				}),
-				postLinje2: Yup.string().when('postLinje1', {
-					is: ifPresent,
-					then: Yup.string()
-						.matches(/^\d{4}(\s|$)/, 'b')
-						.nullable(), //empty when 3 is empty
-					otherwise: Yup.string().notRequired(),
-					validateOnBlur: true
-				}),*/
-				postLinje1: Yup.string().when('postLand', {
-					is: 'NOR',
-					then: Yup.string()
-						.matches(/^\d{4}(\s|$)/, 'c')
-						.nullable(), //empty when 3 is empty
-					otherwise: Yup.string().notRequired(),
-					validateOnBlur: true
-				})
+				postLinje1: requiredString,
+				postLinje3: Yup.string()
+					.matches(/\d{4}$/)
+					.when('PostLinje2', {
+						is: Yup.string().matches(/\d{4}$/),
+						then: Yup.string().notRequired()
+					})
 			})
 		)
 	})
