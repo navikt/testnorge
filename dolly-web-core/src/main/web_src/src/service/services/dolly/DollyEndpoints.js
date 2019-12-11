@@ -71,11 +71,11 @@ export default class DollyEndpoints {
 	}
 
 	static bestillinger(gruppeId) {
-		return `${bestillingBase}/gruppe/${gruppeId}`
+		return `${bestillingBase}/gruppe/${gruppeId}/ny`
 	}
 
 	static bestillingStatus(bestillingId) {
-		return `${bestillingBase}/${bestillingId}`
+		return `${bestillingBase}/${bestillingId}/ny`
 	}
 
 	static bestillingMal() {
@@ -83,7 +83,7 @@ export default class DollyEndpoints {
 	}
 
 	static gjenopprettBestilling(bestillingId, envs) {
-		return `${bestillingBase}/gjenopprett/${bestillingId}?miljoer=${envs}`
+		return `${bestillingBase}/gjenopprett/${bestillingId}?miljoer=${envs}/ny`
 	}
 
 	static config() {
@@ -95,7 +95,7 @@ export default class DollyEndpoints {
 	}
 
 	static removeBestilling(bestillingId) {
-		return `${bestillingBase}/stop/${bestillingId}`
+		return `${bestillingBase}/stop/${bestillingId}/ny`
 	}
 
 	static slettPerson(gruppeId, identId) {

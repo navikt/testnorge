@@ -6,7 +6,15 @@ import JiraLenker from '~/components/bestilling/jiraLenker/JiraLenker'
 export default function BestillingSammendrag({ bestilling }) {
 	return (
 		<div className="bestilling-detaljer">
-			<Bestillingskriterier bestilling={bestilling} header="Bestillingskriterier" />
+			<Bestillingskriterier
+				bestilling={bestilling.bestilling}
+				bestillingsinformasjon={{
+					antallIdenter: bestilling.antallIdenter,
+					sistOppdatert: bestilling.sistOppdatert,
+					opprettetFraId: bestilling.opprettetFraId
+				}}
+				header="Bestillingskriterier"
+			/>
 			<MiljoeStatus bestilling={bestilling} />
 			<JiraLenker openAm={bestilling.openamSent && bestilling.openamSent.split(',')} />
 		</div>
