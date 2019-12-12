@@ -18,5 +18,5 @@ export default function TilgjengeligeMiljoer({ endepunkt }) {
 		message = state.error.message
 	}
 
-	return <span>Tilgjengelige miljø: {message}</span>
+	return <span>{message}</span>
 }

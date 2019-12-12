@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import _mapValues from 'lodash/mapValues'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
 import { FormikCheckbox, DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { MiljoeInfo } from '~/components/miljoeInfo/MiljoeInfo'
 
 import './MiljoVelger.less'
 
@@ -12,13 +13,14 @@ export default class MiljoVelger extends Component {
 	}
 
 	render() {
-		const { heading, arrayHelpers, environments } = this.props
+		const { formikBag, heading, arrayHelpers, environments } = this.props
 		if (!environments) return null
 
 		const order = ['U', 'T', 'Q']
 		return (
 			<div className="miljo-velger">
 				<h2>{heading}</h2>
+				<MiljoeInfo formikBag={formikBag} />
 				{order.map(type => this.renderEnvCategory(environments[type], type))}
 				{this.renderError(arrayHelpers)}
 			</div>
