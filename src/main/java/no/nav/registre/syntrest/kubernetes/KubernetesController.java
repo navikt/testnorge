@@ -6,6 +6,10 @@ import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptions;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -13,6 +17,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -20,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 import org.yaml.snakeyaml.Yaml;
 
+import java.net.ProxySelector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class KubernetesController {
 
+    private static final int TIMEOUT = 120_000;
     private final String GROUP = "nais.io";
     private final String VERSION = "v1alpha1";
     private final String NAMESPACE = "q2";
@@ -62,7 +69,18 @@ public class KubernetesController {
         this.api = customObjectsApi;
         this.authRestTemplate = restTemplateBuilder.build();
         this.authRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(github_username, github_password));
-        this.restTemplate = restTemplateBuilder.build();
+        this.restTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
+                        .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
+                        .setSSLHostnameVerifier(new DefaultHostnameVerifier())
+                        .setDefaultRequestConfig(RequestConfig.custom()
+                                .setConnectTimeout(TIMEOUT)
+                                .setSocketTimeout(TIMEOUT)
+                                .setConnectionRequestTimeout(TIMEOUT)
+                                .build())
+                        .setMaxConnPerRoute(2000)
+                        .setMaxConnTotal(5000)
+                        .build()))
+                .build();
     }
 
     public void deployImage(String appName) throws ApiException, InterruptedException {
