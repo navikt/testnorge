@@ -1,6 +1,6 @@
 package no.nav.dolly.domain.resultset.inntektsstub;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -59,18 +59,18 @@ public class Tilleggsinformasjon {
     private static class Periode {
 
         @ApiModelProperty(
-                dataType = "ZonedDateTime",
+                dataType = "LocalDateTime",
                 example = "yyyy-MM-dd",
                 position = 1
         )
-        private ZonedDateTime startdato;
+        private LocalDateTime startdato;
 
         @ApiModelProperty(
-                dataType = "ZonedDateTime",
+                dataType = "LocalDateTime",
                 example = "yyyy-MM-dd",
                 position = 2
         )
-        private ZonedDateTime sluttdato;
+        private LocalDateTime sluttdato;
     }
 
     @Getter

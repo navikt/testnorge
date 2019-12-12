@@ -1,8 +1,7 @@
 package no.nav.dolly.domain.resultset.aareg;
 
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.time.LocalDateTime;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.util.JsonZonedDateTimeDeserializer;
 
 @Getter
 @Setter
@@ -51,9 +49,8 @@ public class RsArbeidsavtale {
     private BigDecimal antallKonverterteTimer;
 
     @ApiModelProperty(
-            dataType = "ZonedDateTime",
+            dataType = "LocalDateTime",
             position = 7
     )
-    @JsonDeserialize(using = JsonZonedDateTimeDeserializer.class)
-    private ZonedDateTime endringsdatoStillingsprosent;
+    private LocalDateTime endringsdatoStillingsprosent;
 }

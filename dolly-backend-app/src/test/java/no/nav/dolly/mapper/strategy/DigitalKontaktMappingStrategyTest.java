@@ -5,23 +5,24 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import org.junit.Before;
-import org.junit.Test;
-
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 public class DigitalKontaktMappingStrategyTest {
 
     private static final String EPOST = "test@nav.no";
     private static final String MOBIL = "99990000";
     private static final boolean RESERVERT = true;
-    private static final ZonedDateTime GYLDIG_FRA = LocalDateTime.of(2018, 1, 1, 0, 0).atZone(ZoneId.systemDefault());
+    private static final LocalDateTime GYLDIG_FRA = LocalDateTime.of(2018, 1, 1, 0, 0);
+    private static final ZonedDateTime Z_GYLDIG_FRA = ZonedDateTime.of(GYLDIG_FRA, ZoneId.systemDefault());
 
     private MapperFacade mapperFacade;
 
@@ -45,7 +46,7 @@ public class DigitalKontaktMappingStrategyTest {
         assertThat(result.getMobil(), is(nullValue()));
         assertThat(result.getMobilOppdatert(), is(nullValue()));
         assertThat(result.getMobilVerifisert(), is(nullValue()));
-        assertThat(result.getGyldigFra(), is(equalTo(GYLDIG_FRA)));
+        assertThat(result.getGyldigFra(), is(equalTo(Z_GYLDIG_FRA)));
     }
 
     @Test
@@ -57,8 +58,8 @@ public class DigitalKontaktMappingStrategyTest {
                 .build(), DigitalKontaktdata.class);
 
         assertThat(result.getMobil(), is(equalTo(MOBIL)));
-        assertThat(result.getMobilOppdatert(), is(equalTo(GYLDIG_FRA)));
-        assertThat(result.getMobilVerifisert(), is(equalTo(GYLDIG_FRA)));
+        assertThat(result.getMobilOppdatert(), is(equalTo(Z_GYLDIG_FRA)));
+        assertThat(result.getMobilVerifisert(), is(equalTo(Z_GYLDIG_FRA)));
     }
 
     @Test
@@ -70,7 +71,7 @@ public class DigitalKontaktMappingStrategyTest {
                 .build(), DigitalKontaktdata.class);
 
         assertThat(result.getEpost(), is(equalTo(EPOST)));
-        assertThat(result.getEpostOppdatert(), is(equalTo(GYLDIG_FRA)));
-        assertThat(result.getEpostVerifisert(), is(equalTo(GYLDIG_FRA)));
+        assertThat(result.getEpostOppdatert(), is(equalTo(Z_GYLDIG_FRA)));
+        assertThat(result.getEpostVerifisert(), is(equalTo(Z_GYLDIG_FRA)));
     }
 }

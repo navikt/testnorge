@@ -6,13 +6,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdlforvalter.mapper.PdlFalskIdentitetMappingStrategy;
 import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
@@ -23,6 +16,12 @@ import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlRettIdentite
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.RsPdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.RsPdlRettIdentitetVedOpplysninger;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.time.LocalDateTime;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PdlFalskIdentitetMappingStrategyTest {
@@ -39,7 +38,7 @@ public class PdlFalskIdentitetMappingStrategyTest {
 
     @Before
     public void setup() {
-        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new ZonedDateTime2LocalDateCustomMapping(), new PdlFalskIdentitetMappingStrategy());
+        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new PdlFalskIdentitetMappingStrategy());
     }
 
     @Test
@@ -71,7 +70,7 @@ public class PdlFalskIdentitetMappingStrategyTest {
 
         PdlFalskIdentitet falskIdentitet = mapperFacade.map(RsPdlFalskIdentitet.builder()
                 .rettIdentitet(RsPdlRettIdentitetVedOpplysninger.builder()
-                        .foedselsdato(FOEDSEL_DATO.atZone(ZoneId.systemDefault()))
+                        .foedselsdato(FOEDSEL_DATO)
                         .kjoenn(PdlKjoenn.MANN)
                         .personnavn(PdlPersonnavn.builder()
                                 .fornavn(FORNAVN)

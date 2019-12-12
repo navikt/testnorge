@@ -2,7 +2,7 @@ package no.nav.dolly.domain.resultset.entity.bestilling;
 
 import static java.util.Objects.isNull;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -35,7 +35,7 @@ public class RsBestillingStatus {
     private Integer antallIdenter;
     private Integer antallLevert;
     private boolean ferdig;
-    private ZonedDateTime sistOppdatert;
+    private LocalDateTime sistOppdatert;
     private String userId;
     private long gruppeId;
     private boolean stoppet;

@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +34,8 @@ public class PdlDoedsboMappingStrategyTest {
     private static final String ADRESSELINJE_1 = "Utmyra 5";
     private static final String ADRESSELINJE_2 = "Postboks 375";
     private static final LocalDate FODSELSDATO = LocalDate.of(1985, 5, 7);
+    private static final LocalDate GYLDIG_FOM = LocalDate.of(2019, 1, 22);
+    private static final LocalDate GYLDIG_TOM = LocalDate.of(2019, 5, 22);
     private static final LocalDate UTSTEDT_DATO = LocalDate.now();
     private static final String LANDKODE = "POL";
     private static final String POSTNUMMER = "2345";
@@ -44,7 +45,7 @@ public class PdlDoedsboMappingStrategyTest {
 
     @Before
     public void setup() {
-        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new ZonedDateTime2LocalDateCustomMapping(), new PdlDoedsboMappingStrategy());
+        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new PdlDoedsboMappingStrategy());
     }
 
     @Test
@@ -113,7 +114,7 @@ public class PdlDoedsboMappingStrategyTest {
                                         .fornavn(FORNAVN)
                                         .mellomnavn(MELLOMNAVN)
                                         .etternavn(ETTERNAVN).build())
-                                .foedselsdato(FODSELSDATO.atStartOfDay().atZone(ZoneId.systemDefault())).build())
+                                .foedselsdato(FODSELSDATO.atStartOfDay()).build())
                         .build()).build(), Pdldata.class);
 
         assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getKontaktpersonUtenIdNummerSomAdressat().getFoedselsdato(), is(FODSELSDATO));
@@ -129,7 +130,7 @@ public class PdlDoedsboMappingStrategyTest {
                 .kontaktinformasjonForDoedsbo(RsPdlKontaktinformasjonForDoedsbo.builder()
                         .adresselinje1(ADRESSELINJE_1)
                         .adresselinje2(ADRESSELINJE_2)
-                        .utstedtDato(UTSTEDT_DATO.atStartOfDay().atZone(ZoneId.systemDefault()))
+                        .utstedtDato(UTSTEDT_DATO.atStartOfDay())
                         .skifteform(PdlSkifteform.OFFENTLIG)
                         .landkode(LANDKODE)
                         .postnummer(POSTNUMMER)

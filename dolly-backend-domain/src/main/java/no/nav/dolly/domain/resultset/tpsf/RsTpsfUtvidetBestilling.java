@@ -1,6 +1,6 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -29,13 +29,13 @@ public class RsTpsfUtvidetBestilling extends RsTpsfBasisMedSivilstandBestilling 
             position = 2,
             value = "Født etter denne dato. Dafault velges voksne personer i alder 30-60, mens barn får alder 0-18"
     )
-    private ZonedDateTime foedtEtter;
+    private LocalDateTime foedtEtter;
 
     @ApiModelProperty(
             position = 4,
             value = "Født før denne dato. Dafault velges voksne personer i alder 30-60, mens barn får alder 0-18"
     )
-    private ZonedDateTime foedtFoer;
+    private LocalDateTime foedtFoer;
 
     @ApiModelProperty(
             position = 5,

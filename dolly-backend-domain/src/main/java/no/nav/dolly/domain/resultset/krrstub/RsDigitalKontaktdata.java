@@ -1,14 +1,12 @@
 package no.nav.dolly.domain.resultset.krrstub;
 
-import java.time.ZonedDateTime;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.util.JsonZonedDateTimeDeserializer;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -16,8 +14,7 @@ import no.nav.dolly.domain.resultset.util.JsonZonedDateTimeDeserializer;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RsDigitalKontaktdata {
-    @JsonDeserialize(using = JsonZonedDateTimeDeserializer.class)
-    private ZonedDateTime gyldigFra;
+    private LocalDateTime gyldigFra;
     private boolean reservert;
     private String mobil;
     private String epost;

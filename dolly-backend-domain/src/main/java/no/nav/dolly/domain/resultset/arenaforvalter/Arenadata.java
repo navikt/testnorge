@@ -1,8 +1,7 @@
 package no.nav.dolly.domain.resultset.arenaforvalter;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.util.JsonZonedDateTimeDeserializer;
 
 @Getter
 @Setter
@@ -33,10 +31,9 @@ public class Arenadata {
 
     @ApiModelProperty(
             position = 3,
-            dataType = "ZonedDateTime"
+            dataType = "LocalDateTime"
     )
-    @JsonDeserialize(using = JsonZonedDateTimeDeserializer.class)
-    private ZonedDateTime inaktiveringDato;
+    private LocalDateTime inaktiveringDato;
 
     @ApiModelProperty(
             position = 4,

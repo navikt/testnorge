@@ -1,8 +1,7 @@
 package no.nav.dolly.domain.resultset.pdlforvalter.doedsbo;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.util.JsonZonedDateTimeDeserializer;
 
 @Getter
 @Setter
@@ -69,9 +67,8 @@ public class RsPdlKontaktinformasjonForDoedsbo {
     @ApiModelProperty(
             position = 8,
             required = true,
-            dataType = "ZonedDateTime",
+            dataType = "LocalDateTime",
             value = "Dato for utstedelse"
     )
-    @JsonDeserialize(using = JsonZonedDateTimeDeserializer.class)
-    private ZonedDateTime utstedtDato;
+    private LocalDateTime utstedtDato;
 }
