@@ -71,7 +71,7 @@ export default class DollyEndpoints {
 	}
 
 	static bestillinger(gruppeId) {
-		return `${bestillingBase}/gruppe/${gruppeId}/ny`
+		return `${bestillingBase}/gruppe/${gruppeId}`
 	}
 
 	static bestillingStatus(bestillingId) {
