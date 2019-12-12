@@ -106,7 +106,7 @@ public class TestgruppeController {
         }
     }
 
-    @ApiOperation(value = "Opprett identer i TPS basert på fødselsdato, kjønn og identtype")
+    @ApiOperation(value = "Opprett berikede testpersoner basert på fødselsdato, kjønn og identtype")
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
@@ -117,7 +117,7 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
-    @ApiOperation(value = "Opprett identer i TPS fra ekisterende identer")
+    @ApiOperation(value = "Opprett berikede testpersoner basert på eskisterende identer")
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")

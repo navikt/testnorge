@@ -67,7 +67,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         try {
                             return objectMapper.readValue(jsonInput, RsBestillingStatus.RsBestilling.class);
                         } catch (IOException e) {
-                            log.error("Mapping av JSON fra database bestKriterier feilet.");
+                            log.error("Mapping av JSON fra database bestKriterier feilet. {}", e.getMessage(), e);
                         }
                         return new RsBestillingStatus.RsBestilling();
                     }
