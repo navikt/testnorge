@@ -8,8 +8,12 @@ import io.kubernetes.client.models.V1DeleteOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -37,10 +42,13 @@ public class KubernetesController {
     private final int retryDelay;
     @Value("${delete-application-url}")
     private String deleteApplicaitonUrl;
-    @Autowired
     private RestTemplate restTemplate;
+    private RestTemplate authRestTemplate;
 
-    public KubernetesController(CustomObjectsApi customObjectsApi,
+    public KubernetesController(RestTemplateBuilder restTemplateBuilder,
+                                CustomObjectsApi customObjectsApi,
+                                @Value("${github_username}") String github_username,
+                                @Value("${github_password}") String github_password,
                                 @Value("${isAlive}") String isAliveUrl,
                                 @Value("${docker-image-path}") String dockerImagePath,
                                 @Value("${max-alive-retries}") int maxRetries,
@@ -52,6 +60,9 @@ public class KubernetesController {
         this.maxRetries = maxRetries;
         this.retryDelay = retryDelay;
         this.api = customObjectsApi;
+        this.authRestTemplate = restTemplateBuilder.build();
+        this.authRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(github_username, github_password));
+        this.restTemplate = restTemplateBuilder.build();
     }
 
     public void deployImage(String appName) throws ApiException, InterruptedException {
@@ -161,7 +172,34 @@ public class KubernetesController {
         Map<String, Object> manifestFile = yaml.load(
                 getClass().getResourceAsStream(manifestPath.replace("{appName}", appName)));
 
+        Map<String, Object> spec = (Map) manifestFile.get("spec");
+        String imageBase = spec.get("image").toString();
+        String latestImage = imageBase.replace("latest", getApplicaitonTag(appName).orElse("latest"));
+        spec.put("image", latestImage);
+
         return manifestFile;
+    }
+
+
+    private Optional<String> getApplicaitonTag(String appName) {
+        String fileInfoUrl = "https://api.github.com/repos/navikt/synt/contents/package_versions.json";
+        ParameterizedTypeReference<Map<String, Object>> RESPONSE_TYPE = new ParameterizedTypeReference<Map<String, Object>>() {
+        };
+        ParameterizedTypeReference<Map<String, String>> JSON_RESPONSE = new ParameterizedTypeReference<Map<String, String>>() {
+        };
+        String tag;
+        try {
+            RequestEntity request = RequestEntity.get(new UriTemplate(fileInfoUrl).expand()).build();
+            Map<String, Object> fileInfo = (Map<String, Object>) authRestTemplate.exchange(request, RESPONSE_TYPE);
+            String downloadUrl = (String) fileInfo.get("download_url");
+
+            request = RequestEntity.get(new UriTemplate(downloadUrl).expand()).build();
+            Map<String, String> fileTags = (Map<String, String>) authRestTemplate.exchange(request, JSON_RESPONSE);
+            tag = fileTags.get(appName);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+        return Optional.of(tag);
     }
 
 }
