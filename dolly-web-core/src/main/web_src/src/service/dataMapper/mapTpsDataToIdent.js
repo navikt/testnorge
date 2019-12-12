@@ -338,10 +338,12 @@ export function mapTpsfData(tpsfData, tpsfKriterier) {
 							label: 'statsborgerskap',
 							value:
 								relasjonstype === 'Barn' &&
-								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].statsborgerskap
-									? relasjon.personRelasjonMed.statsborgerskap
-									: relasjonstype === 'Partner' && tpsfKriterier.relasjoner.partner.statsborgerskap
-									? relasjon.personRelasjonMed.statsborgerskap
+								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].statsborgerskap[0]
+									.statsborgerskap
+									? relasjon.personRelasjonMed.statsborgerskap[0].statsborgerskap
+									: relasjonstype === 'Partner' &&
+									  tpsfKriterier.relasjoner.partner.statsborgerskap[0].statsborgerskap
+									? relasjon.personRelasjonMed.statsborgerskap[0].statsborgerskap
 									: null,
 							apiKodeverkId: 'Landkoder'
 						},
@@ -350,10 +352,16 @@ export function mapTpsfData(tpsfData, tpsfKriterier) {
 							label: 'Statsborgerskap fra',
 							value:
 								relasjonstype === 'Barn' &&
-								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].statsborgerskap
-									? Formatters.formatDate(relasjon.personRelasjonMed.statsborgerskapRegdato)
-									: relasjonstype === 'Partner' && tpsfKriterier.relasjoner.partner.statsborgerskap
-									? Formatters.formatDate(relasjon.personRelasjonMed.statsborgerskapRegdato)
+								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].statsborgerskap[0]
+									.statsborgerskap
+									? Formatters.formatDate(
+											relasjon.personRelasjonMed.statsborgerskap[0].statsborgerskapRegdato
+									  )
+									: relasjonstype === 'Partner' &&
+									  tpsfKriterier.relasjoner.partner.statsborgerskap[0].statsborgerskap
+									? Formatters.formatDate(
+											relasjon.personRelasjonMed.statsborgerskap[0].statsborgerskapRegdato
+									  )
 									: null
 						},
 						{
