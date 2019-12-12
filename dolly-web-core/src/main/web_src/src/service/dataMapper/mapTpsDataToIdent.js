@@ -86,20 +86,20 @@ export function mapTpsfData(tpsfData, tpsfKriterier) {
 		}
 	]
 
-	if (tpsfData.statsborgerskap) {
+	if (tpsfData.statsborgerskap[0]) {
 		data.push({
 			header: 'Nasjonalitet',
 			data: [
 				{
 					id: 'statsborgerskap',
 					label: 'Statsborgerskap',
-					value: tpsfData.statsborgerskap,
+					value: tpsfData.statsborgerskap[0].statsborgerskap,
 					apiKodeverkId: 'Landkoder'
 				},
 				{
 					id: 'statsborgerskapRegdato',
 					label: 'Statsborgerskap fra',
-					value: Formatters.formatDate(tpsfData.statsborgerskapRegdato)
+					value: Formatters.formatDate(tpsfData.statsborgerskap[0].statsborgerskapRegdato)
 				},
 				{
 					id: 'sprakKode',
