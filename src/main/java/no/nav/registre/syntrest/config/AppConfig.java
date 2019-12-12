@@ -43,6 +43,10 @@ public class AppConfig {
     private int maxRetries;
     @Value("${alive-retry-delay}")
     private int retryDelay;
+    @Value("${github_username}")
+    private String github_username;
+    @Value("${github_password}")
+    private String github_password;
 
     @Bean
     ScheduledExecutorService scheduledExecutorService() {
@@ -88,9 +92,12 @@ public class AppConfig {
     }
 
     @Bean
-    @DependsOn({"restTemplate", "customObjectsApi"})
+    RestTemplateBuilder restTemplateBuilder() { return new RestTemplateBuilder(); }
+
+    @Bean
+    @DependsOn({"restTemplateBuilder", "customObjectsApi"})
     public KubernetesController kubernetesController() {
-        return new KubernetesController(customObjectsApi(),
+        return new KubernetesController(restTemplateBuilder(), customObjectsApi(), github_username, github_password,
                 isAliveUrl, dockerImagePath, maxRetries, retryDelay);
     }
 

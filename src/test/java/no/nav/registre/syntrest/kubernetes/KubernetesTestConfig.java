@@ -4,6 +4,7 @@ import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -21,8 +22,8 @@ public class KubernetesTestConfig {
         return Mockito.mock(CustomObjectsApi.class);
     }
     @Bean
-    RestTemplate restTemplate() {
-        return new RestTemplate();
+    RestTemplateBuilder restTemplateBuilder() {
+        return new RestTemplateBuilder();
     }
 
     @Value("${isAlive}")
@@ -33,8 +34,12 @@ public class KubernetesTestConfig {
     private int maxRetries;
     @Value("${alive-retry-delay}")
     private int retryDelay;
+    @Value("${github_username}")
+    private String github_username;
+    @Value("${github_password}")
+    private String github_password;
     @Bean
     KubernetesController kubernetesController() {
-        return new KubernetesController(customObjectsApi(), isAliveUrl, dockerImagePath, maxRetries, retryDelay);
+        return new KubernetesController(restTemplateBuilder(), customObjectsApi(), github_username, github_password, isAliveUrl, dockerImagePath, maxRetries, retryDelay);
     }
 }
