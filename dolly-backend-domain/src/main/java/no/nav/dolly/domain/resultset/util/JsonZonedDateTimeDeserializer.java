@@ -3,8 +3,6 @@ package no.nav.dolly.domain.resultset.util;
 import static java.util.Objects.nonNull;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -14,6 +12,6 @@ public class JsonZonedDateTimeDeserializer extends JsonDeserializer<ZonedDateTim
 
     @Override public ZonedDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
 
-        return nonNull(jsonParser.getValueAsString()) ? LocalDateTime.parse(jsonParser.getValueAsString()).atZone(ZoneId.systemDefault()) : null;
+        return nonNull(jsonParser.getValueAsString()) ? ZonedDateTime.parse(jsonParser.getValueAsString()) : null;
     }
 }
