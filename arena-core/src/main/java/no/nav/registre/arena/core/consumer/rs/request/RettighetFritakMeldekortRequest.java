@@ -13,7 +13,7 @@ import no.nav.registre.arena.core.consumer.rs.responses.rettighet.NyRettighet;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RettighetUngUfoerRequest extends RettighetRequest {
+public class RettighetFritakMeldekortRequest extends RettighetRequest {
 
-    private List<NyRettighet> nyeAaungufor;
+    private List<NyRettighet> nyeFritak;
 }

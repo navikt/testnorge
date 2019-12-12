@@ -1,4 +1,4 @@
-package no.nav.registre.arena.core.consumer.rs.responses.rettighet.UngUfoer;
+package no.nav.registre.arena.core.consumer.rs.responses.rettighet;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UngUfoerForvalterResponse {
+public class Konto {
 
-    private List<NyeAaUngUfoer> nyeAaungufor;
-    private List<NyeAaUngUfoerFeil> nyeAaunguforFeilList;
+    private String kontonr;
+    private List<UtlandKontoInfo> utland;
 }

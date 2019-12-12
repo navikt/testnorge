@@ -10,8 +10,11 @@ import org.springframework.web.util.UriTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
-import no.nav.registre.arena.core.consumer.rs.responses.rettighet.UngUfoer.UngUfoerForvalterResponse;
+import no.nav.registre.arena.core.consumer.rs.responses.rettighet.ArenaForvalterNyRettighetResponse;
 
 @Component
 public class RettighetArenaForvalterConsumer {
@@ -22,6 +25,8 @@ public class RettighetArenaForvalterConsumer {
     private final RestTemplate restTemplate;
 
     private UriTemplate opprettUngUfoerRettighetUrl;
+    private UriTemplate opprettTvungenForvaltningRettighetUrl;
+    private UriTemplate opprettFritakMeldekortRettighetUrl;
 
     public RettighetArenaForvalterConsumer(
             RestTemplateBuilder restTemplateBuilder,
@@ -29,16 +34,28 @@ public class RettighetArenaForvalterConsumer {
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.opprettUngUfoerRettighetUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/aapungufor");
+        this.opprettTvungenForvaltningRettighetUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/aaptvungenforvaltning");
+        this.opprettFritakMeldekortRettighetUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/aapfritakmeldekort");
     }
 
-    public List<UngUfoerForvalterResponse> opprettRettighetUngUfoer(List<RettighetUngUfoerRequest> rettigheter) {
-        List<UngUfoerForvalterResponse> responses = new ArrayList<>();
-        for (RettighetUngUfoerRequest rettighet : rettigheter) {
-            RequestEntity postRequest = RequestEntity.post(opprettUngUfoerRettighetUrl.expand())
+    public List<ArenaForvalterNyRettighetResponse> opprettRettighet(List<RettighetRequest> rettigheter) {
+        List<ArenaForvalterNyRettighetResponse> responses = new ArrayList<>();
+        for (RettighetRequest rettighet : rettigheter) {
+            UriTemplate url;
+            if (rettighet instanceof RettighetUngUfoerRequest) {
+                url = opprettUngUfoerRettighetUrl;
+            } else if (rettighet instanceof RettighetTvungenForvaltningRequest) {
+                url = opprettTvungenForvaltningRettighetUrl;
+            } else if (rettighet instanceof RettighetFritakMeldekortRequest) {
+                url = opprettFritakMeldekortRettighetUrl;
+            } else {
+                throw new RuntimeException("Unkown URL");
+            }
+            RequestEntity postRequest = RequestEntity.post(url.expand())
                     .header("Nav-Call-Id", NAV_CALL_ID)
                     .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                     .body(rettighet);
-            responses.add(restTemplate.exchange(postRequest, UngUfoerForvalterResponse.class).getBody());
+            responses.add(restTemplate.exchange(postRequest, ArenaForvalterNyRettighetResponse.class).getBody());
         }
         return responses;
     }

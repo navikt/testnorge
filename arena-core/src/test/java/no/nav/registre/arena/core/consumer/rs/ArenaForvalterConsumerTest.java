@@ -37,7 +37,7 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 8082)
+@AutoConfigureWireMock(port = 0)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ContextConfiguration(classes = {ArenaForvalterConsumer.class, AppConfig.class})
 @EnableAutoConfiguration

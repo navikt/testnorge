@@ -1,5 +1,6 @@
-package no.nav.registre.arena.core.consumer.rs.responses.rettighet.UngUfoer;
+package no.nav.registre.arena.core.consumer.rs.responses.rettighet;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,10 +12,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NyeAaUngUfoerFeil {
+public class NyRettighetFeil {
 
     private String personident;
     private String miljoe;
-    private String nyAaunguforFeilstatus;
+
+    @JsonAlias({"nyAaunguforFeilstatus", "nyAatforFeilstatus", "nyFritakFeilstatus"})
+    private String status;
     private String melding;
 }

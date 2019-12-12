@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetSyntRequest;
-import no.nav.registre.arena.core.consumer.rs.responses.rettighet.UngUfoer.UngUfoerSyntResponse;
+import no.nav.registre.arena.core.consumer.rs.responses.rettighet.NyRettighet;
 
 @Component
 public class RettighetSyntConsumer {
@@ -29,8 +29,8 @@ public class RettighetSyntConsumer {
 
     private UriTemplate arenaAapUrl;
     private UriTemplate arenaAapUngUfoerUrl;
-    private UriTemplate arenaAapAatforUrl;
-    private UriTemplate arenaAapFriMkUrl;
+    private UriTemplate arenaAapTvungenForvaltningUrl;
+    private UriTemplate arenaAapFritakMeldekortUrl;
 
     @Autowired public RettighetSyntConsumer(
             RestTemplateBuilder restTemplateBuilder,
@@ -40,12 +40,30 @@ public class RettighetSyntConsumer {
         this.restTemplate = restTemplateBuilder.build();
         this.arenaAapUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap");
         this.arenaAapUngUfoerUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap/aaungufor");
-        this.arenaAapAatforUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap/aatfor");
-        this.arenaAapFriMkUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap/fri_mk");
+        this.arenaAapTvungenForvaltningUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap/aatfor");
+        this.arenaAapFritakMeldekortUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap/fri_mk");
         this.rand = rand;
     }
 
-    public List<UngUfoerSyntResponse> syntetiserRettighetUngUfoer(int antallMeldinger) {
+    public List<NyRettighet> syntetiserRettighetUngUfoer(int antallMeldinger) {
+        RequestEntity postRequest = createPostRequest(arenaAapUngUfoerUrl, antallMeldinger);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyRettighet>>() {
+        }).getBody();
+    }
+
+    public List<NyRettighet> syntetiserRettighetTvungenForvaltning(int antallMeldinger) {
+        RequestEntity postRequest = createPostRequest(arenaAapTvungenForvaltningUrl, antallMeldinger);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyRettighet>>() {
+        }).getBody();
+    }
+
+    public List<NyRettighet> syntetiserRettighetFritakMeldekort(int antallMeldinger) {
+        RequestEntity postRequest = createPostRequest(arenaAapFritakMeldekortUrl, antallMeldinger);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyRettighet>>() {
+        }).getBody();
+    }
+
+    private RequestEntity createPostRequest(UriTemplate uri, int antallMeldinger) {
         List<RettighetSyntRequest> requester = new ArrayList<>();
         for (int i = 0; i < antallMeldinger; i++) {
             requester.add(RettighetSyntRequest.builder()
@@ -54,10 +72,8 @@ public class RettighetSyntConsumer {
                     .startDato(LocalDate.now().minusMonths(rand.nextInt(12)))
                     .build());
         }
-        RequestEntity postRequest = RequestEntity
-                .post(arenaAapUngUfoerUrl.expand())
+        return RequestEntity
+                .post(uri.expand())
                 .body(requester);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<UngUfoerSyntResponse>>() {
-        }).getBody();
     }
 }
