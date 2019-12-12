@@ -544,21 +544,21 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Status', currentTredjelandsborgereStatus),
 				obj(
 					'Oppholdstillatelse fra dato',
-					Formatters.formatStringDates(
+					Formatters.formatDate(
 						_get(oppholdKriterier, `${currentOppholdsrettType}Periode.fra`) ||
 							_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
 					)
 				),
 				obj(
 					'Oppholdstillatelse til dato',
-					Formatters.formatStringDates(
+					Formatters.formatDate(
 						_get(oppholdKriterier, `${currentOppholdsrettType}Periode.til`) ||
 							_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
 					)
 				),
 				obj(
 					'Effektueringsdato',
-					Formatters.formatStringDates(
+					Formatters.formatDate(
 						_get(oppholdKriterier, `${currentOppholdsrettType}Effektuering`) ||
 							_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdSammeVilkaarEffektuering')
 					)
@@ -577,7 +577,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				),
 				obj(
 					'Vedtaksdato',
-					Formatters.formatStringDates(
+					Formatters.formatDate(
 						_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdstillatelseVedtaksDato')
 					)
 				),
@@ -603,11 +603,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				),
 				obj(
 					'Arbeidsadgang fra dato',
-					Formatters.formatStringDates(_get(arbeidsadgangKriterier, 'periode.fra'))
+					Formatters.formatDate(_get(arbeidsadgangKriterier, 'periode.fra'))
 				),
 				obj(
 					'Arbeidsadgang til dato',
-					Formatters.formatStringDates(_get(arbeidsadgangKriterier, 'periode.til'))
+					Formatters.formatDate(_get(arbeidsadgangKriterier, 'periode.til'))
 				),
 				obj('Alias', aliaserListe.length > 0 && aliaserListe),
 				obj('Flyktningstatus', Formatters.oversettBoolean(udiStubKriterier.flyktning)),
