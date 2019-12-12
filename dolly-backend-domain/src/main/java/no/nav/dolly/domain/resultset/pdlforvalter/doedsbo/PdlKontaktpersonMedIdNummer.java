@@ -14,4 +14,9 @@ import lombok.Setter;
 public class PdlKontaktpersonMedIdNummer extends PdlSomAdressat {
 
     private String idnummer;
+
+    @Override
+    public String getAdressatType() {
+        return "PERSON_MEDID";
+    }
 }

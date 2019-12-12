@@ -135,6 +135,11 @@ public class BestillingService {
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, RsTpsfBasisBestilling tpsf, Integer antall, List<String> opprettFraIdenter) {
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+
+        //Fix abstract class problem
+        if(nonNull(request.getPdlforvalter()) && nonNull(request.getPdlforvalter().getKontaktinformasjonForDoedsbo())) {
+            request.getPdlforvalter().getKontaktinformasjonForDoedsbo().setAdressat(request.getPdlforvalter().getKontaktinformasjonForDoedsbo().getAdressat());
+        }
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)

@@ -54,4 +54,6 @@ public abstract class PdlSomAdressat {
                     "}"
     )
     private String adressatType;
+
+    public abstract String getAdressatType();
 }

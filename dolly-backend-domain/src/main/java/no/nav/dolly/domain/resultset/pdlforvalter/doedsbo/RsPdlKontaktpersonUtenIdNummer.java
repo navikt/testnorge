@@ -18,4 +18,8 @@ public class RsPdlKontaktpersonUtenIdNummer extends PdlSomAdressat {
 
     private LocalDateTime foedselsdato;
     private PdlPersonnavn navn;
+
+    @Override public String getAdressatType() {
+        return "PERSON_UTENID";
+    }
 }

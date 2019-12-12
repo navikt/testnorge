@@ -17,4 +17,8 @@ public class PdlOrganisasjon extends PdlSomAdressat {
     private PdlPersonnavn kontaktperson;
     private String organisasjonsnavn;
     private String organisasjonsnummer;
+
+    @Override public String getAdressatType() {
+        return "ORGANISASJON";
+    }
 }

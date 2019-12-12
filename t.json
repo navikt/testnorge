@@ -1,0 +1,36 @@
+{
+  "antall": 1,
+  "environments": [
+    "q2"
+  ],
+  "pdlforvalter": {
+    "kontaktinformasjonForDoedsbo": {
+      "adresselinje1": "Utmyra 2",
+      "adresselinje2": "5034 Fredrikstad",
+      "adressat": {
+        "adressatType": "ADVOKAT",
+        "kontaktperson": {
+          "etternavn": "Hansen",
+          "fornavn": "Gunnar",
+          "mellomnavn": "Peder"
+        },
+        "organisasjonsnavn": "Tvilsom praksis",
+        "organisasjonsnummer": "991003150"
+      },
+      "gyldigFom": "2019-04-05T00:00:00",
+      "landkode": "POL",
+      "postnummer": "1392",
+      "poststedsnavn": "VETTRE",
+      "skifteform": "OFFENTLIG",
+      "utstedtDato": "2019-04-04T00:00:00"
+    },
+    "utenlandskIdentifikasjonsnummer": {
+      "identifikasjonsnummer": "23412132432",
+      "opphoert": "false",
+      "utstederland": "AUT"
+    }
+  },
+  "tpsf": {
+    "identtype": "DNR"
+  }
+}
