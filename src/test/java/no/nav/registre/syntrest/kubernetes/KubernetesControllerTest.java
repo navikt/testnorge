@@ -54,9 +54,6 @@ public class KubernetesControllerTest {
     private CustomObjectsApi customObjectsApi;
 
     @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
     private KubernetesController kubernetesController;
     @Value("${isAlive}") String isAliveUrl;
 
