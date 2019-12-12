@@ -130,23 +130,27 @@ public class DollyBestillingService {
     }
 
     @Async
-    public void oppdaterPersonAsync(String ident, RsDollyUpdateRequest request, Bestilling bestilling) {
+    public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
         try {
-            BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident);
+            BestillingProgress progress = new BestillingProgress(bestilling.getId(), request.getIdent());
+            TpsfBestilling tpsfBestilling = nonNull(request.getTpsf()) ? mapperFacade.map(request.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
+            tpsfBestilling.setAntall(1);
 
-            tpsfService.updatePerson(request.getTpsfPerson());
-            sendIdenterTilTPS(request.getEnvironments(), singletonList(ident), null, progress);
-            gjenopprettNonTpsf(TpsPerson.builder().hovedperson(ident).build(), bestilling, progress);
+            Person person = tpsfService.endrePerson(request.getIdent(), tpsfBestilling);
+            sendIdenterTilTPS(request.getEnvironments(), singletonList(person.getIdent()), null, progress);
+
+            clientRegisters.forEach(clientRegister -> clientRegister.opprettEndre(request, progress));
+
+            oppdaterProgress(bestilling, progress);
 
         } catch (Exception e) {
-            log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), ident, e.getMessage(), e);
+            log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), request.getIdent(), e.getMessage(), e);
             bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
 
         } finally {
             oppdaterProgressFerdig(bestilling);
             clearCache();
-
         }
     }
 

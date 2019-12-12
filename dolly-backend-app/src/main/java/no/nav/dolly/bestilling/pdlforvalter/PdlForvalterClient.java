@@ -7,6 +7,7 @@ import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.StausRespo
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import java.util.List;
+import javax.el.MethodNotFoundException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -104,6 +106,13 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
+    @Override
+    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
+        if (nonNull(bestilling.getPdlforvalter())) {
+            throw new MethodNotFoundException("PdlForvalter mangler denne funksjonen");
+        }
+    }
+
     private void hentTpsPersondetaljer(TpsPerson tpsPerson) {
 
         if (isNull(tpsPerson.getPersondetalj())) {
@@ -166,10 +175,10 @@ public class PdlForvalterClient implements ClientRegister {
             pdlForvalterConsumer.postOpprettPerson(mapperFacade.map(person, PdlOpprettPerson.class), person.getIdent());
 
         } catch (HttpClientErrorException e) {
-            log.error("Feilet å sende opprett person for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
+            log.error("Feilet å sende opprettEndre person for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
 
         } catch (RuntimeException e) {
-            log.error("Feilet å sende opprett person for ident {} til PDL-forvalter.", person.getIdent(), e);
+            log.error("Feilet å sende opprettEndre person for ident {} til PDL-forvalter.", person.getIdent(), e);
         }
     }
 

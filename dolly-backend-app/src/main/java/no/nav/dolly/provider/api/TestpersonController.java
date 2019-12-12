@@ -36,17 +36,13 @@ public class TestpersonController {
     private final MapperFacade mapperFacade;
     private final IdentService identService;
 
-    /**
-     * @deprecated (På vent, ikke sikkert denne funksjonen skal tilbys)
-     */
-    @Deprecated
-    @ApiOperation(value = "Legge egenskaper på person/endre person i TPS og øvrige systemer")
+    @ApiOperation(value = "Legge til egenskaper på person/endre person i TPS og øvrige systemer")
     @PutMapping("/{ident}/leggtilpaaperson")
     @ResponseStatus(HttpStatus.OK)
-    public RsBestillingStatus oppdaterPerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
-        Bestilling bestilling = bestillingService.saveBestilling(ident, request);
+    public RsBestillingStatus endrePerson(@RequestBody RsDollyUpdateRequest request) {
+        Bestilling bestilling = bestillingService.saveBestilling(request);
 
-        dollyBestillingService.oppdaterPersonAsync(ident, request, bestilling);
+        dollyBestillingService.oppdaterPersonAsync(request, bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 

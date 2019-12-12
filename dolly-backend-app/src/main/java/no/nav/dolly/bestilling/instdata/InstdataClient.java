@@ -8,6 +8,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.el.MethodNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -18,6 +19,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.domain.resultset.inst.InstdataInstitusjonstype;
 import no.nav.dolly.domain.resultset.inst.InstdataKategori;
@@ -86,6 +88,13 @@ public class InstdataClient implements ClientRegister {
         environments.forEach(environment ->
                 identer.forEach(ident -> deleteInstdata(ident, environment))
         );
+    }
+
+    @Override
+    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
+        if (nonNull(bestilling.getInstdata())) {
+            throw new MethodNotFoundException("Instdata mangler denne funksjonen");
+        }
     }
 
     private List<String> getEnvironments() {
