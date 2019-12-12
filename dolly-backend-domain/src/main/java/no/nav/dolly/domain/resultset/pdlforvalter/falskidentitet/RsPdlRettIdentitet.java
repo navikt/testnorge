@@ -48,4 +48,6 @@ public abstract class RsPdlRettIdentitet {
                     "  }"
     )
     private String identitetType;
+
+    public abstract String getIdentitetType();
 }

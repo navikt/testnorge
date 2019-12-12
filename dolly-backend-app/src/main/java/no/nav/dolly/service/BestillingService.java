@@ -31,6 +31,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -70,7 +71,7 @@ public class BestillingService {
     public List<Bestilling> fetchBestillingerByGruppeId(Long gruppeId) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
         return testgruppe.isPresent() ?
-            bestillingRepository.findBestillingByGruppeOrderById(testgruppe.get()) : emptyList();
+                bestillingRepository.findBestillingByGruppeOrderById(testgruppe.get()) : emptyList();
     }
 
     public List<Bestilling> fetchMalBestillinger() {
@@ -110,6 +111,7 @@ public class BestillingService {
         if (isNull(testident) || isBlank(testident.getIdent())) {
             throw new NotFoundException(format("Testindent %s ble ikke funnet", request.getIdent()));
         }
+        fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(testident.getTestgruppe())
@@ -135,11 +137,7 @@ public class BestillingService {
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, RsTpsfBasisBestilling tpsf, Integer antall, List<String> opprettFraIdenter) {
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
-
-        //Fix abstract class problem
-        if(nonNull(request.getPdlforvalter()) && nonNull(request.getPdlforvalter().getKontaktinformasjonForDoedsbo())) {
-            request.getPdlforvalter().getKontaktinformasjonForDoedsbo().setAdressat(request.getPdlforvalter().getKontaktinformasjonForDoedsbo().getAdressat());
-        }
+        fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)
@@ -188,17 +186,6 @@ public class BestillingService {
         );
     }
 
-    private String toJson(Object object) {
-        try {
-            if (nonNull(object)) {
-                return objectMapper.writer().writeValueAsString(object);
-            }
-        } catch (JsonProcessingException | RuntimeException e) {
-            log.debug("Konvertering til Json feilet", e);
-        }
-        return null;
-    }
-
     public void slettBestillingerByGruppeId(Long gruppeId) {
 
         bestillingKontrollRepository.deleteByGruppeId(gruppeId);
@@ -218,5 +205,28 @@ public class BestillingService {
             bestillingKontrollRepository.deleteByBestillingWithNoChildren(id);
             bestillingRepository.deleteBestillingWithNoChildren(id);
         });
+    }
+
+    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
+
+        if (nonNull(pdldata)) {
+            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
+                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
+            }
+            if (nonNull(pdldata.getFalskIdentitet())) {
+                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
+            }
+        }
+    }
+
+    private String toJson(Object object) {
+        try {
+            if (nonNull(object)) {
+                return objectMapper.writer().writeValueAsString(object);
+            }
+        } catch (JsonProcessingException | RuntimeException e) {
+            log.debug("Konvertering til Json feilet", e);
+        }
+        return null;
     }
 }
