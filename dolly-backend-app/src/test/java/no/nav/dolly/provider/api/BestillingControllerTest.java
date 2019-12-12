@@ -48,7 +48,7 @@ public class BestillingControllerTest {
         when(bestillingService.fetchBestillingById(any())).thenReturn(new Bestilling());
         when(mapperFacade.map(any(), any())).thenReturn(bestillingStatus);
 
-        RsBestillingStatus res = bestillingController.getBestillingById_ny(BESTILLING_ID);
+        RsBestillingStatus res = bestillingController.getBestillingById(BESTILLING_ID);
 
         assertThat(res, is(bestillingStatus));
     }
@@ -58,7 +58,7 @@ public class BestillingControllerTest {
         when(mapperFacade.mapAsList(anyList(), eq(RsBestillingStatus.class)))
                 .thenReturn(singletonList(RsBestillingStatus.builder().id(BESTILLING_ID).build()));
 
-        RsBestillingStatus bestilling = bestillingController.getBestillinger_ny(GRUPPE_ID).get(0);
+        RsBestillingStatus bestilling = bestillingController.getBestillinger(GRUPPE_ID).get(0);
 
         verify(bestillingService).fetchBestillingerByGruppeId(GRUPPE_ID);
         verify(mapperFacade).mapAsList(anyList(), eq(RsBestillingStatus.class));
@@ -69,7 +69,7 @@ public class BestillingControllerTest {
     @Test
     public void stopBestillingProgressOk() {
         when(bestillingService.cancelBestilling(BESTILLING_ID)).thenReturn(Bestilling.builder().build());
-        bestillingController.stopBestillingProgress_ny(BESTILLING_ID);
+        bestillingController.stopBestillingProgress(BESTILLING_ID);
 
         verify(bestillingService).cancelBestilling(BESTILLING_ID);
         verify(mapperFacade).map(any(Bestilling.class), eq(RsBestillingStatus.class));
@@ -83,7 +83,7 @@ public class BestillingControllerTest {
         when(mapperFacade.map(any(Bestilling.class), eq(RsBestillingStatus.class)))
                 .thenReturn(RsBestillingStatus.builder().id(BESTILLING_ID).build());
 
-        RsBestillingStatus bestilling = bestillingController.gjenopprettBestilling_ny(BESTILLING_ID, null);
+        RsBestillingStatus bestilling = bestillingController.gjenopprettBestilling(BESTILLING_ID, null);
 
         assertThat(bestilling.getId(), is(equalTo(BESTILLING_ID)));
         verify(dollyBestillingService).gjenopprettBestillingAsync(any(Bestilling.class));
