@@ -10,8 +10,8 @@ export const MiljoeInfo = ({ formikBag }) => {
 
 	return (
 		<AlertStripeInfo>
-			Du har valgt attributter som ikke blir distribuert til alle miljøer. For hvert av følgende
-			attributter må derfor ett eller flere av miljøene under velges:
+			Du har valgt egenskaper som ikke blir distribuert til alle miljøer. For hvert av følgende
+			egenskaper må derfor ett eller flere av miljøene under velges:
 			<ul>
 				{instdata && (
 					<li>
