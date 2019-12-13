@@ -1,7 +1,7 @@
 import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 
-import { Identhistorikk } from './Identhistorikk'
+import { Barn } from './Barn'
 import { Personinfo } from './Personinfo'
 
 // TODO: Flyttes et mer logisk sted hvis den trengs flere steder
@@ -24,25 +24,32 @@ const relasjonTranslator = relasjon => {
 	}
 }
 
-export const Relasjoner = ({ relasjoner }) => {
+export const Relasjoner = ({ relasjoner, bestilling }) => {
 	if (!relasjoner) return false
 
+	const barn = relasjoner.filter(
+		relasjon => relasjonTranslator(relasjon.relasjonTypeNavn) === 'Barn'
+	)
+	const partnere = relasjoner.filter(
+		relasjon => relasjonTranslator(relasjon.relasjonTypeNavn) === 'Partner'
+	)
 	return (
 		<div>
 			<SubOverskrift label="Familierelasjoner" />
 			<div className="person-visning_content">
-				{relasjoner.map((relasjon, idx) => (
-					<div key={idx}>
-						<div className="title-multiple">
-							<h3>{relasjonTranslator(relasjon.relasjonTypeNavn)}</h3>
-						</div>
-						<div>
-							<Personinfo data={relasjon.personRelasjonMed} visTittel={false} />
-							<Identhistorikk
-								identhistorikk={relasjon.personRelasjonMed.identHistorikk}
-								visTittel={false}
-							/>
-						</div>
+				{partnere.map((partner, idx) => (
+					<div key={idx} className="title-multiple">
+						<h3>
+							Partner {idx + 1} {idx < 1 && '(nåværende)'}
+						</h3>
+						{/* Legg til partneregenskaper */}
+						<Personinfo data={partner.personRelasjonMed} />
+					</div>
+				))}
+				{barn.map((barnet, jdx) => (
+					<div key={jdx} className="title-multiple">
+						<h3>Barn {jdx + 1}</h3>
+						<Barn data={barnet.personRelasjonMed} bestilling={bestilling.relasjoner.barn[jdx]} />
 					</div>
 				))}
 			</div>
