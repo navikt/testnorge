@@ -27,6 +27,7 @@ export const PermisjonForm = ({ name, formikBag, fjern }) => {
 						name={`${name}[${idx}].permisjonOgPermittering`}
 						label="Permisjonstype"
 						kodeverk="PermisjonsOgPermitteringsBeskrivelse"
+						isClearable={false}
 					/>
 					<FormikDatepicker name={`${name}[${idx}].permisjonsPeriode.fom`} label="Permisjon fra" />
 					<FormikDatepicker name={`${name}[${idx}].permisjonsPeriode.tom`} label="Permisjon til" />

@@ -94,12 +94,14 @@ export const ArbeidsforholdForm = ({ formikBag }) => {
 									label="Type arbeidsforhold"
 									kodeverk="Arbeidsforholdstyper"
 									size="large"
+									isClearable={false}
 								/>
 								<FormikSelect
 									name={`aareg[${idx}].arbeidsgiver.aktoertype`}
 									label="Type arbeidsgiver"
 									options={Options('aktoertype')}
 									size="medium"
+									isClearable={false}
 								/>
 								{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
 									<FormikSelect // evt. felt man kan skrive i også?
@@ -108,6 +110,7 @@ export const ArbeidsforholdForm = ({ formikBag }) => {
 										options={Options('orgnummer')}
 										type="text"
 										size="large"
+										isClearable={false}
 									/>
 								)}
 								{arbeidsforhold.arbeidsgiver.aktoertype === 'PERS' && (

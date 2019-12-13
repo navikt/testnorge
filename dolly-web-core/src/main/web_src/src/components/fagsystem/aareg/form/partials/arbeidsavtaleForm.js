@@ -16,6 +16,7 @@ export const ArbeidsavtaleForm = ({ formikBag, idx }) => {
 					label="Yrke"
 					kodeverk="Yrker"
 					size="xxlarge"
+					isClearable={false}
 				/>
 				<FormikTextInput
 					name={`aareg[${idx}].arbeidsavtale.stillingsprosent`}
@@ -31,6 +32,7 @@ export const ArbeidsavtaleForm = ({ formikBag, idx }) => {
 					label="Arbeidstidsordning"
 					kodeverk="Arbeidstidsordninger"
 					size="xxlarge"
+					isClearable={false}
 				/>
 				<FormikTextInput
 					name={`aareg[${idx}].arbeidsavtale.antallKonverterteTimer`}

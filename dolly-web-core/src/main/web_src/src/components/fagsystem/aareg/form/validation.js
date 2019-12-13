@@ -109,7 +109,7 @@ export const validation = {
 				fom: requiredDate,
 				tom: Yup.date().nullable()
 			}),
-			arbeidsforholdstype: Yup.string(),
+			arbeidsforholdstype: requiredString,
 			arbeidsgiver: Yup.object({
 				aktoertype: requiredString,
 				orgnummer: Yup.string().when('aktoertype', {
