@@ -3,7 +3,6 @@ package no.nav.dolly.domain.resultset.tpsf;
 import java.time.LocalDateTime;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +30,12 @@ public class RsTpsfUtvidetBestilling extends RsTpsfBasisMedSivilstandBestilling 
     )
     private LocalDateTime foedtEtter;
 
+    @ApiModelProperty(
+            position = 3,
+            value = "Velg alder på testperson. Personen vil beholde alder i minst tre, maksimum ni måneder"
+    )
+    private String alder;
+  
     @ApiModelProperty(
             position = 4,
             value = "Født før denne dato. Dafault velges voksne personer i alder 30-60, mens barn får alder 0-18"

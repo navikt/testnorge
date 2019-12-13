@@ -32,6 +32,8 @@ public class TpsfBestilling {
 
     private IdentType identtype;
 
+    private Integer alder;
+
     private LocalDateTime foedtEtter;
 
     private LocalDateTime foedtFoer;
