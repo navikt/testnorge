@@ -34,7 +34,7 @@ public class RsTpsfUtvidetBestilling extends RsTpsfBasisMedSivilstandBestilling 
             position = 3,
             value = "Velg alder på testperson. Personen vil beholde alder i minst tre, maksimum ni måneder"
     )
-    private String alder;
+    private Integer alder;
   
     @ApiModelProperty(
             position = 4,
