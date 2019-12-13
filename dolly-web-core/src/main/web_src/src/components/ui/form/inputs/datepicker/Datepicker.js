@@ -22,18 +22,13 @@ export const Datepicker = ({
 	disabled = false,
 	feil
 }) => {
-	const preSave = selectedDate => {
-		// Vi bryr oss ikke om klokkeslett. Legger til 3 timer for å slippe å ta hensyn til tidsforskjeller
-		const modDateTime = isDate(selectedDate) ? addHours(selectedDate, 3) : null
-		return onChange(modDateTime)
-	}
 	return (
 		<ReactDatepicker
 			locale="nb"
 			dateFormat="dd.MM.yyyy"
 			placeholderText={placeholder}
 			selected={(value && new Date(value)) || null}
-			onChange={preSave}
+			onChange={onChange}
 			showMonthDropdown
 			showYearDropdown
 			minDate={subYears(new Date(), 100)}
