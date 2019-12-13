@@ -39,8 +39,7 @@ InstForm.validation = {
 	instdata: Yup.array().of(
 		Yup.object({
 			institusjonstype: requiredString,
-			startdato: requiredDate,
-			faktiskSluttdato: requiredDate
+			startdato: requiredDate
 		})
 	)
 }
