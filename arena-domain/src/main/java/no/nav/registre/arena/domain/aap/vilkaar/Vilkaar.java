@@ -10,6 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Vilkaar {
+
     private String kode;
     private String status;
 }

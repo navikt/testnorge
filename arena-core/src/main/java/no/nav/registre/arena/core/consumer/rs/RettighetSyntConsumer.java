@@ -45,6 +45,12 @@ public class RettighetSyntConsumer {
         this.rand = rand;
     }
 
+    public List<NyRettighet> syntetiserRettighetAap(int antallMeldinger) {
+        RequestEntity postRequest = createPostRequest(arenaAapUrl, antallMeldinger);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyRettighet>>() {
+        }).getBody();
+    }
+
     public List<NyRettighet> syntetiserRettighetUngUfoer(int antallMeldinger) {
         RequestEntity postRequest = createPostRequest(arenaAapUngUfoerUrl, antallMeldinger);
         return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyRettighet>>() {
