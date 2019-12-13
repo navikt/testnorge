@@ -1,4 +1,4 @@
-package no.nav.registre.arena.core.consumer.rs.responses.rettighet;
+package no.nav.registre.arena.domain.rettighet;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ArenaForvalterNyRettighetResponse {
+public class NyRettighetResponse {
 
     @JsonAlias({"nyeAaungufor", "nyeAatfor", "nyeFritak"})
     private List<NyRettighet> nyeRettigheter;

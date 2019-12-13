@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import java.util.List;
 
-import no.nav.registre.arena.core.consumer.rs.responses.rettighet.NyRettighet;
+import no.nav.registre.arena.domain.rettighet.NyRettighet;
 
 @Getter
 @Setter

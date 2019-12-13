@@ -1,4 +1,4 @@
-package no.nav.registre.arena.core.consumer.rs.responses.rettighet;
+package no.nav.registre.arena.domain.rettighet;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -13,11 +13,14 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
-import no.nav.registre.arena.domain.aap.andreokonomytelser.AndreOkonomYtelserV1;
+import no.nav.registre.arena.domain.aap.adresse.Adresse;
+import no.nav.registre.arena.domain.aap.andreokonomytelser.AndreOkonomYtelser;
 import no.nav.registre.arena.domain.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.arena.domain.aap.institusjonsopphold.Institusjonsopphold;
+import no.nav.registre.arena.domain.aap.konto.Konto;
 import no.nav.registre.arena.domain.aap.medlemfolketrygden.MedlemFolketrygden;
 import no.nav.registre.arena.domain.aap.periode.Periode;
+import no.nav.registre.arena.domain.aap.vilkaar.Vilkaar;
 
 @Getter
 @Setter
@@ -32,7 +35,7 @@ public class NyRettighet {
     private String aktivitetsfase;
 
     @JsonAlias({ "ANDRE_OKONOM_YTELSER", "andreOkonomYtelser" })
-    private List<AndreOkonomYtelserV1> andreOkonomYtelser;
+    private List<AndreOkonomYtelser> andreOkonomYtelser;
 
     @JsonAlias({ "AVBRUDDSKODE", "avbruddKode" })
     private String avbruddKode;

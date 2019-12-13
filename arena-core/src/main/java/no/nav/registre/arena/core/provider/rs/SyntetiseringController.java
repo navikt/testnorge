@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
-import no.nav.registre.arena.core.consumer.rs.responses.rettighet.ArenaForvalterNyRettighetResponse;
+import no.nav.registre.arena.domain.rettighet.NyRettighetResponse;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.RettighetService;
 import no.nav.registre.arena.core.service.SyntetiseringService;
@@ -39,21 +39,21 @@ public class SyntetiseringController {
     }
 
     @PostMapping("generer/rettighet/ungUfoer")
-    public List<ArenaForvalterNyRettighetResponse> genererRettighetUngUfoer(
+    public List<NyRettighetResponse> genererRettighetUngUfoer(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         return rettighetService.genererUngUfoer(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
     }
 
     @PostMapping("generer/rettighet/tvungenForvaltning")
-    public List<ArenaForvalterNyRettighetResponse> genererRettighetTvungenForvaltning(
+    public List<NyRettighetResponse> genererRettighetTvungenForvaltning(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         return rettighetService.genererTvungenForvaltning(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
     }
 
     @PostMapping("generer/rettighet/fritakMeldekort")
-    public List<ArenaForvalterNyRettighetResponse> genererRettighetFritakMeldekort(
+    public List<NyRettighetResponse> genererRettighetFritakMeldekort(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         return rettighetService.genererFritakMeldekort(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetSyntRequest;
-import no.nav.registre.arena.core.consumer.rs.responses.rettighet.NyRettighet;
+import no.nav.registre.arena.domain.rettighet.NyRettighet;
 
 @Component
 public class RettighetSyntConsumer {

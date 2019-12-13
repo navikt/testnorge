@@ -1,4 +1,4 @@
-package no.nav.registre.arena.core.consumer.rs.responses.rettighet;
+package no.nav.registre.arena.domain.aap.andreokonomytelser;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
@@ -9,14 +9,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Vilkaar {
+public class AnnenOkonomYtelse {
 
     @JsonAlias({ "KODE", "kode" })
-    private String kode;
+    private OkonomKoder kode;
 
-    @JsonAlias({ "STATUS", "status" })
-    private String status;
+    @JsonAlias({ "VERDI", "verdi" })
+    private String verdi;
 }

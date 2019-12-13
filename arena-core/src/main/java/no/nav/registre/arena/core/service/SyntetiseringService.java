@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import no.nav.registre.arena.core.consumer.rs.AAPNyRettighetSyntetisererenConsumer;
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
 import no.nav.registre.arena.core.provider.rs.requests.IdentMedData;
@@ -32,7 +31,6 @@ public class SyntetiseringService {
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final ArenaForvalterConsumer arenaForvalterConsumer;
-    private final AAPNyRettighetSyntetisererenConsumer aapConsumer;
     private final Random random;
 
     public NyeBrukereResponse opprettArbeidsoekere(Integer antallNyeIdenter, Long avspillergruppeId, String miljoe) {

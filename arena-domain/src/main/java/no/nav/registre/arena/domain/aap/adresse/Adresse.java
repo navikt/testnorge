@@ -1,4 +1,4 @@
-package no.nav.registre.arena.core.consumer.rs.responses.rettighet;
+package no.nav.registre.arena.domain.aap.adresse;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

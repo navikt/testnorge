@@ -7,16 +7,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnenOkonomYtelseV1 {
+public class AndreOkonomYtelser {
 
-    @JsonAlias({ "KODE", "kode" })
-    private OkonomKoder kode;
-
-    @JsonAlias({ "VERDI", "verdi" })
-    private String verdi;
+    @JsonAlias({ "ANNEN_OKONOM_YTELSE", "annenOkonomYtelse" })
+    private List<AnnenOkonomYtelse> annenOkonomYtelse;
 }

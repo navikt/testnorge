@@ -11,13 +11,13 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetSyntConsumer;
-import no.nav.registre.arena.core.consumer.rs.responses.rettighet.NyRettighet;
+import no.nav.registre.arena.domain.rettighet.NyRettighet;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
-import no.nav.registre.arena.core.consumer.rs.responses.rettighet.ArenaForvalterNyRettighetResponse;
+import no.nav.registre.arena.domain.rettighet.NyRettighetResponse;
 import no.nav.registre.arena.domain.NyBrukerFeil;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
@@ -35,7 +35,7 @@ public class RettighetService {
     private final SyntetiseringService syntetiseringService;
     private final Random rand;
 
-    public List<ArenaForvalterNyRettighetResponse> genererUngUfoer(
+    public List<NyRettighetResponse> genererUngUfoer(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -56,7 +56,7 @@ public class RettighetService {
         return opprettArbeidssoekerOgSendRettigheterTilForvalter(rettigheter, miljoe);
     }
 
-    public List<ArenaForvalterNyRettighetResponse> genererTvungenForvaltning(
+    public List<NyRettighetResponse> genererTvungenForvaltning(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -79,7 +79,7 @@ public class RettighetService {
         return opprettArbeidssoekerOgSendRettigheterTilForvalter(rettigheter, miljoe);
     }
 
-    public List<ArenaForvalterNyRettighetResponse> genererFritakMeldekort(
+    public List<NyRettighetResponse> genererFritakMeldekort(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -100,7 +100,7 @@ public class RettighetService {
         return opprettArbeidssoekerOgSendRettigheterTilForvalter(rettigheter, miljoe);
     }
 
-    private List<ArenaForvalterNyRettighetResponse> opprettArbeidssoekerOgSendRettigheterTilForvalter(List<RettighetRequest> rettigheter, String miljoe) {
+    private List<NyRettighetResponse> opprettArbeidssoekerOgSendRettigheterTilForvalter(List<RettighetRequest> rettigheter, String miljoe) {
         List<String> identerIArena = syntetiseringService.hentEksisterendeArbeidsoekerIdenter();
         List<String> uregistrerteBrukere = rettigheter.stream().filter(rettighet -> !identerIArena.contains(rettighet.getPersonident())).map(RettighetRequest::getPersonident)
                 .collect(Collectors.toList());

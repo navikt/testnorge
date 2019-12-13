@@ -14,7 +14,7 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRe
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
-import no.nav.registre.arena.core.consumer.rs.responses.rettighet.ArenaForvalterNyRettighetResponse;
+import no.nav.registre.arena.domain.rettighet.NyRettighetResponse;
 
 @Component
 public class RettighetArenaForvalterConsumer {
@@ -38,8 +38,8 @@ public class RettighetArenaForvalterConsumer {
         this.opprettFritakMeldekortRettighetUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/aapfritakmeldekort");
     }
 
-    public List<ArenaForvalterNyRettighetResponse> opprettRettighet(List<RettighetRequest> rettigheter) {
-        List<ArenaForvalterNyRettighetResponse> responses = new ArrayList<>();
+    public List<NyRettighetResponse> opprettRettighet(List<RettighetRequest> rettigheter) {
+        List<NyRettighetResponse> responses = new ArrayList<>();
         for (RettighetRequest rettighet : rettigheter) {
             UriTemplate url;
             if (rettighet instanceof RettighetUngUfoerRequest) {
@@ -55,7 +55,7 @@ public class RettighetArenaForvalterConsumer {
                     .header("Nav-Call-Id", NAV_CALL_ID)
                     .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                     .body(rettighet);
-            responses.add(restTemplate.exchange(postRequest, ArenaForvalterNyRettighetResponse.class).getBody());
+            responses.add(restTemplate.exchange(postRequest, NyRettighetResponse.class).getBody());
         }
         return responses;
     }

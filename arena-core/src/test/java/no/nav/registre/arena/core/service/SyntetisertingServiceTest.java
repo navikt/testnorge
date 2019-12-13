@@ -20,11 +20,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import no.nav.registre.arena.core.consumer.rs.AAPNyRettighetSyntetisererenConsumer;
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
 import no.nav.registre.arena.domain.Arbeidsoeker;
-import no.nav.registre.arena.domain.aap.AAPMelding;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -40,8 +38,6 @@ public class SyntetisertingServiceTest {
     private HodejegerenConsumer hodejegerenConsumer;
     @Mock
     private ArenaForvalterConsumer arenaForvalterConsumer;
-    @Mock
-    private AAPNyRettighetSyntetisererenConsumer nyRettighetConsumer;
     @Mock
     private Random random;
 
@@ -66,12 +62,6 @@ public class SyntetisertingServiceTest {
     private NyeBrukereResponse opprettedeArbeidsoekereResponse;
     private NyeBrukereResponse enNyArbeidsoekerResponse;
     private NyeBrukereResponse tyveNyeArbeidsoekereResponse;
-
-    private List<AAPMelding> enAapMelding;
-    private List<AAPMelding> toAapMeldinger;
-    private List<AAPMelding> tyveAapMeldinger;
-    private List<AAPMelding> femtenAapMeldinger;
-    private List<AAPMelding> hundreAapMeldinger;
 
     @Before
     public void setUp() {
@@ -105,13 +95,6 @@ public class SyntetisertingServiceTest {
 
         for (int i = 1; i < ANTALL_LEVENDE_IDENTER + 1; i++)
             hundreIdenterOverAlder.add(buildFnr(i));
-
-        enAapMelding = Collections.singletonList(AAPMelding.builder().build());
-
-        hundreAapMeldinger = new ArrayList<>(100);
-        for (int i = 0; i < 100; i++)
-            hundreAapMeldinger.add(AAPMelding.builder().build());
-
     }
 
     private Arbeidsoeker buildArbeidsoker(String fnr) {
