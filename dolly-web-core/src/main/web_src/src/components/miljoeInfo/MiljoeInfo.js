@@ -19,7 +19,15 @@ export const MiljoeInfo = ({ formikBag }) => {
 						<TilgjengeligeMiljoer endepunkt={InstApi.getTilgjengeligeMiljoer} />
 					</li>
 				)}
-				{pdlforvalter && <li>Kontaktinformasjon for dødsbo: Q2</li>}
+
+				{pdlforvalter && pdlforvalter.falskIdentitet && <li>Falsk identitet: Q2</li>}
+				{pdlforvalter && pdlforvalter.utenlandskIdentifikasjonsnummer && (
+					<li>Utenlandsk identifikasjonsnummer: Q2</li>
+				)}
+				{pdlforvalter && pdlforvalter.kontaktinformasjonForDoedsbo && (
+					<li>Kontaktinformasjon for dødsbo: Q2</li>
+				)}
+
 				{arenaforvalter && (
 					<li>
 						Arena:&nbsp;
