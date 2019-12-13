@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDatepicker, { registerLocale } from 'react-datepicker'
 import { useField } from 'formik'
-import { addHours, subYears, addYears, isDate } from 'date-fns'
+import { subYears, addYears } from 'date-fns'
 import locale_nb from 'date-fns/locale/nb'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { Label } from '~/components/ui/form/inputs/label/Label'
@@ -38,6 +38,7 @@ export const Datepicker = ({
 			onBlur={onBlur}
 			name={name}
 			id={name}
+			autoComplete="off"
 			customInput={<TextInput icon="calendar" feil={feil} />}
 		/>
 	)
