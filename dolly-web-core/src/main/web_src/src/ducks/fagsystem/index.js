@@ -10,7 +10,6 @@ import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
 import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
-import { hentPersonStatus } from './fagsystemMapper'
 import Formatters from '~/utils/DataFormatter'
 
 export const actions = createActions(
@@ -227,6 +226,24 @@ export const sokSelector = (items, searchStr) => {
 				.includes(query)
 		)
 	})
+}
+
+const hentPersonStatus = (ident, bestillingStatus) => {
+	if (!bestillingStatus) return null
+	let totalStatus = 'Ferdig'
+
+	bestillingStatus.status.forEach(fagsystem => {
+		_get(fagsystem, 'statuser', []).forEach(status => {
+			_get(status, 'detaljert', []).forEach(miljoe => {
+				_get(miljoe, 'identer', []).forEach(miljoeIdent => {
+					if (miljoeIdent === ident) {
+						if (status.melding !== 'OK') totalStatus = 'Avvik'
+					}
+				})
+			})
+		})
+	})
+	return totalStatus
 }
 
 export const selectPersonListe = state => {

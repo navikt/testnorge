@@ -20,8 +20,12 @@ const _renderBestillingsDetaljer = data => {
 					{kategori.itemRows && (
 						<div className={cn('info-text', { 'bottom-border': bottomBorder })}>
 							{kategori.itemRows.map((row, i) => (
-								<div className={'flexbox--align-start flexbox--wrap'} key={i}>
-									{row.map(_renderStaticValue)}
+								<div className="dfa-blokk" key={i}>
+									{/*className endres under styling. Kun eksempel*/}
+									{row[0].numberHeader && <h4>{row[0].numberHeader}</h4>}
+									<div className={'flexbox--align-start flexbox--wrap'} key={i}>
+										{row.map(_renderStaticValue)}
+									</div>
 								</div>
 							))}
 						</div>
@@ -45,8 +49,8 @@ const _renderStaticValue = (attributt, key) => {
 	)
 }
 
-export default function Bestillingskriterier({ bestilling, header }) {
-	const data = mapBestillingData(bestilling)
+export default function Bestillingskriterier({ bestilling, bestillingsinformasjon, header }) {
+	const data = mapBestillingData(bestilling, bestillingsinformasjon)
 
 	if (!data) return <p>Kunne ikke hente bestillingsdata</p>
 

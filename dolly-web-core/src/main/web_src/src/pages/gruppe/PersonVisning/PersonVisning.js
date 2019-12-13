@@ -27,7 +27,7 @@ export const PersonVisning = ({
 
 	return (
 		<div className="person-visning">
-			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.tpsfKriterier)} />
+			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.bestilling.tpsf)} />
 			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
@@ -35,11 +35,11 @@ export const PersonVisning = ({
 			<InstVisning data={data.instdata} loading={loading.instdata} />
 			<ArenaVisning
 				data={data.arenaforvalteren}
-				bestData={bestilling.bestKriterier.arenaforvalter}
+				bestData={bestilling.bestilling.arenaforvalter}
 				loading={loading.arenaforvalteren}
 			/>
 			<UdiVisning
-				data={UdiVisning.filterValues(data.udistub, bestilling.bestKriterier.udistub)}
+				data={UdiVisning.filterValues(data.udistub, bestilling.bestilling.udistub)}
 				loading={loading.udistub}
 			/>
 			<TidligereBestillinger ids={ident.bestillingId} />

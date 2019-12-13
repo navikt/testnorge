@@ -6,7 +6,6 @@ import Formatters from '~/utils/DataFormatter'
 export const Nasjonalitet = ({ data, visTittel = true }) => {
 	const {
 		statsborgerskap,
-		statsborgerskapRegdato,
 		sprakKode,
 		innvandretFraLand,
 		innvandretFraLandFlyttedato,
@@ -18,11 +17,15 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 		<div>
 			{visTittel && <SubOverskrift label="Nasjonalitet" />}
 			<div className="person-visning_content">
-				<TitleValue title="Statsborgerskap" kodeverk="Landkoder" value={statsborgerskap} />
-				<TitleValue
-					title="Statsborgerskap fra"
-					value={Formatters.formatDate(statsborgerskapRegdato)}
-				/>
+				{statsborgerskap.map(sb => (
+					<div>
+						<TitleValue title="Statsborgerskap" kodeverk="Landkoder" value={sb.statsborgerskap} />
+						<TitleValue
+							title="Statsborgerskap fra"
+							value={Formatters.formatDate(sb.statsborgerskapRegdato)}
+						/>
+					</div>
+				))}
 				<TitleValue title="Språk" kodeverk="Språk" value={sprakKode} />
 				<TitleValue title="Innvandret fra land" kodeverk="Landkoder" value={innvandretFraLand} />
 				<TitleValue
