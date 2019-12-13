@@ -24,39 +24,34 @@ const relasjonTranslator = relasjon => {
 	}
 }
 
-export const Relasjoner = ({ relasjoner }) => {
+export const Relasjoner = ({ relasjoner, bestilling }) => {
 	if (!relasjoner) return false
-	let barnNr = 0,
-		partnerNr = 0
+
+	const barn = relasjoner.filter(
+		relasjon => relasjonTranslator(relasjon.relasjonTypeNavn) === 'Barn'
+	)
+	const partnere = relasjoner.filter(
+		relasjon => relasjonTranslator(relasjon.relasjonTypeNavn) === 'Partner'
+	)
 	return (
 		<div>
 			<SubOverskrift label="Familierelasjoner" />
 			<div className="person-visning_content">
-				{relasjoner.map((relasjon, idx) => {
-					const relasjonstype = relasjonTranslator(relasjon.relasjonTypeNavn)
-					return (
-						<div key={idx}>
-							<div className="title-multiple"></div>
-							{relasjonstype === 'Barn' && (
-								<React.Fragment>
-									<h3>
-										{relasjonstype} {++barnNr}
-									</h3>
-									<Barn data={relasjon.personRelasjonMed} />
-								</React.Fragment>
-							)}
-							{relasjonstype === 'Partner' && (
-								<React.Fragment>
-									<h3>
-										{relasjonstype} {++partnerNr}
-									</h3>
-									{/* Legg til partneregenskaper */}
-									<Personinfo data={relasjon.personRelasjonMed} />
-								</React.Fragment>
-							)}
-						</div>
-					)
-				})}
+				{partnere.map((partner, idx) => (
+					<div key={idx} className="title-multiple">
+						<h3>
+							Partner {idx + 1} {idx < 1 && '(nåværende)'}
+						</h3>
+						{/* Legg til partneregenskaper */}
+						<Personinfo data={partner.personRelasjonMed} />
+					</div>
+				))}
+				{barn.map((barnet, jdx) => (
+					<div key={jdx} className="title-multiple">
+						<h3>Barn {jdx + 1}</h3>
+						<Barn data={barnet.personRelasjonMed} bestilling={bestilling.relasjoner.barn[jdx]} />
+					</div>
+				))}
 			</div>
 		</div>
 	)
