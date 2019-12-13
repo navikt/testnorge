@@ -40,7 +40,7 @@ public class RettighetArenaForvalterConsumer {
 
     public List<NyRettighetResponse> opprettRettighet(List<RettighetRequest> rettigheter) {
         List<NyRettighetResponse> responses = new ArrayList<>();
-        for (RettighetRequest rettighet : rettigheter) {
+        for (var rettighet : rettigheter) {
             UriTemplate url;
             if (rettighet instanceof RettighetUngUfoerRequest) {
                 url = opprettUngUfoerRettighetUrl;
@@ -51,7 +51,7 @@ public class RettighetArenaForvalterConsumer {
             } else {
                 throw new RuntimeException("Unkown URL");
             }
-            RequestEntity postRequest = RequestEntity.post(url.expand())
+            var postRequest = RequestEntity.post(url.expand())
                     .header("Nav-Call-Id", NAV_CALL_ID)
                     .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                     .body(rettighet);

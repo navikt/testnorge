@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
-import no.nav.registre.arena.domain.rettighet.NyRettighetResponse;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.RettighetService;
 import no.nav.registre.arena.core.service.SyntetiseringService;
+import no.nav.registre.arena.domain.rettighet.NyRettighetResponse;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
@@ -62,7 +62,7 @@ public class SyntetiseringController {
     private ResponseEntity<NyeBrukereResponse> registrerBrukereIArenaForvalter(
             SyntetiserArenaRequest arenaRequest
     ) {
-        NyeBrukereResponse respons = syntetiseringService.opprettArbeidsoekere(
+        var respons = syntetiseringService.opprettArbeidsoekere(
                 arenaRequest.getAntallNyeIdenter(),
                 arenaRequest.getAvspillergruppeId(),
                 arenaRequest.getMiljoe()
@@ -75,7 +75,7 @@ public class SyntetiseringController {
             String personident,
             SyntetiserArenaRequest arenaRequest
     ) {
-        NyeBrukereResponse response = syntetiseringService.opprettArbeidssoeker(
+        var response = syntetiseringService.opprettArbeidssoeker(
                 personident,
                 arenaRequest.getAvspillergruppeId(),
                 arenaRequest.getMiljoe()

@@ -46,25 +46,25 @@ public class RettighetSyntConsumer {
     }
 
     public List<NyRettighet> syntetiserRettighetAap(int antallMeldinger) {
-        RequestEntity postRequest = createPostRequest(arenaAapUrl, antallMeldinger);
+        var postRequest = createPostRequest(arenaAapUrl, antallMeldinger);
         return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyRettighet>>() {
         }).getBody();
     }
 
     public List<NyRettighet> syntetiserRettighetUngUfoer(int antallMeldinger) {
-        RequestEntity postRequest = createPostRequest(arenaAapUngUfoerUrl, antallMeldinger);
+        var postRequest = createPostRequest(arenaAapUngUfoerUrl, antallMeldinger);
         return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyRettighet>>() {
         }).getBody();
     }
 
     public List<NyRettighet> syntetiserRettighetTvungenForvaltning(int antallMeldinger) {
-        RequestEntity postRequest = createPostRequest(arenaAapTvungenForvaltningUrl, antallMeldinger);
+        var postRequest = createPostRequest(arenaAapTvungenForvaltningUrl, antallMeldinger);
         return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyRettighet>>() {
         }).getBody();
     }
 
     public List<NyRettighet> syntetiserRettighetFritakMeldekort(int antallMeldinger) {
-        RequestEntity postRequest = createPostRequest(arenaAapFritakMeldekortUrl, antallMeldinger);
+        var postRequest = createPostRequest(arenaAapFritakMeldekortUrl, antallMeldinger);
         return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyRettighet>>() {
         }).getBody();
     }

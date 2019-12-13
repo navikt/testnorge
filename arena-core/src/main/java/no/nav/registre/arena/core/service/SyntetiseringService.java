@@ -33,12 +33,16 @@ public class SyntetiseringService {
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final Random random;
 
-    public NyeBrukereResponse opprettArbeidsoekere(Integer antallNyeIdenter, Long avspillergruppeId, String miljoe) {
-        List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
-        List<String> arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
+    public NyeBrukereResponse opprettArbeidsoekere(
+            Integer antallNyeIdenter,
+            Long avspillergruppeId,
+            String miljoe
+    ) {
+        var levendeIdenter = hentLevendeIdenter(avspillergruppeId);
+        var arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
 
         if (antallNyeIdenter == null) {
-            int antallArbeidsoekereAaOpprette = getAntallBrukereForAaFylleArenaForvalteren(levendeIdenter.size(), arbeidsoekerIdenter.size());
+            var antallArbeidsoekereAaOpprette = getAntallBrukereForAaFylleArenaForvalteren(levendeIdenter.size(), arbeidsoekerIdenter.size());
 
             if (antallArbeidsoekereAaOpprette > 0) {
                 antallNyeIdenter = antallArbeidsoekereAaOpprette;
@@ -49,17 +53,21 @@ public class SyntetiseringService {
             }
         }
 
-        List<String> nyeIdenter = hentKvalifiserteIdenter(antallNyeIdenter, levendeIdenter, arbeidsoekerIdenter);
+        var nyeIdenter = hentKvalifiserteIdenter(antallNyeIdenter, levendeIdenter, arbeidsoekerIdenter);
         return byggArbeidsoekereOgLagreIHodejegeren(nyeIdenter, miljoe);
     }
 
-    public NyeBrukereResponse opprettArbeidssoeker(String ident, Long avspillergruppeId, String miljoe) {
-        List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
-        List<String> arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
+    public NyeBrukereResponse opprettArbeidssoeker(
+            String ident,
+            Long avspillergruppeId,
+            String miljoe
+    ) {
+        var levendeIdenter = hentLevendeIdenter(avspillergruppeId);
+        var arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
 
         if (arbeidsoekerIdenter.contains(ident)) {
             log.info("Ident {} er allerede registrert som arbeidsøker.", ident);
-            NyeBrukereResponse response = new NyeBrukereResponse();
+            var response = new NyeBrukereResponse();
             response.setArbeidsoekerList(arenaForvalterConsumer.hentArbeidsoekere(ident, null, null));
             return response;
         } else if (!levendeIdenter.contains(ident)) {
@@ -71,13 +79,15 @@ public class SyntetiseringService {
     }
 
     public List<String> hentEksisterendeArbeidsoekerIdenter() {
-        List<Arbeidsoeker> arbeidsoekere = arenaForvalterConsumer.hentArbeidsoekere(null, null, null);
+        var arbeidsoekere = arenaForvalterConsumer.hentArbeidsoekere(null, null, null);
         return hentIdentListe(arbeidsoekere);
     }
 
-    public NyeBrukereResponse byggArbeidsoekereOgLagreIHodejegeren(List<String> identer, String miljoe) {
-
-        List<NyBruker> nyeBrukere = identer.stream().map(ident ->
+    public NyeBrukereResponse byggArbeidsoekereOgLagreIHodejegeren(
+            List<String> identer,
+            String miljoe
+    ) {
+        var nyeBrukere = identer.stream().map(ident ->
                 NyBruker.builder()
                         .personident(ident)
                         .miljoe(miljoe)
@@ -90,8 +100,12 @@ public class SyntetiseringService {
         return arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
     }
 
-    private List<String> hentKvalifiserteIdenter(int antallIdenter, List<String> levendeIdenter, List<String> eksisterendeArbeidsoekere) {
-        List<String> identerIkkeIArena = new ArrayList<>(levendeIdenter);
+    private List<String> hentKvalifiserteIdenter(
+            int antallIdenter,
+            List<String> levendeIdenter,
+            List<String> eksisterendeArbeidsoekere
+    ) {
+        var identerIkkeIArena = new ArrayList<>(levendeIdenter);
         identerIkkeIArena.removeAll(eksisterendeArbeidsoekere);
 
         if (identerIkkeIArena.size() <= 0) {
@@ -111,21 +125,27 @@ public class SyntetiseringService {
         return nyeIdenter;
     }
 
-    private List<String> hentLevendeIdenter(Long avspillergruppeId) {
+    private List<String> hentLevendeIdenter(
+            Long avspillergruppeId
+    ) {
         return hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
     }
 
-    private void lagreArenaBrukereIHodejegeren(List<NyBruker> nyeBrukere) {
+    private void lagreArenaBrukereIHodejegeren(
+            List<NyBruker> nyeBrukere
+    ) {
         List<IdentMedData> brukereSomSkalLagres = new ArrayList<>();
 
-        for (NyBruker bruker : nyeBrukere) {
-            List<NyBruker> data = Collections.singletonList(bruker);
+        for (var bruker : nyeBrukere) {
+            var data = Collections.singletonList(bruker);
             brukereSomSkalLagres.add(new IdentMedData(bruker.getPersonident(), data));
         }
         hodejegerenConsumer.saveHistory(ARENA_FORVALTER_NAME, brukereSomSkalLagres);
     }
 
-    private List<String> hentIdentListe(List<Arbeidsoeker> arbeidsoekere) {
+    private List<String> hentIdentListe(
+            List<Arbeidsoeker> arbeidsoekere
+    ) {
         if (arbeidsoekere.isEmpty()) {
             log.info("Fant ingen eksisterende identer.");
             return new ArrayList<>();
@@ -134,7 +154,10 @@ public class SyntetiseringService {
         return arbeidsoekere.stream().map(Arbeidsoeker::getPersonident).collect(Collectors.toList());
     }
 
-    private int getAntallBrukereForAaFylleArenaForvalteren(int antallLevendeIdenter, int antallEksisterendeIdenter) {
+    private int getAntallBrukereForAaFylleArenaForvalteren(
+            int antallLevendeIdenter,
+            int antallEksisterendeIdenter
+    ) {
         return (int) (floor(antallLevendeIdenter * PROSENTANDEL_SOM_SKAL_HA_MELDEKORT) - antallEksisterendeIdenter);
     }
 }

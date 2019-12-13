@@ -11,14 +11,12 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetSyntConsumer;
-import no.nav.registre.arena.domain.rettighet.NyRettighet;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
-import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
-import no.nav.registre.arena.domain.rettighet.NyRettighetResponse;
 import no.nav.registre.arena.domain.NyBrukerFeil;
+import no.nav.registre.arena.domain.rettighet.NyRettighetResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Service
@@ -40,13 +38,13 @@ public class RettighetService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        List<String> utvalgteIdenter = getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter);
-        List<NyRettighet> syntetiserteRettigheter = rettighetSyntConsumer.syntetiserRettighetUngUfoer(utvalgteIdenter.size());
+        var utvalgteIdenter = getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter);
+        var syntetiserteRettigheter = rettighetSyntConsumer.syntetiserRettighetUngUfoer(utvalgteIdenter.size());
 
         List<RettighetRequest> rettigheter = new ArrayList<>();
-        for (NyRettighet syntetisertRettighet : syntetiserteRettigheter) {
+        for (var syntetisertRettighet : syntetiserteRettigheter) {
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
-            RettighetUngUfoerRequest rettighetRequest = new RettighetUngUfoerRequest(Collections.singletonList(syntetisertRettighet));
+            var rettighetRequest = new RettighetUngUfoerRequest(Collections.singletonList(syntetisertRettighet));
             rettighetRequest.setPersonident(utvalgteIdenter.remove(rand.nextInt(utvalgteIdenter.size())));
             rettighetRequest.setMiljoe(miljoe);
 
@@ -61,15 +59,15 @@ public class RettighetService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        List<String> utvalgteIdenter = getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter);
-        List<NyRettighet> syntetiserteRettigheter = rettighetSyntConsumer.syntetiserRettighetTvungenForvaltning(utvalgteIdenter.size());
+        var utvalgteIdenter = getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter);
+        var syntetiserteRettigheter = rettighetSyntConsumer.syntetiserRettighetTvungenForvaltning(utvalgteIdenter.size());
 
         List<RettighetRequest> rettigheter = new ArrayList<>();
-        for (NyRettighet syntetisertRettighet : syntetiserteRettigheter) {
+        for (var syntetisertRettighet : syntetiserteRettigheter) {
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
             //            syntetisertRettighet.setGjeldendeKontonr(new ArrayList<>());
             //            syntetisertRettighet.setUtbetalingsadresse(new ArrayList<>());
-            RettighetTvungenForvaltningRequest rettighetRequest = new RettighetTvungenForvaltningRequest(Collections.singletonList(syntetisertRettighet));
+            var rettighetRequest = new RettighetTvungenForvaltningRequest(Collections.singletonList(syntetisertRettighet));
             rettighetRequest.setPersonident(utvalgteIdenter.remove(rand.nextInt(utvalgteIdenter.size())));
             rettighetRequest.setMiljoe(miljoe);
 
@@ -84,13 +82,13 @@ public class RettighetService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        List<String> utvalgteIdenter = getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter);
-        List<NyRettighet> syntetiserteRettigheter = rettighetSyntConsumer.syntetiserRettighetFritakMeldekort(utvalgteIdenter.size());
+        var utvalgteIdenter = getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter);
+        var syntetiserteRettigheter = rettighetSyntConsumer.syntetiserRettighetFritakMeldekort(utvalgteIdenter.size());
 
         List<RettighetRequest> rettigheter = new ArrayList<>();
-        for (NyRettighet syntetisertRettighet : syntetiserteRettigheter) {
+        for (var syntetisertRettighet : syntetiserteRettigheter) {
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
-            RettighetFritakMeldekortRequest rettighetRequest = new RettighetFritakMeldekortRequest(Collections.singletonList(syntetisertRettighet));
+            var rettighetRequest = new RettighetFritakMeldekortRequest(Collections.singletonList(syntetisertRettighet));
             rettighetRequest.setPersonident(utvalgteIdenter.remove(rand.nextInt(utvalgteIdenter.size())));
             rettighetRequest.setMiljoe(miljoe);
 
@@ -100,13 +98,16 @@ public class RettighetService {
         return opprettArbeidssoekerOgSendRettigheterTilForvalter(rettigheter, miljoe);
     }
 
-    private List<NyRettighetResponse> opprettArbeidssoekerOgSendRettigheterTilForvalter(List<RettighetRequest> rettigheter, String miljoe) {
-        List<String> identerIArena = syntetiseringService.hentEksisterendeArbeidsoekerIdenter();
-        List<String> uregistrerteBrukere = rettigheter.stream().filter(rettighet -> !identerIArena.contains(rettighet.getPersonident())).map(RettighetRequest::getPersonident)
+    private List<NyRettighetResponse> opprettArbeidssoekerOgSendRettigheterTilForvalter(
+            List<RettighetRequest> rettigheter,
+            String miljoe
+    ) {
+        var identerIArena = syntetiseringService.hentEksisterendeArbeidsoekerIdenter();
+        var uregistrerteBrukere = rettigheter.stream().filter(rettighet -> !identerIArena.contains(rettighet.getPersonident())).map(RettighetRequest::getPersonident)
                 .collect(Collectors.toList());
 
-        NyeBrukereResponse nyeBrukereResponse = syntetiseringService.byggArbeidsoekereOgLagreIHodejegeren(uregistrerteBrukere, miljoe);
-        List<String> feiledeIdenter = nyeBrukereResponse.getNyBrukerFeilList().stream().map(NyBrukerFeil::getPersonident).collect(Collectors.toList());
+        var nyeBrukereResponse = syntetiseringService.byggArbeidsoekereOgLagreIHodejegeren(uregistrerteBrukere, miljoe);
+        var feiledeIdenter = nyeBrukereResponse.getNyBrukerFeilList().stream().map(NyBrukerFeil::getPersonident).collect(Collectors.toList());
         rettigheter.removeIf(rettighet -> feiledeIdenter.contains(rettighet.getPersonident()));
 
         return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
@@ -116,7 +117,7 @@ public class RettighetService {
             Long avspillergruppeId,
             int antallNyeIdenter
     ) {
-        List<String> levendeIdenter = hodejegerenConsumer.getLevende(avspillergruppeId);
+        var levendeIdenter = hodejegerenConsumer.getLevende(avspillergruppeId);
         Collections.shuffle(levendeIdenter);
         return levendeIdenter.subList(0, antallNyeIdenter);
     }
@@ -125,7 +126,7 @@ public class RettighetService {
             Long avspillergruppeId,
             int antallNyeIdenter
     ) {
-        List<String> levendeIdenterIAldersgruppe = hodejegerenConsumer.getLevende(avspillergruppeId, MIN_ALDER_UNG_UFOER, MAX_ALDER_UNG_UFOER);
+        var levendeIdenterIAldersgruppe = hodejegerenConsumer.getLevende(avspillergruppeId, MIN_ALDER_UNG_UFOER, MAX_ALDER_UNG_UFOER);
         Collections.shuffle(levendeIdenterIAldersgruppe);
         return levendeIdenterIAldersgruppe.subList(0, antallNyeIdenter);
     }

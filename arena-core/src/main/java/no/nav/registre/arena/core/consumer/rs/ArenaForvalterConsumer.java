@@ -1,5 +1,7 @@
 package no.nav.registre.arena.core.consumer.rs;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,19 +52,19 @@ public class ArenaForvalterConsumer {
     public NyeBrukereResponse sendTilArenaForvalter(
             List<NyBruker> nyeBrukere
     ) {
-        RequestEntity postRequest = RequestEntity.post(postBrukere.expand())
+        var postRequest = RequestEntity.post(postBrukere.expand())
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                 .body(Collections.singletonMap("nyeBrukere", nyeBrukere));
 
-        ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
+        var response = restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
         if (invalidResponse(response)) {
             log.warn("Kunne ikke sende arbeidsoekere til Arena Forvalteren på addresse:\n{}.\nStatus: {}\nBody: {}",
                     postRequest.toString(), response.getStatusCode(), response.getBody());
             return new NyeBrukereResponse();
         }
 
-        NyeBrukereResponse formatertResponse = new NyeBrukereResponse();
+        var formatertResponse = new NyeBrukereResponse();
         formatertResponse.setArbeidsoekerList(response.getBody().getArbeidsokerList());
         formatertResponse.setNyBrukerFeilList(response.getBody().getNyBrukerFeilList());
         return formatertResponse;
@@ -76,22 +78,22 @@ public class ArenaForvalterConsumer {
     ) {
 
         Map<String, String> filters = new HashMap<>();
-        if (!"".equals(eier)) {
+        if (!isNullOrEmpty(eier)) {
             filters.put("filter-eier", eier);
         }
-        if (!"".equals(miljoe)) {
+        if (!isNullOrEmpty(miljoe)) {
             filters.put("filter-miljoe", miljoe);
         }
-        if (!"".equals(personident)) {
+        if (!isNullOrEmpty(personident)) {
             filters.put("filter-personident", personident);
         }
 
-        StringBuilder baseUrl = new StringBuilder(hentBrukere.toString() + "?");
-        for (Map.Entry<String, String> entry : filters.entrySet()) {
-            if (entry.getValue() != null) {
-                baseUrl.append(entry.getKey())
+        var baseUrl = new StringBuilder(hentBrukere.toString() + "?");
+        for (var filter : filters.entrySet()) {
+            if (filter.getValue() != null) {
+                baseUrl.append(filter.getKey())
                         .append('=')
-                        .append(entry.getValue())
+                        .append(filter.getValue())
                         .append('&');
             }
         }
@@ -102,10 +104,13 @@ public class ArenaForvalterConsumer {
     private List<Arbeidsoeker> hentFiltrerteArbeidsoekere(
             String refinedUrl
     ) {
-        UriTemplate uri = new UriTemplate(refinedUrl);
+        var uri = new UriTemplate(refinedUrl);
 
-        RequestEntity getRequest = RequestEntity.get(uri.expand()).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
-        ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
+        var getRequest = RequestEntity.get(uri.expand())
+                .header("Nav-Call-Id", NAV_CALL_ID)
+                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                .build();
+        var response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
         if (invalidResponse(response)) {
             log.info("Kunne ikke hente arbeidsøkere fra Arena Forvalteren på addresse:\n{}\nStatus: {}\nBody: {}",
                     getRequest.toString(), response.getStatusCode(), response.getBody());
@@ -121,12 +126,12 @@ public class ArenaForvalterConsumer {
             int initialLength
     ) {
         List<Arbeidsoeker> responseList = new ArrayList<>(antallSider * initialLength);
-        UriTemplate hentBrukerePage = new UriTemplate(baseUri + "page={page}");
+        var hentBrukerePage = new UriTemplate(baseUri + "page={page}");
 
         for (int page = 0; page < antallSider; page++) {
-            RequestEntity getRequest = RequestEntity.get(hentBrukerePage.expand(page)).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
+            var getRequest = RequestEntity.get(hentBrukerePage.expand(page)).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
 
-            ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
+            var response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
             if (invalidResponse(response)) {
                 log.warn("Kunne ikke hente arbeidsøkere fra Arena Forvalteren på addresse:\n{}\nStatus: {}\nBody: {}",
                         getRequest.toString(), response.getStatusCode(), response.getBody());
@@ -144,11 +149,11 @@ public class ArenaForvalterConsumer {
             String personident,
             String miljoe
     ) {
-        RequestEntity deleteRequest = RequestEntity.delete(slettBrukere.expand(miljoe, personident))
+        var deleteRequest = RequestEntity.delete(slettBrukere.expand(miljoe, personident))
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
         log.info("Sletter ident {} fra Arena Forvalter i miljø {}.", personident, miljoe);
-        ResponseEntity response = restTemplate.exchange(deleteRequest, String.class);
+        var response = restTemplate.exchange(deleteRequest, String.class);
 
         if (response.getStatusCode() != HttpStatus.OK) {
             log.error("Kunne ikke slette bruker. Status: {}", response.getStatusCode());
