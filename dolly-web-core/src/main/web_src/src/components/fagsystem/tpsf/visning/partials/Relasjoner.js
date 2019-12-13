@@ -1,7 +1,7 @@
 import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 
-import { Identhistorikk } from './Identhistorikk'
+import { Barn } from './Barn'
 import { Personinfo } from './Personinfo'
 
 // TODO: Flyttes et mer logisk sted hvis den trengs flere steder
@@ -26,25 +26,37 @@ const relasjonTranslator = relasjon => {
 
 export const Relasjoner = ({ relasjoner }) => {
 	if (!relasjoner) return false
-
+	let barnNr = 0,
+		partnerNr = 0
 	return (
 		<div>
 			<SubOverskrift label="Familierelasjoner" />
 			<div className="person-visning_content">
-				{relasjoner.map((relasjon, idx) => (
-					<div key={idx}>
-						<div className="title-multiple">
-							<h3>{relasjonTranslator(relasjon.relasjonTypeNavn)}</h3>
+				{relasjoner.map((relasjon, idx) => {
+					const relasjonstype = relasjonTranslator(relasjon.relasjonTypeNavn)
+					return (
+						<div key={idx}>
+							<div className="title-multiple"></div>
+							{relasjonstype === 'Barn' && (
+								<React.Fragment>
+									<h3>
+										{relasjonstype} {++barnNr}
+									</h3>
+									<Barn data={relasjon.personRelasjonMed} />
+								</React.Fragment>
+							)}
+							{relasjonstype === 'Partner' && (
+								<React.Fragment>
+									<h3>
+										{relasjonstype} {++partnerNr}
+									</h3>
+									{/* Legg til partneregenskaper */}
+									<Personinfo data={relasjon.personRelasjonMed} />
+								</React.Fragment>
+							)}
 						</div>
-						<div>
-							<Personinfo data={relasjon.personRelasjonMed} visTittel={false} />
-							<Identhistorikk
-								identhistorikk={relasjon.personRelasjonMed.identHistorikk}
-								visTittel={false}
-							/>
-						</div>
-					</div>
-				))}
+					)
+				})}
 			</div>
 		</div>
 	)
