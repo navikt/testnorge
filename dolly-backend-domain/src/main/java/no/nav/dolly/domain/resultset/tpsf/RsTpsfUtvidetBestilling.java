@@ -1,14 +1,14 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -29,4 +29,6 @@ public class RsTpsfUtvidetBestilling extends RsTpsfBasisBestilling {
     private LocalDateTime foedtFoer;
 
     private String kjonn;
+
+    private String alder;
 }
