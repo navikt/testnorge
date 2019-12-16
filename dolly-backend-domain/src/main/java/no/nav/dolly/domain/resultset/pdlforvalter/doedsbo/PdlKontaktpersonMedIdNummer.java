@@ -11,7 +11,12 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlKontaktpersonMedIdNummer implements PdlSomAdressat {
+public class PdlKontaktpersonMedIdNummer extends PdlSomAdressat {
 
     private String idnummer;
+
+    @Override
+    public String getAdressatType() {
+        return "PERSON_MEDID";
+    }
 }

@@ -12,13 +12,13 @@ import org.springframework.http.HttpStatus;
 
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 
 @DisplayName("PUT /api/v1/gruppe")
 class TestgruppeControllerPutTest extends TestgruppeTestBase {
 
     @Test
-    @DisplayName("Returnerer HTTP 404 Not Found når Testgruppe ikke finnes")
+    @DisplayName("Returnerer HTTP 200 med feilmelding Not Found i body når Testgruppe ikke finnes")
     void shouldFail404WhenTestgruppeDontExist() {
 
         RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder()
@@ -28,7 +28,7 @@ class TestgruppeControllerPutTest extends TestgruppeTestBase {
 
         LinkedHashMap resp = sendRequest(rsOpprettEndreTestgruppe)
                 .to(HttpMethod.PUT, ENDPOINT_BASE_URI + "/123")
-                .andExpect(HttpStatus.NOT_FOUND, LinkedHashMap.class);
+                .andExpect(HttpStatus.OK, LinkedHashMap.class);
 
         assertThat(getErrMsg(resp), is("Finner ikke gruppe basert på gruppeID: 123"));
     }
@@ -43,9 +43,9 @@ class TestgruppeControllerPutTest extends TestgruppeTestBase {
                 .hensikt("hensikt")
                 .build();
 
-        RsTestgruppeUtvidet resp = sendRequest(rsOpprettEndreTestgruppe)
+        RsTestgruppeMedBestillingId resp = sendRequest(rsOpprettEndreTestgruppe)
                 .to(HttpMethod.PUT, ENDPOINT_BASE_URI + "/" + testgruppe.getId())
-                .andExpect(HttpStatus.OK, RsTestgruppeUtvidet.class);
+                .andExpect(HttpStatus.OK, RsTestgruppeMedBestillingId.class);
 
         assertThat(resp.getId(), is(notNullValue()));
         assertThat(resp.getNavn(), is("mingruppe"));

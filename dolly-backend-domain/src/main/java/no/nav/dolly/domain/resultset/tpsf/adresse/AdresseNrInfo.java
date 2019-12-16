@@ -1,9 +1,9 @@
 package no.nav.dolly.domain.resultset.tpsf.adresse;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
 
 @Getter
@@ -11,14 +11,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdresseNrInfo {
-    
-    @NonNull
+
+    public enum AdresseNr {KOMMUNENR, POSTNR}
+
+    @ApiModelProperty(
+            position = 1,
+            required = true,
+            value = "Angir om backend generert boadresse skal baseres på KOMMUNENR eller POSTNR. Default er random for hele landet."
+    )
     private AdresseNr nummertype;
-    
-    @NonNull
+
+    @ApiModelProperty(
+            position = 2,
+            required = true,
+            value = "Angir verdi for kommune- eller postnummer"
+    )
     private String nummer;
-    
-    public enum AdresseNr {
-        KOMMUNENR, POSTNR
-    }
 }

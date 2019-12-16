@@ -53,7 +53,14 @@
         </dependency>
 
         <dependency>
-            <groupId>com.oracle</groupId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-contract-wiremock</artifactId>
+            <version>${spring-cloud-contract.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle.jdbc</groupId>
             <artifactId>ojdbc8</artifactId>
         </dependency>
 
@@ -130,12 +137,6 @@
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-security-ws</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>no.nav.tjenester.domene.arbeidsforhold</groupId>
-            <artifactId>nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon</artifactId>
-            <classifier>jaxws</classifier>
         </dependency>
 
         <dependency>

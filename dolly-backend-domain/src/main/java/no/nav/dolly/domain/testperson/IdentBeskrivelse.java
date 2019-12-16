@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.entity.team;
+package no.nav.dolly.domain.testperson;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,12 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsTeamMedIdOgNavn {
-    private Long id;
-    private String navn;
+public class IdentBeskrivelse extends IdentAttributes {
+
+    private String beskrivelse;
 }

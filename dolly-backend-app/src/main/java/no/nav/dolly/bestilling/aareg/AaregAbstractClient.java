@@ -5,15 +5,15 @@ import static java.util.Collections.singletonList;
 
 import java.util.Map;
 
-import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
-import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
+import no.nav.dolly.bestilling.aareg.domain.AaregOppdaterRequest;
+import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
 
 public abstract class AaregAbstractClient {
 
     protected static final String ARBEIDSGIVER = "arbeidsgiver";
 
-    protected static RsAaregOppdaterRequest buildRequest(RsArbeidsforhold arbfInput, String env) {
-        RsAaregOppdaterRequest request = new RsAaregOppdaterRequest();
+    protected static AaregOppdaterRequest buildRequest(Arbeidsforhold arbfInput, String env) {
+        AaregOppdaterRequest request = new AaregOppdaterRequest();
         request.setRapporteringsperiode(now());
         request.setArbeidsforhold(arbfInput);
         request.setEnvironments(singletonList(env));

@@ -12,9 +12,13 @@ import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlAdvokat implements PdlSomAdressat {
+public class PdlAdvokat extends PdlSomAdressat {
 
     private PdlPersonnavn kontaktperson;
     private String organisasjonsnavn;
     private String organisasjonsnummer;
+
+    @Override public String getAdressatType() {
+        return "ADVOKAT";
+    }
 }

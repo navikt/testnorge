@@ -3,6 +3,12 @@ package no.nav.dolly.mapper.strategy;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.time.LocalDate;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdlforvalter.mapper.PdlDoedsboMappingStrategy;
 import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
@@ -15,12 +21,6 @@ import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlSkifteform;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.RsPdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.RsPdlKontaktpersonUtenIdNummer;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import java.time.LocalDate;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PdlDoedsboMappingStrategyTest {
@@ -130,8 +130,6 @@ public class PdlDoedsboMappingStrategyTest {
                 .kontaktinformasjonForDoedsbo(RsPdlKontaktinformasjonForDoedsbo.builder()
                         .adresselinje1(ADRESSELINJE_1)
                         .adresselinje2(ADRESSELINJE_2)
-                        .gyldigFom(GYLDIG_FOM.atStartOfDay())
-                        .gyldigTom(GYLDIG_TOM.atStartOfDay())
                         .utstedtDato(UTSTEDT_DATO.atStartOfDay())
                         .skifteform(PdlSkifteform.OFFENTLIG)
                         .landkode(LANDKODE)
@@ -141,8 +139,6 @@ public class PdlDoedsboMappingStrategyTest {
 
         assertThat(result.getKontaktinformasjonForDoedsbo().getAdresselinje1(), is(ADRESSELINJE_1));
         assertThat(result.getKontaktinformasjonForDoedsbo().getAdresselinje2(), is(ADRESSELINJE_2));
-        assertThat(result.getKontaktinformasjonForDoedsbo().getGyldigFom(), is(GYLDIG_FOM));
-        assertThat(result.getKontaktinformasjonForDoedsbo().getGyldigTom(), is(GYLDIG_TOM));
         assertThat(result.getKontaktinformasjonForDoedsbo().getUtstedtDato(), is(UTSTEDT_DATO));
         assertThat(result.getKontaktinformasjonForDoedsbo().getSkifteform(), is(PdlSkifteform.OFFENTLIG));
         assertThat(result.getKontaktinformasjonForDoedsbo().getLandkode(), is(LANDKODE));

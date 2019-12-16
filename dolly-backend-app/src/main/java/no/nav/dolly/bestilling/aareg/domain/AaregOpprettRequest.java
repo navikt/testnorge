@@ -1,4 +1,6 @@
-package no.nav.dolly.domain.resultset.aareg;
+package no.nav.dolly.bestilling.aareg.domain;
+
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,17 +8,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsAaregOpprettRequest {
+public class AaregOpprettRequest {
 
     private List<String> environments;
-    private RsArbeidsforhold arbeidsforhold;
+    private Arbeidsforhold arbeidsforhold;
     private String arkivreferanse;
 
     public List<String> getEnvironments() {

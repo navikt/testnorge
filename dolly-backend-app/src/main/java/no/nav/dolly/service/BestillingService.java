@@ -4,9 +4,11 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 import java.util.List;
@@ -26,8 +28,10 @@ import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.BestilteKriterier;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -67,7 +71,7 @@ public class BestillingService {
     public List<Bestilling> fetchBestillingerByGruppeId(Long gruppeId) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
         return testgruppe.isPresent() ?
-            bestillingRepository.findBestillingByGruppeOrderById(testgruppe.get()) : emptyList();
+                bestillingRepository.findBestillingByGruppeOrderById(testgruppe.get()) : emptyList();
     }
 
     public List<Bestilling> fetchMalBestillinger() {
@@ -101,13 +105,21 @@ public class BestillingService {
     }
 
     @Transactional
-    public Bestilling saveBestilling(String ident, RsDollyUpdateRequest request) {
+    public Bestilling saveBestilling(RsDollyUpdateRequest request) {
+
+        Testident testident = identRepository.findByIdent(request.getIdent());
+        if (isNull(testident) || isBlank(testident.getIdent())) {
+            throw new NotFoundException(format("Testindent %s ble ikke funnet", request.getIdent()));
+        }
+        fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
                 Bestilling.builder()
-                        .ident(ident)
+                        .gruppe(testident.getTestgruppe())
+                        .ident(request.getIdent())
+                        .antallIdenter(1)
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
-                        .tpsfKriterier(toJson(request.getTpsfPerson()))
+                        .tpsfKriterier(toJson(request.getTpsf()))
                         .bestKriterier(toJson(BestilteKriterier.builder()
                                 .aareg(request.getAareg())
                                 .krrstub(request.getKrrstub())
@@ -125,6 +137,7 @@ public class BestillingService {
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, RsTpsfBasisBestilling tpsf, Integer antall, List<String> opprettFraIdenter) {
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+        fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)
@@ -173,17 +186,6 @@ public class BestillingService {
         );
     }
 
-    private String toJson(Object object) {
-        try {
-            if (nonNull(object)) {
-                return objectMapper.writer().writeValueAsString(object);
-            }
-        } catch (JsonProcessingException | RuntimeException e) {
-            log.debug("Konvertering til Json feilet", e);
-        }
-        return null;
-    }
-
     public void slettBestillingerByGruppeId(Long gruppeId) {
 
         bestillingKontrollRepository.deleteByGruppeId(gruppeId);
@@ -203,5 +205,28 @@ public class BestillingService {
             bestillingKontrollRepository.deleteByBestillingWithNoChildren(id);
             bestillingRepository.deleteBestillingWithNoChildren(id);
         });
+    }
+
+    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
+
+        if (nonNull(pdldata)) {
+            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
+                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
+            }
+            if (nonNull(pdldata.getFalskIdentitet())) {
+                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
+            }
+        }
+    }
+
+    private String toJson(Object object) {
+        try {
+            if (nonNull(object)) {
+                return objectMapper.writer().writeValueAsString(object);
+            }
+        } catch (JsonProcessingException | RuntimeException e) {
+            log.debug("Konvertering til Json feilet", e);
+        }
+        return null;
     }
 }

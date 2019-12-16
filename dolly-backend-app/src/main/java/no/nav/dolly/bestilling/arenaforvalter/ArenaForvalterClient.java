@@ -6,6 +6,7 @@ import static java.util.Objects.nonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.el.MethodNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -14,14 +15,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.metrics.Timed;
 
 @Slf4j
 @Service
@@ -88,6 +90,13 @@ public class ArenaForvalterClient implements ClientRegister {
                 });
             }
         });
+    }
+
+    @Override
+    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
+        if (nonNull(bestilling.getArenaforvalter())) {
+            throw new MethodNotFoundException("ArenaForvalter mangler denne funksjonen");
+        }
     }
 
     private void deleteServicebruker(String ident, List<String> availEnvironments) {

@@ -9,8 +9,11 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,17 +29,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
-import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
-import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
-import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
+import no.nav.dolly.bestilling.aareg.domain.AaregOppdaterRequest;
+import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
+import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
+import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
@@ -65,11 +64,11 @@ public class AaregConsumerTest {
 
     private String ident = "01010101010";
     private String miljoe = "t0";
-    private RsAaregOpprettRequest opprettRequest;
-    private RsAaregOppdaterRequest oppdaterRequest;
-    private RsAaregResponse opprettResponse;
-    private RsAaregResponse oppdaterResponse;
-    private RsAaregResponse slettResponse;
+    private AaregOpprettRequest opprettRequest;
+    private AaregOppdaterRequest oppdaterRequest;
+    private AaregResponse opprettResponse;
+    private AaregResponse oppdaterResponse;
+    private AaregResponse slettResponse;
 
     @Before
     public void setUp() {
@@ -77,26 +76,26 @@ public class AaregConsumerTest {
 
         server = MockRestServiceServer.createServer(restTemplate);
 
-        opprettRequest = RsAaregOpprettRequest.builder()
-                .arbeidsforhold(RsArbeidsforhold.builder()
+        opprettRequest = AaregOpprettRequest.builder()
+                .arbeidsforhold(Arbeidsforhold.builder()
                         .build())
                 .environments(Collections.singletonList(miljoe))
                 .build();
         Map<String, String> status = new HashMap<>();
         status.put(miljoe, "OK");
-        opprettResponse = RsAaregResponse.builder()
+        opprettResponse = AaregResponse.builder()
                 .statusPerMiljoe(status)
                 .build();
 
-        oppdaterRequest = new RsAaregOppdaterRequest(LocalDateTime.of(2019, 1, 1, 0, 0, 0));
-        oppdaterRequest.setArbeidsforhold(RsArbeidsforhold.builder().build());
+        oppdaterRequest = new AaregOppdaterRequest(LocalDateTime.of(2019, 1, 1, 0, 0, 0));
+        oppdaterRequest.setArbeidsforhold(Arbeidsforhold.builder().build());
         oppdaterRequest.setEnvironments(Collections.singletonList(miljoe));
 
-        oppdaterResponse = RsAaregResponse.builder()
+        oppdaterResponse = AaregResponse.builder()
                 .statusPerMiljoe(status)
                 .build();
 
-        slettResponse = RsAaregResponse.builder()
+        slettResponse = AaregResponse.builder()
                 .statusPerMiljoe(status)
                 .build();
 
@@ -110,7 +109,7 @@ public class AaregConsumerTest {
         String expectedUri = serverUrl + "/api/v1/arbeidsforhold";
         stubOpprettArbeidsforhold(expectedUri, opprettResponse);
 
-        RsAaregResponse response = aaregConsumer.opprettArbeidsforhold(opprettRequest);
+        AaregResponse response = aaregConsumer.opprettArbeidsforhold(opprettRequest);
 
         assertThat(response.getStatusPerMiljoe().get(miljoe), equalTo("OK"));
     }
@@ -120,7 +119,7 @@ public class AaregConsumerTest {
         String expectedUri = serverUrl + "/api/v1/arbeidsforhold";
         stubOppdaterArbeidsforhold(expectedUri, oppdaterResponse);
 
-        RsAaregResponse response = aaregConsumer.oppdaterArbeidsforhold(oppdaterRequest);
+        AaregResponse response = aaregConsumer.oppdaterArbeidsforhold(oppdaterRequest);
 
         assertThat(response.getStatusPerMiljoe().get(miljoe), equalTo("OK"));
     }
@@ -138,12 +137,12 @@ public class AaregConsumerTest {
         String expectedUri = serverUrl + "/api/v1/arbeidsforhold?ident={ident}";
         stubSlettIdentFraAlleMiljoer(expectedUri, slettResponse);
 
-        RsAaregResponse response = aaregConsumer.slettArbeidsforholdFraAlleMiljoer(ident);
+        AaregResponse response = aaregConsumer.slettArbeidsforholdFraAlleMiljoer(ident);
 
         assertThat(response.getStatusPerMiljoe().get(miljoe), equalTo("OK"));
     }
 
-    private void stubOpprettArbeidsforhold(String expectedUri, RsAaregResponse response) throws JsonProcessingException {
+    private void stubOpprettArbeidsforhold(String expectedUri, AaregResponse response) throws JsonProcessingException {
         server.expect(requestToUriTemplate(expectedUri))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(content().string(asJsonString(opprettRequest)))
@@ -153,7 +152,7 @@ public class AaregConsumerTest {
                                 .contentType(MediaType.APPLICATION_JSON));
     }
 
-    private void stubOppdaterArbeidsforhold(String expectedUri, RsAaregResponse response) throws JsonProcessingException {
+    private void stubOppdaterArbeidsforhold(String expectedUri, AaregResponse response) throws JsonProcessingException {
         server.expect(requestToUriTemplate(expectedUri))
                 .andExpect(method(HttpMethod.PUT))
                 .andExpect(content().string(
@@ -173,7 +172,7 @@ public class AaregConsumerTest {
                 .andRespond(withSuccess("[{}]", MediaType.APPLICATION_JSON));
     }
 
-    private void stubSlettIdentFraAlleMiljoer(String expectedUri, RsAaregResponse response) throws JsonProcessingException {
+    private void stubSlettIdentFraAlleMiljoer(String expectedUri, AaregResponse response) throws JsonProcessingException {
         server.expect(requestToUriTemplate(expectedUri, ident))
                 .andExpect(method(HttpMethod.DELETE))
                 .andRespond(withSuccess(asJsonString(response), MediaType.APPLICATION_JSON));
