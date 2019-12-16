@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDatepicker, { registerLocale } from 'react-datepicker'
 import { useField } from 'formik'
-import { addHours, subYears, addYears, isDate } from 'date-fns'
+import { subYears, addYears } from 'date-fns'
 import locale_nb from 'date-fns/locale/nb'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { Label } from '~/components/ui/form/inputs/label/Label'
@@ -22,18 +22,13 @@ export const Datepicker = ({
 	disabled = false,
 	feil
 }) => {
-	const preSave = selectedDate => {
-		// Vi bryr oss ikke om klokkeslett. Legger til 3 timer for å slippe å ta hensyn til tidsforskjeller
-		const modDateTime = isDate(selectedDate) ? addHours(selectedDate, 3) : null
-		return onChange(modDateTime)
-	}
 	return (
 		<ReactDatepicker
 			locale="nb"
 			dateFormat="dd.MM.yyyy"
 			placeholderText={placeholder}
 			selected={(value && new Date(value)) || null}
-			onChange={preSave}
+			onChange={onChange}
 			showMonthDropdown
 			showYearDropdown
 			minDate={subYears(new Date(), 100)}
@@ -43,6 +38,7 @@ export const Datepicker = ({
 			onBlur={onBlur}
 			name={name}
 			id={name}
+			autoComplete="off"
 			customInput={<TextInput icon="calendar" feil={feil} />}
 		/>
 	)

@@ -17,8 +17,8 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 		<div>
 			{visTittel && <SubOverskrift label="Nasjonalitet" />}
 			<div className="person-visning_content">
-				{statsborgerskap.map(sb => (
-					<div>
+				{statsborgerskap.map((sb, idx) => (
+					<div key={idx}>
 						<TitleValue title="Statsborgerskap" kodeverk="Landkoder" value={sb.statsborgerskap} />
 						<TitleValue
 							title="Statsborgerskap fra"
