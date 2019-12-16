@@ -63,7 +63,7 @@ public class BestillingProgress {
     private String instdataStatus;
 
     @Column(name = "INNTEKTSSTUB_STATUS")
-    private String inntektsstubStatus;
+    private String inntektstubStatus;
 
     private String feil;
 

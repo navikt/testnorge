@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.inntektsstub;
+package no.nav.dolly.bestilling.inntektstub;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.inntektsstub.domain.Inntektsinformasjon;
+import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
@@ -32,10 +32,10 @@ public class InntektstubClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
-        if (nonNull(bestilling.getInntektstub())) {
+        if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
 
-            Inntektsinformasjon inntektsinformasjon = mapperFacade.map(bestilling.getInntektstub(), Inntektsinformasjon.class);
-            inntektsinformasjon.setNorskIdent(tpsPerson.getHovedperson());
+            List<Inntektsinformasjon> inntektsinformasjon = mapperFacade.mapAsList(bestilling.getInntektstub().getInntektsinformasjon(), Inntektsinformasjon.class);
+            inntektsinformasjon.forEach(info -> info.setNorskIdent(tpsPerson.getHovedperson()));
 
             deleteInntekter(tpsPerson.getHovedperson());
             opprettInntekter(inntektsinformasjon, progress);
@@ -50,34 +50,34 @@ public class InntektstubClient implements ClientRegister {
 
     @Override
     public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
-        if (nonNull(bestilling.getInntektsstub())) {
+        if (nonNull(bestilling.getInntektstub())) {
             throw new MethodNotFoundException("Inntektstub mangler denne funksjonen");
         }
     }
 
-    private void opprettInntekter(Inntektsinformasjon inntektsinformasjon, BestillingProgress progress) {
+    private void opprettInntekter(List<Inntektsinformasjon> inntektsinformasjon, BestillingProgress progress) {
 
         try {
-            ResponseEntity<Inntektsinformasjon> response = inntektstubConsumer.postInntekter(inntektsinformasjon);
+            ResponseEntity<Inntektsinformasjon[]> response = inntektstubConsumer.postInntekter(inntektsinformasjon);
 
             if (nonNull(response) && response.hasBody()) {
 
-                progress.setInntektsstubStatus(isBlank(response.getBody().getFeilmelding()) ? "OK" : response.getBody().getFeilmelding());
+                progress.setInntektstubStatus(isBlank(response.getBody()[0].getFeilmelding()) ? "OK" : response.getBody()[0].getFeilmelding());
 
             } else {
 
-                progress.setInntektsstubStatus(format("Feilet å opprette inntekter i Inntektstub for ident %s.", inntektsinformasjon.getNorskIdent()));
+                progress.setInntektstubStatus(format("Feilet å opprette inntekter i Inntektstub for ident %s.", inntektsinformasjon.get(0).getNorskIdent()));
             }
 
         } catch (HttpClientErrorException e) {
 
-            progress.setInntektsstubStatus(e.getResponseBodyAsString());
+            progress.setInntektstubStatus(e.getResponseBodyAsString());
 
         } catch (RuntimeException e) {
 
-            progress.setInntektsstubStatus("Teknisk feil, se logg!");
+            progress.setInntektstubStatus("Teknisk feil, se logg!");
 
-            log.error("Feilet å opprette inntekter i Inntektstub for ident {}. Feilmelding: {}", inntektsinformasjon.getNorskIdent(), e.getMessage(), e);
+            log.error("Feilet å opprette inntekter i Inntektstub for ident {}. Feilmelding: {}", inntektsinformasjon.get(0).getNorskIdent(), e.getMessage(), e);
         }
 
     }

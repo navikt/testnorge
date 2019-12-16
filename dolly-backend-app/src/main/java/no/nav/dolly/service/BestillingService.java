@@ -128,7 +128,7 @@ public class BestillingService {
                                 .arenaforvalter(request.getArenaforvalter())
                                 .pdlforvalter(request.getPdlforvalter())
                                 .instdata(request.getInstdata())
-                                .inntektsstub(request.getInntektsstub())
+                                .inntektstub(request.getInntektstub())
                                 .build()))
                         .userId(getUserPrinciple())
                         .build());
@@ -153,7 +153,7 @@ public class BestillingService {
                                 .arenaforvalter(request.getArenaforvalter())
                                 .pdlforvalter(request.getPdlforvalter())
                                 .instdata(request.getInstdata())
-                                .inntektsstub(request.getInntektstub())
+                                .inntektstub(request.getInntektstub())
                                 .build()))
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .malBestillingNavn(request.getMalBestillingNavn())

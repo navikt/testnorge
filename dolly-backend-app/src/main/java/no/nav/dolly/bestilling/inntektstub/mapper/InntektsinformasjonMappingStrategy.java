@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.inntektsstub.mapper;
+package no.nav.dolly.bestilling.inntektstub.mapper;
 
 import java.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.inntektsstub.domain.Inntektsinformasjon;
+import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.mapper.MappingStrategy;
 

@@ -15,7 +15,7 @@ import lombok.Setter;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
-import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
+import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
@@ -79,7 +79,7 @@ public class RsBestillingStatus {
         private List<RsInstdata> instdata;
         private List<RsArbeidsforhold> aareg;
         private List<OpprettSkattegrunnlag> sigrunstub;
-        private RsInntektsinformasjon inntektsstub;
+        private InntektMultiplierWrapper inntektstub;
         private Arenadata arenaforvalter;
         private RsUdiPerson udistub;
     }

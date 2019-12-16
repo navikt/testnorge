@@ -40,7 +40,7 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
                                 .krrstub(bestillingRequest.getKrrstub())
                                 .arenaforvalter(bestillingRequest.getArenaforvalter())
                                 .instdata(bestillingRequest.getInstdata())
-                                .inntektsstub(bestillingRequest.getInntektstub())
+                                .inntektstub(bestillingRequest.getInntektstub())
                                 .sigrunstub(bestillingRequest.getSigrunstub())
                                 .udistub(bestillingRequest.getUdistub())
                                 .tpsf(mapperFacade.map(bestilling.getTpsfKriterier(), Json.class))
