@@ -11,7 +11,7 @@ export const DoedsboKontaktinfo = ({ data, loading }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Kontaktinformasjon for dødsbo" />
+			<SubOverskrift label="Kontaktinformasjon for dødsbo" iconKind="doedsbo" />
 			<div>
 				{data.map((id, idx) => (
 					<div className="person-visning_content" key={idx}>

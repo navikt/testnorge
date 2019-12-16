@@ -15,9 +15,9 @@ export const KontaktReservasjonsPanel = ({ stateModifier }) => {
 		<Panel
 			heading={KontaktReservasjonsPanel.heading}
 			informasjonstekst={infoTekst}
-			startOpen
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
+			iconType="krr"
 		>
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.krrstub} />

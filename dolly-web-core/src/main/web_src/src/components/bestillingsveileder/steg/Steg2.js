@@ -33,12 +33,12 @@ export const Steg2 = ({ formikBag }) => {
 	return (
 		<div>
 			<TpsfForm formikBag={formikBag} />
+			<PdlfForm formikBag={formikBag} />
+			<SigrunstubForm formikBag={formikBag} />
 			<InstForm formikBag={formikBag} />
 			<KrrstubForm formikBag={formikBag} />
-			<SigrunstubForm formikBag={formikBag} />
 			<ArenaForm formikBag={formikBag} />
 			<UdistubForm formikBag={formikBag} />
-			<PdlfForm formikBag={formikBag} />
 		</div>
 	)
 }

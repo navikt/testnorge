@@ -29,7 +29,7 @@ export const ArenaForm = ({ formikBag }) => {
 
 	return (
 		<Vis attributt="arenaforvalter">
-			<Panel heading="Arena" hasErrors={panelError(formikBag)}>
+			<Panel heading="Arena" hasErrors={panelError(formikBag)} iconType="arena">
 				<FormikSelect
 					name="arenaforvalter.arenaBrukertype"
 					label="Brukertype"

@@ -22,10 +22,10 @@ export const InstutisjonsoppholdPanel = ({ stateModifier }) => {
 	return (
 		<Panel
 			heading={InstutisjonsoppholdPanel.heading}
-			startOpen
 			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
+			iconType="institusjon"
 		>
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.instdata} />

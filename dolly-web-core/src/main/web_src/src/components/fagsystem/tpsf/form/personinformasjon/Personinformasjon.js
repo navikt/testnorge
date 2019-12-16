@@ -28,7 +28,12 @@ const panelPaths = [alderPaths, nasjonalitetPaths, diversePaths].flat()
 
 export const Personinformasjon = ({ formikBag }) => (
 	<Vis attributt={panelPaths}>
-		<Panel heading="Personinformasjon" hasErrors={panelError(formikBag)} startOpen>
+		<Panel
+			heading="Personinformasjon"
+			hasErrors={panelError(formikBag)}
+			iconType={'personinformasjon'}
+			startOpen
+		>
 			<Kategori title="Alder" vis={alderPaths}>
 				<FormikDatepicker name="tpsf.foedtEtter" label="Født etter" />
 				<FormikDatepicker name="tpsf.foedtFoer" label="Født før" />
