@@ -24,17 +24,17 @@ import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class InntektsstubClient implements ClientRegister {
+public class InntektstubClient implements ClientRegister {
 
-    private final InntektsstubConsumer inntektsstubConsumer;
+    private final InntektstubConsumer inntektstubConsumer;
     private final MapperFacade mapperFacade;
 
     @Override
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
-        if (nonNull(bestilling.getInntektsstub())) {
+        if (nonNull(bestilling.getInntektstub())) {
 
-            Inntektsinformasjon inntektsinformasjon = mapperFacade.map(bestilling.getInntektsstub(), Inntektsinformasjon.class);
+            Inntektsinformasjon inntektsinformasjon = mapperFacade.map(bestilling.getInntektstub(), Inntektsinformasjon.class);
             inntektsinformasjon.setNorskIdent(tpsPerson.getHovedperson());
 
             deleteInntekter(tpsPerson.getHovedperson());
@@ -51,14 +51,14 @@ public class InntektsstubClient implements ClientRegister {
     @Override
     public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
         if (nonNull(bestilling.getInntektsstub())) {
-            throw new MethodNotFoundException("Inntektsstub mangler denne funksjonen");
+            throw new MethodNotFoundException("Inntektstub mangler denne funksjonen");
         }
     }
 
     private void opprettInntekter(Inntektsinformasjon inntektsinformasjon, BestillingProgress progress) {
 
         try {
-            ResponseEntity<Inntektsinformasjon> response = inntektsstubConsumer.postInntekter(inntektsinformasjon);
+            ResponseEntity<Inntektsinformasjon> response = inntektstubConsumer.postInntekter(inntektsinformasjon);
 
             if (nonNull(response) && response.hasBody()) {
 
@@ -66,7 +66,7 @@ public class InntektsstubClient implements ClientRegister {
 
             } else {
 
-                progress.setInntektsstubStatus(format("Feilet å opprette inntekter i Inntektsstub for ident %s.", inntektsinformasjon.getNorskIdent()));
+                progress.setInntektsstubStatus(format("Feilet å opprette inntekter i Inntektstub for ident %s.", inntektsinformasjon.getNorskIdent()));
             }
 
         } catch (HttpClientErrorException e) {
@@ -77,7 +77,7 @@ public class InntektsstubClient implements ClientRegister {
 
             progress.setInntektsstubStatus("Teknisk feil, se logg!");
 
-            log.error("Feilet å opprette inntekter i Inntektsstub for ident {}. Feilmelding: {}", inntektsinformasjon.getNorskIdent(), e.getMessage(), e);
+            log.error("Feilet å opprette inntekter i Inntektstub for ident {}. Feilmelding: {}", inntektsinformasjon.getNorskIdent(), e.getMessage(), e);
         }
 
     }
@@ -85,14 +85,14 @@ public class InntektsstubClient implements ClientRegister {
     private void deleteInntekter(String hovedperson) {
 
         try {
-            inntektsstubConsumer.deleteInntekter(hovedperson);
+            inntektstubConsumer.deleteInntekter(hovedperson);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
 
-            log.error("Feilet å slette informasjon om ident {} i Inntektsstub. Feilmelding: {}", hovedperson, e.getResponseBodyAsString());
+            log.error("Feilet å slette informasjon om ident {} i Inntektstub. Feilmelding: {}", hovedperson, e.getResponseBodyAsString());
 
         } catch (RuntimeException e) {
 
-            log.error("Feilet å slette informasjon om ident {} i Inntektsstub. Feilmelding: {}", hovedperson, e.getMessage());
+            log.error("Feilet å slette informasjon om ident {} i Inntektstub. Feilmelding: {}", hovedperson, e.getMessage());
         }
     }
 }

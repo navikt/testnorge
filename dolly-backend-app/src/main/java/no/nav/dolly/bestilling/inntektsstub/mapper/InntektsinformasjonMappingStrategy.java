@@ -7,7 +7,7 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.inntektsstub.domain.Inntektsinformasjon;
-import no.nav.dolly.domain.resultset.inntektsstub.RsInntektsinformasjon;
+import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component

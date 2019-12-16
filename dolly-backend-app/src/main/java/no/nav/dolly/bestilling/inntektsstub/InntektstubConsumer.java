@@ -14,7 +14,7 @@ import no.nav.dolly.properties.ProvidersProps;
 
 @Service
 @RequiredArgsConstructor
-public class InntektsstubConsumer {
+public class InntektstubConsumer {
 
     private static final String BESTILLING_INNTEKTER_URL = "/api/v2/inntekter";
 
@@ -24,7 +24,7 @@ public class InntektsstubConsumer {
     public ResponseEntity deleteInntekter(String ident) {
 
         return restTemplate.exchange(RequestEntity.delete(
-                URI.create(providersProps.getInntektsstub().getUrl() + BESTILLING_INNTEKTER_URL))
+                URI.create(providersProps.getInntektstub().getUrl() + BESTILLING_INNTEKTER_URL))
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .build(), Inntektsinformasjon.class);
     }
@@ -32,7 +32,7 @@ public class InntektsstubConsumer {
     public ResponseEntity<Inntektsinformasjon> postInntekter(Inntektsinformasjon inntektsinformasjon) {
 
         return restTemplate.exchange(RequestEntity.post(
-                URI.create(providersProps.getInntektsstub().getUrl() + BESTILLING_INNTEKTER_URL))
+                URI.create(providersProps.getInntektstub().getUrl() + BESTILLING_INNTEKTER_URL))
                 .body(inntektsinformasjon), Inntektsinformasjon.class);
     }
 }

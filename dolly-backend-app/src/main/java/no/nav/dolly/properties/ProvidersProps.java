@@ -27,7 +27,7 @@ public class ProvidersProps {
     private PersonOppslag personOppslag = new PersonOppslag();
     private Instdata instdata = new Instdata();
     private Aaregdata aaregdata = new Aaregdata();
-    private Inntektsstub inntektsstub = new Inntektsstub();
+    private Inntektstub inntektstub = new Inntektstub();
     private PdlPerson pdlPerson = new PdlPerson();
 
     @Getter
@@ -154,7 +154,7 @@ public class ProvidersProps {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Inntektsstub {
+    public static class Inntektstub {
 
         private String url;
     }

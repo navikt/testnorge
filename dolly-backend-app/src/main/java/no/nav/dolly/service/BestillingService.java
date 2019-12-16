@@ -153,7 +153,7 @@ public class BestillingService {
                                 .arenaforvalter(request.getArenaforvalter())
                                 .pdlforvalter(request.getPdlforvalter())
                                 .instdata(request.getInstdata())
-                                .inntektsstub(request.getInntektsstub())
+                                .inntektsstub(request.getInntektstub())
                                 .build()))
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .malBestillingNavn(request.getMalBestillingNavn())

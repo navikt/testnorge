@@ -39,6 +39,8 @@ providers:
     url: https://testnorge-aareg-u2.nais.preprod.local
   pdlPerson:
     url: https://pdl-api.nais.preprod.local
+  inntektstub:
+    url: https://inntektstub-u1.nais.preprod.local
 
 fasit:
   url: https://fasit.adeo.no

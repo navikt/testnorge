@@ -57,7 +57,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .krrstub(bestillingRequest.getKrrstub())
                                 .arenaforvalter(bestillingRequest.getArenaforvalter())
                                 .instdata(bestillingRequest.getInstdata())
-                                .inntektsstub(bestillingRequest.getInntektsstub())
+                                .inntektsstub(bestillingRequest.getInntektstub())
                                 .sigrunstub(bestillingRequest.getSigrunstub())
                                 .udistub(bestillingRequest.getUdistub())
                                 .tpsf(mapperFacade.map(bestilling.getTpsfKriterier(), Json.class))
