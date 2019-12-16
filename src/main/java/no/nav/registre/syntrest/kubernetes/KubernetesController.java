@@ -211,11 +211,11 @@ public class KubernetesController {
                 log.info("Deploying {}, version: {}", appName, tag);
                 return Optional.of(tag);
             }
-            return Optional.empty();
 
-        } catch (Exception e) {
-            return Optional.empty();
-        }
+        } catch (Exception ignored) {}
+
+        log.warn("Could not find tag for application {}.", appName);
+        return Optional.empty();
     }
 
 }
