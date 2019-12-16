@@ -4,6 +4,7 @@ import * as Yup from 'yup'
 import { Personinformasjon } from './personinformasjon/Personinformasjon'
 import { Adresser } from './adresser/Adresser'
 import { Identhistorikk } from './Identhistorikk'
+import { Familierelasjoner } from './familierelasjoner/Familierelasjoner'
 import { requiredDate, requiredString, ifPresent } from '~/utils/YupValidations'
 
 export const TpsfForm = ({ formikBag }) => {
@@ -12,6 +13,7 @@ export const TpsfForm = ({ formikBag }) => {
 			<Personinformasjon formikBag={formikBag} />
 			<Adresser formikBag={formikBag} />
 			<Identhistorikk formikBag={formikBag} />
+			<Familierelasjoner formikBag={formikBag} />
 		</React.Fragment>
 	)
 }
@@ -37,6 +39,7 @@ TpsfForm.validation = {
 					value => value !== 'SPSF'
 				)
 			})
+			// TODO familievalidation
 		})
 	)
 }

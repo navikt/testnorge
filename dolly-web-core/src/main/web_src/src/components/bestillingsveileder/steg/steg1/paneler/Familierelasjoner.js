@@ -30,22 +30,38 @@ FamilierelasjonPanel.heading = 'Familierelasjoner'
 FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 	partner: {
 		label: 'Har partner',
-		checked: has('tpsf.partner'),
+		checked: has('tpsf.relasjoner.partnere'),
 		add() {
-			set('tpsf.partner', {})
+			set('tpsf.relasjoner.partnere', [
+				{
+					identtype: '',
+					kjonn: '',
+					sivilstander: { sivilstand: '', sivilstandRegdato: '' },
+					harFellesAdresse: false
+				}
+			])
 		},
 		remove() {
-			del('tpsf.partner')
+			del('tpsf.relasjoner.partnere')
 		}
 	},
 	barn: {
 		label: 'Har barn',
-		checked: has('tpsf.barn'),
+		checked: has('tpsf.relasjoner.barn'),
 		add() {
-			set('tpsf.barn', {})
+			set('tpsf.relasjoner.barn', [
+				{
+					identtype: '',
+					kjonn: '',
+					barnType: '',
+					partnerNr: '',
+					borHos: '',
+					erAdoptert: false
+				}
+			])
 		},
 		remove() {
-			del('tpsf.barn')
+			del('tpsf.relasjoner.barn')
 		}
 	}
 })
