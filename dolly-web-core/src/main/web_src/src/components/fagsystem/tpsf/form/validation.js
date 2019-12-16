@@ -22,14 +22,20 @@ export const validation = {
 		}),
 		postadresse: Yup.array().of(
 			Yup.object({
-				postLand: requiredString,
-				postLinje1: requiredString,
-				postLinje3: Yup.string()
-					.matches(/\d{4}$/)
-					.when('PostLinje2', {
+				postLinje1: Yup.string()
+					.required('reqd')
+					.when('postLand', {
+						is: 'NORGE',
+						then: requiredString
+					}),
+				postLinje3: Yup.string().when('postLand', {
+					is: 'NOR',
+					then: Yup.string().when('PostLinje2', {
 						is: Yup.string().matches(/\d{4}$/),
 						then: Yup.string().notRequired()
 					})
+				}),
+				postLand: requiredString
 			})
 		)
 	})

@@ -105,7 +105,6 @@ export const Adresser = ({ formikBag }) => {
 				{
 					<Vis attributt="tpsf.postadresse">
 						<Postadresser formikBag={formikBag} />
-						<FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
 					</Vis>
 				}
 			</Panel>
