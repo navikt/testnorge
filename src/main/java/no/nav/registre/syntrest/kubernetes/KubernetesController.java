@@ -1,5 +1,6 @@
 package no.nav.registre.syntrest.kubernetes;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
 import io.kubernetes.client.ApiException;
@@ -10,11 +11,8 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -200,24 +198,24 @@ public class KubernetesController {
 
 
     private Optional<String> getApplicaitonTag(String appName) {
-        String fileInfoUrl = "https://api.github.com/repos/navikt/synt/contents/package_versions.json";
-        ParameterizedTypeReference<Map<String, Object>> RESPONSE_TYPE = new ParameterizedTypeReference<Map<String, Object>>() {
-        };
-        ParameterizedTypeReference<Map<String, String>> JSON_RESPONSE = new ParameterizedTypeReference<Map<String, String>>() {
-        };
-        String tag;
-        try {
-            RequestEntity request = RequestEntity.get(new UriTemplate(fileInfoUrl).expand()).build();
-            Map<String, Object> fileInfo = (Map<String, Object>) authRestTemplate.exchange(request, RESPONSE_TYPE);
-            String downloadUrl = (String) fileInfo.get("download_url");
 
-            request = RequestEntity.get(new UriTemplate(downloadUrl).expand()).build();
-            Map<String, String> fileTags = (Map<String, String>) authRestTemplate.exchange(request, JSON_RESPONSE);
-            tag = fileTags.get(appName);
+        String apiUrl = "https://api.github.com/graphql";
+        String body = "{\"query\":\"query {repository(owner:\"navikt\", name:\"synt\") {registryPackages(name:\"" + appName + "\" last:1) {nodes {latestVersion{version}} }}}\"}";
+
+        try {
+            RequestEntity requestLatestTag = RequestEntity.post(new UriTemplate(apiUrl).expand()).body(body);
+            ResponseEntity<JsonNode> response = authRestTemplate.exchange(requestLatestTag, JsonNode.class);
+
+            if (response.getBody() != null) {
+                String tag = response.getBody().findValue("version").asText();
+                log.info("Deploying {}, version: {}", appName, tag);
+                return Optional.of(tag);
+            }
+            return Optional.empty();
+
         } catch (Exception e) {
             return Optional.empty();
         }
-        return Optional.of(tag);
     }
 
 }
