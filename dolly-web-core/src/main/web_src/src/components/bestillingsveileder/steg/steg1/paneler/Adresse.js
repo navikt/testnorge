@@ -13,7 +13,7 @@ export const AdressePanel = ({ stateModifier }) => {
 			heading={AdressePanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="house"
+			iconType="adresse"
 		>
 			<AttributtKategori title="Boadresse">
 				<Attributt attr={sm.attrs.boadresse} />

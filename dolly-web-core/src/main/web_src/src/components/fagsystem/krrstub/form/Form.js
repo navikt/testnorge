@@ -13,7 +13,7 @@ export const KrrstubForm = ({ formikBag }) => (
 		<Panel
 			heading="Kontakt- og reservasjonsregisteret"
 			hasErrors={panelError(formikBag)}
-			iconType="envelope"
+			iconType="krr"
 		>
 			<FormikTextInput name="krrstub.epost" label="E-post" />
 			<FormikTextInput name="krrstub.mobil" label="Mobilnummer" />

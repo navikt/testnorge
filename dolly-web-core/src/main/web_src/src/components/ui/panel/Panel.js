@@ -30,7 +30,7 @@ export default function Panel({
 	return (
 		<div className={panelClass}>
 			<div className="panel-heading">
-				{iconType && <Icon size={48} kind={iconType} className={'header-icon'} />}
+				{iconType && <Icon size={40} kind={iconType} className={'header-icon'} />}
 				<h2>{heading}</h2>
 
 				{informasjonstekst && <HjelpeTekst>{informasjonstekst}</HjelpeTekst>}

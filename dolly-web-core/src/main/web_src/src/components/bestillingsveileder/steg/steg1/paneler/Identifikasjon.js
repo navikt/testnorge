@@ -13,7 +13,7 @@ export const IdentifikasjonPanel = ({ stateModifier }) => {
 			heading={IdentifikasjonPanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="group-1"
+			iconType="identifikasjon"
 		>
 			<AttributtKategori title="Identifikasjon">
 				<Attributt attr={sm.attrs.falskIdentitet} />

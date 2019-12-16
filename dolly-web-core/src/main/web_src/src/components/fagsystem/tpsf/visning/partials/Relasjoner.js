@@ -35,7 +35,7 @@ export const Relasjoner = ({ relasjoner, bestilling }) => {
 	)
 	return (
 		<div>
-			<SubOverskrift label="Familierelasjoner" />
+			<SubOverskrift label="Familierelasjoner" iconKind="relasjoner" />
 			<div className="person-visning_content">
 				{partnere.map((partner, idx) => (
 					<div key={idx} className="title-multiple">

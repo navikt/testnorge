@@ -6,8 +6,10 @@ import Trashcan from '~/assets/icons/nav-ikoner/line/SVG/01-edition/bin-1.svg'
 import EditIcon from '~/assets/icons/nav-ikoner/line/SVG/01-edition/pencil-2.svg'
 import Search from '~/assets/icons/nav-ikoner/line/SVG/01-edition/search.svg'
 import Skull from '~/assets/icons/nav-ikoner/line/SVG/01-edition/skull-1.svg'
+import ChatBubble from '~/assets/icons/nav-ikoner/line/SVG/06-comment-chat/bubble-chat-1.svg'
 import Star from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/rank-army-star-1.svg'
 import Envelope from '~/assets/icons/nav-ikoner/line/SVG/10-email/email-1.svg'
+import EmailText from '~/assets/icons/nav-ikoner/line/SVG/10-email/email-text.svg'
 import AccountCircle from '~/assets/icons/nav-ikoner/filled/SVG/11-users/account-circle.svg'
 import Man from '~/assets/icons/nav-ikoner/line/SVG/11-users/man.svg'
 import Woman from '~/assets/icons/nav-ikoner/line/SVG/11-users/lady-2.svg'
@@ -27,9 +29,11 @@ import CheckCircle2 from '~/assets/icons/nav-ikoner/line/SVG/20-status/check-cir
 import Wrench from '~/assets/icons/nav-ikoner/line/SVG/21-settings/wrench.svg'
 import Calendar from '~/assets/icons/nav-ikoner/line/SVG/22-time/calendar-3.svg'
 import InformationCircle from '~/assets/icons/nav-ikoner/line/SVG/23-alerts-informations/information-circle.svg'
+import BankNote from '~/assets/icons/nav-ikoner/line/SVG/24-business-finance/bank-notes-3.svg'
 import Institusjon from '~/assets/icons/nav-ikoner/line/SVG/26-places/building-2.svg'
 import House from '~/assets/icons/nav-ikoner/line/SVG/26-places/home-1.svg'
 import Globe from '~/assets/icons/nav-ikoner/line/SVG/26-places/globe-1.svg'
+import Globe2 from '~/assets/icons/nav-ikoner/line/SVG/26-places/globe-2.svg'
 import Eraser from '~/assets/icons/nav-ikoner/filled/SVG/36-text/eraser.svg'
 import ArrowLeft from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-left-10.svg'
 import ArrowRight from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-right-10.svg'
@@ -70,21 +74,27 @@ const icons = {
 	'chevron-right': ChevronRight,
 	'rectangle-empty': RectEmpty,
 	'rectangle-filled': RectFilled,
-	'information-circle': InformationCircle,
-	'group-1': Group1,
-	'check-circle2': CheckCircle2,
-	envelope: Envelope,
-	skull: Skull,
-	institusjon: Institusjon,
-	wrench: Wrench,
-	globe: Globe,
-	family: Family,
-	house: House,
 	man: Man,
 	woman: Woman,
 	group: Group,
 	bestilling: FileChecklist,
-	newFile: NewFile
+	newFile: NewFile,
+
+	personinformasjon: InformationCircle,
+	nasjonalitet: Globe2,
+	relasjoner: Family,
+	identhistorikk: InformationCircle,
+	identifikasjon: Group1,
+	adresse: House,
+	postadresse: EmailText,
+	doedsbo: Skull,
+	krr: Envelope,
+	arena: CheckCircle2,
+	institusjon: Institusjon,
+	arbeid: Wrench,
+	sigrun: BankNote,
+	udi: Globe,
+	kommentar: ChatBubble
 }
 
 const px = v => `${v}px`

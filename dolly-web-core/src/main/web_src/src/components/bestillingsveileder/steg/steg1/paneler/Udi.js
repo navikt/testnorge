@@ -13,7 +13,7 @@ export const UdiPanel = ({ stateModifier }) => {
 			heading={UdiPanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="globe"
+			iconType="udi"
 		>
 			<AttributtKategori title="Gjeldende oppholdstatus">
 				<Attributt attr={sm.attrs.oppholdStatus} />

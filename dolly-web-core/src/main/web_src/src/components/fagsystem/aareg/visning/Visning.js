@@ -15,7 +15,7 @@ export const AaregVisning = ({ data, loading }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Arbeidsforhold" />
+			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" />
 			<div>
 				{data.map((id, idx) => (
 					<div key={idx}>

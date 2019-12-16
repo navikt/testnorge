@@ -17,7 +17,7 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="wrench"
+			iconType="arbeid"
 		>
 			<AttributtKategori title="Arbeidsforhold">
 				<Attributt attr={sm.attrs.arbeid} />

@@ -19,7 +19,7 @@ export const Beskrivelse = ({ ident, updateBeskrivelse, isUpdatingBeskrivelse })
 
 	return (
 		<div className="beskrivelse-visning">
-			<SubOverskrift label="Kommentarer" />
+			<SubOverskrift label="Kommentarer" iconKind="kommentar" />
 			{isEditing ? (
 				<BeskrivelseEditor
 					turnOffEditing={turnOffEditing}

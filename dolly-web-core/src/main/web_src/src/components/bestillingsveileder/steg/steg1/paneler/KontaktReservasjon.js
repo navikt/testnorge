@@ -17,7 +17,7 @@ export const KontaktReservasjonsPanel = ({ stateModifier }) => {
 			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="envelope"
+			iconType="krr"
 		>
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.krrstub} />

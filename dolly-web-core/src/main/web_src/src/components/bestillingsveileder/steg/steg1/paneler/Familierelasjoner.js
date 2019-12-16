@@ -13,7 +13,7 @@ export const FamilierelasjonPanel = ({ stateModifier }) => {
 			heading={FamilierelasjonPanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="family"
+			iconType="relasjoner"
 		>
 			<AttributtKategori title="Partner">
 				<Attributt attr={sm.attrs.partner} />

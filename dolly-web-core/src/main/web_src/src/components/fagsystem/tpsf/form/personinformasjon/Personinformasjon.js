@@ -31,7 +31,7 @@ export const Personinformasjon = ({ formikBag }) => (
 		<Panel
 			heading="Personinformasjon"
 			hasErrors={panelError(formikBag)}
-			iconType={'information-circle'}
+			iconType={'personinformasjon'}
 			startOpen
 		>
 			<Kategori title="Alder" vis={alderPaths}>

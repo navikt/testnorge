@@ -25,7 +25,7 @@ export const ArenaPanel = ({ stateModifier }) => {
 			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="check-circle2"
+			iconType="arena"
 		>
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.arenaforvalter} />
