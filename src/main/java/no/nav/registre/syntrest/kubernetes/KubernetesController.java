@@ -200,11 +200,11 @@ public class KubernetesController {
     private Optional<String> getApplicaitonTag(String appName) {
 
         String apiUrl = "https://api.github.com/graphql";
-        // QueryObject query = QueryObject.builder().query("query {repository(owner:\"navikt\", name:\"synt\") {registryPackages(name:\"" + appName + "\" last:1) {nodes {latestVersion{version}} }}}").build();
+        QueryObject query = QueryObject.builder().query("query {repository(owner:\"navikt\", name:\"synt\") {registryPackages(name:\"" + appName + "\" last:1) {nodes {latestVersion{version}} }}}").build();
         String body = "{\"query\":\"query {repository(owner:\"navikt\", name:\"synt\") {registryPackages(name:\"" + appName + "\" last:1) {nodes {latestVersion{version}} }}}\"}";
 
         try {
-            RequestEntity requestLatestTag = RequestEntity.post(new UriTemplate(apiUrl).expand()).header("Content-Type", "application/json").body(body);
+            RequestEntity requestLatestTag = RequestEntity.post(new UriTemplate(apiUrl).expand()).header("Content-Type", "application/json").body(query);
             ResponseEntity<JsonNode> response = authRestTemplate.exchange(requestLatestTag, JsonNode.class);
 
             if (response.getBody() != null) {
