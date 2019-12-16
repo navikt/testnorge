@@ -14,10 +14,10 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 	return (
 		<Panel
 			heading={ArbeidInntektPanel.heading}
-			startOpen
 			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
+			iconType="wrench"
 		>
 			<AttributtKategori title="Arbeidsforhold">
 				<Attributt attr={sm.attrs.arbeid} />

@@ -16,7 +16,8 @@ export default function Panel({
 	children,
 	checkAttributeArray,
 	uncheckAttributeArray,
-	informasjonstekst
+	informasjonstekst,
+	iconType
 }) {
 	const [isOpen, toggleOpen] = useToggle(startOpen)
 
@@ -29,7 +30,9 @@ export default function Panel({
 	return (
 		<div className={panelClass}>
 			<div className="panel-heading">
+				{iconType && <Icon size={48} kind={iconType} className={'header-icon'} />}
 				<h2>{heading}</h2>
+
 				{informasjonstekst && <HjelpeTekst>{informasjonstekst}</HjelpeTekst>}
 				{hasErrors && (
 					<div className="panel-heading_error">
