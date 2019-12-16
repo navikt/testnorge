@@ -29,7 +29,7 @@ export const Identhistorikk = ({ formikBag }) => (
 			heading="Identhistorikk"
 			hasErrors={panelError(formikBag)}
 			informasjonstekst={hjelpetekst}
-			startOpen
+			iconType="information-circle"
 		>
 			<DollyFieldArray name="tpsf.identHistorikk" title="Historikk">
 				{(path, idx) => (

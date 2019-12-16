@@ -8,7 +8,7 @@ import { InntektsaarForm } from './partials/inntektsaarForm'
 
 export const SigrunstubForm = ({ formikBag }) => (
 	<Vis attributt="sigrunstub">
-		<Panel heading="Inntekt" hasErrors={panelError(formikBag)}>
+		<Panel heading="Inntekt" hasErrors={panelError(formikBag)} iconType="wrench">
 			<InntektsaarForm formikBag={formikBag} />
 		</Panel>
 	</Vis>
