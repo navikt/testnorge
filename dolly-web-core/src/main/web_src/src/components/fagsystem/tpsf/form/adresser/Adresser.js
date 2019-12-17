@@ -78,7 +78,7 @@ export const Adresser = ({ formikBag }) => {
 
 	return (
 		<Vis attributt={paths}>
-			<Panel heading="Adresser">
+			<Panel heading="Adresser" iconType="adresse">
 				<Vis attributt="tpsf.boadresse">
 					<RadioPanelGruppe
 						name="botype"

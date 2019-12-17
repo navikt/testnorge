@@ -11,9 +11,9 @@ export const IdentifikasjonPanel = ({ stateModifier }) => {
 	return (
 		<Panel
 			heading={IdentifikasjonPanel.heading}
-			startOpen
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
+			iconType="identifikasjon"
 		>
 			<AttributtKategori title="Identifikasjon">
 				<Attributt attr={sm.attrs.falskIdentitet} />

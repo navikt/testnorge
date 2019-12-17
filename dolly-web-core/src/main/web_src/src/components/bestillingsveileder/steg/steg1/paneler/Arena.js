@@ -22,10 +22,10 @@ export const ArenaPanel = ({ stateModifier }) => {
 	return (
 		<Panel
 			heading={ArenaPanel.heading}
-			startOpen
 			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
+			iconType="arena"
 		>
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.arenaforvalter} />
