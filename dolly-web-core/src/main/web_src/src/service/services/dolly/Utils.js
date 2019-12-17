@@ -16,6 +16,11 @@ export const SortKodeverkArray = data => {
 		})
 	}
 
+	if (data.name === 'Sivilstander') {
+		//Dolly støtter ikke GLAD fordi det er NAV-spesifikt og ikke SKD. Kan endres ved behov.
+		return kodeverk.filter(kode => kode.value !== 'NULL' && kode.value !== 'GLAD')
+	}
+
 	if (data.name == 'Diskresjonskoder') {
 		return kodeverk
 			.map(kode => {
