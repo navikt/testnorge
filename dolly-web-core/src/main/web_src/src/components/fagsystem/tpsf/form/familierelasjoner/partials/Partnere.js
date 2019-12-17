@@ -6,28 +6,37 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 const initialValues = {
-	identtype: '',
+	identtype: 'FNR',
 	kjonn: '',
-	sivilstander: { sivilstand: '', sivilstandRegdato: '' }, // Array på denne??
-	harFellesAdresse: false
+	sivilstander: [initForhold],
+	harFellesAdresse: true
 }
+const initForhold = { sivilstand: '', sivilstandRegdato: '' }
 
 export const Partnere = ({ formikBag }) => (
 	<DollyFieldArray name="tpsf.relasjoner.partnere" title="Partner" newEntry={initialValues}>
 		{(path, idx) => (
 			<React.Fragment key={idx}>
-				<FormikSelect name={`${path}.identtype`} label="Identtype" options={Options('identtype')} />
-				<FormikSelect name={`${path}.kjonn`} label="Kjønn" kodeverk="Kjønnstyper" />
 				<FormikSelect
-					name={`${path}.sivilstander.sivilstand`}
-					label="Forhold"
-					kodeverk="Sivilstander"
+					name={`${path}.identtype`}
+					label="Identtype"
+					options={Options('identtype')}
+					isClearable={false}
 				/>
-				<FormikDatepicker
-					name={`${path}.sivilstander.sivilstandRegdato`}
-					label="Forhold fra dato"
-				/>
+				<FormikSelect name={`${path}.kjonn`} label="Kjønn" kodeverk="Kjønnstyper" />
 				<FormikCheckbox name={`${path}.harFellesAdresse`} label="Har felles adresse" />
+				<DollyFieldArray
+					name={`tpsf.relasjoner.partnere[${idx}].sivilstander`}
+					title="Forhold"
+					newEntry={initForhold}
+				>
+					{(path, idx) => (
+						<React.Fragment key={idx}>
+							<FormikSelect name={`${path}.sivilstand`} label="Forhold" kodeverk="Sivilstander" />
+							<FormikDatepicker name={`${path}.sivilstandRegdato`} label="Forhold fra dato" />
+						</React.Fragment>
+					)}
+				</DollyFieldArray>
 			</React.Fragment>
 		)}
 	</DollyFieldArray>

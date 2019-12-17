@@ -11,9 +11,10 @@ export const FamilierelasjonPanel = ({ stateModifier }) => {
 	return (
 		<Panel
 			heading={FamilierelasjonPanel.heading}
+			startOpen
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="relasjoner"
+			iconType={'relasjoner'}
 		>
 			<AttributtKategori title="Partner">
 				<Attributt attr={sm.attrs.partner} />
@@ -34,10 +35,10 @@ FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 		add() {
 			set('tpsf.relasjoner.partnere', [
 				{
-					identtype: '',
+					identtype: 'FNR',
 					kjonn: '',
-					sivilstander: { sivilstand: '', sivilstandRegdato: '' },
-					harFellesAdresse: false
+					sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
+					harFellesAdresse: true
 				}
 			])
 		},
@@ -51,7 +52,7 @@ FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 		add() {
 			set('tpsf.relasjoner.barn', [
 				{
-					identtype: '',
+					identtype: 'FNR',
 					kjonn: '',
 					barnType: '',
 					partnerNr: '',

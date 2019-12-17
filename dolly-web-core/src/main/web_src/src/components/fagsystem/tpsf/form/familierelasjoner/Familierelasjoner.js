@@ -9,7 +9,12 @@ import { Barn } from './partials/Barn'
 
 export const Familierelasjoner = ({ formikBag }) => (
 	<Vis attributt="tpsf.relasjoner">
-		<Panel heading="Familierelasjoner" hasErrors={panelError(formikBag)} startOpen>
+		<Panel
+			heading="Familierelasjoner"
+			hasErrors={panelError(formikBag)}
+			iconType={'relasjoner'}
+			startOpen
+		>
 			<Kategori title="Partnere" vis="tpsf.relasjoner.partnere">
 				<Partnere formikBag={formikBag} />
 			</Kategori>
