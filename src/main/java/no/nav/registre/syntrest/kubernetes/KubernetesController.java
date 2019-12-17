@@ -7,7 +7,6 @@ import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptions;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -48,7 +47,7 @@ public class KubernetesController {
     private final int retryDelay;
     @Value("${delete-application-url}")
     private String deleteApplicaitonUrl;
-    private RestTemplate restTemplate;
+    private RestTemplate noAuthRestTemplate;
     private RestTemplate authRestTemplate;
 
     public KubernetesController(RestTemplateBuilder restTemplateBuilder,
@@ -68,7 +67,7 @@ public class KubernetesController {
         this.api = customObjectsApi;
         this.authRestTemplate = restTemplateBuilder.build();
         this.authRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(github_username, github_password));
-        this.restTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
+        this.noAuthRestTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
                 .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
                 .setSSLHostnameVerifier(new DefaultHostnameVerifier())
                 .setDefaultRequestConfig(RequestConfig.custom()
@@ -105,7 +104,7 @@ public class KubernetesController {
                 api.deleteNamespacedCustomObject(GROUP, VERSION, NAMESPACE, PLURAL, appName, deleteOptions,
                         null, null, null);
 
-                ResponseEntity<String> result = restTemplate.exchange(deleteRequest, String.class);
+                ResponseEntity<String> result = noAuthRestTemplate.exchange(deleteRequest, String.class);
                 log.info("Successfully deleted application \'{}\'", appName);
 
             } catch (JsonSyntaxException e) { // TODO: When does this happen?
@@ -125,7 +124,7 @@ public class KubernetesController {
 
         } else {
 
-            ResponseEntity<String> result = restTemplate.exchange(deleteRequest, String.class);
+            ResponseEntity<String> result = noAuthRestTemplate.exchange(deleteRequest, String.class);
             log.info("No application named \'{}\' found. Unable to delete.", appName);
             throw new IllegalArgumentException("No application named \'" + appName + "\' found. Unable to delete.");
         }
@@ -134,7 +133,7 @@ public class KubernetesController {
     public boolean isAlive(String appName) {
         String response = "404";
         try {
-            response = restTemplate.getForObject(isAliveUri.expand(appName), String.class);
+            response = noAuthRestTemplate.getForObject(isAliveUri.expand(appName), String.class);
         } catch (HttpClientErrorException | HttpServerErrorException ignored) {
         }
         return "1".equals(response);
