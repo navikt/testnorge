@@ -120,7 +120,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 
 		if (postadresse) {
-			const postadr = postadresse[0]
+			const postadr = bestillingData.tpsf.postadresse[0]
 			const postadresse = {
 				header: 'Postadresse',
 				items: [

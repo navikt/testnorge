@@ -42,7 +42,15 @@ AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 	postadresse: {
 		label: 'Har postadresse',
 		checked: has('tpsf.postadresse'),
-		add: () => set('tpsf.postadresse', {}),
+		add: () =>
+			set('tpsf.postadresse', [
+				{
+					postLand: 'NOR',
+					postLinje1: '',
+					postLinje2: '',
+					postLinje3: ''
+				}
+			]),
 		remove: () => del('tpsf.postadresse')
 	}
 })
