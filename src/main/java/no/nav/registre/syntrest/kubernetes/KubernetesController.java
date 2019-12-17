@@ -7,6 +7,7 @@ import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptions;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -65,20 +66,20 @@ public class KubernetesController {
         this.maxRetries = maxRetries;
         this.retryDelay = retryDelay;
         this.api = customObjectsApi;
-        this.authRestTemplate = restTemplateBuilder.build();
-        this.authRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(github_username, github_password));
-        this.restTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
-                        .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
-                        .setSSLHostnameVerifier(new DefaultHostnameVerifier())
-                        .setDefaultRequestConfig(RequestConfig.custom()
-                                .setConnectTimeout(TIMEOUT)
-                                .setSocketTimeout(TIMEOUT)
-                                .setConnectionRequestTimeout(TIMEOUT)
-                                .build())
-                        .setMaxConnPerRoute(2000)
-                        .setMaxConnTotal(5000)
-                        .build()))
+        HttpClient standardClient = HttpClientBuilder.create()
+                .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
+                .setSSLHostnameVerifier(new DefaultHostnameVerifier())
+                .setDefaultRequestConfig(RequestConfig.custom()
+                        .setConnectTimeout(TIMEOUT)
+                        .setSocketTimeout(TIMEOUT)
+                        .setConnectionRequestTimeout(TIMEOUT)
+                        .build())
+                .setMaxConnPerRoute(2000)
+                .setMaxConnTotal(5000)
                 .build();
+        this.authRestTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(standardClient)).build();
+        this.authRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(github_username, github_password));
+        this.restTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(standardClient)).build();
     }
 
     public void deployImage(String appName) throws ApiException, InterruptedException {
@@ -198,10 +199,8 @@ public class KubernetesController {
 
 
     private Optional<String> getApplicaitonTag(String appName) {
-
         String apiUrl = "https://api.github.com/graphql";
         QueryObject query = QueryObject.builder().query("query {repository(owner:\"navikt\", name:\"synt\") {registryPackages(name:\"" + appName + "\" last:1) {nodes {latestVersion{version}} }}}").build();
-        String body = "{\"query\":\"query {repository(owner:\"navikt\", name:\"synt\") {registryPackages(name:\"" + appName + "\" last:1) {nodes {latestVersion{version}} }}}\"}";
 
         try {
             RequestEntity requestLatestTag = RequestEntity.post(new UriTemplate(apiUrl).expand()).header("Content-Type", "application/json").body(query);
