@@ -1,23 +1,12 @@
 import React from 'react'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Diskresjonskoder } from './Diskresjonskoder'
 
-const paths = [
-	'tpsf.kjonn',
-	'tpsf.harMellomnavn',
-	'tpsf.sivilstand',
-	'tpsf.sprakKode',
-	'tpsf.egenAnsattDatoFom',
-	'tpsf.spesreg',
-	'tpsf.erForsvunnet'
-]
-
 export const Diverse = ({ formikBag }) => (
-	<Kategori title="Diverse" vis={paths}>
+	<React.Fragment>
 		<FormikSelect name="tpsf.kjonn" label="Kjønn" kodeverk="Kjønnstyper" visHvisAvhuket />
 
 		<FormikSelect
@@ -49,5 +38,5 @@ export const Diverse = ({ formikBag }) => (
 				disabled={!formikBag.values.tpsf.erForsvunnet}
 			/>
 		</Vis>
-	</Kategori>
+	</React.Fragment>
 )
