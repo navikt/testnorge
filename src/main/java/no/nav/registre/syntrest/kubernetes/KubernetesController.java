@@ -66,7 +66,9 @@ public class KubernetesController {
         this.maxRetries = maxRetries;
         this.retryDelay = retryDelay;
         this.api = customObjectsApi;
-        HttpClient standardClient = HttpClientBuilder.create()
+        this.authRestTemplate = restTemplateBuilder.build();
+        this.authRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(github_username, github_password));
+        this.restTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
                 .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
                 .setSSLHostnameVerifier(new DefaultHostnameVerifier())
                 .setDefaultRequestConfig(RequestConfig.custom()
@@ -76,10 +78,7 @@ public class KubernetesController {
                         .build())
                 .setMaxConnPerRoute(2000)
                 .setMaxConnTotal(5000)
-                .build();
-        this.authRestTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(standardClient)).build();
-        this.authRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(github_username, github_password));
-        this.restTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(standardClient)).build();
+                .build())).build();
     }
 
     public void deployImage(String appName) throws ApiException, InterruptedException {
