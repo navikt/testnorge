@@ -13,7 +13,7 @@ export const UdiVisning = ({ data, loading }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="UDI" />
+			<SubOverskrift label="UDI" iconKind="udi" />
 			<div className="person-visning">
 				<Oppholdsstatus
 					oppholdsstatus={data.oppholdStatus}

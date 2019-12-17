@@ -11,9 +11,9 @@ export const UdiPanel = ({ stateModifier }) => {
 	return (
 		<Panel
 			heading={UdiPanel.heading}
-			startOpen
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
+			iconType="udi"
 		>
 			<AttributtKategori title="Gjeldende oppholdstatus">
 				<Attributt attr={sm.attrs.oppholdStatus} />

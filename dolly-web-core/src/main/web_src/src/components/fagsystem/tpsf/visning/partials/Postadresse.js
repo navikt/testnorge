@@ -9,7 +9,7 @@ export const Postadresse = ({ postadresse }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Postadresse" />
+			<SubOverskrift label="Postadresse" iconKind="postadresse" />
 			<div className="person-visning_content">
 				<TitleValue title="Postadresse">
 					<div>{postLinje1}</div>

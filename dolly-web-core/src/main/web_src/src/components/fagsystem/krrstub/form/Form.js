@@ -10,7 +10,11 @@ import { panelError } from '~/components/ui/form/formUtils'
 
 export const KrrstubForm = ({ formikBag }) => (
 	<Vis attributt="krrstub">
-		<Panel heading="Kontakt- og reservasjonsregisteret" hasErrors={panelError(formikBag)}>
+		<Panel
+			heading="Kontakt- og reservasjonsregisteret"
+			hasErrors={panelError(formikBag)}
+			iconType="krr"
+		>
 			<FormikTextInput name="krrstub.epost" label="E-post" />
 			<FormikTextInput name="krrstub.mobil" label="Mobilnummer" />
 			<FormikSelect

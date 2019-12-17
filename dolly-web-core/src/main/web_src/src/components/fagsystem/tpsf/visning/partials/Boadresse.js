@@ -5,7 +5,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 
 export const Boadresse = ({ boadresse }) => {
-	if (!boadresse) return false
+	if (!boadresse[0]) return false
 
 	const {
 		adressetype,
@@ -18,7 +18,7 @@ export const Boadresse = ({ boadresse }) => {
 		undernr,
 		postnr,
 		flyttedato
-	} = boadresse
+	} = boadresse[0]
 
 	const matrikkelVisning = (
 		<div>
@@ -32,7 +32,7 @@ export const Boadresse = ({ boadresse }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Boadresse" />
+			<SubOverskrift label="Boadresse" iconKind="adresse" />
 			<div className="person-visning_content">
 				<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
 					{adressetype === 'GATE' && <div>{`${gateadresse} ${husnummer}`}</div>}

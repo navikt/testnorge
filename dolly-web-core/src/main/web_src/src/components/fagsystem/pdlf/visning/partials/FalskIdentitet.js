@@ -16,7 +16,7 @@ export const FalskIdentitet = ({ data, loading }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Falsk identitet" />
+			<SubOverskrift label="Falsk identitet" iconKind="identifikasjon" />
 			<div className="person-visning_content">
 				{rettIdentitetErUkjent && <TitleValue title="Rett identitet" value={'UKJENT'} />}
 

@@ -19,7 +19,7 @@ export const BeskrivelseEditor = ({ beskrivelse, handleSubmit, turnOffEditing })
 				autoFocus
 				onFocus={focusEndOfStringHack}
 				value={value}
-				placeholder="Skriv inn en beskrivelse"
+				placeholder="Skriv inn en kommentar"
 				onChange={handleChange}
 			/>
 			<br />

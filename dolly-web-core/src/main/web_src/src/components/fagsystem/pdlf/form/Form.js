@@ -14,7 +14,7 @@ export const PdlfForm = ({ formikBag }) => (
 		<Vis
 			attributt={['pdlforvalter.falskIdentitet', 'pdlforvalter.utenlandskIdentifikasjonsnummer']}
 		>
-			<Panel heading="Identifikasjon" startOpen hasErrors={panelError(formikBag)}>
+			<Panel heading="Identifikasjon" hasErrors={panelError(formikBag)} iconType="identifikasjon">
 				<Kategori title="Falsk identitet" vis="pdlforvalter.falskIdentitet">
 					<FalskIdentitet formikBag={formikBag} />
 				</Kategori>
@@ -29,7 +29,11 @@ export const PdlfForm = ({ formikBag }) => (
 		</Vis>
 
 		<Vis attributt="pdlforvalter.kontaktinformasjonForDoedsbo">
-			<Panel heading="Kontaktinformasjon for dødsbo" hasErrors={panelError(formikBag)}>
+			<Panel
+				heading="Kontaktinformasjon for dødsbo"
+				hasErrors={panelError(formikBag)}
+				iconType="doedsbo"
+			>
 				<KontaktinformasjonForDoedsbo formikBag={formikBag} />
 			</Panel>
 		</Vis>

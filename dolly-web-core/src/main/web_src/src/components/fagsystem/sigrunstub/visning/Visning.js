@@ -14,7 +14,7 @@ export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
 
 	return (
 		<div>
-			{visTittel && <SubOverskrift label="Inntekt" />}
+			{visTittel && <SubOverskrift label="Inntekt" iconKind="sigrun" />}
 			<div className="person-visning_content">
 				{grunnlag && (
 					<div>

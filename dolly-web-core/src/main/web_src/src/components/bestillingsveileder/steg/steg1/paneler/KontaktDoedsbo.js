@@ -14,10 +14,10 @@ export const KontaktDoedsboPanel = ({ stateModifier }) => {
 	return (
 		<Panel
 			heading={KontaktDoedsboPanel.heading}
-			startOpen
 			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
+			iconType="doedsbo"
 		>
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.kontaktinformasjonForDoedsbo} />

@@ -15,6 +15,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 			startOpen
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
+			iconType={'personinformasjon'}
 		>
 			<AttributtKategori title="Alder">
 				<Attributt attr={sm.attrs.foedtEtter} />
