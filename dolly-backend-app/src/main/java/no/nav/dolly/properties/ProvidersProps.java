@@ -24,10 +24,9 @@ public class ProvidersProps {
     private Fasit fasit = new Fasit();
     private ArenaForvalter arenaForvalter = new ArenaForvalter();
     private PdlForvalter pdlForvalter = new PdlForvalter();
-    private PersonOppslag personOppslag = new PersonOppslag();
     private Instdata instdata = new Instdata();
     private Aaregdata aaregdata = new Aaregdata();
-    private Inntektsstub inntektsstub = new Inntektsstub();
+    private Inntektstub inntektstub = new Inntektstub();
     private PdlPerson pdlPerson = new PdlPerson();
 
     @Getter
@@ -124,16 +123,6 @@ public class ProvidersProps {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PersonOppslag {
-
-        private String url;
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class Instdata {
 
         private String url;
@@ -154,7 +143,7 @@ public class ProvidersProps {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Inntektsstub {
+    public static class Inntektstub {
 
         private String url;
     }

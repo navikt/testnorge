@@ -31,14 +31,14 @@ providers:
     url: https://arena-forvalteren.nais.preprod.local
   pdlForvalter:
     url: https://person-testdata.nais.preprod.local
-  personOppslag:
-    url: https://person-oppslag.nais.preprod.local
   instdata:
     url: https://testnorge-inst.nais.preprod.local
   aaregdata:
     url: https://testnorge-aareg-u2.nais.preprod.local
   pdlPerson:
     url: https://pdl-api.nais.preprod.local
+  inntektstub:
+    url: https://inntektstub-u1.nais.preprod.local
 
 fasit:
   url: https://fasit.adeo.no

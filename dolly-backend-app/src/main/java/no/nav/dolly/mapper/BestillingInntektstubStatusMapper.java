@@ -17,18 +17,18 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class BestillingInntektsstubStatusMapper {
+public final class BestillingInntektstubStatusMapper {
 
-    public static List<RsStatusRapport> buildInntektsstubStatusMap(List<BestillingProgress> progressList) {
+    public static List<RsStatusRapport> buildInntektstubStatusMap(List<BestillingProgress> progressList) {
 
         Map<String, List<String>> statusMap = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getInntektsstubStatus())) {
-                if (statusMap.containsKey(progress.getInntektsstubStatus())) {
-                    statusMap.get(progress.getInntektsstubStatus()).add(progress.getIdent());
+            if (nonNull(progress.getInntektstubStatus())) {
+                if (statusMap.containsKey(progress.getInntektstubStatus())) {
+                    statusMap.get(progress.getInntektstubStatus()).add(progress.getIdent());
                 } else {
-                    statusMap.put(progress.getInntektsstubStatus(), newArrayList(progress.getIdent()));
+                    statusMap.put(progress.getInntektstubStatus(), newArrayList(progress.getIdent()));
                 }
             }
         });

@@ -1,7 +1,8 @@
-package no.nav.dolly.bestilling.inntektsstub.domain;
+package no.nav.dolly.domain.resultset.inntektstub;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +21,7 @@ public class Tilleggsinformasjon {
     private DagmammaIEgenBolig dagmammaIEgenBolig;
     private Periode etterbetalingsperiode;
     private NorskKontinentalsokkel inntektPaaNorskKontinentalsokkel;
-    private Inntjeningsforhold inntjeningsforhold;
+    private SpesielleInntjeningsforhold  spesielleInntjeningsforhold ;
     private Livrente livrente;
     private LottOgPartInnenFiske lottOgPart;
     private Nettoloennsordning nettoloenn;
@@ -32,14 +33,14 @@ public class Tilleggsinformasjon {
     @Setter
     @Builder
     @NoArgsConstructor
-    private static class BilOgBaat {}
+    public static class BilOgBaat {}
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class BonusFraForsvaret {
+    public static class BonusFraForsvaret {
 
         private String aaretUtbetalingenGjelderFor;
     }
@@ -48,59 +49,70 @@ public class Tilleggsinformasjon {
     @Setter
     @Builder
     @NoArgsConstructor
-    private static class DagmammaIEgenBolig {}
+    public static class DagmammaIEgenBolig {}
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class Periode {
+    public static class Periode {
 
-        private LocalDate startdato;
-        private LocalDate sluttdato;
+        @ApiModelProperty(
+                dataType = "LocalDateTime",
+                example = "yyyy-MM-dd",
+                position = 1
+        )
+        private LocalDateTime startdato;
+
+        @ApiModelProperty(
+                dataType = "LocalDateTime",
+                example = "yyyy-MM-dd",
+                position = 2
+        )
+        private LocalDateTime sluttdato;
     }
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
-    private static class NorskKontinentalsokkel {}
+    public static class NorskKontinentalsokkel {}
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class Inntjeningsforhold {
+    public static class SpesielleInntjeningsforhold  {
 
-        private String inntjeningsforhold;
+        private String spesielleInntjeningsforhold ;
     }
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
-    private static class Livrente {}
+    public static class Livrente {}
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
-    private static class LottOgPartInnenFiske {}
+    public static class LottOgPartInnenFiske {}
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
-    private static class Nettoloennsordning {}
+    public static class Nettoloennsordning {}
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class AldersUfoereEtterlatteAvtalefestetOgKrigspensjon {
+    public static class AldersUfoereEtterlatteAvtalefestetOgKrigspensjon {
 
         private Double grunnpensjonsbeloep;
         private Double heravEtterlattepensjon;
@@ -115,8 +127,12 @@ public class Tilleggsinformasjon {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class ReiseKostOgLosji {
+    public static class ReiseKostOgLosji {
 
+        @ApiModelProperty(
+                position = 1,
+                value = "Verdier hentes fra kodeverk 'PersontypeForReiseKostLosji'"
+        )
         private String persontype;
     }
 
@@ -124,5 +140,5 @@ public class Tilleggsinformasjon {
     @Setter
     @Builder
     @NoArgsConstructor
-    private static class UtenlandskArtist {}
+    public static class UtenlandskArtist {}
 }

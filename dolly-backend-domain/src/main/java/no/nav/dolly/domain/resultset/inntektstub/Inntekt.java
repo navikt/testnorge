@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.inntektsstub;
+package no.nav.dolly.domain.resultset.inntektstub;
 
 import java.time.LocalDateTime;
 
@@ -91,13 +91,8 @@ public class Inntekt {
     private Tilleggsinformasjon tilleggsinformasjon;
 
     @ApiModelProperty(
-            position = 13
-    )
-    private String spesifikasjon;
-
-    @ApiModelProperty(
             value = "F.eks. antall kilometer i kilometergodtgjørelsen",
-            position = 14
+            position = 13
     )
     private double antall;
 }
