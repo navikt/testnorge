@@ -27,10 +27,20 @@ export default function Panel({
 
 	const renderContent = children ? children : content
 
+	const check = e => {
+		e.stopPropagation()
+		checkAttributeArray()
+	}
+
+	const uncheck = e => {
+		e.stopPropagation()
+		uncheckAttributeArray()
+	}
+
 	return (
 		<div className={panelClass}>
-			<div className="panel-heading">
-				{iconType && <Icon size={40} kind={iconType} className={'header-icon'} />}
+			<div className="panel-heading" onClick={toggleOpen}>
+				{iconType && <Icon size={45} kind={iconType} className="header-icon" />}
 				<h2>{heading}</h2>
 
 				{informasjonstekst && <HjelpeTekst>{informasjonstekst}</HjelpeTekst>}
@@ -41,10 +51,8 @@ export default function Panel({
 					</div>
 				)}
 				<span className="panel-heading_buttons">
-					{checkAttributeArray && <LinkButton text="Velg alle" onClick={checkAttributeArray} />}
-					{uncheckAttributeArray && (
-						<LinkButton text="Fjern alle" onClick={uncheckAttributeArray} />
-					)}
+					{checkAttributeArray && <LinkButton text="Velg alle" onClick={check} />}
+					{uncheckAttributeArray && <LinkButton text="Fjern alle" onClick={uncheck} />}
 					<ExpandButton expanded={isOpen} onClick={toggleOpen} />
 				</span>
 			</div>
