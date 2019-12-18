@@ -35,7 +35,6 @@ export const Steg2 = ({ formikBag }) => {
 		<div>
 			<TpsfForm formikBag={formikBag} />
 			<PdlfForm formikBag={formikBag} />
-			<SigrunstubForm formikBag={formikBag} />
 			<InstForm formikBag={formikBag} />
 			<KrrstubForm formikBag={formikBag} />
 			<AaregForm formikBag={formikBag} />

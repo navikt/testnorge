@@ -8,7 +8,7 @@ import { ArbeidsforholdForm } from './partials/arbeidsforholdForm'
 
 export const AaregForm = ({ formikBag }) => (
 	<Vis attributt="aareg">
-		<Panel heading="Arbeidsforhold" hasErrors={panelError(formikBag)} startOpen>
+		<Panel heading="Arbeidsforhold" hasErrors={panelError(formikBag)} startOpen iconType="arbeid">
 			<ArbeidsforholdForm formikBag={formikBag} />
 		</Panel>
 	</Vis>
