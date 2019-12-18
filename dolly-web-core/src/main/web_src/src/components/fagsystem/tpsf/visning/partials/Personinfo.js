@@ -6,7 +6,7 @@ import Formatters from '~/utils/DataFormatter'
 export const Personinfo = ({ data, visTittel = true }) => {
 	return (
 		<div>
-			{visTittel && <SubOverskrift label="Persondetaljer" />}
+			{visTittel && <SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />}
 			<div className="person-visning_content">
 				<TitleValue title={data.identtype} value={data.ident} />
 				<TitleValue title="Fornavn" value={data.fornavn} />

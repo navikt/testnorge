@@ -11,9 +11,9 @@ export const AdressePanel = ({ stateModifier }) => {
 	return (
 		<Panel
 			heading={AdressePanel.heading}
-			startOpen
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
+			iconType="adresse"
 		>
 			<AttributtKategori title="Boadresse">
 				<Attributt attr={sm.attrs.boadresse} />

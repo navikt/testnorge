@@ -4,7 +4,7 @@ import {
 	Attributt,
 	AttributtKategori
 } from '~/components/bestillingsveileder/AttributtVelger/Attributt'
-import { subYears } from 'date-fns'
+import Formatters from '~/utils/DataFormatter'
 
 export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
@@ -15,10 +15,10 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 			startOpen
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
+			iconType={'personinformasjon'}
 		>
 			<AttributtKategori title="Alder">
-				<Attributt attr={sm.attrs.foedtEtter} />
-				<Attributt attr={sm.attrs.foedtFoer} />
+				<Attributt attr={sm.attrs.alder} />
 				<Attributt attr={sm.attrs.doedsdato} />
 			</AttributtKategori>
 
@@ -45,17 +45,11 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 PersoninformasjonPanel.heading = 'Personinformasjon'
 
 PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({
-	foedtEtter: {
-		label: 'Født etter',
-		checked: has('tpsf.foedtEtter'),
-		add: () => set('tpsf.foedtEtter', subYears(new Date(), 80)),
-		remove: () => del('tpsf.foedtEtter')
-	},
-	foedtFoer: {
-		label: 'Født før',
-		checked: has('tpsf.foedtFoer'),
-		add: () => set('tpsf.foedtFoer', new Date()),
-		remove: () => del('tpsf.foedtFoer')
+	alder: {
+		label: 'Alder',
+		checked: has('tpsf.alder') || has('tpsf.foedtEtter') || has('tpsf.foedtFoer'),
+		add: () => set('tpsf.alder', Formatters.randomIntInRange(1, 99)),
+		remove: () => del(['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer'])
 	},
 	doedsdato: {
 		label: 'Dødsdato',

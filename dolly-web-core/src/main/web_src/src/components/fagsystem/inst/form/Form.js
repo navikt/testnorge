@@ -17,7 +17,7 @@ const initialValues = {
 
 export const InstForm = ({ formikBag }) => (
 	<Vis attributt="instdata">
-		<Panel heading="Institusjonsopphold" startOpen hasErrors={panelError(formikBag)}>
+		<Panel heading="Institusjonsopphold" hasErrors={panelError(formikBag)} iconType="institusjon">
 			<DollyFieldArray name="instdata" title="Opphold" newEntry={initialValues}>
 				{(path, idx) => (
 					<React.Fragment key={idx}>

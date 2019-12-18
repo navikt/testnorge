@@ -10,7 +10,7 @@ export const KrrVisning = ({ data, loading }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Kontaktinformasjon og reservasjon" />
+			<SubOverskrift label="Kontaktinformasjon og reservasjon" iconKind="krr" />
 			<div className="person-visning_content">
 				<TitleValue title="Mobilnummer" value={data.mobil} />
 				<TitleValue title="E-post" value={data.epost} />

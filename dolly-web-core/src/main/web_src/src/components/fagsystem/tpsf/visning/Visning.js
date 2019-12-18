@@ -8,17 +8,17 @@ import { Postadresse } from './partials/Postadresse'
 import { Identhistorikk } from './partials/Identhistorikk'
 import { Relasjoner } from './partials/Relasjoner'
 
-export const TpsfVisning = ({ data }) => {
+export const TpsfVisning = ({ data, bestilling }) => {
 	if (!data) return null
 
 	return (
 		<div>
 			<Personinfo data={data} />
 			<Nasjonalitet data={data} />
-			<Boadresse boadresse={data.boadresse[0]} />
+			<Boadresse boadresse={data.boadresse} />
 			<Postadresse postadresse={data.postadresse} />
 			<Identhistorikk identhistorikk={data.identHistorikk} />
-			<Relasjoner relasjoner={data.relasjoner} />
+			<Relasjoner relasjoner={data.relasjoner} bestilling={bestilling} />
 		</div>
 	)
 }
