@@ -33,14 +33,14 @@ public class Tilleggsinformasjon {
     @Setter
     @Builder
     @NoArgsConstructor
-    private static class BilOgBaat {}
+    public static class BilOgBaat {}
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class BonusFraForsvaret {
+    public static class BonusFraForsvaret {
 
         private String aaretUtbetalingenGjelderFor;
     }
@@ -49,14 +49,14 @@ public class Tilleggsinformasjon {
     @Setter
     @Builder
     @NoArgsConstructor
-    private static class DagmammaIEgenBolig {}
+    public static class DagmammaIEgenBolig {}
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class Periode {
+    public static class Periode {
 
         @ApiModelProperty(
                 dataType = "LocalDateTime",
@@ -77,14 +77,14 @@ public class Tilleggsinformasjon {
     @Setter
     @Builder
     @NoArgsConstructor
-    private static class NorskKontinentalsokkel {}
+    public static class NorskKontinentalsokkel {}
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class SpesielleInntjeningsforhold  {
+    public static class SpesielleInntjeningsforhold  {
 
         private String spesielleInntjeningsforhold ;
     }
@@ -93,26 +93,26 @@ public class Tilleggsinformasjon {
     @Setter
     @Builder
     @NoArgsConstructor
-    private static class Livrente {}
+    public static class Livrente {}
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
-    private static class LottOgPartInnenFiske {}
+    public static class LottOgPartInnenFiske {}
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
-    private static class Nettoloennsordning {}
+    public static class Nettoloennsordning {}
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class AldersUfoereEtterlatteAvtalefestetOgKrigspensjon {
+    public static class AldersUfoereEtterlatteAvtalefestetOgKrigspensjon {
 
         private Double grunnpensjonsbeloep;
         private Double heravEtterlattepensjon;
@@ -127,7 +127,7 @@ public class Tilleggsinformasjon {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class ReiseKostOgLosji {
+    public static class ReiseKostOgLosji {
 
         @ApiModelProperty(
                 position = 1,
@@ -140,5 +140,5 @@ public class Tilleggsinformasjon {
     @Setter
     @Builder
     @NoArgsConstructor
-    private static class UtenlandskArtist {}
+    public static class UtenlandskArtist {}
 }
