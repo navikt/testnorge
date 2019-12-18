@@ -4,6 +4,7 @@ import {
 	Attributt,
 	AttributtKategori
 } from '~/components/bestillingsveileder/AttributtVelger/Attributt'
+import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
 
 export const ArbeidInntektPanel = ({ stateModifier }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
@@ -35,32 +36,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 	aareg: {
 		label: 'Har arbeidsforhold',
 		checked: has('aareg'),
-		add: () =>
-			set('aareg', [
-				{
-					ansettelsesPeriode: {
-						fom: new Date(new Date().setFullYear(new Date().getFullYear() - 20)),
-						tom: null
-					},
-					arbeidsforholdstype: 'ordinaertArbeidsforhold',
-					arbeidsgiver: {
-						aktoertype: '',
-						orgnummer: '',
-						ident: ''
-					},
-					arbeidsavtale: {
-						yrke: '',
-						stillingsprosent: 100,
-						endringsdatoStillingsprosent: null,
-						arbeidstidsordning: 'ikkeSkift',
-						antallKonverterteTimer: '',
-						avtaltArbeidstimerPerUke: 37.5
-					},
-					antallTimerForTimeloennet: [],
-					permisjon: [],
-					utenlandsopphold: []
-				}
-			]),
+		add: () => set('aareg', initialValues),
 		remove() {
 			del('aareg')
 		}

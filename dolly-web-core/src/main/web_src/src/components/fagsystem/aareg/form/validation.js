@@ -1,36 +1,40 @@
 import * as Yup from 'yup'
+import _get from 'lodash/get'
 import { isWithinInterval, getMonth } from 'date-fns'
 import { requiredDate, requiredString, ifPresent } from '~/utils/YupValidations'
+
+const innenforAnsettelsesforholdTest = (validation, validateMonthPath) => {
+	const errorMsg = 'Dato må være innenfor ansettelsesforhold'
+	const errorMsgMonth =
+		'Dato må være innenfor ansettelsesforhold, og i samme kalendermåned og år som fra-dato'
+	return validation.test(
+		'range',
+		validateMonthPath ? errorMsgMonth : errorMsg,
+		function isWithinTest(val) {
+			if (!val) return true
+			const values = this.options.context
+
+			if (validateMonthPath) {
+				const fomMonth = _get(values, validateMonthPath)
+				if (getMonth(val) !== getMonth(fomMonth)) return false
+			}
+
+			return isWithinInterval(val, {
+				start: values.aareg[0].ansettelsesPeriode.fom,
+				end: values.aareg[0].ansettelsesPeriode.tom || new Date()
+			})
+		}
+	)
+}
 
 const antallTimerForTimeloennet = Yup.array().of(
 	Yup.object({
 		periode: Yup.object({
-			fom: Yup.date()
-				.required('Feltet er påkrevd')
-				.test('range', 'Dato må være innenfor ansettelsesforhold', function isWithinTest(val) {
-					const values = this.options.context
-					return isWithinInterval(val, {
-						start: values.aareg[0].ansettelsesPeriode.fom,
-						end: values.aareg[0].ansettelsesPeriode.tom || new Date()
-					})
-				}),
-			tom: Yup.date()
-				.required('Feltet er påkrevd')
-				.test(
-					'range',
-					'Dato må være innenfor ansettelsesforhold, og i samme kalendermåned og år som fra-dato',
-					function isWithinTest(val) {
-						const values = this.options.context
-						if (
-							getMonth(val) !== getMonth(values.aareg[0].antallTimerForTimeloennet[0].periode.fom)
-						)
-							return false
-						return isWithinInterval(val, {
-							start: values.aareg[0].ansettelsesPeriode.fom,
-							end: values.aareg[0].ansettelsesPeriode.tom || new Date()
-						})
-					}
-				)
+			fom: innenforAnsettelsesforholdTest(requiredDate),
+			tom: innenforAnsettelsesforholdTest(
+				requiredDate,
+				'aareg[0].antallTimerForTimeloennet[0].periode.fom'
+			)
 		}),
 		antallTimer: Yup.number()
 			.min(1, 'Kan ikke være mindre enn 1')
@@ -41,25 +45,8 @@ const antallTimerForTimeloennet = Yup.array().of(
 const permisjon = Yup.array().of(
 	Yup.object({
 		permisjonsPeriode: Yup.object({
-			fom: Yup.date()
-				.required('Feltet er påkrevd')
-				.test('range', 'Dato må være innenfor ansettelsesforhold', function isWithinTest(val) {
-					const values = this.options.context
-					return isWithinInterval(val, {
-						start: values.aareg[0].ansettelsesPeriode.fom,
-						end: values.aareg[0].ansettelsesPeriode.tom || new Date()
-					})
-				}),
-			tom: Yup.date()
-				.test('range', 'Dato må være innenfor ansettelsesforhold', function isWithinTest(val) {
-					if (!val) return true
-					const values = this.options.context
-					return isWithinInterval(val, {
-						start: values.aareg[0].ansettelsesPeriode.fom,
-						end: values.aareg[0].ansettelsesPeriode.tom || new Date()
-					})
-				})
-				.nullable()
+			fom: innenforAnsettelsesforholdTest(requiredDate),
+			tom: innenforAnsettelsesforholdTest(Yup.date().nullable())
 		}),
 		permisjonsprosent: Yup.number()
 			.min(1, 'Kan ikke være mindre enn 1')
@@ -72,31 +59,11 @@ const permisjon = Yup.array().of(
 const utenlandsopphold = Yup.array().of(
 	Yup.object({
 		periode: Yup.object({
-			fom: Yup.date()
-				.required('Feltet er påkrevd')
-				.test('range', 'Dato må være innenfor ansettelsesforhold', function isWithinTest(val) {
-					const values = this.options.context
-					return isWithinInterval(val, {
-						start: values.aareg[0].ansettelsesPeriode.fom,
-						end: values.aareg[0].ansettelsesPeriode.tom || new Date()
-					})
-				}),
-			tom: Yup.date()
-				.test(
-					'range',
-					'Dato må være innenfor ansettelsesforhold, og i samme kalendermåned og år som fra-dato',
-					function isWithinTest(val) {
-						const values = this.options.context
-						if (!val) return true
-						if (getMonth(val) !== getMonth(values.aareg[0].utenlandsopphold[0].periode.fom))
-							return false
-						return isWithinInterval(val, {
-							start: values.aareg[0].ansettelsesPeriode.fom,
-							end: values.aareg[0].ansettelsesPeriode.tom || new Date()
-						})
-					}
-				)
-				.nullable()
+			fom: innenforAnsettelsesforholdTest(requiredDate),
+			tom: innenforAnsettelsesforholdTest(
+				Yup.date().nullable(),
+				'aareg[0].utenlandsopphold[0].periode.fom'
+			)
 		}),
 		land: requiredString
 	})
