@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.inntektstub;
 
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
+import static java.lang.String.format;
 
 import java.net.URI;
 import java.util.List;
@@ -17,7 +17,8 @@ import no.nav.dolly.properties.ProvidersProps;
 @RequiredArgsConstructor
 public class InntektstubConsumer {
 
-    private static final String BESTILLING_INNTEKTER_URL = "/api/v2/inntekter";
+    private static final String BESTILLING_INNTEKTER_URL = "/api/v2/inntektsinformasjon";
+    private static final String DELETE_INNTEKTER_URL = "/api/v2/personer?norske-identer=";
 
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
@@ -25,8 +26,7 @@ public class InntektstubConsumer {
     public ResponseEntity deleteInntekter(String ident) {
 
         return restTemplate.exchange(RequestEntity.delete(
-                URI.create(providersProps.getInntektstub().getUrl() + BESTILLING_INNTEKTER_URL))
-                .header(HEADER_NAV_PERSON_IDENT, ident)
+                URI.create(format("%s%s%s", providersProps.getInntektstub().getUrl(), DELETE_INNTEKTER_URL, ident)))
                 .build(), Inntektsinformasjon.class);
     }
 

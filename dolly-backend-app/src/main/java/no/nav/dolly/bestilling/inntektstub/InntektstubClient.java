@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
+import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
@@ -34,11 +35,11 @@ public class InntektstubClient implements ClientRegister {
 
         if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
 
-            List<Inntektsinformasjon> inntektsinformasjon = mapperFacade.mapAsList(bestilling.getInntektstub().getInntektsinformasjon(), Inntektsinformasjon.class);
-            inntektsinformasjon.forEach(info -> info.setNorskIdent(tpsPerson.getHovedperson()));
+            InntektsinformasjonWrapper inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(), InntektsinformasjonWrapper.class);
+            inntektsinformasjonWrapper.getInntektsinformasjon().forEach(info -> info.setNorskIdent(tpsPerson.getHovedperson()));
 
             deleteInntekter(tpsPerson.getHovedperson());
-            opprettInntekter(inntektsinformasjon, progress);
+            opprettInntekter(inntektsinformasjonWrapper.getInntektsinformasjon(), progress);
         }
     }
 

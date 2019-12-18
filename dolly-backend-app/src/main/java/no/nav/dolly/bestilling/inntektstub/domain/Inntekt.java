@@ -18,18 +18,18 @@ public class Inntekt {
     public enum InntektType {LOENNSINNTEKT, YTELSE_FRA_OFFENTLIGE, PENSJON_ELLER_TRYGD, NAERINGSINNTEKT}
 
     private Long id;
-    private Double antall;
-    private Double beloep;
-    private String beskrivelse;
-    private String feilmelding;
-    private String fordel;
-    private Boolean inngaarIGrunnlagForTrekk;
     private InntektType inntektstype;
-    private String opptjeningsland;
+    private Double beloep;
+    private LocalDate startOpptjeningsperiode;
+    private LocalDate sluttOpptjeningsperiode;
+    private Boolean inngaarIGrunnlagForTrekk;
+    private Boolean utloeserArbeidsgiveravgift;
+    private String fordel;
     private String skatteOgAvgiftsregel;
     private String skattemessigBosattILand;
-    private LocalDate sluttOpptjeningsperiode;
-    private String startOpptjeningsperiode;
+    private String opptjeningsland;
+    private String beskrivelse;
     private Tilleggsinformasjon tilleggsinformasjon;
-    private Boolean utloeserArbeidsgiveravgift;
+    private Double antall;
+    private String feilmelding;
 }
