@@ -59,7 +59,8 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 		{
 			text: 'Bestilling-ID',
 			width: '10',
-			dataField: 'ident.bestillingId'
+			dataField: 'ident.bestillingId',
+			formatter: cell => getBestillingId(cell)
 		},
 		{
 			text: 'Status',
@@ -90,4 +91,11 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			)}
 		/>
 	)
+}
+
+const getBestillingId = bestillingIdString => {
+	const bestillingIdArray = bestillingIdString.split(',')
+
+	if (bestillingIdArray.length > 1) return `${bestillingIdArray[0]}...`
+	else return bestillingIdArray[0]
 }
