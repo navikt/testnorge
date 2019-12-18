@@ -7,10 +7,9 @@ import { MalForm } from './MalForm'
 export const Steg3 = ({ formikBag }) => {
 	return (
 		<div>
-			{/* Egen komponent med identtype, antall osv..? */}
-			{/* <div className="oppsummering">
+			<div className="oppsummering">
 				<Bestillingskriterier bestilling={formikBag.values} />
-			</div> */}
+			</div>
 			<MiljoeVelgerForm formikBag={formikBag} />
 			<MalForm formikBag={formikBag} />
 		</div>

@@ -10,7 +10,7 @@ export const UtenlandsId = ({ data, loading }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Utenlandsk identifikasjonsnummer" />
+			<SubOverskrift label="Utenlandsk identifikasjonsnummer" iconKind="identifikasjon" />
 			<div className="person-visning_content">
 				{data.map((id, idx) => (
 					<div key={idx}>

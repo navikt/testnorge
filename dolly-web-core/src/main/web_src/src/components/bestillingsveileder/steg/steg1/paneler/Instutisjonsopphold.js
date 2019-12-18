@@ -14,6 +14,7 @@ export const InstutisjonsoppholdPanel = ({ stateModifier }) => {
 			startOpen
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
+			iconType="institusjon"
 		>
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.instdata} />

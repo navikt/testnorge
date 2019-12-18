@@ -38,9 +38,9 @@ export const Steg1 = ({ formikBag, stateModifier }) => {
 			<IdentifikasjonPanel stateModifier={stateModifier} />
 			<FamilierelasjonPanel stateModifier={stateModifier} />
 			<ArbeidInntektPanel stateModifier={stateModifier} />
+			<KontaktDoedsboPanel stateModifier={stateModifier} />
 			<InstutisjonsoppholdPanel stateModifier={stateModifier} />
 			<KontaktReservasjonsPanel stateModifier={stateModifier} />
-			<KontaktDoedsboPanel stateModifier={stateModifier} />
 			<ArenaPanel stateModifier={stateModifier} />
 			<UdiPanel stateModifier={stateModifier} />
 		</AttributtVelger>

@@ -14,6 +14,7 @@ export const KontaktDoedsboPanel = ({ stateModifier }) => {
 			startOpen
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
+			iconType="doedsbo"
 		>
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.kontaktinformasjonForDoedsbo} />

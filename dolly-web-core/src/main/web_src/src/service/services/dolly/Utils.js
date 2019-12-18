@@ -16,6 +16,11 @@ export const SortKodeverkArray = data => {
 		})
 	}
 
+	if (data.name === 'Sivilstander') {
+		//Dolly støtter ikke GLAD fordi det er NAV-spesifikt og ikke SKD. Kan endres ved behov.
+		return kodeverk.filter(kode => kode.value !== 'NULL' && kode.value !== 'GLAD')
+	}
+
 	if (data.name == 'Diskresjonskoder') {
 		return kodeverk
 			.map(kode => {
@@ -55,6 +60,16 @@ export const SortKodeverkArray = data => {
 			{ value: '2521106', label: 'ADVOKAT' }
 		]
 		spesKoder.map(yrke => kodeverk.unshift(yrke))
+	}
+
+	if (data.name === 'Arbeidsforholdstyper') {
+		// Kodeverket for arbeidsforholdstyper har to verdier som AAREG per i dag ikke støtter
+		const arbeidsforhold = kodeverk.filter(
+			kode =>
+				kode.value !== 'frilanserOppdragstakerHonorarPersonerMm' &&
+				kode.value !== 'pensjonOgAndreTyperYtelserUtenAnsettelsesforhold'
+		)
+		return arbeidsforhold
 	}
 
 	if (data.name === 'Landkoder') {

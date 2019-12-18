@@ -59,7 +59,13 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 		{
 			text: 'Bestilling-ID',
 			width: '10',
-			dataField: 'ident.bestillingId'
+			dataField: 'ident.bestillingId',
+			formatter: (cell, row) => {
+				const arr = row.ident.bestillingId
+				let str = arr[0]
+				if (arr.length > 1) str = `${str} ...`
+				return str
+			}
 		},
 		{
 			text: 'Status',

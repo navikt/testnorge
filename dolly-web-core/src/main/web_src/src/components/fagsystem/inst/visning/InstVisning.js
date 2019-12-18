@@ -10,7 +10,7 @@ export const InstVisning = ({ data, loading }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Institusjonsopphold" />
+			<SubOverskrift label="Institusjonsopphold" iconKind="institusjon" />
 			{data.map((opphold, idx) => (
 				<div className="person-visning_content" key={idx}>
 					<TitleValue title="" value={`#${idx + 1}`} size="x-small" />

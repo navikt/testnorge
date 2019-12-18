@@ -14,6 +14,7 @@ export const ArenaPanel = ({ stateModifier }) => {
 			startOpen
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
+			iconType="arena"
 		>
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.arenaforvalter} />

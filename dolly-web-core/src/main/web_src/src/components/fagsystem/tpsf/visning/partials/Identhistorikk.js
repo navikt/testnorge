@@ -8,7 +8,7 @@ export const Identhistorikk = ({ identhistorikk, visTittel = true }) => {
 
 	return (
 		<div>
-			{visTittel && <SubOverskrift label="Identhistorikk" />}
+			{visTittel && <SubOverskrift label="Identhistorikk" iconKind="identhistorikk" />}
 			{identhistorikk.map(({ aliasPerson, regdato }, idx) => (
 				<div key={idx} className="person-visning_content">
 					<TitleValue title="" value={`#${idx + 1}`} size="x-small" />

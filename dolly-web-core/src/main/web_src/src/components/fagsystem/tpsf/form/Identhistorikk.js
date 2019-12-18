@@ -29,9 +29,9 @@ export const Identhistorikk = ({ formikBag }) => (
 			heading="Identhistorikk"
 			hasErrors={panelError(formikBag)}
 			informasjonstekst={hjelpetekst}
-			startOpen
+			iconType="personinformasjon"
 		>
-			<DollyFieldArray name="tpsf.identHistorikk" title="Historikk">
+			<DollyFieldArray name="tpsf.identHistorikk" title="Historikk" newEntry={initialValues}>
 				{(path, idx) => (
 					<React.Fragment key={idx}>
 						<FormikSelect

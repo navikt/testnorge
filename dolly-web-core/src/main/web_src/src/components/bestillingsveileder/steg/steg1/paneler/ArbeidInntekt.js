@@ -4,6 +4,7 @@ import {
 	Attributt,
 	AttributtKategori
 } from '~/components/bestillingsveileder/AttributtVelger/Attributt'
+import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
 
 export const ArbeidInntektPanel = ({ stateModifier }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
@@ -14,13 +15,13 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 	return (
 		<Panel
 			heading={ArbeidInntektPanel.heading}
-			startOpen
 			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
+			iconType="arbeid"
 		>
 			<AttributtKategori title="Arbeidsforhold">
-				<Attributt attr={sm.attrs.arbeid} />
+				<Attributt attr={sm.attrs.aareg} />
 			</AttributtKategori>
 			<AttributtKategori title="Inntekt">
 				<Attributt attr={sm.attrs.sigrunstub} />
@@ -32,12 +33,10 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 ArbeidInntektPanel.heading = 'Arbeid og inntekt'
 
 ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
-	arbeid: {
+	aareg: {
 		label: 'Har arbeidsforhold',
 		checked: has('aareg'),
-		add() {
-			set('aareg', {})
-		},
+		add: () => set('aareg', initialValues),
 		remove() {
 			del('aareg')
 		}

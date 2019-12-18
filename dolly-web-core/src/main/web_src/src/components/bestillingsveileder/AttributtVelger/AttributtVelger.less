@@ -17,8 +17,18 @@
 	}
 
 	&_panelsubcontent {
-		display: flex;
-		flex-wrap: wrap;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+
+		// Ekspanderer grid column for å fylle ut row
+		// css-irl.info/controlling-leftover-grid-items
+		> div:last-child:nth-child(3n - 1) {
+			grid-column: span 2;
+		}
+
+		> div:last-child:nth-child(3n - 2) {
+			grid-column: span 3;
+		}
 	}
 
 	&_panelsubcontent:not(:last-child) {

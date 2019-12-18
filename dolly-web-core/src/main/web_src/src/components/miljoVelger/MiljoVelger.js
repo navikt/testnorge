@@ -80,6 +80,7 @@ export default class MiljoVelger extends Component {
 			checked={this.props.arrayValues.includes(id)}
 			onClick={this.onClickHandler}
 			onChange={() => {}}
+			size={'xxsmall'}
 		/>
 	)
 
