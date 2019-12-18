@@ -92,7 +92,6 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsInntektsinformasjon rsInntektsinformasjon, Inntektsinformasjon inntektsinformasjon, MappingContext context) {
 
                         inntektsinformasjon.setAarMaaned(rsInntektsinformasjon.getAarMaaned().format(YEAR_MONTH_PTR));
-                        inntektsinformasjon.setVersjon(0);
                     }
                 })
                 .exclude("aarMaaned")
