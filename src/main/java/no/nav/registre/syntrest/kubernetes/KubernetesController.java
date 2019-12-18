@@ -210,7 +210,9 @@ public class KubernetesController {
                 return Optional.of(tag);
             }
 
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            log.warn("An exception occured trying to retrieve application tag: {}", e.getMessage());
+        }
 
         log.warn("Could not find tag for application {}.", appName);
         return Optional.empty();
