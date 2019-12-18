@@ -1,9 +1,12 @@
+@import (reference) '~lessVars';
+
 @blokk_bg: #f7f7f7;
 @blokk_border: #eee;
 
 .dfa-blokk {
-	padding: 10px;
+	padding: 0 10px 10px;
 	margin-bottom: 10px;
+	width: 100%;
 
 	&:nth-child(even) {
 		border-left: 2px solid @blokk_border;
@@ -15,11 +18,28 @@
 
 	&-header {
 		display: flex;
-		justify-content: space-between;
+		align-items: center;
 		border-bottom: 1px solid #ccc;
 		h2 {
-			font-size: 18px;
-			margin: 0px 0 10px 0px;
+			font-size: 1rem;
+			margin: 10px 0;
+		}
+		span {
+			background-color: @color-faded-blue;
+			border: 1px solid #999;
+			border-radius: 4px;
+			padding: 2px 6px;
+			font-size: 0.8rem;
+			margin-right: 10px;
+		}
+
+		button {
+			margin-left: auto;
+		}
+
+		.hjelpetekst {
+			height: 1.25rem;
+			width: 1.25rem;
 		}
 	}
 	&-content {

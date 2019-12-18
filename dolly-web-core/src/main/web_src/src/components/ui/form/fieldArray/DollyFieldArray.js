@@ -2,6 +2,7 @@ import React from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import Button from '~/components/ui/button/Button'
+import HjelpeTekst from 'nav-frontend-hjelpetekst'
 
 import './dollyFieldArray.less'
 
@@ -20,14 +21,14 @@ export const FieldArrayRemoveButton = ({ onClick }) => (
 	<Button className="field-group-remove" kind="remove-circle" onClick={onClick} title="Fjern" />
 )
 
-export const DollyFaBlokk = ({ title, idx, arrayHelpers, children }) => {
+export const DollyFaBlokk = ({ title, idx, arrayHelpers, hjelpetekst, children }) => {
 	const handleRemove = () => arrayHelpers.remove(idx)
 	return (
 		<div className="dfa-blokk">
 			<div className="dfa-blokk-header">
-				<h2>
-					{title} {idx + 1}
-				</h2>
+				<span>{idx + 1}</span>
+				<h2>{title}</h2>
+				{hjelpetekst && <HjelpeTekst>{hjelpetekst}</HjelpeTekst>}
 				{idx !== 0 && <Button kind="trashcan" onClick={handleRemove} title="Fjern" />}
 			</div>
 			<div className="dfa-blokk-content">{children}</div>
@@ -35,7 +36,7 @@ export const DollyFaBlokk = ({ title, idx, arrayHelpers, children }) => {
 	)
 }
 
-export const DollyFieldArray = ({ name, title, newEntry, children }) => (
+export const DollyFieldArray = ({ name, title, newEntry, hjelpetekst, children }) => (
 	<FieldArray name={name}>
 		{arrayHelpers => {
 			const values = _get(arrayHelpers.form.values, name)
@@ -44,7 +45,13 @@ export const DollyFieldArray = ({ name, title, newEntry, children }) => (
 					{values.map((curr, idx) => {
 						const path = `${name}.${idx}`
 						return (
-							<DollyFaBlokk key={idx} idx={idx} title={title} arrayHelpers={arrayHelpers}>
+							<DollyFaBlokk
+								key={idx}
+								idx={idx}
+								title={title}
+								hjelpetekst={hjelpetekst}
+								arrayHelpers={arrayHelpers}
+							>
 								{children(path, idx, curr)}
 							</DollyFaBlokk>
 						)
