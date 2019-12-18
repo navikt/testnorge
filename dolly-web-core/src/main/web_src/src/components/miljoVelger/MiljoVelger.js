@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import _mapValues from 'lodash/mapValues'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
-import { FormikCheckbox, DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { MiljoeInfo } from '~/components/miljoeInfo/MiljoeInfo'
+import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { MiljoeInfo } from './MiljoeInfo'
 
 import './MiljoVelger.less'
 

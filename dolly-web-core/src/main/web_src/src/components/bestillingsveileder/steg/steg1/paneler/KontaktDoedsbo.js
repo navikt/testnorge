@@ -11,7 +11,6 @@ export const KontaktDoedsboPanel = ({ stateModifier }) => {
 	return (
 		<Panel
 			heading={KontaktDoedsboPanel.heading}
-			startOpen
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="doedsbo"

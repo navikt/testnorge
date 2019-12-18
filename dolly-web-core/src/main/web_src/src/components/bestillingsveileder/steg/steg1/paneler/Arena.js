@@ -11,7 +11,6 @@ export const ArenaPanel = ({ stateModifier }) => {
 	return (
 		<Panel
 			heading={ArenaPanel.heading}
-			startOpen
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arena"
