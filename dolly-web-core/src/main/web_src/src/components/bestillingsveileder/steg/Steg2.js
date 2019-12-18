@@ -26,7 +26,7 @@ export const Steg2 = ({ formikBag }) => {
 	if (!avhukedeAttributter) {
 		return (
 			<AlertStripeInfo>
-				Du har ikke valgt noen attributter. Dolly oppretter personer med tilfeldige verdier.
+				Du har ikke valgt noen egenskaper. Dolly oppretter personer med tilfeldige verdier.
 			</AlertStripeInfo>
 		)
 	}
