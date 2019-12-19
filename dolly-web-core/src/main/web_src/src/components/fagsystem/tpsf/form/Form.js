@@ -67,6 +67,12 @@ TpsfForm.validation = {
 						.max(9999, 'Bruksnummeret må være mellom 1 og 9999')
 						.required(messages.required)
 				}),
+				festnr: Yup.string()
+					.min(1, 'Festenummer må være mellom 1 og 9999')
+					.max(9999, 'Festenummer må være mellom 1 og 9999'),
+				undernr: Yup.string()
+					.min(1, 'Undernummer må være mellom 1 og 999')
+					.max(999, 'Undernummer må være mellom 1 og 999'),
 				postnr: Yup.string().when('adressetype', { is: 'MATR', then: requiredString }),
 				kommunenr: Yup.string().when('adressetype', { is: 'MATR', then: requiredString })
 			}),
