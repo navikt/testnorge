@@ -1,7 +1,6 @@
 import React from 'react'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 
 export const MatrikkelAdresse = ({ formikBag }) => {
@@ -12,8 +11,8 @@ export const MatrikkelAdresse = ({ formikBag }) => {
 			<FormikTextInput name="tpsf.boadresse.bruksnr" label="Bruksnummer" />
 			<FormikTextInput name="tpsf.boadresse.festnr" label="Festenummer" />
 			<FormikTextInput name="tpsf.boadresse.undernr" label="Undernummer" />
-			<FormikTextInput name="tpsf.boadresse.postnr" label="Postnummer" />
-			<FormikTextInput name="tpsf.boadresse.kommunenr" label="Kommunenummer" />
+			<FormikSelect name="tpsf.boadresse.postnr" label="Postnummer" kodeverk="Postnummer" />
+			<FormikSelect name="tpsf.boadresse.kommunenr" label="Kommunenummer" kodeverk="Kommuner" />
 		</Kategori>
 	)
 }
