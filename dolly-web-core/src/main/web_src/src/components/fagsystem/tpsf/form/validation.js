@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { requiredString, ifKeyHasValue, ifPresent } from '~/utils/YupValidations'
-
+console.log('test :')
 export const validation = {
 	tpsf: Yup.object({
 		foedtEtter: Yup.date().nullable(),

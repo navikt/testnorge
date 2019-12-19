@@ -15,7 +15,6 @@ export const Postadresser = ({ formikBag }) => {
 	const endrePostlinje1 = value => {
 		setPostLinje1(value)
 		formikBag.setFieldValue('tpsf.postadresse[0].postLinje1', value)
-		p2.disabled = false
 	}
 	const endrePostlinje2 = value => {
 		setPostLinje2(value)
@@ -25,28 +24,16 @@ export const Postadresser = ({ formikBag }) => {
 			formikBag.setFieldValue('tpsf.postadresse[0].postLinje2', value)
 		}
 	}
-	const endrePostlinje3 = value => {
-		setPostLinje3(value)
+	const endrePostlinje3 = selected => {
+		console.log('selected :', selected)
+		setPostLinje3(selected)
 		if (!formikBag.values.tpsf.postadresse[0].postLinje1) {
-			formikBag.setFieldValue('tpsf.postadresse[0].postLinje1', value)
+			formikBag.setFieldValue('tpsf.postadresse[0].postLinje1', selected)
 		} else if (!formikBag.values.tpsf.postadresse[0].postLinje2) {
-			formikBag.setFieldValue('tpsf.postadresse[0].postLinje2', value)
+			formikBag.setFieldValue('tpsf.postadresse[0].postLinje2', selected)
 		} else {
-			formikBag.setFieldValue('tpsf.postadresse[0].postLinje3', value)
+			formikBag.setFieldValue('tpsf.postadresse[0].postLinje3', selected)
 		}
-		p2.disabled = true
-		p1.disabled = true
-	}
-
-	const clearForm = value => {
-		formikBag.setFieldValue('tpsf.postadresse[0].postLinje1', '')
-		p1.value = setPostLinje1('')
-		p1.disabled = false
-		formikBag.setFieldValue('tpsf.postadresse[0].postLinje2', '')
-		p2.value = setPostLinje2('')
-		p2.disabled = true
-		formikBag.setFieldValue('tpsf.postadresse[0].postLinje3', '')
-		setPostLinje3(null)
 	}
 
 	return (
@@ -70,20 +57,6 @@ export const Postadresser = ({ formikBag }) => {
 						value={postLinje1}
 						label="Postlinje 1"
 						onChange={v => endrePostlinje1(v.target.value)}
-						disabled={
-							(formikBag.values.tpsf.postadresse[0].postLinje3 &&
-								formikBag.values.tpsf.postadresse[0].postLinje3.value !== '') ||
-							(formikBag.values.tpsf.postadresse[0].postLinje2 &&
-								formikBag.values.tpsf.postadresse[0].postLinje2 !== '')
-						}
-						title={
-							(formikBag.values.tpsf.postadresse[0].postLinje3 &&
-								formikBag.values.tpsf.postadresse[0].postLinje3.value !== '') ||
-							(formikBag.values.tpsf.postadresse[0].postLinje2 &&
-								formikBag.values.tpsf.postadresse[0].postLinje2 !== '')
-								? 'feltet er lukket når man går til neste felt'
-								: 'Man må fylle ut postlinje 1 og 2 før postlinje 3 for å ha riktig post format'
-						}
 					/>
 					<DollyTextInput
 						name="postLinje2"
@@ -93,27 +66,16 @@ export const Postadresser = ({ formikBag }) => {
 						value={postLinje2}
 						label="Postlinje 2"
 						onChange={v => endrePostlinje2(v.target.value)}
-						disabled={true}
-						title={
-							(formikBag.values.tpsf.postadresse[0].postLinje3 &&
-								formikBag.values.tpsf.postadresse[0].postLinje3.value !== '') ||
-							!formikBag.values.tpsf.postadresse[0].postLinje1
-								? 'Feltet er lukket når man går til neste felt'
-								: 'Man må fylle ut postlinje 1 og 2 før postlinje 3 for å ha riktig post format'
-						}
 					/>
-					<DollySelect
+					<FormikSelect
 						name="postLinje3"
 						label="Postlinje 3"
 						id="p3"
 						kodeverk="Postnummer"
 						size="grow"
 						value={postLinje3}
-						onChange={v => endrePostlinje3(v.value)}
+						onChange={selected => endrePostlinje3(selected.label)}
 					/>
-					<Knapp mini type="standard" onClick={clearForm}>
-						Tomme felter
-					</Knapp>
 				</React.Fragment>
 			)}
 		</Kategori>
