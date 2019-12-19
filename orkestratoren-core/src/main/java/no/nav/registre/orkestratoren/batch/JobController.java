@@ -120,7 +120,7 @@ public class JobController {
     @Autowired
     private TestnorgeMedlService testnorgeMedlService;
 
-    @Scheduled(cron = "0 0 0 * * *")
+    // @Scheduled(cron = "0 0 0 * * *") midl. kommentert ut i forbindelse med kommunesammenslåing
     public void tpsSyntBatch() {
         for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
             try {
@@ -131,7 +131,7 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    // @Scheduled(cron = "0 0 0 * * *") midl. kommentert ut i forbindelse med kommunesammenslåing
     public void navSyntBatch() {
         for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
             var syntetiserNavmeldingerRequest = SyntetiserNavmeldingerRequest.builder()
