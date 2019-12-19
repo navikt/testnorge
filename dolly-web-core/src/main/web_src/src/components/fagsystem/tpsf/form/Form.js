@@ -4,7 +4,7 @@ import * as Yup from 'yup'
 import { Personinformasjon } from './personinformasjon/Personinformasjon'
 import { Adresser } from './adresser/Adresser'
 import { Identhistorikk } from './Identhistorikk'
-import { requiredDate, requiredString, ifPresent, ifKeyHasValue } from '~/utils/YupValidations'
+import { requiredString, ifPresent, ifKeyHasValue, messages } from '~/utils/YupValidations'
 
 export const TpsfForm = ({ formikBag }) => {
 	return (
@@ -41,22 +41,41 @@ TpsfForm.validation = {
 					value => value !== 'SPSF'
 				)
 			}),
-			boadresse: ifPresent(
-				'$tpsf.boadresse',
-				ifKeyHasValue(
+			boadresse: Yup.object({
+				gateadresse: ifKeyHasValue(
 					'$tpsf.boadresse.adressetype',
 					['GATE'],
 					ifKeyHasValue(
 						'$tpsf.adresseNrInfo',
 						[null],
-						Yup.object({
-							gateadresse: Yup.string().required(
-								'Bruk adressevelgeren over for å hente gyldige adresser og velge et av forslagene'
-							)
-						})
+						Yup.string().required(
+							'Bruk adressevelgeren over for å hente gyldige adresser og velge et av forslagene'
+						)
 					)
-				)
-			)
+				),
+				gardsnr: Yup.string().when('adressetype', {
+					is: 'MATR',
+					then: Yup.string()
+						.min(1, 'Gårdsnummeret må være mellom 1 og 99999')
+						.max(99999, 'Gårdsnummeret må være mellom 1 og 99999')
+						.required(messages.required)
+				}),
+				bruksnr: Yup.string().when('adressetype', {
+					is: 'MATR',
+					then: Yup.string()
+						.min(1, 'Bruksnummeret må være mellom 1 og 9999')
+						.max(9999, 'Bruksnummeret må være mellom 1 og 9999')
+						.required(messages.required)
+				}),
+				postnr: Yup.string().when('adressetype', { is: 'MATR', then: requiredString }),
+				kommunenr: Yup.string().when('adressetype', { is: 'MATR', then: requiredString })
+			}),
+			adresseNrInfo: Yup.object({
+				nummer: Yup.string().when('nummertype', {
+					is: v => v,
+					then: requiredString
+				})
+			}).nullable()
 		})
 	)
 }

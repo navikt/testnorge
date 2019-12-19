@@ -26,6 +26,15 @@ export const Boadresse = ({ formikBag }) => {
 		return `${gateadresse} ${parseInt(husnummer)}, ${postnr} ${poststed}`
 	}
 
+	const feilmelding = () => {
+		if (
+			!_get(formikBag.values, 'tpsf.boadresse.gateadresse') &&
+			_get(formikBag.touched, 'tpsf.boadresse.gateadresse')
+		) {
+			return { feilmelding: _get(formikBag.errors, 'tpsf.boadresse.gateadresse') }
+		}
+	}
+
 	return (
 		<Kategori title="Gateadresse">
 			<div className="gateadresse">
@@ -38,12 +47,7 @@ export const Boadresse = ({ formikBag }) => {
 					readOnly
 					placeholder="Ingen valgt adresse"
 					title="Endre adressen i adressevelgeren over"
-					feil={
-						!_get(formikBag.values, 'tpsf.boadresse.gateadresse') &&
-						_get(formikBag.touched, 'tpsf.boadresse.gateadresse') && {
-							feilmelding: _get(formikBag.errors, 'tpsf.boadresse.gateadresse', false)
-						}
-					}
+					feil={feilmelding()}
 				/>
 			</div>
 		</Kategori>

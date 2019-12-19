@@ -15,8 +15,8 @@ const initialBoType = formikBag => {
 	const adresseType = _get(formikBag.values, 'tpsf.boadresse.adressetype')
 	const nummertype = _get(formikBag.values, 'tpsf.adresseNrInfo.nummertype')
 
-	if (adresseType) return adresseType === 'GATE' ? 'gate' : 'matrikkel'
-	else if (nummertype) return nummertype === 'POSTNR' ? 'postnr' : 'kommunenr'
+	if (nummertype) return nummertype === 'POSTNR' ? 'postnr' : 'kommunenr'
+	else if (adresseType) return adresseType === 'GATE' ? 'gate' : 'matrikkel'
 	else return
 }
 
@@ -68,6 +68,7 @@ export const Adresser = ({ formikBag }) => {
 					festnr: '',
 					undernr: '',
 					postnr: '',
+					kommunenr: '',
 					flyttedato: formikBag.values.tpsf.boadresse.flyttedato
 				})
 				break
