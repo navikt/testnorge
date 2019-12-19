@@ -13,11 +13,10 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
-import no.nav.registre.arena.domain.aap.adresse.Adresse;
 import no.nav.registre.arena.domain.aap.andreokonomytelser.AndreOkonomYtelser;
+import no.nav.registre.arena.domain.aap.forvalter.Forvalter;
 import no.nav.registre.arena.domain.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.arena.domain.aap.institusjonsopphold.Institusjonsopphold;
-import no.nav.registre.arena.domain.aap.konto.Konto;
 import no.nav.registre.arena.domain.aap.medlemfolketrygden.MedlemFolketrygden;
 import no.nav.registre.arena.domain.aap.periode.Periode;
 import no.nav.registre.arena.domain.aap.vilkaar.Vilkaar;
@@ -35,7 +34,7 @@ public class NyRettighet {
     private String aktivitetsfase;
 
     @JsonAlias({ "ANDRE_OKONOM_YTELSER", "andreOkonomYtelser" })
-    private List<AndreOkonomYtelser> andreOkonomYtelser;
+    private List<AndreOkonomYtelser> andreOkonomYtelserListe;
 
     @JsonAlias({ "AVBRUDDSKODE", "avbruddKode" })
     private String avbruddKode;
@@ -67,23 +66,14 @@ public class NyRettighet {
     @JsonAlias({ "PERIODE", "periode" })
     private Periode periode;
 
-    @JsonAlias({ "FODSELSNR", "fodselsnr" })
-    private String fodselsnr;
-
-    @JsonAlias({ "GJELDENDE_KONTONR", "gjeldendeKontonr" })
-    private List<Konto> gjeldendeKontonr;
-
-    @JsonAlias({ "MILJOE", "miljoe" })
-    private String miljoe;
+    @JsonAlias({ "FORVALTER", "forvalter" })
+    private Forvalter forvalter;
 
     @JsonAlias({ "SAKSBEHANDLER", "saksbehandler" })
     private String saksbehandler;
 
     @JsonAlias({ "TIL_DATO", "tilDato" })
     private LocalDate tilDato;
-
-    @JsonAlias({ "UTBETALINGSADRESSE", "utbetalingsadresse" })
-    private List<Adresse> utbetalingsadresse;
 
     @JsonAlias({ "UTFALL", "utfall" })
     private String utfall;

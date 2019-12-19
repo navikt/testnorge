@@ -10,6 +10,7 @@ import org.springframework.web.util.UriTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+import no.nav.registre.arena.core.consumer.rs.request.RettighetAapRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
@@ -24,6 +25,7 @@ public class RettighetArenaForvalterConsumer {
 
     private final RestTemplate restTemplate;
 
+    private UriTemplate opprettAapRettighetUrl;
     private UriTemplate opprettUngUfoerRettighetUrl;
     private UriTemplate opprettTvungenForvaltningRettighetUrl;
     private UriTemplate opprettFritakMeldekortRettighetUrl;
@@ -33,6 +35,7 @@ public class RettighetArenaForvalterConsumer {
             @Value("${arena-forvalteren.rest-api.url}") String arenaForvalterServerUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
+        this.opprettAapRettighetUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/aap");
         this.opprettUngUfoerRettighetUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/aapungufor");
         this.opprettTvungenForvaltningRettighetUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/aaptvungenforvaltning");
         this.opprettFritakMeldekortRettighetUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/aapfritakmeldekort");
@@ -42,7 +45,9 @@ public class RettighetArenaForvalterConsumer {
         List<NyRettighetResponse> responses = new ArrayList<>();
         for (var rettighet : rettigheter) {
             UriTemplate url;
-            if (rettighet instanceof RettighetUngUfoerRequest) {
+            if (rettighet instanceof RettighetAapRequest) {
+                url = opprettAapRettighetUrl;
+            } else if (rettighet instanceof RettighetUngUfoerRequest) {
                 url = opprettUngUfoerRettighetUrl;
             } else if (rettighet instanceof RettighetTvungenForvaltningRequest) {
                 url = opprettTvungenForvaltningRettighetUrl;

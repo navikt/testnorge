@@ -1,4 +1,4 @@
-package no.nav.registre.arena.domain.aap.konto;
+package no.nav.registre.arena.domain.aap.forvalter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,15 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Konto {
+public class Forvalter {
 
-    private String kontonr;
-    private List<UtlandKontoInfo> utland;
+    private Konto gjeldendeKontonr;
+    private Adresse utbetalingsadresse;
 }

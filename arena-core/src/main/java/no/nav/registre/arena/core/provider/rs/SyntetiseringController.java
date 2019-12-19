@@ -38,6 +38,13 @@ public class SyntetiseringController {
         return registrerBrukerIArenaForvalter(personident, syntetiserArenaRequest);
     }
 
+    @PostMapping("generer/rettighet/aap")
+    public List<NyRettighetResponse> genererRettighetAap(
+            @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
+    ) {
+        return rettighetService.genererAap(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+    }
+
     @PostMapping("generer/rettighet/ungUfoer")
     public List<NyRettighetResponse> genererRettighetUngUfoer(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest

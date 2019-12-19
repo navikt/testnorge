@@ -9,6 +9,7 @@ import lombok.Setter;
 import java.io.Serializable;
 
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = RettighetAapRequest.class, name = "aap"),
         @JsonSubTypes.Type(value = RettighetUngUfoerRequest.class, name = "ungUfoer"),
         @JsonSubTypes.Type(value = RettighetTvungenForvaltningRequest.class, name = "tvungenForvaltning"),
         @JsonSubTypes.Type(value = RettighetFritakMeldekortRequest.class, name = "fritakMeldekort")

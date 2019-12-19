@@ -1,6 +1,5 @@
 package no.nav.registre.arena.core.consumer.rs.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,12 +15,13 @@ import java.time.LocalDate;
 @Builder
 public class RettighetSyntRequest {
 
-    @JsonProperty("type_kode")
-    private String typeKode;
+    private LocalDate fraDato;
 
-    @JsonProperty("utfall")
+    private LocalDate tilDato;
+
     private String utfall;
 
-    @JsonProperty("start_dato")
-    private LocalDate startDato;
+    private LocalDate vedtakDato;
+
+    private String vedtakTypeKode;
 }
