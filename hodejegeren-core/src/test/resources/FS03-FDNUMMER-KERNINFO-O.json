@@ -36,6 +36,7 @@
           "diskresjonTidspunkt": "",
           "diskresjonSystem": "",
           "kodeDiskresjonBeskr": "",
+          "kodeDiskresjonBeskr": "",
           "datoDiskresjon": "",
           "kodeDiskresjon": ""
         },
@@ -112,7 +113,7 @@
       "bankkontoNorge": {
         "regSystem": "",
         "regSaksbehandler": "",
-        "kontoNummer": "",
+        "kontoNummer": "20000723267",
         "regTidspunkt": "",
         "banknavn": ""
       },

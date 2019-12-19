@@ -21,7 +21,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +31,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import wiremock.com.google.common.io.Resources;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,9 +40,7 @@ import java.util.Map;
 import java.util.Random;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
-import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
-import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
-import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
+import no.nav.registre.hodejegeren.provider.rs.responses.kontoinfo.KontoinfoResponse;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EksisterendeIdenterServiceTest {
@@ -224,6 +220,26 @@ public class EksisterendeIdenterServiceTest {
         verify(tpsStatusQuoService).getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1);
 
         assertThat(fnrMedStatusQuo.get(fnr1), equalTo(jsonNode));
+    }
+
+    @Test
+    public void hentGittAntallIdenterMedKontonummerTest() throws IOException {
+        var jsonContent = Resources.getResource("FS03-FDNUMMER-KERNINFO-O.json");
+        var jsonNode = new ObjectMapper().readTree(jsonContent);
+        var fnr1 = "23048801390";
+        List<String> identer = new ArrayList<>();
+        identer.add(fnr1);
+
+        when(cacheService.hentLevendeIdenterCache(avspillergruppeId1)).thenReturn(identer);
+        when(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1)).thenReturn(jsonNode);
+
+        List<KontoinfoResponse> fnrMedKontoinfo = eksisterendeIdenterService.hentGittAntallIdenterMedKononummerinfo(avspillergruppeId1, miljoe, identer.size(), MIN_ALDER, MAX_ALDER);
+
+        verify(cacheService).hentLevendeIdenterCache(avspillergruppeId1);
+        verify(tpsStatusQuoService).getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1);
+
+        assertThat(fnrMedKontoinfo.get(0).getFnr(), equalTo(fnr1));
+        assertThat(fnrMedKontoinfo.get(0).getKontonummer(), equalTo("20000723267"));
     }
 
     @Test

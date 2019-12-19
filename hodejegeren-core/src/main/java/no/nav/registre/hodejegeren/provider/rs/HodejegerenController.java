@@ -17,6 +17,7 @@ import java.util.Map;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
+import no.nav.registre.hodejegeren.provider.rs.responses.kontoinfo.KontoinfoResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
 import no.nav.registre.hodejegeren.service.CacheService;
@@ -185,6 +186,20 @@ public class HodejegerenController {
             @RequestParam String miljoe
     ) {
         return eksisterendeIdenterService.hentPersondata(ident, miljoe);
+    }
+
+    @LogExceptions
+    @ApiOperation(value = "Her kan man hente identer med norsk kontonummer og tilhørende kjerneinfo")
+    @GetMapping("api/v1/identer-med-kontonummer/{avspillergruppeId}")
+    public List<KontoinfoResponse> hentPersondataMedKontoinformasjon(
+            @PathVariable("avspillergruppeId") Long avspillergruppeId,
+            @RequestParam("miljoe") String miljoe,
+            @RequestParam("antallIdenter") int antallIdenter,
+            @RequestParam(value = "minimumAlder", required = false, defaultValue = "" + MIN_ALDER) Integer minimumAlder,
+            @RequestParam(value = "maksimumAlder", required = false, defaultValue = "" + MAX_ALDER) Integer maksimumAlder
+    ) {
+        validerAlder(minimumAlder, maksimumAlder);
+        return eksisterendeIdenterService.hentGittAntallIdenterMedKononummerinfo(avspillergruppeId, miljoe, antallIdenter, minimumAlder, maksimumAlder);
     }
 
     @LogExceptions
