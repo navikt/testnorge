@@ -48,6 +48,10 @@ export const validation = {
 	tpsf: ifPresent(
 		'$tpsf',
 		Yup.object({
+			alder: Yup.number()
+				.min(1)
+				.max(99)
+				.typeError('Feltet er påkrevd'),
 			foedtEtter: Yup.date().nullable(),
 			foedtFoer: Yup.date().nullable(),
 			doedsdato: Yup.date().nullable(),

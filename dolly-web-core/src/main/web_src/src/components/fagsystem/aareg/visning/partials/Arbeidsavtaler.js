@@ -17,7 +17,6 @@ export const Arbeidsavtaler = ({ data }) => {
 							value={id.arbeidstidsordning}
 							kodeverk="Arbeidstidsordninger"
 						/>
-						<TitleValue title="Beregnet antall timer per uke" value={id.beregnetAntallTimerPrUke} />
 						<TitleValue
 							title="stillingsprosent siste endringsdato"
 							value={Formatters.formatStringDates(id.sistStillingsendring)}

@@ -6,8 +6,9 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Diverse } from './partials/Diverse'
+import { Alder } from './partials/alder/Alder'
 
-const alderPaths = ['tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
+const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
 
 const nasjonalitetPaths = [
 	'tpsf.statsborgerskap',
@@ -35,8 +36,7 @@ export const Personinformasjon = ({ formikBag }) => (
 			startOpen
 		>
 			<Kategori title="Alder" vis={alderPaths}>
-				<FormikDatepicker name="tpsf.foedtEtter" label="Født etter" />
-				<FormikDatepicker name="tpsf.foedtFoer" label="Født før" />
+				<Alder basePath="tpsf" formikBag={formikBag} />
 				<FormikDatepicker name="tpsf.doedsdato" label="Dødsdato" />
 			</Kategori>
 
@@ -57,7 +57,9 @@ export const Personinformasjon = ({ formikBag }) => (
 				</Vis>
 			</Kategori>
 
-			<Diverse formikBag={formikBag} />
+			<Kategori title="Diverse" vis={diversePaths}>
+				<Diverse formikBag={formikBag} />
+			</Kategori>
 		</Panel>
 	</Vis>
 )
