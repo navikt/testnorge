@@ -2,12 +2,8 @@ import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import Loading from '~/components/ui/loading/Loading'
 
-export const partnerVisning = ({ data, loading }) => {
-	if (loading) return <Loading label="laster partner data" />
-	if (!data) return false
-
+export const partnerVisning = data => {
 	return (
 		<div>
 			<SubOverskrift label="Partner" />
