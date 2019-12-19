@@ -1,0 +1,26 @@
+import React from 'react'
+import _get from 'lodash/get'
+import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { initialTimeloennet } from '../initialValues'
+
+const infotekst =
+	'Start- og sluttdato må både være innenfor samme kalendermåned i samme år og perioden til arbeidsforholdet'
+
+export const TimeloennetForm = ({ path }) => (
+	<DollyFieldArray
+		name={path}
+		title="Antall timer for timelønnet"
+		hjelpetekst={infotekst}
+		newEntry={initialTimeloennet}
+	>
+		{(path, idx) => (
+			<div key={idx} className="flexbox">
+				<FormikTextInput name={`${path}.antallTimer`} label="Antall timer" type="number" />
+				<FormikDatepicker name={`${path}.periode.fom`} label="Periode fra" />
+				<FormikDatepicker name={`${path}.periode.tom`} label="Periode til" />
+			</div>
+		)}
+	</DollyFieldArray>
+)

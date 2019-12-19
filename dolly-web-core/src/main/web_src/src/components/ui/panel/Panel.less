@@ -17,6 +17,7 @@
 	.panel-heading {
 		display: flex;
 		align-items: center;
+		cursor: pointer;
 
 		h1,
 		h2,
@@ -26,10 +27,15 @@
 			font-size: 1rem;
 		}
 		.header-icon {
-			background: @color-bg-grey-border;
+			background: @color-bg-shallow;
 			align-items: center;
 			margin-right: 10px;
-			padding: 8px;
+			padding: 10px;
+		}
+
+		.hjelpetekst {
+			width: 1.25rem;
+			height: 1.25rem;
 		}
 
 		.dolly-button {
@@ -52,11 +58,12 @@
 			margin-left: auto;
 			display: flex;
 			align-items: center;
+			padding-right: 5px;
 		}
 	}
 
 	.panel-content {
-		border-top: 2px solid @color-darkblue;
+		border-top: 1px solid @color-bg-grey-border;
 		padding: 20px 10px;
 	}
 }

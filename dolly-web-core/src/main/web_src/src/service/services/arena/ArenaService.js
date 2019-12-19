@@ -19,7 +19,7 @@ export default {
 		return Request.getWithoutCredentials(endpoint, options)
 	},
 
-	getTilgjengeligeMiljoe() {
+	getTilgjengeligeMiljoer() {
 		const endpoint = `${getArenaUrl()}/miljoe`
 		return Request.getWithoutCredentials(endpoint, options)
 	}

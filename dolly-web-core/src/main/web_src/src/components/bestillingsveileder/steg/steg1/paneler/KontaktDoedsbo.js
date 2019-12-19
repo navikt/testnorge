@@ -8,13 +8,9 @@ import {
 export const KontaktDoedsboPanel = ({ stateModifier }) => {
 	const sm = stateModifier(KontaktDoedsboPanel.initialValues)
 
-	const infoTekst =
-		'Kontaktinformasjon for dødsbo blir kun distribuert til Q2, og dette miljøet må derfor velges i siste steg.'
-
 	return (
 		<Panel
 			heading={KontaktDoedsboPanel.heading}
-			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="doedsbo"
