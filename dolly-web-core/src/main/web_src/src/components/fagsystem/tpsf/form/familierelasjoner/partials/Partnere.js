@@ -8,8 +8,8 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 const initialValues = {
 	identtype: 'FNR',
 	kjonn: '',
-	sivilstander: [initForhold],
-	harFellesAdresse: true
+	sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
+	harFellesAdresse: false
 }
 const initForhold = { sivilstand: '', sivilstandRegdato: '' }
 
@@ -32,8 +32,17 @@ export const Partnere = ({ formikBag }) => (
 				>
 					{(path, idx) => (
 						<React.Fragment key={idx}>
-							<FormikSelect name={`${path}.sivilstand`} label="Forhold" kodeverk="Sivilstander" />
-							<FormikDatepicker name={`${path}.sivilstandRegdato`} label="Forhold fra dato" />
+							<FormikSelect
+								name={`${path}.sivilstand`}
+								label="Sivilstand"
+								kodeverk="Sivilstander"
+								isClearable={false}
+							/>
+							<FormikDatepicker
+								name={`${path}.sivilstandRegdato`}
+								label="Sivilstand fra dato"
+								isClearable={false}
+							/>
 						</React.Fragment>
 					)}
 				</DollyFieldArray>

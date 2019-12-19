@@ -26,7 +26,7 @@ export const DollyFaBlokk = ({ title, idx, arrayHelpers, children }) => {
 		<div className="dfa-blokk">
 			<div className="dfa-blokk-header">
 				<h2>
-					{title} {idx + 1}
+					{title} {idx + 1} {title === 'Partner' && idx === 0 && '(nåværende)'}
 				</h2>
 				{idx !== 0 && <Button kind="trashcan" onClick={handleRemove} title="Fjern" />}
 			</div>

@@ -1,13 +1,34 @@
 import * as Yup from 'yup'
-import { requiredString, requiredDate, ifPresent } from '~/utils/YupValidations'
+import _get from 'lodash/get'
+import _findIndex from 'lodash/findIndex'
+import { isBefore } from 'date-fns'
+import { requiredString, requiredNumber, requiredDate, ifPresent } from '~/utils/YupValidations'
 
 const partnere = Yup.array().of(
 	Yup.object({
 		identtype: Yup.string(),
 		kjonn: Yup.string().nullable(),
 		sivilstander: Yup.array().of(
-			Yup.object({ sivilstand: requiredString, sivilstandRegdato: requiredDate })
-		), // TODO sjekk at nyeste kommer øverst
+			Yup.object({
+				sivilstand: requiredString,
+				sivilstandRegdato: Yup.string()
+					.test(
+						'is-before-last',
+						'Dato må være før tidligere forhold (nyeste forhold settes først)',
+						function validDate(val) {
+							const values = this.options.context
+							const path = this.options.path
+							const thisDate = _get(values, path)
+							const partnerIndex = path.charAt(path.indexOf('[') + 1)
+							const sivilstander = values.tpsf.relasjoner.partnere[partnerIndex].sivilstander
+							const forholdIndex = _findIndex(sivilstander, ['sivilstandRegdato', thisDate])
+							if (forholdIndex === 0) return true
+							return isBefore(thisDate, sivilstander[forholdIndex - 1].sivilstandRegdato)
+						}
+					)
+					.required('Feltet er påkrevd')
+			})
+		),
 		harFellesAdresse: Yup.boolean()
 	})
 )
@@ -17,20 +38,7 @@ const barn = Yup.array().of(
 		identtype: Yup.string(),
 		kjonn: Yup.string().nullable(),
 		barnType: requiredString,
-		partnerNr: Yup.number()
-			// .test('range', 'feil!', function erGyldigPartner(val) {
-			// 	const values = this.options.context
-			// 	const antallPartnere = values.tpsf.relasjoner.partnere.length
-			// 	if (
-			// 		(!val &&
-			// 			(values.tpsf.relasjoner.barn[0].barnType === 'MITT' ||
-			// 				values.tpsf.relasjoner.barn[0].barnType === 'FELLES')) ||
-			// 		(val > 0 && val <= antallPartnere)
-			// 	)
-			// 		return true
-			// 	else return false
-			// })
-			.nullable(), // TODO fiks denne!
+		partnerNr: Yup.number().nullable(),
 		borHos: requiredString,
 		erAdoptert: Yup.boolean()
 	})

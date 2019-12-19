@@ -55,7 +55,7 @@ FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 					identtype: 'FNR',
 					kjonn: '',
 					barnType: '',
-					partnerNr: '',
+					partnerNr: null,
 					borHos: '',
 					erAdoptert: false
 				}
