@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
+import Knapp from 'nav-frontend-knapper'
+import HjelpeTekst from 'nav-frontend-hjelpetekst'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import Icon from '~/components/ui/icon/Icon'
 import Button from '~/components/ui/button/Button'
 
 export const SokAdresseForm = ({ onSearch }) => {
@@ -12,10 +15,14 @@ export const SokAdresseForm = ({ onSearch }) => {
 		const query = createQueryString(gatenavn, postnummer, kommunenummer)
 		return onSearch(query)
 	}
+	const informasjonstekst =
+		'TPS er avhengig av at adressen er helt korrekt. Bruk ingen, ett eller flere av søkefeltene for å få forslag til adresse fra TPS.'
 
 	return (
-		<div>
-			<h4>Søk adresse</h4>
+		<div className="soekAdresse">
+			<div className="flexbox">
+				<h4>Søk etter gyldig adresse</h4> <HjelpeTekst>{informasjonstekst}</HjelpeTekst>
+			</div>
 			<div className="flexbox">
 				<DollyTextInput
 					name="gatenavn"
@@ -40,9 +47,12 @@ export const SokAdresseForm = ({ onSearch }) => {
 					onChange={v => setKommunenummer((v && v.value) || '')}
 				/>
 			</div>
-			<Button style={{ backgroundColor: '#ccd9ff' }} onClick={sokAdresse}>
-				Hent gyldig adresser
-			</Button>
+			<Knapp form="kompakt" className="knapp" onClick={sokAdresse}>
+				<div className="knapp-header">
+					Hent gyldige adresser
+					<Icon size={15} kind="search" />
+				</div>
+			</Knapp>
 		</div>
 	)
 }

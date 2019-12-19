@@ -4,7 +4,7 @@ import * as Yup from 'yup'
 import { Personinformasjon } from './personinformasjon/Personinformasjon'
 import { Adresser } from './adresser/Adresser'
 import { Identhistorikk } from './Identhistorikk'
-import { requiredDate, requiredString, ifPresent } from '~/utils/YupValidations'
+import { requiredDate, requiredString, ifPresent, ifKeyHasValue } from '~/utils/YupValidations'
 
 export const TpsfForm = ({ formikBag }) => {
 	return (
@@ -40,7 +40,23 @@ TpsfForm.validation = {
 					'Kan ikke være "Kode 6" når "Uten fast bopel" er valgt.',
 					value => value !== 'SPSF'
 				)
-			})
+			}),
+			boadresse: ifPresent(
+				'$tpsf.boadresse',
+				ifKeyHasValue(
+					'$tpsf.boadresse.adressetype',
+					['GATE'],
+					ifKeyHasValue(
+						'$tpsf.adresseNrInfo',
+						[null],
+						Yup.object({
+							gateadresse: Yup.string().required(
+								'Bruk adressevelgeren over for å hente gyldige adresser og velge et av forslagene'
+							)
+						})
+					)
+				)
+			)
 		})
 	)
 }

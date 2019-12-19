@@ -84,8 +84,16 @@ export const Adresser = ({ formikBag }) => {
 						name="botype"
 						legend="Hva slags adresse vil du opprette?"
 						radios={[
-							{ label: 'Postnummer ...', value: 'postnr', id: 'postnr' },
-							{ label: 'Kommunenummer ...', value: 'kommunenr', id: 'kommunenr' },
+							{
+								label: 'Tilfeldig adresse basert på postnummer ...',
+								value: 'postnr',
+								id: 'postnr'
+							},
+							{
+								label: 'Tilfeldig adresse basert på kommunenummer ...',
+								value: 'kommunenr',
+								id: 'kommunenr'
+							},
 							{ label: 'Gateadresse detaljert ...', value: 'gate', id: 'gate' },
 							{ label: 'Matrikkeladresse detaljert ...', value: 'matrikkel', id: 'matrikkel' }
 						]}
