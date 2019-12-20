@@ -14,7 +14,7 @@ public class CronJobService {
     private final BatchService batchService;
 
     @Timed(value = "ident-pool.ajourhold", longTask = true)
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(cron = "0 0 20 * * *")
     public void execute() {
         batchService.startGeneratingIdentsBatch();
     }
