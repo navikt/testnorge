@@ -46,7 +46,7 @@ public class IdentpoolService {
     private static final int MAKS_ANTALL_MANGLENDE_IDENTER = 80;
     private static final int MAKS_ANTALL_OPPRETTINGER_ONTHEFLY_PER_DAG = 250;
     private static final int MAKS_ANTALL_KALL_MOT_TPS = 3;
-    private static final int MAKS_ANTALL_FORSOEK_PAA_LEDIG_DATO = 3;
+    private static final int MAKS_ANTALL_FORSOEK_PAA_LEDIG_DATO = 7;
 
     private final IdentRepository identRepository;
     private final IdentTpsService identTpsService;
@@ -55,10 +55,12 @@ public class IdentpoolService {
 
     public List<String> rekvirerNaermesteLedigDato(HentIdenterRequest request) throws ForFaaLedigeIdenterException {
         LocalDate foedtEtter = request.getFoedtEtter();
+        LocalDate foedtFoer = request.getFoedtFoer();
 
         int i = 0;
         while (i <= MAKS_ANTALL_FORSOEK_PAA_LEDIG_DATO) {
-            request.setFoedtEtter(foedtEtter.minusWeeks(i));
+            request.setFoedtEtter(foedtEtter.minusDays(i));
+            request.setFoedtFoer(foedtFoer.minusDays(i));
 
             try {
                 return rekvirer(request);
@@ -91,7 +93,11 @@ public class IdentpoolService {
 
         if (missingIdentCount > 0) {
             // hent identer som er i bruk i ident-pool-databasen allerede, for ikke å opprette eksisterende identifikasjonsnumre:
-            List<String> usedIdents = hentBrukteIdenterFraDatabase(request);
+            int daysInRange = Math.toIntExact(DAYS.between(request.getFoedtEtter(), request.getFoedtFoer())) + 1;
+            List<String> usedIdents = hentBrukteIdenterFraDatabase(request, daysInRange);
+            if (daysInRange == 1 && usedIdents.size() >= MAKS_ANTALL_OPPRETTINGER_ONTHEFLY_PER_DAG * daysInRange) {
+                throw new ForFaaLedigeIdenterException("Det er for få ledige identer i TPS - prøv med et annet dato-intervall.");
+            }
 
             List<String> newIdents = hentIdenterFraTps(request, usedIdents);
             if (newIdents.size() >= missingIdentCount) {
@@ -351,13 +357,12 @@ public class IdentpoolService {
         return identEntities;
     }
 
-    private List<String> hentBrukteIdenterFraDatabase(HentIdenterRequest request) {
-        int daysInRange = Math.toIntExact(DAYS.between(request.getFoedtEtter(), request.getFoedtFoer())) + 1;
-
+    private List<String> hentBrukteIdenterFraDatabase(HentIdenterRequest request, int daysInRange) {
         HentIdenterRequest usedIdentsRequest = HentIdenterRequest.builder()
                 .identtype(request.getIdenttype())
                 .foedtEtter(request.getFoedtEtter().minusDays(1))
                 .foedtFoer(request.getFoedtFoer().plusDays(1))
+                .kjoenn(request.getKjoenn())
                 .build();
 
         return StreamSupport.stream(
