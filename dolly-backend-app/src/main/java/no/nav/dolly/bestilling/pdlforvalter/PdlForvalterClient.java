@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
+import static java.lang.String.format;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -7,6 +8,7 @@ import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.StausRespo
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import javax.el.MethodNotFoundException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdent
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 
 @Slf4j
@@ -53,6 +56,9 @@ public class PdlForvalterClient implements ClientRegister {
     private static final String HENDELSE_ID = "hendelseId";
     private static final int MAX_COUNT = 20;
     private static final int TIMEOUT = 50;
+
+    private static final String SEND_ERROR = "Feilet å sende %s for ident %s til PDL-forvalter";
+    private static final String SEND_ERROR_2 = SEND_ERROR + ": %s";
 
     private final PdlForvalterConsumer pdlForvalterConsumer;
     private final TpsfService tpsfService;
@@ -125,23 +131,29 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendPdlPersondetaljer(TpsPerson tpsPerson, StringBuilder status) {
 
-        if (nonNull(tpsPerson.getPersondetalj())) {
-            sendOpprettPerson(tpsPerson.getPersondetalj());
-            sendFoedselsmelding(tpsPerson.getPersondetalj());
-            sendNavn(tpsPerson.getPersondetalj());
-            sendKjoenn(tpsPerson.getPersondetalj());
-            sendAdressebeskyttelse(tpsPerson.getPersondetalj());
-            sendDoedsfall(tpsPerson.getPersondetalj());
-            syncMedPdl(tpsPerson.getPersondetalj().getIdent(), status);
+        try {
+            if (nonNull(tpsPerson.getPersondetalj())) {
+                sendOpprettPerson(tpsPerson.getPersondetalj());
+                sendFoedselsmelding(tpsPerson.getPersondetalj());
+                sendNavn(tpsPerson.getPersondetalj());
+                sendKjoenn(tpsPerson.getPersondetalj());
+                sendAdressebeskyttelse(tpsPerson.getPersondetalj());
+                sendDoedsfall(tpsPerson.getPersondetalj());
+                syncMedPdl(tpsPerson.getPersondetalj().getIdent(), status);
 
-            tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
-                sendOpprettPerson(relasjon.getPersonRelasjonMed());
-                sendFoedselsmelding(relasjon.getPersonRelasjonMed());
-                sendNavn(relasjon.getPersonRelasjonMed());
-                sendKjoenn(relasjon.getPersonRelasjonMed());
-                sendAdressebeskyttelse(relasjon.getPersonRelasjonMed());
-                sendDoedsfall(relasjon.getPersonRelasjonMed());
-            });
+                tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
+                    sendOpprettPerson(relasjon.getPersonRelasjonMed());
+                    sendFoedselsmelding(relasjon.getPersonRelasjonMed());
+                    sendNavn(relasjon.getPersonRelasjonMed());
+                    sendKjoenn(relasjon.getPersonRelasjonMed());
+                    sendAdressebeskyttelse(relasjon.getPersonRelasjonMed());
+                    sendDoedsfall(relasjon.getPersonRelasjonMed());
+                });
+            }
+
+        } catch (DollyFunctionalException e) {
+
+            status.append('$').append(PDL_FORVALTER).append('&').append(e.getMessage().replaceAll(",", ";"));
         }
     }
 
@@ -171,82 +183,41 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendOpprettPerson(Person person) {
 
-        try {
-            pdlForvalterConsumer.postOpprettPerson(mapperFacade.map(person, PdlOpprettPerson.class), person.getIdent());
-
-        } catch (HttpClientErrorException e) {
-            log.error("Feilet å sende opprettEndre person for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
-
-        } catch (RuntimeException e) {
-            log.error("Feilet å sende opprettEndre person for ident {} til PDL-forvalter.", person.getIdent(), e);
-        }
+        BiFunction<PdlOpprettPerson, String, ResponseEntity> opprettPerson = (struct, ident) -> pdlForvalterConsumer.postOpprettPerson(struct, ident);
+        sendToPdl(opprettPerson, mapperFacade.map(person, PdlOpprettPerson.class), person.getIdent(), "opprett person");
     }
 
     private void sendNavn(Person person) {
 
-        try {
-            pdlForvalterConsumer.postNavn(mapperFacade.map(person, PdlNavn.class), person.getIdent());
-
-        } catch (HttpClientErrorException e) {
-            log.error("Feilet å sende navn for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
-
-        } catch (RuntimeException e) {
-            log.error("Feilet å sende navn for ident {} til PDL-forvalter.", person.getIdent(), e);
-        }
+        BiFunction<PdlNavn, String, ResponseEntity> sendNavn = (struct, ident) -> pdlForvalterConsumer.postNavn(struct, ident);
+        sendToPdl(sendNavn, mapperFacade.map(person, PdlNavn.class), person.getIdent(), "navn");
     }
 
     private void sendKjoenn(Person person) {
 
-        try {
-            pdlForvalterConsumer.postKjoenn(mapperFacade.map(person, PdlKjoenn.class), person.getIdent());
-
-        } catch (HttpClientErrorException e) {
-            log.error("Feilet å sende kjønn for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
-
-        } catch (RuntimeException e) {
-            log.error("Feilet å sende kjønn for ident {} til PDL-forvalter.", person.getIdent(), e);
-        }
+        BiFunction<PdlKjoenn, String, ResponseEntity> sendKjoenn = (struct, ident) -> pdlForvalterConsumer.postKjoenn(struct, ident);
+        sendToPdl(sendKjoenn, mapperFacade.map(person, PdlKjoenn.class), person.getIdent(), "kjønn");
     }
 
     private void sendAdressebeskyttelse(Person person) {
 
-        try {
-            pdlForvalterConsumer.postAdressebeskyttelse(mapperFacade.map(person, PdlAdressebeskyttelse.class), person.getIdent());
-
-        } catch (HttpClientErrorException e) {
-            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
-
-        } catch (RuntimeException e) {
-            log.error("Feilet å sende adressebeskyttelse for ident {} til PDL-forvalter.", person.getIdent(), e);
-        }
+        BiFunction<PdlAdressebeskyttelse, String, ResponseEntity> sendAdressebeskyttelse = (struct, ident) -> pdlForvalterConsumer.postAdressebeskyttelse(struct, ident);
+        sendToPdl(sendAdressebeskyttelse, mapperFacade.map(person, PdlAdressebeskyttelse.class), person.getIdent(), "adressebeskyttelse");
     }
 
     private void sendDoedsfall(Person person) {
 
         if (nonNull(person.getDoedsdato())) {
-            try {
-                pdlForvalterConsumer.postDoedsfall(mapperFacade.map(person, PdlDoedsfall.class), person.getIdent());
 
-            } catch (HttpClientErrorException e) {
-                log.error("Feilet å sende dødsmelding for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
-
-            } catch (RuntimeException e) {
-                log.error("Feilet å sende dødsmelding for ident {} til PDL-forvalter.", person.getIdent(), e);
-            }
+            BiFunction<PdlDoedsfall, String, ResponseEntity> sendDoedsmelding = (struct, ident) -> pdlForvalterConsumer.postDoedsfall(struct, ident);
+            sendToPdl(sendDoedsmelding, mapperFacade.map(person, PdlDoedsfall.class), person.getIdent(), "dødsmelding");
         }
     }
 
     private void sendFoedselsmelding(Person person) {
 
-        try {
-            pdlForvalterConsumer.postFoedsel(mapperFacade.map(person, PdlFoedsel.class), person.getIdent());
-
-        } catch (HttpClientErrorException e) {
-            log.error("Feilet å sende fødselsmelding for ident {} til PDL-forvalter: {}", person.getIdent(), e.getResponseBodyAsString());
-
-        } catch (RuntimeException e) {
-            log.error("Feilet å sende fødselsmelding for ident {} til PDL-forvalter.", person.getIdent(), e);
-        }
+        BiFunction<PdlFoedsel, String, ResponseEntity> sendFoedselsmelding = (struct, ident) -> pdlForvalterConsumer.postFoedsel(struct, ident);
+        sendToPdl(sendFoedselsmelding, mapperFacade.map(person, PdlFoedsel.class), person.getIdent(), "fødselsmelding");
     }
 
     private void sendUtenlandsid(Pdldata pdldata, String ident, StringBuilder status) {
@@ -327,6 +298,21 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
+    private void sendToPdl(BiFunction pdlConsumerFunction, Object struct, String ident, String beskrivelse) {
+
+        try {
+            pdlConsumerFunction.apply(struct, ident);
+
+        } catch (HttpClientErrorException e) {
+            log.error(format(SEND_ERROR_2, beskrivelse, ident, e.getResponseBodyAsString()));
+            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident, e.getResponseBodyAsString()), e);
+
+        } catch (RuntimeException e) {
+            log.error(format(SEND_ERROR, beskrivelse, ident), e);
+            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident, e.getMessage()), e);
+        }
+    }
+
     private static void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
         builder.append('$')
                 .append(utenlandsIdentifikasjonsnummer);
@@ -344,7 +330,7 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void appendErrorStatus(RuntimeException exception, StringBuilder builder) {
 
-        builder.append("&")
+        builder.append('&')
                 .append(errorStatusDecoder.decodeRuntimeException(exception));
     }
 }

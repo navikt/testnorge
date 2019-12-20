@@ -55,7 +55,7 @@ public final class BestillingPdlForvalterStatusMapper {
                 .map(entry -> RsStatusRapport.builder().id(type).navn(type.getBeskrivelse())
                         .statuser(entry.getValue().entrySet().stream()
                                 .map(entry1 -> RsStatusRapport.Status.builder()
-                                        .melding(entry1.getKey())
+                                        .melding(entry1.getKey().replaceAll(";",","))
                                         .detaljert(singletonList(RsStatusRapport.Detaljert.builder()
                                                 .miljo("PDL")
                                                 .identer(entry1.getValue())
