@@ -4,13 +4,13 @@ import TilgjengeligeMiljoer from '~/components/tilgjengeligeMiljoer/Tilgjengelig
 import { InstApi } from '~/service/Api'
 import { ArenaApi } from '~/service/Api'
 
-export const MiljoeInfo = ({ formikBag }) => {
-	const { instdata, pdlforvalter, arenaforvalter } = formikBag.values
+export const MiljoeInfo = ({ bestillingsdata }) => {
+	const { instdata, pdlforvalter, arenaforvalter } = bestillingsdata
 	if (!instdata && !pdlforvalter && !arenaforvalter) return null
 
 	return (
 		<AlertStripeInfo>
-			Du har valgt egenskaper som ikke blir distribuert til alle miljøer. For hvert av følgende
+			Du har valgt egenskaper som ikke blir distribuert til alle miljøer. For hver av følgende
 			egenskaper må derfor ett eller flere av miljøene under velges:
 			<ul>
 				{instdata && (
