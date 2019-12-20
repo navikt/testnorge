@@ -82,11 +82,13 @@ public class RettighetServiceTest {
 
     @Test
     public void shouldGenerereVedtakshistorikk() {
+        var kontonummer = "12131843564";
+        var forvalterFnr = "02020202020";
         when(hodejegerenConsumer.getLevende(avspillergruppeId)).thenReturn(identer);
         when(hodejegerenConsumer.getIdenterMedKontonummer(avspillergruppeId, miljoe, antallIdenter, null, null))
                 .thenReturn(new ArrayList<>(Collections.singletonList(KontoinfoResponse.builder()
-                        .fnr("02020202020")
-                        .kontonummer("12131843564")
+                        .fnr(forvalterFnr)
+                        .kontonummer(kontonummer)
                         .build())));
         when(rettighetSyntConsumer.syntetiserVedtakshistorikk(antallIdenter)).thenReturn(vedtakshistorikkListe);
 
@@ -123,12 +125,18 @@ public class RettighetServiceTest {
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
         assertThat(response.size(), equalTo(4));
         assertThat(response.get(0).getNyeRettigheter().size(), equalTo(1));
+        assertThat(response.get(0).getNyeRettigheter().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
         assertThat(response.get(0).getFeiledeRettigheter().size(), equalTo(0));
         assertThat(response.get(1).getNyeRettigheter().size(), equalTo(1));
+        assertThat(response.get(1).getNyeRettigheter().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
         assertThat(response.get(1).getFeiledeRettigheter().size(), equalTo(0));
         assertThat(response.get(2).getNyeRettigheter().size(), equalTo(1));
+        assertThat(response.get(2).getNyeRettigheter().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
+        assertThat(response.get(2).getNyeRettigheter().get(0).getForvalter().getGjeldendeKontonr().getKontonr(), equalTo(kontonummer));
+        assertThat(response.get(2).getNyeRettigheter().get(0).getForvalter().getUtbetalingsadresse().getFodselsnr(), equalTo(forvalterFnr));
         assertThat(response.get(2).getFeiledeRettigheter().size(), equalTo(0));
         assertThat(response.get(3).getNyeRettigheter().size(), equalTo(1));
+        assertThat(response.get(3).getNyeRettigheter().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
         assertThat(response.get(3).getFeiledeRettigheter().size(), equalTo(0));
     }
 }
