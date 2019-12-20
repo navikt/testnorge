@@ -296,11 +296,11 @@ public class PdlForvalterClient implements ClientRegister {
 
         } catch (HttpClientErrorException e) {
             log.error(format(SEND_ERROR_2, beskrivelse, ident, e.getResponseBodyAsString()));
-            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident, e.getResponseBodyAsString()));
+            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident, e.getResponseBodyAsString()), e);
 
         } catch (RuntimeException e) {
             log.error(format(SEND_ERROR, beskrivelse, ident), e);
-            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident, e.getMessage()));
+            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident, e.getMessage()), e);
         }
     }
 
