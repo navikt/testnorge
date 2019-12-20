@@ -8,9 +8,16 @@ import { ArbeidsforholdForm } from './partials/arbeidsforholdForm'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { initialValues } from './initialValues'
 
+const aaregAttributt = 'aareg'
+
 export const AaregForm = ({ formikBag }) => (
-	<Vis attributt="aareg">
-		<Panel heading="Arbeidsforhold" hasErrors={panelError(formikBag)} startOpen iconType="arbeid">
+	<Vis attributt={aaregAttributt}>
+		<Panel
+			heading="Arbeidsforhold"
+			hasErrors={panelError(formikBag, aaregAttributt)}
+			startOpen
+			iconType="arbeid"
+		>
 			<DollyFieldArray name="aareg" title="Arbeidsforhold" newEntry={initialValues[0]}>
 				{(path, idx) => <ArbeidsforholdForm path={path} key={idx} formikBag={formikBag} />}
 			</DollyFieldArray>

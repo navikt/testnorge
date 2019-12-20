@@ -6,9 +6,10 @@ import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
 import { InntektsaarForm } from './partials/inntektsaarForm'
 
+const sigrunAttributt = 'sigrunstub'
 export const SigrunstubForm = ({ formikBag }) => (
-	<Vis attributt="sigrunstub">
-		<Panel heading="Inntekt" hasErrors={panelError(formikBag)} iconType="sigrun">
+	<Vis attributt={sigrunAttributt}>
+		<Panel heading="Inntekt" hasErrors={panelError(formikBag, sigrunAttributt)} iconType="sigrun">
 			<InntektsaarForm formikBag={formikBag} />
 		</Panel>
 	</Vis>
