@@ -50,7 +50,7 @@ public class RettighetService {
         List<RettighetRequest> rettighetRequester = new ArrayList<>();
         for (var vedtak : vedtakshistorikk) {
             if (!utvalgteIdenter.isEmpty()) {
-                String personident = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
+                var personident = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
 
                 // aap:
                 RettighetRequest rettighetRequest = new RettighetAapRequest(vedtak.getAap());
@@ -182,9 +182,11 @@ public class RettighetService {
         var uregistrerteBrukere = rettigheter.stream().filter(rettighet -> !identerIArena.contains(rettighet.getPersonident())).map(RettighetRequest::getPersonident)
                 .collect(Collectors.toList());
 
-        var nyeBrukereResponse = syntetiseringService.byggArbeidsoekereOgLagreIHodejegeren(uregistrerteBrukere, miljoe);
-        var feiledeIdenter = nyeBrukereResponse.getNyBrukerFeilList().stream().map(NyBrukerFeil::getPersonident).collect(Collectors.toList());
-        rettigheter.removeIf(rettighet -> feiledeIdenter.contains(rettighet.getPersonident()));
+        if (!uregistrerteBrukere.isEmpty()) {
+            var nyeBrukereResponse = syntetiseringService.byggArbeidsoekereOgLagreIHodejegeren(uregistrerteBrukere, miljoe);
+            var feiledeIdenter = nyeBrukereResponse.getNyBrukerFeilList().stream().map(NyBrukerFeil::getPersonident).collect(Collectors.toCollection(ArrayList::new));
+            rettigheter.removeIf(rettighet -> feiledeIdenter.contains(rettighet.getPersonident()));
+        }
 
         return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
     }
