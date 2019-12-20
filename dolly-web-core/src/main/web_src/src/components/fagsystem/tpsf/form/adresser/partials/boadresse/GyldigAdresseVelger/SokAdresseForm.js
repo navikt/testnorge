@@ -49,8 +49,8 @@ export const SokAdresseForm = ({ onSearch }) => {
 			</div>
 			<Knapp form="kompakt" className="knapp" onClick={sokAdresse}>
 				<div className="knapp-header">
-					Hent gyldige adresser
 					<Icon size={15} kind="search" />
+					Hent gyldige adresser
 				</div>
 			</Knapp>
 		</div>

@@ -1,5 +1,6 @@
 import React from 'react'
 import _get from 'lodash/get'
+import _has from 'lodash/has'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { GyldigAdresseVelger } from './GyldigAdresseVelger/GyldigAdresseVelger'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
@@ -26,6 +27,15 @@ export const Boadresse = ({ formikBag }) => {
 		return `${gateadresse} ${parseInt(husnummer)}, ${postnr} ${poststed}`
 	}
 
+	const feilmelding = () => {
+		if (
+			!_has(formikBag.values, 'tpsf.boadresse.gateadresse') &&
+			_has(formikBag.touched, 'tpsf.boadresse.gateadresse')
+		) {
+			return { feilmelding: _get(formikBag.errors, 'tpsf.boadresse.gateadresse') }
+		}
+	}
+
 	return (
 		<Kategori title="Gateadresse">
 			<div className="gateadresse">
@@ -38,7 +48,7 @@ export const Boadresse = ({ formikBag }) => {
 					readOnly
 					placeholder="Ingen valgt adresse"
 					title="Endre adressen i adressevelgeren over"
-					feil={{ feilmelding: _get(formikBag.errors, 'tpsf.boadresse.gateadresse') }}
+					feil={feilmelding}
 				/>
 			</div>
 		</Kategori>

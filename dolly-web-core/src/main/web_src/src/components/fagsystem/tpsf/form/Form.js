@@ -57,22 +57,18 @@ TpsfForm.validation = {
 					is: 'MATR',
 					then: Yup.string()
 						.min(1, 'Gårdsnummeret må være mellom 1 og 99999')
-						.max(99999, 'Gårdsnummeret må være mellom 1 og 99999')
+						.max(5, 'Gårdsnummeret må være mellom 1 og 99999')
 						.required(messages.required)
 				}),
 				bruksnr: Yup.string().when('adressetype', {
 					is: 'MATR',
 					then: Yup.string()
 						.min(1, 'Bruksnummeret må være mellom 1 og 9999')
-						.max(9999, 'Bruksnummeret må være mellom 1 og 9999')
+						.max(4, 'Bruksnummeret må være mellom 1 og 9999')
 						.required(messages.required)
 				}),
-				festnr: Yup.string()
-					.min(1, 'Festenummer må være mellom 1 og 9999')
-					.max(9999, 'Festenummer må være mellom 1 og 9999'),
-				undernr: Yup.string()
-					.min(1, 'Undernummer må være mellom 1 og 999')
-					.max(999, 'Undernummer må være mellom 1 og 999'),
+				festnr: Yup.string().max(4, 'Festenummer må være mellom 1 og 9999'),
+				undernr: Yup.string().max(3, 'Undernummer må være mellom 1 og 999'),
 				postnr: Yup.string().when('adressetype', { is: 'MATR', then: requiredString }),
 				kommunenr: Yup.string().when('adressetype', { is: 'MATR', then: requiredString })
 			}),
