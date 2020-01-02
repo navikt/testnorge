@@ -11,7 +11,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdentBeskrivelse extends IdentAttributes {
+public class IdentBeskrivelse {
 
     private String beskrivelse;
 }
