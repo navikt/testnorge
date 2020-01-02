@@ -29,7 +29,7 @@ export const Boadresse = ({ formikBag }) => {
 
 	const feilmelding = () => {
 		if (
-			!_has(formikBag.values, 'tpsf.boadresse.gateadresse') &&
+			!_get(formikBag.values, 'tpsf.boadresse.gateadresse') &&
 			_has(formikBag.touched, 'tpsf.boadresse.gateadresse')
 		) {
 			return { feilmelding: _get(formikBag.errors, 'tpsf.boadresse.gateadresse') }
@@ -48,7 +48,7 @@ export const Boadresse = ({ formikBag }) => {
 					readOnly
 					placeholder="Ingen valgt adresse"
 					title="Endre adressen i adressevelgeren over"
-					feil={feilmelding}
+					feil={feilmelding()}
 				/>
 			</div>
 		</Kategori>
