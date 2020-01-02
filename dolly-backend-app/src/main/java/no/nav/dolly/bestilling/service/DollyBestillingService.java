@@ -10,6 +10,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -399,10 +400,10 @@ public class DollyBestillingService {
         for (SendSkdMeldingTilTpsResponse response : responseStatus) {
             if (hovedperson.equals(response.getPersonId())) {
                 for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
-                    if (!entry.getValue().contains(SUCCESS) && !failures.containsKey(entry.getKey())) {
-                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue())));
-                    } else if (!entry.getValue().contains(SUCCESS)) {
+                    if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
                         failures.get(entry.getKey()).add(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue()));
+                    } else if (isFaulty(entry.getValue())) {
+                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue())));
                     }
                 }
             }
@@ -413,13 +414,17 @@ public class DollyBestillingService {
         for (ServiceRoutineResponseStatus response : responseStatus) {
             if (hovedperson.equals(response.getPersonId())) {
                 for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
-                    if (!SUCCESS.equals(entry.getValue()) && !failures.containsKey(entry.getKey())) {
-                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue())));
-                    } else if (!SUCCESS.equals(entry.getValue())) {
+                    if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
                         failures.get(entry.getKey()).add(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue()));
+                    } else if (isFaulty(entry.getValue())) {
+                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue())));
                     }
                 }
             }
         }
+    }
+
+    private boolean isFaulty(String value) {
+        return isNotBlank(value) && !SUCCESS.equals(value);
     }
 }
