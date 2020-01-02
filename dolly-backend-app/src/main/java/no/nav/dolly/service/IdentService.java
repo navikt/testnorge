@@ -13,9 +13,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
-import no.nav.dolly.domain.testperson.IdentAttributes;
-import no.nav.dolly.domain.testperson.IdentBeskrivelse;
-import no.nav.dolly.domain.testperson.IdentIbruk;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.IdentRepository;
@@ -56,18 +53,26 @@ public class IdentService {
     }
 
     @Transactional
-    public Testident save(IdentAttributes attributtes) {
+    public Testident save(String ident, boolean iBruk) {
 
-        Testident testident = identRepository.findByIdent(attributtes.getIdent());
+        Testident testident = identRepository.findByIdent(ident);
         if (nonNull(testident)) {
-            if (attributtes instanceof IdentIbruk) {
-                testident.setIBruk(((IdentIbruk) attributtes).isIbruk());
-            } else if (attributtes instanceof IdentBeskrivelse) {
-                testident.setBeskrivelse(((IdentBeskrivelse) attributtes).getBeskrivelse());
-            }
+            testident.setIBruk(iBruk);
             return identRepository.save(testident);
         } else {
-            throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", attributtes.getIdent()));
+            throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
+        }
+    }
+
+    @Transactional
+    public Testident save(String ident, String beskrivelse) {
+
+        Testident testident = identRepository.findByIdent(ident);
+        if (nonNull(testident)) {
+            testident.setBeskrivelse(beskrivelse);
+            return identRepository.save(testident);
+        } else {
+            throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
         }
     }
 }
