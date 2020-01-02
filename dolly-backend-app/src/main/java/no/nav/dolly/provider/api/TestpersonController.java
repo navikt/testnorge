@@ -21,8 +21,6 @@ import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.testperson.IdentAttributesResponse;
-import no.nav.dolly.domain.testperson.IdentBeskrivelse;
-import no.nav.dolly.domain.testperson.IdentIbruk;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 
@@ -52,9 +50,7 @@ public class TestpersonController {
     @ResponseStatus(HttpStatus.OK)
     public IdentAttributesResponse oppdaterTestidentBeskrivelse(@PathVariable String ident, @RequestBody RsIdentBeskrivelse beskrivelse) {
 
-        IdentBeskrivelse identBeskrivelse = IdentBeskrivelse.builder().beskrivelse(beskrivelse.getBeskrivelse()).build();
-        identBeskrivelse.setIdent(ident);
-        return mapperFacade.map(identService.save(identBeskrivelse), IdentAttributesResponse.class);
+        return mapperFacade.map(identService.save(ident, beskrivelse.getBeskrivelse()), IdentAttributesResponse.class);
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
@@ -63,8 +59,6 @@ public class TestpersonController {
     @ResponseStatus(HttpStatus.OK)
     public IdentAttributesResponse oppdaterTestidentIbruk(@PathVariable String ident, @RequestParam boolean iBruk) {
 
-        IdentIbruk identIbruk = IdentIbruk.builder().ibruk(iBruk).build();
-        identIbruk.setIdent(ident);
-        return mapperFacade.map(identService.save(identIbruk), IdentAttributesResponse.class);
+        return mapperFacade.map(identService.save(ident, iBruk), IdentAttributesResponse.class);
     }
 }

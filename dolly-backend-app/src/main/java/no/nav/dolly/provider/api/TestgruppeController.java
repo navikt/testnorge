@@ -34,9 +34,6 @@ import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
-import no.nav.dolly.domain.testperson.IdentAttributesResponse;
-import no.nav.dolly.domain.testperson.IdentBeskrivelse;
-import no.nav.dolly.domain.testperson.IdentIbruk;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -127,31 +124,5 @@ public class TestgruppeController {
 
         dollyBestillingService.opprettPersonerFraIdenterMedKriterierAsync(gruppeId, request, bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
-    }
-
-    /**
-     * @deprecated Erstattes av /api/v1/ident/{ident}/beskrivelse
-     */
-    @Deprecated
-    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
-    @ApiOperation(value = "Endre status beskrivelse på testperson")
-    @PutMapping("/{gruppeId}/beskrivelse")
-    @ResponseStatus(HttpStatus.OK)
-    public IdentAttributesResponse oppdaterTestidentBeskrivelse(@PathVariable Long gruppeId, @RequestBody IdentBeskrivelse attributes) {
-
-        return mapperFacade.map(identService.save(attributes), IdentAttributesResponse.class);
-    }
-
-    /**
-     * @deprecated Erstattes av /api/v1/ident/{ident}/ibruk
-     */
-    @Deprecated
-    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
-    @ApiOperation(value = "Endre status \"i-bruk\" på testperson")
-    @PutMapping("/{gruppeId}/ibruk")
-    @ResponseStatus(HttpStatus.OK)
-    public IdentAttributesResponse oppdaterTestidentIbruk(@PathVariable Long gruppeId, @RequestBody IdentIbruk attributes) {
-
-        return mapperFacade.map(identService.save(attributes), IdentAttributesResponse.class);
     }
 }
