@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
-import { requiredString, ifKeyHasValue, ifPresent } from '~/utils/YupValidations'
-console.log('test :')
+import { requiredString } from '~/utils/YupValidations'
+
 export const validation = {
 	tpsf: Yup.object({
 		foedtEtter: Yup.date().nullable(),
@@ -22,18 +22,9 @@ export const validation = {
 		}),
 		postadresse: Yup.array().of(
 			Yup.object({
-				postLinje1: Yup.string()
-					.required('reqd')
-					.when('postLand', {
-						is: 'NORGE',
-						then: requiredString
-					}),
-				postLinje3: Yup.string().when('postLand', {
+				postLinje1: Yup.string().when('postLand', {
 					is: 'NOR',
-					then: Yup.string().when('PostLinje2', {
-						is: Yup.string().matches(/\d{4}$/),
-						then: Yup.string().notRequired()
-					})
+					then: requiredString
 				}),
 				postLand: requiredString
 			})
