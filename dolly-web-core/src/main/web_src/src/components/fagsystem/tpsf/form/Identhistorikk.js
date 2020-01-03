@@ -23,11 +23,13 @@ const hjelpetekst =
 	'Hvis fødselsdatoen ble endret i overgangen kan født før og født etter fylles ut. Det samme gjelder for kjønn. ' +
 	'Dersom de står som "Ikke spesifisert" beholdes samme fødselsdato og/eller kjønn.'
 
+const identAttributt = 'tpsf.identHistorikk'
+
 export const Identhistorikk = ({ formikBag }) => (
-	<Vis attributt="tpsf.identHistorikk">
+	<Vis attributt={identAttributt}>
 		<Panel
 			heading="Identhistorikk"
-			hasErrors={panelError(formikBag)}
+			hasErrors={panelError(formikBag, identAttributt)}
 			informasjonstekst={hjelpetekst}
 			iconType="personinformasjon"
 		>

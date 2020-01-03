@@ -8,11 +8,13 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
 
+const krrAttributt = 'krrstub'
+
 export const KrrstubForm = ({ formikBag }) => (
-	<Vis attributt="krrstub">
+	<Vis attributt={krrAttributt}>
 		<Panel
 			heading="Kontakt- og reservasjonsregisteret"
-			hasErrors={panelError(formikBag)}
+			hasErrors={panelError(formikBag, krrAttributt)}
 			iconType="krr"
 		>
 			<FormikTextInput name="krrstub.epost" label="E-post" />

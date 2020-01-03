@@ -31,7 +31,7 @@ export const Personinformasjon = ({ formikBag }) => (
 	<Vis attributt={panelPaths}>
 		<Panel
 			heading="Personinformasjon"
-			hasErrors={panelError(formikBag)}
+			hasErrors={panelError(formikBag, panelPaths)}
 			iconType={'personinformasjon'}
 			startOpen
 		>
