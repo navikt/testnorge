@@ -28,4 +28,9 @@ public class RsTpsfBasisMedSivilstandBestilling extends RsTpsfBasisBestilling {
             value = "Dato sivilstand. Hvis blankt settes dagens dato"
     )
     private LocalDateTime sivilstandRegdato;
+
+    @ApiModelProperty(
+            position = 100
+    )
+    private RsSimpleRelasjoner relasjoner;
 }

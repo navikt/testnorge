@@ -49,11 +49,6 @@ public class RsTpsfUtvidetBestilling extends RsTpsfBasisMedSivilstandBestilling 
     private String kjonn;
 
     @ApiModelProperty(
-            position = 100
-    )
-    private RsSimpleRelasjoner relasjoner;
-
-    @ApiModelProperty(
             position = 101
     )
     private List<RsIdenthistorikk> identHistorikk;
