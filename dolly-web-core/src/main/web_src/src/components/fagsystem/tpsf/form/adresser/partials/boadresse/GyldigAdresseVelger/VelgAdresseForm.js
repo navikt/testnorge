@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import Knapp from 'nav-frontend-knapper'
+
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import Button from '~/components/ui/button/Button'
 
@@ -27,7 +29,7 @@ export const VelgAdresseForm = ({ adresser, velgAdresse }) => {
 	return (
 		<div>
 			<h4>Velg adresse</h4>
-			<div className="flexbox">
+			<div className="velgAdresse">
 				<DollySelect
 					name="adresse"
 					label="Gyldig adresse"
@@ -45,10 +47,10 @@ export const VelgAdresseForm = ({ adresser, velgAdresse }) => {
 					onChange={v => setValgtHusnummer(v.value)}
 					isClearable={false}
 				/>
+				<Knapp form="kompakt" type="standard" onClick={onVelgAdresse} className="knapp">
+					<div className="knapp-header">Velg adresse</div>
+				</Knapp>
 			</div>
-			<Button style={{ backgroundColor: '#ccd9ff' }} onClick={onVelgAdresse}>
-				Velg adresse
-			</Button>
 		</div>
 	)
 }

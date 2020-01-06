@@ -30,9 +30,9 @@ export const GyldigAdresseVelger = ({ settBoadresse }) => {
 	}, [])
 
 	return (
-		<div style={{ backgroundColor: '#edf2ff', padding: '10px 20px', marginBottom: '20px' }}>
+		<div className="gyldigAdresse">
 			<SokAdresseForm onSearch={fetch} />
-			{state.loading && <Loading label="henter gyldig adresser" />}
+			{state.loading && <Loading label="henter gyldige adresser" />}
 			{!feilmelding && adresser && (
 				<VelgAdresseForm adresser={adresser} velgAdresse={settBoadresse} />
 			)}
