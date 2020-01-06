@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { requiredString } from '~/utils/YupValidations'
+import { requiredString, isPresent } from '~/utils/YupValidations'
 
 export const validation = {
 	tpsf: Yup.object({
@@ -22,7 +22,7 @@ export const validation = {
 		}),
 		postadresse: Yup.array().of(
 			Yup.object({
-				postLinje1: Yup.string().when('postLand', {
+				postLinje3: Yup.string().when('postLand', {
 					is: 'NOR',
 					then: requiredString
 				}),
