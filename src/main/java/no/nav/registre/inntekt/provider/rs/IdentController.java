@@ -2,13 +2,17 @@ package no.nav.registre.inntekt.provider.rs;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 import no.nav.registre.inntekt.consumer.rs.v2.InntektstubV2Consumer;
+import no.nav.registre.inntekt.domain.RsInntekt;
 import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
 @RestController
@@ -28,5 +32,12 @@ public class IdentController {
             @RequestParam List<String> identer
     ) {
         return inntektstubV2Consumer.hentEksisterendeInntekterPaaIdenter(identer);
+    }
+
+    @PostMapping("/inntekter")
+    public List<Inntektsinformasjon> opprettInntektPaaIdent(
+            @RequestBody Map<String, List<RsInntekt>> inntekter
+    ) {
+        return inntektstubV2Consumer.leggInntekterIInntektstub(inntekter);
     }
 }

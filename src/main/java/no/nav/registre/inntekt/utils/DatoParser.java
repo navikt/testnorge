@@ -42,6 +42,6 @@ public class DatoParser {
             throw new IllegalArgumentException("Ugyldig maaned " + maaned);
         }
 
-        return MAANEDER.indexOf(maaned);
+        return MAANEDER.indexOf(maaned) + 1;
     }
 }
