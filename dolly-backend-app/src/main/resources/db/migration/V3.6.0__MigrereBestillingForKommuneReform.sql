@@ -5312,3 +5312,5 @@ SET tpsf_kriterier =
             ELSE tpsf_kriterier
             END
 WHERE tpsf_kriterier LIKE '%"kommunenr"%';
+
+COMMIT;
