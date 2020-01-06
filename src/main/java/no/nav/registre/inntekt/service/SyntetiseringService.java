@@ -1,5 +1,7 @@
 package no.nav.registre.inntekt.service;
 
+import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnavnFraMaanedsnummer;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,14 +20,15 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
-import no.nav.registre.inntekt.consumer.rs.v1.InntektstubConsumer;
+import no.nav.registre.inntekt.consumer.rs.v2.InntektstubV2Consumer;
 import no.nav.registre.inntekt.domain.IdentMedData;
 import no.nav.registre.inntekt.domain.InntektSaveInHodejegerenRequest;
 import no.nav.registre.inntekt.domain.RsInntekt;
-import no.nav.registre.inntekt.domain.RsPerson;
+import no.nav.registre.inntekt.domain.RsInntektsinformasjonsType;
 import no.nav.registre.inntekt.provider.rs.requests.SyntetiseringsRequest;
 import no.nav.registre.inntekt.utils.DatoParser;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
 @Slf4j
 @Service
@@ -45,7 +48,7 @@ public class SyntetiseringService {
     private InntektSyntConsumer inntektSyntConsumer;
 
     @Autowired
-    private InntektstubConsumer inntektstubConsumer;
+    private InntektstubV2Consumer inntektstubV2Consumer;
 
     @Autowired
     private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
@@ -53,7 +56,7 @@ public class SyntetiseringService {
     public Map<String, List<RsInntekt>> startSyntetisering(SyntetiseringsRequest syntetiseringsRequest) {
 
         Set<String> identer = new HashSet<>(hentLevendeIdenterOverAlder(syntetiseringsRequest.getAvspillergruppeId()));
-        Set<String> identerIInntektstub = inntektstubConsumer.hentEksisterendeIdenter().stream().map(RsPerson::getFoedselsnummer).collect(Collectors.toSet());
+        Set<String> identerIInntektstub = new HashSet<>(inntektstubV2Consumer.hentEksisterendeIdenter());
 
         identerIInntektstub.retainAll(identer);
 
@@ -117,11 +120,23 @@ public class SyntetiseringService {
         List<List<String>> partisjonerteIdenterIInntektstub = paginerIdenter(new ArrayList<>(identerIInntektstub));
         for (int i = 0; i < partisjonerteIdenterIInntektstub.size(); i++) {
             SortedMap<String, List<RsInntekt>> identerMedInntekt = new TreeMap<>();
-            for (String ident : partisjonerteIdenterIInntektstub.get(i)) {
-                List<RsInntekt> inntekter = inntektstubConsumer.hentEksisterendeInntekterPaaIdent(ident);
+            Map<String, List<Inntektsinformasjon>> identerMedInntektsinformasjon = new HashMap<>();
+
+            inntektstubV2Consumer.hentEksisterendeInntekterPaaIdenter(partisjonerteIdenterIInntektstub.get(i))
+                    .forEach(inntektsinformasjon -> {
+                        String ident = inntektsinformasjon.getNorskIdent();
+                        if (identerMedInntektsinformasjon.containsKey(ident)) {
+                            identerMedInntektsinformasjon.get(ident).add(inntektsinformasjon);
+                        } else {
+                            identerMedInntektsinformasjon.put(ident, new ArrayList<>(Collections.singletonList(inntektsinformasjon)));
+                        }
+                    });
+
+            identerMedInntektsinformasjon.forEach((key, value) -> {
+                List<RsInntekt> inntekter = mapInntektsinformasjonslisteTilRsInntektListe(value);
                 inntekter = DatoParser.finnSenesteInntekter(inntekter);
-                identerMedInntekt.put(ident, inntekter);
-            }
+                identerMedInntekt.put(key, inntekter);
+            });
 
             SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(identerMedInntekt);
 
@@ -166,7 +181,14 @@ public class SyntetiseringService {
             return false;
         }
 
-        feiledeInntektsmeldinger.putAll(inntektstubConsumer.leggInntekterIInntektstub(inntektsmeldingerFraSynt));
+        inntektstubV2Consumer.leggInntekterIInntektstub(inntektsmeldingerFraSynt).stream().filter(inntekt -> inntekt.getFeilmelding() != null && !inntekt.getFeilmelding().isEmpty()).forEach(inntekt -> {
+            if (feiledeInntektsmeldinger.containsKey(inntekt.getNorskIdent())) {
+                feiledeInntektsmeldinger.get(inntekt.getNorskIdent()).addAll(mapInntektsinformasjonTilRsInntekter(inntekt));
+            } else {
+                feiledeInntektsmeldinger.put(inntekt.getNorskIdent(), mapInntektsinformasjonTilRsInntekter(inntekt));
+            }
+        });
+
         syntetiskeInntektsmeldinger.putAll(inntektsmeldingerFraSynt);
         return true;
     }
@@ -177,6 +199,25 @@ public class SyntetiseringService {
             log.info("Ingen syntetiserte meldinger å legge på inntektstub, returnerer");
         }
         return inntektsmeldinger;
+    }
+
+    private static List<RsInntekt> mapInntektsinformasjonslisteTilRsInntektListe(List<Inntektsinformasjon> inntektsinformasjonListe) {
+        List<RsInntekt> inntekter = new ArrayList<>();
+        inntektsinformasjonListe.stream().map(SyntetiseringService::mapInntektsinformasjonTilRsInntekter).forEach(inntekter::addAll);
+        return inntekter;
+    }
+
+    private static List<RsInntekt> mapInntektsinformasjonTilRsInntekter(Inntektsinformasjon inntektsinformasjon) {
+        return inntektsinformasjon.getInntektsliste().stream().map(inntekt -> RsInntekt.builder()
+                .beloep(inntekt.getBeloep())
+                .inntektstype(inntekt.getInntektstype().toString())
+                .aar(String.valueOf(inntektsinformasjon.getAarMaaned().getYear()))
+                .maaned(hentMaanedsnavnFraMaanedsnummer(inntektsinformasjon.getAarMaaned().getMonthValue()))
+                .inntektsinformasjonsType(RsInntektsinformasjonsType.INNTEKT)
+                .inngaarIGrunnlagForTrekk(inntekt.isInngaarIGrunnlagForTrekk())
+                .utloeserArbeidsgiveravgift(inntekt.isUtloeserArbeidsgiveravgift())
+                .virksomhet(inntektsinformasjon.getVirksomhet())
+                .build()).collect(Collectors.toList());
     }
 
     private static List<Map<String, List<RsInntekt>>> paginerInntekter(SortedMap<String, List<RsInntekt>> map) {
