@@ -125,7 +125,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			const postadresse = {
 				header: 'Postadresse',
 				items: [
-					obj('Land', postadr.postland),
+					obj('Land', postadr.postLand),
 					obj('Adresselinje 1', postadr.postLinje1),
 					obj('Adresselinje 2', postadr.postLinje2),
 					obj('Adresselinje 3', postadr.postLinje3)

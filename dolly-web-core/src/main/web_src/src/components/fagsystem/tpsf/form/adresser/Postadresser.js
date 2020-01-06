@@ -13,7 +13,12 @@ export const Postadresser = ({ formikBag }) => {
 	}
 	return (
 		<Kategori title="Postadresse" vis="tpsf.postadresse">
-			<FormikSelect name="tpsf.postadresse[0].postLand" label="Land" kodeverk="Landkoder" />
+			<FormikSelect
+				name="tpsf.postadresse[0].postLand"
+				label="Land"
+				kodeverk="Landkoder"
+				isClearable={false}
+			/>
 			{formikBag.values.tpsf.postadresse[0].postLand !== 'NOR' && (
 				<React.Fragment>
 					<FormikTextInput name="tpsf.postadresse[0].postLinje1" label="Postlinje 1" />
