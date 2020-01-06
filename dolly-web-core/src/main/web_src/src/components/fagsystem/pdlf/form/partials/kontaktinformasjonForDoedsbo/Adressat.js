@@ -59,6 +59,7 @@ export const Adressat = ({ formikBag }) => {
 				<FormikTextInput
 					name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.idnummer"
 					label="Fnr/dnr/bost"
+					type="number"
 				/>
 			)}
 			{adressatType === 'PERSON_UTENID' && (

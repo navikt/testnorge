@@ -18,7 +18,7 @@ export const KrrstubForm = ({ formikBag }) => (
 			iconType="krr"
 		>
 			<FormikTextInput name="krrstub.epost" label="E-post" />
-			<FormikTextInput name="krrstub.mobil" label="Mobilnummer" />
+			<FormikTextInput name="krrstub.mobil" label="Mobilnummer" type="number" />
 			<FormikSelect
 				name="krrstub.registrert"
 				label="Registrert i DKIF"
