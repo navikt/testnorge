@@ -47,7 +47,7 @@ public class RettighetArenaForvalterConsumer {
 
     public List<NyRettighetResponse> opprettRettighet(List<RettighetRequest> rettigheter) {
         ObjectMapper objectMapper = new ObjectMapper();
-        List<NyRettighetResponse> responses = new ArrayList<>();
+        List<NyRettighetResponse> responses = new ArrayList<>(rettigheter.size());
         for (var rettighet : rettigheter) {
             UriTemplate url;
             if (rettighet instanceof RettighetAapRequest) {

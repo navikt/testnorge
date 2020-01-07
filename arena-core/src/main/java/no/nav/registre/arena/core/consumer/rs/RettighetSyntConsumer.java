@@ -49,7 +49,7 @@ public class RettighetSyntConsumer {
     }
 
     public List<Vedtakshistorikk> syntetiserVedtakshistorikk(int antallIdenter) {
-        List<LocalDate> oppstartsdatoer = new ArrayList<>();
+        List<LocalDate> oppstartsdatoer = new ArrayList<>(antallIdenter);
 
         for (int i = 0; i < antallIdenter; i++) {
             oppstartsdatoer.add(LocalDate.now().minusMonths(rand.nextInt(120)));
@@ -85,7 +85,7 @@ public class RettighetSyntConsumer {
     }
 
     private RequestEntity createPostRequest(UriTemplate uri, int antallMeldinger) {
-        List<RettighetSyntRequest> requester = new ArrayList<>();
+        List<RettighetSyntRequest> requester = new ArrayList<>(antallMeldinger);
         for (int i = 0; i < antallMeldinger; i++) {
             LocalDate startDato = LocalDate.now().minusMonths(rand.nextInt(12));
             LocalDate sluttDato = startDato.plusDays(rand.nextInt(365));

@@ -134,8 +134,7 @@ public class SyntetiseringService {
     private void lagreArenaBrukereIHodejegeren(
             List<NyBruker> nyeBrukere
     ) {
-        List<IdentMedData> brukereSomSkalLagres = new ArrayList<>();
-
+        List<IdentMedData> brukereSomSkalLagres = new ArrayList<>(nyeBrukere.size());
         for (var bruker : nyeBrukere) {
             var data = Collections.singletonList(bruker);
             brukereSomSkalLagres.add(new IdentMedData(bruker.getPersonident(), data));
