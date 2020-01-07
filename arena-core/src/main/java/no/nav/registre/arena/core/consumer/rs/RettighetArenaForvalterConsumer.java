@@ -46,6 +46,7 @@ public class RettighetArenaForvalterConsumer {
     }
 
     public List<NyRettighetResponse> opprettRettighet(List<RettighetRequest> rettigheter) {
+        ObjectMapper objectMapper = new ObjectMapper();
         List<NyRettighetResponse> responses = new ArrayList<>();
         for (var rettighet : rettigheter) {
             UriTemplate url;
@@ -61,9 +62,9 @@ public class RettighetArenaForvalterConsumer {
                 throw new RuntimeException("Unkown URL");
             }
             try {
-                log.info("Legger til syntetisk rettighet: {}", new ObjectMapper().writeValueAsString(rettighet));
+                log.info("Legger til syntetisk rettighet: {}", objectMapper.writeValueAsString(rettighet));
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                log.error("Kunne ikke printe rettighet", e);
             }
             var postRequest = RequestEntity.post(url.expand())
                     .header("Nav-Call-Id", NAV_CALL_ID)

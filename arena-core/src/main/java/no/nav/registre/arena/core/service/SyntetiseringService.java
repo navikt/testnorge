@@ -66,12 +66,12 @@ public class SyntetiseringService {
         var arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
 
         if (arbeidsoekerIdenter.contains(ident)) {
-            log.info("Ident {} er allerede registrert som arbeidsøker.", ident);
+            log.info("Ident {} er allerede registrert som arbeidsøker.", ident.replaceAll("[\r\n]", ""));
             var response = new NyeBrukereResponse();
             response.setArbeidsoekerList(arenaForvalterConsumer.hentArbeidsoekere(ident, null, null));
             return response;
         } else if (!levendeIdenter.contains(ident)) {
-            log.info("Ident {} kunne ikke bli funnet av Hodejegeren, og kan derfor ikke opprettes i Arena.", ident);
+            log.info("Ident {} kunne ikke bli funnet av Hodejegeren, og kan derfor ikke opprettes i Arena.", ident.replaceAll("[\r\n]", ""));
             return new NyeBrukereResponse();
         }
 
@@ -108,7 +108,7 @@ public class SyntetiseringService {
         var identerIkkeIArena = new ArrayList<>(levendeIdenter);
         identerIkkeIArena.removeAll(eksisterendeArbeidsoekere);
 
-        if (identerIkkeIArena.size() <= 0) {
+        if (identerIkkeIArena.isEmpty()) {
             log.info("Alle identer som ble funnet i hodejegeren eksisterer allerede i Arena Forvalter.");
             return new ArrayList<>();
         }

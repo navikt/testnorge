@@ -109,7 +109,7 @@ public class RettighetService {
         var utvalgteIdenter = getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter);
         var syntetiserteRettigheter = rettighetSyntConsumer.syntetiserRettighetAap(utvalgteIdenter.size());
 
-        List<RettighetRequest> rettigheter = new ArrayList<>();
+        List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
             var rettighetRequest = new RettighetAapRequest(Collections.singletonList(syntetisertRettighet));
@@ -130,7 +130,7 @@ public class RettighetService {
         var utvalgteIdenter = getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter);
         var syntetiserteRettigheter = rettighetSyntConsumer.syntetiserRettighetUngUfoer(utvalgteIdenter.size());
 
-        List<RettighetRequest> rettigheter = new ArrayList<>();
+        List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
             var rettighetRequest = new RettighetUngUfoerRequest(Collections.singletonList(syntetisertRettighet));
@@ -174,7 +174,7 @@ public class RettighetService {
         var utvalgteIdenter = getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter);
         var syntetiserteRettigheter = rettighetSyntConsumer.syntetiserRettighetFritakMeldekort(utvalgteIdenter.size());
 
-        List<RettighetRequest> rettigheter = new ArrayList<>();
+        List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
             var rettighetRequest = new RettighetFritakMeldekortRequest(Collections.singletonList(syntetisertRettighet));
