@@ -1,7 +1,7 @@
 @import (reference) '~lessVars';
 
 .beskrivelse-visning {
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
 
 .beskrivelse-editor {
@@ -14,13 +14,14 @@
 .beskrivelse-felt {
 	position: relative;
 	display: flex;
+	word-break: break-all;
 	flex-direction: column;
 	min-height: 120px;
 	padding: 8px;
 	outline: 0;
 	border-radius: 4px;
 	border: 1px solid #c6c2bf;
-	background-color: #fafafa;
+	background-color: #f8f8f8;
 }
 
 .beskrivelse-editor-textarea {
@@ -38,11 +39,20 @@
 	position: absolute;
 	display: flex;
 	flex-direction: row;
-	right: 0.5rem;
-	bottom: 0.5rem;
+	right: 0rem;
+	bottom: 0.03rem;
 }
 
 .beskrivelse-button {
 	display: flex;
 	font-size: 16px;
+	border: 3px;
+	background-color: #f1f1f1;
+	padding: 7px 7px 7px 7px;
+	border-style: inset;
+	border-width: 1px;
+}
+
+.beskrivelse-button-container :hover {
+	background-color: #e6e4e4;
 }

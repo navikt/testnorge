@@ -22,6 +22,7 @@ export const BeskrivelseEditor = ({ beskrivelse, handleSubmit, turnOffEditing })
 				placeholder="Skriv inn en kommentar"
 				onChange={handleChange}
 			/>
+
 			<br />
 
 			<div className="beskrivelse-button-container">
@@ -30,6 +31,9 @@ export const BeskrivelseEditor = ({ beskrivelse, handleSubmit, turnOffEditing })
 				</Button>
 				<Button onClick={() => handleSubmit(value)} className="beskrivelse-button">
 					Legg til
+				</Button>
+				<Button onClick={() => setValue('')} className="beskrivelse-button">
+					Tømme
 				</Button>
 			</div>
 		</div>
