@@ -48,6 +48,7 @@ export default function GjenopprettBestilling(props) {
 										heading={'Velg miljø å gjenopprette i'}
 										arrayHelpers={arrayHelpers}
 										arrayValues={formikProps.values.environments}
+										bestillingsdata={bestilling.bestilling}
 									/>
 								)}
 							/>

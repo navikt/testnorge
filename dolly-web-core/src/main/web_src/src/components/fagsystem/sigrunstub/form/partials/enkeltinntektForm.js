@@ -21,7 +21,7 @@ export const EnkeltinntektForm = ({ name, tjeneste, formikBag, fjern }) => {
 						kodeverk={Formatters.uppercaseAndUnderscoreToCapitalized(tjeneste)}
 						size="grow"
 					/>
-					<FormikTextInput name={`${name}[${idx}].verdi`} label="Beløp" />
+					<FormikTextInput name={`${name}[${idx}].verdi`} label="Beløp" type="number" />
 					<FieldArrayRemoveButton onClick={() => fjern(idx, name, inntektArray)} />
 				</div>
 			))}

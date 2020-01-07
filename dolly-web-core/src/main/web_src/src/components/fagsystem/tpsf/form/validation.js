@@ -2,7 +2,8 @@ import * as Yup from 'yup'
 import _get from 'lodash/get'
 import _findIndex from 'lodash/findIndex'
 import { isBefore } from 'date-fns'
-import { requiredString, requiredNumber, requiredDate, ifPresent } from '~/utils/YupValidations'
+// import { requiredString, requiredNumber, requiredDate, ifPresent } from '~/utils/YupValidations'
+import { requiredString, ifPresent, ifKeyHasValue, messages } from '~/utils/YupValidations'
 
 const partnere = Yup.array().of(
 	Yup.object({
@@ -69,6 +70,41 @@ export const validation = {
 					value => value !== 'SPSF'
 				)
 			}),
+			boadresse: Yup.object({
+				gateadresse: ifKeyHasValue(
+					'$tpsf.boadresse.adressetype',
+					['GATE'],
+					ifKeyHasValue(
+						'$tpsf.adresseNrInfo',
+						[null],
+						Yup.string().required(
+							'Bruk adressevelgeren over for å hente gyldige adresser og velge et av forslagene'
+						)
+					)
+				),
+				gardsnr: Yup.string().when('adressetype', {
+					is: 'MATR',
+					then: Yup.string()
+						.required(messages.required)
+						.max(5, 'Gårdsnummeret må være under 99999')
+				}),
+				bruksnr: Yup.string().when('adressetype', {
+					is: 'MATR',
+					then: Yup.string()
+						.required(messages.required)
+						.max(4, 'Bruksnummeret må være under 9999')
+				}),
+				festnr: Yup.string().max(4, 'Festenummer må være under 9999'),
+				undernr: Yup.string().max(3, 'Undernummer må være under 999'),
+				postnr: Yup.string().when('adressetype', { is: 'MATR', then: requiredString }),
+				kommunenr: Yup.string().when('adressetype', { is: 'MATR', then: requiredString })
+			}),
+			adresseNrInfo: Yup.object({
+				nummer: Yup.string().when('nummertype', {
+					is: v => v,
+					then: requiredString
+				})
+			}).nullable(),
 			relasjoner: Yup.object({
 				partnere: ifPresent('$tpsf.relasjoner.partnere', partnere),
 				barn: ifPresent('$tpsf.relasjoner.barn', barn)

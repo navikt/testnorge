@@ -45,6 +45,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 				<FormikTextInput
 					name={`${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`}
 					label="Identifikasjonsnummer"
+					type="number"
 				/>
 			)}
 			{falskIdObj.identitetType === 'OMTRENTLIG' && (

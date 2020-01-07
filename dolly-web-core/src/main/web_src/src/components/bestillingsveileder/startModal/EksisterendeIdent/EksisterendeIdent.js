@@ -74,7 +74,7 @@ export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
 
 					{finnesUgyldige && (
 						<Alertstripe type="advarsel">
-							Det finnes ugyldige identer. Kun gyldige identer blir tatt med.
+							Det finnes personer markert som ikke gyldig. Kun gyldige personer blir tatt med.
 						</Alertstripe>
 					)}
 				</React.Fragment>

@@ -1,5 +1,7 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
+import { useLocation } from 'react-use'
+import _has from 'lodash/has'
 import {
 	Attributt,
 	AttributtKategori
@@ -8,6 +10,8 @@ import Formatters from '~/utils/DataFormatter'
 
 export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
+	const opprettFraEksisterende = _has(useLocation(), 'state.state.opprettFraIdenter')
+	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende
 
 	return (
 		<Panel
@@ -18,7 +22,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 			iconType={'personinformasjon'}
 		>
 			<AttributtKategori title="Alder">
-				<Attributt attr={sm.attrs.alder} />
+				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende} />
 				<Attributt attr={sm.attrs.doedsdato} />
 			</AttributtKategori>
 
@@ -30,7 +34,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 
 			<AttributtKategori title="Diverse">
 				<Attributt attr={sm.attrs.identHistorikk} />
-				<Attributt attr={sm.attrs.kjonn} />
+				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
 				<Attributt attr={sm.attrs.harMellomnavn} />
 				<Attributt attr={sm.attrs.sivilstand} />
 				<Attributt attr={sm.attrs.sprakKode} />

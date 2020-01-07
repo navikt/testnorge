@@ -13,14 +13,14 @@ export default class MiljoVelger extends Component {
 	}
 
 	render() {
-		const { formikBag, heading, arrayHelpers, environments } = this.props
+		const { bestillingsdata, heading, arrayHelpers, environments } = this.props
 		if (!environments) return null
 
 		const order = ['U', 'T', 'Q']
 		return (
 			<div className="miljo-velger">
 				<h2>{heading}</h2>
-				<MiljoeInfo formikBag={formikBag} />
+				<MiljoeInfo bestillingsdata={bestillingsdata} />
 				{order.map(type => this.renderEnvCategory(environments[type], type))}
 				{this.renderError(arrayHelpers)}
 			</div>
