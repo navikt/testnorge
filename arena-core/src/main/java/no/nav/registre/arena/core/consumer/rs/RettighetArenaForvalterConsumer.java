@@ -1,5 +1,8 @@
 package no.nav.registre.arena.core.consumer.rs;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
@@ -17,6 +20,7 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltnin
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.arena.domain.rettighet.NyRettighetResponse;
 
+@Slf4j
 @Component
 public class RettighetArenaForvalterConsumer {
 
@@ -55,6 +59,11 @@ public class RettighetArenaForvalterConsumer {
                 url = opprettFritakMeldekortRettighetUrl;
             } else {
                 throw new RuntimeException("Unkown URL");
+            }
+            try {
+                log.info("Legger til syntetisk rettighet: {}", new ObjectMapper().writeValueAsString(rettighet));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
             }
             var postRequest = RequestEntity.post(url.expand())
                     .header("Nav-Call-Id", NAV_CALL_ID)

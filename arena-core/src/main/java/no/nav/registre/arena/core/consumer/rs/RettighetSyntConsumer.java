@@ -36,10 +36,11 @@ public class RettighetSyntConsumer {
     public RettighetSyntConsumer(
             RestTemplateBuilder restTemplateBuilder,
             Random rand,
-            @Value("${synt-arena.rest-api.url}") String arenaAapServerUrl
+            @Value("${synt-arena.rest-api.url}") String arenaAapServerUrl,
+            @Value("${synt-arena-vedtakshistorikk.rest-api.url}") String arenaVedtakshistorikkServerUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
-        this.arenaVedtakshistorikkUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/vedtakshistorikk");
+        this.arenaVedtakshistorikkUrl = new UriTemplate(arenaVedtakshistorikkServerUrl + "/v1/arena/vedtakshistorikk");
         this.arenaAapUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap");
         this.arenaAapUngUfoerUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap/aaungufor");
         this.arenaAapTvungenForvaltningUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap/aatfor");
@@ -51,7 +52,7 @@ public class RettighetSyntConsumer {
         List<LocalDate> oppstartsdatoer = new ArrayList<>();
 
         for (int i = 0; i < antallIdenter; i++) {
-            oppstartsdatoer.add(LocalDate.now().minusMonths(rand.nextInt(36)));
+            oppstartsdatoer.add(LocalDate.now().minusMonths(rand.nextInt(120)));
         }
 
         var postRequest = RequestEntity.post(arenaVedtakshistorikkUrl.expand()).body(oppstartsdatoer);
