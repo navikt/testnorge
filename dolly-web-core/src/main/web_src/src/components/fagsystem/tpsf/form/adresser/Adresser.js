@@ -16,8 +16,8 @@ const initialBoType = formikBag => {
 	const adresseType = _get(formikBag.values, 'tpsf.boadresse.adressetype')
 	const nummertype = _get(formikBag.values, 'tpsf.adresseNrInfo.nummertype')
 
-	if (adresseType) return adresseType === 'GATE' ? 'gate' : 'matrikkel'
-	else if (nummertype) return nummertype === 'POSTNR' ? 'postnr' : 'kommunenr'
+	if (nummertype) return nummertype === 'POSTNR' ? 'postnr' : 'kommunenr'
+	else if (adresseType) return adresseType === 'GATE' ? 'gate' : 'matrikkel'
 	else return
 }
 
@@ -69,6 +69,7 @@ export const Adresser = ({ formikBag }) => {
 					festnr: '',
 					undernr: '',
 					postnr: '',
+					kommunenr: '',
 					flyttedato: formikBag.values.tpsf.boadresse.flyttedato
 				})
 				break
@@ -85,8 +86,16 @@ export const Adresser = ({ formikBag }) => {
 						name="botype"
 						legend="Hva slags adresse vil du opprette?"
 						radios={[
-							{ label: 'Postnummer ...', value: 'postnr', id: 'postnr' },
-							{ label: 'Kommunenummer ...', value: 'kommunenr', id: 'kommunenr' },
+							{
+								label: 'Tilfeldig adresse basert på postnummer ...',
+								value: 'postnr',
+								id: 'postnr'
+							},
+							{
+								label: 'Tilfeldig adresse basert på kommunenummer ...',
+								value: 'kommunenr',
+								id: 'kommunenr'
+							},
 							{ label: 'Gateadresse detaljert ...', value: 'gate', id: 'gate' },
 							{ label: 'Matrikkeladresse detaljert ...', value: 'matrikkel', id: 'matrikkel' }
 						]}

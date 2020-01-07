@@ -33,7 +33,7 @@ AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 		label: 'Har boadresse',
 		checked: has('tpsf.boadresse'),
 		add() {
-			setMulti(['tpsf.boadresse', null], ['tpsf.adresseNrInfo', null])
+			setMulti(['tpsf.boadresse', { flyttedato: null }], ['tpsf.adresseNrInfo', null])
 		},
 		remove() {
 			del(['tpsf.boadresse', 'tpsf.adresseNrInfo'])
