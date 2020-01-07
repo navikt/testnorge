@@ -1,4 +1,4 @@
-package no.nav.registre.arena.cloud.config;
+package no.nav.registre.arena.core.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

@@ -85,7 +85,7 @@
     </dependencies>
 
     <build>
-        <finalName>testnorge-arena-core</finalName>
+        <finalName>arena-app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

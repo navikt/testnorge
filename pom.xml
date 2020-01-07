@@ -19,7 +19,6 @@
         <module>arena-core</module>
         <module>arena-domain</module>
         <module>arena-local</module>
-        <module>arena-cloud</module>
     </modules>
 
     <properties>
