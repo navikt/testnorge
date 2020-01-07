@@ -12,6 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class Arbeidsoeker {
+
     private String personident;
     private String miljoe;
     private String status;

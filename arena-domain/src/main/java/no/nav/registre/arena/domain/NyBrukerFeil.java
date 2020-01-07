@@ -12,6 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NyBrukerFeil {
+
     String personident;
     String miljoe;
     NyBrukerFeilstatus nyBrukerFeilstatus;

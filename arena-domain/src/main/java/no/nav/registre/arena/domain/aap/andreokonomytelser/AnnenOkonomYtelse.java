@@ -1,22 +1,21 @@
-package no.nav.registre.arena.domain.aap.institusjonsopphold;
+package no.nav.registre.arena.domain.aap.andreokonomytelser;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
-public class Institusjonsopphold {
+public class AnnenOkonomYtelse {
 
     @JsonAlias({ "KODE", "kode" })
-    private InstKoder kode;
-
-    @JsonAlias({ "OVERORDNET", "overordnet" })
-    private InstOvKoder overordnet;
+    private OkonomKoder kode;
 
     @JsonAlias({ "VERDI", "verdi" })
     private String verdi;

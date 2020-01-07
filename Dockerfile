@@ -1,6 +1,6 @@
 FROM navikt/java:11
 LABEL maintainer="Team Registre"
 
-COPY "app.jar" app.jar
+ADD "arena-core/target/arena-app.jar" /app/app.jar
 
 EXPOSE 8080

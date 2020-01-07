@@ -5,11 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.registre.arena.domain.aap.Aap;
-import no.nav.registre.arena.domain.aap115.Aap115;
-
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -17,11 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NyBruker {
+
     private String personident;
     private String miljoe;
     private String kvalifiseringsgruppe;
     private UtenServicebehov utenServicebehov;
     private Boolean automatiskInnsendingAvMeldekort;
-    private List<Aap115> aap115;
-    private List<Aap> aap;
 }
