@@ -4,6 +4,7 @@ import {
 	Attributt,
 	AttributtKategori
 } from '~/components/bestillingsveileder/AttributtVelger/Attributt'
+import Formatters from '~/utils/DataFormatter'
 
 export const FamilierelasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
@@ -38,7 +39,8 @@ FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 					identtype: 'FNR',
 					kjonn: '',
 					sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
-					harFellesAdresse: true
+					harFellesAdresse: true,
+					alder: Formatters.randomIntInRange(18, 99)
 				}
 			])
 		},
