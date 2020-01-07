@@ -6,6 +6,7 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import Panel from '~/components/ui/panel/Panel'
 import { Boadresse } from './partials/boadresse/Boadresse'
+import { Postadresser } from './Postadresser'
 import { MatrikkelAdresse } from './partials/MatrikkelAdresse'
 import { AdresseNr } from './partials/AdresseNr'
 
@@ -110,9 +111,11 @@ export const Adresser = ({ formikBag }) => {
 					<FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
 				</Vis>
 
-				{/* <Vis attributt="tpsf.postadresse">
-					<span>postadresse komponent</span>
-				</Vis> */}
+				{
+					<Vis attributt="tpsf.postadresse">
+						<Postadresser formikBag={formikBag} />
+					</Vis>
+				}
 			</Panel>
 		</Vis>
 	)

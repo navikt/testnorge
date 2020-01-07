@@ -2,7 +2,6 @@ import * as Yup from 'yup'
 import _get from 'lodash/get'
 import _findIndex from 'lodash/findIndex'
 import { isBefore } from 'date-fns'
-// import { requiredString, requiredNumber, requiredDate, ifPresent } from '~/utils/YupValidations'
 import { requiredString, ifPresent, ifKeyHasValue, messages } from '~/utils/YupValidations'
 
 const partnere = Yup.array().of(
@@ -105,6 +104,15 @@ export const validation = {
 					then: requiredString
 				})
 			}).nullable(),
+			postadresse: Yup.array().of(
+				Yup.object({
+					postLinje3: Yup.string().when('postLand', {
+						is: 'NOR',
+						then: requiredString
+					}),
+					postLand: requiredString
+				})
+			),
 			relasjoner: Yup.object({
 				partnere: ifPresent('$tpsf.relasjoner.partnere', partnere),
 				barn: ifPresent('$tpsf.relasjoner.barn', barn)
