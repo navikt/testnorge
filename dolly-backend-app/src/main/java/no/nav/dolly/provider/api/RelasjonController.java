@@ -30,7 +30,7 @@ public class RelasjonController {
     @PathVariable("ident") String ident,
             @RequestBody RsDollyRelationRequest request) {
 
-        throw new DollyFunctionalException("Funksjoner er ikke implementert");
+        throw new DollyFunctionalException("Funksjonen er ikke implementert");
 //        Bestilling bestilling = bestillingService.saveBestilling(request);
 //
 //        dollyBestillingService.oppdaterPersonAsync(request, bestilling);
