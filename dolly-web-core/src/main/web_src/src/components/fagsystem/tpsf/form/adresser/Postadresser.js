@@ -10,6 +10,7 @@ export const Postadresser = ({ formikBag }) => {
 			selected.value + ' ' + selected.data
 		)
 	}
+
 	return (
 		<Kategori title="Postadresse" vis="tpsf.postadresse">
 			<FormikSelect
@@ -28,8 +29,9 @@ export const Postadresser = ({ formikBag }) => {
 
 			{formikBag.values.tpsf.postadresse[0].postLand === 'NOR' && (
 				<FormikSelect
-					name="formikBag.values.tpsf.postadresse[0].postLinje3"
+					name="tpsf.postadresse[0].postLinje3"
 					label={'Postnummer/sted'}
+					value={formikBag.values.tpsf.postadresse[0].postLinje3.substring(0, 4)}
 					kodeverk="Postnummer"
 					size="grow"
 					afterChange={handleAfterChange}
