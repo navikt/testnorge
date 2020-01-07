@@ -6,6 +6,7 @@ import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/Favor
 import EksporterExcel from '~/pages/gruppe/EksporterExcel/EksporterExcel'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { Header } from '~/components/ui/header/Header'
+import Formatters from '~/utils/DataFormatter'
 
 import './GruppeHeader.less'
 
@@ -19,7 +20,10 @@ export default function GruppeHeader({ gruppe, identArray, isDeletingGruppe, del
 				<div className="flexbox">
 					<Header.TitleValue title="Eier" value={gruppe.opprettetAvNavIdent} />
 					<Header.TitleValue title="Antall personer" value={identArray.length} />
-					<Header.TitleValue title="Sist endret" value={gruppe.datoEndret} />
+					<Header.TitleValue
+						title="Sist endret"
+						value={Formatters.formatStringDates(gruppe.datoEndret)}
+					/>
 					<Header.TitleValue
 						title="Antall i bruk"
 						value={identArray.map(p => p.ibruk).filter(Boolean).length}
