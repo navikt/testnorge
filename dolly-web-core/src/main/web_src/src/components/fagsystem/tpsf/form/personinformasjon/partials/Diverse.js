@@ -27,7 +27,7 @@ export const Diverse = ({ formikBag }) => (
 
 		<FormikDatepicker name="tpsf.egenAnsattDatoFom" label="Egenansatt fra" visHvisAvhuket />
 
-		<Diskresjonskoder formikBag={formikBag} />
+		<Diskresjonskoder basePath="tpsf" formikBag={formikBag} />
 
 		<Vis attributt="tpsf.erForsvunnet">
 			<FormikSelect name="tpsf.erForsvunnet" label="Er forsvunnet" options={Options('boolean')} />

@@ -40,7 +40,9 @@ FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 					kjonn: '',
 					sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
 					harFellesAdresse: true,
-					alder: Formatters.randomIntInRange(18, 99)
+					alder: Formatters.randomIntInRange(18, 99),
+					spesreg: '',
+					utenFastBopel: false
 				}
 			])
 		},
@@ -59,7 +61,9 @@ FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 					barnType: '',
 					partnerNr: null,
 					borHos: '',
-					erAdoptert: false
+					erAdoptert: false,
+					spesreg: '',
+					utenFastBopel: false
 				}
 			])
 		},
