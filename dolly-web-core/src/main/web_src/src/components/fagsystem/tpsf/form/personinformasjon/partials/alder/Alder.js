@@ -46,16 +46,12 @@ export const Alder = ({ basePath, formikBag }) => {
 		<Vis attributt={Object.values(paths)}>
 			<div className="alder-component">
 				<RadioPanelGruppe
-					name="alderType"
+					name={paths.alder}
 					legend="Legg til alder"
 					className="myCustomTest"
 					radios={[
-						{ label: 'Antall år ...', value: alderValg.alder, id: alderValg.alder },
-						{
-							label: 'Født før/etter ...',
-							value: alderValg.spesifikk,
-							id: alderValg.spesifikk
-						}
+						{ label: 'Antall år ...', value: alderValg.alder },
+						{ label: 'Født før/etter ...', value: alderValg.spesifikk }
 					]}
 					checked={alderType}
 					onChange={handleRadioChange}
