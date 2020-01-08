@@ -25,18 +25,24 @@ public class RsRelasjon extends RsTpsfBasisBestilling{
 
     @ApiModelProperty(
             position = 7,
+            value = "Velg alder på testperson. Personen vil beholde alder i minst tre, maksimum ni måneder"
+    )
+    private Integer alder;
+
+    @ApiModelProperty(
+            position = 8,
             value = "Født etter denne dato. Dafault velges voksne personer i alder 30-60, mens barn får alder 0-18"
     )
     private LocalDateTime foedtEtter;
 
     @ApiModelProperty(
-            position = 8,
+            position = 9,
             value = "Født før denne dato. Dafault velges voksne personer i alder 30-60, mens barn får alder 0-18"
     )
     private LocalDateTime foedtFoer;
 
     @ApiModelProperty(
-            position = 9,
+            position = 10,
             value = "Kjønn på testperson. Gyldige verdier: 'K', 'M' og 'U'. Ubestemt betyr at systemet velger for deg og generert person blir mann eller kvinne"
     )
     private String kjonn;

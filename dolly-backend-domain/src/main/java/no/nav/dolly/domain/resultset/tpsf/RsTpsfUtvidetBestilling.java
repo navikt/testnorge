@@ -26,16 +26,16 @@ public class RsTpsfUtvidetBestilling extends RsTpsfBasisMedSivilstandBestilling 
 
     @ApiModelProperty(
             position = 2,
+            value = "Velg alder på testperson. Personen vil beholde alder i minst tre, maksimum ni måneder"
+    )
+    private Integer alder;
+
+    @ApiModelProperty(
+            position = 3,
             value = "Født etter denne dato. Dafault velges voksne personer i alder 30-60, mens barn får alder 0-18"
     )
     private LocalDateTime foedtEtter;
 
-    @ApiModelProperty(
-            position = 3,
-            value = "Velg alder på testperson. Personen vil beholde alder i minst tre, maksimum ni måneder"
-    )
-    private Integer alder;
-  
     @ApiModelProperty(
             position = 4,
             value = "Født før denne dato. Dafault velges voksne personer i alder 30-60, mens barn får alder 0-18"
