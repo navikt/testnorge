@@ -69,14 +69,14 @@ export default class RedigerGruppe extends PureComponent {
 	}
 
 	onHandleSubmit = async (values, actions) => {
-		const { createGruppe, updateGruppe, gruppe } = this.props
+		const { createGruppe, updateGruppe, gruppe, error } = this.props
 
 		let groupValues = {
 			hensikt: values.hensikt,
 			navn: values.navn
 		}
 		this.erRedigering ? await updateGruppe(gruppe.id, groupValues) : await createGruppe(groupValues)
-		return this.onCancel()
+		return !error && this.onCancel()
 	}
 
 	onCancel() {
