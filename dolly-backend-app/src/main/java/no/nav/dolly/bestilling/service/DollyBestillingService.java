@@ -37,6 +37,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyRelationRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
@@ -147,6 +148,26 @@ public class DollyBestillingService {
 
         } catch (Exception e) {
             log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), request.getIdent(), e.getMessage(), e);
+            bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
+
+        } finally {
+            oppdaterProgressFerdig(bestilling);
+            clearCache();
+        }
+    }
+
+    @Async
+    public void relasjonPersonAsync(String ident, RsDollyRelationRequest request, Bestilling bestilling) {
+
+        try {
+            BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident);
+            Person person = tpsfService.relasjonPerson(ident, request);
+            sendIdenterTilTPS(request.getEnvironments(), singletonList(person.getIdent()), null, progress);
+
+            oppdaterProgress(bestilling, progress);
+
+        } catch (Exception e) {
+            log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), ident, e.getMessage(), e);
             bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
 
         } finally {

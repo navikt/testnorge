@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
 import no.nav.dolly.bestilling.udistub.RsAliasRequest;
 import no.nav.dolly.bestilling.udistub.RsAliasResponse;
+import no.nav.dolly.domain.resultset.RsDollyRelationRequest;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.EnvironmentsResponse;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -52,6 +53,7 @@ public class TpsfService {
     private static final String TPSF_CREATE_ALIASES = TPSF_BASE_URL + "/aliaser";
     private static final String TPSF_DELETE_PERSONER_URL = TPSF_BASE_URL + "/personer?identer=";
     private static final String TPSF_GET_ENVIRONMENTS = "/api/v1/environments";
+    private static final String TPSF_PERSON_RELASJON = TPSF_BASE_URL + "relasjonperson?ident=";
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -111,6 +113,16 @@ public class TpsfService {
 
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_UPDATE_PERSON_URL, ident)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, getUserIdToken())
+                .body(tpsfBestilling), Person.class).getBody();
+    }
+
+    @Timed(name = "providers", tags = { "operation", "motTPSF" })
+    public Person relasjonPerson(String ident, RsDollyRelationRequest tpsfBestilling) {
+
+        return restTemplate.exchange(RequestEntity.post(
+                URI.create(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_PERSON_RELASJON, ident)))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, getUserIdToken())
                 .body(tpsfBestilling), Person.class).getBody();
