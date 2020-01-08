@@ -3,7 +3,9 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
 import { Diskresjonskoder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/Diskresjonskoder'
+import Formatters from '~/utils/DataFormatter'
 
 const initialValues = {
 	identtype: 'FNR',
@@ -12,6 +14,7 @@ const initialValues = {
 	partnerNr: null,
 	borHos: '',
 	erAdoptert: false,
+	alder: Formatters.randomIntInRange(0, 25),
 	spesreg: '',
 	utenFastBopel: false
 }
@@ -69,6 +72,7 @@ export const Barn = ({ formikBag }) => {
 						isClearable={false}
 					/>
 					<FormikCheckbox name={`${path}.erAdoptert`} label="Er adoptert" />
+					<Alder basePath={path} formikBag={formikBag} />
 					<Diskresjonskoder basePath={path} formikBag={formikBag} />
 				</React.Fragment>
 			)}
