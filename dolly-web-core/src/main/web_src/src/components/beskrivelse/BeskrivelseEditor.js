@@ -26,14 +26,14 @@ export const BeskrivelseEditor = ({ beskrivelse, handleSubmit, turnOffEditing })
 			<br />
 
 			<div className="beskrivelse-button-container">
+				<Button onClick={() => setValue('')} className="beskrivelse-button">
+					Tømme
+				</Button>
 				<Button onClick={turnOffEditing} className="beskrivelse-button">
 					Avbryt
 				</Button>
 				<Button onClick={() => handleSubmit(value)} className="beskrivelse-button">
 					Legg til
-				</Button>
-				<Button onClick={() => setValue('')} className="beskrivelse-button">
-					Tømme
 				</Button>
 			</div>
 		</div>
