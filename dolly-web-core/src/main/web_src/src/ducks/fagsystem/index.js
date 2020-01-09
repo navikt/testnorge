@@ -263,7 +263,7 @@ export const selectPersonListe = state => {
 			ident,
 			identtype: tpsfIdent.identtype,
 			navn: `${tpsfIdent.fornavn} ${tpsfIdent.mellomnavn || ''} ${tpsfIdent.etternavn}`,
-			kjonn: Formatters.kjonnToString(tpsfIdent.kjonn),
+			kjonn: Formatters.kjonn(tpsfIdent.kjonn, tpsfIdent.alder),
 			alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
 			status: hentPersonStatus(ident.ident, state.bestillingStatuser.byId[ident.bestillingId[0]])
 		}

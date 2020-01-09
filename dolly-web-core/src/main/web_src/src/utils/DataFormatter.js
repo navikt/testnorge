@@ -40,17 +40,17 @@ Formatters.formatStringDates = date => {
 	return `${dateArray[2]}.${dateArray[1]}.${dateArray[0]}`
 }
 
-Formatters.kjonnToString = (kjonn = '') => {
+Formatters.kjonn = (kjonn, alder) => {
+	return Formatters.kjonnToString(kjonn, alder < 18)
+}
+
+Formatters.kjonnToString = (kjonn = '', barn = false) => {
 	if (!kjonn) return kjonn
 	const _kjonn = kjonn.toLowerCase()
 	if (!['m', 'k'].includes(_kjonn)) return 'UDEFINERT'
-	return _kjonn === 'm' ? 'MANN' : 'KVINNE'
-}
 
-Formatters.kjonnToStringBarn = (kjonn = '') => {
-	const _kjonn = kjonn.toLowerCase()
-	if (!['m', 'k'].includes(_kjonn)) return 'UDEFINERT'
-	return _kjonn === 'm' ? 'GUTT' : 'JENTE'
+	if (barn) return _kjonn === 'm' ? 'GUTT' : 'JENTE'
+	return _kjonn === 'm' ? 'MANN' : 'KVINNE'
 }
 
 Formatters.adressetypeToString = adressetype => {
