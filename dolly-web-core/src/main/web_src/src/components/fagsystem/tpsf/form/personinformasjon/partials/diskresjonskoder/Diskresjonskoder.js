@@ -5,6 +5,8 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
+import './diskresjonskoder.less'
+
 export const Diskresjonskoder = ({ basePath, formikBag }) => {
 	const [harUfb, setHarUfb] = useState(_get(formikBag.values, `${basePath}.utenFastBopel`))
 
@@ -30,7 +32,7 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 
 	return (
 		<Vis attributt={Object.values(paths)}>
-			<div>
+			<div className="spesreg-component">
 				<FormikSelect
 					name={paths.spesreg}
 					label="Diskresjonskode"

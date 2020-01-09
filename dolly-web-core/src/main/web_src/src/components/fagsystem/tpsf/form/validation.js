@@ -8,9 +8,28 @@ const partnere = Yup.array().of(
 	Yup.object({
 		identtype: Yup.string(),
 		kjonn: Yup.string().nullable(),
+		alder: Yup.number()
+			.min(1, 'Alder må være høyere enn 0')
+			.max(99, 'Alder må være lavere enn 100'),
+		foedtEtter: Yup.date().nullable(),
+		foedtFoer: Yup.date().nullable(),
+		spesreg: Yup.string().when('utenFastBopel', {
+			is: true,
+			then: Yup.string().test(
+				'is-not-kode6',
+				'Kan ikke være "Kode 6" når "Uten fast bopel" er valgt.',
+				value => value !== 'SPSF'
+			)
+		}),
+		utenFastBopel: Yup.boolean(),
+		boadresse: Yup.object({
+			kommunenr: Yup.string().nullable()
+		}),
 		sivilstander: Yup.array().of(
 			Yup.object({
-				sivilstand: requiredString,
+				sivilstand: Yup.string()
+					.test('is-not-ugift', 'Ugyldig sivilstand for partner', value => value !== 'UGIF')
+					.required('Feltet er påkrevd'),
 				sivilstandRegdato: Yup.string()
 					.test(
 						'is-before-last',
@@ -40,7 +59,22 @@ const barn = Yup.array().of(
 		barnType: requiredString,
 		partnerNr: Yup.number().nullable(),
 		borHos: requiredString,
-		erAdoptert: Yup.boolean()
+		erAdoptert: Yup.boolean(),
+		alder: Yup.number()
+			.min(1, 'Alder må være høyere enn 0')
+			.max(99, 'Alder må være lavere enn 100'),
+		spesreg: Yup.string().when('utenFastBopel', {
+			is: true,
+			then: Yup.string().test(
+				'is-not-kode6',
+				'Kan ikke være "Kode 6" når "Uten fast bopel" er valgt.',
+				value => value !== 'SPSF'
+			)
+		}),
+		utenFastBopel: Yup.boolean(),
+		boadresse: Yup.object({
+			kommunenr: Yup.string().nullable()
+		})
 	})
 )
 

@@ -5,7 +5,7 @@ import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
-import { Diskresjonskoder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/Diskresjonskoder'
+import { Diskresjonskoder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/diskresjonskoder/Diskresjonskoder'
 import Formatters from '~/utils/DataFormatter'
 
 const initialValues = {
@@ -42,7 +42,7 @@ export const Partnere = ({ formikBag }) => (
 						<React.Fragment key={idx}>
 							<FormikSelect
 								name={`${path}.sivilstand`}
-								label="Sivilstand"
+								label="Forhold til partner (sivilstand)"
 								kodeverk="Sivilstander"
 								isClearable={false}
 							/>

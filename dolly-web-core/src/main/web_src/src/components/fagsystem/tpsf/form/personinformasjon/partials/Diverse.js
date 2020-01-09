@@ -3,7 +3,7 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { Diskresjonskoder } from './Diskresjonskoder'
+import { Diskresjonskoder } from './diskresjonskoder/Diskresjonskoder'
 
 export const Diverse = ({ formikBag }) => (
 	<React.Fragment>
