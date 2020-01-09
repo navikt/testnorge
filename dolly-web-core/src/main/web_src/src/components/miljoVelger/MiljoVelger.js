@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { FieldArray, ErrorMessage } from 'formik'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { MiljoeInfo } from './MiljoeInfo'
+import { MiljoeInfo } from './MiljoeInfo/MiljoeInfo'
 
 import './MiljoVelger.less'
 
