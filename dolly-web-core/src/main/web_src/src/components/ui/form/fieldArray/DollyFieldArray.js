@@ -23,7 +23,6 @@ export const FieldArrayRemoveButton = ({ onClick }) => (
 
 export const DollyFaBlokk = ({ title, idx, arrayHelpers, hjelpetekst, children }) => {
 	const handleRemove = () => arrayHelpers.remove(idx)
-	if (title === 'Partner' && idx === 0) title = title.concat(' (nåværende)')
 	return (
 		<div className="dfa-blokk">
 			<div className="dfa-blokk-header">

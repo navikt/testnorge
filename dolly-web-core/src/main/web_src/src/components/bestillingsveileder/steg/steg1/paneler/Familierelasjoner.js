@@ -47,7 +47,8 @@ FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 			])
 		},
 		remove() {
-			del('tpsf.relasjoner.partnere'), !has('tpsf.relasjoner.barn') && del('tpsf.relasjoner')
+			del('tpsf.relasjoner.partnere')
+			!has('tpsf.relasjoner.barn') && del('tpsf.relasjoner')
 		}
 	},
 	barn: {
@@ -69,7 +70,8 @@ FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 			])
 		},
 		remove() {
-			del('tpsf.relasjoner.barn'), !has('tpsf.relasjoner.partnere') && del('tpsf.relasjoner')
+			del('tpsf.relasjoner.barn')
+			!has('tpsf.relasjoner.partnere') && del('tpsf.relasjoner')
 		}
 	}
 })
