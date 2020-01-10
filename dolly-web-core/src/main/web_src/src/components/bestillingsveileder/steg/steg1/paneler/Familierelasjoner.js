@@ -4,6 +4,7 @@ import {
 	Attributt,
 	AttributtKategori
 } from '~/components/bestillingsveileder/AttributtVelger/Attributt'
+import Formatters from '~/utils/DataFormatter'
 
 export const FamilierelasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
@@ -11,9 +12,10 @@ export const FamilierelasjonPanel = ({ stateModifier }) => {
 	return (
 		<Panel
 			heading={FamilierelasjonPanel.heading}
+			startOpen
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="relasjoner"
+			iconType={'relasjoner'}
 		>
 			<AttributtKategori title="Partner">
 				<Attributt attr={sm.attrs.partner} />
@@ -30,22 +32,46 @@ FamilierelasjonPanel.heading = 'Familierelasjoner'
 FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 	partner: {
 		label: 'Har partner',
-		checked: has('tpsf.partner'),
+		checked: has('tpsf.relasjoner.partnere'),
 		add() {
-			set('tpsf.partner', {})
+			set('tpsf.relasjoner.partnere', [
+				{
+					identtype: 'FNR',
+					kjonn: '',
+					sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
+					harFellesAdresse: true,
+					alder: Formatters.randomIntInRange(18, 99),
+					spesreg: '',
+					utenFastBopel: false
+				}
+			])
 		},
 		remove() {
-			del('tpsf.partner')
+			del('tpsf.relasjoner.partnere')
+			!has('tpsf.relasjoner.barn') && del('tpsf.relasjoner')
 		}
 	},
 	barn: {
 		label: 'Har barn',
-		checked: has('tpsf.barn'),
+		checked: has('tpsf.relasjoner.barn'),
 		add() {
-			set('tpsf.barn', {})
+			set('tpsf.relasjoner.barn', [
+				{
+					identtype: 'FNR',
+					kjonn: '',
+					barnType: '',
+					partnerNr: null,
+					borHos: '',
+					erAdoptert: false,
+					alder: Formatters.randomIntInRange(1, 18),
+					spesreg: '',
+					utenFastBopel: false
+				}
+			])
 		},
 		remove() {
-			del('tpsf.barn')
+			del('tpsf.relasjoner.barn')
+			!has('tpsf.relasjoner.partnere') && del('tpsf.relasjoner')
 		}
 	}
 })

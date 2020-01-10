@@ -3,7 +3,7 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { Diskresjonskoder } from './Diskresjonskoder'
+import { Diskresjonskoder } from './diskresjonskoder/Diskresjonskoder'
 
 export const Diverse = ({ formikBag }) => (
 	<React.Fragment>
@@ -27,7 +27,7 @@ export const Diverse = ({ formikBag }) => (
 
 		<FormikDatepicker name="tpsf.egenAnsattDatoFom" label="Egenansatt fra" visHvisAvhuket />
 
-		<Diskresjonskoder formikBag={formikBag} />
+		<Diskresjonskoder basePath="tpsf" formikBag={formikBag} />
 
 		<Vis attributt="tpsf.erForsvunnet">
 			<FormikSelect name="tpsf.erForsvunnet" label="Er forsvunnet" options={Options('boolean')} />
