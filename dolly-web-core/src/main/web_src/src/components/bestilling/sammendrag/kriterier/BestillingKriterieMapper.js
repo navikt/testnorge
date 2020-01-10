@@ -413,7 +413,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		if (pdlforvalterKriterier.falskIdentitet) {
 			const falskIdData = pdlforvalterKriterier.falskIdentitet.rettIdentitet
 
-			if (falskIdData.rettIdentitetErUkjent === true) {
+			if (falskIdData.identitetType === 'UKJENT') {
 				const falskId = {
 					header: 'Falsk identitet',
 					items: [
@@ -424,7 +424,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					]
 				}
 				data.push(falskId)
-			} else if (falskIdData.rettIdentitetVedIdentifikasjonsnummer) {
+			} else if (falskIdData.identitetType === 'ENTYDIG') {
 				const falskId = {
 					header: 'Falsk identitet',
 					items: [
@@ -435,7 +435,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					]
 				}
 				data.push(falskId)
-			} else {
+			} else if (falskIdData.identitetType === 'OMTRENTLIG') {
 				const falskId = {
 					header: 'Falsk identitet',
 					items: [
