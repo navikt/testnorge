@@ -5,9 +5,28 @@ const selectOptions = {
 		{ value: 'BOST', label: 'BOST' }
 	],
 	// kjonn: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
-	kjonnBarn: [{ value: 'K', label: 'Jente' }, { value: 'M', label: 'Gutt' }],
+	kjonnBarn: [
+		{ value: 'K', label: 'Jente' },
+		{ value: 'M', label: 'Gutt' },
+		{ value: 'U', label: 'Ukjent' }
+	],
 
-	boolean: [{ value: true, label: 'Ja' }, { value: false, label: 'Nei' }],
+	barnType: [
+		{ value: 'MITT', label: 'Hovedperson' },
+		{ value: 'DITT', label: 'Partner' },
+		{ value: 'FELLES', label: 'Begge' }
+	],
+
+	barnBorHos: [
+		{ value: 'MEG', label: 'Hovedperson' },
+		{ value: 'DEG', label: 'Partner' },
+		{ value: 'OSS', label: 'Begge' }
+	],
+
+	boolean: [
+		{ value: true, label: 'Ja' },
+		{ value: false, label: 'Nei' }
+	],
 	// stringBoolean: [{ value: 'true', label: 'Ja' }, { value: 'false', label: 'Nei' }],
 	adresseNrType: [
 		{ value: 'POSTNR', label: 'postnummer' },
@@ -52,7 +71,10 @@ const selectOptions = {
 		{ value: 'PERSON_UTENID', label: 'Kontaktperson uten id' }
 	],
 
-	skifteform: [{ value: 'OFFENTLIG', label: 'Offentlig' }, { value: 'ANNET', label: 'Annet' }],
+	skifteform: [
+		{ value: 'OFFENTLIG', label: 'Offentlig' },
+		{ value: 'ANNET', label: 'Annet' }
+	],
 
 	// PDLF - falsk identitet
 	identitetType: [
@@ -181,11 +203,17 @@ const selectOptions = {
 		{ value: 'UAVKLART', label: 'Uavklart' }
 	],
 
-	nyIdent: [{ value: false, label: 'Navn' }, { value: true, label: 'ID-nummer' }],
+	nyIdent: [
+		{ value: false, label: 'Navn' },
+		{ value: true, label: 'ID-nummer' }
+	],
 
 	// nyIdent: [{ value: 'navn', label: 'Navn' }, { value: 'idnummer', label: 'ID-nummer' }],
 
-	identtypeUtenBost: [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }]
+	identtypeUtenBost: [
+		{ value: 'FNR', label: 'FNR' },
+		{ value: 'DNR', label: 'DNR' }
+	]
 }
 
 export const SelectOptionsManager = attributeId => selectOptions[attributeId]

@@ -4,6 +4,7 @@ import { validation } from './validation'
 import { Personinformasjon } from './personinformasjon/Personinformasjon'
 import { Adresser } from './adresser/Adresser'
 import { Identhistorikk } from './Identhistorikk'
+import { Familierelasjoner } from './familierelasjoner/Familierelasjoner'
 
 export const TpsfForm = ({ formikBag }) => {
 	return (
@@ -11,6 +12,7 @@ export const TpsfForm = ({ formikBag }) => {
 			<Personinformasjon formikBag={formikBag} />
 			<Adresser formikBag={formikBag} />
 			<Identhistorikk formikBag={formikBag} />
+			<Familierelasjoner formikBag={formikBag} />
 		</React.Fragment>
 	)
 }
