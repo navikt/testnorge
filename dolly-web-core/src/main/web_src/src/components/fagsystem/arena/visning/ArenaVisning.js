@@ -16,11 +16,14 @@ export const ArenaVisning = ({ data, bestData, loading }) => {
 		<div>
 			<SubOverskrift label="Arena" />
 			<div className="person-visning_content">
-				<TitleValue title="Brukertype" value={Formatters.booleanToServicebehov(brukertype)} />
+				<TitleValue
+					title="Brukertype"
+					value={brukertype ? 'Med servicebehov' : 'Uten servicebehov'}
+				/>
 				{kvalifiseringsgruppe && (
 					<TitleValue
 						title="Servicebehov"
-						value={Formatters.servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe)}
+						value={servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe)}
 					/>
 				)}
 				{inaktiveringDato && (
@@ -34,4 +37,20 @@ export const ArenaVisning = ({ data, bestData, loading }) => {
 			</div>
 		</div>
 	)
+}
+
+function servicebehovKodeTilBeskrivelse(value) {
+	if (!value) return null
+	switch (value) {
+		case 'IKVAL':
+			return 'IKVAL - Standardinnsats'
+		case 'BFORM':
+			return 'BFORM - Situasjonsbestemt innsats'
+		case 'BATT':
+			return 'BATT - Spesielt tilpasset innsats'
+		case 'VARIG':
+			return 'VARIG - Varig tilpasset innsats'
+		default:
+			return value
+	}
 }

@@ -20,7 +20,7 @@ const attrPaths = [
 
 export const UdistubForm = ({ formikBag }) => (
 	<Vis attributt={attrPaths}>
-		<Panel heading="UDI" hasErrors={panelError(formikBag)} iconType="udi">
+		<Panel heading="UDI" hasErrors={panelError(formikBag, attrPaths)} iconType="udi">
 			<Kategori title="Gjeldende oppholdsstatus" vis="udistub.oppholdStatus">
 				<Oppholdsstatus formikBag={formikBag} />
 			</Kategori>

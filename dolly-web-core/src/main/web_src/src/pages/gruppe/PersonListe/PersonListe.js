@@ -37,11 +37,6 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			unique: true
 		},
 		{
-			text: 'Type',
-			width: '15',
-			dataField: 'identtype'
-		},
-		{
 			text: 'Navn',
 			width: '30',
 			dataField: 'navn'

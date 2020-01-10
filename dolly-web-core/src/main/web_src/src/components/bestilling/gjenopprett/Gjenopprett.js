@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react'
 import * as yup from 'yup'
-import { Formik, FieldArray } from 'formik'
+import { Formik } from 'formik'
 import Knapp from 'nav-frontend-knapper'
 import DollyModal from '~/components/ui/modal/DollyModal'
-import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
+import { MiljoVelger } from '~/components/miljoVelger/MiljoVelger'
 import Formatters from '~/utils/DataFormatter'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
@@ -41,16 +41,11 @@ export default function GjenopprettBestilling(props) {
 				render={formikProps => {
 					return (
 						<Fragment>
-							<FieldArray
-								name="environments"
-								render={arrayHelpers => (
-									<MiljoVelgerConnector
-										heading={'Velg miljø å gjenopprette i'}
-										arrayHelpers={arrayHelpers}
-										arrayValues={formikProps.values.environments}
-									/>
-								)}
+							<MiljoVelger
+								bestillingsdata={bestilling.bestilling}
+								heading="Velg miljø å gjenopprette i"
 							/>
+
 							<div className="dollymodal_buttons">
 								<Knapp autoFocus type="standard" onClick={closeModal}>
 									Avbryt

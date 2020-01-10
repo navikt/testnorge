@@ -33,7 +33,7 @@ AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 		label: 'Har boadresse',
 		checked: has('tpsf.boadresse'),
 		add() {
-			setMulti(['tpsf.boadresse', null], ['tpsf.adresseNrInfo', null])
+			setMulti(['tpsf.boadresse', { flyttedato: null }], ['tpsf.adresseNrInfo', null])
 		},
 		remove() {
 			del(['tpsf.boadresse', 'tpsf.adresseNrInfo'])
@@ -42,7 +42,15 @@ AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 	postadresse: {
 		label: 'Har postadresse',
 		checked: has('tpsf.postadresse'),
-		add: () => set('tpsf.postadresse', {}),
+		add: () =>
+			set('tpsf.postadresse', [
+				{
+					postLand: 'NOR',
+					postLinje1: '',
+					postLinje2: '',
+					postLinje3: ''
+				}
+			]),
 		remove: () => del('tpsf.postadresse')
 	}
 })

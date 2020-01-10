@@ -5,7 +5,7 @@ import Loading from '~/components/ui/loading/Loading'
 import Formatters from '~/utils/DataFormatter'
 import { Personnavn } from './Personnavn'
 
-export const DoedsboKontaktinfo = ({ data, loading }) => {
+export const KontaktinformasjonForDoedsbo = ({ data, loading }) => {
 	if (loading) return <Loading label="laster PDL-data" />
 	if (!data || data.length === 0) return false
 

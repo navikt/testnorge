@@ -10,6 +10,8 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { MedServicebehov } from './partials/MedServicebehov'
 
+const arenaAttributt = 'arenaforvalter'
+
 export const ArenaForm = ({ formikBag }) => {
 	const servicebehovAktiv =
 		_get(formikBag, 'values.arenaforvalter.arenaBrukertype') === 'MED_SERVICEBEHOV'
@@ -28,8 +30,8 @@ export const ArenaForm = ({ formikBag }) => {
 	}
 
 	return (
-		<Vis attributt="arenaforvalter">
-			<Panel heading="Arena" hasErrors={panelError(formikBag)} iconType="arena">
+		<Vis attributt={arenaAttributt}>
+			<Panel heading="Arena" hasErrors={panelError(formikBag, arenaAttributt)} iconType="arena">
 				<FormikSelect
 					name="arenaforvalter.arenaBrukertype"
 					label="Brukertype"

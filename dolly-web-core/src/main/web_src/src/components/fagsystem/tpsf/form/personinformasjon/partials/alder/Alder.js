@@ -37,8 +37,8 @@ export const Alder = ({ basePath, formikBag }) => {
 		if (value === alderValg.alder) {
 			formikBag.setFieldValue(paths.alder, Formatters.randomIntInRange(1, 99))
 		} else {
-			formikBag.setFieldValue(paths.foedtEtter, subYears(new Date(), 80))
-			formikBag.setFieldValue(paths.foedtFoer, new Date())
+			formikBag.setFieldValue(paths.foedtEtter, subYears(new Date(), 60))
+			formikBag.setFieldValue(paths.foedtFoer, subYears(new Date(), 30))
 		}
 	}
 
@@ -46,12 +46,12 @@ export const Alder = ({ basePath, formikBag }) => {
 		<Vis attributt={Object.values(paths)}>
 			<div className="alder-component">
 				<RadioPanelGruppe
-					name="alderType"
+					name={paths.alder}
 					legend="Legg til alder"
 					className="myCustomTest"
 					radios={[
-						{ label: 'Antall år ...', value: alderValg.alder, id: alderValg.alder },
-						{ label: 'Spesifikk alder ...', value: alderValg.spesifikk, id: alderValg.spesifikk }
+						{ label: 'Antall år ...', value: alderValg.alder },
+						{ label: 'Født før/etter ...', value: alderValg.spesifikk }
 					]}
 					checked={alderType}
 					onChange={handleRadioChange}

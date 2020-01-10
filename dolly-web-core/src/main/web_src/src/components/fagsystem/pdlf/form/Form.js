@@ -9,12 +9,20 @@ import { FalskIdentitet } from './partials/falskIdentitet/FalskIdentitet'
 import { UtenlandsId } from './partials/utenlandsId/UtenlandsId'
 import { KontaktinformasjonForDoedsbo } from './partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
 
+const identifikasjonAttributt = [
+	'pdlforvalter.falskIdentitet',
+	'pdlforvalter.utenlandskIdentifikasjonsnummer'
+]
+const doedsboAttributt = 'pdlforvalter.kontaktinformasjonForDoedsbo'
+
 export const PdlfForm = ({ formikBag }) => (
 	<React.Fragment>
-		<Vis
-			attributt={['pdlforvalter.falskIdentitet', 'pdlforvalter.utenlandskIdentifikasjonsnummer']}
-		>
-			<Panel heading="Identifikasjon" hasErrors={panelError(formikBag)} iconType="identifikasjon">
+		<Vis attributt={identifikasjonAttributt}>
+			<Panel
+				heading="Identifikasjon"
+				hasErrors={panelError(formikBag, identifikasjonAttributt)}
+				iconType="identifikasjon"
+			>
 				<Kategori title="Falsk identitet" vis="pdlforvalter.falskIdentitet">
 					<FalskIdentitet formikBag={formikBag} />
 				</Kategori>
@@ -28,10 +36,10 @@ export const PdlfForm = ({ formikBag }) => (
 			</Panel>
 		</Vis>
 
-		<Vis attributt="pdlforvalter.kontaktinformasjonForDoedsbo">
+		<Vis attributt={doedsboAttributt}>
 			<Panel
 				heading="Kontaktinformasjon for dødsbo"
-				hasErrors={panelError(formikBag)}
+				hasErrors={panelError(formikBag, doedsboAttributt)}
 				iconType="doedsbo"
 			>
 				<KontaktinformasjonForDoedsbo formikBag={formikBag} />

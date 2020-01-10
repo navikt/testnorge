@@ -15,7 +15,7 @@ export const Personinfo = ({ data, visTittel = true }) => {
 
 				<TitleValue title="Etternavn" value={data.etternavn} />
 
-				<TitleValue title="Kjønn" value={Formatters.kjonnToString(data.kjonn)} />
+				<TitleValue title="Kjønn" value={Formatters.kjonn(data.kjonn, data.alder)} />
 				<TitleValue title="Alder" value={Formatters.formatAlder(data.alder, data.doedsdato)} />
 
 				<TitleValue title="Personstatus" kodeverk="Personstatuser" value={data.personStatus} />

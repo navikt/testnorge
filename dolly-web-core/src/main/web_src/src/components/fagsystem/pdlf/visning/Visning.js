@@ -1,7 +1,7 @@
 import React from 'react'
 import { UtenlandsId } from './partials/UtenlandsId'
 import { FalskIdentitet } from './partials/FalskIdentitet'
-import { DoedsboKontaktinfo } from './partials/DoedsboKontaktinfo'
+import { KontaktinformasjonForDoedsbo } from './partials/KontaktinformasjonForDoedsbo'
 
 export const PdlfVisning = ({ data, loading }) => {
 	if (!data || !data.data || !data.data.hentPerson) return false
@@ -10,7 +10,10 @@ export const PdlfVisning = ({ data, loading }) => {
 		<div>
 			<UtenlandsId data={hentPerson.utenlandskIdentifikasjonsnummer} loading={loading} />
 			<FalskIdentitet data={hentPerson.falskIdentitet} loading={loading} />
-			<DoedsboKontaktinfo data={hentPerson.kontaktinformasjonForDoedsbo} loading={loading} />
+			<KontaktinformasjonForDoedsbo
+				data={hentPerson.kontaktinformasjonForDoedsbo}
+				loading={loading}
+			/>
 		</div>
 	)
 }

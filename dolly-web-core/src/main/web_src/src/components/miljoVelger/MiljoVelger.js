@@ -1,97 +1,81 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import _mapValues from 'lodash/mapValues'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { FieldArray, ErrorMessage } from 'formik'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { MiljoeInfo } from './MiljoeInfo'
+import { MiljoeInfo } from './MiljoeInfo/MiljoeInfo'
 
 import './MiljoVelger.less'
 
-export default class MiljoVelger extends Component {
-	static propTypes = {
-		heading: PropTypes.string
-	}
+export const MiljoVelger = ({ bestillingsdata, heading }) => {
+	const environments = useSelector(state => state.environments.data)
 
-	render() {
-		const { formikBag, heading, arrayHelpers, environments } = this.props
-		if (!environments) return null
+	if (!environments) return null
 
-		const order = ['U', 'T', 'Q']
-		return (
-			<div className="miljo-velger">
-				<h2>{heading}</h2>
-				<MiljoeInfo formikBag={formikBag} />
-				{order.map(type => this.renderEnvCategory(environments[type], type))}
-				{this.renderError(arrayHelpers)}
-			</div>
-		)
-	}
+	const order = ['U', 'T', 'Q']
 
-	isChecked = id => this.props.arrayValues.includes(id)
-	add = id => this.props.arrayHelpers.push(id)
-	remove = id => this.props.arrayHelpers.remove(this.props.arrayValues.indexOf(id))
+	return (
+		<div className="miljo-velger">
+			<h2>{heading}</h2>
+			<MiljoeInfo bestillingsdata={bestillingsdata} />
 
-	onClickHandler = e => {
-		const { id } = e.target
-		return this.isChecked(id) ? this.remove(id) : this.add(id)
-	}
+			<FieldArray name="environments">
+				{({ push, remove, form }) => {
+					const values = form.values.environments
 
-	velgAlle = (e, type, envs) => {
-		const self = this
-		envs.forEach(env =>
-			setTimeout(function() {
-				return !self.isChecked(env.id) && self.add(env.id)
-			}, 0)
-		)
-	}
+					const isChecked = id => values.includes(id)
 
-	fjernAlle = (e, type, envs) => {
-		const self = this
-		envs.forEach(env =>
-			setTimeout(function() {
-				return self.isChecked(env.id) && self.remove(env.id)
-			}, 0)
-		)
-	}
+					const onClick = e => {
+						const { id } = e.target
+						isChecked(id) ? remove(values.indexOf(id)) : push(id)
+					}
 
-	renderEnvCategory = (envs, type) => {
-		if (!envs) return null
-		const allDisabled = envs.some(f => f.disabled)
-		return (
-			<fieldset key={type} name={`Liste over ${type}-mijøer`}>
-				<h3>{type}-miljø</h3>
-				<div className="miljo-velger_checkboxes">{envs.map(env => this.renderCheckbox(env))}</div>
-				{!allDisabled && (
-					<div className="miljo-velger_buttons">
-						<LinkButton text="Velg alle" onClick={e => this.velgAlle(e, type, envs)} />
-						<LinkButton text="Fjern alle" onClick={e => this.fjernAlle(e, type, envs)} />
-					</div>
-				)}
-			</fieldset>
-		)
-	}
+					const velgAlle = type => {
+						const c = environments[type].filter(f => !isChecked(f.id)).map(a => a.id)
+						const n = values.concat(c)
+						form.setFieldValue('environments', n)
+					}
 
-	renderCheckbox = ({ id, label, disabled }) => (
-		<DollyCheckbox
-			key={id}
-			id={id}
-			disabled={disabled}
-			label={label}
-			checked={this.props.arrayValues.includes(id)}
-			onClick={this.onClickHandler}
-			onChange={() => {}}
-			size={'xxsmall'}
-		/>
+					const fjernAlle = type => {
+						form.setFieldValue(
+							'environments',
+							values.filter(id => !environments[type].map(a => a.id).includes(id))
+						)
+					}
+
+					return order.map(type => {
+						const category = environments[type]
+						const allDisabled = category.some(f => f.disabled)
+						return (
+							<fieldset key={type} name={`Liste over ${type}-mijøer`}>
+								<h3>{type}-miljø</h3>
+								<div className="miljo-velger_checkboxes">
+									{category.map(env => (
+										<DollyCheckbox
+											key={env.id}
+											id={env.id}
+											disabled={env.disabled}
+											label={env.label}
+											checked={values.includes(env.id)}
+											onClick={onClick}
+											onChange={() => {}}
+											size={'xxsmall'}
+										/>
+									))}
+								</div>
+								{!allDisabled && (
+									<div className="miljo-velger_buttons">
+										<LinkButton text="Velg alle" onClick={e => velgAlle(type)} />
+										<LinkButton text="Fjern alle" onClick={e => fjernAlle(type)} />
+									</div>
+								)}
+							</fieldset>
+						)
+					})
+				}}
+			</FieldArray>
+
+			<ErrorMessage name="environments" />
+		</div>
 	)
-
-	renderError = ({ name, form }) => {
-		if (form.touched[name] && form.errors[name]) {
-			return (
-				<span className="miljo-velger_error" style={{ color: 'red' }}>
-					{form.errors[name]}
-				</span>
-			)
-		}
-		return false
-	}
 }

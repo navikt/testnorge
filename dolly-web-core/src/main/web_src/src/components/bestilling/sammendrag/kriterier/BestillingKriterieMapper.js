@@ -18,6 +18,7 @@ const _getTpsfBestillingData = data => {
 		obj('Identtype', data.identtype),
 		obj('Født etter', Formatters.formatDate(data.foedtEtter)),
 		obj('Født før', Formatters.formatDate(data.foedtFoer)),
+		obj('Alder', data.alder),
 		obj('Dødsdato', Formatters.formatDate(data.doedsdato)),
 		obj('Statsborgerskap', data.statsborgerskap, 'Landkoder'),
 		obj('Statsborgerskap fra', Formatters.formatDate(data.statsborgerskapRegdato)),
@@ -120,11 +121,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 
 		if (postadresse) {
-			const postadr = postadresse[0]
+			const postadr = bestillingData.tpsf.postadresse[0]
 			const postadresse = {
 				header: 'Postadresse',
 				items: [
-					obj('Land', postadr.postland),
+					obj('Land', postadr.postLand),
 					obj('Adresselinje 1', postadr.postLinje1),
 					obj('Adresselinje 2', postadr.postLinje2),
 					obj('Adresselinje 3', postadr.postLinje3)
@@ -153,17 +154,33 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 
 		if (relasjoner) {
-			if (relasjoner.partner) {
-				const mappedTpsfData = _getTpsfBestillingData(relasjoner.partner)
-				if (relasjoner.partner.identHistorikk) {
-					mappedTpsfData.push(
-						obj('Antall historiske identer', relasjoner.partner.identHistorikk.length)
-					)
-				}
+			if (relasjoner.partnere) {
 				const partner = {
 					header: 'Partner',
-					items: mappedTpsfData
+					itemRows: []
 				}
+
+				relasjoner.partnere.forEach((item, j) => {
+					const sivilstander = item.sivilstander.reduce((acc, curr, idx) => {
+						if (idx > 0) {
+							acc.push(curr.sivilstand)
+						}
+						return acc
+					}, [])
+
+					partner.itemRows.push([
+						{
+							label: '',
+							value: `#${j + 1}`,
+							width: 'x-small'
+						},
+						..._getTpsfBestillingData(item),
+						obj('Bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
+						obj('Sivilstand', item.sivilstander[0].sivilstand, 'Sivilstander'),
+						obj('Tidligere sivilstander', Formatters.arrayToString(sivilstander))
+					])
+				})
+
 				data.push(partner)
 			}
 
@@ -180,7 +197,10 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							value: `#${i + 1}`,
 							width: 'x-small'
 						},
-						..._getTpsfBestillingData(item)
+						..._getTpsfBestillingData(item),
+						obj('Foreldre', item.barnType), //Bruke samme funksjon som i bestillingsveileder
+						obj('Bor hos', item.borHos),
+						obj('Er adoptert', Formatters.oversettBoolean(item.erAdoptert))
 					])
 				})
 
@@ -393,7 +413,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		if (pdlforvalterKriterier.falskIdentitet) {
 			const falskIdData = pdlforvalterKriterier.falskIdentitet.rettIdentitet
 
-			if (falskIdData.rettIdentitetErUkjent === true) {
+			if (falskIdData.identitetType === 'UKJENT') {
 				const falskId = {
 					header: 'Falsk identitet',
 					items: [
@@ -404,7 +424,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					]
 				}
 				data.push(falskId)
-			} else if (falskIdData.rettIdentitetVedIdentifikasjonsnummer) {
+			} else if (falskIdData.identitetType === 'ENTYDIG') {
 				const falskId = {
 					header: 'Falsk identitet',
 					items: [
@@ -415,7 +435,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					]
 				}
 				data.push(falskId)
-			} else {
+			} else if (falskIdData.identitetType === 'OMTRENTLIG') {
 				const falskId = {
 					header: 'Falsk identitet',
 					items: [

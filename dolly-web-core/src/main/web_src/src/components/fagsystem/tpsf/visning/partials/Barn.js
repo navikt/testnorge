@@ -22,7 +22,7 @@ export const Barn = ({ data, bestilling }) => {
 			<TitleValue title="Fornavn" value={data.fornavn} />
 			<TitleValue title="Mellomnavn" value={data.mellomnavn} />
 			<TitleValue title="Etternavn" value={data.etternavn} />
-			<TitleValue title="Kjønn" value={Formatters.kjonnToString(data.kjonn)} />
+			<TitleValue title="Kjønn" value={Formatters.kjonn(data.kjonn, data.alder)} />
 			<TitleValue title="Alder" value={Formatters.formatAlder(data.alder, data.doedsdato)} />
 			<TitleValue title="Bor hos" value={adresse(bestilling.borHos)} />
 			<TitleValue title="Barn av" value={foreldre(bestilling.barnType)} />

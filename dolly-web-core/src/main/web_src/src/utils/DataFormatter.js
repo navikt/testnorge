@@ -40,28 +40,17 @@ Formatters.formatStringDates = date => {
 	return `${dateArray[2]}.${dateArray[1]}.${dateArray[0]}`
 }
 
-Formatters.decamelize = (str, separator) => {
-	separator = typeof separator === 'undefined' ? '_' : separator
-
-	const res = str
-		.replace(/([a-z\d])([A-Z])/g, '$1' + separator + '$2')
-		.replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1' + separator + '$2')
-		.toLowerCase()
-
-	return res.charAt(0).toUpperCase() + res.slice(1)
+Formatters.kjonn = (kjonn, alder) => {
+	return Formatters.kjonnToString(kjonn, alder < 18)
 }
 
-Formatters.kjonnToString = (kjonn = '') => {
+Formatters.kjonnToString = (kjonn = '', barn = false) => {
 	if (!kjonn) return kjonn
 	const _kjonn = kjonn.toLowerCase()
 	if (!['m', 'k'].includes(_kjonn)) return 'UDEFINERT'
-	return _kjonn === 'm' ? 'MANN' : 'KVINNE'
-}
 
-Formatters.kjonnToStringBarn = (kjonn = '') => {
-	const _kjonn = kjonn.toLowerCase()
-	if (!['m', 'k'].includes(_kjonn)) return 'UDEFINERT'
-	return _kjonn === 'm' ? 'GUTT' : 'JENTE'
+	if (barn) return _kjonn === 'm' ? 'GUTT' : 'JENTE'
+	return _kjonn === 'm' ? 'MANN' : 'KVINNE'
 }
 
 Formatters.adressetypeToString = adressetype => {
@@ -77,10 +66,6 @@ Formatters.arrayToString = (array, separator = ',') => {
 		}${nextString.toUpperCase()}`
 	}, '')
 }
-Formatters.camelCaseToLabel = camelCase => {
-	if (!camelCase) return null
-	return _capitalize(_startCase(camelCase))
-}
 
 Formatters.uppercaseAndUnderscoreToCapitalized = value => {
 	if (!value) return null
@@ -92,11 +77,6 @@ Formatters.allCapsToCapitalized = value => {
 	return _capitalize(value)
 }
 
-Formatters.kodeverkLabel = kodeverk => {
-	if (!kodeverk) return null
-	return kodeverk.substring(kodeverk.indexOf('-') + 1)
-}
-
 Formatters.oversettBoolean = value => {
 	if (_isNil(value)) return value
 	return value === true || value === 'true'
@@ -106,85 +86,34 @@ Formatters.oversettBoolean = value => {
 		: value
 }
 
-Formatters.booleanToServicebehov = value => {
-	return value === true ? 'Med servicebehov' : value === false ? 'Uten servicebehov' : value
-}
-
-Formatters.servicebehovKodeTilBeskrivelse = value => {
-	if (!value) return null
-	let beskrivelse = value
-	switch (value) {
-		case 'IKVAL':
-			beskrivelse = 'IKVAL - Standardinnsats'
-			break
-		case 'BFORM':
-			beskrivelse = 'BFORM - Situasjonsbestemt innsats'
-			break
-		case 'BATT':
-			beskrivelse = 'BATT - Spesielt tilpasset innsats'
-			break
-		case 'VARIG':
-			beskrivelse = 'VARIG - Varig tilpasset innsats'
-			break
-	}
-	return beskrivelse
-}
-
 Formatters.gtApiKodeverkId = gtType => {
 	if (!gtType) return null
 
-	let gtApiKodeverkId = ''
 	switch (gtType) {
 		case 'KNR':
-			gtApiKodeverkId = 'Kommuner'
-			break
+			return 'Kommuner'
 		case 'BYDEL':
-			gtApiKodeverkId = 'Bydeler'
-			break
+			return 'Bydeler'
 		case 'LAND':
-			gtApiKodeverkId = 'Landkoder'
-			break
+			return 'Landkoder'
+		default:
+			return ''
 	}
-
-	return gtApiKodeverkId
 }
 
 Formatters.gtTypeLabel = gtType => {
 	if (!gtType) return null
 
-	let gtTypeLabel = ''
 	switch (gtType) {
 		case 'KNR':
-			gtTypeLabel = 'Kommune'
-			break
+			return 'Kommune'
 		case 'BYDEL':
-			gtTypeLabel = 'Bydel'
-			break
+			return 'Bydel'
 		case 'LAND':
-			gtTypeLabel = 'Land'
-			break
+			return 'Land'
+		default:
+			return ''
 	}
-
-	return gtTypeLabel
-}
-
-Formatters.getIdLengde = id => {
-	if (!id) return null
-
-	var forste = id.split(' ')
-	return forste[0].length
-}
-
-Formatters.idUtenEllipse = id => {
-	if (!id) return null
-
-	var lengde = Formatters.getIdLengde(id)
-	return id.substr(0, lengde)
-}
-
-Formatters.commaToSpace = streng => {
-	if (!streng) return null
-	return streng.split(',').join(', ')
 }
 
 /**
@@ -196,8 +125,8 @@ Formatters.commaToSpace = streng => {
  *
  * https://stackoverflow.com/a/1527820/3336235
  */
-Formatters.randomIntInRange = (min,max) => {
-    min = Math.ceil(min)
+Formatters.randomIntInRange = (min, max) => {
+	min = Math.ceil(min)
 	max = Math.floor(max)
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
