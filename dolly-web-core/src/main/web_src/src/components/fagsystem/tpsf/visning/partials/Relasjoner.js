@@ -2,7 +2,8 @@ import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 
 import { Barn } from './Barn'
-import { Personinfo } from './Personinfo'
+import { Partner } from './Partner'
+// import { Personinfo } from './Personinfo'
 
 // TODO: Flyttes et mer logisk sted hvis den trengs flere steder
 const relasjonTranslator = relasjon => {
@@ -26,13 +27,16 @@ const relasjonTranslator = relasjon => {
 
 export const Relasjoner = ({ relasjoner, bestilling }) => {
 	if (!relasjoner) return false
-
+	console.log('relasjoner :', relasjoner)
 	const barn = relasjoner.filter(
 		relasjon => relasjonTranslator(relasjon.relasjonTypeNavn) === 'Barn'
 	)
 	const partnere = relasjoner.filter(
 		relasjon => relasjonTranslator(relasjon.relasjonTypeNavn) === 'Partner'
 	)
+
+	console.log('partnere :', partnere)
+
 	return (
 		<div>
 			<SubOverskrift label="Familierelasjoner" iconKind="relasjoner" />
@@ -43,7 +47,7 @@ export const Relasjoner = ({ relasjoner, bestilling }) => {
 							Partner {idx + 1} {idx < 1 && '(nåværende)'}
 						</h3>
 						{/* Legg til partneregenskaper */}
-						<Personinfo data={partner.personRelasjonMed} />
+						<Partner data={partner.personRelasjonMed} />
 					</div>
 				))}
 				{barn.map((barnet, jdx) => (
