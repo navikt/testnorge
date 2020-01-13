@@ -12,7 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RsBarnRelasjonRequest {
 
-    public enum BarnType {MITT, FELLES, DITT}
     public enum BorHos {MEG, OSS, DEG}
 
     @ApiModelProperty(
@@ -24,18 +23,12 @@ public class RsBarnRelasjonRequest {
 
     @ApiModelProperty(
             position = 2,
-            value= "Bestemmer type av relasjon med forelder"
-    )
-    private BarnType barnType;
-
-    @ApiModelProperty(
-            position = 3,
             value= "Ident som identifiserer partner for felles eller dine barn. Kan være tom for mine barn eller når det finnes kun en partner"
     )
     private String partnerIdent;
 
     @ApiModelProperty(
-            position = 4,
+            position = 3,
             value= "Barns boadresse bestemmes ut fra attributtverdi, og blank, MEG og OSS gir boadresse identisk med hovedperson"
     )
     private BorHos borHos;
