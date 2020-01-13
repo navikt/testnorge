@@ -38,7 +38,7 @@ public class BestillingController {
     private final BestillingService bestillingService;
     private final DollyBestillingService dollyBestillingService;
 
-  //  @Cacheable(value = CACHE_BESTILLING)
+    @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/{bestillingId}")
     @ApiOperation("Hent Bestilling med bestillingsId")
     public RsBestillingStatus getBestillingById(@PathVariable("bestillingId") Long bestillingId) {

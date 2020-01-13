@@ -176,7 +176,7 @@ public class DollyBestillingService {
                 log.warn("Bestilling med id={} på ident={} ble avsluttet med feil: {}", bestilling.getId(), ident, message);
                 bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, message));
 
-            } catch (JsonProcessingException jme) {}
+            } catch (JsonProcessingException jme) {log.error("Json kunne ikke hentes ut.", jme);}
 
         } catch (Exception e) {
             log.error("Bestilling med id={} på ident={} ble avsluttet med feil: {}", bestilling.getId(), ident, e.getMessage(), e);
