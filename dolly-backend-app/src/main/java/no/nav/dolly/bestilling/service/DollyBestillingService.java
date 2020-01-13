@@ -23,6 +23,8 @@ import java.util.TreeSet;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -37,7 +39,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.RsDollyRelationRequest;
+import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
@@ -48,6 +50,7 @@ import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.tpsf.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
+import no.nav.dolly.domain.resultset.tpsf.TpsfRelasjonRequest;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.service.BestillingService;
@@ -157,17 +160,26 @@ public class DollyBestillingService {
     }
 
     @Async
-    public void relasjonPersonAsync(String ident, RsDollyRelationRequest request, Bestilling bestilling) {
+    public void relasjonPersonAsync(String ident, RsDollyRelasjonRequest request, Bestilling bestilling) {
 
         try {
             BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident);
-            Person person = tpsfService.relasjonPerson(ident, request);
+            TpsfRelasjonRequest tpsfBestilling = mapperFacade.map(request.getTpsf(), TpsfRelasjonRequest.class);
+            Person person = tpsfService.relasjonPerson(ident, tpsfBestilling);
             sendIdenterTilTPS(request.getEnvironments(), singletonList(person.getIdent()), null, progress);
 
             oppdaterProgress(bestilling, progress);
 
+        } catch (HttpClientErrorException e) {
+            try {
+                String message = (String) objectMapper.readValue(e.getResponseBodyAsString(), Map.class).get("message");
+                log.warn("Bestilling med id={} på ident={} ble avsluttet med feil: {}", bestilling.getId(), ident, message);
+                bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, message));
+
+            } catch (JsonProcessingException jme) {}
+
         } catch (Exception e) {
-            log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), ident, e.getMessage(), e);
+            log.error("Bestilling med id={} på ident={} ble avsluttet med feil: {}", bestilling.getId(), ident, e.getMessage(), e);
             bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
 
         } finally {

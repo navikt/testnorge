@@ -30,7 +30,7 @@ public class RsBarnRelasjonRequest {
 
     @ApiModelProperty(
             position = 3,
-            value= "Ident som identifiserer partner for felles eller dine barn. Kan være tom for mine barn"
+            value= "Ident som identifiserer partner for felles eller dine barn. Kan være tom for mine barn eller når det finnes kun en partner"
     )
     private String partnerIdent;
 
@@ -39,10 +39,4 @@ public class RsBarnRelasjonRequest {
             value= "Barns boadresse bestemmes ut fra attributtverdi, og blank, MEG og OSS gir boadresse identisk med hovedperson"
     )
     private BorHos borHos;
-
-    @ApiModelProperty(
-            position = 5,
-            value= "Når barn er adoptert vil kun relasjon BARN (og ikke fødsel) benyttes for aktuelle foreldere"
-    )
-    private Boolean erAdoptert;
 }

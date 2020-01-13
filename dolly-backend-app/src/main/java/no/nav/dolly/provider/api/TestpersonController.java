@@ -18,11 +18,10 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.RsDollyRelationRequest;
+import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsRelasjonStatus;
 import no.nav.dolly.domain.testperson.IdentAttributesResponse;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -68,13 +67,13 @@ public class TestpersonController {
     @ApiOperation(value = "Koble eksisterende personer i Dolly ")
     @PutMapping("/{ident}/relasjon")
     @ResponseStatus(HttpStatus.OK)
-    public RsRelasjonStatus koblePerson(@ApiParam(value = "Ident for hovedperson", required = true)
+    public RsBestillingStatus koblePerson(@ApiParam(value = "Ident for hovedperson", required = true)
     @PathVariable("ident") String ident,
-            @RequestBody RsDollyRelationRequest request) {
+            @RequestBody RsDollyRelasjonRequest request) {
 
         Bestilling bestilling = bestillingService.saveBestilling(ident, request);
         dollyBestillingService.relasjonPersonAsync(ident, request, bestilling);
 
-        return mapperFacade.map(bestilling, RsRelasjonStatus.class);
+        return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 }

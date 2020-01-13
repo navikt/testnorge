@@ -30,7 +30,7 @@ import no.nav.dolly.domain.jpa.BestilteKriterier;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.domain.resultset.RsDollyRelationRequest;
+import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
@@ -106,7 +106,7 @@ public class BestillingService {
     }
 
     @Transactional
-    public Bestilling saveBestilling(String ident, RsDollyRelationRequest request) {
+    public Bestilling saveBestilling(String ident, RsDollyRelasjonRequest request) {
 
         Testident testident = identRepository.findByIdent(ident);
         if (isNull(testident) || isBlank(testident.getIdent())) {
@@ -120,7 +120,8 @@ public class BestillingService {
                         .antallIdenter(1)
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
-                        .tpsfKriterier(toJson(request))
+                        .tpsfKriterier(toJson(request.getTpsf()))
+                        .bestKriterier("{}")
                         .userId(getUserPrinciple())
                         .build());
     }
