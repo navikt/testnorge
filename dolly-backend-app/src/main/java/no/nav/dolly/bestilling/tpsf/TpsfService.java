@@ -119,13 +119,13 @@ public class TpsfService {
     }
 
     @Timed(name = "providers", tags = { "operation", "motTPSF" })
-    public Person relasjonPerson(String ident, TpsfRelasjonRequest tpsfBestilling) {
+    public List<String> relasjonPerson(String ident, TpsfRelasjonRequest tpsfBestilling) {
 
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_PERSON_RELASJON, ident)))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, getUserIdToken())
-                .body(tpsfBestilling), Person.class).getBody();
+                .body(tpsfBestilling), List.class).getBody();
     }
 
     private ResponseEntity<Object> postToTpsf(String addtionalUrl, Object request) {

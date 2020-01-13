@@ -165,8 +165,8 @@ public class DollyBestillingService {
         try {
             BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident);
             TpsfRelasjonRequest tpsfBestilling = mapperFacade.map(request.getTpsf(), TpsfRelasjonRequest.class);
-            Person person = tpsfService.relasjonPerson(ident, tpsfBestilling);
-            sendIdenterTilTPS(request.getEnvironments(), singletonList(person.getIdent()), null, progress);
+            List<String> identer = tpsfService.relasjonPerson(ident, tpsfBestilling);
+            sendIdenterTilTPS(request.getEnvironments(), identer, null, progress);
 
             oppdaterProgress(bestilling, progress);
 
