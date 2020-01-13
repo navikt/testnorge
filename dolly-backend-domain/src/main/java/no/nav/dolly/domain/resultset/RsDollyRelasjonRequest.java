@@ -13,7 +13,7 @@ import no.nav.dolly.domain.resultset.tpsf.RsRelasjoner;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsDollyRelationRequest {
+public class RsDollyRelasjonRequest {
 
     @ApiModelProperty(
             position = 1,
@@ -27,5 +27,14 @@ public class RsDollyRelationRequest {
             value = "Identifikasjon av relasjoner som skal opprettes",
             required = true
     )
-    private RsRelasjoner relasjoner;
+    private Tpsf tpsf;
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Tpsf {
+
+        private RsRelasjoner relasjoner;
+    }
 }

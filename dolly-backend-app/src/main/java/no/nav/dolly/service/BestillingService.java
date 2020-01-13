@@ -30,6 +30,7 @@ import no.nav.dolly.domain.jpa.BestilteKriterier;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
@@ -102,6 +103,27 @@ public class BestillingService {
 
     public boolean isStoppet(Long bestillingId) {
         return bestillingKontrollRepository.findByBestillingIdOrderByBestillingId(bestillingId).orElse(BestillingKontroll.builder().stoppet(false).build()).isStoppet();
+    }
+
+    @Transactional
+    public Bestilling saveBestilling(String ident, RsDollyRelasjonRequest request) {
+
+        Testident testident = identRepository.findByIdent(ident);
+        if (isNull(testident) || isBlank(testident.getIdent())) {
+            throw new NotFoundException(format("Testindent %s ble ikke funnet", ident));
+        }
+
+        return saveBestillingToDB(
+                Bestilling.builder()
+                        .gruppe(testident.getTestgruppe())
+                        .ident(ident)
+                        .antallIdenter(1)
+                        .sistOppdatert(now())
+                        .miljoer(join(",", request.getEnvironments()))
+                        .tpsfKriterier(toJson(request.getTpsf()))
+                        .bestKriterier("{}")
+                        .userId(getUserPrinciple())
+                        .build());
     }
 
     @Transactional

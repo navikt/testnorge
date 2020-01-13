@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
@@ -60,5 +62,18 @@ public class TestpersonController {
     public IdentAttributesResponse oppdaterTestidentIbruk(@PathVariable String ident, @RequestParam boolean iBruk) {
 
         return mapperFacade.map(identService.save(ident, iBruk), IdentAttributesResponse.class);
+    }
+
+    @ApiOperation(value = "Koble eksisterende personer i Dolly ")
+    @PutMapping("/{ident}/relasjon")
+    @ResponseStatus(HttpStatus.OK)
+    public RsBestillingStatus koblePerson(@ApiParam(value = "Ident for hovedperson", required = true)
+    @PathVariable("ident") String ident,
+            @RequestBody RsDollyRelasjonRequest request) {
+
+        Bestilling bestilling = bestillingService.saveBestilling(ident, request);
+        dollyBestillingService.relasjonPersonAsync(ident, request, bestilling);
+
+        return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 }
