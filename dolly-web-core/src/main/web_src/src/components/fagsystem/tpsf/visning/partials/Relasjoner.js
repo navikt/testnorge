@@ -3,7 +3,6 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 
 import { Barn } from './Barn'
 import { Partner } from './Partner'
-// import { Personinfo } from './Personinfo'
 
 // TODO: Flyttes et mer logisk sted hvis den trengs flere steder
 const relasjonTranslator = relasjon => {
@@ -27,7 +26,6 @@ const relasjonTranslator = relasjon => {
 
 export const Relasjoner = ({ relasjoner, bestilling }) => {
 	if (!relasjoner) return false
-	console.log('relasjoner :', relasjoner)
 	const barn = relasjoner.filter(
 		relasjon => relasjonTranslator(relasjon.relasjonTypeNavn) === 'Barn'
 	)
@@ -35,25 +33,26 @@ export const Relasjoner = ({ relasjoner, bestilling }) => {
 		relasjon => relasjonTranslator(relasjon.relasjonTypeNavn) === 'Partner'
 	)
 
-	console.log('partnere :', partnere)
-
 	return (
 		<div>
 			<SubOverskrift label="Familierelasjoner" iconKind="relasjoner" />
-			<div className="person-visning_content">
+			<div>
 				{partnere.map((partner, idx) => (
-					<div key={idx} className="title-multiple">
+					<div key={idx}>
 						<h3>
-							Partner {idx + 1} {idx < 1 && '(nåværende)'}
+							Partner {idx + 1} {idx < 1 && '(nåværende/siste)'}
 						</h3>
-						{/* Legg til partneregenskaper */}
 						<Partner data={partner.personRelasjonMed} />
 					</div>
 				))}
 				{barn.map((barnet, jdx) => (
 					<div key={jdx} className="title-multiple">
 						<h3>Barn {jdx + 1}</h3>
-						<Barn data={barnet.personRelasjonMed} bestilling={bestilling.relasjoner.barn[jdx]} />
+						<Barn
+							data={barnet.personRelasjonMed}
+							type={barnet.relasjonTypeNavn}
+							bestilling={bestilling.relasjoner.barn[jdx]}
+						/>
 					</div>
 				))}
 			</div>
