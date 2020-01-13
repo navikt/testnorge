@@ -1,5 +1,6 @@
 import React from 'react'
 import * as Yup from 'yup'
+import { harAvhukedeAttributter } from '../utils'
 import Bestillingskriterier from '~/components/bestilling/sammendrag/kriterier/Kriterier'
 import { MiljoVelger } from '~/components/miljoVelger/MiljoVelger'
 import { MalForm } from './MalForm'
@@ -7,9 +8,11 @@ import { MalForm } from './MalForm'
 export const Steg3 = ({ formikBag }) => {
 	return (
 		<div>
-			<div className="oppsummering">
-				<Bestillingskriterier bestilling={formikBag.values} />
-			</div>
+			{harAvhukedeAttributter(formikBag.values) && (
+				<div className="oppsummering">
+					<Bestillingskriterier bestilling={formikBag.values} />
+				</div>
+			)}
 			<MiljoVelger
 				bestillingsdata={formikBag.values}
 				heading="Hvilke testmiljø vil du opprette personene i?"

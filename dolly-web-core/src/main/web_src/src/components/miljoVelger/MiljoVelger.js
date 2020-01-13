@@ -75,7 +75,7 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 				}}
 			</FieldArray>
 
-			<ErrorMessage name="environments" />
+			<ErrorMessage name="environments" className="error-message" component="div" />
 		</div>
 	)
 }
