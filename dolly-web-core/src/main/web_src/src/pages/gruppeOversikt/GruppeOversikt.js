@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
-import Knapp from 'nav-frontend-knapper'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 import HjelpeTekst from 'nav-frontend-hjelpetekst'
 import { SearchField } from '~/components/searchField/SearchField'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
@@ -35,9 +35,9 @@ export default function GruppeOversikt({
 			</div>
 
 			<Toolbar toggleOnChange={byttVisning} toggleCurrent={visning} searchField={<SearchField />}>
-				<Knapp type="hoved" onClick={visNyGruppe}>
+				<NavButton type="hoved" onClick={visNyGruppe}>
 					Ny gruppe
-				</Knapp>
+				</NavButton>
 			</Toolbar>
 
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
