@@ -9,7 +9,7 @@ import lombok.Setter;
 
 import java.util.List;
 
-import no.nav.registre.arena.domain.rettighet.NyRettighet;
+import no.nav.registre.arena.domain.rettighet.NyttVedtak;
 
 @Getter
 @Setter
@@ -19,14 +19,17 @@ import no.nav.registre.arena.domain.rettighet.NyRettighet;
 public class Vedtakshistorikk {
 
     @JsonProperty("AAP")
-    private List<NyRettighet> aap;
+    private List<NyttVedtak> aap;
+
+    @JsonProperty("11_5")
+    private List<NyttVedtak> aap115;
 
     @JsonProperty("AAUNGUFOR")
-    private List<NyRettighet> ungUfoer;
+    private List<NyttVedtak> ungUfoer;
 
     @JsonProperty("AATFOR")
-    private List<NyRettighet> tvungenForvaltning;
+    private List<NyttVedtak> tvungenForvaltning;
 
     @JsonProperty("FRI_MK")
-    private List<NyRettighet> fritakMeldekort;
+    private List<NyttVedtak> fritakMeldekort;
 }

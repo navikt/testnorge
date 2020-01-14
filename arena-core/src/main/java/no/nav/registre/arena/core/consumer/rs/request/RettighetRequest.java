@@ -7,9 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
+
+import no.nav.registre.arena.domain.rettighet.NyttVedtak;
 
 @JsonSubTypes({
         @JsonSubTypes.Type(value = RettighetAapRequest.class, name = "aap"),
+        @JsonSubTypes.Type(value = RettighetAap115Request.class, name = "aap115"),
         @JsonSubTypes.Type(value = RettighetUngUfoerRequest.class, name = "ungUfoer"),
         @JsonSubTypes.Type(value = RettighetTvungenForvaltningRequest.class, name = "tvungenForvaltning"),
         @JsonSubTypes.Type(value = RettighetFritakMeldekortRequest.class, name = "fritakMeldekort")
@@ -18,8 +22,10 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RettighetRequest implements Serializable {
+public abstract class RettighetRequest implements Serializable {
 
     private String personident;
     private String miljoe;
+
+    public abstract List<NyttVedtak> getVedtak();
 }

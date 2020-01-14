@@ -28,6 +28,7 @@ public class SyntetiseringService {
     private static final double PROSENTANDEL_SOM_SKAL_HA_MELDEKORT = 0.2;
     private static final int MINIMUM_ALDER = 16;
     private static final int MAKSIMUM_ALDER = 67;
+    private static final String KVALIFISERINGSGRUPPE_IKVAL = "IKVAL";
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final ArenaForvalterConsumer arenaForvalterConsumer;
@@ -54,7 +55,7 @@ public class SyntetiseringService {
         }
 
         var nyeIdenter = hentKvalifiserteIdenter(antallNyeIdenter, levendeIdenter, arbeidsoekerIdenter);
-        return byggArbeidsoekereOgLagreIHodejegeren(nyeIdenter, miljoe);
+        return byggArbeidsoekereOgLagreIHodejegeren(nyeIdenter, miljoe, KVALIFISERINGSGRUPPE_IKVAL);
     }
 
     public NyeBrukereResponse opprettArbeidssoeker(
@@ -75,7 +76,7 @@ public class SyntetiseringService {
             return new NyeBrukereResponse();
         }
 
-        return byggArbeidsoekereOgLagreIHodejegeren(Collections.singletonList(ident), miljoe);
+        return byggArbeidsoekereOgLagreIHodejegeren(Collections.singletonList(ident), miljoe, KVALIFISERINGSGRUPPE_IKVAL);
     }
 
     public List<String> hentEksisterendeArbeidsoekerIdenter() {
@@ -85,13 +86,14 @@ public class SyntetiseringService {
 
     public NyeBrukereResponse byggArbeidsoekereOgLagreIHodejegeren(
             List<String> identer,
-            String miljoe
+            String miljoe,
+            String kvalifiseringsgruppe
     ) {
         var nyeBrukere = identer.stream().map(ident ->
                 NyBruker.builder()
                         .personident(ident)
                         .miljoe(miljoe)
-                        .kvalifiseringsgruppe("IKVAL")
+                        .kvalifiseringsgruppe(kvalifiseringsgruppe)
                         .automatiskInnsendingAvMeldekort(true)
                         .build())
                 .collect(Collectors.toList());

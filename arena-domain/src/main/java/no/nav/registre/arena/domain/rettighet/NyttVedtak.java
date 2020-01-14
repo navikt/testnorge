@@ -28,7 +28,7 @@ import no.nav.registre.arena.domain.aap.vilkaar.Vilkaar;
 @Builder
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class NyRettighet {
+public class NyttVedtak {
 
     @JsonAlias({ "AKTFASEKODE", "aktivitetsfase" })
     private String aktivitetsfase;

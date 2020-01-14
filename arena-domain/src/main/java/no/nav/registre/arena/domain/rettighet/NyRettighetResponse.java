@@ -16,9 +16,9 @@ import java.util.List;
 @Builder
 public class NyRettighetResponse {
 
-    @JsonAlias({"nyeAap", "nyeAaungufor", "nyeAatfor", "nyeFritak"})
-    private List<NyRettighet> nyeRettigheter;
+    @JsonAlias({"nyeAap", "nyeAap115", "nyeAaungufor", "nyeAatfor", "nyeFritak"})
+    private List<NyttVedtak> nyeRettigheter;
 
-    @JsonAlias({"nyeAapFeilList", "nyeAaunguforFeilList", "nyeAatforFeilList", "nyeFritakFeilList"})
+    @JsonAlias({"nyeAapFeilList", "nyeAap115FeilList", "nyeAaunguforFeilList", "nyeAatforFeilList", "nyeFritakFeilList"})
     private List<NyRettighetFeil> feiledeRettigheter;
 }

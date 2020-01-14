@@ -52,6 +52,13 @@ public class SyntetiseringController {
         return rettighetService.genererAap(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
     }
 
+    @PostMapping("generer/rettighet/aap_115")
+    public List<NyRettighetResponse> genererRettighetAap115(
+            @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
+    ) {
+        return rettighetService.genererAap115(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+    }
+
     @PostMapping("generer/rettighet/ungUfoer")
     public List<NyRettighetResponse> genererRettighetUngUfoer(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest

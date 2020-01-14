@@ -14,12 +14,12 @@ import no.nav.registre.arena.domain.rettighet.NyttVedtak;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RettighetFritakMeldekortRequest extends RettighetRequest {
+public class RettighetAap115Request extends RettighetRequest {
 
-    private List<NyttVedtak> nyeFritak;
+    private List<NyttVedtak> nyeAap115;
 
-    @JsonProperty("nyeFritak")
+    @JsonProperty("nyeAap115")
     @Override public List<NyttVedtak> getVedtak() {
-        return nyeFritak;
+        return nyeAap115;
     }
 }

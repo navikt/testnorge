@@ -21,7 +21,7 @@ import java.util.List;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetSyntConsumer;
 import no.nav.registre.arena.domain.historikk.Vedtakshistorikk;
-import no.nav.registre.arena.domain.rettighet.NyRettighet;
+import no.nav.registre.arena.domain.rettighet.NyttVedtak;
 import no.nav.registre.arena.domain.rettighet.NyRettighetResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
@@ -51,10 +51,10 @@ public class RettighetServiceTest {
     private String miljoe = "t1";
     private int antallIdenter = 1;
     private List<String> identer;
-    private List<NyRettighet> aapRettigheter;
-    private List<NyRettighet> ungUfoerRettigheter;
-    private List<NyRettighet> tvungenForvaltningRettigheter;
-    private List<NyRettighet> fritakMeldekortRettigheter;
+    private List<NyttVedtak> aapRettigheter;
+    private List<NyttVedtak> ungUfoerRettigheter;
+    private List<NyttVedtak> tvungenForvaltningRettigheter;
+    private List<NyttVedtak> fritakMeldekortRettigheter;
     private List<Vedtakshistorikk> vedtakshistorikkListe;
 
     @Before
@@ -62,13 +62,13 @@ public class RettighetServiceTest {
         var fnr1 = "01010101010";
         identer = new ArrayList<>(Collections.singletonList(fnr1));
 
-        var nyRettighetAap = NyRettighet.builder()
+        var nyRettighetAap = NyttVedtak.builder()
                 .build();
-        var nyRettighetUngUfoer = NyRettighet.builder()
+        var nyRettighetUngUfoer = NyttVedtak.builder()
                 .build();
-        var nyRettighetTvungenForvaltning = NyRettighet.builder()
+        var nyRettighetTvungenForvaltning = NyttVedtak.builder()
                 .build();
-        var nyRettighetFritakMeldekort = NyRettighet.builder()
+        var nyRettighetFritakMeldekort = NyttVedtak.builder()
                 .build();
 
         aapRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetAap));

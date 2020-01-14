@@ -13,6 +13,7 @@ import org.springframework.web.util.UriTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+import no.nav.registre.arena.core.consumer.rs.request.RettighetAap115Request;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetAapRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
@@ -30,6 +31,7 @@ public class RettighetArenaForvalterConsumer {
     private final RestTemplate restTemplate;
 
     private UriTemplate opprettAapRettighetUrl;
+    private UriTemplate opprettAap115RettighetUrl;
     private UriTemplate opprettUngUfoerRettighetUrl;
     private UriTemplate opprettTvungenForvaltningRettighetUrl;
     private UriTemplate opprettFritakMeldekortRettighetUrl;
@@ -40,6 +42,7 @@ public class RettighetArenaForvalterConsumer {
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.opprettAapRettighetUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/aap");
+        this.opprettAap115RettighetUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/aap115");
         this.opprettUngUfoerRettighetUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/aapungufor");
         this.opprettTvungenForvaltningRettighetUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/aaptvungenforvaltning");
         this.opprettFritakMeldekortRettighetUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/aapfritakmeldekort");
@@ -52,6 +55,8 @@ public class RettighetArenaForvalterConsumer {
             UriTemplate url;
             if (rettighet instanceof RettighetAapRequest) {
                 url = opprettAapRettighetUrl;
+            } else if (rettighet instanceof RettighetAap115Request) {
+                url = opprettAap115RettighetUrl;
             } else if (rettighet instanceof RettighetUngUfoerRequest) {
                 url = opprettUngUfoerRettighetUrl;
             } else if (rettighet instanceof RettighetTvungenForvaltningRequest) {
@@ -61,11 +66,13 @@ public class RettighetArenaForvalterConsumer {
             } else {
                 throw new RuntimeException("Unkown URL");
             }
+
             try {
                 log.info("Legger til syntetisk rettighet: {}", objectMapper.writeValueAsString(rettighet));
             } catch (JsonProcessingException e) {
                 log.error("Kunne ikke printe rettighet", e);
             }
+
             var postRequest = RequestEntity.post(url.expand())
                     .header("Nav-Call-Id", NAV_CALL_ID)
                     .header("Nav-Consumer-Id", NAV_CONSUMER_ID)

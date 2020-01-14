@@ -22,7 +22,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,7 +44,6 @@ public class ArenaForvalterConsumerTest {
 
     private String miljoe = "q2", EIER = "ORKESTRATOREN";
 
-    private List<NyBruker> nyeBrukere;
     private NyBruker bruker1, bruker2;
 
     public ArenaForvalterConsumerTest() {
@@ -67,9 +65,6 @@ public class ArenaForvalterConsumerTest {
                 .automatiskInnsendingAvMeldekort(true)
                 .kvalifiseringsgruppe("IKVAL")
                 .build();
-
-        nyeBrukere = Arrays.asList(bruker1, bruker2);
-
     }
 
     @Test(expected = HttpClientErrorException.class)

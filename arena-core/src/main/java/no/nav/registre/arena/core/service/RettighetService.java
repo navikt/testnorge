@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetSyntConsumer;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetAap115Request;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetAapRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
@@ -19,8 +21,8 @@ import no.nav.registre.arena.domain.NyBrukerFeil;
 import no.nav.registre.arena.domain.aap.forvalter.Adresse;
 import no.nav.registre.arena.domain.aap.forvalter.Forvalter;
 import no.nav.registre.arena.domain.aap.forvalter.Konto;
-import no.nav.registre.arena.domain.rettighet.NyRettighet;
 import no.nav.registre.arena.domain.rettighet.NyRettighetResponse;
+import no.nav.registre.arena.domain.rettighet.NyttVedtak;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
@@ -31,11 +33,16 @@ public class RettighetService {
     private static final int MIN_ALDER_UNG_UFOER = 18;
     private static final int MAX_ALDER_UNG_UFOER = 36;
     private static final String BEGRUNNELSE = "Syntetisert rettighet";
+    private static final String KVALIFISERINGSGRUPPE_IKVAL = "IKVAL";
+    private static final String KVALIFISERINGSGRUPPE_BFORM = "BFORM";
+    private static final String KVALIFISERINGSGRUPPE_BATT = "BATT";
+    private static final String KVALIFISERINGSGRUPPE_VARIG = "VARIG";
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final RettighetSyntConsumer rettighetSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final SyntetiseringService syntetiseringService;
+    private final Random rand;
 
     public List<NyRettighetResponse> genererVedtakshistorikk(
             Long avspillergruppeId,
@@ -55,7 +62,7 @@ public class RettighetService {
 
                 RettighetRequest rettighetRequest;
                 // aap:
-                List<NyRettighet> aap = vedtak.getAap();
+                List<NyttVedtak> aap = vedtak.getAap();
                 if (aap != null && !aap.isEmpty()) {
                     rettighetRequest = new RettighetAapRequest(aap);
                     rettighetRequest.setPersonident(personident);
@@ -64,8 +71,18 @@ public class RettighetService {
                     rettigheter.add(rettighetRequest);
                 }
 
+                // aap_115:
+                List<NyttVedtak> aap115 = vedtak.getAap115();
+                if (aap115 != null && !aap115.isEmpty()) {
+                    rettighetRequest = new RettighetAap115Request(aap115);
+                    rettighetRequest.setPersonident(personident);
+                    rettighetRequest.setMiljoe(miljoe);
+                    ((RettighetAap115Request) rettighetRequest).getNyeAap115().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+                    rettigheter.add(rettighetRequest);
+                }
+
                 // ung-ufør:
-                List<NyRettighet> ungUfoer = vedtak.getUngUfoer();
+                List<NyttVedtak> ungUfoer = vedtak.getUngUfoer();
                 if (ungUfoer != null && !ungUfoer.isEmpty()) {
                     rettighetRequest = new RettighetUngUfoerRequest(ungUfoer);
                     rettighetRequest.setPersonident(personident);
@@ -75,7 +92,7 @@ public class RettighetService {
                 }
 
                 // tvungen forvaltning:
-                List<NyRettighet> tvungenForvaltning = vedtak.getTvungenForvaltning();
+                List<NyttVedtak> tvungenForvaltning = vedtak.getTvungenForvaltning();
                 if (tvungenForvaltning != null && !tvungenForvaltning.isEmpty()) {
                     rettighetRequest = new RettighetTvungenForvaltningRequest(tvungenForvaltning);
                     rettighetRequest.setPersonident(personident);
@@ -88,7 +105,7 @@ public class RettighetService {
                 }
 
                 // fritak meldekort:
-                List<NyRettighet> fritakMeldekort = vedtak.getFritakMeldekort();
+                List<NyttVedtak> fritakMeldekort = vedtak.getFritakMeldekort();
                 if (fritakMeldekort != null && !fritakMeldekort.isEmpty()) {
                     rettighetRequest = new RettighetFritakMeldekortRequest(fritakMeldekort);
                     rettighetRequest.setPersonident(personident);
@@ -113,6 +130,27 @@ public class RettighetService {
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
             var rettighetRequest = new RettighetAapRequest(Collections.singletonList(syntetisertRettighet));
+            rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
+            rettighetRequest.setMiljoe(miljoe);
+
+            rettigheter.add(rettighetRequest);
+        }
+
+        return rettighetArenaForvalterConsumer.opprettRettighet(opprettArbeidssoeker(rettigheter, miljoe));
+    }
+
+    public List<NyRettighetResponse> genererAap115(
+            Long avspillergruppeId,
+            String miljoe,
+            int antallNyeIdenter
+    ) {
+        var utvalgteIdenter = getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter);
+        var syntetiserteRettigheter = rettighetSyntConsumer.syntetiserRettighetAap115(utvalgteIdenter.size());
+
+        List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
+        for (var syntetisertRettighet : syntetiserteRettigheter) {
+            syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
+            var rettighetRequest = new RettighetAap115Request(Collections.singletonList(syntetisertRettighet));
             rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
             rettighetRequest.setMiljoe(miljoe);
 
@@ -196,7 +234,7 @@ public class RettighetService {
                 .collect(Collectors.toList());
 
         if (!uregistrerteBrukere.isEmpty()) {
-            var nyeBrukereResponse = syntetiseringService.byggArbeidsoekereOgLagreIHodejegeren(uregistrerteBrukere, miljoe);
+            var nyeBrukereResponse = syntetiseringService.byggArbeidsoekereOgLagreIHodejegeren(uregistrerteBrukere, miljoe, rand.nextBoolean() ? KVALIFISERINGSGRUPPE_BATT : KVALIFISERINGSGRUPPE_VARIG);
             var feiledeIdenter = nyeBrukereResponse.getNyBrukerFeilList().stream().map(NyBrukerFeil::getPersonident).collect(Collectors.toCollection(ArrayList::new));
             rettigheter.removeIf(rettighet -> feiledeIdenter.contains(rettighet.getPersonident()));
         }
