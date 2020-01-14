@@ -21,15 +21,14 @@ export const FieldArrayRemoveButton = ({ onClick }) => (
 	<Button className="field-group-remove" kind="remove-circle" onClick={onClick} title="Fjern" />
 )
 
-export const DollyFaBlokk = ({ title, idx, arrayHelpers, hjelpetekst, children }) => {
-	const handleRemove = () => arrayHelpers.remove(idx)
+export const DollyFaBlokk = ({ title, idx, handleRemove, hjelpetekst, children }) => {
 	return (
 		<div className="dfa-blokk">
 			<div className="dfa-blokk-header">
 				<span>{idx + 1}</span>
 				<h2>{title}</h2>
 				{hjelpetekst && <HjelpeTekst>{hjelpetekst}</HjelpeTekst>}
-				<Button kind="trashcan" onClick={handleRemove} title="Fjern" />
+				{handleRemove && <Button kind="trashcan" onClick={() => handleRemove(idx)} title="Fjern" />}
 			</div>
 			<div className="dfa-blokk-content">{children}</div>
 		</div>
@@ -40,6 +39,7 @@ export const DollyFieldArray = ({ name, title, newEntry, hjelpetekst, children }
 	<FieldArray name={name}>
 		{arrayHelpers => {
 			const values = _get(arrayHelpers.form.values, name)
+			const handleRemove = idx => arrayHelpers.remove(idx)
 			return (
 				<React.Fragment>
 					{values.map((curr, idx) => {
@@ -50,7 +50,7 @@ export const DollyFieldArray = ({ name, title, newEntry, hjelpetekst, children }
 								idx={idx}
 								title={title}
 								hjelpetekst={hjelpetekst}
-								arrayHelpers={arrayHelpers}
+								handleRemove={handleRemove}
 							>
 								{children(path, idx, curr)}
 							</DollyFaBlokk>
