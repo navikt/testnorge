@@ -46,6 +46,8 @@ import ProblemTriangle from '~/assets/icons/custom/ProblemTriangle.svg'
 import Details from '~/assets/icons/custom/Details.svg'
 import ReportProblemCircle from '~/assets/icons/custom/ProblemCircle.svg'
 import CheckCircle from '~/assets/icons/custom/CheckCircle.svg'
+import Love from '~/assets/icons/custom/Love.svg'
+import Baby from '~/assets/icons/custom/Baby.svg'
 
 import './Icon.less'
 
@@ -94,7 +96,9 @@ const icons = {
 	arbeid: Wrench,
 	sigrun: BankNote,
 	udi: Globe,
-	kommentar: ChatBubble
+	kommentar: ChatBubble,
+	partner: Love,
+	barn: Baby
 }
 
 const px = v => `${v}px`
