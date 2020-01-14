@@ -14,7 +14,6 @@ export default function BestillingDetaljer({ bestilling }) {
 	const alleredeSendtTilOpenAm = Boolean(bestilling.openamSent)
 
 	const harIdenterOpprettet = bestilling.antallIdenterOpprettet > 0
-	const btnCss = 'flexbox--align-center'
 
 	return (
 		<div className="bestilling-detaljer">
@@ -23,12 +22,12 @@ export default function BestillingDetaljer({ bestilling }) {
 			{harIdenterOpprettet && (
 				<div className="flexbox--align-center--justify-end info-block">
 					{!alleredeSendtTilOpenAm && (
-						<Button className={btnCss} onClick={openOpenAmModal} kind="chevron-right">
+						<Button onClick={openOpenAmModal} kind="chevron-right">
 							SEND TIL OPENAM
 						</Button>
 					)}
 
-					<Button onClick={openGjenopprettModal} className={btnCss} kind="synchronize">
+					<Button onClick={openGjenopprettModal} kind="synchronize">
 						GJENOPPRETT
 					</Button>
 				</div>
