@@ -44,6 +44,10 @@ export default {
 		return Request.put(Endpoints.identIbruk(ident, ibruk))
 	},
 
+	createRelasjon(ident, data) {
+		return Request.put(Endpoints.kobleIdenter(ident), data)
+	},
+
 	// Bruker
 	getBrukere() {
 		return Request.get(Endpoints.bruker())

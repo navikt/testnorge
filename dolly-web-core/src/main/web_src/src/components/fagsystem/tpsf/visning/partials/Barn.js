@@ -26,8 +26,9 @@ export const Barn = ({ data, bestilling }) => {
 			<TitleValue title="Etternavn" value={data.etternavn} />
 			<TitleValue title="Kjønn" value={Formatters.kjonn(data.kjonn, data.alder)} />
 			<TitleValue title="Alder" value={Formatters.formatAlder(data.alder, data.doedsdato)} />
-			<TitleValue title="Foreldre" value={foreldre(bestilling.barnType)} />
-			<TitleValue title="Bor hos" value={adresse(bestilling.borHos)} />
+			{/* Midlertidig!! */}
+			{/* <TitleValue title="Foreldre" value={foreldre(bestilling.barnType)} />
+			<TitleValue title="Bor hos" value={adresse(bestilling.borHos)} /> */}
 		</div>
 	)
 }

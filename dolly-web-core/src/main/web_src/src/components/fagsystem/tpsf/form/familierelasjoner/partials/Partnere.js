@@ -7,6 +7,7 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
 import { Diskresjonskoder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/diskresjonskoder/Diskresjonskoder'
 import Formatters from '~/utils/DataFormatter'
+import { Sivilstand } from './Sivilstand'
 
 const initialValues = {
 	identtype: 'FNR',
@@ -17,7 +18,6 @@ const initialValues = {
 	spesreg: '',
 	utenFastBopel: false
 }
-const initForhold = { sivilstand: '', sivilstandRegdato: '' }
 
 export const Partnere = ({ formikBag }) => (
 	<DollyFieldArray name="tpsf.relasjoner.partnere" title="Partner" newEntry={initialValues}>
@@ -33,27 +33,7 @@ export const Partnere = ({ formikBag }) => (
 				<FormikCheckbox name={`${path}.harFellesAdresse`} label="Har felles adresse" />
 				<Alder basePath={path} formikBag={formikBag} />
 				<Diskresjonskoder basePath={path} formikBag={formikBag} />
-				<DollyFieldArray
-					name={`tpsf.relasjoner.partnere[${idx}].sivilstander`}
-					title="Forhold"
-					newEntry={initForhold}
-				>
-					{(path, idx) => (
-						<React.Fragment key={idx}>
-							<FormikSelect
-								name={`${path}.sivilstand`}
-								label="Forhold til partner (sivilstand)"
-								kodeverk="Sivilstander"
-								isClearable={false}
-							/>
-							<FormikDatepicker
-								name={`${path}.sivilstandRegdato`}
-								label="Sivilstand fra dato"
-								isClearable={false}
-							/>
-						</React.Fragment>
-					)}
-				</DollyFieldArray>
+				<Sivilstand tpsfPath={`tpsf.relasjoner.partnere[${idx}].sivilstander`} />
 			</React.Fragment>
 		)}
 	</DollyFieldArray>

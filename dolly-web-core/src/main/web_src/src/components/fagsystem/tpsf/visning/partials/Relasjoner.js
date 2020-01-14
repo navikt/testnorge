@@ -49,7 +49,10 @@ export const Relasjoner = ({ relasjoner, bestilling }) => {
 				{barn.map((barnet, jdx) => (
 					<div key={jdx} className="title-multiple">
 						<h3>Barn {jdx + 1}</h3>
-						<Barn data={barnet.personRelasjonMed} bestilling={bestilling.relasjoner.barn[jdx]} />
+						<Barn data={barnet.personRelasjonMed} />
+						{/* Midlertidig!! */}
+
+						{/* bestilling={bestilling.relasjoner.barn[jdx]} />*/}
 					</div>
 				))}
 			</div>
