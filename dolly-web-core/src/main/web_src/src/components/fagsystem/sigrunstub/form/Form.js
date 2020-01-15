@@ -5,7 +5,7 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
 import { InntektsaarForm } from './partials/inntektsaarForm'
-import { requiredString, ifPresent } from '~/utils/YupValidations'
+import { ifPresent } from '~/utils/YupValidations'
 
 const sigrunAttributt = 'sigrunstub'
 export const SigrunstubForm = ({ formikBag }) => (
@@ -39,9 +39,6 @@ SigrunstubForm.validation = {
 						const values = this.options.context
 						const path = this.options.path
 						const index = path.charAt(path.indexOf('[') + 1)
-						console.log('this :', this)
-						console.log('values :', values)
-						console.log('path :', path)
 						if (values.sigrunstub[index].tjeneste === 'BEREGNET_SKATT') {
 							if (values.sigrunstub[index].grunnlag.length > 0) {
 								return true
@@ -55,7 +52,6 @@ SigrunstubForm.validation = {
 							} else return false
 						} else return true
 					}),
-				// .min(1, 'Legg til minst én inntekt'),
 				inntektsaar: Yup.number()
 					.integer('Ugyldig årstall')
 					.required('Tast inn et gyldig år'),
@@ -66,46 +62,9 @@ SigrunstubForm.validation = {
 							.min(0, 'Tast inn et gyldig beløp')
 							.required('Oppgi beløpet')
 					})
-				).test,
+				),
 				tjeneste: Yup.string().required('Velg en type tjeneste.')
 			})
 		)
 	)
 }
-
-// grunnlag: Yup.array().when('tjeneste', {
-// 	is: 'BEREGNET_SKATT',
-// 	then: Yup.array()
-// 		.of(
-// 			Yup.object({
-// 				tekniskNavn: Yup.string().required('Velg en type inntekt.'),
-// 				verdi: Yup.number()
-// 					.min(0, 'Tast inn et gyldig beløp')
-// 					.required('Oppgi beløpet')
-// 			})
-// 		)
-// 		.min(1, 'Legg til minst én inntekt')
-// }),
-
-// svalbardGrunnlag: Yup.array().of(
-// 	Yup.object({
-// 		tekniskNavn: Yup.string().required('Velg en type inntekt.'),
-// 		verdi: Yup.number()
-// 			.min(0, 'Tast inn et gyldig beløp')
-// 			.required('Oppgi beløpet')
-// 	})
-// ),
-
-// const delaySchema = yup.object().shape({
-// 	shouldCheck: yup.boolean(),
-// 	rules: yup.array()
-// 	  .when(['shouldCheck'], {
-// 		is: (sck) => {
-// 		  return sck;
-// 		},
-// 	  then: yup.array().of(yup.object().shape({
-// 		right: yup.string().required(),
-// 	  })),
-// 	  otherwise: yup.mixed().nullable()
-// 	}),
-//   });
