@@ -10,12 +10,7 @@ import { ifPresent } from '~/utils/YupValidations'
 const sigrunAttributt = 'sigrunstub'
 export const SigrunstubForm = ({ formikBag }) => (
 	<Vis attributt={sigrunAttributt}>
-		<Panel
-			heading="Inntekt"
-			hasErrors={panelError(formikBag, sigrunAttributt)}
-			iconType="sigrun"
-			startOpen
-		>
+		<Panel heading="Inntekt" hasErrors={panelError(formikBag, sigrunAttributt)} iconType="sigrun">
 			<InntektsaarForm formikBag={formikBag} />
 		</Panel>
 	</Vis>

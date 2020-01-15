@@ -6,7 +6,6 @@ import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 
 export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
-	console.log('data :', data)
 	if (loading) return <Loading label="laster sigrunstub-data" />
 	if (!data || data.length === 0) return false
 	const grunnlag = data[0].grunnlag.length > 0
