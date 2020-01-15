@@ -1,5 +1,5 @@
 import React from 'react'
-import Knapp from 'nav-frontend-knapper'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 import useBoolean from '~/utils/hooks/useBoolean'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import Button from '~/components/ui/button/Button'
@@ -14,7 +14,7 @@ export const SlettButton = ({ action, loading, children }) => {
 
 	return (
 		<React.Fragment>
-			<Button onClick={openModal} className="flexbox--align-center" kind="trashcan">
+			<Button onClick={openModal} kind="trashcan">
 				SLETT
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%">
@@ -25,10 +25,10 @@ export const SlettButton = ({ action, loading, children }) => {
 						<h4>{children}</h4>
 					</div>
 					<div className="slettModal-actions">
-						<Knapp onClick={closeModal}>NEI</Knapp>
-						<Knapp onClick={action} type="hoved" className="flexbox--align-center">
+						<NavButton onClick={closeModal}>NEI</NavButton>
+						<NavButton onClick={action} type="hoved">
 							JA, JEG ER SIKKER
-						</Knapp>
+						</NavButton>
 					</div>
 				</div>
 			</DollyModal>

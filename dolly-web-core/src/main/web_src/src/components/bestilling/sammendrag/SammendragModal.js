@@ -9,7 +9,7 @@ export const BestillingSammendragModal = ({ bestilling }) => {
 
 	return (
 		<div className="flexbox--align-center--justify-end">
-			<Button onClick={openModal} className="flexbox--align-center" kind="details">
+			<Button onClick={openModal} kind="details">
 				BESTILLINGSDETALJER
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="60%">

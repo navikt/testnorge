@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import { Formik, Form } from 'formik'
 import * as yup from 'yup'
-import Knapp from 'nav-frontend-knapper'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { TpsfApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
@@ -242,9 +242,9 @@ export default class SendDoedsmelding extends PureComponent {
 									/>
 								</div>
 								<div className="tps-endring-knapp-container">
-									<Knapp type="hoved" htmlType="submit" disabled={!foundIdent}>
+									<NavButton type="hoved" htmlType="submit" disabled={!foundIdent}>
 										Opprett dødsmelding
-									</Knapp>
+									</NavButton>
 								</div>
 							</Form>
 						)

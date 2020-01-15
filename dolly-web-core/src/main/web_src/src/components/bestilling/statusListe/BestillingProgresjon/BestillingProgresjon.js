@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { DollyApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
 import { Line } from 'rc-progress'
-import Knapp from 'nav-frontend-knapper'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Icon from '~/components/ui/icon/Icon'
 
 import './BestillingProgresjon.less'
@@ -142,9 +142,9 @@ export default class BestillingProgresjon extends PureComponent {
 								Dette tar lengre tid enn forventet. Noe kan ha gått galt med bestillingen din.
 							</h5>
 						</div>
-						<Knapp type="fare" onClick={this._onCancelBtn}>
+						<NavButton type="fare" onClick={this._onCancelBtn}>
 							AVBRYT BESTILLING
-						</Knapp>
+						</NavButton>
 					</div>
 				)}
 			</Fragment>
