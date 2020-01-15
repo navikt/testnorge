@@ -14,7 +14,7 @@ export const SlettButton = ({ action, loading, children }) => {
 
 	return (
 		<React.Fragment>
-			<Button onClick={openModal} className="flexbox--align-center" kind="trashcan">
+			<Button onClick={openModal} kind="trashcan">
 				SLETT
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%">

@@ -7,12 +7,7 @@ import HjelpeTekst from 'nav-frontend-hjelpetekst'
 import './dollyFieldArray.less'
 
 export const FieldArrayAddButton = ({ title, onClick }) => (
-	<Button
-		className="flexbox--align-center"
-		kind="add-circle"
-		onClick={onClick}
-		title={`Legg til ${title}`}
-	>
+	<Button kind="add-circle" onClick={onClick} title={`Legg til ${title}`}>
 		{title}
 	</Button>
 )

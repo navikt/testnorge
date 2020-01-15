@@ -25,7 +25,7 @@ export default class Button extends PureComponent {
 		const {
 			kind,
 			onClick,
-			iconSize,
+			iconSize = 16,
 			loading,
 			children,
 			className,
@@ -35,6 +35,12 @@ export default class Button extends PureComponent {
 
 		const cssClass = cn('dolly-button', className)
 
+		const renderIcon = loading ? (
+			<Loading onlySpinner size={iconSize} />
+		) : kind ? (
+			<Icon size={iconSize} kind={kind} />
+		) : null
+
 		return (
 			<button
 				type={type}
@@ -43,9 +49,8 @@ export default class Button extends PureComponent {
 				disabled={rest.disabled || loading}
 				{...rest}
 			>
-				{kind && <Icon size={iconSize || 16} kind={kind} />}
-				{children && <p>{children}</p>}
-				{loading && <Loading onlySpinner />}
+				{renderIcon}
+				{children && <span>{children}</span>}
 			</button>
 		)
 	}
