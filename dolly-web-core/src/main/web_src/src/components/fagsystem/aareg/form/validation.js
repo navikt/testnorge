@@ -70,43 +70,46 @@ const utenlandsopphold = Yup.array().of(
 )
 
 export const validation = {
-	aareg: Yup.array().of(
-		Yup.object({
-			ansettelsesPeriode: Yup.object({
-				fom: requiredDate,
-				tom: Yup.date().nullable()
-			}),
-			arbeidsforholdstype: requiredString,
-			arbeidsgiver: Yup.object({
-				aktoertype: requiredString,
-				orgnummer: Yup.string().when('aktoertype', {
-					is: 'ORG',
-					then: Yup.string()
-						.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
-						.test('len', 'Orgnummer må være et tall med 9 sifre', val => val && val.length === 9)
+	aareg: ifPresent(
+		'$aareg',
+		Yup.array().of(
+			Yup.object({
+				ansettelsesPeriode: Yup.object({
+					fom: requiredDate,
+					tom: Yup.date().nullable()
 				}),
-				ident: Yup.string().when('aktoertype', {
-					is: 'PERS',
-					then: Yup.string()
-						.matches(/^[0-9]*$/, 'Ident må være et tall med 11 sifre')
-						.test('len', 'Ident må være et tall med 11 sifre', val => val && val.length === 11)
-				})
-			}),
-			arbeidsavtale: Yup.object({
-				yrke: requiredString,
-				stillingsprosent: Yup.number()
-					.min(1, 'Kan ikke være mindre enn 1')
-					.max(100, 'Kan ikke være større enn 100')
-					.required('Feltet er påkrevd'),
-				endringsdatoStillingsprosent: Yup.date().nullable(),
-				arbeidstidsordning: requiredString
-			}),
-			antallTimerForTimeloennet: ifPresent(
-				'$aareg[0].antallTimerForTimeloennet',
-				antallTimerForTimeloennet
-			),
-			permisjon: ifPresent('$aareg[0].permisjon', permisjon),
-			utenlandsopphold: ifPresent('$aareg[0].utenlandsopphold', utenlandsopphold)
-		})
+				arbeidsforholdstype: requiredString,
+				arbeidsgiver: Yup.object({
+					aktoertype: requiredString,
+					orgnummer: Yup.string().when('aktoertype', {
+						is: 'ORG',
+						then: Yup.string()
+							.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
+							.test('len', 'Orgnummer må være et tall med 9 sifre', val => val && val.length === 9)
+					}),
+					ident: Yup.string().when('aktoertype', {
+						is: 'PERS',
+						then: Yup.string()
+							.matches(/^[0-9]*$/, 'Ident må være et tall med 11 sifre')
+							.test('len', 'Ident må være et tall med 11 sifre', val => val && val.length === 11)
+					})
+				}),
+				arbeidsavtale: Yup.object({
+					yrke: requiredString,
+					stillingsprosent: Yup.number()
+						.min(1, 'Kan ikke være mindre enn 1')
+						.max(100, 'Kan ikke være større enn 100')
+						.required('Feltet er påkrevd'),
+					endringsdatoStillingsprosent: Yup.date().nullable(),
+					arbeidstidsordning: requiredString
+				}),
+				antallTimerForTimeloennet: ifPresent(
+					'$aareg[0].antallTimerForTimeloennet',
+					antallTimerForTimeloennet
+				),
+				permisjon: ifPresent('$aareg[0].permisjon', permisjon),
+				utenlandsopphold: ifPresent('$aareg[0].utenlandsopphold', utenlandsopphold)
+			})
+		)
 	)
 }
