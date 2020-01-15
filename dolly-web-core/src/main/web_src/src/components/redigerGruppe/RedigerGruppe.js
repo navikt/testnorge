@@ -6,6 +6,8 @@ import * as yup from 'yup'
 import Loading from '~/components/ui/loading/Loading'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 
+import './RedigerGruppe.less'
+
 export default class RedigerGruppe extends PureComponent {
 	static propTypes = {
 		gruppe: PropTypes.shape({
