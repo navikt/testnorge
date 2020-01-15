@@ -35,8 +35,12 @@ export const StegVelger = ({ steps, initialValues, onSubmit, children }) => {
 			await schema.validate(values, { abortEarly: false, context: values })
 			return {}
 		} catch (err) {
-			// TODO: SJEKK AT ER AV TYPEN VALIDATEERROR
-			return yupToFormErrors(err)
+			if (err.name === 'ValidationError') {
+				return yupToFormErrors(err)
+			} else {
+				console.log('Validation error')
+				throw err
+			}
 		}
 	}
 

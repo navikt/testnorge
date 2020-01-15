@@ -7,14 +7,16 @@ export const Barn = ({ data, bestilling }) => {
 
 	// Finn ut hva vi skal returnere for borHos og barnType :-)
 	const adresse = borHos => {
-		if (borHos === 'MEG') return borHos
-		if (borHos === 'DEG') return `Partner ${bestilling.partnerNr}`
-		if (borHos === 'BEGGE') return borHos
+		if (borHos === 'MEG') return 'Hovedperson'
+		if (borHos === 'DEG') return `Partner ${bestilling.partnerNr ? bestilling.partnerNr : ''}`
+		if (borHos === 'OSS')
+			return `Hovedperson og partner ${bestilling.partnerNr ? bestilling.partnerNr : ''}`
 	}
 	const foreldre = barnType => {
-		if (barnType === 'MITT') return barnType
-		if (barnType === 'DITT') return `Partner ${bestilling.partnerNr}`
-		if (barnType === 'FELLES') return barnType
+		if (barnType === 'MITT') return 'Hovedperson'
+		if (barnType === 'DITT') return `Partner ${bestilling.partnerNr ? bestilling.partnerNr : ''}`
+		if (barnType === 'FELLES')
+			return `Hovedperson og partner ${bestilling.partnerNr ? bestilling.partnerNr : ''}`
 	}
 	return (
 		<div className="person-visning_content">
@@ -22,10 +24,10 @@ export const Barn = ({ data, bestilling }) => {
 			<TitleValue title="Fornavn" value={data.fornavn} />
 			<TitleValue title="Mellomnavn" value={data.mellomnavn} />
 			<TitleValue title="Etternavn" value={data.etternavn} />
-			<TitleValue title="Kjønn" value={Formatters.kjonnToString(data.kjonn)} />
+			<TitleValue title="Kjønn" value={Formatters.kjonn(data.kjonn, data.alder)} />
 			<TitleValue title="Alder" value={Formatters.formatAlder(data.alder, data.doedsdato)} />
+			<TitleValue title="Foreldre" value={foreldre(bestilling.barnType)} />
 			<TitleValue title="Bor hos" value={adresse(bestilling.borHos)} />
-			<TitleValue title="Barn av" value={foreldre(bestilling.barnType)} />
 		</div>
 	)
 }

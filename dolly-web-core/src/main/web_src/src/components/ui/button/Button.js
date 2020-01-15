@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
 import Icon from '~/components/ui/icon/Icon'
+import Loading from '~/components/ui/loading/Loading'
 import './Button.less'
 
 export default class Button extends PureComponent {
@@ -21,14 +22,35 @@ export default class Button extends PureComponent {
 	}
 
 	render() {
-		const { kind, onClick, iconSize, children, className, type = 'button', ...rest } = this.props
+		const {
+			kind,
+			onClick,
+			iconSize = 16,
+			loading,
+			children,
+			className,
+			type = 'button',
+			...rest
+		} = this.props
 
 		const cssClass = cn('dolly-button', className)
 
+		const renderIcon = loading ? (
+			<Loading onlySpinner size={iconSize} />
+		) : kind ? (
+			<Icon size={iconSize} kind={kind} />
+		) : null
+
 		return (
-			<button type={type} className={cssClass} onClick={this.onClickHandler} {...rest}>
-				{kind && <Icon size={iconSize || 16} kind={kind} />}
-				{children && <p>{children}</p>}
+			<button
+				type={type}
+				className={cssClass}
+				onClick={this.onClickHandler}
+				disabled={rest.disabled || loading}
+				{...rest}
+			>
+				{renderIcon}
+				{children && <span>{children}</span>}
 			</button>
 		)
 	}

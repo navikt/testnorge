@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react'
 import { Formik, Form } from 'formik'
-import Knapp from 'nav-frontend-knapper'
 import * as yup from 'yup'
 import { TpsfApi } from '~/service/Api'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -240,9 +240,9 @@ export default class SendFoedselsmelding extends PureComponent {
 									/>
 								</div>
 								<div className="tps-endring-knapp-container">
-									<Knapp type="hoved" htmlType="submit" disabled={!foundIdentMor}>
+									<NavButton type="hoved" htmlType="submit" disabled={!foundIdentMor}>
 										Opprett fødselsmelding
-									</Knapp>
+									</NavButton>
 								</div>
 								{/* <DisplayFormikState {...props} /> */}
 							</Form>

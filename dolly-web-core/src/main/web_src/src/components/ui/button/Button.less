@@ -1,6 +1,9 @@
 @import (reference) '~lessVars';
 
 .dolly-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	font-weight: 600;
 	font-size: 0.8rem;
 	line-height: 9px; // Center text
@@ -11,15 +14,14 @@
 	cursor: pointer;
 	padding: 5px;
 
+	span {
+		padding: 0 5px;
+	}
+
 	&:hover {
 		border-color: @color-lightblue;
 		.svg-icon {
 			fill: @color-lightblue;
 		}
-	}
-
-	p {
-		margin: 0;
-		padding-left: 5px;
 	}
 }

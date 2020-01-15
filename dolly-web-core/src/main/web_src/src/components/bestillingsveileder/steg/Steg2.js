@@ -1,6 +1,6 @@
 import React from 'react'
 import * as Yup from 'yup'
-import _has from 'lodash/has'
+import { harAvhukedeAttributter } from '../utils'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { TpsfForm } from '~/components/fagsystem/tpsf/form/Form'
 import { KrrstubForm } from '~/components/fagsystem/krrstub/form/Form'
@@ -12,18 +12,7 @@ import { InstForm } from '~/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '~/components/fagsystem/udistub/form/Form'
 
 export const Steg2 = ({ formikBag }) => {
-	const avhukedeAttributter = [
-		'tpsf',
-		'pdlforvalter',
-		'aareg',
-		'sigrunstub',
-		'instdata',
-		'krrstub',
-		'arenaforvalter',
-		'udistub'
-	].some(path => _has(formikBag.values, path))
-
-	if (!avhukedeAttributter) {
+	if (!harAvhukedeAttributter(formikBag.values)) {
 		return (
 			<AlertStripeInfo>
 				Du har ikke valgt noen egenskaper. Dolly oppretter personer med tilfeldige verdier.

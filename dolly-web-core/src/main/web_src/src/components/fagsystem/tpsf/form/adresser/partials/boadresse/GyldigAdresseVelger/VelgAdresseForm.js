@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import Knapp from 'nav-frontend-knapper'
 
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import Button from '~/components/ui/button/Button'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 
 export const VelgAdresseForm = ({ adresser, velgAdresse }) => {
 	const mappedAdresser = adresser.map(mapAdresserToOptions)
@@ -47,9 +46,9 @@ export const VelgAdresseForm = ({ adresser, velgAdresse }) => {
 					onChange={v => setValgtHusnummer(v.value)}
 					isClearable={false}
 				/>
-				<Knapp form="kompakt" type="standard" onClick={onVelgAdresse} className="knapp">
+				<NavButton form="kompakt" className="knapp" onClick={onVelgAdresse}>
 					<div className="knapp-header">Velg adresse</div>
-				</Knapp>
+				</NavButton>
 			</div>
 		</div>
 	)

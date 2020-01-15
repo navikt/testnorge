@@ -3,7 +3,7 @@ import Button from '~/components/ui/button/Button'
 import useBoolean from '~/utils/hooks/useBoolean'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
-import EksporterExcel from '~/pages/gruppe/EksporterExcel/EksporterExcel'
+import { EksporterCSV } from '~/pages/gruppe/EksporterCSV/EksporterCSV'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { Header } from '~/components/ui/header/Header'
 import Formatters from '~/utils/DataFormatter'
@@ -32,14 +32,14 @@ export default function GruppeHeader({ gruppe, identArray, isDeletingGruppe, del
 				</div>
 				<div className="gruppe-header_actions">
 					{gruppe.erEierAvGruppe && (
-						<Button className="flexbox--align-center" kind="edit" onClick={visRediger}>
+						<Button kind="edit" onClick={visRediger}>
 							REDIGER
 						</Button>
 					)}
 					<SlettButton action={deleteGruppe} loading={isDeletingGruppe}>
 						Er du sikker på at du vil slette denne gruppen?
 					</SlettButton>
-					<EksporterExcel identer={identArray} gruppeId={gruppe.id} />
+					<EksporterCSV identer={identArray} gruppeId={gruppe.id} />
 					{!gruppe.erEierAvGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 				</div>
 			</Header>

@@ -3,6 +3,7 @@ import Gruppe from './pages/gruppe/GruppeConnector'
 import GruppeOversikt from './pages/gruppeOversikt/GruppeOversiktConnector'
 import TPSEndring from './pages/tpsEndring/TpsEndring'
 import BestillingsveilederConnector from './components/bestillingsveileder/BestillingsveilederConnector'
+import UI from './pages/ui/index'
 
 const GruppeBreadcrumb = props => <span>Gruppe #{props.match.params.gruppeId}</span>
 
@@ -15,7 +16,8 @@ const routes = [
 		breadcrumb: 'Legg til personer',
 		component: BestillingsveilederConnector
 	},
-	{ path: '/tpsendring', exact: true, breadcrumb: 'TPSEndring', component: TPSEndring }
+	{ path: '/tpsendring', exact: true, breadcrumb: 'TPSEndring', component: TPSEndring },
+	{ path: '/ui', exact: true, breadcrumb: 'UI demo', component: UI }
 ]
 
 export default routes

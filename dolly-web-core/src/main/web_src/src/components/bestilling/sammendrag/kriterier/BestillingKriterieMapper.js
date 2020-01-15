@@ -26,7 +26,8 @@ const _getTpsfBestillingData = data => {
 		obj('Har mellomnavn', Formatters.oversettBoolean(data.harMellomnavn)),
 		obj('Sivilstand', data.sivilstand, 'Sivilstander'),
 		obj('Diskresjonskoder', data.spesreg, 'Diskresjonskoder'),
-		obj('Uten fast bopel', Formatters.oversettBoolean(data.utenFastBopel)),
+		obj('Uten fast bopel', data.utenFastBopel && Formatters.oversettBoolean(data.utenFastBopel)),
+		obj('Kommunenummer', data.utenFastBopel && _get(data, 'boadresse.kommunenr')),
 		obj('Språk', data.sprakKode, 'Språk'),
 		obj('Innvandret fra land', data.innvandretFraLand, 'Landkoder'),
 		obj('Innvandret dato', Formatters.formatDate(data.innvandretFraLandFlyttedato)),
@@ -413,7 +414,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		if (pdlforvalterKriterier.falskIdentitet) {
 			const falskIdData = pdlforvalterKriterier.falskIdentitet.rettIdentitet
 
-			if (falskIdData.rettIdentitetErUkjent === true) {
+			if (falskIdData.identitetType === 'UKJENT') {
 				const falskId = {
 					header: 'Falsk identitet',
 					items: [
@@ -424,7 +425,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					]
 				}
 				data.push(falskId)
-			} else if (falskIdData.rettIdentitetVedIdentifikasjonsnummer) {
+			} else if (falskIdData.identitetType === 'ENTYDIG') {
 				const falskId = {
 					header: 'Falsk identitet',
 					items: [
@@ -435,7 +436,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					]
 				}
 				data.push(falskId)
-			} else {
+			} else if (falskIdData.identitetType === 'OMTRENTLIG') {
 				const falskId = {
 					header: 'Falsk identitet',
 					items: [
