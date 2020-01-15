@@ -1,25 +1,15 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
 import Button from '../Button'
 
-export default class FavoriteButton extends PureComponent {
-	static propTypes = {
-		isFavorite: PropTypes.bool,
-		addFavorite: PropTypes.func,
-		removeFavorite: PropTypes.func
-	}
-
-	render() {
-		const { isFavorite, hideLabel, addFavorite, removeFavorite } = this.props
-		return (
-			<Button
-				title={isFavorite ? 'Fjern fra favoritter' : 'Legg til som favoritt'}
-				iconSize={hideLabel && 18}
-				kind={isFavorite ? 'star-filled' : 'star'}
-				onClick={isFavorite ? removeFavorite : addFavorite}
-			>
-				{!hideLabel && (isFavorite ? 'FJERN FAVORITT' : 'FAVORISER')}
-			</Button>
-		)
-	}
+export default function FavoriteButton({ isFavorite, hideLabel, addFavorite, removeFavorite }) {
+	return (
+		<Button
+			title={isFavorite ? 'Fjern fra favoritter' : 'Legg til som favoritt'}
+			iconSize={hideLabel && 18}
+			kind={isFavorite ? 'star-filled' : 'star'}
+			onClick={isFavorite ? removeFavorite : addFavorite}
+		>
+			{!hideLabel && (isFavorite ? 'FJERN FAVORITT' : 'FAVORISER')}
+		</Button>
+	)
 }
