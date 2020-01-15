@@ -37,7 +37,7 @@ public class PdlPersonConsumer {
     private static final String GRAPHQL_URL = "/graphql";
     private static final String PREPROD_ENV = "q1";
 
-    @Value("${fasit.environment.name}")
+    @Value("${fasit.environment.name:t1}")
     private String environment;
 
     private final RestTemplate restTemplate;
