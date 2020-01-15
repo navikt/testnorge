@@ -2,7 +2,7 @@ apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
   name: dolly-backend
-  namespace: t2
+  namespace: t1
   labels:
     team: registre
 replicas:
@@ -11,7 +11,7 @@ replicas:
 spec:
   port: 8080
   ingresses:
-    - https://dolly-backend-t2.nais.preprod.local
+    - https://dolly-backend-t1.nais.preprod.local
   liveness:
     path: /internal/isAlive
     initialDelay: 20
@@ -35,15 +35,15 @@ spec:
   vault:
     enabled: true
     paths:
-      - kvPath: /kv/preprod/fss/dolly-backend/t2
+      - kvPath: /kv/preprod/fss/dolly-backend/t1
         mountPath: /var/run/secrets/nais.io/vault
-
-      - kvPath: /serviceuser/data/test/srvsigrun-u
-        mountPath: /var/run/secrets/nais.io/srvsigrun
-      - kvPath: /oracle/data/dev/creds/sigrun_u1-user
-        mountPath: /var/run/secrets/nais.io/db
-      - kvPath: /oracle/dev/config/dollybackend_t2
+      - kvPath: /oracle/dev/config/dolly_t1
         mountPath: /var/run/secrets/nais.io/dbPath
-
-
-  dev/config/dollybackend_t2
+      - kvPath: /oracle/data/dev/creds/dolly_t1-user
+        mountPath: /var/run/secrets/nais.io/db
+      - kvPath: /serviceuser/dev/srvdolly-preprod-env
+        mountPath: /var/run/secrets/nais.io/preprod
+      - kvPath: /serviceuser/test/srvdolly-backend
+        mountPath: /var/run/secrets/nais.io/test
+      - kvPath: /serviceuser/dev/srvfregdolly
+        mountPath: /var/run/secrets/nais.io/jira

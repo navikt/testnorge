@@ -30,7 +30,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
         <freg-security-oidc.version>3.0.5</freg-security-oidc.version>
+        <freg.property.version>1.2.0</freg.property.version>
         <freg-spring-boot-starters.version>2.0.0</freg-spring-boot-starters.version>
         <springfox.version>2.9.2</springfox.version>
         <kodeverk.version>1.2</kodeverk.version>
@@ -65,6 +67,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-vault-config</artifactId>
+            <version>${spring-cloud.version}</version>
         </dependency>
 
         <dependency>
@@ -181,6 +189,12 @@
                 <groupId>no.nav.freg</groupId>
                 <artifactId>metrics-annotations</artifactId>
                 <version>${freg-metrics.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>no.nav.freg</groupId>
+                <artifactId>freg-property-reader</artifactId>
+                <version>${freg.property.version}</version>
             </dependency>
 		</dependencies>
 

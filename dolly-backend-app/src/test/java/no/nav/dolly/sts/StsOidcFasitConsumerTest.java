@@ -5,12 +5,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
-import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.consumer.fasit.FasitApiConsumer;
-import no.nav.dolly.consumer.fasit.FasitResourceScope;
-import no.nav.dolly.consumer.fasit.FasitResourceWithUnmappedProperties;
-import no.nav.dolly.properties.Environment;
-import no.nav.dolly.security.sts.StsOidcFasitConsumer;
+import java.util.HashMap;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,18 +16,25 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.HashMap;
-import java.util.Map;
+import no.nav.dolly.consumer.fasit.FasitApiConsumer;
+import no.nav.dolly.consumer.fasit.FasitResourceScope;
+import no.nav.dolly.consumer.fasit.FasitResourceWithUnmappedProperties;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.properties.Environment;
+import no.nav.dolly.security.sts.StsOidcFasitConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StsOidcFasitConsumerTest {
 
     private static final Environment ENV = Environment.TEST;
     private static final String OIDC_ALIAS = "security-token-service-token";
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+
     @Mock
     private FasitApiConsumer fasitApiConsumer;
+
     @InjectMocks
     private StsOidcFasitConsumer stsOidcFasitConsumer;
 

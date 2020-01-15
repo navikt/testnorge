@@ -26,6 +26,10 @@
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc8</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.freg</groupId>
+            <artifactId>freg-property-reader</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

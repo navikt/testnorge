@@ -67,7 +67,7 @@ public class BestillingService {
     public List<Bestilling> fetchBestillingerByGruppeId(Long gruppeId) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
         return testgruppe.isPresent() ?
-            bestillingRepository.findBestillingByGruppeOrderById(testgruppe.get()) : emptyList();
+                bestillingRepository.findBestillingByGruppeOrderById(testgruppe.get()) : emptyList();
     }
 
     public List<Bestilling> fetchMalBestillinger() {
