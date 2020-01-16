@@ -32,7 +32,7 @@ export const BeskrivelseEditor = ({ beskrivelse, handleSubmit, turnOffEditing })
 					Avbryt
 				</Button>
 				<Button onClick={() => handleSubmit(value)} className="beskrivelse-button">
-					Legg til
+					Lagre
 				</Button>
 			</div>
 		</div>
