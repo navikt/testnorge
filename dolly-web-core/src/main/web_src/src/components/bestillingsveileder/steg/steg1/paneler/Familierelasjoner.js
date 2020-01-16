@@ -12,7 +12,6 @@ export const FamilierelasjonPanel = ({ stateModifier }) => {
 	return (
 		<Panel
 			heading={FamilierelasjonPanel.heading}
-			startOpen
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'relasjoner'}
