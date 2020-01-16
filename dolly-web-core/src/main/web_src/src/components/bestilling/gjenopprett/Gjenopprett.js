@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import * as yup from 'yup'
 import { Formik } from 'formik'
-import Knapp from 'nav-frontend-knapper'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import { MiljoVelger } from '~/components/miljoVelger/MiljoVelger'
 import Formatters from '~/utils/DataFormatter'
@@ -47,12 +47,12 @@ export default function GjenopprettBestilling(props) {
 							/>
 
 							<div className="dollymodal_buttons">
-								<Knapp autoFocus type="standard" onClick={closeModal}>
+								<NavButton autoFocus onClick={closeModal}>
 									Avbryt
-								</Knapp>
-								<Knapp type="hoved" onClick={formikProps.submitForm}>
+								</NavButton>
+								<NavButton type="hoved" onClick={formikProps.submitForm}>
 									Utfør
-								</Knapp>
+								</NavButton>
 							</div>
 						</Fragment>
 					)

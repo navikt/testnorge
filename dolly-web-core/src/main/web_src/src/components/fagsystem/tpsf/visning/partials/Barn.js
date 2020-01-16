@@ -2,10 +2,9 @@ import React from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 
-export const Barn = ({ data, bestilling }) => {
+export const Barn = ({ data, type, bestilling }) => {
 	if (!data) return false
 
-	// Finn ut hva vi skal returnere for borHos og barnType :-)
 	const adresse = borHos => {
 		if (borHos === 'MEG') return 'Hovedperson'
 		if (borHos === 'DEG') return `Partner ${bestilling.partnerNr ? bestilling.partnerNr : ''}`
@@ -18,6 +17,7 @@ export const Barn = ({ data, bestilling }) => {
 		if (barnType === 'FELLES')
 			return `Hovedperson og partner ${bestilling.partnerNr ? bestilling.partnerNr : ''}`
 	}
+
 	return (
 		<div className="person-visning_content">
 			<TitleValue title={data.identtype} value={data.ident} />
@@ -26,9 +26,12 @@ export const Barn = ({ data, bestilling }) => {
 			<TitleValue title="Etternavn" value={data.etternavn} />
 			<TitleValue title="Kjønn" value={Formatters.kjonn(data.kjonn, data.alder)} />
 			<TitleValue title="Alder" value={Formatters.formatAlder(data.alder, data.doedsdato)} />
+			<TitleValue title="Diskresjonskode" value={Formatters.showLabel(data.spesreg)} />
+			<TitleValue title="Uten fast bopel" value={data.utenFastBopel && 'Ja'} />
 			{/* Midlertidig!! */}
 			{/* <TitleValue title="Foreldre" value={foreldre(bestilling.barnType)} />
-			<TitleValue title="Bor hos" value={adresse(bestilling.borHos)} /> */}
+			<TitleValue title="Bor hos" value={!data.utenFastBopel && adresse(bestilling.borHos)} /> */}
+			<TitleValue title="Er adoptert" value={Formatters.oversettBoolean(type === 'BARN')} />
 		</div>
 	)
 }

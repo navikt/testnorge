@@ -1,10 +1,12 @@
 import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { Formik, Form, getIn } from 'formik'
-import Knapp from 'nav-frontend-knapper'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
 import Loading from '~/components/ui/loading/Loading'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+
+import './RedigerGruppe.less'
 
 export default class RedigerGruppe extends PureComponent {
 	static propTypes = {
@@ -35,12 +37,10 @@ export default class RedigerGruppe extends PureComponent {
 
 		let buttons = (
 			<Fragment>
-				<Knapp mini type="standard" htmlType="button" onClick={() => this.onCancel()}>
-					Avbryt
-				</Knapp>
-				<Knapp mini type="hoved" htmlType="submit">
+				<NavButton onClick={() => this.onCancel()}>Avbryt</NavButton>
+				<NavButton type="hoved" htmlType="submit">
 					{this.erRedigering ? 'Lagre' : 'Opprett og gå til gruppe'}
-				</Knapp>
+				</NavButton>
 			</Fragment>
 		)
 

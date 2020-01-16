@@ -32,7 +32,7 @@ export default function GruppeHeader({ gruppe, identArray, isDeletingGruppe, del
 				</div>
 				<div className="gruppe-header_actions">
 					{gruppe.erEierAvGruppe && (
-						<Button className="flexbox--align-center" kind="edit" onClick={visRediger}>
+						<Button kind="edit" onClick={visRediger}>
 							REDIGER
 						</Button>
 					)}

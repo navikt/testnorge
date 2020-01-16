@@ -3,7 +3,7 @@ import { useAsyncFn } from 'react-use'
 import { Textarea } from 'nav-frontend-skjema'
 import _get from 'lodash/get'
 import Alertstripe from 'nav-frontend-alertstriper'
-import Knapp from 'nav-frontend-knapper'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { TpsfApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
 import { ModalActions } from '../ModalActions'
@@ -43,9 +43,9 @@ export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
 						Skriv inn fnr/dnr/bost. Disse personene kan ikke eksistere i prod, eller finnes i Dolly
 						fra før.
 					</Alertstripe>
-					<Knapp type="hoved" onClick={() => fetch()} disabled={!text.length}>
+					<NavButton type="hoved" onClick={() => fetch()} disabled={!text.length}>
 						Sjekk gyldige personer
-					</Knapp>
+					</NavButton>
 				</React.Fragment>
 			)}
 

@@ -46,7 +46,7 @@ export default function Panel({
 				{informasjonstekst && <HjelpeTekst>{informasjonstekst}</HjelpeTekst>}
 				{hasErrors && (
 					<div className="panel-heading_error">
-						<Icon kind="report-problem-triangle" />
+						<Icon size={16} kind="report-problem-triangle" />
 						Feil i felter
 					</div>
 				)}

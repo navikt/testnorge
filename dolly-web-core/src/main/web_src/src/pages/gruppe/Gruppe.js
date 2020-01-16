@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useMount } from 'react-use'
 import useBoolean from '~/utils/hooks/useBoolean'
-import Knapp from 'nav-frontend-knapper'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import Loading from '~/components/ui/loading/Loading'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 import PersonListeConnector from './PersonListe/PersonListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
 import GruppeHeader from './GruppeHeader/GruppeHeader'
@@ -76,9 +76,9 @@ export default function Gruppe({
 				toggleCurrent={visning}
 				toggleValues={toggleValues}
 			>
-				<Knapp type="hoved" onClick={visStartBestilling}>
+				<NavButton type="hoved" onClick={visStartBestilling}>
 					Opprett personer
-				</Knapp>
+				</NavButton>
 			</Toolbar>
 			{startBestillingAktiv && (
 				<BestillingsveilederModal onSubmit={startBestilling} onAvbryt={skjulStarBestilling} />

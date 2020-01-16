@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import Knapp from 'nav-frontend-knapper'
 import HjelpeTekst from 'nav-frontend-hjelpetekst'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import Icon from '~/components/ui/icon/Icon'
-import Button from '~/components/ui/button/Button'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 
 export const SokAdresseForm = ({ onSearch }) => {
 	const [gatenavn, setGatenavn] = useState('')
@@ -47,12 +46,12 @@ export const SokAdresseForm = ({ onSearch }) => {
 					onChange={v => setKommunenummer((v && v.value) || '')}
 				/>
 			</div>
-			<Knapp form="kompakt" className="knapp" onClick={sokAdresse}>
+			<NavButton form="kompakt" className="knapp" onClick={sokAdresse}>
 				<div className="knapp-header">
 					<Icon size={15} kind="search" />
 					Hent gyldige adresser
 				</div>
-			</Knapp>
+			</NavButton>
 		</div>
 	)
 }
