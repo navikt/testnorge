@@ -24,10 +24,10 @@ SigrunstubForm.validation = {
 				grunnlag: Yup.array()
 					.of(
 						Yup.object({
-							tekniskNavn: Yup.string().required('Velg en type inntekt.'),
+							tekniskNavn: Yup.string().required('Velg en type inntekt'),
 							verdi: Yup.number()
 								.min(0, 'Tast inn et gyldig beløp')
-								.required('Oppgi beløpet')
+								.typeError('Tast inn et gyldig beløp')
 						})
 					)
 					.test('is-required', 'Legg til minst én inntekt', function checkTjenesteGrunnlag(val) {
@@ -52,13 +52,13 @@ SigrunstubForm.validation = {
 					.required('Tast inn et gyldig år'),
 				svalbardGrunnlag: Yup.array().of(
 					Yup.object({
-						tekniskNavn: Yup.string().required('Velg en type inntekt.'),
+						tekniskNavn: Yup.string().required('Velg en type inntekt'),
 						verdi: Yup.number()
 							.min(0, 'Tast inn et gyldig beløp')
-							.required('Oppgi beløpet')
+							.typeError('Tast inn et gyldig beløp')
 					})
 				),
-				tjeneste: Yup.string().required('Velg en type tjeneste.')
+				tjeneste: Yup.string().required('Velg en type tjeneste')
 			})
 		)
 	)
