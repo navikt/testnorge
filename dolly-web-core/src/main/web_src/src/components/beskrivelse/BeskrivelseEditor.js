@@ -15,7 +15,6 @@ export const BeskrivelseEditor = ({ beskrivelse, handleSubmit, turnOffEditing })
 	return (
 		<div className="beskrivelse-editor">
 			<Textarea
-				className="beskrivelse-editor-textarea"
 				label=""
 				placeholder="Skriv inn en kommentar"
 				autoFocus
@@ -24,8 +23,6 @@ export const BeskrivelseEditor = ({ beskrivelse, handleSubmit, turnOffEditing })
 				onChange={e => setValue(e.target.value)}
 				maxLength={0}
 			/>
-
-			<br />
 
 			<div className="beskrivelse-button-container-editor">
 				<Button onClick={turnOffEditing} className="beskrivelse-button">

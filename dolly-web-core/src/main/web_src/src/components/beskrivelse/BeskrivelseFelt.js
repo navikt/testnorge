@@ -6,10 +6,10 @@ export const BeskrivelseFelt = ({
 	turnOnEditing
 }) => {
 	return (
-		<div className="beskrivelse-felt" onClickClick={turnOnEditing}>
+		<div className="beskrivelse-felt" onClick={turnOnEditing}>
 			{beskrivelse}
 			<div className="beskrivelse-button-container">
-				<Button onClick={turnOnEditing} className="beskrivelse-button">
+				<Button onClick={turnOnEditing} className="beskrivelse-button" label="">
 					Rediger
 				</Button>
 			</div>
