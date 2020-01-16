@@ -65,7 +65,7 @@ class TeamControllerGetTest extends TeamControllerTestBase {
 
         LinkedHashMap resp = sendRequest()
                 .to(HttpMethod.GET, ENDPOINT_BASE_URI + "/123")
-                .andExpect(HttpStatus.OK, LinkedHashMap.class);
+                .andExpect(HttpStatus.NOT_FOUND, LinkedHashMap.class);
 
         assertThat(getErrMsg(resp), is("Team ikke funnet for denne IDen: 123"));
     }

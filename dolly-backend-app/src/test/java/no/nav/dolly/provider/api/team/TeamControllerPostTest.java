@@ -27,7 +27,7 @@ class TeamControllerPostTest extends TeamControllerTestBase {
                 .beskrivelse("Nytt team").build();
         LinkedHashMap resp = sendRequest(newTeam)
                 .to(HttpMethod.POST, ENDPOINT_BASE_URI)
-                .andExpect(HttpStatus.OK, LinkedHashMap.class);
+                .andExpect(HttpStatus.NOT_FOUND, LinkedHashMap.class);
 
         assertThat(getErrMsg(resp), is("Bruker ikke funnet"));
     }

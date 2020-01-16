@@ -22,7 +22,7 @@ class TeamControllerDeleteTest extends TeamControllerTestBase {
     void shouldFail404WhenDeleteUnregisteredTeam() {
         LinkedHashMap resp = sendRequest()
                 .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/123")
-                .andExpect(HttpStatus.OK, LinkedHashMap.class);
+                .andExpect(HttpStatus.NOT_FOUND, LinkedHashMap.class);
 
         assertThat(getErrMsg(resp), is("Team med id 123 ble ikke funnet."));
     }
@@ -39,7 +39,7 @@ class TeamControllerDeleteTest extends TeamControllerTestBase {
         //Verifiserer sletting
         sendRequest()
                 .to(HttpMethod.GET, ENDPOINT_BASE_URI + "/" + team.getId())
-                .andExpect(HttpStatus.OK, RsTeamUtvidet.class);
+                .andExpect(HttpStatus.NOT_FOUND, RsTeamUtvidet.class);
     }
 
     @Test
