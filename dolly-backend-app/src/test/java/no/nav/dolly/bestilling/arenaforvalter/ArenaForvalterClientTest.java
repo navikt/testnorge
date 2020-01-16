@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
-import static java.lang.String.format;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse.BrukerFeilstatus.DUPLIKAT;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -23,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
 
 import ma.glasnost.orika.MapperFacade;
@@ -34,6 +34,7 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
+@ActiveProfiles("test")
 @RunWith(MockitoJUnitRunner.class)
 public class ArenaForvalterClientTest {
 
@@ -113,7 +114,7 @@ public class ArenaForvalterClientTest {
 
         BestillingProgress progress = new BestillingProgress();
         when(arenaForvalterConsumer.postArenadata(any(ArenaNyeBrukere.class))).thenThrow(httpClientErrorException);
-        when(httpClientErrorException.getMessage()).thenReturn(format("%s %s", HttpStatus.BAD_REQUEST, ERROR_CAUSE));
+        when(httpClientErrorException.getMessage()).thenReturn(HttpStatus.BAD_REQUEST.toString());
         when(httpClientErrorException.getResponseBodyAsString()).thenReturn(ERROR_MSG);
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
@@ -122,7 +123,7 @@ public class ArenaForvalterClientTest {
         arenaForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo(
-                "q2$Feil: 400 Bad request (An error has occured)")));
+                "q2$Feil: 400 BAD_REQUEST (An error has occured)")));
         verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class));
     }
 

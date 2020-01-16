@@ -4,15 +4,15 @@ package no.nav.dolly.provider.api.team;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
+import java.util.LinkedHashMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
-import java.util.LinkedHashMap;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
 
 @DisplayName("DELETE /api/v1/team")
 class TeamControllerDeleteTest extends TeamControllerTestBase {
@@ -22,7 +22,7 @@ class TeamControllerDeleteTest extends TeamControllerTestBase {
     void shouldFail404WhenDeleteUnregisteredTeam() {
         LinkedHashMap resp = sendRequest()
                 .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/123")
-                .andExpect(HttpStatus.NOT_FOUND, LinkedHashMap.class);
+                .andExpect(HttpStatus.OK, LinkedHashMap.class);
 
         assertThat(getErrMsg(resp), is("Team med id 123 ble ikke funnet."));
     }
@@ -39,7 +39,7 @@ class TeamControllerDeleteTest extends TeamControllerTestBase {
         //Verifiserer sletting
         sendRequest()
                 .to(HttpMethod.GET, ENDPOINT_BASE_URI + "/" + team.getId())
-                .andExpect(HttpStatus.NOT_FOUND, RsTeamUtvidet.class);
+                .andExpect(HttpStatus.OK, RsTeamUtvidet.class);
     }
 
     @Test

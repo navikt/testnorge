@@ -6,16 +6,9 @@ import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.entity.team.RsTeam;
-import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
-import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.dolly.common.TestidentBuilder;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -23,9 +16,16 @@ import org.junit.Test;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.common.TestidentBuilder;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.entity.team.RsTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
+import no.nav.dolly.mapper.utils.MapperTestUtils;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 public class TeamMappingStrategyTest {
 
@@ -37,7 +37,7 @@ public class TeamMappingStrategyTest {
     public static void beforeClass() {
         authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(CURRENT_BRUKER_IDENT, null, null, null));
+                new OidcTokenAuthentication(CURRENT_BRUKER_IDENT, null, null, null, null));
     }
 
     @AfterClass

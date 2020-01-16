@@ -1,21 +1,22 @@
 package no.nav.dolly.provider.api.team;
 
-
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
-import no.nav.dolly.common.RsTeamUtvidetBuilder;
+import java.util.LinkedHashMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.util.LinkedHashMap;
+import no.nav.dolly.common.RsTeamUtvidetBuilder;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
 
+@ActiveProfiles("test")
 @DisplayName("PUT /api/v1/team")
 class TeamControllerPutTest extends TeamControllerTestBase {
 
@@ -27,7 +28,7 @@ class TeamControllerPutTest extends TeamControllerTestBase {
 
         LinkedHashMap resp = sendRequest(asList(bruker.getNavIdent(), bruker2.getNavIdent()))
                 .to(HttpMethod.PUT, ENDPOINT_BASE_URI + "/123/leggTilMedlemmer")
-                .andExpect(HttpStatus.NOT_FOUND, LinkedHashMap.class);
+                .andExpect(HttpStatus.OK, LinkedHashMap.class);
 
         assertThat(getErrMsg(resp), is("Team ikke funnet for denne IDen: 123"));
     }

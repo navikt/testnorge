@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
@@ -21,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.properties.ProvidersProps;
 
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @RestClientTest(InstdataConsumer.class)
 public class InstdataConsumerTest {

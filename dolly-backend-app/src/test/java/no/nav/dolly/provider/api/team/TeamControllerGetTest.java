@@ -4,10 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.entity.team.RsTeam;
-import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
+import java.util.LinkedHashMap;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,8 +13,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
-import java.util.LinkedHashMap;
-import java.util.List;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.resultset.entity.team.RsTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
 
 @DisplayName("GET /api/v1/team")
 class TeamControllerGetTest extends TeamControllerTestBase {
@@ -65,7 +65,7 @@ class TeamControllerGetTest extends TeamControllerTestBase {
 
         LinkedHashMap resp = sendRequest()
                 .to(HttpMethod.GET, ENDPOINT_BASE_URI + "/123")
-                .andExpect(HttpStatus.NOT_FOUND, LinkedHashMap.class);
+                .andExpect(HttpStatus.OK, LinkedHashMap.class);
 
         assertThat(getErrMsg(resp), is("Team ikke funnet for denne IDen: 123"));
     }
