@@ -16,7 +16,7 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 
 	return (
 		<div>
-			<h4>Arbeidsavtale</h4>
+			<h3>Arbeidsavtale</h3>
 			<div className="flexbox--flex-wrap">
 				<FormikSelect
 					name={`${arbeidsavtalePath}.yrke`}

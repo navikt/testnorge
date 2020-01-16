@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Loading from '~/components/ui/loading/Loading'
 import Formatters from '~/utils/DataFormatter'
@@ -12,8 +13,8 @@ export const KontaktinformasjonForDoedsbo = ({ data, loading }) => {
 	return (
 		<div>
 			<SubOverskrift label="Kontaktinformasjon for dødsbo" iconKind="doedsbo" />
-			<div>
-				{data.map((id, idx) => (
+			<DollyFieldArray data={data} nested>
+				{(id, idx) => (
 					<div className="person-visning_content" key={idx}>
 						{id.kontaktpersonUtenIdNummerSomAdressat && (
 							<Fragment>
@@ -88,8 +89,8 @@ export const KontaktinformasjonForDoedsbo = ({ data, loading }) => {
 							value={Formatters.formatStringDates(id.attestutstedelsesdato)}
 						/>
 					</div>
-				))}
-			</div>
+				)}
+			</DollyFieldArray>
 		</div>
 	)
 }

@@ -2,8 +2,8 @@ import React from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
 import { Diskresjonskoder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/diskresjonskoder/Diskresjonskoder'
 import Formatters from '~/utils/DataFormatter'
@@ -36,7 +36,7 @@ export const Barn = ({ formikBag }) => {
 	const optionsPartnerNr = getOptionsPartnerNr()
 
 	return (
-		<DollyFieldArray name="tpsf.relasjoner.barn" title="Barn" newEntry={initialValues}>
+		<FormikDollyFieldArray name="tpsf.relasjoner.barn" title="Barn" newEntry={initialValues}>
 			{(path, idx) => (
 				<React.Fragment key={idx}>
 					<FormikSelect
@@ -85,6 +85,6 @@ export const Barn = ({ formikBag }) => {
 					<Diskresjonskoder basePath={path} formikBag={formikBag} />
 				</React.Fragment>
 			)}
-		</DollyFieldArray>
+		</FormikDollyFieldArray>
 	)
 }

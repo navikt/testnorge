@@ -1,4 +1,5 @@
 import React from 'react'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 
@@ -6,11 +7,11 @@ export const PermisjonPermitteringer = ({ data }) => {
 	if (!data) return false
 
 	return (
-		<div>
+		<React.Fragment>
 			<h4>Permisjon</h4>
-			<div className="person-visning_content">
-				{data.map((id, idx) => (
-					<div key={idx}>
+			<DollyFieldArray data={data} nested>
+				{(id, idx) => (
+					<div className="person-visning_content" key={idx}>
 						<TitleValue
 							title="Permisjonstype"
 							value={id.type}
@@ -24,8 +25,8 @@ export const PermisjonPermitteringer = ({ data }) => {
 						)}
 						<TitleValue title="Permisjonsprosent" value={id.prosent} />
 					</div>
-				))}
-			</div>
-		</div>
+				)}
+			</DollyFieldArray>
+		</React.Fragment>
 	)
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
 import { Diskresjonskoder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/diskresjonskoder/Diskresjonskoder'
@@ -22,7 +22,7 @@ const initialValues = {
 const initForhold = { sivilstand: '', sivilstandRegdato: '' }
 
 export const Partnere = ({ formikBag }) => (
-	<DollyFieldArray name="tpsf.relasjoner.partnere" title="Partner" newEntry={initialValues}>
+	<FormikDollyFieldArray name="tpsf.relasjoner.partnere" title="Partner" newEntry={initialValues}>
 		{(path, idx) => (
 			<React.Fragment key={idx}>
 				<FormikSelect
@@ -41,10 +41,11 @@ export const Partnere = ({ formikBag }) => (
 				/>
 				<FormikDatepicker name={`${path}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
 				<Diskresjonskoder basePath={path} formikBag={formikBag} />
-				<DollyFieldArray
+				<FormikDollyFieldArray
 					name={`tpsf.relasjoner.partnere[${idx}].sivilstander`}
 					title="Forhold"
 					newEntry={initForhold}
+					nested
 				>
 					{(path, idx) => (
 						<React.Fragment key={idx}>
@@ -61,8 +62,8 @@ export const Partnere = ({ formikBag }) => (
 							/>
 						</React.Fragment>
 					)}
-				</DollyFieldArray>
+				</FormikDollyFieldArray>
 			</React.Fragment>
 		)}
-	</DollyFieldArray>
+	</FormikDollyFieldArray>
 )

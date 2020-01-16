@@ -2,7 +2,7 @@ import React from 'react'
 import _get from 'lodash/get'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
 const initialValues = {
 	identtype: '',
@@ -10,7 +10,7 @@ const initialValues = {
 }
 
 export const Alias = ({ formikBag }) => (
-	<DollyFieldArray name="udistub.aliaser" title="Alias" newEntry={initialValues}>
+	<FormikDollyFieldArray name="udistub.aliaser" title="Alias" newEntry={initialValues}>
 		{(path, idx, curr) => (
 			<React.Fragment key={idx}>
 				<FormikSelect name={`${path}.nyIdent`} label="Type alias" options={Options('nyIdent')} />
@@ -24,5 +24,5 @@ export const Alias = ({ formikBag }) => (
 				)}
 			</React.Fragment>
 		)}
-	</DollyFieldArray>
+	</FormikDollyFieldArray>
 )
