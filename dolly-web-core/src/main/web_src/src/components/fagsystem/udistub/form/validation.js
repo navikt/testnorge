@@ -1,33 +1,40 @@
 import * as Yup from 'yup'
-import { requiredDate, ifPresent, requiredString, requiredBoolean } from '~/utils/YupValidations'
+import { ifPresent, requiredString, requiredBoolean } from '~/utils/YupValidations'
 
 const aliaser = Yup.array().of(
 	Yup.object({
 		nyIdent: requiredBoolean,
-		identtype: Yup.string().when('nyIdent', {
-			is: true,
-			then: requiredString
-		})
+		identtype: Yup.string()
+			.when('nyIdent', {
+				is: true,
+				then: requiredString
+			})
+			.nullable()
 	})
 )
 
 const arbeidsadgang = Yup.object({
-	arbeidsOmfang: Yup.string(),
+	arbeidsOmfang: Yup.string().nullable(),
 	harArbeidsAdgang: requiredString,
-	periode: {
-		fra: requiredDate,
-		til: requiredDate
-	},
-	typeArbeidsadgang: Yup.string()
+	periode: Yup.object({
+		fra: Yup.date().nullable(),
+		til: Yup.date().nullable()
+	}),
+	typeArbeidsadgang: Yup.string().nullable()
 })
 
-export const validation = Yup.object({
-	aliaser: ifPresent('$udistub.aliaser', aliaser),
-	arbeidsadgang: ifPresent('$udistub.arbeidsadgang', arbeidsadgang),
-	flyktning: ifPresent('$udistub.flyktning', requiredBoolean),
-	oppholdStatus: Yup.object({}).nullable(),
-	soeknadOmBeskyttelseUnderBehandling: ifPresent(
-		'$udistub.soeknadOmBeskyttelseUnderBehandling',
-		requiredString
+export const validation = {
+	udistub: ifPresent(
+		'$udistub',
+		Yup.object({
+			aliaser: ifPresent('$udistub.aliaser', aliaser),
+			arbeidsadgang: ifPresent('$udistub.arbeidsadgang', arbeidsadgang),
+			flyktning: ifPresent('$udistub.flyktning', requiredBoolean).nullable(),
+			oppholdStatus: Yup.object({}).nullable(),
+			soeknadOmBeskyttelseUnderBehandling: ifPresent(
+				'$udistub.soeknadOmBeskyttelseUnderBehandling',
+				requiredString
+			)
+		})
 	)
-})
+}

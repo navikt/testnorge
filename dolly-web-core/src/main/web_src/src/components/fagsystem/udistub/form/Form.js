@@ -33,6 +33,4 @@ export const UdistubForm = ({ formikBag }) => (
 	</Vis>
 )
 
-UdistubForm.validation = {
-	udistub: validation
-}
+UdistubForm.validation = validation
