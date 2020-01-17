@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
@@ -25,6 +26,6 @@ public class RettighetFritakMeldekortRequest extends RettighetRequest {
     }
 
     @Override public List<NyttVedtakTiltak> getVedtakTiltak() {
-        return null;
+        return Collections.emptyList();
     }
 }

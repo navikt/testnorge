@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.arena.domain.vedtak.NyttVedtak;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
 
@@ -26,6 +26,6 @@ public class RettighetAapRequest extends RettighetRequest {
     }
 
     @Override public List<NyttVedtakTiltak> getVedtakTiltak() {
-        return null;
+        return Collections.emptyList();
     }
 }

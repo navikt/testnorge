@@ -12,7 +12,6 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
-import no.nav.registre.arena.domain.aap.andreokonomytelser.AndreOkonomYtelser;
 import no.nav.registre.arena.domain.aap.vilkaar.Vilkaar;
 
 @JsonSubTypes({

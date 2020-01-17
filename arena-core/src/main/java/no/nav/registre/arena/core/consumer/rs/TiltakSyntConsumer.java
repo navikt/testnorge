@@ -9,7 +9,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
-import java.util.Random;
 
 import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
 
@@ -18,7 +17,6 @@ public class TiltakSyntConsumer {
 
     private RestTemplate restTemplate;
     private ConsumerUtils consumerUtils;
-    private Random rand;
 
     private UriTemplate arenaTiltaksdeltakelseUrl;
     private UriTemplate arenaTiltakspengerUrl;
@@ -27,12 +25,10 @@ public class TiltakSyntConsumer {
     public TiltakSyntConsumer(
             RestTemplateBuilder restTemplateBuilder,
             ConsumerUtils consumerUtils,
-            Random rand,
             @Value("${synt-arena-tiltak.rest-api.url}") String arenaTiltakServerUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.consumerUtils = consumerUtils;
-        this.rand = rand;
         this.arenaTiltaksdeltakelseUrl = new UriTemplate(arenaTiltakServerUrl + "/v1/arena/tiltak/deltakelse/{antallIdenter}");
         this.arenaTiltakspengerUrl = new UriTemplate(arenaTiltakServerUrl + "/v1/arena/tiltak/basi");
         this.arenaBarnetilleggUrl = new UriTemplate(arenaTiltakServerUrl + "/v1/arena/tiltak/btil");
