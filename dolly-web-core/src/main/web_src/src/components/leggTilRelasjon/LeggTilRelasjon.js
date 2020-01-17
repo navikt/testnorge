@@ -3,12 +3,10 @@ import * as Yup from 'yup'
 import { Formik, Form, ErrorMessage } from 'formik'
 import _difference from 'lodash/difference'
 import _get from 'lodash/get'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { DollyApi } from '~/service/Api'
 import { Partner } from './relasjonstype/Partner'
 import { Barn } from './relasjonstype/Barn'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { requiredString, ifPresent, oneOfArraysHaveContent, messages } from '~/utils/YupValidations'
+import { messages } from '~/utils/YupValidations'
 import { sivilstander } from '~/components/fagsystem/tpsf/form/validation'
 import { validate } from '~/utils/YupValidations'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
@@ -49,25 +47,17 @@ export const LeggTilRelasjon = ({
 					return (
 						<Form autoComplete="off">
 							<div className="add-relasjon">
-								<div>
-									<Panel heading="Partner" iconType="partner" startOpen>
-										<Partner
-											lagOptions={lagOptions}
-											identInfo={identInfo}
-											hovedIdent={hovedIdent}
-										/>
-									</Panel>
-								</div>
-								<div>
-									<Panel heading="Barn (adopsjon)" iconType="barn" startOpen>
-										<Barn
-											formikBag={formikBag}
-											lagOptions={lagOptions}
-											identInfo={identInfo}
-											hovedIdent={hovedIdent}
-										/>
-									</Panel>
-								</div>
+								<Panel heading="Partner" iconType="partner" startOpen>
+									<Partner lagOptions={lagOptions} identInfo={identInfo} hovedIdent={hovedIdent} />
+								</Panel>
+								<Panel heading="Barn (adopsjon)" iconType="barn" startOpen>
+									<Barn
+										formikBag={formikBag}
+										lagOptions={lagOptions}
+										identInfo={identInfo}
+										hovedIdent={hovedIdent}
+									/>
+								</Panel>
 								{formikBag.values.tpsf.relasjoner.partner.length < 1 &&
 									formikBag.values.tpsf.relasjoner.barn.length < 1 && (
 										<ErrorMessage

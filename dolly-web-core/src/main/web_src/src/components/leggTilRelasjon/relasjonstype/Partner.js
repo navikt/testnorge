@@ -1,11 +1,8 @@
 import React from 'react'
-import * as Yup from 'yup'
-import { Formik, Form } from 'formik'
 import _get from 'lodash/get'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { FieldArrayAddButton } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { Sivilstand } from '~/components/fagsystem/tpsf/form/familierelasjoner/partials/Sivilstand'
 
