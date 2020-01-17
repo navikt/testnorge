@@ -6,14 +6,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
-import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import java.util.Arrays;
 import org.assertj.core.util.Sets;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -24,7 +17,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Arrays;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
+import no.nav.dolly.mapper.utils.MapperTestUtils;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestgruppeUtvidetMappingStrategyTest {
@@ -43,7 +43,7 @@ public class TestgruppeUtvidetMappingStrategyTest {
     public static void beforeClass() {
         authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(CURRENT_BRUKER_IDENT, null, null, null));
+                new OidcTokenAuthentication(CURRENT_BRUKER_IDENT, null, null, null, null));
     }
 
     @AfterClass

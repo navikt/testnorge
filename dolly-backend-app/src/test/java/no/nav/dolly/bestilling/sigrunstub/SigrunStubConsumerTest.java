@@ -20,6 +20,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.HttpClientErrorException;
@@ -31,6 +32,7 @@ import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @RestClientTest(SigrunStubConsumer.class)
 public class SigrunStubConsumerTest {
@@ -56,7 +58,7 @@ public class SigrunStubConsumerTest {
     @BeforeClass
     public static void setupSecurity() {
         SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(standardPrincipal, null, standardIdtoken, null)
+                new OidcTokenAuthentication(standardPrincipal, null, standardIdtoken, null, null)
         );
     }
 

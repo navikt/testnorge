@@ -2,10 +2,11 @@ package no.nav.dolly.properties;
 
 import static no.nav.dolly.properties.Environment.PREPROD;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -13,20 +14,20 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "credentials")
 public class CredentialsProps {
 
-    private PreprodEnv preprodEnv = new PreprodEnv();
-    private TestEnv testEnv = new TestEnv();
+    private Preprod preprod = new Preprod();
+    private Test test = new Test();
 
     public String getUsername(Environment env) {
-        return env == PREPROD ? getPreprodEnv().getUsername() : getTestEnv().getUsername();
+        return env == PREPROD ? this.getPreprod().getUsername() : this.getTest().getUsername();
     }
 
     public String getPassword(Environment env) {
-        return env == PREPROD ? getPreprodEnv().getPassword() : getTestEnv().getPassword();
+        return env == PREPROD ? this.getPreprod().getPassword() : this.getTest().getPassword();
     }
 
     @Getter
     @Setter
-    public static class PreprodEnv {
+    public static class Preprod {
         private String username;
         private String password;
 
@@ -34,7 +35,7 @@ public class CredentialsProps {
 
     @Getter
     @Setter
-    public static class TestEnv {
+    public static class Test {
         private String username;
         private String password;
 

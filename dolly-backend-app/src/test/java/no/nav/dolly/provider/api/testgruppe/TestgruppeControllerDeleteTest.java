@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 
 @DisplayName("DELETE /api/v1/gruppe")
 class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
@@ -58,11 +58,11 @@ class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
                 .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/slettTestident?ident=" + idents.get(0))
                 .andExpect(HttpStatus.OK, LinkedHashMap.class);
 
-        RsTestgruppeUtvidet resp = sendRequest()
+        RsTestgruppeMedBestillingId resp = sendRequest()
                 .to(HttpMethod.GET, ENDPOINT_BASE_URI + "/" + testgruppe.getId())
-                .andExpect(HttpStatus.OK, RsTestgruppeUtvidet.class);
+                .andExpect(HttpStatus.OK, RsTestgruppeMedBestillingId.class);
 
-        assertThat(resp.getTestidenter().size(), is(2));
+        assertThat(resp.getIdenter().size(), is(2));
     }
 
     @Test

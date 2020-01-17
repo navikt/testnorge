@@ -65,7 +65,7 @@ public class BestillingServiceTest {
     @BeforeClass
     public static void beforeClass() {
         SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(CURRENT_BRUKER_IDENT, null, null, null));
+                new OidcTokenAuthentication(CURRENT_BRUKER_IDENT, null, null, null, null));
     }
 
     @Test(expected = NotFoundException.class)

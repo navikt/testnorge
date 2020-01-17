@@ -27,6 +27,10 @@
             <artifactId>dolly-backend-app</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>no.nav.freg</groupId>
+            <artifactId>freg-property-reader</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
