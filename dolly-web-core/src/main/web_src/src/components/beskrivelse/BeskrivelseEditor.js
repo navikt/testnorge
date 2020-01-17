@@ -21,7 +21,7 @@ export const BeskrivelseEditor = ({ beskrivelse, handleSubmit, turnOffEditing })
 				onFocus={focusEndOfStringHack}
 				value={value}
 				onChange={e => setValue(e.target.value)}
-				maxLength={0}
+				maxLength={1000}
 			/>
 
 			<div className="beskrivelse-button-container-editor">
