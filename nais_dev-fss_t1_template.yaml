@@ -35,8 +35,6 @@ spec:
   vault:
     enabled: true
     paths:
-      - kvPath: /kv/preprod/fss/dolly-backend/t1
-        mountPath: /var/run/secrets/nais.io/vault
       - kvPath: /oracle/dev/config/dolly_t1
         mountPath: /var/run/secrets/nais.io/dbPath
       - kvPath: /oracle/data/dev/creds/dolly_t1-user
