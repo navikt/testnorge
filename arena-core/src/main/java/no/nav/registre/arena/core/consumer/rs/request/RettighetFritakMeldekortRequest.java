@@ -8,7 +8,8 @@ import lombok.Setter;
 
 import java.util.List;
 
-import no.nav.registre.arena.domain.rettighet.NyttVedtak;
+import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
+import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
 
 @Getter
 @Setter
@@ -16,10 +17,14 @@ import no.nav.registre.arena.domain.rettighet.NyttVedtak;
 @AllArgsConstructor
 public class RettighetFritakMeldekortRequest extends RettighetRequest {
 
-    private List<NyttVedtak> nyeFritak;
+    private List<NyttVedtakAap> nyeFritak;
 
     @JsonProperty("nyeFritak")
-    @Override public List<NyttVedtak> getVedtak() {
+    @Override public List<NyttVedtakAap> getVedtakAap() {
         return nyeFritak;
+    }
+
+    @Override public List<NyttVedtakTiltak> getVedtakTiltak() {
+        return null;
     }
 }

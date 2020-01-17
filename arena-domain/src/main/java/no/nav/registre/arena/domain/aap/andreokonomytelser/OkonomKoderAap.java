@@ -1,6 +1,6 @@
 package no.nav.registre.arena.domain.aap.andreokonomytelser;
 
-public enum OkonomKoder {
+public enum OkonomKoderAap {
     TYPE,
     FDATO,
     TDATO,

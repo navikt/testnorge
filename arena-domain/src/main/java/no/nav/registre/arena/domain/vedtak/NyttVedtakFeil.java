@@ -1,4 +1,4 @@
-package no.nav.registre.arena.domain.rettighet;
+package no.nav.registre.arena.domain.vedtak;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
@@ -12,12 +12,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NyRettighetFeil {
+public class NyttVedtakFeil {
 
     private String personident;
     private String miljoe;
 
-    @JsonAlias({"nyAaunguforFeilstatus", "nyAatforFeilstatus", "nyFritakFeilstatus"})
+    @JsonAlias({
+            "nyAapFeilstatus", "nyAap115Feilstatus", "nyAaunguforFeilstatus", "nyAatforFeilstatus", "nyFritakFeilstatus",
+            "nyTiltaksdeltakelseFeilstatus", "nyTiltakspengerFeilstatus"
+    })
     private String status;
     private String melding;
 }

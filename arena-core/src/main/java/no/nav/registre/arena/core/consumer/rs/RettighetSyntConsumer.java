@@ -1,5 +1,8 @@
 package no.nav.registre.arena.core.consumer.rs;
 
+import static no.nav.registre.arena.core.consumer.rs.ConsumerUtils.UTFALL_JA;
+import static no.nav.registre.arena.core.consumer.rs.ConsumerUtils.VEDTAK_TYPE_KODE_O;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -9,24 +12,23 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.time.LocalDate;
-import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetSyntRequest;
 import no.nav.registre.arena.domain.historikk.Vedtakshistorikk;
-import no.nav.registre.arena.domain.rettighet.NyttVedtak;
+import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 
 @Component
 public class RettighetSyntConsumer {
 
-    private static final String VEDTAK_TYPE_KODE_O = "O";
-    private static final String UTFALL_JA = "JA";
     private static final LocalDate MINIMUM_DATE = LocalDate.of(2010, 10, 1); // krav i arena
 
     private RestTemplate restTemplate;
-
+    private ConsumerUtils consumerUtils;
     private Random rand;
 
     private UriTemplate arenaVedtakshistorikkUrl;
@@ -38,25 +40,27 @@ public class RettighetSyntConsumer {
 
     public RettighetSyntConsumer(
             RestTemplateBuilder restTemplateBuilder,
+            ConsumerUtils consumerUtils,
             Random rand,
             @Value("${synt-arena.rest-api.url}") String arenaAapServerUrl,
             @Value("${synt-arena-vedtakshistorikk.rest-api.url}") String arenaVedtakshistorikkServerUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
+        this.consumerUtils = consumerUtils;
+        this.rand = rand;
         this.arenaVedtakshistorikkUrl = new UriTemplate(arenaVedtakshistorikkServerUrl + "/v1/arena/vedtakshistorikk");
         this.arenaAapUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap");
         this.arenaAap115Url = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap/11_5");
         this.arenaAapUngUfoerUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap/aaungufor");
         this.arenaAapTvungenForvaltningUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap/aatfor");
         this.arenaAapFritakMeldekortUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap/fri_mk");
-        this.rand = rand;
     }
 
     public List<Vedtakshistorikk> syntetiserVedtakshistorikk(int antallIdenter) {
         List<LocalDate> oppstartsdatoer = new ArrayList<>(antallIdenter);
 
         for (int i = 0; i < antallIdenter; i++) {
-            oppstartsdatoer.add(LocalDate.now().minusMonths(rand.nextInt(Period.between(MINIMUM_DATE, LocalDate.now()).getMonths())));
+            oppstartsdatoer.add(LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(MINIMUM_DATE, LocalDate.now())))));
         }
 
         var postRequest = RequestEntity.post(arenaVedtakshistorikkUrl.expand()).body(oppstartsdatoer);
@@ -64,51 +68,49 @@ public class RettighetSyntConsumer {
         }).getBody();
     }
 
-    public List<NyttVedtak> syntetiserRettighetAap(int antallMeldinger) {
-        var postRequest = createPostRequest(arenaAapUrl, antallMeldinger);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtak>>() {
+    public List<NyttVedtakAap> syntetiserRettighetAap(int antallMeldinger) {
+        var postRequest = consumerUtils.createPostRequest(arenaAapUrl, antallMeldinger);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakAap>>() {
         }).getBody();
     }
 
-    public List<NyttVedtak> syntetiserRettighetAap115(int antallMeldinger) {
-        var postRequest = createPostRequest(arenaAap115Url, antallMeldinger);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtak>>() {
+    public List<NyttVedtakAap> syntetiserRettighetAap115(int antallMeldinger) {
+        var postRequest = consumerUtils.createPostRequest(arenaAap115Url, antallMeldinger);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakAap>>() {
         }).getBody();
     }
 
-    public List<NyttVedtak> syntetiserRettighetUngUfoer(int antallMeldinger) {
-        var postRequest = createPostRequest(arenaAapUngUfoerUrl, antallMeldinger);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtak>>() {
+    public List<NyttVedtakAap> syntetiserRettighetAap115(LocalDate startDato, LocalDate sluttDato) {
+        RequestEntity<ArrayList<RettighetSyntRequest>> postRequest = RequestEntity.post(arenaAap115Url.expand()).body(
+                new ArrayList<>(Collections.singletonList(
+                        RettighetSyntRequest.builder()
+                                .fraDato(startDato)
+                                .tilDato(sluttDato)
+                                .utfall(UTFALL_JA)
+                                .vedtakTypeKode(VEDTAK_TYPE_KODE_O)
+                                .vedtakDato(startDato)
+                                .build()
+                ))
+        );
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakAap>>() {
         }).getBody();
     }
 
-    public List<NyttVedtak> syntetiserRettighetTvungenForvaltning(int antallMeldinger) {
-        var postRequest = createPostRequest(arenaAapTvungenForvaltningUrl, antallMeldinger);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtak>>() {
+    public List<NyttVedtakAap> syntetiserRettighetUngUfoer(int antallMeldinger) {
+        var postRequest = consumerUtils.createPostRequest(arenaAapUngUfoerUrl, antallMeldinger);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakAap>>() {
         }).getBody();
     }
 
-    public List<NyttVedtak> syntetiserRettighetFritakMeldekort(int antallMeldinger) {
-        var postRequest = createPostRequest(arenaAapFritakMeldekortUrl, antallMeldinger);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtak>>() {
+    public List<NyttVedtakAap> syntetiserRettighetTvungenForvaltning(int antallMeldinger) {
+        var postRequest = consumerUtils.createPostRequest(arenaAapTvungenForvaltningUrl, antallMeldinger);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakAap>>() {
         }).getBody();
     }
 
-    private RequestEntity createPostRequest(UriTemplate uri, int antallMeldinger) {
-        List<RettighetSyntRequest> requester = new ArrayList<>(antallMeldinger);
-        for (int i = 0; i < antallMeldinger; i++) {
-            LocalDate startDato = LocalDate.now().minusMonths(rand.nextInt(12));
-            LocalDate sluttDato = startDato.plusDays(rand.nextInt(365));
-            requester.add(RettighetSyntRequest.builder()
-                    .fraDato(startDato)
-                    .tilDato(sluttDato)
-                    .utfall(UTFALL_JA)
-                    .vedtakTypeKode(VEDTAK_TYPE_KODE_O)
-                    .vedtakDato(startDato)
-                    .build());
-        }
-        return RequestEntity
-                .post(uri.expand())
-                .body(requester);
+    public List<NyttVedtakAap> syntetiserRettighetFritakMeldekort(int antallMeldinger) {
+        var postRequest = consumerUtils.createPostRequest(arenaAapFritakMeldekortUrl, antallMeldinger);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakAap>>() {
+        }).getBody();
     }
 }

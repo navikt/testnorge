@@ -9,13 +9,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnenOkonomYtelse {
+@Builder
+public class AnnenOkonomYtelseTiltak {
 
     @JsonAlias({ "KODE", "kode" })
-    private OkonomKoder kode;
+    private OkonomKoderTiltak kode;
 
     @JsonAlias({ "VERDI", "verdi" })
     private String verdi;

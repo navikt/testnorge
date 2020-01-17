@@ -24,11 +24,13 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import no.nav.registre.arena.core.config.AppConfig;
 import no.nav.registre.arena.domain.aap.gensaksopplysninger.GensakKoder;
 import no.nav.registre.arena.domain.aap.gensaksopplysninger.GensakOvKoder;
+import no.nav.registre.arena.domain.vedtak.NyttVedtak;
+import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureWireMock(port = 0)
 @TestPropertySource(locations = "classpath:application-test.properties")
-@ContextConfiguration(classes = { RettighetSyntConsumer.class, AppConfig.class })
+@ContextConfiguration(classes = { RettighetSyntConsumer.class, AppConfig.class, ConsumerUtils.class })
 @RestClientTest(RettighetSyntConsumer.class)
 public class RettighetSyntConsumerTest {
 
@@ -50,7 +52,7 @@ public class RettighetSyntConsumerTest {
 
         var response = syntConsumer.syntetiserRettighetAap(antallMeldinger);
 
-        var rettighet = response.get(0);
+        NyttVedtakAap rettighet = response.get(0);
         assertThat(rettighet.getAktivitetsfase(), equalTo("UA"));
         assertThat(rettighet.getGenSaksopplysninger().get(0).getKode(), is(GensakKoder.KDATO));
         assertThat(rettighet.getGenSaksopplysninger().get(1).getKode(), is(GensakKoder.BTID));
