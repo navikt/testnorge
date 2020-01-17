@@ -41,7 +41,7 @@ const adresseNrInfo = Yup.object({
 	})
 }).nullable()
 
-const sivilstander = Yup.array().of(
+export const sivilstander = Yup.array().of(
 	Yup.object({
 		sivilstand: Yup.string()
 			.test('is-not-ugift', 'Ugyldig sivilstand for partner', value => value !== 'UGIF')
@@ -55,7 +55,10 @@ const sivilstander = Yup.array().of(
 					const path = this.options.path
 					const thisDate = _get(values, path)
 					const partnerIndex = path.charAt(path.indexOf('[') + 1)
-					const sivilstander = values.tpsf.relasjoner.partnere[partnerIndex].sivilstander
+					const sivilstander =
+						//Linja med partnerE kan fjernes når Dolly2.0 prodsettes. Endres backend
+						_get(values.tpsf.relasjoner.partnere, `${[partnerIndex]}.sivilstander`) ||
+						_get(values.tpsf.relasjoner.partner, `${[partnerIndex]}.sivilstander`)
 					const forholdIndex = _findIndex(sivilstander, ['sivilstandRegdato', thisDate])
 					if (forholdIndex === 0) return true
 					return isBefore(thisDate, sivilstander[forholdIndex - 1].sivilstandRegdato)
@@ -86,31 +89,7 @@ const partnere = Yup.array().of(
 		boadresse: Yup.object({
 			kommunenr: Yup.string().nullable()
 		}),
-		sivilstander: ifPresent('$tpsf.relasjoner.partnere.sivilstander', sivilstander),
-		// sivilstander: Yup.array().of(
-		// 	Yup.object({
-		// 		sivilstand: Yup.string()
-		// 			.test('is-not-ugift', 'Ugyldig sivilstand for partner', value => value !== 'UGIF')
-		// 			.required('Feltet er påkrevd'),
-		// 		sivilstandRegdato: Yup.string()
-		// 			.test(
-		// 				'is-before-last',
-		// 				'Dato må være før tidligere forhold (nyeste forhold settes først)',
-		// 				function validDate(val) {
-		// 					console.log('this :', this)
-		// 					const values = this.options.context
-		// 					const path = this.options.path
-		// 					const thisDate = _get(values, path)
-		// 					const partnerIndex = path.charAt(path.indexOf('[') + 1)
-		// 					const sivilstander = values.tpsf.relasjoner.partnere[partnerIndex].sivilstander
-		// 					const forholdIndex = _findIndex(sivilstander, ['sivilstandRegdato', thisDate])
-		// 					if (forholdIndex === 0) return true
-		// 					return isBefore(thisDate, sivilstander[forholdIndex - 1].sivilstandRegdato)
-		// 				}
-		// 			)
-		// 			.required('Feltet er påkrevd')
-		// 	})
-		// ),
+		sivilstander: sivilstander,
 		harFellesAdresse: Yup.boolean()
 	})
 )

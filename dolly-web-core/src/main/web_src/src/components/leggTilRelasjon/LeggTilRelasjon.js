@@ -1,7 +1,6 @@
 import React from 'react'
 import * as Yup from 'yup'
-import { Formik, Form } from 'formik'
-import Knapp from 'nav-frontend-knapper'
+import { Formik, Form, ErrorMessage } from 'formik'
 import _difference from 'lodash/difference'
 import _get from 'lodash/get'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
@@ -9,7 +8,10 @@ import { DollyApi } from '~/service/Api'
 import { Partner } from './relasjonstype/Partner'
 import { Barn } from './relasjonstype/Barn'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { requiredString, ifPresent, ifKeyHasValue, messages } from '~/utils/YupValidations'
+import { requiredString, ifPresent, oneOfArraysHaveContent, messages } from '~/utils/YupValidations'
+import { sivilstander } from '~/components/fagsystem/tpsf/form/validation'
+import { validate } from '~/utils/YupValidations'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 
 import Panel from '~/components/ui/panel/Panel'
 
@@ -21,9 +23,6 @@ export const LeggTilRelasjon = ({
 	getBestillinger,
 	gruppeId
 }) => {
-	const harAlleredePartner = harPartner(identInfo[hovedIdent])
-	const partnere = muligePartnere(identInfo, hovedIdent)
-
 	const onSubmit = async values => {
 		await DollyApi.createRelasjon(hovedIdent, values)
 		getBestillinger(gruppeId)
@@ -43,49 +42,47 @@ export const LeggTilRelasjon = ({
 		<div className="add-relasjon">
 			<Formik
 				onSubmit={onSubmit}
-				onReset={initialValues}
-				validationSchema={validation}
+				validate={async values => await validate(values, validation)}
 				initialValues={initialValues}
-				enableReinitialize
 			>
-				{props => {
-					const brukteIdenter = []
-					console.log('props :', props)
-					// props.values.tpsf.relasjoner.partner
-					// 	.map(ident => ident.ident)
-					// 	.concat(props.values.tpsf.relasjoner.barn.map(ident => ident.ident))
+				{formikBag => {
 					return (
 						<Form autoComplete="off">
 							<div className="add-relasjon">
 								<div>
-									<Panel heading="Partner" iconType="relasjoner" startOpen>
-										{harAlleredePartner ? (
-											<AlertStripeInfo>
-												Personen har allerede en partner, og du får derfor ikke legge til flere.
-											</AlertStripeInfo>
-										) : (
-											<Partner
-												props={props}
-												valgbareIdenter={lagOptions(partnere, brukteIdenter)}
-											/>
-										)}
-									</Panel>
-								</div>
-								<div>
-									<Panel heading="Barn (adoptert)" iconType="relasjoner" startOpen>
-										<Barn
-											props={props}
-											valgbareIdenter={lagOptions(muligeBarn(identInfo, hovedIdent), brukteIdenter)}
+									<Panel heading="Partner" iconType="partner" startOpen>
+										<Partner
+											lagOptions={lagOptions}
+											identInfo={identInfo}
+											hovedIdent={hovedIdent}
 										/>
 									</Panel>
 								</div>
+								<div>
+									<Panel heading="Barn (adopsjon)" iconType="barn" startOpen>
+										<Barn
+											formikBag={formikBag}
+											lagOptions={lagOptions}
+											identInfo={identInfo}
+											hovedIdent={hovedIdent}
+										/>
+									</Panel>
+								</div>
+								{formikBag.values.tpsf.relasjoner.partner.length < 1 &&
+									formikBag.values.tpsf.relasjoner.barn.length < 1 && (
+										<ErrorMessage
+											name="tpsf.relasjoner.partner"
+											className="error-message"
+											component="div"
+										/>
+									)}
 								<div className="action-knapper">
-									<Knapp type="standard" onClick={closeModal}>
+									<NavButton type="standard" onClick={closeModal}>
 										Avbryt
-									</Knapp>
-									<Knapp type="hoved" htmlType="submit">
+									</NavButton>
+									<NavButton type="hoved" htmlType="submit">
 										Legg til relasjon(er)
-									</Knapp>
+									</NavButton>
 								</div>
 							</div>
 						</Form>
@@ -96,87 +93,74 @@ export const LeggTilRelasjon = ({
 	)
 }
 
-const muligeBarn = (identInfo, hovedIdent) => {
-	//Denne må testes nå vi får hovedperson med foreldre
-	//Hvis det kun blir adopsjon -> trenger vi sjekke MOR og FAR?
-	return Object.keys(identInfo).filter(ident => {
-		if (ident === hovedIdent) return false
-		if (!identInfo[ident].relasjoner) return true
-
-		const counter = identInfo[ident].relasjoner.reduce((acc, relasjon) => {
-			if (relasjon.relasjonTypeNavn === 'MOR' || relasjon.relasjonTypeNavn === 'FAR') {
-				// ADOPSJON?
-				acc++
-			}
-			return acc
-		}, 0)
-		return counter < 2
-	})
-}
-
-const muligePartnere = (identInfo, hovedIdent) => {
-	// Per nå kan ikke bruker legge til en partner som allerede har en annen partner
-	return Object.keys(identInfo).filter(ident => {
-		if (ident === hovedIdent) return false
-		return !harPartner(identInfo[ident])
-	})
-}
-
-const harPartner = identInfo => {
-	return (
-		identInfo.relasjoner &&
-		identInfo.relasjoner.some(relasjon => {
-			return relasjon.relasjonTypeNavn === 'PARTNER'
-		})
-	)
-}
-
-const lagOptions = (tilgjengelige, brukte) => {
-	return _difference(tilgjengelige, brukte).reduce((acc, ident) => {
+const lagOptions = tilgjengelige => {
+	return tilgjengelige.reduce((acc, ident) => {
 		return [...acc, { value: ident, label: ident, isDisabled: true }]
 	}, [])
 }
 
-const validation = () =>
-	Yup.object({
-		environments: Yup.array().required(messages.required),
-		tpsf: Yup.object({
-			relasjoner: Yup.object({
-				partner: Yup.array().of(
+const validation = Yup.object({
+	environments: Yup.array().required(messages.required),
+	tpsf: Yup.object({
+		relasjoner: Yup.object({
+			partner: Yup.mixed().when('$tpsf.relasjoner.partner', {
+				is: v => v.length > 0,
+				then: Yup.array().of(
 					Yup.object({
-						ident: Yup.string().required(messages.required),
-						sivilstander: Yup.array().of(
-							Yup.object({
-								sivilstand: Yup.string()
-									.test('is-not-ugift', 'Ugyldig sivilstand for partner', value => value !== 'UGIF')
-									.required('Feltet er påkrevd'),
-								sivilstandRegdato: Yup.string()
-									.test(
-										'is-before-last',
-										'Dato må være før tidligere forhold (nyeste forhold settes først)',
-										function validDate(val) {
-											console.log('this :', this)
-											const values = this.options.context
-											const path = this.options.path
-											const thisDate = _get(values, path)
-											const partnerIndex = path.charAt(path.indexOf('[') + 1)
-											const sivilstander =
-												values.tpsf.relasjoner.partnere[partnerIndex].sivilstander
-											const forholdIndex = _findIndex(sivilstander, ['sivilstandRegdato', thisDate])
-											if (forholdIndex === 0) return true
-											return isBefore(thisDate, sivilstander[forholdIndex - 1].sivilstandRegdato)
-										}
+						ident: Yup.string()
+							.test(
+								'partner-is-not-already-used',
+								'Denne personen er allerede brukt som partner',
+								function validDate(val) {
+									const values = this.options.context
+									const path = this.options.path
+									const partnerIdent = _get(values, path)
+									const antallPartnerSammeIdent = antallIdenter(
+										values,
+										path,
+										partnerIdent,
+										'partner'
 									)
-									.required('Feltet er påkrevd')
-							})
-						)
+									return antallPartnerSammeIdent < 1
+								}
+							)
+							.required(messages.required),
+						sivilstander: sivilstander
 					})
 				),
-				barn: Yup.array().of(
-					Yup.object({
-						ident: Yup.string().required(messages.required)
-					})
-				)
-			})
+				otherwise: Yup.mixed().when('$tpsf.relasjoner.barn', {
+					is: v => v.length < 1,
+					then: Yup.string().required('Legg til partner eller barn')
+				})
+			}),
+			barn: Yup.array().of(
+				Yup.object({
+					ident: Yup.string()
+						.test(
+							'is-not-already-used',
+							'Denne personen er allerede brukt som partner eller barn',
+							function validDate(val) {
+								const values = this.options.context
+								const path = this.options.path
+								const barnIdent = _get(values, path)
+								const antallBarnSammeIdent = antallIdenter(values, path, barnIdent, 'barn')
+								const partnere = values.tpsf.relasjoner.partner.map(partner => partner.ident)
+								return antallBarnSammeIdent < 1 && !partnere.includes(barnIdent)
+							}
+						)
+						.required(messages.required)
+				})
+			)
 		})
 	})
+})
+
+function antallIdenter(values, path, identNr, type) {
+	const index = path.charAt(path.indexOf('[') + 1)
+	return _get(values.tpsf.relasjoner, type).reduce((acc, barn, idx) => {
+		if (barn.ident === identNr && idx < index) {
+			acc++
+		}
+		return acc
+	}, 0)
+}

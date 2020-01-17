@@ -24,7 +24,7 @@ const relasjonTranslator = relasjon => {
 	}
 }
 
-export const Relasjoner = ({ relasjoner, bestilling }) => {
+export const Relasjoner = ({ relasjoner }) => {
 	if (!relasjoner) return false
 	const barn = relasjoner.filter(
 		relasjon => relasjonTranslator(relasjon.relasjonTypeNavn) === 'Barn'
@@ -51,7 +51,7 @@ export const Relasjoner = ({ relasjoner, bestilling }) => {
 						<Barn
 							data={barnet.personRelasjonMed}
 							type={barnet.relasjonTypeNavn}
-							bestilling={bestilling.relasjoner.barn[jdx]}
+							hovedperson={barnet.person.ident}
 						/>
 					</div>
 				))}

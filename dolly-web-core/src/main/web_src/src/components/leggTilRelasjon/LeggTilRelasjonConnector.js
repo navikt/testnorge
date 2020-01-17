@@ -12,7 +12,6 @@ import {
 const loadingSelector = createLoadingSelector([actions.updateBeskrivelse])
 
 const mapStateToProps = state => {
-	console.log('state :', state)
 	return {
 		identer: state.gruppe.ident,
 		gruppeId: Object.keys(state.gruppe.byId)[0],
@@ -22,7 +21,6 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	console.log('ownProps :', ownProps)
 	return {
 		updateBeskrivelse: actions.updateBeskrivelse,
 		getBestillinger: gruppeId => dispatch(getBestillinger(gruppeId))

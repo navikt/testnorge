@@ -28,10 +28,7 @@ export const PersonVisning = ({
 
 	return (
 		<div className="person-visning">
-			<TpsfVisning
-				data={TpsfVisning.filterValues(data.tpsf, bestilling.bestilling.tpsf)}
-				bestilling={bestilling.bestilling.tpsf}
-			/>
+			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.bestilling.tpsf)} />
 			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />

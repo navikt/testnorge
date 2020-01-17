@@ -9,49 +9,39 @@ import { FieldArrayAddButton } from '~/components/ui/form/fieldArray/DollyFieldA
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { Sivilstand } from '~/components/fagsystem/tpsf/form/familierelasjoner/partials/Sivilstand'
 
-export const Partner = ({ props, valgbareIdenter }) => {
-	if (valgbareIdenter.length < 1)
+export const Partner = ({ lagOptions, identInfo, hovedIdent }) => {
+	const valgbareIdenter = lagOptions(muligePartnere(identInfo, hovedIdent))
+	const harAlleredePartner = harPartner(identInfo[hovedIdent])
+
+	if (harAlleredePartner) {
+		return (
+			<AlertStripeInfo>
+				Personen har allerede en partner, og du får derfor ikke legge til flere.
+			</AlertStripeInfo>
+		)
+	} else if (valgbareIdenter.length < 1) {
 		return (
 			<AlertStripeInfo>
 				Det finnes ikke flere ledige personer i gruppa som personen kan bli partner med.
 			</AlertStripeInfo>
 		)
-
+	}
 	return (
 		<div className="bestilling-detaljer">
 			<DollyFieldArray name="tpsf.relasjoner.partner" title="Partner" newEntry={initialPartner}>
 				{(path, idx) => (
 					<React.Fragment key={idx}>
-						<FormikSelect name={`${path}.ident`} label="Fnr/dnr/bost" options={valgbareIdenter} />
+						<FormikSelect
+							name={`${path}.ident`}
+							label="Fnr/dnr/bost"
+							options={valgbareIdenter}
+							isClearable={false}
+						/>
 						<FormikCheckbox name={`${path}.harFellesAdresse`} label="Bor sammen" />
 						<Sivilstand tpsfPath={`${path}.sivilstander`} />
 					</React.Fragment>
 				)}
 			</DollyFieldArray>
-			{/* {props.values.relasjoner.partner.map((partner, idx) => {
-				return (
-					<div key={idx}>
-						<h4>Partner {idx + 1}</h4>
-						<div>
-							<FormikSelect
-								name={`relasjoner.partner[${idx}].ident`}
-								label="Fnr/dnr/bost"
-								options={valgbareIdenter}
-							/>
-							<FormikCheckbox
-								name={`relasjoner.partner[${idx}].harFellesAdresse`}
-								label="Bor sammen"
-							/>
-						</div>
-					</div>
-				)
-			})}
-			<FieldArrayAddButton
-				title={'Partner'}
-				onClick={() => {
-					leggTilPartner(`relasjoner.partner`)
-				}}
-			/> */}
 		</div>
 	)
 }
@@ -65,4 +55,21 @@ const initialPartner = {
 		}
 	],
 	harFellesAdresse: true
+}
+
+const harPartner = identInfo => {
+	return (
+		identInfo.relasjoner &&
+		identInfo.relasjoner.some(relasjon => {
+			return relasjon.relasjonTypeNavn === 'PARTNER'
+		})
+	)
+}
+
+const muligePartnere = (identInfo, hovedIdent) => {
+	// Per nå kan ikke bruker legge til en partner som allerede har en annen partner
+	return Object.keys(identInfo).filter(ident => {
+		if (ident === hovedIdent) return false
+		return !harPartner(identInfo[ident])
+	})
 }
