@@ -44,9 +44,8 @@ public class PdlForvalterConsumer {
     private static final String PDL_PERSONSTATUS = "/api/v1/personstatus";
     private static final String PREPROD_ENV = "q";
 
-//    @Value("${fasit.environment.name}")
-    // todo find vault alternative
-    private String environment = "u2";
+    @Value("${dolly.environment.name}")
+    private String environment;
 
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
