@@ -4,7 +4,7 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 
-export const Boadresse = ({ boadresse }) => {
+export const Boadresse = ({ boadresse, visKunAdresse }) => {
 	if (!boadresse) return false
 
 	const {
@@ -30,19 +30,29 @@ export const Boadresse = ({ boadresse }) => {
 		</div>
 	)
 
+	const adresseVisning = (
+		<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
+			{adressetype === 'GATE' && <div>{`${gateadresse} ${husnummer}`}</div>}
+			{adressetype === 'MATR' && matrikkelVisning}
+			<KodeverkConnector navn="Postnummer" value={postnr}>
+				{(v, verdi) => <span>{verdi ? verdi.label : postnr}</span>}
+			</KodeverkConnector>
+		</TitleValue>
+	)
+
 	return (
 		<div>
-			<SubOverskrift label="Boadresse" iconKind="adresse" />
-			<div className="person-visning_content">
-				<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
-					{adressetype === 'GATE' && <div>{`${gateadresse} ${husnummer}`}</div>}
-					{adressetype === 'MATR' && matrikkelVisning}
-					<KodeverkConnector navn="Postnummer" value={postnr}>
-						{(v, verdi) => <span>{verdi ? verdi.label : postnr}</span>}
-					</KodeverkConnector>
-				</TitleValue>
-				<TitleValue title="Flyttedato" value={Formatters.formatDate(flyttedato)} />
-			</div>
+			{visKunAdresse ? (
+				adresseVisning
+			) : (
+				<div>
+					<SubOverskrift label="Boadresse" iconKind="adresse" />
+					<div className="person-visning_content">
+						{adresseVisning}
+						<TitleValue title="Flyttedato" value={Formatters.formatDate(flyttedato)} />
+					</div>{' '}
+				</div>
+			)}
 		</div>
 	)
 }
