@@ -40,6 +40,7 @@ Steg2.validation = Yup.object({
 	...TpsfForm.validation,
 	...KrrstubForm.validation,
 	...AaregForm.validation,
+	...SigrunstubForm.validation,
 	...InstForm.validation,
 	...ArenaForm.validation,
 	...UdistubForm.validation,
