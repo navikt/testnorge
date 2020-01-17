@@ -25,7 +25,6 @@ import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
-@ActiveProfiles("test")
 @RunWith(MockitoJUnitRunner.class)
 public class KrrstubClientTest {
 

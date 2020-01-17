@@ -12,6 +12,3 @@ spring:
       read-timeout: 30000
       generic:
         enabled: false
-
-
-dolly.security.cors.origins: http://localhost:3000,http://localhost:8020

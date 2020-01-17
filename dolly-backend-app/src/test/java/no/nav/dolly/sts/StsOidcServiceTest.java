@@ -1,12 +1,12 @@
 package no.nav.dolly.sts;
 
-import static no.nav.dolly.properties.Environment.TEST;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.when;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -16,12 +16,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.properties.CredentialsProps;
-import no.nav.dolly.security.sts.StsOidcFasitConsumer;
 import no.nav.dolly.security.sts.StsOidcService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -35,9 +35,6 @@ public class StsOidcServiceTest {
     private RestTemplate restTemplate;
 
     @Mock
-    private StsOidcFasitConsumer stsOidcFasitConsumer;
-
-    @Mock
     private CredentialsProps credentialsProps;
 
     @InjectMocks
@@ -48,6 +45,11 @@ public class StsOidcServiceTest {
 
     @Mock
     private JsonNode jsonNode2;
+
+    @Before
+    public void setup() {
+        ReflectionTestUtils.setField(stsOidcService, "stsTokenProviderTestUrl", "testUrl");
+    }
 
     @Test
     public void getIdToken_sikkerhetsTokenKunneIkkeFornyes() {
@@ -66,8 +68,6 @@ public class StsOidcServiceTest {
 
         when(restTemplate.exchange(any(RequestEntity.class), eq(JsonNode.class)))
                 .thenReturn(ResponseEntity.ok(jsonNode));
-
-        when(stsOidcFasitConsumer.getStsOidcService(TEST)).thenReturn("baseUrl");
 
         String token = stsOidcService.getIdToken(ENV);
 
