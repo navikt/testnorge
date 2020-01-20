@@ -60,7 +60,7 @@ public class RettighetTiltakService {
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
 
             if (!identerMedKontonummer.isEmpty()) {
-                syntetisertRettighet.setAlternativMottaker(serviceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
+                syntetisertRettighet.setAlternativMottaker(ServiceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
             }
 
             var rettighetRequest = new RettighetTiltakspengerRequest(Collections.singletonList(syntetisertRettighet));

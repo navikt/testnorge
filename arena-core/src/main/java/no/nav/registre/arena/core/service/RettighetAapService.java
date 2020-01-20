@@ -189,7 +189,7 @@ public class RettighetAapService {
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
-            syntetisertRettighet.setForvalter(serviceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
+            syntetisertRettighet.setForvalter(ServiceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
             var rettighetRequest = new RettighetTvungenForvaltningRequest(Collections.singletonList(syntetisertRettighet));
             rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
             rettighetRequest.setMiljoe(miljoe);
