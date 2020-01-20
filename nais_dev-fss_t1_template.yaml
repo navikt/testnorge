@@ -37,5 +37,5 @@ spec:
     paths:
       - kvPath: /oracle/dev/config/dolly_t1
         mountPath: /var/run/secrets/nais.io/dbPath
-      - kvPath: /oracle/data/dev/creds/dolly_t1-user
+      - kvPath: /oracle/dev/creds/dolly_t1-user
         mountPath: /var/run/secrets/nais.io/db
