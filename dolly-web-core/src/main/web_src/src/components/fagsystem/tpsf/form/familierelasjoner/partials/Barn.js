@@ -1,8 +1,9 @@
 import React from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
 import { Diskresjonskoder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/diskresjonskoder/Diskresjonskoder'
 import Formatters from '~/utils/DataFormatter'
@@ -16,7 +17,9 @@ const initialValues = {
 	erAdoptert: false,
 	alder: Formatters.randomIntInRange(1, 18),
 	spesreg: '',
-	utenFastBopel: false
+	utenFastBopel: false,
+	statsborgerskap: '',
+	statsborgerskapRegdato: ''
 }
 
 export const Barn = ({ formikBag }) => {
@@ -73,6 +76,12 @@ export const Barn = ({ formikBag }) => {
 					/>
 					<FormikCheckbox name={`${path}.erAdoptert`} label="Er adoptert" />
 					<Alder basePath={path} formikBag={formikBag} />
+					<FormikSelect
+						name={`${path}.statsborgerskap`}
+						label="Statsborgerskap"
+						kodeverk="Landkoder"
+					/>
+					<FormikDatepicker name={`${path}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
 					<Diskresjonskoder basePath={path} formikBag={formikBag} />
 				</React.Fragment>
 			)}

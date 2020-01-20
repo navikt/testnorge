@@ -15,7 +15,9 @@ const initialValues = {
 	harFellesAdresse: false,
 	alder: Formatters.randomIntInRange(18, 99),
 	spesreg: '',
-	utenFastBopel: false
+	utenFastBopel: false,
+	statsborgerskap: '',
+	statsborgerskapRegdato: ''
 }
 const initForhold = { sivilstand: '', sivilstandRegdato: '' }
 
@@ -32,6 +34,12 @@ export const Partnere = ({ formikBag }) => (
 				<FormikSelect name={`${path}.kjonn`} label="Kjønn" kodeverk="Kjønnstyper" />
 				<FormikCheckbox name={`${path}.harFellesAdresse`} label="Har felles adresse" />
 				<Alder basePath={path} formikBag={formikBag} />
+				<FormikSelect
+					name={`${path}.statsborgerskap`}
+					label="Statsborgerskap"
+					kodeverk="Landkoder"
+				/>
+				<FormikDatepicker name={`${path}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
 				<Diskresjonskoder basePath={path} formikBag={formikBag} />
 				<DollyFieldArray
 					name={`tpsf.relasjoner.partnere[${idx}].sivilstander`}
