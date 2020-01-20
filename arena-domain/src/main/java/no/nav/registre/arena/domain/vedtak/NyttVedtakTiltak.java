@@ -23,7 +23,6 @@ public class NyttVedtakTiltak extends NyttVedtak {
 
     // nyeTiltaksdeltakelse:
     private String begrunnelse;
-    private String begrunnelseInnsoking;
     private String lagOppgave;
 
     private List<AnnenOkonomYtelseTiltak> andreOkonomYtelser;

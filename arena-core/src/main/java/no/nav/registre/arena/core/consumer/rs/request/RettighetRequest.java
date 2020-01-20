@@ -27,7 +27,7 @@ import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public abstract class RettighetRequest implements Serializable {
 
     private String personident;

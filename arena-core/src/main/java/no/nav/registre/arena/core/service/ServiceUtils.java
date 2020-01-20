@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.domain.NyBrukerFeil;
+import no.nav.registre.arena.domain.aap.forvalter.Adresse;
+import no.nav.registre.arena.domain.aap.forvalter.Forvalter;
+import no.nav.registre.arena.domain.aap.forvalter.Konto;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;
@@ -66,17 +69,28 @@ public class ServiceUtils {
         return identerMedKontonummer;
     }
 
-    public List<RettighetRequest> opprettArbeidssoeker(
+    public List<RettighetRequest> opprettArbeidssoekerAap(
             List<RettighetRequest> rettigheter,
             String miljoe
     ) {
+        return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? KVALIFISERINGSGRUPPE_BATT : KVALIFISERINGSGRUPPE_VARIG);
+    }
+
+    public List<RettighetRequest> opprettArbeidssoekerTiltak(
+            List<RettighetRequest> rettigheter,
+            String miljoe
+    ) {
+        return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? KVALIFISERINGSGRUPPE_BATT : KVALIFISERINGSGRUPPE_BFORM);
+    }
+
+    private List<RettighetRequest> opprettArbeidssoeker(List<RettighetRequest> rettigheter, String miljoe, String kvalifiseringsgruppe) {
         var identerIArena = syntetiseringService.hentEksisterendeArbeidsoekerIdenter();
         var uregistrerteBrukere = rettigheter.stream().filter(rettighet -> !identerIArena.contains(rettighet.getPersonident())).map(RettighetRequest::getPersonident)
                 .collect(Collectors.toSet());
 
         if (!uregistrerteBrukere.isEmpty()) {
             var nyeBrukereResponse = syntetiseringService
-                    .byggArbeidsoekereOgLagreIHodejegeren(new ArrayList<>(uregistrerteBrukere), miljoe, rand.nextBoolean() ? KVALIFISERINGSGRUPPE_BATT : KVALIFISERINGSGRUPPE_VARIG);
+                    .byggArbeidsoekereOgLagreIHodejegeren(new ArrayList<>(uregistrerteBrukere), miljoe, kvalifiseringsgruppe);
             var feiledeIdenter = nyeBrukereResponse.getNyBrukerFeilList().stream().map(NyBrukerFeil::getPersonident).collect(Collectors.toCollection(ArrayList::new));
             rettigheter.removeIf(rettighet -> feiledeIdenter.contains(rettighet.getPersonident()));
         }
@@ -92,5 +106,24 @@ public class ServiceUtils {
             String miljoe
     ) {
         return hodejegerenConsumer.getRelasjoner(ident, miljoe);
+    }
+
+    public static Forvalter buildForvalter(KontoinfoResponse identMedKontoinfo) {
+        Konto konto = Konto.builder()
+                .kontonr(identMedKontoinfo.getKontonummer())
+                .build();
+        Adresse adresse = Adresse.builder()
+                .adresseLinje1(identMedKontoinfo.getAdresseLinje1())
+                .adresseLinje2(identMedKontoinfo.getAdresseLinje2())
+                .adresseLinje3(identMedKontoinfo.getAdresseLinje3())
+                .fodselsnr(identMedKontoinfo.getFnr())
+                .landkode(identMedKontoinfo.getLandkode())
+                .navn(identMedKontoinfo.getLandkode())
+                .postnr(identMedKontoinfo.getPostnr())
+                .build();
+        return Forvalter.builder()
+                .gjeldendeKontonr(konto)
+                .utbetalingsadresse(adresse)
+                .build();
     }
 }

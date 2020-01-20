@@ -18,12 +18,8 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRe
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
-import no.nav.registre.arena.domain.aap.forvalter.Adresse;
-import no.nav.registre.arena.domain.aap.forvalter.Forvalter;
-import no.nav.registre.arena.domain.aap.forvalter.Konto;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
-import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -87,10 +83,10 @@ public class RettighetAapService {
                     rettighetRequest = new RettighetTvungenForvaltningRequest(tvungenForvaltning);
                     rettighetRequest.setPersonident(personident);
                     rettighetRequest.setMiljoe(miljoe);
-                    ((RettighetTvungenForvaltningRequest) rettighetRequest).getNyeAatfor().forEach(rettighet -> {
-                        rettighet.setForvalter(buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
+                    for (NyttVedtakAap rettighet : ((RettighetTvungenForvaltningRequest) rettighetRequest).getNyeAatfor()) {
+                        rettighet.setForvalter(ServiceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
                         rettighet.setBegrunnelse(BEGRUNNELSE);
-                    });
+                    }
                     rettigheter.add(rettighetRequest);
                 }
 
@@ -105,7 +101,7 @@ public class RettighetAapService {
                 }
             }
         }
-        return rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoeker(rettigheter, miljoe));
+        return rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
 
     public List<NyttVedtakResponse> genererAapMedTilhoerende115(
@@ -135,8 +131,8 @@ public class RettighetAapService {
             rettigheter.add(rettighetRequest);
         }
 
-        rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoeker(aap115Rettigheter, miljoe));
-        return rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoeker(rettigheter, miljoe));
+        rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(aap115Rettigheter, miljoe));
+        return rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
 
     public List<NyttVedtakResponse> genererAap115(
@@ -157,7 +153,7 @@ public class RettighetAapService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoeker(rettigheter, miljoe));
+        return rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
 
     public List<NyttVedtakResponse> genererUngUfoer(
@@ -178,7 +174,7 @@ public class RettighetAapService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoeker(rettigheter, miljoe));
+        return rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
 
     public List<NyttVedtakResponse> genererTvungenForvaltning(
@@ -193,7 +189,7 @@ public class RettighetAapService {
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
-            syntetisertRettighet.setForvalter(buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
+            syntetisertRettighet.setForvalter(serviceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
             var rettighetRequest = new RettighetTvungenForvaltningRequest(Collections.singletonList(syntetisertRettighet));
             rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
             rettighetRequest.setMiljoe(miljoe);
@@ -201,7 +197,7 @@ public class RettighetAapService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoeker(rettigheter, miljoe));
+        return rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
 
     public List<NyttVedtakResponse> genererFritakMeldekort(
@@ -227,24 +223,5 @@ public class RettighetAapService {
         }
 
         return rettighetAapArenaForvalterConsumer.opprettRettighet(rettigheter);
-    }
-
-    private Forvalter buildForvalter(KontoinfoResponse identMedKontoinfo) {
-        Konto konto = Konto.builder()
-                .kontonr(identMedKontoinfo.getKontonummer())
-                .build();
-        Adresse adresse = Adresse.builder()
-                .adresseLinje1(identMedKontoinfo.getAdresseLinje1())
-                .adresseLinje2(identMedKontoinfo.getAdresseLinje2())
-                .adresseLinje3(identMedKontoinfo.getAdresseLinje3())
-                .fodselsnr(identMedKontoinfo.getFnr())
-                .landkode(identMedKontoinfo.getLandkode())
-                .navn(identMedKontoinfo.getLandkode())
-                .postnr(identMedKontoinfo.getPostnr())
-                .build();
-        return Forvalter.builder()
-                .gjeldendeKontonr(konto)
-                .utbetalingsadresse(adresse)
-                .build();
     }
 }

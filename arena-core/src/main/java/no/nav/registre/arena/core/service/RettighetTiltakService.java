@@ -18,11 +18,12 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class TiltakService {
+public class RettighetTiltakService {
 
     private static final String RELASJON_MOR = "MORA";
     private static final String RELASJON_FAR = "FARA";
@@ -46,13 +47,22 @@ public class TiltakService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var syntetiserteRettigheter = tiltakSyntConsumer.opprettTiltakspenger(antallNyeIdenter);
+        List<KontoinfoResponse> identerMedKontonummer = new ArrayList<>();
+        if (rand.nextBoolean()) {
+            identerMedKontonummer = serviceUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallNyeIdenter);
+        }
         var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter);
+        var syntetiserteRettigheter = tiltakSyntConsumer.opprettTiltakspenger(antallNyeIdenter);
         aktiverTiltaksdeltakelse(utvalgteIdenter, miljoe);
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
+
+            if (!identerMedKontonummer.isEmpty()) {
+                syntetisertRettighet.setAlternativMottaker(serviceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
+            }
+
             var rettighetRequest = new RettighetTiltakspengerRequest(Collections.singletonList(syntetisertRettighet));
 
             rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
@@ -61,7 +71,7 @@ public class TiltakService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetTiltakArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoeker(rettigheter, miljoe));
+        return rettighetTiltakArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
     }
 
     public List<NyttVedtakResponse> opprettBarnetillegg(
@@ -69,8 +79,8 @@ public class TiltakService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var syntetiserteRettigheter = tiltakSyntConsumer.opprettBarnetillegg(antallNyeIdenter);
         var utvalgteIdenter = finnIdenterMedBarn(avspillergruppeId, miljoe, antallNyeIdenter);
+        var syntetiserteRettigheter = tiltakSyntConsumer.opprettBarnetillegg(antallNyeIdenter);
         aktiverTiltaksdeltakelse(utvalgteIdenter, miljoe);
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
@@ -84,7 +94,7 @@ public class TiltakService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetTiltakArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoeker(rettigheter, miljoe));
+        return rettighetTiltakArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
     }
 
     private List<NyttVedtakResponse> aktiverTiltaksdeltakelse(
@@ -96,7 +106,7 @@ public class TiltakService {
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
-            syntetisertRettighet.setBegrunnelseInnsoking(BEGRUNNELSE);
+            syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
             var rettighetRequest = new RettighetTiltaksdeltakelseRequest(Collections.singletonList(syntetisertRettighet));
 
             rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
@@ -105,7 +115,7 @@ public class TiltakService {
             rettigheter.add(rettighetRequest);
         }
 
-        List<NyttVedtakResponse> responses = rettighetTiltakArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoeker(rettigheter, miljoe));
+        var responses = rettighetTiltakArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
         for (var response : responses) {
             if (!response.getFeiledeRettigheter().isEmpty()) {
                 log.warn("Kunne ikke opprette deltakelse for alle identer");

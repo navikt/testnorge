@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.arena.core.service.TiltakService;
+import no.nav.registre.arena.core.service.RettighetTiltakService;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 
 @RestController
@@ -17,26 +17,26 @@ import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 @RequiredArgsConstructor
 public class TiltakController {
 
-    private final TiltakService tiltakService;
+    private final RettighetTiltakService rettighetTiltakService;
 
     @PostMapping("generer/tiltaksdeltakelse")
     public List<NyttVedtakResponse> genererTiltaksdeltakelse(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return tiltakService.opprettTiltaksdeltakelse(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+        return rettighetTiltakService.opprettTiltaksdeltakelse(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
     }
 
     @PostMapping("generer/tiltakspenger")
     public List<NyttVedtakResponse> genererTiltakspenger(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return tiltakService.opprettTiltakspenger(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+        return rettighetTiltakService.opprettTiltakspenger(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
     }
 
     @PostMapping("generer/barnetillegg")
     public List<NyttVedtakResponse> genererBarnetillegg(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return tiltakService.opprettBarnetillegg(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+        return rettighetTiltakService.opprettBarnetillegg(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
     }
 }
