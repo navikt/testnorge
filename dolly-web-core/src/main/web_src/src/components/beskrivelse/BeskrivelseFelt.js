@@ -7,7 +7,9 @@ export const BeskrivelseFelt = ({
 }) => {
 	return (
 		<div className="beskrivelse-felt" onClick={turnOnEditing}>
-			{beskrivelse || 'Skriv inn en kommentar (max 1000 chars)'}
+			{beskrivelse || (
+				<span class="KommentarPlaceholder">Skriv inn en kommentar (maks 1000 tegn)</span>
+			)}
 			<div className="beskrivelse-button-container">
 				<Button onClick={turnOnEditing} className="beskrivelse-button" label="">
 					Rediger
