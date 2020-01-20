@@ -34,8 +34,3 @@ spec:
       memory: 2048Mi
   vault:
     enabled: true
-    paths:
-      - kvPath: /oracle/dev/config/dolly_t1
-        mountPath: /var/run/secrets/nais.io/dbPath
-      - kvPath: /oracle/dev/creds/dolly_t1-user
-        mountPath: /var/run/secrets/nais.io/db
