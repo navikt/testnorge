@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import java.util.List;
 
-import no.nav.registre.arena.domain.aap.andreokonomytelser.AnnenOkonomYtelseTiltak;
+import no.nav.registre.arena.domain.vedtak.andreokonomytelser.AnnenOkonomYtelseTiltak;
 import no.nav.registre.arena.domain.vedtak.forvalter.Forvalter;
 
 @Getter

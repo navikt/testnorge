@@ -1,4 +1,4 @@
-package no.nav.registre.arena.domain.aap.andreokonomytelser;
+package no.nav.registre.arena.domain.vedtak.andreokonomytelser;
 
 public enum OkonomKoderAap {
     TYPE,

@@ -170,7 +170,7 @@ public class AapSyntConsumerTest {
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(getResourceFileContent("files/aap_synt_response.json")));
+                        .body(getResourceFileContent("files/aap/aap_synt_response.json")));
     }
 
     private void stubSyntetiserUngUfoerRettighet(String expectedUri) {
@@ -178,7 +178,7 @@ public class AapSyntConsumerTest {
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(getResourceFileContent("files/ung_ufoer_synt_response.json")));
+                        .body(getResourceFileContent("files/aap/ung_ufoer_synt_response.json")));
     }
 
     private void stubSyntetiserTvungenForvaltningRettighet(String expectedUri) {
@@ -186,7 +186,7 @@ public class AapSyntConsumerTest {
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(getResourceFileContent("files/tvungen_forvaltning_synt_response.json")));
+                        .body(getResourceFileContent("files/aap/tvungen_forvaltning_synt_response.json")));
     }
 
     private void stubSyntetiserFritakMeldekortRettighet(String expectedUri) {
@@ -194,6 +194,6 @@ public class AapSyntConsumerTest {
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(getResourceFileContent("files/fritak_meldekort_synt_response.json")));
+                        .body(getResourceFileContent("files/aap/fritak_meldekort_synt_response.json")));
     }
 }

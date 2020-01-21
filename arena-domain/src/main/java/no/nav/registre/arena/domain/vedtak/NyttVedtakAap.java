@@ -12,7 +12,7 @@ import lombok.Setter;
 
 import java.util.List;
 
-import no.nav.registre.arena.domain.aap.andreokonomytelser.AndreOkonomYtelser;
+import no.nav.registre.arena.domain.vedtak.andreokonomytelser.AndreOkonomYtelser;
 import no.nav.registre.arena.domain.vedtak.forvalter.Forvalter;
 import no.nav.registre.arena.domain.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.arena.domain.aap.institusjonsopphold.Institusjonsopphold;

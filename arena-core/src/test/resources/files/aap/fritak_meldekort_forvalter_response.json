@@ -1,0 +1,11 @@
+{
+  "nyeFritak": [],
+  "nyeFritakFeilList": [
+    {
+      "personident": "01113805753",
+      "miljoe": "q2",
+      "status": "AKTIVER_FRITAK",
+      "melding": "The request could not be processed because an error occurred whilst attempting to evaluate the SQL statement associated with this resource. Please check the SQL statement is correctly formed and executes without error. SQL Error Code: ORA-20999: Det finnes ikke et iverksatt AAP-vedtak, og vedtak om fritak for å sende meldekort kan derfor ikke opprettes. ORA-06512: ved \"SIAMO.SYNT_ARBEIDSAVKLARINGSPENGER\", line 2083 ORA-06512: ved \"SYNT_REST.ARBEIDSAVKLARINGSPENGER\", line 55 ORA-06512: ved line 1 , Error Message: {2}."
+    }
+  ]
+}

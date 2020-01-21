@@ -47,25 +47,12 @@ public class RettighetAapArenaForvalterConsumer {
     }
 
     public List<NyttVedtakResponse> opprettRettighet(List<RettighetRequest> rettigheter) {
-        //        ObjectMapper objectMapper = new ObjectMapper();
         List<NyttVedtakResponse> responses = new ArrayList<>(rettigheter.size());
         for (var rettighet : rettigheter) {
 
             UriTemplate url;
-            //            StringBuilder stringBuilder = new StringBuilder("\n");
             if (rettighet instanceof RettighetAapRequest) {
                 url = opprettAapRettighetUrl;
-                //                System.out.println("----------------------");
-                //                for (NyttVedtakAap nyttVedtakAap : rettighet.getVedtakAap()) {
-                //                    stringBuilder.append("vedtakstype - ").append(nyttVedtakAap.getVedtaktype()).append("   ");
-                //                    stringBuilder.append("aktivitetsfase - ").append(nyttVedtakAap.getAktivitetsfase()).append("   ");
-                //                    stringBuilder.append("datoMottatt - ").append(nyttVedtakAap.getDatoMottatt()).append("   ");
-                //                    stringBuilder.append("fraDato - ").append(nyttVedtakAap.getFraDato()).append("   ");
-                //                    if (nyttVedtakAap.getJustertFra() != null && !nyttVedtakAap.getJustertFra().isEmpty()) {
-                //                        stringBuilder.append("justertFra - ").append(nyttVedtakAap.getJustertFra()).append("   ");
-                //                    }
-                //                    stringBuilder.append("tilDato - ").append(nyttVedtakAap.getTilDato()).append("\n");
-                //                }
             } else if (rettighet instanceof RettighetAap115Request) {
                 url = opprettAap115RettighetUrl;
             } else if (rettighet instanceof RettighetUngUfoerRequest) {
@@ -77,52 +64,11 @@ public class RettighetAapArenaForvalterConsumer {
             } else {
                 throw new RuntimeException("Unkown URL");
             }
-
-            //            try {
-            //                log.info("Legger til syntetisk rettighet: {}", objectMapper.writeValueAsString(rettighet));
-            //            } catch (JsonProcessingException e) {
-            //                log.error("Kunne ikke printe rettighet", e);
-            //            }
-
-            //            log.info(stringBuilder.toString());
-
-            //            List<NyttVedtakAap> vedtakAap = rettighet.getVedtakAap();
-            //            if (rettighet instanceof RettighetAapRequest) {
-            //                for (var vedtak : vedtakAap) {
-            //
-            //                    RettighetRequest rettighetRequest = new RettighetAapRequest(new ArrayList<>(Collections.singletonList(vedtak)));
-            //                    rettighetRequest.setMiljoe(rettighet.getMiljoe());
-            //                    rettighetRequest.setPersonident(rettighet.getPersonident());
-            //                    for (var vilkaar : vedtak.getVilkaar()) {// test om dette hjelper
-            //                        if (vilkaar.getStatus().isEmpty()) {
-            //                            vilkaar.setStatus("V");
-            //                        }
-            //                    }
-            //                    var postRequest = RequestEntity.post(url.expand())
-            //                            .header("Nav-Call-Id", NAV_CALL_ID)
-            //                            .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
-            //                            .body(rettighetRequest);
-            //                    NyttVedtakResponse response = restTemplate.exchange(postRequest, NyttVedtakResponse.class).getBody();
-            //                    if (!response.getFeiledeRettigheter().isEmpty()) {
-            //                        try {
-            //                            log.info("\nVedtak feilet. \n\tFeilmeling: {} - \n\tVedtak: {}",
-            //                                    objectMapper.writeValueAsString(response.getFeiledeRettigheter().get(0)),
-            //                                    objectMapper.writeValueAsString(vedtak));
-            //                        } catch (JsonProcessingException e) {
-            //                            e.printStackTrace();
-            //                        }
-            //                    }
-            //                    responses.add(response);
-            //                }
-            //                System.out.println("----------------------");
-            //            } else {
             var postRequest = RequestEntity.post(url.expand())
                     .header("Nav-Call-Id", NAV_CALL_ID)
                     .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                     .body(rettighet);
             responses.add(restTemplate.exchange(postRequest, NyttVedtakResponse.class).getBody());
-            //            }
-
         }
         return responses;
     }
