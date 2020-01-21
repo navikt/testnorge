@@ -33,7 +33,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 		{
 			text: 'Ident',
 			width: '15',
-			dataField: 'ident.ident',
+			dataField: 'identNr',
 			unique: true
 		},
 		{
@@ -54,9 +54,9 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 		{
 			text: 'Bestilling-ID',
 			width: '20',
-			dataField: 'ident.bestillingId',
+			dataField: 'bestillingId',
 			formatter: (cell, row) => {
-				const arr = row.ident.bestillingId
+				const arr = row.bestillingId
 				let str = arr[0]
 				if (arr.length > 1) str = `${str} ...`
 				return str
