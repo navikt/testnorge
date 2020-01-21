@@ -1,5 +1,67 @@
 import * as Yup from 'yup'
+import _has from 'lodash/has'
 import { ifPresent, requiredString, requiredBoolean } from '~/utils/YupValidations'
+
+const oppholdsstatusTest = (validation, path) => {
+	const statusArray = [
+		'udistub.oppholdStatus.eosEllerEFTABeslutningOmOppholdsrett',
+		'udistub.oppholdStatus.eosEllerEFTAVedtakOmVarigOppholdsrett',
+		'udistub.oppholdStatus.eosEllerEFTAOppholdstillatelse',
+		'udistub.oppholdStatus.oppholdSammeVilkaar.oppholdstillatelseType',
+		'udistub.harOppholdsTillatelse',
+		'udistub.oppholdStatus.uavklart'
+	]
+	// const filteredStatuser = muligeStatuserArray.filter(path => path !== dennePath)
+
+	return validation.test('harPath', function sjekkPath(val) {
+		console.log('val :', val)
+		if (!val) return true
+		const values = this.options.context
+		let harPath = false
+		statusArray.forEach(status => {
+			console.log('status :', status)
+			console.log('values :', values)
+			if (_has(values, status)) {
+				harPath = true
+			}
+		})
+		// console.log('filteredStatuser :', filteredStatuser)
+		// console.log('values :', values)
+		console.log('harPath :', harPath)
+		return harPath
+	})
+}
+
+// const oppholdsstatusTest = (validation, dennePath) => {
+// 	const statusArray = [
+// 		'udistub.oppholdStatus.eosEllerEFTABeslutningOmOppholdsrett',
+// 		'udistub.oppholdStatus.eosEllerEFTAVedtakOmVarigOppholdsrett',
+// 		'udistub.oppholdStatus.eosEllerEFTAOppholdstillatelse',
+// 		'udistub.oppholdStatus.oppholdSammeVilkaar.oppholdstillatelseType',
+// 		'udistub.harOppholdsTillatelse',
+// 		'udistub.oppholdStatus.uavklart'
+// 	]
+
+// 	const filteredStatuser = statusArray.filter(path => path !== dennePath)
+
+// 	return validation.test('harPath', function sjekkPath(val) {
+// 		console.log('val :', val)
+// 		if (!val) return true
+// 		const values = this.options.context
+// 		let harPath = false
+// 		filteredStatuser.forEach(status => {
+// 			console.log('status :', status)
+// 			console.log('values :', values)
+// 			if (_has(values, status)) {
+// 				harPath = true
+// 			}
+// 		})
+// 		// console.log('filteredStatuser :', filteredStatuser)
+// 		// console.log('values :', values)
+// 		console.log('harPath :', harPath)
+// 		return harPath
+// 	})
+// }
 
 const aliaser = Yup.array().of(
 	Yup.object({
@@ -39,10 +101,7 @@ const oppholdSammeVilkaar = Yup.object({
 		'$udistub.oppholdStatus.oppholdSammeVilkaar.oppholdstillatelseVedtaksDato',
 		Yup.date().nullable()
 	),
-	oppholdstillatelseType: ifPresent(
-		'$udistub.oppholdStatus.oppholdSammeVilkaar.oppholdstillatelseType',
-		requiredString
-	)
+	oppholdstillatelseType: oppholdsstatusTest(requiredString)
 })
 
 const oppholdStatus = Yup.object({
@@ -57,10 +116,29 @@ const oppholdStatus = Yup.object({
 		'$udistub.oppholdStatus.eosEllerEFTABeslutningOmOppholdsrettEffektuering',
 		Yup.date().nullable()
 	),
-	eosEllerEFTABeslutningOmOppholdsrett: ifPresent(
-		'$udistub.oppholdStatus.eosEllerEFTABeslutningOmOppholdsrett',
-		requiredString
+	// eosEllerEFTABeslutningOmOppholdsrett: Yup.string().when(
+	// 	['eosEllerEFTAVedtakOmVarigOppholdsrett', 'eosEllerEFTAOppholdstillatelse'],
+	// 	{
+	// 		is: undefined,
+	// 		then: requiredString
+	// 	}
+	// ),
+	// eosEllerEFTABeslutningOmOppholdsrett: Yup.string().when(
+	// 	oppholdsstatusTest(Yup.object(), 'udistub.oppholdStatus.eosEllerEFTABeslutningOmOppholdsrett'),
+	// 	{
+	// 		is: false,
+	// 		then: requiredString
+	// 	}
+	// ),
+	eosEllerEFTABeslutningOmOppholdsrett: oppholdsstatusTest(
+		requiredString,
+		'udistub.oppholdStatus.eosEllerEFTABeslutningOmOppholdsrett'
 	),
+	// eosEllerEFTABeslutningOmOppholdsrett: requiredString,
+	// eosEllerEFTABeslutningOmOppholdsrett: ifPresent(
+	// 	'$udistub.oppholdStatus.eosEllerEFTABeslutningOmOppholdsrett',
+	// 	requiredString
+	// ),
 	eosEllerEFTAVedtakOmVarigOppholdsrettPeriode: ifPresent(
 		'$udistub.oppholdStatus.eosEllerEFTAVedtakOmVarigOppholdsrettPeriode',
 		Yup.object({
@@ -72,10 +150,15 @@ const oppholdStatus = Yup.object({
 		'$udistub.oppholdStatus.eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering',
 		Yup.date().nullable()
 	),
-	eosEllerEFTAVedtakOmVarigOppholdsrett: ifPresent(
-		'$udistub.oppholdStatus.eosEllerEFTAVedtakOmVarigOppholdsrett',
-		requiredString
-	),
+	eosEllerEFTAVedtakOmVarigOppholdsrett: Yup.string(),
+	// eosEllerEFTAVedtakOmVarigOppholdsrett: Yup.string().when(
+	// 	['eosEllerEFTABeslutningOmOppholdsrett', 'eosEllerEFTAOppholdstillatelse'],
+	// 	{
+	// 		is: undefined,
+	// 		then: requiredString
+	// 	}
+	// ),
+	// eosEllerEFTAVedtakOmVarigOppholdsrett: oppholdsstatusTest(requiredString),
 	eosEllerEFTAOppholdstillatelsePeriode: ifPresent(
 		'$udistub.oppholdStatus.eosEllerEFTAOppholdstillatelsePeriode',
 		Yup.object({
@@ -87,10 +170,15 @@ const oppholdStatus = Yup.object({
 		'$udistub.oppholdStatus.eosEllerEFTAOppholdstillatelseEffektuering',
 		Yup.date().nullable()
 	),
-	eosEllerEFTAOppholdstillatelse: ifPresent(
-		'$udistub.oppholdStatus.eosEllerEFTAOppholdstillatelse',
-		requiredString
-	),
+	eosEllerEFTAOppholdstillatelse: Yup.string(),
+	// eosEllerEFTAOppholdstillatelse: Yup.string().when(
+	// 	['eosEllerEFTAVedtakOmVarigOppholdsrett', 'eosEllerEFTABeslutningOmOppholdsrett'],
+	// 	{
+	// 		is: undefined,
+	// 		then: requiredString
+	// 	}
+	// ),
+	// eosEllerEFTAOppholdstillatelse: oppholdsstatusTest(requiredString),
 	oppholdSammeVilkaar: ifPresent('$udistub.oppholdStatus.oppholdSammeVilkaar', oppholdSammeVilkaar)
 })
 
