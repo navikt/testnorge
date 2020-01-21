@@ -6,8 +6,8 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.arena.domain.Arbeidsoeker;
-import no.nav.registre.arena.domain.NyBrukerFeil;
+import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
+import no.nav.registre.arena.domain.brukere.NyBrukerFeil;
 
 @Getter
 @Setter

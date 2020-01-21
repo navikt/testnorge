@@ -1,4 +1,4 @@
-package no.nav.registre.arena.domain.aap.forvalter;
+package no.nav.registre.arena.domain.brukere;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,13 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Forvalter {
+public class UtenServicebehov {
 
-    private Konto gjeldendeKontonr;
-    private Adresse utbetalingsadresse;
+    private LocalDate stansDato;
 }

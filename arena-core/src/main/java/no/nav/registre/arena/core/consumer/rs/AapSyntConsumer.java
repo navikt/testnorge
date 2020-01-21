@@ -23,7 +23,7 @@ import no.nav.registre.arena.domain.historikk.Vedtakshistorikk;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 
 @Component
-public class RettighetSyntConsumer {
+public class AapSyntConsumer {
 
     private static final LocalDate MINIMUM_DATE = LocalDate.of(2010, 10, 1); // krav i arena
 
@@ -38,7 +38,7 @@ public class RettighetSyntConsumer {
     private UriTemplate arenaAapTvungenForvaltningUrl;
     private UriTemplate arenaAapFritakMeldekortUrl;
 
-    public RettighetSyntConsumer(
+    public AapSyntConsumer(
             RestTemplateBuilder restTemplateBuilder,
             ConsumerUtils consumerUtils,
             Random rand,

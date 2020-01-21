@@ -22,8 +22,8 @@ import java.util.Objects;
 
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
 import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
-import no.nav.registre.arena.domain.Arbeidsoeker;
-import no.nav.registre.arena.domain.NyBruker;
+import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
+import no.nav.registre.arena.domain.brukere.NyBruker;
 
 @Component
 @Slf4j

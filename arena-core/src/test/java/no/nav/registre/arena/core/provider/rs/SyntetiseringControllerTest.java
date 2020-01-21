@@ -1,7 +1,7 @@
 package no.nav.registre.arena.core.provider.rs;
 
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
-import no.nav.registre.arena.domain.Arbeidsoeker;
+import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.SyntetiseringService;
 import org.junit.Before;
@@ -12,10 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;

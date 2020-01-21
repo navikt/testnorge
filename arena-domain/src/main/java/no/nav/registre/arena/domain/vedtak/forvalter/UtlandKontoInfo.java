@@ -1,4 +1,4 @@
-package no.nav.registre.arena.domain.aap.forvalter;
+package no.nav.registre.arena.domain.vedtak.forvalter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

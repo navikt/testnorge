@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
+import no.nav.registre.arena.domain.vedtak.NyttVedtakTillegg;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
 
 @Getter
@@ -27,5 +28,9 @@ public class RettighetTiltakspengerRequest extends RettighetRequest {
     @JsonProperty("nyeTiltakspenger")
     @Override public List<NyttVedtakTiltak> getVedtakTiltak() {
         return nyeTiltakspenger;
+    }
+
+    @Override public List<NyttVedtakTillegg> getVedtakTillegg() {
+        return Collections.emptyList();
     }
 }

@@ -19,7 +19,8 @@ public class NyttVedtakFeil {
 
     @JsonAlias({
             "nyAapFeilstatus", "nyAap115Feilstatus", "nyAaunguforFeilstatus", "nyAatforFeilstatus", "nyFritakFeilstatus",
-            "nyTiltaksdeltakelseFeilstatus", "nyTiltakspengerFeilstatus"
+            "nyTiltaksdeltakelseFeilstatus", "nyTiltakspengerFeilstatus",
+            "nyTilleggsstonadFeilstatus"
     })
     private String status;
     private String melding;

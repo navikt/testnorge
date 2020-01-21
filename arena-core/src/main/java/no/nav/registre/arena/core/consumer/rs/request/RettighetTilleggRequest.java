@@ -17,20 +17,20 @@ import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RettighetTvungenForvaltningRequest extends RettighetRequest {
+public class RettighetTilleggRequest extends RettighetRequest {
 
-    private List<NyttVedtakAap> nyeAatfor;
+    private List<NyttVedtakTillegg> nyeTilleggsstonad;
 
-    @JsonProperty("nyeAatfor")
     @Override public List<NyttVedtakAap> getVedtakAap() {
-        return nyeAatfor;
+        return Collections.emptyList();
     }
 
     @Override public List<NyttVedtakTiltak> getVedtakTiltak() {
         return Collections.emptyList();
     }
 
-    @Override public List<NyttVedtakTillegg> getVedtakTillegg() {
-        return Collections.emptyList();
+    @JsonProperty("nyeTilleggsstonad")
+    public List<NyttVedtakTillegg> getVedtakTillegg() {
+        return nyeTilleggsstonad;
     }
 }

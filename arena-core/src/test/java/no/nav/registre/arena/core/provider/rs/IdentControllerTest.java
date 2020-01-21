@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.arena.core.service.IdentService;
-import no.nav.registre.arena.domain.Arbeidsoeker;
+import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentControllerTest {

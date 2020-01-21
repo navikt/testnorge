@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.arena.core.service.IdentService;
-import no.nav.registre.arena.domain.Arbeidsoeker;
+import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 
 @RestController
 @RequestMapping("api/v1/ident")

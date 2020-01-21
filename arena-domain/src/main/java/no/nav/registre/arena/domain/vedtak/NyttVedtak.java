@@ -12,11 +12,10 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
-import no.nav.registre.arena.domain.aap.vilkaar.Vilkaar;
-
 @JsonSubTypes({
         @JsonSubTypes.Type(value = NyttVedtakAap.class),
-        @JsonSubTypes.Type(value = NyttVedtakTiltak.class)
+        @JsonSubTypes.Type(value = NyttVedtakTiltak.class),
+        @JsonSubTypes.Type(value = NyttVedtakTillegg.class)
 })
 
 @Getter

@@ -71,7 +71,7 @@ public class RettighetTiltakService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetTiltakArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
+        return rettighetTiltakArenaForvalterConsumer.opprettRettighet(rettigheter);
     }
 
     public List<NyttVedtakResponse> opprettBarnetillegg(
@@ -94,10 +94,10 @@ public class RettighetTiltakService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetTiltakArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
+        return rettighetTiltakArenaForvalterConsumer.opprettRettighet(rettigheter);
     }
 
-    private List<NyttVedtakResponse> aktiverTiltaksdeltakelse(
+    public List<NyttVedtakResponse> aktiverTiltaksdeltakelse(
             List<String> identer,
             String miljoe
     ) {

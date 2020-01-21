@@ -11,7 +11,7 @@ import lombok.Setter;
 import java.util.List;
 
 import no.nav.registre.arena.domain.aap.andreokonomytelser.AnnenOkonomYtelseTiltak;
-import no.nav.registre.arena.domain.aap.forvalter.Forvalter;
+import no.nav.registre.arena.domain.vedtak.forvalter.Forvalter;
 
 @Getter
 @Setter
@@ -21,10 +21,10 @@ import no.nav.registre.arena.domain.aap.forvalter.Forvalter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NyttVedtakTiltak extends NyttVedtak {
 
-    // nyeTiltaksdeltakelse:
-    private String begrunnelse;
+    @JsonAlias({ "LAG_OPPGAVE", "lagOppgave" })
     private String lagOppgave;
 
+    @JsonAlias({ "ANDRE_OKONOM_YTELSER", "andreOkonomYtelser" })
     private List<AnnenOkonomYtelseTiltak> andreOkonomYtelser;
 
     @JsonAlias({ "TILTAK_PROSENTDELTID", "tiltakProsentDeltid" })
@@ -39,11 +39,15 @@ public class NyttVedtakTiltak extends NyttVedtak {
     @JsonAlias({ "TILTAK_KARAKTERISTIKK", "tiltakskarakteristikk" })
     private String tiltakskarakteristikk;
 
-    // nyeTiltaksaktivitet:
+    @JsonAlias({ "AKTIVITETSKODE", "aktivitetkode" })
     private String aktivitetkode;
+
+    @JsonAlias({ "BESKRIVELSE", "beskrivelse" })
     private String beskrivelse;
 
-    // tiltakspenger:
+    @JsonAlias({ "ALTERNATIV_MOTTAKER", "alternativMottaker" })
     private Forvalter alternativMottaker;
+
+    @JsonAlias({ "ANT_DAGER_UTBETALING", "antDagerUtbetaling" })
     private Integer antDagerUtbetaling;
 }

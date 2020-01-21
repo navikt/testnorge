@@ -1,4 +1,4 @@
-package no.nav.registre.arena.domain.aap.vilkaar;
+package no.nav.registre.arena.domain.vedtak;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;

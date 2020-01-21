@@ -5,7 +5,7 @@ import lombok.Getter;
 
 import java.util.List;
 
-import no.nav.registre.arena.domain.NyBruker;
+import no.nav.registre.arena.domain.brukere.NyBruker;
 
 @AllArgsConstructor
 @Getter

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
-import no.nav.registre.arena.domain.Arbeidsoeker;
+import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 
 @Service
 @Slf4j

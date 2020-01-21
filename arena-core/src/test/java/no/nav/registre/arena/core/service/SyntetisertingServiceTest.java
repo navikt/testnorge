@@ -22,7 +22,7 @@ import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
-import no.nav.registre.arena.domain.Arbeidsoeker;
+import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)

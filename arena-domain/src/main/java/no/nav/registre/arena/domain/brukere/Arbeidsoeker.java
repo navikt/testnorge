@@ -1,4 +1,4 @@
-package no.nav.registre.arena.domain;
+package no.nav.registre.arena.domain.brukere;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,14 +8,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NyBruker {
+@Builder
+public class Arbeidsoeker {
 
     private String personident;
     private String miljoe;
-    private String kvalifiseringsgruppe;
-    private UtenServicebehov utenServicebehov;
+    private String status;
+    private String eier;
+    private Boolean servicebehov;
     private Boolean automatiskInnsendingAvMeldekort;
+    private Boolean aap115;
+    private Boolean aap;
 }

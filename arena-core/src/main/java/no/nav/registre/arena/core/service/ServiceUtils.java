@@ -10,10 +10,11 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
-import no.nav.registre.arena.domain.NyBrukerFeil;
-import no.nav.registre.arena.domain.aap.forvalter.Adresse;
-import no.nav.registre.arena.domain.aap.forvalter.Forvalter;
-import no.nav.registre.arena.domain.aap.forvalter.Konto;
+import no.nav.registre.arena.domain.vedtak.forvalter.Adresse;
+import no.nav.registre.arena.domain.vedtak.forvalter.Forvalter;
+import no.nav.registre.arena.domain.vedtak.forvalter.Konto;
+import no.nav.registre.arena.domain.brukere.Kvalifiseringsgrupper;
+import no.nav.registre.arena.domain.brukere.NyBrukerFeil;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;
@@ -24,10 +25,6 @@ public class ServiceUtils {
 
     private static final int MIN_ALDER_UNG_UFOER = 18;
     private static final int MAX_ALDER_UNG_UFOER = 36;
-    private static final String KVALIFISERINGSGRUPPE_IKVAL = "IKVAL";
-    private static final String KVALIFISERINGSGRUPPE_BFORM = "BFORM";
-    private static final String KVALIFISERINGSGRUPPE_BATT = "BATT";
-    private static final String KVALIFISERINGSGRUPPE_VARIG = "VARIG";
     public static final String BEGRUNNELSE = "Syntetisert rettighet";
 
     private final HodejegerenConsumer hodejegerenConsumer;
@@ -73,17 +70,25 @@ public class ServiceUtils {
             List<RettighetRequest> rettigheter,
             String miljoe
     ) {
-        return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? KVALIFISERINGSGRUPPE_BATT : KVALIFISERINGSGRUPPE_VARIG);
+        return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG);
     }
 
     public List<RettighetRequest> opprettArbeidssoekerTiltak(
             List<RettighetRequest> rettigheter,
             String miljoe
     ) {
-        return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? KVALIFISERINGSGRUPPE_BATT : KVALIFISERINGSGRUPPE_BFORM);
+        return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM);
     }
 
-    private List<RettighetRequest> opprettArbeidssoeker(List<RettighetRequest> rettigheter, String miljoe, String kvalifiseringsgruppe) {
+    public List<RettighetRequest> opprettArbeidssoekerTillegg(
+            List<RettighetRequest> rettigheter,
+            String miljoe
+    ) {
+        //TODO: Finn ut hvilke kvalifiseringsgrupper som er vanligst her
+        return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM);
+    }
+
+    private List<RettighetRequest> opprettArbeidssoeker(List<RettighetRequest> rettigheter, String miljoe, Kvalifiseringsgrupper kvalifiseringsgruppe) {
         var identerIArena = syntetiseringService.hentEksisterendeArbeidsoekerIdenter();
         var uregistrerteBrukere = rettigheter.stream().filter(rettighet -> !identerIArena.contains(rettighet.getPersonident())).map(RettighetRequest::getPersonident)
                 .collect(Collectors.toSet());

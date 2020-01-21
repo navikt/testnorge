@@ -1,4 +1,4 @@
-package no.nav.registre.arena.domain;
+package no.nav.registre.arena.domain.vedtak.forvalter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,12 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UtenServicebehov {
-    private String stansDato;
+@Builder
+public class Forvalter {
+
+    private Konto gjeldendeKontonr;
+    private Adresse utbetalingsadresse;
 }

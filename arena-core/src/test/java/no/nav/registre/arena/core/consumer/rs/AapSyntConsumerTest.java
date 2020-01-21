@@ -24,18 +24,17 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import no.nav.registre.arena.core.config.AppConfig;
 import no.nav.registre.arena.domain.aap.gensaksopplysninger.GensakKoder;
 import no.nav.registre.arena.domain.aap.gensaksopplysninger.GensakOvKoder;
-import no.nav.registre.arena.domain.vedtak.NyttVedtak;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureWireMock(port = 0)
 @TestPropertySource(locations = "classpath:application-test.properties")
-@ContextConfiguration(classes = { RettighetSyntConsumer.class, AppConfig.class, ConsumerUtils.class })
-@RestClientTest(RettighetSyntConsumer.class)
-public class RettighetSyntConsumerTest {
+@ContextConfiguration(classes = { AapSyntConsumer.class, AppConfig.class, ConsumerUtils.class })
+@RestClientTest(AapSyntConsumer.class)
+public class AapSyntConsumerTest {
 
     @Autowired
-    private RettighetSyntConsumer syntConsumer;
+    private AapSyntConsumer syntConsumer;
 
     @Autowired
     private MockRestServiceServer server;

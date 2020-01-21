@@ -11,7 +11,7 @@ import lombok.Setter;
 public class MedlemFolketrygden {
 
     @JsonAlias({ "KODE", "kode" })
-    private String kode;
+    private FolketrygdenKoder kode;
 
     @JsonAlias({ "VERDI", "verdi" })
     private String verdi;

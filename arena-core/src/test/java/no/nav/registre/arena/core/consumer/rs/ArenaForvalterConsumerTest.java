@@ -22,14 +22,16 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.arena.core.config.AppConfig;
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
-import no.nav.registre.arena.domain.Arbeidsoeker;
-import no.nav.registre.arena.domain.NyBruker;
-import no.nav.registre.arena.domain.UtenServicebehov;
+import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
+import no.nav.registre.arena.domain.brukere.Kvalifiseringsgrupper;
+import no.nav.registre.arena.domain.brukere.NyBruker;
+import no.nav.registre.arena.domain.brukere.UtenServicebehov;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -52,18 +54,18 @@ public class ArenaForvalterConsumerTest {
                 .miljoe(miljoe)
                 .utenServicebehov(
                         UtenServicebehov.builder()
-                                .stansDato("2001-03-18").build())
+                                .stansDato(LocalDate.of(2001, 3, 18)).build())
                 .automatiskInnsendingAvMeldekort(true)
-                .kvalifiseringsgruppe("IKVAL")
+                .kvalifiseringsgruppe(Kvalifiseringsgrupper.IKVAL)
                 .build();
         bruker2 = NyBruker.builder()
                 .personident("20202020202")
                 .miljoe(miljoe)
                 .utenServicebehov(
                         UtenServicebehov.builder()
-                                .stansDato("2015-08-20").build())
+                                .stansDato(LocalDate.of(2015, 8, 20)).build())
                 .automatiskInnsendingAvMeldekort(true)
-                .kvalifiseringsgruppe("IKVAL")
+                .kvalifiseringsgruppe(Kvalifiseringsgrupper.IKVAL)
                 .build();
     }
 

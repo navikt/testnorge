@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
+import no.nav.registre.arena.domain.vedtak.NyttVedtakTillegg;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
 
 @JsonSubTypes({
@@ -21,7 +22,8 @@ import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
         @JsonSubTypes.Type(value = RettighetFritakMeldekortRequest.class, name = "fritakMeldekort"),
         @JsonSubTypes.Type(value = RettighetTiltaksdeltakelseRequest.class, name = "tiltaksdeltakelse"),
         @JsonSubTypes.Type(value = RettighetTiltakspengerRequest.class, name = "tiltakspenger"),
-        @JsonSubTypes.Type(value = RettighetBarnetilleggRequest.class, name = "barnetillegg")
+        @JsonSubTypes.Type(value = RettighetBarnetilleggRequest.class, name = "barnetillegg"),
+        @JsonSubTypes.Type(value = RettighetTilleggRequest.class, name = "tilleggstonad")
 })
 @Getter
 @Setter
@@ -36,4 +38,6 @@ public abstract class RettighetRequest implements Serializable {
     public abstract List<NyttVedtakAap> getVedtakAap();
 
     public abstract List<NyttVedtakTiltak> getVedtakTiltak();
+
+    public abstract List<NyttVedtakTillegg> getVedtakTillegg();
 }

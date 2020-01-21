@@ -1,4 +1,4 @@
-package no.nav.registre.arena.domain;
+package no.nav.registre.arena.domain.brukere;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +13,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class NyBrukerFeil {
 
-    String personident;
-    String miljoe;
-    NyBrukerFeilstatus nyBrukerFeilstatus;
-    String melding;
+    private String personident;
+    private String miljoe;
+    private String nyBrukerFeilstatus;
+    private String melding;
 }

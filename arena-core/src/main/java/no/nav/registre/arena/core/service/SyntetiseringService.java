@@ -15,8 +15,9 @@ import java.util.stream.Collectors;
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
 import no.nav.registre.arena.core.provider.rs.requests.IdentMedData;
-import no.nav.registre.arena.domain.Arbeidsoeker;
-import no.nav.registre.arena.domain.NyBruker;
+import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
+import no.nav.registre.arena.domain.brukere.Kvalifiseringsgrupper;
+import no.nav.registre.arena.domain.brukere.NyBruker;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Service
@@ -28,7 +29,6 @@ public class SyntetiseringService {
     private static final double PROSENTANDEL_SOM_SKAL_HA_MELDEKORT = 0.2;
     private static final int MINIMUM_ALDER = 16;
     private static final int MAKSIMUM_ALDER = 67;
-    private static final String KVALIFISERINGSGRUPPE_IKVAL = "IKVAL";
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final ArenaForvalterConsumer arenaForvalterConsumer;
@@ -55,7 +55,7 @@ public class SyntetiseringService {
         }
 
         var nyeIdenter = hentKvalifiserteIdenter(antallNyeIdenter, levendeIdenter, arbeidsoekerIdenter);
-        return byggArbeidsoekereOgLagreIHodejegeren(nyeIdenter, miljoe, KVALIFISERINGSGRUPPE_IKVAL);
+        return byggArbeidsoekereOgLagreIHodejegeren(nyeIdenter, miljoe, Kvalifiseringsgrupper.IKVAL);
     }
 
     public NyeBrukereResponse opprettArbeidssoeker(
@@ -76,7 +76,7 @@ public class SyntetiseringService {
             return new NyeBrukereResponse();
         }
 
-        return byggArbeidsoekereOgLagreIHodejegeren(Collections.singletonList(ident), miljoe, KVALIFISERINGSGRUPPE_IKVAL);
+        return byggArbeidsoekereOgLagreIHodejegeren(Collections.singletonList(ident), miljoe, Kvalifiseringsgrupper.IKVAL);
     }
 
     public List<String> hentEksisterendeArbeidsoekerIdenter() {
@@ -87,7 +87,7 @@ public class SyntetiseringService {
     public NyeBrukereResponse byggArbeidsoekereOgLagreIHodejegeren(
             List<String> identer,
             String miljoe,
-            String kvalifiseringsgruppe
+            Kvalifiseringsgrupper kvalifiseringsgruppe
     ) {
         var nyeBrukere = identer.stream().map(ident ->
                 NyBruker.builder()
