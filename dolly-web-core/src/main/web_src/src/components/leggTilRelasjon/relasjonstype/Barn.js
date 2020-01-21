@@ -7,11 +7,16 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 export const Barn = ({ formikBag, lagOptions, identInfo, hovedIdent }) => {
 	const valgbareIdenter = lagOptions(
-		Object.keys(identInfo).filter(ident => !(ident === hovedIdent))
+		Object.keys(identInfo).filter(ident => !(ident === hovedIdent)),
+		identInfo
 	)
 
 	if (valgbareIdenter.length < 1) {
-		return <AlertStripeInfo>Det finnes ikke flere ledige personer i gruppa</AlertStripeInfo>
+		return (
+			<AlertStripeInfo>
+				Det finnes ingen ledige personer i gruppa som personen kan bli forelder til
+			</AlertStripeInfo>
+		)
 	}
 
 	return (
@@ -19,12 +24,16 @@ export const Barn = ({ formikBag, lagOptions, identInfo, hovedIdent }) => {
 			<DollyFieldArray name="tpsf.relasjoner.barn" title="Barn" newEntry={initialBarn}>
 				{(path, idx) => (
 					<React.Fragment key={idx}>
-						<FormikSelect
-							name={`${path}.ident`}
-							label="Fnr/dnr/bost"
-							options={valgbareIdenter}
-							isClearable={false}
-						/>
+						{/* Endres når det er bestemt hvordan bredde styles */}
+						<div style={{ minWidth: '350px' }}>
+							<FormikSelect
+								name={`${path}.ident`}
+								label="Fnr/dnr/bost"
+								options={valgbareIdenter}
+								isClearable={false}
+								size="grow"
+							/>
+						</div>
 						<FormikSelect
 							name={`${path}.borHos`}
 							label="Bor hos"

@@ -33,7 +33,7 @@ export const Partnere = ({ formikBag }) => (
 				<FormikCheckbox name={`${path}.harFellesAdresse`} label="Har felles adresse" />
 				<Alder basePath={path} formikBag={formikBag} />
 				<Diskresjonskoder basePath={path} formikBag={formikBag} />
-				<Sivilstand tpsfPath={`tpsf.relasjoner.partnere[${idx}].sivilstander`} />
+				<Sivilstand basePath={`tpsf.relasjoner.partnere[${idx}].sivilstander`} />
 			</React.Fragment>
 		)}
 	</DollyFieldArray>

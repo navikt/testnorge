@@ -7,7 +7,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { Sivilstand } from '~/components/fagsystem/tpsf/form/familierelasjoner/partials/Sivilstand'
 
 export const Partner = ({ lagOptions, identInfo, hovedIdent }) => {
-	const valgbareIdenter = lagOptions(muligePartnere(identInfo, hovedIdent))
+	const valgbareIdenter = lagOptions(muligePartnere(identInfo, hovedIdent), identInfo)
 	const harAlleredePartner = harPartner(identInfo[hovedIdent])
 
 	if (harAlleredePartner) {
@@ -19,7 +19,7 @@ export const Partner = ({ lagOptions, identInfo, hovedIdent }) => {
 	} else if (valgbareIdenter.length < 1) {
 		return (
 			<AlertStripeInfo>
-				Det finnes ikke flere ledige personer i gruppa som personen kan bli partner med.
+				Det finnes ingen ledige personer i gruppa som personen kan bli partner med.
 			</AlertStripeInfo>
 		)
 	}
@@ -28,14 +28,18 @@ export const Partner = ({ lagOptions, identInfo, hovedIdent }) => {
 			<DollyFieldArray name="tpsf.relasjoner.partner" title="Partner" newEntry={initialPartner}>
 				{(path, idx) => (
 					<React.Fragment key={idx}>
-						<FormikSelect
-							name={`${path}.ident`}
-							label="Fnr/dnr/bost"
-							options={valgbareIdenter}
-							isClearable={false}
-						/>
+						{/* Endres når styling av bredde er på plass */}
+						<div style={{ minWidth: '350px' }}>
+							<FormikSelect
+								name={`${path}.ident`}
+								label="Fnr/dnr/bost"
+								options={valgbareIdenter}
+								isClearable={false}
+								size="grow"
+							/>
+						</div>
 						<FormikCheckbox name={`${path}.harFellesAdresse`} label="Bor sammen" />
-						<Sivilstand tpsfPath={`${path}.sivilstander`} />
+						<Sivilstand basePath={`${path}.sivilstander`} />
 					</React.Fragment>
 				)}
 			</DollyFieldArray>

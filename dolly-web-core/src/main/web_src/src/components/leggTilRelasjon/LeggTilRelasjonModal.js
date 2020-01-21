@@ -7,7 +7,7 @@ import LeggTilRelasjonConnector from './LeggTilRelasjonConnector'
 
 import './LeggTilRelasjon.less'
 
-export const LeggTilRelasjonModal = ({ environments, ident, navn }) => {
+export const LeggTilRelasjonModal = ({ environments, personInfo }) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
 	return (
@@ -19,15 +19,15 @@ export const LeggTilRelasjonModal = ({ environments, ident, navn }) => {
 				<h1>Legg til relasjoner </h1>
 				<div className="relasjon-modal-overskrift">
 					<div className="icon">
-						<Icon kind="man" />
+						<Icon kind={personInfo.kjonn === 'K' ? 'woman' : 'man'} />
 					</div>
 					<h2>
-						{navn} ({ident.ident})
+						{`${personInfo.fornavn} ${personInfo.etternavn}`} ({personInfo.ident})
 					</h2>
 				</div>
 				<LeggTilRelasjonConnector
 					environments={environments}
-					hovedIdent={ident.ident}
+					hovedIdent={personInfo.ident}
 					closeModal={closeModal}
 				/>
 			</DollyModal>

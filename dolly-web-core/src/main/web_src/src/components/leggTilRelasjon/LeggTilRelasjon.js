@@ -24,7 +24,6 @@ export const LeggTilRelasjon = ({
 	const onSubmit = async values => {
 		await DollyApi.createRelasjon(hovedIdent, values)
 		getBestillinger(gruppeId)
-		return closeModal()
 	}
 
 	const initialValues = {
@@ -50,7 +49,7 @@ export const LeggTilRelasjon = ({
 								<Panel heading="Partner" iconType="partner" startOpen>
 									<Partner lagOptions={lagOptions} identInfo={identInfo} hovedIdent={hovedIdent} />
 								</Panel>
-								<Panel heading="Barn (adopsjon)" iconType="barn" startOpen>
+								<Panel heading="Barn" iconType="barn" startOpen>
 									<Barn
 										formikBag={formikBag}
 										lagOptions={lagOptions}
@@ -83,9 +82,10 @@ export const LeggTilRelasjon = ({
 	)
 }
 
-const lagOptions = tilgjengelige => {
+const lagOptions = (tilgjengelige, identInfo) => {
 	return tilgjengelige.reduce((acc, ident) => {
-		return [...acc, { value: ident, label: ident, isDisabled: true }]
+		const navn = `${identInfo[ident].fornavn} ${identInfo[ident].etternavn}`
+		return [...acc, { value: ident, label: `${ident} - ${navn}` }]
 	}, [])
 }
 

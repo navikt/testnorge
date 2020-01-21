@@ -46,11 +46,7 @@ export const PersonVisning = ({
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} />
 			<div className="flexbox--align-center--justify-end">
-				<LeggTilRelasjonModal
-					environments={bestilling.environments}
-					ident={ident}
-					navn={`${data.tpsf.fornavn} ${data.tpsf.etternavn}`}
-				/>
+				<LeggTilRelasjonModal environments={bestilling.environments} personInfo={data.tpsf} />
 				<BestillingSammendragModal bestilling={bestilling} />
 				<SlettButton action={slettPerson} loading={loading.slettPerson}>
 					Er du sikker på at du vil slette denne personen?

@@ -48,11 +48,7 @@ export const Relasjoner = ({ relasjoner }) => {
 				{barn.map((barnet, jdx) => (
 					<div key={jdx} className="title-multiple">
 						<h3>Barn {jdx + 1}</h3>
-						<Barn
-							data={barnet.personRelasjonMed}
-							type={barnet.relasjonTypeNavn}
-							hovedperson={barnet.person.ident}
-						/>
+						<Barn data={barnet.personRelasjonMed} type={barnet.relasjonTypeNavn} />
 					</div>
 				))}
 			</div>

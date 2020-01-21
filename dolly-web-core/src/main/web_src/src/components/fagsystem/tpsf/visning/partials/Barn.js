@@ -4,7 +4,7 @@ import Formatters from '~/utils/DataFormatter'
 import { TpsfApi } from '~/service/Api'
 import { Boadresse } from './Boadresse'
 
-export const Barn = ({ data, type, hovedperson }) => {
+export const Barn = ({ data, type }) => {
 	if (!data) return false
 	const [barnInfo, setBarnInfo] = useState(null)
 	const [isLoading, setIsLoading] = useState(false)
@@ -30,10 +30,7 @@ export const Barn = ({ data, type, hovedperson }) => {
 			<TitleValue title="Diskresjonskode" value={Formatters.showLabel(data.spesreg)} />
 			<TitleValue title="Uten fast bopel" value={data.utenFastBopel && 'Ja'} />
 			{barnInfo && !isLoading && (
-				<TitleValue
-					title="Foreldre"
-					value={finnForeldre(barnInfo[0].relasjoner, hovedperson).join(', ')}
-				/>
+				<TitleValue title="Foreldre" value={finnForeldre(barnInfo[0].relasjoner).join(', ')} />
 			)}
 			<TitleValue title="Er adoptert" value={Formatters.oversettBoolean(type === 'BARN')} />
 			{!data.utenFastBopel && <Boadresse boadresse={data.boadresse} visKunAdresse={true} />}
@@ -41,14 +38,10 @@ export const Barn = ({ data, type, hovedperson }) => {
 	)
 }
 
-const finnForeldre = (relasjoner, hovedperson) => {
+const finnForeldre = relasjoner => {
 	return relasjoner
 		.filter(relasjon => {
 			return relasjon.relasjonTypeNavn === 'MOR' || relasjon.relasjonTypeNavn === 'FAR'
 		})
-		.map(relasjon =>
-			relasjon.personRelasjonMed.ident === hovedperson
-				? 'Hovedperson'
-				: relasjon.personRelasjonMed.ident
-		)
+		.map(relasjon => relasjon.personRelasjonMed.ident)
 }

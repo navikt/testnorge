@@ -3,11 +3,11 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
-export const Sivilstand = ({ tpsfPath }) => {
+export const Sivilstand = ({ basePath }) => {
 	const initForhold = { sivilstand: '', sivilstandRegdato: '' }
 
 	return (
-		<DollyFieldArray name={tpsfPath} title="Forhold" newEntry={initForhold}>
+		<DollyFieldArray name={basePath} title="Forhold" newEntry={initForhold}>
 			{(path, idx) => (
 				<React.Fragment key={idx}>
 					<FormikSelect
