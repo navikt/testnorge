@@ -4,7 +4,7 @@ import { InstApi } from '~/service/Api'
 import { ArenaApi } from '~/service/Api'
 import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
 
-export const MiljoeInfo = ({ bestillingsdata }) => {
+export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 	const { instdata, pdlforvalter, arenaforvalter } = bestillingsdata
 	if (!instdata && !pdlforvalter && !arenaforvalter) return null
 
@@ -16,7 +16,10 @@ export const MiljoeInfo = ({ bestillingsdata }) => {
 				{instdata && (
 					<li>
 						Institusjonsopphold:&nbsp;
-						<TilgjengeligeMiljoer endepunkt={InstApi.getTilgjengeligeMiljoer} />
+						<TilgjengeligeMiljoer
+							endepunkt={InstApi.getTilgjengeligeMiljoer}
+							dollyEnvironments={dollyEnvironments}
+						/>
 					</li>
 				)}
 
@@ -31,7 +34,10 @@ export const MiljoeInfo = ({ bestillingsdata }) => {
 				{arenaforvalter && (
 					<li>
 						Arena:&nbsp;
-						<TilgjengeligeMiljoer endepunkt={ArenaApi.getTilgjengeligeMiljoer} />
+						<TilgjengeligeMiljoer
+							endepunkt={ArenaApi.getTilgjengeligeMiljoer}
+							dollyEnvironments={dollyEnvironments}
+						/>
 					</li>
 				)}
 			</ul>

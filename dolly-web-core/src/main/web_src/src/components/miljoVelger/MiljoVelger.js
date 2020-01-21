@@ -17,7 +17,7 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 	return (
 		<div className="miljo-velger">
 			<h2>{heading}</h2>
-			<MiljoeInfo bestillingsdata={bestillingsdata} />
+			<MiljoeInfo bestillingsdata={bestillingsdata} dollyEnvironments={environments} />
 
 			<FieldArray name="environments">
 				{({ push, remove, form }) => {
