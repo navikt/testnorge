@@ -32,7 +32,7 @@ import no.nav.freg.security.test.oidc.tools.JwtClaimsBuilder;
 import no.nav.freg.security.test.oidc.tools.OidcTestService;
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 @AutoConfigureWireMock(port = DYNAMIC_PORT)
 @ExtendWith(SpringExtension.class)
 public abstract class RestTestBase {
