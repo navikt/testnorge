@@ -1,6 +1,5 @@
 package no.nav.dolly.provider;
 
-import static com.github.tomakehurst.wiremock.core.Options.DYNAMIC_PORT;
 import static no.nav.dolly.config.SecurityTestConfig.OPEN_AM_ISSUER_URL;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
@@ -32,8 +31,8 @@ import no.nav.freg.security.test.oidc.tools.JwtClaimsBuilder;
 import no.nav.freg.security.test.oidc.tools.OidcTestService;
 
 @ActiveProfiles("test")
-@SpringBootTest
-@AutoConfigureWireMock(port = DYNAMIC_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWireMock
 @ExtendWith(SpringExtension.class)
 public abstract class RestTestBase {
 
