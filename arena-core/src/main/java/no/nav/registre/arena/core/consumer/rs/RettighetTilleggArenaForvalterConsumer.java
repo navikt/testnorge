@@ -1,5 +1,8 @@
 package no.nav.registre.arena.core.consumer.rs;
 
+import static no.nav.registre.arena.core.consumer.rs.ConsumerUtils.NAV_CALL_ID;
+import static no.nav.registre.arena.core.consumer.rs.ConsumerUtils.NAV_CONSUMER_ID;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -18,9 +21,6 @@ import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 @Slf4j
 @Component
 public class RettighetTilleggArenaForvalterConsumer {
-
-    private static final String NAV_CALL_ID = "ORKESTRATOREN";
-    private static final String NAV_CONSUMER_ID = "ORKESTRATOREN";
 
     private final RestTemplate restTemplate;
 

@@ -1,6 +1,8 @@
 package no.nav.registre.arena.core.consumer.rs;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static no.nav.registre.arena.core.consumer.rs.ConsumerUtils.NAV_CALL_ID;
+import static no.nav.registre.arena.core.consumer.rs.ConsumerUtils.NAV_CONSUMER_ID;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +32,6 @@ import no.nav.registre.arena.domain.brukere.NyBruker;
 public class ArenaForvalterConsumer {
 
     private static final String EIER = "ORKESTRATOREN";
-    private static final String NAV_CALL_ID = "ORKESTRATOREN";
-    private static final String NAV_CONSUMER_ID = "ORKESTRATOREN";
 
     @Autowired
     private RestTemplate restTemplate;
