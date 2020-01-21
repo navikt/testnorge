@@ -43,5 +43,5 @@ spec:
         mountPath: /var/run/secrets/nais.io/preprod
       - kvPath: /serviceuser/data/test/srvdolly-backend
         mountPath: /var/run/secrets/nais.io/test
-      - kvPath: /serviceuser/dev/srvfregdolly
+      - kvPath: /serviceuser/data/dev/srvfregdolly
         mountPath: /var/run/secrets/nais.io/jira
