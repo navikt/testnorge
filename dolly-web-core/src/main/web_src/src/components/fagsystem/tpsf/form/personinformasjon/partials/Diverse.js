@@ -16,13 +16,6 @@ export const Diverse = ({ formikBag }) => (
 			visHvisAvhuket
 		/>
 
-		<FormikSelect
-			name="tpsf.sivilstand"
-			label="Sivilstand"
-			kodeverk="Sivilstander"
-			visHvisAvhuket
-		/>
-
 		<FormikSelect name="tpsf.sprakKode" label="Språk" kodeverk="Språk" visHvisAvhuket />
 
 		<FormikDatepicker name="tpsf.egenAnsattDatoFom" label="Egenansatt fra" visHvisAvhuket />

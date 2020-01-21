@@ -1,13 +1,13 @@
 import React from 'react'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
 export const Sivilstand = ({ basePath }) => {
 	const initForhold = { sivilstand: '', sivilstandRegdato: '' }
 
 	return (
-		<DollyFieldArray name={basePath} title="Forhold" newEntry={initForhold}>
+		<FormikDollyFieldArray name={basePath} title="Forhold" newEntry={initForhold} nested>
 			{(path, idx) => (
 				<React.Fragment key={idx}>
 					<FormikSelect
@@ -23,6 +23,6 @@ export const Sivilstand = ({ basePath }) => {
 					/>
 				</React.Fragment>
 			)}
-		</DollyFieldArray>
+		</FormikDollyFieldArray>
 	)
 }

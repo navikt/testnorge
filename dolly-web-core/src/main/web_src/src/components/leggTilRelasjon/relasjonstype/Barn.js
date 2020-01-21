@@ -2,7 +2,7 @@ import React from 'react'
 import _get from 'lodash/get'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 export const Barn = ({ formikBag, lagOptions, identInfo, hovedIdent }) => {
@@ -21,7 +21,7 @@ export const Barn = ({ formikBag, lagOptions, identInfo, hovedIdent }) => {
 
 	return (
 		<div className="bestilling-detaljer">
-			<DollyFieldArray name="tpsf.relasjoner.barn" title="Barn" newEntry={initialBarn}>
+			<FormikDollyFieldArray name="tpsf.relasjoner.barn" title="Barn" newEntry={initialBarn}>
 				{(path, idx) => (
 					<React.Fragment key={idx}>
 						{/* Endres når det er bestemt hvordan bredde styles */}
@@ -50,7 +50,7 @@ export const Barn = ({ formikBag, lagOptions, identInfo, hovedIdent }) => {
 						)}
 					</React.Fragment>
 				)}
-			</DollyFieldArray>
+			</FormikDollyFieldArray>
 		</div>
 	)
 }

@@ -3,25 +3,29 @@ import _get from 'lodash/get'
 import { isWithinInterval, getMonth } from 'date-fns'
 import { requiredDate, requiredString, ifPresent } from '~/utils/YupValidations'
 
-const innenforAnsettelsesforholdTest = (validation, validateMonthPath) => {
+const innenforAnsettelsesforholdTest = (validation, validateFomMonth) => {
 	const errorMsg = 'Dato må være innenfor ansettelsesforhold'
 	const errorMsgMonth =
 		'Dato må være innenfor ansettelsesforhold, og i samme kalendermåned og år som fra-dato'
 	return validation.test(
 		'range',
-		validateMonthPath ? errorMsgMonth : errorMsg,
+		validateFomMonth ? errorMsgMonth : errorMsg,
 		function isWithinTest(val) {
 			if (!val) return true
+			const path = this.path
 			const values = this.options.context
 
-			if (validateMonthPath) {
-				const fomMonth = _get(values, validateMonthPath)
+			if (validateFomMonth) {
+				const fomPath = path.replace('.tom', '.fom')
+				const fomMonth = _get(values, fomPath)
 				if (getMonth(val) !== getMonth(fomMonth)) return false
 			}
 
+			const arrayPos = path.split('.')[0] // feks: aareg[1]
+
 			return isWithinInterval(val, {
-				start: values.aareg[0].ansettelsesPeriode.fom,
-				end: values.aareg[0].ansettelsesPeriode.tom || new Date()
+				start: _get(values, `${arrayPos}.ansettelsesPeriode.fom`),
+				end: _get(values, `${arrayPos}.ansettelsesPeriode.tom`) || new Date()
 			})
 		}
 	)
@@ -31,10 +35,7 @@ const antallTimerForTimeloennet = Yup.array().of(
 	Yup.object({
 		periode: Yup.object({
 			fom: innenforAnsettelsesforholdTest(requiredDate),
-			tom: innenforAnsettelsesforholdTest(
-				requiredDate,
-				'aareg[0].antallTimerForTimeloennet[0].periode.fom'
-			)
+			tom: innenforAnsettelsesforholdTest(requiredDate, true)
 		}),
 		antallTimer: Yup.number()
 			.min(1, 'Kan ikke være mindre enn 1')
@@ -60,10 +61,7 @@ const utenlandsopphold = Yup.array().of(
 	Yup.object({
 		periode: Yup.object({
 			fom: innenforAnsettelsesforholdTest(requiredDate),
-			tom: innenforAnsettelsesforholdTest(
-				Yup.date().nullable(),
-				'aareg[0].utenlandsopphold[0].periode.fom'
-			)
+			tom: innenforAnsettelsesforholdTest(Yup.date().nullable(), true)
 		}),
 		land: requiredString
 	})
@@ -101,12 +99,9 @@ export const validation = {
 				endringsdatoStillingsprosent: Yup.date().nullable(),
 				arbeidstidsordning: requiredString
 			}),
-			antallTimerForTimeloennet: ifPresent(
-				'$aareg[0].antallTimerForTimeloennet',
-				antallTimerForTimeloennet
-			),
-			permisjon: ifPresent('$aareg[0].permisjon', permisjon),
-			utenlandsopphold: ifPresent('$aareg[0].utenlandsopphold', utenlandsopphold)
+			antallTimerForTimeloennet: antallTimerForTimeloennet,
+			permisjon: permisjon,
+			utenlandsopphold: utenlandsopphold
 		})
 	)
 }

@@ -5,22 +5,17 @@ export const Arbeidsgiver = ({ data }) => {
 	if (!data || data.length === 0) return false
 
 	return (
-		<div>
+		<React.Fragment>
 			<h4>Arbeidsgiver</h4>
 			<div className="person-visning_content">
+				<TitleValue title="Aktørtype" value={data.type} />
 				{data.type === 'Organisasjon' && (
-					<Fragment>
-						<TitleValue title="Aktørtype" value={data.type} />
-						<TitleValue title="Organisasjonsnummer" value={data.organisasjonsnummer} />
-					</Fragment>
+					<TitleValue title="Organisasjonsnummer" value={data.organisasjonsnummer} />
 				)}
 				{data.type === 'Person' && (
-					<Fragment>
-						<TitleValue title="Aktørtype" value={data.type} />
-						<TitleValue title="Arbeidsgiverident" value={data.offentligIdent} />
-					</Fragment>
+					<TitleValue title="Arbeidsgiverident" value={data.offentligIdent} />
 				)}
 			</div>
-		</div>
+		</React.Fragment>
 	)
 }

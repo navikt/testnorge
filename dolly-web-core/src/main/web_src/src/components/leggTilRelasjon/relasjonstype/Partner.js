@@ -3,7 +3,7 @@ import _get from 'lodash/get'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { Sivilstand } from '~/components/fagsystem/tpsf/form/familierelasjoner/partials/Sivilstand'
 
 export const Partner = ({ lagOptions, identInfo, hovedIdent }) => {
@@ -25,7 +25,11 @@ export const Partner = ({ lagOptions, identInfo, hovedIdent }) => {
 	}
 	return (
 		<div className="bestilling-detaljer">
-			<DollyFieldArray name="tpsf.relasjoner.partner" title="Partner" newEntry={initialPartner}>
+			<FormikDollyFieldArray
+				name="tpsf.relasjoner.partner"
+				title="Partner"
+				newEntry={initialPartner}
+			>
 				{(path, idx) => (
 					<React.Fragment key={idx}>
 						{/* Endres når styling av bredde er på plass */}
@@ -42,7 +46,7 @@ export const Partner = ({ lagOptions, identInfo, hovedIdent }) => {
 						<Sivilstand basePath={`${path}.sivilstander`} />
 					</React.Fragment>
 				)}
-			</DollyFieldArray>
+			</FormikDollyFieldArray>
 		</div>
 	)
 }

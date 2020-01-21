@@ -5,6 +5,7 @@ import _has from 'lodash/has'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import Panel from '~/components/ui/panel/Panel'
+import { panelError } from '~/components/ui/form/formUtils'
 import { Boadresse } from './partials/boadresse/Boadresse'
 import { Postadresser } from './Postadresser'
 import { MatrikkelAdresse } from './partials/MatrikkelAdresse'
@@ -80,7 +81,11 @@ export const Adresser = ({ formikBag }) => {
 
 	return (
 		<Vis attributt={paths}>
-			<Panel heading="Adresser" iconType="adresse">
+			<Panel
+				heading="Adresser"
+				hasErrors={panelError(formikBag, paths.concat('tpsf.adresseNrInfo'))}
+				iconType="adresse"
+			>
 				<Vis attributt="tpsf.boadresse">
 					<RadioPanelGruppe
 						name="botype"

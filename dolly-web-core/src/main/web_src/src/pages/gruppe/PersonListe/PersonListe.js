@@ -43,7 +43,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 		},
 		{
 			text: 'Kjønn',
-			width: '20',
+			width: '15',
 			dataField: 'kjonn'
 		},
 		{
@@ -53,7 +53,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 		},
 		{
 			text: 'Bestilling-ID',
-			width: '10',
+			width: '20',
 			dataField: 'ident.bestillingId',
 			formatter: (cell, row) => {
 				const arr = row.ident.bestillingId
@@ -69,7 +69,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			formatter: (cell, row) => <EtikettBase type={etikettTypeMap[cell]}>{cell}</EtikettBase>
 		},
 		{
-			text: 'I bruk',
+			text: 'Brukt',
 			width: '10',
 			dataField: 'ibruk',
 			formatter: (cell, row) => <PersonIBrukButtonConnector ident={row.ident} />

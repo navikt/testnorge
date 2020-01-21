@@ -1,4 +1,5 @@
 import React from 'react'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
 export const Aliaser = ({ aliaser }) => {
@@ -7,15 +8,16 @@ export const Aliaser = ({ aliaser }) => {
 	return (
 		<div>
 			<h4>Aliaser</h4>
-			{aliaser.map((alias, idx) => (
-				<div key={idx} className="person-visning_content">
-					<TitleValue title="" value={`#${idx + 1}`} size="x-small" />
-					<TitleValue title="FNR/DNR" value={alias.fnr} />
-					<TitleValue title="Fornavn" value={alias.navn.fornavn} />
-					<TitleValue title="Mellomnavn" value={alias.navn.mellomnavn} />
-					<TitleValue title="Etternavn" value={alias.navn.etternavn} />
-				</div>
-			))}
+			<DollyFieldArray data={aliaser}>
+				{(alias, idx) => (
+					<div key={idx} className="person-visning_content">
+						<TitleValue title="FNR/DNR" value={alias.fnr} />
+						<TitleValue title="Fornavn" value={alias.navn.fornavn} />
+						<TitleValue title="Mellomnavn" value={alias.navn.mellomnavn} />
+						<TitleValue title="Etternavn" value={alias.navn.etternavn} />
+					</div>
+				)}
+			</DollyFieldArray>
 		</div>
 	)
 }

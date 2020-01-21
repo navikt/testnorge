@@ -5,7 +5,7 @@ import { panelError } from '~/components/ui/form/formUtils'
 import Panel from '~/components/ui/panel/Panel'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { requiredDate, requiredString } from '~/utils/YupValidations'
 
@@ -23,7 +23,7 @@ export const InstForm = ({ formikBag }) => (
 			hasErrors={panelError(formikBag, instAttributt)}
 			iconType="institusjon"
 		>
-			<DollyFieldArray name="instdata" title="Opphold" newEntry={initialValues}>
+			<FormikDollyFieldArray name="instdata" title="Opphold" newEntry={initialValues}>
 				{(path, idx) => (
 					<React.Fragment key={idx}>
 						<FormikSelect
@@ -35,7 +35,7 @@ export const InstForm = ({ formikBag }) => (
 						<FormikDatepicker name={`${path}.faktiskSluttdato`} label="Sluttdato" />
 					</React.Fragment>
 				)}
-			</DollyFieldArray>
+			</FormikDollyFieldArray>
 		</Panel>
 	</Vis>
 )

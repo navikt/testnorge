@@ -41,7 +41,9 @@ FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 					harFellesAdresse: true,
 					alder: Formatters.randomIntInRange(18, 99),
 					spesreg: '',
-					utenFastBopel: false
+					utenFastBopel: false,
+					statsborgerskap: '',
+					statsborgerskapRegdato: ''
 				}
 			])
 		},
@@ -64,7 +66,9 @@ FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 					erAdoptert: false,
 					alder: Formatters.randomIntInRange(1, 18),
 					spesreg: '',
-					utenFastBopel: false
+					utenFastBopel: false,
+					statsborgerskap: '',
+					statsborgerskapRegdato: ''
 				}
 			])
 		},

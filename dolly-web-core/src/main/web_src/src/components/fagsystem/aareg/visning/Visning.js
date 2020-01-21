@@ -2,6 +2,7 @@ import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import Loading from '~/components/ui/loading/Loading'
 import Formatters from '~/utils/DataFormatter'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { Arbeidsavtaler } from './partials/Arbeidsavtaler'
 import { Arbeidsgiver } from './partials/Arbeidsgiver'
@@ -16,11 +17,9 @@ export const AaregVisning = ({ data, loading }) => {
 	return (
 		<div>
 			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" />
-			<div>
-				{data.map((id, idx) => (
-					<div key={idx}>
-						<h4>{`Arbeidsforhold #${idx + 1}`}</h4>
-
+			<DollyFieldArray title="Arbeidsforhold" data={data}>
+				{(id, idx) => (
+					<React.Fragment>
 						<div className="person-visning_content">
 							{id.ansettelsesperiode && (
 								<TitleValue
@@ -53,9 +52,9 @@ export const AaregVisning = ({ data, loading }) => {
 						<PermisjonPermitteringer data={id.permisjonPermitteringer} />
 
 						<Utenlandsopphold data={id.utenlandsopphold} />
-					</div>
-				))}
-			</div>
+					</React.Fragment>
+				)}
+			</DollyFieldArray>
 		</div>
 	)
 }

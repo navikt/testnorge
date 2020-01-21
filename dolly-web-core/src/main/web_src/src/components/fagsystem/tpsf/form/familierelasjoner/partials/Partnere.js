@@ -2,7 +2,7 @@ import React from 'react'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
 import { Diskresjonskoder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/diskresjonskoder/Diskresjonskoder'
@@ -16,11 +16,13 @@ const initialValues = {
 	harFellesAdresse: false,
 	alder: Formatters.randomIntInRange(18, 99),
 	spesreg: '',
-	utenFastBopel: false
+	utenFastBopel: false,
+	statsborgerskap: '',
+	statsborgerskapRegdato: ''
 }
 
 export const Partnere = ({ formikBag }) => (
-	<DollyFieldArray name="tpsf.relasjoner.partnere" title="Partner" newEntry={initialValues}>
+	<FormikDollyFieldArray name="tpsf.relasjoner.partnere" title="Partner" newEntry={initialValues}>
 		{(path, idx) => (
 			<React.Fragment key={idx}>
 				<FormikSelect
@@ -32,9 +34,15 @@ export const Partnere = ({ formikBag }) => (
 				<FormikSelect name={`${path}.kjonn`} label="Kjønn" kodeverk="Kjønnstyper" />
 				<FormikCheckbox name={`${path}.harFellesAdresse`} label="Har felles adresse" />
 				<Alder basePath={path} formikBag={formikBag} />
+				<FormikSelect
+					name={`${path}.statsborgerskap`}
+					label="Statsborgerskap"
+					kodeverk="Landkoder"
+				/>
+				<FormikDatepicker name={`${path}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
 				<Diskresjonskoder basePath={path} formikBag={formikBag} />
 				<Sivilstand basePath={`tpsf.relasjoner.partnere[${idx}].sivilstander`} />
 			</React.Fragment>
 		)}
-	</DollyFieldArray>
+	</FormikDollyFieldArray>
 )
