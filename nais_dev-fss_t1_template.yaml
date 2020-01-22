@@ -7,7 +7,7 @@ metadata:
     team: registre
 replicas:
   min: 1
-  max: 2
+  max: 1
 spec:
   port: 8080
   ingresses:
