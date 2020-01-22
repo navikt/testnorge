@@ -23,10 +23,10 @@ spec:
     enabled: true
   resources:
     limits:
-      cpu: 500m
+      cpu: 1000m
       memory: 2048Mi
     requests:
-      cpu: 200m
+      cpu: 500m
       memory: 1024Mi
   ingresses:
     - "https://testnorge-tp.nais.preprod.local"

@@ -13,9 +13,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -196,31 +194,20 @@ public class TpService {
     }
 
     @Transactional
-    public Map<String, Object> removeFnrsFromTp(List<String> fnrs) {
-
-        //        tPersonRepository.save();
-        //        tYtelseRepository.save();
-        //        tForholdRepository.save();
-        //        tForholdYtelseHistorikkRepository.save();
-        Map<String, Object> fnrMedForhold = new HashMap<>();
+    public List<String> removeFnrsFromTp(List<String> fnrs) {
+        List<String> removedFnrs = new ArrayList<>();
         for (String fnr : fnrs) {
-            //            get forholdId get ytelseId
-            TPerson tPerson = tPersonRepository.findByFnrFk(fnr);
+            var tPerson = tPersonRepository.findByFnrFk(fnr);
             if (tPerson != null) {
-                Integer personId = tPerson.getPersonId();
-
-                TForhold tForhold = tForholdRepository.findByPersonId(personId);
-
-                fnrMedForhold.put(fnr, tForhold);
+                var tForhold = tForholdRepository.findByPersonId(tPerson.getPersonId());
 
                 if (tForhold == null) {
                     tPersonRepository.delete(tPerson);
+                    removedFnrs.add(fnr);
                 }
             }
-
-            //            tPersonRepository.delete(tPerson);
         }
-        return fnrMedForhold;
+        return removedFnrs;
     }
 
     private List<String>[] partition(List<String> list) {

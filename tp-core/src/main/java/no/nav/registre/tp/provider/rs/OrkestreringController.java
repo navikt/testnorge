@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
@@ -66,8 +65,10 @@ public class OrkestreringController {
     }
 
     @Transactional
+    @ApiOperation(value = "Enkel implementasjon for å fjerne personer i en gitt liste fra TP. Personene fjernes kun hvis de ikke"
+            + "har tilhørende forhold. Returnerer en liste med de personene som ble slettet.")
     @DeleteMapping("/fjernPersoner/{miljoe}")
-    public Map<String, Object> asd(
+    public List<String> removeIdentsFromTp(
             @PathVariable String miljoe,
             @RequestBody List<String> fnrs
     ) {
