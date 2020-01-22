@@ -33,9 +33,6 @@ spring:
     allow-bean-definition-overriding: true
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
-    username: ${DOLLY_DB_USERNAME}
-    password: ${DOLLY_DB_PASSWORD}
-    url: ${DOLLY_DB_URL}
 
 management:
   endpoints:
