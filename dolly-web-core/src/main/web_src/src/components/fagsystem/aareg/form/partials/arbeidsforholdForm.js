@@ -45,6 +45,7 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 					<FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" />
 				)}
 			</div>
+
 			<ArbeidsavtaleForm formikBag={formikBag} path={path} />
 
 			<TimeloennetForm path={`${path}.antallTimerForTimeloennet`} />
