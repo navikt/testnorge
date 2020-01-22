@@ -210,7 +210,7 @@ public class TpService {
         return removedFnrs;
     }
 
-    private List<String>[] partition(List<String> list) {
+    private List<List<String>> partition(List<String> list) {
         int size = list.size();
 
         int numberOfPartitions = size / PARTITION_SIZE;
@@ -218,12 +218,12 @@ public class TpService {
             numberOfPartitions++;
         }
 
-        List<String>[] partitions = new ArrayList[numberOfPartitions];
+        List<List<String>> partitions = new ArrayList<>(numberOfPartitions);
         for (int i = 0; i < numberOfPartitions; i++) {
             int fromIndex = i * PARTITION_SIZE;
             int toIndex = (i * PARTITION_SIZE + PARTITION_SIZE < size) ? (i * PARTITION_SIZE + PARTITION_SIZE) : size;
 
-            partitions[i] = new ArrayList<>(list.subList(fromIndex, toIndex));
+            partitions.add(new ArrayList<>(list.subList(fromIndex, toIndex)));
         }
 
         return partitions;
