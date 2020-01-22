@@ -1,3 +1,4 @@
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
 spring.datasource.url=${DOLLY_DB_URL}
 spring.datasource.username=${DOLLY_DB_USERNAME}
 spring.datasource.password=${DOLLY_DB_PASSWORD}
