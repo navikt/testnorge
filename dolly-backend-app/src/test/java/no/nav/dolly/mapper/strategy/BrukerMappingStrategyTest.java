@@ -31,7 +31,7 @@ public class BrukerMappingStrategyTest {
     public static void beforeClass() {
         authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(CURRENT_BRUKER_IDENT, null, null, null));
+                new OidcTokenAuthentication(CURRENT_BRUKER_IDENT, null, null, null, null));
     }
 
     @AfterClass

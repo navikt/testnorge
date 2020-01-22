@@ -49,7 +49,7 @@ public class BrukerControllerTest {
     @Test
     public void getCurrentBruker() {
         String standardPrincipal = "test";
-        OidcTokenAuthentication token = new OidcTokenAuthentication(standardPrincipal, null, null, null);
+        OidcTokenAuthentication token = new OidcTokenAuthentication(standardPrincipal, null, null, null, null);
         SecurityContextHolder.getContext().setAuthentication(token);
 
         Bruker b = new Bruker();

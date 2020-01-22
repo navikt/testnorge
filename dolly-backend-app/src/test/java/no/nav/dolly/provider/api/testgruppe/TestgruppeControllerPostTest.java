@@ -3,19 +3,14 @@ package no.nav.dolly.provider.api.testgruppe;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 
 @DisplayName("POST /api/v1/gruppe")
 class TestgruppeControllerPostTest extends TestgruppeTestBase {

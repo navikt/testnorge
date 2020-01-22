@@ -50,7 +50,7 @@ public class BrukerServiceTest {
 
     @Before
     public void setup() {
-        SecurityContextHolder.getContext().setAuthentication(new OidcTokenAuthentication(navIdent, null, null, null));
+        SecurityContextHolder.getContext().setAuthentication(new OidcTokenAuthentication(navIdent, null, null, null, null));
     }
 
     @Test

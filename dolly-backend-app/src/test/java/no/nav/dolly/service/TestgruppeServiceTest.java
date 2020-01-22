@@ -74,7 +74,7 @@ public class TestgruppeServiceTest {
     @Before
     public void setup() {
         SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(standardPrincipal, null, null, null)
+                new OidcTokenAuthentication(standardPrincipal, null, null, null, null)
         );
 
         Set gruppe = newHashSet(
@@ -193,7 +193,7 @@ public class TestgruppeServiceTest {
         RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder().hensikt("test").navn("navn").build();
 
         when(testgruppeRepository.findById(anyLong())).thenReturn(Optional.of(testGruppe));
-        when(brukerService.fetchBruker(anyString())).thenReturn( Bruker.builder().brukerId("brukerId").build());
+        when(brukerService.fetchBruker(anyString())).thenReturn(Bruker.builder().brukerId("brukerId").build());
         testgruppeService.oppdaterTestgruppe(GROUP_ID, rsOpprettEndreTestgruppe);
         verify(testgruppeRepository).save(testGruppe);
     }

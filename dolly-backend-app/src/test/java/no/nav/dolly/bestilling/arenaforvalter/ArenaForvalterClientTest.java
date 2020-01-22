@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
-import static java.lang.String.format;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse.BrukerFeilstatus.DUPLIKAT;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -112,7 +111,7 @@ public class ArenaForvalterClientTest {
 
         BestillingProgress progress = new BestillingProgress();
         when(arenaForvalterConsumer.postArenadata(any(ArenaNyeBrukere.class))).thenThrow(httpClientErrorException);
-        when(httpClientErrorException.getMessage()).thenReturn(format("%s", HttpStatus.BAD_REQUEST));
+        when(httpClientErrorException.getMessage()).thenReturn(HttpStatus.BAD_REQUEST.toString());
         when(httpClientErrorException.getResponseBodyAsString()).thenReturn(ERROR_MSG);
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();

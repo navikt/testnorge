@@ -19,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
@@ -26,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.sts.StsOidcService;
 
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @RestClientTest(PdlPersonConsumer.class)
 public class PdlPersonConsumerTest {

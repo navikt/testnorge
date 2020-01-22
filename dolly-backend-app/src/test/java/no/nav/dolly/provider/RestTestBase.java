@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +86,6 @@ public abstract class RestTestBase {
                 .withHeader(HEADER_NAV_CONSUMER_ID, DEFAULT_CONSUMER_ID)
                 .withHeader(HttpHeaders.AUTHORIZATION, "Bearer " + createOidcToken());
     }
-
 
     protected class EndpointRequestBuilder {
         private Map<String, String> requestHeaders = new HashMap<>();

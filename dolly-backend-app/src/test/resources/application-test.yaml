@@ -5,8 +5,13 @@ APP_NAME: dolly
 environment: localhost
 APP_VERSION: ${application.version}
 
-fasit:
-  environment.name: u2
+sts:
+  token:
+    provider:
+      test: dummy
+      preprod: dummy
+
+dolly.environment.name: dummy
 
 spring:
   datasource:
@@ -24,13 +29,6 @@ spring:
       enabled: true
       path: /h2
 
-### ABAC ###
-no.nav.abac:
-    url: https://wasapp-t4.adeo.no/asm-pdp/authorize
-    systemuser:
-      username: srvnorg2_u
-      password: #
-
 #### NEW FREG-SECURITY #####
 freg.security.oidc:
   idp:
@@ -42,7 +40,7 @@ providers:
   tpsf:
     url: http://localhost:${wiremock.server.port}/tpsf
   sigrun:
-    url: http://localhost:8040
+    url: http://sigrundummy
   kodeverk:
     url: http://kodeverkdummy
   sigrunstub:
@@ -54,5 +52,3 @@ providers:
   aaregdata:
     url: http://aaregdatadummy
 
-### CORS ###
-dolly.security.cors.origins: http://localhost:3050,http://localhost:3000

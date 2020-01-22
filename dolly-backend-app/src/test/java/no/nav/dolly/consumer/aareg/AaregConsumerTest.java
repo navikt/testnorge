@@ -100,7 +100,7 @@ public class AaregConsumerTest {
                 .build();
 
         SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(STANDARD_PRINCIPAL, null, STANDARD_IDTOKEN, null)
+                new OidcTokenAuthentication(STANDARD_PRINCIPAL, STANDARD_IDTOKEN, null)
         );
     }
 
