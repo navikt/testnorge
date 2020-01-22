@@ -37,7 +37,6 @@ export const Personinformasjon = ({ formikBag }) => (
 		>
 			<Kategori title="Alder" vis={alderPaths}>
 				<Alder basePath="tpsf" formikBag={formikBag} />
-				<FormikDatepicker name="tpsf.doedsdato" label="Dødsdato" />
 			</Kategori>
 
 			<Kategori title="Nasjonalitet" vis={nasjonalitetPaths}>

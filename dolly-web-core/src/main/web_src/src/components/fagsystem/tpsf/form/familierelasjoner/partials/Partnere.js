@@ -33,7 +33,6 @@ export const Partnere = ({ formikBag }) => (
 				/>
 				<FormikSelect name={`${path}.kjonn`} label="Kjønn" kodeverk="Kjønnstyper" />
 				<FormikCheckbox name={`${path}.harFellesAdresse`} label="Har felles adresse" />
-				<Alder basePath={path} formikBag={formikBag} />
 				<FormikSelect
 					name={`${path}.statsborgerskap`}
 					label="Statsborgerskap"
@@ -41,6 +40,7 @@ export const Partnere = ({ formikBag }) => (
 				/>
 				<FormikDatepicker name={`${path}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
 				<Diskresjonskoder basePath={path} formikBag={formikBag} />
+				<Alder basePath={path} formikBag={formikBag} title="Alder" />
 				<FormikDollyFieldArray
 					name={`tpsf.relasjoner.partnere[${idx}].sivilstander`}
 					title="Forhold"
