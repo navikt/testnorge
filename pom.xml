@@ -36,7 +36,7 @@
         <freg-spring-boot-starters.version>2.1.0</freg-spring-boot-starters.version>
         <springfox.version>2.9.2</springfox.version>
         <kodeverk.version>1.2</kodeverk.version>
-        <jdbc.ojdbc.version>19.3.0.0</jdbc.ojdbc.version>
+        <jdbc.ojdbc.version>18.3.0.0</jdbc.ojdbc.version>
         <jdbc.ucp.version>12.2.0.1</jdbc.ucp.version>
         <jdbc.ons.version>12.2.0.1</jdbc.ons.version>
         <orika.version>1.5.2</orika.version>
@@ -45,6 +45,7 @@
         <ehcache-core.version>2.6.11</ehcache-core.version>
         <commons-collections4.version>4.1</commons-collections4.version>
         <jettison.version>1.4.0</jettison.version>
+        <spring-cloud-contract.version>2.2.0.RELEASE</spring-cloud-contract.version>
         <fasit-util.version>3.1.2</fasit-util.version>
         <wiremock.version>2.24.0</wiremock.version>
         <freg-metrics.version>1.0.0</freg-metrics.version>
@@ -135,7 +136,7 @@
             <dependency>
                 <groupId>com.oracle.jdbc</groupId>
                 <artifactId>ojdbc8</artifactId>
-                <version>${jdbc.ojdbc.version>}</version>
+                <version>${jdbc.ojdbc.version}</version>
             </dependency>
 
             <dependency>

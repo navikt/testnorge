@@ -34,7 +34,7 @@ public class TestgruppeMappingStrategyTest {
     public static void beforeClass() {
 
         SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(STANDARD_PRINCIPAL, null, STANDARD_IDTOKEN, null)
+                new OidcTokenAuthentication(STANDARD_PRINCIPAL, null, STANDARD_IDTOKEN, null, null)
         );
     }
 
