@@ -64,6 +64,7 @@ public class TpService {
     private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     private static final String TP_NAME = "tp";
+    private static final int PARTITION_SIZE = 500;
 
     public int initializeTpDbForEnvironment(
             Long id
@@ -182,8 +183,32 @@ public class TpService {
     }
 
     public List<String> filterTpOnFnrs(List<String> fnrs) {
-        List<TPerson> allPersons = tPersonRepository.findAllByFnrFkIn(fnrs);
-        return allPersons.stream().map(TPerson::getFnrFk).collect(Collectors.toList());
+        var partitions = partition(fnrs);
+        List<String> personsInTp = new ArrayList<>();
+        for (var subList : partitions) {
+            var allPersons = tPersonRepository.findAllByFnrFkIn(subList);
+            personsInTp.addAll(allPersons.stream().map(TPerson::getFnrFk).collect(Collectors.toList()));
+        }
+        return personsInTp;
+    }
+
+    private List<String>[] partition(List<String> list) {
+        int size = list.size();
+
+        int numberOfPartitions = size / PARTITION_SIZE;
+        if (size % PARTITION_SIZE != 0) {
+            numberOfPartitions++;
+        }
+
+        List<String>[] partitions = new ArrayList[numberOfPartitions];
+        for (int i = 0; i < numberOfPartitions; i++) {
+            int fromIndex = i * PARTITION_SIZE;
+            int toIndex = (i * PARTITION_SIZE + PARTITION_SIZE < size) ? (i * PARTITION_SIZE + PARTITION_SIZE) : size;
+
+            partitions[i] = new ArrayList<>(list.subList(fromIndex, toIndex));
+        }
+
+        return partitions;
     }
 
     private List<TPerson> createPeopleFromStream(
