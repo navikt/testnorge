@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
-import static java.lang.String.format;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse.BrukerFeilstatus.DUPLIKAT;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -10,7 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
@@ -39,7 +38,6 @@ public class ArenaForvalterClientTest {
 
     private static final String IDENT = "12423353112";
     private static final String ENV = "q2";
-    private static final String ERROR_CAUSE = "Bad request";
     private static final String ERROR_MSG = "An error has occured";
 
     @Mock
@@ -113,7 +111,7 @@ public class ArenaForvalterClientTest {
 
         BestillingProgress progress = new BestillingProgress();
         when(arenaForvalterConsumer.postArenadata(any(ArenaNyeBrukere.class))).thenThrow(httpClientErrorException);
-        when(httpClientErrorException.getMessage()).thenReturn(format("%s %s", HttpStatus.BAD_REQUEST, ERROR_CAUSE));
+        when(httpClientErrorException.getMessage()).thenReturn(HttpStatus.BAD_REQUEST.toString());
         when(httpClientErrorException.getResponseBodyAsString()).thenReturn(ERROR_MSG);
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
@@ -122,7 +120,7 @@ public class ArenaForvalterClientTest {
         arenaForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo(
-                "q2$Feil: 400 Bad request (An error has occured)")));
+                "q2$Feil: 400 BAD_REQUEST (An error has occured)")));
         verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class));
     }
 
@@ -148,7 +146,7 @@ public class ArenaForvalterClientTest {
         request.setEnvironments(singletonList(ENV));
         arenaForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
 
-        verifyZeroInteractions(arenaForvalterConsumer);
+        verifyNoInteractions(arenaForvalterConsumer);
         assertThat(progress.getArenaforvalterStatus(), is(nullValue()));
     }
 }

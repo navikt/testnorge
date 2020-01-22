@@ -13,15 +13,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
-import no.nav.dolly.domain.resultset.entity.team.RsOpprettTeam;
-import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.TeamRepository;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import java.util.List;
+import java.util.Optional;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,8 +26,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.List;
-import java.util.Optional;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
+import no.nav.dolly.domain.resultset.entity.team.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.entity.team.RsTeamUtvidet;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.TeamRepository;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TeamServiceTest {
@@ -58,7 +58,7 @@ public class TeamServiceTest {
     public static void beforeClass() {
         authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(CURRENT_BRUKER_IDENT, null, null, null));
+                new OidcTokenAuthentication(CURRENT_BRUKER_IDENT, null, null, null, null));
     }
 
     @AfterClass

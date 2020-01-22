@@ -19,12 +19,6 @@ springfox:
       v2:
         path: /internal/swagger-spec
 
-providers:
-  tpsf:
-    url: http://localhost:8050
-  sigrun:
-    url: http://localhost:8040
-
 dolly:
   api:
     v1:
@@ -37,6 +31,8 @@ dolly:
 spring:
   main:
     allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
 
 management:
   endpoints:

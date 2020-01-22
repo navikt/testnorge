@@ -8,31 +8,37 @@ import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import lombok.RequiredArgsConstructor;
-import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.properties.CredentialsProps;
-import no.nav.dolly.properties.Environment;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.EnumMap;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.RequiredArgsConstructor;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.properties.CredentialsProps;
+import no.nav.dolly.properties.Environment;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @Service
 @RequiredArgsConstructor
 public class StsOidcService {
 
     private final RestTemplate restTemplate;
-    private final StsOidcFasitConsumer stsOidcFasitConsumer;
     private final CredentialsProps credentialsProps;
+
+    @Value("${sts.token.provider.test}")
+    private String stsTokenProviderTestUrl;
+
+    @Value("${sts.token.provider.preprod}")
+    private String stsTokenProviderPreprodUrl;
 
     private Map<Environment, String> idToken = new EnumMap<>(Environment.class);
     private Map<Environment, LocalDateTime> expiry = new EnumMap<>(Environment.class);
@@ -84,7 +90,8 @@ public class StsOidcService {
     private void updateToken(Environment env) {
 
         ResponseEntity responseEntity = restTemplate.exchange(RequestEntity
-                .get(URI.create(stsOidcFasitConsumer.getStsOidcService(env).concat("?grant_type=client_credentials&scope=openid")))
+                .get(URI.create((PREPROD == env ? stsTokenProviderPreprodUrl : stsTokenProviderTestUrl)
+                        .concat("?grant_type=client_credentials&scope=openid")))
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header(AUTHORIZATION, "Basic " +
                         Base64.getEncoder().encodeToString((

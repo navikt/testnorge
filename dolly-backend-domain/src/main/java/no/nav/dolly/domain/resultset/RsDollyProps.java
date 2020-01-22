@@ -14,7 +14,6 @@ public class RsDollyProps {
     private String krrStubUrl;
     private String udiStubUrl;
     private String kodeverkUrl;
-    private String norg2;
     private String arenaForvalterUrl;
     private String instdataUrl;
     private String aaregdataUrl;
