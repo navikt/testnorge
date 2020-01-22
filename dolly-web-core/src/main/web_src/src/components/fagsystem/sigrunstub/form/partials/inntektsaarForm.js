@@ -2,10 +2,9 @@ import React from 'react'
 import { FieldArray } from 'formik'
 import { subYears } from 'date-fns'
 import _get from 'lodash/get'
-import {
-	FieldArrayAddButton,
-	FieldArrayRemoveButton
-} from '~/components/ui/form/fieldArray/DollyFieldArray'
+import _isString from 'lodash/isString'
+import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { ErrorMessage } from 'formik'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { EnkeltinntektForm } from './enkeltinntektForm'
@@ -23,78 +22,60 @@ export const InntektsaarForm = ({ formikBag }) => {
 		tekniskNavn: '',
 		verdi: ''
 	}
-	const inntektsaarArray = _get(formikBag.values, 'sigrunstub', [])
-
-	const fjern = (idx, path, currentArray) => {
-		const nyArray = currentArray.filter((_, _idx) => _idx !== idx)
-		formikBag.setFieldValue(path, nyArray)
-	}
-
-	const leggTilGrunnlag = name =>
-		formikBag.setFieldValue(name, _get(formikBag.values, name).concat([initialGrunnlag]))
-
-	const pushGrunnlag = idx => leggTilGrunnlag(`sigrunstub[${idx}].grunnlag`)
-	const pushSvalbard = idx => leggTilGrunnlag(`sigrunstub[${idx}].svalbardGrunnlag`)
 
 	return (
-		<FieldArray name="sigrunstub">
-			{({ push }) => (
-				<div>
-					{inntektsaarArray.map((inntektsaar, idx) => (
-						<React.Fragment key={idx}>
-							<div className="flexbox">
-								<FormikSelect
-									name={`sigrunstub[${idx}].inntektsaar`}
-									label="År"
-									options={Formatters.getYearRangeOptions(
-										1968,
-										subYears(new Date(), -5).getFullYear()
-									)}
-									isClearable={false}
-								/>
-								<FormikSelect
-									name={`sigrunstub[${idx}].tjeneste`}
-									label="Tjeneste"
-									options={Options('tjeneste')}
-									isDisabled={inntektsaar.svalbardGrunnlag.length > 0}
-									isClearable={false}
-								/>
-
-								{inntektsaar.tjeneste && (
-									<FieldArrayAddButton
-										title="Inntekt fra Fastlands-Norge"
-										onClick={() => pushGrunnlag(idx)}
-									/>
+		<FormikDollyFieldArray name="sigrunstub" title="Inntekt" newEntry={initialValues}>
+			{path => (
+				<React.Fragment>
+					<React.Fragment>
+						<div className="flexbox--flex-wrap">
+							<FormikSelect
+								name={`${path}.inntektsaar`}
+								label="År"
+								options={Formatters.getYearRangeOptions(
+									1968,
+									subYears(new Date(), -5).getFullYear()
 								)}
-								{inntektsaar.tjeneste === 'SUMMERT_SKATTEGRUNNLAG' && (
-									<FieldArrayAddButton
-										title="Inntekt fra Svalbard"
-										onClick={() => pushSvalbard(idx)}
-									/>
-								)}
-								<FieldArrayRemoveButton
-									onClick={() => fjern(idx, 'sigrunstub', inntektsaarArray)}
-								/>
-							</div>
-
-							<EnkeltinntektForm
-								name={`sigrunstub[${idx}].grunnlag`}
-								tjeneste={formikBag.values.sigrunstub[idx].tjeneste}
-								formikBag={formikBag}
-								fjern={fjern}
+								isClearable={false}
 							/>
-
-							<EnkeltinntektForm
-								name={`sigrunstub[${idx}].svalbardGrunnlag`}
-								tjeneste={formikBag.values.sigrunstub[idx].tjeneste}
-								formikBag={formikBag}
-								fjern={fjern}
+							<FormikSelect
+								name={`${path}.tjeneste`}
+								label="Tjeneste"
+								options={Options('tjeneste')}
+								isDisabled={_get(formikBag.values, `${path}.svalbardGrunnlag`, []).length > 0}
+								isClearable={false}
 							/>
-						</React.Fragment>
-					))}
-					<FieldArrayAddButton title="Legg til inntektsår" onClick={() => push(initialValues)} />
-				</div>
+						</div>
+						{tjenesteErValgt(formikBag, path) && (
+							<EnkeltinntektForm
+								path={`${path}.grunnlag`}
+								title="Grunnlag fra Fastlands-Norge"
+								initialGrunnlag={initialGrunnlag}
+								tjeneste={_get(formikBag.values, `${path}.tjeneste`)}
+							/>
+						)}
+						{_get(formikBag.values, `${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
+							<EnkeltinntektForm
+								path={`${path}.svalbardGrunnlag`}
+								title="Grunnlag fra Svalbard"
+								initialGrunnlag={initialGrunnlag}
+								tjeneste={_get(formikBag.values, `${path}.tjeneste`)}
+							/>
+						)}
+
+						<div style={{ marginTop: '20px' }}>
+							{/* TODO: Vise feilmelding uten at den drunker i annen tekst */}
+							{_isString(_get(formikBag.errors, `${path}.grunnlag`)) && (
+								<ErrorMessage name={`${path}.grunnlag`} className="error-message" component="div" />
+							)}
+						</div>
+					</React.Fragment>
+				</React.Fragment>
 			)}
-		</FieldArray>
+		</FormikDollyFieldArray>
 	)
+}
+
+const tjenesteErValgt = (formikBag, path) => {
+	return _get(formikBag.values, `${path}.tjeneste`)
 }
