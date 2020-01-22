@@ -8,4 +8,5 @@ import no.nav.registre.tp.database.models.TForhold;
 @Repository
 public interface TForholdRepository extends CrudRepository<TForhold, Integer> {
 
+    TForhold findByPersonId(Integer personId);
 }

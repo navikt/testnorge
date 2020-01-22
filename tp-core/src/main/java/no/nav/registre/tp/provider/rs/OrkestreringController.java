@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
@@ -60,5 +62,14 @@ public class OrkestreringController {
     ) {
         TenantContext.setTenant(miljoe);
         return tpService.filterTpOnFnrs(fnrs);
+    }
+
+    @DeleteMapping("/fjernPersoner/{miljoe}")
+    public Map<String, Object> asd(
+            @PathVariable String miljoe,
+            @RequestBody List<String> fnrs
+    ) {
+        TenantContext.setTenant(miljoe);
+        return tpService.removeFnrsFromTp(fnrs);
     }
 }
