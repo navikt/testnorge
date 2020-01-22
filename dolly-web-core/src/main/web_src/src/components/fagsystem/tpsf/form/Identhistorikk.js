@@ -5,7 +5,7 @@ import { panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 const initialValues = {
@@ -33,7 +33,7 @@ export const Identhistorikk = ({ formikBag }) => (
 			informasjonstekst={hjelpetekst}
 			iconType="personinformasjon"
 		>
-			<DollyFieldArray name="tpsf.identHistorikk" title="Historikk" newEntry={initialValues}>
+			<FormikDollyFieldArray name="tpsf.identHistorikk" title="Historikk" newEntry={initialValues}>
 				{(path, idx) => (
 					<React.Fragment key={idx}>
 						<FormikSelect
@@ -51,7 +51,7 @@ export const Identhistorikk = ({ formikBag }) => (
 						<FormikDatepicker name={`${path}.foedtFoer`} label="Født før" visHvisAvhuket={false} />
 					</React.Fragment>
 				)}
-			</DollyFieldArray>
+			</FormikDollyFieldArray>
 		</Panel>
 	</Vis>
 )
