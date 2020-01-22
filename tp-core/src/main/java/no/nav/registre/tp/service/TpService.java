@@ -204,14 +204,15 @@ public class TpService {
         for (String fnr : fnrs) {
             //            get forholdId get ytelseId
             TPerson tPerson = tPersonRepository.findByFnrFk(fnr);
+            if (tPerson != null) {
+                Integer personId = tPerson.getPersonId();
 
-            Integer personId = tPerson.getPersonId();
+                TForhold tForhold = tForholdRepository.findByPersonId(personId);
 
-            TForhold tForhold = tForholdRepository.findByPersonId(personId);
+                fnrMedForhold.put(fnr, tForhold);
+            }
 
-            fnrMedForhold.put(fnr, tForhold);
-
-//            tPersonRepository.delete(tPerson);
+            //            tPersonRepository.delete(tPerson);
         }
         return fnrMedForhold;
     }
