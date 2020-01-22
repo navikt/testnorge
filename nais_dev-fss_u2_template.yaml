@@ -6,7 +6,7 @@ metadata:
   labels:
     team: registre
 replicas:
-  min: 2
+  min: 1
   max: 2
 spec:
   port: 8080
@@ -37,3 +37,7 @@ spec:
     paths:
       - kvPath: /kv/preprod/fss/dolly-backend/u2
         mountPath: /var/run/secrets/nais.io/vault
+      - kvPath: /oracle/data/dev/creds/dolly_u2-user
+        mountPath: /var/run/secrets/nais.io/db
+      - kvPath: /oracle/dev/config/dolly_u2
+        mountPath: /var/run/secrets/nais.io/dbPath

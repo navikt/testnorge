@@ -31,6 +31,8 @@ dolly:
 spring:
   main:
     allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
 
 management:
   endpoints:
