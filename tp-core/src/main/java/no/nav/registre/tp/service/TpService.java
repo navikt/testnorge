@@ -182,7 +182,7 @@ public class TpService {
     }
 
     public List<String> filterTpOnFnrs(List<String> fnrs) {
-        List<TPerson> allPersons = tPersonRepository.findAllByFnrFk(fnrs);
+        List<TPerson> allPersons = tPersonRepository.findAllByFnrFkIn(fnrs);
         return allPersons.stream().map(TPerson::getFnrFk).collect(Collectors.toList());
     }
 

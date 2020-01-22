@@ -10,5 +10,5 @@ public interface TPersonRepository extends CrudRepository<TPerson, Integer> {
 
     TPerson findByFnrFk(String fnr);
 
-    List<TPerson> findAllByFnrFk(List<String> fnr);
+    List<TPerson> findAllByFnrFkIn(List<String> fnr);
 }
