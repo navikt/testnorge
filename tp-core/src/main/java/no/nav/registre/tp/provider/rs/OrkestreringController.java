@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,6 +65,7 @@ public class OrkestreringController {
         return tpService.filterTpOnFnrs(fnrs);
     }
 
+    @Transactional
     @DeleteMapping("/fjernPersoner/{miljoe}")
     public Map<String, Object> asd(
             @PathVariable String miljoe,

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpServerErrorException;
 
 import javax.validation.Valid;
@@ -194,6 +195,7 @@ public class TpService {
         return personsInTp;
     }
 
+    @Transactional
     public Map<String, Object> removeFnrsFromTp(List<String> fnrs) {
 
         //        tPersonRepository.save();
@@ -210,6 +212,10 @@ public class TpService {
                 TForhold tForhold = tForholdRepository.findByPersonId(personId);
 
                 fnrMedForhold.put(fnr, tForhold);
+
+                if (tForhold == null) {
+                    tPersonRepository.delete(tPerson);
+                }
             }
 
             //            tPersonRepository.delete(tPerson);
