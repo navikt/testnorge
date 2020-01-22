@@ -38,14 +38,6 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/bestillingStatus`
 	}
 
-	static identBeskrivelse(ident) {
-		return `${identBase}/${ident}/beskrivelse`
-	}
-
-	static identIbruk(ident, ibruk) {
-		return `${identBase}/${ident}/ibruk?iBruk=${ibruk}`
-	}
-
 	static bruker() {
 		return brukerBase
 	}
@@ -112,5 +104,18 @@ export default class DollyEndpoints {
 
 	static personoppslag(ident) {
 		return `${personoppslagBase}/ident/${ident}`
+	}
+
+	//TESTPERSON-CONTROLLER
+	static identBeskrivelse(ident) {
+		return `${identBase}/${ident}/beskrivelse`
+	}
+
+	static identIbruk(ident, ibruk) {
+		return `${identBase}/${ident}/ibruk?iBruk=${ibruk}`
+	}
+
+	static kobleIdenter(ident) {
+		return `${identBase}/${ident}/relasjon`
 	}
 }

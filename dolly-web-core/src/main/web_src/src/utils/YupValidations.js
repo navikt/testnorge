@@ -1,8 +1,27 @@
 import * as Yup from 'yup'
 import _isUndefined from 'lodash/isUndefined'
+import { yupToFormErrors } from 'formik'
 import _isString from 'lodash/isString'
 import Formatters from '~/utils/DataFormatter'
 import { isDate } from 'date-fns'
+
+/*
+For custom validation der vi kan bruke f.eks. context.
+*/
+export const validate = async (values, schema) => {
+	if (!schema) return
+	try {
+		await schema.validate(values, { abortEarly: false, context: values })
+		return {}
+	} catch (err) {
+		if (err.name === 'ValidationError') {
+			return yupToFormErrors(err)
+		} else {
+			console.info('Validation error')
+			throw err
+		}
+	}
+}
 
 /**
  * Valideringsmeldinger

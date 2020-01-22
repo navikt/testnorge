@@ -3,6 +3,7 @@ import { Formik, yupToFormErrors } from 'formik'
 import Stegindikator from 'nav-frontend-stegindikator'
 import { Navigation } from './Navigation/Navigation'
 import { stateModifierFns } from './stateModifier'
+import { validate } from '~/utils/YupValidations'
 
 import DisplayFormikState from '~/utils/DisplayFormikState'
 
@@ -29,21 +30,6 @@ export const StegVelger = ({ steps, initialValues, onSubmit, children }) => {
 		return onSubmit(values, formikBag)
 	}
 
-	const _validate = async (values, schema) => {
-		if (!schema) return
-		try {
-			await schema.validate(values, { abortEarly: false, context: values })
-			return {}
-		} catch (err) {
-			if (err.name === 'ValidationError') {
-				return yupToFormErrors(err)
-			} else {
-				console.log('Validation error')
-				throw err
-			}
-		}
-	}
-
 	const CurrentStep = steps[step]
 
 	const labels = steps.map(v => ({ label: v.label }))
@@ -51,7 +37,7 @@ export const StegVelger = ({ steps, initialValues, onSubmit, children }) => {
 	return (
 		<Formik
 			initialValues={initialValues}
-			validate={async values => await _validate(values, CurrentStep.validation)}
+			validate={async values => await validate(values, CurrentStep.validation)}
 			onSubmit={_handleSubmit}
 			enableReinitialize
 		>

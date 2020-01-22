@@ -24,7 +24,7 @@ const relasjonTranslator = relasjon => {
 	}
 }
 
-export const Relasjoner = ({ relasjoner, bestilling }) => {
+export const Relasjoner = ({ relasjoner }) => {
 	if (!relasjoner) return false
 	const barn = relasjoner.filter(
 		relasjon => relasjonTranslator(relasjon.relasjonTypeNavn) === 'Barn'
@@ -48,11 +48,7 @@ export const Relasjoner = ({ relasjoner, bestilling }) => {
 				{barn.map((barnet, jdx) => (
 					<div key={jdx} className="title-multiple">
 						<h3>Barn {jdx + 1}</h3>
-						<Barn
-							data={barnet.personRelasjonMed}
-							type={barnet.relasjonTypeNavn}
-							bestilling={bestilling.relasjoner.barn[jdx]}
-						/>
+						<Barn data={barnet.personRelasjonMed} type={barnet.relasjonTypeNavn} />
 					</div>
 				))}
 			</div>

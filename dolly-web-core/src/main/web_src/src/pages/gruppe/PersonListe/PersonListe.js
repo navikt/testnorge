@@ -85,7 +85,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			onExpand={bruker => (
 				<PersonVisningConnector
 					personId={bruker.ident.ident}
-					bestillingId={_last(bruker.ident.bestillingId)}
+					bestillingId={bruker.ident.bestillingId[0]}
 					gruppeId={bruker.ident.gruppeId}
 				/>
 			)}
