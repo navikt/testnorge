@@ -42,12 +42,23 @@ public class OrkestreringController {
     @ApiOperation(value = "Dette endepunktet kan benyttes for å opprette gitte personer. De vil bli opprettet i TJPEN. Det er ikke noen verifikasjon av FNR mot TPS eller om det er et gyldig FNR.")
     @PostMapping("/opprettPersoner/{miljoe}")
     public ResponseEntity<List<String>> addPeople(
-            @RequestBody List<String> fnrs,
-            @PathVariable String miljoe
+            @PathVariable String miljoe,
+            @RequestBody List<String> fnrs
     ) {
         TenantContext.setTenant(miljoe);
         var people = tpService.createPeople(fnrs);
         var feilet = fnrs.parallelStream().filter(fnr -> !people.contains(fnr)).collect(Collectors.toList());
         return ResponseEntity.ok(feilet);
+    }
+
+    @LogExceptions
+    @ApiOperation(value = "Dette endepunktet kan benyttes for å hente personer fra en gitt liste som finnes i TP.")
+    @PostMapping("/hentPersonerITp/{miljoe}")
+    public List<String> getPeopleInTp(
+            @PathVariable String miljoe,
+            @RequestBody List<String> fnrs
+    ) {
+        TenantContext.setTenant(miljoe);
+        return tpService.filterTpOnFnrs(fnrs);
     }
 }

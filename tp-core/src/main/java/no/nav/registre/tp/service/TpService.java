@@ -181,6 +181,11 @@ public class TpService {
         return saved.parallelStream().map(TPerson::getFnrFk).collect(Collectors.toList());
     }
 
+    public List<String> filterTpOnFnrs(List<String> fnrs) {
+        List<TPerson> allPersons = tPersonRepository.findAllByFnrFk(fnrs);
+        return allPersons.stream().map(TPerson::getFnrFk).collect(Collectors.toList());
+    }
+
     private List<TPerson> createPeopleFromStream(
             Stream<String> stringStream
     ) {
