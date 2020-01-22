@@ -1,0 +1,3 @@
+spring.datasource.url=${DOLLY_DB_URL}
+spring.datasource.username=${DOLLY_DB_USERNAME}
+spring.datasource.password=${DOLLY_DB_PASSWORD}
