@@ -20,13 +20,6 @@
         <module>dolly-web-app-local</module>
     </modules>
 
-    <properties>
-        <jsoup.version>1.11.3</jsoup.version>
-        <logstash-logback-encoder.version>6.0</logstash-logback-encoder.version>
-        <freg-security-oidc.version>3.3.5</freg-security-oidc.version>
-        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
-    </properties>
-
     <distributionManagement>
         <repository>
             <id>m2internal</id>
@@ -40,6 +33,13 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
+
+    <properties>
+        <jsoup.version>1.11.3</jsoup.version>
+        <logstash-logback-encoder.version>6.0</logstash-logback-encoder.version>
+        <freg-security-oidc.version>3.3.5</freg-security-oidc.version>
+        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
+    </properties>
 
     <dependencies>
         <dependency>
