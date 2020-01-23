@@ -28,7 +28,7 @@ export default class NyIdent extends Component {
 			} else {
 				this.props.setBestillingFraMal({
 					antallIdenter: mal.antallIdenter,
-					identtype: JSON.parse(mal.tpsfKriterier).identtype || 'FNR',
+					identtype: mal.tpsfKriterier.identtype || 'FNR',
 					attributeIds: getAttributesFromMal(mal),
 					environments: mal.environments,
 					values: getValuesFromMal(mal),

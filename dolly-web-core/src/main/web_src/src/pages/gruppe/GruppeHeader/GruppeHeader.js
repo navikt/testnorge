@@ -41,7 +41,7 @@ export default function GruppeHeader({ gruppe, isDeletingGruppe, deleteGruppe })
 					{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 				</Overskrift>
 				<div className="hoyre">
-					<EksporterExcel testidenter={gruppe.testidenter} gruppeId={gruppe.id} />
+					<EksporterExcel identer={gruppe.identer} gruppeId={gruppe.id} />
 				</div>
 			</div>
 

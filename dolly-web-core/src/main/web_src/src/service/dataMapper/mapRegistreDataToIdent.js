@@ -3,10 +3,17 @@ import _get from 'lodash/get'
 
 export function mapSigrunData(sigrunData) {
 	if (!sigrunData || sigrunData.length === 0) return null
+	const gr = sigrunData[0].grunnlag.map(g => {
+		return { ...g, inntektssted: 'Fastlandet' }
+	})
+	const sgr = sigrunData[0].svalbardGrunnlag.map(g => {
+		return { ...g, inntektssted: 'Svalbard' }
+	})
+	const totalGrunnlag = gr.concat(sgr)
 	return {
 		header: 'Inntekter',
 		multiple: true,
-		data: sigrunData.map((data, i) => {
+		data: totalGrunnlag.map((data, i) => {
 			return {
 				parent: 'inntekter',
 				id: data.personidentifikator,
@@ -18,6 +25,11 @@ export function mapSigrunData(sigrunData) {
 						width: 'x-small'
 					},
 					{
+						id: 'inntektssted',
+						label: 'Inntektssted',
+						value: data.inntektssted
+					},
+					{
 						id: 'aar',
 						label: 'År',
 						value: data.inntektsaar
@@ -27,7 +39,6 @@ export function mapSigrunData(sigrunData) {
 						label: 'Beløp',
 						value: data.verdi
 					},
-					,
 					{
 						id: 'tjeneste',
 						label: 'Tjeneste',

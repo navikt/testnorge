@@ -11,8 +11,8 @@ export default class EksportExcel extends Component {
 	}
 
 	render() {
-		// Ikke render knapp dersom det ikke finnes noen testidenter
-		if (!this.props.testidenter) return false
+		// Ikke render knapp dersom det ikke finnes noen identer
+		if (!this.props.identer) return false
 
 		if (this.state.loading) return <Loading label="Eksporterer" />
 
@@ -54,7 +54,7 @@ export default class EksportExcel extends Component {
 	}
 
 	_getIdentliste = () => {
-		return this.props.testidenter.map(ident => ident.ident)
+		return this.props.identer.map(ident => ident.ident)
 	}
 
 	_getDato = () => {

@@ -2,6 +2,8 @@ export const relasjonTranslator = relasjon => {
 	switch (relasjon) {
 		case 'EKTEFELLE':
 			return 'Partner'
+		case 'PARTNER':
+			return 'Partner'
 		case 'MOR':
 			return 'Mor'
 		case 'FAR':

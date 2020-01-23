@@ -40,7 +40,7 @@ export default function Gruppe({
 	const toggleValues = [
 		{
 			value: VISNING_TESTPERSONER,
-			label: `Testpersoner (${gruppe.testidenter ? gruppe.testidenter.length : 0})`
+			label: `Testpersoner (${gruppe.identer ? gruppe.identer.length : 0})`
 		},
 		{
 			value: VISNING_BESTILLING,

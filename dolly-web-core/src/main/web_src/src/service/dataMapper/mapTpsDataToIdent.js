@@ -1,9 +1,8 @@
 import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 import _get from 'lodash/get'
-import DataMapper from '.'
 
-export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
+export function mapTpsfData(tpsfData, tpsfKriterier) {
 	if (!tpsfData) return null
 
 	const data = [
@@ -57,11 +56,6 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 					value: tpsfData.sivilstand
 				},
 				{
-					id: 'miljoer',
-					label: 'Miljøer',
-					value: Formatters.commaToSpace(testIdent.tpsfSuccessEnv)
-				},
-				{
 					id: 'spesreg',
 					label: 'Diskresjonskoder',
 					value: tpsfData.spesreg
@@ -99,13 +93,15 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 				{
 					id: 'statsborgerskap',
 					label: 'Statsborgerskap',
-					value: tpsfData.statsborgerskap,
+					value: tpsfData.statsborgerskap[0] && tpsfData.statsborgerskap[0].statsborgerskap,
 					apiKodeverkId: 'Landkoder'
 				},
 				{
 					id: 'statsborgerskapRegdato',
 					label: 'Statsborgerskap fra',
-					value: Formatters.formatDate(tpsfData.statsborgerskapRegdato)
+					value:
+						tpsfData.statsborgerskap[0] &&
+						Formatters.formatDate(tpsfData.statsborgerskap[0].statsborgerskapRegdato)
 				},
 				{
 					id: 'sprakKode',
@@ -141,6 +137,7 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 	}
 
 	if (tpsfData.boadresse) {
+		const boadresse = tpsfData.boadresse[0]
 		data.push({
 			header: 'Bostedadresse',
 			data: [
@@ -148,63 +145,63 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 					parent: 'boadresse',
 					id: 'adressetype',
 					label: 'Adressetype',
-					value: Formatters.adressetypeToString(tpsfData.boadresse.adressetype)
+					value: Formatters.adressetypeToString(boadresse.adressetype)
 				},
 				{
 					parent: 'boadresse',
 					id: 'gateadresse',
 					label: 'Gatenavn',
-					value: tpsfData.boadresse.gateadresse
+					value: boadresse.gateadresse
 				},
 				{
 					parent: 'boadresse',
 					id: 'husnummer',
 					label: 'Husnummer',
-					value: tpsfData.boadresse.husnummer
+					value: boadresse.husnummer
 				},
 				{
 					parent: 'boadresse',
 					id: 'mellomnavn',
 					label: 'Stedsnavn',
-					value: tpsfData.boadresse.mellomnavn
+					value: boadresse.mellomnavn
 				},
 				{
 					parent: 'boadresse',
 					id: 'gardsnr',
 					label: 'Gårdsnummer',
-					value: tpsfData.boadresse.gardsnr
+					value: boadresse.gardsnr
 				},
 				{
 					parent: 'boadresse',
 					id: 'bruksnr',
 					label: 'Bruksnummer',
-					value: tpsfData.boadresse.bruksnr
+					value: boadresse.bruksnr
 				},
 				{
 					parent: 'boadresse',
 					id: 'festenr',
 					label: 'Festenummer',
-					value: tpsfData.boadresse.festenr
+					value: boadresse.festenr
 				},
 				{
 					parent: 'boadresse',
 					id: 'undernr',
 					label: 'Undernummer',
-					value: tpsfData.boadresse.undernr
+					value: boadresse.undernr
 				},
 				{
 					parent: 'boadresse',
 					id: 'postnr',
 					label: 'Postnummer',
-					extraLabel: tpsfData.boadresse.postnr,
+					extraLabel: boadresse.postnr,
 					apiKodeverkId: 'Postnummer',
-					value: tpsfData.boadresse.postnr
+					value: boadresse.postnr
 				},
 				{
 					parent: 'boadresse',
 					id: 'flyttedato',
 					label: 'Flyttedato',
-					value: Formatters.formatDate(tpsfData.boadresse.flyttedato)
+					value: Formatters.formatDate(boadresse.flyttedato)
 				}
 			]
 		})
@@ -344,9 +341,9 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 							value:
 								relasjonstype === 'Barn' &&
 								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].statsborgerskap
-									? relasjon.personRelasjonMed.statsborgerskap
+									? relasjon.personRelasjonMed.statsborgerskap[0].statsborgerskap
 									: relasjonstype === 'Partner' && tpsfKriterier.relasjoner.partner.statsborgerskap
-									? relasjon.personRelasjonMed.statsborgerskap
+									? relasjon.personRelasjonMed.statsborgerskap[0].statsborgerskap
 									: null,
 							apiKodeverkId: 'Landkoder'
 						},
@@ -356,9 +353,13 @@ export function mapTpsfData(tpsfData, testIdent, tpsfKriterier) {
 							value:
 								relasjonstype === 'Barn' &&
 								tpsfKriterier.relasjoner.barn[numberOfChildren - 1].statsborgerskap
-									? Formatters.formatDate(relasjon.personRelasjonMed.statsborgerskapRegdato)
+									? Formatters.formatDate(
+											relasjon.personRelasjonMed.statsborgerskap[0].statsborgerskapRegdato
+									  )
 									: relasjonstype === 'Partner' && tpsfKriterier.relasjoner.partner.statsborgerskap
-									? Formatters.formatDate(relasjon.personRelasjonMed.statsborgerskapRegdato)
+									? Formatters.formatDate(
+											relasjon.personRelasjonMed.statsborgerskap[0].statsborgerskapRegdato
+									  )
 									: null
 						},
 						{
