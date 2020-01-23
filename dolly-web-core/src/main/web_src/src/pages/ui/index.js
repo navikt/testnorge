@@ -31,6 +31,9 @@ import ApiFeilmelding from '~/components/ui/apiFeilmelding/ApiFeilmelding'
 // ContentContainer
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 
+// TextEditor
+import { TextEditor } from '~/components/ui/form/inputs/textEditor/TextEditor'
+
 export default function() {
 	return (
 		<div className="ui-demo">
@@ -96,6 +99,10 @@ export default function() {
 			<Panel heading="Har ikon" iconType="man">
 				Dette er panelets innhold
 			</Panel>
+
+			<h2>Text Editor</h2>
+			<TextEditor placeholder="Skriv en tekst" handleSubmit={v => {}} />
+			<TextEditor text="Dette er en tekst som allerede ligger inne" handleSubmit={v => {}} />
 
 			<h2>ContentContainer</h2>
 			<ContentContainer>Dette er en ContentContainer</ContentContainer>
