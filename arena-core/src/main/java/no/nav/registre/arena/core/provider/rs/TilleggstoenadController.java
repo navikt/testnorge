@@ -46,4 +46,33 @@ public class TilleggstoenadController {
     ) {
         return rettighetTilleggService.opprettTilleggsstoenadHjemreise(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
     }
+
+    @PostMapping("generer/tillegg/reisestoenadArbeidssoekere")
+    public List<NyttVedtakResponse> genererTilleggReisestoenadArbeidssoekere(
+            @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
+    ) {
+        return rettighetTilleggService
+                .opprettTilleggsstoenadReisestoenadArbeidssoekere(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+    }
+
+    @PostMapping("generer/tillegg/boutgifterArbeidssoekere")
+    public List<NyttVedtakResponse> genererTilleggBoutgifterArbeidssoekere(
+            @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
+    ) {
+        return rettighetTilleggService.opprettTilleggsstoenadBoutgifterArbeidssoekere(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+    }
+
+    @PostMapping("generer/tillegg/dagligReise")
+    public List<NyttVedtakResponse> genererTilleggDagligReise(
+            @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
+    ) {
+        return rettighetTilleggService.opprettDagligReise(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+    }
+
+    @PostMapping("generer/tillegg/reiseObligatoriskSamling")
+    public List<NyttVedtakResponse> genererTilleggReiseObligatoriskSamling(
+            @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
+    ) {
+        return rettighetTilleggService.opprettReiseObligatoriskSamling(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+    }
 }

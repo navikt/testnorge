@@ -21,6 +21,10 @@ public class TilleggSyntConsumer {
     private UriTemplate arenaTilleggBoutgiftUrl;
     private UriTemplate arenaTilleggFlyttingUrl;
     private UriTemplate arenaTilleggHjemreiseUrl;
+    private UriTemplate arenaTilleggReisestoenadArbeidssoekereUrl;
+    private UriTemplate arenaTilleggBoutgifterArbeidssoekereUrl;
+    private UriTemplate arenaTilleggDagligReiseUrl;
+    private UriTemplate arenaTilleggReiseObligatoriskSamlingUrl;
 
     public TilleggSyntConsumer(
             RestTemplateBuilder restTemplateBuilder,
@@ -33,6 +37,10 @@ public class TilleggSyntConsumer {
         this.arenaTilleggBoutgiftUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/boutgift");
         this.arenaTilleggFlyttingUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/flytting");
         this.arenaTilleggHjemreiseUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/reise_aktivitet_og_hjemreiser");
+        this.arenaTilleggReisestoenadArbeidssoekereUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/reisestonad_til_arbeidssokere");
+        this.arenaTilleggBoutgifterArbeidssoekereUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/boutgifter_arbeidssokere");
+        this.arenaTilleggDagligReiseUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/daglig_reise");
+        this.arenaTilleggReiseObligatoriskSamlingUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/reise_til_obligatorisk_samling");
     }
 
     public List<NyttVedtakTillegg> opprettLaeremidler(int antallMeldinger) {
@@ -55,6 +63,30 @@ public class TilleggSyntConsumer {
 
     public List<NyttVedtakTillegg> opprettHjemreise(int antallMeldinger) {
         var postRequest = consumerUtils.createPostRequest(arenaTilleggHjemreiseUrl, antallMeldinger);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTillegg>>() {
+        }).getBody();
+    }
+
+    public List<NyttVedtakTillegg> opprettReisestoenadArbeidssoekere(int antallMeldinger) {
+        var postRequest = consumerUtils.createPostRequest(arenaTilleggReisestoenadArbeidssoekereUrl, antallMeldinger);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTillegg>>() {
+        }).getBody();
+    }
+
+    public List<NyttVedtakTillegg> opprettBoutgifterArbeidssoekere(int antallMeldinger) {
+        var postRequest = consumerUtils.createPostRequest(arenaTilleggBoutgifterArbeidssoekereUrl, antallMeldinger);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTillegg>>() {
+        }).getBody();
+    }
+
+    public List<NyttVedtakTillegg> opprettDagligReise(int antallMeldinger) {
+        var postRequest = consumerUtils.createPostRequest(arenaTilleggDagligReiseUrl, antallMeldinger);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTillegg>>() {
+        }).getBody();
+    }
+
+    public List<NyttVedtakTillegg> opprettReiseObligatoriskSamling(int antallMeldinger) {
+        var postRequest = consumerUtils.createPostRequest(arenaTilleggReiseObligatoriskSamlingUrl, antallMeldinger);
         return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTillegg>>() {
         }).getBody();
     }

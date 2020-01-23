@@ -57,6 +57,38 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettHjemreise(antallNyeIdenter));
     }
 
+    public List<NyttVedtakResponse> opprettTilleggsstoenadReisestoenadArbeidssoekere(
+            Long avspillergruppeId,
+            String miljoe,
+            int antallNyeIdenter
+    ) {
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettReisestoenadArbeidssoekere(antallNyeIdenter));
+    }
+
+    public List<NyttVedtakResponse> opprettTilleggsstoenadBoutgifterArbeidssoekere(
+            Long avspillergruppeId,
+            String miljoe,
+            int antallNyeIdenter
+    ) {
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettBoutgifterArbeidssoekere(antallNyeIdenter));
+    }
+
+    public List<NyttVedtakResponse> opprettDagligReise(
+            Long avspillergruppeId,
+            String miljoe,
+            int antallNyeIdenter
+    ) {
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettDagligReise(antallNyeIdenter));
+    }
+
+    public List<NyttVedtakResponse> opprettReiseObligatoriskSamling(
+            Long avspillergruppeId,
+            String miljoe,
+            int antallNyeIdenter
+    ) {
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettReiseObligatoriskSamling(antallNyeIdenter));
+    }
+
     private List<NyttVedtakResponse> opprettTilleggsstoenad(
             Long avspillergruppeId,
             String miljoe,
