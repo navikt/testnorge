@@ -18,6 +18,7 @@ export const Adresse = ({ formikBag }) => {
 				name="pdlforvalter.kontaktinformasjonForDoedsbo.landkode"
 				label="Land"
 				kodeverk="Landkoder"
+				size="large"
 			/>
 			<div>
 				<FormikTextInput
@@ -36,6 +37,7 @@ export const Adresse = ({ formikBag }) => {
 					kodeverk="Postnummer"
 					afterChange={handleAfterChange}
 					isClearable={false}
+					size="large"
 				/>
 			) : (
 				<div>

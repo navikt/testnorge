@@ -23,6 +23,7 @@ export const UtenlandsoppholdForm = ({ path }) => (
 					label="Land"
 					kodeverk="LandkoderISO2"
 					isClearable={false}
+					size="large"
 				/>
 				<FormikDatepicker name={`${path}.periode.fom`} label="Opphold fra" />
 				<FormikDatepicker name={`${path}.periode.tom`} label="Opphold til" />

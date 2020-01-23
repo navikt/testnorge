@@ -15,7 +15,7 @@ export const EnkeltinntektForm = ({ path, title, initialGrunnlag, tjeneste, form
 						name={`${path}.tekniskNavn`}
 						label="Type inntekt"
 						kodeverk={Formatters.uppercaseAndUnderscoreToCapitalized(tjeneste)}
-						size="grow"
+						size="xxlarge"
 						isClearable={false}
 					/>
 					<FormikTextInput name={`${path}.verdi`} label="Beløp" type="number" />
