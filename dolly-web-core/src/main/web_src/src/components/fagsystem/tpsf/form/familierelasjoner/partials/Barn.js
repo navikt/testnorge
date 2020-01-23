@@ -75,7 +75,6 @@ export const Barn = ({ formikBag }) => {
 						isClearable={false}
 					/>
 					<FormikCheckbox name={`${path}.erAdoptert`} label="Er adoptert" />
-					<Alder basePath={path} formikBag={formikBag} />
 					<FormikSelect
 						name={`${path}.statsborgerskap`}
 						label="Statsborgerskap"
@@ -83,6 +82,7 @@ export const Barn = ({ formikBag }) => {
 					/>
 					<FormikDatepicker name={`${path}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
 					<Diskresjonskoder basePath={path} formikBag={formikBag} />
+					<Alder basePath={path} formikBag={formikBag} title="Alder" />
 				</React.Fragment>
 			)}
 		</FormikDollyFieldArray>
