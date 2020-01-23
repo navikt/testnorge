@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Button from '~/components/ui/button/Button'
+import { Textarea } from 'nav-frontend-skjema'
 
 export const BeskrivelseEditor = ({ beskrivelse, handleSubmit, turnOffEditing }) => {
 	const [value, setValue] = useState(beskrivelse || '')
@@ -13,23 +14,22 @@ export const BeskrivelseEditor = ({ beskrivelse, handleSubmit, turnOffEditing })
 
 	return (
 		<div className="beskrivelse-editor">
-			<textarea
-				className="beskrivelse-editor-textarea"
-				type="text"
+			<Textarea
+				label=""
+				placeholder="Skriv inn en kommentar"
 				autoFocus
 				onFocus={focusEndOfStringHack}
 				value={value}
-				placeholder="Skriv inn en kommentar"
-				onChange={handleChange}
+				onChange={e => setValue(e.target.value)}
+				maxLength={1000}
 			/>
-			<br />
 
-			<div className="beskrivelse-button-container">
+			<div className="beskrivelse-button-container-editor">
 				<Button onClick={turnOffEditing} className="beskrivelse-button">
 					Avbryt
 				</Button>
 				<Button onClick={() => handleSubmit(value)} className="beskrivelse-button">
-					Legg til
+					Lagre
 				</Button>
 			</div>
 		</div>

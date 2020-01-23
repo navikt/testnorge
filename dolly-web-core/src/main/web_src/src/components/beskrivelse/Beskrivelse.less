@@ -1,47 +1,71 @@
 @import (reference) '~lessVars';
 
 .beskrivelse-visning {
-	margin-bottom: 20px;
+	margin-bottom: 15px;
+
+	.beskrivelse-felt {
+		position: relative;
+		display: flex;
+		word-break: break-all;
+		flex-direction: column;
+		overflow: hidden;
+		width: 100%;
+		white-space: pre-wrap;
+		min-height: fit-content;
+		padding: 8px 8px 35px 8px;
+		border-radius: 4px;
+		border: 1px solid #c6c2bf;
+		background-color: #fafafa;
+		line-height: 1.45;
+
+		.beskrivelse-button-container {
+			right: 0.5rem;
+			bottom: 0.5rem;
+		}
+
+		.kommentarPlaceholder {
+			color: grey;
+		}
+	}
 }
 
 .beskrivelse-editor {
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	min-height: 120px;
+
+	.beskrivelse-editor-textarea {
+		position: relative;
+		width: 100%;
+		resize: none;
+		padding: 8px;
+		border-radius: 4px;
+		border: 1px solid #c6c2bf;
+	}
+
+	.teller-tekst {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	.beskrivelse-button-container-editor {
+		right: 0.5rem;
+		bottom: 1.5rem;
+	}
 }
 
-.beskrivelse-felt {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	min-height: 120px;
-	padding: 8px;
-	outline: 0;
-	border-radius: 4px;
-	border: 1px solid #c6c2bf;
-	background-color: #fafafa;
-}
-
-.beskrivelse-editor-textarea {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	resize: none;
-	padding: 8px;
-	outline: 0;
-	border-radius: 4px;
-	border: 1px solid #c6c2bf;
-}
-
-.beskrivelse-button-container {
+[class^='beskrivelse-button'] {
 	position: absolute;
 	display: flex;
 	flex-direction: row;
-	right: 0.5rem;
-	bottom: 0.5rem;
-}
 
-.beskrivelse-button {
-	font-size: 16px;
+	[class^='beskrivelse-button-container'] :hover {
+		background-color: #f7f5f5;
+		border-radius: 10px;
+	}
+
+	.beskrivelse-button {
+		font-size: 16px;
+	}
 }
