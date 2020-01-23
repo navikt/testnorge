@@ -107,6 +107,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 						label="Grunnlag for opphold"
 						options={Options(eosEllerEFTAtypeOpphold)}
 						isClearable={false}
+						size="large"
 					/>
 				</React.Fragment>
 			)}

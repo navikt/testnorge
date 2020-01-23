@@ -19,7 +19,7 @@ const alderValg = {
 const initialValue = (basePath, formikBag) => {
 	return _has(formikBag.values, `${basePath}.alder`)
 		? alderValg.alder
-		: _has(formikBag.values, `${basePath}.spesifikk`)
+		: _has(formikBag.values, `${basePath}.foedtEtter`)
 		? alderValg.spesifikk
 		: null
 }

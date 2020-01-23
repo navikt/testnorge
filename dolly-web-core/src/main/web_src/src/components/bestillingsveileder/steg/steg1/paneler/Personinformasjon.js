@@ -81,7 +81,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		}
 	},
 	utvandretTilLand: {
-		label: 'Utvandret fra',
+		label: 'Utvandret til',
 		checked: has('tpsf.utvandretTilLand'),
 		add() {
 			setMulti(['tpsf.utvandretTilLand', ''], ['tpsf.utvandretTilLandFlyttedato', null])

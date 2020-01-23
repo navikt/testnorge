@@ -22,7 +22,7 @@ const _getTpsfBestillingData = data => {
 		obj('Dødsdato', Formatters.formatDate(data.doedsdato)),
 		obj('Statsborgerskap', data.statsborgerskap, 'Landkoder'),
 		obj('Statsborgerskap fra', Formatters.formatDate(data.statsborgerskapRegdato)),
-		obj('Kjønn', Formatters.kjonnToString(data.kjonn)),
+		obj('Kjønn', Formatters.kjonn(data.kjonn, data.alder)),
 		obj('Har mellomnavn', Formatters.oversettBoolean(data.harMellomnavn)),
 		obj('Sivilstand', data.sivilstand, 'Sivilstander'),
 		obj('Diskresjonskoder', data.spesreg, 'Diskresjonskoder'),
@@ -155,13 +155,15 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 
 		if (relasjoner) {
-			if (relasjoner.partnere) {
+			const partnere = relasjoner.partner || relasjoner.partnere
+			const barn = relasjoner.barn
+			if (partnere) {
 				const partner = {
 					header: 'Partner',
 					itemRows: []
 				}
 
-				relasjoner.partnere.forEach((item, j) => {
+				partnere.forEach((item, j) => {
 					const sivilstander = item.sivilstander.reduce((acc, curr, idx) => {
 						if (idx > 0) {
 							acc.push(curr.sivilstand)
@@ -176,6 +178,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							width: 'x-small'
 						},
 						..._getTpsfBestillingData(item),
+						obj('Fnr/dnr/bost', item.ident),
 						obj('Bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
 						obj('Sivilstand', item.sivilstander[0].sivilstand, 'Sivilstander'),
 						obj('Tidligere sivilstander', Formatters.arrayToString(sivilstander))
@@ -185,7 +188,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				data.push(partner)
 			}
 
-			if (relasjoner.barn) {
+			if (barn && barn.length > 0) {
 				const barn = {
 					header: 'Barn',
 					itemRows: []
@@ -199,8 +202,10 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							width: 'x-small'
 						},
 						..._getTpsfBestillingData(item),
-						obj('Foreldre', item.barnType), //Bruke samme funksjon som i bestillingsveileder
-						obj('Bor hos', item.borHos),
+						obj('Fnr/dnr/bost', item.ident),
+						obj('Forelder 2', item.partnerIdent),
+						obj('Foreldre', Formatters.showLabel('barnType', item.barnType)), //Bruke samme funksjon som i bestillingsveileder
+						obj('Bor hos', Formatters.showLabel('barnBorHos', item.borHos)),
 						obj('Er adoptert', Formatters.oversettBoolean(item.erAdoptert))
 					])
 				})

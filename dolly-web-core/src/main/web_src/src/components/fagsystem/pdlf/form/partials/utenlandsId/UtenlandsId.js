@@ -21,14 +21,13 @@ export const UtenlandsId = ({ formikBag }) => (
 					label="Opphørt"
 					options={Options('boolean')}
 					isClearable={false}
-					size="grow"
 				/>
 				<FormikSelect
 					name={`${path}.utstederland`}
 					label="Utstederland"
 					kodeverk="Landkoder"
 					isClearable={false}
-					size="grow"
+					size="large"
 				/>
 			</React.Fragment>
 		)}

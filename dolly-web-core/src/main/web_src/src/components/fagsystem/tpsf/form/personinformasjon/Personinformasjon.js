@@ -41,17 +41,32 @@ export const Personinformasjon = ({ formikBag }) => (
 
 			<Kategori title="Nasjonalitet" vis={nasjonalitetPaths}>
 				<Vis attributt="tpsf.statsborgerskap">
-					<FormikSelect name="tpsf.statsborgerskap" label="Statsborgerskap" kodeverk="Landkoder" />
+					<FormikSelect
+						name="tpsf.statsborgerskap"
+						label="Statsborgerskap"
+						kodeverk="Landkoder"
+						size="large"
+					/>
 					<FormikDatepicker name="tpsf.statsborgerskapRegdato" label="Statsborgerskap fra" />
 				</Vis>
 
 				<Vis attributt="tpsf.innvandretFraLand">
-					<FormikSelect name="tpsf.innvandretFraLand" label="Innvandret" kodeverk="Landkoder" />
+					<FormikSelect
+						name="tpsf.innvandretFraLand"
+						label="Innvandret"
+						kodeverk="Landkoder"
+						size="large"
+					/>
 					<FormikDatepicker name="tpsf.innvandretFraLandFlyttedato" label="Innvandret dato" />
 				</Vis>
 
 				<Vis attributt="tpsf.utvandretTilLand">
-					<FormikSelect name="tpsf.utvandretTilLand" label="Utvandret" kodeverk="Landkoder" />
+					<FormikSelect
+						name="tpsf.utvandretTilLand"
+						label="Utvandret"
+						kodeverk="Landkoder"
+						size="large"
+					/>
 					<FormikDatepicker name="tpsf.utvandretTilLandFlyttedato" label="Utvandret dato" />
 				</Vis>
 			</Kategori>

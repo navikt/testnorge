@@ -1,5 +1,6 @@
 import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
 import { Barn } from './Barn'
 import { Partner } from './Partner'
@@ -24,7 +25,7 @@ const relasjonTranslator = relasjon => {
 	}
 }
 
-export const Relasjoner = ({ relasjoner, bestilling }) => {
+export const Relasjoner = ({ relasjoner }) => {
 	if (!relasjoner) return false
 	const barn = relasjoner.filter(
 		relasjon => relasjonTranslator(relasjon.relasjonTypeNavn) === 'Barn'
@@ -34,28 +35,17 @@ export const Relasjoner = ({ relasjoner, bestilling }) => {
 	)
 
 	return (
-		<div>
+		<React.Fragment>
 			<SubOverskrift label="Familierelasjoner" iconKind="relasjoner" />
-			<div>
-				{partnere.map((partner, idx) => (
-					<div key={idx}>
-						<h3>
-							Partner {idx + 1} {idx < 1 && '(nåværende/siste)'}
-						</h3>
-						<Partner data={partner.personRelasjonMed} />
-					</div>
-				))}
-				{barn.map((barnet, jdx) => (
-					<div key={jdx} className="title-multiple">
-						<h3>Barn {jdx + 1}</h3>
-						<Barn
-							data={barnet.personRelasjonMed}
-							type={barnet.relasjonTypeNavn}
-							bestilling={bestilling.relasjoner.barn[jdx]}
-						/>
-					</div>
-				))}
-			</div>
-		</div>
+			<DollyFieldArray data={partnere} title="Partner">
+				{(partner, idx) => <Partner key={idx} data={partner.personRelasjonMed} />}
+			</DollyFieldArray>
+
+			<DollyFieldArray data={barn} title="Barn">
+				{(barnet, idx) => (
+					<Barn key={idx} data={barnet.personRelasjonMed} type={barnet.relasjonTypeNavn} />
+				)}
+			</DollyFieldArray>
+		</React.Fragment>
 	)
 }

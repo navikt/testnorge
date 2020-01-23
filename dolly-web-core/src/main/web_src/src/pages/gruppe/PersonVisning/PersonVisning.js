@@ -12,6 +12,7 @@ import { InstVisning } from '~/components/fagsystem/inst/visning/InstVisning'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/SammendragModal'
+import { LeggTilRelasjonModal } from '~/components/leggTilRelasjon/LeggTilRelasjonModal'
 
 import './PersonVisning.less'
 
@@ -27,10 +28,7 @@ export const PersonVisning = ({
 
 	return (
 		<div className="person-visning">
-			<TpsfVisning
-				data={TpsfVisning.filterValues(data.tpsf, bestilling.bestilling.tpsf)}
-				bestilling={bestilling.bestilling.tpsf}
-			/>
+			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.bestilling.tpsf)} />
 			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
@@ -47,8 +45,8 @@ export const PersonVisning = ({
 			/>
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} />
-
 			<div className="flexbox--align-center--justify-end">
+				<LeggTilRelasjonModal environments={bestilling.environments} personInfo={data.tpsf} />
 				<BestillingSammendragModal bestilling={bestilling} />
 				<SlettButton action={slettPerson} loading={loading.slettPerson}>
 					Er du sikker på at du vil slette denne personen?

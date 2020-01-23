@@ -15,7 +15,7 @@ export const AdresseNr = ({ formikBag, type }) => {
 					name="tpsf.adresseNrInfo.nummer"
 					label="Postnummer"
 					kodeverk="Postnummer"
-					size="grow"
+					size="large"
 				/>
 			)}
 			{type === 'kommunenr' && (
@@ -23,7 +23,7 @@ export const AdresseNr = ({ formikBag, type }) => {
 					name="tpsf.adresseNrInfo.nummer"
 					label="Kommunenummer"
 					kodeverk="Kommuner"
-					size="grow"
+					size="large"
 				/>
 			)}
 		</Kategori>

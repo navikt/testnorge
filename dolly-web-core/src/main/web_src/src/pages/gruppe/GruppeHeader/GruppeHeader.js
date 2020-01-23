@@ -25,7 +25,7 @@ export default function GruppeHeader({ gruppe, identArray, isDeletingGruppe, del
 						value={Formatters.formatStringDates(gruppe.datoEndret)}
 					/>
 					<Header.TitleValue
-						title="Antall i bruk"
+						title="Antall brukt"
 						value={identArray.map(p => p.ibruk).filter(Boolean).length}
 					/>
 					<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
