@@ -20,6 +20,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
@@ -39,7 +40,8 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_DOEDSFALL_URL = PDL_BESTILLING_URL + "/doedsfall";
     private static final String PDL_BESTILLING_ADRESSEBESKYTTELSE_URL = PDL_BESTILLING_URL + "/adressebeskyttelse";
     private static final String PDL_BESTILLING_NAVN_URL = PDL_BESTILLING_URL + "/navn";
-    private static final String PDL_BESTILLING_KJOENN = PDL_BESTILLING_URL + "/kjoenn";
+    private static final String PDL_BESTILLING_KJOENN_URL = PDL_BESTILLING_URL + "/kjoenn";
+    private static final String PDL_BESTILLING_STATSBORGERSKAP_URL = PDL_BESTILLING_URL + "/statsborgerskap";
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/ident";
     private static final String PDL_PERSONSTATUS = "/api/v1/personstatus";
     private static final String PREPROD_ENV = "q";
@@ -86,7 +88,7 @@ public class PdlForvalterConsumer {
     public ResponseEntity postKjoenn(PdlKjoenn pdlNavn, String ident) {
 
         return postRequest(
-                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_KJOENN,
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_KJOENN_URL,
                 pdlNavn, ident);
     }
 
@@ -110,10 +112,10 @@ public class PdlForvalterConsumer {
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FALSK_IDENTITET_URL, falskIdentitet, ident);
     }
 
-    public ResponseEntity postFoedsel(PdlFoedsel pdlFoedsel, String ident) {
+    public ResponseEntity postStatsborgerskap(PdlStatsborgerskap pdlStatsborgerskap, String ident) {
 
         return postRequest(
-                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FOEDSEL_URL, pdlFoedsel, ident);
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_STATSBORGERSKAP_URL, pdlStatsborgerskap, ident);
     }
 
     public ResponseEntity postDoedsfall(PdlDoedsfall pdlDoedsfall, String ident) {
@@ -121,6 +123,12 @@ public class PdlForvalterConsumer {
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_DOEDSFALL_URL,
                 pdlDoedsfall, ident);
+    }
+
+    public ResponseEntity postFoedsel(PdlFoedsel pdlFoedsel, String ident) {
+
+        return postRequest(
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FOEDSEL_URL, pdlFoedsel, ident);
     }
 
     public ResponseEntity postAdressebeskyttelse(PdlAdressebeskyttelse pdlAdressebeskyttelse, String ident) {

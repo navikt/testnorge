@@ -33,11 +33,21 @@ public class Person {
     private String spesreg;
     private LocalDateTime spesregDato;
     private LocalDateTime doedsdato;
+    private List<Statsborgerskap> statsborgerskap;
 
     public List<Relasjon> getRelasjoner() {
+
         if (isNull(relasjoner)) {
             relasjoner = new ArrayList();
         }
         return relasjoner;
+    }
+
+    public List<Statsborgerskap> getStatsborgerskap() {
+
+        if (isNull(statsborgerskap)) {
+            statsborgerskap = new ArrayList();
+        }
+        return statsborgerskap;
     }
 }
