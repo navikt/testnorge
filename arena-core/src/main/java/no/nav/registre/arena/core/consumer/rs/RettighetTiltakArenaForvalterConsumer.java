@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksaktivitetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
@@ -26,6 +27,7 @@ public class RettighetTiltakArenaForvalterConsumer {
     private final RestTemplate restTemplate;
 
     private UriTemplate opprettTiltaksdeltakelseUrl;
+    private UriTemplate opprettTiltaksaktivitetUrl;
     private UriTemplate opprettTiltakspengerUrl;
 
     public RettighetTiltakArenaForvalterConsumer(
@@ -34,6 +36,7 @@ public class RettighetTiltakArenaForvalterConsumer {
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.opprettTiltaksdeltakelseUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/tiltaksdeltakelse");
+        this.opprettTiltaksaktivitetUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/tiltaksaktivitet");
         this.opprettTiltakspengerUrl = new UriTemplate(arenaForvalterServerUrl + "/v1/tiltakspenger");
     }
 
@@ -46,6 +49,8 @@ public class RettighetTiltakArenaForvalterConsumer {
                 url = opprettTiltaksdeltakelseUrl;
             } else if (rettighet instanceof RettighetTiltakspengerRequest) {
                 url = opprettTiltakspengerUrl;
+            } else if (rettighet instanceof RettighetTiltaksaktivitetRequest) {
+                url = opprettTiltaksaktivitetUrl;
             } else {
                 throw new RuntimeException("Unkown URL");
             }

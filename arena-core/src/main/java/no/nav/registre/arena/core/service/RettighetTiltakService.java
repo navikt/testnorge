@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,9 +16,12 @@ import no.nav.registre.arena.core.consumer.rs.RettighetTiltakArenaForvalterConsu
 import no.nav.registre.arena.core.consumer.rs.TiltakSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetBarnetilleggRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksaktivitetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
+import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
 @Slf4j
@@ -27,6 +31,7 @@ public class RettighetTiltakService {
 
     private static final String RELASJON_MOR = "MORA";
     private static final String RELASJON_FAR = "FARA";
+    private static final String AKTIVITETSKODE_ARBEIDSTRENING = "ARBTREN";
 
     private final TiltakSyntConsumer tiltakSyntConsumer;
     private final RettighetTiltakArenaForvalterConsumer rettighetTiltakArenaForvalterConsumer;
@@ -122,6 +127,42 @@ public class RettighetTiltakService {
             }
         }
         return responses;
+    }
+
+    public List<NyttVedtakResponse> opprettTiltaksaktivitet(String ident, LocalDate fraDato, String miljoe) {
+        RettighetTiltaksaktivitetRequest rettighetRequest = new RettighetTiltaksaktivitetRequest();
+        rettighetRequest.setPersonident(ident);
+        rettighetRequest.setMiljoe(miljoe);
+        NyttVedtakTiltak nyttVedtakTiltak = new NyttVedtakTiltak();
+        nyttVedtakTiltak.setAktivitetkode("");
+        nyttVedtakTiltak.setBeskrivelse(BEGRUNNELSE);
+        nyttVedtakTiltak.setFraDato(fraDato);
+        //        nyttVedtakTiltak.setSaksbehandler("");
+        List<NyttVedtakTiltak> nyTiltaksaktivitet = new ArrayList<>(Collections.singletonList(nyttVedtakTiltak));
+        rettighetRequest.setNyeTiltaksaktivitet(nyTiltaksaktivitet);
+
+        return rettighetTiltakArenaForvalterConsumer.opprettRettighet(new ArrayList<>(Collections.singletonList(rettighetRequest)));
+    }
+
+    public List<NyttVedtakResponse> opprettTiltaksaktiviteter(List<RettighetRequest> rettigheter) {
+        List<RettighetRequest> tiltaksaktiviteter = new ArrayList<>(rettigheter.size());
+        for (var rettighet : rettigheter) {
+            if (!(rettighet instanceof RettighetTilleggRequest)) {
+                throw new RuntimeException("Opprettelse av tiltaksaktivitet er kun støttet for tilleggsstønad");
+            }
+            RettighetTiltaksaktivitetRequest rettighetRequest = new RettighetTiltaksaktivitetRequest();
+            rettighetRequest.setPersonident(rettighet.getPersonident());
+            rettighetRequest.setMiljoe(rettighet.getMiljoe());
+            NyttVedtakTiltak nyttVedtakTiltak = new NyttVedtakTiltak();
+            nyttVedtakTiltak.setAktivitetkode(AKTIVITETSKODE_ARBEIDSTRENING);
+            nyttVedtakTiltak.setBeskrivelse(BEGRUNNELSE);
+            nyttVedtakTiltak.setFraDato(rettighet.getVedtakTillegg().get(0).getVedtaksperiode().getFom());
+            List<NyttVedtakTiltak> nyTiltaksaktivitet = new ArrayList<>(Collections.singletonList(nyttVedtakTiltak));
+            rettighetRequest.setNyeTiltaksaktivitet(nyTiltaksaktivitet);
+            tiltaksaktiviteter.add(rettighetRequest);
+        }
+
+        return rettighetTiltakArenaForvalterConsumer.opprettRettighet(tiltaksaktiviteter);
     }
 
     private List<String> finnIdenterMedBarn(

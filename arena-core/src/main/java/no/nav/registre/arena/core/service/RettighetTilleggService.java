@@ -3,6 +3,7 @@ package no.nav.registre.arena.core.service;
 import static no.nav.registre.arena.core.service.ServiceUtils.BEGRUNNELSE;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakTillegg;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RettighetTilleggService {
@@ -96,7 +98,6 @@ public class RettighetTilleggService {
             List<NyttVedtakTillegg> syntetiserteRettigheter
     ) {
         var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter);
-        rettighetTiltakService.aktiverTiltaksdeltakelse(utvalgteIdenter, miljoe);
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
@@ -108,6 +109,15 @@ public class RettighetTilleggService {
             rettighetRequest.setMiljoe(miljoe);
 
             rettigheter.add(rettighetRequest);
+        }
+
+        serviceUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
+
+        var aktivitetResponse = rettighetTiltakService.opprettTiltaksaktiviteter(rettigheter);
+        for (var response : aktivitetResponse) {
+            if (response.getFeiledeRettigheter() != null && !response.getFeiledeRettigheter().isEmpty()) {
+                log.warn("Kunne ikke opprette aktivitet på ident {}", response.getFeiledeRettigheter().get(0).getPersonident());
+            }
         }
 
         return rettighetTilleggArenaForvalterConsumer.opprettRettighet(rettigheter);
