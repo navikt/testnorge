@@ -3,6 +3,7 @@ import { requiredString, requiredDate, ifKeyHasValue, ifPresent } from '~/utils/
 
 const personnavnSchema = Yup.object({
 	fornavn: requiredString,
+	mellomnavn: Yup.string(),
 	etternavn: requiredString
 })
 
@@ -18,7 +19,7 @@ const falskIdentitet = Yup.object({
 			['OMTRENTLIG'],
 			personnavnSchema
 		),
-		foedselsdato: Yup.string().when('identitetType', {
+		foedselsdato: Yup.mixed().when('identitetType', {
 			is: 'OMTRENTLIG',
 			then: requiredDate
 		}),
