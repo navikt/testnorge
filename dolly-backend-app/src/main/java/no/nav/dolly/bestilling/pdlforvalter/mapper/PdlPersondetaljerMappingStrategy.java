@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
+import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KILDE;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.UGRADERT;
@@ -11,14 +12,15 @@ import org.springframework.stereotype.Component;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.Statsborgerskap;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
@@ -42,7 +44,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, PdlFoedsel pdlFoedsel, MappingContext context) {
 
-                        pdlFoedsel.setKilde(PdlForvalterClient.KILDE);
+                        pdlFoedsel.setKilde(KILDE);
                     }
                 })
                 .byDefault()
@@ -53,7 +55,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, PdlNavn pdlNavn, MappingContext context) {
 
-                        pdlNavn.setKilde(PdlForvalterClient.KILDE);
+                        pdlNavn.setKilde(KILDE);
                     }
                 })
                 .byDefault()
@@ -66,7 +68,18 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Person person, PdlKjoenn pdlKjoenn, MappingContext context) {
 
                         pdlKjoenn.setKjoenn("M".equals(person.getKjonn()) ? MANN : KVINNE);
-                        pdlKjoenn.setKilde(PdlForvalterClient.KILDE);
+                        pdlKjoenn.setKilde(KILDE);
+                    }
+                })
+                .register();
+
+        factory.classMap(Statsborgerskap.class, PdlStatsborgerskap.class)
+                .customize(new CustomMapper<Statsborgerskap, PdlStatsborgerskap>() {
+                    @Override
+                    public void mapAtoB(Statsborgerskap statsborgerskap, PdlStatsborgerskap pdlStatsborgerskap, MappingContext context) {
+
+                        pdlStatsborgerskap.setLandkode(statsborgerskap.getStatsborgerskap());
+                        pdlStatsborgerskap.setKilde(KILDE);
                     }
                 })
                 .register();
@@ -86,7 +99,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                             adressebeskyttelse.setGradering(UGRADERT);
                         }
 
-                        adressebeskyttelse.setKilde(PdlForvalterClient.KILDE);
+                        adressebeskyttelse.setKilde(KILDE);
                     }
                 })
                 .register();
@@ -97,7 +110,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, PdlDoedsfall pdlDoedsfall, MappingContext context) {
 
-                        pdlDoedsfall.setKilde(PdlForvalterClient.KILDE);
+                        pdlDoedsfall.setKilde(KILDE);
                     }
                 })
                 .byDefault()

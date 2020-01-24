@@ -26,6 +26,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -139,6 +140,7 @@ public class PdlForvalterClient implements ClientRegister {
                 sendKjoenn(tpsPerson.getPersondetalj());
                 sendAdressebeskyttelse(tpsPerson.getPersondetalj());
                 sendDoedsfall(tpsPerson.getPersondetalj());
+                sendStatsborgerskap(tpsPerson.getPersondetalj());
                 syncMedPdl(tpsPerson.getPersondetalj().getIdent(), status);
 
                 tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
@@ -147,6 +149,7 @@ public class PdlForvalterClient implements ClientRegister {
                     sendNavn(relasjon.getPersonRelasjonMed());
                     sendKjoenn(relasjon.getPersonRelasjonMed());
                     sendAdressebeskyttelse(relasjon.getPersonRelasjonMed());
+                    sendStatsborgerskap(relasjon.getPersonRelasjonMed());
                     sendDoedsfall(relasjon.getPersonRelasjonMed());
                 });
             }
@@ -212,6 +215,14 @@ public class PdlForvalterClient implements ClientRegister {
             BiFunction<PdlDoedsfall, String, ResponseEntity> sendDoedsmelding = (struct, ident) -> pdlForvalterConsumer.postDoedsfall(struct, ident);
             sendToPdl(sendDoedsmelding, mapperFacade.map(person, PdlDoedsfall.class), person.getIdent(), "dødsmelding");
         }
+    }
+
+    private void sendStatsborgerskap(Person person) {
+
+        person.getStatsborgerskap().forEach(statsborgerskap -> {
+            BiFunction<PdlStatsborgerskap, String, ResponseEntity> sendStatsborgerskap = (struct, ident) -> pdlForvalterConsumer.postStatsborgerskap(struct, ident);
+            sendToPdl(sendStatsborgerskap, mapperFacade.map(statsborgerskap, PdlStatsborgerskap.class), person.getIdent(), "adressebeskyttelse");
+        });
     }
 
     private void sendFoedselsmelding(Person person) {
