@@ -9,7 +9,6 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -76,8 +75,7 @@ public class BestillingService {
     }
 
     public List<Bestilling> fetchMalBestillinger() {
-        String userId = getContext().getAuthentication().getPrincipal().toString();
-        return bestillingRepository.findMalBestilling(userId).orElse(emptyList());
+        return bestillingRepository.findMalBestilling().orElse(emptyList());
     }
 
     @Transactional
@@ -206,6 +204,14 @@ public class BestillingService {
                         .userId(getUserPrinciple())
                         .build()
         );
+    }
+
+    @Transactional
+    public void redigerBestilling(Long id, String malbestillingNavn) {
+
+        Optional<Bestilling> token = bestillingRepository.findById(id);
+        Bestilling bestilling = token.orElseThrow(() -> new NotFoundException(format("Id {%d} ikke funnet ", id)));
+        bestilling.setMalBestillingNavn(malbestillingNavn);
     }
 
     public void slettBestillingerByGruppeId(Long gruppeId) {

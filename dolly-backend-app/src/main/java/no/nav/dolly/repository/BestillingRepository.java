@@ -18,9 +18,8 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
 
     List<Bestilling> findBestillingByGruppeOrderById(Testgruppe gruppe);
 
-    @Query(value = "from Bestilling b where b.malBestillingNavn is not null and "
-            + "(b.userId is null or b.userId is not null and b.userId = :userId) order by b.malBestillingNavn")
-    Optional<List<Bestilling>> findMalBestilling(@Param("userId") String userId);
+    @Query(value = "from Bestilling b where b.malBestillingNavn is not null order by b.malBestillingNavn")
+    Optional<List<Bestilling>> findMalBestilling();
 
     int deleteByGruppeId(Long gruppeId);
 

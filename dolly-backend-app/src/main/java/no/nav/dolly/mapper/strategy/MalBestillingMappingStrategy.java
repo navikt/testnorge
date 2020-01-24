@@ -25,28 +25,15 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
     private final ObjectMapper objectMapper;
 
     @Override public void register(MapperFactory factory) {
-        factory.classMap(Bestilling.class, RsMalBestillingWrapper.class)
-                .customize(new CustomMapper<Bestilling, RsMalBestillingWrapper>() {
+        factory.classMap(Bestilling.class, RsMalBestillingWrapper.RsBestilling.class)
+                .customize(new CustomMapper<Bestilling, RsMalBestillingWrapper.RsBestilling>() {
                     @Override
-                    public void mapAtoB(Bestilling bestilling, RsMalBestillingWrapper malBestilling, MappingContext context) {
+                    public void mapAtoB(Bestilling bestilling, RsMalBestillingWrapper.RsBestilling malBestilling, MappingContext context) {
 
                         RsDollyBestillingRequest bestillingRequest = mapBestillingRequest(bestilling.getBestKriterier());
-
-                        malBestilling.setMalNavn(bestilling.getMalBestillingNavn());
-                        malBestilling.setMal(RsMalBestillingWrapper.RsMalBestilling.builder()
-                                .environments(newArrayList(bestilling.getMiljoer().split(",")))
-                                .pdlforvalter(bestillingRequest.getPdlforvalter())
-                                .aareg(bestillingRequest.getAareg())
-                                .krrstub(bestillingRequest.getKrrstub())
-                                .arenaforvalter(bestillingRequest.getArenaforvalter())
-                                .instdata(bestillingRequest.getInstdata())
-                                .inntektstub(bestillingRequest.getInntektstub())
-                                .sigrunstub(bestillingRequest.getSigrunstub())
-                                .udistub(bestillingRequest.getUdistub())
-                                .tpsf(mapperFacade.map(bestilling.getTpsfKriterier(), Json.class))
-                                .antallIdenter(bestilling.getAntallIdenter())
-                                .opprettFraIdenter(bestilling.getOpprettFraIdenter())
-                                .build());
+                        mapperFacade.map(bestillingRequest, malBestilling);
+                        malBestilling.setEnvironments(newArrayList(bestilling.getMiljoer().split(",")));
+                        malBestilling.setTpsf(mapperFacade.map(bestilling.getTpsfKriterier(), Json.class));
                     }
 
                     private RsDollyBestillingRequest mapBestillingRequest(String jsonInput) {
