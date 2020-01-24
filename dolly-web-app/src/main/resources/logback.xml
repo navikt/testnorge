@@ -25,6 +25,7 @@
         <appender-ref ref="stdout_json"/>
     </root>
 
+    <logger name="no.nav.freg.security" level="INFO"/>
     <logger name="no.nav.dollyweb" level="INFO"/>
     <logger name="org.springframework" level="INFO"/>
 </configuration>
