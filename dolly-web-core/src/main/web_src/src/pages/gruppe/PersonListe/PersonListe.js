@@ -33,7 +33,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 		{
 			text: 'Ident',
 			width: '15',
-			dataField: 'ident.ident',
+			dataField: 'identNr',
 			unique: true
 		},
 		{
@@ -43,7 +43,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 		},
 		{
 			text: 'Kjønn',
-			width: '20',
+			width: '15',
 			dataField: 'kjonn'
 		},
 		{
@@ -53,10 +53,10 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 		},
 		{
 			text: 'Bestilling-ID',
-			width: '10',
-			dataField: 'ident.bestillingId',
+			width: '20',
+			dataField: 'bestillingId',
 			formatter: (cell, row) => {
-				const arr = row.ident.bestillingId
+				const arr = row.bestillingId
 				let str = arr[0]
 				if (arr.length > 1) str = `${str} ...`
 				return str
@@ -69,7 +69,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			formatter: (cell, row) => <EtikettBase type={etikettTypeMap[cell]}>{cell}</EtikettBase>
 		},
 		{
-			text: 'I bruk',
+			text: 'Brukt',
 			width: '10',
 			dataField: 'ibruk',
 			formatter: (cell, row) => <PersonIBrukButtonConnector ident={row.ident} />
@@ -85,7 +85,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			onExpand={bruker => (
 				<PersonVisningConnector
 					personId={bruker.ident.ident}
-					bestillingId={_last(bruker.ident.bestillingId)}
+					bestillingId={bruker.ident.bestillingId[0]}
 					gruppeId={bruker.ident.gruppeId}
 				/>
 			)}

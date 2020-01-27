@@ -36,11 +36,13 @@ export const Arbeidsadgang = ({ formikBag }) => {
 						name="udistub.arbeidsadgang.typeArbeidsadgang"
 						label="Type arbeidsadgang"
 						options={Options('typeArbeidsadgang')}
+						size="xxlarge"
 					/>
 					<FormikSelect
 						name="udistub.arbeidsadgang.arbeidsOmfang"
 						label="Arbeidsomfang"
 						options={Options('arbeidsOmfang')}
+						size="medium"
 					/>
 					<FormikDatepicker
 						name="udistub.arbeidsadgang.periode.fra"

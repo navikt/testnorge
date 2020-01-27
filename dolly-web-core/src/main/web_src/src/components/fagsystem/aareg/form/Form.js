@@ -5,7 +5,7 @@ import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
 import { validation } from './validation'
 import { ArbeidsforholdForm } from './partials/arbeidsforholdForm'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { initialValues } from './initialValues'
 
 const aaregAttributt = 'aareg'
@@ -18,9 +18,9 @@ export const AaregForm = ({ formikBag }) => (
 			startOpen
 			iconType="arbeid"
 		>
-			<DollyFieldArray name="aareg" title="Arbeidsforhold" newEntry={initialValues[0]}>
+			<FormikDollyFieldArray name="aareg" title="Arbeidsforhold" newEntry={initialValues[0]}>
 				{(path, idx) => <ArbeidsforholdForm path={path} key={idx} formikBag={formikBag} />}
-			</DollyFieldArray>
+			</FormikDollyFieldArray>
 		</Panel>
 	</Vis>
 )

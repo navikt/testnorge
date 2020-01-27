@@ -18,6 +18,7 @@ export const Postadresser = ({ formikBag }) => {
 				label="Land"
 				kodeverk="Landkoder"
 				isClearable={false}
+				size="large"
 			/>
 
 			<FormikTextInput name="tpsf.postadresse[0].postLinje1" label="Postlinje 1" />
@@ -33,7 +34,7 @@ export const Postadresser = ({ formikBag }) => {
 					label={'Postnummer/sted'}
 					value={formikBag.values.tpsf.postadresse[0].postLinje3.substring(0, 4)}
 					kodeverk="Postnummer"
-					size="grow"
+					size="large"
 					afterChange={handleAfterChange}
 					isClearable={false}
 				/>

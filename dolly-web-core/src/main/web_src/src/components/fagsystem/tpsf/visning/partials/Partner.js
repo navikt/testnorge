@@ -1,4 +1,5 @@
 import React from 'react'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { Boadresse } from './Boadresse'
@@ -7,7 +8,7 @@ export const Partner = ({ data }) => {
 	if (!data) return false
 
 	return (
-		<div>
+		<React.Fragment>
 			<div className="person-visning_content">
 				<TitleValue title={data.identtype} value={data.ident} />
 				<TitleValue title="Fornavn" value={data.fornavn} />
@@ -20,11 +21,9 @@ export const Partner = ({ data }) => {
 				{!data.utenFastBopel && <Boadresse boadresse={data.boadresse} visKunAdresse={true} />}
 			</div>
 
-			<div>
-				<h4>Forhold</h4>
-				{data.sivilstander.map((forhold, idx) => (
+			<DollyFieldArray title="Forhold" data={data.sivilstander} nested>
+				{(forhold, idx) => (
 					<div key={idx} className="person-visning_content">
-						<TitleValue title="" value={`#${idx + 1}`} size="x-small" />
 						<TitleValue
 							title="Forhold til partner (sivilstand)"
 							kodeverk="Sivilstander"
@@ -36,8 +35,8 @@ export const Partner = ({ data }) => {
 							value={Formatters.formatDate(forhold.sivilstandRegdato)}
 						/>
 					</div>
-				))}
-			</div>
-		</div>
+				)}
+			</DollyFieldArray>
+		</React.Fragment>
 	)
 }

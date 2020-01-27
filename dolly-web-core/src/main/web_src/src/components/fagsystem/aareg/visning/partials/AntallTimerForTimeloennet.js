@@ -1,4 +1,5 @@
 import React from 'react'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 
@@ -6,12 +7,11 @@ export const AntallTimerForTimeloennet = ({ data }) => {
 	if (!data || data.length === 0) return false
 
 	return (
-		<div>
+		<React.Fragment>
 			<h4>Antall timer for timelønnet</h4>
-			<div className="person-visning_content">
-				{data.map((id, idx) => (
-					<div key={idx}>
-						<TitleValue title="" value={`#${idx + 1}`} size="x-small" />
+			<DollyFieldArray data={data} nested>
+				{(id, idx) => (
+					<div className="person-visning_content" key={idx}>
 						<TitleValue title="Antall timer" value={id.antallTimer} />
 						{id.periode && (
 							<TitleValue
@@ -26,8 +26,8 @@ export const AntallTimerForTimeloennet = ({ data }) => {
 							/>
 						)}
 					</div>
-				))}
-			</div>
-		</div>
+				)}
+			</DollyFieldArray>
+		</React.Fragment>
 	)
 }

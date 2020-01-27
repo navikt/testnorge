@@ -1,4 +1,5 @@
 import React from 'react'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
@@ -11,20 +12,21 @@ export const InstVisning = ({ data, loading }) => {
 	return (
 		<div>
 			<SubOverskrift label="Institusjonsopphold" iconKind="institusjon" />
-			{data.map((opphold, idx) => (
-				<div className="person-visning_content" key={idx}>
-					<TitleValue title="" value={`#${idx + 1}`} size="x-small" />
-					<TitleValue
-						title="Institusjonstype"
-						value={Formatters.showLabel('institusjonstype', opphold.institusjonstype)}
-					/>
-					<TitleValue title="Startdato" value={Formatters.formatStringDates(opphold.startdato)} />
-					<TitleValue
-						title="Sluttdato"
-						value={Formatters.formatStringDates(opphold.faktiskSluttdato)}
-					/>
-				</div>
-			))}
+			<DollyFieldArray data={data} nested>
+				{(opphold, idx) => (
+					<div className="person-visning_content" key={idx}>
+						<TitleValue
+							title="Institusjonstype"
+							value={Formatters.showLabel('institusjonstype', opphold.institusjonstype)}
+						/>
+						<TitleValue title="Startdato" value={Formatters.formatStringDates(opphold.startdato)} />
+						<TitleValue
+							title="Sluttdato"
+							value={Formatters.formatStringDates(opphold.faktiskSluttdato)}
+						/>
+					</div>
+				)}
+			</DollyFieldArray>
 		</div>
 	)
 }

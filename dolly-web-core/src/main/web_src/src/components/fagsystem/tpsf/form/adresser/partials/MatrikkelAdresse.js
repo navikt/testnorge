@@ -11,8 +11,18 @@ export const MatrikkelAdresse = ({ formikBag }) => {
 			<FormikTextInput name="tpsf.boadresse.bruksnr" label="Bruksnummer" type="number" min={1} />
 			<FormikTextInput name="tpsf.boadresse.festnr" label="Festenummer" type="number" min={1} />
 			<FormikTextInput name="tpsf.boadresse.undernr" label="Undernummer" type="number" min={1} />
-			<FormikSelect name="tpsf.boadresse.postnr" label="Postnummer" kodeverk="Postnummer" />
-			<FormikSelect name="tpsf.boadresse.kommunenr" label="Kommunenummer" kodeverk="Kommuner" />
+			<FormikSelect
+				name="tpsf.boadresse.postnr"
+				label="Postnummer"
+				kodeverk="Postnummer"
+				size="large"
+			/>
+			<FormikSelect
+				name="tpsf.boadresse.kommunenr"
+				label="Kommunenummer"
+				kodeverk="Kommuner"
+				size="large"
+			/>
 		</Kategori>
 	)
 }

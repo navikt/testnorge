@@ -8,15 +8,17 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 	const arbeidsavtalePath = `${path}.arbeidsavtale`
 	const arbeidsavtale = _get(formikBag.values, arbeidsavtalePath)
 
-	const harArbTimerPerUke = arbeidsavtale.avtaltArbeidstimerPerUke.toString()
-	const harKonverterteTimer = arbeidsavtale.antallKonverterteTimer.toString()
+	const harKonverterteTimer = arbeidsavtale.antallKonverterteTimer
+	const harArbTimerPerUke = arbeidsavtale.avtaltArbeidstimerPerUke
+
+	// TODO: Denne må løses. Kan feks være en toggle
 
 	// Kun to av feltene (stillingsprosent, antall konverterte timer, avtalte timer per uke) kan settes pr arbeidsforhold
 	const infotekst = 'Antall konverterte timer og avtalte timer per uke kan ikke være satt samtidig.'
 
 	return (
 		<div>
-			<h4>Arbeidsavtale</h4>
+			<h3>Arbeidsavtale</h3>
 			<div className="flexbox--flex-wrap">
 				<FormikSelect
 					name={`${arbeidsavtalePath}.yrke`}
@@ -41,13 +43,13 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 					size="xxlarge"
 					isClearable={false}
 				/>
-				<FormikTextInput
+				{/* <FormikTextInput
 					name={`${arbeidsavtalePath}.antallKonverterteTimer`}
 					label="Antall konverterte timer"
 					type="number"
 					disabled={harArbTimerPerUke}
 					title={harArbTimerPerUke ? infotekst : undefined}
-				/>
+				/> */}
 				<FormikTextInput
 					name={`${arbeidsavtalePath}.avtaltArbeidstimerPerUke`}
 					label="Avtalte timer per uke"

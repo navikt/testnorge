@@ -1,6 +1,7 @@
 import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 
@@ -11,10 +12,9 @@ export const UtenlandsId = ({ data, loading }) => {
 	return (
 		<div>
 			<SubOverskrift label="Utenlandsk identifikasjonsnummer" iconKind="identifikasjon" />
-			<div className="person-visning_content">
-				{data.map((id, idx) => (
-					<div key={idx}>
-						<TitleValue title="" value={`#${idx + 1}`} size="x-small" />
+			<DollyFieldArray data={data} nested>
+				{(id, idx) => (
+					<div className="person-visning_content" key={idx}>
 						<TitleValue title="Identifikasjonsnummer" value={id.identifikasjonsnummer} />
 						{id.metadata && id.metadata.endringer && (
 							<TitleValue title="Kilde" value={id.metadata.endringer[0].kilde} />
@@ -22,8 +22,8 @@ export const UtenlandsId = ({ data, loading }) => {
 						<TitleValue title="Opphørt" value={Formatters.oversettBoolean(Boolean(id.opphoert))} />
 						<TitleValue title="Utstederland" value={id.utstederland} kodeverk="Landkoder" />
 					</div>
-				))}
-			</div>
+				)}
+			</DollyFieldArray>
 		</div>
 	)
 }

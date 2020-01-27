@@ -36,7 +36,6 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.identHistorikk} />
 				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
 				<Attributt attr={sm.attrs.harMellomnavn} />
-				<Attributt attr={sm.attrs.sivilstand} />
 				<Attributt attr={sm.attrs.sprakKode} />
 				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 				<Attributt attr={sm.attrs.spesreg} />
@@ -82,7 +81,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		}
 	},
 	utvandretTilLand: {
-		label: 'Utvandret fra',
+		label: 'Utvandret til',
 		checked: has('tpsf.utvandretTilLand'),
 		add() {
 			setMulti(['tpsf.utvandretTilLand', ''], ['tpsf.utvandretTilLandFlyttedato', null])
@@ -117,12 +116,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		checked: has('tpsf.harMellomnavn'),
 		add: () => set('tpsf.harMellomnavn', true),
 		remove: () => del('tpsf.harMellomnavn')
-	},
-	sivilstand: {
-		label: 'Sivilstand',
-		checked: has('tpsf.sivilstand'),
-		add: () => set('tpsf.sivilstand', ''),
-		remove: () => del('tpsf.sivilstand')
 	},
 	sprakKode: {
 		label: 'Språk',

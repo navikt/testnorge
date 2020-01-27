@@ -112,13 +112,13 @@ export const Oppholdsstatus = ({ formikBag }) => {
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Effektuering`}
 						label="Effektueringsdato"
 					/>
-
 					{eosEllerEFTAtypeOpphold && (
 						<FormikSelect
 							name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}`}
 							label="Grunnlag for opphold"
 							options={Options(eosEllerEFTAtypeOpphold)}
 							isClearable={false}
+							size="large"
 						/>
 					)}
 				</React.Fragment>

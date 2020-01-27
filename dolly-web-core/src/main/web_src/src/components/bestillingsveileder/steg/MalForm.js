@@ -9,7 +9,7 @@ export const MalForm = ({ formikBag }) => {
 	//TODO: Sjekke om malnavn allerede finnes
 	return (
 		<div className="input-mal-field">
-			<h3>Mal</h3>
+			<h2>Mal</h2>
 			<div className="flexbox">
 				<FormikSelect
 					name="__lagreSomNyMal"

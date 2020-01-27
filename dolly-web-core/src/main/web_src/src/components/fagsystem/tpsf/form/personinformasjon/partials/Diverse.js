@@ -17,17 +17,14 @@ export const Diverse = ({ formikBag }) => (
 		/>
 
 		<FormikSelect
-			name="tpsf.sivilstand"
-			label="Sivilstand"
-			kodeverk="Sivilstander"
+			name="tpsf.sprakKode"
+			label="Språk"
+			kodeverk="Språk"
+			size="large"
 			visHvisAvhuket
 		/>
 
-		<FormikSelect name="tpsf.sprakKode" label="Språk" kodeverk="Språk" visHvisAvhuket />
-
 		<FormikDatepicker name="tpsf.egenAnsattDatoFom" label="Egenansatt fra" visHvisAvhuket />
-
-		<Diskresjonskoder basePath="tpsf" formikBag={formikBag} />
 
 		<Vis attributt="tpsf.erForsvunnet">
 			<FormikSelect name="tpsf.erForsvunnet" label="Er forsvunnet" options={Options('boolean')} />
@@ -38,5 +35,6 @@ export const Diverse = ({ formikBag }) => (
 				disabled={!formikBag.values.tpsf.erForsvunnet}
 			/>
 		</Vis>
+		<Diskresjonskoder basePath="tpsf" formikBag={formikBag} />
 	</React.Fragment>
 )

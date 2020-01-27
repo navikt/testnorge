@@ -38,7 +38,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 				value={falskIdObj.identitetType}
 				onChange={settIdentitetType}
 				isClearable={false}
-				size="grow"
+				size="medium"
 			/>
 
 			{falskIdObj.identitetType === 'ENTYDIG' && (
@@ -66,7 +66,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 						kodeverk="Landkoder"
 						isClearable={false}
 						isMulti={true}
-						size="grow"
+						size="large"
 					/>
 				</div>
 			)}
