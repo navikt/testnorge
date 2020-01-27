@@ -184,6 +184,7 @@ public class JobController {
         }
     }
 
+    @Scheduled(cron = "0 0 0 * * *")
     public void bisysSyntBatch() {
         for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
             var syntetiserBisysRequest = new SyntetiserBisysRequest(entry.getKey(), entry.getValue(), bisysbatchAntallNyeIdenter);
