@@ -2,8 +2,12 @@ package no.nav.dolly.web.provider.web;
 
 import static java.lang.String.format;
 
-import lombok.RequiredArgsConstructor;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Enumeration;
+import java.util.UUID;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.core.codec.EncodingException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,12 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.Enumeration;
-import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +43,7 @@ public class ProxyService {
 
         headers.add(NAV_CALL_ID, String.valueOf(UUID.randomUUID()));
         headers.add(NAV_CONSUMER_ID, "dolly-proxy");
-        headers.add(CONTENT_TYPE, "application/json");
+        headers.add(CONTENT_TYPE, "application/json; charset=UTF-8");
         headers.set(HttpHeaders.ACCEPT_ENCODING, "identity=1.0");
 
         HttpEntity<String> httpEntity = new HttpEntity<>(body, headers);
