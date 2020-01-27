@@ -2,6 +2,7 @@ package no.nav.dolly.service;
 
 import static java.util.Objects.nonNull;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 import org.springframework.stereotype.Service;
@@ -35,9 +36,8 @@ public class MalBestillingService {
                     .build();
 
             malBestillingWrapper.getMalbestillinger().putIfAbsent(getUserId(bestilling.getUserId()),
-                    new TreeSet((b1, b2) ->
-                            ((RsMalBestillingWrapper.RsMalBestilling) b1).getMalNavn()
-                                    .compareToIgnoreCase(((RsMalBestillingWrapper.RsMalBestilling) b2).getMalNavn())));
+                    new TreeSet(Comparator.comparing(RsMalBestillingWrapper.RsMalBestilling::getMalNavn)
+                            .thenComparing(RsMalBestillingWrapper.RsMalBestilling::getId)));
             malBestillingWrapper.getMalbestillinger().get(getUserId(bestilling.getUserId())).add(malBestilling);
         });
 
