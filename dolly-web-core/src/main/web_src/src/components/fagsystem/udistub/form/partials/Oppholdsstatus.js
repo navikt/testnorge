@@ -72,7 +72,6 @@ export const Oppholdsstatus = ({ formikBag }) => {
 	}
 
 	const feilmelding = felt => {
-		// if (!felt && _has(formikBag.touched, 'udistub.oppholdStatus')) {
 		if (!felt) {
 			return { feilmelding: 'Feltet er påkrevd' }
 		}
