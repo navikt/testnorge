@@ -1,5 +1,4 @@
 import * as Yup from 'yup'
-import _has from 'lodash/has'
 import _isEmpty from 'lodash/isEmpty'
 import { ifPresent, requiredString, requiredBoolean } from '~/utils/YupValidations'
 
