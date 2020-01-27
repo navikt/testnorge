@@ -1,6 +1,11 @@
 package no.nav.dolly.domain.resultset.entity.bestilling;
 
+import static java.util.Objects.isNull;
+
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -24,8 +29,15 @@ import springfox.documentation.spring.web.json.Json;
 @AllArgsConstructor
 public class RsMalBestillingWrapper {
 
-    private String malNavn;
-    private RsMalBestilling mal;
+    private Map<String, Set<RsMalBestilling>> malbestillinger;
+
+    public Map<String, Set<RsMalBestilling>> getMalbestillinger() {
+
+        if (isNull(malbestillinger)) {
+            malbestillinger = new TreeMap();
+        }
+        return malbestillinger;
+    }
 
     @Getter
     @Setter
@@ -34,6 +46,20 @@ public class RsMalBestillingWrapper {
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class RsMalBestilling {
+
+        private Long id;
+        private String malNavn;
+        private RsBestilling bestilling;
+        private String brukerId;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class RsBestilling {
 
         private Integer antallIdenter;
         private String opprettFraIdenter;

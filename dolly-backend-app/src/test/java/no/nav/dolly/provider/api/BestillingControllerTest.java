@@ -20,8 +20,8 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.service.BestillingService;
+import no.nav.dolly.service.MalBestillingService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingControllerTest {
@@ -37,6 +37,9 @@ public class BestillingControllerTest {
 
     @Mock
     private DollyBestillingService dollyBestillingService;
+
+    @Mock
+    private MalBestillingService malBestillingService;
 
     @InjectMocks
     private BestillingController bestillingController;
@@ -92,9 +95,9 @@ public class BestillingControllerTest {
 
     @Test
     public void malBestillingNavnOk() {
+
         bestillingController.getMalBestillinger();
 
-        verify(bestillingService).fetchMalBestillinger();
-        verify(mapperFacade).mapAsList(anyList(), eq(RsMalBestillingWrapper.class));
+        verify(malBestillingService).getMalBestillinger();
     }
 }
