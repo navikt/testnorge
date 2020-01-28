@@ -14,9 +14,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.requests.SlettSkdmeldingerRequest;
@@ -43,7 +41,8 @@ public class TpsfConsumer {
     private final UriTemplate urlSlettMeldinger;
     private final UriTemplate urlSlettIdenterFraTps;
 
-    public TpsfConsumer(RestTemplateBuilder restTemplateBuilder,
+    public TpsfConsumer(
+            RestTemplateBuilder restTemplateBuilder,
             @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
             @Value("${testnorges.ida.credential.tpsf.username}") String username,
             @Value("${testnorges.ida.credential.tpsf.password}") String password
@@ -59,13 +58,19 @@ public class TpsfConsumer {
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
-    public List<Long> saveSkdEndringsmeldingerInTPSF(Long gruppeId, List<RsMeldingstype> skdmeldinger) {
+    public List<Long> saveSkdEndringsmeldingerInTPSF(
+            Long gruppeId,
+            List<RsMeldingstype> skdmeldinger
+    ) {
         var postRequest = RequestEntity.post(uriTemplateSaveToTpsf.expand(gruppeId)).body(skdmeldinger);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
-    public SkdMeldingerTilTpsRespons sendSkdmeldingerToTps(Long gruppeId, SendToTpsRequest sendToTpsRequest) {
+    public SkdMeldingerTilTpsRespons sendSkdmeldingerToTps(
+            Long gruppeId,
+            SendToTpsRequest sendToTpsRequest
+    ) {
         var postRequest = RequestEntity.post(uriTemplateSaveToTps.expand(gruppeId)).body(sendToTpsRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE_TPS).getBody();
     }
@@ -77,9 +82,12 @@ public class TpsfConsumer {
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
-    public List<Long> getMeldingIderTilhoerendeIdenter(Long avspillergruppeId, List<String> identer) {
+    public List<Long> getMeldingIderTilhoerendeIdenter(
+            Long avspillergruppeId,
+            List<String> identer
+    ) {
         var postRequest = RequestEntity.post(urlGetMeldingIder.expand(avspillergruppeId)).body(identer);
-        return new ArrayList<>(Objects.requireNonNull(restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody()));
+        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
@@ -89,7 +97,10 @@ public class TpsfConsumer {
     }
 
     @Timed
-    public ResponseEntity slettIdenterFraTps(List<String> miljoer, List<String> identer) {
+    public ResponseEntity slettIdenterFraTps(
+            List<String> miljoer,
+            List<String> identer
+    ) {
         var response = ResponseEntity.ok().build();
         var miljoerSomString = String.join(",", miljoer);
 
