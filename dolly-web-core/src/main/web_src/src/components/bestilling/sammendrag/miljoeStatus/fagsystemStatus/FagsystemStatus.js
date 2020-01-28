@@ -7,7 +7,12 @@ import './FagsystemStatus.less'
 export default function FagsystemStatus({ statusrapport }) {
 	if (statusrapport.length <= 0) return false
 
-	const getIconType = melding => (melding ? 'report-problem-triangle' : 'feedback-check-circle')
+	const getIconType = melding =>
+		melding
+			? melding === 'InnvandringOpprettingsmelding: STATUS: TIDSAVBRUDD'
+				? 'report-problem-circle'
+				: 'report-problem-triangle'
+			: 'feedback-check-circle'
 
 	return (
 		<table className="fagsystemstatus">
@@ -21,6 +26,7 @@ export default function FagsystemStatus({ statusrapport }) {
 			<tbody>
 				{statusrapport.map((status, idx) => (
 					<tr key={idx}>
+						{console.log('status :', status)}
 						<td>
 							<div className="flexbox">
 								<Icon size={16} kind={getIconType(status.melding)} />
