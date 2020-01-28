@@ -40,7 +40,10 @@ public class SigrunStubConsumer {
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
-    public List<String> hentEksisterendePersonidentifikatorer(String miljoe, String testdataEier) {
+    public List<String> hentEksisterendePersonidentifikatorer(
+            String miljoe,
+            String testdataEier
+    ) {
         UriTemplate hentFnrUrl;
         RequestEntity getRequest;
         if (testdataEier != null) {
@@ -56,12 +59,12 @@ public class SigrunStubConsumer {
                     .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                     .build();
         }
-        var response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
+        var response = restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
 
         List<String> identer = new ArrayList<>();
 
-        if (response.getBody() != null) {
-            identer.addAll(response.getBody());
+        if (response != null) {
+            identer.addAll(response);
         } else {
             log.error("SigrunStubConsumer.hentEksisterendePersonidentifikatorer: Kunne ikke hente response body fra sigrun-skd-stub: NullPointerException");
         }
@@ -70,7 +73,11 @@ public class SigrunStubConsumer {
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
-    public ResponseEntity sendDataTilSigrunstub(List<PoppSyntetisererenResponse> meldinger, String testdataEier, String miljoe) {
+    public ResponseEntity sendDataTilSigrunstub(
+            List<PoppSyntetisererenResponse> meldinger,
+            String testdataEier,
+            String miljoe
+    ) {
         var sendDataUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/opprettBolk");
         var postRequest = RequestEntity.post(sendDataUrl.expand())
                 .header("Nav-Call-Id", NAV_CALL_ID)
@@ -81,7 +88,10 @@ public class SigrunStubConsumer {
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
-    public List<SigrunSkattegrunnlagResponse> hentEksisterendeSkattegrunnlag(String ident, String miljoe) {
+    public List<SigrunSkattegrunnlagResponse> hentEksisterendeSkattegrunnlag(
+            String ident,
+            String miljoe
+    ) {
         var hentSkattegrunnlagUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/les");
         var getRequest = RequestEntity.get(hentSkattegrunnlagUrl.expand())
                 .header("Nav-Call-Id", NAV_CALL_ID)
@@ -92,7 +102,10 @@ public class SigrunStubConsumer {
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
-    public ResponseEntity slettEksisterendeSkattegrunnlag(SigrunSkattegrunnlagResponse skattegrunnlag, String miljoe) {
+    public ResponseEntity slettEksisterendeSkattegrunnlag(
+            SigrunSkattegrunnlagResponse skattegrunnlag,
+            String miljoe
+    ) {
         var slettSkattegrunnlagUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/slett");
         var deleteRequest = RequestEntity.delete(slettSkattegrunnlagUrl.expand())
                 .header("Nav-Call-Id", NAV_CALL_ID)

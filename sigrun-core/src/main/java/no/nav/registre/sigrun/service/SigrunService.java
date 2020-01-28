@@ -147,7 +147,10 @@ public class SigrunService {
         return poppSyntRestConsumer.hentPoppMeldingerFromSyntRest(fnrs);
     }
 
-    private List<String> finnEksisterendeIdenter(String miljoe, String testdataEier) {
+    private List<String> finnEksisterendeIdenter(
+            String miljoe,
+            String testdataEier
+    ) {
         return sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe, testdataEier);
     }
 
