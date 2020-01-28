@@ -271,7 +271,7 @@ public class TpService {
 
         var now = Timestamp.from(Instant.now());
 
-        TForhold forhold = new TForhold();
+        var forhold = new TForhold();
         forhold.setPersonId(person.getPersonId());
         forhold.setDatoBrukFom(ytelse.getDatoBrukFom());
         forhold.setDatoBrukTom(ytelse.getDatoBrukTom());
