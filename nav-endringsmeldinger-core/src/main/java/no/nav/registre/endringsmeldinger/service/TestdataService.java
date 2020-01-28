@@ -32,7 +32,10 @@ public class TestdataService {
     @Autowired
     private TpsfConsumer tpsfConsumer;
 
-    public List<RsPureXmlMessageResponse> genererKontonummerOgSendTilTps(String koeNavn, GenererKontonummerRequest genererKontonummerRequest) throws TransformerException {
+    public List<RsPureXmlMessageResponse> genererKontonummerOgSendTilTps(
+            String koeNavn,
+            GenererKontonummerRequest genererKontonummerRequest
+    ) throws TransformerException {
         var identer = genererKontonummerRequest.getIdenter();
         var kontonummer = genererKontonummerRequest.getKontonummer();
 

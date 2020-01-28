@@ -31,7 +31,10 @@ public class NavEndringsmeldingerSyntetisererenConsumer {
         this.serverUrl = new UriTemplate(syntrestServerUrl + "/v1/generate/nav/{endringskode}?numToGenerate={antallMeldinger}");
     }
 
-    public ResponseEntity<List<Document>> getSyntetiserteNavEndringsmeldinger(String endringskode, int antallMeldinger) {
+    public ResponseEntity<List<Document>> getSyntetiserteNavEndringsmeldinger(
+            String endringskode,
+            int antallMeldinger
+    ) {
         var getRequest = RequestEntity.get(serverUrl.expand(endringskode, antallMeldinger)).build();
         ResponseEntity<List<Document>> response;
         try {

@@ -13,10 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -121,7 +119,6 @@ public class EndringsmeldingServiceTest {
                         + "    </sfeTilbakeMelding>\n"
                         + "</sfePersonData>")
                 .build();
-
 
         levendeIdenter = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 

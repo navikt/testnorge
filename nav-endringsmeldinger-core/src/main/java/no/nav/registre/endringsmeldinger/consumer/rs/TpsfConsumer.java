@@ -22,10 +22,12 @@ public class TpsfConsumer {
 
     private UriTemplate sendTilTpsUrl;
 
-    public TpsfConsumer(RestTemplateBuilder restTemplateBuilder,
+    public TpsfConsumer(
+            RestTemplateBuilder restTemplateBuilder,
             @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
             @Value("${testnorges.ida.credential.tpsf.username}") String username,
-            @Value("${testnorges.ida.credential.tpsf.password}") String password) {
+            @Value("${testnorges.ida.credential.tpsf.password}") String password
+    ) {
         this.sendTilTpsUrl = new UriTemplate(serverUrl + "/v1/xmlmelding");
         this.restTemplate = restTemplateBuilder.build();
         this.restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
