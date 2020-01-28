@@ -10,6 +10,7 @@ import GruppeHeader from './GruppeHeader/GruppeHeader'
 import Toolbar from '~/components/ui/toolbar/Toolbar'
 import { SearchField } from '~/components/searchField/SearchField'
 import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
+import Icon from '~/components/ui/icon/Icon'
 
 const VISNING_PERSONER = 'personer'
 const VISNING_BESTILLING = 'bestilling'
@@ -36,6 +37,14 @@ export default function Gruppe({
 
 	if (!gruppe) return null
 
+	if (visning == 'personer') {
+		var iconTypeMan = 'manLight'
+		var iconTypeBestilling = 'bestilling'
+	} else {
+		iconTypeMan = 'man'
+		iconTypeBestilling = 'bestillingLight'
+	}
+
 	const byttVisning = event => setVisning(event.target.value)
 
 	const identArray = Object.values(identer)
@@ -43,11 +52,13 @@ export default function Gruppe({
 	const toggleValues = [
 		{
 			value: VISNING_PERSONER,
-			label: `Personer (${identArray.length})`
+			label: `Personer (${identArray.length})`,
+			icon: <Icon size={13} kind={iconTypeMan} className="toggleIcon" />
 		},
 		{
 			value: VISNING_BESTILLING,
-			label: `Bestillinger (${identArray.map(b => b.bestillingId).flat().length})`
+			label: `Bestillinger (${identArray.map(b => b.bestillingId).flat().length})`,
+			icon: <Icon size={15} kind={iconTypeBestilling} className="toggleIcon" />
 		}
 	]
 
@@ -69,7 +80,6 @@ export default function Gruppe({
 			/>
 
 			<StatusListeConnector gruppeId={gruppe.id} />
-
 			<Toolbar
 				searchField={<SearchField placeholder={searchfieldPlaceholderSelector()} />}
 				toggleOnChange={byttVisning}

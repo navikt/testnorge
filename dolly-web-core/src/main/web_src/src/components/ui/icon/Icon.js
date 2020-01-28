@@ -12,10 +12,12 @@ import Envelope from '~/assets/icons/nav-ikoner/line/SVG/10-email/email-1.svg'
 import EmailText from '~/assets/icons/nav-ikoner/line/SVG/10-email/email-text.svg'
 import AccountCircle from '~/assets/icons/nav-ikoner/filled/SVG/11-users/account-circle.svg'
 import Group from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-4.svg'
+import GroupLight from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-4Light.svg'
 import Family from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-5.svg'
 import Group1 from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-1.svg'
 import NewFileTable from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-table.svg'
 import FileChecklist from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklist.svg'
+import FileChecklistLight from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklistLight.svg'
 // import NewFile from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-new-1.svg'
 import NewFile from '~/assets/icons/nav-ikoner/filled/SVG/17-files/file-add.svg'
 import RectFilled from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/filled-version-button-empty.svg'
@@ -45,9 +47,13 @@ import Details from '~/assets/icons/custom/Details.svg'
 import ReportProblemCircle from '~/assets/icons/custom/ProblemCircle.svg'
 import CheckCircle from '~/assets/icons/custom/CheckCircle.svg'
 import Man from '~/assets/icons/custom/Man.svg'
+import ManLight from '~/assets/icons/custom/ManLight.svg'
+import Man2 from '~/assets/icons/custom/Man2.svg'
+import Man2Light from '~/assets/icons/custom/Man2Light.svg'
 import Woman from '~/assets/icons/custom/Woman.svg'
 import Love from '~/assets/icons/custom/Love.svg'
 import Baby from '~/assets/icons/custom/Baby.svg'
+import Dolly from '~/assets/icons/custom/Dolly.svg'
 
 import './Icon.less'
 
@@ -76,10 +82,16 @@ const icons = {
 	'chevron-right': ChevronRight,
 	'rectangle-empty': RectEmpty,
 	'rectangle-filled': RectFilled,
+
 	man: Man,
+	manLight: ManLight,
+	man2: Man2,
+	man2Light: Man2Light,
 	woman: Woman,
 	group: Group,
+	groupLight: GroupLight,
 	bestilling: FileChecklist,
+	bestillingLight: FileChecklistLight,
 	newFile: NewFile,
 
 	personinformasjon: InformationCircle,
@@ -98,7 +110,8 @@ const icons = {
 	udi: Globe,
 	kommentar: ChatBubble,
 	partner: Love,
-	barn: Baby
+	barn: Baby,
+	dolly: Dolly
 }
 
 const px = v => `${v}px`

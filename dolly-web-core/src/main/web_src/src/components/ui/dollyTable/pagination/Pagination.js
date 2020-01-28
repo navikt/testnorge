@@ -55,7 +55,6 @@ export default class Pagination extends Component {
 
 		return (
 			<Fragment>
-				{paginationComponent}
 				{this.props.render(itemsToRender)}
 				{renderBottomPagination && paginationComponent}
 			</Fragment>

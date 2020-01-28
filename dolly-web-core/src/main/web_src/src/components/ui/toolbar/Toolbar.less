@@ -2,15 +2,22 @@
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
-	margin: 20px 0;
-
+	margin: 8px 0;
 	h2 {
 		margin: 0;
 	}
 
 	h2,
 	.toggle {
-		margin-right: 20px;
+		margin-right: auto;
+
+		.toggle__label {
+			width: 170px;
+
+			.toggleIcon {
+				margin-right: 10px;
+			}
+		}
 	}
 
 	.skjemaelement {
@@ -18,10 +25,36 @@
 	}
 
 	&--actions {
-		margin-left: auto;
+		margin-right: auto;
+		width: 240px;
 
 		:not(:last-child) {
 			margin-right: 5px;
 		}
 	}
+}
+
+.toggleListLine {
+	width: 920px;
+	height: 15px;
+	border-top: 1.5px double #bababa;
+	position: absolute;
+}
+
+.positionA {
+	position: relative;
+	left: 380px;
+	bottom: 30px;
+	border-left: 12px solid transparent;
+	border-right: 12px solid transparent;
+	border-bottom: 10px solid #bababa;
+}
+
+.positionB {
+	position: relative;
+	left: 550px;
+	bottom: 30px;
+	border-left: 12px solid transparent;
+	border-right: 12px solid transparent;
+	border-bottom: 10px solid #bababa;
 }
