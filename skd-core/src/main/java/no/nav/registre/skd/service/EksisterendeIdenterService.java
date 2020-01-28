@@ -258,7 +258,7 @@ public class EksisterendeIdenterService {
         for (String foedtIdent : foedteIdenter) {
             var relasjonerTilBarn = hodejegerenConsumer.getRelasjoner(foedtIdent, environment);
 
-            if(relasjonerTilBarn.getRelasjoner().isEmpty()) {
+            if (relasjonerTilBarn.getRelasjoner().isEmpty()) {
                 continue;
             }
 
@@ -292,25 +292,7 @@ public class EksisterendeIdenterService {
             antallMeldinger = barnMedFedre.size();
         }
 
-        var meldingIterator = meldinger.iterator();
-        var i = 0;
-        var barn = new ArrayList<>(barnMedFedre.keySet());
-        while (meldingIterator.hasNext()) {
-            var melding = meldingIterator.next();
-
-            if (i >= antallMeldinger) {
-                meldingIterator.remove();
-                break;
-            }
-
-            var barnFnr = barn.get(i++);
-            var farFnr = barnMedFedre.remove(barnFnr);
-
-            putFnrInnIMelding((RsMeldingstype1Felter) melding, barnFnr);
-            ((RsMeldingstype1Felter) melding).setFarsFodselsdato(farFnr.substring(0, 6));
-            ((RsMeldingstype1Felter) melding).setFarsPersonnummer(farFnr.substring(6));
-            oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(farFnr, barnFnr));
-        }
+        oppdaterMeldingerMedFarsFnr(meldinger, barnMedFedre, antallMeldinger, brukteIdenterIDenneBolken);
     }
 
     void behandleDoedsmelding(
@@ -465,6 +447,33 @@ public class EksisterendeIdenterService {
         melding.setTildelingskode("0");
 
         return melding;
+    }
+
+    private void oppdaterMeldingerMedFarsFnr(
+            List<RsMeldingstype> meldinger,
+            Map<String, String> barnMedFedre,
+            int antallMeldinger,
+            List<String> brukteIdenterIDenneBolken
+    ) {
+        var meldingIterator = meldinger.iterator();
+        var i = 0;
+        var barn = new ArrayList<>(barnMedFedre.keySet());
+        while (meldingIterator.hasNext()) {
+            var melding = meldingIterator.next();
+
+            if (i >= antallMeldinger) {
+                meldingIterator.remove();
+                break;
+            }
+
+            var barnFnr = barn.get(i++);
+            var farFnr = barnMedFedre.remove(barnFnr);
+
+            putFnrInnIMelding((RsMeldingstype1Felter) melding, barnFnr);
+            ((RsMeldingstype1Felter) melding).setFarsFodselsdato(farFnr.substring(0, 6));
+            ((RsMeldingstype1Felter) melding).setFarsPersonnummer(farFnr.substring(6));
+            oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(farFnr, barnFnr));
+        }
     }
 
     private void oppdaterBolk(

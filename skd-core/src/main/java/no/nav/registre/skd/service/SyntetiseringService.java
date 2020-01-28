@@ -113,15 +113,7 @@ public class SyntetiseringService {
                 ids = lagreSkdEndringsmeldingerITpsf(endringskode, syntetiserteSkdmeldinger, genereringsOrdreRequest);
                 idsLagretITpsfMenIkkeTps.addAll(ids);
 
-                var skdMeldingerTilTpsRespons = sendSkdEndringsmeldingerTilTps(ids, genereringsOrdreRequest);
-                skdMeldingerTilTpsResponsTotal.setAntallSendte(skdMeldingerTilTpsResponsTotal.getAntallSendte() + skdMeldingerTilTpsRespons.getAntallSendte());
-                skdMeldingerTilTpsResponsTotal.setAntallFeilet(skdMeldingerTilTpsResponsTotal.getAntallFeilet() + skdMeldingerTilTpsRespons.getAntallFeilet());
-                for (var status : skdMeldingerTilTpsRespons.getStatusFraFeilendeMeldinger()) {
-                    if (skdMeldingerTilTpsResponsTotal.getStatusFraFeilendeMeldinger() == null) {
-                        skdMeldingerTilTpsResponsTotal.setStatusFraFeilendeMeldinger(new ArrayList<>());
-                    }
-                    skdMeldingerTilTpsResponsTotal.getStatusFraFeilendeMeldinger().add(status);
-                }
+                sendSkdMeldingerTilTpsOgOppdaterStatus(skdMeldingerTilTpsResponsTotal, ids, genereringsOrdreRequest);
 
                 fjernBrukteIdenterFraListerMedIdenter(listerMedIdenter);
                 idsLagretITpsfMenIkkeTps.removeAll(ids);
@@ -326,6 +318,22 @@ public class SyntetiseringService {
             }
         }
         return idsWithRange;
+    }
+
+    private void sendSkdMeldingerTilTpsOgOppdaterStatus(
+            SkdMeldingerTilTpsRespons skdMeldingerTilTpsResponsTotal,
+            List<Long> ids,
+            GenereringsOrdreRequest genereringsOrdreRequest
+    ) {
+        var skdMeldingerTilTpsRespons = sendSkdEndringsmeldingerTilTps(ids, genereringsOrdreRequest);
+        skdMeldingerTilTpsResponsTotal.setAntallSendte(skdMeldingerTilTpsResponsTotal.getAntallSendte() + skdMeldingerTilTpsRespons.getAntallSendte());
+        skdMeldingerTilTpsResponsTotal.setAntallFeilet(skdMeldingerTilTpsResponsTotal.getAntallFeilet() + skdMeldingerTilTpsRespons.getAntallFeilet());
+        for (var status : skdMeldingerTilTpsRespons.getStatusFraFeilendeMeldinger()) {
+            if (skdMeldingerTilTpsResponsTotal.getStatusFraFeilendeMeldinger() == null) {
+                skdMeldingerTilTpsResponsTotal.setStatusFraFeilendeMeldinger(new ArrayList<>());
+            }
+            skdMeldingerTilTpsResponsTotal.getStatusFraFeilendeMeldinger().add(status);
+        }
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
