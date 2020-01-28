@@ -9,11 +9,14 @@ import store from './Store'
 import { ConnectedRouter } from 'connected-react-router'
 import AppConnector from './app/AppConnector'
 import history from './history'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 render(
 	<Provider store={store}>
 		<ConnectedRouter history={history}>
-			<AppConnector />
+			<ErrorBoundary error="React:GlobalErrorBoundary">
+				<AppConnector />
+			</ErrorBoundary>
 		</ConnectedRouter>
 	</Provider>,
 	document.getElementById('root')
