@@ -39,9 +39,9 @@ public class SamSyntetisererenConsumer {
 
         List<SyntetisertSamordningsmelding> syntetiserteMeldinger = new ArrayList<>();
 
-        var response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
-        if (response != null && response.getBody() != null) {
-            syntetiserteMeldinger.addAll(response.getBody());
+        var response = restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
+        if (response != null) {
+            syntetiserteMeldinger.addAll(response);
         } else {
             log.error("Kunne ikke hente response body fra synthdata-sam: NullPointerException");
         }
