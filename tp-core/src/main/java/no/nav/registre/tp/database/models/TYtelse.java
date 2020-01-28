@@ -1,5 +1,6 @@
 package no.nav.registre.tp.database.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class TYtelse {
     private Integer ytelseId;
 
     @JsonProperty("dato_innm_ytel_fom")
-    private java.sql.Date datoInnmYtelFom;
+    private Date datoInnmYtelFom;
 
     @JsonProperty("k_ytelse_t")
     @Column(name = "K_YTELSE_T")
@@ -40,15 +41,15 @@ public class TYtelse {
     private String kMeldingT;
 
     @JsonProperty("dato_ytel_iver_fom")
-    private java.sql.Date datoYtelIverFom;
+    private Date datoYtelIverFom;
     @JsonProperty("dato_ytel_iver_tom")
-    private java.sql.Date datoYtelIverTom;
+    private Date datoYtelIverTom;
     @JsonProperty("dato_opprettet")
-    private java.sql.Timestamp datoOpprettet;
+    private Timestamp datoOpprettet;
     @JsonProperty("opprettet_av")
     private String opprettetAv;
     @JsonProperty("dato_endret")
-    private java.sql.Timestamp datoEndret;
+    private Timestamp datoEndret;
     @JsonProperty("endret_av")
     private String endretAv;
     @JsonProperty("versjon")
@@ -59,12 +60,27 @@ public class TYtelse {
     @JsonProperty("funk_ytelse_id")
     private String funkYtelseId;
     @JsonProperty("dato_bruk_fom")
-    private java.sql.Timestamp datoBrukFom;
+    private Timestamp datoBrukFom;
     @JsonProperty("dato_bruk_tom")
-    private java.sql.Timestamp datoBrukTom;
+    private Timestamp datoBrukTom;
 
-    public TYtelse(Date datoInnmYtelFom, String kYtelseT, String kMeldingT, Date datoYtelIverFom, Date datoYtelIverTom, Timestamp datoOpprettet, String opprettetAv,
-            Timestamp datoEndret, String endretAv, String versjon, String erGyldig, String funkYtelseId, Timestamp datoBrukFom, Timestamp datoBrukTom) {
+    @JsonCreator
+    public TYtelse(
+            @JsonProperty("dato_innm_ytel_fom") Date datoInnmYtelFom,
+            @JsonProperty("k_ytelse_t") String kYtelseT,
+            @JsonProperty("k_melding_t") String kMeldingT,
+            @JsonProperty("dato_ytel_iver_fom") Date datoYtelIverFom,
+            @JsonProperty("dato_ytel_iver_tom") Date datoYtelIverTom,
+            @JsonProperty("dato_opprettet") Timestamp datoOpprettet,
+            @JsonProperty("opprettet_av") String opprettetAv,
+            @JsonProperty("dato_endret") Timestamp datoEndret,
+            @JsonProperty("endret_av") String endretAv,
+            @JsonProperty("versjon") String versjon,
+            @JsonProperty("er_gyldig") String erGyldig,
+            @JsonProperty("funk_ytelse_id") String funkYtelseId,
+            @JsonProperty("dato_bruk_fom") Timestamp datoBrukFom,
+            @JsonProperty("dato_bruk_tom") Timestamp datoBrukTom
+    ) {
         this.datoInnmYtelFom = datoInnmYtelFom != null ? new Date(datoInnmYtelFom.getTime()) : null;
         this.kYtelseT = kYtelseT;
         this.kMeldingT = kMeldingT;

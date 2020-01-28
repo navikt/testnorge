@@ -1,5 +1,7 @@
 package no.nav.registre.tp.database.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,7 +28,18 @@ public class TKYtelseT {
     private String endretAv;
     private String erGyldig;
 
-    public TKYtelseT(String kYtelseT, String dekode, Date datoFom, Date datoTom, Timestamp datoOpprettet, String opprettetAv, Timestamp datoEndret, String endretAv, String erGyldig) {
+    @JsonCreator
+    public TKYtelseT(
+            @JsonProperty("kYtelseT") String kYtelseT,
+            @JsonProperty("dekode") String dekode,
+            @JsonProperty("datoFom") Date datoFom,
+            @JsonProperty("datoTom") Date datoTom,
+            @JsonProperty("datoOpprettet") Timestamp datoOpprettet,
+            @JsonProperty("opprettetAv") String opprettetAv,
+            @JsonProperty("datoEndret") Timestamp datoEndret,
+            @JsonProperty("endretAv") String endretAv,
+            @JsonProperty("erGyldig") String erGyldig
+    ) {
         this.kYtelseT = kYtelseT;
         this.dekode = dekode;
         this.datoFom = datoFom != null ? new Date(datoFom.getTime()) : null;

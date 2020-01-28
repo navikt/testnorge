@@ -1,5 +1,6 @@
 package no.nav.registre.tp.database.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,6 +30,7 @@ public class TPerson {
     private String endretAv;
     private String versjon;
 
+    @JsonCreator
     public TPerson(String fnrFk, Timestamp datoOpprettet, String opprettetAv, Timestamp datoEndret, String endretAv, String versjon) {
         this.fnrFk = fnrFk;
         this.datoOpprettet = datoOpprettet != null ? new Timestamp(datoOpprettet.getTime()) : null;
