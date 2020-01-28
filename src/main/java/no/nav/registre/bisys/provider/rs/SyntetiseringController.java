@@ -1,14 +1,14 @@
 package no.nav.registre.bisys.provider.rs;
 
-import java.util.List;
-
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.ApiOperation;
+import java.util.List;
+
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.exception.SyntetisertBidragsmeldingException;
@@ -26,9 +26,21 @@ public class SyntetiseringController {
     @ApiOperation(value = "Her kan man starte generering av syntetiske bidragsmeldinger på personer i en gitt TPSF-avspillergruppe i et gitt miljø.")
     @PostMapping(value = "/generer")
     public List<SyntetisertBidragsmelding> genererBidragsmeldinger(
-            @RequestBody SyntetiserBisysRequest syntetiserBisysRequest) throws SyntetisertBidragsmeldingException {
+            @RequestBody SyntetiserBisysRequest syntetiserBisysRequest
+    ) throws SyntetisertBidragsmeldingException {
 
         return syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
+    }
+
+    @LogExceptions
+    @ApiOperation(value = "Her kan man generere syntetiske bidragsmeldinger på personer i en gitt TPSF-avspillergruppe i et gitt miljø og lagre i Bisys UI.")
+    @PostMapping(value = "/genererOgLagre")
+    public List<SyntetisertBidragsmelding> genererOgLagreBidragsmeldinger(
+            @RequestBody SyntetiserBisysRequest syntetiserBisysRequest
+    ) throws SyntetisertBidragsmeldingException {
+        List<SyntetisertBidragsmelding> syntetisertBidragsmeldinger = syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
+        syntetiseringService.processBidragsmeldinger(syntetisertBidragsmeldinger);
+        return syntetisertBidragsmeldinger;
     }
 
     @ApiOperation(value = "Registrerer bidragsaker-, søknader, og vedtak i Bisys basert på syntetiske bidragsmeldinger.")
