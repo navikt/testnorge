@@ -20,6 +20,7 @@ export default function Gruppe({
 	getBestillinger,
 	gruppe,
 	identer,
+	zBruker,
 	isFetching,
 	isDeletingGruppe,
 	match,
@@ -81,7 +82,11 @@ export default function Gruppe({
 				</NavButton>
 			</Toolbar>
 			{startBestillingAktiv && (
-				<BestillingsveilederModal onSubmit={startBestilling} onAvbryt={skjulStarBestilling} />
+				<BestillingsveilederModal
+					onSubmit={startBestilling}
+					onAvbryt={skjulStarBestilling}
+					zBruker={zBruker}
+				/>
 			)}
 
 			{visning === VISNING_PERSONER && <PersonListeConnector />}

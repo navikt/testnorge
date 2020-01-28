@@ -11,7 +11,8 @@ const mapStateToProps = (state, ownProps) => ({
 	isFetching: loadingSelector(state),
 	isDeletingGruppe: loadingSelectorSlettGruppe(state),
 	gruppe: selectGruppeById(state, ownProps.match.params.gruppeId),
-	identer: state.gruppe.ident
+	identer: state.gruppe.ident,
+	zBruker: state.bruker.brukerData.brukerId
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -23,7 +24,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	}
 }
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Gruppe)
+export default connect(mapStateToProps, mapDispatchToProps)(Gruppe)
