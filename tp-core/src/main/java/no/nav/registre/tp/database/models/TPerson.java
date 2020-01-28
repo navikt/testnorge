@@ -1,9 +1,8 @@
 package no.nav.registre.tp.database.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,10 +12,9 @@ import javax.persistence.SequenceGenerator;
 import java.sql.Timestamp;
 
 @Entity(name = "T_PERSON")
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class TPerson {
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_seq")
@@ -31,18 +29,28 @@ public class TPerson {
     private String endretAv;
     private String versjon;
 
+    public TPerson(String fnrFk, Timestamp datoOpprettet, String opprettetAv, Timestamp datoEndret, String endretAv, String versjon) {
+        this.fnrFk = fnrFk;
+        this.datoOpprettet = datoOpprettet != null ? new Timestamp(datoOpprettet.getTime()) : null;
+        this.opprettetAv = opprettetAv;
+        this.datoEndret = datoEndret != null ? new Timestamp(datoEndret.getTime()) : null;
+        this.endretAv = endretAv;
+        this.versjon = versjon;
+    }
+
     public Timestamp getDatoOpprettet() {
-        if (datoOpprettet != null) {
-            return new Timestamp(datoOpprettet.getTime());
-        }
-        return null;
+        return datoOpprettet != null ? new Timestamp(datoOpprettet.getTime()) : null;
+    }
+
+    public void setDatoOpprettet(Timestamp datoOpprettet) {
+        this.datoOpprettet = datoOpprettet != null ? new Timestamp(datoOpprettet.getTime()) : null;
     }
 
     public Timestamp getDatoEndret() {
-        if (datoEndret != null) {
-            return new Timestamp(datoEndret.getTime());
-        }
-        return null;
+        return datoEndret != null ? new Timestamp(datoEndret.getTime()) : null;
+    }
 
+    public void setDatoEndret(Timestamp datoEndret) {
+        this.datoEndret = datoEndret != null ? new Timestamp(datoEndret.getTime()) : null;
     }
 }

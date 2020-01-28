@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpServerErrorException;
 
 import javax.validation.Valid;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -234,14 +235,7 @@ public class TpService {
     ) {
         var timestamp = Timestamp.from(Instant.now());
 
-        var toCreate = stringStream.map(fnr -> TPerson.builder()
-                .fnrFk(fnr)
-                .datoOpprettet(timestamp)
-                .datoEndret(timestamp)
-                .endretAv("synt")
-                .opprettetAv("synt")
-                .versjon("1")
-                .build())
+        var toCreate = stringStream.map(fnr -> new TPerson(fnr, timestamp, "synt", timestamp, "synt", "1"))
                 .collect(Collectors.toSet());
 
         return (List<TPerson>) tPersonRepository.saveAll(toCreate);
@@ -277,24 +271,24 @@ public class TpService {
 
         var now = Timestamp.from(Instant.now());
 
-        var savedForhold = tForholdRepository.save(TForhold.builder()
-                .personId(person.getPersonId())
-                .datoBrukFom(ytelse.getDatoBrukFom())
-                .datoBrukTom(ytelse.getDatoBrukTom())
-                .erGyldig(ytelse.getErGyldig())
-                .kSamtykkeSimT("N")
-                .kKildeTpT(endretAv)
-                .harSimulering("0")
-                .tssEksternIdFk("80000470761")
-                .versjon(ytelse.getVersjon())
-                .datoOpprettet(now)
-                .datoEndret(now)
-                .endretAv("synt")
-                .opprettetAv("synt")
-                .datoSamtykkeGitt(new java.sql.Date(Instant.now().toEpochMilli()))
-                .harUtlandPensj("N")
-                .funkForholdId(ytelse.getFunkYtelseId())
-                .build());
+        TForhold forhold = new TForhold();
+        forhold.setPersonId(person.getPersonId());
+        forhold.setDatoBrukFom(ytelse.getDatoBrukFom());
+        forhold.setDatoBrukTom(ytelse.getDatoBrukTom());
+        forhold.setErGyldig(ytelse.getErGyldig());
+        forhold.setKSamtykkeSimT("N");
+        forhold.setKKildeTpT(endretAv);
+        forhold.setHarSimulering("0");
+        forhold.setTssEksternIdFk("80000470761");
+        forhold.setVersjon(ytelse.getVersjon());
+        forhold.setDatoOpprettet(now);
+        forhold.setDatoEndret(now);
+        forhold.setEndretAv("synt");
+        forhold.setOpprettetAv("synt");
+        forhold.setDatoSamtykkeGitt(new Date(Instant.now().toEpochMilli()));
+        forhold.setHarUtlandPensj("N");
+        forhold.setFunkForholdId(ytelse.getFunkYtelseId());
+        var savedForhold = tForholdRepository.save(forhold);
 
         tForholdYtelseHistorikkRepository.save(new TForholdYtelseHistorikk(new HistorikkComposityKey(savedForhold.getForholdId(), ytelse.getYtelseId())));
         return savedForhold;
@@ -306,14 +300,8 @@ public class TpService {
     ) {
         var fullSavedForhold = new FullSavedForhold();
         var timestamp = Timestamp.from(Instant.now());
-        var tPerson = savePerson(TPerson.builder()
-                .fnrFk(fnr)
-                .datoOpprettet(timestamp)
-                .datoEndret(timestamp)
-                .endretAv("synt")
-                .versjon(ytelse.getVersjon())
-                .opprettetAv("synt")
-                .build());
+
+        var tPerson = savePerson(new TPerson(fnr, timestamp, "synt", timestamp, "synt", ytelse.getVersjon()));
         var tYtelse = saveYtelse(ytelse);
         var tForhold = saveForhold(tPerson, tYtelse);
 

@@ -1,14 +1,14 @@
 package no.nav.registre.tp;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.sql.Timestamp;
 
 @Getter
 @Setter
-@ToString
+@NoArgsConstructor
 public class Person {
 
     private String fnrFk;
@@ -18,59 +18,29 @@ public class Person {
     private String endretAv;
     private String versjon;
 
-    public Person() {
-
-    }
-
     public Person(String fnrFk, Timestamp datoOpprettet, String opprettetAv, Timestamp datoEndret, String endretAv, String versjon) {
         this.fnrFk = fnrFk;
-
-        if (datoOpprettet != null) {
-            this.datoOpprettet = new Timestamp(datoOpprettet.getTime());
-        } else {
-            this.datoOpprettet = null;
-        }
-
+        this.datoOpprettet = datoOpprettet != null ? new Timestamp(datoOpprettet.getTime()) : null;
         this.opprettetAv = opprettetAv;
-
-        if (datoEndret != null) {
-            this.datoEndret = new Timestamp(datoEndret.getTime());
-        } else {
-            this.datoEndret = null;
-        }
-
+        this.datoEndret = datoEndret != null ? new Timestamp(datoEndret.getTime()) : null;
         this.endretAv = endretAv;
         this.versjon = versjon;
     }
 
     public Timestamp getDatoOpprettet() {
-        if (datoOpprettet != null) {
-            return new Timestamp(datoOpprettet.getTime());
-        }
-        return null;
+        return datoOpprettet != null ? new Timestamp(datoOpprettet.getTime()) : null;
     }
 
     public void setDatoOpprettet(Timestamp datoOpprettet) {
-        if (datoOpprettet != null) {
-            this.datoOpprettet = new Timestamp(datoOpprettet.getTime());
-        } else {
-            this.datoOpprettet = null;
-        }
+        this.datoOpprettet = datoOpprettet != null ? new Timestamp(datoOpprettet.getTime()) : null;
     }
 
     public Timestamp getDatoEndret() {
-        if (datoEndret != null) {
-            return new Timestamp(datoEndret.getTime());
-        }
-        return null;
+        return datoEndret != null ? new Timestamp(datoEndret.getTime()) : null;
     }
 
     public void setDatoEndret(Timestamp datoEndret) {
-        if (datoEndret != null) {
-            this.datoEndret = new Timestamp(datoEndret.getTime());
-        } else {
-            this.datoEndret = null;
-        }
+        this.datoEndret = datoEndret != null ? new Timestamp(datoEndret.getTime()) : null;
     }
 
     public static class Builder {
@@ -92,11 +62,7 @@ public class Person {
         }
 
         public Builder setDatoOpprettet(Timestamp datoOpprettet) {
-            if (datoOpprettet != null) {
-                this.datoOpprettet = new Timestamp(datoOpprettet.getTime());
-            } else {
-                this.datoOpprettet = null;
-            }
+            this.datoOpprettet = datoOpprettet != null ? new Timestamp(datoOpprettet.getTime()) : null;
             return this;
         }
 
@@ -106,11 +72,7 @@ public class Person {
         }
 
         public Builder setDatoEndret(Timestamp datoEndret) {
-            if (datoEndret != null) {
-                this.datoEndret = new Timestamp(datoEndret.getTime());
-            } else {
-                this.datoEndret = null;
-            }
+            this.datoEndret = datoEndret != null ? new Timestamp(datoEndret.getTime()) : null;
             return this;
         }
 
