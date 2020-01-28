@@ -50,7 +50,7 @@ public class NyttKontonummerUtil {
 
         var datoGiroNrNorsk = document.createElement("datoGiroNrNorsk");
         var dagensDato = LocalDate.now();
-        datoGiroNrNorsk.appendChild(document.createTextNode(String.format("%s-%s-%s", dagensDato.getYear(), dagensDato.getMonthValue(), dagensDato.getDayOfMonth())));
+        datoGiroNrNorsk.appendChild(document.createTextNode(dagensDato.toString()));
         endreGironrNorsk.appendChild(datoGiroNrNorsk);
 
         return document;
