@@ -3,7 +3,6 @@ package no.nav.registre.aareg.consumer.rs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,8 +21,8 @@ public class TpsfConsumer {
     @Value("${tps-forvalteren.rest-api.url}")
     private String tpsfServerUrl;
 
-    public ResponseEntity<MiljoerResponse> hentMiljoer() {
+    public MiljoerResponse hentMiljoer() {
         var getRequest = RequestEntity.get(URI.create(tpsfServerUrl + TPSF_GET_ENVIRONMENTS)).build();
-        return restTemplate.exchange(getRequest, MiljoerResponse.class);
+        return restTemplate.exchange(getRequest, MiljoerResponse.class).getBody();
     }
 }

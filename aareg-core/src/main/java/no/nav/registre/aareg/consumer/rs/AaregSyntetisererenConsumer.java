@@ -6,7 +6,6 @@ import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
@@ -29,7 +28,8 @@ public class AaregSyntetisererenConsumer {
     private final UriTemplate url;
 
     public AaregSyntetisererenConsumer(
-            @Value("${syntrest.rest.api.url}") String syntrestServerUrl) {
+            @Value("${syntrest.rest.api.url}") String syntrestServerUrl
+    ) {
         this.restTemplate = new RestTemplate();
         this.url = new UriTemplate(syntrestServerUrl + "/v1/generate/aareg");
     }
@@ -59,16 +59,19 @@ public class AaregSyntetisererenConsumer {
         return syntetiserteMeldinger;
     }
 
-    private void insertSyntetiskeArbeidsforhold(List<RsAaregOpprettRequest> syntetiserteMeldinger, RequestEntity postRequest) {
-        ResponseEntity<List<RsAaregOpprettRequest>> response;
+    private void insertSyntetiskeArbeidsforhold(
+            List<RsAaregOpprettRequest> syntetiserteMeldinger,
+            RequestEntity postRequest
+    ) {
+        List<RsAaregOpprettRequest> response;
         try {
-            response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST_AAREG_REQUEST);
+            response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST_AAREG_REQUEST).getBody();
         } catch (Exception e) {
             log.error("Feil under syntetisering", e);
             throw new SyntetiseringException(e.getMessage(), e.getCause());
         }
-        if (response != null && response.getBody() != null) {
-            syntetiserteMeldinger.addAll(response.getBody());
+        if (response != null) {
+            syntetiserteMeldinger.addAll(response);
         } else {
             log.error("Kunne ikke hente response body fra synthdata-aareg: NullPointerException");
         }

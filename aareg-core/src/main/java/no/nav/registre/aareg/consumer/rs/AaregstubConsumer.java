@@ -44,10 +44,10 @@ public class AaregstubConsumer {
     public List<String> hentEksisterendeIdenter() {
         var getRequest = RequestEntity.get(hentAlleArbeidstakereUrl.expand()).build();
         List<String> eksisterendeIdenter = new ArrayList<>();
-        var response = restTemplate.exchange(getRequest, RESPONSE_TYPE_LIST_STRING);
+        var response = restTemplate.exchange(getRequest, RESPONSE_TYPE_LIST_STRING).getBody();
 
-        if (response.getBody() != null) {
-            eksisterendeIdenter.addAll(response.getBody());
+        if (response != null) {
+            eksisterendeIdenter.addAll(response);
         } else {
             log.error("AaregstubConsumer.hentEksisterendeIdenter: Kunne ikke hente response body fra Aaregstub: NullPointerException");
         }

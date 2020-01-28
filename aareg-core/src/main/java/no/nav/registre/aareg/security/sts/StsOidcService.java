@@ -79,12 +79,12 @@ public class StsOidcService {
                                 credentialsProps.getUsername(env) + ":" +
                                         credentialsProps.getPassword(env)).getBytes(UTF_8)))
                 .build();
-        var responseEntity = restTemplate.exchange(getRequest, JsonNode.class);
+        var responseEntity = restTemplate.exchange(getRequest, JsonNode.class).getBody();
 
-        if (isNull(responseEntity.getBody())) {
+        if (isNull(responseEntity)) {
             return;
         }
-        expiry.put(env, LocalDateTime.now().plusSeconds((responseEntity.getBody()).get("expires_in").asLong()));
-        idToken.put(env, "Bearer " + (responseEntity.getBody()).get("access_token").asText());
+        expiry.put(env, LocalDateTime.now().plusSeconds((responseEntity).get("expires_in").asLong()));
+        idToken.put(env, "Bearer " + (responseEntity).get("access_token").asText());
     }
 }

@@ -80,7 +80,7 @@ public class ArbeidsforholdController {
             @RequestParam(required = false, defaultValue = "") List<String> miljoer
     ) {
         if (miljoer == null || miljoer.isEmpty()) {
-            miljoer = tpsfConsumer.hentMiljoer().getBody().getEnvironments();
+            miljoer = tpsfConsumer.hentMiljoer().getEnvironments();
         }
         return aaregService.slettArbeidsforhold(ident, miljoer, navCallId);
     }

@@ -8,9 +8,11 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -19,6 +21,7 @@ import java.util.Map;
 
 import no.nav.registre.aareg.security.sts.StsOidcService;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AaregRestConsumer {
@@ -38,6 +41,12 @@ public class AaregRestConsumer {
                 .header(HEADER_NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(miljoe))
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .build();
-        return restTemplate.exchange(getRequest, RESPONSE_TYPE_LIST_MAP);
+        ResponseEntity<List<Map>> response = null;
+        try {
+            response = restTemplate.exchange(getRequest, RESPONSE_TYPE_LIST_MAP);
+        } catch (ResourceAccessException e) {
+            log.warn("Kunne ikke hente ident {} i miljø {}", ident, miljoe, e);
+        }
+        return response;
     }
 }

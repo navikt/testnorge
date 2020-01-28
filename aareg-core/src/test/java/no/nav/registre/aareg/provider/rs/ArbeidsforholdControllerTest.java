@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -67,7 +66,7 @@ public class ArbeidsforholdControllerTest {
         var miljoer = Arrays.asList("t0", "t1", "t2");
         var miljoerResponse = new MiljoerResponse();
         miljoerResponse.setEnvironments(miljoer);
-        when(tpsfConsumer.hentMiljoer()).thenReturn(ResponseEntity.ok(miljoerResponse));
+        when(tpsfConsumer.hentMiljoer()).thenReturn(miljoerResponse);
 
         arbeidsforholdController.slettArbeidsforhold(navCallId, ident, null);
 
