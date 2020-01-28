@@ -26,7 +26,6 @@ export default function FagsystemStatus({ statusrapport }) {
 			<tbody>
 				{statusrapport.map((status, idx) => (
 					<tr key={idx}>
-						{console.log('status :', status)}
 						<td>
 							<div className="flexbox">
 								<Icon size={16} kind={getIconType(status.melding)} />
