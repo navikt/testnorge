@@ -45,7 +45,7 @@ public class AaregRestConsumer {
         try {
             response = restTemplate.exchange(getRequest, RESPONSE_TYPE_LIST_MAP);
         } catch (ResourceAccessException e) {
-            log.warn("Kunne ikke hente ident {} i miljø {}", ident, miljoe, e);
+            log.warn("Kunne ikke hente ident {} i miljø {}", ident.replaceAll("[\r\n]",""), miljoe.replaceAll("[\r\n]",""), e);
         }
         return response;
     }
