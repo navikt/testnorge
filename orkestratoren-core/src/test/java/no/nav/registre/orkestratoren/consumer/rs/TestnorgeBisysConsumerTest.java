@@ -53,7 +53,7 @@ public class TestnorgeBisysConsumerTest {
 
     @Test
     public void shouldStartSyntetisering() {
-        var expectedUri = serverUrl + "/v1/syntetisering/generer";
+        var expectedUri = serverUrl + "/v1/syntetisering/genererOgLagre";
         stubBisysSyntConsumer(expectedUri);
 
         var response = (ResponseEntity) testnorgeBisysConsumer.startSyntetisering(syntetiserBisysRequest);

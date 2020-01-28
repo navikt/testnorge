@@ -28,7 +28,7 @@ public class TestnorgeBisysConsumer {
             @Value("${testnorge-bisys.rest.api.url}") String bisysServerUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
-        this.url = new UriTemplate(bisysServerUrl + "/v1/syntetisering/generer");
+        this.url = new UriTemplate(bisysServerUrl + "/v1/syntetisering/genererOgLagre");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "bisys" })
