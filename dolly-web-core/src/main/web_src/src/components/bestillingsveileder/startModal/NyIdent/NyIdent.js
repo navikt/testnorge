@@ -33,20 +33,8 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 		return response.data
 	}, [])
 
-	const zIdentOptions = state.value
-		? Object.keys(state.value.malbestillinger).map(ident => {
-				return { value: ident, label: ident }
-		  })
-		: []
-
-	const malOptions =
-		state.value && zIdent
-			? _get(state.value.malbestillinger, zIdent, []).map(mal => ({
-					value: mal.id,
-					label: mal.malNavn,
-					data: { bestilling: mal.bestilling, malNavn: mal.malNavn }
-			  }))
-			: []
+	const zIdentOptions = state.value ? getZIdentOptions(state.value.malbestillinger, zBruker) : []
+	const malOptions = state.value ? getMalOptions(state.value.malbestillinger, zIdent) : []
 
 	const preSubmit = (values, formikBag) => {
 		if (values.mal) values.mal = malOptions.find(m => m.value === values.mal).data
@@ -67,7 +55,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 						<FormikTextInput name="antall" label="Antall" type="number" size="small" />
 					</div>
 					<div className="ny-ident-form_maler">
-						<h4>Maler</h4>
+						<h3>Maler</h3>
 						<div>
 							<DollySelect
 								name="zIdent"
@@ -77,6 +65,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 								size="medium"
 								onChange={e => setZIdent(e.value)}
 								value={zIdent}
+								isClearable={false}
 							/>
 							<FormikSelect
 								name="mal"
@@ -97,3 +86,18 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 		</Formik>
 	)
 }
+
+const getZIdentOptions = (malbestillinger, zBruker) =>
+	Object.keys(malbestillinger).map(ident => {
+		return {
+			value: ident,
+			label: ident === zBruker ? `${ident} (din)` : ident
+		}
+	})
+
+const getMalOptions = (malbestillinger, zIdent) =>
+	_get(malbestillinger, zIdent, []).map(mal => ({
+		value: mal.id,
+		label: mal.malNavn,
+		data: { bestilling: mal.bestilling, malNavn: mal.malNavn }
+	}))
