@@ -9,7 +9,7 @@ const personnavnSchema = Yup.object({
 const falskIdentitet = Yup.object({
 	rettIdentitet: Yup.object({
 		identitetType: requiredString,
-		rettIdentitetVedIdentifikasjonsnummer: Yup.string().when('identitetType', {
+		rettIdentitetVedIdentifikasjonsnummer: Yup.mixed().when('identitetType', {
 			is: 'ENTYDIG',
 			then: requiredString
 		}),
@@ -18,15 +18,15 @@ const falskIdentitet = Yup.object({
 			['OMTRENTLIG'],
 			personnavnSchema
 		),
-		foedselsdato: Yup.string().when('identitetType', {
+		foedselsdato: Yup.mixed().when('identitetType', {
 			is: 'OMTRENTLIG',
 			then: requiredDate
 		}),
-		kjoenn: Yup.string().when('identitetType', {
+		kjoenn: Yup.mixed().when('identitetType', {
 			is: 'OMTRENTLIG',
 			then: requiredString
 		}),
-		statsborgerskap: Yup.string().when('identitetType', {
+		statsborgerskap: Yup.mixed().when('identitetType', {
 			is: 'OMTRENTLIG',
 			then: requiredString
 		})
