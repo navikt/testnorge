@@ -71,12 +71,12 @@ public class FasteMeldingerService {
                     .adresse3(fastMelding.getBy() != null ? fastMelding.getBy() : syntetisertMelding.getAdresse3())
                     .build();
 
-            if (nyMelding.getSlektsnavn() == null || nyMelding.getSlektsnavn().isEmpty() || nyMelding.getFornavn() == null || nyMelding.getFornavn().isEmpty()) {
+            if (isNullOrEmpty(nyMelding.getSlektsnavn()) || isNullOrEmpty(nyMelding.getFornavn())) {
                 var navn = identPoolConsumer.hentNavn();
-                if (nyMelding.getFornavn() == null || nyMelding.getFornavn().isEmpty()) {
+                if (isNullOrEmpty(nyMelding.getFornavn())) {
                     nyMelding.setFornavn(navn.getFornavn());
                 }
-                if (nyMelding.getSlektsnavn() == null || nyMelding.getSlektsnavn().isEmpty()) {
+                if (isNullOrEmpty(nyMelding.getSlektsnavn())) {
                     nyMelding.setSlektsnavn(navn.getEtternavn());
                 }
             }
@@ -96,5 +96,12 @@ public class FasteMeldingerService {
         }
 
         return tpsfConsumer.saveSkdEndringsmeldingerInTPSF(avspillergruppeId, nyeFasteMeldinger);
+    }
+
+    private static boolean isNullOrEmpty(String s) {
+        if (s == null) {
+            return true;
+        }
+        return s.isEmpty();
     }
 }
