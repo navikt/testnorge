@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.orkestratoren.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeAaregConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeInstConsumer;
