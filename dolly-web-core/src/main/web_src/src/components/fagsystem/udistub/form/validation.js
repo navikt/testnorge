@@ -43,15 +43,9 @@ const oppholdSammeVilkaar = Yup.object({
 
 const oppholdStatus = Yup.object()
 	.shape({
-		eosEllerEFTABeslutningOmOppholdsrett: Yup.lazy(value => {
-			return checkUndefined(value)
-		}),
-		eosEllerEFTAVedtakOmVarigOppholdsrett: Yup.lazy(value => {
-			return checkUndefined(value)
-		}),
-		eosEllerEFTAOppholdstillatelse: Yup.lazy(value => {
-			return checkUndefined(value)
-		}),
+		eosEllerEFTABeslutningOmOppholdsrett: Yup.lazy(checkUndefined),
+		eosEllerEFTAVedtakOmVarigOppholdsrett: Yup.lazy(checkUndefined),
+		eosEllerEFTAOppholdstillatelse: Yup.lazy(checkUndefined),
 		oppholdSammeVilkaar: Yup.lazy(value => {
 			if (value !== undefined) {
 				return oppholdSammeVilkaar
@@ -61,13 +55,10 @@ const oppholdStatus = Yup.object()
 	})
 	// Sjekker om oppholdStatus er et tomt objekt. Objektet blir satt ved å fylle i feltene
 	// 'Oppholdsstatus' og 'Type opphold', men disse er ikke en del av selve formet.
-	.test('is-not-empty', function checkObject(val) {
+	.test('is-not-empty', function() {
 		const values = this.options.context
 		if (_isEmpty(values.udistub.oppholdStatus)) {
-			if (values.udistub.harOppholdsTillatelse === false) {
-				return true
-			}
-			return false
+			return values.udistub.harOppholdsTillatelse === false
 		}
 		return true
 	})
