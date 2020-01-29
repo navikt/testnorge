@@ -6,7 +6,7 @@ import { EksisterendeIdent } from './EksisterendeIdent/EksisterendeIdent'
 
 import './startModal.less'
 
-export const BestillingsveilederModal = ({ onAvbryt, onSubmit }) => {
+export const BestillingsveilederModal = ({ onAvbryt, onSubmit, zBruker }) => {
 	const [type, setType] = useState('ny')
 	return (
 		<DollyModal isOpen closeModal={onAvbryt} width="60%">
@@ -24,7 +24,7 @@ export const BestillingsveilederModal = ({ onAvbryt, onSubmit }) => {
 					onChange={e => setType(e.target.value)}
 				/>
 
-				{type === 'ny' && <NyIdent onAvbryt={onAvbryt} onSubmit={onSubmit} />}
+				{type === 'ny' && <NyIdent onAvbryt={onAvbryt} onSubmit={onSubmit} zBruker={zBruker} />}
 				{type === 'eksisterende' && <EksisterendeIdent onAvbryt={onAvbryt} onSubmit={onSubmit} />}
 			</div>
 		</DollyModal>
