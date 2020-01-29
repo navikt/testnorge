@@ -10,16 +10,18 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
+import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetAap115Request;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetAapRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
+import no.nav.registre.arena.domain.historikk.Vedtakshistorikk;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -46,59 +48,11 @@ public class RettighetAapService {
             if (!utvalgteIdenter.isEmpty()) {
                 var personident = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
 
-                RettighetRequest rettighetRequest;
-                // aap_115:
-                List<NyttVedtakAap> aap115 = vedtak.getAap115();
-                if (aap115 != null && !aap115.isEmpty()) {
-                    rettighetRequest = new RettighetAap115Request(aap115);
-                    rettighetRequest.setPersonident(personident);
-                    rettighetRequest.setMiljoe(miljoe);
-                    ((RettighetAap115Request) rettighetRequest).getNyeAap115().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
-                    rettigheter.add(rettighetRequest);
-                }
-
-                // aap:
-                List<NyttVedtakAap> aap = vedtak.getAap();
-                if (aap != null && !aap.isEmpty()) {
-                    rettighetRequest = new RettighetAapRequest(aap);
-                    rettighetRequest.setPersonident(personident);
-                    rettighetRequest.setMiljoe(miljoe);
-                    ((RettighetAapRequest) rettighetRequest).getNyeAap().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
-                    rettigheter.add(rettighetRequest);
-                }
-
-                // ung-ufør:
-                List<NyttVedtakAap> ungUfoer = vedtak.getUngUfoer();
-                if (ungUfoer != null && !ungUfoer.isEmpty()) {
-                    rettighetRequest = new RettighetUngUfoerRequest(ungUfoer);
-                    rettighetRequest.setPersonident(personident);
-                    rettighetRequest.setMiljoe(miljoe);
-                    ((RettighetUngUfoerRequest) rettighetRequest).getNyeAaungufor().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
-                    rettigheter.add(rettighetRequest);
-                }
-
-                // tvungen forvaltning:
-                List<NyttVedtakAap> tvungenForvaltning = vedtak.getTvungenForvaltning();
-                if (tvungenForvaltning != null && !tvungenForvaltning.isEmpty()) {
-                    rettighetRequest = new RettighetTvungenForvaltningRequest(tvungenForvaltning);
-                    rettighetRequest.setPersonident(personident);
-                    rettighetRequest.setMiljoe(miljoe);
-                    for (NyttVedtakAap rettighet : ((RettighetTvungenForvaltningRequest) rettighetRequest).getNyeAatfor()) {
-                        rettighet.setForvalter(ServiceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
-                        rettighet.setBegrunnelse(BEGRUNNELSE);
-                    }
-                    rettigheter.add(rettighetRequest);
-                }
-
-                // fritak meldekort:
-                List<NyttVedtakAap> fritakMeldekort = vedtak.getFritakMeldekort();
-                if (fritakMeldekort != null && !fritakMeldekort.isEmpty()) {
-                    rettighetRequest = new RettighetFritakMeldekortRequest(fritakMeldekort);
-                    rettighetRequest.setPersonident(personident);
-                    rettighetRequest.setMiljoe(miljoe);
-                    ((RettighetFritakMeldekortRequest) rettighetRequest).getNyeFritak().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
-                    rettigheter.add(rettighetRequest);
-                }
+                opprettVedtakAap115(vedtak, personident, miljoe, rettigheter);
+                opprettVedtakAap(vedtak, personident, miljoe, rettigheter);
+                opprettVedtakUngUfoer(vedtak, personident, miljoe, rettigheter);
+                opprettVedtakTvungenForvaltning(vedtak, personident, miljoe, rettigheter, identerMedKontonummer);
+                opprettVedtakFritakMeldekort(vedtak, personident, miljoe, rettigheter);
             }
         }
         return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
@@ -223,5 +177,89 @@ public class RettighetAapService {
         }
 
         return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
+    }
+
+    private void opprettVedtakAap115(
+            Vedtakshistorikk vedtak,
+            String personident,
+            String miljoe,
+            List<RettighetRequest> rettigheter
+    ) {
+        List<NyttVedtakAap> aap115 = vedtak.getAap115();
+        if (aap115 != null && !aap115.isEmpty()) {
+            RettighetAap115Request rettighetRequest = new RettighetAap115Request(aap115);
+            rettighetRequest.setPersonident(personident);
+            rettighetRequest.setMiljoe(miljoe);
+            rettighetRequest.getNyeAap115().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+            rettigheter.add(rettighetRequest);
+        }
+    }
+
+    private void opprettVedtakAap(
+            Vedtakshistorikk vedtak,
+            String personident,
+            String miljoe,
+            List<RettighetRequest> rettigheter
+    ) {
+        List<NyttVedtakAap> aap = vedtak.getAap();
+        if (aap != null && !aap.isEmpty()) {
+            RettighetAapRequest rettighetRequest = new RettighetAapRequest(aap);
+            rettighetRequest.setPersonident(personident);
+            rettighetRequest.setMiljoe(miljoe);
+            rettighetRequest.getNyeAap().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+            rettigheter.add(rettighetRequest);
+        }
+    }
+
+    private void opprettVedtakUngUfoer(
+            Vedtakshistorikk vedtak,
+            String personident,
+            String miljoe,
+            List<RettighetRequest> rettigheter
+    ) {
+        List<NyttVedtakAap> ungUfoer = vedtak.getUngUfoer();
+        if (ungUfoer != null && !ungUfoer.isEmpty()) {
+            RettighetUngUfoerRequest rettighetRequest = new RettighetUngUfoerRequest(ungUfoer);
+            rettighetRequest.setPersonident(personident);
+            rettighetRequest.setMiljoe(miljoe);
+            rettighetRequest.getNyeAaungufor().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+            rettigheter.add(rettighetRequest);
+        }
+    }
+
+    private void opprettVedtakTvungenForvaltning(
+            Vedtakshistorikk vedtak,
+            String personident,
+            String miljoe,
+            List<RettighetRequest> rettigheter,
+            List<KontoinfoResponse> identerMedKontonummer
+    ) {
+        List<NyttVedtakAap> tvungenForvaltning = vedtak.getTvungenForvaltning();
+        if (tvungenForvaltning != null && !tvungenForvaltning.isEmpty()) {
+            RettighetTvungenForvaltningRequest rettighetRequest = new RettighetTvungenForvaltningRequest(tvungenForvaltning);
+            rettighetRequest.setPersonident(personident);
+            rettighetRequest.setMiljoe(miljoe);
+            for (NyttVedtakAap rettighet : rettighetRequest.getNyeAatfor()) {
+                rettighet.setForvalter(ServiceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
+                rettighet.setBegrunnelse(BEGRUNNELSE);
+            }
+            rettigheter.add(rettighetRequest);
+        }
+    }
+
+    private void opprettVedtakFritakMeldekort(
+            Vedtakshistorikk vedtak,
+            String personident,
+            String miljoe,
+            List<RettighetRequest> rettigheter
+    ) {
+        List<NyttVedtakAap> fritakMeldekort = vedtak.getFritakMeldekort();
+        if (fritakMeldekort != null && !fritakMeldekort.isEmpty()) {
+            RettighetFritakMeldekortRequest rettighetRequest = new RettighetFritakMeldekortRequest(fritakMeldekort);
+            rettighetRequest.setPersonident(personident);
+            rettighetRequest.setMiljoe(miljoe);
+            rettighetRequest.getNyeFritak().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+            rettigheter.add(rettighetRequest);
+        }
     }
 }
