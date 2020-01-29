@@ -21,6 +21,10 @@ public class RettighetAapRequest extends RettighetRequest {
 
     private List<NyttVedtakAap> nyeAap;
 
+    @Override public String getArenaForvalterUrlPath() {
+        return "/v1/aap";
+    }
+
     @JsonProperty("nyeAap")
     @Override public List<NyttVedtakAap> getVedtakAap() {
         return nyeAap;

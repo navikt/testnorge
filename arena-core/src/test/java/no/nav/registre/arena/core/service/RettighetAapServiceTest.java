@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.arena.core.consumer.rs.RettighetAapArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
+import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.domain.historikk.Vedtakshistorikk;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
@@ -40,7 +40,7 @@ public class RettighetAapServiceTest {
     private ServiceUtils serviceUtils;
 
     @Mock
-    private RettighetAapArenaForvalterConsumer rettighetAapArenaForvalterConsumer;
+    private RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
 
     @InjectMocks
     private RettighetAapService rettighetAapService;
@@ -128,13 +128,13 @@ public class RettighetAapServiceTest {
                         nyRettighetFritakMeldekortResponse
                 ));
 
-        when(rettighetAapArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
+        when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
 
         var response = rettighetAapService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 
         verify(serviceUtils).getUtvalgteIdenter(avspillergruppeId, antallIdenter);
         verify(aapSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
-        verify(rettighetAapArenaForvalterConsumer).opprettRettighet(anyList());
+        verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
 
         assertThat(response.size(), equalTo(4));
 
@@ -167,7 +167,7 @@ public class RettighetAapServiceTest {
 
         when(aapSyntConsumer.syntetiserRettighetAap115(any(LocalDate.class), any(LocalDate.class))).thenReturn(new ArrayList<>(Collections.singletonList(aap115Rettighet)));
         when(aapSyntConsumer.syntetiserRettighetAap(antallIdenter)).thenReturn(aapRettigheter);
-        when(rettighetAapArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
+        when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
 
         var response = rettighetAapService.genererAapMedTilhoerende115(avspillergruppeId, miljoe, antallIdenter);
 
@@ -186,7 +186,7 @@ public class RettighetAapServiceTest {
 
         when(serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter)).thenReturn(identer);
         when(aapSyntConsumer.syntetiserRettighetUngUfoer(antallIdenter)).thenReturn(ungUfoerRettigheter);
-        when(rettighetAapArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
+        when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
 
         var response = rettighetAapService.genererUngUfoer(avspillergruppeId, miljoe, antallIdenter);
 
@@ -212,7 +212,7 @@ public class RettighetAapServiceTest {
         var expectedResponsesFromArenaForvalter = new ArrayList<>(Collections.singletonList(nyRettighetTvungenForvaltningResponse));
 
         when(aapSyntConsumer.syntetiserRettighetTvungenForvaltning(antallIdenter)).thenReturn(tvungenForvaltningRettigheter);
-        when(rettighetAapArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
+        when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
 
         var response = rettighetAapService.genererTvungenForvaltning(avspillergruppeId, miljoe, antallIdenter);
 
@@ -234,7 +234,7 @@ public class RettighetAapServiceTest {
         when(brukereService.hentEksisterendeArbeidsoekerIdenter()).thenReturn(identer);
         when(serviceUtils.getLevende(avspillergruppeId)).thenReturn(identer);
         when(aapSyntConsumer.syntetiserRettighetFritakMeldekort(antallIdenter)).thenReturn(fritakMeldekortRettigheter);
-        when(rettighetAapArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
+        when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
 
         var response = rettighetAapService.genererFritakMeldekort(avspillergruppeId, miljoe, antallIdenter);
 

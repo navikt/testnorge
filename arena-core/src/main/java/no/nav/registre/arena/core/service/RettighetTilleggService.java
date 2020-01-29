@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.arena.core.consumer.rs.RettighetTilleggArenaForvalterConsumer;
+import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TilleggSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
@@ -23,7 +23,7 @@ import no.nav.registre.arena.domain.vedtak.NyttVedtakTillegg;
 public class RettighetTilleggService {
 
     private final TilleggSyntConsumer tilleggSyntConsumer;
-    private final RettighetTilleggArenaForvalterConsumer rettighetTilleggArenaForvalterConsumer;
+    private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final RettighetTiltakService rettighetTiltakService;
     private final ServiceUtils serviceUtils;
 
@@ -120,6 +120,6 @@ public class RettighetTilleggService {
             }
         }
 
-        return rettighetTilleggArenaForvalterConsumer.opprettRettighet(rettigheter);
+        return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
     }
 }

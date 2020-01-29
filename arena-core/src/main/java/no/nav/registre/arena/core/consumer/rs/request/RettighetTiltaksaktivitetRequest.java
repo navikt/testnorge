@@ -21,6 +21,10 @@ public class RettighetTiltaksaktivitetRequest extends RettighetRequest {
 
     private List<NyttVedtakTiltak> nyeTiltaksaktivitet;
 
+    @Override public String getArenaForvalterUrlPath() {
+        return "/v1/tiltaksaktivitet";
+    }
+
     @Override public List<NyttVedtakAap> getVedtakAap() {
         return Collections.emptyList();
     }

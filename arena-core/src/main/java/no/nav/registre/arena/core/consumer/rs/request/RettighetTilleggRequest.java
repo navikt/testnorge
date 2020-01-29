@@ -21,6 +21,10 @@ public class RettighetTilleggRequest extends RettighetRequest {
 
     private List<NyttVedtakTillegg> nyeTilleggsstonad;
 
+    @Override public String getArenaForvalterUrlPath() {
+        return "/v1/tilleggsstonad";
+    }
+
     @Override public List<NyttVedtakAap> getVedtakAap() {
         return Collections.emptyList();
     }

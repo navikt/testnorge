@@ -21,6 +21,10 @@ public class RettighetFritakMeldekortRequest extends RettighetRequest {
 
     private List<NyttVedtakAap> nyeFritak;
 
+    @Override public String getArenaForvalterUrlPath() {
+        return "/v1/aapfritakmeldekort";
+    }
+
     @JsonProperty("nyeFritak")
     @Override public List<NyttVedtakAap> getVedtakAap() {
         return nyeFritak;

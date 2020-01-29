@@ -21,6 +21,10 @@ public class RettighetBarnetilleggRequest extends RettighetRequest {
 
     private List<NyttVedtakTiltak> nyeBarnetillegg;
 
+    @Override public String getArenaForvalterUrlPath() {
+        return "";
+    }
+
     @Override public List<NyttVedtakAap> getVedtakAap() {
         return Collections.emptyList();
     }
