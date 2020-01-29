@@ -17,42 +17,37 @@ export default class Toolbar extends PureComponent {
 			{
 				value: 'mine',
 				label: 'Mine',
-				icon: <Icon size={14} kind="man2Light" className="toggleIcon" />
+				icon: 'man2'
 			},
 			{
 				value: 'alle',
 				label: 'Alle',
-				icon: <Icon size={16} kind="groupLight" className="toggleIcon" />
+				icon: 'group'
 			}
 		]
 	}
 
 	render() {
 		const { title, toggleOnChange, children, searchField } = this.props
-		if (this.props.toggleCurrent === 'personer' || this.props.toggleCurrent === 'mine') {
-			var arrowPosition = 'positionA'
-		} else if (this.props.toggleCurrent === 'bestilling' || this.props.toggleCurrent === 'alle') {
-			arrowPosition = 'positionB'
-		}
-
 		return (
-			<React.Fragment>
-				<div className="toolbar">
-					{title && <h2>{title}</h2>}
-					<div className="toolbar--actions">{children}</div>
-					{toggleOnChange && this._renderToggle()}
-					{searchField}
-				</div>
-				<div className="toggleListLine">
-					<span className={arrowPosition}></span>
-				</div>
-			</React.Fragment>
+			<div className="toolbar">
+				{title && <h2>{title}</h2>}
+				<div className="toolbar--actions">{children}</div>
+				{toggleOnChange && this._renderToggle()}
+				{searchField}
+			</div>
 		)
 	}
 
 	_renderToggle = () => {
 		const { toggleValues, toggleOnChange, toggleCurrent } = this.props
-
+		if (toggleCurrent === 'mine') {
+			toggleValues[0].icon = <Icon size={14} kind="man2Light" className="toggleIcon" />
+			toggleValues[1].icon = <Icon size={16} kind="groupDark" className="toggleIcon" />
+		} else if (toggleCurrent === 'alle') {
+			toggleValues[0].icon = <Icon size={14} kind="man2" className="toggleIcon" />
+			toggleValues[1].icon = <Icon size={16} kind="groupLight" className="toggleIcon" />
+		}
 		return (
 			<ToggleGruppe onChange={toggleOnChange} name="toggler">
 				{toggleValues.map(val => (

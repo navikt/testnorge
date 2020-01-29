@@ -13,6 +13,7 @@ import EmailText from '~/assets/icons/nav-ikoner/line/SVG/10-email/email-text.sv
 import AccountCircle from '~/assets/icons/nav-ikoner/filled/SVG/11-users/account-circle.svg'
 import Group from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-4.svg'
 import GroupLight from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-4Light.svg'
+import GroupDark from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-4Dark.svg'
 import Family from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-5.svg'
 import Group1 from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-1.svg'
 import NewFileTable from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-table.svg'
@@ -90,6 +91,7 @@ const icons = {
 	woman: Woman,
 	group: Group,
 	groupLight: GroupLight,
+	groupDark: GroupDark,
 	bestilling: FileChecklist,
 	bestillingLight: FileChecklistLight,
 	newFile: NewFile,
