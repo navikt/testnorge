@@ -17,7 +17,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -25,11 +24,12 @@ import java.util.TreeMap;
 
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
-import no.nav.registre.inntekt.consumer.rs.v1.InntektstubConsumer;
+import no.nav.registre.inntekt.consumer.rs.v2.InntektstubV2Consumer;
 import no.nav.registre.inntekt.domain.RsInntekt;
 import no.nav.registre.inntekt.provider.rs.requests.SyntetiseringsRequest;
 import no.nav.registre.inntekt.testUtils.InntektGenerator;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringServiceTest {
@@ -43,7 +43,7 @@ public class SyntetiseringServiceTest {
     private InntektSyntConsumer inntektSyntConsumer;
 
     @Mock
-    private InntektstubConsumer inntektstubConsumer;
+    private InntektstubV2Consumer inntektstubV2Consumer;
 
     @Mock
     private HodejegerenConsumer hodejegerenConsumer;
@@ -61,7 +61,7 @@ public class SyntetiseringServiceTest {
         double beloep = 1490;
         inntekter.put("10128400000", Collections.singletonList(InntektGenerator.genererInntekt(beloep)));
         when(hodejegerenConsumer.getLevende(request.getAvspillergruppeId(), ALDER)).thenReturn(identer);
-        when(inntektstubConsumer.leggInntekterIInntektstub(inntekter)).thenReturn(new HashMap<>());
+        when(inntektstubV2Consumer.leggInntekterIInntektstub(inntekter)).thenReturn(new ArrayList<>());
     }
 
     /**
@@ -84,13 +84,13 @@ public class SyntetiseringServiceTest {
      */
     @Test
     public void startSyntetiseringTestEnFeil() {
-        Map<String, List<RsInntekt>> feiletInntekter = new HashMap<>();
-        feiletInntekter.put("10128400000", Collections.singletonList(InntektGenerator.genererInntekt(1490)));
+        double beloep = 1490;
+        List<Inntektsinformasjon> feiletInntekt = new ArrayList<>(Collections.singletonList(InntektGenerator.genererFeiletInntektsinformasjon("10128400000", beloep)));
         when(inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(anyMap())).thenReturn(inntekter);
-        when(inntektstubConsumer.leggInntekterIInntektstub(inntekter)).thenReturn(feiletInntekter);
+        when(inntektstubV2Consumer.leggInntekterIInntektstub(inntekter)).thenReturn(feiletInntekt);
         Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request);
         assertThat(feil.size(), equalTo(1));
-        assertThat(feil.get("10128400000"), equalTo(feiletInntekter.get("10128400000")));
+        assertThat(feil.get("10128400000").get(0).getBeloep(), equalTo(feiletInntekt.get(0).getInntektsliste().get(0).getBeloep()));
     }
 
     /**
@@ -121,8 +121,9 @@ public class SyntetiseringServiceTest {
     public void startSyntetiseringTestInntektSyntGirEn() {
         SortedMap<String, List<RsInntekt>> tomSyntInntekt = new TreeMap<>();
         tomSyntInntekt.put("10128400000", new ArrayList<>(Collections.singletonList(RsInntekt.builder().build())));
+        List<Inntektsinformasjon> feiletInntekt = new ArrayList<>(Collections.singletonList(InntektGenerator.genererFeiletInntektsinformasjon("10128400000", 0)));
         when(inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(anyMap())).thenReturn(tomSyntInntekt);
-        when(inntektstubConsumer.leggInntekterIInntektstub(anyMap())).thenReturn(inntekter);
+        when(inntektstubV2Consumer.leggInntekterIInntektstub(anyMap())).thenReturn(feiletInntekt);
         Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request);
         assertThat(feil.size(), equalTo(1));
     }

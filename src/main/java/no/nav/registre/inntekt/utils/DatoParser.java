@@ -44,4 +44,12 @@ public class DatoParser {
 
         return MAANEDER.indexOf(maaned) + 1;
     }
+
+    public static String hentMaanedsnavnFraMaanedsnummer(int maaned) {
+        if (maaned < 1 || maaned > MAANEDER.size()) {
+            throw new IllegalArgumentException("Ugyldig maaned " + maaned);
+        }
+
+        return MAANEDER.get(maaned - 1);
+    }
 }
