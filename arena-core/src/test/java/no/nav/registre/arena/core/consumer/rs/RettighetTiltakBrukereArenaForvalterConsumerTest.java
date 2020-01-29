@@ -21,20 +21,21 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureWireMock(port = 0)
-@RestClientTest(RettighetTilleggArenaForvalterConsumer.class)
+@RestClientTest(RettighetTiltakArenaForvalterConsumer.class)
 @ActiveProfiles("test")
-public class RettighetTilleggArenaForvalterConsumerTest {
+public class RettighetTiltakBrukereArenaForvalterConsumerTest {
 
     @Autowired
-    private RettighetTilleggArenaForvalterConsumer consumer;
+    private RettighetTiltakArenaForvalterConsumer consumer;
 
     @Autowired
     private MockRestServiceServer server;
@@ -46,27 +47,38 @@ public class RettighetTilleggArenaForvalterConsumerTest {
 
     @Before
     public void setUp() {
-        rettigheter = new ArrayList<>(Collections.singletonList(
-                new RettighetTilleggRequest()
+        rettigheter = new ArrayList<>(Arrays.asList(
+                new RettighetTiltaksdeltakelseRequest(),
+                new RettighetTiltakspengerRequest()
         ));
     }
 
     @Test
-    public void shouldOppretteRettighetTillegg() {
-        stubArenaForvalterOpprettRettighetTilleggLaeremidler(serverUrl + "/v1/tilleggsstonad");
+    public void shouldOppretteRettighetTiltak() {
+        stubArenaForvalterOpprettRettighetTiltaksdeltakelse(serverUrl + "/v1/tiltaksdeltakelse");
+        stubArenaForvalterOpprettRettighetTiltakspenger(serverUrl + "/v1/tiltakspenger");
 
         var response = consumer.opprettRettighet(rettigheter);
 
         server.verify();
 
-        assertThat(response.get(0).getNyeRettigheterTillegg().size(), equalTo(1));
+        assertThat(response.get(0).getFeiledeRettigheter().size(), equalTo(0));
+        assertThat(response.get(1).getNyeRettigheterTiltak().size(), equalTo(1));
     }
 
-    private void stubArenaForvalterOpprettRettighetTilleggLaeremidler(String expectedUri) {
+    private void stubArenaForvalterOpprettRettighetTiltaksdeltakelse(String expectedUri) {
         server.expect(requestToUriTemplate(expectedUri))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(getResourceFileContent("files/tillegg/tillegg_forvalter_response.json")));
+                        .body(getResourceFileContent("files/tiltak/tiltaksdeltakelse_forvalter_response.json")));
+    }
+
+    private void stubArenaForvalterOpprettRettighetTiltakspenger(String expectedUri) {
+        server.expect(requestToUriTemplate(expectedUri))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withSuccess()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(getResourceFileContent("files/tiltak/tiltakspenger_forvalter_response.json")));
     }
 }

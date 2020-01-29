@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
@@ -20,7 +19,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
 import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
@@ -28,7 +26,7 @@ import no.nav.registre.arena.domain.brukere.NyBruker;
 
 @Component
 @Slf4j
-public class ArenaForvalterConsumer {
+public class BrukereArenaForvalterConsumer {
 
     private static final String EIER = "ORKESTRATOREN";
 
@@ -39,7 +37,7 @@ public class ArenaForvalterConsumer {
     private UriTemplate hentBrukere;
     private UriTemplate slettBrukere;
 
-    public ArenaForvalterConsumer(
+    public BrukereArenaForvalterConsumer(
             @Value("${arena-forvalteren.rest-api.url}") String arenaForvalterServerUrl
     ) {
         this.postBrukere = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker?eier=" + EIER);
@@ -77,7 +75,7 @@ public class ArenaForvalterConsumer {
             filters.put("filter-personident", personident);
         }
 
-        var baseUrl = new StringBuilder(hentBrukere.toString() + "?");
+        var baseUrl = new StringBuilder(hentBrukere.toString()).append("?");
         for (var filter : filters.entrySet()) {
             if (filter.getValue() != null) {
                 baseUrl.append(filter.getKey())

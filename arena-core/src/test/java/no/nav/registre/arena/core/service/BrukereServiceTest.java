@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
+import no.nav.registre.arena.core.consumer.rs.BrukereArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
 import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
@@ -37,7 +37,7 @@ public class BrukereServiceTest {
     @Mock
     private HodejegerenConsumer hodejegerenConsumer;
     @Mock
-    private ArenaForvalterConsumer arenaForvalterConsumer;
+    private BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
     @Mock
     private Random random;
 
@@ -121,8 +121,8 @@ public class BrukereServiceTest {
 
     private NyeBrukereResponse opprettIdenter(Integer antallNyeIdenter, String miljoe) {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(toEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
-        doReturn(enNyArbeidsoekerResponse).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
+        doReturn(toEksisterendeArbeidsokere).when(brukereArenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(enNyArbeidsoekerResponse).when(brukereArenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         return brukereService.opprettArbeidsoekere(antallNyeIdenter, avspillergruppeId, miljoe);
     }
@@ -138,8 +138,8 @@ public class BrukereServiceTest {
     @Test
     public void fyllFraTomArenaForvalter() {
         doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
-        doReturn(tyveNyeArbeidsoekereResponse).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
+        doReturn(Collections.EMPTY_LIST).when(brukereArenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(tyveNyeArbeidsoekereResponse).when(brukereArenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         NyeBrukereResponse arbeidsokere =
                 brukereService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
@@ -168,8 +168,8 @@ public class BrukereServiceTest {
     @Test
     public void fyllOppForvalterenTest() {
         doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(femtenEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
-        doReturn(opprettedeArbeidsoekereResponse).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
+        doReturn(femtenEksisterendeArbeidsokere).when(brukereArenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(opprettedeArbeidsoekereResponse).when(brukereArenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         NyeBrukereResponse arbeidsokere =
                 brukereService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
@@ -182,8 +182,8 @@ public class BrukereServiceTest {
     @Test
     public void opprettArbeidssoekerTest() {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
-        doReturn(enNyArbeidsoekerResponse).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
+        doReturn(Collections.EMPTY_LIST).when(brukereArenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(enNyArbeidsoekerResponse).when(brukereArenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
 
@@ -194,8 +194,8 @@ public class BrukereServiceTest {
     @Test
     public void opprettEksisterendeArbeidssoekerTest() {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(enNyArbeisoker).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
-        doReturn(enNyArbeisoker).when(arenaForvalterConsumer).hentArbeidsoekere(anyString(), eq(null), eq(null));
+        doReturn(enNyArbeisoker).when(brukereArenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(enNyArbeisoker).when(brukereArenaForvalterConsumer).hentArbeidsoekere(anyString(), eq(null), eq(null));
 
         NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
 
@@ -206,7 +206,7 @@ public class BrukereServiceTest {
     @Test
     public void opprettIkkeEksisterendeIdentTest() {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(Collections.EMPTY_LIST).when(brukereArenaForvalterConsumer).hentArbeidsoekere(null, null, null);
 
         NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr3, avspillergruppeId, miljoe);
 

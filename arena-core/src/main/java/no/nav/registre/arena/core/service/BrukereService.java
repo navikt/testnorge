@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
+import no.nav.registre.arena.core.consumer.rs.BrukereArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
 import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 import no.nav.registre.arena.domain.brukere.Kvalifiseringsgrupper;
@@ -29,7 +29,7 @@ public class BrukereService {
     private static final int MAKSIMUM_ALDER = 67;
 
     private final HodejegerenConsumer hodejegerenConsumer;
-    private final ArenaForvalterConsumer arenaForvalterConsumer;
+    private final BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
     private final Random random;
 
     public NyeBrukereResponse opprettArbeidsoekere(
@@ -67,7 +67,7 @@ public class BrukereService {
         if (arbeidsoekerIdenter.contains(ident)) {
             log.info("Ident {} er allerede registrert som arbeidsøker.", ident.replaceAll("[\r\n]", ""));
             var response = new NyeBrukereResponse();
-            response.setArbeidsoekerList(arenaForvalterConsumer.hentArbeidsoekere(ident, null, null));
+            response.setArbeidsoekerList(brukereArenaForvalterConsumer.hentArbeidsoekere(ident, null, null));
             return response;
         } else if (!levendeIdenter.contains(ident)) {
             log.info("Ident {} kunne ikke bli funnet av Hodejegeren, og kan derfor ikke opprettes i Arena.", ident.replaceAll("[\r\n]", ""));
@@ -78,7 +78,7 @@ public class BrukereService {
     }
 
     public List<String> hentEksisterendeArbeidsoekerIdenter() {
-        var arbeidsoekere = arenaForvalterConsumer.hentArbeidsoekere(null, null, null);
+        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, null, null);
         return hentIdentListe(arbeidsoekere);
     }
 
@@ -96,7 +96,7 @@ public class BrukereService {
                         .build())
                 .collect(Collectors.toList());
 
-        return arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
+        return brukereArenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
     }
 
     private List<String> hentKvalifiserteIdenter(

@@ -37,18 +37,18 @@ import no.nav.registre.arena.domain.brukere.UtenServicebehov;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @TestPropertySource(locations = "classpath:application-test.properties")
-@ContextConfiguration(classes = { ArenaForvalterConsumer.class, AppConfig.class })
+@ContextConfiguration(classes = { BrukereArenaForvalterConsumer.class, AppConfig.class })
 @EnableAutoConfiguration
-public class ArenaForvalterConsumerTest {
+public class BrukereArenaForvalterConsumerTest {
 
     @Autowired
-    private ArenaForvalterConsumer arenaForvalterConsumer;
+    private BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
 
     private String miljoe = "q2", EIER = "ORKESTRATOREN";
 
     private NyBruker bruker1, bruker2;
 
-    public ArenaForvalterConsumerTest() {
+    public BrukereArenaForvalterConsumerTest() {
         bruker1 = NyBruker.builder()
                 .personident("10101010101")
                 .miljoe(miljoe)
@@ -73,7 +73,7 @@ public class ArenaForvalterConsumerTest {
     public void checkEmptyListOnBadSentTilArenaForvalterRequest() {
         stubArenaForvalterBadRequest();
 
-        NyeBrukereResponse response = arenaForvalterConsumer.sendTilArenaForvalter(null);
+        NyeBrukereResponse response = brukereArenaForvalterConsumer.sendTilArenaForvalter(null);
 
         assertThat(response.getArbeidsoekerList(), is(Collections.EMPTY_LIST));
     }
@@ -84,7 +84,7 @@ public class ArenaForvalterConsumerTest {
         stubArenaForvalterHentBrukereFirstPage();
         stubArenaForvalterHentBrukereSecondPage();
 
-        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("", "", "");
+        List<Arbeidsoeker> response = brukereArenaForvalterConsumer.hentArbeidsoekere("", "", "");
 
         assertThat(response.get(2).getPersonident(), is("09038817873"));
         assertThat(response.size(), is(3));
@@ -94,7 +94,7 @@ public class ArenaForvalterConsumerTest {
     public void slettBrukereTest() {
         stubArenaForvalterSlettBrukere();
 
-        Boolean test = arenaForvalterConsumer.slettBruker("10101010101", "q2");
+        Boolean test = brukereArenaForvalterConsumer.slettBruker("10101010101", "q2");
         assertThat(test, is(true));
     }
 
@@ -102,7 +102,7 @@ public class ArenaForvalterConsumerTest {
     public void slettBrukereBadReq() {
         stubArenaForvalterSlettBrukereBadReq();
 
-        Boolean test = arenaForvalterConsumer.slettBruker("10101010101", "q2");
+        Boolean test = brukereArenaForvalterConsumer.slettBruker("10101010101", "q2");
         assertThat(test, is(false));
     }
 
@@ -112,7 +112,7 @@ public class ArenaForvalterConsumerTest {
         stubArenaForvalterHentBrukereFilterPageEn();
         stubArenaForvalterHentBrukereFilterPageTo();
 
-        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("10101010101", "Dolly", "q2");
+        List<Arbeidsoeker> response = brukereArenaForvalterConsumer.hentArbeidsoekere("10101010101", "Dolly", "q2");
 
         assertThat(response.get(0).getStatus(), is("OK"));
         assertThat(response.size(), is(2));
@@ -127,8 +127,8 @@ public class ArenaForvalterConsumerTest {
         stubArenaForvalterFilterPersonidentGuyTo();
         stubArenaForvalterFilterPersonidentGuyToPageEn();
 
-        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("10101010101", "", "");
-        response.addAll(arenaForvalterConsumer.hentArbeidsoekere("20202020202", "", ""));
+        List<Arbeidsoeker> response = brukereArenaForvalterConsumer.hentArbeidsoekere("10101010101", "", "");
+        response.addAll(brukereArenaForvalterConsumer.hentArbeidsoekere("20202020202", "", ""));
 
         assertThat(response.size(), is(4));
         assertThat(response.get(2).getPersonident(), is("10101010101"));

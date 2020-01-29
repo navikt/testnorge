@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
+import no.nav.registre.arena.core.consumer.rs.BrukereArenaForvalterConsumer;
 import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 
 @Service
@@ -15,14 +15,14 @@ import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 @RequiredArgsConstructor
 public class IdentService {
 
-    private final ArenaForvalterConsumer arenaForvalterConsumer;
+    private final BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
 
     public List<Arbeidsoeker> hentArbeidsoekere(
             String eier,
             String miljoe,
             String personident
     ) {
-        return arenaForvalterConsumer.hentArbeidsoekere(personident, eier, miljoe);
+        return brukereArenaForvalterConsumer.hentArbeidsoekere(personident, eier, miljoe);
     }
 
     public List<String> slettBrukereIArenaForvalter(
@@ -32,7 +32,7 @@ public class IdentService {
         List<String> slettedeIdenter = new ArrayList<>();
 
         for (var personident : identerToDelete) {
-            if (arenaForvalterConsumer.slettBruker(personident, miljoe)) {
+            if (brukereArenaForvalterConsumer.slettBruker(personident, miljoe)) {
                 slettedeIdenter.add(personident);
             }
         }

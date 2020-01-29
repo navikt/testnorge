@@ -35,7 +35,7 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
 @AutoConfigureWireMock(port = 0)
 @RestClientTest(RettighetAapArenaForvalterConsumer.class)
 @ActiveProfiles("test")
-public class RettighetAapArenaForvalterConsumerTest {
+public class RettighetAapBrukereArenaForvalterConsumerTest {
 
     @Autowired
     private RettighetAapArenaForvalterConsumer consumer;
