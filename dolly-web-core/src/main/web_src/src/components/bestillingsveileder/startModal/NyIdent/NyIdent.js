@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
+import { useToggle } from 'react-use'
 import _get from 'lodash/get'
 import { useAsync } from 'react-use'
 import { DollyApi } from '~/service/Api'
 import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Select'
+import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { ModalActions } from '../ModalActions'
@@ -28,6 +30,7 @@ const validationSchema = yup.object({
 
 export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 	const [zIdent, setZIdent] = useState(zBruker)
+	const [malAktiv, toggleMalAktiv] = useToggle(false)
 	const state = useAsync(async () => {
 		const response = await DollyApi.getBestillingMaler()
 		return response.data
@@ -44,18 +47,23 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 		<Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={preSubmit}>
 			{formikBag => (
 				<div className="ny-ident-form">
+					<h3>Velg type og antall</h3>
 					<div className="ny-ident-form_selects">
 						<FormikSelect
 							name="identtype"
 							label="Velg identtype"
-							size="small"
+							size="medium"
 							options={Options('identtype')}
 							isClearable={false}
 						/>
-						<FormikTextInput name="antall" label="Antall" type="number" size="small" />
+						<FormikTextInput name="antall" label="Antall" type="number" size="medium" />
 					</div>
 					<div className="ny-ident-form_maler">
-						<h3>Maler</h3>
+						<div className="ny-ident-form_maler_header">
+							<h3>Maler</h3>
+							<DollyCheckbox name="aktiver-maler" onChange={toggleMalAktiv} label="Vis" />
+						</div>
+
 						<div>
 							<DollySelect
 								name="zIdent"
@@ -66,6 +74,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 								onChange={e => setZIdent(e.value)}
 								value={zIdent}
 								isClearable={false}
+								isDisabled={!malAktiv}
 							/>
 							<FormikSelect
 								name="mal"
@@ -74,6 +83,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 								options={malOptions}
 								size="grow"
 								fastfield={false}
+								isDisabled={!malAktiv}
 							/>
 						</div>
 					</div>
