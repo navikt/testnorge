@@ -45,7 +45,7 @@ export const PersonVisning = ({
 			/>
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} />
-			<div className="flexbox--align-center--justify-end">
+			<div className="person-visning_actions">
 				<LeggTilRelasjonModal environments={bestilling.environments} personInfo={data.tpsf} />
 				<BestillingSammendragModal bestilling={bestilling} />
 				<SlettButton action={slettPerson} loading={loading.slettPerson}>
