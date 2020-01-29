@@ -5,14 +5,14 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 
-import no.nav.identpool.ajourhold.IdentDistribusjonUtil;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
 class IdentDistribusjonUtilTest {
+
     @Test
-    void totaltAntallPersonerPerDagSkalSummereTilCa40000() {
+    void totaltAntallPersonerPerDagSkalSummereTilCa110000() {
         int sum = 0;
         int antallPersonerPerDag;
         for (int age = 0; age < 100; age = age + 10) {
@@ -22,7 +22,7 @@ class IdentDistribusjonUtilTest {
             }
         }
 
-        assertThat(sum, is(greaterThan(40000)));
-        assertThat(sum, is(lessThan(70000)));
+        assertThat(sum, is(greaterThan(110000)));
+        assertThat(sum, is(lessThan(120000)));
     }
 }
