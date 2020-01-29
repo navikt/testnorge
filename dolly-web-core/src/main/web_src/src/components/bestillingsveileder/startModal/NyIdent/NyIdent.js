@@ -88,16 +88,16 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 }
 
 const getZIdentOptions = (malbestillinger, zBruker) =>
-	Object.keys(malbestillinger).map(ident => {
-		return {
-			value: ident,
-			label: ident === zBruker ? `${ident} (din)` : ident
-		}
-	})
+	Object.keys(malbestillinger).map(ident => ({
+		value: ident,
+		label: ident === zBruker ? `${ident} (din)` : ident
+	}))
 
-const getMalOptions = (malbestillinger, zIdent) =>
-	_get(malbestillinger, zIdent, []).map(mal => ({
+const getMalOptions = (malbestillinger, zIdent) => {
+	if (!malbestillinger) return []
+	return malbestillinger[zIdent].map(mal => ({
 		value: mal.id,
 		label: mal.malNavn,
 		data: { bestilling: mal.bestilling, malNavn: mal.malNavn }
 	}))
+}
