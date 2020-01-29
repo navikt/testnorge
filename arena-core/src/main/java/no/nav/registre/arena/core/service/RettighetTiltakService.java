@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import no.nav.registre.arena.core.consumer.rs.RettighetTiltakArenaForvalterConsumer;
+import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TiltakSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetBarnetilleggRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
@@ -34,7 +34,7 @@ public class RettighetTiltakService {
     private static final String AKTIVITETSKODE_ARBEIDSTRENING = "ARBTREN";
 
     private final TiltakSyntConsumer tiltakSyntConsumer;
-    private final RettighetTiltakArenaForvalterConsumer rettighetTiltakArenaForvalterConsumer;
+    private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
     private final Random rand;
 
@@ -76,7 +76,7 @@ public class RettighetTiltakService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetTiltakArenaForvalterConsumer.opprettRettighet(rettigheter);
+        return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
     }
 
     public List<NyttVedtakResponse> opprettBarnetillegg(
@@ -99,10 +99,10 @@ public class RettighetTiltakService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetTiltakArenaForvalterConsumer.opprettRettighet(rettigheter);
+        return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
     }
 
-    public List<NyttVedtakResponse> aktiverTiltaksdeltakelse(
+    private List<NyttVedtakResponse> aktiverTiltaksdeltakelse(
             List<String> identer,
             String miljoe
     ) {
@@ -120,7 +120,7 @@ public class RettighetTiltakService {
             rettigheter.add(rettighetRequest);
         }
 
-        var responses = rettighetTiltakArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
+        var responses = rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
         for (var response : responses) {
             if (!response.getFeiledeRettigheter().isEmpty()) {
                 log.warn("Kunne ikke opprette deltakelse for alle identer");
@@ -129,22 +129,7 @@ public class RettighetTiltakService {
         return responses;
     }
 
-    public List<NyttVedtakResponse> opprettTiltaksaktivitet(String ident, LocalDate fraDato, String miljoe) {
-        RettighetTiltaksaktivitetRequest rettighetRequest = new RettighetTiltaksaktivitetRequest();
-        rettighetRequest.setPersonident(ident);
-        rettighetRequest.setMiljoe(miljoe);
-        NyttVedtakTiltak nyttVedtakTiltak = new NyttVedtakTiltak();
-        nyttVedtakTiltak.setAktivitetkode("");
-        nyttVedtakTiltak.setBeskrivelse(BEGRUNNELSE);
-        nyttVedtakTiltak.setFraDato(fraDato);
-        //        nyttVedtakTiltak.setSaksbehandler("");
-        List<NyttVedtakTiltak> nyTiltaksaktivitet = new ArrayList<>(Collections.singletonList(nyttVedtakTiltak));
-        rettighetRequest.setNyeTiltaksaktivitet(nyTiltaksaktivitet);
-
-        return rettighetTiltakArenaForvalterConsumer.opprettRettighet(new ArrayList<>(Collections.singletonList(rettighetRequest)));
-    }
-
-    public List<NyttVedtakResponse> opprettTiltaksaktiviteter(List<RettighetRequest> rettigheter) {
+    List<NyttVedtakResponse> opprettTiltaksaktiviteter(List<RettighetRequest> rettigheter) {
         List<RettighetRequest> tiltaksaktiviteter = new ArrayList<>(rettigheter.size());
         for (var rettighet : rettigheter) {
             if (!(rettighet instanceof RettighetTilleggRequest)) {
@@ -162,7 +147,7 @@ public class RettighetTiltakService {
             tiltaksaktiviteter.add(rettighetRequest);
         }
 
-        return rettighetTiltakArenaForvalterConsumer.opprettRettighet(tiltaksaktiviteter);
+        return rettighetArenaForvalterConsumer.opprettRettighet(tiltaksaktiviteter);
     }
 
     private List<String> finnIdenterMedBarn(

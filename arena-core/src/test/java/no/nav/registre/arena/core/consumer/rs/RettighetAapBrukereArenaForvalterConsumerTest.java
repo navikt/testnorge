@@ -33,12 +33,12 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureWireMock(port = 0)
-@RestClientTest(RettighetAapArenaForvalterConsumer.class)
+@RestClientTest(RettighetArenaForvalterConsumer.class)
 @ActiveProfiles("test")
 public class RettighetAapBrukereArenaForvalterConsumerTest {
 
     @Autowired
-    private RettighetAapArenaForvalterConsumer consumer;
+    private RettighetArenaForvalterConsumer consumer;
 
     @Autowired
     private MockRestServiceServer server;

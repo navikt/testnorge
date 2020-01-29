@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import no.nav.registre.arena.core.consumer.rs.RettighetAapArenaForvalterConsumer;
+import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetAap115Request;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetAapRequest;
@@ -26,7 +26,7 @@ import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 public class RettighetAapService {
 
     private final AapSyntConsumer aapSyntConsumer;
-    private final RettighetAapArenaForvalterConsumer rettighetAapArenaForvalterConsumer;
+    private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final BrukereService brukereService;
     private final ServiceUtils serviceUtils;
 
@@ -101,7 +101,7 @@ public class RettighetAapService {
                 }
             }
         }
-        return rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+        return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
 
     public List<NyttVedtakResponse> genererAapMedTilhoerende115(
@@ -131,8 +131,8 @@ public class RettighetAapService {
             rettigheter.add(rettighetRequest);
         }
 
-        rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(aap115Rettigheter, miljoe));
-        return rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+        rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(aap115Rettigheter, miljoe));
+        return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
 
     public List<NyttVedtakResponse> genererAap115(
@@ -153,7 +153,7 @@ public class RettighetAapService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+        return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
 
     public List<NyttVedtakResponse> genererUngUfoer(
@@ -174,7 +174,7 @@ public class RettighetAapService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+        return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
 
     public List<NyttVedtakResponse> genererTvungenForvaltning(
@@ -197,7 +197,7 @@ public class RettighetAapService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetAapArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+        return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
 
     public List<NyttVedtakResponse> genererFritakMeldekort(
@@ -222,6 +222,6 @@ public class RettighetAapService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetAapArenaForvalterConsumer.opprettRettighet(rettigheter);
+        return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
     }
 }

@@ -1,5 +1,6 @@
 package no.nav.registre.arena.core.consumer.rs.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,9 @@ public abstract class RettighetRequest implements Serializable {
 
     private String personident;
     private String miljoe;
+
+    @JsonIgnore
+    public abstract String getArenaForvalterUrlPath();
 
     public abstract List<NyttVedtakAap> getVedtakAap();
 

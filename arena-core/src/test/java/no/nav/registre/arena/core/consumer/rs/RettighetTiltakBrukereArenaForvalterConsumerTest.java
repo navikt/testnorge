@@ -30,12 +30,12 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequ
 
 @RunWith(SpringRunner.class)
 @AutoConfigureWireMock(port = 0)
-@RestClientTest(RettighetTiltakArenaForvalterConsumer.class)
+@RestClientTest(RettighetArenaForvalterConsumer.class)
 @ActiveProfiles("test")
 public class RettighetTiltakBrukereArenaForvalterConsumerTest {
 
     @Autowired
-    private RettighetTiltakArenaForvalterConsumer consumer;
+    private RettighetArenaForvalterConsumer consumer;
 
     @Autowired
     private MockRestServiceServer server;
