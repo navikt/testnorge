@@ -1,5 +1,6 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
+import _isNil from 'lodash/isNil'
 import { isWithinInterval, getMonth } from 'date-fns'
 import { requiredDate, requiredString } from '~/utils/YupValidations'
 
@@ -14,7 +15,6 @@ const innenforAnsettelsesforholdTest = (validation, validateFomMonth) => {
 			if (!val) return true
 
 			// Husk at dato som kommer fra en Mal kan være av typen String
-
 			const dateValue = new Date(val)
 			const path = this.path
 			const values = this.options.context
@@ -27,9 +27,12 @@ const innenforAnsettelsesforholdTest = (validation, validateFomMonth) => {
 
 			const arrayPos = path.split('.')[0] // feks: aareg[1]
 
+			const ansattFom = _get(values, `${arrayPos}.ansettelsesPeriode.fom`)
+			const ansattTom = _get(values, `${arrayPos}.ansettelsesPeriode.tom`)
+
 			return isWithinInterval(dateValue, {
-				start: new Date(_get(values, `${arrayPos}.ansettelsesPeriode.fom`)),
-				end: new Date(_get(values, `${arrayPos}.ansettelsesPeriode.tom`))
+				start: new Date(ansattFom),
+				end: _isNil(ansattTom) ? new Date() : new Date(ansattTom)
 			})
 		}
 	)

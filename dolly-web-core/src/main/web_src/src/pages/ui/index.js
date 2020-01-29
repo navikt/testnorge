@@ -31,6 +31,9 @@ import ApiFeilmelding from '~/components/ui/apiFeilmelding/ApiFeilmelding'
 // ContentContainer
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 
+// AppError
+import { AppError } from '~/components/ui/appError/AppError'
+
 // TextEditor
 import { TextEditor } from '~/components/ui/form/inputs/textEditor/TextEditor'
 
@@ -106,6 +109,9 @@ export default function() {
 
 			<h2>ContentContainer</h2>
 			<ContentContainer>Dette er en ContentContainer</ContentContainer>
+
+			<h2>Application error</h2>
+			<AppError />
 
 			<h2>API Feilmelding</h2>
 			<ApiFeilmelding feilmelding="Dette er feilmeldingen" />

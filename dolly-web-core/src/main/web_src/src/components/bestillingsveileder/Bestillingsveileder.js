@@ -21,7 +21,7 @@ const createInitialValues = (locState = {}) => {
 	}
 
 	if (locState.mal) {
-		initialValues = Object.assign(initialValues, locState.mal.mal)
+		initialValues = Object.assign(initialValues, locState.mal.bestilling)
 	}
 
 	return {

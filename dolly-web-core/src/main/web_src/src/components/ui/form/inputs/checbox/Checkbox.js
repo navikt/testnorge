@@ -1,8 +1,8 @@
 import React from 'react'
-import { useField, FastField } from 'formik'
 import { Checkbox as NavCheckbox } from 'nav-frontend-skjema'
 import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
-import { fieldError, SyntEvent } from '~/components/ui/form/formUtils'
+import { FormikField } from '~/components/ui/form/FormikField'
+import { SyntEvent } from '~/components/ui/form/formUtils'
 
 import './Checkbox.less'
 
@@ -16,33 +16,15 @@ export const DollyCheckbox = props => (
 	</InputWrapper>
 )
 
-export const FormikCheckbox = ({ afterChange, ...props }) => {
-	const [field, meta] = useField(props)
+export const FormikCheckbox = ({ afterChange, fastfield, ...props }) => (
+	<FormikField name={props.name} fastfield={fastfield}>
+		{({ field, form, meta }) => {
+			const handleChange = event => {
+				field.onChange(SyntEvent(field.name, event.target.checked))
+				if (afterChange) afterChange(event.target.checked)
+			}
 
-	const handleChange = event => {
-		field.onChange(SyntEvent(field.name, event.target.checked))
-		if (afterChange) afterChange(event.target.checked)
-	}
-
-	return <DollyCheckbox checked={field.value} onChange={handleChange} {...props} />
-}
-
-// TODO: Formik@2.0.3 har en bug som gjør at FastField ikke funker
-// https://github.com/jaredpalmer/formik/issues/1974
-// export const FastFormikCheckbox = props => {
-// 	return (
-// 		<FastField name={props.name}>
-// 			{({ field, form, meta }) => {
-// 				const handleChange = event => field.onChange(SyntEvent(field.name, event.target.checked))
-// 				return (
-// 					<DollyCheckbox
-// 						onChange={handleChange}
-// 						onBlur={field.onBlur}
-// 						checked={field.value}
-// 						{...props}
-// 					/>
-// 				)
-// 			}}
-// 		</FastField>
-// 	)
-// }
+			return <DollyCheckbox checked={field.value} onChange={handleChange} {...props} />
+		}}
+	</FormikField>
+)
