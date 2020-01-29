@@ -26,7 +26,7 @@ import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SyntetisertingServiceTest {
+public class BrukereServiceTest {
 
     private static final int ANTALL_EKSISTERENDE_ARBEIDSSOKERE = 15;
     private static final int ANTALL_OPPRETTEDE_ARBEIDSSOKERE = 5;
@@ -42,7 +42,7 @@ public class SyntetisertingServiceTest {
     private Random random;
 
     @InjectMocks
-    private SyntetiseringService syntetiseringService;
+    private BrukereService brukereService;
 
     private Long avspillergruppeId = 10L;
     private String miljoe = "q2";
@@ -124,7 +124,7 @@ public class SyntetisertingServiceTest {
         doReturn(toEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(enNyArbeidsoekerResponse).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
-        return syntetiseringService.opprettArbeidsoekere(antallNyeIdenter, avspillergruppeId, miljoe);
+        return brukereService.opprettArbeidsoekere(antallNyeIdenter, avspillergruppeId, miljoe);
     }
 
     @Test
@@ -142,7 +142,7 @@ public class SyntetisertingServiceTest {
         doReturn(tyveNyeArbeidsoekereResponse).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         NyeBrukereResponse arbeidsokere =
-                syntetiseringService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
+                brukereService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
         assertThat(arbeidsokere.getArbeidsoekerList().size(), is(20));
         assertThat(arbeidsokere.getArbeidsoekerList().get(0).getPersonident(), is("10101010101"));
         assertThat(arbeidsokere.getArbeidsoekerList().get(4).getPersonident(), is("50505050505"));
@@ -172,7 +172,7 @@ public class SyntetisertingServiceTest {
         doReturn(opprettedeArbeidsoekereResponse).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         NyeBrukereResponse arbeidsokere =
-                syntetiseringService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
+                brukereService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
 
         assertThat(arbeidsokere.getArbeidsoekerList().size(), is(5));
         assertThat(arbeidsokere.getArbeidsoekerList().get(2).getPersonident(), is("30303030303"));
@@ -185,7 +185,7 @@ public class SyntetisertingServiceTest {
         doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(enNyArbeidsoekerResponse).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
-        NyeBrukereResponse arbeidsoeker = syntetiseringService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
+        NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
 
         assertThat(arbeidsoeker.getArbeidsoekerList().size(), is(1));
         assertThat(arbeidsoeker.getArbeidsoekerList().get(0).getPersonident(), is(fnr2));
@@ -197,7 +197,7 @@ public class SyntetisertingServiceTest {
         doReturn(enNyArbeisoker).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(enNyArbeisoker).when(arenaForvalterConsumer).hentArbeidsoekere(anyString(), eq(null), eq(null));
 
-        NyeBrukereResponse arbeidsoeker = syntetiseringService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
+        NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
 
         assertThat(arbeidsoeker.getArbeidsoekerList().size(), is(1));
         assertThat(arbeidsoeker.getArbeidsoekerList().get(0).getPersonident(), is(fnr2));
@@ -208,7 +208,7 @@ public class SyntetisertingServiceTest {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
         doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
 
-        NyeBrukereResponse arbeidsoeker = syntetiseringService.opprettArbeidssoeker(fnr3, avspillergruppeId, miljoe);
+        NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr3, avspillergruppeId, miljoe);
 
         assertThat(arbeidsoeker.getArbeidsoekerList(), is(Collections.EMPTY_LIST));
     }

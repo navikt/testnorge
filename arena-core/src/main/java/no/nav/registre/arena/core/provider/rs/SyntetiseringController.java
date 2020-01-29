@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.arena.core.service.SyntetiseringService;
+import no.nav.registre.arena.core.service.BrukereService;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
 @RequiredArgsConstructor
 public class SyntetiseringController {
 
-    private final SyntetiseringService syntetiseringService;
+    private final BrukereService brukereService;
 
     @PostMapping("/generer")
     @ApiOperation(value = "Legg til identer i Arena", notes = "Legger til oppgitt antall identer i Arena. Dersom ingen antall identer blir oppgitt fyller den opp slik at 20% tilgjengelige gyldige identer ligger i Arena. \nResponse: liste av opprettede identer.")
@@ -36,7 +36,7 @@ public class SyntetiseringController {
     private ResponseEntity<NyeBrukereResponse> registrerBrukereIArenaForvalter(
             SyntetiserArenaRequest arenaRequest
     ) {
-        var respons = syntetiseringService.opprettArbeidsoekere(
+        var respons = brukereService.opprettArbeidsoekere(
                 arenaRequest.getAntallNyeIdenter(),
                 arenaRequest.getAvspillergruppeId(),
                 arenaRequest.getMiljoe()
@@ -49,7 +49,7 @@ public class SyntetiseringController {
             String personident,
             SyntetiserArenaRequest arenaRequest
     ) {
-        var response = syntetiseringService.opprettArbeidssoeker(
+        var response = brukereService.opprettArbeidssoeker(
                 personident,
                 arenaRequest.getAvspillergruppeId(),
                 arenaRequest.getMiljoe()

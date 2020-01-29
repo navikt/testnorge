@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
-import no.nav.registre.arena.core.provider.rs.requests.IdentMedData;
 import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 import no.nav.registre.arena.domain.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.arena.domain.brukere.NyBruker;
@@ -23,9 +22,8 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class SyntetiseringService {
+public class BrukereService {
 
-    private static final String ARENA_FORVALTER_NAME = "arena-forvalteren";
     private static final double PROSENTANDEL_SOM_SKAL_HA_MELDEKORT = 0.2;
     private static final int MINIMUM_ALDER = 16;
     private static final int MAKSIMUM_ALDER = 67;
@@ -55,7 +53,7 @@ public class SyntetiseringService {
         }
 
         var nyeIdenter = hentKvalifiserteIdenter(antallNyeIdenter, levendeIdenter, arbeidsoekerIdenter);
-        return byggArbeidsoekereOgLagreIHodejegeren(nyeIdenter, miljoe, Kvalifiseringsgrupper.IKVAL);
+        return sendArbeidssoekereTilArenaForvalter(nyeIdenter, miljoe, Kvalifiseringsgrupper.IKVAL);
     }
 
     public NyeBrukereResponse opprettArbeidssoeker(
@@ -76,7 +74,7 @@ public class SyntetiseringService {
             return new NyeBrukereResponse();
         }
 
-        return byggArbeidsoekereOgLagreIHodejegeren(Collections.singletonList(ident), miljoe, Kvalifiseringsgrupper.IKVAL);
+        return sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, Kvalifiseringsgrupper.IKVAL);
     }
 
     public List<String> hentEksisterendeArbeidsoekerIdenter() {
@@ -84,7 +82,7 @@ public class SyntetiseringService {
         return hentIdentListe(arbeidsoekere);
     }
 
-    public NyeBrukereResponse byggArbeidsoekereOgLagreIHodejegeren(
+    public NyeBrukereResponse sendArbeidssoekereTilArenaForvalter(
             List<String> identer,
             String miljoe,
             Kvalifiseringsgrupper kvalifiseringsgruppe
@@ -97,7 +95,6 @@ public class SyntetiseringService {
                         .automatiskInnsendingAvMeldekort(true)
                         .build())
                 .collect(Collectors.toList());
-        lagreArenaBrukereIHodejegeren(nyeBrukere);
 
         return arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
     }
@@ -131,17 +128,6 @@ public class SyntetiseringService {
             Long avspillergruppeId
     ) {
         return hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-    }
-
-    private void lagreArenaBrukereIHodejegeren(
-            List<NyBruker> nyeBrukere
-    ) {
-        List<IdentMedData> brukereSomSkalLagres = new ArrayList<>(nyeBrukere.size());
-        for (var bruker : nyeBrukere) {
-            var data = Collections.singletonList(bruker);
-            brukereSomSkalLagres.add(new IdentMedData(bruker.getPersonident(), data));
-        }
-        hodejegerenConsumer.saveHistory(ARENA_FORVALTER_NAME, brukereSomSkalLagres);
     }
 
     private List<String> hentIdentListe(

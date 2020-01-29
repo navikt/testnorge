@@ -34,7 +34,7 @@ public class RettighetAapServiceTest {
     private AapSyntConsumer aapSyntConsumer;
 
     @Mock
-    private SyntetiseringService syntetiseringService;
+    private BrukereService brukereService;
 
     @Mock
     private ServiceUtils serviceUtils;
@@ -90,7 +90,7 @@ public class RettighetAapServiceTest {
 
         when(serviceUtils.getLevende(avspillergruppeId)).thenReturn(identer);
         when(serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallIdenter)).thenReturn(identer);
-        when(syntetiseringService.hentEksisterendeArbeidsoekerIdenter()).thenReturn(new ArrayList<>(Collections.singletonList(fnr1)));
+        when(brukereService.hentEksisterendeArbeidsoekerIdenter()).thenReturn(new ArrayList<>(Collections.singletonList(fnr1)));
     }
 
     @Test
@@ -231,7 +231,7 @@ public class RettighetAapServiceTest {
                 .build();
         var expectedResponsesFromArenaForvalter = new ArrayList<>(Collections.singletonList(nyRettighetFritakMeldekortResponse));
 
-        when(syntetiseringService.hentEksisterendeArbeidsoekerIdenter()).thenReturn(identer);
+        when(brukereService.hentEksisterendeArbeidsoekerIdenter()).thenReturn(identer);
         when(serviceUtils.getLevende(avspillergruppeId)).thenReturn(identer);
         when(aapSyntConsumer.syntetiserRettighetFritakMeldekort(antallIdenter)).thenReturn(fritakMeldekortRettigheter);
         when(rettighetAapArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);

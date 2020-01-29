@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
-import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
 import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 import no.nav.registre.arena.domain.brukere.NyBruker;
 
@@ -57,17 +56,7 @@ public class ArenaForvalterConsumer {
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                 .body(Collections.singletonMap("nyeBrukere", nyeBrukere));
 
-        var response = restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
-        if (invalidResponse(response)) {
-            log.warn("Kunne ikke sende arbeidsoekere til Arena Forvalteren på addresse:\n{}.\nStatus: {}\nBody: {}",
-                    postRequest.toString(), response.getStatusCode(), response.getBody());
-            return new NyeBrukereResponse();
-        }
-
-        var formatertResponse = new NyeBrukereResponse();
-        formatertResponse.setArbeidsoekerList(response.getBody().getArbeidsokerList());
-        formatertResponse.setNyBrukerFeilList(response.getBody().getNyBrukerFeilList());
-        return formatertResponse;
+        return restTemplate.exchange(postRequest, NyeBrukereResponse.class).getBody();
     }
 
     @Timed(value = "testnorge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
@@ -110,14 +99,12 @@ public class ArenaForvalterConsumer {
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                 .build();
-        var response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
-        if (invalidResponse(response)) {
-            log.info("Kunne ikke hente arbeidsøkere fra Arena Forvalteren på addresse:\n{}\nStatus: {}\nBody: {}",
-                    getRequest.toString(), response.getStatusCode(), response.getBody());
+        var response = restTemplate.exchange(getRequest, NyeBrukereResponse.class).getBody();
+        if (response != null) {
+            return gaaGjennomSider(refinedUrl, response.getAntallSider(), response.getArbeidsoekerList().size());
+        } else {
             return new ArrayList<>();
         }
-
-        return gaaGjennomSider(refinedUrl, response.getBody().getAntallSider(), response.getBody().getArbeidsokerList().size());
     }
 
     private List<Arbeidsoeker> gaaGjennomSider(
@@ -125,27 +112,25 @@ public class ArenaForvalterConsumer {
             int antallSider,
             int initialLength
     ) {
-        List<Arbeidsoeker> responseList = new ArrayList<>(antallSider * initialLength);
+        List<Arbeidsoeker> arbeidssoekere = new ArrayList<>(antallSider * initialLength);
         var hentBrukerePage = new UriTemplate(baseUri + "page={page}");
 
         for (int page = 0; page < antallSider; page++) {
-            var getRequest = RequestEntity.get(hentBrukerePage.expand(page)).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
-
-            var response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
-            if (invalidResponse(response)) {
-                log.warn("Kunne ikke hente arbeidsøkere fra Arena Forvalteren på addresse:\n{}\nStatus: {}\nBody: {}",
-                        getRequest.toString(), response.getStatusCode(), response.getBody());
-                return responseList;
+            var getRequest = RequestEntity.get(hentBrukerePage.expand(page))
+                    .header("Nav-Call-Id", NAV_CALL_ID)
+                    .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                    .build();
+            var response = restTemplate.exchange(getRequest, NyeBrukereResponse.class).getBody();
+            if (response != null) {
+                arbeidssoekere.addAll(response.getArbeidsoekerList());
             }
-
-            responseList.addAll(response.getBody().getArbeidsokerList());
         }
 
-        return responseList;
+        return arbeidssoekere;
     }
 
     @Timed(value = "testnroge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
-    public Boolean slettBrukerSuccessful(
+    public Boolean slettBruker(
             String personident,
             String miljoe
     ) {
@@ -161,9 +146,5 @@ public class ArenaForvalterConsumer {
         }
 
         return true;
-    }
-
-    private Boolean invalidResponse(ResponseEntity<?> response) {
-        return (Objects.isNull(response.getBody()) || response.getStatusCode() != HttpStatus.OK);
     }
 }

@@ -94,7 +94,7 @@ public class ArenaForvalterConsumerTest {
     public void slettBrukereTest() {
         stubArenaForvalterSlettBrukere();
 
-        Boolean test = arenaForvalterConsumer.slettBrukerSuccessful("10101010101", "q2");
+        Boolean test = arenaForvalterConsumer.slettBruker("10101010101", "q2");
         assertThat(test, is(true));
     }
 
@@ -102,7 +102,7 @@ public class ArenaForvalterConsumerTest {
     public void slettBrukereBadReq() {
         stubArenaForvalterSlettBrukereBadReq();
 
-        Boolean test = arenaForvalterConsumer.slettBrukerSuccessful("10101010101", "q2");
+        Boolean test = arenaForvalterConsumer.slettBruker("10101010101", "q2");
         assertThat(test, is(false));
     }
 

@@ -28,7 +28,7 @@ public class ServiceUtils {
     public static final String BEGRUNNELSE = "Syntetisert rettighet";
 
     private final HodejegerenConsumer hodejegerenConsumer;
-    private final SyntetiseringService syntetiseringService;
+    private final BrukereService brukereService;
     private final Random rand;
 
     public List<String> getLevende(Long avspillergruppeId) {
@@ -89,13 +89,13 @@ public class ServiceUtils {
     }
 
     private List<RettighetRequest> opprettArbeidssoeker(List<RettighetRequest> rettigheter, String miljoe, Kvalifiseringsgrupper kvalifiseringsgruppe) {
-        var identerIArena = syntetiseringService.hentEksisterendeArbeidsoekerIdenter();
+        var identerIArena = brukereService.hentEksisterendeArbeidsoekerIdenter();
         var uregistrerteBrukere = rettigheter.stream().filter(rettighet -> !identerIArena.contains(rettighet.getPersonident())).map(RettighetRequest::getPersonident)
                 .collect(Collectors.toSet());
 
         if (!uregistrerteBrukere.isEmpty()) {
-            var nyeBrukereResponse = syntetiseringService
-                    .byggArbeidsoekereOgLagreIHodejegeren(new ArrayList<>(uregistrerteBrukere), miljoe, kvalifiseringsgruppe);
+            var nyeBrukereResponse = brukereService
+                    .sendArbeidssoekereTilArenaForvalter(new ArrayList<>(uregistrerteBrukere), miljoe, kvalifiseringsgruppe);
             var feiledeIdenter = nyeBrukereResponse.getNyBrukerFeilList().stream().map(NyBrukerFeil::getPersonident).collect(Collectors.toCollection(ArrayList::new));
             rettigheter.removeIf(rettighet -> feiledeIdenter.contains(rettighet.getPersonident()));
         }

@@ -3,7 +3,7 @@ package no.nav.registre.arena.core.provider.rs;
 import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
 import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.arena.core.service.SyntetiseringService;
+import no.nav.registre.arena.core.service.BrukereService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 public class SyntetiseringControllerTest {
 
     @Mock
-    private SyntetiseringService syntetiseringService;
+    private BrukereService brukereService;
 
     @InjectMocks
     private SyntetiseringController syntetiseringController;
@@ -61,7 +61,7 @@ public class SyntetiseringControllerTest {
 
     @Test
     public void registrerAntallIdenterIArenaForvalter() {
-        when(syntetiseringService
+        when(brukereService
                 .opprettArbeidsoekere(antallNyeIdenter, avspillegruppeId, miljoe))
                 .thenReturn(response);
 
@@ -72,7 +72,7 @@ public class SyntetiseringControllerTest {
 
     @Test
     public void registrerIdentIArenaForvalter() {
-        doReturn(singleResponse).when(syntetiseringService)
+        doReturn(singleResponse).when(brukereService)
                 .opprettArbeidssoeker(fnr1, avspillegruppeId, miljoe);
 
         ResponseEntity<NyeBrukereResponse> response = syntetiseringController.registrerBrukereIArenaForvalter(fnr1, syntetiserArenaRequest);

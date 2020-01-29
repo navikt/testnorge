@@ -32,7 +32,7 @@ public class IdentService {
         List<String> slettedeIdenter = new ArrayList<>();
 
         for (var personident : identerToDelete) {
-            if (arenaForvalterConsumer.slettBrukerSuccessful(personident, miljoe)) {
+            if (arenaForvalterConsumer.slettBruker(personident, miljoe)) {
                 slettedeIdenter.add(personident);
             }
         }

@@ -27,7 +27,7 @@ public class RettighetAapService {
 
     private final AapSyntConsumer aapSyntConsumer;
     private final RettighetAapArenaForvalterConsumer rettighetAapArenaForvalterConsumer;
-    private final SyntetiseringService syntetiseringService;
+    private final BrukereService brukereService;
     private final ServiceUtils serviceUtils;
 
     public List<NyttVedtakResponse> genererVedtakshistorikk(
@@ -205,7 +205,7 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = syntetiseringService.hentEksisterendeArbeidsoekerIdenter();
+        var utvalgteIdenter = brukereService.hentEksisterendeArbeidsoekerIdenter();
         var identerIAvspillergruppe = new HashSet<>(serviceUtils.getLevende(avspillergruppeId));
         utvalgteIdenter.retainAll(identerIAvspillergruppe);
         Collections.shuffle(utvalgteIdenter);
