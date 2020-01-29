@@ -1,6 +1,6 @@
 import React from 'react'
 import cn from 'classnames'
-import { useField } from 'formik'
+import { FormikField } from '~/components/ui/form/FormikField'
 import { Label } from '~/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
 import { fieldError } from '~/components/ui/form/formUtils'
@@ -29,18 +29,19 @@ export const DollyTextInput = props => (
 	</InputWrapper>
 )
 
-const P_FormikTextInput = props => {
-	const [field, meta] = useField(props)
-	return (
-		<DollyTextInput
-			value={field.value}
-			onChange={field.onChange}
-			onBlur={field.onBlur}
-			feil={fieldError(meta)}
-			{...props}
-		/>
-	)
-}
+const P_FormikTextInput = ({ fastfield, ...props }) => (
+	<FormikField name={props.name} fastfield={fastfield}>
+		{({ field, form, meta }) => (
+			<DollyTextInput
+				value={field.value}
+				onChange={field.onChange}
+				onBlur={field.onBlur}
+				feil={fieldError(meta)}
+				{...props}
+			/>
+		)}
+	</FormikField>
+)
 
 export const FormikTextInput = ({ visHvisAvhuket = true, ...props }) => {
 	const component = <P_FormikTextInput {...props} />

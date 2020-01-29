@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDatepicker, { registerLocale } from 'react-datepicker'
-import { useField } from 'formik'
+import { FormikField } from '~/components/ui/form/FormikField'
 import { subYears, addYears } from 'date-fns'
 import locale_nb from 'date-fns/locale/nb'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
@@ -52,22 +52,24 @@ export const DollyDatepicker = props => (
 	</InputWrapper>
 )
 
-const P_FormikDatepicker = props => {
-	const [field, meta] = useField(props)
+const P_FormikDatepicker = ({ fastfield, ...props }) => (
+	<FormikField name={props.name} fastfield={fastfield}>
+		{({ field, form, meta }) => {
+			const handleChange = date => field.onChange(SyntEvent(field.name, date))
+			const handleBlur = () => field.onBlur(SyntEvent(field.name, field.value))
 
-	const handleChange = date => field.onChange(SyntEvent(field.name, date))
-	const handleBlur = () => field.onBlur(SyntEvent(field.name, field.value))
-
-	return (
-		<DollyDatepicker
-			value={field.value}
-			onChange={handleChange}
-			onBlur={handleBlur}
-			feil={fieldError(meta)}
-			{...props}
-		/>
-	)
-}
+			return (
+				<DollyDatepicker
+					value={field.value}
+					onChange={handleChange}
+					onBlur={handleBlur}
+					feil={fieldError(meta)}
+					{...props}
+				/>
+			)
+		}}
+	</FormikField>
+)
 
 export const FormikDatepicker = ({ visHvisAvhuket = true, ...props }) => {
 	const component = <P_FormikDatepicker {...props} />
