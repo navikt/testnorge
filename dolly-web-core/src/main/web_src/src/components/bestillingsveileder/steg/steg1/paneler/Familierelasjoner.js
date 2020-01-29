@@ -9,13 +9,9 @@ import Formatters from '~/utils/DataFormatter'
 export const FamilierelasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
 
-	const infoTekst =
-		'Savner du noen egenskaper for partner/barn? Du kan nå opprette personene hver for seg (uten relasjoner) og koble dem sammen etter de er bestilt. På denne måten kan partner og barn få flere typer egenskaper. Hvis du vil legge inn familierelasjoner raskt gjør du dette under familierelasjoner i bestillingsveilederen.'
-
 	return (
 		<Panel
 			heading={FamilierelasjonPanel.heading}
-			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'relasjoner'}
