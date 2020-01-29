@@ -46,7 +46,7 @@ public class DatoParser {
     }
 
     public static String hentMaanedsnavnFraMaanedsnummer(int maaned) {
-        if(maaned < 0 || maaned >= MAANEDER.size()) {
+        if (maaned < 1 || maaned > MAANEDER.size()) {
             throw new IllegalArgumentException("Ugyldig maaned " + maaned);
         }
 

@@ -54,7 +54,6 @@ public class SyntetiseringService {
     private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     public Map<String, List<RsInntekt>> startSyntetisering(SyntetiseringsRequest syntetiseringsRequest) {
-
         Set<String> identer = new HashSet<>(hentLevendeIdenterOverAlder(syntetiseringsRequest.getAvspillergruppeId()));
         Set<String> identerIInntektstub = new HashSet<>(inntektstubV2Consumer.hentEksisterendeIdenter());
 

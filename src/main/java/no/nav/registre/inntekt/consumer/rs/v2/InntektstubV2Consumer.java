@@ -51,7 +51,7 @@ public class InntektstubV2Consumer {
     private final UriTemplate hentEksisterendeInntekterUrl;
 
     public InntektstubV2Consumer(
-            @Value("${inntektstub-u1.rest.api.url}") String inntektstubUrl
+            @Value("${inntektstub-t4.rest.api.url}") String inntektstubUrl
     ) {
         this.restTemplate = new RestTemplate(getHttpRequestFactory());
         this.leggTilInntektUrl = new UriTemplate(inntektstubUrl + "/v2/inntektsinformasjon?valider-inntektskombinasjoner=true&valider-kodeverk=true");
