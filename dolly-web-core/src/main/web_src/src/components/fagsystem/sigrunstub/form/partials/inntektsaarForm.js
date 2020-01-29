@@ -43,6 +43,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 								label="Tjeneste"
 								options={Options('tjeneste')}
 								isDisabled={_get(formikBag.values, `${path}.svalbardGrunnlag`, []).length > 0}
+								fastfield={false}
 								isClearable={false}
 							/>
 						</div>
