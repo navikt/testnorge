@@ -129,25 +129,6 @@ public class RettighetTiltakService {
         return responses;
     }
 
-    public List<NyttVedtakResponse> opprettTiltaksaktivitet(
-            String ident,
-            LocalDate fraDato,
-            String miljoe
-    ) {
-        RettighetTiltaksaktivitetRequest rettighetRequest = new RettighetTiltaksaktivitetRequest();
-        rettighetRequest.setPersonident(ident);
-        rettighetRequest.setMiljoe(miljoe);
-        NyttVedtakTiltak nyttVedtakTiltak = new NyttVedtakTiltak();
-        nyttVedtakTiltak.setAktivitetkode("");
-        nyttVedtakTiltak.setBeskrivelse(BEGRUNNELSE);
-        nyttVedtakTiltak.setFraDato(fraDato);
-        //        nyttVedtakTiltak.setSaksbehandler("");
-        List<NyttVedtakTiltak> nyTiltaksaktivitet = new ArrayList<>(Collections.singletonList(nyttVedtakTiltak));
-        rettighetRequest.setNyeTiltaksaktivitet(nyTiltaksaktivitet);
-
-        return rettighetArenaForvalterConsumer.opprettRettighet(new ArrayList<>(Collections.singletonList(rettighetRequest)));
-    }
-
     List<NyttVedtakResponse> opprettTiltaksaktiviteter(List<RettighetRequest> rettigheter) {
         List<RettighetRequest> tiltaksaktiviteter = new ArrayList<>(rettigheter.size());
         for (var rettighet : rettigheter) {
