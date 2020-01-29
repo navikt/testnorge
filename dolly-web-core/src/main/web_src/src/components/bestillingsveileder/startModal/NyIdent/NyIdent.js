@@ -73,6 +73,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 								isLoading={state.loading}
 								options={malOptions}
 								size="grow"
+								fastfield={false}
 							/>
 						</div>
 					</div>

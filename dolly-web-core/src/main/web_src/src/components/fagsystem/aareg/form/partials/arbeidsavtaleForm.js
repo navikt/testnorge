@@ -43,18 +43,20 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 					size="xxlarge"
 					isClearable={false}
 				/>
-				{/* <FormikTextInput
+				<FormikTextInput
 					name={`${arbeidsavtalePath}.antallKonverterteTimer`}
 					label="Antall konverterte timer"
 					type="number"
 					disabled={harArbTimerPerUke}
+					fastfield={false}
 					title={harArbTimerPerUke ? infotekst : undefined}
-				/> */}
+				/>
 				<FormikTextInput
 					name={`${arbeidsavtalePath}.avtaltArbeidstimerPerUke`}
 					label="Avtalte timer per uke"
 					type="number"
 					disabled={harKonverterteTimer}
+					fastfield={false}
 					title={harKonverterteTimer ? infotekst : undefined}
 				/>
 			</div>

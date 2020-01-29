@@ -5,7 +5,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 
 export const Boadresse = ({ boadresse, visKunAdresse }) => {
-	if (!boadresse) return false
+	if (!boadresse || boadresse.length < 1) return false
 
 	const {
 		adressetype,

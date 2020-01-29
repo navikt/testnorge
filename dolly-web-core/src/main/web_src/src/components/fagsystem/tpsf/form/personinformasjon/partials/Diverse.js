@@ -33,6 +33,7 @@ export const Diverse = ({ formikBag }) => (
 				name="tpsf.forsvunnetDato"
 				label="Forsvunnet dato"
 				disabled={!formikBag.values.tpsf.erForsvunnet}
+				fastfield={false}
 			/>
 		</Vis>
 		<Diskresjonskoder basePath="tpsf" formikBag={formikBag} />
