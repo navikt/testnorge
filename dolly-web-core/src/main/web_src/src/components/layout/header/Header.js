@@ -16,6 +16,7 @@ export default ({ brukerData }) => {
 				<div className="img-logo">
 					<img alt="NAV logo" src={logo} />
 				</div>
+				<Icon size={30} kind="dolly" className="dollysheep" />
 				<h1>Dolly</h1>
 			</NavLink>
 

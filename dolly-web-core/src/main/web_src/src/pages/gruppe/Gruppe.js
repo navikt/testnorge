@@ -7,9 +7,10 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import PersonListeConnector from './PersonListe/PersonListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
 import GruppeHeader from './GruppeHeader/GruppeHeader'
-import Toolbar from '~/components/ui/toolbar/Toolbar'
+import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { SearchField } from '~/components/searchField/SearchField'
 import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
+import Icon from '~/components/ui/icon/Icon'
 
 const VISNING_PERSONER = 'personer'
 const VISNING_BESTILLING = 'bestilling'
@@ -41,17 +42,6 @@ export default function Gruppe({
 
 	const identArray = Object.values(identer)
 
-	const toggleValues = [
-		{
-			value: VISNING_PERSONER,
-			label: `Personer (${identArray.length})`
-		},
-		{
-			value: VISNING_BESTILLING,
-			label: `Bestillinger (${identArray.map(b => b.bestillingId).flat().length})`
-		}
-	]
-
 	const startBestilling = values =>
 		history.push(`/gruppe/${match.params.gruppeId}/bestilling`, values)
 
@@ -71,16 +61,28 @@ export default function Gruppe({
 
 			<StatusListeConnector gruppeId={gruppe.id} />
 
-			<Toolbar
-				searchField={<SearchField placeholder={searchfieldPlaceholderSelector()} />}
-				toggleOnChange={byttVisning}
-				toggleCurrent={visning}
-				toggleValues={toggleValues}
-			>
+			<div className="toolbar">
 				<NavButton type="hoved" onClick={visStartBestilling}>
 					Opprett personer
 				</NavButton>
-			</Toolbar>
+
+				<ToggleGruppe onChange={byttVisning} name="toggler">
+					<ToggleKnapp value={VISNING_PERSONER} checked={visning === VISNING_PERSONER}>
+						<Icon size={13} kind={visning === VISNING_PERSONER ? 'manLight' : 'man'} />
+						{`Personer (${identArray.length})`}
+					</ToggleKnapp>
+					<ToggleKnapp value={VISNING_BESTILLING} checked={visning === VISNING_BESTILLING}>
+						<Icon
+							size={13}
+							kind={visning === VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
+						/>
+						{`Bestillinger (${identArray.map(b => b.bestillingId).flat().length})`}
+					</ToggleKnapp>
+				</ToggleGruppe>
+
+				<SearchField placeholder={searchfieldPlaceholderSelector()} />
+			</div>
+
 			{startBestillingAktiv && (
 				<BestillingsveilederModal
 					onSubmit={startBestilling}

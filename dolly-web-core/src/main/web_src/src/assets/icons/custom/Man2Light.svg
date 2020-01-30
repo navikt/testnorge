@@ -1,0 +1,10 @@
+<svg contentScriptType="text/ecmascript" zoomAndPan="magnify"
+     xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css"
+     id="Filled_Version" enable-background="new 0 0 24 24" version="1.1"
+     xml:space="preserve" width="24px" preserveAspectRatio="xMidYMid meet"
+     viewBox="0 0 24 24" height="24px" xmlns="http://www.w3.org/2000/svg"
+     x="0px" y="0px">
+    <g fill="#FFFFFF">
+        <circle fill="#FFFFFF" r="3" cx="12" cy="3"/>
+        <path fill="#FFFFFF"
+              d="M17.637,7.52l-3.5-1c-0.232-0.067-0.477,0.042-0.584,0.257L12,9.883l-1.553-3.106C10.34,6.562,10.095,6.453,9.862,6.52   l-3.5,1C6.148,7.581,6,7.777,6,8v7.5C6,15.776,6.224,16,6.5,16h1.529l0.975,7.563C9.036,23.813,9.249,24,9.5,24h5   c0.251,0,0.464-0.187,0.496-0.437L15.97,16h1.53c0.276,0,0.5-0.224,0.5-0.5V8C18,7.777,17.852,7.581,17.637,7.52z"/></g></svg>
