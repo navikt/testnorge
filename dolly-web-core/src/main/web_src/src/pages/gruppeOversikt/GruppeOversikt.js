@@ -35,7 +35,7 @@ export default function GruppeOversikt({
 				<HjelpeTekst>Testdatagruppen inneholder alle personene dine (FNR/DNR/BOST).</HjelpeTekst>
 			</div>
 
-			<div className="flexbox--align-center--space">
+			<div className="toolbar">
 				<NavButton type="hoved" onClick={visNyGruppe}>
 					Ny gruppe
 				</NavButton>

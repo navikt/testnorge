@@ -61,7 +61,7 @@ export default function Gruppe({
 
 			<StatusListeConnector gruppeId={gruppe.id} />
 
-			<div className="flexbox--align-center--space">
+			<div className="toolbar">
 				<NavButton type="hoved" onClick={visStartBestilling}>
 					Opprett personer
 				</NavButton>
