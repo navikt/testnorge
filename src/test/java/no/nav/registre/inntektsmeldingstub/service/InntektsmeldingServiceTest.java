@@ -1,9 +1,9 @@
 package no.nav.registre.inntektsmeldingstub.service;
 
-import lombok.RequiredArgsConstructor;
 import no.nav.registre.inntektsmeldingstub.MeldingsType;
 import no.nav.registre.inntektsmeldingstub.database.model.Arbeidsforhold;
 import no.nav.registre.inntektsmeldingstub.database.model.Arbeidsgiver;
+import no.nav.registre.inntektsmeldingstub.database.model.Eier;
 import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
 import no.nav.registre.inntektsmeldingstub.database.repository.ArbeidsforholdRepository;
 import no.nav.registre.inntektsmeldingstub.database.repository.ArbeidsgiverRepository;
@@ -15,89 +15,130 @@ import no.nav.registre.inntektsmeldingstub.database.repository.InntektsmeldingRe
 import no.nav.registre.inntektsmeldingstub.database.repository.NaturalytelseDetaljerRepository;
 import no.nav.registre.inntektsmeldingstub.database.repository.PeriodeRepository;
 import no.nav.registre.inntektsmeldingstub.database.repository.UtsettelseAvForeldrepengerRepository;
+import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+// @AutoConfigureTestDatabase
+@DataJpaTest
+@RunWith(SpringRunner.class)
+@EnableAutoConfiguration
+//@SpringBootTest
+//@AutoConfigureWireMock(port = 0)
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class InntektsmeldingServiceTest {
 
-    @Mock
-    ArbeidsforholdRepository arbeidsforholdRepository;
-    @Mock
-    ArbeidsgiverRepository arbeidsgiverRepository;
-    @Mock
+    @Autowired
+    private ArbeidsforholdRepository arbeidsforholdRepository;
+    @Autowired
+    private ArbeidsgiverRepository arbeidsgiverRepository;
+    @Autowired
     private DelvisFravaerRepository delvisFravaerRepository;
-    @Mock
+    @Autowired
     private GraderingIForeldrePengerRepository graderingIForeldrePengerRepository;
-    @Mock
+    @Autowired
     private InntektsmeldingRepository inntektsmeldingRepository;
-    @Mock
+    @Autowired
     private NaturalytelseDetaljerRepository naturalytelseDetaljerRepository;
-    @Mock
+    @Autowired
     private PeriodeRepository periodeRepository;
-    @Mock
+    @Autowired
     private EndringIRefusjonRepository endringIRefusjonRepository;
-    @Mock
+    @Autowired
     private UtsettelseAvForeldrepengerRepository utsettelseAvForeldrepengerRepository;
-    @Mock
+    @Autowired
     private EierRepository eierRepository;
 
     private Inntektsmelding inntekt_A, inntekt_B, inntekt_C, inntekt_D, inntekt_E, inntekt_F;
-
-    @InjectMocks
     private InntektsmeldingService inntektsmeldingService;
 
     @Before
     public void setup() {
+        inntektsmeldingService = new InntektsmeldingService(
+                arbeidsforholdRepository,
+                arbeidsgiverRepository,
+                delvisFravaerRepository,
+                graderingIForeldrePengerRepository,
+                inntektsmeldingRepository,
+                naturalytelseDetaljerRepository,
+                periodeRepository,
+                endringIRefusjonRepository,
+                utsettelseAvForeldrepengerRepository,
+                eierRepository);
 
-        inntekt_A = Inntektsmelding.builder().id(0L).ytelse("KREV").arbeidstakerFnr("00112233445")
-                .arbeidsgiver(Arbeidsgiver.builder().id(6L).virksomhetsnummer("0000011111")
-                        .inntektsmeldinger(Collections.EMPTY_LIST).build())
-                .arbeidsforhold(Arbeidsforhold.builder().build()).build();
-        inntekt_B = Inntektsmelding.builder().id(1L).ytelse("LONN").arbeidstakerFnr("55667788990")
-                .arbeidsgiver(Arbeidsgiver.builder().id(7L).virksomhetsnummer("0000011111")
-                        .inntektsmeldinger(Collections.EMPTY_LIST).build())
-                .arbeidsforhold(Arbeidsforhold.builder().build()).build();
-        inntekt_C = Inntektsmelding.builder().id(2L).ytelse("LONN").arbeidstakerFnr("22334455667")
-                .arbeidsgiver(Arbeidsgiver.builder().id(8L).virksomhetsnummer("0000011111")
-                        .inntektsmeldinger(Collections.EMPTY_LIST).build())
-                .arbeidsforhold(Arbeidsforhold.builder().build()).build();
-
-        inntekt_D = Inntektsmelding.builder().id(3L).ytelse("KREV").arbeidstakerFnr("00112233445")
-                .privatArbeidsgiver(Arbeidsgiver.builder().id(9L).virksomhetsnummer("0000022222")
-                        .inntektsmeldinger(Collections.EMPTY_LIST).build())
-                .arbeidsforhold(Arbeidsforhold.builder().build()).build();
-        inntekt_E = Inntektsmelding.builder().id(4L).ytelse("LONN").arbeidstakerFnr("55667788990")
-                .privatArbeidsgiver(Arbeidsgiver.builder().id(10L).virksomhetsnummer("00000222222")
-                        .inntektsmeldinger(Collections.EMPTY_LIST).build())
-                .arbeidsforhold(Arbeidsforhold.builder().build()).build();
-        inntekt_F = Inntektsmelding.builder().id(5L).ytelse("LONN").arbeidstakerFnr("22334455667")
-                .privatArbeidsgiver(Arbeidsgiver.builder().id(11L).virksomhetsnummer("0000022222")
-                        .inntektsmeldinger(Collections.EMPTY_LIST).build())
-                .arbeidsforhold(Arbeidsforhold.builder().build()).build();
-
-        when(inntektsmeldingRepository.save(inntekt_A)).thenReturn(inntekt_A);
-        when(inntektsmeldingRepository.save(inntekt_B)).thenReturn(inntekt_B);
-        when(inntektsmeldingRepository.save(inntekt_C)).thenReturn(inntekt_C);
-        when(inntektsmeldingRepository.save(inntekt_D)).thenReturn(inntekt_D);
-        when(inntektsmeldingRepository.save(inntekt_E)).thenReturn(inntekt_E);
-        when(inntektsmeldingRepository.save(inntekt_F)).thenReturn(inntekt_F);
+        inntekt_A = Inntektsmelding.builder()
+                .ytelse("miniytelse")
+                .aarsakTilInnsending("minitesting")
+                .arbeidsgiver(Arbeidsgiver.builder()
+                        .virksomhetsnummer("123456789")
+                        .telefonnummer("12345678")
+                        .kontaktinformasjonNavn("Bjarne Bjarne")
+                        .build())
+                .arbeidsforhold(Arbeidsforhold.builder()
+                        .arbeidforholdsId("ANSWER42")
+                        .build())
+                .build();
     }
 
     @Test
     public void saveXML12MeldingerTest() {
 
-        // inntektsmeldingService.saveMeldinger(Arrays.asList(inntekt_D, inntekt_E, inntekt_F), MeldingsType.TYPE_2018_12, "test");
+        RsInntektsmelding melding = InntektsmeldingFactory.getMinimalMelding();
+        List<Inntektsmelding> res = inntektsmeldingService.saveMeldinger(Collections.singletonList(melding),
+                MeldingsType.TYPE_2018_12, "test");
+        assertThat(res.size(), is(1));
+        assertThat(res.get(0).getEier().getNavn(), is("test"));
+    }
+
+    @Test
+    public void save2MeldingerSammeArbGiverTest() {
+        RsInntektsmelding fullMelding = InntektsmeldingFactory.getFullMelding();
+        RsInntektsmelding miniMelding = InntektsmeldingFactory.getMinimalMelding();
+
+        List<Inntektsmelding> res = inntektsmeldingService.saveMeldinger(Collections.singletonList(miniMelding),
+                MeldingsType.TYPE_2018_12, "test");
+        assertThat(res.size(), is(1));
+        assertThat(res.get(0).getEier().getNavn(), is("test"));
+        assertThat(res.get(0).getArbeidsgiver().get().getInntektsmeldinger().size(), is(1));
+
+
+
+        res = inntektsmeldingService.saveMeldinger(Collections.singletonList(fullMelding),
+                MeldingsType.TYPE_2018_12, "test");
+
+        assertThat(res.get(0).getArbeidsgiver().get().getInntektsmeldinger().size(), is(2));
+
+        List<Eier> e = (List<Eier>) eierRepository.findAll();
+        assertThat(e.size(), is(1));
+
+    }
+
+    @Test
+    public void save2MeldingerPrivatArbeidsgiver() {
+
+    }
+
+    @Test
+    public void save2ArbeidsforholdSammeArbeidsgiver() {
 
     }
 

@@ -7,7 +7,11 @@ definert av [denne XSD'en](https://github.com/navikt/tjenestespesifikasjoner/blo
 Den har endepunkter for å opprette inntektsmeldinger på 201809- og 201812-formater, og lagrer dem i en database. Man 
 kan også hente opp inntektsmeldinger man allerede har laget.
 
-![databasemodell](databasemodell.png)
+![databasemodell](graphics/databasemodell.png)
+
+Flytskjema for Kontekst:
+
+![flowchart](graphics/inntektsmelding.png)
 
 ## Mangler
 - [ ] Foreløpig ikke implementert innsending av meldingene (hvor? inntektstub?)

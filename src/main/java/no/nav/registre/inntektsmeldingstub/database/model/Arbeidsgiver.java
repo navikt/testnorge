@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -25,8 +26,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Arbeidsgiver {
 
-    @OneToMany(mappedBy = "arbeidsgiver", cascade = CascadeType.ALL)
-    @Builder.Default
+    @OneToMany(mappedBy = "arbeidsgiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Inntektsmelding> inntektsmeldinger = Collections.emptyList();
     @Id
     @GeneratedValue
@@ -36,4 +36,8 @@ public class Arbeidsgiver {
     private String kontaktinformasjonNavn;
     private String telefonnummer;
 
+    public void addInntektsmelding(Inntektsmelding melding) {
+        melding.setArbeidsgiver(this);
+        inntektsmeldinger.add(melding);
+    }
 }

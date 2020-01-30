@@ -25,12 +25,16 @@ import no.nav.registre.inntektsmeldingstub.service.rs.RsSykepengerIArbeidsgiverp
 import no.nav.registre.inntektsmeldingstub.service.rs.RsUtsettelseAvForeldrepenger;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class InntektsmeldingMapper {
 
     public static Inntektsmelding.InntektsmeldingBuilder map201809melding(RsInntektsmelding melding) {
-        return Inntektsmelding.builder()
+        if (Objects.isNull(melding)) {
+            return Inntektsmelding.builder();
+        }
+        Inntektsmelding.InntektsmeldingBuilder tmp = Inntektsmelding.builder()
                 .ytelse(melding.getYtelse())
                 .arbeidstakerFnr(melding.getArbeidstakerFnr())
                 .aarsakTilInnsending(melding.getAarsakTilInnsending())
@@ -71,13 +75,17 @@ public class InntektsmeldingMapper {
                 .pleiepengerPeriodeListe(melding.getPleiepengerPerioder()
                         .map(list -> list.stream().map(InntektsmeldingMapper::mapPeriode).collect(Collectors.toList()))
                         .orElse(Collections.emptyList()));
+        return tmp;
     }
 
     public static Inntektsmelding.InntektsmeldingBuilder map201812melding(RsInntektsmelding melding) {
-        return map201809melding(melding)
-                .privatArbeidsgiver(melding.getArbeidsgiverPrivat()
-                        .map(InntektsmeldingMapper::mapPrivatArbeidsgiver)
-                        .orElse(null));
+        if (Objects.isNull(melding)) {
+            return Inntektsmelding.builder();
+        }
+        Inntektsmelding.InntektsmeldingBuilder tmp = map201809melding(melding);
+        if (melding.getArbeidsgiverPrivat().isPresent())
+            return tmp.arbeidsgiver(mapPrivatArbeidsgiver(melding.getArbeidsgiverPrivat().get()));
+        return tmp;
     }
 
     private static Arbeidsgiver mapPrivatArbeidsgiver(RsArbeidsgiverPrivat arbeidsgiver) {
