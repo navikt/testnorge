@@ -58,7 +58,7 @@ public class AjourholdService {
 
         int minYearMinus = 110;
         LocalDate minDate = current.minusYears(minYearMinus).with(firstDayOfYear());
-        while (minDate.isBefore(current)) {
+        while (minDate.isBefore(current.plusYears(1))) {
             checkAndGenerateForDate(minDate, Identtype.FNR);
             checkAndGenerateForDate(minDate, Identtype.DNR);
             checkAndGenerateForDate(minDate, Identtype.BOST);
@@ -68,7 +68,10 @@ public class AjourholdService {
         return newIdentCount > 0;
     }
 
-    void checkAndGenerateForDate(LocalDate date, Identtype type) {
+    void checkAndGenerateForDate(
+            LocalDate date,
+            Identtype type
+    ) {
         int maxRuns = 3;
         int runs = 0;
         while (runs < maxRuns && criticalForYear(date.getYear(), type)) {
@@ -77,7 +80,10 @@ public class AjourholdService {
         }
     }
 
-    private boolean criticalForYear(int year, Identtype type) {
+    private boolean criticalForYear(
+            int year,
+            Identtype type
+    ) {
         int antallPerDag = IdentDistribusjonUtil.antallPersonerPerDagPerAar(year);
         int days = (year == current.getYear() ? 365 - current.getDayOfYear() : 365);
         long count = identRepository.countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatus(
@@ -88,7 +94,10 @@ public class AjourholdService {
         return count < antallPerDag * days;
     }
 
-    void generateForYear(int year, Identtype type) {
+    void generateForYear(
+            int year,
+            Identtype type
+    ) {
         int antallPerDag = IdentDistribusjonUtil.antallPersonerPerDagPerAar(year + 1) * 2;
 
         LocalDate firstDate = LocalDate.of(year, 1, 1);
@@ -105,7 +114,10 @@ public class AjourholdService {
         filterIdents(antallPerDag, pinMap);
     }
 
-    private void filterIdents(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
+    private void filterIdents(
+            int antallPerDag,
+            Map<LocalDate, List<String>> pinMap
+    ) {
         List<String> identsNotInDatabase = filterAgainstDatabase(antallPerDag, pinMap);
         Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase, new ArrayList<>());
 
@@ -126,7 +138,10 @@ public class AjourholdService {
         saveIdents(ledig, LEDIG, null);
     }
 
-    private List<String> filterAgainstDatabase(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
+    private List<String> filterAgainstDatabase(
+            int antallPerDag,
+            Map<LocalDate, List<String>> pinMap
+    ) {
         final List<String> arrayList = new ArrayList<>();
         pinMap.forEach((d, value) -> arrayList.addAll(
                 value.stream()
@@ -138,7 +153,11 @@ public class AjourholdService {
         return arrayList;
     }
 
-    private List<Ident> saveIdents(List<String> idents, Rekvireringsstatus status, String rekvirertAv) {
+    private List<Ident> saveIdents(
+            List<String> idents,
+            Rekvireringsstatus status,
+            String rekvirertAv
+    ) {
         return identRepository.saveAll(idents.stream()
                 .map(fnr -> IdentGeneratorUtil.createIdent(fnr, status, rekvirertAv))
                 .collect(Collectors.toList()));

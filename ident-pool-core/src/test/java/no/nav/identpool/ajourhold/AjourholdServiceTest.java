@@ -76,7 +76,7 @@ class AjourholdServiceTest {
         doNothing().when(ajourholdService).generateForYear(anyInt(), eq(Identtype.DNR));
         doNothing().when(ajourholdService).generateForYear(anyInt(), eq(Identtype.BOST));
         ajourholdService.checkCriticalAndGenerate();
-        int number = 111;
+        int number = 112;
         if (LocalDate.now().getDayOfYear() == 1) {
             number -= 1;
         }
