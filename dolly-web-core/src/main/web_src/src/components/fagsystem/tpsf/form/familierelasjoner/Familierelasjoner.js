@@ -7,10 +7,14 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Partnere } from './partials/Partnere'
 import { Barn } from './partials/Barn'
 
+const infoTekst =
+	'Savner du noen egenskaper for partner/barn? Du kan nå opprette personene hver for seg (uten relasjoner) og koble dem sammen etter de er bestilt. På denne måten kan partner og barn få flere typer egenskaper. Hvis du vil legge inn familierelasjoner raskt gjør du dette her.'
+
 export const Familierelasjoner = ({ formikBag }) => (
 	<Vis attributt="tpsf.relasjoner">
 		<Panel
 			heading="Familierelasjoner"
+			informasjonstekst={infoTekst}
 			hasErrors={panelError(formikBag, 'tpsf.relasjoner')}
 			iconType={'relasjoner'}
 		>
