@@ -1,7 +1,5 @@
 package no.nav.registre.tp;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,21 +26,21 @@ public class Ytelse {
     private Timestamp datoBrukFom;
     private Timestamp datoBrukTom;
 
-    @JsonCreator
+    @SuppressWarnings("squid:S00107")
     public Ytelse(
-            @JsonProperty("datoInnmYtelFom") Date datoInnmYtelFom,
-            @JsonProperty("kYtelseT") String kYtelseT,
-            @JsonProperty("meldingsType") String meldingsType,
-            @JsonProperty("datoYtelIverFom") Date datoYtelIverFom,
-            @JsonProperty("datoYtelIverTom") Date datoYtelIverTom,
-            @JsonProperty("datoOpprettet") Timestamp datoOpprettet,
-            @JsonProperty("opprettetAv") String opprettetAv,
-            @JsonProperty("datoEndret") Timestamp datoEndret,
-            @JsonProperty("endretAv") String endretAv,
-            @JsonProperty("versjon") String versjon,
-            @JsonProperty("erGyldig") String erGyldig,
-            @JsonProperty("datoBrukFom") Timestamp datoBrukFom,
-            @JsonProperty("datoBrukTom") Timestamp datoBrukTom
+            Date datoInnmYtelFom,
+            String kYtelseT,
+            String meldingsType,
+            Date datoYtelIverFom,
+            Date datoYtelIverTom,
+            Timestamp datoOpprettet,
+            String opprettetAv,
+            Timestamp datoEndret,
+            String endretAv,
+            String versjon,
+            String erGyldig,
+            Timestamp datoBrukFom,
+            Timestamp datoBrukTom
     ) {
         this.datoInnmYtelFom = datoInnmYtelFom != null ? new Date(datoInnmYtelFom.getTime()) : null;
         this.kYtelseT = kYtelseT;

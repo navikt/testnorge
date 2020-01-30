@@ -1,7 +1,5 @@
 package no.nav.registre.tp;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,14 +18,13 @@ public class Person {
     private String endretAv;
     private String versjon;
 
-    @JsonCreator
     public Person(
-            @JsonProperty("fnrFk") String fnrFk,
-            @JsonProperty("datoOpprettet") Timestamp datoOpprettet,
-            @JsonProperty("opprettetAv") String opprettetAv,
-            @JsonProperty("datoEndret") Timestamp datoEndret,
-            @JsonProperty("endretAv") String endretAv,
-            @JsonProperty("versjon") String versjon
+            String fnrFk,
+            Timestamp datoOpprettet,
+            String opprettetAv,
+            Timestamp datoEndret,
+            String endretAv,
+            String versjon
     ) {
         this.fnrFk = fnrFk;
         this.datoOpprettet = datoOpprettet != null ? new Timestamp(datoOpprettet.getTime()) : null;

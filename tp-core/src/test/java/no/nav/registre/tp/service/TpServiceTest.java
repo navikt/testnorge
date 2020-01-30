@@ -232,13 +232,16 @@ public class TpServiceTest {
             when(tPersonRepository.findByFnrFk(fnrs.get(i))).thenReturn(null);
         }
 
-        var people = fnrs.parallelStream().filter(
+        var people = fnrs
+                .parallelStream()
+                .filter(
                 fnr -> !fnr.equals("123") && !fnr.equals("132"))
                 .map(fnr -> {
                     var person = new TPerson();
                     person.setFnrFk(fnr);
                     return person;
-                }).collect(Collectors.toList());
+                })
+                .collect(Collectors.toList());
         when(tPersonRepository.saveAll(any())).thenReturn(people);
         var created = tpService.createPeople(fnrs);
 

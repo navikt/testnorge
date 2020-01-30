@@ -1,7 +1,5 @@
 package no.nav.registre.tp;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,20 +25,20 @@ public class Forhold {
     private Timestamp datoBrukFom;
     private Timestamp datoBrukTom;
 
-    @JsonCreator
+    @SuppressWarnings("squid:S00107")
     public Forhold(
-            @JsonProperty("datoSamtykkeGitt") Date datoSamtykkeGitt,
-            @JsonProperty("tssEksternIdFk") String tssEksternIdFk,
-            @JsonProperty("datoOpprettet") Timestamp datoOpprettet,
-            @JsonProperty("opprettetAv") String opprettetAv,
-            @JsonProperty("datoEndret") Timestamp datoEndret,
-            @JsonProperty("harUtlandPensj") String harUtlandPensj,
-            @JsonProperty("endretAv") String endretAv,
-            @JsonProperty("kilde") String kilde,
-            @JsonProperty("versjon") String versjon,
-            @JsonProperty("erGyldig") String erGyldig,
-            @JsonProperty("datoBrukFom") Timestamp datoBrukFom,
-            @JsonProperty("datoBrukTom") Timestamp datoBrukTom
+            Date datoSamtykkeGitt,
+            String tssEksternIdFk,
+            Timestamp datoOpprettet,
+            String opprettetAv,
+            Timestamp datoEndret,
+            String harUtlandPensj,
+            String endretAv,
+            String kilde,
+            String versjon,
+            String erGyldig,
+            Timestamp datoBrukFom,
+            Timestamp datoBrukTom
     ) {
         this.datoSamtykkeGitt = datoSamtykkeGitt != null ? new Date(datoSamtykkeGitt.getTime()) : null;
         this.tssEksternIdFk = tssEksternIdFk;

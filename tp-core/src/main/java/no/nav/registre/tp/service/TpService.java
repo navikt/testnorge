@@ -43,6 +43,7 @@ import no.nav.registre.tp.provider.rs.request.SyntetiseringsRequest;
 public class TpService {
 
     private static final Integer MIN_AGE = 13;
+    private static final String EIER = "synt";
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
@@ -235,7 +236,7 @@ public class TpService {
     ) {
         var timestamp = Timestamp.from(Instant.now());
 
-        var toCreate = stringStream.map(fnr -> new TPerson(fnr, timestamp, "synt", timestamp, "synt", "1"))
+        var toCreate = stringStream.map(fnr -> new TPerson(fnr, timestamp, EIER, timestamp, EIER, "1"))
                 .collect(Collectors.toSet());
 
         return (List<TPerson>) tPersonRepository.saveAll(toCreate);
@@ -244,8 +245,8 @@ public class TpService {
     private TYtelse saveYtelse(
             TYtelse ytelse
     ) {
-        ytelse.setOpprettetAv("synt");
-        ytelse.setEndretAv("synt");
+        ytelse.setOpprettetAv(EIER);
+        ytelse.setEndretAv(EIER);
         return tYtelseRepository.save(ytelse);
     }
 
@@ -283,8 +284,8 @@ public class TpService {
         forhold.setVersjon(ytelse.getVersjon());
         forhold.setDatoOpprettet(now);
         forhold.setDatoEndret(now);
-        forhold.setEndretAv("synt");
-        forhold.setOpprettetAv("synt");
+        forhold.setEndretAv(EIER);
+        forhold.setOpprettetAv(EIER);
         forhold.setDatoSamtykkeGitt(new Date(Instant.now().toEpochMilli()));
         forhold.setHarUtlandPensj("N");
         forhold.setFunkForholdId(ytelse.getFunkYtelseId());
@@ -301,7 +302,7 @@ public class TpService {
         var fullSavedForhold = new FullSavedForhold();
         var timestamp = Timestamp.from(Instant.now());
 
-        var tPerson = savePerson(new TPerson(fnr, timestamp, "synt", timestamp, "synt", ytelse.getVersjon()));
+        var tPerson = savePerson(new TPerson(fnr, timestamp, EIER, timestamp, EIER, ytelse.getVersjon()));
         var tYtelse = saveYtelse(ytelse);
         var tForhold = saveForhold(tPerson, tYtelse);
 

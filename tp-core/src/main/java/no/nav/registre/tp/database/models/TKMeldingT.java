@@ -1,7 +1,5 @@
 package no.nav.registre.tp.database.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,17 +26,17 @@ public class TKMeldingT {
     private String endretAv;
     private String erGyldig;
 
-    @JsonCreator
+    @SuppressWarnings("squid:S00107")
     public TKMeldingT(
-            @JsonProperty("kMeldingT") String kMeldingT,
-            @JsonProperty("dekode") String dekode,
-            @JsonProperty("datoFom") Timestamp datoFom,
-            @JsonProperty("datoTom") Timestamp datoTom,
-            @JsonProperty("datoOpprettet") Timestamp datoOpprettet,
-            @JsonProperty("opprettetAv") String opprettetAv,
-            @JsonProperty("datoEndret") Timestamp datoEndret,
-            @JsonProperty("endretAv") String endretAv,
-            @JsonProperty("erGyldig") String erGyldig
+            String kMeldingT,
+            String dekode,
+            Timestamp datoFom,
+            Timestamp datoTom,
+            Timestamp datoOpprettet,
+            String opprettetAv,
+            Timestamp datoEndret,
+            String endretAv,
+            String erGyldig
     ) {
         this.kMeldingT = kMeldingT;
         this.dekode = dekode;

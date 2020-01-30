@@ -1,7 +1,5 @@
 package no.nav.registre.tp.database.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -45,24 +43,24 @@ public class TForhold {
     private Timestamp datoBrukFom;
     private Timestamp datoBrukTom;
 
-    @JsonCreator
+    @SuppressWarnings("squid:S00107")
     public TForhold(
-            @JsonProperty("personId") Integer personId,
-            @JsonProperty("datoSamtykkeGitt") Date datoSamtykkeGitt,
-            @JsonProperty("tssEksternIdFk") String tssEksternIdFk,
-            @JsonProperty("datoOpprettet") Timestamp datoOpprettet,
-            @JsonProperty("opprettetAv") String opprettetAv,
-            @JsonProperty("datoEndret") Timestamp datoEndret,
-            @JsonProperty("harUtlandPensj") String harUtlandPensj,
-            @JsonProperty("endretAv") String endretAv,
-            @JsonProperty("kKildeTpT") String kKildeTpT,
-            @JsonProperty("versjon") String versjon,
-            @JsonProperty("erGyldig") String erGyldig,
-            @JsonProperty("kSamtykkeSimT") String kSamtykkeSimT,
-            @JsonProperty("harSimulering") String harSimulering,
-            @JsonProperty("funkForholdId") String funkForholdId,
-            @JsonProperty("datoBrukFom") Timestamp datoBrukFom,
-            @JsonProperty("datoBrukTom") Timestamp datoBrukTom
+            Integer personId,
+            Date datoSamtykkeGitt,
+            String tssEksternIdFk,
+            Timestamp datoOpprettet,
+            String opprettetAv,
+            Timestamp datoEndret,
+            String harUtlandPensj,
+            String endretAv,
+            String kKildeTpT,
+            String versjon,
+            String erGyldig,
+            String kSamtykkeSimT,
+            String harSimulering,
+            String funkForholdId,
+            Timestamp datoBrukFom,
+            Timestamp datoBrukTom
     ) {
         this.personId = personId;
         this.datoSamtykkeGitt = datoSamtykkeGitt != null ? new Date(datoSamtykkeGitt.getTime()) : null;
