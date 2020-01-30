@@ -68,42 +68,50 @@ public class TpServiceTest {
     private TpService tpService;
 
     private SyntetiseringsRequest request = new SyntetiseringsRequest(1L, "q2", 3);
+    private TYtelse ytelse1;
 
     @Before
     public void setUp() {
         var fnrs = new ArrayList<>(Arrays.asList("123", "132", "321"));
+        ytelse1 = new TYtelse();
+        ytelse1.setYtelseId(3);
+        ytelse1.setErGyldig("0");
+        ytelse1.setFunkYtelseId("10637556");
+        ytelse1.setKYtelseT("UKJENT");
+        ytelse1.setEndretAv("");
+        ytelse1.setVersjon("2");
+
         var ytelser = new ArrayList<>(
                 Arrays.asList(
-                        TYtelse.builder()
-                                .ytelseId(3)
-                                .erGyldig("0")
-                                .funkYtelseId("10637556")
-                                .kYtelseT("UKJENT")
-                                .endretAv("")
-                                .versjon("2")
-                                .build(),
-                        TYtelse.builder().build(),
-                        TYtelse.builder().build()
+                        ytelse1,
+                        new TYtelse(),
+                        new TYtelse()
                 ));
+
+        var expectedForhold = new TForhold();
+        expectedForhold.setPersonId(1);
+        expectedForhold.setForholdId(2);
+        expectedForhold.setEndretAv("");
+
+        var person = new TPerson();
+        person.setPersonId(1);
+        person.setFnrFk("123");
+
         when(hodejegerenConsumer.getLevende(anyLong())).thenReturn(fnrs);
         when(hodejegerenConsumer.getLevende(anyLong(), anyString(), anyInt(), anyInt())).thenReturn(fnrs);
-        when(tPersonRepository.save(any())).thenReturn(TPerson.builder().personId(1).fnrFk("123").build());
-        when(tForholdRepository.save(any())).thenReturn(TForhold.builder().personId(1).forholdId(2).endretAv("").build());
+        when(tPersonRepository.save(any())).thenReturn(person);
+        when(tForholdRepository.save(any())).thenReturn(expectedForhold);
         when(tpSyntConsumer.getSyntYtelser(3)).thenReturn(ytelser);
-        when(tYtelseRepository.save(any())).thenReturn(TYtelse.builder()
-                .ytelseId(3)
-                .erGyldig("0")
-                .funkYtelseId("10637556")
-                .kYtelseT("UKJENT")
-                .endretAv("")
-                .versjon("2")
-                .build());
+        when(tYtelseRepository.save(any())).thenReturn(ytelse1);
         when(tForholdYtelseHistorikkRepository.save(any())).thenReturn(new TForholdYtelseHistorikk(new HistorikkComposityKey(2, 3)));
 
-        var forhold = new ArrayList<>(Collections.singletonList(
-                TForhold.builder().personId(1).forholdId(2).endretAv("").build()
-        ));
-        when(tForholdRepository.findAll()).thenReturn(forhold);
+        var forhold = new TForhold();
+        forhold.setPersonId(1);
+        forhold.setForholdId(2);
+        forhold.setEndretAv("");
+
+        var forholdListe = new ArrayList<>(Collections.singletonList(forhold));
+        when(tForholdRepository.findAll()).thenReturn(forholdListe);
 
         when(hodejegerenHistorikkConsumer.saveHistory(any())).thenReturn(fnrs);
     }
@@ -124,21 +132,14 @@ public class TpServiceTest {
     @Test
     public void syntetiserForMangeForhold() {
         var ytelser = new ArrayList<>(Arrays.asList(
-                TYtelse.builder()
-                        .ytelseId(3)
-                        .erGyldig("0")
-                        .funkYtelseId("10637556")
-                        .kYtelseT("UKJENT")
-                        .endretAv("")
-                        .versjon("2")
-                        .build(),
-                TYtelse.builder().build(),
-                TYtelse.builder().build(),
-                TYtelse.builder().build(),
-                TYtelse.builder().build(),
-                TYtelse.builder().build(),
-                TYtelse.builder().build(),
-                TYtelse.builder().build()
+                ytelse1,
+                new TYtelse(),
+                new TYtelse(),
+                new TYtelse(),
+                new TYtelse(),
+                new TYtelse(),
+                new TYtelse(),
+                new TYtelse()
         ));
 
         when(tpSyntConsumer.getSyntYtelser(3)).thenReturn(ytelser);
@@ -191,7 +192,11 @@ public class TpServiceTest {
                 "231"
         ));
 
-        var people = fnrs.parallelStream().map(fnr -> TPerson.builder().fnrFk(fnr).build()).collect(Collectors.toList());
+        var people = fnrs.parallelStream().map(fnr -> {
+            var person = new TPerson();
+            person.setFnrFk(fnr);
+            return person;
+        }).collect(Collectors.toList());
 
         for (var s : fnrs) {
             when(tPersonRepository.findByFnrFk(s)).thenReturn(null);
@@ -216,15 +221,27 @@ public class TpServiceTest {
                 "231"
         ));
 
-        when(tPersonRepository.findByFnrFk("123")).thenReturn(TPerson.builder().fnrFk("123").build());
-        when(tPersonRepository.findByFnrFk("132")).thenReturn(TPerson.builder().fnrFk("132").build());
+        var person1 = new TPerson();
+        person1.setFnrFk("123");
+        var person2 = new TPerson();
+        person2.setFnrFk("132");
+
+        when(tPersonRepository.findByFnrFk("123")).thenReturn(person1);
+        when(tPersonRepository.findByFnrFk("132")).thenReturn(person2);
         for (int i = 2; i < fnrs.size(); i++) {
             when(tPersonRepository.findByFnrFk(fnrs.get(i))).thenReturn(null);
         }
 
-        var people = fnrs.parallelStream().filter(
+        var people = fnrs
+                .parallelStream()
+                .filter(
                 fnr -> !fnr.equals("123") && !fnr.equals("132"))
-                .map(fnr -> TPerson.builder().fnrFk(fnr).build()).collect(Collectors.toList());
+                .map(fnr -> {
+                    var person = new TPerson();
+                    person.setFnrFk(fnr);
+                    return person;
+                })
+                .collect(Collectors.toList());
         when(tPersonRepository.saveAll(any())).thenReturn(people);
         var created = tpService.createPeople(fnrs);
 

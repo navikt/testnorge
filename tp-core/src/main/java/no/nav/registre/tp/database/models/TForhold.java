@@ -1,7 +1,5 @@
 package no.nav.registre.tp.database.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,8 +17,6 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class TForhold {
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "forhold_seq")
@@ -47,6 +43,43 @@ public class TForhold {
     private Timestamp datoBrukFom;
     private Timestamp datoBrukTom;
 
+    @SuppressWarnings("squid:S00107")
+    public TForhold(
+            Integer personId,
+            Date datoSamtykkeGitt,
+            String tssEksternIdFk,
+            Timestamp datoOpprettet,
+            String opprettetAv,
+            Timestamp datoEndret,
+            String harUtlandPensj,
+            String endretAv,
+            String kKildeTpT,
+            String versjon,
+            String erGyldig,
+            String kSamtykkeSimT,
+            String harSimulering,
+            String funkForholdId,
+            Timestamp datoBrukFom,
+            Timestamp datoBrukTom
+    ) {
+        this.personId = personId;
+        this.datoSamtykkeGitt = datoSamtykkeGitt != null ? new Date(datoSamtykkeGitt.getTime()) : null;
+        this.tssEksternIdFk = tssEksternIdFk;
+        this.datoOpprettet = datoOpprettet != null ? new Timestamp(datoOpprettet.getTime()) : null;
+        this.opprettetAv = opprettetAv;
+        this.datoEndret = datoEndret != null ? new Timestamp(datoEndret.getTime()) : null;
+        this.harUtlandPensj = harUtlandPensj;
+        this.endretAv = endretAv;
+        this.kKildeTpT = kKildeTpT;
+        this.versjon = versjon;
+        this.erGyldig = erGyldig;
+        this.kSamtykkeSimT = kSamtykkeSimT;
+        this.harSimulering = harSimulering;
+        this.funkForholdId = funkForholdId;
+        this.datoBrukFom = datoBrukFom != null ? new Timestamp(datoBrukFom.getTime()) : null;
+        this.datoBrukTom = datoBrukTom != null ? new Timestamp(datoBrukTom.getTime()) : null;
+    }
+
     public Date getDatoSamtykkeGitt() {
         return datoSamtykkeGitt != null ? new Date(datoSamtykkeGitt.getTime()) : null;
     }
@@ -56,7 +89,7 @@ public class TForhold {
     }
 
     public Timestamp getDatoOpprettet() {
-        return datoOpprettet != null ? new Timestamp(datoSamtykkeGitt.getTime()) : null;
+        return datoOpprettet != null ? new Timestamp(datoOpprettet.getTime()) : null;
     }
 
     public void setDatoOpprettet(Timestamp datoOpprettet) {
