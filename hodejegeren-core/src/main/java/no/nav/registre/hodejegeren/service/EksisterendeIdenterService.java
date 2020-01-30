@@ -160,7 +160,6 @@ public class EksisterendeIdenterService {
         for (int i = 0; i < antallIdenter; i++) {
             var tilfeldigIdent = alleIdenter.remove(rand.nextInt(alleIdenter.size()));
             try {
-                tpsStatusQuoService.resetCache();
                 utvalgteIdenterMedStatusQuo.put(tilfeldigIdent, tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, tilfeldigIdent));
             } catch (IOException e) {
                 log.error("Kunne ikke hente status quo på ident {} - ", tilfeldigIdent, e);
@@ -188,7 +187,6 @@ public class EksisterendeIdenterService {
         while (i < antallIdenter && !alleIdenter.isEmpty()) {
             String ident = alleIdenter.remove(rand.nextInt(alleIdenter.size()));
             try {
-                tpsStatusQuoService.resetCache();
                 var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident);
                 if (statusQuoTilIdent == null) {
                     continue;
@@ -234,7 +232,6 @@ public class EksisterendeIdenterService {
         ObjectNode navnOgAdresse;
         ObjectMapper mapper = new ObjectMapper();
         for (var ident : identer) {
-            tpsStatusQuoService.resetCache();
             navnOgAdresse = mapper.createObjectNode();
             try {
                 var infoOnRoutineName = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident);
@@ -282,7 +279,6 @@ public class EksisterendeIdenterService {
             String miljoe
     ) {
         try {
-            tpsStatusQuoService.resetCache();
             var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident);
             return PersondataResponse.builder()
                     .fnr(statusQuoTilIdent.findValue("fnr").asText())
@@ -312,7 +308,6 @@ public class EksisterendeIdenterService {
     ) {
         RelasjonsResponse relasjonsResponse = null;
         try {
-            tpsStatusQuoService.resetCache();
             var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, ident);
             var antallRelasjoner = 0;
             JsonNode antallRelasjonerJsonNode = statusQuoTilIdent.findValue("antallRelasjoner");
@@ -357,15 +352,15 @@ public class EksisterendeIdenterService {
                         var statusFromTps = jsonNode.findValue("EFnr");
                         List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
                         });
-                        for (var map : identStatus) {
-                            if (map.containsKey("svarStatus")) {
-                                Map<String, String> svarStatus = objectMapper.convertValue(map.get("svarStatus"), new TypeReference<Map<String, String>>() {
+                        identStatus.stream()
+                                .filter(map -> map.containsKey("svarStatus"))
+                                .forEach(map -> {
+                                    Map<String, String> svarStatus = objectMapper.convertValue(map.get("svarStatus"), new TypeReference<Map<String, String>>() {
+                                    });
+                                    if ("08".equals(svarStatus.get("returStatus"))) {
+                                        identerIkkeITps.add(String.valueOf(map.get("fnr")));
+                                    }
                                 });
-                                if ("08".equals(svarStatus.get("returStatus"))) {
-                                    identerIkkeITps.add(String.valueOf(map.get("fnr")));
-                                }
-                            }
-                        }
 
                     }
                 }

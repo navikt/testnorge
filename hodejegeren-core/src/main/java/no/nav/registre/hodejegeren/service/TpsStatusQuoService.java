@@ -27,17 +27,19 @@ public class TpsStatusQuoService {
     @Autowired
     private TpsfConsumer tpsfConsumer;
 
-    private Map<String, JsonNode> tpsServiceRoutineCache;
-
-    public Map<String, String> hentStatusQuo(String routineName, List<String> feltnavn, String environment, String fnr) throws IOException {
+    public Map<String, String> hentStatusQuo(
+            String routineName,
+            List<String> feltnavn,
+            String environment,
+            String fnr
+    ) throws IOException {
         Map<String, String> personStatusQuo = new HashMap<>(feltnavn.size());
-        resetCache();
 
         for (String felt : feltnavn) {
             var root = getInfoOnRoutineName(routineName, AKSJONSKODE, environment, fnr);
 
             if (root == null) {
-                log.error("Fant ikke rutine {} på fnr {}", routineName.replaceAll("[\r\n]",""), fnr.replaceAll("[\r\n]",""));
+                log.error("Fant ikke rutine {} på fnr {}", routineName.replaceAll("[\r\n]", ""), fnr.replaceAll("[\r\n]", ""));
 
                 throw new ManglendeInfoITpsException("Fant ikke rutine " + routineName + " på fnr " + fnr);
             } else {
@@ -48,7 +50,20 @@ public class TpsStatusQuoService {
         return personStatusQuo;
     }
 
-    public String extractStatusQuoInfoFromTps(JsonNode root, String felt, String fnr) {
+    public JsonNode getInfoOnRoutineName(
+            String routineName,
+            String aksjonsKode,
+            String environment,
+            String fnr
+    ) throws IOException {
+        return tpsfConsumer.getTpsServiceRoutine(routineName, aksjonsKode, environment, fnr);
+    }
+
+    private String extractStatusQuoInfoFromTps(
+            JsonNode root,
+            String felt,
+            String fnr
+    ) {
         if (felt.contains("$")) {
             var document = Configuration.defaultConfiguration().jsonProvider().parse(root.toString());
             JSONArray jsonArray = JsonPath.read(document, felt);
@@ -70,21 +85,5 @@ public class TpsStatusQuoService {
             }
             return statusQuoFromTPS.asText();
         }
-    }
-
-    public JsonNode getInfoOnRoutineName(String routineName, String aksjonsKode, String environment, String fnr) throws IOException {
-        if (this.tpsServiceRoutineCache == null) {
-            resetCache();
-        }
-
-        if (!tpsServiceRoutineCache.containsKey(routineName)) {
-            var response = tpsfConsumer.getTpsServiceRoutine(routineName, aksjonsKode, environment, fnr);
-            tpsServiceRoutineCache.put(routineName, response);
-        }
-        return tpsServiceRoutineCache.get(routineName);
-    }
-
-    public void resetCache() {
-        this.tpsServiceRoutineCache = new HashMap<>();
     }
 }

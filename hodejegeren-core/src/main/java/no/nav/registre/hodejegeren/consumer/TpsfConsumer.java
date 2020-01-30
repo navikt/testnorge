@@ -30,7 +30,8 @@ public class TpsfConsumer {
     private UriTemplate urlServiceRoutine;
     private UriTemplate statusPaaIdenter;
 
-    public TpsfConsumer(RestTemplateBuilder restTemplateBuilder,
+    public TpsfConsumer(
+            RestTemplateBuilder restTemplateBuilder,
             @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
             @Value("${testnorges.ida.credential.tpsf.username}") String username,
             @Value("${testnorges.ida.credential.tpsf.password}") String password
@@ -43,20 +44,33 @@ public class TpsfConsumer {
     }
 
     @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
-    public Set<String> getIdenterFiltrertPaaAarsakskode(Long avspillergruppeId, List<String> aarsakskode, String transaksjonstype) {
+    public Set<String> getIdenterFiltrertPaaAarsakskode(
+            Long avspillergruppeId,
+            List<String> aarsakskode,
+            String transaksjonstype
+    ) {
         var getRequest = RequestEntity.get(urlGetIdenter.expand(avspillergruppeId, StringUtils.join(aarsakskode, ','), transaksjonstype)).build();
         return restTemplate.exchange(getRequest, RESPONSE_TYPE_SET).getBody();
     }
 
     @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
-    public JsonNode getTpsServiceRoutine(String routineName, String aksjonsKode, String miljoe, String fnr) throws IOException {
+    public JsonNode getTpsServiceRoutine(
+            String routineName,
+            String aksjonsKode,
+            String miljoe,
+            String fnr
+    ) throws IOException {
         var getRequest = RequestEntity.get(urlServiceRoutine.expand(routineName, aksjonsKode, miljoe, fnr)).build();
         var response = restTemplate.exchange(getRequest, String.class);
         return new ObjectMapper().readTree(response.getBody());
     }
 
     @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
-    public JsonNode hentTpsStatusPaaIdenter(String aksjonskode, String miljoe, List<String> identer) throws IOException {
+    public JsonNode hentTpsStatusPaaIdenter(
+            String aksjonskode,
+            String miljoe,
+            List<String> identer
+    ) throws IOException {
         var identerSomString = String.join(",", identer);
         var getRequest = RequestEntity.get(statusPaaIdenter.expand(aksjonskode, identer.size(), miljoe, identerSomString)).build();
         var response = restTemplate.exchange(getRequest, String.class);
