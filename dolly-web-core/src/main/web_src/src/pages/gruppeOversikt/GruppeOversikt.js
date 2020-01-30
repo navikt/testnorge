@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
 import HjelpeTekst from 'nav-frontend-hjelpetekst'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { SearchField } from '~/components/searchField/SearchField'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
-import Toolbar from '~/components/ui/toolbar/Toolbar'
+import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
+import Icon from '~/components/ui/icon/Icon'
 import Liste from './Liste'
 
 export default function GruppeOversikt({
@@ -34,11 +35,22 @@ export default function GruppeOversikt({
 				<HjelpeTekst>Testdatagruppen inneholder alle personene dine (FNR/DNR/BOST).</HjelpeTekst>
 			</div>
 
-			<Toolbar toggleOnChange={byttVisning} toggleCurrent={visning} searchField={<SearchField />}>
+			<div className="flexbox--align-center--space">
 				<NavButton type="hoved" onClick={visNyGruppe}>
 					Ny gruppe
 				</NavButton>
-			</Toolbar>
+				<ToggleGruppe onChange={byttVisning} name="toggler">
+					<ToggleKnapp value="mine" checked={visning === 'mine'}>
+						<Icon size={14} kind={visning === 'mine' ? 'man2Light' : 'man2'} />
+						Mine
+					</ToggleKnapp>
+					<ToggleKnapp value="alle" checked={visning === 'alle'}>
+						<Icon size={16} kind={visning === 'alle' ? 'groupLight' : 'groupDark'} />
+						Alle
+					</ToggleKnapp>
+				</ToggleGruppe>
+				<SearchField />
+			</div>
 
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
 
