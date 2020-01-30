@@ -20,8 +20,8 @@ export const Arbeidsadgang = ({ arbeidsadgang }) => {
 					title="Arbeidsomfang"
 					value={Formatters.showLabel('arbeidsOmfang', arbeidsOmfang)}
 				/>
-				<TitleValue title="Fra dato" value={Formatters.formatStringDates(periode.fra)} />
-				<TitleValue title="Til dato" value={Formatters.formatStringDates(periode.til)} />
+				<TitleValue title="Fra dato" value={Formatters.formatStringDates(periode && periode.fra)} />
+				<TitleValue title="Til dato" value={Formatters.formatStringDates(periode && periode.til)} />
 			</div>
 		</div>
 	)

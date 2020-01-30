@@ -5,7 +5,7 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
 const initialValues = {
-	identtype: '',
+	identtype: null,
 	nyIdent: false
 }
 
@@ -13,7 +13,12 @@ export const Alias = ({ formikBag }) => (
 	<FormikDollyFieldArray name="udistub.aliaser" title="Alias" newEntry={initialValues}>
 		{(path, idx, curr) => (
 			<React.Fragment key={idx}>
-				<FormikSelect name={`${path}.nyIdent`} label="Type alias" options={Options('nyIdent')} />
+				<FormikSelect
+					name={`${path}.nyIdent`}
+					label="Type alias"
+					options={Options('nyIdent')}
+					isClearable={false}
+				/>
 				{curr.nyIdent && (
 					<FormikSelect
 						name={`${path}.identtype`}

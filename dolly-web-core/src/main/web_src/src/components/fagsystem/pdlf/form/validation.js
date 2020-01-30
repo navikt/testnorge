@@ -3,6 +3,7 @@ import { requiredString, requiredDate, ifKeyHasValue, ifPresent } from '~/utils/
 
 const personnavnSchema = Yup.object({
 	fornavn: requiredString,
+	mellomnavn: Yup.string(),
 	etternavn: requiredString
 })
 

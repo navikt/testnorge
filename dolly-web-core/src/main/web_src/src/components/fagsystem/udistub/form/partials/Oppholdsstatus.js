@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import _get from 'lodash/get'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
@@ -43,21 +42,23 @@ export const Oppholdsstatus = ({ formikBag }) => {
 		setEosEllerEFTAtypeOpphold(value)
 		formikBag.setFieldValue('udistub.oppholdStatus', {})
 		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Periode`, {
-			fra: '',
-			til: ''
+			fra: null,
+			til: null
 		})
-		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Effektuering`, '')
+		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Effektuering`, null)
+		formikBag.setFieldValue(`udistub.oppholdStatus.${value}`, '')
 	}
 
 	const endreTredjelandsBorgereValg = value => {
 		setTredjelandsBorgereValg(value)
 		formikBag.setFieldValue('udistub.oppholdStatus', {})
 		if (value === 'oppholdSammeVilkaar') {
-			formikBag.setFieldValue('udistub.harOppholdsTillatelse', '')
+			formikBag.setFieldValue('udistub.harOppholdsTillatelse', null)
 			formikBag.setFieldValue('udistub.oppholdStatus.oppholdSammeVilkaar', {
-				oppholdSammeVilkaarPeriode: { fra: '', til: '' },
-				oppholdSammeVilkaarEffektuering: '',
-				oppholdstillatelseVedtaksDato: ''
+				oppholdSammeVilkaarPeriode: { fra: null, til: null },
+				oppholdSammeVilkaarEffektuering: null,
+				oppholdstillatelseVedtaksDato: null,
+				oppholdstillatelseType: ''
 			})
 		} else if (value === 'ikkeOppholdSammeVilkaar') {
 			formikBag.setFieldValue('udistub.oppholdStatus', {})
@@ -65,6 +66,12 @@ export const Oppholdsstatus = ({ formikBag }) => {
 		} else if (value === 'UAVKLART') {
 			formikBag.setFieldValue('udistub.oppholdStatus', { uavklart: true })
 			formikBag.setFieldValue('udistub.harOppholdsTillatelse', '')
+		}
+	}
+
+	const feilmelding = felt => {
+		if (!felt) {
+			return { feilmelding: 'Feltet er påkrevd' }
 		}
 	}
 
@@ -76,6 +83,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 				value={oppholdsstatus}
 				options={Options('oppholdsstatus')}
 				onChange={v => endreOppholdsstatus(v.value)}
+				feil={feilmelding(oppholdsstatus)}
 				isClearable={false}
 			/>
 			{oppholdsstatus === 'eosEllerEFTAOpphold' && (
@@ -87,6 +95,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 						options={Options('eosEllerEFTAtypeOpphold')}
 						onChange={v => endreEosEllerEFTAtypeOpphold(v.value)}
 						size="xxlarge"
+						feil={feilmelding(eosEllerEFTAtypeOpphold)}
 						isClearable={false}
 					/>
 					<FormikDatepicker
@@ -101,14 +110,15 @@ export const Oppholdsstatus = ({ formikBag }) => {
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Effektuering`}
 						label="Effektueringsdato"
 					/>
-
-					<FormikSelect
-						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}`}
-						label="Grunnlag for opphold"
-						options={Options(eosEllerEFTAtypeOpphold)}
-						isClearable={false}
-						size="large"
-					/>
+					{eosEllerEFTAtypeOpphold && (
+						<FormikSelect
+							name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}`}
+							label="Grunnlag for opphold"
+							options={Options(eosEllerEFTAtypeOpphold)}
+							isClearable={false}
+							size="large"
+						/>
+					)}
 				</React.Fragment>
 			)}
 			{oppholdsstatus === 'tredjelandsBorgere' && (
@@ -120,6 +130,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 						size="xxlarge"
 						options={Options('tredjelandsBorgereValg')}
 						onChange={v => endreTredjelandsBorgereValg(v.value)}
+						feil={feilmelding(tredjelandsBorgereValg)}
 						isClearable={false}
 					/>
 					{tredjelandsBorgereValg === 'oppholdSammeVilkaar' && (

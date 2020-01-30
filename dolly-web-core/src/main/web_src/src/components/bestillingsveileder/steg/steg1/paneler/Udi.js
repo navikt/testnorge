@@ -49,13 +49,13 @@ UdiPanel.initialValues = ({ set, del, has }) => ({
 		checked: has('udistub.arbeidsadgang'),
 		add() {
 			set('udistub.arbeidsadgang', {
-				arbeidsOmfang: '',
+				arbeidsOmfang: null,
 				harArbeidsAdgang: '',
 				periode: {
-					fra: '',
-					til: ''
+					fra: null,
+					til: null
 				},
-				typeArbeidsadgang: ''
+				typeArbeidsadgang: null
 			})
 		},
 		remove() {
@@ -68,7 +68,7 @@ UdiPanel.initialValues = ({ set, del, has }) => ({
 		add: () =>
 			set('udistub.aliaser', [
 				{
-					identtype: '',
+					identtype: null,
 					nyIdent: false
 				}
 			]),
@@ -77,7 +77,7 @@ UdiPanel.initialValues = ({ set, del, has }) => ({
 	flyktning: {
 		label: 'Flyktningstatus',
 		checked: has('udistub.flyktning'),
-		add: () => set('udistub.flyktning', ''),
+		add: () => set('udistub.flyktning', null),
 		remove: () => del('udistub.flyktning')
 	},
 	asylsoker: {
