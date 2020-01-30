@@ -49,7 +49,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 				/>
 			)}
 			{falskIdObj.identitetType === 'OMTRENTLIG' && (
-				<div>
+				<div className="flexbox--flex-wrap">
 					<FormikTextInput name={`${falskIdPath}.personnavn.fornavn`} label="Fornavn" />
 					<FormikTextInput name={`${falskIdPath}.personnavn.mellomnavn`} label="Mellomnavn" />
 					<FormikTextInput name={`${falskIdPath}.personnavn.etternavn`} label="Etternavn" />

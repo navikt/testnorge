@@ -17,15 +17,17 @@ export const KrrstubForm = ({ formikBag }) => (
 			hasErrors={panelError(formikBag, krrAttributt)}
 			iconType="krr"
 		>
-			<FormikTextInput name="krrstub.epost" label="E-post" />
-			<FormikTextInput name="krrstub.mobil" label="Mobilnummer" type="number" />
-			<FormikSelect
-				name="krrstub.registrert"
-				label="Registrert i DKIF"
-				options={Options('boolean')}
-			/>
-			<FormikSelect name="krrstub.reservert" label="Reservert" options={Options('boolean')} />
-			<FormikDatepicker name="krrstub.gyldigFra" label="Reservasjon gyldig fra" />
+			<div className="flexbox--flex-wrap">
+				<FormikTextInput name="krrstub.epost" label="E-post" />
+				<FormikTextInput name="krrstub.mobil" label="Mobilnummer" type="number" />
+				<FormikSelect
+					name="krrstub.registrert"
+					label="Registrert i DKIF"
+					options={Options('boolean')}
+				/>
+				<FormikSelect name="krrstub.reservert" label="Reservert" options={Options('boolean')} />
+				<FormikDatepicker name="krrstub.gyldigFra" label="Reservasjon gyldig fra" />
+			</div>
 		</Panel>
 	</Vis>
 )

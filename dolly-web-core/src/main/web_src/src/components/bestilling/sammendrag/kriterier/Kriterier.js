@@ -55,7 +55,7 @@ export default function Bestillingskriterier({ bestilling, bestillingsinformasjo
 	if (!data) return <p>Kunne ikke hente bestillingsdata</p>
 
 	return (
-		<div>
+		<div className="bestilling-detaljer">
 			{header && <SubOverskrift label={header} />}
 			{_renderBestillingsDetaljer(data)}
 		</div>
