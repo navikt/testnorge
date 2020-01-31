@@ -75,7 +75,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			dataField: 'harBeskrivelse',
 			formatter: (cell, row) => {
 				if (row.ident.beskrivelse) {
-					return <Icon className="kommentar" kind="kommentar" Icon size={20} />
+					return <Icon kind="kommentar" size={20} />
 				}
 			}
 		},
