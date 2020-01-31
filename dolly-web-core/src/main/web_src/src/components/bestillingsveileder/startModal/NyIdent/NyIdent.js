@@ -61,7 +61,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 					<div className="ny-ident-form_maler">
 						<div className="ny-ident-form_maler_header">
 							<h3>Maler</h3>
-							<DollyCheckbox name="aktiver-maler" onChange={toggleMalAktiv} label="Vis" />
+							<DollyCheckbox name="aktiver-maler" onChange={toggleMalAktiv} label="Vis" isSwitch />
 						</div>
 
 						<div>
