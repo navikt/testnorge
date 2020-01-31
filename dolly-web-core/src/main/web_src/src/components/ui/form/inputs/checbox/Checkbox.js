@@ -10,9 +10,13 @@ export const Checkbox = ({ id, ...restProps }) => {
 	return <NavCheckbox id={id || restProps.name} {...restProps} />
 }
 
-export const DollyCheckbox = props => (
+export const Switch = ({ id, ...restProps }) => {
+	return <input id={id || restProps.name} {...restProps} className="dolly-switch" type="checkbox" />
+}
+
+export const DollyCheckbox = ({ isSwitch = false, ...props }) => (
 	<InputWrapper {...props}>
-		<Checkbox {...props} />
+		{isSwitch ? <Switch {...props} /> : <Checkbox {...props} />}
 	</InputWrapper>
 )
 
