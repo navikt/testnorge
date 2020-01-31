@@ -2,20 +2,27 @@ package no.nav.registre.arena.core.service;
 
 import static no.nav.registre.arena.core.service.ServiceUtils.BEGRUNNELSE;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TiltakSyntConsumer;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetBarnetilleggRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggsytelseRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksaktivitetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
@@ -36,6 +43,21 @@ public class RettighetTiltakService {
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
     private final Random rand;
+
+    private static final Map<String, List<AktivitetskodeMedSannsynlighet>> vedtakMedAktitivetskode;
+
+    static {
+        vedtakMedAktitivetskode = new HashMap<>();
+        URL resource = Resources.getResource("vedtak_til_aktivitetkode.json");
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            Map<String, List<AktivitetskodeMedSannsynlighet>> map = objectMapper.readValue(resource, new TypeReference<Map<String, List<AktivitetskodeMedSannsynlighet>>>() {
+            });
+            vedtakMedAktitivetskode.putAll(map);
+        } catch (IOException e) {
+            log.error("Kunne ikke laste inn aktivitetskoder.", e);
+        }
+    }
 
     public List<NyttVedtakResponse> opprettTiltaksdeltakelse(
             Long avspillergruppeId,
@@ -90,7 +112,7 @@ public class RettighetTiltakService {
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
-            var rettighetRequest = new RettighetBarnetilleggRequest(Collections.singletonList(syntetisertRettighet));
+            var rettighetRequest = new RettighetTilleggsytelseRequest(Collections.singletonList(syntetisertRettighet));
 
             rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
             rettighetRequest.setMiljoe(miljoe);
@@ -138,7 +160,7 @@ public class RettighetTiltakService {
             rettighetRequest.setPersonident(rettighet.getPersonident());
             rettighetRequest.setMiljoe(rettighet.getMiljoe());
             NyttVedtakTiltak nyttVedtakTiltak = new NyttVedtakTiltak();
-            nyttVedtakTiltak.setAktivitetkode(AKTIVITETSKODE_ARBEIDSTRENING);
+            nyttVedtakTiltak.setAktivitetkode(serviceUtils.velgAktivitetBasertPaaSannsynlighet(vedtakMedAktitivetskode.get(rettighet.getVedtakTillegg().get(0).getRettighetKode())).getAktivitetkode());
             nyttVedtakTiltak.setBeskrivelse(BEGRUNNELSE);
             nyttVedtakTiltak.setFraDato(rettighet.getVedtakTillegg().get(0).getVedtaksperiode().getFom());
             List<NyttVedtakTiltak> nyTiltaksaktivitet = new ArrayList<>(Collections.singletonList(nyttVedtakTiltak));

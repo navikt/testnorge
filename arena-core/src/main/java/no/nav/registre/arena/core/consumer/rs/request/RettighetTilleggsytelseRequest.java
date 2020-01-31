@@ -17,21 +17,21 @@ import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RettighetBarnetilleggRequest extends RettighetRequest {
+public class RettighetTilleggsytelseRequest extends RettighetRequest {
 
-    private List<NyttVedtakTiltak> nyeBarnetillegg;
+    private List<NyttVedtakTiltak> nyeTilleggsytelser;
 
     @Override public String getArenaForvalterUrlPath() {
-        return "";
+        return "/v1/tilleggsytelser";
     }
 
     @Override public List<NyttVedtakAap> getVedtakAap() {
         return Collections.emptyList();
     }
 
-    @JsonProperty("nyeBarnetillegg")
+    @JsonProperty("nyeTilleggsytelser")
     @Override public List<NyttVedtakTiltak> getVedtakTiltak() {
-        return nyeBarnetillegg;
+        return nyeTilleggsytelser;
     }
 
     @Override public List<NyttVedtakTillegg> getVedtakTillegg() {

@@ -10,11 +10,11 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
+import no.nav.registre.arena.domain.brukere.Kvalifiseringsgrupper;
+import no.nav.registre.arena.domain.brukere.NyBrukerFeil;
 import no.nav.registre.arena.domain.vedtak.forvalter.Adresse;
 import no.nav.registre.arena.domain.vedtak.forvalter.Forvalter;
 import no.nav.registre.arena.domain.vedtak.forvalter.Konto;
-import no.nav.registre.arena.domain.brukere.Kvalifiseringsgrupper;
-import no.nav.registre.arena.domain.brukere.NyBrukerFeil;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;
@@ -88,7 +88,11 @@ public class ServiceUtils {
         return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM);
     }
 
-    private List<RettighetRequest> opprettArbeidssoeker(List<RettighetRequest> rettigheter, String miljoe, Kvalifiseringsgrupper kvalifiseringsgruppe) {
+    private List<RettighetRequest> opprettArbeidssoeker(
+            List<RettighetRequest> rettigheter,
+            String miljoe,
+            Kvalifiseringsgrupper kvalifiseringsgruppe
+    ) {
         var identerIArena = brukereService.hentEksisterendeArbeidsoekerIdenter();
         var uregistrerteBrukere = rettigheter.stream().filter(rettighet -> !identerIArena.contains(rettighet.getPersonident())).map(RettighetRequest::getPersonident)
                 .collect(Collectors.toSet());
@@ -130,5 +134,21 @@ public class ServiceUtils {
                 .gjeldendeKontonr(konto)
                 .utbetalingsadresse(adresse)
                 .build();
+    }
+
+    public AktivitetskodeMedSannsynlighet velgAktivitetBasertPaaSannsynlighet(List<AktivitetskodeMedSannsynlighet> aktivitetskoder) {
+        int totalSum = 0;
+        for (var a : aktivitetskoder) {
+            totalSum += a.getSannsynlighet();
+        }
+
+        int index = rand.nextInt(totalSum);
+        int sum = 0;
+        int i = 0;
+        while (sum < index) {
+            sum += aktivitetskoder.get(i++).getSannsynlighet();
+        }
+
+        return aktivitetskoder.get(Math.max(0, i - 1));
     }
 }

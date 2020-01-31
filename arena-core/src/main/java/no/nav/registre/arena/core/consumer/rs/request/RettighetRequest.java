@@ -23,8 +23,8 @@ import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
         @JsonSubTypes.Type(value = RettighetFritakMeldekortRequest.class, name = "fritakMeldekort"),
         @JsonSubTypes.Type(value = RettighetTiltaksdeltakelseRequest.class, name = "tiltaksdeltakelse"),
         @JsonSubTypes.Type(value = RettighetTiltakspengerRequest.class, name = "tiltakspenger"),
-        @JsonSubTypes.Type(value = RettighetBarnetilleggRequest.class, name = "barnetillegg"),
         @JsonSubTypes.Type(value = RettighetTiltaksaktivitetRequest.class, name = "tiltaksaktivitet"),
+        @JsonSubTypes.Type(value = RettighetTilleggsytelseRequest.class, name = "tilleggsytelse"),
         @JsonSubTypes.Type(value = RettighetTilleggRequest.class, name = "tilleggstonad")
 })
 @Getter
