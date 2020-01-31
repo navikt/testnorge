@@ -21,8 +21,6 @@ import FileChecklist from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-chec
 import FileChecklistLight from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklistLight.svg'
 // import NewFile from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-new-1.svg'
 import NewFile from '~/assets/icons/nav-ikoner/filled/SVG/17-files/file-add.svg'
-import RectFilled from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/filled-version-button-empty.svg'
-import RectEmpty from '~/assets/icons/nav-ikoner/line/SVG/19-interface/line-version-expanded-button-empty.svg'
 import Synchronize from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/synchronize-3.svg'
 import AddCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/add-circle.svg'
 import RemoveCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/remove-circle.svg'
@@ -81,8 +79,6 @@ const icons = {
 	'chevron-up': ChevronUp,
 	'chevron-left': ChevronLeft,
 	'chevron-right': ChevronRight,
-	'rectangle-empty': RectEmpty,
-	'rectangle-filled': RectFilled,
 
 	man: Man,
 	manLight: ManLight,
