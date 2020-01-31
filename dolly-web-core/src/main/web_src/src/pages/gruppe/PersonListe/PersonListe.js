@@ -42,11 +42,6 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			dataField: 'navn'
 		},
 		{
-			text: 'Kjønn',
-			width: '15',
-			dataField: 'kjonn'
-		},
-		{
 			text: 'Alder',
 			width: '10',
 			dataField: 'alder'

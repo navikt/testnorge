@@ -26,7 +26,7 @@ export default function TableRow({ children, icon, expandComponent, navLink }) {
 		<div tabIndex={0} className={rowClass}>
 			<div className={columnsClass} onClick={onRowClick}>
 				{icon && (
-					<div className="dot-icon-wrapper">
+					<div className={icon === 'man' ? 'dot-icon-wrapper' : 'dot-icon-wrapper-woman'}>
 						<Icon kind={icon} />
 					</div>
 				)}
