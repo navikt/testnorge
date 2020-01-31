@@ -54,6 +54,8 @@ export const Select = ({
 			isLoading={isLoading}
 			isClearable={isClearable}
 			isMulti={isMulti}
+			styles={{ menuPortal: base => ({ ...base, zIndex: 99999 }) }}
+			menuPortalTarget={document.getElementById('react-select-root')}
 		/>
 	)
 }
