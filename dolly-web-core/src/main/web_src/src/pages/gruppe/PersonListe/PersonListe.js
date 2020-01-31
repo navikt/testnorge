@@ -7,6 +7,7 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
 import EtikettBase from 'nav-frontend-etiketter'
+import Icon from '~/components/ui/icon/Icon'
 
 const etikettTypeMap = {
 	Ferdig: 'suksess',
@@ -32,13 +33,13 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 	const columns = [
 		{
 			text: 'Ident',
-			width: '15',
+			width: '20',
 			dataField: 'identNr',
 			unique: true
 		},
 		{
 			text: 'Navn',
-			width: '30',
+			width: '35',
 			dataField: 'navn'
 		},
 		{
@@ -48,7 +49,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 		},
 		{
 			text: 'Alder',
-			width: '10',
+			width: '15',
 			dataField: 'alder'
 		},
 		{
@@ -64,9 +65,19 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 		},
 		{
 			text: 'Status',
-			width: '10',
+			width: '15',
 			dataField: 'status',
 			formatter: (cell, row) => <EtikettBase type={etikettTypeMap[cell]}>{cell}</EtikettBase>
+		},
+		{
+			text: 'Kommentar',
+			width: '20',
+			dataField: 'harBeskrivelse',
+			formatter: (cell, row) => {
+				if (row.ident.beskrivelse) {
+					return <Icon className="kommentar" kind="kommentar" Icon size={20} />
+				}
+			}
 		},
 		{
 			text: 'Brukt',
