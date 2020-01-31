@@ -30,7 +30,9 @@ IdentifikasjonPanel.initialValues = ({ set, del, has }) => ({
 		label: 'Har falsk identitet',
 		checked: has('pdlforvalter.falskIdentitet'),
 		add() {
-			set('pdlforvalter.falskIdentitet', { rettIdentitet: { identitetType: 'UKJENT' } })
+			set('pdlforvalter.falskIdentitet', {
+				rettIdentitet: { identitetType: 'UKJENT', rettIdentitetErUkjent: true }
+			})
 		},
 		remove() {
 			del('pdlforvalter.falskIdentitet')
