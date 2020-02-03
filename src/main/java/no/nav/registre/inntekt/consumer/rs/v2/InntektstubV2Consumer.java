@@ -151,10 +151,7 @@ public class InntektstubV2Consumer {
             if (periodeVirksomhetInntekterMap.containsKey(aarMaaned)) {
                 var virksomhetInntekterMap = periodeVirksomhetInntekterMap.get(aarMaaned);
                 if (virksomhetInntekterMap.containsKey(virksomhet)) {
-                    var inntekter = virksomhetInntekterMap.get(virksomhet);
-                    if (inntekter == null) {
-                        inntekter = new ArrayList<>();
-                    }
+                    var inntekter = virksomhetInntekterMap.computeIfAbsent(virksomhet, k -> new ArrayList<>());
                     inntekter.add(buildInntektFromSyntInntekt(rsInntekt));
                 } else {
                     virksomhetInntekterMap.put(virksomhet, new ArrayList<>(Collections.singletonList(buildInntektFromSyntInntekt(rsInntekt))));

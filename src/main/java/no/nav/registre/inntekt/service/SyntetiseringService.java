@@ -94,17 +94,7 @@ public class SyntetiseringService {
             identerMedData.add(new IdentMedData(personInfo.getKey(), personInfo.getValue()));
         }
 
-        InntektSaveInHodejegerenRequest hodejegerenRequests = new InntektSaveInHodejegerenRequest(INNTEKT_NAME, identerMedData);
-        List<String> lagredeIdenter = hodejegerenHistorikkConsumer.saveHistory(hodejegerenRequests);
-
-        if (lagredeIdenter.size() < identerMedData.size()) {
-            List<String> identerSomIkkeBleLagret = new ArrayList<>(identerMedData.size());
-            for (IdentMedData ident : identerMedData) {
-                identerSomIkkeBleLagret.add(ident.getId());
-            }
-            identerSomIkkeBleLagret.removeAll(lagredeIdenter);
-            log.warn("Kunne ikke lagre historikk på alle identer. Identer som ikke ble lagret: {}", identerSomIkkeBleLagret);
-        }
+        hodejegerenHistorikkConsumer.saveHistory(new InntektSaveInHodejegerenRequest(INNTEKT_NAME, identerMedData));
 
         return feiledeInntektsmeldinger;
     }
