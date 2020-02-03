@@ -10,8 +10,8 @@ import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
 import Icon from '~/components/ui/icon/Icon'
 
 const ikonTypeMap = {
-	FERDIG: 'Ferdig',
-	AVVIK: 'Avvik'
+	Ferdig: 'feedback-check-circle',
+	Avvik: 'report-problem-circle'
 }
 
 export default function PersonListe({ isFetching, personListe, searchActive, fetchTpsfPersoner }) {
@@ -67,14 +67,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			text: 'Status',
 			width: '10',
 			dataField: 'status',
-			formatter: (cell, row) =>
-				row.status === ikonTypeMap.FERDIG ? (
-					<Icon kind="feedback-check-circle" />
-				) : row.status === ikonTypeMap.AVVIK ? (
-					<Icon kind="report-problem-circle" />
-				) : (
-					<Icon kind="report-problem-triangle" />
-				)
+			formatter: (cell, row) => <Icon kind={ikonTypeMap[cell]} />
 		},
 		{
 			text: 'Brukt',
