@@ -11,7 +11,9 @@ import Icon from '~/components/ui/icon/Icon'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
-	Avvik: 'report-problem-circle'
+	Avvik: 'report-problem-circle',
+	Feilet: 'report-problem-triangle',
+	Stoppet: 'report-problem-triangle'
 }
 
 export default function PersonListe({ isFetching, personListe, searchActive, fetchTpsfPersoner }) {
@@ -67,7 +69,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			text: 'Status',
 			width: '10',
 			dataField: 'status',
-			formatter: (cell, row) => <Icon kind={ikonTypeMap[cell]} />
+			formatter: (cell, row) => <Icon kind={ikonTypeMap[cell]} title={cell} />
 		},
 		{
 			text: 'Brukt',

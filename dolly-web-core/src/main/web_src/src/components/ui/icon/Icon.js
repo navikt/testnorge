@@ -114,11 +114,11 @@ const icons = {
 
 const px = v => `${v}px`
 
-export default function Icon({ kind, size = 24, style, className }) {
+export default function Icon({ kind, title, size = 24, style, className }) {
 	if (!icons[kind]) return null
 
 	const cssClass = cn('svg-icon', `svg-icon-${kind}`, className)
 	const styleObj = Object.assign({ width: px(size), height: px(size) }, style)
 
-	return <SVG src={icons[kind]} className={cssClass} style={styleObj} />
+	return <SVG src={icons[kind]} className={cssClass} style={styleObj} title={title} />
 }
