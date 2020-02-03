@@ -4,13 +4,19 @@ import _get from 'lodash/get'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
+import { erForste } from '~/components/ui/form/formUtils'
 import { InntektsaarForm } from './partials/inntektsaarForm'
 import { ifPresent } from '~/utils/YupValidations'
 
 const sigrunAttributt = 'sigrunstub'
 export const SigrunstubForm = ({ formikBag }) => (
 	<Vis attributt={sigrunAttributt}>
-		<Panel heading="Inntekt" hasErrors={panelError(formikBag, sigrunAttributt)} iconType="sigrun">
+		<Panel
+			heading="Inntekt"
+			hasErrors={panelError(formikBag, sigrunAttributt)}
+			iconType="sigrun"
+			startOpen={() => erForste(formikBag.values, [sigrunAttributt])}
+		>
 			<InntektsaarForm formikBag={formikBag} />
 		</Panel>
 	</Vis>

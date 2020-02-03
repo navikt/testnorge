@@ -23,11 +23,11 @@ export const Steg2 = ({ formikBag }) => {
 	return (
 		<div>
 			<TpsfForm formikBag={formikBag} />
+			<AaregForm formikBag={formikBag} />
+			<SigrunstubForm formikBag={formikBag} />
 			<PdlfForm formikBag={formikBag} />
 			<InstForm formikBag={formikBag} />
 			<KrrstubForm formikBag={formikBag} />
-			<AaregForm formikBag={formikBag} />
-			<SigrunstubForm formikBag={formikBag} />
 			<ArenaForm formikBag={formikBag} />
 			<UdistubForm formikBag={formikBag} />
 		</div>
@@ -38,11 +38,11 @@ Steg2.label = 'Velg verdier'
 
 Steg2.validation = Yup.object({
 	...TpsfForm.validation,
-	...KrrstubForm.validation,
+	...PdlfForm.validation,
 	...AaregForm.validation,
 	...SigrunstubForm.validation,
 	...InstForm.validation,
+	...KrrstubForm.validation,
 	...ArenaForm.validation,
-	...UdistubForm.validation,
-	...PdlfForm.validation
+	...UdistubForm.validation
 })

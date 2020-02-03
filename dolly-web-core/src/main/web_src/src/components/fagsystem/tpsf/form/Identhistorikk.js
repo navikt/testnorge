@@ -2,6 +2,7 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'
+import { erForste } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -31,7 +32,8 @@ export const Identhistorikk = ({ formikBag }) => (
 			heading="Identhistorikk"
 			hasErrors={panelError(formikBag, identAttributt)}
 			informasjonstekst={hjelpetekst}
-			iconType="personinformasjon"
+			iconType="identhistorikk"
+			startOpen={() => erForste(formikBag.values, [identAttributt])}
 		>
 			<FormikDollyFieldArray name="tpsf.identHistorikk" title="Historikk" newEntry={initialValues}>
 				{(path, idx) => (

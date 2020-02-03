@@ -16,6 +16,7 @@ import GroupLight from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-grou
 import GroupDark from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-4Dark.svg'
 import Family from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-5.svg'
 import Group1 from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-1.svg'
+import IdCardDouble from '~/assets/icons/nav-ikoner/line/SVG/11-users/id-card-double.svg'
 import NewFileTable from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-table.svg'
 import FileChecklist from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklist.svg'
 import FileChecklistLight from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklistLight.svg'
@@ -99,7 +100,7 @@ const icons = {
 	personinformasjon: InformationCircle,
 	nasjonalitet: Globe2,
 	relasjoner: Family,
-	identhistorikk: InformationCircle,
+	identhistorikk: IdCardDouble,
 	identifikasjon: Group1,
 	adresse: House,
 	postadresse: EmailText,
