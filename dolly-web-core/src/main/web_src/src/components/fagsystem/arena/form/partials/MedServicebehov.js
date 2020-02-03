@@ -36,6 +36,7 @@ export const MedServicebehov = ({ formikBag }) => {
 					label="Har 11-5-vedtak"
 					checked={Boolean(arenaforvalter.aap115)}
 					onChange={handleChange115}
+					checkboxMargin
 				/>
 
 				<FormikDatepicker name="arenaforvalter.aap115[0].fraDato" label="Fra dato" />
@@ -47,6 +48,7 @@ export const MedServicebehov = ({ formikBag }) => {
 					label="Har AAP-vedtak"
 					checked={Boolean(arenaforvalter.aap)}
 					onChange={handleChangeAAP}
+					checkboxMargin
 				/>
 				<FormikDatepicker name="arenaforvalter.aap[0].fraDato" label="Fra dato" />
 				<FormikDatepicker name="arenaforvalter.aap[0].tilDato" label="Til dato" />

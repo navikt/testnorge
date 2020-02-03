@@ -45,6 +45,7 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 					name={paths.utenFastBopel}
 					label="Uten fast bopel"
 					afterChange={handleChangeUFB}
+					checkboxMargin
 				/>
 
 				{harUfb && (
