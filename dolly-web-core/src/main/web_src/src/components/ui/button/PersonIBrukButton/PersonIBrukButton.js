@@ -1,12 +1,17 @@
 import React from 'react'
-import Button from '../Button'
+import { DollyCheckbox } from '../../form/inputs/checbox/Checkbox'
 
 export const PersonIBrukButton = ({ ident, updateIdentIbruk }) => {
+	const handleOnChange = event => {
+		updateIdentIbruk(ident.ident, !ident.ibruk)
+	}
 	return (
-		<Button
+		<DollyCheckbox
 			title={ident.ibruk ? 'Marker som ikke i bruk' : 'Marker som i bruk'}
-			kind={ident.ibruk ? 'rectangle-filled' : 'rectangle-empty'}
-			onClick={() => updateIdentIbruk(ident.ident, !ident.ibruk)}
+			checked={ident.ibruk}
+			onChange={handleOnChange}
+			onClick={e => e.stopPropagation()}
+			isSwitch
 		/>
 	)
 }
