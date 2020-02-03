@@ -2,8 +2,8 @@ package no.nav.registre.inntekt.service;
 
 import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnavnFraMaanedsnummer;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +32,7 @@ import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntekt
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SyntetiseringService {
 
     private static final int MINIMUM_ALDER = 13;
@@ -41,17 +42,10 @@ public class SyntetiseringService {
     @Value("${andelNyeIdenter}")
     private int andelNyeIdenter;
 
-    @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
-
-    @Autowired
-    private InntektSyntConsumer inntektSyntConsumer;
-
-    @Autowired
-    private InntektstubV2Consumer inntektstubV2Consumer;
-
-    @Autowired
-    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
+    private final HodejegerenConsumer hodejegerenConsumer;
+    private final InntektSyntConsumer inntektSyntConsumer;
+    private final InntektstubV2Consumer inntektstubV2Consumer;
+    private final HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     public Map<String, List<RsInntekt>> startSyntetisering(SyntetiseringsRequest syntetiseringsRequest) {
         Set<String> identer = new HashSet<>(hentLevendeIdenterOverAlder(syntetiseringsRequest.getAvspillergruppeId()));
@@ -115,7 +109,11 @@ public class SyntetiseringService {
         return feiledeInntektsmeldinger;
     }
 
-    private void opprettInntekterPaaEksisterende(Set<String> identerIInntektstub, Map<String, List<RsInntekt>> feiledeInntektsmeldinger, Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger) {
+    private void opprettInntekterPaaEksisterende(
+            Set<String> identerIInntektstub,
+            Map<String, List<RsInntekt>> feiledeInntektsmeldinger,
+            Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger
+    ) {
         List<List<String>> partisjonerteIdenterIInntektstub = paginerIdenter(new ArrayList<>(identerIInntektstub));
         for (int i = 0; i < partisjonerteIdenterIInntektstub.size(); i++) {
             SortedMap<String, List<RsInntekt>> identerMedInntekt = new TreeMap<>();
@@ -147,7 +145,11 @@ public class SyntetiseringService {
         }
     }
 
-    private void opprettInntekterPaaNye(Map<String, List<RsInntekt>> feiledeInntektsmeldinger, Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger, SortedMap<String, List<RsInntekt>> nyeIdenterMedInntekt) {
+    private void opprettInntekterPaaNye(
+            Map<String, List<RsInntekt>> feiledeInntektsmeldinger,
+            Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger,
+            SortedMap<String, List<RsInntekt>> nyeIdenterMedInntekt
+    ) {
         List<Map<String, List<RsInntekt>>> paginerteIdenterMedInntekt = paginerInntekter(nyeIdenterMedInntekt);
         for (int i = 0; i < paginerteIdenterMedInntekt.size(); i++) {
             SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(paginerteIdenterMedInntekt.get(i));
@@ -168,7 +170,11 @@ public class SyntetiseringService {
         return inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(identerMedInntekt);
     }
 
-    private boolean leggTilHvisGyldig(Map<String, List<RsInntekt>> feiledeInntektsmeldinger, Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger, SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt) {
+    private boolean leggTilHvisGyldig(
+            Map<String, List<RsInntekt>> feiledeInntektsmeldinger,
+            Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger,
+            SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt
+    ) {
         if (inntektsmeldingerFraSynt == null) {
             log.warn("Fikk ingen syntetiserte meldinger synt-pakken. Fortsetter med neste bolk");
             return false;
@@ -180,13 +186,16 @@ public class SyntetiseringService {
             return false;
         }
 
-        inntektstubV2Consumer.leggInntekterIInntektstub(inntektsmeldingerFraSynt).stream().filter(inntekt -> inntekt.getFeilmelding() != null && !inntekt.getFeilmelding().isEmpty()).forEach(inntekt -> {
-            if (feiledeInntektsmeldinger.containsKey(inntekt.getNorskIdent())) {
-                feiledeInntektsmeldinger.get(inntekt.getNorskIdent()).addAll(mapInntektsinformasjonTilRsInntekter(inntekt));
-            } else {
-                feiledeInntektsmeldinger.put(inntekt.getNorskIdent(), mapInntektsinformasjonTilRsInntekter(inntekt));
-            }
-        });
+        inntektstubV2Consumer.leggInntekterIInntektstub(inntektsmeldingerFraSynt)
+                .stream()
+                .filter(inntekt -> inntekt.getFeilmelding() != null && !inntekt.getFeilmelding().isEmpty())
+                .forEach(inntekt -> {
+                    if (feiledeInntektsmeldinger.containsKey(inntekt.getNorskIdent())) {
+                        feiledeInntektsmeldinger.get(inntekt.getNorskIdent()).addAll(mapInntektsinformasjonTilRsInntekter(inntekt));
+                    } else {
+                        feiledeInntektsmeldinger.put(inntekt.getNorskIdent(), mapInntektsinformasjonTilRsInntekter(inntekt));
+                    }
+                });
 
         syntetiskeInntektsmeldinger.putAll(inntektsmeldingerFraSynt);
         return true;

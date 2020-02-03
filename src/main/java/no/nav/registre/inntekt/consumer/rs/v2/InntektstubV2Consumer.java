@@ -118,28 +118,29 @@ public class InntektstubV2Consumer {
     public List<Inntektsinformasjon> leggInntekterIInntektstub(Map<String, List<RsInntekt>> identerMedInntekter) {
         List<Inntektsinformasjon> inntektsinformasjonTilIdenter = new ArrayList<>();
         for (var identerMedInntekterEntry : identerMedInntekter.entrySet()) {
-            var ident = identerMedInntekterEntry.getKey();
-            var rsInntekter = identerMedInntekterEntry.getValue();
-            var periodeVirksomhetInntekterMap = buildInntektsliste(rsInntekter);
-            for (var periodeVirksomhetInntekterEntry : periodeVirksomhetInntekterMap.entrySet()) {
-                var aarMaaned = periodeVirksomhetInntekterEntry.getKey();
-                var virksomhetInntekterMap = periodeVirksomhetInntekterEntry.getValue();
-                for (var virksomhetInntekterEntry : virksomhetInntekterMap.entrySet()) {
-                    var virksomhet = virksomhetInntekterEntry.getKey();
-                    var inntekter = virksomhetInntekterEntry.getValue();
-                    inntektsinformasjonTilIdenter.add(
-                            Inntektsinformasjon.builder()
-                                    .norskIdent(ident)
-                                    .inntektsliste(inntekter)
-                                    .aarMaaned(YearMonth.parse(aarMaaned))
-                                    .virksomhet(virksomhet)
-                                    .build());
-                }
+            for (var periodeVirksomhetInntekterEntry : buildInntektsliste(identerMedInntekterEntry.getValue()).entrySet()) {
+                periodeVirksomhetInntekterEntry.getValue().forEach((key, value) -> inntektsinformasjonTilIdenter.add(
+                        Inntektsinformasjon.builder()
+                                .norskIdent(identerMedInntekterEntry.getKey())
+                                .inntektsliste(value)
+                                .aarMaaned(YearMonth.parse(periodeVirksomhetInntekterEntry.getKey()))
+                                .virksomhet(key)
+                                .build()));
             }
         }
-        RequestEntity postRequest = RequestEntity.post(leggTilInntektUrl.expand()).body(inntektsinformasjonTilIdenter);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<Inntektsinformasjon>>() {
-        }).getBody();
+
+        var postRequest = RequestEntity.post(leggTilInntektUrl.expand()).body(inntektsinformasjonTilIdenter);
+        List<Inntektsinformasjon> response = new ArrayList<>();
+        try {
+            List<Inntektsinformasjon> responseBody = restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<Inntektsinformasjon>>() {
+            }).getBody();
+            if (responseBody != null) {
+                response = responseBody;
+            }
+        } catch (HttpStatusCodeException e) {
+            log.error("Kunne ikke legge inntekt i inntektstub", e);
+        }
+        return response;
     }
 
     private Map<String, Map<String, List<Inntekt>>> buildInntektsliste(List<RsInntekt> rsInntekter) {
