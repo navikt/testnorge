@@ -7,6 +7,7 @@ import static no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.
 import static no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.YTELSE_FRA_OFFENTLIGE;
 
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
@@ -21,6 +22,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
@@ -39,6 +41,7 @@ import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntekt
 import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype;
 
+@Slf4j
 @Component
 public class InntektstubV2Consumer {
 
@@ -96,10 +99,16 @@ public class InntektstubV2Consumer {
         for (var page : partitions) {
             var identerAsString = String.join(",", page);
             var getRequest = RequestEntity.get(hentEksisterendeInntekterUrl.expand(identerAsString)).build();
-            var responseBody = restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<Inntektsinformasjon>>() {
-            }).getBody();
-            if (responseBody != null) {
-                inntekter.addAll(responseBody);
+
+            try {
+                var responseBody = restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<Inntektsinformasjon>>() {
+                }).getBody();
+
+                if (responseBody != null) {
+                    inntekter.addAll(responseBody);
+                }
+            } catch (HttpStatusCodeException e) {
+                log.error("Kunne ikke hente inntekt fra inntektstub", e);
             }
         }
 
