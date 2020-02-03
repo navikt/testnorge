@@ -35,7 +35,7 @@ export const KrrstubForm = ({ formikBag }) => (
 KrrstubForm.validation = {
 	krrstub: Yup.object({
 		epost: '',
-		gyldigFra: Yup.date(),
+		gyldigFra: Yup.date().nullable(),
 		mobil: Yup.string().matches(/^[0-9]*$/, 'Ugyldig mobilnummer'),
 		registrert: '',
 		reservert: ''

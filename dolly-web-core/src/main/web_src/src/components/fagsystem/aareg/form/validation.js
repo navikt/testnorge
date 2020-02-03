@@ -45,7 +45,7 @@ const antallTimerForTimeloennet = Yup.array().of(
 			tom: innenforAnsettelsesforholdTest(requiredDate, true)
 		}),
 		antallTimer: Yup.number()
-			.min(1, 'Kan ikke være mindre enn 1')
+			.min(1, 'Kan ikke være mindre enn ${min}')
 			.required('Feltet er påkrevd')
 	})
 )
@@ -57,8 +57,8 @@ const permisjon = Yup.array().of(
 			tom: innenforAnsettelsesforholdTest(Yup.date().nullable())
 		}),
 		permisjonsprosent: Yup.number()
-			.min(1, 'Kan ikke være mindre enn 1')
-			.max(100, 'Kan ikke være større enn 100')
+			.min(1, 'Kan ikke være mindre enn ${min}')
+			.max(100, 'Kan ikke være større enn ${max}')
 			.required('Feltet er påkrevd'),
 		permisjonOgPermittering: requiredString
 	})
@@ -100,8 +100,8 @@ export const validation = {
 			arbeidsavtale: Yup.object({
 				yrke: requiredString,
 				stillingsprosent: Yup.number()
-					.min(1, 'Kan ikke være mindre enn 1')
-					.max(100, 'Kan ikke være større enn 100')
+					.min(1, 'Kan ikke være mindre enn ${min}')
+					.max(100, 'Kan ikke være større enn ${max}')
 					.required('Feltet er påkrevd'),
 				endringsdatoStillingsprosent: Yup.date().nullable(),
 				arbeidstidsordning: requiredString

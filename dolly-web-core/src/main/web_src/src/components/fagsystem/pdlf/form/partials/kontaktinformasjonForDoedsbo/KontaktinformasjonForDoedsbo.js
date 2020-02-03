@@ -18,6 +18,7 @@ export const KontaktinformasjonForDoedsbo = ({ formikBag }) => {
 					name="pdlforvalter.kontaktinformasjonForDoedsbo.skifteform"
 					label="Skifteform"
 					options={Options('skifteform')}
+					isClearable={false}
 				/>
 				<FormikDatepicker
 					name="pdlforvalter.kontaktinformasjonForDoedsbo.utstedtDato"

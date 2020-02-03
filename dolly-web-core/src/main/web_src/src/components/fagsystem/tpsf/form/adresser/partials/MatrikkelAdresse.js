@@ -16,12 +16,14 @@ export const MatrikkelAdresse = ({ formikBag }) => {
 				label="Postnummer"
 				kodeverk="Postnummer"
 				size="large"
+				isClearable={false}
 			/>
 			<FormikSelect
 				name="tpsf.boadresse.kommunenr"
 				label="Kommunenummer"
 				kodeverk="Kommuner"
 				size="large"
+				isClearable={false}
 			/>
 		</Kategori>
 	)
