@@ -2,7 +2,7 @@ import * as Yup from 'yup'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 import { isWithinInterval, getMonth } from 'date-fns'
-import { requiredDate, requiredString } from '~/utils/YupValidations'
+import { requiredDate, requiredString, messages } from '~/utils/YupValidations'
 
 const innenforAnsettelsesforholdTest = (validation, validateFomMonth) => {
 	const errorMsg = 'Dato må være innenfor ansettelsesforhold'
@@ -46,7 +46,7 @@ const antallTimerForTimeloennet = Yup.array().of(
 		}),
 		antallTimer: Yup.number()
 			.min(1, 'Kan ikke være mindre enn ${min}')
-			.required('Feltet er påkrevd')
+			.required(messages.required)
 	})
 )
 
@@ -59,7 +59,7 @@ const permisjon = Yup.array().of(
 		permisjonsprosent: Yup.number()
 			.min(1, 'Kan ikke være mindre enn ${min}')
 			.max(100, 'Kan ikke være større enn ${max}')
-			.required('Feltet er påkrevd'),
+			.typeError(messages.required),
 		permisjonOgPermittering: requiredString
 	})
 )
@@ -102,7 +102,7 @@ export const validation = {
 				stillingsprosent: Yup.number()
 					.min(1, 'Kan ikke være mindre enn ${min}')
 					.max(100, 'Kan ikke være større enn ${max}')
-					.required('Feltet er påkrevd'),
+					.typeError(messages.required),
 				endringsdatoStillingsprosent: Yup.date().nullable(),
 				arbeidstidsordning: requiredString
 			}),

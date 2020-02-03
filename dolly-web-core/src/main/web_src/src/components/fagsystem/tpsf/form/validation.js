@@ -45,7 +45,7 @@ export const sivilstander = Yup.array().of(
 	Yup.object({
 		sivilstand: Yup.string()
 			.test('is-not-ugift', 'Ugyldig sivilstand for partner', value => value !== 'UGIF')
-			.required('Feltet er påkrevd'),
+			.required(messages.required),
 		sivilstandRegdato: Yup.string()
 			.test(
 				'is-before-last',
@@ -65,7 +65,7 @@ export const sivilstander = Yup.array().of(
 				}
 			)
 			.nullable()
-			.required('Feltet er påkrevd')
+			.required(messages.required)
 	})
 )
 
@@ -130,9 +130,9 @@ export const validation = {
 		'$tpsf',
 		Yup.object({
 			alder: Yup.number()
-				.min(1)
-				.max(99)
-				.typeError('Feltet er påkrevd'),
+				.min(1, 'Alder må være høyere enn 0')
+				.max(99, 'Alder må være lavere enn 100')
+				.typeError(messages.required),
 			foedtEtter: Yup.date().nullable(),
 			foedtFoer: Yup.date().nullable(),
 			doedsdato: Yup.date().nullable(),
@@ -144,16 +144,19 @@ export const validation = {
 			utvandretTilLand: ifPresent('$tpsf.utvandretTilLand', requiredString),
 			utvandretTilLandFlyttedato: Yup.date().nullable(),
 			sprakKode: ifPresent('$tpsf.sprakKode', requiredString),
-			spesreg: Yup.string()
-				.when('utenFastBopel', {
-					is: true,
-					then: Yup.string().test(
-						'is-not-kode6',
-						'Kan ikke være "Kode 6" når "Uten fast bopel" er valgt.',
-						value => value !== 'SPSF'
-					)
-				})
-				.required(messages.required),
+			spesreg: ifPresent(
+				'$tpsf.spesreg',
+				Yup.string()
+					.when('utenFastBopel', {
+						is: true,
+						then: Yup.string().test(
+							'is-not-kode6',
+							'Kan ikke være "Kode 6" når "Uten fast bopel" er valgt.',
+							value => value !== 'SPSF'
+						)
+					})
+					.required(messages.required)
+			),
 			boadresse: ifPresent('$tpsf.boadresse', boadresse),
 			adresseNrInfo: ifPresent('$tpsf.adresseNrInfo', adresseNrInfo),
 			postadresse: Yup.array().of(
