@@ -16,6 +16,7 @@ export const AdresseNr = ({ formikBag, type }) => {
 					label="Postnummer"
 					kodeverk="Postnummer"
 					size="large"
+					isClearable={false}
 				/>
 			)}
 			{type === 'kommunenr' && (
@@ -24,6 +25,7 @@ export const AdresseNr = ({ formikBag, type }) => {
 					label="Kommunenummer"
 					kodeverk="Kommuner"
 					size="large"
+					isClearable={false}
 				/>
 			)}
 		</Kategori>

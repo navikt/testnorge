@@ -32,6 +32,7 @@ export const InstForm = ({ formikBag }) => (
 							name={`${path}.institusjonstype`}
 							label="Institusjonstype"
 							options={Options('institusjonstype')}
+							isClearable={false}
 						/>
 						<FormikDatepicker name={`${path}.startdato`} label="Startdato" />
 						<FormikDatepicker name={`${path}.faktiskSluttdato`} label="Sluttdato" />

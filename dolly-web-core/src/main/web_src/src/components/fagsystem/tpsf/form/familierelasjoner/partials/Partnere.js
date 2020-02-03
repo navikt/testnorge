@@ -32,7 +32,11 @@ export const Partnere = ({ formikBag }) => (
 					isClearable={false}
 				/>
 				<FormikSelect name={`${path}.kjonn`} label="Kjønn" kodeverk="Kjønnstyper" />
-				<FormikCheckbox name={`${path}.harFellesAdresse`} label="Har felles adresse" />
+				<FormikCheckbox
+					name={`${path}.harFellesAdresse`}
+					label="Har felles adresse"
+					checkboxMargin
+				/>
 				<FormikSelect
 					name={`${path}.statsborgerskap`}
 					label="Statsborgerskap"

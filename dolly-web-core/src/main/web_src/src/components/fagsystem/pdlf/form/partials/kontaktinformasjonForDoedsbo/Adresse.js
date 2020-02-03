@@ -19,6 +19,7 @@ export const Adresse = ({ formikBag }) => {
 				label="Land"
 				kodeverk="Landkoder"
 				size="large"
+				isClearable={false}
 			/>
 			<div>
 				<FormikTextInput

@@ -1,18 +1,46 @@
-.dolly-checkbox {
-	&.nonlabel .skjemaelement__label::before {
-		top: -10px;
+// Switch colors
+@switch-bg: #d4d1cf;
+@switch-bg-active: #0067c5;
+@slider-bg: #f1efef;
+
+// Switch size
+@switch-width: 40px;
+@switch-height: 18px;
+
+input.dolly-switch {
+	// background bar
+	display: block;
+	-webkit-appearance: none;
+	width: @switch-width;
+	height: @switch-height;
+	position: relative;
+	border-radius: 50px;
+	outline: none;
+	border: none;
+	cursor: pointer;
+	background-color: @switch-bg;
+	transition: background-color ease 0.3s;
+
+	// circle slider
+	&::before {
+		content: '';
+		display: block;
+		position: absolute;
+		width: calc(@switch-height - 4px);
+		height: calc(@switch-height - 4px);
+		background: @slider-bg;
+		left: 2px;
+		top: 2px;
+		border-radius: 50%;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+		transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
 	}
 
-	.checkboks + .skjemaelement__label,
-	.radioknapp + .skjemaelement__label {
-		line-height: 24px;
-		padding-left: 32px;
-		font-size: 1rem;
-		text-transform: none;
-
+	&:checked {
+		background-color: @switch-bg-active;
 		&::before {
-			width: 24px;
-			height: 24px;
+			right: 2px;
+			left: auto;
 		}
 	}
 }
