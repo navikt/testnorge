@@ -15,6 +15,7 @@ spec:
     path: /internal/isReady
     initialDelay: 30
   prometheus:
+    enabled: true
     path: /internal/prometheus
   replicas:
     min: 1
