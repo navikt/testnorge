@@ -6,11 +6,12 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
-import EtikettBase from 'nav-frontend-etiketter'
 
-const etikettTypeMap = {
-	Ferdig: 'suksess',
-	Avvik: 'fokus'
+import Icon from '~/components/ui/icon/Icon'
+
+const ikonTypeMap = {
+	Ferdig: 'feedback-check-circle',
+	Avvik: 'report-problem-circle'
 }
 
 export default function PersonListe({ isFetching, personListe, searchActive, fetchTpsfPersoner }) {
@@ -66,7 +67,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			text: 'Status',
 			width: '10',
 			dataField: 'status',
-			formatter: (cell, row) => <EtikettBase type={etikettTypeMap[cell]}>{cell}</EtikettBase>
+			formatter: (cell, row) => <Icon kind={ikonTypeMap[cell]} />
 		},
 		{
 			text: 'Brukt',
