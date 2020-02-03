@@ -62,7 +62,7 @@ public class InntektstubV2Consumer {
         this.hentEksisterendeInntekterUrl = new UriTemplate(inntektstubUrl + "/v2/inntektsinformasjon?historikk=false&norske-identer={identer}");
     }
 
-    private HttpComponentsClientHttpRequestFactory getHttpRequestFactory() {
+    private final HttpComponentsClientHttpRequestFactory getHttpRequestFactory() {
         SSLConnectionSocketFactory sslsf;
         try {
             sslsf = new SSLConnectionSocketFactory(SSLContext.getDefault(), NoopHostnameVerifier.INSTANCE);
