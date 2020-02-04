@@ -6,6 +6,7 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
+import { WomanIconItem, ManIconItem } from './IconItem'
 
 import Icon from '~/components/ui/icon/Icon'
 
@@ -45,11 +46,6 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			dataField: 'navn'
 		},
 		{
-			text: 'Kjønn',
-			width: '15',
-			dataField: 'kjonn'
-		},
-		{
 			text: 'Alder',
 			width: '10',
 			dataField: 'alder'
@@ -84,7 +80,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			data={personListe}
 			columns={columns}
 			pagination
-			rowIcon={bruker => (bruker.kjonn === 'MANN' ? 'man' : 'woman')}
+			iconItem={bruker => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
 			onExpand={bruker => (
 				<PersonVisningConnector
 					personId={bruker.ident.ident}
