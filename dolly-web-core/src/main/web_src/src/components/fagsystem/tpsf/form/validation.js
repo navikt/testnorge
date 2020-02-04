@@ -74,6 +74,7 @@ const partnere = Yup.array().of(
 		identtype: Yup.string(),
 		kjonn: Yup.string().nullable(),
 		alder: Yup.number()
+			.transform(num => (isNaN(num) ? undefined : num))
 			.min(1, 'Alder må være høyere enn 0')
 			.max(99, 'Alder må være lavere enn 100'),
 		foedtEtter: Yup.date().nullable(),
@@ -106,6 +107,7 @@ const barn = Yup.array().of(
 		borHos: requiredString,
 		erAdoptert: Yup.boolean(),
 		alder: Yup.number()
+			.transform(num => (isNaN(num) ? undefined : num))
 			.min(1, 'Alder må være høyere enn 0')
 			.max(99, 'Alder må være lavere enn 100'),
 		spesreg: Yup.string()

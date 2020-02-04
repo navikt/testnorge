@@ -9,7 +9,7 @@ import './diskresjonskoder.less'
 
 export const Diskresjonskoder = ({ basePath, formikBag }) => {
 	const [harUfb, setHarUfb] = useState(_get(formikBag.values, `${basePath}.utenFastBopel`))
-	console.log('basePath :', basePath)
+
 	// For å sjekke om det er valgt boadresse i tillegg til diskresjonskoder
 	const harBoadresse = _has(formikBag.values, `${basePath}.boadresse.flyttedato`)
 
@@ -29,7 +29,6 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 	const handleChangeKommunenr = val => {
 		formikBag.setFieldValue(`${basePath}.boadresse.adressetype`, 'GATE')
 	}
-	console.log('!basePath.includes( :', !basePath.includes('relasjoner'))
 	return (
 		<Vis attributt={Object.values(paths)}>
 			<div className="spesreg-component">
