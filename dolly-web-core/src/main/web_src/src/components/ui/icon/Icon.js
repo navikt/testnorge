@@ -58,7 +58,7 @@ import Dolly from '~/assets/icons/custom/Dolly.svg'
 
 import './Icon.less'
 
-const icons = {
+export const icons = {
 	trashcan: Trashcan,
 	'add-circle': AddCircle,
 	'remove-circle': RemoveCircle,

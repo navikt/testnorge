@@ -26,7 +26,7 @@ const getIconType = (rowIcon, row) => {
 	return _isFunction(rowIcon) ? rowIcon(row) : rowIcon
 }
 
-export default function Table({ data, rowIcon, columns, onRowClick, onExpand }) {
+export default function Table({ data, rowIcon, rowClass, columns, onRowClick, onExpand }) {
 	return (
 		<div className="dot">
 			<div className="dot-header">
@@ -42,7 +42,12 @@ export default function Table({ data, rowIcon, columns, onRowClick, onExpand }) 
 				const iconType = getIconType(rowIcon, row)
 				const rowKey = getRowKey(row, columns) || rowIdx
 				return (
-					<Row key={rowKey} icon={iconType} navLink={navLink} expandComponent={expandComponent}>
+					<Row
+						key={rowKey}
+						icon={rowClass(row)}
+						navLink={navLink}
+						expandComponent={expandComponent}
+					>
 						{columns.map((columnCell, idx) => (
 							<Column key={idx} width={columnCell.width} value={getColumnValue(row, columnCell)} />
 						))}
