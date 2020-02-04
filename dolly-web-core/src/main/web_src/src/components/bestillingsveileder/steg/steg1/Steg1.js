@@ -16,12 +16,12 @@ export const Steg1 = ({ formikBag, stateModifier }) => {
 	const checked = [
 		PersoninformasjonPanel,
 		AdressePanel,
-		IdentifikasjonPanel,
 		FamilierelasjonPanel,
 		ArbeidInntektPanel,
+		IdentifikasjonPanel,
+		KontaktDoedsboPanel,
 		InstutisjonsoppholdPanel,
 		KontaktReservasjonsPanel,
-		KontaktDoedsboPanel,
 		ArenaPanel,
 		UdiPanel
 	]
@@ -35,9 +35,9 @@ export const Steg1 = ({ formikBag, stateModifier }) => {
 		<AttributtVelger checked={checked}>
 			<PersoninformasjonPanel stateModifier={stateModifier} />
 			<AdressePanel stateModifier={stateModifier} />
-			<IdentifikasjonPanel stateModifier={stateModifier} />
 			<FamilierelasjonPanel stateModifier={stateModifier} />
 			<ArbeidInntektPanel stateModifier={stateModifier} />
+			<IdentifikasjonPanel stateModifier={stateModifier} />
 			<KontaktDoedsboPanel stateModifier={stateModifier} />
 			<InstutisjonsoppholdPanel stateModifier={stateModifier} />
 			<KontaktReservasjonsPanel stateModifier={stateModifier} />
