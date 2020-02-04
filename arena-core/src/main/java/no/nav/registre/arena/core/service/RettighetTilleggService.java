@@ -1,6 +1,6 @@
 package no.nav.registre.arena.core.service;
 
-import static no.nav.registre.arena.core.service.ServiceUtils.BEGRUNNELSE;
+import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +14,7 @@ import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TilleggSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
+import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakTillegg;
 

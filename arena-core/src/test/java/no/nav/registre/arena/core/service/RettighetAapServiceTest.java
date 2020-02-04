@@ -22,6 +22,7 @@ import java.util.List;
 
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
+import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.arena.domain.historikk.Vedtakshistorikk;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.BrukereArenaForvalterConsumer;
-import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
+import no.nav.registre.arena.domain.vedtak.NyeBrukereResponse;
 import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 

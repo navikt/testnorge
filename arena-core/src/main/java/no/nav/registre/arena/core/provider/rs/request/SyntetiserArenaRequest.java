@@ -1,4 +1,4 @@
-package no.nav.registre.arena.core.provider.rs.requests;
+package no.nav.registre.arena.core.provider.rs.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

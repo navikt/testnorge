@@ -11,9 +11,9 @@ import java.util.List;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AndreOkonomYtelser {
 
     @JsonAlias({ "ANNEN_OKONOM_YTELSE", "annenOkonomYtelse" })

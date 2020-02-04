@@ -1,4 +1,4 @@
-package no.nav.registre.arena.core.consumer.rs.responses;
+package no.nav.registre.arena.domain.vedtak;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

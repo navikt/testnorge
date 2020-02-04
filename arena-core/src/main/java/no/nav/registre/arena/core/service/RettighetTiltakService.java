@@ -1,6 +1,6 @@
 package no.nav.registre.arena.core.service;
 
-import static no.nav.registre.arena.core.service.ServiceUtils.BEGRUNNELSE;
+import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +26,8 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggsytelseReq
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksaktivitetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
+import no.nav.registre.arena.core.service.util.AktivitetskodeMedSannsynlighet;
+import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
@@ -37,7 +39,6 @@ public class RettighetTiltakService {
 
     private static final String RELASJON_MOR = "MORA";
     private static final String RELASJON_FAR = "FARA";
-    private static final String AKTIVITETSKODE_ARBEIDSTRENING = "ARBTREN";
 
     private final TiltakSyntConsumer tiltakSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;

@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
-import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
+import no.nav.registre.arena.domain.vedtak.NyeBrukereResponse;
+import no.nav.registre.arena.core.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.BrukereService;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
 @RequiredArgsConstructor
-public class SyntetiseringController {
+public class BrukereController {
 
     private final BrukereService brukereService;
 

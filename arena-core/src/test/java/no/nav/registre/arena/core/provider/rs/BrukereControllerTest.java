@@ -1,8 +1,8 @@
 package no.nav.registre.arena.core.provider.rs;
 
-import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
+import no.nav.registre.arena.domain.vedtak.NyeBrukereResponse;
 import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
-import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
+import no.nav.registre.arena.core.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.BrukereService;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,13 +23,13 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class SyntetiseringControllerTest {
+public class BrukereControllerTest {
 
     @Mock
     private BrukereService brukereService;
 
     @InjectMocks
-    private SyntetiseringController syntetiseringController;
+    private BrukereController brukereController;
 
     private SyntetiserArenaRequest syntetiserArenaRequest;
 
@@ -65,7 +65,7 @@ public class SyntetiseringControllerTest {
                 .opprettArbeidsoekere(antallNyeIdenter, avspillegruppeId, miljoe))
                 .thenReturn(response);
 
-        ResponseEntity<NyeBrukereResponse> result = syntetiseringController.registrerBrukereIArenaForvalter(null, syntetiserArenaRequest);
+        ResponseEntity<NyeBrukereResponse> result = brukereController.registrerBrukereIArenaForvalter(null, syntetiserArenaRequest);
         assertThat(result.getBody().getArbeidsoekerList().get(1).getPersonident(), containsString(fnr2));
         assertThat(result.getBody().getArbeidsoekerList().size(), is(3));
     }
@@ -75,7 +75,7 @@ public class SyntetiseringControllerTest {
         doReturn(singleResponse).when(brukereService)
                 .opprettArbeidssoeker(fnr1, avspillegruppeId, miljoe);
 
-        ResponseEntity<NyeBrukereResponse> response = syntetiseringController.registrerBrukereIArenaForvalter(fnr1, syntetiserArenaRequest);
+        ResponseEntity<NyeBrukereResponse> response = brukereController.registrerBrukereIArenaForvalter(fnr1, syntetiserArenaRequest);
         assertThat(response.getBody().getArbeidsoekerList().size(), is(1));
         assertThat(response.getBody().getArbeidsoekerList().get(0).getPersonident(), containsString(fnr1));
     }

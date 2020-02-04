@@ -1,6 +1,6 @@
 package no.nav.registre.arena.core.service;
 
-import static no.nav.registre.arena.core.service.ServiceUtils.BEGRUNNELSE;
+import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +18,7 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRe
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
+import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.arena.domain.historikk.Vedtakshistorikk;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
+import no.nav.registre.arena.core.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.RettighetAapService;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 

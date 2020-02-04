@@ -9,9 +9,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Periode {
 
     @JsonAlias({ "ENDRING_PERIODE", "endringPeriodeBegrunnelse" })

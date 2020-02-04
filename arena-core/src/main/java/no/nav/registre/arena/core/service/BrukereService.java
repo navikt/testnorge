@@ -13,7 +13,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.BrukereArenaForvalterConsumer;
-import no.nav.registre.arena.core.consumer.rs.responses.NyeBrukereResponse;
+import no.nav.registre.arena.domain.vedtak.NyeBrukereResponse;
 import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 import no.nav.registre.arena.domain.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.arena.domain.brukere.NyBruker;

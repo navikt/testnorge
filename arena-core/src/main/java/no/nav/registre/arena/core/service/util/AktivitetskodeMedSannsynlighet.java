@@ -1,4 +1,4 @@
-package no.nav.registre.arena.core.service;
+package no.nav.registre.arena.core.service.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

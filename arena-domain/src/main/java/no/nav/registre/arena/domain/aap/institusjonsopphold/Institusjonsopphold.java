@@ -8,8 +8,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
+@Builder
 public class Institusjonsopphold {
 
     @JsonAlias({ "KODE", "kode" })

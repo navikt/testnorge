@@ -1,4 +1,4 @@
-package no.nav.registre.arena.core.service;
+package no.nav.registre.arena.core.service.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,6 +10,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
+import no.nav.registre.arena.core.service.BrukereService;
 import no.nav.registre.arena.domain.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.arena.domain.brukere.NyBrukerFeil;
 import no.nav.registre.arena.domain.vedtak.forvalter.Adresse;
