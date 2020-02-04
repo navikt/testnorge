@@ -43,7 +43,7 @@ export const Personinformasjon = ({ formikBag }) => (
 				<Vis attributt="tpsf.statsborgerskap">
 					<FormikSelect
 						name="tpsf.statsborgerskap"
-						label="Statsborgerskap"
+						label="Statsborgerskap fra dato"
 						kodeverk="Landkoder"
 						size="large"
 					/>
@@ -53,7 +53,7 @@ export const Personinformasjon = ({ formikBag }) => (
 				<Vis attributt="tpsf.innvandretFraLand">
 					<FormikSelect
 						name="tpsf.innvandretFraLand"
-						label="Innvandret"
+						label="Innvandret fra"
 						kodeverk="Landkoder"
 						size="large"
 					/>
@@ -63,7 +63,7 @@ export const Personinformasjon = ({ formikBag }) => (
 				<Vis attributt="tpsf.utvandretTilLand">
 					<FormikSelect
 						name="tpsf.utvandretTilLand"
-						label="Utvandret"
+						label="Utvandret til"
 						kodeverk="Landkoder"
 						size="large"
 					/>

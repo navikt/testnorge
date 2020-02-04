@@ -11,7 +11,7 @@ export const Diverse = ({ formikBag }) => (
 
 		<FormikSelect
 			name="tpsf.harMellomnavn"
-			label="Mellomnavn"
+			label="Har mellomnavn"
 			options={Options('boolean')}
 			visHvisAvhuket
 		/>
