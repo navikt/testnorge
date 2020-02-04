@@ -6,7 +6,7 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
-import { WomanIconItem, ManIconItem } from './IconItem'
+import { WomanIconItem, ManIconItem } from '~/components/ui/icon/IconItem'
 
 import Icon from '~/components/ui/icon/Icon'
 
