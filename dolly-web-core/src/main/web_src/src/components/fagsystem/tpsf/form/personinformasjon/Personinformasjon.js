@@ -49,6 +49,7 @@ export const Personinformasjon = ({ formikBag }) => (
 						label="Statsborgerskap"
 						kodeverk="Landkoder"
 						size="large"
+						isClearable={false}
 					/>
 					<FormikDatepicker name="tpsf.statsborgerskapRegdato" label="Statsborgerskap fra dato" />
 				</Vis>
@@ -59,6 +60,7 @@ export const Personinformasjon = ({ formikBag }) => (
 						label="Innvandret fra"
 						kodeverk="Landkoder"
 						size="large"
+						isClearable={false}
 					/>
 					<FormikDatepicker name="tpsf.innvandretFraLandFlyttedato" label="Innvandret dato" />
 				</Vis>
@@ -69,6 +71,7 @@ export const Personinformasjon = ({ formikBag }) => (
 						label="Utvandret til"
 						kodeverk="Landkoder"
 						size="large"
+						isClearable={false}
 					/>
 					<FormikDatepicker name="tpsf.utvandretTilLandFlyttedato" label="Utvandret dato" />
 				</Vis>
