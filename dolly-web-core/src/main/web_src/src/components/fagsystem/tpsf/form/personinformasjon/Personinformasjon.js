@@ -43,11 +43,11 @@ export const Personinformasjon = ({ formikBag }) => (
 				<Vis attributt="tpsf.statsborgerskap">
 					<FormikSelect
 						name="tpsf.statsborgerskap"
-						label="Statsborgerskap fra dato"
+						label="Statsborgerskap"
 						kodeverk="Landkoder"
 						size="large"
 					/>
-					<FormikDatepicker name="tpsf.statsborgerskapRegdato" label="Statsborgerskap fra" />
+					<FormikDatepicker name="tpsf.statsborgerskapRegdato" label="Statsborgerskap fra dato" />
 				</Vis>
 
 				<Vis attributt="tpsf.innvandretFraLand">
