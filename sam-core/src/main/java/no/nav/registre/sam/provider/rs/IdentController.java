@@ -2,6 +2,7 @@ package no.nav.registre.sam.provider.rs;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
+import no.nav.registre.sam.multitenancy.TenantContext;
 import no.nav.registre.sam.service.IdentService;
 
 @RestController
@@ -21,10 +23,12 @@ public class IdentController {
 
     @LogExceptions
     @ApiOperation(value = "Her kan man hente de identene fra en gitt liste som finnes i sam.")
-    @PostMapping(value = "/filtrerIdenter")
+    @PostMapping(value = "/filtrerIdenter/{miljoe}")
     public List<String> filtrerIdenter(
+            @PathVariable String miljoe,
             @RequestBody List<String> identer
     ) {
+        TenantContext.setTenant(miljoe);
         return identService.filtrerIdenter(identer);
     }
 }
