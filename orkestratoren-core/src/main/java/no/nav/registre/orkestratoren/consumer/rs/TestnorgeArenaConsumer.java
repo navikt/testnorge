@@ -13,7 +13,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
-import java.util.Objects;
 
 import no.nav.registre.orkestratoren.consumer.rs.response.GenererArenaResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteArenaResponse;
@@ -50,9 +49,13 @@ public class TestnorgeArenaConsumer {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(syntetiserArenaRequest);
 
-        var response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
+        var response = restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
 
-        return Objects.requireNonNull(response.getBody()).getRegistrerteIdenter();
+        if (response != null) {
+            return response.getRegistrerteIdenter();
+        } else {
+            throw new RuntimeException("Feil i syntetisering av arena");
+        }
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
