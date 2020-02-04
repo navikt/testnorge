@@ -8,11 +8,11 @@ import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
 public class TpSaveInHodejegerenRequest {
 
     private String kilde;

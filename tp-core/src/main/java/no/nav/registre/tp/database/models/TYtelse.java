@@ -2,10 +2,9 @@ package no.nav.registre.tp.database.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,12 +12,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity(name = "T_YTELSE")
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class TYtelse {
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ytelse_seq")
@@ -29,7 +29,7 @@ public class TYtelse {
     private Integer ytelseId;
 
     @JsonProperty("dato_innm_ytel_fom")
-    private java.sql.Date datoInnmYtelFom;
+    private Date datoInnmYtelFom;
 
     @JsonProperty("k_ytelse_t")
     @Column(name = "K_YTELSE_T")
@@ -40,15 +40,15 @@ public class TYtelse {
     private String kMeldingT;
 
     @JsonProperty("dato_ytel_iver_fom")
-    private java.sql.Date datoYtelIverFom;
+    private Date datoYtelIverFom;
     @JsonProperty("dato_ytel_iver_tom")
-    private java.sql.Date datoYtelIverTom;
+    private Date datoYtelIverTom;
     @JsonProperty("dato_opprettet")
-    private java.sql.Timestamp datoOpprettet;
+    private Timestamp datoOpprettet;
     @JsonProperty("opprettet_av")
     private String opprettetAv;
     @JsonProperty("dato_endret")
-    private java.sql.Timestamp datoEndret;
+    private Timestamp datoEndret;
     @JsonProperty("endret_av")
     private String endretAv;
     @JsonProperty("versjon")
@@ -59,8 +59,96 @@ public class TYtelse {
     @JsonProperty("funk_ytelse_id")
     private String funkYtelseId;
     @JsonProperty("dato_bruk_fom")
-    private java.sql.Timestamp datoBrukFom;
+    private Timestamp datoBrukFom;
     @JsonProperty("dato_bruk_tom")
-    private java.sql.Timestamp datoBrukTom;
+    private Timestamp datoBrukTom;
 
+    @SuppressWarnings("squid:S00107")
+    public TYtelse(
+            Date datoInnmYtelFom,
+            String kYtelseT,
+            String kMeldingT,
+            Date datoYtelIverFom,
+            Date datoYtelIverTom,
+            Timestamp datoOpprettet,
+            String opprettetAv,
+            Timestamp datoEndret,
+            String endretAv,
+            String versjon,
+            String erGyldig,
+            String funkYtelseId,
+            Timestamp datoBrukFom,
+            Timestamp datoBrukTom
+    ) {
+        this.datoInnmYtelFom = datoInnmYtelFom != null ? new Date(datoInnmYtelFom.getTime()) : null;
+        this.kYtelseT = kYtelseT;
+        this.kMeldingT = kMeldingT;
+        this.datoYtelIverFom = datoYtelIverFom != null ? new Date(datoYtelIverFom.getTime()) : null;
+        this.datoYtelIverTom = datoYtelIverTom != null ? new Date(datoYtelIverTom.getTime()) : null;
+        this.datoOpprettet = datoOpprettet != null ? new Timestamp(datoOpprettet.getTime()) : null;
+        this.opprettetAv = opprettetAv;
+        this.datoEndret = datoEndret != null ? new Timestamp(datoEndret.getTime()) : null;
+        this.endretAv = endretAv;
+        this.versjon = versjon;
+        this.erGyldig = erGyldig;
+        this.funkYtelseId = funkYtelseId;
+        this.datoBrukFom = datoBrukFom != null ? new Timestamp(datoBrukFom.getTime()) : null;
+        this.datoBrukTom = datoBrukTom != null ? new Timestamp(datoBrukTom.getTime()) : null;
+    }
+
+    public Date getDatoInnmYtelFom() {
+        return datoInnmYtelFom != null ? new Date(datoInnmYtelFom.getTime()) : null;
+    }
+
+    public void setDatoInnmYtelFom(Date datoInnmYtelFom) {
+        this.datoInnmYtelFom = datoInnmYtelFom != null ? new Date(datoInnmYtelFom.getTime()) : null;
+    }
+
+    public Date getDatoYtelIverFom() {
+        return datoYtelIverFom != null ? new Date(datoYtelIverFom.getTime()) : null;
+    }
+
+    public void setDatoYtelIverFom(Date datoYtelIverFom) {
+        this.datoYtelIverFom = datoYtelIverFom != null ? new Date(datoYtelIverFom.getTime()) : null;
+    }
+
+    public Date getDatoYtelIverTom() {
+        return datoYtelIverTom != null ? new Date(datoYtelIverTom.getTime()) : null;
+    }
+
+    public void setDatoYtelIverTom(Date datoYtelIverTom) {
+        this.datoYtelIverTom = datoYtelIverTom != null ? new Date(datoYtelIverTom.getTime()) : null;
+    }
+
+    public Timestamp getDatoOpprettet() {
+        return datoOpprettet != null ? new Timestamp(datoOpprettet.getTime()) : null;
+    }
+
+    public void setDatoOpprettet(Timestamp datoOpprettet) {
+        this.datoOpprettet = datoOpprettet != null ? new Timestamp(datoOpprettet.getTime()) : null;
+    }
+
+    public Timestamp getDatoEndret() {
+        return datoEndret != null ? new Timestamp(datoEndret.getTime()) : null;
+    }
+
+    public void setDatoEndret(Timestamp datoEndret) {
+        this.datoEndret = datoEndret != null ? new Timestamp(datoEndret.getTime()) : null;
+    }
+
+    public Timestamp getDatoBrukFom() {
+        return datoBrukFom != null ? new Timestamp(datoBrukFom.getTime()) : null;
+    }
+
+    public void setDatoBrukFom(Timestamp datoBrukFom) {
+        this.datoBrukFom = datoBrukFom != null ? new Timestamp(datoBrukFom.getTime()) : null;
+    }
+
+    public Timestamp getDatoBrukTom() {
+        return datoBrukTom != null ? new Timestamp(datoBrukTom.getTime()) : null;
+    }
+
+    public void setDatoBrukTom(Timestamp datoBrukTom) {
+        this.datoBrukTom = datoBrukTom != null ? new Timestamp(datoBrukTom.getTime()) : null;
+    }
 }
