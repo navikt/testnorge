@@ -16,13 +16,12 @@ import GroupLight from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-grou
 import GroupDark from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-4Dark.svg'
 import Family from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-5.svg'
 import Group1 from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-1.svg'
+import IdCardDouble from '~/assets/icons/nav-ikoner/line/SVG/11-users/id-card-double.svg'
 import NewFileTable from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-table.svg'
 import FileChecklist from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklist.svg'
 import FileChecklistLight from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklistLight.svg'
 // import NewFile from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-new-1.svg'
 import NewFile from '~/assets/icons/nav-ikoner/filled/SVG/17-files/file-add.svg'
-import RectFilled from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/filled-version-button-empty.svg'
-import RectEmpty from '~/assets/icons/nav-ikoner/line/SVG/19-interface/line-version-expanded-button-empty.svg'
 import Synchronize from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/synchronize-3.svg'
 import AddCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/add-circle.svg'
 import RemoveCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/remove-circle.svg'
@@ -81,8 +80,6 @@ export const icons = {
 	'chevron-up': ChevronUp,
 	'chevron-left': ChevronLeft,
 	'chevron-right': ChevronRight,
-	'rectangle-empty': RectEmpty,
-	'rectangle-filled': RectFilled,
 
 	man: Man,
 	manLight: ManLight,
@@ -99,7 +96,7 @@ export const icons = {
 	personinformasjon: InformationCircle,
 	nasjonalitet: Globe2,
 	relasjoner: Family,
-	identhistorikk: InformationCircle,
+	identhistorikk: IdCardDouble,
 	identifikasjon: Group1,
 	adresse: House,
 	postadresse: EmailText,
@@ -118,11 +115,11 @@ export const icons = {
 
 const px = v => `${v}px`
 
-export default function Icon({ kind, size = 24, style, className }) {
+export default function Icon({ kind, title, size = 24, style, className }) {
 	if (!icons[kind]) return null
 
 	const cssClass = cn('svg-icon', `svg-icon-${kind}`, className)
 	const styleObj = Object.assign({ width: px(size), height: px(size) }, style)
 
-	return <SVG src={icons[kind]} className={cssClass} style={styleObj} />
+	return <SVG src={icons[kind]} className={cssClass} style={styleObj} title={title} />
 }

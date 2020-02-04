@@ -4,6 +4,7 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
+import { erForste } from '~/components/ui/form/formUtils'
 import { validation } from './validation'
 import { Oppholdsstatus } from './partials/Oppholdsstatus'
 import { Arbeidsadgang } from './partials/Arbeidsadgang'
@@ -18,9 +19,16 @@ const attrPaths = [
 	'udistub.soeknadOmBeskyttelseUnderBehandling'
 ]
 
+const udiAttributt = 'udistub'
+
 export const UdistubForm = ({ formikBag }) => (
 	<Vis attributt={attrPaths}>
-		<Panel heading="UDI" hasErrors={panelError(formikBag, attrPaths)} iconType="udi">
+		<Panel
+			heading="UDI"
+			hasErrors={panelError(formikBag, attrPaths)}
+			iconType="udi"
+			startOpen={() => erForste(formikBag.values, [udiAttributt])}
+		>
 			<Kategori title="Gjeldende oppholdsstatus" vis="udistub.oppholdStatus">
 				<Oppholdsstatus formikBag={formikBag} />
 			</Kategori>

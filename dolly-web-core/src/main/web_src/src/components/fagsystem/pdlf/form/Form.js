@@ -4,6 +4,7 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { validation } from './validation'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
+import { erForste } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FalskIdentitet } from './partials/falskIdentitet/FalskIdentitet'
 import { UtenlandsId } from './partials/utenlandsId/UtenlandsId'
@@ -22,6 +23,7 @@ export const PdlfForm = ({ formikBag }) => (
 				heading="Identifikasjon"
 				hasErrors={panelError(formikBag, identifikasjonAttributt)}
 				iconType="identifikasjon"
+				startOpen={() => erForste(formikBag.values, identifikasjonAttributt)}
 			>
 				<Kategori title="Falsk identitet" vis="pdlforvalter.falskIdentitet">
 					<FalskIdentitet formikBag={formikBag} />
@@ -41,6 +43,7 @@ export const PdlfForm = ({ formikBag }) => (
 				heading="Kontaktinformasjon for dødsbo"
 				hasErrors={panelError(formikBag, doedsboAttributt)}
 				iconType="doedsbo"
+				startOpen={() => erForste(formikBag.values, [doedsboAttributt])}
 			>
 				<KontaktinformasjonForDoedsbo formikBag={formikBag} />
 			</Panel>

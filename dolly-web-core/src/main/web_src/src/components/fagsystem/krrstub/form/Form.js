@@ -7,6 +7,7 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
+import { erForste } from '~/components/ui/form/formUtils'
 
 const krrAttributt = 'krrstub'
 
@@ -16,6 +17,7 @@ export const KrrstubForm = ({ formikBag }) => (
 			heading="Kontakt- og reservasjonsregisteret"
 			hasErrors={panelError(formikBag, krrAttributt)}
 			iconType="krr"
+			startOpen={() => erForste(formikBag.values, [krrAttributt])}
 		>
 			<div className="flexbox--flex-wrap">
 				<FormikTextInput name="krrstub.epost" label="E-post" />
@@ -35,7 +37,7 @@ export const KrrstubForm = ({ formikBag }) => (
 KrrstubForm.validation = {
 	krrstub: Yup.object({
 		epost: '',
-		gyldigFra: Yup.date(),
+		gyldigFra: Yup.date().nullable(),
 		mobil: Yup.string().matches(/^[0-9]*$/, 'Ugyldig mobilnummer'),
 		registrert: '',
 		reservert: ''

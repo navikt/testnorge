@@ -23,7 +23,7 @@ const validationSchema = yup.object({
 	antall: yup
 		.number()
 		.positive('Må være et positivt tall')
-		.min(1, 'Må minst opprette 1 person')
+		.min(1, 'Må minst opprette ${min} person')
 		.required('Oppgi antall personer'),
 	identtype: yup.string().required('Velg en identtype')
 })
@@ -61,7 +61,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 					<div className="ny-ident-form_maler">
 						<div className="ny-ident-form_maler_header">
 							<h3>Maler</h3>
-							<DollyCheckbox name="aktiver-maler" onChange={toggleMalAktiv} label="Vis" />
+							<DollyCheckbox name="aktiver-maler" onChange={toggleMalAktiv} label="Vis" isSwitch />
 						</div>
 
 						<div>

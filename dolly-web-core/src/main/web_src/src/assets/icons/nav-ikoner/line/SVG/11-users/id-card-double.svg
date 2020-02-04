@@ -1,0 +1,13 @@
+
+<svg contentScriptType="text/ecmascript" width="24"
+     xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify"
+     contentStyleType="text/css" viewBox="0 0 24 24" height="24"
+     preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+     version="1.0">
+    <g fill="none" stroke-miterlimit="10" stroke="#3e3832"
+       stroke-linejoin="round">
+        <path d="M4.5 6.5v14h4v-.75c0-.963.787-1.75 1.75-1.75.962 0 1.75.787 1.75 1.75v.75h4v-.75c0-.963.787-1.75 1.75-1.75.962 0 1.75.787 1.75 1.75v.75h4v-14h-19zM19.5 4.5v-2h-19v14h2.5"/>
+        <circle r="1.5" cx="10.5" cy="10.929"/>
+        <path d="M10.5 12.422c-2.143 0-3 1.813-3 3.099h6c0-1.286-.857-3.099-3-3.099zM16 14.5h5M16 12.5h5M16 10.5h2.5"/>
+    </g>
+</svg>

@@ -17,7 +17,7 @@ export const initialValues = [
 			stillingsprosent: 100,
 			endringsdatoStillingsprosent: null,
 			arbeidstidsordning: 'ikkeSkift',
-			antallKonverterteTimer: null,
+			antallKonverterteTimer: '',
 			avtaltArbeidstimerPerUke: 37.5
 		},
 		antallTimerForTimeloennet: [],

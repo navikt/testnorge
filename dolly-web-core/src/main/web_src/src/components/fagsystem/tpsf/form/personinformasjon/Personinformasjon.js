@@ -2,6 +2,7 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'
+import { erForste } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -33,7 +34,9 @@ export const Personinformasjon = ({ formikBag }) => (
 			heading="Personinformasjon"
 			hasErrors={panelError(formikBag, panelPaths)}
 			iconType={'personinformasjon'}
-			startOpen
+			startOpen={() =>
+				erForste(formikBag.values, alderPaths.concat(nasjonalitetPaths, diversePaths))
+			}
 		>
 			<Kategori title="Alder" vis={alderPaths}>
 				<Alder basePath="tpsf" formikBag={formikBag} />
@@ -47,13 +50,13 @@ export const Personinformasjon = ({ formikBag }) => (
 						kodeverk="Landkoder"
 						size="large"
 					/>
-					<FormikDatepicker name="tpsf.statsborgerskapRegdato" label="Statsborgerskap fra" />
+					<FormikDatepicker name="tpsf.statsborgerskapRegdato" label="Statsborgerskap fra dato" />
 				</Vis>
 
 				<Vis attributt="tpsf.innvandretFraLand">
 					<FormikSelect
 						name="tpsf.innvandretFraLand"
-						label="Innvandret"
+						label="Innvandret fra"
 						kodeverk="Landkoder"
 						size="large"
 					/>
@@ -63,7 +66,7 @@ export const Personinformasjon = ({ formikBag }) => (
 				<Vis attributt="tpsf.utvandretTilLand">
 					<FormikSelect
 						name="tpsf.utvandretTilLand"
-						label="Utvandret"
+						label="Utvandret til"
 						kodeverk="Landkoder"
 						size="large"
 					/>

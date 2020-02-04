@@ -5,13 +5,14 @@ import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Loading from '~/components/ui/loading/Loading'
 import BestillingDetaljer from '~/components/bestilling/detaljer/Detaljer'
-import EtikettBase from 'nav-frontend-etiketter'
 
-const etikettTypeMap = {
-	Ferdig: 'suksess',
-	Avvik: 'fokus',
-	Feilet: 'advarsel',
-	Stoppet: 'advarsel'
+import Icon from '~/components/ui/icon/Icon'
+
+const ikonTypeMap = {
+	Ferdig: 'feedback-check-circle',
+	Avvik: 'report-problem-circle',
+	Feilet: 'report-problem-triangle',
+	Stoppet: 'report-problem-triangle'
 }
 
 export default function BestillingListe({ bestillinger, searchActive, isFetchingBestillinger }) {
@@ -56,7 +57,7 @@ export default function BestillingListe({ bestillinger, searchActive, isFetching
 			text: 'Status',
 			width: '10',
 			dataField: 'listedata[4]',
-			formatter: (cell, row) => <EtikettBase type={etikettTypeMap[cell]}>{cell}</EtikettBase>
+			formatter: (cell, row) => <Icon kind={ikonTypeMap[cell]} title={cell} />
 		}
 	]
 

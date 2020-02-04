@@ -11,7 +11,7 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 	const [harUfb, setHarUfb] = useState(_get(formikBag.values, `${basePath}.utenFastBopel`))
 
 	// For å sjekke om det er valgt boadresse i tillegg til diskresjonskoder
-	const harBoadresse = _has(formikBag.values, 'tpsf.boadresse.flyttedato')
+	const harBoadresse = _has(formikBag.values, `${basePath}.boadresse.flyttedato`)
 
 	const paths = {
 		spesreg: `${basePath}.spesreg`,
@@ -29,7 +29,6 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 	const handleChangeKommunenr = val => {
 		formikBag.setFieldValue(`${basePath}.boadresse.adressetype`, 'GATE')
 	}
-
 	return (
 		<Vis attributt={Object.values(paths)}>
 			<div className="spesreg-component">
@@ -38,12 +37,14 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 					label="Diskresjonskode"
 					kodeverk="Diskresjonskoder"
 					size="large"
+					isClearable={basePath.includes('relasjoner')}
 				/>
 
 				<FormikCheckbox
 					name={paths.utenFastBopel}
 					label="Uten fast bopel"
 					afterChange={handleChangeUFB}
+					checkboxMargin
 				/>
 
 				{harUfb && (

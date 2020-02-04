@@ -10,8 +10,8 @@ export const TpsfForm = ({ formikBag }) => {
 	return (
 		<React.Fragment>
 			<Personinformasjon formikBag={formikBag} />
-			<Adresser formikBag={formikBag} />
 			<Identhistorikk formikBag={formikBag} />
+			<Adresser formikBag={formikBag} />
 			<Familierelasjoner formikBag={formikBag} />
 		</React.Fragment>
 	)

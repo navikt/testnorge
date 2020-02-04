@@ -5,6 +5,7 @@ import { requiredDate, ifPresent, requiredString } from '~/utils/YupValidations'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
+import { erForste } from '~/components/ui/form/formUtils'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
@@ -31,7 +32,12 @@ export const ArenaForm = ({ formikBag }) => {
 
 	return (
 		<Vis attributt={arenaAttributt}>
-			<Panel heading="Arena" hasErrors={panelError(formikBag, arenaAttributt)} iconType="arena">
+			<Panel
+				heading="Arena"
+				hasErrors={panelError(formikBag, arenaAttributt)}
+				iconType="arena"
+				startOpen={() => erForste(formikBag.values, [arenaAttributt])}
+			>
 				<FormikSelect
 					name="arenaforvalter.arenaBrukertype"
 					label="Brukertype"
