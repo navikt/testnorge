@@ -7,7 +7,7 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
 import EtikettBase from 'nav-frontend-etiketter'
-import PersonIcon from '~/pages/gruppe/PersonListe/PersonIcon'
+import { WomanIconItem, ManIconItem } from './IconItem'
 
 const etikettTypeMap = {
 	Ferdig: 'suksess',
@@ -82,12 +82,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			data={personListe}
 			columns={columns}
 			pagination
-			rowClass={bruker => {
-				console.log('bruker :', bruker)
-				return <PersonIcon kjonn={bruker.kjonn === 'MANN' ? 'man' : 'woman'} />
-			}}
-			// rowIconColor={bruker => (ikonFarge[bruker.kjonn])}
-			rowIcon={bruker => (bruker.kjonn === 'MANN' ? 'man' : 'woman')}
+			iconItem={bruker => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
 			onExpand={bruker => (
 				<PersonVisningConnector
 					personId={bruker.ident.ident}

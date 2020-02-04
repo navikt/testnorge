@@ -1,11 +1,10 @@
 import React from 'react'
-import cn from 'classnames'
 import Icon from '~/components/ui/icon/Icon'
 
-import './PersonIcon.less'
+import './IconItem.less'
 
 const IconItem = ({ className, icon }) => (
-	<div className={cssClass}>
+	<div className={`icon-item ${className}`}>
 		<Icon kind={icon} />
 	</div>
 )
