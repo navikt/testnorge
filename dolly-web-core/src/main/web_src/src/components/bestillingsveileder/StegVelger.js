@@ -56,7 +56,8 @@ export const StegVelger = ({ steps, initialValues, onSubmit, children }) => {
 							formikBag={formikBag}
 						/>
 
-						<DisplayFormikState {...formikBag} />
+						{/* Uncomment for å vise FormikState */}
+						{/* <DisplayFormikState {...formikBag} /> */}
 					</Fragment>
 				)
 			}}
