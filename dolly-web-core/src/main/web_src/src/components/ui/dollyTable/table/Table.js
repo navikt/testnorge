@@ -44,7 +44,12 @@ export default function Table({ data, rowIcon, columns, onRowClick, onExpand }) 
 				return (
 					<Row key={rowKey} icon={iconType} navLink={navLink} expandComponent={expandComponent}>
 						{columns.map((columnCell, idx) => (
-							<Column key={idx} width={columnCell.width} value={getColumnValue(row, columnCell)} />
+							<Column
+								key={idx}
+								width={columnCell.width}
+								value={getColumnValue(row, columnCell)}
+								centerItem={columnCell.centerItem}
+							/>
 						))}
 					</Row>
 				)

@@ -73,6 +73,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			text: 'Kommentar',
 			width: '20',
 			dataField: 'harBeskrivelse',
+			centerItem: true,
 			formatter: (cell, row) => {
 				if (row.ident.beskrivelse) {
 					return <Icon kind="kommentar" size={20} />
