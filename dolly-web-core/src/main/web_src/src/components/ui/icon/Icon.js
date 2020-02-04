@@ -16,6 +16,7 @@ import GroupLight from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-grou
 import GroupDark from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-4Dark.svg'
 import Family from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-5.svg'
 import Group1 from '~/assets/icons/nav-ikoner/line/SVG/11-users/account-group-1.svg'
+import IdCardDouble from '~/assets/icons/nav-ikoner/line/SVG/11-users/id-card-double.svg'
 import NewFileTable from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-table.svg'
 import FileChecklist from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklist.svg'
 import FileChecklistLight from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklistLight.svg'
@@ -56,7 +57,7 @@ import Dolly from '~/assets/icons/custom/Dolly.svg'
 
 import './Icon.less'
 
-const icons = {
+export const icons = {
 	trashcan: Trashcan,
 	'add-circle': AddCircle,
 	'remove-circle': RemoveCircle,
@@ -95,7 +96,7 @@ const icons = {
 	personinformasjon: InformationCircle,
 	nasjonalitet: Globe2,
 	relasjoner: Family,
-	identhistorikk: InformationCircle,
+	identhistorikk: IdCardDouble,
 	identifikasjon: Group1,
 	adresse: House,
 	postadresse: EmailText,
@@ -114,11 +115,11 @@ const icons = {
 
 const px = v => `${v}px`
 
-export default function Icon({ kind, size = 24, style, className }) {
+export default function Icon({ kind, title, size = 24, style, className }) {
 	if (!icons[kind]) return null
 
 	const cssClass = cn('svg-icon', `svg-icon-${kind}`, className)
 	const styleObj = Object.assign({ width: px(size), height: px(size) }, style)
 
-	return <SVG src={icons[kind]} className={cssClass} style={styleObj} />
+	return <SVG src={icons[kind]} className={cssClass} style={styleObj} title={title} />
 }

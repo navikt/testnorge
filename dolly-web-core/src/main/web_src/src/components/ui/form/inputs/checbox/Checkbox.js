@@ -7,15 +7,15 @@ import { SyntEvent } from '~/components/ui/form/formUtils'
 import './Checkbox.less'
 
 export const Checkbox = ({ id, ...restProps }) => {
-	return <NavCheckbox id={id || restProps.name} {...restProps} />
+	return <NavCheckbox id={id || restProps.name} className="dolly-checkbox" {...restProps} />
 }
 
 export const Switch = ({ id, ...restProps }) => {
 	return <input id={id || restProps.name} {...restProps} className="dolly-switch" type="checkbox" />
 }
 
-export const DollyCheckbox = ({ isSwitch = false, ...props }) => (
-	<InputWrapper {...props}>
+export const DollyCheckbox = ({ isSwitch = false, size, checkboxMargin, ...props }) => (
+	<InputWrapper size={size} checkboxMargin={checkboxMargin}>
 		{isSwitch ? <Switch {...props} /> : <Checkbox {...props} />}
 	</InputWrapper>
 )

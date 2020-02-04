@@ -16,3 +16,44 @@ export const panelError = (formikBag, attributtPath) => {
 }
 
 export const SyntEvent = (name, value) => ({ target: { name, value } })
+
+export const erForste = (values, attributt) => {
+	const rootPaths = [
+		'tpsf.alder',
+		'tpsf.foedtEtter',
+		'tpsf.foedtFoer',
+		'tpsf.doedsdato',
+		'tpsf.statsborgerskap',
+		'tpsf.innvandretFraLand',
+		'tpsf.utvandretTilLand',
+		'tpsf.kjonn',
+		'tpsf.harMellomnavn',
+		'tpsf.sivilstand',
+		'tpsf.sprakKode',
+		'tpsf.egenAnsattDatoFom',
+		'tpsf.spesreg',
+		'tpsf.erForsvunnet',
+		'tpsf.identHistorikk',
+		'tpsf.boadresse',
+		'tpsf.postadresse',
+		'tpsf.relasjoner',
+		'aareg',
+		'sigrunstub',
+		'pdlforvalter.falskIdentitet',
+		'pdlforvalter.utenlandskIdentifikasjonsnummer',
+		'pdlforvalter.kontaktinformasjonForDoedsbo',
+		'instdata',
+		'krrstub',
+		'arenaforvalter',
+		'udistub'
+	]
+
+	const valgteAttributter = []
+
+	rootPaths.forEach(path => {
+		if (_has(values, path)) {
+			valgteAttributter.push(path)
+		}
+	})
+	return attributt.includes(valgteAttributter[0])
+}

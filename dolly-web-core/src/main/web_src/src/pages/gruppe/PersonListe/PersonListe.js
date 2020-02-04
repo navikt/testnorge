@@ -6,12 +6,15 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
-import EtikettBase from 'nav-frontend-etiketter'
 import Icon from '~/components/ui/icon/Icon'
 
-const etikettTypeMap = {
-	Ferdig: 'suksess',
-	Avvik: 'fokus'
+import Icon from '~/components/ui/icon/Icon'
+
+const ikonTypeMap = {
+	Ferdig: 'feedback-check-circle',
+	Avvik: 'report-problem-circle',
+	Feilet: 'report-problem-triangle',
+	Stoppet: 'report-problem-triangle'
 }
 
 export default function PersonListe({ isFetching, personListe, searchActive, fetchTpsfPersoner }) {
@@ -43,11 +46,6 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			dataField: 'navn'
 		},
 		{
-			text: 'Kjønn',
-			width: '15',
-			dataField: 'kjonn'
-		},
-		{
 			text: 'Alder',
 			width: '15',
 			dataField: 'alder'
@@ -67,7 +65,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			text: 'Status',
 			width: '15',
 			dataField: 'status',
-			formatter: (cell, row) => <EtikettBase type={etikettTypeMap[cell]}>{cell}</EtikettBase>
+			formatter: (cell, row) => <Icon kind={ikonTypeMap[cell]} title={cell} />
 		},
 		{
 			text: 'Kommentar',
@@ -93,7 +91,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			data={personListe}
 			columns={columns}
 			pagination
-			rowIcon={bruker => (bruker.kjonn === 'MANN' ? 'man' : 'woman')}
+			iconItem={bruker => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
 			onExpand={bruker => (
 				<PersonVisningConnector
 					personId={bruker.ident.ident}

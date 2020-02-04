@@ -74,7 +74,7 @@ export const Barn = ({ formikBag }) => {
 						options={Options('barnBorHos')}
 						isClearable={false}
 					/>
-					<FormikCheckbox name={`${path}.erAdoptert`} label="Er adoptert" />
+					<FormikCheckbox name={`${path}.erAdoptert`} label="Er adoptert" checkboxMargin />
 					<FormikSelect
 						name={`${path}.statsborgerskap`}
 						label="Statsborgerskap"

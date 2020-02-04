@@ -25,11 +25,7 @@ export default function TableRow({ children, icon, expandComponent, navLink }) {
 	return (
 		<div tabIndex={0} className={rowClass}>
 			<div className={columnsClass} onClick={onRowClick}>
-				{icon && (
-					<div className="dot-icon-wrapper">
-						<Icon kind={icon} />
-					</div>
-				)}
+				{icon && icon}
 				{children}
 				{expandComponent && (
 					<Column width="10" className="dot-body-row-actioncolumn">

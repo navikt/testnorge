@@ -26,7 +26,6 @@ export default class Pagination extends Component {
 		const itemCount = this.props.items.length
 		const renderPagination = itemCount > this.state.itemCount
 		const renderItemCount = ITEM_PER_PAGE < itemCount
-		const renderBottomPagination = itemsToRender.length >= 5
 
 		const paginationComponent = (
 			<div className="pagination-wrapper">
@@ -56,7 +55,7 @@ export default class Pagination extends Component {
 		return (
 			<Fragment>
 				{this.props.render(itemsToRender)}
-				{renderBottomPagination && paginationComponent}
+				{paginationComponent}
 			</Fragment>
 		)
 	}
