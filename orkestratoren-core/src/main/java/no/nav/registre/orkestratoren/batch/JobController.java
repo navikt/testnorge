@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
@@ -57,17 +56,8 @@ public class JobController {
     @Value("${poppbatch.antallNyeIdenter}")
     private int poppbatchAntallNyeIdenter;
 
-    @Value("${inntektbatch.avspillergruppeId}")
-    private Long inntektbatchAvspillergruppeId;
-
     @Value("${aaregbatch.antallNyeIdenter}")
     private int aaregbatchAntallNyeIdenter;
-
-    @Value("#{'${instbatch.miljoe}'.split(', ')}")
-    private List<String> instbatchMiljoe;
-
-    @Value("${instbatch.avspillergruppeId}")
-    private Long instbatchAvspillergruppeId;
 
     @Value("${instbatch.antallNyeIdenter}")
     private int instbatchAntallNyeIdenter;
@@ -145,9 +135,11 @@ public class JobController {
 
     @Scheduled(cron = "0 0 1 1 * *")
     public void inntektSyntBatch() {
-        var request = new SyntetiserInntektsmeldingRequest(inntektbatchAvspillergruppeId);
-        var feiledeInntektsmeldinger = testnorgeInntektService.genererInntektsmeldinger(request);
-        log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger. Meldinger som feilet: {}.", feiledeInntektsmeldinger.keySet().toString());
+        for (var avspillergruppeId : avspillergruppeIdMedMiljoe.keySet()) {
+            var request = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
+            var feiledeInntektsmeldinger = testnorgeInntektService.genererInntektsmeldinger(request);
+            log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger. Meldinger som feilet: {}.", feiledeInntektsmeldinger.keySet().toString());
+        }
     }
 
     public void elsamSyntBatch() {
@@ -178,8 +170,8 @@ public class JobController {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void instSyntBatch() {
-        for (var miljoe : instbatchMiljoe) {
-            var syntetiserInstRequest = new SyntetiserInstRequest(instbatchAvspillergruppeId, miljoe, instbatchAntallNyeIdenter);
+        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            var syntetiserInstRequest = new SyntetiserInstRequest(entry.getKey(), entry.getValue(), instbatchAntallNyeIdenter);
             testnorgeInstService.genererInstitusjonsforhold(syntetiserInstRequest);
         }
     }

@@ -18,6 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,20 +75,16 @@ public class JobControllerTest {
     private JobController jobController;
 
     private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
     private List<String> miljoer;
     private Map<String, Integer> antallMeldingerPerEndringskode;
-    private Map<Long, String> avspillergruppeIdMedMiljoe;
 
     @Before
     public void setUp() {
-        miljoer = new ArrayList<>(Arrays.asList(miljoe));
-        avspillergruppeIdMedMiljoe = new HashMap<>();
+        String miljoe = "t1";
+        miljoer = new ArrayList<>(Collections.singletonList(miljoe));
+        Map<Long, String> avspillergruppeIdMedMiljoe = new HashMap<>();
         avspillergruppeIdMedMiljoe.put(avspillergruppeId, miljoe);
         ReflectionTestUtils.setField(jobController, "avspillergruppeIdMedMiljoe", avspillergruppeIdMedMiljoe);
-        ReflectionTestUtils.setField(jobController, "instbatchAvspillergruppeId", avspillergruppeId);
-        ReflectionTestUtils.setField(jobController, "inntektbatchAvspillergruppeId", avspillergruppeId);
-        ReflectionTestUtils.setField(jobController, "instbatchMiljoe", miljoer);
         antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 2);
         ReflectionTestUtils.setField(jobController, "antallSkdmeldingerPerEndringskode", antallMeldingerPerEndringskode);
