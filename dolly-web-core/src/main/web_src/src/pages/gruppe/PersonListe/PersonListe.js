@@ -42,7 +42,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 		},
 		{
 			text: 'Navn',
-			width: '30',
+			width: '35',
 			dataField: 'navn'
 		},
 		{
@@ -65,7 +65,19 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			text: 'Status',
 			width: '10',
 			dataField: 'status',
+
 			formatter: (cell, row) => <Icon kind={ikonTypeMap[cell]} title={cell} />
+		},
+		{
+			text: 'Kommentar',
+			width: '15',
+			dataField: 'harBeskrivelse',
+			centerItem: true,
+			formatter: (cell, row) => {
+				if (row.ident.beskrivelse) {
+					return <Icon kind="kommentar" size={20} />
+				}
+			}
 		},
 		{
 			text: 'Brukt',
