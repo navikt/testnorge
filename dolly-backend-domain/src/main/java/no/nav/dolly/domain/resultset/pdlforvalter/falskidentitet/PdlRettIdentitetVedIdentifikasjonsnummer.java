@@ -14,4 +14,8 @@ import lombok.Setter;
 public class PdlRettIdentitetVedIdentifikasjonsnummer extends RsPdlRettIdentitet {
 
     private String rettIdentitetVedIdentifikasjonsnummer;
+
+    @Override public String getIdentitetType() {
+        return "ENTYDIG";
+    }
 }

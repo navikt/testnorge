@@ -13,6 +13,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
+import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
+import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
+import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
+import no.nav.dolly.domain.resultset.inst.RsInstdata;
+import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
+import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
+import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import springfox.documentation.spring.web.json.Json;
 
 @Getter
@@ -36,8 +44,7 @@ public class RsBestillingStatus {
     private List<RsStatusRapport> status;
 
     private Long opprettetFraId;
-    private Json tpsfKriterier;
-    private Json bestKriterier;
+    private RsBestilling bestilling;
     private String openamSent;
     private String opprettFraIdenter;
 
@@ -55,5 +62,25 @@ public class RsBestillingStatus {
             status = new ArrayList();
         }
         return status;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class RsBestilling {
+
+        private Json tpsf;
+
+        private RsPdldata pdlforvalter;
+        private RsDigitalKontaktdata krrstub;
+        private List<RsInstdata> instdata;
+        private List<RsArbeidsforhold> aareg;
+        private List<OpprettSkattegrunnlag> sigrunstub;
+        private InntektMultiplierWrapper inntektstub;
+        private Arenadata arenaforvalter;
+        private RsUdiPerson udistub;
     }
 }

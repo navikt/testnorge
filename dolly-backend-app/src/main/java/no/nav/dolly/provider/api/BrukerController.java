@@ -2,17 +2,8 @@ package no.nav.dolly.provider.api;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerTeamAndGruppeIDs;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
-import no.nav.dolly.service.BrukerService;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import java.util.List;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -25,7 +16,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
+import no.nav.dolly.service.BrukerService;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @Transactional
 @RestController
@@ -37,11 +36,11 @@ public class BrukerController {
     private final MapperFacade mapperFacade;
 
     @Cacheable(CACHE_BRUKER)
-    @GetMapping("/{navIdent}")
-    @ApiOperation("Hent Bruker med navIdent")
-    public RsBrukerTeamAndGruppeIDs getBrukerByNavIdent(@PathVariable("navIdent") String navIdent) {
-        Bruker bruker = brukerService.fetchBruker(navIdent);
-        return mapperFacade.map(bruker, RsBrukerTeamAndGruppeIDs.class);
+    @GetMapping("/{brukerId}")
+    @ApiOperation("Hent Bruker med brukerId")
+    public RsBrukerAndGruppeId getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
+        Bruker bruker = brukerService.fetchBruker(brukerId);
+        return mapperFacade.map(bruker, RsBrukerAndGruppeId.class);
     }
 
     @GetMapping("/current")
@@ -55,8 +54,8 @@ public class BrukerController {
     @Cacheable(CACHE_BRUKER)
     @GetMapping
     @ApiOperation("Hent alle Brukerne")
-    public List<RsBrukerTeamAndGruppeIDs> getAllBrukere() {
-        return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBrukerTeamAndGruppeIDs.class);
+    public List<RsBrukerAndGruppeId> getAllBrukere() {
+        return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBrukerAndGruppeId.class);
     }
 
     @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)

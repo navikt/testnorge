@@ -5,10 +5,10 @@ metadata:
   namespace: t2
   labels:
     team: registre
-replicas:
-  min: 1
-  max: 2
 spec:
+  replicas:
+    min: 1
+    max: 2
   port: 8080
   ingresses:
     - https://dolly-backend-t2.nais.preprod.local

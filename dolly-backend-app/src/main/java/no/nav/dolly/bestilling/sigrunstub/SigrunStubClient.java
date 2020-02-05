@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.sigrunstub;
 
 import java.util.List;
+import javax.el.MethodNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -8,12 +9,13 @@ import org.springframework.web.client.HttpClientErrorException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.metrics.Timed;
 
 @Log4j2
 @Service
@@ -45,6 +47,19 @@ public class SigrunStubClient implements ClientRegister {
         }
     }
 
+    @Override
+    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
+        if (!bestilling.getSigrunstub().isEmpty()) {
+            throw new MethodNotFoundException("SigrunStub mangler denne funksjonen");
+        }
+    }
+
+    @Override
+    public void release(List<String> identer) {
+
+        identer.forEach(this::deleteExistingSkattegrunnlag);
+    }
+
     private void deleteExistingSkattegrunnlag(String ident) {
         try {
             // Alle skattegrunnlag har samme ident
@@ -56,11 +71,5 @@ public class SigrunStubClient implements ClientRegister {
                 log.error("Feilet å slette ident {} fra Sigrunstub", ident, error);
             }
         }
-    }
-
-    @Override
-    public void release(List<String> identer) {
-
-        identer.forEach(this::deleteExistingSkattegrunnlag);
     }
 }

@@ -14,4 +14,8 @@ import lombok.Setter;
 public class PdlRettIdentitetErUkjent extends RsPdlRettIdentitet {
 
     private Boolean rettIdentitetErUkjent;
+
+    @Override public String getIdentitetType() {
+        return "UKJENT";
+    }
 }

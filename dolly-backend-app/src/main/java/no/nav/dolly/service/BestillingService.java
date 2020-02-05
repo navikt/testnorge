@@ -4,10 +4,11 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
-import static org.springframework.security.core.context.SecurityContextHolder.getContext;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +27,13 @@ import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.BestilteKriterier;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
+import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
+import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -71,8 +77,7 @@ public class BestillingService {
     }
 
     public List<Bestilling> fetchMalBestillinger() {
-        String userId = getContext().getAuthentication().getPrincipal().toString();
-        return bestillingRepository.findMalBestilling(userId).orElse(emptyList());
+        return bestillingRepository.findMalBestilling().orElse(emptyList());
     }
 
     @Transactional
@@ -101,20 +106,52 @@ public class BestillingService {
     }
 
     @Transactional
-    public Bestilling saveBestilling(String ident, RsDollyUpdateRequest request) {
+    public Bestilling saveBestilling(String ident, RsDollyRelasjonRequest request) {
+
+        Testident testident = identRepository.findByIdent(ident);
+        if (isNull(testident) || isBlank(testident.getIdent())) {
+            throw new NotFoundException(format("Testindent %s ble ikke funnet", ident));
+        }
+
         return saveBestillingToDB(
                 Bestilling.builder()
+                        .gruppe(testident.getTestgruppe())
                         .ident(ident)
+                        .antallIdenter(1)
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
-                        .tpsfKriterier(toJson(request.getTpsfPerson()))
+                        .tpsfKriterier(toJson(request.getTpsf()))
+                        .bestKriterier("{}")
+                        .userId(getUserPrinciple())
+                        .build());
+    }
+
+    @Transactional
+    public Bestilling saveBestilling(RsDollyUpdateRequest request) {
+
+        Testident testident = identRepository.findByIdent(request.getIdent());
+        if (isNull(testident) || isBlank(testident.getIdent())) {
+            throw new NotFoundException(format("Testindent %s ble ikke funnet", request.getIdent()));
+        }
+        fixAaregAbstractClassProblem(request.getAareg());
+        fixPdlAbstractClassProblem(request.getPdlforvalter());
+        return saveBestillingToDB(
+                Bestilling.builder()
+                        .gruppe(testident.getTestgruppe())
+                        .ident(request.getIdent())
+                        .antallIdenter(1)
+                        .sistOppdatert(now())
+                        .miljoer(join(",", request.getEnvironments()))
+                        .tpsfKriterier(toJson(request.getTpsf()))
                         .bestKriterier(toJson(BestilteKriterier.builder()
                                 .aareg(request.getAareg())
                                 .krrstub(request.getKrrstub())
+                                .udistub(request.getUdistub())
                                 .sigrunstub(request.getSigrunstub())
                                 .arenaforvalter(request.getArenaforvalter())
                                 .pdlforvalter(request.getPdlforvalter())
                                 .instdata(request.getInstdata())
+                                .inntektstub(request.getInntektstub())
                                 .build()))
                         .userId(getUserPrinciple())
                         .build());
@@ -123,6 +160,8 @@ public class BestillingService {
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, RsTpsfBasisBestilling tpsf, Integer antall, List<String> opprettFraIdenter) {
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+        fixAaregAbstractClassProblem(request.getAareg());
+        fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)
@@ -138,6 +177,7 @@ public class BestillingService {
                                 .arenaforvalter(request.getArenaforvalter())
                                 .pdlforvalter(request.getPdlforvalter())
                                 .instdata(request.getInstdata())
+                                .inntektstub(request.getInntektstub())
                                 .build()))
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .malBestillingNavn(request.getMalBestillingNavn())
@@ -170,15 +210,12 @@ public class BestillingService {
         );
     }
 
-    private String toJson(Object object) {
-        try {
-            if (nonNull(object)) {
-                return objectMapper.writer().writeValueAsString(object);
-            }
-        } catch (JsonProcessingException | RuntimeException e) {
-            log.debug("Konvertering til Json feilet", e);
-        }
-        return null;
+    @Transactional
+    public void redigerBestilling(Long id, String malbestillingNavn) {
+
+        Optional<Bestilling> token = bestillingRepository.findById(id);
+        Bestilling bestilling = token.orElseThrow(() -> new NotFoundException(format("Id {%d} ikke funnet ", id)));
+        bestilling.setMalBestillingNavn(malbestillingNavn);
     }
 
     public void slettBestillingerByGruppeId(Long gruppeId) {
@@ -200,5 +237,35 @@ public class BestillingService {
             bestillingKontrollRepository.deleteByBestillingWithNoChildren(id);
             bestillingRepository.deleteBestillingWithNoChildren(id);
         });
+    }
+
+    private static void fixAaregAbstractClassProblem(List<RsArbeidsforhold> aaregdata) {
+
+        aaregdata.forEach(arbeidforhold ->
+                arbeidforhold.getArbeidsgiver().setAktoertype(
+                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS"));
+    }
+
+    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
+
+        if (nonNull(pdldata)) {
+            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
+                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
+            }
+            if (nonNull(pdldata.getFalskIdentitet())) {
+                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
+            }
+        }
+    }
+
+    private String toJson(Object object) {
+        try {
+            if (nonNull(object)) {
+                return objectMapper.writer().writeValueAsString(object);
+            }
+        } catch (JsonProcessingException | RuntimeException e) {
+            log.debug("Konvertering til Json feilet", e);
+        }
+        return null;
     }
 }

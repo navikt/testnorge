@@ -20,7 +20,8 @@ public enum SystemTyper {
     PDL_FALSKID("Falsk identitet (PDL)"),
     PDL_DODSBO("Kontaktinformasjon dødsbo (PDL)"),
     PDL_UTENLANDSID("Utenlandsk id (PDL)"),
-    UDISTUB("Utlendingsdirektoratet (UDI)");
+    UDISTUB("Utlendingsdirektoratet (UDI)"),
+    INNTK("Inntektskomponenten (INNTK");
 
     SystemTyper(String beskrivelse) {
         this.beskrivelse = beskrivelse;

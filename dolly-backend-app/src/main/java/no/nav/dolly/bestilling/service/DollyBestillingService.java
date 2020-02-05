@@ -10,6 +10,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import java.util.TreeSet;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -36,6 +39,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
@@ -46,6 +50,7 @@ import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.tpsf.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
+import no.nav.dolly.domain.resultset.tpsf.TpsfRelasjonRequest;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.service.BestillingService;
@@ -130,23 +135,56 @@ public class DollyBestillingService {
     }
 
     @Async
-    public void oppdaterPersonAsync(String ident, RsDollyUpdateRequest request, Bestilling bestilling) {
+    public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
         try {
-            BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident);
+            BestillingProgress progress = new BestillingProgress(bestilling.getId(), request.getIdent());
+            TpsfBestilling tpsfBestilling = nonNull(request.getTpsf()) ? mapperFacade.map(request.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
+            tpsfBestilling.setAntall(1);
 
-            tpsfService.updatePerson(request.getTpsfPerson());
-            sendIdenterTilTPS(request.getEnvironments(), singletonList(ident), null, progress);
-            gjenopprettNonTpsf(TpsPerson.builder().hovedperson(ident).build(), bestilling, progress);
+            Person person = tpsfService.endrePerson(request.getIdent(), tpsfBestilling);
+            sendIdenterTilTPS(request.getEnvironments(), singletonList(person.getIdent()), null, progress);
+
+            clientRegisters.forEach(clientRegister -> clientRegister.opprettEndre(request, progress));
+
+            oppdaterProgress(bestilling, progress);
 
         } catch (Exception e) {
-            log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), ident, e.getMessage(), e);
+            log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), request.getIdent(), e.getMessage(), e);
             bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
 
         } finally {
             oppdaterProgressFerdig(bestilling);
             clearCache();
+        }
+    }
 
+    @Async
+    public void relasjonPersonAsync(String ident, RsDollyRelasjonRequest request, Bestilling bestilling) {
+
+        try {
+            BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident);
+            TpsfRelasjonRequest tpsfBestilling = mapperFacade.map(request.getTpsf(), TpsfRelasjonRequest.class);
+            List<String> identer = tpsfService.relasjonPerson(ident, tpsfBestilling);
+            sendIdenterTilTPS(request.getEnvironments(), identer, null, progress);
+
+            oppdaterProgress(bestilling, progress);
+
+        } catch (HttpClientErrorException e) {
+            try {
+                String message = (String) objectMapper.readValue(e.getResponseBodyAsString(), Map.class).get("message");
+                log.warn("Bestilling med id={} på ident={} ble avsluttet med feil: {}", bestilling.getId(), ident, message);
+                bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, message));
+
+            } catch (JsonProcessingException jme) {log.error("Json kunne ikke hentes ut.", jme);}
+
+        } catch (Exception e) {
+            log.error("Bestilling med id={} på ident={} ble avsluttet med feil: {}", bestilling.getId(), ident, e.getMessage(), e);
+            bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
+
+        } finally {
+            oppdaterProgressFerdig(bestilling);
+            clearCache();
         }
     }
 
@@ -395,10 +433,10 @@ public class DollyBestillingService {
         for (SendSkdMeldingTilTpsResponse response : responseStatus) {
             if (hovedperson.equals(response.getPersonId())) {
                 for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
-                    if (!entry.getValue().contains(SUCCESS) && !failures.containsKey(entry.getKey())) {
-                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue())));
-                    } else if (!entry.getValue().contains(SUCCESS)) {
+                    if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
                         failures.get(entry.getKey()).add(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue()));
+                    } else if (isFaulty(entry.getValue())) {
+                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue())));
                     }
                 }
             }
@@ -409,13 +447,17 @@ public class DollyBestillingService {
         for (ServiceRoutineResponseStatus response : responseStatus) {
             if (hovedperson.equals(response.getPersonId())) {
                 for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
-                    if (!SUCCESS.equals(entry.getValue()) && !failures.containsKey(entry.getKey())) {
-                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue())));
-                    } else if (!SUCCESS.equals(entry.getValue())) {
+                    if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
                         failures.get(entry.getKey()).add(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue()));
+                    } else if (isFaulty(entry.getValue())) {
+                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue())));
                     }
                 }
             }
         }
+    }
+
+    private boolean isFaulty(String value) {
+        return isNotBlank(value) && !SUCCESS.equals(value);
     }
 }

@@ -23,7 +23,6 @@ import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
 import no.nav.dolly.consumer.norg2.Norg2EnhetResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
-import no.nav.dolly.consumer.personoppslag.PersonoppslagConsumer;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
@@ -36,7 +35,6 @@ public class OppslagController {
     private final KodeverkMapper kodeverkMapper;
     private final KodeverkConsumer kodeverkConsumer;
     private final Norg2Consumer norg2Consumer;
-    private final PersonoppslagConsumer personoppslagConsumer;
     private final AaregConsumer aaregConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
 
@@ -53,12 +51,6 @@ public class OppslagController {
     @ApiOperation("Hent enhet tilhørende Tknr fra NORG")
     public Norg2EnhetResponse fetchEnhetByTknr(@PathVariable("tknr") String tknr) {
         return norg2Consumer.fetchEnhetByEnhetNr(tknr);
-    }
-
-    @GetMapping("/personoppslag/ident/{ident}")
-    @ApiOperation("Hent person tilhørende ident fra personoppslag")
-    public ResponseEntity personoppslag(@PathVariable("ident") String ident) {
-        return personoppslagConsumer.fetchPerson(ident);
     }
 
     @GetMapping("/pdlperson/ident/{ident}")

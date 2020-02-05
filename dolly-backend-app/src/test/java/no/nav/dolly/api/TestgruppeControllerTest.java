@@ -115,8 +115,8 @@ public class TestgruppeControllerTest {
 
     @Test
     public void getTestgrupper() {
-        controller.getTestgrupper("nav", GRUPPE_ID);
-        verify(testgruppeService).getTestgruppeByNavidentOgTeamId("nav", GRUPPE_ID);
+        controller.getTestgrupper("nav");
+        verify(testgruppeService).getTestgruppeByBrukerId("nav");
     }
 
     @Test

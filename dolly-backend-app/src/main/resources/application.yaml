@@ -34,6 +34,7 @@ spring:
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
 
+
 management:
   endpoints:
     enabled-by-default: false

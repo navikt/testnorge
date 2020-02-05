@@ -20,11 +20,11 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestilling
 class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
 
     @Test
-    @DisplayName("Returnerer HTTP 404 Not Found ved sletting når Testgruppe ikke finnes")
+    @DisplayName("Returnerer HTTP 200 med feilmelding Not Found i body ved sletting når Testgruppe ikke finnes")
     void shouldFail404WhenTestgruppeDontExist() {
         LinkedHashMap resp = sendRequest()
                 .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/123")
-                .andExpect(HttpStatus.NOT_FOUND, LinkedHashMap.class);
+                .andExpect(HttpStatus.OK, LinkedHashMap.class);
 
         assertThat(getErrMsg(resp), is("Finner ikke gruppe basert på gruppeID: 123"));
     }
@@ -40,7 +40,7 @@ class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
 
         LinkedHashMap resp = sendRequest()
                 .to(HttpMethod.GET, ENDPOINT_BASE_URI + "/" + testgruppe.getId())
-                .andExpect(HttpStatus.NOT_FOUND, LinkedHashMap.class);
+                .andExpect(HttpStatus.OK, LinkedHashMap.class);
 
         assertThat(getErrMsg(resp), is(format("Finner ikke gruppe basert på gruppeID: %d", testgruppe.getId())));
     }
@@ -66,13 +66,13 @@ class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
     }
 
     @Test
-    @DisplayName("Returnerer HTTP 404 Not Found når TestIdent ikke finnes")
+    @DisplayName("Returnerer HTTP 200 med feilmelding Not Found i body når TestIdent ikke finnes")
     void shouldFail404WhenTestidentDontExist() {
         Testgruppe testgruppe = dataFactory.createTestgruppe("Testgruppe");
 
         LinkedHashMap resp = sendRequest()
                 .to(HttpMethod.DELETE, ENDPOINT_BASE_URI + "/" + testgruppe.getId() + "/slettTestident?ident=567")
-                .andExpect(HttpStatus.NOT_FOUND, LinkedHashMap.class);
+                .andExpect(HttpStatus.OK, LinkedHashMap.class);
         assertThat(getErrMsg(resp), is("Testperson med ident 567 ble ikke funnet."));
     }
 

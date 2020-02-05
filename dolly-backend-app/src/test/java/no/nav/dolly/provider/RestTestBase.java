@@ -1,5 +1,6 @@
 package no.nav.dolly.provider;
 
+import static com.github.tomakehurst.wiremock.core.Options.DYNAMIC_PORT;
 import static no.nav.dolly.config.SecurityTestConfig.OPEN_AM_ISSUER_URL;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
@@ -32,7 +33,7 @@ import no.nav.freg.security.test.oidc.tools.OidcTestService;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock
+@AutoConfigureWireMock(port = DYNAMIC_PORT)
 @ExtendWith(SpringExtension.class)
 public abstract class RestTestBase {
 
@@ -86,7 +87,6 @@ public abstract class RestTestBase {
                 .withHeader(HttpHeaders.AUTHORIZATION, "Bearer " + createOidcToken());
     }
 
-
     protected class EndpointRequestBuilder {
         private Map<String, String> requestHeaders = new HashMap<>();
         private Object requestBody;
@@ -97,11 +97,6 @@ public abstract class RestTestBase {
 
         public EndpointRequestBuilder withHeader(String headerName, String headerValue) {
             requestHeaders.put(headerName, headerValue);
-            return this;
-        }
-
-        public EndpointRequestBuilder withoutHeader(String headerName) {
-            requestHeaders.remove(headerName);
             return this;
         }
 
@@ -148,13 +143,5 @@ public abstract class RestTestBase {
 
             return restTestTemplate.exchange(uri, method, new HttpEntity<>(requestBody, headers), expectedResponseType);
         }
-
-        private <T> ResponseEntity<Map<T, T>> andExpectResponseEntityWithMapFor(ParameterizedTypeReference<Map<T, T>> expectedResponseType) {
-            HttpHeaders headers = new HttpHeaders();
-            requestHeaders.forEach(headers::add);
-
-            return restTestTemplate.exchange(uri, method, new HttpEntity<>(requestBody, headers), expectedResponseType);
-        }
-
     }
 }

@@ -1,11 +1,10 @@
 package no.nav.dolly.repository;
 
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import org.springframework.data.repository.Repository;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.repository.Repository;
+
+import no.nav.dolly.domain.jpa.Testgruppe;
 
 public interface TestgruppeRepository extends Repository<Testgruppe, Long> {
 
@@ -19,9 +18,5 @@ public interface TestgruppeRepository extends Repository<Testgruppe, Long> {
 
     List<Testgruppe> findAllByOrderByNavn();
 
-    List<Testgruppe> findAllByTeamtilhoerighetOrderByNavn(Team team);
-
     int deleteTestgruppeById(Long id);
-
-    int deleteTestgruppeByTeamtilhoerighetId(Long teamId);
 }

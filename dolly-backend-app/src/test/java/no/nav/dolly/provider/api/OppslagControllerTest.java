@@ -23,7 +23,6 @@ import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
 import no.nav.dolly.consumer.norg2.Norg2EnhetResponse;
-import no.nav.dolly.consumer.personoppslag.PersonoppslagConsumer;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.tjenester.kodeverk.api.v1.Betydning;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
@@ -59,9 +58,6 @@ public class OppslagControllerTest {
     private GetKodeverkKoderBetydningerResponse getKodeverkKoderBetydningerResponse;
 
     @Mock
-    private PersonoppslagConsumer personoppslagConsumer;
-
-    @Mock
     private AaregConsumer aaregConsumer;
 
     @Test
@@ -93,17 +89,6 @@ public class OppslagControllerTest {
         assertThat(target.getEnhetNr(), is(equalTo(TKNR)));
         assertThat(target.getNavn(), is(equalTo(ENHET_NAVN)));
         verify(norg2Consumer).fetchEnhetByEnhetNr(TKNR);
-    }
-
-    @Test
-    public void oppslagPerson_happyPath() {
-
-        when(personoppslagConsumer.fetchPerson(IDENT)).thenReturn(ResponseEntity.ok(OPPLYSNINGER));
-
-        ResponseEntity response = oppslagController.personoppslag(IDENT);
-
-        verify(personoppslagConsumer).fetchPerson(IDENT);
-        assertThat(response.getBody(), is(equalTo(OPPLYSNINGER)));
     }
 
     @Test

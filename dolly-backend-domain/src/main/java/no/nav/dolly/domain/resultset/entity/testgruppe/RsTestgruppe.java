@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.entity.team.RsTeamMedIdOgNavn;
 
 @Getter
 @Setter
@@ -22,16 +21,13 @@ public class RsTestgruppe {
     private String hensikt;
     private String opprettetAvNavIdent;
     private String sistEndretAvNavIdent;
-    private Boolean openAmSent;
 
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate datoEndret;
 
-    private RsTeamMedIdOgNavn team;
-
     private Integer antallIdenter;
     private Integer antallIBruk;
 
-    private boolean erMedlemAvTeamSomEierGruppe;
+    private boolean erEierAvGruppe;
     private boolean favorittIGruppen;
 }

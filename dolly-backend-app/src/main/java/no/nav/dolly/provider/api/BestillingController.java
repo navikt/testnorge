@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,9 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.service.BestillingService;
+import no.nav.dolly.service.MalBestillingService;
 
 @Transactional
 @RestController
@@ -35,6 +38,7 @@ public class BestillingController {
 
     private final MapperFacade mapperFacade;
     private final BestillingService bestillingService;
+    private final MalBestillingService malBestillingService;
     private final DollyBestillingService dollyBestillingService;
 
     @Cacheable(value = CACHE_BESTILLING)
@@ -68,9 +72,25 @@ public class BestillingController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
+    @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/malbestilling")
     @ApiOperation("Hent mal-bestilling")
-    public List<RsBestillingStatus> getMalBestillinger() {
-        return mapperFacade.mapAsList(bestillingService.fetchMalBestillinger(), RsBestillingStatus.class);
+    public RsMalBestillingWrapper getMalBestillinger() {
+
+        return malBestillingService.getMalBestillinger();
+    }
+
+    @DeleteMapping("/malbestilling/{id}")
+    @ApiOperation("Slett mal-bestilling")
+    public void deleteMalBestilling(@PathVariable Long id) {
+
+        bestillingService.redigerBestilling(id, null);
+    }
+
+    @PutMapping("/malbestilling/{id}")
+    @ApiOperation("Rediger mal-bestilling")
+    public void redigerMalBestilling(@PathVariable Long id, @RequestParam String malbestillingNavn) {
+
+        bestillingService.redigerBestilling(id, malbestillingNavn);
     }
 }

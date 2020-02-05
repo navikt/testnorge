@@ -2,22 +2,21 @@ package no.nav.dolly.service;
 
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.stereotype.Service;
+
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ public class BrukerService {
     private final TestgruppeRepository testgruppeRepository;
 
     public Bruker fetchBruker(String navIdent) {
-        Bruker bruker = brukerRepository.findBrukerByNavIdent(navIdent.toUpperCase());
+        Bruker bruker = brukerRepository.findBrukerByBrukerId(navIdent.toUpperCase());
         if (bruker == null) {
             throw new NotFoundException("Bruker ikke funnet");
         }
@@ -38,12 +37,8 @@ public class BrukerService {
         try {
             return fetchBruker(navIdent);
         } catch (NotFoundException e) {
-            return brukerRepository.save(new Bruker(navIdent.toUpperCase()));
+            return brukerRepository.save(Bruker.builder().brukerId(navIdent.toUpperCase()).build());
         }
-    }
-
-    public List<Bruker> findByNavIdentInOrderByNavIdent(List<String> navIdenter) {
-        return brukerRepository.findByNavIdentInOrderByNavIdent(navIdenter);
     }
 
     public Bruker leggTilFavoritt(Long gruppeId) {
@@ -65,18 +60,8 @@ public class BrukerService {
         return brukerRepository.save(bruker);
     }
 
-    public Bruker leggTilTeam(Bruker bruker, Team team) {
-        team.getMedlemmer().add(bruker);
-        bruker.getTeams().add(team);
-        return saveBrukerTilDB(bruker);
-    }
-
     public List<Bruker> fetchBrukere() {
-        return brukerRepository.findAllByOrderByNavIdent();
-    }
-
-    public int sletteBrukerFavoritterByTeamId(Long teamId) {
-        return brukerRepository.deleteBrukerFavoritterByTeamId(teamId);
+        return brukerRepository.findAllByOrderByBrukerId();
     }
 
     public int sletteBrukerFavoritterByGroupId(Long groupId) {

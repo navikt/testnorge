@@ -1,6 +1,6 @@
 package no.nav.dolly.domain.resultset.udistub.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -8,9 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang.UdiArbeidsadgang;
-import no.nav.dolly.domain.resultset.udistub.model.avgjoerelse.UdiAvgjorelse;
-import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdStatus;
+import no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang.RsUdiArbeidsadgang;
+import no.nav.dolly.domain.resultset.udistub.model.avgjoerelse.RsUdiAvgjorelse;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.RsUdiOppholdStatus;
 
 @Getter
 @Setter
@@ -19,13 +19,13 @@ import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdStatus;
 @ToString
 public class RsUdiPerson {
 
-        private List<UdiAvgjorelse> avgjoerelser;
+        private List<RsUdiAvgjorelse> avgjoerelser;
         private List<RsUdiAlias> aliaser;
-        private UdiArbeidsadgang arbeidsadgang;
-        private UdiOppholdStatus oppholdStatus;
+        private RsUdiArbeidsadgang arbeidsadgang;
+        private RsUdiOppholdStatus oppholdStatus;
         private Boolean avgjoerelseUavklart;
         private Boolean harOppholdsTillatelse;
         private Boolean flyktning;
         private String soeknadOmBeskyttelseUnderBehandling;
-        private LocalDate soknadDato;
+        private LocalDateTime soknadDato;
 }

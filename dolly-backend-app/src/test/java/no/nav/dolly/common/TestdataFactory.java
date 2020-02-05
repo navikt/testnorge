@@ -2,32 +2,27 @@ package no.nav.dolly.common;
 
 import static java.util.Arrays.asList;
 
-import no.nav.dolly.common.repository.BestillingProgressTestRepository;
-import no.nav.dolly.common.repository.BestillingTestRepository;
-import no.nav.dolly.common.repository.BrukerTestRepository;
-import no.nav.dolly.common.repository.GruppeTestRepository;
-import no.nav.dolly.common.repository.IdentTestRepository;
-import no.nav.dolly.common.repository.TeamTestRepository;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import no.nav.dolly.common.repository.BestillingProgressTestRepository;
+import no.nav.dolly.common.repository.BestillingTestRepository;
+import no.nav.dolly.common.repository.BrukerTestRepository;
+import no.nav.dolly.common.repository.GruppeTestRepository;
+import no.nav.dolly.common.repository.IdentTestRepository;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class TestdataFactory {
-
-    @Autowired
-    private TeamTestRepository teamTestRepository;
 
     @Autowired
     private BrukerTestRepository brukerTestRepository;
@@ -54,9 +49,6 @@ public class TestdataFactory {
         gruppeTestRepository.deleteAll();
         gruppeTestRepository.flush();
 
-        teamTestRepository.deleteAll();
-        teamTestRepository.flush();
-
         brukerTestRepository.deleteAll();
         brukerTestRepository.flush();
 
@@ -64,39 +56,22 @@ public class TestdataFactory {
         bestillingProgressTestRepository.flush();
     }
 
-    public Bruker createBruker(String navIdent) {
-        Bruker bruker = Bruker.builder().navIdent(navIdent).build();
+    public Bruker createBruker(String brukerId) {
+        Bruker bruker = Bruker.builder().brukerId(brukerId).build();
         return brukerTestRepository.save(bruker);
     }
 
-    public Team createTeam(String name) {
-        Bruker bruker = createBruker("NAVIDENT");
-        return createTeam(bruker, name, "", bruker);
-    }
-
-    public Team createTeam(Bruker eier, String name, String desc, Bruker... medlemmer) {
-        Team team = Team.builder()
-                .navn(name)
-                .beskrivelse(desc)
-                .datoOpprettet(LocalDate.now())
-                .eier(eier)
-                .medlemmer(asList(medlemmer)).build();
-        return teamTestRepository.save(team);
-    }
-
     public Testgruppe createTestgruppe(String navn) {
-        Bruker creator = createBruker("CREATOR");
-        Team team = createTeam(creator, "Team", "", creator);
-        return createTestgruppe(navn, creator, team);
+        Bruker creator = createBruker("NAVIDENT");
+        return createTestgruppe(navn, creator);
     }
 
-    public Testgruppe createTestgruppe(String navn, Bruker opprettetAv, Team team) {
+    public Testgruppe createTestgruppe(String navn, Bruker opprettetAv) {
         Testgruppe testgruppe = Testgruppe.builder()
                 .navn(navn)
                 .opprettetAv(opprettetAv)
                 .sistEndretAv(opprettetAv)
                 .datoEndret(LocalDate.now())
-                .teamtilhoerighet(team)
                 .build();
         Testgruppe saved = gruppeTestRepository.save(testgruppe);
         saved.setTestidenter(buildTestIdenter(saved));
@@ -124,17 +99,16 @@ public class TestdataFactory {
         return identTestRepository.save(testident);
     }
 
-    public void addToBrukerFavourites(String navIdent, Long testgruppeId) {
-        Bruker brukerByNavIdent = brukerTestRepository.findBrukerByNavIdent(navIdent);
+    public void addToBrukerFavourites(String brukerId, Long testgruppeId) {
+        Bruker bruker = brukerTestRepository.findBrukerByBrukerId(brukerId);
         Testgruppe testgruppe = gruppeTestRepository.findById(testgruppeId).get();
-        brukerByNavIdent.getFavoritter().add(testgruppe);
-        brukerTestRepository.save(brukerByNavIdent);
+        bruker.getFavoritter().add(testgruppe);
+        brukerTestRepository.save(bruker);
     }
 
-    public void clearFavourites(String navIdent) {
-        Bruker brukerByNavIdent = brukerTestRepository.findBrukerByNavIdent(navIdent);
-        brukerByNavIdent.getFavoritter().clear();
-        brukerTestRepository.save(brukerByNavIdent);
+    public void clearFavourites(String brukerId) {
+        Bruker bruker = brukerTestRepository.findBrukerByBrukerId(brukerId);
+        bruker.getFavoritter().clear();
+        brukerTestRepository.save(bruker);
     }
-
 }
