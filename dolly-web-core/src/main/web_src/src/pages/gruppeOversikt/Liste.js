@@ -38,12 +38,12 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 		},
 		{
 			text: 'Navn',
-			width: '25',
+			width: '20',
 			dataField: 'navn'
 		},
 		{
 			text: 'Hensikt',
-			width: '15',
+			width: '20',
 			dataField: 'hensikt'
 		},
 		{
