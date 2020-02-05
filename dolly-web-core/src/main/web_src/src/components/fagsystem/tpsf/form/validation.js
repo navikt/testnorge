@@ -152,16 +152,14 @@ export const validation = {
 			sprakKode: ifPresent('$tpsf.sprakKode', requiredString),
 			spesreg: ifPresent(
 				'$tpsf.spesreg',
-				Yup.string()
-					.when('utenFastBopel', {
-						is: true,
-						then: Yup.string().test(
-							'is-not-kode6',
-							'Kan ikke være "Kode 6" når "Uten fast bopel" er valgt.',
-							value => value !== 'SPSF'
-						)
-					})
-					.required(messages.required)
+				Yup.string().when('utenFastBopel', {
+					is: true,
+					then: Yup.string().test(
+						'is-not-kode6',
+						'Kan ikke være "Kode 6" når "Uten fast bopel" er valgt.',
+						value => value !== 'SPSF'
+					)
+				})
 			),
 			boadresse: ifPresent('$tpsf.boadresse', boadresse),
 			adresseNrInfo: ifPresent('$tpsf.adresseNrInfo', adresseNrInfo),
