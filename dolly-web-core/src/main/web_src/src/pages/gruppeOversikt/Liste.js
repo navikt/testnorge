@@ -32,23 +32,23 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 	const columns = [
 		{
 			text: 'ID',
-			width: '15',
+			width: '10',
 			dataField: 'id',
 			unique: true
 		},
 		{
 			text: 'Navn',
-			width: '20',
+			width: '25',
 			dataField: 'navn'
 		},
 		{
 			text: 'Hensikt',
-			width: '20',
+			width: '25',
 			dataField: 'hensikt'
 		},
 		{
 			text: 'Personer',
-			width: '20',
+			width: '15',
 			dataField: 'antallIdenter'
 		},
 		{
