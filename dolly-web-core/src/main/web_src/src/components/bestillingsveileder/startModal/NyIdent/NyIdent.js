@@ -105,7 +105,7 @@ const getZIdentOptions = (malbestillinger, zBruker) =>
 	}))
 
 const getMalOptions = (malbestillinger, zIdent) => {
-	if (!malbestillinger) return []
+	if (!malbestillinger || !malbestillinger[zIdent]) return []
 	return malbestillinger[zIdent].map(mal => ({
 		value: mal.id,
 		label: mal.malNavn,
