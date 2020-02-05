@@ -1,6 +1,7 @@
 package no.nav.dolly.mapper.strategy;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Objects.nonNull;
 
 import java.io.IOException;
 import org.springframework.stereotype.Component;
@@ -14,8 +15,8 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.mapper.MappingStrategy;
-import springfox.documentation.spring.web.json.Json;
 
 @Slf4j
 @Component
@@ -33,16 +34,25 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
                         RsDollyBestillingRequest bestillingRequest = mapBestillingRequest(bestilling.getBestKriterier());
                         mapperFacade.map(bestillingRequest, malBestilling);
                         malBestilling.setEnvironments(newArrayList(bestilling.getMiljoer().split(",")));
-                        malBestilling.setTpsf(mapperFacade.map(bestilling.getTpsfKriterier(), Json.class));
+                        malBestilling.setTpsf(mapTpsfRequest(bestilling.getTpsfKriterier()));
                     }
 
                     private RsDollyBestillingRequest mapBestillingRequest(String jsonInput) {
                         try {
-                            return objectMapper.readValue(jsonInput, RsDollyBestillingRequest.class);
+                            return objectMapper.readValue(nonNull(jsonInput) ? jsonInput : "{}", RsDollyBestillingRequest.class);
                         } catch (IOException e) {
                             log.error("Mapping av JSON fra database bestKriterier feilet. {}", e.getMessage(), e);
                         }
                         return new RsDollyBestillingRequest();
+                    }
+
+                    private RsTpsfUtvidetBestilling mapTpsfRequest(String jsonInput) {
+                        try {
+                            return objectMapper.readValue(nonNull(jsonInput) ? jsonInput : "{}", RsTpsfUtvidetBestilling.class);
+                        } catch (IOException e) {
+                            log.error("Mapping av JSON fra database bestKriterier feilet. {}", e.getMessage(), e);
+                        }
+                        return new RsTpsfUtvidetBestilling();
                     }
                 })
                 .byDefault()

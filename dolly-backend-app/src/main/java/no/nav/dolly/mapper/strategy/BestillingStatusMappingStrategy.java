@@ -24,8 +24,8 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.mapper.MappingStrategy;
-import springfox.documentation.spring.web.json.Json;
 
 @Slf4j
 @Component
@@ -61,7 +61,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .inntektstub(bestillingRequest.getInntektstub())
                                 .sigrunstub(bestillingRequest.getSigrunstub())
                                 .udistub(bestillingRequest.getUdistub())
-                                .tpsf(mapperFacade.map(bestilling.getTpsfKriterier(), Json.class))
+                                .tpsf(mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .build());
                     }
 
@@ -72,6 +72,15 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                             log.error("Mapping av JSON fra database bestKriterier feilet. {}", e.getMessage(), e);
                         }
                         return new RsDollyBestillingRequest();
+                    }
+
+                    private RsTpsfUtvidetBestilling mapTpsfRequest(String jsonInput) {
+                        try {
+                            return objectMapper.readValue(nonNull(jsonInput) ? jsonInput : "{}", RsTpsfUtvidetBestilling.class);
+                        } catch (IOException e) {
+                            log.error("Mapping av JSON fra database bestKriterier feilet. {}", e.getMessage(), e);
+                        }
+                        return new RsTpsfUtvidetBestilling();
                     }
                 })
                 .byDefault()

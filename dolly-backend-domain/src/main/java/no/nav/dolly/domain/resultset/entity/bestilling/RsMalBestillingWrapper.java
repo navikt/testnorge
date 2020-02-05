@@ -20,8 +20,8 @@ import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
-import springfox.documentation.spring.web.json.Json;
 
 @Getter
 @Setter
@@ -64,7 +64,7 @@ public class RsMalBestillingWrapper {
         private Integer antallIdenter;
         private String opprettFraIdenter;
         private List<String> environments;
-        private Json tpsf;
+        private RsTpsfUtvidetBestilling tpsf;
 
         private RsPdldata pdlforvalter;
         private RsDigitalKontaktdata krrstub;
