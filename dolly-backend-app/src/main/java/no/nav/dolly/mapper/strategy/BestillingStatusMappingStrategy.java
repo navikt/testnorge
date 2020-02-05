@@ -1,5 +1,6 @@
 package no.nav.dolly.mapper.strategy;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektstubStatusMapper.buildInntektstubStatusMap;
@@ -66,7 +67,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
 
                     private RsDollyBestillingRequest mapBestillingRequest(String jsonInput) {
                         try {
-                            return objectMapper.readValue(jsonInput, RsDollyBestillingRequest.class);
+                            return objectMapper.readValue(nonNull(jsonInput) ? jsonInput : "{}", RsDollyBestillingRequest.class);
                         } catch (IOException e) {
                             log.error("Mapping av JSON fra database bestKriterier feilet. {}", e.getMessage(), e);
                         }
