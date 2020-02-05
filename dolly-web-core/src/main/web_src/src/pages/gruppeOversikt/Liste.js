@@ -43,7 +43,7 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 		},
 		{
 			text: 'Hensikt',
-			width: '25',
+			width: '15',
 			dataField: 'hensikt'
 		},
 		{
