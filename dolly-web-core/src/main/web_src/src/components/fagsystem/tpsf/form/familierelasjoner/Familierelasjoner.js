@@ -22,12 +22,16 @@ export const Familierelasjoner = ({ formikBag }) => (
 			iconType={'relasjoner'}
 			startOpen={() => erForste(formikBag.values, [relasjonerAttributt])}
 		>
-			<Kategori title="Partnere" vis="tpsf.relasjoner.partnere">
-				<Partnere formikBag={formikBag} />
-			</Kategori>
-			<Kategori title="Barn" vis="tpsf.relasjoner.barn">
-				<Barn formikBag={formikBag} />
-			</Kategori>
+			{formikBag.values.tpsf.relasjoner.partnere && (
+				<Kategori title="Partnere" vis="tpsf.relasjoner.partnere">
+					<Partnere formikBag={formikBag} />
+				</Kategori>
+			)}
+			{formikBag.values.tpsf.relasjoner.barn && (
+				<Kategori title="Barn" vis="tpsf.relasjoner.barn">
+					<Barn formikBag={formikBag} />
+				</Kategori>
+			)}
 		</Panel>
 	</Vis>
 )
