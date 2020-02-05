@@ -32,7 +32,7 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 	const columns = [
 		{
 			text: 'ID',
-			width: '15',
+			width: '10',
 			dataField: 'id',
 			unique: true
 		},
@@ -48,7 +48,7 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 		},
 		{
 			text: 'Personer',
-			width: '20',
+			width: '15',
 			dataField: 'antallIdenter'
 		},
 		{
