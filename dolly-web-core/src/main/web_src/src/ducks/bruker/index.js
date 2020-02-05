@@ -1,31 +1,25 @@
 import { DollyApi } from '~/service/Api'
-import { createActions, combineActions } from 'redux-actions'
-import { handleActions } from '~/ducks/utils/immerHandleActions'
-import { onSuccess } from '~/ducks/utils/requestActions'
+import { createAction, handleActions, combineActions } from 'redux-actions'
+import success from '~/utils/SuccessAction'
 
-export const { getCurrentBruker, addFavorite, removeFavorite } = createActions(
-	{
-		getCurrentBruker: DollyApi.getCurrentBruker,
-		addFavorite: DollyApi.addFavorite,
-		removeFavorite: DollyApi.removeFavorite
-	},
-	{ prefix: 'bruker' }
-)
+export const getCurrentBruker = createAction('GET_CURRENT_BRUKER', DollyApi.getCurrentBruker)
+export const addFavorite = createAction('ADD_FAVORITE', DollyApi.addFavorite)
+export const removeFavorite = createAction('REMOVE_FAVORITE', DollyApi.removeFavorite)
 
 const initialState = {
 	brukerData: null
 }
 
 const successActions = combineActions(
-	onSuccess(getCurrentBruker),
-	onSuccess(addFavorite),
-	onSuccess(removeFavorite)
+	success(getCurrentBruker),
+	success(addFavorite),
+	success(removeFavorite)
 )
 
 export default handleActions(
 	{
 		[successActions](state, action) {
-			state.brukerData = action.payload.data
+			return { ...state, brukerData: action.payload.data }
 		}
 	},
 	initialState

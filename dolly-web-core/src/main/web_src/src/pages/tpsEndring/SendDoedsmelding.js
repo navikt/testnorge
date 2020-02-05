@@ -1,14 +1,15 @@
-import React, { PureComponent } from 'react'
-import { Formik, Form } from 'formik'
 import * as yup from 'yup'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
-import { TpsfApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
+import { TpsfApi } from '~/service/Api'
+import { FormikDollySelect } from '~/components/fields/Select/Select'
+import { FormikDatepicker } from '~/components/fields/Datepicker/Datepicker'
+import React, { PureComponent } from 'react'
+import { Formik, Form, Field } from 'formik'
+import { FormikInput } from '~/components/fields/Input/Input'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { requiredDate } from '~/utils/YupValidations'
+import DateValidation from '~/components/fields/Datepicker/DateValidation'
+import Knapp from 'nav-frontend-knapper'
+import Formatters from '~/utils/DataFormatter'
 
 export default class SendDoedsmelding extends PureComponent {
 	state = {
@@ -34,12 +35,20 @@ export default class SendDoedsmelding extends PureComponent {
 				.max(11, 'Ident må inneholde 11 sifre.')
 				.required('Ident er et påkrevd felt.'),
 			handling: yup.string().required('Handling er et påkrevd felt.'),
-			miljoer: yup.array(),
-			doedsdato: requiredDate
+			miljoer: yup.string().required('Miljø er et påkrevd felt.'),
+			doedsdato: DateValidation()
 		})
 
+	createRequestObjects(values_obj) {
+		const miljoer = values_obj.miljoer.map(env => {
+			return env.value
+		})
+
+		return { ...values_obj, miljoer: miljoer }
+	}
+
 	_onSubmit = (values, { resetForm }) => {
-		const body = values
+		const request = this.createRequestObjects(values)
 		var success_envs = []
 		var error_envs = []
 
@@ -53,12 +62,17 @@ export default class SendDoedsmelding extends PureComponent {
 			},
 			async () => {
 				try {
-					let response = await TpsfApi.createDoedsmelding(body)
+					let response = await TpsfApi.createDoedsmelding({
+						...request,
+						doedsdato: Formatters.parseDate(values.doedsdato)
+					})
 					const status = response.data.status
+
 					Object.keys(status).map(key => {
 						if (status[key] === 'OK') success_envs = [...success_envs, key]
 						else error_envs = [...error_envs, key]
 					})
+
 					this.setState({
 						isFetching: false,
 						meldingSent: true,
@@ -197,7 +211,7 @@ export default class SendDoedsmelding extends PureComponent {
 			ident: currentfnr,
 			handling: 'C',
 			doedsdato: '',
-			miljoer: []
+			miljoer: miljoer.slice()
 		}
 
 		const handlingOptions = [
@@ -214,46 +228,54 @@ export default class SendDoedsmelding extends PureComponent {
 					validationSchema={this.validation}
 					initialValues={initialValues}
 					enableReinitialize
-				>
-					{props => {
+					render={props => {
 						const { values, touched, errors, dirty, isSubmitting } = props
 						return (
 							<Form autoComplete="off">
 								<h2>Send dødsmelding</h2>
 								<div className="tps-endring-doedsmelding">
-									<FormikTextInput name="ident" label="IDENT" onBlur={this._handleOnBlurInput} />
-
-									<FormikSelect
+									<Field
+										name="ident"
+										label="IDENT"
+										component={FormikInput}
+										onBlur={this._handleOnBlurInput}
+									/>
+									<Field
 										name="handling"
 										label="HANDLING"
 										options={handlingOptions}
-										isClearable={false}
-										disabled={!foundIdent}
+										component={FormikDollySelect}
+										disabled={foundIdent ? false : true}
+									/>
+									<Field
+										name="doedsdato"
+										label="DØDSDATO"
+										component={FormikDatepicker}
+										disabled={foundIdent ? false : true}
 									/>
 
-									<FormikDatepicker name="doedsdato" label="DØDSDATO" disabled={!foundIdent} />
-
-									<FormikSelect
+									<Field
 										name="miljoer"
 										label="SEND TIL MILJØ"
 										options={environments}
-										isMulti
-										disabled={!foundIdent}
+										component={FormikDollySelect}
+										multi={true}
+										disabled={foundIdent ? false : true}
 									/>
 								</div>
 								<div className="tps-endring-knapp-container">
-									<NavButton type="hoved" htmlType="submit" disabled={!foundIdent}>
+									<Knapp type="hoved" htmlType="submit" disabled={foundIdent ? false : true}>
 										Opprett dødsmelding
-									</NavButton>
+									</Knapp>
 								</div>
 							</Form>
 						)
 					}}
-				</Formik>
-				{this.state.isFetchingMiljoer && <Loading label="Søker etter person" />}
+				/>
+				{this.state.isFetchingMiljoer && <Loading label="Søker etter testbruker" />}
 				{this.state.showErrorMessageFoundIdent && (
 					<h3 className="tps-endring-tps-endring-error-message">
-						Finner ikke person med ident: {this.state.currentfnr}
+						Finner ikke testperson med ident: {this.state.currentfnr}
 					</h3>
 				)}
 				{this.state.isFetching && (

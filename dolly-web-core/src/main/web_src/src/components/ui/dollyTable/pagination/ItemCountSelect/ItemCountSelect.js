@@ -22,11 +22,10 @@ export default function ItemCountSelect({ value, onChangeHandler }) {
 			Antall elementer i listen
 			<Select
 				id="item-count"
-				className="item-count-select"
 				name="item-count"
 				openOnFocus
 				clearable={false}
-				value={options.filter(o => o.value === value)}
+				value={value}
 				options={options}
 				onChange={onChangeHandler}
 			/>

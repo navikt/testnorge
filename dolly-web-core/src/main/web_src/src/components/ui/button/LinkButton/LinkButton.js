@@ -1,16 +1,29 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
+import PropTypes from 'prop-types'
 
 import './LinkButton.less'
 
-export default function LinkButton({ text, onClick }) {
-	const handleClick = event => {
-		event.preventDefault()
-		onClick(event)
+export default class LinkButton extends PureComponent {
+	static propTypes = {
+		text: PropTypes.string,
+		preventDefault: PropTypes.bool
 	}
 
-	return (
-		<a href="#" className="dolly-link-button" onClick={handleClick}>
-			{text}
-		</a>
-	)
+	static defaultProps = {
+		text: '',
+		preventDefault: true
+	}
+
+	click = (event, ...rest) => {
+		if (this.props.preventDefault) event.preventDefault()
+		this.props.onClick(event, ...rest)
+	}
+
+	render() {
+		return (
+			<a href="#" className="dolly-link-button" onClick={this.click}>
+				{this.props.text}
+			</a>
+		)
+	}
 }

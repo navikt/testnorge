@@ -1,22 +1,24 @@
 import { connect } from 'react-redux'
-import { actions } from '~/ducks/gruppe'
+import { createGruppe, createTeam, updateGruppe } from '~/ducks/gruppe'
 import { createLoadingSelector } from '~/ducks/loading'
 import { createErrorMessageSelector } from '~/ducks/errors'
 import RedigerGruppe from './RedigerGruppe'
 
-const loadingSelector = createLoadingSelector([actions.createGruppe, actions.updateGruppe])
-const errorSelector = createErrorMessageSelector([actions.createGruppe, actions.updateGruppe])
+const loadingSelector = createLoadingSelector([createGruppe, createTeam, updateGruppe])
+const errorSelector = createErrorMessageSelector([createGruppe, createTeam, updateGruppe])
 
 const mapStateToProps = state => ({
 	createOrUpdateFetching: loadingSelector(state),
-	currentUserId: state.bruker.brukerData.brukerId,
-	error: errorSelector(state)
+	currentUserId: state.bruker.brukerData.navIdent,
+	error: errorSelector(state),
+	teamId: state.gruppe.teamId
 })
 
-const mapDispatchToProps = {
-	createGruppe: actions.create,
-	updateGruppe: actions.update
-}
+const mapDispatchToProps = dispatch => ({
+	createTeam: nyttTeam => dispatch(createTeam(nyttTeam)),
+	createGruppe: nyGruppe => dispatch(createGruppe(nyGruppe)),
+	updateGruppe: (id, values) => dispatch(updateGruppe(id, values))
+})
 
 export default connect(
 	mapStateToProps,

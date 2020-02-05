@@ -1,13 +1,9 @@
 import { TpsfApi } from '~/service/Api'
-import { createActions } from 'redux-actions'
-import { handleActions } from '~/ducks/utils/immerHandleActions'
-import { onSuccess } from '~/ducks/utils/requestActions'
+import { createAction, handleActions } from 'redux-actions'
+import success from '~/utils/SuccessAction'
 
-export const { getEnvironments } = createActions(
-	{
-		getEnvironments: TpsfApi.getTilgjengligeMiljoer
-	},
-	{ prefix: 'env' }
+export const getEnvironments = createAction('GET_ENVIRONMENTS', () =>
+	TpsfApi.getTilgjengligeMiljoer()
 )
 
 const initialState = {
@@ -16,8 +12,9 @@ const initialState = {
 
 export default handleActions(
 	{
-		[onSuccess(getEnvironments)](state, action) {
-			state.data = _getEnvironmentsSortedByType(action.payload.data.environments)
+		[success(getEnvironments)](state, action) {
+			const envs = _getEnvironmentsSortedByType(action.payload.data.environments)
+			return { ...state, data: envs }
 		}
 	},
 	initialState

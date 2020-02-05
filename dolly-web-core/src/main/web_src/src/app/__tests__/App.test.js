@@ -32,13 +32,13 @@ describe('App.js', () => {
 	// TODO:Test onRedirect
 
 	it('should render main components', () => {
-		const personData = { id: 'test' }
+		const testbrukerData = { id: 'test' }
 		const wrapper = shallow(
 			<App
 				fetchConfig={fetchConfig}
 				getCurrentBruker={getCurrentBruker}
 				configReady={true}
-				brukerData={personData}
+				brukerData={testbrukerData}
 			/>
 		)
 

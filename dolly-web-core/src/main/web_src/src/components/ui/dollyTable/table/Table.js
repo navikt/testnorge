@@ -3,7 +3,6 @@ import cn from 'classnames'
 import Row from './TableRow'
 import Column from './TableColumn'
 import _get from 'lodash/get'
-import _isFunction from 'lodash/isFunction'
 import _isNil from 'lodash/isNil'
 
 import './Table.less'
@@ -21,16 +20,10 @@ const getRowKey = (row, columns) => {
 	return hasUnique && _get(row, `${hasUnique.dataField}`).toString()
 }
 
-const getIconType = (iconItem, row) => {
-	if (!iconItem) return null
-	return _isFunction(iconItem) ? iconItem(row) : iconItem
-}
-
-export default function Table({ data, iconItem, columns, onRowClick, onExpand }) {
+export default function Table({ data, columns, onRowClick, onExpand }) {
 	return (
 		<div className="dot">
 			<div className="dot-header">
-				{iconItem && <Column className="dot-icon" />}
 				{columns.map((cell, idx) => (
 					<Column key={idx} width={cell.width} value={cell.text} />
 				))}
@@ -39,17 +32,11 @@ export default function Table({ data, iconItem, columns, onRowClick, onExpand })
 			{data.map((row, rowIdx) => {
 				const navLink = onRowClick ? onRowClick(row) : null
 				const expandComponent = onExpand ? onExpand(row) : null
-				const iconType = getIconType(iconItem, row)
 				const rowKey = getRowKey(row, columns) || rowIdx
 				return (
-					<Row key={rowKey} icon={iconType} navLink={navLink} expandComponent={expandComponent}>
+					<Row key={rowKey} navLink={navLink} expandComponent={expandComponent}>
 						{columns.map((columnCell, idx) => (
-							<Column
-								key={idx}
-								width={columnCell.width}
-								value={getColumnValue(row, columnCell)}
-								centerItem={columnCell.centerItem}
-							/>
+							<Column key={idx} width={columnCell.width} value={getColumnValue(row, columnCell)} />
 						))}
 					</Row>
 				)

@@ -7,15 +7,7 @@ import './FagsystemStatus.less'
 export default function FagsystemStatus({ statusrapport }) {
 	if (statusrapport.length <= 0) return false
 
-	// Feilmeldinger som skal ha gul problem-circle legges inn her
-	const problemCircleFeil = ['InnvandringOpprettingsmelding: STATUS: TIDSAVBRUDD']
-
-	const getIconType = melding =>
-		melding
-			? problemCircleFeil.includes(melding)
-				? 'report-problem-circle'
-				: 'report-problem-triangle'
-			: 'feedback-check-circle'
+	const getIconType = melding => (melding ? 'report-problem-triangle' : 'feedback-check-circle')
 
 	return (
 		<table className="fagsystemstatus">

@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 import Header from '../Header'
 
 describe('Header.js', () => {
-	const testdata = { brukerId: 'test' }
+	const testdata = { navIdent: 'test' }
 	const wrapper = shallow(<Header brukerData={testdata} />)
 
 	it('should render Header', () => {

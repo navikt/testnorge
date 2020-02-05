@@ -5,15 +5,13 @@ import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Loading from '~/components/ui/loading/Loading'
 import BestillingDetaljer from '~/components/bestilling/detaljer/Detaljer'
-import { BestillingIconItem } from '~/components/ui/icon/IconItem'
+import EtikettBase from 'nav-frontend-etiketter'
 
-import Icon from '~/components/ui/icon/Icon'
-
-const ikonTypeMap = {
-	Ferdig: 'feedback-check-circle',
-	Avvik: 'report-problem-circle',
-	Feilet: 'report-problem-triangle',
-	Stoppet: 'report-problem-triangle'
+const etikettTypeMap = {
+	Ferdig: 'suksess',
+	Avvik: 'fokus',
+	Feilet: 'advarsel',
+	Stoppet: 'advarsel'
 }
 
 export default function BestillingListe({ bestillinger, searchActive, isFetchingBestillinger }) {
@@ -31,7 +29,6 @@ export default function BestillingListe({ bestillinger, searchActive, isFetching
 	}
 
 	const sortedBestillinger = _orderBy(bestillinger, ['id'], ['desc'])
-
 	const columns = [
 		{
 			text: 'ID',
@@ -40,7 +37,7 @@ export default function BestillingListe({ bestillinger, searchActive, isFetching
 			unique: true
 		},
 		{
-			text: 'Antall personer',
+			text: 'Antall testpersoner',
 			width: '15',
 			dataField: 'listedata[1]'
 		},
@@ -58,15 +55,13 @@ export default function BestillingListe({ bestillinger, searchActive, isFetching
 			text: 'Status',
 			width: '10',
 			dataField: 'listedata[4]',
-			formatter: (cell, row) => <Icon kind={ikonTypeMap[cell]} title={cell} />
+			formatter: (cell, row) => <EtikettBase type={etikettTypeMap[cell]}>{cell}</EtikettBase>
 		}
 	]
-
 	return (
 		<DollyTable
 			data={sortedBestillinger}
 			columns={columns}
-			iconItem={<BestillingIconItem />}
 			onExpand={bestilling => <BestillingDetaljer bestilling={bestilling} />}
 			pagination
 		/>

@@ -36,7 +36,7 @@ describe('Panel.js', () => {
 	})
 
 	it('should render error in panel', () => {
-		const wrapper = shallow(<Panel hasErrors />)
+		const wrapper = shallow(<Panel errors />)
 		expect(wrapper.find('.panel-heading_error').exists()).toBeTruthy()
 	})
 })

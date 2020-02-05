@@ -1,7 +1,8 @@
 import common, { redirectReducer } from '../index'
 import { LOCATION_CHANGE } from 'connected-react-router'
-import { onSuccess } from '~/ducks/utils/requestActions'
+import success from '~/utils/SuccessAction'
 import { createGruppe, deleteGruppe } from '~/ducks/gruppe'
+import { actions as teamActions } from '~/ducks/teams'
 import { actions as bestillingActions } from '~/ducks/bestilling'
 
 describe('commonReducer', () => {
@@ -23,11 +24,21 @@ describe('commonReducer - redirectReducer', () => {
 	const testId = 1
 	it('should handle success create group', () => {
 		const action = {
-			type: onSuccess(createGruppe),
+			type: success(createGruppe),
 			payload: { data: { id: testId } }
 		}
 
 		const res = `/gruppe/${testId}`
+		expect(redirectReducer({}, action)).toEqual(res)
+	})
+	it('should handle success team create', () => {
+		const action = {
+			type: success(teamActions.api.create),
+			payload: { data: { id: testId } }
+		}
+
+		const res = `/team/${testId}`
+
 		expect(redirectReducer({}, action)).toEqual(res)
 	})
 
@@ -44,7 +55,7 @@ describe('commonReducer - redirectReducer', () => {
 
 	// it('should handle bestilling success', () => {
 	// 	const action = {
-	// 		type: onSuccess(bestillingActions.postBestilling),
+	// 		type: success(bestillingActions.postBestilling),
 	// 		meta: { gruppeId: testId }
 	// 	}
 
@@ -55,9 +66,18 @@ describe('commonReducer - redirectReducer', () => {
 
 	it('should handle delete group success', () => {
 		const action = {
-			type: onSuccess(deleteGruppe)
+			type: success(deleteGruppe)
 		}
 		const res = '/'
+		expect(redirectReducer({}, action)).toEqual(res)
+	})
+
+	it('should handle delete team success', () => {
+		const action = {
+			type: success(teamActions.api.delete)
+		}
+
+		const res = '/team'
 		expect(redirectReducer({}, action)).toEqual(res)
 	})
 

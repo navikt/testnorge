@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 
 import './Loading.less'
 
-const px = v => `${v}px`
-
 export default class Loading extends PureComponent {
 	static propTypes = {
 		label: PropTypes.string,
@@ -17,17 +15,11 @@ export default class Loading extends PureComponent {
 		label: 'Laster',
 		onlySpinner: false,
 		fullpage: false,
-		panel: false,
-		size: 18
+		panel: false
 	}
 
 	renderSpinner = () => {
-		return (
-			<div
-				className="loading-spinner"
-				style={{ width: px(this.props.size), height: px(this.props.size) }}
-			/>
-		)
+		return <div className="loading-spinner" />
 	}
 
 	render() {

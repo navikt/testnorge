@@ -6,7 +6,7 @@ const getKrrBaseUrl = () => ConfigService.getDatesourceUrl('krr') || config.serv
 const getKrrUrl = () => `${getKrrBaseUrl()}/api/v1`
 
 export default {
-	getPerson(ident) {
+	getTestbruker(ident) {
 		const endpoint = `${getKrrUrl()}/person/kontaktinformasjon`
 		return Request.getWithoutCredentials(endpoint, {
 			headers: {
@@ -17,7 +17,7 @@ export default {
 		})
 	},
 
-	updatePerson(krrstubId, data) {
+	updateTestbruker(krrstubId, data) {
 		const endpoint = `${getKrrUrl()}/kontaktinformasjon/${krrstubId}`
 		return Request.putWithoutCredentials(endpoint, data, {
 			headers: {

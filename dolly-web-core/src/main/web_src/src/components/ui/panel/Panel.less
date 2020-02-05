@@ -3,7 +3,8 @@
 .panel {
 	display: flex;
 	flex-direction: column;
-	margin-bottom: 10px;
+	padding: 0 10px;
+	margin-bottom: 20px;
 	background-color: white;
 	border: 1px solid white; // get correct sizing when open
 	border-radius: 4px;
@@ -17,25 +18,14 @@
 	.panel-heading {
 		display: flex;
 		align-items: center;
-		cursor: pointer;
+		padding: 10px 0;
 
 		h1,
 		h2,
 		h3,
 		h4 {
 			margin: 0;
-			margin-left: 10px;
 			font-size: 1rem;
-		}
-		.header-icon {
-			background: @color-bg-shallow;
-			align-items: center;
-			padding: 10px;
-		}
-
-		.hjelpetekst {
-			width: 1.25rem;
-			height: 1.25rem;
 		}
 
 		.dolly-button {
@@ -47,8 +37,7 @@
 			color: @color-error;
 			display: flex;
 			align-items: center;
-			margin: 0 10px;
-			font-size: 0.9rem;
+			margin: 0 20px;
 
 			svg {
 				margin-right: 5px;
@@ -59,12 +48,11 @@
 			margin-left: auto;
 			display: flex;
 			align-items: center;
-			padding-right: 5px;
 		}
 	}
 
 	.panel-content {
-		border-top: 1px solid @color-bg-grey-border;
-		padding: 20px 10px;
+		border-top: 2px solid @color-darkblue;
+		padding: 20px 0;
 	}
 }

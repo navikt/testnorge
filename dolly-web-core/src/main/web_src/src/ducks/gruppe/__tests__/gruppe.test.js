@@ -1,10 +1,11 @@
 import gruppe from '../index'
-import { sokSelectorGruppeOversikt } from '../index'
+import { sokSelectorOversikt } from '../index'
 
 describe('gruppeReducer', () => {
 	const initialState = {
 		data: null,
-		visning: 'mine'
+		visning: 'mine',
+		teamId: null
 	}
 
 	it('should return gruppe with initialstate', () => {
@@ -101,14 +102,14 @@ describe('gruppeReducer-sokSelector', () => {
 	const testdata = [{ id: 'a' }, { id: 'b' }]
 	it('should return a filtered list', () => {
 		const res = [{ id: 'a' }]
-		expect(sokSelectorGruppeOversikt(testdata, 'a')).toEqual(res)
+		expect(sokSelectorOversikt(testdata, 'a')).toEqual(res)
 	})
 
 	it('should return whole list', () => {
-		expect(sokSelectorGruppeOversikt(testdata)).toEqual(testdata)
+		expect(sokSelectorOversikt(testdata)).toEqual(testdata)
 	})
 
 	it('should return null when list is undefined', () => {
-		expect(sokSelectorGruppeOversikt(null)).toEqual(null)
+		expect(sokSelectorOversikt(null)).toEqual(null)
 	})
 })

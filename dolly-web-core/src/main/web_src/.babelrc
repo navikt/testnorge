@@ -1,17 +1,14 @@
 {
-	"presets": [["@babel/preset-env", { "modules": false }], "@babel/preset-react"],
+	"presets": [["env", { "modules": false }], "react"],
 	"plugins": [
-		"@babel/plugin-proposal-class-properties",
-		"@babel/plugin-proposal-object-rest-spread",
-		"@babel/plugin-syntax-dynamic-import"
+		"transform-class-properties",
+		"transform-object-rest-spread",
+		"syntax-dynamic-import"
 	],
 	"env": {
 		"test": {
 			"presets": ["env", "react"],
-			"plugins": [
-				"@babel/plugin-transform-class-properties",
-				"@babel/plugin-transform-object-rest-spread"
-			]
+			"plugins": ["transform-class-properties", "transform-object-rest-spread"]
 		}
 	}
 }

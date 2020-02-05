@@ -1,44 +1,35 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
+import PropTypes from 'prop-types'
 import cn from 'classnames'
 import Icon from '~/components/ui/icon/Icon'
-import Loading from '~/components/ui/loading/Loading'
 import './Button.less'
 
-export default function Button(props) {
-	const {
-		kind,
-		onClick,
-		children,
-		className,
-		iconSize = 16,
-		loading = false,
-		type = 'button',
-		...rest
-	} = props
-
-	const handleClick = event => {
-		event.stopPropagation()
-		return onClick()
+export default class Button extends PureComponent {
+	static propTypes = {
+		kind: PropTypes.string,
+		onClick: PropTypes.func
 	}
 
-	const cssClass = cn('dolly-button', className)
+	static defaultProps = {
+		kind: null,
+		onClick: () => {} // Default noop func
+	}
 
-	const renderIcon = loading ? (
-		<Loading onlySpinner size={iconSize} />
-	) : kind ? (
-		<Icon size={iconSize} kind={kind} />
-	) : null
+	onClickHandler = event => {
+		event.stopPropagation()
+		return this.props.onClick()
+	}
 
-	return (
-		<button
-			type={type}
-			className={cssClass}
-			onClick={handleClick}
-			disabled={rest.disabled || loading}
-			{...rest}
-		>
-			{renderIcon}
-			{children && <span>{children}</span>}
-		</button>
-	)
+	render() {
+		const { kind, iconSize, children, className, type = 'button', title } = this.props
+
+		const cssClass = cn('dolly-button', className)
+
+		return (
+			<button type={type} className={cssClass} onClick={this.onClickHandler} title={title}>
+				{kind && <Icon size={iconSize} kind={kind} />}
+				{children && <p>{children}</p>}
+			</button>
+		)
+	}
 }

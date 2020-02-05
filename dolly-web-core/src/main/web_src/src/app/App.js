@@ -1,23 +1,16 @@
 import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import Header from '~/components/layout/header/Header'
-import Breadcrumb from '~/components/layout/breadcrumb/BreadcrumbWithHoc'
 import Loading from '~/components/ui/loading/Loading'
-import { AppError } from '~/components/ui/appError/AppError'
+import Breadcrumb from '~/components/layout/breadcrumb/BreadcrumbWithHoc'
 import Toast from '~/components/ui/toast/Toast'
 import routes from '~/Routes'
 
 import './App.less'
 
 export default class App extends Component {
-	state = {
-		bootError: false
-	}
-
 	async componentDidMount() {
-		this.props.fetchConfig().catch(err => {
-			this.setState({ bootError: true })
-		})
+		await this.props.fetchConfig()
 		await this.props.getCurrentBruker()
 		await this.props.getEnvironments()
 	}
@@ -30,12 +23,8 @@ export default class App extends Component {
 	render() {
 		const { brukerData, applicationError, clearAllErrors, configReady } = this.props
 
-		if (this.state.bootError)
-			return (
-				<AppError error="Problemer med å hente dolly config. Prøv å refresh siden (ctrl + R)." />
-			)
-
-		if (!brukerData || !configReady) return <Loading label="laster dolly applikasjon" fullpage />
+		if (!configReady) return null
+		if (!brukerData) return <Loading label="laster dolly applikasjon" fullpage />
 		return (
 			<React.Fragment>
 				<Header brukerData={brukerData} />

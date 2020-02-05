@@ -2,7 +2,7 @@ apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
   name: dolly
-  namespace: t1
+  namespace: t2
   labels:
     team: registre
 spec:

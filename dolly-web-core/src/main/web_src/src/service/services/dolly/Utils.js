@@ -1,46 +1,45 @@
+import DataFormatter from '~/utils/DataFormatter'
+
+//liste over koder som må eksludert pga ingen støtte i TPSF/dolly
+const _excludeList = ['NULL', 'GLAD']
+
+export const NormalizeTeamListForDropdown = ({ data }) => ({
+	options: data.map(team => ({ value: team.id, label: team.navn }))
+})
+
 // Specialbehov for modifisering og sortering av kodeverk
 export const SortKodeverkArray = data => {
-	const kodeverk = data.koder
+	const koderArray = data.koder
 	if (data.name == 'Språk') {
 		const spesKoder = ['ES', 'EN', 'NN', 'NB']
 
 		spesKoder.forEach(value => {
-			for (var i = 0; i < kodeverk.length - 1; i++) {
-				const temp = kodeverk[i]
+			for (var i = 0; i < koderArray.length - 1; i++) {
+				const temp = koderArray[i]
 				if (value == temp.value) {
 					if (value == 'NB') temp.label = 'Norwegian, Bokmål'
 					if (value == 'NN') temp.label = 'Norwegian, Nynorsk'
-					kodeverk.splice(i, 1) && kodeverk.unshift(temp)
+					koderArray.splice(i, 1) && koderArray.unshift(temp)
 				}
 			}
 		})
 	}
 
-	if (data.name === 'Sivilstander') {
-		//Dolly støtter ikke GLAD fordi det er NAV-spesifikt og ikke SKD. Kan endres ved behov.
-		return kodeverk.filter(kode => kode.value !== 'NULL' && kode.value !== 'GLAD')
-	}
-
 	if (data.name == 'Diskresjonskoder') {
-		return kodeverk
-			.map(kode => {
-				if (kode.value === 'SPFO') {
-					kode.label = 'KODE 7 - Sperret adresse, fortrolig'
-				}
-				if (kode.value === 'SPSF') {
-					kode.label = 'KODE 6 - Sperret adresse, strengt fortrolig'
-				}
-				return kode
-			})
-			.filter(kode => kode.value !== 'UFB')
-	}
+		const spesKoder = [
+			{ value: 'SPFO', label: 'KODE 7 - Sperret adresse, fortrolig' },
+			{ value: 'SPSF', label: 'KODE 6 - Sperret adresse, strengt fortrolig' }
+		]
 
-	if (data.name === 'Postnummer' || data.name === 'Kommuner') {
-		return kodeverk.map(kode => ({
-			label: `${kode.value} - ${kode.label}`,
-			value: kode.value,
-			data: kode.label
-		}))
+		spesKoder.forEach(kode => {
+			for (var i = 0; i < koderArray.length - 1; i++) {
+				const temp = koderArray[i]
+				if (kode.value == temp.value) {
+					temp.label = kode.label
+					koderArray.splice(i, 1) && koderArray.unshift(temp)
+				}
+			}
+		})
 	}
 
 	if (data.name === 'Yrker') {
@@ -59,17 +58,7 @@ export const SortKodeverkArray = data => {
 			{ value: '3310101', label: 'ALLMENNLÆRER' },
 			{ value: '2521106', label: 'ADVOKAT' }
 		]
-		spesKoder.map(yrke => kodeverk.unshift(yrke))
-	}
-
-	if (data.name === 'Arbeidsforholdstyper') {
-		// Kodeverket for arbeidsforholdstyper har to verdier som AAREG per i dag ikke støtter
-		const arbeidsforhold = kodeverk.filter(
-			kode =>
-				kode.value !== 'frilanserOppdragstakerHonorarPersonerMm' &&
-				kode.value !== 'pensjonOgAndreTyperYtelserUtenAnsettelsesforhold'
-		)
-		return arbeidsforhold
+		spesKoder.map(yrke => koderArray.unshift(yrke))
 	}
 
 	if (data.name === 'Landkoder') {
@@ -88,8 +77,56 @@ export const SortKodeverkArray = data => {
 			'WAK',
 			'YUG'
 		]
-		return kodeverk.filter(kode => !spesKoder.includes(kode.value))
+		return koderArray.filter(kode => !spesKoder.includes(kode.value))
 	}
 
-	return kodeverk
+	return koderArray
+}
+
+export const NormalizeKodeverkForDropdown = ({ data }, showValueInLabel) => {
+	const sortedArray = SortKodeverkArray(data)
+	return {
+		options: sortedArray
+			.filter(val => !_excludeList.includes(val.value))
+			.map(kode => ({
+				value: kode.value,
+				label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
+			}))
+	}
+}
+
+export const NormalizeKodeverkForDropdownUtenUfb = ({ data }, showValueInLabel) => {
+	const sortedArray = SortKodeverkArray(data)
+	let filteredSortedArray = []
+	sortedArray.map(
+		diskresjonskode =>
+			diskresjonskode.value !== 'UFB' &&
+			diskresjonskode.value !== 'SPSF' &&
+			filteredSortedArray.push(diskresjonskode)
+	)
+	return {
+		options: filteredSortedArray
+			.filter(val => !_excludeList.includes(val.value))
+			.map(kode => ({
+				value: kode.value,
+				label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
+			}))
+	}
+}
+
+export const NormalizeBrukerListForDropdown = (data, teamMembers) => {
+	const options = data.reduce((filtered, bruker) => {
+		if (!teamMembers.includes(bruker.navIdent)) {
+			filtered.push({ value: bruker.navIdent, label: bruker.navIdent })
+		}
+		return filtered
+	}, [])
+	return { options }
+}
+
+export default {
+	NormalizeTeamListForDropdown,
+	NormalizeBrukerListForDropdown,
+	NormalizeKodeverkForDropdown,
+	NormalizeKodeverkForDropdownUtenUfb
 }

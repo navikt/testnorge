@@ -1,24 +1,26 @@
 import { connect } from 'react-redux'
 import _orderBy from 'lodash/orderBy'
-import {
-	actions,
-	fetchMineGrupper,
-	loadingGrupper,
-	sokSelectorGruppeOversikt
-} from '~/ducks/gruppe'
 import GruppeOversikt from './GruppeOversikt'
+import {
+	getGrupper,
+	fetchGrupperTilBruker,
+	getGrupperByUserId,
+	sokSelectorOversikt
+} from '~/ducks/gruppe'
+import { createLoadingSelector } from '~/ducks/loading'
+
+const loadingSelector = createLoadingSelector([getGrupper, getGrupperByUserId])
 
 const mapStateToProps = state => ({
 	searchActive: Boolean(state.search),
-	isFetching: loadingGrupper(state),
-	mineIds: state.gruppe.mineIds,
-	gruppeListe: _orderBy(sokSelectorGruppeOversikt(state), 'id', 'desc')
+	isFetching: loadingSelector(state),
+	gruppeListe: _orderBy(sokSelectorOversikt(state.gruppe.data, state.search), 'id', 'desc')
 })
 
-const mapDispatchToProps = {
-	getGrupper: actions.getAlle,
-	fetchMineGrupper
-}
+const mapDispatchToProps = dispatch => ({
+	getGrupper: () => dispatch(getGrupper()),
+	getMineGrupper: () => dispatch(fetchGrupperTilBruker())
+})
 
 export default connect(
 	mapStateToProps,
