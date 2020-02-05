@@ -15,7 +15,7 @@ export default class App extends Component {
 	}
 
 	async componentDidMount() {
-		this.props.fetchConfig().catch(err => {
+		await this.props.fetchConfig().catch(err => {
 			this.setState({ bootError: true })
 		})
 		await this.props.getCurrentBruker()

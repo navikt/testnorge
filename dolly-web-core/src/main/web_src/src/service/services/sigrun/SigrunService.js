@@ -2,8 +2,7 @@ import config from '~/config'
 import Request from '~/service/services/Request'
 import ConfigService from '~/service/Config'
 
-const getSigrunBaseUrl = () =>
-	ConfigService.getDatesourceUrl('sigrun') || config.services.sigrunStubUrl
+const getSigrunBaseUrl = () => ConfigService.getDatesourceUrl('sigrun')
 
 export default {
 	getPerson(ident) {
