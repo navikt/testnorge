@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const pkg = require('./package.json')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 
@@ -26,7 +26,7 @@ const outputDir = {
 const webpackConfig = {
 	mode: process.env.NODE_ENV,
 	devtool: 'source-map',
-	entry: ['babel-polyfill', './src/index.js'],
+	entry: ['./src/index.js'],
 	output: {
 		filename: 'bundle.js',
 		publicPath: '/',
@@ -59,7 +59,7 @@ const webpackConfig = {
 			favicon: 'src/assets/favicon.ico',
 			inject: false,
 			template: require('html-webpack-template'),
-			appMountId: 'root',
+			appMountIds: ['root', 'react-select-root'],
 			lang: 'nb'
 		})
 	],
@@ -73,11 +73,6 @@ const webpackConfig = {
 	},
 	module: {
 		rules: [
-			{
-				test: /\.ts(x?)$/,
-				exclude: /node_modules/,
-				use: ['babel-loader', 'ts-loader']
-			},
 			{
 				test: /\.js$/,
 				exclude: /node_modules/,
@@ -120,9 +115,7 @@ if (TARGET === 'build-dev') {
 		filename: 'bundle.js',
 		publicPath: '/'
 	}
-	webpackConfig.plugins = [new CleanWebpackPlugin([outputDir.development])].concat(
-		webpackConfig.plugins
-	)
+	webpackConfig.plugins = [new CleanWebpackPlugin()].concat(webpackConfig.plugins)
 }
 
 // If production build
@@ -134,18 +127,16 @@ if (TARGET === 'build') {
 		filename: 'bundle.[contenthash:8].js',
 		publicPath: '/'
 	}
-	webpackConfig.plugins = [new CleanWebpackPlugin([outputDir.production])]
-		.concat(webpackConfig.plugins)
-		.concat([
-			new OptimizeCssAssetsPlugin({
-				assetNameRegExp: /\.css$/g,
-				cssProcessor: require('cssnano'),
-				cssProcessorPluginOptions: {
-					preset: ['default', { discardComments: { removeAll: true } }]
-				},
-				canPrint: true
-			})
-		])
+	webpackConfig.plugins = [new CleanWebpackPlugin()].concat(webpackConfig.plugins).concat([
+		new OptimizeCssAssetsPlugin({
+			assetNameRegExp: /\.css$/g,
+			cssProcessor: require('cssnano'),
+			cssProcessorPluginOptions: {
+				preset: ['default', { discardComments: { removeAll: true } }]
+			},
+			canPrint: true
+		})
+	])
 }
 
 module.exports = webpackConfig

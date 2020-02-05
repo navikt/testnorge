@@ -1,13 +1,10 @@
 import React from 'react'
 import Knapp from 'nav-frontend-knapper'
 
-const NavButton = ({ direction, ...restProps }) => {
+const NavButton = ({ type = 'standard', children, ...restProps }) => {
 	return (
-		<Knapp type={direction == 'forward' ? 'hoved' : 'standard'} {...restProps}>
-			<div className="nav-button-container">
-				{direction === 'forward' && 'Videre'}
-				{direction === 'backward' && ' Tilbake'}
-			</div>
+		<Knapp type={type} {...restProps}>
+			{children}
 		</Knapp>
 	)
 }

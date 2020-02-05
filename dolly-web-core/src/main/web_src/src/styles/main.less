@@ -3,14 +3,12 @@
 @import './variables';
 @import './utils';
 
+@import '~nav-frontend-tabell-style';
+
 // TODO: rydd i shared styling
 // shared stylings across pages
-@import './shared/Rediger';
 @import './shared/Oversikt';
-@import './shared/Tooltip';
-
-// ? Trenger vi egentlig font awesome?
-@import '~font-awesome/css/font-awesome.min.css';
+@import './shared/Toolbar';
 
 body {
 	font-family: 'Source Sans Pro', sans-serif;
@@ -29,14 +27,33 @@ h1 {
 	margin: 40px 0 20px;
 }
 
+h3 {
+	font-size: 1rem;
+}
+
 // NAV skjema override
 .skjemaelement {
+	.skjemaelement__input {
+		width: 100%;
+		padding: 7px 10px;
+	}
 	.skjemaelement__label {
 		font-size: 0.75em;
 		text-transform: uppercase;
 	}
-	&__staticvalue {
-		padding: 0.45rem 0;
-		min-width: 200px;
+
+	.svg-icon {
+		pointer-events: none;
+		position: absolute;
+		top: 9px;
+		right: 8px;
 	}
+}
+
+// NAV hjelpetekst
+.hjelpetekst {
+	margin-left: 10px;
+}
+.popover {
+	max-width: 350px;
 }

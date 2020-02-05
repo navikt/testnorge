@@ -1,0 +1,31 @@
+@import (reference) '~lessVars';
+
+.step-navknapper-wrapper {
+	background-color: @color-bg-grey;
+	border-top: 1px solid @color-bg-grey-border;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 2;
+}
+
+.step-navknapper {
+	max-width: @page-max-width;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: row;
+	padding: 10px 20px;
+
+	> button {
+		margin-right: 10px;
+	}
+
+	&--right {
+		margin-left: auto;
+
+		:not(:last-child) {
+			margin-right: 5px;
+		}
+	}
+}

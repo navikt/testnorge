@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
-import Knapp from 'nav-frontend-knapper'
 import HjelpeTekst from 'nav-frontend-hjelpetekst'
-import Overskrift from '~/components/ui/overskrift/Overskrift'
-import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
+import { SearchField } from '~/components/searchField/SearchField'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
-import Toolbar from '~/components/ui/toolbar/Toolbar'
+import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
+import Icon from '~/components/ui/icon/Icon'
 import Liste from './Liste'
 
 export default function GruppeOversikt({
 	getGrupper,
-	getMineGrupper,
+	fetchMineGrupper,
 	isFetching,
 	gruppeListe,
+	mineIds,
 	history,
 	searchActive
 }) {
@@ -20,38 +21,40 @@ export default function GruppeOversikt({
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
 
 	useEffect(() => {
-		visning === 'mine' ? getMineGrupper() : getGrupper()
+		visning === 'mine' ? fetchMineGrupper() : getGrupper()
 	}, [visning])
 
 	const byttVisning = event => setVisning(event.target.value)
 
+	const items = visning === 'mine' ? gruppeListe.filter(v => mineIds.includes(v.id)) : gruppeListe
+
 	return (
 		<div className="oversikt-container">
 			<div className="page-header flexbox--align-center--justify-start">
-				<Overskrift label="Testdatagrupper" />
-				<HjelpeTekst>
-					Testdatagruppen inneholder alle testpersonene dine (FNR/DNR/BOST).
-				</HjelpeTekst>
+				<h1>Testdatagrupper</h1>
+				<HjelpeTekst>Testdatagruppen inneholder alle personene dine (FNR/DNR/BOST).</HjelpeTekst>
 			</div>
 
-			<Toolbar
-				toggleOnChange={byttVisning}
-				toggleCurrent={visning}
-				searchField={<SearchFieldConnector />}
-			>
-				<Knapp type="hoved" onClick={visNyGruppe}>
+			<div className="toolbar">
+				<NavButton type="hoved" onClick={visNyGruppe}>
 					Ny gruppe
-				</Knapp>
-			</Toolbar>
+				</NavButton>
+				<ToggleGruppe onChange={byttVisning} name="toggler">
+					<ToggleKnapp value="mine" checked={visning === 'mine'}>
+						<Icon size={14} kind={visning === 'mine' ? 'man2Light' : 'man2'} />
+						Mine
+					</ToggleKnapp>
+					<ToggleKnapp value="alle" checked={visning === 'alle'}>
+						<Icon size={16} kind={visning === 'alle' ? 'groupLight' : 'groupDark'} />
+						Alle
+					</ToggleKnapp>
+				</ToggleGruppe>
+				<SearchField />
+			</div>
 
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
 
-			<Liste
-				items={gruppeListe}
-				history={history}
-				isFetching={isFetching}
-				searchActive={searchActive}
-			/>
+			<Liste items={items} history={history} isFetching={isFetching} searchActive={searchActive} />
 		</div>
 	)
 }

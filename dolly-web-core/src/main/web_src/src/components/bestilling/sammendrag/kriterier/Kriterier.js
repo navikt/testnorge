@@ -1,8 +1,7 @@
 import React, { Fragment } from 'react'
 import cn from 'classnames'
-import Header from '~/components/bestilling/sammendrag/header/Header'
-import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
-import StaticValue from '~/components/fields/StaticValue/StaticValue'
+import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { mapBestillingData } from './BestillingKriterieMapper'
 
 const _renderBestillingsDetaljer = data => {
@@ -16,27 +15,19 @@ const _renderBestillingsDetaljer = data => {
 				<Fragment key={j}>
 					<h4>{kategori.header} </h4>
 					{kategori.items && (
-						<div className={cssClass}>
-							{kategori.items.map((attributt, i) => {
-								if (attributt.value) {
-									return _renderStaticValue(attributt, i)
-								}
-							})}
-						</div>
+						<div className={cssClass}>{kategori.items.map(_renderStaticValue)}</div>
 					)}
 					{kategori.itemRows && (
 						<div className={cn('info-text', { 'bottom-border': bottomBorder })}>
-							{kategori.itemRows.map((row, i) => {
-								return (
+							{kategori.itemRows.map((row, i) => (
+								<div className="dfa-blokk" key={i}>
+									{/*className endres under styling. Kun eksempel*/}
+									{row[0].numberHeader && <h4>{row[0].numberHeader}</h4>}
 									<div className={'flexbox--align-start flexbox--wrap'} key={i}>
-										{row.map((attributt, j) => {
-											if (attributt.value) {
-												return _renderStaticValue(attributt, j)
-											}
-										})}
+										{row.map(_renderStaticValue)}
 									</div>
-								)
-							})}
+								</div>
+							))}
 						</div>
 					)}
 				</Fragment>
@@ -46,36 +37,26 @@ const _renderBestillingsDetaljer = data => {
 }
 
 const _renderStaticValue = (attributt, key) => {
-	if (attributt.apiKodeverkId) {
-		return (
-			<KodeverkValueConnector
-				apiKodeverkId={attributt.apiKodeverkId}
-				showValue={attributt.showKodeverkValue}
-				header={attributt.label}
-				size={attributt.width ? attributt.width : 'small'}
-				value={attributt.value}
-				key={key}
-			/>
-		)
-	}
+	if (!attributt.value) return false
 	return (
-		<StaticValue
-			header={attributt.label}
-			size={attributt.width ? attributt.width : 'small'}
-			value={attributt.value}
+		<TitleValue
 			key={key}
+			title={attributt.label}
+			value={attributt.value}
+			kodeverk={attributt.apiKodeverkId}
+			size={attributt.width ? attributt.width : 'small'}
 		/>
 	)
 }
 
-export default function Bestillingskriterier({ bestilling }) {
-	const data = mapBestillingData(bestilling)
+export default function Bestillingskriterier({ bestilling, bestillingsinformasjon, header }) {
+	const data = mapBestillingData(bestilling, bestillingsinformasjon)
 
 	if (!data) return <p>Kunne ikke hente bestillingsdata</p>
 
 	return (
-		<div>
-			<Header label="Bestillingskriterier" />
+		<div className="bestilling-detaljer">
+			{header && <SubOverskrift label={header} />}
 			{_renderBestillingsDetaljer(data)}
 		</div>
 	)

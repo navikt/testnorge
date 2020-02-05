@@ -1,39 +1,27 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import Icon from '~/components/ui/icon/Icon'
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { setSearchText } from '~/ducks/search'
+import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 
 import './SearchField.less'
 
-// Kopi av NAV, utvides for å kunne legge til ikoner
-export default class SearchField extends PureComponent {
-	static propTypes = {
-		searchText: PropTypes.string.isRequired,
-		placeholder: PropTypes.string,
-		setSearchText: PropTypes.func.isRequired
-	}
+export const SearchField = ({ placeholder = 'Hva leter du etter?' }) => {
+	const searchText = useSelector(state => state.search)
+	const dispatch = useDispatch()
 
-	static defaultProps = {
-		placeholder: 'Hva leter du etter?'
-	}
+	const handleChange = event => dispatch(setSearchText(event.target.value.trim()))
 
-	onChangeHandler = e => this.props.setSearchText(e.target.value.trim())
-
-	render() {
-		return (
-			<div className="skjemaelement">
-				<div className="searchfield-container">
-					<input
-						value={this.props.searchText}
-						id="searchfield-inputfield"
-						type="text"
-						placeholder={this.props.placeholder}
-						onChange={this.onChangeHandler}
-						aria-label="Search"
-					/>
-					<Icon kind="search" size="20" />
-				</div>
-				<div aria-live="assertive" role="alert" />
-			</div>
-		)
-	}
+	return (
+		<div className="searchfield-container skjemaelement">
+			<TextInput
+				value={searchText}
+				id="searchfield-inputfield"
+				type="text"
+				placeholder={placeholder}
+				onChange={handleChange}
+				aria-label="Search"
+				icon="search"
+			/>
+		</div>
+	)
 }

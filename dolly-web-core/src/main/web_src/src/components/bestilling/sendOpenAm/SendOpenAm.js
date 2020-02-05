@@ -1,11 +1,11 @@
 import React from 'react'
-import Knapp from 'nav-frontend-knapper'
 import { useAsyncFn } from 'react-use'
 import _get from 'lodash/get'
 import { DollyApi } from '~/service/Api'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import Loading from '~/components/ui/loading/Loading'
 import JiraLenker from '~/components/bestilling/jiraLenker/JiraLenker'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 
 export default function SendOpenAm({ closeModal, bestilling, getBestillinger }) {
 	const [requestState, postOpenAm] = useAsyncFn(async () => {
@@ -22,8 +22,8 @@ export default function SendOpenAm({ closeModal, bestilling, getBestillinger }) 
 
 			{!requestState.value && (
 				<p>
-					Dolly vil sende alle testidenter i bestillingen til OpenAm. Er du sikker på at du vil
-					utføre dette?
+					Dolly vil sende alle personer i bestillingen til OpenAm. Er du sikker på at du vil utføre
+					dette?
 				</p>
 			)}
 
@@ -35,21 +35,21 @@ export default function SendOpenAm({ closeModal, bestilling, getBestillinger }) 
 					<p>Sakene vil bli oppdatert i løpet av 2-3 minutter, og finnes da i kommentarfeltet.</p>
 
 					<div className="dollymodal_buttons">
-						<Knapp autoFocus type="standard" onClick={close}>
+						<NavButton autoFocus onClick={close}>
 							Lukk
-						</Knapp>
+						</NavButton>
 					</div>
 				</div>
 			)}
 
 			{!requestState.value && (
 				<div className="dollymodal_buttons">
-					<Knapp autoFocus type="standard" onClick={closeModal}>
+					<NavButton autoFocus onClick={closeModal}>
 						Avbryt
-					</Knapp>
-					<Knapp type="hoved" onClick={postOpenAm}>
+					</NavButton>
+					<NavButton type="hoved" onClick={postOpenAm}>
 						Send til OpenAm
-					</Knapp>
+					</NavButton>
 				</div>
 			)}
 		</DollyModal>
