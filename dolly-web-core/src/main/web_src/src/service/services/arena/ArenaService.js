@@ -2,8 +2,7 @@ import config from '~/config'
 import Request from '~/service/services/Request'
 import ConfigService from '~/service/Config'
 
-const getArenaBaseUrl = () =>
-	ConfigService.getDatesourceUrl('arena') || config.services.arenaForvalterUrl
+const getArenaBaseUrl = () => ConfigService.getDatesourceUrl('arena')
 const getArenaUrl = () => `${getArenaBaseUrl()}/api/v1`
 
 const options = {

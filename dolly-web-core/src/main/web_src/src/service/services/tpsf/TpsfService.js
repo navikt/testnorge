@@ -2,7 +2,7 @@ import config from '~/config'
 import Request from '~/service/services/Request'
 import ConfigService from '~/service/Config'
 
-const getBaseUrl = () => ConfigService.getDatesourceUrl('tpsf') || config.services.tpsfUrl
+const getBaseUrl = () => ConfigService.getDatesourceUrl('tpsf')
 const getTpsfUrl = () => `${getBaseUrl()}/api/v1`
 
 export default {
