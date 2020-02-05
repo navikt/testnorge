@@ -22,12 +22,14 @@ export const Familierelasjoner = ({ formikBag }) => (
 			iconType={'relasjoner'}
 			startOpen={() => erForste(formikBag.values, [relasjonerAttributt])}
 		>
-			{formikBag.values.tpsf.relasjoner.partnere && (
+			{/* Fiks under fjernes når barn: null og partere: null blir fikset backend. */}
+			{/* De vil være huket av i steg 1 selv om de ikke har noe info (null), så det må fikses */}
+			{formikBag.values.tpsf.relasjoner && formikBag.values.tpsf.relasjoner.partnere && (
 				<Kategori title="Partnere" vis="tpsf.relasjoner.partnere">
 					<Partnere formikBag={formikBag} />
 				</Kategori>
 			)}
-			{formikBag.values.tpsf.relasjoner.barn && (
+			{formikBag.values.tpsf.relasjoner && formikBag.values.tpsf.relasjoner.barn && (
 				<Kategori title="Barn" vis="tpsf.relasjoner.barn">
 					<Barn formikBag={formikBag} />
 				</Kategori>
