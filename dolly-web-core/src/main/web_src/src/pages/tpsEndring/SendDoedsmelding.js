@@ -229,6 +229,7 @@ export default class SendDoedsmelding extends PureComponent {
 										options={handlingOptions}
 										isClearable={false}
 										disabled={!foundIdent}
+										fastfield={false}
 									/>
 
 									<FormikDatepicker name="doedsdato" label="DØDSDATO" disabled={!foundIdent} />
