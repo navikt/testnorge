@@ -6,7 +6,7 @@ const getUdiBaseUrl = () => ConfigService.getDatesourceUrl('udi') || config.serv
 const getUdiUrl = () => `${getUdiBaseUrl()}/api/v1`
 
 export default {
-	getTestbruker(ident) {
+	getPerson(ident) {
 		const endpoint = `${getUdiUrl()}/person/${ident}`
 		return Request.getWithoutCredentials(endpoint)
 	}

@@ -3,12 +3,19 @@ import Bestillingskriterier from './kriterier/Kriterier'
 import MiljoeStatus from './miljoeStatus/MiljoeStatus'
 import JiraLenker from '~/components/bestilling/jiraLenker/JiraLenker'
 
-export default function BestillingSammendrag({ bestilling, modal = false }) {
+export default function BestillingSammendrag({ bestilling }) {
 	return (
 		<div className="bestilling-detaljer">
-			{modal && <h1>Bestilling #{bestilling.id}</h1>}
-			<Bestillingskriterier bestilling={bestilling} />
 			<MiljoeStatus bestilling={bestilling} />
+			<Bestillingskriterier
+				bestilling={bestilling.bestilling}
+				bestillingsinformasjon={{
+					antallIdenter: bestilling.antallIdenter,
+					sistOppdatert: bestilling.sistOppdatert,
+					opprettetFraId: bestilling.opprettetFraId
+				}}
+				header="Bestillingskriterier"
+			/>
 			<JiraLenker openAm={bestilling.openamSent && bestilling.openamSent.split(',')} />
 		</div>
 	)

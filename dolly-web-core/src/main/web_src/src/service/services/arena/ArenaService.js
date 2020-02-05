@@ -14,12 +14,12 @@ const options = {
 }
 
 export default {
-	getTestbruker(ident) {
+	getPerson(ident) {
 		const endpoint = `${getArenaUrl()}/bruker?filter-personident=${ident}&page=0`
 		return Request.getWithoutCredentials(endpoint, options)
 	},
 
-	getTilgjengeligeMiljoe() {
+	getTilgjengeligeMiljoer() {
 		const endpoint = `${getArenaUrl()}/miljoe`
 		return Request.getWithoutCredentials(endpoint, options)
 	}

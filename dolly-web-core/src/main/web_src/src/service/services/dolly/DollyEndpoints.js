@@ -3,15 +3,14 @@ import config from '~/config'
 const uri = `${config.services.dollyBackend}`
 
 const groupBase = `${uri}/gruppe`
-const teamBase = `${uri}/team`
+const identBase = `${uri}/ident`
 const brukerBase = `${uri}/bruker`
 const kodeverkBase = `${uri}/kodeverk`
 const bestillingBase = `${uri}/bestilling`
 const configBase = `${uri}/config`
 const openamBase = `${uri}/openam`
-const norg2Base = `${uri}/norg2`
 const aaregBase = `${uri}/aareg/arbeidsforhold`
-const personoppslagBase = `${uri}/personoppslag`
+const personoppslagBase = `${uri}/pdlperson`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -23,15 +22,7 @@ export default class DollyEndpoints {
 	}
 
 	static gruppeByUser(userId) {
-		return `${groupBase}?navIdent=${userId}`
-	}
-
-	static gruppeByTeam(teamId) {
-		return `${groupBase}?teamId=${teamId}`
-	}
-
-	static gruppeAttributter(gruppeId) {
-		return `${groupBase}/${gruppeId}/attributter`
+		return `${groupBase}?brukerId=${userId}`
 	}
 
 	static gruppeBestilling(gruppeId) {
@@ -44,26 +35,6 @@ export default class DollyEndpoints {
 
 	static gruppeBestillingStatus(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestillingStatus`
-	}
-
-	static team() {
-		return teamBase
-	}
-
-	static teamByUser(userId) {
-		return `${teamBase}?navIdent=${userId}`
-	}
-
-	static teamById(teamId) {
-		return `${teamBase}/${teamId}`
-	}
-
-	static teamAddMember(teamId) {
-		return `${teamBase}/${teamId}/leggTilMedlemmer`
-	}
-
-	static teamRemoveMember(teamId, userId) {
-		return `${teamBase}/${teamId}/deleteMedlem?navIdent=${userId}`
 	}
 
 	static bruker() {
@@ -99,7 +70,7 @@ export default class DollyEndpoints {
 	}
 
 	static bestillingMal() {
-		return bestillingBase + '/malbestilling'
+		return `${bestillingBase}/malbestilling`
 	}
 
 	static gjenopprettBestilling(bestillingId, envs) {
@@ -118,12 +89,8 @@ export default class DollyEndpoints {
 		return `${bestillingBase}/stop/${bestillingId}`
 	}
 
-	static removeTestIdent(gruppeId, identId) {
+	static slettPerson(gruppeId, identId) {
 		return `${groupBase}/${gruppeId}/slettTestident?ident=${identId}`
-	}
-
-	static enhetByTknr(tknr) {
-		return `${norg2Base}/enhet/${tknr}`
 	}
 
 	static aareg() {
@@ -136,5 +103,18 @@ export default class DollyEndpoints {
 
 	static personoppslag(ident) {
 		return `${personoppslagBase}/ident/${ident}`
+	}
+
+	//TESTPERSON-CONTROLLER
+	static identBeskrivelse(ident) {
+		return `${identBase}/${ident}/beskrivelse`
+	}
+
+	static identIbruk(ident, ibruk) {
+		return `${identBase}/${ident}/ibruk?iBruk=${ibruk}`
+	}
+
+	static kobleIdenter(ident) {
+		return `${identBase}/${ident}/relasjon`
 	}
 }

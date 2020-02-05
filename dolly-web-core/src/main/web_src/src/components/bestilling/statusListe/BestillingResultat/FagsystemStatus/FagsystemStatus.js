@@ -13,7 +13,13 @@ export default function FagsystemStatus({ bestilling }) {
 	const iconType = statuser => {
 		// Alle er OK
 		if (statuser.every(status => status.melding === 'OK')) return iconTypes.suksess
-
+		// Denne statusmeldingen gir kun avvik
+		else if (
+			statuser.some(
+				status => status.melding === 'InnvandringOpprettingsmelding: STATUS: TIDSAVBRUDD'
+			)
+		)
+			return iconTypes.avvik
 		// Avvik eller Error
 		return statuser.some(status => status.melding === 'OK') ? iconTypes.avvik : iconTypes.feil
 	}

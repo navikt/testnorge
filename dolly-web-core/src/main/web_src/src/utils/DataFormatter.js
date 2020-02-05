@@ -1,12 +1,11 @@
-import dateFnsFormat from 'date-fns/format'
-import dateFnsParse from 'date-fns/parse'
+import { format, isDate } from 'date-fns'
 import _startCase from 'lodash/startCase'
 import _capitalize from 'lodash/capitalize'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 
-import { defaultDateFormat } from '~/components/fields/Datepicker/DateValidation'
-import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
+export const defaultDateFormat = 'dd.MM.yyyy'
+import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 const Formatters = {}
 
@@ -20,7 +19,9 @@ Formatters.formatAlder = (alder, dodsdato) => {
 Formatters.formatDate = date => {
 	if (!date) return date
 	if (date.length == 10) return date
-	return dateFnsFormat(date, defaultDateFormat, new Date())
+	// Parse date if not date
+	if (!isDate(date)) date = new Date(date)
+	return format(date, defaultDateFormat)
 }
 
 // Format string to Date format
@@ -39,28 +40,17 @@ Formatters.formatStringDates = date => {
 	return `${dateArray[2]}.${dateArray[1]}.${dateArray[0]}`
 }
 
-Formatters.decamelize = (str, separator) => {
-	separator = typeof separator === 'undefined' ? '_' : separator
-
-	const res = str
-		.replace(/([a-z\d])([A-Z])/g, '$1' + separator + '$2')
-		.replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1' + separator + '$2')
-		.toLowerCase()
-
-	return res.charAt(0).toUpperCase() + res.slice(1)
+Formatters.kjonn = (kjonn, alder) => {
+	return Formatters.kjonnToString(kjonn, alder < 18)
 }
 
-Formatters.kjonnToString = (kjonn = '') => {
+Formatters.kjonnToString = (kjonn = '', barn = false) => {
 	if (!kjonn) return kjonn
 	const _kjonn = kjonn.toLowerCase()
 	if (!['m', 'k'].includes(_kjonn)) return 'UDEFINERT'
-	return _kjonn === 'm' ? 'MANN' : 'KVINNE'
-}
 
-Formatters.kjonnToStringBarn = (kjonn = '') => {
-	const _kjonn = kjonn.toLowerCase()
-	if (!['m', 'k'].includes(_kjonn)) return 'UDEFINERT'
-	return _kjonn === 'm' ? 'GUTT' : 'JENTE'
+	if (barn) return _kjonn === 'm' ? 'GUTT' : 'JENTE'
+	return _kjonn === 'm' ? 'MANN' : 'KVINNE'
 }
 
 Formatters.adressetypeToString = adressetype => {
@@ -75,10 +65,6 @@ Formatters.arrayToString = (array, separator = ',') => {
 			idx === 0 ? '' : ' '
 		}${nextString.toUpperCase()}`
 	}, '')
-}
-Formatters.camelCaseToLabel = camelCase => {
-	if (!camelCase) return null
-	return _capitalize(_startCase(camelCase))
 }
 
 Formatters.uppercaseAndUnderscoreToCapitalized = value => {
@@ -95,13 +81,8 @@ Formatters.allCapsToCapitalized = value => {
 	return _capitalize(value)
 }
 
-Formatters.kodeverkLabel = kodeverk => {
-	if (!kodeverk) return null
-	return kodeverk.substring(kodeverk.indexOf('-') + 1)
-}
-
 Formatters.oversettBoolean = value => {
-	if (value === null) return null
+	if (_isNil(value)) return value
 	return value === true || value === 'true'
 		? 'Ja'
 		: value === false || value === 'false'
@@ -109,107 +90,49 @@ Formatters.oversettBoolean = value => {
 		: value
 }
 
-Formatters.booleanToServicebehov = value => {
-	return value === true ? 'Med servicebehov' : value === false ? 'Uten servicebehov' : value
-}
-
-Formatters.servicebehovKodeTilBeskrivelse = value => {
-	if (!value) return null
-	let beskrivelse = value
-	switch (value) {
-		case 'IKVAL':
-			beskrivelse = 'IKVAL - Standardinnsats'
-			break
-		case 'BFORM':
-			beskrivelse = 'BFORM - Situasjonsbestemt innsats'
-			break
-		case 'BATT':
-			beskrivelse = 'BATT - Spesielt tilpasset innsats'
-			break
-		case 'VARIG':
-			beskrivelse = 'VARIG - Varig tilpasset innsats'
-			break
-	}
-	return beskrivelse
-}
-
 Formatters.gtApiKodeverkId = gtType => {
 	if (!gtType) return null
 
-	let gtApiKodeverkId = ''
 	switch (gtType) {
 		case 'KNR':
-			gtApiKodeverkId = 'Kommuner'
-			break
+			return 'Kommuner'
 		case 'BYDEL':
-			gtApiKodeverkId = 'Bydeler'
-			break
+			return 'Bydeler'
 		case 'LAND':
-			gtApiKodeverkId = 'Landkoder'
-			break
+			return 'Landkoder'
+		default:
+			return ''
 	}
-
-	return gtApiKodeverkId
 }
 
 Formatters.gtTypeLabel = gtType => {
 	if (!gtType) return null
 
-	let gtTypeLabel = ''
 	switch (gtType) {
 		case 'KNR':
-			gtTypeLabel = 'Kommune'
-			break
+			return 'Kommune'
 		case 'BYDEL':
-			gtTypeLabel = 'Bydel'
-			break
+			return 'Bydel'
 		case 'LAND':
-			gtTypeLabel = 'Land'
-			break
+			return 'Land'
+		default:
+			return ''
 	}
-
-	return gtTypeLabel
 }
 
-Formatters.sort2DArray = (array, i) => {
-	// i er indexen av verdi som man ønsker å sortere på
-	return array.sort((a, b) => {
-		var lengde = Formatters.getIdLengde(a[i])
-		var aSub = a[i].substr(0, lengde)
-		var bSub = b[i].substr(0, lengde)
-		return bSub - aSub
-	})
-}
-
-Formatters.flat2DArray = (array, i) => {
-	if (!array) return null
-
-	array.forEach(person => {
-		if (person[i].includes(',')) {
-			const arrayValues = person[i].split(',')
-			person[i] = Math.max(...arrayValues).toString() + ' ...'
-		}
-	})
-	return array
-}
-
-Formatters.getIdLengde = id => {
-	if (!id) return null
-
-	var forste = id.split(' ')
-	return forste[0].length
-}
-
-Formatters.idUtenEllipse = id => {
-	if (!id) return null
-
-	var lengde = Formatters.getIdLengde(id)
-	return id.substr(0, lengde)
-}
-
-Formatters.commaToSpace = streng => {
-	if (!streng) return null
-	return streng.split(',').join(', ')
+/**
+ * Returns a random integer between min (inclusive) and max (inclusive).
+ * The value is no lower than min (or the next integer greater than min
+ * if min isn't an integer) and no greater than max (or the next integer
+ * lower than max if max isn't an integer).
+ * Using Math.round() will give you a non-uniform distribution!
+ *
+ * https://stackoverflow.com/a/1527820/3336235
+ */
+Formatters.randomIntInRange = (min, max) => {
+	min = Math.ceil(min)
+	max = Math.floor(max)
+	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 Formatters.showLabel = (optionsGruppe, value) => {
@@ -219,11 +142,18 @@ Formatters.showLabel = (optionsGruppe, value) => {
 	optionsGruppe.includes('partner') && (copyOptionsGruppe = optionsGruppe.replace('partner_', ''))
 	optionsGruppe.includes('barn') && (copyOptionsGruppe = optionsGruppe.replace('barn_', ''))
 
-	const obj = SelectOptionsManager(copyOptionsGruppe).filter(options => options.value === value)
+	const obj = Options(copyOptionsGruppe).filter(options => options.value === value)
 
 	if (_get(obj, 'label') || _get(obj, '[0].label')) {
 		return obj.label || obj[0].label
 	}
 }
 
+Formatters.getYearRangeOptions = (start, stop) => {
+	let years = []
+	for (let i = start; i <= stop; i++) {
+		years.push({ value: i, label: i.toString() })
+	}
+	return years.reverse()
+}
 export default Formatters

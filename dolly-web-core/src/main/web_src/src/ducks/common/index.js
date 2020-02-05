@@ -1,25 +1,18 @@
 import { LOCATION_CHANGE } from 'connected-react-router'
-import success from '~/utils/SuccessAction'
-import { createGruppe, deleteGruppe } from '~/ducks/gruppe'
-import { actions as teamActions } from '~/ducks/teams'
+import { onSuccess } from '~/ducks/utils/requestActions'
+import { actions } from '~/ducks/gruppe'
 import { actions as bestillingActions } from '~/ducks/bestilling'
 
 export const redirectReducer = (state = null, action) => {
 	switch (action.type) {
-		case success(createGruppe):
+		case onSuccess(actions.create):
 			return `/gruppe/${action.payload.data.id}`
-		case success(teamActions.api.create):
-			return `/team/${action.payload.data.id}`
-		case bestillingActions.abortBestilling.toString():
-			return `/gruppe/${action.payload}`
-		case success(bestillingActions.postBestilling):
+		case onSuccess(bestillingActions.postBestilling):
 			return `/gruppe/${action.payload.data.gruppeId}`
-		case success(bestillingActions.postBestillingFraEksisterendeIdenter):
+		case onSuccess(bestillingActions.postBestillingFraEksisterendeIdenter):
 			return `/gruppe/${action.payload.data.gruppeId}`
-		case success(deleteGruppe):
+		case onSuccess(actions.remove):
 			return '/'
-		case success(teamActions.api.delete):
-			return '/team'
 		case LOCATION_CHANGE:
 		default:
 			return null

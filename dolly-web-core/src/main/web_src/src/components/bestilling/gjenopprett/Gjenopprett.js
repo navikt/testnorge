@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react'
 import * as yup from 'yup'
-import { Formik, FieldArray } from 'formik'
-import Knapp from 'nav-frontend-knapper'
+import { Formik } from 'formik'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
 import DollyModal from '~/components/ui/modal/DollyModal'
-import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
+import { MiljoVelger } from '~/components/miljoVelger/MiljoVelger'
 import Formatters from '~/utils/DataFormatter'
-import StaticValue from '~/components/fields/StaticValue/StaticValue'
+import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
 export default function GjenopprettBestilling(props) {
 	const { bestilling, closeModal } = props
@@ -28,7 +28,7 @@ export default function GjenopprettBestilling(props) {
 		<DollyModal isOpen={true} closeModal={closeModal}>
 			<div style={{ paddingLeft: 20, paddingRight: 20 }}>
 				<h1>Bestilling #{bestilling.id}</h1>
-				<StaticValue header="Bestilt miljø" value={Formatters.arrayToString(environments)} />
+				<TitleValue title="Bestilt miljø" value={Formatters.arrayToString(environments)} />
 				<br />
 				<hr />
 			</div>
@@ -41,23 +41,18 @@ export default function GjenopprettBestilling(props) {
 				render={formikProps => {
 					return (
 						<Fragment>
-							<FieldArray
-								name="environments"
-								render={arrayHelpers => (
-									<MiljoVelgerConnector
-										heading={'Velg miljø å gjenopprette i'}
-										arrayHelpers={arrayHelpers}
-										arrayValues={formikProps.values.environments}
-									/>
-								)}
+							<MiljoVelger
+								bestillingsdata={bestilling.bestilling}
+								heading="Velg miljø å gjenopprette i"
 							/>
+
 							<div className="dollymodal_buttons">
-								<Knapp autoFocus type="standard" onClick={closeModal}>
+								<NavButton autoFocus onClick={closeModal}>
 									Avbryt
-								</Knapp>
-								<Knapp type="hoved" onClick={formikProps.submitForm}>
+								</NavButton>
+								<NavButton type="hoved" onClick={formikProps.submitForm}>
 									Utfør
-								</Knapp>
+								</NavButton>
 							</div>
 						</Fragment>
 					)

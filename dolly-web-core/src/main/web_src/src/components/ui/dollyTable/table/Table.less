@@ -63,8 +63,12 @@
 	.col95 {
 		width: 95%;
 	}
+	.centerItem {
+		justify-content: center;
+	}
 
-	@rowPadding: 10px 10px 10px 20px;
+	@rowPadding: 10px 10px 10px 10px;
+	@iconWidth: 60px;
 
 	.dot-header {
 		display: flex;
@@ -79,6 +83,10 @@
 			color: @color-nav-black;
 			font-weight: bold;
 			font-size: 16px;
+
+			&.dot-icon {
+				width: @iconWidth;
+			}
 
 			&.sortable {
 				display: flex;
@@ -98,12 +106,16 @@
 		flex-direction: column;
 		background-color: white;
 		margin-bottom: 10px;
-		min-height: 50px;
 		border: 1px solid white; // prevent jumping
 		border: 1px solid @color-bg-grey-border;
 
 		&.expanded {
 			border: 1px solid @color-focus;
+			box-shadow: 10px 10px 10px -5px rgba(0, 0, 0, 0.3);
+
+			.dot-body-row-columns {
+				box-shadow: 0px 1px 4px #ccc;
+			}
 		}
 
 		&-columns.clickable {
@@ -113,13 +125,25 @@
 		&-columns {
 			display: flex;
 			flex-grow: 1;
-			align-items: center;
-			padding: @rowPadding;
+			padding-right: 10px;
+			min-height: 50px;
 
-			.dot-column:last-child {
-				justify-content: flex-end;
+			.dot-column {
 				display: flex;
-				padding-right: 5px;
+				align-items: center;
+
+				&:last-child {
+					justify-content: flex-end;
+				}
+			}
+
+			.dot-icon-wrapper {
+				background-color: #e9ecef;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: @iconWidth;
+				margin-right: 10px;
 			}
 		}
 
@@ -134,7 +158,7 @@
 		}
 
 		&-expandcomponent {
-			margin: 0px 20px 10px;
+			margin: 10px 20px;
 		}
 
 		&:hover {

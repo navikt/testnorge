@@ -1,5 +1,5 @@
 import React from 'react'
-import Header from '~/components/bestilling/sammendrag/header/Header'
+import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import Formatters from '~/utils/DataFormatter'
 import FagsystemStatus from './fagsystemStatus/FagsystemStatus'
 import ApiFeilmelding from '~/components/ui/apiFeilmelding/ApiFeilmelding'
@@ -43,7 +43,7 @@ export default function MiljoeStatus({ bestilling }) {
 
 	return (
 		<div>
-			<Header label="Bestillingsstatus" />
+			<SubOverskrift label="Bestillingsstatus" />
 			{bestilling.feil && (
 				<div className="feilmelding_generell">
 					<p>{tekst}</p>

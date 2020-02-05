@@ -1,11 +1,7 @@
 import Request from '~/service/services/Request'
 import Endpoints from './DollyEndpoints'
-import Utils from './Utils'
 
 export default {
-	// UTILS
-	Utils,
-
 	// Grupper
 	getGrupper() {
 		return Request.get(Endpoints.gruppe())
@@ -17,10 +13,6 @@ export default {
 
 	getGruppeByUserId(userId) {
 		return Request.get(Endpoints.gruppeByUser(userId))
-	},
-
-	getGruppeByTeamId(teamId) {
-		return Request.get(Endpoints.gruppeByTeam(teamId))
 	},
 
 	createGruppe(data) {
@@ -35,10 +27,6 @@ export default {
 		return Request.delete(Endpoints.gruppeById(gruppeId))
 	},
 
-	updateGruppeAttributter(gruppeId, data) {
-		return Request.put(Endpoints.gruppeAttributter(gruppeId), data)
-	},
-
 	createBestilling(gruppeId, data) {
 		return Request.post(Endpoints.gruppeBestilling(gruppeId), data)
 	},
@@ -47,37 +35,17 @@ export default {
 		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
 	},
 
-	// Team
-	getTeams() {
-		return Request.get(Endpoints.team())
+	// Ident
+	updateIdentBeskrivelse(ident, beskrivelse) {
+		return Request.put(Endpoints.identBeskrivelse(ident), { beskrivelse })
 	},
 
-	getTeamsByUserId(userId) {
-		return Request.get(Endpoints.teamByUser(userId))
+	updateIdentIbruk(ident, ibruk) {
+		return Request.put(Endpoints.identIbruk(ident, ibruk))
 	},
 
-	getTeamById(teamId) {
-		return Request.get(Endpoints.teamById(teamId))
-	},
-
-	createTeam(data) {
-		return Request.post(Endpoints.team(), data)
-	},
-
-	updateTeam(teamId, data) {
-		return Request.put(Endpoints.teamById(teamId), data)
-	},
-
-	deleteTeam(teamId) {
-		return Request.delete(Endpoints.teamById(teamId))
-	},
-
-	addTeamMedlemmer(teamId, userArray) {
-		return Request.put(Endpoints.teamAddMember(teamId), userArray)
-	},
-
-	removeTeamMedlemmer(teamId, user) {
-		return Request.delete(Endpoints.teamRemoveMember(teamId, user))
+	createRelasjon(ident, data) {
+		return Request.put(Endpoints.kobleIdenter(ident), data)
 	},
 
 	// Bruker
@@ -135,8 +103,8 @@ export default {
 		return Request.delete(Endpoints.removeBestilling(bestillingId))
 	},
 
-	deleteTestIdent(gruppeId, identId) {
-		return Request.delete(Endpoints.removeTestIdent(gruppeId, identId))
+	slettPerson(gruppeId, identId) {
+		return Request.delete(Endpoints.slettPerson(gruppeId, identId))
 	},
 
 	//Oppslag
@@ -144,7 +112,7 @@ export default {
 		return Request.get(Endpoints.enhetByTknr(tknr))
 	},
 
-	getPersonFraPersonoppslag(ident) {
+	getPersonFraPdlperson(ident) {
 		return Request.get(Endpoints.personoppslag(ident))
 	},
 

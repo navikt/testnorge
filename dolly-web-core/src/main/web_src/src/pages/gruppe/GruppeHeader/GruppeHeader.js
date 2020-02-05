@@ -1,53 +1,50 @@
 import React, { Fragment } from 'react'
+import Button from '~/components/ui/button/Button'
 import useBoolean from '~/utils/hooks/useBoolean'
-import Loading from '~/components/ui/loading/Loading'
-import Overskrift from '~/components/ui/overskrift/Overskrift'
-import GruppeDetaljer from '~/pages/gruppe/GruppeDetaljer/GruppeDetaljer'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
-import ConfirmTooltip from '~/components/ui/confirmTooltip/ConfirmTooltip'
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
-import EksporterExcel from '~/pages/gruppe/EksporterExcel/EksporterExcel'
+import { EksporterCSV } from '~/pages/gruppe/EksporterCSV/EksporterCSV'
+import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
+import { Header } from '~/components/ui/header/Header'
+import Formatters from '~/utils/DataFormatter'
 
 import './GruppeHeader.less'
 
-export default function GruppeHeader({ gruppe, isDeletingGruppe, deleteGruppe }) {
+export default function GruppeHeader({ gruppe, identArray, isDeletingGruppe, deleteGruppe }) {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
-
-	const groupActions = []
-
-	// Vise redigeringsknapp eller stjerne
-	if (gruppe.erMedlemAvTeamSomEierGruppe) {
-		groupActions.push({
-			icon: 'edit',
-			label: 'REDIGER',
-			onClick: visRediger
-		})
-	}
 
 	return (
 		<Fragment>
-			<div className="header-valg">
-				<Overskrift label={gruppe.navn} actions={groupActions}>
-					{isDeletingGruppe ? (
-						<Loading label="Sletter gruppe" panel />
-					) : (
-						<ConfirmTooltip
-							label="SLETT"
-							className="flexbox--align-center"
-							message="Vil du slette denne testdatagruppen?"
-							onClick={deleteGruppe}
-						/>
-					)}
-					{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
-				</Overskrift>
-				<div className="hoyre">
-					<EksporterExcel identer={gruppe.identer} gruppeId={gruppe.id} />
+			<h1>{gruppe.navn}</h1>
+			<Header className="gruppe-header" icon="group">
+				<div className="flexbox">
+					<Header.TitleValue title="Eier" value={gruppe.opprettetAvNavIdent} />
+					<Header.TitleValue title="Antall personer" value={identArray.length} />
+					<Header.TitleValue
+						title="Sist endret"
+						value={Formatters.formatStringDates(gruppe.datoEndret)}
+					/>
+					<Header.TitleValue
+						title="Antall brukt"
+						value={identArray.map(p => p.ibruk).filter(Boolean).length}
+					/>
+					<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
 				</div>
-			</div>
+				<div className="gruppe-header_actions">
+					{gruppe.erEierAvGruppe && (
+						<Button kind="edit" onClick={visRediger}>
+							REDIGER
+						</Button>
+					)}
+					<SlettButton action={deleteGruppe} loading={isDeletingGruppe}>
+						Er du sikker på at du vil slette denne gruppen?
+					</SlettButton>
+					<EksporterCSV identer={identArray} gruppeId={gruppe.id} />
+					{!gruppe.erEierAvGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
+				</div>
+			</Header>
 
 			{visRedigerState && <RedigerGruppeConnector gruppe={gruppe} onCancel={skjulRediger} />}
-
-			<GruppeDetaljer gruppe={gruppe} />
 		</Fragment>
 	)
 }

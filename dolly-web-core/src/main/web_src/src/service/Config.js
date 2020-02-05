@@ -2,14 +2,9 @@ import { DollyApi } from './Api'
 
 const ConfigService = {
 	fetchConfig() {
-		return DollyApi.getConfig()
-			.then(res => {
-				window.dollyConfig = res.data
-			})
-			.catch(err => {
-				console.warn('Dolly config er ikke satt!')
-				return err
-			})
+		return DollyApi.getConfig().then(res => {
+			window.dollyConfig = res.data
+		})
 	},
 	verifyConfig() {
 		return Boolean(window.dollyConfig)
