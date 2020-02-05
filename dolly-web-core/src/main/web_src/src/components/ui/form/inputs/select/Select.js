@@ -13,13 +13,14 @@ import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 import './Select.less'
 
 export const Select = ({
+	id,
 	name,
 	value,
 	onChange,
 	onBlur,
 	className,
 	classNamePrefix = 'select',
-	isDisabled = false,
+	disabled = false,
 	isLoading = false,
 	isSearchable = true,
 	isClearable = true,
@@ -43,13 +44,13 @@ export const Select = ({
 			value={_value}
 			options={options}
 			name={name}
-			inputId={name}
+			inputId={id || name}
 			onChange={onChange}
 			onBlur={onBlur}
 			placeholder={placeholder}
 			className={cn('basic-single', className)}
 			classNamePrefix={classNamePrefix}
-			isDisabled={isDisabled}
+			isDisabled={disabled}
 			isSearchable={isSearchable}
 			isLoading={isLoading}
 			isClearable={isClearable}
@@ -66,7 +67,7 @@ export const SelectMedKodeverk = ({ kodeverk, ...rest }) => (
 			<Select
 				{...rest}
 				isLoading={!kodeverkVerdier}
-				isDisabled={!kodeverkVerdier}
+				disabled={!kodeverkVerdier}
 				options={kodeverkVerdier}
 			/>
 		)}
