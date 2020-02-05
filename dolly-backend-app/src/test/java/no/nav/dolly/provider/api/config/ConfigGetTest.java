@@ -4,12 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpMethod.GET;
 
-import no.nav.dolly.domain.resultset.RsDollyProps;
-import no.nav.dolly.provider.RestTestBase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.annotation.DirtiesContext;
 
+import no.nav.dolly.domain.resultset.RsDollyProps;
+import no.nav.dolly.provider.RestTestBase;
+
+@DirtiesContext
 @DisplayName("GET /api/v1/config")
 class ConfigGetTest extends RestTestBase {
 
