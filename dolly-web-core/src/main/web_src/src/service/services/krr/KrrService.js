@@ -2,7 +2,7 @@ import config from '~/config'
 import Request from '~/service/services/Request'
 import ConfigService from '~/service/Config'
 
-const getKrrBaseUrl = () => ConfigService.getDatesourceUrl('krr') || config.services.krrStubUrl
+const getKrrBaseUrl = () => ConfigService.getDatesourceUrl('krr')
 const getKrrUrl = () => `${getKrrBaseUrl()}/api/v1`
 
 export default {

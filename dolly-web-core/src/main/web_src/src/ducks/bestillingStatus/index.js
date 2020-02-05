@@ -1,3 +1,4 @@
+import { LOCATION_CHANGE } from 'connected-react-router'
 import { createActions } from 'redux-actions'
 import _isNil from 'lodash/isNil'
 import _mapValues from 'lodash/mapValues'
@@ -27,6 +28,9 @@ const initialState = { ny: [], byId: {} }
 
 export default handleActions(
 	{
+		[LOCATION_CHANGE](state, action) {
+			return initialState
+		},
 		[onSuccess(getBestillinger)](state, action) {
 			const { data } = action.payload
 			const nyeBestillinger = data
