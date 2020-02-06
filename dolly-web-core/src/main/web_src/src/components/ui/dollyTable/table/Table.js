@@ -27,10 +27,13 @@ const getIconType = (iconItem, row) => {
 }
 
 export default function Table({ data, iconItem, columns, onRowClick, onExpand }) {
+	const headerClass = cn('dot-header', {
+		'has-icon': Boolean(iconItem)
+	})
+
 	return (
 		<div className="dot">
-			<div className="dot-header">
-				{iconItem && <Column className="dot-icon" />}
+			<div className={headerClass}>
 				{columns.map((cell, idx) => (
 					<Column key={idx} width={cell.width} value={cell.text} />
 				))}
