@@ -1,6 +1,11 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
+import static java.util.Objects.isNull;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -14,6 +19,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsSimpleRelasjoner {
 
     @ApiModelProperty(
@@ -33,4 +39,18 @@ public class RsSimpleRelasjoner {
             value = "Liste av barn: mine/våre/dine i forhold til hovedperson og angitt partner"
     )
     private List<RsBarnRequest> barn;
+
+    public List<RsPartnerRequest> getPartnere() {
+        if (isNull(partnere)) {
+            partnere = new ArrayList();
+        }
+        return partnere;
+    }
+
+    public List<RsBarnRequest> getBarn() {
+        if (isNull(barn)) {
+            barn = new ArrayList();
+        }
+        return barn;
+    }
 }
