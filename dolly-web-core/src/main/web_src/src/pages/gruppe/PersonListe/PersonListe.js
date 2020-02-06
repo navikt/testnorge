@@ -36,13 +36,13 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 	const columns = [
 		{
 			text: 'Ident',
-			width: '15',
+			width: '20',
 			dataField: 'identNr',
 			unique: true
 		},
 		{
 			text: 'Navn',
-			width: '35',
+			width: '30',
 			dataField: 'navn'
 		},
 		{
