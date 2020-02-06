@@ -24,6 +24,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.annotation.DirtiesContext;
 
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -33,6 +34,7 @@ import no.nav.dolly.domain.resultset.RsOpenAmResponse;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.service.OpenAmService;
 
+@DirtiesContext
 @RunWith(MockitoJUnitRunner.class)
 public class OpenAmControllerTest {
 

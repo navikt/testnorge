@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.annotation.DirtiesContext;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
@@ -23,6 +24,7 @@ import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.MalBestillingService;
 
+@DirtiesContext
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingControllerTest {
 

@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 
 import no.nav.dolly.consumer.aareg.AaregConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
@@ -27,6 +28,7 @@ import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.tjenester.kodeverk.api.v1.Betydning;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
+@DirtiesContext
 @RunWith(MockitoJUnitRunner.class)
 public class OppslagControllerTest {
 
