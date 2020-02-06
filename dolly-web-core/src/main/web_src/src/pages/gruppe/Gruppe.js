@@ -49,6 +49,9 @@ export default function Gruppe({
 		if (visning === VISNING_BESTILLING) return 'Søk i bestillinger'
 		return 'Søk etter personer'
 	}
+	const countUnique = iterable => {
+		return new Set(iterable).size
+	}
 
 	return (
 		<div className="gruppe-container">
@@ -76,7 +79,7 @@ export default function Gruppe({
 							size={13}
 							kind={visning === VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 						/>
-						{`Bestillinger (${identArray.map(b => b.bestillingId).flat().length})`}
+						{`Bestillinger (${countUnique(identArray.map(b => b.bestillingId).flat())})`}
 					</ToggleKnapp>
 				</ToggleGruppe>
 
