@@ -1,4 +1,5 @@
 import React from 'react'
+import _get from 'lodash/get'
 import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'
@@ -24,12 +25,12 @@ export const Familierelasjoner = ({ formikBag }) => (
 		>
 			{/* Fiks under fjernes når barn: null og partere: null blir fikset backend. */}
 			{/* De vil være huket av i steg 1 selv om de ikke har noe info (null), så det må fikses */}
-			{formikBag.values.tpsf.relasjoner && formikBag.values.tpsf.relasjoner.partnere && (
+			{_get(formikBag, 'values.tpsf.relasjoner.partnere') && (
 				<Kategori title="Partnere" vis="tpsf.relasjoner.partnere">
 					<Partnere formikBag={formikBag} />
 				</Kategori>
 			)}
-			{formikBag.values.tpsf.relasjoner && formikBag.values.tpsf.relasjoner.barn && (
+			{_get(formikBag, 'values.tpsf.relasjoner.barn') && (
 				<Kategori title="Barn" vis="tpsf.relasjoner.barn">
 					<Barn formikBag={formikBag} />
 				</Kategori>
