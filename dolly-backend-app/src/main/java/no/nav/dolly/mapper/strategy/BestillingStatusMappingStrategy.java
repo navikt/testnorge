@@ -1,6 +1,5 @@
 package no.nav.dolly.mapper.strategy;
 
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektstubStatusMapper.buildInntektstubStatusMap;
@@ -11,10 +10,8 @@ import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunSt
 import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 
-import java.io.IOException;
 import java.util.Arrays;
 import org.springframework.stereotype.Component;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +21,6 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Slf4j
@@ -32,14 +28,14 @@ import no.nav.dolly.mapper.MappingStrategy;
 @RequiredArgsConstructor
 public class BestillingStatusMappingStrategy implements MappingStrategy {
 
-    private final ObjectMapper objectMapper;
+    private final JsonBestillingMapper jsonBestillingMapper;
 
     @Override public void register(MapperFactory factory) {
         factory.classMap(Bestilling.class, RsBestillingStatus.class)
                 .customize(new CustomMapper<Bestilling, RsBestillingStatus>() {
                     @Override public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
 
-                        RsDollyBestillingRequest bestillingRequest = mapBestillingRequest(bestilling.getBestKriterier());
+                        RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper.mapBestillingRequest(bestilling.getBestKriterier());
                         bestillingStatus.setAntallLevert(bestilling.getProgresser().size());
                         bestillingStatus.setEnvironments(Arrays.asList(bestilling.getMiljoer().split(",")));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
@@ -61,26 +57,8 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .inntektstub(bestillingRequest.getInntektstub())
                                 .sigrunstub(bestillingRequest.getSigrunstub())
                                 .udistub(bestillingRequest.getUdistub())
-                                .tpsf(mapTpsfRequest(bestilling.getTpsfKriterier()))
+                                .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .build());
-                    }
-
-                    private RsDollyBestillingRequest mapBestillingRequest(String jsonInput) {
-                        try {
-                            return objectMapper.readValue(nonNull(jsonInput) ? jsonInput : "{}", RsDollyBestillingRequest.class);
-                        } catch (IOException e) {
-                            log.error("Mapping av JSON fra database bestKriterier feilet. {}", e.getMessage(), e);
-                        }
-                        return new RsDollyBestillingRequest();
-                    }
-
-                    private RsTpsfUtvidetBestilling mapTpsfRequest(String jsonInput) {
-                        try {
-                            return objectMapper.readValue(nonNull(jsonInput) ? jsonInput : "{}", RsTpsfUtvidetBestilling.class);
-                        } catch (IOException e) {
-                            log.error("Mapping av JSON fra database bestKriterier feilet. {}", e.getMessage(), e);
-                        }
-                        return new RsTpsfUtvidetBestilling();
                     }
                 })
                 .byDefault()
