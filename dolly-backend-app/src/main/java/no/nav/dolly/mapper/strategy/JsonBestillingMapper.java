@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
+import no.nav.dolly.domain.resultset.tpsf.adresse.RsGateadresse;
 
 @Slf4j
 @Component
@@ -24,6 +25,10 @@ public class JsonBestillingMapper {
             if (nonNull(tpsfUtvidetBestilling.getRelasjoner()) && nonNull(tpsfUtvidetBestilling.getRelasjoner().getPartner())) {
                 tpsfUtvidetBestilling.getRelasjoner().getPartnere().add(tpsfUtvidetBestilling.getRelasjoner().getPartner());
                 tpsfUtvidetBestilling.getRelasjoner().setPartner(null);
+            }
+            if (nonNull(tpsfUtvidetBestilling.getBoadresse())) {
+                tpsfUtvidetBestilling.getBoadresse().setAdressetype(
+                        tpsfUtvidetBestilling.getBoadresse() instanceof RsGateadresse ? "GATE" : "MATR");
             }
             return tpsfUtvidetBestilling;
         } catch (IOException e) {
