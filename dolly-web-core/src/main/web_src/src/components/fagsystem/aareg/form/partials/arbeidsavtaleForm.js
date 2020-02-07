@@ -1,20 +1,29 @@
-import React from 'react'
+import React, { useState } from 'react'
 import _get from 'lodash/get'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
+import HjelpeTekst from 'nav-frontend-hjelpetekst'
+
+const avtaltArbeidsTimerPerUke = 'avtaltArbeidsTimerPerUke'
+const antallKonverterteTimer = 'antallKonverterteTimer'
 
 export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 	const arbeidsavtalePath = `${path}.arbeidsavtale`
 	const arbeidsavtale = _get(formikBag.values, arbeidsavtalePath)
 
-	const harKonverterteTimer = arbeidsavtale.antallKonverterteTimer
-	const harArbTimerPerUke = arbeidsavtale.avtaltArbeidstimerPerUke
+	const [visning, setVisning] = useState(avtaltArbeidsTimerPerUke)
 
-	// TODO: Denne må løses. Kan feks være en toggle
+	const byttVisning = event => setVisning(event.target.value)
 
-	// Kun to av feltene (stillingsprosent, antall konverterte timer, avtalte timer per uke) kan settes pr arbeidsforhold
-	const infotekst = 'Antall konverterte timer og avtalte timer per uke kan ikke være satt samtidig.'
+	arbeidsavtale.avtaltArbeidstimerPerUke != '' && visning === 'avtaltArbeidsTimerPerUke'
+		? (arbeidsavtale.antallKonverterteTimer = '')
+		: (arbeidsavtale.avtaltArbeidstimerPerUke = '')
+
+	arbeidsavtale.antallKonverterteTimer != '' && visning === 'antallKonverterteTimer'
+		? (arbeidsavtale.avtaltArbeidstimerPerUke = '')
+		: (arbeidsavtale.antallKonverterteTimer = '')
 
 	return (
 		<div>
@@ -43,21 +52,34 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 					size="xxlarge"
 					isClearable={false}
 				/>
+				<div className="toggle--wrapper">
+					<ToggleGruppe onChange={byttVisning} name="timerToggle">
+						<ToggleKnapp
+							value={avtaltArbeidsTimerPerUke}
+							checked={visning === avtaltArbeidsTimerPerUke}
+						>
+							Avtalte timer per uke
+						</ToggleKnapp>
+						<ToggleKnapp
+							value={antallKonverterteTimer}
+							checked={visning === antallKonverterteTimer}
+						>
+							Antall konverterte timer
+						</ToggleKnapp>
+					</ToggleGruppe>
+				</div>
+				<HjelpeTekst>
+					Antall konverterte timer og avtalte timer per uke kan ikke være satt samtidig. Ved å bytte
+				</HjelpeTekst>
 				<FormikTextInput
-					name={`${arbeidsavtalePath}.antallKonverterteTimer`}
-					label="Antall konverterte timer"
+					name={
+						visning === 'avtaltArbeidsTimerPerUke'
+							? `${arbeidsavtalePath}.avtaltArbeidstimerPerUke`
+							: `${arbeidsavtalePath}.antallKonverterteTimer`
+					}
+					size="xxlarge"
 					type="number"
-					disabled={harArbTimerPerUke}
-					fastfield={false}
-					title={harArbTimerPerUke ? infotekst : undefined}
-				/>
-				<FormikTextInput
-					name={`${arbeidsavtalePath}.avtaltArbeidstimerPerUke`}
-					label="Avtalte timer per uke"
-					type="number"
-					disabled={harKonverterteTimer}
-					fastfield={false}
-					title={harKonverterteTimer ? infotekst : undefined}
+					isclearable="true"
 				/>
 			</div>
 		</div>
