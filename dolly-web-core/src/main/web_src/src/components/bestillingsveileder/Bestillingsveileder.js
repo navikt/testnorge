@@ -1,8 +1,7 @@
 import React from 'react'
 import _set from 'lodash/fp/set'
 import _get from 'lodash/get'
-import Formatter from '~/utils/DataFormatter'
-import { Header } from '~/components/ui/header/Header'
+import { BestillingsveilederHeader } from './BestillingsveilederHeader'
 import { StegVelger } from './StegVelger'
 import { Steg1 } from './steg/steg1/Steg1'
 import { Steg2 } from './steg/Steg2'
@@ -51,23 +50,12 @@ export const Bestillingsveileder = ({ location, sendBestilling }) => {
 			<StegVelger steps={steps} initialValues={initialValues} onSubmit={handleSubmit}>
 				{(CurrentStep, formikBag, stateModifier) => (
 					<React.Fragment>
-						<Header>
-							<div className="flexbox">
-								<Header.TitleValue
-									title="Antall"
-									value={`${antall} ${antall > 1 ? 'personer' : 'person'}`}
-								/>
-								{!opprettFraIdenter && <Header.TitleValue title="Identtype" value={identtype} />}
-								{opprettFraIdenter && (
-									<Header.TitleValue
-										title="Opprett fra eksisterende personer"
-										value={Formatter.arrayToString(opprettFraIdenter)}
-									/>
-								)}
-								{mal && <Header.TitleValue title="Basert på mal" value={mal.malNavn} />}
-							</div>
-						</Header>
-
+						<BestillingsveilederHeader
+							antall={antall}
+							identtype={identtype}
+							opprettFraIdenter={opprettFraIdenter}
+							mal={mal}
+						/>
 						<CurrentStep formikBag={formikBag} stateModifier={stateModifier} />
 					</React.Fragment>
 				)}

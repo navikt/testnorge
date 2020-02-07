@@ -67,8 +67,8 @@
 		justify-content: center;
 	}
 
-	@rowPadding: 10px 10px 10px 10px;
-	@iconWidth: 60px;
+	@rowPadding: 10px;
+	@iconWidth: 50px;
 
 	.dot-header {
 		display: flex;
@@ -76,8 +76,11 @@
 		background-color: white;
 		margin-bottom: 10px;
 		padding: @rowPadding;
-
 		border: 1px solid @color-bg-grey-border;
+
+		&.has-icon {
+			padding-left: calc(@rowPadding + @iconWidth);
+		}
 
 		.dot-column {
 			color: @color-nav-black;
@@ -101,7 +104,7 @@
 		}
 	}
 
-	.dot-body-row {
+	.dot-body-row-wrapper {
 		display: flex;
 		flex-direction: column;
 		background-color: white;
@@ -113,57 +116,60 @@
 			border: 1px solid @color-focus;
 			box-shadow: 10px 10px 10px -5px rgba(0, 0, 0, 0.3);
 
-			.dot-body-row-columns {
+			.dot-body-row {
 				box-shadow: 0px 1px 4px #ccc;
 			}
 		}
 
-		&-columns.clickable {
-			cursor: pointer;
-		}
-
-		&-columns {
+		.dot-body-row {
 			display: flex;
-			flex-grow: 1;
-			padding-right: 10px;
-			min-height: 50px;
 
-			.dot-column {
+			&.clickable {
+				cursor: pointer;
+			}
+
+			&-columns {
 				display: flex;
-				align-items: center;
-				margin-right: 20px;
+				flex-grow: 1;
+				padding-right: 10px;
+				min-height: 50px;
 
-				&:last-child {
-					justify-content: flex-end;
+				.dot-column {
+					display: flex;
+					align-items: center;
+
+					&:last-child {
+						justify-content: flex-end;
+					}
+				}
+
+				.dot-icon-wrapper {
+					background-color: #e9ecef;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					width: @iconWidth;
+					margin-right: 10px;
 				}
 			}
 
-			.dot-icon-wrapper {
-				background-color: #e9ecef;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				width: @iconWidth;
-				margin-right: 10px;
+			&-actioncolumn {
+				flex-grow: 1;
+				outline: none;
+				text-align: end;
+
+				.dolly-button svg {
+					vertical-align: middle;
+				}
+			}
+
+			&:hover {
+				border-color: @color-lightblue;
 			}
 		}
+	}
 
-		&-actioncolumn {
-			flex-grow: 1;
-			outline: none;
-			text-align: end;
-
-			.dolly-button svg {
-				vertical-align: middle;
-			}
-		}
-
-		&-expandcomponent {
-			margin: 10px 20px;
-		}
-
-		&:hover {
-			border-color: @color-lightblue;
-		}
+	&-expandcomponent {
+		margin: 10px 20px;
 	}
 }
