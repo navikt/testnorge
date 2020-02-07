@@ -130,18 +130,10 @@
 
 			&-columns {
 				display: flex;
+				align-items: center;
 				flex-grow: 1;
 				padding-right: 10px;
 				min-height: 50px;
-
-				.dot-column {
-					display: flex;
-					align-items: center;
-
-					&:last-child {
-						justify-content: flex-end;
-					}
-				}
 
 				.dot-icon-wrapper {
 					background-color: #e9ecef;
@@ -154,9 +146,9 @@
 			}
 
 			&-actioncolumn {
+				display: flex;
+				justify-content: flex-end;
 				flex-grow: 1;
-				outline: none;
-				text-align: end;
 
 				.dolly-button svg {
 					vertical-align: middle;
