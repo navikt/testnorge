@@ -64,7 +64,6 @@ export const sivilstander = Yup.array().of(
 					return isBefore(thisDate, sivilstander[forholdIndex - 1].sivilstandRegdato)
 				}
 			)
-			.nullable()
 			.required(messages.required)
 	})
 )
@@ -94,7 +93,7 @@ const partnere = Yup.array()
 			boadresse: Yup.object({
 				kommunenr: Yup.string().nullable()
 			}),
-			sivilstander: sivilstander,
+			sivilstander: ifPresent('$tpsf.relasjoner.partnere[0].sivilstander', sivilstander),
 			harFellesAdresse: Yup.boolean()
 		})
 	)
