@@ -164,7 +164,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}
 
 				partnere.forEach((item, j) => {
-					const sivilstander = item.sivilstander.reduce((acc, curr, idx) => {
+					const tidligereSivilstander = _get(item, 'sivilstander', []).reduce((acc, curr, idx) => {
 						if (idx > 0) {
 							acc.push(curr.sivilstand)
 						}
@@ -180,8 +180,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						..._getTpsfBestillingData(item),
 						obj('Fnr/dnr/bost', item.ident),
 						obj('Bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
-						obj('Sivilstand', item.sivilstander[0].sivilstand, 'Sivilstander'),
-						obj('Tidligere sivilstander', Formatters.arrayToString(sivilstander))
+						obj('Sivilstand', _get(item, 'sivilstander[0].sivilstand'), 'Sivilstander'),
+						obj('Tidligere sivilstander', Formatters.arrayToString(tidligereSivilstander))
 					])
 				})
 
