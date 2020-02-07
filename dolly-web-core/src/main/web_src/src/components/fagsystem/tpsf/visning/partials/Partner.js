@@ -20,23 +20,24 @@ export const Partner = ({ data }) => {
 				<TitleValue title="Uten fast bopel" value={data.utenFastBopel && 'Ja'} />
 				{!data.utenFastBopel && <Boadresse boadresse={data.boadresse} visKunAdresse={true} />}
 			</div>
-
-			<DollyFieldArray title="Forhold" data={data.sivilstander} nested>
-				{(forhold, idx) => (
-					<div key={idx} className="person-visning_content">
-						<TitleValue
-							title="Forhold til partner (sivilstand)"
-							kodeverk="Sivilstander"
-							value={forhold.sivilstand}
-							size="medium"
-						/>
-						<TitleValue
-							title="Sivilstand fra dato"
-							value={Formatters.formatDate(forhold.sivilstandRegdato)}
-						/>
-					</div>
-				)}
-			</DollyFieldArray>
+			{data.sivilstander.length > 0 && (
+				<DollyFieldArray title="Forhold" data={data.sivilstander} nested>
+					{(forhold, idx) => (
+						<div key={idx} className="person-visning_content">
+							<TitleValue
+								title="Forhold til partner (sivilstand)"
+								kodeverk="Sivilstander"
+								value={forhold.sivilstand}
+								size="medium"
+							/>
+							<TitleValue
+								title="Sivilstand fra dato"
+								value={Formatters.formatDate(forhold.sivilstandRegdato)}
+							/>
+						</div>
+					)}
+				</DollyFieldArray>
+			)}
 		</React.Fragment>
 	)
 }
