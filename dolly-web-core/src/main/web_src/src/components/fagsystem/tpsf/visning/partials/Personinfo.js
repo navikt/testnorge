@@ -24,7 +24,9 @@ export const Personinfo = ({ data, visTittel = true }) => {
 
 				<TitleValue title="Sivilstand" kodeverk="Sivilstander" value={data.sivilstand} />
 
-				<TitleValue title="Diskresjonskoder" kodeverk="Diskresjonskoder" value={data.spesreg} />
+				{data.spesreg !== 'UFB' && (
+					<TitleValue title="Diskresjonskoder" kodeverk="Diskresjonskoder" value={data.spesreg} />
+				)}
 
 				<TitleValue
 					title="Uten fast bopel"
