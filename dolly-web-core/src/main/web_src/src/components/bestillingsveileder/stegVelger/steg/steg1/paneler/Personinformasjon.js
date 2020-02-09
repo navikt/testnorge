@@ -2,10 +2,7 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { useLocation } from 'react-use'
 import _has from 'lodash/has'
-import {
-	Attributt,
-	AttributtKategori
-} from '~/components/bestillingsveileder/AttributtVelger/Attributt'
+import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 
 export const PersoninformasjonPanel = ({ stateModifier }) => {

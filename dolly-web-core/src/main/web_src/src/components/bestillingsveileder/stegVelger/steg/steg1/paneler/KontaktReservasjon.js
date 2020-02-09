@@ -1,9 +1,6 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
-import {
-	Attributt,
-	AttributtKategori
-} from '~/components/bestillingsveileder/AttributtVelger/Attributt'
+import { Attributt, AttributtKategori } from '../Attributt'
 
 export const KontaktReservasjonsPanel = ({ stateModifier }) => {
 	const sm = stateModifier(KontaktReservasjonsPanel.initialValues)

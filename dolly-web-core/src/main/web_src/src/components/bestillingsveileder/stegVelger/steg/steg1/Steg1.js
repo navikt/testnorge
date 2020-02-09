@@ -1,5 +1,5 @@
 import React from 'react'
-import { AttributtVelger } from '~/components/bestillingsveileder/AttributtVelger/AttributtVelger'
+import { AttributtVelger } from './attributtVelger/AttributtVelger'
 
 import { PersoninformasjonPanel } from './paneler/Personinformasjon'
 import { AdressePanel } from './paneler/Adresse'
@@ -12,7 +12,7 @@ import { KontaktDoedsboPanel } from './paneler/KontaktDoedsbo'
 import { ArenaPanel } from './paneler/Arena'
 import { UdiPanel } from './paneler/Udi'
 
-export const Steg1 = ({ formikBag, stateModifier }) => {
+export const Steg1 = ({ stateModifier }) => {
 	const checked = [
 		PersoninformasjonPanel,
 		AdressePanel,

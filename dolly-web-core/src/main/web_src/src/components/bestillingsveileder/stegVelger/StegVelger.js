@@ -2,15 +2,21 @@ import React, { useState, Fragment } from 'react'
 import { Formik } from 'formik'
 import Stegindikator from 'nav-frontend-stegindikator'
 import { Navigation } from './Navigation/Navigation'
-import { stateModifierFns } from './stateModifier'
+import { stateModifierFns } from '../stateModifier'
 import { validate } from '~/utils/YupValidations'
 
 import DisplayFormikState from '~/utils/DisplayFormikState'
 
-export const StegVelger = ({ steps, initialValues, onSubmit, children }) => {
+import { Steg1 } from './steg/steg1/Steg1'
+import { Steg2 } from './steg/Steg2/Steg2'
+import { Steg3 } from './steg/Steg3/Steg3'
+
+const STEPS = [Steg1, Steg2, Steg3]
+
+export const StegVelger = ({ initialValues, onSubmit, children }) => {
 	const [step, setStep] = useState(0)
 
-	const isLastStep = () => step === steps.length - 1
+	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => setStep(step + 1)
 
 	const handleBack = () => {
@@ -29,14 +35,14 @@ export const StegVelger = ({ steps, initialValues, onSubmit, children }) => {
 		return onSubmit(values, formikBag)
 	}
 
-	const CurrentStep = steps[step]
+	const CurrentStepComponent = STEPS[step]
 
-	const labels = steps.map(v => ({ label: v.label }))
+	const labels = STEPS.map(v => ({ label: v.label }))
 
 	return (
 		<Formik
 			initialValues={initialValues}
-			validate={async values => await validate(values, CurrentStep.validation)}
+			validate={async values => await validate(values, CurrentStepComponent.validation)}
 			onSubmit={_handleSubmit}
 			enableReinitialize
 		>
@@ -46,7 +52,11 @@ export const StegVelger = ({ steps, initialValues, onSubmit, children }) => {
 					<Fragment>
 						<Stegindikator aktivtSteg={step} steg={labels} visLabel kompakt />
 
-						{children(CurrentStep, formikBag, stateModifier)}
+						{children(CurrentStepComponent, formikBag, stateModifier)}
+
+						{/* <CurrentStepComponent formikBag={formikBag} stateModifier={stateModifier} /> */}
+
+						<DisplayFormikState {...formikBag} />
 
 						<Navigation
 							showPrevious={step > 0}
@@ -54,9 +64,6 @@ export const StegVelger = ({ steps, initialValues, onSubmit, children }) => {
 							isLastStep={isLastStep()}
 							formikBag={formikBag}
 						/>
-
-						{/* Uncomment for å vise FormikState */}
-						{/* <DisplayFormikState {...formikBag} /> */}
 					</Fragment>
 				)
 			}}

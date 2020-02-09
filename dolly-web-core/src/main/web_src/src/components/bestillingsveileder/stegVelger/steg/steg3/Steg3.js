@@ -1,6 +1,6 @@
 import React from 'react'
 import * as Yup from 'yup'
-import { harAvhukedeAttributter } from '../utils'
+import { harAvhukedeAttributter } from '~/components/bestillingsveileder/utils'
 import Bestillingskriterier from '~/components/bestilling/sammendrag/kriterier/Kriterier'
 import { MiljoVelger } from '~/components/miljoVelger/MiljoVelger'
 import { MalForm } from './MalForm'
