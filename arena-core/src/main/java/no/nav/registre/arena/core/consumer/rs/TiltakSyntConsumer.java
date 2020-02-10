@@ -10,6 +10,7 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 
+import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
 
 @Component

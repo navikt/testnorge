@@ -1,8 +1,8 @@
 package no.nav.registre.arena.core.consumer.rs;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static no.nav.registre.arena.core.consumer.rs.ConsumerUtils.NAV_CALL_ID;
-import static no.nav.registre.arena.core.consumer.rs.ConsumerUtils.NAV_CONSUMER_ID;
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.NAV_CALL_ID;
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.NAV_CONSUMER_ID;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;

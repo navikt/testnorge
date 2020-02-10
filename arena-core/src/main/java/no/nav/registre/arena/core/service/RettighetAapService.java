@@ -28,6 +28,11 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoRespons
 @RequiredArgsConstructor
 public class RettighetAapService {
 
+    private static final int MIN_ALDER_UNG_UFOER = 18;
+    private static final int MAX_ALDER_UNG_UFOER = 36;
+    private static final int MIN_ALDER_AAP = 20;
+    private static final int MAX_ALDER_AAP = 65;
+
     private final AapSyntConsumer aapSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final BrukereService brukereService;
@@ -38,8 +43,8 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter);
-        var vedtakshistorikk = aapSyntConsumer.syntetiserVedtakshistorikk(utvalgteIdenter.size());
+        var utvalgteIdenter = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP);
+        var vedtakshistorikk = aapSyntConsumer.syntetiserVedtakshistorikkGittListeMedIdenter(utvalgteIdenter);
 
         int antallTvungenForvaltning = vedtakshistorikk.stream().mapToInt(vedtak -> vedtak.getTvungenForvaltning() != null ? vedtak.getTvungenForvaltning().size() : 0).sum();
         var identerMedKontonummer = serviceUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallTvungenForvaltning);
@@ -116,7 +121,7 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter);
+        var utvalgteIdenter = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_UNG_UFOER, MAX_ALDER_UNG_UFOER);
         var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetUngUfoer(utvalgteIdenter.size());
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());

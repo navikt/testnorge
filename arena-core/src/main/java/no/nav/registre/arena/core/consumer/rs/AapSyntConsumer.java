@@ -1,7 +1,8 @@
 package no.nav.registre.arena.core.consumer.rs;
 
-import static no.nav.registre.arena.core.consumer.rs.ConsumerUtils.UTFALL_JA;
-import static no.nav.registre.arena.core.consumer.rs.ConsumerUtils.VEDTAK_TYPE_KODE_O;
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.UTFALL_JA;
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.VEDTAK_TYPE_KODE_O;
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.getFoedselsdatoFraFnr;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetSyntRequest;
+import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.arena.domain.historikk.Vedtakshistorikk;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 
@@ -68,6 +70,24 @@ public class AapSyntConsumer {
         }).getBody();
     }
 
+    public List<Vedtakshistorikk> syntetiserVedtakshistorikkGittListeMedIdenter(List<String> identer) {
+        List<LocalDate> oppstartsdatoer = new ArrayList<>(identer.size());
+
+        for (String ident : identer) {
+            LocalDate foedselsdato = getFoedselsdatoFraFnr(ident);
+            long yearsBetween = ChronoUnit.YEARS.between(foedselsdato.plusYears(18), LocalDate.now());
+            LocalDate minDate = LocalDate.now().minusYears(yearsBetween);
+            if (minDate.isBefore(MINIMUM_DATE)) {
+                minDate = MINIMUM_DATE;
+            }
+            oppstartsdatoer.add(LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(minDate, LocalDate.now())))));
+        }
+
+        var postRequest = RequestEntity.post(arenaVedtakshistorikkUrl.expand()).body(oppstartsdatoer);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<Vedtakshistorikk>>() {
+        }).getBody();
+    }
+
     public List<NyttVedtakAap> syntetiserRettighetAap(int antallMeldinger) {
         var postRequest = consumerUtils.createPostRequest(arenaAapUrl, antallMeldinger);
         return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakAap>>() {
@@ -80,7 +100,10 @@ public class AapSyntConsumer {
         }).getBody();
     }
 
-    public List<NyttVedtakAap> syntetiserRettighetAap115(LocalDate startDato, LocalDate sluttDato) {
+    public List<NyttVedtakAap> syntetiserRettighetAap115(
+            LocalDate startDato,
+            LocalDate sluttDato
+    ) {
         RequestEntity<ArrayList<RettighetSyntRequest>> postRequest = RequestEntity.post(arenaAap115Url.expand()).body(
                 new ArrayList<>(Collections.singletonList(
                         RettighetSyntRequest.builder()

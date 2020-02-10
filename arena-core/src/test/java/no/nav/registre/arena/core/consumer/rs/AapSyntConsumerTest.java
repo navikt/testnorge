@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
 import no.nav.registre.arena.core.config.AppConfig;
+import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.arena.domain.aap.gensaksopplysninger.GensakKoder;
 import no.nav.registre.arena.domain.aap.gensaksopplysninger.GensakOvKoder;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;

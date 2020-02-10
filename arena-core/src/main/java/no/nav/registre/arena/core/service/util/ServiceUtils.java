@@ -24,8 +24,6 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsRespons
 @RequiredArgsConstructor
 public class ServiceUtils {
 
-    private static final int MIN_ALDER_UNG_UFOER = 18;
-    private static final int MAX_ALDER_UNG_UFOER = 36;
     public static final String BEGRUNNELSE = "Syntetisert rettighet";
 
     private final HodejegerenConsumer hodejegerenConsumer;
@@ -47,9 +45,11 @@ public class ServiceUtils {
 
     public List<String> getUtvalgteIdenterIAldersgruppe(
             Long avspillergruppeId,
-            int antallNyeIdenter
+            int antallNyeIdenter,
+            int minimumAlder,
+            int maksimumAlder
     ) {
-        var levendeIdenterIAldersgruppe = hodejegerenConsumer.getLevende(avspillergruppeId, MIN_ALDER_UNG_UFOER, MAX_ALDER_UNG_UFOER);
+        var levendeIdenterIAldersgruppe = hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder, maksimumAlder);
         Collections.shuffle(levendeIdenterIAldersgruppe);
         return levendeIdenterIAldersgruppe.subList(0, antallNyeIdenter);
     }

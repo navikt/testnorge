@@ -3,7 +3,9 @@ package no.nav.registre.arena.core.service;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -91,6 +93,7 @@ public class RettighetAapServiceTest {
 
         when(serviceUtils.getLevende(avspillergruppeId)).thenReturn(identer);
         when(serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallIdenter)).thenReturn(identer);
+        when(serviceUtils.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt())).thenReturn(identer);
         when(brukereService.hentEksisterendeArbeidsoekerIdenter()).thenReturn(new ArrayList<>(Collections.singletonList(fnr1)));
     }
 
@@ -103,7 +106,7 @@ public class RettighetAapServiceTest {
                         .fnr(forvalterFnr)
                         .kontonummer(kontonummer)
                         .build())));
-        when(aapSyntConsumer.syntetiserVedtakshistorikk(antallIdenter)).thenReturn(vedtakshistorikkListe);
+        when(aapSyntConsumer.syntetiserVedtakshistorikkGittListeMedIdenter(anyList())).thenReturn(vedtakshistorikkListe);
 
         var nyRettighetAapResponse = NyttVedtakResponse.builder()
                 .nyeRettigheterAap(aapRettigheter)
@@ -133,8 +136,8 @@ public class RettighetAapServiceTest {
 
         var response = rettighetAapService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 
-        verify(serviceUtils).getUtvalgteIdenter(avspillergruppeId, antallIdenter);
-        verify(aapSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
+        verify(serviceUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt());
+        verify(aapSyntConsumer).syntetiserVedtakshistorikkGittListeMedIdenter(anyList());
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
 
         assertThat(response.size(), equalTo(4));
@@ -185,7 +188,7 @@ public class RettighetAapServiceTest {
                 .build();
         var expectedResponsesFromArenaForvalter = new ArrayList<>(Collections.singletonList(nyRettighetungUfoerResponse));
 
-        when(serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter)).thenReturn(identer);
+        when(serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, 18, 36)).thenReturn(identer);
         when(aapSyntConsumer.syntetiserRettighetUngUfoer(antallIdenter)).thenReturn(ungUfoerRettigheter);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
 

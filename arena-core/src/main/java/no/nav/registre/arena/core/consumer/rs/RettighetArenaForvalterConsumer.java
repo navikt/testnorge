@@ -1,7 +1,7 @@
 package no.nav.registre.arena.core.consumer.rs;
 
-import static no.nav.registre.arena.core.consumer.rs.ConsumerUtils.NAV_CALL_ID;
-import static no.nav.registre.arena.core.consumer.rs.ConsumerUtils.NAV_CONSUMER_ID;
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.NAV_CALL_ID;
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.NAV_CONSUMER_ID;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
