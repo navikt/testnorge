@@ -136,7 +136,7 @@ export default class SendFoedselsmelding extends PureComponent {
 								showErrorMessageFoundIdent: true
 							})
 						} else if (res_environments.length === 1) {
-							miljoer.push({ value: res_environments[0], label: res_environments[0] })
+							miljoer.push(res_environments[0])
 						}
 
 						const displayEnvironmentsInDropdown = this.fillEnvironmentDropdown(res_environments)
