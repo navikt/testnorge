@@ -33,7 +33,7 @@ import java.util.Collection;
 @Table(name = "Varighet")
 public class Varighet extends AuditModel {
 
-    private static final Period EXPIRATION_LENGTH = Period.of(2, 0, 0);
+    private static final Period EXPIRATION_TIME = Period.of(2, 0, 0);
 
     @Id
     @GeneratedValue
@@ -73,18 +73,18 @@ public class Varighet extends AuditModel {
     private Collection<EregModel> ereg;
 
     public Boolean shouldDelete() {
-        return LocalDate.now().isAfter(getBestilt().toLocalDate().plus(EXPIRATION_LENGTH).plusYears(1));
+        return LocalDate.now().isAfter(getBestilt().toLocalDate().plus(EXPIRATION_TIME).plusYears(1));
     }
 
     public Boolean shouldUse() {
-        return LocalDate.now().isBefore(getBestilt().toLocalDate().plus(EXPIRATION_LENGTH));
+        return LocalDate.now().isBefore(getBestilt().toLocalDate().plus(EXPIRATION_TIME));
     }
 
     public Boolean shouldNotify() {
         if (hasNotified) {
             return false;
         }
-        return LocalDate.now().isAfter(getBestilt().toLocalDate().plus(EXPIRATION_LENGTH).minusMonths(1));
+        return LocalDate.now().isAfter(getBestilt().toLocalDate().plus(EXPIRATION_TIME).minusMonths(1));
     }
 
     public Period getAlder() {
@@ -94,6 +94,6 @@ public class Varighet extends AuditModel {
     }
 
     public Period timeLeft() {
-        return Period.between(LocalDate.now(), getBestilt().toLocalDate().plus(EXPIRATION_LENGTH));
+        return Period.between(LocalDate.now(), getBestilt().toLocalDate().plus(EXPIRATION_TIME));
     }
 }
