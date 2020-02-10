@@ -1,29 +1,54 @@
 import React, { useState } from 'react'
 import _get from 'lodash/get'
+import _has from 'lodash/has'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import HjelpeTekst from 'nav-frontend-hjelpetekst'
 
-const avtaltArbeidsTimerPerUke = 'avtaltArbeidsTimerPerUke'
-const antallKonverterteTimer = 'antallKonverterteTimer'
+const avtaleValg = {
+	avtaltArbeidstimerPerUke: 'avtaltArbeidstimerPerUke',
+	antallKonverterteTimer: 'antallKonverterteTimer'
+}
+
+const initialValue = (path, formikBag) => {
+	return _get(formikBag.values, `${path}.arbeidsavtale.avtaltArbeidstimerPerUke`) !== ''
+		? avtaleValg.avtaltArbeidstimerPerUke
+		: _get(formikBag.values, `${path}.arbeidsavtale.antallKonverterteTimer`) !== ''
+		? avtaleValg.antallKonverterteTimer
+		: avtaleValg.avtaltArbeidstimerPerUke
+}
 
 export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 	const arbeidsavtalePath = `${path}.arbeidsavtale`
 	const arbeidsavtale = _get(formikBag.values, arbeidsavtalePath)
 
-	const [visning, setVisning] = useState(avtaltArbeidsTimerPerUke)
+	const [visning, setVisning] = useState(initialValue(path, formikBag))
 
-	const byttVisning = event => setVisning(event.target.value)
+	const handleToggleChange = event => {
+		const { value } = event.target
+		setVisning(avtaleValg[value])
+	}
 
-	arbeidsavtale.avtaltArbeidstimerPerUke != '' && visning === 'avtaltArbeidsTimerPerUke'
+	arbeidsavtale.avtaltArbeidstimerPerUke != '' && visning === avtaleValg.avtaltArbeidstimerPerUke
 		? (arbeidsavtale.antallKonverterteTimer = '')
 		: (arbeidsavtale.avtaltArbeidstimerPerUke = '')
 
-	arbeidsavtale.antallKonverterteTimer != '' && visning === 'antallKonverterteTimer'
+	arbeidsavtale.antallKonverterteTimer != '' && visning === avtaleValg.antallKonverterteTimer
 		? (arbeidsavtale.avtaltArbeidstimerPerUke = '')
 		: (arbeidsavtale.antallKonverterteTimer = '')
+
+	const toggleValues = [
+		{
+			value: avtaleValg.avtaltArbeidstimerPerUke,
+			label: 'Avtalt arbeids timer per uke'
+		},
+		{
+			value: avtaleValg.antallKonverterteTimer,
+			label: 'Antall konverterte timer'
+		}
+	]
 
 	return (
 		<div>
@@ -53,19 +78,12 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 					isClearable={false}
 				/>
 				<div className="toggle--wrapper">
-					<ToggleGruppe onChange={byttVisning} name="timerToggle">
-						<ToggleKnapp
-							value={avtaltArbeidsTimerPerUke}
-							checked={visning === avtaltArbeidsTimerPerUke}
-						>
-							Avtalte timer per uke
-						</ToggleKnapp>
-						<ToggleKnapp
-							value={antallKonverterteTimer}
-							checked={visning === antallKonverterteTimer}
-						>
-							Antall konverterte timer
-						</ToggleKnapp>
+					<ToggleGruppe onChange={handleToggleChange} name={arbeidsavtalePath}>
+						{toggleValues.map(val => (
+							<ToggleKnapp key={val.value} value={val.value} checked={visning === val.value}>
+								{val.label}
+							</ToggleKnapp>
+						))}
 					</ToggleGruppe>
 				</div>
 				<HjelpeTekst>
@@ -73,7 +91,7 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 				</HjelpeTekst>
 				<FormikTextInput
 					name={
-						visning === 'avtaltArbeidsTimerPerUke'
+						visning === avtaleValg.avtaltArbeidstimerPerUke
 							? `${arbeidsavtalePath}.avtaltArbeidstimerPerUke`
 							: `${arbeidsavtalePath}.antallKonverterteTimer`
 					}
