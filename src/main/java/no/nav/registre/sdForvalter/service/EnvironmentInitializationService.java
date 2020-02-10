@@ -163,7 +163,7 @@ public class EnvironmentInitializationService {
         krrRepository.findAll().forEach(dkifSet::add);
         dkifSet = dkifSet
                 .parallelStream()
-                .filter(krrModel -> krrModel != null && krrModel.getVarighet().shouldUse())
+                .filter(krrModel -> krrModel.getVarighet() != null && krrModel.getVarighet().shouldUse())
                 .collect(Collectors.toSet());
 
 
