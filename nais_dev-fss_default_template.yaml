@@ -5,10 +5,10 @@ metadata:
   namespace: default
   labels:
     team: registre
-replicas:
-  min: 2
-  max: 2
 spec:
+  replicas:
+    min: 2
+    max: 2
   port: 8080
   ingresses:
     - https://dolly.nais.preprod.local

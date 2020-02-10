@@ -25,8 +25,8 @@ const _getTpsfBestillingData = data => {
 		obj('Kjønn', Formatters.kjonn(data.kjonn, data.alder)),
 		obj('Har mellomnavn', Formatters.oversettBoolean(data.harMellomnavn)),
 		obj('Sivilstand', data.sivilstand, 'Sivilstander'),
-		obj('Diskresjonskoder', data.spesreg, 'Diskresjonskoder'),
-		obj('Uten fast bopel', data.utenFastBopel && Formatters.oversettBoolean(data.utenFastBopel)),
+		obj('Diskresjonskoder', data.spesreg !== 'UFB' && data.spesreg, 'Diskresjonskoder'),
+		obj('Uten fast bopel', (data.utenFastBopel || data.spesreg === 'UFB') && 'JA'),
 		obj('Kommunenummer', data.utenFastBopel && _get(data, 'boadresse.kommunenr')),
 		obj('Språk', data.sprakKode, 'Språk'),
 		obj('Innvandret fra land', data.innvandretFraLand, 'Landkoder'),
@@ -164,7 +164,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}
 
 				partnere.forEach((item, j) => {
-					const sivilstander = item.sivilstander.reduce((acc, curr, idx) => {
+					const tidligereSivilstander = _get(item, 'sivilstander', []).reduce((acc, curr, idx) => {
 						if (idx > 0) {
 							acc.push(curr.sivilstand)
 						}
@@ -180,8 +180,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						..._getTpsfBestillingData(item),
 						obj('Fnr/dnr/bost', item.ident),
 						obj('Bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
-						obj('Sivilstand', item.sivilstander[0].sivilstand, 'Sivilstander'),
-						obj('Tidligere sivilstander', Formatters.arrayToString(sivilstander))
+						obj('Sivilstand', _get(item, 'sivilstander[0].sivilstand'), 'Sivilstander'),
+						obj('Tidligere sivilstander', Formatters.arrayToString(tidligereSivilstander))
 					])
 				})
 

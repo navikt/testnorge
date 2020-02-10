@@ -27,10 +27,13 @@ const getIconType = (iconItem, row) => {
 }
 
 export default function Table({ data, iconItem, columns, onRowClick, onExpand }) {
+	const headerClass = cn('dot-header', {
+		'has-icon': Boolean(iconItem)
+	})
+
 	return (
 		<div className="dot">
-			<div className="dot-header">
-				{iconItem && <Column className="dot-icon" />}
+			<div className={headerClass}>
 				{columns.map((cell, idx) => (
 					<Column key={idx} width={cell.width} value={cell.text} />
 				))}
@@ -44,7 +47,12 @@ export default function Table({ data, iconItem, columns, onRowClick, onExpand })
 				return (
 					<Row key={rowKey} icon={iconType} navLink={navLink} expandComponent={expandComponent}>
 						{columns.map((columnCell, idx) => (
-							<Column key={idx} width={columnCell.width} value={getColumnValue(row, columnCell)} />
+							<Column
+								key={idx}
+								width={columnCell.width}
+								value={getColumnValue(row, columnCell)}
+								centerItem={columnCell.centerItem}
+							/>
 						))}
 					</Row>
 				)

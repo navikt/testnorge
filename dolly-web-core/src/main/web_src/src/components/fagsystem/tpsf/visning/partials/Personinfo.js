@@ -24,12 +24,13 @@ export const Personinfo = ({ data, visTittel = true }) => {
 
 				<TitleValue title="Sivilstand" kodeverk="Sivilstander" value={data.sivilstand} />
 
-				<TitleValue title="Diskresjonskoder" kodeverk="Diskresjonskoder" value={data.spesreg} />
+				{data.spesreg !== 'UFB' && (
+					<TitleValue title="Diskresjonskoder" kodeverk="Diskresjonskoder" value={data.spesreg} />
+				)}
 
-				<TitleValue
-					title="Uten fast bopel"
-					value={Formatters.oversettBoolean(data.utenFastBopel)}
-				/>
+				{(data.utenFastBopel || data.spesreg === 'UFB') && (
+					<TitleValue title="Uten fast bopel" value="JA" />
+				)}
 
 				{data.gtVerdi && (
 					<TitleValue

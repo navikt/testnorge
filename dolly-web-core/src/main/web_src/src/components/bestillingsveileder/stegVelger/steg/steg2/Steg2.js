@@ -1,7 +1,7 @@
 import React from 'react'
 import * as Yup from 'yup'
-import { harAvhukedeAttributter } from '../utils'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { harAvhukedeAttributter } from '~/components/bestillingsveileder/utils'
 import { TpsfForm } from '~/components/fagsystem/tpsf/form/Form'
 import { KrrstubForm } from '~/components/fagsystem/krrstub/form/Form'
 import { SigrunstubForm } from '~/components/fagsystem/sigrunstub/form/Form'

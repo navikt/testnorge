@@ -13,27 +13,28 @@ export default function TableRow({ children, icon, expandComponent, navLink }) {
 		if (navLink) return navLink()
 	}
 
-	const rowClass = cn('dot-body-row', {
+	const rowWrapperClass = cn('dot-body-row-wrapper', {
 		expanded: isExpanded
 	})
 
-	const columnsClass = cn('dot-body-row-columns', {
-		'has-icon': Boolean(icon),
+	const rowClass = cn('dot-body-row', {
 		clickable: Boolean(expandComponent || navLink)
 	})
 
 	return (
-		<div tabIndex={0} className={rowClass}>
-			<div className={columnsClass} onClick={onRowClick}>
+		<div tabIndex={0} className={rowWrapperClass}>
+			<div className={rowClass} onClick={onRowClick}>
 				{icon && icon}
-				{children}
-				{expandComponent && (
-					<Column width="10" className="dot-body-row-actioncolumn">
-						<ExpandButton expanded={isExpanded} onClick={onRowClick} />
-					</Column>
-				)}
+				<div className="dot-body-row-columns">
+					{children}
+					{expandComponent && (
+						<Column width="10" className="dot-body-row-actioncolumn">
+							<ExpandButton expanded={isExpanded} onClick={onRowClick} />
+						</Column>
+					)}
+				</div>
 			</div>
-			{isExpanded && <div className="dot-body-row-expandcomponent">{expandComponent}</div>}
+			{isExpanded && <div className="dot-expandcomponent">{expandComponent}</div>}
 		</div>
 	)
 }

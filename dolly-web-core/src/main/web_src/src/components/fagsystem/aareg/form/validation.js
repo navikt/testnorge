@@ -46,7 +46,7 @@ const antallTimerForTimeloennet = Yup.array().of(
 		}),
 		antallTimer: Yup.number()
 			.min(1, 'Kan ikke være mindre enn ${min}')
-			.required(messages.required)
+			.typeError(messages.required)
 	})
 )
 

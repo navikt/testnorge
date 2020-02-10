@@ -74,7 +74,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 								onChange={e => setZIdent(e.value)}
 								value={zIdent}
 								isClearable={false}
-								isDisabled={!malAktiv}
+								disabled={!malAktiv}
 							/>
 							<FormikSelect
 								name="mal"
@@ -83,7 +83,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 								options={malOptions}
 								size="grow"
 								fastfield={false}
-								isDisabled={!malAktiv}
+								disabled={!malAktiv}
 							/>
 						</div>
 					</div>
@@ -105,7 +105,7 @@ const getZIdentOptions = (malbestillinger, zBruker) =>
 	}))
 
 const getMalOptions = (malbestillinger, zIdent) => {
-	if (!malbestillinger) return []
+	if (!malbestillinger || !malbestillinger[zIdent]) return []
 	return malbestillinger[zIdent].map(mal => ({
 		value: mal.id,
 		label: mal.malNavn,

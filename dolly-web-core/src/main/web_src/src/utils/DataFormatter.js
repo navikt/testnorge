@@ -73,6 +73,10 @@ Formatters.uppercaseAndUnderscoreToCapitalized = value => {
 	return _capitalize(clean)
 }
 
+Formatters.CapitalizedToUppercaseAndUnderscore = value => {
+	return value.replace(' ', '_').toUpperCase()
+}
+
 Formatters.allCapsToCapitalized = value => {
 	return _capitalize(value)
 }

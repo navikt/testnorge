@@ -6,7 +6,7 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
-import { WomanIconItem, ManIconItem } from './IconItem'
+import { WomanIconItem, ManIconItem } from '~/components/ui/icon/IconItem'
 
 import Icon from '~/components/ui/icon/Icon'
 
@@ -36,7 +36,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 	const columns = [
 		{
 			text: 'Ident',
-			width: '15',
+			width: '20',
 			dataField: 'identNr',
 			unique: true
 		},
@@ -65,7 +65,19 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			text: 'Status',
 			width: '10',
 			dataField: 'status',
+
 			formatter: (cell, row) => <Icon kind={ikonTypeMap[cell]} title={cell} />
+		},
+		{
+			text: 'Kommentar',
+			width: '15',
+			dataField: 'harBeskrivelse',
+			centerItem: true,
+			formatter: (cell, row) => {
+				if (row.ident.beskrivelse) {
+					return <Icon kind="kommentar" size={20} />
+				}
+			}
 		},
 		{
 			text: 'Brukt',

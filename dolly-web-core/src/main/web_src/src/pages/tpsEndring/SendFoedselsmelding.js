@@ -45,15 +45,7 @@ export default class SendFoedselsmelding extends PureComponent {
 			adresseFra: yup.string().required('Adresse er et påkrevd felt.')
 		})
 
-	createRequestObjects(values) {
-		const miljoer = values.miljoer.map(env => {
-			return env.value
-		})
-		return { ...values, miljoer: miljoer }
-	}
-
 	_onSubmit = (values, { resetForm }) => {
-		const request = this.createRequestObjects(values)
 		var success_envs = []
 
 		this.setState(
@@ -67,13 +59,10 @@ export default class SendFoedselsmelding extends PureComponent {
 			},
 			async () => {
 				try {
-					const createFoedselsmeldingRes = await TpsfApi.createFoedselsmelding({
-						...request,
-						foedselsdato: DataFormatter.parseDate(values.foedselsdato)
-					})
+					const createFoedselsmeldingRes = await TpsfApi.createFoedselsmelding(values)
 					const getKontaktInformasjonRes = await TpsfApi.getKontaktInformasjon(
 						createFoedselsmeldingRes.data.personId,
-						request.miljoer[0]
+						values.miljoer[0]
 					)
 					const status = createFoedselsmeldingRes.data.status
 					Object.keys(status).map(key => {
@@ -83,14 +72,14 @@ export default class SendFoedselsmelding extends PureComponent {
 					return this.setState({
 						nyttBarn: getKontaktInformasjonRes.data.person,
 						isFetching: false,
-						currentFnrMor: null,
+						currentFnrMor: '',
 						miljoer: [],
 						response_success: success_envs
 					})
 				} catch (err) {
 					resetForm()
 					this.setState({
-						currentFnrMor: null,
+						currentFnrMor: '',
 						isFetching: false,
 						miljoer: [],
 						errorMessage: err.response.data.message
@@ -147,7 +136,7 @@ export default class SendFoedselsmelding extends PureComponent {
 								showErrorMessageFoundIdent: true
 							})
 						} else if (res_environments.length === 1) {
-							miljoer.push({ value: res_environments[0], label: res_environments[0] })
+							miljoer.push(res_environments[0])
 						}
 
 						const displayEnvironmentsInDropdown = this.fillEnvironmentDropdown(res_environments)
@@ -205,12 +194,18 @@ export default class SendFoedselsmelding extends PureComponent {
 										label="MORS IDENT"
 										onBlur={this._handleOnBlurInput}
 									/>
-									<FormikTextInput name="identFar" label="FARS IDENT" disabled={!foundIdentMor} />
+									<FormikTextInput
+										name="identFar"
+										label="FARS IDENT"
+										disabled={!foundIdentMor}
+										fastfield={false}
+									/>
 									<FormikSelect
 										name="identtype"
 										label="BARNETS IDENTTYPE"
 										options={Options('identtype')}
 										disabled={!foundIdentMor}
+										fastfield={false}
 									/>
 								</div>
 								<div className="tps-endring-foedselmelding-bottom">
@@ -226,6 +221,7 @@ export default class SendFoedselsmelding extends PureComponent {
 										disabled={!foundIdentMor}
 									/>
 									<FormikSelect
+										id="foedselMiljoer"
 										name="miljoer"
 										label="SEND TIL MILJØ"
 										options={environments}

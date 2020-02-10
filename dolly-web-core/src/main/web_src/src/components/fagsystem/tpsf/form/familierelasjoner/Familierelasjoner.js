@@ -1,4 +1,5 @@
 import React from 'react'
+import _get from 'lodash/get'
 import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'

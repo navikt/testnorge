@@ -5,6 +5,7 @@ import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Loading from '~/components/ui/loading/Loading'
 import BestillingDetaljer from '~/components/bestilling/detaljer/Detaljer'
+import { BestillingIconItem } from '~/components/ui/icon/IconItem'
 
 import Icon from '~/components/ui/icon/Icon'
 
@@ -65,7 +66,7 @@ export default function BestillingListe({ bestillinger, searchActive, isFetching
 		<DollyTable
 			data={sortedBestillinger}
 			columns={columns}
-			rowIcon="bestilling"
+			iconItem={<BestillingIconItem />}
 			onExpand={bestilling => <BestillingDetaljer bestilling={bestilling} />}
 			pagination
 		/>

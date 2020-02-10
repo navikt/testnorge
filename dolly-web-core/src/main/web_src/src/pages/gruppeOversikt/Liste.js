@@ -3,6 +3,7 @@ import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
+import { GruppeIconItem } from '~/components/ui/icon/IconItem'
 
 export default function Liste({ items, history, searchActive, isFetching }) {
 	if (isFetching) return <Loading label="laster grupper" panel />
@@ -31,7 +32,7 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 	const columns = [
 		{
 			text: 'ID',
-			width: '15',
+			width: '10',
 			dataField: 'id',
 			unique: true
 		},
@@ -47,7 +48,7 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 		},
 		{
 			text: 'Personer',
-			width: '20',
+			width: '15',
 			dataField: 'antallIdenter'
 		},
 		{
@@ -68,7 +69,7 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 			data={items}
 			columns={columns}
 			onRowClick={row => () => history.push(`gruppe/${row.id}`)}
-			rowIcon="group"
+			iconItem={<GruppeIconItem />}
 			pagination
 		/>
 	)
