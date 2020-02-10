@@ -17,7 +17,8 @@ export const Boadresse = ({ boadresse, visKunAdresse }) => {
 		festenr,
 		undernr,
 		postnr,
-		flyttedato
+		flyttedato,
+		validAdresse
 	} = boadresse[0]
 
 	const matrikkelVisning = (
@@ -32,7 +33,11 @@ export const Boadresse = ({ boadresse, visKunAdresse }) => {
 
 	const adresseVisning = (
 		<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
-			{adressetype === 'GATE' && <div>{`${gateadresse} ${husnummer}`}</div>}
+			{adressetype === 'GATE' && (
+				<div>
+					{!validAdresse ? <div>{gateadresse}</div> : <div>{`${gateadresse} ${husnummer}`}</div>}
+				</div>
+			)}
 			{adressetype === 'MATR' && matrikkelVisning}
 			<KodeverkConnector navn="Postnummer" value={postnr}>
 				{(v, verdi) => <span>{verdi ? verdi.label : postnr}</span>}

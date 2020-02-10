@@ -31,7 +31,9 @@ const boadresse = Yup.object({
 	festnr: Yup.string().max(4, 'Festenummer må være under 9999'),
 	undernr: Yup.string().max(3, 'Undernummer må være under 999'),
 	postnr: Yup.string().when('adressetype', { is: 'MATR', then: requiredString }),
-	kommunenr: Yup.string().when('adressetype', { is: 'MATR', then: requiredString })
+	kommunenr: Yup.string()
+		.when('adressetype', { is: 'MATR', then: requiredString })
+		.nullable()
 })
 
 const adresseNrInfo = Yup.object({

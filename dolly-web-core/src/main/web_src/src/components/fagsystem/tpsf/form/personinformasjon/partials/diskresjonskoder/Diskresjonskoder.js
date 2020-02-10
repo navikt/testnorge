@@ -29,6 +29,7 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 	const handleChangeKommunenr = val => {
 		formikBag.setFieldValue(`${basePath}.boadresse.adressetype`, 'GATE')
 	}
+
 	return (
 		<Vis attributt={Object.values(paths)}>
 			<div className="spesreg-component">
@@ -47,7 +48,8 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 					checkboxMargin
 				/>
 
-				{harUfb && (
+				{/* {harUfb && ( */}
+				{harUfb && !harBoadresse && (
 					<FormikSelect
 						name={paths.kommunenr}
 						label="Kommunenummer"
