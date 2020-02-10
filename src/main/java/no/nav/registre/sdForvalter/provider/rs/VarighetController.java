@@ -29,8 +29,8 @@ public class VarighetController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Varighet> updateVarighet(@PathVariable Long id, @RequestBody(required = false) Period ttl) {
-        return ResponseEntity.ok(staticDataService.updateVarighet(id, ttl));
+    public ResponseEntity<Varighet> updateVarighet(@PathVariable Long id) {
+        return ResponseEntity.ok(staticDataService.updateVarighet(id));
     }
 
     @GetMapping("/validate")

@@ -70,13 +70,9 @@ public class StaticDataService {
         return varighetRepository.findById(id).orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Id existerer ikke"));
     }
 
-    public Varighet updateVarighet(Long id, Period ttl) {
+    public Varighet updateVarighet(Long id) {
         Varighet varighet = varighetRepository.findById(id)
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Id existerer ikke"));
-
-        if (ttl != null) {
-            varighet.setTtl(ttl);
-        }
         varighet.setBestilt(Date.valueOf(LocalDate.now()));
         return varighetRepository.save(varighet);
     }
@@ -136,8 +132,7 @@ public class StaticDataService {
 
     private Varighet.VarighetBuilder getDefaultVarighetBuilder() {
         return Varighet.builder()
-                .bestilt(new Date(Calendar.getInstance().getTime().getTime()))
-                .ttl(Period.of(1, 0, 0));
+                .bestilt(new Date(Calendar.getInstance().getTime().getTime()));
     }
 
     private Ownable saveIfNotPresent(Ownable entity, CrudRepository repository, Varighet.VarighetBuilder varighetBuilder, String eier) {

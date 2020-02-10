@@ -89,7 +89,10 @@ public class EnvironmentInitializationService {
         Set<TpsModel> tpsSet = new HashSet<>();
         tpsRepository.findAll().forEach(tpsSet::add);
 
-        tpsSet = tpsSet.parallelStream().filter(tpsModel -> tpsModel.getVarighet().shouldUse()).collect(Collectors.toSet());
+        tpsSet = tpsSet
+                .parallelStream()
+                .filter(tpsModel -> tpsModel.getVarighet() != null && tpsModel.getVarighet().shouldUse())
+                .collect(Collectors.toSet());
 
         Set<String> playgroupFnrs = hodejegerenConsumer.getPlaygroupFnrs(staticDataPlaygroup);
         tpsSet = tpsSet.parallelStream().filter(t -> !playgroupFnrs.contains(t.getFnr())).collect(Collectors.toSet());
@@ -113,7 +116,10 @@ public class EnvironmentInitializationService {
     public Map<String, String> initializeAareg(String environment) {
         Set<AaregModel> aaregSet = new HashSet<>();
         aaregRepository.findAll().forEach(aaregSet::add);
-        aaregSet = aaregSet.parallelStream().filter(aaregModel -> aaregModel.getVarighet().shouldUse()).collect(Collectors.toSet());
+        aaregSet = aaregSet
+                .parallelStream()
+                .filter(aaregModel -> aaregModel.getVarighet() != null && aaregModel.getVarighet().shouldUse())
+                .collect(Collectors.toSet());
 
         Set<String> fnrs = aaregConsumer.finnPersonerUtenArbeidsforhold(aaregSet.parallelStream().map(AaregModel::getFnr).collect(Collectors.toSet()), environment);
 
@@ -141,7 +147,10 @@ public class EnvironmentInitializationService {
     public void initializeKrr() {
         Set<KrrModel> dkifSet = new HashSet<>();
         krrRepository.findAll().forEach(dkifSet::add);
-        dkifSet = dkifSet.parallelStream().filter(krrModel -> krrModel.getVarighet().shouldUse()).collect(Collectors.toSet());
+        dkifSet = dkifSet
+                .parallelStream()
+                .filter(krrModel -> krrModel != null && krrModel.getVarighet().shouldUse())
+                .collect(Collectors.toSet());
 
 
         Set<String> existing = krrConsumer.getContactInformation(dkifSet.parallelStream().map(KrrModel::getFnr).collect(Collectors.toSet()));
