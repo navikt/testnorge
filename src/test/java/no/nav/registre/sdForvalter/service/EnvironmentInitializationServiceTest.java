@@ -89,7 +89,7 @@ public class EnvironmentInitializationServiceTest {
 
     private final Varighet varighet = new Varighet(
             1L,
-            Period.of(1, 0, 0), false, Date.valueOf("2019-04-03"), eier,
+            false, Date.valueOf("2019-04-03"), eier,
             Collections.emptySet(), Collections.emptySet(), Collections.emptySet(), Collections.emptySet()
     );
 
