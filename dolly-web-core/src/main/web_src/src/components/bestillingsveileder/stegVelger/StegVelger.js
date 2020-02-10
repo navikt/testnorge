@@ -37,15 +37,12 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 
 	const CurrentStepComponent = STEPS[step]
 
+	const _validate = values => validate(values, CurrentStepComponent.validation)
+
 	const labels = STEPS.map(v => ({ label: v.label }))
 
 	return (
-		<Formik
-			initialValues={initialValues}
-			validate={async values => await validate(values, CurrentStepComponent.validation)}
-			onSubmit={_handleSubmit}
-			enableReinitialize
-		>
+		<Formik initialValues={initialValues} validate={_validate} onSubmit={_handleSubmit}>
 			{formikBag => {
 				const stateModifier = stateModifierFns(formikBag.values, formikBag.setValues)
 				return (
@@ -54,9 +51,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 
 						{children(CurrentStepComponent, formikBag, stateModifier)}
 
-						{/* <CurrentStepComponent formikBag={formikBag} stateModifier={stateModifier} /> */}
-
-						<DisplayFormikState {...formikBag} />
+						{/* <DisplayFormikState {...formikBag} /> */}
 
 						<Navigation
 							showPrevious={step > 0}
