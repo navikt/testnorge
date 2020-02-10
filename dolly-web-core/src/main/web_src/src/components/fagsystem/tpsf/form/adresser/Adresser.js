@@ -24,7 +24,6 @@ const initialBoType = formikBag => {
 }
 
 export const Adresser = ({ formikBag }) => {
-	console.log('formikBag :', formikBag)
 	const [boType, setBoType] = useState(initialBoType(formikBag))
 
 	const erValgt = _has(formikBag.values, 'tpsf.boadresse.flyttedato')
