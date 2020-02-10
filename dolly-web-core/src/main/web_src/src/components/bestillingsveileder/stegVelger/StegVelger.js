@@ -8,8 +8,8 @@ import { validate } from '~/utils/YupValidations'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 
 import { Steg1 } from './steg/steg1/Steg1'
-import { Steg2 } from './steg/Steg2/Steg2'
-import { Steg3 } from './steg/Steg3/Steg3'
+import { Steg2 } from './steg/steg2/Steg2'
+import { Steg3 } from './steg/steg3/Steg3'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
