@@ -55,13 +55,15 @@ public class EnvironmentInitializationService {
      * @param environment Miljøet som skal initialiseres
      */
     public void initializeEnvironmentWithStaticData(String environment) {
+        log.info("Start init of all static data sets...");
+
         /*
           Order of method calls are important to ensure that the values exist in the databases.
           Some methods may fail if at the very least TPS (SKD) have not been created.
           TP and SAM are also critical databases for the fag applications
         */
         Set<String> missingFnrs = initializeSkd(environment);
-        if (missingFnrs.size() != 0) {
+        if (!missingFnrs.isEmpty()) {
             log.warn("Identer som ikke ble opprettet i tps: {}, disse burde sjekkes på nytt etter en liten stund, se hodejegeren", missingFnrs);
         }
 
@@ -77,6 +79,7 @@ public class EnvironmentInitializationService {
         if (!"".equals(flatfileFromEregMapper) && flatfileFromEregMapper != null) {
             log.info(flatfileFromEregMapper);
         }
+        log.info("Completed init of all static data sets.");
     }
 
     /**
@@ -86,6 +89,7 @@ public class EnvironmentInitializationService {
      * @return Et set som inneholder de identene som ikke har blitt opprettet i tps
      */
     public Set<String> initializeSkd(String environment) {
+        log.info("Start init of Skd...");
         Set<TpsModel> tpsSet = new HashSet<>();
         tpsRepository.findAll().forEach(tpsSet::add);
 
@@ -102,7 +106,9 @@ public class EnvironmentInitializationService {
 
         Set<String> livingFnrs = hodejegerenConsumer.getLivingFnrs(staticDataPlaygroup, environment);
 
-        return playgroupFnrs.parallelStream().filter(t -> !livingFnrs.contains(t)).collect(Collectors.toSet());
+        Set<String> response = playgroupFnrs.parallelStream().filter(t -> !livingFnrs.contains(t)).collect(Collectors.toSet());
+        log.info("Init of Skd completed.");
+        return response;
     }
 
     /**
@@ -111,6 +117,7 @@ public class EnvironmentInitializationService {
      * @param environment Miljøet arbeidsforholdene skal legges til i
      */
     public Map<String, String> initializeAareg(String environment) {
+        log.info("Start init of Aareg...");
         Set<AaregModel> aaregSet = new HashSet<>();
         aaregRepository.findAll().forEach(aaregSet::add);
         aaregSet = aaregSet.parallelStream().filter(aaregModel -> aaregModel.getVarighet().shouldUse()).collect(Collectors.toSet());
@@ -119,10 +126,13 @@ public class EnvironmentInitializationService {
 
         Set<AaregModel> models = aaregSet.parallelStream().filter(a -> fnrs.contains(a.getFnr())).collect(Collectors.toSet());
 
-        return aaregConsumer.send(models, environment);
+        Map<String, String> response = aaregConsumer.send(models, environment);
+        log.info("Init of Aareg completed.");
+        return response;
     }
 
     public String initializeEreg(String environment) {
+        log.info("Start init of Ereg...");
         List<EregModel> data = new ArrayList<>();
         eregRepository.findAll().forEach(
                 e -> {
@@ -132,13 +142,17 @@ public class EnvironmentInitializationService {
                     data.add(e);
                 }
         );
-        return eregMapperConsumer.uploadToEreg(data, environment);
+
+        String response = eregMapperConsumer.uploadToEreg(data, environment);
+        log.info("Init of Ereg completed.");
+        return response;
     }
 
     /**
      * Metoden legger til dataen i databasen i krr hvis ikke de finnes fra før av
      */
     public void initializeKrr() {
+        log.info("Start init of KRR ...");
         Set<KrrModel> dkifSet = new HashSet<>();
         krrRepository.findAll().forEach(dkifSet::add);
         dkifSet = dkifSet.parallelStream().filter(krrModel -> krrModel.getVarighet().shouldUse()).collect(Collectors.toSet());
@@ -149,17 +163,25 @@ public class EnvironmentInitializationService {
         dkifSet = dkifSet.parallelStream().filter(t -> !existing.contains(t.getFnr())).collect(Collectors.toSet());
 
         if (dkifSet.isEmpty()) {
+            log.info("Init of KRR completed (0 created).");
             return;
         }
         krrConsumer.send(dkifSet);
+        if (log.isInfoEnabled()) {
+           log.info("Init of KRR completed ({} created).", dkifSet.size());
+        }
     }
 
     private void iniitalizeTp(String environment, Set<String> fnrs) {
+        log.info("Start init of TP...");
         tpConsumer.send(fnrs, environment);
+        log.info("Init of TP completed.");
     }
 
     private void initializeSam(String environment, Set<String> fnrs) {
+        log.info("Start init of SAM...");
         samConsumer.send(fnrs, environment);
+        log.info("Init of SAM completed");
     }
 
 }
