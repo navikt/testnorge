@@ -27,7 +27,6 @@ const _getTpsfBestillingData = data => {
 		obj('Sivilstand', data.sivilstand, 'Sivilstander'),
 		obj('Diskresjonskoder', data.spesreg !== 'UFB' && data.spesreg, 'Diskresjonskoder'),
 		obj('Uten fast bopel', (data.utenFastBopel || data.spesreg === 'UFB') && 'JA'),
-		obj('Kommunenummer', data.utenFastBopel && _get(data, 'boadresse.kommunenr')),
 		obj('Språk', data.sprakKode, 'Språk'),
 		obj('Innvandret fra land', data.innvandretFraLand, 'Landkoder'),
 		obj('Innvandret dato', Formatters.formatDate(data.innvandretFraLandFlyttedato)),

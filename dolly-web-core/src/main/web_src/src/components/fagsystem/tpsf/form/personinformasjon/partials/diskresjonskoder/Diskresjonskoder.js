@@ -48,7 +48,7 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 					checkboxMargin
 				/>
 
-				{/* {harUfb && ( */}
+				{/* Skal kunne velge kommunenummer selv om man ikke har fast bopel, men trenger ikke eget felt når man også har valgt boadresse. */}
 				{harUfb && !harBoadresse && (
 					<FormikSelect
 						name={paths.kommunenr}
