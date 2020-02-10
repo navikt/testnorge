@@ -13,9 +13,7 @@ const avtaleValg = {
 }
 
 const initialValue = (path, formikBag) => {
-	return _get(formikBag.values, `${path}.arbeidsavtale.avtaltArbeidstimerPerUke`) !== ''
-		? avtaleValg.avtaltArbeidstimerPerUke
-		: _get(formikBag.values, `${path}.arbeidsavtale.antallKonverterteTimer`) !== ''
+	return _get(formikBag.values, `${path}.arbeidsavtale.antallKonverterteTimer`) !== ''
 		? avtaleValg.antallKonverterteTimer
 		: avtaleValg.avtaltArbeidstimerPerUke
 }
@@ -85,20 +83,19 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 							</ToggleKnapp>
 						))}
 					</ToggleGruppe>
+					<FormikTextInput
+						name={
+							visning === avtaleValg.avtaltArbeidstimerPerUke
+								? `${arbeidsavtalePath}.avtaltArbeidstimerPerUke`
+								: `${arbeidsavtalePath}.antallKonverterteTimer`
+						}
+						type="number"
+						isclearable="true"
+					/>
 				</div>
 				<HjelpeTekst>
-					Antall konverterte timer og avtalte timer per uke kan ikke være satt samtidig. Ved å bytte
+					Antall konverterte timer og avtalte timer per uke kan ikke være satt samtidig.
 				</HjelpeTekst>
-				<FormikTextInput
-					name={
-						visning === avtaleValg.avtaltArbeidstimerPerUke
-							? `${arbeidsavtalePath}.avtaltArbeidstimerPerUke`
-							: `${arbeidsavtalePath}.antallKonverterteTimer`
-					}
-					size="xxlarge"
-					type="number"
-					isclearable="true"
-				/>
 			</div>
 		</div>
 	)
