@@ -8,7 +8,9 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 const inputValg = { velg: 'velg', skriv: 'skriv' }
 const initial = (formikBag, path) => {
 	const orgnr = _get(formikBag.values, `${path}.arbeidsgiver.orgnummer`)
-	return !orgnr || Options('orgnummer').includes(orgnr) ? inputValg.velg : inputValg.skriv
+	return !orgnr || Options('orgnummer').some(org => org.value === orgnr)
+		? inputValg.velg
+		: inputValg.skriv
 }
 
 export const OrgnrForm = ({ formikBag, path }) => {
@@ -24,28 +26,27 @@ export const OrgnrForm = ({ formikBag, path }) => {
 					value={inputValg.velg}
 					checked={inputType === inputValg.velg}
 				>
-					Velg orgnummer
+					Velg organisasjonsnummer
 				</ToggleKnapp>
 				<ToggleKnapp
 					key={inputValg.skriv}
 					value={inputValg.skriv}
 					checked={inputType === inputValg.skriv}
 				>
-					Skriv inn orgnummer selv
+					Skriv inn organisasjonsnummer
 				</ToggleKnapp>
 			</ToggleGruppe>
 
 			{inputType === inputValg.velg ? (
 				<FormikSelect
 					name={`${path}.arbeidsgiver.orgnummer`}
-					label="Arbeidsgiver orgnummer"
 					options={Options('orgnummer')}
 					type="text"
 					size="large"
 					isClearable={false}
 				/>
 			) : (
-				<FormikTextInput name={`${path}.arbeidsgiver.orgnummer`} label="Arbeidsgiver orgnummer" />
+				<FormikTextInput name={`${path}.arbeidsgiver.orgnummer`} />
 			)}
 		</div>
 	)
