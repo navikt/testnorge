@@ -81,6 +81,10 @@ public class AaregConsumer {
                 Collections.singletonList(environment)
         )).collect(Collectors.toList());
 
+        for (var request : requestBody) {
+            log.info("Sender ident {} til miljøer {}.", request.getArbeidsforhold().getArbeidstaker().getIdent(), request.getEnvironments().toString());
+        }
+
         UriTemplate uriTemplate = new UriTemplate(aaregUrl + "/sendTilAareg?fyllUtArbeidsforhold=true");
         RequestEntity<List<AaregRequest>> request = new RequestEntity<>(requestBody, HttpMethod.POST, uriTemplate.expand());
         return restTemplate.exchange(request, new ParameterizedTypeReference<List<AaregResponse>>() {
