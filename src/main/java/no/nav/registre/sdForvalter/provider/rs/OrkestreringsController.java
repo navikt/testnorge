@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
+import no.nav.registre.sdForvalter.consumer.rs.response.AaregResponse;
 import no.nav.registre.sdForvalter.service.EnvironmentInitializationService;
 
 @Slf4j
@@ -38,10 +39,10 @@ public class OrkestreringsController {
         return ResponseEntity.ok(environmentInitializationService.initializeSkd(miljoe));
     }
 
-    @ApiOperation(value = "Legger til arbeidsforhold i Aareg-stub", consumes = "Testnorge-aaregstub")
+    @ApiOperation(value = "Legger til arbeidsforhold i Aareg", consumes = "Testnorge-aareg")
     @PostMapping(value = "/aareg/{miljoe}")
-    public ResponseEntity<Map<String, String>> initializeAareg(@PathVariable String miljoe) {
-        return ResponseEntity.ok(environmentInitializationService.initializeAareg(miljoe));
+    public List<AaregResponse> initializeAareg(@PathVariable String miljoe) {
+        return environmentInitializationService.initializeAareg(miljoe);
     }
 
     @ApiOperation(value = "Legger til faste kontaktreservasjoner i krr-stub", consumes = "Krr-stub, Aktørregisteret")

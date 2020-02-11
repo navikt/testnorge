@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -16,7 +15,5 @@ import java.util.Map;
 @Builder
 public class AaregResponse {
 
-    private List<String> identerLagretIStub;
-    private List<String> identerLagretIAareg;
-    private Map<String, String> identerSomIkkeKunneLagresIAareg;
+    private Map<String, String> statusPerMiljoe;
 }

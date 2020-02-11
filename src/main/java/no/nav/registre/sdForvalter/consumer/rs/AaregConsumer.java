@@ -12,7 +12,6 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,13 +33,20 @@ public class AaregConsumer {
     };
     private final String aaregStubUrl;
 
-    public AaregConsumer(RestTemplate restTemplate, @Value("${testnorge.aareg.rest.api.url}") String aaregUrl, @Value("${testnorge.aaregstub.rest.api.url}") String aaregStubUrl) {
+    public AaregConsumer(
+            RestTemplate restTemplate,
+            @Value("${testnorge.aareg.rest.api.url}") String aaregUrl,
+            @Value("${testnorge.aaregstub.rest.api.url}") String aaregStubUrl
+    ) {
         this.restTemplate = restTemplate;
         this.aaregUrl = aaregUrl + "/v1/syntetisering";
         this.aaregStubUrl = aaregStubUrl + "/v1";
     }
 
-    public Set<String> finnPersonerUtenArbeidsforhold(Set<String> fnrs, String environment) {
+    public Set<String> finnPersonerUtenArbeidsforhold(
+            Set<String> fnrs,
+            String environment
+    ) {
         UriTemplate uriTemplate = new UriTemplate(aaregStubUrl + "/hentArbeidsforholdFraAareg?ident={fnr}&miljoe={environment}");
         log.info(fnrs.toString());
         return fnrs.stream().map(f -> {
@@ -58,7 +64,10 @@ public class AaregConsumer {
         }).filter(Objects::nonNull).collect(Collectors.toSet());
     }
 
-    public Map<String, String> send(Set<AaregModel> data, String environment) {
+    public List<AaregResponse> send(
+            Set<AaregModel> data,
+            String environment
+    ) {
 
         List<AaregRequest> requestBody = data.parallelStream().map(d -> new AaregRequest(
                 new Arbeidsforhold(
@@ -74,12 +83,7 @@ public class AaregConsumer {
 
         UriTemplate uriTemplate = new UriTemplate(aaregUrl + "/sendTilAareg?fyllUtArbeidsforhold=true");
         RequestEntity<List<AaregRequest>> request = new RequestEntity<>(requestBody, HttpMethod.POST, uriTemplate.expand());
-        ResponseEntity<AaregResponse> response = restTemplate.exchange(request, AaregResponse.class);
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            if (response.getBody() != null) {
-                log.warn("Klarte ikke opprette arbeidsforhold for {}", response.getBody().getIdenterSomIkkeKunneLagresIAareg());
-            }
-        }
-        return Objects.requireNonNull(response.getBody()).getIdenterSomIkkeKunneLagresIAareg();
+        return restTemplate.exchange(request, new ParameterizedTypeReference<List<AaregResponse>>() {
+        }).getBody();
     }
 }
