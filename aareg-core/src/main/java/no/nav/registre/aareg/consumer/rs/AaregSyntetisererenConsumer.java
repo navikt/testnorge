@@ -13,8 +13,8 @@ import org.springframework.web.util.UriTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.exception.SyntetiseringException;
+import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
 
 @Component
 @Slf4j
@@ -35,8 +35,8 @@ public class AaregSyntetisererenConsumer {
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aareg-syntetisereren" })
-    public List<RsAaregOpprettRequest> getSyntetiserteArbeidsforholdsmeldinger(List<String> identer) {
-        List<RsAaregOpprettRequest> syntetiserteMeldinger = new ArrayList<>();
+    public List<RsAaregSyntetiseringsRequest> getSyntetiserteArbeidsforholdsmeldinger(List<String> identer) {
+        List<RsAaregSyntetiseringsRequest> syntetiserteMeldinger = new ArrayList<>();
         RequestEntity postRequest;
 
         if (identer.size() > pageSize) {
@@ -60,10 +60,10 @@ public class AaregSyntetisererenConsumer {
     }
 
     private void insertSyntetiskeArbeidsforhold(
-            List<RsAaregOpprettRequest> syntetiserteMeldinger,
+            List<RsAaregSyntetiseringsRequest> syntetiserteMeldinger,
             RequestEntity postRequest
     ) {
-        List<RsAaregOpprettRequest> response;
+        List<RsAaregSyntetiseringsRequest> response;
         try {
             response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST_AAREG_REQUEST).getBody();
         } catch (Exception e) {

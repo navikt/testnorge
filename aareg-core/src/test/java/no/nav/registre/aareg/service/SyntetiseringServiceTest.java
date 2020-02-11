@@ -32,9 +32,9 @@ import java.util.Random;
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenHistorikkConsumer;
-import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
+import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -70,7 +70,7 @@ public class SyntetiseringServiceTest {
     private final String fnr2 = "02020202020";
     private SyntetiserAaregRequest syntetiserAaregRequest;
     private List<String> fnrs;
-    private List<RsAaregOpprettRequest> syntetiserteMeldinger;
+    private List<RsAaregSyntetiseringsRequest> syntetiserteMeldinger;
     private boolean sendAlleEksisterende = true;
 
     @Before
@@ -85,7 +85,7 @@ public class SyntetiseringServiceTest {
         objectMapper.registerModule(new JavaTimeModule());
         var list = objectMapper.readValue(resourceFileContent, List.class);
         for (Object o : list) {
-            syntetiserteMeldinger.add(objectMapper.convertValue(o, RsAaregOpprettRequest.class));
+            syntetiserteMeldinger.add(objectMapper.convertValue(o, RsAaregSyntetiseringsRequest.class));
         }
 
         when(hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER)).thenReturn(fnrs);
@@ -106,8 +106,7 @@ public class SyntetiseringServiceTest {
 
         var response = syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, sendAlleEksisterende);
 
-        verify(aaregstubConsumer).sendTilAaregstub(Collections.singletonList(syntetiserteMeldinger.get(0)));
-        verify(aaregstubConsumer).sendTilAaregstub(Collections.singletonList(syntetiserteMeldinger.get(1)));
+        verify(aaregstubConsumer, times(2)).sendTilAaregstub(Collections.singletonList(any()));
         verify(hodejegerenHistorikkConsumer, times(2)).saveHistory(any());
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
