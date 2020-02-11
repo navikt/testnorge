@@ -48,7 +48,6 @@ public class AaregConsumer {
             String environment
     ) {
         UriTemplate uriTemplate = new UriTemplate(aaregStubUrl + "/hentArbeidsforholdFraAareg?ident={fnr}&miljoe={environment}");
-        log.info(fnrs.toString());
         return fnrs.stream().map(f -> {
             RequestEntity request = new RequestEntity<>(HttpMethod.GET, uriTemplate.expand(f, environment));
             ResponseEntity<List<Object>> response = restTemplate.exchange(request, RESPONSE_TYPE_LIST);
@@ -81,13 +80,13 @@ public class AaregConsumer {
                 Collections.singletonList(environment)
         )).collect(Collectors.toList());
 
-        for (var request : requestBody) {
+        for (AaregRequest request : requestBody) {
             log.info("Sender ident {} til miljøer {}.", request.getArbeidsforhold().getArbeidstaker().getIdent(), request.getEnvironments().toString());
         }
 
         UriTemplate uriTemplate = new UriTemplate(aaregUrl + "/sendTilAareg?fyllUtArbeidsforhold=true");
-        RequestEntity<List<AaregRequest>> request = new RequestEntity<>(requestBody, HttpMethod.POST, uriTemplate.expand());
-        return restTemplate.exchange(request, new ParameterizedTypeReference<List<AaregResponse>>() {
+        RequestEntity postRequest = RequestEntity.post(uriTemplate.expand()).body(requestBody);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<AaregResponse>>() {
         }).getBody();
     }
 }
