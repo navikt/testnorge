@@ -8,6 +8,7 @@ import { TimeloennetForm } from './timeloennetForm'
 import { PermisjonForm } from './permisjonForm'
 import { UtenlandsoppholdForm } from './utenlandsoppholdForm'
 import { ArbeidsavtaleForm } from './arbeidsavtaleForm'
+import { OrgnrForm } from './orgnrForm'
 
 export const ArbeidsforholdForm = ({ path, formikBag }) => {
 	const arbeidsforhold = _get(formikBag.values, path)
@@ -31,20 +32,13 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 					size="medium"
 					isClearable={false}
 				/>
-				{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
-					<FormikSelect // evt. felt man kan skrive i også?
-						name={`${path}.arbeidsgiver.orgnummer`}
-						label="Arbeidsgiver orgnummer"
-						options={Options('orgnummer')}
-						type="text"
-						size="large"
-						isClearable={false}
-					/>
-				)}
 				{arbeidsforhold.arbeidsgiver.aktoertype === 'PERS' && (
 					<FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" />
 				)}
 			</div>
+			{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
+				<OrgnrForm path={path} formikBag={formikBag} />
+			)}
 
 			<ArbeidsavtaleForm formikBag={formikBag} path={path} />
 
