@@ -18,7 +18,6 @@ export const OrgnrForm = ({ formikBag, path }) => {
 
 	const handleToggleChange = event => {
 		setInputType(event.target.value)
-		console.log('path :', path)
 		formikBag.setFieldValue(`${path}.arbeidsgiver.orgnummer`, '')
 	}
 
