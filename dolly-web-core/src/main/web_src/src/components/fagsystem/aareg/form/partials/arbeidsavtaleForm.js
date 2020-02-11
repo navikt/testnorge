@@ -40,7 +40,7 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 	const toggleValues = [
 		{
 			value: avtaleValg.avtaltArbeidstimerPerUke,
-			label: 'Avtalt arbeids timer per uke'
+			label: 'Avtalte arbeidstimer per uke'
 		},
 		{
 			value: avtaleValg.antallKonverterteTimer,
