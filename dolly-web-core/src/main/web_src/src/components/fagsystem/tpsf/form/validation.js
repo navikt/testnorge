@@ -161,7 +161,7 @@ export const validation = {
 						value => value !== 'SPSF'
 					)
 				})
-			),
+			).nullable(),
 			boadresse: ifPresent('$tpsf.boadresse', boadresse),
 			adresseNrInfo: ifPresent('$tpsf.adresseNrInfo', adresseNrInfo),
 			postadresse: Yup.array().of(

@@ -26,7 +26,9 @@ const initialBoType = formikBag => {
 export const Adresser = ({ formikBag }) => {
 	const [boType, setBoType] = useState(initialBoType(formikBag))
 
-	const erValgt = _has(formikBag.values, 'tpsf.boadresse.flyttedato')
+	const erValgt =
+		_has(formikBag.values, 'tpsf.boadresse.flyttedato') ||
+		_has(formikBag.values, 'tpsf.postadresse')
 
 	const handleRadioChange = e => {
 		const nyType = e.target.value
@@ -91,7 +93,7 @@ export const Adresser = ({ formikBag }) => {
 					iconType="adresse"
 					startOpen={() => erForste(formikBag.values, paths)}
 				>
-					<Vis attributt="tpsf.boadresse">
+					<Vis attributt="tpsf.boadresse.flyttedato">
 						<RadioPanelGruppe
 							name="botype"
 							legend="Hva slags adresse vil du opprette?"

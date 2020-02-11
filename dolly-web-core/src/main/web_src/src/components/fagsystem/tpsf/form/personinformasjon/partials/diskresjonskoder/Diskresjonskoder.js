@@ -38,7 +38,6 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 					label="Diskresjonskode"
 					kodeverk="Diskresjonskoder"
 					size="large"
-					isClearable={basePath.includes('relasjoner')}
 				/>
 
 				<FormikCheckbox
