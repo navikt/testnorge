@@ -27,15 +27,15 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 	const handleToggleChange = event => {
 		const { value } = event.target
 		setVisning(avtaleValg[value])
+
+		arbeidsavtale.avtaltArbeidstimerPerUke != '' && visning === avtaleValg.avtaltArbeidstimerPerUke
+			? formikBag.setFieldValue(`${path}.arbeidsavtale.antallKonverterteTimer`, '')
+			: formikBag.setFieldValue(`${path}.arbeidsavtale.avtaltArbeidstimerPerUke`, '')
+
+		arbeidsavtale.antallKonverterteTimer != '' && visning === avtaleValg.antallKonverterteTimer
+			? formikBag.setFieldValue(`${path}.arbeidsavtale.avtaltArbeidstimerPerUke`, '')
+			: formikBag.setFieldValue(`${path}.arbeidsavtale.antallKonverterteTimer`, '')
 	}
-
-	arbeidsavtale.avtaltArbeidstimerPerUke != '' && visning === avtaleValg.avtaltArbeidstimerPerUke
-		? (arbeidsavtale.antallKonverterteTimer = '')
-		: (arbeidsavtale.avtaltArbeidstimerPerUke = '')
-
-	arbeidsavtale.antallKonverterteTimer != '' && visning === avtaleValg.antallKonverterteTimer
-		? (arbeidsavtale.avtaltArbeidstimerPerUke = '')
-		: (arbeidsavtale.antallKonverterteTimer = '')
 
 	const toggleValues = [
 		{
