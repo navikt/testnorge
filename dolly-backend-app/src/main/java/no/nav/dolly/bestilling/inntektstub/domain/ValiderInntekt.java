@@ -17,7 +17,7 @@ public class ValiderInntekt {
     private String fordel;
     private String grunnpensjonsbeloep;
     private String heravEtterlattepensjon;
-    private boolean inngaarIGrunnlagForTrekk;
+    private Boolean inngaarIGrunnlagForTrekk;
     private Inntektstype inntektstype;
     private String inntjeningsforhold;
     private String opptjeningsland;
@@ -30,5 +30,5 @@ public class ValiderInntekt {
     private String tilleggsinformasjonstype;
     private String tilleggspensjonsbeloep;
     private String ufoeregrad;
-    private boolean utloeserArbeidsgiveravgift;
+    private Boolean utloeserArbeidsgiveravgift;
 }
