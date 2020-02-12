@@ -25,6 +25,7 @@ import java.util.List;
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
+import no.nav.registre.arena.domain.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.arena.domain.historikk.Vedtakshistorikk;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
@@ -66,10 +67,12 @@ public class RettighetAapServiceTest {
 
         aap115Rettighet = NyttVedtakAap.builder()
                 .build();
+        Saksopplysning saksopplysning = new Saksopplysning();
         var nyRettighetAap = NyttVedtakAap.builder()
                 .build();
         nyRettighetAap.setFraDato(LocalDate.now().minusDays(7));
         nyRettighetAap.setTilDato(LocalDate.now());
+        nyRettighetAap.setGenSaksopplysninger(Collections.singletonList(saksopplysning));
         var nyRettighetUngUfoer = NyttVedtakAap.builder()
                 .build();
         var nyRettighetTvungenForvaltning = NyttVedtakAap.builder()
@@ -106,7 +109,7 @@ public class RettighetAapServiceTest {
                         .fnr(forvalterFnr)
                         .kontonummer(kontonummer)
                         .build())));
-        when(aapSyntConsumer.syntetiserVedtakshistorikkGittListeMedIdenter(anyList())).thenReturn(vedtakshistorikkListe);
+        when(aapSyntConsumer.syntetiserVedtakshistorikk(antallIdenter)).thenReturn(vedtakshistorikkListe);
 
         var nyRettighetAapResponse = NyttVedtakResponse.builder()
                 .nyeRettigheterAap(aapRettigheter)
@@ -136,8 +139,8 @@ public class RettighetAapServiceTest {
 
         var response = rettighetAapService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 
-        verify(serviceUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt());
-        verify(aapSyntConsumer).syntetiserVedtakshistorikkGittListeMedIdenter(anyList());
+        verify(serviceUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(1), anyInt(), anyInt());
+        verify(aapSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
 
         assertThat(response.size(), equalTo(4));

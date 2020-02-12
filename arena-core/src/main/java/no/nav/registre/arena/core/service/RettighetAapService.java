@@ -1,10 +1,15 @@
 package no.nav.registre.arena.core.service;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,19 +24,20 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
+import no.nav.registre.arena.domain.aap.gensaksopplysninger.GensakKoder;
 import no.nav.registre.arena.domain.historikk.Vedtakshistorikk;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RettighetAapService {
 
     private static final int MIN_ALDER_UNG_UFOER = 18;
     private static final int MAX_ALDER_UNG_UFOER = 36;
-    private static final int MIN_ALDER_AAP = 20;
-    private static final int MAX_ALDER_AAP = 65;
+    private static final int MAX_ALDER_VEDTAKSHISTORIKK = 67;
 
     private final AapSyntConsumer aapSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
@@ -43,25 +49,27 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP);
-        var vedtakshistorikk = aapSyntConsumer.syntetiserVedtakshistorikkGittListeMedIdenter(utvalgteIdenter);
+        List<Vedtakshistorikk> vedtakshistorikk = aapSyntConsumer.syntetiserVedtakshistorikk(antallNyeIdenter);
+        List<NyttVedtakResponse> responses = new ArrayList<>();
+        for (var vedtakshistorikken : vedtakshistorikk) {
+            List<NyttVedtakAap> aap = vedtakshistorikken.getAap();
 
-        int antallTvungenForvaltning = vedtakshistorikk.stream().mapToInt(vedtak -> vedtak.getTvungenForvaltning() != null ? vedtak.getTvungenForvaltning().size() : 0).sum();
-        var identerMedKontonummer = serviceUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallTvungenForvaltning);
-
-        List<RettighetRequest> rettigheter = new ArrayList<>();
-        for (var vedtak : vedtakshistorikk) {
-            if (!utvalgteIdenter.isEmpty()) {
-                var personident = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
-
-                opprettVedtakAap115(vedtak, personident, miljoe, rettigheter);
-                opprettVedtakAap(vedtak, personident, miljoe, rettigheter);
-                opprettVedtakUngUfoer(vedtak, personident, miljoe, rettigheter);
-                opprettVedtakTvungenForvaltning(vedtak, personident, miljoe, rettigheter, identerMedKontonummer);
-                opprettVedtakFritakMeldekort(vedtak, personident, miljoe, rettigheter);
+            if (aap != null && !aap.isEmpty()) {
+                LocalDate tidligsteDato = finnTidligsteDato(aap);
+                int minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(18), LocalDate.now()));
+                if (minimumAlder > MAX_ALDER_VEDTAKSHISTORIKK) {
+                    log.warn("Kunne ikke opprette vedtakshistorikk på ident med minimum alder |}", minimumAlder);
+                    continue;
+                }
+                int maksimumAlder = minimumAlder + 50;
+                if (maksimumAlder > MAX_ALDER_VEDTAKSHISTORIKK) {
+                    maksimumAlder = MAX_ALDER_VEDTAKSHISTORIKK;
+                }
+                String ident = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder).get(0);
+                responses.addAll(opprettHistorikkOgSendTilArena(avspillergruppeId, ident, miljoe, vedtakshistorikken));
             }
         }
-        return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+        return responses;
     }
 
     public List<NyttVedtakResponse> genererAapMedTilhoerende115(
@@ -183,6 +191,62 @@ public class RettighetAapService {
         }
 
         return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
+    }
+
+    private List<NyttVedtakResponse> opprettHistorikkOgSendTilArena(
+            Long avspillergruppeId,
+            String personident,
+            String miljoe,
+            Vedtakshistorikk vedtakshistorikk
+    ) {
+        List<KontoinfoResponse> identerMedKontonummer = null;
+        if (vedtakshistorikk.getTvungenForvaltning() != null && !vedtakshistorikk.getTvungenForvaltning().isEmpty()) {
+            var antallTvungenForvaltning = vedtakshistorikk.getTvungenForvaltning().size();
+            identerMedKontonummer = serviceUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallTvungenForvaltning);
+        }
+
+        List<RettighetRequest> rettigheter = new ArrayList<>();
+
+        opprettVedtakAap115(vedtakshistorikk, personident, miljoe, rettigheter);
+        opprettVedtakAap(vedtakshistorikk, personident, miljoe, rettigheter);
+        opprettVedtakUngUfoer(vedtakshistorikk, personident, miljoe, rettigheter);
+        opprettVedtakTvungenForvaltning(vedtakshistorikk, personident, miljoe, rettigheter, identerMedKontonummer);
+        opprettVedtakFritakMeldekort(vedtakshistorikk, personident, miljoe, rettigheter);
+
+        return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+    }
+
+    private LocalDate finnTidligsteDato(List<NyttVedtakAap> aapVedtak) {
+        LocalDate tidligsteDato = LocalDate.now();
+        for (var aapVedtaket : aapVedtak) {
+            tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, aapVedtaket.getFraDato());
+            var genSaksopplysninger = aapVedtaket.getGenSaksopplysninger();
+            for (var saksopplysning : genSaksopplysninger) {
+                if (GensakKoder.KDATO.equals(saksopplysning.getKode())
+                        || GensakKoder.BTID.equals(saksopplysning.getKode())
+                        || GensakKoder.UFTID.equals(saksopplysning.getKode())
+                        || GensakKoder.YDATO.equals(saksopplysning.getKode())) {
+                    if (!isNullOrEmpty(saksopplysning.getVerdi())) {
+                        tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, LocalDate.parse(saksopplysning.getVerdi(), DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+                    }
+                }
+            }
+        }
+        return tidligsteDato;
+    }
+
+    private LocalDate finnTidligsteDatoAvTo(
+            LocalDate date1,
+            LocalDate date2
+    ) {
+        if (date2 == null) {
+            return date1;
+        }
+        if (date2.isBefore(date1)) {
+            return date2;
+        } else {
+            return date1;
+        }
     }
 
     private void opprettVedtakAap115(
