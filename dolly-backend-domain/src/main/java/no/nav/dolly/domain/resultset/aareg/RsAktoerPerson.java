@@ -27,4 +27,9 @@ public class RsAktoerPerson extends RsAktoer {
             position = 2
     )
     private String identtype;
+
+    @Override
+    public String getAktoertype() {
+        return "PERS";
+    }
 }

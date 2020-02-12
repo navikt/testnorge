@@ -20,4 +20,9 @@ public class RsOrganisasjon extends RsAktoer {
             position = 1
     )
     private String orgnummer;
+
+    @Override
+    public String getAktoertype() {
+        return "ORG";
+    }
 }

@@ -28,5 +28,8 @@ public abstract class RsAktoer {
             "\"ident\": \"12345678901\",\n" +
             "}",
             required = true)
+
     private String aktoertype;
+
+    public abstract String getAktoertype();
 }
