@@ -128,6 +128,8 @@ public class EnvironmentInitializationService {
                 .filter(aaregModel -> aaregModel.getVarighet() != null && aaregModel.getVarighet().shouldUse())
                 .collect(Collectors.toSet());
 
+        log.info("Fant {} arbeidsforhold i database med faste testdata", aaregSet.size());
+
         Set<String> fnrs = aaregConsumer.finnPersonerUtenArbeidsforhold(aaregSet.parallelStream().map(AaregModel::getFnr).collect(Collectors.toSet()), environment);
 
         Set<AaregModel> models = aaregSet.parallelStream().filter(a -> fnrs.contains(a.getFnr())).collect(Collectors.toSet());
