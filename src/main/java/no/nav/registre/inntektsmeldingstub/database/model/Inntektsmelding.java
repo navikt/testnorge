@@ -18,6 +18,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -34,11 +35,11 @@ public class Inntektsmelding {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "opphoer_av_naturalytelse_id", referencedColumnName = "id")
-    List<NaturalytelseDetaljer> opphoerAvNaturalytelseListe = Collections.emptyList();
+    private List<NaturalytelseDetaljer> opphoerAvNaturalytelseListe;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "gjenopptakelse_naturalytelse_id", referencedColumnName = "id")
-    List<NaturalytelseDetaljer> gjenopptakelseNaturalytelseListe = Collections.emptyList();
+    private List<NaturalytelseDetaljer> gjenopptakelseNaturalytelseListe;
     @Id
     @GeneratedValue
     private Long id;
@@ -60,13 +61,13 @@ public class Inntektsmelding {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "refusjon_endring_id", referencedColumnName = "id")
-    private List<EndringIRefusjon> endringIRefusjonListe = Collections.emptyList();
+    private List<EndringIRefusjon> endringIRefusjonListe;
     private double sykepengerBruttoUtbetalt;
     private String sykepengerBegrunnelseForReduksjonEllerIkkeUtbetalt;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "sykepenger_periode_id", referencedColumnName = "id")
-    private List<Periode> sykepengerPerioder = Collections.emptyList();
+    private List<Periode> sykepengerPerioder;
     private LocalDate startdatoForeldrepengeperiode;
     private String avsendersystemNavn;
     private String avsendersystemVersjon;
@@ -74,7 +75,7 @@ public class Inntektsmelding {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "pleiepenger_periode_id", referencedColumnName = "id")
-    private List<Periode> pleiepengerPeriodeListe = Collections.emptyList();
+    private List<Periode> pleiepengerPeriodeListe;
 
 
     private boolean omsorgHarUtbetaltPliktigeDager;
@@ -86,15 +87,50 @@ public class Inntektsmelding {
     @JoinColumn(name = "omsorgspenger_delvis_fravaers_id", referencedColumnName = "id")
     private List<DelvisFravaer> omsorgspengerDelvisFravaersListe = Collections.emptyList();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "eier_id", referencedColumnName = "id")
     private Eier eier;
 
-    public Optional<Arbeidsgiver> getArbeidsgiver() { return Optional.ofNullable(arbeidsgiver); }
-    public Arbeidsgiver getPrivatArbeidsgiver() {
-        if (!Objects.isNull(arbeidsgiver) && arbeidsgiver.getVirksomhetsnummer().length() == 11) {
-            return arbeidsgiver;
+    public Optional<Arbeidsgiver> getArbeidsgiver() {
+        if (!Objects.isNull(arbeidsgiver) && arbeidsgiver.getVirksomhetsnummer().length() > 9) {
+            return Optional.empty();
         }
-        return null;
+        return Optional.ofNullable(arbeidsgiver);
+    }
+    public Optional<Arbeidsgiver> getPrivatArbeidsgiver() {
+        if (!Objects.isNull(arbeidsgiver) && arbeidsgiver.getVirksomhetsnummer().length() == 11) {
+            return Optional.of(arbeidsgiver);
+        }
+        return Optional.empty();
+    }
+
+    public List<NaturalytelseDetaljer> getOpphoerAvNaturaytelseListe() {
+        if (Objects.isNull(opphoerAvNaturalytelseListe)) { return new ArrayList<>(); }
+        return opphoerAvNaturalytelseListe;
+    }
+
+    public List<NaturalytelseDetaljer> getGjenopptakelseNaturaytelseListe() {
+        if (Objects.isNull(gjenopptakelseNaturalytelseListe)) { return new ArrayList<>(); }
+        return gjenopptakelseNaturalytelseListe;
+    }
+
+    public List<EndringIRefusjon> getEndringIRefusjonListe() {
+        if (Objects.isNull(endringIRefusjonListe)) { return new ArrayList<>(); }
+        return endringIRefusjonListe;
+    }
+
+    public List<Periode> getSykepengerPerioder() {
+        if (Objects.isNull(sykepengerPerioder)) { return new ArrayList<>(); }
+        return sykepengerPerioder;
+    }
+
+    public List<Periode> getPleiepengerPeriodeListe() {
+        if (Objects.isNull(pleiepengerPeriodeListe)) { return new ArrayList<>(); }
+        return pleiepengerPeriodeListe;
+    }
+
+    public List<Periode> getOmsorgspengerFrabaersPeriodeListe() {
+        if (Objects.isNull(pleiepengerPeriodeListe)) { return new ArrayList<>(); }
+        return pleiepengerPeriodeListe;
     }
 }

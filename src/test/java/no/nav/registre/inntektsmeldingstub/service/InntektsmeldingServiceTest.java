@@ -1,8 +1,6 @@
 package no.nav.registre.inntektsmeldingstub.service;
 
 import no.nav.registre.inntektsmeldingstub.MeldingsType;
-import no.nav.registre.inntektsmeldingstub.database.model.Arbeidsforhold;
-import no.nav.registre.inntektsmeldingstub.database.model.Arbeidsgiver;
 import no.nav.registre.inntektsmeldingstub.database.model.Eier;
 import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
 import no.nav.registre.inntektsmeldingstub.database.repository.ArbeidsforholdRepository;
@@ -20,14 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -74,29 +67,11 @@ public class InntektsmeldingServiceTest {
     @Before
     public void setup() {
         inntektsmeldingService = new InntektsmeldingService(
-                arbeidsforholdRepository,
                 arbeidsgiverRepository,
-                delvisFravaerRepository,
-                graderingIForeldrePengerRepository,
                 inntektsmeldingRepository,
-                naturalytelseDetaljerRepository,
-                periodeRepository,
-                endringIRefusjonRepository,
-                utsettelseAvForeldrepengerRepository,
                 eierRepository);
 
-        inntekt_A = Inntektsmelding.builder()
-                .ytelse("miniytelse")
-                .aarsakTilInnsending("minitesting")
-                .arbeidsgiver(Arbeidsgiver.builder()
-                        .virksomhetsnummer("123456789")
-                        .telefonnummer("12345678")
-                        .kontaktinformasjonNavn("Bjarne Bjarne")
-                        .build())
-                .arbeidsforhold(Arbeidsforhold.builder()
-                        .arbeidforholdsId("ANSWER42")
-                        .build())
-                .build();
+        inntekt_A = RestToDatabaseModelMapper.map201812melding(InntektsmeldingFactory.getFullMelding()).build();
     }
 
     @Test
@@ -116,15 +91,19 @@ public class InntektsmeldingServiceTest {
 
         List<Inntektsmelding> res = inntektsmeldingService.saveMeldinger(Collections.singletonList(miniMelding),
                 MeldingsType.TYPE_2018_12, "test");
+        long numSavedMessages = inntektsmeldingRepository.findAll().spliterator().estimateSize();
+
+        assertThat(numSavedMessages, is(1L));
         assertThat(res.size(), is(1));
         assertThat(res.get(0).getEier().getNavn(), is("test"));
+        assertThat(res.get(0).getArbeidsgiver().isPresent(), is(true));
         assertThat(res.get(0).getArbeidsgiver().get().getInntektsmeldinger().size(), is(1));
-
-
 
         res = inntektsmeldingService.saveMeldinger(Collections.singletonList(fullMelding),
                 MeldingsType.TYPE_2018_12, "test");
+        numSavedMessages = inntektsmeldingRepository.findAll().spliterator().estimateSize();
 
+        assertThat(numSavedMessages, is(2L));
         assertThat(res.get(0).getArbeidsgiver().get().getInntektsmeldinger().size(), is(2));
 
         List<Eier> e = (List<Eier>) eierRepository.findAll();

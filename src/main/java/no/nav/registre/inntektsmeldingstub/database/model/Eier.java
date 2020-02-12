@@ -13,8 +13,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Entity
 @Getter
@@ -30,10 +32,13 @@ public class Eier {
     private Long id;
     private String navn;
     @OneToMany(mappedBy = "eier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Inntektsmelding> inntektsmeldinger = Collections.emptyList();
+    private List<Inntektsmelding> inntektsmeldinger;
 
-    public void addInntektsmelding(Inntektsmelding melding) {
-        melding.setEier(this);
-        inntektsmeldinger.add(melding);
+
+    public List<Inntektsmelding> getInntektsmeldinger() {
+        if (isNull(inntektsmeldinger)) {
+            inntektsmeldinger = new ArrayList<>();
+        }
+        return inntektsmeldinger;
     }
 }

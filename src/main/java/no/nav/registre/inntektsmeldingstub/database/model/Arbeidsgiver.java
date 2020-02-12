@@ -14,8 +14,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Entity
 @Table(name = "arbeidsgiver")
@@ -27,7 +29,7 @@ import java.util.List;
 public class Arbeidsgiver {
 
     @OneToMany(mappedBy = "arbeidsgiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    List<Inntektsmelding> inntektsmeldinger = Collections.emptyList();
+    private List<Inntektsmelding> inntektsmeldinger;
     @Id
     @GeneratedValue
     private Long id;
@@ -36,8 +38,10 @@ public class Arbeidsgiver {
     private String kontaktinformasjonNavn;
     private String telefonnummer;
 
-    public void addInntektsmelding(Inntektsmelding melding) {
-        melding.setArbeidsgiver(this);
-        inntektsmeldinger.add(melding);
+    public List<Inntektsmelding> getInntektsmeldinger() {
+        if (isNull(inntektsmeldinger)) {
+            inntektsmeldinger = new ArrayList<>();
+        }
+        return inntektsmeldinger;
     }
 }

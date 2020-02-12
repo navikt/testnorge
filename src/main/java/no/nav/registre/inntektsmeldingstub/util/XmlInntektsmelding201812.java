@@ -58,7 +58,7 @@ public class XmlInntektsmelding201812 {
                 inntektsmelding.getYtelse(),
                 inntektsmelding.getAarsakTilInnsending(),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsgiver"), XMLArbeidsgiver.class, createArbeidsgiver(inntektsmelding.getArbeidsgiver().orElse(null))), // nillable
-                new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsgiverPrivat"), XMLArbeidsgiverPrivat.class, createPrivatArbeidsgiver(inntektsmelding.getPrivatArbeidsgiver())), // nillable
+                new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsgiverPrivat"), XMLArbeidsgiverPrivat.class, createPrivatArbeidsgiver(inntektsmelding.getPrivatArbeidsgiver().orElse(null))), // nillable
                 inntektsmelding.getArbeidstakerFnr(),
                 inntektsmelding.isNaerRelasjon(),
                 createArbeidsforhold(inntektsmelding.getArbeidsforhold()), // nillable

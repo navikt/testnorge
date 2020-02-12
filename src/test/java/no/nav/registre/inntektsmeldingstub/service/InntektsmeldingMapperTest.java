@@ -28,21 +28,21 @@ public class InntektsmeldingMapperTest {
 
     @Test
     public void tomMeldingTest() {
-        Inntektsmelding i = InntektsmeldingMapper.map201809melding(null).build();
+        Inntektsmelding i = RestToDatabaseModelMapper.map201809melding(null).build();
         assertThat(Objects.isNull(i.getPrivatArbeidsgiver()), is(true));
         assertThat(i.getArbeidstakerFnr() == null, is(true));
     }
 
     @Test
     public void minimalMeldingTest() {
-        Inntektsmelding i = InntektsmeldingMapper.map201809melding(minimalMelding).build();
+        Inntektsmelding i = RestToDatabaseModelMapper.map201809melding(minimalMelding).build();
         assertThat(i.getArbeidstakerFnr(), is("11223344556"));
         assertThat(i.getArbeidsgiver().isPresent(), is(true));
     }
 
     @Test
     public void fullMeldingTest() {
-        Inntektsmelding i = InntektsmeldingMapper.map201812melding(fullMelding).build();
+        Inntektsmelding i = RestToDatabaseModelMapper.map201812melding(fullMelding).build();
         assertThat(i.getGjenopptakelseNaturalytelseListe().size(), is(2));
         assertThat(i.getSykepengerPerioder().size(), is(2));
         assertThat(i.getArbeidsgiver().isPresent(), is(true));
@@ -52,11 +52,11 @@ public class InntektsmeldingMapperTest {
 
     @Test
     public void privatArbeidsgiverTest() {
-        Inntektsmelding i = InntektsmeldingMapper.map201812melding(privatArbeidsgiverMelding).build();
+        Inntektsmelding i = RestToDatabaseModelMapper.map201812melding(privatArbeidsgiverMelding).build();
         assertThat(i.getArbeidsgiver().isPresent(), is(true));
-        assertThat(Objects.isNull(i.getPrivatArbeidsgiver()), is(false));
+        assertThat(i.getPrivatArbeidsgiver().isPresent(), is(true));
         assertThat(i.getArbeidsgiver().get().getVirksomhetsnummer().length(), is(11));
-        assertThat(i.getArbeidsgiver().get() == i.getPrivatArbeidsgiver(), is(true));
+        assertThat(i.getArbeidsgiver().get() == i.getPrivatArbeidsgiver().get(), is(true));
     }
 
 }
