@@ -76,7 +76,7 @@ const partnere = Yup.array()
 			alder: Yup.number()
 				.transform(num => (isNaN(num) ? undefined : num))
 				.min(1, 'Alder må være høyere enn 0')
-				.max(99, 'Alder må være lavere enn 100'),
+				.max(120, 'Alder kan ikke være høyere enn ${max}'),
 			foedtEtter: Yup.date().nullable(),
 			foedtFoer: Yup.date().nullable(),
 			spesreg: Yup.string()
@@ -111,7 +111,7 @@ const barn = Yup.array()
 			alder: Yup.number()
 				.transform(num => (isNaN(num) ? undefined : num))
 				.min(1, 'Alder må være høyere enn 0')
-				.max(99, 'Alder må være lavere enn 100'),
+				.max(120, 'Alder kan ikke være høyere enn ${max}'),
 			spesreg: Yup.string()
 				.when('utenFastBopel', {
 					is: true,
@@ -136,7 +136,7 @@ export const validation = {
 		Yup.object({
 			alder: Yup.number()
 				.min(1, 'Alder må være høyere enn 0')
-				.max(99, 'Alder må være lavere enn 100')
+				.max(120, 'Alder kan ikke være høyere enn ${max}')
 				.typeError(messages.required),
 			foedtEtter: Yup.date().nullable(),
 			foedtFoer: Yup.date().nullable(),
