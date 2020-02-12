@@ -11,12 +11,16 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
+import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.consumer.aareg.AaregConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
@@ -37,6 +41,7 @@ public class OppslagController {
     private final Norg2Consumer norg2Consumer;
     private final AaregConsumer aaregConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
+    private final InntektstubConsumer inntektstubConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -57,6 +62,18 @@ public class OppslagController {
     @ApiOperation("Hent person tilhørende ident fra pdlperson")
     public ResponseEntity pdlPerson(@PathVariable("ident") String ident) {
         return pdlPersonConsumer.getPdlPerson(ident);
+    }
+
+    @GetMapping("/inntektstub/{ident}")
+    @ApiOperation("Hent inntekter tilhørende ident fra Inntektstub")
+    public ResponseEntity inntektstub(@PathVariable String ident) {
+        return inntektstubConsumer.getInntekter(ident);
+    }
+
+    @PostMapping("/inntektstub")
+    @ApiOperation("Valider inntekt mot Inntektstub")
+    public ResponseEntity inntektstub(@RequestBody ValiderInntekt validerInntekt) {
+        return inntektstubConsumer.validerInntekter(validerInntekt);
     }
 
     @GetMapping("/systemer")

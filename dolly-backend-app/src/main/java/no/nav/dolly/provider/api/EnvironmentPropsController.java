@@ -1,14 +1,15 @@
-package no.nav.dolly.provider.api.config;
+package no.nav.dolly.provider.api;
 
-import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.resultset.RsDollyProps;
-import no.nav.dolly.properties.ProvidersProps;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import no.nav.dolly.domain.resultset.RsDollyProps;
+import no.nav.dolly.properties.ProvidersProps;
 
 @CrossOrigin
 @RestController
@@ -30,6 +31,7 @@ public class EnvironmentPropsController {
                 .arenaForvalterUrl(providersProps.getArenaForvalter().getUrl())
                 .instdataUrl(providersProps.getInstdata().getUrl())
                 .aaregdataUrl(providersProps.getAaregdata().getUrl())
+                .inntektstub(providersProps.getInntektstub().getUrl())
                 .build();
     }
 }
