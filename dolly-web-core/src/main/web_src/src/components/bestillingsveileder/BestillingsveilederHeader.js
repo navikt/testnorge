@@ -1,19 +1,33 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Header } from '~/components/ui/header/Header'
 import Formatter from '~/utils/DataFormatter'
+import { BestillingsveilederContext } from './Bestillingsveileder'
 
-export const BestillingsveilederHeader = ({ antall, identtype, opprettFraIdenter, mal }) => (
-	<Header>
-		<div className="flexbox">
-			<Header.TitleValue title="Antall" value={`${antall} ${antall > 1 ? 'personer' : 'person'}`} />
-			{!opprettFraIdenter && <Header.TitleValue title="Identtype" value={identtype} />}
-			{opprettFraIdenter && (
+export const BestillingsveilederHeader = () => {
+	const opts = useContext(BestillingsveilederContext)
+	return (
+		<Header>
+			<div className="flexbox">
 				<Header.TitleValue
-					title="Opprett fra eksisterende personer"
-					value={Formatter.arrayToString(opprettFraIdenter)}
+					title="Antall"
+					value={`${opts.antall} ${opts.antall > 1 ? 'personer' : 'person'}`}
 				/>
-			)}
-			{mal && <Header.TitleValue title="Basert på mal" value={mal.malNavn} />}
-		</div>
-	</Header>
-)
+				{!opts.is.opprettFraIdenter && (
+					<Header.TitleValue title="Identtype" value={opts.identtype} />
+				)}
+				{opts.is.opprettFraIdenter && (
+					<Header.TitleValue
+						title="Opprett fra eksisterende personer"
+						value={Formatter.arrayToString(opts.opprettFraIdenter)}
+					/>
+				)}
+				{opts.is.nyBestillingFraMal && (
+					<Header.TitleValue title="Basert på mal" value={opts.mal.malNavn} />
+				)}
+				{opts.is.leggTil && (
+					<Header.TitleValue title="Legg til på person" value={opts.leggTilPaaFnr} />
+				)}
+			</div>
+		</Header>
+	)
+}

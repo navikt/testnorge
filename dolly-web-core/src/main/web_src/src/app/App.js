@@ -32,7 +32,7 @@ export default class App extends Component {
 
 		if (this.state.bootError)
 			return (
-				<AppError error="Problemer med å hente dolly config. Prøv å refresh siden (ctrl + R)." />
+				<AppError message="Problemer med å hente dolly config. Prøv å refresh siden (ctrl + R)." />
 			)
 
 		if (!brukerData || !configReady) return <Loading label="laster dolly applikasjon" fullpage />

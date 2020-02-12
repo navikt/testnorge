@@ -48,6 +48,10 @@ export default {
 		return Request.put(Endpoints.kobleIdenter(ident), data)
 	},
 
+	createBestillingLeggTilPaaPerson(ident, data) {
+		return Request.put(Endpoints.leggTilPaaPerson(ident), data)
+	},
+
 	// Bruker
 	getBrukere() {
 		return Request.get(Endpoints.bruker())

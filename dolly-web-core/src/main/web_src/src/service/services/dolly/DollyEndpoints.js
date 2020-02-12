@@ -110,6 +110,10 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}/beskrivelse`
 	}
 
+	static leggTilPaaPerson(ident) {
+		return `${identBase}/${ident}/leggtilpaaperson`
+	}
+
 	static identIbruk(ident, ibruk) {
 		return `${identBase}/${ident}/ibruk?iBruk=${ibruk}`
 	}
