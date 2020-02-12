@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.properties.ProvidersProps;
-import springfox.documentation.spring.web.json.Json;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +50,6 @@ public class InntektstubConsumer {
 
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getInntektstub().getUrl() + VALIDER_INNTEKTER_URL))
-                .body(validerInntekt), Json.class);
+                .body(validerInntekt), Object.class);
     }
 }
