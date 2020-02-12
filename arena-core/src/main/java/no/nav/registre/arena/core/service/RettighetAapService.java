@@ -58,7 +58,7 @@ public class RettighetAapService {
                 LocalDate tidligsteDato = finnTidligsteDato(aap);
                 int minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(18), LocalDate.now()));
                 if (minimumAlder > MAX_ALDER_VEDTAKSHISTORIKK) {
-                    log.warn("Kunne ikke opprette vedtakshistorikk på ident med minimum alder |}", minimumAlder);
+                    log.warn("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}", minimumAlder);
                     continue;
                 }
                 int maksimumAlder = minimumAlder + 50;
@@ -199,7 +199,7 @@ public class RettighetAapService {
             String miljoe,
             Vedtakshistorikk vedtakshistorikk
     ) {
-        List<KontoinfoResponse> identerMedKontonummer = null;
+        List<KontoinfoResponse> identerMedKontonummer = new ArrayList<>();
         if (vedtakshistorikk.getTvungenForvaltning() != null && !vedtakshistorikk.getTvungenForvaltning().isEmpty()) {
             var antallTvungenForvaltning = vedtakshistorikk.getTvungenForvaltning().size();
             identerMedKontonummer = serviceUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallTvungenForvaltning);
