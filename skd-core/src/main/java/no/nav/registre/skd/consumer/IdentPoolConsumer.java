@@ -13,6 +13,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -73,5 +74,12 @@ public class IdentPoolConsumer {
             log.error("Fikk feil antall navn - størrelse: {}", navn.size());
         }
         return navn.get(0);
+    }
+
+    public List<String> frigjoerLedigeIdenter(List<String> identer) {
+        RequestEntity postRequest = RequestEntity.post(new UriTemplate(this.baseUrl + "/v1/identifikator/frigjoerLedige").expand())
+                .body(identer);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<String>>() {
+        }).getBody();
     }
 }
