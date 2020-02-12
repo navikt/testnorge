@@ -35,4 +35,8 @@ public class RsGateadresse extends RsAdresse {
     )
     private String gatekode;
 
+    @Override
+    public String getAdressetype() {
+        return "GATE";
+    }
 }

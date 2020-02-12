@@ -23,4 +23,8 @@ public class RsMatrikkeladresse extends RsAdresse {
 
     private String undernr;
 
+    @Override
+    public String getAdressetype() {
+        return "MATR";
+    }
 }

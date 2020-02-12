@@ -58,4 +58,5 @@ public abstract class RsAdresse {
     )
     private LocalDateTime flyttedato;
 
+    public abstract String getAdressetype();
 }
