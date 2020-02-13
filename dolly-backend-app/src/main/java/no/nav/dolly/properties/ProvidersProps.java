@@ -28,6 +28,7 @@ public class ProvidersProps {
     private Aaregdata aaregdata = new Aaregdata();
     private Inntektstub inntektstub = new Inntektstub();
     private PdlPerson pdlPerson = new PdlPerson();
+    private FasteDatasett fasteDatasett = new FasteDatasett();
 
     @Getter
     @Setter
@@ -154,6 +155,16 @@ public class ProvidersProps {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PdlPerson {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class FasteDatasett {
 
         private String url;
     }
