@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,6 +18,7 @@ import no.nav.registre.sdForvalter.consumer.rs.KrrConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.SamConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.SkdConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.TpConsumer;
+import no.nav.registre.sdForvalter.consumer.rs.response.AaregResponse;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
@@ -71,10 +71,10 @@ public class EnvironmentInitializationService {
         iniitalizeTp(environment, fnrs);
         initializeSam(environment, fnrs);
         initializeKrr();
-        Map<String, String> aaregStatusMap = initializeAareg(environment);
-        if (!aaregStatusMap.isEmpty()) {
-            log.warn("Fullførte ikke initialiseringen av miljøet: {} i Aareg, feilet på identer {}", environment, aaregStatusMap);
-        }
+        List<AaregResponse> response = initializeAareg(environment);
+        response.forEach(resp -> resp.getStatusPerMiljoe().values().stream().filter(melding -> melding.startsWith("Feil"))
+                .forEach(melding -> log.warn("Feil under initialisering av aareg i miljø |}. Feilmelding: {}", environment, melding)));
+
         String flatfileFromEregMapper = initializeEreg(environment);
         if (!"".equals(flatfileFromEregMapper) && flatfileFromEregMapper != null) {
             log.info(flatfileFromEregMapper);
@@ -119,7 +119,7 @@ public class EnvironmentInitializationService {
      *
      * @param environment Miljøet arbeidsforholdene skal legges til i
      */
-    public Map<String, String> initializeAareg(String environment) {
+    public List<AaregResponse> initializeAareg(String environment) {
         log.info("Start init of Aareg...");
         Set<AaregModel> aaregSet = new HashSet<>();
         aaregRepository.findAll().forEach(aaregSet::add);
@@ -128,7 +128,7 @@ public class EnvironmentInitializationService {
                 .filter(aaregModel -> aaregModel.getVarighet() == null || aaregModel.getVarighet().shouldUse() )
                 .collect(Collectors.toSet());
 
-        Map<String, String> response = aaregConsumer.send(aaregSet, environment);
+        List<AaregResponse> response = aaregConsumer.send(aaregSet, environment);
         log.info("Init of Aareg completed.");
         return response;
     }
@@ -162,7 +162,6 @@ public class EnvironmentInitializationService {
                 .filter(krrModel ->  krrModel.getVarighet() == null || krrModel.getVarighet().shouldUse())
                 .collect(Collectors.toSet());
 
-
         Set<String> existing = krrConsumer.getContactInformation(dkifSet.parallelStream().map(KrrModel::getFnr).collect(Collectors.toSet()));
 
         dkifSet = dkifSet.parallelStream().filter(t -> !existing.contains(t.getFnr())).collect(Collectors.toSet());
@@ -173,17 +172,23 @@ public class EnvironmentInitializationService {
         }
         krrConsumer.send(dkifSet);
         if (log.isInfoEnabled()) {
-           log.info("Init of KRR completed ({} created).", dkifSet.size());
+            log.info("Init of KRR completed ({} created).", dkifSet.size());
         }
     }
 
-    private void iniitalizeTp(String environment, Set<String> fnrs) {
+    private void iniitalizeTp(
+            String environment,
+            Set<String> fnrs
+    ) {
         log.info("Start init of TP...");
         tpConsumer.send(fnrs, environment);
         log.info("Init of TP completed.");
     }
 
-    private void initializeSam(String environment, Set<String> fnrs) {
+    private void initializeSam(
+            String environment,
+            Set<String> fnrs
+    ) {
         log.info("Start init of SAM...");
         samConsumer.send(fnrs, environment);
         log.info("Init of SAM completed");
