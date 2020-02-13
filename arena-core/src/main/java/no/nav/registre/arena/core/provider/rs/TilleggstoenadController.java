@@ -66,13 +66,13 @@ public class TilleggstoenadController {
     public List<NyttVedtakResponse> genererTilleggDagligReise(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return rettighetTilleggService.opprettDagligReise(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+        return rettighetTilleggService.opprettTilleggsstoenadDagligReise(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
     }
 
     @PostMapping("generer/tillegg/reiseObligatoriskSamling")
     public List<NyttVedtakResponse> genererTilleggReiseObligatoriskSamling(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return rettighetTilleggService.opprettReiseObligatoriskSamling(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+        return rettighetTilleggService.opprettTilleggsstoenadReiseObligatoriskSamling(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
     }
 }

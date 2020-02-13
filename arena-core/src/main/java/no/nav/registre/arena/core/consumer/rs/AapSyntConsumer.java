@@ -70,24 +70,6 @@ public class AapSyntConsumer {
         }).getBody();
     }
 
-    public List<Vedtakshistorikk> syntetiserVedtakshistorikkGittListeMedIdenter(List<String> identer) {
-        List<LocalDate> oppstartsdatoer = new ArrayList<>(identer.size());
-
-        for (String ident : identer) {
-            LocalDate foedselsdato = getFoedselsdatoFraFnr(ident);
-            long yearsBetween = ChronoUnit.YEARS.between(foedselsdato.plusYears(18), LocalDate.now());
-            LocalDate minDate = LocalDate.now().minusYears(yearsBetween);
-            if (minDate.isBefore(MINIMUM_DATE)) {
-                minDate = MINIMUM_DATE;
-            }
-            oppstartsdatoer.add(LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(minDate, LocalDate.now())))));
-        }
-
-        var postRequest = RequestEntity.post(arenaVedtakshistorikkUrl.expand()).body(oppstartsdatoer);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<Vedtakshistorikk>>() {
-        }).getBody();
-    }
-
     public List<NyttVedtakAap> syntetiserRettighetAap(int antallMeldinger) {
         var postRequest = consumerUtils.createPostRequest(arenaAapUrl, antallMeldinger);
         return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakAap>>() {

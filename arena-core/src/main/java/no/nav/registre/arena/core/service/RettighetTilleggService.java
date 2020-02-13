@@ -76,7 +76,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettBoutgifterArbeidssoekere(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettDagligReise(
+    public List<NyttVedtakResponse> opprettTilleggsstoenadDagligReise(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -84,7 +84,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettDagligReise(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettReiseObligatoriskSamling(
+    public List<NyttVedtakResponse> opprettTilleggsstoenadReiseObligatoriskSamling(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
