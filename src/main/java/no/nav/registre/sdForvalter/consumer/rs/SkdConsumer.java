@@ -59,19 +59,18 @@ public class SkdConsumer {
     /**
      * @param playgroup   AvspillergruppeId som skal spilles av når denne funksjonen er invokert
      * @param environment Miljøet som gruppen skal spilles av til
-     * @return Response fra skd
      */
-    public SkdResponse send(Long playgroup, String environment) {
+    public void send(Long playgroup, String environment) {
         UriTemplate uriTemplate = new UriTemplate(skdUrl + "/startAvspilling/{playgroup}?miljoe={environment}");
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.POST, uriTemplate.expand(playgroup, environment));
         ResponseEntity<SkdResponse> responseEntity = restTemplate.exchange(requestEntity, SkdResponse.class);
         SkdResponse body = responseEntity.getBody();
+
         if (responseEntity.getStatusCode() != HttpStatus.OK && body != null) {
             if (body.getAntallFeilet() != 0) {
                 log.warn("Fikk ikke opprettet alle identene i TPS, burde bli manuelt sjekket for overlapp. Kan også være mulig at man prøver å initialisere et miljø som er allerede initialisert");
                 body.getFailedStatus().forEach(s -> log.warn("Status på feilende melding: {}", s));
             }
         }
-        return body;
     }
 }
