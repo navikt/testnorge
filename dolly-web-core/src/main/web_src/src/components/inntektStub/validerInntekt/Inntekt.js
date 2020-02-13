@@ -3,7 +3,7 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import texts from './texts'
+import texts from '../texts'
 import { Field } from 'formik'
 
 const sjekkFelt = (field, options) => {

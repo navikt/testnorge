@@ -23,6 +23,9 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 			<AttributtKategori title="Inntekt">
 				<Attributt attr={sm.attrs.sigrunstub} />
 			</AttributtKategori>
+			<AttributtKategori title="Inntektskomponenten">
+				<Attributt attr={sm.attrs.inntektstub} />
+			</AttributtKategori>
 		</Panel>
 	)
 }
@@ -51,5 +54,18 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 				}
 			]),
 		remove: () => del('sigrunstub')
+	},
+	inntektstub: {
+		label: 'Har inntekter',
+		checked: has('inntektstub'),
+		add: () =>
+			set('inntektstub', {
+				antallMaaneder: '',
+				prosentOekningPerAaar: '',
+				inntektsinformasjon: []
+			}),
+		remove() {
+			del('inntektstub')
+		}
 	}
 })

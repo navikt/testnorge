@@ -51,7 +51,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 
 						{children(CurrentStepComponent, formikBag, stateModifier)}
 
-						{/* <DisplayFormikState {...formikBag} /> */}
+						<DisplayFormikState {...formikBag} />
 
 						<Navigation
 							showPrevious={step > 0}
