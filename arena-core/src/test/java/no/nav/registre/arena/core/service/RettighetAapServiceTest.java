@@ -62,7 +62,7 @@ public class RettighetAapServiceTest {
 
     @Before
     public void setUp() {
-        var fnr1 = "01010101010";
+        var fnr1 = "270699494213";
         identer = new ArrayList<>(Collections.singletonList(fnr1));
 
         aap115Rettighet = NyttVedtakAap.builder()
@@ -75,6 +75,7 @@ public class RettighetAapServiceTest {
         nyRettighetAap.setGenSaksopplysninger(Collections.singletonList(saksopplysning));
         var nyRettighetUngUfoer = NyttVedtakAap.builder()
                 .build();
+        nyRettighetUngUfoer.setFraDato(LocalDate.now().minusDays(7));
         var nyRettighetTvungenForvaltning = NyttVedtakAap.builder()
                 .build();
         var nyRettighetFritakMeldekort = NyttVedtakAap.builder()

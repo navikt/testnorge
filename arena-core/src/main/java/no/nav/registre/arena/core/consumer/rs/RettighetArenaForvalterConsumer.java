@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
@@ -43,7 +44,15 @@ public class RettighetArenaForvalterConsumer {
                     .header("Nav-Call-Id", NAV_CALL_ID)
                     .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                     .body(rettighet);
-            responses.add(restTemplate.exchange(postRequest, NyttVedtakResponse.class).getBody());
+            NyttVedtakResponse response = null;
+            try {
+                response = restTemplate.exchange(postRequest, NyttVedtakResponse.class).getBody();
+            } catch (HttpStatusCodeException e) {
+                log.error("Kunne ikke opprette rettighet i arena-forvalteren.", e);
+            }
+            if (response != null) {
+                responses.add(response);
+            }
         }
         return responses;
     }

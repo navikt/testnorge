@@ -1,6 +1,7 @@
 package no.nav.registre.arena.core.service;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.getFoedselsdatoFraFnr;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;
 
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class RettighetAapService {
 
     private static final int MIN_ALDER_UNG_UFOER = 18;
     private static final int MAX_ALDER_UNG_UFOER = 36;
+    private static final int MIN_ALDER_VEDTAKSHISTORIKK = 18;
     private static final int MAX_ALDER_VEDTAKSHISTORIKK = 67;
 
     private final AapSyntConsumer aapSyntConsumer;
@@ -49,23 +51,23 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        List<Vedtakshistorikk> vedtakshistorikk = aapSyntConsumer.syntetiserVedtakshistorikk(antallNyeIdenter);
+        var vedtakshistorikk = aapSyntConsumer.syntetiserVedtakshistorikk(antallNyeIdenter);
         List<NyttVedtakResponse> responses = new ArrayList<>();
         for (var vedtakshistorikken : vedtakshistorikk) {
-            List<NyttVedtakAap> aap = vedtakshistorikken.getAap();
+            var aap = vedtakshistorikken.getAap();
 
             if (aap != null && !aap.isEmpty()) {
-                LocalDate tidligsteDato = finnTidligsteDato(aap);
-                int minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(18), LocalDate.now()));
+                var tidligsteDato = finnTidligsteDato(aap);
+                var minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(MIN_ALDER_VEDTAKSHISTORIKK), LocalDate.now()));
                 if (minimumAlder > MAX_ALDER_VEDTAKSHISTORIKK) {
                     log.warn("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}", minimumAlder);
                     continue;
                 }
-                int maksimumAlder = minimumAlder + 50;
+                var maksimumAlder = minimumAlder + 50;
                 if (maksimumAlder > MAX_ALDER_VEDTAKSHISTORIKK) {
                     maksimumAlder = MAX_ALDER_VEDTAKSHISTORIKK;
                 }
-                String ident = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder).get(0);
+                var ident = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder).get(0);
                 responses.addAll(opprettHistorikkOgSendTilArena(avspillergruppeId, ident, miljoe, vedtakshistorikken));
             }
         }
@@ -255,9 +257,9 @@ public class RettighetAapService {
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        List<NyttVedtakAap> aap115 = vedtak.getAap115();
+        var aap115 = vedtak.getAap115();
         if (aap115 != null && !aap115.isEmpty()) {
-            RettighetAap115Request rettighetRequest = new RettighetAap115Request(aap115);
+            var rettighetRequest = new RettighetAap115Request(aap115);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeAap115().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
@@ -271,9 +273,9 @@ public class RettighetAapService {
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        List<NyttVedtakAap> aap = vedtak.getAap();
+        var aap = vedtak.getAap();
         if (aap != null && !aap.isEmpty()) {
-            RettighetAapRequest rettighetRequest = new RettighetAapRequest(aap);
+            var rettighetRequest = new RettighetAapRequest(aap);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeAap().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
@@ -287,12 +289,23 @@ public class RettighetAapService {
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        List<NyttVedtakAap> ungUfoer = vedtak.getUngUfoer();
+        var foedselsdato = getFoedselsdatoFraFnr(personident);
+        var ungUfoer = vedtak.getUngUfoer();
         if (ungUfoer != null && !ungUfoer.isEmpty()) {
-            RettighetUngUfoerRequest rettighetRequest = new RettighetUngUfoerRequest(ungUfoer);
+            var rettighetRequest = new RettighetUngUfoerRequest(ungUfoer);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
-            rettighetRequest.getNyeAaungufor().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+
+            var iterator = rettighetRequest.getNyeAaungufor().iterator();
+            while (iterator.hasNext()) {
+                var rettighet = iterator.next();
+                rettighet.setBegrunnelse(BEGRUNNELSE);
+                var alderPaaVedtaksdato = Math.toIntExact(ChronoUnit.YEARS.between(foedselsdato, rettighet.getFraDato()));
+                if (alderPaaVedtaksdato < MIN_ALDER_UNG_UFOER || alderPaaVedtaksdato > MAX_ALDER_UNG_UFOER) {
+                    log.warn("Kan ikke opprette vedtak ung-ufør på ident som er {} år gammel.", alderPaaVedtaksdato);
+                    iterator.remove();
+                }
+            }
             rettigheter.add(rettighetRequest);
         }
     }
@@ -304,12 +317,12 @@ public class RettighetAapService {
             List<RettighetRequest> rettigheter,
             List<KontoinfoResponse> identerMedKontonummer
     ) {
-        List<NyttVedtakAap> tvungenForvaltning = vedtak.getTvungenForvaltning();
+        var tvungenForvaltning = vedtak.getTvungenForvaltning();
         if (tvungenForvaltning != null && !tvungenForvaltning.isEmpty()) {
-            RettighetTvungenForvaltningRequest rettighetRequest = new RettighetTvungenForvaltningRequest(tvungenForvaltning);
+            var rettighetRequest = new RettighetTvungenForvaltningRequest(tvungenForvaltning);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
-            for (NyttVedtakAap rettighet : rettighetRequest.getNyeAatfor()) {
+            for (var rettighet : rettighetRequest.getNyeAatfor()) {
                 rettighet.setForvalter(ServiceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
                 rettighet.setBegrunnelse(BEGRUNNELSE);
             }
@@ -323,9 +336,9 @@ public class RettighetAapService {
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        List<NyttVedtakAap> fritakMeldekort = vedtak.getFritakMeldekort();
+        var fritakMeldekort = vedtak.getFritakMeldekort();
         if (fritakMeldekort != null && !fritakMeldekort.isEmpty()) {
-            RettighetFritakMeldekortRequest rettighetRequest = new RettighetFritakMeldekortRequest(fritakMeldekort);
+            var rettighetRequest = new RettighetFritakMeldekortRequest(fritakMeldekort);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeFritak().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
