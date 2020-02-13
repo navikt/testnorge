@@ -95,7 +95,7 @@ public class EnvironmentInitializationService {
 
         tpsSet = tpsSet
                 .parallelStream()
-                .filter(tpsModel -> tpsModel.getVarighet() != null && tpsModel.getVarighet().shouldUse())
+                .filter(tpsModel -> tpsModel.getVarighet() == null || tpsModel.getVarighet().shouldUse())
                 .collect(Collectors.toSet());
 
         Set<String> playgroupFnrs = hodejegerenConsumer.getPlaygroupFnrs(staticDataPlaygroup);
@@ -125,14 +125,10 @@ public class EnvironmentInitializationService {
         aaregRepository.findAll().forEach(aaregSet::add);
         aaregSet = aaregSet
                 .parallelStream()
-                .filter(aaregModel -> aaregModel.getVarighet() != null && aaregModel.getVarighet().shouldUse())
+                .filter(aaregModel -> aaregModel.getVarighet() == null || aaregModel.getVarighet().shouldUse() )
                 .collect(Collectors.toSet());
 
-        Set<String> fnrs = aaregConsumer.finnPersonerUtenArbeidsforhold(aaregSet.parallelStream().map(AaregModel::getFnr).collect(Collectors.toSet()), environment);
-
-        Set<AaregModel> models = aaregSet.parallelStream().filter(a -> fnrs.contains(a.getFnr())).collect(Collectors.toSet());
-
-        Map<String, String> response = aaregConsumer.send(models, environment);
+        Map<String, String> response = aaregConsumer.send(aaregSet, environment);
         log.info("Init of Aareg completed.");
         return response;
     }
@@ -163,7 +159,7 @@ public class EnvironmentInitializationService {
         krrRepository.findAll().forEach(dkifSet::add);
         dkifSet = dkifSet
                 .parallelStream()
-                .filter(krrModel -> krrModel.getVarighet() != null && krrModel.getVarighet().shouldUse())
+                .filter(krrModel ->  krrModel.getVarighet() == null || krrModel.getVarighet().shouldUse())
                 .collect(Collectors.toSet());
 
 

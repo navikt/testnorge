@@ -30,33 +30,13 @@ public class AaregConsumer {
 
     private final RestTemplate restTemplate;
     private final String aaregUrl;
-    private static final ParameterizedTypeReference<List<Object>> RESPONSE_TYPE_LIST = new ParameterizedTypeReference<List<Object>>() {
-    };
-    private final String aaregStubUrl;
 
-    public AaregConsumer(RestTemplate restTemplate, @Value("${testnorge.aareg.rest.api.url}") String aaregUrl, @Value("${testnorge.aaregstub.rest.api.url}") String aaregStubUrl) {
+
+    public AaregConsumer(RestTemplate restTemplate, @Value("${testnorge.aareg.rest.api.url}") String aaregUrl) {
         this.restTemplate = restTemplate;
         this.aaregUrl = aaregUrl + "/v1/syntetisering";
-        this.aaregStubUrl = aaregStubUrl + "/v1";
     }
 
-    public Set<String> finnPersonerUtenArbeidsforhold(Set<String> fnrs, String environment) {
-        UriTemplate uriTemplate = new UriTemplate(aaregStubUrl + "/hentArbeidsforholdFraAareg?ident={fnr}&miljoe={environment}");
-        log.info(fnrs.toString());
-        return fnrs.stream().map(f -> {
-            RequestEntity request = new RequestEntity<>(HttpMethod.GET, uriTemplate.expand(f, environment));
-            ResponseEntity<List<Object>> response = restTemplate.exchange(request, RESPONSE_TYPE_LIST);
-            if (response.getBody() != null) {
-                if (!response.getStatusCode().is2xxSuccessful()) {
-                    log.warn("Klarte ikke opprette arbeidsforhold for {}", response.getBody());
-                }
-                if (response.getBody().isEmpty()) {
-                    return f;
-                }
-            }
-            return null;
-        }).filter(Objects::nonNull).collect(Collectors.toSet());
-    }
 
     public Map<String, String> send(Set<AaregModel> data, String environment) {
 
