@@ -48,12 +48,10 @@ export const PersonVisning = ({
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} />
 			<div className="person-visning_actions">
-				{/* 
-                // Denne legges tilbake når det er en fiks på endepunktet leggTilPaaPerson
-                <Button onClick={leggTilPaaPerson} kind="add-circle">
+				<Button onClick={leggTilPaaPerson} kind="add-circle">
 					LEGG TIL
-				</Button> 
-                */}
+				</Button>
+
 				<LeggTilRelasjonModal environments={bestilling.environments} personInfo={data.tpsf} />
 				<BestillingSammendragModal bestilling={bestilling} />
 				<SlettButton action={slettPerson} loading={loading.slettPerson}>
