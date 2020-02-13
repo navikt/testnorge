@@ -65,6 +65,9 @@ public class BestillingProgress {
     @Column(name = "INNTEKTSSTUB_STATUS")
     private String inntektstubStatus;
 
+    @Column(name = "PENSJON_STATUS")
+    private String pensjonStatus;
+
     private String feil;
 
     public BestillingProgress(Long bestillingId, String ident) {

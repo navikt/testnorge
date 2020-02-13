@@ -11,6 +11,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 
 @Getter
 @Setter
@@ -34,6 +36,9 @@ public class Person {
     private LocalDateTime spesregDato;
     private LocalDateTime doedsdato;
     private List<Statsborgerskap> statsborgerskap;
+    private List<RsPostadresse> postadresse;
+    private List<RsAdresse> boadresse;
+    private LocalDateTime utvandretTilLandFlyttedato;
 
     public List<Relasjon> getRelasjoner() {
 
@@ -49,5 +54,19 @@ public class Person {
             statsborgerskap = new ArrayList();
         }
         return statsborgerskap;
+    }
+
+    public List<RsPostadresse> getPostadresse() {
+        if (isNull(postadresse)) {
+            postadresse = new ArrayList();
+        }
+        return postadresse;
+    }
+
+    public List<RsAdresse> getBoadresse() {
+        if (isNull(boadresse)) {
+            boadresse = new ArrayList();
+        }
+        return boadresse;
     }
 }

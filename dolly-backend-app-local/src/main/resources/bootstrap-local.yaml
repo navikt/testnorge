@@ -1,6 +1,6 @@
 spring:
   flyway:
-    enabled: false # Disabled by default as you should probably think twice before running Flyway-migrations
+    enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
   datasource:
     url: ${dolly.datasource.jdbc_url}
   cloud:
