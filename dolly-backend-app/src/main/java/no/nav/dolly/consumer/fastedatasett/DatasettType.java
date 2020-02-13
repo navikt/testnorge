@@ -12,9 +12,9 @@ public enum DatasettType {
     KRR("/krr"),
     TPS("/tps");
 
+    private String url;
+
     DatasettType(String url) {
         this.url = url;
     }
-
-    private String url;
 }
