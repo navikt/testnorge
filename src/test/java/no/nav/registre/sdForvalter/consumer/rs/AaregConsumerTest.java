@@ -137,34 +137,4 @@ public class AaregConsumerTest {
                         )
                 ));
     }
-
-    @Test
-    public void hentArbeidsforhold() {
-        Set<String> fnrs = new HashSet<>();
-        fnrs.add("123");
-        fnrs.add("456");
-
-        stubAaregStubFound();
-        stubAaregStubNotFound();
-
-        Set<String> resultFnr = aaregConsumer.finnPersonerUtenArbeidsforhold(fnrs, environment);
-
-        assertNotNull(resultFnr);
-        assertEquals(1, resultFnr.size());
-        assertTrue(resultFnr.contains("456"));
-    }
-
-    private void stubAaregStubFound() {
-        stubFor(get(urlEqualTo("/testnorge-aaregstub/api/v1/hentArbeidsforholdFraAareg?ident=123&miljoe=t1"))
-                .willReturn(
-                        okJson("[{\"fnr\": \"123\"}]")
-                ));
-    }
-
-    private void stubAaregStubNotFound() {
-        stubFor(get(urlEqualTo("/testnorge-aaregstub/api/v1/hentArbeidsforholdFraAareg?ident=456&miljoe=t1"))
-                .willReturn(
-                        okJson("[]")
-                ));
-    }
 }
