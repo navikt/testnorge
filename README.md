@@ -5,6 +5,6 @@
 ## For utviklere
 
 ### Lokal kjøring
-Ved lokal kjøring av applikasjonen startes ApplicationStarterLocal.
+Ved lokal kjøring av applikasjonen startes LocalApplicationStarter.
 
 ### Sette properties for lokal kjøring
