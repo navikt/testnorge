@@ -99,6 +99,7 @@ export const actions = createActions(
 const initialState = {
 	tpsf: {},
 	sigrunstub: {},
+	inntektstub: {},
 	krrstub: {},
 	arenaforvalteren: {},
 	aareg: {},

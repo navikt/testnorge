@@ -39,6 +39,7 @@ export const erForste = (values, attributt) => {
 		'tpsf.relasjoner',
 		'aareg',
 		'sigrunstub',
+		'inntektstub',
 		'pdlforvalter.falskIdentitet',
 		'pdlforvalter.utenlandskIdentifikasjonsnummer',
 		'pdlforvalter.kontaktinformasjonForDoedsbo',

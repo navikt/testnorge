@@ -65,15 +65,7 @@ const Inntekt = ({ fields = {}, onValidate }) => (
 			['LOENNSINNTEKT', 'YTELSE_FRA_OFFENTLIGE', 'PENSJON_ELLER_TRYGD', 'NAERINGSINNTEKT'],
 			onValidate
 		)}
-		<FormikTextInput
-			visHvisAvhuket={false}
-			name="beloep"
-			label="Beløp"
-			onBlur={onValidate}
-			size="large"
-			type="number"
-			// feil={sjekkFelt(field, options)}
-		/>
+
 		{Object.keys(fields)
 			.filter(field => !(fields[field].length === 1 && fields[field][0] === '<TOM>'))
 			.map(field => fieldReslover(field, fields[field], onValidate))}

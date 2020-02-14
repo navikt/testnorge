@@ -62,7 +62,13 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 			set('inntektstub', {
 				antallMaaneder: '',
 				prosentOekningPerAaar: '',
-				inntektsinformasjon: []
+				inntektsinformasjon: [
+					{
+						aarMaaned: '',
+						opplysningspliktig: '',
+						virksomhet: ''
+					}
+				]
 			}),
 		remove() {
 			del('inntektstub')

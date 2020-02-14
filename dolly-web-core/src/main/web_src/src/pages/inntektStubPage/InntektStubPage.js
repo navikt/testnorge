@@ -1,6 +1,6 @@
 import React from 'react'
 import InntektStub from '../../components/inntektStub/validerInntekt'
-import { InntektstubForm } from '~/components/inntektStub/form/Form'
+// import { InntektstubForm } from '~/components/inntektStub/form/Form'
 
 const InntektStubPage = () => (
 	<>

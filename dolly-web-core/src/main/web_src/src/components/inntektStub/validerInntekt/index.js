@@ -16,9 +16,9 @@ const InntektStub = () => {
 			render={({ handleSubmit }) => (
 				<div>
 					<Inntekt fields={fields} onValidate={handleSubmit} />
-					<NavButton type="hoved" onClick={values => validate(values)}>
+					{/* <NavButton type="hoved" onClick={values => validate(values)}>
 						Opprett
-					</NavButton>
+					</NavButton> */}
 				</div>
 			)}
 		/>
