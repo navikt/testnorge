@@ -6,6 +6,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,13 +59,13 @@ public class BestillingControllerTest {
 
     @Test
     public void getBestillingerOk() {
-        when(mapperFacade.mapAsList(anyList(), eq(RsBestillingStatus.class)))
+        when(mapperFacade.mapAsList(anySet(), eq(RsBestillingStatus.class)))
                 .thenReturn(singletonList(RsBestillingStatus.builder().id(BESTILLING_ID).build()));
 
         RsBestillingStatus bestilling = bestillingController.getBestillinger(GRUPPE_ID).get(0);
 
         verify(bestillingService).fetchBestillingerByGruppeId(GRUPPE_ID);
-        verify(mapperFacade).mapAsList(anyList(), eq(RsBestillingStatus.class));
+        verify(mapperFacade).mapAsList(anySet(), eq(RsBestillingStatus.class));
 
         assertThat(bestilling.getId(), is(equalTo(BESTILLING_ID)));
     }
