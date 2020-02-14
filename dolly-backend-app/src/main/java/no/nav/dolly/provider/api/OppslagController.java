@@ -22,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.consumer.aareg.AaregConsumer;
+import no.nav.dolly.consumer.fastedatasett.DatasettType;
+import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
@@ -42,6 +44,7 @@ public class OppslagController {
     private final AaregConsumer aaregConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
     private final InntektstubConsumer inntektstubConsumer;
+    private final FasteDatasettConsumer fasteDatasettConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -82,6 +85,12 @@ public class OppslagController {
         return asList(SystemTyper.values()).stream()
                 .map(type -> SystemTyper.SystemBeskrivelse.builder().system(type.name()).beskrivelse(type.getBeskrivelse()).build())
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/fastedatasett/{datasettype}")
+    @ApiOperation("Hent faste datasett med beskrivelser")
+    public ResponseEntity getFasteDatasett(@PathVariable DatasettType datasettype) {
+        return fasteDatasettConsumer.hentDatasett(datasettype);
     }
 
     @GetMapping("/aareg/arbeidsforhold")

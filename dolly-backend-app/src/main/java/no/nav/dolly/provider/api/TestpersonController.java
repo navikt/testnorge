@@ -39,7 +39,8 @@ public class TestpersonController {
     @ApiOperation(value = "Legge til egenskaper på person/endre person i TPS og øvrige systemer")
     @PutMapping("/{ident}/leggtilpaaperson")
     @ResponseStatus(HttpStatus.OK)
-    public RsBestillingStatus endrePerson(@RequestBody RsDollyUpdateRequest request) {
+    public RsBestillingStatus endrePerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
+        request.setIdent(ident);
         Bestilling bestilling = bestillingService.saveBestilling(request);
 
         dollyBestillingService.oppdaterPersonAsync(request, bestilling);
