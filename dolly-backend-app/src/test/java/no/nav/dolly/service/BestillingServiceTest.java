@@ -101,7 +101,7 @@ public class BestillingServiceTest {
         when(testgruppeRepository.findById(any())).thenReturn(Optional.of(gruppe));
 
         bestillingService.fetchBestillingerByGruppeId(1l);
-        verify(bestillingRepository).findBestillingByGruppeOrderById(gruppe);
+        verify(testgruppeRepository).findById(1l);
     }
 
     @Test
