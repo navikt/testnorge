@@ -120,7 +120,7 @@ if (TARGET === 'build-dev') {
 
 // If production build
 if (TARGET === 'build') {
-	webpackConfig.devtool = 'none'
+	webpackConfig.devtool = 'source-map'
 	webpackConfig.stats = 'normal'
 	webpackConfig.output = {
 		path: path.join(__dirname, outputDir.production),
