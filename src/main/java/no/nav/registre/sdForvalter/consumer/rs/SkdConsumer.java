@@ -66,11 +66,12 @@ public class SkdConsumer {
         ResponseEntity<SkdResponse> responseEntity = restTemplate.exchange(requestEntity, SkdResponse.class);
         SkdResponse body = responseEntity.getBody();
 
-        if (responseEntity.getStatusCode() != HttpStatus.OK && body != null) {
-            if (body.getAntallFeilet() != 0) {
-                log.warn("Fikk ikke opprettet alle identene i TPS, burde bli manuelt sjekket for overlapp. Kan også være mulig at man prøver å initialisere et miljø som er allerede initialisert");
-                body.getFailedStatus().forEach(s -> log.warn("Status på feilende melding: {}", s));
-            }
+        if (responseEntity.getStatusCode() != HttpStatus.OK || body != null && body.getAntallFeilet() != 0) {
+            log.warn("Fikk ikke opprettet alle identene i TPS, burde bli manuelt sjekket for overlapp. " +
+                    "Kan også være mulig at man prøver å initialisere et miljø som er allerede initialisert");
+        }
+        if (body != null) {
+            body.getFailedStatus().forEach(s -> log.error("Status på feilende melding: {}", s));
         }
     }
 }
