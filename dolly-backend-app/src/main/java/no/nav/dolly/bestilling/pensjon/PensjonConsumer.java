@@ -20,7 +20,8 @@ import com.google.common.collect.Sets;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.pensjon.domain.OpprettPerson;
+import no.nav.dolly.bestilling.pensjon.domain.LagreInntektRequest;
+import no.nav.dolly.bestilling.pensjon.domain.OpprettPersonRequest;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.sts.StsOidcService;
 
@@ -31,24 +32,12 @@ public class PensjonConsumer {
 
     private static final String PENSJON_OPPRETT_PERSON_URL = "/api/person";
     private static final String MILJOER_HENT_TILGJENGELIGE_URL = "/api/miljo";
+    private static final String PENSJON_INNTEKT_URL = "/api/inntekt";
     private static final String PREPROD_ENV = "q";
 
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
     private final StsOidcService stsOidcService;
-
-    public ResponseEntity opprettPerson(OpprettPerson opprettPerson) {
-
-        return restTemplate.exchange(
-                RequestEntity.post(URI.create(providersProps.getPensjon().getUrl() + PENSJON_OPPRETT_PERSON_URL))
-                        .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
-                        .header(HEADER_NAV_CALL_ID, getCallId())
-                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(opprettPerson),
-                JsonNode.class
-        );
-    }
 
     public Set<String> getMiljoer() {
 
@@ -59,8 +48,7 @@ public class PensjonConsumer {
                             .header(HEADER_NAV_CALL_ID, getCallId())
                             .header(HEADER_NAV_CONSUMER_ID, KILDE)
                             .build(),
-                    String[].class
-            );
+                    String[].class);
             return responseEntity.hasBody() ? Sets.newHashSet((String[]) responseEntity.getBody()) : emptySet();
 
         } catch (RuntimeException e) {
@@ -68,6 +56,30 @@ public class PensjonConsumer {
             log.error("Feilet å lese tilgjengelige miljøer fra pensjon. {}", e.getMessage(), e);
             return emptySet();
         }
+    }
+
+    public ResponseEntity opprettPerson(OpprettPersonRequest opprettPersonRequest) {
+
+        return restTemplate.exchange(
+                RequestEntity.post(URI.create(providersProps.getPensjon().getUrl() + PENSJON_OPPRETT_PERSON_URL))
+                        .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                        .header(HEADER_NAV_CALL_ID, getCallId())
+                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(opprettPersonRequest),
+                JsonNode.class);
+    }
+
+    public ResponseEntity lagreInntekt(LagreInntektRequest lagreInntektRequest) {
+
+        return restTemplate.exchange(
+                RequestEntity.post(URI.create(providersProps.getPensjon().getUrl() + PENSJON_INNTEKT_URL))
+                        .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                        .header(HEADER_NAV_CALL_ID, getCallId())
+                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(lagreInntektRequest),
+                JsonNode.class);
     }
 
     private static String getCallId() {

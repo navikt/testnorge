@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OpprettPerson {
+public class OpprettPersonRequest {
 
     private List<String> miljo;
 

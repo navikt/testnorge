@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.pensjon.domain.OpprettPerson;
+import no.nav.dolly.bestilling.pensjon.domain.OpprettPersonRequest;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.mapper.MappingStrategy;
 
@@ -15,19 +15,19 @@ public class OpprettPersonMapper implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(Person.class, OpprettPerson.class)
-                .customize(new CustomMapper<Person, OpprettPerson>() {
+        factory.classMap(Person.class, OpprettPersonRequest.class)
+                .customize(new CustomMapper<Person, OpprettPersonRequest>() {
                     @Override
-                    public void mapAtoB(Person person, OpprettPerson opprettPerson, MappingContext context) {
+                    public void mapAtoB(Person person, OpprettPersonRequest opprettPersonRequest, MappingContext context) {
 
-                        opprettPerson.setFodselsDato(mapperFacade.map(person.getFoedselsdato(), LocalDate.class));
-                        opprettPerson.setDodsDato(mapperFacade.map(person.getDoedsdato(), LocalDate.class));
-                        opprettPerson.setUtvandringsDato(mapperFacade.map(person.getUtvandretTilLandFlyttedato(), LocalDate.class));
+                        opprettPersonRequest.setFodselsDato(mapperFacade.map(person.getFoedselsdato(), LocalDate.class));
+                        opprettPersonRequest.setDodsDato(mapperFacade.map(person.getDoedsdato(), LocalDate.class));
+                        opprettPersonRequest.setUtvandringsDato(mapperFacade.map(person.getUtvandretTilLandFlyttedato(), LocalDate.class));
 
                         if (!person.getBoadresse().isEmpty()) {
-                            opprettPerson.setBostedsland("NOR");
+                            opprettPersonRequest.setBostedsland("NOR");
                         } else if (!person.getPostadresse().isEmpty()) {
-                            opprettPerson.setBostedsland(person.getPostadresse().get(0).getPostLand());
+                            opprettPersonRequest.setBostedsland(person.getPostadresse().get(0).getPostLand());
                         }
                     }
                 })

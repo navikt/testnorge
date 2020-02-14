@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.pensjon.domain.OpprettPerson;
+import no.nav.dolly.bestilling.pensjon.domain.OpprettPersonRequest;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
@@ -40,6 +40,7 @@ public class PensjonClient implements ClientRegister {
             StringBuilder status = new StringBuilder();
             sendOpprettPerson(tpsPerson, newArrayList(miljoer), status);
 
+
             progress.setPensjonStatus(status.toString());
         }
     }
@@ -57,14 +58,36 @@ public class PensjonClient implements ClientRegister {
     private void sendOpprettPerson(TpsPerson tpsPerson, List<String> miljoer, StringBuilder status) {
 
         try {
-            OpprettPerson opprettPerson = mapperFacade.map(tpsPerson.getPersondetalj(), OpprettPerson.class);
-            opprettPerson.setFnr(tpsPerson.getHovedperson());
-            opprettPerson.setMiljo(miljoer);
-            pensjonConsumer.opprettPerson(opprettPerson);
+            OpprettPersonRequest opprettPersonRequest = mapperFacade.map(tpsPerson.getPersondetalj(), OpprettPersonRequest.class);
+            opprettPersonRequest.setFnr(tpsPerson.getHovedperson());
+            opprettPersonRequest.setMiljo(miljoer);
+            pensjonConsumer.opprettPerson(opprettPersonRequest);
             tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
-                OpprettPerson personRelasjon = mapperFacade.map(relasjon.getPersonRelasjonMed(), OpprettPerson.class);
+                OpprettPersonRequest personRelasjon = mapperFacade.map(relasjon.getPersonRelasjonMed(), OpprettPersonRequest.class);
                 personRelasjon.setFnr(relasjon.getPersonRelasjonMed().getIdent());
-                opprettPerson.setMiljo(miljoer);
+                opprettPersonRequest.setMiljo(miljoer);
+                pensjonConsumer.opprettPerson(personRelasjon);
+            });
+
+            status.append("OK");
+
+        } catch (RuntimeException e) {
+
+            status.append(errorStatusDecoder.decodeRuntimeException(e));
+        }
+    }
+
+    private void lagreInntekt(TpsPerson tpsPerson, List<String> miljoer, StringBuilder status) {
+
+        try {
+            OpprettPersonRequest opprettPersonRequest = mapperFacade.map(tpsPerson.getPersondetalj(), OpprettPersonRequest.class);
+            opprettPersonRequest.setFnr(tpsPerson.getHovedperson());
+            opprettPersonRequest.setMiljo(miljoer);
+            pensjonConsumer.opprettPerson(opprettPersonRequest);
+            tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
+                OpprettPersonRequest personRelasjon = mapperFacade.map(relasjon.getPersonRelasjonMed(), OpprettPersonRequest.class);
+                personRelasjon.setFnr(relasjon.getPersonRelasjonMed().getIdent());
+                opprettPersonRequest.setMiljo(miljoer);
                 pensjonConsumer.opprettPerson(personRelasjon);
             });
 
