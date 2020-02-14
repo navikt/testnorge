@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.jpa;
 
+import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -66,19 +68,20 @@ public class Testgruppe {
     @ManyToMany(mappedBy = "favoritter", fetch = FetchType.LAZY)
     private Set<Bruker> favorisertAv;
 
+    @OrderBy("id")
     @OneToMany(mappedBy = "gruppe", fetch = FetchType.LAZY)
     private Set<Bestilling> bestillinger;
 
     public Set<Testident> getTestidenter() {
-        if (testidenter == null) {
-            testidenter = new HashSet<>();
+        if (isNull(testidenter)) {
+            testidenter = new HashSet();
         }
         return testidenter;
     }
 
     public Set<Bruker> getFavorisertAv() {
-        if (favorisertAv == null) {
-            favorisertAv = new HashSet<>();
+        if (isNull(favorisertAv)) {
+            favorisertAv = new HashSet();
         }
         return favorisertAv;
     }
