@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pensjon.mapper;
 
+import java.time.LocalDate;
 import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
@@ -19,9 +20,9 @@ public class OpprettPersonMapper implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, OpprettPerson opprettPerson, MappingContext context) {
 
-                        opprettPerson.setFodselsDato(person.getFoedselsdato());
-                        opprettPerson.setDodsDato(person.getDoedsdato());
-                        opprettPerson.setUtvandringsDato(person.getUtvandretTilLandFlyttedato());
+                        opprettPerson.setFodselsDato(mapperFacade.map(person.getFoedselsdato(), LocalDate.class));
+                        opprettPerson.setDodsDato(mapperFacade.map(person.getDoedsdato(), LocalDate.class));
+                        opprettPerson.setUtvandringsDato(mapperFacade.map(person.getUtvandretTilLandFlyttedato(), LocalDate.class));
 
                         if (!person.getBoadresse().isEmpty()) {
                             opprettPerson.setBostedsland("NOR");

@@ -1,6 +1,10 @@
 package no.nav.dolly.bestilling.pensjon;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
+
 import java.util.List;
+import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -20,9 +24,6 @@ import no.nav.dolly.metrics.Timed;
 @RequiredArgsConstructor
 public class PensjonClient implements ClientRegister {
 
-    public static final String SYNTH_ENV = "q2";
-    public static final String PENSJON = "Pensjon";
-
     private final PensjonConsumer pensjonConsumer;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -31,14 +32,15 @@ public class PensjonClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
-        if (bestilling.getEnvironments().contains(SYNTH_ENV)) {
+        Set miljoer = newHashSet(bestilling.getEnvironments());
+        miljoer.retainAll(pensjonConsumer.getMiljoer());
+
+        if (!miljoer.isEmpty()) {
 
             StringBuilder status = new StringBuilder();
-            sendOpprettPerson(tpsPerson, status);
+            sendOpprettPerson(tpsPerson, newArrayList(miljoer), status);
 
-            if (status.length() > 1) {
-                progress.setPensjonStatus(status.substring(1));
-            }
+            progress.setPensjonStatus(status.toString());
         }
     }
 
@@ -52,23 +54,25 @@ public class PensjonClient implements ClientRegister {
 
     }
 
-    private void sendOpprettPerson(TpsPerson tpsPerson, StringBuilder status) {
+    private void sendOpprettPerson(TpsPerson tpsPerson, List<String> miljoer, StringBuilder status) {
 
         try {
             OpprettPerson opprettPerson = mapperFacade.map(tpsPerson.getPersondetalj(), OpprettPerson.class);
             opprettPerson.setFnr(tpsPerson.getHovedperson());
+            opprettPerson.setMiljo(miljoer);
             pensjonConsumer.opprettPerson(opprettPerson);
             tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
                 OpprettPerson personRelasjon = mapperFacade.map(relasjon.getPersonRelasjonMed(), OpprettPerson.class);
                 personRelasjon.setFnr(relasjon.getPersonRelasjonMed().getIdent());
+                opprettPerson.setMiljo(miljoer);
                 pensjonConsumer.opprettPerson(personRelasjon);
             });
 
-            status.append('$').append(PENSJON).append('&').append("OK");
+            status.append("OK");
 
         } catch (RuntimeException e) {
 
-            status.append('$').append(PENSJON).append('&').append(errorStatusDecoder.decodeRuntimeException(e));
+            status.append(errorStatusDecoder.decodeRuntimeException(e));
         }
     }
 }
