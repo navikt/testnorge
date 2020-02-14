@@ -39,25 +39,30 @@ public class PensjonConsumer {
 
     public ResponseEntity opprettPerson(OpprettPerson opprettPerson) {
 
-        return restTemplate.exchange(RequestEntity.post(
-                URI.create(providersProps.getPensjon().getUrl() + PENSJON_OPPRETT_PERSON_URL))
-                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
-                .header(HEADER_NAV_CALL_ID, getCallId())
-                .header(HEADER_NAV_CONSUMER_ID, KILDE)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(opprettPerson), JsonNode.class);
+        return restTemplate.exchange(
+                RequestEntity.post(URI.create(providersProps.getPensjon().getUrl() + PENSJON_OPPRETT_PERSON_URL))
+                        .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                        .header(HEADER_NAV_CALL_ID, getCallId())
+                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(opprettPerson),
+                JsonNode.class
+        );
     }
 
     public Set<String> getMiljoer() {
 
         try {
-            ResponseEntity responseEntity = restTemplate.exchange(RequestEntity.get(
-                    URI.create(providersProps.getPensjon().getUrl() + MILJOER_HENT_TILGJENGELIGE_URL))
-                    .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
-                    .header(HEADER_NAV_CALL_ID, getCallId())
-                    .header(HEADER_NAV_CONSUMER_ID, KILDE)
-                    .build(), String[].class);
+            ResponseEntity responseEntity = restTemplate.exchange(
+                    RequestEntity.get(URI.create(providersProps.getPensjon().getUrl() + MILJOER_HENT_TILGJENGELIGE_URL))
+                            .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                            .header(HEADER_NAV_CALL_ID, getCallId())
+                            .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                            .build(),
+                    String[].class
+            );
             return responseEntity.hasBody() ? Sets.newHashSet((String[]) responseEntity.getBody()) : emptySet();
+
         } catch (RuntimeException e) {
 
             log.error("Feilet å lese tilgjengelige miljøer fra pensjon. {}", e.getMessage(), e);
