@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.pensjon;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
+import static java.util.Objects.nonNull;
 
 import java.util.List;
 import java.util.Set;
@@ -11,10 +12,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.pensjon.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjon.domain.OpprettPersonRequest;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.Timed;
@@ -23,6 +26,8 @@ import no.nav.dolly.metrics.Timed;
 @Service
 @RequiredArgsConstructor
 public class PensjonClient implements ClientRegister {
+
+    public static final String POPP_INNTEKTSREGISTER = "PoppInntekts";
 
     private final PensjonConsumer pensjonConsumer;
     private final MapperFacade mapperFacade;
@@ -40,8 +45,12 @@ public class PensjonClient implements ClientRegister {
             StringBuilder status = new StringBuilder();
             sendOpprettPerson(tpsPerson, newArrayList(miljoer), status);
 
+            if (nonNull(bestilling.getPensjonforvalter())) {
+                lagreInntekt(bestilling.getPensjonforvalter(), tpsPerson, miljoer, status);
+            }
 
-            progress.setPensjonStatus(status.toString());
+            if (status.length() > 0)
+            progress.setPensjonforvalterStatus(status.toString());
         }
     }
 
@@ -77,19 +86,13 @@ public class PensjonClient implements ClientRegister {
         }
     }
 
-    private void lagreInntekt(TpsPerson tpsPerson, List<String> miljoer, StringBuilder status) {
+    private void lagreInntekt(PensjonData pensjonData, TpsPerson tpsPerson, Set<String> miljoer, StringBuilder status) {
 
         try {
-            OpprettPersonRequest opprettPersonRequest = mapperFacade.map(tpsPerson.getPersondetalj(), OpprettPersonRequest.class);
-            opprettPersonRequest.setFnr(tpsPerson.getHovedperson());
-            opprettPersonRequest.setMiljo(miljoer);
-            pensjonConsumer.opprettPerson(opprettPersonRequest);
-            tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
-                OpprettPersonRequest personRelasjon = mapperFacade.map(relasjon.getPersonRelasjonMed(), OpprettPersonRequest.class);
-                personRelasjon.setFnr(relasjon.getPersonRelasjonMed().getIdent());
-                opprettPersonRequest.setMiljo(miljoer);
-                pensjonConsumer.opprettPerson(personRelasjon);
-            });
+            LagreInntektRequest lagreInntektRequest = mapperFacade.map(pensjonData.getInntekt(), LagreInntektRequest.class);
+            lagreInntektRequest.setFnr(tpsPerson.getHovedperson());
+            lagreInntektRequest.setMiljo(newArrayList(miljoer));
+            pensjonConsumer.lagreInntekt(lagreInntektRequest);
 
             status.append("OK");
 
