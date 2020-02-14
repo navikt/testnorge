@@ -38,8 +38,8 @@ public class RettighetAapService {
 
     private static final int MIN_ALDER_UNG_UFOER = 18;
     private static final int MAX_ALDER_UNG_UFOER = 36;
-    private static final int MIN_ALDER_VEDTAKSHISTORIKK = 18;
-    private static final int MAX_ALDER_VEDTAKSHISTORIKK = 67;
+    private static final int MIN_ALDER_AAP = 18;
+    private static final int MAX_ALDER_AAP = 67;
 
     private final AapSyntConsumer aapSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
@@ -58,14 +58,14 @@ public class RettighetAapService {
 
             if (aap != null && !aap.isEmpty()) {
                 var tidligsteDato = finnTidligsteDato(aap);
-                var minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(MIN_ALDER_VEDTAKSHISTORIKK), LocalDate.now()));
-                if (minimumAlder > MAX_ALDER_VEDTAKSHISTORIKK) {
+                var minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(MIN_ALDER_AAP), LocalDate.now()));
+                if (minimumAlder > MAX_ALDER_AAP) {
                     log.warn("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}", minimumAlder);
                     continue;
                 }
                 var maksimumAlder = minimumAlder + 50;
-                if (maksimumAlder > MAX_ALDER_VEDTAKSHISTORIKK) {
-                    maksimumAlder = MAX_ALDER_VEDTAKSHISTORIKK;
+                if (maksimumAlder > MAX_ALDER_AAP) {
+                    maksimumAlder = MAX_ALDER_AAP;
                 }
                 var ident = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder).get(0);
                 responses.addAll(opprettHistorikkOgSendTilArena(avspillergruppeId, ident, miljoe, vedtakshistorikken));
@@ -79,7 +79,7 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter);
+        var utvalgteIdenter = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1);
         var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetAap(utvalgteIdenter.size());
 
         List<RettighetRequest> aap115Rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
@@ -110,7 +110,7 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter);
+        var utvalgteIdenter = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1);
         var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetAap115(utvalgteIdenter.size());
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
@@ -131,7 +131,7 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_UNG_UFOER, MAX_ALDER_UNG_UFOER);
+        var utvalgteIdenter = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_UNG_UFOER, MAX_ALDER_UNG_UFOER - 1);
         var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetUngUfoer(utvalgteIdenter.size());
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
@@ -153,7 +153,7 @@ public class RettighetAapService {
             int antallNyeIdenter
     ) {
         var identerMedKontonummer = serviceUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallNyeIdenter);
-        var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter);
+        var utvalgteIdenter = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1);
         var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetTvungenForvaltning(utvalgteIdenter.size());
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());

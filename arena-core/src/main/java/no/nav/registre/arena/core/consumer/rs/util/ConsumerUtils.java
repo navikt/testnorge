@@ -35,7 +35,7 @@ public class ConsumerUtils {
         List<RettighetSyntRequest> requester = new ArrayList<>(antallMeldinger);
         for (int i = 0; i < antallMeldinger; i++) {
             LocalDate startDato = LocalDate.now().minusMonths(rand.nextInt(12));
-            LocalDate sluttDato = startDato.plusDays(rand.nextInt(365));
+            LocalDate sluttDato = startDato.plusDays(rand.nextInt(365 / 2) + (365 / 2));
             requester.add(RettighetSyntRequest.builder()
                     .fraDato(startDato)
                     .tilDato(sluttDato)
