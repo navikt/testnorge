@@ -1,5 +1,8 @@
 package no.nav.dolly.domain;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public final class CommonKeys {
     public static final String MDC_CONSUMER_ID_KEY = "consumerId";
     public static final String MDC_CALL_ID_KEY = "callId";
@@ -9,6 +12,5 @@ public final class CommonKeys {
     public static final String HEADER_NAV_CONSUMER_TOKEN = "Nav-Consumer-Token";
     public static final String HEADER_NAV_PERSON_IDENT = "Nav-Personident";
 
-    private CommonKeys() {
-    }
+    public static final String KILDE = "Dolly";
 }
