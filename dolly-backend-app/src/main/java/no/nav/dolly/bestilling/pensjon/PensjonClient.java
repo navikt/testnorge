@@ -18,6 +18,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
+import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.Timed;
@@ -27,6 +28,7 @@ import no.nav.dolly.metrics.Timed;
 @RequiredArgsConstructor
 public class PensjonClient implements ClientRegister {
 
+    public static final String PENSJON_FORVALTER = "PensjonForvalter";
     public static final String POPP_INNTEKTSREGISTER = "PoppInntekts";
 
     private final PensjonConsumer pensjonConsumer;
@@ -37,20 +39,29 @@ public class PensjonClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
 
-        Set miljoer = newHashSet(bestilling.getEnvironments());
-        miljoer.retainAll(pensjonConsumer.getMiljoer());
+        StringBuilder status = new StringBuilder();
 
-        if (!miljoer.isEmpty()) {
+        Set bestilteMiljoer = newHashSet(bestilling.getEnvironments());
+        Set tilgjengeligeMiljøer = pensjonConsumer.getMiljoer();
+        bestilteMiljoer.retainAll(tilgjengeligeMiljøer);
+        if (!bestilteMiljoer.isEmpty()) {
 
-            StringBuilder status = new StringBuilder();
-            sendOpprettPerson(tpsPerson, newArrayList(miljoer), status);
+            opprettPerson(tpsPerson, bestilteMiljoer, status);
 
             if (nonNull(bestilling.getPensjonforvalter())) {
-                lagreInntekt(bestilling.getPensjonforvalter(), tpsPerson, miljoer, status);
+                lagreInntekt(bestilling.getPensjonforvalter(), tpsPerson, bestilteMiljoer, status);
             }
 
-            if (status.length() > 0)
-            progress.setPensjonforvalterStatus(status.toString());
+        } else if (nonNull(bestilling.getPensjonforvalter())) {
+            status.append('$')
+                    .append(PENSJON_FORVALTER)
+                    .append("&Feil: Bestilling ble ikke sendt til Pensjonsforvalter (PEN) da tilgjengelig(e) miljø(er) '")
+                    .append(tilgjengeligeMiljøer.toArray())
+                    .append("' ikke er valgt");
+        }
+
+        if (status.length() > 1) {
+            progress.setPensjonforvalterStatus(status.substring(1));
         }
     }
 
@@ -64,41 +75,47 @@ public class PensjonClient implements ClientRegister {
 
     }
 
-    private void sendOpprettPerson(TpsPerson tpsPerson, List<String> miljoer, StringBuilder status) {
+    private void opprettPerson(TpsPerson tpsPerson, Set<String> miljoer, StringBuilder status) {
+
+        status.append('$').append(PENSJON_FORVALTER);
 
         try {
-            OpprettPersonRequest opprettPersonRequest = mapperFacade.map(tpsPerson.getPersondetalj(), OpprettPersonRequest.class);
-            opprettPersonRequest.setFnr(tpsPerson.getHovedperson());
-            opprettPersonRequest.setMiljo(miljoer);
-            pensjonConsumer.opprettPerson(opprettPersonRequest);
+            sendOpprettPerson(tpsPerson.getPersondetalj(), miljoer);
             tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
-                OpprettPersonRequest personRelasjon = mapperFacade.map(relasjon.getPersonRelasjonMed(), OpprettPersonRequest.class);
-                personRelasjon.setFnr(relasjon.getPersonRelasjonMed().getIdent());
-                opprettPersonRequest.setMiljo(miljoer);
-                pensjonConsumer.opprettPerson(personRelasjon);
+                sendOpprettPerson(relasjon.getPersonRelasjonMed(), miljoer);
             });
 
-            status.append("OK");
+            status.append("&OK");
 
         } catch (RuntimeException e) {
 
-            status.append(errorStatusDecoder.decodeRuntimeException(e));
+            status.append('&').append(errorStatusDecoder.decodeRuntimeException(e));
         }
+    }
+
+    private void sendOpprettPerson(Person person, Set<String> miljoer) {
+
+        OpprettPersonRequest opprettPersonRequest = mapperFacade.map(person, OpprettPersonRequest.class);
+        opprettPersonRequest.setFnr(person.getIdent());
+        opprettPersonRequest.setMiljo(newArrayList(miljoer));
+        pensjonConsumer.opprettPerson(opprettPersonRequest);
     }
 
     private void lagreInntekt(PensjonData pensjonData, TpsPerson tpsPerson, Set<String> miljoer, StringBuilder status) {
 
         try {
+            status.append('$')
+                    .append(POPP_INNTEKTSREGISTER);
             LagreInntektRequest lagreInntektRequest = mapperFacade.map(pensjonData.getInntekt(), LagreInntektRequest.class);
             lagreInntektRequest.setFnr(tpsPerson.getHovedperson());
             lagreInntektRequest.setMiljo(newArrayList(miljoer));
             pensjonConsumer.lagreInntekt(lagreInntektRequest);
 
-            status.append("OK");
+            status.append("&OK");
 
         } catch (RuntimeException e) {
 
-            status.append(errorStatusDecoder.decodeRuntimeException(e));
+            status.append('&').append(errorStatusDecoder.decodeRuntimeException(e));
         }
     }
 }

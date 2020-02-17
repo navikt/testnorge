@@ -22,7 +22,8 @@ public enum SystemTyper {
     PDL_UTENLANDSID("Utenlandsk id (PDL)"),
     UDISTUB("Utlendingsdirektoratet (UDI)"),
     INNTK("Inntektskomponenten (INNTK"),
-    PENSJON("Pensjon (PEN)");
+    PEN_FORVALTER("Pensjon (PEN)"),
+    PEN_INNTEKT("Pensjonsopptjening (POPP)");
 
     SystemTyper(String beskrivelse) {
         this.beskrivelse = beskrivelse;

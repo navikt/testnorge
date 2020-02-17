@@ -1,0 +1,16 @@
+{
+  "status": [
+    {
+      "miljo": "q2",
+      "response": {
+        "httpStatus": {
+          "value": 417,
+          "reasonPhrase": "Expectation Failed"
+        },
+        "message": "Person er under 17 år i inntektsåret for en inntekt som gjelder før 2010",
+        "path": "/api/inntekt",
+        "timestamp": "2020-02-17T07:40:39.506+0000"
+      }
+    }
+  ]
+}
