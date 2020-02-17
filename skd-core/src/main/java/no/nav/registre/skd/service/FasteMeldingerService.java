@@ -61,6 +61,17 @@ public class FasteMeldingerService {
             var syntetisertMelding = (RsMeldingstype1Felter) syntetiserteSkdmeldinger.get(i);
             var fastMelding = fasteMeldinger.get(i);
 
+            String adresselinje3;
+            if (fastMelding.getPostnr() != null && fastMelding.getBy() != null) {
+                adresselinje3 = fastMelding.getPostnr() + " " + fastMelding.getBy();
+            } else if (fastMelding.getPostnr() != null && fastMelding.getBy() == null) {
+                adresselinje3 = "";
+            } else {
+                adresselinje3 = syntetisertMelding.getPostnummer() + " " + syntetisertMelding.getAdresse3();
+            }
+            adresselinje3 += fastMelding.getPostnr() != null ? fastMelding.getPostnr() : syntetisertMelding.getPostnummer();
+            adresselinje3 += fastMelding.getBy() != null ? fastMelding.getBy() : syntetisertMelding.getAdresse3();
+
             var nyMelding = RsMeldingstype1Felter.builder()
                     .fodselsdato(fastMelding.getFoedselsdato())
                     .personnummer(fastMelding.getPersonnummer())
@@ -68,7 +79,7 @@ public class FasteMeldingerService {
                     .slektsnavn(fastMelding.getEtternavn())
                     .postnummer(fastMelding.getPostnr() != null ? fastMelding.getPostnr() : syntetisertMelding.getPostnummer())
                     .adressenavn(fastMelding.getAdresse() != null ? fastMelding.getAdresse() : syntetisertMelding.getAdressenavn())
-                    .adresse3(fastMelding.getBy() != null ? fastMelding.getBy() : syntetisertMelding.getAdresse3())
+                    .adresse3(adresselinje3)
                     .build();
 
             if (isNullOrEmpty(nyMelding.getSlektsnavn()) || isNullOrEmpty(nyMelding.getFornavn())) {
