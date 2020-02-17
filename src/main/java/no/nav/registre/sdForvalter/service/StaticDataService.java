@@ -10,7 +10,6 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -87,15 +86,6 @@ public class StaticDataService {
 
     public Set<KrrModel> getDkifData() {
         return new HashSet<>((Collection<KrrModel>) krrRepository.findAll());
-    }
-
-    public Set<TpsModel> saveInTps(Set<TpsModel> data, String eier) {
-        Varighet.VarighetBuilder varighetBuilder = getDefaultVarighetBuilder();
-        return data.stream()
-                .peek(tpsModel -> log.info(tpsModel.getFnr()))
-                .filter(tpsModel -> !tpsRepository.existsById(tpsModel.getFnr()))
-                .map(tpsModel -> (TpsModel) saveIfNotPresent(tpsModel, tpsRepository, varighetBuilder, eier))
-                .collect(Collectors.toSet());
     }
 
     public Set<AaregModel> saveInAareg(Set<AaregModel> data, String eier) {

@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Set;
 
+import no.nav.registre.sdForvalter.adapter.TpsAdapter;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.model.Team;
-import no.nav.registre.sdForvalter.database.model.TpsModel;
+import no.nav.registre.sdForvalter.domain.Tps;
 import no.nav.registre.sdForvalter.provider.rs.request.FastDataRequest;
 import no.nav.registre.sdForvalter.service.StaticDataService;
 
@@ -29,6 +30,7 @@ import no.nav.registre.sdForvalter.service.StaticDataService;
 public class StaticDataController {
 
     private final StaticDataService staticDataService;
+    private final TpsAdapter tpsAdapter;
 
     @GetMapping("/team")
     public ResponseEntity<Set<Team>> getTeams() {
@@ -46,10 +48,14 @@ public class StaticDataController {
     }
 
     @GetMapping(value = "/tps")
-    public ResponseEntity<Set<TpsModel>> getTpsStaticData() {
-        return ResponseEntity.ok(staticDataService.getLocalTpsDatabaseData());
+    public ResponseEntity<Set<Tps>> getTpsStaticData() {
+        return ResponseEntity.ok(tpsAdapter.fetchTps());
     }
 
+    @PostMapping("/tps")
+    public ResponseEntity<Set<Tps>> createTpsStaticData(@RequestBody Set<Tps> tpsSet) {
+        return ResponseEntity.ok(tpsAdapter.saveTps(tpsSet));
+    }
 
     @GetMapping(value = "/aareg")
     public ResponseEntity<Set<AaregModel>> getAaregStaticData() {
@@ -70,7 +76,7 @@ public class StaticDataController {
     public ResponseEntity<FastDataRequest> storeStaticDataInTps(@RequestBody FastDataRequest data) {
         FastDataRequest responseBody = new FastDataRequest();
         responseBody.setEier(data.getEier());
-        responseBody.setTps(staticDataService.saveInTps(data.getTps(), data.getEier()));
+        responseBody.setTps(tpsAdapter.saveTps(data.getTps()));
         responseBody.setKrr(staticDataService.saveInKrr(data.getKrr(), data.getEier()));
         responseBody.setEreg(staticDataService.saveInEreg(data.getEreg(), data.getEier()));
         responseBody.setAareg(staticDataService.saveInAareg(data.getAareg(), data.getEier()));

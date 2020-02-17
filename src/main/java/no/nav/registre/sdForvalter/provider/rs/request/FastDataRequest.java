@@ -11,7 +11,7 @@ import java.util.Set;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
-import no.nav.registre.sdForvalter.database.model.TpsModel;
+import no.nav.registre.sdForvalter.domain.Tps;
 
 @Getter
 @Setter
@@ -19,7 +19,7 @@ import no.nav.registre.sdForvalter.database.model.TpsModel;
 public class FastDataRequest {
 
     Set<AaregModel> aareg = new HashSet<>();
-    Set<TpsModel> tps = new HashSet<>();
+    Set<Tps> tps = new HashSet<>();
     Set<KrrModel> krr = new HashSet<>();
     Set<EregModel> ereg = new HashSet<>();
     @NotNull
