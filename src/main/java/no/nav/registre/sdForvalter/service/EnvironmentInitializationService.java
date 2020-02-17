@@ -102,6 +102,13 @@ public class EnvironmentInitializationService {
         tpsSet = tpsSet.parallelStream().filter(t -> !playgroupFnrs.contains(t.getFnr())).collect(Collectors.toSet());
 
         if (!tpsSet.isEmpty()) {
+            if(log.isInfoEnabled()){
+                log.info(
+                        "Identer mangler i avspillings gruppen {}. Legger til identene: {} i gruppen.",
+                        staticDataPlaygroup,
+                        tpsSet.stream().map(TpsModel::getFnr).collect(Collectors.joining(", "))
+                );
+            }
             skdConsumer.createTpsMessagesInGroup(tpsSet, staticDataPlaygroup);
         }
 
