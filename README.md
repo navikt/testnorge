@@ -2,12 +2,12 @@
 
 ## Dokumentasjon
 
-###Swagger
+### Swagger
 Swagger finnes under [/api](https://testnorge-spion.nais.preprod.local/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 
-###Java
+### Java
 For å kjøre lokalt må active profile settes til "dev". I tillegg, for å kunne gjøre kall mot NAIS apper må nav truststore settes opp 
 og cloud vault token må hentes fra Vault. 
 
