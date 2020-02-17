@@ -25,6 +25,10 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsRespons
 public class ServiceUtils {
 
     public static final String BEGRUNNELSE = "Syntetisert rettighet";
+    public static final int MIN_ALDER_AAP = 18;
+    public static final int MAX_ALDER_AAP = 67;
+    public static final int MIN_ALDER_UNG_UFOER = 18;
+    public static final int MAX_ALDER_UNG_UFOER = 36;
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final BrukereService brukereService;

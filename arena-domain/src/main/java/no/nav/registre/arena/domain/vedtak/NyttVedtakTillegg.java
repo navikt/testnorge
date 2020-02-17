@@ -28,7 +28,6 @@ public class NyttVedtakTillegg extends NyttVedtak {
     @JsonAlias({ "RETTIGHET_KODE", "rettighetKode" })
     private String rettighetKode;
 
-    // fix:
     @JsonAlias({ "UTFALL", "utfallKode" })
     private String utfallKode;
 

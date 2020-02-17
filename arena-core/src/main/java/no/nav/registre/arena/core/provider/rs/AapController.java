@@ -19,13 +19,6 @@ public class AapController {
 
     private final RettighetAapService rettighetAapService;
 
-    @PostMapping("generer/vedtakshistorikk")
-    public List<NyttVedtakResponse> genererVedtakshistorikk(
-            @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
-    ) {
-        return rettighetAapService.genererVedtakshistorikk(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
-    }
-
     @PostMapping("generer/rettighet/aap")
     public List<NyttVedtakResponse> genererRettighetAap(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest

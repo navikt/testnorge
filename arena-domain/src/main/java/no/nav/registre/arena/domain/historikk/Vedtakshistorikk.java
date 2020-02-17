@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.util.List;
 
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
+import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
 
 @Getter
 @Setter
@@ -32,4 +33,10 @@ public class Vedtakshistorikk {
 
     @JsonProperty("FRI_MK")
     private List<NyttVedtakAap> fritakMeldekort;
+
+    @JsonProperty("BASI")
+    private List<NyttVedtakTiltak> tiltakspenger;
+
+    @JsonProperty("BTIL")
+    private List<NyttVedtakTiltak> barnetillegg;
 }
