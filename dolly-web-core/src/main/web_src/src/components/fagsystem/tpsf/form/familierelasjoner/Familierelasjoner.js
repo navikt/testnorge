@@ -6,7 +6,7 @@ import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { Partnere } from './partials/Partnere'
+import { Partnere } from './partials/Partnere/Partnere'
 import { Barn } from './partials/Barn'
 
 const infoTekst =

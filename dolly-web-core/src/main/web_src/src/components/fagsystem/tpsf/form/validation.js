@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
-import _findIndex from 'lodash/findIndex'
-import { isBefore } from 'date-fns'
+import { isAfter } from 'date-fns'
+import Dataformatter from '~/utils/DataFormatter'
 import { requiredString, ifPresent, ifKeyHasValue, messages } from '~/utils/YupValidations'
 
 const boadresse = Yup.object({
@@ -43,25 +43,50 @@ const adresseNrInfo = Yup.object({
 
 export const sivilstander = Yup.array().of(
 	Yup.object({
-		sivilstand: Yup.string()
-			.test('is-not-ugift', 'Ugyldig sivilstand for partner', value => value !== 'UGIF')
-			.required(messages.required),
+		sivilstand: Yup.string().required(messages.required),
 		sivilstandRegdato: Yup.string()
 			.test(
-				'is-before-last',
-				'Dato må være før tidligere forhold (nyeste forhold settes først)',
-				function validDate(val) {
+				'is-after-last',
+				'Dato må være etter tidligere forhold (eldste forhold settes først)',
+				function validDate(dato) {
+					if (!dato) return true
 					const values = this.options.context
 					const path = this.options.path
-					const thisDate = _get(values, path)
-					const partnerIndex = path.charAt(path.indexOf('[') + 1)
-					const sivilstander =
-						//Linja med partnerE kan fjernes når Dolly2.0 prodsettes. Endres backend
-						_get(values.tpsf.relasjoner.partnere, `${[partnerIndex]}.sivilstander`) ||
-						_get(values.tpsf.relasjoner.partner, `${[partnerIndex]}.sivilstander`)
-					const forholdIndex = _findIndex(sivilstander, ['sivilstandRegdato', thisDate])
-					if (forholdIndex === 0) return true
-					return isBefore(thisDate, sivilstander[forholdIndex - 1].sivilstandRegdato)
+
+					// Finn index av current partner og sivilstand
+					// Ex path: tpsf.relasjoner.partnere[0].sivilstander[0].sivilstandRegdato
+					const partnerIdx = parseInt(path.match(/partnere\[(.*?)\].sivilstander/i)[1])
+					const sivilstandIdx = parseInt(path.match(/sivilstander\[(.*?)\].sivilstandRegdato/i)[1])
+
+					// Da vi skal validere mot "forrige forhold" trenger vi ikke sjekke første
+					if (partnerIdx === 0 && sivilstandIdx === 0) return true
+
+					const getSivilstandRegdato = (pIdx, sIdx) =>
+						_get(
+							values.tpsf.relasjoner.partnere,
+							`[${pIdx}].sivilstander[${sIdx}].sivilstandRegdato`
+						)
+
+					let prevDato
+					if (partnerIdx === 0 || sivilstandIdx > 0) {
+						prevDato = getSivilstandRegdato(partnerIdx, sivilstandIdx - 1)
+					} else {
+						const prevPartnerSivilstandArr = _get(
+							values.tpsf.relasjoner.partnere,
+							`[${partnerIdx}].sivilstander`
+						)
+						prevDato = getSivilstandRegdato(partnerIdx - 1, prevPartnerSivilstandArr.length)
+					}
+
+					// Selve testen
+					const dateValid = isAfter(new Date(dato), new Date(prevDato))
+					return (
+						dateValid ||
+						this.createError({
+							message: `Dato må være etter tidligere forhold (${Dataformatter.formatDate(prevDato)})`,
+							path: path
+						})
+					)
 				}
 			)
 			.required(messages.required)
