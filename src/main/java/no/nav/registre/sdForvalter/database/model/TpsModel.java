@@ -56,18 +56,19 @@ public class TpsModel extends AuditModel implements CreatableFromString, Ownable
     @ManyToOne
     @JoinColumn(name = "varighet_id")
     private Varighet varighet;
-    @ManyToOne
-    @JoinColumn(name = "kilde_id")
-    private KildeModel kildeModel;
 
-    public TpsModel(Tps tps, KildeModel kildeModel) {
+    @ManyToOne
+    @JoinColumn(name = "kilde_system_id")
+    private KildeSystemModel kildeSystemModel;
+
+    public TpsModel(Tps tps, KildeSystemModel kildeSystemModel) {
         fnr = tps.getFnr();
         firstName = tps.getFirstName();
         lastName = tps.getLastName();
         address = tps.getAddress();
         postNr = tps.getPostNr();
         city = tps.getCity();
-        this.kildeModel = kildeModel;
+        this.kildeSystemModel = kildeSystemModel;
     }
 
     @Override

@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,11 +23,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import no.nav.registre.sdForvalter.database.model.KildeModel;
+import no.nav.registre.sdForvalter.database.model.KildeSystemModel;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
-import no.nav.registre.sdForvalter.database.repository.KildeRepository;
+import no.nav.registre.sdForvalter.database.repository.KildeSystemRepository;
 import no.nav.registre.sdForvalter.database.repository.TpsRepository;
-import no.nav.registre.sdForvalter.domain.Kilde;
+import no.nav.registre.sdForvalter.domain.KildeSystem;
 import no.nav.registre.sdForvalter.domain.Tps;
 
 @RunWith(SpringRunner.class)
@@ -46,20 +47,19 @@ public class StaticDataControllerTpsIntegrationTest {
     private TpsRepository tpsRepository;
 
     @Autowired
-    private KildeRepository kildeRepository;
+    private KildeSystemRepository kildeSystemRepository;
 
 
     @Test
-    public void shouldGetTpsSetWithKilde() throws Exception {
-
-        KildeModel altinn = new KildeModel("Altinn");
-        kildeRepository.save(altinn);
+    public void shouldGetTpsSetWithKildeSystem() throws Exception {
+        KildeSystemModel altinn = new KildeSystemModel("Altinn");
+        kildeSystemRepository.save(altinn);
         TpsModel tpsModel = TpsModel
                 .builder()
-                .firstName("Hans")
-                .lastName("Hansen")
+                .firstName("Test")
+                .lastName("Testen")
                 .fnr("101010101")
-                .kildeModel(altinn)
+                .kildeSystemModel(altinn)
                 .build();
         tpsRepository.save(tpsModel);
 
@@ -77,7 +77,11 @@ public class StaticDataControllerTpsIntegrationTest {
 
     @Test
     public void shouldAddTpsSetToDatabase() throws Exception {
-        Tps tps = Tps.builder().firstName("Hans").lastName("hansen").fnr("01010101011").build();
+        Tps tps = Tps.builder()
+                .firstName("Test")
+                .lastName("Testen")
+                .fnr("01010101011")
+                .build();
         Set<Tps> tpsSet = createTpsSet(tps);
         mvc.perform(post("/api/v1/statiskData/tps/")
                 .content(objectMapper.writeValueAsString(tpsSet))
@@ -88,12 +92,21 @@ public class StaticDataControllerTpsIntegrationTest {
     }
 
     @Test
-    public void shouldAddKildeToDatabase() throws Exception {
-        final Tps hans = Tps.builder().firstName("Hans").lastName("hansen").fnr("01010101011")
-                .kilde(new Kilde("Altinn")).build();
-        final Tps petter = Tps.builder().firstName("petter").lastName("pettersen").fnr("01010101021")
-                .kilde(new Kilde("Altinn")).build();
+    public void shouldAddKildeSystemToDatabase() throws Exception {
+        KildeSystem altinn = new KildeSystem("Altinn");
+        final Tps hans = Tps.builder()
+                .firstName("Test")
+                .lastName("Testen")
+                .fnr("01010101011")
+                .kildeSystem(altinn)
+                .build();
 
+        final Tps petter = Tps.builder()
+                .firstName("Testern")
+                .lastName("Testernson")
+                .fnr("01010101021")
+                .kildeSystem(altinn)
+                .build();
 
         final Set<Tps> tpsSet = createTpsSet(hans, petter);
         mvc.perform(post("/api/v1/statiskData/tps/")
@@ -101,27 +114,22 @@ public class StaticDataControllerTpsIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-
-        final KildeModel altinnKilde = new KildeModel(1L, "Altinn");
-        assertThat(kildeRepository.findAll())
-                .containsOnly(altinnKilde);
-
-        assertThat(tpsRepository.findAll())
-                .containsOnly(
-                        new TpsModel(hans, altinnKilde),
-                        new TpsModel(petter, altinnKilde)
+        assertThat(Lists.newArrayList(kildeSystemRepository.findAll()))
+                .hasSize(1)
+                .first()
+                .isEqualToComparingOnlyGivenFields(
+                        new KildeSystemModel(altinn),
+                        "navn"
                 );
     }
 
     @After
     public void cleanUp() {
         tpsRepository.deleteAll();
-        kildeRepository.deleteAll();
+        kildeSystemRepository.deleteAll();
     }
-
 
     private Set<Tps> createTpsSet(Tps... tpss) {
         return new HashSet<>(Arrays.asList(tpss));
     }
-
 }

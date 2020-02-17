@@ -1,4 +1,4 @@
-create table kilde
+create table kilde_system
 (
     id         bigint              not null,
     navn       varchar(255) unique not null,
@@ -8,7 +8,7 @@ create table kilde
 );
 
 alter table tps
-    add column kilde_id bigint;
+    add column kilde_system_id bigint;
 
 alter table tps
-    add constraint kilde_id_fkey foreign key (kilde_id) references kilde;
+    add constraint kilde_system_id_fkey foreign key (kilde_system_id) references kilde_system;

@@ -32,7 +32,7 @@ public class Tps {
     @JsonProperty("by")
     private final String city;
     @JsonProperty
-    private final Kilde kilde;
+    private final KildeSystem kildeSystem;
     @JsonBackReference(value = "tps")
     private Team team;
     @JsonBackReference(value = "tps-varighet")
@@ -46,6 +46,6 @@ public class Tps {
         city = model.getCity();
         team = model.getTeam();
         varighet = model.getVarighet();
-        kilde = new Kilde(model.getKildeModel());
+        kildeSystem = new KildeSystem(model.getKildeSystemModel());
     }
 }

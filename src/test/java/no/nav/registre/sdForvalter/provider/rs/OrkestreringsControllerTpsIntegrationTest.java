@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -31,6 +29,7 @@ import no.nav.registre.sdForvalter.consumer.rs.request.SkdRequest;
 import no.nav.registre.sdForvalter.consumer.rs.response.SkdResponse;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
 import no.nav.registre.sdForvalter.database.repository.TpsRepository;
+import no.nav.registre.sdForvalter.util.JsonTestHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -71,7 +70,7 @@ public class OrkestreringsControllerTpsIntegrationTest {
 
     @Test
     public void shouldInitiateTps() throws Exception {
-        final TpsModel tps = TpsModel.builder().firstName("Hans").lastName("Hansen").fnr("01010101011").build();
+        final TpsModel tps = TpsModel.builder().firstName("Test").lastName("Testen").fnr("01010101011").build();
         tpsRepository.save(tps);
 
         JsonTestHelper.stubGet(hodejegerenUrlPattern, Collections.EMPTY_SET, objectMapper);
@@ -88,7 +87,7 @@ public class OrkestreringsControllerTpsIntegrationTest {
 
     @Test
     public void shouldUpdateTpsPlaygroupFromDatabaseAndRunPlaygroup() throws Exception {
-        final TpsModel tps = TpsModel.builder().firstName("Hans").lastName("Hansen").fnr("01010101011").build();
+        final TpsModel tps = TpsModel.builder().firstName("Test").lastName("Testeb").fnr("01010101011").build();
         tpsRepository.save(tps);
 
         JsonTestHelper.stubGet(hodejegerenUrlPattern, Collections.EMPTY_SET, objectMapper);

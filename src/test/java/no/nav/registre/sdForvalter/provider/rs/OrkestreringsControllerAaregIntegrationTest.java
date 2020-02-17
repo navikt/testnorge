@@ -26,6 +26,7 @@ import no.nav.registre.sdForvalter.consumer.rs.request.aareg.AaregRequest;
 import no.nav.registre.sdForvalter.consumer.rs.request.aareg.Arbeidsforhold;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.repository.AaregRepository;
+import no.nav.registre.sdForvalter.util.JsonTestHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

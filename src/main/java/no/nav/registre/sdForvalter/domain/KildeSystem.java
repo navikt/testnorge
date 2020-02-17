@@ -6,18 +6,18 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import no.nav.registre.sdForvalter.database.model.KildeModel;
+import no.nav.registre.sdForvalter.database.model.KildeSystemModel;
 
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Kilde {
+public class KildeSystem {
 
     @JsonProperty
     private final String navn;
 
-    public Kilde(KildeModel model) {
+    public KildeSystem(KildeSystemModel model) {
         this(model != null ? model.getNavn() : null);
     }
 }

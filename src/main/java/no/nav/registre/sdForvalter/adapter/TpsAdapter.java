@@ -16,7 +16,7 @@ import no.nav.registre.sdForvalter.domain.Tps;
 @AllArgsConstructor
 public class TpsAdapter {
     private final TpsRepository repository;
-    private final KildeAdapter kildeAdapter;
+    private final KildeSystemAdapter kildeSystemAdapter;
 
     public Set<Tps> fetchTps() {
         Set<Tps> tpsSet = new HashSet<>();
@@ -34,7 +34,7 @@ public class TpsAdapter {
 
         Iterable<TpsModel> createdTps = repository.saveAll(noneExistingTpss
                 .stream()
-                .map(tps -> new TpsModel(tps, tps.getKilde() != null ? kildeAdapter.saveKilde(tps.getKilde()) : null))
+                .map(tps -> new TpsModel(tps, tps.getKildeSystem() != null ? kildeSystemAdapter.saveKildeSystem(tps.getKildeSystem()) : null))
                 .collect(Collectors.toList())
         );
         return StreamSupport

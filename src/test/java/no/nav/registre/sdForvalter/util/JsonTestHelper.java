@@ -1,4 +1,4 @@
-package no.nav.registre.sdForvalter.provider.rs;
+package no.nav.registre.sdForvalter.util;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
@@ -12,22 +12,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 
-class JsonTestHelper {
+public class JsonTestHelper {
 
     private JsonTestHelper() {
 
     }
 
-    static <T> void verifyPost(UrlPathPattern urlPathPattern, T requestBody, ObjectMapper objectMapper) throws JsonProcessingException {
+    public static <T> void verifyPost(UrlPathPattern urlPathPattern, T requestBody, ObjectMapper objectMapper) throws JsonProcessingException {
         final String requestJsonBody = objectMapper.writeValueAsString(requestBody);
         verify(postRequestedFor(urlPathPattern).withRequestBody(equalToJson(requestJsonBody)));
     }
 
-    static <T> void verifyPost(UrlPathPattern urlPathPattern) {
+    public static <T> void verifyPost(UrlPathPattern urlPathPattern) {
         verify(postRequestedFor(urlPathPattern));
     }
 
-    static <T, K> void stubPost(UrlPathPattern urlPathPattern, T requestBody, K responseBody, ObjectMapper objectMapper) throws Exception {
+    public static <T, K> void stubPost(UrlPathPattern urlPathPattern, T requestBody, K responseBody, ObjectMapper objectMapper) throws Exception {
         final String requestJsonBody = objectMapper.writeValueAsString(requestBody);
         final String responseJsonBody = objectMapper.writeValueAsString(responseBody);
         stubFor(post(urlPathPattern)
@@ -39,7 +39,7 @@ class JsonTestHelper {
         );
     }
 
-    static <T> void stubPost(UrlPathPattern urlPathPattern, T responseBody, ObjectMapper objectMapper) throws Exception {
+    public static <T> void stubPost(UrlPathPattern urlPathPattern, T responseBody, ObjectMapper objectMapper) throws Exception {
         final String responseJsonBody = objectMapper.writeValueAsString(responseBody);
         stubFor(post(urlPathPattern)
                 .willReturn(aResponse()
@@ -49,8 +49,7 @@ class JsonTestHelper {
         );
     }
 
-
-    static <T, K> void stubGet(UrlPathPattern urlPathPattern, K responseBody, ObjectMapper objectMapper) throws Exception {
+    public static <T, K> void stubGet(UrlPathPattern urlPathPattern, K responseBody, ObjectMapper objectMapper) throws Exception {
         final String responseJsonBody = objectMapper.writeValueAsString(responseBody);
         stubFor(get(urlPathPattern)
                 .willReturn(aResponse()

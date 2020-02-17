@@ -1,6 +1,7 @@
 package no.nav.registre.sdForvalter.provider.rs;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,9 +21,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.sdForvalter.database.model.KildeModel;
-import no.nav.registre.sdForvalter.database.repository.KildeRepository;
-import no.nav.registre.sdForvalter.domain.Kilder;
+import no.nav.registre.sdForvalter.database.model.KildeSystemModel;
+import no.nav.registre.sdForvalter.database.repository.KildeSystemRepository;
+import no.nav.registre.sdForvalter.domain.KildeSystemListe;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -30,36 +31,37 @@ import no.nav.registre.sdForvalter.domain.Kilder;
 @AutoConfigureMockMvc
 @TestPropertySource(
         locations = "classpath:application-test.properties")
-public class KildeControllerIntegrationTest {
+public class KildeSystemControllerIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
 
     @Autowired
-    private KildeRepository kildeRepository;
+    private KildeSystemRepository kildeSystemRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Test
-    public void shouldGetKildeerFromDatabase() throws Exception {
-        List<KildeModel> iterable = Arrays.asList(
-                new KildeModel("Altinn"),
-                new KildeModel("Skatt")
+    public void shouldGetKildeSystemFromDatabase() throws Exception {
+        List<KildeSystemModel> iterable = Arrays.asList(
+                new KildeSystemModel("Altinn"),
+                new KildeSystemModel("Skatt")
         );
-        kildeRepository.saveAll(iterable);
+        kildeSystemRepository.saveAll(iterable);
 
-        String body = mvc.perform(MockMvcRequestBuilders.get("/api/v1/kilde/").contentType(MediaType.APPLICATION_JSON))
+        String body = mvc.perform(get("/api/v1/kilde-system/")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        assertThat(body).isEqualTo(objectMapper.writeValueAsString(new Kilder(iterable)));
+        assertThat(body).isEqualTo(objectMapper.writeValueAsString(new KildeSystemListe(iterable)));
     }
 
     @After
     public void cleanUp() {
-        kildeRepository.deleteAll();
+        kildeSystemRepository.deleteAll();
     }
 }
