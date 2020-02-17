@@ -7,13 +7,14 @@ import InntektStub from '~/components/inntektStub/validerInntekt'
 const initialValues = {
 	beloep: '',
 	startOpptjeningsperiode: null,
-	sluttOpptjeningsperiode: null
+	sluttOpptjeningsperiode: null,
+	inntektstype: ''
 }
 
-export const InntektForm = ({ formikBag }) => {
+export const InntektForm = ({ formikBag, inntektsinformasjonPath }) => {
 	return (
 		<FormikDollyFieldArray
-			name="inntektstub.inntektsinformasjon.inntektsliste"
+			name={`${inntektsinformasjonPath}.inntektsliste`}
 			title="Inntekt"
 			newEntry={initialValues}
 		>
@@ -22,8 +23,8 @@ export const InntektForm = ({ formikBag }) => {
 					<FormikTextInput name={`${path}.beloep`} label="Beløp" type="number" />
 					<FormikDatepicker name={`${path}.startOpptjeningsperiode`} label="Startdato" />
 					<FormikDatepicker name={`${path}.sluttOpptjeningsperiode`} label="Sluttdato" />
-					{/* <InntektStub /> */}
-					{/* sende med noe i denne ^ ?? */}
+					<InntektStub formikBag={formikBag} inntektPath={path} />
+					{/* sende med noe i denne ^ ?? Og endre navn? */}
 				</React.Fragment>
 			)}
 		</FormikDollyFieldArray>

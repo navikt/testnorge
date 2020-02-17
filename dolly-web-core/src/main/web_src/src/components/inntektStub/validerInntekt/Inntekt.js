@@ -7,8 +7,8 @@ import texts from '../texts'
 import { Field } from 'formik'
 
 const sjekkFelt = (field, options) => {
-	console.log('field :', field)
-	console.log('options :', options)
+	// console.log('field :', field)
+	// console.log('options :', options)
 	if (!options.includes('<TOM>')) {
 		return { feilmelding: 'Feltet er påkrevd' }
 	}

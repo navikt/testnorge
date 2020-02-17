@@ -66,7 +66,11 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 					{
 						aarMaaned: '',
 						opplysningspliktig: '',
-						virksomhet: ''
+						virksomhet: '',
+						inntektsliste: [],
+						fradragsliste: [],
+						forskuddstrekksliste: [],
+						arbeidsforholdsliste: []
 					}
 				]
 			}),

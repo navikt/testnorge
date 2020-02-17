@@ -11,7 +11,10 @@ const initialValues = {
 	aarMaaned: '',
 	opplysningspliktig: '',
 	virksomhet: '',
-	inntektsliste: []
+	inntektsliste: [],
+	fradragsliste: [],
+	forskuddstrekksliste: [],
+	arbeidsforholdsliste: []
 }
 
 export const InntektsinformasjonForm = ({ formikBag }) => {
@@ -39,15 +42,15 @@ export const InntektsinformasjonForm = ({ formikBag }) => {
 						/>
 					</div>
 					{/* Kategori? */}
-					<InntektForm formikBag={formikBag} />
+					<InntektForm formikBag={formikBag} inntektsinformasjonPath={path} />
 					{/* Kategori? */}
-					<FradragForm formikBag={formikBag} />
+					<FradragForm formikBag={formikBag} inntektsinformasjonPath={path} />
 
 					{/* Kategori? */}
-					<ForskuddstrekkForm formikBag={formikBag} />
+					<ForskuddstrekkForm formikBag={formikBag} inntektsinformasjonPath={path} />
 
 					{/* KAtegori? */}
-					<ArbeidsforholdForm formikBag={formikBag} />
+					<ArbeidsforholdForm formikBag={formikBag} inntektsinformasjonPath={path} />
 				</React.Fragment>
 			)}
 		</FormikDollyFieldArray>

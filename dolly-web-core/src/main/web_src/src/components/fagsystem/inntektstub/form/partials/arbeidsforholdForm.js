@@ -17,10 +17,10 @@ const initialValues = {
 	sisteDatoForStillingsprosentendring: null
 }
 
-export const ArbeidsforholdForm = ({ formikBag }) => {
+export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 	return (
 		<FormikDollyFieldArray
-			name="inntektstub.inntektinformasjon.arbeidsforholdsliste"
+			name={`${inntektsinformasjonPath}.arbeidsforholdsliste`}
 			title="Arbeidsforhold"
 			newEntry={initialValues}
 		>

@@ -9,7 +9,6 @@ const inntektstubAttributt = 'inntektstub'
 
 export const InntektstubForm = ({ formikBag }) => (
 	<Vis attributt={inntektstubAttributt}>
-		{console.log('formikBag :', formikBag)}
 		<Panel
 			heading="Inntektskomponenten"
 			hasErrors={panelError(formikBag, inntektstubAttributt)}

@@ -8,10 +8,10 @@ const initialValues = {
 	beskrivelse: ''
 }
 
-export const FradragForm = ({ formikBag }) => {
+export const FradragForm = ({ formikBag, inntektsinformasjonPath }) => {
 	return (
 		<FormikDollyFieldArray
-			name="inntektstub.inntektinformasjon.fradragsliste"
+			name={`${inntektsinformasjonPath}.fradragsliste`}
 			title="Fradrag"
 			newEntry={initialValues}
 		>

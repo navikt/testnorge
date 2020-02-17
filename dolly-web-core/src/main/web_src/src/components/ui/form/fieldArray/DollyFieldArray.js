@@ -86,7 +86,6 @@ export const FormikDollyFieldArray = ({
 	<FieldArray name={name}>
 		{arrayHelpers => {
 			const values = _get(arrayHelpers.form.values, name, [])
-			console.log('values :', values)
 			const addNewEntry = () => arrayHelpers.push(newEntry)
 			return (
 				<DollyFieldArrayWrapper title={title} hjelpetekst={hjelpetekst} nested={nested}>
