@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import javax.persistence.Table;
 import java.util.List;
 
 import no.nav.registre.sdForvalter.database.Ownable;
+import no.nav.registre.sdForvalter.domain.Tps;
 import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 
 @Entity
@@ -29,12 +31,13 @@ import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 @AllArgsConstructor
 @Slf4j
 @Table(name = "tps")
+@EqualsAndHashCode(callSuper = false)
 public class TpsModel extends AuditModel implements CreatableFromString, Ownable {
+
 
     @Id
     @JsonProperty
     private String fnr;
-
     @JsonProperty("fornavn")
     private String firstName;
     @JsonProperty("etternavn")
@@ -45,16 +48,28 @@ public class TpsModel extends AuditModel implements CreatableFromString, Ownable
     private String postNr;
     @JsonProperty("by")
     private String city;
-
     @JsonBackReference(value = "tps")
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
-
     @JsonBackReference(value = "tps-varighet")
     @ManyToOne
     @JoinColumn(name = "varighet_id")
     private Varighet varighet;
+
+    @ManyToOne
+    @JoinColumn(name = "kilde_system_id")
+    private KildeSystemModel kildeSystemModel;
+
+    public TpsModel(Tps tps, KildeSystemModel kildeSystemModel) {
+        fnr = tps.getFnr();
+        firstName = tps.getFirstName();
+        lastName = tps.getLastName();
+        address = tps.getAddress();
+        postNr = tps.getPostNr();
+        city = tps.getCity();
+        this.kildeSystemModel = kildeSystemModel;
+    }
 
     @Override
     public void updateFromString(List<String> input, List<String> headers) {
