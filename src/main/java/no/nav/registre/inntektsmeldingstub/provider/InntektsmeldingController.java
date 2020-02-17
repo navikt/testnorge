@@ -3,7 +3,10 @@ package no.nav.registre.inntektsmeldingstub.provider;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
 import no.nav.registre.inntektsmeldingstub.provider.validation.InntektsmeldingRequestValidator;
+import no.nav.registre.inntektsmeldingstub.service.DBToRestMapper;
+
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLInntektsmeldingM;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +28,6 @@ import no.nav.registre.inntektsmeldingstub.provider.validation.ValidationExcepti
 import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping("/api/v1/inntektsmelding")
 @RequiredArgsConstructor
@@ -38,14 +39,14 @@ public class InntektsmeldingController {
     public XMLInntektsmeldingM hentInntektsmelding201809(
             @PathVariable Long id
     ) {
-        return XmlInntektsmelding201809.createInntektsmelding(service.findInntektsmelding(id));
+        return XmlInntektsmelding201809.createInntektsmelding(DBToRestMapper.mapDBMelding(service.findInntektsmelding(id)));
     }
 
     @GetMapping("/2018/09/json/{id}")
-    public ResponseEntity<Inntektsmelding> hentInntektsmeldingJSON201809(
+    public ResponseEntity<RsInntektsmelding> hentInntektsmeldingJSON201809(
             @PathVariable Long id
     ) {
-        return ResponseEntity.ok(service.findInntektsmelding(id));
+        return ResponseEntity.ok(DBToRestMapper.mapDBMelding(service.findInntektsmelding(id)));
     }
 
     @PostMapping("/2018/09")
@@ -67,14 +68,14 @@ public class InntektsmeldingController {
 
     @GetMapping(value = "/2018/12/xml/{id}", produces = MediaType.APPLICATION_XML_VALUE)
     public no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM hentInntektsmelding201812(@PathVariable Long id) {
-        return XmlInntektsmelding201812.createInntektsmelding(service.findInntektsmelding(id));
+        return XmlInntektsmelding201812.createInntektsmelding(DBToRestMapper.mapDBMelding(service.findInntektsmelding(id)));
     }
 
     @GetMapping("/2018/12/json/{id}")
-    public ResponseEntity<Inntektsmelding> hentInntektsmeldingJSON201812(
+    public ResponseEntity<RsInntektsmelding> hentInntektsmeldingJSON201812(
             @PathVariable Long id
     ) {
-        return ResponseEntity.ok(service.findInntektsmelding(id));
+        return ResponseEntity.ok(DBToRestMapper.mapDBMelding(service.findInntektsmelding(id)));
     }
 
     @PostMapping("/2018/12")

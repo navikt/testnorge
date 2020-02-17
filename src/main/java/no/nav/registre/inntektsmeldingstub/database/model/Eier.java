@@ -1,5 +1,6 @@
 package no.nav.registre.inntektsmeldingstub.database.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +32,7 @@ public class Eier {
     @GeneratedValue
     private Long id;
     private String navn;
+    @JsonBackReference
     @OneToMany(mappedBy = "eier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Inntektsmelding> inntektsmeldinger;
 

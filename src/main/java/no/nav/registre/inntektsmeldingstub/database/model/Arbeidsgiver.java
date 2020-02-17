@@ -1,5 +1,6 @@
 package no.nav.registre.inntektsmeldingstub.database.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +29,7 @@ import static java.util.Objects.isNull;
 @NoArgsConstructor
 public class Arbeidsgiver {
 
+    @JsonBackReference
     @OneToMany(mappedBy = "arbeidsgiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Inntektsmelding> inntektsmeldinger;
     @Id

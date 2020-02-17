@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class RestToDatabaseModelMapper {
+public class RestToDBMapper {
 
     public static Inntektsmelding.InntektsmeldingBuilder map201809melding(RsInntektsmelding melding) {
         if (Objects.isNull(melding)) {
@@ -42,22 +42,22 @@ public class RestToDatabaseModelMapper {
                 .avsendersystemVersjon(melding.getAvsendersystem().getSystemversjon())
                 .innsendingstidspunkt(melding.getAvsendersystem().getInnsendingstidspunkt().orElse(null))
                 .naerRelasjon(melding.isNaerRelasjon())
-                .arbeidsgiver(melding.getArbeidsgiver().map(RestToDatabaseModelMapper::mapArbeidsgiver).orElse(null))
-                .arbeidsforhold(RestToDatabaseModelMapper.mapArbeidsforhold(melding.getArbeidsforhold()))
+                .arbeidsgiver(melding.getArbeidsgiver().map(RestToDBMapper::mapArbeidsgiver).orElse(null))
+                .arbeidsforhold(RestToDBMapper.mapArbeidsforhold(melding.getArbeidsforhold()))
                 .refusjonsopphoersdato(melding.getRefusjon().flatMap(RsRefusjon::getRefusjonsopphoersdato).orElse(null))
                 .refusjonsbeloepPrMnd(melding.getRefusjon().flatMap(RsRefusjon::getRefusjonsbeloepPrMnd).orElse(0.0))
                 .endringIRefusjonListe(melding.getRefusjon().flatMap(refusjon -> refusjon.getEndringIRefusjonListe()
-                        .map(liste -> liste.stream().map(RestToDatabaseModelMapper::mapEndringIRefusjon).collect(Collectors.toList())))
+                        .map(liste -> liste.stream().map(RestToDBMapper::mapEndringIRefusjon).collect(Collectors.toList())))
                         .orElse(Collections.emptyList()))
                 .omsorgspengerFravaersPeriodeListe(melding.getOmsorgspenger().flatMap(omsorgspenger -> omsorgspenger.getFravaersPerioder()
-                        .map(list -> list.stream().map(RestToDatabaseModelMapper::mapPeriode).collect(Collectors.toList())))
+                        .map(list -> list.stream().map(RestToDBMapper::mapPeriode).collect(Collectors.toList())))
                         .orElse(Collections.emptyList()))
                 .omsorgspengerDelvisFravaersListe(melding.getOmsorgspenger().flatMap(omsorgspenger -> omsorgspenger.getDelvisFravaersListe()
-                        .map(list -> list.stream().map(RestToDatabaseModelMapper::mapDelvisFravaer).collect(Collectors.toList())))
+                        .map(list -> list.stream().map(RestToDBMapper::mapDelvisFravaer).collect(Collectors.toList())))
                         .orElse(Collections.emptyList()))
                 .omsorgHarUtbetaltPliktigeDager(melding.getOmsorgspenger().flatMap(RsOmsorgspenger::getHarUtbetaltPliktigeDager).orElse(true))
                 .sykepengerPerioder(melding.getSykepengerIArbeidsgiverPerioden().flatMap(sykepenger -> sykepenger.getArbeidsgiverperiodeListe()
-                        .map(liste -> liste.stream().map(RestToDatabaseModelMapper::mapPeriode).collect(Collectors.toList())))
+                        .map(liste -> liste.stream().map(RestToDBMapper::mapPeriode).collect(Collectors.toList())))
                         .orElse(Collections.emptyList()))
                 .sykepengerBruttoUtbetalt(melding.getSykepengerIArbeidsgiverPerioden()
                         .flatMap(RsSykepengerIArbeidsgiverperioden::getBruttoUtbetalt)
@@ -67,13 +67,13 @@ public class RestToDatabaseModelMapper {
                         .orElse(null))
                 .startdatoForeldrepengeperiode(melding.getStartdatoForeldrepengeperiode().orElse(null))
                 .opphoerAvNaturalytelseListe(melding.getOpphoerAvNaturalytelseListe()
-                        .map(list -> list.stream().map(RestToDatabaseModelMapper::mapNaturaytelseDetaljer).collect(Collectors.toList()))
+                        .map(list -> list.stream().map(RestToDBMapper::mapNaturaytelseDetaljer).collect(Collectors.toList()))
                         .orElse(Collections.emptyList()))
                 .gjenopptakelseNaturalytelseListe(melding.getGjenopptakelseNaturalytelseListe()
-                        .map(list -> list.stream().map(RestToDatabaseModelMapper::mapNaturaytelseDetaljer).collect(Collectors.toList()))
+                        .map(list -> list.stream().map(RestToDBMapper::mapNaturaytelseDetaljer).collect(Collectors.toList()))
                         .orElse(Collections.emptyList()))
                 .pleiepengerPeriodeListe(melding.getPleiepengerPerioder()
-                        .map(list -> list.stream().map(RestToDatabaseModelMapper::mapPeriode).collect(Collectors.toList()))
+                        .map(list -> list.stream().map(RestToDBMapper::mapPeriode).collect(Collectors.toList()))
                         .orElse(Collections.emptyList()));
         return tmp;
     }
@@ -111,13 +111,13 @@ public class RestToDatabaseModelMapper {
                 .beloep(arbeidsforhold.getBeregnetInntekt().flatMap(RsInntekt::getBeloep).orElse(0.0))
                 .aarsakVedEndring(arbeidsforhold.getBeregnetInntekt().flatMap(RsInntekt::getAarsakVedEndring).orElse(null))
                 .avtaltFerieListe(arbeidsforhold.getAvtaltFerieListe()
-                        .map(list -> list.stream().map(RestToDatabaseModelMapper::mapPeriode).collect(Collectors.toList()))
+                        .map(list -> list.stream().map(RestToDBMapper::mapPeriode).collect(Collectors.toList()))
                         .orElse(Collections.emptyList()))
                 .utsettelseAvForeldrepengerListe(arbeidsforhold.getUtsettelseAvForeldrepengerListe()
-                        .map(list -> list.stream().map(RestToDatabaseModelMapper::mapUtsettelseAvForeldrepenger).collect(Collectors.toList()))
+                        .map(list -> list.stream().map(RestToDBMapper::mapUtsettelseAvForeldrepenger).collect(Collectors.toList()))
                         .orElse(Collections.emptyList()))
                 .graderingIForeldrepengerListe(arbeidsforhold.getGraderingIForeldrepengerListe()
-                        .map(list -> list.stream().map(RestToDatabaseModelMapper::mapGraderingIForeldrepenger).collect(Collectors.toList()))
+                        .map(list -> list.stream().map(RestToDBMapper::mapGraderingIForeldrepenger).collect(Collectors.toList()))
                         .orElse(Collections.emptyList()))
                 .build();
     }
@@ -146,14 +146,14 @@ public class RestToDatabaseModelMapper {
 
     private static GraderingIForeldrepenger mapGraderingIForeldrepenger(RsGraderingIForeldrepenger gradering) {
         return GraderingIForeldrepenger.builder()
-                .periode(gradering.getPeriode().map(RestToDatabaseModelMapper::mapPeriode).orElse(null))
+                .periode(gradering.getPeriode().map(RestToDBMapper::mapPeriode).orElse(null))
                 .gradering(gradering.getArbeidstidprosent().orElse(null))
                 .build();
     }
 
     private static UtsettelseAvForeldrepenger mapUtsettelseAvForeldrepenger(RsUtsettelseAvForeldrepenger utsettelse) {
         return UtsettelseAvForeldrepenger.builder()
-                .periode(utsettelse.getPeriode().map(RestToDatabaseModelMapper::mapPeriode).orElse(null))
+                .periode(utsettelse.getPeriode().map(RestToDBMapper::mapPeriode).orElse(null))
                 .aarsakTilUtsettelse(utsettelse.getAarsakTilUtsettelse().orElse(null))
                 .build();
     }

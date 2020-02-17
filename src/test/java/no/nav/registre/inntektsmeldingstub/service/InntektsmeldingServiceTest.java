@@ -71,7 +71,7 @@ public class InntektsmeldingServiceTest {
                 inntektsmeldingRepository,
                 eierRepository);
 
-        inntekt_A = RestToDatabaseModelMapper.map201812melding(InntektsmeldingFactory.getFullMelding()).build();
+        inntekt_A = RestToDBMapper.map201812melding(InntektsmeldingFactory.getFullMelding()).build();
     }
 
     @Test

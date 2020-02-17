@@ -1,10 +1,12 @@
 package no.nav.registre.inntektsmeldingstub.database.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -46,6 +48,7 @@ public class Inntektsmelding {
     private String ytelse;
     private String aarsakTilInnsending;
 
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "arbeidsgiver_id", referencedColumnName = "id")
     private Arbeidsgiver arbeidsgiver;
@@ -87,6 +90,7 @@ public class Inntektsmelding {
     @JoinColumn(name = "omsorgspenger_delvis_fravaers_id", referencedColumnName = "id")
     private List<DelvisFravaer> omsorgspengerDelvisFravaersListe = Collections.emptyList();
 
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "eier_id", referencedColumnName = "id")
     private Eier eier;

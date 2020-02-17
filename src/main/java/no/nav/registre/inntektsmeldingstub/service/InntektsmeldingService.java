@@ -23,13 +23,6 @@ import no.nav.registre.inntektsmeldingstub.database.repository.ArbeidsgiverRepos
 import no.nav.registre.inntektsmeldingstub.database.repository.EierRepository;
 
 import javax.transaction.Transactional;
-//import no.nav.registre.inntektsmeldingstub.database.repository.ArbeidsforholdRepository;
-//import no.nav.registre.inntektsmeldingstub.database.repository.DelvisFravaerRepository;
-//import no.nav.registre.inntektsmeldingstub.database.repository.GraderingIForeldrePengerRepository;
-//import no.nav.registre.inntektsmeldingstub.database.repository.NaturalytelseDetaljerRepository;
-//import no.nav.registre.inntektsmeldingstub.database.repository.PeriodeRepository;
-//import no.nav.registre.inntektsmeldingstub.database.repository.EndringIRefusjonRepository;
-//import no.nav.registre.inntektsmeldingstub.database.repository.UtsettelseAvForeldrepengerRepository;
 
 @Slf4j
 @Service
@@ -39,14 +32,6 @@ public class InntektsmeldingService {
     private final ArbeidsgiverRepository arbeidsgiverRepository;
     private final InntektsmeldingRepository inntektsmeldingRepository;
     private final EierRepository eierRepository;
-//    private final NaturalytelseDetaljerRepository naturalytelseDetaljerRepository;
-//    private final PeriodeRepository periodeRepository;
-//    private final EndringIRefusjonRepository endringIRefusjonRepository;
-//    private final UtsettelseAvForeldrepengerRepository utsettelseAvForeldrepengerRepository;
-//    private final DelvisFravaerRepository delvisFravaerRepository;
-//    private final GraderingIForeldrePengerRepository graderingIForeldrePengerRepository;
-//    private final ArbeidsforholdRepository arbeidsforholdRepository;
-
 
     @Transactional
     public List<Inntektsmelding> saveMeldinger(List<RsInntektsmelding> inntektsmeldinger, MeldingsType type, String eier) {
@@ -57,9 +42,9 @@ public class InntektsmeldingService {
 
         switch(type) {
             case TYPE_2018_12:
-                return lagreInntektsmelding(inntektsmeldinger, eier, RestToDatabaseModelMapper::map201812melding);
+                return lagreInntektsmelding(inntektsmeldinger, eier, RestToDBMapper::map201812melding);
             case TYPE_2018_09:
-                return lagreInntektsmelding(inntektsmeldinger, eier, RestToDatabaseModelMapper::map201809melding);
+                return lagreInntektsmelding(inntektsmeldinger, eier, RestToDBMapper::map201809melding);
             default:
                 log.warn("Prøvde å hente ugyldig meldingstype. Returenerer \'null\'");
                 return null;
