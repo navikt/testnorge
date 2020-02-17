@@ -14,8 +14,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception{
         http
+                //HTTP Basic authentication
+                .httpBasic()
+                .and()
                 .csrf().disable()
-                .headers().contentSecurityPolicy("default-src 'none'; script-src 'self'; " +
-                "connect-src 'self'; img-src 'self' data; style-src 'self'");
+                .formLogin().disable();
     }
 }
