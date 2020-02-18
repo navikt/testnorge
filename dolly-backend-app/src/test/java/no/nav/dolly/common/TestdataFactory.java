@@ -19,6 +19,7 @@ import no.nav.dolly.common.repository.IdentTestRepository;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.provider.api.TestpersonController;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -32,6 +33,9 @@ public class TestdataFactory {
 
     @Autowired
     private IdentTestRepository identTestRepository;
+
+    @Autowired
+    private TestpersonController testpersonController;
 
     @Autowired
     private BestillingProgressTestRepository bestillingProgressTestRepository;

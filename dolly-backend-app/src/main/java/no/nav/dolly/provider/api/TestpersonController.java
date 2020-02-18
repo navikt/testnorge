@@ -1,9 +1,14 @@
 package no.nav.dolly.provider.api;
 
+import static java.lang.String.format;
+import static java.util.Collections.singletonList;
+import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,8 +28,10 @@ import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.testperson.IdentAttributesResponse;
+import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.service.PersonService;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,6 +42,7 @@ public class TestpersonController {
     private final DollyBestillingService dollyBestillingService;
     private final MapperFacade mapperFacade;
     private final IdentService identService;
+    private final PersonService personService;
 
     @ApiOperation(value = "Legge til egenskaper på person/endre person i TPS og øvrige systemer")
     @PutMapping("/{ident}/leggtilpaaperson")
@@ -76,5 +84,17 @@ public class TestpersonController {
         dollyBestillingService.relasjonPersonAsync(ident, request, bestilling);
 
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
+    }
+
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @Transactional
+    @DeleteMapping("/{ident}")
+    public void deleteTestident(@PathVariable String ident) {
+
+        if (identService.slettTestident(ident) == 0) {
+            throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
+        }
+        bestillingService.slettBestillingByTestIdent(ident);
+        personService.recyclePersoner(singletonList(ident));
     }
 }
