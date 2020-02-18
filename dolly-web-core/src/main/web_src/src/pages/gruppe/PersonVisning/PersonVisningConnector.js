@@ -42,8 +42,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
-	slettPerson: () =>
-		dispatch(actions.slettPerson(ownProps.match.params.gruppeId, ownProps.personId)),
+	slettPerson: () => dispatch(actions.slettPerson(ownProps.personId)),
 	leggTilPaaPerson: () =>
 		dispatch(
 			push(`/gruppe/${ownProps.match.params.gruppeId}/bestilling`, {

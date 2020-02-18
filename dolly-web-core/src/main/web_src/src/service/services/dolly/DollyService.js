@@ -107,8 +107,8 @@ export default {
 		return Request.delete(Endpoints.removeBestilling(bestillingId))
 	},
 
-	slettPerson(gruppeId, identId) {
-		return Request.delete(Endpoints.slettPerson(gruppeId, identId))
+	slettPerson(ident) {
+		return Request.delete(Endpoints.slettPerson(ident))
 	},
 
 	//Oppslag
