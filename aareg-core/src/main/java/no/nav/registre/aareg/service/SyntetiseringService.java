@@ -30,6 +30,8 @@ import no.nav.registre.aareg.IdentMedData;
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenHistorikkConsumer;
+import no.nav.registre.aareg.consumer.rs.KodeverkConsumer;
+import no.nav.registre.aareg.consumer.rs.responses.KodeverkResponse;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.domain.RsArbeidsavtale;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
@@ -54,6 +56,7 @@ public class SyntetiseringService {
     private final AaregSyntetisererenConsumer aaregSyntetisererenConsumer;
     private final AaregstubConsumer aaregstubConsumer;
     private final AaregService aaregService;
+    private final KodeverkConsumer kodeverkConsumer;
     private final Random rand;
 
     public ResponseEntity opprettArbeidshistorikkOgSendTilAaregstub(
@@ -172,6 +175,7 @@ public class SyntetiseringService {
     }
 
     private void validerArbeidsforholdMotAaregSpecs(List<RsAaregSyntetiseringsRequest> arbeidsforholdRequests) {
+        KodeverkResponse yrkeskoder = kodeverkConsumer.getYrkeskoder();
         for (var request : arbeidsforholdRequests) {
             var arbeidsforhold = request.getArbeidsforhold();
             if (arbeidsforhold.getArbeidsavtale().getSisteLoennsendringsdato() != null) {
@@ -185,6 +189,10 @@ public class SyntetiseringService {
                 } else {
                     arbeidsforhold.getArbeidsavtale().setAvtaltArbeidstimerPerUke((arbeidsforhold.getArbeidsavtale().getStillingsprosent() / 100.0) * 40.0);
                 }
+            }
+
+            if (arbeidsforhold.getArbeidsavtale().getYrke().length() != 7) {
+                arbeidsforhold.getArbeidsavtale().setYrke(yrkeskoder.getKoder().get(rand.nextInt(yrkeskoder.getKoder().size())));
             }
         }
     }
