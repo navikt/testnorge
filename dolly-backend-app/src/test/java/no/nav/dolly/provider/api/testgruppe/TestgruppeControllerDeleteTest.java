@@ -5,7 +5,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.LinkedHashMap;
-import org.junit.Ignore;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
@@ -43,7 +42,6 @@ public class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
     }
 
     @Test
-    @Ignore
     @DisplayName("Fjerner TestIdent fra Testgruppe")
     public void deleteTestident() {
 //        Testgruppe testgruppe = dataFactory.createTestgruppe("Testgruppe");
