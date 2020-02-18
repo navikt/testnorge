@@ -1,7 +1,5 @@
 package no.nav.dolly.provider.api;
 
-import static java.lang.String.format;
-import static java.util.Collections.singletonList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.config.CachingConfig.CACHE_TEAM;
@@ -34,10 +32,7 @@ import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
-import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.IdentService;
-import no.nav.dolly.service.PersonService;
 import no.nav.dolly.service.TestgruppeService;
 
 @RestController
@@ -46,11 +41,9 @@ import no.nav.dolly.service.TestgruppeService;
 public class TestgruppeController {
 
     private final TestgruppeService testgruppeService;
-    private final IdentService identService;
     private final MapperFacade mapperFacade;
     private final DollyBestillingService dollyBestillingService;
     private final BestillingService bestillingService;
-    private final PersonService personService;
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
@@ -67,18 +60,6 @@ public class TestgruppeController {
     public RsTestgruppeMedBestillingId opprettTestgruppe(@RequestBody RsOpprettEndreTestgruppe createTestgruppeRequest) {
         Testgruppe gruppe = testgruppeService.opprettTestgruppe(createTestgruppeRequest);
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeMedBestillingId.class);
-    }
-
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
-    @Transactional
-    @DeleteMapping("/{gruppeId}/slettTestident")
-    public void deleteTestident(@PathVariable Long gruppeId, @RequestParam String ident) {
-        if (identService.slettTestident(ident) == 0) {
-            throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
-        }
-        bestillingService.slettBestillingByTestIdent(ident);
-        personService.recyclePerson(ident);
-        personService.releaseArtifacts(singletonList(ident));
     }
 
     @Cacheable(CACHE_GRUPPE)
@@ -98,9 +79,8 @@ public class TestgruppeController {
     @Transactional
     @DeleteMapping("/{gruppeId}")
     public void slettgruppe(@PathVariable("gruppeId") Long gruppeId) {
-        if (testgruppeService.slettGruppeById(gruppeId) == 0) {
-            throw new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId));
-        }
+
+        testgruppeService.deleteGruppeById(gruppeId);
     }
 
     @ApiOperation(value = "Opprett berikede testpersoner basert på fødselsdato, kjønn og identtype")

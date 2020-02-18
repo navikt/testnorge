@@ -6,7 +6,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,10 +28,8 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
-import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.provider.api.TestgruppeController;
 import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.PersonService;
 import no.nav.dolly.service.TestgruppeService;
 
@@ -47,9 +44,6 @@ public class TestgruppeControllerTest {
     private TestgruppeService testgruppeService;
 
     @Mock
-    private IdentService identService;
-
-    @Mock
     private MapperFacade mapperFacade;
 
     @Mock
@@ -62,7 +56,7 @@ public class TestgruppeControllerTest {
     private PersonService personService;
 
     @InjectMocks
-    private TestgruppeController controller;
+    private TestgruppeController testgruppeController;
 
     @Test
     public void opprettTestgruppe() {
@@ -70,7 +64,7 @@ public class TestgruppeControllerTest {
         Testgruppe testgruppe = Testgruppe.builder().id(1L).build();
         when(testgruppeService.opprettTestgruppe(gruppe)).thenReturn(testgruppe);
 
-        controller.opprettTestgruppe(gruppe);
+        testgruppeController.opprettTestgruppe(gruppe);
         verify(testgruppeService).fetchTestgruppeById(1L);
     }
 
@@ -81,21 +75,9 @@ public class TestgruppeControllerTest {
         Testgruppe testgruppe = new Testgruppe();
         when(testgruppeService.oppdaterTestgruppe(GRUPPE_ID, gruppe)).thenReturn(testgruppe);
 
-        controller.oppdaterTestgruppe(GRUPPE_ID, gruppe);
+        testgruppeController.oppdaterTestgruppe(GRUPPE_ID, gruppe);
 
         verify(testgruppeService).oppdaterTestgruppe(GRUPPE_ID, gruppe);
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void deleteTestIdentNotFound() {
-        controller.deleteTestident(GRUPPE_ID, IDENT);
-    }
-
-    @Test
-    public void deleteTestIdentFound() {
-        when(identService.slettTestident(IDENT)).thenReturn(1);
-        controller.deleteTestident(GRUPPE_ID, IDENT);
-        verify(identService).slettTestident(IDENT);
     }
 
     @Test
@@ -105,7 +87,7 @@ public class TestgruppeControllerTest {
         when(testgruppeService.fetchTestgruppeById(GRUPPE_ID)).thenReturn(new Testgruppe());
         when(mapperFacade.map(any(Testgruppe.class), eq(RsTestgruppeMedBestillingId.class))).thenReturn(testgruppeMedBestillingId);
 
-        RsTestgruppeMedBestillingId result = controller.getTestgruppe(GRUPPE_ID);
+        RsTestgruppeMedBestillingId result = testgruppeController.getTestgruppe(GRUPPE_ID);
 
         assertThat(result.getId(), is(equalTo(GRUPPE_ID)));
 
@@ -115,7 +97,7 @@ public class TestgruppeControllerTest {
 
     @Test
     public void getTestgrupper() {
-        controller.getTestgrupper("nav");
+        testgruppeController.getTestgrupper("nav");
         verify(testgruppeService).getTestgruppeByBrukerId("nav");
     }
 
@@ -133,21 +115,8 @@ public class TestgruppeControllerTest {
 
         when(bestillingService.saveBestilling(eq(GRUPPE_ID), any(RsDollyBestilling.class), any(RsTpsfUtvidetBestilling.class), eq(ant), eq(null))).thenReturn(bestilling);
 
-        controller.opprettIdentBestilling(GRUPPE_ID, dollyBestillingRequest);
+        testgruppeController.opprettIdentBestilling(GRUPPE_ID, dollyBestillingRequest);
         verify(dollyBestillingService).opprettPersonerByKriterierAsync(GRUPPE_ID, dollyBestillingRequest, bestilling);
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void slettGruppeIdNotFound() {
-        controller.slettgruppe(anyLong());
-        verify(testgruppeService).slettGruppeById(anyLong());
-    }
-
-    @Test
-    public void slettGruppeIdFound() {
-        when(testgruppeService.slettGruppeById(anyLong())).thenReturn(1);
-        controller.slettgruppe(anyLong());
-        verify(testgruppeService).slettGruppeById(anyLong());
     }
 
     @Test
@@ -163,7 +132,7 @@ public class TestgruppeControllerTest {
 
         when(bestillingService.saveBestilling(eq(GRUPPE_ID), any(RsDollyBestilling.class), any(RsTpsfBasisBestilling.class), eq(1), anyList())).thenReturn(bestilling);
 
-        controller.opprettIdentBestillingFraIdenter(GRUPPE_ID, dollyBestillingsRequest);
+        testgruppeController.opprettIdentBestillingFraIdenter(GRUPPE_ID, dollyBestillingsRequest);
         verify(dollyBestillingService).opprettPersonerFraIdenterMedKriterierAsync(GRUPPE_ID, dollyBestillingsRequest, bestilling);
     }
 }

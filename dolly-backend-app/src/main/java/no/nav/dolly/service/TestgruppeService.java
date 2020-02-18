@@ -1,5 +1,6 @@
 package no.nav.dolly.service;
 
+import static java.lang.String.format;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -45,7 +48,8 @@ public class TestgruppeService {
     }
 
     public Testgruppe fetchTestgruppeById(Long gruppeId) {
-        return testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+        return testgruppeRepository.findById(gruppeId).orElseThrow(() ->
+                new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
     }
 
     public List<Testgruppe> fetchGrupperByIdsIn(Collection<Long> grupperIDer) {
@@ -87,13 +91,15 @@ public class TestgruppeService {
         }
     }
 
-    public int slettGruppeById(Long gruppeId) {
-        personService.recyclePersonerIGruppe(gruppeId);
-        personService.releaseArtifacts(gruppeId);
+    public void deleteGruppeById(Long gruppeId) {
+        Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
+
         bestillingService.slettBestillingerByGruppeId(gruppeId);
         identService.slettTestidenterByGruppeId(gruppeId);
         brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
-        return testgruppeRepository.deleteTestgruppeById(gruppeId);
+        testgruppeRepository.deleteTestgruppeById(gruppeId);
+
+        personService.recyclePersoner(testgruppe.getTestidenter().stream().map(Testident::getIdent).collect(Collectors.toList()));
     }
 
     public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {
