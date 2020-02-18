@@ -148,6 +148,8 @@ public class SyntetiseringService {
                 }
             }
 
+            validerArbeidsforholdMotAaregSpecs(arbeidsforhold);
+
             List<RsAaregSyntetiseringsRequest> ugyldigeArbeidsforhold = new ArrayList<>();
 
             for (var arbeidsforholdsResponse : arbeidsforhold) {
@@ -167,6 +169,24 @@ public class SyntetiseringService {
         }
 
         return aaregResponses;
+    }
+
+    private void validerArbeidsforholdMotAaregSpecs(List<RsAaregSyntetiseringsRequest> arbeidsforholdRequests) {
+        for (var request : arbeidsforholdRequests) {
+            var arbeidsforhold = request.getArbeidsforhold();
+            if (arbeidsforhold.getArbeidsavtale().getSisteLoennsendringsdato() != null) {
+                arbeidsforhold.getArbeidsavtale().setSisteLoennsendringsdato(null);
+            }
+
+            if (arbeidsforhold.getArbeidsavtale().getAvtaltArbeidstimerPerUke() == 0.0) {
+                if (arbeidsforhold.getArbeidsavtale().getStillingsprosent() == 0.0) {
+                    arbeidsforhold.getArbeidsavtale().setStillingsprosent(100.0);
+                    arbeidsforhold.getArbeidsavtale().setAvtaltArbeidstimerPerUke(40.0);
+                } else {
+                    arbeidsforhold.getArbeidsavtale().setAvtaltArbeidstimerPerUke((arbeidsforhold.getArbeidsavtale().getStillingsprosent() / 100.0) * 40.0);
+                }
+            }
+        }
     }
 
     private RsAaregOpprettRequest mapSyntetiseringsRequestToOpprettRequest(RsAaregSyntetiseringsRequest syntetiseringsRequest) {
