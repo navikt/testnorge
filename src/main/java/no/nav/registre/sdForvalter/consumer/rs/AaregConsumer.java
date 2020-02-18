@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,18 +23,41 @@ import no.nav.registre.sdForvalter.database.model.AaregModel;
 @Component
 public class AaregConsumer {
 
-    public static final ParameterizedTypeReference<List<AaregResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<List<AaregResponse>>() {
+    private static final ParameterizedTypeReference<List<AaregResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<List<AaregResponse>>() {
     };
-    private final RestTemplate restTemplate;
-    private final String aaregUrl;
+    private static final String CALL_ID = "Orkestratoren";
+    private static final String CONSUMER_ID = "Orkestratoren";
 
-    public AaregConsumer(RestTemplate restTemplate, @Value("${testnorge.aareg.rest.api.url}") String aaregUrl
+    private final RestTemplate restTemplate;
+    private final UriTemplate sendArbeidsforholdTilAaregUrl;
+    private final UriTemplate getArbeidsforholdFraAaregUrl;
+
+    public AaregConsumer(
+            RestTemplate restTemplate,
+            @Value("${testnorge.aareg.rest.api.url}") String aaregServerUrl
     ) {
         this.restTemplate = restTemplate;
-        this.aaregUrl = aaregUrl + "/v1/syntetisering";
+        this.sendArbeidsforholdTilAaregUrl = new UriTemplate(aaregServerUrl + "/v1/syntetisering/sendTilAareg?fyllUtArbeidsforhold=true");
+        this.getArbeidsforholdFraAaregUrl = new UriTemplate(aaregServerUrl + "/v1/ident/{ident}?miljoe={miljoe}");
     }
 
-    public List<AaregResponse> send(
+    public List getArbeidsforholdFraAareg(
+            String ident,
+            String miljoe
+    ) {
+        RequestEntity getRequest = RequestEntity.get(getArbeidsforholdFraAaregUrl.expand(ident, miljoe))
+                .header("Nav-Call-Id", CALL_ID)
+                .header("Nav-Consumer-Id", CONSUMER_ID)
+                .build();
+        try {
+            return restTemplate.exchange(getRequest, List.class).getBody();
+        } catch (HttpStatusCodeException e) {
+            log.error("Kunne ikke hente arbeidsforhold fra aareg i miljø {}", miljoe);
+        }
+        return new ArrayList();
+    }
+
+    public List<AaregResponse> sendArbeidsforholdTilAareg(
             Set<AaregModel> data,
             String environment
     ) {
@@ -49,9 +74,8 @@ public class AaregConsumer {
                     String.join(", ", request.getEnvironments())
             );
         }
-        UriTemplate uriTemplate = new UriTemplate(aaregUrl + "/sendTilAareg?fyllUtArbeidsforhold=true");
         return restTemplate.exchange(
-                RequestEntity.post(uriTemplate.expand()).body(requestList),
+                RequestEntity.post(sendArbeidsforholdTilAaregUrl.expand()).body(requestList),
                 RESPONSE_TYPE
         ).getBody();
     }
