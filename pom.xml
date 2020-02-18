@@ -17,9 +17,10 @@
     <properties>
         <application.version>${project.version}</application.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
-        <springfox.version>2.9.2</springfox.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
+        <springfox.version>2.9.2</springfox.version>
         <spring.boot.maven.plugin.version>2.1.8.RELEASE</spring.boot.maven.plugin.version>
+        <spring-kafka.version>2.2.0.RELEASE</spring-kafka.version>
     </properties>
 
     <dependencies>
@@ -99,6 +100,12 @@
             <version>${springfox.version}</version>
         </dependency>
 
+        <!--KAFKA-->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>${spring-kafka.version}</version>
+        </dependency>
     </dependencies>
 
 

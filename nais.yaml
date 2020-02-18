@@ -32,3 +32,15 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-spion.nais.preprod.local"
+#  fasitResources:
+#    used:
+#      - alias: srvtestnorgespion #må lages for fasit
+#        resourceType: credential
+#      - alias: kafka-brokers
+#        resourceType: BaseUrl
+#        propertyMap:
+#          url: spring.kafka.bootstrap-servers
+#      - alias: kafka-schema-registry
+#        resourceType: BaseUrl
+#        propertyMap:
+#          url: spring.kafka.properties.schema.registry.url
