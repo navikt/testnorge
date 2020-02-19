@@ -46,50 +46,48 @@ const sjekkKanOppretteNyPartner = (partnere, formikBag) => {
 	return formikBag.isValid && gyldigKode && harRegdato
 }
 
-export const Partnere = ({ formikBag }) => {
-	const path = 'tpsf.relasjoner.partnere'
-	return (
-		<FieldArray name={path}>
-			{arrayHelpers => {
-				const partnere = _get(arrayHelpers.form.values, path, [])
-				const kanOppretteNyPartner = sjekkKanOppretteNyPartner(partnere, formikBag)
-				const addNewEntry = () => arrayHelpers.push(initialValues)
+const path = 'tpsf.relasjoner.partnere'
+export const Partnere = ({ formikBag }) => (
+	<FieldArray name={path}>
+		{arrayHelpers => {
+			const partnere = _get(arrayHelpers.form.values, path, [])
+			const kanOppretteNyPartner = sjekkKanOppretteNyPartner(partnere, formikBag)
+			const addNewEntry = () => arrayHelpers.push(initialValues)
 
-				return (
-					<DollyFieldArrayWrapper title="Partner">
-						{partnere.map((c, idx) => {
-							const isLast = idx === partnere.length - 1
+			return (
+				<DollyFieldArrayWrapper title="Partner">
+					{partnere.map((c, idx) => {
+						const isLast = idx === partnere.length - 1
 
-							// Det er kun mulig å slette siste forhold
-							const showRemove = isLast && idx > 0
-							const clickRemove = () => arrayHelpers.remove(idx)
-							return (
-								<DollyFaBlokk
-									key={idx}
+						// Det er kun mulig å slette siste forhold
+						const showRemove = isLast && idx > 0
+						const clickRemove = () => arrayHelpers.remove(idx)
+						return (
+							<DollyFaBlokk
+								key={idx}
+								idx={idx}
+								title="Partner"
+								handleRemove={showRemove && clickRemove}
+							>
+								<PartnerForm
+									path={path}
 									idx={idx}
-									title="Partner"
-									handleRemove={showRemove && clickRemove}
-								>
-									<PartnerForm
-										path={path}
-										idx={idx}
-										formikBag={formikBag}
-										locked={idx !== partnere.length - 1}
-									/>
-								</DollyFaBlokk>
-							)
-						})}
-						<FieldArrayAddButton
-							title="Legg til ny partner"
-							onClick={addNewEntry}
-							disabled={!kanOppretteNyPartner}
-						/>
-					</DollyFieldArrayWrapper>
-				)
-			}}
-		</FieldArray>
-	)
-}
+									formikBag={formikBag}
+									locked={idx !== partnere.length - 1}
+								/>
+							</DollyFaBlokk>
+						)
+					})}
+					<FieldArrayAddButton
+						title="Legg til ny partner"
+						onClick={addNewEntry}
+						disabled={!kanOppretteNyPartner}
+					/>
+				</DollyFieldArrayWrapper>
+			)
+		}}
+	</FieldArray>
+)
 
 const PartnerForm = ({ path, idx, formikBag, locked }) => {
 	const basePath = `${path}[${idx}]`
