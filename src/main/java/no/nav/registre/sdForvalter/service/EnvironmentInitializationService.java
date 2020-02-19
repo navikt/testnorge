@@ -102,7 +102,7 @@ public class EnvironmentInitializationService {
         tpsSet = tpsSet.parallelStream().filter(t -> !playgroupFnrs.contains(t.getFnr())).collect(Collectors.toSet());
 
         if (!tpsSet.isEmpty()) {
-            if(log.isInfoEnabled()){
+            if (log.isInfoEnabled()) {
                 log.info(
                         "Identer mangler i avspillings gruppen {}. Legger til identene: {} i gruppen.",
                         staticDataPlaygroup,
@@ -132,10 +132,15 @@ public class EnvironmentInitializationService {
         aaregRepository.findAll().forEach(aaregSet::add);
         aaregSet = aaregSet
                 .parallelStream()
-                .filter(aaregModel -> aaregModel.getVarighet() == null || aaregModel.getVarighet().shouldUse() )
+                .filter(aaregModel -> aaregModel.getVarighet() == null || aaregModel.getVarighet().shouldUse())
                 .collect(Collectors.toSet());
 
-        List<AaregResponse> response = aaregConsumer.send(aaregSet, environment);
+        aaregSet.removeIf(aaregModel -> {
+            List arbeidsforholdFraAareg = aaregConsumer.getArbeidsforholdFraAareg(aaregModel.getFnr(), environment);
+            return arbeidsforholdFraAareg != null && !arbeidsforholdFraAareg.isEmpty();
+        });
+
+        List<AaregResponse> response = aaregConsumer.sendArbeidsforholdTilAareg(aaregSet, environment);
         log.info("Init of Aareg completed.");
         return response;
     }
@@ -166,7 +171,7 @@ public class EnvironmentInitializationService {
         krrRepository.findAll().forEach(dkifSet::add);
         dkifSet = dkifSet
                 .parallelStream()
-                .filter(krrModel ->  krrModel.getVarighet() == null || krrModel.getVarighet().shouldUse())
+                .filter(krrModel -> krrModel.getVarighet() == null || krrModel.getVarighet().shouldUse())
                 .collect(Collectors.toSet());
 
         Set<String> existing = krrConsumer.getContactInformation(dkifSet.parallelStream().map(KrrModel::getFnr).collect(Collectors.toSet()));
