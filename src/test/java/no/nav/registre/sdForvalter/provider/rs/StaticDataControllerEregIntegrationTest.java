@@ -1,5 +1,6 @@
 package no.nav.registre.sdForvalter.provider.rs;
 
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -20,15 +21,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 
+import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.KildeSystemModel;
-import no.nav.registre.sdForvalter.database.model.TpsModel;
+import no.nav.registre.sdForvalter.database.repository.EregRepository;
 import no.nav.registre.sdForvalter.database.repository.KildeSystemRepository;
-import no.nav.registre.sdForvalter.database.repository.TpsRepository;
+import no.nav.registre.sdForvalter.domain.Ereg;
 import no.nav.registre.sdForvalter.domain.KildeSystem;
-import no.nav.registre.sdForvalter.domain.Tps;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -36,7 +37,7 @@ import no.nav.registre.sdForvalter.domain.Tps;
 @TestPropertySource(
         locations = "classpath:application-test.properties"
 )
-public class StaticDataControllerTpsIntegrationTest {
+public class StaticDataControllerEregIntegrationTest {
     @Autowired
     private MockMvc mvc;
 
@@ -44,92 +45,84 @@ public class StaticDataControllerTpsIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private TpsRepository tpsRepository;
+    private EregRepository eregRepository;
 
     @Autowired
     private KildeSystemRepository kildeSystemRepository;
 
-
     @Test
-    public void shouldGetTpsSetWithKildeSystem() throws Exception {
+    public void shouldGetEregsWithKildeSystem() throws Exception {
         KildeSystemModel altinn = kildeSystemRepository.save(new KildeSystemModel("Altinn"));
-
-        TpsModel tpsModel = TpsModel
+        EregModel model = EregModel
                 .builder()
-                .firstName("Test")
-                .lastName("Testen")
-                .fnr("101010101")
+                .orgnr("123456789")
+                .enhetstype("BEDR")
                 .kildeSystemModel(altinn)
                 .build();
-        tpsRepository.save(tpsModel);
 
-        String json = mvc.perform(get("/api/v1/statiskData/tps/")
+        eregRepository.save(model);
+
+        String json = mvc.perform(get("/api/v1/statiskData/ereg/")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        Set<Tps> response = objectMapper.readValue(json, new TypeReference<Set<Tps>>() {
+        List<Ereg> response = objectMapper.readValue(json, new TypeReference<List<Ereg>>() {
         });
-        assertThat(response).containsOnly(new Tps(tpsModel));
+        assertThat(response).containsOnly(new Ereg(model));
     }
 
+
     @Test
-    public void shouldAddTpsSetToDatabase() throws Exception {
-        Tps tps = Tps.builder()
-                .firstName("Test")
-                .lastName("Testen")
-                .fnr("01010101011")
+    public void shouldAddEregSetToDatabase() throws Exception {
+        Ereg ereg = Ereg.builder()
+                .orgnr("987654321")
+                .enhetstype("BEDR")
                 .build();
-        Set<Tps> tpsSet = createTpsSet(tps);
-        mvc.perform(post("/api/v1/statiskData/tps/")
-                .content(objectMapper.writeValueAsString(tpsSet))
+        mvc.perform(post("/api/v1/statiskData/ereg/")
+                .content(objectMapper.writeValueAsString(Collections.singletonList(ereg)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        assertThat(tpsRepository.findAll()).containsOnly(new TpsModel(tps, null));
+        assertThat(eregRepository.findAll())
+                .hasSize(1)
+                .first()
+                .isEqualToIgnoringGivenFields(
+                        new EregModel(ereg, null),
+                        "id", "createdAt", "updatedAt"
+                );
     }
 
     @Test
     public void shouldAddKildeSystemToDatabase() throws Exception {
         KildeSystem altinn = new KildeSystem("Altinn");
-        final Tps hans = Tps.builder()
-                .firstName("Test")
-                .lastName("Testen")
-                .fnr("01010101011")
+        Ereg ereg_123456789 = Ereg.builder()
+                .orgnr("123456789")
+                .enhetstype("BEDR")
+                .kildeSystem(altinn)
+                .build();
+        Ereg ereg_987654321 = Ereg.builder()
+                .orgnr("987654321")
+                .enhetstype("BEDR")
                 .kildeSystem(altinn)
                 .build();
 
-        final Tps petter = Tps.builder()
-                .firstName("Testern")
-                .lastName("Testernson")
-                .fnr("01010101021")
-                .kildeSystem(altinn)
-                .build();
-
-        final Set<Tps> tpsSet = createTpsSet(hans, petter);
-        mvc.perform(post("/api/v1/statiskData/tps/")
-                .content(objectMapper.writeValueAsString(tpsSet))
+        mvc.perform(post("/api/v1/statiskData/ereg/")
+                .content(objectMapper.writeValueAsString(Arrays.asList(ereg_123456789, ereg_987654321)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-
         assertThat(Lists.newArrayList(kildeSystemRepository.findAll()))
                 .hasSize(1)
                 .first()
-                .isEqualToComparingOnlyGivenFields(
-                        new KildeSystemModel(altinn),
-                        "navn"
-                );
+                .isEqualToComparingOnlyGivenFields(new KildeSystemModel(altinn), "navn");
     }
 
     @After
-    public void cleanUp() {
-        tpsRepository.deleteAll();
+    public void cleanUp(){
+        eregRepository.deleteAll();
         kildeSystemRepository.deleteAll();
     }
 
-    private Set<Tps> createTpsSet(Tps... tpss) {
-        return new HashSet<>(Arrays.asList(tpss));
-    }
 }

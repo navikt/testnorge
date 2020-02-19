@@ -1,9 +1,9 @@
 package no.nav.registre.sdForvalter.database.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,6 +23,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import no.nav.registre.sdForvalter.database.Ownable;
+import no.nav.registre.sdForvalter.domain.Ereg;
 
 @Entity
 @ToString
@@ -37,7 +38,6 @@ public class EregModel extends AuditModel implements Ownable {
 
     @Id
     @GeneratedValue
-    @JsonIgnore
     Long id;
 
     @NotNull
@@ -65,6 +65,10 @@ public class EregModel extends AuditModel implements Ownable {
     @JoinColumn(name = "varighet_id")
     private Varighet varighet;
 
+    @ManyToOne
+    @JoinColumn(name = "kilde_system_id")
+    private KildeSystemModel kildeSystemModel;
+
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "adresse", column = @Column(name = "forretnings_adresse")),
@@ -80,4 +84,18 @@ public class EregModel extends AuditModel implements Ownable {
 
     @Column(name = "ekskludert")
     private boolean excluded = false;
+
+    public EregModel(Ereg ereg, KildeSystemModel kildeSystemModel) {
+        this.orgnr = ereg.getOrgnr();
+        this.enhetstype = ereg.getEnhetstype();
+        this.navn = ereg.getNavn();
+        this.epost = ereg.getEpost();
+        this.internetAdresse = ereg.getInternetAdresse();
+        this.parent = ereg.getParent();
+        this.team = ereg.getTeam();
+        this.varighet = ereg.getVarighet();
+        this.kildeSystemModel = kildeSystemModel;
+        this.forretningsAdresse = ereg.getInternetAdresse() != null ? new AdresseModel(ereg.getForretningsAdresse()) : null;
+        this.postadresse = ereg.getPostadresse() != null ? new AdresseModel(ereg.getPostadresse()) : null;
+    }
 }

@@ -37,6 +37,7 @@ public class Tps {
     private Team team;
     @JsonBackReference(value = "tps-varighet")
     private Varighet varighet;
+
     public Tps(TpsModel model) {
         fnr = model.getFnr();
         firstName = model.getFirstName();
