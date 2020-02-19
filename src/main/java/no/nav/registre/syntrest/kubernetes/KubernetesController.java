@@ -7,9 +7,11 @@ import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptions;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -47,13 +49,15 @@ public class KubernetesController {
     private final int retryDelay;
     @Value("${delete-application-url}")
     private String deleteApplicaitonUrl;
-    private RestTemplate restTemplate;
+    private RestTemplate noAuthRestTemplate;
     private RestTemplate authRestTemplate;
 
     public KubernetesController(RestTemplateBuilder restTemplateBuilder,
                                 CustomObjectsApi customObjectsApi,
                                 @Value("${github_username}") String github_username,
                                 @Value("${github_password}") String github_password,
+                                @Value("${proxy-url}") String proxyUrl,
+                                @Value("${proxy-port}") int proxyPort,
                                 @Value("${isAlive}") String isAliveUrl,
                                 @Value("${docker-image-path}") String dockerImagePath,
                                 @Value("${max-alive-retries}") int maxRetries,
@@ -65,20 +69,40 @@ public class KubernetesController {
         this.maxRetries = maxRetries;
         this.retryDelay = retryDelay;
         this.api = customObjectsApi;
-        this.authRestTemplate = restTemplateBuilder.build();
-        this.authRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(github_username, github_password));
-        this.restTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
-                        .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
-                        .setSSLHostnameVerifier(new DefaultHostnameVerifier())
-                        .setDefaultRequestConfig(RequestConfig.custom()
-                                .setConnectTimeout(TIMEOUT)
-                                .setSocketTimeout(TIMEOUT)
-                                .setConnectionRequestTimeout(TIMEOUT)
-                                .build())
-                        .setMaxConnPerRoute(2000)
-                        .setMaxConnTotal(5000)
+
+
+        this.authRestTemplate = restTemplateBuilder
+                .requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
+                        .setRoutePlanner(new DefaultProxyRoutePlanner(new HttpHost(proxyUrl, proxyPort)))
                         .build()))
+                .additionalInterceptors(new BasicAuthenticationInterceptor(github_username, github_password))
                 .build();
+
+        /*
+        this.authRestTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
+                .setRoutePlanner(new DefaultProxyRoutePlanner(new HttpHost(proxyUrl, proxyPort)))
+                .setSSLHostnameVerifier(new DefaultHostnameVerifier())
+                .setDefaultRequestConfig(RequestConfig.custom()
+                        .setConnectTimeout(TIMEOUT)
+                        .setSocketTimeout(TIMEOUT)
+                        .setConnectionRequestTimeout(TIMEOUT)
+                        .build())
+                .setMaxConnPerRoute(2000)
+                .setMaxConnTotal(5000)
+                .build())).build();
+        this.authRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(github_username, github_password));
+        */
+        this.noAuthRestTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
+                .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
+                .setSSLHostnameVerifier(new DefaultHostnameVerifier())
+                .setDefaultRequestConfig(RequestConfig.custom()
+                        .setConnectTimeout(TIMEOUT)
+                        .setSocketTimeout(TIMEOUT)
+                        .setConnectionRequestTimeout(TIMEOUT)
+                        .build())
+                .setMaxConnPerRoute(2000)
+                .setMaxConnTotal(5000)
+                .build())).build();
     }
 
     public void deployImage(String appName) throws ApiException, InterruptedException {
@@ -105,7 +129,7 @@ public class KubernetesController {
                 api.deleteNamespacedCustomObject(GROUP, VERSION, NAMESPACE, PLURAL, appName, deleteOptions,
                         null, null, null);
 
-                ResponseEntity<String> result = restTemplate.exchange(deleteRequest, String.class);
+                ResponseEntity<String> result = noAuthRestTemplate.exchange(deleteRequest, String.class);
                 log.info("Successfully deleted application \'{}\'", appName);
 
             } catch (JsonSyntaxException e) { // TODO: When does this happen?
@@ -125,7 +149,7 @@ public class KubernetesController {
 
         } else {
 
-            ResponseEntity<String> result = restTemplate.exchange(deleteRequest, String.class);
+            ResponseEntity<String> result = noAuthRestTemplate.exchange(deleteRequest, String.class);
             log.info("No application named \'{}\' found. Unable to delete.", appName);
             throw new IllegalArgumentException("No application named \'" + appName + "\' found. Unable to delete.");
         }
@@ -134,7 +158,7 @@ public class KubernetesController {
     public boolean isAlive(String appName) {
         String response = "404";
         try {
-            response = restTemplate.getForObject(isAliveUri.expand(appName), String.class);
+            response = noAuthRestTemplate.getForObject(isAliveUri.expand(appName), String.class);
         } catch (HttpClientErrorException | HttpServerErrorException ignored) {
         }
         return "1".equals(response);
@@ -198,10 +222,8 @@ public class KubernetesController {
 
 
     private Optional<String> getApplicaitonTag(String appName) {
-
         String apiUrl = "https://api.github.com/graphql";
         QueryObject query = QueryObject.builder().query("query {repository(owner:\"navikt\", name:\"synt\") {registryPackages(name:\"" + appName + "\" last:1) {nodes {latestVersion{version}} }}}").build();
-        String body = "{\"query\":\"query {repository(owner:\"navikt\", name:\"synt\") {registryPackages(name:\"" + appName + "\" last:1) {nodes {latestVersion{version}} }}}\"}";
 
         try {
             RequestEntity requestLatestTag = RequestEntity.post(new UriTemplate(apiUrl).expand()).header("Content-Type", "application/json").body(query);
@@ -213,7 +235,9 @@ public class KubernetesController {
                 return Optional.of(tag);
             }
 
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            log.warn("An exception occured trying to retrieve application tag: {}", e.getMessage());
+        }
 
         log.warn("Could not find tag for application {}.", appName);
         return Optional.empty();

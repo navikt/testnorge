@@ -47,6 +47,10 @@ public class AppConfig {
     private String github_username;
     @Value("${github_password}")
     private String github_password;
+    @Value("${proxy-url}")
+    private String proxyUrl;
+    @Value("${proxy-port}")
+    private int proxyPort;
 
     @Bean
     ScheduledExecutorService scheduledExecutorService() {
@@ -98,7 +102,7 @@ public class AppConfig {
     @DependsOn({"restTemplateBuilder", "customObjectsApi"})
     public KubernetesController kubernetesController() {
         return new KubernetesController(restTemplateBuilder(), customObjectsApi(), github_username, github_password,
-                isAliveUrl, dockerImagePath, maxRetries, retryDelay);
+                proxyUrl, proxyPort, isAliveUrl, dockerImagePath, maxRetries, retryDelay);
     }
 
 

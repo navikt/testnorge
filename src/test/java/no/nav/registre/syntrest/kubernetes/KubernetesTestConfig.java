@@ -38,8 +38,13 @@ public class KubernetesTestConfig {
     private String github_username;
     @Value("${github_password}")
     private String github_password;
+    @Value("${proxy-url}")
+    private String proxyUrl;
+    @Value("${proxy-port}")
+    private int proxyPort;
+
     @Bean
     KubernetesController kubernetesController() {
-        return new KubernetesController(restTemplateBuilder(), customObjectsApi(), github_username, github_password, isAliveUrl, dockerImagePath, maxRetries, retryDelay);
+        return new KubernetesController(restTemplateBuilder(), customObjectsApi(), github_username, github_password, proxyUrl, proxyPort, isAliveUrl, dockerImagePath, maxRetries, retryDelay);
     }
 }
