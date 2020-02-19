@@ -47,6 +47,6 @@ public class Tps {
         city = model.getCity();
         team = model.getTeam();
         varighet = model.getVarighet();
-        kildeSystem = new KildeSystem(model.getKildeSystemModel());
+        kildeSystem = model.getKildeSystemModel() != null ? new KildeSystem(model.getKildeSystemModel()) : null;
     }
 }
