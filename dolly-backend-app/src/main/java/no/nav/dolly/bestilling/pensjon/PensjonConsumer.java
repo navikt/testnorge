@@ -30,9 +30,9 @@ import no.nav.dolly.security.sts.StsOidcService;
 @RequiredArgsConstructor
 public class PensjonConsumer {
 
-    private static final String PENSJON_OPPRETT_PERSON_URL = "/api/person";
-    private static final String MILJOER_HENT_TILGJENGELIGE_URL = "/api/miljo";
-    private static final String PENSJON_INNTEKT_URL = "/api/inntekt";
+    private static final String PENSJON_OPPRETT_PERSON_URL = "/person";
+    private static final String MILJOER_HENT_TILGJENGELIGE_URL = "/miljo";
+    private static final String PENSJON_INNTEKT_URL = "/inntekt";
     private static final String PREPROD_ENV = "q";
 
     private final RestTemplate restTemplate;
