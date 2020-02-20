@@ -28,7 +28,7 @@ import no.nav.dolly.security.sts.StsOidcService;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PensjonConsumer {
+public class PensjonforvalterConsumer {
 
     private static final String PENSJON_OPPRETT_PERSON_URL = "/person";
     private static final String MILJOER_HENT_TILGJENGELIGE_URL = "/miljo";

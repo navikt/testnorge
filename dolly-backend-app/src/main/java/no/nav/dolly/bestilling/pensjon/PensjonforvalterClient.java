@@ -2,8 +2,8 @@ package no.nav.dolly.bestilling.pensjon;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
-import static java.lang.String.*;
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.joining;
 
 import java.util.List;
 import java.util.Set;
@@ -27,12 +27,12 @@ import no.nav.dolly.metrics.Timed;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PensjonClient implements ClientRegister {
+public class PensjonforvalterClient implements ClientRegister {
 
     public static final String PENSJON_FORVALTER = "PensjonForvalter";
     public static final String POPP_INNTEKTSREGISTER = "PoppInntekts";
 
-    private final PensjonConsumer pensjonConsumer;
+    private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
@@ -43,7 +43,7 @@ public class PensjonClient implements ClientRegister {
         StringBuilder status = new StringBuilder();
 
         Set bestilteMiljoer = newHashSet(bestilling.getEnvironments());
-        Set tilgjengeligeMiljoer = pensjonConsumer.getMiljoer();
+        Set tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
         bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
         if (!bestilteMiljoer.isEmpty()) {
 
@@ -57,7 +57,7 @@ public class PensjonClient implements ClientRegister {
             status.append('$')
                     .append(PENSJON_FORVALTER)
                     .append("&Feil: Bestilling ble ikke sendt til Pensjonsforvalter (PEN) da tilgjengelig(e) miljø(er) ['")
-                    .append(join(",", (String[]) tilgjengeligeMiljoer.toArray()))
+                    .append(tilgjengeligeMiljoer.stream().collect(joining(",")))
                     .append("]' ikke er valgt");
         }
 
@@ -83,7 +83,7 @@ public class PensjonClient implements ClientRegister {
         try {
             sendOpprettPerson(tpsPerson.getPersondetalj(), miljoer);
             tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon ->
-                sendOpprettPerson(relasjon.getPersonRelasjonMed(), miljoer)
+                    sendOpprettPerson(relasjon.getPersonRelasjonMed(), miljoer)
             );
 
             status.append("&OK");
@@ -99,7 +99,7 @@ public class PensjonClient implements ClientRegister {
         OpprettPersonRequest opprettPersonRequest = mapperFacade.map(person, OpprettPersonRequest.class);
         opprettPersonRequest.setFnr(person.getIdent());
         opprettPersonRequest.setMiljo(newArrayList(miljoer));
-        pensjonConsumer.opprettPerson(opprettPersonRequest);
+        pensjonforvalterConsumer.opprettPerson(opprettPersonRequest);
     }
 
     private void lagreInntekt(PensjonData pensjonData, TpsPerson tpsPerson, Set<String> miljoer, StringBuilder status) {
@@ -110,7 +110,7 @@ public class PensjonClient implements ClientRegister {
             LagreInntektRequest lagreInntektRequest = mapperFacade.map(pensjonData.getInntekt(), LagreInntektRequest.class);
             lagreInntektRequest.setFnr(tpsPerson.getHovedperson());
             lagreInntektRequest.setMiljo(newArrayList(miljoer));
-            pensjonConsumer.lagreInntekt(lagreInntektRequest);
+            pensjonforvalterConsumer.lagreInntekt(lagreInntektRequest);
 
             status.append("&OK");
 
