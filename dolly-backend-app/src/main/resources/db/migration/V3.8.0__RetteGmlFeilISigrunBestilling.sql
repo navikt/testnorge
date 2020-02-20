@@ -3,9 +3,11 @@
 ------------------------------
 
 UPDATE t_bestilling
-SET best_kriterier = REPLACE(best_kriterier, '"Summert skattegrunnlag","grunnlag"', '"SUMMERT_SKATTEGRUNNLAG"');
+SET best_kriterier = REPLACE(best_kriterier, '"Summert skattegrunnlag","grunnlag"', '"SUMMERT_SKATTEGRUNNLAG"')
+WHERE best_kriterier LIKE '%"Summert skattegrunnlag","grunnlag"%';
 
 Update t_bestilling
-SET best_kriterier = REPLACE(best_kriterier, '"Beregnet skatt","grunnlag"', '"BEREGNET_SKATT"');
+SET best_kriterier = REPLACE(best_kriterier, '"Beregnet skatt","grunnlag"', '"BEREGNET_SKATT"')
+WHERE best_kriterier LIKE '%"Beregnet skatt","grunnlag"%';
 
 COMMIT;
