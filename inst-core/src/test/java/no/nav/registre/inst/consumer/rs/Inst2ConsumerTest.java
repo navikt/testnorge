@@ -13,33 +13,25 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static no.nav.registre.inst.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.BDDMockito.given;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Map;
 
 import no.nav.registre.inst.Institusjonsopphold;
-import no.nav.registre.inst.service.Inst2FasitService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -50,37 +42,15 @@ public class Inst2ConsumerTest {
     @Autowired
     private Inst2Consumer inst2Consumer;
 
-    @MockBean
-    private Inst2FasitService inst2FasitService;
-
     @Value("${inst2.web.api.url}")
     private String baseUrl;
 
-    @Value("${freg-token-provider-v1.url}")
-    private String fregTokenProviderUrl;
-
     private String id = "test";
     private String fnr1 = "01010101010";
-    private Map<String, Object> token;
+    private String token = "Bearer abc";
     private String tssEksternId = "123";
     private LocalDate date = LocalDate.of(2019, 1, 1);
     private String miljoe = "t1";
-
-    @Before
-    public void setUp() throws IOException {
-        token = new ObjectMapper().readValue(getResourceFileContent("token.json"), new TypeReference<Map<String, Object>>() {
-        });
-        given(this.inst2FasitService.getUrlForEnv(miljoe)).willReturn(baseUrl);
-    }
-
-    @Test
-    public void shouldGetTokenForInst2() {
-        stubTokenProvider();
-
-        var actualToken = inst2Consumer.hentTokenTilInst2(fregTokenProviderUrl);
-
-        assertThat(actualToken.get("idToken").toString(), containsString(token.get("idToken").toString()));
-    }
 
     @Test
     public void shouldGetInstitusjonsmeldingerFromInst2() {
@@ -159,7 +129,7 @@ public class Inst2ConsumerTest {
     private void stubGetInstitusjonsopphold() {
         stubFor(get(urlPathEqualTo("/inst2/web/api/person/institusjonsopphold"))
                 .withHeader("accept", equalTo("*/*"))
-                .withHeader("Authorization", equalTo(token.get("tokenType") + " " + token.get("idToken")))
+                .withHeader("Authorization", equalTo(token))
                 .withHeader("Nav-Call-Id", equalTo(id))
                 .withHeader("Nav-Consumer-Id", equalTo(id))
                 .withHeader("Nav-Personident", equalTo(fnr1))
@@ -171,7 +141,7 @@ public class Inst2ConsumerTest {
     private void stubGetInstitusjonsoppholdWithBadRequest() {
         stubFor(get(urlPathEqualTo("/inst2/web/api/person/institusjonsopphold"))
                 .withHeader("accept", equalTo("*/*"))
-                .withHeader("Authorization", equalTo(token.get("tokenType") + " " + token.get("idToken")))
+                .withHeader("Authorization", equalTo(token))
                 .withHeader("Nav-Call-Id", equalTo(id))
                 .withHeader("Nav-Consumer-Id", equalTo(id))
                 .withHeader("Nav-Personident", equalTo(fnr1))
@@ -181,7 +151,7 @@ public class Inst2ConsumerTest {
     private void stubAddInstitusjonsopphold(Institusjonsopphold institusjonsopphold) throws JsonProcessingException {
         stubFor(post(urlEqualTo("/inst2/web/api/person/institusjonsopphold?validatePeriod=true"))
                 .withHeader("accept", equalTo("*/*"))
-                .withHeader("Authorization", equalTo(token.get("tokenType") + " " + token.get("idToken")))
+                .withHeader("Authorization", equalTo(token))
                 .withHeader("Nav-Call-Id", equalTo(id))
                 .withHeader("Nav-Consumer-Id", equalTo(id))
                 .withRequestBody(equalToJson(new ObjectMapper().writeValueAsString(institusjonsopphold)))
@@ -189,10 +159,13 @@ public class Inst2ConsumerTest {
                         .withStatus(HttpStatus.CREATED.value())));
     }
 
-    private void stubUpdateInstitusjonsopphold(Long oppholdId, Institusjonsopphold institusjonsopphold) throws JsonProcessingException {
+    private void stubUpdateInstitusjonsopphold(
+            Long oppholdId,
+            Institusjonsopphold institusjonsopphold
+    ) throws JsonProcessingException {
         stubFor(put(urlEqualTo("/inst2/web/api/person/institusjonsopphold/" + oppholdId))
                 .withHeader("accept", equalTo("*/*"))
-                .withHeader("Authorization", equalTo(token.get("tokenType") + " " + token.get("idToken")))
+                .withHeader("Authorization", equalTo(token))
                 .withHeader("Nav-Call-Id", equalTo(id))
                 .withHeader("Nav-Consumer-Id", equalTo(id))
                 .withRequestBody(equalToJson(new ObjectMapper().writeValueAsString(institusjonsopphold)))
@@ -203,7 +176,7 @@ public class Inst2ConsumerTest {
     private void stubDeleteOpphold(Long oppholdId) {
         stubFor(delete(urlEqualTo("/inst2/web/api/person/institusjonsopphold/" + oppholdId))
                 .withHeader("accept", equalTo("*/*"))
-                .withHeader("Authorization", equalTo(token.get("tokenType") + " " + token.get("idToken")))
+                .withHeader("Authorization", equalTo(token))
                 .withHeader("Nav-Call-Id", equalTo(id))
                 .withHeader("Nav-Consumer-Id", equalTo(id))
                 .willReturn(aResponse()
@@ -213,7 +186,7 @@ public class Inst2ConsumerTest {
     private void stubFindInstitusjon() {
         stubFor(get(urlEqualTo("/inst2/web/api/institusjon/oppslag/tssEksternId/" + tssEksternId + "?date=" + date))
                 .withHeader("accept", equalTo("*/*"))
-                .withHeader("Authorization", equalTo(token.get("tokenType") + " " + token.get("idToken")))
+                .withHeader("Authorization", equalTo(token))
                 .withHeader("Nav-Call-Id", equalTo(id))
                 .withHeader("Nav-Consumer-Id", equalTo(id))
                 .willReturn(ok()

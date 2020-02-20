@@ -16,18 +16,13 @@ import org.springframework.web.util.UriTemplate;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
-import no.nav.registre.inst.service.Inst2FasitService;
 
 @Component
 @Slf4j
 public class Inst2Consumer {
-
-    private static final ParameterizedTypeReference<Map<String, Object>> RESPONSE_TYPE_HENT_TOKEN = new ParameterizedTypeReference<>() {
-    };
 
     private static final ParameterizedTypeReference<List<Institusjonsopphold>> RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<>() {
     };
@@ -38,34 +33,27 @@ public class Inst2Consumer {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Autowired
-    private Inst2FasitService inst2FasitService;
-
-    private String username;
-    private String password;
+    private UriTemplate inst2WebApiServerUrl;
+    private UriTemplate inst2ServerUrl;
 
     public Inst2Consumer(
-            @Value("${testnorges.ida.credential.inst.username}") String username,
-            @Value("${testnorges.ida.credential.inst.password}") String password) {
-        this.username = username;
-        this.password = password;
+            @Value("${inst2.web.api.url}") String inst2WebApiServerUrl,
+            @Value("${inst2.api.url}") String inst2ServerUrl
+    ) {
+        this.inst2WebApiServerUrl = new UriTemplate(inst2WebApiServerUrl);
+        this.inst2ServerUrl = new UriTemplate(inst2ServerUrl);
     }
 
-    public Map<String, Object> hentTokenTilInst2(String fregTokenProviderUrl) {
-        var getRequest = RequestEntity.get(new UriTemplate(fregTokenProviderUrl).expand())
+    public List<Institusjonsopphold> hentInstitusjonsoppholdFraInst2(
+            String bearerToken,
+            String callId,
+            String consumerId,
+            String miljoe,
+            String ident
+    ) {
+        var getRequest = RequestEntity.get(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold").expand())
                 .header("accept", "*/*")
-                .header("username", username)
-                .header("password", password)
-                .build();
-        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_HENT_TOKEN);
-
-        return response.getBody();
-    }
-
-    public List<Institusjonsopphold> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, String ident) {
-        var getRequest = RequestEntity.get(new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold").expand())
-                .header("accept", "*/*")
-                .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
+                .header("Authorization", bearerToken)
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
                 .header("Nav-Personident", ident)
@@ -85,10 +73,16 @@ public class Inst2Consumer {
         return response;
     }
 
-    public OppholdResponse leggTilInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, Institusjonsopphold institusjonsopphold) {
-        var postRequest = RequestEntity.post(new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold?validatePeriod=true").expand())
+    public OppholdResponse leggTilInstitusjonsoppholdIInst2(
+            String bearerToken,
+            String callId,
+            String consumerId,
+            String miljoe,
+            Institusjonsopphold institusjonsopphold
+    ) {
+        var postRequest = RequestEntity.post(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold?validatePeriod=true").expand())
                 .header("accept", "*/*")
-                .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
+                .header("Authorization", bearerToken)
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
                 .body(institusjonsopphold);
@@ -108,10 +102,17 @@ public class Inst2Consumer {
         }
     }
 
-    public ResponseEntity oppdaterInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, Long oppholdId, Institusjonsopphold institusjonsopphold) {
-        var putRequest = RequestEntity.put(new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold/{oppholdId}").expand(oppholdId))
+    public ResponseEntity oppdaterInstitusjonsoppholdIInst2(
+            String bearerToken,
+            String callId,
+            String consumerId,
+            String miljoe,
+            Long oppholdId,
+            Institusjonsopphold institusjonsopphold
+    ) {
+        var putRequest = RequestEntity.put(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold/{oppholdId}").expand(oppholdId))
                 .header("accept", "*/*")
-                .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
+                .header("Authorization", bearerToken)
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
                 .body(institusjonsopphold);
@@ -124,10 +125,16 @@ public class Inst2Consumer {
         }
     }
 
-    public ResponseEntity slettInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, Long oppholdId) {
-        var deleteRequest = RequestEntity.delete(new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold/{oppholdId}").expand(oppholdId))
+    public ResponseEntity slettInstitusjonsoppholdFraInst2(
+            String bearerToken,
+            String callId,
+            String consumerId,
+            String miljoe,
+            Long oppholdId
+    ) {
+        var deleteRequest = RequestEntity.delete(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold/{oppholdId}").expand(oppholdId))
                 .header("accept", "*/*")
-                .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
+                .header("Authorization", bearerToken)
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
                 .build();
@@ -140,11 +147,18 @@ public class Inst2Consumer {
         }
     }
 
-    public HttpStatus finnesInstitusjonPaaDato(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, String tssEksternId, LocalDate date) {
-        var getRequest = RequestEntity.get(new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/institusjon/oppslag/tssEksternId/{tssEksternId}?date={date}")
+    public HttpStatus finnesInstitusjonPaaDato(
+            String bearerToken,
+            String callId,
+            String consumerId,
+            String miljoe,
+            String tssEksternId,
+            LocalDate date
+    ) {
+        var getRequest = RequestEntity.get(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/institusjon/oppslag/tssEksternId/{tssEksternId}?date={date}")
                 .expand(tssEksternId, date))
                 .header("accept", "*/*")
-                .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
+                .header("Authorization", bearerToken)
                 .header("Nav-Call-Id", callId)
                 .header("Nav-Consumer-Id", consumerId)
                 .build();
@@ -155,6 +169,17 @@ public class Inst2Consumer {
         } catch (HttpStatusCodeException e) {
             log.debug("Institusjon med tssEksternId {} er ikke gyldig på dato {}.", tssEksternId, date);
             return e.getStatusCode();
+        }
+    }
+
+    public boolean isMiljoeTilgjengelig(String miljoe) {
+        var optionsRequest = RequestEntity.options(inst2ServerUrl.expand(miljoe)).build();
+        try {
+            restTemplate.exchange(optionsRequest, Void.class);
+            return true;
+        } catch (HttpStatusCodeException e) {
+            log.warn("Inst2 er ikke tilgjengelig i miljø {}", miljoe);
+            return false;
         }
     }
 }

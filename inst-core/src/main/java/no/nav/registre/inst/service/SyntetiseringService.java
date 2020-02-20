@@ -22,8 +22,8 @@ import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
-@Service
 @Slf4j
+@Service
 public class SyntetiseringService {
 
     private static final int ANTALL_FORSOEK = 3;
@@ -45,9 +45,6 @@ public class SyntetiseringService {
     private Inst2Consumer inst2Consumer;
 
     @Autowired
-    private Inst2FasitService inst2FasitService;
-
-    @Autowired
     private Random rand;
 
     public Map<String, List<OppholdResponse>> finnSyntetiserteMeldingerOgLagreIInst2(
@@ -64,20 +61,21 @@ public class SyntetiseringService {
             return new HashMap<>();
         }
 
-        var tokenObject = inst2Consumer.hentTokenTilInst2(inst2FasitService.getFregTokenProviderInEnvironment(miljoe));
-        var syntetiserteMeldinger = hentSyntetiserteInstitusjonsforholdsmeldinger(tokenObject, callId, consumerId, miljoe, utvalgteIdenter.size());
-        return leggTilInstitusjonsforholdIInst2(tokenObject, callId, consumerId, miljoe, utvalgteIdenter, syntetiserteMeldinger);
+        var bearerToken = identService.hentTokenTilInst2(miljoe);
+        var syntetiserteMeldinger = hentSyntetiserteInstitusjonsforholdsmeldinger(bearerToken, callId, consumerId, miljoe, utvalgteIdenter.size());
+        return leggTilInstitusjonsforholdIInst2(bearerToken, callId, consumerId, miljoe, utvalgteIdenter, syntetiserteMeldinger);
     }
 
     private List<Institusjonsopphold> hentSyntetiserteInstitusjonsforholdsmeldinger(
-            Map<String, Object> tokenObject,
+            String bearerToken,
             String callId,
             String consumerId,
-            String miljoe, int antallMeldinger
+            String miljoe,
+            int antallMeldinger
     ) {
         List<Institusjonsopphold> syntetiserteMeldinger = new ArrayList<>(antallMeldinger);
         for (int i = 0; i < ANTALL_FORSOEK && syntetiserteMeldinger.size() < antallMeldinger; i++) {
-            syntetiserteMeldinger.addAll(validerOgFjernUgyldigeMeldinger(tokenObject, callId, consumerId, miljoe,
+            syntetiserteMeldinger.addAll(validerOgFjernUgyldigeMeldinger(bearerToken, callId, consumerId, miljoe,
                     instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger - syntetiserteMeldinger.size())));
         }
         return syntetiserteMeldinger;
@@ -99,7 +97,7 @@ public class SyntetiseringService {
     }
 
     private Map<String, List<OppholdResponse>> leggTilInstitusjonsforholdIInst2(
-            Map<String, Object> tokenObject,
+            String bearerToken,
             String callId,
             String consumerId,
             String miljoe,
@@ -117,12 +115,12 @@ public class SyntetiseringService {
             }
             var personident = utvalgteIdenter.remove(0);
             var eksisterendeInstitusjonsforhold =
-                    identService.hentInstitusjonsoppholdFraInst2(tokenObject, callId, consumerId, miljoe, personident);
+                    identService.hentInstitusjonsoppholdFraInst2(bearerToken, callId, consumerId, miljoe, personident);
             if (!eksisterendeInstitusjonsforhold.isEmpty()) {
                 log.warn("Ident {} har allerede fått opprettet institusjonsforhold. Hopper over opprettelse.", personident);
             } else {
                 institusjonsopphold.setPersonident(personident);
-                var oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(tokenObject, callId, consumerId, miljoe, institusjonsopphold);
+                var oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(bearerToken, callId, consumerId, miljoe, institusjonsopphold);
                 if (statusFraInst2.containsKey(personident)) {
                     statusFraInst2.get(personident).add(oppholdResponse);
                 } else {
@@ -163,7 +161,7 @@ public class SyntetiseringService {
     }
 
     private List<Institusjonsopphold> validerOgFjernUgyldigeMeldinger(
-            Map<String, Object> tokenObject,
+            String bearerToken,
             String callId,
             String consumerId,
             String miljoe,
@@ -175,8 +173,8 @@ public class SyntetiseringService {
             var tssEksternId = melding.getTssEksternId();
             var startdato = melding.getStartdato();
             var faktiskSluttdato = melding.getFaktiskSluttdato();
-            if (inst2Consumer.finnesInstitusjonPaaDato(tokenObject, callId, consumerId, miljoe, tssEksternId, startdato).is2xxSuccessful()
-                    && inst2Consumer.finnesInstitusjonPaaDato(tokenObject, callId, consumerId, miljoe, tssEksternId, faktiskSluttdato).is2xxSuccessful()) {
+            if (inst2Consumer.finnesInstitusjonPaaDato(bearerToken, callId, consumerId, miljoe, tssEksternId, startdato).is2xxSuccessful()
+                    && inst2Consumer.finnesInstitusjonPaaDato(bearerToken, callId, consumerId, miljoe, tssEksternId, faktiskSluttdato).is2xxSuccessful()) {
                 gyldigeSyntetiserteMeldinger.add(melding);
             }
         }

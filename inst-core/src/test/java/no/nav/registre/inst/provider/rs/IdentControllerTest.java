@@ -1,8 +1,9 @@
 package no.nav.registre.inst.provider.rs;
 
-import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -64,9 +65,11 @@ public class IdentControllerTest {
 
     @Test
     public void shouldSletteInstitusjonsopphold() {
+        when(identService.hentTokenTilInst2(miljoe)).thenReturn("Bearer 123");
+
         identController.slettInstitusjonsopphold(id, id, miljoe, Collections.singletonList(oppholdId));
 
-        verify(identService).slettOppholdMedId(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId));
+        verify(identService).slettOppholdMedId(anyString(), eq(id), eq(id), eq(miljoe), eq(oppholdId));
     }
 
     @Test

@@ -2,7 +2,7 @@ package no.nav.registre.inst.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,6 +23,7 @@ import java.util.List;
 
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
+import no.nav.registre.inst.security.StsOidcService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentServiceTest {
@@ -31,7 +32,7 @@ public class IdentServiceTest {
     private Inst2Consumer inst2Consumer;
 
     @Mock
-    private Inst2FasitService inst2FasitService;
+    private StsOidcService stsOidcService;
 
     @InjectMocks
     private IdentService identService;
@@ -39,6 +40,7 @@ public class IdentServiceTest {
     private Long oppholdId1 = 1L;
     private Long oppholdId2 = 2L;
     private List<Institusjonsopphold> meldinger;
+    private String token = "Bearer 123";
 
     @Before
     public void setUp() {
@@ -62,23 +64,22 @@ public class IdentServiceTest {
         var fnr1 = "01010101010";
         var fnr2 = "02020202020";
         var identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
-        var fregTokenProviderUrl = "dummyUrl";
         var miljoe = "t1";
         var id = "test";
 
-        when(inst2FasitService.getFregTokenProviderInEnvironment(miljoe)).thenReturn(fregTokenProviderUrl);
-        when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr1))).thenReturn(Collections.singletonList(meldinger.get(0)));
-        when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr2))).thenReturn(Collections.singletonList(meldinger.get(1)));
-        when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId1))).thenReturn(ResponseEntity.noContent().build());
-        when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId2))).thenReturn(ResponseEntity.noContent().build());
+        when(stsOidcService.getIdTokenT()).thenReturn(token);
+        when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyString(), eq(id), eq(id), eq(miljoe), eq(fnr1))).thenReturn(Collections.singletonList(meldinger.get(0)));
+        when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyString(), eq(id), eq(id), eq(miljoe), eq(fnr2))).thenReturn(Collections.singletonList(meldinger.get(1)));
+        when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyString(), eq(id), eq(id), eq(miljoe), eq(oppholdId1))).thenReturn(ResponseEntity.noContent().build());
+        when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyString(), eq(id), eq(id), eq(miljoe), eq(oppholdId2))).thenReturn(ResponseEntity.noContent().build());
 
         var response = identService.slettInstitusjonsoppholdTilIdenter(id, id, miljoe, identer);
 
-        verify(inst2Consumer).hentTokenTilInst2(fregTokenProviderUrl);
-        verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr1));
-        verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr2));
-        verify(inst2Consumer).slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId1));
-        verify(inst2Consumer).slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId2));
+        verify(stsOidcService).getIdTokenT();
+        verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(token, id, id, miljoe, fnr1);
+        verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(token, id, id, miljoe, fnr2);
+        verify(inst2Consumer).slettInstitusjonsoppholdFraInst2(token, id, id, miljoe, oppholdId1);
+        verify(inst2Consumer).slettInstitusjonsoppholdFraInst2(token, id, id, miljoe, oppholdId2);
 
         assertThat(response.get(0).getInstitusjonsopphold().getOppholdId(), equalTo(oppholdId1));
         assertThat(response.get(1).getInstitusjonsopphold().getOppholdId(), equalTo(oppholdId2));
