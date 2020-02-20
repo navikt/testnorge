@@ -23,7 +23,7 @@ jobs:
             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
           when: always
       - store_test_results:
-          paths: ~/test-results
+          path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
       - run:
