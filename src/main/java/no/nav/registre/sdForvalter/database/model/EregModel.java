@@ -3,7 +3,6 @@ package no.nav.registre.sdForvalter.database.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,11 +17,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import no.nav.registre.sdForvalter.database.Ownable;
 import no.nav.registre.sdForvalter.domain.Ereg;
 
 @Entity
@@ -34,7 +32,7 @@ import no.nav.registre.sdForvalter.domain.Ereg;
 @AllArgsConstructor
 @Slf4j
 @Table(name = "EREG")
-public class EregModel extends AuditModel implements Ownable {
+public class EregModel extends AuditModel {
 
     @Id
     @GeneratedValue
@@ -55,17 +53,7 @@ public class EregModel extends AuditModel implements Ownable {
 
     private String parent;
 
-    @JsonBackReference(value = "ereg")
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
-
-    @JsonBackReference(value = "ereg-varighet")
-    @ManyToOne
-    @JoinColumn(name = "varighet_id")
-    private Varighet varighet;
-
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "kilde_system_id")
     private KildeSystemModel kildeSystemModel;
 
@@ -92,8 +80,6 @@ public class EregModel extends AuditModel implements Ownable {
         this.epost = ereg.getEpost();
         this.internetAdresse = ereg.getInternetAdresse();
         this.parent = ereg.getParent();
-        this.team = ereg.getTeam();
-        this.varighet = ereg.getVarighet();
         this.kildeSystemModel = kildeSystemModel;
         this.forretningsAdresse = ereg.getInternetAdresse() != null ? new AdresseModel(ereg.getForretningsAdresse()) : null;
         this.postadresse = ereg.getPostadresse() != null ? new AdresseModel(ereg.getPostadresse()) : null;

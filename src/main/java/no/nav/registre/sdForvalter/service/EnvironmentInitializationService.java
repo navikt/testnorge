@@ -73,7 +73,7 @@ public class EnvironmentInitializationService {
         initializeKrr();
         List<AaregResponse> response = initializeAareg(environment);
         response.forEach(resp -> resp.getStatusPerMiljoe().values().stream().filter(melding -> melding.startsWith("Feil"))
-                .forEach(melding -> log.warn("Feil under initialisering av aareg i miljø |}. Feilmelding: {}", environment, melding)));
+                .forEach(melding -> log.warn("Feil under initialisering av aareg i miljø {}. Feilmelding: {}", environment, melding)));
 
         String flatfileFromEregMapper = initializeEreg(environment);
         if (!"".equals(flatfileFromEregMapper) && flatfileFromEregMapper != null) {
@@ -95,7 +95,6 @@ public class EnvironmentInitializationService {
 
         tpsSet = tpsSet
                 .parallelStream()
-                .filter(tpsModel -> tpsModel.getVarighet() == null || tpsModel.getVarighet().shouldUse())
                 .collect(Collectors.toSet());
 
         Set<String> playgroupFnrs = hodejegerenConsumer.getPlaygroupFnrs(staticDataPlaygroup);
@@ -132,7 +131,6 @@ public class EnvironmentInitializationService {
         aaregRepository.findAll().forEach(aaregSet::add);
         aaregSet = aaregSet
                 .parallelStream()
-                .filter(aaregModel -> aaregModel.getVarighet() == null || aaregModel.getVarighet().shouldUse())
                 .collect(Collectors.toSet());
 
         aaregSet.removeIf(aaregModel -> {
@@ -156,7 +154,6 @@ public class EnvironmentInitializationService {
                     data.add(e);
                 }
         );
-
         String response = eregMapperConsumer.uploadToEreg(data, environment);
         log.info("Init of Ereg completed.");
         return response;
@@ -169,12 +166,9 @@ public class EnvironmentInitializationService {
         log.info("Start init of KRR ...");
         Set<KrrModel> dkifSet = new HashSet<>();
         krrRepository.findAll().forEach(dkifSet::add);
-        dkifSet = dkifSet
-                .parallelStream()
-                .filter(krrModel -> krrModel.getVarighet() == null || krrModel.getVarighet().shouldUse())
-                .collect(Collectors.toSet());
 
-        Set<String> existing = krrConsumer.getContactInformation(dkifSet.parallelStream().map(KrrModel::getFnr).collect(Collectors.toSet()));
+        Set<String> existing = krrConsumer
+                .getContactInformation(dkifSet.parallelStream().map(KrrModel::getFnr).collect(Collectors.toSet()));
 
         dkifSet = dkifSet.parallelStream().filter(t -> !existing.contains(t.getFnr())).collect(Collectors.toSet());
 

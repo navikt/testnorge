@@ -1,6 +1,5 @@
 package no.nav.registre.sdForvalter.database.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,11 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.List;
 
-import no.nav.registre.sdForvalter.database.Ownable;
 import no.nav.registre.sdForvalter.domain.Tps;
 import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 
@@ -32,7 +30,7 @@ import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 @Slf4j
 @Table(name = "tps")
 @EqualsAndHashCode(callSuper = false)
-public class TpsModel extends AuditModel implements CreatableFromString, Ownable {
+public class TpsModel extends AuditModel implements CreatableFromString {
 
 
     @Id
@@ -48,16 +46,8 @@ public class TpsModel extends AuditModel implements CreatableFromString, Ownable
     private String postNr;
     @JsonProperty("by")
     private String city;
-    @JsonBackReference(value = "tps")
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
-    @JsonBackReference(value = "tps-varighet")
-    @ManyToOne
-    @JoinColumn(name = "varighet_id")
-    private Varighet varighet;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "kilde_system_id")
     private KildeSystemModel kildeSystemModel;
 

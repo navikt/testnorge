@@ -17,7 +17,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.List;
 
-import no.nav.registre.sdForvalter.database.Ownable;
 import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 
 @Entity
@@ -29,7 +28,7 @@ import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 @AllArgsConstructor
 @Slf4j
 @Table(name = "AAREG")
-public class AaregModel extends AuditModel implements CreatableFromString, Ownable {
+public class AaregModel extends AuditModel implements CreatableFromString {
 
     @Id
     private String fnr;
@@ -37,22 +36,10 @@ public class AaregModel extends AuditModel implements CreatableFromString, Ownab
     @JsonProperty("orgId")
     private long orgId;
 
-
-    @ManyToOne
-    @JsonBackReference(value = "aareg")
-    @JoinColumn(name = "team_id")
-    private Team team;
-
-    @JsonBackReference(value = "aareg-varighet")
-    @ManyToOne
-    @JoinColumn(name = "varighet_id")
-    private Varighet varighet;
-
     @Override
     public void updateFromString(List<String> input, List<String> headers) {
 
         for (int i = 0; i < headers.size(); i++) {
-
             try {
                 String fieldName = headers.get(i);
 
