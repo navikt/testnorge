@@ -83,6 +83,6 @@ public class RsBestillingStatus {
         private InntektMultiplierWrapper inntektstub;
         private Arenadata arenaforvalter;
         private RsUdiPerson udistub;
-        private PensjonData pensjonData;
+        private PensjonData pensjonforvalter;
     }
 }

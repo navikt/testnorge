@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.pensjon;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
+import static java.lang.String.*;
 import static java.util.Objects.nonNull;
 
 import java.util.List;
@@ -42,8 +43,8 @@ public class PensjonClient implements ClientRegister {
         StringBuilder status = new StringBuilder();
 
         Set bestilteMiljoer = newHashSet(bestilling.getEnvironments());
-        Set tilgjengeligeMiljøer = pensjonConsumer.getMiljoer();
-        bestilteMiljoer.retainAll(tilgjengeligeMiljøer);
+        Set tilgjengeligeMiljoer = pensjonConsumer.getMiljoer();
+        bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
         if (!bestilteMiljoer.isEmpty()) {
 
             opprettPerson(tpsPerson, bestilteMiljoer, status);
@@ -55,9 +56,9 @@ public class PensjonClient implements ClientRegister {
         } else if (nonNull(bestilling.getPensjonforvalter())) {
             status.append('$')
                     .append(PENSJON_FORVALTER)
-                    .append("&Feil: Bestilling ble ikke sendt til Pensjonsforvalter (PEN) da tilgjengelig(e) miljø(er) '")
-                    .append(tilgjengeligeMiljøer.toArray())
-                    .append("' ikke er valgt");
+                    .append("&Feil: Bestilling ble ikke sendt til Pensjonsforvalter (PEN) da tilgjengelig(e) miljø(er) ['")
+                    .append(join(",", (String[]) tilgjengeligeMiljoer.toArray()))
+                    .append("]' ikke er valgt");
         }
 
         if (status.length() > 1) {
@@ -81,9 +82,9 @@ public class PensjonClient implements ClientRegister {
 
         try {
             sendOpprettPerson(tpsPerson.getPersondetalj(), miljoer);
-            tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
-                sendOpprettPerson(relasjon.getPersonRelasjonMed(), miljoer);
-            });
+            tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon ->
+                sendOpprettPerson(relasjon.getPersonRelasjonMed(), miljoer)
+            );
 
             status.append("&OK");
 
@@ -103,9 +104,9 @@ public class PensjonClient implements ClientRegister {
 
     private void lagreInntekt(PensjonData pensjonData, TpsPerson tpsPerson, Set<String> miljoer, StringBuilder status) {
 
+        status.append('$').append(POPP_INNTEKTSREGISTER);
+
         try {
-            status.append('$')
-                    .append(POPP_INNTEKTSREGISTER);
             LagreInntektRequest lagreInntektRequest = mapperFacade.map(pensjonData.getInntekt(), LagreInntektRequest.class);
             lagreInntektRequest.setFnr(tpsPerson.getHovedperson());
             lagreInntektRequest.setMiljo(newArrayList(miljoer));

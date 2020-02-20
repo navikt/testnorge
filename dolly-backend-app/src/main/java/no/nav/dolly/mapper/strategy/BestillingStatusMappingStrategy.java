@@ -59,7 +59,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .inntektstub(bestillingRequest.getInntektstub())
                                 .sigrunstub(bestillingRequest.getSigrunstub())
                                 .udistub(bestillingRequest.getUdistub())
-                                .pensjonData(bestillingRequest.getPensjonforvalter())
+                                .pensjonforvalter(bestillingRequest.getPensjonforvalter())
                                 .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .build());
                     }
