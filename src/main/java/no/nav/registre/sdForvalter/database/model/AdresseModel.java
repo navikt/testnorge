@@ -6,35 +6,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Embeddable;
 
-//@Entity
+import no.nav.registre.sdForvalter.domain.Adresse;
+
 @ToString
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Slf4j
-//@Table(name = "Adresse")
 @Embeddable
 public class AdresseModel {
-
-//    @Id
-//    @GeneratedValue
-//    @JsonIgnore
-//    private Long id;
-
     private String adresse;
     private String postnr;
     private String kommunenr;
     private String landkode;
     private String poststed;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JsonIgnore
-//    private EregModel eregModel;
-
+    public AdresseModel(Adresse adresse) {
+        this.adresse = adresse.getAdresse();
+        this.postnr = adresse.getPostnr();
+        this.kommunenr = adresse.getKommunenr();
+        this.landkode = adresse.getLandkode();
+        this.poststed = adresse.getPoststed();
+    }
 }

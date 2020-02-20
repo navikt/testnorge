@@ -37,6 +37,7 @@ public class Tps {
     private Team team;
     @JsonBackReference(value = "tps-varighet")
     private Varighet varighet;
+
     public Tps(TpsModel model) {
         fnr = model.getFnr();
         firstName = model.getFirstName();
@@ -46,6 +47,6 @@ public class Tps {
         city = model.getCity();
         team = model.getTeam();
         varighet = model.getVarighet();
-        kildeSystem = new KildeSystem(model.getKildeSystemModel());
+        kildeSystem = model.getKildeSystemModel() != null ? new KildeSystem(model.getKildeSystemModel()) : null;
     }
 }

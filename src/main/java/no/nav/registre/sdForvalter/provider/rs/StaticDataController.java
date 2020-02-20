@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Set;
 
+import no.nav.registre.sdForvalter.adapter.EregAdapter;
 import no.nav.registre.sdForvalter.adapter.TpsAdapter;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
-import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.model.Team;
+import no.nav.registre.sdForvalter.domain.Ereg;
 import no.nav.registre.sdForvalter.domain.Tps;
 import no.nav.registre.sdForvalter.provider.rs.request.FastDataRequest;
 import no.nav.registre.sdForvalter.service.StaticDataService;
@@ -31,6 +32,7 @@ public class StaticDataController {
 
     private final StaticDataService staticDataService;
     private final TpsAdapter tpsAdapter;
+    private final EregAdapter eregAdapter;
 
     @GetMapping("/team")
     public ResponseEntity<Set<Team>> getTeams() {
@@ -68,8 +70,13 @@ public class StaticDataController {
     }
 
     @GetMapping(value = "/ereg")
-    public ResponseEntity<List<EregModel>> getEregStaticData() {
-        return ResponseEntity.ok(staticDataService.getEregData());
+    public ResponseEntity<List<Ereg>> getEregStaticData() {
+        return ResponseEntity.ok(eregAdapter.fetchEregData());
+    }
+
+    @PostMapping(value = "/ereg")
+    public ResponseEntity<List<Ereg>> createEregStaticData(@RequestBody List<Ereg> eregs) {
+        return ResponseEntity.ok(eregAdapter.saveEregData(eregs));
     }
 
     @PostMapping(value = "/")
@@ -78,7 +85,7 @@ public class StaticDataController {
         responseBody.setEier(data.getEier());
         responseBody.setTps(tpsAdapter.saveTps(data.getTps()));
         responseBody.setKrr(staticDataService.saveInKrr(data.getKrr(), data.getEier()));
-        responseBody.setEreg(staticDataService.saveInEreg(data.getEreg(), data.getEier()));
+        responseBody.setEreg(eregAdapter.saveEregData(data.getEreg()));
         responseBody.setAareg(staticDataService.saveInAareg(data.getAareg(), data.getEier()));
         return ResponseEntity.ok(responseBody);
     }

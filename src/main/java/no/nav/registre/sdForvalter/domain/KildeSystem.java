@@ -18,6 +18,6 @@ public class KildeSystem {
     private final String navn;
 
     public KildeSystem(KildeSystemModel model) {
-        this(model != null ? model.getNavn() : null);
+        this(model.getNavn());
     }
 }
