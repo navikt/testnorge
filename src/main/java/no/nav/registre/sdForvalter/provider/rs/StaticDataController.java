@@ -71,12 +71,12 @@ public class StaticDataController {
 
     @GetMapping(value = "/ereg")
     public ResponseEntity<List<Ereg>> getEregStaticData() {
-        return ResponseEntity.ok(eregAdapter.fetchEregs());
+        return ResponseEntity.ok(eregAdapter.fetchEregData());
     }
 
     @PostMapping(value = "/ereg")
     public ResponseEntity<List<Ereg>> createEregStaticData(@RequestBody List<Ereg> eregs) {
-        return ResponseEntity.ok(eregAdapter.saveEregs(eregs));
+        return ResponseEntity.ok(eregAdapter.saveEregData(eregs));
     }
 
     @PostMapping(value = "/")
@@ -85,7 +85,7 @@ public class StaticDataController {
         responseBody.setEier(data.getEier());
         responseBody.setTps(tpsAdapter.saveTps(data.getTps()));
         responseBody.setKrr(staticDataService.saveInKrr(data.getKrr(), data.getEier()));
-        responseBody.setEreg(eregAdapter.saveEregs(data.getEreg()));
+        responseBody.setEreg(eregAdapter.saveEregData(data.getEreg()));
         responseBody.setAareg(staticDataService.saveInAareg(data.getAareg(), data.getEier()));
         return ResponseEntity.ok(responseBody);
     }

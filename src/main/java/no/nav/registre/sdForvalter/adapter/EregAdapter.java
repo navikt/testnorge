@@ -17,15 +17,15 @@ public class EregAdapter {
     private final EregRepository repository;
     private final KildeSystemAdapter kildeSystemAdapter;
 
-    public List<Ereg> fetchEregs() {
+    public List<Ereg> fetchEregData() {
         return StreamSupport
                 .stream(repository.findAll().spliterator(), false)
                 .map(Ereg::new)
                 .collect(Collectors.toList());
     }
 
-    public List<Ereg> saveEregs(List<Ereg> eregs) {
-        List<Ereg> existionEregs = fetchEregs();
+    public List<Ereg> saveEregData(List<Ereg> eregs) {
+        List<Ereg> existionEregs = fetchEregData();
         List<Ereg> noneExistingEregs = eregs
                 .stream()
                 .filter(ereg -> existionEregs.stream().noneMatch(existing -> existing.equals(ereg)))
