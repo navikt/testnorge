@@ -17,6 +17,7 @@ export const EnkeltinntektForm = ({ path, title, initialGrunnlag, tjeneste, form
 						kodeverk={Formatters.uppercaseAndUnderscoreToCapitalized(tjeneste)}
 						size="xxlarge"
 						isClearable={false}
+						optionHeight={50}
 					/>
 					<FormikTextInput name={`${path}.verdi`} label="Beløp" type="number" />
 				</React.Fragment>

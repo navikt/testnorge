@@ -26,6 +26,7 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 					kodeverk="Yrker"
 					size="xxlarge"
 					isClearable={false}
+					optionHeight={50}
 				/>
 				<FormikTextInput
 					name={`${arbeidsavtalePath}.stillingsprosent`}

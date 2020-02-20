@@ -19,6 +19,7 @@ export const Select = ({
 	onChange,
 	onBlur,
 	className,
+	optionHeight,
 	classNamePrefix = 'select',
 	disabled = false,
 	isLoading = false,
@@ -57,6 +58,7 @@ export const Select = ({
 			isMulti={isMulti}
 			styles={{ menuPortal: base => ({ ...base, zIndex: 99999 }) }}
 			menuPortalTarget={document.getElementById('react-select-root')}
+			optionHeight={optionHeight}
 		/>
 	)
 }
