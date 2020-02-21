@@ -1,25 +1,19 @@
 package no.nav.registre.spion.domain;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
+@NoArgsConstructor(force = true)
 public class SykemeldingInformation {
 
     @JsonProperty("startDato")
-    private String startDate;
+    private final String startDate;
     @JsonProperty("pasient")
-    private Patient patient;
+    private final Patient patient;
     @JsonProperty("lege")
-    private Doctor doctor;
+    private final Doctor doctor;
 
 }

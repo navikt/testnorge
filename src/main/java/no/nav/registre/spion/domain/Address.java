@@ -2,24 +2,20 @@ package no.nav.registre.spion.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
+@NoArgsConstructor(force = true)
 public class Address {
 
     @JsonProperty("gate")
-    private String street;
+    private final String street;
     @JsonProperty("postnummer")
-    private String postal;
+    private final String postal;
     @JsonProperty("by")
-    private String city;
+    private final String city;
     @JsonProperty("land")
-    private String country;
+    private final String country;
 
 }

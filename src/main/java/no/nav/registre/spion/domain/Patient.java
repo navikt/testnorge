@@ -2,32 +2,28 @@ package no.nav.registre.spion.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
+@NoArgsConstructor(force = true)
 public class Patient {
 
     @JsonProperty("fornavn")
-    private String firstName;
+    private final  String firstName;
     @JsonProperty("mellomnavn")
-    private String middleName;
+    private final String middleName;
     @JsonProperty("etternavn")
-    private String lastName;
+    private final String lastName;
     @JsonProperty("fnr")
-    private String fnr;
+    private final String fnr;
     @JsonProperty("tlf")
-    private String tlf;
+    private final String tlf;
     @JsonProperty("fastlege")
-    private String fastlege;
+    private final String fastlege;
     @JsonProperty("nav_kontor")
-    private String navKontor;
+    private final String navKontor;
     @JsonProperty("arbeidsgiver")
-    private Arbeidsgiver arbeidsgiver;
+    private final Arbeidsgiver arbeidsgiver;
 
 }
