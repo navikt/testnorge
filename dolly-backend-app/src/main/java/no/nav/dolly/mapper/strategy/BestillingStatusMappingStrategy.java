@@ -6,7 +6,7 @@ import static no.nav.dolly.mapper.BestillingInntektstubStatusMapper.buildInntekt
 import static no.nav.dolly.mapper.BestillingInstdataStatusMapper.buildInstdataStatusMap;
 import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdldataStatusMap;
-import static no.nav.dolly.mapper.BestillingPensjonStatusMapper.buildPensjonStatusMap;
+import static no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
 import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
@@ -49,7 +49,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildInstdataStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildUdiStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildInntektstubStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildPensjonStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildPensjonforvalterStatusMap(bestilling.getProgresser()));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
                                 .pdlforvalter(bestillingRequest.getPdlforvalter())
                                 .aareg(bestillingRequest.getAareg())

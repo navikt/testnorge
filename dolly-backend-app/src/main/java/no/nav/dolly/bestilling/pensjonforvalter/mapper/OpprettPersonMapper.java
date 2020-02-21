@@ -1,17 +1,23 @@
-package no.nav.dolly.bestilling.pensjon.mapper;
+package no.nav.dolly.bestilling.pensjonforvalter.mapper;
 
-import java.time.LocalDate;
+import static java.time.format.DateTimeFormatter.ofPattern;
+import static java.util.Objects.nonNull;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.pensjon.domain.OpprettPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
 public class OpprettPersonMapper implements MappingStrategy {
+
+    private static final DateTimeFormatter DATE_FMT = ofPattern("dd-MM-yyyy");
 
     @Override
     public void register(MapperFactory factory) {
@@ -20,9 +26,9 @@ public class OpprettPersonMapper implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, OpprettPersonRequest opprettPersonRequest, MappingContext context) {
 
-                        opprettPersonRequest.setFodselsDato(mapperFacade.map(person.getFoedselsdato(), LocalDate.class));
-                        opprettPersonRequest.setDodsDato(mapperFacade.map(person.getDoedsdato(), LocalDate.class));
-                        opprettPersonRequest.setUtvandringsDato(mapperFacade.map(person.getUtvandretTilLandFlyttedato(), LocalDate.class));
+                        opprettPersonRequest.setFodselsDato(convertDate(person.getFoedselsdato()));
+                        opprettPersonRequest.setDodsDato(convertDate(person.getDoedsdato()));
+                        opprettPersonRequest.setUtvandringsDato(convertDate(person.getUtvandretTilLandFlyttedato()));
 
                         if (!person.getBoadresse().isEmpty()) {
                             opprettPersonRequest.setBostedsland("NOR");
@@ -33,5 +39,10 @@ public class OpprettPersonMapper implements MappingStrategy {
                 })
                 .byDefault()
                 .register();
+    }
+
+    private static String convertDate(LocalDateTime dateTime) {
+
+        return nonNull(dateTime) ? dateTime.format(DATE_FMT) : null;
     }
 }

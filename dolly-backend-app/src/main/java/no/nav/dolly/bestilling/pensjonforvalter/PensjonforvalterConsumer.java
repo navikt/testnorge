@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.pensjon;
+package no.nav.dolly.bestilling.pensjonforvalter;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptySet;
@@ -20,8 +20,8 @@ import com.google.common.collect.Sets;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.pensjon.domain.LagreInntektRequest;
-import no.nav.dolly.bestilling.pensjon.domain.OpprettPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.sts.StsOidcService;
 
@@ -30,9 +30,10 @@ import no.nav.dolly.security.sts.StsOidcService;
 @RequiredArgsConstructor
 public class PensjonforvalterConsumer {
 
-    private static final String PENSJON_OPPRETT_PERSON_URL = "/person";
-    private static final String MILJOER_HENT_TILGJENGELIGE_URL = "/miljo";
-    private static final String PENSJON_INNTEKT_URL = "/inntekt";
+    private static final String API_VERSJON = "/api/v1";
+    private static final String PENSJON_OPPRETT_PERSON_URL = API_VERSJON + "/person";
+    private static final String MILJOER_HENT_TILGJENGELIGE_URL = API_VERSJON + "/miljo";
+    private static final String PENSJON_INNTEKT_URL = API_VERSJON + "/inntekt";
     private static final String PREPROD_ENV = "q";
 
     private final RestTemplate restTemplate;

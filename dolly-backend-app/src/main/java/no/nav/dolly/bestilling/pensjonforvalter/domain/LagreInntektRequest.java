@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.pensjon.domain;
+package no.nav.dolly.bestilling.pensjonforvalter.domain;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class LagreInntektRequest {
 
-    private List<String> miljo;
+    private List<String> miljoer;
 
     private String fnr;
     private Integer tomAar;

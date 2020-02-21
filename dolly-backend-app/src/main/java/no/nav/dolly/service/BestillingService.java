@@ -266,7 +266,7 @@ public class BestillingService {
                 return objectMapper.writer().writeValueAsString(object);
             }
         } catch (JsonProcessingException | RuntimeException e) {
-            log.debug("Konvertering til Json feilet", e);
+            log.info("Konvertering til Json feilet", e);
         }
         return null;
     }

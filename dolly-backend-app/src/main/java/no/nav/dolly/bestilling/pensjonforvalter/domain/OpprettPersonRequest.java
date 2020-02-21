@@ -1,6 +1,5 @@
-package no.nav.dolly.bestilling.pensjon.domain;
+package no.nav.dolly.bestilling.pensjonforvalter.domain;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -14,11 +13,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class OpprettPersonRequest {
 
-    private List<String> miljo;
+    private List<String> miljoer;
 
     private String fnr;
     private String bostedsland;
-    private LocalDate dodsDato;
-    private LocalDate fodselsDato;
-    private LocalDate utvandringsDato;
+    private String dodsDato;         //dd-MM-yyyy
+    private String fodselsDato;      //dd-MM-yyyy
+    private String utvandringsDato;  //dd-MM-yyyy
 }

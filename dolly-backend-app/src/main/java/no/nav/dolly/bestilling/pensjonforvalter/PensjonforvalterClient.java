@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.pensjon;
+package no.nav.dolly.bestilling.pensjonforvalter;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
@@ -13,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.pensjon.domain.LagreInntektRequest;
-import no.nav.dolly.bestilling.pensjon.domain.OpprettPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
@@ -30,7 +30,7 @@ import no.nav.dolly.metrics.Timed;
 public class PensjonforvalterClient implements ClientRegister {
 
     public static final String PENSJON_FORVALTER = "PensjonForvalter";
-    public static final String POPP_INNTEKTSREGISTER = "PoppInntekts";
+    public static final String POPP_INNTEKTSREGISTER = "PoppInntekt";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final MapperFacade mapperFacade;
@@ -98,7 +98,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
         OpprettPersonRequest opprettPersonRequest = mapperFacade.map(person, OpprettPersonRequest.class);
         opprettPersonRequest.setFnr(person.getIdent());
-        opprettPersonRequest.setMiljo(newArrayList(miljoer));
+        opprettPersonRequest.setMiljoer(newArrayList(miljoer));
         pensjonforvalterConsumer.opprettPerson(opprettPersonRequest);
     }
 
@@ -109,7 +109,7 @@ public class PensjonforvalterClient implements ClientRegister {
         try {
             LagreInntektRequest lagreInntektRequest = mapperFacade.map(pensjonData.getInntekt(), LagreInntektRequest.class);
             lagreInntektRequest.setFnr(tpsPerson.getHovedperson());
-            lagreInntektRequest.setMiljo(newArrayList(miljoer));
+            lagreInntektRequest.setMiljoer(newArrayList(miljoer));
             pensjonforvalterConsumer.lagreInntekt(lagreInntektRequest);
 
             status.append("&OK");
