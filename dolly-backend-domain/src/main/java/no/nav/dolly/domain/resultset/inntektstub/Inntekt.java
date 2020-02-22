@@ -2,6 +2,8 @@ package no.nav.dolly.domain.resultset.inntektstub;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +16,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Inntekt {
 
     public enum InntektType {LOENNSINNTEKT, YTELSE_FRA_OFFENTLIGE, PENSJON_ELLER_TRYGD, NAERINGSINNTEKT}
@@ -26,7 +29,7 @@ public class Inntekt {
     @ApiModelProperty(
             position = 2
     )
-    private double beloep;
+    private Double beloep;
 
     @ApiModelProperty(
             value = "Startdato på perioden inntekten var opptjent",
@@ -47,12 +50,12 @@ public class Inntekt {
     @ApiModelProperty(
             position = 5
     )
-    private boolean inngaarIGrunnlagForTrekk;
+    private Boolean inngaarIGrunnlagForTrekk;
 
     @ApiModelProperty(
             position = 6
     )
-    private boolean utloeserArbeidsgiveravgift;
+    private Boolean utloeserArbeidsgiveravgift;
 
     @ApiModelProperty(
             value = "Gyldige verdier finnes i kodeverket 'Fordel'",
@@ -94,6 +97,6 @@ public class Inntekt {
             value = "F.eks. antall kilometer i kilometergodtgjørelsen",
             position = 13
     )
-    private double antall;
+    private Double antall;
 }
 
