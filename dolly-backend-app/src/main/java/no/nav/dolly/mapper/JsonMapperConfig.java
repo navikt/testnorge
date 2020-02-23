@@ -29,7 +29,7 @@ public class JsonMapperConfig {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer());
