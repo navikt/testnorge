@@ -33,55 +33,6 @@ public class Inntektsinformasjon {
 
     private String feilmelding;
 
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Fradrag {
-
-        private Long id;
-        private Double beloep;
-        private String beskrivelse;
-        private String feilmelding;
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Forskuddstrekk {
-
-        private Long id;
-        private Double beloep;
-        private String beskrivelse;
-        private String feilmelding;
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Arbeidsforhold {
-
-        private Long id;
-        private Double antallTimerPerUkeSomEnFullStillingTilsvarer;
-        private String arbeidsforholdstype;
-        private String arbeidstidsordning;
-        private String avloenningstype;
-        private String feilmelding;
-
-        private LocalDate sisteDatoForStillingsprosentendring;
-        private LocalDate sisteLoennsendringsdato;
-        private LocalDate sluttdato;
-        private LocalDate startdato;
-
-        private Double stillingsprosent;
-        private String yrke;
-    }
-
     public List<Inntekt> getInntektsliste() {
         if (isNull(inntektsliste)) {
             inntektsliste = new ArrayList();
@@ -91,7 +42,7 @@ public class Inntektsinformasjon {
 
     public List<Fradrag> getFradragsliste() {
         if (isNull(fradragsliste)) {
-          fradragsliste = new ArrayList();
+            fradragsliste = new ArrayList();
         }
         return fradragsliste;
     }
@@ -108,5 +59,56 @@ public class Inntektsinformasjon {
             arbeidsforholdsliste = new ArrayList();
         }
         return arbeidsforholdsliste;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Fradrag {
+
+        private Long id;
+        private Double beloep;
+        private String beskrivelse;
+        private String feilmelding;
+
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Forskuddstrekk {
+
+        private Long id;
+        private Double beloep;
+        private String beskrivelse;
+        private String feilmelding;
+
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Arbeidsforhold {
+
+        private Long id;
+        private Double antallTimerPerUkeSomEnFullStillingTilsvarer;
+        private String arbeidsforholdstype;
+        private String arbeidstidsordning;
+        private String avloenningstype;
+
+        private String feilmelding;
+        private LocalDate sisteDatoForStillingsprosentendring;
+        private LocalDate sisteLoennsendringsdato;
+        private LocalDate sluttdato;
+
+        private LocalDate startdato;
+        private Double stillingsprosent;
+        private String yrke;
     }
 }
