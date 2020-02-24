@@ -8,9 +8,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import no.nav.registre.sdForvalter.database.model.Team;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
-import no.nav.registre.sdForvalter.database.model.Varighet;
 
 @Value
 @NoArgsConstructor(force = true)
@@ -33,10 +31,6 @@ public class Tps {
     private final String city;
     @JsonProperty
     private final KildeSystem kildeSystem;
-    @JsonBackReference(value = "tps")
-    private Team team;
-    @JsonBackReference(value = "tps-varighet")
-    private Varighet varighet;
 
     public Tps(TpsModel model) {
         fnr = model.getFnr();
@@ -45,8 +39,6 @@ public class Tps {
         address = model.getAddress();
         postNr = model.getPostNr();
         city = model.getCity();
-        team = model.getTeam();
-        varighet = model.getVarighet();
         kildeSystem = model.getKildeSystemModel() != null ? new KildeSystem(model.getKildeSystemModel()) : null;
     }
 }

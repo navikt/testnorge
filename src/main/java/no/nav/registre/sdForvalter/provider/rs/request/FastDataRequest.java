@@ -1,5 +1,6 @@
 package no.nav.registre.sdForvalter.provider.rs.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,13 +20,12 @@ import no.nav.registre.sdForvalter.domain.Tps;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FastDataRequest {
 
     private Set<AaregModel> aareg = new HashSet<>();
     private Set<Tps> tps = new HashSet<>();
     private Set<KrrModel> krr = new HashSet<>();
     private List<Ereg> ereg = new ArrayList<>();
-    @NotNull
-    private String eier;
 
 }

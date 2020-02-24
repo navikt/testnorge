@@ -1,6 +1,5 @@
 package no.nav.registre.sdForvalter.database.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,12 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.List;
 
-import no.nav.registre.sdForvalter.database.Ownable;
 import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 
 @Entity
@@ -28,11 +24,10 @@ import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 @AllArgsConstructor
 @Slf4j
 @Table(name = "krr")
-public class KrrModel extends AuditModel implements CreatableFromString, Ownable {
+public class KrrModel extends AuditModel implements CreatableFromString {
 
     @Id
     private String fnr;
-
     private String name;
     private String email;
     private String sms;
@@ -40,16 +35,6 @@ public class KrrModel extends AuditModel implements CreatableFromString, Ownable
     private boolean sdp;
     private boolean emailValid;
     private boolean smsValid;
-
-    @JsonBackReference(value = "krr")
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
-
-    @JsonBackReference(value = "krr-varighet")
-    @ManyToOne
-    @JoinColumn(name = "varighet_id")
-    private Varighet varighet;
 
     @Override
     public void updateFromString(List<String> input, List<String> headers) {

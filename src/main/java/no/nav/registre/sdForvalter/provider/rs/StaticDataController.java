@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,6 @@ import no.nav.registre.sdForvalter.adapter.EregAdapter;
 import no.nav.registre.sdForvalter.adapter.TpsAdapter;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
-import no.nav.registre.sdForvalter.database.model.Team;
 import no.nav.registre.sdForvalter.domain.Ereg;
 import no.nav.registre.sdForvalter.domain.Tps;
 import no.nav.registre.sdForvalter.provider.rs.request.FastDataRequest;
@@ -34,20 +32,6 @@ public class StaticDataController {
     private final TpsAdapter tpsAdapter;
     private final EregAdapter eregAdapter;
 
-    @GetMapping("/team")
-    public ResponseEntity<Set<Team>> getTeams() {
-        return ResponseEntity.ok(staticDataService.getAllTeams());
-    }
-
-    @PostMapping("/team")
-    public ResponseEntity<Team> saveTeam(@RequestBody Team team) {
-        return ResponseEntity.ok(staticDataService.saveTeam(team));
-    }
-
-    @GetMapping("/team/{name}")
-    public ResponseEntity<Team> getTeam(@PathVariable String name) {
-        return ResponseEntity.ok(staticDataService.getTeam(name));
-    }
 
     @GetMapping(value = "/tps")
     public ResponseEntity<Set<Tps>> getTpsStaticData() {
@@ -82,11 +66,10 @@ public class StaticDataController {
     @PostMapping(value = "/")
     public ResponseEntity<FastDataRequest> storeStaticDataInTps(@RequestBody FastDataRequest data) {
         FastDataRequest responseBody = new FastDataRequest();
-        responseBody.setEier(data.getEier());
         responseBody.setTps(tpsAdapter.saveTps(data.getTps()));
-        responseBody.setKrr(staticDataService.saveInKrr(data.getKrr(), data.getEier()));
+        responseBody.setKrr(staticDataService.saveInKrr(data.getKrr()));
         responseBody.setEreg(eregAdapter.saveEregData(data.getEreg()));
-        responseBody.setAareg(staticDataService.saveInAareg(data.getAareg(), data.getEier()));
+        responseBody.setAareg(staticDataService.saveInAareg(data.getAareg()));
         return ResponseEntity.ok(responseBody);
     }
 

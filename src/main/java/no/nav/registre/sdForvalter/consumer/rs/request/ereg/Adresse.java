@@ -21,5 +21,4 @@ public class Adresse {
     private String landkode;
     private String poststed;
 
-
 }

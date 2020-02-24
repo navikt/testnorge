@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import no.nav.registre.sdForvalter.database.model.EregModel;
-import no.nav.registre.sdForvalter.database.model.Team;
-import no.nav.registre.sdForvalter.database.model.Varighet;
 
 @Value
 @Builder
@@ -36,11 +34,7 @@ public class Ereg {
     @JsonProperty
     private final Adresse postadresse;
     @JsonProperty
-    private Team team;
-    @JsonProperty
-    private Varighet varighet;
-    @JsonProperty
-    private KildeSystem kildeSystem;
+    private final KildeSystem kildeSystem;
 
     public Ereg(EregModel model) {
         this.orgnr = model.getOrgnr();
@@ -50,8 +44,6 @@ public class Ereg {
         this.internetAdresse = model.getInternetAdresse();
         this.naeringskode = model.getNaeringskode();
         this.parent = model.getParent();
-        this.team = model.getTeam();
-        this.varighet = model.getVarighet();
         this.kildeSystem = model.getKildeSystemModel() != null ? new KildeSystem(model.getKildeSystemModel()) : null;
         this.forretningsAdresse = model.getForretningsAdresse() != null ? new Adresse(model.getForretningsAdresse()) : null;
         this.postadresse = model.getPostadresse() != null ? new Adresse(model.getPostadresse()) : null;
