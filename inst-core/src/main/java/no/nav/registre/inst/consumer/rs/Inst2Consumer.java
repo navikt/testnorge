@@ -1,5 +1,8 @@
 package no.nav.registre.inst.consumer.rs;
 
+import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
+import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +57,8 @@ public class Inst2Consumer {
         var getRequest = RequestEntity.get(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold").expand())
                 .header("accept", "*/*")
                 .header("Authorization", bearerToken)
-                .header("Nav-Call-Id", callId)
-                .header("Nav-Consumer-Id", consumerId)
+                .header(HEADER_NAV_CALL_ID, callId)
+                .header(HEADER_NAV_CONSUMER_ID, consumerId)
                 .header("Nav-Personident", ident)
                 .build();
         List<Institusjonsopphold> response;
@@ -83,8 +86,8 @@ public class Inst2Consumer {
         var postRequest = RequestEntity.post(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold?validatePeriod=true").expand())
                 .header("accept", "*/*")
                 .header("Authorization", bearerToken)
-                .header("Nav-Call-Id", callId)
-                .header("Nav-Consumer-Id", consumerId)
+                .header(HEADER_NAV_CALL_ID, callId)
+                .header(HEADER_NAV_CONSUMER_ID, consumerId)
                 .body(institusjonsopphold);
         try {
             var response = restTemplate.exchange(postRequest, RESPONSE_TYPE_OBJECT);
@@ -113,8 +116,8 @@ public class Inst2Consumer {
         var putRequest = RequestEntity.put(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold/{oppholdId}").expand(oppholdId))
                 .header("accept", "*/*")
                 .header("Authorization", bearerToken)
-                .header("Nav-Call-Id", callId)
-                .header("Nav-Consumer-Id", consumerId)
+                .header(HEADER_NAV_CALL_ID, callId)
+                .header(HEADER_NAV_CONSUMER_ID, consumerId)
                 .body(institusjonsopphold);
         try {
             var response = restTemplate.exchange(putRequest, RESPONSE_TYPE_OBJECT);
@@ -135,8 +138,8 @@ public class Inst2Consumer {
         var deleteRequest = RequestEntity.delete(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold/{oppholdId}").expand(oppholdId))
                 .header("accept", "*/*")
                 .header("Authorization", bearerToken)
-                .header("Nav-Call-Id", callId)
-                .header("Nav-Consumer-Id", consumerId)
+                .header(HEADER_NAV_CALL_ID, callId)
+                .header(HEADER_NAV_CONSUMER_ID, consumerId)
                 .build();
         try {
             var response = restTemplate.exchange(deleteRequest, RESPONSE_TYPE_OBJECT);
@@ -159,8 +162,8 @@ public class Inst2Consumer {
                 .expand(tssEksternId, date))
                 .header("accept", "*/*")
                 .header("Authorization", bearerToken)
-                .header("Nav-Call-Id", callId)
-                .header("Nav-Consumer-Id", consumerId)
+                .header(HEADER_NAV_CALL_ID, callId)
+                .header(HEADER_NAV_CONSUMER_ID, consumerId)
                 .build();
 
         try {

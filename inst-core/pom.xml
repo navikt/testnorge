@@ -103,12 +103,6 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger.version}</version>
         </dependency>
-        <!--FASIT-->
-        <dependency>
-            <groupId>no.nav.freg</groupId>
-            <artifactId>fasit-util</artifactId>
-            <version>${fasit-util.version}</version>
-        </dependency>
         <!--HODEJEGEREN-->
         <dependency>
             <groupId>no.nav.registre</groupId>
@@ -119,6 +113,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- FREG SECURITY -->
+        <dependency>
+            <groupId>no.nav.freg</groupId>
+            <artifactId>freg-security-oidc-utility</artifactId>
+            <version>${freg.security.oidc.utility.version}</version>
         </dependency>
     </dependencies>
 
