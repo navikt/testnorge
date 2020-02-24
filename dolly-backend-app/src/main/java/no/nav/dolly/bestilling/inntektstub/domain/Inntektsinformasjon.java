@@ -1,6 +1,9 @@
 package no.nav.dolly.bestilling.inntektstub.domain;
 
+import static java.util.Objects.isNull;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -30,6 +33,34 @@ public class Inntektsinformasjon {
 
     private String feilmelding;
 
+    public List<Inntekt> getInntektsliste() {
+        if (isNull(inntektsliste)) {
+            inntektsliste = new ArrayList();
+        }
+        return inntektsliste;
+    }
+
+    public List<Fradrag> getFradragsliste() {
+        if (isNull(fradragsliste)) {
+            fradragsliste = new ArrayList();
+        }
+        return fradragsliste;
+    }
+
+    public List<Forskuddstrekk> getForskuddstrekksliste() {
+        if (isNull(forskuddstrekksliste)) {
+            forskuddstrekksliste = new ArrayList();
+        }
+        return forskuddstrekksliste;
+    }
+
+    public List<Arbeidsforhold> getArbeidsforholdsliste() {
+        if (isNull(arbeidsforholdsliste)) {
+            arbeidsforholdsliste = new ArrayList();
+        }
+        return arbeidsforholdsliste;
+    }
+
     @Getter
     @Setter
     @Builder
@@ -41,6 +72,7 @@ public class Inntektsinformasjon {
         private Double beloep;
         private String beskrivelse;
         private String feilmelding;
+
     }
 
     @Getter
@@ -54,6 +86,7 @@ public class Inntektsinformasjon {
         private Double beloep;
         private String beskrivelse;
         private String feilmelding;
+
     }
 
     @Getter
@@ -68,13 +101,13 @@ public class Inntektsinformasjon {
         private String arbeidsforholdstype;
         private String arbeidstidsordning;
         private String avloenningstype;
-        private String feilmelding;
 
+        private String feilmelding;
         private LocalDate sisteDatoForStillingsprosentendring;
         private LocalDate sisteLoennsendringsdato;
         private LocalDate sluttdato;
-        private LocalDate startdato;
 
+        private LocalDate startdato;
         private Double stillingsprosent;
         private String yrke;
     }
