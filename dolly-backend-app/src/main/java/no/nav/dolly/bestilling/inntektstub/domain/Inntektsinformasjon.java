@@ -1,6 +1,9 @@
 package no.nav.dolly.bestilling.inntektstub.domain;
 
+import static java.util.Objects.isNull;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -77,5 +80,33 @@ public class Inntektsinformasjon {
 
         private Double stillingsprosent;
         private String yrke;
+    }
+
+    public List<Inntekt> getInntektsliste() {
+        if (isNull(inntektsliste)) {
+            inntektsliste = new ArrayList();
+        }
+        return inntektsliste;
+    }
+
+    public List<Fradrag> getFradragsliste() {
+        if (isNull(fradragsliste)) {
+          fradragsliste = new ArrayList();
+        }
+        return fradragsliste;
+    }
+
+    public List<Forskuddstrekk> getForskuddstrekksliste() {
+        if (isNull(forskuddstrekksliste)) {
+            forskuddstrekksliste = new ArrayList();
+        }
+        return forskuddstrekksliste;
+    }
+
+    public List<Arbeidsforhold> getArbeidsforholdsliste() {
+        if (isNull(arbeidsforholdsliste)) {
+            arbeidsforholdsliste = new ArrayList();
+        }
+        return arbeidsforholdsliste;
     }
 }
