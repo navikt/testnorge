@@ -8,11 +8,11 @@ public enum Kjoenn {
     KVINNE("K"),
     UKJENT("U");
 
+    private String kode;
+
     Kjoenn(String kode) {
         this.kode = kode;
     }
-
-    private String kode;
 
     public static Kjoenn decode(String kode) {
 
