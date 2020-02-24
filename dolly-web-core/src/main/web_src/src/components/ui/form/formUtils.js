@@ -45,7 +45,8 @@ export const erForste = (values, attributt) => {
 		'instdata',
 		'krrstub',
 		'arenaforvalter',
-		'udistub'
+		'udistub',
+		'popp'
 	]
 
 	const valgteAttributter = []
