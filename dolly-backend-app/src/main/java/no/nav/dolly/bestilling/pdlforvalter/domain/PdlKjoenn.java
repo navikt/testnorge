@@ -13,8 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PdlKjoenn {
 
-    public enum Kjoenn {MANN, KVINNE, UBESTEMT}
-
     private String kilde;
     private Kjoenn kjoenn;
 }
