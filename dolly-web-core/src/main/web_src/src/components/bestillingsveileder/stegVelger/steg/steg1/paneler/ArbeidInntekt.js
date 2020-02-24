@@ -2,12 +2,14 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
+import subYears from "date-fns/subYears";
 
 export const ArbeidInntektPanel = ({ stateModifier }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
 
 	const infoTekst =
-		'Arbeidsforhold: \nDataene her blir lagt til AAREG. \n\nInntekt: \nSkatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.'
+		'Arbeidsforhold: \nDataene her blir lagt til AAREG. \n\nInntekt: \nSkatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.' +
+		'\n\nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP.'
 
 	return (
 		<Panel
@@ -22,6 +24,9 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 			</AttributtKategori>
 			<AttributtKategori title="Inntekt">
 				<Attributt attr={sm.attrs.sigrunstub} />
+			</AttributtKategori>
+			<AttributtKategori title={"Pensjonsgivende inntekt"}>
+				<Attributt attr={sm.attrs.popp} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -51,5 +56,20 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 				}
 			]),
 		remove: () => del('sigrunstub')
+	},
+	popp:{
+		label: 'Pensjonsgivende inntekt',
+		checked: has('popp'),
+		add: () =>
+			set('popp', [
+				{
+					inntektsperiode: {
+						fom: new Date().getFullYear(),
+						tom: null
+					},
+					beloep: ''
+				}
+			]),
+		remove: () => del('popp')
 	}
 })
