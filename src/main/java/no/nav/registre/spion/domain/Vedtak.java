@@ -1,6 +1,4 @@
 package no.nav.registre.spion.domain;
-import java.util.Hashtable;
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -11,18 +9,13 @@ import lombok.Value;
 @AllArgsConstructor
 public class Vedtak {
 
+    private final String identitetsnummer;
+    private final String virksomhetsnummer;
+    private final String fom;
+    private final String tom;
     private final String ytelse;
-    private final Hashtable<String, String> periode;
-    private final String fnr;
-    private final String vnr;
     private final String vedtaksstatus;
-    private final String fritakFraAGP;
     private final int sykemeldingsgrad;
-    private final int refusjonsbelopPerPeriode;
-    private final int dagsats;
-    private final int dagerIgjenTilMaksDato;
-    private final List<Hashtable<String, String>> ferie;
-
-//TODO: private String arbeidsforholdId?;
+    private final int refusjonsbelop;
 
 }
