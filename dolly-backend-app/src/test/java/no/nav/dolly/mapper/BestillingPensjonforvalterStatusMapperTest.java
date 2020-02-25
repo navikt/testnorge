@@ -7,6 +7,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,7 @@ class BestillingPensjonforvalterStatusMapperTest {
     void buildPensjonforvalterStatusMap() {
 
         BestillingProgress progress = BestillingProgress.builder()
-                .pensjonforvalterStatus(PENSJON_FORVALTER + "#q2:OK")
+                .pensjonforvalterStatus(PENSJON_FORVALTER + "#q2:OK,")
                 .ident(IDENT)
                 .build();
 
@@ -30,6 +31,7 @@ class BestillingPensjonforvalterStatusMapperTest {
 
         assertThat(statusRapport.getId(), is(equalTo(SystemTyper.PEN_FORVALTER)));
         assertThat(statusRapport.getNavn(), is(equalTo(SystemTyper.PEN_FORVALTER.getBeskrivelse())));
+        assertThat(statusRapport.getStatuser(), hasSize(1));
         assertThat(statusRapport.getStatuser().get(0).getMelding(), is(equalTo("OK")));
         assertThat(statusRapport.getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("q2")));
         assertThat(statusRapport.getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT));
@@ -39,7 +41,7 @@ class BestillingPensjonforvalterStatusMapperTest {
     void buildPoppInntektsStatusMap() {
 
         BestillingProgress progress = BestillingProgress.builder()
-                .pensjonforvalterStatus(POPP_INNTEKTSREGISTER +"#q1:Feil i system,q2:OK")
+                .pensjonforvalterStatus(PENSJON_FORVALTER + "#q2:OK,$" + POPP_INNTEKTSREGISTER + "#q1:Feil i system,q2:OK,")
                 .ident(IDENT)
                 .build();
 
@@ -47,6 +49,7 @@ class BestillingPensjonforvalterStatusMapperTest {
 
         assertThat(statusRapport.getId(), is(equalTo(SystemTyper.PEN_INNTEKT)));
         assertThat(statusRapport.getNavn(), is(equalTo(SystemTyper.PEN_INNTEKT.getBeskrivelse())));
+        assertThat(statusRapport.getStatuser(), hasSize(2));
         assertThat(statusRapport.getStatuser().get(0).getMelding(), is(equalTo("Feil i system")));
         assertThat(statusRapport.getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("q1")));
         assertThat(statusRapport.getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT));

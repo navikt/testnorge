@@ -15,11 +15,11 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
-import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.Timed;
@@ -78,45 +78,45 @@ public class PensjonforvalterClient implements ClientRegister {
 
     private void opprettPerson(TpsPerson tpsPerson, Set<String> miljoer, StringBuilder status) {
 
-        status.append('$').append(PENSJON_FORVALTER);
+        status.append('$').append(PENSJON_FORVALTER).append("#");
 
         try {
-            sendOpprettPerson(tpsPerson.getPersondetalj(), miljoer);
-            tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon ->
-                    sendOpprettPerson(relasjon.getPersonRelasjonMed(), miljoer)
-            );
+            OpprettPersonRequest opprettPersonRequest = mapperFacade.map(tpsPerson.getPersondetalj(), OpprettPersonRequest.class);
+            opprettPersonRequest.setFnr(tpsPerson.getHovedperson());
+            opprettPersonRequest.setMiljoer(newArrayList(miljoer));
 
-            status.append("&OK");
+            decodeStatus(pensjonforvalterConsumer.opprettPerson(opprettPersonRequest), status);
 
         } catch (RuntimeException e) {
 
-            status.append('&').append(errorStatusDecoder.decodeRuntimeException(e));
+            status.append(errorStatusDecoder.decodeRuntimeException(e));
         }
     }
 
-    private void sendOpprettPerson(Person person, Set<String> miljoer) {
-
-        OpprettPersonRequest opprettPersonRequest = mapperFacade.map(person, OpprettPersonRequest.class);
-        opprettPersonRequest.setFnr(person.getIdent());
-        opprettPersonRequest.setMiljoer(newArrayList(miljoer));
-        pensjonforvalterConsumer.opprettPerson(opprettPersonRequest);
-    }
 
     private void lagreInntekt(PensjonData pensjonData, TpsPerson tpsPerson, Set<String> miljoer, StringBuilder status) {
 
-        status.append('$').append(POPP_INNTEKTSREGISTER);
+        status.append('$').append(POPP_INNTEKTSREGISTER).append('#');
 
         try {
             LagreInntektRequest lagreInntektRequest = mapperFacade.map(pensjonData.getInntekt(), LagreInntektRequest.class);
             lagreInntektRequest.setFnr(tpsPerson.getHovedperson());
             lagreInntektRequest.setMiljoer(newArrayList(miljoer));
-            pensjonforvalterConsumer.lagreInntekt(lagreInntektRequest);
 
-            status.append("&OK");
+            decodeStatus(pensjonforvalterConsumer.lagreInntekt(lagreInntektRequest), status);
 
         } catch (RuntimeException e) {
 
             status.append('&').append(errorStatusDecoder.decodeRuntimeException(e));
         }
+    }
+
+    private void decodeStatus(PensjonforvalterResponse response, StringBuilder pensjonStatus) {
+        response.getStatus().forEach(status -> {
+            pensjonStatus.append(status.getMiljo()).append(':')
+                    .append(status.getResponse().getHttpStatus().getStatus() == 200 ? "OK" :
+                            "Feil= " + status.getResponse().getMessage())
+                    .append(',');
+        });
     }
 }

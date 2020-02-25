@@ -15,13 +15,13 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Sets;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.sts.StsOidcService;
 
@@ -59,7 +59,7 @@ public class PensjonforvalterConsumer {
         }
     }
 
-    public ResponseEntity opprettPerson(OpprettPersonRequest opprettPersonRequest) {
+    public PensjonforvalterResponse opprettPerson(OpprettPersonRequest opprettPersonRequest) {
 
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getPensjon().getUrl() + PENSJON_OPPRETT_PERSON_URL))
@@ -68,10 +68,10 @@ public class PensjonforvalterConsumer {
                         .header(HEADER_NAV_CONSUMER_ID, KILDE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(opprettPersonRequest),
-                JsonNode.class);
+                PensjonforvalterResponse.class).getBody();
     }
 
-    public ResponseEntity lagreInntekt(LagreInntektRequest lagreInntektRequest) {
+    public PensjonforvalterResponse lagreInntekt(LagreInntektRequest lagreInntektRequest) {
 
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getPensjon().getUrl() + PENSJON_INNTEKT_URL))
@@ -80,7 +80,7 @@ public class PensjonforvalterConsumer {
                         .header(HEADER_NAV_CONSUMER_ID, KILDE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(lagreInntektRequest),
-                JsonNode.class);
+                PensjonforvalterResponse.class).getBody();
     }
 
     private static String getCallId() {

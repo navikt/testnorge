@@ -65,7 +65,7 @@ public class BestillingProgress {
     @Column(name = "INNTEKTSSTUB_STATUS")
     private String inntektstubStatus;
 
-    @Column(name = "PENSJON_STATUS")
+    @Column(name = "PENSJONFORVALTER_STATUS")
     private String pensjonforvalterStatus;
 
     private String feil;
