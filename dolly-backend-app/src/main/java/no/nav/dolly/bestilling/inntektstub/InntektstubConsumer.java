@@ -20,8 +20,9 @@ import no.nav.dolly.properties.ProvidersProps;
 public class InntektstubConsumer {
 
     private static final String INNTEKTER_URL = "/api/v2/inntektsinformasjon";
-    private static final String PERSON_URL = "/api/v2/personer?norske-identer=";
+    private static final String DELETE_INNTEKTER_URL = "/api/v2/personer?norske-identer=";
     private static final String VALIDER_INNTEKTER_URL = "/api/v2/valider";
+    private static final String GET_INNTEKTER_URL = INNTEKTER_URL + "?norske-identer=";
 
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
@@ -29,14 +30,14 @@ public class InntektstubConsumer {
     public ResponseEntity getInntekter(String ident) {
 
         return restTemplate.exchange(RequestEntity.get(
-                URI.create(format("%s%s%s", providersProps.getInntektstub().getUrl(), PERSON_URL, ident)))
+                URI.create(format("%s%s%s", providersProps.getInntektstub().getUrl(), GET_INNTEKTER_URL, ident)))
                 .build(), JsonNode.class);
     }
 
     public ResponseEntity deleteInntekter(String ident) {
 
         return restTemplate.exchange(RequestEntity.delete(
-                URI.create(format("%s%s%s", providersProps.getInntektstub().getUrl(), PERSON_URL, ident)))
+                URI.create(format("%s%s%s", providersProps.getInntektstub().getUrl(), DELETE_INNTEKTER_URL, ident)))
                 .build(), Inntektsinformasjon.class);
     }
 
