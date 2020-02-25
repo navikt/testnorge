@@ -78,7 +78,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     private void opprettPerson(TpsPerson tpsPerson, Set<String> miljoer, StringBuilder status) {
 
-        status.append('$').append(PENSJON_FORVALTER).append("#");
+        status.append('$').append(PENSJON_FORVALTER).append('#');
 
         try {
             OpprettPersonRequest opprettPersonRequest = mapperFacade.map(tpsPerson.getPersondetalj(), OpprettPersonRequest.class);
