@@ -15,7 +15,7 @@ import no.nav.registre.spion.provider.rs.request.SyntetiserSpionRequest;
 @Slf4j
 public class SyntetiseringService {
 
-    private final String YTELSE = "SP";
+    private final static String YTELSE = "SP";
 
     public List<Vedtak> syntetiserVedtak(SyntetiserSpionRequest request) {
         String endDate = request.getEndDate();
