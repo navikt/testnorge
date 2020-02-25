@@ -2,7 +2,7 @@
 -- A L T E R   T A B L E S --
 -----------------------------
 ALTER TABLE t_bestilling_progress
-RENAME pensjon_status TO pensjonforvalter_status;
+RENAME COLUMN pensjon_status TO pensjonforvalter_status;
 
 ALTER TABLE t_bestilling_progress
     MODIFY pensjonforvalter_status VARCHAR2(4000);
