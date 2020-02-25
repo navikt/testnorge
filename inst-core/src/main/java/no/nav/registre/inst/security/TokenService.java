@@ -2,7 +2,6 @@ package no.nav.registre.inst.security;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.HttpHeaders.ACCEPT;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,30 +17,24 @@ import java.util.Base64;
 
 @Component
 @RequiredArgsConstructor
-public class StsOidcService {
+public class TokenService {
 
     private static final String MILJOE_Q = "q";
     private static final String MILJOE_T = "t";
 
     private final RestTemplate restTemplate;
 
-    @Value("${serviceuser_username_q}")
-    private String usernameQ;
+    @Value("${ida.username}")
+    private String username;
 
-    @Value("${serviceuser_password_q}")
-    private String passwordQ;
+    @Value("${ida.password}")
+    private String password;
 
-    @Value("${sts.url.q}")
-    private String stsUrlQ;
+    @Value("${testnorge-token-provider-q2.url}")
+    private String tokenProviderUrlQ;
 
-    @Value("${serviceuser_username_t}")
-    private String usernameT;
-
-    @Value("${serviceuser_password_t}")
-    private String passwordT;
-
-    @Value("${sts.url.t}")
-    private String stsUrlT;
+    @Value("${testnorge-token-provider-t6.url}")
+    private String tokenProviderUrlT;
 
     private String idTokenQ;
     private String idTokenT;
@@ -95,34 +88,32 @@ public class StsOidcService {
     private void updateToken(String miljoe) {
         String url;
         if (MILJOE_Q.equals(miljoe)) {
-            url = stsUrlQ;
+            url = tokenProviderUrlQ;
         } else {
-            url = stsUrlT;
+            url = tokenProviderUrlT;
         }
-        RequestEntity<?> entity = RequestEntity
-                .get(URI.create(url.concat("?grant_type=client_credentials&scope=openid")))
+        RequestEntity getRequest = RequestEntity
+                .get(URI.create(url))
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
-                .header(AUTHORIZATION, generateBasicAuthToken(miljoe))
+                // .header(AUTHORIZATION, generateBasicAuthToken())
+                .header("username", username)
+                .header("password", password)
                 .build();
 
-        JsonNode result = restTemplate.exchange(entity, JsonNode.class).getBody();
+        JsonNode result = restTemplate.exchange(getRequest, JsonNode.class).getBody();
         if (result == null) {
             return;
         }
         if (MILJOE_Q.equals(miljoe)) {
-            expiryQ = LocalDateTime.now().plusSeconds(result.get("expires_in").asLong());
-            idTokenQ = "Bearer " + result.get("access_token").asText();
+            expiryQ = LocalDateTime.now().plusSeconds(result.get("expiresIn").asLong());
+            idTokenQ = "Bearer " + result.get("idToken").asText();
         } else {
-            expiryT = LocalDateTime.now().plusSeconds(result.get("expires_in").asLong());
-            idTokenT = "Bearer " + result.get("access_token").asText();
+            expiryT = LocalDateTime.now().plusSeconds(result.get("expiresIn").asLong());
+            idTokenT = "Bearer " + result.get("idToken").asText();
         }
     }
 
-    private String generateBasicAuthToken(String miljoe) {
-        if (MILJOE_Q.equals(miljoe)) {
-            return "Basic " + Base64.getEncoder().encodeToString((usernameQ + ":" + passwordQ).getBytes(UTF_8));
-        } else {
-            return "Basic " + Base64.getEncoder().encodeToString((usernameT + ":" + passwordT).getBytes(UTF_8));
-        }
+    private String generateBasicAuthToken() {
+        return "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(UTF_8));
     }
 }

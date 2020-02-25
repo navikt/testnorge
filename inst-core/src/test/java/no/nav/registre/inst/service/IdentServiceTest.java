@@ -23,7 +23,7 @@ import java.util.List;
 
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
-import no.nav.registre.inst.security.StsOidcService;
+import no.nav.registre.inst.security.TokenService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentServiceTest {
@@ -32,7 +32,7 @@ public class IdentServiceTest {
     private Inst2Consumer inst2Consumer;
 
     @Mock
-    private StsOidcService stsOidcService;
+    private TokenService tokenService;
 
     @InjectMocks
     private IdentService identService;
@@ -67,7 +67,7 @@ public class IdentServiceTest {
         var miljoe = "t1";
         var id = "test";
 
-        when(stsOidcService.getIdTokenT()).thenReturn(token);
+        when(tokenService.getIdTokenT()).thenReturn(token);
         when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyString(), eq(id), eq(id), eq(miljoe), eq(fnr1))).thenReturn(Collections.singletonList(meldinger.get(0)));
         when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyString(), eq(id), eq(id), eq(miljoe), eq(fnr2))).thenReturn(Collections.singletonList(meldinger.get(1)));
         when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyString(), eq(id), eq(id), eq(miljoe), eq(oppholdId1))).thenReturn(ResponseEntity.noContent().build());
@@ -75,7 +75,7 @@ public class IdentServiceTest {
 
         var response = identService.slettInstitusjonsoppholdTilIdenter(id, id, miljoe, identer);
 
-        verify(stsOidcService).getIdTokenT();
+        verify(tokenService).getIdTokenT();
         verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(token, id, id, miljoe, fnr1);
         verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(token, id, id, miljoe, fnr2);
         verify(inst2Consumer).slettInstitusjonsoppholdFraInst2(token, id, id, miljoe, oppholdId1);

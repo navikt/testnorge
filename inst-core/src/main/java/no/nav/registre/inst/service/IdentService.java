@@ -11,13 +11,16 @@ import java.util.List;
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
-import no.nav.registre.inst.security.StsOidcService;
+import no.nav.registre.inst.security.TokenService;
 
 @Service
 public class IdentService {
 
-    @Autowired private Inst2Consumer inst2Consumer;
-    @Autowired private StsOidcService stsOidcService;
+    @Autowired
+    private Inst2Consumer inst2Consumer;
+
+    @Autowired
+    private TokenService tokenService;
 
     public List<OppholdResponse> opprettInstitusjonsopphold(
             String callId,
@@ -142,9 +145,9 @@ public class IdentService {
 
     public String hentTokenTilInst2(String miljoe) {
         if (miljoe.contains("q")) {
-            return stsOidcService.getIdTokenQ();
+            return tokenService.getIdTokenQ();
         } else if (miljoe.contains("t")) {
-            return stsOidcService.getIdTokenT();
+            return tokenService.getIdTokenT();
         } else {
             throw new RuntimeException("Kjente ikke igjen miljø " + miljoe);
         }
