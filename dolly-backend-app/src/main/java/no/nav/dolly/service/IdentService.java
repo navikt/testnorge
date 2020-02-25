@@ -1,6 +1,7 @@
 package no.nav.dolly.service;
 
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class IdentService {
 
     @Transactional
     public void persisterTestidenter(List<RsTestident> personIdentListe) {
+
         List<Testident> testidentList = mapperFacade.mapAsList(personIdentListe, Testident.class);
         try {
             identRepository.saveAll(testidentList);
@@ -35,9 +37,13 @@ public class IdentService {
     }
 
     @Transactional
-    public Testident saveIdentTilGruppe(String hovedPersonIdent, Testgruppe testgruppe) {
-        Testident testident = new Testident();
-        testident.setIdent(hovedPersonIdent);
+    public Testident saveIdentTilGruppe(String ident, Testgruppe testgruppe) {
+
+        Testident testident = identRepository.findByIdent(ident);
+        if (isNull(testident)) {
+            testident = new Testident();
+        }
+        testident.setIdent(ident);
         testident.setTestgruppe(testgruppe);
         return identRepository.save(testident);
     }

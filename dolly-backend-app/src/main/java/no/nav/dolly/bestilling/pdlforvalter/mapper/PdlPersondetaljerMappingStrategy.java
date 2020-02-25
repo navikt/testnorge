@@ -4,14 +4,13 @@ import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KILDE;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.UGRADERT;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn.Kjoenn.KVINNE;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn.Kjoenn.MANN;
 
 import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.pdlforvalter.domain.Kjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
@@ -67,7 +66,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, PdlKjoenn pdlKjoenn, MappingContext context) {
 
-                        pdlKjoenn.setKjoenn("M".equals(person.getKjonn()) ? MANN : KVINNE);
+                        pdlKjoenn.setKjoenn(Kjoenn.decode(person.getKjonn()));
                         pdlKjoenn.setKilde(KILDE);
                     }
                 })

@@ -38,7 +38,7 @@ public abstract class RsPdlRettIdentitet {
                     "  \"rettIdentitet\": {\n" +
                     "    \"identitetType\": \"OMTRENTLIG\",\n" +
                     "    \"foedselsdato\": \"string($date-time)\"\n" +
-                    "    \"kjoenn\": \"MANN\"/\"KVINNE\"/\"UBESTEMT\"\n" +
+                    "    \"kjoenn\": \"MANN\"/\"KVINNE\"/\"UKJENT\"\n" +
                     "    \"personnavn\":{\n" +
                     "      \"etternavn\": \"string\",\n" +
                     "      \"fornavn\": \"string\",\n" +

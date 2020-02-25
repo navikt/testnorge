@@ -30,7 +30,7 @@ class TestgruppeControllerPutTest extends TestgruppeTestBase {
                 .to(HttpMethod.PUT, ENDPOINT_BASE_URI + "/123")
                 .andExpect(HttpStatus.OK, LinkedHashMap.class);
 
-        assertThat(getErrMsg(resp), is("Finner ikke gruppe basert på gruppeID: 123"));
+        assertThat(getErrMsg(resp), is("Gruppe med id 123 ble ikke funnet."));
     }
 
     @Test

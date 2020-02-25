@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -71,11 +72,15 @@ public class TestgruppeServiceTest {
 
     private Testgruppe testGruppe;
 
-    @Before
-    public void setup() {
+    @BeforeClass
+    public static void establishSecurity() {
         SecurityContextHolder.getContext().setAuthentication(
                 new OidcTokenAuthentication(standardPrincipal, null, null, null, null)
         );
+    }
+
+    @Before
+    public void setup() {
 
         Set gruppe = newHashSet(
                 asList(
@@ -153,7 +158,8 @@ public class TestgruppeServiceTest {
 
     @Test
     public void slettGruppeById_deleteBlirKaltMotRepoMedGittId() {
-        testgruppeService.slettGruppeById(GROUP_ID);
+        when(testgruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(testGruppe));
+        testgruppeService.deleteGruppeById(GROUP_ID);
         verify(brukerService).sletteBrukerFavoritterByGroupId(GROUP_ID);
         verify(testgruppeRepository).deleteTestgruppeById(GROUP_ID);
     }

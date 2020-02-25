@@ -4,6 +4,7 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
@@ -70,10 +71,9 @@ public class BestillingService {
         }
     }
 
-    public List<Bestilling> fetchBestillingerByGruppeId(Long gruppeId) {
+    public Set<Bestilling> fetchBestillingerByGruppeId(Long gruppeId) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
-        return testgruppe.isPresent() ?
-                bestillingRepository.findBestillingByGruppeOrderById(testgruppe.get()) : emptyList();
+        return testgruppe.isPresent() ? testgruppe.get().getBestillinger() : emptySet();
     }
 
     public List<Bestilling> fetchMalBestillinger() {
