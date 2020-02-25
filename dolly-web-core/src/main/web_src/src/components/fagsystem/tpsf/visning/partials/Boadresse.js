@@ -3,10 +3,9 @@ import Formatters from '~/utils/DataFormatter'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
+import { Historikk } from '~/components/ui/historikk/Historikk'
 
-export const Boadresse = ({ boadresse, visKunAdresse }) => {
-	if (!boadresse || boadresse.length < 1) return false
-
+export const Adressevisning = ({ boadresse }) => {
 	const {
 		adressetype,
 		gateadresse,
@@ -18,9 +17,11 @@ export const Boadresse = ({ boadresse, visKunAdresse }) => {
 		undernr,
 		postnr,
 		flyttedato
-	} = boadresse[0]
+	} = boadresse
 
-	const matrikkelVisning = (
+	const gate = <div>{`${gateadresse} ${husnummer}`}</div>
+
+	const matrikkel = (
 		<div>
 			{mellomnavn && <span>{`${mellomnavn}, `}</span>}
 			<span>{`${gardsnr}`}</span>
@@ -30,29 +31,42 @@ export const Boadresse = ({ boadresse, visKunAdresse }) => {
 		</div>
 	)
 
-	const adresseVisning = (
-		<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
-			{adressetype === 'GATE' && <div>{`${gateadresse} ${husnummer}`}</div>}
-			{adressetype === 'MATR' && matrikkelVisning}
-			<KodeverkConnector navn="Postnummer" value={postnr}>
-				{(v, verdi) => <span>{verdi ? verdi.label : postnr}</span>}
-			</KodeverkConnector>
-		</TitleValue>
-	)
+	if (gateadresse === 'UTEN FAST BOSTED') {
+		return (
+			<TitleValue title="Bosted" size="medium">
+				Uten fast bosted
+			</TitleValue>
+		)
+	}
 
 	return (
-		<div>
-			{visKunAdresse ? (
-				adresseVisning
-			) : (
-				<div>
-					<SubOverskrift label="Boadresse" iconKind="adresse" />
-					<div className="person-visning_content">
-						{adresseVisning}
-						<TitleValue title="Flyttedato" value={Formatters.formatDate(flyttedato)} />
-					</div>{' '}
-				</div>
-			)}
-		</div>
+		<React.Fragment>
+			<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
+				{adressetype === 'GATE' && gate}
+				{adressetype === 'MATR' && matrikkel}
+				{postnr && (
+					<KodeverkConnector navn="Postnummer" value={postnr}>
+						{(v, verdi) => <span>{verdi ? verdi.label : postnr}</span>}
+					</KodeverkConnector>
+				)}
+			</TitleValue>
+			<TitleValue title="Flyttedato" value={Formatters.formatDate(flyttedato)} />
+		</React.Fragment>
+	)
+}
+
+// ;<Historikk component={Adressevisning} boadresse={boadresse} />
+
+export const Boadresse = ({ boadresse }) => {
+	if (!boadresse) return false
+
+	return (
+		<React.Fragment>
+			<SubOverskrift label="Boadresse" iconKind="adresse" />
+			<div className="person-visning_content">
+				<Historikk component={Adressevisning} propName="boadresse" data={boadresse} />
+				{/* <Adressevisning boadresse={boadresse} /> */}
+			</div>
+		</React.Fragment>
 	)
 }
