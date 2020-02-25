@@ -27,10 +27,10 @@ export const LeggTilRelasjon = ({
 	}
 
 	const initialValues = {
-		environments: environments,
+		environments,
 		tpsf: {
 			relasjoner: {
-				partner: [],
+				partnere: [],
 				barn: []
 			}
 		}
@@ -47,7 +47,12 @@ export const LeggTilRelasjon = ({
 						<Form autoComplete="off">
 							<div className="add-relasjon">
 								<Panel heading="Partner" iconType="partner" startOpen>
-									<Partner lagOptions={lagOptions} identInfo={identInfo} hovedIdent={hovedIdent} />
+									<Partner
+										lagOptions={lagOptions}
+										identInfo={identInfo}
+										hovedIdent={hovedIdent}
+										formikBag={formikBag}
+									/>
 								</Panel>
 								<Panel heading="Barn" iconType="barn" startOpen>
 									<Barn
@@ -57,10 +62,10 @@ export const LeggTilRelasjon = ({
 										hovedIdent={hovedIdent}
 									/>
 								</Panel>
-								{formikBag.values.tpsf.relasjoner.partner.length < 1 &&
+								{formikBag.values.tpsf.relasjoner.partnere.length < 1 &&
 									formikBag.values.tpsf.relasjoner.barn.length < 1 && (
 										<ErrorMessage
-											name="tpsf.relasjoner.partner"
+											name="tpsf.relasjoner.partnere"
 											className="error-message"
 											component="div"
 										/>
@@ -82,18 +87,17 @@ export const LeggTilRelasjon = ({
 	)
 }
 
-const lagOptions = (tilgjengelige, identInfo) => {
-	return tilgjengelige.reduce((acc, ident) => {
-		const navn = `${identInfo[ident].fornavn} ${identInfo[ident].etternavn}`
-		return [...acc, { value: ident, label: `${ident} - ${navn}` }]
+const lagOptions = (identer, identInfo) =>
+	identer.reduce((acc, ident) => {
+		const { fornavn, etternavn } = identInfo[ident]
+		return [...acc, { value: ident, label: `${ident} - ${fornavn} ${etternavn}` }]
 	}, [])
-}
 
 const validation = Yup.object({
 	environments: Yup.array().required(messages.required),
 	tpsf: Yup.object({
 		relasjoner: Yup.object({
-			partner: Yup.mixed().when('$tpsf.relasjoner.partner', {
+			partnere: Yup.mixed().when('$tpsf.relasjoner.partnere', {
 				is: v => v.length > 0,
 				then: Yup.array().of(
 					Yup.object({
@@ -109,7 +113,7 @@ const validation = Yup.object({
 										values,
 										path,
 										partnerIdent,
-										'partner'
+										'partnere'
 									)
 									return antallPartnerSammeIdent < 1
 								}
@@ -134,7 +138,7 @@ const validation = Yup.object({
 								const path = this.options.path
 								const barnIdent = _get(values, path)
 								const antallBarnSammeIdent = antallIdenter(values, path, barnIdent, 'barn')
-								const partnere = values.tpsf.relasjoner.partner.map(partner => partner.ident)
+								const partnere = values.tpsf.relasjoner.partnere.map(partner => partner.ident)
 								return antallBarnSammeIdent < 1 && !partnere.includes(barnIdent)
 							}
 						)
