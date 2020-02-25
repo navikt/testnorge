@@ -93,7 +93,6 @@ public class PensjonforvalterClient implements ClientRegister {
         }
     }
 
-
     private void lagreInntekt(PensjonData pensjonData, TpsPerson tpsPerson, Set<String> miljoer, StringBuilder status) {
 
         status.append('$').append(POPP_INNTEKTSREGISTER).append('#');
@@ -112,11 +111,11 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     private void decodeStatus(PensjonforvalterResponse response, StringBuilder pensjonStatus) {
-        response.getStatus().forEach(status -> {
-            pensjonStatus.append(status.getMiljo()).append(':')
-                    .append(status.getResponse().getHttpStatus().getStatus() == 200 ? "OK" :
-                            "Feil= " + status.getResponse().getMessage())
-                    .append(',');
-        });
+        response.getStatus().forEach(status ->
+                pensjonStatus.append(status.getMiljo()).append(':')
+                        .append(status.getResponse().getHttpStatus().getStatus() == 200 ? "OK" :
+                                "Feil= " + status.getResponse().getMessage())
+                        .append(',')
+        );
     }
 }
