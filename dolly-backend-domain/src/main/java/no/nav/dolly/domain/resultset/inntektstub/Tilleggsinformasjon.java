@@ -24,7 +24,7 @@ public class Tilleggsinformasjon {
     private DagmammaIEgenBolig dagmammaIEgenBolig;
     private Periode etterbetalingsperiode;
     private NorskKontinentalsokkel inntektPaaNorskKontinentalsokkel;
-    private SpesielleInntjeningsforhold  spesielleInntjeningsforhold ;
+    private Inntjeningsforhold inntjeningsforhold;
     private Livrente livrente;
     private LottOgPartInnenFiske lottOgPart;
     private Nettoloennsordning nettoloenn;
@@ -87,9 +87,9 @@ public class Tilleggsinformasjon {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class SpesielleInntjeningsforhold  {
+    public static class Inntjeningsforhold {
 
-        private String spesielleInntjeningsforhold ;
+        private String inntjeningsforhold;
     }
 
     @Getter

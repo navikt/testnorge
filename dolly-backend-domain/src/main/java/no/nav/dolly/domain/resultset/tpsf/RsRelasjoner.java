@@ -20,7 +20,7 @@ public class RsRelasjoner {
             position = 1,
             value = "Feltet beskriver liste av \"seriemonogame\" partnere med hovedperson. Siste forhold først, nr to er forrige partner etc"
     )
-    private List<RsPartnerRelasjonRequest> partner;
+    private List<RsPartnerRelasjonRequest> partnere;
 
     @ApiModelProperty(
             position = 2,

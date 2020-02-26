@@ -18,6 +18,7 @@ import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
+import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
@@ -81,6 +82,11 @@ public class RsDollyBestilling {
             position = 10
     )
     private RsUdiPerson udistub;
+
+    @ApiModelProperty(
+            position = 11
+    )
+    private PensjonData pensjonforvalter;
 
     public List<RsArbeidsforhold> getAareg() {
         if (isNull(aareg)) {

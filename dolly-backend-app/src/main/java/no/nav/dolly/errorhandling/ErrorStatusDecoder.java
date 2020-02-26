@@ -48,7 +48,7 @@ public class ErrorStatusDecoder {
     public String decodeRuntimeException(RuntimeException e) {
 
         StringBuilder builder = new StringBuilder()
-                .append("Feil: ");
+                .append("Feil= ");
 
         if (e instanceof HttpClientErrorException) {
 
