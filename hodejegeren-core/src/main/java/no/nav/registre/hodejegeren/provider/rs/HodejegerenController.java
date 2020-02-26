@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
@@ -231,7 +233,22 @@ public class HodejegerenController {
         return eksisterendeIdenterService.hentIdenterSomKolliderer(avspillergruppeId);
     }
 
-    private static void validerAlder(Integer minimumAlder, Integer maksimumAlder) {
+    @LogExceptions
+    @ApiOperation(value = "Her kan man finne ut hvilke identer i en gitt liste, som finnes i en gitt avspillergruppe. Endepunktet returnerer de identene i lista som også finnes i avspillergruppen.")
+    @PostMapping("api/v1/filtrerIdenter/{avspillergruppeId}")
+    public Set<String> filtrerIdenter(
+            @PathVariable Long avspillergruppeId,
+            @RequestBody Set<String> identer
+    ) {
+        Set<String> identerIGruppe = new HashSet<>(cacheService.hentAlleIdenterCache(avspillergruppeId));
+        identerIGruppe.retainAll(identer);
+        return identerIGruppe;
+    }
+
+    private static void validerAlder(
+            Integer minimumAlder,
+            Integer maksimumAlder
+    ) {
         if (minimumAlder < MIN_ALDER || maksimumAlder < minimumAlder) {
             throw new IllegalArgumentException("Minimum alder kan ikke være høyere enn maksimum alder");
         }
