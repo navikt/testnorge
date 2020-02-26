@@ -44,7 +44,7 @@ public class PensjonforvalterConsumer {
 
         try {
             ResponseEntity responseEntity = restTemplate.exchange(
-                    RequestEntity.get(URI.create(providersProps.getPensjon().getUrl() + MILJOER_HENT_TILGJENGELIGE_URL))
+                    RequestEntity.get(URI.create(providersProps.getPensjonforvalter().getUrl() + MILJOER_HENT_TILGJENGELIGE_URL))
                             .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                             .header(HEADER_NAV_CALL_ID, getCallId())
                             .header(HEADER_NAV_CONSUMER_ID, KILDE)
@@ -62,7 +62,7 @@ public class PensjonforvalterConsumer {
     public PensjonforvalterResponse opprettPerson(OpprettPersonRequest opprettPersonRequest) {
 
         return restTemplate.exchange(
-                RequestEntity.post(URI.create(providersProps.getPensjon().getUrl() + PENSJON_OPPRETT_PERSON_URL))
+                RequestEntity.post(URI.create(providersProps.getPensjonforvalter().getUrl() + PENSJON_OPPRETT_PERSON_URL))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                         .header(HEADER_NAV_CALL_ID, getCallId())
                         .header(HEADER_NAV_CONSUMER_ID, KILDE)
@@ -74,7 +74,7 @@ public class PensjonforvalterConsumer {
     public PensjonforvalterResponse lagreInntekt(LagreInntektRequest lagreInntektRequest) {
 
         return restTemplate.exchange(
-                RequestEntity.post(URI.create(providersProps.getPensjon().getUrl() + PENSJON_INNTEKT_URL))
+                RequestEntity.post(URI.create(providersProps.getPensjonforvalter().getUrl() + PENSJON_INNTEKT_URL))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                         .header(HEADER_NAV_CALL_ID, getCallId())
                         .header(HEADER_NAV_CONSUMER_ID, KILDE)
