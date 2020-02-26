@@ -68,14 +68,14 @@ export const sivilstander = Yup.array().of(
 						)
 
 					let prevDato
-					if (partnerIdx === 0 || sivilstandIdx > 0) {
+					if (sivilstandIdx > 0) {
 						prevDato = getSivilstandRegdato(partnerIdx, sivilstandIdx - 1)
 					} else {
 						const prevPartnerSivilstandArr = _get(
 							values.tpsf.relasjoner.partnere,
-							`[${partnerIdx}].sivilstander`
+							`[${partnerIdx - 1}].sivilstander`
 						)
-						prevDato = getSivilstandRegdato(partnerIdx - 1, prevPartnerSivilstandArr.length)
+						prevDato = getSivilstandRegdato(partnerIdx - 1, prevPartnerSivilstandArr.length - 1)
 					}
 
 					// Selve testen
