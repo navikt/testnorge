@@ -32,7 +32,7 @@ export const Bestillingsveileder = ({ location, sendBestilling }) => {
 
 		// Sett identType (denne blir ikke satt tidligere grunnet at den sitter inne i tpsf-noden)
 		values = _set('tpsf.identtype', identtype, values)
-
+		console.log('SEND BESTILLING:', values)
 		sendBestilling(values)
 	}
 

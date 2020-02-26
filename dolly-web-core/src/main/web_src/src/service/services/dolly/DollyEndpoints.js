@@ -11,6 +11,7 @@ const configBase = `${uri}/config`
 const openamBase = `${uri}/openam`
 const aaregBase = `${uri}/aareg/arbeidsforhold`
 const personoppslagBase = `${uri}/pdlperson`
+const inntektstubBase = `${uri}/inntektstub`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -103,6 +104,10 @@ export default class DollyEndpoints {
 
 	static personoppslag(ident) {
 		return `${personoppslagBase}/ident/${ident}`
+	}
+
+	static inntekterByIdent(ident) {
+		return `${inntektstubBase}/${ident}`
 	}
 
 	//TESTPERSON-CONTROLLER

@@ -2,25 +2,23 @@ import React, { useState } from 'react'
 import _get from 'lodash/get'
 import Inntekt from './inntekt'
 import { Formik } from 'formik'
-// import NavButton from '~/components/ui/button/NavButton/NavButton'
 import * as api from '../api'
 
 const InntektStub = ({ formikBag, inntektPath }) => {
-	// console.log('inntektPath :', inntektPath)
 	const [fields, setFields] = useState({})
-	// const [fields, setFields] = useState(_get(formikBag.values, `${inntektPath}`))
-
-	console.log('fields :', fields)
+	// const [inntektstype, setInntektstype] = useState(
+	// 	_get(formikBag.values, `${inntektPath}.inntektstype`)
+	// )
 
 	const initialValues = {
 		inntektstype: '',
 		inngaarIGrunnlagForTrekk: null,
 		utloeserArbeidsgiveravgift: null,
-		fordel: '', // kodeverk
-		skatteOgAvgiftsregel: '', // kodeverk
-		skattemessigBosattILand: '', // kodeverk
-		opptjeningsland: '', // kodeverk
-		beskrivelse: '', // flere kodeverk
+		fordel: '',
+		skatteOgAvgiftsregel: '',
+		skattemessigBosattILand: '',
+		opptjeningsland: '',
+		beskrivelse: '',
 		tilleggsinformasjon: {
 			bilOgBaat: {},
 			bonusFraForsvaret: {
@@ -47,35 +45,69 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 				ufoeregrad: ''
 			},
 			reiseKostOgLosji: {
-				persontype: '' // kodeverk
+				persontype: ''
 			},
-			spesielleInntjeningsforhold: {
-				spesielleInntjeningsforhold: ''
+			inntjeningsforhold: {
+				inntjeningsforhold: ''
 			},
 			utenlandskArtist: {}
 		},
 		antall: ''
 	}
 
+	const setFormikBag = values => {
+		const tilleggsinformasjonPaths = {
+			aaretUtbetalingenGjelderFor: 'bonusFraForsvaret.aaretUtbetalingenGjelderFor', // Lønnsinntekt
+			etterbetalingsperiodeStart: 'etterbetalingsperiode.startdato', // Ytelse fra offentlige + Pensjon eller trygd
+			etterbetalingsperiodeSlutt: 'etterbetalingsperiode.sluttdato', // Ytelse fra offentlige + Pensjon eller trygd
+			grunnpensjonsbeloep: 'pensjon.grunnpensjonsbeloep', // Ytelse fra offentlige + Pensjon eller trygd
+			heravEtterlattepensjon: 'pensjon.heravEtterlattepensjon', // Ytelse fra offentlige + Pensjon eller trygd
+			pensjonsgrad: 'pensjon.pensjonsgrad', // Ytelse fra offentlige + Pensjon eller trygd
+			pensjonTidsromStart: 'pensjon.tidsrom.startdato', // Ytelse fra offentlige + Pensjon eller trygd
+			pensjonTidsromSlutt: 'pensjon.tidsrom.sluttdato', // Ytelse fra offentlige + Pensjon eller trygd
+			tilleggspensjonsbeloep: 'pensjon.tilleggspensjonsbeloep', // Ytelse fra offentlige + Pensjon eller trygd
+			ufoeregrad: 'pensjon.ufoeregrad', // Ytelse fra offentlige + Pensjon eller trygd
+			persontype: 'reiseKostOgLosji.persontype', // Lønnsinntekt
+			inntjeningsforhold: 'inntjeningsforhold.inntjeningsforhold' // Lønnsinntekt
+		}
+		const tilleggsinformasjonAttributter = {
+			BilOgBaat: 'bilOgBaat', // Lønnsinntekt
+			DagmammaIEgenBolig: 'dagmammaIEgenBolig', // Næringsinntekt
+			NorskKontinentalsokkel: 'inntektPaaNorskKontinentalsokkel', // Lønnsinntekt
+			Livrente: 'livrente', // Pensjon eller trygd
+			LottOgPartInnenFiske: 'lottOgPart', // Næringsinntekt
+			Nettoloennsordning: 'nettoloenn', // Lønnsinntekt
+			UtenlandskArtist: 'utenlandskArtist' // Lønnsinntekt
+		}
+		for (var [key, value] of Object.entries(values)) {
+			tilleggsinformasjonAttributter[value]
+				? formikBag.setFieldValue(
+						`${inntektPath}.tilleggsinformasjon.${tilleggsinformasjonAttributter[value]}`,
+						{}
+				  )
+				: tilleggsinformasjonPaths[key]
+				? formikBag.setFieldValue(
+						`${inntektPath}.tilleggsinformasjon.${tilleggsinformasjonPaths[key]}`,
+						value
+				  )
+				: formikBag.setFieldValue(`${inntektPath}.${key}`, value)
+		}
+	}
+
 	return (
 		<Formik
 			initialValues={{}}
-			// validateForm={validate}
 			onSubmit={
 				values =>
 					api
 						.validate(values)
 						.then(response => setFields(response))
-						.then(() => formikBag.setFieldValue(inntektPath, values))
-				// .then(newResponse => console.log('values :', values))
+						.then(() => setFormikBag(values))
+				// .then(() => setInntektstype(values.inntektstype))
 			}
-			// set formikBag ellernoe her ^. må på et vis få med path...
 			render={({ handleSubmit }) => (
 				<div>
 					<Inntekt fields={fields} onValidate={handleSubmit} />
-					{/* <NavButton type="hoved" onClick={values => validate(values)}>
-						Opprett
-					</NavButton> */}
 				</div>
 			)}
 		/>

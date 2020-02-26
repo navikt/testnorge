@@ -41,6 +41,7 @@ const _getTpsfBestillingData = data => {
 
 export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (!bestillingData) return null
+	console.log('bestillingData :', bestillingData)
 
 	const data = []
 
@@ -325,6 +326,46 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		})
 
 		data.push(sigrunStub)
+	}
+
+	const inntektStubKriterier = bestillingData.inntektstub
+
+	if (inntektStubKriterier) {
+		const inntektStub = {
+			header: 'Inntektskomponenten',
+			items: [
+				obj('Antall måneder', inntektStubKriterier.antallMaaneder),
+				obj('Prosentøkning per år', inntektStubKriterier.prosentOekningPerAaar)
+			],
+			itemRows: []
+		}
+
+		inntektStubKriterier.inntektsinformasjon.forEach((inntektsinfo, i) => {
+			inntektStub.itemRows.push([
+				{ numberHeader: `Inntektsinformasjon ${i + 1}` },
+				obj('År/måned', Formatters.formatDate(inntektsinfo.aarMaaned)),
+				obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
+				obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
+				obj(
+					'Antall registrerte inntekter',
+					inntektsinfo.inntektsliste && inntektsinfo.inntektsliste.length
+				),
+				obj(
+					'Antall registrerte fradrag',
+					inntektsinfo.fradragsliste && inntektsinfo.fradragsliste.length
+				),
+				obj(
+					'Antall registrerte forskuddstrekk',
+					inntektsinfo.forskuddstrekksliste && inntektsinfo.forskuddstrekksliste.length
+				),
+				obj(
+					'Antall registrerte arbeidsforhold',
+					inntektsinfo.arbeidsforholdsliste && inntektsinfo.arbeidsforholdsliste.length
+				)
+			])
+		})
+
+		data.push(inntektStub)
 	}
 
 	const krrKriterier = bestillingData.krrstub

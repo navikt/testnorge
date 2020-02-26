@@ -118,5 +118,9 @@ export default {
 
 	getArbeidsforhold(ident, env) {
 		return Request.get(Endpoints.arbeidsforholdByIdent(ident, env))
+	},
+
+	getInntektsinformasjon(ident) {
+		return Request.get(Endpoints.inntekterByIdent(ident))
 	}
 }

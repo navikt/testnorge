@@ -10,6 +10,7 @@ import { PersonVisning } from './PersonVisning'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
 const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
+const loadingSelectorInntektstub = createLoadingSelector(actions.getInntektstub)
 const loadingSelectorAareg = createLoadingSelector(actions.getAareg)
 const loadingSelectorPdlf = createLoadingSelector(actions.getPDL)
 const loadingSelectorArena = createLoadingSelector(actions.getArena)
@@ -23,6 +24,7 @@ const loadingSelector = createSelector(
 		return {
 			krrstub: loadingSelectorKrr({ loading }),
 			sigrunstub: loadingSelectorSigrun({ loading }),
+			inntektstub: loadingSelectorInntektstub({ loading }),
 			aareg: loadingSelectorAareg({ loading }),
 			pdlforvalter: loadingSelectorPdlf({ loading }),
 			arenaforvalteren: loadingSelectorArena({ loading }),
