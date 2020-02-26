@@ -17,7 +17,7 @@ import no.nav.dolly.mapper.MappingStrategy;
 @Component
 public class OpprettPersonMapper implements MappingStrategy {
 
-    private static final DateTimeFormatter DATE_FMT = ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter DATE_FMT = ofPattern("yyyy-MM-dd");
 
     @Override
     public void register(MapperFactory factory) {

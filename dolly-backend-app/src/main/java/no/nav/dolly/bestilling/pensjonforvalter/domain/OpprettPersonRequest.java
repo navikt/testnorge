@@ -17,7 +17,7 @@ public class OpprettPersonRequest {
 
     private String fnr;
     private String bostedsland;
-    private String dodsDato;         //dd-MM-yyyy
-    private String fodselsDato;      //dd-MM-yyyy
-    private String utvandringsDato;  //dd-MM-yyyy
+    private String dodsDato;         //yyyy-MM-dd
+    private String fodselsDato;      //yyyy-MM-dd
+    private String utvandringsDato;  //yyyy-MM-dd
 }
