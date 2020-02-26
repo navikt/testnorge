@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
-import { isAfter } from 'date-fns'
+import { isAfter, addDays } from 'date-fns'
 import Dataformatter from '~/utils/DataFormatter'
 import { requiredString, ifPresent, ifKeyHasValue, messages } from '~/utils/YupValidations'
 
@@ -79,11 +79,13 @@ export const sivilstander = Yup.array().of(
 					}
 
 					// Selve testen
-					const dateValid = isAfter(new Date(dato), new Date(prevDato))
+					const dateValid = isAfter(new Date(dato), addDays(new Date(prevDato), 2))
 					return (
 						dateValid ||
 						this.createError({
-							message: `Dato må være etter tidligere forhold (${Dataformatter.formatDate(prevDato)})`,
+							message: `Dato må være etter tidligere forhold (${Dataformatter.formatDate(
+								prevDato
+							)}) og det må minst være 2 dager i mellom`,
 							path: path
 						})
 					)
