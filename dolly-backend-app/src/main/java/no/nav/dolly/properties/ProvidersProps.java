@@ -29,7 +29,7 @@ public class ProvidersProps {
     private Inntektstub inntektstub = new Inntektstub();
     private PdlPerson pdlPerson = new PdlPerson();
     private FasteDatasett fasteDatasett = new FasteDatasett();
-    private Pensjon pensjon = new Pensjon();
+    private Pensjonforvalter pensjonforvalter = new Pensjonforvalter();
 
     @Getter
     @Setter
@@ -175,7 +175,7 @@ public class ProvidersProps {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Pensjon {
+    public static class Pensjonforvalter {
 
         private String url;
     }

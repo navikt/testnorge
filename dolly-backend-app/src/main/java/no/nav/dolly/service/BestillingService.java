@@ -152,6 +152,7 @@ public class BestillingService {
                                 .pdlforvalter(request.getPdlforvalter())
                                 .instdata(request.getInstdata())
                                 .inntektstub(request.getInntektstub())
+                                .pensjonforvalter(request.getPensjonforvalter())
                                 .build()))
                         .userId(getUserPrinciple())
                         .build());
@@ -178,6 +179,7 @@ public class BestillingService {
                                 .pdlforvalter(request.getPdlforvalter())
                                 .instdata(request.getInstdata())
                                 .inntektstub(request.getInntektstub())
+                                .pensjonforvalter(request.getPensjonforvalter())
                                 .build()))
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .malBestillingNavn(request.getMalBestillingNavn())
