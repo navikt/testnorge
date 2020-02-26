@@ -56,9 +56,9 @@ public class PensjonforvalterClient implements ClientRegister {
         } else if (nonNull(bestilling.getPensjonforvalter())) {
             status.append('$')
                     .append(PENSJON_FORVALTER)
-                    .append("&Feil: Bestilling ble ikke sendt til Pensjonsforvalter (PEN) da tilgjengelig(e) miljø(er) ['")
+                    .append("#Feil= Bestilling ble ikke sendt til Pensjonsforvalter (PEN) da tilgjengelig(e) miljø(er) [")
                     .append(tilgjengeligeMiljoer.stream().collect(joining(",")))
-                    .append("]' ikke er valgt");
+                    .append("] ikke er valgt");
         }
 
         if (status.length() > 1) {
@@ -106,7 +106,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
         } catch (RuntimeException e) {
 
-            status.append('&').append(errorStatusDecoder.decodeRuntimeException(e));
+            status.append(errorStatusDecoder.decodeRuntimeException(e));
         }
     }
 

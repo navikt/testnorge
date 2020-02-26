@@ -11,7 +11,7 @@ ALTER TABLE t_bestilling_progress
 -- M I G R A T E   D A T A  --
 ------------------------------
 UPDATE t_bestilling_progress
-SET pensjonforvalter_status = 'PensjonForvalter#q2:' || pensjonforvalter_status
+SET pensjonforvalter_status = 'PensjonForvalter#q2:' || replace(pensjonforvalter_status, 'Feil:', 'Feil=')
 WHERE pensjonforvalter_status is not null;
 
 COMMIT;

@@ -34,8 +34,9 @@ public final class BestillingPensjonforvalterStatusMapper {
                         .split("\\$")).forEach(meldingMiljoStatus -> {
                     String melding = meldingMiljoStatus.split("\\#")[0];
                     newArrayList(meldingMiljoStatus.split("\\#")[1].split(",")).forEach(miljostatus -> {
-                        String miljoe = miljostatus.split(":")[0];
-                        String status = miljostatus.split(":")[1];
+                        String[] miljoStatuser = miljostatus.split(":");
+                        String miljoe = miljoStatuser.length > 1 ? miljoStatuser[0] : null;
+                        String status = miljoStatuser.length > 1 ? miljoStatuser[1] : miljoStatuser[0];
                         insertArtifact(meldStatusMiljoeIdents, melding, status, miljoe, progress.getIdent());
                     });
                 });
