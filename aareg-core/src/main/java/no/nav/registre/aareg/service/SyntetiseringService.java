@@ -96,7 +96,7 @@ public class SyntetiseringService {
             if (response != null) {
                 if (STATUS_OK.equals(response.getStatusPerMiljoe().get(syntetiserAaregRequest.getMiljoe()))) {
                     lagredeIdenter.add(opprettRequest.getArbeidsforhold().getArbeidstaker().getIdent());
-                    aaregstubConsumer.sendTilAaregstub(Collections.singletonList(rsAaregOpprettRequest));
+//                    aaregstubConsumer.sendTilAaregstub(Collections.singletonList(rsAaregOpprettRequest));
                     lagreArbeidsforholdIHodejegeren(rsAaregOpprettRequest);
                 } else {
                     log.error("Kunne ikke opprette arbeidsforhold: {}", response.getStatusPerMiljoe().get(syntetiserAaregRequest.getMiljoe()));
