@@ -2,8 +2,6 @@ package no.nav.registre.aareg.provider.rs;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Set;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
@@ -42,14 +39,5 @@ public class SyntetiseringController {
             @RequestBody List<RsAaregSyntetiseringsRequest> syntetiserteArbeidsforhold
     ) {
         return syntetiseringService.sendArbeidsforholdTilAareg(syntetiserteArbeidsforhold, fyllUtArbeidsforhold);
-    }
-
-    @LogExceptions
-    @GetMapping(value = "/avspillergruppe/{avspillergruppeId}")
-    public Set<String> hentIdenterIAvspillergruppeMedArbeidsforhold(
-            @PathVariable Long avspillergruppeId,
-            @RequestParam String miljoe
-    ) {
-        return syntetiseringService.hentIdenterIAvspillergruppeMedArbeidsforhold(avspillergruppeId, miljoe);
     }
 }

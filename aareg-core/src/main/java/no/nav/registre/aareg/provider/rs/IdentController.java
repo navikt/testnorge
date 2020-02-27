@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.aareg.provider.rs.response.SletteArbeidsforholdResponse;
 import no.nav.registre.aareg.service.AaregService;
 import no.nav.registre.aareg.service.IdentService;
+import no.nav.registre.aareg.service.SyntetiseringService;
 
 @RestController
 @RequestMapping("api/v1/ident")
@@ -25,6 +28,7 @@ public class IdentController {
 
     private final IdentService identService;
     private final AaregService aaregService;
+    private final SyntetiseringService syntetiseringService;
 
     @DeleteMapping
     public SletteArbeidsforholdResponse slettArbeidsforholdFraAaregstub(
@@ -40,5 +44,14 @@ public class IdentController {
             @RequestParam String miljoe
     ) {
         return aaregService.hentArbeidsforhold(ident, miljoe);
+    }
+
+    @LogExceptions
+    @GetMapping(value = "/avspillergruppe/{avspillergruppeId}")
+    public Set<String> hentIdenterIAvspillergruppeMedArbeidsforhold(
+            @PathVariable Long avspillergruppeId,
+            @RequestParam String miljoe
+    ) {
+        return syntetiseringService.hentIdenterIAvspillergruppeMedArbeidsforhold(avspillergruppeId, miljoe);
     }
 }
