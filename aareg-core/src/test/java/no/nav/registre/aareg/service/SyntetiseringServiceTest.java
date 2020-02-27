@@ -32,6 +32,8 @@ import java.util.Random;
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenHistorikkConsumer;
+import no.nav.registre.aareg.consumer.rs.KodeverkConsumer;
+import no.nav.registre.aareg.consumer.rs.responses.KodeverkResponse;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
@@ -56,6 +58,9 @@ public class SyntetiseringServiceTest {
 
     @Mock
     private AaregService aaregService;
+
+    @Mock
+    private KodeverkConsumer kodeverkConsumer;
 
     @Mock
     private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
@@ -103,6 +108,7 @@ public class SyntetiseringServiceTest {
 
         when(aaregService.opprettArbeidsforhold(any())).thenReturn(rsAaregResponse);
         when(aaregstubConsumer.sendTilAaregstub(anyList())).thenReturn(Collections.singletonList(fnr1));
+        when(kodeverkConsumer.getYrkeskoder()).thenReturn(new KodeverkResponse(Collections.singletonList("0010961")));
 
         var response = syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, sendAlleEksisterende);
 
