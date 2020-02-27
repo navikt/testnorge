@@ -44,6 +44,7 @@ public class EregModel extends AuditModel {
     private String naeringskode;
 
     @OneToOne
+    @JoinColumn(name = "parent")
     private EregModel parent;
 
     @OneToOne
