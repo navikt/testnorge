@@ -1,27 +1,11 @@
 package no.nav.registre.sdForvalter.database.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-
 import no.nav.registre.sdForvalter.domain.Ereg;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @ToString
@@ -35,11 +19,6 @@ import no.nav.registre.sdForvalter.domain.Ereg;
 public class EregModel extends AuditModel {
 
     @Id
-    @GeneratedValue
-    Long id;
-
-    @NotNull
-    @Column(unique = true)
     private String orgnr;
 
     @NotNull
@@ -48,10 +27,10 @@ public class EregModel extends AuditModel {
     private String navn;
     private String epost;
     private String internetAdresse;
-
     private String naeringskode;
 
-    private String parent;
+    @OneToOne
+    private EregModel parent;
 
     @OneToOne
     @JoinColumn(name = "kilde_system_id")
@@ -73,13 +52,13 @@ public class EregModel extends AuditModel {
     @Column(name = "ekskludert")
     private boolean excluded = false;
 
-    public EregModel(Ereg ereg, KildeSystemModel kildeSystemModel) {
+    public EregModel(Ereg ereg, EregModel parent, KildeSystemModel kildeSystemModel) {
         this.orgnr = ereg.getOrgnr();
         this.enhetstype = ereg.getEnhetstype();
         this.navn = ereg.getNavn();
         this.epost = ereg.getEpost();
         this.internetAdresse = ereg.getInternetAdresse();
-        this.parent = ereg.getParent();
+        this.parent = parent;
         this.kildeSystemModel = kildeSystemModel;
         this.forretningsAdresse = ereg.getInternetAdresse() != null ? new AdresseModel(ereg.getForretningsAdresse()) : null;
         this.postadresse = ereg.getPostadresse() != null ? new AdresseModel(ereg.getPostadresse()) : null;

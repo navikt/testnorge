@@ -1,15 +1,14 @@
 package no.nav.registre.sdForvalter.adapter;
 
 import lombok.AllArgsConstructor;
+import no.nav.registre.sdForvalter.database.model.EregModel;
+import no.nav.registre.sdForvalter.database.repository.EregRepository;
+import no.nav.registre.sdForvalter.domain.Ereg;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import no.nav.registre.sdForvalter.database.model.EregModel;
-import no.nav.registre.sdForvalter.database.repository.EregRepository;
-import no.nav.registre.sdForvalter.domain.Ereg;
 
 @Component
 @AllArgsConstructor
@@ -24,6 +23,13 @@ public class EregAdapter {
                 .collect(Collectors.toList());
     }
 
+    private EregModel fetchEreg(String orgnr) {
+        return repository.findById(orgnr).orElseThrow(
+                () -> new RuntimeException("Finner ikke orgnr = " + orgnr + " i ereg databasen.")
+        );
+    }
+
+
     public List<Ereg> saveEregData(List<Ereg> eregs) {
         List<Ereg> existionEregs = fetchEregData();
         List<Ereg> noneExistingEregs = eregs
@@ -36,6 +42,7 @@ public class EregAdapter {
                         .stream()
                         .map(ereg -> new EregModel(
                                 ereg,
+                                ereg.getParent() != null ? fetchEreg(ereg.getParent()) : null,
                                 ereg.getKildeSystem() != null
                                         ? kildeSystemAdapter.saveKildeSystem(ereg.getKildeSystem())
                                         : null

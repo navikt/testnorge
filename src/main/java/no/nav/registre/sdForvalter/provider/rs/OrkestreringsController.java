@@ -3,6 +3,8 @@ package no.nav.registre.sdForvalter.provider.rs;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.sdForvalter.consumer.rs.response.AaregResponse;
+import no.nav.registre.sdForvalter.service.EnvironmentInitializationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,9 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Set;
-
-import no.nav.registre.sdForvalter.consumer.rs.response.AaregResponse;
-import no.nav.registre.sdForvalter.service.EnvironmentInitializationService;
 
 @Slf4j
 @RestController
@@ -53,7 +52,8 @@ public class OrkestreringsController {
     }
 
     @PostMapping(value = "/ereg/{miljoe}")
-    public ResponseEntity<String> initializeEreg(@PathVariable String miljoe) {
-        return ResponseEntity.ok(environmentInitializationService.initializeEreg(miljoe));
+    public ResponseEntity initializeEreg(@PathVariable String miljoe) {
+        environmentInitializationService.initializeEreg(miljoe);
+        return ResponseEntity.ok().build();
     }
 }

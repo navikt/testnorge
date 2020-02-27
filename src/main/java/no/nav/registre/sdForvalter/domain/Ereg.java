@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-
 import no.nav.registre.sdForvalter.database.model.EregModel;
 
 @Value
@@ -43,7 +42,7 @@ public class Ereg {
         this.epost = model.getEpost();
         this.internetAdresse = model.getInternetAdresse();
         this.naeringskode = model.getNaeringskode();
-        this.parent = model.getParent();
+        this.parent = model.getParent() != null ? model.getParent().getOrgnr() : null;
         this.kildeSystem = model.getKildeSystemModel() != null ? new KildeSystem(model.getKildeSystemModel()) : null;
         this.forretningsAdresse = model.getForretningsAdresse() != null ? new Adresse(model.getForretningsAdresse()) : null;
         this.postadresse = model.getPostadresse() != null ? new Adresse(model.getPostadresse()) : null;
