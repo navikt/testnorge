@@ -82,6 +82,8 @@ public class SyntetiseringService {
             nyeIdenter.add(utvalgteIdenter.remove(rand.nextInt(utvalgteIdenter.size())));
         }
 
+        StringBuilder statusFraAareg = new StringBuilder();
+
         identerIAaregstub.addAll(nyeIdenter);
         List<String> lagredeIdenter = new ArrayList<>();
         var syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(new ArrayList<>(identerIAaregstub));
@@ -97,11 +99,10 @@ public class SyntetiseringService {
                     lagreArbeidsforholdIHodejegeren(rsAaregOpprettRequest);
                 } else {
                     log.error("Kunne ikke opprette arbeidsforhold: {}", response.getStatusPerMiljoe().get(syntetiserAaregRequest.getMiljoe()));
+                    statusFraAareg.append(response.getStatusPerMiljoe());
                 }
             }
         }
-
-        StringBuilder statusFraAareg = new StringBuilder();
 
         if (!CollectionUtils.isEmpty(lagredeIdenter)) {
             statusFraAareg
