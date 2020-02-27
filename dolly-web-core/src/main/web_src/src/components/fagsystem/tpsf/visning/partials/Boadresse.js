@@ -40,7 +40,7 @@ export const Adressevisning = ({ boadresse }) => {
 	}
 
 	return (
-		<React.Fragment>
+		<>
 			<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
 				{adressetype === 'GATE' && gate}
 				{adressetype === 'MATR' && matrikkel}
@@ -51,22 +51,19 @@ export const Adressevisning = ({ boadresse }) => {
 				)}
 			</TitleValue>
 			<TitleValue title="Flyttedato" value={Formatters.formatDate(flyttedato)} />
-		</React.Fragment>
+		</>
 	)
 }
-
-// ;<Historikk component={Adressevisning} boadresse={boadresse} />
 
 export const Boadresse = ({ boadresse }) => {
 	if (!boadresse) return false
 
 	return (
-		<React.Fragment>
+		<>
 			<SubOverskrift label="Boadresse" iconKind="adresse" />
 			<div className="person-visning_content">
 				<Historikk component={Adressevisning} propName="boadresse" data={boadresse} />
-				{/* <Adressevisning boadresse={boadresse} /> */}
 			</div>
-		</React.Fragment>
+		</>
 	)
 }

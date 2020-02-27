@@ -7,19 +7,19 @@ import './historikk.less'
 export const Historikk = ({ component, data, propName = 'data', ...restProps }) => {
 	if (!_isArray(data)) return false
 
-	const main = React.createElement(component, { [propName]: data[0], ...restProps })
+	const Main = component
 
 	// Hvis det kun finnes en
-	if (data.length <= 1) return main
+	if (data.length <= 1) return <Main {...{ [propName]: data[0], ...restProps }} />
 
 	return (
 		<div className="med-historikk">
-			{main}
+			<Main {...{ [propName]: data[0], ...restProps }} />
 			<div className="med-historikk-blokk">
 				<h5>Historikk</h5>
 				{_drop(data).map((element, idx) => (
 					<div key={idx} className="med-historikk-content">
-						{React.createElement(component, { [propName]: element, ...restProps })}
+						<Main {...{ [propName]: element, ...restProps }} />
 					</div>
 				))}
 			</div>
