@@ -101,8 +101,8 @@ public class SyntetiseringService {
                 } else {
                     log.error("Kunne ikke opprette arbeidsforhold: {}", response.getStatusPerMiljoe().get(syntetiserAaregRequest.getMiljoe()));
                     //                    statusFraAareg.append(response.getStatusPerMiljoe());
-                    statusFraAareg.add(response);
                 }
+                statusFraAareg.add(response);
             }
         }
 
