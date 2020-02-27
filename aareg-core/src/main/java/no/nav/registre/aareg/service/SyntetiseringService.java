@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -83,6 +84,7 @@ public class SyntetiseringService {
         }
 
         StringBuilder statusFraAareg = new StringBuilder();
+        HttpStatus httpStatus = HttpStatus.OK;
 
         identerIAaregstub.addAll(nyeIdenter);
         List<String> lagredeIdenter = new ArrayList<>();
@@ -99,6 +101,7 @@ public class SyntetiseringService {
                     lagreArbeidsforholdIHodejegeren(rsAaregOpprettRequest);
                 } else {
                     log.error("Kunne ikke opprette arbeidsforhold: {}", response.getStatusPerMiljoe().get(syntetiserAaregRequest.getMiljoe()));
+                    httpStatus = HttpStatus.CONFLICT;
                     statusFraAareg.append(response.getStatusPerMiljoe());
                 }
             }
@@ -115,7 +118,7 @@ public class SyntetiseringService {
             log.info(statusFraAareg.toString());
         }
 
-        return ResponseEntity.ok().body(statusFraAareg.toString());
+        return ResponseEntity.status(httpStatus).body(statusFraAareg.toString());
     }
 
     private void lagreArbeidsforholdIHodejegeren(RsAaregOpprettRequest opprettRequest) {
