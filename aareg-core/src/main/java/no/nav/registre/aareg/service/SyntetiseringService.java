@@ -86,8 +86,8 @@ public class SyntetiseringService {
         List<String> lagredeIdenter = new ArrayList<>();
         var syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(new ArrayList<>(identerIAaregstub));
         for (var opprettRequest : syntetiserteArbeidsforhold) {
-            RsAaregOpprettRequest rsAaregOpprettRequest = mapSyntetiseringsRequestToOpprettRequest(opprettRequest);
             opprettRequest.setEnvironments(Collections.singletonList(syntetiserAaregRequest.getMiljoe()));
+            RsAaregOpprettRequest rsAaregOpprettRequest = mapSyntetiseringsRequestToOpprettRequest(opprettRequest);
             var response = aaregService.opprettArbeidsforhold(rsAaregOpprettRequest);
 
             if (response != null) {
