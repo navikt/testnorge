@@ -23,7 +23,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest
 @Component
 public class TestnorgeAaregConsumer {
 
-    private static final ParameterizedTypeReference<ResponseEntity> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<List<Object>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
     private static final ParameterizedTypeReference<SletteArbeidsforholdResponse> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<>() {
     };
