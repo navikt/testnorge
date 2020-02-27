@@ -49,6 +49,11 @@ public class JsonTestHelper {
         );
     }
 
+    public static <T> void stubPost(UrlPathPattern urlPathPattern) {
+        stubFor(post(urlPathPattern));
+    }
+
+
     public static <T, K> void stubGet(UrlPathPattern urlPathPattern, K responseBody, ObjectMapper objectMapper) throws Exception {
         final String responseJsonBody = objectMapper.writeValueAsString(responseBody);
         stubFor(get(urlPathPattern)

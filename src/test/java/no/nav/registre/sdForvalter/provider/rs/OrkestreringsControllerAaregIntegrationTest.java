@@ -37,7 +37,7 @@ import no.nav.registre.sdForvalter.util.JsonTestHelper;
 )
 public class OrkestreringsControllerAaregIntegrationTest {
 
-    public static final String ENVIRONMENT = "t1";
+    private static final String ENVIRONMENT = "t1";
 
     @Autowired
     private MockMvc mvc;

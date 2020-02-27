@@ -43,7 +43,7 @@ public class OrkestreringsControllerTpsIntegrationTest {
     @Value("${tps.statisk.avspillergruppeId}")
     private Long staticDataPlaygroup;
 
-    public static final String ENVIRONMENT = "t1";
+    private static final String ENVIRONMENT = "t1";
 
     @Autowired
     private MockMvc mvc;

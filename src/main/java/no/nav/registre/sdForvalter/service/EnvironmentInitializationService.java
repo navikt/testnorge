@@ -75,10 +75,7 @@ public class EnvironmentInitializationService {
         response.forEach(resp -> resp.getStatusPerMiljoe().values().stream().filter(melding -> melding.startsWith("Feil"))
                 .forEach(melding -> log.warn("Feil under initialisering av aareg i miljø {}. Feilmelding: {}", environment, melding)));
 
-        String flatfileFromEregMapper = initializeEreg(environment);
-        if (!"".equals(flatfileFromEregMapper) && flatfileFromEregMapper != null) {
-            log.info(flatfileFromEregMapper);
-        }
+        initializeEreg(environment);
         log.info("Completed init of all static data sets.");
     }
 
@@ -143,7 +140,7 @@ public class EnvironmentInitializationService {
         return response;
     }
 
-    public String initializeEreg(String environment) {
+    public void initializeEreg(String environment) {
         log.info("Start init of Ereg...");
         List<EregModel> data = new ArrayList<>();
         eregRepository.findAll().forEach(
@@ -154,9 +151,8 @@ public class EnvironmentInitializationService {
                     data.add(e);
                 }
         );
-        String response = eregMapperConsumer.uploadToEreg(data, environment);
+        eregMapperConsumer.create(data, environment);
         log.info("Init of Ereg completed.");
-        return response;
     }
 
     /**

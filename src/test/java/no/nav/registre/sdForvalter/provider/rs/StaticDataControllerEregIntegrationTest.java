@@ -1,14 +1,15 @@
 package no.nav.registre.sdForvalter.provider.rs;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import no.nav.registre.sdForvalter.database.model.EregModel;
+import no.nav.registre.sdForvalter.database.model.KildeSystemModel;
+import no.nav.registre.sdForvalter.database.repository.EregRepository;
+import no.nav.registre.sdForvalter.database.repository.KildeSystemRepository;
+import no.nav.registre.sdForvalter.domain.Ereg;
+import no.nav.registre.sdForvalter.domain.KildeSystem;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,12 +25,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.sdForvalter.database.model.EregModel;
-import no.nav.registre.sdForvalter.database.model.KildeSystemModel;
-import no.nav.registre.sdForvalter.database.repository.EregRepository;
-import no.nav.registre.sdForvalter.database.repository.KildeSystemRepository;
-import no.nav.registre.sdForvalter.domain.Ereg;
-import no.nav.registre.sdForvalter.domain.KildeSystem;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -90,10 +89,11 @@ public class StaticDataControllerEregIntegrationTest {
                 .hasSize(1)
                 .first()
                 .isEqualToIgnoringGivenFields(
-                        new EregModel(ereg, null),
+                        new EregModel(ereg, null, null),
                         "id", "createdAt", "updatedAt"
                 );
     }
+
 
     @Test
     public void shouldAddKildeSystemToDatabase() throws Exception {
@@ -120,7 +120,7 @@ public class StaticDataControllerEregIntegrationTest {
     }
 
     @After
-    public void cleanUp(){
+    public void cleanUp() {
         eregRepository.deleteAll();
         kildeSystemRepository.deleteAll();
     }
