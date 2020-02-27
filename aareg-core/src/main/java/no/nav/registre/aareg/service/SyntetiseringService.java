@@ -15,7 +15,6 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
@@ -83,7 +82,8 @@ public class SyntetiseringService {
             nyeIdenter.add(utvalgteIdenter.remove(rand.nextInt(utvalgteIdenter.size())));
         }
 
-        StringBuilder statusFraAareg = new StringBuilder();
+        //        StringBuilder statusFraAareg = new StringBuilder();
+        List<RsAaregResponse> statusFraAareg = new ArrayList<>();
         HttpStatus httpStatus = HttpStatus.OK;
 
         identerIAaregstub.addAll(nyeIdenter);
@@ -102,23 +102,24 @@ public class SyntetiseringService {
                 } else {
                     log.error("Kunne ikke opprette arbeidsforhold: {}", response.getStatusPerMiljoe().get(syntetiserAaregRequest.getMiljoe()));
                     httpStatus = HttpStatus.CONFLICT;
-                    statusFraAareg.append(response.getStatusPerMiljoe());
+                    //                    statusFraAareg.append(response.getStatusPerMiljoe());
+                    statusFraAareg.add(response);
                 }
             }
         }
 
-        if (!CollectionUtils.isEmpty(lagredeIdenter)) {
-            statusFraAareg
-                    .append("Identer som ble lagret i aareg: ")
-                    .append(lagredeIdenter)
-                    .append(". ");
-        }
+        //        if (!CollectionUtils.isEmpty(lagredeIdenter)) {
+        //            statusFraAareg
+        //                    .append("Identer som ble lagret i aareg: ")
+        //                    .append(lagredeIdenter)
+        //                    .append(". ");
+        //        }
 
-        if (!statusFraAareg.toString().isEmpty()) {
-            log.info(statusFraAareg.toString());
-        }
+        //        if (!statusFraAareg.toString().isEmpty()) {
+        //            log.info(statusFraAareg.toString());
+        //        }
 
-        return ResponseEntity.status(httpStatus).body(statusFraAareg.toString());
+        return ResponseEntity.status(httpStatus).body(statusFraAareg);
     }
 
     private void lagreArbeidsforholdIHodejegeren(RsAaregOpprettRequest opprettRequest) {

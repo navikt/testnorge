@@ -18,7 +18,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class RsAaregResponse {
 
-    Map<String, String> statusPerMiljoe;
+    private Map<String, String> statusPerMiljoe;
 
     public Map<String, String> getStatusPerMiljoe() {
         if (isNull(statusPerMiljoe)) {
