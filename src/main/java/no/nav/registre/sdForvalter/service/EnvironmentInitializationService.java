@@ -2,7 +2,22 @@ package no.nav.registre.sdForvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sdForvalter.consumer.rs.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import no.nav.registre.sdForvalter.consumer.rs.AaregConsumer;
+import no.nav.registre.sdForvalter.consumer.rs.EregMapperConsumer;
+import no.nav.registre.sdForvalter.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.sdForvalter.consumer.rs.KrrConsumer;
+import no.nav.registre.sdForvalter.consumer.rs.SamConsumer;
+import no.nav.registre.sdForvalter.consumer.rs.SkdConsumer;
+import no.nav.registre.sdForvalter.consumer.rs.TpConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.response.AaregResponse;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.EregModel;
@@ -12,14 +27,6 @@ import no.nav.registre.sdForvalter.database.repository.AaregRepository;
 import no.nav.registre.sdForvalter.database.repository.EregRepository;
 import no.nav.registre.sdForvalter.database.repository.KrrRepository;
 import no.nav.registre.sdForvalter.database.repository.TpsRepository;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

@@ -1,7 +1,10 @@
 package no.nav.registre.sdForvalter.consumer.rs.request.ereg;
 
-import lombok.*;
-import no.nav.registre.sdForvalter.database.model.EregModel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.validation.constraints.NotNull;
@@ -9,6 +12,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import no.nav.registre.sdForvalter.database.model.EregModel;
 
 @Getter
 @Setter

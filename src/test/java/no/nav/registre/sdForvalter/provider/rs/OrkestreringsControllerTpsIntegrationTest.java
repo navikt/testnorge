@@ -1,12 +1,12 @@
 package no.nav.registre.sdForvalter.provider.rs;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.reset;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
-import no.nav.registre.sdForvalter.consumer.rs.request.SkdRequest;
-import no.nav.registre.sdForvalter.consumer.rs.response.SkdResponse;
-import no.nav.registre.sdForvalter.database.model.TpsModel;
-import no.nav.registre.sdForvalter.database.repository.TpsRepository;
-import no.nav.registre.sdForvalter.util.JsonTestHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,10 +25,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import no.nav.registre.sdForvalter.consumer.rs.request.SkdRequest;
+import no.nav.registre.sdForvalter.consumer.rs.response.SkdResponse;
+import no.nav.registre.sdForvalter.database.model.TpsModel;
+import no.nav.registre.sdForvalter.database.repository.TpsRepository;
+import no.nav.registre.sdForvalter.util.JsonTestHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

@@ -1,10 +1,15 @@
 package no.nav.registre.sdForvalter.consumer.rs.request.ereg;
 
-import lombok.*;
-import no.nav.registre.sdForvalter.database.model.AdresseModel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Collections;
 import java.util.List;
+
+import no.nav.registre.sdForvalter.database.model.AdresseModel;
 
 @Builder
 @NoArgsConstructor
