@@ -20,6 +20,11 @@ public class SyntetiseringController {
 
     @PostMapping(value = "/vedtak")
     public List<Vedtak> genererVedtak(@RequestBody SyntetiserSpionRequest request){
-        return syntetiseringService.syntetiserVedtak(request);
+        return syntetiseringService.syntetiserVedtak(
+                request.getAvspillergruppeId(),
+                request.getMiljoe(),
+                request.getStartDate(),
+                request.getEndDate(),
+                request.getNumPeriods());
     }
 }

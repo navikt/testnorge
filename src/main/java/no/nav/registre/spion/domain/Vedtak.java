@@ -1,17 +1,16 @@
 package no.nav.registre.spion.domain;
 
 import java.time.LocalDate;
-import java.util.Random;
 
+import no.nav.registre.spion.consumer.rs.response.aaregstub.AaregstubResponse;
 import org.apache.commons.math3.distribution.GammaDistribution;
+import static no.nav.registre.spion.utils.RandomUtils.getRandomBoundedNumber;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
 @Value
 @NoArgsConstructor(force = true)
-@AllArgsConstructor
 public class Vedtak {
 
     private final String identitetsnummer;
@@ -23,14 +22,14 @@ public class Vedtak {
     private final int sykemeldingsgrad;
     private final int refusjonsbelop;
 
-    public Vedtak(LocalDate startDato, boolean isFoersteVedtak){
+    public Vedtak(AaregstubResponse aaregstubResponse, LocalDate sluttDato, boolean isFoersteVedtak){
 
-        LocalDate startDatoPeriode = isFoersteVedtak ? startDato: getNextStartDato(startDato);
+        LocalDate startDatoPeriode = isFoersteVedtak ? sluttDato: getNextStartDato(sluttDato);
         int periodeLength = getPeriodeLength();
         LocalDate sluttDatoPeriode = startDatoPeriode.plusDays(periodeLength);
 
-        this.identitetsnummer = getID();
-        this.virksomhetsnummer = getVnr();
+        this.identitetsnummer = aaregstubResponse.getFnr();
+        this.virksomhetsnummer = aaregstubResponse.getArbeidsforhold().get(0).getArbeidsgiver().getOrgnummer();
         this.fom = startDatoPeriode;
         this.tom = sluttDatoPeriode;
         this.vedtaksstatus = getVedtaksstatus();
@@ -46,11 +45,9 @@ public class Vedtak {
      * @return nextStartDato
      */
     private LocalDate getNextStartDato(LocalDate lastSluttDato){
-        int numDays = Math.random() < 0.25 ? 0: new Random().nextInt(21) + 1;
-
+        int numDays = Math.random() < 0.25 ? 0: getRandomBoundedNumber(1,21);
         return lastSluttDato.plusDays(numDays);
     }
-
 
     /**
      *Lengden på en periode trekkes fra en gamma-fordeling med shape 1.5 og scale 14.
@@ -64,24 +61,6 @@ public class Vedtak {
     }
 
     /**
-     * TODO: endre på metoden slik at id (Fnr/Dnr) er korrekt og koblet opp mot personer i Mini-Norge
-     * @return id
-     */
-    private String getID(){
-        return "10101010101";
-    }
-
-
-    /**
-     * TODO: endre på metoden slik at virksomhetsnummeret er korrekt og koblet opp mot personer i Mini-Norge
-     * @return vnr
-     */
-    private String getVnr(){
-        return "020202020";
-    }
-
-
-    /**
      * Status trekkes fra en fordeling slik at vi i snitt får 90% innvilget og 10 % avslått.
      * @return vedtaksstatus
      */
@@ -89,16 +68,14 @@ public class Vedtak {
         return Math.random() <0.1 ? "Avslått": "Innvilget";
     }
 
-
     /**
      * Sykmeldingsgrad kan trekkes fra en uniform fordeling mellom 20 og 100. Eventuelt si at 50% av alle sykmeldingsgrader
      * er på 100%, og så fordele uniformt mellom 20% og 90%.
      * @return sykemeldingsgrad
      */
     private int getSykemeldingsgrad(){
-        return Math.random()<0.5 ? 100 : 20 + new Random().nextInt(71);
+        return Math.random()<0.5 ? 100 : getRandomBoundedNumber(20, 90);
     }
-
 
     /**
      * Refusjonsbeløpet kan trekkes fra en uniform fordeling mellom 200 og 2400 og så gange opp
@@ -107,7 +84,7 @@ public class Vedtak {
      * @return refusjonsbeløp for perioden
      */
     private int getRefusjonsBeloepForPeriode(int periodeLength){
-        return (200 + new Random().nextInt(2201))*periodeLength;
+        return getRandomBoundedNumber(200, 2400)*periodeLength;
     }
 
 }

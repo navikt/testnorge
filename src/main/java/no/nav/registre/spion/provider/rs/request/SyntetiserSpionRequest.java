@@ -10,6 +10,11 @@ import lombok.Value;
 @Value
 @NoArgsConstructor(force = true)
 public class SyntetiserSpionRequest {
+
+    @JsonProperty("avspillergruppeId")
+    private Long avspillergruppeId;
+    @JsonProperty("miljoe")
+    private String miljoe;
     @JsonProperty("startDato")
     private final LocalDate startDate;
     @JsonProperty("sluttDato")
