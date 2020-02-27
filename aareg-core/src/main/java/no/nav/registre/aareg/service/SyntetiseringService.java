@@ -84,7 +84,6 @@ public class SyntetiseringService {
 
         //        StringBuilder statusFraAareg = new StringBuilder();
         List<RsAaregResponse> statusFraAareg = new ArrayList<>();
-        HttpStatus httpStatus = HttpStatus.OK;
 
         identerIAaregstub.addAll(nyeIdenter);
         List<String> lagredeIdenter = new ArrayList<>();
@@ -101,7 +100,6 @@ public class SyntetiseringService {
                     lagreArbeidsforholdIHodejegeren(rsAaregOpprettRequest);
                 } else {
                     log.error("Kunne ikke opprette arbeidsforhold: {}", response.getStatusPerMiljoe().get(syntetiserAaregRequest.getMiljoe()));
-                    httpStatus = HttpStatus.CONFLICT;
                     //                    statusFraAareg.append(response.getStatusPerMiljoe());
                     statusFraAareg.add(response);
                 }
@@ -119,7 +117,7 @@ public class SyntetiseringService {
         //            log.info(statusFraAareg.toString());
         //        }
 
-        return ResponseEntity.status(httpStatus).body(statusFraAareg);
+        return ResponseEntity.ok().body(statusFraAareg);
     }
 
     private void lagreArbeidsforholdIHodejegeren(RsAaregOpprettRequest opprettRequest) {
