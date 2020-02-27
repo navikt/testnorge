@@ -7,6 +7,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.StausResponse.DONE;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiFunction;
 import javax.el.MethodNotFoundException;
@@ -34,6 +35,9 @@ import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.RsBarnRequest;
+import no.nav.dolly.domain.resultset.tpsf.RsPartnerRequest;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -54,6 +58,7 @@ public class PdlForvalterClient implements ClientRegister {
     public static final String FALSK_IDENTITET = "FalskIdentitet";
     public static final String PDL_FORVALTER = "PdlForvalter";
 
+    private static final String UKJENT = "U";
     private static final String HENDELSE_ID = "hendelseId";
     private static final int MAX_COUNT = 30;
     private static final int TIMEOUT = 100;
@@ -76,7 +81,7 @@ public class PdlForvalterClient implements ClientRegister {
 
             if (bestilling.getEnvironments().contains(SYNTH_ENV)) {
 
-                hentTpsPersondetaljer(tpsPerson);
+                hentTpsPersondetaljer(tpsPerson, bestilling.getTpsf());
                 sendDeleteIdent(tpsPerson);
                 sendPdlPersondetaljer(tpsPerson, status);
 
@@ -120,12 +125,23 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void hentTpsPersondetaljer(TpsPerson tpsPerson) {
+    private void hentTpsPersondetaljer(TpsPerson tpsPerson, RsTpsfUtvidetBestilling tpsfUtvidetBestilling) {
 
         if (isNull(tpsPerson.getPersondetalj())) {
             List<Person> personer = tpsfService.hentTestpersoner(singletonList(tpsPerson.getHovedperson()));
             if (!personer.isEmpty()) {
                 tpsPerson.setPersondetalj(personer.get(0));
+                if (UKJENT.equals(tpsfUtvidetBestilling.getKjonn())) {
+                    tpsPerson.getPersondetalj().setKjonn(UKJENT);
+                }
+                Iterator<RsPartnerRequest> partnere = tpsfUtvidetBestilling.getRelasjoner().getPartnere().iterator();
+                Iterator<RsBarnRequest> barn = tpsfUtvidetBestilling.getRelasjoner().getBarn().iterator();
+                tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
+                    if (relasjon.isPartner() && UKJENT.equals(partnere.next().getKjonn()) ||
+                            relasjon.isBarn() && UKJENT.equals(barn.next().getKjonn())) {
+                        relasjon.getPersonRelasjonMed().setKjonn(UKJENT);
+                    }
+                });
             }
         }
     }
