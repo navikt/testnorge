@@ -14,11 +14,13 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -105,12 +107,6 @@ public class SyntetiseringService {
         return ResponseEntity.ok().body(statusFraAareg);
     }
 
-    private void lagreArbeidsforholdIHodejegeren(RsAaregOpprettRequest opprettRequest) {
-        var identMedData = new IdentMedData(opprettRequest.getArbeidsforhold().getArbeidstaker().getIdent(), Collections.singletonList(opprettRequest.getArbeidsforhold()));
-        var hodejegerenRequest = new AaregSaveInHodejegerenRequest(AAREG_NAME, Collections.singletonList(identMedData));
-        hodejegerenHistorikkConsumer.saveHistory(hodejegerenRequest);
-    }
-
     public List<RsAaregResponse> sendArbeidsforholdTilAareg(
             List<RsAaregSyntetiseringsRequest> arbeidsforhold,
             boolean fyllUtArbeidsforhold
@@ -160,6 +156,34 @@ public class SyntetiseringService {
         }
 
         return aaregResponses;
+    }
+
+    public Set<String> hentIdenterIAvspillergruppeMedArbeidsforhold(
+            Long avspillergruppeId,
+            String miljoe
+    ) {
+        Set<String> identerIAvspillergruppe = new HashSet<>(hodejegerenConsumer.get(avspillergruppeId));
+        Set<String> identerIAaregstub = new HashSet<>(aaregstubConsumer.hentEksisterendeIdenter());
+
+        identerIAvspillergruppe.retainAll(identerIAaregstub);
+
+        Iterator<String> iterator = identerIAvspillergruppe.iterator();
+        while (iterator.hasNext()) {
+            String ident = iterator.next();
+            try {
+                aaregService.hentArbeidsforhold(ident, miljoe);
+            } catch (HttpStatusCodeException e) {
+                iterator.remove();
+            }
+        }
+
+        return identerIAvspillergruppe;
+    }
+
+    private void lagreArbeidsforholdIHodejegeren(RsAaregOpprettRequest opprettRequest) {
+        var identMedData = new IdentMedData(opprettRequest.getArbeidsforhold().getArbeidstaker().getIdent(), Collections.singletonList(opprettRequest.getArbeidsforhold()));
+        var hodejegerenRequest = new AaregSaveInHodejegerenRequest(AAREG_NAME, Collections.singletonList(identMedData));
+        hodejegerenHistorikkConsumer.saveHistory(hodejegerenRequest);
     }
 
     private void validerArbeidsforholdMotAaregSpecs(List<RsAaregSyntetiseringsRequest> arbeidsforholdRequests) {

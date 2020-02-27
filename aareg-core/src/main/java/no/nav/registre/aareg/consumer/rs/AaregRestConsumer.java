@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
@@ -46,6 +47,9 @@ public class AaregRestConsumer {
             response = restTemplate.exchange(getRequest, RESPONSE_TYPE_LIST_MAP);
         } catch (ResourceAccessException e) {
             log.warn("Kunne ikke hente ident fra miljø", e);
+        } catch (HttpStatusCodeException e) {
+            log.info("Kunne ikke hente ident fra aareg", e);
+            response = ResponseEntity.status(e.getStatusCode()).build();
         }
         return response;
     }
