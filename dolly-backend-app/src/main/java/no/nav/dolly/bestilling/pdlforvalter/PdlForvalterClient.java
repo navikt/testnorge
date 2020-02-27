@@ -134,14 +134,16 @@ public class PdlForvalterClient implements ClientRegister {
                 if (UKJENT.equals(tpsfUtvidetBestilling.getKjonn())) {
                     tpsPerson.getPersondetalj().setKjonn(UKJENT);
                 }
-                Iterator<RsPartnerRequest> partnere = tpsfUtvidetBestilling.getRelasjoner().getPartnere().iterator();
-                Iterator<RsBarnRequest> barn = tpsfUtvidetBestilling.getRelasjoner().getBarn().iterator();
-                tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
-                    if (relasjon.isPartner() && UKJENT.equals(partnere.next().getKjonn()) ||
-                            relasjon.isBarn() && UKJENT.equals(barn.next().getKjonn())) {
-                        relasjon.getPersonRelasjonMed().setKjonn(UKJENT);
-                    }
-                });
+                if (nonNull(tpsfUtvidetBestilling.getRelasjoner())) {
+                    Iterator<RsPartnerRequest> partnere = tpsfUtvidetBestilling.getRelasjoner().getPartnere().iterator();
+                    Iterator<RsBarnRequest> barn = tpsfUtvidetBestilling.getRelasjoner().getBarn().iterator();
+                    tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
+                        if (relasjon.isPartner() && UKJENT.equals(partnere.next().getKjonn()) ||
+                                relasjon.isBarn() && UKJENT.equals(barn.next().getKjonn())) {
+                            relasjon.getPersonRelasjonMed().setKjonn(UKJENT);
+                        }
+                    });
+                }
             }
         }
     }
