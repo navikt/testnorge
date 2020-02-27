@@ -18,7 +18,7 @@ public class SyntetiseringController {
 
     private final SyntetiseringService syntetiseringService;
 
-    @PostMapping(value = "/genererVedtak")
+    @PostMapping(value = "/vedtak")
     public List<Vedtak> genererVedtak(@RequestBody SyntetiserSpionRequest request){
         return syntetiseringService.syntetiserVedtak(request);
     }
