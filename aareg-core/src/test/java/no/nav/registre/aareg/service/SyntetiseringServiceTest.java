@@ -107,12 +107,12 @@ public class SyntetiseringServiceTest {
                 .build();
 
         when(aaregService.opprettArbeidsforhold(any())).thenReturn(rsAaregResponse);
-//        when(aaregstubConsumer.sendTilAaregstub(anyList())).thenReturn(Collections.singletonList(fnr1));
+        when(aaregstubConsumer.sendTilAaregstub(anyList())).thenReturn(Collections.singletonList(fnr1));
         when(kodeverkConsumer.getYrkeskoder()).thenReturn(new KodeverkResponse(Collections.singletonList("0010961")));
 
         var response = syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, sendAlleEksisterende);
 
-//        verify(aaregstubConsumer, times(2)).sendTilAaregstub(Collections.singletonList(any()));
+        verify(aaregstubConsumer, times(2)).sendTilAaregstub(Collections.singletonList(any()));
         verify(hodejegerenHistorikkConsumer, times(2)).saveHistory(any());
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }

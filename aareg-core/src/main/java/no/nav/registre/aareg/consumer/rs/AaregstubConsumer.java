@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
@@ -60,9 +61,15 @@ public class AaregstubConsumer {
             List<RsAaregOpprettRequest> syntetiserteArbeidsforhold
     ) {
         var postRequest = RequestEntity.post(sendTilAaregstubUrl.expand()).body(syntetiserteArbeidsforhold);
-        var response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST_STRING);
 
-        if (response.getBody() != null) {
+        ResponseEntity<List<String>> response = null;
+        try {
+            response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST_STRING);
+        } catch (HttpStatusCodeException e) {
+            log.error("Kunne ikke legge arbeidsforhold inn i aaregstub", e);
+        }
+
+        if (response != null && response.getBody() != null) {
             return response.getBody();
         } else {
             log.error("AaregstubConsumer.sendTilAaregstub: Kunne ikke hente response body fra Aaregstub: NullPointerException");
