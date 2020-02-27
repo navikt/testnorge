@@ -81,11 +81,9 @@ public class SyntetiseringService {
             nyeIdenter.add(utvalgteIdenter.remove(rand.nextInt(utvalgteIdenter.size())));
         }
 
-        //        StringBuilder statusFraAareg = new StringBuilder();
         List<RsAaregResponse> statusFraAareg = new ArrayList<>();
 
         identerIAaregstub.addAll(nyeIdenter);
-        List<String> lagredeIdenter = new ArrayList<>();
         var syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(new ArrayList<>(identerIAaregstub));
         validerArbeidsforholdMotAaregSpecs(syntetiserteArbeidsforhold);
         for (var opprettRequest : syntetiserteArbeidsforhold) {
@@ -95,27 +93,14 @@ public class SyntetiseringService {
 
             if (response != null) {
                 if (STATUS_OK.equals(response.getStatusPerMiljoe().get(syntetiserAaregRequest.getMiljoe()))) {
-                    lagredeIdenter.add(opprettRequest.getArbeidsforhold().getArbeidstaker().getIdent());
-//                    aaregstubConsumer.sendTilAaregstub(Collections.singletonList(rsAaregOpprettRequest));
+                    // aaregstubConsumer.sendTilAaregstub(Collections.singletonList(rsAaregOpprettRequest));
                     lagreArbeidsforholdIHodejegeren(rsAaregOpprettRequest);
                 } else {
                     log.error("Kunne ikke opprette arbeidsforhold: {}", response.getStatusPerMiljoe().get(syntetiserAaregRequest.getMiljoe()));
-                    //                    statusFraAareg.append(response.getStatusPerMiljoe());
                 }
                 statusFraAareg.add(response);
             }
         }
-
-        //        if (!CollectionUtils.isEmpty(lagredeIdenter)) {
-        //            statusFraAareg
-        //                    .append("Identer som ble lagret i aareg: ")
-        //                    .append(lagredeIdenter)
-        //                    .append(". ");
-        //        }
-
-        //        if (!statusFraAareg.toString().isEmpty()) {
-        //            log.info(statusFraAareg.toString());
-        //        }
 
         return ResponseEntity.ok().body(statusFraAareg);
     }
