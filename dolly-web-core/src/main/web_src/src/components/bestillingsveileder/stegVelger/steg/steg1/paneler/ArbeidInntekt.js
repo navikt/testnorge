@@ -9,7 +9,7 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 
 	const infoTekst =
 		'Arbeidsforhold: \nDataene her blir lagt til AAREG. \n\nInntekt: \nSkatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.' +
-		'\n\nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP.'
+		'\n\nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register.'
 
 	return (
 		<Panel
@@ -26,7 +26,7 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.sigrunstub} />
 			</AttributtKategori>
 			<AttributtKategori title={"Pensjonsgivende inntekt"}>
-				<Attributt attr={sm.attrs.popp} />
+				<Attributt attr={sm.attrs.pensjonforvalter} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -57,19 +57,16 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 			]),
 		remove: () => del('sigrunstub')
 	},
-	popp:{
+	pensjonforvalter:{
 		label: 'Pensjonsgivende inntekt',
-		checked: has('popp'),
+		checked: has('pensjonforvalter'),
 		add: () =>
-			set('popp', [
-				{
-					inntektsperiode: {
-						fom: new Date().getFullYear(),
-						tom: null
-					},
-					beloep: ''
-				}
-			]),
-		remove: () => del('popp')
+			set('pensjonforvalter.inntekt', {
+						fomAar: new Date().getFullYear(),
+						tomAar: null,
+						belop: '',
+						redusertMedGrunnbelop: true
+					}),
+		remove: () => del('pensjonforvalter.inntekt')
 	}
 })

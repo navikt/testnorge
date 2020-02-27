@@ -649,27 +649,22 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(udistub)
 	}
 
-	const poppKriterier = bestillingData.popp
+	const pensjonKriterier = bestillingData.pensjonforvalter
 
-	if(poppKriterier){
-
-		const popp = {
-			header: 'Pensjonsgivende inntekter',
-			itemRows: []
+	if(pensjonKriterier){
+		const pensjonforvalter = {
+			header: 'Pensjonsgivende inntekt',
+			items: [
+				obj('Fra og med år', pensjonKriterier.inntekt.fomAar),
+				obj('Til og med år', pensjonKriterier.inntekt.tomAar),
+				obj('Beløp', pensjonKriterier.inntekt.belop),
+				obj('Nedjuster med grunnbeløp',
+					Formatters.oversettBoolean(pensjonKriterier.inntekt.redusertMedGrunnbelop))
+			]
 		}
 
-		poppKriterier.forEach((inntekt, i) => {
-			popp.itemRows.push([
-				{
-					numberHeader: `Pensjonsgivende inntekt ${i + 1}`
-				},
-				obj('Fra og med år', inntekt.inntektsperiode.fom),
-				obj('Til og med år', inntekt.inntektsperiode.tom),
-				obj('Beløp', inntekt.beloep)
-			])
-		})
-
-		data.push(popp)
+		data.push(pensjonforvalter)
 	}
+
 	return data
 }

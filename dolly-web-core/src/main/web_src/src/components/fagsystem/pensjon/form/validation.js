@@ -16,10 +16,10 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge) =>{
             const dateValue = val
             const path = this.path
             const values = this.options.context
-            const arrayPos = path.split('.')[0] // feks: popp[1]
+            const arrayPos = path.split('.')[0] // feks: pensjonforvalter[1]
 
             if(validateFomBasedOnAge){
-                const inntektFom = _get(values, `${arrayPos}.inntektsperiode.fom`)
+                const inntektFom = _get(values, `${arrayPos}.inntekt.fomAar`)
 
                 const alder = _get(values, 'tpsf.alder')
                 const foedtFoer = _get(values, 'tpsf.foedtFoer')
@@ -46,8 +46,8 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge) =>{
                 }
             }
 
-            const inntektFom = _get(values, `${arrayPos}.inntektsperiode.fom`)
-            const inntektTom = _get(values, `${arrayPos}.inntektsperiode.tom`)
+            const inntektFom = _get(values, `${arrayPos}.inntekt.fomAar`)
+            const inntektTom = _get(values, `${arrayPos}.inntekt.tomAar`)
 
             return dateValue >= inntektFom && dateValue <= (_isNil(inntektTom) ? new Date().getFullYear() : inntektTom)
         }
@@ -55,18 +55,17 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge) =>{
 }
 
 export const validation  = {
-    popp: ifPresent(
-        '$popp',
-        Yup.array().of(
+    pensjonforvalter: ifPresent(
+        '$pensjonforvalter',
             Yup.object({
-                inntektsperiode: Yup.object({
-                    fom: innenforInntektsperiodeTest(requiredNumber, true),
-                    tom: innenforInntektsperiodeTest(Yup.number().nullable())
-                }),
-                beloep: Yup.number()
-                    .min(0, 'Tast inn et gyldig beløp')
-                    .typeError('Tast inn et gyldig beløp')
+                inntekt: Yup.object({
+                    fomAar: innenforInntektsperiodeTest(requiredNumber, true),
+                    tomAar: innenforInntektsperiodeTest(Yup.number().nullable()),
+                    belop: Yup.number()
+                        .min(0, 'Tast inn et gyldig beløp')
+                        .typeError('Tast inn et gyldig beløp'),
+                    redusertMedGrunnbelop: Yup.boolean()
+                })
             })
-        )
     )
 }
