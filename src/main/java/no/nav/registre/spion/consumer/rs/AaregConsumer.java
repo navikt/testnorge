@@ -11,7 +11,7 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 
-import no.nav.registre.spion.consumer.rs.response.aaregstub.AaregstubResponse;
+import no.nav.registre.spion.consumer.rs.response.aareg.AaregResponse;
 
 @Component
 public class AaregConsumer {
@@ -36,9 +36,9 @@ public class AaregConsumer {
         }).getBody();
     }
 
-    public AaregstubResponse hentArbeidsforholdTilIdent(String ident, String miljoe) {
+    public AaregResponse[] hentArbeidsforholdTilIdent(String ident, String miljoe) {
         var requestEntity = RequestEntity.get(hentArbeidsforholdUrl.expand(ident, miljoe)).build();
-        var response = restTemplate.exchange(requestEntity, AaregstubResponse.class);
+        var response = restTemplate.exchange(requestEntity, AaregResponse[].class);
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new HttpServerErrorException(response.getStatusCode());
         }

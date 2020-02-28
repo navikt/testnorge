@@ -2,7 +2,6 @@ package no.nav.registre.spion.domain;
 
 import java.time.LocalDate;
 
-import no.nav.registre.spion.consumer.rs.response.aaregstub.AaregstubResponse;
 import org.apache.commons.math3.distribution.GammaDistribution;
 import static no.nav.registre.spion.utils.RandomUtils.getRandomBoundedNumber;
 
@@ -22,18 +21,18 @@ public class Vedtak {
     private final int sykemeldingsgrad;
     private final int refusjonsbelop;
 
-    public Vedtak(AaregstubResponse aaregstubResponse, LocalDate sluttDato, boolean isFoersteVedtak){
+    public Vedtak(String id, String orgnummer, LocalDate sluttDato, boolean isFoersteVedtak){
 
         LocalDate startDatoPeriode = isFoersteVedtak ? sluttDato: getNextStartDato(sluttDato);
         int periodeLength = getPeriodeLength();
         LocalDate sluttDatoPeriode = startDatoPeriode.plusDays(periodeLength);
 
-        this.identitetsnummer = aaregstubResponse.getFnr();
-        this.virksomhetsnummer = aaregstubResponse.getArbeidsforhold().get(0).getArbeidsgiver().getOrgnummer();
+        this.identitetsnummer = id;
+        this.virksomhetsnummer = orgnummer;
         this.fom = startDatoPeriode;
         this.tom = sluttDatoPeriode;
-        this.vedtaksstatus = getVedtaksstatus();
-        this.sykemeldingsgrad = getSykemeldingsgrad();
+        this.vedtaksstatus = getNyVedtaksstatus();
+        this.sykemeldingsgrad = getNySykemeldingsgrad();
         this.refusjonsbelop = getRefusjonsBeloepForPeriode(periodeLength);
 
     }
@@ -64,7 +63,7 @@ public class Vedtak {
      * Status trekkes fra en fordeling slik at vi i snitt får 90% innvilget og 10 % avslått.
      * @return vedtaksstatus
      */
-    private String getVedtaksstatus(){
+    private String getNyVedtaksstatus(){
         return Math.random() <0.1 ? "Avslått": "Innvilget";
     }
 
@@ -73,7 +72,7 @@ public class Vedtak {
      * er på 100%, og så fordele uniformt mellom 20% og 90%.
      * @return sykemeldingsgrad
      */
-    private int getSykemeldingsgrad(){
+    private int getNySykemeldingsgrad(){
         return Math.random()<0.5 ? 100 : getRandomBoundedNumber(20, 90);
     }
 
