@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { TpsfApi } from '~/service/Api'
-import { Boadresse } from './Boadresse'
+import { Adressevisning } from './Boadresse'
+import { Historikk } from '~/components/ui/historikk/Historikk'
 
 export const Barn = ({ data, type }) => {
 	if (!data) return false
@@ -33,7 +34,9 @@ export const Barn = ({ data, type }) => {
 				<TitleValue title="Foreldre" value={finnForeldre(barnInfo[0].relasjoner).join(', ')} />
 			)}
 			<TitleValue title="Er adoptert" value={Formatters.oversettBoolean(type === 'BARN')} />
-			{!data.utenFastBopel && <Boadresse boadresse={data.boadresse} visKunAdresse={true} />}
+			{!data.utenFastBopel && (
+				<Historikk component={Adressevisning} propName="boadresse" data={data.boadresse} />
+			)}
 		</div>
 	)
 }

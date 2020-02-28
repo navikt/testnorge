@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
-import { isAfter } from 'date-fns'
+import { isAfter, addDays } from 'date-fns'
 import Dataformatter from '~/utils/DataFormatter'
 import { requiredString, ifPresent, ifKeyHasValue, messages } from '~/utils/YupValidations'
 
@@ -68,22 +68,24 @@ export const sivilstander = Yup.array().of(
 						)
 
 					let prevDato
-					if (partnerIdx === 0 || sivilstandIdx > 0) {
+					if (sivilstandIdx > 0) {
 						prevDato = getSivilstandRegdato(partnerIdx, sivilstandIdx - 1)
 					} else {
 						const prevPartnerSivilstandArr = _get(
 							values.tpsf.relasjoner.partnere,
-							`[${partnerIdx}].sivilstander`
+							`[${partnerIdx - 1}].sivilstander`
 						)
-						prevDato = getSivilstandRegdato(partnerIdx - 1, prevPartnerSivilstandArr.length)
+						prevDato = getSivilstandRegdato(partnerIdx - 1, prevPartnerSivilstandArr.length - 1)
 					}
 
 					// Selve testen
-					const dateValid = isAfter(new Date(dato), new Date(prevDato))
+					const dateValid = isAfter(new Date(dato), addDays(new Date(prevDato), 2))
 					return (
 						dateValid ||
 						this.createError({
-							message: `Dato må være etter tidligere forhold (${Dataformatter.formatDate(prevDato)})`,
+							message: `Dato må være etter tidligere forhold (${Dataformatter.formatDate(
+								prevDato
+							)}) og det må minst være 2 dager i mellom`,
 							path: path
 						})
 					)

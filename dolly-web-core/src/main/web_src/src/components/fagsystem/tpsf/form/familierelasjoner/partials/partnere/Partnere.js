@@ -1,6 +1,7 @@
 import React from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
+import _has from 'lodash/has'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
@@ -28,6 +29,9 @@ const initialValues = {
 	statsborgerskapRegdato: ''
 }
 
+const ugyldigSivilstandState = errors =>
+	_get(errors, 'tpsf.relasjoner.partnere', []).some(partner => Boolean(partner.sivilstander))
+
 const sistePartner = (partnere = []) => partnere[partnere.length - 1]
 
 const sisteSivilstand = (partner = {}) => {
@@ -38,12 +42,13 @@ const sisteSivilstand = (partner = {}) => {
 // Det er 3 kriterier for å opprette ny partner
 // - Må ha regDato for forholder (error validering sjekker om dato er gyldig)
 // - Må ha sivilstandKode som er gyldig som "siste forholdstype"
-// - Må ikke finnes errors i form
+// - Må ikke finnes errors i sivilstandform
 const sjekkKanOppretteNyPartner = (partnere, formikBag) => {
 	const { sivilstand, sivilstandRegdato } = sisteSivilstand(sistePartner(partnere))
 	const gyldigKode = erOpprettNyPartnerGyldig(sivilstand)
 	const harRegdato = sivilstandRegdato !== null
-	return formikBag.isValid && gyldigKode && harRegdato
+	const harGyldigSivilstander = !ugyldigSivilstandState(formikBag.errors)
+	return harGyldigSivilstander && gyldigKode && harRegdato
 }
 
 const path = 'tpsf.relasjoner.partnere'
