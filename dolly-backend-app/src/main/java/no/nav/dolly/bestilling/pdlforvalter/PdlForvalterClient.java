@@ -159,6 +159,8 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendPdlPersondetaljer(TpsPerson tpsPerson, StringBuilder status) {
 
+        status.append('$').append(PDL_FORVALTER);
+
         try {
             tpsPerson.getPersondetaljer().forEach(person -> {
                 sendOpprettPerson(person);
@@ -180,8 +182,6 @@ public class PdlForvalterClient implements ClientRegister {
     }
 
     private void syncMedPdl(String ident, StringBuilder status) {
-
-        status.append('$').append(PDL_FORVALTER);
 
         int count = 0;
         try {

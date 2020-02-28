@@ -81,7 +81,8 @@ public class PensjonforvalterClient implements ClientRegister {
         status.append('$').append(PENSJON_FORVALTER).append('#');
 
         try {
-            OpprettPersonRequest opprettPersonRequest = mapperFacade.map(tpsPerson.getPersondetaljer(), OpprettPersonRequest.class);
+            OpprettPersonRequest opprettPersonRequest =
+                    mapperFacade.map(tpsPerson.getPerson(tpsPerson.getHovedperson()), OpprettPersonRequest.class);
             opprettPersonRequest.setFnr(tpsPerson.getHovedperson());
             opprettPersonRequest.setMiljoer(newArrayList(miljoer));
 
