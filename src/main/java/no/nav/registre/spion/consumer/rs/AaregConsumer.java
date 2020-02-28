@@ -1,47 +1,58 @@
 package no.nav.registre.spion.consumer.rs;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.spion.consumer.rs.response.aareg.AaregResponse;
 
+@Slf4j
 @Component
 public class AaregConsumer {
 
     private final RestTemplate restTemplate;
-    private final UriTemplate hentAlleIdenterMedArbeidsforholdUrl;
-    private final UriTemplate hentArbeidsforholdUrl;
+    private final String aaregUrl;
 
     public AaregConsumer(
-            RestTemplateBuilder restTemplateBuilder,
+            RestTemplate restTemplate,
             @Value("${testnorge.rest-api.aareg}") String serverUrl
     ) {
-        this.restTemplate = restTemplateBuilder.build();
-        this.hentAlleIdenterMedArbeidsforholdUrl =
-                new UriTemplate(serverUrl + "/v1/ident/avspillergruppe/{avspillergruppeId}?miljoe={miljoe}");
-        this.hentArbeidsforholdUrl = new UriTemplate(serverUrl + "/v1/ident/{ident}?miljoe={miljoe}");
+        this.restTemplate = restTemplate;
+        this.aaregUrl = serverUrl;
     }
 
     public List<String> hentAlleIdenterMedArbeidsforhold(long avspillergruppeId, String miljoe) {
-        var requestEntity = RequestEntity.get(hentAlleIdenterMedArbeidsforholdUrl.expand(avspillergruppeId, miljoe)).build();
-        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<String>>() {
-        }).getBody();
+        UriTemplate uriTemplate = new UriTemplate(aaregUrl
+                + "/v1/ident/avspillergruppe/{avspillergruppeId}?miljoe={miljoe}");
+        var getRequest = RequestEntity.get(uriTemplate.expand(avspillergruppeId, miljoe)).build();
+
+        try{
+            return restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<String>>() {}).getBody();
+        }catch(HttpStatusCodeException e){
+            log.error("Kunne ikke hente identer med arbeidsforhold fra aareg.");
+        }
+        return new ArrayList<>();
     }
 
     public AaregResponse[] hentArbeidsforholdTilIdent(String ident, String miljoe) {
-        var requestEntity = RequestEntity.get(hentArbeidsforholdUrl.expand(ident, miljoe)).build();
-        var response = restTemplate.exchange(requestEntity, AaregResponse[].class);
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new HttpServerErrorException(response.getStatusCode());
+        UriTemplate uriTemplate = new UriTemplate(aaregUrl
+                + "/v1/ident/{ident}?miljoe={miljoe}");
+        var getRequest = RequestEntity.get(uriTemplate.expand(ident, miljoe)).build();
+
+        try{
+            return restTemplate.exchange(getRequest, AaregResponse[].class).getBody();
+        }catch(HttpStatusCodeException e){
+            log.error("Kunne ikke hente arbeidsforhold for ident fra aareg");
         }
-        return response.getBody();
+        return new AaregResponse[1];
     }
 }

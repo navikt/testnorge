@@ -1,5 +1,6 @@
 package no.nav.registre.spion.consumer.rs.response.aareg;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Value
 @NoArgsConstructor(force = true)
+@AllArgsConstructor
 public class AaregResponse {
 
     private final long navArbeidsforholdId;
