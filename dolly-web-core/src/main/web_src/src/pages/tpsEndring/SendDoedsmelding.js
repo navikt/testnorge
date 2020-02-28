@@ -14,10 +14,10 @@ export default class SendDoedsmelding extends PureComponent {
 	state = {
 		isFetching: false,
 		isFetchingMiljoer: false,
-		errorMessage: null,
+		errorMessage: '',
 		meldingSent: false,
-		handlingsType: null,
-		foundIdent: null,
+		handlingsType: '',
+		foundIdent: '',
 		showErrorMessageFoundIdent: false,
 		currentfnr: '',
 		environments: [],
@@ -47,7 +47,7 @@ export default class SendDoedsmelding extends PureComponent {
 			{
 				isFetching: true,
 				meldingSent: false,
-				errorMessage: null,
+				errorMessage: '',
 				handlingsType: values.handling,
 				foundIdent: false
 			},
@@ -62,7 +62,7 @@ export default class SendDoedsmelding extends PureComponent {
 					this.setState({
 						isFetching: false,
 						meldingSent: true,
-						currentfnr: null,
+						currentfnr: '',
 						miljoer: [],
 						environments_success: success_envs,
 						environments_error: error_envs
@@ -71,7 +71,7 @@ export default class SendDoedsmelding extends PureComponent {
 				} catch (err) {
 					this.setState({
 						meldingSent: false,
-						currentfnr: null,
+						currentfnr: '',
 						miljoer: [],
 						errorMessage: err.response.data.message,
 						isFetching: false
@@ -95,7 +95,7 @@ export default class SendDoedsmelding extends PureComponent {
 					isFetchingMiljoer: true,
 					environments: [],
 					showErrorMessageFoundIdent: false,
-					errorMessage: null,
+					errorMessage: '',
 					miljoer: [],
 					meldingSent: false,
 					foundIdent: false
@@ -173,6 +173,7 @@ export default class SendDoedsmelding extends PureComponent {
 				handling = 'annullert'
 				break
 		}
+
 		return (
 			<div>
 				{this.state.environments_success.length > 0 && (
@@ -181,11 +182,17 @@ export default class SendDoedsmelding extends PureComponent {
 					</h3>
 				)}
 
-				{this.state.environments_error.length > 0 && (
+				{handling === 'sent' && this.state.environments_error.length > 0 && (
 					<h3 className="tps-endring-tps-endring-error-message">
 						Personen var allerede død i {feilMiljoer}
 					</h3>
 				)}
+				{(handling === 'annullert' || handling === 'endret') &&
+					this.state.environments_error.length > 0 && (
+						<h3 className="tps-endring-tps-endring-error-message">
+							Personen var ikke død i {feilMiljoer}
+						</h3>
+					)}
 			</div>
 		)
 	}
