@@ -23,7 +23,8 @@ export default class SendDoedsmelding extends PureComponent {
 		environments: [],
 		miljoer: [],
 		environments_success: [],
-		environments_error: []
+		environments_error: [],
+		errorFormatted: ''
 	}
 
 	validation = () =>
@@ -65,7 +66,8 @@ export default class SendDoedsmelding extends PureComponent {
 						currentfnr: '',
 						miljoer: [],
 						environments_success: success_envs,
-						environments_error: error_envs
+						environments_error: error_envs,
+						errorFormatted: status
 					})
 					resetForm()
 				} catch (err) {
@@ -137,6 +139,7 @@ export default class SendDoedsmelding extends PureComponent {
 
 	_renderMeldingSent = () => {
 		var handling = ''
+		console.log('this.statesent :', this.state)
 		switch (this.state.handlingsType) {
 			case 'C':
 				handling = 'sent'
@@ -155,6 +158,11 @@ export default class SendDoedsmelding extends PureComponent {
 		var handling = ''
 		var suksessMiljoer = ''
 		var feilMiljoer = ''
+
+		var object = this.state.errorFormatted,
+			errorMessageFormatted = Object.keys(object).reduce(function(r, k) {
+				return r.concat(k, object[k])
+			}, [])
 
 		if (this.state.environments_success.length > 0)
 			suksessMiljoer = this.state.environments_success.join(', ')
@@ -182,17 +190,9 @@ export default class SendDoedsmelding extends PureComponent {
 					</h3>
 				)}
 
-				{handling === 'sent' && this.state.environments_error.length > 0 && (
-					<h3 className="tps-endring-tps-endring-error-message">
-						Personen var allerede død i {feilMiljoer}
-					</h3>
+				{this.state.environments_error.length > 0 && (
+					<h3 className="tps-endring-tps-endring-error-message">{errorMessageFormatted[1]}</h3>
 				)}
-				{(handling === 'annullert' || handling === 'endret') &&
-					this.state.environments_error.length > 0 && (
-						<h3 className="tps-endring-tps-endring-error-message">
-							Personen var ikke død i {feilMiljoer}
-						</h3>
-					)}
 			</div>
 		)
 	}
