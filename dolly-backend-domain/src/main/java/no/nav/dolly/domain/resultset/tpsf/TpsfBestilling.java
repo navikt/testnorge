@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
+import static java.util.Objects.isNull;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -95,4 +97,11 @@ public class TpsfBestilling {
     private LocalDateTime forsvunnetDato;
 
     private List<RsIdenthistorikk> identHistorikk;
+
+    public RsSimpleRelasjoner getRelasjoner() {
+        if (isNull(relasjoner)) {
+            relasjoner = new RsSimpleRelasjoner();
+        }
+        return relasjoner;
+    }
 }
