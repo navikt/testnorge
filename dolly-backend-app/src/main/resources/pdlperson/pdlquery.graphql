@@ -52,7 +52,30 @@ query($ident: ID!, $historikk: Boolean!) {
                     kilde
                 }
             }
-
+        },
+        familierelasjoner {
+            relatertPersonsIdent,
+            relatertPersonsRolle,
+            minRolleForPerson,
+            folkeregistermetadata {
+                ajourholdstidspunkt,
+                gyldighetstidspunkt,
+                opphoerstidspunkt,
+                aarsak,
+                kilde,
+                sekvens
+            }
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
         }
         kontaktinformasjonForDoedsbo(historikk: $historikk) {
             skifteform,
@@ -354,7 +377,6 @@ query($ident: ID!, $historikk: Boolean!) {
                 }
             }
         },
-
         sikkerhetstiltak {
             tiltakstype,
             beskrivelse,
@@ -362,8 +384,8 @@ query($ident: ID!, $historikk: Boolean!) {
                 personident,
                 enhet
             }
-            gyldigTilOgMed,
             gyldigFraOgMed,
+            gyldigTilOgMed,
             metadata {
                 opplysningsId,
                 master,
@@ -406,6 +428,68 @@ query($ident: ID!, $historikk: Boolean!) {
             kommune,
             sted,
             utland,
+            relatertVedSivilstand,
+            bekreftelsesdato,
+            folkeregistermetadata {
+                ajourholdstidspunkt,
+                gyldighetstidspunkt,
+                opphoerstidspunkt,
+                aarsak,
+                kilde
+            },
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        },
+        telefonnummer {
+            landskode,
+            nummer,
+            prioritet,
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        },
+        innflyttingTilNorge {
+            fraflyttingsland,
+            fraflyttingsstedIUtlandet,
+            folkeregistermetadata {
+                ajourholdstidspunkt,
+                gyldighetstidspunkt,
+                opphoerstidspunkt,
+                aarsak,
+                kilde
+            },
+            metadata {
+                opplysningsId,
+                master,
+                endringer {
+                    type,
+                    registrert,
+                    registrertAv,
+                    systemkilde,
+                    kilde
+                }
+            }
+        },
+        utflyttingFraNorge {
+            tilflyttingsland,
+            tilflyttingsstedIUtlandet,
             folkeregistermetadata {
                 ajourholdstidspunkt,
                 gyldighetstidspunkt,

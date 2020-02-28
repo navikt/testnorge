@@ -18,16 +18,39 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TpsPerson {
 
-    private Person persondetalj;
+    private List<Person> persondetaljer;
 
     private String hovedperson;
-    private String partner;
+    private List<String> partnere;
     private List<String> barn;
+
+    public List<String> getPartnere() {
+        if (isNull(partnere)) {
+            partnere = new ArrayList();
+        }
+        return partnere;
+    }
 
     public List<String> getBarn() {
         if (isNull(barn)) {
             barn = new ArrayList();
         }
         return barn;
+    }
+
+    public List<Person> getPersondetaljer() {
+        if (isNull(persondetaljer)) {
+            persondetaljer = new ArrayList();
+        }
+        return persondetaljer;
+    }
+
+    public Person getPerson(String ident){
+        for (Person person : getPersondetaljer()){
+            if (person.getIdent().equals(ident)){
+                return person;
+            }
+        }
+        return null;
     }
 }

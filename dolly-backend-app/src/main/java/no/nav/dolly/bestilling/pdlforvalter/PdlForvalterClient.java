@@ -1,15 +1,18 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Lists.reverse;
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.StausResponse.DONE;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 import javax.el.MethodNotFoundException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
@@ -35,6 +39,7 @@ import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.Relasjon;
 import no.nav.dolly.domain.resultset.tpsf.RsBarnRequest;
 import no.nav.dolly.domain.resultset.tpsf.RsPartnerRequest;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
@@ -127,60 +132,66 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void hentTpsPersondetaljer(TpsPerson tpsPerson, RsTpsfUtvidetBestilling tpsfUtvidetBestilling) {
 
-        if (isNull(tpsPerson.getPersondetalj())) {
-            List<Person> personer = tpsfService.hentTestpersoner(singletonList(tpsPerson.getHovedperson()));
-            if (!personer.isEmpty()) {
-                tpsPerson.setPersondetalj(personer.get(0));
+        if (tpsPerson.getPersondetaljer().isEmpty()) {
+            List<String> tpsfIdenter = new ArrayList<>();
+            Stream.of(singletonList(tpsPerson.getHovedperson()), tpsPerson.getPartnere(), tpsPerson.getBarn()).forEach(tpsfIdenter::addAll);
+            tpsPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(tpsfIdenter));
+
+            if (nonNull(tpsPerson.getPerson(tpsPerson.getHovedperson()))) {
+                Person hovedperson = tpsPerson.getPerson(tpsPerson.getHovedperson());
                 if (UKJENT.equals(tpsfUtvidetBestilling.getKjonn())) {
-                    tpsPerson.getPersondetalj().setKjonn(UKJENT);
+                    hovedperson.setKjonn(UKJENT);
                 }
-                if (nonNull(tpsfUtvidetBestilling.getRelasjoner())) {
-                    Iterator<RsPartnerRequest> partnere = tpsfUtvidetBestilling.getRelasjoner().getPartnere().iterator();
-                    Iterator<RsBarnRequest> barn = tpsfUtvidetBestilling.getRelasjoner().getBarn().iterator();
-                    tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
-                        if (relasjon.isPartner() && UKJENT.equals(partnere.next().getKjonn()) ||
-                                relasjon.isBarn() && UKJENT.equals(barn.next().getKjonn())) {
-                            relasjon.getPersonRelasjonMed().setKjonn(UKJENT);
-                        }
-                    });
-                }
+                List partnereRequest = newArrayList(tpsfUtvidetBestilling.getRelasjoner().getPartnere());
+                Iterator<RsPartnerRequest> partnere = reverse(partnereRequest).iterator();
+                Iterator<RsBarnRequest> barn = tpsfUtvidetBestilling.getRelasjoner().getBarn().iterator();
+                hovedperson.getRelasjoner().forEach(relasjon -> {
+                    if (isKjonnUkjent(relasjon, partnere, barn) &&
+                            nonNull(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))) {
+                        tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()).setKjonn(UKJENT);
+                    }
+                });
             }
+            tpsPerson.getPersondetaljer().forEach(person ->
+                person.getRelasjoner().forEach(relasjon ->
+                    relasjon.setPersonRelasjonTil(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))
+                )
+            );
         }
+    }
+
+    private static boolean isKjonnUkjent(Relasjon relasjon, Iterator<RsPartnerRequest> partnere,
+            Iterator<RsBarnRequest> barn) {
+
+        return relasjon.isPartner() && partnere.next().isKjonnUkjent() ||
+                relasjon.isBarn() && barn.next().isKjonnUkjent();
     }
 
     private void sendPdlPersondetaljer(TpsPerson tpsPerson, StringBuilder status) {
 
-        try {
-            if (nonNull(tpsPerson.getPersondetalj())) {
-                sendOpprettPerson(tpsPerson.getPersondetalj());
-                sendFoedselsmelding(tpsPerson.getPersondetalj());
-                sendNavn(tpsPerson.getPersondetalj());
-                sendKjoenn(tpsPerson.getPersondetalj());
-                sendAdressebeskyttelse(tpsPerson.getPersondetalj());
-                sendDoedsfall(tpsPerson.getPersondetalj());
-                sendStatsborgerskap(tpsPerson.getPersondetalj());
-                syncMedPdl(tpsPerson.getPersondetalj().getIdent(), status);
+        status.append('$').append(PDL_FORVALTER);
 
-                tpsPerson.getPersondetalj().getRelasjoner().forEach(relasjon -> {
-                    sendOpprettPerson(relasjon.getPersonRelasjonMed());
-                    sendFoedselsmelding(relasjon.getPersonRelasjonMed());
-                    sendNavn(relasjon.getPersonRelasjonMed());
-                    sendKjoenn(relasjon.getPersonRelasjonMed());
-                    sendAdressebeskyttelse(relasjon.getPersonRelasjonMed());
-                    sendStatsborgerskap(relasjon.getPersonRelasjonMed());
-                    sendDoedsfall(relasjon.getPersonRelasjonMed());
-                });
-            }
+        try {
+            tpsPerson.getPersondetaljer().forEach(person -> {
+                sendOpprettPerson(person);
+                sendFoedselsmelding(person);
+                sendNavn(person);
+                sendKjoenn(person);
+                sendAdressebeskyttelse(person);
+                sendStatsborgerskap(person);
+                sendFamilierelasjoner(person);
+                sendDoedsfall(person);
+            });
+
+            syncMedPdl(tpsPerson.getHovedperson(), status);
 
         } catch (DollyFunctionalException e) {
 
-            status.append('$').append(PDL_FORVALTER).append('&').append(e.getMessage().replaceAll(",", ";"));
+            status.append('&').append(e.getMessage().replaceAll(",", ";"));
         }
     }
 
     private void syncMedPdl(String ident, StringBuilder status) {
-
-        status.append('$').append(PDL_FORVALTER);
 
         int count = 0;
         try {
@@ -224,6 +235,15 @@ public class PdlForvalterClient implements ClientRegister {
 
         BiFunction<PdlAdressebeskyttelse, String, ResponseEntity> sendAdressebeskyttelse = (struct, ident) -> pdlForvalterConsumer.postAdressebeskyttelse(struct, ident);
         sendToPdl(sendAdressebeskyttelse, mapperFacade.map(person, PdlAdressebeskyttelse.class), person.getIdent(), "adressebeskyttelse");
+    }
+
+    private void sendFamilierelasjoner(Person person) {
+        person.getRelasjoner().forEach(relasjon -> {
+            if (!relasjon.isPartner()) {
+                BiFunction<PdlFamilierelasjon, String, ResponseEntity> sendFamilierelasjon = (struct, ident) -> pdlForvalterConsumer.postFamilierelasjon(struct, ident);
+                sendToPdl(sendFamilierelasjon, mapperFacade.map(relasjon, PdlFamilierelasjon.class), person.getIdent(), "familierelasjon");
+            }
+        });
     }
 
     private void sendDoedsfall(Person person) {
@@ -314,11 +334,7 @@ public class PdlForvalterClient implements ClientRegister {
 
         try {
             pdlForvalterConsumer.deleteIdent(tpsPerson.getHovedperson());
-
-            if (nonNull(tpsPerson.getPartner())) {
-                pdlForvalterConsumer.deleteIdent(tpsPerson.getPartner());
-            }
-
+            tpsPerson.getPartnere().forEach(pdlForvalterConsumer::deleteIdent);
             tpsPerson.getBarn().forEach(pdlForvalterConsumer::deleteIdent);
 
         } catch (RuntimeException e) {
@@ -334,11 +350,13 @@ public class PdlForvalterClient implements ClientRegister {
 
         } catch (HttpClientErrorException e) {
             log.error(format(SEND_ERROR_2, beskrivelse, ident, e.getResponseBodyAsString()));
-            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident, e.getResponseBodyAsString()), e);
+            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident,
+                    errorStatusDecoder.decodeRuntimeException(e)), e);
 
         } catch (RuntimeException e) {
             log.error(format(SEND_ERROR, beskrivelse, ident), e);
-            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident, e.getMessage()), e);
+            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident,
+                    errorStatusDecoder.decodeRuntimeException(e)), e);
         }
     }
 

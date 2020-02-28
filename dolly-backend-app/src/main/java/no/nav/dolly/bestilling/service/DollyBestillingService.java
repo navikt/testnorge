@@ -284,9 +284,11 @@ public class DollyBestillingService {
 
     private TpsPerson buildTpsPerson(Bestilling bestilling, List<String> leverteIdenter, List<Person> personer) {
 
+        Iterator<String> leverteIdenterIterator = leverteIdenter.iterator();
+
         TpsPerson tpsPerson = TpsPerson.builder()
-                .hovedperson(leverteIdenter.get(0))
-                .persondetalj(nonNull(personer) ? personer.get(0) : null)
+                .hovedperson(leverteIdenterIterator.next())
+                .persondetaljer(personer)
                 .build();
 
         if (nonNull(bestilling.getTpsfKriterier())) {
@@ -294,9 +296,16 @@ public class DollyBestillingService {
                 TpsfBestilling tpsfBestilling = objectMapper.readValue(bestilling.getTpsfKriterier(), TpsfBestilling.class);
 
                 if (nonNull(tpsfBestilling.getRelasjoner())) {
-                    tpsPerson.setPartner(nonNull(tpsfBestilling.getRelasjoner().getPartner()) ? leverteIdenter.get(1) : null);
-                    tpsPerson.setBarn(nonNull(tpsfBestilling.getRelasjoner().getBarn()) ?
-                            harPartner(tpsfBestilling, leverteIdenter) : null);
+                    if (nonNull(tpsfBestilling.getRelasjoner().getPartner())) {
+                        tpsPerson.getPartnere().add(leverteIdenterIterator.next());
+                    } else {
+                        for (int i = 0; i < tpsfBestilling.getRelasjoner().getPartnere().size(); i++) {
+                            tpsPerson.getPartnere().add(leverteIdenterIterator.next());
+                        }
+                    }
+                    while (leverteIdenterIterator.hasNext()) {
+                        tpsPerson.getBarn().add(leverteIdenterIterator.next());
+                    }
                 }
             } catch (IOException e) {
                 log.error("Feilet å hente tpsfKriterier", e);
@@ -304,12 +313,6 @@ public class DollyBestillingService {
         }
 
         return tpsPerson;
-    }
-
-    private static List<String> harPartner(TpsfBestilling bestilling, List<String> leverteIdenter) {
-        return nonNull(bestilling.getRelasjoner().getPartner()) ?
-                leverteIdenter.subList(2, leverteIdenter.size()) :
-                leverteIdenter.subList(1, leverteIdenter.size());
     }
 
     private void oppdaterProgressFerdig(Bestilling bestilling) {
