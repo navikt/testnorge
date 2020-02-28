@@ -91,15 +91,13 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Relasjon relasjon, PdlFamilierelasjon familierelasjon, MappingContext context) {
 
-                        if (!relasjon.isPartner()) {
                             familierelasjon.setRelatertPerson(relasjon.getPersonRelasjonMed().getIdent());
                             familierelasjon.setRelatertPersonsRolle(decode(relasjon.getRelasjonTypeNavn()));
-                            relasjon.getMinRelasjon().getRelasjoner().forEach(relasjon1 -> {
+                            relasjon.getPersonRelasjonTil().getRelasjoner().forEach(relasjon1 -> {
                                 if (relasjon1.getPersonRelasjonMed().getIdent().equals(relasjon.getPerson().getIdent())) {
                                     familierelasjon.setMinRolleForPerson(decode(relasjon1.getRelasjonTypeNavn()));
                                 }
                             });
-                        }
                         familierelasjon.setKilde(KILDE);
                     }
                 })

@@ -7,7 +7,6 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.StausResponse.DONE;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,6 +39,7 @@ import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.Relasjon;
 import no.nav.dolly.domain.resultset.tpsf.RsBarnRequest;
 import no.nav.dolly.domain.resultset.tpsf.RsPartnerRequest;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
@@ -146,14 +146,25 @@ public class PdlForvalterClient implements ClientRegister {
                 Iterator<RsPartnerRequest> partnere = reverse(partnereRequest).iterator();
                 Iterator<RsBarnRequest> barn = tpsfUtvidetBestilling.getRelasjoner().getBarn().iterator();
                 hovedperson.getRelasjoner().forEach(relasjon -> {
-                    if (relasjon.isPartner() && UKJENT.equals(partnere.next().getKjonn()) ||
-                            relasjon.isBarn() && UKJENT.equals(barn.next().getKjonn()) &&
-                                    nonNull(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))) {
+                    if (isKjonnUkjent(relasjon, partnere, barn) &&
+                            nonNull(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))) {
                         tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()).setKjonn(UKJENT);
                     }
                 });
             }
+            tpsPerson.getPersondetaljer().forEach(person ->
+                person.getRelasjoner().forEach(relasjon ->
+                    relasjon.setPersonRelasjonTil(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))
+                )
+            );
         }
+    }
+
+    private static boolean isKjonnUkjent(Relasjon relasjon, Iterator<RsPartnerRequest> partnere,
+            Iterator<RsBarnRequest> barn) {
+
+        return relasjon.isPartner() && partnere.next().isKjonnUkjent() ||
+                relasjon.isBarn() && barn.next().isKjonnUkjent();
     }
 
     private void sendPdlPersondetaljer(TpsPerson tpsPerson, StringBuilder status) {
@@ -168,15 +179,15 @@ public class PdlForvalterClient implements ClientRegister {
                 sendKjoenn(person);
                 sendAdressebeskyttelse(person);
                 sendStatsborgerskap(person);
+                sendFamilierelasjoner(person);
                 sendDoedsfall(person);
             });
-            sendFamilierelasjoner(tpsPerson);
 
             syncMedPdl(tpsPerson.getHovedperson(), status);
 
         } catch (DollyFunctionalException e) {
 
-            status.append('$').append(PDL_FORVALTER).append('&').append(e.getMessage().replaceAll(",", ";"));
+            status.append('&').append(e.getMessage().replaceAll(",", ";"));
         }
     }
 
@@ -226,17 +237,13 @@ public class PdlForvalterClient implements ClientRegister {
         sendToPdl(sendAdressebeskyttelse, mapperFacade.map(person, PdlAdressebeskyttelse.class), person.getIdent(), "adressebeskyttelse");
     }
 
-    private void sendFamilierelasjoner(TpsPerson personer) {
-        personer.getPersondetaljer().forEach(person ->
-                person.getRelasjoner().forEach(relasjon -> {
-                    relasjon.setMinRelasjon(personer.getPerson(relasjon.getPerson().getIdent()));
-                    PdlFamilierelasjon familierelasjon = mapperFacade.map(relasjon, PdlFamilierelasjon.class);
-                    if (isNotBlank(familierelasjon.getRelatertPerson())) {
-                        BiFunction<PdlFamilierelasjon, String, ResponseEntity> sendFamilierelasjon = (struct, ident) -> pdlForvalterConsumer.postFamilierelasjon(struct, ident);
-                        sendToPdl(sendFamilierelasjon, familierelasjon, person.getIdent(), "familierelasjon");
-                    }
-                })
-        );
+    private void sendFamilierelasjoner(Person person) {
+        person.getRelasjoner().forEach(relasjon -> {
+            if (!relasjon.isPartner()) {
+                BiFunction<PdlFamilierelasjon, String, ResponseEntity> sendFamilierelasjon = (struct, ident) -> pdlForvalterConsumer.postFamilierelasjon(struct, ident);
+                sendToPdl(sendFamilierelasjon, mapperFacade.map(relasjon, PdlFamilierelasjon.class), person.getIdent(), "familierelasjon");
+            }
+        });
     }
 
     private void sendDoedsfall(Person person) {
@@ -343,11 +350,13 @@ public class PdlForvalterClient implements ClientRegister {
 
         } catch (HttpClientErrorException e) {
             log.error(format(SEND_ERROR_2, beskrivelse, ident, e.getResponseBodyAsString()));
-            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident, e.getResponseBodyAsString()), e);
+            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident,
+                    errorStatusDecoder.decodeRuntimeException(e)), e);
 
         } catch (RuntimeException e) {
             log.error(format(SEND_ERROR, beskrivelse, ident), e);
-            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident, e.getMessage()), e);
+            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident,
+                    errorStatusDecoder.decodeRuntimeException(e)), e);
         }
     }
 

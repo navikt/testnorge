@@ -3,6 +3,8 @@ package no.nav.dolly.domain.resultset.tpsf;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,4 +53,9 @@ public class RsRelasjon extends RsTpsfBasisBestilling{
             position = 100
     )
     private List<RsIdenthistorikk> identHistorikk;
+
+    @JsonIgnore
+    public boolean isKjonnUkjent() {
+        return "U".equals(getKjonn());
+    }
 }
