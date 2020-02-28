@@ -94,6 +94,11 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                         if (!relasjon.isPartner()) {
                             familierelasjon.setRelatertPerson(relasjon.getPersonRelasjonMed().getIdent());
                             familierelasjon.setRelatertPersonsRolle(decode(relasjon.getRelasjonTypeNavn()));
+                            relasjon.getMinRelasjon().getRelasjoner().forEach(relasjon1 -> {
+                                if (relasjon1.getPersonRelasjonMed().getIdent().equals(relasjon.getPerson().getIdent())) {
+                                    familierelasjon.setMinRolleForPerson(decode(relasjon1.getRelasjonTypeNavn()));
+                                }
+                            });
                         }
                         familierelasjon.setKilde(KILDE);
                     }

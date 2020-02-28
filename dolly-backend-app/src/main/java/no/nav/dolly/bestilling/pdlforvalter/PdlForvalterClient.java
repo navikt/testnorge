@@ -4,7 +4,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.reverse;
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.StausResponse.DONE;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
@@ -133,7 +132,7 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void hentTpsPersondetaljer(TpsPerson tpsPerson, RsTpsfUtvidetBestilling tpsfUtvidetBestilling) {
 
-        if (isNull(tpsPerson.getPersondetaljer())) {
+        if (tpsPerson.getPersondetaljer().isEmpty()) {
             List<String> tpsfIdenter = new ArrayList<>();
             Stream.of(singletonList(tpsPerson.getHovedperson()), tpsPerson.getPartnere(), tpsPerson.getBarn()).forEach(tpsfIdenter::addAll);
             tpsPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(tpsfIdenter));
@@ -230,7 +229,8 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendFamilierelasjoner(TpsPerson personer) {
         personer.getPersondetaljer().forEach(person ->
                 person.getRelasjoner().forEach(relasjon -> {
-                    PdlFamilierelasjon familierelasjon = mapperFacade.map(person, PdlFamilierelasjon.class);
+                    relasjon.setMinRelasjon(personer.getPerson(relasjon.getPerson().getIdent()));
+                    PdlFamilierelasjon familierelasjon = mapperFacade.map(relasjon, PdlFamilierelasjon.class);
                     if (isNotBlank(familierelasjon.getRelatertPerson())) {
                         BiFunction<PdlFamilierelasjon, String, ResponseEntity> sendFamilierelasjon = (struct, ident) -> pdlForvalterConsumer.postFamilierelasjon(struct, ident);
                         sendToPdl(sendFamilierelasjon, familierelasjon, person.getIdent(), "familierelasjon");

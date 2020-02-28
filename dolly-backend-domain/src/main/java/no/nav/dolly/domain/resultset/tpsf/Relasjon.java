@@ -20,6 +20,7 @@ public class Relasjon {
     private Person person;
     private Person personRelasjonMed;
     private ROLLE relasjonTypeNavn;
+    private Person minRelasjon;
 
     public boolean isPartner() {
         return PARTNER == getRelasjonTypeNavn() || EKTEFELLE == getRelasjonTypeNavn();
