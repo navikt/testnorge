@@ -1,12 +1,19 @@
 import React from 'react'
+import _get from 'lodash/get'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+// import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import texts from '../texts'
+import tilleggsinformasjonPaths from '../paths'
 
-const sjekkFelt = options => {
+const sjekkFelt = (field, options, values, path) => {
+	const fieldValue = _get(values, path)
+	const fieldPath = tilleggsinformasjonPaths(field)
 	if (!options.includes('<TOM>')) {
-		return { feilmelding: 'Feltet er påkrevd' }
+		if (fieldValue && !_get(fieldValue, fieldPath) && _get(fieldValue, fieldPath) !== false) {
+			return { feilmelding: 'Feltet er påkrevd' }
+		}
 	}
 }
 
@@ -26,7 +33,7 @@ const numberFields = [
 	'antall'
 ]
 
-const fieldReslover = (field, options = [], handleChange) => {
+const fieldReslover = (field, options = [], handleChange, values, path) => {
 	if (dateFields.includes(field)) {
 		return (
 			<FormikDatepicker
@@ -34,7 +41,7 @@ const fieldReslover = (field, options = [], handleChange) => {
 				name={field}
 				label={texts(field)}
 				onBlur={handleChange}
-				feil={sjekkFelt(options)}
+				feil={sjekkFelt(field, options, values, path)}
 			/>
 		)
 	} else if (field === 'skattemessigBosattILand' || field === 'opptjeningsland') {
@@ -46,7 +53,7 @@ const fieldReslover = (field, options = [], handleChange) => {
 				fastfield={false}
 				afterChange={handleChange}
 				size="large"
-				feil={sjekkFelt(options)}
+				feil={sjekkFelt(field, options, values, path)}
 			/>
 		)
 	} else if (
@@ -60,7 +67,7 @@ const fieldReslover = (field, options = [], handleChange) => {
 				label={texts(field)}
 				onBlur={handleChange}
 				size="large"
-				feil={sjekkFelt(options)}
+				feil={sjekkFelt(field, options, values, path)}
 				type={numberFields.includes(field) ? 'number' : 'text'}
 			/>
 		)
@@ -72,6 +79,7 @@ const fieldReslover = (field, options = [], handleChange) => {
 	// 			label={texts(field)}
 	// 			afterChange={handleChange}
 	// 			disabled={options.length == 1 && options[0] === false}
+	// 			checkboxMargin
 	// 		/>
 	// 	)
 	// }
@@ -86,22 +94,24 @@ const fieldReslover = (field, options = [], handleChange) => {
 			fastfield={false}
 			afterChange={handleChange}
 			size="large"
-			feil={sjekkFelt(options)}
+			feil={sjekkFelt(field, options, values, path)}
 		/>
 	)
 }
 
-const Inntekt = ({ fields = {}, onValidate }) => (
-	<div>
+const Inntekt = ({ fields = {}, onValidate, formikBag, path }) => (
+	<div className="flexbox--flex-wrap">
 		{fieldReslover(
 			'inntektstype',
 			['LOENNSINNTEKT', 'YTELSE_FRA_OFFENTLIGE', 'PENSJON_ELLER_TRYGD', 'NAERINGSINNTEKT'],
-			onValidate
+			onValidate,
+			formikBag.values,
+			path
 		)}
 
 		{Object.keys(fields)
 			.filter(field => !(fields[field].length === 1 && fields[field][0] === '<TOM>'))
-			.map(field => fieldReslover(field, fields[field], onValidate))}
+			.map(field => fieldReslover(field, fields[field], onValidate, formikBag.values, path))}
 	</div>
 )
 

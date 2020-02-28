@@ -2,6 +2,7 @@ import React from 'react'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError, erForste } from '~/components/ui/form/formUtils'
+import { validation } from './validation'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { InntektsinformasjonForm } from './partials/inntektsinformasjonForm'
 
@@ -37,3 +38,5 @@ export const InntektstubForm = ({ formikBag }) => (
 		</Panel>
 	</Vis>
 )
+
+InntektstubForm.validation = validation

@@ -6,15 +6,15 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 
 const initialValues = {
 	arbeidsforholdstype: '',
-	startdato: null,
-	sluttdato: null,
-	antallTimerPerUkeSomEnFullStillingTilsvarer: '',
+	startdato: undefined,
+	sluttdato: undefined,
+	antallTimerPerUkeSomEnFullStillingTilsvarer: null,
 	avloenningstype: '',
 	yrke: '',
 	arbeidstidsordning: '',
-	stillingsprosent: '',
-	sisteLoennsendringsdato: null,
-	sisteDatoForStillingsprosentendring: null
+	stillingsprosent: null,
+	sisteLoennsendringsdato: undefined,
+	sisteDatoForStillingsprosentendring: undefined
 }
 
 export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {

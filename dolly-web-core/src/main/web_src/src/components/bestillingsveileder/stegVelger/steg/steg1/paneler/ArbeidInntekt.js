@@ -60,8 +60,8 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		checked: has('inntektstub'),
 		add: () =>
 			set('inntektstub', {
-				antallMaaneder: '',
-				prosentOekningPerAaar: '',
+				antallMaaneder: null,
+				prosentOekningPerAaar: null,
 				inntektsinformasjon: [
 					{
 						aarMaaned: '',

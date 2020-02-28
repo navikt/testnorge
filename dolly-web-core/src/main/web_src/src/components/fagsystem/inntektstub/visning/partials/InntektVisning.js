@@ -54,7 +54,7 @@ export const InntektVisning = ({ data }) => {
 									<TitleValue
 										title="År for utbetaling"
 										value={id.tilleggsinformasjon.bonusFraForsvaret.aaretUtbetalingenGjelderFor}
-									/> // TODO: Test denne når Jørgen har fikset årstall
+									/>
 								)}
 								{id.tilleggsinformasjon.etterbetalingsperiode && (
 									<React.Fragment>
