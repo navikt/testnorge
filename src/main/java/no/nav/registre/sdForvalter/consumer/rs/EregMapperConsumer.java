@@ -1,8 +1,6 @@
 package no.nav.registre.sdForvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregMapperRequest;
-import no.nav.registre.sdForvalter.database.model.EregModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -17,6 +15,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregMapperRequest;
+import no.nav.registre.sdForvalter.database.model.EregModel;
+
 @Component
 @Slf4j
 public class EregMapperConsumer {
@@ -24,18 +25,27 @@ public class EregMapperConsumer {
     private final RestTemplate restTemplate;
     private final String eregUrl;
 
+    private final Boolean parallel;
 
-    public EregMapperConsumer(RestTemplate restTemplate, @Value("${testnorge.ereg.mapper.rest.api.url}") String eregUrl) {
+    public EregMapperConsumer(
+            RestTemplate restTemplate,
+            @Value("${testnorge.ereg.mapper.rest.api.url}") String eregUrl,
+            @Value("${ereg.parallel}") Boolean parallel
+    ) {
         this.restTemplate = restTemplate;
         this.eregUrl = eregUrl + "/v1";
+        this.parallel = parallel;
     }
-
 
     public void create(List<EregModel> data, String env) {
         create(data, env, new HashSet<>());
     }
 
     private void create(List<EregModel> data, String env, final Set<String> createdOrgnr) {
+        if (!parallel) {
+            uploadToEreg(data, env);
+            return;
+        }
         List<EregModel> eregToCreate = data.stream()
                 .filter(ereg -> !createdOrgnr.contains(ereg.getOrgnr()))
                 .filter(ereg -> ereg.getParent() == null
