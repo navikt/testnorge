@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +25,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
+import no.nav.dolly.domain.MalbestillingNavn;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
@@ -89,8 +91,8 @@ public class BestillingController {
 
     @PutMapping("/malbestilling/{id}")
     @ApiOperation("Rediger mal-bestilling")
-    public void redigerMalBestilling(@PathVariable Long id, @RequestParam String malbestillingNavn) {
+    public void redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {
 
-        bestillingService.redigerBestilling(id, malbestillingNavn);
+        bestillingService.redigerBestilling(id, malbestillingNavn.getMal());
     }
 }
