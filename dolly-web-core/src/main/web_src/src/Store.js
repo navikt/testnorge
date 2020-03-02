@@ -10,6 +10,7 @@ import searchReducer from './ducks/search'
 import loadingReducer from './ducks/loading'
 import errorsReducer from './ducks/errors'
 import commonReducer from './ducks/common'
+import bestillingReducer from './ducks/bestilling'
 import bestillingStatusReducer from './ducks/bestillingStatus'
 import environmentsReducer from './ducks/environments'
 import kodeverkReducer from './ducks/kodeverk'
@@ -37,6 +38,7 @@ const configureReduxStore = history => {
 	const rootReducer = history =>
 		combineReducers({
 			router: connectRouter(history),
+			bestveil: bestillingReducer,
 			bestillingStatuser: bestillingStatusReducer,
 			gruppe: gruppeReducer,
 			bruker: brukerReducer,

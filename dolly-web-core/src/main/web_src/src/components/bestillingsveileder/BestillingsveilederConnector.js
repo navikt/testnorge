@@ -2,15 +2,13 @@ import { connect } from 'react-redux'
 import { sendBestilling } from '~/ducks/bestilling'
 import { Bestillingsveileder } from './Bestillingsveileder'
 
-const mapStateToProps = state => {
-	return {}
-}
-
-const mapDispatchToProps = (dispatch, ownProps) => ({
-	sendBestilling: values => dispatch(sendBestilling(values, ownProps.match.params.gruppeId))
+const mapStateToProps = state => ({
+	error: state.bestveil.error
 })
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Bestillingsveileder)
+const mapDispatchToProps = (dispatch, ownProps) => ({
+	sendBestilling: (values, opts) =>
+		dispatch(sendBestilling(values, opts, ownProps.match.params.gruppeId))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Bestillingsveileder)

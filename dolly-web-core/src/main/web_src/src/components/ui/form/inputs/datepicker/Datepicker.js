@@ -55,7 +55,10 @@ export const DollyDatepicker = props => (
 const P_FormikDatepicker = ({ fastfield, ...props }) => (
 	<FormikField name={props.name} fastfield={fastfield}>
 		{({ field, form, meta }) => {
-			const handleChange = date => field.onChange(SyntEvent(field.name, date))
+			const handleChange = date => {
+				form.setFieldTouched(props.name) // Need to trigger touched manually for Datepicker
+				return field.onChange(SyntEvent(field.name, date))
+			}
 			const handleBlur = () => field.onBlur(SyntEvent(field.name, field.value))
 
 			return (

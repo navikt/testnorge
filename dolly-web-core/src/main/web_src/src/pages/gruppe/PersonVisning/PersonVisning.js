@@ -1,5 +1,6 @@
 import React from 'react'
 import { useMount } from 'react-use'
+import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
@@ -22,7 +23,8 @@ export const PersonVisning = ({
 	ident,
 	bestilling,
 	loading,
-	slettPerson
+	slettPerson,
+	leggTilPaaPerson
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
@@ -46,6 +48,10 @@ export const PersonVisning = ({
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} />
 			<div className="person-visning_actions">
+				<Button onClick={leggTilPaaPerson} kind="add-circle">
+					LEGG TIL
+				</Button>
+
 				<LeggTilRelasjonModal environments={bestilling.environments} personInfo={data.tpsf} />
 				<BestillingSammendragModal bestilling={bestilling} />
 				<SlettButton action={slettPerson} loading={loading.slettPerson}>

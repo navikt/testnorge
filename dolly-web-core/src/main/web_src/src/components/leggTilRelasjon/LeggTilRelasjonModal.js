@@ -21,9 +21,7 @@ export const LeggTilRelasjonModal = ({ environments, personInfo }) => {
 					<div className="icon">
 						<Icon kind={personInfo.kjonn === 'K' ? 'woman' : 'man'} />
 					</div>
-					<h2>
-						{`${personInfo.fornavn} ${personInfo.etternavn}`} ({personInfo.ident})
-					</h2>
+					<h2>{`${personInfo.fornavn} ${personInfo.etternavn} (${personInfo.ident})`}</h2>
 				</div>
 				<LeggTilRelasjonConnector
 					environments={environments}

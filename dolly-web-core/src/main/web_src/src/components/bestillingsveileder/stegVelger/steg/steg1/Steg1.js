@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { AttributtVelger } from './attributtVelger/AttributtVelger'
-
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { PersoninformasjonPanel } from './paneler/Personinformasjon'
 import { AdressePanel } from './paneler/Adresse'
 import { IdentifikasjonPanel } from './paneler/Identifikasjon'
@@ -13,6 +14,8 @@ import { ArenaPanel } from './paneler/Arena'
 import { UdiPanel } from './paneler/Udi'
 
 export const Steg1 = ({ stateModifier }) => {
+	const opts = useContext(BestillingsveilederContext)
+
 	const checked = [
 		PersoninformasjonPanel,
 		AdressePanel,
@@ -33,16 +36,32 @@ export const Steg1 = ({ stateModifier }) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			<PersoninformasjonPanel stateModifier={stateModifier} />
+			{!opts.is.leggTil && <PersoninformasjonPanel stateModifier={stateModifier} />}
+
 			<AdressePanel stateModifier={stateModifier} />
-			<FamilierelasjonPanel stateModifier={stateModifier} />
-			<ArbeidInntektPanel stateModifier={stateModifier} />
-			<IdentifikasjonPanel stateModifier={stateModifier} />
-			<KontaktDoedsboPanel stateModifier={stateModifier} />
-			<InstutisjonsoppholdPanel stateModifier={stateModifier} />
-			<KontaktReservasjonsPanel stateModifier={stateModifier} />
-			<ArenaPanel stateModifier={stateModifier} />
-			<UdiPanel stateModifier={stateModifier} />
+
+			{!opts.is.leggTil && (
+				<React.Fragment>
+					<FamilierelasjonPanel stateModifier={stateModifier} />
+					<ArbeidInntektPanel stateModifier={stateModifier} />
+					<IdentifikasjonPanel stateModifier={stateModifier} />
+					<KontaktDoedsboPanel stateModifier={stateModifier} />
+					<InstutisjonsoppholdPanel stateModifier={stateModifier} />
+					<KontaktReservasjonsPanel stateModifier={stateModifier} />
+					<ArenaPanel stateModifier={stateModifier} />
+					<UdiPanel stateModifier={stateModifier} />
+				</React.Fragment>
+			)}
+
+			{opts.is.leggTil && (
+				<AlertStripeInfo>
+					<b>Kun støtte for å legge til adresse</b>
+					<p>
+						Det er foreløpig redusert støtte for å legge til attributter på person. Flere
+						attributter vil blir lagt til etterhvert.
+					</p>
+				</AlertStripeInfo>
+			)}
 		</AttributtVelger>
 	)
 }

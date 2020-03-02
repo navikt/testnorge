@@ -48,6 +48,10 @@ export default {
 		return Request.put(Endpoints.kobleIdenter(ident), data)
 	},
 
+	createBestillingLeggTilPaaPerson(ident, data) {
+		return Request.put(Endpoints.leggTilPaaPerson(ident), data)
+	},
+
 	// Bruker
 	getBrukere() {
 		return Request.get(Endpoints.bruker())
@@ -103,8 +107,8 @@ export default {
 		return Request.delete(Endpoints.removeBestilling(bestillingId))
 	},
 
-	slettPerson(gruppeId, identId) {
-		return Request.delete(Endpoints.slettPerson(gruppeId, identId))
+	slettPerson(ident) {
+		return Request.delete(Endpoints.slettPerson(ident))
 	},
 
 	//Oppslag

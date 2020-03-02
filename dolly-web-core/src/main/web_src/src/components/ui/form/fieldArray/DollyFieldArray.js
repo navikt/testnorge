@@ -6,8 +6,8 @@ import HjelpeTekst from 'nav-frontend-hjelpetekst'
 
 import './dollyFieldArray.less'
 
-export const FieldArrayAddButton = ({ title, onClick }) => (
-	<Button kind="add-circle" onClick={onClick} title={`Legg til ${title}`}>
+export const FieldArrayAddButton = ({ title, onClick, disabled }) => (
+	<Button kind="add-circle" onClick={onClick} title={`Legg til ${title}`} disabled={disabled}>
 		{title}
 	</Button>
 )
@@ -23,7 +23,7 @@ const DeleteButton = ({ onClick }) => {
 
 const Numbering = ({ idx }) => <span className="dfa-blokk-number">{idx + 1}</span>
 
-const DollyFieldArrayWrapper = ({ title, hjelpetekst, nested, children }) => (
+export const DollyFieldArrayWrapper = ({ title, hjelpetekst, nested, children }) => (
 	<div className="dfa">
 		{nested && title && (
 			<div className="dfa-blokk-nested_title">

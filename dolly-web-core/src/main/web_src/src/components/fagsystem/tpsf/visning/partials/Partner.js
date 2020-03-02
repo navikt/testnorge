@@ -2,7 +2,8 @@ import React from 'react'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import { Boadresse } from './Boadresse'
+import { Adressevisning } from './Boadresse'
+import { Historikk } from '~/components/ui/historikk/Historikk'
 
 export const Partner = ({ data }) => {
 	if (!data) return false
@@ -18,7 +19,9 @@ export const Partner = ({ data }) => {
 				<TitleValue title="Alder" value={Formatters.formatAlder(data.alder, data.doedsdato)} />
 				<TitleValue title="Diskresjonskode" value={Formatters.showLabel(data.spesreg)} />
 				<TitleValue title="Uten fast bopel" value={data.utenFastBopel && 'Ja'} />
-				{!data.utenFastBopel && <Boadresse boadresse={data.boadresse} visKunAdresse={true} />}
+				{!data.utenFastBopel && (
+					<Historikk component={Adressevisning} propName="boadresse" data={data.boadresse} />
+				)}
 			</div>
 			{data.sivilstander.length > 0 && (
 				<DollyFieldArray title="Forhold" data={data.sivilstander} nested>

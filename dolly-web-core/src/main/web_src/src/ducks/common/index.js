@@ -7,10 +7,6 @@ export const redirectReducer = (state = null, action) => {
 	switch (action.type) {
 		case onSuccess(actions.create):
 			return `/gruppe/${action.payload.data.id}`
-		case onSuccess(bestillingActions.postBestilling):
-			return `/gruppe/${action.payload.data.gruppeId}`
-		case onSuccess(bestillingActions.postBestillingFraEksisterendeIdenter):
-			return `/gruppe/${action.payload.data.gruppeId}`
 		case onSuccess(actions.remove):
 			return '/'
 		case LOCATION_CHANGE:

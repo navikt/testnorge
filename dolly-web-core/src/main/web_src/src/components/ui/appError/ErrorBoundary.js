@@ -13,7 +13,12 @@ export class ErrorBoundary extends React.Component {
 	render() {
 		const { children, error } = this.props
 		if (this.state.hasError) {
-			return <AppError error={error || 'React:ErrorBoundary - Det har skjedd en render feil'} />
+			return (
+				<AppError
+					message={error || 'React:ErrorBoundary - Det har skjedd en render feil'}
+					error={error}
+				/>
+			)
 		}
 
 		return children

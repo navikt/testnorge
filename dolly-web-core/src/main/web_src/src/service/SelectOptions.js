@@ -86,7 +86,7 @@ const selectOptions = {
 	kjoennFalskIdentitet: [
 		{ value: 'KVINNE', label: 'Kvinne' },
 		{ value: 'MANN', label: 'Mann' },
-		{ value: 'UBESTEMT', label: 'Ubestemt' }
+		{ value: 'UKJENT', label: 'Ukjent' }
 	],
 
 	// Arena
