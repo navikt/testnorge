@@ -93,6 +93,6 @@ public class BestillingController {
     @ApiOperation("Rediger mal-bestilling")
     public void redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {
 
-        bestillingService.redigerBestilling(id, malbestillingNavn.getMal());
+        bestillingService.redigerBestilling(id, malbestillingNavn.getMalNavn());
     }
 }
