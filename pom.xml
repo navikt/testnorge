@@ -38,6 +38,13 @@
             <version>${commons-math3.version}</version>
         </dependency>
 
+        <!-- HODEJEGEREN -->
+        <dependency>
+            <groupId>no.nav.registre</groupId>
+            <artifactId>testnorge-consumers</artifactId>
+            <version>1.10.6-RELEASE</version>
+        </dependency>
+
         <!-- LOMBOK -->
         <dependency>
             <groupId>org.projectlombok</groupId>
