@@ -54,7 +54,7 @@ public class SyntetiseringControllerAaregIntegrationTest {
 
 
     @Test
-    public void shouldCreateVedtak() throws Exception{
+    public void shouldGetDataFromAaregAndCreateVedtak() throws Exception{
 
         final UrlPathPattern hentIdenterIAaregUrl =
                 urlPathMatching("(.*)/v1/ident/avspillergruppe/"+AVSPILLERGRUPPEID+"(.*)");
