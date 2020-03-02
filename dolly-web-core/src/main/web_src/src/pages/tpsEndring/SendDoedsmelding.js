@@ -139,7 +139,7 @@ export default class SendDoedsmelding extends PureComponent {
 
 	_renderMeldingSent = () => {
 		var handling = ''
-		console.log('this.statesent :', this.state)
+
 		switch (this.state.handlingsType) {
 			case 'C':
 				handling = 'sent'
