@@ -26,6 +26,7 @@ const initialBoType = formikBag => {
 export const Adresser = ({ formikBag }) => {
 	const [boType, setBoType] = useState(initialBoType(formikBag))
 
+	// Sjekker om adresse er valgt på steg 1, da panelet ikke skal vises dersom bare diskresjonskoder (med UFB og kommunenummer) er valgt
 	const erValgt =
 		_has(formikBag.values, 'tpsf.boadresse.flyttedato') ||
 		_has(formikBag.values, 'tpsf.postadresse')
@@ -123,11 +124,9 @@ export const Adresser = ({ formikBag }) => {
 						<FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
 					</Vis>
 
-					{
-						<Vis attributt="tpsf.postadresse">
-							<Postadresser formikBag={formikBag} />
-						</Vis>
-					}
+					<Vis attributt="tpsf.postadresse">
+						<Postadresser formikBag={formikBag} />
+					</Vis>
 				</Panel>
 			</Vis>
 		)
