@@ -20,7 +20,7 @@ import lombok.Setter;
 public class RsInntektsinformasjon {
 
     @ApiModelProperty(
-            value = "Året/måneden inntektsinformasjonen gjelder for",
+            value = "Start år-måned som inntektsinformasjonen gjelder for",
             example = "yyyy-MM",
             dataType = "LocalDateTime",
             required = true,
@@ -31,7 +31,7 @@ public class RsInntektsinformasjon {
     @ApiModelProperty(
             position = 2,
             dataType = "Integer",
-            value = "Antall måneder som skal preppes basert på første element i inntektsinformasjon",
+            value = "Antall måneder som denne inntektsinformasjonen skal kopieres",
             example = "36")
     private Integer antallMaaneder;
 
