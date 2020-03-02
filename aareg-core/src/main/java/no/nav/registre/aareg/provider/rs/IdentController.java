@@ -50,8 +50,9 @@ public class IdentController {
     @GetMapping(value = "/avspillergruppe/{avspillergruppeId}")
     public Set<String> hentIdenterIAvspillergruppeMedArbeidsforhold(
             @PathVariable Long avspillergruppeId,
-            @RequestParam String miljoe
+            @RequestParam String miljoe,
+            @RequestParam(required = false, defaultValue = "false") Boolean validerMotAareg
     ) {
-        return syntetiseringService.hentIdenterIAvspillergruppeMedArbeidsforhold(avspillergruppeId, miljoe);
+        return syntetiseringService.hentIdenterIAvspillergruppeMedArbeidsforhold(avspillergruppeId, miljoe, validerMotAareg);
     }
 }

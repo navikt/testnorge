@@ -127,7 +127,7 @@ public class SyntetiseringServiceTest {
         when(aaregstubConsumer.hentEksisterendeIdenter()).thenReturn(identer);
         when(aaregService.hentArbeidsforhold(anyString(), eq(miljoe))).thenReturn(ResponseEntity.ok().build());
 
-        var response = new ArrayList<>(syntetiseringService.hentIdenterIAvspillergruppeMedArbeidsforhold(avspillergruppeId, miljoe));
+        var response = new ArrayList<>(syntetiseringService.hentIdenterIAvspillergruppeMedArbeidsforhold(avspillergruppeId, miljoe, true));
 
         assertThat(response, hasItem(identer.get(0)));
         assertThat(response, hasItem(identer.get(1)));

@@ -20,7 +20,6 @@ import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -150,8 +149,8 @@ public class SyntetiseringService {
         }
 
         for (var forholdet : arbeidsforhold) {
-            RsAaregOpprettRequest opprettRequest = mapSyntetiseringsRequestToOpprettRequest(forholdet);
-            RsAaregResponse aaregResponse = aaregService.opprettArbeidsforhold(opprettRequest);
+            var opprettRequest = mapSyntetiseringsRequestToOpprettRequest(forholdet);
+            var aaregResponse = aaregService.opprettArbeidsforhold(opprettRequest);
             aaregResponses.add(aaregResponse);
         }
 
@@ -160,20 +159,23 @@ public class SyntetiseringService {
 
     public Set<String> hentIdenterIAvspillergruppeMedArbeidsforhold(
             Long avspillergruppeId,
-            String miljoe
+            String miljoe,
+            boolean validerMotAareg
     ) {
-        Set<String> identerIAvspillergruppe = new HashSet<>(hodejegerenConsumer.get(avspillergruppeId));
-        Set<String> identerIAaregstub = new HashSet<>(aaregstubConsumer.hentEksisterendeIdenter());
+        var identerIAvspillergruppe = new HashSet<>(hodejegerenConsumer.get(avspillergruppeId));
+        var identerIAaregstub = new HashSet<>(aaregstubConsumer.hentEksisterendeIdenter());
 
         identerIAvspillergruppe.retainAll(identerIAaregstub);
 
-        Iterator<String> iterator = identerIAvspillergruppe.iterator();
-        while (iterator.hasNext()) {
-            String ident = iterator.next();
-            try {
-                aaregService.hentArbeidsforhold(ident, miljoe);
-            } catch (HttpStatusCodeException e) {
-                iterator.remove();
+        if (validerMotAareg) {
+            var iterator = identerIAvspillergruppe.iterator();
+            while (iterator.hasNext()) {
+                var ident = iterator.next();
+                try {
+                    aaregService.hentArbeidsforhold(ident, miljoe);
+                } catch (HttpStatusCodeException e) {
+                    iterator.remove();
+                }
             }
         }
 
