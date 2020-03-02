@@ -30,7 +30,7 @@ const initialValues = {
 }
 
 const ugyldigSivilstandState = errors =>
-	_get(errors, 'tpsf.relasjoner.partnere', []).some(partner => Boolean(partner.sivilstander))
+	_get(errors, 'tpsf.relasjoner.partnere', []).some(partner => _has(partner, 'sivilstander'))
 
 const sistePartner = (partnere = []) => partnere[partnere.length - 1]
 
