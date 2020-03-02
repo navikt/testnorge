@@ -20,45 +20,52 @@ import lombok.Setter;
 public class RsInntektsinformasjon {
 
     @ApiModelProperty(
-            value = "Året/måneden inntektsinformasjonen gjelder for",
+            value = "Start år-måned som inntektsinformasjonen gjelder for",
             example = "yyyy-MM",
             dataType = "LocalDateTime",
             required = true,
             position = 1
     )
-    private LocalDateTime aarMaaned;
+    private LocalDateTime startAarMaaned;
 
     @ApiModelProperty(
-            value = "Organisasjonsnummer/norskIdent",
-            required = true,
-            position = 2
-    )
-    private String opplysningspliktig;
+            position = 2,
+            dataType = "Integer",
+            value = "Antall måneder som denne inntektsinformasjonen skal kopieres",
+            example = "36")
+    private Integer antallMaaneder;
 
     @ApiModelProperty(
             value = "Organisasjonsnummer/norskIdent",
             required = true,
             position = 3
     )
-    private String virksomhet;
+    private String opplysningspliktig;
 
     @ApiModelProperty(
+            value = "Organisasjonsnummer/norskIdent",
+            required = true,
             position = 4
     )
-    private List<Inntekt> inntektsliste;
+    private String virksomhet;
 
     @ApiModelProperty(
             position = 5
     )
-    private List<Fradrag> fradragsliste;
+    private List<Inntekt> inntektsliste;
 
     @ApiModelProperty(
             position = 6
     )
-    private List<Forskuddstrekk> forskuddstrekksliste;
+    private List<Fradrag> fradragsliste;
 
     @ApiModelProperty(
             position = 7
+    )
+    private List<Forskuddstrekk> forskuddstrekksliste;
+
+    @ApiModelProperty(
+            position = 8
     )
     private List<Arbeidsforhold> arbeidsforholdsliste;
 

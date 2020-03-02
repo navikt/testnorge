@@ -67,28 +67,22 @@ public class InntektsinformasjonMappingStrategyTest {
     public void mapInntektsinformasjonWithMulitiplier_HappyPath() {
 
         InntektMultiplierWrapper inntektMultiplierWrapper = prepInntektMultiplierWrapper();
-        inntektMultiplierWrapper.setAntallMaaneder(ANTALL_MAANEDER);
-        inntektMultiplierWrapper.setProsentOekningPerAaar(PERCENT_OEKNING_PER_AAR);
 
         InntektsinformasjonWrapper result = mapperFacade.map(inntektMultiplierWrapper, InntektsinformasjonWrapper.class);
 
         assertThat(result.getInntektsinformasjon().get(0).getInntektsliste().get(0).getBeloep(), is(equalTo(BELOEP)));
         assertThat(result.getInntektsinformasjon().get(11).getInntektsliste().get(0).getBeloep(), is(equalTo(BELOEP)));
-        assertThat(result.getInntektsinformasjon().get(12).getInntektsliste().get(0).getBeloep(),
-                is(equalTo(BELOEP * (1 + PERCENT_OEKNING_PER_AAR / 100))));
-        assertThat(result.getInntektsinformasjon().get(23).getInntektsliste().get(0).getBeloep(),
-                is(equalTo(BELOEP * (1 + PERCENT_OEKNING_PER_AAR / 100))));
-        assertThat(result.getInntektsinformasjon().get(24).getInntektsliste().get(0).getBeloep(),
-                is(equalTo(BELOEP * Math.pow(1 + PERCENT_OEKNING_PER_AAR / 100, 2))));
-        assertThat(result.getInntektsinformasjon().get(35).getInntektsliste().get(0).getBeloep(),
-                is(equalTo(BELOEP * Math.pow(1 + PERCENT_OEKNING_PER_AAR / 100, 2))));
+        assertThat(result.getInntektsinformasjon().get(12).getInntektsliste().get(0).getBeloep(),is(equalTo(BELOEP)));
+        assertThat(result.getInntektsinformasjon().get(24).getInntektsliste().get(0).getBeloep(),is(equalTo(BELOEP)));
+        assertThat(result.getInntektsinformasjon().get(35).getInntektsliste().get(0).getBeloep(),is(equalTo(BELOEP)));
     }
 
     private InntektMultiplierWrapper prepInntektMultiplierWrapper() {
 
         return InntektMultiplierWrapper.builder()
                 .inntektsinformasjon(singletonList(RsInntektsinformasjon.builder()
-                        .aarMaaned(AAR_MAANED)
+                        .startAarMaaned(AAR_MAANED)
+                        .antallMaaneder(ANTALL_MAANEDER)
                         .virksomhet(ORG_NR)
                         .opplysningspliktig(ORG_NR)
                         .inntektsliste(singletonList(Inntekt.builder()
