@@ -23,7 +23,7 @@ import java.util.HashSet;
  * Configure automated swagger API documentation
  */
 
-@Profile("prod")
+@Profile("dev")
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig implements WebMvcConfigurer {
@@ -49,7 +49,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Testnorge-spion")
-                .description("Applikasjon som gjør noe...")
+                .description("Applikasjon lager syntetiske vedtak.")
                 .version(appVersion)
                 .termsOfServiceUrl("https://nav.no")
                 .contact(new Contact("Fellesregistrene på NAV", "https://github.com/navikt/testnorge-spion", null))

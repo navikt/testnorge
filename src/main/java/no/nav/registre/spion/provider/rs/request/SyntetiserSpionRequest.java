@@ -14,9 +14,11 @@ import lombok.Value;
 public class SyntetiserSpionRequest {
 
     @JsonProperty("avspillergruppeId")
-    private Long avspillergruppeId;
+    private final Long avspillergruppeId;
     @JsonProperty("miljoe")
-    private String miljoe;
+    private final String miljoe;
+    @JsonProperty("antallPersoner")
+    private final Integer numPersons;
     @JsonProperty("startDato")
     private final LocalDate startDate;
     @JsonProperty("sluttDato")

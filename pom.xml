@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.8.RELEASE</version>
+        <version>2.2.4.RELEASE</version>
     </parent>
 
     <groupId>no.nav.registre</groupId>
@@ -21,6 +21,7 @@
         <springfox.version>2.9.2</springfox.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <spring.boot.maven.plugin.version>2.1.8.RELEASE</spring.boot.maven.plugin.version>
+        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
     </properties>
 
     <dependencies>
@@ -110,6 +111,13 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${springfox.version}</version>
+        </dependency>
+
+        <!--VAULT-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-vault-config</artifactId>
+            <version>${spring-cloud.version}</version>
         </dependency>
 
     </dependencies>
