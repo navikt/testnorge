@@ -194,8 +194,8 @@ public class SyntetiseringService {
                 arbeidsforhold.getArbeidsavtale().setSisteLoennsendringsdato(null);
             }
 
-            if (arbeidsforhold.getArbeidsavtale().getAvtaltArbeidstimerPerUke() == 0.0) {
-                if (arbeidsforhold.getArbeidsavtale().getStillingsprosent() == 0.0) {
+            if (Math.abs(arbeidsforhold.getArbeidsavtale().getAvtaltArbeidstimerPerUke() - 0.0) < 0.001) {
+                if (Math.abs(arbeidsforhold.getArbeidsavtale().getStillingsprosent() - 0.0) < 0.001) {
                     arbeidsforhold.getArbeidsavtale().setStillingsprosent(100.0);
                     arbeidsforhold.getArbeidsavtale().setAvtaltArbeidstimerPerUke(40.0);
                 } else {

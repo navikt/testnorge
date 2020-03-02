@@ -3,9 +3,12 @@ package no.nav.registre.aareg.service;
 import static no.nav.registre.aareg.consumer.ws.AaregWsConsumer.STATUS_OK;
 import static no.nav.registre.aareg.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -74,14 +78,14 @@ public class SyntetiseringServiceTest {
     private final String fnr1 = "01010101010";
     private final String fnr2 = "02020202020";
     private SyntetiserAaregRequest syntetiserAaregRequest;
-    private List<String> fnrs;
+    private List<String> identer;
     private List<RsAaregSyntetiseringsRequest> syntetiserteMeldinger;
     private boolean sendAlleEksisterende = true;
 
     @Before
     public void setUp() throws IOException {
         syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, antallMeldinger);
-        fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+        identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
         syntetiserteMeldinger = new ArrayList<>();
 
         var resourceFileContent = getResourceFileContent("arbeidsforholdsmelding.json");
@@ -93,7 +97,7 @@ public class SyntetiseringServiceTest {
             syntetiserteMeldinger.add(objectMapper.convertValue(o, RsAaregSyntetiseringsRequest.class));
         }
 
-        when(hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER)).thenReturn(fnrs);
+        when(hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER)).thenReturn(identer);
         when(aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(anyList())).thenReturn(syntetiserteMeldinger);
         when(aaregstubConsumer.hentEksisterendeIdenter()).thenReturn(new ArrayList<>());
     }
@@ -115,5 +119,21 @@ public class SyntetiseringServiceTest {
         verify(aaregstubConsumer, times(2)).sendTilAaregstub(Collections.singletonList(any()));
         verify(hodejegerenHistorikkConsumer, times(2)).saveHistory(any());
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    @Test
+    public void shouldHenteIdenterMedArbeidsforhold() {
+        when(hodejegerenConsumer.get(avspillergruppeId)).thenReturn(identer);
+        when(aaregstubConsumer.hentEksisterendeIdenter()).thenReturn(identer);
+        when(aaregService.hentArbeidsforhold(anyString(), eq(miljoe))).thenReturn(ResponseEntity.ok().build());
+
+        var response = new ArrayList<>(syntetiseringService.hentIdenterIAvspillergruppeMedArbeidsforhold(avspillergruppeId, miljoe));
+
+        assertThat(response, hasItem(identer.get(0)));
+        assertThat(response, hasItem(identer.get(1)));
+
+        verify(hodejegerenConsumer).get(avspillergruppeId);
+        verify(aaregstubConsumer).hentEksisterendeIdenter();
+        verify(aaregService, times(2)).hentArbeidsforhold(anyString(), eq(miljoe));
     }
 }
