@@ -1,4 +1,4 @@
-package no.nav.registre.spion.provider.rs.respone;
+package no.nav.registre.spion.provider.rs.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

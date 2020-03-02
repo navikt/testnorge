@@ -1,12 +1,14 @@
 package no.nav.registre.spion.service;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.spion.provider.rs.respone.SyntetiserSpionResponse;
+import no.nav.registre.spion.domain.Vedtak;
+import no.nav.registre.spion.provider.rs.response.SyntetiserSpionResponse;
 
 @Slf4j
 @Service
@@ -16,11 +18,17 @@ public class VedtakPublisher {
     private String topic;
 
     @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate<String, List<Vedtak>> kafkaTemplate;
 
-    public String publish(SyntetiserSpionResponse response) {
-        log.info(String.format("$$ -> Producing message --> %s", response.getMelding()));
-        this.kafkaTemplate.send(topic, response.getMelding());
-        return "Vedtak sent to the Kafka Topic "+ topic + " successfully";
+    public SyntetiserSpionResponse publish(List<Vedtak> vedtak) {
+        log.info("Sender vedtak til Kafka Topic {}.", topic);
+        try{
+            this.kafkaTemplate.send(topic, vedtak);
+            log.info("Sending av vedtak til Kafka Topic {} var vellykket.", topic);
+            return new SyntetiserSpionResponse("");
+        }catch(Exception e){
+            log.error("Sending av vedtak til Kafka Topic {} mislyktes.", topic);
+            return new SyntetiserSpionResponse("");
+        }
     }
 }
