@@ -43,16 +43,16 @@ public class AaregConsumer {
         return new ArrayList<>();
     }
 
-    public AaregResponse[] hentArbeidsforholdTilIdent(String ident, String miljoe) {
+    public List<AaregResponse> hentArbeidsforholdTilIdent(String ident, String miljoe) {
         UriTemplate uriTemplate = new UriTemplate(aaregUrl
                 + "/v1/ident/{ident}?miljoe={miljoe}");
         var getRequest = RequestEntity.get(uriTemplate.expand(ident, miljoe)).build();
 
         try{
-            return restTemplate.exchange(getRequest, AaregResponse[].class).getBody();
+            return restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<AaregResponse>>() {}).getBody();
         }catch(HttpStatusCodeException e){
             log.error("Kunne ikke hente arbeidsforhold for ident fra aareg");
         }
-        return new AaregResponse[1];
+        return new ArrayList<>();
     }
 }

@@ -7,19 +7,14 @@ import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import no.nav.registre.spion.consumer.rs.response.aareg.*;
 import no.nav.registre.spion.provider.rs.request.SyntetiserSpionRequest;
 
-import org.apache.tomcat.jni.Local;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -27,12 +22,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.registre.spion.util.JsonTestHelper.stubGet;
-import static no.nav.registre.spion.util.JsonTestHelper.verifyPost;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,15 +38,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         locations = "classpath:application-test.properties"
 )
 @ActiveProfiles("test")
-public class SyntetiseringControllerIntegrationTest {
+public class SyntetiseringControllerAaregIntegrationTest {
 
     private static final String MILJOE = "x2";
     private static final long AVSPILLERGRUPPEID = 10;
     private static final LocalDate SLUTTDATO = LocalDate.now();
     private static final LocalDate STARTDATO = SLUTTDATO.minusMonths(18);
     private static final String IDENT = "123";
-
-    @Value("${testnorge.rest-api.aareg}") String serverUrl;
 
     @Autowired
     private MockMvc mvc;
@@ -65,11 +56,10 @@ public class SyntetiseringControllerIntegrationTest {
     @Test
     public void shouldCreateVedtak() throws Exception{
 
-
         final UrlPathPattern hentIdenterIAaregUrl =
-                urlPathMatching("(.*)/v1/ident/avspillergruppe/(.*)");
+                urlPathMatching("(.*)/v1/ident/avspillergruppe/"+AVSPILLERGRUPPEID+"(.*)");
         final UrlPathPattern hentArbeidsforholdIAaregUrl =
-                urlPathMatching("(.*)/v1/ident/123(.*)");
+                urlPathMatching("(.*)/v1/ident/"+IDENT+"(.*)");
 
 
         SyntetiserSpionRequest vedtakRequest =
@@ -81,9 +71,9 @@ public class SyntetiseringControllerIntegrationTest {
 
         List<AaregResponse> arbeidsforhold = new ArrayList<>();
         arbeidsforhold.add(new AaregResponse(
-                123,
+                1234,
                 "",
-                new Arbeidstaker("","123",""),
+                new Arbeidstaker("",IDENT,""),
                 new Arbeidsgiver("organisasjon", "org_nr"),
                null,
                 "",
@@ -97,7 +87,7 @@ public class SyntetiseringControllerIntegrationTest {
 
 
         stubGet(hentIdenterIAaregUrl, identer,  objectMapper);
-        stubGet(hentArbeidsforholdIAaregUrl, arbeidsforhold.toArray(), objectMapper);
+        stubGet(hentArbeidsforholdIAaregUrl, arbeidsforhold, objectMapper);
 
         mvc.perform(post("/api/v1/syntetisering/vedtak")
                 .content(objectMapper.writeValueAsString(vedtakRequest))

@@ -54,8 +54,8 @@ public class SyntetiseringService {
 
         String utvalgtIdent = finnIdentMedArbeidsforhold(avspillergruppeId, miljoe);
 
-        AaregResponse[] aaregResponse = aaregConsumer.hentArbeidsforholdTilIdent(utvalgtIdent, miljoe);
-        String orgnummer = aaregResponse[new Random().nextInt(aaregResponse.length)]
+        List<AaregResponse> aaregResponse = aaregConsumer.hentArbeidsforholdTilIdent(utvalgtIdent, miljoe);
+        String orgnummer = aaregResponse.get(new Random().nextInt(aaregResponse.size()))
                 .getArbeidsgiver().getOrganisasjonsnummer();
 
         LocalDate lastSluttDato = startDato.plusDays(getRandomBoundedNumber(0,90));

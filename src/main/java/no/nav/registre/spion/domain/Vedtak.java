@@ -19,11 +19,11 @@ public class Vedtak {
     private final String ytelse = "SP";
     private final String vedtaksstatus;
     private final int sykemeldingsgrad;
-    private final int refusjonsbelop;
+    private final int refusjonsbelopForPeriode;
 
-    public Vedtak(String id, String orgnummer, LocalDate sluttDato, boolean isFoersteVedtak){
+    public Vedtak(String id, String orgnummer, LocalDate sluttDatoForrigeVedtak, boolean isFoersteVedtak){
 
-        LocalDate startDatoPeriode = isFoersteVedtak ? sluttDato: getNextStartDato(sluttDato);
+        LocalDate startDatoPeriode = isFoersteVedtak ? sluttDatoForrigeVedtak: getNextStartDato(sluttDatoForrigeVedtak);
         int periodeLength = getPeriodeLength();
         LocalDate sluttDatoPeriode = startDatoPeriode.plusDays(periodeLength);
 
@@ -33,7 +33,7 @@ public class Vedtak {
         this.tom = sluttDatoPeriode;
         this.vedtaksstatus = getNyVedtaksstatus();
         this.sykemeldingsgrad = getNySykemeldingsgrad();
-        this.refusjonsbelop = getRefusjonsBeloepForPeriode(periodeLength);
+        this.refusjonsbelopForPeriode = getNyttRefusjonsbeloepForPeriode(periodeLength);
 
     }
 
@@ -82,7 +82,7 @@ public class Vedtak {
      * @param periodeLength
      * @return refusjonsbeløp for perioden
      */
-    private int getRefusjonsBeloepForPeriode(int periodeLength){
+    private int getNyttRefusjonsbeloepForPeriode(int periodeLength){
         return getRandomBoundedNumber(200, 2400)*periodeLength;
     }
 
