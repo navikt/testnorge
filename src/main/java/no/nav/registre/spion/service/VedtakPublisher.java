@@ -6,7 +6,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.spion.provider.rs.respones.SyntetiserSpionResponse;
+import no.nav.registre.spion.provider.rs.respone.SyntetiserSpionResponse;
 
 @Slf4j
 @Service

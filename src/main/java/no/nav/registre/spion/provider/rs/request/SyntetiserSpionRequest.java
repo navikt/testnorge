@@ -1,22 +1,19 @@
 package no.nav.registre.spion.provider.rs.request;
 
+import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
+@NoArgsConstructor(force = true)
 public class SyntetiserSpionRequest {
-
-    @JsonProperty("avspillergruppeId")
-    private Long avspillergruppeId;
-    @JsonProperty("miljoe")
-    private String miljoe;
-    @JsonProperty("antallNyeIdenter")
-    private int antallNyeIdenter;
+    @JsonProperty("startDato")
+    private final LocalDate startDate;
+    @JsonProperty("sluttDato")
+    private final LocalDate endDate;
+    @JsonProperty("antallPerioder")
+    private final Integer numPeriods;
 
 }

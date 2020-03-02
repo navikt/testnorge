@@ -1,7 +1,7 @@
 package no.nav.registre.spion.provider.rs;
 
 import no.nav.registre.spion.provider.rs.request.SyntetiserSpionRequest;
-import no.nav.registre.spion.provider.rs.respones.SyntetiserSpionResponse;
+import no.nav.registre.spion.provider.rs.respone.SyntetiserSpionResponse;
 import no.nav.registre.spion.service.VedtakPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
