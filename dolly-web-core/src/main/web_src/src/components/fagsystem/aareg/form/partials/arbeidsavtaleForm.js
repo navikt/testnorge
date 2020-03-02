@@ -28,11 +28,11 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 		const { value } = event.target
 		setVisning(avtaleValg[value])
 
-		arbeidsavtale.avtaltArbeidstimerPerUke != '' && visning === avtaleValg.avtaltArbeidstimerPerUke
+		arbeidsavtale.avtaltArbeidstimerPerUke == '' && visning === avtaleValg.avtaltArbeidstimerPerUke
 			? formikBag.setFieldValue(`${path}.arbeidsavtale.antallKonverterteTimer`, '')
 			: formikBag.setFieldValue(`${path}.arbeidsavtale.avtaltArbeidstimerPerUke`, '')
 
-		arbeidsavtale.antallKonverterteTimer != '' && visning === avtaleValg.antallKonverterteTimer
+		arbeidsavtale.antallKonverterteTimer == '' && visning === avtaleValg.antallKonverterteTimer
 			? formikBag.setFieldValue(`${path}.arbeidsavtale.avtaltArbeidstimerPerUke`, '')
 			: formikBag.setFieldValue(`${path}.arbeidsavtale.antallKonverterteTimer`, '')
 	}
