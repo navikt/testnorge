@@ -26,6 +26,11 @@ const initialBoType = formikBag => {
 export const Adresser = ({ formikBag }) => {
 	const [boType, setBoType] = useState(initialBoType(formikBag))
 
+	// Sjekker om adresse er valgt på steg 1, da panelet ikke skal vises dersom bare diskresjonskoder (med UFB og kommunenummer) er valgt
+	const erValgt =
+		_has(formikBag.values, 'tpsf.boadresse.flyttedato') ||
+		_has(formikBag.values, 'tpsf.postadresse')
+
 	const handleRadioChange = e => {
 		const nyType = e.target.value
 		setBoType(nyType)
@@ -81,49 +86,49 @@ export const Adresser = ({ formikBag }) => {
 	}
 
 	return (
-		<Vis attributt={paths}>
-			<Panel
-				heading="Adresser"
-				hasErrors={panelError(formikBag, paths.concat('tpsf.adresseNrInfo'))}
-				iconType="adresse"
-				startOpen={() => erForste(formikBag.values, paths)}
-			>
-				<Vis attributt="tpsf.boadresse">
-					<RadioPanelGruppe
-						name="botype"
-						legend="Hva slags adresse vil du opprette?"
-						radios={[
-							{
-								label: 'Tilfeldig adresse basert på postnummer ...',
-								value: 'postnr',
-								id: 'postnr'
-							},
-							{
-								label: 'Tilfeldig adresse basert på kommunenummer ...',
-								value: 'kommunenr',
-								id: 'kommunenr'
-							},
-							{ label: 'Gateadresse detaljert ...', value: 'gate', id: 'gate' },
-							{ label: 'Matrikkeladresse detaljert ...', value: 'matrikkel', id: 'matrikkel' }
-						]}
-						checked={boType}
-						onChange={handleRadioChange}
-					/>
+		erValgt && (
+			<Vis attributt={paths}>
+				<Panel
+					heading="Adresser"
+					hasErrors={panelError(formikBag, paths.concat('tpsf.adresseNrInfo'))}
+					iconType="adresse"
+					startOpen={() => erForste(formikBag.values, paths)}
+				>
+					<Vis attributt="tpsf.boadresse.flyttedato">
+						<RadioPanelGruppe
+							name="botype"
+							legend="Hva slags adresse vil du opprette?"
+							radios={[
+								{
+									label: 'Tilfeldig adresse basert på postnummer ...',
+									value: 'postnr',
+									id: 'postnr'
+								},
+								{
+									label: 'Tilfeldig adresse basert på kommunenummer ...',
+									value: 'kommunenr',
+									id: 'kommunenr'
+								},
+								{ label: 'Gateadresse detaljert ...', value: 'gate', id: 'gate' },
+								{ label: 'Matrikkeladresse detaljert ...', value: 'matrikkel', id: 'matrikkel' }
+							]}
+							checked={boType}
+							onChange={handleRadioChange}
+						/>
 
-					{['postnr', 'kommunenr'].includes(boType) && (
-						<AdresseNr formikBag={formikBag} type={boType} />
-					)}
-					{boType === 'gate' && <Boadresse formikBag={formikBag} />}
-					{boType === 'matrikkel' && <MatrikkelAdresse formikBag={formikBag} />}
-					<FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
-				</Vis>
+						{['postnr', 'kommunenr'].includes(boType) && (
+							<AdresseNr formikBag={formikBag} type={boType} />
+						)}
+						{boType === 'gate' && <Boadresse formikBag={formikBag} />}
+						{boType === 'matrikkel' && <MatrikkelAdresse formikBag={formikBag} />}
+						<FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
+					</Vis>
 
-				{
 					<Vis attributt="tpsf.postadresse">
 						<Postadresser formikBag={formikBag} />
 					</Vis>
-				}
-			</Panel>
-		</Vis>
+				</Panel>
+			</Vis>
+		)
 	)
 }

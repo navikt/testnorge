@@ -29,6 +29,7 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 	const handleChangeKommunenr = val => {
 		formikBag.setFieldValue(`${basePath}.boadresse.adressetype`, 'GATE')
 	}
+
 	return (
 		<Vis attributt={Object.values(paths)}>
 			<div className="spesreg-component">
@@ -37,7 +38,6 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 					label="Diskresjonskode"
 					kodeverk="Diskresjonskoder"
 					size="large"
-					isClearable={basePath.includes('relasjoner')}
 				/>
 
 				<FormikCheckbox
@@ -47,7 +47,8 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 					checkboxMargin
 				/>
 
-				{harUfb && (
+				{/* Skal kunne velge kommunenummer selv om man ikke har fast bopel, men trenger ikke eget felt når man også har valgt boadresse. */}
+				{harUfb && !harBoadresse && (
 					<FormikSelect
 						name={paths.kommunenr}
 						label="Kommunenummer"
