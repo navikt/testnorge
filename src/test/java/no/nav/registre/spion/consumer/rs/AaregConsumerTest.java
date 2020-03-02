@@ -17,11 +17,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doReturn;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -33,53 +32,47 @@ public class AaregConsumerTest {
 
     private AaregConsumer aaregConsumer;
 
-    private String serverUrl;
-    private long avspillergruppeId;
-    private String miljoe;
-    private String ident;
+    private static final String SERVERURL="http://localhost:0/testnorge-aareg/api";
+    private static final long AVSPILLERGRUPPEID = 1;
+    private static final String MILJOE = "x2";
+    private static final String IDENT = "123";
     private UriTemplate hentAlleIdenterMedArbeidsforholdUri;
     private UriTemplate hentArbeidsforholdtilIdentUri;
 
     @Before
     public void setup(){
-        serverUrl = "http://localhost:0/testnorge-aareg/api";
-        aaregConsumer = new AaregConsumer(restTemplate, serverUrl);
-        hentAlleIdenterMedArbeidsforholdUri = new UriTemplate(serverUrl
+        aaregConsumer = new AaregConsumer(restTemplate, SERVERURL);
+        hentAlleIdenterMedArbeidsforholdUri = new UriTemplate(SERVERURL
                 +  "/v1/ident/avspillergruppe/{avspillergruppeId}?miljoe={miljoe}");
 
-        hentArbeidsforholdtilIdentUri = new UriTemplate(serverUrl
+        hentArbeidsforholdtilIdentUri = new UriTemplate(SERVERURL
                 + "/v1/ident/{ident}?miljoe={miljoe}");
-        avspillergruppeId = 1;
-        miljoe = "x2";
-        ident = "123";
     }
 
 
     @Test
     public void hentAlleIdenterMedArbeidsforhold() {
-        List<String> data = new ArrayList<>();
-        data.add(ident);
+        List<String> data = Collections.singletonList(IDENT);
 
         ResponseEntity<List<String>> response = new ResponseEntity<>(data, HttpStatus.OK);
 
-        var getRequest = RequestEntity.get(hentAlleIdenterMedArbeidsforholdUri.expand(avspillergruppeId, miljoe)).build();
+        var getRequest = RequestEntity.get(hentAlleIdenterMedArbeidsforholdUri.expand(AVSPILLERGRUPPEID, MILJOE)).build();
 
         when(restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<String>>(){}))
                 .thenReturn(response);
 
-        List<String> fnrs = aaregConsumer.hentAlleIdenterMedArbeidsforhold(avspillergruppeId, miljoe);
+        List<String> fnrs = aaregConsumer.hentAlleIdenterMedArbeidsforhold(AVSPILLERGRUPPEID, MILJOE);
 
-        assertTrue(fnrs.contains(ident));
+        assertThat(fnrs).contains(IDENT);
     }
 
     @Test
     public void hentArbeidsforholdTilIdent() {
 
-        List<AaregResponse> arbeidsforhold = new ArrayList<>();
-        arbeidsforhold.add(new AaregResponse(
+        List<AaregResponse> arbeidsforhold = Collections.singletonList(new AaregResponse(
                 1234,
                 "",
-                new Arbeidstaker("",ident,""),
+                new Arbeidstaker("",IDENT,""),
                 new Arbeidsgiver("organisasjon", "org_nr"),
                 null,
                 "",
@@ -93,14 +86,13 @@ public class AaregConsumerTest {
 
         ResponseEntity<List<AaregResponse>> response = new ResponseEntity<>(arbeidsforhold, HttpStatus.OK);
 
-        var getRequest = RequestEntity.get(hentArbeidsforholdtilIdentUri.expand(ident, miljoe)).build();
+        var getRequest = RequestEntity.get(hentArbeidsforholdtilIdentUri.expand(IDENT, MILJOE)).build();
 
         when(restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<AaregResponse>>(){}))
                 .thenReturn(response);
 
-        List<AaregResponse> result = aaregConsumer.hentArbeidsforholdTilIdent(ident, miljoe);
+        List<AaregResponse> result = aaregConsumer.hentArbeidsforholdTilIdent(IDENT, MILJOE);
 
-        assertTrue(result.size() == 1);
-        assertTrue(result.get(0).getArbeidstaker().getOffentligIdent().equals(ident));
+        assertThat(result).hasSize(1).first().isEqualTo(arbeidsforhold.get(0));
     }
 }

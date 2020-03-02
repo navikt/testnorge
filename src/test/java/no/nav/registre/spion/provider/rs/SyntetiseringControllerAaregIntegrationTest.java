@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -65,9 +66,7 @@ public class SyntetiseringControllerAaregIntegrationTest {
         SyntetiserSpionRequest vedtakRequest =
                 new SyntetiserSpionRequest(AVSPILLERGRUPPEID, MILJOE, STARTDATO , SLUTTDATO, 1);
 
-        List<String> identer = new ArrayList<>();
-        identer.add(IDENT);
-
+        List<String> identer = Collections.singletonList(IDENT);
 
         List<AaregResponse> arbeidsforhold = new ArrayList<>();
         arbeidsforhold.add(new AaregResponse(

@@ -17,9 +17,9 @@ public class Vedtak {
     private final LocalDate fom;
     private final LocalDate tom;
     private final String ytelse = "SP";
-    private final String vedtaksstatus;
+    private final String status;
     private final int sykemeldingsgrad;
-    private final int refusjonsbelopForPeriode;
+    private final int refusjonsbelop;
 
     public Vedtak(String id, String orgnummer, LocalDate sluttDatoForrigeVedtak, boolean isFoersteVedtak){
 
@@ -31,9 +31,9 @@ public class Vedtak {
         this.virksomhetsnummer = orgnummer;
         this.fom = startDatoPeriode;
         this.tom = sluttDatoPeriode;
-        this.vedtaksstatus = getNyVedtaksstatus();
+        this.status = getNyVedtaksstatus();
         this.sykemeldingsgrad = getNySykemeldingsgrad();
-        this.refusjonsbelopForPeriode = getNyttRefusjonsbeloepForPeriode(periodeLength);
+        this.refusjonsbelop = getNyttRefusjonsbeloepForPeriode(periodeLength);
 
     }
 

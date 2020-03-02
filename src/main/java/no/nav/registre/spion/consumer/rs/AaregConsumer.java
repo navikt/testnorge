@@ -2,7 +2,6 @@ package no.nav.registre.spion.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
@@ -10,7 +9,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.spion.consumer.rs.response.aareg.AaregResponse;
@@ -39,8 +37,8 @@ public class AaregConsumer {
             return restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<String>>() {}).getBody();
         }catch(HttpStatusCodeException e){
             log.error("Kunne ikke hente identer med arbeidsforhold fra aareg.");
+            throw e;
         }
-        return new ArrayList<>();
     }
 
     public List<AaregResponse> hentArbeidsforholdTilIdent(String ident, String miljoe) {
@@ -52,7 +50,7 @@ public class AaregConsumer {
             return restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<AaregResponse>>() {}).getBody();
         }catch(HttpStatusCodeException e){
             log.error("Kunne ikke hente arbeidsforhold for ident fra aareg");
+            throw e;
         }
-        return new ArrayList<>();
     }
 }
