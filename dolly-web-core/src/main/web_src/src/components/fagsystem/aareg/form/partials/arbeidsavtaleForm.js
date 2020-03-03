@@ -94,7 +94,8 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 					/>
 				</div>
 				<HjelpeTekst>
-					Antall konverterte timer og avtalte timer per uke kan ikke være satt samtidig.
+					Antall konverterte timer og avtalte timer per uke kan ikke bli satt samtidig. Hvis feltet
+					er tomt blir det automatisk generert avhengig av stillingsprosentet.
 				</HjelpeTekst>
 			</div>
 		</div>

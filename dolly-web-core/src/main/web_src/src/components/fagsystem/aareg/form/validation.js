@@ -107,9 +107,15 @@ export const validation = {
 				endringsdatoStillingsprosent: Yup.date().nullable(),
 				arbeidstidsordning: requiredString,
 				avtaltArbeidstimerPerUke: Yup.number()
+					.transform((i, j) => (j === '' ? null : i))
+					.nullable()
+					.min(1, 'Kan ikke være mindre enn ${min}')
+					.max(75, 'Kan ikke være større enn ${max}'),
+				antallKonverterteTimer: Yup.number()
+					.transform((i, j) => (j === '' ? null : i))
+					.nullable()
 					.min(1, 'Kan ikke være mindre enn ${min}')
 					.max(75, 'Kan ikke være større enn ${max}')
-					.typeError(messages.required)
 			}),
 			antallTimerForTimeloennet: antallTimerForTimeloennet,
 			permisjon: permisjon,
