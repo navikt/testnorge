@@ -36,7 +36,7 @@ export const Barn = ({ formikBag }) => {
 	const optionsPartnerNr = getOptionsPartnerNr()
 
 	return (
-		<FormikDollyFieldArray name="tpsf.relasjoner.barn" title="Barn" newEntry={initialValues}>
+		<FormikDollyFieldArray name="tpsf.relasjoner.barn" buttontext="Barn" newEntry={initialValues}>
 			{(path, idx) => (
 				<React.Fragment key={idx}>
 					<FormikSelect

@@ -11,7 +11,7 @@ const infotekst = 'Start- og sluttdato må være innenfor perioden til arbeidsfo
 export const PermisjonForm = ({ path }) => (
 	<FormikDollyFieldArray
 		name={path}
-		title="Permisjon"
+		buttontext="Permisjon"
 		infotekst={infotekst}
 		newEntry={initialPermisjon}
 		nested

@@ -84,7 +84,12 @@ export const Partnere = ({ formikBag }) => (
 						)
 					})}
 					<FieldArrayAddButton
-						title="Legg til ny partner"
+						title={
+							!kanOppretteNyPartner
+								? 'Forhold med tidligere partner må avsluttes (skilt eller enke/-mann)'
+								: false
+						}
+						buttontext="Legg til ny partner"
 						onClick={addNewEntry}
 						disabled={!kanOppretteNyPartner}
 					/>
@@ -96,6 +101,7 @@ export const Partnere = ({ formikBag }) => (
 
 const PartnerForm = ({ path, idx, formikBag, locked }) => {
 	const basePath = `${path}[${idx}]`
+	const erSistePartner = _get(formikBag.values, path).length === idx + 1
 	return (
 		<React.Fragment>
 			<FormikSelect
@@ -118,7 +124,12 @@ const PartnerForm = ({ path, idx, formikBag, locked }) => {
 			<FormikDatepicker name={`${basePath}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
 			<Diskresjonskoder basePath={basePath} formikBag={formikBag} />
 			<Alder basePath={basePath} formikBag={formikBag} title="Alder" />
-			<Sivilstand formikBag={formikBag} basePath={`${basePath}.sivilstander`} locked={locked} />
+			<Sivilstand
+				formikBag={formikBag}
+				basePath={`${basePath}.sivilstander`}
+				locked={locked}
+				erSistePartner={erSistePartner}
+			/>
 		</React.Fragment>
 	)
 }

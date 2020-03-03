@@ -1,6 +1,7 @@
 import React from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
+import _has from 'lodash/has'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import {
@@ -12,7 +13,7 @@ import { nesteGyldigStatuser, statuser as SivilstandStatuser } from './Sivilstan
 
 const initialValues = { sivilstand: '', sivilstandRegdato: null }
 
-export const Sivilstand = ({ basePath, formikBag, locked }) => (
+export const Sivilstand = ({ basePath, formikBag, locked, erSistePartner }) => (
 	<FieldArray name={basePath}>
 		{arrayHelpers => {
 			const sivilstander = _get(arrayHelpers.form.values, basePath, [])
@@ -25,7 +26,7 @@ export const Sivilstand = ({ basePath, formikBag, locked }) => (
 			}
 
 			const options = nesteGyldigStatuser(sivilstandKode)
-
+			const ugyldigSisteSivilstand = _has(formikBag.errors, basePath)
 			const addNewEntry = () => arrayHelpers.push(initialValues)
 			return (
 				<DollyFieldArrayWrapper title="Forhold" nested>
@@ -48,8 +49,15 @@ export const Sivilstand = ({ basePath, formikBag, locked }) => (
 						)
 					})}
 					<FieldArrayAddButton
-						title="Nytt forhold"
-						disabled={!formikBag.isValid}
+						buttontext="Nytt forhold"
+						title={
+							ugyldigSisteSivilstand
+								? 'Siste sivilstand må være gyldig før du kan legge til en ny'
+								: !erSistePartner
+								? 'Du kan kun endre siste partner'
+								: false
+						}
+						disabled={ugyldigSisteSivilstand || !erSistePartner}
 						onClick={addNewEntry}
 					/>
 				</DollyFieldArrayWrapper>

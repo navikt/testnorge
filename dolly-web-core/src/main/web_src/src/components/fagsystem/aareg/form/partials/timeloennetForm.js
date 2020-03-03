@@ -11,7 +11,7 @@ const infotekst =
 export const TimeloennetForm = ({ path }) => (
 	<FormikDollyFieldArray
 		name={path}
-		title="Antall timer for timelønnet"
+		buttontext="Antall timer for timelønnet"
 		hjelpetekst={infotekst}
 		newEntry={initialTimeloennet}
 		nested

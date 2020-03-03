@@ -10,7 +10,7 @@ const initialValues = {
 }
 
 export const Alias = ({ formikBag }) => (
-	<FormikDollyFieldArray name="udistub.aliaser" title="Alias" newEntry={initialValues}>
+	<FormikDollyFieldArray name="udistub.aliaser" buttontext="Alias" newEntry={initialValues}>
 		{(path, idx, curr) => (
 			<React.Fragment key={idx}>
 				<FormikSelect
