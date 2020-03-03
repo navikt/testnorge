@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Value;
 import no.nav.registre.spion.consumer.rs.AaregConsumer;
 import no.nav.registre.spion.consumer.rs.response.aareg.AaregResponse;
 import static no.nav.registre.spion.utils.RandomUtils.getRandomBoundedNumber;
