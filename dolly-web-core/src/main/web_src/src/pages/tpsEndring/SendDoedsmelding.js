@@ -168,8 +168,6 @@ export default class SendDoedsmelding extends PureComponent {
 			return index % 2 === 1
 		})
 		let str = errorMessageFormatted.toString()
-		let errorString = new Array()
-		errorString = str.split('.,')
 
 		if (this.state.environments_success.length > 0)
 			suksessMiljoer = this.state.environments_success.join(', ')
@@ -198,7 +196,7 @@ export default class SendDoedsmelding extends PureComponent {
 				)}
 
 				{this.state.environments_error.length > 0 && (
-					<h3 className="tps-endring-tps-endring-error-message">{errorString.join(' -- ')}</h3>
+					<h3 className="tps-endring-tps-endring-error-message">{str.replace('.,', ' -- ')}</h3>
 				)}
 			</div>
 		)
