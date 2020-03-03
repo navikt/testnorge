@@ -1,17 +1,19 @@
 package no.nav.registre.spion.provider.rs.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
+import no.nav.registre.spion.domain.Vedtak;
 
-@Getter
-@Setter
-@NoArgsConstructor
+import java.util.List;
+
+@Value
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
-@Builder
 public class SyntetiserSpionResponse {
 
-    private String melding;
+    private final String identitetsnummer;
+    private final List<Vedtak> vedtak;
+
 }
+
