@@ -6,7 +6,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +21,8 @@ import no.nav.dolly.mapper.utils.MapperTestUtils;
 
 public class InntektsinformasjonMappingStrategyTest {
 
-    private static final LocalDateTime AAR_MAANED = LocalDate.of(2016, 1, 1).atStartOfDay();
+    private static final LocalDate AAR_MAANED = LocalDate.of(2016, 1, 1);
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM");
     private static final String AAR_MAANED_STR = "2016-01";
     private static final String ORG_NR = "123456789";
     private static final Double BELOEP = 350000d;
@@ -31,7 +32,6 @@ public class InntektsinformasjonMappingStrategyTest {
     private static final String YRKE = "Skadedyrbekjemper";
     private static final String AARET_BETALINGEN_GJELDER_FOR = "1994";
     private static final int ANTALL_MAANEDER = 36;
-    private static final Double PERCENT_OEKNING_PER_AAR = 3d;
 
     private MapperFacade mapperFacade;
 
@@ -49,8 +49,8 @@ public class InntektsinformasjonMappingStrategyTest {
         assertThat(result.getInntektsinformasjon().get(0).getVirksomhet(), is(equalTo(ORG_NR)));
         assertThat(result.getInntektsinformasjon().get(0).getOpplysningspliktig(), is(equalTo(ORG_NR)));
         assertThat(result.getInntektsinformasjon().get(0).getInntektsliste().get(0).getBeloep(), is(equalTo(BELOEP)));
-        assertThat(result.getInntektsinformasjon().get(0).getInntektsliste().get(0).getStartOpptjeningsperiode(), is(equalTo(AAR_MAANED.toLocalDate())));
-        assertThat(result.getInntektsinformasjon().get(0).getInntektsliste().get(0).getSluttOpptjeningsperiode(), is(equalTo(AAR_MAANED.plusMonths(1).minusDays(1).toLocalDate())));
+        assertThat(result.getInntektsinformasjon().get(0).getInntektsliste().get(0).getStartOpptjeningsperiode(), is(equalTo(AAR_MAANED)));
+        assertThat(result.getInntektsinformasjon().get(0).getInntektsliste().get(0).getSluttOpptjeningsperiode(), is(equalTo(AAR_MAANED.plusMonths(1).minusDays(1))));
         assertThat(result.getInntektsinformasjon().get(0).getInntektsliste().get(0).getBeskrivelse(), is(equalTo(BESKRIVELSE)));
         assertThat(result.getInntektsinformasjon().get(0).getInntektsliste().get(0).getTilleggsinformasjon().getBonusFraForsvaret().getAaretUtbetalingenGjelderFor(),
                 is(equalTo(AARET_BETALINGEN_GJELDER_FOR)));
@@ -81,14 +81,14 @@ public class InntektsinformasjonMappingStrategyTest {
 
         return InntektMultiplierWrapper.builder()
                 .inntektsinformasjon(singletonList(RsInntektsinformasjon.builder()
-                        .startAarMaaned(AAR_MAANED)
+                        .startAarMaaned(AAR_MAANED.format(FORMATTER))
                         .antallMaaneder(ANTALL_MAANEDER)
                         .virksomhet(ORG_NR)
                         .opplysningspliktig(ORG_NR)
                         .inntektsliste(singletonList(Inntekt.builder()
                                 .beloep(BELOEP)
-                                .startOpptjeningsperiode(AAR_MAANED)
-                                .sluttOpptjeningsperiode(AAR_MAANED.plusMonths(1).minusDays(1))
+                                .startOpptjeningsperiode(AAR_MAANED.atStartOfDay())
+                                .sluttOpptjeningsperiode(AAR_MAANED.atStartOfDay().plusMonths(1).minusDays(1))
                                 .beskrivelse(BESKRIVELSE)
                                 .tilleggsinformasjon(Tilleggsinformasjon.builder()
                                         .bonusFraForsvaret(Tilleggsinformasjon.BonusFraForsvaret.builder()
