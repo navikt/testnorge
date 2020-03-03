@@ -3,6 +3,7 @@ import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 import { isWithinInterval, getMonth } from 'date-fns'
 import { requiredDate, requiredString, messages } from '~/utils/YupValidations'
+import { yupToFormErrors } from 'formik'
 
 const innenforAnsettelsesforholdTest = (validation, validateFomMonth) => {
 	const errorMsg = 'Dato må være innenfor ansettelsesforhold'
@@ -104,7 +105,17 @@ export const validation = {
 					.max(100, 'Kan ikke være større enn ${max}')
 					.typeError(messages.required),
 				endringsdatoStillingsprosent: Yup.date().nullable(),
-				arbeidstidsordning: requiredString
+				arbeidstidsordning: requiredString,
+				avtaltArbeidstimerPerUke: Yup.number()
+					.transform((i, j) => (j === '' ? null : i))
+					.nullable()
+					.min(1, 'Kan ikke være mindre enn ${min}')
+					.max(75, 'Kan ikke være større enn ${max}'),
+				antallKonverterteTimer: Yup.number()
+					.transform((i, j) => (j === '' ? null : i))
+					.nullable()
+					.min(1, 'Kan ikke være mindre enn ${min}')
+					.max(75, 'Kan ikke være større enn ${max}')
 			}),
 			antallTimerForTimeloennet: antallTimerForTimeloennet,
 			permisjon: permisjon,
