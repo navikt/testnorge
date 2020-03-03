@@ -8,7 +8,7 @@ import no.nav.registre.spion.consumer.rs.AaregConsumer;
 import no.nav.registre.spion.consumer.rs.response.aareg.AaregResponse;
 import static no.nav.registre.spion.utils.RandomUtils.getRandomBoundedNumber;
 
-import no.nav.registre.spion.provider.rs.response.SyntetiserSpionResponse;
+import no.nav.registre.spion.provider.rs.response.SyntetiserVedtakResponse;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class SyntetiseringService {
 
     private final AaregConsumer aaregConsumer;
 
-    public List<SyntetiserSpionResponse> syntetiserVedtak(
+    public List<SyntetiserVedtakResponse> syntetiserVedtak(
             long groupId,
             String environment,
             Integer numPersons,
@@ -38,7 +38,7 @@ public class SyntetiseringService {
                 environment,
                 numPersons!=null ? numPersons : 1);
 
-        List<SyntetiserSpionResponse> resultat = new ArrayList<>();
+        List<SyntetiserVedtakResponse> resultat = new ArrayList<>();
 
         for(int i=0; i< utvalgteIdenter.size(); i++){
             List<Vedtak> vedtaksliste = lagListeMedVedtak(
@@ -47,7 +47,7 @@ public class SyntetiseringService {
                     startDato,
                     sluttDato,
                     numPeriods != null ? numPeriods : getRandomBoundedNumber(1, 15) );
-            resultat.add(new SyntetiserSpionResponse(utvalgteIdenter.get(i), vedtaksliste));
+            resultat.add(new SyntetiserVedtakResponse(utvalgteIdenter.get(i), vedtaksliste));
         }
 
         return resultat;

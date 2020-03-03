@@ -2,10 +2,13 @@ package no.nav.registre.spion.provider.rs;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.spion.provider.rs.kafka.VedtakTilKafkaScheduler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,17 +16,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.registre.spion.provider.rs.request.SyntetiserSpionRequest;
-import no.nav.registre.spion.provider.rs.response.SyntetiserSpionResponse;
+import no.nav.registre.spion.provider.rs.response.SyntetiserVedtakResponse;
 import no.nav.registre.spion.service.SyntetiseringService;
-import no.nav.registre.spion.service.VedtakPublisher;
 
+@Slf4j
 @RestController
 @RequestMapping("api/v1/syntetisering")
 @RequiredArgsConstructor
 public class SyntetiseringController {
 
     private final SyntetiseringService syntetiseringService;
-    private final VedtakPublisher vedtakPublisher;
+    private final VedtakTilKafkaScheduler vedtakTilKafkaScheduler;
 
     private static final String PARAM_DESCRIPTION = "Ingen av parameterne i request body er nødvendig. Hvis en " +
             "parameter mangler blir den satt til default verdi. \n\n " +
@@ -42,17 +45,18 @@ public class SyntetiseringController {
             "verdi blir den satt til startDato pluss 18 måneder. Hvis startDato også mangler verdi blir den satt til " +
             "dagens dato. ";
 
-    @Value("${avspillergruppe-id}")
+    @Value("${tps.forvalter.avspillergruppe.id}")
     private String defaultAvspillergruppeId;
 
-    @Value("${avspillergruppe-miljoe}")
+    @Value("${tps.forvalter.miljoe}")
     private String defaultMiljoe;
+
 
     @PostMapping(value = "/vedtak")
     @ApiOperation(value="Generer syntetiske vedtak for et gitt antall personer.")
-    public List<SyntetiserSpionResponse> genererVedtak(@ApiParam(value=PARAM_DESCRIPTION) @RequestBody SyntetiserSpionRequest request){
+    public List<SyntetiserVedtakResponse> genererVedtak(@ApiParam(value=PARAM_DESCRIPTION) @RequestBody SyntetiserSpionRequest request) throws ExecutionException, InterruptedException {
 
-        return syntetiseringService.syntetiserVedtak(
+        List<SyntetiserVedtakResponse> syntetisertvedtaksliste = syntetiseringService.syntetiserVedtak(
                 Objects.isNull(request.getAvspillergruppeId())?
                         Long.valueOf(defaultAvspillergruppeId) : request.getAvspillergruppeId() ,
                 Objects.isNull(request.getMiljoe()) ? defaultMiljoe : request.getMiljoe(),
@@ -60,6 +64,13 @@ public class SyntetiseringController {
                 request.getStartDate(),
                 request.getEndDate(),
                 request.getNumPeriods());
+
+        log.info("Vedtak for {} person(er) ble syntetisert.", syntetisertvedtaksliste.size());
+
+//        vedtakTilKafkaScheduler.execute(syntetisertvedtaksliste);
+
+        return syntetisertvedtaksliste;
+
     }
 
 }

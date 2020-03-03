@@ -10,7 +10,7 @@ import java.util.List;
 @Value
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class SyntetiserSpionResponse {
+public class SyntetiserVedtakResponse {
 
     private final String identitetsnummer;
     private final List<Vedtak> vedtak;
