@@ -61,7 +61,7 @@ FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 					partnerNr: null,
 					borHos: '',
 					erAdoptert: false,
-					alder: Formatters.randomIntInRange(1, 18),
+					alder: Formatters.randomIntInRange(1, 17),
 					spesreg: '',
 					utenFastBopel: false,
 					statsborgerskap: '',

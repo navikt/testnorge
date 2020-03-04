@@ -15,7 +15,7 @@ const initialValues = {
 	partnerNr: null,
 	borHos: '',
 	erAdoptert: false,
-	alder: Formatters.randomIntInRange(1, 18),
+	alder: Formatters.randomIntInRange(1, 17),
 	spesreg: '',
 	utenFastBopel: false,
 	statsborgerskap: '',
@@ -34,6 +34,8 @@ export const Barn = ({ formikBag }) => {
 	}
 
 	const optionsPartnerNr = getOptionsPartnerNr()
+
+	initialValues.alder = Formatters.randomIntInRange(1, 17)
 
 	return (
 		<FormikDollyFieldArray name="tpsf.relasjoner.barn" title="Barn" newEntry={initialValues}>
