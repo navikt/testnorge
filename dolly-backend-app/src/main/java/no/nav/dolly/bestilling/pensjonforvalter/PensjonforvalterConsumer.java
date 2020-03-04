@@ -15,6 +15,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Sets;
 
 import lombok.RequiredArgsConstructor;
@@ -81,6 +82,19 @@ public class PensjonforvalterConsumer {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(lagreInntektRequest),
                 PensjonforvalterResponse.class).getBody();
+    }
+
+    public ResponseEntity getInntekter(String ident, String miljoe) {
+
+        return restTemplate.exchange(
+                RequestEntity.get(URI.create(
+                        format("%s%s?fnr=%s&miljo=%s",
+                                providersProps.getPensjonforvalter().getUrl(),
+                                PENSJON_INNTEKT_URL, ident, miljoe)))
+                        .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                        .header(HEADER_NAV_CALL_ID, getCallId())
+                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                        .build(), JsonNode.class);
     }
 
     private static String getCallId() {
