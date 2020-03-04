@@ -95,6 +95,7 @@ const fieldReslover = (field, options = [], handleChange, values, path) => {
 			afterChange={handleChange}
 			size="large"
 			feil={sjekkFelt(field, options, values, path)}
+			isClearable={field !== 'inntektstype'}
 		/>
 	)
 }

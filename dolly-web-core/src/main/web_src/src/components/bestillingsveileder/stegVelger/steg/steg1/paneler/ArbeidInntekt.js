@@ -2,6 +2,7 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
+import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 export const ArbeidInntektPanel = ({ stateModifier }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
@@ -60,14 +61,23 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		checked: has('inntektstub'),
 		add: () =>
 			set('inntektstub', {
-				antallMaaneder: null,
-				prosentOekningPerAaar: null,
+				// prosentOekningPerAaar: null,
 				inntektsinformasjon: [
 					{
-						aarMaaned: '',
+						startAarMaaned: '',
+						antallMaaneder: null,
 						opplysningspliktig: '',
-						virksomhet: '',
-						inntektsliste: [],
+						virksomhet: Options('orgnummer')[
+							Math.floor(Math.random() * Options('orgnummer').length)
+						].value,
+						inntektsliste: [
+							{
+								beloep: null,
+								startOpptjeningsperiode: '',
+								sluttOpptjeningsperiode: '',
+								inntektstype: ''
+							}
+						],
 						fradragsliste: [],
 						forskuddstrekksliste: [],
 						arbeidsforholdsliste: []

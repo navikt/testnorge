@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import _get from 'lodash/get'
 import Inntekt from './inntekt'
 import { Formik } from 'formik'
@@ -7,9 +7,15 @@ import tilleggsinformasjonPaths from '../paths'
 
 const InntektStub = ({ formikBag, inntektPath }) => {
 	const [fields, setFields] = useState({})
-	// const [inntektstype, setInntektstype] = useState(
-	// 	_get(formikBag.values, `${inntektPath}.inntektstype`)
-	// )
+	// TODO: kanskje bruke formikBag.values for å hente fields når man går fram og tilbake?
+	const [currentInntektstype, setCurrentInntektstype] = useState(
+		_get(formikBag.values, `${inntektPath}.inntektstype`)
+	)
+
+	useEffect(() => {
+		setCurrentInntektstype(_get(formikBag.values, `${inntektPath}.inntektstype`))
+		// console.log('currentInntektstype :', currentInntektstype)
+	})
 
 	const setFormikBag = values => {
 		const tilleggsinformasjonAttributter = {
@@ -21,29 +27,41 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 			Nettoloennsordning: 'nettoloenn', // Lønnsinntekt
 			UtenlandskArtist: 'utenlandskArtist' // Lønnsinntekt
 		}
-		for (var [key, value] of Object.entries(values)) {
-			tilleggsinformasjonAttributter[value]
-				? formikBag.setFieldValue(
-						`${inntektPath}.tilleggsinformasjon.${tilleggsinformasjonAttributter[value]}`,
-						{}
-				  )
-				: tilleggsinformasjonPaths(key) !== key
-				? formikBag.setFieldValue(`${inntektPath}.${tilleggsinformasjonPaths(key)}`, value)
-				: formikBag.setFieldValue(`${inntektPath}.${key}`, value)
+
+		const nullstiltInntekt = {
+			beloep: _get(formikBag.values, `${inntektPath}.beloep`),
+			startOpptjeningsperiode: _get(formikBag.values, `${inntektPath}.startOpptjeningsperiode`),
+			sluttOpptjeningsperiode: _get(formikBag.values, `${inntektPath}.sluttOpptjeningsperiode`),
+			inntektstype: values.inntektstype
+		}
+
+		if (values.inntektstype !== currentInntektstype) {
+			formikBag.setFieldValue(inntektPath, nullstiltInntekt)
+		} else {
+			for (var [key, value] of Object.entries(values)) {
+				tilleggsinformasjonAttributter[value]
+					? formikBag.setFieldValue(
+							`${inntektPath}.tilleggsinformasjon.${tilleggsinformasjonAttributter[value]}`,
+							{}
+					  )
+					: tilleggsinformasjonPaths(key) !== key
+					? formikBag.setFieldValue(`${inntektPath}.${tilleggsinformasjonPaths(key)}`, value)
+					: formikBag.setFieldValue(`${inntektPath}.${key}`, value)
+			}
 		}
 	}
 
 	return (
 		<Formik
 			initialValues={{}}
-			onSubmit={
-				values =>
-					api
-						.validate(values)
-						.then(response => setFields(response))
-						.then(() => setFormikBag(values))
-				// .then(() => setInntektstype(values.inntektstype))
-			}
+			onSubmit={(values, { resetForm }) => {
+				if (currentInntektstype && values.inntektstype !== currentInntektstype) {
+					resetForm({ values: { inntektstype: values.inntektstype } })
+					values = { inntektstype: values.inntektstype }
+				}
+				api.validate(values).then(response => setFields(response))
+				setFormikBag(values)
+			}}
 			render={({ handleSubmit }) => (
 				<div>
 					<Inntekt

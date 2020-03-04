@@ -16,11 +16,11 @@ export const InntektVisning = ({ data }) => {
 						<TitleValue title="Inntektstype" value={texts(id.inntektstype)} />
 						<TitleValue title="Beløp" value={id.beloep} />
 						<TitleValue
-							title="Startdato"
+							title="Start opptjeningsperiode"
 							value={Formatters.formatStringDates(id.startOpptjeningsperiode)}
 						/>
 						<TitleValue
-							title="Sluttdato"
+							title="Slutt opptjeningsperiode"
 							value={Formatters.formatStringDates(id.sluttOpptjeningsperiode)}
 						/>
 						<TitleValue

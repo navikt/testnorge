@@ -333,17 +333,17 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (inntektStubKriterier) {
 		const inntektStub = {
 			header: 'Inntektskomponenten',
-			items: [
-				obj('Antall måneder', inntektStubKriterier.antallMaaneder),
-				obj('Prosentøkning per år', inntektStubKriterier.prosentOekningPerAaar)
-			],
+			// items: [
+			// 	obj('Prosentøkning per år', inntektStubKriterier.prosentOekningPerAaar)
+			// ],
 			itemRows: []
 		}
 
 		inntektStubKriterier.inntektsinformasjon.forEach((inntektsinfo, i) => {
 			inntektStub.itemRows.push([
 				{ numberHeader: `Inntektsinformasjon ${i + 1}` },
-				obj('År/måned', Formatters.formatDate(inntektsinfo.aarMaaned)),
+				obj('Start måned/år', inntektsinfo.startAarMaaned),
+				obj('Antall måneder', inntektsinfo.antallMaaneder),
 				obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
 				obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
 				obj(

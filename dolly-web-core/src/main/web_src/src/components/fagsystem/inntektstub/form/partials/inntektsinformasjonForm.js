@@ -1,55 +1,69 @@
 import React from 'react'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { InntektForm } from './inntektForm'
 import { FradragForm } from './fradragForm'
 import { ForskuddstrekkForm } from './forskuddstrekkForm'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
+import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 const initialValues = {
-	aarMaaned: '',
+	startAarMaaned: '',
+	antallMaaneder: null,
 	opplysningspliktig: '',
-	virksomhet: '',
-	inntektsliste: [],
+	virksomhet: Options('orgnummer')[Math.floor(Math.random() * Options('orgnummer').length)].value,
+	inntektsliste: [
+		{
+			beloep: null,
+			startOpptjeningsperiode: undefined,
+			sluttOpptjeningsperiode: undefined,
+			inntektstype: ''
+		}
+	],
 	fradragsliste: [],
 	forskuddstrekksliste: [],
 	arbeidsforholdsliste: []
 }
+
+const infotekst =
+	'For å generere samme inntektsinformasjon for flere måneder - fyll inn første måned/år, samt antall måneder inntektsinformasjonen skal genereres for.'
 
 export const InntektsinformasjonForm = ({ formikBag }) => {
 	return (
 		<FormikDollyFieldArray
 			name="inntektstub.inntektsinformasjon"
 			title="Inntektsinformasjon"
+			hjelpetekst={infotekst}
 			newEntry={initialValues}
 		>
 			{path => (
 				<React.Fragment>
-					{/* <Kategori></Kategori> kanskje??? */}
 					<div className="flexbox--flex-wrap">
-						{/* måå kanskje ha 2 felter? */}
-						<FormikDatepicker name={`${path}.aarMaaned`} label="År/måned" />
+						<FormikTextInput name={`${path}.startAarMaaned`} label="Start måned/år" type="month" />
+						<FormikTextInput name={`${path}.antallMaaneder`} label="Antall måneder" type="number" />
 						<FormikTextInput
 							name={`${path}.opplysningspliktig`}
 							label="Opplysningspliktig (orgnr/id)"
 							fastfield={false}
 						/>
-						<FormikTextInput
+						<FormikSelect
+							name={`${path}.virksomhet`}
+							label="Virksomhet (orgnr/id)"
+							options={Options('orgnummer')}
+							type="text"
+							size="large"
+							isClearable={false}
+						/>
+						{/* <FormikTextInput
 							name={`${path}.virksomhet`}
 							label="Virksomhet (orgnr/id)"
 							fastfield={false}
-						/>
+						/> */}
 					</div>
-					{/* Kategori? */}
 					<InntektForm formikBag={formikBag} inntektsinformasjonPath={path} />
-					{/* Kategori? */}
 					<FradragForm formikBag={formikBag} inntektsinformasjonPath={path} />
-
-					{/* Kategori? */}
 					<ForskuddstrekkForm formikBag={formikBag} inntektsinformasjonPath={path} />
-
-					{/* KAtegori? */}
 					<ArbeidsforholdForm formikBag={formikBag} inntektsinformasjonPath={path} />
 				</React.Fragment>
 			)}

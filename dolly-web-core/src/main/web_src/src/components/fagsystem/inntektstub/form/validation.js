@@ -6,8 +6,8 @@ import { requiredDate, requiredString, requiredNumber, messages } from '~/utils/
 const inntektsliste = Yup.array().of(
 	Yup.object({
 		beloep: requiredNumber.typeError(messages.required),
-		startOpptjeningsperiode: Yup.date().nullable(),
-		sluttOpptjeningsperiode: Yup.date().nullable()
+		startOpptjeningsperiode: Yup.string().nullable(),
+		sluttOpptjeningsperiode: Yup.string().nullable()
 
 		// inntektstype: requiredString.typeError(messages.required)
 		// inngaarIGrunnlagForTrekk: null,
@@ -88,16 +88,16 @@ const arbeidsforholdsliste = Yup.array().of(
 
 export const validation = {
 	inntektstub: Yup.object({
-		antallMaaneder: Yup.number()
-			.integer('Kan ikke være et desimaltall')
-			.transform((i, j) => (j === '' ? null : i))
-			.nullable(),
-		prosentOekningPerAaar: Yup.number()
-			.transform((i, j) => (j === '' ? null : i))
-			.nullable(),
+		// prosentOekningPerAaar: Yup.number()
+		// 	.transform((i, j) => (j === '' ? null : i))
+		// 	.nullable(),
 		inntektsinformasjon: Yup.array().of(
 			Yup.object({
-				aarMaaned: requiredDate,
+				startAarMaaned: requiredString,
+				antallMaaneder: Yup.number()
+					.integer('Kan ikke være et desimaltall')
+					.transform((i, j) => (j === '' ? null : i))
+					.nullable(),
 				opplysningspliktig: requiredString,
 				virksomhet: requiredString,
 				inntektsliste: inntektsliste,
