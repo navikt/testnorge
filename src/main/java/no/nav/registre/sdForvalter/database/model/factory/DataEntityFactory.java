@@ -6,7 +6,7 @@ import static org.springframework.util.StringUtils.isEmpty;
 import no.nav.registre.sdForvalter.database.ModelEnum;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
-import no.nav.registre.sdForvalter.database.model.TpsModel;
+import no.nav.registre.sdForvalter.database.model.TpsIdentModel;
 
 public class DataEntityFactory {
 
@@ -20,12 +20,12 @@ public class DataEntityFactory {
                 }
                 return aaregModel;
             case TPS:
-                TpsModel tpsModel = TpsModel.builder().build();
-                tpsModel.updateFromString(content, headers);
-                if (isEmpty(tpsModel.getFnr())) {
+                TpsIdentModel tpsIdentModel = TpsIdentModel.builder().build();
+                tpsIdentModel.updateFromString(content, headers);
+                if (isEmpty(tpsIdentModel.getFnr())) {
                     throw new IllegalArgumentException(String.format("Unable to create %s because it is missing FNR", dataType));
                 }
-                return tpsModel;
+                return tpsIdentModel;
             case DKIF:
                 KrrModel krrModel = KrrModel.builder().build();
                 krrModel.updateFromString(content, headers);

@@ -22,11 +22,11 @@ import no.nav.registre.sdForvalter.consumer.rs.response.AaregResponse;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
-import no.nav.registre.sdForvalter.database.model.TpsModel;
+import no.nav.registre.sdForvalter.database.model.TpsIdentModel;
 import no.nav.registre.sdForvalter.database.repository.AaregRepository;
 import no.nav.registre.sdForvalter.database.repository.EregRepository;
 import no.nav.registre.sdForvalter.database.repository.KrrRepository;
-import no.nav.registre.sdForvalter.database.repository.TpsRepository;
+import no.nav.registre.sdForvalter.database.repository.TpsIdenterRepository;
 
 @Slf4j
 @Service
@@ -34,7 +34,7 @@ import no.nav.registre.sdForvalter.database.repository.TpsRepository;
 public class EnvironmentInitializationService {
 
     private final AaregRepository aaregRepository;
-    private final TpsRepository tpsRepository;
+    private final TpsIdenterRepository tpsIdenterRepository;
     private final KrrRepository krrRepository;
     private final EregRepository eregRepository;
 
@@ -59,7 +59,7 @@ public class EnvironmentInitializationService {
 
         /*
           Order of method calls are important to ensure that the values exist in the databases.
-          Some methods may fail if at the very least TPS (SKD) have not been created.
+          Some methods may fail if at the very least TPS-ident (SKD) have not been created.
           TP and SAM are also critical databases for the fag applications
         */
         Set<String> missingFnrs = initializeSkd(environment);
@@ -87,25 +87,25 @@ public class EnvironmentInitializationService {
      */
     public Set<String> initializeSkd(String environment) {
         log.info("Start init of Skd...");
-        Set<TpsModel> tpsSet = new HashSet<>();
-        tpsRepository.findAll().forEach(tpsSet::add);
+        Set<TpsIdentModel> tpsIdentSet = new HashSet<>();
+        tpsIdenterRepository.findAll().forEach(tpsIdentSet::add);
 
-        tpsSet = tpsSet
+        tpsIdentSet = tpsIdentSet
                 .parallelStream()
                 .collect(Collectors.toSet());
 
         Set<String> playgroupFnrs = hodejegerenConsumer.getPlaygroupFnrs(staticDataPlaygroup);
-        tpsSet = tpsSet.parallelStream().filter(t -> !playgroupFnrs.contains(t.getFnr())).collect(Collectors.toSet());
+        tpsIdentSet = tpsIdentSet.parallelStream().filter(t -> !playgroupFnrs.contains(t.getFnr())).collect(Collectors.toSet());
 
-        if (!tpsSet.isEmpty()) {
+        if (!tpsIdentSet.isEmpty()) {
             if (log.isInfoEnabled()) {
                 log.info(
                         "Identer mangler i avspillings gruppen {}. Legger til identene: {} i gruppen.",
                         staticDataPlaygroup,
-                        tpsSet.stream().map(TpsModel::getFnr).collect(Collectors.joining(", "))
+                        tpsIdentSet.stream().map(TpsIdentModel::getFnr).collect(Collectors.joining(", "))
                 );
             }
-            skdConsumer.createTpsMessagesInGroup(tpsSet, staticDataPlaygroup);
+            skdConsumer.createTpsIdenterMessagesInGroup(tpsIdentSet, staticDataPlaygroup);
         }
 
         skdConsumer.send(staticDataPlaygroup, environment);

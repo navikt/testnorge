@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.consumer.rs.request.SkdRequest;
 import no.nav.registre.sdForvalter.consumer.rs.response.SkdResponse;
-import no.nav.registre.sdForvalter.database.model.TpsModel;
+import no.nav.registre.sdForvalter.database.model.TpsIdentModel;
 
 @Slf4j
 @Component
@@ -35,7 +35,7 @@ public class SkdConsumer {
      * @param data      Et set med personer som skal legges til i avspillergruppen
      * @param playgroup AvspillergruppeId som meldingene skal legges til på
      */
-    public void createTpsMessagesInGroup(Set<TpsModel> data, Long playgroup) {
+    public void createTpsIdenterMessagesInGroup(Set<TpsIdentModel> data, Long playgroup) {
         Set<SkdRequest> requests = data.parallelStream().map(t -> SkdRequest.builder()
                 .dateOfBirth(t.getFnr().substring(0, 6))
                 .fnr(t.getFnr().substring(6))

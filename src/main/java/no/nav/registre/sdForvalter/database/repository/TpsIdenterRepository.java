@@ -3,9 +3,9 @@ package no.nav.registre.sdForvalter.database.repository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import no.nav.registre.sdForvalter.database.model.TpsModel;
+import no.nav.registre.sdForvalter.database.model.TpsIdentModel;
 
 @Repository
-public interface TpsRepository extends CrudRepository<TpsModel, String> {
+public interface TpsIdenterRepository extends CrudRepository<TpsIdentModel, String> {
 
 }
