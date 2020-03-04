@@ -26,19 +26,21 @@ const getIconType = (iconItem, row) => {
 	return _isFunction(iconItem) ? iconItem(row) : iconItem
 }
 
-export default function Table({ data, iconItem, columns, onRowClick, onExpand }) {
+export default function Table({ data, iconItem, columns, onRowClick, header = true, onExpand }) {
 	const headerClass = cn('dot-header', {
 		'has-icon': Boolean(iconItem)
 	})
 
 	return (
 		<div className="dot">
-			<div className={headerClass}>
-				{columns.map((cell, idx) => (
-					<Column key={idx} width={cell.width} value={cell.text} />
-				))}
-				{onExpand && <Column />}
-			</div>
+			{header && (
+				<div className={headerClass}>
+					{columns.map((cell, idx) => (
+						<Column key={idx} width={cell.width} value={cell.text} />
+					))}
+					{onExpand && <Column />}
+				</div>
+			)}
 			{data.map((row, rowIdx) => {
 				const navLink = onRowClick ? onRowClick(row) : null
 				const expandComponent = onExpand ? onExpand(row) : null
