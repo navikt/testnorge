@@ -172,7 +172,15 @@ public class SyntetiseringService {
             while (iterator.hasNext()) {
                 var ident = iterator.next();
                 try {
-                    aaregService.hentArbeidsforhold(ident, miljoe);
+                    var response = aaregService.hentArbeidsforhold(ident, miljoe);
+                    if (response.hasBody()) {
+                        var responseBody = response.getBody();
+                        if (responseBody == null || responseBody.isEmpty()) {
+                            iterator.remove();
+                        }
+                    } else {
+                        iterator.remove();
+                    }
                 } catch (HttpStatusCodeException e) {
                     iterator.remove();
                 }

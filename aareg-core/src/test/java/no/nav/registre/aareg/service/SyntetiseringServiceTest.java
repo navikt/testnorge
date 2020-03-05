@@ -125,7 +125,7 @@ public class SyntetiseringServiceTest {
     public void shouldHenteIdenterMedArbeidsforhold() {
         when(hodejegerenConsumer.get(avspillergruppeId)).thenReturn(identer);
         when(aaregstubConsumer.hentEksisterendeIdenter()).thenReturn(identer);
-        when(aaregService.hentArbeidsforhold(anyString(), eq(miljoe))).thenReturn(ResponseEntity.ok().build());
+        when(aaregService.hentArbeidsforhold(anyString(), eq(miljoe))).thenReturn(ResponseEntity.ok().body(new ArrayList<>(Collections.singletonList(new HashMap<>()))));
 
         var response = new ArrayList<>(syntetiseringService.hentIdenterIAvspillergruppeMedArbeidsforhold(avspillergruppeId, miljoe, true));
 
