@@ -13,7 +13,7 @@ export const InntektstubForm = ({ formikBag }) => (
 		<Panel
 			heading="Inntektskomponenten"
 			hasErrors={panelError(formikBag, inntektstubAttributt)}
-			iconType="sigrun"
+			iconType="inntektstub"
 			startOpen={() => erForste(formikBag.values, [inntektstubAttributt])}
 		>
 			<div className="flexbox--flex-wrap">

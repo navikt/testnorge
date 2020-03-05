@@ -30,6 +30,7 @@ import Wrench from '~/assets/icons/nav-ikoner/line/SVG/21-settings/wrench.svg'
 import Calendar from '~/assets/icons/nav-ikoner/line/SVG/22-time/calendar-3.svg'
 import InformationCircle from '~/assets/icons/nav-ikoner/line/SVG/23-alerts-informations/information-circle.svg'
 import BankNote from '~/assets/icons/nav-ikoner/line/SVG/24-business-finance/bank-notes-3.svg'
+import MoneyBag from '~/assets/icons/nav-ikoner/line/SVG/24-business-finance/money-bag-dollar.svg'
 import Institusjon from '~/assets/icons/nav-ikoner/line/SVG/26-places/building-2.svg'
 import House from '~/assets/icons/nav-ikoner/line/SVG/26-places/home-1.svg'
 import Globe from '~/assets/icons/nav-ikoner/line/SVG/26-places/globe-1.svg'
@@ -106,6 +107,7 @@ export const icons = {
 	institusjon: Institusjon,
 	arbeid: Wrench,
 	sigrun: BankNote,
+	inntektstub: MoneyBag,
 	udi: Globe,
 	kommentar: ChatBubble,
 	partner: Love,

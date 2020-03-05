@@ -7,15 +7,20 @@ import tilleggsinformasjonPaths from '../paths'
 
 const InntektStub = ({ formikBag, inntektPath }) => {
 	const [fields, setFields] = useState({})
-	// TODO: kanskje bruke formikBag.values for å hente fields når man går fram og tilbake?
+	const [inntektValues, setInntektValues] = useState(_get(formikBag.values, inntektPath))
 	const [currentInntektstype, setCurrentInntektstype] = useState(
 		_get(formikBag.values, `${inntektPath}.inntektstype`)
 	)
 
 	useEffect(() => {
 		setCurrentInntektstype(_get(formikBag.values, `${inntektPath}.inntektstype`))
-		// console.log('currentInntektstype :', currentInntektstype)
 	})
+
+	useEffect(() => {
+		if (inntektValues.inntektstype !== '' && Object.keys(fields).length < 1) {
+			api.validate(inntektValues).then(response => setFields(response))
+		}
+	}, [])
 
 	const setFormikBag = values => {
 		const tilleggsinformasjonAttributter = {
@@ -53,7 +58,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 
 	return (
 		<Formik
-			initialValues={{}}
+			initialValues={inntektValues.inntektstype !== '' ? inntektValues : {}}
 			onSubmit={(values, { resetForm }) => {
 				if (currentInntektstype && values.inntektstype !== currentInntektstype) {
 					resetForm({ values: { inntektstype: values.inntektstype } })
