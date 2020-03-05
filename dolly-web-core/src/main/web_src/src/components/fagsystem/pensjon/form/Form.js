@@ -11,8 +11,12 @@ import Formatters from "~/utils/DataFormatter";
 import {FormikTextInput} from "~/components/ui/form/inputs/textInput/TextInput";
 import {FormikCheckbox} from "~/components/ui/form/inputs/checbox/Checkbox";
 
+
 const pensjonAttributt = 'pensjonforvalter'
 const path = `${pensjonAttributt}.inntekt`
+
+const hjelpetekst = "Hvis nedjuster med grunnbeløp er valgt skal beløp angis som årsbeløp i dagens kroneverdi, " +
+    "og vil nedjusteres basert på snitt grunnbeløp i inntektsåret."
 
 export const PensjonForm = ({ formikBag }) => (
         <Vis attributt={pensjonAttributt}>
@@ -21,8 +25,9 @@ export const PensjonForm = ({ formikBag }) => (
                 hasErrors={panelError(formikBag, pensjonAttributt)}
                 iconType="pensjon"
                 startOpen={() => erForste(formikBag.values, [pensjonAttributt])}
+                informasjonstekst={hjelpetekst}
             >
-                <Kategori title="Inntekt" vis={path}>
+                <Kategori title="Pensjonsgivende inntekt" vis={path}>
                     <React.Fragment>
                         <FormikSelect
                             name={`${path}.fomAar`}
@@ -43,6 +48,7 @@ export const PensjonForm = ({ formikBag }) => (
                             )}
                             isClearable={false}
                         />
+
                         <FormikTextInput
                             name={`${path}.belop`}
                             label="Beløp"
@@ -54,7 +60,9 @@ export const PensjonForm = ({ formikBag }) => (
                             name={`${path}.redusertMedGrunnbelop`}
                             label="Nedjuster med grunnbeløp"
                             checkboxMargin
+                            size="medium"
                         />
+
                     </React.Fragment>
                 </Kategori>
             </Panel>
