@@ -5,9 +5,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import no.nav.registre.spion.consumer.rs.AaregConsumer;
+import no.nav.registre.spion.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.spion.consumer.rs.response.aareg.AaregResponse;
 import static no.nav.registre.spion.utils.RandomUtils.getRandomBoundedNumber;
 
+import no.nav.registre.spion.consumer.rs.response.hodejegeren.HodejegerenResponse;
 import no.nav.registre.spion.provider.rs.response.SyntetiserVedtakResponse;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ import no.nav.registre.spion.domain.Vedtak;
 public class SyntetiseringService {
 
     private final AaregConsumer aaregConsumer;
+    private final HodejegerenConsumer hodejegerenConsumer;
 
     public List<SyntetiserVedtakResponse> syntetiserVedtak(
             long groupId,
@@ -64,14 +67,15 @@ public class SyntetiseringService {
 
 
         List<AaregResponse> aaregResponse = aaregConsumer.hentArbeidsforholdTilIdent(utvalgtIdent, miljoe);
-        String orgnummer = aaregResponse.get(new Random().nextInt(aaregResponse.size()))
-                .getArbeidsgiver().getOrganisasjonsnummer();
+        AaregResponse arbeidsforhold = aaregResponse.get(new Random().nextInt(aaregResponse.size()));
+
+        HodejegerenResponse persondata = hodejegerenConsumer.hentPersondataTilIdent(utvalgtIdent, miljoe);
 
         LocalDate lastSluttDato = startDato.plusDays(getRandomBoundedNumber(0,90));
 
         for(int i=0; i<antallPerioder; i++){
 
-            Vedtak vedtak = new Vedtak(utvalgtIdent, orgnummer, lastSluttDato, i==0);
+            Vedtak vedtak = new Vedtak(persondata, arbeidsforhold, lastSluttDato, i==0);
             lastSluttDato = vedtak.getTom();
 
             vedtaksliste.add(vedtak);
