@@ -10,6 +10,7 @@ import { AaregVisning } from '~/components/fagsystem/aareg/visning/Visning'
 import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
 import { SigrunstubVisning } from '~/components/fagsystem/sigrunstub/visning/Visning'
 import { InstVisning } from '~/components/fagsystem/inst/visning/InstVisning'
+import {PensjonVisning} from "~/components/fagsystem/pensjon/visning/PensjonVisning";
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/SammendragModal'
@@ -33,6 +34,7 @@ export const PersonVisning = ({
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.bestilling.tpsf)} />
 			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
+			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			<AaregVisning data={data.aareg} loading={loading.aareg} />
 			<InstVisning data={data.instdata} loading={loading.instdata} />

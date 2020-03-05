@@ -5,7 +5,7 @@ import _set from 'lodash/set'
 import _merge from 'lodash/merge'
 import _last from 'lodash/last'
 import _isEmpty from 'lodash/isEmpty'
-import { DollyApi, TpsfApi, SigrunApi, KrrApi, ArenaApi, InstApi, UdiApi } from '~/service/Api'
+import { DollyApi, TpsfApi, SigrunApi, KrrApi, ArenaApi, InstApi, UdiApi, PensjonApi } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
 import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
@@ -23,6 +23,12 @@ export const actions = createActions(
 		],
 		getSigrunSekvensnr: [
 			SigrunApi.getSekvensnummer,
+			ident => ({
+				ident
+			})
+		],
+		getPensjon: [
+			PensjonApi.getPerson,
 			ident => ({
 				ident
 			})
@@ -104,7 +110,8 @@ const initialState = {
 	aareg: {},
 	pdlforvalter: {},
 	instdata: {},
-	udistub: {}
+	udistub: {},
+	pensjonforvalter: {},
 }
 
 export default handleActions(
@@ -137,6 +144,9 @@ export default handleActions(
 		[onSuccess(actions.getAareg)](state, action) {
 			state.aareg[action.meta.ident] = action.payload.data
 		},
+		[onSuccess(actions.getPensjon)](state, action) {
+			state.pensjonforvalter[action.meta.ident] = action.payload.data
+		},
 		[onSuccess(actions.getUdi)](state, action) {
 			state.udistub[action.meta.ident] = action.payload.data.person
 		},
@@ -155,6 +165,7 @@ export default handleActions(
 			delete state.pdlforvalter[action.meta.ident]
 			delete state.instdata[action.meta.ident]
 			delete state.udistub[action.meta.ident]
+			delete state.pensjonforvalter[action.meta.ident]
 		}
 	},
 	initialState
@@ -208,6 +219,8 @@ export const fetchDataFraFagsystemer = personId => (dispatch, getState) => {
 				return dispatch(actions.getAareg(personId, success[system][0]))
 			case 'INST2':
 				return dispatch(actions.getInst(personId, success[system][0]))
+			case 'POPP':
+				return dispatch(actions.getPensjon(personId, success[system][0]))
 		}
 	})
 }
@@ -283,6 +296,7 @@ export const selectDataForIdent = (state, ident) => {
 		aareg: state.fagsystem.aareg[ident],
 		pdlforvalter: state.fagsystem.pdlforvalter[ident],
 		instdata: state.fagsystem.instdata[ident],
-		udistub: state.fagsystem.udistub[ident]
+		udistub: state.fagsystem.udistub[ident],
+		pensjonforvalter: state.fagsystem.pensjonforvalter[ident]
 	}
 }
