@@ -41,6 +41,7 @@ import ChevronDown from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-do
 import ChevronUp from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-up-8.svg'
 import ChevronLeft from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-left-8.svg'
 import ChevronRight from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-right-8.svg'
+import PiggyBank from '~/assets/icons/nav-ikoner/line/SVG/24-business-finance/piggy-bank.svg'
 
 import ProblemTriangle from '~/assets/icons/custom/ProblemTriangle.svg'
 import Details from '~/assets/icons/custom/Details.svg'
@@ -110,7 +111,8 @@ export const icons = {
 	kommentar: ChatBubble,
 	partner: Love,
 	barn: Baby,
-	dolly: Dolly
+	dolly: Dolly,
+	pensjon: PiggyBank
 }
 
 const px = v => `${v}px`

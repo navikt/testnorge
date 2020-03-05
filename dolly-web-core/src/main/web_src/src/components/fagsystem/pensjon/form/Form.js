@@ -19,17 +19,17 @@ export const PensjonForm = ({ formikBag }) => (
             <Panel
                 heading="Pensjonsgivende inntekt"
                 hasErrors={panelError(formikBag, pensjonAttributt)}
-                iconType="sigrun"
+                iconType="pensjon"
                 startOpen={() => erForste(formikBag.values, [pensjonAttributt])}
             >
-                <Kategori title="Pensjonsgivende inntekt" vis={path}>
+                <Kategori title="Inntekt" vis={path}>
                     <React.Fragment>
                         <FormikSelect
                             name={`${path}.fomAar`}
                             label="Fra og med år"
                             options={Formatters.getYearRangeOptions(
                                 1968,
-                                new Date().getFullYear()
+                                new Date().getFullYear()-1
                             )}
                             isClearable={false}
                         />
@@ -39,7 +39,7 @@ export const PensjonForm = ({ formikBag }) => (
                             label="Til og med år"
                             options={Formatters.getYearRangeOptions(
                                 1968,
-                                new Date().getFullYear()
+                                new Date().getFullYear()-1
                             )}
                             isClearable={false}
                         />
