@@ -11,10 +11,10 @@ import java.util.List;
 import no.nav.registre.sdForvalter.database.ModelEnum;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
-import no.nav.registre.sdForvalter.database.model.TpsModel;
+import no.nav.registre.sdForvalter.database.model.TpsIdentModel;
 import no.nav.registre.sdForvalter.database.repository.AaregRepository;
 import no.nav.registre.sdForvalter.database.repository.KrrRepository;
-import no.nav.registre.sdForvalter.database.repository.TpsRepository;
+import no.nav.registre.sdForvalter.database.repository.TpsIdenterRepository;
 import no.nav.registre.sdForvalter.util.database.DatabaseInitializer;
 
 @Slf4j
@@ -24,7 +24,7 @@ public class StaticFileService {
 
     private final AaregRepository aaregRepository;
     private final KrrRepository krrRepository;
-    private final TpsRepository tpsRepository;
+    private final TpsIdenterRepository tpsIdenterRepository;
 
     @PostConstruct
     public void initializeFromLocalFiles() {
@@ -46,8 +46,8 @@ public class StaticFileService {
     @SuppressWarnings(value = "unchecked")
     private void readTpsLocalFile() {
         try {
-            List<TpsModel> entities = (List<TpsModel>) (List<?>) DatabaseInitializer.initializeFromCsv("src/main/resources/statisk_data/tps.csv", ModelEnum.TPS, ";");
-            tpsRepository.saveAll(entities);
+            List<TpsIdentModel> entities = (List<TpsIdentModel>) (List<?>) DatabaseInitializer.initializeFromCsv("src/main/resources/statisk_data/tps.csv", ModelEnum.TPS, ";");
+            tpsIdenterRepository.saveAll(entities);
         } catch (IOException e) {
             log.warn("Unable to read local file, expected this to be present when initializing.\nDatabase might not have been initialized with the correct values");
         }

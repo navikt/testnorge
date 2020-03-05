@@ -24,11 +24,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import no.nav.registre.sdForvalter.database.model.KildeSystemModel;
-import no.nav.registre.sdForvalter.database.model.TpsModel;
+import no.nav.registre.sdForvalter.database.model.TpsIdentModel;
 import no.nav.registre.sdForvalter.database.repository.KildeSystemRepository;
-import no.nav.registre.sdForvalter.database.repository.TpsRepository;
+import no.nav.registre.sdForvalter.database.repository.TpsIdenterRepository;
 import no.nav.registre.sdForvalter.domain.KildeSystem;
-import no.nav.registre.sdForvalter.domain.Tps;
+import no.nav.registre.sdForvalter.domain.TpsIdent;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -44,24 +44,24 @@ public class StaticDataControllerTpsIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private TpsRepository tpsRepository;
+    private TpsIdenterRepository tpsIdenterRepository;
 
     @Autowired
     private KildeSystemRepository kildeSystemRepository;
 
 
     @Test
-    public void shouldGetTpsSetWithKildeSystem() throws Exception {
+    public void shouldGetTpsIdentSetWithKildeSystem() throws Exception {
         KildeSystemModel altinn = kildeSystemRepository.save(new KildeSystemModel("Altinn"));
 
-        TpsModel tpsModel = TpsModel
+        TpsIdentModel tpsIdentModel = TpsIdentModel
                 .builder()
                 .firstName("Test")
                 .lastName("Testen")
                 .fnr("101010101")
                 .kildeSystemModel(altinn)
                 .build();
-        tpsRepository.save(tpsModel);
+        tpsIdenterRepository.save(tpsIdentModel);
 
         String json = mvc.perform(get("/api/v1/statiskData/tps/")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -70,47 +70,47 @@ public class StaticDataControllerTpsIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        Set<Tps> response = objectMapper.readValue(json, new TypeReference<Set<Tps>>() {
+        Set<TpsIdent> response = objectMapper.readValue(json, new TypeReference<Set<TpsIdent>>() {
         });
-        assertThat(response).containsOnly(new Tps(tpsModel));
+        assertThat(response).containsOnly(new TpsIdent(tpsIdentModel));
     }
 
     @Test
-    public void shouldAddTpsSetToDatabase() throws Exception {
-        Tps tps = Tps.builder()
+    public void shouldAddTpsIdentSetToDatabase() throws Exception {
+        TpsIdent tpsIdent = TpsIdent.builder()
                 .firstName("Test")
                 .lastName("Testen")
                 .fnr("01010101011")
                 .build();
-        Set<Tps> tpsSet = createTpsSet(tps);
+        Set<TpsIdent> tpsIdentSet = createTpsIdentSet(tpsIdent);
         mvc.perform(post("/api/v1/statiskData/tps/")
-                .content(objectMapper.writeValueAsString(tpsSet))
+                .content(objectMapper.writeValueAsString(tpsIdentSet))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        assertThat(tpsRepository.findAll()).containsOnly(new TpsModel(tps, null));
+        assertThat(tpsIdenterRepository.findAll()).containsOnly(new TpsIdentModel(tpsIdent, null));
     }
 
     @Test
     public void shouldAddKildeSystemToDatabase() throws Exception {
         KildeSystem altinn = new KildeSystem("Altinn");
-        final Tps hans = Tps.builder()
+        final TpsIdent hans = TpsIdent.builder()
                 .firstName("Test")
                 .lastName("Testen")
                 .fnr("01010101011")
                 .kildeSystem(altinn)
                 .build();
 
-        final Tps petter = Tps.builder()
+        final TpsIdent petter = TpsIdent.builder()
                 .firstName("Testern")
                 .lastName("Testernson")
                 .fnr("01010101021")
                 .kildeSystem(altinn)
                 .build();
 
-        final Set<Tps> tpsSet = createTpsSet(hans, petter);
+        final Set<TpsIdent> tpsIdentSet = createTpsIdentSet(hans, petter);
         mvc.perform(post("/api/v1/statiskData/tps/")
-                .content(objectMapper.writeValueAsString(tpsSet))
+                .content(objectMapper.writeValueAsString(tpsIdentSet))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -125,11 +125,11 @@ public class StaticDataControllerTpsIntegrationTest {
 
     @After
     public void cleanUp() {
-        tpsRepository.deleteAll();
+        tpsIdenterRepository.deleteAll();
         kildeSystemRepository.deleteAll();
     }
 
-    private Set<Tps> createTpsSet(Tps... tpss) {
-        return new HashSet<>(Arrays.asList(tpss));
+    private Set<TpsIdent> createTpsIdentSet(TpsIdent... tpsIdenter) {
+        return new HashSet<>(Arrays.asList(tpsIdenter));
     }
 }

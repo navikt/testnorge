@@ -27,8 +27,8 @@ import java.util.HashSet;
 
 import no.nav.registre.sdForvalter.consumer.rs.request.SkdRequest;
 import no.nav.registre.sdForvalter.consumer.rs.response.SkdResponse;
-import no.nav.registre.sdForvalter.database.model.TpsModel;
-import no.nav.registre.sdForvalter.database.repository.TpsRepository;
+import no.nav.registre.sdForvalter.database.model.TpsIdentModel;
+import no.nav.registre.sdForvalter.database.repository.TpsIdenterRepository;
 import no.nav.registre.sdForvalter.util.JsonTestHelper;
 
 @RunWith(SpringRunner.class)
@@ -52,7 +52,7 @@ public class OrkestreringsControllerTpsIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private TpsRepository tpsRepository;
+    private TpsIdenterRepository tpsIdenterRepository;
 
     private UrlPathPattern hodejegerenUrlPattern;
     private UrlPathPattern leggTilNyeMeldingerUrlPattern;
@@ -70,11 +70,11 @@ public class OrkestreringsControllerTpsIntegrationTest {
 
     @Test
     public void shouldInitiateTps() throws Exception {
-        final TpsModel tps = TpsModel.builder().firstName("Test").lastName("Testen").fnr("01010101011").build();
-        tpsRepository.save(tps);
+        final TpsIdentModel tpsIdent = TpsIdentModel.builder().firstName("Test").lastName("Testen").fnr("01010101011").build();
+        tpsIdenterRepository.save(tpsIdent);
 
         JsonTestHelper.stubGet(hodejegerenUrlPattern, Collections.EMPTY_SET, objectMapper);
-        JsonTestHelper.stubGet(levendeIdenterUrlPattern, Collections.singletonList(tps.getFnr()), objectMapper);
+        JsonTestHelper.stubGet(levendeIdenterUrlPattern, Collections.singletonList(tpsIdent.getFnr()), objectMapper);
         JsonTestHelper.stubPost(leggTilNyeMeldingerUrlPattern, Collections.EMPTY_LIST, objectMapper);
         JsonTestHelper.stubPost(startAvspillingUrlPattern, new SkdResponse(1, 0, new ArrayList<>(), new ArrayList<>()), objectMapper);
 
@@ -87,11 +87,11 @@ public class OrkestreringsControllerTpsIntegrationTest {
 
     @Test
     public void shouldUpdateTpsPlaygroupFromDatabaseAndRunPlaygroup() throws Exception {
-        final TpsModel tps = TpsModel.builder().firstName("Test").lastName("Testeb").fnr("01010101011").build();
-        tpsRepository.save(tps);
+        final TpsIdentModel tpsIdent = TpsIdentModel.builder().firstName("Test").lastName("Testeb").fnr("01010101011").build();
+        tpsIdenterRepository.save(tpsIdent);
 
         JsonTestHelper.stubGet(hodejegerenUrlPattern, Collections.EMPTY_SET, objectMapper);
-        JsonTestHelper.stubGet(levendeIdenterUrlPattern, Collections.singletonList(tps.getFnr()), objectMapper);
+        JsonTestHelper.stubGet(levendeIdenterUrlPattern, Collections.singletonList(tpsIdent.getFnr()), objectMapper);
         JsonTestHelper.stubPost(leggTilNyeMeldingerUrlPattern, Collections.EMPTY_LIST, objectMapper);
         JsonTestHelper.stubPost(startAvspillingUrlPattern, new SkdResponse(1, 0, new ArrayList<>(), new ArrayList<>()), objectMapper);
 
@@ -100,21 +100,21 @@ public class OrkestreringsControllerTpsIntegrationTest {
 
         JsonTestHelper.verifyPost(
                 leggTilNyeMeldingerUrlPattern,
-                new HashSet<>(Collections.singleton(createSkdRequest(tps))),
+                new HashSet<>(Collections.singleton(createSkdRequest(tpsIdent))),
                 objectMapper
         );
         JsonTestHelper.verifyPost(startAvspillingUrlPattern);
     }
 
-    public SkdRequest createSkdRequest(TpsModel tps) {
+    public SkdRequest createSkdRequest(TpsIdentModel tpsIdent) {
         return SkdRequest.builder()
-                .dateOfBirth(tps.getFnr().substring(0, 6))
-                .fnr(tps.getFnr().substring(6))
-                .address(tps.getAddress())
-                .city(tps.getCity())
-                .firstName(tps.getFirstName())
-                .lastName(tps.getLastName())
-                .postnr(tps.getPostNr())
+                .dateOfBirth(tpsIdent.getFnr().substring(0, 6))
+                .fnr(tpsIdent.getFnr().substring(6))
+                .address(tpsIdent.getAddress())
+                .city(tpsIdent.getCity())
+                .firstName(tpsIdent.getFirstName())
+                .lastName(tpsIdent.getLastName())
+                .postnr(tpsIdent.getPostNr())
                 .build();
     }
 
@@ -122,7 +122,7 @@ public class OrkestreringsControllerTpsIntegrationTest {
     @After
     public void cleanUp() {
         reset();
-        tpsRepository.deleteAll();
+        tpsIdenterRepository.deleteAll();
     }
 
 

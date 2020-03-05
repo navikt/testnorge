@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Set;
 
 import no.nav.registre.sdForvalter.adapter.EregAdapter;
-import no.nav.registre.sdForvalter.adapter.TpsAdapter;
+import no.nav.registre.sdForvalter.adapter.TpsIdenterAdapter;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.domain.Ereg;
-import no.nav.registre.sdForvalter.domain.Tps;
+import no.nav.registre.sdForvalter.domain.TpsIdent;
 import no.nav.registre.sdForvalter.provider.rs.request.FastDataRequest;
 import no.nav.registre.sdForvalter.service.StaticDataService;
 
@@ -28,18 +28,18 @@ import no.nav.registre.sdForvalter.service.StaticDataService;
 public class StaticDataController {
 
     private final StaticDataService staticDataService;
-    private final TpsAdapter tpsAdapter;
+    private final TpsIdenterAdapter tpsIdenterAdapter;
     private final EregAdapter eregAdapter;
 
 
     @GetMapping(value = "/tps")
-    public ResponseEntity<Set<Tps>> getTpsStaticData() {
-        return ResponseEntity.ok(tpsAdapter.fetchTps());
+    public ResponseEntity<Set<TpsIdent>> getTpsStaticData() {
+        return ResponseEntity.ok(tpsIdenterAdapter.fetchTpsIdenter());
     }
 
     @PostMapping("/tps")
-    public ResponseEntity<Set<Tps>> createTpsStaticData(@RequestBody Set<Tps> tpsSet) {
-        return ResponseEntity.ok(tpsAdapter.saveTps(tpsSet));
+    public ResponseEntity<Set<TpsIdent>> createTpsStaticData(@RequestBody Set<TpsIdent> tpsIdentSet) {
+        return ResponseEntity.ok(tpsIdenterAdapter.saveTpsIdenter(tpsIdentSet));
     }
 
     @GetMapping(value = "/aareg")
@@ -65,7 +65,7 @@ public class StaticDataController {
     @PostMapping(value = "/")
     public ResponseEntity<FastDataRequest> storeStaticDataInTps(@RequestBody FastDataRequest data) {
         FastDataRequest responseBody = new FastDataRequest();
-        responseBody.setTps(tpsAdapter.saveTps(data.getTps()));
+        responseBody.setTps(tpsIdenterAdapter.saveTpsIdenter(data.getTps()));
         responseBody.setKrr(staticDataService.saveInKrr(data.getKrr()));
         responseBody.setEreg(eregAdapter.saveEregData(data.getEreg()));
         responseBody.setAareg(staticDataService.saveInAareg(data.getAareg()));

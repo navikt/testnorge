@@ -17,7 +17,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.List;
 
-import no.nav.registre.sdForvalter.domain.Tps;
+import no.nav.registre.sdForvalter.domain.TpsIdent;
 import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 
 @Entity
@@ -28,9 +28,9 @@ import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
-@Table(name = "tps")
+@Table(name = "tps_identer")
 @EqualsAndHashCode(callSuper = false)
-public class TpsModel extends AuditModel implements CreatableFromString {
+public class TpsIdentModel extends AuditModel implements CreatableFromString {
 
 
     @Id
@@ -51,13 +51,13 @@ public class TpsModel extends AuditModel implements CreatableFromString {
     @JoinColumn(name = "kilde_system_id")
     private KildeSystemModel kildeSystemModel;
 
-    public TpsModel(Tps tps, KildeSystemModel kildeSystemModel) {
-        fnr = tps.getFnr();
-        firstName = tps.getFirstName();
-        lastName = tps.getLastName();
-        address = tps.getAddress();
-        postNr = tps.getPostNr();
-        city = tps.getCity();
+    public TpsIdentModel(TpsIdent tpsIdent, KildeSystemModel kildeSystemModel) {
+        fnr = tpsIdent.getFnr();
+        firstName = tpsIdent.getFirstName();
+        lastName = tpsIdent.getLastName();
+        address = tpsIdent.getAddress();
+        postNr = tpsIdent.getPostNr();
+        city = tpsIdent.getCity();
         this.kildeSystemModel = kildeSystemModel;
     }
 
