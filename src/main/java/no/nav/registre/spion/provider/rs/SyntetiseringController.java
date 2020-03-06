@@ -32,7 +32,6 @@ public class SyntetiseringController {
 
     private final VedtakPublisher vedtakPublisher;
 
-
     @Value("${tps.forvalter.avspillergruppe.id}")
     private String defaultAvspillergruppeId;
 
