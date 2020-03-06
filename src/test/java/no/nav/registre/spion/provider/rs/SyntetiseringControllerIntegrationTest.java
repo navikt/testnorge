@@ -79,7 +79,7 @@ public class SyntetiseringControllerIntegrationTest {
                 "",
                 new Arbeidstaker("",IDENT,""),
                 new Arbeidsgiver("organisasjon", "org_nr"),
-               null,
+                null,
                 "",
                 null,
                 null,
@@ -87,7 +87,7 @@ public class SyntetiseringControllerIntegrationTest {
                 LocalDate.now(),
                 LocalDate.now(),
                 new Sporingsinformasjon()
-                ));
+        ));
 
         HodejegerenResponse persondata = new HodejegerenResponse(
                 IDENT,

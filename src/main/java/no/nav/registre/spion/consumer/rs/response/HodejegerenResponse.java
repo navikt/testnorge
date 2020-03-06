@@ -9,21 +9,20 @@ import lombok.Value;
 @AllArgsConstructor
 public class HodejegerenResponse {
 
-    private final String fnr;
-    private final String fornavn;
-    private final String mellomnavn;
-    private final String etternavn;
-    private final String kortnavn;
-    private final String innvandretFra;
-    private final String datoInnvandret;
-    private final String kodeInnvandretFra;
-    private final String sivilstand;
-    private final String datoSivilstand;
-    private final String kodeSivilstand;
-    private final String statsborger;
-    private final String datoStatsborger;
-    private final String kodeStatsborger;
-
+    String fnr;
+    String fornavn;
+    String mellomnavn;
+    String etternavn;
+    String kortnavn;
+    String innvandretFra;
+    String datoInnvandret;
+    String kodeInnvandretFra;
+    String sivilstand;
+    String datoSivilstand;
+    String kodeSivilstand;
+    String statsborger;
+    String datoStatsborger;
+    String kodeStatsborger;
 
 
 }

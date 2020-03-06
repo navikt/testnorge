@@ -8,8 +8,8 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 public class Ansettelsesperiode {
 
-    private final Periode periode;
-    private final Periode bruksperiode;
-    private final Sporingsinformasjon sporingsinformasjon;
+    Periode periode;
+    Periode bruksperiode;
+    Sporingsinformasjon sporingsinformasjon;
 
 }

@@ -8,5 +8,5 @@ import java.time.LocalDate;
 @Value
 @NoArgsConstructor(force = true)
 public class Periode{
-    private final LocalDate fom;
+    LocalDate fom;
 }

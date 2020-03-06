@@ -9,6 +9,6 @@ import lombok.Value;
 @AllArgsConstructor
 public class Arbeidsgiver {
 
-    private final String type;
-    private final String organisasjonsnummer;
+    String type;
+    String organisasjonsnummer;
 }
