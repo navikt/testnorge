@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
@@ -144,15 +143,18 @@ public class StaticDataControllerEregIntegrationTest {
 
         EregModel eregWithGruppeModel = EregModel
                 .builder()
-                .orgnr("123456789")
+                .orgnr("987654321")
                 .enhetstype("BEDR")
                 .gruppeModel(gruppeModel)
                 .build();
 
         eregRepository.saveAll(Arrays.asList(eregModel, eregWithGruppeModel));
 
-        String json = mvc.perform(get("/api/v1/faste-data/ereg/")
-                .contentType(MediaType.APPLICATION_JSON))
+        String json = mvc.perform(
+                get("/api/v1/faste-data/ereg/")
+                        .param("gruppe", gruppeModel.getKode())
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()

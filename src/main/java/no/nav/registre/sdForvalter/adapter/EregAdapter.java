@@ -22,8 +22,8 @@ public class EregAdapter {
         return StreamSupport
                 .stream(repository.findAll().spliterator(), false)
                 .filter(model -> gruppe == null
-                        || model.getGruppeModel() == null
-                        || model.getGruppeModel().getKode().equals(gruppe)
+                        || model.getGruppeModel() != null
+                        && model.getGruppeModel().getKode().equals(gruppe)
                 )
                 .map(Ereg::new)
                 .collect(Collectors.toList());
