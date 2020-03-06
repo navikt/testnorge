@@ -79,7 +79,7 @@ public class SyntetiseringServiceTest {
     public void startSyntetiseringTestIngenFeil() {
         when(inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(anyMap())).thenReturn(inntekter);
 
-        Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request);
+        Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request, true);
 
         assertThat(feil.size(), equalTo(0));
         verify(hodejegerenHistorikkConsumer).saveHistory(any());
@@ -95,7 +95,7 @@ public class SyntetiseringServiceTest {
         List<Inntektsinformasjon> feiletInntekt = new ArrayList<>(Collections.singletonList(InntektGenerator.genererFeiletInntektsinformasjon("10128400000", beloep)));
         when(inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(anyMap())).thenReturn(inntekter);
         when(inntektstubV2Consumer.leggInntekterIInntektstub(inntekter)).thenReturn(feiletInntekt);
-        Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request);
+        Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request, true);
         assertThat(feil.size(), equalTo(1));
         assertThat(feil.get("10128400000").get(0).getBeloep(), equalTo(feiletInntekt.get(0).getInntektsliste().get(0).getBeloep()));
     }
@@ -108,7 +108,7 @@ public class SyntetiseringServiceTest {
     public void startSyntetiseringTestInntektSyntGirIngen() {
         SortedMap<String, List<RsInntekt>> tomSyntInntekt = new TreeMap<>();
         when(inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(anyMap())).thenReturn(tomSyntInntekt);
-        Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request);
+        Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request, true);
         assertThat(feil, equalTo(Collections.EMPTY_MAP));
     }
 
@@ -119,7 +119,7 @@ public class SyntetiseringServiceTest {
         List<Inntektsinformasjon> feiletInntekt = new ArrayList<>(Collections.singletonList(InntektGenerator.genererFeiletInntektsinformasjon("10128400000", 0)));
         when(inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(anyMap())).thenReturn(tomSyntInntekt);
         when(inntektstubV2Consumer.leggInntekterIInntektstub(anyMap())).thenReturn(feiletInntekt);
-        Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request);
+        Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request, true);
         assertThat(feil.size(), equalTo(1));
     }
 }

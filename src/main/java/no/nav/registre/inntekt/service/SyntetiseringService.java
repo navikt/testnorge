@@ -58,7 +58,10 @@ public class SyntetiseringService {
     private final HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
     private final TestnorgeAaregConsumer testnorgeAaregConsumer;
 
-    public Map<String, List<RsInntekt>> startSyntetisering(SyntetiseringsRequest syntetiseringsRequest) {
+    public Map<String, List<RsInntekt>> startSyntetisering(
+            SyntetiseringsRequest syntetiseringsRequest,
+            boolean opprettPaaEksisterende
+    ) {
         var identer = new HashSet<>(hentLevendeIdenterOverAlder(syntetiseringsRequest.getAvspillergruppeId()));
         var identerIAareg = new HashSet<>(testnorgeAaregConsumer.hentIdenterIAvspillergruppeMedArbeidsforhold(syntetiseringsRequest.getAvspillergruppeId(), syntetiseringsRequest.getMiljoe()));
         var identerIInntektstub = new HashSet<>(inntektstubV2Consumer.hentEksisterendeIdenter());
@@ -89,7 +92,9 @@ public class SyntetiseringService {
         Map<String, List<RsInntekt>> feiledeInntektsmeldinger = new HashMap<>();
         Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger = new HashMap<>();
 
-        opprettInntekterPaaEksisterende(identerIInntektstub, feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, syntetiseringsRequest.getMiljoe());
+        if (opprettPaaEksisterende) {
+            opprettInntekterPaaEksisterende(identerIInntektstub, feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, syntetiseringsRequest.getMiljoe());
+        }
 
         SortedMap<String, List<RsInntekt>> nyeIdenterMedInntekt = new TreeMap<>();
         for (var ident : nyeIdenter) {
