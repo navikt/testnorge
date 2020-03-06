@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.inntekt.consumer.rs.v2.InntektstubV2Consumer;
+import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
 import no.nav.registre.inntekt.domain.RsInntekt;
 import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 

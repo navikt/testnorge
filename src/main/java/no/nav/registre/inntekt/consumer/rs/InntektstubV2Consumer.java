@@ -1,10 +1,7 @@
-package no.nav.registre.inntekt.consumer.rs.v2;
+package no.nav.registre.inntekt.consumer.rs;
 
-import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnummerFraMaanedsnavn;
-import static no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.LOENNSINNTEKT;
-import static no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.NAERINGSINNTEKT;
-import static no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.PENSJON_ELLER_TRYGD;
-import static no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.YTELSE_FRA_OFFENTLIGE;
+import static no.nav.registre.inntekt.consumer.rs.ConsumerUtils.buildInntektsliste;
+import static no.nav.registre.inntekt.consumer.rs.ConsumerUtils.setBeskrivelseOgFordel;
 
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -17,18 +14,14 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.time.Month;
 import java.time.YearMonth;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.inntekt.domain.RsInntekt;
 import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntekt;
 import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
-import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype;
 
 @Slf4j
 @Component
@@ -44,7 +37,7 @@ public class InntektstubV2Consumer {
 
     public InntektstubV2Consumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${inntektstub-t4.rest.api.url}") String inntektstubUrl
+            @Value("${inntektstub-u1.rest.api.url}") String inntektstubUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.leggTilInntektUrl = new UriTemplate(inntektstubUrl + "/v2/inntektsinformasjon?valider-inntektskombinasjoner=true&valider-kodeverk=true");
@@ -85,13 +78,21 @@ public class InntektstubV2Consumer {
         List<Inntektsinformasjon> inntektsinformasjonTilIdenter = new ArrayList<>();
         for (var identerMedInntekterEntry : identerMedInntekter.entrySet()) {
             for (var periodeVirksomhetInntekterEntry : buildInntektsliste(identerMedInntekterEntry.getValue()).entrySet()) {
-                periodeVirksomhetInntekterEntry.getValue().forEach((key, value) -> inntektsinformasjonTilIdenter.add(
-                        Inntektsinformasjon.builder()
-                                .norskIdent(identerMedInntekterEntry.getKey())
-                                .inntektsliste(value)
-                                .aarMaaned(YearMonth.parse(periodeVirksomhetInntekterEntry.getKey()))
-                                .virksomhet(key)
-                                .build()));
+                for (Map.Entry<String, Inntektsinformasjon> entry : periodeVirksomhetInntekterEntry.getValue().entrySet()) {
+                    String virksomhet = entry.getKey();
+                    List<Inntekt> inntektsliste = entry.getValue().getInntektsliste();
+                    for (Inntekt inntekt : inntektsliste) {
+                        setBeskrivelseOgFordel(inntekt);
+                    }
+                    inntektsinformasjonTilIdenter.add(
+                            Inntektsinformasjon.builder()
+                                    .norskIdent(identerMedInntekterEntry.getKey())
+                                    .inntektsliste(inntektsliste)
+                                    .aarMaaned(YearMonth.parse(periodeVirksomhetInntekterEntry.getKey()))
+                                    .virksomhet(virksomhet)
+                                    .opplysningspliktig(entry.getValue().getOpplysningspliktig())
+                                    .build());
+                }
             }
         }
 
@@ -102,54 +103,19 @@ public class InntektstubV2Consumer {
             }).getBody();
             if (responseBody != null) {
                 response = responseBody;
+                for (var inntektsinformasjon : response) {
+                    if (inntektsinformasjon.getFeilmelding() != null && !inntektsinformasjon.getFeilmelding().isEmpty()) {
+                        for (var inntekt : inntektsinformasjon.getInntektsliste()) {
+                            if (inntekt.getFeilmelding() != null && !inntekt.getFeilmelding().isEmpty()) {
+                                log.info("Feil på innlegging av inntekt av type {} - feilmelding: {}", inntekt.getInntektstype(), inntektsinformasjon.getFeilmelding());
+                            }
+                        }
+                    }
+                }
             }
         } catch (HttpStatusCodeException e) {
             log.error("Kunne ikke legge inntekt i inntektstub", e);
         }
         return response;
-    }
-
-    private Map<String, Map<String, List<Inntekt>>> buildInntektsliste(List<RsInntekt> rsInntekter) {
-        Map<String, Map<String, List<Inntekt>>> periodeVirksomhetInntekterMap = new HashMap<>();
-        for (var rsInntekt : rsInntekter) {
-            var aarMaaned = YearMonth.of(Integer.parseInt(rsInntekt.getAar()), Month.of(hentMaanedsnummerFraMaanedsnavn(rsInntekt.getMaaned()))).toString();
-            var virksomhet = rsInntekt.getVirksomhet();
-            if (periodeVirksomhetInntekterMap.containsKey(aarMaaned)) {
-                var virksomhetInntekterMap = periodeVirksomhetInntekterMap.get(aarMaaned);
-                if (virksomhetInntekterMap.containsKey(virksomhet)) {
-                    var inntekter = virksomhetInntekterMap.computeIfAbsent(virksomhet, k -> new ArrayList<>());
-                    inntekter.add(buildInntektFromSyntInntekt(rsInntekt));
-                } else {
-                    virksomhetInntekterMap.put(virksomhet, new ArrayList<>(Collections.singletonList(buildInntektFromSyntInntekt(rsInntekt))));
-                }
-            } else {
-                Map<String, List<Inntekt>> virksomhetInntekterMap = new HashMap<>();
-                virksomhetInntekterMap.put(virksomhet, new ArrayList<>(Collections.singletonList(buildInntektFromSyntInntekt(rsInntekt))));
-                periodeVirksomhetInntekterMap.put(aarMaaned, virksomhetInntekterMap);
-            }
-        }
-        return periodeVirksomhetInntekterMap;
-    }
-
-    private Inntekt buildInntektFromSyntInntekt(RsInntekt rsInntekt) {
-        return Inntekt.builder()
-                .inntektstype(mapInntektstypeFromSyntToInntekt(rsInntekt.getInntektstype()))
-                .utloeserArbeidsgiveravgift(rsInntekt.getUtloeserArbeidsgiveravgift())
-                .inngaarIGrunnlagForTrekk(rsInntekt.getInngaarIGrunnlagForTrekk())
-                .beloep(rsInntekt.getBeloep())
-                .build();
-    }
-
-    private Inntektstype mapInntektstypeFromSyntToInntekt(String inntektstype) {
-        if ("PensjonEllerTrygd".equals(inntektstype)) {
-            return PENSJON_ELLER_TRYGD;
-        } else if ("Loennsinntekt".equals(inntektstype)) {
-            return LOENNSINNTEKT;
-        } else if ("YtelseFraOffentlige".equals(inntektstype)) {
-            return YTELSE_FRA_OFFENTLIGE;
-        } else if ("Naeringsinntekt".equals(inntektstype)) {
-            return NAERINGSINNTEKT;
-        }
-        throw new IllegalArgumentException("Kunne ikke finne inntektstype " + inntektstype);
     }
 }

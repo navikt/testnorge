@@ -3,7 +3,9 @@ package no.nav.registre.inntekt.service;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -24,7 +26,8 @@ import java.util.TreeMap;
 
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
-import no.nav.registre.inntekt.consumer.rs.v2.InntektstubV2Consumer;
+import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
+import no.nav.registre.inntekt.consumer.rs.TestnorgeAaregConsumer;
 import no.nav.registre.inntekt.domain.RsInntekt;
 import no.nav.registre.inntekt.provider.rs.requests.SyntetiseringsRequest;
 import no.nav.registre.inntekt.testUtils.InntektGenerator;
@@ -48,12 +51,15 @@ public class SyntetiseringServiceTest {
     @Mock
     private HodejegerenConsumer hodejegerenConsumer;
 
+    @Mock
+    private TestnorgeAaregConsumer testnorgeAaregConsumer;
+
     @InjectMocks
     private SyntetiseringService syntetiseringService;
 
     private List<String> identer = Collections.singletonList("10128400000");
     private SortedMap<String, List<RsInntekt>> inntekter = new TreeMap<>();
-    private SyntetiseringsRequest request = new SyntetiseringsRequest(1L);
+    private SyntetiseringsRequest request = new SyntetiseringsRequest(1L, "t1");
 
     @Before
     public void setUp() {
@@ -61,6 +67,7 @@ public class SyntetiseringServiceTest {
         double beloep = 1490;
         inntekter.put("10128400000", Collections.singletonList(InntektGenerator.genererInntekt(beloep)));
         when(hodejegerenConsumer.getLevende(request.getAvspillergruppeId(), ALDER)).thenReturn(identer);
+        when(testnorgeAaregConsumer.hentIdenterIAvspillergruppeMedArbeidsforhold(anyLong(), anyString())).thenReturn(identer);
         when(inntektstubV2Consumer.leggInntekterIInntektstub(inntekter)).thenReturn(new ArrayList<>());
     }
 
@@ -91,18 +98,6 @@ public class SyntetiseringServiceTest {
         Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request);
         assertThat(feil.size(), equalTo(1));
         assertThat(feil.get("10128400000").get(0).getBeloep(), equalTo(feiletInntekt.get(0).getInntektsliste().get(0).getBeloep()));
-    }
-
-    /**
-     * Scenario:
-     * Får forespørsel om å genere og lagre syntet meldinger men vi får feil fra InntektSynt
-     */
-    @Test
-    public void startSyntetiseringTestInntektSyntFeiler() {
-        when(inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(anyMap())).thenReturn(null);
-        syntetiseringService.startSyntetisering(request);
-        Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request);
-        assertThat(feil, equalTo(Collections.EMPTY_MAP));
     }
 
     /**

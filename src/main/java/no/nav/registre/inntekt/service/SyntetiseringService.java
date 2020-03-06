@@ -2,11 +2,13 @@ package no.nav.registre.inntekt.service;
 
 import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnavnFraMaanedsnummer;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,7 +22,8 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
-import no.nav.registre.inntekt.consumer.rs.v2.InntektstubV2Consumer;
+import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
+import no.nav.registre.inntekt.consumer.rs.TestnorgeAaregConsumer;
 import no.nav.registre.inntekt.domain.IdentMedData;
 import no.nav.registre.inntekt.domain.InntektSaveInHodejegerenRequest;
 import no.nav.registre.inntekt.domain.RsInntekt;
@@ -39,6 +42,13 @@ public class SyntetiseringService {
     private static final String INNTEKT_NAME = "inntekt";
     private static final int PAGE_SIZE = 100;
 
+    private static final String JSON_NODE_OPPLYSNINGSPLIKTIG = "opplysningspliktig";
+    private static final String JSON_NODE_TYPE = "type";
+    private static final String JSON_NODE_ORGANISASJONSNUMMER = "organisasjonsnummer";
+    private static final String JSON_NODE_OFFENTLIG_IDENT = "offentligIdent";
+    private static final String TYPE_ORGANISASJON = "Organisasjon";
+    private static final String TYPE_PERSON = "Person";
+
     @Value("${andelNyeIdenter}")
     private int andelNyeIdenter;
 
@@ -46,22 +56,29 @@ public class SyntetiseringService {
     private final InntektSyntConsumer inntektSyntConsumer;
     private final InntektstubV2Consumer inntektstubV2Consumer;
     private final HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
+    private final TestnorgeAaregConsumer testnorgeAaregConsumer;
 
     public Map<String, List<RsInntekt>> startSyntetisering(SyntetiseringsRequest syntetiseringsRequest) {
-        Set<String> identer = new HashSet<>(hentLevendeIdenterOverAlder(syntetiseringsRequest.getAvspillergruppeId()));
-        Set<String> identerIInntektstub = new HashSet<>(inntektstubV2Consumer.hentEksisterendeIdenter());
+        var identer = new HashSet<>(hentLevendeIdenterOverAlder(syntetiseringsRequest.getAvspillergruppeId()));
+        var identerIAareg = new HashSet<>(testnorgeAaregConsumer.hentIdenterIAvspillergruppeMedArbeidsforhold(syntetiseringsRequest.getAvspillergruppeId(), syntetiseringsRequest.getMiljoe()));
+        var identerIInntektstub = new HashSet<>(inntektstubV2Consumer.hentEksisterendeIdenter());
 
-        identerIInntektstub.retainAll(identer);
+        identerIInntektstub.retainAll(identerIAareg);
 
         int antallNyeIdenterMedInntekt = (identer.size() / andelNyeIdenter) - identerIInntektstub.size();
+        int antallIdenterUtenArbeidsforhold = (identer.size() / andelNyeIdenter) - identerIAareg.size();
 
-        identer.removeAll(identerIInntektstub);
+        log.info("{} identer mangler inntekt", antallNyeIdenterMedInntekt);
+        log.info("{} identer mangler arbeidsforhold", antallIdenterUtenArbeidsforhold);
+
+        identerIAareg.removeAll(identerIInntektstub);
         List<String> nyeIdenter;
         if (antallNyeIdenterMedInntekt <= 0) {
             log.info("Tilstrekkelig mange identer i mininorge har allerede inntekt. Oppretter ikke inntekt på nye identer.");
             nyeIdenter = Collections.emptyList();
         } else {
-            nyeIdenter = new ArrayList<>(identer).subList(0, antallNyeIdenterMedInntekt);
+            antallNyeIdenterMedInntekt = antallNyeIdenterMedInntekt < identerIAareg.size() ? antallNyeIdenterMedInntekt : identerIAareg.size();
+            nyeIdenter = new ArrayList<>(identerIAareg).subList(0, antallNyeIdenterMedInntekt);
         }
 
         if (identerIInntektstub.isEmpty() && nyeIdenter.isEmpty()) {
@@ -72,14 +89,14 @@ public class SyntetiseringService {
         Map<String, List<RsInntekt>> feiledeInntektsmeldinger = new HashMap<>();
         Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger = new HashMap<>();
 
-        opprettInntekterPaaEksisterende(identerIInntektstub, feiledeInntektsmeldinger, syntetiskeInntektsmeldinger);
+        opprettInntekterPaaEksisterende(identerIInntektstub, feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, syntetiseringsRequest.getMiljoe());
 
         SortedMap<String, List<RsInntekt>> nyeIdenterMedInntekt = new TreeMap<>();
         for (String ident : nyeIdenter) {
             nyeIdenterMedInntekt.put(ident, new ArrayList<>());
         }
 
-        opprettInntekterPaaNye(feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, nyeIdenterMedInntekt);
+        opprettInntekterPaaNye(feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, nyeIdenterMedInntekt, syntetiseringsRequest.getMiljoe());
 
         if (!feiledeInntektsmeldinger.isEmpty()) {
             log.warn("Kunne ikke opprette inntekt på følgende identer: {}", feiledeInntektsmeldinger.keySet());
@@ -102,7 +119,8 @@ public class SyntetiseringService {
     private void opprettInntekterPaaEksisterende(
             Set<String> identerIInntektstub,
             Map<String, List<RsInntekt>> feiledeInntektsmeldinger,
-            Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger
+            Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger,
+            String miljoe
     ) {
         List<List<String>> partisjonerteIdenterIInntektstub = paginerIdenter(new ArrayList<>(identerIInntektstub));
         for (int i = 0; i < partisjonerteIdenterIInntektstub.size(); i++) {
@@ -125,7 +143,7 @@ public class SyntetiseringService {
                 identerMedInntekt.put(key, inntekter);
             });
 
-            SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(identerMedInntekt);
+            SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(identerMedInntekt, miljoe);
 
             if (!leggTilHvisGyldig(feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, inntektsmeldingerFraSynt)) {
                 continue;
@@ -138,11 +156,12 @@ public class SyntetiseringService {
     private void opprettInntekterPaaNye(
             Map<String, List<RsInntekt>> feiledeInntektsmeldinger,
             Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger,
-            SortedMap<String, List<RsInntekt>> nyeIdenterMedInntekt
+            SortedMap<String, List<RsInntekt>> nyeIdenterMedInntekt,
+            String miljoe
     ) {
         List<Map<String, List<RsInntekt>>> paginerteIdenterMedInntekt = paginerInntekter(nyeIdenterMedInntekt);
         for (int i = 0; i < paginerteIdenterMedInntekt.size(); i++) {
-            SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(paginerteIdenterMedInntekt.get(i));
+            SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(paginerteIdenterMedInntekt.get(i), miljoe);
 
             if (!leggTilHvisGyldig(feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, inntektsmeldingerFraSynt)) {
                 continue;
@@ -156,8 +175,23 @@ public class SyntetiseringService {
         return hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER);
     }
 
-    private SortedMap<String, List<RsInntekt>> getInntektsmeldingerFraSynt(Map<String, List<RsInntekt>> identerMedInntekt) {
-        return inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(identerMedInntekt);
+    private SortedMap<String, List<RsInntekt>> getInntektsmeldingerFraSynt(
+            Map<String, List<RsInntekt>> identerMedInntekt,
+            String miljoe
+    ) {
+        var inntektsmeldingerFraSynt = inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(identerMedInntekt);
+        for (Map.Entry<String, List<RsInntekt>> entry : inntektsmeldingerFraSynt.entrySet()) {
+            String ident = entry.getKey();
+            List<RsInntekt> inntekter = entry.getValue();
+            for (RsInntekt inntekt : inntekter) {
+                String opplysningspliktig = getOpplysningspliktigId(ident, miljoe);
+                if (opplysningspliktig == null) {
+                    log.warn("Fant ikke opplysningspliktig på arbeidsforhold til ident {}", ident);
+                }
+                inntekt.setOpplysningspliktig(opplysningspliktig);
+            }
+        }
+        return inntektsmeldingerFraSynt;
     }
 
     private boolean leggTilHvisGyldig(
@@ -166,7 +200,7 @@ public class SyntetiseringService {
             SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt
     ) {
         if (inntektsmeldingerFraSynt == null) {
-            log.warn("Fikk ingen syntetiserte meldinger synt-pakken. Fortsetter med neste bolk");
+            log.warn("Fikk ingen syntetiserte meldinger fra synt-pakken. Fortsetter med neste bolk");
             return false;
         }
 
@@ -197,6 +231,43 @@ public class SyntetiseringService {
             log.info("Ingen syntetiserte meldinger å legge på inntektstub, returnerer");
         }
         return inntektsmeldinger;
+    }
+
+    private String getOpplysningspliktigId(
+            String ident,
+            String miljoe
+    ) {
+        var arbeidsforhold = testnorgeAaregConsumer.hentArbeidsforholdTilIdentIMiljoe(ident, miljoe);
+        if (arbeidsforhold != null && !arbeidsforhold.isEmpty()) {
+            var arbeidsforholdet = finnNyesteArbeidsforhold(arbeidsforhold);
+            if (arbeidsforholdet != null) {
+                var opplysningspliktig = arbeidsforholdet.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG);
+                if (opplysningspliktig != null) {
+                    var type = opplysningspliktig.findValue(JSON_NODE_TYPE).asText();
+                    if (TYPE_ORGANISASJON.equals(type)) {
+                        return opplysningspliktig.findValue(JSON_NODE_ORGANISASJONSNUMMER).asText();
+                    } else if (TYPE_PERSON.equals(type)) {
+                        return opplysningspliktig.findValue(JSON_NODE_OFFENTLIG_IDENT).asText();
+                    }
+                }
+                throw new RuntimeException("Fant ingen opplysningspliktig i arbeidsforholdet til ident " + ident);
+            }
+            throw new RuntimeException("Fant ikke arbeidsforhold til ident " + ident);
+        }
+        return null;
+    }
+
+    private JsonNode finnNyesteArbeidsforhold(List<JsonNode> arbeidsforhold) {
+        var nyesteDato = LocalDateTime.MIN;
+        JsonNode nyesteArbeidsforhold = null;
+        for (var arbeidsforholdet : arbeidsforhold) {
+            var opprettetTidspunkt = LocalDateTime.parse(arbeidsforholdet.findValue("opprettetTidspunkt").asText());
+            if (opprettetTidspunkt.isAfter(nyesteDato)) {
+                nyesteDato = opprettetTidspunkt;
+                nyesteArbeidsforhold = arbeidsforholdet;
+            }
+        }
+        return nyesteArbeidsforhold;
     }
 
     private static List<RsInntekt> mapInntektsinformasjonslisteTilRsInntektListe(List<Inntektsinformasjon> inntektsinformasjonListe) {

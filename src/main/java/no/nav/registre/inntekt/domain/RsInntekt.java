@@ -23,4 +23,7 @@ public class RsInntekt {
     private Boolean inngaarIGrunnlagForTrekk;
     private Boolean utloeserArbeidsgiveravgift;
     private String virksomhet;
+    private String opplysningspliktig;
+    private String beskrivelse;
+    private String fordel;
 }

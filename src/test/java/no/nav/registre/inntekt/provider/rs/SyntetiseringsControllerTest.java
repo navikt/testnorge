@@ -43,7 +43,7 @@ public class SyntetiseringsControllerTest {
     @Test
     public void syntetiseringOk() {
         when(syntetiseringService.startSyntetisering(any())).thenReturn(feilet);
-        Map<String, List<RsInntekt>> response = syntetiseringsController.genererSyntetiserteInntektsmeldinger(new SyntetiseringsRequest(gruppeId));
+        Map<String, List<RsInntekt>> response = syntetiseringsController.genererSyntetiserteInntektsmeldinger(new SyntetiseringsRequest(gruppeId, "t1"));
         assertTrue(response.isEmpty());
     }
 
@@ -51,7 +51,7 @@ public class SyntetiseringsControllerTest {
     public void syntetiseringFeilet() {
         feilet.put("123", new ArrayList<>());
         when(syntetiseringService.startSyntetisering(any())).thenReturn(feilet);
-        Map<String, List<RsInntekt>> response = syntetiseringsController.genererSyntetiserteInntektsmeldinger(new SyntetiseringsRequest(gruppeId));
+        Map<String, List<RsInntekt>> response = syntetiseringsController.genererSyntetiserteInntektsmeldinger(new SyntetiseringsRequest(gruppeId, "t1"));
         assertFalse(response.isEmpty());
     }
 }

@@ -18,8 +18,10 @@ import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,11 +29,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.inntekt.consumer.rs.ConsumerUtils;
+import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
 import no.nav.registre.inntekt.domain.RsInntekt;
 import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
 @RunWith(SpringRunner.class)
-@RestClientTest(InntektstubV2Consumer.class)
+@RestClientTest({ InntektstubV2Consumer.class, ConsumerUtils.class })
+@ContextConfiguration(classes = { InntektstubV2Consumer.class, ConsumerUtils.class, RestTemplate.class })
 @ActiveProfiles("test")
 public class InntektstubV2ConsumerTest {
 
@@ -41,7 +46,7 @@ public class InntektstubV2ConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${inntektstub-t4.rest.api.url}")
+    @Value("${inntektstub-u1.rest.api.url}")
     private String serverUrl;
 
     private List<String> identer;
