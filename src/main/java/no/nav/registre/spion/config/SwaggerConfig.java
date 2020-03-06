@@ -1,4 +1,4 @@
-package no.nav.registre.spion.config.prod;
+package no.nav.registre.spion.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +23,6 @@ import java.util.HashSet;
  * Configure automated swagger API documentation
  */
 
-@Profile("prod")
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig implements WebMvcConfigurer {
@@ -49,7 +48,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Testnorge-spion")
-                .description("Applikasjon som gjør noe...")
+                .description("Testnorge-spion tilbyr endepunkt for å lage syntetiske vedtak og legge dem på Kafka kø til SPION.")
                 .version(appVersion)
                 .termsOfServiceUrl("https://nav.no")
                 .contact(new Contact("Fellesregistrene på NAV", "https://github.com/navikt/testnorge-spion", null))

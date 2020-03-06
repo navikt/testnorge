@@ -64,7 +64,7 @@ public class SyntetiseringControllerAaregIntegrationTest {
 
 
         SyntetiserSpionRequest vedtakRequest =
-                new SyntetiserSpionRequest(AVSPILLERGRUPPEID, MILJOE, STARTDATO , SLUTTDATO, 1);
+                new SyntetiserSpionRequest(AVSPILLERGRUPPEID, MILJOE,1, STARTDATO , SLUTTDATO, 1);
 
         List<String> identer = Collections.singletonList(IDENT);
 
