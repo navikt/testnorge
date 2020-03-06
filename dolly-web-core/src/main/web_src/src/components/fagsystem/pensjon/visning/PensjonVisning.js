@@ -11,7 +11,7 @@ export const PensjonVisning = ({ data, loading }) => {
     return (
         <div>
             <SubOverskrift label="Pensjonsgivende inntekt" iconKind="pensjon" />
-            <DollyFieldArray data={data} nested>
+            <DollyFieldArray data={data.inntekter} nested>
                 {(inntekt, idx) => (
                     <div className="person-visning_content" key={idx}>
                         <TitleValue title="Inntektsår" value={inntekt.inntektAar} />
