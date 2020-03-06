@@ -20,7 +20,7 @@ export const Barn = ({ data, type }) => {
 		}
 		fetchData()
 	}, [])
-	console.log('data :', data)
+
 	return (
 		<>
 			<div className="person-visning_content">
@@ -37,6 +37,7 @@ export const Barn = ({ data, type }) => {
 				)}
 				<TitleValue title="Er adoptert" value={Formatters.oversettBoolean(type === 'BARN')} />
 			</div>
+			{/* Postadresse refaktoreres med REG-7519. Da kan width=100% i div under fjernes */}
 			<div style={{ width: '100%' }}>
 				{!data.utenFastBopel &&
 					(data.boadresse.length > 0 ? (
