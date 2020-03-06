@@ -11,24 +11,24 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.sdForvalter.database.model.KildeSystemModel;
+import no.nav.registre.sdForvalter.database.model.OpprinnelseModel;
 
 
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class KildeSystemListe {
+public class OpprinnelseListe {
 
-    @JsonProperty("kildeSystemListe")
-    private final Set<KildeSystem> set;
+    @JsonProperty("liste")
+    private final Set<Opprinnelse> set;
 
-    public KildeSystemListe(Iterable<KildeSystemModel> iterable) {
+    public OpprinnelseListe(Iterable<OpprinnelseModel> iterable) {
         set = new HashSet<>();
-        iterable.forEach(model -> set.add(new KildeSystem(model)));
+        iterable.forEach(model -> set.add(new Opprinnelse(model)));
     }
 
-    public KildeSystemListe(Collection<KildeSystemModel> list) {
-        set = list.stream().map(KildeSystem::new).collect(Collectors.toSet());
+    public OpprinnelseListe(Collection<OpprinnelseModel> list) {
+        set = list.stream().map(Opprinnelse::new).collect(Collectors.toSet());
     }
 }

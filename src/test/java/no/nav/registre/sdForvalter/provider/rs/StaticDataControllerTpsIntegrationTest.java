@@ -23,11 +23,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import no.nav.registre.sdForvalter.database.model.KildeSystemModel;
+import no.nav.registre.sdForvalter.database.model.OpprinnelseModel;
 import no.nav.registre.sdForvalter.database.model.TpsIdentModel;
-import no.nav.registre.sdForvalter.database.repository.KildeSystemRepository;
+import no.nav.registre.sdForvalter.database.repository.OpprinnelseRepository;
 import no.nav.registre.sdForvalter.database.repository.TpsIdenterRepository;
-import no.nav.registre.sdForvalter.domain.KildeSystem;
+import no.nav.registre.sdForvalter.domain.Opprinnelse;
 import no.nav.registre.sdForvalter.domain.TpsIdent;
 
 @RunWith(SpringRunner.class)
@@ -47,19 +47,19 @@ public class StaticDataControllerTpsIntegrationTest {
     private TpsIdenterRepository tpsIdenterRepository;
 
     @Autowired
-    private KildeSystemRepository kildeSystemRepository;
+    private OpprinnelseRepository opprinnelseRepository;
 
 
     @Test
-    public void shouldGetTpsIdentSetWithKildeSystem() throws Exception {
-        KildeSystemModel altinn = kildeSystemRepository.save(new KildeSystemModel("Altinn"));
+    public void shouldGetTpsIdentSetWithOpprinnelse() throws Exception {
+        OpprinnelseModel altinn = opprinnelseRepository.save(new OpprinnelseModel("Altinn"));
 
         TpsIdentModel tpsIdentModel = TpsIdentModel
                 .builder()
                 .firstName("Test")
                 .lastName("Testen")
                 .fnr("101010101")
-                .kildeSystemModel(altinn)
+                .opprinnelseModel(altinn)
                 .build();
         tpsIdenterRepository.save(tpsIdentModel);
 
@@ -92,8 +92,8 @@ public class StaticDataControllerTpsIntegrationTest {
     }
 
     @Test
-    public void shouldAddKildeSystemToDatabase() throws Exception {
-        KildeSystem altinn = new KildeSystem("Altinn");
+    public void shouldAddOpprinnelseToDatabase() throws Exception {
+        Opprinnelse altinn = new Opprinnelse("Altinn");
         final TpsIdent hans = TpsIdent.builder()
                 .firstName("Test")
                 .lastName("Testen")
@@ -114,11 +114,11 @@ public class StaticDataControllerTpsIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        assertThat(Lists.newArrayList(kildeSystemRepository.findAll()))
+        assertThat(Lists.newArrayList(opprinnelseRepository.findAll()))
                 .hasSize(1)
                 .first()
                 .isEqualToComparingOnlyGivenFields(
-                        new KildeSystemModel(altinn),
+                        new OpprinnelseModel(altinn),
                         "navn"
                 );
     }
@@ -127,7 +127,7 @@ public class StaticDataControllerTpsIntegrationTest {
     @After
     public void cleanUp() {
         tpsIdenterRepository.deleteAll();
-        kildeSystemRepository.deleteAll();
+        opprinnelseRepository.deleteAll();
     }
 
     private Set<TpsIdent> createTpsIdentSet(TpsIdent... tpsIdenter) {

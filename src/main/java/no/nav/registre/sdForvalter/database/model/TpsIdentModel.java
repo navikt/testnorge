@@ -48,17 +48,17 @@ public class TpsIdentModel extends AuditModel implements CreatableFromString {
     private String city;
 
     @OneToOne
-    @JoinColumn(name = "kilde_system_id")
-    private KildeSystemModel kildeSystemModel;
+    @JoinColumn(name = "opprinnelse_id")
+    private OpprinnelseModel opprinnelseModel;
 
-    public TpsIdentModel(TpsIdent tpsIdent, KildeSystemModel kildeSystemModel) {
+    public TpsIdentModel(TpsIdent tpsIdent, OpprinnelseModel opprinnelseModel) {
         fnr = tpsIdent.getFnr();
         firstName = tpsIdent.getFirstName();
         lastName = tpsIdent.getLastName();
         address = tpsIdent.getAddress();
         postNr = tpsIdent.getPostNr();
         city = tpsIdent.getCity();
-        this.kildeSystemModel = kildeSystemModel;
+        this.opprinnelseModel = opprinnelseModel;
     }
 
     @Override

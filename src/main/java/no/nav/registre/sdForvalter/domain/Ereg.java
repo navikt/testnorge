@@ -46,7 +46,7 @@ public class Ereg {
         this.internetAdresse = model.getInternetAdresse();
         this.naeringskode = model.getNaeringskode();
         this.juridiskEnhet = model.getParent() != null ? model.getParent().getOrgnr() : null;
-        this.opprinelse = model.getKildeSystemModel() != null ? model.getKildeSystemModel().getNavn() : null;
+        this.opprinelse = model.getOpprinnelseModel() != null ? model.getOpprinnelseModel().getNavn() : null;
         this.forretningsAdresse = model.getForretningsAdresse() != null ? new Adresse(model.getForretningsAdresse()) : null;
         this.postadresse = model.getPostadresse() != null ? new Adresse(model.getPostadresse()) : null;
         this.gruppe = model.getGruppeModel() != null ? model.getGruppeModel().getKode() : null;

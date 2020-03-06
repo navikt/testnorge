@@ -48,8 +48,8 @@ public class  EregModel extends AuditModel {
     private EregModel parent;
 
     @OneToOne
-    @JoinColumn(name = "kilde_system_id")
-    private KildeSystemModel kildeSystemModel;
+    @JoinColumn(name = "opprinnelse_id")
+    private OpprinnelseModel opprinnelseModel;
 
     @OneToOne
     @JoinColumn(name = "gruppe_id")
@@ -68,14 +68,14 @@ public class  EregModel extends AuditModel {
     @Embedded
     private AdresseModel postadresse;
 
-    public EregModel(Ereg ereg, EregModel parent, KildeSystemModel kildeSystemModel, GruppeModel gruppeModel) {
+    public EregModel(Ereg ereg, EregModel parent, OpprinnelseModel opprinnelseModel, GruppeModel gruppeModel) {
         this.orgnr = ereg.getOrgnr();
         this.enhetstype = ereg.getEnhetstype();
         this.navn = ereg.getNavn();
         this.epost = ereg.getEpost();
         this.internetAdresse = ereg.getInternetAdresse();
         this.parent = parent;
-        this.kildeSystemModel = kildeSystemModel;
+        this.opprinnelseModel = opprinnelseModel;
         this.forretningsAdresse = ereg.getInternetAdresse() != null ? new AdresseModel(ereg.getForretningsAdresse()) : null;
         this.postadresse = ereg.getPostadresse() != null ? new AdresseModel(ereg.getPostadresse()) : null;
         this.gruppeModel = gruppeModel;

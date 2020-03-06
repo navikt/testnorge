@@ -13,15 +13,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import no.nav.registre.sdForvalter.domain.KildeSystem;
+import no.nav.registre.sdForvalter.domain.Opprinnelse;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "kilde_system")
+@Table(name = "opprinnelse")
 @EqualsAndHashCode(callSuper = false)
-public class KildeSystemModel extends AuditModel {
+public class OpprinnelseModel extends AuditModel {
 
     @Id
     @GeneratedValue
@@ -30,11 +30,11 @@ public class KildeSystemModel extends AuditModel {
     @Column(unique = true)
     private String navn;
 
-    public KildeSystemModel(String navn) {
+    public OpprinnelseModel(String navn) {
         this.navn = navn;
     }
 
-    public KildeSystemModel(KildeSystem kildeSystem) {
-        this(kildeSystem.getNavn());
+    public OpprinnelseModel(Opprinnelse opprinnelse) {
+        this(opprinnelse.getNavn());
     }
 }

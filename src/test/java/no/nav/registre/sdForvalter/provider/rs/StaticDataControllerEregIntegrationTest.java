@@ -20,17 +20,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.GruppeModel;
-import no.nav.registre.sdForvalter.database.model.KildeSystemModel;
+import no.nav.registre.sdForvalter.database.model.OpprinnelseModel;
 import no.nav.registre.sdForvalter.database.repository.EregRepository;
 import no.nav.registre.sdForvalter.database.repository.GruppeRepository;
-import no.nav.registre.sdForvalter.database.repository.KildeSystemRepository;
+import no.nav.registre.sdForvalter.database.repository.OpprinnelseRepository;
 import no.nav.registre.sdForvalter.domain.Ereg;
 import no.nav.registre.sdForvalter.domain.EregListe;
-import no.nav.registre.sdForvalter.domain.KildeSystem;
+import no.nav.registre.sdForvalter.domain.Opprinnelse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -49,19 +48,19 @@ public class StaticDataControllerEregIntegrationTest {
     private EregRepository eregRepository;
 
     @Autowired
-    private KildeSystemRepository kildeSystemRepository;
+    private OpprinnelseRepository opprinnelseRepository;
 
     @Autowired
     private GruppeRepository gruppeRepository;
 
     @Test
-    public void shouldGetEregsWithKildeSystem() throws Exception {
-        KildeSystemModel altinn = kildeSystemRepository.save(new KildeSystemModel("Altinn"));
+    public void shouldGetEregsWithOpprinnelse() throws Exception {
+        OpprinnelseModel altinn = opprinnelseRepository.save(new OpprinnelseModel("Altinn"));
         EregModel model = EregModel
                 .builder()
                 .orgnr("123456789")
                 .enhetstype("BEDR")
-                .kildeSystemModel(altinn)
+                .opprinnelseModel(altinn)
                 .build();
 
         eregRepository.save(model);
@@ -187,8 +186,8 @@ public class StaticDataControllerEregIntegrationTest {
 
 
     @Test
-    public void shouldAddKildeSystemToDatabase() throws Exception {
-        KildeSystem altinn = new KildeSystem("Altinn");
+    public void shouldAddOpprinnelseToDatabase() throws Exception {
+        Opprinnelse altinn = new Opprinnelse("Altinn");
         Ereg ereg_123456789 = Ereg.builder()
                 .orgnr("123456789")
                 .enhetstype("BEDR")
@@ -203,10 +202,10 @@ public class StaticDataControllerEregIntegrationTest {
                 .content(objectMapper.writeValueAsString(create(ereg_123456789, ereg_987654321)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        assertThat(Lists.newArrayList(kildeSystemRepository.findAll()))
+        assertThat(Lists.newArrayList(opprinnelseRepository.findAll()))
                 .hasSize(1)
                 .first()
-                .isEqualToComparingOnlyGivenFields(new KildeSystemModel(altinn), "navn");
+                .isEqualToComparingOnlyGivenFields(new OpprinnelseModel(altinn), "navn");
     }
 
 
@@ -218,7 +217,7 @@ public class StaticDataControllerEregIntegrationTest {
     public void cleanUp() {
         eregRepository.deleteAll();
         gruppeRepository.deleteAll();
-        kildeSystemRepository.deleteAll();
+        opprinnelseRepository.deleteAll();
     }
 
 }

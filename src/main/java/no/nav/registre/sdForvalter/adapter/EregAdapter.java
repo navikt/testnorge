@@ -19,7 +19,7 @@ import no.nav.registre.sdForvalter.domain.EregListe;
 public class EregAdapter {
     private final EregRepository repository;
     private final GruppeAdapter gruppeAdapter;
-    private final KildeSystemAdapter kildeSystemAdapter;
+    private final OpprinnelseAdapter opprinnelseAdapter;
 
     public EregListe fetchEregData(String gruppe) {
         if (gruppe != null) {
@@ -56,7 +56,7 @@ public class EregAdapter {
                                 ereg,
                                 ereg.getJuridiskEnhet() != null ? fetchEreg(ereg.getJuridiskEnhet()) : null,
                                 ereg.getOpprinelse() != null
-                                        ? kildeSystemAdapter.saveKildeSystem(ereg.getOpprinelse())
+                                        ? opprinnelseAdapter.saveOpprinnelse(ereg.getOpprinelse())
                                         : null,
                                 ereg.getGruppe() != null
                                         ? gruppeAdapter.fetchGruppe(ereg.getGruppe())

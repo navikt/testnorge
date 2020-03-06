@@ -38,6 +38,6 @@ public class TpsIdent {
         address = model.getAddress();
         postNr = model.getPostNr();
         city = model.getCity();
-        opprinelse = model.getKildeSystemModel() != null ? model.getKildeSystemModel().getNavn() : null;
+        opprinelse = model.getOpprinnelseModel() != null ? model.getOpprinnelseModel().getNavn() : null;
     }
 }

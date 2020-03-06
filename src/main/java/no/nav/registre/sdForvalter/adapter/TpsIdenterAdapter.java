@@ -16,7 +16,7 @@ import no.nav.registre.sdForvalter.domain.TpsIdent;
 @AllArgsConstructor
 public class TpsIdenterAdapter {
     private final TpsIdenterRepository repository;
-    private final KildeSystemAdapter kildeSystemAdapter;
+    private final OpprinnelseAdapter opprinnelseAdapter;
 
     public Set<TpsIdent> fetchTpsIdenter() {
         Set<TpsIdent> tpsIdentSet = new HashSet<>();
@@ -37,7 +37,7 @@ public class TpsIdenterAdapter {
                 .map(tpsIdent -> new TpsIdentModel(
                         tpsIdent,
                         tpsIdent.getOpprinelse() != null
-                                ? kildeSystemAdapter.saveKildeSystem(tpsIdent.getOpprinelse())
+                                ? opprinnelseAdapter.saveOpprinnelse(tpsIdent.getOpprinelse())
                                 : null
                 ))
                 .collect(Collectors.toList())
