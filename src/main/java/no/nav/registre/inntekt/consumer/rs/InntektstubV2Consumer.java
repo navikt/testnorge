@@ -1,7 +1,6 @@
 package no.nav.registre.inntekt.consumer.rs;
 
 import static no.nav.registre.inntekt.consumer.rs.ConsumerUtils.buildInntektsliste;
-import static no.nav.registre.inntekt.consumer.rs.ConsumerUtils.setBeskrivelseOgFordel;
 
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.inntekt.domain.RsInntekt;
-import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntekt;
 import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
 @Slf4j
@@ -78,21 +76,18 @@ public class InntektstubV2Consumer {
         List<Inntektsinformasjon> inntektsinformasjonTilIdenter = new ArrayList<>();
         for (var identerMedInntekterEntry : identerMedInntekter.entrySet()) {
             for (var periodeVirksomhetInntekterEntry : buildInntektsliste(identerMedInntekterEntry.getValue()).entrySet()) {
-                for (Map.Entry<String, Inntektsinformasjon> entry : periodeVirksomhetInntekterEntry.getValue().entrySet()) {
-                    String virksomhet = entry.getKey();
-                    List<Inntekt> inntektsliste = entry.getValue().getInntektsliste();
-                    for (Inntekt inntekt : inntektsliste) {
-                        setBeskrivelseOgFordel(inntekt);
-                    }
+                periodeVirksomhetInntekterEntry.getValue().forEach((virksomhet, value) -> {
+                    var inntektsliste = value.getInntektsliste();
+                    inntektsliste.forEach(ConsumerUtils::setBeskrivelseOgFordel);
                     inntektsinformasjonTilIdenter.add(
                             Inntektsinformasjon.builder()
                                     .norskIdent(identerMedInntekterEntry.getKey())
                                     .inntektsliste(inntektsliste)
                                     .aarMaaned(YearMonth.parse(periodeVirksomhetInntekterEntry.getKey()))
                                     .virksomhet(virksomhet)
-                                    .opplysningspliktig(entry.getValue().getOpplysningspliktig())
+                                    .opplysningspliktig(value.getOpplysningspliktig())
                                     .build());
-                }
+                });
             }
         }
 

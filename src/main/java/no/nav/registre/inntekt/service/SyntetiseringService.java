@@ -1,5 +1,6 @@
 package no.nav.registre.inntekt.service;
 
+import static no.nav.registre.inntekt.utils.DatoParser.finnSenesteInntekter;
 import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnavnFraMaanedsnummer;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,7 +30,6 @@ import no.nav.registre.inntekt.domain.InntektSaveInHodejegerenRequest;
 import no.nav.registre.inntekt.domain.RsInntekt;
 import no.nav.registre.inntekt.domain.RsInntektsinformasjonsType;
 import no.nav.registre.inntekt.provider.rs.requests.SyntetiseringsRequest;
-import no.nav.registre.inntekt.utils.DatoParser;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
@@ -92,7 +92,7 @@ public class SyntetiseringService {
         opprettInntekterPaaEksisterende(identerIInntektstub, feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, syntetiseringsRequest.getMiljoe());
 
         SortedMap<String, List<RsInntekt>> nyeIdenterMedInntekt = new TreeMap<>();
-        for (String ident : nyeIdenter) {
+        for (var ident : nyeIdenter) {
             nyeIdenterMedInntekt.put(ident, new ArrayList<>());
         }
 
@@ -101,15 +101,11 @@ public class SyntetiseringService {
         if (!feiledeInntektsmeldinger.isEmpty()) {
             log.warn("Kunne ikke opprette inntekt på følgende identer: {}", feiledeInntektsmeldinger.keySet());
 
-            for (Map.Entry<String, List<RsInntekt>> feilet : feiledeInntektsmeldinger.entrySet()) {
-                syntetiskeInntektsmeldinger.remove(feilet.getKey());
-            }
+            feiledeInntektsmeldinger.keySet().forEach(syntetiskeInntektsmeldinger::remove);
         }
 
         List<IdentMedData> identerMedData = new ArrayList<>(syntetiskeInntektsmeldinger.size());
-        for (Map.Entry<String, List<RsInntekt>> personInfo : syntetiskeInntektsmeldinger.entrySet()) {
-            identerMedData.add(new IdentMedData(personInfo.getKey(), personInfo.getValue()));
-        }
+        syntetiskeInntektsmeldinger.forEach((ident, inntekter) -> identerMedData.add(new IdentMedData(ident, inntekter)));
 
         hodejegerenHistorikkConsumer.saveHistory(new InntektSaveInHodejegerenRequest(INNTEKT_NAME, identerMedData));
 
@@ -122,14 +118,14 @@ public class SyntetiseringService {
             Map<String, List<RsInntekt>> syntetiskeInntektsmeldinger,
             String miljoe
     ) {
-        List<List<String>> partisjonerteIdenterIInntektstub = paginerIdenter(new ArrayList<>(identerIInntektstub));
+        var partisjonerteIdenterIInntektstub = paginerIdenter(new ArrayList<>(identerIInntektstub));
         for (int i = 0; i < partisjonerteIdenterIInntektstub.size(); i++) {
             SortedMap<String, List<RsInntekt>> identerMedInntekt = new TreeMap<>();
             Map<String, List<Inntektsinformasjon>> identerMedInntektsinformasjon = new HashMap<>();
 
             inntektstubV2Consumer.hentEksisterendeInntekterPaaIdenter(partisjonerteIdenterIInntektstub.get(i))
                     .forEach(inntektsinformasjon -> {
-                        String ident = inntektsinformasjon.getNorskIdent();
+                        var ident = inntektsinformasjon.getNorskIdent();
                         if (identerMedInntektsinformasjon.containsKey(ident)) {
                             identerMedInntektsinformasjon.get(ident).add(inntektsinformasjon);
                         } else {
@@ -137,13 +133,13 @@ public class SyntetiseringService {
                         }
                     });
 
-            identerMedInntektsinformasjon.forEach((key, value) -> {
-                List<RsInntekt> inntekter = mapInntektsinformasjonslisteTilRsInntektListe(value);
-                inntekter = DatoParser.finnSenesteInntekter(inntekter);
-                identerMedInntekt.put(key, inntekter);
+            identerMedInntektsinformasjon.forEach((ident, inntektsinformasjon) -> {
+                var inntekter = mapInntektsinformasjonslisteTilRsInntektListe(inntektsinformasjon);
+                inntekter = finnSenesteInntekter(inntekter);
+                identerMedInntekt.put(ident, inntekter);
             });
 
-            SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(identerMedInntekt, miljoe);
+            var inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(identerMedInntekt, miljoe);
 
             if (!leggTilHvisGyldig(feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, inntektsmeldingerFraSynt)) {
                 continue;
@@ -159,9 +155,9 @@ public class SyntetiseringService {
             SortedMap<String, List<RsInntekt>> nyeIdenterMedInntekt,
             String miljoe
     ) {
-        List<Map<String, List<RsInntekt>>> paginerteIdenterMedInntekt = paginerInntekter(nyeIdenterMedInntekt);
+        var paginerteIdenterMedInntekt = paginerInntekter(nyeIdenterMedInntekt);
         for (int i = 0; i < paginerteIdenterMedInntekt.size(); i++) {
-            SortedMap<String, List<RsInntekt>> inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(paginerteIdenterMedInntekt.get(i), miljoe);
+            var inntektsmeldingerFraSynt = getInntektsmeldingerFraSynt(paginerteIdenterMedInntekt.get(i), miljoe);
 
             if (!leggTilHvisGyldig(feiledeInntektsmeldinger, syntetiskeInntektsmeldinger, inntektsmeldingerFraSynt)) {
                 continue;
@@ -180,17 +176,15 @@ public class SyntetiseringService {
             String miljoe
     ) {
         var inntektsmeldingerFraSynt = inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(identerMedInntekt);
-        for (Map.Entry<String, List<RsInntekt>> entry : inntektsmeldingerFraSynt.entrySet()) {
-            String ident = entry.getKey();
-            List<RsInntekt> inntekter = entry.getValue();
-            for (RsInntekt inntekt : inntekter) {
-                String opplysningspliktig = getOpplysningspliktigId(ident, miljoe);
+        inntektsmeldingerFraSynt.forEach((ident, inntekter) -> {
+            for (var inntekt : inntekter) {
+                var opplysningspliktig = getOpplysningspliktigId(ident, miljoe);
                 if (opplysningspliktig == null) {
                     log.warn("Fant ikke opplysningspliktig på arbeidsforhold til ident {}", ident);
                 }
                 inntekt.setOpplysningspliktig(opplysningspliktig);
             }
-        }
+        });
         return inntektsmeldingerFraSynt;
     }
 

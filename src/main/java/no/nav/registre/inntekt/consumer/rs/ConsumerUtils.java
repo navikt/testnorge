@@ -63,7 +63,7 @@ public class ConsumerUtils {
             inntekt.setFordel("kontantytelse");
             inntekt.setUtloeserArbeidsgiveravgift(false);
             inntekt.setInngaarIGrunnlagForTrekk(true);
-            Tilleggsinformasjon tilleggsinformasjon = new Tilleggsinformasjon(AldersUfoereEtterlatteAvtalefestetOgKrigspensjon.builder()
+            var tilleggsinformasjon = new Tilleggsinformasjon(AldersUfoereEtterlatteAvtalefestetOgKrigspensjon.builder()
                     .grunnpensjonsbeloep(grunnpensjon)
                     .tilleggspensjonsbeloep(tillegspensjon)
                     .pensjonsgrad(pensjonsgrad)
