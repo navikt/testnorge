@@ -114,7 +114,7 @@ public class SyntetiseringsControllerTest {
      */
     @Test
     public void shouldProduceInntektsmeldinger() {
-        var syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
+        var syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(avspillergruppeId, miljoe);
 
         syntetiseringsController.opprettSyntetiskInntektsmeldingIInntektstub(syntetiserInntektsmeldingRequest);
 

@@ -42,7 +42,8 @@ public class TestnorgeInntektServiceTest {
     @Test
     public void shouldGenerereInntektsmeldinger() {
         var avspillergruppeId = 123L;
-        var syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
+        var miljoe = "t1";
+        var syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(avspillergruppeId, miljoe);
 
         when(testnorgeInntektConsumer.startSyntetisering(syntetiserInntektsmeldingRequest)).thenReturn(expectedFeiledeInntektsmeldinger);
 

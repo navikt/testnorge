@@ -135,8 +135,8 @@ public class JobController {
 
     @Scheduled(cron = "0 0 1 1 * *")
     public void inntektSyntBatch() {
-        for (var avspillergruppeId : avspillergruppeIdMedMiljoe.keySet()) {
-            var request = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
+        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            var request = new SyntetiserInntektsmeldingRequest(entry.getKey(), entry.getValue());
             var feiledeInntektsmeldinger = testnorgeInntektService.genererInntektsmeldinger(request);
             log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger. Meldinger som feilet: {}.", feiledeInntektsmeldinger.keySet().toString());
         }

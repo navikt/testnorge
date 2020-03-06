@@ -39,13 +39,14 @@ public class TestnorgeInntektConsumerTest {
     private String serverUrl;
 
     private long gruppeId = 10L;
+    private String miljoe = "t1";
     private String fnr = "01010101010";
     private Double beloep = 10000.0;
     private SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest;
 
     @Before
     public void setUp() {
-        syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(gruppeId);
+        syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(gruppeId, miljoe);
     }
 
     /**
