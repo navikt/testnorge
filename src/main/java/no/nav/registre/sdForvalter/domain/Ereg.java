@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+
 import no.nav.registre.sdForvalter.database.model.EregModel;
 
 @Value
@@ -27,13 +28,15 @@ public class Ereg {
     @JsonProperty
     private final String naeringskode;
     @JsonProperty
-    private final String parent;
+    private final String juridiskEnhet;
     @JsonProperty
     private final Adresse forretningsAdresse;
     @JsonProperty
     private final Adresse postadresse;
     @JsonProperty
-    private final KildeSystem kildeSystem;
+    private final String gruppe;
+    @JsonProperty
+    private final String opprinelse;
 
     public Ereg(EregModel model) {
         this.orgnr = model.getOrgnr();
@@ -42,9 +45,10 @@ public class Ereg {
         this.epost = model.getEpost();
         this.internetAdresse = model.getInternetAdresse();
         this.naeringskode = model.getNaeringskode();
-        this.parent = model.getParent() != null ? model.getParent().getOrgnr() : null;
-        this.kildeSystem = model.getKildeSystemModel() != null ? new KildeSystem(model.getKildeSystemModel()) : null;
+        this.juridiskEnhet = model.getParent() != null ? model.getParent().getOrgnr() : null;
+        this.opprinelse = model.getKildeSystemModel() != null ? model.getKildeSystemModel().getNavn() : null;
         this.forretningsAdresse = model.getForretningsAdresse() != null ? new Adresse(model.getForretningsAdresse()) : null;
         this.postadresse = model.getPostadresse() != null ? new Adresse(model.getPostadresse()) : null;
+        this.gruppe = model.getGruppeModel() != null ? model.getGruppeModel().getKode() : null;
     }
 }

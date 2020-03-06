@@ -18,9 +18,9 @@ public class KildeSystemAdapter {
         return new KildeSystemListe(repository.findAll());
     }
 
-    KildeSystemModel saveKildeSystem(KildeSystem kildeSystem) {
+    KildeSystemModel saveKildeSystem(String opprinelse) {
         return repository
-                .findByNavn(kildeSystem.getNavn())
-                .orElseGet(() -> repository.save(new KildeSystemModel(kildeSystem)));
+                .findByNavn(opprinelse)
+                .orElseGet(() -> repository.save(new KildeSystemModel(opprinelse)));
     }
 }

@@ -29,7 +29,7 @@ public class TpsIdent {
     @JsonProperty("by")
     private final String city;
     @JsonProperty
-    private final KildeSystem kildeSystem;
+    private final String opprinelse;
 
     public TpsIdent(TpsIdentModel model) {
         fnr = model.getFnr();
@@ -38,6 +38,6 @@ public class TpsIdent {
         address = model.getAddress();
         postNr = model.getPostNr();
         city = model.getCity();
-        kildeSystem = model.getKildeSystemModel() != null ? new KildeSystem(model.getKildeSystemModel()) : null;
+        opprinelse = model.getKildeSystemModel() != null ? model.getKildeSystemModel().getNavn() : null;
     }
 }

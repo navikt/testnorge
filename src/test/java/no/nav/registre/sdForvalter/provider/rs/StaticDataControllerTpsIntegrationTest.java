@@ -63,7 +63,7 @@ public class StaticDataControllerTpsIntegrationTest {
                 .build();
         tpsIdenterRepository.save(tpsIdentModel);
 
-        String json = mvc.perform(get("/api/v1/statiskData/tps/")
+        String json = mvc.perform(get("/api/v1/faste-data/tps/")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -83,7 +83,7 @@ public class StaticDataControllerTpsIntegrationTest {
                 .fnr("01010101011")
                 .build();
         Set<TpsIdent> tpsIdentSet = createTpsIdentSet(tpsIdent);
-        mvc.perform(post("/api/v1/statiskData/tps/")
+        mvc.perform(post("/api/v1/faste-data/tps/")
                 .content(objectMapper.writeValueAsString(tpsIdentSet))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -98,18 +98,18 @@ public class StaticDataControllerTpsIntegrationTest {
                 .firstName("Test")
                 .lastName("Testen")
                 .fnr("01010101011")
-                .kildeSystem(altinn)
+                .opprinelse(altinn.getNavn())
                 .build();
 
         final TpsIdent petter = TpsIdent.builder()
                 .firstName("Testern")
                 .lastName("Testernson")
                 .fnr("01010101021")
-                .kildeSystem(altinn)
+                .opprinelse(altinn.getNavn())
                 .build();
 
         final Set<TpsIdent> tpsIdentSet = createTpsIdentSet(hans, petter);
-        mvc.perform(post("/api/v1/statiskData/tps/")
+        mvc.perform(post("/api/v1/faste-data/tps/")
                 .content(objectMapper.writeValueAsString(tpsIdentSet))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -122,6 +122,7 @@ public class StaticDataControllerTpsIntegrationTest {
                         "navn"
                 );
     }
+
 
     @After
     public void cleanUp() {

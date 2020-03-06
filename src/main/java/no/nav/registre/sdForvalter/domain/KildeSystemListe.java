@@ -8,10 +8,8 @@ import lombok.Value;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import no.nav.registre.sdForvalter.database.model.KildeSystemModel;
 

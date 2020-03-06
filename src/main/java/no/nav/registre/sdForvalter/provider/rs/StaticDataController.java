@@ -1,5 +1,6 @@
 package no.nav.registre.sdForvalter.provider.rs;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -18,13 +20,12 @@ import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.domain.Ereg;
 import no.nav.registre.sdForvalter.domain.TpsIdent;
-import no.nav.registre.sdForvalter.provider.rs.request.FastDataRequest;
 import no.nav.registre.sdForvalter.service.StaticDataService;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/statiskData")
+@RequestMapping("/api/v1/faste-data")
 public class StaticDataController {
 
     private final StaticDataService staticDataService;
@@ -53,22 +54,12 @@ public class StaticDataController {
     }
 
     @GetMapping(value = "/ereg")
-    public ResponseEntity<List<Ereg>> getEregStaticData() {
-        return ResponseEntity.ok(eregAdapter.fetchEregData());
+    public ResponseEntity<List<Ereg>> getEregStaticData(@RequestParam(name = "gruppe", required = false) String gruppe) {
+        return ResponseEntity.ok(eregAdapter.fetchEregData(gruppe));
     }
 
     @PostMapping(value = "/ereg")
     public ResponseEntity<List<Ereg>> createEregStaticData(@RequestBody List<Ereg> eregs) {
         return ResponseEntity.ok(eregAdapter.saveEregData(eregs));
-    }
-
-    @PostMapping(value = "/")
-    public ResponseEntity<FastDataRequest> storeStaticDataInTps(@RequestBody FastDataRequest data) {
-        FastDataRequest responseBody = new FastDataRequest();
-        responseBody.setTps(tpsIdenterAdapter.saveTpsIdenter(data.getTps()));
-        responseBody.setKrr(staticDataService.saveInKrr(data.getKrr()));
-        responseBody.setEreg(eregAdapter.saveEregData(data.getEreg()));
-        responseBody.setAareg(staticDataService.saveInAareg(data.getAareg()));
-        return ResponseEntity.ok(responseBody);
     }
 }

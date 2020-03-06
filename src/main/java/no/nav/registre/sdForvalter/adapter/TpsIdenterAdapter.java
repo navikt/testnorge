@@ -1,7 +1,6 @@
 package no.nav.registre.sdForvalter.adapter;
 
 import lombok.AllArgsConstructor;
-import no.nav.registre.sdForvalter.domain.TpsIdent;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -11,6 +10,7 @@ import java.util.stream.StreamSupport;
 
 import no.nav.registre.sdForvalter.database.model.TpsIdentModel;
 import no.nav.registre.sdForvalter.database.repository.TpsIdenterRepository;
+import no.nav.registre.sdForvalter.domain.TpsIdent;
 
 @Component
 @AllArgsConstructor
@@ -34,7 +34,12 @@ public class TpsIdenterAdapter {
 
         Iterable<TpsIdentModel> createdTpsIdenter = repository.saveAll(noneExistingTpsIdenter
                 .stream()
-                .map(tpsIdent -> new TpsIdentModel(tpsIdent, tpsIdent.getKildeSystem() != null ? kildeSystemAdapter.saveKildeSystem(tpsIdent.getKildeSystem()) : null))
+                .map(tpsIdent -> new TpsIdentModel(
+                        tpsIdent,
+                        tpsIdent.getOpprinelse() != null
+                                ? kildeSystemAdapter.saveKildeSystem(tpsIdent.getOpprinelse())
+                                : null
+                ))
                 .collect(Collectors.toList())
         );
         return StreamSupport

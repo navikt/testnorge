@@ -22,7 +22,6 @@ import java.util.HashSet;
  * Configure automated swagger API documentation
  */
 
-@Profile("prod")
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig implements WebMvcConfigurer {

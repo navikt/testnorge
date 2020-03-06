@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import no.nav.registre.sdForvalter.consumer.rs.AaregConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.EregMapperConsumer;
@@ -54,7 +54,7 @@ public class EnvironmentInitializationService {
      *
      * @param environment Miljøet som skal initialiseres
      */
-    public void initializeEnvironmentWithStaticData(String environment) {
+    public void initializeEnvironmentWithStaticData(String environment, String gruppe) {
         log.info("Start init of all static data sets...");
 
         /*
@@ -75,7 +75,7 @@ public class EnvironmentInitializationService {
         response.forEach(resp -> resp.getStatusPerMiljoe().values().stream().filter(melding -> melding.startsWith("Feil"))
                 .forEach(melding -> log.warn("Feil under initialisering av aareg i miljø {}. Feilmelding: {}", environment, melding)));
 
-        initializeEreg(environment);
+        initializeEreg(environment, gruppe);
         log.info("Completed init of all static data sets.");
     }
 
@@ -140,17 +140,21 @@ public class EnvironmentInitializationService {
         return response;
     }
 
-    public void initializeEreg(String environment) {
-        log.info("Start init of Ereg...");
-        List<EregModel> data = new ArrayList<>();
-        eregRepository.findAll().forEach(
-                e -> {
-                    if (e.isExcluded()) {
-                        return;
-                    }
-                    data.add(e);
-                }
-        );
+    public void initializeEreg(String environment, String gruppe) {
+        if (gruppe != null) {
+            log.info("Start init of Ereg for gruppe {} ...", gruppe);
+        } else {
+            log.info("Start init of Ereg ...");
+        }
+
+        List<EregModel> data = StreamSupport
+                .stream(eregRepository.findAll().spliterator(), false)
+                .filter(model -> !model.isExcluded())
+                .filter(model -> gruppe == null
+                        || model.getGruppeModel() == null
+                        || model.getGruppeModel().getKode().equals(gruppe)
+                )
+                .collect(Collectors.toList());
         eregMapperConsumer.create(data, environment);
         log.info("Init of Ereg completed.");
     }
