@@ -30,7 +30,7 @@ import no.nav.registre.sdForvalter.domain.Ereg;
 @AllArgsConstructor
 @Slf4j
 @Table(name = "EREG")
-public class EregModel extends AuditModel {
+public class  EregModel extends AuditModel {
 
     @Id
     private String orgnr;
@@ -51,6 +51,10 @@ public class EregModel extends AuditModel {
     @JoinColumn(name = "kilde_system_id")
     private KildeSystemModel kildeSystemModel;
 
+    @OneToOne
+    @JoinColumn(name = "gruppe_id")
+    private GruppeModel gruppeModel;
+
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "adresse", column = @Column(name = "forretnings_adresse")),
@@ -67,7 +71,7 @@ public class EregModel extends AuditModel {
     @Column(name = "ekskludert")
     private boolean excluded = false;
 
-    public EregModel(Ereg ereg, EregModel parent, KildeSystemModel kildeSystemModel) {
+    public EregModel(Ereg ereg, EregModel parent, KildeSystemModel kildeSystemModel, GruppeModel gruppeModel) {
         this.orgnr = ereg.getOrgnr();
         this.enhetstype = ereg.getEnhetstype();
         this.navn = ereg.getNavn();
@@ -77,5 +81,6 @@ public class EregModel extends AuditModel {
         this.kildeSystemModel = kildeSystemModel;
         this.forretningsAdresse = ereg.getInternetAdresse() != null ? new AdresseModel(ereg.getForretningsAdresse()) : null;
         this.postadresse = ereg.getPostadresse() != null ? new AdresseModel(ereg.getPostadresse()) : null;
+        this.gruppeModel = gruppeModel;
     }
 }
