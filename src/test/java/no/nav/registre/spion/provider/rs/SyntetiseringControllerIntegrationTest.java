@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 
 import no.nav.registre.spion.consumer.rs.response.aareg.*;
+import no.nav.registre.spion.consumer.rs.response.HodejegerenResponse;
 import no.nav.registre.spion.provider.rs.request.SyntetiserSpionRequest;
 
 import org.junit.After;
@@ -41,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         locations = "classpath:application-test.properties"
 )
 @ActiveProfiles("test")
-public class SyntetiseringControllerAaregIntegrationTest {
+public class SyntetiseringControllerIntegrationTest {
 
     private static final String MILJOE = "x2";
     private static final long AVSPILLERGRUPPEID = 10;
@@ -57,12 +58,14 @@ public class SyntetiseringControllerAaregIntegrationTest {
 
 
     @Test
-    public void shouldGetDataFromAaregAndCreateVedtak() throws Exception{
+    public void shouldGetDataFromAaregAndHodejegerenAndCreateVedtak() throws Exception{
 
         final UrlPathPattern hentIdenterIAaregUrl =
                 urlPathMatching("(.*)/v1/ident/avspillergruppe/"+AVSPILLERGRUPPEID+"(.*)");
         final UrlPathPattern hentArbeidsforholdIAaregUrl =
                 urlPathMatching("(.*)/v1/ident/"+IDENT+"(.*)");
+        final UrlPathPattern hentPersondataTilIdentUrl =
+                urlPathMatching("(.*)/v1/persondata(.*)");
 
 
         SyntetiserSpionRequest vedtakRequest =
@@ -86,9 +89,26 @@ public class SyntetiseringControllerAaregIntegrationTest {
                 new Sporingsinformasjon()
                 ));
 
+        HodejegerenResponse persondata = new HodejegerenResponse(
+                IDENT,
+                "FORNAVN",
+                "MELLOMNAVN",
+                "ETTERNAVN",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "");
+
 
         stubGet(hentIdenterIAaregUrl, identer,  objectMapper);
         stubGet(hentArbeidsforholdIAaregUrl, arbeidsforhold, objectMapper);
+        stubGet(hentPersondataTilIdentUrl, persondata, objectMapper);
 
         mvc.perform(post("/api/v1/syntetisering/vedtak")
                 .content(objectMapper.writeValueAsString(vedtakRequest))

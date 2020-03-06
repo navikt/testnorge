@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.spion.provider.rs.response.SyntetiserSpionResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,9 +41,9 @@ public class SyntetiseringController {
 
 
     @PostMapping(value = "/vedtak")
-    @ApiOperation(value="Generer syntetiske vedtak for et gitt antall personer.")
+    @ApiOperation(value="Generer syntetiske vedtak for et gitt antall personer og legger dem på Kafka kø til SPION.")
     @Transactional
-    public List<SyntetiserVedtakResponse> genererVedtak(@ApiParam(value=REQUEST_DESCRIPTION) @RequestBody SyntetiserSpionRequest request) throws JsonProcessingException {
+    public SyntetiserSpionResponse genererVedtakForSPION(@ApiParam(value=REQUEST_DESCRIPTION) @RequestBody SyntetiserSpionRequest request) throws JsonProcessingException {
 
         List<SyntetiserVedtakResponse> syntetisertvedtaksliste = syntetiseringService.syntetiserVedtak(
                 Objects.isNull(request.getAvspillergruppeId())?
@@ -53,12 +54,13 @@ public class SyntetiseringController {
                 request.getEndDate(),
                 request.getNumPeriods());
 
-        log.info("Vedtak for {} person(er) ble syntetisert.", syntetisertvedtaksliste.size());
+        int vedtakSyntetisertForAntallPersoner = syntetisertvedtaksliste.size();
 
-        vedtakPublisher.publish(syntetisertvedtaksliste);
+        log.info("Vedtak for {} person(er) ble syntetisert.", vedtakSyntetisertForAntallPersoner);
 
-        return syntetisertvedtaksliste;
+        int antallVellykketSendinger = vedtakPublisher.publish(syntetisertvedtaksliste);
 
+        return new SyntetiserSpionResponse(vedtakSyntetisertForAntallPersoner, antallVellykketSendinger);
     }
 
 }

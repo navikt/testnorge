@@ -1,10 +1,9 @@
 package no.nav.registre.spion.domain;
 
 import java.time.LocalDate;
-import java.util.Random;
 
 import no.nav.registre.spion.consumer.rs.response.aareg.AaregResponse;
-import no.nav.registre.spion.consumer.rs.response.hodejegeren.HodejegerenResponse;
+import no.nav.registre.spion.consumer.rs.response.HodejegerenResponse;
 import org.apache.commons.math3.distribution.GammaDistribution;
 import static no.nav.registre.spion.utils.RandomUtils.getRandomBoundedNumber;
 

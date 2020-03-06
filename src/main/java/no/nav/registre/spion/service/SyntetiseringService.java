@@ -9,7 +9,7 @@ import no.nav.registre.spion.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.spion.consumer.rs.response.aareg.AaregResponse;
 import static no.nav.registre.spion.utils.RandomUtils.getRandomBoundedNumber;
 
-import no.nav.registre.spion.consumer.rs.response.hodejegeren.HodejegerenResponse;
+import no.nav.registre.spion.consumer.rs.response.HodejegerenResponse;
 import no.nav.registre.spion.provider.rs.response.SyntetiserVedtakResponse;
 import org.springframework.stereotype.Service;
 
