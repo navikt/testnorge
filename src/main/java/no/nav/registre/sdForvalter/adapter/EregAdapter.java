@@ -1,6 +1,7 @@
 package no.nav.registre.sdForvalter.adapter;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,7 +11,9 @@ import java.util.stream.StreamSupport;
 import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.repository.EregRepository;
 import no.nav.registre.sdForvalter.domain.Ereg;
+import no.nav.registre.sdForvalter.domain.EregListe;
 
+@Slf4j
 @Component
 @AllArgsConstructor
 public class EregAdapter {
@@ -18,15 +21,18 @@ public class EregAdapter {
     private final GruppeAdapter gruppeAdapter;
     private final KildeSystemAdapter kildeSystemAdapter;
 
-    public List<Ereg> fetchEregData(String gruppe) {
-        return StreamSupport
+    public EregListe fetchEregData(String gruppe) {
+        if (gruppe != null) {
+            log.info("Henter ereg med gruppe={}", gruppe);
+        }
+        return new EregListe(StreamSupport
                 .stream(repository.findAll().spliterator(), false)
                 .filter(model -> gruppe == null
                         || model.getGruppeModel() != null
                         && model.getGruppeModel().getKode().equals(gruppe)
                 )
-                .map(Ereg::new)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+        );
     }
 
     private EregModel fetchEreg(String orgnr) {
@@ -35,14 +41,15 @@ public class EregAdapter {
         );
     }
 
-    public List<Ereg> saveEregData(List<Ereg> eregs) {
-        List<Ereg> existionEregs = fetchEregData(null);
+    public EregListe saveEregData(EregListe eregs) {
+        List<Ereg> existionEregs = fetchEregData(null).getListe();
         List<Ereg> noneExistingEregs = eregs
+                .getListe()
                 .stream()
                 .filter(ereg -> existionEregs.stream().noneMatch(existing -> existing.equals(ereg)))
                 .collect(Collectors.toList());
 
-        Iterable<EregModel> createdEregs = repository.saveAll(
+        return new EregListe(repository.saveAll(
                 noneExistingEregs
                         .stream()
                         .map(ereg -> new EregModel(
@@ -56,12 +63,7 @@ public class EregAdapter {
                                         : null
                         ))
                         .collect(Collectors.toList())
-        );
-
-        return StreamSupport
-                .stream(createdEregs.spliterator(), false)
-                .map(Ereg::new)
-                .collect(Collectors.toList());
+        ));
     }
 
 

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.sdForvalter.database.model.EregModel;
+import no.nav.registre.sdForvalter.domain.Ereg;
 
 @Getter
 @Setter
@@ -37,7 +38,7 @@ public class EregMapperRequest {
     private Adresse adresse;
     private List<Map<String, String>> knytninger;
 
-    public EregMapperRequest(EregModel model) {
+    public EregMapperRequest(Ereg model) {
         enhetstype = model.getEnhetstype();
         epost = model.getEpost();
         internetAdresse = model.getInternetAdresse();
@@ -45,9 +46,9 @@ public class EregMapperRequest {
             navn = Navn.builder().navneListe(Collections.singletonList(model.getNavn())).build();
         }
         orgnr = model.getOrgnr();
-        if (model.getParent() != null) {
+        if (model.getJuridiskEnhet() != null) {
             knytninger = Collections.singletonList(new HashMap<String, String>() {{
-                put("orgnr", model.getParent().getOrgnr());
+                put("orgnr", model.getJuridiskEnhet());
             }});
         }
         if (model.getForretningsAdresse() != null) {

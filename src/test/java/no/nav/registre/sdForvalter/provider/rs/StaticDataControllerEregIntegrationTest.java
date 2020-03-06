@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import org.junit.After;
@@ -22,7 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.GruppeModel;
@@ -31,6 +29,7 @@ import no.nav.registre.sdForvalter.database.repository.EregRepository;
 import no.nav.registre.sdForvalter.database.repository.GruppeRepository;
 import no.nav.registre.sdForvalter.database.repository.KildeSystemRepository;
 import no.nav.registre.sdForvalter.domain.Ereg;
+import no.nav.registre.sdForvalter.domain.EregListe;
 import no.nav.registre.sdForvalter.domain.KildeSystem;
 
 @RunWith(SpringRunner.class)
@@ -74,9 +73,8 @@ public class StaticDataControllerEregIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        List<Ereg> response = objectMapper.readValue(json, new TypeReference<List<Ereg>>() {
-        });
-        assertThat(response).containsOnly(new Ereg(model));
+        EregListe response = objectMapper.readValue(json, EregListe.class);
+        assertThat(response.getListe()).containsOnly(new Ereg(model));
     }
 
 
@@ -87,7 +85,7 @@ public class StaticDataControllerEregIntegrationTest {
                 .enhetstype("BEDR")
                 .build();
         mvc.perform(post("/api/v1/faste-data/ereg/")
-                .content(objectMapper.writeValueAsString(Collections.singletonList(ereg)))
+                .content(objectMapper.writeValueAsString(create(ereg)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -122,9 +120,8 @@ public class StaticDataControllerEregIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        List<Ereg> response = objectMapper.readValue(json, new TypeReference<List<Ereg>>() {
-        });
-        assertThat(response).containsOnly(new Ereg(eregModel));
+        EregListe response = objectMapper.readValue(json, EregListe.class);
+        assertThat(response.getListe()).containsOnly(new Ereg(eregModel));
     }
 
 
@@ -160,9 +157,8 @@ public class StaticDataControllerEregIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        List<Ereg> response = objectMapper.readValue(json, new TypeReference<List<Ereg>>() {
-        });
-        assertThat(response).containsOnly(new Ereg(eregWithGruppeModel));
+        EregListe response = objectMapper.readValue(json, EregListe.class);
+        assertThat(response.getListe()).containsOnly(new Ereg(eregWithGruppeModel));
     }
 
     @Test
@@ -179,7 +175,7 @@ public class StaticDataControllerEregIntegrationTest {
                 .build();
 
         mvc.perform(post("/api/v1/faste-data/ereg/")
-                .content(objectMapper.writeValueAsString(Collections.singletonList(ereg)))
+                .content(objectMapper.writeValueAsString(create(ereg)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -203,15 +199,19 @@ public class StaticDataControllerEregIntegrationTest {
                 .enhetstype("BEDR")
                 .opprinelse(altinn.getNavn())
                 .build();
-
         mvc.perform(post("/api/v1/faste-data/ereg/")
-                .content(objectMapper.writeValueAsString(Arrays.asList(ereg_123456789, ereg_987654321)))
+                .content(objectMapper.writeValueAsString(create(ereg_123456789, ereg_987654321)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         assertThat(Lists.newArrayList(kildeSystemRepository.findAll()))
                 .hasSize(1)
                 .first()
                 .isEqualToComparingOnlyGivenFields(new KildeSystemModel(altinn), "navn");
+    }
+
+
+    private EregListe create(Ereg... eregs) {
+        return new EregListe(Arrays.asList(eregs));
     }
 
     @After

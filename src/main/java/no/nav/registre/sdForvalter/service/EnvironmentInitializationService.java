@@ -9,8 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
+import no.nav.registre.sdForvalter.adapter.EregAdapter;
 import no.nav.registre.sdForvalter.consumer.rs.AaregConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.EregMapperConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.HodejegerenConsumer;
@@ -20,11 +20,9 @@ import no.nav.registre.sdForvalter.consumer.rs.SkdConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.TpConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.response.AaregResponse;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
-import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.model.TpsIdentModel;
 import no.nav.registre.sdForvalter.database.repository.AaregRepository;
-import no.nav.registre.sdForvalter.database.repository.EregRepository;
 import no.nav.registre.sdForvalter.database.repository.KrrRepository;
 import no.nav.registre.sdForvalter.database.repository.TpsIdenterRepository;
 
@@ -36,7 +34,6 @@ public class EnvironmentInitializationService {
     private final AaregRepository aaregRepository;
     private final TpsIdenterRepository tpsIdenterRepository;
     private final KrrRepository krrRepository;
-    private final EregRepository eregRepository;
 
     private final AaregConsumer aaregConsumer;
     private final SkdConsumer skdConsumer;
@@ -45,6 +42,8 @@ public class EnvironmentInitializationService {
     private final TpConsumer tpConsumer;
     private final SamConsumer samConsumer;
     private final EregMapperConsumer eregMapperConsumer;
+
+    private final EregAdapter eregAdapter;
 
     @Value("${tps.statisk.avspillergruppeId}")
     private Long staticDataPlaygroup;
@@ -141,21 +140,8 @@ public class EnvironmentInitializationService {
     }
 
     public void initializeEreg(String environment, String gruppe) {
-        if (gruppe != null) {
-            log.info("Start init of Ereg for gruppe {} ...", gruppe);
-        } else {
-            log.info("Start init of Ereg ...");
-        }
-
-        List<EregModel> data = StreamSupport
-                .stream(eregRepository.findAll().spliterator(), false)
-                .filter(model -> !model.isExcluded())
-                .filter(model -> gruppe == null
-                        || model.getGruppeModel() == null
-                        || model.getGruppeModel().getKode().equals(gruppe)
-                )
-                .collect(Collectors.toList());
-        eregMapperConsumer.create(data, environment);
+        log.info("Start init of Ereg ...");
+        eregMapperConsumer.create(eregAdapter.fetchEregData(gruppe), environment);
         log.info("Init of Ereg completed.");
     }
 

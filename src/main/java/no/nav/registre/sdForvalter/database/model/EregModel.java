@@ -68,9 +68,6 @@ public class  EregModel extends AuditModel {
     @Embedded
     private AdresseModel postadresse;
 
-    @Column(name = "ekskludert")
-    private boolean excluded = false;
-
     public EregModel(Ereg ereg, EregModel parent, KildeSystemModel kildeSystemModel, GruppeModel gruppeModel) {
         this.orgnr = ereg.getOrgnr();
         this.enhetstype = ereg.getEnhetstype();

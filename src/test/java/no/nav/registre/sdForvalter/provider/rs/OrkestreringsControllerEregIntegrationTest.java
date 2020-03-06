@@ -6,6 +6,8 @@ import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregMapperRequest;
 import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.repository.EregRepository;
+import no.nav.registre.sdForvalter.domain.Ereg;
+
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,43 +63,7 @@ public class OrkestreringsControllerEregIntegrationTest {
 
         verifyPost(
                 CREATE_IN_EREG_URL_PATTERN,
-                Collections.singletonList(new EregMapperRequest(model)),
-                objectMapper
-        );
-    }
-
-    @Test
-    public void shouldInitializeEregWithAndSplitOnParents() throws Exception {
-        EregModel firstGeneration = createEregModel("12345678903", "AAS");
-        EregModel secondGeneration01 = createEregModel("12345678904", "AS", firstGeneration);
-        EregModel secondGeneration02 = createEregModel("12345678905", "BEDF", firstGeneration);
-        EregModel thirdGeneration = createEregModel("12345678906", "BEDF", secondGeneration01);
-
-        eregRepository.saveAll(Arrays.asList(firstGeneration, secondGeneration01, secondGeneration02, thirdGeneration));
-
-        stubPost(CREATE_IN_EREG_URL_PATTERN);
-        mvc.perform(post("/api/v1/orkestrering/ereg/" + ENVIRONMENT)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        verifyPost(
-                CREATE_IN_EREG_URL_PATTERN,
-                Collections.singletonList(new EregMapperRequest(firstGeneration)),
-                objectMapper
-        );
-
-        verifyPost(
-                CREATE_IN_EREG_URL_PATTERN,
-                Arrays.asList(
-                        new EregMapperRequest(secondGeneration01),
-                        new EregMapperRequest(secondGeneration02)
-                ),
-                objectMapper
-        );
-
-        verifyPost(
-                CREATE_IN_EREG_URL_PATTERN,
-                Collections.singletonList(new EregMapperRequest(thirdGeneration)),
+                Collections.singletonList(new EregMapperRequest(new Ereg(model))),
                 objectMapper
         );
     }
@@ -105,7 +71,6 @@ public class OrkestreringsControllerEregIntegrationTest {
     private EregModel createEregModel(String orgId, String enhetstype) {
         return createEregModel(orgId, enhetstype, null);
     }
-
 
     private EregModel createEregModel(String orgId, String enhetstype, EregModel parent) {
         return EregModel.builder().orgnr(orgId).enhetstype(enhetstype).parent(parent).build();
@@ -116,6 +81,4 @@ public class OrkestreringsControllerEregIntegrationTest {
         reset();
         eregRepository.deleteAll();
     }
-
-
 }

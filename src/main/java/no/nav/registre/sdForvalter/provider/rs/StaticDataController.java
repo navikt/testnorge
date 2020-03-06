@@ -19,6 +19,7 @@ import no.nav.registre.sdForvalter.adapter.TpsIdenterAdapter;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.domain.Ereg;
+import no.nav.registre.sdForvalter.domain.EregListe;
 import no.nav.registre.sdForvalter.domain.TpsIdent;
 import no.nav.registre.sdForvalter.service.StaticDataService;
 
@@ -54,12 +55,12 @@ public class StaticDataController {
     }
 
     @GetMapping(value = "/ereg")
-    public ResponseEntity<List<Ereg>> getEregStaticData(@RequestParam(name = "gruppe", required = false) String gruppe) {
+    public ResponseEntity<EregListe> getEregStaticData(@RequestParam(name = "gruppe", required = false) String gruppe) {
         return ResponseEntity.ok(eregAdapter.fetchEregData(gruppe));
     }
 
     @PostMapping(value = "/ereg")
-    public ResponseEntity<List<Ereg>> createEregStaticData(@RequestBody List<Ereg> eregs) {
+    public ResponseEntity<EregListe> createEregStaticData(@RequestBody EregListe eregs) {
         return ResponseEntity.ok(eregAdapter.saveEregData(eregs));
     }
 }

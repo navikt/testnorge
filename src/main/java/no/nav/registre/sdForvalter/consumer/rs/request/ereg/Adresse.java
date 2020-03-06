@@ -24,12 +24,12 @@ public class Adresse {
     private String landkode;
     private String poststed;
 
-    public Adresse(AdresseModel model) {
-        adresser = Collections.singletonList(model.getAdresse());
-        kommunenr = model.getKommunenr();
-        landkode = model.getKommunenr();
-        postnr = model.getPostnr();
-        poststed = model.getPoststed();
-    }
 
+    public Adresse(no.nav.registre.sdForvalter.domain.Adresse adresse) {
+        adresser = Collections.singletonList(adresse.getAdresse());
+        kommunenr = adresse.getKommunenr();
+        landkode = adresse.getLandkode();
+        postnr = adresse.getPostnr();
+        poststed = adresse.getPoststed();
+    }
 }

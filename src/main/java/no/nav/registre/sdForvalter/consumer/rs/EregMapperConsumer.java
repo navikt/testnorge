@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregMapperRequest;
 import no.nav.registre.sdForvalter.database.model.EregModel;
+import no.nav.registre.sdForvalter.domain.Ereg;
+import no.nav.registre.sdForvalter.domain.EregListe;
 
 @Component
 @Slf4j
@@ -25,51 +27,24 @@ public class EregMapperConsumer {
     private final RestTemplate restTemplate;
     private final String eregUrl;
 
-    private final Boolean parallel;
-
     public EregMapperConsumer(
             RestTemplate restTemplate,
-            @Value("${testnorge.ereg.mapper.rest.api.url}") String eregUrl,
-            @Value("${ereg.parallel}") Boolean parallel
+            @Value("${testnorge.ereg.mapper.rest.api.url}") String eregUrl
     ) {
         this.restTemplate = restTemplate;
         this.eregUrl = eregUrl + "/v1";
-        this.parallel = parallel;
     }
 
-    public void create(List<EregModel> data, String env) {
-        create(data, env, new HashSet<>());
-    }
-
-    private void create(List<EregModel> data, String env, final Set<String> createdOrgnr) {
-        if (!parallel) {
-            uploadToEreg(data, env);
-            return;
-        }
-        List<EregModel> eregToCreate = data.stream()
-                .filter(ereg -> !createdOrgnr.contains(ereg.getOrgnr()))
-                .filter(ereg -> ereg.getParent() == null
-                        || createdOrgnr.contains(ereg.getParent().getOrgnr()))
-                .collect(Collectors.toList());
-
-        if (eregToCreate.isEmpty()) {
-            return;
-        }
-        createdOrgnr.addAll(
-                eregToCreate
-                        .stream()
-                        .map(EregModel::getOrgnr)
-                        .collect(Collectors.toList())
-        );
-        uploadToEreg(eregToCreate, env);
-        create(data, env, createdOrgnr);
+    public void create(EregListe eregListe, String env) {
+        uploadToEreg(eregListe, env);
     }
 
 
-    private void uploadToEreg(List<EregModel> data, String env) {
+    private void uploadToEreg(EregListe eregListe, String env) {
         UriTemplate uriTemplate = new UriTemplate(eregUrl + "/orkestrering/opprett?lastOpp=true&miljoe={miljoe}");
         RequestEntity<List<EregMapperRequest>> requestEntity = new RequestEntity<>(
-                data.parallelStream()
+                eregListe.getListe()
+                        .stream()
                         .map(EregMapperRequest::new)
                         .collect(Collectors.toList()),
                 HttpMethod.POST, uriTemplate.expand(env));
