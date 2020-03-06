@@ -41,13 +41,13 @@ public class SyntetiseringController {
 
 
     @PostMapping(value = "/vedtak")
-    @ApiOperation(value="Generer syntetiske vedtak for et gitt antall personer og legger dem på Kafka kø til SPION.")
+    @ApiOperation(value = "Generer syntetiske vedtak for et gitt antall personer og legger dem på Kafka kø til SPION.")
     @Transactional
-    public SyntetiserSpionResponse genererVedtakForSPION(@ApiParam(value=REQUEST_DESCRIPTION) @RequestBody SyntetiserSpionRequest request) throws JsonProcessingException {
+    public SyntetiserSpionResponse genererVedtakForSPION(@ApiParam(value = REQUEST_DESCRIPTION) @RequestBody SyntetiserSpionRequest request) throws JsonProcessingException {
 
         List<SyntetiserVedtakResponse> syntetisertvedtaksliste = syntetiseringService.syntetiserVedtak(
-                Objects.isNull(request.getAvspillergruppeId())?
-                        Long.valueOf(defaultAvspillergruppeId) : request.getAvspillergruppeId() ,
+                Objects.isNull(request.getAvspillergruppeId()) ?
+                        Long.valueOf(defaultAvspillergruppeId) : request.getAvspillergruppeId(),
                 Objects.isNull(request.getMiljoe()) ? defaultMiljoe : request.getMiljoe(),
                 request.getNumPersons(),
                 request.getStartDate(),

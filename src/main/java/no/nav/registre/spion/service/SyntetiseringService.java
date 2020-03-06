@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.spion.consumer.rs.AaregConsumer;
 import no.nav.registre.spion.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.spion.consumer.rs.response.aareg.AaregResponse;
+
 import static no.nav.registre.spion.utils.RandomUtils.getRandomBoundedNumber;
 
 import no.nav.registre.spion.consumer.rs.response.HodejegerenResponse;
@@ -33,23 +34,23 @@ public class SyntetiseringService {
             LocalDate endDate,
             Integer numPeriods) {
 
-        LocalDate sluttDato = endDate!=null ? endDate : startDate==null ? LocalDate.now() : startDate.plusMonths(18);
-        LocalDate startDato = startDate!=null ? startDate : sluttDato.minusMonths(18);
+        LocalDate sluttDato = endDate != null ? endDate : startDate == null ? LocalDate.now() : startDate.plusMonths(18);
+        LocalDate startDato = startDate != null ? startDate : sluttDato.minusMonths(18);
 
         List<String> utvalgteIdenter = finnIdenterMedArbeidsforhold(
                 groupId,
                 environment,
-                numPersons!=null ? numPersons : 1);
+                numPersons != null ? numPersons : 1);
 
         List<SyntetiserVedtakResponse> resultat = new ArrayList<>();
 
-        for(int i=0; i< utvalgteIdenter.size(); i++){
+        for (int i = 0; i < utvalgteIdenter.size(); i++) {
             List<Vedtak> vedtaksliste = lagListeMedVedtak(
                     environment,
                     utvalgteIdenter.get(i),
                     startDato,
                     sluttDato,
-                    numPeriods != null ? numPeriods : getRandomBoundedNumber(1, 15) );
+                    numPeriods != null ? numPeriods : getRandomBoundedNumber(1, 15));
             resultat.add(new SyntetiserVedtakResponse(utvalgteIdenter.get(i), vedtaksliste));
         }
 
@@ -62,7 +63,7 @@ public class SyntetiseringService {
             LocalDate startDato,
             LocalDate sluttDato,
             int antallPerioder
-    ){
+    ) {
         List<Vedtak> vedtaksliste = new ArrayList<>();
 
 
@@ -71,11 +72,11 @@ public class SyntetiseringService {
 
         HodejegerenResponse persondata = hodejegerenConsumer.hentPersondataTilIdent(utvalgtIdent, miljoe);
 
-        LocalDate lastSluttDato = startDato.plusDays(getRandomBoundedNumber(0,90));
+        LocalDate lastSluttDato = startDato.plusDays(getRandomBoundedNumber(0, 90));
 
-        for(int i=0; i<antallPerioder; i++){
+        for (int i = 0; i < antallPerioder; i++) {
 
-            Vedtak vedtak = new Vedtak(persondata, arbeidsforhold, lastSluttDato, i==0);
+            Vedtak vedtak = new Vedtak(persondata, arbeidsforhold, lastSluttDato, i == 0);
             lastSluttDato = vedtak.getTom();
 
             vedtaksliste.add(vedtak);
@@ -99,11 +100,11 @@ public class SyntetiseringService {
         Collections.shuffle(identerMedArbeidsforholdListe);
 
         int antallIdenterFunnet = identerMedArbeidsforholdListe.size();
-        if(antallIdenterFunnet<antallIdenterOensket){
+        if (antallIdenterFunnet < antallIdenterOensket) {
             log.warn("Fant ikke nok identer med arbeidsforhold. Lager vedtak for {} identer",
                     antallIdenterFunnet);
             return identerMedArbeidsforholdListe.subList(0, antallIdenterFunnet);
-        }else{
+        } else {
             return identerMedArbeidsforholdListe.subList(0, antallIdenterOensket);
         }
     }

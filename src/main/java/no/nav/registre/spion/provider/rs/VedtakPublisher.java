@@ -40,27 +40,27 @@ public class VedtakPublisher {
     public int publish(List<SyntetiserVedtakResponse> syntetisertvedtakslister) throws JsonProcessingException {
 
         int antallVellykket = 0;
-        for(int i=0; i<syntetisertvedtakslister.size(); i++){
+        for (int i = 0; i < syntetisertvedtakslister.size(); i++) {
             SyntetiserVedtakResponse vedtaksliste = syntetisertvedtakslister.get(i);
-            log.info("Sender vedtak for person nr.{} til Kafka topic {}.",i+1, topic);
-            try{
+            log.info("Sender vedtak for person nr.{} til Kafka topic {}.", i + 1, topic);
+            try {
                 publish(vedtaksliste);
-                log.info("Sending av vedtak for person nr. {} til Kafka Topic {} var vellykket.", i+1,  topic);
+                log.info("Sending av vedtak for person nr. {} til Kafka Topic {} var vellykket.", i + 1, topic);
                 antallVellykket++;
-            }catch(ExecutionException | InterruptedException e){
-                log.error("Sending av vedtak for person nr. {} til Kafka Topic {} mislyktes.", i+1,  topic);
+            } catch (ExecutionException | InterruptedException e) {
+                log.error("Sending av vedtak for person nr. {} til Kafka Topic {} mislyktes.", i + 1, topic);
                 continue;
-            }catch(JsonProcessingException e){
+            } catch (JsonProcessingException e) {
                 log.error("Kunne ikke mappe vedtak til String.");
                 throw e;
             }
         }
 
-        return  antallVellykket;
+        return antallVellykket;
     }
 
     public void publish(SyntetiserVedtakResponse response) throws ExecutionException, InterruptedException, JsonProcessingException {
-        for(Vedtak vedtak : response.getVedtak()){
+        for (Vedtak vedtak : response.getVedtak()) {
             String id = UUID.randomUUID().toString();
             String vedtakString = om.writeValueAsString(vedtak);
             ProducerRecord<String, String> record = new ProducerRecord<>(
