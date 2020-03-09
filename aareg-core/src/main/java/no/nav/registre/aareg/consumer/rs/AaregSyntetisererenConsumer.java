@@ -63,12 +63,11 @@ public class AaregSyntetisererenConsumer {
             List<RsAaregSyntetiseringsRequest> syntetiserteMeldinger,
             RequestEntity postRequest
     ) {
-        List<RsAaregSyntetiseringsRequest> response;
+        List<RsAaregSyntetiseringsRequest> response = null;
         try {
             response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST_AAREG_REQUEST).getBody();
         } catch (Exception e) {
             log.error("Feil under syntetisering", e);
-            throw new SyntetiseringException(e.getMessage(), e.getCause());
         }
         if (response != null) {
             syntetiserteMeldinger.addAll(response);
