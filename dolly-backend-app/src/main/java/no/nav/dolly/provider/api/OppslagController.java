@@ -5,6 +5,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 import static no.nav.dolly.config.CachingConfig.CACHE_NORG2;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -21,6 +22,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
+import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
 import no.nav.dolly.consumer.aareg.AaregConsumer;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
 import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
@@ -45,6 +47,7 @@ public class OppslagController {
     private final PdlPersonConsumer pdlPersonConsumer;
     private final InntektstubConsumer inntektstubConsumer;
     private final FasteDatasettConsumer fasteDatasettConsumer;
+    private final PensjonforvalterConsumer pensjonforvalterConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -103,5 +106,17 @@ public class OppslagController {
     @ApiOperation("Hent faste orgnummer")
     public ResponseEntity getOrgnummer() {
         return fasteDatasettConsumer.hentOrgnummer();
+    }
+
+    @GetMapping("/popp/inntekt/{ident}/{miljoe}")
+    @ApiOperation("Hent inntekter fra POPP-register")
+    public ResponseEntity getPoppInntekter(@PathVariable String ident, @PathVariable String miljoe) {
+        return pensjonforvalterConsumer.getInntekter(ident, miljoe);
+    }
+
+    @GetMapping("/popp/miljoe")
+    @ApiOperation("Hent tilgjengelige miljøer for POPP-register")
+    public Set<String> getPoppMiljoer() {
+        return pensjonforvalterConsumer.getMiljoer();
     }
 }

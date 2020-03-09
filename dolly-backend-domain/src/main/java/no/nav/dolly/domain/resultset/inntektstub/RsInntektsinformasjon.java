@@ -22,11 +22,11 @@ public class RsInntektsinformasjon {
     @ApiModelProperty(
             value = "Start år-måned som inntektsinformasjonen gjelder for",
             example = "yyyy-MM",
-            dataType = "LocalDateTime",
+            dataType = "String",
             required = true,
             position = 1
     )
-    private LocalDateTime startAarMaaned;
+    private String startAarMaaned;
 
     @ApiModelProperty(
             position = 2,

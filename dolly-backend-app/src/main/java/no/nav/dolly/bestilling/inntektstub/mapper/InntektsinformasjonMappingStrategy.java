@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.inntektstub.mapper;
 
 import static java.util.Objects.isNull;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +28,7 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
 
                         inntektMultiplierWrapper.getInntektsinformasjon().forEach(inntektsinformasjon -> {
 
-                            LocalDateTime yearMonth = inntektMultiplierWrapper.getInntektsinformasjon().get(0).getStartAarMaaned();
+                            LocalDate yearMonth = LocalDate.parse(inntektsinformasjon.getStartAarMaaned() + "-01");
                             int antallMaaneder = isNull(inntektsinformasjon.getAntallMaaneder()) || inntektsinformasjon.getAntallMaaneder() < 0 ? 1 :
                                     inntektsinformasjon.getAntallMaaneder();
 
