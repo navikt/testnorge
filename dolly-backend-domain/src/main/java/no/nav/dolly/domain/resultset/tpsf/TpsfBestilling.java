@@ -98,6 +98,10 @@ public class TpsfBestilling {
 
     private List<RsIdenthistorikk> identHistorikk;
 
+    private Boolean harBankkontonr;
+
+    private LocalDateTime bankkontonrRegdato;
+
     public RsSimpleRelasjoner getRelasjoner() {
         if (isNull(relasjoner)) {
             relasjoner = new RsSimpleRelasjoner();
