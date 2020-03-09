@@ -155,4 +155,18 @@ public class RsTpsfBasisBestilling {
             value = "Sette dødsdato på person"
     )
     private LocalDateTime doedsdato;
+
+    @ApiModelProperty(
+            position = 33,
+            dataType = "Boolean",
+            value = "Når satt genereres et gyldig bankkontonummer som legges til på person-egenskaper"
+    )
+    private Boolean harBankkontonr;
+
+    @ApiModelProperty(
+            position = 34,
+            dataType = "LocalDateTime",
+            value = "Dato for opprettet bankkontonummer"
+    )
+    private LocalDateTime bankkontonrRegdato;
 }
