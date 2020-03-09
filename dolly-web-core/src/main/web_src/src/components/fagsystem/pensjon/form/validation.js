@@ -60,7 +60,8 @@ export const validation  = {
             Yup.object({
                 inntekt: Yup.object({
                     fomAar: innenforInntektsperiodeTest(requiredNumber, true),
-                    tomAar: innenforInntektsperiodeTest(Yup.number().nullable()),
+                    tomAar: innenforInntektsperiodeTest(requiredNumber)
+                        .typeError('Velg et gyldig år'),
                     belop: Yup.number()
                         .min(0, 'Tast inn et gyldig beløp')
                         .typeError('Tast inn et gyldig beløp'),
