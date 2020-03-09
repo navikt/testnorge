@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,8 @@ import no.nav.identpool.util.IdentPredicateUtil;
 public class AjourholdService {
 
     private static final int MAX_SIZE_TPS_QUEUE = 80;
+    private static final int MIN_ANTALL_IDENTER_PER_DAG = 2;
+    private static final int MIN_ANTALL_IDENTER_PER_DAG_SENERE_AAR = 10;
 
     private final IdentRepository identRepository;
     private final IdentGeneratorService identGeneratorService;
@@ -85,9 +88,7 @@ public class AjourholdService {
             Identtype type
     ) {
         int antallPerDag = IdentDistribusjonUtil.antallPersonerPerDagPerAar(year);
-        if (antallPerDag < 2) {
-            antallPerDag = 2;
-        }
+        antallPerDag = adjustForYear(year, antallPerDag);
         int days = (year == current.getYear() ? 365 - current.getDayOfYear() : 365);
         long count = identRepository.countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatus(
                 LocalDate.of(year, 1, 1),
@@ -102,9 +103,7 @@ public class AjourholdService {
             Identtype type
     ) {
         int antallPerDag = IdentDistribusjonUtil.antallPersonerPerDagPerAar(year + 1) * 2;
-        if (antallPerDag < 2) {
-            antallPerDag = 2;
-        }
+        antallPerDag = adjustForYear(year, antallPerDag);
 
         LocalDate firstDate = LocalDate.of(year, 1, 1);
         LocalDate lastDate = LocalDate.of(year + 1, 1, 1);
@@ -118,6 +117,21 @@ public class AjourholdService {
         Map<LocalDate, List<String>> pinMap = identGeneratorService.genererIdenterMap(firstDate, lastDate, type);
 
         filterIdents(antallPerDag, pinMap);
+    }
+
+    private int adjustForYear(
+            int year,
+            int antallPerDag
+    ) {
+        if (antallPerDag < MIN_ANTALL_IDENTER_PER_DAG) {
+            LocalDate dateOfYear = LocalDate.of(year, 1, 1);
+            if (dateOfYear.isBefore(LocalDate.now()) && ChronoUnit.YEARS.between(dateOfYear, LocalDate.now()) <= 3) {
+                log.info("Genererer flere identer per dag for år {}", year);
+                return MIN_ANTALL_IDENTER_PER_DAG_SENERE_AAR;
+            }
+            return MIN_ANTALL_IDENTER_PER_DAG;
+        }
+        return antallPerDag;
     }
 
     private void filterIdents(
