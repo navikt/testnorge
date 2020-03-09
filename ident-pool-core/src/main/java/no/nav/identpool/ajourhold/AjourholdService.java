@@ -85,6 +85,9 @@ public class AjourholdService {
             Identtype type
     ) {
         int antallPerDag = IdentDistribusjonUtil.antallPersonerPerDagPerAar(year);
+        if (antallPerDag <= 2) {
+            log.info("Antall per dag er mindre enn 2 for år {}", year);
+        }
         int days = (year == current.getYear() ? 365 - current.getDayOfYear() : 365);
         long count = identRepository.countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatus(
                 LocalDate.of(year, 1, 1),
