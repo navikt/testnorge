@@ -102,6 +102,12 @@ public class OppslagController {
         return aaregConsumer.hentArbeidsforhold(ident, miljoe);
     }
 
+    @GetMapping("/orgnummer")
+    @ApiOperation("Hent faste orgnummer")
+    public ResponseEntity getOrgnummer() {
+        return fasteDatasettConsumer.hentOrgnummer();
+    }
+
     @GetMapping("/popp/inntekt/{ident}/{miljoe}")
     @ApiOperation("Hent inntekter fra POPP-register")
     public ResponseEntity getPoppInntekter(@PathVariable String ident, @PathVariable String miljoe) {

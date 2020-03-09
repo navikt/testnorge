@@ -17,7 +17,7 @@ import no.nav.dolly.properties.ProvidersProps;
 @RequiredArgsConstructor
 public class FasteDatasettConsumer {
 
-    private static final String REQUEST_URL = "/api/v1/statiskData";
+    private static final String REQUEST_URL = "/api/v1/faste-data";
 
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
@@ -27,6 +27,14 @@ public class FasteDatasettConsumer {
 
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(format("%s%s%s", providersProps.getFasteDatasett().getUrl(), REQUEST_URL, datasettType.getUrl())))
+                .build(), JsonNode.class);
+    }
+
+    @Timed(name = "providers", tags = {"operation", "hentOrgnummer"})
+    public ResponseEntity hentOrgnummer() {
+
+        return restTemplate.exchange(RequestEntity.get(
+                URI.create(format("%s%s/ereg?gruppe=DOLLY", providersProps.getFasteDatasett().getUrl(), REQUEST_URL)))
                 .build(), JsonNode.class);
     }
 }
