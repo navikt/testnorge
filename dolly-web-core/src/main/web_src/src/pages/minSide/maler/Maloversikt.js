@@ -1,23 +1,26 @@
 import React, { useState, useEffect } from 'react'
-import config from '~/config'
 import { api } from './api'
+import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import Button from '~/components/ui/button/Button'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { MalIconItem } from '~/components/ui/icon/IconItem'
 import { EndreMalnavn } from './EndreMalnavn'
+import { slettMal } from './SlettMal'
 
 export default ({ brukerId }) => {
 	const [loading, setLoading] = useState(true)
 	const [maler, setMaler] = useState([])
+	const [searchText, setSearchText] = useState('')
 	const [underRedigering, setUnderRedigering] = useState([])
 
 	useEffect(() => {
 		api
 			.hentMaler()
 			.then(data => {
-				setMaler(data.malbestillinger[brukerId])
+				setMaler(data.malbestillinger[brukerId] || [])
 			})
 			.then(() => setLoading(false))
 	}, [])
@@ -45,7 +48,9 @@ export default ({ brukerId }) => {
 			width: '10',
 			formatter: (cell, row) => {
 				return erUnderRedigering(row.id) ? (
-					<Button onClick={() => avbrytRedigering(row.id)}>AVBRYT</Button>
+					<Button className="avbryt" onClick={() => avbrytRedigering(row.id)}>
+						AVBRYT
+					</Button>
 				) : (
 					<Button kind="edit" onClick={() => setUnderRedigering(underRedigering.concat([row.id]))}>
 						ENDRE
@@ -66,22 +71,39 @@ export default ({ brukerId }) => {
 	]
 
 	if (loading) return <Loading label="Loading" />
+
 	return (
-		<>
-			<h1>Dine maler</h1>
-			<DollyTable
-				data={maler}
-				columns={columns}
-				header={false}
-				iconItem={<MalIconItem />}
-				pagination
-			/>
-		</>
+		<div className="maloversikt">
+			<div className="flexbox--space">
+				<h2>Mine maler</h2>
+				<div className="searchfield-container skjemaelement searchField">
+					<TextInput
+						id="searchfield-inputfield"
+						type="text"
+						placeholder="Søk etter mal"
+						onChange={e => setSearchText(e.target.value)}
+						aria-label="Search"
+						icon="search"
+					/>
+				</div>
+			</div>
+			{maler.length > 0 ? (
+				<DollyTable
+					data={malerFiltrert(maler, searchText)}
+					columns={columns}
+					header={false}
+					iconItem={<MalIconItem />}
+					pagination
+				/>
+			) : (
+				<AlertStripeInfo>
+					Du har ingen maler enda. Neste gang du oppretter en ny person kan du lagre bestillingen
+					som en mal på siste side av bestillingsveilederen.
+				</AlertStripeInfo>
+			)}
+		</div>
 	)
 }
 
-const slettMal = (malId, setMaler) => {
-	return api.slettMal(malId).then(() => {
-		setMaler(maler => maler.filter(mal => mal.id !== malId))
-	})
-}
+const malerFiltrert = (maler, searchText) =>
+	maler.filter(mal => mal.malNavn.toLowerCase().includes(searchText.toLowerCase()))

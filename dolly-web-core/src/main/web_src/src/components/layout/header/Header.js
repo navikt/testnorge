@@ -31,8 +31,8 @@ export default ({ brukerData }) => {
 			</div>
 
 			<div className="profil-area flexbox--all-center">
-				<NavLink to="/bruker">
-					<Icon kind="user" size="18" />
+				<NavLink to="/minside">
+					<Icon kind="user" size="25" />
 					{brukerData.brukerId}
 				</NavLink>
 			</div>
