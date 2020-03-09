@@ -98,4 +98,10 @@ public class OppslagController {
     public ResponseEntity getArbeidsforhold(@RequestParam String ident, @RequestParam String miljoe) {
         return aaregConsumer.hentArbeidsforhold(ident, miljoe);
     }
+
+    @GetMapping("/orgnummer")
+    @ApiOperation("Hent faste orgnummer")
+    public ResponseEntity getOrgnummer() {
+        return fasteDatasettConsumer.hentOrgnummer();
+    }
 }
