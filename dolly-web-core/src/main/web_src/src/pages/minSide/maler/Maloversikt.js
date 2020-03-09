@@ -88,13 +88,17 @@ export default ({ brukerId }) => {
 				</div>
 			</div>
 			{maler.length > 0 ? (
-				<DollyTable
-					data={malerFiltrert(maler, searchText)}
-					columns={columns}
-					header={false}
-					iconItem={<MalIconItem />}
-					pagination
-				/>
+				malerFiltrert(maler, searchText).length > 0 ? (
+					<DollyTable
+						data={malerFiltrert(maler, searchText)}
+						columns={columns}
+						header={false}
+						iconItem={<MalIconItem />}
+						pagination
+					/>
+				) : (
+					<AlertStripeInfo>Ingen maler samsvarte med søket ditt</AlertStripeInfo>
+				)
 			) : (
 				<AlertStripeInfo>
 					Du har ingen maler enda. Neste gang du oppretter en ny person kan du lagre bestillingen
