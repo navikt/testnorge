@@ -2,6 +2,8 @@ package no.nav.registre.spion.domain;
 
 import java.time.LocalDate;
 
+import no.nav.registre.spion.consumer.rs.response.aareg.AaregResponse;
+import no.nav.registre.spion.consumer.rs.response.HodejegerenResponse;
 import org.apache.commons.math3.distribution.GammaDistribution;
 import static no.nav.registre.spion.utils.RandomUtils.getRandomBoundedNumber;
 
@@ -13,27 +15,35 @@ import lombok.Value;
 public class Vedtak {
 
     private final String identitetsnummer;
+    private final String fornavn;
+    private final String etternavn;
     private final String virksomhetsnummer;
     private final LocalDate fom;
     private final LocalDate tom;
     private final String ytelse = "SP";
     private final String status;
     private final int sykemeldingsgrad;
-    private final int refusjonsbelop;
+    private final double refusjonsbeloep;
 
-    public Vedtak(String id, String orgnummer, LocalDate sluttDatoForrigeVedtak, boolean isFoersteVedtak){
+    public Vedtak(
+            HodejegerenResponse persondata,
+            AaregResponse arbeidsforhold,
+            LocalDate sluttDatoForrigeVedtak,
+            boolean isFoersteVedtak){
 
         LocalDate startDatoPeriode = isFoersteVedtak ? sluttDatoForrigeVedtak: getNextStartDato(sluttDatoForrigeVedtak);
         int periodeLength = getPeriodeLength();
         LocalDate sluttDatoPeriode = startDatoPeriode.plusDays(periodeLength);
 
-        this.identitetsnummer = id;
-        this.virksomhetsnummer = orgnummer;
+        this.identitetsnummer = persondata.getFnr();
+        this.fornavn = persondata.getFornavn();
+        this.etternavn = persondata.getEtternavn();
+        this.virksomhetsnummer = arbeidsforhold.getArbeidsgiver().getOrganisasjonsnummer();
         this.fom = startDatoPeriode;
         this.tom = sluttDatoPeriode;
         this.status = getNyVedtaksstatus();
         this.sykemeldingsgrad = getNySykemeldingsgrad();
-        this.refusjonsbelop = getNyttRefusjonsbeloepForPeriode(periodeLength);
+        this.refusjonsbeloep = getNyttRefusjonsbeloepForPeriode(periodeLength);
 
     }
 
@@ -64,7 +74,7 @@ public class Vedtak {
      * @return vedtaksstatus
      */
     private String getNyVedtaksstatus(){
-        return Math.random() <0.1 ? "Avslått": "Innvilget";
+        return Math.random() <0.1 ? "AVSLÅTT": "INNVILGET";
     }
 
     /**

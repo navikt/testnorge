@@ -12,17 +12,17 @@ import java.util.List;
 @AllArgsConstructor
 public class AaregResponse {
 
-    private final long navArbeidsforholdId;
-    private final String arbeidsforholdId;
-    private final Arbeidstaker arbeidstaker;
-    private final Arbeidsgiver arbeidsgiver;
-    private final Arbeidsgiver opplysningspliktig;
-    private final String type;
-    private final Ansettelsesperiode ansettelsesperiode;
-    private final List<Arbeidsavtale> arbeidsavtaler;
-    private final boolean innrapportertEtterAOrdningen;
-    private final LocalDate registrert;
-    private final LocalDate sistBekreftet;
-    private final Sporingsinformasjon sporingsinformasjon;
+    long navArbeidsforholdId;
+    String arbeidsforholdId;
+    Arbeidstaker arbeidstaker;
+    Arbeidsgiver arbeidsgiver;
+    Arbeidsgiver opplysningspliktig;
+    String type;
+    Ansettelsesperiode ansettelsesperiode;
+    List<Arbeidsavtale> arbeidsavtaler;
+    boolean innrapportertEtterAOrdningen;
+    LocalDate registrert;
+    LocalDate sistBekreftet;
+    Sporingsinformasjon sporingsinformasjon;
 
 }

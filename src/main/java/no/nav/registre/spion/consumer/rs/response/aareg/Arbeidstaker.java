@@ -9,7 +9,7 @@ import lombok.Value;
 @AllArgsConstructor
 public class Arbeidstaker {
 
-    private final String type;
-    private final String offentligIdent;
-    private final String aktoerId;
+    String type;
+    String offentligIdent;
+    String aktoerId;
 }

@@ -17,11 +17,14 @@
     <properties>
         <application.version>${project.version}</application.version>
         <commons-math3.version>3.6.1</commons-math3.version>
+        <kafka-clients.version>2.4.0</kafka-clients.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
-        <springfox.version>2.9.2</springfox.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
+        <springfox.version>2.9.2</springfox.version>
         <spring.boot.maven.plugin.version>2.1.8.RELEASE</spring.boot.maven.plugin.version>
         <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
+        <spring-core.version>5.2.2.RELEASE</spring-core.version>
+        <spring-kafka.version>2.3.4.RELEASE</spring-kafka.version>
     </properties>
 
     <dependencies>
@@ -32,6 +35,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring-core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -111,6 +119,25 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${springfox.version}</version>
+        </dependency>
+
+        <!--KAFKA-->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>${spring-kafka.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>${kafka-clients.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+            <version>${spring-kafka.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <!--VAULT-->

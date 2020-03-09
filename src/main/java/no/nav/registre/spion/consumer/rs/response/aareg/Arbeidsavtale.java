@@ -9,14 +9,14 @@ import java.time.LocalDate;
 @NoArgsConstructor(force = true)
 public class Arbeidsavtale {
 
-    private final String arbeidstidsordning;
-    private final String yrke;
-    private final float stillingsprosent;
-    private final float antallTimerPrUke;
-    private final float beregnetAntallTimerPrUke;
-    private final LocalDate sistStillingsendring;
-    private final Periode bruksperiode;
-    private final Periode gyldighetsperiode;
-    private final Sporingsinformasjon sporingsinformasjon;
+    String arbeidstidsordning;
+    String yrke;
+    float stillingsprosent;
+    float antallTimerPrUke;
+    float beregnetAntallTimerPrUke;
+    LocalDate sistStillingsendring;
+    Periode bruksperiode;
+    Periode gyldighetsperiode;
+    Sporingsinformasjon sporingsinformasjon;
 
 }

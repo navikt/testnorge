@@ -1,6 +1,5 @@
 package no.nav.registre.spion.provider.rs.request;
 
-
 import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
