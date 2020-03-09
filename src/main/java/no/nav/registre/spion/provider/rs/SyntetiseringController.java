@@ -33,7 +33,7 @@ public class SyntetiseringController {
     private final VedtakPublisher vedtakPublisher;
 
     @Value("${tps.forvalter.avspillergruppe.id}")
-    private String defaultAvspillergruppeId;
+    private long defaultAvspillergruppeId;
 
     @Value("${tps.forvalter.miljoe}")
     private String defaultMiljoe;
@@ -46,7 +46,7 @@ public class SyntetiseringController {
 
         List<SyntetiserVedtakResponse> syntetisertvedtaksliste = syntetiseringService.syntetiserVedtak(
                 Objects.isNull(request.getAvspillergruppeId()) ?
-                        Long.valueOf(defaultAvspillergruppeId) : request.getAvspillergruppeId(),
+                        defaultAvspillergruppeId : request.getAvspillergruppeId(),
                 Objects.isNull(request.getMiljoe()) ? defaultMiljoe : request.getMiljoe(),
                 request.getNumPersons(),
                 request.getStartDate(),

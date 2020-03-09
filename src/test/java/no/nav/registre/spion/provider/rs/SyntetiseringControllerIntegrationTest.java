@@ -33,6 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
+//TODO: Update test for kafka use.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Ignore
@@ -79,7 +80,7 @@ public class SyntetiseringControllerIntegrationTest {
                 "",
                 new Arbeidstaker("",IDENT,""),
                 new Arbeidsgiver("organisasjon", "org_nr"),
-                null,
+               null,
                 "",
                 null,
                 null,
@@ -87,7 +88,7 @@ public class SyntetiseringControllerIntegrationTest {
                 LocalDate.now(),
                 LocalDate.now(),
                 new Sporingsinformasjon()
-        ));
+                ));
 
         HodejegerenResponse persondata = new HodejegerenResponse(
                 IDENT,

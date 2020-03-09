@@ -27,7 +27,6 @@ public class HodejegerenConsumerTest {
     private HodejegerenConsumer hodejegerenConsumer;
 
     private static final String SERVERURL="http://localhost:0/testnorge-hodejegeren/api";
-    private static final long AVSPILLERGRUPPEID = 1;
     private static final String MILJOE = "x2";
     private static final String IDENT = "123";
     private UriTemplate hentPersondataTilIdentUri;
