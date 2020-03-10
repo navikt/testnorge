@@ -48,8 +48,8 @@ public class VedtakPublisher {
                 log.info("Sending av vedtak for person nr. {} til Kafka Topic {} var vellykket.", i + 1, topic);
                 antallVellykket++;
             } catch (ExecutionException | InterruptedException e) {
-                log.error("Sending av vedtak for person nr. {} til Kafka Topic {} mislyktes.", i + 1, topic);
-                continue;
+                log.error("Sending av vedtak for person nr. {} til Kafka Topic {} mislyktes.", i + 1, topic, e);
+                return antallVellykket;
             } catch (JsonProcessingException e) {
                 log.error("Kunne ikke mappe vedtak til String.");
                 throw e;
