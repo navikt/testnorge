@@ -1,18 +1,19 @@
 import React from 'react'
+import _get from 'lodash/get'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { InntektForm } from './inntektForm'
 import { FradragForm } from './fradragForm'
 import { ForskuddstrekkForm } from './forskuddstrekkForm'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 const initialValues = {
 	startAarMaaned: '',
 	antallMaaneder: null,
+	virksomhet: '',
 	opplysningspliktig: '',
-	virksomhet: Options('orgnummer')[Math.floor(Math.random() * Options('orgnummer').length)].value,
 	inntektsliste: [
 		{
 			beloep: null,
@@ -30,6 +31,17 @@ const infotekst =
 	'For å generere samme inntektsinformasjon for flere måneder - fyll inn første måned/år, samt antall måneder inntektsinformasjonen skal genereres for.'
 
 export const InntektsinformasjonForm = ({ formikBag }) => {
+	const orgInfo = SelectOptionsOppslag('orgnr')
+	const options = SelectOptionsOppslag.formatOptions(orgInfo)
+	const randomNumber = Math.floor(Math.random() * options.length)
+	initialValues.virksomhet = options.length > 0 && options[randomNumber].value
+	initialValues.opplysningspliktig = options.length > 0 && options[randomNumber].juridiskEnhet
+
+	const setOrgnummer = (org, path) => {
+		formikBag.setFieldValue(`${path}.virksomhet`, org.value)
+		formikBag.setFieldValue(`${path}.opplysningspliktig`, org.juridiskEnhet)
+	}
+
 	return (
 		<FormikDollyFieldArray
 			name="inntektstub.inntektsinformasjon"
@@ -42,24 +54,16 @@ export const InntektsinformasjonForm = ({ formikBag }) => {
 					<div className="flexbox--flex-wrap">
 						<FormikTextInput name={`${path}.startAarMaaned`} label="Start måned/år" type="month" />
 						<FormikTextInput name={`${path}.antallMaaneder`} label="Antall måneder" type="number" />
-						<FormikTextInput
-							name={`${path}.opplysningspliktig`}
-							label="Opplysningspliktig (orgnr/id)"
-							fastfield={false}
-						/>
-						<FormikSelect
+						<DollySelect
 							name={`${path}.virksomhet`}
 							label="Virksomhet (orgnr/id)"
-							options={Options('orgnummer')}
-							type="text"
-							size="large"
+							isLoading={orgInfo.loading}
+							options={options}
+							size="xlarge"
+							onChange={org => setOrgnummer(org, path)}
+							value={_get(formikBag.values, `${path}.virksomhet`)}
 							isClearable={false}
 						/>
-						{/* <FormikTextInput
-							name={`${path}.virksomhet`}
-							label="Virksomhet (orgnr/id)"
-							fastfield={false}
-						/> */}
 					</div>
 					<InntektForm formikBag={formikBag} inntektsinformasjonPath={path} />
 					<FradragForm formikBag={formikBag} inntektsinformasjonPath={path} />

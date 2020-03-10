@@ -8,49 +8,6 @@ const inntektsliste = Yup.array().of(
 		beloep: requiredNumber.typeError(messages.required),
 		startOpptjeningsperiode: Yup.string().nullable(),
 		sluttOpptjeningsperiode: Yup.string().nullable()
-
-		// inntektstype: requiredString.typeError(messages.required)
-		// inngaarIGrunnlagForTrekk: null,
-		// utloeserArbeidsgiveravgift: null,
-		// fordel: '',
-		// skatteOgAvgiftsregel: '',
-		// skattemessigBosattILand: '',
-		// opptjeningsland: '',
-		// beskrivelse: '', REQUIRED
-		// tilleggsinformasjon: {
-		//     bilOgBaat: {},
-		//     bonusFraForsvaret: {
-		//         aaretUtbetalingenGjelderFor: ''
-		//     },
-		//     dagmammaIEgenBolig: {},
-		//     etterbetalingsperiode: {
-		//         startdato: null,
-		//         sluttdato: null
-		//     },
-		//     inntektPaaNorskKontinentalsokkel: {},
-		//     livrente: {},
-		//     lottOgPart: {},
-		//     nettoloenn: {},
-		//     pensjon: {
-		//         grunnpensjonsbeloep: '',
-		//         heravEtterlattepensjon: '',
-		//         pensjonsgrad: '',
-		//         tidsrom: {
-		//             startdato: null,
-		//             sluttdato: null
-		//         },
-		//         tilleggspensjonsbeloep: '',
-		//         ufoeregrad: ''
-		//     },
-		//     reiseKostOgLosji: {
-		//         persontype: ''
-		//     },
-		//     inntjeningsforhold: {
-		//         inntjeningsforhold: ''
-		//     },
-		//     utenlandskArtist: {}
-		// },
-		// antall: ''
 	})
 )
 
@@ -98,8 +55,8 @@ export const validation = {
 					.integer('Kan ikke være et desimaltall')
 					.transform((i, j) => (j === '' ? null : i))
 					.nullable(),
-				opplysningspliktig: requiredString,
 				virksomhet: requiredString,
+				opplysningspliktig: requiredString,
 				inntektsliste: inntektsliste,
 				fradragsliste: fradragsliste,
 				forskuddstrekksliste: forskuddstrekksliste,

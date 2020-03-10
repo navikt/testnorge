@@ -72,6 +72,7 @@ const fieldReslover = (field, options = [], handleChange, values, path) => {
 			/>
 		)
 	}
+	// TODO: Sjekk om det er mulig å sette booleans som checkboxes
 	// else if (options.length > 0 && typeof options[0] === 'boolean') {
 	// 	return (
 	// 		<FormikCheckbox

@@ -8,9 +8,13 @@ import { TimeloennetForm } from './timeloennetForm'
 import { PermisjonForm } from './permisjonForm'
 import { UtenlandsoppholdForm } from './utenlandsoppholdForm'
 import { ArbeidsavtaleForm } from './arbeidsavtaleForm'
+import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 export const ArbeidsforholdForm = ({ path, formikBag }) => {
 	const arbeidsforhold = _get(formikBag.values, path)
+
+	const orgInfo = SelectOptionsOppslag('orgnr')
+	const options = SelectOptionsOppslag.formatOptions(orgInfo)
 
 	return (
 		<React.Fragment>
@@ -35,9 +39,9 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 					<FormikSelect // evt. felt man kan skrive i også?
 						name={`${path}.arbeidsgiver.orgnummer`}
 						label="Arbeidsgiver orgnummer"
-						options={Options('orgnummer')}
+						options={options}
 						type="text"
-						size="large"
+						size="xlarge"
 						isClearable={false}
 					/>
 				)}

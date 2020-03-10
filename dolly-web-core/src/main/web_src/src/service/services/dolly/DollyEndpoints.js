@@ -12,6 +12,7 @@ const openamBase = `${uri}/openam`
 const aaregBase = `${uri}/aareg/arbeidsforhold`
 const personoppslagBase = `${uri}/pdlperson`
 const inntektstubBase = `${uri}/inntektstub`
+const fasteOrgnummerBase = `${uri}/orgnummer`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -108,6 +109,10 @@ export default class DollyEndpoints {
 
 	static inntekterByIdent(ident) {
 		return `${inntektstubBase}/${ident}`
+	}
+
+	static fasteOrgnummer() {
+		return fasteOrgnummerBase
 	}
 
 	//TESTPERSON-CONTROLLER

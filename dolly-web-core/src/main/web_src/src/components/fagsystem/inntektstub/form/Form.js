@@ -11,7 +11,7 @@ const inntektstubAttributt = 'inntektstub'
 export const InntektstubForm = ({ formikBag }) => (
 	<Vis attributt={inntektstubAttributt}>
 		<Panel
-			heading="Inntektskomponenten"
+			heading="Inntektskomponenten (A-ordningen)"
 			hasErrors={panelError(formikBag, inntektstubAttributt)}
 			iconType="inntektstub"
 			startOpen={() => erForste(formikBag.values, [inntektstubAttributt])}

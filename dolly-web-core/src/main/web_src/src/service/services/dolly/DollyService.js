@@ -2,7 +2,7 @@ import Request from '~/service/services/Request'
 import Endpoints from './DollyEndpoints'
 
 export default {
-	// Grupper
+	//* Grupper
 	getGrupper() {
 		return Request.get(Endpoints.gruppe())
 	},
@@ -35,7 +35,7 @@ export default {
 		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
 	},
 
-	// Ident
+	//* Ident
 	updateIdentBeskrivelse(ident, beskrivelse) {
 		return Request.put(Endpoints.identBeskrivelse(ident), { beskrivelse })
 	},
@@ -48,7 +48,7 @@ export default {
 		return Request.put(Endpoints.kobleIdenter(ident), data)
 	},
 
-	// Bruker
+	//* Bruker
 	getBrukere() {
 		return Request.get(Endpoints.bruker())
 	},
@@ -107,7 +107,7 @@ export default {
 		return Request.delete(Endpoints.slettPerson(gruppeId, identId))
 	},
 
-	//Oppslag
+	//* Oppslag
 	getEnhetByTknr(tknr) {
 		return Request.get(Endpoints.enhetByTknr(tknr))
 	},
@@ -122,5 +122,9 @@ export default {
 
 	getInntektsinformasjon(ident) {
 		return Request.get(Endpoints.inntekterByIdent(ident))
+	},
+
+	getFasteOrgnummer() {
+		return Request.get(Endpoints.fasteOrgnummer())
 	}
 }
