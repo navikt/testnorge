@@ -2,16 +2,10 @@ import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
 export const Nasjonalitet = ({ data, visTittel = true }) => {
-	const {
-		statsborgerskap,
-		sprakKode,
-		innvandretFraLand,
-		innvandretFraLandFlyttedato,
-		utvandretTilLand,
-		utvandretTilLandFlyttedato
-	} = data
+	const { statsborgerskap, sprakKode, innvandretUtvandret } = data
 
 	return (
 		<div>
@@ -27,17 +21,37 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 					</div>
 				))}
 				<TitleValue title="Språk" kodeverk="Språk" value={sprakKode} />
-				<TitleValue title="Innvandret fra land" kodeverk="Landkoder" value={innvandretFraLand} />
-				<TitleValue
-					title="Innvandret dato"
-					value={Formatters.formatDate(innvandretFraLandFlyttedato)}
-				/>
-				<TitleValue title="Utvandret til land" kodeverk="Landkoder" value={utvandretTilLand} />
-				<TitleValue
-					title="Utvandret dato"
-					value={Formatters.formatDate(utvandretTilLandFlyttedato)}
-				/>
 			</div>
+			<h3>Innvandring og utvandring</h3>
+
+			<DollyFieldArray data={innvandretUtvandret}>
+				{(id, idx) => (
+					<React.Fragment>
+						{innvandretUtvandret && (
+							<>
+								<TitleValue title="Inn/utvandret" value={innvandretUtvandret[idx].innutvandret} />
+								<TitleValue
+									title="Land"
+									kodeverk="Landkoder"
+									value={innvandretUtvandret[idx].landkode}
+								/>
+								<TitleValue
+									title="Flytte dato"
+									value={Formatters.formatDate(innvandretUtvandret[idx].flyttedato)}
+								/>
+							</>
+						)}
+					</React.Fragment>
+				)}
+			</DollyFieldArray>
+			<InnvandretUtvandretCheck data={innvandretUtvandret} />
 		</div>
 	)
 }
+
+function InnvandretUtvandretCheck(innvandretUtvandret) {
+	const siste = innvandretUtvandret.data.length - 1
+	const innvandretEllerUtvandret = innvandretUtvandret.data[siste].innutvandret
+	return innvandretEllerUtvandret
+}
+export default InnvandretUtvandretCheck

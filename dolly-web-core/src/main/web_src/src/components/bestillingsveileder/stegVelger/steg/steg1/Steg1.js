@@ -36,8 +36,7 @@ export const Steg1 = ({ stateModifier }) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			{!opts.is.leggTil && <PersoninformasjonPanel stateModifier={stateModifier} />}
-
+			<PersoninformasjonPanel stateModifier={stateModifier} />
 			<AdressePanel stateModifier={stateModifier} />
 
 			{!opts.is.leggTil && (
@@ -55,7 +54,7 @@ export const Steg1 = ({ stateModifier }) => {
 
 			{opts.is.leggTil && (
 				<AlertStripeInfo>
-					<b>Kun støtte for å legge til adresse</b>
+					<b>Kun støtte for å legge til innvandret, utvandret og adresse</b>
 					<p>
 						Det er foreløpig redusert støtte for å legge til attributter på person. Flere
 						attributter vil blir lagt til etterhvert.

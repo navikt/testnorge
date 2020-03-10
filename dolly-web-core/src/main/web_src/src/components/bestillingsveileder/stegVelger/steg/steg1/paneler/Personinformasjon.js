@@ -2,44 +2,65 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { useLocation } from 'react-use'
 import _has from 'lodash/has'
+
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 
 export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
 	const opprettFraEksisterende = _has(useLocation(), 'state.state.opprettFraIdenter')
+	const leggTil = _has(useLocation(), 'state.state.leggTilPaaFnr')
+
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende
 
-	return (
-		<Panel
-			heading={PersoninformasjonPanel.heading}
-			startOpen
-			checkAttributeArray={sm.batchAdd}
-			uncheckAttributeArray={sm.batchRemove}
-			iconType={'personinformasjon'}
-		>
-			<AttributtKategori title="Alder">
-				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende} />
-				<Attributt attr={sm.attrs.doedsdato} />
-			</AttributtKategori>
+	if (!leggTil) {
+		return (
+			<Panel
+				heading={PersoninformasjonPanel.heading}
+				startOpen
+				checkAttributeArray={sm.batchAdd}
+				uncheckAttributeArray={sm.batchRemove}
+				iconType={'personinformasjon'}
+			>
+				<AttributtKategori title="Alder">
+					<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende} />
+					<Attributt attr={sm.attrs.doedsdato} />
+				</AttributtKategori>
 
-			<AttributtKategori title="Nasjonalitet">
-				<Attributt attr={sm.attrs.statsborgerskap} />
-				<Attributt attr={sm.attrs.innvandretFraLand} />
-				<Attributt attr={sm.attrs.utvandretTilLand} />
-			</AttributtKategori>
+				<AttributtKategori title="Nasjonalitet">
+					<Attributt attr={sm.attrs.statsborgerskap} />
+					<Attributt attr={sm.attrs.innvandretFraLand} />
+					<Attributt attr={sm.attrs.utvandretTilLand} />
+				</AttributtKategori>
 
-			<AttributtKategori title="Diverse">
-				<Attributt attr={sm.attrs.identHistorikk} />
-				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
-				<Attributt attr={sm.attrs.harMellomnavn} />
-				<Attributt attr={sm.attrs.sprakKode} />
-				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
-				<Attributt attr={sm.attrs.spesreg} />
-				<Attributt attr={sm.attrs.erForsvunnet} />
-			</AttributtKategori>
-		</Panel>
-	)
+				<AttributtKategori title="Diverse">
+					<Attributt attr={sm.attrs.identHistorikk} />
+					<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
+					<Attributt attr={sm.attrs.harMellomnavn} />
+					<Attributt attr={sm.attrs.sprakKode} />
+					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
+					<Attributt attr={sm.attrs.spesreg} />
+					<Attributt attr={sm.attrs.erForsvunnet} />
+				</AttributtKategori>
+			</Panel>
+		)
+	} else {
+		return (
+			// Panel som innholder attributer som er støttet i Legg til
+			<Panel
+				heading={PersoninformasjonPanel.heading}
+				startOpen
+				checkAttributeArray={sm.batchAdd}
+				uncheckAttributeArray={sm.batchRemove}
+				iconType={'personinformasjon'}
+			>
+				<AttributtKategori title="Nasjonalitet">
+					<Attributt attr={sm.attrs.innvandretFraLand} />
+					<Attributt attr={sm.attrs.utvandretTilLand} />
+				</AttributtKategori>
+			</Panel>
+		)
+	}
 }
 
 PersoninformasjonPanel.heading = 'Personinformasjon'
