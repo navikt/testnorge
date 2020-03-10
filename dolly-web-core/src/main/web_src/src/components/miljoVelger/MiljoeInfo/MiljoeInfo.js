@@ -2,7 +2,7 @@ import React from 'react'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { InstApi } from '~/service/Api'
 import { ArenaApi } from '~/service/Api'
-import { PensjonApi } from "~/service/Api";
+import { DollyApi } from "~/service/Api";
 import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
@@ -46,7 +46,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					<li>
 						POPP:&nbsp;
 						<TilgjengeligeMiljoer
-							endepunkt={PensjonApi.getTilgjengeligeMiljoer}
+							endepunkt={DollyApi.getTilgjengeligePoppMiljoer}
 							dollyEnvironments={dollyEnvironments}
 						/>
 					</li>

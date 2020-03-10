@@ -26,8 +26,6 @@ const ConfigService = {
 				return dollyConfig.instdataUrl
 			case 'udi':
 				return dollyConfig.udiStubUrl
-			case 'pensjon':
-				return config.services.dollyBackend
 			default:
 				return undefined
 		}

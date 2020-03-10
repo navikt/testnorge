@@ -122,5 +122,13 @@ export default {
 
 	getArbeidsforhold(ident, env) {
 		return Request.get(Endpoints.arbeidsforholdByIdent(ident, env))
+	},
+
+	getPoppInntekt(ident, env){
+		return Request.get(Endpoints.poppInntekt(ident, env))
+	},
+
+	getTilgjengeligePoppMiljoer(){
+		return Request.get(Endpoints.poppMiljoe())
 	}
 }

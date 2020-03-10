@@ -28,7 +28,7 @@ export const actions = createActions(
 			})
 		],
 		getPensjon: [
-			PensjonApi.getPerson,
+			DollyApi.getPoppInntekt,
 			ident => ({
 				ident
 			})
