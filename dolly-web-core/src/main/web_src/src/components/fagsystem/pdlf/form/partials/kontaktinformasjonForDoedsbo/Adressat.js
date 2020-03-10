@@ -56,11 +56,16 @@ export const Adressat = ({ formikBag }) => {
 			)}
 
 			{adressatType === 'PERSON_MEDID' && (
-				<FormikTextInput
+				<FormikSelect
 					name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.idnummer"
 					label="Fnr/dnr/bost"
-					type="number"
+					fasteData={true}
 				/>
+				// <FormikTextInput
+				// 	name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.idnummer"
+				// 	label="Fnr/dnr/bost"
+				// 	type="number"
+				// />
 			)}
 			{adressatType === 'PERSON_UTENID' && (
 				<React.Fragment>
