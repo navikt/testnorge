@@ -30,7 +30,7 @@ public class AaregConsumer {
 
     public List<String> hentAlleIdenterMedArbeidsforhold(long avspillergruppeId, String miljoe) {
         UriTemplate uriTemplate = new UriTemplate(aaregUrl
-                + "/v1/ident/avspillergruppe/{avspillergruppeId}?miljoe={miljoe}");
+                + "/v1/ident/avspillergruppe/{avspillergruppeId}?miljoe={miljoe}&validerMotAareg=true");
         var getRequest = RequestEntity.get(uriTemplate.expand(avspillergruppeId, miljoe)).build();
 
         try{
