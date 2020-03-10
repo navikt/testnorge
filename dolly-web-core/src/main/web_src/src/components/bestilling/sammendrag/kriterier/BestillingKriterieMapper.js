@@ -41,7 +41,6 @@ const _getTpsfBestillingData = data => {
 
 export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (!bestillingData) return null
-	console.log('bestillingData :', bestillingData)
 
 	const data = []
 
