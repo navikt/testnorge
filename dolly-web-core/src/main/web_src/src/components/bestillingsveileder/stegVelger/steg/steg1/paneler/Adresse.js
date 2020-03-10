@@ -28,7 +28,7 @@ AdressePanel.heading = 'Adresser'
 AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 	boadresse: {
 		label: 'Har boadresse',
-		checked: has('tpsf.boadresse'),
+		checked: has('tpsf.boadresse.flyttedato'),
 		add() {
 			setMulti(['tpsf.boadresse', { flyttedato: null }], ['tpsf.adresseNrInfo', null])
 		},

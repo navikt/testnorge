@@ -4,6 +4,7 @@ import Stegindikator from 'nav-frontend-stegindikator'
 import { Navigation } from './Navigation/Navigation'
 import { stateModifierFns } from '../stateModifier'
 import { validate } from '~/utils/YupValidations'
+import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
 
 import DisplayFormikState from '~/utils/DisplayFormikState'
 
@@ -49,7 +50,9 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 					<Fragment>
 						<Stegindikator aktivtSteg={step} steg={labels} visLabel kompakt />
 
-						{children(CurrentStepComponent, formikBag, stateModifier)}
+						<BestillingsveilederHeader />
+
+						<CurrentStepComponent formikBag={formikBag} stateModifier={stateModifier} />
 
 						{/* <DisplayFormikState {...formikBag} /> */}
 

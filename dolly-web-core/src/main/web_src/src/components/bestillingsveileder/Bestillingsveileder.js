@@ -1,58 +1,28 @@
-import React from 'react'
-import _set from 'lodash/fp/set'
-import _get from 'lodash/get'
-import { BestillingsveilederHeader } from './BestillingsveilederHeader'
+import React, { createContext } from 'react'
 import { StegVelger } from './stegVelger/StegVelger'
+import { AppError } from '~/components/ui/appError/AppError'
+import { BVOptions } from './options/options'
 
 import './bestillingsveileder.less'
 
-const createInitialValues = (locState = {}) => {
-	let initialValues = {
-		antall: locState.antall || 1,
-		environments: []
-	}
+export const BestillingsveilederContext = createContext()
 
-	if (locState.mal) {
-		initialValues = Object.assign(initialValues, locState.mal.bestilling)
-	}
-
-	return {
-		initialValues,
-		identtype: locState.identtype || 'FNR',
-		mal: locState.mal,
-		opprettFraIdenter: locState.opprettFraIdenter
-	}
-}
-
-export const Bestillingsveileder = ({ location, sendBestilling }) => {
-	const { initialValues, identtype, mal, opprettFraIdenter } = createInitialValues(location.state)
+export const Bestillingsveileder = ({ error, location, sendBestilling }) => {
+	const options = BVOptions(location.state)
 
 	const handleSubmit = (values, formikBag) => {
-		// props.createBestillingMal(values.malNavn) //Nå sjekkes ikke malnavn
-
-		// Sett identType (denne blir ikke satt tidligere grunnet at den sitter inne i tpsf-noden)
-		values = _set('tpsf.identtype', identtype, values)
-
-		sendBestilling(values)
+		sendBestilling(values, options)
 	}
 
-	const antall = (opprettFraIdenter && opprettFraIdenter.length) || initialValues.antall
+	if (error) {
+		return <AppError title="Det skjedde en feil ved bestilling" message={error.message} />
+	}
 
 	return (
 		<div className="bestillingsveileder">
-			<StegVelger initialValues={initialValues} onSubmit={handleSubmit}>
-				{(CurrentStep, formikBag, stateModifier) => (
-					<React.Fragment>
-						<BestillingsveilederHeader
-							antall={antall}
-							identtype={identtype}
-							opprettFraIdenter={opprettFraIdenter}
-							mal={mal}
-						/>
-						<CurrentStep formikBag={formikBag} stateModifier={stateModifier} />
-					</React.Fragment>
-				)}
-			</StegVelger>
+			<BestillingsveilederContext.Provider value={options}>
+				<StegVelger initialValues={options.initialValues} onSubmit={handleSubmit} />
+			</BestillingsveilederContext.Provider>
 		</div>
 	)
 }

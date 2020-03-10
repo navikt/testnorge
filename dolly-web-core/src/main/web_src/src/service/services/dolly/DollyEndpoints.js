@@ -91,10 +91,6 @@ export default class DollyEndpoints {
 		return `${bestillingBase}/stop/${bestillingId}`
 	}
 
-	static slettPerson(gruppeId, identId) {
-		return `${groupBase}/${gruppeId}/slettTestident?ident=${identId}`
-	}
-
 	static aareg() {
 		return aaregBase
 	}
@@ -116,8 +112,16 @@ export default class DollyEndpoints {
 	}
 
 	//TESTPERSON-CONTROLLER
+	static slettPerson(ident) {
+		return `${identBase}/${ident}`
+	}
+
 	static identBeskrivelse(ident) {
 		return `${identBase}/${ident}/beskrivelse`
+	}
+
+	static leggTilPaaPerson(ident) {
+		return `${identBase}/${ident}/leggtilpaaperson`
 	}
 
 	static identIbruk(ident, ibruk) {

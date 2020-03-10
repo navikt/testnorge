@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
-import _findIndex from 'lodash/findIndex'
-import { isBefore } from 'date-fns'
+import { isAfter, addDays } from 'date-fns'
+import Dataformatter from '~/utils/DataFormatter'
 import { requiredString, ifPresent, ifKeyHasValue, messages } from '~/utils/YupValidations'
 
 const boadresse = Yup.object({
@@ -31,7 +31,9 @@ const boadresse = Yup.object({
 	festnr: Yup.string().max(4, 'Festenummer må være under 9999'),
 	undernr: Yup.string().max(3, 'Undernummer må være under 999'),
 	postnr: Yup.string().when('adressetype', { is: 'MATR', then: requiredString }),
-	kommunenr: Yup.string().when('adressetype', { is: 'MATR', then: requiredString })
+	kommunenr: Yup.string()
+		.when('adressetype', { is: 'MATR', then: requiredString })
+		.nullable()
 })
 
 const adresseNrInfo = Yup.object({
@@ -43,25 +45,52 @@ const adresseNrInfo = Yup.object({
 
 export const sivilstander = Yup.array().of(
 	Yup.object({
-		sivilstand: Yup.string()
-			.test('is-not-ugift', 'Ugyldig sivilstand for partner', value => value !== 'UGIF')
-			.required(messages.required),
+		sivilstand: Yup.string().required(messages.required),
 		sivilstandRegdato: Yup.string()
 			.test(
-				'is-before-last',
-				'Dato må være før tidligere forhold (nyeste forhold settes først)',
-				function validDate(val) {
+				'is-after-last',
+				'Dato må være etter tidligere forhold (eldste forhold settes først)',
+				function validDate(dato) {
+					if (!dato) return true
 					const values = this.options.context
 					const path = this.options.path
-					const thisDate = _get(values, path)
-					const partnerIndex = path.charAt(path.indexOf('[') + 1)
-					const sivilstander =
-						//Linja med partnerE kan fjernes når Dolly2.0 prodsettes. Endres backend
-						_get(values.tpsf.relasjoner.partnere, `${[partnerIndex]}.sivilstander`) ||
-						_get(values.tpsf.relasjoner.partner, `${[partnerIndex]}.sivilstander`)
-					const forholdIndex = _findIndex(sivilstander, ['sivilstandRegdato', thisDate])
-					if (forholdIndex === 0) return true
-					return isBefore(thisDate, sivilstander[forholdIndex - 1].sivilstandRegdato)
+
+					// Finn index av current partner og sivilstand
+					// Ex path: tpsf.relasjoner.partnere[0].sivilstander[0].sivilstandRegdato
+					const partnerIdx = parseInt(path.match(/partnere\[(.*?)\].sivilstander/i)[1])
+					const sivilstandIdx = parseInt(path.match(/sivilstander\[(.*?)\].sivilstandRegdato/i)[1])
+
+					// Da vi skal validere mot "forrige forhold" trenger vi ikke sjekke første
+					if (partnerIdx === 0 && sivilstandIdx === 0) return true
+
+					const getSivilstandRegdato = (pIdx, sIdx) =>
+						_get(
+							values.tpsf.relasjoner.partnere,
+							`[${pIdx}].sivilstander[${sIdx}].sivilstandRegdato`
+						)
+
+					let prevDato
+					if (sivilstandIdx > 0) {
+						prevDato = getSivilstandRegdato(partnerIdx, sivilstandIdx - 1)
+					} else {
+						const prevPartnerSivilstandArr = _get(
+							values.tpsf.relasjoner.partnere,
+							`[${partnerIdx - 1}].sivilstander`
+						)
+						prevDato = getSivilstandRegdato(partnerIdx - 1, prevPartnerSivilstandArr.length - 1)
+					}
+
+					// Selve testen
+					const dateValid = isAfter(new Date(dato), addDays(new Date(prevDato), 2))
+					return (
+						dateValid ||
+						this.createError({
+							message: `Dato må være etter tidligere forhold (${Dataformatter.formatDate(
+								prevDato
+							)}) og det må minst være 2 dager i mellom`,
+							path: path
+						})
+					)
 				}
 			)
 			.required(messages.required)
@@ -76,7 +105,7 @@ const partnere = Yup.array()
 			alder: Yup.number()
 				.transform(num => (isNaN(num) ? undefined : num))
 				.min(1, 'Alder må være høyere enn 0')
-				.max(99, 'Alder må være lavere enn 100'),
+				.max(120, 'Alder kan ikke være høyere enn ${max}'),
 			foedtEtter: Yup.date().nullable(),
 			foedtFoer: Yup.date().nullable(),
 			spesreg: Yup.string()
@@ -111,7 +140,7 @@ const barn = Yup.array()
 			alder: Yup.number()
 				.transform(num => (isNaN(num) ? undefined : num))
 				.min(1, 'Alder må være høyere enn 0')
-				.max(99, 'Alder må være lavere enn 100'),
+				.max(120, 'Alder kan ikke være høyere enn ${max}'),
 			spesreg: Yup.string()
 				.when('utenFastBopel', {
 					is: true,
@@ -136,7 +165,7 @@ export const validation = {
 		Yup.object({
 			alder: Yup.number()
 				.min(1, 'Alder må være høyere enn 0')
-				.max(99, 'Alder må være lavere enn 100')
+				.max(120, 'Alder kan ikke være høyere enn ${max}')
 				.typeError(messages.required),
 			foedtEtter: Yup.date().nullable(),
 			foedtFoer: Yup.date().nullable(),
@@ -159,7 +188,7 @@ export const validation = {
 						value => value !== 'SPSF'
 					)
 				})
-			),
+			).nullable(),
 			boadresse: ifPresent('$tpsf.boadresse', boadresse),
 			adresseNrInfo: ifPresent('$tpsf.adresseNrInfo', adresseNrInfo),
 			postadresse: Yup.array().of(

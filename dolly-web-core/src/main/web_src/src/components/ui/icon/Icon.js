@@ -20,6 +20,7 @@ import IdCardDouble from '~/assets/icons/nav-ikoner/line/SVG/11-users/id-card-do
 import NewFileTable from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-table.svg'
 import FileChecklist from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklist.svg'
 import FileChecklistLight from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklistLight.svg'
+import FileRefresh from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-refresh.svg'
 // import NewFile from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-new-1.svg'
 import NewFile from '~/assets/icons/nav-ikoner/filled/SVG/17-files/file-add.svg'
 import Synchronize from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/synchronize-3.svg'
@@ -93,6 +94,7 @@ export const icons = {
 	bestilling: FileChecklist,
 	bestillingLight: FileChecklistLight,
 	newFile: NewFile,
+	maler: FileRefresh,
 
 	personinformasjon: InformationCircle,
 	nasjonalitet: Globe2,

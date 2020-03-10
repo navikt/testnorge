@@ -71,7 +71,7 @@ export const actions = createActions(
 		],
 		slettPerson: [
 			DollyApi.slettPerson,
-			(gruppeId, ident) => ({
+			ident => ({
 				ident
 			})
 		]

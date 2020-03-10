@@ -1,4 +1,6 @@
 import _get from 'lodash/get'
+import _dropRight from 'lodash/dropRight'
+import _takeRight from 'lodash/takeRight'
 import _isEmpty from 'lodash/isEmpty'
 import Formatters from '~/utils/DataFormatter'
 
@@ -27,7 +29,6 @@ const _getTpsfBestillingData = data => {
 		obj('Sivilstand', data.sivilstand, 'Sivilstander'),
 		obj('Diskresjonskoder', data.spesreg !== 'UFB' && data.spesreg, 'Diskresjonskoder'),
 		obj('Uten fast bopel', (data.utenFastBopel || data.spesreg === 'UFB') && 'JA'),
-		obj('Kommunenummer', data.utenFastBopel && _get(data, 'boadresse.kommunenr')),
 		obj('Språk', data.sprakKode, 'Språk'),
 		obj('Innvandret fra land', data.innvandretFraLand, 'Landkoder'),
 		obj('Innvandret dato', Formatters.formatDate(data.innvandretFraLandFlyttedato)),
@@ -164,12 +165,12 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}
 
 				partnere.forEach((item, j) => {
-					const tidligereSivilstander = _get(item, 'sivilstander', []).reduce((acc, curr, idx) => {
-						if (idx > 0) {
-							acc.push(curr.sivilstand)
-						}
-						return acc
-					}, [])
+					const sivilstander = _get(item, 'sivilstander', [])
+					const sisteSivilstand = _takeRight(sivilstander)
+
+					const tidligereSivilstander = _dropRight(sivilstander)
+						.reverse()
+						.map(s => s.sivilstand)
 
 					partner.itemRows.push([
 						{
@@ -180,7 +181,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						..._getTpsfBestillingData(item),
 						obj('Fnr/dnr/bost', item.ident),
 						obj('Bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
-						obj('Sivilstand', _get(item, 'sivilstander[0].sivilstand'), 'Sivilstander'),
+						obj('Sivilstand', sisteSivilstand[0].sivilstand, 'Sivilstander'),
 						obj('Tidligere sivilstander', Formatters.arrayToString(tidligereSivilstander))
 					])
 				})

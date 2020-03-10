@@ -12,7 +12,7 @@ export const Arbeidsavtaler = ({ data }) => {
 			<DollyFieldArray data={data} nested>
 				{(id, idx) => (
 					<div key={idx} className="person-visning_content">
-						<TitleValue title="Antall timer per uke" value={id.antallTimerPrUke} />
+						<TitleValue title="Antall timer per uke" value={id.beregnetAntallTimerPrUke} />
 						<TitleValue
 							title="Arbeidstidsordning"
 							value={id.arbeidstidsordning}

@@ -20,7 +20,7 @@ const ConfigService = {
 			case 'krr':
 				return dollyConfig.krrStubUrl
 			case 'arena':
-				return dollyConfig.arenaUrl
+				return dollyConfig.arenaForvalterUrl
 			case 'inst':
 				return dollyConfig.instdataUrl
 			case 'udi':
