@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import _get from 'lodash/get'
-import Inntekt from './inntekt'
+import Inntekt from './Inntekt'
 import { Formik } from 'formik'
 import * as api from '../api'
 import tilleggsinformasjonPaths from '../paths'
