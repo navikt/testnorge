@@ -43,7 +43,7 @@ public class AaregConsumerTest {
     public void setup(){
         aaregConsumer = new AaregConsumer(restTemplate, SERVERURL);
         hentAlleIdenterMedArbeidsforholdUri = new UriTemplate(SERVERURL
-                +  "/v1/ident/avspillergruppe/{avspillergruppeId}?miljoe={miljoe}");
+                +  "/v1/ident/avspillergruppe/{avspillergruppeId}?miljoe={miljoe}&validerMotAareg=true");
 
         hentArbeidsforholdtilIdentUri = new UriTemplate(SERVERURL
                 + "/v1/ident/{ident}?miljoe={miljoe}");
