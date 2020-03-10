@@ -111,7 +111,7 @@ const initialState = {
 	pdlforvalter: {},
 	instdata: {},
 	udistub: {},
-	pensjonforvalter: {},
+	pensjonforvalter: {}
 }
 
 export default handleActions(
