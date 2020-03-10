@@ -33,10 +33,11 @@ const numberFields = [
 	'antall'
 ]
 
-const fieldReslover = (field, options = [], handleChange, values, path) => {
+const fieldReslover = (field, options = [], handleChange, values, path, index) => {
 	if (dateFields.includes(field)) {
 		return (
 			<FormikDatepicker
+				key={index}
 				visHvisAvhuket={false}
 				name={field}
 				label={texts(field)}
@@ -47,6 +48,7 @@ const fieldReslover = (field, options = [], handleChange, values, path) => {
 	} else if (field === 'skattemessigBosattILand' || field === 'opptjeningsland') {
 		return (
 			<FormikSelect
+				key={index}
 				name={field}
 				label={texts(field)}
 				kodeverk="LandkoderISO2"
@@ -62,6 +64,7 @@ const fieldReslover = (field, options = [], handleChange, values, path) => {
 	) {
 		return (
 			<FormikTextInput
+				key={index}
 				visHvisAvhuket={false}
 				name={field}
 				label={texts(field)}
@@ -87,6 +90,7 @@ const fieldReslover = (field, options = [], handleChange, values, path) => {
 
 	return (
 		<FormikSelect
+			key={index}
 			name={field}
 			label={texts(field)}
 			options={options
@@ -113,7 +117,9 @@ const Inntekt = ({ fields = {}, onValidate, formikBag, path }) => (
 
 		{Object.keys(fields)
 			.filter(field => !(fields[field].length === 1 && fields[field][0] === '<TOM>'))
-			.map(field => fieldReslover(field, fields[field], onValidate, formikBag.values, path))}
+			.map(field =>
+				fieldReslover(field, fields[field], onValidate, formikBag.values, path, `${path}.${field}`)
+			)}
 	</div>
 )
 

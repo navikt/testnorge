@@ -77,12 +77,12 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 				inntektsinformasjon: [
 					{
 						startAarMaaned: '',
-						antallMaaneder: null,
+						antallMaaneder: '',
 						virksomhet: '',
 						opplysningspliktig: '',
 						inntektsliste: [
 							{
-								beloep: null,
+								beloep: '',
 								startOpptjeningsperiode: '',
 								sluttOpptjeningsperiode: '',
 								inntektstype: ''

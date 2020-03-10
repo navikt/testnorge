@@ -5,7 +5,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import InntektStub from '~/components/inntektStub/validerInntekt'
 
 const initialValues = {
-	beloep: null,
+	beloep: '',
 	startOpptjeningsperiode: '',
 	sluttOpptjeningsperiode: '',
 	inntektstype: ''

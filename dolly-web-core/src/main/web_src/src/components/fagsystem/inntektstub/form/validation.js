@@ -13,14 +13,14 @@ const inntektsliste = Yup.array().of(
 
 const fradragsliste = Yup.array().of(
 	Yup.object({
-		beloep: requiredNumber.nullable(),
+		beloep: requiredNumber.typeError(messages.required),
 		beskrivelse: requiredString
 	})
 )
 
 const forskuddstrekksliste = Yup.array().of(
 	Yup.object({
-		beloep: requiredNumber.nullable(),
+		beloep: requiredNumber.typeError(messages.required),
 		beskrivelse: Yup.string()
 	})
 )
@@ -32,14 +32,18 @@ const arbeidsforholdsliste = Yup.array().of(
 			is: val => val !== undefined,
 			then: requiredDate
 		}),
-		sluttdato: Yup.date(),
-		antallTimerPerUkeSomEnFullStillingTilsvarer: Yup.number().nullable(),
+		sluttdato: Yup.string().nullable(),
+		antallTimerPerUkeSomEnFullStillingTilsvarer: Yup.number()
+			.transform((i, j) => (j === '' ? null : i))
+			.nullable(),
 		avloenningstype: Yup.string(),
 		yrke: Yup.string(),
 		arbeidstidsordning: Yup.string(),
-		stillingsprosent: Yup.number().nullable(),
-		sisteLoennsendringsdato: Yup.date(),
-		sisteDatoForStillingsprosentendring: Yup.date()
+		stillingsprosent: Yup.number()
+			.transform((i, j) => (j === '' ? null : i))
+			.nullable(),
+		sisteLoennsendringsdato: Yup.string().nullable(),
+		sisteDatoForStillingsprosentendring: Yup.string().nullable()
 	})
 )
 
@@ -55,7 +59,7 @@ export const validation = {
 					.integer('Kan ikke være et desimaltall')
 					.transform((i, j) => (j === '' ? null : i))
 					.nullable(),
-				virksomhet: requiredString,
+				virksomhet: requiredString.typeError(messages.required),
 				opplysningspliktig: requiredString,
 				inntektsliste: inntektsliste,
 				fradragsliste: fradragsliste,

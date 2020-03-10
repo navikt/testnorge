@@ -4,7 +4,7 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 
 const initialValues = {
-	beloep: null,
+	beloep: '',
 	beskrivelse: ''
 }
 

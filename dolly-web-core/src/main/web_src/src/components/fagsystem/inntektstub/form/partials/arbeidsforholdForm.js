@@ -8,11 +8,11 @@ const initialValues = {
 	arbeidsforholdstype: '',
 	startdato: undefined,
 	sluttdato: undefined,
-	antallTimerPerUkeSomEnFullStillingTilsvarer: null,
+	antallTimerPerUkeSomEnFullStillingTilsvarer: '',
 	avloenningstype: '',
 	yrke: '',
 	arbeidstidsordning: '',
-	stillingsprosent: null,
+	stillingsprosent: '',
 	sisteLoennsendringsdato: undefined,
 	sisteDatoForStillingsprosentendring: undefined
 }

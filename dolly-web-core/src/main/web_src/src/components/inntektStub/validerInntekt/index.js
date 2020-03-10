@@ -98,7 +98,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 				api.validate(values).then(response => setFields(response))
 				setFormikBag(values)
 			}}
-			render={({ handleSubmit }) => (
+			component={({ handleSubmit }) => (
 				<div>
 					<Inntekt
 						fields={fields}

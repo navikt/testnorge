@@ -11,12 +11,12 @@ import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 const initialValues = {
 	startAarMaaned: '',
-	antallMaaneder: null,
+	antallMaaneder: '',
 	virksomhet: '',
 	opplysningspliktig: '',
 	inntektsliste: [
 		{
-			beloep: null,
+			beloep: '',
 			startOpptjeningsperiode: undefined,
 			sluttOpptjeningsperiode: undefined,
 			inntektstype: ''
@@ -62,6 +62,11 @@ export const InntektsinformasjonForm = ({ formikBag }) => {
 							size="xlarge"
 							onChange={org => setOrgnummer(org, path)}
 							value={_get(formikBag.values, `${path}.virksomhet`)}
+							feil={
+								!_get(formikBag.values, `${path}.virksomhet`) && {
+									feilmelding: 'Feltet er påkrevd'
+								}
+							}
 							isClearable={false}
 						/>
 					</div>
