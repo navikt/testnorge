@@ -5,6 +5,7 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import {FasteDataApi} from "~/service/Api";
 
 export const Adressat = ({ formikBag }) => {
 	const adressatType =
@@ -59,7 +60,7 @@ export const Adressat = ({ formikBag }) => {
 				<FormikSelect
 					name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.idnummer"
 					label="Fnr/dnr/bost"
-					fasteData={true}
+					options={FasteDataApi.getFasteDataTps()}
 				/>
 				// <FormikTextInput
 				// 	name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.idnummer"

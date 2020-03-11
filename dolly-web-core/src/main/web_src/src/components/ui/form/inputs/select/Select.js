@@ -78,24 +78,10 @@ export const SelectMedKodeverk = ({ kodeverk, ...rest }) => (
 	</KodeverkConnector>
 )
 
-export const SelectMedFasteData = ({ fasteData, ...rest}) => (
-	<FasteDataConnector>
-		{fasteDataVerdier => (
-			<Select
-				{...rest}
-				isLoading={!fasteDataVerdier}
-				disabled={!fasteDataVerdier}
-				options={fasteDataVerdier}
-			/>
-		)}
-	</FasteDataConnector>
-)
-
 export const DollySelect = props => (
 	<InputWrapper {...props}>
 		<Label containerClass="dollyselect" name={props.name} label={props.label} feil={props.feil}>
-			{props.kodeverk ? <SelectMedKodeverk {...props} /> : props.fasteData ?
-				<SelectMedFasteData {...props} /> : <Select {...props} />}
+			{props.kodeverk ? <SelectMedKodeverk {...props} /> : <Select {...props} />}
 		</Label>
 	</InputWrapper>
 )
