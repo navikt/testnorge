@@ -103,7 +103,7 @@ const PartnerForm = ({ path, idx, formikBag, locked }) => {
 	const basePath = `${path}[${idx}]`
 	const erSistePartner = _get(formikBag.values, path).length === idx + 1
 	return (
-		<React.Fragment>
+		<>
 			<FormikSelect
 				name={`${basePath}.identtype`}
 				label="Identtype"
@@ -130,6 +130,6 @@ const PartnerForm = ({ path, idx, formikBag, locked }) => {
 				locked={locked}
 				erSistePartner={erSistePartner}
 			/>
-		</React.Fragment>
+		</>
 	)
 }

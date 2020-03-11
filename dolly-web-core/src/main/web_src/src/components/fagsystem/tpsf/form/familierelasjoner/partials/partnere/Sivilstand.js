@@ -27,6 +27,8 @@ export const Sivilstand = ({ basePath, formikBag, locked, erSistePartner }) => (
 
 			const options = nesteGyldigStatuser(sivilstandKode)
 			const ugyldigSisteSivilstand = _has(formikBag.errors, basePath)
+
+			console.log(_get(formikBag.values, basePath)[0].sivilstand)
 			const addNewEntry = () => arrayHelpers.push(initialValues)
 			return (
 				<DollyFieldArrayWrapper title="Forhold" nested>
@@ -67,7 +69,7 @@ export const Sivilstand = ({ basePath, formikBag, locked, erSistePartner }) => (
 )
 
 const SivilstandForm = ({ path, options, readOnly }) => (
-	<React.Fragment>
+	<div className="flexbox" title={readOnly ? 'Du kan kun endre siste partner' : undefined}>
 		<FormikSelect
 			name={`${path}.sivilstand`}
 			label="Forhold til partner (sivilstand)"
@@ -83,5 +85,5 @@ const SivilstandForm = ({ path, options, readOnly }) => (
 			disabled={readOnly}
 			fastfield={false}
 		/>
-	</React.Fragment>
+	</div>
 )
