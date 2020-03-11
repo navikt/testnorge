@@ -160,14 +160,14 @@ export default class SendDoedsmelding extends PureComponent {
 		var feilMiljoer = ''
 
 		const object = this.state.errorFormatted,
-			x = Object.keys(object).reduce(function(r, k) {
+			errorMsgArray = Object.keys(object).reduce(function(r, k) {
 				return r.concat(k, object[k])
 			}, [])
 
-		let errorMessageFormatted = x.filter((element, index) => {
+		const errorMessageFormatted = errorMsgArray.filter((element, index) => {
 			return index % 2 === 1
 		})
-		let str = errorMessageFormatted.toString()
+		const str = errorMessageFormatted.toString()
 
 		if (this.state.environments_success.length > 0)
 			suksessMiljoer = this.state.environments_success.join(', ')
@@ -196,7 +196,7 @@ export default class SendDoedsmelding extends PureComponent {
 				)}
 
 				{this.state.environments_error.length > 0 && (
-					<h3 className="tps-endring-tps-endring-error-message">{str.replace('.,', ' -- ')}</h3>
+					<h3 className="tps-endring-tps-endring-error-message">{str.replace(/.,/g, ' -- ')}</h3>
 				)}
 			</div>
 		)
