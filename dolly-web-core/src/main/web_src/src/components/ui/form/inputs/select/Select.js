@@ -11,8 +11,6 @@ import { fieldError, SyntEvent } from '~/components/ui/form/formUtils'
 import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 
 import './Select.less'
-import FasteDataConnector from "~/components/fasteData/FasteDataConnector";
-import FasteDataService from "~/service/services/fasteData/FasteDataService";
 
 export const Select = ({
 	id,
