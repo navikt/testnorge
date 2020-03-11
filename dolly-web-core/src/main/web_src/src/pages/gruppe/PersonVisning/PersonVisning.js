@@ -11,6 +11,7 @@ import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
 import { SigrunstubVisning } from '~/components/fagsystem/sigrunstub/visning/Visning'
 import { InntektstubVisning } from '~/components/fagsystem/inntektstub/visning/Visning'
 import { InstVisning } from '~/components/fagsystem/inst/visning/InstVisning'
+import { PensjonVisning } from "~/components/fagsystem/pensjon/visning/PensjonVisning";
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/SammendragModal'
@@ -35,6 +36,7 @@ export const PersonVisning = ({
 			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			<AaregVisning data={data.aareg} loading={loading.aareg} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
+			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
 			<InntektstubVisning data={data.inntektstub} loading={loading.inntektstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			<InstVisning data={data.instdata} loading={loading.instdata} />

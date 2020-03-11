@@ -11,6 +11,7 @@ import { PdlfForm } from '~/components/fagsystem/pdlf/form/Form'
 import { ArenaForm } from '~/components/fagsystem/arena/form/Form'
 import { InstForm } from '~/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '~/components/fagsystem/udistub/form/Form'
+import { PensjonForm } from "~/components/fagsystem/pensjon/form/Form";
 
 export const Steg2 = ({ formikBag }) => {
 	if (!harAvhukedeAttributter(formikBag.values)) {
@@ -26,6 +27,7 @@ export const Steg2 = ({ formikBag }) => {
 			<TpsfForm formikBag={formikBag} />
 			<AaregForm formikBag={formikBag} />
 			<SigrunstubForm formikBag={formikBag} />
+			<PensjonForm formikBag={formikBag}/>
 			<InntektstubForm formikBag={formikBag} />
 			<PdlfForm formikBag={formikBag} />
 			<InstForm formikBag={formikBag} />
@@ -43,6 +45,7 @@ Steg2.validation = Yup.object({
 	...PdlfForm.validation,
 	...AaregForm.validation,
 	...SigrunstubForm.validation,
+	...PensjonForm.validation,
 	...InntektstubForm.validation,
 	...InstForm.validation,
 	...KrrstubForm.validation,

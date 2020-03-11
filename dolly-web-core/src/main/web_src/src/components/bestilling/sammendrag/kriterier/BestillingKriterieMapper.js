@@ -689,5 +689,23 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 		data.push(udistub)
 	}
+
+	const pensjonKriterier = bestillingData.pensjonforvalter
+
+	if(pensjonKriterier){
+		const pensjonforvalter = {
+			header: 'Pensjonsgivende inntekt',
+			items: [
+				obj('Fra og med år', pensjonKriterier.inntekt.fomAar),
+				obj('Til og med år', pensjonKriterier.inntekt.tomAar),
+				obj('Beløp', pensjonKriterier.inntekt.belop),
+				obj('Nedjuster med grunnbeløp',
+					Formatters.oversettBoolean(pensjonKriterier.inntekt.redusertMedGrunnbelop))
+			]
+		}
+
+		data.push(pensjonforvalter)
+	}
+
 	return data
 }

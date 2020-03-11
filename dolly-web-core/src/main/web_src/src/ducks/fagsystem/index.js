@@ -27,6 +27,12 @@ export const actions = createActions(
 				ident
 			})
 		],
+		getPensjon: [
+			DollyApi.getPoppInntekt,
+			ident => ({
+				ident
+			})
+		],
 		getInntektstub: [
 			DollyApi.getInntektsinformasjon,
 			ident => ({
@@ -111,7 +117,8 @@ const initialState = {
 	aareg: {},
 	pdlforvalter: {},
 	instdata: {},
-	udistub: {}
+	udistub: {},
+	pensjonforvalter: {}
 }
 
 export default handleActions(
@@ -147,6 +154,9 @@ export default handleActions(
 		[onSuccess(actions.getAareg)](state, action) {
 			state.aareg[action.meta.ident] = action.payload.data
 		},
+		[onSuccess(actions.getPensjon)](state, action) {
+			state.pensjonforvalter[action.meta.ident] = action.payload.data
+		},
 		[onSuccess(actions.getUdi)](state, action) {
 			state.udistub[action.meta.ident] = action.payload.data.person
 		},
@@ -166,6 +176,7 @@ export default handleActions(
 			delete state.pdlforvalter[action.meta.ident]
 			delete state.instdata[action.meta.ident]
 			delete state.udistub[action.meta.ident]
+			delete state.pensjonforvalter[action.meta.ident]
 		}
 	},
 	initialState
@@ -221,6 +232,8 @@ export const fetchDataFraFagsystemer = personId => (dispatch, getState) => {
 				return dispatch(actions.getAareg(personId, success[system][0]))
 			case 'INST2':
 				return dispatch(actions.getInst(personId, success[system][0]))
+			case 'PEN_INNTEKT':
+				return dispatch(actions.getPensjon(personId, success[system][0]))
 		}
 	})
 }
@@ -297,6 +310,7 @@ export const selectDataForIdent = (state, ident) => {
 		aareg: state.fagsystem.aareg[ident],
 		pdlforvalter: state.fagsystem.pdlforvalter[ident],
 		instdata: state.fagsystem.instdata[ident],
-		udistub: state.fagsystem.udistub[ident]
+		udistub: state.fagsystem.udistub[ident],
+		pensjonforvalter: state.fagsystem.pensjonforvalter[ident]
 	}
 }

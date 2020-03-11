@@ -5,6 +5,7 @@ const rootPaths = [
 	'pdlforvalter',
 	'aareg',
 	'sigrunstub',
+	'pensjonforvalter',
 	'inntektstub',
 	'instdata',
 	'krrstub',
