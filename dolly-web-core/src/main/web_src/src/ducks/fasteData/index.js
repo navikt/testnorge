@@ -19,7 +19,7 @@ const initialState = {
 export default handleActions(
     {
         [onSuccess(getFasteData)](state, action) {
-            state.fasteData = action.payload.data
+            state.data = action.payload.data
         }
 
     },
@@ -34,7 +34,7 @@ export const fetchFasteData = () => (dispatch, getState) => {
 
 export const getFnrFraFasteData = (state) => {
     var liste = []
-    for (d in state.fasteData){
+    for (d in state.data){
         liste = liste + d.fnr;
     }
     return liste
