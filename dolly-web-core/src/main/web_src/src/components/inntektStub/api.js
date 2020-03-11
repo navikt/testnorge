@@ -1,6 +1,10 @@
+import config from '~/config'
+
+const uri = `${config.services.dollyBackend}`
+
 export const validate = values =>
 	window
-		.fetch('https://dolly-t2.nais.preprod.local/api/v1/inntektstub', {
+		.fetch(`${uri}/inntektstub`, {
 			method: 'POST',
 			mode: 'cors',
 			credentials: 'include',
