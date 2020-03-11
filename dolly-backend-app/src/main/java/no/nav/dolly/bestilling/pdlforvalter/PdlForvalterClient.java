@@ -139,18 +139,22 @@ public class PdlForvalterClient implements ClientRegister {
 
             if (nonNull(tpsPerson.getPerson(tpsPerson.getHovedperson()))) {
                 Person hovedperson = tpsPerson.getPerson(tpsPerson.getHovedperson());
-                if (UKJENT.equals(tpsfUtvidetBestilling.getKjonn())) {
-                    hovedperson.setKjonn(UKJENT);
-                }
-                List partnereRequest = newArrayList(tpsfUtvidetBestilling.getRelasjoner().getPartnere());
-                Iterator<RsPartnerRequest> partnere = reverse(partnereRequest).iterator();
-                Iterator<RsBarnRequest> barn = tpsfUtvidetBestilling.getRelasjoner().getBarn().iterator();
-                hovedperson.getRelasjoner().forEach(relasjon -> {
-                    if (isKjonnUkjent(relasjon, partnere, barn) &&
-                            nonNull(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))) {
-                        tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()).setKjonn(UKJENT);
+                if (nonNull(tpsfUtvidetBestilling)) {
+                    if (UKJENT.equals(tpsfUtvidetBestilling.getKjonn())) {
+                        hovedperson.setKjonn(UKJENT);
                     }
-                });
+                    if (nonNull(tpsfUtvidetBestilling.getRelasjoner())) {
+                        List partnereRequest = newArrayList(tpsfUtvidetBestilling.getRelasjoner().getPartnere());
+                        Iterator<RsPartnerRequest> partnere = reverse(partnereRequest).iterator();
+                        Iterator<RsBarnRequest> barn = tpsfUtvidetBestilling.getRelasjoner().getBarn().iterator();
+                        hovedperson.getRelasjoner().forEach(relasjon -> {
+                            if (isKjonnUkjent(relasjon, partnere, barn) &&
+                                    nonNull(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))) {
+                                tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()).setKjonn(UKJENT);
+                            }
+                        });
+                    }
+                }
             }
             tpsPerson.getPersondetaljer().forEach(person ->
                 person.getRelasjoner().forEach(relasjon ->

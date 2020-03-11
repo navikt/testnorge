@@ -21,7 +21,7 @@ public enum SystemTyper {
     PDL_DODSBO("Kontaktinformasjon dødsbo (PDL)"),
     PDL_UTENLANDSID("Utenlandsk id (PDL)"),
     UDISTUB("Utlendingsdirektoratet (UDI)"),
-    INNTK("Inntektskomponenten (INNTK"),
+    INNTK("Inntektskomponenten (INNTK)"),
     PEN_FORVALTER("Pensjon (PEN)"),
     PEN_INNTEKT("Pensjonsopptjening (POPP)");
 

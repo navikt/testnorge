@@ -35,11 +35,4 @@ public class RsTpsfBasisMedSivilstandBestilling extends RsTpsfBasisBestilling {
             position = 100
     )
     private RsSimpleRelasjoner relasjoner;
-
-    public RsSimpleRelasjoner getRelasjoner() {
-        if (isNull(relasjoner)) {
-            relasjoner = new RsSimpleRelasjoner();
-        }
-        return relasjoner;
-    }
 }
