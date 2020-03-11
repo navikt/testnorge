@@ -35,16 +35,10 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 				{arbeidsforhold.arbeidsgiver.aktoertype === 'PERS' && (
 					<FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" />
 				)}
-				{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
-					<FormikTextInput label="Arbeidsgiver orgnummer" name={`${path}.arbeidsgiver.orgnummer`} />
-				)}
 			</div>
-
-			{/* Mulighet til å velge orgnr fra nedtrekksliste fjernes midlertidig.
-				Husk å fjerne orgnr-input over når denne kommenteres inn igjen.
 			{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
 				<OrgnrForm path={path} formikBag={formikBag} />
-			)} */}
+			)}
 
 			<ArbeidsavtaleForm formikBag={formikBag} path={path} />
 

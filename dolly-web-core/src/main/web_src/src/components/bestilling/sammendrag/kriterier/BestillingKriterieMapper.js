@@ -328,6 +328,46 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(sigrunStub)
 	}
 
+	const inntektStubKriterier = bestillingData.inntektstub
+
+	if (inntektStubKriterier) {
+		const inntektStub = {
+			header: 'Inntektskomponenten (A-ordningen)',
+			// items: [
+			// 	obj('Prosentøkning per år', inntektStubKriterier.prosentOekningPerAaar)
+			// ],
+			itemRows: []
+		}
+
+		inntektStubKriterier.inntektsinformasjon.forEach((inntektsinfo, i) => {
+			inntektStub.itemRows.push([
+				{ numberHeader: `Inntektsinformasjon ${i + 1}` },
+				obj('Start måned/år', inntektsinfo.startAarMaaned),
+				obj('Antall måneder', inntektsinfo.antallMaaneder),
+				obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
+				obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
+				obj(
+					'Antall registrerte inntekter',
+					inntektsinfo.inntektsliste && inntektsinfo.inntektsliste.length
+				),
+				obj(
+					'Antall registrerte fradrag',
+					inntektsinfo.fradragsliste && inntektsinfo.fradragsliste.length
+				),
+				obj(
+					'Antall registrerte forskuddstrekk',
+					inntektsinfo.forskuddstrekksliste && inntektsinfo.forskuddstrekksliste.length
+				),
+				obj(
+					'Antall registrerte arbeidsforhold',
+					inntektsinfo.arbeidsforholdsliste && inntektsinfo.arbeidsforholdsliste.length
+				)
+			])
+		})
+
+		data.push(inntektStub)
+	}
+
 	const krrKriterier = bestillingData.krrstub
 
 	if (krrKriterier) {

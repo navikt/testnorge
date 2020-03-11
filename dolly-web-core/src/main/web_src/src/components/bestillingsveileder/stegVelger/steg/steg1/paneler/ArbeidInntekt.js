@@ -2,12 +2,13 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
+// import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 export const ArbeidInntektPanel = ({ stateModifier }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
 
 	const infoTekst =
-		'Arbeidsforhold: \nDataene her blir lagt til AAREG. \n\nInntekt: \nSkatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.'
+		'Arbeidsforhold: \nDataene her blir lagt til AAREG. \n\nInntekt: \nSkatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub. \nInntektskomponenten: Informasjonen blir lagt i Inntekt-stub.'
 
 	return (
 		<Panel
@@ -23,9 +24,24 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 			<AttributtKategori title="Inntekt">
 				<Attributt attr={sm.attrs.sigrunstub} />
 			</AttributtKategori>
+			<AttributtKategori title="Inntektskomponenten (A-ordningen)">
+				<Attributt attr={sm.attrs.inntektstub} />
+			</AttributtKategori>
 		</Panel>
 	)
 }
+
+// TODO: Sett initialValue på virksomhet og opplysningspliktig til en random organisasjon, har ikke fått det til å fingere foreløpig
+// const randomVirksomhet = () => {
+// 	const orgInfo = SelectOptionsOppslag('orgnr')
+// 	const options = SelectOptionsOppslag.formatOptions(orgInfo)
+// 	const randomNumber = Math.floor(Math.random() * options.length)
+// 	if (options.length > 0) {
+// 		return options[randomNumber].value
+// 	}
+// 	return ''
+// }
+// const initialVirksomhet = randomVirksomhet()
 
 ArbeidInntektPanel.heading = 'Arbeid og inntekt'
 
@@ -51,5 +67,35 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 				}
 			]),
 		remove: () => del('sigrunstub')
+	},
+	inntektstub: {
+		label: 'Har inntekter',
+		checked: has('inntektstub'),
+		add: () =>
+			set('inntektstub', {
+				// prosentOekningPerAaar: null,
+				inntektsinformasjon: [
+					{
+						startAarMaaned: '',
+						antallMaaneder: '',
+						virksomhet: '',
+						opplysningspliktig: '',
+						inntektsliste: [
+							{
+								beloep: '',
+								startOpptjeningsperiode: '',
+								sluttOpptjeningsperiode: '',
+								inntektstype: ''
+							}
+						],
+						fradragsliste: [],
+						forskuddstrekksliste: [],
+						arbeidsforholdsliste: []
+					}
+				]
+			}),
+		remove() {
+			del('inntektstub')
+		}
 	}
 })
