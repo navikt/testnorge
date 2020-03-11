@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.spion.domain.Vedtak;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
@@ -47,19 +48,19 @@ public class VedtakPublisher {
                 publish(vedtaksliste);
                 log.info("Sending av vedtak for person nr. {} til Kafka Topic {} var vellykket.", i + 1, topic);
                 antallVellykket++;
-            } catch (ExecutionException | InterruptedException e) {
-                log.error("Sending av vedtak for person nr. {} til Kafka Topic {} mislyktes.", i + 1, topic, e);
-                return antallVellykket;
             } catch (JsonProcessingException e) {
                 log.error("Kunne ikke mappe vedtak til String.");
                 throw e;
+            } catch (Exception e){
+                log.error("Sending av vedtak for person nr. {} til Kafka Topic {} mislyktes.", i + 1, topic, e);
+                continue;
             }
         }
 
         return antallVellykket;
     }
 
-    public void publish(SyntetiserVedtakResponse response) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public void publish(SyntetiserVedtakResponse response) throws Exception {
         for (Vedtak vedtak : response.getVedtak()) {
             String id = UUID.randomUUID().toString();
             String vedtakString = om.writeValueAsString(vedtak);
@@ -69,7 +70,19 @@ public class VedtakPublisher {
                     id,
                     vedtakString
             );
-            kafkaTemplate.send(record).get();
+            boolean wasSuccess = kafkaTemplate.executeInTransaction(kt ->
+            {
+                try {
+                    kt.send(record).get();
+                    return true;
+                } catch (InterruptedException | ExecutionException e) {
+                    return false;
+                }
+            });
+
+            if(!wasSuccess){
+                throw new Exception("Fikk ikke sendt vedtak til Kakfa topic.");
+            }
         }
     }
 }

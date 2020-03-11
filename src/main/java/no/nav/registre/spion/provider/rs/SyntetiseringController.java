@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.spion.provider.rs.response.SyntetiserSpionResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +40,6 @@ public class SyntetiseringController {
 
     @PostMapping(value = "/vedtak")
     @ApiOperation(value = "Generer syntetiske vedtak for et gitt antall personer og legger dem på Kafka kø til SPION.")
-    @Transactional
     public SyntetiserSpionResponse genererVedtakForSPION(@ApiParam(value = REQUEST_DESCRIPTION) @RequestBody SyntetiserSpionRequest request) throws JsonProcessingException {
 
         List<SyntetiserVedtakResponse> syntetisertvedtaksliste = syntetiseringService.syntetiserVedtak(
