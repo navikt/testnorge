@@ -33,6 +33,12 @@ export const actions = createActions(
 				ident
 			})
 		],
+		getInntektstub: [
+			DollyApi.getInntektsinformasjon,
+			ident => ({
+				ident
+			})
+		],
 		getKrr: [
 			KrrApi.getPerson,
 			ident => ({
@@ -105,6 +111,7 @@ export const actions = createActions(
 const initialState = {
 	tpsf: {},
 	sigrunstub: {},
+	inntektstub: {},
 	krrstub: {},
 	arenaforvalteren: {},
 	aareg: {},
@@ -135,6 +142,9 @@ export default handleActions(
 				return { ...i, sekvensnummer }
 			})
 		},
+		[onSuccess(actions.getInntektstub)](state, action) {
+			state.inntektstub[action.meta.ident] = action.payload.data
+		},
 		[onSuccess(actions.getKrr)](state, action) {
 			state.krrstub[action.meta.ident] = action.payload.data[0]
 		},
@@ -159,6 +169,7 @@ export default handleActions(
 		[onSuccess(actions.slettPerson)](state, action) {
 			delete state.tpsf[action.meta.ident]
 			delete state.sigrunstub[action.meta.ident]
+			delete state.inntektstub[action.meta.ident]
 			delete state.krrstub[action.meta.ident]
 			delete state.arenaforvalteren[action.meta.ident]
 			delete state.aareg[action.meta.ident]
@@ -209,6 +220,8 @@ export const fetchDataFraFagsystemer = personId => (dispatch, getState) => {
 			case 'SIGRUNSTUB':
 				dispatch(actions.getSigrun(personId))
 				return dispatch(actions.getSigrunSekvensnr(personId))
+			case 'INNTK':
+				return dispatch(actions.getInntektstub(personId))
 			case 'ARENA':
 				return dispatch(actions.getArena(personId))
 			case 'PDL':
@@ -291,6 +304,7 @@ export const selectDataForIdent = (state, ident) => {
 	return {
 		tpsf: state.fagsystem.tpsf[ident],
 		sigrunstub: state.fagsystem.sigrunstub[ident],
+		inntektstub: state.fagsystem.inntektstub[ident],
 		krrstub: state.fagsystem.krrstub[ident],
 		arenaforvalteren: state.fagsystem.arenaforvalteren[ident],
 		aareg: state.fagsystem.aareg[ident],

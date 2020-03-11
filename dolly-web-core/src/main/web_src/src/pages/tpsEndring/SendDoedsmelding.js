@@ -14,16 +14,17 @@ export default class SendDoedsmelding extends PureComponent {
 	state = {
 		isFetching: false,
 		isFetchingMiljoer: false,
-		errorMessage: null,
+		errorMessage: '',
 		meldingSent: false,
-		handlingsType: null,
-		foundIdent: null,
+		handlingsType: '',
+		foundIdent: '',
 		showErrorMessageFoundIdent: false,
 		currentfnr: '',
 		environments: [],
 		miljoer: [],
 		environments_success: [],
-		environments_error: []
+		environments_error: [],
+		errorFormatted: ''
 	}
 
 	validation = () =>
@@ -47,7 +48,7 @@ export default class SendDoedsmelding extends PureComponent {
 			{
 				isFetching: true,
 				meldingSent: false,
-				errorMessage: null,
+				errorMessage: '',
 				handlingsType: values.handling,
 				foundIdent: false
 			},
@@ -62,16 +63,17 @@ export default class SendDoedsmelding extends PureComponent {
 					this.setState({
 						isFetching: false,
 						meldingSent: true,
-						currentfnr: null,
+						currentfnr: '',
 						miljoer: [],
 						environments_success: success_envs,
-						environments_error: error_envs
+						environments_error: error_envs,
+						errorFormatted: status
 					})
 					resetForm()
 				} catch (err) {
 					this.setState({
 						meldingSent: false,
-						currentfnr: null,
+						currentfnr: '',
 						miljoer: [],
 						errorMessage: err.response.data.message,
 						isFetching: false
@@ -95,7 +97,7 @@ export default class SendDoedsmelding extends PureComponent {
 					isFetchingMiljoer: true,
 					environments: [],
 					showErrorMessageFoundIdent: false,
-					errorMessage: null,
+					errorMessage: '',
 					miljoer: [],
 					meldingSent: false,
 					foundIdent: false
@@ -137,6 +139,7 @@ export default class SendDoedsmelding extends PureComponent {
 
 	_renderMeldingSent = () => {
 		var handling = ''
+
 		switch (this.state.handlingsType) {
 			case 'C':
 				handling = 'sent'
@@ -156,6 +159,16 @@ export default class SendDoedsmelding extends PureComponent {
 		var suksessMiljoer = ''
 		var feilMiljoer = ''
 
+		const object = this.state.errorFormatted,
+			errorMsgArray = Object.keys(object).reduce(function(r, k) {
+				return r.concat(k, object[k])
+			}, [])
+
+		const errorMessageFormatted = errorMsgArray.filter((element, index) => {
+			return index % 2 === 1
+		})
+		const str = errorMessageFormatted.toString()
+
 		if (this.state.environments_success.length > 0)
 			suksessMiljoer = this.state.environments_success.join(', ')
 
@@ -173,6 +186,7 @@ export default class SendDoedsmelding extends PureComponent {
 				handling = 'annullert'
 				break
 		}
+
 		return (
 			<div>
 				{this.state.environments_success.length > 0 && (
@@ -182,9 +196,7 @@ export default class SendDoedsmelding extends PureComponent {
 				)}
 
 				{this.state.environments_error.length > 0 && (
-					<h3 className="tps-endring-tps-endring-error-message">
-						Personen var allerede død i {feilMiljoer}
-					</h3>
+					<h3 className="tps-endring-tps-endring-error-message">{str.replace(/.,/g, ' -- ')}</h3>
 				)}
 			</div>
 		)
