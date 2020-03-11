@@ -4,6 +4,7 @@ import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 const inputValg = { fraListe: 'velg', skrivSelv: 'skriv' }
 const initial = (formikBag, path) => {
@@ -20,6 +21,9 @@ export const OrgnrForm = ({ formikBag, path }) => {
 		setInputType(event.target.value)
 		formikBag.setFieldValue(`${path}.arbeidsgiver.orgnummer`, '')
 	}
+
+	const orgInfo = SelectOptionsOppslag('orgnr')
+	const options = SelectOptionsOppslag.formatOptions(orgInfo)
 
 	return (
 		<div className="toggle--wrapper">
@@ -43,9 +47,9 @@ export const OrgnrForm = ({ formikBag, path }) => {
 			{inputType === inputValg.fraListe ? (
 				<FormikSelect
 					name={`${path}.arbeidsgiver.orgnummer`}
-					options={Options('orgnummer')}
+					options={options}
 					type="text"
-					size="large"
+					size="xlarge"
 					isClearable={false}
 				/>
 			) : (

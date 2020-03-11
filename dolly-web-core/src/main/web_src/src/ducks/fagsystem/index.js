@@ -27,6 +27,18 @@ export const actions = createActions(
 				ident
 			})
 		],
+		getPensjon: [
+			DollyApi.getPoppInntekt,
+			ident => ({
+				ident
+			})
+		],
+		getInntektstub: [
+			DollyApi.getInntektsinformasjon,
+			ident => ({
+				ident
+			})
+		],
 		getKrr: [
 			KrrApi.getPerson,
 			ident => ({
@@ -99,12 +111,14 @@ export const actions = createActions(
 const initialState = {
 	tpsf: {},
 	sigrunstub: {},
+	inntektstub: {},
 	krrstub: {},
 	arenaforvalteren: {},
 	aareg: {},
 	pdlforvalter: {},
 	instdata: {},
-	udistub: {}
+	udistub: {},
+	pensjonforvalter: {}
 }
 
 export default handleActions(
@@ -128,6 +142,9 @@ export default handleActions(
 				return { ...i, sekvensnummer }
 			})
 		},
+		[onSuccess(actions.getInntektstub)](state, action) {
+			state.inntektstub[action.meta.ident] = action.payload.data
+		},
 		[onSuccess(actions.getKrr)](state, action) {
 			state.krrstub[action.meta.ident] = action.payload.data[0]
 		},
@@ -136,6 +153,9 @@ export default handleActions(
 		},
 		[onSuccess(actions.getAareg)](state, action) {
 			state.aareg[action.meta.ident] = action.payload.data
+		},
+		[onSuccess(actions.getPensjon)](state, action) {
+			state.pensjonforvalter[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.getUdi)](state, action) {
 			state.udistub[action.meta.ident] = action.payload.data.person
@@ -149,12 +169,14 @@ export default handleActions(
 		[onSuccess(actions.slettPerson)](state, action) {
 			delete state.tpsf[action.meta.ident]
 			delete state.sigrunstub[action.meta.ident]
+			delete state.inntektstub[action.meta.ident]
 			delete state.krrstub[action.meta.ident]
 			delete state.arenaforvalteren[action.meta.ident]
 			delete state.aareg[action.meta.ident]
 			delete state.pdlforvalter[action.meta.ident]
 			delete state.instdata[action.meta.ident]
 			delete state.udistub[action.meta.ident]
+			delete state.pensjonforvalter[action.meta.ident]
 		}
 	},
 	initialState
@@ -198,6 +220,8 @@ export const fetchDataFraFagsystemer = personId => (dispatch, getState) => {
 			case 'SIGRUNSTUB':
 				dispatch(actions.getSigrun(personId))
 				return dispatch(actions.getSigrunSekvensnr(personId))
+			case 'INNTK':
+				return dispatch(actions.getInntektstub(personId))
 			case 'ARENA':
 				return dispatch(actions.getArena(personId))
 			case 'PDL':
@@ -208,6 +232,8 @@ export const fetchDataFraFagsystemer = personId => (dispatch, getState) => {
 				return dispatch(actions.getAareg(personId, success[system][0]))
 			case 'INST2':
 				return dispatch(actions.getInst(personId, success[system][0]))
+			case 'PEN_INNTEKT':
+				return dispatch(actions.getPensjon(personId, success[system][0]))
 		}
 	})
 }
@@ -278,11 +304,13 @@ export const selectDataForIdent = (state, ident) => {
 	return {
 		tpsf: state.fagsystem.tpsf[ident],
 		sigrunstub: state.fagsystem.sigrunstub[ident],
+		inntektstub: state.fagsystem.inntektstub[ident],
 		krrstub: state.fagsystem.krrstub[ident],
 		arenaforvalteren: state.fagsystem.arenaforvalteren[ident],
 		aareg: state.fagsystem.aareg[ident],
 		pdlforvalter: state.fagsystem.pdlforvalter[ident],
 		instdata: state.fagsystem.instdata[ident],
-		udistub: state.fagsystem.udistub[ident]
+		udistub: state.fagsystem.udistub[ident],
+		pensjonforvalter: state.fagsystem.pensjonforvalter[ident]
 	}
 }
