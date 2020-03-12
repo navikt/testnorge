@@ -142,8 +142,8 @@ public class DollyBestillingService {
             TpsfBestilling tpsfBestilling = nonNull(request.getTpsf()) ? mapperFacade.map(request.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
             tpsfBestilling.setAntall(1);
 
-            Person person = tpsfService.endrePerson(request.getIdent(), tpsfBestilling);
-            sendIdenterTilTPS(request.getEnvironments(), singletonList(person.getIdent()), null, progress);
+            String[] identer = tpsfService.endrePerson(request.getIdent(), tpsfBestilling);
+            sendIdenterTilTPS(request.getEnvironments(), newArrayList(identer), null, progress);
 
             clientRegisters.forEach(clientRegister -> clientRegister.opprettEndre(request, progress));
 

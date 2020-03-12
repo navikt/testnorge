@@ -49,7 +49,7 @@ public class TpsfService {
     private static final String TPSF_SEND_TPS_FLERE_URL = "/tilTpsFlere";
     private static final String TPSF_HENT_PERSONER_URL = "/hentpersoner";
     private static final String TPSF_CHECK_IDENT_STATUS = "/checkpersoner";
-    private static final String TPSF_UPDATE_PERSON_URL = TPSF_BASE_URL + "/oppdaterperson?ident=";
+    private static final String TPSF_UPDATE_PERSON_URL = TPSF_BASE_URL + "/leggtilpaaperson?ident=";
     private static final String TPSF_CREATE_ALIASES = TPSF_BASE_URL + "/aliaser";
     private static final String TPSF_DELETE_PERSONER_URL = TPSF_BASE_URL + "/personer?identer=";
     private static final String TPSF_GET_ENVIRONMENTS = "/api/v1/environments";
@@ -109,13 +109,13 @@ public class TpsfService {
     }
 
     @Timed(name = "providers", tags = { "operation", "motTPSF" })
-    public Person endrePerson(String ident, TpsfBestilling tpsfBestilling) {
+    public String[] endrePerson(String ident, TpsfBestilling tpsfBestilling) {
 
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_UPDATE_PERSON_URL, ident)))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, getUserIdToken())
-                .body(tpsfBestilling), Person.class).getBody();
+                .body(tpsfBestilling), String[].class).getBody();
     }
 
     @Timed(name = "providers", tags = { "operation", "motTPSF" })
