@@ -84,12 +84,12 @@ export const Partnere = ({ formikBag }) => (
 						)
 					})}
 					<FieldArrayAddButton
-						title={
+						hoverText={
 							!kanOppretteNyPartner
 								? 'Forhold med tidligere partner må avsluttes (skilt eller enke/-mann)'
 								: false
 						}
-						buttontext="Legg til ny partner"
+						addEntryButtonText="Legg til ny partner"
 						onClick={addNewEntry}
 						disabled={!kanOppretteNyPartner}
 					/>

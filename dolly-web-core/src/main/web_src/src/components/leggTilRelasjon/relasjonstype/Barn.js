@@ -21,7 +21,11 @@ export const Barn = ({ formikBag, lagOptions, identInfo, hovedIdent }) => {
 
 	return (
 		<div className="bestilling-detaljer">
-			<FormikDollyFieldArray name="tpsf.relasjoner.barn" buttontext="Barn" newEntry={initialBarn}>
+			<FormikDollyFieldArray
+				name="tpsf.relasjoner.barn"
+				addEntryButtonText="Barn"
+				newEntry={initialBarn}
+			>
 				{(path, idx) => (
 					<React.Fragment key={idx}>
 						{/* Endres når det er bestemt hvordan bredde styles */}

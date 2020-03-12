@@ -23,7 +23,7 @@ export const Partner = ({ lagOptions, identInfo, hovedIdent, formikBag }) => {
 		<div className="bestilling-detaljer">
 			<FormikDollyFieldArray
 				name="tpsf.relasjoner.partnere"
-				title="Partner"
+				addEntryButtonText="Partner"
 				newEntry={initialPartner}
 			>
 				{(path, idx) => (

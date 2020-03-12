@@ -26,9 +26,9 @@ export const Sivilstand = ({ basePath, formikBag, locked, erSistePartner }) => (
 			}
 
 			const options = nesteGyldigStatuser(sivilstandKode)
-			const ugyldigSisteSivilstand = _has(formikBag.errors, basePath)
+			const ingenSivilstand = _get(formikBag.values, basePath)[0].sivilstand.length < 1
+			const ugyldigSisteSivilstand = _has(formikBag.errors, basePath) || ingenSivilstand
 
-			console.log(_get(formikBag.values, basePath)[0].sivilstand)
 			const addNewEntry = () => arrayHelpers.push(initialValues)
 			return (
 				<DollyFieldArrayWrapper title="Forhold" nested>
@@ -51,8 +51,8 @@ export const Sivilstand = ({ basePath, formikBag, locked, erSistePartner }) => (
 						)
 					})}
 					<FieldArrayAddButton
-						buttontext="Nytt forhold"
-						title={
+						addEntryButtonText="Nytt forhold"
+						hoverText={
 							ugyldigSisteSivilstand
 								? 'Siste sivilstand må være gyldig før du kan legge til en ny'
 								: !erSistePartner

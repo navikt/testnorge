@@ -19,7 +19,11 @@ export const AaregForm = ({ formikBag }) => (
 			iconType="arbeid"
 			startOpen={() => erForste(formikBag.values, [aaregAttributt])}
 		>
-			<FormikDollyFieldArray name="aareg" buttontext="Arbeidsforhold" newEntry={initialValues[0]}>
+			<FormikDollyFieldArray
+				name="aareg"
+				addEntryButtonText="Arbeidsforhold"
+				newEntry={initialValues[0]}
+			>
 				{(path, idx) => <ArbeidsforholdForm path={path} key={idx} formikBag={formikBag} />}
 			</FormikDollyFieldArray>
 		</Panel>

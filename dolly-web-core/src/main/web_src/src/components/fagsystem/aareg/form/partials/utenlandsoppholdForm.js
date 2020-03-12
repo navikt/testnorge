@@ -11,7 +11,7 @@ const infotekst =
 export const UtenlandsoppholdForm = ({ path }) => (
 	<FormikDollyFieldArray
 		name={path}
-		buttontext="Utenlandsopphold"
+		addEntryButtonText="Utenlandsopphold"
 		hjelpetekst={infotekst}
 		newEntry={initialUtenlandsopphold}
 		nested

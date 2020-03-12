@@ -37,7 +37,7 @@ export const Identhistorikk = ({ formikBag }) => (
 		>
 			<FormikDollyFieldArray
 				name="tpsf.identHistorikk"
-				buttontext="Historikk"
+				addEntryButtonText="Historikk"
 				newEntry={initialValues}
 			>
 				{(path, idx) => (

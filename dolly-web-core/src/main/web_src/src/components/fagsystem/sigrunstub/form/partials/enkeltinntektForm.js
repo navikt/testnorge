@@ -8,7 +8,7 @@ import Formatters from '~/utils/DataFormatter'
 
 export const EnkeltinntektForm = ({ path, title, initialGrunnlag, tjeneste, formikBag }) => {
 	return (
-		<FormikDollyFieldArray name={path} buttontext={title} newEntry={initialGrunnlag} nested>
+		<FormikDollyFieldArray name={path} addEntryButtonText={title} newEntry={initialGrunnlag} nested>
 			{(path, idx) => (
 				<React.Fragment key={idx}>
 					<FormikSelect

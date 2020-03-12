@@ -6,14 +6,14 @@ import HjelpeTekst from 'nav-frontend-hjelpetekst'
 
 import './dollyFieldArray.less'
 
-export const FieldArrayAddButton = ({ title, buttontext, onClick, disabled }) => (
+export const FieldArrayAddButton = ({ hoverText, addEntryButtonText, onClick, disabled }) => (
 	<Button
 		kind="add-circle"
 		onClick={onClick}
-		title={title || `Legg til ${buttontext}`}
+		title={hoverText || `Legg til ${addEntryButtonText.toLowerCase()}`}
 		disabled={disabled}
 	>
-		{buttontext || title}
+		{addEntryButtonText}
 	</Button>
 )
 
@@ -83,7 +83,7 @@ export const DollyFieldArray = ({ title, hjelpetekst, data, nested = false, chil
 export const FormikDollyFieldArray = ({
 	name,
 	title,
-	buttontext,
+	addEntryButtonText,
 	newEntry,
 	hjelpetekst,
 	nested = false,
@@ -114,8 +114,11 @@ export const FormikDollyFieldArray = ({
 							</DollyFaBlokk>
 						)
 					})}
-
-					<FieldArrayAddButton title={title} buttontext={buttontext} onClick={addNewEntry} />
+					<FieldArrayAddButton
+						hoverText={title}
+						addEntryButtonText={addEntryButtonText}
+						onClick={addNewEntry}
+					/>
 				</DollyFieldArrayWrapper>
 			)
 		}}

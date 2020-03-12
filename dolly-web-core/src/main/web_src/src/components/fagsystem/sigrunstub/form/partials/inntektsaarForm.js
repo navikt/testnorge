@@ -24,7 +24,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 	}
 
 	return (
-		<FormikDollyFieldArray name="sigrunstub" buttontext="Inntekt" newEntry={initialValues}>
+		<FormikDollyFieldArray name="sigrunstub" addEntryButtonText="Inntekt" newEntry={initialValues}>
 			{path => (
 				<React.Fragment>
 					<React.Fragment>
