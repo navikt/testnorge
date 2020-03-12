@@ -76,7 +76,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 				// prosentOekningPerAaar: null,
 				inntektsinformasjon: [
 					{
-						startAarMaaned: '',
+						sisteAarMaaned: '',
 						antallMaaneder: '',
 						virksomhet: '',
 						opplysningspliktig: '',

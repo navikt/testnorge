@@ -10,7 +10,7 @@ import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 const initialValues = {
-	startAarMaaned: '',
+	sisteAarMaaned: '',
 	antallMaaneder: '',
 	virksomhet: '',
 	opplysningspliktig: '',
@@ -28,7 +28,7 @@ const initialValues = {
 }
 
 const infotekst =
-	'For å generere samme inntektsinformasjon for flere måneder - fyll inn første måned/år, samt antall måneder inntektsinformasjonen skal genereres for.'
+	'For å generere samme inntektsinformasjon for flere måneder - fyll inn siste måned/år, samt antall måneder bakover inntektsinformasjonen skal genereres for.'
 
 export const InntektsinformasjonForm = ({ formikBag }) => {
 	const orgInfo = SelectOptionsOppslag('orgnr')
@@ -52,8 +52,12 @@ export const InntektsinformasjonForm = ({ formikBag }) => {
 			{path => (
 				<React.Fragment>
 					<div className="flexbox--flex-wrap">
-						<FormikTextInput name={`${path}.startAarMaaned`} label="Start måned/år" type="month" />
-						<FormikTextInput name={`${path}.antallMaaneder`} label="Antall måneder" type="number" />
+						<FormikTextInput name={`${path}.sisteAarMaaned`} label="Måned/år" type="month" />
+						<FormikTextInput
+							name={`${path}.antallMaaneder`}
+							label="Generer antall måneder"
+							type="number"
+						/>
 						<DollySelect
 							name={`${path}.virksomhet`}
 							label="Virksomhet (orgnr/id)"

@@ -33,7 +33,13 @@ const numberFields = [
 	'antall'
 ]
 
+const booleanField = options => {
+	return options.length > 0 && typeof options[0] === 'boolean'
+}
+
 const fieldReslover = (field, options = [], handleChange, values, path, index) => {
+	// console.log('options :', options)
+	// console.log('booleanField(options) :', booleanField(options))
 	if (dateFields.includes(field)) {
 		return (
 			<FormikDatepicker
@@ -54,7 +60,9 @@ const fieldReslover = (field, options = [], handleChange, values, path, index) =
 				kodeverk="LandkoderISO2"
 				fastfield={false}
 				afterChange={handleChange}
-				size="large"
+				// size="large"
+				size={booleanField(options) ? 'medium' : 'large'}
+				// size={field == 'beskrivelse' ? 'xxlarge' : 'large'} // TODO Fortsett her!!
 				feil={sjekkFelt(field, options, values, path)}
 			/>
 		)
@@ -69,7 +77,7 @@ const fieldReslover = (field, options = [], handleChange, values, path, index) =
 				name={field}
 				label={texts(field)}
 				onBlur={handleChange}
-				size="large"
+				size={numberFields.includes(field) ? 'medium' : 'large'}
 				feil={sjekkFelt(field, options, values, path)}
 				type={numberFields.includes(field) ? 'number' : 'text'}
 			/>

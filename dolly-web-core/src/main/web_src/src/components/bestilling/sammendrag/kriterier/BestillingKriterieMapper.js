@@ -342,8 +342,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		inntektStubKriterier.inntektsinformasjon.forEach((inntektsinfo, i) => {
 			inntektStub.itemRows.push([
 				{ numberHeader: `Inntektsinformasjon ${i + 1}` },
-				obj('Start måned/år', inntektsinfo.startAarMaaned),
-				obj('Antall måneder', inntektsinfo.antallMaaneder),
+				obj('Måned/år', inntektsinfo.sisteAarMaaned),
+				obj('Generer antall måneder', inntektsinfo.antallMaaneder),
 				obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
 				obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
 				obj(
