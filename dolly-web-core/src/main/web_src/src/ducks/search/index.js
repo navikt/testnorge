@@ -8,8 +8,6 @@ const initialState = ''
 
 export default (state = initialState, action) => {
 	{
-		console.log('state :', state)
-		console.log('action :', action)
 		switch (action.type) {
 			case LOCATION_CHANGE:
 			case resetSearch.toString():
