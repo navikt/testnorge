@@ -19,7 +19,6 @@ import java.util.concurrent.ExecutionException;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.spion.domain.Vedtak;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
