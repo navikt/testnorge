@@ -138,5 +138,9 @@ export default {
 
 	getFasteOrgnummer() {
 		return Request.get(Endpoints.fasteOrgnummer())
+	},
+
+	getFasteDatasettTPS() {
+		return Request.get(Endpoints.getFasteDatasettTPS())
 	}
 }

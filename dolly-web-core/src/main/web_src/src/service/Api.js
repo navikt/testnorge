@@ -5,7 +5,6 @@ import KrrService from './services/krr/KrrService'
 import ArenaService from './services/arena/ArenaService'
 import InstService from './services/inst/InstService'
 import UdiService from './services/udi/UdiService'
-import FasteDataService from './services/fasteData/FasteDataService'
 
 export const DollyApi = DollyService
 export const TpsfApi = TpsfService
@@ -14,7 +13,6 @@ export const KrrApi = KrrService
 export const ArenaApi = ArenaService
 export const InstApi = InstService
 export const UdiApi = UdiService
-export const FasteDataApi = FasteDataService
 
 export default {
 	DollyApi: DollyService,
@@ -23,7 +21,5 @@ export default {
 	KrrApi: KrrService,
 	ArenaApi: ArenaService,
 	InstApi: InstService,
-	UdiApi: UdiService,
-	FasteDataApi: FasteDataService
-
+	UdiApi: UdiService
 }

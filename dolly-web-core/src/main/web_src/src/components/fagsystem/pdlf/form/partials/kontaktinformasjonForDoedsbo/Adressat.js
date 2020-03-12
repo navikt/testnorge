@@ -5,7 +5,8 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import {FasteDataApi} from "~/service/Api";
+import { DollyApi } from "~/service/Api";
+import FasteDatasettSelect from '~/components/fasteData/FasteDatasettSelect'
 
 export const Adressat = ({ formikBag }) => {
 	const adressatType =
@@ -57,16 +58,11 @@ export const Adressat = ({ formikBag }) => {
 			)}
 
 			{adressatType === 'PERSON_MEDID' && (
-				<FormikSelect
+				<FasteDatasettSelect
 					name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.idnummer"
 					label="Fnr/dnr/bost"
-					options={FasteDataApi.getFasteDataTps()}
+					endepunkt={ DollyApi.getFasteDatasettTPS }
 				/>
-				// <FormikTextInput
-				// 	name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.idnummer"
-				// 	label="Fnr/dnr/bost"
-				// 	type="number"
-				// />
 			)}
 			{adressatType === 'PERSON_UTENID' && (
 				<React.Fragment>

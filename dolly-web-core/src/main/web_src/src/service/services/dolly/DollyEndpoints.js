@@ -14,6 +14,7 @@ const personoppslagBase = `${uri}/pdlperson`
 const poppBase = `${uri}/popp`
 const inntektstubBase = `${uri}/inntektstub`
 const fasteOrgnummerBase = `${uri}/orgnummer`
+const fasteDatasettBase = `${uri}/fastedatasett`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -139,5 +140,9 @@ export default class DollyEndpoints {
 
 	static poppMiljoe(){
 		return `${poppBase}/miljoe`
+	}
+
+	static getFasteDatasettTPS(){
+		return `${fasteDatasettBase}/TPS`
 	}
 }

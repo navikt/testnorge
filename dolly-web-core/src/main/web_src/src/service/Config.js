@@ -26,8 +26,6 @@ const ConfigService = {
 				return dollyConfig.instdataUrl
 			case 'udi':
 				return dollyConfig.udiStubUrl
-			case 'fasteData':
-				return config.services.testnorgeStatiskForvalter
 			default:
 				return undefined
 		}
