@@ -49,14 +49,21 @@ public class SyntetiseringController {
     @LogExceptions
     @ApiOperation(value = "Her kan man starte avspilling av en TPSF-avspillergruppe. Dette innebærer at alle skd-meldingene i en gitt gruppe sendes til TPS i et gitt miljø.")
     @PostMapping(value = "/startAvspilling/{avspillergruppeId}")
-    public SkdMeldingerTilTpsRespons startAvspillingAvTpsfAvspillergruppe(@PathVariable Long avspillergruppeId, @RequestParam String miljoe) {
+    public SkdMeldingerTilTpsRespons startAvspillingAvTpsfAvspillergruppe(
+            @PathVariable Long avspillergruppeId,
+            @RequestParam String miljoe
+    ) {
         return fasteMeldingerService.startAvspillingAvTpsfAvspillergruppe(avspillergruppeId, miljoe);
     }
 
     @LogExceptions
     @ApiOperation(value = "Her kan man legge nye identer inn i en gitt avspillergruppe i TPSF. Identene vil få opprettet en innvandringsmelding hver.")
     @PostMapping(value = "/leggTilNyeMeldinger/{avspillergruppeId}")
-    public List<Long> leggTilNyeMeldingerIGruppe(@PathVariable Long avspillergruppeId, @RequestBody List<FastMeldingRequest> fasteMeldinger) {
-        return fasteMeldingerService.opprettMeldingerOgLeggIGruppe(avspillergruppeId, fasteMeldinger);
+    public List<Long> leggTilNyeMeldingerIGruppe(
+            @PathVariable Long avspillergruppeId,
+            @RequestParam(required = false, defaultValue = "false") Boolean opprettEndringStatsborgerskap,
+            @RequestBody List<FastMeldingRequest> fasteMeldinger
+    ) {
+        return fasteMeldingerService.opprettMeldingerOgLeggIGruppe(avspillergruppeId, fasteMeldinger, opprettEndringStatsborgerskap);
     }
 }

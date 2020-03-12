@@ -59,8 +59,8 @@ public class SyntetiseringControllerTest {
 
     @Test
     public void shouldLeggeTilNyeMeldingerIGruppe() {
-        syntetiseringController.leggTilNyeMeldingerIGruppe(avspillergruppeId, fasteMeldinger);
+        syntetiseringController.leggTilNyeMeldingerIGruppe(avspillergruppeId, false, fasteMeldinger);
 
-        verify(fasteMeldingerService).opprettMeldingerOgLeggIGruppe(avspillergruppeId, fasteMeldinger);
+        verify(fasteMeldingerService).opprettMeldingerOgLeggIGruppe(avspillergruppeId, fasteMeldinger, false);
     }
 }

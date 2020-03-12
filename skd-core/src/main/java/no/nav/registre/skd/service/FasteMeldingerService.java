@@ -1,5 +1,6 @@
 package no.nav.registre.skd.service;
 
+import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.opprettStatsborgerendringsmelding;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.setObligatoriskeFelt;
 
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +46,8 @@ public class FasteMeldingerService {
 
     public List<Long> opprettMeldingerOgLeggIGruppe(
             Long avspillergruppeId,
-            List<FastMeldingRequest> fasteMeldinger
+            List<FastMeldingRequest> fasteMeldinger,
+            Boolean opprettEndringStatsborgerskap
     ) {
         var syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), fasteMeldinger.size());
         validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger, Endringskoder.INNVANDRING);
@@ -104,6 +106,10 @@ public class FasteMeldingerService {
             nyMelding.setFraLandRegdato(syntetisertMelding.getFraLandRegdato());
 
             nyeFasteMeldinger.add(nyMelding);
+
+            if (opprettEndringStatsborgerskap) {
+                nyeFasteMeldinger.add(opprettStatsborgerendringsmelding(nyMelding));
+            }
         }
 
         return tpsfConsumer.saveSkdEndringsmeldingerInTPSF(avspillergruppeId, nyeFasteMeldinger);
