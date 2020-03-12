@@ -11,6 +11,9 @@ const configBase = `${uri}/config`
 const openamBase = `${uri}/openam`
 const aaregBase = `${uri}/aareg/arbeidsforhold`
 const personoppslagBase = `${uri}/pdlperson`
+const poppBase = `${uri}/popp`
+const inntektstubBase = `${uri}/inntektstub`
+const fasteOrgnummerBase = `${uri}/orgnummer`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -101,6 +104,14 @@ export default class DollyEndpoints {
 		return `${personoppslagBase}/ident/${ident}`
 	}
 
+	static inntekterByIdent(ident) {
+		return `${inntektstubBase}/${ident}`
+	}
+
+	static fasteOrgnummer() {
+		return fasteOrgnummerBase
+	}
+
 	//TESTPERSON-CONTROLLER
 	static slettPerson(ident) {
 		return `${identBase}/${ident}`
@@ -120,5 +131,13 @@ export default class DollyEndpoints {
 
 	static kobleIdenter(ident) {
 		return `${identBase}/${ident}/relasjon`
+	}
+
+	static poppInntekt(ident, env){
+		return `${poppBase}/inntekt/${ident}/${env}`
+	}
+
+	static poppMiljoe(){
+		return `${poppBase}/miljoe`
 	}
 }

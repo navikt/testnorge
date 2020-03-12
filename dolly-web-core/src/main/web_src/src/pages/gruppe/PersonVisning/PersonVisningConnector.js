@@ -10,12 +10,14 @@ import { PersonVisning } from './PersonVisning'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
 const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
+const loadingSelectorInntektstub = createLoadingSelector(actions.getInntektstub)
 const loadingSelectorAareg = createLoadingSelector(actions.getAareg)
 const loadingSelectorPdlf = createLoadingSelector(actions.getPDL)
 const loadingSelectorArena = createLoadingSelector(actions.getArena)
 const loadingSelectorInst = createLoadingSelector(actions.getInst)
 const loadingSelectorUdi = createLoadingSelector(actions.getUdi)
 const loadingSelectorSlettPerson = createLoadingSelector(actions.slettPerson)
+const loadingSelectorPensjon = createLoadingSelector(actions.getPensjon)
 
 const loadingSelector = createSelector(
 	state => state.loading,
@@ -23,12 +25,14 @@ const loadingSelector = createSelector(
 		return {
 			krrstub: loadingSelectorKrr({ loading }),
 			sigrunstub: loadingSelectorSigrun({ loading }),
+			inntektstub: loadingSelectorInntektstub({ loading }),
 			aareg: loadingSelectorAareg({ loading }),
 			pdlforvalter: loadingSelectorPdlf({ loading }),
 			arenaforvalteren: loadingSelectorArena({ loading }),
 			instdata: loadingSelectorInst({ loading }),
 			udistub: loadingSelectorUdi({ loading }),
-			slettPerson: loadingSelectorSlettPerson({ loading })
+			slettPerson: loadingSelectorSlettPerson({ loading }),
+			pensjonforvalter: loadingSelectorPensjon({ loading } )
 		}
 	}
 )

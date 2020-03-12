@@ -20,6 +20,7 @@ import IdCardDouble from '~/assets/icons/nav-ikoner/line/SVG/11-users/id-card-do
 import NewFileTable from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-table.svg'
 import FileChecklist from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklist.svg'
 import FileChecklistLight from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklistLight.svg'
+import FileRefresh from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-refresh.svg'
 // import NewFile from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-new-1.svg'
 import NewFile from '~/assets/icons/nav-ikoner/filled/SVG/17-files/file-add.svg'
 import Synchronize from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/synchronize-3.svg'
@@ -30,6 +31,7 @@ import Wrench from '~/assets/icons/nav-ikoner/line/SVG/21-settings/wrench.svg'
 import Calendar from '~/assets/icons/nav-ikoner/line/SVG/22-time/calendar-3.svg'
 import InformationCircle from '~/assets/icons/nav-ikoner/line/SVG/23-alerts-informations/information-circle.svg'
 import BankNote from '~/assets/icons/nav-ikoner/line/SVG/24-business-finance/bank-notes-3.svg'
+import MoneyBag from '~/assets/icons/nav-ikoner/line/SVG/24-business-finance/money-bag-dollar.svg'
 import Institusjon from '~/assets/icons/nav-ikoner/line/SVG/26-places/building-2.svg'
 import House from '~/assets/icons/nav-ikoner/line/SVG/26-places/home-1.svg'
 import Globe from '~/assets/icons/nav-ikoner/line/SVG/26-places/globe-1.svg'
@@ -41,6 +43,7 @@ import ChevronDown from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-do
 import ChevronUp from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-up-8.svg'
 import ChevronLeft from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-left-8.svg'
 import ChevronRight from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-right-8.svg'
+import PiggyBank from '~/assets/icons/nav-ikoner/line/SVG/24-business-finance/piggy-bank.svg'
 
 import ProblemTriangle from '~/assets/icons/custom/ProblemTriangle.svg'
 import Details from '~/assets/icons/custom/Details.svg'
@@ -92,6 +95,7 @@ export const icons = {
 	bestilling: FileChecklist,
 	bestillingLight: FileChecklistLight,
 	newFile: NewFile,
+	maler: FileRefresh,
 
 	personinformasjon: InformationCircle,
 	nasjonalitet: Globe2,
@@ -106,11 +110,13 @@ export const icons = {
 	institusjon: Institusjon,
 	arbeid: Wrench,
 	sigrun: BankNote,
+	inntektstub: MoneyBag,
 	udi: Globe,
 	kommentar: ChatBubble,
 	partner: Love,
 	barn: Baby,
-	dolly: Dolly
+	dolly: Dolly,
+	pensjon: PiggyBank
 }
 
 const px = v => `${v}px`

@@ -26,7 +26,13 @@ export const SlettButton = ({ action, loading, children }) => {
 					</div>
 					<div className="slettModal-actions">
 						<NavButton onClick={closeModal}>NEI</NavButton>
-						<NavButton onClick={action} type="hoved">
+						<NavButton
+							onClick={() => {
+								closeModal()
+								return action()
+							}}
+							type="hoved"
+						>
 							JA, JEG ER SIKKER
 						</NavButton>
 					</div>
