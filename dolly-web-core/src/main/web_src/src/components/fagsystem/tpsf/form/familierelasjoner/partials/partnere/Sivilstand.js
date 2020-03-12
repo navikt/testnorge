@@ -26,8 +26,13 @@ export const Sivilstand = ({ basePath, formikBag, locked, erSistePartner }) => (
 			}
 
 			const options = nesteGyldigStatuser(sivilstandKode)
-			const ingenSivilstand = _get(formikBag.values, basePath)[0].sivilstand.length < 1
-			const ugyldigSisteSivilstand = _has(formikBag.errors, basePath) || ingenSivilstand
+			const tomSisteSivilstand = () => {
+				const sivilstander = _get(formikBag.values, basePath)
+				const antallSivilstander = sivilstander.length
+				return sivilstander[antallSivilstander - 1].sivilstand.length < 1
+			}
+
+			const ugyldigSisteSivilstand = _has(formikBag.errors, basePath) || tomSisteSivilstand()
 
 			const addNewEntry = () => arrayHelpers.push(initialValues)
 			return (
