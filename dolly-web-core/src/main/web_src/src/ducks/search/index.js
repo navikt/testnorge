@@ -7,13 +7,15 @@ export const resetSearch = createAction('SEARCH/RESET_SEARCH')
 const initialState = ''
 
 export default (state = initialState, action) => {
-	switch (action.type) {
-		case LOCATION_CHANGE:
-		case resetSearch.toString():
-			return initialState
-		case setSearchText.toString():
-			return action.payload
-		default:
-			return state
+	{
+		switch (action.type) {
+			case LOCATION_CHANGE:
+			case resetSearch.toString():
+				return initialState
+			case setSearchText.toString():
+				return action.payload
+			default:
+				return state
+		}
 	}
 }

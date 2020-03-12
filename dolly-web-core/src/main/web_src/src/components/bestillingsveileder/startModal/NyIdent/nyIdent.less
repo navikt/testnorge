@@ -1,3 +1,5 @@
+@import (reference) '~lessVars';
+
 .ny-ident-form {
 	> h3 {
 		margin: 20px 0 0;
@@ -15,6 +17,17 @@
 		background-color: #eee;
 		margin: 10px -20px;
 		padding: 0 0 0 20px;
+
+		.mal-admin {
+			margin: 20px 0 16px;
+			a {
+				text-decoration: none;
+				color: @navBla;
+			}
+			svg {
+				stroke: @navBla;
+			}
+		}
 
 		> div {
 			h3 {
