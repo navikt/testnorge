@@ -60,7 +60,7 @@ export const Partnere = ({ formikBag }) => (
 			const addNewEntry = () => arrayHelpers.push(initialValues)
 
 			return (
-				<DollyFieldArrayWrapper title="Partner">
+				<DollyFieldArrayWrapper header="Partner">
 					{partnere.map((c, idx) => {
 						const isLast = idx === partnere.length - 1
 
@@ -71,7 +71,7 @@ export const Partnere = ({ formikBag }) => (
 							<DollyFaBlokk
 								key={idx}
 								idx={idx}
-								title="Partner"
+								header="Partner"
 								handleRemove={showRemove && clickRemove}
 							>
 								<PartnerForm

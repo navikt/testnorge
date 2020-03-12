@@ -24,7 +24,7 @@ export const Partner = ({ data }) => {
 				)}
 			</div>
 			{data.sivilstander.length > 0 && (
-				<DollyFieldArray title="Forhold" data={data.sivilstander} nested>
+				<DollyFieldArray header="Forhold" data={data.sivilstander} nested>
 					{(forhold, idx) => (
 						<div key={idx} className="person-visning_content">
 							<TitleValue

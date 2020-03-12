@@ -25,7 +25,7 @@ export const InstForm = ({ formikBag }) => (
 			iconType="institusjon"
 			startOpen={() => erForste(formikBag.values, [instAttributt])}
 		>
-			<FormikDollyFieldArray name="instdata" addEntryButtonText="Opphold" newEntry={initialValues}>
+			<FormikDollyFieldArray name="instdata" header="Opphold" newEntry={initialValues}>
 				{(path, idx) => (
 					<React.Fragment key={idx}>
 						<FormikSelect

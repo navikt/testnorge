@@ -31,7 +31,7 @@ export const Sivilstand = ({ basePath, formikBag, locked, erSistePartner }) => (
 
 			const addNewEntry = () => arrayHelpers.push(initialValues)
 			return (
-				<DollyFieldArrayWrapper title="Forhold" nested>
+				<DollyFieldArrayWrapper header="Forhold" nested>
 					{sivilstander.map((c, idx) => {
 						const path = `${basePath}[${idx}]`
 						const isLast = idx === sivilstander.length - 1
@@ -43,7 +43,7 @@ export const Sivilstand = ({ basePath, formikBag, locked, erSistePartner }) => (
 							<DollyFaBlokk
 								key={idx}
 								idx={idx}
-								title="Forhold"
+								header="Forhold"
 								handleRemove={showRemove && clickRemove}
 							>
 								<SivilstandForm path={path} options={options} readOnly={!isLast || locked} />

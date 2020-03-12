@@ -6,9 +6,9 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import Formatters from '~/utils/DataFormatter'
 
-export const EnkeltinntektForm = ({ path, title, initialGrunnlag, tjeneste, formikBag }) => {
+export const EnkeltinntektForm = ({ path, header, initialGrunnlag, tjeneste, formikBag }) => {
 	return (
-		<FormikDollyFieldArray name={path} addEntryButtonText={title} newEntry={initialGrunnlag} nested>
+		<FormikDollyFieldArray name={path} header={header} newEntry={initialGrunnlag} nested>
 			{(path, idx) => (
 				<React.Fragment key={idx}>
 					<FormikSelect

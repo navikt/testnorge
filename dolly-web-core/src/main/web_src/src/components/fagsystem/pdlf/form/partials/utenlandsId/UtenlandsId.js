@@ -9,7 +9,7 @@ const initialValues = { identifikasjonsnummer: '', kilde: '', opphoert: '', utst
 export const UtenlandsId = ({ formikBag }) => (
 	<FormikDollyFieldArray
 		name="pdlforvalter.utenlandskIdentifikasjonsnummer"
-		addEntryButtonText="Utenlandsk ID"
+		header="Utenlandsk ID"
 		newEntry={initialValues}
 	>
 		{(path, idx) => (
