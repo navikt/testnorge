@@ -45,7 +45,7 @@ export const InntektsinformasjonForm = ({ formikBag }) => {
 	return (
 		<FormikDollyFieldArray
 			name="inntektstub.inntektsinformasjon"
-			title="Inntektsinformasjon"
+			header="Inntektsinformasjon"
 			hjelpetekst={infotekst}
 			newEntry={initialValues}
 		>
