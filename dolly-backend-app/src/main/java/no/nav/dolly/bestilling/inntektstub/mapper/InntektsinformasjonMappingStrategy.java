@@ -28,7 +28,7 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
 
                         inntektMultiplierWrapper.getInntektsinformasjon().forEach(inntektsinformasjon -> {
 
-                            LocalDate yearMonth = LocalDate.parse(inntektsinformasjon.getStartAarMaaned() + "-01");
+                            LocalDate yearMonth = LocalDate.parse(inntektsinformasjon.getSisteAarMaaned() + "-01");
                             int antallMaaneder = isNull(inntektsinformasjon.getAntallMaaneder()) || inntektsinformasjon.getAntallMaaneder() < 0 ? 1 :
                                     inntektsinformasjon.getAntallMaaneder();
 
@@ -37,7 +37,7 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                                         inntektMultiplierWrapper.getInntektsinformasjon().get(0), Inntektsinformasjon.class);
 
                                 inntektsinformasjon1.setAarMaaned(yearMonth.format(YEAR_MONTH_FORMAT));
-                                yearMonth = yearMonth.plusMonths(1);
+                                yearMonth = yearMonth.minusMonths(1);
 
                                 inntektsinformasjonWrapper.getInntektsinformasjon().add(inntektsinformasjon1);
 

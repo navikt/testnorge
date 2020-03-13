@@ -81,7 +81,7 @@ public class InntektsinformasjonMappingStrategyTest {
 
         return InntektMultiplierWrapper.builder()
                 .inntektsinformasjon(singletonList(RsInntektsinformasjon.builder()
-                        .startAarMaaned(AAR_MAANED.format(FORMATTER))
+                        .sisteAarMaaned(AAR_MAANED.format(FORMATTER))
                         .antallMaaneder(ANTALL_MAANEDER)
                         .virksomhet(ORG_NR)
                         .opplysningspliktig(ORG_NR)

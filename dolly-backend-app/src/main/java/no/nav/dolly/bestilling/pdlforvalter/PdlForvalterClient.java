@@ -32,7 +32,6 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
-import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
@@ -47,6 +46,7 @@ import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.service.TpsfPersonCache;
 
 @Slf4j
 @Order(1)
@@ -72,7 +72,7 @@ public class PdlForvalterClient implements ClientRegister {
     private static final String SEND_ERROR_2 = SEND_ERROR + ": %s";
 
     private final PdlForvalterConsumer pdlForvalterConsumer;
-    private final TpsfService tpsfService;
+    private final TpsfPersonCache tpsfPersonCache;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
@@ -135,7 +135,7 @@ public class PdlForvalterClient implements ClientRegister {
         if (tpsPerson.getPersondetaljer().isEmpty()) {
             List<String> tpsfIdenter = new ArrayList<>();
             Stream.of(singletonList(tpsPerson.getHovedperson()), tpsPerson.getPartnere(), tpsPerson.getBarn()).forEach(tpsfIdenter::addAll);
-            tpsPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(tpsfIdenter));
+            tpsfPersonCache.fetchIfEmpty(tpsPerson, tpsfIdenter);
 
             if (nonNull(tpsPerson.getPerson(tpsPerson.getHovedperson()))) {
                 Person hovedperson = tpsPerson.getPerson(tpsPerson.getHovedperson());
