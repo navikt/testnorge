@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.pensjonforvalter;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -23,6 +24,7 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.service.TpsfPersonCache;
 
 @Slf4j
 @Service
@@ -33,6 +35,7 @@ public class PensjonforvalterClient implements ClientRegister {
     public static final String POPP_INNTEKTSREGISTER = "PoppInntekt";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
+    private final TpsfPersonCache tpsfPersonCache;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
@@ -81,6 +84,7 @@ public class PensjonforvalterClient implements ClientRegister {
         status.append('$').append(PENSJON_FORVALTER).append('#');
 
         try {
+            tpsfPersonCache.fetchIfEmpty(tpsPerson, singletonList(tpsPerson.getHovedperson()));
             OpprettPersonRequest opprettPersonRequest =
                     mapperFacade.map(tpsPerson.getPerson(tpsPerson.getHovedperson()), OpprettPersonRequest.class);
             opprettPersonRequest.setFnr(tpsPerson.getHovedperson());

@@ -23,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
@@ -34,6 +33,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdent
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.service.TpsfPersonCache;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PdlForvalterClientTest {
@@ -53,7 +53,7 @@ public class PdlForvalterClientTest {
     private PdlForvalterConsumer pdlForvalterConsumer;
 
     @Mock
-    private TpsfService tpsfService;
+    private TpsfPersonCache tpsfPersonCache;
 
     @Mock
     private MapperFacade mapperFacade;

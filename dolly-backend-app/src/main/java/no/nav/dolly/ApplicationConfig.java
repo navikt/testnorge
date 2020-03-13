@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 public class ApplicationConfig {
 
-    private static final int TIMEOUT = 120_000;
+    private static final int TIMEOUT = 300_000;
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
