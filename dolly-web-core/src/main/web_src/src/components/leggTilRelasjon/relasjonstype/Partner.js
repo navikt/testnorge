@@ -23,7 +23,7 @@ export const Partner = ({ lagOptions, identInfo, hovedIdent, formikBag }) => {
 		<div className="bestilling-detaljer">
 			<FormikDollyFieldArray
 				name="tpsf.relasjoner.partnere"
-				title="Partner"
+				header="Partner"
 				newEntry={initialPartner}
 			>
 				{(path, idx) => (
@@ -35,8 +35,13 @@ export const Partner = ({ lagOptions, identInfo, hovedIdent, formikBag }) => {
 							isClearable={false}
 							size="large"
 						/>
+
 						<FormikCheckbox name={`${path}.harFellesAdresse`} label="Bor sammen" checkboxMargin />
-						<Sivilstand basePath={`${path}.sivilstander`} formikBag={formikBag} />
+						<Sivilstand
+							basePath={`${path}.sivilstander`}
+							formikBag={formikBag}
+							erSistePartner={formikBag.values.tpsf.relasjoner.partnere.length === idx + 1}
+						/>
 					</React.Fragment>
 				)}
 			</FormikDollyFieldArray>

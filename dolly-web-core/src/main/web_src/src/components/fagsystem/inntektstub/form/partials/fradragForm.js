@@ -12,7 +12,7 @@ export const FradragForm = ({ formikBag, inntektsinformasjonPath }) => {
 	return (
 		<FormikDollyFieldArray
 			name={`${inntektsinformasjonPath}.fradragsliste`}
-			title="Fradrag"
+			header="Fradrag"
 			newEntry={initialValues}
 		>
 			{path => (

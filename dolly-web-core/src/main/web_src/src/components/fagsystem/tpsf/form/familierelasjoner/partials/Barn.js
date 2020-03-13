@@ -38,7 +38,7 @@ export const Barn = ({ formikBag }) => {
 	initialValues.alder = Formatters.randomIntInRange(1, 17)
 
 	return (
-		<FormikDollyFieldArray name="tpsf.relasjoner.barn" title="Barn" newEntry={initialValues}>
+		<FormikDollyFieldArray name="tpsf.relasjoner.barn" header="Barn" newEntry={initialValues}>
 			{(path, idx) => (
 				<React.Fragment key={idx}>
 					<FormikSelect
