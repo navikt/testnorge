@@ -142,5 +142,9 @@ export default {
 
 	getFasteDatasettTPS() {
 		return Request.get(Endpoints.getFasteDatasettTPS())
+	},
+
+	getPersonnavn(){
+		return Request.get(Endpoints.getPersonnavn())
 	}
 }

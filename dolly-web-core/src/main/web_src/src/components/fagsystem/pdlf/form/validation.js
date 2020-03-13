@@ -72,7 +72,7 @@ const kontaktDoedsbo = Yup.object({
 		navn: ifKeyHasValue(
 			'$pdlforvalter.kontaktinformasjonForDoedsbo.adressat.adressatType',
 			['PERSON_UTENID'],
-			personnavnSchema
+			requiredString
 		)
 	}),
 	adresselinje1: requiredString,

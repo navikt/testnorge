@@ -4,6 +4,8 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { DollyApi } from "~/service/Api";
+import FasteDatasettSelect from "~/components/fasteDatasett/FasteDatasettSelect";
 
 export const FalskIdentitet = ({ formikBag }) => {
 	const falskIdPath = 'pdlforvalter.falskIdentitet.rettIdentitet'
@@ -42,10 +44,10 @@ export const FalskIdentitet = ({ formikBag }) => {
 			/>
 
 			{falskIdObj.identitetType === 'ENTYDIG' && (
-				<FormikTextInput
+				<FasteDatasettSelect
 					name={`${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`}
 					label="Identifikasjonsnummer"
-					type="number"
+					endepunkt={ DollyApi.getFasteDatasettTPS }
 				/>
 			)}
 			{falskIdObj.identitetType === 'OMTRENTLIG' && (

@@ -145,4 +145,8 @@ export default class DollyEndpoints {
 	static getFasteDatasettTPS(){
 		return `${fasteDatasettBase}/TPS`
 	}
+
+	static getPersonnavn(){
+		return `${uri}/personnavn`
+	}
 }
