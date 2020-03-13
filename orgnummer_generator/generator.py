@@ -14,7 +14,7 @@ def make_orgnummer():
     for i, c in enumerate(r_str):
         sum += (int(c) * int(w[i]))
 
-    control_digit = (sum % 11) - 6
+    control_digit = 11 - (sum % 11)
 
     final = r_str + str(control_digit)
 
