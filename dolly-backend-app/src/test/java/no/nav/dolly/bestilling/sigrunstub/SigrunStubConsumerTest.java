@@ -37,7 +37,7 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 @RestClientTest(SigrunStubConsumer.class)
 public class SigrunStubConsumerTest {
 
-    private static final String standardPrincipal = "brukernavn";
+    private static final String standardPrincipal = "BRUKERNAVN";
     private static final String standardIdtoken = "idtoken";
     private static final String standardEierHeaderName = "testdataEier";
     private static final String IDENT = "111111111";
