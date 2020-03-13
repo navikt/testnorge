@@ -4,6 +4,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
 import static no.nav.dolly.properties.Environment.PREPROD;
 import static no.nav.dolly.properties.Environment.TEST;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -48,7 +49,8 @@ public class StsOidcService {
     }
 
     public static String getUserPrinciple() {
-        return ((OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication()).getPrincipal();
+        String principal = ((OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication()).getPrincipal();
+        return isNotBlank(principal) ? principal.toUpperCase() : "";
     }
 
     public String getIdToken(String environment) {

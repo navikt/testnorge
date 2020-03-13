@@ -2,12 +2,12 @@ package no.nav.dolly.provider.api;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
 
 import java.util.List;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +24,6 @@ import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.service.BrukerService;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @Transactional
 @RestController
@@ -46,8 +45,7 @@ public class BrukerController {
     @GetMapping("/current")
     @ApiOperation("Hent pålogget Bruker")
     public RsBruker getCurrentBruker() {
-        OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
-        Bruker bruker = brukerService.fetchOrCreateBruker(auth.getPrincipal());
+        Bruker bruker = brukerService.fetchOrCreateBruker(getUserPrinciple());
         return mapperFacade.map(bruker, RsBruker.class);
     }
 
