@@ -1,5 +1,6 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
+import Kodeverk from '~/utils/kodeverkMapper'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
@@ -47,7 +48,7 @@ export const Personinformasjon = ({ formikBag }) => (
 					<FormikSelect
 						name="tpsf.statsborgerskap"
 						label="Statsborgerskap"
-						kodeverk="Landkoder"
+						kodeverk={Kodeverk.statsborgerskapLand}
 						size="large"
 						isClearable={false}
 					/>
@@ -58,7 +59,7 @@ export const Personinformasjon = ({ formikBag }) => (
 					<FormikSelect
 						name="tpsf.innvandretFraLand"
 						label="Innvandret fra"
-						kodeverk="Landkoder"
+						kodeverk={Kodeverk.innvandretUtvandretLand}
 						size="large"
 						isClearable={false}
 					/>
@@ -69,7 +70,7 @@ export const Personinformasjon = ({ formikBag }) => (
 					<FormikSelect
 						name="tpsf.utvandretTilLand"
 						label="Utvandret til"
-						kodeverk="Landkoder"
+						kodeverk={Kodeverk.innvandretUtvandretLand}
 						size="large"
 						isClearable={false}
 					/>

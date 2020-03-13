@@ -1,5 +1,6 @@
 import React from 'react'
 import _get from 'lodash/get'
+import Kodeverk from '~/utils/kodeverkMapper'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -57,7 +58,7 @@ const fieldReslover = (field, options = [], handleChange, values, path, index) =
 				key={index}
 				name={field}
 				label={texts(field)}
-				kodeverk="LandkoderISO2"
+				kodeverk={Kodeverk.inntektstubLand}
 				fastfield={false}
 				afterChange={handleChange}
 				// size="large"

@@ -1,5 +1,6 @@
 import React from 'react'
 import _get from 'lodash'
+import Kodeverk from '~/utils/kodeverkMapper'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
@@ -17,7 +18,7 @@ export const Adresse = ({ formikBag }) => {
 			<FormikSelect
 				name="pdlforvalter.kontaktinformasjonForDoedsbo.landkode"
 				label="Land"
-				kodeverk="Landkoder"
+				kodeverk={Kodeverk.postadresseLand}
 				size="large"
 				isClearable={false}
 			/>

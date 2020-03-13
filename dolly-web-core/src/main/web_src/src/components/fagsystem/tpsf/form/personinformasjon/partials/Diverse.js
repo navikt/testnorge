@@ -1,4 +1,5 @@
 import React from 'react'
+import Kodeverk from '~/utils/kodeverkMapper'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -19,7 +20,7 @@ export const Diverse = ({ formikBag }) => (
 		<FormikSelect
 			name="tpsf.sprakKode"
 			label="Språk"
-			kodeverk="Språk"
+			kodeverk={Kodeverk.sprak}
 			size="large"
 			visHvisAvhuket
 		/>
