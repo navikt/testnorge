@@ -123,7 +123,7 @@ public class OppslagController {
     }
 
     @GetMapping("/personnavn")
-    @ApiOperation("Henter 10 syntetiske personvan")
+    @ApiOperation("Henter 10 syntetiske personnvan")
     public ResponseEntity getPersonnavn() {
         return identpoolConsumer.getPersonnavn();
     }
