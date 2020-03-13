@@ -26,6 +26,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
 import no.nav.dolly.consumer.aareg.AaregConsumer;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
 import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
+import no.nav.dolly.consumer.identpool.IdentpoolConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
@@ -48,6 +49,7 @@ public class OppslagController {
     private final InntektstubConsumer inntektstubConsumer;
     private final FasteDatasettConsumer fasteDatasettConsumer;
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
+    private final IdentpoolConsumer identpoolConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -118,5 +120,11 @@ public class OppslagController {
     @ApiOperation("Hent tilgjengelige miljøer for POPP-register")
     public Set<String> getPoppMiljoer() {
         return pensjonforvalterConsumer.getMiljoer();
+    }
+
+    @GetMapping("/personnavn")
+    @ApiOperation("Henter 10 syntetiske personvan")
+    public ResponseEntity getPersonnavn() {
+        return identpoolConsumer.getPersonnavn();
     }
 }
