@@ -36,6 +36,8 @@ const _getTpsfBestillingData = data => {
 		obj('Utvandret dato', Formatters.formatDate(data.utvandretTilLandFlyttedato)),
 		obj('Er forsvunnet', Formatters.oversettBoolean(data.erForsvunnet)),
 		obj('Forsvunnet dato', Formatters.formatDate(data.forsvunnetDato)),
+		obj('Har bankkontonummer', Formatters.oversettBoolean(data.harBankkontonr)),
+		obj('Bankkonto opprettet', Formatters.formatDate(data.bankkontonrRegdato)),
 		obj('Egenansatt', Formatters.oversettBoolean(data.egenansattDatoFom))
 	]
 }
@@ -692,15 +694,17 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	const pensjonKriterier = bestillingData.pensjonforvalter
 
-	if(pensjonKriterier){
+	if (pensjonKriterier) {
 		const pensjonforvalter = {
 			header: 'Pensjonsgivende inntekt',
 			items: [
 				obj('Fra og med år', pensjonKriterier.inntekt.fomAar),
 				obj('Til og med år', pensjonKriterier.inntekt.tomAar),
 				obj('Beløp', pensjonKriterier.inntekt.belop),
-				obj('Nedjuster med grunnbeløp',
-					Formatters.oversettBoolean(pensjonKriterier.inntekt.redusertMedGrunnbelop))
+				obj(
+					'Nedjuster med grunnbeløp',
+					Formatters.oversettBoolean(pensjonKriterier.inntekt.redusertMedGrunnbelop)
+				)
 			]
 		}
 
