@@ -1,8 +1,6 @@
 import React from 'react'
-import _get from 'lodash'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { DollyApi } from "~/service/Api";
 import FasteDatasettSelect from "~/components/fasteDatasett/FasteDatasettSelect";
@@ -47,7 +45,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 				<FasteDatasettSelect
 					name={`${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`}
 					label="Navn og identifikasjonsnummer"
-					endepunkt={ DollyApi.getFasteDatasettTPS }
+					endepunkt={DollyApi.getFasteDatasettTPS}
 					type = "navnOgId"
 				/>
 			)}
@@ -56,7 +54,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 					<FasteDatasettSelect
 						name={ `${falskIdPath}.personnavn` }
 						label="Navn"
-						endepunkt={ DollyApi.getPersonnavn }
+						endepunkt={DollyApi.getPersonnavn}
 						type="navn"
 					/>
 					<FormikDatepicker name={`${falskIdPath}.foedselsdato`} label="Fødselsdato" />

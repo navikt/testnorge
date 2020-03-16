@@ -5,7 +5,7 @@ import { Navigation } from './Navigation/Navigation'
 import { stateModifierFns } from '../stateModifier'
 import { validate } from '~/utils/YupValidations'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
-import { separateIdsFromNames, separateFullNames } from '../utils'
+import { separateIdsFromNames, separateFullNames, combineNames } from '../utils'
 
 import DisplayFormikState from '~/utils/DisplayFormikState'
 
@@ -22,7 +22,10 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => setStep(step + 1)
 
-	const handleBack = () => {
+	const handleBack = (formikBag) =>{
+		if(isLastStep()){
+			combineNames(formikBag)
+		}
 		if (step !== 0) setStep(step - 1)
 	}
 

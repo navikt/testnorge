@@ -47,7 +47,7 @@ export const Adressat = ({ formikBag }) => {
 					<FasteDatasettSelect
 						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn"
 						label="Navn"
-						endepunkt={ DollyApi.getPersonnavn }
+						endepunkt={DollyApi.getPersonnavn}
 						type="navn"
 					/>
 					<div>
@@ -67,7 +67,7 @@ export const Adressat = ({ formikBag }) => {
 				<FasteDatasettSelect
 					name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.idnummer"
 					label="Navn og id"
-					endepunkt={ DollyApi.getFasteDatasettTPS }
+					endepunkt={DollyApi.getFasteDatasettTPS}
 					type="navnOgId"
 				/>
 			)}
@@ -76,7 +76,7 @@ export const Adressat = ({ formikBag }) => {
 					<FasteDatasettSelect
 						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn"
 						label="Navn"
-						endepunkt={ DollyApi.getPersonnavn }
+						endepunkt={DollyApi.getPersonnavn}
 						type="navn"
 					/>
 					<FormikDatepicker
