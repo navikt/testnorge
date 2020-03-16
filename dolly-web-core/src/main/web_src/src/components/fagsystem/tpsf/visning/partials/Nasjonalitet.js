@@ -2,6 +2,7 @@ import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
+import { FetchInnUt } from '~/components/bestillingsveileder/stegvelger/steg/steg1/paneler/Personinformasjon'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
 export const Nasjonalitet = ({ data, visTittel = true }) => {
@@ -27,6 +28,7 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 			<DollyFieldArray data={innvandretUtvandret}>
 				{(id, idx) => (
 					<React.Fragment>
+						<FetchInnUt vals={data} />
 						{innvandretUtvandret && (
 							<>
 								<TitleValue title="Inn/utvandret" value={innvandretUtvandret[idx].innutvandret} />
@@ -44,14 +46,6 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 					</React.Fragment>
 				)}
 			</DollyFieldArray>
-			<InnvandretUtvandretCheck data={innvandretUtvandret} />
 		</div>
 	)
 }
-
-function InnvandretUtvandretCheck(innvandretUtvandret) {
-	const siste = innvandretUtvandret.data.length - 1
-	const innvandretEllerUtvandret = innvandretUtvandret.data[siste].innutvandret
-	return innvandretEllerUtvandret
-}
-export default InnvandretUtvandretCheck
