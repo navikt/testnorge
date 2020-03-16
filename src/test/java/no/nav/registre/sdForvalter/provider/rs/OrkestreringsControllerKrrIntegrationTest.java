@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,12 +45,6 @@ public class OrkestreringsControllerKrrIntegrationTest {
 
     @Autowired
     private KrrRepository repository;
-
-
-    @Before
-    public void setup() {
-
-    }
 
     @Test
     public void shouldInitiateKrrFromDatabase() throws Exception {
