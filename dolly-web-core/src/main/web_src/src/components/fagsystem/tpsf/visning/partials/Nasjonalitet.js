@@ -23,12 +23,14 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 				))}
 				<TitleValue title="Språk" kodeverk="Språk" value={sprakKode} />
 			</div>
+
 			<h3>Innvandring og utvandring</h3>
 
 			<DollyFieldArray data={innvandretUtvandret}>
 				{(id, idx) => (
 					<React.Fragment>
 						<FetchInnUt vals={data} />
+
 						{innvandretUtvandret && (
 							<>
 								<TitleValue title="Inn/utvandret" value={innvandretUtvandret[idx].innutvandret} />
