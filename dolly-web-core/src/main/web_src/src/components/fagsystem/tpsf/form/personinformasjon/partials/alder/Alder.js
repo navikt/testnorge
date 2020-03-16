@@ -45,11 +45,11 @@ export const Alder = ({ basePath, formikBag, title }) => {
 
 		if (value === alderValg.alder) {
 			if (barn) {
-				formikBag.setFieldValue(paths.alder, Formatters.randomIntInRange(1, 17))
+				formikBag.setFieldValue(paths.alder, Formatters.randomIntInRange(0, 17))
 			} else if (partner) {
-				formikBag.setFieldValue(paths.alder, Formatters.randomIntInRange(18, 60))
+				formikBag.setFieldValue(paths.alder, Formatters.randomIntInRange(30, 60))
 			} else {
-				formikBag.setFieldValue(paths.alder, Formatters.randomIntInRange(1, 60))
+				formikBag.setFieldValue(paths.alder, Formatters.randomIntInRange(30, 60))
 			}
 		} else {
 			if (barn) {
