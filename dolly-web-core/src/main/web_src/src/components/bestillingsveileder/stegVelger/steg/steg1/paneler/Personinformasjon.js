@@ -48,7 +48,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({
 	alder: {
 		label: 'Alder',
 		checked: has('tpsf.alder') || has('tpsf.foedtEtter') || has('tpsf.foedtFoer'),
-		add: () => set('tpsf.alder', Formatters.randomIntInRange(1, 99)),
+		add: () => set('tpsf.alder', Formatters.randomIntInRange(30, 60)),
 		remove: () => del(['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer'])
 	},
 	doedsdato: {

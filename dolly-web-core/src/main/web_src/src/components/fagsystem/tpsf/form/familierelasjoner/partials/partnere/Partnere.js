@@ -22,7 +22,7 @@ const initialValues = {
 	kjonn: '',
 	sivilstander: [{ sivilstand: '', sivilstandRegdato: null }],
 	harFellesAdresse: false,
-	alder: Formatters.randomIntInRange(18, 99),
+	alder: Formatters.randomIntInRange(30, 60),
 	spesreg: '',
 	utenFastBopel: false,
 	statsborgerskap: '',
