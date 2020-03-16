@@ -11,7 +11,6 @@ import no.nav.registre.aareg.domain.RsArbeidsavtale;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
 import no.nav.registre.aareg.domain.RsOrganisasjon;
 import no.nav.registre.aareg.domain.RsPermisjon;
-import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.domain.RsUtenlandsopphold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsavtale;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
@@ -32,7 +31,10 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Yrker;
 @Component
 public class AaregMappingStrategy implements MappingStrategy {
 
-    private static <T extends Kodeverdi> T mapKodeverdi(T clazz, String value) {
+    private static <T extends Kodeverdi> T mapKodeverdi(
+            T clazz,
+            String value
+    ) {
         clazz.setKodeRef(value);
         return clazz;
     }
@@ -42,7 +44,11 @@ public class AaregMappingStrategy implements MappingStrategy {
         factory.classMap(RsArbeidsforhold.class, Arbeidsforhold.class)
                 .customize(new CustomMapper<RsArbeidsforhold, Arbeidsforhold>() {
                     @Override
-                    public void mapAtoB(RsArbeidsforhold rsArbeidsforhold, Arbeidsforhold arbeidsforhold, MappingContext context) {
+                    public void mapAtoB(
+                            RsArbeidsforhold rsArbeidsforhold,
+                            Arbeidsforhold arbeidsforhold,
+                            MappingContext context
+                    ) {
 
                         arbeidsforhold.setArbeidsforholdstype(mapKodeverdi(new Arbeidsforholdstyper(), rsArbeidsforhold.getArbeidsforholdstype()));
                         arbeidsforhold.setArbeidstaker(mapPerson(rsArbeidsforhold.getArbeidstaker()));
@@ -59,7 +65,11 @@ public class AaregMappingStrategy implements MappingStrategy {
         factory.classMap(RsArbeidsavtale.class, Arbeidsavtale.class)
                 .customize(new CustomMapper<RsArbeidsavtale, Arbeidsavtale>() {
                     @Override
-                    public void mapAtoB(RsArbeidsavtale rsArbeidsavtale, Arbeidsavtale arbeidsavtale, MappingContext context) {
+                    public void mapAtoB(
+                            RsArbeidsavtale rsArbeidsavtale,
+                            Arbeidsavtale arbeidsavtale,
+                            MappingContext context
+                    ) {
 
                         arbeidsavtale.setArbeidstidsordning(mapKodeverdi(new Arbeidstidsordninger(), rsArbeidsavtale.getArbeidstidsordning()));
                         arbeidsavtale.setAvloenningstype(mapKodeverdi(new Avloenningstyper(), rsArbeidsavtale.getAvloenningstype()));
@@ -72,7 +82,11 @@ public class AaregMappingStrategy implements MappingStrategy {
         factory.classMap(RsPermisjon.class, Permisjon.class)
                 .customize(new CustomMapper<RsPermisjon, Permisjon>() {
                     @Override
-                    public void mapAtoB(RsPermisjon rsPermisjon, Permisjon permisjon, MappingContext context) {
+                    public void mapAtoB(
+                            RsPermisjon rsPermisjon,
+                            Permisjon permisjon,
+                            MappingContext context
+                    ) {
 
                         permisjon.setPermisjonOgPermittering(mapKodeverdi(new PermisjonsOgPermitteringsBeskrivelse(), rsPermisjon.getPermisjonOgPermittering()));
                     }
@@ -83,7 +97,11 @@ public class AaregMappingStrategy implements MappingStrategy {
         factory.classMap(RsUtenlandsopphold.class, Utenlandsopphold.class)
                 .customize(new CustomMapper<RsUtenlandsopphold, Utenlandsopphold>() {
                     @Override
-                    public void mapAtoB(RsUtenlandsopphold rsUtenlandsopphold, Utenlandsopphold utenlandsopphold, MappingContext context) {
+                    public void mapAtoB(
+                            RsUtenlandsopphold rsUtenlandsopphold,
+                            Utenlandsopphold utenlandsopphold,
+                            MappingContext context
+                    ) {
 
                         utenlandsopphold.setLand(mapKodeverdi(new Landkoder(), rsUtenlandsopphold.getLand()));
                     }
@@ -94,7 +112,11 @@ public class AaregMappingStrategy implements MappingStrategy {
         factory.classMap(RsOrganisasjon.class, Organisasjon.class)
                 .customize(new CustomMapper<RsOrganisasjon, Organisasjon>() {
                     @Override
-                    public void mapAtoB(RsOrganisasjon rsOrganisasjon, Organisasjon organisasjon, MappingContext context) {
+                    public void mapAtoB(
+                            RsOrganisasjon rsOrganisasjon,
+                            Organisasjon organisasjon,
+                            MappingContext context
+                    ) {
 
                         organisasjon.setOrgnummer(rsOrganisasjon.getOrgnummer());
                     }
@@ -104,7 +126,11 @@ public class AaregMappingStrategy implements MappingStrategy {
         factory.classMap(RsAktoerPerson.class, Person.class)
                 .customize(new CustomMapper<RsAktoerPerson, Person>() {
                     @Override
-                    public void mapAtoB(RsAktoerPerson rsAktoerPerson, Person person, MappingContext context) {
+                    public void mapAtoB(
+                            RsAktoerPerson rsAktoerPerson,
+                            Person person,
+                            MappingContext context
+                    ) {
 
                         NorskIdent norskIdent = new NorskIdent();
                         norskIdent.setIdent(rsAktoerPerson.getIdent());
@@ -117,11 +143,11 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .register();
     }
 
-    private Person mapPerson(RsPersonAareg rsPerson) {
+    private Person mapPerson(RsAktoerPerson rsAktoerPerson) {
         var norskIdent = new NorskIdent();
-        norskIdent.setIdent(rsPerson.getIdent());
+        norskIdent.setIdent(rsAktoerPerson.getIdent());
 
-        norskIdent.setType(mapKodeverdi(new Personidenter(), rsPerson.getIdenttype()));
+        norskIdent.setType(mapKodeverdi(new Personidenter(), rsAktoerPerson.getIdenttype()));
 
         var person = new Person();
         person.setIdent(norskIdent);

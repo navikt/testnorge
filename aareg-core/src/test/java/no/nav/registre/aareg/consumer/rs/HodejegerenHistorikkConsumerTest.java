@@ -28,11 +28,11 @@ import java.util.List;
 
 import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
 import no.nav.registre.aareg.IdentMedData;
+import no.nav.registre.aareg.domain.RsAktoerPerson;
 import no.nav.registre.aareg.domain.RsArbeidsavtale;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
 import no.nav.registre.aareg.domain.RsOrganisasjon;
 import no.nav.registre.aareg.domain.RsPeriode;
-import no.nav.registre.aareg.domain.RsPersonAareg;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(HodejegerenHistorikkConsumer.class)
@@ -71,7 +71,7 @@ public class HodejegerenHistorikkConsumerTest {
                 .arbeidsgiver(RsOrganisasjon.builder()
                         .orgnummer("974722992")
                         .build())
-                .arbeidstaker(RsPersonAareg.builder()
+                .arbeidstaker(RsAktoerPerson.builder()
                         .ident(fnr)
                         .identtype("FNR")
                         .build())

@@ -37,11 +37,12 @@ import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.aareg.consumer.rs.KodeverkConsumer;
-import no.nav.registre.aareg.consumer.rs.responses.KodeverkResponse;
+import no.nav.registre.aareg.consumer.rs.response.KodeverkResponse;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringServiceTest {
@@ -125,7 +126,7 @@ public class SyntetiseringServiceTest {
     public void shouldHenteIdenterMedArbeidsforhold() {
         when(hodejegerenConsumer.get(avspillergruppeId)).thenReturn(identer);
         when(aaregstubConsumer.hentEksisterendeIdenter()).thenReturn(identer);
-        when(aaregService.hentArbeidsforhold(anyString(), eq(miljoe))).thenReturn(ResponseEntity.ok().body(new ArrayList<>(Collections.singletonList(new HashMap<>()))));
+        when(aaregService.hentArbeidsforhold(anyString(), eq(miljoe))).thenReturn(ResponseEntity.ok().body(new ArrayList<>(Collections.singletonList(new Arbeidsforhold()))));
 
         var response = new ArrayList<>(syntetiseringService.hentIdenterIAvspillergruppeMedArbeidsforhold(avspillergruppeId, miljoe, true));
 

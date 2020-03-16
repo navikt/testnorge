@@ -15,16 +15,21 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.aareg.consumer.rs.AaregRestConsumer;
 import no.nav.registre.aareg.consumer.ws.AaregWsConsumer;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Ansettelsesperiode;
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsavtale;
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Organisasjon;
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Periode;
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Person;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AaregServiceTest {
@@ -84,41 +89,29 @@ public class AaregServiceTest {
         verify(aaregWsConsumer).oppdaterArbeidsforhold(any());
     }
 
-    private Map buildArbeidsforhold() {
-        Map<String, Object> arbeidsforhold = new HashMap<>();
-        arbeidsforhold.put("arbeidsforholdId", "y6LJXvtsU57l2sTU");
-        arbeidsforhold.put("navArbeidsforholdId", 3053173);
-
-        Map<String, Object> arbeidstaker = new HashMap<>();
-        arbeidstaker.put("offentligIdent", "16018809048");
-        arbeidstaker.put("aktoerId", "1675247299346");
-        arbeidstaker.put("type", "Person");
-        arbeidsforhold.put("arbeidstaker", arbeidstaker);
-
-        Map<String, Object> arbeidsgiver = new HashMap<>();
-        arbeidsgiver.put("organisasjonsnummer", "874623512");
-        arbeidsgiver.put("type", "Organisasjon");
-        arbeidsforhold.put("arbeidsgiver", arbeidsgiver);
-
-        arbeidsforhold.put("type", "ordinaertArbeidsforhold");
-
-        Map<String, Object> opplysningspliktig = new HashMap<>();
-        opplysningspliktig.put("organisasjonsnummer", "970490361");
-        opplysningspliktig.put("type", "Organisasjon");
-        arbeidsforhold.put("opplysningspliktig", opplysningspliktig);
-
-        Map<String, Object> ansettelsesperiode = new HashMap<>();
-        Map<String, Object> periode = new HashMap<>();
-        periode.put("fom", "2012-10-14");
-        ansettelsesperiode.put("periode", periode);
-        arbeidsforhold.put("ansettelsesperiode", ansettelsesperiode);
-
-        List<Object> arbeidsavtaler = new ArrayList<>();
-        Map<String, Object> arbeidsavtale = new HashMap<>();
-        arbeidsavtale.put("yrke", "8279102");
-        arbeidsavtaler.add(arbeidsavtale);
-        arbeidsforhold.put("arbeidsavtaler", arbeidsavtaler);
-
-        return arbeidsforhold;
+    private Arbeidsforhold buildArbeidsforhold() {
+        return Arbeidsforhold.builder()
+                .arbeidsforholdId("y6LJXvtsU57l2sTU")
+                .navArbeidsforholdId(3053173L)
+                .arbeidstaker(Person.builder()
+                        .offentligIdent("16018809048")
+                        .aktoerId("1675247299346")
+                        .build())
+                .arbeidsgiver(Organisasjon.builder()
+                        .organisasjonsnummer("874623512")
+                        .build())
+                .type("ordinaertArbeidsforhold")
+                .opplysningspliktig(Organisasjon.builder()
+                        .organisasjonsnummer("970490361")
+                        .build())
+                .ansettelsesperiode(Ansettelsesperiode.builder()
+                        .periode(Periode.builder()
+                                .fom(LocalDate.of(2012, 10, 14))
+                                .build())
+                        .build())
+                .arbeidsavtaler(Collections.singletonList(Arbeidsavtale.builder()
+                        .yrke("8279102")
+                        .build()))
+                .build();
     }
 }

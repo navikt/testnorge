@@ -15,13 +15,13 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 
 import no.nav.registre.aareg.config.MappingStrategy;
+import no.nav.registre.aareg.domain.RsAktoerPerson;
 import no.nav.registre.aareg.domain.RsAntallTimerForTimeloennet;
 import no.nav.registre.aareg.domain.RsArbeidsavtale;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
 import no.nav.registre.aareg.domain.RsOrganisasjon;
 import no.nav.registre.aareg.domain.RsPeriode;
 import no.nav.registre.aareg.domain.RsPermisjon;
-import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.domain.RsUtenlandsopphold;
 import no.nav.registre.aareg.testutils.MapperTestUtils;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
@@ -113,7 +113,7 @@ public class AaregMappingStrategyTest {
                         .build())
                 .arbeidsforholdID("Ansatt")
                 .arbeidsforholdIDnav(101L)
-                .arbeidstaker(RsPersonAareg.builder()
+                .arbeidstaker(RsAktoerPerson.builder()
                         .ident("5345345345")
                         .identtype("FNR")
                         .build())

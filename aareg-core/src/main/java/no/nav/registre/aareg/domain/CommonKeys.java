@@ -1,5 +1,6 @@
 package no.nav.registre.aareg.domain;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public final class CommonKeys {
     public static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE_LIST_LONG = new ParameterizedTypeReference<>() {
     };
 
-    public static final ParameterizedTypeReference<List<Map>> RESPONSE_TYPE_LIST_MAP = new ParameterizedTypeReference<>() {
+    public static final ParameterizedTypeReference<List<JsonNode>> RESPONSE_TYPE_LIST_ARBEIDSFORHOLD = new ParameterizedTypeReference<>() {
     };
 
     public static final ParameterizedTypeReference<List<RsAaregSyntetiseringsRequest>> RESPONSE_TYPE_LIST_AAREG_REQUEST = new ParameterizedTypeReference<>() {

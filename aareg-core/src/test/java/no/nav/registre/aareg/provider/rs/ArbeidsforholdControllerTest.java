@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import no.nav.registre.aareg.consumer.rs.TpsfConsumer;
-import no.nav.registre.aareg.consumer.rs.responses.MiljoerResponse;
+import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.service.AaregService;

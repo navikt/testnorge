@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import no.nav.registre.aareg.consumer.rs.responses.KodeverkResponse;
+import no.nav.registre.aareg.consumer.rs.response.KodeverkResponse;
 
 @Component
 public class KodeverkConsumer {
