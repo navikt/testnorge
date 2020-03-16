@@ -18,10 +18,6 @@ import java.util.Date;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-@JsonIgnoreProperties(
-        value = {"createdAt", "updatedAt"},
-        allowGetters = true
-)
 @Getter
 @Setter
 abstract class AuditModel implements Serializable {

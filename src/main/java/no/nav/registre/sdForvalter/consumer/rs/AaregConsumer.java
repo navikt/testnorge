@@ -11,13 +11,12 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.consumer.rs.request.aareg.AaregRequest;
 import no.nav.registre.sdForvalter.consumer.rs.request.aareg.Arbeidsforhold;
 import no.nav.registre.sdForvalter.consumer.rs.response.AaregResponse;
-import no.nav.registre.sdForvalter.database.model.AaregModel;
+import no.nav.registre.sdForvalter.domain.AaregListe;
 
 @Slf4j
 @Component
@@ -41,40 +40,28 @@ public class AaregConsumer {
         this.getArbeidsforholdFraAaregUrl = new UriTemplate(aaregServerUrl + "/v1/ident/{ident}?miljoe={miljoe}");
     }
 
-    public List getArbeidsforholdFraAareg(
-            String ident,
-            String miljoe
-    ) {
+    private List getArbeidsforhold(String ident, String miljoe) {
         RequestEntity getRequest = RequestEntity.get(getArbeidsforholdFraAaregUrl.expand(ident, miljoe))
                 .header("Nav-Call-Id", CALL_ID)
                 .header("Nav-Consumer-Id", CONSUMER_ID)
                 .build();
         try {
-            return restTemplate.exchange(getRequest, List.class).getBody();
+            List list = restTemplate.exchange(getRequest, List.class).getBody();
+            return list != null ? list : new ArrayList();
         } catch (HttpStatusCodeException e) {
             log.error("Kunne ikke hente arbeidsforhold fra aareg i miljø {}", miljoe);
         }
         return new ArrayList();
     }
 
-    public List<AaregResponse> sendArbeidsforholdTilAareg(
-            Set<AaregModel> data,
-            String environment
-    ) {
-
-        List<AaregRequest> requestList = data
+    public void sendArbeidsforhold(AaregListe liste, String environment) {
+        List<AaregRequest> requestList = liste.getListe()
                 .stream()
-                .map(d -> new AaregRequest(new Arbeidsforhold(d), environment))
+                .filter(item -> getArbeidsforhold(item.getFnr(), environment).isEmpty())
+                .map(item -> new AaregRequest(new Arbeidsforhold(item), environment))
                 .collect(Collectors.toList());
 
-        for (AaregRequest request : requestList) {
-            log.info(
-                    "Sender ident {} til miljøer {}.",
-                    request.getArbeidsforhold().getArbeidstaker().getIdent(),
-                    String.join(", ", request.getEnvironments())
-            );
-        }
-        return restTemplate.exchange(
+        restTemplate.exchange(
                 RequestEntity.post(sendArbeidsforholdTilAaregUrl.expand()).body(requestList),
                 RESPONSE_TYPE
         ).getBody();

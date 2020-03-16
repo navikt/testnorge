@@ -38,7 +38,7 @@ import no.nav.registre.sdForvalter.util.JsonTestHelper;
 @TestPropertySource(
         locations = "classpath:application-test.properties"
 )
-public class OrkestreringsControllerTpsIntegrationTest {
+public class OrkestreringsControllerIdentIntegrationTest {
 
     @Value("${tps.statisk.avspillergruppeId}")
     private Long staticDataPlaygroup;
@@ -65,12 +65,13 @@ public class OrkestreringsControllerTpsIntegrationTest {
         leggTilNyeMeldingerUrlPattern = urlPathMatching("(.*)/v1/syntetisering/leggTilNyeMeldinger/" + staticDataPlaygroup);
         startAvspillingUrlPattern = urlPathMatching("(.*)/v1/syntetisering/startAvspilling/" + staticDataPlaygroup);
         levendeIdenterUrlPattern = urlPathMatching("(.*)/v1/levende-identer/" + staticDataPlaygroup);
+        JsonTestHelper.stubPost(urlPathMatching("(.*)/v1/orkestrering/opprettPersoner/(.*)"));
     }
 
 
     @Test
-    public void shouldInitiateTps() throws Exception {
-        final TpsIdentModel tpsIdent = TpsIdentModel.builder().firstName("Test").lastName("Testen").fnr("01010101011").build();
+    public void shouldInitiateIdent() throws Exception {
+        final TpsIdentModel tpsIdent = create("01010101011", "Test", "Testen");
         tpsIdenterRepository.save(tpsIdent);
 
         JsonTestHelper.stubGet(hodejegerenUrlPattern, Collections.EMPTY_SET, objectMapper);
@@ -87,7 +88,7 @@ public class OrkestreringsControllerTpsIntegrationTest {
 
     @Test
     public void shouldUpdateTpsPlaygroupFromDatabaseAndRunPlaygroup() throws Exception {
-        final TpsIdentModel tpsIdent = TpsIdentModel.builder().firstName("Test").lastName("Testeb").fnr("01010101011").build();
+        final TpsIdentModel tpsIdent = create("01010101011", "Test", "Testen");
         tpsIdenterRepository.save(tpsIdent);
 
         JsonTestHelper.stubGet(hodejegerenUrlPattern, Collections.EMPTY_SET, objectMapper);
@@ -109,7 +110,7 @@ public class OrkestreringsControllerTpsIntegrationTest {
     public SkdRequest createSkdRequest(TpsIdentModel tpsIdent) {
         return SkdRequest.builder()
                 .dateOfBirth(tpsIdent.getFnr().substring(0, 6))
-                .fnr(tpsIdent.getFnr().substring(6))
+                .fnr(tpsIdent.getFnr())
                 .address(tpsIdent.getAddress())
                 .city(tpsIdent.getCity())
                 .firstName(tpsIdent.getFirstName())
@@ -118,6 +119,13 @@ public class OrkestreringsControllerTpsIntegrationTest {
                 .build();
     }
 
+    private TpsIdentModel create(String fnr, String firstName, String lastName) {
+        TpsIdentModel model = new TpsIdentModel();
+        model.setFnr(fnr);
+        model.setFirstName(firstName);
+        model.setLastName(lastName);
+        return model;
+    }
 
     @After
     public void cleanUp() {

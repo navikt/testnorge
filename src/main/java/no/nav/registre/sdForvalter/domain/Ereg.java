@@ -2,22 +2,24 @@ package no.nav.registre.sdForvalter.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.Value;
 
 import no.nav.registre.sdForvalter.database.model.EregModel;
 
+
 @Value
-@Builder
 @NoArgsConstructor(force = true)
-@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Ereg {
-    @JsonProperty
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class Ereg extends FasteData {
+    @JsonProperty(required = true)
     private final String orgnr;
-    @JsonProperty
+    @JsonProperty(required = true)
     private final String enhetstype;
     @JsonProperty
     private final String navn;
@@ -33,22 +35,17 @@ public class Ereg {
     private final Adresse forretningsAdresse;
     @JsonProperty
     private final Adresse postadresse;
-    @JsonProperty
-    private final String gruppe;
-    @JsonProperty
-    private final String opprinelse;
 
     public Ereg(EregModel model) {
-        this.orgnr = model.getOrgnr();
-        this.enhetstype = model.getEnhetstype();
-        this.navn = model.getNavn();
-        this.epost = model.getEpost();
-        this.internetAdresse = model.getInternetAdresse();
-        this.naeringskode = model.getNaeringskode();
-        this.juridiskEnhet = model.getParent() != null ? model.getParent().getOrgnr() : null;
-        this.opprinelse = model.getOpprinnelseModel() != null ? model.getOpprinnelseModel().getNavn() : null;
-        this.forretningsAdresse = model.getForretningsAdresse() != null ? new Adresse(model.getForretningsAdresse()) : null;
-        this.postadresse = model.getPostadresse() != null ? new Adresse(model.getPostadresse()) : null;
-        this.gruppe = model.getGruppeModel() != null ? model.getGruppeModel().getKode() : null;
+        super(model);
+        orgnr = model.getOrgnr();
+        enhetstype = model.getEnhetstype();
+        navn = model.getNavn();
+        epost = model.getEpost();
+        internetAdresse = model.getInternetAdresse();
+        naeringskode = model.getNaeringskode();
+        juridiskEnhet = model.getParent() != null ? model.getParent().getOrgnr() : null;
+        forretningsAdresse = model.getForretningsAdresse() != null ? new Adresse(model.getForretningsAdresse()) : null;
+        postadresse = model.getPostadresse() != null ? new Adresse(model.getPostadresse()) : null;
     }
 }

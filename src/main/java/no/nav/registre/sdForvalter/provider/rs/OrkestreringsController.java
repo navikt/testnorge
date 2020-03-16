@@ -36,20 +36,22 @@ public class OrkestreringsController {
 
     @ApiOperation(value = "Legger til nye identer fra faste data og spiller av til gitt miljø", consumes = "TPSF, Testnorge-SKD")
     @PostMapping(value = "/tps/{miljoe}")
-    public ResponseEntity<Set<String>> initializeTps(@PathVariable String miljoe) {
-        return ResponseEntity.ok(environmentInitializationService.initializeSkd(miljoe));
+    public ResponseEntity initializeTps(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) String gruppe) {
+        environmentInitializationService.initializeIdent(miljoe, gruppe);
+        return ResponseEntity.ok().build();
     }
 
     @ApiOperation(value = "Legger til arbeidsforhold i Aareg", consumes = "Testnorge-aareg")
     @PostMapping(value = "/aareg/{miljoe}")
-    public List<AaregResponse> initializeAareg(@PathVariable String miljoe) {
-        return environmentInitializationService.initializeAareg(miljoe);
+    public ResponseEntity initializeAareg(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) String gruppe) {
+        environmentInitializationService.initializeAareg(miljoe, gruppe);
+        return ResponseEntity.ok().build();
     }
 
     @ApiOperation(value = "Legger til faste kontaktreservasjoner i krr-stub", consumes = "Krr-stub, Aktørregisteret")
     @PostMapping(value = "/krr")
-    public ResponseEntity initializeKrr() {
-        environmentInitializationService.initializeKrr();
+    public ResponseEntity initializeKrr(@RequestParam(name = "gruppe", required = false) String gruppe) {
+        environmentInitializationService.initializeKrr(gruppe);
         return ResponseEntity.ok().build();
     }
 

@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import no.nav.registre.sdForvalter.domain.TpsIdent;
+
 @Getter
 @Setter
 @Builder
@@ -37,5 +39,15 @@ public class SkdRequest {
     private String postnr;
     @JsonProperty("by")
     private String city;
+
+    public SkdRequest(TpsIdent ident){
+        fnr = ident.getFnr();
+        dateOfBirth = ident.getFnr().substring(0, 6);
+        address = ident.getAddress();
+        city = ident.getCity();
+        firstName = ident.getFirstName();
+        lastName = ident.getLastName();
+        postnr = ident.getPostNr();
+    }
 
 }

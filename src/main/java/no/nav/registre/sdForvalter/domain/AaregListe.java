@@ -5,16 +5,15 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-import no.nav.registre.sdForvalter.database.model.EregModel;
+import no.nav.registre.sdForvalter.database.model.AaregModel;
 
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public final class EregListe extends FasteDataListe<Ereg> {
-    public EregListe(Iterable<EregModel> iterable) {
+public final class AaregListe extends FasteDataListe<Aareg> {
+    public AaregListe(Iterable<AaregModel> iterable) {
         super(iterable);
     }
-
-    public EregListe(List<Ereg> liste) {
+    public AaregListe(List<Aareg> liste) {
         super(liste);
     }
 }

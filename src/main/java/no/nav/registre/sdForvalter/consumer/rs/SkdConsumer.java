@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.consumer.rs.request.SkdRequest;
 import no.nav.registre.sdForvalter.consumer.rs.response.SkdResponse;
-import no.nav.registre.sdForvalter.database.model.TpsIdentModel;
+import no.nav.registre.sdForvalter.domain.TpsIdentListe;
 
 @Slf4j
 @Component
@@ -35,16 +35,8 @@ public class SkdConsumer {
      * @param data      Et set med personer som skal legges til i avspillergruppen
      * @param playgroup AvspillergruppeId som meldingene skal legges til på
      */
-    public void createTpsIdenterMessagesInGroup(Set<TpsIdentModel> data, Long playgroup) {
-        Set<SkdRequest> requests = data.parallelStream().map(t -> SkdRequest.builder()
-                .dateOfBirth(t.getFnr().substring(0, 6))
-                .fnr(t.getFnr().substring(6))
-                .address(t.getAddress())
-                .city(t.getCity())
-                .firstName(t.getFirstName())
-                .lastName(t.getLastName())
-                .postnr(t.getPostNr())
-                .build()).collect(Collectors.toSet());
+    public void createTpsIdenterMessagesInGroup(TpsIdentListe liste, Long playgroup) {
+        Set<SkdRequest> requests = liste.stream().map(SkdRequest::new).collect(Collectors.toSet());
 
         UriTemplate uriTemplate = new UriTemplate(skdUrl + "/leggTilNyeMeldinger/{playgroup}");
         RequestEntity<Set<SkdRequest>> requestEntity = new RequestEntity<>(requests, HttpMethod.POST, uriTemplate.expand(playgroup));
@@ -54,7 +46,6 @@ public class SkdConsumer {
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     /**
      * @param playgroup   AvspillergruppeId som skal spilles av når denne funksjonen er invokert

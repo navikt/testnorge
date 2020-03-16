@@ -1,7 +1,6 @@
 package no.nav.registre.sdForvalter.database.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,23 +14,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.List;
 
 import no.nav.registre.sdForvalter.domain.TpsIdent;
-import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 
 @Entity
 @ToString
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Slf4j
 @Table(name = "tps_identer")
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class TpsIdentModel extends AuditModel implements CreatableFromString {
-
+public class TpsIdentModel extends FasteDataModel<TpsIdent> {
 
     @Id
     @JsonProperty
@@ -48,60 +42,25 @@ public class TpsIdentModel extends AuditModel implements CreatableFromString {
     private String city;
 
     @OneToOne
+    @JoinColumn(name = "gruppe_id")
+    private GruppeModel gruppeModel;
+
+    @OneToOne
     @JoinColumn(name = "opprinnelse_id")
     private OpprinnelseModel opprinnelseModel;
 
-    public TpsIdentModel(TpsIdent tpsIdent, OpprinnelseModel opprinnelseModel) {
+    public TpsIdentModel(TpsIdent tpsIdent, OpprinnelseModel opprinnelseModel, GruppeModel gruppeModel) {
+        super(gruppeModel, opprinnelseModel);
         fnr = tpsIdent.getFnr();
         firstName = tpsIdent.getFirstName();
         lastName = tpsIdent.getLastName();
         address = tpsIdent.getAddress();
         postNr = tpsIdent.getPostNr();
         city = tpsIdent.getCity();
-        this.opprinnelseModel = opprinnelseModel;
     }
 
     @Override
-    public void updateFromString(List<String> input, List<String> headers) {
-
-        for (int i = 0; i < headers.size(); i++) {
-            try {
-                String fieldName = headers.get(i);
-                if (input.size() != headers.size()) {
-                    if (input.size() == i || input.size() == 0)
-                        break;
-                }
-                String fieldValue = input.get(i);
-
-                switch (fieldName.toLowerCase()) {
-                    case "fornavn":
-                        this.setFirstName(fieldValue);
-                        break;
-                    case "fnr":
-                        this.setFnr(fieldValue);
-                        break;
-                    case "etternavn":
-                        this.setLastName(fieldValue);
-                        break;
-                    case "adresse":
-                        this.setAddress(fieldValue);
-                        break;
-                    case "postnr":
-                        this.setPostNr(fieldValue);
-                        break;
-                    case "by":
-                        this.setCity(fieldValue);
-                        break;
-                    default:
-                        throw new NoSuchFieldException(fieldName);
-                }
-            } catch (NoSuchFieldException e) {
-                log.warn("Mismatch between input data when creating from string for field: {}", headers.get(i));
-                log.warn(e.getMessage(), e);
-            }
-        }
-        if ("".equals(this.fnr) || this.fnr == null) {
-            log.warn("Could not create fnr");
-        }
+    public TpsIdent toDomain() {
+        return new TpsIdent(this);
     }
 }

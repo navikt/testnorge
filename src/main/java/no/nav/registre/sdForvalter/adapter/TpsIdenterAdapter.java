@@ -1,51 +1,44 @@
 package no.nav.registre.sdForvalter.adapter;
 
-import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import no.nav.registre.sdForvalter.database.model.TpsIdentModel;
 import no.nav.registre.sdForvalter.database.repository.TpsIdenterRepository;
 import no.nav.registre.sdForvalter.domain.TpsIdent;
+import no.nav.registre.sdForvalter.domain.TpsIdentListe;
 
+@Slf4j
 @Component
-@AllArgsConstructor
-public class TpsIdenterAdapter {
+public class TpsIdenterAdapter extends FasteDataApdater {
     private final TpsIdenterRepository repository;
-    private final OpprinnelseAdapter opprinnelseAdapter;
 
-    public Set<TpsIdent> fetchTpsIdenter() {
-        Set<TpsIdent> tpsIdentSet = new HashSet<>();
-        repository.findAll().forEach(model -> tpsIdentSet.add(new TpsIdent(model)));
-        return tpsIdentSet;
+    public TpsIdenterAdapter(OpprinnelseAdapter opprinnelseAdapter, GruppeAdapter gruppeAdapter, TpsIdenterRepository repository) {
+        super(opprinnelseAdapter, gruppeAdapter);
+        this.repository = repository;
     }
 
+    private TpsIdentListe fetch() {
+        return new TpsIdentListe(repository.findAll());
+    }
 
-    public Set<TpsIdent> saveTpsIdenter(Set<TpsIdent> tpsIdenter) {
-        Set<TpsIdent> existingTpsIdenter = fetchTpsIdenter();
-        Set<TpsIdent> noneExistingTpsIdenter = tpsIdenter
-                .stream()
-                .filter(tpsIdent -> !existingTpsIdenter.contains(tpsIdent))
-                .collect(Collectors.toSet());
+    public TpsIdentListe fetchBy(String gruppe) {
+        log.info("Henter tps identer med gruppe {}", gruppe);
+        return new TpsIdentListe(fetch().filterOnGruppe(gruppe));
+    }
 
-        Iterable<TpsIdentModel> createdTpsIdenter = repository.saveAll(noneExistingTpsIdenter
+    public TpsIdentListe save(TpsIdentListe liste) {
+        List<TpsIdent> list = liste.itemsNotIn(fetch());
+        if (list.isEmpty()) {
+            return new TpsIdentListe();
+        }
+        return new TpsIdentListe(repository.saveAll(list
                 .stream()
-                .map(tpsIdent -> new TpsIdentModel(
-                        tpsIdent,
-                        tpsIdent.getOpprinelse() != null
-                                ? opprinnelseAdapter.saveOpprinnelse(tpsIdent.getOpprinelse())
-                                : null
-                ))
-                .collect(Collectors.toList())
+                .map(item -> new TpsIdentModel(item, getOppinnelse(item), getGruppe(item)))
+                .collect(Collectors.toList()))
         );
-        return StreamSupport
-                .stream(createdTpsIdenter.spliterator(), true)
-                .map(TpsIdent::new)
-                .collect(Collectors.toSet());
     }
-
 }

@@ -9,6 +9,4 @@ import no.nav.registre.sdForvalter.database.model.KrrModel;
 
 @Repository
 public interface KrrRepository extends CrudRepository<KrrModel, String> {
-
-    Optional<KrrModel> findByFnr(String fnr);
 }
