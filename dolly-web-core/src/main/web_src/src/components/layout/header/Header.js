@@ -31,8 +31,10 @@ export default ({ brukerData }) => {
 			</div>
 
 			<div className="profil-area flexbox--all-center">
-				<Icon kind="user" size="20" />
-				<p>{brukerData.brukerId}</p>
+				<NavLink to="/bruker">
+					<Icon kind="user" size="18" />
+					{brukerData.brukerId}
+				</NavLink>
 			</div>
 		</header>
 	)

@@ -1,20 +1,52 @@
-import React from 'react'
+import React, { useState } from 'react'
 import _get from 'lodash/get'
+import _has from 'lodash/has'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
+import HjelpeTekst from 'nav-frontend-hjelpetekst'
+
+const avtaleValg = {
+	avtaltArbeidstimerPerUke: 'avtaltArbeidstimerPerUke',
+	antallKonverterteTimer: 'antallKonverterteTimer'
+}
+
+const initialValue = (path, formikBag) => {
+	return _get(formikBag.values, `${path}.arbeidsavtale.antallKonverterteTimer`) !== ''
+		? avtaleValg.antallKonverterteTimer
+		: avtaleValg.avtaltArbeidstimerPerUke
+}
 
 export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 	const arbeidsavtalePath = `${path}.arbeidsavtale`
 	const arbeidsavtale = _get(formikBag.values, arbeidsavtalePath)
 
-	const harKonverterteTimer = arbeidsavtale.antallKonverterteTimer
-	const harArbTimerPerUke = arbeidsavtale.avtaltArbeidstimerPerUke
+	const [visning, setVisning] = useState(initialValue(path, formikBag))
 
-	// TODO: Denne må løses. Kan feks være en toggle
+	const handleToggleChange = event => {
+		const { value } = event.target
+		setVisning(avtaleValg[value])
 
-	// Kun to av feltene (stillingsprosent, antall konverterte timer, avtalte timer per uke) kan settes pr arbeidsforhold
-	const infotekst = 'Antall konverterte timer og avtalte timer per uke kan ikke være satt samtidig.'
+		arbeidsavtale.avtaltArbeidstimerPerUke == '' && visning === avtaleValg.avtaltArbeidstimerPerUke
+			? formikBag.setFieldValue(`${path}.arbeidsavtale.antallKonverterteTimer`, '')
+			: formikBag.setFieldValue(`${path}.arbeidsavtale.avtaltArbeidstimerPerUke`, '')
+
+		arbeidsavtale.antallKonverterteTimer == '' && visning === avtaleValg.antallKonverterteTimer
+			? formikBag.setFieldValue(`${path}.arbeidsavtale.avtaltArbeidstimerPerUke`, '')
+			: formikBag.setFieldValue(`${path}.arbeidsavtale.antallKonverterteTimer`, '')
+	}
+
+	const toggleValues = [
+		{
+			value: avtaleValg.avtaltArbeidstimerPerUke,
+			label: 'Avtalte arbeidstimer per uke'
+		},
+		{
+			value: avtaleValg.antallKonverterteTimer,
+			label: 'Antall konverterte timer'
+		}
+	]
 
 	return (
 		<div>
@@ -44,22 +76,28 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 					size="xxlarge"
 					isClearable={false}
 				/>
-				<FormikTextInput
-					name={`${arbeidsavtalePath}.antallKonverterteTimer`}
-					label="Antall konverterte timer"
-					type="number"
-					disabled={harArbTimerPerUke}
-					fastfield={false}
-					title={harArbTimerPerUke ? infotekst : undefined}
-				/>
-				<FormikTextInput
-					name={`${arbeidsavtalePath}.avtaltArbeidstimerPerUke`}
-					label="Avtalte timer per uke"
-					type="number"
-					disabled={harKonverterteTimer}
-					fastfield={false}
-					title={harKonverterteTimer ? infotekst : undefined}
-				/>
+				<div className="toggle--wrapper">
+					<ToggleGruppe onChange={handleToggleChange} name={arbeidsavtalePath}>
+						{toggleValues.map(val => (
+							<ToggleKnapp key={val.value} value={val.value} checked={visning === val.value}>
+								{val.label}
+							</ToggleKnapp>
+						))}
+					</ToggleGruppe>
+					<FormikTextInput
+						name={
+							visning === avtaleValg.avtaltArbeidstimerPerUke
+								? `${arbeidsavtalePath}.avtaltArbeidstimerPerUke`
+								: `${arbeidsavtalePath}.antallKonverterteTimer`
+						}
+						type="number"
+						isclearable="true"
+					/>
+				</div>
+				<HjelpeTekst>
+					Antall konverterte timer og avtalte timer per uke kan ikke bli satt samtidig. Hvis feltet
+					er tomt blir det automatisk generert avhengig av stillingsprosentet.
+				</HjelpeTekst>
 			</div>
 		</div>
 	)

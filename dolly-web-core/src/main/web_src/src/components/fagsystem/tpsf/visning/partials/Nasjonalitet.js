@@ -4,6 +4,21 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { FetchInnUt } from '~/components/bestillingsveileder/stegvelger/steg/steg1/paneler/Personinformasjon'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { Historikk } from '~/components/ui/historikk/Historikk'
+
+const Statsborgerskap = ({ statsborgerskap }) => (
+	<React.Fragment>
+		<TitleValue
+			title="Statsborgerskap"
+			kodeverk="Landkoder"
+			value={statsborgerskap.statsborgerskap}
+		/>
+		<TitleValue
+			title="Statsborgerskap fra"
+			value={Formatters.formatDate(statsborgerskap.statsborgerskapRegdato)}
+		/>
+	</React.Fragment>
+)
 
 export const Nasjonalitet = ({ data, visTittel = true }) => {
 	const { statsborgerskap, sprakKode, innvandretUtvandret } = data
@@ -12,15 +27,7 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 		<div>
 			{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="nasjonalitet" />}
 			<div className="person-visning_content">
-				{statsborgerskap.map((sb, idx) => (
-					<div key={idx}>
-						<TitleValue title="Statsborgerskap" kodeverk="Landkoder" value={sb.statsborgerskap} />
-						<TitleValue
-							title="Statsborgerskap fra"
-							value={Formatters.formatDate(sb.statsborgerskapRegdato)}
-						/>
-					</div>
-				))}
+				<Historikk component={Statsborgerskap} data={statsborgerskap} propName="statsborgerskap" />
 				<TitleValue title="Språk" kodeverk="Språk" value={sprakKode} />
 			</div>
 

@@ -9,5 +9,6 @@ const BestillingIconItem = () => (
 	<IconItem className={'icon-item--bestilling'} icon={'bestilling'} />
 )
 const GruppeIconItem = () => <IconItem className={'icon-item--group'} icon={'group'} />
+const MalIconItem = () => <IconItem className={'icon-item'} icon={'maler'} />
 
-export { WomanIconItem, ManIconItem, BestillingIconItem, GruppeIconItem }
+export { WomanIconItem, ManIconItem, BestillingIconItem, GruppeIconItem, MalIconItem }

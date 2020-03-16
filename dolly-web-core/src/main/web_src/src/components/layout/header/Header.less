@@ -60,8 +60,22 @@ header.app-header {
 		margin-left: 66px;
 		border-left: 2px solid #88b1d6;
 		width: @side-padding;
-		p {
+		a {
+			color: white;
+			text-decoration: none;
+			font-weight: normal;
+			padding: 20px 10px;
 			margin: 0 10px;
+			&.active {
+				font-weight: bold;
+				background-color: lighten(@color-nav-black, 10%);
+			}
+			&:hover {
+				background-color: @headerHoverColor;
+			}
+			svg {
+				padding-right: 5px;
+			}
 		}
 		height: 30px;
 	}
