@@ -8,6 +8,7 @@ import static java.util.stream.Collectors.joining;
 
 import java.util.List;
 import java.util.Set;
+import javax.el.MethodNotFoundException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -75,7 +76,10 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
+    public void opprettEndre(RsDollyUpdateRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+        if (nonNull(bestilling.getPensjonforvalter())) {
+            throw new MethodNotFoundException("Pensjon (POPP) mangler denne funksjonen");
+        }
 
     }
 

@@ -13,5 +13,5 @@ public interface ClientRegister {
 
     void release(List<String> identer);
 
-    void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress);
+    void opprettEndre(RsDollyUpdateRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress);
 }

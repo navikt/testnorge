@@ -71,7 +71,7 @@ public class UdiStubClient implements ClientRegister {
     }
 
     @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
+    public void opprettEndre(RsDollyUpdateRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
         if (nonNull(bestilling.getUdistub())) {
             throw new MethodNotFoundException("UdiStub mangler denne funksjonen");
         }

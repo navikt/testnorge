@@ -93,7 +93,7 @@ public class ArenaForvalterClient implements ClientRegister {
     }
 
     @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
+    public void opprettEndre(RsDollyUpdateRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
         if (nonNull(bestilling.getArenaforvalter())) {
             throw new MethodNotFoundException("ArenaForvalter mangler denne funksjonen");
         }

@@ -15,6 +15,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 import javax.el.MethodNotFoundException;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -124,7 +125,7 @@ public class PdlForvalterClient implements ClientRegister {
     }
 
     @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
+    public void opprettEndre(RsDollyUpdateRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
         if (nonNull(bestilling.getPdlforvalter())) {
             throw new MethodNotFoundException("PdlForvalter mangler denne funksjonen");
         }
@@ -341,6 +342,11 @@ public class PdlForvalterClient implements ClientRegister {
             tpsPerson.getPartnere().forEach(pdlForvalterConsumer::deleteIdent);
             tpsPerson.getBarn().forEach(pdlForvalterConsumer::deleteIdent);
 
+        } catch (HttpClientErrorException e) {
+
+            if (!HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
+                log.error(e.getMessage(), e);
+            }
         } catch (RuntimeException e) {
 
             log.error(e.getMessage(), e);

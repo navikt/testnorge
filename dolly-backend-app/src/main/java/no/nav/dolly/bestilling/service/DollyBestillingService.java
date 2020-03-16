@@ -56,6 +56,7 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
+import no.nav.dolly.service.TpsfPersonCache;
 
 @Slf4j
 @Service
@@ -70,6 +71,7 @@ public class DollyBestillingService {
     private final TpsfService tpsfService;
     private final TestgruppeService testgruppeService;
     private final IdentService identService;
+    private final TpsfPersonCache tpsfPersonCache;
     private final BestillingProgressRepository bestillingProgressRepository;
     private final BestillingService bestillingService;
     private final MapperFacade mapperFacade;
@@ -145,7 +147,8 @@ public class DollyBestillingService {
             String[] identer = tpsfService.endrePerson(request.getIdent(), tpsfBestilling);
             sendIdenterTilTPS(request.getEnvironments(), newArrayList(identer), null, progress);
 
-            clientRegisters.forEach(clientRegister -> clientRegister.opprettEndre(request, progress));
+            TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPerson(identer[0]);
+            clientRegisters.forEach(clientRegister -> clientRegister.opprettEndre(request, tpsPerson, progress));
 
             oppdaterProgress(bestilling, progress);
 
@@ -176,7 +179,9 @@ public class DollyBestillingService {
                 log.warn("Bestilling med id={} på ident={} ble avsluttet med feil: {}", bestilling.getId(), ident, message);
                 bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, message));
 
-            } catch (JsonProcessingException jme) {log.error("Json kunne ikke hentes ut.", jme);}
+            } catch (JsonProcessingException jme) {
+                log.error("Json kunne ikke hentes ut.", jme);
+            }
 
         } catch (Exception e) {
             log.error("Bestilling med id={} på ident={} ble avsluttet med feil: {}", bestilling.getId(), ident, e.getMessage(), e);

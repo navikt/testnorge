@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
@@ -28,6 +29,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdent
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.sts.StsOidcService;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PdlForvalterConsumer {
@@ -47,6 +49,9 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/ident";
     private static final String PDL_PERSONSTATUS = "/api/v1/personstatus";
     private static final String PREPROD_ENV = "q";
+
+    private static final String SEND_ERROR = "Feilet å sende %s for ident %s til PDL-forvalter";
+    private static final String SEND_ERROR_2 = SEND_ERROR + ": %s";
 
     @Value("${dolly.environment.name}")
     private String environment;

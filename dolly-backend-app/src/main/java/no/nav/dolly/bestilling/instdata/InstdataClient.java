@@ -92,7 +92,7 @@ public class InstdataClient implements ClientRegister {
     }
 
     @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
+    public void opprettEndre(RsDollyUpdateRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
         if (nonNull(bestilling.getInstdata())) {
             throw new MethodNotFoundException("Instdata mangler denne funksjonen");
         }

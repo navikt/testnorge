@@ -91,7 +91,7 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
     }
 
     @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
+    public void opprettEndre(RsDollyUpdateRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
         if (!bestilling.getAareg().isEmpty()) {
             throw new MethodNotFoundException("Aareg mangler denne funksjonen");
         }

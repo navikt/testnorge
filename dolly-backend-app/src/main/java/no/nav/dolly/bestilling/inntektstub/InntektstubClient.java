@@ -50,7 +50,7 @@ public class InntektstubClient implements ClientRegister {
     }
 
     @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
+    public void opprettEndre(RsDollyUpdateRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
         if (nonNull(bestilling.getInntektstub())) {
             throw new MethodNotFoundException("Inntektstub mangler denne funksjonen");
         }
