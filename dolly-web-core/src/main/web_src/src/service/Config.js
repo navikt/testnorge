@@ -1,5 +1,4 @@
 import { DollyApi } from './Api'
-import config from "~/config";
 
 const ConfigService = {
 	fetchConfig() {

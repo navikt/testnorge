@@ -1,5 +1,4 @@
 import React from 'react'
-import _get from 'lodash'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -16,16 +15,14 @@ export const Adressat = ({ formikBag }) => {
 		if (value === 'ADVOKAT' || value === 'ORGANISASJON')
 			formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.adressat', {
 				adressatType: value,
-				// kontaktperson: { fornavn: '', mellomnavn: '', etternavn: '' },
-				kontaktperson: {fulltNavn: ''},
+				kontaktperson: '',
 				organisasjonsnavn: '',
 				organisasjonsnummer: ''
 			})
 		else if (value === 'PERSON_UTENID')
 			formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.adressat', {
 				adressatType: value,
-				navn: {fulltNavn: ''},
-				// navn: '',
+				navn: '',
 				foedselsdato: ''
 			})
 		else if (value === 'PERSON_MEDID')
@@ -48,7 +45,7 @@ export const Adressat = ({ formikBag }) => {
 			{(adressatType === 'ADVOKAT' || adressatType === 'ORGANISASJON') && (
 				<React.Fragment>
 					<FasteDatasettSelect
-						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn.fulltnavn"
+						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn"
 						label="Navn"
 						endepunkt={ DollyApi.getPersonnavn }
 						type="navn"
@@ -71,13 +68,13 @@ export const Adressat = ({ formikBag }) => {
 					name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.idnummer"
 					label="Navn og id"
 					endepunkt={ DollyApi.getFasteDatasettTPS }
-					type="navnOgFnr"
+					type="navnOgId"
 				/>
 			)}
 			{adressatType === 'PERSON_UTENID' && (
 				<React.Fragment>
 					<FasteDatasettSelect
-						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn.fulltnavn"
+						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn"
 						label="Navn"
 						endepunkt={ DollyApi.getPersonnavn }
 						type="navn"
@@ -89,15 +86,5 @@ export const Adressat = ({ formikBag }) => {
 				</React.Fragment>
 			)}
 		</Kategori>
-	)
-}
-
-const navnForm = path => {
-	return (
-		<div>
-			<FormikTextInput name={`${path}.fornavn`} label="Fornavn" />
-			<FormikTextInput name={`${path}.mellomnavn`} label="Mellomnavn" />
-			<FormikTextInput name={`${path}.etternavn`} label="Etternavn" />
-		</div>
 	)
 }
