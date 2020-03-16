@@ -17,7 +17,7 @@ const falskIdentitet = Yup.object({
 		personnavn: ifKeyHasValue(
 			'$pdlforvalter.falskIdentitet.rettIdentitet.identitetType',
 			['OMTRENTLIG'],
-			personnavnSchema
+			Yup.object({fulltNavn: requiredString})
 		),
 		foedselsdato: Yup.mixed().when('identitetType', {
 			is: 'OMTRENTLIG',
@@ -49,7 +49,7 @@ const kontaktDoedsbo = Yup.object({
 		kontaktperson: ifKeyHasValue(
 			'$pdlforvalter.kontaktinformasjonForDoedsbo.adressat.adressatType',
 			['ADVOKAT', 'ORGANISASJON'],
-			personnavnSchema
+			Yup.object({fulltNavn: requiredString})
 		),
 		organisasjonsnavn: Yup.string().when('adressatType', {
 			is: 'ORGANISASJON',
@@ -72,7 +72,7 @@ const kontaktDoedsbo = Yup.object({
 		navn: ifKeyHasValue(
 			'$pdlforvalter.kontaktinformasjonForDoedsbo.adressat.adressatType',
 			['PERSON_UTENID'],
-			requiredString
+			Yup.object({fulltNavn: requiredString})
 		)
 	}),
 	adresselinje1: requiredString,

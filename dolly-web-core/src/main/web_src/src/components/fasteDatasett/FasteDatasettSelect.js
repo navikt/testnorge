@@ -20,7 +20,8 @@ export default function FasteDatasettSelect({ name, label, endepunkt, type }) {
         }else if (type==="navnOgFnr"){
             state.value.data.forEach(function(value){
                 if(!_isNil(value.fornavn)){
-                    let navnOgFnr = (value.fornavn + " " + value.etternavn).toUpperCase()
+                    const mellomnavn = !_isNil(value.mellomnavn) ? " " +  value.mellomnavn : "";
+                    const navnOgFnr = (value.fornavn + mellomnavn+  " " + value.etternavn).toUpperCase()
                         + ": " + value.fnr;
                     optionsData.push({ value: navnOgFnr, label: navnOgFnr});
                 }
@@ -29,7 +30,8 @@ export default function FasteDatasettSelect({ name, label, endepunkt, type }) {
         } else if (type==="navn"){
             state.value.data.forEach(function(value){
                 if(!_isNil(value.fornavn)){
-                    let navn = value.fornavn + " " + value.etternavn;
+                    const mellomnavn = !_isNil(value.mellomnavn) ? " " +  value.mellomnavn : "";
+                    const navn = value.fornavn + mellomnavn + " " + value.etternavn;
                     optionsData.push({ value: navn.toUpperCase(), label: navn.toUpperCase() });
                 }
             })

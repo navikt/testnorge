@@ -24,7 +24,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 				identitetType: e.value,
 				foedselsdato: '',
 				kjoenn: '',
-				personnavn: { fornavn: '', mellomnavn: '', etternavn: '' },
+				personnavn: {fulltNavn: ''},
 				statsborgerskap: ''
 			})
 		}
@@ -48,13 +48,17 @@ export const FalskIdentitet = ({ formikBag }) => {
 					name={`${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`}
 					label="Identifikasjonsnummer"
 					endepunkt={ DollyApi.getFasteDatasettTPS }
+					type = "navnOgFnr"
 				/>
 			)}
 			{falskIdObj.identitetType === 'OMTRENTLIG' && (
 				<div className="flexbox--flex-wrap">
-					<FormikTextInput name={`${falskIdPath}.personnavn.fornavn`} label="Fornavn" />
-					<FormikTextInput name={`${falskIdPath}.personnavn.mellomnavn`} label="Mellomnavn" />
-					<FormikTextInput name={`${falskIdPath}.personnavn.etternavn`} label="Etternavn" />
+					<FasteDatasettSelect
+						name={ `${falskIdPath}.personnavn.fulltNavn` }
+						label="Navn"
+						endepunkt={ DollyApi.getPersonnavn }
+						type="navn"
+					/>
 					<FormikDatepicker name={`${falskIdPath}.foedselsdato`} label="Fødselsdato" />
 					<FormikSelect
 						name={`${falskIdPath}.kjoenn`}

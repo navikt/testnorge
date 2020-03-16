@@ -5,6 +5,8 @@ import { Navigation } from './Navigation/Navigation'
 import { stateModifierFns } from '../stateModifier'
 import { validate } from '~/utils/YupValidations'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
+import _get from 'lodash/get'
+import _isNil from 'lodash/isNil'
 
 import DisplayFormikState from '~/utils/DisplayFormikState'
 
@@ -24,12 +26,34 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 		if (step !== 0) setStep(step - 1)
 	}
 
+	const updateFromFullNames = (values, formikBag) =>{
+		const namePaths = [`pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn`,
+			`pdlforvalter.kontaktinformasjonForDoedsbo.adressat.kontaktperson`,
+			`pdlforvalter.falskIdentitet.rettIdentitet.personnavn`]
+
+		for(let i = 0; i < namePaths.length ; i++){
+			const path = namePaths[i]
+			const fullName = _get(values, `${path}.fulltNavn`)
+			if (!_isNil(fullName)){
+				const deltNavn = (fullName+'').split(" ")
+				const mellomNavn = deltNavn.length===3 ? deltNavn[1] : ''
+
+				formikBag.setFieldValue(`${path}`, {
+					fornavn: deltNavn[0],
+					mellomnavn: mellomNavn,
+					etternavn: deltNavn[deltNavn.length-1]
+				})
+			}
+		}
+	}
+
 	const _handleSubmit = (values, formikBag) => {
 		const { setSubmitting } = formikBag
 
 		if (!isLastStep()) {
 			setSubmitting(false)
 			handleNext()
+			updateFromFullNames(values, formikBag)
 			return
 		}
 
@@ -54,7 +78,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 
 						<CurrentStepComponent formikBag={formikBag} stateModifier={stateModifier} />
 
-						 {/*<DisplayFormikState {...formikBag} />*/}
+						 <DisplayFormikState {...formikBag} />
 
 						<Navigation
 							showPrevious={step > 0}

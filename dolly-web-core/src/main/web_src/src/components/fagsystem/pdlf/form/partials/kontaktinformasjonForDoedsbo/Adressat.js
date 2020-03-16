@@ -17,22 +17,21 @@ export const Adressat = ({ formikBag }) => {
 			formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.adressat', {
 				adressatType: value,
 				// kontaktperson: { fornavn: '', mellomnavn: '', etternavn: '' },
-				kontaktperson: '',
+				kontaktperson: {fulltNavn: ''},
 				organisasjonsnavn: '',
 				organisasjonsnummer: ''
 			})
 		else if (value === 'PERSON_UTENID')
 			formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.adressat', {
 				adressatType: value,
-				navn: { fornavn: '', mellomnavn: '', etternavn: '' },
+				navn: {fulltNavn: ''},
 				// navn: '',
 				foedselsdato: ''
 			})
 		else if (value === 'PERSON_MEDID')
 			formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.adressat', {
 				adressatType: value,
-				navn: '',
-				foedselsdato: ''
+				idnummer: ''
 			})
 	}
 
@@ -49,12 +48,11 @@ export const Adressat = ({ formikBag }) => {
 			{(adressatType === 'ADVOKAT' || adressatType === 'ORGANISASJON') && (
 				<React.Fragment>
 					<FasteDatasettSelect
-						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn"
+						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn.fulltnavn"
 						label="Navn"
 						endepunkt={ DollyApi.getPersonnavn }
 						type="navn"
 					/>
-					{/*{navnForm('pdlforvalter.kontaktinformasjonForDoedsbo.adressat.kontaktperson')}*/}
 					<div>
 						<FormikTextInput
 							name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.organisasjonsnavn"
@@ -79,12 +77,11 @@ export const Adressat = ({ formikBag }) => {
 			{adressatType === 'PERSON_UTENID' && (
 				<React.Fragment>
 					<FasteDatasettSelect
-						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn"
+						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn.fulltnavn"
 						label="Navn"
 						endepunkt={ DollyApi.getPersonnavn }
 						type="navn"
 					/>
-					{/*{navnForm('pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn')}*/}
 					<FormikDatepicker
 						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.foedselsdato"
 						label="Fødselsdato"
