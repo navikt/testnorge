@@ -46,10 +46,11 @@ export const Adressat = ({ formikBag }) => {
 			{(adressatType === 'ADVOKAT' || adressatType === 'ORGANISASJON') && (
 				<React.Fragment>
 					<FasteDatasettSelect
-						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn"
+						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.kontaktperson"
 						label="Navn"
 						endepunkt={DollyApi.getPersonnavn}
-						type="navn"
+						filterMethod={getNavnListe}
+						size="large"
 					/>
 					<div>
 						<FormikTextInput
