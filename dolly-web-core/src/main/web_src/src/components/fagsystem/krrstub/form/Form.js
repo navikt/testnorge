@@ -28,7 +28,7 @@ export const KrrstubForm = ({ formikBag }) => (
 					options={Options('boolean')}
 				/>
 				<FormikSelect name="krrstub.reservert" label="Reservert" options={Options('boolean')} />
-				<FormikDatepicker name="krrstub.gyldigFra" label="Reservasjon gyldig fra" />
+				<FormikDatepicker name="krrstub.gyldigFra" label="Kontaktinformasjon gjelder fra" />
 			</div>
 		</Panel>
 	</Vis>
