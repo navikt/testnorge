@@ -6,6 +6,7 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { DollyApi } from "~/service/Api";
 import FasteDatasettSelect from '~/components/fasteDatasett/FasteDatasettSelect'
+import {getNavnOgFnrListe, getNavnListe} from "../filterMethods"
 
 export const Adressat = ({ formikBag }) => {
 	const adressatType =
@@ -68,7 +69,8 @@ export const Adressat = ({ formikBag }) => {
 					name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.idnummer"
 					label="Navn og id"
 					endepunkt={DollyApi.getFasteDatasettTPS}
-					type="navnOgId"
+					filterMethod={getNavnOgFnrListe}
+					size="large"
 				/>
 			)}
 			{adressatType === 'PERSON_UTENID' && (
@@ -77,7 +79,8 @@ export const Adressat = ({ formikBag }) => {
 						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn"
 						label="Navn"
 						endepunkt={DollyApi.getPersonnavn}
-						type="navn"
+						filterMethod={getNavnListe}
+						size="large"
 					/>
 					<FormikDatepicker
 						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.foedselsdato"

@@ -4,6 +4,7 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { DollyApi } from "~/service/Api";
 import FasteDatasettSelect from "~/components/fasteDatasett/FasteDatasettSelect";
+import {getNavnOgFnrListe, getNavnListe} from "../filterMethods"
 
 export const FalskIdentitet = ({ formikBag }) => {
 	const falskIdPath = 'pdlforvalter.falskIdentitet.rettIdentitet'
@@ -46,7 +47,9 @@ export const FalskIdentitet = ({ formikBag }) => {
 					name={`${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`}
 					label="Navn og identifikasjonsnummer"
 					endepunkt={DollyApi.getFasteDatasettTPS}
-					type = "navnOgId"
+					filterMethod={getNavnOgFnrListe}
+					optionHeight={50}
+					size="large"
 				/>
 			)}
 			{falskIdObj.identitetType === 'OMTRENTLIG' && (
@@ -55,7 +58,8 @@ export const FalskIdentitet = ({ formikBag }) => {
 						name={ `${falskIdPath}.personnavn` }
 						label="Navn"
 						endepunkt={DollyApi.getPersonnavn}
-						type="navn"
+						filterMethod={getNavnListe}
+						size="large"
 					/>
 					<FormikDatepicker name={`${falskIdPath}.foedselsdato`} label="Fødselsdato" />
 					<FormikSelect

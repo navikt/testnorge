@@ -57,8 +57,7 @@ export const stateModifierFns = (initial, setInitial) => {
 	}
 }
 
-
-export const stateModifierSeparateNames = (initial, setFieldValue) => {
+const separateNames = (initial, setFieldValue) => {
 	for (let i = 0; i < namePaths.length; i++) {
 		const path = namePaths[i]
 		const fullName = _get(initial, `${path}`)
@@ -74,7 +73,7 @@ export const stateModifierSeparateNames = (initial, setFieldValue) => {
 	}
 }
 
-export const stateModifierCombineNames = (initial, setFieldValue) => {
+const combineNames = (initial, setFieldValue) => {
 	for (let i = 0; i < namePaths.length; i++) {
 		const path = namePaths[i]
 		const fornavn = _get(initial, `${path}.fornavn`)
@@ -88,13 +87,40 @@ export const stateModifierCombineNames = (initial, setFieldValue) => {
 	}
 }
 
-export const stateModifierSeparateId = (initial, setFieldValue) => {
+const separateIdsFromNames = (initial, setFieldValue, selectedIds, setSelectedIds) => {
 	for (let i = 0; i < idPaths.length; i++) {
 		const path = idPaths[i]
 		const fnrOgNavn = _get(initial, `${path}`)
 		if (!_isNil(fnrOgNavn)) {
 			const deltTekst = (fnrOgNavn + '').split(" ")
 			setFieldValue(`${path}`, deltTekst[deltTekst.length - 1])
+
+			let copy = selectedIds
+			copy[i]=fnrOgNavn
+			setSelectedIds(copy)
 		}
 	}
+}
+
+const combineIdsWithNames = (initial, setFieldValue, selectedIds, setSelectedIds) => {
+	for (let i = 0; i < idPaths.length; i++){
+		const path = idPaths[i]
+		const id = _get(initial, `${path}`)
+		if(!_isNil(id)){
+			setFieldValue(`${path}`, selectedIds[i])
+			let copy = selectedIds
+			copy[i]=""
+			setSelectedIds(copy)
+		}
+	}
+}
+
+export const stateModifierSeparateNamesAndIds = (initial, setFieldValue, selectedIds, setSelectedIds) => {
+	separateIdsFromNames(initial, setFieldValue, selectedIds, setSelectedIds)
+	separateNames(initial, setFieldValue)
+}
+
+export const stateModifierCombineNamesAndIds = (formikBag, selectedIds, setSelectedIds) => {
+	combineNames(formikBag.values, formikBag.setFieldValue)
+	combineIdsWithNames(formikBag.values, formikBag.setFieldValue, selectedIds, setSelectedIds)
 }
