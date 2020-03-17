@@ -4,7 +4,6 @@ import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.util.List;
-import javax.el.MethodNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -17,8 +16,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiAlias;
 import no.nav.dolly.domain.resultset.udistub.model.UdiAlias;
@@ -37,7 +35,7 @@ public class UdiStubClient implements ClientRegister {
 
     @Override
     @Timed(name = "providers", tags = { "operation", "gjenopprettUdiStub" })
-    public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getUdistub())) {
             StringBuilder status = new StringBuilder();
@@ -49,7 +47,9 @@ public class UdiStubClient implements ClientRegister {
 
                 createAndSetAliases(udiPerson, bestilling, tpsPerson.getHovedperson());
 
-                deletePerson(tpsPerson.getHovedperson());
+                if (!isOpprettEndre) {
+                    deletePerson(tpsPerson.getHovedperson());
+                }
 
                 ResponseEntity<UdiPersonControllerResponse> response = udiStubConsumer.createUdiPerson(udiPerson);
                 appendOkStatus(status, response);
@@ -68,13 +68,6 @@ public class UdiStubClient implements ClientRegister {
     public void release(List<String> identer) {
 
         identer.forEach(this::deletePerson);
-    }
-
-    @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
-        if (nonNull(bestilling.getUdistub())) {
-            throw new MethodNotFoundException("UdiStub mangler denne funksjonen");
-        }
     }
 
     private void createAndSetAliases(UdiPerson person, RsDollyBestilling bestilling, String ident) {

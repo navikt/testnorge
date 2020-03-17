@@ -30,6 +30,12 @@ public class RsDollyBestillingFraIdenterRequest extends RsDollyBestilling {
     )
     private RsTpsfBasisMedSivilstandBestilling tpsf;
 
+    @ApiModelProperty(
+            position = 15,
+            value = "Navn på malbestillling"
+    )
+    private String malBestillingNavn;
+
     public List<String> getOpprettFraIdenter() {
         if (isNull(opprettFraIdenter)) {
             opprettFraIdenter = new ArrayList<>();

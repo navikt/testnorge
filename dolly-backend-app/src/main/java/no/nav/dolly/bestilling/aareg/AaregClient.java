@@ -1,12 +1,12 @@
 package no.nav.dolly.bestilling.aareg;
 
+import static java.time.LocalDateTime.now;
 import static java.util.Collections.singletonList;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.el.MethodNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +14,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.aareg.domain.AaregOppdaterRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
 import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
-import no.nav.dolly.consumer.aareg.AaregConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAktoer;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
@@ -30,14 +29,16 @@ import no.nav.dolly.metrics.Timed;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AaregClient extends AaregAbstractClient implements ClientRegister {
+public class AaregClient implements ClientRegister {
 
-    private final MapperFacade mapperFacade;
+    private static final String ARBEIDSGIVER = "arbeidsgiver";
+
     private final AaregConsumer aaregConsumer;
+    private final MapperFacade mapperFacade;
 
     @Override
     @Timed(name = "providers", tags = { "operation", "gjenopprettAareg" })
-    public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         StringBuilder result = new StringBuilder();
 
@@ -91,13 +92,6 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
     }
 
     @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
-        if (!bestilling.getAareg().isEmpty()) {
-            throw new MethodNotFoundException("Aareg mangler denne funksjonen");
-        }
-    }
-
-    @Override
     public void release(List<String> identer) {
         identer.forEach(aaregConsumer::slettArbeidsforholdFraAlleMiljoer);
     }
@@ -134,5 +128,33 @@ public class AaregClient extends AaregAbstractClient implements ClientRegister {
                     .append(entry.getValue().replaceAll(",", "&").replaceAll(":", "="));
         }
         return builder;
+    }
+
+    private static AaregOppdaterRequest buildRequest(Arbeidsforhold arbfInput, String env) {
+        AaregOppdaterRequest request = new AaregOppdaterRequest();
+        request.setRapporteringsperiode(now());
+        request.setArbeidsforhold(arbfInput);
+        request.setEnvironments(singletonList(env));
+        return request;
+    }
+
+    private static String getOrgnummer(Map arbeidsforhold) {
+        return (String) ((Map) arbeidsforhold.get(ARBEIDSGIVER)).get("organisasjonsnummer");
+    }
+
+    private static String getPersonnummer(Map arbeidsforhold) {
+        return (String) ((Map) arbeidsforhold.get(ARBEIDSGIVER)).get("offentligIdent");
+    }
+
+    private static String getArbeidsgiverType(Map arbeidsforhold) {
+        return (String) ((Map) arbeidsforhold.get(ARBEIDSGIVER)).get("type");
+    }
+
+    private static Long getNavArbfholdId(Map arbeidsforhold) {
+        return Long.valueOf((Integer) arbeidsforhold.get("navArbeidsforholdId"));
+    }
+
+    private static String getArbforholdId(Map arbeidsforhold) {
+        return (String) arbeidsforhold.get("arbeidsforholdId");
     }
 }

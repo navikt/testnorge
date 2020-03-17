@@ -37,7 +37,7 @@ public class TpsfPersonCache {
 
         List<Person> personer = tpsfService.hentTestpersoner(singletonList(ident));
 
-        if (personer.isEmpty()) {
+        if (!personer.isEmpty()) {
             return TpsPerson.builder()
                     .persondetaljer(personer)
                     .hovedperson(personer.get(0).getIdent())

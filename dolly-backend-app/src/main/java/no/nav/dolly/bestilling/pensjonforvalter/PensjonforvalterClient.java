@@ -8,7 +8,6 @@ import static java.util.stream.Collectors.joining;
 
 import java.util.List;
 import java.util.Set;
-import javax.el.MethodNotFoundException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -19,8 +18,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -42,7 +40,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     @Timed(name = "providers", tags = { "operation", "gjenopprettPensjon" })
     @Override
-    public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         StringBuilder status = new StringBuilder();
 
@@ -72,15 +70,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     @Override
     public void release(List<String> identer) {
-
-    }
-
-    @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
-        if (nonNull(bestilling.getPensjonforvalter())) {
-            throw new MethodNotFoundException("Pensjon (POPP) mangler denne funksjonen");
-        }
-
+        // Pensjonforvalter / POPP støtter pt ikke sletting
     }
 
     private void opprettPerson(TpsPerson tpsPerson, Set<String> miljoer, StringBuilder status) {

@@ -127,18 +127,18 @@ public class BestillingService {
     }
 
     @Transactional
-    public Bestilling saveBestilling(RsDollyUpdateRequest request) {
+    public Bestilling saveBestilling(RsDollyUpdateRequest request, String ident) {
 
-        Testident testident = identRepository.findByIdent(request.getIdent());
+        Testident testident = identRepository.findByIdent(ident);
         if (isNull(testident) || isBlank(testident.getIdent())) {
-            throw new NotFoundException(format("Testindent %s ble ikke funnet", request.getIdent()));
+            throw new NotFoundException(format("Testindent %s ble ikke funnet", ident));
         }
         fixAaregAbstractClassProblem(request.getAareg());
         fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(testident.getTestgruppe())
-                        .ident(request.getIdent())
+                        .ident(ident)
                         .antallIdenter(1)
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
@@ -159,7 +159,8 @@ public class BestillingService {
     }
 
     @Transactional
-    public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, RsTpsfBasisBestilling tpsf, Integer antall, List<String> opprettFraIdenter) {
+    public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, RsTpsfBasisBestilling tpsf, Integer antall,
+            List<String> opprettFraIdenter, String malBeskrivelseNavn) {
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
         fixAaregAbstractClassProblem(request.getAareg());
         fixPdlAbstractClassProblem(request.getPdlforvalter());
@@ -182,7 +183,7 @@ public class BestillingService {
                                 .pensjonforvalter(request.getPensjonforvalter())
                                 .build()))
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
-                        .malBestillingNavn(request.getMalBestillingNavn())
+                        .malBestillingNavn(malBeskrivelseNavn)
                         .userId(getUserPrinciple())
                         .build());
     }

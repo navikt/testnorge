@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
-import javax.el.MethodNotFoundException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +33,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -79,7 +77,7 @@ public class PdlForvalterClient implements ClientRegister {
 
     @Timed(name = "providers", tags = { "operation", "gjenopprettPdlForvalter" })
     @Override
-    public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (bestilling.getEnvironments().contains(SYNTH_ENV) || nonNull(bestilling.getPdlforvalter())) {
 
@@ -88,7 +86,9 @@ public class PdlForvalterClient implements ClientRegister {
             if (bestilling.getEnvironments().contains(SYNTH_ENV)) {
 
                 hentTpsPersondetaljer(tpsPerson, bestilling.getTpsf());
-                sendDeleteIdent(tpsPerson);
+                if (!isOpprettEndre) {
+                    sendDeleteIdent(tpsPerson);
+                }
                 sendPdlPersondetaljer(tpsPerson, status);
 
                 if (nonNull(bestilling.getPdlforvalter())) {
@@ -124,13 +124,6 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
-        if (nonNull(bestilling.getPdlforvalter())) {
-            throw new MethodNotFoundException("PdlForvalter mangler denne funksjonen");
-        }
-    }
-
     private void hentTpsPersondetaljer(TpsPerson tpsPerson, RsTpsfUtvidetBestilling tpsfUtvidetBestilling) {
 
         if (tpsPerson.getPersondetaljer().isEmpty()) {
@@ -158,9 +151,9 @@ public class PdlForvalterClient implements ClientRegister {
                 }
             }
             tpsPerson.getPersondetaljer().forEach(person ->
-                person.getRelasjoner().forEach(relasjon ->
-                    relasjon.setPersonRelasjonTil(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))
-                )
+                    person.getRelasjoner().forEach(relasjon ->
+                            relasjon.setPersonRelasjonTil(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))
+                    )
             );
         }
     }

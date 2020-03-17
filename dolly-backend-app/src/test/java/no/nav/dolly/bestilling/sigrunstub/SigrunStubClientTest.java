@@ -44,7 +44,8 @@ public class SigrunStubClientTest {
     @Test
     public void gjenopprett_ingendata() {
         BestillingProgress progress = new BestillingProgress();
-        sigrunStubClient.gjenopprett(new RsDollyBestillingRequest(), TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
+        sigrunStubClient.gjenopprett(new RsDollyBestillingRequest(), TpsPerson.builder().hovedperson(IDENT).build(),
+                new BestillingProgress(), false);
 
         assertThat(progress.getSigrunstubStatus(), is(nullValue()));
     }
@@ -59,7 +60,7 @@ public class SigrunStubClientTest {
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
 
-        sigrunStubClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        sigrunStubClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         assertThat(progress.getSigrunstubStatus(), containsString("Feil:"));
     }
@@ -74,7 +75,7 @@ public class SigrunStubClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
-        sigrunStubClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        sigrunStubClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         verify(sigrunStubConsumer).createSkattegrunnlag(anyList());
         verify(sigrunStubResponseHandler).extractResponse(any());

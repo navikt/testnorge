@@ -48,8 +48,8 @@ public class TestpersonController {
     @PutMapping("/{ident}/leggtilpaaperson")
     @ResponseStatus(HttpStatus.OK)
     public RsBestillingStatus endrePerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
-        request.setIdent(ident);
-        Bestilling bestilling = bestillingService.saveBestilling(request);
+
+        Bestilling bestilling = bestillingService.saveBestilling(request, ident);
 
         dollyBestillingService.oppdaterPersonAsync(request, bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);

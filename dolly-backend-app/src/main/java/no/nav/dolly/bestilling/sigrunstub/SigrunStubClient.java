@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.sigrunstub;
 
 import java.util.List;
-import javax.el.MethodNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -10,8 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -26,8 +24,8 @@ public class SigrunStubClient implements ClientRegister {
     private final SigrunStubResponseHandler sigrunStubResponseHandler;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    @Timed(name = "providers", tags={"operation", "gjenopprettSigrunStub"})
-    @Override public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+    @Timed(name = "providers", tags = { "operation", "gjenopprettSigrunStub" })
+    @Override public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getSigrunstub().isEmpty()) {
             try {
@@ -35,7 +33,9 @@ public class SigrunStubClient implements ClientRegister {
                     request.setPersonidentifikator(tpsPerson.getHovedperson());
                 }
 
-                deleteExistingSkattegrunnlag(bestilling.getSigrunstub().get(0).getPersonidentifikator());
+                if (!isOpprettEndre) {
+                    deleteExistingSkattegrunnlag(bestilling.getSigrunstub().get(0).getPersonidentifikator());
+                }
 
                 progress.setSigrunstubStatus(
                         sigrunStubResponseHandler.extractResponse(
@@ -44,13 +44,6 @@ public class SigrunStubClient implements ClientRegister {
             } catch (RuntimeException e) {
                 progress.setSigrunstubStatus(errorStatusDecoder.decodeRuntimeException(e));
             }
-        }
-    }
-
-    @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
-        if (!bestilling.getSigrunstub().isEmpty()) {
-            throw new MethodNotFoundException("SigrunStub mangler denne funksjonen");
         }
     }
 

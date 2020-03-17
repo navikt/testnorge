@@ -6,7 +6,6 @@ import static java.util.Objects.nonNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.el.MethodNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -16,8 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
@@ -34,8 +32,8 @@ public class ArenaForvalterClient implements ClientRegister {
     private final MapperFacade mapperFacade;
 
     @Override
-    @Timed(name = "providers", tags={"operation", "gjenopprettArenaForvalter"})
-    public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+    @Timed(name = "providers", tags = { "operation", "gjenopprettArenaForvalter" })
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getArenaforvalter())) {
 
@@ -50,7 +48,9 @@ public class ArenaForvalterClient implements ClientRegister {
 
             if (!availEnvironments.isEmpty()) {
 
-                deleteServicebruker(tpsPerson.getHovedperson(), availEnvironments);
+                if (!isOpprettEndre) {
+                    deleteServicebruker(tpsPerson.getHovedperson(), availEnvironments);
+                }
 
                 ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
                 availEnvironments.forEach(environment -> {
@@ -90,13 +90,6 @@ public class ArenaForvalterClient implements ClientRegister {
                 });
             }
         });
-    }
-
-    @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
-        if (nonNull(bestilling.getArenaforvalter())) {
-            throw new MethodNotFoundException("ArenaForvalter mangler denne funksjonen");
-        }
     }
 
     private void deleteServicebruker(String ident, List<String> availEnvironments) {

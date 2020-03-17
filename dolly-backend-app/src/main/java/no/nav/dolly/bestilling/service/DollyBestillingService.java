@@ -41,6 +41,7 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -69,9 +70,9 @@ public class DollyBestillingService {
 
     private final TpsfResponseHandler tpsfResponseHandler;
     private final TpsfService tpsfService;
+    private final TpsfPersonCache tpsfPersonCache;
     private final TestgruppeService testgruppeService;
     private final IdentService identService;
-    private final TpsfPersonCache tpsfPersonCache;
     private final BestillingProgressRepository bestillingProgressRepository;
     private final BestillingService bestillingService;
     private final MapperFacade mapperFacade;
@@ -140,20 +141,21 @@ public class DollyBestillingService {
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
         try {
-            BestillingProgress progress = new BestillingProgress(bestilling.getId(), request.getIdent());
+            BestillingProgress progress = new BestillingProgress(bestilling.getId(), bestilling.getIdent());
             TpsfBestilling tpsfBestilling = nonNull(request.getTpsf()) ? mapperFacade.map(request.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
             tpsfBestilling.setAntall(1);
 
-            String[] identer = tpsfService.endrePerson(request.getIdent(), tpsfBestilling);
+            String[] identer = tpsfService.endrePerson(bestilling.getIdent(), tpsfBestilling);
             sendIdenterTilTPS(request.getEnvironments(), newArrayList(identer), null, progress);
 
             TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPerson(identer[0]);
-            clientRegisters.forEach(clientRegister -> clientRegister.opprettEndre(request, tpsPerson, progress));
+            clientRegisters.forEach(clientRegister ->
+                    clientRegister.gjenopprett(request, tpsPerson, progress, true));
 
             oppdaterProgress(bestilling, progress);
 
         } catch (Exception e) {
-            log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), request.getIdent(), e.getMessage(), e);
+            log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), bestilling.getIdent(), e.getMessage(), e);
             bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
 
         } finally {
@@ -235,7 +237,7 @@ public class DollyBestillingService {
                 bestKriterier.setEnvironments(newArrayList(bestilling.getMiljoer().split(",")));
 
                 clientRegisters.forEach(clientRegister ->
-                        clientRegister.gjenopprett(bestKriterier, tpsPerson, progress));
+                        clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, false));
 
                 oppdaterProgress(bestilling, progress);
 
@@ -272,13 +274,13 @@ public class DollyBestillingService {
 
             sendIdenterTilTPS(request.getEnvironments(), leverteIdenter, testgruppe, progress);
 
-            RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
+            RsDollyUtvidetBestilling bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyUtvidetBestilling.class);
             bestKriterier.setEnvironments(request.getEnvironments());
             if (nonNull(bestilling.getTpsfKriterier())) {
                 bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
             }
 
-            clientRegisters.forEach(clientRegister -> clientRegister.gjenopprett(bestKriterier, tpsPerson, progress));
+            clientRegisters.forEach(clientRegister -> clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, false));
 
             oppdaterProgress(bestilling, progress);
 
