@@ -4,7 +4,7 @@ import _omit from 'lodash/omit'
 import _isEmpty from 'lodash/isEmpty'
 import _get from "lodash/get";
 import _isNil from "lodash/isNil";
-import { namePaths, idPaths } from './utils'
+import { pdlfNamePaths, pdlfIdPaths } from './utils'
 
 export const stateModifierFns = (initial, setInitial) => {
 	const set = (path, value) => setInitial(_set(path, value, initial))
@@ -58,8 +58,8 @@ export const stateModifierFns = (initial, setInitial) => {
 }
 
 const separateNames = (initial, setFieldValue) => {
-	for (let i = 0; i < namePaths.length; i++) {
-		const path = namePaths[i]
+	for (let i = 0; i < pdlfNamePaths.length; i++) {
+		const path = pdlfNamePaths[i]
 		const fullName = _get(initial, `${path}`)
 		if (!_isNil(fullName)) {
 			const deltNavn = (fullName + '').split(" ")
@@ -74,8 +74,8 @@ const separateNames = (initial, setFieldValue) => {
 }
 
 const combineNames = (initial, setFieldValue) => {
-	for (let i = 0; i < namePaths.length; i++) {
-		const path = namePaths[i]
+	for (let i = 0; i < pdlfNamePaths.length; i++) {
+		const path = pdlfNamePaths[i]
 		const fornavn = _get(initial, `${path}.fornavn`)
 		if (!_isNil(fornavn)) {
 			const mellomnavn = _get(initial, `${path}.mellomnavn`)
@@ -88,8 +88,8 @@ const combineNames = (initial, setFieldValue) => {
 }
 
 const separateIdsFromNames = (initial, setFieldValue, selectedIds, setSelectedIds) => {
-	for (let i = 0; i < idPaths.length; i++) {
-		const path = idPaths[i]
+	for (let i = 0; i < pdlfIdPaths.length; i++) {
+		const path = pdlfIdPaths[i]
 		const fnrOgNavn = _get(initial, `${path}`)
 		if (!_isNil(fnrOgNavn)) {
 			const deltTekst = (fnrOgNavn + '').split(" ")
@@ -103,8 +103,8 @@ const separateIdsFromNames = (initial, setFieldValue, selectedIds, setSelectedId
 }
 
 const combineIdsWithNames = (initial, setFieldValue, selectedIds, setSelectedIds) => {
-	for (let i = 0; i < idPaths.length; i++){
-		const path = idPaths[i]
+	for (let i = 0; i < pdlfIdPaths.length; i++){
+		const path = pdlfIdPaths[i]
 		const id = _get(initial, `${path}`)
 		if(!_isNil(id)){
 			setFieldValue(`${path}`, selectedIds[i])

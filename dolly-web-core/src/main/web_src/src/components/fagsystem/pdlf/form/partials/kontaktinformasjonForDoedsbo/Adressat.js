@@ -7,27 +7,29 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { DollyApi } from "~/service/Api";
 import FasteDatasettSelect from '~/components/fasteDatasett/FasteDatasettSelect'
 import {getNavnOgFnrListe, getNavnListe} from "../filterMethods"
+import {getPlaceholder} from "../utils"
 
 export const Adressat = ({ formikBag }) => {
+	const addressatPath = 'pdlforvalter.kontaktinformasjonForDoedsbo.adressat'
 	const adressatType =
 		formikBag.values.pdlforvalter.kontaktinformasjonForDoedsbo.adressat.adressatType
 
 	const handleAfterChange = ({ value }) => {
 		if (value === 'ADVOKAT' || value === 'ORGANISASJON')
-			formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.adressat', {
+			formikBag.setFieldValue(addressatPath, {
 				adressatType: value,
 				kontaktperson: '',
 				organisasjonsnavn: '',
 				organisasjonsnummer: ''
 			})
 		else if (value === 'PERSON_UTENID')
-			formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.adressat', {
+			formikBag.setFieldValue(addressatPath, {
 				adressatType: value,
 				navn: '',
 				foedselsdato: ''
 			})
 		else if (value === 'PERSON_MEDID')
-			formikBag.setFieldValue('pdlforvalter.kontaktinformasjonForDoedsbo.adressat', {
+			formikBag.setFieldValue(addressatPath, {
 				adressatType: value,
 				idnummer: ''
 			})
@@ -36,7 +38,7 @@ export const Adressat = ({ formikBag }) => {
 	return (
 		<Kategori title="Adressat">
 			<FormikSelect
-				name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.adressatType"
+				name={`${addressatPath}.adressatType`}
 				label="Adressattype"
 				options={Options('adressatType')}
 				onChange={handleAfterChange}
@@ -46,19 +48,20 @@ export const Adressat = ({ formikBag }) => {
 			{(adressatType === 'ADVOKAT' || adressatType === 'ORGANISASJON') && (
 				<React.Fragment>
 					<FasteDatasettSelect
-						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.kontaktperson"
+						name={`${addressatPath}.kontaktperson`}
 						label="Navn"
 						endepunkt={DollyApi.getPersonnavn}
 						filterMethod={getNavnListe}
 						size="large"
+						placeholder={getPlaceholder(formikBag.values,`${addressatPath}.kontaktperson`)}
 					/>
 					<div>
 						<FormikTextInput
-							name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.organisasjonsnavn"
+							name={`${addressatPath}.organisasjonsnavn`}
 							label="Organisasjonsnavn"
 						/>
 						<FormikTextInput
-							name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.organisasjonsnummer"
+							name={`${addressatPath}.organisasjonsnummer`}
 							label="Organisasjonsnummer"
 						/>
 					</div>
@@ -67,7 +70,7 @@ export const Adressat = ({ formikBag }) => {
 
 			{adressatType === 'PERSON_MEDID' && (
 				<FasteDatasettSelect
-					name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.idnummer"
+					name={`${addressatPath}.idnummer`}
 					label="Navn og id"
 					endepunkt={DollyApi.getFasteDatasettTPS}
 					filterMethod={getNavnOgFnrListe}
@@ -77,14 +80,15 @@ export const Adressat = ({ formikBag }) => {
 			{adressatType === 'PERSON_UTENID' && (
 				<React.Fragment>
 					<FasteDatasettSelect
-						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn"
+						name={`${addressatPath}.navn`}
 						label="Navn"
 						endepunkt={DollyApi.getPersonnavn}
 						filterMethod={getNavnListe}
 						size="large"
+						placeholder={getPlaceholder(formikBag.values,`${addressatPath}.navn`)}
 					/>
 					<FormikDatepicker
-						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.foedselsdato"
+						name={`${addressatPath}.foedselsdato`}
 						label="Fødselsdato"
 					/>
 				</React.Fragment>

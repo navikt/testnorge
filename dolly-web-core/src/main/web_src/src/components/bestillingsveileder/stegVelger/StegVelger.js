@@ -5,7 +5,7 @@ import { Navigation } from './Navigation/Navigation'
 import { stateModifierFns, stateModifierSeparateNamesAndIds, stateModifierCombineNamesAndIds} from '../stateModifier'
 import { validate } from '~/utils/YupValidations'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
-import {idPaths} from "~/components/bestillingsveileder/utils";
+import {pdlfIdPaths} from "~/components/bestillingsveileder/utils";
 
 import DisplayFormikState from '~/utils/DisplayFormikState'
 
@@ -18,14 +18,14 @@ const STEPS = [Steg1, Steg2, Steg3]
 
 export const StegVelger = ({ initialValues, onSubmit, children }) => {
 	const [step, setStep] = useState(0)
-	const [selectedIds, setSelectedIds] = useState(new Array(idPaths.length))
+	const [selectedPdlfIds, setSelectedPdlfIds] = useState(new Array(pdlfIdPaths.length))
 
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => setStep(step + 1)
 
 	const handleBack = (formikBag) =>{
 		if(isLastStep()){
-			stateModifierCombineNamesAndIds(formikBag, selectedIds, setSelectedIds)
+			stateModifierCombineNamesAndIds(formikBag, selectedPdlfIds, setSelectedPdlfIds)
 		}
 		if (step !== 0) setStep(step - 1)
 	}
@@ -36,7 +36,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 		if (!isLastStep()) {
 			setSubmitting(false)
 			if(step===STEPS.length - 2){
-				stateModifierSeparateNamesAndIds(values, formikBag.setFieldValue, selectedIds, setSelectedIds)
+				stateModifierSeparateNamesAndIds(values, formikBag.setFieldValue, selectedPdlfIds, setSelectedPdlfIds)
 			}
 
 			handleNext()

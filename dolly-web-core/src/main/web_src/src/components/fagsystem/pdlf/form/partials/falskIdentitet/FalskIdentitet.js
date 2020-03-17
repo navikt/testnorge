@@ -5,6 +5,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { DollyApi } from "~/service/Api";
 import FasteDatasettSelect from "~/components/fasteDatasett/FasteDatasettSelect";
 import {getNavnOgFnrListe, getNavnListe} from "../filterMethods"
+import {getPlaceholder} from "../utils"
 
 export const FalskIdentitet = ({ formikBag }) => {
 	const falskIdPath = 'pdlforvalter.falskIdentitet.rettIdentitet'
@@ -60,6 +61,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 						endepunkt={DollyApi.getPersonnavn}
 						filterMethod={getNavnListe}
 						size="large"
+						placeholder={getPlaceholder(formikBag.values, `${falskIdPath}.personnavn`)}
 					/>
 					<FormikDatepicker name={`${falskIdPath}.foedselsdato`} label="Fødselsdato" />
 					<FormikSelect
