@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.List;
-import java.util.Map;
 
 import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
 

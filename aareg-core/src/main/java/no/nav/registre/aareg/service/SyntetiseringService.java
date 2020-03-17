@@ -205,20 +205,22 @@ public class SyntetiseringService {
             String miljoe
     ) {
         Map<String, String> aaregResponses = new HashMap<>();
-        for (var identMedArbeidsforhold : identerSomSkalBeholdeArbeidsforhold.entrySet()) {
-            var oppdaterRequests = mapAaregResponseToOppdateringsRequest(identMedArbeidsforhold.getValue().get(0)); // testing
-            for (var oppdaterRequest : oppdaterRequests) {
-                oppdaterRequest.setEnvironments(Collections.singletonList(miljoe));
-                oppdaterRequest.setRapporteringsperiode(LocalDateTime.now());
-                aaregResponses.putAll(aaregService.oppdaterArbeidsforhold(oppdaterRequest));
+        for (var arbeidsforholdliste : identerSomSkalBeholdeArbeidsforhold.values()) {
+            for (var arbeidsforhold : arbeidsforholdliste) {
+                var oppdaterRequests = mapAaregResponseToOppdateringsRequest(arbeidsforhold);
+                for (var oppdaterRequest : oppdaterRequests) {
+                    oppdaterRequest.setEnvironments(Collections.singletonList(miljoe));
+                    oppdaterRequest.setRapporteringsperiode(LocalDateTime.now());
+                    aaregResponses.putAll(aaregService.oppdaterArbeidsforhold(oppdaterRequest));
+                }
             }
         }
         log.info("Status på oppdatering: {}", aaregResponses.toString());
     }
 
     private List<RsAaregOppdaterRequest> mapAaregResponseToOppdateringsRequest(Arbeidsforhold aaregResponse) {
-        List<RsAaregOppdaterRequest> oppdaterRequests = new ArrayList<>();
         var arbeidsforhold = mapArbeidsforholdToRsArbeidsforhold(aaregResponse);
+        List<RsAaregOppdaterRequest> oppdaterRequests = new ArrayList<>(arbeidsforhold.size());
         for (var rsArbeidsforhold : arbeidsforhold) {
             var oppdaterRequest = new RsAaregOppdaterRequest();
             oppdaterRequest.setArbeidsforhold(rsArbeidsforhold);
@@ -241,7 +243,6 @@ public class SyntetiseringService {
             if (aaregResponse.getStatusCode().is2xxSuccessful() && aaregResponse.hasBody()) {
                 identerMedArbeidsforholdFraAareg.put(ident, aaregResponse.getBody());
             }
-            break; // testing
         }
     }
 

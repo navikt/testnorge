@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.aareg.domain.RsAktoer;
@@ -43,7 +44,7 @@ public class ArbeidsforholdMappingUtil {
                 .permisjonPermitteringer(mapPermisjonPermitteringer(arbeidsforholdNode.get("permisjonPermitteringer")))
                 .antallTimerForTimeloennet(mapAntallTimerForTimeloennet(arbeidsforholdNode.get("antallTimerForTimeloennet")))
                 .utenlandsopphold(mapUtenlandsopphold(arbeidsforholdNode.get("utenlandsopphold")))
-                .innrapportertEtterAOrdningen(findBooleanNullSafe(arbeidsforholdNode, "innrapportertEtterAOrdningen"))
+                .innrapportertEtterAOrdningen(arbeidsforholdNode.get("innrapportertEtterAOrdningen") != null ? arbeidsforholdNode.get("innrapportertEtterAOrdningen").asBoolean() : null)
                 .registrert(findLocalDateTimeNullSafe(arbeidsforholdNode, "registrert"))
                 .sistBekreftet(findLocalDateTimeNullSafe(arbeidsforholdNode, "sistBekreftet"))
                 .sporingsinformasjon(mapSporingsinformasjon(arbeidsforholdNode.get("sporingsinformasjon")))
@@ -51,7 +52,7 @@ public class ArbeidsforholdMappingUtil {
     }
 
     public static List<RsArbeidsforhold> mapArbeidsforholdToRsArbeidsforhold(Arbeidsforhold arbeidsforhold) {
-        List<RsArbeidsforhold> rsArbeidsforhold = new ArrayList<>();
+        List<RsArbeidsforhold> rsArbeidsforhold = new ArrayList<>(arbeidsforhold.getArbeidsavtaler().size());
         for (var arbeidsavtale : arbeidsforhold.getArbeidsavtaler()) {
             rsArbeidsforhold.add(RsArbeidsforhold.builder()
                     .arbeidsforholdIDnav(arbeidsforhold.getNavArbeidsforholdId())
@@ -157,7 +158,7 @@ public class ArbeidsforholdMappingUtil {
 
     private static List<PermisjonPermittering> mapPermisjonPermitteringer(JsonNode permisjonPermitteringer) {
         if (permisjonPermitteringer == null) {
-            return null;
+            return Collections.emptyList();
         }
         List<PermisjonPermittering> permisjonPermitteringListe = new ArrayList<>();
         for (var permisjonPermittering : permisjonPermitteringer) {
@@ -175,7 +176,7 @@ public class ArbeidsforholdMappingUtil {
 
     private static List<AntallTimerForTimeloennet> mapAntallTimerForTimeloennet(JsonNode antallTimerForTimeloennet) {
         if (antallTimerForTimeloennet == null) {
-            return null;
+            return Collections.emptyList();
         }
         List<AntallTimerForTimeloennet> antallTimerForTimeloennetListe = new ArrayList<>();
         for (var antallTimer : antallTimerForTimeloennet) {
@@ -191,7 +192,7 @@ public class ArbeidsforholdMappingUtil {
 
     private static List<Utenlandsopphold> mapUtenlandsopphold(JsonNode utenlandsopphold) {
         if (utenlandsopphold == null) {
-            return null;
+            return Collections.emptyList();
         }
         List<Utenlandsopphold> utenlandsoppholdListe = new ArrayList<>();
         for (var opphold : utenlandsopphold) {
@@ -237,13 +238,6 @@ public class ArbeidsforholdMappingUtil {
             String fieldName
     ) {
         return node.get(fieldName) != null ? node.get(fieldName).asDouble() : null;
-    }
-
-    private static Boolean findBooleanNullSafe(
-            JsonNode node,
-            String fieldName
-    ) {
-        return node.get(fieldName) != null ? node.get(fieldName).asBoolean() : null;
     }
 
     private static LocalDate findLocalDateNullSafe(
