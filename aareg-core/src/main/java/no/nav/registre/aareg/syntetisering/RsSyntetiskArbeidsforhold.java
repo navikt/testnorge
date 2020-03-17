@@ -10,7 +10,6 @@ import lombok.Setter;
 import java.util.List;
 
 import no.nav.registre.aareg.domain.RsAktoer;
-import no.nav.registre.aareg.domain.RsAktoerPerson;
 
 @Getter
 @Setter
@@ -27,7 +26,7 @@ public class RsSyntetiskArbeidsforhold {
     private Long arbeidsforholdIDnav;
     private String arbeidsforholdstype;
     private RsAktoer arbeidsgiver;
-    private RsAktoerPerson arbeidstaker;
+    private RsSyntPerson arbeidstaker;
     private List<RsSyntetiskPermisjon> permisjon;
     private List<RsSyntetiskUtenlandsopphold> utenlandsopphold;
 }

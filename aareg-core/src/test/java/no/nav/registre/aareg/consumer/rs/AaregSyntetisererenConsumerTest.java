@@ -10,6 +10,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -27,6 +28,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -72,9 +74,9 @@ public class AaregSyntetisererenConsumerTest {
 
         var result = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(fnrs);
 
-        assertThat(result.get(0).getArbeidsforhold().getArbeidstaker().getIdent(), equalTo(fnrs.get(0)));
-        assertThat(result.get(1).getArbeidsforhold().getArbeidstaker().getIdent(), equalTo(fnrs.get(1)));
-        assertThat(result.get(2).getArbeidsforhold().getArbeidstaker().getIdent(), equalTo(fnrs.get(2)));
+        var identsInResponse = result.stream().map(a -> a.getArbeidsforhold().getArbeidstaker().getIdent()).collect(Collectors.toList());
+
+        assertThat(identsInResponse, hasItems(fnrs.get(0), fnrs.get(1), fnrs.get(2)));
     }
 
     @Test

@@ -86,13 +86,14 @@ public class AaregService {
                                                     .ident(forhold.getArbeidstaker().getOffentligIdent())
                                                     .build())
                                             .ansettelsesPeriode(RsPeriode.builder()
-                                                    .fom(forhold.getAnsettelsesperiode().getPeriode().getFom().atStartOfDay())
-                                                    .fom(forhold.getAnsettelsesperiode().getPeriode().getTom().atStartOfDay())
+                                                    .fom(forhold.getAnsettelsesperiode().getPeriode().getFom() != null ? forhold.getAnsettelsesperiode().getPeriode().getFom().atStartOfDay() : null)
+                                                    .fom(forhold.getAnsettelsesperiode().getPeriode().getTom() != null ? forhold.getAnsettelsesperiode().getPeriode().getTom().atStartOfDay() : null)
                                                     .build())
                                             .arbeidsavtale(RsArbeidsavtale.builder()
                                                     .yrke(forhold.getArbeidsavtaler().get(0).getYrke())
                                                     .stillingsprosent(0.0)
-                                                    .endringsdatoStillingsprosent(forhold.getAnsettelsesperiode().getPeriode().getFom().atStartOfDay())
+                                                    .endringsdatoStillingsprosent(
+                                                            forhold.getAnsettelsesperiode().getPeriode().getFom() != null ? forhold.getAnsettelsesperiode().getPeriode().getFom().atStartOfDay() : null)
                                                     .build())
                                             .build();
                                     resultMap.putAll(aaregWsConsumer.oppdaterArbeidsforhold(buildRequest(arbeidsforhold, environment, navCallId)));

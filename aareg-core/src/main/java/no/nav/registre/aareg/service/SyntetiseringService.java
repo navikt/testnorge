@@ -12,7 +12,6 @@ import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.mapArbeidsfor
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.http.ResponseEntity;
@@ -68,7 +67,6 @@ public class SyntetiseringService {
     private final AaregService aaregService;
     private final KodeverkConsumer kodeverkConsumer;
     private final Random rand;
-    private final MapperFacade mapperFacade;
 
     public ResponseEntity opprettArbeidshistorikkOgSendTilAaregstub(
             SyntetiserAaregRequest syntetiserAaregRequest,
@@ -206,22 +204,23 @@ public class SyntetiseringService {
             Map<String, List<Arbeidsforhold>> identerSomSkalBeholdeArbeidsforhold,
             String miljoe
     ) {
+        Map<String, String> aaregResponses = new HashMap<>();
         for (var identMedArbeidsforhold : identerSomSkalBeholdeArbeidsforhold.entrySet()) {
-            List<RsAaregOppdaterRequest> oppdaterRequests = mapAaregResponseToOppdateringsRequest(identMedArbeidsforhold.getValue().get(0)); // testing
+            var oppdaterRequests = mapAaregResponseToOppdateringsRequest(identMedArbeidsforhold.getValue().get(0)); // testing
             for (var oppdaterRequest : oppdaterRequests) {
                 oppdaterRequest.setEnvironments(Collections.singletonList(miljoe));
                 oppdaterRequest.setRapporteringsperiode(LocalDateTime.now());
+                aaregResponses.putAll(aaregService.oppdaterArbeidsforhold(oppdaterRequest));
             }
-            //            Map<String, String> oppdaterResponse = aaregService.oppdaterArbeidsforhold(oppdaterRequest);
         }
-        System.out.println();
+        log.info("Status på oppdatering: {}", aaregResponses.toString());
     }
 
     private List<RsAaregOppdaterRequest> mapAaregResponseToOppdateringsRequest(Arbeidsforhold aaregResponse) {
         List<RsAaregOppdaterRequest> oppdaterRequests = new ArrayList<>();
-        List<RsArbeidsforhold> arbeidsforhold = mapArbeidsforholdToRsArbeidsforhold(aaregResponse);
+        var arbeidsforhold = mapArbeidsforholdToRsArbeidsforhold(aaregResponse);
         for (var rsArbeidsforhold : arbeidsforhold) {
-            RsAaregOppdaterRequest oppdaterRequest = new RsAaregOppdaterRequest();
+            var oppdaterRequest = new RsAaregOppdaterRequest();
             oppdaterRequest.setArbeidsforhold(rsArbeidsforhold);
             oppdaterRequests.add(oppdaterRequest);
         }

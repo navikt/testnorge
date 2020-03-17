@@ -6,6 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -16,7 +17,6 @@ import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Map;
 
 import no.nav.registre.aareg.security.sts.StsOidcService;
 
@@ -46,7 +46,7 @@ public class AaregRestConsumerTest {
 
         verify(stsOidcService, times(2)).getIdToken(ENV);
         verify(aaregArbeidsforholdFasitConsumer).getUrlForEnv(ENV);
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(new ParameterizedTypeReference<List<Map>>() {
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(new ParameterizedTypeReference<List<JsonNode>>() {
         }));
     }
 }

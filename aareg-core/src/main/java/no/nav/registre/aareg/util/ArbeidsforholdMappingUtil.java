@@ -52,7 +52,7 @@ public class ArbeidsforholdMappingUtil {
 
     public static List<RsArbeidsforhold> mapArbeidsforholdToRsArbeidsforhold(Arbeidsforhold arbeidsforhold) {
         List<RsArbeidsforhold> rsArbeidsforhold = new ArrayList<>();
-        for(var arbeidsavtale : arbeidsforhold.getArbeidsavtaler()) {
+        for (var arbeidsavtale : arbeidsforhold.getArbeidsavtaler()) {
             rsArbeidsforhold.add(RsArbeidsforhold.builder()
                     .arbeidsforholdIDnav(arbeidsforhold.getNavArbeidsforholdId())
                     .arbeidsforholdID(arbeidsforhold.getArbeidsforholdId())
@@ -60,7 +60,7 @@ public class ArbeidsforholdMappingUtil {
                     .arbeidsgiver(mapRsAktoer(arbeidsforhold.getArbeidsgiver()))
                     .arbeidsforholdstype(arbeidsforhold.getType())
                     .ansettelsesPeriode(mapRsAnsettelsesPeriode(arbeidsforhold.getAnsettelsesperiode()))
-                    .arbeidsavtale(mapRsArbeidsavtale(arbeidsforhold.getArbeidsavtaler().get(0)))
+                    .arbeidsavtale(mapRsArbeidsavtale(arbeidsavtale))
                     // .permisjon()
                     // .antallTimerForTimeloennet()
                     // .utenlandsopphold()
