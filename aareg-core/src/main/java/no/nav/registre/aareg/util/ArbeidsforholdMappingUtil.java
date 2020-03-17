@@ -268,20 +268,26 @@ public class ArbeidsforholdMappingUtil {
     }
 
     private static RsAktoerPerson mapRsAktoerPerson(Person person) {
-        return RsAktoerPerson.builder()
+        var rsAktoerPerson = RsAktoerPerson.builder()
                 .ident(person.getOffentligIdent())
                 .build();
+        rsAktoerPerson.setAktoertype("PERS");
+        return rsAktoerPerson;
     }
 
     private static RsAktoer mapRsAktoer(OpplysningspliktigArbeidsgiver opplysningspliktigArbeidsgiver) {
         if ("Organisasjon".equals(opplysningspliktigArbeidsgiver.getType())) {
-            return RsOrganisasjon.builder()
+            var rsOrganisasjon = RsOrganisasjon.builder()
                     .orgnummer(((Organisasjon) opplysningspliktigArbeidsgiver).getOrganisasjonsnummer())
                     .build();
+            rsOrganisasjon.setAktoertype("ORG");
+            return rsOrganisasjon;
         } else if ("Person".equals(opplysningspliktigArbeidsgiver.getType())) {
-            return RsAktoerPerson.builder()
+            var rsAktoerPerson = RsAktoerPerson.builder()
                     .ident(((Person) opplysningspliktigArbeidsgiver).getOffentligIdent())
                     .build();
+            rsAktoerPerson.setAktoertype("PERS");
+            return rsAktoerPerson;
         } else {
             throw new RuntimeException("Ukjent aktørtype: " + opplysningspliktigArbeidsgiver.getType());
         }
