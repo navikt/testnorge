@@ -2,7 +2,7 @@ import React, { useState, Fragment } from 'react'
 import { Formik } from 'formik'
 import Stegindikator from 'nav-frontend-stegindikator'
 import { Navigation } from './Navigation/Navigation'
-import { stateModifierFns, stateModifierSeparateValuesPdlf, stateModifierCombineValuesPdlf} from '../stateModifier'
+import { stateModifierFns } from '../stateModifier'
 import { validate } from '~/utils/YupValidations'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
 
@@ -14,7 +14,6 @@ import { Steg3 } from './steg/steg3/Steg3'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
-
 export const StegVelger = ({ initialValues, onSubmit, children }) => {
 	const [step, setStep] = useState(0)
 
@@ -25,7 +24,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 		if (step !== 0) setStep(step - 1)
 	}
 
-	const _handleSubmit = (values, formikBag) => {
+	const _handleSubmit = (values, formikBag) =>{
 		const { setSubmitting } = formikBag
 
 		if (!isLastStep()) {

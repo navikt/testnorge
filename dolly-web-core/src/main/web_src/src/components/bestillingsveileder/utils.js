@@ -1,6 +1,4 @@
 import _has from 'lodash/has'
-import _get from "lodash/get";
-import _isNil from "lodash/isNil";
 
 const rootPaths = [
     'tpsf',

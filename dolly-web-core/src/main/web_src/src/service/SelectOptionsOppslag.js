@@ -31,11 +31,11 @@ SelectOptionsOppslag.formatOptions = (type, data) => {
 		liste.length > 0 &&
 		liste.forEach(org => {
 			org.juridiskEnhet &&
-			options.push({
-				value: org.orgnr,
-				label: `${org.orgnr} (${org.enhetstype}) - ${org.navn}`,
-				juridiskEnhet: org.juridiskEnhet
-			})
+				options.push({
+					value: org.orgnr,
+					label: `${org.orgnr} (${org.enhetstype}) - ${org.navn}`,
+					juridiskEnhet: org.juridiskEnhet
+				})
 		})
 		return options
 	}else if(type === 'personnavn'){
