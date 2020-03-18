@@ -64,6 +64,14 @@ public class SyntetiseringController {
             @RequestParam(required = false, defaultValue = "false") Boolean opprettEndringStatsborgerskap,
             @RequestBody List<FastMeldingRequest> fasteMeldinger
     ) {
+        for (var fastMelding : fasteMeldinger) {
+            if (fastMelding.getFoedselsdato().length() != 6) {
+                throw new RuntimeException("Valideringsfeil: Fødselsdato må være på format DDMMYY.");
+            }
+            if (fastMelding.getPersonnummer().length() != 5) {
+                throw new RuntimeException("Valideringsfeil: Personnummer må ha en lengde på 5.");
+            }
+        }
         return fasteMeldingerService.opprettMeldingerOgLeggIGruppe(avspillergruppeId, fasteMeldinger, opprettEndringStatsborgerskap);
     }
 }
