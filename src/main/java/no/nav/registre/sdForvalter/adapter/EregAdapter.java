@@ -13,7 +13,7 @@ import no.nav.registre.sdForvalter.domain.EregListe;
 
 @Slf4j
 @Component
-public class EregAdapter extends FasteDataApdater {
+public class EregAdapter extends FasteDataAdapter {
     private final EregRepository repository;
 
     public EregAdapter(OpprinnelseAdapter opprinnelseAdapter, GruppeAdapter gruppeAdapter, EregRepository repository) {

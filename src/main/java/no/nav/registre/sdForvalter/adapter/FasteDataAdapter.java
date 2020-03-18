@@ -7,14 +7,14 @@ import no.nav.registre.sdForvalter.database.model.OpprinnelseModel;
 import no.nav.registre.sdForvalter.domain.FasteData;
 
 @AllArgsConstructor
-abstract class FasteDataApdater {
+abstract class FasteDataAdapter {
 
     private final OpprinnelseAdapter opprinnelseAdapter;
     private final GruppeAdapter gruppeAdapter;
 
     OpprinnelseModel getOppinnelse(FasteData fasteData) {
-        return fasteData.getOpprinelse() != null
-                ? opprinnelseAdapter.saveOpprinnelse(fasteData.getOpprinelse())
+        return fasteData.getOpprinnelse() != null
+                ? opprinnelseAdapter.saveOpprinnelse(fasteData.getOpprinnelse())
                 : null;
     }
 

@@ -35,13 +35,11 @@ import no.nav.registre.sdForvalter.util.JsonTestHelper;
 )
 public class OrkestreringsControllerKrrIntegrationTest {
 
-
     @Autowired
     private MockMvc mvc;
 
     @Autowired
     private ObjectMapper objectMapper;
-
 
     @Autowired
     private KrrRepository repository;
@@ -73,11 +71,9 @@ public class OrkestreringsControllerKrrIntegrationTest {
         return new KrrRequest(new Krr(model));
     }
 
-
     @After
     public void cleanUp() {
         reset();
         repository.deleteAll();
     }
-
 }

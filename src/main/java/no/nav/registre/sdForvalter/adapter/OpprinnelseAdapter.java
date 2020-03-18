@@ -12,9 +12,9 @@ public class OpprinnelseAdapter {
 
     private final OpprinnelseRepository repository;
 
-    OpprinnelseModel saveOpprinnelse(String opprinelse) {
+    OpprinnelseModel saveOpprinnelse(String opprinnelse) {
         return repository
-                .findByNavn(opprinelse)
-                .orElseGet(() -> repository.save(new OpprinnelseModel(opprinelse)));
+                .findByNavn(opprinnelse)
+                .orElseGet(() -> repository.save(new OpprinnelseModel(opprinnelse)));
     }
 }

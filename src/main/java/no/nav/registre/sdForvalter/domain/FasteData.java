@@ -14,10 +14,10 @@ public abstract class FasteData {
     @JsonProperty
     private final String gruppe;
     @JsonProperty
-    private final String opprinelse;
+    private final String opprinnelse;
 
     FasteData(FasteDataModel model) {
         gruppe = model.getGruppeModel() != null ? model.getGruppeModel().getKode() : null;
-        opprinelse = model.getOpprinnelseModel() != null ? model.getOpprinnelseModel().getNavn() : null;
+        opprinnelse = model.getOpprinnelseModel() != null ? model.getOpprinnelseModel().getNavn() : null;
     }
 }

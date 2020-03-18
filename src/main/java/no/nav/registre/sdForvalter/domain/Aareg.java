@@ -21,8 +21,8 @@ public class Aareg extends FasteData {
     @JsonProperty(required = true)
     private final String orgId;
 
-    public Aareg(String gruppe, String opprinelse, String fnr, String orgId) {
-        super(gruppe, opprinelse);
+    public Aareg(String gruppe, String opprinnelse, String fnr, String orgId) {
+        super(gruppe, opprinnelse);
         this.fnr = fnr;
         this.orgId = orgId;
     }

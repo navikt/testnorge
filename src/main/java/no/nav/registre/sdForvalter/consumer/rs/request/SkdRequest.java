@@ -28,7 +28,7 @@ public class SkdRequest {
     private String dateOfBirth;
     @NonNull
     @JsonProperty("personnummer")
-    private String fnr;
+    private String personnummer;
     @JsonProperty("fornavn")
     private String firstName;
     @JsonProperty("etternavn")
@@ -41,7 +41,7 @@ public class SkdRequest {
     private String city;
 
     public SkdRequest(TpsIdent ident){
-        fnr = ident.getFnr();
+        personnummer = ident.getFnr().substring(6);
         dateOfBirth = ident.getFnr().substring(0, 6);
         address = ident.getAddress();
         city = ident.getCity();

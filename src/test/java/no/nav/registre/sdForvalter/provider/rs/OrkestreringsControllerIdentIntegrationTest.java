@@ -110,7 +110,7 @@ public class OrkestreringsControllerIdentIntegrationTest {
     public SkdRequest createSkdRequest(TpsIdentModel tpsIdent) {
         return SkdRequest.builder()
                 .dateOfBirth(tpsIdent.getFnr().substring(0, 6))
-                .fnr(tpsIdent.getFnr())
+                .personnummer(tpsIdent.getFnr().substring(6))
                 .address(tpsIdent.getAddress())
                 .city(tpsIdent.getCity())
                 .firstName(tpsIdent.getFirstName())

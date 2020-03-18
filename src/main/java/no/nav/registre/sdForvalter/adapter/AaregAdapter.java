@@ -14,7 +14,7 @@ import no.nav.registre.sdForvalter.domain.AaregListe;
 
 @Slf4j
 @Component
-public class AaregAdapter extends FasteDataApdater {
+public class AaregAdapter extends FasteDataAdapter {
     private final AaregRepository repository;
 
     public AaregAdapter(OpprinnelseAdapter opprinnelseAdapter, GruppeAdapter gruppeAdapter, AaregRepository repository) {

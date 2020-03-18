@@ -14,7 +14,7 @@ import no.nav.registre.sdForvalter.domain.KrrListe;
 
 @Slf4j
 @Component
-public class KrrAdapter extends FasteDataApdater {
+public class KrrAdapter extends FasteDataAdapter {
     private final KrrRepository repository;
 
     public KrrAdapter(OpprinnelseAdapter opprinnelseAdapter, GruppeAdapter gruppeAdapter, KrrRepository repository) {

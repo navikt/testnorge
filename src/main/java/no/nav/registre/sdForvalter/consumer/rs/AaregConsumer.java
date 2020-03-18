@@ -57,13 +57,19 @@ public class AaregConsumer {
     public void sendArbeidsforhold(AaregListe liste, String environment) {
         List<AaregRequest> requestList = liste.getListe()
                 .stream()
-                .filter(item -> getArbeidsforhold(item.getFnr(), environment).isEmpty())
+                // TODO filter arbeidsforhold som allerede eksisterer.
+                // .filter(item -> getArbeidsforhold(item.getFnr(), environment).isEmpty())
                 .map(item -> new AaregRequest(new Arbeidsforhold(item), environment))
                 .collect(Collectors.toList());
 
-        restTemplate.exchange(
-                RequestEntity.post(sendArbeidsforholdTilAaregUrl.expand()).body(requestList),
-                RESPONSE_TYPE
-        ).getBody();
+        try {
+            restTemplate.exchange(
+                    RequestEntity.post(sendArbeidsforholdTilAaregUrl.expand()).body(requestList),
+                    RESPONSE_TYPE
+            ).getBody();
+        } catch (Exception e) {
+            log.error("Feil ved innsending av arbeidsforhold", e);
+            throw e;
+        }
     }
 }

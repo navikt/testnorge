@@ -13,7 +13,7 @@ import no.nav.registre.sdForvalter.domain.TpsIdentListe;
 
 @Slf4j
 @Component
-public class TpsIdenterAdapter extends FasteDataApdater {
+public class TpsIdenterAdapter extends FasteDataAdapter {
     private final TpsIdenterRepository repository;
 
     public TpsIdenterAdapter(OpprinnelseAdapter opprinnelseAdapter, GruppeAdapter gruppeAdapter, TpsIdenterRepository repository) {
