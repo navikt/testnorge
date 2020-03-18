@@ -711,5 +711,37 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(pensjonforvalter)
 	}
 
+	const altinnInntektKriterier = bestillingData.altinnInntekt
+
+	if (altinnInntektKriterier) {
+		// Flater ut altinnKriterier for å gjøre det lettere å mappe
+
+		let flatAltinnInntektKriterier = []
+		altinnInntektKriterier.inntekter.forEach(i => {
+			flatAltinnInntektKriterier.push({
+				dato: i.dato,
+				virksomhetsnummer: i.virksomhetsnummer,
+				beloep: i.beloep
+			})
+		})
+
+		const altinnInntektObj = {
+			header: 'Altinn inntekt',
+			itemRows: []
+		}
+
+		flatAltinnInntektKriterier.forEach((inntekt, i) => {
+			altinnInntektObj.itemRows.push([
+				{
+					numberHeader: `Inntekt ${i + 1}`
+				},
+				obj('Innsendingstidspunkt', Formatters.formatDate(inntekt.dato)),
+				obj('Virksomhet', inntekt.virksomhetsnummer),
+				obj('Beløp', inntekt.beloep)
+			])
+		})
+		data.push(altinnInntektObj)
+	}
+
 	return data
 }

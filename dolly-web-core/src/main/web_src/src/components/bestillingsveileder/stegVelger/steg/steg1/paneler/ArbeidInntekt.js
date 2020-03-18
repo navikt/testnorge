@@ -25,11 +25,14 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 			<AttributtKategori title="Inntekt">
 				<Attributt attr={sm.attrs.sigrunstub} />
 			</AttributtKategori>
-			<AttributtKategori title={"Pensjonsgivende inntekt"}>
+			<AttributtKategori title="Pensjonsgivende inntekt">
 				<Attributt attr={sm.attrs.pensjonforvalter} />
 			</AttributtKategori>
 			<AttributtKategori title="Inntektskomponenten (A-ordningen)">
 				<Attributt attr={sm.attrs.inntektstub} />
+			</AttributtKategori>
+			<AttributtKategori title="Altinn inntekt (beta)">
+				<Attributt attr={sm.attrs.altinnInntekt} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -71,6 +74,21 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 				}
 			]),
 		remove: () => del('sigrunstub')
+	},
+	altinnInntekt: {
+		label: 'Altinn inntekt',
+		checked: has('altinnInntekt'),
+		add: () =>
+			set('altinnInntekt', {
+				inntekter: [
+					{
+						dato: new Date(),
+						virksomhetsnummer: '',
+						beloep: ''
+					}
+				]
+			}),
+		remove: () => del('altinnInntekt')
 	},
 	pensjonforvalter: {
 		label: 'Pensjonsgivende inntekt',

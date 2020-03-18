@@ -48,7 +48,8 @@ export const erForste = (values, attributt) => {
 		'krrstub',
 		'arenaforvalter',
 		'udistub',
-		'pensjonforvalter'
+		'pensjonforvalter',
+		'altinnInntekt'
 	]
 
 	const valgteAttributter = []
