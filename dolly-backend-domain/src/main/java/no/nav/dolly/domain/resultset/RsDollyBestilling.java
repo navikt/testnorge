@@ -38,6 +38,12 @@ public class RsDollyBestilling {
     private List<String> environments;
 
     @ApiModelProperty(
+            position = 2,
+            value = "Navn på malbestillling"
+    )
+    private String malBestillingNavn;
+
+    @ApiModelProperty(
             position = 3
     )
     private RsPdldata pdlforvalter;

@@ -18,10 +18,4 @@ public class RsDollyBestillingRequest extends RsDollyUtvidetBestilling {
             value = "Antall testpersoner som bestilles"
     )
     private int antall;
-
-    @ApiModelProperty(
-            position = 15,
-            value = "Navn på malbestillling"
-    )
-    private String malBestillingNavn;
 }
