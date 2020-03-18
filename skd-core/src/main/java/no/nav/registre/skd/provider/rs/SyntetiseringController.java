@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -66,10 +68,10 @@ public class SyntetiseringController {
     ) {
         for (var fastMelding : fasteMeldinger) {
             if (fastMelding.getFoedselsdato().length() != 6) {
-                throw new RuntimeException("Valideringsfeil: Fødselsdato må være på format DDMMYY.");
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Valideringsfeil: Fødselsdato må være på format DDMMYY.");
             }
             if (fastMelding.getPersonnummer().length() != 5) {
-                throw new RuntimeException("Valideringsfeil: Personnummer må ha en lengde på 5.");
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Valideringsfeil: Personnummer må ha en lengde på 5.");
             }
         }
         return fasteMeldingerService.opprettMeldingerOgLeggIGruppe(avspillergruppeId, fasteMeldinger, opprettEndringStatsborgerskap);
