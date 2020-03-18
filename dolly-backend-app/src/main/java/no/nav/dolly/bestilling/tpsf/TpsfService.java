@@ -31,6 +31,7 @@ import no.nav.dolly.bestilling.udistub.RsAliasResponse;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.EnvironmentsResponse;
 import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfIdenterMiljoer;
@@ -109,13 +110,13 @@ public class TpsfService {
     }
 
     @Timed(name = "providers", tags = { "operation", "motTPSF" })
-    public String[] endrePerson(String ident, TpsfBestilling tpsfBestilling) {
+    public RsOppdaterPersonResponse endrePerson(String ident, TpsfBestilling tpsfBestilling) {
 
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_UPDATE_PERSON_URL, ident)))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, getUserIdToken())
-                .body(tpsfBestilling), String[].class).getBody();
+                .body(tpsfBestilling), RsOppdaterPersonResponse.class).getBody();
     }
 
     @Timed(name = "providers", tags = { "operation", "motTPSF" })

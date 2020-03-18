@@ -45,6 +45,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
 import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
@@ -145,10 +146,12 @@ public class DollyBestillingService {
             TpsfBestilling tpsfBestilling = nonNull(request.getTpsf()) ? mapperFacade.map(request.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
             tpsfBestilling.setAntall(1);
 
-            String[] identer = tpsfService.endrePerson(bestilling.getIdent(), tpsfBestilling);
-            sendIdenterTilTPS(request.getEnvironments(), newArrayList(identer), null, progress);
+            RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endrePerson(bestilling.getIdent(), tpsfBestilling);
+            sendIdenterTilTPS(request.getEnvironments(),
+                    oppdaterPersonResponse.getIdentTupler().stream()
+                            .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
 
-            TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPerson(identer[0]);
+            TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(oppdaterPersonResponse);
             clientRegisters.forEach(clientRegister ->
                     clientRegister.gjenopprett(request, tpsPerson, progress, true));
 

@@ -23,6 +23,7 @@ public class TpsPerson {
     private String hovedperson;
     private List<String> partnere;
     private List<String> barn;
+    private List<String> nyePartnereOgBarn;
 
     public List<String> getPartnere() {
         if (isNull(partnere)) {

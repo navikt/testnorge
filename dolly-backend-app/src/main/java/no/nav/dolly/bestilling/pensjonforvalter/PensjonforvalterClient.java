@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.pensjonforvalter;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -78,7 +77,7 @@ public class PensjonforvalterClient implements ClientRegister {
         status.append('$').append(PENSJON_FORVALTER).append('#');
 
         try {
-            tpsfPersonCache.fetchIfEmpty(tpsPerson, singletonList(tpsPerson.getHovedperson()));
+            tpsfPersonCache.fetchIfEmpty(tpsPerson);
             OpprettPersonRequest opprettPersonRequest =
                     mapperFacade.map(tpsPerson.getPerson(tpsPerson.getHovedperson()), OpprettPersonRequest.class);
             opprettPersonRequest.setFnr(tpsPerson.getHovedperson());

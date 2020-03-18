@@ -3,15 +3,18 @@ package no.nav.dolly.service;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
+import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @Service
@@ -20,7 +23,10 @@ public class TpsfPersonCache {
 
     private final TpsfService tpsfService;
 
-    public void fetchIfEmpty(TpsPerson tpsPerson, List<String> tpsfIdenter) {
+    public void fetchIfEmpty(TpsPerson tpsPerson) {
+
+        List<String> tpsfIdenter = new ArrayList<>();
+        Stream.of(singletonList(tpsPerson.getHovedperson()), tpsPerson.getPartnere(), tpsPerson.getBarn()).forEach(tpsfIdenter::addAll);
 
         AtomicBoolean notFound = new AtomicBoolean(false);
         tpsfIdenter.forEach(ident -> {
@@ -33,9 +39,9 @@ public class TpsfPersonCache {
         }
     }
 
-    public TpsPerson prepareTpsPerson(String ident) {
+    public TpsPerson prepareTpsPersoner(RsOppdaterPersonResponse identer) {
 
-        List<Person> personer = tpsfService.hentTestpersoner(singletonList(ident));
+        List<Person> personer = tpsfService.hentTestpersoner(singletonList(identer.getIdentTupler().get(0).getIdent()));
 
         if (!personer.isEmpty()) {
             return TpsPerson.builder()
@@ -50,6 +56,10 @@ public class TpsfPersonCache {
                             .filter(Relasjon::isBarn)
                             .map(Relasjon::getPersonRelasjonMed)
                             .map(Person::getIdent)
+                            .collect(Collectors.toList()))
+                    .nyePartnereOgBarn(identer.getIdentTupler().stream()
+                            .filter(RsOppdaterPersonResponse.IdentTuple::isLagtTil)
+                            .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
                             .collect(Collectors.toList()))
                     .build();
         }
