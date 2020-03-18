@@ -4,7 +4,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 
 import java.util.List;
-import javax.el.MethodNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +11,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
-import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.metrics.Timed;
 
 @Slf4j
 @Service
@@ -30,8 +28,8 @@ public class KrrstubClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    @Timed(name = "providers", tags={"operation", "gjenopprettKrrStub"})
-    @Override public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+    @Timed(name = "providers", tags = { "operation", "gjenopprettKrrStub" })
+    @Override public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getKrrstub())) {
 
@@ -39,7 +37,9 @@ public class KrrstubClient implements ClientRegister {
                 DigitalKontaktdata digitalKontaktdata = mapperFacade.map(bestilling.getKrrstub(), DigitalKontaktdata.class);
                 digitalKontaktdata.setPersonident(tpsPerson.getHovedperson());
 
-                deleteIdent(tpsPerson.getHovedperson());
+                if (!isOpprettEndre) {
+                    deleteIdent(tpsPerson.getHovedperson());
+                }
 
                 ResponseEntity krrstubResponse = krrstubConsumer.createDigitalKontaktdata(digitalKontaktdata);
                 progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
@@ -56,13 +56,6 @@ public class KrrstubClient implements ClientRegister {
     public void release(List<String> identer) {
 
         identer.forEach(this::deleteIdent);
-    }
-
-    @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
-        if (nonNull(bestilling.getKrrstub())) {
-            throw new MethodNotFoundException("Krrstub mangler denne funksjonen");
-        }
     }
 
     private void deleteIdent(String ident) {

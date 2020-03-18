@@ -1,4 +1,4 @@
-package no.nav.dolly.consumer.aareg;
+package no.nav.dolly.bestilling.aareg;
 
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;

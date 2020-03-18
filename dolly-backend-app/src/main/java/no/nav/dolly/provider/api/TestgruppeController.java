@@ -88,7 +88,7 @@ public class TestgruppeController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
     public RsBestillingStatus opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
-        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(), request.getAntall(), null);
+        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(), request.getAntall(), null, request.getMalBestillingNavn());
 
         dollyBestillingService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
@@ -100,7 +100,7 @@ public class TestgruppeController {
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
     public RsBestillingStatus opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(),
-                request.getOpprettFraIdenter().size(), request.getOpprettFraIdenter());
+                request.getOpprettFraIdenter().size(), request.getOpprettFraIdenter(), request.getMalBestillingNavn());
 
         dollyBestillingService.opprettPersonerFraIdenterMedKriterierAsync(gruppeId, request, bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);

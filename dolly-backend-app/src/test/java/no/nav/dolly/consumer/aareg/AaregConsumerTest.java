@@ -32,6 +32,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import no.nav.dolly.bestilling.aareg.AaregConsumer;
 import no.nav.dolly.bestilling.aareg.domain.AaregOppdaterRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregResponse;

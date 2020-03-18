@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.pensjonforvalter;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -18,8 +17,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -41,7 +39,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     @Timed(name = "providers", tags = { "operation", "gjenopprettPensjon" })
     @Override
-    public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         StringBuilder status = new StringBuilder();
 
@@ -71,12 +69,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     @Override
     public void release(List<String> identer) {
-
-    }
-
-    @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
-
+        // Pensjonforvalter / POPP støtter pt ikke sletting
     }
 
     private void opprettPerson(TpsPerson tpsPerson, Set<String> miljoer, StringBuilder status) {
@@ -84,7 +77,7 @@ public class PensjonforvalterClient implements ClientRegister {
         status.append('$').append(PENSJON_FORVALTER).append('#');
 
         try {
-            tpsfPersonCache.fetchIfEmpty(tpsPerson, singletonList(tpsPerson.getHovedperson()));
+            tpsfPersonCache.fetchIfEmpty(tpsPerson);
             OpprettPersonRequest opprettPersonRequest =
                     mapperFacade.map(tpsPerson.getPerson(tpsPerson.getHovedperson()), OpprettPersonRequest.class);
             opprettPersonRequest.setFnr(tpsPerson.getHovedperson());

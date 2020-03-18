@@ -41,9 +41,11 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
 import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
@@ -56,6 +58,7 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
+import no.nav.dolly.service.TpsfPersonCache;
 
 @Slf4j
 @Service
@@ -68,6 +71,7 @@ public class DollyBestillingService {
 
     private final TpsfResponseHandler tpsfResponseHandler;
     private final TpsfService tpsfService;
+    private final TpsfPersonCache tpsfPersonCache;
     private final TestgruppeService testgruppeService;
     private final IdentService identService;
     private final BestillingProgressRepository bestillingProgressRepository;
@@ -138,19 +142,23 @@ public class DollyBestillingService {
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
         try {
-            BestillingProgress progress = new BestillingProgress(bestilling.getId(), request.getIdent());
+            BestillingProgress progress = new BestillingProgress(bestilling.getId(), bestilling.getIdent());
             TpsfBestilling tpsfBestilling = nonNull(request.getTpsf()) ? mapperFacade.map(request.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
             tpsfBestilling.setAntall(1);
 
-            Person person = tpsfService.endrePerson(request.getIdent(), tpsfBestilling);
-            sendIdenterTilTPS(request.getEnvironments(), singletonList(person.getIdent()), null, progress);
+            RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endrePerson(bestilling.getIdent(), tpsfBestilling);
+            sendIdenterTilTPS(request.getEnvironments(),
+                    oppdaterPersonResponse.getIdentTupler().stream()
+                            .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
 
-            clientRegisters.forEach(clientRegister -> clientRegister.opprettEndre(request, progress));
+            TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(oppdaterPersonResponse);
+            clientRegisters.forEach(clientRegister ->
+                    clientRegister.gjenopprett(request, tpsPerson, progress, true));
 
             oppdaterProgress(bestilling, progress);
 
         } catch (Exception e) {
-            log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), request.getIdent(), e.getMessage(), e);
+            log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), bestilling.getIdent(), e.getMessage(), e);
             bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
 
         } finally {
@@ -176,7 +184,9 @@ public class DollyBestillingService {
                 log.warn("Bestilling med id={} på ident={} ble avsluttet med feil: {}", bestilling.getId(), ident, message);
                 bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, message));
 
-            } catch (JsonProcessingException jme) {log.error("Json kunne ikke hentes ut.", jme);}
+            } catch (JsonProcessingException jme) {
+                log.error("Json kunne ikke hentes ut.", jme);
+            }
 
         } catch (Exception e) {
             log.error("Bestilling med id={} på ident={} ble avsluttet med feil: {}", bestilling.getId(), ident, e.getMessage(), e);
@@ -230,7 +240,7 @@ public class DollyBestillingService {
                 bestKriterier.setEnvironments(newArrayList(bestilling.getMiljoer().split(",")));
 
                 clientRegisters.forEach(clientRegister ->
-                        clientRegister.gjenopprett(bestKriterier, tpsPerson, progress));
+                        clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, false));
 
                 oppdaterProgress(bestilling, progress);
 
@@ -267,13 +277,13 @@ public class DollyBestillingService {
 
             sendIdenterTilTPS(request.getEnvironments(), leverteIdenter, testgruppe, progress);
 
-            RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
+            RsDollyUtvidetBestilling bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyUtvidetBestilling.class);
             bestKriterier.setEnvironments(request.getEnvironments());
             if (nonNull(bestilling.getTpsfKriterier())) {
                 bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
             }
 
-            clientRegisters.forEach(clientRegister -> clientRegister.gjenopprett(bestKriterier, tpsPerson, progress));
+            clientRegisters.forEach(clientRegister -> clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, false));
 
             oppdaterProgress(bestilling, progress);
 

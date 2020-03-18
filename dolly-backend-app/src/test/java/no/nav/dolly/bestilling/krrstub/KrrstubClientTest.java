@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
 
 import ma.glasnost.orika.MapperFacade;
@@ -48,7 +47,7 @@ public class KrrstubClientTest {
 
     @Test
     public void gjenopprett_ingendata() {
-        krrstubClient.gjenopprett(new RsDollyBestillingRequest(), TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
+        krrstubClient.gjenopprett(new RsDollyBestillingRequest(), TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
 
         verify(krrstubConsumer, times(0)).createDigitalKontaktdata(any(DigitalKontaktdata.class));
     }
@@ -66,7 +65,7 @@ public class KrrstubClientTest {
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
         krrstubClient.gjenopprett(request,
                 TpsPerson.builder().hovedperson(IDENT).build(),
-                BestillingProgress.builder().bestillingId(BESTILLING_ID).build());
+                BestillingProgress.builder().bestillingId(BESTILLING_ID).build(), false);
 
         verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
         verify(krrStubResponseHandler).extractResponse(any());
@@ -84,7 +83,7 @@ public class KrrstubClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
-        krrstubClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        krrstubClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
         verify(krrStubResponseHandler, times(0)).extractResponse(any());

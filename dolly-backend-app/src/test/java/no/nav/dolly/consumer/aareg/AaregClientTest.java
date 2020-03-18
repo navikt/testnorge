@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.aareg.AaregClient;
+import no.nav.dolly.bestilling.aareg.AaregConsumer;
 import no.nav.dolly.bestilling.aareg.domain.AaregOppdaterRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
@@ -73,7 +74,7 @@ public class AaregClientTest {
         request.setAareg(singletonList(RsArbeidsforhold.builder().build()));
         request.setEnvironments(singletonList("u2"));
         aaregClient.gjenopprett(request,
-                TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
+                TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
 
         verify(aaregConsumer).opprettArbeidsforhold(any(AaregOpprettRequest.class));
     }
@@ -93,7 +94,7 @@ public class AaregClientTest {
         request.setAareg(singletonList(RsArbeidsforhold.builder().build()));
         request.setEnvironments(singletonList("u2"));
         aaregClient.gjenopprett(request,
-                TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
+                TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
 
         verify(aaregConsumer).opprettArbeidsforhold(any(AaregOpprettRequest.class));
     }
@@ -114,7 +115,7 @@ public class AaregClientTest {
                 .arbeidsgiver(RsOrganisasjon.builder().orgnummer(ORGNUMMER).build())
                 .build()));
         request.setEnvironments(singletonList("u2"));
-        aaregClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
+        aaregClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
 
         verify(aaregConsumer).oppdaterArbeidsforhold(any(AaregOppdaterRequest.class));
     }
@@ -140,7 +141,7 @@ public class AaregClientTest {
                 .build()));
         request.setEnvironments(singletonList("u2"));
         aaregClient.gjenopprett(request,
-                TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress());
+                TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
 
         verify(aaregConsumer).oppdaterArbeidsforhold(any(AaregOppdaterRequest.class));
     }
@@ -167,7 +168,7 @@ public class AaregClientTest {
                 .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
                 .build()));
         request.setEnvironments(singletonList("u2"));
-        aaregClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        aaregClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         verify(aaregConsumer).oppdaterArbeidsforhold(any(AaregOppdaterRequest.class));
         assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=1$OK")));

@@ -45,7 +45,7 @@ public class InstdataClientTest {
 
         BestillingProgress progress = new BestillingProgress();
 
-        instdataClient.gjenopprett(new RsDollyBestillingRequest(), TPS_IDENT, progress);
+        instdataClient.gjenopprett(new RsDollyBestillingRequest(), TPS_IDENT, progress, false);
 
         assertThat(progress.getInstdataStatus(), is(nullValue()));
     }
@@ -60,7 +60,7 @@ public class InstdataClientTest {
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setInstdata(newArrayList(RsInstdata.builder().build()));
         request.setEnvironments(singletonList("t2"));
-        instdataClient.gjenopprett(request, TPS_IDENT, progress);
+        instdataClient.gjenopprett(request, TPS_IDENT, progress, false);
 
         assertThat(progress.getInstdataStatus(), is(equalTo("t2:Feil: Miljø ikke støttet")));
     }
@@ -85,7 +85,7 @@ public class InstdataClientTest {
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setInstdata(newArrayList(RsInstdata.builder().build()));
         request.setEnvironments(singletonList("q2"));
-        instdataClient.gjenopprett(request, TPS_IDENT, progress);
+        instdataClient.gjenopprett(request, TPS_IDENT, progress, false);
 
         assertThat(progress.getInstdataStatus(), is(equalTo("q2:opphold=1$OK")));
     }

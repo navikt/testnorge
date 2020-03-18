@@ -84,7 +84,7 @@ public class PdlForvalterClientTest {
         request.setPdlforvalter(RsPdldata.builder().build());
         request.setEnvironments(singletonList(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
-        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -108,7 +108,7 @@ public class PdlForvalterClientTest {
         request.setPdlforvalter(RsPdldata.builder().build());
         request.setEnvironments(singletonList(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
-        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -131,7 +131,7 @@ public class PdlForvalterClientTest {
         request.setPdlforvalter(RsPdldata.builder().build());
         request.setEnvironments(singletonList(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
-        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -155,7 +155,7 @@ public class PdlForvalterClientTest {
         request.setPdlforvalter(RsPdldata.builder().build());
         request.setEnvironments(singletonList(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
-        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -178,7 +178,7 @@ public class PdlForvalterClientTest {
         request.setPdlforvalter(RsPdldata.builder().build());
         request.setEnvironments(singletonList(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
-        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -202,7 +202,7 @@ public class PdlForvalterClientTest {
         request.setPdlforvalter(RsPdldata.builder().build());
         request.setEnvironments(singletonList(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
-        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -219,7 +219,7 @@ public class PdlForvalterClientTest {
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setPdlforvalter(RsPdldata.builder().build());
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
-        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress);
+        pdlForvalterClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         verifyNoInteractions(mapperFacade);
         verifyNoInteractions(pdlForvalterConsumer);

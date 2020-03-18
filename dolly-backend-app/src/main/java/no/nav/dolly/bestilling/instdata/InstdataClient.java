@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.instdata;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -9,7 +8,6 @@ import static org.springframework.http.HttpStatus.OK;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.el.MethodNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -19,8 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.domain.resultset.inst.InstdataInstitusjonstype;
 import no.nav.dolly.domain.resultset.inst.InstdataKategori;
@@ -42,8 +39,8 @@ public class InstdataClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    @Timed(name = "providers", tags={"operation", "gjenopprettInstdata"})
-    public void gjenopprett(RsDollyBestillingRequest bestilling, TpsPerson tpsPerson, BestillingProgress progress) {
+    @Timed(name = "providers", tags = { "operation", "gjenopprettInstdata" })
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getInstdata().isEmpty()) {
 
@@ -56,7 +53,9 @@ public class InstdataClient implements ClientRegister {
             if (!environments.isEmpty()) {
 
                 environments.forEach(environment -> {
-                    deleteInstdata(tpsPerson.getHovedperson(), environment);
+                    if (!isOpprettEndre) {
+                        deleteInstdata(tpsPerson.getHovedperson(), environment);
+                    }
 
                     List<Instdata> instdataListe = mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class);
                     instdataListe.forEach(instdata -> {
@@ -89,13 +88,6 @@ public class InstdataClient implements ClientRegister {
         environments.forEach(environment ->
                 identer.forEach(ident -> deleteInstdata(ident, environment))
         );
-    }
-
-    @Override
-    public void opprettEndre(RsDollyUpdateRequest bestilling, BestillingProgress progress) {
-        if (nonNull(bestilling.getInstdata())) {
-            throw new MethodNotFoundException("Instdata mangler denne funksjonen");
-        }
     }
 
     private List<String> getEnvironments() {

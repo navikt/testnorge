@@ -5,17 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsDollyBestillingRequest extends RsDollyUtvidetBestilling {
+public class RsDollyUtvidetBestilling extends RsDollyBestilling {
 
     @ApiModelProperty(
-            position = 1,
-            required = true,
-            value = "Antall testpersoner som bestilles"
+            position = 2
     )
-    private int antall;
+    private RsTpsfUtvidetBestilling tpsf;
 }

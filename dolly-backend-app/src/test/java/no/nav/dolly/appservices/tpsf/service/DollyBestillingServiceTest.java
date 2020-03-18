@@ -40,6 +40,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -154,7 +155,7 @@ public class DollyBestillingServiceTest {
         when(mapperFacade.map(any(RsTpsfUtvidetBestilling.class), eq(TpsfBestilling.class))).thenReturn(new TpsfBestilling());
         when(objectMapper.readValue(anyString(), eq(TpsfBestilling.class))).thenReturn(new TpsfBestilling());
 
-        when(objectMapper.readValue(anyString(), eq(RsDollyBestillingRequest.class))).thenReturn(new RsDollyBestillingRequest());
+        when(objectMapper.readValue(anyString(), eq(RsDollyUtvidetBestilling.class))).thenReturn(new RsDollyUtvidetBestilling());
     }
 
     @Test
