@@ -5,7 +5,7 @@ import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Se
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import {getPlaceholder, setNavn, setValue} from "../utils"
+import {getPlaceholder, setNavn, setValue, setOrgNummer} from "../utils"
 import _get from "lodash/get";
 
 export const Adressat = ({ formikBag }) => {
@@ -17,6 +17,8 @@ export const Adressat = ({ formikBag }) => {
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 	const fasteDatasettInfo = SelectOptionsOppslag('fasteDatasettTps')
 	const navnOgFnrOptions = SelectOptionsOppslag.formatOptions('navnOgFnr', fasteDatasettInfo)
+	const orgInfo = SelectOptionsOppslag('orgnr')
+	const orgOptions = SelectOptionsOppslag.formatOptions('orgInfo', orgInfo)
 
 	const handleAfterChange = ({ value }) => {
 		if (value === 'ADVOKAT' || value === 'ORGANISASJON')
@@ -64,16 +66,16 @@ export const Adressat = ({ formikBag }) => {
 						isClearable={false}
 						optionHeight={50}
 					/>
-					<div>
-						<FormikTextInput
-							name={`${addressatPath}.organisasjonsnavn`}
-							label="Organisasjonsnavn"
-						/>
-						<FormikTextInput
-							name={`${addressatPath}.organisasjonsnummer`}
-							label="Organisasjonsnummer"
-						/>
-					</div>
+					<DollySelect
+						name={`${addressatPath}.organisasjonsnummer`}
+						label="Orgnaisasjonsnavn og nummer"
+						options={orgOptions}
+						size="large"
+						isLoading={navnInfo.loading}
+						onChange={org => setOrgNummer(org, `${addressatPath}`, formikBag.setFieldValue)}
+						value={_get(formikBag.values, `${addressatPath}.organisasjonsnummer`)}
+						isClearable={false}
+					/>
 				</React.Fragment>
 			)}
 
