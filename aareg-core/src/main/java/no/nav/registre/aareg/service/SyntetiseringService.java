@@ -207,26 +207,20 @@ public class SyntetiseringService {
         Map<String, String> aaregResponses = new HashMap<>();
         for (var arbeidsforholdliste : identerSomSkalBeholdeArbeidsforhold.values()) {
             for (var arbeidsforhold : arbeidsforholdliste) {
-                var oppdaterRequests = mapAaregResponseToOppdateringsRequest(arbeidsforhold);
-                for (var oppdaterRequest : oppdaterRequests) {
-                    oppdaterRequest.setEnvironments(Collections.singletonList(miljoe));
-                    oppdaterRequest.setRapporteringsperiode(LocalDateTime.now());
-                    aaregResponses.putAll(aaregService.oppdaterArbeidsforhold(oppdaterRequest));
-                }
+                var oppdaterRequest = mapAaregResponseToOppdateringsRequest(arbeidsforhold);
+                oppdaterRequest.setEnvironments(Collections.singletonList(miljoe));
+                oppdaterRequest.setRapporteringsperiode(LocalDateTime.now());
+                aaregResponses.putAll(aaregService.oppdaterArbeidsforhold(oppdaterRequest));
             }
         }
         log.info("Status på oppdatering: {}", aaregResponses.toString());
     }
 
-    private List<RsAaregOppdaterRequest> mapAaregResponseToOppdateringsRequest(Arbeidsforhold aaregResponse) {
+    private RsAaregOppdaterRequest mapAaregResponseToOppdateringsRequest(Arbeidsforhold aaregResponse) {
         var arbeidsforhold = mapArbeidsforholdToRsArbeidsforhold(aaregResponse);
-        List<RsAaregOppdaterRequest> oppdaterRequests = new ArrayList<>(arbeidsforhold.size());
-        for (var rsArbeidsforhold : arbeidsforhold) {
-            var oppdaterRequest = new RsAaregOppdaterRequest();
-            oppdaterRequest.setArbeidsforhold(rsArbeidsforhold);
-            oppdaterRequests.add(oppdaterRequest);
-        }
-        return oppdaterRequests;
+        var oppdaterRequest = new RsAaregOppdaterRequest();
+        oppdaterRequest.setArbeidsforhold(arbeidsforhold);
+        return oppdaterRequest;
     }
 
     private void populerIdenterSomSkalBeholdeArbeidsforhold(

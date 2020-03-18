@@ -51,23 +51,19 @@ public class ArbeidsforholdMappingUtil {
                 .build();
     }
 
-    public static List<RsArbeidsforhold> mapArbeidsforholdToRsArbeidsforhold(Arbeidsforhold arbeidsforhold) {
-        List<RsArbeidsforhold> rsArbeidsforhold = new ArrayList<>(arbeidsforhold.getArbeidsavtaler().size());
-        for (var arbeidsavtale : arbeidsforhold.getArbeidsavtaler()) {
-            rsArbeidsforhold.add(RsArbeidsforhold.builder()
-                    .arbeidsforholdIDnav(arbeidsforhold.getNavArbeidsforholdId())
-                    .arbeidsforholdID(arbeidsforhold.getArbeidsforholdId())
-                    .arbeidstaker(mapRsAktoerPerson(arbeidsforhold.getArbeidstaker()))
-                    .arbeidsgiver(mapRsAktoer(arbeidsforhold.getArbeidsgiver()))
-                    .arbeidsforholdstype(arbeidsforhold.getType())
-                    .ansettelsesPeriode(mapRsAnsettelsesPeriode(arbeidsforhold.getAnsettelsesperiode()))
-                    .arbeidsavtale(mapRsArbeidsavtale(arbeidsavtale))
-                    // .permisjon()
-                    // .antallTimerForTimeloennet()
-                    // .utenlandsopphold()
-                    .build());
-        }
-        return rsArbeidsforhold;
+    public static RsArbeidsforhold mapArbeidsforholdToRsArbeidsforhold(Arbeidsforhold arbeidsforhold) {
+        return RsArbeidsforhold.builder()
+                .arbeidsforholdIDnav(arbeidsforhold.getNavArbeidsforholdId())
+                .arbeidsforholdID(arbeidsforhold.getArbeidsforholdId())
+                .arbeidstaker(mapRsAktoerPerson(arbeidsforhold.getArbeidstaker()))
+                .arbeidsgiver(mapRsAktoer(arbeidsforhold.getArbeidsgiver()))
+                .arbeidsforholdstype(arbeidsforhold.getType())
+                .ansettelsesPeriode(mapRsAnsettelsesPeriode(arbeidsforhold.getAnsettelsesperiode()))
+                .arbeidsavtale(mapRsArbeidsavtale(arbeidsforhold.getArbeidsavtaler()))
+                // .permisjon()
+                // .antallTimerForTimeloennet()
+                // .utenlandsopphold()
+                .build();
     }
 
     private static Person mapArbeidstaker(JsonNode person) {
@@ -294,7 +290,8 @@ public class ArbeidsforholdMappingUtil {
                 .build();
     }
 
-    private static RsArbeidsavtale mapRsArbeidsavtale(Arbeidsavtale arbeidsavtale) {
+    private static RsArbeidsavtale mapRsArbeidsavtale(List<Arbeidsavtale> arbeidsavtaler) {
+        var arbeidsavtale = findLatestArbeidsavtale(arbeidsavtaler);
         return RsArbeidsavtale.builder()
                 .arbeidstidsordning(arbeidsavtale.getArbeidstidsordning())
                 .yrke(arbeidsavtale.getYrke())
@@ -303,5 +300,17 @@ public class ArbeidsforholdMappingUtil {
                 .sisteLoennsendringsdato(arbeidsavtale.getSistLoennsendring() != null ? arbeidsavtale.getSistLoennsendring().atStartOfDay() : null)
                 .endringsdatoStillingsprosent(arbeidsavtale.getSistStillingsendring() != null ? arbeidsavtale.getSistStillingsendring().atStartOfDay() : null)
                 .build();
+    }
+
+    private static Arbeidsavtale findLatestArbeidsavtale(List<Arbeidsavtale> arbeidsavtaler) {
+        var latest = LocalDateTime.MIN;
+        Arbeidsavtale latestArbeidsavtale = null;
+        for (var arbeidsavtale : arbeidsavtaler) {
+            if (arbeidsavtale.getSporingsinformasjon().getEndretTidspunkt().isAfter(latest)) {
+                latest = arbeidsavtale.getSporingsinformasjon().getEndretTidspunkt();
+                latestArbeidsavtale = arbeidsavtale;
+            }
+        }
+        return latestArbeidsavtale;
     }
 }
