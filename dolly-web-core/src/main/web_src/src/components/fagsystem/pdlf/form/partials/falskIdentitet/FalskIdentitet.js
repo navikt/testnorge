@@ -1,15 +1,19 @@
 import React from 'react'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import {DollySelect, FormikSelect} from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { DollyApi } from "~/service/Api";
-import FasteDatasettSelect from "~/components/fasteDatasett/FasteDatasettSelect";
-import {getNavnOgFnrListe, getNavnListe} from "../filterMethods"
-import {getPlaceholder} from "../utils"
+import {getPlaceholder, setValue, setNavn} from "../utils"
+import _get from "lodash/get";
+import {SelectOptionsOppslag} from "~/service/SelectOptionsOppslag";
 
 export const FalskIdentitet = ({ formikBag }) => {
 	const falskIdPath = 'pdlforvalter.falskIdentitet.rettIdentitet'
 	const falskIdObj = formikBag.values.pdlforvalter.falskIdentitet.rettIdentitet
+
+	const navnInfo = SelectOptionsOppslag('personnavn')
+	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
+	const fasteDatasettInfo = SelectOptionsOppslag('fasteDatasettTps')
+	const navnOgFnrOptions = SelectOptionsOppslag.formatOptions('navnOgFnr', fasteDatasettInfo)
 
 	const settIdentitetType = e => {
 		if (e.value === 'UKJENT') {
@@ -24,7 +28,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 				identitetType: e.value,
 				foedselsdato: '',
 				kjoenn: '',
-				personnavn: '',
+				personnavn: { fornavn: '', mellomnavn: '', etternavn: '' },
 				statsborgerskap: ''
 			})
 		}
@@ -44,24 +48,30 @@ export const FalskIdentitet = ({ formikBag }) => {
 			/>
 
 			{falskIdObj.identitetType === 'ENTYDIG' && (
-				<FasteDatasettSelect
+				<DollySelect
 					name={`${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`}
 					label="Navn og identifikasjonsnummer"
-					endepunkt={DollyApi.getFasteDatasettTPS}
-					filterMethod={getNavnOgFnrListe}
 					optionHeight={50}
 					size="large"
+					options={navnOgFnrOptions}
+					isLoading={fasteDatasettInfo.loading}
+					onChange={id => setValue(id, `${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`, formikBag.setFieldValue)}
+					value={_get(formikBag.values, `${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`)}
+					isClearable={false}
 				/>
 			)}
 			{falskIdObj.identitetType === 'OMTRENTLIG' && (
 				<div className="flexbox--flex-wrap">
-					<FasteDatasettSelect
-						name={ `${falskIdPath}.personnavn` }
+					<DollySelect
+						name={ `${falskIdPath}.personnavn.fornavn` }
 						label="Navn"
-						endepunkt={DollyApi.getPersonnavn}
-						filterMethod={getNavnListe}
+						options={navnOptions}
 						size="large"
-						placeholder={getPlaceholder(formikBag.values, `${falskIdPath}.personnavn`)}
+						isLoading={navnInfo.loading}
+						onChange={navn => setNavn(navn, `${falskIdPath}.personnavn`, formikBag.setFieldValue)}
+						value={_get(formikBag.values, `${falskIdPath}.personnavn.fornavn`)}
+						isClearable={false}
+						placeholder={getPlaceholder(formikBag.values,`${falskIdPath}.personnavn`)}
 					/>
 					<FormikDatepicker name={`${falskIdPath}.foedselsdato`} label="Fødselsdato" />
 					<FormikSelect

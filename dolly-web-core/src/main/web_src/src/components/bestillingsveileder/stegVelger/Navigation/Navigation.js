@@ -17,7 +17,7 @@ export const Navigation = ({ showPrevious, onPrevious, isLastStep, formikBag }) 
 				<NavButton onClick={onAbort}>AVBRYT</NavButton>
 
 				<div className="step-navknapper--right">
-					{showPrevious && <NavButton onClick={() => {onPrevious(formikBag)}}>Tilbake</NavButton>}
+					{showPrevious && <NavButton onClick={onPrevious}>Tilbake</NavButton>}
 					{!isLastStep && (
 						<NavButton type="hoved" disabled={isSubmitting} onClick={handleSubmit}>
 							Videre

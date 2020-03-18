@@ -32,7 +32,7 @@ const infotekst =
 
 export const InntektsinformasjonForm = ({ formikBag }) => {
 	const orgInfo = SelectOptionsOppslag('orgnr')
-	const options = SelectOptionsOppslag.formatOptions(orgInfo)
+	const options = SelectOptionsOppslag.formatOptions('orgInfo', orgInfo)
 	const randomNumber = Math.floor(Math.random() * options.length)
 	initialValues.virksomhet = options.length > 0 && options[randomNumber].value
 	initialValues.opplysningspliktig = options.length > 0 && options[randomNumber].juridiskEnhet

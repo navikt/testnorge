@@ -1,6 +1,12 @@
 import * as Yup from 'yup'
 import { requiredString, requiredDate, ifKeyHasValue, ifPresent } from '~/utils/YupValidations'
 
+const personnavnSchema = Yup.object({
+	fornavn: requiredString,
+	mellomnavn: Yup.string(),
+	etternavn: requiredString
+})
+
 const falskIdentitet = Yup.object({
 	rettIdentitet: Yup.object({
 		identitetType: requiredString,
@@ -11,7 +17,7 @@ const falskIdentitet = Yup.object({
 		personnavn: ifKeyHasValue(
 			'$pdlforvalter.falskIdentitet.rettIdentitet.identitetType',
 			['OMTRENTLIG'],
-			requiredString
+			personnavnSchema
 		),
 		foedselsdato: Yup.mixed().when('identitetType', {
 			is: 'OMTRENTLIG',
@@ -43,7 +49,7 @@ const kontaktDoedsbo = Yup.object({
 		kontaktperson: ifKeyHasValue(
 			'$pdlforvalter.kontaktinformasjonForDoedsbo.adressat.adressatType',
 			['ADVOKAT', 'ORGANISASJON'],
-			requiredString
+			personnavnSchema
 		),
 		organisasjonsnavn: Yup.string().when('adressatType', {
 			is: 'ORGANISASJON',
@@ -58,12 +64,15 @@ const kontaktDoedsbo = Yup.object({
 		}),
 		idnummer: Yup.string().when('adressatType', {
 			is: 'PERSON_MEDID',
-			then: requiredString
+			then: requiredString.matches(/^[0-9]{11}$/, {
+				message: 'Id-nummeret må være et tall med 11 sifre',
+				excludeEmptyString: true
+			})
 		}),
 		navn: ifKeyHasValue(
 			'$pdlforvalter.kontaktinformasjonForDoedsbo.adressat.adressatType',
 			['PERSON_UTENID'],
-			requiredString
+			personnavnSchema
 		)
 	}),
 	adresselinje1: requiredString,

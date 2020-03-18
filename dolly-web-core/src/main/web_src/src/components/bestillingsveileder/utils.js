@@ -15,17 +15,6 @@ const rootPaths = [
     'udistub'
 ]
 
-export const pdlfNamePaths = [
-    `pdlforvalter.kontaktinformasjonForDoedsbo.adressat.navn`,
-    `pdlforvalter.kontaktinformasjonForDoedsbo.adressat.kontaktperson`,
-    `pdlforvalter.falskIdentitet.rettIdentitet.personnavn`
-]
-
-export const pdlfIdPaths = [
-    `pdlforvalter.kontaktinformasjonForDoedsbo.adressat.idnummer`,
-    `pdlforvalter.falskIdentitet.rettIdentitet.rettIdentitetVedIdentifikasjonsnummer`
-]
-
 export const harAvhukedeAttributter = values => {
     return rootPaths.some(path => _has(values, path))
 }

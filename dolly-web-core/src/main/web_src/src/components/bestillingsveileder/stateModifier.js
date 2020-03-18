@@ -2,9 +2,6 @@ import _has from 'lodash/has'
 import _set from 'lodash/fp/set'
 import _omit from 'lodash/omit'
 import _isEmpty from 'lodash/isEmpty'
-import _get from "lodash/get";
-import _isNil from "lodash/isNil";
-import { pdlfNamePaths, pdlfIdPaths } from './utils'
 
 export const stateModifierFns = (initial, setInitial) => {
 	const set = (path, value) => setInitial(_set(path, value, initial))
@@ -55,72 +52,4 @@ export const stateModifierFns = (initial, setInitial) => {
 			batchRemove: ignoreKeys => batchUpdate(attrs, fn, ignoreKeys, 'remove')
 		}
 	}
-}
-
-const separateNames = (initial, setFieldValue) => {
-	for (let i = 0; i < pdlfNamePaths.length; i++) {
-		const path = pdlfNamePaths[i]
-		const fullName = _get(initial, `${path}`)
-		if (!_isNil(fullName)) {
-			const deltNavn = (fullName + '').split(" ")
-
-			setFieldValue(`${path}`, {
-				fornavn: deltNavn[0],
-				mellomnavn: deltNavn.length === 3 ? deltNavn[1] : '',
-				etternavn: deltNavn[deltNavn.length - 1]
-			})
-		}
-	}
-}
-
-const combineNames = (initial, setFieldValue) => {
-	for (let i = 0; i < pdlfNamePaths.length; i++) {
-		const path = pdlfNamePaths[i]
-		const fornavn = _get(initial, `${path}.fornavn`)
-		if (!_isNil(fornavn)) {
-			const mellomnavn = _get(initial, `${path}.mellomnavn`)
-			const etternavn = " " + _get(initial, `${path}.etternavn`)
-
-			setFieldValue(`${path}`,
-				fornavn + (mellomnavn !=='' ? " " + mellomnavn : '') + etternavn)
-		}
-	}
-}
-
-const separateIdsFromNames = (initial, setFieldValue, selectedIds, setSelectedIds) => {
-	for (let i = 0; i < pdlfIdPaths.length; i++) {
-		const path = pdlfIdPaths[i]
-		const fnrOgNavn = _get(initial, `${path}`)
-		if (!_isNil(fnrOgNavn)) {
-			const deltTekst = (fnrOgNavn + '').split(" ")
-			setFieldValue(`${path}`, deltTekst[deltTekst.length - 1])
-
-			let copy = selectedIds
-			copy[i]=fnrOgNavn
-			setSelectedIds(copy)
-		}
-	}
-}
-
-const combineIdsWithNames = (initial, setFieldValue, selectedIds, setSelectedIds) => {
-	for (let i = 0; i < pdlfIdPaths.length; i++){
-		const path = pdlfIdPaths[i]
-		const id = _get(initial, `${path}`)
-		if(!_isNil(id)){
-			setFieldValue(`${path}`, selectedIds[i])
-			let copy = selectedIds
-			copy[i]=""
-			setSelectedIds(copy)
-		}
-	}
-}
-
-export const stateModifierSeparateNamesAndIds = (initial, setFieldValue, selectedIds, setSelectedIds) => {
-	separateIdsFromNames(initial, setFieldValue, selectedIds, setSelectedIds)
-	separateNames(initial, setFieldValue)
-}
-
-export const stateModifierCombineNamesAndIds = (formikBag, selectedIds, setSelectedIds) => {
-	combineNames(formikBag.values, formikBag.setFieldValue)
-	combineIdsWithNames(formikBag.values, formikBag.setFieldValue, selectedIds, setSelectedIds)
 }
