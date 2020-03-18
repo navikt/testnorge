@@ -40,15 +40,17 @@ const mapStateToProps = (state, ownProps) => ({
 	bestilling: getBestillingById(state, ownProps.bestillingId)
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-	fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
-	slettPerson: () => dispatch(actions.slettPerson(ownProps.personId)),
-	leggTilPaaPerson: () =>
-		dispatch(
-			push(`/gruppe/${ownProps.match.params.gruppeId}/bestilling`, {
-				leggTilPaaFnr: ownProps.personId
-			})
-		)
-})
+const mapDispatchToProps = (dispatch, ownProps) => {
+	return {
+		fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
+		slettPerson: () => dispatch(actions.slettPerson(ownProps.personId)),
+		leggTilPaaPerson: () =>
+			dispatch(
+				push(`/gruppe/${ownProps.match.params.gruppeId}/bestilling/${ownProps.personId}`, {
+					leggTilPaaFnr: ownProps.personId
+				})
+			)
+	}
+}
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PersonVisning))

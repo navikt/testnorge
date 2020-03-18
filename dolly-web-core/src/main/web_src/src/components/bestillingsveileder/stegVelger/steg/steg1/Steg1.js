@@ -13,7 +13,7 @@ import { KontaktDoedsboPanel } from './paneler/KontaktDoedsbo'
 import { ArenaPanel } from './paneler/Arena'
 import { UdiPanel } from './paneler/Udi'
 
-export const Steg1 = ({ stateModifier }) => {
+export const Steg1 = ({ stateModifier, formikBag }) => {
 	const opts = useContext(BestillingsveilederContext)
 
 	const checked = [
@@ -36,7 +36,10 @@ export const Steg1 = ({ stateModifier }) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			<PersoninformasjonPanel stateModifier={stateModifier} />
+			<PersoninformasjonPanel
+				stateModifier={stateModifier}
+				eksisterende={formikBag.values.eksisterende}
+			/>
 			<AdressePanel stateModifier={stateModifier} />
 
 			{!opts.is.leggTil && (

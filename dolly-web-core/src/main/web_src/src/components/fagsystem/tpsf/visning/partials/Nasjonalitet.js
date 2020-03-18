@@ -6,6 +6,9 @@ import { FetchInnUt } from '~/components/bestillingsveileder/stegvelger/steg/ste
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { Historikk } from '~/components/ui/historikk/Historikk'
 
+// const siste = eksisterende.innvandretUtvandret.length - 1
+// const innvandretEllerUtvandret = eksisterende.innvandretUtvandret[siste].innutvandret
+//may need these above
 const Statsborgerskap = ({ statsborgerskap }) => (
 	<React.Fragment>
 		<TitleValue
@@ -28,6 +31,15 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 			{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="nasjonalitet" />}
 			<div className="person-visning_content">
 				<Historikk component={Statsborgerskap} data={statsborgerskap} propName="statsborgerskap" />
+				{statsborgerskap.map((sb, idx) => (
+					<div key={idx}>
+						<TitleValue title="Statsborgerskap" kodeverk="Landkoder" value={sb.statsborgerskap} />
+						<TitleValue
+							title="Statsborgerskap fra"
+							value={Formatters.formatDate(sb.statsborgerskapRegdato)}
+						/>
+					</div>
+				))}
 				<TitleValue title="Språk" kodeverk="Språk" value={sprakKode} />
 			</div>
 
@@ -36,8 +48,6 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 			<DollyFieldArray data={innvandretUtvandret}>
 				{(id, idx) => (
 					<React.Fragment>
-						<FetchInnUt vals={data} />
-
 						{innvandretUtvandret && (
 							<>
 								<TitleValue title="Inn/utvandret" value={innvandretUtvandret[idx].innutvandret} />
