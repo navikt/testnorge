@@ -10,6 +10,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 
 public class JsonTestHelper {
@@ -18,10 +19,24 @@ public class JsonTestHelper {
 
     }
 
-    public static <T> void verifyPost(UrlPathPattern urlPathPattern, T requestBody, ObjectMapper objectMapper) throws JsonProcessingException {
-        final String requestJsonBody = objectMapper.writeValueAsString(requestBody);
-        verify(postRequestedFor(urlPathPattern).withRequestBody(equalToJson(requestJsonBody)));
+    public static <T> void verifyPost(UrlPathPattern urlPathPattern, T requestBody, ObjectMapper objectMapper) throws Exception {
+        verifyPost(urlPathPattern, requestBody, objectMapper, WireMock::equalToJson);
     }
+
+    public static <T> void verifyPost(UrlPathPattern urlPathPattern, T requestBody, ObjectMapper objectMapper, String... fieldToIgnore) throws Exception {
+        verifyPost(
+                urlPathPattern,
+                requestBody,
+                objectMapper,
+                value -> WireMock.matching(convertToRegexString(value, fieldToIgnore))
+        );
+    }
+
+    private static <T> void verifyPost(UrlPathPattern urlPathPattern, T requestBody, ObjectMapper objectMapper, StringValuePatternOperation operation) throws Exception {
+        final String body = objectMapper.writeValueAsString(requestBody);
+        verify(postRequestedFor(urlPathPattern).withRequestBody(operation.getPattern(body)));
+    }
+
 
     public static <T> void verifyPost(UrlPathPattern urlPathPattern) {
         verify(postRequestedFor(urlPathPattern));
@@ -64,4 +79,21 @@ public class JsonTestHelper {
         );
     }
 
+
+    private static String convertToRegexString(final String value, String... fieldToIgnore) {
+        return ignoreFields(
+                value
+                        .replaceAll("\\{", "\\\\{")
+                        .replaceAll("\\}", "\\\\}"),
+                fieldToIgnore
+        );
+    }
+
+    private static String ignoreFields(final String property, String... fieldToIgnore) {
+        String regex = property;
+        for (String ignored : fieldToIgnore) {
+            regex = regex.replaceAll("\"" + ignored + "\":(\"([^\"]*)\"|null|true|false|\\d+)", "\"" + ignored + "\":\".*\"");
+        }
+        return regex;
+    }
 }

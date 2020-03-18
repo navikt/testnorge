@@ -19,15 +19,12 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Collections;
-import java.util.List;
-
-import no.nav.registre.sdForvalter.consumer.rs.request.aareg.AaregRequest;
-import no.nav.registre.sdForvalter.consumer.rs.request.aareg.Arbeidsforhold;
-import no.nav.registre.sdForvalter.database.model.AaregModel;
-import no.nav.registre.sdForvalter.database.repository.AaregRepository;
-import no.nav.registre.sdForvalter.domain.Aareg;
+import no.nav.registre.sdForvalter.consumer.rs.request.KrrRequest;
+import no.nav.registre.sdForvalter.database.model.KrrModel;
+import no.nav.registre.sdForvalter.database.repository.KrrRepository;
+import no.nav.registre.sdForvalter.domain.Krr;
 import no.nav.registre.sdForvalter.util.JsonTestHelper;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -36,50 +33,47 @@ import no.nav.registre.sdForvalter.util.JsonTestHelper;
 @TestPropertySource(
         locations = "classpath:application-test.properties"
 )
-public class OrkestreringsControllerAaregIntegrationTest {
-
-    private static final String ENVIRONMENT = "t1";
+public class OrkestreringsControllerKrrIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
 
     @Autowired
-    private AaregRepository aaregRepository;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private KrrRepository repository;
+
     @Test
-    public void shouldInitiateAaregFromDatabase() throws Exception {
-        final AaregModel aaregModel = createAaregModel("09876543213", "987654321");
-        final UrlPathPattern sendTilAaregUrlPattern = urlPathMatching("(.*)/v1/syntetisering/sendTilAareg");
-        aaregRepository.save(aaregModel);
+    public void shouldInitiateKrrFromDatabase() throws Exception {
+        KrrModel model = createKrr("01010112365");
+        repository.save(model);
+        UrlPathPattern kontaktinformasjon = urlPathMatching("(.*)/v1/kontaktinformasjon");
 
-        List<AaregRequest> aaregRequestList = Collections.singletonList(
-                new AaregRequest(new Arbeidsforhold(new Aareg(aaregModel)), ENVIRONMENT)
-        );
+        JsonTestHelper.stubPost(kontaktinformasjon);
 
-        JsonTestHelper.stubPost(sendTilAaregUrlPattern, aaregRequestList, Collections.EMPTY_LIST, objectMapper);
-
-        mvc.perform(post("/api/v1/orkestrering/aareg/" + ENVIRONMENT)
+        mvc.perform(post("/api/v1/orkestrering/krr/")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
+        KrrRequest request = createKrrRequest(model);
 
-        JsonTestHelper.verifyPost(sendTilAaregUrlPattern, aaregRequestList, objectMapper);
+        JsonTestHelper.verifyPost(kontaktinformasjon, request, objectMapper, "gyldigFra");
     }
 
-    private AaregModel createAaregModel(String fnr, String orgId) {
-        AaregModel model = new AaregModel();
+    private KrrModel createKrr(String fnr) {
+        KrrModel model = new KrrModel();
         model.setFnr(fnr);
-        model.setOrgId(orgId);
         return model;
+    }
+
+    private KrrRequest createKrrRequest(KrrModel model) {
+        return new KrrRequest(new Krr(model));
     }
 
     @After
     public void cleanUp() {
         reset();
-        aaregRepository.deleteAll();
+        repository.deleteAll();
     }
-
 }

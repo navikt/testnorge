@@ -1,13 +1,15 @@
 package no.nav.registre.sdForvalter.provider.rs;
 
 
+import static com.github.tomakehurst.wiremock.client.WireMock.reset;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static no.nav.registre.sdForvalter.util.JsonTestHelper.stubPost;
+import static no.nav.registre.sdForvalter.util.JsonTestHelper.verifyPost;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
-import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregMapperRequest;
-import no.nav.registre.sdForvalter.database.model.EregModel;
-import no.nav.registre.sdForvalter.database.repository.EregRepository;
-import no.nav.registre.sdForvalter.domain.Ereg;
-
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,15 +22,12 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
 import java.util.Collections;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static no.nav.registre.sdForvalter.util.JsonTestHelper.stubPost;
-import static no.nav.registre.sdForvalter.util.JsonTestHelper.verifyPost;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregMapperRequest;
+import no.nav.registre.sdForvalter.database.model.EregModel;
+import no.nav.registre.sdForvalter.database.repository.EregRepository;
+import no.nav.registre.sdForvalter.domain.Ereg;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -73,7 +72,11 @@ public class OrkestreringsControllerEregIntegrationTest {
     }
 
     private EregModel createEregModel(String orgId, String enhetstype, EregModel parent) {
-        return EregModel.builder().orgnr(orgId).enhetstype(enhetstype).parent(parent).build();
+        EregModel model = new EregModel();
+        model.setOrgnr(orgId);
+        model.setEnhetstype(enhetstype);
+        model.setParent(parent);
+        return model;
     }
 
     @After

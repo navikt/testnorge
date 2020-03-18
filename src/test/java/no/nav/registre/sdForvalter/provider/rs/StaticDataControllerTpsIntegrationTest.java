@@ -29,6 +29,7 @@ import no.nav.registre.sdForvalter.database.repository.OpprinnelseRepository;
 import no.nav.registre.sdForvalter.database.repository.TpsIdenterRepository;
 import no.nav.registre.sdForvalter.domain.Opprinnelse;
 import no.nav.registre.sdForvalter.domain.TpsIdent;
+import no.nav.registre.sdForvalter.domain.TpsIdentListe;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -53,14 +54,7 @@ public class StaticDataControllerTpsIntegrationTest {
     @Test
     public void shouldGetTpsIdentSetWithOpprinnelse() throws Exception {
         OpprinnelseModel altinn = opprinnelseRepository.save(new OpprinnelseModel("Altinn"));
-
-        TpsIdentModel tpsIdentModel = TpsIdentModel
-                .builder()
-                .firstName("Test")
-                .lastName("Testen")
-                .fnr("101010101")
-                .opprinnelseModel(altinn)
-                .build();
+        TpsIdentModel tpsIdentModel = createIdentModel("01010101011", "Petter", "Petterson", altinn);
         tpsIdenterRepository.save(tpsIdentModel);
 
         String json = mvc.perform(get("/api/v1/faste-data/tps/")
@@ -70,47 +64,29 @@ public class StaticDataControllerTpsIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        Set<TpsIdent> response = objectMapper.readValue(json, new TypeReference<Set<TpsIdent>>() {
-        });
-        assertThat(response).containsOnly(new TpsIdent(tpsIdentModel));
+        TpsIdentListe response = objectMapper.readValue(json, TpsIdentListe.class);
+        assertThat(response.getListe()).containsOnly(new TpsIdent(tpsIdentModel));
     }
 
     @Test
     public void shouldAddTpsIdentSetToDatabase() throws Exception {
-        TpsIdent tpsIdent = TpsIdent.builder()
-                .firstName("Test")
-                .lastName("Testen")
-                .fnr("01010101011")
-                .build();
-        Set<TpsIdent> tpsIdentSet = createTpsIdentSet(tpsIdent);
+        TpsIdent tpsIdent = createIdent("01010101011", "Petter", "Petterson");
         mvc.perform(post("/api/v1/faste-data/tps/")
-                .content(objectMapper.writeValueAsString(tpsIdentSet))
+                .content(objectMapper.writeValueAsString(createTpsIdenter(tpsIdent)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        assertThat(tpsIdenterRepository.findAll()).containsOnly(new TpsIdentModel(tpsIdent, null));
+        assertThat(tpsIdenterRepository.findAll()).containsOnly(new TpsIdentModel(tpsIdent, null, null));
     }
 
     @Test
     public void shouldAddOpprinnelseToDatabase() throws Exception {
         Opprinnelse altinn = new Opprinnelse("Altinn");
-        final TpsIdent hans = TpsIdent.builder()
-                .firstName("Test")
-                .lastName("Testen")
-                .fnr("01010101011")
-                .opprinelse(altinn.getNavn())
-                .build();
+        final TpsIdent hans = createIdent("01010101011", "Hans", "Hansen");
+        final TpsIdent petter = createIdent("01010101021", "Petter", "Petterson", altinn);
 
-        final TpsIdent petter = TpsIdent.builder()
-                .firstName("Testern")
-                .lastName("Testernson")
-                .fnr("01010101021")
-                .opprinelse(altinn.getNavn())
-                .build();
-
-        final Set<TpsIdent> tpsIdentSet = createTpsIdentSet(hans, petter);
         mvc.perform(post("/api/v1/faste-data/tps/")
-                .content(objectMapper.writeValueAsString(tpsIdentSet))
+                .content(objectMapper.writeValueAsString(createTpsIdenter(hans, petter)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -130,7 +106,29 @@ public class StaticDataControllerTpsIntegrationTest {
         opprinnelseRepository.deleteAll();
     }
 
-    private Set<TpsIdent> createTpsIdentSet(TpsIdent... tpsIdenter) {
-        return new HashSet<>(Arrays.asList(tpsIdenter));
+
+    private TpsIdentModel createIdentModel(String fnr, String firstName, String lastName, OpprinnelseModel opprinnelseModel) {
+        TpsIdentModel model = new TpsIdentModel();
+        model.setFnr(fnr);
+        model.setFirstName(firstName);
+        model.setLastName(lastName);
+        model.setOpprinnelseModel(opprinnelseModel);
+        return model;
+    }
+
+    private TpsIdentModel createIdentModel(String fnr, String firstName, String lastName) {
+        return createIdentModel(fnr, firstName, lastName, null);
+    }
+
+    private TpsIdent createIdent(String fnr, String firstName, String lastName) {
+        return new TpsIdent(createIdentModel(fnr, firstName, lastName));
+    }
+
+    private TpsIdent createIdent(String fnr, String firstName, String lastName, Opprinnelse opprinnelse) {
+        return new TpsIdent(createIdentModel(fnr, firstName, lastName, new OpprinnelseModel(opprinnelse)));
+    }
+
+    private TpsIdentListe createTpsIdenter(TpsIdent... tpsIdenter) {
+        return new TpsIdentListe(Arrays.asList(tpsIdenter));
     }
 }

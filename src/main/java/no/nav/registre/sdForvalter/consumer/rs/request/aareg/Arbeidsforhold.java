@@ -6,15 +6,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 import no.nav.registre.sdForvalter.database.model.AaregModel;
+import no.nav.registre.sdForvalter.domain.Aareg;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class Arbeidsforhold {
 
-    public Arbeidsforhold(AaregModel aaregModel) {
-        this.arbeidsgiver = new Arbeidsgiver(String.valueOf(aaregModel.getOrgId()));
-        this.arbeidstaker = new Arbeidstaker(aaregModel.getFnr());
+    public Arbeidsforhold(Aareg aareg) {
+        this.arbeidsgiver = new Arbeidsgiver(String.valueOf(aareg.getOrgId()));
+        this.arbeidstaker = new Arbeidstaker(aareg.getFnr());
     }
 
     @JsonProperty("arbeidsgiver")

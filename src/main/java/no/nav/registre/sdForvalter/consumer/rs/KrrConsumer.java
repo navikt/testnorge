@@ -13,16 +13,16 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.net.URI;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.consumer.rs.request.KrrRequest;
-import no.nav.registre.sdForvalter.database.model.KrrModel;
+import no.nav.registre.sdForvalter.domain.Krr;
+import no.nav.registre.sdForvalter.domain.KrrListe;
 
 @Slf4j
 @Component
@@ -32,47 +32,49 @@ public class KrrConsumer {
     };
 
     private final RestTemplate restTemplate;
-    private final String krrUrl;
+    private final URI krrUrl;
 
     public KrrConsumer(RestTemplate restTemplate, @Value("${krr.stub.rest.api.url}") String krrUrl) {
         this.restTemplate = restTemplate;
-        this.krrUrl = krrUrl + "/v1";
+        this.krrUrl = new UriTemplate(krrUrl + "/v1/kontaktinformasjon").expand();
     }
 
-    public Set<String> send(Set<KrrModel> data) {
+    public Set<String> send(KrrListe liste) {
+        Set<String> existing = existingKrrFnr(liste
+                .getListe()
+                .stream()
+                .map(Krr::getFnr)
+                .collect(Collectors.toSet())
+        );
+        List<Krr> noneExisting = liste
+                .getListe()
+                .stream()
+                .filter(krr -> !existing.contains(krr.getFnr()))
+                .collect(Collectors.toList());
 
-        String dateString = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).toString();
+        if (noneExisting.isEmpty()) {
+            log.info("Fant ingen nye krr.");
+            return Collections.emptySet();
+        }
 
-        Set<KrrRequest> requestData = data.parallelStream().map(k -> {
-            KrrRequest.KrrRequestBuilder builder = KrrRequest.builder();
-            builder.email(k.getEmail());
-            if (k.isEmailValid()) {
-                builder.emailValidatedDate(dateString);
-                builder.emailUpdated(dateString);
-            }
-            builder.phone(k.getSms());
-            if (k.isSmsValid()) {
-                builder.phoneValidatedDate(dateString);
-                builder.phoneUpdated(dateString);
-            }
-            builder.reserved(k.isReserved());
-            builder.fnr(k.getFnr());
-            builder.validFrom(dateString);
-            builder.sdpProvider(null);
-            builder.sdpAddress(null);
+        Set<KrrRequest> requestData = noneExisting
+                .stream()
+                .map(KrrRequest::new)
+                .collect(Collectors.toSet());
 
-            return builder.build();
-        }).collect(Collectors.toSet());
-
-        UriTemplate uriTemplate = new UriTemplate(krrUrl + "/kontaktinformasjon");
         HttpHeaders httpHeaders = buildDefaultHeaders();
 
         Set<String> createdInKrr = new HashSet<>();
         requestData.forEach(d -> {
-            RequestEntity<KrrRequest> requestEntity = new RequestEntity<>(d, httpHeaders, HttpMethod.POST, uriTemplate.expand());
-            ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
-            if (response.getStatusCode() != HttpStatus.CREATED) {
-                log.warn("Klarte ikke opprette kontaktinformasjon i krr-stub");
+            RequestEntity<KrrRequest> requestEntity = new RequestEntity<>(d, httpHeaders, HttpMethod.POST, krrUrl);
+            try {
+                ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
+                if (response.getStatusCode() != HttpStatus.CREATED) {
+                    log.error("Klarte ikke opprette kontaktinformasjon i krr-stub");
+                    return;
+                }
+            } catch (Exception e){
+                log.error("Klarte ikke opprette kontaktinformasjon i krr-stub", e);
                 return;
             }
             createdInKrr.add(d.getFnr());
@@ -81,16 +83,13 @@ public class KrrConsumer {
     }
 
 
-    public Set<String> getContactInformation(Set<String> fnrs) {
-
+    private Set<String> existingKrrFnr(Set<String> fnrs) {
         Set<String> existing = new HashSet<>();
-
-        UriTemplate uriTemplate = new UriTemplate(krrUrl + "/person/kontaktinformasjon");
         HttpHeaders httpHeaders = buildDefaultHeaders();
 
         fnrs.forEach(fnr -> {
             httpHeaders.add("Nav-Personident", fnr);
-            RequestEntity requestEntity = new RequestEntity<>(httpHeaders, HttpMethod.GET, uriTemplate.expand());
+            RequestEntity requestEntity = new RequestEntity<>(httpHeaders, HttpMethod.GET, krrUrl);
             try {
                 ResponseEntity<List<KrrRequest>> response = restTemplate.exchange(requestEntity, RESPONSE_TYPE);
                 if (response.getStatusCode() == HttpStatus.OK) {

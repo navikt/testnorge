@@ -5,185 +5,63 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import no.nav.registre.sdForvalter.adapter.AaregAdapter;
 import no.nav.registre.sdForvalter.adapter.EregAdapter;
+import no.nav.registre.sdForvalter.adapter.KrrAdapter;
 import no.nav.registre.sdForvalter.consumer.rs.AaregConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.EregMapperConsumer;
-import no.nav.registre.sdForvalter.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.KrrConsumer;
-import no.nav.registre.sdForvalter.consumer.rs.SamConsumer;
-import no.nav.registre.sdForvalter.consumer.rs.SkdConsumer;
-import no.nav.registre.sdForvalter.consumer.rs.TpConsumer;
-import no.nav.registre.sdForvalter.consumer.rs.response.AaregResponse;
-import no.nav.registre.sdForvalter.database.model.AaregModel;
-import no.nav.registre.sdForvalter.database.model.KrrModel;
-import no.nav.registre.sdForvalter.database.model.TpsIdentModel;
-import no.nav.registre.sdForvalter.database.repository.AaregRepository;
-import no.nav.registre.sdForvalter.database.repository.KrrRepository;
-import no.nav.registre.sdForvalter.database.repository.TpsIdenterRepository;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class EnvironmentInitializationService {
 
-    private final AaregRepository aaregRepository;
-    private final TpsIdenterRepository tpsIdenterRepository;
-    private final KrrRepository krrRepository;
-
     private final AaregConsumer aaregConsumer;
-    private final SkdConsumer skdConsumer;
     private final KrrConsumer krrConsumer;
-    private final HodejegerenConsumer hodejegerenConsumer;
-    private final TpConsumer tpConsumer;
-    private final SamConsumer samConsumer;
     private final EregMapperConsumer eregMapperConsumer;
 
     private final EregAdapter eregAdapter;
+    private final KrrAdapter krrAdapter;
+    private final AaregAdapter aaregAdapter;
+
+    private final IdentService identService;
 
     @Value("${tps.statisk.avspillergruppeId}")
     private Long staticDataPlaygroup;
 
-    /**
-     * Initialiser et helt miljø med de faste statiske dataene
-     *
-     * @param environment Miljøet som skal initialiseres
-     */
     public void initializeEnvironmentWithStaticData(String environment, String gruppe) {
         log.info("Start init of all static data sets...");
-
-        /*
-          Order of method calls are important to ensure that the values exist in the databases.
-          Some methods may fail if at the very least TPS-ident (SKD) have not been created.
-          TP and SAM are also critical databases for the fag applications
-        */
-        Set<String> missingFnrs = initializeSkd(environment);
-        if (!missingFnrs.isEmpty()) {
-            log.warn("Identer som ikke ble opprettet i tps: {}, disse burde sjekkes på nytt etter en liten stund, se hodejegeren", missingFnrs);
-        }
-
-        Set<String> fnrs = hodejegerenConsumer.getLivingFnrs(staticDataPlaygroup, environment);
-        iniitalizeTp(environment, fnrs);
-        initializeSam(environment, fnrs);
-        initializeKrr();
-        List<AaregResponse> response = initializeAareg(environment);
-        response.forEach(resp -> resp.getStatusPerMiljoe().values().stream().filter(melding -> melding.startsWith("Feil"))
-                .forEach(melding -> log.warn("Feil under initialisering av aareg i miljø {}. Feilmelding: {}", environment, melding)));
-
+        initializeIdent(environment, gruppe);
+        initializeKrr(gruppe);
+        initializeAareg(environment, gruppe);
         initializeEreg(environment, gruppe);
         log.info("Completed init of all static data sets.");
     }
 
-    /**
-     * Metoden oppretter nye meldinger for de som ikke har meldinger fra før av og spiller av disse i gitt miljø
-     *
-     * @param environment Miljø som de faste meldingene skal spilles av
-     * @return Et set som inneholder de identene som ikke har blitt opprettet i tps
-     */
-    public Set<String> initializeSkd(String environment) {
-        log.info("Start init of Skd...");
-        Set<TpsIdentModel> tpsIdentSet = new HashSet<>();
-        tpsIdenterRepository.findAll().forEach(tpsIdentSet::add);
 
-        tpsIdentSet = tpsIdentSet
-                .parallelStream()
-                .collect(Collectors.toSet());
-
-        Set<String> playgroupFnrs = hodejegerenConsumer.getPlaygroupFnrs(staticDataPlaygroup);
-        tpsIdentSet = tpsIdentSet.parallelStream().filter(t -> !playgroupFnrs.contains(t.getFnr())).collect(Collectors.toSet());
-
-        if (!tpsIdentSet.isEmpty()) {
-            if (log.isInfoEnabled()) {
-                log.info(
-                        "Identer mangler i avspillings gruppen {}. Legger til identene: {} i gruppen.",
-                        staticDataPlaygroup,
-                        tpsIdentSet.stream().map(TpsIdentModel::getFnr).collect(Collectors.joining(", "))
-                );
-            }
-            skdConsumer.createTpsIdenterMessagesInGroup(tpsIdentSet, staticDataPlaygroup);
-        }
-
-        skdConsumer.send(staticDataPlaygroup, environment);
-
-        Set<String> livingFnrs = hodejegerenConsumer.getLivingFnrs(staticDataPlaygroup, environment);
-
-        Set<String> response = playgroupFnrs.parallelStream().filter(t -> !livingFnrs.contains(t)).collect(Collectors.toSet());
-        log.info("Init of Skd completed.");
-        return response;
+    public void initializeIdent(String environment, String gruppe) {
+        log.info("Start init av identer...");
+        identService.send(environment, gruppe);
+        log.info("Init av identer er ferdig.");
     }
 
-    /**
-     * Metoden legger til identer i gitt miljø med gitte arbeidsforhold definert i databasen.
-     *
-     * @param environment Miljøet arbeidsforholdene skal legges til i
-     */
-    public List<AaregResponse> initializeAareg(String environment) {
-        log.info("Start init of Aareg...");
-        Set<AaregModel> aaregSet = new HashSet<>();
-        aaregRepository.findAll().forEach(aaregSet::add);
-        aaregSet = aaregSet
-                .parallelStream()
-                .collect(Collectors.toSet());
-
-        aaregSet.removeIf(aaregModel -> {
-            List arbeidsforholdFraAareg = aaregConsumer.getArbeidsforholdFraAareg(aaregModel.getFnr(), environment);
-            return arbeidsforholdFraAareg != null && !arbeidsforholdFraAareg.isEmpty();
-        });
-
-        List<AaregResponse> response = aaregConsumer.sendArbeidsforholdTilAareg(aaregSet, environment);
-        log.info("Init of Aareg completed.");
-        return response;
+    public void initializeAareg(String environment, String gruppe) {
+        log.info("Start init av Aareg...");
+        aaregConsumer.sendArbeidsforhold(aaregAdapter.fetchBy(gruppe), environment);
+        log.info("Init av Aareg eer ferdig.");
     }
 
     public void initializeEreg(String environment, String gruppe) {
-        log.info("Start init of Ereg ...");
-        eregMapperConsumer.create(eregAdapter.fetchEregData(gruppe), environment);
-        log.info("Init of Ereg completed.");
+        log.info("Start init av Ereg ...");
+        eregMapperConsumer.create(eregAdapter.fetchBy(gruppe), environment);
+        log.info("Init of Ereg er ferdig.");
     }
 
-    /**
-     * Metoden legger til dataen i databasen i krr hvis ikke de finnes fra før av
-     */
-    public void initializeKrr() {
-        log.info("Start init of KRR ...");
-        Set<KrrModel> dkifSet = new HashSet<>();
-        krrRepository.findAll().forEach(dkifSet::add);
-
-        Set<String> existing = krrConsumer
-                .getContactInformation(dkifSet.parallelStream().map(KrrModel::getFnr).collect(Collectors.toSet()));
-
-        dkifSet = dkifSet.parallelStream().filter(t -> !existing.contains(t.getFnr())).collect(Collectors.toSet());
-
-        if (dkifSet.isEmpty()) {
-            log.info("Init of KRR completed (0 created).");
-            return;
-        }
-        krrConsumer.send(dkifSet);
-        if (log.isInfoEnabled()) {
-            log.info("Init of KRR completed ({} created).", dkifSet.size());
-        }
-    }
-
-    private void iniitalizeTp(
-            String environment,
-            Set<String> fnrs
-    ) {
-        log.info("Start init of TP...");
-        tpConsumer.send(fnrs, environment);
-        log.info("Init of TP completed.");
-    }
-
-    private void initializeSam(
-            String environment,
-            Set<String> fnrs
-    ) {
-        log.info("Start init of SAM...");
-        samConsumer.send(fnrs, environment);
-        log.info("Init of SAM completed");
+    public void initializeKrr(String gruppe) {
+        log.info("Start init av KRR ...");
+        krrConsumer.send(krrAdapter.fetchBy(gruppe));
+        log.info("Init av krr er ferdig.");
     }
 
 }

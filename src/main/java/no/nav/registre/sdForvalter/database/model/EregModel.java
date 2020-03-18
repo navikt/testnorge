@@ -1,7 +1,5 @@
 package no.nav.registre.sdForvalter.database.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,12 +23,10 @@ import no.nav.registre.sdForvalter.domain.Ereg;
 @ToString
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Slf4j
 @Table(name = "EREG")
-public class  EregModel extends AuditModel {
+@NoArgsConstructor
+public class EregModel extends FasteDataModel<Ereg> {
 
     @Id
     private String orgnr;
@@ -47,13 +43,6 @@ public class  EregModel extends AuditModel {
     @JoinColumn(name = "parent")
     private EregModel parent;
 
-    @OneToOne
-    @JoinColumn(name = "opprinnelse_id")
-    private OpprinnelseModel opprinnelseModel;
-
-    @OneToOne
-    @JoinColumn(name = "gruppe_id")
-    private GruppeModel gruppeModel;
 
     @Embedded
     @AttributeOverrides({
@@ -69,15 +58,19 @@ public class  EregModel extends AuditModel {
     private AdresseModel postadresse;
 
     public EregModel(Ereg ereg, EregModel parent, OpprinnelseModel opprinnelseModel, GruppeModel gruppeModel) {
+        super(gruppeModel, opprinnelseModel);
         this.orgnr = ereg.getOrgnr();
         this.enhetstype = ereg.getEnhetstype();
         this.navn = ereg.getNavn();
         this.epost = ereg.getEpost();
         this.internetAdresse = ereg.getInternetAdresse();
         this.parent = parent;
-        this.opprinnelseModel = opprinnelseModel;
         this.forretningsAdresse = ereg.getInternetAdresse() != null ? new AdresseModel(ereg.getForretningsAdresse()) : null;
         this.postadresse = ereg.getPostadresse() != null ? new AdresseModel(ereg.getPostadresse()) : null;
-        this.gruppeModel = gruppeModel;
+    }
+
+    @Override
+    public Ereg toDomain() {
+        return new Ereg(this);
     }
 }

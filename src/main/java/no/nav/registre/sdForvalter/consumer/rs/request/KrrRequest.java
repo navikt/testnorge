@@ -2,13 +2,17 @@ package no.nav.registre.sdForvalter.consumer.rs.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Builder
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
+import no.nav.registre.sdForvalter.domain.Krr;
+
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -43,6 +47,26 @@ public class KrrRequest {
     private String sdpAddress;
     @JsonProperty("sdpLeverandoer")
     private Integer sdpProvider;
+
+
+    public KrrRequest(Krr krr) {
+        ZonedDateTime now = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault());
+        email = krr.getEmail();
+        if (krr.isEmailValid()) {
+            emailUpdated = now.toString();
+            emailValidatedDate = now.toString();
+        }
+        phone = krr.getSms();
+        if (krr.isSmsValid()) {
+            phoneUpdated = now.toString();
+            phoneValidatedDate = now.toString();
+        }
+        reserved = krr.isReserved();
+        fnr = krr.getFnr();
+        validFrom = now.toString();
+        sdpAddress = null;
+        sdpProvider = null;
+    }
 
 
 }

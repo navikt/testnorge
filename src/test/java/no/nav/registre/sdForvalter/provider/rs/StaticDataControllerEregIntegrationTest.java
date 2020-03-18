@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.GruppeModel;
@@ -29,6 +30,7 @@ import no.nav.registre.sdForvalter.database.repository.GruppeRepository;
 import no.nav.registre.sdForvalter.database.repository.OpprinnelseRepository;
 import no.nav.registre.sdForvalter.domain.Ereg;
 import no.nav.registre.sdForvalter.domain.EregListe;
+import no.nav.registre.sdForvalter.domain.Gruppe;
 import no.nav.registre.sdForvalter.domain.Opprinnelse;
 
 @RunWith(SpringRunner.class)
@@ -56,12 +58,7 @@ public class StaticDataControllerEregIntegrationTest {
     @Test
     public void shouldGetEregsWithOpprinnelse() throws Exception {
         OpprinnelseModel altinn = opprinnelseRepository.save(new OpprinnelseModel("Altinn"));
-        EregModel model = EregModel
-                .builder()
-                .orgnr("123456789")
-                .enhetstype("BEDR")
-                .opprinnelseModel(altinn)
-                .build();
+        EregModel model = createEregModel("123456789", "BEDR", altinn);
 
         eregRepository.save(model);
 
@@ -76,13 +73,9 @@ public class StaticDataControllerEregIntegrationTest {
         assertThat(response.getListe()).containsOnly(new Ereg(model));
     }
 
-
     @Test
     public void shouldAddEregSetToDatabase() throws Exception {
-        Ereg ereg = Ereg.builder()
-                .orgnr("987654321")
-                .enhetstype("BEDR")
-                .build();
+        Ereg ereg = createEreg("987654321", "BEDR");
         mvc.perform(post("/api/v1/faste-data/ereg/")
                 .content(objectMapper.writeValueAsString(create(ereg)))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -104,12 +97,7 @@ public class StaticDataControllerEregIntegrationTest {
                 "TestKode",
                 "TestBeskrivelse"
         ));
-        EregModel eregModel = EregModel
-                .builder()
-                .orgnr("123456789")
-                .enhetstype("BEDR")
-                .gruppeModel(gruppeModel)
-                .build();
+        EregModel eregModel = createEregModel("987654321", "BEDR", gruppeModel);
         eregRepository.save(eregModel);
 
         String json = mvc.perform(get("/api/v1/faste-data/ereg/")
@@ -131,18 +119,8 @@ public class StaticDataControllerEregIntegrationTest {
                 "TestKode",
                 "TestBeskrivelse"
         ));
-        EregModel eregModel = EregModel
-                .builder()
-                .orgnr("123456789")
-                .enhetstype("BEDR")
-                .build();
-
-        EregModel eregWithGruppeModel = EregModel
-                .builder()
-                .orgnr("987654321")
-                .enhetstype("BEDR")
-                .gruppeModel(gruppeModel)
-                .build();
+        EregModel eregModel = createEregModel("123456789", "BEDR");
+        EregModel eregWithGruppeModel = createEregModel("987654321", "BEDR", gruppeModel);
 
         eregRepository.saveAll(Arrays.asList(eregModel, eregWithGruppeModel));
 
@@ -167,11 +145,7 @@ public class StaticDataControllerEregIntegrationTest {
                 "TestKode",
                 "TestBeskrivelse"
         ));
-        Ereg ereg = Ereg.builder()
-                .orgnr("987654321")
-                .enhetstype("BEDR")
-                .gruppe(gruppeModel.getKode())
-                .build();
+        Ereg ereg = createEreg("987654321", "BEDR", new Gruppe(gruppeModel));
 
         mvc.perform(post("/api/v1/faste-data/ereg/")
                 .content(objectMapper.writeValueAsString(create(ereg)))
@@ -188,16 +162,8 @@ public class StaticDataControllerEregIntegrationTest {
     @Test
     public void shouldAddOpprinnelseToDatabase() throws Exception {
         Opprinnelse altinn = new Opprinnelse("Altinn");
-        Ereg ereg_123456789 = Ereg.builder()
-                .orgnr("123456789")
-                .enhetstype("BEDR")
-                .opprinelse(altinn.getNavn())
-                .build();
-        Ereg ereg_987654321 = Ereg.builder()
-                .orgnr("987654321")
-                .enhetstype("BEDR")
-                .opprinelse(altinn.getNavn())
-                .build();
+        Ereg ereg_123456789 = createEreg("123456789", "BEDR", altinn.getNavn());
+        Ereg ereg_987654321 = createEreg("987654321", "BEDR", altinn.getNavn());
         mvc.perform(post("/api/v1/faste-data/ereg/")
                 .content(objectMapper.writeValueAsString(create(ereg_123456789, ereg_987654321)))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -220,4 +186,37 @@ public class StaticDataControllerEregIntegrationTest {
         opprinnelseRepository.deleteAll();
     }
 
+
+    private EregModel createEregModel(String orgnr, String enhetstype, GruppeModel gruppeModel) {
+        return createEregModel(orgnr, enhetstype, null, gruppeModel);
+    }
+
+    private EregModel createEregModel(String orgnr, String enhetstype, OpprinnelseModel opprinnelseModel) {
+        return createEregModel(orgnr, enhetstype, opprinnelseModel, null);
+    }
+
+    private EregModel createEregModel(String orgnr, String enhetstype, OpprinnelseModel opprinnelseModel, GruppeModel gruppeModel) {
+        EregModel model = new EregModel();
+        model.setOrgnr(orgnr);
+        model.setEnhetstype(enhetstype);
+        model.setOpprinnelseModel(opprinnelseModel);
+        model.setGruppeModel(gruppeModel);
+        return model;
+    }
+
+    private EregModel createEregModel(String orgnr, String enhetstype) {
+        return createEregModel(orgnr, enhetstype, null, null);
+    }
+
+    private Ereg createEreg(String orgnr, String enhetstype, String opprinnelse) {
+        return new Ereg(createEregModel(orgnr, enhetstype, new OpprinnelseModel(opprinnelse)));
+    }
+
+    private Ereg createEreg(String orgnr, String enhetstype, Gruppe gruppe) {
+        return new Ereg(createEregModel(orgnr, enhetstype, null, new GruppeModel(null, gruppe.getKode(), gruppe.getBeskrivelse())));
+    }
+
+    private Ereg createEreg(String orgnr, String enhetstype) {
+        return new Ereg(createEregModel(orgnr, enhetstype));
+    }
 }
