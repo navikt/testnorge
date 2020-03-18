@@ -67,9 +67,14 @@ public class KrrConsumer {
         Set<String> createdInKrr = new HashSet<>();
         requestData.forEach(d -> {
             RequestEntity<KrrRequest> requestEntity = new RequestEntity<>(d, httpHeaders, HttpMethod.POST, krrUrl);
-            ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
-            if (response.getStatusCode() != HttpStatus.CREATED) {
-                log.error("Klarte ikke opprette kontaktinformasjon i krr-stub");
+            try {
+                ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
+                if (response.getStatusCode() != HttpStatus.CREATED) {
+                    log.error("Klarte ikke opprette kontaktinformasjon i krr-stub");
+                    return;
+                }
+            } catch (Exception e){
+                log.error("Klarte ikke opprette kontaktinformasjon i krr-stub", e);
                 return;
             }
             createdInKrr.add(d.getFnr());
