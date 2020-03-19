@@ -291,6 +291,9 @@ public class ArbeidsforholdMappingUtil {
     }
 
     private static RsArbeidsavtale mapRsArbeidsavtale(List<Arbeidsavtale> arbeidsavtaler) {
+        if (arbeidsavtaler == null || arbeidsavtaler.isEmpty()) {
+            return null;
+        }
         var arbeidsavtale = findLatestArbeidsavtale(arbeidsavtaler);
         return RsArbeidsavtale.builder()
                 .arbeidstidsordning(arbeidsavtale.getArbeidstidsordning())
@@ -303,8 +306,8 @@ public class ArbeidsforholdMappingUtil {
     }
 
     private static Arbeidsavtale findLatestArbeidsavtale(List<Arbeidsavtale> arbeidsavtaler) {
-        var latest = LocalDateTime.MIN;
-        Arbeidsavtale latestArbeidsavtale = null;
+        var latest = arbeidsavtaler.get(0).getSporingsinformasjon().getEndretTidspunkt();
+        var latestArbeidsavtale = arbeidsavtaler.get(0);
         for (var arbeidsavtale : arbeidsavtaler) {
             if (arbeidsavtale.getSporingsinformasjon().getEndretTidspunkt().isAfter(latest)) {
                 latest = arbeidsavtale.getSporingsinformasjon().getEndretTidspunkt();
