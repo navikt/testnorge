@@ -12,8 +12,8 @@ export const PersoninformasjonPanel = ({ stateModifier, eksisterende }) => {
 
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende
 	if (leggTil && eksisterende) {
-		const siste = eksisterende.innvandretUtvandret.length - 1
-		const innvandretEllerUtvandret = eksisterende.innvandretUtvandret[siste].innutvandret
+		const innvandretEllerUtvandret = eksisterende.innvandretUtvandret[0].innutvandret
+
 		return (
 			// Panel som innholder attributer som er støttet i Legg til
 			<>

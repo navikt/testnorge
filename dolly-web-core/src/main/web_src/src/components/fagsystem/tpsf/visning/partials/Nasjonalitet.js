@@ -6,9 +6,6 @@ import { FetchInnUt } from '~/components/bestillingsveileder/stegvelger/steg/ste
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { Historikk } from '~/components/ui/historikk/Historikk'
 
-// const siste = eksisterende.innvandretUtvandret.length - 1
-// const innvandretEllerUtvandret = eksisterende.innvandretUtvandret[siste].innutvandret
-//may need these above
 const Statsborgerskap = ({ statsborgerskap }) => (
 	<React.Fragment>
 		<TitleValue
