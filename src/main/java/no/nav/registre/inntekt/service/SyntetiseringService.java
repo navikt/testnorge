@@ -80,7 +80,7 @@ public class SyntetiseringService {
             log.info("Tilstrekkelig mange identer i mininorge har allerede inntekt. Oppretter ikke inntekt på nye identer.");
             nyeIdenter = Collections.emptyList();
         } else {
-            antallNyeIdenterMedInntekt = antallNyeIdenterMedInntekt < identerIAareg.size() ? antallNyeIdenterMedInntekt : identerIAareg.size();
+            antallNyeIdenterMedInntekt = Math.min(antallNyeIdenterMedInntekt, identerIAareg.size());
             nyeIdenter = new ArrayList<>(identerIAareg).subList(0, antallNyeIdenterMedInntekt);
         }
 
@@ -237,22 +237,27 @@ public class SyntetiseringService {
             String miljoe
     ) {
         var arbeidsforhold = testnorgeAaregConsumer.hentArbeidsforholdTilIdentIMiljoe(ident, miljoe);
-        if (arbeidsforhold != null && !arbeidsforhold.isEmpty()) {
-            var arbeidsforholdet = finnNyesteArbeidsforhold(arbeidsforhold);
-            if (arbeidsforholdet != null) {
-                var opplysningspliktig = arbeidsforholdet.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG);
-                if (opplysningspliktig != null) {
-                    var type = opplysningspliktig.findValue(JSON_NODE_TYPE).asText();
-                    if (TYPE_ORGANISASJON.equals(type)) {
-                        return opplysningspliktig.findValue(JSON_NODE_ORGANISASJONSNUMMER).asText();
-                    } else if (TYPE_PERSON.equals(type)) {
-                        return opplysningspliktig.findValue(JSON_NODE_OFFENTLIG_IDENT).asText();
-                    }
-                }
-                throw new RuntimeException("Fant ingen opplysningspliktig i arbeidsforholdet til ident " + ident);
-            }
+        if (arbeidsforhold == null || arbeidsforhold.isEmpty()) {
+            return null;
+        }
+
+        var arbeidsforholdet = finnNyesteArbeidsforhold(arbeidsforhold);
+        if (arbeidsforholdet == null) {
             throw new RuntimeException("Fant ikke arbeidsforhold til ident " + ident);
         }
+
+        var opplysningspliktig = arbeidsforholdet.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG);
+        if (opplysningspliktig == null) {
+            throw new RuntimeException("Fant ingen opplysningspliktig i arbeidsforholdet til ident " + ident);
+        }
+
+        var type = opplysningspliktig.findValue(JSON_NODE_TYPE).asText();
+        if (TYPE_ORGANISASJON.equals(type)) {
+            return opplysningspliktig.findValue(JSON_NODE_ORGANISASJONSNUMMER).asText();
+        } else if (TYPE_PERSON.equals(type)) {
+            return opplysningspliktig.findValue(JSON_NODE_OFFENTLIG_IDENT).asText();
+        }
+
         return null;
     }
 
@@ -312,7 +317,7 @@ public class SyntetiseringService {
         List<List<String>> partisjoner = new ArrayList<>(m);
         for (int i = 0; i < m; i++) {
             int fromIndex = i * PAGE_SIZE;
-            int toIndex = (i * PAGE_SIZE + PAGE_SIZE < size) ? (i * PAGE_SIZE + PAGE_SIZE) : size;
+            int toIndex = Math.min(i * PAGE_SIZE + PAGE_SIZE, size);
 
             partisjoner.add(new ArrayList<>(list.subList(fromIndex, toIndex)));
         }
