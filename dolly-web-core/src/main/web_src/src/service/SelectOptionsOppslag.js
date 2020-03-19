@@ -1,27 +1,24 @@
-import { useAsync } from 'react-use'
-import { DollyApi } from '~/service/Api'
+import config from '~/config'
 
-export const SelectOptionsOppslag = oppslag => {
-	if (oppslag === 'orgnr') {
-		const orgInfo = useAsync(async () => {
-			const response = await DollyApi.getFasteOrgnummer()
-			return response.data
-		}, [])
-		return orgInfo
-	}
-}
+const uri = `${config.services.dollyBackend}`
 
-SelectOptionsOppslag.formatOptions = orgInfo => {
-	const liste = orgInfo.value ? orgInfo.value.liste : []
-	const options = []
-	liste.length > 0 &&
-		liste.forEach(org => {
-			org.juridiskEnhet &&
-				options.push({
-					value: org.orgnr,
-					label: `${org.orgnr} (${org.enhetstype}) - ${org.navn}`,
-					juridiskEnhet: org.juridiskEnhet
-				})
+export const SelectOptionsOppslag = {
+	hentOrgnr: () =>
+		fetch(`${uri}/orgnummer`, {
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+			}
 		})
-	return options
+			.then(response => {
+				if (!response.ok) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.then(response => response.json())
+			.catch(error => {
+				console.error(error)
+				throw error
+			})
 }

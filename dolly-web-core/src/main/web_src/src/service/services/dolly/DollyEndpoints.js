@@ -13,7 +13,6 @@ const aaregBase = `${uri}/aareg/arbeidsforhold`
 const personoppslagBase = `${uri}/pdlperson`
 const poppBase = `${uri}/popp`
 const inntektstubBase = `${uri}/inntektstub`
-const fasteOrgnummerBase = `${uri}/orgnummer`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -108,10 +107,6 @@ export default class DollyEndpoints {
 		return `${inntektstubBase}/${ident}`
 	}
 
-	static fasteOrgnummer() {
-		return fasteOrgnummerBase
-	}
-
 	//TESTPERSON-CONTROLLER
 	static slettPerson(ident) {
 		return `${identBase}/${ident}`
@@ -133,11 +128,11 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}/relasjon`
 	}
 
-	static poppInntekt(ident, env){
+	static poppInntekt(ident, env) {
 		return `${poppBase}/inntekt/${ident}/${env}`
 	}
 
-	static poppMiljoe(){
+	static poppMiljoe() {
 		return `${poppBase}/miljoe`
 	}
 }
