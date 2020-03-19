@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import Kodeverk from '~/utils/kodeverkMapper'
+import { AdresseKodeverk } from '~/config/kodeverk'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
@@ -84,7 +84,7 @@ export const KontaktinformasjonForDoedsbo = ({ data, loading }) => {
 								<TitleValue
 									title="Land"
 									value={id.adresse.landkode}
-									kodeverk={Kodeverk.postadresseLand}
+									kodeverk={AdresseKodeverk.PostadresseLand}
 								/>
 							</Fragment>
 						)}

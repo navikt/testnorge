@@ -1,5 +1,5 @@
 import React from 'react'
-import Kodeverk from '~/utils/kodeverkMapper'
+import { AdresseKodeverk } from '~/config/kodeverk'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
@@ -24,7 +24,7 @@ export const UtenlandsId = ({ data, loading }) => {
 						<TitleValue
 							title="Utstederland"
 							value={id.utstederland}
-							kodeverk={Kodeverk.utstederland}
+							kodeverk={AdresseKodeverk.Utstederland}
 						/>
 					</div>
 				)}

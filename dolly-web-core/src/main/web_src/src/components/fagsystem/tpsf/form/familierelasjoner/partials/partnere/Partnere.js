@@ -2,7 +2,7 @@ import React from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import Kodeverk from '~/utils/kodeverkMapper'
+import { AdresseKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
@@ -111,7 +111,11 @@ const PartnerForm = ({ path, idx, formikBag, locked }) => {
 				options={Options('identtype')}
 				isClearable={false}
 			/>
-			<FormikSelect name={`${basePath}.kjonn`} label="Kjønn" kodeverk="Kjønnstyper" />
+			<FormikSelect
+				name={`${basePath}.kjonn`}
+				label="Kjønn"
+				kodeverk={PersoninformasjonKodeverk.Kjoennstyper}
+			/>
 			<FormikCheckbox
 				name={`${basePath}.harFellesAdresse`}
 				label="Har felles adresse"
@@ -120,7 +124,7 @@ const PartnerForm = ({ path, idx, formikBag, locked }) => {
 			<FormikSelect
 				name={`${basePath}.statsborgerskap`}
 				label="Statsborgerskap"
-				kodeverk={Kodeverk.statsborgerskapLand}
+				kodeverk={AdresseKodeverk.StatsborgerskapLand}
 			/>
 			<FormikDatepicker name={`${basePath}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
 			<Diskresjonskoder basePath={basePath} formikBag={formikBag} />

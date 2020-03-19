@@ -1,5 +1,5 @@
 import React from 'react'
-import Kodeverk from '~/utils/kodeverkMapper'
+import { AdresseKodeverk } from '~/config/kodeverk'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
@@ -18,7 +18,7 @@ export const Postadresse = ({ postadresse }) => {
 					<div>{postLinje3}</div>
 				</TitleValue>
 
-				<TitleValue title="Land" kodeverk={Kodeverk.postadresseLand} value={postLand} />
+				<TitleValue title="Land" kodeverk={AdresseKodeverk.PostadresseLand} value={postLand} />
 			</div>
 		</div>
 	)

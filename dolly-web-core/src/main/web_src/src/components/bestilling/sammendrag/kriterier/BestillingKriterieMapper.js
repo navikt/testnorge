@@ -3,7 +3,12 @@ import _dropRight from 'lodash/dropRight'
 import _takeRight from 'lodash/takeRight'
 import _isEmpty from 'lodash/isEmpty'
 import Formatters from '~/utils/DataFormatter'
-import Kodeverk from '~/utils/kodeverkMapper'
+import {
+	PersoninformasjonKodeverk,
+	AdresseKodeverk,
+	SigrunKodeverk,
+	ArbeidKodeverk
+} from '~/config/kodeverk'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -23,17 +28,17 @@ const _getTpsfBestillingData = data => {
 		obj('Født før', Formatters.formatDate(data.foedtFoer)),
 		obj('Alder', data.alder),
 		obj('Dødsdato', Formatters.formatDate(data.doedsdato)),
-		obj('Statsborgerskap', data.statsborgerskap, Kodeverk.statsborgerskapLand),
+		obj('Statsborgerskap', data.statsborgerskap, AdresseKodeverk.StatsborgerskapLand),
 		obj('Statsborgerskap fra', Formatters.formatDate(data.statsborgerskapRegdato)),
 		obj('Kjønn', Formatters.kjonn(data.kjonn, data.alder)),
 		obj('Har mellomnavn', Formatters.oversettBoolean(data.harMellomnavn)),
-		obj('Sivilstand', data.sivilstand, 'Sivilstander'),
+		obj('Sivilstand', data.sivilstand, PersoninformasjonKodeverk.Sivilstander),
 		obj('Diskresjonskoder', data.spesreg !== 'UFB' && data.spesreg, 'Diskresjonskoder'),
 		obj('Uten fast bopel', (data.utenFastBopel || data.spesreg === 'UFB') && 'JA'),
-		obj('Språk', data.sprakKode, Kodeverk.sprak),
-		obj('Innvandret fra land', data.innvandretFraLand, Kodeverk.innvandretUtvandretLand),
+		obj('Språk', data.sprakKode, PersoninformasjonKodeverk.Spraak),
+		obj('Innvandret fra land', data.innvandretFraLand, AdresseKodeverk.InnvandretUtvandretLand),
 		obj('Innvandret dato', Formatters.formatDate(data.innvandretFraLandFlyttedato)),
-		obj('Utvandret til land', data.utvandretTilLand, Kodeverk.innvandretUtvandretLand),
+		obj('Utvandret til land', data.utvandretTilLand, AdresseKodeverk.InnvandretUtvandretLand),
 		obj('Utvandret dato', Formatters.formatDate(data.utvandretTilLandFlyttedato)),
 		obj('Er forsvunnet', Formatters.oversettBoolean(data.erForsvunnet)),
 		obj('Forsvunnet dato', Formatters.formatDate(data.forsvunnetDato)),
@@ -184,7 +189,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						..._getTpsfBestillingData(item),
 						obj('Fnr/dnr/bost', item.ident),
 						obj('Bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
-						obj('Sivilstand', sisteSivilstand[0].sivilstand, 'Sivilstander'),
+						obj(
+							'Sivilstand',
+							sisteSivilstand[0].sivilstand,
+							PersoninformasjonKodeverk.Sivilstander
+						),
 						obj('Tidligere sivilstander', Formatters.arrayToString(tidligereSivilstander))
 					])
 				})
@@ -236,7 +245,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				{
 					label: 'Type arbeidsforhold',
 					value: arbeidsforhold.arbeidsforholdstype,
-					apiKodeverkId: 'Arbeidsforholdstyper'
+					apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper
 				},
 				obj('Type av arbeidsgiver', arbeidsforhold.arbeidsgiver.aktoertype),
 				obj('Orgnummer', arbeidsforhold.arbeidsgiver.orgnummer),
@@ -244,7 +253,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				{
 					label: 'Yrke',
 					value: arbeidsforhold.arbeidsavtale.yrke,
-					apiKodeverkId: 'Yrker',
+					apiKodeverkId: ArbeidKodeverk.Yrker,
 					width: 'xlarge',
 					showKodeverkValue: true
 				},
@@ -256,7 +265,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				{
 					label: 'Arbeidstidsordning',
 					value: arbeidsforhold.arbeidsavtale.arbeidstidsordning,
-					apiKodeverkId: 'Arbeidstidsordninger'
+					apiKodeverkId: ArbeidKodeverk.Arbeidstidsordninger
 				},
 				obj('Antall konverterte timer', arbeidsforhold.arbeidsavtale.antallKonverterteTimer),
 				obj('Avtalte timer per uke', arbeidsforhold.arbeidsavtale.avtaltArbeidstimerPerUke),
@@ -317,13 +326,13 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					label: 'Grunnlag (Fastlands-Norge)',
 					value: inntekt.grunnlag,
 					width: 'xlarge',
-					apiKodeverkId: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
+					apiKodeverkId: SigrunKodeverk[inntekt.tjeneste]
 				},
 				{
 					label: 'Grunnlag (Svalbard)',
 					value: inntekt.svalbardGrunnlag,
 					width: 'xlarge',
-					apiKodeverkId: Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)
+					apiKodeverkId: SigrunKodeverk[inntekt.tjeneste]
 				}
 			])
 		})
@@ -418,7 +427,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						'Postnummer og -sted',
 						`${doedsboKriterier.postnummer} ${doedsboKriterier.poststedsnavn}`
 					),
-					obj('Land', doedsboKriterier.landkode, Kodeverk.postadresseLand),
+					obj('Land', doedsboKriterier.landkode, AdresseKodeverk.PostadresseLand),
 					obj('Skifteform', doedsboKriterier.skifteform),
 					obj('Dato utstedt', Formatters.formatDate(doedsboKriterier.utstedtDato)),
 					obj('Gyldig fra', Formatters.formatDate(doedsboKriterier.gyldigFom)),
@@ -454,7 +463,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					obj('Utenlands-ID', uidr.identifikasjonsnummer),
 					obj('Kilde', uidr.kilde),
 					obj('Utenlands-ID opphørt', Formatters.oversettBoolean(uidr.opphoert)),
-					obj('Utstederland', uidr.utstederland, Kodeverk.utstederland)
+					obj('Utstederland', uidr.utstederland, AdresseKodeverk.Utstederland)
 				])
 			})
 			data.push(uidnrObj)

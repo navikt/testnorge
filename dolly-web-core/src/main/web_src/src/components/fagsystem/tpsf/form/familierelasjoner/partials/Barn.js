@@ -1,5 +1,5 @@
 import React from 'react'
-import Kodeverk from '~/utils/kodeverkMapper'
+import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -81,7 +81,7 @@ export const Barn = ({ formikBag }) => {
 					<FormikSelect
 						name={`${path}.statsborgerskap`}
 						label="Statsborgerskap"
-						kodeverk={Kodeverk.statsborgerskapLand}
+						kodeverk={AdresseKodeverk.StatsborgerskapLand}
 					/>
 					<FormikDatepicker name={`${path}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
 					<Diskresjonskoder basePath={path} formikBag={formikBag} />

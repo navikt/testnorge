@@ -1,5 +1,5 @@
 import React from 'react'
-import Kodeverk from '~/utils/kodeverkMapper'
+import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -16,7 +16,12 @@ export const Diverse = ({ formikBag }) => {
 
 	return (
 		<React.Fragment>
-			<FormikSelect name="tpsf.kjonn" label="Kjønn" kodeverk="Kjønnstyper" visHvisAvhuket />
+			<FormikSelect
+				name="tpsf.kjonn"
+				label="Kjønn"
+				kodeverk={PersoninformasjonKodeverk.Kjoennstyper}
+				visHvisAvhuket
+			/>
 
 			<FormikSelect
 				name="tpsf.harMellomnavn"
@@ -28,7 +33,7 @@ export const Diverse = ({ formikBag }) => {
 			<FormikSelect
 				name="tpsf.sprakKode"
 				label="Språk"
-				kodeverk={Kodeverk.sprak}
+				kodeverk={PersoninformasjonKodeverk.Spraak}
 				size="large"
 				visHvisAvhuket
 			/>

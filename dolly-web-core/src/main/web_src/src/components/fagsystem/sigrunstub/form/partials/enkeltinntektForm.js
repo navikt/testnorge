@@ -4,7 +4,7 @@ import _isString from 'lodash/isString'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import Formatters from '~/utils/DataFormatter'
+import { SigrunKodeverk } from '~/config/kodeverk'
 
 export const EnkeltinntektForm = ({ path, header, initialGrunnlag, tjeneste, formikBag }) => {
 	return (
@@ -14,7 +14,7 @@ export const EnkeltinntektForm = ({ path, header, initialGrunnlag, tjeneste, for
 					<FormikSelect
 						name={`${path}.tekniskNavn`}
 						label="Type inntekt"
-						kodeverk={Formatters.uppercaseAndUnderscoreToCapitalized(tjeneste)}
+						kodeverk={SigrunKodeverk[tjeneste]}
 						size="xxlarge"
 						isClearable={false}
 						optionHeight={50}

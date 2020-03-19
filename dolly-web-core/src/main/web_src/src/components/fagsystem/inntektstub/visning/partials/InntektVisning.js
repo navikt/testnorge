@@ -1,5 +1,5 @@
 import React from 'react'
-import Kodeverk from '~/utils/kodeverkMapper'
+import { AdresseKodeverk } from '~/config/kodeverk'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
@@ -37,12 +37,12 @@ export const InntektVisning = ({ data }) => {
 						<TitleValue
 							title="Skattemessig bosatt i land"
 							value={id.skattemessigBosattILand}
-							kodeverk={Kodeverk.inntektstubLand}
+							kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 						/>
 						<TitleValue
 							title="Opptjeningsland"
 							value={id.opptjeningsland}
-							kodeverk={Kodeverk.inntektstubLand}
+							kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 						/>
 						<TitleValue title="Beskrivelse" value={texts(id.beskrivelse)} />
 						{id.tilleggsinformasjon && (
