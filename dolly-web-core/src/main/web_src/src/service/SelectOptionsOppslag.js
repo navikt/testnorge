@@ -15,11 +15,11 @@ export const SelectOptionsOppslag = oppslag => {
 			return response
 		}, [DollyApi.getPersonnavn])
 		return navnInfo
-	} else if (oppslag === 'fasteDatasettTps'){
+	} else if (oppslag === 'dollyGruppe'){
 		const datasettInfo = useAsync(async () => {
-			const response = await DollyApi.getFasteDatasettTPS()
+			const response = await DollyApi.getFasteDatasettGruppe("TPS", "DOLLY")
 			return response
-		}, [DollyApi.getFasteDatasettTPS])
+		}, [DollyApi.getFasteDatasettGruppe])
 		return datasettInfo
 	}
 }

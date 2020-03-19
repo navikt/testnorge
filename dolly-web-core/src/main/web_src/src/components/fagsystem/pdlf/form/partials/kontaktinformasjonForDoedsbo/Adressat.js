@@ -15,8 +15,8 @@ export const Adressat = ({ formikBag }) => {
 
 	const navnInfo = SelectOptionsOppslag('personnavn')
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
-	const fasteDatasettInfo = SelectOptionsOppslag('fasteDatasettTps')
-	const navnOgFnrOptions = SelectOptionsOppslag.formatOptions('navnOgFnr', fasteDatasettInfo)
+	const dollyGruppeInfo = SelectOptionsOppslag('dollyGruppe')
+	const navnOgFnrOptions = SelectOptionsOppslag.formatOptions('navnOgFnr', dollyGruppeInfo)
 	const orgInfo = SelectOptionsOppslag('orgnr')
 	const orgOptions = SelectOptionsOppslag.formatOptions('orgInfo', orgInfo)
 
@@ -85,7 +85,7 @@ export const Adressat = ({ formikBag }) => {
 					label="Navn og id"
 					options={navnOgFnrOptions}
 					size="large"
-					isLoading={fasteDatasettInfo.loading}
+					isLoading={dollyGruppeInfo.loading}
 					onChange={id => setValue(id, `${addressatPath}.idnummer`, formikBag.setFieldValue)}
 					value={_get(formikBag.values, `${addressatPath}.idnummer`)}
 					isClearable={false}

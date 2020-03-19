@@ -12,8 +12,8 @@ export const FalskIdentitet = ({ formikBag }) => {
 
 	const navnInfo = SelectOptionsOppslag('personnavn')
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
-	const fasteDatasettInfo = SelectOptionsOppslag('fasteDatasettTps')
-	const navnOgFnrOptions = SelectOptionsOppslag.formatOptions('navnOgFnr', fasteDatasettInfo)
+	const dollyGruppeInfo = SelectOptionsOppslag('dollyGruppe')
+	const navnOgFnrOptions = SelectOptionsOppslag.formatOptions('navnOgFnr', dollyGruppeInfo)
 
 	const settIdentitetType = e => {
 		if (e.value === 'UKJENT') {
@@ -54,7 +54,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 					optionHeight={50}
 					size="large"
 					options={navnOgFnrOptions}
-					isLoading={fasteDatasettInfo.loading}
+					isLoading={dollyGruppeInfo.loading}
 					onChange={id => setValue(id, `${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`, formikBag.setFieldValue)}
 					value={_get(formikBag.values, `${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`)}
 					isClearable={false}
