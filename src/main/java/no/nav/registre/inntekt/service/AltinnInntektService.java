@@ -111,7 +111,7 @@ public class AltinnInntektService {
                     .build());
         }
 
-
+        return new ArrayList<>();
     }
 
     private JsonNode finnNyesteArbeidsforholdIOrganisasjon (

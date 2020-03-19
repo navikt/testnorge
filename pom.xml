@@ -84,6 +84,11 @@
             <artifactId>stub-aordningen-inntektsinformasjon-v2</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>no.nav.tjenester</groupId>
+            <artifactId>ordningen-arbeidsforhold-v1</artifactId>
+            <version>1.9</version>
+        </dependency>
     </dependencies>
 
     <build>
