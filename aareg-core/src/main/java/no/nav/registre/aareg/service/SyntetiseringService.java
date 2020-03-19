@@ -72,13 +72,14 @@ public class SyntetiseringService {
             SyntetiserAaregRequest syntetiserAaregRequest,
             Boolean sendAlleEksisterende
     ) {
+        List<RsAaregResponse> statusFraAareg = new ArrayList<>();
         var levendeIdenter = new HashSet<>(hentLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId(), MINIMUM_ALDER));
         var identerIAaregstub = new ArrayList<>(hentIdenterIAvspillergruppeMedArbeidsforhold(syntetiserAaregRequest.getAvspillergruppeId(), syntetiserAaregRequest.getMiljoe(), false));
         if (sendAlleEksisterende) {
             Map<String, List<Arbeidsforhold>> identerSomSkalBeholdeArbeidsforhold = new HashMap<>();
             populerIdenterSomSkalBeholdeArbeidsforhold(syntetiserAaregRequest, identerIAaregstub, identerSomSkalBeholdeArbeidsforhold);
             levendeIdenter.removeAll(identerSomSkalBeholdeArbeidsforhold.keySet());
-            oppdaterArbeidsforholdPaaEksisterendeIdenter(identerSomSkalBeholdeArbeidsforhold, syntetiserAaregRequest.getMiljoe());
+            statusFraAareg.add(oppdaterArbeidsforholdPaaEksisterendeIdenter(identerSomSkalBeholdeArbeidsforhold, syntetiserAaregRequest.getMiljoe()));
         } else {
             levendeIdenter.removeAll(identerIAaregstub);
         }
@@ -92,8 +93,6 @@ public class SyntetiseringService {
         List<String> utvalgteIdenter = new ArrayList<>(levendeIdenter);
         Collections.shuffle(utvalgteIdenter);
         utvalgteIdenter = utvalgteIdenter.subList(0, antallNyeIdenter);
-
-        List<RsAaregResponse> statusFraAareg = new ArrayList<>();
 
         var syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(utvalgteIdenter);
         validerArbeidsforholdMotAaregSpecs(syntetiserteArbeidsforhold);
@@ -200,7 +199,7 @@ public class SyntetiseringService {
         return identerIAvspillergruppe;
     }
 
-    private void oppdaterArbeidsforholdPaaEksisterendeIdenter(
+    private RsAaregResponse oppdaterArbeidsforholdPaaEksisterendeIdenter(
             Map<String, List<Arbeidsforhold>> identerSomSkalBeholdeArbeidsforhold,
             String miljoe
     ) {
@@ -214,6 +213,7 @@ public class SyntetiseringService {
             }
         }
         log.info("Status på oppdatering: {}", aaregResponses.toString());
+        return RsAaregResponse.builder().statusPerMiljoe(aaregResponses).build();
     }
 
     private RsAaregOppdaterRequest mapAaregResponseToOppdateringsRequest(Arbeidsforhold aaregResponse) {
