@@ -80,7 +80,7 @@ public class SyntetiseringService {
             log.info("Tilstrekkelig mange identer i mininorge har allerede inntekt. Oppretter ikke inntekt på nye identer.");
             nyeIdenter = Collections.emptyList();
         } else {
-            antallNyeIdenterMedInntekt = antallNyeIdenterMedInntekt < identerIAareg.size() ? antallNyeIdenterMedInntekt : identerIAareg.size();
+            antallNyeIdenterMedInntekt = Math.min(antallNyeIdenterMedInntekt, identerIAareg.size());
             nyeIdenter = new ArrayList<>(identerIAareg).subList(0, antallNyeIdenterMedInntekt);
         }
 
@@ -312,7 +312,7 @@ public class SyntetiseringService {
         List<List<String>> partisjoner = new ArrayList<>(m);
         for (int i = 0; i < m; i++) {
             int fromIndex = i * PAGE_SIZE;
-            int toIndex = (i * PAGE_SIZE + PAGE_SIZE < size) ? (i * PAGE_SIZE + PAGE_SIZE) : size;
+            int toIndex = Math.min(i * PAGE_SIZE + PAGE_SIZE, size);
 
             partisjoner.add(new ArrayList<>(list.subList(fromIndex, toIndex)));
         }
