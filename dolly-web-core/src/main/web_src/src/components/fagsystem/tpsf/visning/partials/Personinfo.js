@@ -24,6 +24,13 @@ export const Personinfo = ({ data, visTittel = true }) => {
 
 				<TitleValue title="Sivilstand" kodeverk="Sivilstander" value={data.sivilstand} />
 
+				<TitleValue title="Bankkontonummer" value={data.bankkontonr} />
+
+				<TitleValue
+					title="Bankkonto opprettet"
+					value={Formatters.formatDate(data.bankkontonrRegdato)}
+				/>
+
 				{data.spesreg !== 'UFB' && (
 					<TitleValue title="Diskresjonskoder" kodeverk="Diskresjonskoder" value={data.spesreg} />
 				)}

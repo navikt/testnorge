@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		"allowJs": true,
 		"sourceMap": true,
 		"moduleResolution": "node",
 		"esModuleInterop": true,

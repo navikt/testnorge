@@ -37,21 +37,25 @@ export const Alder = ({ basePath, formikBag, title }) => {
 		const { value } = event.target
 		setAlderType(alderValg[value])
 
+		const barn = basePath.includes('barn')
+
 		formikBag.setValues(_omit(formikBag.values, Object.values(paths)))
+		formikBag.setFieldValue(paths.doedsdato, _get(formikBag.values, `${basePath}.doedsdato`))
 
 		if (value === alderValg.alder) {
-			formikBag.setFieldValue(paths.alder, Formatters.randomIntInRange(1, 99))
-			formikBag.setFieldValue(paths.doedsdato, _get(formikBag.values, `${basePath}.doedsdato`))
-
-			if (basePath.includes('barn')) {
-				formikBag.setFieldValue(paths.alder, Formatters.randomIntInRange(1, 17))
-			} else if (basePath.includes('partner')) {
-				formikBag.setFieldValue(paths.alder, Formatters.randomIntInRange(18, 99))
+			if (barn) {
+				formikBag.setFieldValue(paths.alder, Formatters.randomIntInRange(0, 17))
+			} else {
+				formikBag.setFieldValue(paths.alder, Formatters.randomIntInRange(30, 60))
 			}
 		} else {
-			formikBag.setFieldValue(paths.foedtEtter, subYears(new Date(), 60))
-			formikBag.setFieldValue(paths.foedtFoer, subYears(new Date(), 30))
-			formikBag.setFieldValue(paths.doedsdato, _get(formikBag.values, `${basePath}.doedsdato`))
+			if (barn) {
+				formikBag.setFieldValue(paths.foedtEtter, subYears(new Date(), 17))
+				formikBag.setFieldValue(paths.foedtFoer, new Date())
+			} else {
+				formikBag.setFieldValue(paths.foedtEtter, subYears(new Date(), 60))
+				formikBag.setFieldValue(paths.foedtFoer, subYears(new Date(), 30))
+			}
 		}
 	}
 

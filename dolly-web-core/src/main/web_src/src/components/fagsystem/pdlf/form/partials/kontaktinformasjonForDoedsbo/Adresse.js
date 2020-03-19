@@ -1,5 +1,4 @@
 import React from 'react'
-import _get from 'lodash'
 import Kodeverk from '~/utils/kodeverkMapper'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
