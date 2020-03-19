@@ -57,7 +57,6 @@ export const PersoninformasjonPanel = ({ stateModifier, eksisterende }) => {
 					<Attributt attr={sm.attrs.utvandretTilLand} />
 				</AttributtKategori>
 
-<<<<<<< HEAD
 				<AttributtKategori title="Diverse">
 					<Attributt attr={sm.attrs.identHistorikk} />
 					<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
@@ -70,20 +69,6 @@ export const PersoninformasjonPanel = ({ stateModifier, eksisterende }) => {
 			</Panel>
 		)
 	}
-=======
-			<AttributtKategori title="Diverse">
-				<Attributt attr={sm.attrs.identHistorikk} />
-				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
-				<Attributt attr={sm.attrs.harMellomnavn} />
-				<Attributt attr={sm.attrs.sprakKode} />
-				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
-				<Attributt attr={sm.attrs.erForsvunnet} />
-				<Attributt attr={sm.attrs.harBankkontonr} />
-				<Attributt attr={sm.attrs.spesreg} />
-			</AttributtKategori>
-		</Panel>
-	)
->>>>>>> 90e173c6c138f233fcf16a7dcd2d0fd08601a667
 }
 
 PersoninformasjonPanel.heading = 'Personinformasjon'

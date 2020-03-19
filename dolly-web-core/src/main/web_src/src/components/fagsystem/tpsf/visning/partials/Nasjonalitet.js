@@ -2,7 +2,6 @@ import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import { FetchInnUt } from '~/components/bestillingsveileder/stegvelger/steg/steg1/paneler/Personinformasjon'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { Historikk } from '~/components/ui/historikk/Historikk'
 
