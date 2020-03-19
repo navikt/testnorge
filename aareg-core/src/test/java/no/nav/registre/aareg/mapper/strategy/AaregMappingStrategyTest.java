@@ -132,7 +132,7 @@ public class AaregMappingStrategyTest {
                         .sisteLoennsendringsdato(of(2019, 1, 3, 0, 0))
                         .build())
                 .antallTimerForTimeloennet(singletonList(RsAntallTimerForTimeloennet.builder()
-                        .antallTimer(345)
+                        .antallTimer(345D)
                         .periode(RsPeriode.builder()
                                 .fom(of(2013, 10, 8, 0, 0))
                                 .tom(of(2015, 2, 7, 0, 0))

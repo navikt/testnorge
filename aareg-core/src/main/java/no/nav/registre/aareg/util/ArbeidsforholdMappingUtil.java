@@ -11,10 +11,13 @@ import java.util.List;
 
 import no.nav.registre.aareg.domain.RsAktoer;
 import no.nav.registre.aareg.domain.RsAktoerPerson;
+import no.nav.registre.aareg.domain.RsAntallTimerForTimeloennet;
 import no.nav.registre.aareg.domain.RsArbeidsavtale;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
 import no.nav.registre.aareg.domain.RsOrganisasjon;
 import no.nav.registre.aareg.domain.RsPeriode;
+import no.nav.registre.aareg.domain.RsPermisjon;
+import no.nav.registre.aareg.domain.RsUtenlandsopphold;
 import no.nav.tjenester.aordningen.arbeidsforhold.v1.Ansettelsesperiode;
 import no.nav.tjenester.aordningen.arbeidsforhold.v1.AntallTimerForTimeloennet;
 import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsavtale;
@@ -60,9 +63,9 @@ public class ArbeidsforholdMappingUtil {
                 .arbeidsforholdstype(arbeidsforhold.getType())
                 .ansettelsesPeriode(mapRsAnsettelsesPeriode(arbeidsforhold.getAnsettelsesperiode()))
                 .arbeidsavtale(mapRsArbeidsavtale(arbeidsforhold.getArbeidsavtaler()))
-                // .permisjon()
-                // .antallTimerForTimeloennet()
-                // .utenlandsopphold()
+                .permisjon(mapRsPermisjoner(arbeidsforhold.getPermisjonPermitteringer()))
+                .antallTimerForTimeloennet(mapRsAntallTimerForTimeloennet(arbeidsforhold.getAntallTimerForTimeloennet()))
+                .utenlandsopphold(mapRsUtenlandsopphold(arbeidsforhold.getUtenlandsopphold()))
                 .build();
     }
 
@@ -215,48 +218,6 @@ public class ArbeidsforholdMappingUtil {
                 .build();
     }
 
-    private static String findStringNullSafe(
-            JsonNode node,
-            String fieldName
-    ) {
-        return node.get(fieldName) != null ? node.get(fieldName).asText() : null;
-    }
-
-    private static Long findLongNullSafe(
-            JsonNode node,
-            String fieldName
-    ) {
-        return node.get(fieldName) != null ? node.get(fieldName).asLong() : null;
-    }
-
-    private static Double findDoubleNullSafe(
-            JsonNode node,
-            String fieldName
-    ) {
-        return node.get(fieldName) != null ? node.get(fieldName).asDouble() : null;
-    }
-
-    private static LocalDate findLocalDateNullSafe(
-            JsonNode node,
-            String fieldName
-    ) {
-        return node.get(fieldName) != null ? LocalDate.parse(node.get(fieldName).asText()) : null;
-    }
-
-    private static LocalDateTime findLocalDateTimeNullSafe(
-            JsonNode node,
-            String fieldName
-    ) {
-        return node.get(fieldName) != null ? LocalDateTime.parse(node.get(fieldName).asText()) : null;
-    }
-
-    private static YearMonth findYearMonthNullSage(
-            JsonNode node,
-            String fieldName
-    ) {
-        return node.get(fieldName) != null ? YearMonth.parse(node.get(fieldName).asText()) : null;
-    }
-
     private static RsAktoerPerson mapRsAktoerPerson(Person person) {
         var rsAktoerPerson = RsAktoerPerson.builder()
                 .ident(person.getOffentligIdent())
@@ -315,5 +276,91 @@ public class ArbeidsforholdMappingUtil {
             }
         }
         return latestArbeidsavtale;
+    }
+
+    private static List<RsPermisjon> mapRsPermisjoner(List<PermisjonPermittering> permisjoner) {
+        List<RsPermisjon> rsPermisjoner = new ArrayList<>(permisjoner.size());
+        for (var permisjon : permisjoner) {
+            rsPermisjoner.add(RsPermisjon.builder()
+                    .permisjonsId(permisjon.getPermisjonPermitteringId())
+                    .permisjonsPeriode(RsPeriode.builder()
+                            .fom(permisjon.getPeriode().getFom() != null ? permisjon.getPeriode().getFom().atStartOfDay() : null)
+                            .tom(permisjon.getPeriode().getTom() != null ? permisjon.getPeriode().getTom().atStartOfDay() : null)
+                            .build())
+                    .permisjonsprosent(permisjon.getProsent())
+                    .permisjonOgPermittering(permisjon.getType())
+                    .build());
+        }
+        return rsPermisjoner;
+    }
+
+    private static List<RsAntallTimerForTimeloennet> mapRsAntallTimerForTimeloennet(List<AntallTimerForTimeloennet> antallTimerForTimeloennet) {
+        List<RsAntallTimerForTimeloennet> rsAntallTimerForTimeloennet = new ArrayList<>(antallTimerForTimeloennet.size());
+        for (var antallTimer : antallTimerForTimeloennet) {
+            rsAntallTimerForTimeloennet.add(RsAntallTimerForTimeloennet.builder()
+                    .periode(RsPeriode.builder()
+                            .fom(antallTimer.getPeriode().getFom() != null ? antallTimer.getPeriode().getFom().atStartOfDay() : null)
+                            .tom(antallTimer.getPeriode().getTom() != null ? antallTimer.getPeriode().getTom().atStartOfDay() : null)
+                            .build())
+                    .antallTimer(antallTimer.getAntallTimer())
+                    .build());
+        }
+        return rsAntallTimerForTimeloennet;
+    }
+
+    private static List<RsUtenlandsopphold> mapRsUtenlandsopphold(List<Utenlandsopphold> utenlandsopphold) {
+        List<RsUtenlandsopphold> rsUtenlandsopphold = new ArrayList<>(utenlandsopphold.size());
+        for (var opphold : utenlandsopphold) {
+            rsUtenlandsopphold.add(RsUtenlandsopphold.builder()
+                    .periode(RsPeriode.builder()
+                            .fom(opphold.getPeriode().getFom() != null ? opphold.getPeriode().getFom().atStartOfDay() : null)
+                            .tom(opphold.getPeriode().getTom() != null ? opphold.getPeriode().getTom().atStartOfDay() : null)
+                            .build())
+                    .land(opphold.getLandkode())
+                    .build());
+        }
+        return rsUtenlandsopphold;
+    }
+
+    private static String findStringNullSafe(
+            JsonNode node,
+            String fieldName
+    ) {
+        return node.get(fieldName) != null ? node.get(fieldName).asText() : null;
+    }
+
+    private static Long findLongNullSafe(
+            JsonNode node,
+            String fieldName
+    ) {
+        return node.get(fieldName) != null ? node.get(fieldName).asLong() : null;
+    }
+
+    private static Double findDoubleNullSafe(
+            JsonNode node,
+            String fieldName
+    ) {
+        return node.get(fieldName) != null ? node.get(fieldName).asDouble() : null;
+    }
+
+    private static LocalDate findLocalDateNullSafe(
+            JsonNode node,
+            String fieldName
+    ) {
+        return node.get(fieldName) != null ? LocalDate.parse(node.get(fieldName).asText()) : null;
+    }
+
+    private static LocalDateTime findLocalDateTimeNullSafe(
+            JsonNode node,
+            String fieldName
+    ) {
+        return node.get(fieldName) != null ? LocalDateTime.parse(node.get(fieldName).asText()) : null;
+    }
+
+    private static YearMonth findYearMonthNullSage(
+            JsonNode node,
+            String fieldName
+    ) {
+        return node.get(fieldName) != null ? YearMonth.parse(node.get(fieldName).asText()) : null;
     }
 }
