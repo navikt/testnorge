@@ -237,22 +237,27 @@ public class SyntetiseringService {
             String miljoe
     ) {
         var arbeidsforhold = testnorgeAaregConsumer.hentArbeidsforholdTilIdentIMiljoe(ident, miljoe);
-        if (arbeidsforhold != null && !arbeidsforhold.isEmpty()) {
-            var arbeidsforholdet = finnNyesteArbeidsforhold(arbeidsforhold);
-            if (arbeidsforholdet != null) {
-                var opplysningspliktig = arbeidsforholdet.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG);
-                if (opplysningspliktig != null) {
-                    var type = opplysningspliktig.findValue(JSON_NODE_TYPE).asText();
-                    if (TYPE_ORGANISASJON.equals(type)) {
-                        return opplysningspliktig.findValue(JSON_NODE_ORGANISASJONSNUMMER).asText();
-                    } else if (TYPE_PERSON.equals(type)) {
-                        return opplysningspliktig.findValue(JSON_NODE_OFFENTLIG_IDENT).asText();
-                    }
-                }
-                throw new RuntimeException("Fant ingen opplysningspliktig i arbeidsforholdet til ident " + ident);
-            }
+        if (arbeidsforhold == null || arbeidsforhold.isEmpty()) {
+            return null;
+        }
+
+        var arbeidsforholdet = finnNyesteArbeidsforhold(arbeidsforhold);
+        if (arbeidsforholdet == null) {
             throw new RuntimeException("Fant ikke arbeidsforhold til ident " + ident);
         }
+
+        var opplysningspliktig = arbeidsforholdet.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG);
+        if (opplysningspliktig == null) {
+            throw new RuntimeException("Fant ingen opplysningspliktig i arbeidsforholdet til ident " + ident);
+        }
+
+        var type = opplysningspliktig.findValue(JSON_NODE_TYPE).asText();
+        if (TYPE_ORGANISASJON.equals(type)) {
+            return opplysningspliktig.findValue(JSON_NODE_ORGANISASJONSNUMMER).asText();
+        } else if (TYPE_PERSON.equals(type)) {
+            return opplysningspliktig.findValue(JSON_NODE_OFFENTLIG_IDENT).asText();
+        }
+
         return null;
     }
 
