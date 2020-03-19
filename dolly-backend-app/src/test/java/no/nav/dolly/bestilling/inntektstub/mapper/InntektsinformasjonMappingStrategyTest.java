@@ -11,7 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
+import no.nav.dolly.bestilling.inntektskomponenten.domain.InntektsinformasjonWrapper;
+import no.nav.dolly.bestilling.inntektskomponenten.mapper.InntektsinformasjonMappingStrategy;
 import no.nav.dolly.domain.resultset.inntektstub.Inntekt;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;

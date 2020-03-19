@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.inntektstub;
+package no.nav.dolly.bestilling.inntektskomponenten;
 
 import static java.lang.String.format;
 
@@ -11,13 +11,13 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
-import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
+import no.nav.dolly.bestilling.inntektskomponenten.domain.ValiderInntekt;
+import no.nav.dolly.bestilling.inntektskomponenten.domain.Inntektsinformasjon;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Service
 @RequiredArgsConstructor
-public class InntektstubConsumer {
+public class InntektskomponentenConsumer {
 
     private static final String INNTEKTER_URL = "/api/v2/inntektsinformasjon";
     private static final String DELETE_INNTEKTER_URL = "/api/v2/personer?norske-identer=";
@@ -30,28 +30,28 @@ public class InntektstubConsumer {
     public ResponseEntity getInntekter(String ident) {
 
         return restTemplate.exchange(RequestEntity.get(
-                URI.create(format("%s%s%s", providersProps.getInntektstub().getUrl(), GET_INNTEKTER_URL, ident)))
+                URI.create(format("%s%s%s", providersProps.getInntektskomponenten().getUrl(), GET_INNTEKTER_URL, ident)))
                 .build(), JsonNode.class);
     }
 
     public ResponseEntity deleteInntekter(String ident) {
 
         return restTemplate.exchange(RequestEntity.delete(
-                URI.create(format("%s%s%s", providersProps.getInntektstub().getUrl(), DELETE_INNTEKTER_URL, ident)))
+                URI.create(format("%s%s%s", providersProps.getInntektskomponenten().getUrl(), DELETE_INNTEKTER_URL, ident)))
                 .build(), Inntektsinformasjon.class);
     }
 
     public ResponseEntity<Inntektsinformasjon[]> postInntekter(List<Inntektsinformasjon> inntektsinformasjon) {
 
         return restTemplate.exchange(RequestEntity.post(
-                URI.create(providersProps.getInntektstub().getUrl() + INNTEKTER_URL))
+                URI.create(providersProps.getInntektskomponenten().getUrl() + INNTEKTER_URL))
                 .body(inntektsinformasjon), Inntektsinformasjon[].class);
     }
 
     public ResponseEntity validerInntekter(ValiderInntekt validerInntekt) {
 
         return restTemplate.exchange(RequestEntity.post(
-                URI.create(providersProps.getInntektstub().getUrl() + VALIDER_INNTEKTER_URL))
+                URI.create(providersProps.getInntektskomponenten().getUrl() + VALIDER_INNTEKTER_URL))
                 .body(validerInntekt), Object.class);
     }
 }

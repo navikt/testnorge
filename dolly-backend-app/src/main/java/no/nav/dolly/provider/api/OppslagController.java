@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
-import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
+import no.nav.dolly.bestilling.inntektskomponenten.InntektskomponentenConsumer;
+import no.nav.dolly.bestilling.inntektskomponenten.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
 import no.nav.dolly.bestilling.aareg.AaregConsumer;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
@@ -46,7 +46,7 @@ public class OppslagController {
     private final Norg2Consumer norg2Consumer;
     private final AaregConsumer aaregConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
-    private final InntektstubConsumer inntektstubConsumer;
+    private final InntektskomponentenConsumer inntektskomponentenConsumer;
     private final FasteDatasettConsumer fasteDatasettConsumer;
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final IdentpoolConsumer identpoolConsumer;
@@ -75,13 +75,13 @@ public class OppslagController {
     @GetMapping("/inntektstub/{ident}")
     @ApiOperation("Hent inntekter tilhørende ident fra Inntektstub")
     public ResponseEntity inntektstub(@PathVariable String ident) {
-        return inntektstubConsumer.getInntekter(ident);
+        return inntektskomponentenConsumer.getInntekter(ident);
     }
 
     @PostMapping("/inntektstub")
     @ApiOperation("Valider inntekt mot Inntektstub")
     public ResponseEntity inntektstub(@RequestBody ValiderInntekt validerInntekt) {
-        return inntektstubConsumer.validerInntekter(validerInntekt);
+        return inntektskomponentenConsumer.validerInntekter(validerInntekt);
     }
 
     @GetMapping("/systemer")

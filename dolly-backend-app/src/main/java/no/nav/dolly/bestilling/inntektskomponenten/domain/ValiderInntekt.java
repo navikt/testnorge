@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.inntektstub.domain;
+package no.nav.dolly.bestilling.inntektskomponenten.domain;
 
 import lombok.Getter;
 import lombok.Setter;

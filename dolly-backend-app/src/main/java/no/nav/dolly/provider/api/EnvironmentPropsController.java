@@ -31,7 +31,7 @@ public class EnvironmentPropsController {
                 .arenaForvalterUrl(providersProps.getArenaForvalter().getUrl())
                 .instdataUrl(providersProps.getInstdata().getUrl())
                 .aaregdataUrl(providersProps.getAaregdata().getUrl())
-                .inntektstub(providersProps.getInntektstub().getUrl())
+                .inntektstub(providersProps.getInntektskomponenten().getUrl())
                 .build();
     }
 }

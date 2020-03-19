@@ -153,14 +153,16 @@ public class BestillingService {
                                 .instdata(request.getInstdata())
                                 .inntektstub(request.getInntektstub())
                                 .pensjonforvalter(request.getPensjonforvalter())
+                                .inntektsmelding(request.getInntektsmelding())
                                 .build()))
+                        .malBestillingNavn(request.getMalBestillingNavn())
                         .userId(getUserPrinciple())
                         .build());
     }
 
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, RsTpsfBasisBestilling tpsf, Integer antall,
-            List<String> opprettFraIdenter, String malBeskrivelseNavn) {
+            List<String> opprettFraIdenter) {
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
         fixAaregAbstractClassProblem(request.getAareg());
         fixPdlAbstractClassProblem(request.getPdlforvalter());
@@ -181,9 +183,10 @@ public class BestillingService {
                                 .instdata(request.getInstdata())
                                 .inntektstub(request.getInntektstub())
                                 .pensjonforvalter(request.getPensjonforvalter())
+                                .inntektsmelding(request.getInntektsmelding())
                                 .build()))
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
-                        .malBestillingNavn(malBeskrivelseNavn)
+                        .malBestillingNavn(request.getMalBestillingNavn())
                         .userId(getUserPrinciple())
                         .build());
     }

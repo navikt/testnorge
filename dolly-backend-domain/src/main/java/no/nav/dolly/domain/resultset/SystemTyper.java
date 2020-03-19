@@ -23,7 +23,8 @@ public enum SystemTyper {
     UDISTUB("Utlendingsdirektoratet (UDI)"),
     INNTK("Inntektskomponenten (INNTK)"),
     PEN_FORVALTER("Pensjon (PEN)"),
-    PEN_INNTEKT("Pensjonsopptjening (POPP)");
+    PEN_INNTEKT("Pensjonsopptjening (POPP)"),
+    INNTKMELD("Inntektsmelding (JOARK)");
 
     SystemTyper(String beskrivelse) {
         this.beskrivelse = beskrivelse;

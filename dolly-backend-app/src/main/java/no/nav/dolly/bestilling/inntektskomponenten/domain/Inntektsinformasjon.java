@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.inntektstub.domain;
+package no.nav.dolly.bestilling.inntektskomponenten.domain;
 
 import static java.util.Objects.isNull;
 

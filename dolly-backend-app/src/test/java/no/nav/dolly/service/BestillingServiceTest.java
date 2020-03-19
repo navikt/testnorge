@@ -114,7 +114,7 @@ public class BestillingServiceTest {
         when(testgruppeRepository.findById(gruppeId)).thenReturn(Optional.of(gruppe));
 
         bestillingService.saveBestilling(gruppeId, RsDollyBestilling.builder().environments(miljoer).build(),
-                RsTpsfUtvidetBestilling.builder().build(), antallIdenter, null, "Trudelu");
+                RsTpsfUtvidetBestilling.builder().build(), antallIdenter, null);
 
         ArgumentCaptor<Bestilling> argCap = ArgumentCaptor.forClass(Bestilling.class);
         verify(bestillingRepository).save(argCap.capture());

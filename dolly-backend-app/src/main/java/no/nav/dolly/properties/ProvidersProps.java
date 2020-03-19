@@ -26,10 +26,11 @@ public class ProvidersProps {
     private PdlForvalter pdlForvalter = new PdlForvalter();
     private Instdata instdata = new Instdata();
     private Aaregdata aaregdata = new Aaregdata();
-    private Inntektstub inntektstub = new Inntektstub();
+    private Inntektskomponenten inntektskomponenten = new Inntektskomponenten();
     private PdlPerson pdlPerson = new PdlPerson();
     private FasteDatasett fasteDatasett = new FasteDatasett();
     private Pensjonforvalter pensjonforvalter = new Pensjonforvalter();
+    private Inntektsmelding inntektsmelding = new Inntektsmelding();
     private IdentPool identPool = new IdentPool();
 
     @Getter
@@ -146,7 +147,7 @@ public class ProvidersProps {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Inntektstub {
+    public static class Inntektskomponenten {
 
         private String url;
     }
@@ -177,6 +178,16 @@ public class ProvidersProps {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Pensjonforvalter {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Inntektsmelding {
 
         private String url;
     }
