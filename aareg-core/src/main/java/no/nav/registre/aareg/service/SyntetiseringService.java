@@ -2,11 +2,7 @@ package no.nav.registre.aareg.service;
 
 import static java.util.stream.Collectors.toCollection;
 import static no.nav.registre.aareg.consumer.ws.AaregWsConsumer.STATUS_OK;
-import static no.nav.registre.aareg.service.AaregAbstractClient.getArbeidsgiver;
-import static no.nav.registre.aareg.service.AaregAbstractClient.getEndringsdatoStillingsprosent;
-import static no.nav.registre.aareg.service.AaregAbstractClient.getPeriodeFom;
-import static no.nav.registre.aareg.service.AaregAbstractClient.getPeriodeTom;
-import static no.nav.registre.aareg.service.AaregAbstractClient.getSisteLoennsendringsdato;
+import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.getLocalDateTimeFromLocalDate;
 import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.mapArbeidsforholdToRsArbeidsforhold;
 
 import io.micrometer.core.annotation.Timed;
@@ -273,7 +269,7 @@ public class SyntetiseringService {
         var arbeidsforhold = RsArbeidsforhold.builder()
                 .arbeidsforholdID(syntetiseringsRequest.getArbeidsforhold().getArbeidsforholdID())
                 .arbeidsgiver(RsOrganisasjon.builder()
-                        .orgnummer(getArbeidsgiver(syntetiseringsRequest.getArbeidsforhold()).getOrgnummer())
+                        .orgnummer(((RsOrganisasjon) syntetiseringsRequest.getArbeidsforhold().getArbeidsgiver()).getOrgnummer())
                         .build())
                 .arbeidsforholdstype(syntetiseringsRequest.getArbeidsforhold().getArbeidsforholdstype())
                 .arbeidstaker(RsAktoerPerson.builder()
@@ -281,14 +277,14 @@ public class SyntetiseringService {
                         .identtype(syntetiseringsRequest.getArbeidsforhold().getArbeidstaker().getIdenttype())
                         .build())
                 .ansettelsesPeriode(RsPeriode.builder()
-                        .fom(getPeriodeFom(syntetiseringsRequest.getArbeidsforhold()))
-                        .tom(getPeriodeTom(syntetiseringsRequest.getArbeidsforhold()))
+                        .fom(getLocalDateTimeFromLocalDate(syntetiseringsRequest.getArbeidsforhold().getAnsettelsesPeriode().getFom()))
+                        .tom(getLocalDateTimeFromLocalDate(syntetiseringsRequest.getArbeidsforhold().getAnsettelsesPeriode().getTom()))
                         .build())
                 .arbeidsavtale(RsArbeidsavtale.builder()
                         .arbeidstidsordning(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getArbeidstidsordning())
                         .avtaltArbeidstimerPerUke(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getAvtaltArbeidstimerPerUke())
-                        .endringsdatoStillingsprosent(getEndringsdatoStillingsprosent(syntetiseringsRequest.getArbeidsforhold()))
-                        .sisteLoennsendringsdato(getSisteLoennsendringsdato(syntetiseringsRequest.getArbeidsforhold()))
+                        .endringsdatoStillingsprosent(getLocalDateTimeFromLocalDate(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getEndringsdatoStillingsprosent()))
+                        .sisteLoennsendringsdato(getLocalDateTimeFromLocalDate(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getSisteLoennsendringsdato()))
                         .stillingsprosent(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getStillingsprosent())
                         .yrke(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getYrke())
                         .build())

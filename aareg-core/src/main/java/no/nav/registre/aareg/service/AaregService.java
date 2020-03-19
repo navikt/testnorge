@@ -1,6 +1,8 @@
 package no.nav.registre.aareg.service;
 
-import static no.nav.registre.aareg.service.AaregAbstractClient.buildRequest;
+import static java.time.LocalDateTime.now;
+import static java.util.Collections.singletonList;
+import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.getLocalDateTimeFromLocalDate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -86,14 +88,14 @@ public class AaregService {
                                                     .ident(forhold.getArbeidstaker().getOffentligIdent())
                                                     .build())
                                             .ansettelsesPeriode(RsPeriode.builder()
-                                                    .fom(forhold.getAnsettelsesperiode().getPeriode().getFom() != null ? forhold.getAnsettelsesperiode().getPeriode().getFom().atStartOfDay() : null)
-                                                    .fom(forhold.getAnsettelsesperiode().getPeriode().getTom() != null ? forhold.getAnsettelsesperiode().getPeriode().getTom().atStartOfDay() : null)
+                                                    .fom(getLocalDateTimeFromLocalDate(forhold.getAnsettelsesperiode().getPeriode().getFom()))
+                                                    .fom(getLocalDateTimeFromLocalDate(forhold.getAnsettelsesperiode().getPeriode().getTom()))
                                                     .build())
                                             .arbeidsavtale(RsArbeidsavtale.builder()
                                                     .yrke(forhold.getArbeidsavtaler().get(0).getYrke())
                                                     .stillingsprosent(0.0)
                                                     .endringsdatoStillingsprosent(
-                                                            forhold.getAnsettelsesperiode().getPeriode().getFom() != null ? forhold.getAnsettelsesperiode().getPeriode().getFom().atStartOfDay() : null)
+                                                            getLocalDateTimeFromLocalDate(forhold.getAnsettelsesperiode().getPeriode().getFom()))
                                                     .build())
                                             .build();
                                     resultMap.putAll(aaregWsConsumer.oppdaterArbeidsforhold(buildRequest(arbeidsforhold, environment, navCallId)));
@@ -114,5 +116,18 @@ public class AaregService {
         return RsAaregResponse.builder()
                 .statusPerMiljoe(resultMap)
                 .build();
+    }
+
+    private static RsAaregOppdaterRequest buildRequest(
+            RsArbeidsforhold arbfInput,
+            String env,
+            String arkivreferanse
+    ) {
+        var request = new RsAaregOppdaterRequest();
+        request.setRapporteringsperiode(now());
+        request.setArbeidsforhold(arbfInput);
+        request.setEnvironments(singletonList(env));
+        request.setArkivreferanse(arkivreferanse);
+        return request;
     }
 }

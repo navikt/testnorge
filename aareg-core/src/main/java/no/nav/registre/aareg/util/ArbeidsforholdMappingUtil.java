@@ -69,6 +69,10 @@ public class ArbeidsforholdMappingUtil {
                 .build();
     }
 
+    public static LocalDateTime getLocalDateTimeFromLocalDate(LocalDate localDate) {
+        return localDate != null ? localDate.atStartOfDay() : null;
+    }
+
     private static Person mapArbeidstaker(JsonNode person) {
         return Person.builder()
                 .aktoerId(findStringNullSafe(person, "aktoerId"))
@@ -246,8 +250,8 @@ public class ArbeidsforholdMappingUtil {
 
     private static RsPeriode mapRsAnsettelsesPeriode(Ansettelsesperiode ansettelsesperiode) {
         return RsPeriode.builder()
-                .fom(ansettelsesperiode.getPeriode().getFom() != null ? ansettelsesperiode.getPeriode().getFom().atStartOfDay() : null)
-                .tom(ansettelsesperiode.getPeriode().getTom() != null ? ansettelsesperiode.getPeriode().getTom().atStartOfDay() : null)
+                .fom(getLocalDateTimeFromLocalDate(ansettelsesperiode.getPeriode().getFom()))
+                .tom(getLocalDateTimeFromLocalDate(ansettelsesperiode.getPeriode().getTom()))
                 .build();
     }
 
@@ -261,8 +265,8 @@ public class ArbeidsforholdMappingUtil {
                 .yrke(arbeidsavtale.getYrke())
                 .stillingsprosent(arbeidsavtale.getStillingsprosent())
                 .avtaltArbeidstimerPerUke(arbeidsavtale.getAntallTimerPrUke())
-                .sisteLoennsendringsdato(arbeidsavtale.getSistLoennsendring() != null ? arbeidsavtale.getSistLoennsendring().atStartOfDay() : null)
-                .endringsdatoStillingsprosent(arbeidsavtale.getSistStillingsendring() != null ? arbeidsavtale.getSistStillingsendring().atStartOfDay() : null)
+                .sisteLoennsendringsdato(getLocalDateTimeFromLocalDate(arbeidsavtale.getSistLoennsendring()))
+                .endringsdatoStillingsprosent(getLocalDateTimeFromLocalDate(arbeidsavtale.getSistStillingsendring()))
                 .build();
     }
 
@@ -284,8 +288,8 @@ public class ArbeidsforholdMappingUtil {
             rsPermisjoner.add(RsPermisjon.builder()
                     .permisjonsId(permisjon.getPermisjonPermitteringId())
                     .permisjonsPeriode(RsPeriode.builder()
-                            .fom(permisjon.getPeriode().getFom() != null ? permisjon.getPeriode().getFom().atStartOfDay() : null)
-                            .tom(permisjon.getPeriode().getTom() != null ? permisjon.getPeriode().getTom().atStartOfDay() : null)
+                            .fom(getLocalDateTimeFromLocalDate(permisjon.getPeriode().getFom()))
+                            .tom(getLocalDateTimeFromLocalDate(permisjon.getPeriode().getTom()))
                             .build())
                     .permisjonsprosent(permisjon.getProsent())
                     .permisjonOgPermittering(permisjon.getType())
@@ -299,8 +303,8 @@ public class ArbeidsforholdMappingUtil {
         for (var antallTimer : antallTimerForTimeloennet) {
             rsAntallTimerForTimeloennet.add(RsAntallTimerForTimeloennet.builder()
                     .periode(RsPeriode.builder()
-                            .fom(antallTimer.getPeriode().getFom() != null ? antallTimer.getPeriode().getFom().atStartOfDay() : null)
-                            .tom(antallTimer.getPeriode().getTom() != null ? antallTimer.getPeriode().getTom().atStartOfDay() : null)
+                            .fom(getLocalDateTimeFromLocalDate(antallTimer.getPeriode().getFom()))
+                            .tom(getLocalDateTimeFromLocalDate(antallTimer.getPeriode().getTom()))
                             .build())
                     .antallTimer(antallTimer.getAntallTimer())
                     .build());
@@ -313,8 +317,8 @@ public class ArbeidsforholdMappingUtil {
         for (var opphold : utenlandsopphold) {
             rsUtenlandsopphold.add(RsUtenlandsopphold.builder()
                     .periode(RsPeriode.builder()
-                            .fom(opphold.getPeriode().getFom() != null ? opphold.getPeriode().getFom().atStartOfDay() : null)
-                            .tom(opphold.getPeriode().getTom() != null ? opphold.getPeriode().getTom().atStartOfDay() : null)
+                            .fom(getLocalDateTimeFromLocalDate(opphold.getPeriode().getFom()))
+                            .tom(getLocalDateTimeFromLocalDate(opphold.getPeriode().getTom()))
                             .build())
                     .land(opphold.getLandkode())
                     .build());
