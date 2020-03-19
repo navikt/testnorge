@@ -169,4 +169,32 @@ public class RsTpsfBasisBestilling {
             value = "Dato for opprettet bankkontonummer"
     )
     private LocalDateTime bankkontonrRegdato;
+
+    @ApiModelProperty(
+            position = 35,
+            dataType = "String",
+            value = "Landskode 1 fra kodeverk 'Retningsnumre'"
+    )
+    private String telefonLandskode_1;
+
+    @ApiModelProperty(
+            position = 36,
+            dataType = "String",
+            value = "Telefonnummer 1, maxs 20 sifre"
+    )
+    private String telefonnummer_1;
+
+    @ApiModelProperty(
+            position = 37,
+            dataType = "String",
+            value = "Landskode 2 fra kodeverk 'Retningsnumre'"
+    )
+    private String telefonLandskode_2;
+
+    @ApiModelProperty(
+            position = 38,
+            dataType = "String",
+            value = "Telefonnummer 2, maxs 20 sifre"
+    )
+    private String telefonnummer_2;
 }

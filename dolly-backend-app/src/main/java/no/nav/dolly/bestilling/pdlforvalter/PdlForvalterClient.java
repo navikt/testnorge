@@ -29,6 +29,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
@@ -175,6 +176,7 @@ public class PdlForvalterClient implements ClientRegister {
                     sendStatsborgerskap(person);
                     sendFamilierelasjoner(person);
                     sendDoedsfall(person);
+                    sendTelefonnummer(person);
                 }
             });
 
@@ -262,6 +264,15 @@ public class PdlForvalterClient implements ClientRegister {
 
         BiFunction<PdlFoedsel, String, ResponseEntity> sendFoedselsmelding = (struct, ident) -> pdlForvalterConsumer.postFoedsel(struct, ident);
         sendToPdl(sendFoedselsmelding, mapperFacade.map(person, PdlFoedsel.class), person.getIdent(), "fødselsmelding");
+    }
+
+    private void sendTelefonnummer(Person person) {
+
+        BiFunction<PdlTelefonnummer.Entry, String, ResponseEntity> sendTelefonummer = (struct, ident) -> pdlForvalterConsumer.postTelefonnummer(struct, ident);
+        PdlTelefonnummer telefonnumre = mapperFacade.map(person, PdlTelefonnummer.class);
+        telefonnumre.getTelfonnumre().forEach(telefonnummer ->
+                sendToPdl(sendTelefonummer, telefonnummer, person.getIdent(), "telefonnummer")
+        );
     }
 
     private void sendUtenlandsid(Pdldata pdldata, String ident, StringBuilder status) {
