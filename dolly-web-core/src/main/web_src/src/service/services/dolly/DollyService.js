@@ -160,7 +160,15 @@ export default {
 		return Request.get(Endpoints.getPersonKrr(ident))
 	},
 
-	updatePersonKrr(ident, data){
-		return Request.post(Endpoints.updatePersonKrr(ident), data)
+	getPersonSigrun(ident) {
+		return Request.get(Endpoints.getPersonSigrun(ident))
+	},
+
+	getSekvensnrSigrun(ident) {
+		return Request.get(Endpoints.getSekvensnrSigrun(ident))
+	},
+
+	getPersonUdi(ident) {
+		return Request.get(Endpoints.getPersonUdi(ident))
 	}
 }

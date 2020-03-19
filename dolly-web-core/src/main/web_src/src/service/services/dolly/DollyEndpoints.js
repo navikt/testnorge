@@ -15,8 +15,10 @@ const poppBase = `${uri}/popp`
 const inntektstubBase = `${uri}/inntektstub`
 const fasteOrgnummerBase = `${uri}/orgnummer`
 const arenaBase = `${uri}/arena`
-const instBase = `${uri}/inst`
+const instBase = `${uri}/instdata`
 const krrBase = `${uri}/krrstub`
+const sigrunBase = `${uri}/sigrunstub`
+const udiBase = `${uri}/udistub`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -48,7 +50,7 @@ export default class DollyEndpoints {
 	}
 
 	static brukerById(brukerId) {
-		return `${brukerBase}/brukerId`
+		return `${brukerBase}/${brukerId}`
 	}
 
 	static currentBruker() {
@@ -164,7 +166,15 @@ export default class DollyEndpoints {
 		return `${krrBase}/ident/${ident}`
 	}
 
-	static updatePersonKrr(ident){
-		return `${krrBase}/kontaktinformasjon/${ident}`
+	static getPersonSigrun(ident){
+		return `${sigrunBase}/ident/${ident}`
+	}
+
+	static getSekvensnrSigrun(ident){
+		return `${sigrunBase}/sekvensnummer/${ident}`
+	}
+
+	static getPersonUdi(ident){
+		return `${udiBase}/ident/${ident}`
 	}
 }
