@@ -35,7 +35,7 @@ export const Identhistorikk = ({ formikBag }) => (
 			iconType="identhistorikk"
 			startOpen={() => erForste(formikBag.values, [identAttributt])}
 		>
-			<FormikDollyFieldArray name="tpsf.identHistorikk" title="Historikk" newEntry={initialValues}>
+			<FormikDollyFieldArray name="tpsf.identHistorikk" header="Historikk" newEntry={initialValues}>
 				{(path, idx) => (
 					<React.Fragment key={idx}>
 						<FormikSelect

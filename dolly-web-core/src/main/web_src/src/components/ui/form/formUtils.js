@@ -33,19 +33,22 @@ export const erForste = (values, attributt) => {
 		'tpsf.egenAnsattDatoFom',
 		'tpsf.spesreg',
 		'tpsf.erForsvunnet',
+		'tpsf.harBankkontonr',
 		'tpsf.identHistorikk',
 		'tpsf.boadresse',
 		'tpsf.postadresse',
 		'tpsf.relasjoner',
 		'aareg',
 		'sigrunstub',
+		'inntektstub',
 		'pdlforvalter.falskIdentitet',
 		'pdlforvalter.utenlandskIdentifikasjonsnummer',
 		'pdlforvalter.kontaktinformasjonForDoedsbo',
 		'instdata',
 		'krrstub',
 		'arenaforvalter',
-		'udistub'
+		'udistub',
+		'pensjonforvalter'
 	]
 
 	const valgteAttributter = []

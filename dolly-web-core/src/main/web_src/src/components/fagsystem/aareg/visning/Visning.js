@@ -17,7 +17,7 @@ export const AaregVisning = ({ data, loading }) => {
 	return (
 		<div>
 			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" />
-			<DollyFieldArray title="Arbeidsforhold" data={data}>
+			<DollyFieldArray header="Arbeidsforhold" data={data}>
 				{(id, idx) => (
 					<React.Fragment>
 						<div className="person-visning_content">

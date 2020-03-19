@@ -36,6 +36,8 @@ const _getTpsfBestillingData = data => {
 		obj('Utvandret dato', Formatters.formatDate(data.utvandretTilLandFlyttedato)),
 		obj('Er forsvunnet', Formatters.oversettBoolean(data.erForsvunnet)),
 		obj('Forsvunnet dato', Formatters.formatDate(data.forsvunnetDato)),
+		obj('Har bankkontonummer', Formatters.oversettBoolean(data.harBankkontonr)),
+		obj('Bankkonto opprettet', Formatters.formatDate(data.bankkontonrRegdato)),
 		obj('Egenansatt', Formatters.oversettBoolean(data.egenansattDatoFom))
 	]
 }
@@ -326,6 +328,46 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		})
 
 		data.push(sigrunStub)
+	}
+
+	const inntektStubKriterier = bestillingData.inntektstub
+
+	if (inntektStubKriterier) {
+		const inntektStub = {
+			header: 'Inntektskomponenten (A-ordningen)',
+			// items: [
+			// 	obj('Prosentøkning per år', inntektStubKriterier.prosentOekningPerAaar)
+			// ],
+			itemRows: []
+		}
+
+		inntektStubKriterier.inntektsinformasjon.forEach((inntektsinfo, i) => {
+			inntektStub.itemRows.push([
+				{ numberHeader: `Inntektsinformasjon ${i + 1}` },
+				obj('Måned/år', inntektsinfo.sisteAarMaaned),
+				obj('Generer antall måneder', inntektsinfo.antallMaaneder),
+				obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
+				obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
+				obj(
+					'Antall registrerte inntekter',
+					inntektsinfo.inntektsliste && inntektsinfo.inntektsliste.length
+				),
+				obj(
+					'Antall registrerte fradrag',
+					inntektsinfo.fradragsliste && inntektsinfo.fradragsliste.length
+				),
+				obj(
+					'Antall registrerte forskuddstrekk',
+					inntektsinfo.forskuddstrekksliste && inntektsinfo.forskuddstrekksliste.length
+				),
+				obj(
+					'Antall registrerte arbeidsforhold',
+					inntektsinfo.arbeidsforholdsliste && inntektsinfo.arbeidsforholdsliste.length
+				)
+			])
+		})
+
+		data.push(inntektStub)
 	}
 
 	const krrKriterier = bestillingData.krrstub
@@ -649,5 +691,25 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 		data.push(udistub)
 	}
+
+	const pensjonKriterier = bestillingData.pensjonforvalter
+
+	if (pensjonKriterier) {
+		const pensjonforvalter = {
+			header: 'Pensjonsgivende inntekt',
+			items: [
+				obj('Fra og med år', pensjonKriterier.inntekt.fomAar),
+				obj('Til og med år', pensjonKriterier.inntekt.tomAar),
+				obj('Beløp', pensjonKriterier.inntekt.belop),
+				obj(
+					'Nedjuster med grunnbeløp',
+					Formatters.oversettBoolean(pensjonKriterier.inntekt.redusertMedGrunnbelop)
+				)
+			]
+		}
+
+		data.push(pensjonforvalter)
+	}
+
 	return data
 }
