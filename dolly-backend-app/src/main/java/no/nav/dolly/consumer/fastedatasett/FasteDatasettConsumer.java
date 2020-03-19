@@ -18,7 +18,6 @@ import no.nav.dolly.properties.ProvidersProps;
 public class FasteDatasettConsumer {
 
     private static final String REQUEST_URL = "/api/v1/faste-data";
-    private static final String GET_GRUPPE_URL = "/{datasettType}?gruppe=";
 
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
