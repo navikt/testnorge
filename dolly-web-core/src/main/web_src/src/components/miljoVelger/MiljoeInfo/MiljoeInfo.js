@@ -1,7 +1,5 @@
 import React from 'react'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
-import { InstApi } from '~/service/Api'
-import { ArenaApi } from '~/service/Api'
 import { DollyApi } from "~/service/Api";
 import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
 
@@ -18,7 +16,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					<li>
 						Institusjonsopphold:&nbsp;
 						<TilgjengeligeMiljoer
-							endepunkt={InstApi.getTilgjengeligeMiljoer}
+							endepunkt={DollyApi.getTilgjengeligeInstMiljoer}
 							dollyEnvironments={dollyEnvironments}
 						/>
 					</li>
@@ -36,7 +34,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					<li>
 						Arena:&nbsp;
 						<TilgjengeligeMiljoer
-							endepunkt={ArenaApi.getTilgjengeligeMiljoer}
+							endepunkt={DollyApi.getTilgjengeligeArenaMiljoer}
 							dollyEnvironments={dollyEnvironments}
 						/>
 					</li>

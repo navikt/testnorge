@@ -138,5 +138,29 @@ export default {
 
 	getFasteOrgnummer() {
 		return Request.get(Endpoints.fasteOrgnummer())
+	},
+
+	getPersonFraArena(ident) {
+		return Request.get(Endpoints.getPersonFraArena(ident))
+	},
+
+	getTilgjengeligeArenaMiljoer(){
+		return Request.get(Endpoints.arenaMiljoe())
+	},
+
+	getPersonInst(ident, env) {
+		return Request.get(Endpoints.getPersonInst(ident, env))
+	},
+
+	getTilgjengeligeInstMiljoer(){
+		return Request.get(Endpoints.instMiljoe())
+	},
+
+	getPersonKrr(ident) {
+		return Request.get(Endpoints.getPersonKrr(ident))
+	},
+
+	updatePersonKrr(ident, data){
+		return Request.post(Endpoints.updatePersonKrr(ident), data)
 	}
 }

@@ -14,6 +14,9 @@ const personoppslagBase = `${uri}/pdlperson`
 const poppBase = `${uri}/popp`
 const inntektstubBase = `${uri}/inntektstub`
 const fasteOrgnummerBase = `${uri}/orgnummer`
+const arenaBase = `${uri}/arena`
+const instBase = `${uri}/inst`
+const krrBase = `${uri}/krrstub`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -139,5 +142,29 @@ export default class DollyEndpoints {
 
 	static poppMiljoe(){
 		return `${poppBase}/miljoe`
+	}
+
+	static getPersonFraArena(ident){
+		return `${arenaBase}/ident/${ident}`
+	}
+
+	static arenaMiljoe(){
+		return `${arenaBase}/miljoe`
+	}
+
+	static getPersonInst(ident, env){
+		return `${instBase}/ident/${ident}/${env}`
+	}
+
+	static instMiljoe(){
+		return `${instBase}/miljoe`
+	}
+
+	static getPersonKrr(ident){
+		return `${krrBase}/ident/${ident}`
+	}
+
+	static updatePersonKrr(ident){
+		return `${krrBase}/kontaktinformasjon/${ident}`
 	}
 }
