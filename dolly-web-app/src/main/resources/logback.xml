@@ -8,6 +8,10 @@
                 <exclude>org\.apache\.coyote\..*</exclude>
                 <exclude>org\.apache\.tomcat\..*</exclude>
             </throwableConverter>
+            <fieldNames>
+                <version>[ignore]</version>
+                <levelValue>[ignore]</levelValue>
+            </fieldNames>
         </encoder>
     </appender>
 
