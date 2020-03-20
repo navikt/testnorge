@@ -4,7 +4,6 @@ import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KILDE;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.UGRADERT;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon.decode;
 
 import org.springframework.stereotype.Component;
 
@@ -14,14 +13,12 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.Kjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.domain.resultset.tpsf.Person;
-import no.nav.dolly.domain.resultset.tpsf.Relasjon;
 import no.nav.dolly.domain.resultset.tpsf.Statsborgerskap;
 import no.nav.dolly.mapper.MappingStrategy;
 
@@ -86,43 +83,25 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                 })
                 .register();
 
-        factory.classMap(Relasjon.class, PdlFamilierelasjon.class)
-                .customize(new CustomMapper<Relasjon, PdlFamilierelasjon>() {
-                    @Override
-                    public void mapAtoB(Relasjon relasjon, PdlFamilierelasjon familierelasjon, MappingContext context) {
-
-                            familierelasjon.setRelatertPerson(relasjon.getPersonRelasjonMed().getIdent());
-                            familierelasjon.setRelatertPersonsRolle(decode(relasjon.getRelasjonTypeNavn()));
-                            relasjon.getPersonRelasjonTil().getRelasjoner().forEach(relasjon1 -> {
-                                if (relasjon1.getPersonRelasjonMed().getIdent().equals(relasjon.getPerson().getIdent())) {
-                                    familierelasjon.setMinRolleForPerson(decode(relasjon1.getRelasjonTypeNavn()));
-                                }
-                            });
-                        familierelasjon.setKilde(KILDE);
-                    }
-                })
-                .register();
-
         factory.classMap(Person.class, PdlAdressebeskyttelse.class)
                 .customize(new CustomMapper<Person, PdlAdressebeskyttelse>() {
                     @Override
                     public void mapAtoB(Person person, PdlAdressebeskyttelse adressebeskyttelse, MappingContext context) {
 
-                        switch (person.getSpesreg()) {
-                        case "SPSF":
+                        if ("SPSF".equals(person.getSpesreg())) {
                             adressebeskyttelse.setGradering(STRENGT_FORTROLIG);
-                            break;
-                        case "SPFO":
+
+                        } else if ("SPFO".equals(person.getSpesreg())) {
                             adressebeskyttelse.setGradering(FORTROLIG);
-                            break;
-                        default:
+
+                        } else {
                             adressebeskyttelse.setGradering(UGRADERT);
                         }
+
                         adressebeskyttelse.setKilde(KILDE);
                     }
                 })
                 .register();
-
 
         factory.classMap(Person.class, PdlDoedsfall.class)
                 .customize(new CustomMapper<Person, PdlDoedsfall>() {
