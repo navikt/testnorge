@@ -138,45 +138,5 @@ export default {
 
 	getFasteOrgnummer() {
 		return Request.get(Endpoints.fasteOrgnummer())
-	},
-
-	getPersonFraArena(ident) {
-		return Request.get(Endpoints.getPersonFraArena(ident))
-	},
-
-	getTilgjengeligeArenaMiljoer(){
-		return Request.get(Endpoints.arenaMiljoe())
-	},
-
-	getPersonInst(ident, env) {
-		return Request.get(Endpoints.getPersonInst(ident, env))
-	},
-
-	getTilgjengeligeInstMiljoer(){
-		return Request.get(Endpoints.instMiljoe())
-	},
-
-	getPersonKrr(ident) {
-		return Request.get(Endpoints.getPersonKrr(ident))
-	},
-
-	getPersonSigrun(ident) {
-		return Request.get(Endpoints.getPersonSigrun(ident))
-	},
-
-	getSekvensnrSigrun(ident) {
-		return Request.get(Endpoints.getSekvensnrSigrun(ident))
-	},
-
-	getPersonUdi(ident) {
-		return Request.get(Endpoints.getPersonUdi(ident))
-	},
-
-	getPersonerTpsf(identer) {
-		return Request.post(Endpoints.getPersonerTpsf(), identer)
-	},
-
-	checkPersonerTpsf(identer){
-		return Request.post(Endpoints.checkPersonerTpsf(), identer)
 	}
 }

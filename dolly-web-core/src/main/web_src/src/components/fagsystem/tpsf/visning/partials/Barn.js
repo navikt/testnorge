@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import { DollyApi } from '~/service/Api'
+import { TpsfApi } from '~/service/Api'
 import { Adressevisning } from './Boadresse'
 import { Postadresse } from './Postadresse'
 import { Historikk } from '~/components/ui/historikk/Historikk'
@@ -14,7 +14,7 @@ export const Barn = ({ data, type }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			setIsLoading(true)
-			const respons = await DollyApi.getPersonerTpsf([data.ident])
+			const respons = await TpsfApi.getPersoner([data.ident])
 			setBarnInfo(respons.data)
 			setIsLoading(false)
 		}

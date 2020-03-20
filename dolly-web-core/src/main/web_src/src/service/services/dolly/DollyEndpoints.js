@@ -1,6 +1,6 @@
 import config from '~/config'
 
-const uri = `${config.services.dollyBackend}`
+const uri = `${config.services.dollyBackend}/dolly`
 
 const groupBase = `${uri}/gruppe`
 const identBase = `${uri}/ident`
@@ -14,12 +14,6 @@ const personoppslagBase = `${uri}/pdlperson`
 const poppBase = `${uri}/popp`
 const inntektstubBase = `${uri}/inntektstub`
 const fasteOrgnummerBase = `${uri}/orgnummer`
-const arenaBase = `${uri}/arena`
-const instBase = `${uri}/instdata`
-const krrBase = `${uri}/krrstub`
-const sigrunBase = `${uri}/sigrunstub`
-const udiBase = `${uri}/udistub`
-const tpsfBase = `${uri}/tpsf`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -145,45 +139,5 @@ export default class DollyEndpoints {
 
 	static poppMiljoe(){
 		return `${poppBase}/miljoe`
-	}
-
-	static getPersonFraArena(ident){
-		return `${arenaBase}/ident/${ident}`
-	}
-
-	static arenaMiljoe(){
-		return `${arenaBase}/miljoe`
-	}
-
-	static getPersonInst(ident, env){
-		return `${instBase}/ident/${ident}/${env}`
-	}
-
-	static instMiljoe(){
-		return `${instBase}/miljoe`
-	}
-
-	static getPersonKrr(ident){
-		return `${krrBase}/ident/${ident}`
-	}
-
-	static getPersonSigrun(ident){
-		return `${sigrunBase}/ident/${ident}`
-	}
-
-	static getSekvensnrSigrun(ident){
-		return `${sigrunBase}/sekvensnummer/${ident}`
-	}
-
-	static getPersonUdi(ident){
-		return `${udiBase}/ident/${ident}`
-	}
-
-	static getPersonerTpsf(){
-		return `${udiBase}/hentPersoner`
-	}
-
-	static checkPersonerTpsf(){
-		return `${udiBase}/checkPersoner`
 	}
 }

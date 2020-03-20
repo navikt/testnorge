@@ -24,3 +24,18 @@ freg:
         header-enabled: false
         validation:
           type: refreshing
+
+
+fagsystem:
+  arena:
+    url: https://arena-forvalteren.nais.preprod.local/api/v1
+  instdata:
+    url: https://testnorge-inst.nais.preprod.local/api/v1
+  krrstub:
+    url: https://krr-stub.nais.preprod.local/api/v1
+  sigrunstub:
+    url: https://sigrun-skd-stub.nais.preprod.local/api/v1
+  tpsf:
+    url: http://localhost:8050/api/v1
+  udiStub:
+    url: https://udi-stub.nais.preprod.local/api/v1

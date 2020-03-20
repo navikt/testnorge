@@ -5,7 +5,7 @@ import _set from 'lodash/set'
 import _merge from 'lodash/merge'
 import _last from 'lodash/last'
 import _isEmpty from 'lodash/isEmpty'
-import { DollyApi } from '~/service/Api'
+import { DollyApi, TpsfApi, SigrunApi, KrrApi, ArenaApi, InstApi, UdiApi } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
 import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
@@ -14,15 +14,15 @@ import Formatters from '~/utils/DataFormatter'
 
 export const actions = createActions(
 	{
-		getTpsf: DollyApi.getPersonerTpsf,
+		getTpsf: TpsfApi.getPersoner,
 		getSigrun: [
-			DollyApi.getPersonSigrun,
+			SigrunApi.getPerson,
 			ident => ({
 				ident
 			})
 		],
 		getSigrunSekvensnr: [
-			DollyApi.getSekvensnrSigrun,
+			SigrunApi.getSekvensnummer,
 			ident => ({
 				ident
 			})
@@ -40,13 +40,13 @@ export const actions = createActions(
 			})
 		],
 		getKrr: [
-			DollyApi.getPersonKrr,
+			KrrApi.getPerson,
 			ident => ({
 				ident
 			})
 		],
 		getArena: [
-			DollyApi.getPersonFraArena,
+			ArenaApi.getPerson,
 			ident => ({
 				ident
 			})
@@ -58,13 +58,13 @@ export const actions = createActions(
 			})
 		],
 		getInst: [
-			DollyApi.getPersonInst,
+			InstApi.getPerson,
 			ident => ({
 				ident
 			})
 		],
 		getUdi: [
-			DollyApi.getPersonUdi,
+			UdiApi.getPerson,
 			ident => ({
 				ident
 			})
