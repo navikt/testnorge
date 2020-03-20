@@ -4,7 +4,7 @@ import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KILDE;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.UGRADERT;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon.*;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon.decode;
 
 import org.springframework.stereotype.Component;
 
@@ -108,16 +108,16 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, PdlAdressebeskyttelse adressebeskyttelse, MappingContext context) {
 
-                        if ("SPSF".equals(person.getSpesreg())) {
+                        switch (person.getSpesreg()) {
+                        case "SPSF":
                             adressebeskyttelse.setGradering(STRENGT_FORTROLIG);
-
-                        } else if ("SPFO".equals(person.getSpesreg())) {
+                            break;
+                        case "SPFO":
                             adressebeskyttelse.setGradering(FORTROLIG);
-
-                        } else {
+                            break;
+                        default:
                             adressebeskyttelse.setGradering(UGRADERT);
                         }
-
                         adressebeskyttelse.setKilde(KILDE);
                     }
                 })

@@ -99,4 +99,12 @@ public class TpsfBestilling {
     private Boolean harBankkontonr;
 
     private LocalDateTime bankkontonrRegdato;
+
+    private String telefonLandskode_1;
+
+    private String telefonnummer_1;
+
+    private String telefonLandskode_2;
+
+    private String telefonnummer_2;
 }

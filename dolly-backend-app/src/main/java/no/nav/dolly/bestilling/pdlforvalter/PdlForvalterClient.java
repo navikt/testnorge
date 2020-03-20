@@ -2,14 +2,12 @@ package no.nav.dolly.bestilling.pdlforvalter;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.reverse;
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.StausResponse.DONE;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.BiFunction;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +27,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
@@ -175,6 +174,7 @@ public class PdlForvalterClient implements ClientRegister {
                     sendStatsborgerskap(person);
                     sendFamilierelasjoner(person);
                     sendDoedsfall(person);
+                    sendTelefonnummer(person);
                 }
             });
 
@@ -210,33 +210,32 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendOpprettPerson(Person person) {
 
-        BiFunction<PdlOpprettPerson, String, ResponseEntity> opprettPerson = (struct, ident) -> pdlForvalterConsumer.postOpprettPerson(struct, ident);
-        sendToPdl(opprettPerson, mapperFacade.map(person, PdlOpprettPerson.class), person.getIdent(), "opprett person");
+        pdlForvalterConsumer.postOpprettPerson(mapperFacade.map(person, PdlOpprettPerson.class),
+                person.getIdent(), "opprett person");
     }
 
     private void sendNavn(Person person) {
 
-        BiFunction<PdlNavn, String, ResponseEntity> sendNavn = (struct, ident) -> pdlForvalterConsumer.postNavn(struct, ident);
-        sendToPdl(sendNavn, mapperFacade.map(person, PdlNavn.class), person.getIdent(), "navn");
+        pdlForvalterConsumer.postNavn(mapperFacade.map(person, PdlNavn.class), person.getIdent(), "navn");
     }
 
     private void sendKjoenn(Person person) {
 
-        BiFunction<PdlKjoenn, String, ResponseEntity> sendKjoenn = (struct, ident) -> pdlForvalterConsumer.postKjoenn(struct, ident);
-        sendToPdl(sendKjoenn, mapperFacade.map(person, PdlKjoenn.class), person.getIdent(), "kjønn");
+        pdlForvalterConsumer.postKjoenn(mapperFacade.map(person, PdlKjoenn.class), person.getIdent(), "kjønn");
     }
 
     private void sendAdressebeskyttelse(Person person) {
 
-        BiFunction<PdlAdressebeskyttelse, String, ResponseEntity> sendAdressebeskyttelse = (struct, ident) -> pdlForvalterConsumer.postAdressebeskyttelse(struct, ident);
-        sendToPdl(sendAdressebeskyttelse, mapperFacade.map(person, PdlAdressebeskyttelse.class), person.getIdent(), "adressebeskyttelse");
+        pdlForvalterConsumer.postAdressebeskyttelse(mapperFacade.map(person, PdlAdressebeskyttelse.class),
+                person.getIdent(), "adressebeskyttelse");
     }
 
     private void sendFamilierelasjoner(Person person) {
+
         person.getRelasjoner().forEach(relasjon -> {
             if (!relasjon.isPartner()) {
-                BiFunction<PdlFamilierelasjon, String, ResponseEntity> sendFamilierelasjon = (struct, ident) -> pdlForvalterConsumer.postFamilierelasjon(struct, ident);
-                sendToPdl(sendFamilierelasjon, mapperFacade.map(relasjon, PdlFamilierelasjon.class), person.getIdent(), "familierelasjon");
+                pdlForvalterConsumer.postFamilierelasjon(mapperFacade.map(relasjon, PdlFamilierelasjon.class),
+                        person.getIdent(), "familierelasjon");
             }
         });
     }
@@ -245,23 +244,31 @@ public class PdlForvalterClient implements ClientRegister {
 
         if (nonNull(person.getDoedsdato())) {
 
-            BiFunction<PdlDoedsfall, String, ResponseEntity> sendDoedsmelding = (struct, ident) -> pdlForvalterConsumer.postDoedsfall(struct, ident);
-            sendToPdl(sendDoedsmelding, mapperFacade.map(person, PdlDoedsfall.class), person.getIdent(), "dødsmelding");
+            pdlForvalterConsumer.postDoedsfall(mapperFacade.map(person, PdlDoedsfall.class),
+                    person.getIdent(), "dødsmelding");
         }
     }
 
     private void sendStatsborgerskap(Person person) {
 
-        person.getStatsborgerskap().forEach(statsborgerskap -> {
-            BiFunction<PdlStatsborgerskap, String, ResponseEntity> sendStatsborgerskap = (struct, ident) -> pdlForvalterConsumer.postStatsborgerskap(struct, ident);
-            sendToPdl(sendStatsborgerskap, mapperFacade.map(statsborgerskap, PdlStatsborgerskap.class), person.getIdent(), "adressebeskyttelse");
-        });
+        person.getStatsborgerskap().forEach(statsborgerskap ->
+                pdlForvalterConsumer.postStatsborgerskap(mapperFacade.map(statsborgerskap, PdlStatsborgerskap.class),
+                        person.getIdent(), "adressebeskyttelse")
+        );
     }
 
     private void sendFoedselsmelding(Person person) {
 
-        BiFunction<PdlFoedsel, String, ResponseEntity> sendFoedselsmelding = (struct, ident) -> pdlForvalterConsumer.postFoedsel(struct, ident);
-        sendToPdl(sendFoedselsmelding, mapperFacade.map(person, PdlFoedsel.class), person.getIdent(), "fødselsmelding");
+        pdlForvalterConsumer.postFoedsel(mapperFacade.map(person, PdlFoedsel.class),
+                person.getIdent(), "fødselsmelding");
+    }
+
+    private void sendTelefonnummer(Person person) {
+
+        PdlTelefonnummer telefonnumre = mapperFacade.map(person, PdlTelefonnummer.class);
+        telefonnumre.getTelfonnumre().forEach(telefonnummer ->
+                pdlForvalterConsumer.postTelefonnummer(telefonnummer, person.getIdent(), "telefonnummer")
+        );
     }
 
     private void sendUtenlandsid(Pdldata pdldata, String ident, StringBuilder status) {
@@ -340,23 +347,6 @@ public class PdlForvalterClient implements ClientRegister {
         } catch (RuntimeException e) {
 
             log.error(e.getMessage(), e);
-        }
-    }
-
-    private void sendToPdl(BiFunction pdlConsumerFunction, Object struct, String ident, String beskrivelse) {
-
-        try {
-            pdlConsumerFunction.apply(struct, ident);
-
-        } catch (HttpClientErrorException e) {
-            log.error(format(SEND_ERROR_2, beskrivelse, ident, e.getResponseBodyAsString()));
-            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident,
-                    errorStatusDecoder.decodeRuntimeException(e)), e);
-
-        } catch (RuntimeException e) {
-            log.error(format(SEND_ERROR, beskrivelse, ident), e);
-            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident,
-                    errorStatusDecoder.decodeRuntimeException(e)), e);
         }
     }
 

@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
+import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_TOKEN;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -23,9 +24,12 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.sts.StsOidcService;
 
@@ -46,6 +50,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_NAVN_URL = PDL_BESTILLING_URL + "/navn";
     private static final String PDL_BESTILLING_KJOENN_URL = PDL_BESTILLING_URL + "/kjoenn";
     private static final String PDL_BESTILLING_STATSBORGERSKAP_URL = PDL_BESTILLING_URL + "/statsborgerskap";
+    private static final String PDL_BESTILLING_TELEFONUMMER_URL = PDL_BESTILLING_URL + "/telefonnummer";
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/ident";
     private static final String PDL_PERSONSTATUS = "/api/v1/personstatus";
     private static final String PREPROD_ENV = "q";
@@ -59,6 +64,7 @@ public class PdlForvalterConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
     private final StsOidcService stsOidcService;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     public ResponseEntity deleteIdent(String ident) {
         return restTemplate.exchange(RequestEntity.delete(
@@ -78,25 +84,25 @@ public class PdlForvalterConsumer {
                 .build(), JsonNode.class);
     }
 
-    public ResponseEntity postOpprettPerson(PdlOpprettPerson pdlNavn, String ident) {
+    public ResponseEntity postOpprettPerson(PdlOpprettPerson pdlNavn, String ident, String beskrivelse) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_OPPRETT_PERSON,
-                pdlNavn, ident);
+                pdlNavn, ident, beskrivelse);
     }
 
-    public ResponseEntity postNavn(PdlNavn pdlNavn, String ident) {
+    public ResponseEntity postNavn(PdlNavn pdlNavn, String ident, String beskrivelse) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_NAVN_URL,
-                pdlNavn, ident);
+                pdlNavn, ident, beskrivelse);
     }
 
-    public ResponseEntity postKjoenn(PdlKjoenn pdlNavn, String ident) {
+    public ResponseEntity postKjoenn(PdlKjoenn pdlNavn, String ident, String beskrivelse) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_KJOENN_URL,
-                pdlNavn, ident);
+                pdlNavn, ident, beskrivelse);
     }
 
     public ResponseEntity postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo, String ident) {
@@ -119,37 +125,61 @@ public class PdlForvalterConsumer {
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FALSK_IDENTITET_URL, falskIdentitet, ident);
     }
 
-    public ResponseEntity postStatsborgerskap(PdlStatsborgerskap pdlStatsborgerskap, String ident) {
+    public ResponseEntity postStatsborgerskap(PdlStatsborgerskap pdlStatsborgerskap, String ident, String beskrivelse) {
 
         return postRequest(
-                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_STATSBORGERSKAP_URL, pdlStatsborgerskap, ident);
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_STATSBORGERSKAP_URL, pdlStatsborgerskap, ident, beskrivelse);
     }
 
-    public ResponseEntity postDoedsfall(PdlDoedsfall pdlDoedsfall, String ident) {
+    public ResponseEntity postDoedsfall(PdlDoedsfall pdlDoedsfall, String ident, String beskrivelse) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_DOEDSFALL_URL,
-                pdlDoedsfall, ident);
+                pdlDoedsfall, ident, beskrivelse);
     }
 
-    public ResponseEntity postFoedsel(PdlFoedsel pdlFoedsel, String ident) {
+    public ResponseEntity postFoedsel(PdlFoedsel pdlFoedsel, String ident, String beskrivelse) {
 
         return postRequest(
-                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FOEDSEL_URL, pdlFoedsel, ident);
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FOEDSEL_URL, pdlFoedsel, ident, beskrivelse);
     }
 
-    public ResponseEntity postAdressebeskyttelse(PdlAdressebeskyttelse pdlAdressebeskyttelse, String ident) {
+    public ResponseEntity postAdressebeskyttelse(PdlAdressebeskyttelse pdlAdressebeskyttelse, String ident, String beskrivelse) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_ADRESSEBESKYTTELSE_URL,
-                pdlAdressebeskyttelse, ident);
+                pdlAdressebeskyttelse, ident, beskrivelse);
     }
 
-    public ResponseEntity postFamilierelasjon(PdlFamilierelasjon familierelasjonn, String ident) {
+    public ResponseEntity postFamilierelasjon(PdlFamilierelasjon familierelasjonn, String ident, String beskrivelse) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FAMILIERELASJON,
-                familierelasjonn, ident);
+                familierelasjonn, ident, beskrivelse);
+    }
+
+    public ResponseEntity postTelefonnummer(PdlTelefonnummer.Entry telefonnummer, String ident, String beskrivelse) {
+
+        return postRequest(
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_TELEFONUMMER_URL,
+                telefonnummer, ident, beskrivelse);
+    }
+
+    private ResponseEntity postRequest(String url, Object body, String ident, String beskrivelse) {
+
+        try {
+        return restTemplate.exchange(RequestEntity.post(URI.create(url))
+                .contentType(APPLICATION_JSON)
+                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                .header(HEADER_NAV_CONSUMER_TOKEN, resolveToken())
+                .header(HEADER_NAV_PERSON_IDENT, ident)
+                .body(body), JsonNode.class);
+
+        } catch (RuntimeException e) {
+
+            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident,
+                    errorStatusDecoder.decodeRuntimeException(e)), e);
+        }
     }
 
     private ResponseEntity postRequest(String url, Object body, String ident) {
