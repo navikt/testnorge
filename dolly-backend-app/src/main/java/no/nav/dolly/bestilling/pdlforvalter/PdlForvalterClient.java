@@ -59,6 +59,7 @@ public class PdlForvalterClient implements ClientRegister {
     public static final String FALSK_IDENTITET = "FalskIdentitet";
     public static final String PDL_FORVALTER = "PdlForvalter";
 
+    private static final int MYNDIGHET_ALDER = 18;
     private static final String UKJENT = "U";
     private static final String HENDELSE_ID = "hendelseId";
     private static final int MAX_COUNT = 30;
@@ -242,17 +243,16 @@ public class PdlForvalterClient implements ClientRegister {
     }
 
     private void sendSivilstand(Person person) {
-        person.getRelasjoner().forEach(relasjon -> {
-            if (relasjon.isPartner()) {
-                pdlForvalterConsumer.postSivilstand(mapperFacade.map(relasjon, PdlSivilstand.class), person.getIdent(), "sivilstand");
-            }
-        });
+
+        if (person.getAlder() >= MYNDIGHET_ALDER) {
+            pdlForvalterConsumer.postSivilstand(mapperFacade.map(person, PdlSivilstand.class),
+                    person.getIdent(), "sivilstand");
+        }
     }
 
     private void sendDoedsfall(Person person) {
 
         if (nonNull(person.getDoedsdato())) {
-
             pdlForvalterConsumer.postDoedsfall(mapperFacade.map(person, PdlDoedsfall.class),
                     person.getIdent(), "dødsmelding");
         }

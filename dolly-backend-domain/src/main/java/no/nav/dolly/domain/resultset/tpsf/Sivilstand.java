@@ -15,11 +15,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Sivilstand {
 
-    public enum SIVILSTATUS {UGIF, GIFT, ENKE, SKIL, SEPR, REPA, SEPA, SKPA, GJPA, SAMB}
+    public enum Sivilstatus {UGIF, GIFT, ENKE, SKIL, SEPR, REPA, SEPA, SKPA, GJPA, SAMB}
 
     private Long id;
     private Person person;
-    private SIVILSTATUS sivilstand;
+    private Sivilstatus sivilstand;
     private LocalDateTime sivilstandRegdato;
     private Person personRelasjonMed;
 }

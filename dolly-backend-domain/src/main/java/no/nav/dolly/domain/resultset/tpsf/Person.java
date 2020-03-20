@@ -23,6 +23,7 @@ public class Person {
 
     private Long personId;
     private String ident;
+    private Integer alder;
     private String identtype;
     private String kjonn;
     private String fornavn;
@@ -36,7 +37,7 @@ public class Person {
     private LocalDateTime spesregDato;
     private LocalDateTime doedsdato;
     private List<Statsborgerskap> statsborgerskap;
-    private Sivilstand.SIVILSTATUS sivilstand;
+    private Sivilstand.Sivilstatus sivilstand;
     private LocalDateTime sivilstandRegdato;
     private List<Sivilstand> sivilstander;
     private List<RsPostadresse> postadresse;

@@ -53,7 +53,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_STATSBORGERSKAP_URL = PDL_BESTILLING_URL + "/statsborgerskap";
     private static final String PDL_BESTILLING_TELEFONUMMER_URL = PDL_BESTILLING_URL + "/telefonnummer";
     private static final String PDL_BESTILLING_SIVILSTAND_URL = PDL_BESTILLING_URL + "/sivilstand";
-    private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/ident";
+    private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/personident";
     private static final String PDL_PERSONSTATUS = "/api/v1/personstatus";
     private static final String PREPROD_ENV = "q";
 

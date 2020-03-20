@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PdlSivilstand {
 
-    public enum SIVILSTAND {UOPPGITT, UGIFT, GIFT, ENKE_ELLER_ENKEMANN, SKILT, SEPARERT, REGISTRERT_PARTNER,
+    public enum Sivilstand {UOPPGITT, UGIFT, GIFT, ENKE_ELLER_ENKEMANN, SKILT, SEPARERT, REGISTRERT_PARTNER,
         SEPARERT_PARTNER, SKILT_PARTNER, GJENLEVENDE_PARTNER}
 
     private LocalDate bekreftelsesdato;
@@ -24,6 +24,6 @@ public class PdlSivilstand {
     private String relatertVedSivilstand;
     private LocalDate sivilstandsdato;
     private String sted;
-    private SIVILSTAND type;
+    private Sivilstand type;
     private String utland;
 }
