@@ -5,7 +5,6 @@ import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.UGRADERT;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon.decode;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import org.springframework.stereotype.Component;
 
@@ -21,7 +20,6 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
 import no.nav.dolly.domain.resultset.tpsf.Statsborgerskap;
@@ -105,46 +103,21 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                 })
                 .register();
 
-        factory.classMap(Person.class, PdlTelefonnummer.class)
-                .customize(new CustomMapper<Person, PdlTelefonnummer>() {
-                    @Override
-                    public void mapAtoB(Person person, PdlTelefonnummer telefonnummer, MappingContext context) {
-
-                        if (isNotBlank(person.getTelefonnummer_1())) {
-                            telefonnummer.getTelfonnumre().add(PdlTelefonnummer.Entry.builder()
-                                    .kilde(KILDE)
-                                    .prioritet(1)
-                                    .landskode(person.getTelefonLandskode_1())
-                                    .nummer(person.getTelefonnummer_1())
-                                    .build());
-                        }
-                        if (isNotBlank(person.getTelefonnummer_2())) {
-                            telefonnummer.getTelfonnumre().add(PdlTelefonnummer.Entry.builder()
-                                    .kilde(KILDE)
-                                    .prioritet(2)
-                                    .landskode(person.getTelefonLandskode_2())
-                                    .nummer(person.getTelefonnummer_2())
-                                    .build());
-                        }
-                    }
-                })
-                .register();
-
         factory.classMap(Person.class, PdlAdressebeskyttelse.class)
                 .customize(new CustomMapper<Person, PdlAdressebeskyttelse>() {
                     @Override
                     public void mapAtoB(Person person, PdlAdressebeskyttelse adressebeskyttelse, MappingContext context) {
 
-                        if ("SPSF".equals(person.getSpesreg())) {
+                        switch (person.getSpesreg()) {
+                        case "SPSF":
                             adressebeskyttelse.setGradering(STRENGT_FORTROLIG);
-
-                        } else if ("SPFO".equals(person.getSpesreg())) {
+                            break;
+                        case "SPFO":
                             adressebeskyttelse.setGradering(FORTROLIG);
-
-                        } else {
+                            break;
+                        default:
                             adressebeskyttelse.setGradering(UGRADERT);
                         }
-
                         adressebeskyttelse.setKilde(KILDE);
                     }
                 })

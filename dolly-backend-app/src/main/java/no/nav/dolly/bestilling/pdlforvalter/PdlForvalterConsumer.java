@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -175,11 +174,6 @@ public class PdlForvalterConsumer {
                 .header(HEADER_NAV_CONSUMER_TOKEN, resolveToken())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .body(body), JsonNode.class);
-
-        } catch (HttpClientErrorException e) {
-
-            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident,
-                    errorStatusDecoder.decodeRuntimeException(e)), e);
 
         } catch (RuntimeException e) {
 

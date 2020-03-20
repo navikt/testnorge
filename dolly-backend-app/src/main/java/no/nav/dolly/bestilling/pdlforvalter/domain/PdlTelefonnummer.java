@@ -20,22 +20,23 @@ public class PdlTelefonnummer {
 
     private List<Entry> telfonnumre;
 
+    public List<Entry> getTelfonnumre() {
+        if (isNull(telfonnumre)) {
+            telfonnumre = new ArrayList();
+        }
+        return telfonnumre;
+    }
+
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Entry {
+
         private String kilde;
         private String landskode;
         private String nummer;
         private Integer prioritet;
-    }
-
-    public List<Entry> getTelfonnumre() {
-        if (isNull(telfonnumre)) {
-            telfonnumre = new ArrayList();
-        }
-        return telfonnumre;
     }
 }
