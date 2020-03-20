@@ -1,4 +1,4 @@
-package no.nav.registre.inntekt.domain.altinn;
+package no.nav.registre.inntekt.domain.altinn.rs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -8,11 +8,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Builder
-public class RsArbeidsgiver {
+@NoArgsConstructor
+public class RsArbeidsgiverPrivat {
     @JsonProperty
-    private String virksomhetsnummer;
+    private String arbeidsgiverFnr;
     @JsonProperty
     private RsKontaktinformasjon kontaktinformasjon;
 }

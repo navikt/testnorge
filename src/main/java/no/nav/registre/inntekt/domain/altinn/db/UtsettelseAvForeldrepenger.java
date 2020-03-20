@@ -1,18 +1,18 @@
-package no.nav.registre.inntekt.domain.altinn;
+package no.nav.registre.inntekt.domain.altinn.db;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
-public class RsBeregnetInntekt {
+public class UtsettelseAvForeldrepenger {
     @JsonProperty
-    private Double beloep;
+    private Long id;
     @JsonProperty
-    private String aarsakVedEndring;
+    private Periode periode;
+    @JsonProperty
+    private String aarsakTilUtsettelse;
 }

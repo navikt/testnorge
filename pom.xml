@@ -86,7 +86,7 @@
         </dependency>
         <dependency>
             <groupId>no.nav.tjenester</groupId>
-            <artifactId>ordningen-arbeidsforhold-v1</artifactId>
+            <artifactId>aordningen-arbeidsforhold-v1</artifactId>
             <version>1.9</version>
         </dependency>
     </dependencies>

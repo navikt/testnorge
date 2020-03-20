@@ -1,4 +1,4 @@
-package no.nav.registre.inntekt.domain.altinn;
+package no.nav.registre.inntekt.domain.altinn.rs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

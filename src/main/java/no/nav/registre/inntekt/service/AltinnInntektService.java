@@ -8,12 +8,12 @@ import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
 import no.nav.registre.inntekt.consumer.rs.TestnorgeAaregConsumer;
 import no.nav.registre.inntekt.domain.RsInntekt;
-import no.nav.registre.inntekt.domain.altinn.AltinnInntektRequest;
-import no.nav.registre.inntekt.domain.altinn.RsArbeidsforhold;
-import no.nav.registre.inntekt.domain.altinn.RsArbeidsgiver;
-import no.nav.registre.inntekt.domain.altinn.RsAvsendersystem;
-import no.nav.registre.inntekt.domain.altinn.RsBeregnetInntekt;
-import no.nav.registre.inntekt.domain.altinn.RsKontaktinformasjon;
+import no.nav.registre.inntekt.domain.altinn.rs.AltinnInntektRequest;
+import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsforhold;
+import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiver;
+import no.nav.registre.inntekt.domain.altinn.rs.RsAvsendersystem;
+import no.nav.registre.inntekt.domain.altinn.rs.RsBeregnetInntekt;
+import no.nav.registre.inntekt.domain.altinn.rs.RsKontaktinformasjon;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnRequest;
 import no.nav.registre.inntekt.utils.ValidationException;
@@ -87,28 +87,22 @@ public class AltinnInntektService {
                     .aarsakTilInnsending(AARSAK_TIL_INNSENDING)
                     .arbeidstakerFnr(ident)
                     .ytelse(YTELSE)
-                    .arbeidsgiver(
-                            RsArbeidsgiver.builder()
-                                    .virksomhetsnummer(inntekt.getVirksomhetsnummer())
-                                    .kontaktinformasjon(RsKontaktinformasjon.builder()
-                                            .kontaktinformasjonNavn(KONTAKTINFORMASJON_NAVN)
-                                            .telefonnummer(KONTAKTINFORMASJON_TELEFONNUMMER).build())
-                                    .build())
-                    .avsendersystem(
-                            RsAvsendersystem.builder()
-                                    .systemnavn(AVSENDERSYSTEM_SYSTEMNAVN)
-                                    .systemversjon(AVSENDERSYSTEM_SYSTEMVERSJON)
-                                    .innsendingstidspunkt(inntekt.getDato().atStartOfDay())
-                                    .build())
-                    .arbeidsforhold(
-                            RsArbeidsforhold.builder()
-                                    .arbeidsforholdId(nyesteArbeidsforhold.findValue(JSON_NODE_ARBEIDSFORHOLD_ID).asText())
-                                    .beregnetInntekt(RsBeregnetInntekt.builder()
-                                            .aarsakVedEndring(ARBEIDSFORHOLD_AARSAK_VED_ENDRING)
-                                            .beloep(inntekt.getBeloep())
-                                            .build())
-                                    .build())
-                    .build());
+                    .arbeidsgiver(RsArbeidsgiver.builder()
+                            .virksomhetsnummer(inntekt.getVirksomhetsnummer())
+                            .kontaktinformasjon(RsKontaktinformasjon.builder()
+                                    .kontaktinformasjonNavn(KONTAKTINFORMASJON_NAVN)
+                                    .telefonnummer(KONTAKTINFORMASJON_TELEFONNUMMER).build()).build())
+                    .avsendersystem(RsAvsendersystem.builder()
+                            .systemnavn(AVSENDERSYSTEM_SYSTEMNAVN)
+                            .systemversjon(AVSENDERSYSTEM_SYSTEMVERSJON)
+                            .innsendingstidspunkt(inntekt.getDato().atStartOfDay())
+                            .build())
+                    .arbeidsforhold(RsArbeidsforhold.builder()
+                            .arbeidsforholdId(nyesteArbeidsforhold.findValue(JSON_NODE_ARBEIDSFORHOLD_ID).asText())
+                            .beregnetInntekt(RsBeregnetInntekt.builder()
+                                    .aarsakVedEndring(ARBEIDSFORHOLD_AARSAK_VED_ENDRING)
+                                    .beloep(inntekt.getBeloep())
+                                    .build()).build()).build());
         }
 
         return new ArrayList<>();
