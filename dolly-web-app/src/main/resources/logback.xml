@@ -25,7 +25,24 @@
         <appender-ref ref="stdout_json"/>
     </root>
 
+    <appender name="auditLogger" class="com.papertrailapp.logback.Syslog4jAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSSS} [%-5level] %msg%n</pattern>
+        </layout>
+        <syslogConfig class="org.productivity.java.syslog4j.impl.net.tcp.TCPNetSyslogConfig">
+            <host>audit.nais</host> <!-- remote system to log to -->
+            <port>6514</port> <!-- remote port to log to -->
+            <ident>dolly</ident> <!-- program name to log as -->
+            <maxMessageLength>128000</maxMessageLength> <!-- max log message length in bytes -->
+        </syslogConfig>
+    </appender>
+
     <logger name="no.nav.freg.security" level="INFO"/>
     <logger name="no.nav.dollyweb" level="INFO"/>
     <logger name="org.springframework" level="INFO"/>
+
+    <logger name="auditLogger" level="INFO" additivity="false">
+        <appender-ref ref="auditLogger"/>
+    </logger>
+
 </configuration>
