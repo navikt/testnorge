@@ -19,6 +19,7 @@ const instBase = `${uri}/instdata`
 const krrBase = `${uri}/krrstub`
 const sigrunBase = `${uri}/sigrunstub`
 const udiBase = `${uri}/udistub`
+const tpsfBase = `${uri}/tpsf`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -176,5 +177,13 @@ export default class DollyEndpoints {
 
 	static getPersonUdi(ident){
 		return `${udiBase}/ident/${ident}`
+	}
+
+	static getPersonerTpsf(){
+		return `${udiBase}/hentPersoner`
+	}
+
+	static checkPersonerTpsf(){
+		return `${udiBase}/checkPersoner`
 	}
 }

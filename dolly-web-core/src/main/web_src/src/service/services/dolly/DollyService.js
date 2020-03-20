@@ -170,5 +170,13 @@ export default {
 
 	getPersonUdi(ident) {
 		return Request.get(Endpoints.getPersonUdi(ident))
+	},
+
+	getPersonerTpsf(identer) {
+		return Request.post(Endpoints.getPersonerTpsf(), identer)
+	},
+
+	checkPersonerTpsf(identer){
+		return Request.post(Endpoints.checkPersonerTpsf(), identer)
 	}
 }

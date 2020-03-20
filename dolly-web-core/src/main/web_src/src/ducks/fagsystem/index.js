@@ -5,7 +5,7 @@ import _set from 'lodash/set'
 import _merge from 'lodash/merge'
 import _last from 'lodash/last'
 import _isEmpty from 'lodash/isEmpty'
-import { DollyApi, TpsfApi } from '~/service/Api'
+import { DollyApi } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
 import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
@@ -14,7 +14,7 @@ import Formatters from '~/utils/DataFormatter'
 
 export const actions = createActions(
 	{
-		getTpsf: TpsfApi.getPersoner,
+		getTpsf: DollyApi.getPersonerTpsf,
 		getSigrun: [
 			DollyApi.getPersonSigrun,
 			ident => ({
