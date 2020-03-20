@@ -85,4 +85,22 @@ public class Person {
         }
         return boadresse;
     }
+
+    public boolean isSivilstandGift() {
+
+        if (isNull(getSivilstand())) {
+            return false;
+
+        } else {
+            switch (getSivilstand()) {
+            case GIFT:
+            case REPA:
+            case SEPR:
+            case SEPA:
+                return true;
+            default:
+                return false;
+            }
+        }
+    }
 }
