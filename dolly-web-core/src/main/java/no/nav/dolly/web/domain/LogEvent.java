@@ -6,10 +6,10 @@ import no.nav.dolly.web.provider.web.dto.LogEventDTO;
 
 @Value
 public class LogEvent {
-    private final Level level;
-    private final String event;
-    private final String message;
-    private final LogMetadata metadata;
+    private Level level;
+    private String event;
+    private String message;
+    private LogMetadata metadata;
 
     public LogEvent(LogEventDTO dto, String userAgent){
         metadata = new LogMetadata(userAgent);

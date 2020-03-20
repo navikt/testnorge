@@ -1,7 +1,7 @@
 package no.nav.dolly.web.domain;
 
 public enum Level{
-    WARING,
+    WARNING,
     ERROR,
     INFO
 }

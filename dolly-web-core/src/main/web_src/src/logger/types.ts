@@ -1,5 +1,5 @@
 export enum Level {
     INFO= "INFO",
-    WARRING= "WARRING",
+    WARNING= "WARNING",
     ERROR="ERROR"
 }

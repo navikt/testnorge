@@ -11,11 +11,11 @@ import no.nav.dolly.web.domain.Level;
 public class LogEventDTO {
 
     @JsonProperty(required = true)
-    private final String event;
+    private String event;
 
     @JsonProperty(required = true)
-    private final Level level;
+    private Level level;
 
     @JsonProperty
-    private final String message;
+    private String message;
 }

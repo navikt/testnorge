@@ -7,6 +7,6 @@ const log = (level : Level, event: string, message?: string) => {
 
 export default {
     log: (event: string, message?: string) => log(Level.INFO, event, message),
-    warn: (event: string, message?: string) => log(Level.WARRING, event, message),
+    warn: (event: string, message?: string) => log(Level.WARNING, event, message),
     error: (event: string, message?: string) => log(Level.ERROR, event, message)
 }
