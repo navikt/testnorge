@@ -18,7 +18,7 @@ import no.nav.dolly.properties.ProvidersProps;
 public class FasteDatasettConsumer {
 
     private static final String REQUEST_URL = "/api/v1/faste-data";
-    private static final String GRUPPE_REQUEST_URL = "/api/v1/faste-data/tps?gruppe=";
+    private static final String GRUPPE_REQUEST_URL = REQUEST_URL+"/tps?gruppe=";
 
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
