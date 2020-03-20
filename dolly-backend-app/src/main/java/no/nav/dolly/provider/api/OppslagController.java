@@ -98,10 +98,10 @@ public class OppslagController {
         return fasteDatasettConsumer.hentDatasett(datasettype);
     }
 
-    @GetMapping("/fastedatasett/{datasettype}/{gruppe}")
+    @GetMapping("/fastedatasett/tps/{gruppe}")
     @ApiOperation("Hent faste datasett gruppe med beskrivelser")
-    public ResponseEntity getFasteDatasettGruppe(@PathVariable DatasettType datasettype, @PathVariable String gruppe) {
-        return fasteDatasettConsumer.hentDatasettGruppe(datasettype, gruppe);
+    public ResponseEntity getFasteDatasettGruppe(@PathVariable String gruppe) {
+        return fasteDatasettConsumer.hentDatasettGruppe(gruppe);
     }
 
     @GetMapping("/aareg/arbeidsforhold")

@@ -18,6 +18,7 @@ import no.nav.dolly.properties.ProvidersProps;
 public class FasteDatasettConsumer {
 
     private static final String REQUEST_URL = "/api/v1/faste-data";
+    private static final String GRUPPE_REQUEST_URL = "/api/v1/faste-data/tps?gruppe=";
 
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
@@ -39,10 +40,10 @@ public class FasteDatasettConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "hentFasteDatasett"})
-    public ResponseEntity hentDatasettGruppe(DatasettType datasettType, String gruppe) {
+    public ResponseEntity hentDatasettGruppe(String gruppe) {
 
         return restTemplate.exchange(RequestEntity.get(
-                URI.create(format(providersProps.getFasteDatasett().getUrl()+ REQUEST_URL + datasettType.getUrl()+"?gruppe="+gruppe)))
+                URI.create(format(providersProps.getFasteDatasett().getUrl()+ GRUPPE_REQUEST_URL+gruppe)))
                 .build(), JsonNode.class);
     }
 }
