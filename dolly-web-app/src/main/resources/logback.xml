@@ -8,20 +8,10 @@
                 <exclude>org\.apache\.coyote\..*</exclude>
                 <exclude>org\.apache\.tomcat\..*</exclude>
             </throwableConverter>
-            <fieldNames>
-                <timestamp>timestamp</timestamp>
-                <level>level</level>
-                <message>message</message>
-                <logger>logger</logger>
-                <version>[ignore]</version>
-                <levelValue>[ignore]</levelValue>
-                <thread>[ignore]</thread>
-            </fieldNames>
-
         </encoder>
     </appender>
 
-    <root level="WARN">
+    <root level="INFO">
         <appender-ref ref="stdout_json"/>
     </root>
 
