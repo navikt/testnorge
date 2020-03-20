@@ -112,7 +112,7 @@ export const icons = {
 	arbeid: Wrench,
 	sigrun: BankNote,
 	inntektstub: MoneyBag,
-	altinnInntekt: CoinBankNote,
+	inntektsmelding: CoinBankNote,
 	udi: Globe,
 	kommentar: ChatBubble,
 	partner: Love,

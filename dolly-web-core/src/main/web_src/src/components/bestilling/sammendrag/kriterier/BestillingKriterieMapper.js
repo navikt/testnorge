@@ -221,7 +221,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	const aaregKriterier = bestillingData.aareg
 	if (aaregKriterier) {
 		const aareg = {
-			header: 'Arbeidsforhold',
+			header: 'Arbeidsforhold (Aareg)',
 			itemRows: []
 		}
 
@@ -300,7 +300,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		})
 
 		const sigrunStub = {
-			header: 'Inntekter',
+			header: 'Skatteoppgjør (Sigrun)',
 			itemRows: []
 		}
 
@@ -334,7 +334,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	if (inntektStubKriterier) {
 		const inntektStub = {
-			header: 'Inntektskomponenten (A-ordningen)',
+			header: 'A-ordningen (Inntektskomponenten)',
 			// items: [
 			// 	obj('Prosentøkning per år', inntektStubKriterier.prosentOekningPerAaar)
 			// ],
@@ -696,7 +696,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	if (pensjonKriterier) {
 		const pensjonforvalter = {
-			header: 'Pensjonsgivende inntekt',
+			header: 'Pensjonsgivende inntekt (POPP)',
 			items: [
 				obj('Fra og med år', pensjonKriterier.inntekt.fomAar),
 				obj('Til og med år', pensjonKriterier.inntekt.tomAar),
@@ -711,27 +711,27 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(pensjonforvalter)
 	}
 
-	const altinnInntektKriterier = bestillingData.altinnInntekt
+	const inntektsmeldingKriterier = bestillingData.inntektsmelding
 
-	if (altinnInntektKriterier) {
-		// Flater ut altinnKriterier for å gjøre det lettere å mappe
+	if (inntektsmeldingKriterier) {
+		// Flater ut inntektsmeldingKriterier for å gjøre det lettere å mappe
 
-		let flatAltinnInntektKriterier = []
-		altinnInntektKriterier.inntekter.forEach(i => {
-			flatAltinnInntektKriterier.push({
+		let flatInntektsmeldingKriterier = []
+		inntektsmeldingKriterier.inntekter.forEach(i => {
+			flatInntektsmeldingKriterier.push({
 				dato: i.dato,
 				virksomhetsnummer: i.virksomhetsnummer,
 				beloep: i.beloep
 			})
 		})
 
-		const altinnInntektObj = {
-			header: 'Altinn inntekt',
+		const inntektsmeldingObj = {
+			header: 'Inntektsmelding (fra Altinn)',
 			itemRows: []
 		}
 
-		flatAltinnInntektKriterier.forEach((inntekt, i) => {
-			altinnInntektObj.itemRows.push([
+		flatInntektsmeldingKriterier.forEach((inntekt, i) => {
+			inntektsmeldingObj.itemRows.push([
 				{
 					numberHeader: `Inntekt ${i + 1}`
 				},
@@ -740,7 +740,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Beløp', inntekt.beloep)
 			])
 		})
-		data.push(altinnInntektObj)
+		data.push(inntektsmeldingObj)
 	}
 
 	return data

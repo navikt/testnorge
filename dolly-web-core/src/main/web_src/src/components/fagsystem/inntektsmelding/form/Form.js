@@ -16,24 +16,24 @@ const initialValues = {
 	virksomhetsnummer: '',
 	beloep: ''
 }
-const altinnAttributt = 'altinnInntekt'
+const inntektsmeldingAttributt = 'inntektsmelding'
 const hjelpetekst = 'Personen må ha et arbeidsforhold til virksomheten du velger.'
 
-export const AltinnInntektForm = ({ formikBag }) => {
+export const InntektsmeldingForm = ({ formikBag }) => {
 	const orgInfo = SelectOptionsOppslag('orgnr')
 	const options = SelectOptionsOppslag.formatOptions(orgInfo)
 
 	return (
-		<Vis attributt={altinnAttributt}>
+		<Vis attributt={inntektsmeldingAttributt}>
 			<Panel
-				heading="Altinn inntekt (beta)"
-				hasErrors={panelError(formikBag, altinnAttributt)}
-				iconType="altinnInntekt"
+				heading="Inntektsmelding (fra Altinn)"
+				hasErrors={panelError(formikBag, inntektsmeldingAttributt)}
+				iconType="inntektsmelding"
 				hjelpetekst={hjelpetekst}
-				startOpen={() => erForste(formikBag.values, [altinnAttributt])}
+				startOpen={() => erForste(formikBag.values, [inntektsmeldingAttributt])}
 			>
 				<FormikDollyFieldArray
-					name="altinnInntekt.inntekter"
+					name="inntektsmelding.inntekter"
 					header="Inntekt"
 					newEntry={initialValues}
 				>
@@ -57,8 +57,8 @@ export const AltinnInntektForm = ({ formikBag }) => {
 	)
 }
 
-AltinnInntektForm.validation = {
-	altinnInntekt: Yup.object({
+InntektsmeldingForm.validation = {
+	inntektsmelding: Yup.object({
 		inntekter: Yup.array().of(
 			Yup.object({
 				dato: requiredDate,

@@ -6,7 +6,7 @@ import { TpsfForm } from '~/components/fagsystem/tpsf/form/Form'
 import { KrrstubForm } from '~/components/fagsystem/krrstub/form/Form'
 import { SigrunstubForm } from '~/components/fagsystem/sigrunstub/form/Form'
 import { InntektstubForm } from '~/components/fagsystem/inntektstub/form/Form'
-import { AltinnInntektForm } from '~/components/fagsystem/altinnInntekt/form/Form'
+import { InntektsmeldingForm } from '~/components/fagsystem/inntektsmelding/form/Form'
 import { AaregForm } from '~/components/fagsystem/aareg/form/Form'
 import { PdlfForm } from '~/components/fagsystem/pdlf/form/Form'
 import { ArenaForm } from '~/components/fagsystem/arena/form/Form'
@@ -30,7 +30,7 @@ export const Steg2 = ({ formikBag }) => {
 			<SigrunstubForm formikBag={formikBag} />
 			<PensjonForm formikBag={formikBag} />
 			<InntektstubForm formikBag={formikBag} />
-			<AltinnInntektForm formikBag={formikBag} />
+			<InntektsmeldingForm formikBag={formikBag} />
 			<PdlfForm formikBag={formikBag} />
 			<InstForm formikBag={formikBag} />
 			<KrrstubForm formikBag={formikBag} />
@@ -49,7 +49,7 @@ Steg2.validation = Yup.object({
 	...SigrunstubForm.validation,
 	...PensjonForm.validation,
 	...InntektstubForm.validation,
-	...AltinnInntektForm.validation,
+	...InntektsmeldingForm.validation,
 	...InstForm.validation,
 	...KrrstubForm.validation,
 	...ArenaForm.validation,

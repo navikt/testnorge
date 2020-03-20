@@ -19,20 +19,20 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arbeid"
 		>
-			<AttributtKategori title="Arbeidsforhold">
+			<AttributtKategori title="Arbeidsforhold (Aareg)">
 				<Attributt attr={sm.attrs.aareg} />
 			</AttributtKategori>
-			<AttributtKategori title="Inntekt">
+			<AttributtKategori title="Skatteoppgjør (Sigrun)">
 				<Attributt attr={sm.attrs.sigrunstub} />
 			</AttributtKategori>
-			<AttributtKategori title="Pensjonsgivende inntekt">
+			<AttributtKategori title="Pensjonsgivende inntekt (POPP)">
 				<Attributt attr={sm.attrs.pensjonforvalter} />
 			</AttributtKategori>
-			<AttributtKategori title="Inntektskomponenten (A-ordningen)">
+			<AttributtKategori title="A-ordningen (Inntektskomponenten)">
 				<Attributt attr={sm.attrs.inntektstub} />
 			</AttributtKategori>
-			<AttributtKategori title="Altinn inntekt (beta)">
-				<Attributt attr={sm.attrs.altinnInntekt} />
+			<AttributtKategori title="Inntektsmelding (fra Altinn) - beta">
+				<Attributt attr={sm.attrs.inntektsmelding} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -62,7 +62,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		}
 	},
 	sigrunstub: {
-		label: 'Inntekt',
+		label: 'Har inntekt',
 		checked: has('sigrunstub'),
 		add: () =>
 			set('sigrunstub', [
@@ -75,11 +75,11 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 			]),
 		remove: () => del('sigrunstub')
 	},
-	altinnInntekt: {
-		label: 'Altinn inntekt',
-		checked: has('altinnInntekt'),
+	inntektsmelding: {
+		label: 'Har inntektsmelding',
+		checked: has('inntektsmelding'),
 		add: () =>
-			set('altinnInntekt', {
+			set('inntektsmelding', {
 				inntekter: [
 					{
 						dato: new Date(),
@@ -88,10 +88,10 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 					}
 				]
 			}),
-		remove: () => del('altinnInntekt')
+		remove: () => del('inntektsmelding')
 	},
 	pensjonforvalter: {
-		label: 'Pensjonsgivende inntekt',
+		label: 'Har inntekt',
 		checked: has('pensjonforvalter'),
 		add: () =>
 			set('pensjonforvalter.inntekt', {
@@ -103,7 +103,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		remove: () => del('pensjonforvalter.inntekt')
 	},
 	inntektstub: {
-		label: 'Har inntekter',
+		label: 'Har inntekt',
 		checked: has('inntektstub'),
 		add: () =>
 			set('inntektstub', {

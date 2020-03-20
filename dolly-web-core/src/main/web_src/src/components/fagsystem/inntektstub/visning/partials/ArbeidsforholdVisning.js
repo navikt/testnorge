@@ -8,7 +8,7 @@ export const ArbeidsforholdVisning = ({ data }) => {
 
 	return (
 		<React.Fragment>
-			<h4>Arbeidsforhold</h4>
+			<h4>Arbeidsforhold (Aareg)</h4>
 			<DollyFieldArray data={data} nested>
 				{(id, idx) => (
 					<div className="person-visning_content" key={idx}>

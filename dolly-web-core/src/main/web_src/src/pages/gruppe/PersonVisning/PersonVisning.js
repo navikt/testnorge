@@ -10,7 +10,7 @@ import { AaregVisning } from '~/components/fagsystem/aareg/visning/Visning'
 import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
 import { SigrunstubVisning } from '~/components/fagsystem/sigrunstub/visning/Visning'
 import { InntektstubVisning } from '~/components/fagsystem/inntektstub/visning/Visning'
-import { AltinnInntektVisning } from '~/components/fagsystem/altinnInntekt/visning/Visning'
+import { InntektsmeldingVisning } from '~/components/fagsystem/inntektsmelding/visning/Visning'
 import { InstVisning } from '~/components/fagsystem/inst/visning/InstVisning'
 import { PensjonVisning } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
@@ -39,10 +39,10 @@ export const PersonVisning = ({
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
 			<InntektstubVisning data={data.inntektstub} loading={loading.inntektstub} />
-			<AltinnInntektVisning
-				data={data.altinnInntekt}
+			<InntektsmeldingVisning
+				data={data.inntektsmelding}
 				bestilling={bestilling}
-				loading={loading.altinnInntekt}
+				loading={loading.inntektsmelding}
 			/>
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			<InstVisning data={data.instdata} loading={loading.instdata} />

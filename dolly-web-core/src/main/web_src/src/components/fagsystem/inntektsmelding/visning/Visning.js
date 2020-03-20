@@ -5,19 +5,19 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 
-export const AltinnInntektVisning = ({ bestilling, loading }) => {
-	// export const AltinnInntektVisning = ({ data, loading }) => {
-	// if (loading) return <Loading label="laster altinn inntekt data" />
+export const InntektsmeldingVisning = ({ bestilling, loading }) => {
+	// export const InntektsmeldingVisning = ({ data, loading }) => {
+	// if (loading) return <Loading label="laster inntektsmelding data" />
 	// if (!data) return false
 
-	// Midlertidig løsning der vi viser bestilte verdier. Data hentes egentlig som prop.
-	// Husk å fjerne hent av bestilling i PersonVisning.js også
+	// Midlertidig løsning der vi viser bestilte verdier istedenfor å lese tilbake fra kilde.
+	// Data hentes egentlig som prop. Husk å fjerne at bestilling sendes fra PersonVisning.js også
 
-	if (!bestilling.altinnInntekt) return false
-	const data = bestilling.altinnInntekt
+	if (!bestilling.inntektsmelding) return false
+	const data = bestilling.inntektsmelding
 	return (
 		<div>
-			<SubOverskrift label="Altinn inntekt" iconKind="altinnInntekt" />
+			<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
 			<DollyFieldArray data={data.inntekter} nested>
 				{(inntekt, idx) => (
 					<div className="person-visning_content" key={idx}>

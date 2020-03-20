@@ -12,11 +12,9 @@ export const InntektstubVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster Inntektstub-data" />
 	if (!data) return false
 
-	console.log('data :', data)
-
 	return (
 		<div>
-			<SubOverskrift label="Inntektskomponenten (A-ordningen)" iconKind="inntektstub" />
+			<SubOverskrift label="A-ordningen (Inntektskomponenten)" iconKind="inntektstub" />
 			<DollyFieldArray header="Inntektsinformasjon" data={data}>
 				{(id, idx) => (
 					<React.Fragment>
