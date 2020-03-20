@@ -26,6 +26,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -64,7 +65,6 @@ public class PdlForvalterClient implements ClientRegister {
     private static final int TIMEOUT = 100;
 
     private static final String SEND_ERROR = "Feilet å sende %s for ident %s til PDL-forvalter";
-    private static final String SEND_ERROR_2 = SEND_ERROR + ": %s";
 
     private final PdlForvalterConsumer pdlForvalterConsumer;
     private final TpsfPersonCache tpsfPersonCache;
@@ -165,17 +165,16 @@ public class PdlForvalterClient implements ClientRegister {
 
         try {
             tpsPerson.getPersondetaljer().forEach(person -> {
-                if (!isOpprettEndre || tpsPerson.getNyePartnereOgBarn().contains(person.getIdent())) {
-                    sendOpprettPerson(person);
-                    sendFoedselsmelding(person);
-                    sendNavn(person);
-                    sendKjoenn(person);
-                    sendAdressebeskyttelse(person);
-                    sendStatsborgerskap(person);
-                    sendFamilierelasjoner(person);
-                    sendDoedsfall(person);
-                    sendTelefonnummer(person);
-                }
+                sendOpprettPerson(person);
+                sendFoedselsmelding(person);
+                sendNavn(person);
+                sendKjoenn(person, isOpprettEndre, tpsPerson.getNyePartnereOgBarn());
+                sendAdressebeskyttelse(person);
+                sendStatsborgerskap(person);
+                sendFamilierelasjoner(person);
+                sendSivilstand(person);
+                sendTelefonnummer(person);
+                sendDoedsfall(person);
             });
 
             syncMedPdl(tpsPerson.getHovedperson(), status);
@@ -219,9 +218,10 @@ public class PdlForvalterClient implements ClientRegister {
         pdlForvalterConsumer.postNavn(mapperFacade.map(person, PdlNavn.class), person.getIdent(), "navn");
     }
 
-    private void sendKjoenn(Person person) {
-
-        pdlForvalterConsumer.postKjoenn(mapperFacade.map(person, PdlKjoenn.class), person.getIdent(), "kjønn");
+    private void sendKjoenn(Person person, boolean isOpprettEndre, List<String> nyePartnereOgBarn) {
+        if (!isOpprettEndre || nyePartnereOgBarn.contains(person.getIdent())) {
+            pdlForvalterConsumer.postKjoenn(mapperFacade.map(person, PdlKjoenn.class), person.getIdent(), "kjønn");
+        }
     }
 
     private void sendAdressebeskyttelse(Person person) {
@@ -240,10 +240,17 @@ public class PdlForvalterClient implements ClientRegister {
         });
     }
 
+    private void sendSivilstand(Person person) {
+
+        if (person.isMyndig()) {
+            pdlForvalterConsumer.postSivilstand(mapperFacade.map(person, PdlSivilstand.class),
+                    person.getIdent(), "sivilstand");
+        }
+    }
+
     private void sendDoedsfall(Person person) {
 
         if (nonNull(person.getDoedsdato())) {
-
             pdlForvalterConsumer.postDoedsfall(mapperFacade.map(person, PdlDoedsfall.class),
                     person.getIdent(), "dødsmelding");
         }

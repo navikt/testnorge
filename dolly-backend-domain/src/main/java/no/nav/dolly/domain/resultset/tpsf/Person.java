@@ -21,8 +21,11 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 @AllArgsConstructor
 public class Person {
 
+    private static final Integer MYNDIGHET_ALDER = 18;
+
     private Long personId;
     private String ident;
+    private Integer alder;
     private String identtype;
     private String kjonn;
     private String fornavn;
@@ -36,6 +39,9 @@ public class Person {
     private LocalDateTime spesregDato;
     private LocalDateTime doedsdato;
     private List<Statsborgerskap> statsborgerskap;
+    private Sivilstand.Sivilstatus sivilstand;
+    private LocalDateTime sivilstandRegdato;
+    private List<Sivilstand> sivilstander;
     private List<RsPostadresse> postadresse;
     private List<RsAdresse> boadresse;
     private LocalDateTime utvandretTilLandFlyttedato;
@@ -50,6 +56,14 @@ public class Person {
             relasjoner = new ArrayList();
         }
         return relasjoner;
+    }
+
+    public List<Sivilstand> getSivilstander() {
+
+        if (isNull(sivilstander)) {
+            sivilstander = new ArrayList();
+        }
+        return sivilstander;
     }
 
     public List<Statsborgerskap> getStatsborgerskap() {
@@ -72,5 +86,27 @@ public class Person {
             boadresse = new ArrayList();
         }
         return boadresse;
+    }
+
+    public boolean isSivilstandGift() {
+
+        if (isNull(getSivilstand())) {
+            return false;
+
+        } else {
+            switch (getSivilstand()) {
+            case GIFT:
+            case REPA:
+            case SEPR:
+            case SEPA:
+                return true;
+            default:
+                return false;
+            }
+        }
+    }
+
+    public boolean isMyndig() {
+        return getAlder() >= MYNDIGHET_ALDER;
     }
 }

@@ -110,7 +110,7 @@ public class PdlForvalterConsumerTest {
     @Test
     public void deleteIdent() {
 
-        server.expect(requestTo("http://pdl.nav.no/api/v1/ident"))
+        server.expect(requestTo("http://pdl.nav.no/api/v1/personident"))
                 .andExpect(method(HttpMethod.DELETE))
                 .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
                 .andRespond(withSuccess());

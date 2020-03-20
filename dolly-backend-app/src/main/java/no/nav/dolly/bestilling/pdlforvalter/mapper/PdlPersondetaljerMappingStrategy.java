@@ -60,7 +60,6 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-
         factory.classMap(Person.class, PdlKjoenn.class)
                 .customize(new CustomMapper<Person, PdlKjoenn>() {
                     @Override
