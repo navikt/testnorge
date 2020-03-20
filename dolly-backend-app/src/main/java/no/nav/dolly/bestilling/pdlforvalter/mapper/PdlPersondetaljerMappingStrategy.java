@@ -88,21 +88,20 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, PdlAdressebeskyttelse adressebeskyttelse, MappingContext context) {
 
-                        switch (person.getSpesreg()) {
-                        case "SPSF":
+                        if ("SPSF".equals(person.getSpesreg())) {
                             adressebeskyttelse.setGradering(STRENGT_FORTROLIG);
-                            break;
-                        case "SPFO":
+
+                        } else if ("SPFO".equals(person.getSpesreg())) {
                             adressebeskyttelse.setGradering(FORTROLIG);
-                            break;
-                        default:
+
+                        } else {
                             adressebeskyttelse.setGradering(UGRADERT);
                         }
+
                         adressebeskyttelse.setKilde(KILDE);
                     }
                 })
                 .register();
-
 
         factory.classMap(Person.class, PdlDoedsfall.class)
                 .customize(new CustomMapper<Person, PdlDoedsfall>() {
