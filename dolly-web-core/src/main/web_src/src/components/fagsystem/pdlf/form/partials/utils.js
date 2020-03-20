@@ -20,9 +20,3 @@ export const setNavn = (navn, path, setFieldValue) => {
 export const setValue = (value, path, setFieldValue) => {
     setFieldValue(`${path}`, value.value)
 }
-
-export const setOrgNummer = (orgInfo, path, setFieldValue) => {
-    const orgLabel = orgInfo.label.split(" - ")
-    setFieldValue(`${path}.organisasjonsnavn`, orgLabel[orgLabel.length - 1])
-    setFieldValue(`${path}.organisasjonsnummer`, orgInfo.value)
-}

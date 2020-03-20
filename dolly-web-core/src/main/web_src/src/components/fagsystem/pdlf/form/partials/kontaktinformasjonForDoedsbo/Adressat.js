@@ -5,7 +5,7 @@ import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Se
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import {getPlaceholder, setNavn, setValue, setOrgNummer} from "../utils"
+import {getPlaceholder, setNavn, setValue} from "../utils"
 import _get from "lodash/get";
 
 export const Adressat = ({ formikBag }) => {
