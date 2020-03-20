@@ -59,14 +59,12 @@ public class PdlForvalterClient implements ClientRegister {
     public static final String FALSK_IDENTITET = "FalskIdentitet";
     public static final String PDL_FORVALTER = "PdlForvalter";
 
-    private static final int MYNDIGHET_ALDER = 18;
     private static final String UKJENT = "U";
     private static final String HENDELSE_ID = "hendelseId";
     private static final int MAX_COUNT = 30;
     private static final int TIMEOUT = 100;
 
     private static final String SEND_ERROR = "Feilet å sende %s for ident %s til PDL-forvalter";
-    private static final String SEND_ERROR_2 = SEND_ERROR + ": %s";
 
     private final PdlForvalterConsumer pdlForvalterConsumer;
     private final TpsfPersonCache tpsfPersonCache;
@@ -244,7 +242,7 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendSivilstand(Person person) {
 
-        if (person.getAlder() >= MYNDIGHET_ALDER) {
+        if (person.isMyndig()) {
             pdlForvalterConsumer.postSivilstand(mapperFacade.map(person, PdlSivilstand.class),
                     person.getIdent(), "sivilstand");
         }

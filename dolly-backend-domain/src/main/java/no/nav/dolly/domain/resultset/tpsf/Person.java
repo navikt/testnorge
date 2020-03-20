@@ -21,6 +21,8 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 @AllArgsConstructor
 public class Person {
 
+    private static final Integer MYNDIGHET_ALDER = 18;
+
     private Long personId;
     private String ident;
     private Integer alder;
@@ -102,5 +104,9 @@ public class Person {
                 return false;
             }
         }
+    }
+
+    public boolean isMyndig() {
+        return getAlder() >= MYNDIGHET_ALDER;
     }
 }
