@@ -3,6 +3,8 @@ package no.nav.dolly.bestilling.pdlforvalter.mapper;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KILDE;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import org.springframework.stereotype.Component;
+
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -10,6 +12,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.mapper.MappingStrategy;
 
+@Component
 public class PdlTelefonnummerMappingStrategy implements MappingStrategy {
 
     @Override

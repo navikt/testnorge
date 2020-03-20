@@ -36,6 +36,9 @@ public class Person {
     private LocalDateTime spesregDato;
     private LocalDateTime doedsdato;
     private List<Statsborgerskap> statsborgerskap;
+    private Sivilstand.SIVILSTATUS sivilstand;
+    private LocalDateTime sivilstandRegdato;
+    private List<Sivilstand> sivilstander;
     private List<RsPostadresse> postadresse;
     private List<RsAdresse> boadresse;
     private LocalDateTime utvandretTilLandFlyttedato;
@@ -50,6 +53,14 @@ public class Person {
             relasjoner = new ArrayList();
         }
         return relasjoner;
+    }
+
+    public List<Sivilstand> getSivilstander() {
+
+        if (isNull(sivilstander)) {
+            sivilstander = new ArrayList();
+        }
+        return sivilstander;
     }
 
     public List<Statsborgerskap> getStatsborgerskap() {
