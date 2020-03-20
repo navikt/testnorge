@@ -20,10 +20,10 @@ public class LogEvent {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder().append("event:").append(event).append(';');
+        StringBuilder builder = new StringBuilder().append("logged: [ event: \"").append(event).append("\"");
         if(message != null) {
-            builder.append("message:").append(message).append(';');
+            builder.append("message: \"").append(message).append("\"");
         }
-        return builder.append(metadata).toString();
+        return builder.append("metadata: ").append(metadata).append(" ]").toString();
     }
 }

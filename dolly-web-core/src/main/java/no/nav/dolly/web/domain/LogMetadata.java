@@ -8,6 +8,6 @@ class LogMetadata {
 
     @Override
     public String toString() {
-        return "metadata:[user-agent:" + userAgent +"]";
+        return "[ user-agent: " + userAgent +" ]";
     }
 }
