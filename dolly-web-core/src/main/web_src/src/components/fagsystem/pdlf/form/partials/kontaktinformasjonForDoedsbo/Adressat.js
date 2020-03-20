@@ -17,8 +17,6 @@ export const Adressat = ({ formikBag }) => {
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 	const dollyGruppeInfo = SelectOptionsOppslag('dollyGruppe')
 	const navnOgFnrOptions = SelectOptionsOppslag.formatOptions('navnOgFnr', dollyGruppeInfo)
-	const orgInfo = SelectOptionsOppslag('orgnr')
-	const orgOptions = SelectOptionsOppslag.formatOptions('orgInfo', orgInfo)
 
 	const handleAfterChange = ({ value }) => {
 		if (value === 'ADVOKAT' || value === 'ORGANISASJON')
@@ -66,15 +64,13 @@ export const Adressat = ({ formikBag }) => {
 						isClearable={false}
 						optionHeight={50}
 					/>
-					<DollySelect
-						name={`${addressatPath}.organisasjonsnummer`}
-						label="Orgnaisasjonsnavn og nummer"
-						options={orgOptions}
-						size="large"
-						isLoading={navnInfo.loading}
-						onChange={org => setOrgNummer(org, `${addressatPath}`, formikBag.setFieldValue)}
-						value={_get(formikBag.values, `${addressatPath}.organisasjonsnummer`)}
-						isClearable={false}
+					<FormikTextInput
+						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.organisasjonsnavn"
+						label="Organisasjonsnavn"
+					/>
+					<FormikTextInput
+						name="pdlforvalter.kontaktinformasjonForDoedsbo.adressat.organisasjonsnummer"
+						label="Organisasjonsnummer"
 					/>
 				</React.Fragment>
 			)}

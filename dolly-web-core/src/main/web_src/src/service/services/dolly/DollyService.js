@@ -140,8 +140,8 @@ export default {
 		return Request.get(Endpoints.fasteOrgnummer())
 	},
 
-	getFasteDatasettGruppe(datasettType, gruppe) {
-		return Request.get(Endpoints.getFasteDatasettGruppe(datasettType, gruppe))
+	getFasteDatasettGruppe(gruppe) {
+		return Request.get(Endpoints.getFasteDatasettTPSGruppe(gruppe))
 	},
 
 	getPersonnavn(){

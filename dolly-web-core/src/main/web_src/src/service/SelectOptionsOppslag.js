@@ -17,7 +17,7 @@ export const SelectOptionsOppslag = oppslag => {
 		return navnInfo
 	} else if (oppslag === 'dollyGruppe'){
 		const datasettInfo = useAsync(async () => {
-			const response = await DollyApi.getFasteDatasettGruppe("TPS", "DOLLY")
+			const response = await DollyApi.getFasteDatasettGruppe("DOLLY")
 			return response
 		}, [DollyApi.getFasteDatasettGruppe])
 		return datasettInfo
@@ -51,7 +51,7 @@ SelectOptionsOppslag.formatOptions = (type, data) => {
 		})
 		return options;
 	}else if(type === 'navnOgFnr'){
-		const persondata = data.value && data.value.data ? data.value.data : []
+		const persondata = data.value && data.value.data ? data.value.data.liste : []
 		const options = []
 		persondata.length > 0 &&
 		persondata.forEach(personInfo => {

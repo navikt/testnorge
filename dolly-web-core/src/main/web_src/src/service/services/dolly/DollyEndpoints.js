@@ -142,8 +142,8 @@ export default class DollyEndpoints {
 		return `${poppBase}/miljoe`
 	}
 
-	static getFasteDatasettGruppe(datasettType, gruppe){
-		return `${fasteDatasettBase}/${datasettType}/${gruppe}`
+	static getFasteDatasettTPSGruppe(gruppe){
+		return `${fasteDatasettBase}/tps/${gruppe}`
 	}
 
 	static getPersonnavn(){
