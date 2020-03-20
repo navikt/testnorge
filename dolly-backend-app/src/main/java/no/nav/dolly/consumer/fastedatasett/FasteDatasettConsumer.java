@@ -39,7 +39,7 @@ public class FasteDatasettConsumer {
                 .build(), JsonNode.class);
     }
 
-    @Timed(name = "providers", tags = {"operation", "hentFasteDatasett"})
+    @Timed(name = "providers", tags = {"operation", "hentFasteDatasettGruppe"})
     public ResponseEntity hentDatasettGruppe(String gruppe) {
 
         return restTemplate.exchange(RequestEntity.get(
