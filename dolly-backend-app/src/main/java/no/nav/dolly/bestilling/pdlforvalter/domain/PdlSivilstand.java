@@ -13,8 +13,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PdlSivilstand {
 
-    public enum Sivilstand {UOPPGITT, UGIFT, GIFT, ENKE_ELLER_ENKEMANN, SKILT, SEPARERT, REGISTRERT_PARTNER,
-        SEPARERT_PARTNER, SKILT_PARTNER, GJENLEVENDE_PARTNER}
+    public enum Sivilstand {
+        UOPPGITT, UGIFT, GIFT, ENKE_ELLER_ENKEMANN, SKILT, SEPARERT,
+        REGISTRERT_PARTNER, SEPARERT_PARTNER, SKILT_PARTNER, GJENLEVENDE_PARTNER
+    }
 
     private LocalDate bekreftelsesdato;
     private String kilde;
