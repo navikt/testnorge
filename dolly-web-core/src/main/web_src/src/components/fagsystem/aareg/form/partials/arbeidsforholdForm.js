@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import _get from 'lodash/get'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
@@ -8,28 +8,9 @@ import { TimeloennetForm } from './timeloennetForm'
 import { PermisjonForm } from './permisjonForm'
 import { UtenlandsoppholdForm } from './utenlandsoppholdForm'
 import { ArbeidsavtaleForm } from './arbeidsavtaleForm'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { OrgnummerForm } from './orgnummerForm'
 
 export const ArbeidsforholdForm = ({ path, formikBag }) => {
-	const [loading, setLoading] = useState(true)
-	const [options, setOptions] = useState([])
-
-	useEffect(() => {
-		const organisasjoner = []
-		SelectOptionsOppslag.hentOrgnr()
-			.then(response => {
-				response.liste.forEach(org => {
-					org.juridiskEnhet &&
-						organisasjoner.push({
-							value: org.orgnr,
-							label: `${org.orgnr} (${org.enhetstype}) - ${org.navn}`
-						})
-				})
-			})
-			.then(() => setOptions(organisasjoner))
-			.then(() => setLoading(false))
-	}, [])
-
 	const arbeidsforhold = _get(formikBag.values, path)
 
 	const clearOrgnrIdent = aktoer => {
@@ -62,15 +43,7 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 					<FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" />
 				)}
 				{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
-					<FormikSelect
-						name={`${path}.arbeidsgiver.orgnummer`}
-						label="Organisasjonsnummer"
-						isLoading={loading}
-						options={options}
-						type="text"
-						size="xlarge"
-						isClearable={false}
-					/>
+					<OrgnummerForm path={`${path}.arbeidsgiver.orgnummer`} />
 				)}
 			</div>
 

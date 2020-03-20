@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import _get from 'lodash/get'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { InntektForm } from './inntektForm'
 import { FradragForm } from './fradragForm'
 import { ForskuddstrekkForm } from './forskuddstrekkForm'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { OrgnummerForm } from '~/components/fagsystem/aareg/form/partials/orgnummerForm'
 
 const initialValues = {
 	sisteAarMaaned: '',
@@ -31,35 +30,6 @@ const infotekst =
 	'For å generere samme inntektsinformasjon for flere måneder - fyll inn siste måned/år, samt antall måneder bakover inntektsinformasjonen skal genereres for.'
 
 export const InntektsinformasjonForm = ({ formikBag }) => {
-	const [loading, setLoading] = useState(true)
-	const [options, setOptions] = useState([])
-
-	useEffect(() => {
-		const organisasjoner = []
-		SelectOptionsOppslag.hentOrgnr()
-			.then(response => {
-				response.liste.forEach(org => {
-					org.juridiskEnhet &&
-						organisasjoner.push({
-							value: org.orgnr,
-							label: `${org.orgnr} (${org.enhetstype}) - ${org.navn}`,
-							juridiskEnhet: org.juridiskEnhet
-						})
-				})
-			})
-			.then(() => setOptions(organisasjoner))
-			.then(() => setLoading(false))
-	}, [])
-
-	const randomNumber = Math.floor(Math.random() * options.length)
-	initialValues.virksomhet = options.length > 0 && options[randomNumber].value
-	initialValues.opplysningspliktig = options.length > 0 && options[randomNumber].juridiskEnhet
-
-	const setOrgnummer = (org, path) => {
-		formikBag.setFieldValue(`${path}.virksomhet`, org.value)
-		formikBag.setFieldValue(`${path}.opplysningspliktig`, org.juridiskEnhet)
-	}
-
 	return (
 		<FormikDollyFieldArray
 			name="inntektstub.inntektsinformasjon"
@@ -76,21 +46,7 @@ export const InntektsinformasjonForm = ({ formikBag }) => {
 							label="Generer antall måneder"
 							type="number"
 						/>
-						<DollySelect
-							name={`${path}.virksomhet`}
-							label="Virksomhet (orgnr/id)"
-							isLoading={loading}
-							options={options}
-							size="xlarge"
-							onChange={org => setOrgnummer(org, path)}
-							value={_get(formikBag.values, `${path}.virksomhet`)}
-							feil={
-								!_get(formikBag.values, `${path}.virksomhet`) && {
-									feilmelding: 'Feltet er påkrevd'
-								}
-							}
-							isClearable={false}
-						/>
+						<OrgnummerForm path={path} formikBag={formikBag} type="inntektstub" />
 					</div>
 					<InntektForm formikBag={formikBag} inntektsinformasjonPath={path} />
 					<FradragForm formikBag={formikBag} inntektsinformasjonPath={path} />
