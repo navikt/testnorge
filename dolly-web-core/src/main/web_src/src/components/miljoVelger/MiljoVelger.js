@@ -9,7 +9,7 @@ import './MiljoVelger.less'
 
 export const MiljoVelger = ({ bestillingsdata, heading }) => {
 	const environments = useSelector(state => state.environments.data)
-
+	console.log('environments :', environments)
 	if (!environments) return null
 
 	const order = ['U', 'T', 'Q']
@@ -31,6 +31,7 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 					}
 
 					const velgAlle = type => {
+						console.log('type :', type)
 						const c = environments[type].filter(f => !isChecked(f.id)).map(a => a.id)
 						const n = values.concat(c)
 						form.setFieldValue('environments', n)
@@ -43,9 +44,23 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 						)
 					}
 
+					const formatereEnvs = category => {
+						const sortereNummer = category.map(env => env.id.match(/.{1,1}/g))
+						const sortereEnvs = []
+
+						sortereNummer.map((v, idx) => {
+							sortereEnvs.push(sortereNummer[idx][0] + sortereNummer[idx][1])
+						})
+						const sorterteEnvs = sortereEnvs.sort()
+						console.log('sorterteEnvs :', sorterteEnvs)
+						console.log('sortereEnvs :', sortereEnvs)
+					}
+
 					return order.map(type => {
 						const category = environments[type]
 						const allDisabled = category.some(f => f.disabled)
+						console.log('category :', category)
+
 						return (
 							<fieldset key={type} name={`Liste over ${type}-mijøer`}>
 								<h3>{type}-miljø</h3>
@@ -67,6 +82,7 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 									<div className="miljo-velger_buttons">
 										<LinkButton text="Velg alle" onClick={e => velgAlle(type)} />
 										<LinkButton text="Fjern alle" onClick={e => fjernAlle(type)} />
+										<LinkButton text="sortenvs" onClick={e => formatereEnvs(category)} />
 									</div>
 								)}
 							</fieldset>
