@@ -13,7 +13,7 @@ public class LogService {
             case INFO:
                 log.info(event.toString());
                 break;
-            case WARING:
+            case WARNING:
                 log.warn(event.toString());
                 break;
             case ERROR:
