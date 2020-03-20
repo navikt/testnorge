@@ -23,7 +23,7 @@ public class LogEvent {
 
     public Map<String, String> toPropertyMap() {
         Map<String, String> properties = new HashMap<>();
-        properties.put("event", event);
+        properties.put("log_event", event);
         properties.put("browser", metadata.getNameBrowser());
         properties.put("user-agent", metadata.getUserAgent());
         return properties;
