@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --open --config webpack.dev.js",
+    "start": "webpack-dev-server --env.backend=https://dolly-t2.nais.preprod.local --open --config webpack.dev.js",
+    "local": "webpack-dev-server --env.backend=http://localhost:8020 --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "analysis": "webpack --config webpack.analysis.js",
     "test": "jest --watch",
