@@ -4,7 +4,6 @@ import {v4 as _uuid} from 'uuid';
 import {Level} from "./types";
 
 const log = (level : Level, event: string, message?: string, uuid?: string) => {
-    console.log(event);
     Api.log({ event: event, message: message, level: level, uuid: uuid || _uuid()});
 };
 
