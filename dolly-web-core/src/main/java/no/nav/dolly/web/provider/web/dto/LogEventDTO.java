@@ -11,6 +11,9 @@ import no.nav.dolly.web.domain.Level;
 public class LogEventDTO {
 
     @JsonProperty(required = true)
+    private String uuid;
+
+    @JsonProperty(required = true)
     private String event;
 
     @JsonProperty(required = true)
