@@ -15,8 +15,8 @@ public class LogEvent {
     private LogMetadata metadata;
     private String uuid;
 
-    public LogEvent(LogEventDTO dto, String userAgent) {
-        metadata = new LogMetadata(userAgent);
+    public LogEvent(LogEventDTO dto, String userAgent, String host) {
+        metadata = new LogMetadata(userAgent, host);
         level = dto.getLevel();
         event = dto.getEvent();
         message = dto.getMessage();
@@ -27,6 +27,7 @@ public class LogEvent {
         Map<String, String> properties = new HashMap<>();
         properties.put("log_event", event);
         properties.put("log_uuid", uuid);
+        properties.put("log_host", metadata.getHost());
         properties.put("browser", metadata.getNameBrowser());
         properties.put("user-agent", metadata.getUserAgent());
         return properties;

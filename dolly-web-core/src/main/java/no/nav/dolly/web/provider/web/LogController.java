@@ -22,7 +22,7 @@ public class LogController {
     private final LogService logService;
 
     @PostMapping
-    public void logg(@RequestBody LogEventDTO dto, @RequestHeader("user-agent") String userAgent) {
-        logService.log(new LogEvent(dto, userAgent));
+    public void logg(@RequestBody LogEventDTO dto, @RequestHeader("user-agent") String userAgent, @RequestHeader("host") String host) {
+        logService.log(new LogEvent(dto, userAgent, host));
     }
 }
