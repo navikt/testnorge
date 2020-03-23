@@ -1,5 +1,6 @@
 import React from 'react'
 import _get from 'lodash/get'
+import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -38,8 +39,6 @@ const booleanField = options => {
 }
 
 const fieldReslover = (field, options = [], handleChange, values, path, index) => {
-	// console.log('options :', options)
-	// console.log('booleanField(options) :', booleanField(options))
 	if (dateFields.includes(field)) {
 		return (
 			<FormikDatepicker
@@ -57,7 +56,7 @@ const fieldReslover = (field, options = [], handleChange, values, path, index) =
 				key={index}
 				name={field}
 				label={texts(field)}
-				kodeverk="LandkoderISO2"
+				kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 				fastfield={false}
 				afterChange={handleChange}
 				// size="large"

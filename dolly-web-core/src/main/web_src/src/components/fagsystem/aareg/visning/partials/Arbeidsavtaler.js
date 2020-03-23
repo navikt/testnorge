@@ -2,6 +2,7 @@ import React from 'react'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
+import { ArbeidKodeverk } from '~/config/kodeverk'
 
 export const Arbeidsavtaler = ({ data }) => {
 	if (!data || data.length === 0) return false
@@ -16,14 +17,14 @@ export const Arbeidsavtaler = ({ data }) => {
 						<TitleValue
 							title="Arbeidstidsordning"
 							value={id.arbeidstidsordning}
-							kodeverk="Arbeidstidsordninger"
+							kodeverk={ArbeidKodeverk.Arbeidstidsordninger}
 						/>
 						<TitleValue
 							title="stillingsprosent siste endringsdato"
 							value={Formatters.formatStringDates(id.sistStillingsendring)}
 						/>
 						<TitleValue title="Stillingsprosent" value={id.stillingsprosent} />
-						<TitleValue title="Yrke" value={id.yrke} kodeverk="Yrker" />
+						<TitleValue title="Yrke" value={id.yrke} kodeverk={ArbeidKodeverk.Yrker} />
 					</div>
 				)}
 			</DollyFieldArray>
