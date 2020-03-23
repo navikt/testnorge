@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
@@ -20,6 +19,7 @@ import no.nav.registre.aareg.provider.rs.response.SletteArbeidsforholdResponse;
 import no.nav.registre.aareg.service.AaregService;
 import no.nav.registre.aareg.service.IdentService;
 import no.nav.registre.aareg.service.SyntetiseringService;
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
 
 @RestController
 @RequestMapping("api/v1/ident")
@@ -39,7 +39,7 @@ public class IdentController {
 
     @GetMapping("/{ident}")
     @ApiOperation(value = "Hent arbeidsforhold fra aareg. Trenger ikke token for å hente.")
-    public ResponseEntity<List<Map>> hentArbeidsforhold(
+    public ResponseEntity<List<Arbeidsforhold>> hentArbeidsforhold(
             @PathVariable String ident,
             @RequestParam String miljoe
     ) {

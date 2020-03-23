@@ -33,8 +33,9 @@ import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
+import no.nav.registre.aareg.domain.RsAktoer;
+import no.nav.registre.aareg.domain.RsAktoerPerson;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
-import no.nav.registre.aareg.domain.RsPersonAareg;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(AaregstubConsumer.class)
@@ -71,14 +72,14 @@ public class AaregstubConsumerTest {
         List<RsAaregOpprettRequest> syntetiserteMeldinger = new ArrayList<>(Arrays.asList(
                 RsAaregOpprettRequest.builder()
                         .arbeidsforhold(RsArbeidsforhold.builder()
-                                .arbeidstaker(RsPersonAareg.builder()
+                                .arbeidstaker(RsAktoerPerson.builder()
                                         .ident(fnr1)
                                         .build())
                                 .build())
                         .build(),
                 RsAaregOpprettRequest.builder()
                         .arbeidsforhold(RsArbeidsforhold.builder()
-                                .arbeidstaker(RsPersonAareg.builder()
+                                .arbeidstaker(RsAktoerPerson.builder()
                                         .ident(fnr2)
                                         .build())
                                 .build())

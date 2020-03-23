@@ -13,6 +13,6 @@ import lombok.Setter;
 @Builder
 public class RsAntallTimerForTimeloennet {
 
-    private Integer antallTimer;
+    private Double antallTimer;
     private RsPeriode periode;
 }

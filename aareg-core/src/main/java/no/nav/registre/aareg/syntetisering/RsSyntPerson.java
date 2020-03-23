@@ -1,4 +1,4 @@
-package no.nav.registre.aareg.domain;
+package no.nav.registre.aareg.syntetisering;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RsPersonAareg {
+public class RsSyntPerson {
 
     private String ident;
     private String identtype;

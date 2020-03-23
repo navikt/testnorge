@@ -1,4 +1,4 @@
-package no.nav.registre.aareg.consumer.rs.responses;
+package no.nav.registre.aareg.consumer.rs.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

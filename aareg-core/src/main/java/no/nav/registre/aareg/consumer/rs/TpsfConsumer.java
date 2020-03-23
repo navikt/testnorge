@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 
-import no.nav.registre.aareg.consumer.rs.responses.MiljoerResponse;
+import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
 
 @Component
 @RequiredArgsConstructor

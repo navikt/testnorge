@@ -1,11 +1,9 @@
 package no.nav.registre.aareg.service;
 
+import static java.util.stream.Collectors.toCollection;
 import static no.nav.registre.aareg.consumer.ws.AaregWsConsumer.STATUS_OK;
-import static no.nav.registre.aareg.service.AaregAbstractClient.getArbeidsgiver;
-import static no.nav.registre.aareg.service.AaregAbstractClient.getEndringsdatoStillingsprosent;
-import static no.nav.registre.aareg.service.AaregAbstractClient.getPeriodeFom;
-import static no.nav.registre.aareg.service.AaregAbstractClient.getPeriodeTom;
-import static no.nav.registre.aareg.service.AaregAbstractClient.getSisteLoennsendringsdato;
+import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.getLocalDateTimeFromLocalDate;
+import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.mapArbeidsforholdToRsArbeidsforhold;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.beans.PropertyDescriptor;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,17 +33,19 @@ import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.aareg.consumer.rs.KodeverkConsumer;
-import no.nav.registre.aareg.consumer.rs.responses.KodeverkResponse;
+import no.nav.registre.aareg.consumer.rs.response.KodeverkResponse;
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
+import no.nav.registre.aareg.domain.RsAktoerPerson;
 import no.nav.registre.aareg.domain.RsArbeidsavtale;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
 import no.nav.registre.aareg.domain.RsOrganisasjon;
 import no.nav.registre.aareg.domain.RsPeriode;
-import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
 
 @Service
 @Slf4j
@@ -50,6 +54,7 @@ public class SyntetiseringService {
 
     private static final String AAREG_NAME = "aareg";
     private static final int MINIMUM_ALDER = 13;
+    private static final double NYTT_ARBEIDSFORHOLD_SANNSYNLIGHET = 0.1;
 
     private final HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
     private final HodejegerenConsumer hodejegerenConsumer;
@@ -63,29 +68,29 @@ public class SyntetiseringService {
             SyntetiserAaregRequest syntetiserAaregRequest,
             Boolean sendAlleEksisterende
     ) {
-        Set<String> levendeIdenter = new HashSet<>(hentLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId(), MINIMUM_ALDER));
-        Set<String> nyeIdenter = new HashSet<>(syntetiserAaregRequest.getAntallNyeIdenter());
-        Set<String> identerIAaregstub = new HashSet<>();
+        List<RsAaregResponse> statusFraAareg = new ArrayList<>();
+        var levendeIdenter = new HashSet<>(hentLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId(), MINIMUM_ALDER));
+        var identerIAaregstub = new ArrayList<>(hentIdenterIAvspillergruppeMedArbeidsforhold(syntetiserAaregRequest.getAvspillergruppeId(), syntetiserAaregRequest.getMiljoe(), false));
         if (sendAlleEksisterende) {
-            identerIAaregstub.addAll(aaregstubConsumer.hentEksisterendeIdenter());
+            Map<String, List<Arbeidsforhold>> identerSomSkalBeholdeArbeidsforhold = new HashMap<>();
+            populerIdenterSomSkalBeholdeArbeidsforhold(syntetiserAaregRequest, identerIAaregstub, identerSomSkalBeholdeArbeidsforhold);
+            levendeIdenter.removeAll(identerSomSkalBeholdeArbeidsforhold.keySet());
+            statusFraAareg.add(oppdaterArbeidsforholdPaaEksisterendeIdenter(identerSomSkalBeholdeArbeidsforhold, syntetiserAaregRequest.getMiljoe()));
+        } else {
+            levendeIdenter.removeAll(identerIAaregstub);
         }
-        levendeIdenter.removeAll(identerIAaregstub);
-        List<String> utvalgteIdenter = new ArrayList<>(levendeIdenter);
 
         int antallNyeIdenter = syntetiserAaregRequest.getAntallNyeIdenter();
-        if (antallNyeIdenter > utvalgteIdenter.size()) {
-            antallNyeIdenter = utvalgteIdenter.size();
+        if (antallNyeIdenter > levendeIdenter.size()) {
+            antallNyeIdenter = levendeIdenter.size();
             log.info("Fant ikke nok ledige identer i avspillergruppe. Lager arbeidsforhold på {} identer.", antallNyeIdenter);
         }
 
-        for (int i = 0; i < antallNyeIdenter; i++) {
-            nyeIdenter.add(utvalgteIdenter.remove(rand.nextInt(utvalgteIdenter.size())));
-        }
+        List<String> utvalgteIdenter = new ArrayList<>(levendeIdenter);
+        Collections.shuffle(utvalgteIdenter);
+        utvalgteIdenter = utvalgteIdenter.subList(0, antallNyeIdenter);
 
-        List<RsAaregResponse> statusFraAareg = new ArrayList<>();
-
-        identerIAaregstub.addAll(nyeIdenter);
-        var syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(new ArrayList<>(identerIAaregstub));
+        var syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(utvalgteIdenter);
         validerArbeidsforholdMotAaregSpecs(syntetiserteArbeidsforhold);
         for (var opprettRequest : syntetiserteArbeidsforhold) {
             opprettRequest.setEnvironments(Collections.singletonList(syntetiserAaregRequest.getMiljoe()));
@@ -190,6 +195,47 @@ public class SyntetiseringService {
         return identerIAvspillergruppe;
     }
 
+    private RsAaregResponse oppdaterArbeidsforholdPaaEksisterendeIdenter(
+            Map<String, List<Arbeidsforhold>> identerSomSkalBeholdeArbeidsforhold,
+            String miljoe
+    ) {
+        Map<String, String> aaregResponses = new HashMap<>();
+        for (var arbeidsforholdliste : identerSomSkalBeholdeArbeidsforhold.values()) {
+            for (var arbeidsforhold : arbeidsforholdliste) {
+                var oppdaterRequest = mapAaregResponseToOppdateringsRequest(arbeidsforhold);
+                oppdaterRequest.setEnvironments(Collections.singletonList(miljoe));
+                oppdaterRequest.setRapporteringsperiode(LocalDateTime.now());
+                aaregResponses.putAll(aaregService.oppdaterArbeidsforhold(oppdaterRequest));
+            }
+        }
+        log.info("Status på oppdatering: {}", aaregResponses.toString());
+        return RsAaregResponse.builder().statusPerMiljoe(aaregResponses).build();
+    }
+
+    private RsAaregOppdaterRequest mapAaregResponseToOppdateringsRequest(Arbeidsforhold aaregResponse) {
+        var arbeidsforhold = mapArbeidsforholdToRsArbeidsforhold(aaregResponse);
+        var oppdaterRequest = new RsAaregOppdaterRequest();
+        oppdaterRequest.setArbeidsforhold(arbeidsforhold);
+        return oppdaterRequest;
+    }
+
+    private void populerIdenterSomSkalBeholdeArbeidsforhold(
+            SyntetiserAaregRequest syntetiserAaregRequest,
+            List<String> identerIAaregstub,
+            Map<String, List<Arbeidsforhold>> identerMedArbeidsforholdFraAareg
+    ) {
+        Collections.shuffle(identerIAaregstub);
+        var identerSomSkalBeholdeArbeidsforhold = identerIAaregstub.stream()
+                .limit(Math.round(identerIAaregstub.size() * (1 - NYTT_ARBEIDSFORHOLD_SANNSYNLIGHET)))
+                .collect(toCollection(LinkedHashSet::new));
+        for (var ident : identerSomSkalBeholdeArbeidsforhold) {
+            var aaregResponse = aaregService.hentArbeidsforhold(ident, syntetiserAaregRequest.getMiljoe());
+            if (aaregResponse.getStatusCode().is2xxSuccessful() && aaregResponse.hasBody()) {
+                identerMedArbeidsforholdFraAareg.put(ident, aaregResponse.getBody());
+            }
+        }
+    }
+
     private void lagreArbeidsforholdIHodejegeren(RsAaregOpprettRequest opprettRequest) {
         var identMedData = new IdentMedData(opprettRequest.getArbeidsforhold().getArbeidstaker().getIdent(), Collections.singletonList(opprettRequest.getArbeidsforhold()));
         var hodejegerenRequest = new AaregSaveInHodejegerenRequest(AAREG_NAME, Collections.singletonList(identMedData));
@@ -223,22 +269,22 @@ public class SyntetiseringService {
         var arbeidsforhold = RsArbeidsforhold.builder()
                 .arbeidsforholdID(syntetiseringsRequest.getArbeidsforhold().getArbeidsforholdID())
                 .arbeidsgiver(RsOrganisasjon.builder()
-                        .orgnummer(getArbeidsgiver(syntetiseringsRequest.getArbeidsforhold()).getOrgnummer())
+                        .orgnummer(((RsOrganisasjon) syntetiseringsRequest.getArbeidsforhold().getArbeidsgiver()).getOrgnummer())
                         .build())
                 .arbeidsforholdstype(syntetiseringsRequest.getArbeidsforhold().getArbeidsforholdstype())
-                .arbeidstaker(RsPersonAareg.builder()
+                .arbeidstaker(RsAktoerPerson.builder()
                         .ident(syntetiseringsRequest.getArbeidsforhold().getArbeidstaker().getIdent())
                         .identtype(syntetiseringsRequest.getArbeidsforhold().getArbeidstaker().getIdenttype())
                         .build())
                 .ansettelsesPeriode(RsPeriode.builder()
-                        .fom(getPeriodeFom(syntetiseringsRequest.getArbeidsforhold()))
-                        .tom(getPeriodeTom(syntetiseringsRequest.getArbeidsforhold()))
+                        .fom(getLocalDateTimeFromLocalDate(syntetiseringsRequest.getArbeidsforhold().getAnsettelsesPeriode().getFom()))
+                        .tom(getLocalDateTimeFromLocalDate(syntetiseringsRequest.getArbeidsforhold().getAnsettelsesPeriode().getTom()))
                         .build())
                 .arbeidsavtale(RsArbeidsavtale.builder()
                         .arbeidstidsordning(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getArbeidstidsordning())
                         .avtaltArbeidstimerPerUke(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getAvtaltArbeidstimerPerUke())
-                        .endringsdatoStillingsprosent(getEndringsdatoStillingsprosent(syntetiseringsRequest.getArbeidsforhold()))
-                        .sisteLoennsendringsdato(getSisteLoennsendringsdato(syntetiseringsRequest.getArbeidsforhold()))
+                        .endringsdatoStillingsprosent(getLocalDateTimeFromLocalDate(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getEndringsdatoStillingsprosent()))
+                        .sisteLoennsendringsdato(getLocalDateTimeFromLocalDate(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getSisteLoennsendringsdato()))
                         .stillingsprosent(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getStillingsprosent())
                         .yrke(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getYrke())
                         .build())

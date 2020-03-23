@@ -114,6 +114,12 @@
             <classifier>jaxws</classifier>
         </dependency>
 
+        <dependency>
+            <groupId>no.nav.tjenester</groupId>
+            <artifactId>aordningen-arbeidsforhold-v1</artifactId>
+            <version>1.9</version>
+        </dependency>
+
         <!-- SECURITY -->
         <dependency>
             <groupId>org.apache.neethi</groupId>

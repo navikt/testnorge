@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 import no.nav.registre.aareg.consumer.rs.TpsfConsumer;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.aareg.service.AaregService;
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
 
 @RestController
 @CrossOrigin
@@ -63,7 +63,7 @@ public class ArbeidsforholdController {
 
     @GetMapping
     @ApiOperation(value = "Hent arbeidsforhold fra aareg.")
-    public ResponseEntity<List<Map>> hentArbeidsforhold(
+    public ResponseEntity<List<Arbeidsforhold>> hentArbeidsforhold(
             @RequestParam String ident,
             @RequestParam String miljoe
     ) {
