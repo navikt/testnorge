@@ -85,8 +85,8 @@ public class RettighetAapService {
         rettighetRequest.setPersonident(ident);
         rettighetRequest.setMiljoe(miljoe);
 
-        rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(Collections.singletonList(aap115Rettighet), miljoe));
-        return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(Collections.singletonList(rettighetRequest), miljoe));
+        rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(new ArrayList<>(Collections.singletonList(aap115Rettighet)), miljoe));
+        return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(new ArrayList<>(Collections.singletonList(rettighetRequest)), miljoe));
     }
 
     public List<NyttVedtakResponse> genererAap115(
