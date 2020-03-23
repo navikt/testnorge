@@ -1,4 +1,5 @@
 import React from 'react'
+import { AdresseKodeverk } from '~/config/kodeverk'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
@@ -16,7 +17,7 @@ export const Postadresser = ({ formikBag }) => {
 			<FormikSelect
 				name="tpsf.postadresse[0].postLand"
 				label="Land"
-				kodeverk="Landkoder"
+				kodeverk={AdresseKodeverk.PostadresseLand}
 				isClearable={false}
 				size="large"
 			/>
@@ -33,7 +34,7 @@ export const Postadresser = ({ formikBag }) => {
 					name="tpsf.postadresse[0].postLinje3"
 					label={'Postnummer/sted'}
 					value={formikBag.values.tpsf.postadresse[0].postLinje3.substring(0, 4)}
-					kodeverk="Postnummer"
+					kodeverk={AdresseKodeverk.Postnummer}
 					size="large"
 					afterChange={handleAfterChange}
 					isClearable={false}

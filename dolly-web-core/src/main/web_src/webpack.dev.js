@@ -1,9 +1,10 @@
 const path = require('path');
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
+const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-module.exports = merge(common, {
+module.exports = env => merge(common, {
     mode: 'development',
     devtool: 'inline-source-map',
     devServer: {
@@ -12,6 +13,9 @@ module.exports = merge(common, {
         historyApiFallback: true
     },
     plugins: [
+        new webpack.EnvironmentPlugin({
+            BACKEND: env.backend
+        }),
         new MiniCssExtractPlugin({
             filename: '[name].css'
         })

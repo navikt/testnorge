@@ -2,6 +2,7 @@ import React from 'react'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
+import { ArbeidKodeverk } from '~/config/kodeverk'
 
 export const PermisjonPermitteringer = ({ data }) => {
 	if (!data) return false
@@ -15,7 +16,7 @@ export const PermisjonPermitteringer = ({ data }) => {
 						<TitleValue
 							title="Permisjonstype"
 							value={id.type}
-							kodeverk="PermisjonsOgPermitteringsBeskrivelse"
+							kodeverk={ArbeidKodeverk.PermisjonsOgPermitteringsBeskrivelse}
 						/>
 						{id.periode && (
 							<TitleValue title="Startdato" value={Formatters.formatStringDates(id.periode.fom)} />

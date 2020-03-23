@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import _get from 'lodash/get'
-import _has from 'lodash/has'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
-import HjelpeTekst from 'nav-frontend-hjelpetekst'
+import Hjelpetekst from '~/components/hjelpetekst'
+import { ArbeidKodeverk } from '~/config/kodeverk'
 
 const avtaleValg = {
 	avtaltArbeidstimerPerUke: 'avtaltArbeidstimerPerUke',
@@ -55,7 +55,7 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 				<FormikSelect
 					name={`${arbeidsavtalePath}.yrke`}
 					label="Yrke"
-					kodeverk="Yrker"
+					kodeverk={ArbeidKodeverk.Yrker}
 					size="xxlarge"
 					isClearable={false}
 					optionHeight={50}
@@ -72,7 +72,7 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 				<FormikSelect
 					name={`${arbeidsavtalePath}.arbeidstidsordning`}
 					label="Arbeidstidsordning"
-					kodeverk="Arbeidstidsordninger"
+					kodeverk={ArbeidKodeverk.Arbeidstidsordninger}
 					size="xxlarge"
 					isClearable={false}
 				/>
@@ -94,10 +94,10 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 						isclearable="true"
 					/>
 				</div>
-				<HjelpeTekst>
+				<Hjelpetekst hjelpetekstFor="Avtalte arbeidstimer per uke og antall konverterte timer">
 					Antall konverterte timer og avtalte timer per uke kan ikke bli satt samtidig. Hvis feltet
 					er tomt blir det automatisk generert avhengig av stillingsprosentet.
-				</HjelpeTekst>
+				</Hjelpetekst>
 			</div>
 		</div>
 	)
