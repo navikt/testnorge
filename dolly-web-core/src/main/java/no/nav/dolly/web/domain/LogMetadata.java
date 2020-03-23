@@ -5,6 +5,7 @@ import lombok.Value;
 @Value
 class LogMetadata {
     private final String userAgent;
+    private final String host;
 
     /**
      * Nettleser navn er ikke 100% sikker basert på user agent. Derfor kan denne koden kun brukes til logging.

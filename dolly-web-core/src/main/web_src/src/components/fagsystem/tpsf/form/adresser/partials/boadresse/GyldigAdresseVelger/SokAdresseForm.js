@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import HjelpeTekst from 'nav-frontend-hjelpetekst'
+import Hjelpetekst from '~/components/hjelpetekst'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import Icon from '~/components/ui/icon/Icon'
@@ -21,7 +21,7 @@ export const SokAdresseForm = ({ onSearch }) => {
 	return (
 		<div className="soekAdresse">
 			<div className="flexbox">
-				<h4>Søk etter gyldig adresse</h4> <HjelpeTekst>{informasjonstekst}</HjelpeTekst>
+				<h4>Søk etter gyldig adresse</h4> <Hjelpetekst hjelpetekstFor="Søk etter gyldig adresse">{informasjonstekst}</Hjelpetekst>
 			</div>
 			<div className="flexbox">
 				<DollyTextInput

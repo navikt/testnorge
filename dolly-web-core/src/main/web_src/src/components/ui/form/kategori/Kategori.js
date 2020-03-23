@@ -1,5 +1,5 @@
 import React from 'react'
-import HjelpeTekst from 'nav-frontend-hjelpetekst'
+import Hjelpetekst from '~/components/hjelpetekst'
 import cn from 'classnames'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 
@@ -12,7 +12,7 @@ export const Kategori = ({ title = 'Kategori', flex = true, vis, hjelpetekst, ch
 	const render = (
 		<div className="form-kategori">
 			<h4>
-				{title} {hjelpetekst && <HjelpeTekst>{hjelpetekst}</HjelpeTekst>}
+				{title} {hjelpetekst && <Hjelpetekst hjelpetekstFor={title}>{hjelpetekst}</Hjelpetekst>}
 			</h4>
 			<div className={css}>{children}</div>
 		</div>
