@@ -4,6 +4,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.*;
 
 import java.util.List;
 import java.util.Set;
@@ -112,7 +113,7 @@ public class PensjonforvalterClient implements ClientRegister {
         response.getStatus().forEach(status ->
                 pensjonStatus.append(status.getMiljo()).append(':')
                         .append(status.getResponse().getHttpStatus().getStatus() == 200 ? "OK" :
-                                "Feil= " + status.getResponse().getMessage())
+                                "Feil= " + encodeErrorStatus(status.getResponse().getMessage()))
                         .append(',')
         );
     }
