@@ -72,6 +72,12 @@ public class Testgruppe {
     @OneToMany(mappedBy = "gruppe", fetch = FetchType.LAZY)
     private Set<Bestilling> bestillinger;
 
+    @Column(name = "ER_LAAST")
+    private Boolean erLaast;
+
+    @Column(name = "LAAST_BESKRIVELSE")
+    private String laastBeskrivelse;
+
     public Set<Testident> getTestidenter() {
         if (isNull(testidenter)) {
             testidenter = new HashSet();

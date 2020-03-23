@@ -27,6 +27,7 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                         rsTestgruppe.setSistEndretAvNavIdent(testgruppe.getSistEndretAv().getBrukerId());
                         rsTestgruppe.setFavorittIGruppen(!testgruppe.getFavorisertAv().isEmpty());
                         rsTestgruppe.setErEierAvGruppe(getUserPrinciple().equalsIgnoreCase(testgruppe.getOpprettetAv().getBrukerId()));
+                        rsTestgruppe.setErLaast(isTrue(rsTestgruppe.getErLaast()));
                     }
                 })
                 .byDefault()
