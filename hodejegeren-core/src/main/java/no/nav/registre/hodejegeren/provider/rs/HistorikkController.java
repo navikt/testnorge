@@ -28,47 +28,55 @@ import no.nav.registre.hodejegeren.service.HistorikkService;
 @RequestMapping("api/v1/historikk")
 public class HistorikkController {
 
+    private static final int MAX_PAGE_SIZE = 100;
+
     @Autowired
     private HistorikkService historikkService;
 
     @LogExceptions
     @ApiOperation(value = "Hent all historikk fra databasen.")
-    @GetMapping(value = "")
-    public List<SyntHistorikk> hentAllHistorikk() {
-        return historikkService.hentAllHistorikk();
+    @GetMapping()
+    public List<SyntHistorikk> hentAllHistorikk(
+            @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+            @RequestParam(required = false, defaultValue = "10") Integer pageSize
+    ) {
+        if (pageSize > MAX_PAGE_SIZE) {
+            throw new RuntimeException("Max størrelse på side: " + MAX_PAGE_SIZE);
+        }
+        return historikkService.hentAllHistorikk(pageNumber, pageSize);
     }
 
     @LogExceptions
     @ApiOperation(value = "Hent all historikk med en gitt kilde fra databasen.")
-    @GetMapping(value = "medKilde")
-    public List<SyntHistorikk> hentHistorikkMedKilde(@RequestParam List<String> kilder) {
-        return historikkService.hentHistorikkMedKilder(kilder);
-    }
-
-    @LogExceptions
-    @ApiOperation(value = "Hent all historikk med en gitt kilde fra databasen.")
-    @GetMapping(value = "medKildeNy")
-    public List<SyntHistorikk> hentHistorikkMedKildeNy(@RequestParam List<String> kilder) {
-        return historikkService.hentHistorikkMedKilderNy(kilder);
+    @GetMapping("medKildeNy")
+    public List<SyntHistorikk> hentHistorikkMedKilde(
+            @RequestParam List<String> kilder,
+            @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+            @RequestParam(required = false, defaultValue = "10") Integer pageSize
+    ) {
+        if (pageSize > MAX_PAGE_SIZE) {
+            throw new RuntimeException("Max størrelse på side: " + MAX_PAGE_SIZE);
+        }
+        return historikkService.hentHistorikkMedKilder(kilder, pageNumber, pageSize);
     }
 
     @LogExceptions
     @ApiOperation(value = "Hent alle id-ene som er registrert med en gitt kilde fra databasen.")
-    @GetMapping(value = "idsMedKilde")
+    @GetMapping("idsMedKilde")
     public Set<String> hentIdsMedKilde(@RequestParam List<String> kilder) {
         return historikkService.hentIdsMedKilder(kilder);
     }
 
     @LogExceptions
     @ApiOperation(value = "Hent all historikk på en gitt id fra databasen.")
-    @GetMapping(value = "{id}")
+    @GetMapping("{id}")
     public SyntHistorikk hentHistorikkMedId(@PathVariable String id) {
         return historikkService.hentHistorikkMedId(id);
     }
 
     @LogExceptions
     @ApiOperation(value = "Legg til ny historikk i databasen")
-    @PostMapping(value = "")
+    @PostMapping()
     public List<String> leggTilHistorikk(@RequestBody HistorikkRequest historikkRequest) {
         if ("skd".equals(historikkRequest.getKilde())) {
             log.error("Skd historikk opprettes gjennom persondokumenter fra orkestratoren.");

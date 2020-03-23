@@ -8,6 +8,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -22,6 +24,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -66,7 +71,7 @@ public class HistorikkServiceTest {
 
         lagretHistorikk = new ArrayList<>(Arrays.asList(syntHistorikk1, syntHistorikk2));
 
-        when(syntHistorikkRepository.findAll()).thenReturn(lagretHistorikk);
+        when(syntHistorikkRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(lagretHistorikk));
         when(syntHistorikkRepository.findById(id1)).thenReturn(Optional.ofNullable(lagretHistorikk.get(0)));
         when(syntHistorikkRepository.findById(id2)).thenReturn(Optional.ofNullable(lagretHistorikk.get(1)));
 
@@ -81,7 +86,7 @@ public class HistorikkServiceTest {
 
     @Test
     public void shouldHenteAllHistorikk() {
-        var historikk = historikkService.hentAllHistorikk();
+        var historikk = historikkService.hentAllHistorikk(0, 10);
 
         assertThat(historikk.get(0).getId(), equalTo(id1));
         assertThat(historikk.get(1).getId(), equalTo(id2));
@@ -98,7 +103,8 @@ public class HistorikkServiceTest {
 
     @Test
     public void shouldHenteHistorikkMedKilde() {
-        var historikkMedKilde = historikkService.hentHistorikkMedKilder(Collections.singletonList("aareg"));
+        when(syntHistorikkRepository.findAllByIdIn(anyList(), any(Pageable.class))).thenReturn(new PageImpl<>(lagretHistorikk));
+        var historikkMedKilde = historikkService.hentHistorikkMedKilder(Collections.singletonList("aareg"), 0, 10);
 
         var historikkIds = new ArrayList<>(Arrays.asList(historikkMedKilde.get(0).getId(), historikkMedKilde.get(1).getId()));
         assertThat(historikkIds, containsInAnyOrder(id1, id2));

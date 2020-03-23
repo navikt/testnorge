@@ -1,5 +1,7 @@
 package no.nav.registre.hodejegeren.mongodb;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -12,5 +14,10 @@ public interface SyntHistorikkRepository extends MongoRepository<SyntHistorikk, 
     @Query(value = "{'kilder.navn' : ?0}", fields = "{'_id':1}")
     List<SyntHistorikk> findAllIdsByKildenavn(String kilde);
 
-    List<SyntHistorikk> findAllById(List<String> id);
+    List<SyntHistorikk> findAllByIdIn(List<String> ids);
+
+    Page<SyntHistorikk> findAllByIdIn(
+            List<String> ids,
+            Pageable pageable
+    );
 }

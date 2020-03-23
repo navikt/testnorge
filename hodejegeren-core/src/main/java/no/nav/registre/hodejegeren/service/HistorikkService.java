@@ -3,6 +3,8 @@ package no.nav.registre.hodejegeren.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.rtv.namespacetps.TpsPersonDokumentType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,25 +32,25 @@ public class HistorikkService {
 
     private final SyntHistorikkRepository syntHistorikkRepository;
 
-    public List<SyntHistorikk> hentAllHistorikk() {
-        return syntHistorikkRepository.findAll();
+    public List<SyntHistorikk> hentAllHistorikk(
+            int pageNumber,
+            int pageSize
+    ) {
+        var pageableRequest = PageRequest.of(pageNumber, pageSize);
+        Page<SyntHistorikk> page = syntHistorikkRepository.findAll(pageableRequest);
+        return page.getContent();
     }
 
     public SyntHistorikk hentHistorikkMedId(String id) {
         return syntHistorikkRepository.findById(id).orElse(null);
     }
 
-    public List<SyntHistorikk> hentHistorikkMedKilder(List<String> kilder) {
-        var idsMedKilder = hentIdsMedKilder(kilder);
-        List<SyntHistorikk> historikkMedKilder = new ArrayList<>(idsMedKilder.size());
-        for (var id : idsMedKilder) {
-            historikkMedKilder.add(hentHistorikkMedId(id));
-        }
-        return historikkMedKilder;
-    }
-
-    public List<SyntHistorikk> hentHistorikkMedKilderNy(List<String> kilder) {
-        return syntHistorikkRepository.findAllById(new ArrayList<>(hentIdsMedKilder(kilder)));
+    public List<SyntHistorikk> hentHistorikkMedKilder(
+            List<String> kilder,
+            int pageNumber,
+            int pageSize
+    ) {
+        return syntHistorikkRepository.findAllByIdIn(new ArrayList<>(hentIdsMedKilder(kilder)), PageRequest.of(pageNumber, pageSize)).getContent();
     }
 
     public Set<String> hentIdsMedKilder(List<String> kilder) {
@@ -125,7 +127,10 @@ public class HistorikkService {
         return opprettedeIder;
     }
 
-    public List<String> oppdaterTpsPersonDokument(String ident, TpsPersonDokumentType tpsPersonDokument) {
+    public List<String> oppdaterTpsPersonDokument(
+            String ident,
+            TpsPersonDokumentType tpsPersonDokument
+    ) {
         var syntHistorikk = hentHistorikkMedId(ident);
         var personDokumentWrapper = PersonDokumentUtility.convertToPersonDokumentWrapper(tpsPersonDokument);
         if (syntHistorikk != null) {
@@ -159,7 +164,10 @@ public class HistorikkService {
         }
     }
 
-    public ResponseEntity slettKilde(String id, String navnPaaKilde) {
+    public ResponseEntity slettKilde(
+            String id,
+            String navnPaaKilde
+    ) {
         var historikk = syntHistorikkRepository.findById(id).orElse(null);
 
         if (historikk != null) {
@@ -187,7 +195,10 @@ public class HistorikkService {
         }
     }
 
-    private List<String> leggTilSkdData(String ident, PersonDokumentWrapper personDokumentWrapper) {
+    private List<String> leggTilSkdData(
+            String ident,
+            PersonDokumentWrapper personDokumentWrapper
+    ) {
         var historikkRequest = HistorikkRequest.builder()
                 .kilde("skd")
                 .identMedData(Collections.singletonList(DataRequest.builder()
