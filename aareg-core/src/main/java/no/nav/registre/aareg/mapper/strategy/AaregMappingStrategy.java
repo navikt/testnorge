@@ -11,6 +11,7 @@ import no.nav.registre.aareg.domain.RsArbeidsavtale;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
 import no.nav.registre.aareg.domain.RsOrganisasjon;
 import no.nav.registre.aareg.domain.RsPermisjon;
+import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.domain.RsUtenlandsopphold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsavtale;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
@@ -143,11 +144,11 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .register();
     }
 
-    private Person mapPerson(RsAktoerPerson rsAktoerPerson) {
+    private Person mapPerson(RsPersonAareg rsPersonAareg) {
         var norskIdent = new NorskIdent();
-        norskIdent.setIdent(rsAktoerPerson.getIdent());
+        norskIdent.setIdent(rsPersonAareg.getIdent());
 
-        norskIdent.setType(mapKodeverdi(new Personidenter(), rsAktoerPerson.getIdenttype()));
+        norskIdent.setType(mapKodeverdi(new Personidenter(), rsPersonAareg.getIdenttype()));
 
         var person = new Person();
         person.setIdent(norskIdent);

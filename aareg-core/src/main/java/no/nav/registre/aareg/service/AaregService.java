@@ -25,6 +25,7 @@ import no.nav.registre.aareg.domain.RsArbeidsavtale;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
 import no.nav.registre.aareg.domain.RsOrganisasjon;
 import no.nav.registre.aareg.domain.RsPeriode;
+import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
@@ -84,7 +85,7 @@ public class AaregService {
                                                             .orgnummer(((Organisasjon) (forhold.getArbeidsgiver())).getOrganisasjonsnummer())
                                                             .build())
                                             .arbeidsforholdstype(forhold.getType())
-                                            .arbeidstaker(RsAktoerPerson.builder()
+                                            .arbeidstaker(RsPersonAareg.builder()
                                                     .ident(forhold.getArbeidstaker().getOffentligIdent())
                                                     .build())
                                             .ansettelsesPeriode(RsPeriode.builder()

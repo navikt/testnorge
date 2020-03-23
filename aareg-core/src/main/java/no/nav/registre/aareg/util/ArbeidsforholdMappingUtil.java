@@ -17,6 +17,7 @@ import no.nav.registre.aareg.domain.RsArbeidsforhold;
 import no.nav.registre.aareg.domain.RsOrganisasjon;
 import no.nav.registre.aareg.domain.RsPeriode;
 import no.nav.registre.aareg.domain.RsPermisjon;
+import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.domain.RsUtenlandsopphold;
 import no.nav.tjenester.aordningen.arbeidsforhold.v1.Ansettelsesperiode;
 import no.nav.tjenester.aordningen.arbeidsforhold.v1.AntallTimerForTimeloennet;
@@ -58,7 +59,7 @@ public class ArbeidsforholdMappingUtil {
         return RsArbeidsforhold.builder()
                 .arbeidsforholdIDnav(arbeidsforhold.getNavArbeidsforholdId())
                 .arbeidsforholdID(arbeidsforhold.getArbeidsforholdId())
-                .arbeidstaker(mapRsAktoerPerson(arbeidsforhold.getArbeidstaker()))
+                .arbeidstaker(mapRsPersonAareg(arbeidsforhold.getArbeidstaker()))
                 .arbeidsgiver(mapRsAktoer(arbeidsforhold.getArbeidsgiver()))
                 .arbeidsforholdstype(arbeidsforhold.getType())
                 .ansettelsesPeriode(mapRsAnsettelsesPeriode(arbeidsforhold.getAnsettelsesperiode()))
@@ -222,12 +223,10 @@ public class ArbeidsforholdMappingUtil {
                 .build();
     }
 
-    private static RsAktoerPerson mapRsAktoerPerson(Person person) {
-        var rsAktoerPerson = RsAktoerPerson.builder()
+    private static RsPersonAareg mapRsPersonAareg(Person person) {
+        return RsPersonAareg.builder()
                 .ident(person.getOffentligIdent())
                 .build();
-        rsAktoerPerson.setAktoertype("PERS");
-        return rsAktoerPerson;
     }
 
     private static RsAktoer mapRsAktoer(OpplysningspliktigArbeidsgiver opplysningspliktigArbeidsgiver) {

@@ -41,6 +41,7 @@ import no.nav.registre.aareg.domain.RsArbeidsavtale;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
 import no.nav.registre.aareg.domain.RsOrganisasjon;
 import no.nav.registre.aareg.domain.RsPeriode;
+import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
@@ -272,7 +273,7 @@ public class SyntetiseringService {
                         .orgnummer(((RsOrganisasjon) syntetiseringsRequest.getArbeidsforhold().getArbeidsgiver()).getOrgnummer())
                         .build())
                 .arbeidsforholdstype(syntetiseringsRequest.getArbeidsforhold().getArbeidsforholdstype())
-                .arbeidstaker(RsAktoerPerson.builder()
+                .arbeidstaker(RsPersonAareg.builder()
                         .ident(syntetiseringsRequest.getArbeidsforhold().getArbeidstaker().getIdent())
                         .identtype(syntetiseringsRequest.getArbeidsforhold().getArbeidstaker().getIdenttype())
                         .build())
