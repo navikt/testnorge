@@ -57,7 +57,7 @@ public class ErrorStatusDecoder {
                     builder.append(encodeErrorStatus((String) objectMapper.readValue(((HttpClientErrorException) e).getResponseBodyAsString(), Map.class).get("message")));
 
                 } catch (IOException ioe) {
-                    builder.append(encodeErrorStatus(e.getMessage()));
+                    builder.append(encodeErrorStatus(ioe.getMessage()));
                 }
 
             } else {
