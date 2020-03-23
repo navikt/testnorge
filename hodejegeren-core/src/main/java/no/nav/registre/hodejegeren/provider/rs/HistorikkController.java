@@ -48,7 +48,7 @@ public class HistorikkController {
 
     @LogExceptions
     @ApiOperation(value = "Hent all historikk med en gitt kilde fra databasen.")
-    @GetMapping("medKildeNy")
+    @GetMapping("medKilde")
     public List<SyntHistorikk> hentHistorikkMedKilde(
             @RequestParam List<String> kilder,
             @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
