@@ -20,7 +20,7 @@ public class ErrorStatusDecoder {
     public String getErrorText(HttpStatus errorStatus, String errorMsg) {
 
         StringBuilder builder = new StringBuilder()
-                .append("Feil: ");
+                .append("Feil= ");
 
         if (errorMsg.contains("{")) {
 
@@ -31,7 +31,7 @@ public class ErrorStatusDecoder {
 
                 builder.append(errorStatus.value())
                         .append(" (")
-                        .append(errorStatus.getReasonPhrase())
+                        .append(encodeErrorStatus(errorStatus.getReasonPhrase()))
                         .append(')');
 
                 log.warn("Parsing av melding '{}' feilet", errorMsg, e);
@@ -57,7 +57,7 @@ public class ErrorStatusDecoder {
                     builder.append(encodeErrorStatus((String) objectMapper.readValue(((HttpClientErrorException) e).getResponseBodyAsString(), Map.class).get("message")));
 
                 } catch (IOException ioe) {
-                    builder.append(e.getMessage());
+                    builder.append(encodeErrorStatus(e.getMessage()));
                 }
 
             } else {
@@ -74,7 +74,7 @@ public class ErrorStatusDecoder {
         return builder.toString();
     }
 
-    private static String encodeErrorStatus(String toBeEncoded) {
+    public static String encodeErrorStatus(String toBeEncoded) {
         return toBeEncoded.replaceAll(",", "&").replaceAll(":", "=");
     }
 }
