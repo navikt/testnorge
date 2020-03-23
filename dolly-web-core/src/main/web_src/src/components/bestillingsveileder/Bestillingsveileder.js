@@ -35,8 +35,8 @@ export const Bestillingsveileder = ({ error, location, sendBestilling, match }) 
 						response.data.length > 0 ? response.data[0] : null
 					)
 				}
-				getComponent={data => {
-					const initialValues = { ...options.initialValues, eksisterende: data }
+				render={data => {
+					const initialValues = { ...options.initialValues, personFoerLeggTil: data }
 					return renderBestillingsVeileder(initialValues)
 				}}
 			/>

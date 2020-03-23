@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Loading from './Loading'
 
-const LoadableComponent = ({ onFetch, getComponent }) => {
+const LoadableComponent = ({ onFetch, render }) => {
 	const [loading, setLoading] = useState(true)
 	const [data, setData] = useState()
 	useEffect(() => {
@@ -15,6 +15,6 @@ const LoadableComponent = ({ onFetch, getComponent }) => {
 		return <Loading />
 	}
 
-	return getComponent(data)
+	return render(data)
 }
 export default LoadableComponent

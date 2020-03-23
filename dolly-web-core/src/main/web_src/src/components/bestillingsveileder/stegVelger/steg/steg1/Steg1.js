@@ -38,7 +38,7 @@ export const Steg1 = ({ stateModifier, formikBag }) => {
 		<AttributtVelger checked={checked}>
 			<PersoninformasjonPanel
 				stateModifier={stateModifier}
-				eksisterende={formikBag.values.eksisterende}
+				personFoerLeggTil={formikBag.values.personFoerLeggTil}
 			/>
 			<AdressePanel stateModifier={stateModifier} />
 

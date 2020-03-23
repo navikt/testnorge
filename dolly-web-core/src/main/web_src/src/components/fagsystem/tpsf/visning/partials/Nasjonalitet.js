@@ -27,15 +27,7 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 			{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="nasjonalitet" />}
 			<div className="person-visning_content">
 				<Historikk component={Statsborgerskap} data={statsborgerskap} propName="statsborgerskap" />
-				{statsborgerskap.map((sb, idx) => (
-					<div key={idx}>
-						<TitleValue title="Statsborgerskap" kodeverk="Landkoder" value={sb.statsborgerskap} />
-						<TitleValue
-							title="Statsborgerskap fra"
-							value={Formatters.formatDate(sb.statsborgerskapRegdato)}
-						/>
-					</div>
-				))}
+
 				<TitleValue title="Språk" kodeverk="Språk" value={sprakKode} />
 			</div>
 

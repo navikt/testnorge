@@ -5,14 +5,17 @@ import _has from 'lodash/has'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 
-export const PersoninformasjonPanel = ({ stateModifier, eksisterende }) => {
+export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
 	const opprettFraEksisterende = _has(useLocation(), 'state.state.opprettFraIdenter')
 	const leggTil = _has(useLocation(), 'state.state.leggTilPaaFnr')
 
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende
-	if (leggTil && eksisterende) {
-		const innvandretEllerUtvandret = eksisterende.innvandretUtvandret[0].innutvandret
+	if (leggTil && personFoerLeggTil) {
+		const innvandretEllerUtvandret = personFoerLeggTil.innvandretUtvandret[0].innutvandret
+
+		const infoTekst =
+			'For å utvandre, må en person først innvandre. Det er heller ikke mulig å innvandre to ganger på rad uten først å utvandre'
 
 		return (
 			// Panel som innholder attributer som er støttet i Legg til
@@ -23,15 +26,16 @@ export const PersoninformasjonPanel = ({ stateModifier, eksisterende }) => {
 					checkAttributeArray={sm.batchAdd}
 					uncheckAttributeArray={sm.batchRemove}
 					iconType={'personinformasjon'}
+					informasjonstekst={infoTekst}
 				>
 					<AttributtKategori title="Nasjonalitet">
 						<Attributt
 							attr={sm.attrs.innvandretFraLand}
-							vis={innvandretEllerUtvandret == 'UTVANDRET'}
+							disabled={innvandretEllerUtvandret == 'UTVANDRET'}
 						/>
 						<Attributt
 							attr={sm.attrs.utvandretTilLand}
-							vis={innvandretEllerUtvandret == 'INNVANDRET'}
+							disabled={innvandretEllerUtvandret == 'INNVANDRET'}
 						/>
 					</AttributtKategori>
 				</Panel>
