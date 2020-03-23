@@ -5,6 +5,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import Hjelpetekst from '~/components/hjelpetekst'
+import { ArbeidKodeverk } from '~/config/kodeverk'
 
 const avtaleValg = {
 	avtaltArbeidstimerPerUke: 'avtaltArbeidstimerPerUke',
@@ -54,7 +55,7 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 				<FormikSelect
 					name={`${arbeidsavtalePath}.yrke`}
 					label="Yrke"
-					kodeverk="Yrker"
+					kodeverk={ArbeidKodeverk.Yrker}
 					size="xxlarge"
 					isClearable={false}
 					optionHeight={50}
@@ -71,7 +72,7 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 				<FormikSelect
 					name={`${arbeidsavtalePath}.arbeidstidsordning`}
 					label="Arbeidstidsordning"
-					kodeverk="Arbeidstidsordninger"
+					kodeverk={ArbeidKodeverk.Arbeidstidsordninger}
 					size="xxlarge"
 					isClearable={false}
 				/>

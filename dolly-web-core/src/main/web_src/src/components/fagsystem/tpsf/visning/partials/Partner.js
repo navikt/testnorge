@@ -4,6 +4,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { Adressevisning } from './Boadresse'
 import { Historikk } from '~/components/ui/historikk/Historikk'
+import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 
 export const Partner = ({ data }) => {
 	if (!data) return false
@@ -29,7 +30,7 @@ export const Partner = ({ data }) => {
 						<div key={idx} className="person-visning_content">
 							<TitleValue
 								title="Forhold til partner (sivilstand)"
-								kodeverk="Sivilstander"
+								kodeverk={PersoninformasjonKodeverk.Sivilstander}
 								value={forhold.sivilstand}
 								size="medium"
 							/>

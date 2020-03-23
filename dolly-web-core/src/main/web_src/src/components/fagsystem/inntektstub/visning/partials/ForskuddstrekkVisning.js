@@ -1,6 +1,7 @@
 import React from 'react'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import { InntektstubKodeverk } from '~/config/kodeverk'
 
 export const ForskuddstrekkVisning = ({ data }) => {
 	if (!data || data.length === 0) return false
@@ -15,7 +16,7 @@ export const ForskuddstrekkVisning = ({ data }) => {
 						<TitleValue
 							title="Beskrivelse"
 							value={id.beskrivelse}
-							kodeverk="Forskuddstrekkbeskrivelse"
+							kodeverk={InntektstubKodeverk.Forskuddstrekkbeskrivelse}
 						/>
 					</div>
 				)}
