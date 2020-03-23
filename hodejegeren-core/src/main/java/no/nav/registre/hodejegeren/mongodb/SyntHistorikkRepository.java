@@ -11,4 +11,6 @@ public interface SyntHistorikkRepository extends MongoRepository<SyntHistorikk, 
 
     @Query(value = "{'kilder.navn' : ?0}", fields = "{'_id':1}")
     List<SyntHistorikk> findAllIdsByKildenavn(String kilde);
+
+    List<SyntHistorikk> findAllById(List<String> id);
 }

@@ -46,6 +46,13 @@ public class HistorikkController {
     }
 
     @LogExceptions
+    @ApiOperation(value = "Hent all historikk med en gitt kilde fra databasen.")
+    @GetMapping(value = "medKildeNy")
+    public List<SyntHistorikk> hentHistorikkMedKildeNy(@RequestParam List<String> kilder) {
+        return historikkService.hentHistorikkMedKilderNy(kilder);
+    }
+
+    @LogExceptions
     @ApiOperation(value = "Hent alle id-ene som er registrert med en gitt kilde fra databasen.")
     @GetMapping(value = "idsMedKilde")
     public Set<String> hentIdsMedKilde(@RequestParam List<String> kilder) {
@@ -74,7 +81,10 @@ public class HistorikkController {
     @LogExceptions
     @ApiOperation(value = "Oppdater persondokument i databasen.")
     @PostMapping(value = "skd/oppdaterDokument/{ident}")
-    public List<String> oppdaterTpsPersonDokument(@PathVariable String ident, @RequestBody TpsPersonDokumentType tpsPersonDokument) {
+    public List<String> oppdaterTpsPersonDokument(
+            @PathVariable String ident,
+            @RequestBody TpsPersonDokumentType tpsPersonDokument
+    ) {
         return historikkService.oppdaterTpsPersonDokument(ident, tpsPersonDokument);
     }
 
@@ -88,7 +98,10 @@ public class HistorikkController {
     @LogExceptions
     @ApiOperation(value = "Slett historikk på en gitt kilde på en gitt id fra databasen.")
     @DeleteMapping(value = "kilde/{id}")
-    public ResponseEntity slettKilde(@PathVariable String id, @RequestParam String navnPaaKilde) {
+    public ResponseEntity slettKilde(
+            @PathVariable String id,
+            @RequestParam String navnPaaKilde
+    ) {
         return historikkService.slettKilde(id, navnPaaKilde);
     }
 }

@@ -39,12 +39,16 @@ public class HistorikkService {
     }
 
     public List<SyntHistorikk> hentHistorikkMedKilder(List<String> kilder) {
-        var idsMedAlleKilder = hentIdsMedKilder(kilder);
-        List<SyntHistorikk> historikkMedAlleKilder = new ArrayList<>(idsMedAlleKilder.size());
-        for (String id : idsMedAlleKilder) {
-            historikkMedAlleKilder.add(hentHistorikkMedId(id));
+        var idsMedKilder = hentIdsMedKilder(kilder);
+        List<SyntHistorikk> historikkMedKilder = new ArrayList<>(idsMedKilder.size());
+        for (var id : idsMedKilder) {
+            historikkMedKilder.add(hentHistorikkMedId(id));
         }
-        return historikkMedAlleKilder;
+        return historikkMedKilder;
+    }
+
+    public List<SyntHistorikk> hentHistorikkMedKilderNy(List<String> kilder) {
+        return syntHistorikkRepository.findAllById(new ArrayList<>(hentIdsMedKilder(kilder)));
     }
 
     public Set<String> hentIdsMedKilder(List<String> kilder) {
