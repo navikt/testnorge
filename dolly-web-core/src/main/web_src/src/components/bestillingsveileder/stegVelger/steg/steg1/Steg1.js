@@ -7,7 +7,7 @@ import { AdressePanel } from './paneler/Adresse'
 import { IdentifikasjonPanel } from './paneler/Identifikasjon'
 import { FamilierelasjonPanel } from './paneler/Familierelasjoner'
 import { ArbeidInntektPanel } from './paneler/ArbeidInntekt'
-import { InstutisjonsoppholdPanel } from './paneler/Instutisjonsopphold'
+import { InstitusjonsoppholdPanel } from './paneler/Institusjonsopphold'
 import { KontaktReservasjonsPanel } from './paneler/KontaktReservasjon'
 import { KontaktDoedsboPanel } from './paneler/KontaktDoedsbo'
 import { ArenaPanel } from './paneler/Arena'
@@ -23,7 +23,7 @@ export const Steg1 = ({ stateModifier }) => {
 		ArbeidInntektPanel,
 		IdentifikasjonPanel,
 		KontaktDoedsboPanel,
-		InstutisjonsoppholdPanel,
+		InstitusjonsoppholdPanel,
 		KontaktReservasjonsPanel,
 		ArenaPanel,
 		UdiPanel
@@ -46,7 +46,7 @@ export const Steg1 = ({ stateModifier }) => {
 					<ArbeidInntektPanel stateModifier={stateModifier} />
 					<IdentifikasjonPanel stateModifier={stateModifier} />
 					<KontaktDoedsboPanel stateModifier={stateModifier} />
-					<InstutisjonsoppholdPanel stateModifier={stateModifier} />
+					<InstitusjonsoppholdPanel stateModifier={stateModifier} />
 					<KontaktReservasjonsPanel stateModifier={stateModifier} />
 					<ArenaPanel stateModifier={stateModifier} />
 					<UdiPanel stateModifier={stateModifier} />

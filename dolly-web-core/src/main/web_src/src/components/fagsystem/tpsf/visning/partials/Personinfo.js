@@ -2,6 +2,7 @@ import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
+import { PersoninformasjonKodeverk, GtKodeverk } from '~/config/kodeverk'
 
 export const Personinfo = ({ data, visTittel = true }) => {
 	return (
@@ -18,14 +19,33 @@ export const Personinfo = ({ data, visTittel = true }) => {
 				<TitleValue title="Kjønn" value={Formatters.kjonn(data.kjonn, data.alder)} />
 				<TitleValue title="Alder" value={Formatters.formatAlder(data.alder, data.doedsdato)} />
 
-				<TitleValue title="Personstatus" kodeverk="Personstatuser" value={data.personStatus} />
+				<TitleValue
+					title="Personstatus"
+					kodeverk={PersoninformasjonKodeverk.Personstatuser}
+					value={data.personStatus}
+				/>
 
 				<TitleValue title="Savnet siden" value={Formatters.formatDate(data.forsvunnetDato)} />
 
-				<TitleValue title="Sivilstand" kodeverk="Sivilstander" value={data.sivilstand} />
+				<TitleValue
+					title="Sivilstand"
+					kodeverk={PersoninformasjonKodeverk.Sivilstander}
+					value={data.sivilstand}
+				/>
+
+				<TitleValue title="Bankkontonummer" value={data.bankkontonr} />
+
+				<TitleValue
+					title="Bankkonto opprettet"
+					value={Formatters.formatDate(data.bankkontonrRegdato)}
+				/>
 
 				{data.spesreg !== 'UFB' && (
-					<TitleValue title="Diskresjonskoder" kodeverk="Diskresjonskoder" value={data.spesreg} />
+					<TitleValue
+						title="Diskresjonskoder"
+						kodeverk={PersoninformasjonKodeverk.Diskresjonskoder}
+						value={data.spesreg}
+					/>
 				)}
 
 				{(data.utenFastBopel || data.spesreg === 'UFB') && (
@@ -35,7 +55,7 @@ export const Personinfo = ({ data, visTittel = true }) => {
 				{data.gtVerdi && (
 					<TitleValue
 						title="Geo. tilhør."
-						kodeverk={Formatters.gtApiKodeverkId(data.gtType)}
+						kodeverk={GtKodeverk[data.gtType]}
 						value={data.gtVerdi}
 						size="medium"
 					>

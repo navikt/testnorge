@@ -33,6 +33,7 @@ export const erForste = (values, attributt) => {
 		'tpsf.egenAnsattDatoFom',
 		'tpsf.spesreg',
 		'tpsf.erForsvunnet',
+		'tpsf.harBankkontonr',
 		'tpsf.identHistorikk',
 		'tpsf.boadresse',
 		'tpsf.postadresse',

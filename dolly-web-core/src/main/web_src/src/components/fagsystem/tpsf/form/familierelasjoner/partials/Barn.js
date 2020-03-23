@@ -1,4 +1,5 @@
 import React from 'react'
+import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -15,7 +16,7 @@ const initialValues = {
 	partnerNr: null,
 	borHos: '',
 	erAdoptert: false,
-	alder: Formatters.randomIntInRange(1, 18),
+	alder: Formatters.randomIntInRange(0, 17),
 	spesreg: '',
 	utenFastBopel: false,
 	statsborgerskap: '',
@@ -35,8 +36,10 @@ export const Barn = ({ formikBag }) => {
 
 	const optionsPartnerNr = getOptionsPartnerNr()
 
+	initialValues.alder = Formatters.randomIntInRange(0, 17)
+
 	return (
-		<FormikDollyFieldArray name="tpsf.relasjoner.barn" title="Barn" newEntry={initialValues}>
+		<FormikDollyFieldArray name="tpsf.relasjoner.barn" header="Barn" newEntry={initialValues}>
 			{(path, idx) => (
 				<React.Fragment key={idx}>
 					<FormikSelect
@@ -78,7 +81,7 @@ export const Barn = ({ formikBag }) => {
 					<FormikSelect
 						name={`${path}.statsborgerskap`}
 						label="Statsborgerskap"
-						kodeverk="Landkoder"
+						kodeverk={AdresseKodeverk.StatsborgerskapLand}
 					/>
 					<FormikDatepicker name={`${path}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
 					<Diskresjonskoder basePath={path} formikBag={formikBag} />

@@ -4,6 +4,7 @@ import _get from 'lodash/get'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { PersoninformasjonKodeverk, AdresseKodeverk } from '~/config/kodeverk'
 
 import './diskresjonskoder.less'
 
@@ -36,7 +37,7 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 				<FormikSelect
 					name={paths.spesreg}
 					label="Diskresjonskode"
-					kodeverk="Diskresjonskoder"
+					kodeverk={PersoninformasjonKodeverk.Diskresjonskoder}
 					size="large"
 				/>
 
@@ -53,7 +54,7 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 						name={paths.kommunenr}
 						label="Kommunenummer"
 						afterChange={handleChangeKommunenr}
-						kodeverk="Kommuner"
+						kodeverk={AdresseKodeverk.Kommunenummer}
 					/>
 				)}
 			</div>

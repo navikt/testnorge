@@ -1,4 +1,6 @@
 import React from 'react'
+import _get from 'lodash'
+import { AdresseKodeverk } from '~/config/kodeverk'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import {DollySelect, FormikSelect} from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -83,7 +85,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 					<FormikSelect
 						name={`${falskIdPath}.statsborgerskap`}
 						label="Statsborgerskap"
-						kodeverk="Landkoder"
+						kodeverk={AdresseKodeverk.StatsborgerskapLand}
 						isClearable={false}
 						isMulti={true}
 						size="large"

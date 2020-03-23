@@ -2,12 +2,12 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 
-export const InstutisjonsoppholdPanel = ({ stateModifier }) => {
-	const sm = stateModifier(InstutisjonsoppholdPanel.initialValues)
+export const InstitusjonsoppholdPanel = ({ stateModifier }) => {
+	const sm = stateModifier(InstitusjonsoppholdPanel.initialValues)
 
 	return (
 		<Panel
-			heading={InstutisjonsoppholdPanel.heading}
+			heading={InstitusjonsoppholdPanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="institusjon"
@@ -19,11 +19,11 @@ export const InstutisjonsoppholdPanel = ({ stateModifier }) => {
 	)
 }
 
-InstutisjonsoppholdPanel.heading = 'Instutisjonsopphold'
+InstitusjonsoppholdPanel.heading = 'Institusjonsopphold'
 
-InstutisjonsoppholdPanel.initialValues = ({ set, del, has }) => ({
+InstitusjonsoppholdPanel.initialValues = ({ set, del, has }) => ({
 	instdata: {
-		label: 'Har instutisjonsopphold',
+		label: 'Har institusjonsopphold',
 		checked: has('instdata'),
 		add() {
 			set('instdata', [

@@ -1,5 +1,6 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
+import { AdresseKodeverk } from '~/config/kodeverk'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
@@ -23,7 +24,8 @@ const diversePaths = [
 	'tpsf.sprakKode',
 	'tpsf.egenAnsattDatoFom',
 	'tpsf.spesreg',
-	'tpsf.erForsvunnet'
+	'tpsf.erForsvunnet',
+	'tpsf.harBankkontonr'
 ]
 
 const panelPaths = [alderPaths, nasjonalitetPaths, diversePaths].flat()
@@ -47,7 +49,7 @@ export const Personinformasjon = ({ formikBag }) => (
 					<FormikSelect
 						name="tpsf.statsborgerskap"
 						label="Statsborgerskap"
-						kodeverk="Landkoder"
+						kodeverk={AdresseKodeverk.StatsborgerskapLand}
 						size="large"
 						isClearable={false}
 					/>
@@ -58,7 +60,7 @@ export const Personinformasjon = ({ formikBag }) => (
 					<FormikSelect
 						name="tpsf.innvandretFraLand"
 						label="Innvandret fra"
-						kodeverk="Landkoder"
+						kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
 						size="large"
 						isClearable={false}
 					/>
@@ -69,7 +71,7 @@ export const Personinformasjon = ({ formikBag }) => (
 					<FormikSelect
 						name="tpsf.utvandretTilLand"
 						label="Utvandret til"
-						kodeverk="Landkoder"
+						kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
 						size="large"
 						isClearable={false}
 					/>

@@ -15,7 +15,10 @@ export const EndreMalnavn = ({ malInfo, setMaler, avbrytRedigering }) => {
 				onChange={e => setMalnavn(e.target.value)}
 				className="navnInput"
 			/>
-			<Button onClick={() => lagreEndring(nyttMalnavn, setMaler, id, avbrytRedigering)}>
+			<Button
+				className="lagre"
+				onClick={() => lagreEndring(nyttMalnavn, setMaler, id, avbrytRedigering)}
+			>
 				LAGRE
 			</Button>
 		</div>

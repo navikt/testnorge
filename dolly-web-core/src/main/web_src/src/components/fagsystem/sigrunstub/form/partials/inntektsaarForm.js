@@ -24,7 +24,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 	}
 
 	return (
-		<FormikDollyFieldArray name="sigrunstub" title="Inntekt" newEntry={initialValues}>
+		<FormikDollyFieldArray name="sigrunstub" header="Inntekt" newEntry={initialValues}>
 			{path => (
 				<React.Fragment>
 					<React.Fragment>
@@ -50,7 +50,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 						{tjenesteErValgt(formikBag, path) && (
 							<EnkeltinntektForm
 								path={`${path}.grunnlag`}
-								title="Grunnlag fra Fastlands-Norge"
+								header="Grunnlag fra Fastlands-Norge"
 								initialGrunnlag={initialGrunnlag}
 								tjeneste={_get(formikBag.values, `${path}.tjeneste`)}
 							/>
@@ -58,7 +58,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 						{_get(formikBag.values, `${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
 							<EnkeltinntektForm
 								path={`${path}.svalbardGrunnlag`}
-								title="Grunnlag fra Svalbard"
+								header="Grunnlag fra Svalbard"
 								initialGrunnlag={initialGrunnlag}
 								tjeneste={_get(formikBag.values, `${path}.tjeneste`)}
 							/>

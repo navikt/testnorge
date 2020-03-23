@@ -2,6 +2,7 @@ import React from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
+import { AdresseKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
@@ -22,7 +23,7 @@ const initialValues = {
 	kjonn: '',
 	sivilstander: [{ sivilstand: '', sivilstandRegdato: null }],
 	harFellesAdresse: false,
-	alder: Formatters.randomIntInRange(18, 99),
+	alder: Formatters.randomIntInRange(30, 60),
 	spesreg: '',
 	utenFastBopel: false,
 	statsborgerskap: '',
@@ -60,7 +61,7 @@ export const Partnere = ({ formikBag }) => (
 			const addNewEntry = () => arrayHelpers.push(initialValues)
 
 			return (
-				<DollyFieldArrayWrapper title="Partner">
+				<DollyFieldArrayWrapper header="Partner">
 					{partnere.map((c, idx) => {
 						const isLast = idx === partnere.length - 1
 
@@ -71,7 +72,7 @@ export const Partnere = ({ formikBag }) => (
 							<DollyFaBlokk
 								key={idx}
 								idx={idx}
-								title="Partner"
+								header="Partner"
 								handleRemove={showRemove && clickRemove}
 							>
 								<PartnerForm
@@ -84,7 +85,12 @@ export const Partnere = ({ formikBag }) => (
 						)
 					})}
 					<FieldArrayAddButton
-						title="Legg til ny partner"
+						hoverText={
+							!kanOppretteNyPartner
+								? 'Forhold med tidligere partner må avsluttes (skilt eller enke/-mann)'
+								: false
+						}
+						addEntryButtonText="Legg til ny partner"
 						onClick={addNewEntry}
 						disabled={!kanOppretteNyPartner}
 					/>
@@ -96,15 +102,20 @@ export const Partnere = ({ formikBag }) => (
 
 const PartnerForm = ({ path, idx, formikBag, locked }) => {
 	const basePath = `${path}[${idx}]`
+	const erSistePartner = _get(formikBag.values, path).length === idx + 1
 	return (
-		<React.Fragment>
+		<>
 			<FormikSelect
 				name={`${basePath}.identtype`}
 				label="Identtype"
 				options={Options('identtype')}
 				isClearable={false}
 			/>
-			<FormikSelect name={`${basePath}.kjonn`} label="Kjønn" kodeverk="Kjønnstyper" />
+			<FormikSelect
+				name={`${basePath}.kjonn`}
+				label="Kjønn"
+				kodeverk={PersoninformasjonKodeverk.Kjoennstyper}
+			/>
 			<FormikCheckbox
 				name={`${basePath}.harFellesAdresse`}
 				label="Har felles adresse"
@@ -113,12 +124,17 @@ const PartnerForm = ({ path, idx, formikBag, locked }) => {
 			<FormikSelect
 				name={`${basePath}.statsborgerskap`}
 				label="Statsborgerskap"
-				kodeverk="Landkoder"
+				kodeverk={AdresseKodeverk.StatsborgerskapLand}
 			/>
 			<FormikDatepicker name={`${basePath}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
 			<Diskresjonskoder basePath={basePath} formikBag={formikBag} />
 			<Alder basePath={basePath} formikBag={formikBag} title="Alder" />
-			<Sivilstand formikBag={formikBag} basePath={`${basePath}.sivilstander`} locked={locked} />
-		</React.Fragment>
+			<Sivilstand
+				formikBag={formikBag}
+				basePath={`${basePath}.sivilstander`}
+				locked={locked}
+				erSistePartner={erSistePartner}
+			/>
+		</>
 	)
 }

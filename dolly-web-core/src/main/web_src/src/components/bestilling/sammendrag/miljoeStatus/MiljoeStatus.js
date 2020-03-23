@@ -26,7 +26,7 @@ const mapStatusrapport = bestillingstatus => {
 					if (status.detaljert) {
 						const miljoArray = status.detaljert.map(m => m.miljo).sort()
 						const identArray = status.detaljert[0].identer
-						feil.miljo = Formatters.arrayToString(miljoArray)
+						feil.miljo = miljoArray[0] ? Formatters.arrayToString(miljoArray) : ''
 						feil.identer = identArray
 					}
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import _get from 'lodash/get'
+import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -33,6 +34,10 @@ const numberFields = [
 	'antall'
 ]
 
+const booleanField = options => {
+	return options.length > 0 && typeof options[0] === 'boolean'
+}
+
 const fieldReslover = (field, options = [], handleChange, values, path, index) => {
 	if (dateFields.includes(field)) {
 		return (
@@ -51,10 +56,12 @@ const fieldReslover = (field, options = [], handleChange, values, path, index) =
 				key={index}
 				name={field}
 				label={texts(field)}
-				kodeverk="LandkoderISO2"
+				kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 				fastfield={false}
 				afterChange={handleChange}
-				size="large"
+				// size="large"
+				size={booleanField(options) ? 'medium' : 'large'}
+				// size={field == 'beskrivelse' ? 'xxlarge' : 'large'} // TODO Fortsett her!!
 				feil={sjekkFelt(field, options, values, path)}
 			/>
 		)
@@ -69,7 +76,7 @@ const fieldReslover = (field, options = [], handleChange, values, path, index) =
 				name={field}
 				label={texts(field)}
 				onBlur={handleChange}
-				size="large"
+				size={numberFields.includes(field) ? 'medium' : 'large'}
 				feil={sjekkFelt(field, options, values, path)}
 				type={numberFields.includes(field) ? 'number' : 'text'}
 			/>

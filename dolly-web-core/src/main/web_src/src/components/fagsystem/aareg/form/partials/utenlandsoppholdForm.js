@@ -1,5 +1,6 @@
 import React from 'react'
 import _get from 'lodash/get'
+import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
@@ -11,7 +12,7 @@ const infotekst =
 export const UtenlandsoppholdForm = ({ path }) => (
 	<FormikDollyFieldArray
 		name={path}
-		title="Utenlandsopphold"
+		header="Utenlandsopphold"
 		hjelpetekst={infotekst}
 		newEntry={initialUtenlandsopphold}
 		nested
@@ -21,7 +22,7 @@ export const UtenlandsoppholdForm = ({ path }) => (
 				<FormikSelect
 					name={`${path}.land`}
 					label="Land"
-					kodeverk="LandkoderISO2"
+					kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 					isClearable={false}
 					size="large"
 				/>

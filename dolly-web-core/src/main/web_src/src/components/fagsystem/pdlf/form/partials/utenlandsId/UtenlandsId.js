@@ -1,4 +1,5 @@
 import React from 'react'
+import { AdresseKodeverk } from '~/config/kodeverk'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
@@ -9,7 +10,7 @@ const initialValues = { identifikasjonsnummer: '', kilde: '', opphoert: '', utst
 export const UtenlandsId = ({ formikBag }) => (
 	<FormikDollyFieldArray
 		name="pdlforvalter.utenlandskIdentifikasjonsnummer"
-		title="Utenlandsk ID"
+		header="Utenlandsk ID"
 		newEntry={initialValues}
 	>
 		{(path, idx) => (
@@ -25,7 +26,7 @@ export const UtenlandsId = ({ formikBag }) => (
 				<FormikSelect
 					name={`${path}.utstederland`}
 					label="Utstederland"
-					kodeverk="Landkoder"
+					kodeverk={AdresseKodeverk.Utstederland}
 					isClearable={false}
 					size="large"
 				/>
