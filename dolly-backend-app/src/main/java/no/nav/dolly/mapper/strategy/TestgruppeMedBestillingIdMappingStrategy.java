@@ -1,6 +1,6 @@
 package no.nav.dolly.mapper.strategy;
 
-import static java.lang.Boolean.TRUE;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -25,7 +25,7 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                         testgruppeMedBestillingId.setIdenter(testgruppe.getTestidenter().stream()
                                 .map(testident -> RsTestgruppeMedBestillingId.IdentBestilling.builder()
                                         .ident(testident.getIdent())
-                                        .iBruk(TRUE.equals(testident.getIBruk()))
+                                        .iBruk(isTrue(testident.getIBruk()))
                                         .beskrivelse(testident.getBeskrivelse())
                                         .bestillingId(testident.getBestillingProgress().stream()
                                                 .map(BestillingProgress::getBestillingId)
@@ -33,6 +33,7 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                                                 .collect(Collectors.toList()))
                                         .build())
                                 .collect(Collectors.toList()));
+                        testgruppeMedBestillingId.setErLaast(isTrue(testgruppe.getErLaast()));
                     }
                 })
                 .byDefault()
