@@ -1,9 +1,11 @@
 package no.nav.registre.arena.core.provider.rs;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -24,6 +26,14 @@ public class AapController {
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         return rettighetAapService.genererAapMedTilhoerende115(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+    }
+
+    @PostMapping("generer/rettighet/aap/ident/{ident}")
+    public List<NyttVedtakResponse> genererRettighetAapPaaIdent(
+            @PathVariable String ident,
+            @RequestParam String miljoe
+    ) {
+        return rettighetAapService.genererAapMedTilhoerende115(ident, miljoe);
     }
 
     @PostMapping("generer/rettighet/aap_115")

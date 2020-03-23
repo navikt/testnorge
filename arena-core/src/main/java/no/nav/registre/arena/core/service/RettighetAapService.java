@@ -24,6 +24,7 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
+import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 
 @Slf4j
@@ -65,6 +66,27 @@ public class RettighetAapService {
 
         rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(aap115Rettigheter, miljoe));
         return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+    }
+
+    public List<NyttVedtakResponse> genererAapMedTilhoerende115(
+            String ident,
+            String miljoe
+    ) {
+        NyttVedtakAap syntetisertRettighet = aapSyntConsumer.syntetiserRettighetAap(1).get(0);
+
+        var aap115 = aapSyntConsumer.syntetiserRettighetAap115(syntetisertRettighet.getFraDato().minusDays(1), syntetisertRettighet.getTilDato()).get(0);
+        aap115.setBegrunnelse(BEGRUNNELSE);
+        var aap115Rettighet = new RettighetAap115Request(Collections.singletonList(aap115));
+        aap115Rettighet.setPersonident(ident);
+        aap115Rettighet.setMiljoe(miljoe);
+
+        syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
+        var rettighetRequest = new RettighetAapRequest(Collections.singletonList(syntetisertRettighet));
+        rettighetRequest.setPersonident(ident);
+        rettighetRequest.setMiljoe(miljoe);
+
+        rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(Collections.singletonList(aap115Rettighet), miljoe));
+        return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(Collections.singletonList(rettighetRequest), miljoe));
     }
 
     public List<NyttVedtakResponse> genererAap115(
