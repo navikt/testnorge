@@ -2,6 +2,7 @@ import React from 'react'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { InntektstubKodeverk } from '~/config/kodeverk'
 
 const initialValues = {
 	beloep: '',
@@ -21,7 +22,7 @@ export const FradragForm = ({ formikBag, inntektsinformasjonPath }) => {
 					<FormikSelect
 						name={`${path}.beskrivelse`}
 						label="Beskrivelse"
-						kodeverk="Fradragbeskrivelse"
+						kodeverk={InntektstubKodeverk.Fradragbeskrivelse}
 						size="large"
 					/>
 				</React.Fragment>
