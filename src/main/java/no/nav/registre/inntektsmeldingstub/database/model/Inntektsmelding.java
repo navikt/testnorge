@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -35,11 +34,11 @@ import java.util.Optional;
 @NoArgsConstructor
 public class Inntektsmelding {
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "opphoer_av_naturalytelse_id", referencedColumnName = "id")
     private List<NaturalytelseDetaljer> opphoerAvNaturalytelseListe;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "gjenopptakelse_naturalytelse_id", referencedColumnName = "id")
     private List<NaturalytelseDetaljer> gjenopptakelseNaturalytelseListe;
     @Id
@@ -54,21 +53,21 @@ public class Inntektsmelding {
     private Arbeidsgiver arbeidsgiver;
 
     private String arbeidstakerFnr;
-    private boolean naerRelasjon;
+    private Boolean naerRelasjon;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "arbeidsforhold_id", referencedColumnName = "id")
     private Arbeidsforhold arbeidsforhold;
-    private double refusjonsbeloepPrMnd;
+    private Double refusjonsbeloepPrMnd;
     private LocalDate refusjonsopphoersdato;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "refusjon_endring_id", referencedColumnName = "id")
     private List<EndringIRefusjon> endringIRefusjonListe;
-    private double sykepengerBruttoUtbetalt;
+    private Double sykepengerBruttoUtbetalt;
     private String sykepengerBegrunnelseForReduksjonEllerIkkeUtbetalt;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "sykepenger_periode_id", referencedColumnName = "id")
     private List<Periode> sykepengerPerioder;
     private LocalDate startdatoForeldrepengeperiode;
@@ -76,22 +75,22 @@ public class Inntektsmelding {
     private String avsendersystemVersjon;
     private LocalDateTime innsendingstidspunkt;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "pleiepenger_periode_id", referencedColumnName = "id")
     private List<Periode> pleiepengerPeriodeListe;
 
 
-    private boolean omsorgHarUtbetaltPliktigeDager;
-    @OneToMany(cascade = CascadeType.ALL)
+    private Boolean omsorgHarUtbetaltPliktigeDager;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "omsorgspenger_fravaers_periode_id", referencedColumnName = "id")
     private List<Periode> omsorgspengerFravaersPeriodeListe = Collections.emptyList();
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "omsorgspenger_delvis_fravaers_id", referencedColumnName = "id")
     private List<DelvisFravaer> omsorgspengerDelvisFravaersListe = Collections.emptyList();
 
     @JsonManagedReference
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "eier_id", referencedColumnName = "id")
     private Eier eier;
 
@@ -108,12 +107,12 @@ public class Inntektsmelding {
         return Optional.empty();
     }
 
-    public List<NaturalytelseDetaljer> getOpphoerAvNaturaytelseListe() {
+    public List<NaturalytelseDetaljer> getOpphoerAvNaturalytelseListe() {
         if (Objects.isNull(opphoerAvNaturalytelseListe)) { return new ArrayList<>(); }
         return opphoerAvNaturalytelseListe;
     }
 
-    public List<NaturalytelseDetaljer> getGjenopptakelseNaturaytelseListe() {
+    public List<NaturalytelseDetaljer> getGjenopptakelseNaturalytelseListe() {
         if (Objects.isNull(gjenopptakelseNaturalytelseListe)) { return new ArrayList<>(); }
         return gjenopptakelseNaturalytelseListe;
     }
@@ -133,7 +132,7 @@ public class Inntektsmelding {
         return pleiepengerPeriodeListe;
     }
 
-    public List<Periode> getOmsorgspengerFrabaersPeriodeListe() {
+    public List<Periode> getOmsorgspengerFravaersPeriodeListe() {
         if (Objects.isNull(pleiepengerPeriodeListe)) { return new ArrayList<>(); }
         return pleiepengerPeriodeListe;
     }

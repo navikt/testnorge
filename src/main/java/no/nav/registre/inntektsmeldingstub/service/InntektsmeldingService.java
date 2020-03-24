@@ -27,14 +27,15 @@ import javax.transaction.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class InntektsmeldingService {
 
     private final ArbeidsgiverRepository arbeidsgiverRepository;
     private final InntektsmeldingRepository inntektsmeldingRepository;
     private final EierRepository eierRepository;
 
-    @Transactional
-    public List<Inntektsmelding> saveMeldinger(List<RsInntektsmelding> inntektsmeldinger, MeldingsType type, String eier) {
+    public List<Inntektsmelding> saveMeldinger(
+            List<RsInntektsmelding> inntektsmeldinger, MeldingsType type, String eier) {
 
         if (inntektsmeldinger.isEmpty()) {
             return Collections.emptyList();
@@ -51,7 +52,11 @@ public class InntektsmeldingService {
         }
     }
 
-    private List<Inntektsmelding> lagreInntektsmelding(List<RsInntektsmelding> inntektsmeldinger, String eierNavn, Function<RsInntektsmelding, Inntektsmelding.InntektsmeldingBuilder> mappeMetode) {
+    private List<Inntektsmelding> lagreInntektsmelding(
+            List<RsInntektsmelding> inntektsmeldinger,
+            String eierNavn,
+            Function<RsInntektsmelding, Inntektsmelding.InntektsmeldingBuilder> mappeMetode
+    ) {
 
         final Eier tmp = Eier.builder().navn(eierNavn).build();
         Eier eier = eierRepository.findEierByNavn(eierNavn).orElseGet(() -> eierRepository.save(tmp));
@@ -111,6 +116,9 @@ public class InntektsmeldingService {
     }
 
     public Inntektsmelding findInntektsmelding(Long id) {
-        return inntektsmeldingRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "Kunne ikke finne inntektsmeldingen"));
+        return inntektsmeldingRepository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT,
+                        "Kunne ikke finne inntektsmeldingen"));
     }
 }
