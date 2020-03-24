@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -58,6 +59,21 @@ public class HistorikkController {
             throw new RuntimeException("Max størrelse på side: " + MAX_PAGE_SIZE);
         }
         return historikkService.hentHistorikkMedKilder(kilder, pageNumber, pageSize);
+    }
+
+    @LogExceptions
+    @ApiOperation(value = "Hent historikk med visse kriterier fra databasen.")
+    @GetMapping("soek/{keywords}")
+    public List<SyntHistorikk> hentHistorikkMedKriterier(
+            @PathVariable String keywords,
+            @RequestParam List<String> kilder,
+            @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+            @RequestParam(required = false, defaultValue = "10") Integer pageSize
+    ) {
+        if (pageSize > MAX_PAGE_SIZE) {
+            throw new RuntimeException("Max størrelse på side: " + MAX_PAGE_SIZE);
+        }
+        return historikkService.hentHistorikkMedKriterier(kilder, pageNumber, pageSize, new ArrayList<>(Arrays.asList(keywords.split("&"))));
     }
 
     @LogExceptions

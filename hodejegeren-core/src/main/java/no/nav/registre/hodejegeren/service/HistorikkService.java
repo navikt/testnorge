@@ -5,6 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import no.rtv.namespacetps.TpsPersonDokumentType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,7 @@ import no.nav.registre.hodejegeren.service.utilities.PersonDokumentUtility;
 public class HistorikkService {
 
     private final SyntHistorikkRepository syntHistorikkRepository;
+    private final MongoTemplate mongoTemplate;
 
     public List<SyntHistorikk> hentAllHistorikk(
             int pageNumber,
@@ -51,6 +55,25 @@ public class HistorikkService {
             int pageSize
     ) {
         return syntHistorikkRepository.findAllByIdIn(new ArrayList<>(hentIdsMedKilder(kilder)), PageRequest.of(pageNumber, pageSize)).getContent();
+    }
+
+    public List<SyntHistorikk> hentHistorikkMedKriterier(
+            List<String> kilder,
+            int pageNumber,
+            int pageSize,
+            List<String> keywordList
+    ) {
+        List<SyntHistorikk> results = new ArrayList<>();
+        for (var keyword : keywordList) {
+            String[] keyValue = keyword.split("=");
+            Query query = new Query();
+            // query.addCriteria(Criteria.where("kilder.data.innhold." + keyValue[0]).is(Pattern.compile(keyValue[1], Pattern.CASE_INSENSITIVE))); // finner også substrings. Sikkerhet?
+            query.addCriteria(Criteria.where("kilder.data.innhold." + keyValue[0]).is(keyValue[1]));
+            query.limit(pageSize);
+            results.addAll(mongoTemplate.find(query, SyntHistorikk.class));
+        }
+
+        return results;
     }
 
     public Set<String> hentIdsMedKilder(List<String> kilder) {
