@@ -18,7 +18,7 @@ public class NavnOpplysning extends TpsServiceRutine {
     private final Collection<String> fnr;
 
     public NavnOpplysning(List<String> fnrs) {
-        super(ServiceRutinenavn.HENT_NAVNOPPLYSNINGER, "A", "1");
+        super(ServiceRutinenavn.HENT_NAVNOPPLYSNINGER, "A", "3");
         this.antallFnr = fnrs.size();
         this.fnr = fnrs;
     }
