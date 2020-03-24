@@ -6,9 +6,14 @@ import HjelpeTekst from 'nav-frontend-hjelpetekst'
 
 import './dollyFieldArray.less'
 
-export const FieldArrayAddButton = ({ title, onClick, disabled }) => (
-	<Button kind="add-circle" onClick={onClick} title={`Legg til ${title}`} disabled={disabled}>
-		{title}
+export const FieldArrayAddButton = ({ hoverText, addEntryButtonText, onClick, disabled }) => (
+	<Button
+		kind="add-circle"
+		onClick={onClick}
+		title={hoverText || `Legg til ${addEntryButtonText.toLowerCase()}`}
+		disabled={disabled}
+	>
+		{addEntryButtonText}
 	</Button>
 )
 
@@ -23,11 +28,11 @@ const DeleteButton = ({ onClick }) => {
 
 const Numbering = ({ idx }) => <span className="dfa-blokk-number">{idx + 1}</span>
 
-export const DollyFieldArrayWrapper = ({ title, hjelpetekst, nested, children }) => (
+export const DollyFieldArrayWrapper = ({ header, hjelpetekst, nested, children }) => (
 	<div className="dfa">
-		{nested && title && (
+		{nested && header && (
 			<div className="dfa-blokk-nested_title">
-				<h3>{title}</h3>
+				<h3>{header}</h3>
 				{hjelpetekst && <HjelpeTekst>{hjelpetekst}</HjelpeTekst>}
 			</div>
 		)}
@@ -35,11 +40,11 @@ export const DollyFieldArrayWrapper = ({ title, hjelpetekst, nested, children })
 	</div>
 )
 
-export const DollyFaBlokk = ({ title, idx, handleRemove, hjelpetekst, children }) => (
+export const DollyFaBlokk = ({ header, idx, handleRemove, hjelpetekst, children }) => (
 	<div className="dfa-blokk">
 		<div className="dfa-blokk_header">
 			<Numbering idx={idx} />
-			<h2>{title}</h2>
+			<h2>{header}</h2>
 			{hjelpetekst && <HjelpeTekst>{hjelpetekst}</HjelpeTekst>}
 			<DeleteButton onClick={handleRemove} />
 		</div>
@@ -59,15 +64,15 @@ export const DollyFaBlokkNested = ({ idx, handleRemove, children }) => (
 	</div>
 )
 
-export const DollyFieldArray = ({ title, hjelpetekst, data, nested = false, children }) => (
-	<DollyFieldArrayWrapper title={title} hjelpetekst={hjelpetekst} nested={nested}>
+export const DollyFieldArray = ({ header, hjelpetekst, data, nested = false, children }) => (
+	<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
 		{data.map((curr, idx) => {
 			return nested ? (
 				<DollyFaBlokkNested key={idx} idx={idx}>
 					{children(curr, idx)}
 				</DollyFaBlokkNested>
 			) : (
-				<DollyFaBlokk key={idx} idx={idx} title={title} hjelpetekst={hjelpetekst}>
+				<DollyFaBlokk key={idx} idx={idx} header={header} hjelpetekst={hjelpetekst}>
 					{children(curr, idx)}
 				</DollyFaBlokk>
 			)
@@ -78,6 +83,7 @@ export const DollyFieldArray = ({ title, hjelpetekst, data, nested = false, chil
 export const FormikDollyFieldArray = ({
 	name,
 	title,
+	header,
 	newEntry,
 	hjelpetekst,
 	nested = false,
@@ -88,7 +94,7 @@ export const FormikDollyFieldArray = ({
 			const values = _get(arrayHelpers.form.values, name, [])
 			const addNewEntry = () => arrayHelpers.push(newEntry)
 			return (
-				<DollyFieldArrayWrapper title={title} hjelpetekst={hjelpetekst} nested={nested}>
+				<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
 					{values.map((curr, idx) => {
 						const path = `${name}.${idx}`
 						const handleRemove = () => arrayHelpers.remove(idx)
@@ -100,7 +106,7 @@ export const FormikDollyFieldArray = ({
 							<DollyFaBlokk
 								key={idx}
 								idx={idx}
-								title={title}
+								header={header}
 								hjelpetekst={hjelpetekst}
 								handleRemove={handleRemove}
 							>
@@ -108,8 +114,11 @@ export const FormikDollyFieldArray = ({
 							</DollyFaBlokk>
 						)
 					})}
-
-					<FieldArrayAddButton title={title} onClick={addNewEntry} />
+					<FieldArrayAddButton
+						hoverText={title}
+						addEntryButtonText={header}
+						onClick={addNewEntry}
+					/>
 				</DollyFieldArrayWrapper>
 			)
 		}}

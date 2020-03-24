@@ -17,7 +17,7 @@ export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
 			{visTittel && <SubOverskrift label="Inntekt" iconKind="sigrun" />}
 			<div className="person-visning_content">
 				{grunnlag && (
-					<DollyFieldArray title="Fastlands-Norge" data={data[0].grunnlag} nested>
+					<DollyFieldArray header="Fastlands-Norge" data={data[0].grunnlag} nested>
 						{(inntekt, idx) => (
 							<React.Fragment key={idx}>
 								<TitleValue title="Inntektsår" value={inntekt.inntektsaar} />
@@ -33,7 +33,7 @@ export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
 					</DollyFieldArray>
 				)}
 				{svalbardGrunnlag && (
-					<DollyFieldArray title="Svalbard" data={data[0].svalbardGrunnlag} nested>
+					<DollyFieldArray header="Svalbard" data={data[0].svalbardGrunnlag} nested>
 						{(inntekt, idx) => (
 							<React.Fragment key={idx}>
 								<TitleValue title="Inntektsår" value={inntekt.inntektsaar} />

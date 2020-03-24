@@ -4,6 +4,9 @@ import * as yup from 'yup'
 import { useToggle } from 'react-use'
 import _get from 'lodash/get'
 import { useAsync } from 'react-use'
+import { NavLink } from 'react-router-dom'
+import Button from '~/components/ui/button/Button'
+
 import { DollyApi } from '~/service/Api'
 import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
@@ -85,6 +88,11 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 								fastfield={false}
 								disabled={!malAktiv}
 							/>
+						</div>
+						<div className="mal-admin">
+							<Button kind="maler" onClick={() => {}}>
+								<NavLink to="/minside">Administrer maler</NavLink>
+							</Button>
 						</div>
 					</div>
 					<ModalActions

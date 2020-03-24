@@ -35,8 +35,9 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.harMellomnavn} />
 				<Attributt attr={sm.attrs.sprakKode} />
 				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
-				<Attributt attr={sm.attrs.spesreg} />
 				<Attributt attr={sm.attrs.erForsvunnet} />
+				<Attributt attr={sm.attrs.harBankkontonr} />
+				<Attributt attr={sm.attrs.spesreg} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -48,7 +49,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({
 	alder: {
 		label: 'Alder',
 		checked: has('tpsf.alder') || has('tpsf.foedtEtter') || has('tpsf.foedtFoer'),
-		add: () => set('tpsf.alder', Formatters.randomIntInRange(1, 99)),
+		add: () => set('tpsf.alder', Formatters.randomIntInRange(30, 60)),
 		remove: () => del(['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer'])
 	},
 	doedsdato: {
@@ -126,16 +127,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		add: () => set('tpsf.egenAnsattDatoFom', new Date()),
 		remove: () => del('tpsf.egenAnsattDatoFom')
 	},
-	spesreg: {
-		label: 'Diskresjonskode',
-		checked: has('tpsf.spesreg'),
-		add() {
-			setMulti(['tpsf.spesreg', ''], ['tpsf.utenFastBopel', false])
-		},
-		remove() {
-			del(['tpsf.spesreg', 'tpsf.utenFastBopel'])
-		}
-	},
 	erForsvunnet: {
 		label: 'Forsvunnet',
 		checked: has('tpsf.erForsvunnet'),
@@ -144,6 +135,26 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		},
 		remove() {
 			del(['tpsf.erForsvunnet', 'tpsf.forsvunnetDato'])
+		}
+	},
+	harBankkontonr: {
+		label: 'Bankkontonummer',
+		checked: has('tpsf.harBankkontonr'),
+		add() {
+			setMulti(['tpsf.harBankkontonr', true], ['tpsf.bankkontonrRegdato', null])
+		},
+		remove() {
+			del(['tpsf.harBankkontonr', 'tpsf.bankkontonrRegdato'])
+		}
+	},
+	spesreg: {
+		label: 'Diskresjonskode',
+		checked: has('tpsf.spesreg'),
+		add() {
+			setMulti(['tpsf.spesreg', ''], ['tpsf.utenFastBopel', false])
+		},
+		remove() {
+			del(['tpsf.spesreg', 'tpsf.utenFastBopel'])
 		}
 	}
 })

@@ -54,7 +54,7 @@ export const validation = {
 		// 	.nullable(),
 		inntektsinformasjon: Yup.array().of(
 			Yup.object({
-				startAarMaaned: requiredString,
+				sisteAarMaaned: requiredString,
 				antallMaaneder: Yup.number()
 					.integer('Kan ikke være et desimaltall')
 					.transform((i, j) => (j === '' ? null : i))

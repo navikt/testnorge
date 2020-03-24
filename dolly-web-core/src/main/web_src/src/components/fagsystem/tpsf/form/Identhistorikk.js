@@ -8,6 +8,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 
 const initialValues = {
 	foedtEtter: null,
@@ -35,7 +36,7 @@ export const Identhistorikk = ({ formikBag }) => (
 			iconType="identhistorikk"
 			startOpen={() => erForste(formikBag.values, [identAttributt])}
 		>
-			<FormikDollyFieldArray name="tpsf.identHistorikk" title="Historikk" newEntry={initialValues}>
+			<FormikDollyFieldArray name="tpsf.identHistorikk" header="Historikk" newEntry={initialValues}>
 				{(path, idx) => (
 					<React.Fragment key={idx}>
 						<FormikSelect
@@ -43,7 +44,11 @@ export const Identhistorikk = ({ formikBag }) => (
 							label="Identtype"
 							options={Options('identtype')}
 						/>
-						<FormikSelect name={`${path}.kjonn`} label="Kjønn" kodeverk="Kjønnstyper" />
+						<FormikSelect
+							name={`${path}.kjonn`}
+							label="Kjønn"
+							kodeverk={PersoninformasjonKodeverk.Kjoennstyper}
+						/>
 						<FormikDatepicker name={`${path}.regdato`} label="Utgått dato" visHvisAvhuket={false} />
 						<FormikDatepicker
 							name={`${path}.foedtEtter`}

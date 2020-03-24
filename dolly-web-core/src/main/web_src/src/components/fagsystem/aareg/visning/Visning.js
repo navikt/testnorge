@@ -9,6 +9,7 @@ import { Arbeidsgiver } from './partials/Arbeidsgiver'
 import { PermisjonPermitteringer } from './partials/PermisjonPermitteringer'
 import { AntallTimerForTimeloennet } from './partials/AntallTimerForTimeloennet'
 import { Utenlandsopphold } from './partials/Utenlandsopphold'
+import { ArbeidKodeverk } from '~/config/kodeverk'
 
 export const AaregVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster Aareg-data" />
@@ -17,7 +18,7 @@ export const AaregVisning = ({ data, loading }) => {
 	return (
 		<div>
 			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" />
-			<DollyFieldArray title="Arbeidsforhold" data={data}>
+			<DollyFieldArray header="Arbeidsforhold" data={data}>
 				{(id, idx) => (
 					<React.Fragment>
 						<div className="person-visning_content">
@@ -25,7 +26,7 @@ export const AaregVisning = ({ data, loading }) => {
 								<TitleValue
 									title="Arbeidsforhold type"
 									value={id.type}
-									kodeverk="Arbeidsforholdstyper"
+									kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
 								/>
 							)}
 

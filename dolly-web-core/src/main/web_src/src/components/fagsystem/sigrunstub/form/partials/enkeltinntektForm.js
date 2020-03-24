@@ -4,17 +4,17 @@ import _isString from 'lodash/isString'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import Formatters from '~/utils/DataFormatter'
+import { SigrunKodeverk } from '~/config/kodeverk'
 
-export const EnkeltinntektForm = ({ path, title, initialGrunnlag, tjeneste, formikBag }) => {
+export const EnkeltinntektForm = ({ path, header, initialGrunnlag, tjeneste, formikBag }) => {
 	return (
-		<FormikDollyFieldArray name={path} title={title} newEntry={initialGrunnlag} nested>
+		<FormikDollyFieldArray name={path} header={header} newEntry={initialGrunnlag} nested>
 			{(path, idx) => (
 				<React.Fragment key={idx}>
 					<FormikSelect
 						name={`${path}.tekniskNavn`}
 						label="Type inntekt"
-						kodeverk={Formatters.uppercaseAndUnderscoreToCapitalized(tjeneste)}
+						kodeverk={SigrunKodeverk[tjeneste]}
 						size="xxlarge"
 						isClearable={false}
 						optionHeight={50}

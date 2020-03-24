@@ -5,13 +5,14 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { initialPermisjon } from '../initialValues'
+import { ArbeidKodeverk } from '~/config/kodeverk'
 
 const infotekst = 'Start- og sluttdato må være innenfor perioden til arbeidsforholdet'
 
 export const PermisjonForm = ({ path }) => (
 	<FormikDollyFieldArray
 		name={path}
-		title="Permisjon"
+		header="Permisjon"
 		infotekst={infotekst}
 		newEntry={initialPermisjon}
 		nested
@@ -21,7 +22,7 @@ export const PermisjonForm = ({ path }) => (
 				<FormikSelect
 					name={`${path}.permisjonOgPermittering`}
 					label="Permisjonstype"
-					kodeverk="PermisjonsOgPermitteringsBeskrivelse"
+					kodeverk={ArbeidKodeverk.PermisjonsOgPermitteringsBeskrivelse}
 					isClearable={false}
 					size="medium"
 				/>

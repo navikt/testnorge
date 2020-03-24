@@ -1,6 +1,7 @@
 import React from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
+import _has from 'lodash/has'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import {
@@ -12,7 +13,7 @@ import { nesteGyldigStatuser, statuser as SivilstandStatuser } from './Sivilstan
 
 const initialValues = { sivilstand: '', sivilstandRegdato: null }
 
-export const Sivilstand = ({ basePath, formikBag, locked }) => (
+export const Sivilstand = ({ basePath, formikBag, locked, erSistePartner }) => (
 	<FieldArray name={basePath}>
 		{arrayHelpers => {
 			const sivilstander = _get(arrayHelpers.form.values, basePath, [])
@@ -25,10 +26,17 @@ export const Sivilstand = ({ basePath, formikBag, locked }) => (
 			}
 
 			const options = nesteGyldigStatuser(sivilstandKode)
+			const tomSisteSivilstand = () => {
+				const sivilstander = _get(formikBag.values, basePath)
+				const antallSivilstander = sivilstander.length
+				return sivilstander[antallSivilstander - 1].sivilstand.length < 1
+			}
+
+			const ugyldigSisteSivilstand = _has(formikBag.errors, basePath) || tomSisteSivilstand()
 
 			const addNewEntry = () => arrayHelpers.push(initialValues)
 			return (
-				<DollyFieldArrayWrapper title="Forhold" nested>
+				<DollyFieldArrayWrapper header="Forhold" nested>
 					{sivilstander.map((c, idx) => {
 						const path = `${basePath}[${idx}]`
 						const isLast = idx === sivilstander.length - 1
@@ -40,7 +48,7 @@ export const Sivilstand = ({ basePath, formikBag, locked }) => (
 							<DollyFaBlokk
 								key={idx}
 								idx={idx}
-								title="Forhold"
+								header="Forhold"
 								handleRemove={showRemove && clickRemove}
 							>
 								<SivilstandForm path={path} options={options} readOnly={!isLast || locked} />
@@ -48,8 +56,15 @@ export const Sivilstand = ({ basePath, formikBag, locked }) => (
 						)
 					})}
 					<FieldArrayAddButton
-						title="Nytt forhold"
-						disabled={!formikBag.isValid}
+						addEntryButtonText="Nytt forhold"
+						hoverText={
+							ugyldigSisteSivilstand
+								? 'Siste sivilstand må være gyldig før du kan legge til en ny'
+								: !erSistePartner
+								? 'Du kan kun endre siste partner'
+								: false
+						}
+						disabled={ugyldigSisteSivilstand || !erSistePartner}
 						onClick={addNewEntry}
 					/>
 				</DollyFieldArrayWrapper>
@@ -59,7 +74,7 @@ export const Sivilstand = ({ basePath, formikBag, locked }) => (
 )
 
 const SivilstandForm = ({ path, options, readOnly }) => (
-	<React.Fragment>
+	<div className="flexbox" title={readOnly ? 'Du kan kun endre siste partner' : undefined}>
 		<FormikSelect
 			name={`${path}.sivilstand`}
 			label="Forhold til partner (sivilstand)"
@@ -75,5 +90,5 @@ const SivilstandForm = ({ path, options, readOnly }) => (
 			disabled={readOnly}
 			fastfield={false}
 		/>
-	</React.Fragment>
+	</div>
 )
