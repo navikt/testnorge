@@ -9,6 +9,7 @@ import { PermisjonForm } from './permisjonForm'
 import { UtenlandsoppholdForm } from './utenlandsoppholdForm'
 import { ArbeidsavtaleForm } from './arbeidsavtaleForm'
 import { OrgnummerForm } from './orgnummerForm'
+import { ArbeidKodeverk } from '~/config/kodeverk'
 
 export const ArbeidsforholdForm = ({ path, formikBag }) => {
 	const arbeidsforhold = _get(formikBag.values, path)
@@ -27,7 +28,7 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 				<FormikSelect
 					name={`${path}.arbeidsforholdstype`}
 					label="Type arbeidsforhold"
-					kodeverk="Arbeidsforholdstyper"
+					kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
 					size="large"
 					isClearable={false}
 				/>

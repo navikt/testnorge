@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
-import HjelpeTekst from 'nav-frontend-hjelpetekst'
+import Hjelpetekst from '~/components/hjelpetekst'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { SearchField } from '~/components/searchField/SearchField'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
@@ -32,7 +32,7 @@ export default function GruppeOversikt({
 		<div className="oversikt-container">
 			<div className="page-header flexbox--align-center--justify-start">
 				<h1>Testdatagrupper</h1>
-				<HjelpeTekst>Testdatagruppen inneholder alle personene dine (FNR/DNR/BOST).</HjelpeTekst>
+				<Hjelpetekst hjelpetekstFor="Testdatagrupper">Testdatagruppen inneholder alle personene dine (FNR/DNR/BOST).</Hjelpetekst>
 			</div>
 
 			<div className="toolbar">

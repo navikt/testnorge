@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import HjelpeTekst from 'nav-frontend-hjelpetekst'
+import Hjelpetekst from '~/components/hjelpetekst'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import Icon from '~/components/ui/icon/Icon'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
+import { AdresseKodeverk } from '~/config/kodeverk'
 
 export const SokAdresseForm = ({ onSearch }) => {
 	const [gatenavn, setGatenavn] = useState('')
@@ -20,7 +21,7 @@ export const SokAdresseForm = ({ onSearch }) => {
 	return (
 		<div className="soekAdresse">
 			<div className="flexbox">
-				<h4>Søk etter gyldig adresse</h4> <HjelpeTekst>{informasjonstekst}</HjelpeTekst>
+				<h4>Søk etter gyldig adresse</h4> <Hjelpetekst hjelpetekstFor="Søk etter gyldig adresse">{informasjonstekst}</Hjelpetekst>
 			</div>
 			<div className="flexbox">
 				<DollyTextInput
@@ -32,7 +33,7 @@ export const SokAdresseForm = ({ onSearch }) => {
 				<DollySelect
 					name="postnummer"
 					label="Postnummer"
-					kodeverk="Postnummer"
+					kodeverk={AdresseKodeverk.Postnummer}
 					size="grow"
 					value={postnummer}
 					onChange={v => setPostnummer((v && v.value) || '')}
@@ -40,7 +41,7 @@ export const SokAdresseForm = ({ onSearch }) => {
 				<DollySelect
 					name="kommunenummer"
 					label="Kommunenummer"
-					kodeverk="Kommuner"
+					kodeverk={AdresseKodeverk.Kommunenummer}
 					size="grow"
 					value={kommunenummer}
 					onChange={v => setKommunenummer((v && v.value) || '')}

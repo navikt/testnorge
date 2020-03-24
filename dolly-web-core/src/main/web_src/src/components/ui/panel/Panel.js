@@ -1,7 +1,7 @@
 import React from 'react'
 import { useToggle } from 'react-use'
 import cn from 'classnames'
-import HjelpetekstWrapper from '~/components/ui/hjelpetekstWrapper/HjelpetekstWrapper'
+import Hjelpetekst from '~/components/hjelpetekst'
 import Icon from '~/components/ui/icon/Icon'
 import ExpandButton from '~/components/ui/button/ExpandButton'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
@@ -44,7 +44,9 @@ export default function Panel({
 				<h2>{heading}</h2>
 
 				{informasjonstekst && (
-					<HjelpetekstWrapper informasjonstekst={informasjonstekst}></HjelpetekstWrapper>
+					<Hjelpetekst hjelpetekstFor={heading}>
+						{informasjonstekst}
+					</Hjelpetekst>
 				)}
 				{hasErrors && (
 					<div className="panel-heading_error">

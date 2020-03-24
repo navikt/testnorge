@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --open --config webpack.dev.js",
+    "start": "webpack-dev-server --env.backend=https://dolly-t2.nais.preprod.local --open --config webpack.dev.js",
+    "local": "webpack-dev-server --env.backend=http://localhost:8020 --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "analysis": "webpack --config webpack.analysis.js",
     "test": "jest --watch",
@@ -73,6 +74,7 @@
     "redux-promise-middleware": "^6.1.2",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
+    "uuid": "^7.0.2",
     "webpack-merge": "^4.2.2",
     "yup": "^0.27.0"
   },
@@ -83,6 +85,7 @@
     "@babel/plugin-syntax-dynamic-import": "^7.7.4",
     "@babel/preset-env": "^7.7.4",
     "@babel/preset-react": "^7.7.4",
+    "@types/lodash": "^4.14.149",
     "@types/react": "^16.9.23",
     "@types/react-dom": "^16.9.5",
     "babel-loader": "^8.0.6",
