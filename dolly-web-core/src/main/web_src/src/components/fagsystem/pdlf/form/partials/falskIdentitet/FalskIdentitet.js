@@ -1,9 +1,9 @@
 import React from 'react'
+import _get from "lodash/get";
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import {DollySelect, FormikSelect} from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import {getPlaceholder, setValue, setNavn} from "../utils"
-import _get from "lodash/get";
 import {SelectOptionsOppslag} from "~/service/SelectOptionsOppslag";
 
 export const FalskIdentitet = ({ formikBag }) => {
@@ -51,7 +51,6 @@ export const FalskIdentitet = ({ formikBag }) => {
 				<DollySelect
 					name={`${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`}
 					label="Navn og identifikasjonsnummer"
-					optionHeight={50}
 					size="large"
 					options={navnOgFnrOptions}
 					isLoading={dollyGruppeInfo.loading}
