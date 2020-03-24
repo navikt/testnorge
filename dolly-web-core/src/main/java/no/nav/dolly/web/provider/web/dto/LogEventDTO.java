@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import no.nav.dolly.web.domain.Level;
+import no.nav.dolly.web.domain.Rating;
 
 @Value
 @NoArgsConstructor(force = true)
@@ -21,4 +22,7 @@ public class LogEventDTO {
 
     @JsonProperty
     private String message;
+
+    @JsonProperty
+    private Rating rating;
 }

@@ -43,10 +43,10 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 				{arbeidsforhold.arbeidsgiver.aktoertype === 'PERS' && (
 					<FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" />
 				)}
-				{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
-					<OrgnummerToggle formikBag={formikBag} path={`${path}.arbeidsgiver.orgnummer`} />
-				)}
 			</div>
+			{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
+				<OrgnummerToggle formikBag={formikBag} path={`${path}.arbeidsgiver.orgnummer`} />
+			)}
 
 			<ArbeidsavtaleForm formikBag={formikBag} path={path} />
 

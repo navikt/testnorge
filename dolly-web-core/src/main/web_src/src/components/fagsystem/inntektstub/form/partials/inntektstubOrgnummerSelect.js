@@ -16,6 +16,7 @@ export const InntektstubOrgnummerSelect = ({ path, formikBag }) => {
 		<LoadableComponent
 			onFetch={() =>
 				SelectOptionsOppslag.hentOrgnr().then(response => {
+					console.log('response :', response)
 					response.liste.forEach(org => {
 						org.juridiskEnhet &&
 							organisasjoner.push({

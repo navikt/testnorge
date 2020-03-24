@@ -134,5 +134,17 @@ export default {
 
 	getInntektsinformasjon(ident) {
 		return Request.get(Endpoints.inntekterByIdent(ident))
+	},
+
+	getFasteOrgnummer() {
+		return Request.get(Endpoints.fasteOrgnummer())
+	},
+
+	getFasteDatasettGruppe(gruppe) {
+		return Request.get(Endpoints.getFasteDatasettTPSGruppe(gruppe))
+	},
+
+	getPersonnavn() {
+		return Request.get(Endpoints.getPersonnavn())
 	}
 }
