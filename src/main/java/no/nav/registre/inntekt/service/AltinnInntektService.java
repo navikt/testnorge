@@ -3,6 +3,7 @@ package no.nav.registre.inntekt.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inntekt.consumer.rs.AltinnInntektConsumer;
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
@@ -14,8 +15,13 @@ import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiver;
 import no.nav.registre.inntekt.domain.altinn.rs.RsAvsendersystem;
 import no.nav.registre.inntekt.domain.altinn.rs.RsBeregnetInntekt;
 import no.nav.registre.inntekt.domain.altinn.rs.RsKontaktinformasjon;
+import no.nav.registre.inntekt.domain.dokmot.AvsenderMottaker;
+import no.nav.registre.inntekt.domain.dokmot.Bruker;
+import no.nav.registre.inntekt.domain.dokmot.Dokument;
+import no.nav.registre.inntekt.domain.dokmot.Dokumentvariant;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnRequest;
+import no.nav.registre.inntekt.provider.rs.requests.DokmotRequest;
 import no.nav.registre.inntekt.utils.ValidationException;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import org.springframework.stereotype.Service;
@@ -26,6 +32,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -46,7 +53,9 @@ public class AltinnInntektService {
     private final InntektSyntConsumer inntektSyntConsumer;
     private final TestnorgeAaregConsumer testnorgeAaregConsumer;
     private final InntektstubV2Consumer inntektstubV2Consumer;
+    private final AltinnInntektConsumer altinnInntektConsumer;
 
+    private final String EIER = "DOLLY";
     private final Boolean NAER_RELASJON = false;
     private final String YTELSE = "YTELSE PLASSHOLDER";
     private final String AARSAK_TIL_INNSENDING = "MÅNEDSOPPGAVE";
@@ -55,6 +64,16 @@ public class AltinnInntektService {
     private final String AVSENDERSYSTEM_SYSTEMNAVN = "DOLLY";
     private final String AVSENDERSYSTEM_SYSTEMVERSJON = "0.0.0";
     private final String ARBEIDSFORHOLD_AARSAK_VED_ENDRING = "ÅRSAK VED ENDRING PLASSHOLDER";
+
+    private final String JOURNALPOST_TYPE = "INNGAAENDE";
+    private final String AVSENDER_MOTTAKER_ID_TYPE = "ORGNR";
+    private final String BRUKER_ID_TYPE = "FNR";
+    private final String TEMA = "FOR";
+    private final String TITTEL = "Syntetisk Inntektsmelding";
+    private final String KANAL = "ALTINN";
+    private final String DOKUMENTER_BREVKODE = "4936";
+    private final String DOKUMENTER_BERVKATEGORI = "ES";
+
 
     public Map<String, List<RsInntekt>> lagAltinnMeldinger(
             AltinnRequest altinnRequest,
@@ -79,11 +98,10 @@ public class AltinnInntektService {
             throw new ValidationException(Collections.singletonList("Kunne ikke finne arbeidsforhold for ident " + ident));
         }
 
-        List<AltinnInntektRequest> altinnInntektRequests = new ArrayList<>(inntekterAaOpprette.size());
         // TODO: Refaktorering -- dersom én av virksomhetsnumrene feiler, kutter alle. Beholder for MVP
         for (var inntekt : inntekterAaOpprette) {
             var nyesteArbeidsforhold = finnNyesteArbeidsforholdIOrganisasjon(ident, inntekt.getVirksomhetsnummer(), arbeidsforholdListe);
-            altinnInntektRequests.add(AltinnInntektRequest.builder()
+            var altinnInntektRequest = AltinnInntektRequest.builder()
                     .aarsakTilInnsending(AARSAK_TIL_INNSENDING)
                     .arbeidstakerFnr(ident)
                     .ytelse(YTELSE)
@@ -102,9 +120,40 @@ public class AltinnInntektService {
                             .beregnetInntekt(RsBeregnetInntekt.builder()
                                     .aarsakVedEndring(ARBEIDSFORHOLD_AARSAK_VED_ENDRING)
                                     .beloep(inntekt.getBeloep())
-                                    .build()).build()).build());
-        }
+                                    .build()).build()).build();
 
+            // Lag melding
+            var altinnInntektResponse = altinnInntektConsumer.getInntektsmeldingXml201812(Collections.singletonList(altinnInntektRequest), EIER);
+
+            // Lagre melding i Joark
+            var dokmotRequest = DokmotRequest.builder()
+                    .journalposttype(JOURNALPOST_TYPE)
+                    .avsenderMottaker(AvsenderMottaker.builder()
+                            .id(inntekt.getVirksomhetsnummer())
+                            .idType(AVSENDER_MOTTAKER_ID_TYPE)
+                            .navn(KONTAKTINFORMASJON_NAVN).build())
+                    .bruker(Bruker.builder()
+                            .id(ident)
+                            .idType(BRUKER_ID_TYPE).build())
+                    .tema(TEMA)
+                    .tittel(TITTEL)
+                    .kanal(KANAL)
+                    .eksternReferanseId("")
+                    .datoMottatt(inntekt.getDato())
+                    .dokumenter(Collections.singletonList(Dokument.builder()
+                            .brevkode(DOKUMENTER_BREVKODE)
+                            .dokumentkategori(DOKUMENTER_BERVKATEGORI)
+                            .tittel(TITTEL)
+                            .dokumentvarianter(Collections.singletonList(
+                                    Dokumentvariant.builder()
+                                            .filtype("XML")
+                                            .variantformat("ORIGINAL")
+                                            .fysiskDokument(altinnInntektResponse.get(0))
+                                            .build()
+                            ))
+                            .build()
+                    ));
+        }
         return new ArrayList<>();
     }
 
