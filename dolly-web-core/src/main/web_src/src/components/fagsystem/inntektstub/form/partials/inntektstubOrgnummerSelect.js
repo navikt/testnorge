@@ -1,11 +1,10 @@
 import React from 'react'
 import _get from 'lodash/get'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
-export const OrgnummerForm = ({ path, formikBag, type }) => {
+export const InntektstubOrgnummerSelect = ({ path, formikBag }) => {
 	const organisasjoner = []
 
 	const setOrgnummer = org => {
@@ -28,33 +27,22 @@ export const OrgnummerForm = ({ path, formikBag, type }) => {
 					return organisasjoner
 				})
 			}
-			render={data =>
-				type === 'inntektstub' ? (
-					<DollySelect
-						name={`${path}.virksomhet`}
-						label="Virksomhet (orgnr/id)"
-						options={data}
-						size="xlarge"
-						onChange={setOrgnummer}
-						value={_get(formikBag.values, `${path}.virksomhet`)}
-						feil={
-							_get(formikBag.values, `${path}.virksomhet`) === '' && {
-								feilmelding: 'Feltet er påkrevd'
-							}
+			render={data => (
+				<DollySelect
+					name={`${path}.virksomhet`}
+					label="Virksomhet (orgnr/id)"
+					options={data}
+					size="xlarge"
+					onChange={setOrgnummer}
+					value={_get(formikBag.values, `${path}.virksomhet`)}
+					feil={
+						_get(formikBag.values, `${path}.virksomhet`) === '' && {
+							feilmelding: 'Feltet er påkrevd'
 						}
-						isClearable={false}
-					/>
-				) : (
-					<FormikSelect
-						name={path}
-						label="Organisasjonsnummer"
-						options={data}
-						type="text"
-						size="xlarge"
-						isClearable={false}
-					/>
-				)
-			}
+					}
+					isClearable={false}
+				/>
+			)}
 		/>
 	)
 }

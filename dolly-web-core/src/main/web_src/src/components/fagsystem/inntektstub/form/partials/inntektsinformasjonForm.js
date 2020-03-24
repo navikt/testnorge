@@ -2,11 +2,11 @@ import React from 'react'
 import _get from 'lodash/get'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { InntektstubOrgnummerSelect } from './inntektstubOrgnummerSelect'
 import { InntektForm } from './inntektForm'
 import { FradragForm } from './fradragForm'
 import { ForskuddstrekkForm } from './forskuddstrekkForm'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
-import { OrgnummerForm } from '~/components/fagsystem/aareg/form/partials/orgnummerForm'
 
 const initialValues = {
 	sisteAarMaaned: '',
@@ -46,7 +46,7 @@ export const InntektsinformasjonForm = ({ formikBag }) => {
 							label="Generer antall måneder"
 							type="number"
 						/>
-						<OrgnummerForm path={path} formikBag={formikBag} type="inntektstub" />
+						<InntektstubOrgnummerSelect path={path} formikBag={formikBag} />
 					</div>
 					<InntektForm formikBag={formikBag} inntektsinformasjonPath={path} />
 					<FradragForm formikBag={formikBag} inntektsinformasjonPath={path} />

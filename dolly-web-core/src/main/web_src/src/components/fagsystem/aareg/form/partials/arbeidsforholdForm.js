@@ -8,7 +8,7 @@ import { TimeloennetForm } from './timeloennetForm'
 import { PermisjonForm } from './permisjonForm'
 import { UtenlandsoppholdForm } from './utenlandsoppholdForm'
 import { ArbeidsavtaleForm } from './arbeidsavtaleForm'
-import { OrgnummerForm } from './orgnummerForm'
+import { OrgnummerToggle } from './orgnummerToggle'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 
 export const ArbeidsforholdForm = ({ path, formikBag }) => {
@@ -44,7 +44,7 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 					<FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" />
 				)}
 				{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
-					<OrgnummerForm path={`${path}.arbeidsgiver.orgnummer`} />
+					<OrgnummerToggle formikBag={formikBag} path={`${path}.arbeidsgiver.orgnummer`} />
 				)}
 			</div>
 
