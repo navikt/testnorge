@@ -72,7 +72,7 @@ public class RettighetAapService {
             String ident,
             String miljoe
     ) {
-        NyttVedtakAap syntetisertRettighet = aapSyntConsumer.syntetiserRettighetAap(1).get(0);
+        var syntetisertRettighet = aapSyntConsumer.syntetiserRettighetAap(1).get(0);
 
         var aap115 = aapSyntConsumer.syntetiserRettighetAap115(syntetisertRettighet.getFraDato().minusDays(1), syntetisertRettighet.getTilDato()).get(0);
         aap115.setBegrunnelse(BEGRUNNELSE);
