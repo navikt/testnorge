@@ -5,9 +5,9 @@ import config from "../config";
 interface LogEvent {
     level: Level,
     event: string,
-    message?: string
+    message?: string,
+    uuid: string
 }
-
 
 const uri = `${config.services.dollyBackend}`
 
