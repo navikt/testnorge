@@ -8,8 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Objects;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -29,7 +27,7 @@ public class InntektsmeldingMapperTest {
     @Test
     public void tomMeldingTest() {
         Inntektsmelding i = RestToDBMapper.map201809melding(null).build();
-        assertThat(Objects.isNull(i.getPrivatArbeidsgiver()), is(true));
+        assertThat(i.getPrivatArbeidsgiver().isPresent(), is(false));
         assertThat(i.getArbeidstakerFnr() == null, is(true));
     }
 
@@ -47,16 +45,15 @@ public class InntektsmeldingMapperTest {
         assertThat(i.getSykepengerPerioder().size(), is(2));
         assertThat(i.getArbeidsgiver().isPresent(), is(true));
         assertThat(i.getArbeidsgiver().get().getTelefonnummer(), is("81549300"));
-        assertThat(Objects.isNull(i.getPrivatArbeidsgiver()), is(true));
+        assertThat(i.getPrivatArbeidsgiver().isPresent(), is(false));
     }
 
     @Test
     public void privatArbeidsgiverTest() {
         Inntektsmelding i = RestToDBMapper.map201812melding(privatArbeidsgiverMelding).build();
-        assertThat(i.getArbeidsgiver().isPresent(), is(true));
+        assertThat(i.getArbeidsgiver().isPresent(), is(false));
         assertThat(i.getPrivatArbeidsgiver().isPresent(), is(true));
-        assertThat(i.getArbeidsgiver().get().getVirksomhetsnummer().length(), is(11));
-        assertThat(i.getArbeidsgiver().get() == i.getPrivatArbeidsgiver().get(), is(true));
+        assertThat(i.getPrivatArbeidsgiver().get().getVirksomhetsnummer().length(), is(11));
     }
 
 }

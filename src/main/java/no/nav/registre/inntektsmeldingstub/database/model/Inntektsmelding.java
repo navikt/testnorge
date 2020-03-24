@@ -101,7 +101,7 @@ public class Inntektsmelding {
         return Optional.ofNullable(arbeidsgiver);
     }
     public Optional<Arbeidsgiver> getPrivatArbeidsgiver() {
-        if (!Objects.isNull(arbeidsgiver) && arbeidsgiver.getVirksomhetsnummer().length() == 11) {
+        if ((!Objects.isNull(arbeidsgiver)) && arbeidsgiver.getVirksomhetsnummer().length() == 11) {
             return Optional.of(arbeidsgiver);
         }
         return Optional.empty();
