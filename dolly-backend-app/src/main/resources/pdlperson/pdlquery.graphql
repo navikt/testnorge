@@ -187,6 +187,8 @@ query($ident: ID!, $historikk: Boolean!) {
         },
         kontaktadresse(historikk: $historikk) {
             gyldigFraOgMed,
+            gyldigTilOgMed,
+            type,
             coAdressenavn,
             postboksadresse {
                 postbokseier,
@@ -215,16 +217,6 @@ query($ident: ID!, $historikk: Boolean!) {
                 adresselinje3,
                 postnummer
             },
-            folkeregistermetadata {
-                ...folkeregistermetadataDetails
-            }
-            metadata {
-                ...metadataDetails
-            }
-        },
-        kontaktadresseIUtlandet(historikk: $historikk) {
-            gyldigFraOgMed,
-            coAdressenavn,
             utenlandskAdresse {
                 adressenavn,
                 bygningsinformasjon,
@@ -241,7 +233,7 @@ query($ident: ID!, $historikk: Boolean!) {
                 postkode,
                 byEllerStedsnavn,
                 landkode
-            },
+            }
             folkeregistermetadata {
                 ...folkeregistermetadataDetails
             }
