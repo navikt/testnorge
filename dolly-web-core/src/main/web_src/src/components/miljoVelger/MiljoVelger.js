@@ -9,7 +9,7 @@ import './MiljoVelger.less'
 
 export const MiljoVelger = ({ bestillingsdata, heading }) => {
 	const environments = useSelector(state => state.environments.data)
-	console.log('environments :', environments)
+
 	if (!environments) return null
 
 	const order = ['U', 'T', 'Q']
@@ -31,7 +31,6 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 					}
 
 					const velgAlle = type => {
-						console.log('type :', type)
 						const c = environments[type].filter(f => !isChecked(f.id)).map(a => a.id)
 						const n = values.concat(c)
 						form.setFieldValue('environments', n)
@@ -44,34 +43,28 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 						)
 					}
 
-					const formatereEnvs = category => {
+					return order.map(type => {
+						const category = environments[type]
+						const allDisabled = category.some(f => f.disabled)
+
 						const sortereNummer = category.map(env => env.id.match(/.{1,1}/g))
 						const sortereEnvs = []
-
 						sortereNummer.map((v, idx) => {
 							sortereEnvs.push(sortereNummer[idx][0] + sortereNummer[idx][1])
 						})
 						const sorterteEnvs = sortereEnvs.sort()
-						console.log('sorterteEnvs :', sorterteEnvs)
-						console.log('sortereEnvs :', sortereEnvs)
-					}
-
-					return order.map(type => {
-						const category = environments[type]
-						const allDisabled = category.some(f => f.disabled)
-						console.log('category :', category)
 
 						return (
 							<fieldset key={type} name={`Liste over ${type}-mijøer`}>
 								<h3>{type}-miljø</h3>
 								<div className="miljo-velger_checkboxes">
-									{category.map(env => (
+									{category.map((env, idx) => (
 										<DollyCheckbox
-											key={env.id}
-											id={env.id}
+											key={sorterteEnvs[idx]}
+											id={sorterteEnvs[idx]}
 											disabled={env.disabled}
-											label={env.label}
-											checked={values.includes(env.id)}
+											label={sorterteEnvs[idx]}
+											checked={values.includes(sorterteEnvs[idx])}
 											onClick={onClick}
 											onChange={() => {}}
 											size={'xxsmall'}
