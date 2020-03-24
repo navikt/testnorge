@@ -2,8 +2,8 @@ import config from '~/config'
 import Request from '~/service/services/Request'
 import ConfigService from '~/service/Config'
 
-const getBaseUrl = () => ConfigService.getDatesourceUrl('tpsf')
-const getTpsfUrl = () => `${getBaseUrl()}/api/v1`
+const getTpsfUrl = () => `${config.services.dollyBackend}/tpsf`
+const getKontaktinfoUrl = () => `${config.services.dollyBackend}/kontaktinfo`
 
 export default {
 	getPersoner(userArray) {
@@ -26,7 +26,7 @@ export default {
 	},
 
 	getKontaktInformasjon(fnr, env) {
-		const endpoint = getBaseUrl() + '/api/tps/kontaktinformasjon?fnr=' + fnr + '&environment=' + env
+		const endpoint = getKontaktinfoUrl() + '/tps/kontaktinformasjon?fnr=' + fnr + '&environment=' + env
 		return Request.get(endpoint)
 	},
 

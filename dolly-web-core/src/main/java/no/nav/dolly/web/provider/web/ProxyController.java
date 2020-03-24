@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -94,27 +95,27 @@ public class ProxyController {
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
 
-//    @RequestMapping("/tpsf/**")
-//    public ResponseEntity<String> tpsfProxy(
-//            @RequestBody(required = false) String body,
-//            HttpMethod method,
-//            HttpServletRequest request) throws UnsupportedEncodingException {
-//
-//        String requestURL = createURL(request, tpsfUrl, API_URI+"/tpsf");
-//
-//        return proxyService.proxyRequest(body, method, request, requestURL);
-//    }
-//
-//    @RequestMapping("/kontaktinfo/**")
-//    public ResponseEntity<String> kontaktInfoProxy(
-//            @RequestBody(required = false) String body,
-//            HttpMethod method,
-//            HttpServletRequest request) throws UnsupportedEncodingException {
-//
-//        String requestURL = createURL(request, tpsfUrl.split("/v1")[0], API_URI+"/kontaktinfo");
-//
-//        return proxyService.proxyRequest(body, method, request, requestURL);
-//    }
+    @RequestMapping("/tpsf/**")
+    public ResponseEntity<String> tpsfProxy(
+            @RequestBody(required = false) String body,
+            HttpMethod method,
+            HttpServletRequest request) throws UnsupportedEncodingException {
+
+        String requestURL = createURL(request, tpsfUrl+API_URI, API_URI+"/tpsf");
+
+        return proxyService.proxyRequest(body, method, request, requestURL);
+    }
+
+    @RequestMapping("/kontaktinfo/**")
+    public ResponseEntity<String> kontaktInfoProxy(
+            @RequestBody(required = false) String body,
+            HttpMethod method,
+            HttpServletRequest request) throws UnsupportedEncodingException {
+
+        String requestURL = createURL(request, tpsfUrl+"/api", API_URI+"/kontaktinfo");
+
+        return proxyService.proxyRequest(body, method, request, requestURL);
+    }
 
     @RequestMapping("/udi/**")
     public ResponseEntity<String> udiProxy(

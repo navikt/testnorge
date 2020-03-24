@@ -12,6 +12,6 @@ fagsystem:
   sigrunstub:
     url: https://sigrun-skd-stub.nais.preprod.local/api/v1
   tpsf:
-    url: http://localhost:8050/api/v1
+    url: http://localhost:8050
   udiStub:
     url: https://udi-stub.nais.preprod.local/api/v1
