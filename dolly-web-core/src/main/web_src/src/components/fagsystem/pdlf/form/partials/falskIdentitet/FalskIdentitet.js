@@ -1,13 +1,20 @@
 import React from 'react'
-import _get from 'lodash'
+import _get from "lodash/get";
+import { AdresseKodeverk } from '~/config/kodeverk'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import {DollySelect, FormikSelect} from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import {getPlaceholder, setValue, setNavn} from "../utils"
+import {SelectOptionsOppslag} from "~/service/SelectOptionsOppslag";
 
 export const FalskIdentitet = ({ formikBag }) => {
 	const falskIdPath = 'pdlforvalter.falskIdentitet.rettIdentitet'
 	const falskIdObj = formikBag.values.pdlforvalter.falskIdentitet.rettIdentitet
+
+	const navnInfo = SelectOptionsOppslag('personnavn')
+	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
+	const dollyGruppeInfo = SelectOptionsOppslag('dollyGruppe')
+	const navnOgFnrOptions = SelectOptionsOppslag.formatOptions('navnOgFnr', dollyGruppeInfo)
 
 	const settIdentitetType = e => {
 		if (e.value === 'UKJENT') {
@@ -42,17 +49,30 @@ export const FalskIdentitet = ({ formikBag }) => {
 			/>
 
 			{falskIdObj.identitetType === 'ENTYDIG' && (
-				<FormikTextInput
+				<DollySelect
 					name={`${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`}
-					label="Identifikasjonsnummer"
-					type="number"
+					label="Navn og identifikasjonsnummer"
+					size="large"
+					options={navnOgFnrOptions}
+					isLoading={dollyGruppeInfo.loading}
+					onChange={id => setValue(id, `${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`, formikBag.setFieldValue)}
+					value={_get(formikBag.values, `${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`)}
+					isClearable={false}
 				/>
 			)}
 			{falskIdObj.identitetType === 'OMTRENTLIG' && (
 				<div className="flexbox--flex-wrap">
-					<FormikTextInput name={`${falskIdPath}.personnavn.fornavn`} label="Fornavn" />
-					<FormikTextInput name={`${falskIdPath}.personnavn.mellomnavn`} label="Mellomnavn" />
-					<FormikTextInput name={`${falskIdPath}.personnavn.etternavn`} label="Etternavn" />
+					<DollySelect
+						name={ `${falskIdPath}.personnavn.fornavn` }
+						label="Navn"
+						options={navnOptions}
+						size="large"
+						isLoading={navnInfo.loading}
+						onChange={navn => setNavn(navn, `${falskIdPath}.personnavn`, formikBag.setFieldValue)}
+						value={_get(formikBag.values, `${falskIdPath}.personnavn.fornavn`)}
+						isClearable={false}
+						placeholder={getPlaceholder(formikBag.values,`${falskIdPath}.personnavn`)}
+					/>
 					<FormikDatepicker name={`${falskIdPath}.foedselsdato`} label="Fødselsdato" />
 					<FormikSelect
 						name={`${falskIdPath}.kjoenn`}
@@ -63,7 +83,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 					<FormikSelect
 						name={`${falskIdPath}.statsborgerskap`}
 						label="Statsborgerskap"
-						kodeverk="Landkoder"
+						kodeverk={AdresseKodeverk.StatsborgerskapLand}
 						isClearable={false}
 						isMulti={true}
 						size="large"

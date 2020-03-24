@@ -3,6 +3,7 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { ArbeidKodeverk } from '~/config/kodeverk'
 
 const initialValues = {
 	arbeidsforholdstype: '',
@@ -29,7 +30,7 @@ export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 					<FormikSelect
 						name={`${path}.arbeidsforholdstype`}
 						label="Arbeidsforholdstype"
-						kodeverk="Arbeidsforholdstyper"
+						kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
 						size="medium"
 					/>
 					<FormikDatepicker name={`${path}.startdato`} label="Startdato" />
@@ -42,14 +43,19 @@ export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 					<FormikSelect
 						name={`${path}.avloenningstype`}
 						label="Avlønningstype"
-						kodeverk="Avlønningstyper"
+						kodeverk={ArbeidKodeverk.Avloenningstyper}
 						size="medium"
 					/>
-					<FormikSelect name={`${path}.yrke`} label="Yrke" kodeverk="Yrker" size="large" />
+					<FormikSelect
+						name={`${path}.yrke`}
+						label="Yrke"
+						kodeverk={ArbeidKodeverk.Yrker}
+						size="large"
+					/>
 					<FormikSelect
 						name={`${path}.arbeidstidsordning`}
 						label="Arbeidstidsordning"
-						kodeverk="Arbeidstidsordninger"
+						kodeverk={ArbeidKodeverk.Arbeidstidsordninger}
 						size="medium"
 					/>
 					<FormikTextInput

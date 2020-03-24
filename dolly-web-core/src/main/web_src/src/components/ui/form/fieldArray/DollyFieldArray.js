@@ -2,7 +2,7 @@ import React from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import Button from '~/components/ui/button/Button'
-import HjelpeTekst from 'nav-frontend-hjelpetekst'
+import Hjelpetekst from '~/components/hjelpetekst'
 
 import './dollyFieldArray.less'
 
@@ -33,7 +33,7 @@ export const DollyFieldArrayWrapper = ({ header, hjelpetekst, nested, children }
 		{nested && header && (
 			<div className="dfa-blokk-nested_title">
 				<h3>{header}</h3>
-				{hjelpetekst && <HjelpeTekst>{hjelpetekst}</HjelpeTekst>}
+				{hjelpetekst && <Hjelpetekst hjelpetekstFor={header}>{hjelpetekst}</Hjelpetekst>}
 			</div>
 		)}
 		{children}
@@ -45,7 +45,7 @@ export const DollyFaBlokk = ({ header, idx, handleRemove, hjelpetekst, children 
 		<div className="dfa-blokk_header">
 			<Numbering idx={idx} />
 			<h2>{header}</h2>
-			{hjelpetekst && <HjelpeTekst>{hjelpetekst}</HjelpeTekst>}
+			{hjelpetekst && <Hjelpetekst hjelpetekstFor={header}>{hjelpetekst}</Hjelpetekst>}
 			<DeleteButton onClick={handleRemove} />
 		</div>
 		<div className="dfa-blokk_content">{children}</div>

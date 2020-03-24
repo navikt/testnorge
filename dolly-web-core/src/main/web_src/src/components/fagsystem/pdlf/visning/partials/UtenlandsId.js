@@ -1,4 +1,5 @@
 import React from 'react'
+import { AdresseKodeverk } from '~/config/kodeverk'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
@@ -20,7 +21,11 @@ export const UtenlandsId = ({ data, loading }) => {
 							<TitleValue title="Kilde" value={id.metadata.endringer[0].kilde} />
 						)}
 						<TitleValue title="Opphørt" value={Formatters.oversettBoolean(Boolean(id.opphoert))} />
-						<TitleValue title="Utstederland" value={id.utstederland} kodeverk="Landkoder" />
+						<TitleValue
+							title="Utstederland"
+							value={id.utstederland}
+							kodeverk={AdresseKodeverk.Utstederland}
+						/>
 					</div>
 				)}
 			</DollyFieldArray>
