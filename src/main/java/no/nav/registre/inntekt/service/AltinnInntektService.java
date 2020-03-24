@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inntekt.consumer.rs.AltinnInntektConsumer;
+import no.nav.registre.inntekt.consumer.rs.DokmotConsumer;
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
@@ -54,6 +55,7 @@ public class AltinnInntektService {
     private final TestnorgeAaregConsumer testnorgeAaregConsumer;
     private final InntektstubV2Consumer inntektstubV2Consumer;
     private final AltinnInntektConsumer altinnInntektConsumer;
+    private final DokmotConsumer dokmotConsumer;
 
     private final String EIER = "DOLLY";
     private final Boolean NAER_RELASJON = false;
@@ -149,10 +151,8 @@ public class AltinnInntektService {
                                             .filtype("XML")
                                             .variantformat("ORIGINAL")
                                             .fysiskDokument(altinnInntektResponse.get(0))
-                                            .build()
-                            ))
-                            .build()
-                    ));
+                                            .build())).build())).build();
+            dokmotConsumer.opprettJournalpost(dokmotRequest);
         }
         return new ArrayList<>();
     }
