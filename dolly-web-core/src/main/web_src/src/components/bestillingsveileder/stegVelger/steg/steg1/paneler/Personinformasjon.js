@@ -31,11 +31,11 @@ export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => 
 					<AttributtKategori title="Nasjonalitet">
 						<Attributt
 							attr={sm.attrs.innvandretFraLand}
-							disabled={innvandretEllerUtvandret == 'UTVANDRET'}
+							disabled={innvandretEllerUtvandret == 'INNVANDRET'}
 						/>
 						<Attributt
 							attr={sm.attrs.utvandretTilLand}
-							disabled={innvandretEllerUtvandret == 'INNVANDRET'}
+							disabled={innvandretEllerUtvandret == 'UTVANDRET'}
 						/>
 					</AttributtKategori>
 				</Panel>

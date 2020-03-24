@@ -34,19 +34,19 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 
 			<h3>Innvandring og utvandring</h3>
 
-			<DollyFieldArray data={innvandretUtvandret}>
+			<DollyFieldArray data={innvandretUtvandret} header="Innvandret/utvandret">
 				{(id, idx) => (
 					<React.Fragment>
 						{innvandretUtvandret && (
 							<>
-								<TitleValue title="Inn/utvandret" value={innvandretUtvandret[idx].innutvandret} />
+								<TitleValue value={innvandretUtvandret[idx].innutvandret} />
 								<TitleValue
 									title="Land"
 									kodeverk="Landkoder"
 									value={innvandretUtvandret[idx].landkode}
 								/>
 								<TitleValue
-									title="Flytte dato"
+									title="Flyttedato"
 									value={Formatters.formatDate(innvandretUtvandret[idx].flyttedato)}
 								/>
 							</>
