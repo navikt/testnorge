@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -128,11 +127,11 @@ public class ProxyController {
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
 
-    private static String createURL(HttpServletRequest request, String host, String split_uri)
+    private static String createURL(HttpServletRequest request, String host, String splitUri)
             throws UnsupportedEncodingException {
 
 
-        if (request.getRequestURI().split(split_uri).length < 2) {
+        if (request.getRequestURI().split(splitUri).length < 2) {
             throw new UnsupportedEncodingException(format("Incomplete url: %s", request.getRequestURI()));
         }
         String queryString = "";
@@ -140,6 +139,6 @@ public class ProxyController {
             queryString = URLDecoder.decode("?" + request.getQueryString(), StandardCharsets.UTF_8.name());
         }
 
-        return format("%s%s%s", host, request.getRequestURI().split(split_uri)[1], queryString);
+        return format("%s%s%s", host, request.getRequestURI().split(splitUri)[1], queryString);
     }
 }
