@@ -17,7 +17,7 @@ const initialValues = {
 	beloep: ''
 }
 const inntektsmeldingAttributt = 'inntektsmelding'
-const hjelpetekst = 'Personen må ha et arbeidsforhold til virksomheten du velger.'
+const informasjonstekst = 'Personen må ha et arbeidsforhold knyttet til den valgte virksomheten.'
 
 export const InntektsmeldingForm = ({ formikBag }) => {
 	const orgInfo = SelectOptionsOppslag('orgnr')
@@ -29,7 +29,7 @@ export const InntektsmeldingForm = ({ formikBag }) => {
 				heading="Inntektsmelding (fra Altinn)"
 				hasErrors={panelError(formikBag, inntektsmeldingAttributt)}
 				iconType="inntektsmelding"
-				hjelpetekst={hjelpetekst}
+				informasjonstekst={informasjonstekst}
 				startOpen={() => erForste(formikBag.values, [inntektsmeldingAttributt])}
 			>
 				<FormikDollyFieldArray
@@ -38,7 +38,7 @@ export const InntektsmeldingForm = ({ formikBag }) => {
 					newEntry={initialValues}
 				>
 					{(path, idx) => (
-						<React.Fragment key={idx}>
+						<>
 							<FormikTextInput name={`${path}.beloep`} label="Beløp" type="number" />
 							<FormikDatepicker name={`${path}.dato`} label="Innsendingstidspunkt" type="month" />
 							<FormikSelect
@@ -49,7 +49,7 @@ export const InntektsmeldingForm = ({ formikBag }) => {
 								size="xlarge"
 								fastfield={false}
 							/>
-						</React.Fragment>
+						</>
 					)}
 				</FormikDollyFieldArray>
 			</Panel>

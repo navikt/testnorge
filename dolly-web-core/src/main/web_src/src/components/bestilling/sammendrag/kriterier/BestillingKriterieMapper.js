@@ -713,35 +713,20 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	const inntektsmeldingKriterier = bestillingData.inntektsmelding
 
-	if (inntektsmeldingKriterier) {
-		// Flater ut inntektsmeldingKriterier for å gjøre det lettere å mappe
+	const mapInntektsmeldingKriterier = meldinger => ({
+		header: 'Inntektsmelding (fra Altinn)',
+		itemRows: meldinger.map((inntekt, i) => [
+			{
+				numberHeader: `Inntekt ${i + 1}`
+			},
+			obj('Innsendingstidspunkt', Formatters.formatDate(inntekt.dato)),
+			obj('Virksomhet', inntekt.virksomhetsnummer),
+			obj('Beløp', inntekt.beloep)
+		])
+	})
 
-		let flatInntektsmeldingKriterier = []
-		inntektsmeldingKriterier.inntekter.forEach(i => {
-			flatInntektsmeldingKriterier.push({
-				dato: i.dato,
-				virksomhetsnummer: i.virksomhetsnummer,
-				beloep: i.beloep
-			})
-		})
-
-		const inntektsmeldingObj = {
-			header: 'Inntektsmelding (fra Altinn)',
-			itemRows: []
-		}
-
-		flatInntektsmeldingKriterier.forEach((inntekt, i) => {
-			inntektsmeldingObj.itemRows.push([
-				{
-					numberHeader: `Inntekt ${i + 1}`
-				},
-				obj('Innsendingstidspunkt', Formatters.formatDate(inntekt.dato)),
-				obj('Virksomhet', inntekt.virksomhetsnummer),
-				obj('Beløp', inntekt.beloep)
-			])
-		})
-		data.push(inntektsmeldingObj)
-	}
+	if (inntektsmeldingKriterier)
+		data.push(mapInntektsmeldingKriterier(inntektsmeldingKriterier.inntekter))
 
 	return data
 }
