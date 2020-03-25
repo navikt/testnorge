@@ -1,5 +1,7 @@
 package no.nav.registre.arena.core.consumer.rs;
 
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.CALL_ID_HEADER;
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.CONSUMER_ID_HEADER;
 import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.NAV_CALL_ID;
 import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.NAV_CONSUMER_ID;
 
@@ -41,8 +43,8 @@ public class RettighetArenaForvalterConsumer {
             UriTemplate url = new UriTemplate(arenaForvalterServerUrl + rettighet.getArenaForvalterUrlPath());
 
             var postRequest = RequestEntity.post(url.expand())
-                    .header("Nav-Call-Id", NAV_CALL_ID)
-                    .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                    .header(CALL_ID_HEADER, NAV_CALL_ID)
+                    .header(CONSUMER_ID_HEADER, NAV_CONSUMER_ID)
                     .body(rettighet);
             NyttVedtakResponse response = null;
             try {

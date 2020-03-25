@@ -1,5 +1,6 @@
 package no.nav.registre.arena.core.service;
 
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.getFoedselsdatoFraFnr;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_AAP;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_UNG_UFOER;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
@@ -23,6 +25,10 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRe
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
+import no.nav.registre.arena.core.pensjon.consumer.rs.PensjonTestdataFacadeConsumer;
+import no.nav.registre.arena.core.pensjon.request.PensjonTestdataInntekt;
+import no.nav.registre.arena.core.pensjon.request.PensjonTestdataPerson;
+import no.nav.registre.arena.core.pensjon.response.PensjonTestdataResponse;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
@@ -36,6 +42,8 @@ public class RettighetAapService {
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final BrukereService brukereService;
     private final ServiceUtils serviceUtils;
+    private final PensjonTestdataFacadeConsumer pensjonTestdataFacadeConsumer;
+    private final Random rand;
 
     public List<NyttVedtakResponse> genererAapMedTilhoerende115(
             Long avspillergruppeId,
@@ -49,6 +57,9 @@ public class RettighetAapService {
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             var ident = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
+
+            opprettPersonOgInntektIPopp(ident, miljoe, syntetisertRettighet);
+
             var aap115 = aapSyntConsumer.syntetiserRettighetAap115(syntetisertRettighet.getFraDato().minusDays(1), syntetisertRettighet.getTilDato()).get(0);
             aap115.setBegrunnelse(BEGRUNNELSE);
             var aap115Rettighet = new RettighetAap115Request(Collections.singletonList(aap115));
@@ -73,6 +84,8 @@ public class RettighetAapService {
             String miljoe
     ) {
         var syntetisertRettighet = aapSyntConsumer.syntetiserRettighetAap(1).get(0);
+
+        opprettPersonOgInntektIPopp(ident, miljoe, syntetisertRettighet);
 
         var aap115 = aapSyntConsumer.syntetiserRettighetAap115(syntetisertRettighet.getFraDato().minusDays(1), syntetisertRettighet.getTilDato()).get(0);
         aap115.setBegrunnelse(BEGRUNNELSE);
@@ -177,5 +190,39 @@ public class RettighetAapService {
         }
 
         return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
+    }
+
+    private void opprettPersonOgInntektIPopp(
+            String ident,
+            String miljoe,
+            NyttVedtakAap syntetisertRettighet
+    ) {
+        PensjonTestdataResponse opprettPersonStatus = pensjonTestdataFacadeConsumer.opprettPerson(PensjonTestdataPerson.builder()
+                .bostedsland("NOR")
+                .fodselsDato(getFoedselsdatoFraFnr(ident))
+                .miljoer(Collections.singletonList(miljoe))
+                .fnr(ident)
+                .build());
+
+        for (var response : opprettPersonStatus.getStatus()) {
+            if (response.getResponse().getHttpStatus().getStatus() != 200) {
+                log.warn("Kunne ikke opprette ident {} i popp i miljø {}. Feilmelding: {}", ident, response.getMiljo(), response.getResponse().getMessage());
+            }
+        }
+
+        PensjonTestdataResponse opprettInntektStatus = pensjonTestdataFacadeConsumer.opprettInntekt(PensjonTestdataInntekt.builder()
+                .belop(rand.nextInt(650000) + 350000)
+                .fnr(ident)
+                .fomAar(syntetisertRettighet.getFraDato().minusYears(4).getYear())
+                .miljoer(Collections.singletonList(miljoe))
+                .redusertMedGrunnbelop(true)
+                .tomAar(syntetisertRettighet.getFraDato().minusYears(1).getYear())
+                .build());
+
+        for (var response : opprettInntektStatus.getStatus()) {
+            if (response.getResponse().getHttpStatus().getStatus() != 200) {
+                log.warn("Kunne ikke opprette inntekt på ident {} i popp i miljø {}. Feilmelding: {}", ident, response.getMiljo(), response.getResponse().getMessage());
+            }
+        }
     }
 }
