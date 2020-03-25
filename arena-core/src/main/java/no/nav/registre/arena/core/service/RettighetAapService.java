@@ -206,12 +206,17 @@ public class RettighetAapService {
 
         for (var response : opprettPersonStatus.getStatus()) {
             if (response.getResponse().getHttpStatus().getStatus() != 200) {
-                log.warn("Kunne ikke opprette ident {} i popp i miljø {}. Feilmelding: {}", ident, response.getMiljo(), response.getResponse().getMessage());
+                log.warn(
+                        "Kunne ikke opprette ident {} i popp i miljø {}. Feilmelding: {}",
+                        ident.replaceAll("[\r\n]", ""),
+                        response.getMiljo().replaceAll("[\r\n]", ""),
+                        response.getResponse().getMessage().replaceAll("[\r\n]", "")
+                );
             }
         }
 
         PensjonTestdataResponse opprettInntektStatus = pensjonTestdataFacadeConsumer.opprettInntekt(PensjonTestdataInntekt.builder()
-                .belop(rand.nextInt(650000) + 350000)
+                .belop(rand.nextInt(650_000) + 350_000)
                 .fnr(ident)
                 .fomAar(syntetisertRettighet.getFraDato().minusYears(4).getYear())
                 .miljoer(Collections.singletonList(miljoe))
@@ -221,7 +226,12 @@ public class RettighetAapService {
 
         for (var response : opprettInntektStatus.getStatus()) {
             if (response.getResponse().getHttpStatus().getStatus() != 200) {
-                log.warn("Kunne ikke opprette inntekt på ident {} i popp i miljø {}. Feilmelding: {}", ident, response.getMiljo(), response.getResponse().getMessage());
+                log.warn(
+                        "Kunne ikke opprette inntekt på ident {} i popp i miljø {}. Feilmelding: {}",
+                        ident.replaceAll("[\r\n]", ""),
+                        response.getMiljo().replaceAll("[\r\n]", ""),
+                        response.getResponse().getMessage().replaceAll("[\r\n]", "")
+                );
             }
         }
     }
