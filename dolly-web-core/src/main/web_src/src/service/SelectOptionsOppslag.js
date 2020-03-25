@@ -1,29 +1,13 @@
 import { useAsync } from 'react-use'
 import { DollyApi } from '~/service/Api'
 import config from '~/config'
+import Api from '~/api'
 import _isNil from 'lodash/isNil'
 
 const uri = `${config.services.dollyBackend}`
 
 export const SelectOptionsOppslag = {
-	hentOrgnr: () =>
-		fetch(`${uri}/orgnummer`, {
-			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
-			.then(response => {
-				if (!response.ok) {
-					throw new Error(response.statusText)
-				}
-				return response
-			})
-			.then(response => response.json())
-			.catch(error => {
-				console.error(error)
-				throw error
-			}),
+	hentOrgnr: () => Api.fetchJson(`${uri}/orgnummer`, 'GET'),
 
 	hentPersonnavn: () => {
 		const navnInfo = useAsync(async () => {

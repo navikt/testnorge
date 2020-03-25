@@ -5,8 +5,6 @@ import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 export const InntektstubOrgnummerSelect = ({ path, formikBag }) => {
-	const organisasjoner = []
-
 	const setOrgnummer = org => {
 		formikBag.setFieldValue(`${path}.virksomhet`, org.value)
 		formikBag.setFieldValue(`${path}.opplysningspliktig`, org.juridiskEnhet)
@@ -15,18 +13,15 @@ export const InntektstubOrgnummerSelect = ({ path, formikBag }) => {
 	return (
 		<LoadableComponent
 			onFetch={() =>
-				SelectOptionsOppslag.hentOrgnr().then(response => {
-					console.log('response :', response)
-					response.liste.forEach(org => {
-						org.juridiskEnhet &&
-							organisasjoner.push({
-								value: org.orgnr,
-								label: `${org.orgnr} (${org.enhetstype}) - ${org.navn}`,
-								juridiskEnhet: org.juridiskEnhet
-							})
-					})
-					return organisasjoner
-				})
+				SelectOptionsOppslag.hentOrgnr().then(({ liste }) =>
+					liste
+						.filter(org => org.juridiskEnhet)
+						.map(org => ({
+							value: org.orgnr,
+							label: `${org.orgnr} (${org.enhetstype}) - ${org.navn}`,
+							juridiskEnhet: org.juridiskEnhet
+						}))
+				)
 			}
 			render={data => (
 				<DollySelect
