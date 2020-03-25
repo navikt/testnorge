@@ -64,8 +64,6 @@ public class PdlForvalterClient implements ClientRegister {
     private static final int MAX_COUNT = 30;
     private static final int TIMEOUT = 100;
 
-    private static final String SEND_ERROR = "Feilet å sende %s for ident %s til PDL-forvalter";
-
     private final PdlForvalterConsumer pdlForvalterConsumer;
     private final TpsfPersonCache tpsfPersonCache;
     private final MapperFacade mapperFacade;
