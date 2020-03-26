@@ -105,9 +105,9 @@ public class InntektsmeldingController {
     }
 
     @PostMapping(value = "/map/2018/09", consumes = "application/json", produces = "application/xml")
-    public List<no.seres.xsd.nav.inntektsmelding_m._20180924.XMLInntektsmeldingM> mapInntektsmelding201809(
-            @RequestBody List<RsInntektsmelding> meldinger
+    public no.seres.xsd.nav.inntektsmelding_m._20180924.XMLInntektsmeldingM mapInntektsmelding201809(
+            @RequestBody RsInntektsmelding melding
     ) {
-        return meldinger.stream().map(XmlInntektsmelding201809::createInntektsmelding).collect(Collectors.toList());
+        return XmlInntektsmelding201809.createInntektsmelding(melding);
     }
 }
