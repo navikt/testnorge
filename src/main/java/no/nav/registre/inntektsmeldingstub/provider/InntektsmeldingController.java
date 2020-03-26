@@ -5,6 +5,7 @@ import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
 import no.nav.registre.inntektsmeldingstub.provider.validation.InntektsmeldingRequestValidator;
 import no.nav.registre.inntektsmeldingstub.service.DBToRestMapper;
 
+import no.nav.registre.inntektsmeldingstub.service.rs.response.RsXml201812Response;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLInntektsmeldingM;
 
 import org.springframework.http.HttpStatus;
@@ -97,10 +98,10 @@ public class InntektsmeldingController {
     }
 
     @PostMapping(value = "/map/2018/12", consumes = "application/json", produces = {"application/xml", "application/json"})
-    public List<no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM> mapInntektsmelding201812(
+    public RsXml201812Response mapInntektsmelding201812(
             @RequestBody List<RsInntektsmelding> meldinger
     ) {
-        return meldinger.stream().map(XmlInntektsmelding201812::createInntektsmelding).collect(Collectors.toList());
+        return new RsXml201812Response(meldinger.stream().map(XmlInntektsmelding201812::createInntektsmelding).collect(Collectors.toList()));
     }
 
     @PostMapping(value = "/map/2018/09", consumes = "application/json", produces = {"application/xml", "application/json"})
