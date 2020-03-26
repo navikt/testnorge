@@ -1,7 +1,9 @@
 package no.nav.registre.arena.core.consumer.rs;
 
-import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.NAV_CALL_ID;
-import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.NAV_CONSUMER_ID;
+import static no.nav.registre.arena.core.consumer.rs.util.Headers.CALL_ID;
+import static no.nav.registre.arena.core.consumer.rs.util.Headers.CONSUMER_ID;
+import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CALL_ID;
+import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CONSUMER_ID;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,8 +43,8 @@ public class RettighetArenaForvalterConsumer {
             UriTemplate url = new UriTemplate(arenaForvalterServerUrl + rettighet.getArenaForvalterUrlPath());
 
             var postRequest = RequestEntity.post(url.expand())
-                    .header("Nav-Call-Id", NAV_CALL_ID)
-                    .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                    .header(CALL_ID, NAV_CALL_ID)
+                    .header(CONSUMER_ID, NAV_CONSUMER_ID)
                     .body(rettighet);
             NyttVedtakResponse response = null;
             try {

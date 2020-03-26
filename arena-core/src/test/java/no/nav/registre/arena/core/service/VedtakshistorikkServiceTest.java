@@ -2,8 +2,10 @@ package no.nav.registre.arena.core.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,6 +43,9 @@ public class VedtakshistorikkServiceTest {
 
     @Mock
     private RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
+
+    @Mock
+    private RettighetAapService rettighetAapService;
 
     @InjectMocks
     private VedtakshistorikkService vedtakshistorikkService;
@@ -132,6 +137,7 @@ public class VedtakshistorikkServiceTest {
 
         verify(serviceUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(1), anyInt(), anyInt());
         verify(aapSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
+        verify(rettighetAapService).opprettPersonOgInntektIPopp(anyString(), anyString(), any(NyttVedtakAap.class));
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
 
         assertThat(response.size(), equalTo(4));

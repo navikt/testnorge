@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
@@ -18,15 +17,21 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
+import no.nav.registre.arena.core.pensjon.consumer.rs.PensjonTestdataFacadeConsumer;
+import no.nav.registre.arena.core.pensjon.request.PensjonTestdataInntekt;
+import no.nav.registre.arena.core.pensjon.request.PensjonTestdataPerson;
+import no.nav.registre.arena.core.pensjon.response.HttpStatus;
+import no.nav.registre.arena.core.pensjon.response.PensjonTestdataResponse;
+import no.nav.registre.arena.core.pensjon.response.PensjonTestdataResponseDetails;
+import no.nav.registre.arena.core.pensjon.response.PensjonTestdataStatus;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.arena.domain.aap.gensaksopplysninger.Saksopplysning;
-import no.nav.registre.arena.domain.historikk.Vedtakshistorikk;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
@@ -45,6 +50,12 @@ public class RettighetAapServiceTest {
 
     @Mock
     private RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
+
+    @Mock
+    private PensjonTestdataFacadeConsumer pensjonTestdataFacadeConsumer;
+
+    @Mock
+    private Random rand;
 
     @InjectMocks
     private RettighetAapService rettighetAapService;
@@ -101,6 +112,28 @@ public class RettighetAapServiceTest {
         when(aapSyntConsumer.syntetiserRettighetAap115(any(LocalDate.class), any(LocalDate.class))).thenReturn(new ArrayList<>(Collections.singletonList(aap115Rettighet)));
         when(aapSyntConsumer.syntetiserRettighetAap(antallIdenter)).thenReturn(aapRettigheter);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
+        when(pensjonTestdataFacadeConsumer.opprettPerson(any(PensjonTestdataPerson.class))).thenReturn(PensjonTestdataResponse.builder()
+                .status(Collections.singletonList(PensjonTestdataStatus.builder()
+                        .miljo(miljoe)
+                        .response(PensjonTestdataResponseDetails.builder()
+                                .httpStatus(HttpStatus.builder()
+                                        .status(200)
+                                        .reasonPhrase("OK")
+                                        .build())
+                                .build())
+                        .build()))
+                .build());
+        when(pensjonTestdataFacadeConsumer.opprettInntekt(any(PensjonTestdataInntekt.class))).thenReturn(PensjonTestdataResponse.builder()
+                .status(Collections.singletonList(PensjonTestdataStatus.builder()
+                        .miljo(miljoe)
+                        .response(PensjonTestdataResponseDetails.builder()
+                                .httpStatus(HttpStatus.builder()
+                                        .status(200)
+                                        .reasonPhrase("OK")
+                                        .build())
+                                .build())
+                        .build()))
+                .build());
 
         var response = rettighetAapService.genererAapMedTilhoerende115(avspillergruppeId, miljoe, antallIdenter);
 

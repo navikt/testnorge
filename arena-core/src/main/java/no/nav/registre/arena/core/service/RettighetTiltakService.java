@@ -145,7 +145,7 @@ public class RettighetTiltakService {
         var responses = rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
         for (var response : responses) {
             if (!response.getFeiledeRettigheter().isEmpty()) {
-                log.warn("Kunne ikke opprette deltakelse for alle identer");
+                log.error("Kunne ikke opprette deltakelse for alle identer");
             }
         }
         return responses;
