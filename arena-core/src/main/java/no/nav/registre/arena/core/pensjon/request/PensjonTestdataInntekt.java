@@ -15,10 +15,10 @@ import java.util.List;
 @Builder
 public class PensjonTestdataInntekt {
 
-    private int belop;
+    private Integer belop;
     private String fnr;
-    private int fomAar;
+    private Integer fomAar;
     private List<String> miljoer;
-    private boolean redusertMedGrunnbelop;
-    private int tomAar;
+    private Boolean redusertMedGrunnbelop;
+    private Integer tomAar;
 }
