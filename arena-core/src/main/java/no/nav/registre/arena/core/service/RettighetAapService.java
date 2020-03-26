@@ -197,7 +197,7 @@ public class RettighetAapService {
             String miljoe,
             NyttVedtakAap syntetisertRettighet
     ) {
-        PensjonTestdataResponse opprettPersonStatus = pensjonTestdataFacadeConsumer.opprettPerson(PensjonTestdataPerson.builder()
+        var opprettPersonStatus = pensjonTestdataFacadeConsumer.opprettPerson(PensjonTestdataPerson.builder()
                 .bostedsland("NOR")
                 .fodselsDato(getFoedselsdatoFraFnr(ident))
                 .miljoer(Collections.singletonList(miljoe))
@@ -215,7 +215,7 @@ public class RettighetAapService {
             }
         }
 
-        PensjonTestdataResponse opprettInntektStatus = pensjonTestdataFacadeConsumer.opprettInntekt(PensjonTestdataInntekt.builder()
+        var opprettInntektStatus = pensjonTestdataFacadeConsumer.opprettInntekt(PensjonTestdataInntekt.builder()
                 .belop(rand.nextInt(650_000) + 350_000)
                 .fnr(ident)
                 .fomAar(syntetisertRettighet.getFraDato().minusYears(4).getYear())
