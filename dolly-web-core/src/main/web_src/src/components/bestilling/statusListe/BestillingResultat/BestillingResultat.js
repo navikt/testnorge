@@ -27,7 +27,7 @@ export default function BestillingResultat(props) {
 			{antall.harMangler && <span>{antall.tekst}</span>}
 			{bestilling.feil && <ApiFeilmelding feilmelding={bestilling.feil} container />}
 			<Feedback
-				label="Hvordan var din opplevese med bruk av Dolly?"
+				label="Hvordan var din opplevelse med bruk av Dolly?"
 				feedbackFor="Bruk av Dolly etter bestilling"
 			/>
 			<div className="flexbox--all-center">
