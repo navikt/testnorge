@@ -1,15 +1,22 @@
-// TODO Gjør denne om til .tsx!!!
-
-import React, { useState } from 'react'
-import _get from 'lodash/get'
-import _has from 'lodash/has'
+import * as React from 'react'
+import { useState } from 'react'
+import _get = require('lodash/get')
+// @ts-ignore
 import Button from '~/components/ui/button/Button'
+// @ts-ignore
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
+// @ts-ignore
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+// @ts-ignore
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+// @ts-ignore
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 
-export const Telefonnummer = ({ formikBag }) => {
+interface Props {
+	formikBag: any
+}
+
+export const Telefonnummer = ({ formikBag }: Props) => {
 	const [harToTlfnr, setHarToTlfnr] = useState(_get(formikBag.values, 'tpsf.telefonnummer_2'))
 
 	const paths = {
@@ -31,9 +38,8 @@ export const Telefonnummer = ({ formikBag }) => {
 		setHarToTlfnr(false)
 	}
 
-	// TODO sjekk om jeg kan ha landkode som i label (Norge (+47))
 	return (
-		<Vis attributt={Object.values(paths)}>
+		<Vis attributt={Object.values(paths)} formik>
 			<div className="flexbox--flex-wrap">
 				<FormikSelect
 					name="tpsf.telefonLandskode_1"
@@ -41,6 +47,7 @@ export const Telefonnummer = ({ formikBag }) => {
 					kodeverk={PersoninformasjonKodeverk.Retningsnumre}
 					size="large"
 					isClearable={false}
+					visHvisAvhuket
 				/>
 				<FormikTextInput
 					name="tpsf.telefonnummer_1"
@@ -63,6 +70,7 @@ export const Telefonnummer = ({ formikBag }) => {
 							kodeverk={PersoninformasjonKodeverk.Retningsnumre}
 							size="large"
 							isClearable={false}
+							visHvisAvhuket
 						/>
 						<FormikTextInput
 							name="tpsf.telefonnummer_2"
