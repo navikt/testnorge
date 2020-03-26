@@ -152,12 +152,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		label: 'Telefonnummer',
 		checked: has('tpsf.telefonnummer_1'),
 		add() {
-			setMulti(
-				['tpsf.telefonLandskode_1', ''],
-				['tpsf.telefonnummer_1', ''],
-				['tpsf.telefonLandskode_2', ''],
-				['tpsf.telefonnummer_2', '']
-			)
+			setMulti(['tpsf.telefonLandskode_1', ''], ['tpsf.telefonnummer_1', ''])
 		},
 		remove() {
 			del([
