@@ -191,7 +191,7 @@ public class RettighetAapService {
         return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
     }
 
-    private void opprettPersonOgInntektIPopp(
+    void opprettPersonOgInntektIPopp(
             String ident,
             String miljoe,
             NyttVedtakAap syntetisertRettighet

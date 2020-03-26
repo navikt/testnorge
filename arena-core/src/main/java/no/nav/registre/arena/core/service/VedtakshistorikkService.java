@@ -41,6 +41,7 @@ public class VedtakshistorikkService {
     private final AapSyntConsumer aapSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
+    private final RettighetAapService rettighetAapService;
 
     public List<NyttVedtakResponse> genererVedtakshistorikk(
             Long avspillergruppeId,
@@ -150,6 +151,7 @@ public class VedtakshistorikkService {
     ) {
         var aap = vedtak.getAap();
         if (aap != null && !aap.isEmpty()) {
+            rettighetAapService.opprettPersonOgInntektIPopp(personident, miljoe, aap.get(0));
             var rettighetRequest = new RettighetAapRequest(aap);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
