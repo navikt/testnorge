@@ -28,7 +28,6 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.arena.core.pensjon.consumer.rs.PensjonTestdataFacadeConsumer;
 import no.nav.registre.arena.core.pensjon.request.PensjonTestdataInntekt;
 import no.nav.registre.arena.core.pensjon.request.PensjonTestdataPerson;
-import no.nav.registre.arena.core.pensjon.response.PensjonTestdataResponse;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
