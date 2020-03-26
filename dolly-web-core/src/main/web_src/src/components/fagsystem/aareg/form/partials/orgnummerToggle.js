@@ -1,29 +1,30 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import _get from 'lodash/get'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { AaregOrgnummerSelect } from './aaregOrgnummerSelect'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 const inputValg = { fraListe: 'velg', skrivSelv: 'skriv' }
-const initial = (formikBag, path) => {
-	const orgnr = _get(formikBag.values, `${path}.arbeidsgiver.orgnummer`)
-	return !orgnr || Options('orgnummer').some(org => org.value === orgnr)
-		? inputValg.fraListe
-		: inputValg.skrivSelv
-}
 
-export const OrgnrForm = ({ formikBag, path }) => {
-	const [inputType, setInputType] = useState(initial(formikBag, path))
+export const OrgnummerToggle = ({ formikBag, path }) => {
+	const [inputType, setInputType] = useState()
+
+	useEffect(() => {
+		const orgnr = _get(formikBag.values, path)
+		const setInitial = async () => {
+			const response = await SelectOptionsOppslag.hentOrgnr()
+			if (!orgnr || response.liste.some(org => org.orgnr === orgnr)) {
+				setInputType(inputValg.fraListe)
+			} else setInputType(inputValg.skrivSelv)
+		}
+		setInitial()
+	}, [])
 
 	const handleToggleChange = event => {
 		setInputType(event.target.value)
-		formikBag.setFieldValue(`${path}.arbeidsgiver.orgnummer`, '')
+		formikBag.setFieldValue(path, '')
 	}
-
-	const orgInfo = SelectOptionsOppslag('orgnr')
-	const options = SelectOptionsOppslag.formatOptions(orgInfo)
 
 	return (
 		<div className="toggle--wrapper">
@@ -45,15 +46,9 @@ export const OrgnrForm = ({ formikBag, path }) => {
 			</ToggleGruppe>
 
 			{inputType === inputValg.fraListe ? (
-				<FormikSelect
-					name={`${path}.arbeidsgiver.orgnummer`}
-					options={options}
-					type="text"
-					size="xlarge"
-					isClearable={false}
-				/>
+				<AaregOrgnummerSelect path={path} />
 			) : (
-				<FormikTextInput name={`${path}.arbeidsgiver.orgnummer`} />
+				<FormikTextInput name={path} size="xlarge" />
 			)}
 		</div>
 	)

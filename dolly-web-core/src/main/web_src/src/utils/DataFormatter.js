@@ -90,21 +90,6 @@ Formatters.oversettBoolean = value => {
 		: value
 }
 
-Formatters.gtApiKodeverkId = gtType => {
-	if (!gtType) return null
-
-	switch (gtType) {
-		case 'KNR':
-			return 'Kommuner'
-		case 'BYDEL':
-			return 'Bydeler'
-		case 'LAND':
-			return 'Landkoder'
-		default:
-			return ''
-	}
-}
-
 Formatters.gtTypeLabel = gtType => {
 	if (!gtType) return null
 

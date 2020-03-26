@@ -124,11 +124,11 @@ export default {
 		return Request.get(Endpoints.arbeidsforholdByIdent(ident, env))
 	},
 
-	getPoppInntekt(ident, env){
+	getPoppInntekt(ident, env) {
 		return Request.get(Endpoints.poppInntekt(ident, env))
 	},
 
-	getTilgjengeligePoppMiljoer(){
+	getTilgjengeligePoppMiljoer() {
 		return Request.get(Endpoints.poppMiljoe())
 	},
 
@@ -138,5 +138,13 @@ export default {
 
 	getFasteOrgnummer() {
 		return Request.get(Endpoints.fasteOrgnummer())
+	},
+
+	getFasteDatasettGruppe(gruppe) {
+		return Request.get(Endpoints.getFasteDatasettTPSGruppe(gruppe))
+	},
+
+	getPersonnavn() {
+		return Request.get(Endpoints.getPersonnavn())
 	}
 }
