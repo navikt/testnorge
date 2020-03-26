@@ -1,17 +1,20 @@
 package no.nav.registre.inntektsmeldingstub.service.rs;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @ApiModel
 @Builder
 @Getter
@@ -75,6 +78,7 @@ public class RsInntektsmelding {
             RsOmsorgspenger omsorgspenger, RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden, LocalDate startdatoForeldrepengeperiode,
             List<RsNaturaYtelseDetaljer> opphoerAvNaturalytelseListe, List<RsNaturaYtelseDetaljer> gjenopptakelseNaturalytelseListe,
             List<RsPeriode> pleiepengerPerioder) {
+        log.info("Bruker egendefinert konstruktør for RsInntektsmelding objektet.");
         this.ytelse = ytelse;
         this.aarsakTilInnsending = aarsakTilInnsending;
         this.arbeidstakerFnr = arbeidstakerFnr;
@@ -92,13 +96,22 @@ public class RsInntektsmelding {
         this.pleiepengerPerioder = pleiepengerPerioder;
     }
 
+    @JsonIgnore
     public Optional<RsArbeidsgiver> getArbeidsgiver() { return Optional.ofNullable(arbeidsgiver); }
+    @JsonIgnore
     public Optional<RsArbeidsgiverPrivat> getArbeidsgiverPrivat() { return Optional.ofNullable(arbeidsgiverPrivat); }
+    @JsonIgnore
     public Optional<RsRefusjon> getRefusjon() { return Optional.ofNullable(refusjon); }
+    @JsonIgnore
     public Optional<RsOmsorgspenger> getOmsorgspenger() { return Optional.ofNullable(omsorgspenger); }
+    @JsonIgnore
     public Optional<RsSykepengerIArbeidsgiverperioden> getSykepengerIArbeidsgiverPerioden() { return Optional.ofNullable(sykepengerIArbeidsgiverperioden); }
+    @JsonIgnore
     public Optional<LocalDate> getStartdatoForeldrepengeperiode() { return Optional.ofNullable(startdatoForeldrepengeperiode); }
+    @JsonIgnore
     public Optional<List<RsNaturaYtelseDetaljer>> getOpphoerAvNaturalytelseListe() { return Optional.ofNullable(opphoerAvNaturalytelseListe); }
+    @JsonIgnore
     public Optional<List<RsNaturaYtelseDetaljer>> getGjenopptakelseNaturalytelseListe() { return Optional.ofNullable(gjenopptakelseNaturalytelseListe); }
+    @JsonIgnore
     public Optional<List<RsPeriode>> getPleiepengerPerioder() { return Optional.ofNullable(pleiepengerPerioder); }
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.inntektsmeldingstub.MeldingsType;
@@ -92,6 +93,23 @@ public class InntektsmeldingController {
 
         return ResponseEntity.ok(
                 service.saveMeldinger(meldinger, MeldingsType.TYPE_2018_12, eier)
+        );
+    }
+
+    @PostMapping("/2018/12TO")
+    public ResponseEntity<List<Inntektsmelding>> opprettInntektsmeldingerTO201812(
+            @RequestParam String eier,
+            @RequestBody RsInntektsmelding melding
+    ) {
+        try {
+            InntektsmeldingRequestValidator.validate(Collections.singletonList(melding), MeldingsType.TYPE_2018_12, eier);
+        } catch (ValidationException e) {
+            String errorstring = "Kunne ikke opprette inntektsmelding:\n" + e.getErrors();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorstring);
+        }
+
+        return ResponseEntity.ok(
+                service.saveMeldinger(Collections.singletonList(melding), MeldingsType.TYPE_2018_12, eier)
         );
     }
 
