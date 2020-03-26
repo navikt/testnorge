@@ -2,4 +2,4 @@ server.port: 8020
 
 #dolly.url: http://localhost:8020/api/v1
 
-fagsystem.tpsf.url: http://localhost:8050
+fagsystem.tpsf.url: https://tps-forvalteren-u2.nais.preprod.local

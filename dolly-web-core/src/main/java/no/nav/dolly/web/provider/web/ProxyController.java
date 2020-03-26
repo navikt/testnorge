@@ -3,6 +3,7 @@ package no.nav.dolly.web.provider.web;
 import static java.lang.String.format;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -24,16 +25,22 @@ public class ProxyController {
 
     @Value("${dolly.url}")
     private String dollyUrl;
+
     @Value("${fagsystem.arena.url}")
     private String arenaUrl;
+
     @Value("${fagsystem.instdata.url}")
     private String instUrl;
+
     @Value("${fagsystem.krrstub.url}")
     private String krrUrl;
+
     @Value("${fagsystem.sigrunstub.url}")
     private String sigrunUrl;
+
     @Value("${fagsystem.tpsf.url}")
     private String tpsfUrl;
+
     @Value("${fagsystem.udistub.url}")
     private String udiUrl;
 
@@ -134,7 +141,7 @@ public class ProxyController {
             throw new UnsupportedEncodingException(format("Incomplete url: %s", request.getRequestURI()));
         }
         String queryString = "";
-        if (request.getQueryString() != null) {
+        if (StringUtils.isNotBlank(request.getQueryString())) {
             queryString = URLDecoder.decode("?" + request.getQueryString(), StandardCharsets.UTF_8.name());
         }
 
