@@ -109,10 +109,6 @@ export default class DollyEndpoints {
 		return `${inntektstubBase}/${ident}`
 	}
 
-	static fasteOrgnummer() {
-		return fasteOrgnummerBase
-	}
-
 	//TESTPERSON-CONTROLLER
 	static slettPerson(ident) {
 		return `${identBase}/${ident}`
@@ -134,19 +130,19 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}/relasjon`
 	}
 
-	static poppInntekt(ident, env){
+	static poppInntekt(ident, env) {
 		return `${poppBase}/inntekt/${ident}/${env}`
 	}
 
-	static poppMiljoe(){
+	static poppMiljoe() {
 		return `${poppBase}/miljoe`
 	}
 
-	static getFasteDatasettTPSGruppe(gruppe){
+	static getFasteDatasettTPSGruppe(gruppe) {
 		return `${fasteDatasettBase}/tps/${gruppe}`
 	}
 
-	static getPersonnavn(){
+	static getPersonnavn() {
 		return `${uri}/personnavn`
 	}
 }

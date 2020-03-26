@@ -5,17 +5,17 @@ import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Se
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import {getPlaceholder, setNavn, setValue} from "../utils"
-import _get from "lodash/get";
+import { getPlaceholder, setNavn, setValue } from '../utils'
+import _get from 'lodash/get'
 
 export const Adressat = ({ formikBag }) => {
 	const addressatPath = 'pdlforvalter.kontaktinformasjonForDoedsbo.adressat'
 	const adressatType =
 		formikBag.values.pdlforvalter.kontaktinformasjonForDoedsbo.adressat.adressatType
 
-	const navnInfo = SelectOptionsOppslag('personnavn')
+	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
-	const dollyGruppeInfo = SelectOptionsOppslag('dollyGruppe')
+	const dollyGruppeInfo = SelectOptionsOppslag.hentGruppe()
 	const navnOgFnrOptions = SelectOptionsOppslag.formatOptions('navnOgFnr', dollyGruppeInfo)
 
 	const handleAfterChange = ({ value }) => {
@@ -39,7 +39,6 @@ export const Adressat = ({ formikBag }) => {
 			})
 	}
 
-
 	return (
 		<Kategori title="Adressat">
 			<FormikSelect
@@ -57,9 +56,11 @@ export const Adressat = ({ formikBag }) => {
 						label="Navn"
 						options={navnOptions}
 						size="large"
-						placeholder={getPlaceholder(formikBag.values,`${addressatPath}.kontaktperson`)}
+						placeholder={getPlaceholder(formikBag.values, `${addressatPath}.kontaktperson`)}
 						isLoading={navnInfo.loading}
-						onChange={navn => setNavn(navn, `${addressatPath}.kontaktperson`, formikBag.setFieldValue)}
+						onChange={navn =>
+							setNavn(navn, `${addressatPath}.kontaktperson`, formikBag.setFieldValue)
+						}
 						value={_get(formikBag.values, `${addressatPath}.kontaktperson.fornavn`)}
 						isClearable={false}
 						optionHeight={50}
@@ -94,16 +95,13 @@ export const Adressat = ({ formikBag }) => {
 						label="Navn"
 						options={navnOptions}
 						size="large"
-						placeholder={getPlaceholder(formikBag.values,`${addressatPath}.navn`)}
+						placeholder={getPlaceholder(formikBag.values, `${addressatPath}.navn`)}
 						isLoading={navnInfo.loading}
 						onChange={navn => setNavn(navn, `${addressatPath}.navn`, formikBag.setFieldValue)}
 						value={_get(formikBag.values, `${addressatPath}.navn.fornavn`)}
 						isClearable={false}
 					/>
-					<FormikDatepicker
-						name={`${addressatPath}.foedselsdato`}
-						label="Fødselsdato"
-					/>
+					<FormikDatepicker name={`${addressatPath}.foedselsdato`} label="Fødselsdato" />
 				</React.Fragment>
 			)}
 		</Kategori>
