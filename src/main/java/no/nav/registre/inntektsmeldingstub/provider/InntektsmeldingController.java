@@ -79,7 +79,7 @@ public class InntektsmeldingController {
         return ResponseEntity.ok(DBToRestMapper.mapDBMelding(service.findInntektsmelding(id)));
     }
 
-    @PostMapping("/2018/12")
+    @PostMapping(value = "/2018/12", consumes = "application/json;charset=UTF-8", produces = "application/json")
     public ResponseEntity<List<Inntektsmelding>> opprettInntektsmeldinger201812(
             @RequestParam String eier,
             @RequestBody List<RsInntektsmelding> meldinger
@@ -96,7 +96,7 @@ public class InntektsmeldingController {
         );
     }
 
-    @PostMapping(value = "/2018/12TO", consumes = "application/json")
+    @PostMapping(value = "/2018/12TO", consumes = "application/json;charset=UTF-8", produces = "application/json")
     public ResponseEntity<List<Inntektsmelding>> opprettInntektsmeldingerTO201812(
             @RequestParam String eier,
             @RequestBody RsInntektsmelding melding
