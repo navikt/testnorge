@@ -96,7 +96,7 @@ public class InntektsmeldingController {
         );
     }
 
-    @PostMapping("/2018/12TO")
+    @PostMapping(value = "/2018/12TO", consumes = "application/json")
     public ResponseEntity<List<Inntektsmelding>> opprettInntektsmeldingerTO201812(
             @RequestParam String eier,
             @RequestBody RsInntektsmelding melding
