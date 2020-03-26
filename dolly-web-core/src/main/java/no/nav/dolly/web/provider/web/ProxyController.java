@@ -52,7 +52,7 @@ public class ProxyController {
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, dollyUrl, API_URI + "/dolly");
+        String requestURL = createURL(request, dollyUrl + API_URI, API_URI + "/dolly");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
@@ -63,7 +63,7 @@ public class ProxyController {
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, arenaUrl, API_URI + "/arena");
+        String requestURL = createURL(request, arenaUrl + API_URI, API_URI + "/arena");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
@@ -74,7 +74,7 @@ public class ProxyController {
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, instUrl, API_URI + "/inst");
+        String requestURL = createURL(request, instUrl + API_URI, API_URI + "/inst");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
@@ -85,7 +85,7 @@ public class ProxyController {
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, krrUrl, API_URI + "/krr");
+        String requestURL = createURL(request, krrUrl + API_URI, API_URI + "/krr");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
@@ -96,7 +96,7 @@ public class ProxyController {
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, sigrunUrl, API_URI + "/sigrun");
+        String requestURL = createURL(request, sigrunUrl + API_URI, API_URI + "/sigrun");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
@@ -129,7 +129,7 @@ public class ProxyController {
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, udiUrl, API_URI + "/udi");
+        String requestURL = createURL(request, udiUrl + API_URI, API_URI + "/udi");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
