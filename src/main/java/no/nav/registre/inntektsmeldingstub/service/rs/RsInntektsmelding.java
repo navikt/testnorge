@@ -1,5 +1,6 @@
 package no.nav.registre.inntektsmeldingstub.service.rs;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -67,6 +68,29 @@ public class RsInntektsmelding {
     @JsonProperty
     @ApiModelProperty()
     private List<RsPeriode> pleiepengerPerioder;
+
+    @JsonCreator
+    public RsInntektsmelding(String ytelse, String aarsakTilInnsending, @Size(min = 11, max = 11) String arbeidstakerFnr, boolean naerRelasjon,
+            RsAvsendersystem avsendersystem, RsArbeidsgiver arbeidsgiver, RsArbeidsgiverPrivat arbeidsgiverPrivat, RsArbeidsforhold arbeidsforhold, RsRefusjon refusjon,
+            RsOmsorgspenger omsorgspenger, RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden, LocalDate startdatoForeldrepengeperiode,
+            List<RsNaturaYtelseDetaljer> opphoerAvNaturalytelseListe, List<RsNaturaYtelseDetaljer> gjenopptakelseNaturalytelseListe,
+            List<RsPeriode> pleiepengerPerioder) {
+        this.ytelse = ytelse;
+        this.aarsakTilInnsending = aarsakTilInnsending;
+        this.arbeidstakerFnr = arbeidstakerFnr;
+        this.naerRelasjon = naerRelasjon;
+        this.avsendersystem = avsendersystem;
+        this.arbeidsgiver = arbeidsgiver;
+        this.arbeidsgiverPrivat = arbeidsgiverPrivat;
+        this.arbeidsforhold = arbeidsforhold;
+        this.refusjon = refusjon;
+        this.omsorgspenger = omsorgspenger;
+        this.sykepengerIArbeidsgiverperioden = sykepengerIArbeidsgiverperioden;
+        this.startdatoForeldrepengeperiode = startdatoForeldrepengeperiode;
+        this.opphoerAvNaturalytelseListe = opphoerAvNaturalytelseListe;
+        this.gjenopptakelseNaturalytelseListe = gjenopptakelseNaturalytelseListe;
+        this.pleiepengerPerioder = pleiepengerPerioder;
+    }
 
     public Optional<RsArbeidsgiver> getArbeidsgiver() { return Optional.ofNullable(arbeidsgiver); }
     public Optional<RsArbeidsgiverPrivat> getArbeidsgiverPrivat() { return Optional.ofNullable(arbeidsgiverPrivat); }
