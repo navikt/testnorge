@@ -41,7 +41,6 @@ import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.service.TpsfPersonCache;
 
 @Slf4j
@@ -71,7 +70,6 @@ public class PdlForvalterClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    @Timed(name = "providers", tags = { "operation", "gjenopprettPdlForvalter" })
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
