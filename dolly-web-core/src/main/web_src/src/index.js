@@ -11,16 +11,20 @@ import AppConnector from './app/AppConnector'
 import history from './history'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Logger from './logger'
-import {v4 as uuid} from 'uuid';
+import { v4 as uuid } from 'uuid'
 
-window.uuid = uuid();
-window.onerror = (message) => {
+window.uuid = uuid()
+window.onerror = message => {
 	try {
-		Logger.error("Global feil", message, window.uuid)
+		Logger.error({
+			event: 'Global feil',
+			message: message,
+			uuid: window.uuid
+		})
 	} catch (e) {
-		console.error(e);
+		console.error(e)
 	}
-};
+}
 
 render(
 	<Provider store={store}>
