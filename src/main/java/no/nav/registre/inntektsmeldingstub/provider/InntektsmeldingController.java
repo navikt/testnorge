@@ -5,7 +5,6 @@ import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
 import no.nav.registre.inntektsmeldingstub.provider.validation.InntektsmeldingRequestValidator;
 import no.nav.registre.inntektsmeldingstub.service.DBToRestMapper;
 
-import no.nav.registre.inntektsmeldingstub.service.rs.RsTestObjekt;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLInntektsmeldingM;
 
 import org.springframework.http.HttpStatus;
@@ -80,7 +79,7 @@ public class InntektsmeldingController {
         return ResponseEntity.ok(DBToRestMapper.mapDBMelding(service.findInntektsmelding(id)));
     }
 
-    @PostMapping(value = "/2018/12", consumes = "application/json;charset=UTF-8", produces = "application/json")
+    @PostMapping(value = "/2018/12", consumes = "application/json", produces = "application/json")
     public ResponseEntity<List<Inntektsmelding>> opprettInntektsmeldinger201812(
             @RequestParam String eier,
             @RequestBody List<RsInntektsmelding> meldinger
@@ -96,27 +95,4 @@ public class InntektsmeldingController {
                 service.saveMeldinger(meldinger, MeldingsType.TYPE_2018_12, eier)
         );
     }
-
-    @PostMapping(value = "/2018/12TO", consumes = "application/json;charset=UTF-8", produces = "application/json")
-    public ResponseEntity<List<Inntektsmelding>> opprettInntektsmeldingerTO201812(
-            @RequestParam String eier,
-            @RequestBody RsInntektsmelding melding
-    ) {
-        try {
-            InntektsmeldingRequestValidator.validate(Collections.singletonList(melding), MeldingsType.TYPE_2018_12, eier);
-        } catch (ValidationException e) {
-            String errorstring = "Kunne ikke opprette inntektsmelding:\n" + e.getErrors();
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorstring);
-        }
-
-        return ResponseEntity.ok(
-                service.saveMeldinger(Collections.singletonList(melding), MeldingsType.TYPE_2018_12, eier)
-        );
-    }
-
-    @PostMapping("/testendepunkt")
-    public void test(@RequestBody RsTestObjekt testObjekt) {
-
-    }
-
 }
