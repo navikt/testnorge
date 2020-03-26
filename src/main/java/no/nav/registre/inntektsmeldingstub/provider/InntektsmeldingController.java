@@ -5,6 +5,7 @@ import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
 import no.nav.registre.inntektsmeldingstub.provider.validation.InntektsmeldingRequestValidator;
 import no.nav.registre.inntektsmeldingstub.service.DBToRestMapper;
 
+import no.nav.registre.inntektsmeldingstub.service.rs.RsTestObjekt;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLInntektsmeldingM;
 
 import org.springframework.http.HttpStatus;
@@ -111,6 +112,11 @@ public class InntektsmeldingController {
         return ResponseEntity.ok(
                 service.saveMeldinger(Collections.singletonList(melding), MeldingsType.TYPE_2018_12, eier)
         );
+    }
+
+    @PostMapping("/testendepunkt")
+    public void test(@RequestBody RsTestObjekt testObjekt) {
+
     }
 
 }
