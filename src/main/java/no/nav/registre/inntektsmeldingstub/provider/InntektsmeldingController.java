@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.inntektsmeldingstub.MeldingsType;
 import no.nav.registre.inntektsmeldingstub.service.InntektsmeldingService;
@@ -94,5 +96,19 @@ public class InntektsmeldingController {
         return ResponseEntity.ok(
                 service.saveMeldinger(meldinger, MeldingsType.TYPE_2018_12, eier)
         );
+    }
+
+    @PostMapping(value = "/map/2018/12", consumes = "application/json", produces = "application/xml") //
+    public List<no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM> mapInntektsmelding201812(
+            @RequestBody List<RsInntektsmelding> meldinger
+    ) {
+        return meldinger.stream().map(XmlInntektsmelding201812::createInntektsmelding).collect(Collectors.toList());
+    }
+
+    @PostMapping(value = "/map/2018/09", consumes = "application/json", produces = "application/xml") //
+    public List<no.seres.xsd.nav.inntektsmelding_m._20180924.XMLInntektsmeldingM> mapInntektsmelding201809(
+            @RequestBody List<RsInntektsmelding> meldinger
+    ) {
+        return meldinger.stream().map(XmlInntektsmelding201809::createInntektsmelding).collect(Collectors.toList());
     }
 }
