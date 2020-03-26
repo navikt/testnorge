@@ -3,7 +3,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { TpsfApi } from '~/service/Api'
 import { Adressevisning } from './Boadresse'
-import { Postadresse } from './Postadresse'
+import { PostadresseVisning } from './Postadresse'
 import { Historikk } from '~/components/ui/historikk/Historikk'
 
 export const Barn = ({ data, type }) => {
@@ -37,15 +37,12 @@ export const Barn = ({ data, type }) => {
 				)}
 				<TitleValue title="Er adoptert" value={Formatters.oversettBoolean(type === 'BARN')} />
 			</div>
-			{/* Postadresse refaktoreres med REG-7519. Da kan width=100% i div under fjernes */}
-			<div style={{ width: '100%' }}>
-				{!data.utenFastBopel &&
-					(data.boadresse.length > 0 ? (
-						<Historikk component={Adressevisning} propName="boadresse" data={data.boadresse} />
-					) : (
-						data.postadresse && <Postadresse postadresse={data.postadresse} />
-					))}
-			</div>
+			{data.boadresse.length > 0 && (
+				<Historikk component={Adressevisning} propName="boadresse" data={data.boadresse} />
+			)}
+			{data.postadresse.length > 0 && (
+				<Historikk component={PostadresseVisning} propName="postadresse" data={data.postadresse} />
+			)}
 		</>
 	)
 }
