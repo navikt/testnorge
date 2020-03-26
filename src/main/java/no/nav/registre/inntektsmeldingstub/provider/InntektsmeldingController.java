@@ -97,14 +97,14 @@ public class InntektsmeldingController {
         );
     }
 
-    @PostMapping(value = "/map/2018/12", consumes = "application/json", produces = {"application/xml", "application/json"})
-    public RsXml201812Response mapInntektsmelding201812(
-            @RequestBody List<RsInntektsmelding> meldinger
+    @PostMapping(value = "/map/2018/12", consumes = "application/json", produces = "application/xml")
+    public no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM mapInntektsmelding201812(
+            @RequestBody RsInntektsmelding melding
     ) {
-        return new RsXml201812Response(meldinger.stream().map(XmlInntektsmelding201812::createInntektsmelding).collect(Collectors.toList()));
+        return XmlInntektsmelding201812.createInntektsmelding(melding);
     }
 
-    @PostMapping(value = "/map/2018/09", consumes = "application/json", produces = {"application/xml", "application/json"})
+    @PostMapping(value = "/map/2018/09", consumes = "application/json", produces = "application/xml")
     public List<no.seres.xsd.nav.inntektsmelding_m._20180924.XMLInntektsmeldingM> mapInntektsmelding201809(
             @RequestBody List<RsInntektsmelding> meldinger
     ) {
