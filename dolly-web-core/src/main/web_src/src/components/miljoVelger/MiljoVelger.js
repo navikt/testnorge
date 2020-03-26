@@ -47,24 +47,17 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 						const category = environments[type]
 						const allDisabled = category.some(f => f.disabled)
 
-						const sortereNummer = category.map(env => env.id.match(/.{1,1}/g))
-						const sortereEnvs = []
-						sortereNummer.map((v, idx) => {
-							sortereEnvs.push(sortereNummer[idx][0] + sortereNummer[idx][1])
-						})
-						const sorterteEnvs = sortereEnvs.sort()
-
 						return (
 							<fieldset key={type} name={`Liste over ${type}-mijøer`}>
 								<h3>{type}-miljø</h3>
 								<div className="miljo-velger_checkboxes">
 									{category.map((env, idx) => (
 										<DollyCheckbox
-											key={sorterteEnvs[idx]}
-											id={sorterteEnvs[idx]}
+											key={env.id}
+											id={env.id}
 											disabled={env.disabled}
-											label={sorterteEnvs[idx]}
-											checked={values.includes(sorterteEnvs[idx])}
+											label={env.id}
+											checked={values.includes(env.id)}
 											onClick={onClick}
 											onChange={() => {}}
 											size={'xxsmall'}
@@ -75,7 +68,6 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 									<div className="miljo-velger_buttons">
 										<LinkButton text="Velg alle" onClick={e => velgAlle(type)} />
 										<LinkButton text="Fjern alle" onClick={e => fjernAlle(type)} />
-										<LinkButton text="sortenvs" onClick={e => formatereEnvs(category)} />
 									</div>
 								)}
 							</fieldset>
