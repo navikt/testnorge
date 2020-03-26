@@ -8,11 +8,17 @@ import { TimeloennetForm } from './timeloennetForm'
 import { PermisjonForm } from './permisjonForm'
 import { UtenlandsoppholdForm } from './utenlandsoppholdForm'
 import { ArbeidsavtaleForm } from './arbeidsavtaleForm'
-import { OrgnrForm } from './orgnrForm'
+import { OrgnummerToggle } from './orgnummerToggle'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 
 export const ArbeidsforholdForm = ({ path, formikBag }) => {
 	const arbeidsforhold = _get(formikBag.values, path)
+
+	const clearOrgnrIdent = aktoer => {
+		formikBag.setFieldValue(`${path}.arbeidsgiver.aktoertype`, aktoer.value)
+		formikBag.setFieldValue(`${path}.arbeidsgiver.orgnummer`, '')
+		formikBag.setFieldValue(`${path}.arbeidsgiver.ident`, '')
+	}
 
 	return (
 		<React.Fragment>
@@ -30,6 +36,7 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 					name={`${path}.arbeidsgiver.aktoertype`}
 					label="Type arbeidsgiver"
 					options={Options('aktoertype')}
+					onChange={clearOrgnrIdent}
 					size="medium"
 					isClearable={false}
 				/>
@@ -38,7 +45,7 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 				)}
 			</div>
 			{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
-				<OrgnrForm path={path} formikBag={formikBag} />
+				<OrgnummerToggle formikBag={formikBag} path={`${path}.arbeidsgiver.orgnummer`} />
 			)}
 
 			<ArbeidsavtaleForm formikBag={formikBag} path={path} />

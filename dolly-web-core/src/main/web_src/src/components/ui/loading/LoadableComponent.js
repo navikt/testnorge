@@ -14,7 +14,6 @@ const LoadableComponent = ({ onFetch, render }) => {
 	if (loading) {
 		return <Loading />
 	}
-
 	return render(data)
 }
 export default LoadableComponent

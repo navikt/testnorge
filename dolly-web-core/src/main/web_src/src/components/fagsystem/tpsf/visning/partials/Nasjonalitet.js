@@ -11,7 +11,7 @@ const Statsborgerskap = ({ statsborgerskap }) => (
 		<TitleValue
 			title="Statsborgerskap"
 			kodeverk={AdresseKodeverk.StatsborgerskapLand}
-			value={statsborgerskap.Statsborgerskap}
+			value={statsborgerskap.statsborgerskap}
 		/>
 		<TitleValue
 			title="Statsborgerskap fra"
@@ -34,14 +34,17 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 
 			<h3>Innvandring og utvandring</h3>
 
-			<DollyFieldArray data={innvandretUtvandret} header="Innvandret/utvandret">
+			<DollyFieldArray data={innvandretUtvandret} header={'Innvandret/utvandret'}>
 				{(id, idx) => (
 					<React.Fragment>
 						{innvandretUtvandret && (
 							<>
-								<TitleValue value={innvandretUtvandret[idx].innutvandret} />
 								<TitleValue
-									title="Land"
+									title={
+										innvandretUtvandret[idx].innutvandret === 'UTVANDRET'
+											? 'Utvandret til'
+											: 'Innvandret fra'
+									}
 									kodeverk="Landkoder"
 									value={innvandretUtvandret[idx].landkode}
 								/>

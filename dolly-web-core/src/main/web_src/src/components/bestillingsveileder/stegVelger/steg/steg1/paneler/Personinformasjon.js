@@ -67,6 +67,7 @@ export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => 
 					<Attributt attr={sm.attrs.harMellomnavn} />
 					<Attributt attr={sm.attrs.sprakKode} />
 					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
+					<Attributt attr={sm.attrs.harBankkontonr} />
 					<Attributt attr={sm.attrs.spesreg} />
 					<Attributt attr={sm.attrs.erForsvunnet} />
 				</AttributtKategori>
