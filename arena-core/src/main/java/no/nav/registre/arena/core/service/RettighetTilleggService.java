@@ -117,7 +117,7 @@ public class RettighetTilleggService {
         var aktivitetResponse = rettighetTiltakService.opprettTiltaksaktiviteter(rettigheter);
         for (var response : aktivitetResponse) {
             if (response.getFeiledeRettigheter() != null && !response.getFeiledeRettigheter().isEmpty()) {
-                log.warn("Kunne ikke opprette aktivitet på ident {}", response.getFeiledeRettigheter().get(0).getPersonident());
+                log.error("Kunne ikke opprette aktivitet på ident {}", response.getFeiledeRettigheter().get(0).getPersonident());
             }
         }
 

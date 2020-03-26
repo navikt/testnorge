@@ -25,11 +25,6 @@ public class ConsumerUtils {
 
     public static final String VEDTAK_TYPE_KODE_O = "O";
     public static final String UTFALL_JA = "JA";
-    public static final String CALL_ID_HEADER = "Nav-Call-Id";
-    public static final String CONSUMER_ID_HEADER = "Nav-Consumer-Id";
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String NAV_CALL_ID = "ORKESTRATOREN";
-    public static final String NAV_CONSUMER_ID = "ORKESTRATOREN";
 
     public RequestEntity createPostRequest(
             UriTemplate uri,

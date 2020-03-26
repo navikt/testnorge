@@ -205,7 +205,7 @@ public class RettighetAapService {
 
         for (var response : opprettPersonStatus.getStatus()) {
             if (response.getResponse().getHttpStatus().getStatus() != 200) {
-                log.warn(
+                log.error(
                         "Kunne ikke opprette ident {} i popp i miljø {}. Feilmelding: {}",
                         ident.replaceAll("[\r\n]", ""),
                         response.getMiljo().replaceAll("[\r\n]", ""),
@@ -225,7 +225,7 @@ public class RettighetAapService {
 
         for (var response : opprettInntektStatus.getStatus()) {
             if (response.getResponse().getHttpStatus().getStatus() != 200) {
-                log.warn(
+                log.error(
                         "Kunne ikke opprette inntekt på ident {} i popp i miljø {}. Feilmelding: {}",
                         ident.replaceAll("[\r\n]", ""),
                         response.getMiljo().replaceAll("[\r\n]", ""),

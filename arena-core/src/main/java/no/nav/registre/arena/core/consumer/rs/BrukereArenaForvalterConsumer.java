@@ -1,10 +1,10 @@
 package no.nav.registre.arena.core.consumer.rs;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.CALL_ID_HEADER;
-import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.CONSUMER_ID_HEADER;
-import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.NAV_CALL_ID;
-import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.NAV_CONSUMER_ID;
+import static no.nav.registre.arena.core.consumer.rs.util.Headers.CALL_ID;
+import static no.nav.registre.arena.core.consumer.rs.util.Headers.CONSUMER_ID;
+import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CALL_ID;
+import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CONSUMER_ID;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
@@ -52,8 +52,8 @@ public class BrukereArenaForvalterConsumer {
             List<NyBruker> nyeBrukere
     ) {
         var postRequest = RequestEntity.post(postBrukere.expand())
-                .header(CALL_ID_HEADER, NAV_CALL_ID)
-                .header(CONSUMER_ID_HEADER, NAV_CONSUMER_ID)
+                .header(CALL_ID, NAV_CALL_ID)
+                .header(CONSUMER_ID, NAV_CONSUMER_ID)
                 .body(Collections.singletonMap("nyeBrukere", nyeBrukere));
 
         return restTemplate.exchange(postRequest, NyeBrukereResponse.class).getBody();
@@ -96,8 +96,8 @@ public class BrukereArenaForvalterConsumer {
         var uri = new UriTemplate(refinedUrl);
 
         var getRequest = RequestEntity.get(uri.expand())
-                .header(CALL_ID_HEADER, NAV_CALL_ID)
-                .header(CONSUMER_ID_HEADER, NAV_CONSUMER_ID)
+                .header(CALL_ID, NAV_CALL_ID)
+                .header(CONSUMER_ID, NAV_CONSUMER_ID)
                 .build();
         var response = restTemplate.exchange(getRequest, NyeBrukereResponse.class).getBody();
         if (response != null) {
@@ -117,8 +117,8 @@ public class BrukereArenaForvalterConsumer {
 
         for (int page = 0; page < antallSider; page++) {
             var getRequest = RequestEntity.get(hentBrukerePage.expand(page))
-                    .header(CALL_ID_HEADER, NAV_CALL_ID)
-                    .header(CONSUMER_ID_HEADER, NAV_CONSUMER_ID)
+                    .header(CALL_ID, NAV_CALL_ID)
+                    .header(CONSUMER_ID, NAV_CONSUMER_ID)
                     .build();
             var response = restTemplate.exchange(getRequest, NyeBrukereResponse.class).getBody();
             if (response != null) {
@@ -135,8 +135,8 @@ public class BrukereArenaForvalterConsumer {
             String miljoe
     ) {
         var deleteRequest = RequestEntity.delete(slettBrukere.expand(miljoe, personident))
-                .header(CALL_ID_HEADER, NAV_CALL_ID)
-                .header(CONSUMER_ID_HEADER, NAV_CONSUMER_ID).build();
+                .header(CALL_ID, NAV_CALL_ID)
+                .header(CONSUMER_ID, NAV_CONSUMER_ID).build();
         log.info("Sletter ident {} fra Arena Forvalter i miljø {}.", personident.replaceAll("[\r\n]", ""), miljoe.replaceAll("[\r\n]", ""));
         var response = restTemplate.exchange(deleteRequest, String.class);
 

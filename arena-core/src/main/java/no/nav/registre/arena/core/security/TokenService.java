@@ -66,7 +66,6 @@ public class TokenService {
         RequestEntity getRequest = RequestEntity
                 .get(URI.create(url))
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
-                // .header(AUTHORIZATION, generateBasicAuthToken())
                 .header("username", username)
                 .header("password", password)
                 .build();

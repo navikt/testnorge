@@ -57,7 +57,7 @@ public class VedtakshistorikkService {
                 var tidligsteDato = finnTidligsteDato(aap);
                 var minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(MIN_ALDER_AAP), LocalDate.now()));
                 if (minimumAlder > MAX_ALDER_AAP) {
-                    log.warn("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}", minimumAlder);
+                    log.error("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}", minimumAlder);
                     continue;
                 }
                 var maksimumAlder = minimumAlder + 50;
@@ -179,7 +179,7 @@ public class VedtakshistorikkService {
                 rettighet.setBegrunnelse(BEGRUNNELSE);
                 var alderPaaVedtaksdato = Math.toIntExact(ChronoUnit.YEARS.between(foedselsdato, rettighet.getFraDato()));
                 if (alderPaaVedtaksdato < MIN_ALDER_UNG_UFOER || alderPaaVedtaksdato > MAX_ALDER_UNG_UFOER) {
-                    log.warn("Kan ikke opprette vedtak ung-ufør på ident som er {} år gammel.", alderPaaVedtaksdato);
+                    log.error("Kan ikke opprette vedtak ung-ufør på ident som er {} år gammel.", alderPaaVedtaksdato);
                     iterator.remove();
                 }
             }
