@@ -14,5 +14,5 @@ import lombok.Setter;
 public class HttpStatus {
 
     private String reasonPhrase;
-    private int status;
+    private Integer status;
 }
