@@ -15,7 +15,7 @@ interface FeedbackProps {
 	feedbackFor: string
 }
 
-const MAX_LENGTH = 800
+const MAX_LENGTH = 2000
 
 export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 	const [rating, setRating] = useState<Rating>()
