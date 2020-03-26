@@ -1,13 +1,13 @@
 import React from 'react'
 import { AppError } from './AppError'
-import Logger from '~/logger';
+import Logger from '~/logger'
 
 export class ErrorBoundary extends React.Component {
 	constructor(props) {
-		super(props);
+		super(props)
 		this.state = {
 			hasError: false
-		};
+		}
 	}
 
 	static getDerivedStateFromError(error) {
@@ -15,7 +15,11 @@ export class ErrorBoundary extends React.Component {
 	}
 
 	componentDidCatch(error, info) {
-		Logger.error("Gobal React feil", error.message + info.componentStack, window.uuid);
+		Logger.error({
+			event: `Gobal React feil: ${error.message}`,
+			message: error.message + info.componentStack,
+			uuid: window.uuid
+		})
 	}
 
 	render() {
@@ -28,7 +32,6 @@ export class ErrorBoundary extends React.Component {
 				/>
 			)
 		}
-
 		return children
 	}
 }

@@ -1,0 +1,29 @@
+@import (reference) '~lessVars';
+
+.thumbs-rating {
+	margin: 2px 0;
+
+	&__button {
+		border: 0;
+		padding: 0 8px;
+		border-radius: 50%;
+		margin: 0 2px;
+	}
+
+	&__button:focus {
+		outline: none;
+		box-shadow: 0 0 2px @color-nav-black;
+	}
+
+	&__icon {
+		fill: @color-darkblue;
+
+		&__left {
+			margin-top: -3px;
+		}
+
+		&__right {
+			margin-top: 5px;
+		}
+	}
+}
