@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { useState } from 'react'
-import _get = require('lodash/get')
+import _has = require('lodash/has')
+// @ts-ignore
+import useBoolean from '~/utils/hooks/useBoolean'
 // @ts-ignore
 import Button from '~/components/ui/button/Button'
 // @ts-ignore
@@ -17,7 +19,9 @@ interface Props {
 }
 
 export const Telefonnummer = ({ formikBag }: Props) => {
-	const [harToTlfnr, setHarToTlfnr] = useState(_get(formikBag.values, 'tpsf.telefonnummer_2'))
+	const [harToTlfnr, settToTlfnr, settEttTlfnr] = useBoolean(
+		_has(formikBag.values, 'tpsf.telefonnummer_2')
+	)
 
 	const paths = {
 		telefonLandskode_1: 'tpsf.telefonLandskode_1',
@@ -29,13 +33,13 @@ export const Telefonnummer = ({ formikBag }: Props) => {
 	const leggTilTlfnr = () => {
 		formikBag.setFieldValue('tpsf.telefonLandskode_2', '')
 		formikBag.setFieldValue('tpsf.telefonnummer_2', '')
-		setHarToTlfnr(true)
+		settToTlfnr()
 	}
 
 	const fjernTlfnr = () => {
 		formikBag.setFieldValue('tpsf.telefonLandskode_2', undefined)
 		formikBag.setFieldValue('tpsf.telefonnummer_2', undefined)
-		setHarToTlfnr(false)
+		settEttTlfnr()
 	}
 
 	return (
