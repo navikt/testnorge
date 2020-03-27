@@ -14,6 +14,7 @@ public class LogEvent {
     private String message;
     private LogMetadata metadata;
     private String uuid;
+    private Rating rating;
 
     public LogEvent(LogEventDTO dto, String userAgent, String host) {
         metadata = new LogMetadata(userAgent, host);
@@ -21,6 +22,7 @@ public class LogEvent {
         event = dto.getEvent();
         message = dto.getMessage();
         uuid = dto.getUuid();
+        rating = dto.getRating();
     }
 
     public Map<String, String> toPropertyMap() {
@@ -30,6 +32,9 @@ public class LogEvent {
         properties.put("log_host", metadata.getHost());
         properties.put("browser", metadata.getNameBrowser());
         properties.put("user-agent", metadata.getUserAgent());
+        if (rating != null) {
+            properties.put("rating", rating.name());
+        }
         return properties;
     }
 }
