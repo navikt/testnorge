@@ -32,7 +32,7 @@ public class GetOrganisasjon implements Callable<OrganisasjonResponse> {
             log.info("Henter {} fra Ereg i {}...", orgnummer, miljo);
             final URI url = new UriTemplate(this.url + "/organisasjon/{orgnummer}").expand(orgnummer, miljo);
             ResponseEntity<OrganisasjonResponse> entity = restTemplate.getForEntity(
-                    url,git
+                    url,
                     OrganisasjonResponse.class
             );
 
