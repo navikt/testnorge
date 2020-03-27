@@ -4,7 +4,7 @@ import config from '~/config'
 import Api from '~/api'
 import _isNil from 'lodash/isNil'
 
-const uri = `${config.services.dollyBackend}`
+const uri = `${config.services.dollyBackend}/dolly`
 
 export const SelectOptionsOppslag = {
 	hentOrgnr: () => Api.fetchJson(`${uri}/orgnummer`, 'GET'),

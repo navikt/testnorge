@@ -1,7 +1,7 @@
 import config from '~/config'
 import Request from '~/service/services/Request'
 
-const getAaregUrl = () => `${config.services.dollyBackend}/proxy/aareg`
+const getInntektstubUrl = () => `${config.services.dollyBackend}/proxy/inntektstub`
 
 const options = {
     headers: {
@@ -11,8 +11,8 @@ const options = {
 }
 
 export default {
-    getArbeidsforhold(ident, miljoe) {
-        const endpoint = `${getAaregUrl()}/arbeidsforhold/ident=${ident}&miljoe=${miljoe}`
+    getInntektsinformasjon(ident) {
+        const endpoint = `${getInntektstubUrl()}/inntektsinformasjon/?norske-identer=${ident}`
         return Request.getWithoutCredentials(endpoint, options)
     }
 }

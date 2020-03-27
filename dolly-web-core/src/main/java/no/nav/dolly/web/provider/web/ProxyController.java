@@ -50,6 +50,9 @@ public class ProxyController {
     @Value("${fagsystem.aareg.url}")
     private String aaregUrl;
 
+    @Value("${fagsystem.inntektstub.url}")
+    private String inntektstubUrl;
+
     private final ProxyService proxyService;
 
     @RequestMapping("/dolly/**")
@@ -140,38 +143,38 @@ public class ProxyController {
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
 
-    @RequestMapping("/aareg/**")
+    @RequestMapping("/proxy/aareg**")
     public ResponseEntity<String> aaaregProxy(
             @RequestBody(required = false) String body,
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, aaregUrl + API_URI, API_URI + "/aaregproxy");
+        String requestURL = createURL(request, aaregUrl + API_URI, API_URI + "/proxy/aareg");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
 
-    @RequestMapping("/pensjon/**")
+    @RequestMapping("/proxy/popp/**")
     public ResponseEntity<String> poppProxy(
             @RequestBody(required = false) String body,
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, poppUrl + API_URI, API_URI + "/pensjon");
+        String requestURL = createURL(request, poppUrl + API_URI, API_URI + "/proxy/popp");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
-//
-//    @RequestMapping("/inntektstub/**")
-//    public ResponseEntity<String> poppProxy(
-//            @RequestBody(required = false) String body,
-//            HttpMethod method,
-//            HttpServletRequest request) throws UnsupportedEncodingException {
-//
-//        String requestURL = createURL(request, inntektstubUrl + API_URI, API_URI + "/inntektstub");
-//
-//        return proxyService.proxyRequest(body, method, request, requestURL);
-//    }
+
+    @RequestMapping("/proxy/inntektstub**")
+    public ResponseEntity<String> inntektstubProxy(
+            @RequestBody(required = false) String body,
+            HttpMethod method,
+            HttpServletRequest request) throws UnsupportedEncodingException {
+
+        String requestURL = createURL(request, inntektstubUrl + "api/v2", API_URI + "/proxy/inntektstub");
+
+        return proxyService.proxyRequest(body, method, request, requestURL);
+    }
 //
 //    @RequestMapping("/pdlf/**")
 //    public ResponseEntity<String> poppProxy(

@@ -120,10 +120,6 @@ export default {
 		return Request.get(Endpoints.personoppslag(ident))
 	},
 
-	getInntektsinformasjon(ident) {
-		return Request.get(Endpoints.inntekterByIdent(ident))
-	},
-
 	getFasteOrgnummer() {
 		return Request.get(Endpoints.fasteOrgnummer())
 	},

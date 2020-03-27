@@ -9,9 +9,7 @@ const kodeverkBase = `${uri}/kodeverk`
 const bestillingBase = `${uri}/bestilling`
 const configBase = `${uri}/config`
 const openamBase = `${uri}/openam`
-const aaregBase = `${uri}/aareg/arbeidsforhold`
 const personoppslagBase = `${uri}/pdlperson`
-const inntektstubBase = `${uri}/inntektstub`
 const fasteOrgnummerBase = `${uri}/orgnummer`
 const fasteDatasettBase = `${uri}/fastedatasett`
 
@@ -92,16 +90,8 @@ export default class DollyEndpoints {
 		return `${bestillingBase}/stop/${bestillingId}`
 	}
 
-	static aareg() {
-		return aaregBase
-	}
-
 	static personoppslag(ident) {
 		return `${personoppslagBase}/ident/${ident}`
-	}
-
-	static inntekterByIdent(ident) {
-		return `${inntektstubBase}/${ident}`
 	}
 
 	//TESTPERSON-CONTROLLER
