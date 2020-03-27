@@ -2,6 +2,7 @@ import React from 'react'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
+import { ArbeidKodeverk } from '~/config/kodeverk'
 
 export const ArbeidsforholdVisning = ({ data }) => {
 	if (!data || data.length === 0) return false
@@ -15,7 +16,7 @@ export const ArbeidsforholdVisning = ({ data }) => {
 						<TitleValue
 							title="Arbeidsforholdstype"
 							value={id.arbeidsforholdstype}
-							kodeverk="Arbeidsforholdstyper"
+							kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
 						/>
 						<TitleValue title="Startdato" value={Formatters.formatStringDates(id.startdato)} />
 						<TitleValue title="Sluttdato" value={Formatters.formatStringDates(id.sluttdato)} />
@@ -26,13 +27,13 @@ export const ArbeidsforholdVisning = ({ data }) => {
 						<TitleValue
 							title="Avlønningstype"
 							value={id.avloenningstype}
-							kodeverk="Avlønningstyper"
+							kodeverk={ArbeidKodeverk.Avloenningstyper}
 						/>
-						<TitleValue title="Yrke" value={id.yrke} kodeverk="Yrker" />
+						<TitleValue title="Yrke" value={id.yrke} kodeverk={ArbeidKodeverk.Yrker} />
 						<TitleValue
 							title="Arbeidstidsordning"
 							value={id.arbeidstidsordning}
-							kodeverk="Arbeidstidsordninger"
+							kodeverk={ArbeidKodeverk.Arbeidstidsordninger}
 						/>
 						<TitleValue title="Stillingsprosent" value={id.stillingsprosent} />
 						<TitleValue

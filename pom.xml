@@ -39,6 +39,9 @@
         <logstash-logback-encoder.version>6.0</logstash-logback-encoder.version>
         <freg-security-oidc.version>3.3.5</freg-security-oidc.version>
         <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
+        <papertrailapp.version>1.0.0</papertrailapp.version>
+        <logstash-logback-encoder.version>5.1</logstash-logback-encoder.version>
     </properties>
 
     <dependencies>
@@ -47,13 +50,28 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-vault-config</artifactId>
             <version>${spring-cloud.version}</version>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>${logstash-logback-encoder.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.papertrailapp</groupId>
+                <artifactId>logback-syslog4j</artifactId>
+                <version>${papertrailapp.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
     <build>
         <plugins>

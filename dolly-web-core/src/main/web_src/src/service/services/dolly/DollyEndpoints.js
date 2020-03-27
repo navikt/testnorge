@@ -1,6 +1,6 @@
 import config from '~/config'
 
-const uri = `${config.services.dollyBackend}`
+const uri = `${config.services.dollyBackend}/dolly`
 
 const groupBase = `${uri}/gruppe`
 const identBase = `${uri}/ident`
@@ -14,6 +14,7 @@ const personoppslagBase = `${uri}/pdlperson`
 const poppBase = `${uri}/popp`
 const inntektstubBase = `${uri}/inntektstub`
 const fasteOrgnummerBase = `${uri}/orgnummer`
+const fasteDatasettBase = `${uri}/fastedatasett`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -45,7 +46,7 @@ export default class DollyEndpoints {
 	}
 
 	static brukerById(brukerId) {
-		return `${brukerBase}/brukerId`
+		return `${brukerBase}/${brukerId}`
 	}
 
 	static currentBruker() {
@@ -108,10 +109,6 @@ export default class DollyEndpoints {
 		return `${inntektstubBase}/${ident}`
 	}
 
-	static fasteOrgnummer() {
-		return fasteOrgnummerBase
-	}
-
 	//TESTPERSON-CONTROLLER
 	static slettPerson(ident) {
 		return `${identBase}/${ident}`
@@ -133,11 +130,19 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}/relasjon`
 	}
 
-	static poppInntekt(ident, env){
+	static poppInntekt(ident, env) {
 		return `${poppBase}/inntekt/${ident}/${env}`
 	}
 
-	static poppMiljoe(){
+	static poppMiljoe() {
 		return `${poppBase}/miljoe`
+	}
+
+	static getFasteDatasettTPSGruppe(gruppe) {
+		return `${fasteDatasettBase}/tps/${gruppe}`
+	}
+
+	static getPersonnavn() {
+		return `${uri}/personnavn`
 	}
 }

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { format } from 'date-fns'
 import { TpsfApi } from '~/service/Api'
 import Button from '~/components/ui/button/Button'
+import Logger from '~/logger'
 
 import './EksporterCSV.less'
 
@@ -26,6 +27,7 @@ export const EksporterCSV = ({ identer, gruppeId }) => {
 
 	const download = async () => {
 		setLoading(true)
+		Logger.log({ event: 'Eksporterer til excel' })
 		const identListe = identer.map(ident => ident.ident)
 		const { data } = await TpsfApi.getExcelForIdenter(identListe)
 		downloadCsvString(gruppeId, data)
