@@ -85,7 +85,7 @@ public class AltinnInntektService {
     private static final String DOKUMENTER_BREVKODE = "4936";
     private static final String DOKUMENTER_BERVKATEGORI = "ES";
 
-    private final String DUMMY_PDF_FILEPATH = "dummy.pdf";
+    private static final String DUMMY_PDF_FILEPATH = "dummy.pdf";
 
 
     /*public Map<String, List<RsInntekt>> lagAltinnMeldinger(
