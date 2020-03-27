@@ -30,9 +30,9 @@ public class GetOrganisasjon implements Callable<OrganisasjonResponse> {
     public OrganisasjonResponse call() {
         try {
             log.info("Henter {} fra Ereg i {}...", orgnummer, miljo);
-            final URI url = new UriTemplate(this.url + "/organisasjon/{orgnummer}").expand(miljo, orgnummer);
+            final URI url = new UriTemplate(this.url + "/organisasjon/{orgnummer}").expand(orgnummer, miljo);
             ResponseEntity<OrganisasjonResponse> entity = restTemplate.getForEntity(
-                    url,
+                    url,git
                     OrganisasjonResponse.class
             );
 
