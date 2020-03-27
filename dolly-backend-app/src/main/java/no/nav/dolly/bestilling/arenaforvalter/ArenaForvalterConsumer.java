@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.arenaforvalter;
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.domain.CommonKeys.KILDE;
+import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 
 import java.net.URI;
 import java.util.List;
@@ -36,7 +36,7 @@ public class ArenaForvalterConsumer {
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(format("%s%s?filter-personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, ident)))
                 .header(HEADER_NAV_CALL_ID, getCallId())
-                .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .build(), ArenaArbeidssokerBruker.class);
     }
 
@@ -45,7 +45,7 @@ public class ArenaForvalterConsumer {
         return restTemplate.exchange(RequestEntity.delete(
                 URI.create(format("%s%s?miljoe=%s&personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, environment, ident)))
                 .header(HEADER_NAV_CALL_ID, getCallId())
-                .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .build(), JsonNode.class);
     }
 
@@ -54,7 +54,7 @@ public class ArenaForvalterConsumer {
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_BRUKER))
                 .header(HEADER_NAV_CALL_ID, getCallId())
-                .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .body(arenaNyeBrukere), ArenaNyeBrukereResponse.class);
     }
 
@@ -63,7 +63,7 @@ public class ArenaForvalterConsumer {
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_ENVIRONMENTS))
                 .header(HEADER_NAV_CALL_ID, getCallId())
-                .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .build(), List.class);
     }
 

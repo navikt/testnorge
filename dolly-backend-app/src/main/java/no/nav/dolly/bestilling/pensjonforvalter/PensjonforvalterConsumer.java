@@ -4,7 +4,7 @@ import static java.lang.String.format;
 import static java.util.Collections.emptySet;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.domain.CommonKeys.KILDE;
+import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.net.URI;
@@ -50,7 +50,7 @@ public class PensjonforvalterConsumer {
                     RequestEntity.get(URI.create(providersProps.getPensjonforvalter().getUrl() + MILJOER_HENT_TILGJENGELIGE_URL))
                             .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                             .header(HEADER_NAV_CALL_ID, getCallId())
-                            .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                            .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                             .build(),
                     String[].class);
             return responseEntity.hasBody() ? Sets.newHashSet((String[]) responseEntity.getBody()) : emptySet();
@@ -69,7 +69,7 @@ public class PensjonforvalterConsumer {
                 RequestEntity.post(URI.create(providersProps.getPensjonforvalter().getUrl() + PENSJON_OPPRETT_PERSON_URL))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                         .header(HEADER_NAV_CALL_ID, getCallId())
-                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(opprettPersonRequest),
                 PensjonforvalterResponse.class).getBody();
@@ -82,7 +82,7 @@ public class PensjonforvalterConsumer {
                 RequestEntity.post(URI.create(providersProps.getPensjonforvalter().getUrl() + PENSJON_INNTEKT_URL))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                         .header(HEADER_NAV_CALL_ID, getCallId())
-                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(lagreInntektRequest),
                 PensjonforvalterResponse.class).getBody();
@@ -98,11 +98,11 @@ public class PensjonforvalterConsumer {
                                 PENSJON_INNTEKT_URL, ident, miljoe)))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                         .header(HEADER_NAV_CALL_ID, getCallId())
-                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .build(), JsonNode.class);
     }
 
     private static String getCallId() {
-        return format("%s %s", KILDE, UUID.randomUUID().toString());
+        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
     }
 }

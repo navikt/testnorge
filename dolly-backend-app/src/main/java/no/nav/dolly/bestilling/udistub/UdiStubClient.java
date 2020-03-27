@@ -34,7 +34,6 @@ public class UdiStubClient implements ClientRegister {
     private final TpsfService tpsfService;
 
     @Override
-    @Timed(name = "providers", tags = { "operation", "gjenopprettUdiStub" })
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getUdistub())) {
