@@ -2,16 +2,16 @@ package no.nav.registre.inntekt.service;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import lombok.extern.slf4j.Slf4j;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inntekt.consumer.rs.AltinnInntektConsumer;
 import no.nav.registre.inntekt.consumer.rs.DokmotConsumer;
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
 import no.nav.registre.inntekt.consumer.rs.TestnorgeAaregConsumer;
-import no.nav.registre.inntekt.domain.RsInntekt;
 import no.nav.registre.inntekt.domain.altinn.rs.AltinnInntektRequest;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsforhold;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiver;
@@ -23,7 +23,6 @@ import no.nav.registre.inntekt.domain.dokmot.Bruker;
 import no.nav.registre.inntekt.domain.dokmot.Dokument;
 import no.nav.registre.inntekt.domain.dokmot.Dokumentvariant;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
-import no.nav.registre.inntekt.provider.rs.requests.AltinnRequest;
 import no.nav.registre.inntekt.provider.rs.requests.DokmotRequest;
 import no.nav.registre.inntekt.utils.ValidationException;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
@@ -33,7 +32,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -41,11 +39,8 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -71,29 +66,29 @@ public class AltinnInntektService {
     private final AltinnInntektConsumer altinnInntektConsumer;
     private final DokmotConsumer dokmotConsumer;
 
-    private final String EIER = "DOLLY";
-    private final Boolean NAER_RELASJON = false;
-    private final String YTELSE = "Sykepenger";
-    private final String AARSAK_TIL_INNSENDING = "Endring";
-    private final String KONTAKTINFORMASJON_TELEFONNUMMER = "12345678";
-    private final String KONTAKTINFORMASJON_NAVN = "GUL BOLLE";
-    private final String AVSENDERSYSTEM_SYSTEMNAVN = "DOLLY";
-    private final String AVSENDERSYSTEM_SYSTEMVERSJON = "0.0.0";
-    private final String ARBEIDSFORHOLD_AARSAK_VED_ENDRING = "Tariffendring";
+    private static final String EIER = "DOLLY";
+    private static final Boolean NAER_RELASJON = false;
+    private static final String YTELSE = "Sykepenger";
+    private static final String AARSAK_TIL_INNSENDING = "Endring";
+    private static final String KONTAKTINFORMASJON_TELEFONNUMMER = "12345678";
+    private static final String KONTAKTINFORMASJON_NAVN = "GUL BOLLE";
+    private static final String AVSENDERSYSTEM_SYSTEMNAVN = "DOLLY";
+    private static final String AVSENDERSYSTEM_SYSTEMVERSJON = "0.0.0";
+    private static final String ARBEIDSFORHOLD_AARSAK_VED_ENDRING = "Tariffendring";
 
-    private final String JOURNALPOST_TYPE = "INNGAAENDE";
-    private final String AVSENDER_MOTTAKER_ID_TYPE = "ORGNR";
-    private final String BRUKER_ID_TYPE = "FNR";
-    private final String TEMA = "FOR";
-    private final String TITTEL = "Syntetisk Inntektsmelding";
-    private final String KANAL = "ALTINN";
-    private final String DOKUMENTER_BREVKODE = "4936";
-    private final String DOKUMENTER_BERVKATEGORI = "ES";
+    private static final String JOURNALPOST_TYPE = "INNGAAENDE";
+    private static final String AVSENDER_MOTTAKER_ID_TYPE = "ORGNR";
+    private static final String BRUKER_ID_TYPE = "FNR";
+    private static final String TEMA = "FOR";
+    private static final String TITTEL = "Syntetisk Inntektsmelding";
+    private static final String KANAL = "ALTINN";
+    private static final String DOKUMENTER_BREVKODE = "4936";
+    private static final String DOKUMENTER_BERVKATEGORI = "ES";
 
     private final String DUMMY_PDF_FILEPATH = "dummy.pdf";
 
 
-    public Map<String, List<RsInntekt>> lagAltinnMeldinger(
+    /*public Map<String, List<RsInntekt>> lagAltinnMeldinger(
             AltinnRequest altinnRequest,
             boolean opprettPaaEksisterende,
             boolean sendTilInntektskomponenten,
@@ -104,7 +99,7 @@ public class AltinnInntektService {
 
 
         return null;
-    }
+    }*/
 
     public List<String> lagAltinnMeldinger(AltinnDollyRequest dollyRequest) throws ValidationException {
         var miljoe = dollyRequest.getMiljoe();
@@ -120,6 +115,9 @@ public class AltinnInntektService {
         var altinnInntektMeldinger = new ArrayList<String>(inntekterAaOpprette.size());
         for (var inntekt : inntekterAaOpprette) {
             var nyesteArbeidsforhold = finnNyesteArbeidsforholdIOrganisasjon(ident, inntekt.getVirksomhetsnummer(), arbeidsforholdListe);
+            if (Objects.isNull(nyesteArbeidsforhold)) {
+                continue;
+            }
             var altinnInntektRequest = AltinnInntektRequest.builder()
                     .aarsakTilInnsending(AARSAK_TIL_INNSENDING)
                     .arbeidstakerFnr(ident)
@@ -189,27 +187,28 @@ public class AltinnInntektService {
             log.info("Kunne ikke finne " + filNavn);
         }
 
-        return null;
+        return new byte[0];
     }
 
     private static byte[] lastFil(File fil) throws IOException {
-        InputStream is = new FileInputStream(fil);
+        try (InputStream is = new FileInputStream(fil)) {
 
-        long length = fil.length();
-        if (length > Integer.MAX_VALUE) {
-            log.info("Fil for stor for å leses.");
-            throw new IOException("File too large");
+            long length = fil.length();
+            if (length > Integer.MAX_VALUE) {
+                log.info("Fil for stor for å leses.");
+                throw new IOException("File too large");
+            }
+            byte[] bytes = new byte[(int) length];
+
+            int offset = 0;
+            int numRead = 0;
+            while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+                offset += numRead;
+            }
+
+            is.close();
+            return bytes;
         }
-        byte[] bytes = new byte[(int)length];
-
-        int offset = 0;
-        int numRead = 0;
-        while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
-            offset += numRead;
-        }
-
-        is.close();
-        return bytes;
     }
 
     private JsonNode finnNyesteArbeidsforholdIOrganisasjon (
@@ -229,10 +228,9 @@ public class AltinnInntektService {
                 if (arbeidsforhold.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG).findValue(JSON_NODE_ORGANISASJONSNUMMER).asText().equals(organisasjonsnummer)) {
                     arbeidsforholdMedOppgittOrgnrListe.add(arbeidsforhold);
                 }
-            } else if (arbeidsforhold.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG).findValue("type").asText().equals(TYPE_PERSON)) {
-                if (arbeidsforhold.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG).findValue(JSON_NODE_OFFENTLIG_IDENT).asText().equals(organisasjonsnummer)) {
-                    arbeidsforholdMedOppgittOrgnrListe.add(arbeidsforhold);
-                }
+            } else if (arbeidsforhold.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG).findValue("type").asText().equals(TYPE_PERSON) &&
+                    arbeidsforhold.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG).findValue(JSON_NODE_OFFENTLIG_IDENT).asText().equals(organisasjonsnummer)) {
+                arbeidsforholdMedOppgittOrgnrListe.add(arbeidsforhold);
             }
         }
 
@@ -256,7 +254,7 @@ public class AltinnInntektService {
         return nyesteArbeidsforhold;
     }
 
-    private List<String> identerSomSkalHaInntekt(boolean opprettPaaEksisterende, Long avspillergruppeId, String miljoe) {
+    /*private List<String> identerSomSkalHaInntekt(boolean opprettPaaEksisterende, Long avspillergruppeId, String miljoe) {
         var arbeidereMedInntekt = hentArbeidereMedInntekt(avspillergruppeId, miljoe);
 
         return new ArrayList<>();
@@ -273,7 +271,7 @@ public class AltinnInntektService {
         identerIInntektstub.retainAll(identerIAareg);
 
         return identerIInntektstub;
-    }
+    }*/
 
 
 }

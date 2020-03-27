@@ -39,13 +39,15 @@ public class StsOidcService {
         return idToken.get(env);
     }
 
-    private synchronized void updateTokenIfNeeded(Environment env) {
-        if (shouldRefresh(env)) {
-            try {
-                updateToken(env);
-            } catch (RuntimeException e) {
-                if (isExpired(env)) {
-                    throw new FunctionalException("Sikkerhets-token kunne ikke fornyes.");
+    private void updateTokenIfNeeded(Environment env) {
+        synchronized (this) {
+            if (shouldRefresh(env)) {
+                try {
+                    updateToken(env);
+                } catch (RuntimeException e) {
+                    if (isExpired(env)) {
+                        throw new FunctionalException("Sikkerhets-token kunne ikke fornyes.");
+                    }
                 }
             }
         }
