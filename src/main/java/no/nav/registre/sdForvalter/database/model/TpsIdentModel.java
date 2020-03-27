@@ -41,14 +41,6 @@ public class TpsIdentModel extends FasteDataModel<TpsIdent> {
     @JsonProperty("by")
     private String city;
 
-    @OneToOne
-    @JoinColumn(name = "gruppe_id")
-    private GruppeModel gruppeModel;
-
-    @OneToOne
-    @JoinColumn(name = "opprinnelse_id")
-    private OpprinnelseModel opprinnelseModel;
-
     public TpsIdentModel(TpsIdent tpsIdent, OpprinnelseModel opprinnelseModel, GruppeModel gruppeModel) {
         super(gruppeModel, opprinnelseModel);
         fnr = tpsIdent.getFnr();
