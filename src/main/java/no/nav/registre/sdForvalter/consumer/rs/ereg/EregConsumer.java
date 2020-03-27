@@ -40,9 +40,9 @@ public class EregConsumer {
 
     public Map<String, Organisasjon> getOrganisasjoner(List<String> orgnummerList, String miljo) {
         ExecutorService executorService = Executors.newFixedThreadPool(5);
-        AsyncOrganisasjonMap list = new AsyncOrganisasjonMap();
-        orgnummerList.forEach(orgnummer -> list.add(getOrganisasjon(orgnummer, miljo, executorService)));
-        return list.getMap();
+        AsyncOrganisasjonMap asyncMap = new AsyncOrganisasjonMap();
+        orgnummerList.forEach(orgnummer -> asyncMap.put(orgnummer, getOrganisasjon(orgnummer, miljo, executorService)));
+        return asyncMap.getMap();
     }
 }
 

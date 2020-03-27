@@ -16,4 +16,12 @@ public class OrganisasjonStatus {
         this.fasteData = new Organisasjon(fasteData);
         this.fraEreg = fraEreg;
     }
+
+    @JsonProperty
+    private boolean isEqual() {
+        if (fraEreg == null) {
+            return false;
+        }
+        return fasteData.equals(fraEreg);
+    }
 }
