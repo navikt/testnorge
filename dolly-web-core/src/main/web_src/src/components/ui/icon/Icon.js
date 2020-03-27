@@ -7,6 +7,8 @@ import EditIcon from '~/assets/icons/nav-ikoner/line/SVG/01-edition/pencil-2.svg
 import Search from '~/assets/icons/nav-ikoner/line/SVG/01-edition/search.svg'
 import Skull from '~/assets/icons/nav-ikoner/line/SVG/01-edition/skull-1.svg'
 import ChatBubble from '~/assets/icons/nav-ikoner/line/SVG/06-comment-chat/bubble-chat-1.svg'
+import ThumbsUp from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/filled-version-thumbs-up-2.svg'
+import ThumbsDown from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/filled-version-thumbs-down-2.svg'
 import Star from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/rank-army-star-1.svg'
 import Envelope from '~/assets/icons/nav-ikoner/line/SVG/10-email/email-1.svg'
 import EmailText from '~/assets/icons/nav-ikoner/line/SVG/10-email/email-text.svg'
@@ -83,6 +85,8 @@ export const icons = {
 	'chevron-up': ChevronUp,
 	'chevron-left': ChevronLeft,
 	'chevron-right': ChevronRight,
+	ThumbsUp: ThumbsUp,
+	ThumbsDown: ThumbsDown,
 
 	man: Man,
 	manLight: ManLight,

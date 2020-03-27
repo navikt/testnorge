@@ -1,6 +1,6 @@
 import config from '~/config'
 
-const uri = `${config.services.dollyBackend}`
+const uri = `${config.services.dollyBackend}/dolly`
 
 const groupBase = `${uri}/gruppe`
 const identBase = `${uri}/ident`
@@ -46,7 +46,7 @@ export default class DollyEndpoints {
 	}
 
 	static brukerById(brukerId) {
-		return `${brukerBase}/brukerId`
+		return `${brukerBase}/${brukerId}`
 	}
 
 	static currentBruker() {
