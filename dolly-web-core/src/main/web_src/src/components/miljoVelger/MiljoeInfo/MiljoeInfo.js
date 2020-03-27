@@ -46,7 +46,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					<li>
 						POPP:&nbsp;
 						<TilgjengeligeMiljoer
-							endepunkt={DollyApi.getTilgjengeligePoppMiljoer}
+							endepunkt={PensjonApi.getTilgjengeligeMiljoer}
 							dollyEnvironments={dollyEnvironments}
 						/>
 					</li>
