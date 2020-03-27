@@ -10,7 +10,7 @@ import no.nav.registre.inntekt.domain.dokmot.AvsenderMottaker;
 import no.nav.registre.inntekt.domain.dokmot.Bruker;
 import no.nav.registre.inntekt.domain.dokmot.Dokument;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -34,7 +34,7 @@ public class DokmotRequest {
     @JsonProperty
     private String eksternReferanseId;
     @JsonProperty
-    private LocalDate datoMottatt;
+    private Date datoMottatt;
     @JsonProperty
     private List<Dokument> dokumenter;
 }

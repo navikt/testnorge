@@ -1,5 +1,7 @@
 package no.nav.registre.inntekt.service;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +29,18 @@ import no.nav.registre.inntekt.utils.ValidationException;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -45,9 +56,12 @@ public class AltinnInntektService {
 
     private static final String JSON_NODE_OPPLYSNINGSPLIKTIG = "opplysningspliktig";
     private static final String JSON_NODE_TYPE = "type";
+    private static final String JSON_NODE_ARBEIDSGIVER = "arbeidsgiver";
     private static final String JSON_NODE_ORGANISASJONSNUMMER = "organisasjonsnummer";
     private static final String JSON_NODE_OFFENTLIG_IDENT = "offentligIdent";
     private static final String JSON_NODE_ARBEIDSFORHOLD_ID = "arbeidsforholdId";
+    private static final String TYPE_ORGANISASJON = "Organisasjon";
+    private static final String TYPE_PERSON = "Person";
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
@@ -59,13 +73,13 @@ public class AltinnInntektService {
 
     private final String EIER = "DOLLY";
     private final Boolean NAER_RELASJON = false;
-    private final String YTELSE = "YTELSE PLASSHOLDER";
-    private final String AARSAK_TIL_INNSENDING = "MÅNEDSOPPGAVE";
+    private final String YTELSE = "Sykepenger";
+    private final String AARSAK_TIL_INNSENDING = "Endring";
     private final String KONTAKTINFORMASJON_TELEFONNUMMER = "12345678";
-    private final String KONTAKTINFORMASJON_NAVN = "KONTAKTINFORMASJON NAVN PLASSHOLDER";
+    private final String KONTAKTINFORMASJON_NAVN = "GUL BOLLE";
     private final String AVSENDERSYSTEM_SYSTEMNAVN = "DOLLY";
     private final String AVSENDERSYSTEM_SYSTEMVERSJON = "0.0.0";
-    private final String ARBEIDSFORHOLD_AARSAK_VED_ENDRING = "ÅRSAK VED ENDRING PLASSHOLDER";
+    private final String ARBEIDSFORHOLD_AARSAK_VED_ENDRING = "Tariffendring";
 
     private final String JOURNALPOST_TYPE = "INNGAAENDE";
     private final String AVSENDER_MOTTAKER_ID_TYPE = "ORGNR";
@@ -75,6 +89,8 @@ public class AltinnInntektService {
     private final String KANAL = "ALTINN";
     private final String DOKUMENTER_BREVKODE = "4936";
     private final String DOKUMENTER_BERVKATEGORI = "ES";
+
+    private final String DUMMY_PDF_FILEPATH = "dummy.pdf";
 
 
     public Map<String, List<RsInntekt>> lagAltinnMeldinger(
@@ -101,6 +117,7 @@ public class AltinnInntektService {
         }
 
         // TODO: Refaktorering -- dersom én av virksomhetsnumrene feiler, kutter alle. Beholder for MVP
+        var altinnInntektMeldinger = new ArrayList<String>(inntekterAaOpprette.size());
         for (var inntekt : inntekterAaOpprette) {
             var nyesteArbeidsforhold = finnNyesteArbeidsforholdIOrganisasjon(ident, inntekt.getVirksomhetsnummer(), arbeidsforholdListe);
             var altinnInntektRequest = AltinnInntektRequest.builder()
@@ -125,7 +142,8 @@ public class AltinnInntektService {
                                     .build()).build()).build();
 
             // Lag melding
-            var altinnInntektResponse = altinnInntektConsumer.getInntektsmeldingXml201812(Collections.singletonList(altinnInntektRequest), EIER);
+            var altinnInntektResponse = altinnInntektConsumer.getInntektsmeldingXml201812(altinnInntektRequest);
+            altinnInntektMeldinger.add(altinnInntektResponse);
 
             // Lagre melding i Joark
             var dokmotRequest = DokmotRequest.builder()
@@ -140,32 +158,83 @@ public class AltinnInntektService {
                     .tema(TEMA)
                     .tittel(TITTEL)
                     .kanal(KANAL)
-                    .eksternReferanseId("")
-                    .datoMottatt(inntekt.getDato())
+                    .eksternReferanseId("INGEN")
+                    .datoMottatt(Date.from(inntekt.getDato().atStartOfDay(ZoneId.systemDefault()).toInstant())) // Skal være java util Date
                     .dokumenter(Collections.singletonList(Dokument.builder()
                             .brevkode(DOKUMENTER_BREVKODE)
                             .dokumentkategori(DOKUMENTER_BERVKATEGORI)
                             .tittel(TITTEL)
-                            .dokumentvarianter(Collections.singletonList(
+                            .dokumentvarianter(Arrays.asList(
                                     Dokumentvariant.builder()
                                             .filtype("XML")
                                             .variantformat("ORIGINAL")
-                                            .fysiskDokument(altinnInntektResponse.get(0))
+                                            .fysiskDokument(Base64.getEncoder().encode(altinnInntektResponse.getBytes(UTF_8)))
+                                            .build(),
+                                    Dokumentvariant.builder()
+                                            .filtype("PDF")
+                                            .variantformat("ARKIV")
+                                            .fysiskDokument(encodeFilTilBase64Binary(DUMMY_PDF_FILEPATH))
                                             .build())).build())).build();
-            dokmotConsumer.opprettJournalpost(dokmotRequest);
+            dokmotConsumer.opprettJournalpost(dokmotRequest, miljoe);
         }
-        return new ArrayList<>();
+        return altinnInntektMeldinger;
+    }
+
+    private static byte[] encodeFilTilBase64Binary(String filNavn) {
+        try {
+            File fil = new File(filNavn);
+            byte[] bytes = lastFil(fil);
+            return Base64.getEncoder().encode(bytes);
+        } catch (IOException e) {
+            log.info("Kunne ikke finne " + filNavn);
+        }
+
+        return null;
+    }
+
+    private static byte[] lastFil(File fil) throws IOException {
+        InputStream is = new FileInputStream(fil);
+
+        long length = fil.length();
+        if (length > Integer.MAX_VALUE) {
+            log.info("Fil for stor for å leses.");
+            throw new IOException("File too large");
+        }
+        byte[] bytes = new byte[(int)length];
+
+        int offset = 0;
+        int numRead = 0;
+        while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+            offset += numRead;
+        }
+
+        is.close();
+        return bytes;
     }
 
     private JsonNode finnNyesteArbeidsforholdIOrganisasjon (
             String ident,
             String organisasjonsnummer,
             List<JsonNode> arbeidsforholdsListe) throws ValidationException {
+        /*
         var arbeidsforholdMedOppgittOrgnrListe = arbeidsforholdsListe.stream()
                 .filter(arbeidsforhold ->
                     arbeidsforhold.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG).findValue(JSON_NODE_ORGANISASJONSNUMMER).asText().equals(organisasjonsnummer) ||
                             arbeidsforhold.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG).findValue(JSON_NODE_OFFENTLIG_IDENT).asText().equals(organisasjonsnummer))
                 .collect(Collectors.toList());
+         */
+        var arbeidsforholdMedOppgittOrgnrListe = new ArrayList<JsonNode>();
+        for (var arbeidsforhold : arbeidsforholdsListe) {
+            if (arbeidsforhold.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG).findValue("type").asText().equals(TYPE_ORGANISASJON)) {
+                if (arbeidsforhold.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG).findValue(JSON_NODE_ORGANISASJONSNUMMER).asText().equals(organisasjonsnummer)) {
+                    arbeidsforholdMedOppgittOrgnrListe.add(arbeidsforhold);
+                }
+            } else if (arbeidsforhold.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG).findValue("type").asText().equals(TYPE_PERSON)) {
+                if (arbeidsforhold.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG).findValue(JSON_NODE_OFFENTLIG_IDENT).asText().equals(organisasjonsnummer)) {
+                    arbeidsforholdMedOppgittOrgnrListe.add(arbeidsforhold);
+                }
+            }
+        }
 
         if (arbeidsforholdMedOppgittOrgnrListe.isEmpty()) {
             throw new ValidationException(Collections.singletonList("Ingen arbeidsforhold hos organisasjonsnummer: \"" +

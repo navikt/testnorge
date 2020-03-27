@@ -89,6 +89,11 @@
             <artifactId>aordningen-arbeidsforhold-v1</artifactId>
             <version>1.9</version>
         </dependency>
+        <dependency>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
+            <artifactId>nav-altinn-inntektsmelding</artifactId>
+            <version>1.2019.08.16-13.46-35cbdfd492d4</version>
+        </dependency>
     </dependencies>
 
     <build>
