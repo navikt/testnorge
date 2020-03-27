@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.aareg;
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeys.KILDE;
 import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -25,7 +26,6 @@ import no.nav.dolly.properties.ProvidersProps;
 @RequiredArgsConstructor
 public class AaregConsumer {
 
-    private static final String CONSUMER = "Dolly";
     private static final String AAREGDATA_URL = "/api/v1/arbeidsforhold";
     private static final String OPPRETT_ARBEIDSFORHOLD = "%s" + AAREGDATA_URL;
     private static final String OPPDATER_ARBEIDSFORHOLD = "%s" + AAREGDATA_URL;
@@ -40,7 +40,7 @@ public class AaregConsumer {
         RequestEntity postRequest =
                 RequestEntity.post(URI.create(format(OPPRETT_ARBEIDSFORHOLD, providersProps.getAaregdata().getUrl())))
                         .header(AUTHORIZATION, getUserIdToken())
-                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .body(request);
         return restTemplate.exchange(postRequest, AaregResponse.class).getBody();
@@ -51,7 +51,7 @@ public class AaregConsumer {
         RequestEntity putRequest =
                 RequestEntity.put(URI.create(format(OPPDATER_ARBEIDSFORHOLD, providersProps.getAaregdata().getUrl())))
                         .header(AUTHORIZATION, getUserIdToken())
-                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .body(request);
         return restTemplate.exchange(putRequest, AaregResponse.class).getBody();
@@ -62,7 +62,7 @@ public class AaregConsumer {
         RequestEntity getRequest =
                 RequestEntity.get(URI.create(format(HENT_ARBEIDSFORHOLD, providersProps.getAaregdata().getUrl(), ident, miljoe)))
                         .header(AUTHORIZATION, getUserIdToken())
-                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .build();
         return restTemplate.exchange(getRequest, Map[].class);
@@ -73,13 +73,13 @@ public class AaregConsumer {
         RequestEntity deleteRequest =
                 RequestEntity.delete(URI.create(format(SLETT_ARBEIDSFORHOLD, providersProps.getAaregdata().getUrl(), ident)))
                         .header(AUTHORIZATION, getUserIdToken())
-                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .build();
         return restTemplate.exchange(deleteRequest, AaregResponse.class).getBody();
     }
 
     private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
+        return format("%s %s", KILDE, UUID.randomUUID().toString());
     }
 }

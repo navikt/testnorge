@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Service
@@ -27,6 +28,7 @@ public class InntektstubConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
+    @Timed(name = "providers", tags = { "operation", "inntk_getInntekter" })
     public ResponseEntity getInntekter(String ident) {
 
         return restTemplate.exchange(RequestEntity.get(
@@ -34,6 +36,7 @@ public class InntektstubConsumer {
                 .build(), JsonNode.class);
     }
 
+    @Timed(name = "providers", tags = { "operation", "inntk_deleteInntekter" })
     public ResponseEntity deleteInntekter(String ident) {
 
         return restTemplate.exchange(RequestEntity.delete(
@@ -41,6 +44,7 @@ public class InntektstubConsumer {
                 .build(), Inntektsinformasjon.class);
     }
 
+    @Timed(name = "providers", tags = { "operation", "inntk_postInntekter" })
     public ResponseEntity<Inntektsinformasjon[]> postInntekter(List<Inntektsinformasjon> inntektsinformasjon) {
 
         return restTemplate.exchange(RequestEntity.post(
@@ -48,6 +52,7 @@ public class InntektstubConsumer {
                 .body(inntektsinformasjon), Inntektsinformasjon[].class);
     }
 
+    @Timed(name = "providers", tags = { "operation", "inntk_validerInntekt" })
     public ResponseEntity validerInntekter(ValiderInntekt validerInntekt) {
 
         return restTemplate.exchange(RequestEntity.post(
