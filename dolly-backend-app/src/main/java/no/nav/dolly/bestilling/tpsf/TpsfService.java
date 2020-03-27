@@ -87,13 +87,13 @@ public class TpsfService {
         return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), CheckStatusResponse.class) : null;
     }
 
-    @Timed(name = "providers", tags = { "operation", "tpsf_opprettIdenterTpsf" })
+    @Timed(name = "providers", tags = { "operation", "tpsf_opprettIdenter" })
     public List<String> opprettIdenterTpsf(TpsfBestilling request) {
         ResponseEntity<Object> response = postToTpsf(TPSF_OPPRETT_URL, request);
         return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), List.class) : null;
     }
 
-    @Timed(name = "providers", tags = { "operation", "tpsf_sendIdenterTilTps" })
+    @Timed(name = "providers", tags = { "operation", "tpsf_sendIdenterTilMiljoe" })
     public RsSkdMeldingResponse sendIdenterTilTpsFraTPSF(List<String> identer, List<String> environments) {
         validateEnvironments(environments);
         ResponseEntity<Object> response = postToTpsf(TPSF_SEND_TPS_FLERE_URL, new TpsfIdenterMiljoer(identer, environments));

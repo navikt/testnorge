@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.aareg.domain.AaregOppdaterRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Component
@@ -34,6 +35,7 @@ public class AaregConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
+    @Timed(name = "providers", tags = { "operation", "aareg_opprettArbeidforhold" })
     public AaregResponse opprettArbeidsforhold(AaregOpprettRequest request) {
         RequestEntity postRequest =
                 RequestEntity.post(URI.create(format(OPPRETT_ARBEIDSFORHOLD, providersProps.getAaregdata().getUrl())))
@@ -44,6 +46,7 @@ public class AaregConsumer {
         return restTemplate.exchange(postRequest, AaregResponse.class).getBody();
     }
 
+    @Timed(name = "providers", tags = { "operation", "aareg_oppdaterArbeidforhold" })
     public AaregResponse oppdaterArbeidsforhold(AaregOppdaterRequest request) {
         RequestEntity putRequest =
                 RequestEntity.put(URI.create(format(OPPDATER_ARBEIDSFORHOLD, providersProps.getAaregdata().getUrl())))
@@ -54,6 +57,7 @@ public class AaregConsumer {
         return restTemplate.exchange(putRequest, AaregResponse.class).getBody();
     }
 
+    @Timed(name = "providers", tags = { "operation", "aareg_getArbeidforhold" })
     public ResponseEntity<Map[]> hentArbeidsforhold(String ident, String miljoe) {
         RequestEntity getRequest =
                 RequestEntity.get(URI.create(format(HENT_ARBEIDSFORHOLD, providersProps.getAaregdata().getUrl(), ident, miljoe)))
@@ -64,6 +68,7 @@ public class AaregConsumer {
         return restTemplate.exchange(getRequest, Map[].class);
     }
 
+    @Timed(name = "providers", tags = { "operation", "aareg_deleteArbeidsforhold" })
     public AaregResponse slettArbeidsforholdFraAlleMiljoer(String ident) {
         RequestEntity deleteRequest =
                 RequestEntity.delete(URI.create(format(SLETT_ARBEIDSFORHOLD, providersProps.getAaregdata().getUrl(), ident)))
