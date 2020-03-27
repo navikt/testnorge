@@ -8,6 +8,9 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import no.nav.registre.sdForvalter.consumer.rs.ereg.command.GetOrganisasjon;
 import no.nav.registre.sdForvalter.consumer.rs.response.ereg.OrganisasjonResponse;
@@ -28,13 +31,17 @@ public class EregConsumer {
         this.eregUrl = eregUrl;
     }
 
-    private CompletableFuture<OrganisasjonResponse> getOrganisasjon(String orgnummer, String miljo) {
-        return CompletableFuture.supplyAsync(() -> new GetOrganisasjon(eregUrl, orgnummer, miljo, restTemplate).call());
+    private CompletableFuture<OrganisasjonResponse> getOrganisasjon(String orgnummer, String miljo, Executor executor) {
+        return CompletableFuture.supplyAsync(
+                () -> new GetOrganisasjon(eregUrl, miljo, orgnummer, restTemplate).call(),
+                executor
+        );
     }
 
     public Map<String, Organisasjon> getOrganisasjoner(List<String> orgnummerList, String miljo) {
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
         AsyncOrganisasjonMap list = new AsyncOrganisasjonMap();
-        orgnummerList.forEach(orgnummer -> list.add(getOrganisasjon(orgnummer, miljo)));
+        orgnummerList.forEach(orgnummer -> list.add(getOrganisasjon(orgnummer, miljo, executorService)));
         return list.getMap();
     }
 }

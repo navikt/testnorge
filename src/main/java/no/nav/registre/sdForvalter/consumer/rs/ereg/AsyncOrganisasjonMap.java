@@ -23,8 +23,11 @@ public class AsyncOrganisasjonMap {
         Map<String, Organisasjon> organisasjoner = new HashMap<>();
         futureList.forEach(completable -> {
             try {
-                Organisasjon organisasjon = new Organisasjon(completable.get());
-                organisasjoner.put(organisasjon.getOrgnummer(), organisasjon);
+                OrganisasjonResponse response = completable.get();
+                if(response != null){
+                    Organisasjon organisasjon = new Organisasjon(response);
+                    organisasjoner.put(organisasjon.getOrgnummer(), organisasjon);
+                }
             } catch (Exception e) {
                 log.error("Klarte ikke å hente ut organisasjon fra ereg", e);
             }
