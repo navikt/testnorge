@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.sts.StsOidcService;
 
@@ -41,6 +42,7 @@ public class PensjonforvalterConsumer {
     private final ProvidersProps providersProps;
     private final StsOidcService stsOidcService;
 
+    @Timed(name = "providers", tags = { "operation", "pen_getMiljoer" })
     public Set<String> getMiljoer() {
 
         try {
@@ -60,6 +62,7 @@ public class PensjonforvalterConsumer {
         }
     }
 
+    @Timed(name = "providers", tags = { "operation", "pen_opprettPerson" })
     public PensjonforvalterResponse opprettPerson(OpprettPersonRequest opprettPersonRequest) {
 
         return restTemplate.exchange(
@@ -72,6 +75,7 @@ public class PensjonforvalterConsumer {
                 PensjonforvalterResponse.class).getBody();
     }
 
+    @Timed(name = "providers", tags = { "operation", "pen_lagreInntekt" })
     public PensjonforvalterResponse lagreInntekt(LagreInntektRequest lagreInntektRequest) {
 
         return restTemplate.exchange(
@@ -84,6 +88,7 @@ public class PensjonforvalterConsumer {
                 PensjonforvalterResponse.class).getBody();
     }
 
+    @Timed(name = "providers", tags = { "operation", "pen_getInntekter" })
     public ResponseEntity getInntekter(String ident, String miljoe) {
 
         return restTemplate.exchange(
