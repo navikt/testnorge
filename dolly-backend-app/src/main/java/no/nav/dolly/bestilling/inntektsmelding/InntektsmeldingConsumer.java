@@ -2,9 +2,9 @@ package no.nav.dolly.bestilling.inntektsmelding;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
+import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.domain.CommonKeys.KILDE;
 
 import java.net.URI;
 import java.util.List;
@@ -39,7 +39,7 @@ public class InntektsmeldingConsumer {
             ResponseEntity responseEntity = restTemplate.exchange(
                     RequestEntity.get(URI.create(providersProps.getInntektsmelding().getUrl() + MILJOER_URL))
                             .header(HEADER_NAV_CALL_ID, getNavCallId())
-                            .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                            .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                             .build(),
                     String[].class);
             return responseEntity.hasBody() ? Lists.newArrayList((String[]) responseEntity.getBody()) : emptyList();
@@ -55,7 +55,7 @@ public class InntektsmeldingConsumer {
         return restTemplate.exchange(
                 RequestEntity.delete(URI.create(format(DELETE_FMT_BLD, providersProps.getInntektsmelding().getUrl(), ident, environment)))
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
-                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .build(), String.class);
     }
 
@@ -63,11 +63,11 @@ public class InntektsmeldingConsumer {
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getInntektsmelding().getUrl() + POST_FMT_BLD))
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
-                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .body(inntekstsmelding), String.class);
     }
 
     private static String getNavCallId() {
-        return format("%s %s", KILDE, UUID.randomUUID().toString());
+        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
     }
 }

@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.inntektskomponenten;
+package no.nav.dolly.bestilling.inntektstub;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
@@ -14,9 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.inntektskomponenten.domain.InntektsinformasjonWrapper;
-import no.nav.dolly.bestilling.inntektskomponenten.domain.Inntektsinformasjon;
-import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
+import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
+import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
@@ -24,7 +23,7 @@ import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class InntektskomponentenClient implements ClientRegister {
+public class InntektatubClient implements ClientRegister {
 
     private final InntektstubConsumer inntektstubConsumer;
     private final MapperFacade mapperFacade;

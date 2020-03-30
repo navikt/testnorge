@@ -11,8 +11,8 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.inntektskomponenten.domain.Inntektsinformasjon;
-import no.nav.dolly.bestilling.inntektskomponenten.domain.ValiderInntekt;
+import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
+import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 
