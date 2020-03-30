@@ -1,7 +1,7 @@
 import config from '~/config'
 import Request from '~/service/services/Request'
 
-const getAaregUrl = () => `${config.services.dollyBackend}/proxy/aareg`
+const getAaregUrl = () => `${config.services.proxyBackend}/aareg`
 
 const options = {
     headers: {

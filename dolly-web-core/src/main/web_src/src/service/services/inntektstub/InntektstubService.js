@@ -1,7 +1,7 @@
 import config from '~/config'
 import Request from '~/service/services/Request'
 
-const getInntektstubUrl = () => `${config.services.dollyBackend}/proxy/inntektstub`
+const getInntektstubUrl = () => `${config.services.proxyBackend}/inntektstub`
 
 const options = {
     headers: {

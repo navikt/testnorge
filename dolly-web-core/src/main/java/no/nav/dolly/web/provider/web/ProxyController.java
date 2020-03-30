@@ -18,10 +18,11 @@ import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api")
 public class ProxyController {
 
     public static final String API_URI = "/api/v1";
+    public static final String PROXY_URI = "/api/proxy";
 
     @Value("${dolly.url}")
     private String dollyUrl;
@@ -55,90 +56,90 @@ public class ProxyController {
 
     private final ProxyService proxyService;
 
-    @RequestMapping("/dolly/**")
+    @RequestMapping("/v1/**")
     public ResponseEntity<String> dollyProxy(
             @RequestBody(required = false) String body,
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, dollyUrl + API_URI, API_URI + "/dolly");
+        String requestURL = createURL(request, dollyUrl + API_URI, API_URI );
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
 
-    @RequestMapping("/arena/**")
+    @RequestMapping("/proxy/arena/**")
     public ResponseEntity<String> arenaProxy(
             @RequestBody(required = false) String body,
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, arenaUrl + API_URI, API_URI + "/arena");
+        String requestURL = createURL(request, arenaUrl + API_URI, PROXY_URI + "/arena");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
 
-    @RequestMapping("/inst/**")
+    @RequestMapping("/proxy/inst/**")
     public ResponseEntity<String> instProxy(
             @RequestBody(required = false) String body,
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, instUrl + API_URI, API_URI + "/inst");
+        String requestURL = createURL(request, instUrl + API_URI, PROXY_URI + "/inst");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
 
-    @RequestMapping("/krr/**")
+    @RequestMapping("/proxy/krr/**")
     public ResponseEntity<String> krrProxy(
             @RequestBody(required = false) String body,
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, krrUrl + API_URI, API_URI + "/krr");
+        String requestURL = createURL(request, krrUrl + API_URI, PROXY_URI + "/krr");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
 
-    @RequestMapping("/sigrun/**")
+    @RequestMapping("/proxy/sigrun/**")
     public ResponseEntity<String> sigrunProxy(
             @RequestBody(required = false) String body,
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, sigrunUrl + API_URI, API_URI + "/sigrun");
+        String requestURL = createURL(request, sigrunUrl + API_URI, PROXY_URI + "/sigrun");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
 
-    @RequestMapping("/tpsf/**")
+    @RequestMapping("/proxy/tpsf/**")
     public ResponseEntity<String> tpsfProxy(
             @RequestBody(required = false) String body,
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, tpsfUrl + API_URI, API_URI + "/tpsf");
+        String requestURL = createURL(request, tpsfUrl + API_URI, PROXY_URI + "/tpsf");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
 
-    @RequestMapping("/kontaktinfo/**")
+    @RequestMapping("/proxy/kontaktinfo/**")
     public ResponseEntity<String> kontaktInfoProxy(
             @RequestBody(required = false) String body,
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, tpsfUrl + "/api", API_URI + "/kontaktinfo");
+        String requestURL = createURL(request, tpsfUrl + "/api", PROXY_URI + "/kontaktinfo");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
 
-    @RequestMapping("/udi/**")
+    @RequestMapping("/proxy/udi/**")
     public ResponseEntity<String> udiProxy(
             @RequestBody(required = false) String body,
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, udiUrl + API_URI, API_URI + "/udi");
+        String requestURL = createURL(request, udiUrl + API_URI, PROXY_URI + "/udi");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
@@ -149,7 +150,7 @@ public class ProxyController {
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, aaregUrl + API_URI, API_URI + "/proxy/aareg");
+        String requestURL = createURL(request, aaregUrl + API_URI, PROXY_URI + "/aareg");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
@@ -160,7 +161,7 @@ public class ProxyController {
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, poppUrl + API_URI, API_URI + "/proxy/popp");
+        String requestURL = createURL(request, poppUrl + API_URI, PROXY_URI + "/popp");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
@@ -171,21 +172,10 @@ public class ProxyController {
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, inntektstubUrl + "api/v2", API_URI + "/proxy/inntektstub");
+        String requestURL = createURL(request, inntektstubUrl + "api/v2", PROXY_URI + "/inntektstub");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
-//
-//    @RequestMapping("/pdlf/**")
-//    public ResponseEntity<String> poppProxy(
-//            @RequestBody(required = false) String body,
-//            HttpMethod method,
-//            HttpServletRequest request) throws UnsupportedEncodingException {
-//
-//        String requestURL = createURL(request, pdlfUrl + API_URI, API_URI + "/pdlf");
-//
-//        return proxyService.proxyRequest(body, method, request, requestURL);
-//    }
 
     private static String createURL(HttpServletRequest request, String host, String splitUri)
             throws UnsupportedEncodingException {

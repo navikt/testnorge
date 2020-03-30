@@ -1,7 +1,7 @@
 import config from '~/config'
 import Request from '~/service/services/Request'
 
-const getPensjonUrl = () => `${config.services.dollyBackend}/proxy/popp`
+const getPensjonUrl = () => `${config.services.proxyBackend}/popp`
 
 const options = {
     headers: {
