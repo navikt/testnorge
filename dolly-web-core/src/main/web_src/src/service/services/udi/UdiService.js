@@ -1,7 +1,7 @@
 import config from '~/config'
 import Request from '~/service/services/Request'
 
-const getUdiUrl = () => `${config.services.dollyBackend}/udi`
+const getUdiUrl = () => `${config.services.proxyBackend}/udi`
 
 export default {
 	getPerson(ident) {
