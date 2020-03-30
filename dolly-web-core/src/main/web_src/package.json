@@ -87,6 +87,7 @@
 		"@babel/plugin-proposal-export-default-from": "^7.8.3",
 		"@babel/plugin-proposal-object-rest-spread": "^7.7.4",
 		"@babel/plugin-syntax-dynamic-import": "^7.7.4",
+		"@babel/plugin-transform-arrow-functions": "^7.8.3",
 		"@babel/preset-env": "^7.7.4",
 		"@babel/preset-react": "^7.7.4",
 		"@types/lodash": "^4.14.149",

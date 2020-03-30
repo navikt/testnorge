@@ -66,6 +66,7 @@ module.exports = {
 			},
 			{
 				test: /\.ts(x?)$/,
+				// use: ['babel-loader', 'ts-loader']
 				use: ['ts-loader']
 			}
 		]
