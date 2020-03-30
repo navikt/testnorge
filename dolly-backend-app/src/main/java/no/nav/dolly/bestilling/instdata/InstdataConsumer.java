@@ -30,7 +30,7 @@ public class InstdataConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
-    @Timed(name = "providers", tags = { "operation", "inst_getMiljoer" })
+    @Timed(name = "consumer", tags = { "operation", "inst_getMiljoer" })
     public ResponseEntity getMiljoer() {
         return restTemplate.exchange(
                 RequestEntity.get(URI.create(format(INSTMILJO_URL, providersProps.getInstdata().getUrl())))
@@ -39,7 +39,7 @@ public class InstdataConsumer {
                         .build(), String[].class);
     }
 
-    @Timed(name = "providers", tags = { "operation", "inst_deleteInstdata" })
+    @Timed(name = "consumer", tags = { "operation", "inst_deleteInstdata" })
     public ResponseEntity deleteInstdata(String ident, String environment) {
         return restTemplate.exchange(
                 RequestEntity.delete(URI.create(format(DELETE_FMT_BLD, providersProps.getInstdata().getUrl(), ident, environment)))
@@ -48,7 +48,7 @@ public class InstdataConsumer {
                         .build(), InstdataResponse[].class);
     }
 
-    @Timed(name = "providers", tags = { "operation", "inst_postInstdata" })
+    @Timed(name = "consumer", tags = { "operation", "inst_postInstdata" })
     public ResponseEntity postInstdata(List<Instdata> instdata, String environment) {
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(format(POST_FMT_BLD, providersProps.getInstdata().getUrl(), environment)))

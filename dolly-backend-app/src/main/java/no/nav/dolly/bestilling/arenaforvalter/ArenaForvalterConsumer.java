@@ -31,7 +31,7 @@ public class ArenaForvalterConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
-    @Timed(name = "providers", tags = { "operation", "arena_getIdent" })
+    @Timed(name = "consumer", tags = { "operation", "arena_getIdent" })
     public ResponseEntity getIdent(String ident) {
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(format("%s%s?filter-personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, ident)))
@@ -40,7 +40,7 @@ public class ArenaForvalterConsumer {
                 .build(), ArenaArbeidssokerBruker.class);
     }
 
-    @Timed(name = "providers", tags = { "operation", "arena_deleteIdent" })
+    @Timed(name = "consumer", tags = { "operation", "arena_deleteIdent" })
     public ResponseEntity deleteIdent(String ident, String environment) {
         return restTemplate.exchange(RequestEntity.delete(
                 URI.create(format("%s%s?miljoe=%s&personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, environment, ident)))
@@ -49,7 +49,7 @@ public class ArenaForvalterConsumer {
                 .build(), JsonNode.class);
     }
 
-    @Timed(name = "providers", tags = { "operation", "arena_postData" })
+    @Timed(name = "consumer", tags = { "operation", "arena_postData" })
     public ResponseEntity<ArenaNyeBrukereResponse> postArenadata(ArenaNyeBrukere arenaNyeBrukere) {
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_BRUKER))
@@ -58,7 +58,7 @@ public class ArenaForvalterConsumer {
                 .body(arenaNyeBrukere), ArenaNyeBrukereResponse.class);
     }
 
-    @Timed(name = "providers", tags = { "operation", "arena_getEnvironments" })
+    @Timed(name = "consumer", tags = { "operation", "arena_getEnvironments" })
     public ResponseEntity<List> getEnvironments() {
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_ENVIRONMENTS))

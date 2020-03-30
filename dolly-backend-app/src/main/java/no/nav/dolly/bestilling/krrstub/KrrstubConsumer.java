@@ -31,7 +31,7 @@ public class KrrstubConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
-    @Timed(name = "providers", tags = { "operation", "krrstub_getKontaktdata" })
+    @Timed(name = "consumer", tags = { "operation", "krrstub_getKontaktdata" })
     public ResponseEntity getDigitalKontaktdata(String ident) {
 
         return restTemplate.exchange(
@@ -42,7 +42,7 @@ public class KrrstubConsumer {
                         .build(), DigitalKontaktdata[].class);
     }
 
-    @Timed(name = "providers", tags = { "operation", "krrstub_createKontaktdata" })
+    @Timed(name = "consumer", tags = { "operation", "krrstub_createKontaktdata" })
     public ResponseEntity<Object> createDigitalKontaktdata(DigitalKontaktdata digitalKontaktdata) {
 
         return restTemplate.exchange(
@@ -53,7 +53,7 @@ public class KrrstubConsumer {
                         .body(digitalKontaktdata), Object.class);
     }
 
-    @Timed(name = "providers", tags = { "operation", "krrstub_deleteKontaktdata" })
+    @Timed(name = "consumer", tags = { "operation", "krrstub_deleteKontaktdata" })
     public ResponseEntity<Object> deleteDigitalKontaktdata(Long id) {
 
         return restTemplate.exchange(
