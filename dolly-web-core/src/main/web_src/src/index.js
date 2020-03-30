@@ -1,6 +1,7 @@
 // Import all CSS først
 import './styles/main.less'
 import '~/utils/FormatIso'
+import './polyfill'
 
 import React from 'react'
 import { render } from 'react-dom'

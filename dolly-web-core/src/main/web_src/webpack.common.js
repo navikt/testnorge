@@ -13,9 +13,14 @@ const gitRevisionPlugin = new GitRevisionPlugin({
 })
 
 module.exports = {
-	entry: {
-		app: './src/index.js'
-	},
+	entry: [
+		'whatwg-fetch',
+		'events-polyfill',
+		'core-js/stable',
+		'regenerator-runtime/runtime',
+		'./src/index.js'
+	],
+
 	output: {
 		path: path.join(__dirname, 'dist/dev'),
 		filename: 'bundle.js',
@@ -66,8 +71,7 @@ module.exports = {
 			},
 			{
 				test: /\.ts(x?)$/,
-				// use: ['babel-loader', 'ts-loader']
-				use: ['ts-loader']
+				use: ['babel-loader']
 			}
 		]
 	}
