@@ -1,7 +1,7 @@
 import config from '~/config'
 import Request from '~/service/services/Request'
 
-const getInstUrl = () => `${config.services.dollyBackend}/inst`
+const getInstUrl = () => `${config.services.proxyBackend}/inst`
 
 export default {
 	getPerson(ident, env) {
