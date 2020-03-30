@@ -54,6 +54,9 @@ public class ProxyController {
     @Value("${fagsystem.inntektstub.url}")
     private String inntektstubUrl;
 
+    @Value("${fagsystem.pdlperson.url}")
+    private String pdlPersonUrl;
+
     private final ProxyService proxyService;
 
     @RequestMapping("/v1/**")
@@ -144,7 +147,7 @@ public class ProxyController {
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
 
-    @RequestMapping("/proxy/aareg**")
+    @RequestMapping("/proxy/aareg/**")
     public ResponseEntity<String> aaaregProxy(
             @RequestBody(required = false) String body,
             HttpMethod method,
@@ -166,16 +169,26 @@ public class ProxyController {
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
 
-    @RequestMapping("/proxy/inntektstub**")
+    @RequestMapping("/proxy/inntektstub/**")
     public ResponseEntity<String> inntektstubProxy(
             @RequestBody(required = false) String body,
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, inntektstubUrl + "api/v2", PROXY_URI + "/inntektstub");
-
+        String requestURL = createURL(request, inntektstubUrl + "/api/v2", PROXY_URI + "/inntektstub");
+        System.out.println(requestURL);
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
+
+//    @RequestMapping("/proxy/pdlperson/**")
+//    public ResponseEntity<String> pdlPersonProxy(
+//            HttpServletRequest request){
+//
+//        String ident = request.getRequestURI().split("pdlperson/")[1];
+//        String requestURL = pdlPersonUrl + "/graphql";
+//
+//        return proxyService.pdlPersonRequest(requestURL, ident);
+//    }
 
     private static String createURL(HttpServletRequest request, String host, String splitUri)
             throws UnsupportedEncodingException {
