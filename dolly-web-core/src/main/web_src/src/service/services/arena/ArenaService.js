@@ -1,7 +1,7 @@
 import config from '~/config'
 import Request from '~/service/services/Request'
 
-const getArenaUrl = () => `${config.services.proxyBackend}/proxy/arena`
+const getArenaUrl = () => `${config.services.proxyBackend}/arena`
 
 const options = {
 	headers: {
