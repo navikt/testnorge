@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.registre.sdForvalter.domain.status.ereg.OranisasjonStatusMap;
+import no.nav.registre.sdForvalter.domain.status.ereg.OrganisasjonStatusMap;
 import no.nav.registre.sdForvalter.service.EregStatusService;
 
 @RestController
@@ -18,10 +18,11 @@ public class StatusController {
     private final EregStatusService eregStatusService;
 
     @GetMapping("/ereg")
-    public ResponseEntity<OranisasjonStatusMap> getEregStatus(
+    public ResponseEntity<OrganisasjonStatusMap> getEregStatus(
             @RequestParam("miljo") String miljo,
+            @RequestParam(value = "equal", required = false) Boolean equal,
             @RequestParam(value = "gruppe", required = false) String gruppe
     ) {
-        return ResponseEntity.ok(eregStatusService.getStatus(miljo, gruppe));
+        return ResponseEntity.ok(eregStatusService.getStatus(miljo, gruppe, equal));
     }
 }

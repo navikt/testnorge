@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Value
-public class OranisasjonStatusMap {
+public class OrganisasjonStatusMap {
 
     @JsonProperty
     private String miljo;
@@ -15,7 +16,8 @@ public class OranisasjonStatusMap {
     @JsonProperty
     private Map<String, OrganisasjonStatus> map = new HashMap<>();
 
-    public void put(String orgnummer, OrganisasjonStatus status) {
-        map.put(orgnummer, status);
+    public OrganisasjonStatusMap(String miljo, List<OrganisasjonStatus> statuses) {
+        this.miljo = miljo;
+        statuses.forEach(status -> map.put(status.getOrgnummer(), status));
     }
 }
