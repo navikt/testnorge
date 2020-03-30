@@ -1,6 +1,6 @@
 import config from '~/config'
 
-const uri = `${config.services.dollyBackend}/dolly`
+const uri = `${config.services.dollyBackend}`
 
 const groupBase = `${uri}/gruppe`
 const identBase = `${uri}/ident`

@@ -44,6 +44,14 @@ const _getTpsfBestillingData = data => {
 		obj('Forsvunnet dato', Formatters.formatDate(data.forsvunnetDato)),
 		obj('Har bankkontonummer', Formatters.oversettBoolean(data.harBankkontonr)),
 		obj('Bankkonto opprettet', Formatters.formatDate(data.bankkontonrRegdato)),
+		obj(
+			data.telefonnummer_2 ? 'Telefonnummer 1' : 'Telefonnummer',
+			data.telefonnummer_1 && `${data.telefonLandskode_1} ${data.telefonnummer_1}`
+		),
+		obj(
+			'Telefonnummer 2',
+			data.telefonnummer_2 && `${data.telefonLandskode_2} ${data.telefonnummer_2}`
+		),
 		obj('Egenansatt', Formatters.oversettBoolean(data.egenansattDatoFom))
 	]
 }
