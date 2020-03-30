@@ -146,7 +146,7 @@ public class DollyBestillingService {
             TpsfBestilling tpsfBestilling = nonNull(request.getTpsf()) ? mapperFacade.map(request.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
             tpsfBestilling.setAntall(1);
 
-            RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endrePerson(bestilling.getIdent(), tpsfBestilling);
+            RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(bestilling.getIdent(), tpsfBestilling);
             sendIdenterTilTPS(request.getEnvironments(),
                     oppdaterPersonResponse.getIdentTupler().stream()
                             .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);

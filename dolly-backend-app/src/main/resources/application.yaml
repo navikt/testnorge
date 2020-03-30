@@ -37,7 +37,7 @@ spring:
 
 management:
   endpoints:
-    enabled-by-default: false
+    enabled-by-default: true
     web:
       base-path: /internal
       exposure.include: prometheus,heapdump

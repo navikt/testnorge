@@ -1,3 +1,24 @@
+fragment folkeregistermetadataDetails on Folkeregistermetadata {
+    aarsak
+    ajourholdstidspunkt
+    gyldighetstidspunkt
+    kilde
+    opphoerstidspunkt
+    sekvens
+}
+
+fragment metadataDetails on Metadata {
+    endringer {
+        kilde
+        registrert
+        registrertAv
+        systemkilde
+        type
+    }
+    master
+    opplysningsId
+}
+
 query($ident: ID!, $historikk: Boolean!) {
     hentPerson(ident: $ident) {
         falskIdentitet {
@@ -15,17 +36,100 @@ query($ident: ID!, $historikk: Boolean!) {
                 kjoenn
             },
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
+        bostedsadresse(historikk: $historikk) {
+            angittFlyttedato,
+            coAdressenavn,
+            vegadresse {
+                matrikkelId,
+                husbokstav,
+                husnummer,
+                adressenavn,
+                bruksenhetsnummer,
+                tilleggsnavn,
+                postnummer,
+                kommunenummer,
+                koordinater {
+                    x,
+                    y,
+                    z
+                    kvalitet
+                }
+            },
+            matrikkeladresse {
+                matrikkelId,
+                bruksenhetsnummer,
+                tilleggsnavn,
+                postnummer,
+                kommunenummer,
+                koordinater {
+                    x,
+                    y,
+                    z
+                    kvalitet
+                }
+            },
+            ukjentBosted {
+                bostedskommune
+            },
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        },
+        oppholdsadresse(historikk: $historikk) {
+            utenlandskAdresse {
+                adressenavn,
+                bygningsinformasjon,
+                postboks,
+                postkode,
+                byEllerStedsnavn,
+                distriktEllerRegion,
+                landkode
+            },
+            vegadresse {
+                matrikkelId,
+                husbokstav,
+                husnummer,
+                adressenavn,
+                bruksenhetsnummer,
+                tilleggsnavn,
+                postnummer,
+                kommunenummer,
+                koordinater {
+                    x,
+                    y,
+                    z
+                    kvalitet
+                }
+            },
+            matrikkeladresse {
+                matrikkelId,
+                bruksenhetsnummer,
+                tilleggsnavn,
+                postnummer,
+                kommunenummer,
+                koordinater {
+                    x,
+                    y,
+                    z
+                    kvalitet
+                }
+            },
+            oppholdsadressedato,
+            oppholdAnnetSted,
+            coAdressenavn,
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        }
         deltBosted(historikk: $historikk) {
             startdatoForKontrakt,
             sluttdatoForKontrakt,
@@ -33,24 +137,41 @@ query($ident: ID!, $historikk: Boolean!) {
                 adressegradering,
                 coAdressenavn
             },
+            coAdressenavn,
+            vegadresse {
+                matrikkelId,
+                bruksenhetsnummer,
+                tilleggsnavn,
+                postnummer,
+                kommunenummer,
+                koordinater {
+                    x,
+                    y,
+                    z
+                    kvalitet
+                }
+            },
+            matrikkeladresse {
+                matrikkelId,
+                bruksenhetsnummer,
+                tilleggsnavn,
+                postnummer,
+                kommunenummer,
+                koordinater {
+                    x,
+                    y,
+                    z
+                    kvalitet
+                }
+            },
+            ukjentBosted {
+                bostedskommune
+            },
             folkeregistermetadata {
-                ajourholdstidspunkt,
-                gyldighetstidspunkt,
-                opphoerstidspunkt,
-                aarsak,
-                kilde,
-                sekvens
+                ...folkeregistermetadataDetails
             }
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         familierelasjoner {
@@ -58,25 +179,68 @@ query($ident: ID!, $historikk: Boolean!) {
             relatertPersonsRolle,
             minRolleForPerson,
             folkeregistermetadata {
-                ajourholdstidspunkt,
-                gyldighetstidspunkt,
-                opphoerstidspunkt,
-                aarsak,
-                kilde,
-                sekvens
+                ...folkeregistermetadataDetails
             }
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
-        }
+        },
+        kontaktadresse(historikk: $historikk) {
+            gyldigFraOgMed,
+            gyldigTilOgMed,
+            type,
+            coAdressenavn,
+            postboksadresse {
+                postbokseier,
+                postboks,
+                postnummer
+            },
+            vegadresseForPost {
+                matrikkelId,
+                husbokstav,
+                husnummer,
+                adressenavn,
+                bruksenhetsnummer,
+                tilleggsnavn,
+                postnummer,
+                kommunenummer,
+                koordinater {
+                    x,
+                    y,
+                    z
+                    kvalitet
+                }
+            },
+            postadresseIFrittFormat {
+                adresselinje1,
+                adresselinje2,
+                adresselinje3,
+                postnummer
+            },
+            utenlandskAdresse {
+                adressenavn,
+                bygningsinformasjon,
+                postboks,
+                postkode,
+                byEllerStedsnavn,
+                distriktEllerRegion,
+                landkode
+            },
+            utenlandskAdresseIFrittFormat {
+                adresselinje1,
+                adresselinje2,
+                adresselinje3,
+                postkode,
+                byEllerStedsnavn,
+                landkode
+            }
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        },
         kontaktinformasjonForDoedsbo(historikk: $historikk) {
             skifteform,
             attestutstedelsesdato,
@@ -122,15 +286,7 @@ query($ident: ID!, $historikk: Boolean!) {
                 landkode
             },
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         utenlandskIdentifikasjonsnummer(historikk: $historikk) {
@@ -138,36 +294,16 @@ query($ident: ID!, $historikk: Boolean!) {
             utstederland,
             opphoert,
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         adressebeskyttelse(historikk: $historikk) {
             gradering,
             folkeregistermetadata {
-                ajourholdstidspunkt,
-                gyldighetstidspunkt,
-                opphoerstidspunkt,
-                aarsak,
-                kilde
+                ...folkeregistermetadataDetails
             }
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         foedsel {
@@ -177,50 +313,22 @@ query($ident: ID!, $historikk: Boolean!) {
             foedested,
             foedekommune,
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         doedsfall {
             doedsdato,
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         kjoenn(historikk: $historikk) {
             kjoenn,
             folkeregistermetadata {
-                ajourholdstidspunkt,
-                gyldighetstidspunkt,
-                opphoerstidspunkt,
-                aarsak,
-                kilde
+                ...folkeregistermetadataDetails
             }
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         navn(historikk: $historikk) {
@@ -234,66 +342,29 @@ query($ident: ID!, $historikk: Boolean!) {
                 etternavn
             },
             folkeregistermetadata {
-                ajourholdstidspunkt,
-                gyldighetstidspunkt,
-                opphoerstidspunkt,
-                aarsak,
-                kilde,
-                sekvens
+                ...folkeregistermetadataDetails
             }
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         folkeregisterpersonstatus(historikk: $historikk) {
             status,
             forenkletStatus,
             folkeregistermetadata {
-                ajourholdstidspunkt,
-                gyldighetstidspunkt,
-                opphoerstidspunkt,
-                aarsak,
-                kilde
+                ...folkeregistermetadataDetails
             }
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         identitetsgrunnlag(historikk: $historikk) {
             status,
             folkeregistermetadata {
-                ajourholdstidspunkt,
-                gyldighetstidspunkt,
-                opphoerstidspunkt,
-                aarsak,
-                kilde
+                ...folkeregistermetadataDetails
             }
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         tilrettelagtKommunikasjon {
@@ -304,15 +375,7 @@ query($ident: ID!, $historikk: Boolean!) {
                 spraak
             }
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         fullmakt(historikk: $historikk) {
@@ -322,15 +385,7 @@ query($ident: ID!, $historikk: Boolean!) {
             gyldigFraOgMed,
             gyldigTilOgMed
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         folkeregisteridentifikator(historikk: $historikk) {
@@ -338,43 +393,19 @@ query($ident: ID!, $historikk: Boolean!) {
             status,
             type,
             folkeregistermetadata {
-                ajourholdstidspunkt,
-                gyldighetstidspunkt,
-                opphoerstidspunkt,
-                aarsak,
-                kilde
+                ...folkeregistermetadataDetails
             }
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         statsborgerskap(historikk: $historikk) {
             land,
             folkeregistermetadata {
-                ajourholdstidspunkt,
-                gyldighetstidspunkt,
-                opphoerstidspunkt,
-                aarsak,
-                kilde
+                ...folkeregistermetadataDetails
             },
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         sikkerhetstiltak {
@@ -387,15 +418,7 @@ query($ident: ID!, $historikk: Boolean!) {
             gyldigFraOgMed,
             gyldigTilOgMed,
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         opphold(historikk: $historikk) {
@@ -403,22 +426,10 @@ query($ident: ID!, $historikk: Boolean!) {
             oppholdFra,
             oppholdTil,
             folkeregistermetadata {
-                ajourholdstidspunkt,
-                gyldighetstidspunkt,
-                opphoerstidspunkt,
-                aarsak,
-                kilde
+                ...folkeregistermetadataDetails
             },
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         sivilstand(historikk: $historikk) {
@@ -431,22 +442,10 @@ query($ident: ID!, $historikk: Boolean!) {
             relatertVedSivilstand,
             bekreftelsesdato,
             folkeregistermetadata {
-                ajourholdstidspunkt,
-                gyldighetstidspunkt,
-                opphoerstidspunkt,
-                aarsak,
-                kilde
+                ...folkeregistermetadataDetails
             },
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         telefonnummer {
@@ -454,59 +453,27 @@ query($ident: ID!, $historikk: Boolean!) {
             nummer,
             prioritet,
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         innflyttingTilNorge {
             fraflyttingsland,
             fraflyttingsstedIUtlandet,
             folkeregistermetadata {
-                ajourholdstidspunkt,
-                gyldighetstidspunkt,
-                opphoerstidspunkt,
-                aarsak,
-                kilde
+                ...folkeregistermetadataDetails
             },
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         },
         utflyttingFraNorge {
             tilflyttingsland,
             tilflyttingsstedIUtlandet,
             folkeregistermetadata {
-                ajourholdstidspunkt,
-                gyldighetstidspunkt,
-                opphoerstidspunkt,
-                aarsak,
-                kilde
+                ...folkeregistermetadataDetails
             },
             metadata {
-                opplysningsId,
-                master,
-                endringer {
-                    type,
-                    registrert,
-                    registrertAv,
-                    systemkilde,
-                    kilde
-                }
+                ...metadataDetails
             }
         }
     }

@@ -16,7 +16,6 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.metrics.Timed;
 
 @Slf4j
 @Service
@@ -28,7 +27,6 @@ public class KrrstubClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    @Timed(name = "providers", tags = { "operation", "gjenopprettKrrStub" })
     @Override public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getKrrstub())) {
@@ -61,7 +59,7 @@ public class KrrstubClient implements ClientRegister {
     private void deleteIdent(String ident) {
 
         try {
-            ResponseEntity<DigitalKontaktdata[]> response = krrstubConsumer.readDigitalKontaktdata(ident);
+            ResponseEntity<DigitalKontaktdata[]> response = krrstubConsumer.getDigitalKontaktdata(ident);
 
             if (response.hasBody()) {
                 newArrayList(response.getBody()).forEach(dkif -> {

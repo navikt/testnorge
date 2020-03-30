@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
@@ -30,7 +31,8 @@ public class KrrstubConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
-    public ResponseEntity readDigitalKontaktdata(String ident) {
+    @Timed(name = "consumer", tags = { "operation", "krrstub_getKontaktdata" })
+    public ResponseEntity getDigitalKontaktdata(String ident) {
 
         return restTemplate.exchange(
                 RequestEntity.get(URI.create(providersProps.getKrrStub().getUrl() + PERSON_DIGITAL_KONTAKT_URL))
@@ -40,6 +42,7 @@ public class KrrstubConsumer {
                         .build(), DigitalKontaktdata[].class);
     }
 
+    @Timed(name = "consumer", tags = { "operation", "krrstub_createKontaktdata" })
     public ResponseEntity<Object> createDigitalKontaktdata(DigitalKontaktdata digitalKontaktdata) {
 
         return restTemplate.exchange(
@@ -50,6 +53,7 @@ public class KrrstubConsumer {
                         .body(digitalKontaktdata), Object.class);
     }
 
+    @Timed(name = "consumer", tags = { "operation", "krrstub_deleteKontaktdata" })
     public ResponseEntity<Object> deleteDigitalKontaktdata(Long id) {
 
         return restTemplate.exchange(

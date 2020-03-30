@@ -4,7 +4,7 @@ import static java.lang.String.format;
 import static java.util.Collections.emptySet;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.domain.CommonKeys.KILDE;
+import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.net.URI;
@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.sts.StsOidcService;
 
@@ -41,6 +42,7 @@ public class PensjonforvalterConsumer {
     private final ProvidersProps providersProps;
     private final StsOidcService stsOidcService;
 
+    @Timed(name = "consumer", tags = { "operation", "pen_getMiljoer" })
     public Set<String> getMiljoer() {
 
         try {
@@ -48,7 +50,7 @@ public class PensjonforvalterConsumer {
                     RequestEntity.get(URI.create(providersProps.getPensjonforvalter().getUrl() + MILJOER_HENT_TILGJENGELIGE_URL))
                             .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                             .header(HEADER_NAV_CALL_ID, getCallId())
-                            .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                            .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                             .build(),
                     String[].class);
             return responseEntity.hasBody() ? Sets.newHashSet((String[]) responseEntity.getBody()) : emptySet();
@@ -60,30 +62,33 @@ public class PensjonforvalterConsumer {
         }
     }
 
+    @Timed(name = "consumer", tags = { "operation", "pen_opprettPerson" })
     public PensjonforvalterResponse opprettPerson(OpprettPersonRequest opprettPersonRequest) {
 
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getPensjonforvalter().getUrl() + PENSJON_OPPRETT_PERSON_URL))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                         .header(HEADER_NAV_CALL_ID, getCallId())
-                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(opprettPersonRequest),
                 PensjonforvalterResponse.class).getBody();
     }
 
+    @Timed(name = "consumer", tags = { "operation", "pen_lagreInntekt" })
     public PensjonforvalterResponse lagreInntekt(LagreInntektRequest lagreInntektRequest) {
 
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getPensjonforvalter().getUrl() + PENSJON_INNTEKT_URL))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                         .header(HEADER_NAV_CALL_ID, getCallId())
-                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(lagreInntektRequest),
                 PensjonforvalterResponse.class).getBody();
     }
 
+    @Timed(name = "consumer", tags = { "operation", "pen_getInntekter" })
     public ResponseEntity getInntekter(String ident, String miljoe) {
 
         return restTemplate.exchange(
@@ -93,11 +98,11 @@ public class PensjonforvalterConsumer {
                                 PENSJON_INNTEKT_URL, ident, miljoe)))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                         .header(HEADER_NAV_CALL_ID, getCallId())
-                        .header(HEADER_NAV_CONSUMER_ID, KILDE)
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .build(), JsonNode.class);
     }
 
     private static String getCallId() {
-        return format("%s %s", KILDE, UUID.randomUUID().toString());
+        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
     }
 }

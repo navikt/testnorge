@@ -13,7 +13,6 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.metrics.Timed;
 
 @Log4j2
 @Service
@@ -24,7 +23,6 @@ public class SigrunStubClient implements ClientRegister {
     private final SigrunStubResponseHandler sigrunStubResponseHandler;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    @Timed(name = "providers", tags = { "operation", "gjenopprettSigrunStub" })
     @Override public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getSigrunstub().isEmpty()) {

@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
@@ -35,6 +36,7 @@ public class SigrunStubConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
+    @Timed(name = "consumer", tags = { "operation", "sigrun_deleteGrunnlag" })
     public void deleteSkattegrunnlag(String ident) {
 
         restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getSigrunStub().getUrl() + SIGRUN_STUB_DELETE_GRUNNLAG))
@@ -46,6 +48,7 @@ public class SigrunStubConsumer {
                 String.class);
     }
 
+    @Timed(name = "consumer", tags = { "operation", "sigrun_createGrunnlag" })
     public ResponseEntity createSkattegrunnlag(List<OpprettSkattegrunnlag> request) {
 
         return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getSigrunStub().getUrl() + SIGRUN_STUB_OPPRETT_GRUNNLAG))

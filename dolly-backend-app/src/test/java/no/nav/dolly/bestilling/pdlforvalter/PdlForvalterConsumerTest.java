@@ -28,6 +28,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.sts.StsOidcService;
 
@@ -49,6 +50,9 @@ public class PdlForvalterConsumerTest {
 
     @MockBean
     private StsOidcService stsOidcService;
+
+    @MockBean
+    private ErrorStatusDecoder errorStatusDecoder;
 
     @Autowired
     private PdlForvalterConsumer pdlForvalterConsumer;
@@ -106,7 +110,7 @@ public class PdlForvalterConsumerTest {
     @Test
     public void deleteIdent() {
 
-        server.expect(requestTo("http://pdl.nav.no/api/v1/ident"))
+        server.expect(requestTo("http://pdl.nav.no/api/v1/personident"))
                 .andExpect(method(HttpMethod.DELETE))
                 .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
                 .andRespond(withSuccess());
@@ -125,7 +129,7 @@ public class PdlForvalterConsumerTest {
                 .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
                 .andRespond(withSuccess());
 
-        pdlForvalterConsumer.postOpprettPerson(PdlOpprettPerson.builder().opprettetIdent(IDENT).build(), IDENT);
+        pdlForvalterConsumer.postOpprettPerson(PdlOpprettPerson.builder().opprettetIdent(IDENT).build(), IDENT, "OpprettPerson");
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService, times(2)).getIdToken(anyString());
@@ -139,7 +143,7 @@ public class PdlForvalterConsumerTest {
                 .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
                 .andRespond(withSuccess());
 
-        pdlForvalterConsumer.postNavn(PdlNavn.builder().build(), IDENT);
+        pdlForvalterConsumer.postNavn(PdlNavn.builder().build(), IDENT, "LeggTIlNavn");
     }
 
     @Test
