@@ -1,7 +1,7 @@
 import config from '~/config'
 import Request from '~/service/services/Request'
 
-const getKrrUrl = () => `${config.services.dollyBackend}/krr`
+const getKrrUrl = () => `${config.services.proxyBackend}/krr`
 
 export default {
 	getPerson(ident) {

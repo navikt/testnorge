@@ -3,7 +3,8 @@ export enum PersoninformasjonKodeverk {
 	Kjoennstyper = 'Kjønnstyper',
 	Diskresjonskoder = 'Diskresjonskoder',
 	Sivilstander = 'Sivilstander',
-	Personstatuser = 'Personstatuser'
+	Personstatuser = 'Personstatuser',
+	Retningsnumre = 'Retningsnumre'
 }
 
 export enum AdresseKodeverk {

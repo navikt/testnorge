@@ -1,18 +1,13 @@
 {
 	"compilerOptions": {
-		"allowJs": true,
+		"outDir": "./dist/dev",
 		"sourceMap": true,
-		"moduleResolution": "node",
-		"esModuleInterop": true,
-		"module": "es6",
-		"target": "es6",
-		"outDir": "./dist",
-		"lib": ["es6", "dom", "es2017"],
+		"noImplicitAny": true,
+		"module": "commonjs",
+		"target": "ESNext",
+		"allowJs": true,
 		"jsx": "react",
-		"baseUrl": ".",
-		"paths": {
-			"~/*": ["./src/*"]
-		}
+		"lib": ["esnext", "dom"]
 	},
-	"exclude": ["node_modules", "**/node_modules/*"]
+	"exclude": ["node_modules"]
 }

@@ -67,15 +67,15 @@ export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => 
 					<Attributt attr={sm.attrs.harMellomnavn} />
 					<Attributt attr={sm.attrs.sprakKode} />
 					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
-					<Attributt attr={sm.attrs.harBankkontonr} />
-					<Attributt attr={sm.attrs.spesreg} />
 					<Attributt attr={sm.attrs.erForsvunnet} />
+					<Attributt attr={sm.attrs.harBankkontonr} />
+					<Attributt attr={sm.attrs.telefonnummer_1} />
+					<Attributt attr={sm.attrs.spesreg} />
 				</AttributtKategori>
 			</Panel>
 		)
 	}
 }
-
 PersoninformasjonPanel.heading = 'Personinformasjon'
 
 PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({
@@ -178,6 +178,21 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		},
 		remove() {
 			del(['tpsf.harBankkontonr', 'tpsf.bankkontonrRegdato'])
+		}
+	},
+	telefonnummer_1: {
+		label: 'Telefonnummer',
+		checked: has('tpsf.telefonnummer_1'),
+		add() {
+			setMulti(['tpsf.telefonLandskode_1', ''], ['tpsf.telefonnummer_1', ''])
+		},
+		remove() {
+			del([
+				'tpsf.telefonLandskode_1',
+				'tpsf.telefonnummer_1',
+				'tpsf.telefonLandskode_2',
+				'tpsf.telefonnummer_2'
+			])
 		}
 	},
 	spesreg: {
