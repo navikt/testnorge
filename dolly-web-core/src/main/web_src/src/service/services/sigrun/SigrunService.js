@@ -1,7 +1,7 @@
 import config from '~/config'
 import Request from '~/service/services/Request'
 
-const getSigrunBaseUrl = () => `${config.services.dollyBackend}/sigrun`
+const getSigrunBaseUrl = () => `${config.services.proxyBackend}/sigrun`
 
 export default {
 	getPerson(ident) {
