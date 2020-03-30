@@ -16,6 +16,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektskomponenten.domain.InntektsinformasjonWrapper;
 import no.nav.dolly.bestilling.inntektskomponenten.domain.Inntektsinformasjon;
+import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
@@ -25,7 +26,7 @@ import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 @RequiredArgsConstructor
 public class InntektskomponentenClient implements ClientRegister {
 
-    private final InntektskomponentenConsumer inntektskomponentenConsumer;
+    private final InntektstubConsumer inntektstubConsumer;
     private final MapperFacade mapperFacade;
 
     @Override
@@ -52,7 +53,7 @@ public class InntektskomponentenClient implements ClientRegister {
     private void opprettInntekter(List<Inntektsinformasjon> inntektsinformasjon, BestillingProgress progress) {
 
         try {
-            ResponseEntity<Inntektsinformasjon[]> response = inntektskomponentenConsumer.postInntekter(inntektsinformasjon);
+            ResponseEntity<Inntektsinformasjon[]> response = inntektstubConsumer.postInntekter(inntektsinformasjon);
 
             if (nonNull(response) && response.hasBody()) {
 
@@ -79,7 +80,7 @@ public class InntektskomponentenClient implements ClientRegister {
     private void deleteInntekter(String hovedperson) {
 
         try {
-            inntektskomponentenConsumer.deleteInntekter(hovedperson);
+            inntektstubConsumer.deleteInntekter(hovedperson);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
 
             log.error("Feilet å slette informasjon om ident {} i Inntektstub. Feilmelding: {}", hovedperson, e.getResponseBodyAsString());

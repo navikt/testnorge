@@ -26,7 +26,7 @@ public class ProvidersProps {
     private PdlForvalter pdlForvalter = new PdlForvalter();
     private Instdata instdata = new Instdata();
     private Aaregdata aaregdata = new Aaregdata();
-    private Inntektskomponenten inntektskomponenten = new Inntektskomponenten();
+    private Inntektstub inntektstub = new Inntektstub();
     private PdlPerson pdlPerson = new PdlPerson();
     private FasteDatasett fasteDatasett = new FasteDatasett();
     private Pensjonforvalter pensjonforvalter = new Pensjonforvalter();
@@ -147,7 +147,7 @@ public class ProvidersProps {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Inntektskomponenten {
+    public static class Inntektstub {
 
         private String url;
     }

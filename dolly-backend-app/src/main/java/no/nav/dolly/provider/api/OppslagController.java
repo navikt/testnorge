@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.inntektskomponenten.InntektskomponentenConsumer;
-import no.nav.dolly.bestilling.inntektskomponenten.domain.ValiderInntekt;
-import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
 import no.nav.dolly.bestilling.aareg.AaregConsumer;
+import no.nav.dolly.bestilling.inntektskomponenten.domain.ValiderInntekt;
+import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
+import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
 import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.identpool.IdentpoolConsumer;
@@ -46,7 +46,7 @@ public class OppslagController {
     private final Norg2Consumer norg2Consumer;
     private final AaregConsumer aaregConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
-    private final InntektskomponentenConsumer inntektskomponentenConsumer;
+    private final InntektstubConsumer inntektstubConsumer;
     private final FasteDatasettConsumer fasteDatasettConsumer;
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final IdentpoolConsumer identpoolConsumer;
@@ -75,13 +75,13 @@ public class OppslagController {
     @GetMapping("/inntektstub/{ident}")
     @ApiOperation("Hent inntekter tilhørende ident fra Inntektstub")
     public ResponseEntity inntektstub(@PathVariable String ident) {
-        return inntektskomponentenConsumer.getInntekter(ident);
+        return inntektstubConsumer.getInntekter(ident);
     }
 
     @PostMapping("/inntektstub")
     @ApiOperation("Valider inntekt mot Inntektstub")
     public ResponseEntity inntektstub(@RequestBody ValiderInntekt validerInntekt) {
-        return inntektskomponentenConsumer.validerInntekter(validerInntekt);
+        return inntektstubConsumer.validerInntekter(validerInntekt);
     }
 
     @GetMapping("/systemer")
