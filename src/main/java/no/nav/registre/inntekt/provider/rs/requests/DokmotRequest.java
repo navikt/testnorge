@@ -37,4 +37,12 @@ public class DokmotRequest {
     private Date datoMottatt;
     @JsonProperty
     private List<Dokument> dokumenter;
+
+    public void setDatoMottatt(Date datoMottatt) {
+        this.datoMottatt = datoMottatt != null ? new Date(datoMottatt.getTime()) : null;
+    }
+
+    public Date getDatoMottatt() {
+        return datoMottatt != null ? new Date(datoMottatt.getTime()) : null;
+    }
 }
