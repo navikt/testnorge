@@ -2,6 +2,7 @@ import React from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
+import _drop from 'lodash/drop'
 import { AdresseKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -44,7 +45,8 @@ const sisteSivilstand = (partner = {}) => {
 // - Må ha regDato for forholder (error validering sjekker om dato er gyldig)
 // - Må ha sivilstandKode som er gyldig som "siste forholdstype"
 // - Må ikke finnes errors i sivilstandform
-const sjekkKanOppretteNyPartner = (partnere, formikBag) => {
+export const sjekkKanOppretteNyPartner = (partnere, formikBag) => {
+	if (partnere.length < 1) return null
 	const { sivilstand, sivilstandRegdato } = sisteSivilstand(sistePartner(partnere))
 	const gyldigKode = erOpprettNyPartnerGyldig(sivilstand)
 	const harRegdato = sivilstandRegdato !== null
@@ -53,16 +55,16 @@ const sjekkKanOppretteNyPartner = (partnere, formikBag) => {
 }
 
 const path = 'tpsf.relasjoner.partnere'
-export const Partnere = ({ formikBag }) => (
+export const Partnere = ({ formikBag, eksisterendePartner = false }) => (
 	<FieldArray name={path}>
 		{arrayHelpers => {
 			const partnere = _get(arrayHelpers.form.values, path, [])
 			const kanOppretteNyPartner = sjekkKanOppretteNyPartner(partnere, formikBag)
 			const addNewEntry = () => arrayHelpers.push(initialValues)
-
 			return (
 				<DollyFieldArrayWrapper header="Partner">
 					{partnere.map((c, idx) => {
+						if (eksisterendePartner && idx === 0) return null
 						const isLast = idx === partnere.length - 1
 
 						// Det er kun mulig å slette siste forhold

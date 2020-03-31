@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useState } from 'react'
-import _has = require('lodash/has')
+// import _has = require('lodash/has')
+import { has as _has } from 'lodash'
 // @ts-ignore
 import useBoolean from '~/utils/hooks/useBoolean'
 // @ts-ignore

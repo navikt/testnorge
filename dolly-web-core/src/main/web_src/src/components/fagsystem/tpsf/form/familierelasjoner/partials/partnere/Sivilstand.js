@@ -2,6 +2,7 @@ import React from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
+import { addDays } from 'date-fns'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import {
@@ -9,11 +10,22 @@ import {
 	DollyFaBlokk,
 	FieldArrayAddButton
 } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { nesteGyldigStatuser, statuser as SivilstandStatuser } from './SivilstandOptions'
+import {
+	nesteGyldigStatuser,
+	tomSisteSivilstand,
+	statuser as SivilstandStatuser
+} from './SivilstandOptions'
 
 const initialValues = { sivilstand: '', sivilstandRegdato: null }
 
-export const Sivilstand = ({ basePath, formikBag, locked, erSistePartner }) => (
+export const Sivilstand = ({
+	basePath,
+	formikBag,
+	locked,
+	erSistePartner,
+	sisteSivilstandKode,
+	minimumDato
+}) => (
 	<FieldArray name={basePath}>
 		{arrayHelpers => {
 			const sivilstander = _get(arrayHelpers.form.values, basePath, [])
@@ -24,15 +36,10 @@ export const Sivilstand = ({ basePath, formikBag, locked, erSistePartner }) => (
 			if (sivilstander.length > 1) {
 				sivilstandKode = sivilstander[sivilstander.length - 2].sivilstand
 			}
+			const options = nesteGyldigStatuser(sivilstandKode || sisteSivilstandKode)
 
-			const options = nesteGyldigStatuser(sivilstandKode)
-			const tomSisteSivilstand = () => {
-				const sivilstander = _get(formikBag.values, basePath)
-				const antallSivilstander = sivilstander.length
-				return sivilstander[antallSivilstander - 1].sivilstand.length < 1
-			}
-
-			const ugyldigSisteSivilstand = _has(formikBag.errors, basePath) || tomSisteSivilstand()
+			const ugyldigSisteSivilstand =
+				_has(formikBag.errors, basePath) || tomSisteSivilstand(formikBag, basePath)
 
 			const addNewEntry = () => arrayHelpers.push(initialValues)
 			return (
@@ -51,7 +58,12 @@ export const Sivilstand = ({ basePath, formikBag, locked, erSistePartner }) => (
 								header="Forhold"
 								handleRemove={showRemove && clickRemove}
 							>
-								<SivilstandForm path={path} options={options} readOnly={!isLast || locked} />
+								<SivilstandForm
+									path={path}
+									options={options}
+									readOnly={!isLast || locked}
+									minimumDato={minimumDato}
+								/>
 							</DollyFaBlokk>
 						)
 					})}
@@ -73,7 +85,7 @@ export const Sivilstand = ({ basePath, formikBag, locked, erSistePartner }) => (
 	</FieldArray>
 )
 
-const SivilstandForm = ({ path, options, readOnly }) => (
+export const SivilstandForm = ({ path, options, readOnly, minimumDato = null }) => (
 	<div className="flexbox" title={readOnly ? 'Du kan kun endre siste partner' : undefined}>
 		<FormikSelect
 			name={`${path}.sivilstand`}
@@ -83,12 +95,14 @@ const SivilstandForm = ({ path, options, readOnly }) => (
 			disabled={readOnly}
 			fastfield={false}
 		/>
+		{console.log('minimumDato :', minimumDato)}
 		<FormikDatepicker
 			name={`${path}.sivilstandRegdato`}
 			label="Sivilstand fra dato"
 			isClearable={false}
 			disabled={readOnly}
 			fastfield={false}
+			minDate={addDays(new Date(minimumDato), 3)}
 		/>
 	</div>
 )

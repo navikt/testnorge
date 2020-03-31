@@ -1,10 +1,13 @@
 import React from 'react'
+import _has from 'lodash/has'
+import { useLocation } from 'react-use'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 
 export const FamilierelasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
+	const leggTil = _has(useLocation(), 'state.state.leggTilPaaFnr')
 
 	return (
 		<Panel
@@ -16,9 +19,11 @@ export const FamilierelasjonPanel = ({ stateModifier }) => {
 			<AttributtKategori title="Partner">
 				<Attributt attr={sm.attrs.partner} />
 			</AttributtKategori>
-			<AttributtKategori title="Barn">
-				<Attributt attr={sm.attrs.barn} />
-			</AttributtKategori>
+			{!leggTil && (
+				<AttributtKategori title="Barn">
+					<Attributt attr={sm.attrs.barn} />
+				</AttributtKategori>
+			)}
 		</Panel>
 	)
 }
@@ -31,17 +36,17 @@ FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 		checked: has('tpsf.relasjoner.partnere'),
 		add() {
 			set('tpsf.relasjoner.partnere', [
-				{
-					identtype: 'FNR',
-					kjonn: '',
-					sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
-					harFellesAdresse: true,
-					alder: Formatters.randomIntInRange(30, 60),
-					spesreg: '',
-					utenFastBopel: false,
-					statsborgerskap: '',
-					statsborgerskapRegdato: ''
-				}
+				// {
+				// 	identtype: 'FNR',
+				// 	kjonn: '',
+				// 	sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
+				// 	harFellesAdresse: true,
+				// 	alder: Formatters.randomIntInRange(30, 60),
+				// 	spesreg: '',
+				// 	utenFastBopel: false,
+				// 	statsborgerskap: '',
+				// 	statsborgerskapRegdato: ''
+				// }
 			])
 		},
 		remove() {

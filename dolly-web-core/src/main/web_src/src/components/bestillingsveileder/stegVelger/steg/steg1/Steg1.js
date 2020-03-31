@@ -33,16 +33,19 @@ export const Steg1 = ({ stateModifier }) => {
 			values: stateModifier(panel.initialValues).checked
 		}))
 		.filter(v => v.values.length)
-
 	return (
 		<AttributtVelger checked={checked}>
-			{!opts.is.leggTil && <PersoninformasjonPanel stateModifier={stateModifier} />}
-
+			{!opts.is.leggTil && (
+				<PersoninformasjonPanel
+					stateModifier={stateModifier}
+					personFoerLeggTil={opts.personFoerLeggTil}
+				/>
+			)}
 			<AdressePanel stateModifier={stateModifier} />
+			<FamilierelasjonPanel stateModifier={stateModifier} valgtPerson={opts.personFoerLeggTil} />
 
 			{!opts.is.leggTil && (
 				<React.Fragment>
-					<FamilierelasjonPanel stateModifier={stateModifier} />
 					<ArbeidInntektPanel stateModifier={stateModifier} />
 					<IdentifikasjonPanel stateModifier={stateModifier} />
 					<KontaktDoedsboPanel stateModifier={stateModifier} />
