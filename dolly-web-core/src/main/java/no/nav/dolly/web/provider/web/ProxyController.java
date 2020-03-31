@@ -54,9 +54,6 @@ public class ProxyController {
     @Value("${fagsystem.inntektstub.url}")
     private String inntektstubUrl;
 
-    @Value("${fagsystem.pdlperson.url}")
-    private String pdlPersonUrl;
-
     private final ProxyService proxyService;
 
     @RequestMapping("/v1/**")
@@ -154,7 +151,7 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, aaregUrl + API_URI, PROXY_URI + "/aareg");
-        
+
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
 
