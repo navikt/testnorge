@@ -13,7 +13,7 @@ import { KontaktDoedsboPanel } from './paneler/KontaktDoedsbo'
 import { ArenaPanel } from './paneler/Arena'
 import { UdiPanel } from './paneler/Udi'
 
-export const Steg1 = ({ stateModifier, formikBag }) => {
+export const Steg1 = ({ stateModifier }) => {
 	const opts = useContext(BestillingsveilederContext)
 
 	const checked = [
@@ -38,7 +38,7 @@ export const Steg1 = ({ stateModifier, formikBag }) => {
 		<AttributtVelger checked={checked}>
 			<PersoninformasjonPanel
 				stateModifier={stateModifier}
-				personFoerLeggTil={formikBag.values.personFoerLeggTil}
+				personFoerLeggTil={opts.personFoerLeggTil}
 			/>
 			<AdressePanel stateModifier={stateModifier} />
 
