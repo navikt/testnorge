@@ -1,7 +1,7 @@
 import config from '~/config'
 import Request from '~/service/services/Request'
 
-const getInntektstubUrl = () => `${config.services.proxyBackend}/inntektstub`
+const getAaregUrl = () => `${config.services.proxyBackend}/aareg`
 
 const options = {
 	headers: {
@@ -11,8 +11,8 @@ const options = {
 }
 
 export default {
-	getInntektsinformasjon(ident) {
-		const endpoint = `${getInntektstubUrl()}/inntektsinformasjon?norske-identer=${ident}`
+	getArbeidsforhold(ident, miljoe) {
+		const endpoint = `${getAaregUrl()}/arbeidsforhold?ident=${ident}&miljoe=${miljoe}`
 		return Request.getWithoutCredentials(endpoint, options)
 	}
 }

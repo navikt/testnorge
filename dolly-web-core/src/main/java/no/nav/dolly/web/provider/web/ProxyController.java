@@ -45,6 +45,12 @@ public class ProxyController {
     @Value("${fagsystem.udistub.url}")
     private String udiUrl;
 
+    @Value("${fagsystem.pensjonforvalter.url}")
+    private String poppUrl;
+
+    @Value("${fagsystem.aareg.url}")
+    private String aaregUrl;
+
     @Value("${fagsystem.inntektstub.url}")
     private String inntektstubUrl;
 
@@ -56,7 +62,7 @@ public class ProxyController {
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, dollyUrl + API_URI, API_URI);
+        String requestURL = createURL(request, dollyUrl + API_URI, API_URI );
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
@@ -134,6 +140,28 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, udiUrl + API_URI, PROXY_URI + "/udi");
+
+        return proxyService.proxyRequest(body, method, request, requestURL);
+    }
+
+    @RequestMapping("/proxy/aareg/**")
+    public ResponseEntity<String> aaaregProxy(
+            @RequestBody(required = false) String body,
+            HttpMethod method,
+            HttpServletRequest request) throws UnsupportedEncodingException {
+
+        String requestURL = createURL(request, aaregUrl + API_URI, PROXY_URI + "/aareg");
+
+        return proxyService.proxyRequest(body, method, request, requestURL);
+    }
+
+    @RequestMapping("/proxy/popp/**")
+    public ResponseEntity<String> poppProxy(
+            @RequestBody(required = false) String body,
+            HttpMethod method,
+            HttpServletRequest request) throws UnsupportedEncodingException {
+
+        String requestURL = createURL(request, poppUrl + API_URI, PROXY_URI + "/popp");
 
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
