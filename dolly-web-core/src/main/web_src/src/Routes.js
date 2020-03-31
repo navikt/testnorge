@@ -15,7 +15,7 @@ const routes = [
 	{
 		path: '/gruppe/:gruppeId/bestilling/:personId',
 		exact: true,
-		breadcrumb: 'Legg til personer',
+		breadcrumb: 'Legg til på personer',
 		component: BestillingsveilederConnector
 	},
 	{
