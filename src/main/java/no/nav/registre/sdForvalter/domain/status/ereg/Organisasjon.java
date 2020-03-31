@@ -17,10 +17,13 @@ public class Organisasjon {
     private String enhetType;
     @JsonProperty
     private String navn;
+    @JsonProperty
+    private String juridiskEnhet;
 
     public Organisasjon(Ereg ereg) {
         orgnummer = ereg.getOrgnr();
         enhetType = ereg.getEnhetstype();
         navn = ereg.getNavn();
+        juridiskEnhet = ereg.getJuridiskEnhet();
     }
 }

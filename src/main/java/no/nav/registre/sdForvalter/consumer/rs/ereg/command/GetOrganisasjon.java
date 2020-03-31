@@ -6,14 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.net.URI;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.sdForvalter.consumer.rs.response.ereg.OrganisasjonResponse;
+import no.nav.registre.sdForvalter.consumer.rs.response.ereg.EregOrganisasjon;
 
 
 @Slf4j
-public class GetOrganisasjon implements Callable<OrganisasjonResponse> {
+public class GetOrganisasjon implements Callable<EregOrganisasjon> {
     private final String url;
     private final String miljo;
     private final String orgnummer;
@@ -27,13 +26,13 @@ public class GetOrganisasjon implements Callable<OrganisasjonResponse> {
     }
 
     @Override
-    public OrganisasjonResponse call() {
+    public EregOrganisasjon call() {
         try {
             log.info("Henter {} fra Ereg i {}...", orgnummer, miljo);
-            final URI url = new UriTemplate(this.url + "/organisasjon/{orgnummer}").expand(miljo, orgnummer);
-            ResponseEntity<OrganisasjonResponse> entity = restTemplate.getForEntity(
-                    url,
-                    OrganisasjonResponse.class
+            ResponseEntity<EregOrganisasjon> entity = restTemplate.getForEntity(
+                    new UriTemplate(this.url + "/organisasjon/{orgnummer}?inkluderHierarki=true&inkluderHistorikk=false")
+                            .expand(miljo, orgnummer),
+                    EregOrganisasjon.class
             );
 
             if (entity.hasBody()) {
@@ -42,11 +41,10 @@ public class GetOrganisasjon implements Callable<OrganisasjonResponse> {
             }
             if (entity.getStatusCode() == HttpStatus.NOT_FOUND) {
                 log.warn("{} ikke funnet for miljo: {}", orgnummer, miljo);
-                return null;
             } else {
                 log.error("Kan ikke hente ut {} fra: {}", orgnummer, miljo);
-                return null;
             }
+            return null;
 
         } catch (Exception e) {
             log.error("Kan ikke hente ut {} fra: {}", orgnummer, miljo, e);
