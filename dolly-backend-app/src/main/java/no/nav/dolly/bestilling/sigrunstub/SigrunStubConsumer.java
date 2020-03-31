@@ -36,7 +36,7 @@ public class SigrunStubConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
-    @Timed(name = "consumer", tags = { "operation", "sigrun_deleteGrunnlag" })
+    @Timed(name = "providers", tags = { "operation", "sigrun_deleteGrunnlag" })
     public void deleteSkattegrunnlag(String ident) {
 
         restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getSigrunStub().getUrl() + SIGRUN_STUB_DELETE_GRUNNLAG))
@@ -48,7 +48,7 @@ public class SigrunStubConsumer {
                 String.class);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "sigrun_createGrunnlag" })
+    @Timed(name = "providers", tags = { "operation", "sigrun_createGrunnlag" })
     public ResponseEntity createSkattegrunnlag(List<OpprettSkattegrunnlag> request) {
 
         return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getSigrunStub().getUrl() + SIGRUN_STUB_OPPRETT_GRUNNLAG))

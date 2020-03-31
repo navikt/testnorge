@@ -28,7 +28,7 @@ public class InntektstubConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
-    @Timed(name = "consumer", tags = { "operation", "inntk_getInntekter" })
+    @Timed(name = "providers", tags = { "operation", "inntk_getInntekter" })
     public ResponseEntity getInntekter(String ident) {
 
         return restTemplate.exchange(RequestEntity.get(
@@ -36,7 +36,7 @@ public class InntektstubConsumer {
                 .build(), JsonNode.class);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "inntk_deleteInntekter" })
+    @Timed(name = "providers", tags = { "operation", "inntk_deleteInntekter" })
     public ResponseEntity deleteInntekter(String ident) {
 
         return restTemplate.exchange(RequestEntity.delete(
@@ -44,7 +44,7 @@ public class InntektstubConsumer {
                 .build(), Inntektsinformasjon.class);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "inntk_postInntekter" })
+    @Timed(name = "providers", tags = { "operation", "inntk_postInntekter" })
     public ResponseEntity<Inntektsinformasjon[]> postInntekter(List<Inntektsinformasjon> inntektsinformasjon) {
 
         return restTemplate.exchange(RequestEntity.post(
@@ -52,7 +52,7 @@ public class InntektstubConsumer {
                 .body(inntektsinformasjon), Inntektsinformasjon[].class);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "inntk_validerInntekt" })
+    @Timed(name = "providers", tags = { "operation", "inntk_validerInntekt" })
     public ResponseEntity validerInntekter(ValiderInntekt validerInntekt) {
 
         return restTemplate.exchange(RequestEntity.post(

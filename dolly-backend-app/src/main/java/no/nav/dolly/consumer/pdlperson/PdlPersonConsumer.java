@@ -45,7 +45,7 @@ public class PdlPersonConsumer {
     private final ProvidersProps providersProps;
     private final StsOidcService stsOidcService;
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_getPerson" })
+    @Timed(name = "providers", tags = { "operation", "pdl_getPerson" })
     public ResponseEntity getPdlPerson(String ident) {
 
         Map<String, Object> variables = new HashMap();

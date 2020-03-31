@@ -23,7 +23,7 @@ public class FasteDatasettConsumer {
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
 
-    @Timed(name = "consumer", tags = {"operation", "hentFasteDatasett"})
+    @Timed(name = "providers", tags = {"operation", "hentFasteDatasett"})
     public ResponseEntity hentDatasett(DatasettType datasettType) {
 
         return restTemplate.exchange(RequestEntity.get(
@@ -31,7 +31,7 @@ public class FasteDatasettConsumer {
                 .build(), JsonNode.class);
     }
 
-    @Timed(name = "consumer", tags = {"operation", "hentOrgnummer"})
+    @Timed(name = "providers", tags = {"operation", "hentOrgnummer"})
     public ResponseEntity hentOrgnummer() {
 
         return restTemplate.exchange(RequestEntity.get(
@@ -39,7 +39,7 @@ public class FasteDatasettConsumer {
                 .build(), JsonNode.class);
     }
 
-    @Timed(name = "consumer", tags = {"operation", "hentFasteDatasettGruppe"})
+    @Timed(name = "providers", tags = {"operation", "hentFasteDatasettGruppe"})
     public ResponseEntity hentDatasettGruppe(String gruppe) {
 
         return restTemplate.exchange(RequestEntity.get(

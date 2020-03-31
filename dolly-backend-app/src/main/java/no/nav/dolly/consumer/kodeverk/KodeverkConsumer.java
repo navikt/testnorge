@@ -4,6 +4,11 @@ import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 
+import lombok.RequiredArgsConstructor;
+import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.exceptions.KodeverkException;
+import no.nav.dolly.properties.ProvidersProps;
+import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -11,12 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import lombok.RequiredArgsConstructor;
-import no.nav.dolly.exceptions.KodeverkException;
-import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
 @Component
 @RequiredArgsConstructor
@@ -30,7 +29,8 @@ public class KodeverkConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
-    @Timed(name = "consumer", tags = { "operation", "hentKodeverk" })
+
+    @Timed(name = "providers", tags={"operation", "hentKodeverk"})
     public GetKodeverkKoderBetydningerResponse fetchKodeverkByName(String navn) {
         String url = providersProps.getKodeverk().getUrl() + getKodeverksnavnUrl(navn) + KODEVERK_URL_QUERY_PARAMS_EKSKLUDER_UGYLDIGE_SPRAAK_NB;
         HttpEntity entity = buildKodeverkEntityForGET();

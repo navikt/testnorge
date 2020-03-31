@@ -32,7 +32,7 @@ public class UdiStubConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
-    @Timed(name = "consumer", tags = { "operation", "udi_createPerson" })
+    @Timed(name = "providers", tags = { "operation", "udi_createPerson" })
     public ResponseEntity<UdiPersonControllerResponse> createUdiPerson(UdiPerson udiPerson) {
 
             return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
@@ -43,7 +43,7 @@ public class UdiStubConsumer {
                     UdiPersonControllerResponse.class);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "udi_deletePerson" })
+    @Timed(name = "providers", tags = { "operation", "udi_deletePerson" })
     public ResponseEntity<Object> deleteUdiPerson(String ident) {
 
             return restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))

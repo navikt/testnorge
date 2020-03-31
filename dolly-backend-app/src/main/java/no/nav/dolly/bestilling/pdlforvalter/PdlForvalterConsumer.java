@@ -69,7 +69,7 @@ public class PdlForvalterConsumer {
     private final StsOidcService stsOidcService;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_deletePerson" })
+    @Timed(name = "providers", tags = { "operation", "pdl_deletePerson" })
     public ResponseEntity deleteIdent(String ident) {
         return restTemplate.exchange(RequestEntity.delete(
                 URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_SLETTING_URL))
@@ -79,7 +79,7 @@ public class PdlForvalterConsumer {
                 .build(), JsonNode.class);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_personStatus" })
+    @Timed(name = "providers", tags = { "operation", "pdl_personStatus" })
     public ResponseEntity<JsonNode> getPersonstatus(String ident) {
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(providersProps.getPdlForvalter().getUrl() + PDL_PERSONSTATUS))
@@ -89,7 +89,7 @@ public class PdlForvalterConsumer {
                 .build(), JsonNode.class);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_opprettPerson" })
+    @Timed(name = "providers", tags = { "operation", "pdl_opprettPerson" })
     public ResponseEntity postOpprettPerson(PdlOpprettPerson pdlNavn, String ident, String beskrivelse) {
 
         return postRequest(
@@ -97,7 +97,7 @@ public class PdlForvalterConsumer {
                 pdlNavn, ident, beskrivelse);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_navn" })
+    @Timed(name = "providers", tags = { "operation", "pdl_navn" })
     public ResponseEntity postNavn(PdlNavn pdlNavn, String ident, String beskrivelse) {
 
         return postRequest(
@@ -105,7 +105,7 @@ public class PdlForvalterConsumer {
                 pdlNavn, ident, beskrivelse);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_kjoenn" })
+    @Timed(name = "providers", tags = { "operation", "pdl_kjoenn" })
     public ResponseEntity postKjoenn(PdlKjoenn pdlNavn, String ident, String beskrivelse) {
 
         return postRequest(
@@ -113,7 +113,7 @@ public class PdlForvalterConsumer {
                 pdlNavn, ident, beskrivelse);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_kontaktinfoDoedsbo" })
+    @Timed(name = "providers", tags = { "operation", "pdl_kontaktinfoDoedsbo" })
     public ResponseEntity postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo, String ident) {
 
         return postRequest(
@@ -121,7 +121,7 @@ public class PdlForvalterConsumer {
                 kontaktinformasjonForDoedsbo, ident);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_utenlandsIdentitet" })
+    @Timed(name = "providers", tags = { "operation", "pdl_utenlandsIdentitet" })
     public ResponseEntity postUtenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer utenlandskIdentifikasjonsnummer, String ident) {
 
         return postRequest(
@@ -129,21 +129,21 @@ public class PdlForvalterConsumer {
                 utenlandskIdentifikasjonsnummer, ident);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_falskIdentitet" })
+    @Timed(name = "providers", tags = { "operation", "pdl_falskIdentitet" })
     public ResponseEntity postFalskIdentitet(PdlFalskIdentitet falskIdentitet, String ident) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FALSK_IDENTITET_URL, falskIdentitet, ident);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_statsborgerskap" })
+    @Timed(name = "providers", tags = { "operation", "pdl_statsborgerskap" })
     public ResponseEntity postStatsborgerskap(PdlStatsborgerskap pdlStatsborgerskap, String ident, String beskrivelse) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_STATSBORGERSKAP_URL, pdlStatsborgerskap, ident, beskrivelse);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_doedsfall" })
+    @Timed(name = "providers", tags = { "operation", "pdl_doedsfall" })
     public ResponseEntity postDoedsfall(PdlDoedsfall pdlDoedsfall, String ident, String beskrivelse) {
 
         return postRequest(
@@ -151,14 +151,14 @@ public class PdlForvalterConsumer {
                 pdlDoedsfall, ident, beskrivelse);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_foedsel" })
+    @Timed(name = "providers", tags = { "operation", "pdl_foedsel" })
     public ResponseEntity postFoedsel(PdlFoedsel pdlFoedsel, String ident, String beskrivelse) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FOEDSEL_URL, pdlFoedsel, ident, beskrivelse);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_adressebeskyttelse" })
+    @Timed(name = "providers", tags = { "operation", "pdl_adressebeskyttelse" })
     public ResponseEntity postAdressebeskyttelse(PdlAdressebeskyttelse pdlAdressebeskyttelse, String ident, String beskrivelse) {
 
         return postRequest(
@@ -166,7 +166,7 @@ public class PdlForvalterConsumer {
                 pdlAdressebeskyttelse, ident, beskrivelse);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_familierelasjon" })
+    @Timed(name = "providers", tags = { "operation", "pdl_familierelasjon" })
     public ResponseEntity postFamilierelasjon(PdlFamilierelasjon familierelasjonn, String ident, String beskrivelse) {
 
         return postRequest(
@@ -174,7 +174,7 @@ public class PdlForvalterConsumer {
                 familierelasjonn, ident, beskrivelse);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_telefonnummer" })
+    @Timed(name = "providers", tags = { "operation", "pdl_telefonnummer" })
     public ResponseEntity postTelefonnummer(PdlTelefonnummer.Entry telefonnummer, String ident, String beskrivelse) {
 
         return postRequest(
@@ -182,7 +182,7 @@ public class PdlForvalterConsumer {
                 telefonnummer, ident, beskrivelse);
     }
 
-    @Timed(name = "consumer", tags = { "operation", "pdl_sivilstand" })
+    @Timed(name = "providers", tags = { "operation", "pdl_sivilstand" })
     public ResponseEntity postSivilstand(PdlSivilstand sivilstand, String ident, String beskrivelse) {
 
         return postRequest(
