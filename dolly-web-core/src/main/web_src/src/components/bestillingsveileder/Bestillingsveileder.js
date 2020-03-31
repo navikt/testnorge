@@ -1,4 +1,6 @@
 import React, { createContext } from 'react'
+import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import { TpsfApi } from '~/service/Api'
 import { StegVelger } from './stegVelger/StegVelger'
 import { AppError } from '~/components/ui/appError/AppError'
 import { BVOptions } from './options/options'
@@ -9,6 +11,7 @@ export const BestillingsveilederContext = createContext()
 
 export const Bestillingsveileder = ({ error, location, sendBestilling }) => {
 	const options = BVOptions(location.state)
+	const { leggTilPaaFnr } = options
 
 	const handleSubmit = (values, formikBag) => {
 		sendBestilling(values, options)
@@ -17,11 +20,29 @@ export const Bestillingsveileder = ({ error, location, sendBestilling }) => {
 	if (error) {
 		return <AppError title="Det skjedde en feil ved bestilling" message={error.message} />
 	}
-
+	if (leggTilPaaFnr) {
+		return (
+			<LoadableComponent
+				onFetch={() =>
+					TpsfApi.getPersoner([leggTilPaaFnr]).then(response =>
+						response.data.length > 0 ? response.data[0] : null
+					)
+				}
+				render={data => {
+					const initialValues = { ...options.initialValues }
+					const leggTilPaaPersonOptions = { ...options, personFoerLeggTil: data }
+					return renderBestillingsVeileder(initialValues, leggTilPaaPersonOptions, handleSubmit)
+				}}
+			/>
+		)
+	}
+	return renderBestillingsVeileder(options.initialValues, options, handleSubmit)
+}
+const renderBestillingsVeileder = (initialValues, options, handleSubmit) => {
 	return (
 		<div className="bestillingsveileder">
 			<BestillingsveilederContext.Provider value={options}>
-				<StegVelger initialValues={options.initialValues} onSubmit={handleSubmit} />
+				<StegVelger initialValues={initialValues} onSubmit={handleSubmit} />
 			</BestillingsveilederContext.Provider>
 		</div>
 	)

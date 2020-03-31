@@ -40,6 +40,16 @@ export const Personinfo = ({ data, visTittel = true }) => {
 					value={Formatters.formatDate(data.bankkontonrRegdato)}
 				/>
 
+				<TitleValue
+					title={data.telefonnummer_2 ? 'Telefonnummer 1' : 'Telefonnummer'}
+					value={data.telefonnummer_1 && `${data.telefonLandskode_1} ${data.telefonnummer_1}`}
+				/>
+
+				<TitleValue
+					title="Telefonnummer 2"
+					value={data.telefonnummer_2 && `${data.telefonLandskode_2} ${data.telefonnummer_2}`}
+				/>
+
 				{data.spesreg !== 'UFB' && (
 					<TitleValue
 						title="Diskresjonskoder"

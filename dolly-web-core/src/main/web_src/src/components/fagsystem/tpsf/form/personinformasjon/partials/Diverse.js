@@ -6,6 +6,7 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Diskresjonskoder } from './diskresjonskoder/Diskresjonskoder'
+import { Telefonnummer } from './telefonnummer/Telefonnummer'
 
 export const Diverse = ({ formikBag }) => {
 	const handleChangeKontonr = selected => {
@@ -64,6 +65,7 @@ export const Diverse = ({ formikBag }) => {
 					fastfield={false}
 				/>
 			</Vis>
+			<Telefonnummer formikBag={formikBag} />
 			<Diskresjonskoder basePath="tpsf" formikBag={formikBag} />
 		</React.Fragment>
 	)

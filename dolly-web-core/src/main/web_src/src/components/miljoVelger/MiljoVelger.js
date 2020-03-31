@@ -46,16 +46,17 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 					return order.map(type => {
 						const category = environments[type]
 						const allDisabled = category.some(f => f.disabled)
+
 						return (
 							<fieldset key={type} name={`Liste over ${type}-mijøer`}>
 								<h3>{type}-miljø</h3>
 								<div className="miljo-velger_checkboxes">
-									{category.map(env => (
+									{category.map((env, idx) => (
 										<DollyCheckbox
 											key={env.id}
 											id={env.id}
 											disabled={env.disabled}
-											label={env.label}
+											label={env.id}
 											checked={values.includes(env.id)}
 											onClick={onClick}
 											onChange={() => {}}

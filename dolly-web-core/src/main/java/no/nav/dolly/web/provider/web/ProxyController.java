@@ -173,9 +173,10 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, inntektstubUrl + "/api/v2", PROXY_URI + "/inntektstub");
-        System.out.println(requestURL);
+
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
+
 
     private static String createURL(HttpServletRequest request, String host, String splitUri)
             throws UnsupportedEncodingException {
