@@ -1,12 +1,13 @@
 package no.nav.registre.inntekt.provider.rs;
 
-
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
+
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnRequest;
 import no.nav.registre.inntekt.service.AltinnInntektService;
 import no.nav.registre.inntekt.utils.ValidationException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Collections;
 
 @Slf4j
 @RestController

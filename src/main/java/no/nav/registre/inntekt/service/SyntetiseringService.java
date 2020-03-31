@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
-import no.nav.registre.inntekt.consumer.rs.TestnorgeAaregConsumer;
 import no.nav.registre.inntekt.domain.IdentMedData;
 import no.nav.registre.inntekt.domain.InntektSaveInHodejegerenRequest;
 import no.nav.registre.inntekt.domain.RsInntekt;
@@ -54,14 +53,14 @@ public class SyntetiseringService {
     private final InntektSyntConsumer inntektSyntConsumer;
     private final InntektstubV2Consumer inntektstubV2Consumer;
     private final HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
-    private final TestnorgeAaregConsumer testnorgeAaregConsumer;
+    private final AaregService aaregService;
 
     public Map<String, List<RsInntekt>> startSyntetisering(
             SyntetiseringsRequest syntetiseringsRequest,
             boolean opprettPaaEksisterende
     ) {
         var identer = new HashSet<>(hentLevendeIdenterOverAlder(syntetiseringsRequest.getAvspillergruppeId()));
-        var identerIAareg = new HashSet<>(testnorgeAaregConsumer.hentIdenterIAvspillergruppeMedArbeidsforhold(syntetiseringsRequest.getAvspillergruppeId(), syntetiseringsRequest.getMiljoe()));
+        var identerIAareg = new HashSet<>(aaregService.hentIdenterMedArbeidsforhold(syntetiseringsRequest.getAvspillergruppeId(), syntetiseringsRequest.getMiljoe()));
         var identerIInntektstub = new HashSet<>(inntektstubV2Consumer.hentEksisterendeIdenter());
 
         identerIInntektstub.retainAll(identerIAareg);
@@ -234,7 +233,7 @@ public class SyntetiseringService {
             String ident,
             String miljoe
     ) {
-        var arbeidsforhold = testnorgeAaregConsumer.hentArbeidsforholdTilIdentIMiljoe(ident, miljoe);
+        var arbeidsforhold = aaregService.hentArbeidsforhold(ident, miljoe);
         if (arbeidsforhold == null || arbeidsforhold.isEmpty()) {
             return null;
         }

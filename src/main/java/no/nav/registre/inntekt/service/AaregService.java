@@ -1,15 +1,17 @@
 package no.nav.registre.inntekt.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
 import lombok.RequiredArgsConstructor;
+
 import no.nav.registre.inntekt.consumer.rs.TestnorgeAaregConsumer;
 import no.nav.registre.inntekt.utils.ValidationException;
 // import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -26,6 +28,14 @@ public class AaregService {
     private static final String JSON_NODE_ARBEIDSFORHOLD_ID = "arbeidsforholdId";
     private static final String TYPE_ORGANISASJON = "Organisasjon";
     private static final String TYPE_PERSON = "Person";
+
+    public List<JsonNode> hentArbeidsforhold(String ident, String miljoe) {
+        return testnorgeAaregConsumer.hentArbeidsforholdTilIdentIMiljoe(ident, miljoe);
+    }
+
+    public List<String> hentIdenterMedArbeidsforhold(Long avspillergruppeId, String miljoe) {
+        return testnorgeAaregConsumer.hentIdenterIAvspillergruppeMedArbeidsforhold(avspillergruppeId, miljoe);
+    }
 
     public static JsonNode finnNyesteArbeidsforholdIOrganisasjon (
             String ident,

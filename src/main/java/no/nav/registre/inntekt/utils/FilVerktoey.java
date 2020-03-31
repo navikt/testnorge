@@ -35,7 +35,7 @@ public class FilVerktoey {
     }
 
     public static File lastRessurs(String filNavn) throws IOException {
-        var ressurs = FilVerktoey.class.getClassLoader().getResource(filNavn);
+        var ressurs = Thread.currentThread().getContextClassLoader().getResource(filNavn);
         if (ressurs == null) {
             log.error("Kunne ikke finne ressurs " + filNavn);
             throw new IOException("Resource not found exception");
@@ -47,7 +47,9 @@ public class FilVerktoey {
         try {
             byte[] bytes = lastFil(fil);
             return Base64.getEncoder().encode(bytes);
-        } catch (IOException ignored) {}
+        } catch (IOException e) {
+            log.error("Kunne ikke laste fil.");
+        }
         return new byte[0];
     }
 }

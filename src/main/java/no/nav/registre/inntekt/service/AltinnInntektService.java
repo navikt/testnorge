@@ -9,7 +9,6 @@ import no.nav.registre.inntekt.consumer.rs.DokmotConsumer;
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
-import no.nav.registre.inntekt.consumer.rs.TestnorgeAaregConsumer;
 import no.nav.registre.inntekt.domain.altinn.rs.AltinnInntektRequest;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsforhold;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiver;
@@ -25,6 +24,7 @@ import no.nav.registre.inntekt.provider.rs.requests.DokmotRequest;
 import no.nav.registre.inntekt.utils.FilVerktoey;
 import no.nav.registre.inntekt.utils.ValidationException;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -45,7 +45,7 @@ public class AltinnInntektService {
     private final HodejegerenConsumer hodejegerenConsumer;
     private final HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
     private final InntektSyntConsumer inntektSyntConsumer;
-    private final TestnorgeAaregConsumer testnorgeAaregConsumer;
+    private final AaregService aaregService;
     private final InntektstubV2Consumer inntektstubV2Consumer;
     private final AltinnInntektConsumer altinnInntektConsumer;
     private final DokmotConsumer dokmotConsumer;
@@ -82,7 +82,7 @@ public class AltinnInntektService {
             HodejegerenConsumer hodejegerenConsumer,
             HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer,
             InntektSyntConsumer inntektSyntConsumer,
-            TestnorgeAaregConsumer testnorgeAaregConsumer,
+            AaregService aaregService,
             InntektstubV2Consumer inntektstubV2Consumer,
             AltinnInntektConsumer altinnInntektConsumer,
             DokmotConsumer dokmotConsumer
@@ -90,7 +90,7 @@ public class AltinnInntektService {
         this.hodejegerenConsumer = hodejegerenConsumer;
         this.hodejegerenHistorikkConsumer = hodejegerenHistorikkConsumer;
         this.inntektSyntConsumer = inntektSyntConsumer;
-        this.testnorgeAaregConsumer = testnorgeAaregConsumer;
+        this.aaregService = aaregService;
         this.inntektstubV2Consumer = inntektstubV2Consumer;
         this.altinnInntektConsumer = altinnInntektConsumer;
         this.dokmotConsumer = dokmotConsumer;
@@ -117,7 +117,7 @@ public class AltinnInntektService {
         var ident = dollyRequest.getArbeidstakerFnr();
         var inntekterAaOpprette = dollyRequest.getInntekter();
 
-        var arbeidsforholdListe = testnorgeAaregConsumer.hentArbeidsforholdTilIdentIMiljoe(ident, miljoe);
+        var arbeidsforholdListe = aaregService.hentArbeidsforhold(ident, miljoe);
         if (arbeidsforholdListe == null || arbeidsforholdListe.isEmpty()) {
             throw new ValidationException("Kunne ikke finne arbeidsforhold for ident " + ident);
         }

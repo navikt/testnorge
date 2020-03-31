@@ -1,9 +1,7 @@
 package no.nav.registre.inntekt.security.sts;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
@@ -46,9 +44,7 @@ public class StsOidcService {
                 try {
                     updateToken(env);
                 } catch (RuntimeException e) {
-                    if (isExpired(env)) {
-                        throw new FunctionalException("Sikkerhets-token kunne ikke fornyes.");
-                    }
+                    throw new FunctionalException("Sikkerhets-token kunne ikke fornyes.", e);
                 }
             }
         }
