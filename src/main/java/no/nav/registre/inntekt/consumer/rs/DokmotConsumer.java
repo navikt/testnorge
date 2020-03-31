@@ -40,7 +40,7 @@ public class DokmotConsumer {
         try {
             return restTemplate.exchange(request, JoarkResponse.class).getBody();
         } catch (Exception e) {
-            log.error("Uventet feil ved lagring av journalpost", e);
+            log.warn("Uventet feil ved lagring av journalpost", e);
         }
         return null;
     }

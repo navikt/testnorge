@@ -7,6 +7,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -64,7 +65,7 @@ public class StsOidcService {
     private void updateToken(Environment env) {
         var getRequest = RequestEntity
                 .get(URI.create(credentialProps.getTokenUrl(env).concat("?grant_type=client_credentials&scope=openid")))
-                .header(ACCEPT, APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Basic " +
                         Base64.getEncoder().encodeToString(
                                 (credentialProps.getUsername(env) + ":" + credentialProps.getPassword(env)).getBytes(UTF_8)))

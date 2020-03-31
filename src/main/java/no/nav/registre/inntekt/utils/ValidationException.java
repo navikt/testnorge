@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -12,4 +13,5 @@ public class ValidationException extends Exception {
     private final List<String> errors;
 
     public ValidationException(List<String> errors) { this.errors = errors; }
+    public ValidationException(String error) { this.errors = Collections.singletonList(error); }
 }

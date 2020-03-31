@@ -3,13 +3,11 @@ package no.nav.registre.inntekt.service;
 import static no.nav.registre.inntekt.utils.DatoParser.finnSenesteInntekter;
 import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnavnFraMaanedsnummer;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -241,7 +239,7 @@ public class SyntetiseringService {
             return null;
         }
 
-        var arbeidsforholdet = finnNyesteArbeidsforhold(arbeidsforhold);
+        var arbeidsforholdet = AaregService.finnNyesteArbeidsforhold(arbeidsforhold);
         if (arbeidsforholdet == null) {
             throw new RuntimeException("Fant ikke arbeidsforhold til ident " + ident);
         }
@@ -259,19 +257,6 @@ public class SyntetiseringService {
         }
 
         return null;
-    }
-
-    private JsonNode finnNyesteArbeidsforhold(List<JsonNode> arbeidsforhold) {
-        var nyesteDato = LocalDateTime.MIN;
-        JsonNode nyesteArbeidsforhold = null;
-        for (var arbeidsforholdet : arbeidsforhold) {
-            var opprettetTidspunkt = LocalDateTime.parse(arbeidsforholdet.findValue("opprettetTidspunkt").asText());
-            if (opprettetTidspunkt.isAfter(nyesteDato)) {
-                nyesteDato = opprettetTidspunkt;
-                nyesteArbeidsforhold = arbeidsforholdet;
-            }
-        }
-        return nyesteArbeidsforhold;
     }
 
     private static List<RsInntekt> mapInntektsinformasjonslisteTilRsInntektListe(List<Inntektsinformasjon> inntektsinformasjonListe) {

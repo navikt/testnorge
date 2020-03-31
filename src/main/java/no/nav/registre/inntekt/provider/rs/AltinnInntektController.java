@@ -1,12 +1,12 @@
 package no.nav.registre.inntekt.provider.rs;
 
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnRequest;
 import no.nav.registre.inntekt.service.AltinnInntektService;
 import no.nav.registre.inntekt.utils.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,10 +21,10 @@ import java.util.Collections;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/altinnInntekt")
+@RequiredArgsConstructor
 public class AltinnInntektController {
 
-    @Autowired
-    private AltinnInntektService altinnInntektService;
+    private final AltinnInntektService altinnInntektService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/generer")
@@ -32,7 +32,7 @@ public class AltinnInntektController {
             @RequestParam(required = false, defaultValue = "true") Boolean opprettPaaEksisterende,
             @RequestBody AltinnRequest request
             ) throws ValidationException {
-        throw new ValidationException(Collections.singletonList("NOT IMPLEMENTED"));
+        throw new ValidationException("NOT IMPLEMENTED");
     }
 
     @PostMapping(value = "/enkeltident")
