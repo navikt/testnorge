@@ -154,7 +154,7 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, aaregUrl + API_URI, PROXY_URI + "/aareg");
-
+        
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
 
@@ -179,16 +179,6 @@ public class ProxyController {
         System.out.println(requestURL);
         return proxyService.proxyRequest(body, method, request, requestURL);
     }
-
-//    @RequestMapping("/proxy/pdlperson/**")
-//    public ResponseEntity<String> pdlPersonProxy(
-//            HttpServletRequest request){
-//
-//        String ident = request.getRequestURI().split("pdlperson/")[1];
-//        String requestURL = pdlPersonUrl + "/graphql";
-//
-//        return proxyService.pdlPersonRequest(requestURL, ident);
-//    }
 
     private static String createURL(HttpServletRequest request, String host, String splitUri)
             throws UnsupportedEncodingException {

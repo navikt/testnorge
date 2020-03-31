@@ -1,39 +1,27 @@
 package no.nav.dolly.web.provider.web;
 
 import static java.lang.String.format;
-import static no.nav.dolly.web.domain.TemaGrunnlag.GEN;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URLDecoder;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import lombok.extern.slf4j.Slf4j;
-import lombok.RequiredArgsConstructor;
-//import com.google.common.io.CharStreams;
-
-import org.apache.http.Consts;
 import org.springframework.core.codec.EncodingException;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.dolly.web.domain.GraphQLRequest;
+import lombok.RequiredArgsConstructor;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProxyService {
@@ -41,7 +29,6 @@ public class ProxyService {
     private static final String NAV_CALL_ID = "Nav-Call-Id";
     private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
     private static final String CONTENT_TYPE = "Content-Type";
-    private static final String TEMA = "Tema";
     private final RestTemplate proxyRestTemplate;
 
     public ResponseEntity proxyRequest(
@@ -74,46 +61,6 @@ public class ProxyService {
                     .body(exception.getResponseBodyAsString());
         }
     }
-//
-//    public ResponseEntity pdlPersonRequest(
-//            String requestUrl, String ident) {
-//
-//        Map<String, Object> variables = new HashMap();
-//        variables.put("ident", ident);
-//        variables.put("historikk", true);
-//
-//        String query = null;
-//        InputStream queryStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("pdlperson/pdlquery.graphql");
-//        try {
-//            Reader reader = new InputStreamReader(queryStream, Consts.UTF_8);
-//            query = CharStreams.toString(reader);
-//        } catch (IOException e) {
-//            log.error("Lesing av query ressurs feilet");
-//        }
-//
-//        GraphQLRequest graphQLRequest = GraphQLRequest.builder()
-//                .query(query)
-//                .variables(variables)
-//                .build();
-//
-//        OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
-//
-//        try {
-//            return proxyRestTemplate.exchange(RequestEntity.post(
-//                    URI.create(requestUrl))
-//                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + auth.getIdToken())
-//                    .header(NAV_CALL_ID, String.valueOf(UUID.randomUUID()))
-//                    .header(NAV_CONSUMER_ID, "dolly-frontend")
-//                    .header(TEMA, GEN.name())
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                    .body(graphQLRequest), JsonNode.class);
-//
-//        } catch (HttpClientErrorException exception) {
-//            return ResponseEntity.status(exception.getStatusCode())
-//                    .headers(exception.getResponseHeaders())
-//                    .body(exception.getResponseBodyAsString());
-//        }
-//    }
 
     private String decodeUrl(String requestUrl) {
         try {

@@ -12,7 +12,7 @@ const options = {
 
 export default {
     getArbeidsforhold(ident, miljoe) {
-        const endpoint = `${getAaregUrl()}/arbeidsforhold/ident=${ident}&miljoe=${miljoe}`
+        const endpoint = `${getAaregUrl()}/arbeidsforhold?ident=${ident}&miljoe=${miljoe}`
         return Request.getWithoutCredentials(endpoint, options)
     }
 }
