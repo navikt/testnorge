@@ -48,8 +48,8 @@ public class EregAdapter extends FasteDataAdapter {
                         item,
                         item.getJuridiskEnhet() != null ? fetchByOrgnr(item.getJuridiskEnhet()) : null,
                         getOppinnelse(item),
-                        getGruppe(item))
-                )
+                        getGruppe(item)
+                ))
                 .collect(Collectors.toList()))
         );
     }

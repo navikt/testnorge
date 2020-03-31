@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import no.nav.registre.sdForvalter.consumer.rs.ereg.command.GetOrganisasjon;
-import no.nav.registre.sdForvalter.consumer.rs.response.ereg.OrganisasjonResponse;
+import no.nav.registre.sdForvalter.consumer.rs.response.ereg.EregOrganisasjon;
 import no.nav.registre.sdForvalter.domain.status.ereg.Organisasjon;
 
 
@@ -31,7 +31,7 @@ public class EregConsumer {
         this.eregUrl = eregUrl;
     }
 
-    private CompletableFuture<OrganisasjonResponse> getOrganisasjon(String orgnummer, String miljo, Executor executor) {
+    private CompletableFuture<EregOrganisasjon> getOrganisasjon(String orgnummer, String miljo, Executor executor) {
         return CompletableFuture.supplyAsync(
                 () -> new GetOrganisasjon(eregUrl, miljo, orgnummer, restTemplate).call(),
                 executor
