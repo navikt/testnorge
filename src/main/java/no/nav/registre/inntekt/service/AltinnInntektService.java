@@ -2,6 +2,7 @@ package no.nav.registre.inntekt.service;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.inntekt.consumer.rs.AltinnInntektConsumer;
@@ -9,6 +10,7 @@ import no.nav.registre.inntekt.consumer.rs.DokmotConsumer;
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
+import no.nav.registre.inntekt.domain.altinn.AltinnInntektInfo;
 import no.nav.registre.inntekt.domain.altinn.rs.AltinnInntektRequest;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsforhold;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiver;
@@ -65,6 +67,11 @@ public class AltinnInntektService {
     private static final String TEMA = "FOR";
     private static final String TITTEL = "Syntetisk Inntektsmelding";
     private static final String KANAL = "ALTINN";
+    private static final String EKSTERN_REFERANSE_ID = "INGEN";
+    private static final String FILTYPE_XML = "XML";
+    private static final String FILTYPE_PDF = "PDF";
+    private static final String VARIANTFORMAT_ORIGINAL = "ORIGINAL";
+    private static final String VARIANTFORMAT_ARKIV = "ARKIV";
     private static final String DOKUMENTER_BREVKODE = "4936";
     private static final String DOKUMENTER_BERVKATEGORI = "ES";
 
@@ -96,9 +103,6 @@ public class AltinnInntektService {
         this.dokmotConsumer = dokmotConsumer;
     }
 
-
-
-
     /*public Map<String, List<RsInntekt>> lagAltinnMeldinger(
             AltinnRequest altinnRequest,
             boolean opprettPaaEksisterende,
@@ -129,64 +133,71 @@ public class AltinnInntektService {
             if (Objects.isNull(nyesteArbeidsforhold)) {
                 continue;
             }
-            var altinnInntektRequest = AltinnInntektRequest.builder()
-                    .aarsakTilInnsending(AARSAK_TIL_INNSENDING)
-                    .arbeidstakerFnr(ident)
-                    .ytelse(YTELSE)
-                    .arbeidsgiver(RsArbeidsgiver.builder()
-                            .virksomhetsnummer(inntekt.getVirksomhetsnummer())
-                            .kontaktinformasjon(RsKontaktinformasjon.builder()
-                                    .kontaktinformasjonNavn(KONTAKTINFORMASJON_NAVN)
-                                    .telefonnummer(KONTAKTINFORMASJON_TELEFONNUMMER).build()).build())
-                    .avsendersystem(RsAvsendersystem.builder()
-                            .systemnavn(AVSENDERSYSTEM_SYSTEMNAVN)
-                            .systemversjon(AVSENDERSYSTEM_SYSTEMVERSJON)
-                            .innsendingstidspunkt(inntekt.getDato().atStartOfDay())
-                            .build())
-                    .arbeidsforhold(RsArbeidsforhold.builder()
-                            .arbeidsforholdId(AaregService.finnArbeidsforholdId(nyesteArbeidsforhold))
-                            .beregnetInntekt(RsBeregnetInntekt.builder()
-                                    .aarsakVedEndring(ARBEIDSFORHOLD_AARSAK_VED_ENDRING)
-                                    .beloep(inntekt.getBeloep())
-                                    .build()).build()).build();
-
-            // Lag melding
+            var altinnInntektRequest = lagAltinnInntektRequest(inntekt, nyesteArbeidsforhold, ident);
             var altinnInntektResponse = altinnInntektConsumer.getInntektsmeldingXml201812(altinnInntektRequest);
+
             altinnInntektMeldinger.add(altinnInntektResponse);
 
-            // Lagre melding i Joark
-            var dokmotRequest = DokmotRequest.builder()
-                    .journalposttype(JOURNALPOST_TYPE)
-                    .avsenderMottaker(AvsenderMottaker.builder()
-                            .id(inntekt.getVirksomhetsnummer())
-                            .idType(AVSENDER_MOTTAKER_ID_TYPE)
-                            .navn(KONTAKTINFORMASJON_NAVN).build())
-                    .bruker(Bruker.builder()
-                            .id(ident)
-                            .idType(BRUKER_ID_TYPE).build())
-                    .tema(TEMA)
-                    .tittel(TITTEL)
-                    .kanal(KANAL)
-                    .eksternReferanseId("INGEN")
-                    .datoMottatt(Date.from(inntekt.getDato().atStartOfDay(ZoneId.systemDefault()).toInstant())) // Skal være java util Date
-                    .dokumenter(Collections.singletonList(Dokument.builder()
-                            .brevkode(DOKUMENTER_BREVKODE)
-                            .dokumentkategori(DOKUMENTER_BERVKATEGORI)
-                            .tittel(TITTEL)
-                            .dokumentvarianter(Arrays.asList(
-                                    Dokumentvariant.builder()
-                                            .filtype("XML")
-                                            .variantformat("ORIGINAL")
-                                            .fysiskDokument(Base64.getEncoder().encode(altinnInntektResponse.getBytes(UTF_8)))
-                                            .build(),
-                                    Dokumentvariant.builder()
-                                            .filtype("PDF")
-                                            .variantformat("ARKIV")
-                                            .fysiskDokument(FilVerktoey.encodeFilTilBase64Binary(dummyPdf))
-                                            .build())).build())).build();
-            dokmotConsumer.opprettJournalpost(dokmotRequest, miljoe);
+            lagreMeldingIJoark(altinnInntektResponse, inntekt, ident, miljoe);
         }
         return altinnInntektMeldinger;
+    }
+
+    private AltinnInntektRequest lagAltinnInntektRequest(AltinnInntektInfo inntekt, JsonNode nyesteArbeidsforhold, String ident) {
+        return AltinnInntektRequest.builder()
+                .aarsakTilInnsending(AARSAK_TIL_INNSENDING)
+                .arbeidstakerFnr(ident)
+                .ytelse(YTELSE)
+                .arbeidsgiver(RsArbeidsgiver.builder()
+                        .virksomhetsnummer(inntekt.getVirksomhetsnummer())
+                        .kontaktinformasjon(RsKontaktinformasjon.builder()
+                                .kontaktinformasjonNavn(KONTAKTINFORMASJON_NAVN)
+                                .telefonnummer(KONTAKTINFORMASJON_TELEFONNUMMER).build()).build())
+                .avsendersystem(RsAvsendersystem.builder()
+                        .systemnavn(AVSENDERSYSTEM_SYSTEMNAVN)
+                        .systemversjon(AVSENDERSYSTEM_SYSTEMVERSJON)
+                        .innsendingstidspunkt(inntekt.getDato().atStartOfDay())
+                        .build())
+                .arbeidsforhold(RsArbeidsforhold.builder()
+                        .arbeidsforholdId(AaregService.finnArbeidsforholdId(nyesteArbeidsforhold))
+                        .beregnetInntekt(RsBeregnetInntekt.builder()
+                                .aarsakVedEndring(ARBEIDSFORHOLD_AARSAK_VED_ENDRING)
+                                .beloep(inntekt.getBeloep())
+                                .build()).build()).build();
+    }
+
+    private void lagreMeldingIJoark(String xmlMelding, AltinnInntektInfo inntekt, String ident, String miljoe) {
+        var request = DokmotRequest.builder()
+                .journalposttype(JOURNALPOST_TYPE)
+                .avsenderMottaker(AvsenderMottaker.builder()
+                        .id(inntekt.getVirksomhetsnummer())
+                        .idType(AVSENDER_MOTTAKER_ID_TYPE)
+                        .navn(KONTAKTINFORMASJON_NAVN).build())
+                .bruker(Bruker.builder()
+                        .id(ident)
+                        .idType(BRUKER_ID_TYPE)
+                        .build())
+                .tema(TEMA)
+                .tittel(TITTEL)
+                .kanal(KANAL)
+                .eksternReferanseId(EKSTERN_REFERANSE_ID)
+                .datoMottatt(Date.from(inntekt.getDato().atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .dokumenter(Collections.singletonList(Dokument.builder()
+                        .brevkode(DOKUMENTER_BREVKODE)
+                        .dokumentkategori(DOKUMENTER_BERVKATEGORI)
+                        .tittel(TITTEL)
+                        .dokumentvarianter(Arrays.asList(
+                                Dokumentvariant.builder()
+                                        .filtype(FILTYPE_XML)
+                                        .variantformat(VARIANTFORMAT_ORIGINAL)
+                                        .fysiskDokument(Base64.getEncoder().encode(xmlMelding.getBytes(UTF_8)))
+                                        .build(),
+                                Dokumentvariant.builder()
+                                        .filtype(FILTYPE_PDF)
+                                        .variantformat(VARIANTFORMAT_ARKIV)
+                                        .fysiskDokument(FilVerktoey.encodeFilTilBase64Binary(dummyPdf))
+                                        .build())).build())).build();
+        dokmotConsumer.opprettJournalpost(request, miljoe);
     }
 
     /*private List<String> identerSomSkalHaInntekt(boolean opprettPaaEksisterende, Long avspillergruppeId, String miljoe) {
