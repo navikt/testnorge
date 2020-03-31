@@ -4,7 +4,6 @@ import { TpsfApi } from '~/service/Api'
 import { StegVelger } from './stegVelger/StegVelger'
 import { AppError } from '~/components/ui/appError/AppError'
 import { BVOptions } from './options/options'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 
 import './bestillingsveileder.less'
 
