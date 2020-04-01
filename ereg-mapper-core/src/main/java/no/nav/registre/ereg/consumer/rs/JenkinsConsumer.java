@@ -62,7 +62,7 @@ public class JenkinsConsumer {
 
     private static Resource getFileResource(String content) throws IOException {
         Path tempFile = Files.createTempFile("ereg", ".txt");
-        Files.write(tempFile, content.getBytes(StandardCharsets.ISO_8859_1));
+        Files.write(tempFile, content.getBytes(StandardCharsets.UTF_8));
         File file = tempFile.toFile();
         return new FileSystemResource(file);
     }
@@ -87,6 +87,8 @@ public class JenkinsConsumer {
         map.add("FileName", "orkestratoren" + UUID.randomUUID() + ".txt");
         map.add("overrideSequenceControl", "true");
 
+        log.info("server: {}", map.get("server"));
+
         try {
             MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
             Resource fileResource = getFileResource(flatFile);
@@ -97,7 +99,7 @@ public class JenkinsConsumer {
                     .filename(filename)
                     .build();
             fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
-            fileMap.set("Content-Type", ContentType.TEXT_PLAIN.toString());
+            fileMap.set("Content-Type", ContentType.TEXT_PLAIN.withCharset(StandardCharsets.UTF_8).toString());
             HttpEntity<byte[]> fileEntity = new HttpEntity<>(flatFile.getBytes(), fileMap);
             map.add("input_file", fileEntity);
         } catch (IOException e) {
