@@ -75,6 +75,10 @@ public class ErrorStatusDecoder {
     }
 
     public static String encodeErrorStatus(String toBeEncoded) {
-        return toBeEncoded.replaceAll(",", "&").replaceAll(":", "=");
+        return toBeEncoded
+                .replace("[\"", "")
+                .replace("\"]", "")
+                .replaceAll(",", "&")
+                .replaceAll(":", "=");
     }
 }

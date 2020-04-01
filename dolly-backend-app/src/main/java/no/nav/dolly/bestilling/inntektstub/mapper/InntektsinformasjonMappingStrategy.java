@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
+import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.mapper.MappingStrategy;
 

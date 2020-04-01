@@ -30,6 +30,7 @@ public class ProvidersProps {
     private PdlPerson pdlPerson = new PdlPerson();
     private FasteDatasett fasteDatasett = new FasteDatasett();
     private Pensjonforvalter pensjonforvalter = new Pensjonforvalter();
+    private Inntektsmelding inntektsmelding = new Inntektsmelding();
     private IdentPool identPool = new IdentPool();
 
     @Getter
@@ -177,6 +178,16 @@ public class ProvidersProps {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Pensjonforvalter {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Inntektsmelding {
 
         private String url;
     }

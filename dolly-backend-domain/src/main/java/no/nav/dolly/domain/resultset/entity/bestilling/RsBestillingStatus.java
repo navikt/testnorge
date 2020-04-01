@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
@@ -84,5 +85,6 @@ public class RsBestillingStatus {
         private Arenadata arenaforvalter;
         private RsUdiPerson udistub;
         private PensjonData pensjonforvalter;
+        private RsInntektsmelding inntektsmelding;
     }
 }
