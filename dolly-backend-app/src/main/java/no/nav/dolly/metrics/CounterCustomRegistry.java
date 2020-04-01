@@ -9,8 +9,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
-import io.prometheus.client.CollectorRegistry;
-import io.prometheus.client.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 
@@ -18,14 +17,11 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 @RequiredArgsConstructor
 public class CounterCustomRegistry {
 
-    private final CollectorRegistry registry;
+    private final MeterRegistry registry;
 
     public void invoke(String name, String[] tags) {
 
-        Counter.build()
-                .name(name)
-                .labelNames(tags)
-                .register(registry);
+        registry.counter(name, tags).increment();
     }
 
     public void invoke(String name, RsDollyUtvidetBestilling bestilling) {
@@ -51,6 +47,7 @@ public class CounterCustomRegistry {
             addLabel(labels, isNotBlank(bestilling.getTpsf().getUtvandretTilLand()), "UTVANDRET");
             addLabel(labels, isTrue(bestilling.getTpsf().getErForsvunnet()), "FORSVUNNET");
             addLabel(labels, isTrue(bestilling.getTpsf().getUtenFastBopel()), "UTENFASTBOPEL");
+            addLabel(labels, isNotBlank(bestilling.getTpsf().getSprakKode()), "SPRÅK");
             addLabel(labels, nonNull(bestilling.getTpsf().getDoedsdato()), "DØDSDATO");
 
             if (nonNull(bestilling.getTpsf().getRelasjoner())) {
