@@ -50,6 +50,7 @@ import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.tpsf.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
+import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -104,6 +105,9 @@ public class DollyBestillingServiceTest {
 
     @Mock
     private SigrunStubResponseHandler responseHandler;
+
+    @Mock
+    private CounterCustomRegistry counterCustomRegistry;
 
     @Mock
     private CacheManager cacheManager;

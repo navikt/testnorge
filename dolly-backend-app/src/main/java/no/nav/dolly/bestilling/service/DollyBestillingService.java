@@ -54,6 +54,7 @@ import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfRelasjonRequest;
 import no.nav.dolly.exceptions.TpsfException;
+import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -80,6 +81,7 @@ public class DollyBestillingService {
     private final CacheManager cacheManager;
     private final ObjectMapper objectMapper;
     private final List<ClientRegister> clientRegisters;
+    private final CounterCustomRegistry counterCustomRegistry;
 
     @Async
     public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingRequest request, Bestilling bestilling) {
@@ -152,6 +154,7 @@ public class DollyBestillingService {
                             .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
 
             TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(oppdaterPersonResponse);
+            counterCustomRegistry.invoke(request);
             clientRegisters.forEach(clientRegister ->
                     clientRegister.gjenopprett(request, tpsPerson, progress, true));
 
@@ -239,6 +242,7 @@ public class DollyBestillingService {
                 }
                 bestKriterier.setEnvironments(newArrayList(bestilling.getMiljoer().split(",")));
 
+                counterCustomRegistry.invoke(bestKriterier);
                 clientRegisters.forEach(clientRegister ->
                         clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, false));
 
@@ -283,6 +287,7 @@ public class DollyBestillingService {
                 bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
             }
 
+            counterCustomRegistry.invoke(bestKriterier);
             clientRegisters.forEach(clientRegister -> clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, false));
 
             oppdaterProgress(bestilling, progress);
