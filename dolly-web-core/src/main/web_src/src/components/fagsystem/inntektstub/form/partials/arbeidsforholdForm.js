@@ -57,6 +57,7 @@ export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 						label="Yrke"
 						kodeverk={ArbeidKodeverk.Yrker}
 						size="xxlarge"
+						optionHeight={50}
 					/>
 					<FormikSelect
 						name={`${path}.arbeidstidsordning`}
