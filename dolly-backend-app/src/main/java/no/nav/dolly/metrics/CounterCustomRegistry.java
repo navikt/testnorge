@@ -17,6 +17,8 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 @RequiredArgsConstructor
 public class CounterCustomRegistry {
 
+    private static final String BESTILLING_TAG = "bestillingTag";
+
     private final MeterRegistry registry;
 
     public void invoke(String name, List<String> tags) {
@@ -26,7 +28,7 @@ public class CounterCustomRegistry {
         );
     }
 
-    public void invoke(String name, RsDollyUtvidetBestilling bestilling) {
+    public void invoke(RsDollyUtvidetBestilling bestilling) {
 
         List<String> tags = newArrayList();
 
@@ -77,7 +79,7 @@ public class CounterCustomRegistry {
 
         addTag(tags, isNotBlank(bestilling.getMalBestillingNavn()), "MALBESTILLING");
 
-        invoke(name, tags);
+        invoke(BESTILLING_TAG, tags);
     }
 
     private static void addTag(List tags, boolean check, String tag) {

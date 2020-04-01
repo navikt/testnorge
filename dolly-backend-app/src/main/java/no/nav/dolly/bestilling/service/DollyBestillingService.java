@@ -154,7 +154,7 @@ public class DollyBestillingService {
                             .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
 
             TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(oppdaterPersonResponse);
-            counterCustomRegistry.invoke("leggTilPaaPerson", request);
+            counterCustomRegistry.invoke(request);
             clientRegisters.forEach(clientRegister ->
                     clientRegister.gjenopprett(request, tpsPerson, progress, true));
 
@@ -242,7 +242,7 @@ public class DollyBestillingService {
                 }
                 bestKriterier.setEnvironments(newArrayList(bestilling.getMiljoer().split(",")));
 
-                counterCustomRegistry.invoke("gjenopprettBestilling", bestKriterier);
+                counterCustomRegistry.invoke(bestKriterier);
                 clientRegisters.forEach(clientRegister ->
                         clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, false));
 
@@ -287,7 +287,7 @@ public class DollyBestillingService {
                 bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
             }
 
-            counterCustomRegistry.invoke("opprettFraKriterier", bestKriterier);
+            counterCustomRegistry.invoke(bestKriterier);
             clientRegisters.forEach(clientRegister -> clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, false));
 
             oppdaterProgress(bestilling, progress);
