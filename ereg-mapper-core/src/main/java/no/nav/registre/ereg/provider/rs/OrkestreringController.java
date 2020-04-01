@@ -29,7 +29,11 @@ public class OrkestreringController {
     }
 
     @PostMapping("/opprett")
-    public ResponseEntity<String> opprettEnheterIEreg(@Valid @RequestBody List<EregDataRequest> data, @RequestParam boolean lastOpp, @RequestParam String miljoe) {
+    public ResponseEntity<String> opprettEnheterIEreg(
+            @Valid @RequestBody List<EregDataRequest> data,
+            @RequestParam boolean lastOpp,
+            @RequestParam String miljoe
+    ) {
         String eregData = flatfileService.mapEreg(data, lastOpp, miljoe);
 
         if ("".equals(eregData)) {
@@ -40,7 +44,10 @@ public class OrkestreringController {
     }
 
     @PostMapping("/flatfil/jenkins")
-    public ResponseEntity sendFlatfil(@RequestBody String flatFil, @RequestParam String miljoe) {
+    public ResponseEntity sendFlatfil(
+            @RequestBody String flatFil,
+            @RequestParam String miljoe
+    ) {
         boolean send = flatfileService.sendToJenkins(flatFil, miljoe);
         if (!send) {
             return ResponseEntity.badRequest().build();
