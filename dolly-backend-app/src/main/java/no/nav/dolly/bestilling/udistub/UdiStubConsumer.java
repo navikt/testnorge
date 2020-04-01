@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
@@ -31,6 +32,7 @@ public class UdiStubConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
+    @Timed(name = "providers", tags = { "operation", "udi_createPerson" })
     public ResponseEntity<UdiPersonControllerResponse> createUdiPerson(UdiPerson udiPerson) {
 
             return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
@@ -41,6 +43,7 @@ public class UdiStubConsumer {
                     UdiPersonControllerResponse.class);
     }
 
+    @Timed(name = "providers", tags = { "operation", "udi_deletePerson" })
     public ResponseEntity<Object> deleteUdiPerson(String ident) {
 
             return restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))

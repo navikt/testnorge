@@ -4,7 +4,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.*;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeErrorStatus;
 
 import java.util.List;
 import java.util.Set;
@@ -22,7 +22,6 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.service.TpsfPersonCache;
 
 @Slf4j
@@ -38,7 +37,6 @@ public class PensjonforvalterClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    @Timed(name = "providers", tags = { "operation", "gjenopprettPensjon" })
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 

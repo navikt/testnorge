@@ -25,6 +25,7 @@ import com.google.common.io.CharStreams;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.sts.StsOidcService;
 
@@ -44,6 +45,7 @@ public class PdlPersonConsumer {
     private final ProvidersProps providersProps;
     private final StsOidcService stsOidcService;
 
+    @Timed(name = "providers", tags = { "operation", "pdl_getPerson" })
     public ResponseEntity getPdlPerson(String ident) {
 
         Map<String, Object> variables = new HashMap();

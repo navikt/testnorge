@@ -32,7 +32,6 @@ public class ArenaForvalterClient implements ClientRegister {
     private final MapperFacade mapperFacade;
 
     @Override
-    @Timed(name = "providers", tags = { "operation", "gjenopprettArenaForvalter" })
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getArenaforvalter())) {

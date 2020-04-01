@@ -58,7 +58,7 @@ public class KrrstubClientTest {
         when(mapperFacade.map(any(RsDigitalKontaktdata.class), eq(DigitalKontaktdata.class)))
                 .thenReturn(new DigitalKontaktdata());
 
-        when(krrstubConsumer.readDigitalKontaktdata(IDENT)).thenReturn(null);
+        when(krrstubConsumer.getDigitalKontaktdata(IDENT)).thenReturn(null);
         when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenReturn(ResponseEntity.ok(""));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
@@ -75,7 +75,7 @@ public class KrrstubClientTest {
     public void gjenopprett_krrdata_feil() {
 
         BestillingProgress progress = BestillingProgress.builder().bestillingId(BESTILLING_ID).build();
-        when(krrstubConsumer.readDigitalKontaktdata(IDENT)).thenReturn(null);
+        when(krrstubConsumer.getDigitalKontaktdata(IDENT)).thenReturn(null);
         when(mapperFacade.map(any(RsDigitalKontaktdata.class), eq(DigitalKontaktdata.class)))
                 .thenReturn(new DigitalKontaktdata());
         when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenThrow(HttpClientErrorException.class);

@@ -24,7 +24,6 @@ import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
-import no.nav.dolly.metrics.Timed;
 
 @Slf4j
 @Service
@@ -37,7 +36,6 @@ public class AaregClient implements ClientRegister {
     private final MapperFacade mapperFacade;
 
     @Override
-    @Timed(name = "providers", tags = { "operation", "gjenopprettAareg" })
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         StringBuilder result = new StringBuilder();
