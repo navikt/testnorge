@@ -50,29 +50,25 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 		}
 
 		// TODO: Denne må gjøres ferdig - må nullstille tilleggsinformasjon når tilleggsinformasjonstype endres
-		// Nullstill inntekt-form om det velges ny inntektstype
 		if (values.inntektstype !== currentInntektstype) {
 			formikBag.setFieldValue(inntektPath, nullstiltInntekt)
 		} else {
 			for (var [key, value] of Object.entries(values)) {
 				if (key === 'tilleggsinformasjonstype') {
 					if (value !== currentTilleggsinformasjonstype) {
-						// if (value !== _get(formikBag.values, `${inntektPath}.tilleggsinformasjonstype`)) {
 						formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, {})
 					}
 					setCurrentTilleggsinformasjonstype(value)
 				}
 
 				if (tilleggsinformasjonAttributter[value]) {
-					// formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, null)
 					formikBag.setFieldValue(
 						`${inntektPath}.tilleggsinformasjon.${tilleggsinformasjonAttributter[value]}`,
 						{}
 					)
-					formikBag.setFieldValue(`${inntektPath}.${key}`, value) // denne som setter tilleggsinformasjonstype
+					formikBag.setFieldValue(`${inntektPath}.${key}`, value)
 				} else {
 					if (tilleggsinformasjonPaths(key) !== key) {
-						// formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, null)
 						formikBag.setFieldValue(`${inntektPath}.${tilleggsinformasjonPaths(key)}`, value)
 					} else {
 						formikBag.setFieldValue(`${inntektPath}.${key}`, value)
