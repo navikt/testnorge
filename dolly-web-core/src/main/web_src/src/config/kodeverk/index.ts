@@ -33,7 +33,7 @@ export enum ArbeidKodeverk {
 
 export enum InntektstubKodeverk {
 	Forskuddstrekkbeskrivelse = 'Forskuddstrekkbeskrivelse',
-	Fradragsbeskrivelse = 'Fradragsbeskrivelse'
+	Fradragbeskrivelse = 'Fradragbeskrivelse'
 }
 
 export enum GtKodeverk {
