@@ -36,6 +36,7 @@ export default handleActions(
  */
 export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getState) => {
 	let bestillingAction = null
+	console.log('opts :', opts)
 
 	if (opts.is.leggTil) {
 		bestillingAction = actions.postBestillingLeggTilPaaPerson(opts.leggTilPaaFnr, values)
