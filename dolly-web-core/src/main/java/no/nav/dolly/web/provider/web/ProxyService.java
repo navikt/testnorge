@@ -8,6 +8,7 @@ import java.util.Enumeration;
 import java.util.UUID;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.core.codec.EncodingException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -41,8 +42,12 @@ public class ProxyService {
         OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + auth.getIdToken());
 
-        headers.add(NAV_CALL_ID, String.valueOf(UUID.randomUUID()));
-        headers.add(NAV_CONSUMER_ID, "dolly-proxy");
+        if (headers.get(NAV_CALL_ID) == null) {
+            headers.add(NAV_CALL_ID, String.valueOf(UUID.randomUUID()));
+        }
+        if (headers.get(NAV_CONSUMER_ID) == null) {
+            headers.add(NAV_CONSUMER_ID, "dolly-proxy");
+        }
         headers.add(CONTENT_TYPE, "application/json; charset=UTF-8");
         headers.set(HttpHeaders.ACCEPT_ENCODING, "identity=1.0");
 

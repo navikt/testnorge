@@ -120,22 +120,6 @@ export default {
 		return Request.get(Endpoints.personoppslag(ident))
 	},
 
-	getArbeidsforhold(ident, env) {
-		return Request.get(Endpoints.arbeidsforholdByIdent(ident, env))
-	},
-
-	getPoppInntekt(ident, env){
-		return Request.get(Endpoints.poppInntekt(ident, env))
-	},
-
-	getTilgjengeligePoppMiljoer(){
-		return Request.get(Endpoints.poppMiljoe())
-	},
-
-	getInntektsinformasjon(ident) {
-		return Request.get(Endpoints.inntekterByIdent(ident))
-	},
-
 	getFasteOrgnummer() {
 		return Request.get(Endpoints.fasteOrgnummer())
 	},
@@ -144,7 +128,7 @@ export default {
 		return Request.get(Endpoints.getFasteDatasettTPSGruppe(gruppe))
 	},
 
-	getPersonnavn(){
+	getPersonnavn() {
 		return Request.get(Endpoints.getPersonnavn())
 	}
 }

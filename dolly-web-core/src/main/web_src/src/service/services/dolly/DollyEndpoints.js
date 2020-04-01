@@ -9,10 +9,7 @@ const kodeverkBase = `${uri}/kodeverk`
 const bestillingBase = `${uri}/bestilling`
 const configBase = `${uri}/config`
 const openamBase = `${uri}/openam`
-const aaregBase = `${uri}/aareg/arbeidsforhold`
 const personoppslagBase = `${uri}/pdlperson`
-const poppBase = `${uri}/popp`
-const inntektstubBase = `${uri}/inntektstub`
 const fasteOrgnummerBase = `${uri}/orgnummer`
 const fasteDatasettBase = `${uri}/fastedatasett`
 
@@ -46,7 +43,7 @@ export default class DollyEndpoints {
 	}
 
 	static brukerById(brukerId) {
-		return `${brukerBase}/brukerId`
+		return `${brukerBase}/${brukerId}`
 	}
 
 	static currentBruker() {
@@ -93,24 +90,8 @@ export default class DollyEndpoints {
 		return `${bestillingBase}/stop/${bestillingId}`
 	}
 
-	static aareg() {
-		return aaregBase
-	}
-
-	static arbeidsforholdByIdent(ident, env) {
-		return `${aaregBase}?ident=${ident}&miljoe=${env}`
-	}
-
 	static personoppslag(ident) {
 		return `${personoppslagBase}/ident/${ident}`
-	}
-
-	static inntekterByIdent(ident) {
-		return `${inntektstubBase}/${ident}`
-	}
-
-	static fasteOrgnummer() {
-		return fasteOrgnummerBase
 	}
 
 	//TESTPERSON-CONTROLLER
@@ -134,19 +115,11 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}/relasjon`
 	}
 
-	static poppInntekt(ident, env){
-		return `${poppBase}/inntekt/${ident}/${env}`
-	}
-
-	static poppMiljoe(){
-		return `${poppBase}/miljoe`
-	}
-
-	static getFasteDatasettTPSGruppe(gruppe){
+	static getFasteDatasettTPSGruppe(gruppe) {
 		return `${fasteDatasettBase}/tps/${gruppe}`
 	}
 
-	static getPersonnavn(){
+	static getPersonnavn() {
 		return `${uri}/personnavn`
 	}
 }

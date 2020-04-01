@@ -25,7 +25,8 @@ const diversePaths = [
 	'tpsf.egenAnsattDatoFom',
 	'tpsf.spesreg',
 	'tpsf.erForsvunnet',
-	'tpsf.harBankkontonr'
+	'tpsf.harBankkontonr',
+	'tpsf.telefonnummer_1'
 ]
 
 const panelPaths = [alderPaths, nasjonalitetPaths, diversePaths].flat()

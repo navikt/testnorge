@@ -1,28 +1,20 @@
 import config from '~/config'
 import Request from '~/service/services/Request'
-import ConfigService from '~/service/Config'
 
-const getSigrunBaseUrl = () => ConfigService.getDatesourceUrl('sigrun')
+const getSigrunBaseUrl = () => `${config.services.proxyBackend}/sigrun`
 
 export default {
 	getPerson(ident) {
-		const endpoint = getSigrunBaseUrl() + '/api/v1/lignetinntekt'
+		const endpoint = getSigrunBaseUrl() + '/lignetinntekt'
 		return Request.getWithoutCredentials(endpoint, {
 			headers: { personidentifikator: ident }
 		})
 	},
 
 	getSekvensnummer(ident) {
-		const endpoint = getSigrunBaseUrl() + '/api/v1/sekvensnummer/' + ident
+		const endpoint = getSigrunBaseUrl() + '/sekvensnummer/' + ident
 		return Request.getWithoutCredentials(endpoint, {
 			headers: { personidentifikator: ident }
-		})
-	},
-
-	updatePerson(data) {
-		const endpoint = `${getSigrunBaseUrl()}/testdata/oppdater`
-		return Request.postWithoutCredentials(endpoint, null, {
-			headers: data
 		})
 	}
 }

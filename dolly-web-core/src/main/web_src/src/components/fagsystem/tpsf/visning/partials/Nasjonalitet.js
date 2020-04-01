@@ -10,7 +10,7 @@ const Statsborgerskap = ({ statsborgerskap }) => (
 		<TitleValue
 			title="Statsborgerskap"
 			kodeverk={AdresseKodeverk.StatsborgerskapLand}
-			value={statsborgerskap.Statsborgerskap}
+			value={statsborgerskap.statsborgerskap}
 		/>
 		<TitleValue
 			title="Statsborgerskap fra"

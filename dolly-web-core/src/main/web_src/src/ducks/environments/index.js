@@ -37,9 +37,14 @@ export const _getEnvironmentsSortedByType = envArray => {
 
 	Object.keys(sortedByType).forEach(key => {
 		const envs = sortedByType[key]
-		sortedByType[key] = envs.sort((a, b) => {
-			return a.label.substring(1) - b.label.substring(1)
+		const sorterteNummer = envs.map(env => env.id.match(/.{1,1}/g))
+		const sorterteEnvs = sorterteNummer.map(v => v[0] + v[1]).sort()
+
+		sorterteEnvs.map((current, idx) => {
+			return (envs[idx].id = sorterteEnvs[idx])
 		})
+
+		sorterteEnvs.map((current, idx) => (envs[idx].id = sorterteEnvs[idx]))
 	})
 	return sortedByType
 }

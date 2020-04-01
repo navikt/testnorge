@@ -1,9 +1,7 @@
 import config from '~/config'
 import Request from '~/service/services/Request'
-import ConfigService from '~/service/Config'
 
-const getInstBaseUrl = () => ConfigService.getDatesourceUrl('inst')
-const getInstUrl = () => `${getInstBaseUrl()}/api/v1`
+const getInstUrl = () => `${config.services.proxyBackend}/inst`
 
 export default {
 	getPerson(ident, env) {

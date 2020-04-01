@@ -2,8 +2,8 @@ import config from '~/config'
 import Request from '~/service/services/Request'
 import ConfigService from '~/service/Config'
 
-const getBaseUrl = () => ConfigService.getDatesourceUrl('tpsf')
-const getTpsfUrl = () => `${getBaseUrl()}/api/v1`
+const getTpsfUrl = () => `${config.services.proxyBackend}/tpsf`
+const getKontaktinfoUrl = () => `${config.services.proxyBackend}/kontaktinfo`
 
 export default {
 	getPersoner(userArray) {
@@ -14,22 +14,10 @@ export default {
 		return Request.post(endpoint, userArray)
 	},
 
-	updatePersoner(userData) {
-		if (!userData) return
-		const endpoint = getTpsfUrl() + '/testdata/updatepersoner'
-		return Request.post(endpoint, [userData])
-	},
-
 	checkpersoner(userArray) {
 		if (!userArray) return
 		const endpoint = getTpsfUrl() + '/dolly/testdata/checkpersoner'
 		return Request.post(endpoint, userArray)
-	},
-
-	sendToTps(data) {
-		if (!data) return
-		const endpoint = getTpsfUrl() + '/dolly/testdata/tilTpsFlere'
-		return Request.post(endpoint, data)
 	},
 
 	createFoedselsmelding(userData) {
@@ -38,7 +26,7 @@ export default {
 	},
 
 	getKontaktInformasjon(fnr, env) {
-		const endpoint = getBaseUrl() + '/api/tps/kontaktinformasjon?fnr=' + fnr + '&environment=' + env
+		const endpoint = getKontaktinfoUrl() + '/tps/kontaktinformasjon?fnr=' + fnr + '&environment=' + env
 		return Request.get(endpoint)
 	},
 
@@ -59,16 +47,6 @@ export default {
 
 	generateAddress(query) {
 		const endpoint = `${getTpsfUrl()}/gyldigadresse/autocomplete?maxRetur=5${query}`
-		return Request.get(endpoint)
-	},
-
-	autocompleteAddress(adresseSok) {
-		const endpoint = getTpsfUrl() + '/gyldigadresse/autocomplete?adresseNavnsok=' + adresseSok
-		return Request.get(endpoint)
-	},
-
-	checkPostnummer(postnummer) {
-		const endpoint = getTpsfUrl() + '/gyldigadresse/autocomplete?postNrsok=' + postnummer
 		return Request.get(endpoint)
 	},
 

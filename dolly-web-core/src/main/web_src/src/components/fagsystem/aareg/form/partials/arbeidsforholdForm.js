@@ -8,11 +8,18 @@ import { TimeloennetForm } from './timeloennetForm'
 import { PermisjonForm } from './permisjonForm'
 import { UtenlandsoppholdForm } from './utenlandsoppholdForm'
 import { ArbeidsavtaleForm } from './arbeidsavtaleForm'
-import { OrgnrForm } from './orgnrForm'
+import { OrgnummerToggle } from './orgnummerToggle'
 import { ArbeidKodeverk } from '~/config/kodeverk'
+import Hjelpetekst from '~/components/hjelpetekst'
 
 export const ArbeidsforholdForm = ({ path, formikBag }) => {
 	const arbeidsforhold = _get(formikBag.values, path)
+
+	const clearOrgnrIdent = aktoer => {
+		formikBag.setFieldValue(`${path}.arbeidsgiver.aktoertype`, aktoer.value)
+		formikBag.setFieldValue(`${path}.arbeidsgiver.orgnummer`, '')
+		formikBag.setFieldValue(`${path}.arbeidsgiver.ident`, '')
+	}
 
 	return (
 		<React.Fragment>
@@ -30,16 +37,30 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 					name={`${path}.arbeidsgiver.aktoertype`}
 					label="Type arbeidsgiver"
 					options={Options('aktoertype')}
+					onChange={clearOrgnrIdent}
 					size="medium"
 					isClearable={false}
 				/>
 				{arbeidsforhold.arbeidsgiver.aktoertype === 'PERS' && (
 					<FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" />
 				)}
+				{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
+					<>
+						<FormikTextInput
+							name={`${path}.arbeidsgiver.orgnummer`}
+							label="Organisasjonsnummer"
+							size="medium"
+						/>
+						<Hjelpetekst hjelpetekstFor="Skriv inn orgnr">
+							De syntetiske organisasjonsnummerne er midlertidig fjernet. Vi jobber med å gjøre
+							løsningen mer stabil. Hvis du sliter med å finne et orgnr gjennom Ereg, ta kontakt med
+							oss på #dolly.
+						</Hjelpetekst>
+					</>
+					// Midlertidig fjerning av nedtrekksliste med syntetiske orgnr
+					// <OrgnummerToggle formikBag={formikBag} path={`${path}.arbeidsgiver.orgnummer`} />
+				)}
 			</div>
-			{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
-				<OrgnrForm path={path} formikBag={formikBag} />
-			)}
 
 			<ArbeidsavtaleForm formikBag={formikBag} path={path} />
 
