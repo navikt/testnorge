@@ -44,23 +44,10 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 				{arbeidsforhold.arbeidsgiver.aktoertype === 'PERS' && (
 					<FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" />
 				)}
-				{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
-					<>
-						<FormikTextInput
-							name={`${path}.arbeidsgiver.orgnummer`}
-							label="Organisasjonsnummer"
-							size="medium"
-						/>
-						<Hjelpetekst hjelpetekstFor="Skriv inn orgnr">
-							De syntetiske organisasjonsnummerne er midlertidig fjernet. Vi jobber med å gjøre
-							løsningen mer stabil. Hvis du sliter med å finne et orgnr gjennom Ereg, ta kontakt med
-							oss på #dolly.
-						</Hjelpetekst>
-					</>
-					// Midlertidig fjerning av nedtrekksliste med syntetiske orgnr
-					// <OrgnummerToggle formikBag={formikBag} path={`${path}.arbeidsgiver.orgnummer`} />
-				)}
 			</div>
+			{arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
+				<OrgnummerToggle formikBag={formikBag} path={`${path}.arbeidsgiver.orgnummer`} />
+			)}
 
 			<ArbeidsavtaleForm formikBag={formikBag} path={path} />
 
