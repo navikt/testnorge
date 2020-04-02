@@ -14,7 +14,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.metrics.Timed;
 
 @Slf4j
 @Service
@@ -26,7 +25,6 @@ public class InntektsmeldingClient implements ClientRegister {
     private final MapperFacade mapperFacade;
 
     @Override
-    @Timed(name = "providers", tags = { "operation", "gjenopprettInntektsmelding" })
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
 
