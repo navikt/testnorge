@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.inntektsmelding.domain.Inntektsmelding;
+import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
@@ -28,6 +29,7 @@ public class InntektsmeldingConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
+    @Timed(name = "providers", tags = { "operation", "inntektsmelding_opprett" })
     public ResponseEntity postInntektsmelding(Inntektsmelding inntekstsmelding) {
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getInntektsmelding().getUrl() + POST_FMT_BLD))
