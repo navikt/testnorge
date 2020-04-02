@@ -30,7 +30,7 @@ public class RsInntektsmelding {
         private Boolean naerRelasjon;
         private List<RsOmsorgspenger> omsorgspenger;
         private List<RsNaturalYtelseDetaljer> opphoerAvNaturalytelseListe;
-        private List<RsPeriode>         pleiepengerPerioder;
+        private List<RsPeriode> pleiepengerPerioder;
         private RsRefusjon refusjon;
         private LocalDateTime startdatoForeldrepengeperiode;
         private RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
