@@ -34,10 +34,8 @@ public class ProxyService {
     public ResponseEntity proxyRequest(
             String body,
             HttpMethod method,
-            HttpServletRequest request,
+            HttpHeaders headers,
             String requestUrl) {
-
-        HttpHeaders headers = copyHeaders(request);
 
         OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + auth.getIdToken());
@@ -68,23 +66,6 @@ public class ProxyService {
         } catch (UnsupportedEncodingException e) {
             throw new EncodingException(format("Encoding av requesturl %s feilet", requestUrl));
         }
-    }
-
-    private HttpHeaders copyHeaders(HttpServletRequest request) {
-        HttpHeaders headers = new HttpHeaders();
-        Enumeration<String> headerNames = request.getHeaderNames();
-
-        while (headerNames.hasMoreElements()) {
-            String headerName = headerNames.nextElement();
-            if ("connection".equals(headerName)) {
-                headers.set(headerName, "keep-alive");
-            } else if ("Cookie".equals(headerName)) {
-                headers.set(headerName, request.getHeader(headerName));
-            } else {
-                headers.set(headerName, request.getHeader(headerName));
-            }
-        }
-        return headers;
     }
 
     private Cookie getIdTokenCookie(HttpServletRequest request) {
