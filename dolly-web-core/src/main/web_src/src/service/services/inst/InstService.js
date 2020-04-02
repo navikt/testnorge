@@ -6,17 +6,11 @@ const getInstUrl = () => `${config.services.proxyBackend}/inst`
 export default {
 	getPerson(ident, env) {
 		const endpoint = `${getInstUrl()}/ident?identer=${ident}&miljoe=${env}`
-		const options = {
-			headers: {
-				'Nav-Call-Id': 'dolly',
-				'Nav-Consumer-Id': 'dolly-frontend'
-			}
-		}
-		return Request.getWithoutCredentials(endpoint, options)
+		return Request.get(endpoint)
 	},
 
 	getTilgjengeligeMiljoer() {
 		const endpoint = `${getInstUrl()}/miljoer`
-		return Request.getWithoutCredentials(endpoint)
+		return Request.get(endpoint)
 	}
 }
