@@ -8,6 +8,25 @@
     <artifactId>testnorge-domain</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <organization>NAV (Arbeids- og velferdsdirektoratet) - The Norwegian Labour and Welfare Administration</organization>
+            <organizationUrl>https://www.nav.no</organizationUrl>
+        </developer>
+    </developers>
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/navikt/testnorge-domain</url>
+        </repository>
+    </distributionManagement>
+
     <properties>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <lombok.version>1.18.12</lombok.version>
@@ -33,6 +52,13 @@
             <version>${swagger.version}</version>
         </dependency>
     </dependencies>
+
+    <scm>
+        <developerConnection>scm:git:git@github.com:navikt/testnorge-domain.git</developerConnection>
+        <connection>scm:git:git@github.com:navikt/testnorge-domain.git</connection>
+        <url>https://github.com/navikt/testnorge-domain</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <build>
         <finalName>testnorge-domain</finalName>
