@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+import no.nav.registre.inntekt.domain.altinn.enums.AarsakInnsendingKodeListe;
+import no.nav.registre.inntekt.domain.altinn.enums.YtelseKodeListe;
 
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -21,10 +23,10 @@ public class RsInntektsmelding {
 
     @JsonProperty
     @ApiModelProperty(required = true)
-    private String ytelse;
+    private YtelseKodeListe ytelse;
     @JsonProperty
     @ApiModelProperty(required = true)
-    private String aarsakTilInnsending;
+    private AarsakInnsendingKodeListe aarsakTilInnsending;
     @JsonProperty
     @Size(min = 11, max = 11)
     @ApiModelProperty(value = "Arbeidstakers fødselsnummer", required = true)

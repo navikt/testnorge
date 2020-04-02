@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+import no.nav.registre.inntekt.domain.altinn.enums.AarsakInnsendingKodeListe;
+import no.nav.registre.inntekt.domain.altinn.enums.YtelseKodeListe;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsforhold;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiver;
 import no.nav.registre.inntekt.domain.altinn.rs.RsAvsendersystem;
@@ -28,10 +30,10 @@ import java.util.List;
 public class RsAltinnInntektInfo {
     @JsonProperty
     @ApiModelProperty(required = true)
-    private String ytelse;
+    private YtelseKodeListe ytelse;
     @JsonProperty
     @ApiModelProperty(required = true)
-    private String aarsakTilInnsending;
+    private AarsakInnsendingKodeListe aarsakTilInnsending;
     @JsonProperty
     @ApiModelProperty(value = "default = \'false\'", required = true)
     private boolean naerRelasjon;
