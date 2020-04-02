@@ -1,4 +1,8 @@
-const selectOptions = {
+interface SelectOptions {
+	[name: string]: Array<{ value: boolean | string, label: string}>
+}
+
+const selectOptions : SelectOptions = {
 	identtype: [
 		{ value: 'FNR', label: 'FNR' },
 		{ value: 'DNR', label: 'DNR' },
@@ -216,4 +220,4 @@ const selectOptions = {
 	]
 }
 
-export const SelectOptionsManager = attributeId => selectOptions[attributeId]
+export const SelectOptionsManager = (attributeId: keyof SelectOptions) => selectOptions[attributeId];
