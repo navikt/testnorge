@@ -1,23 +1,27 @@
 package no.nav.registre.inntekt.domain.altinn.rs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+import java.time.LocalDate;
+
+@ApiModel
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsBeregnetInntekt {
+public class RsEndringIRefusjon {
+
     @JsonProperty
-    @ApiModelProperty("Månedsinntekt")
-    private Double beloep;
+    @ApiModelProperty(example = "YYYY-MM-DD")
+    private LocalDate endringsdato;
     @JsonProperty
-    @ApiModelProperty
-    private String aarsakVedEndring;
+    @ApiModelProperty("Nytt refusjonsbeløp per måned")
+    private Double refusjonsbeloepPrMnd;
+
 }

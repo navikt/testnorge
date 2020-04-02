@@ -3,16 +3,16 @@ package no.nav.registre.inntekt.domain.altinn.db;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@Value
+@NoArgsConstructor(force = true)
 public class GraderingIForeldrepenger {
     @JsonProperty
-    private Long id;
+    Long id;
     @JsonProperty
-    private Periode periode;
+    Periode periode;
     @JsonProperty
-    private Integer gradering;
+    Integer gradering;
 }

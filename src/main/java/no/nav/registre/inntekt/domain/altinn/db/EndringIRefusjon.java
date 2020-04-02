@@ -3,18 +3,18 @@ package no.nav.registre.inntekt.domain.altinn.db;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
 import java.time.LocalDate;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@Value
+@NoArgsConstructor(force = true)
 public class EndringIRefusjon {
     @JsonProperty
-    private Long id;
+    Long id;
     @JsonProperty
-    private LocalDate endringsDato;
+    LocalDate endringsDato;
     @JsonProperty
-    private double refusjonsbeloepPrMnd;
+    double refusjonsbeloepPrMnd;
 }

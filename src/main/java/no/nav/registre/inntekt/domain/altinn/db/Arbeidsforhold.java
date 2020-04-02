@@ -3,30 +3,30 @@ package no.nav.registre.inntekt.domain.altinn.db;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@Value
+@NoArgsConstructor(force = true)
 public class Arbeidsforhold {
     @JsonProperty
     List<Periode> avtaltFerieListe;
     @JsonProperty
-    private Long id;
+    Long id;
     @JsonProperty
-    private String arbeidforholdsId;
+    String arbeidforholdsId;
     @JsonProperty
-    private LocalDate foersteFravaersdag;
+    LocalDate foersteFravaersdag;
     @JsonProperty
-    private double beloep;
+    double beloep;
     @JsonProperty
-    private String aarsakVedEndring;
+    String aarsakVedEndring;
     @JsonProperty
-    private List<UtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
+    List<UtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
     @JsonProperty
-    private List<GraderingIForeldrepenger> graderingIForeldrepengerListe;
+    List<GraderingIForeldrepenger> graderingIForeldrepengerListe;
 
 }

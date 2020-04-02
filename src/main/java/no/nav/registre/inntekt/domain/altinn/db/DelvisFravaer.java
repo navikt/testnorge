@@ -3,18 +3,18 @@ package no.nav.registre.inntekt.domain.altinn.db;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
 import java.time.LocalDate;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@Value
+@NoArgsConstructor(force = true)
 public class DelvisFravaer {
     @JsonProperty
-    private Long id;
+    Long id;
     @JsonProperty
-    private LocalDate dato;
+    LocalDate dato;
     @JsonProperty
-    private double timer;
+    double timer;
 }
