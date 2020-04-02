@@ -1,19 +1,17 @@
 package no.nav.registre.inntekt.domain.altinn.db;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Value
+@NoArgsConstructor(force = true)
 public class Arbeidsforhold {
     @JsonProperty
-    List<Periode> avtaltFerieListe;
+    private List<Periode> avtaltFerieListe;
     @JsonProperty
     private Long id;
     @JsonProperty

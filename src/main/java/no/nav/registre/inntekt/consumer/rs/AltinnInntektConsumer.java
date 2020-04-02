@@ -3,6 +3,7 @@ package no.nav.registre.inntekt.consumer.rs;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inntekt.domain.altinn.rs.AltinnInntektRequest;
 
+import no.nav.registre.inntekt.domain.altinn.rs.RsInntektsmelding;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -44,6 +45,19 @@ public class AltinnInntektConsumer {
         RequestEntity postRequest = RequestEntity.post(urlMapper201812.expand())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(inntektsmelding);
+        try {
+            return restTemplate.exchange(postRequest, String.class).getBody();
+        } catch (Exception e) {
+            log.warn("Uventet feil ved mapping til AltinnInntekt.", e);
+        }
+        return "";
+    }
+
+    public String getFullMelding(RsInntektsmelding inntektsmelding) {
+        RequestEntity postRequest = RequestEntity.post(urlMapper201812.expand())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(inntektsmelding);
+
         try {
             return restTemplate.exchange(postRequest, String.class).getBody();
         } catch (Exception e) {

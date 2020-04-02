@@ -1,24 +1,30 @@
 package no.nav.registre.inntekt.domain.altinn.rs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import javax.validation.constraints.Size;
+import java.util.List;
 
+@ApiModel
+@Builder
 @Value
 @NoArgsConstructor(force = true)
-@Builder
 @AllArgsConstructor
-public class RsKontaktinformasjon {
+public class RsOmsorgspenger {
+
     @JsonProperty
-    @ApiModelProperty(required = true)
-    private String kontaktinformasjonNavn;
+    @ApiModelProperty()
+    private Boolean harUtbetaltPliktigeDager;
     @JsonProperty
-    @Size(min = 8, max = 8)
-    @ApiModelProperty(value = "Telefonnummer på 8-siffer uten mellomrom og landkode.", example = "12345678", required = true)
-    private String telefonnummer;
+    @ApiModelProperty()
+    private List<RsPeriode> fravaersPerioder;
+    @JsonProperty
+    @ApiModelProperty()
+    private List<RsDelvisFravaer> delvisFravaersListe;
+
 }

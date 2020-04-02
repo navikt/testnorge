@@ -3,6 +3,7 @@ package no.nav.registre.inntekt.provider.rs;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 
+import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyFullMeldingRequest;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnRequest;
 import no.nav.registre.inntekt.service.AltinnInntektService;
@@ -40,6 +41,19 @@ public class AltinnInntektController {
             ) {
         try {
             return new ResponseEntity<>(altinnInntektService.lagAltinnMeldinger(dollyRequest), HttpStatus.CREATED);
+        } catch (ValidationException e) {
+            return new ResponseEntity<>(e.getErrors(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getStackTrace(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping(value = "/enkeltident/full-melding")
+    public ResponseEntity<?> genererFullMelding(
+            @RequestBody AltinnDollyFullMeldingRequest request
+    ) {
+        try {
+            return new ResponseEntity<>(altinnInntektService.lagFullAltinnMelding(request), HttpStatus.CREATED);
         } catch (ValidationException e) {
             return new ResponseEntity<>(e.getErrors(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {

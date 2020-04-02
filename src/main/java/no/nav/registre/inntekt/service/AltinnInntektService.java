@@ -15,12 +15,14 @@ import no.nav.registre.inntekt.domain.altinn.rs.AltinnInntektRequest;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsforhold;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiver;
 import no.nav.registre.inntekt.domain.altinn.rs.RsAvsendersystem;
-import no.nav.registre.inntekt.domain.altinn.rs.RsBeregnetInntekt;
+import no.nav.registre.inntekt.domain.altinn.rs.RsAltinnInntekt;
+import no.nav.registre.inntekt.domain.altinn.rs.RsInntektsmelding;
 import no.nav.registre.inntekt.domain.altinn.rs.RsKontaktinformasjon;
 import no.nav.registre.inntekt.domain.dokmot.AvsenderMottaker;
 import no.nav.registre.inntekt.domain.dokmot.Bruker;
 import no.nav.registre.inntekt.domain.dokmot.Dokument;
 import no.nav.registre.inntekt.domain.dokmot.Dokumentvariant;
+import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyFullMeldingRequest;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
 import no.nav.registre.inntekt.provider.rs.requests.DokmotRequest;
 import no.nav.registre.inntekt.utils.FilVerktoey;
@@ -116,6 +118,31 @@ public class AltinnInntektService {
         return null;
     }*/
 
+    public List<String> lagFullAltinnMelding(AltinnDollyFullMeldingRequest request) throws ValidationException {
+        var miljoe = request.getMiljoe();
+        var ident = request.getArbeidstakerFnr();
+        var inntekterAaOpprette = request.getInntekter();
+
+        var arbeidsforholdListe = aaregService.hentArbeidsforhold(ident, miljoe);
+        if (arbeidsforholdListe == null || arbeidsforholdListe.isEmpty()) {
+            throw new ValidationException("Kunne ikke finne arbeidsforhold for ident " + ident);
+        }
+
+        var altinnInntektMeldinger = new ArrayList<String>(inntekterAaOpprette.size());
+        for (var inntekt : inntekterAaOpprette) {
+            var virksomhetsnummer = inntekt.getArbeidsgiver() != null ? inntekt.getArbeidsgiver().getVirksomhetsnummer() : inntekt.getArbeidsgiverPrivat().getArbeidsgiverFnr();
+            var nyesteArbeidsforhold = AaregService.finnNyesteArbeidsforholdIOrganisasjon(ident, virksomhetsnummer, arbeidsforholdListe);
+            if (Objects.isNull(nyesteArbeidsforhold)) {
+                continue;
+            }
+            var altinnInntektResponse = altinnInntektConsumer.getFullMelding(inntekt);
+
+            altinnInntektMeldinger.add(altinnInntektResponse);
+            lagreMeldingIJoark(altinnInntektResponse, inntekt, virksomhetsnummer, ident, miljoe);
+        }
+        return altinnInntektMeldinger;
+    }
+
     public List<String> lagAltinnMeldinger(AltinnDollyRequest dollyRequest) throws ValidationException {
         var miljoe = dollyRequest.getMiljoe();
         var ident = dollyRequest.getArbeidstakerFnr();
@@ -160,7 +187,7 @@ public class AltinnInntektService {
                         .build())
                 .arbeidsforhold(RsArbeidsforhold.builder()
                         .arbeidsforholdId(AaregService.finnArbeidsforholdId(nyesteArbeidsforhold))
-                        .beregnetInntekt(RsBeregnetInntekt.builder()
+                        .beregnetInntekt(RsAltinnInntekt.builder()
                                 .aarsakVedEndring(ARBEIDSFORHOLD_AARSAK_VED_ENDRING)
                                 .beloep(inntekt.getBeloep())
                                 .build()).build()).build();
@@ -182,6 +209,40 @@ public class AltinnInntektService {
                 .kanal(KANAL)
                 .eksternReferanseId(EKSTERN_REFERANSE_ID)
                 .datoMottatt(Date.from(inntekt.getDato().atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .dokumenter(Collections.singletonList(Dokument.builder()
+                        .brevkode(DOKUMENTER_BREVKODE)
+                        .dokumentkategori(DOKUMENTER_BERVKATEGORI)
+                        .tittel(TITTEL)
+                        .dokumentvarianter(Arrays.asList(
+                                Dokumentvariant.builder()
+                                        .filtype(FILTYPE_XML)
+                                        .variantformat(VARIANTFORMAT_ORIGINAL)
+                                        .fysiskDokument(Base64.getEncoder().encode(xmlMelding.getBytes(UTF_8)))
+                                        .build(),
+                                Dokumentvariant.builder()
+                                        .filtype(FILTYPE_PDF)
+                                        .variantformat(VARIANTFORMAT_ARKIV)
+                                        .fysiskDokument(FilVerktoey.encodeFilTilBase64Binary(dummyPdf))
+                                        .build())).build())).build();
+        dokmotConsumer.opprettJournalpost(request, miljoe);
+    }
+
+    private void lagreMeldingIJoark(String xmlMelding, RsInntektsmelding inntekt, String virksomhetsnummer, String ident, String miljoe) {
+        var request = DokmotRequest.builder()
+                .journalposttype(JOURNALPOST_TYPE)
+                .avsenderMottaker(AvsenderMottaker.builder()
+                        .id(virksomhetsnummer)
+                        .idType(AVSENDER_MOTTAKER_ID_TYPE)
+                        .navn(KONTAKTINFORMASJON_NAVN).build())
+                .bruker(Bruker.builder()
+                        .id(ident)
+                        .idType(BRUKER_ID_TYPE)
+                        .build())
+                .tema(TEMA)
+                .tittel(TITTEL)
+                .kanal(KANAL)
+                .eksternReferanseId(EKSTERN_REFERANSE_ID)
+                .datoMottatt(Date.from(inntekt.getAvsendersystem().getInnsendingstidspunkt().atZone(ZoneId.systemDefault()).toInstant()))
                 .dokumenter(Collections.singletonList(Dokument.builder()
                         .brevkode(DOKUMENTER_BREVKODE)
                         .dokumentkategori(DOKUMENTER_BERVKATEGORI)
