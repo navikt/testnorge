@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+import no.nav.registre.inntekt.domain.altinn.enums.AarsakBeregnetInntektEndringKodeListe;
 
 @ApiModel
 @Builder
@@ -20,6 +21,6 @@ public class RsAltinnInntekt {
     private Double beloep;
     @JsonProperty
     @ApiModelProperty
-    private String aarsakVedEndring;
+    private AarsakBeregnetInntektEndringKodeListe aarsakVedEndring;
 
 }
