@@ -1,6 +1,4 @@
 import * as React from 'react'
-import { useState } from 'react'
-import _has = require('lodash/has')
 // @ts-ignore
 import useBoolean from '~/utils/hooks/useBoolean'
 // @ts-ignore
@@ -14,13 +12,23 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 // @ts-ignore
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 
-interface Props {
-	formikBag: any
+import { FormikProps }  from 'formik'
+
+export interface TelefonnummerValues {
+	telefonLandskode_1?: string
+	telefonnummer_1?: string
+	telefonLandskode_2?: string
+	telefonnummer_2?: string
 }
 
-export const Telefonnummer = ({ formikBag }: Props) => {
+interface TelefonnummerProps {
+	formikBag: FormikProps<{ tpsf: TelefonnummerValues }>
+}
+
+export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
+
 	const [harToTlfnr, settToTlfnr, settEttTlfnr] = useBoolean(
-		_has(formikBag.values, 'tpsf.telefonnummer_2')
+		formikBag.values.tpsf.hasOwnProperty("telefonnummer_2")
 	)
 
 	const paths = {

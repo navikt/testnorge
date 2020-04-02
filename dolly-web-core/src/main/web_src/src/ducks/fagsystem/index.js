@@ -5,7 +5,18 @@ import _set from 'lodash/set'
 import _merge from 'lodash/merge'
 import _last from 'lodash/last'
 import _isEmpty from 'lodash/isEmpty'
-import {DollyApi, TpsfApi, SigrunApi, KrrApi, ArenaApi, InstApi, UdiApi, InntektstubApi} from '~/service/Api'
+import {
+    DollyApi,
+    TpsfApi,
+    SigrunApi,
+    KrrApi,
+    ArenaApi,
+    InstApi,
+    UdiApi,
+    PensjonApi,
+    AaregApi,
+    InntektstubApi
+} from '~/service/Api'
 import {onSuccess} from '~/ducks/utils/requestActions'
 import {selectIdentById} from '~/ducks/gruppe'
 import {getBestillingById, successMiljoSelector} from '~/ducks/bestillingStatus'
@@ -28,7 +39,7 @@ export const actions = createActions(
             })
         ],
         getPensjon: [
-            DollyApi.getPoppInntekt,
+            PensjonApi.getPoppInntekt,
             ident => ({
                 ident
             })
@@ -52,7 +63,7 @@ export const actions = createActions(
             })
         ],
         getAareg: [
-            DollyApi.getArbeidsforhold,
+            AaregApi.getArbeidsforhold,
             ident => ({
                 ident
             })

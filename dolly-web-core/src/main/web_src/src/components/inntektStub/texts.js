@@ -54,7 +54,7 @@ const texts = {
 	feriepenger: 'Feriepenger',
 	annet: 'Annet',
 	ikkeSkattepliktigLoennFraUtenlandskDiplomKonsulStasjon:
-		'Ikke skattepliktig lønn fra utenlandsk diplomatisk eller konsulær stasjon',
+		'Ikke skattepliktig lønn, utenlandsk diplomatisk/konsulær stasjon',
 	skattepliktigDelForsikringer: 'Skattepliktig del av forsikringer',
 	hyretillegg: 'Hyretillegg',
 	bil: 'Bil',
@@ -68,7 +68,7 @@ const texts = {
 	aksjerGrunnfondsbevisTilUnderkurs: 'Aksjer/grunnfondsbevis til underkurs',
 	loennForBarnepassIBarnetsHjem: 'Lønn for barnepass i barnets hjem',
 	loennUtbetaltAvVeldedigEllerAllmennyttigInstitusjonEllerOrganisasjon:
-		'Lønn utbetalt av veldedig eller allmennyttig institusjon eller organisasjon',
+		'Lønn utbetalt av veldedig/allmennyttig institusjon/organisasjon',
 	loennTilPrivatpersonerForArbeidIHjemmet: 'Lønn til privatpersoner for arbeid i hjemmet',
 	kostbesparelseIHjemmet: 'Kostbesparelse i hjemmet',
 	smusstillegg: 'Smusstillegg',
@@ -95,7 +95,7 @@ const texts = {
 	reiseKostMedOvernattingPaaHybelBrakkePrivat: 'Reise kost med overnatting på hybel/brakke/privat',
 	losjiEgenBrakkeCampingvogn: 'Losji egen brakke/campingvogn',
 	reiseKostMedOvernattingTilLangtransportsjaafoerForKjoeringIUtlandet:
-		'Reise kost med overnatting til langtransportsjåfør for kjøring i utlandet',
+		'Reise kost med overnatting, langtransportsjåfør i utlandet',
 	reiseKostMedOvernattingPaaPensjonat: 'Reise kost med overnatting på pensjonat',
 	besoeksreiserHjemmetKost: 'Besoeksreiser hjemmet kost',
 	kilometergodtgjoerelseElBil: 'Kilometergodtgjørelse el-bil',
@@ -134,7 +134,7 @@ const texts = {
 	svangerskapspenger: 'Svangerskapspenger',
 	skattefriStoenadTilBarnetilsyn: 'Skattefri stønad til barnetilsyn',
 	overgangsstoenadTilEnsligMorEllerFarSomBegynteAaLoepe1April2014EllerSenere:
-		'Overgangsstønad til enslig mor eller far som begynte å løpe 1. april 2014 eller senere',
+		'Overgangsstønad enslig mor eller far, fra 1. april 2014 eller senere',
 	ufoeretrygd: 'Ufoeretrygd',
 	ektefelletilleggUfoeretrygd: 'Ektefelletillegg uføretrygd',
 	ufoereytelseEtteroppgjoer: 'Uføreytelse etteroppgjør',
@@ -155,14 +155,14 @@ const texts = {
 	supplerendeStoenadTilPersonKortBotidNorge: 'Supplerende stønad til person med kort botid i Norge',
 	kvalifiseringstoenad: 'Kvalifiseringstønad',
 	nyeLivrenterIArbeidsforholdOgLivrenterFortsettelsesforsikringer:
-		'Nye livrenter i arbeidsforhold og livrenter tegnet som fortsettelsesforsikringer',
+		'Nye livrenter i arb.forhold og livrenter (fortsettelsesforsikringer)',
 	krigspensjon: 'Krigspensjon',
 	etterlattepensjon: 'Etterlattepensjon',
 	nyAvtalefestetPensjonPrivatSektor: 'Ny avtalefestet pensjon privat sektor',
 	ufoerepensjonFraAndreEnnFolketrygden: 'Uførepensjon fra andre enn folketrygden',
 	underholdsbidragTilTidligereEktefelle: 'Underholdsbidrag til tidligere ektefelle',
 	overgangsstoenadTilEnsligMorEllerFarSomBegynteAaLoepe31Mars2014EllerTidligere:
-		'Overgangsstønad til enslig mor eller far som begynte å løpe 31. mars 2014 eller tidligere',
+		'Overgangsstønad enslig mor eller far, fra 31. mars 2014 eller tidligere',
 	overgangsstoenadTilGjenlevendeEktefelle: 'Overgangsstønad til gjenlevende ektefelle',
 	ipaEllerIpsEngangsutbetaling: 'Ipa eller ips engangsutbetaling',
 	ipaEllerIpsUfoerepensjon: 'Ipa eller ips uførepensjon',
