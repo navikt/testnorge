@@ -3,6 +3,8 @@ package no.nav.dolly.metrics;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.resultset.tpsf.adresse.AdresseNrInfo.AdresseNr.KOMMUNENR;
+import static no.nav.dolly.domain.resultset.tpsf.adresse.AdresseNrInfo.AdresseNr.POSTNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -54,6 +56,13 @@ public class CounterCustomRegistry {
             addTag(tags, isNotBlank(bestilling.getTpsf().getSprakKode()), "SPRÅK");
             addTag(tags, nonNull(bestilling.getTpsf().getDoedsdato()), "DØDSDATO");
 
+            addTag(tags, nonNull(bestilling.getTpsf().getBoadresse()), "BOADRESSE");
+            addTag(tags, !bestilling.getTpsf().getPostadresse().isEmpty(), "POSTADRESSE");
+            addTag(tags, nonNull(bestilling.getTpsf().getAdresseNrInfo()) &&
+                    KOMMUNENR == bestilling.getTpsf().getAdresseNrInfo().getNummertype(), "KOMMUNENR");
+            addTag(tags, nonNull(bestilling.getTpsf().getAdresseNrInfo()) &&
+                    POSTNR == bestilling.getTpsf().getAdresseNrInfo().getNummertype(), "POSTNR");
+
             if (nonNull(bestilling.getTpsf().getRelasjoner())) {
                 addTag(tags, !bestilling.getTpsf().getRelasjoner().getPartnere().isEmpty(), "PARTNER");
                 addTag(tags, !bestilling.getTpsf().getRelasjoner().getBarn().isEmpty(), "BARN");
@@ -76,6 +85,7 @@ public class CounterCustomRegistry {
         addTag(tags, nonNull(bestilling.getInntektstub()), "INNTKSTUB");
         addTag(tags, nonNull(bestilling.getKrrstub()), "KRRSTUB");
         addTag(tags, nonNull(bestilling.getUdistub()), "UDISTUB");
+        addTag(tags, nonNull(bestilling.getInntektsmelding()), "INNTEKTSMELDING");
 
         addTag(tags, isNotBlank(bestilling.getMalBestillingNavn()), "MALBESTILLING");
 
