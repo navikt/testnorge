@@ -6,6 +6,6 @@ const getUdiUrl = () => `${config.services.proxyBackend}/udi`
 export default {
 	getPerson(ident) {
 		const endpoint = `${getUdiUrl()}/person/${ident}`
-		return Request.getWithoutCredentials(endpoint)
+		return Request.get(endpoint)
 	}
 }
