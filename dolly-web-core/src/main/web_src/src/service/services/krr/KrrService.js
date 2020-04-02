@@ -7,9 +7,5 @@ export default {
 	getPerson(ident) {
 		const endpoint = `${getKrrUrl()}/person/kontaktinformasjon`
 		return Request.post(endpoint, ident)
-		// 	headers: {
-		// 		'Nav-Personident': ident
-		// 	}
-		// })
 	}
 }

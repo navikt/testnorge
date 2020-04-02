@@ -7,14 +7,10 @@ export default {
 	getPerson(ident) {
 		const endpoint = getSigrunBaseUrl() + '/lignetinntekt'
 		return Request.post(endpoint, ident)
-		// 	headers: { personidentifikator: ident }
-		// })
 	},
 
 	getSekvensnummer(ident) {
 		const endpoint = getSigrunBaseUrl() + '/sekvensnummer/' + ident
 		return Request.post(endpoint, ident)
-		// 	headers: { personidentifikator: ident }
-		// })
 	}
 }
