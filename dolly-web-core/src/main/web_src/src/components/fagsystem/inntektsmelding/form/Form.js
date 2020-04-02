@@ -37,12 +37,7 @@ export const InntektsmeldingForm = ({ formikBag }) => {
 						<>
 							<FormikTextInput name={`${path}.beloep`} label="Beløp" type="number" />
 							<FormikDatepicker name={`${path}.dato`} label="Innsendingstidspunkt" type="month" />
-							<FormikTextInput
-								name={`${path}.virksomhetsnummer`}
-								label="Virksomhet (orgnr/id)"
-								size="medium"
-							/>
-							{/* <InntektsmeldingOrgnummerSelect path={`${path}.virksomhetsnummer`} /> */}
+							<InntektsmeldingOrgnummerSelect path={path} formikBag={formikBag} />
 						</>
 					)}
 				</FormikDollyFieldArray>
