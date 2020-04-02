@@ -1,24 +1,31 @@
-package no.nav.registre.inntekt.domain.altinn.rs;
+package no.nav.registre.inntekt.domain.altinn;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsforhold;
+import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiver;
+import no.nav.registre.inntekt.domain.altinn.rs.RsAvsendersystem;
+import no.nav.registre.inntekt.domain.altinn.rs.RsNaturalytelseDetaljer;
+import no.nav.registre.inntekt.domain.altinn.rs.RsOmsorgspenger;
+import no.nav.registre.inntekt.domain.altinn.rs.RsPeriode;
+import no.nav.registre.inntekt.domain.altinn.rs.RsRefusjon;
+import no.nav.registre.inntekt.domain.altinn.rs.RsSykepengerIArbeidsgiverperioden;
 
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 
-@ApiModel
-@Builder
-@Value
-@AllArgsConstructor
-@NoArgsConstructor(force = true)
-public class RsInntektsmelding {
 
+/**
+ * Skal være så å si et duplikat av RsInntektsmelding, men uten fnr og privatarbeidsgiver da disse blir satt av
+ * business logikk når hver melding skal lages.
+ */
+@ApiModel
+@Value
+@NoArgsConstructor(force = true)
+public class RsAltinnInntektInfo {
     @JsonProperty
     @ApiModelProperty(required = true)
     private String ytelse;
@@ -26,48 +33,38 @@ public class RsInntektsmelding {
     @ApiModelProperty(required = true)
     private String aarsakTilInnsending;
     @JsonProperty
-    @Size(min = 11, max = 11)
-    @ApiModelProperty(value = "Arbeidstakers fødselsnummer", required = true)
-    private String arbeidstakerFnr;
-    @JsonProperty
     @ApiModelProperty(value = "default = \'false\'", required = true)
     private boolean naerRelasjon;
+
+    @JsonProperty
+    @ApiModelProperty
+    private RsAvsendersystem avsendersystem;
     @JsonProperty
     @ApiModelProperty(required = true)
-    private RsAvsendersystem avsendersystem;
-
-    @JsonProperty
-    @ApiModelProperty("For inntektsmeldingstype 201812 må enten arbeidsgiver eller arbeidsgiverPrivat være satt." +
-            "For inntektsmeldingstype 201809 må arbeidsgiver være satt.")
     private RsArbeidsgiver arbeidsgiver;
-    @JsonProperty
-    @ApiModelProperty("For inntektsmeldingstype 201812 må enten arbeidsgiver eller arbeidsgiverPrivat være satt.")
-    private RsArbeidsgiverPrivat arbeidsgiverPrivat;
-
     @JsonProperty
     @ApiModelProperty(value = "Gjeldende arbeidsforhold. \'nillable\' i XSD skjema.", required = true)
     private RsArbeidsforhold arbeidsforhold;
 
     @JsonProperty
-    @ApiModelProperty()
+    @ApiModelProperty
     private RsRefusjon refusjon;
     @JsonProperty
-    @ApiModelProperty()
+    @ApiModelProperty
     private RsOmsorgspenger omsorgspenger;
     @JsonProperty
-    @ApiModelProperty()
+    @ApiModelProperty
     private RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
     @JsonProperty
     @ApiModelProperty(example = "YYYY-MM-DD")
     private LocalDate startdatoForeldrepengeperiode;
     @JsonProperty
-    @ApiModelProperty()
+    @ApiModelProperty
     private List<RsNaturalytelseDetaljer> opphoerAvNaturalytelseListe;
     @JsonProperty
-    @ApiModelProperty()
+    @ApiModelProperty
     private List<RsNaturalytelseDetaljer> gjenopptakelseNaturalytelseListe;
     @JsonProperty
-    @ApiModelProperty()
+    @ApiModelProperty
     private List<RsPeriode> pleiepengerPerioder;
-
 }

@@ -5,6 +5,8 @@ import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnavnFraMaaneds
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Organisasjon;
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Person;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -39,10 +41,6 @@ public class SyntetiseringService {
     private static final String INNTEKT_NAME = "inntekt";
     private static final int PAGE_SIZE = 100;
 
-    private static final String JSON_NODE_OPPLYSNINGSPLIKTIG = "opplysningspliktig";
-    private static final String JSON_NODE_TYPE = "type";
-    private static final String JSON_NODE_ORGANISASJONSNUMMER = "organisasjonsnummer";
-    private static final String JSON_NODE_OFFENTLIG_IDENT = "offentligIdent";
     private static final String TYPE_ORGANISASJON = "Organisasjon";
     private static final String TYPE_PERSON = "Person";
 
@@ -243,18 +241,17 @@ public class SyntetiseringService {
             throw new RuntimeException("Fant ikke arbeidsforhold til ident " + ident);
         }
 
-        var opplysningspliktig = arbeidsforholdet.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG);
+        var opplysningspliktig = arbeidsforholdet.getOpplysningspliktig();
         if (opplysningspliktig == null) {
             throw new RuntimeException("Fant ingen opplysningspliktig i arbeidsforholdet til ident " + ident);
         }
 
-        var type = opplysningspliktig.findValue(JSON_NODE_TYPE).asText();
+        var type = opplysningspliktig.getType();
         if (TYPE_ORGANISASJON.equals(type)) {
-            return opplysningspliktig.findValue(JSON_NODE_ORGANISASJONSNUMMER).asText();
+            return ((Organisasjon)opplysningspliktig).getOrganisasjonsnummer();
         } else if (TYPE_PERSON.equals(type)) {
-            return opplysningspliktig.findValue(JSON_NODE_OFFENTLIG_IDENT).asText();
+            return ((Person)opplysningspliktig).getOffentligIdent();
         }
-
         return null;
     }
 

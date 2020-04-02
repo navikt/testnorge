@@ -1,7 +1,6 @@
 package no.nav.registre.inntekt.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.inntekt.domain.altinn.rs.AltinnInntektRequest;
 
 import no.nav.registre.inntekt.domain.altinn.rs.RsInntektsmelding;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,19 +28,7 @@ public class AltinnInntektConsumer {
         this.restTemplate = restTemplate;
     }
 
-    public String getInntektsmeldingXml201809(AltinnInntektRequest inntektsmelding) {
-        RequestEntity postRequest = RequestEntity.post(urlMapper201809.expand())
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(inntektsmelding);
-        try {
-            return restTemplate.exchange(postRequest, String.class).getBody();
-        } catch (Exception e) {
-            log.warn("Uventet feil ved mapping til AltinnInntekt.", e);
-        }
-        return "";
-    }
-
-    public String getInntektsmeldingXml201812(AltinnInntektRequest inntektsmelding) {
+    public String getInntektsmeldingXml201812(RsInntektsmelding inntektsmelding) {
         RequestEntity postRequest = RequestEntity.post(urlMapper201812.expand())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(inntektsmelding);
@@ -52,18 +39,4 @@ public class AltinnInntektConsumer {
         }
         return "";
     }
-
-    public String getFullMelding(RsInntektsmelding inntektsmelding) {
-        RequestEntity postRequest = RequestEntity.post(urlMapper201812.expand())
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(inntektsmelding);
-
-        try {
-            return restTemplate.exchange(postRequest, String.class).getBody();
-        } catch (Exception e) {
-            log.warn("Uventet feil ved mapping til AltinnInntekt.", e);
-        }
-        return "";
-    }
-
 }

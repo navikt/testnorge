@@ -1,13 +1,13 @@
 package no.nav.registre.inntekt.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import lombok.RequiredArgsConstructor;
 
 import no.nav.registre.inntekt.consumer.rs.TestnorgeAaregConsumer;
 import no.nav.registre.inntekt.utils.ValidationException;
-// import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
 
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Organisasjon;
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Person;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,16 +20,10 @@ public class AaregService {
 
     private final TestnorgeAaregConsumer testnorgeAaregConsumer;
 
-    private static final String JSON_NODE_OPPLYSNINGSPLIKTIG = "opplysningspliktig";
-    private static final String JSON_NODE_TYPE = "type";
-    private static final String JSON_NODE_ARBEIDSGIVER = "arbeidsgiver";
-    private static final String JSON_NODE_ORGANISASJONSNUMMER = "organisasjonsnummer";
-    private static final String JSON_NODE_OFFENTLIG_IDENT = "offentligIdent";
-    private static final String JSON_NODE_ARBEIDSFORHOLD_ID = "arbeidsforholdId";
     private static final String TYPE_ORGANISASJON = "Organisasjon";
     private static final String TYPE_PERSON = "Person";
 
-    public List<JsonNode> hentArbeidsforhold(String ident, String miljoe) {
+    public List<Arbeidsforhold> hentArbeidsforhold(String ident, String miljoe) {
         return testnorgeAaregConsumer.hentArbeidsforholdTilIdentIMiljoe(ident, miljoe);
     }
 
@@ -37,19 +31,15 @@ public class AaregService {
         return testnorgeAaregConsumer.hentIdenterIAvspillergruppeMedArbeidsforhold(avspillergruppeId, miljoe);
     }
 
-    public static JsonNode finnNyesteArbeidsforholdIOrganisasjon (
+    public static Arbeidsforhold finnNyesteArbeidsforholdIOrganisasjon (
             String ident,
             String organisasjonsnummer,
-            List<JsonNode> arbeidsforholdsListe) throws ValidationException {
+            List<Arbeidsforhold> arbeidsforholdsListe
+    ) throws ValidationException {
 
-        var arbeidsforholdMedOppgittOrgnrListe = new ArrayList<JsonNode>();
+        var arbeidsforholdMedOppgittOrgnrListe = new ArrayList<Arbeidsforhold>();
         for (var arbeidsforhold : arbeidsforholdsListe) {
-            if (arbeidsforhold.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG).findValue("type").asText().equals(TYPE_ORGANISASJON)) {
-                if (arbeidsforhold.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG).findValue(JSON_NODE_ORGANISASJONSNUMMER).asText().equals(organisasjonsnummer)) {
-                    arbeidsforholdMedOppgittOrgnrListe.add(arbeidsforhold);
-                }
-            } else if (arbeidsforhold.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG).findValue("type").asText().equals(TYPE_PERSON) &&
-                    arbeidsforhold.findValue(JSON_NODE_OPPLYSNINGSPLIKTIG).findValue(JSON_NODE_OFFENTLIG_IDENT).asText().equals(organisasjonsnummer)) {
+            if (isValidOrganisasjonsnummer(arbeidsforhold, organisasjonsnummer)) {
                 arbeidsforholdMedOppgittOrgnrListe.add(arbeidsforhold);
             }
         }
@@ -61,11 +51,45 @@ public class AaregService {
         return finnNyesteArbeidsforhold(arbeidsforholdMedOppgittOrgnrListe);
     }
 
-    public static JsonNode finnNyesteArbeidsforhold(List<JsonNode> arbeidsforhold) {
+    // TODO: simplify
+    private static boolean isValidOrganisasjonsnummer(Arbeidsforhold arbeidsforhold, String organisasjonsnummer) {
+
+        if (arbeidsforhold.getOpplysningspliktig().getType().equals(TYPE_ORGANISASJON)) {
+            Organisasjon org = (Organisasjon)arbeidsforhold.getOpplysningspliktig();
+            if (org.getOrganisasjonsnummer().equals(organisasjonsnummer)) {
+                return true;
+            }
+        }
+
+        if (arbeidsforhold.getOpplysningspliktig().getType().equals(TYPE_PERSON)) {
+            Person pers = (Person)arbeidsforhold.getOpplysningspliktig();
+            if (pers.getOffentligIdent().equals(organisasjonsnummer)) {
+                return true;
+            }
+        }
+
+        if (arbeidsforhold.getArbeidsgiver().getType().equals(TYPE_ORGANISASJON)) {
+            Organisasjon org = (Organisasjon)arbeidsforhold.getArbeidsgiver();
+            if (org.getOrganisasjonsnummer().equals(organisasjonsnummer)) {
+                return true;
+            }
+        }
+
+        if (arbeidsforhold.getArbeidsgiver().getType().equals(TYPE_PERSON)) {
+            Person pers = (Person)arbeidsforhold.getArbeidsgiver();
+            if (pers.getOffentligIdent().equals(organisasjonsnummer)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static Arbeidsforhold finnNyesteArbeidsforhold(List<Arbeidsforhold> arbeidsforhold) {
         var nyesteDato = LocalDateTime.MIN;
-        JsonNode nyesteArbeidsforhold = null;
+        Arbeidsforhold nyesteArbeidsforhold = null;
         for (var arbeidsforholdet : arbeidsforhold) {
-            var opprettetTidspunkt = LocalDateTime.parse(arbeidsforholdet.findValue("opprettetTidspunkt").asText());
+            var opprettetTidspunkt = arbeidsforholdet.getAnsettelsesperiode().getSporingsinformasjon().getOpprettetTidspunkt();
             if (opprettetTidspunkt.isAfter(nyesteDato)) {
                 nyesteDato = opprettetTidspunkt;
                 nyesteArbeidsforhold = arbeidsforholdet;
@@ -74,38 +98,7 @@ public class AaregService {
         return nyesteArbeidsforhold;
     }
 
-    public static String finnArbeidsforholdId(JsonNode arbeidsforhold) {
-        return arbeidsforhold.findValue(JSON_NODE_ARBEIDSFORHOLD_ID).asText();
+    public static String finnArbeidsforholdId(Arbeidsforhold arbeidsforhold) {
+        return arbeidsforhold.getArbeidsforholdId();
     }
-
-    /* TODO: Endre fra JsonNode til Arbeidsforhold fra aordningen. Problem her er at man ikke har tilgang på organisasjonsnummer fra denne datastrukturen.
-    public static Arbeidsforhold finnNyesteArbeidsforhold(List<Arbeidsforhold> arbeisforholdListe) {
-        var nyesteDato = LocalDateTime.MIN;
-        Arbeidsforhold nyesteArbeidsforhold = null;
-
-        for (var arbeidsforhold : arbeisforholdListe) {
-            var registreringsTidspunkt = arbeidsforhold.getRegistrert();
-
-            if (registreringsTidspunkt.isAfter(nyesteDato)) {
-                nyesteDato = registreringsTidspunkt;
-                nyesteArbeidsforhold = arbeidsforhold;
-            }
-        }
-
-        return nyesteArbeidsforhold;
-    }
-
-    public static Arbeidsforhold finnNyesteArbeidsforholdIOrganisasjon(
-            String ident,
-            String organisasjonsnummer,
-            List<Arbeidsforhold> arbeidsforholdsListe
-    ) {
-        var arbeidsforholdMedOppgittOrgnrListe = new ArrayList<Arbeidsforhold>();
-
-        for (var arbeidsforhold : arbeidsforholdsListe) {
-
-            if (arbeidsforhold.getOpplysningspliktig())
-        }
-    }
-    */
 }

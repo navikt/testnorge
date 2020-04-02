@@ -1,23 +1,22 @@
 package no.nav.registre.inntekt.provider.rs.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import no.nav.registre.inntekt.domain.altinn.AltinnInntektInfo;
+import lombok.Value;
+import no.nav.registre.inntekt.domain.altinn.RsAltinnInntektInfo;
+import no.nav.registre.inntekt.domain.dokmot.rs.RsJoarkMetadata;
 
 import java.util.List;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Value
+@NoArgsConstructor(force = true)
 public class AltinnDollyRequest {
     @JsonProperty
     private String miljoe;
     @JsonProperty
     private String arbeidstakerFnr;
     @JsonProperty
-    private List<AltinnInntektInfo> inntekter;
+    private RsJoarkMetadata joarkMetadata;
+    @JsonProperty
+    private List<RsAltinnInntektInfo> inntekter;
 }

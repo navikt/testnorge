@@ -5,8 +5,8 @@ import static no.nav.registre.inntekt.consumer.rs.ConsumerUtils.CONSUMER_ID_NAME
 import static no.nav.registre.inntekt.consumer.rs.ConsumerUtils.NAV_CALL_ID;
 import static no.nav.registre.inntekt.consumer.rs.ConsumerUtils.NAV_CONSUMER_ID;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -45,22 +45,19 @@ public class TestnorgeAaregConsumer {
         }).getBody();
     }
 
-    public List<JsonNode> hentArbeidsforholdTilIdentIMiljoe(
-            String ident,
-            String miljoe
-    ) {
-        var getRequest = RequestEntity.get(hentArbeidsforholdFraAaregUrl.expand(ident, miljoe))
-                .header(CALL_ID_NAME, NAV_CALL_ID)
-                .header(CONSUMER_ID_NAME, NAV_CONSUMER_ID)
-                .build();
-        List<JsonNode> response = null;
-        try {
-            response = restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<JsonNode>>() {
-            }).getBody();
-        } catch (HttpStatusCodeException e) {
-            log.error("Kunne ikke hente arbeidsforhold til ident " + ident);
-        }
+    public List<Arbeidsforhold> hentArbeidsforholdTilIdentIMiljoe(String ident, String miljoe) {
+       var getRequest = RequestEntity.get(hentArbeidsforholdFraAaregUrl.expand(ident, miljoe))
+               .header(CALL_ID_NAME, NAV_CALL_ID)
+               .header(CONSUMER_ID_NAME, NAV_CONSUMER_ID)
+               .build();
+       List<Arbeidsforhold> response = null;
+       try {
+           response = restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<Arbeidsforhold>>() {
+           }).getBody();
+       } catch (HttpStatusCodeException e) {
+           log.error("Kunne ikke hente arbeidsforhold til ident " + ident);
+       }
 
-        return response;
+       return response;
     }
 }

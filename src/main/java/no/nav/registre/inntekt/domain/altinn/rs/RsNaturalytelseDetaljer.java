@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Value
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class RsNaturaYtelseDetaljer {
+public class RsNaturalytelseDetaljer {
 
     @JsonProperty
     @ApiModelProperty()
