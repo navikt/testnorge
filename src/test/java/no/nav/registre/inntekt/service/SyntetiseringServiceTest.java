@@ -52,7 +52,7 @@ public class SyntetiseringServiceTest {
     private HodejegerenConsumer hodejegerenConsumer;
 
     @Mock
-    private TestnorgeAaregConsumer testnorgeAaregConsumer;
+    private AaregService aaregService;
 
     @InjectMocks
     private SyntetiseringService syntetiseringService;
@@ -67,7 +67,7 @@ public class SyntetiseringServiceTest {
         double beloep = 1490;
         inntekter.put("10128400000", Collections.singletonList(InntektGenerator.genererInntekt(beloep)));
         when(hodejegerenConsumer.getLevende(request.getAvspillergruppeId(), ALDER)).thenReturn(identer);
-        when(testnorgeAaregConsumer.hentIdenterIAvspillergruppeMedArbeidsforhold(anyLong(), anyString())).thenReturn(identer);
+        when(aaregService.hentIdenterMedArbeidsforhold(anyLong(), anyString())).thenReturn(identer);
         when(inntektstubV2Consumer.leggInntekterIInntektstub(inntekter)).thenReturn(new ArrayList<>());
     }
 
