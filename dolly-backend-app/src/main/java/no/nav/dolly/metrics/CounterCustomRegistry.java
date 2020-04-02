@@ -56,7 +56,8 @@ public class CounterCustomRegistry {
             addTag(tags, isNotBlank(bestilling.getTpsf().getSprakKode()), "SPRÅK");
             addTag(tags, nonNull(bestilling.getTpsf().getDoedsdato()), "DØDSDATO");
 
-            addTag(tags, nonNull(bestilling.getTpsf().getBoadresse()), "BOADRESSE");
+            addTag(tags, nonNull(bestilling.getTpsf().getBoadresse()) &&
+                    isNotBlank(bestilling.getTpsf().getBoadresse().getKommunenr()), "BOADRESSE");
             addTag(tags, nonNull(bestilling.getTpsf().getPostadresse()), "POSTADRESSE");
             addTag(tags, nonNull(bestilling.getTpsf().getAdresseNrInfo()) &&
                     KOMMUNENR == bestilling.getTpsf().getAdresseNrInfo().getNummertype(), "KOMMUNENR");
