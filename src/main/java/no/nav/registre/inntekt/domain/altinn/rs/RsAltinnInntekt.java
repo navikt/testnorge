@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsInntekt {
+public class RsAltinnInntekt {
 
     @JsonProperty
     @ApiModelProperty("Månedsinntekt")

@@ -25,7 +25,7 @@ public class RsArbeidsforhold {
     private LocalDate foersteFravaersdag;
     @JsonProperty
     @ApiModelProperty(value = "Beregnet inntekt", required = true)
-    private RsInntekt beregnetInntekt;
+    private RsAltinnInntekt beregnetInntekt;
     @JsonProperty
     @ApiModelProperty(value = "Ferieliste bestående av perioder med ferie")
     private List<RsPeriode> avtaltFerieListe;

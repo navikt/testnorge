@@ -15,8 +15,7 @@ import no.nav.registre.inntekt.domain.altinn.rs.AltinnInntektRequest;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsforhold;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiver;
 import no.nav.registre.inntekt.domain.altinn.rs.RsAvsendersystem;
-import no.nav.registre.inntekt.domain.altinn.rs.RsBeregnetInntekt;
-import no.nav.registre.inntekt.domain.altinn.rs.RsInntekt;
+import no.nav.registre.inntekt.domain.altinn.rs.RsAltinnInntekt;
 import no.nav.registre.inntekt.domain.altinn.rs.RsInntektsmelding;
 import no.nav.registre.inntekt.domain.altinn.rs.RsKontaktinformasjon;
 import no.nav.registre.inntekt.domain.dokmot.AvsenderMottaker;
@@ -34,7 +33,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -189,7 +187,7 @@ public class AltinnInntektService {
                         .build())
                 .arbeidsforhold(RsArbeidsforhold.builder()
                         .arbeidsforholdId(AaregService.finnArbeidsforholdId(nyesteArbeidsforhold))
-                        .beregnetInntekt(RsInntekt.builder()
+                        .beregnetInntekt(RsAltinnInntekt.builder()
                                 .aarsakVedEndring(ARBEIDSFORHOLD_AARSAK_VED_ENDRING)
                                 .beloep(inntekt.getBeloep())
                                 .build()).build()).build();
