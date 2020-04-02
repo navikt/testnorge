@@ -18,10 +18,10 @@ import java.time.LocalDate;
 public class RsPeriode {
 
     @JsonProperty
-    @ApiModelProperty(value = "Dato fra og med", example = "YYYY-MM-DD", dataType = "java.time.LocalDate")
+    @ApiModelProperty(value = "Dato fra og med", example = "YYYY-MM-DD")
     private LocalDate fom;
     @JsonProperty
-    @ApiModelProperty(value = "Dato til og med", example = "YYYY-MM-DD", dataType = "java.time.LocalDate")
+    @ApiModelProperty(value = "Dato til og med", example = "YYYY-MM-DD")
     private LocalDate tom;
 
 }
