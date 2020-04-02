@@ -11,20 +11,20 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class Arbeidsforhold {
     @JsonProperty
-    List<Periode> avtaltFerieListe;
+    private List<Periode> avtaltFerieListe;
     @JsonProperty
-    Long id;
+    private Long id;
     @JsonProperty
-    String arbeidforholdsId;
+    private String arbeidforholdsId;
     @JsonProperty
-    LocalDate foersteFravaersdag;
+    private LocalDate foersteFravaersdag;
     @JsonProperty
-    double beloep;
+    private double beloep;
     @JsonProperty
-    String aarsakVedEndring;
+    private String aarsakVedEndring;
     @JsonProperty
-    List<UtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
+    private List<UtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
     @JsonProperty
-    List<GraderingIForeldrepenger> graderingIForeldrepengerListe;
+    private List<GraderingIForeldrepenger> graderingIForeldrepengerListe;
 
 }

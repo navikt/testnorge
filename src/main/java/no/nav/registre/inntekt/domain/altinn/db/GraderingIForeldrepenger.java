@@ -8,9 +8,9 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 public class GraderingIForeldrepenger {
     @JsonProperty
-    Long id;
+    private Long id;
     @JsonProperty
-    Periode periode;
+    private Periode periode;
     @JsonProperty
-    Integer gradering;
+    private Integer gradering;
 }

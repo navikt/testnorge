@@ -12,58 +12,58 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class Inntektsmelding {
     @JsonProperty
-    List<NaturalytelseDetaljer> opphoerAvNaturalytelseListe;
+    private List<NaturalytelseDetaljer> opphoerAvNaturalytelseListe;
 
     @JsonProperty
-    List<NaturalytelseDetaljer> gjenopptakelseNaturalytelseListe;
+    private List<NaturalytelseDetaljer> gjenopptakelseNaturalytelseListe;
 
     @JsonProperty
-    Long id;
+    private Long id;
     @JsonProperty
-    String ytelse;
+    private String ytelse;
     @JsonProperty
-    String aarsakTilInnsending;
+    private String aarsakTilInnsending;
 
     @JsonProperty
-    Arbeidsgiver arbeidsgiver;
+    private Arbeidsgiver arbeidsgiver;
 
     @JsonProperty
-    String arbeidstakerFnr;
+    private String arbeidstakerFnr;
     @JsonProperty
-    Boolean naerRelasjon;
+    private Boolean naerRelasjon;
 
     @JsonProperty
-    Arbeidsforhold arbeidsforhold;
+    private Arbeidsforhold arbeidsforhold;
     @JsonProperty
-    Double refusjonsbeloepPrMnd;
+    private Double refusjonsbeloepPrMnd;
     @JsonProperty
-    LocalDate refusjonsopphoersdato;
+    private LocalDate refusjonsopphoersdato;
 
     @JsonProperty
-    List<EndringIRefusjon> endringIRefusjonListe;
+    private List<EndringIRefusjon> endringIRefusjonListe;
     @JsonProperty
-    Double sykepengerBruttoUtbetalt;
+    private Double sykepengerBruttoUtbetalt;
     @JsonProperty
-    String sykepengerBegrunnelseForReduksjonEllerIkkeUtbetalt;
+    private String sykepengerBegrunnelseForReduksjonEllerIkkeUtbetalt;
 
     @JsonProperty
-    List<Periode> sykepengerPerioder;
+    private List<Periode> sykepengerPerioder;
     @JsonProperty
-    LocalDate startdatoForeldrepengeperiode;
+    private LocalDate startdatoForeldrepengeperiode;
     @JsonProperty
-    String avsendersystemNavn;
+    private String avsendersystemNavn;
     @JsonProperty
-    String avsendersystemVersjon;
+    private String avsendersystemVersjon;
     @JsonProperty
-    LocalDateTime innsendingstidspunkt;
+    private LocalDateTime innsendingstidspunkt;
     @JsonProperty
-    List<Periode> pleiepengerPeriodeListe;
+    private List<Periode> pleiepengerPeriodeListe;
     @JsonProperty
-    Boolean omsorgHarUtbetaltPliktigeDager;
+    private Boolean omsorgHarUtbetaltPliktigeDager;
     @JsonProperty
-    List<Periode> omsorgspengerFravaersPeriodeListe;
+    private List<Periode> omsorgspengerFravaersPeriodeListe;
     @JsonProperty
-    List<DelvisFravaer> omsorgspengerDelvisFravaersListe;
+    private List<DelvisFravaer> omsorgspengerDelvisFravaersListe;
     @JsonProperty
-    Eier eier;
+    private Eier eier;
 }

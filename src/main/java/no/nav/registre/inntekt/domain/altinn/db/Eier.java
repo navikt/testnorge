@@ -10,9 +10,9 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class Eier {
     @JsonProperty
-    Long id;
+    private Long id;
     @JsonProperty
-    String navn;
+    private String navn;
     @JsonProperty
-    List<Inntektsmelding> inntektsmeldinger;
+    private List<Inntektsmelding> inntektsmeldinger;
 }

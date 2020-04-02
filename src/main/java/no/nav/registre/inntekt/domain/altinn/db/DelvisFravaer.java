@@ -10,9 +10,9 @@ import java.time.LocalDate;
 @NoArgsConstructor(force = true)
 public class DelvisFravaer {
     @JsonProperty
-    Long id;
+    private Long id;
     @JsonProperty
-    LocalDate dato;
+    private LocalDate dato;
     @JsonProperty
-    double timer;
+    private double timer;
 }

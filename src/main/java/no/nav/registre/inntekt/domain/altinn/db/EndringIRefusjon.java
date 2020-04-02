@@ -10,9 +10,9 @@ import java.time.LocalDate;
 @NoArgsConstructor(force = true)
 public class EndringIRefusjon {
     @JsonProperty
-    Long id;
+    private Long id;
     @JsonProperty
-    LocalDate endringsDato;
+    private LocalDate endringsDato;
     @JsonProperty
-    double refusjonsbeloepPrMnd;
+    private double refusjonsbeloepPrMnd;
 }

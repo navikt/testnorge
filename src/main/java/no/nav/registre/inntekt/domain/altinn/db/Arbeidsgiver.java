@@ -10,13 +10,13 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class Arbeidsgiver {
     @JsonProperty
-    List<Inntektsmelding> inntektsmeldinger;
+    private List<Inntektsmelding> inntektsmeldinger;
     @JsonProperty
-    Long id;
+    private Long id;
     @JsonProperty
-    String virksomhetsnummer;
+    private String virksomhetsnummer;
     @JsonProperty
-    String kontaktinformasjonNavn;
+    private String kontaktinformasjonNavn;
     @JsonProperty
-    String telefonnummer;
+    private String telefonnummer;
 }
