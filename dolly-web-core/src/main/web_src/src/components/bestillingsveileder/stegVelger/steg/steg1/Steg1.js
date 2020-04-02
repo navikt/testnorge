@@ -41,13 +41,13 @@ export const Steg1 = ({ stateModifier }) => {
 			<AdressePanel stateModifier={stateModifier} />
 
 			{!opts.is.leggTil && (
-				<React.Fragment>
+				<>
 					<FamilierelasjonPanel stateModifier={stateModifier} />
 					<ArbeidInntektPanel stateModifier={stateModifier} />
 					<IdentifikasjonPanel stateModifier={stateModifier} />
 					<KontaktDoedsboPanel stateModifier={stateModifier} />
 					<InstitusjonsoppholdPanel stateModifier={stateModifier} />
-				</React.Fragment>
+				</>
 			)}
 
 			<KontaktReservasjonsPanel stateModifier={stateModifier} />
@@ -64,7 +64,7 @@ export const Steg1 = ({ stateModifier }) => {
 					<b>Funksjonen er under utvikling</b>
 					<p>
 						Det er foreløpig redusert støtte for å legge til attributter på person. Flere
-						attributter vil blir lagt til fortløpende.
+						attributter vil bli lagt til fortløpende.
 					</p>
 				</AlertStripeInfo>
 			)}

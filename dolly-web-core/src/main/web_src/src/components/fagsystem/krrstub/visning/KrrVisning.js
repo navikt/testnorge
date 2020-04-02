@@ -24,11 +24,13 @@ export const Krr = ({ data, loading }) => {
 	if (loading) return <Loading label="laster krr data" />
 	if (!data) return false
 
+	const sortedData = Array.isArray(data) ? data.slice().reverse() : data
+
 	return (
 		<div>
 			<SubOverskrift label="Kontaktinformasjon og reservasjon" iconKind="krr" />
 			<div className="person-visning_content">
-				<Historikk component={KrrVisning} data={data} />
+				<Historikk component={KrrVisning} data={sortedData} />
 			</div>
 		</div>
 	)
