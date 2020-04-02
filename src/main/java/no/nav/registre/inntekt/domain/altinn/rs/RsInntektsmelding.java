@@ -5,8 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Value;
 
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -14,9 +14,9 @@ import java.util.List;
 
 @ApiModel
 @Builder
-@Getter
+@Value
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 public class RsInntektsmelding {
 
     @JsonProperty

@@ -48,7 +48,7 @@ public class AltinnInntektController {
         }
     }
 
-    @PostMapping(value = "/enkeltident/full_melding")
+    @PostMapping(value = "/enkeltident/full-melding")
     public ResponseEntity<?> genererFullMelding(
             @RequestBody AltinnDollyFullMeldingRequest request
     ) {

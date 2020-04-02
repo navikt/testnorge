@@ -5,16 +5,16 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Value;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @ApiModel
 @Builder
-@Getter
-@NoArgsConstructor
+@Value
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 public class RsRefusjon {
 

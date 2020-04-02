@@ -4,16 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
 import javax.validation.constraints.Size;
 
-@Getter
-@Setter
+@Value
+@NoArgsConstructor(force = true)
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class RsArbeidsgiverPrivat {
     @JsonProperty

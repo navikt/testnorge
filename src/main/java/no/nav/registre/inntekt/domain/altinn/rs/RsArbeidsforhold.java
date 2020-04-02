@@ -4,17 +4,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Getter
-@Setter
 @Builder
-@NoArgsConstructor
+@Value
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 public class RsArbeidsforhold {
      @JsonProperty

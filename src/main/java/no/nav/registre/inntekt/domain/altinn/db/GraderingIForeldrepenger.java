@@ -1,11 +1,9 @@
 package no.nav.registre.inntekt.domain.altinn.db;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-@Getter
 @Value
 @NoArgsConstructor(force = true)
 public class GraderingIForeldrepenger {
