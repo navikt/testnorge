@@ -22,41 +22,56 @@ const Statsborgerskap = ({ statsborgerskap }) => (
 
 export const Nasjonalitet = ({ data, visTittel = true }) => {
 	const { statsborgerskap, sprakKode, innvandretUtvandret } = data
+	const objToArray = Object.entries(innvandretUtvandret)
+	const formaterteInnvandretutvandret = []
 
-	return (
-		<div>
-			{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="nasjonalitet" />}
-			<div className="person-visning_content">
-				<Historikk component={Statsborgerskap} data={statsborgerskap} propName="statsborgerskap" />
+	if (
+		data.innvandretUtvandret[0].flyttedato !== data.foedselsdato &&
+		data.innvandretUtvandret.length > 1
+	) {
+		objToArray.forEach(([key, value]) => {
+			formaterteInnvandretutvandret.push(value)
+		})
+		formaterteInnvandretutvandret.pop()
+		return (
+			<div>
+				{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="nasjonalitet" />}
+				<div className="person-visning_content">
+					<Historikk
+						component={Statsborgerskap}
+						data={statsborgerskap}
+						propName="statsborgerskap"
+					/>
 
-				<TitleValue title="Språk" kodeverk="Språk" value={sprakKode} />
+					<TitleValue title="Språk" kodeverk="Språk" value={sprakKode} />
+				</div>
+
+				<h3>Innvandring og utvandring</h3>
+
+				<DollyFieldArray data={formaterteInnvandretutvandret} header={'Innvandret/utvandret'}>
+					{(id, idx) => (
+						<React.Fragment>
+							{innvandretUtvandret && (
+								<>
+									<TitleValue
+										title={
+											innvandretUtvandret[idx].innutvandret === 'UTVANDRET'
+												? 'Utvandret til'
+												: 'Innvandret fra'
+										}
+										kodeverk="Landkoder"
+										value={innvandretUtvandret[idx].landkode}
+									/>
+									<TitleValue
+										title="Flyttedato"
+										value={Formatters.formatDate(innvandretUtvandret[idx].flyttedato)}
+									/>
+								</>
+							)}
+						</React.Fragment>
+					)}
+				</DollyFieldArray>
 			</div>
-
-			<h3>Innvandring og utvandring</h3>
-
-			<DollyFieldArray data={innvandretUtvandret} header={'Innvandret/utvandret'}>
-				{(id, idx) => (
-					<React.Fragment>
-						{innvandretUtvandret && (
-							<>
-								<TitleValue
-									title={
-										innvandretUtvandret[idx].innutvandret === 'UTVANDRET'
-											? 'Utvandret til'
-											: 'Innvandret fra'
-									}
-									kodeverk="Landkoder"
-									value={innvandretUtvandret[idx].landkode}
-								/>
-								<TitleValue
-									title="Flyttedato"
-									value={Formatters.formatDate(innvandretUtvandret[idx].flyttedato)}
-								/>
-							</>
-						)}
-					</React.Fragment>
-				)}
-			</DollyFieldArray>
-		</div>
-	)
+		)
+	} else return null
 }
