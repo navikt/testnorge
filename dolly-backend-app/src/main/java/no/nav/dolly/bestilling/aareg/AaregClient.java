@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @Slf4j
+@Order(2)
 @Service
 @RequiredArgsConstructor
 public class AaregClient implements ClientRegister {
