@@ -66,7 +66,7 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, dollyUrl + API_URI, API_URI );
-        HttpHeaders headers = copyHeaders(request);
+        HttpHeaders headers = proxyService.copyHeaders(request);
 
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
@@ -78,7 +78,7 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, arenaUrl + API_URI, PROXY_URI + "/arena");
-        HttpHeaders headers = copyHeaders(request);
+        HttpHeaders headers = proxyService.copyHeaders(request);
 
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
@@ -90,7 +90,7 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, instUrl + API_URI, PROXY_URI + "/inst");
-        HttpHeaders headers = copyHeaders(request);
+        HttpHeaders headers = proxyService.copyHeaders(request);
 
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
@@ -102,7 +102,7 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, krrUrl + API_URI, PROXY_URI + "/krr");
-        HttpHeaders headers = copyHeaders(request);
+        HttpHeaders headers = proxyService.copyHeaders(request);
         headers.add("Nav-Personident",  body.split("=")[0]);
 
         return proxyService.proxyRequest(null, HttpMethod.GET, headers, requestURL);
@@ -115,7 +115,7 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, sigrunUrl + API_URI, PROXY_URI + "/sigrun");
-        HttpHeaders headers = copyHeaders(request);
+        HttpHeaders headers = proxyService.copyHeaders(request);
         headers.add("personidentifikator", body.split("=")[0]);
 
         return proxyService.proxyRequest(null, HttpMethod.GET, headers, requestURL);
@@ -128,7 +128,7 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, tpsfUrl + API_URI, PROXY_URI + "/tpsf");
-        HttpHeaders headers = copyHeaders(request);
+        HttpHeaders headers = proxyService.copyHeaders(request);
 
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
@@ -140,7 +140,7 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, tpsfUrl + "/api", PROXY_URI + "/kontaktinfo");
-        HttpHeaders headers = copyHeaders(request);
+        HttpHeaders headers = proxyService.copyHeaders(request);
 
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
@@ -152,7 +152,7 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, udiUrl + API_URI, PROXY_URI + "/udi");
-        HttpHeaders headers = copyHeaders(request);
+        HttpHeaders headers = proxyService.copyHeaders(request);
 
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
@@ -164,7 +164,7 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, aaregUrl + API_URI, PROXY_URI + "/aareg");
-        HttpHeaders headers = copyHeaders(request);
+        HttpHeaders headers = proxyService.copyHeaders(request);
 
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
@@ -176,7 +176,7 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, poppUrl + API_URI, PROXY_URI + "/popp");
-        HttpHeaders headers = copyHeaders(request);
+        HttpHeaders headers = proxyService.copyHeaders(request);
 
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
@@ -188,7 +188,7 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, inntektstubUrl + "/api/v2", PROXY_URI + "/inntektstub");
-        HttpHeaders headers = copyHeaders(request);
+        HttpHeaders headers = proxyService.copyHeaders(request);
 
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
@@ -205,22 +205,5 @@ public class ProxyController {
         }
 
         return format("%s%s%s", host, request.getRequestURI().split(splitUri)[1], queryString);
-    }
-
-    private HttpHeaders copyHeaders(HttpServletRequest request) {
-        HttpHeaders headers = new HttpHeaders();
-        Enumeration<String> headerNames = request.getHeaderNames();
-
-        while (headerNames.hasMoreElements()) {
-            String headerName = headerNames.nextElement();
-            if ("connection".equals(headerName)) {
-                headers.set(headerName, "keep-alive");
-            } else if ("Cookie".equals(headerName)) {
-                headers.set(headerName, request.getHeader(headerName));
-            } else {
-                headers.set(headerName, request.getHeader(headerName));
-            }
-        }
-        return headers;
     }
 }

@@ -68,6 +68,23 @@ public class ProxyService {
         }
     }
 
+    public HttpHeaders copyHeaders(HttpServletRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+        Enumeration<String> headerNames = request.getHeaderNames();
+
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            if ("connection".equals(headerName)) {
+                headers.set(headerName, "keep-alive");
+            } else if ("Cookie".equals(headerName)) {
+                headers.set(headerName, request.getHeader(headerName));
+            } else {
+                headers.set(headerName, request.getHeader(headerName));
+            }
+        }
+        return headers;
+    }
+
     private Cookie getIdTokenCookie(HttpServletRequest request) {
         for (Cookie c : request.getCookies()) {
             if (c.getName().equals("ID_token")) {
