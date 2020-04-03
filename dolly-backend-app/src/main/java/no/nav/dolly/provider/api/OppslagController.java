@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.aareg.AaregConsumer;
-import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
+import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
 import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
@@ -34,6 +34,7 @@ import no.nav.dolly.consumer.norg2.Norg2EnhetResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
+import no.nav.dolly.service.InntektsmeldingEnumService;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
 @RestController
@@ -50,6 +51,7 @@ public class OppslagController {
     private final FasteDatasettConsumer fasteDatasettConsumer;
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final IdentpoolConsumer identpoolConsumer;
+    private final InntektsmeldingEnumService inntektsmeldingEnumService;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -132,5 +134,12 @@ public class OppslagController {
     @ApiOperation("Henter 10 syntetiske personnavn")
     public ResponseEntity getPersonnavn() {
         return identpoolConsumer.getPersonnavn();
+    }
+
+    @GetMapping("/inntektsmelding/{enumtype}")
+    @ApiOperation("Henter enumtyper for inntektsmelding")
+    public List<String> getInntektsmeldingeTyper(@PathVariable InntektsmeldingEnumService.EnumTypes enumtype) {
+
+        return inntektsmeldingEnumService.getEnumType(enumtype);
     }
 }

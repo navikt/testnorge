@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.inntektsmeldingstub;
 
 public enum NaturalytelseType {
+
     AKSJER_GRUNNFONDSBEVIS_TIL_UNDERKURS,
     LOSJI,
     KOST_DOEGN,
