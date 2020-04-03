@@ -41,17 +41,19 @@ export const Steg1 = ({ stateModifier }) => {
 			<AdressePanel stateModifier={stateModifier} />
 
 			{!opts.is.leggTil && (
-				<React.Fragment>
+				<>
 					<FamilierelasjonPanel stateModifier={stateModifier} />
 					<ArbeidInntektPanel stateModifier={stateModifier} />
 					<IdentifikasjonPanel stateModifier={stateModifier} />
 					<KontaktDoedsboPanel stateModifier={stateModifier} />
 					<InstitusjonsoppholdPanel stateModifier={stateModifier} />
 					<KontaktReservasjonsPanel stateModifier={stateModifier} />
-					<ArenaPanel stateModifier={stateModifier} />
-					<UdiPanel stateModifier={stateModifier} />
-				</React.Fragment>
+				</>
 			)}
+
+			<ArenaPanel stateModifier={stateModifier} />
+
+			{!opts.is.leggTil && <UdiPanel stateModifier={stateModifier} />}
 
 			{opts.is.leggTil && (
 				<AlertStripeInfo>

@@ -65,6 +65,16 @@ export const nyeBestillingerSelector = state => {
 	return state.bestillingStatuser.ny.map(id => getBestillingById(state, id)).filter(x => Boolean(x))
 }
 
+// Henter alle bestillinger som er gjort på en ident
+export const getAlleBestillingerPrIdent = (state, personId) => {
+	const bestillingId = state.gruppe.ident[personId].bestillingId
+	const bestillingInfo = []
+	bestillingId.forEach(id => {
+		bestillingInfo.push(state.bestillingStatuser.byId[id])
+	})
+	return bestillingInfo
+}
+
 // Filtrer bestillinger basert på søkestreng
 export const sokSelector = (state, searchStr) => {
 	const items = Object.values(state.bestillingStatuser.byId)

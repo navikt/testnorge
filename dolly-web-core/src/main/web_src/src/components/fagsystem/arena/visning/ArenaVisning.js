@@ -3,37 +3,51 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
+import { Historikk } from '~/components/ui/historikk/Historikk'
 
-export const ArenaVisning = ({ data, bestData, loading }) => {
+export const ArenaVisning = ({ data }) => {
+	return (
+		<>
+			<TitleValue title="Brukertype" value={data.brukertype} />
+			<TitleValue title="Servicebehov" value={data.servicebehov} />
+			<TitleValue title="Inaktiv fra dato" value={data.inaktiveringDato} />
+			<TitleValue title="Har 11-5-vedtak" value={data.harAap115} />
+			<TitleValue title="Fra dato" value={data.aap115FraDato} />
+			<TitleValue title="Har AAP vedtak UA - positivt utfall" value={data.harAap} />
+			<TitleValue title="Fra dato" value={data.aapFraDato} />
+			<TitleValue title="Til dato" value={data.aapTilDato} />
+		</>
+	)
+}
+
+export const Arena = ({ data, bestData, loading }) => {
 	if (loading) return <Loading label="Laster arena-data" />
 	if (!data) return false
 
+	const visningData = []
+
 	// Areneforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
-	const brukertype = data.arbeidsokerList[0].servicebehov
-	const { kvalifiseringsgruppe, inaktiveringDato, aap115, aap } = bestData
+	data.arbeidsokerList.forEach((info, idx) => {
+		const { kvalifiseringsgruppe, inaktiveringDato, aap115, aap } = bestData[
+			idx
+		].bestilling.arenaforvalter
+		visningData.push({
+			brukertype: info.servicebehov ? 'Med servicebehov' : 'Uten servicebehov',
+			servicebehov: servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe),
+			inaktiveringDato: Formatters.formatDate(inaktiveringDato),
+			harAap115: aap115 && 'Ja',
+			aap115FraDato: aap115 && Formatters.formatDate(aap115[0].fraDato),
+			harAap: aap && 'Ja',
+			aapFraDato: aap && Formatters.formatDate(aap[0].fraDato),
+			aapTilDato: aap && Formatters.formatDate(aap[0].tilDato)
+		})
+	})
 
 	return (
 		<div>
 			<SubOverskrift label="Arena" />
 			<div className="person-visning_content">
-				<TitleValue
-					title="Brukertype"
-					value={brukertype ? 'Med servicebehov' : 'Uten servicebehov'}
-				/>
-				{kvalifiseringsgruppe && (
-					<TitleValue
-						title="Servicebehov"
-						value={servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe)}
-					/>
-				)}
-				{inaktiveringDato && (
-					<TitleValue title="Inaktiv fra dato" value={Formatters.formatDate(inaktiveringDato)} />
-				)}
-				{aap115 && <TitleValue title="Har 11-5-vedtak" value="Ja" />}
-				{aap115 && <TitleValue title="Fra dato" value={Formatters.formatDate(aap115[0].fraDato)} />}
-				{aap && <TitleValue title="Har AAP vedtak UA - positivt utfall" value="Ja" />}
-				{aap && <TitleValue title="Fra dato" value={Formatters.formatDate(aap[0].fraDato)} />}
-				{aap && <TitleValue title="Til dato" value={Formatters.formatDate(aap[0].tilDato)} />}
+				<Historikk component={ArenaVisning} data={visningData} />
 			</div>
 		</div>
 	)

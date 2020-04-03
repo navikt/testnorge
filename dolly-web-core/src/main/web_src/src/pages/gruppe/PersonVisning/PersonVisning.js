@@ -5,13 +5,13 @@ import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestilli
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
 import { PdlfVisning } from '~/components/fagsystem/pdlf/visning/Visning'
-import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
+import { Arena } from '~/components/fagsystem/arena/visning/ArenaVisning'
 import { AaregVisning } from '~/components/fagsystem/aareg/visning/Visning'
 import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
 import { SigrunstubVisning } from '~/components/fagsystem/sigrunstub/visning/Visning'
 import { InntektstubVisning } from '~/components/fagsystem/inntektstub/visning/Visning'
 import { InstVisning } from '~/components/fagsystem/inst/visning/InstVisning'
-import { PensjonVisning } from "~/components/fagsystem/pensjon/visning/PensjonVisning";
+import { PensjonVisning } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/SammendragModal'
@@ -26,7 +26,8 @@ export const PersonVisning = ({
 	bestilling,
 	loading,
 	slettPerson,
-	leggTilPaaPerson
+	leggTilPaaPerson,
+	alleBestillingerPrIdent
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
@@ -40,9 +41,9 @@ export const PersonVisning = ({
 			<InntektstubVisning data={data.inntektstub} loading={loading.inntektstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			<InstVisning data={data.instdata} loading={loading.instdata} />
-			<ArenaVisning
+			<Arena
 				data={data.arenaforvalteren}
-				bestData={bestilling.bestilling.arenaforvalter}
+				bestData={alleBestillingerPrIdent}
 				loading={loading.arenaforvalteren}
 			/>
 			<UdiVisning
