@@ -23,10 +23,10 @@ public class RsInntektsmelding {
 
     @JsonProperty
     @ApiModelProperty(required = true)
-    private YtelseKodeListe ytelse;
+    private String ytelse;
     @JsonProperty
     @ApiModelProperty(required = true)
-    private AarsakInnsendingKodeListe aarsakTilInnsending;
+    private String aarsakTilInnsending;
     @JsonProperty
     @Size(min = 11, max = 11)
     @ApiModelProperty(value = "Arbeidstakers fødselsnummer", required = true)

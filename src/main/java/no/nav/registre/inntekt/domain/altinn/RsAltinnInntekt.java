@@ -1,4 +1,4 @@
-package no.nav.registre.inntekt.domain.altinn.rs;
+package no.nav.registre.inntekt.domain.altinn;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -7,20 +7,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-import no.nav.registre.inntekt.domain.altinn.enums.AarsakUtsettelseKodeListe;
+import no.nav.registre.inntekt.domain.altinn.enums.AarsakBeregnetInntektEndringKodeListe;
 
 @ApiModel
 @Builder
 @Value
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class RsUtsettelseAvForeldrepenger {
+public class RsAltinnInntekt {
 
     @JsonProperty
-    @ApiModelProperty("Periode for utsettelse av foreldrepenger")
-    private RsPeriode periode;
+    @ApiModelProperty("Månedsinntekt")
+    private Double beloep;
     @JsonProperty
-    @ApiModelProperty()
-    private String aarsakTilUtsettelse;
+    @ApiModelProperty
+    private AarsakBeregnetInntektEndringKodeListe aarsakVedEndring;
 
 }

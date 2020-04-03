@@ -1,4 +1,4 @@
-package no.nav.registre.inntekt.domain.altinn.rs;
+package no.nav.registre.inntekt.domain.altinn;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+import no.nav.registre.inntekt.domain.altinn.rs.RsGraderingIForeldrepenger;
+import no.nav.registre.inntekt.domain.altinn.rs.RsPeriode;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,7 +18,7 @@ import java.util.List;
 @Value
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class RsArbeidsforhold {
+public class RsAltinnArbeidsforhold {
     @JsonProperty(defaultValue = "Hentet fra Aareg")
     @ApiModelProperty(value = "Unik ID for det gjeldende arbeidsforholdet")
     private String arbeidsforholdId;
@@ -25,13 +27,13 @@ public class RsArbeidsforhold {
     private LocalDate foersteFravaersdag;
     @JsonProperty
     @ApiModelProperty(value = "Beregnet inntekt", required = true)
-    private RsInntekt beregnetInntekt;
+    private RsAltinnInntekt beregnetInntekt;
     @JsonProperty
     @ApiModelProperty(value = "Ferieliste bestående av perioder med ferie")
     private List<RsPeriode> avtaltFerieListe;
     @JsonProperty
     @ApiModelProperty()
-    private List<RsUtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
+    private List<RsAltinnUtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
     @JsonProperty
     @ApiModelProperty()
     private List<RsGraderingIForeldrepenger> graderingIForeldrepengerListe;

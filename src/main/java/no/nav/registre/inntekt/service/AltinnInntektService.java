@@ -10,8 +10,11 @@ import no.nav.registre.inntekt.domain.altinn.RsAltinnInntektInfo;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsforhold;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiver;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiverPrivat;
+import no.nav.registre.inntekt.domain.altinn.rs.RsInntekt;
 import no.nav.registre.inntekt.domain.altinn.rs.RsInntektsmelding;
 import no.nav.registre.inntekt.domain.altinn.rs.RsKontaktinformasjon;
+import no.nav.registre.inntekt.domain.altinn.rs.RsNaturalytelseDetaljer;
+import no.nav.registre.inntekt.domain.altinn.rs.RsUtsettelseAvForeldrepenger;
 import no.nav.registre.inntekt.domain.dokmot.AvsenderMottaker;
 import no.nav.registre.inntekt.domain.dokmot.Bruker;
 import no.nav.registre.inntekt.domain.dokmot.Dokument;
@@ -36,6 +39,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -117,8 +121,8 @@ public class AltinnInntektService {
         kontaktinformasjon = Objects.isNull(inntekt.getArbeidsgiver().getKontaktinformasjon()) ? kontaktinformasjon : inntekt.getArbeidsgiver().getKontaktinformasjon();
 
         var tmp = RsInntektsmelding.builder()
-                .ytelse(inntekt.getYtelse())
-                .aarsakTilInnsending(inntekt.getAarsakTilInnsending())
+                .ytelse(inntekt.getYtelse().getValue())
+                .aarsakTilInnsending(inntekt.getAarsakTilInnsending().getValue())
                 .arbeidstakerFnr(ident)
                 .naerRelasjon(inntekt.isNaerRelasjon())
                 .avsendersystem(inntekt.getAvsendersystem())
@@ -126,8 +130,18 @@ public class AltinnInntektService {
                 .omsorgspenger(inntekt.getOmsorgspenger())
                 .sykepengerIArbeidsgiverperioden(inntekt.getSykepengerIArbeidsgiverperioden())
                 .startdatoForeldrepengeperiode(inntekt.getStartdatoForeldrepengeperiode())
-                .opphoerAvNaturalytelseListe(inntekt.getOpphoerAvNaturalytelseListe())
-                .gjenopptakelseNaturalytelseListe(inntekt.getGjenopptakelseNaturalytelseListe())
+                .opphoerAvNaturalytelseListe(inntekt.getOpphoerAvNaturalytelseListe().stream().map(
+                        m -> RsNaturalytelseDetaljer.builder()
+                                .naturalytelseType(m.getNaturalytelseType().getValue())
+                                .beloepPrMnd(m.getBeloepPrMnd())
+                                .fom(m.getFom()).build())
+                        .collect(Collectors.toList()))
+                .gjenopptakelseNaturalytelseListe(inntekt.getGjenopptakelseNaturalytelseListe().stream().map(
+                        m -> RsNaturalytelseDetaljer.builder()
+                                .naturalytelseType(m.getNaturalytelseType().getValue())
+                                .beloepPrMnd(m.getBeloepPrMnd())
+                                .fom(m.getFom()).build())
+                        .collect(Collectors.toList()))
                 .pleiepengerPerioder(inntekt.getPleiepengerPerioder());
 
         if (nyesteArbeidsforhold.getOpplysningspliktig().getType().equals(TYPE_PERSON)) {
@@ -144,11 +158,17 @@ public class AltinnInntektService {
 
         tmp.arbeidsforhold(RsArbeidsforhold.builder()
                 .arbeidsforholdId(nyesteArbeidsforhold.getArbeidsforholdId())
-                .beregnetInntekt(inntekt.getArbeidsforhold().getBeregnetInntekt())
+                .beregnetInntekt(RsInntekt.builder()
+                        .beloep(inntekt.getArbeidsforhold().getBeregnetInntekt().getBeloep())
+                        .aarsakVedEndring(inntekt.getArbeidsforhold().getBeregnetInntekt().getAarsakVedEndring().getValue())
+                        .build())
                 .avtaltFerieListe(inntekt.getArbeidsforhold().getAvtaltFerieListe())
                 .foersteFravaersdag(inntekt.getArbeidsforhold().getFoersteFravaersdag())
                 .graderingIForeldrepengerListe(inntekt.getArbeidsforhold().getGraderingIForeldrepengerListe())
-                .utsettelseAvForeldrepengerListe(inntekt.getArbeidsforhold().getUtsettelseAvForeldrepengerListe())
+                .utsettelseAvForeldrepengerListe(inntekt.getArbeidsforhold().getUtsettelseAvForeldrepengerListe().stream().map(
+                        m -> RsUtsettelseAvForeldrepenger.builder()
+                                .aarsakTilUtsettelse(m.getAarsakTilUtsettelse().getValue())
+                                .periode(m.getPeriode()).build()).collect(Collectors.toList()))
                 .build());
 
         return tmp.build();

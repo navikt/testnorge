@@ -1,4 +1,4 @@
-package no.nav.registre.inntekt.domain.altinn.rs;
+package no.nav.registre.inntekt.domain.altinn;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -16,11 +16,10 @@ import java.time.LocalDate;
 @Value
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class RsNaturalytelseDetaljer {
-
+public class RsAltinnNaturalytelseDetaljer {
     @JsonProperty
     @ApiModelProperty
-    private String naturalytelseType;
+    private NaturalytelseKodeListe naturalytelseType;
     @JsonProperty
     @ApiModelProperty(value = "Startdato for naturaytelse", example = "YYYY-MM-DD")
     private LocalDate fom;
