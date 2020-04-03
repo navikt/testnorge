@@ -184,9 +184,13 @@ export const validation = {
 			statsborgerskap: ifPresent('$tpsf.statsborgerskap', requiredString),
 			statsborgerskapRegdato: Yup.date().nullable(),
 			innvandretFraLand: ifPresent('$tpsf.innvandretFraLand', requiredString),
-			innvandretFraLandFlyttedato: Yup.date().nullable(),
+			innvandretFraLandFlyttedato: Yup.date()
+				.nullable()
+				.required('Feltet er påkrevd'),
 			utvandretTilLand: ifPresent('$tpsf.utvandretTilLand', requiredString),
-			utvandretTilLandFlyttedato: Yup.date().nullable(),
+			utvandretTilLandFlyttedato: Yup.date()
+				.nullable()
+				.required('Feltet er påkrevd'),
 			sprakKode: ifPresent('$tpsf.sprakKode', requiredString),
 			telefonLandskode_1: ifPresent('$tpsf.telefonLandskode_1', requiredString),
 			telefonnummer_1: ifPresent('$tpsf.telefonnummer_1', testTelefonnummer('1')),
