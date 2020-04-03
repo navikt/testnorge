@@ -6,7 +6,7 @@ naiseratorApplicationPipeline {
     branchDeployments = [
         [branch: "dolly-test-u2", namespace: "u2"],
         [branch: "feature/dolly-test-t1", namespace: "t1"],
-        [branch: "dolly-v2", namespace: "t2"]
+        [branch: "dolly-t2", namespace: "t2"]
     ]
     additionalDeployments = [
         [namespace: "t1", environment: "t1"]
