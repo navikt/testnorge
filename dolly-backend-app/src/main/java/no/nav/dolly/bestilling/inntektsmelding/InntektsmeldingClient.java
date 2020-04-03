@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.inntektsmelding.domain.Inntektsmelding;
+import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
@@ -33,11 +33,11 @@ public class InntektsmeldingClient implements ClientRegister {
             StringBuilder status = new StringBuilder();
             bestilling.getEnvironments().forEach(environment -> {
 
-                    Inntektsmelding inntektsmelding = mapperFacade.map(bestilling.getInntektsmelding(), Inntektsmelding.class);
-                    inntektsmelding.setArbeidstakerFnr(tpsPerson.getHovedperson());
-                    inntektsmelding.setMiljoe(environment);
+                    InntektsmeldingRequest inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class);
+                    inntektsmeldingRequest.setArbeidstakerFnr(tpsPerson.getHovedperson());
+                    inntektsmeldingRequest.setMiljoe(environment);
 
-                    postInntektsmelding(inntektsmelding, status);
+                    postInntektsmelding(inntektsmeldingRequest, status);
                 });
 
             progress.setInntektsmeldingStatus(status.length() > 1 ? status.substring(1) : null);
@@ -50,24 +50,24 @@ public class InntektsmeldingClient implements ClientRegister {
         // Inntektsmelding mangler pt. sletting
     }
 
-    private void postInntektsmelding(Inntektsmelding inntektsmelding, StringBuilder status) {
+    private void postInntektsmelding(InntektsmeldingRequest inntektsmeldingRequest, StringBuilder status) {
 
         try {
-            inntektsmeldingConsumer.postInntektsmelding(inntektsmelding);
+            inntektsmeldingConsumer.postInntektsmelding(inntektsmeldingRequest);
 
             status.append(',')
-                    .append(inntektsmelding.getMiljoe())
+                    .append(inntektsmeldingRequest.getMiljoe())
                     .append(":OK");
 
         } catch (RuntimeException re) {
 
             status.append(',')
-                    .append(inntektsmelding.getMiljoe())
+                    .append(inntektsmeldingRequest.getMiljoe())
                     .append(':')
                     .append(errorStatusDecoder.decodeRuntimeException(re));
 
             log.error("Feilet å legge inn person: {} til Inntektsmelding miljø: {}",
-                    inntektsmelding.getArbeidstakerFnr(), inntektsmelding.getMiljoe(), re);
+                    inntektsmeldingRequest.getArbeidstakerFnr(), inntektsmeldingRequest.getMiljoe(), re);
         }
     }
 }

@@ -1,19 +1,26 @@
-package no.nav.dolly.domain.resultset.inntektsmeldingstub;
+package no.nav.dolly.bestilling.inntektsmelding.domain;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakTilInnsendingType;
+import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakTilUtsettelseType;
+import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakVedEndringType;
+import no.nav.dolly.domain.resultset.inntektsmeldingstub.BegrunnelseForReduksjonEllerIkkeUtbetaltType;
+import no.nav.dolly.domain.resultset.inntektsmeldingstub.NaturalytelseType;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsInntektsmelding {
+public class InntektsmeldingRequest {
 
+    private String miljoe;
+    private String arbeidstakerFnr;
     private List<Inntektsmelding> inntekter;
     private JoarkMetadata joarkMetadata;
 
@@ -45,27 +52,27 @@ public class RsInntektsmelding {
     public static class Inntektsmelding {
 
         private AarsakTilInnsendingType aarsakTilInnsending;
-        private RsArbeidsforhold arbeidsforhold;
-        private RsArbeidsgiver arbeidsgiver;
-        private RsAvsendersystem avsendersystem;
-        private List<RsNaturalYtelseDetaljer> gjenopptakelseNaturalytelseListe;
+        private Arbeidsforhold arbeidsforhold;
+        private Arbeidsgiver arbeidsgiver;
+        private Avsendersystem avsendersystem;
+        private List<NaturalYtelseDetaljer> gjenopptakelseNaturalytelseListe;
         private Boolean naerRelasjon;
-        private List<RsOmsorgspenger> omsorgspenger;
-        private List<RsNaturalYtelseDetaljer> opphoerAvNaturalytelseListe;
-        private List<RsPeriode> pleiepengerPerioder;
-        private RsRefusjon refusjon;
-        private LocalDateTime startdatoForeldrepengeperiode;
-        private RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
-        private YtelseType ytelse;
+        private List<Omsorgspenger> omsorgspenger;
+        private List<NaturalYtelseDetaljer> opphoerAvNaturalytelseListe;
+        private List<Periode> pleiepengerPerioder;
+        private Refusjon refusjon;
+        private LocalDate startdatoForeldrepengeperiode;
+        private SykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
+        private String ytelse;
     }
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RsSykepengerIArbeidsgiverperioden {
+    public static class SykepengerIArbeidsgiverperioden {
 
-        private List<RsPeriode> arbeidsgiverperiodeListe;
+        private List<Periode> arbeidsgiverperiodeListe;
         private BegrunnelseForReduksjonEllerIkkeUtbetaltType begrunnelseForReduksjonEllerIkkeUtbetalt;
         private Double bruttoUtbetalt;
     }
@@ -74,20 +81,20 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RsRefusjon {
+    public static class Refusjon {
 
-        private List<RsEndringIRefusjon> endringIRefusjonListe;
+        private List<EndringIRefusjon> endringIRefusjonListe;
         private Double refusjonsbeloepPrMnd;
-        private LocalDateTime refusjonsopphoersdato;
+        private LocalDate refusjonsopphoersdato;
     }
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RsEndringIRefusjon {
+    public static class EndringIRefusjon {
 
-        private LocalDateTime endringsdato;
+        private LocalDate endringsdato;
         private Double refusjonsbeloepPrMnd;
     }
 
@@ -95,10 +102,10 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RsNaturalYtelseDetaljer {
+    public static class NaturalYtelseDetaljer {
 
         private Double beloepPrMnd;
-        private LocalDateTime fom;
+        private LocalDate fom;
         private NaturalytelseType naturalytelseType;
     }
 
@@ -106,10 +113,10 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RsOmsorgspenger {
+    public static class Omsorgspenger {
 
-        private List<RsDelvisFravaer> delvisFravaersListe;
-        private List<RsPeriode> fravaersPerioder;
+        private List<DelvisFravaer> delvisFravaersListe;
+        private List<Periode> fravaersPerioder;
         private Boolean harUtbetaltPliktigeDager;
     }
 
@@ -117,9 +124,9 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RsDelvisFravaer {
+    public static class DelvisFravaer {
 
-        private LocalDateTime dato;
+        private LocalDate dato;
         private Double timer;
     }
 
@@ -127,9 +134,9 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RsAvsendersystem {
+    public static class Avsendersystem {
 
-        private LocalDateTime innsendingstidspunkt;
+        private LocalDate innsendingstidspunkt;
         private String systemnavn;
         private String systemversjon;
     }
@@ -138,9 +145,9 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RsArbeidsgiver {
+    public static class Arbeidsgiver {
 
-        private RsKontaktinformasjon kontaktinformasjon;
+        private Kontaktinformasjon kontaktinformasjon;
         private String virksomhetsnummer;
     }
 
@@ -148,7 +155,7 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RsKontaktinformasjon {
+    public static class Kontaktinformasjon {
 
         private String kontaktinformasjonNavn;
         private String telefonnummer;
@@ -158,40 +165,40 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RsArbeidsforhold {
+    public static class Arbeidsforhold {
 
         private String arbeidsforholdId;
-        private List<RsPeriode> avtaltFerieListe;
-        private RsAltinnInntekt beregnetInntekt;
-        private LocalDateTime foersteFravaersdag;
-        private List<RsGraderingIForeldrepenger> graderingIForeldrepengerListe;
-        private List<RsUtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
+        private List<Periode> avtaltFerieListe;
+        private AltinnInntekt beregnetInntekt;
+        private LocalDate foersteFravaersdag;
+        private List<GraderingIForeldrepenger> graderingIForeldrepengerListe;
+        private List<UtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
     }
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RsUtsettelseAvForeldrepenger {
+    public static class UtsettelseAvForeldrepenger {
 
         private AarsakTilUtsettelseType aarsakTilUtsettelse;
-        private RsPeriode periode;
+        private Periode periode;
     }
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RsGraderingIForeldrepenger {
+    public static class GraderingIForeldrepenger {
         private Integer arbeidstidprosent;
-        private RsPeriode periode;
+        private Periode periode;
     }
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RsAltinnInntekt {
+    public static class AltinnInntekt {
 
         private AarsakVedEndringType aarsakVedEndring;
         private Double beloep;
@@ -201,9 +208,9 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RsPeriode {
+    public static class Periode {
 
-        private LocalDateTime fom;
-        private LocalDateTime tom;
+        private LocalDate fom;
+        private LocalDate tom;
     }
 }
