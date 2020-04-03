@@ -20,7 +20,7 @@ type OrgOption = {
 export default ({ path, formikBag }: InntektsmeldingOrgnummerSelect) => {
 	const setOrgnr = (org: OrgOption) => {
 		formikBag.setFieldValue(`${path}.virksomhetsnummer`, org.juridiskEnhet)
-		formikBag.setFieldValue(`${path}.orgnr`, org.value) //orgnr ignoreres av backend. Sendes for å kunne bruke nedtrekksliste
+		formikBag.setFieldValue(`${path}.orgnummer`, org.value) //orgnr ignoreres av backend. Sendes for å kunne bruke nedtrekksliste
 	}
 
 	return (
@@ -43,9 +43,9 @@ export default ({ path, formikBag }: InntektsmeldingOrgnummerSelect) => {
 					options={data}
 					size="xlarge"
 					onChange={setOrgnr}
-					value={_get(formikBag.values, `${path}.orgnr`)}
+					value={_get(formikBag.values, `${path}.orgnummer`)}
 					feil={
-						_get(formikBag.values, `${path}.orgnr`) === '' && {
+						_get(formikBag.values, `${path}.orgnummer`) === '' && {
 							feilmelding: 'Feltet er påkrevd'
 						}
 					}

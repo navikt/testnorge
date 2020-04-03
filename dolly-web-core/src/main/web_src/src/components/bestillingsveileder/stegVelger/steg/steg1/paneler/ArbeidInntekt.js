@@ -71,9 +71,17 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 			set('inntektsmelding', {
 				inntekter: [
 					{
-						dato: new Date(),
-						virksomhetsnummer: '',
-						beloep: ''
+						arbeidsgiver: {
+							virksomhetsnummer: ''
+						},
+						arbeidsforhold: {
+							beregnetInntekt: {
+								beloep: ''
+							}
+						},
+						avsendersystem: {
+							innsendingstidspunkt: new Date()
+						}
 					}
 				]
 			}),

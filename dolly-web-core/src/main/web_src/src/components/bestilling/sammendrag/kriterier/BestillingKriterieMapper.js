@@ -737,9 +737,13 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			{
 				numberHeader: `Inntekt ${i + 1}`
 			},
-			obj('Innsendingstidspunkt', Formatters.formatDate(inntekt.dato)),
-			obj('Virksomhet', inntekt.virksomhetsnummer),
-			obj('Beløp', inntekt.beloep)
+			obj(
+				'Innsendingstidspunkt',
+				Formatters.formatDate(inntekt.avsendersystem.innsendingstidspunkt)
+			),
+			obj('Virksomhet', inntekt.arbeidsgiver.orgnummer),
+			obj('Opplysningspliktig virksomhet', inntekt.arbeidsgiver.virksomhetsnummer),
+			obj('Beløp', inntekt.arbeidsforhold.beregnetInntekt.beloep)
 		])
 	})
 

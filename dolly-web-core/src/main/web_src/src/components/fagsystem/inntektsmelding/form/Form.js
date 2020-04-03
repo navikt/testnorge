@@ -8,12 +8,20 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { requiredDate, requiredString, requiredNumber, messages } from '~/utils/YupValidations'
-import InntektsmeldingOrgnummerSelect from './partials/InntektsmeldingOrgnummerSelect'
+import InntektsmeldingOrgnummerSelect from './partials/inntektsmeldingOrgnummerSelect'
 
 const initialValues = {
-	dato: '',
-	virksomhetsnummer: '',
-	beloep: ''
+	arbeidsgiver: {
+		virksomhetsnummer: ''
+	},
+	arbeidsforhold: {
+		beregnetInntekt: {
+			beloep: ''
+		}
+	},
+	avsendersystem: {
+		innsendingstidspunkt: new Date()
+	}
 }
 const inntektsmeldingAttributt = 'inntektsmelding'
 const informasjonstekst = 'Personen må ha et arbeidsforhold knyttet til den valgte virksomheten.'
@@ -35,9 +43,17 @@ export const InntektsmeldingForm = ({ formikBag }) => {
 				>
 					{(path, idx) => (
 						<>
-							<FormikTextInput name={`${path}.beloep`} label="Beløp" type="number" />
-							<FormikDatepicker name={`${path}.dato`} label="Innsendingstidspunkt" type="month" />
-							<InntektsmeldingOrgnummerSelect path={path} formikBag={formikBag} />
+							<FormikTextInput
+								name={`${path}.arbeidsforhold.beregnetInntekt.beloep`}
+								label="Beløp"
+								type="number"
+							/>
+							<FormikDatepicker
+								name={`${path}.avsendersystem.innsendingstidspunkt`}
+								label="Innsendingstidspunkt"
+								type="month"
+							/>
+							<InntektsmeldingOrgnummerSelect path={`${path}.arbeidsgiver`} formikBag={formikBag} />
 						</>
 					)}
 				</FormikDollyFieldArray>
@@ -50,9 +66,17 @@ InntektsmeldingForm.validation = {
 	inntektsmelding: Yup.object({
 		inntekter: Yup.array().of(
 			Yup.object({
-				dato: requiredDate,
-				virksomhetsnummer: requiredString,
-				beloep: requiredNumber.typeError(messages.required)
+				arbeidsgiver: Yup.object({
+					virksomhetsnummer: requiredString
+				}),
+				arbeidsforhold: Yup.object({
+					beregnetInntekt: Yup.object({
+						beloep: requiredNumber.typeError(messages.required)
+					})
+				}),
+				avsendersystem: Yup.object({
+					innsendingstidspunkt: requiredDate
+				})
 			})
 		)
 	})

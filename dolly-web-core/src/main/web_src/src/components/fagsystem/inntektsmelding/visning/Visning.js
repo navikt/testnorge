@@ -26,7 +26,8 @@ export const InntektsmeldingVisning = ({ bestilling, loading }) => {
 							title="Innsendingstidspunkt"
 							value={Formatters.formatStringDates(inntekt.dato)}
 						/>
-						<TitleValue title="Virksomhet" value={inntekt.virksomhetsnummer} />
+						<TitleValue title="Virksomhet" value={inntekt.orgnummer} />
+						<TitleValue title="Opplysningspliktig virksomhet" value={inntekt.virksomhetsnummer} />
 					</div>
 				)}
 			</DollyFieldArray>
