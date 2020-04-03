@@ -56,6 +56,8 @@ public class TestnorgeAaregConsumer {
            }).getBody();
        } catch (HttpStatusCodeException e) {
            log.error("Kunne ikke hente arbeidsforhold til ident " + ident);
+       } catch (Exception e) {
+           log.error("Uventet feil ved henting av arbeidsforhold.", e);
        }
 
        return response;
