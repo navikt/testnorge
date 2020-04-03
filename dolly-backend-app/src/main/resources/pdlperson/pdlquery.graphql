@@ -83,12 +83,12 @@ query($ident: ID!, $historikk: Boolean!) {
         },
         oppholdsadresse(historikk: $historikk) {
             utenlandskAdresse {
-                adressenavn,
-                bygningsinformasjon,
-                postboks,
+                adressenavnNummer,
+                bygningEtasjeLeilighet,
+                postboksNummerNavn,
                 postkode,
-                byEllerStedsnavn,
-                distriktEllerRegion,
+                bySted,
+                regionDistriktOmraade,
                 landkode
             },
             vegadresse {
@@ -218,12 +218,12 @@ query($ident: ID!, $historikk: Boolean!) {
                 postnummer
             },
             utenlandskAdresse {
-                adressenavn,
-                bygningsinformasjon,
-                postboks,
+                adressenavnNummer,
+                bygningEtasjeLeilighet,
+                postboksNummerNavn,
                 postkode,
-                byEllerStedsnavn,
-                distriktEllerRegion,
+                bySted,
+                regionDistriktOmraade,
                 landkode
             },
             utenlandskAdresseIFrittFormat {
@@ -469,6 +469,46 @@ query($ident: ID!, $historikk: Boolean!) {
         utflyttingFraNorge {
             tilflyttingsland,
             tilflyttingsstedIUtlandet,
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            },
+            metadata {
+                ...metadataDetails
+            }
+        },
+        vergemaalEllerFremtidsfullmakt(historikk: $historikk) {
+            type,
+            embete,
+            vergeEllerFullmektig {
+                navn {
+                    fornavn,
+                    mellomnavn,
+                    etternavn
+                },
+                motpartsPersonident,
+                omfang,
+                omfangetErInnenPersonligOmraade
+            },
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            },
+            metadata {
+                ...metadataDetails
+            }
+        },
+        foreldreansvar(historikk: $historikk) {
+            ansvar,
+            ansvarlig,
+            ansvarligUtenIdentifikator {
+                navn {
+                    fornavn,
+                    mellomnavn,
+                    etternavn
+                },
+                foedselsdato,
+                statsborgerskap,
+                kjoenn
+            },
             folkeregistermetadata {
                 ...folkeregistermetadataDetails
             },
