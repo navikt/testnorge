@@ -2,7 +2,6 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
-// import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 export const ArbeidInntektPanel = ({ stateModifier }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
@@ -38,17 +37,7 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 	)
 }
 
-// TODO: Sett initialValue på virksomhet og opplysningspliktig til en random organisasjon, har ikke fått det til å fingere foreløpig
-// const randomVirksomhet = () => {
-// 	const orgInfo = SelectOptionsOppslag('orgnr')
-// 	const options = SelectOptionsOppslag.formatOptions(orgInfo)
-// 	const randomNumber = Math.floor(Math.random() * options.length)
-// 	if (options.length > 0) {
-// 		return options[randomNumber].value
-// 	}
-// 	return ''
-// }
-// const initialVirksomhet = randomVirksomhet()
+// TODO: Sett initialValue på virksomhet og opplysningspliktig til en random organisasjon, har ikke fått det til å fungere foreløpig
 
 ArbeidInntektPanel.heading = 'Arbeid og inntekt'
 
@@ -107,7 +96,6 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		checked: has('inntektstub'),
 		add: () =>
 			set('inntektstub', {
-				// prosentOekningPerAaar: null,
 				inntektsinformasjon: [
 					{
 						sisteAarMaaned: '',

@@ -34,10 +34,8 @@ public class ProxyService {
     public ResponseEntity proxyRequest(
             String body,
             HttpMethod method,
-            HttpServletRequest request,
+            HttpHeaders headers,
             String requestUrl) {
-
-        HttpHeaders headers = copyHeaders(request);
 
         OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + auth.getIdToken());
@@ -70,7 +68,7 @@ public class ProxyService {
         }
     }
 
-    private HttpHeaders copyHeaders(HttpServletRequest request) {
+    public HttpHeaders copyHeaders(HttpServletRequest request) {
         HttpHeaders headers = new HttpHeaders();
         Enumeration<String> headerNames = request.getHeaderNames();
 

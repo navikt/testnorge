@@ -3,11 +3,36 @@ import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 import { requiredDate, requiredString, requiredNumber, messages } from '~/utils/YupValidations'
 
+const innenforMaanedAarTest = validation => {
+	const errorMsg = 'Dato må være innenfor måned/år for denne inntektsinformasjonen'
+
+	return validation.test('range', errorMsg, function isWithinMonth(val) {
+		if (!val) return true
+
+		const dateValue = new Date(val)
+		const path = this.path
+		const values = this.options.context
+
+		const dateValueMaanedAar = `${dateValue.getFullYear()}-${(
+			'0' +
+			(dateValue.getMonth() + 1)
+		).slice(-2)}`
+
+		const inntektsinformasjonPath = path.split('.', 2).join('.')
+		const inntektsinformasjonMaanedAar = _get(values, `${inntektsinformasjonPath}.sisteAarMaaned`)
+
+		if (!inntektsinformasjonMaanedAar || dateValueMaanedAar === inntektsinformasjonMaanedAar) {
+			return true
+		}
+		return false
+	})
+}
+
 const inntektsliste = Yup.array().of(
 	Yup.object({
 		beloep: requiredNumber.typeError(messages.required),
-		startOpptjeningsperiode: Yup.string().nullable(),
-		sluttOpptjeningsperiode: Yup.string().nullable()
+		startOpptjeningsperiode: innenforMaanedAarTest(Yup.string().nullable()),
+		sluttOpptjeningsperiode: innenforMaanedAarTest(Yup.string().nullable())
 	})
 )
 
@@ -36,9 +61,9 @@ const arbeidsforholdsliste = Yup.array().of(
 		antallTimerPerUkeSomEnFullStillingTilsvarer: Yup.number()
 			.transform((i, j) => (j === '' ? null : i))
 			.nullable(),
-		avloenningstype: Yup.string(),
-		yrke: Yup.string(),
-		arbeidstidsordning: Yup.string(),
+		avloenningstype: Yup.string().nullable(),
+		yrke: Yup.string().nullable(),
+		arbeidstidsordning: Yup.string().nullable(),
 		stillingsprosent: Yup.number()
 			.transform((i, j) => (j === '' ? null : i))
 			.nullable(),
@@ -49,9 +74,6 @@ const arbeidsforholdsliste = Yup.array().of(
 
 export const validation = {
 	inntektstub: Yup.object({
-		// prosentOekningPerAaar: Yup.number()
-		// 	.transform((i, j) => (j === '' ? null : i))
-		// 	.nullable(),
 		inntektsinformasjon: Yup.array().of(
 			Yup.object({
 				sisteAarMaaned: requiredString,
