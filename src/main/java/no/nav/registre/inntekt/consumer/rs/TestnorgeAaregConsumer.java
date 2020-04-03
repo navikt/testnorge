@@ -5,7 +5,10 @@ import static no.nav.registre.inntekt.consumer.rs.ConsumerUtils.CONSUMER_ID_NAME
 import static no.nav.registre.inntekt.consumer.rs.ConsumerUtils.NAV_CALL_ID;
 import static no.nav.registre.inntekt.consumer.rs.ConsumerUtils.NAV_CONSUMER_ID;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inntekt.utils.ArbeidsforholdMappingUtil;
 import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -17,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -52,8 +56,10 @@ public class TestnorgeAaregConsumer {
                .build();
        List<Arbeidsforhold> response = null;
        try {
-           response = restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<Arbeidsforhold>>() {
+           var tmp = restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<JsonNode>>() {
            }).getBody();
+           assert tmp != null;
+           response = tmp.stream().map(ArbeidsforholdMappingUtil::mapToArbeidsforhold).collect(Collectors.toList());
        } catch (HttpStatusCodeException e) {
            log.error("Kunne ikke hente arbeidsforhold til ident " + ident);
        } catch (Exception e) {
