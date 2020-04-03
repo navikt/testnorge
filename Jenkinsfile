@@ -9,9 +9,7 @@ naiseratorApplicationPipeline {
         [branch: "feature/REG-5715-dolly-2.0-backend", namespace: "t2"]
     ]
     additionalDeployments = [
-        [namespace: "u2", environment: "u2"],
-        [namespace: "t1", environment: "t1"],
-        [namespace: "t2", environment: "t2"]
+        [namespace: "t1", environment: "t1"]
     ]
     isTestApplication = true
 }
