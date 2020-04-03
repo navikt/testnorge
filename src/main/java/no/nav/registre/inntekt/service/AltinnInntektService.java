@@ -16,6 +16,7 @@ import no.nav.registre.inntekt.domain.dokmot.AvsenderMottaker;
 import no.nav.registre.inntekt.domain.dokmot.Bruker;
 import no.nav.registre.inntekt.domain.dokmot.Dokument;
 import no.nav.registre.inntekt.domain.dokmot.Dokumentvariant;
+import no.nav.registre.inntekt.domain.dokmot.rs.RsJoarkMetadata;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
 import no.nav.registre.inntekt.provider.rs.requests.DokmotRequest;
 import no.nav.registre.inntekt.utils.FilVerktoey;
@@ -164,6 +165,9 @@ public class AltinnInntektService {
 
     private void lagreMeldingIJoark(String xmlMelding, RsAltinnInntektInfo inntekt, AltinnDollyRequest dollyRequest) {
         var metadata = dollyRequest.getJoarkMetadata();
+        if (Objects.isNull(metadata)) {
+            metadata = new RsJoarkMetadata();
+        }
         var request = DokmotRequest.builder()
                 .journalposttype(metadata.getJournalpostType())
                 .avsenderMottaker(AvsenderMottaker.builder()
