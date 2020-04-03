@@ -9,8 +9,6 @@ naiseratorApplicationPipeline {
         [branch: "dolly-v2", namespace: "t2"]
     ]
     additionalDeployments = [
-        [namespace: "u2", environment: "u2"],
-        [namespace: "t1", environment: "t1"],
-        [namespace: "t2", environment: "t2"]
+        [namespace: "t1", environment: "t1"]
     ]
 }
