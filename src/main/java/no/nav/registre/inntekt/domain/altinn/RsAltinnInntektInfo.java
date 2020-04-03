@@ -46,7 +46,7 @@ public class RsAltinnInntektInfo {
     private RsArbeidsgiver arbeidsgiver;
     @JsonProperty
     @ApiModelProperty(value = "Gjeldende arbeidsforhold. \'nillable\' i XSD skjema.", required = true)
-    private RsArbeidsforhold arbeidsforhold;
+    private RsAltinnArbeidsforhold arbeidsforhold;
 
     @JsonProperty
     @ApiModelProperty
@@ -62,10 +62,10 @@ public class RsAltinnInntektInfo {
     private LocalDate startdatoForeldrepengeperiode;
     @JsonProperty
     @ApiModelProperty
-    private List<RsNaturalytelseDetaljer> opphoerAvNaturalytelseListe;
+    private List<RsAltinnNaturalytelseDetaljer> opphoerAvNaturalytelseListe;
     @JsonProperty
     @ApiModelProperty
-    private List<RsNaturalytelseDetaljer> gjenopptakelseNaturalytelseListe;
+    private List<RsAltinnNaturalytelseDetaljer> gjenopptakelseNaturalytelseListe;
     @JsonProperty
     @ApiModelProperty
     private List<RsPeriode> pleiepengerPerioder;

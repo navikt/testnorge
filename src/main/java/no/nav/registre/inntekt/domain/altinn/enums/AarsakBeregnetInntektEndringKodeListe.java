@@ -1,6 +1,6 @@
 package no.nav.registre.inntekt.domain.altinn.enums;
 
-public enum AarsakBeregnetInntektEndringKodeListe {
+public enum AarsakBeregnetInntektEndringKodeListe implements AltinnEnum {
     TARIFFENDRING("Tariffendring"),
     FEIL_INNTEKT("FeilInntekt");
 

@@ -1,4 +1,4 @@
-package no.nav.registre.inntekt.domain.altinn.rs;
+package no.nav.registre.inntekt.domain.altinn;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;

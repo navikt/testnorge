@@ -7,20 +7,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-import no.nav.registre.inntekt.domain.altinn.enums.AarsakUtsettelseKodeListe;
 
 @ApiModel
 @Builder
 @Value
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class RsUtsettelseAvForeldrepenger {
-
+public class RsInntekt {
     @JsonProperty
-    @ApiModelProperty("Periode for utsettelse av foreldrepenger")
-    private RsPeriode periode;
+    @ApiModelProperty("Månedsinntekt")
+    private Double beloep;
     @JsonProperty
-    @ApiModelProperty()
-    private String aarsakTilUtsettelse;
-
+    @ApiModelProperty
+    private String aarsakVedEndring;
 }

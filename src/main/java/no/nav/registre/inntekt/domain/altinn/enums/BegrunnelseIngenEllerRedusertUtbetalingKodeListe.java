@@ -1,6 +1,6 @@
 package no.nav.registre.inntekt.domain.altinn.enums;
 
-public enum BegrunnelseIngenEllerRedusertUtbetalingKodeListe {
+public enum BegrunnelseIngenEllerRedusertUtbetalingKodeListe implements AltinnEnum {
     LOVLIG_FRAVAER("LovligFravaer"),
     FRAVAER_UTEN_GYLDIG_GRUNN("FravaerUtenGyldigGrunn"),
     ARBEID_OPPHOERT("ArbeidOpphoert"),
