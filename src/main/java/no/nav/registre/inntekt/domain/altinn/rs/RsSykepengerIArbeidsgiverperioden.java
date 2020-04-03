@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+import no.nav.registre.inntekt.domain.altinn.enums.BegrunnelseIngenEllerRedusertUtbetalingKodeListe;
 
 import java.util.List;
 
@@ -25,6 +26,6 @@ public class RsSykepengerIArbeidsgiverperioden {
     private Double bruttoUtbetalt;
     @JsonProperty
     @ApiModelProperty("Begrunnelse for reduksjon eller ikke utbetalt")
-    private String begrunnelseForReduksjonEllerIkkeUtbetalt;
+    private BegrunnelseIngenEllerRedusertUtbetalingKodeListe begrunnelseForReduksjonEllerIkkeUtbetalt;
 
 }

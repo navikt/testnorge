@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+import no.nav.registre.inntekt.domain.altinn.enums.AarsakUtsettelseKodeListe;
 
 @ApiModel
 @Builder
@@ -20,6 +21,6 @@ public class RsUtsettelseAvForeldrepenger {
     private RsPeriode periode;
     @JsonProperty
     @ApiModelProperty()
-    private String aarsakTilUtsettelse;
+    private AarsakUtsettelseKodeListe aarsakTilUtsettelse;
 
 }
