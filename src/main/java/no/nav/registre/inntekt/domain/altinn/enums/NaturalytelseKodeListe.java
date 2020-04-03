@@ -1,6 +1,6 @@
 package no.nav.registre.inntekt.domain.altinn.enums;
 
-public enum NaturalytelseKodeListe {
+public enum NaturalytelseKodeListe implements AltinnEnum {
     AKSJER_GRUNNFONDSBEVIS_TIL_UNDERKURS("aksjerGrunnfondsbevisTilUnderkurs"),
     LOSJI("losji"),
     KOST_DOEGN("kostDoegn"),

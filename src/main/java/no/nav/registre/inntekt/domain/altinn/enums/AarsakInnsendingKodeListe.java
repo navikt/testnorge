@@ -1,6 +1,6 @@
 package no.nav.registre.inntekt.domain.altinn.enums;
 
-public enum AarsakInnsendingKodeListe {
+public enum AarsakInnsendingKodeListe implements AltinnEnum {
     NY("Ny"),
     ENDRING("Endring");
 

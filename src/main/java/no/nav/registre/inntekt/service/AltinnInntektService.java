@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inntekt.consumer.rs.AltinnInntektConsumer;
 import no.nav.registre.inntekt.consumer.rs.DokmotConsumer;
 import no.nav.registre.inntekt.domain.altinn.RsAltinnInntektInfo;
+import no.nav.registre.inntekt.domain.altinn.enums.AltinnEnum;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsforhold;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiver;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiverPrivat;
@@ -122,8 +123,8 @@ public class AltinnInntektService {
         kontaktinformasjon = Objects.isNull(inntekt.getArbeidsgiver().getKontaktinformasjon()) ? kontaktinformasjon : inntekt.getArbeidsgiver().getKontaktinformasjon();
 
         var tmp = RsInntektsmelding.builder()
-                .ytelse(inntekt.getYtelse().getValue())
-                .aarsakTilInnsending(inntekt.getAarsakTilInnsending().getValue())
+                .ytelse(getValueFromEnumIfSet(inntekt.getYtelse()))
+                .aarsakTilInnsending(getValueFromEnumIfSet(inntekt.getAarsakTilInnsending()))
                 .arbeidstakerFnr(ident)
                 .naerRelasjon(inntekt.isNaerRelasjon())
                 .avsendersystem(inntekt.getAvsendersystem())
@@ -133,13 +134,13 @@ public class AltinnInntektService {
                 .startdatoForeldrepengeperiode(inntekt.getStartdatoForeldrepengeperiode())
                 .opphoerAvNaturalytelseListe(inntekt.getOpphoerAvNaturalytelseListe().stream().map(
                         m -> RsNaturalytelseDetaljer.builder()
-                                .naturalytelseType(m.getNaturalytelseType().getValue())
+                                .naturalytelseType(getValueFromEnumIfSet(m.getNaturalytelseType()))
                                 .beloepPrMnd(m.getBeloepPrMnd())
                                 .fom(m.getFom()).build())
                         .collect(Collectors.toList()))
                 .gjenopptakelseNaturalytelseListe(inntekt.getGjenopptakelseNaturalytelseListe().stream().map(
                         m -> RsNaturalytelseDetaljer.builder()
-                                .naturalytelseType(m.getNaturalytelseType().getValue())
+                                .naturalytelseType(getValueFromEnumIfSet(m.getNaturalytelseType()))
                                 .beloepPrMnd(m.getBeloepPrMnd())
                                 .fom(m.getFom()).build())
                         .collect(Collectors.toList()))
@@ -161,18 +162,22 @@ public class AltinnInntektService {
                 .arbeidsforholdId(nyesteArbeidsforhold.getArbeidsforholdId())
                 .beregnetInntekt(RsInntekt.builder()
                         .beloep(inntekt.getArbeidsforhold().getBeregnetInntekt().getBeloep())
-                        .aarsakVedEndring(inntekt.getArbeidsforhold().getBeregnetInntekt().getAarsakVedEndring().getValue())
+                        .aarsakVedEndring(getValueFromEnumIfSet(inntekt.getArbeidsforhold().getBeregnetInntekt().getAarsakVedEndring()))
                         .build())
                 .avtaltFerieListe(inntekt.getArbeidsforhold().getAvtaltFerieListe())
                 .foersteFravaersdag(inntekt.getArbeidsforhold().getFoersteFravaersdag())
                 .graderingIForeldrepengerListe(inntekt.getArbeidsforhold().getGraderingIForeldrepengerListe())
                 .utsettelseAvForeldrepengerListe(inntekt.getArbeidsforhold().getUtsettelseAvForeldrepengerListe().stream().map(
                         m -> RsUtsettelseAvForeldrepenger.builder()
-                                .aarsakTilUtsettelse(m.getAarsakTilUtsettelse().getValue())
+                                .aarsakTilUtsettelse(getValueFromEnumIfSet(m.getAarsakTilUtsettelse()))
                                 .periode(m.getPeriode()).build()).collect(Collectors.toList()))
                 .build());
 
         return tmp.build();
+    }
+
+    private static String getValueFromEnumIfSet(AltinnEnum altinnEnum) {
+        return Objects.isNull(altinnEnum) ? null : altinnEnum.getValue();
     }
 
     private RsKontaktinformasjon hentKontaktinformasjon(String virksomhetsnummer, String miljoe) {

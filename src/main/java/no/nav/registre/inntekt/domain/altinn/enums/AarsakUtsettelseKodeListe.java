@@ -1,6 +1,6 @@
 package no.nav.registre.inntekt.domain.altinn.enums;
 
-public enum AarsakUtsettelseKodeListe {
+public enum AarsakUtsettelseKodeListe implements AltinnEnum {
     ARBEID("Arbeid"),
     LOVBESTEMT_FERIE("LovbestemtFerie");
 
