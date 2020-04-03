@@ -3,6 +3,8 @@ package no.nav.dolly.domain.resultset.inntektsmeldingstub;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsInntektsmelding {
 
     private List<Inntektsmelding> inntekter;
@@ -21,6 +24,7 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class JoarkMetadata {
 
         private String avsenderMottakerIdType;
@@ -42,9 +46,9 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Inntektsmelding {
 
-        private AarsakTilInnsendingType aarsakTilInnsending;
         private RsArbeidsforhold arbeidsforhold;
         private RsArbeidsgiver arbeidsgiver;
         private RsAvsendersystem avsendersystem;
@@ -63,6 +67,7 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsSykepengerIArbeidsgiverperioden {
 
         private List<RsPeriode> arbeidsgiverperiodeListe;
@@ -74,6 +79,7 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsRefusjon {
 
         private List<RsEndringIRefusjon> endringIRefusjonListe;
@@ -85,6 +91,7 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsEndringIRefusjon {
 
         private LocalDateTime endringsdato;
@@ -95,6 +102,7 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsNaturalYtelseDetaljer {
 
         private Double beloepPrMnd;
@@ -106,6 +114,7 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsOmsorgspenger {
 
         private List<RsDelvisFravaer> delvisFravaersListe;
@@ -117,6 +126,7 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsDelvisFravaer {
 
         private LocalDateTime dato;
@@ -127,6 +137,7 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsAvsendersystem {
 
         private LocalDateTime innsendingstidspunkt;
@@ -138,16 +149,19 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsArbeidsgiver {
 
         private RsKontaktinformasjon kontaktinformasjon;
         private String virksomhetsnummer;
+        private String orgnummer;
     }
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsKontaktinformasjon {
 
         private String kontaktinformasjonNavn;
@@ -158,6 +172,7 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsArbeidsforhold {
 
         private String arbeidsforholdId;
@@ -172,6 +187,7 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsUtsettelseAvForeldrepenger {
 
         private AarsakTilUtsettelseType aarsakTilUtsettelse;
@@ -182,6 +198,7 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsGraderingIForeldrepenger {
         private Integer arbeidstidprosent;
         private RsPeriode periode;
@@ -191,6 +208,7 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsAltinnInntekt {
 
         private AarsakVedEndringType aarsakVedEndring;
@@ -201,6 +219,7 @@ public class RsInntektsmelding {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsPeriode {
 
         private LocalDateTime fom;

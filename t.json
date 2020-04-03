@@ -1,0 +1,27 @@
+{
+  "antall": 1,
+  "environments": [
+    "q2"
+  ],
+  "inntektsmelding": {
+    "inntekter": [
+      {
+        "aarsakTilInnsending": "NY",
+        "arbeidsforhold": {
+          "beregnetInntekt": {
+            "beloep": 225000
+          }
+        },
+        "arbeidsgiver": {
+          "virksomhetsnummer": "928497704",
+          "orgnummer": "824771332"
+        },
+        "avsendersystem": {
+          "innsendingstidspunkt": "2020-04-03T10:17:24.741Z"
+        },
+        "naerRelasjon": false,
+        "ytelse": "SYKEPENGER"
+      }
+    ]
+  }
+}

@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.inntektsmelding.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -136,7 +137,7 @@ public class InntektsmeldingRequest {
     @AllArgsConstructor
     public static class Avsendersystem {
 
-        private LocalDate innsendingstidspunkt;
+        private LocalDateTime innsendingstidspunkt;
         private String systemnavn;
         private String systemversjon;
     }
