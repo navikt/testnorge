@@ -1,13 +1,7 @@
 package no.nav.registre.inntektsmeldingstub.provider;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
-import no.nav.registre.inntektsmeldingstub.provider.validation.InntektsmeldingRequestValidator;
-import no.nav.registre.inntektsmeldingstub.service.DBToRestMapper;
-
-import no.nav.registre.inntektsmeldingstub.service.rs.response.RsXml201812Response;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLInntektsmeldingM;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +12,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.StringWriter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import no.nav.registre.inntektsmeldingstub.MeldingsType;
+import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
+import no.nav.registre.inntektsmeldingstub.provider.validation.InntektsmeldingRequestValidator;
+import no.nav.registre.inntektsmeldingstub.provider.validation.ValidationException;
+import no.nav.registre.inntektsmeldingstub.service.DBToRestMapper;
 import no.nav.registre.inntektsmeldingstub.service.InntektsmeldingService;
+import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
 import no.nav.registre.inntektsmeldingstub.util.XmlInntektsmelding201809;
 import no.nav.registre.inntektsmeldingstub.util.XmlInntektsmelding201812;
-import no.nav.registre.inntektsmeldingstub.provider.validation.ValidationException;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/v1/inntektsmelding")
@@ -98,10 +98,11 @@ public class InntektsmeldingController {
     }
 
     @PostMapping(value = "/map/2018/12", consumes = "application/json", produces = "application/xml")
-    public no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM mapInntektsmelding201812(
+    public String mapInntektsmelding201812(
             @RequestBody RsInntektsmelding melding
     ) {
-        return XmlInntektsmelding201812.createInntektsmelding(melding);
+
+        return jaxbObjectToXML(XmlInntektsmelding201812.createInntektsmelding(melding));
     }
 
     @PostMapping(value = "/map/2018/09", consumes = "application/json", produces = "application/xml")
@@ -110,4 +111,33 @@ public class InntektsmeldingController {
     ) {
         return XmlInntektsmelding201809.createInntektsmelding(melding);
     }
+
+
+    private static String jaxbObjectToXML(Medling inntektsmelding) {
+        try {
+            //Create JAXB Context
+            JAXBContext jaxbContext = JAXBContext.newInstance(Medling.class);
+
+            //Create Marshaller
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+
+            //Required formatting??
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+            //Print XML String to Console
+            StringWriter sw = new StringWriter();
+
+            //Write XML to StringWriter
+            jaxbMarshaller.marshal(inntektsmelding, sw);
+
+            //Verify XML Content
+            String xmlContent = sw.toString();
+            System.out.println(xmlContent);
+            return xmlContent;
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
 }

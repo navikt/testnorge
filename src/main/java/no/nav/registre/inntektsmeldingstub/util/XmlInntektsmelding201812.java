@@ -1,5 +1,6 @@
 package no.nav.registre.inntektsmeldingstub.util;
 
+import no.nav.registre.inntektsmeldingstub.provider.Medling;
 import no.nav.registre.inntektsmeldingstub.service.rs.RsArbeidsforhold;
 import no.nav.registre.inntektsmeldingstub.service.rs.RsArbeidsgiver;
 import no.nav.registre.inntektsmeldingstub.service.rs.RsArbeidsgiverPrivat;
@@ -59,8 +60,8 @@ public class XmlInntektsmelding201812 {
 
     private static final String NAMESPACE_URI = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211";
 
-    public static XMLInntektsmeldingM createInntektsmelding(RsInntektsmelding melding) {
-        return new XMLInntektsmeldingM(new XMLSkjemainnhold(
+    public static Medling createInntektsmelding(RsInntektsmelding melding) {
+        return new Medling(new XMLSkjemainnhold(
                 melding.getYtelse(),
                 melding.getAarsakTilInnsending(),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsgiver"),
