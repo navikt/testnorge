@@ -1,10 +1,11 @@
-package no.nav.registre.inntekt.domain.dokmot;
+package no.nav.registre.inntekt.consumer.rs.dokmot.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -12,7 +13,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class JoarkResponse {
+@ToString
+public class DokmotResponse {
     @JsonProperty
     private List<DokumentInfo> dokumenter;
     @JsonProperty

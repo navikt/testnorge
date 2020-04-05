@@ -1,16 +1,12 @@
-package no.nav.registre.inntekt.domain.dokmot;
+package no.nav.registre.inntekt.consumer.rs.dokmot.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
-@Getter
-@Setter
+@Value
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class Dokumentvariant {
     @JsonProperty
@@ -18,5 +14,5 @@ public class Dokumentvariant {
     @JsonProperty
     private String variantformat;
     @JsonProperty
-    private Object fysiskDokument;
+    private byte[] fysiskDokument;
 }

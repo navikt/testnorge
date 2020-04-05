@@ -1,11 +1,19 @@
 package no.nav.registre.inntekt.service;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import no.nav.registre.inntekt.consumer.rs.AltinnInntektConsumer;
-import no.nav.registre.inntekt.consumer.rs.DokmotConsumer;
+import no.nav.registre.inntekt.consumer.rs.dokmot.DokmotConsumer;
 import no.nav.registre.inntekt.domain.altinn.RsAltinnInntektInfo;
 import no.nav.registre.inntekt.domain.altinn.enums.AltinnEnum;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsforhold;
@@ -16,48 +24,24 @@ import no.nav.registre.inntekt.domain.altinn.rs.RsInntektsmelding;
 import no.nav.registre.inntekt.domain.altinn.rs.RsKontaktinformasjon;
 import no.nav.registre.inntekt.domain.altinn.rs.RsNaturalytelseDetaljer;
 import no.nav.registre.inntekt.domain.altinn.rs.RsUtsettelseAvForeldrepenger;
-import no.nav.registre.inntekt.domain.dokmot.AvsenderMottaker;
-import no.nav.registre.inntekt.domain.dokmot.Bruker;
-import no.nav.registre.inntekt.domain.dokmot.Dokument;
-import no.nav.registre.inntekt.domain.dokmot.Dokumentvariant;
-import no.nav.registre.inntekt.domain.dokmot.rs.RsJoarkMetadata;
+import no.nav.registre.inntekt.domain.dokmot.InntektDokument;
+import no.nav.registre.inntekt.domain.dokmot.RsJoarkMetadata;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
-import no.nav.registre.inntekt.provider.rs.requests.DokmotRequest;
 import no.nav.registre.inntekt.utils.FilVerktoey;
 import no.nav.registre.inntekt.utils.ValidationException;
-
 import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
 import no.nav.tjenester.aordningen.arbeidsforhold.v1.Organisasjon;
 import no.nav.tjenester.aordningen.arbeidsforhold.v1.Person;
-import org.springframework.stereotype.Service;
-
-import java.io.File;
-import java.io.IOException;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class AltinnInntektService {
 
-    private final AaregService aaregService;
-    private final AltinnInntektConsumer altinnInntektConsumer;
-    private final DokmotConsumer dokmotConsumer;
-
-    private static final String EIER = "ORKESTRATOREN";
     private static final String TYPE_ORGANISASJON = "Organisasjon";
     private static final String TYPE_PERSON = "Person";
-    // TODO: Add enums to Arbeidsforhold-fields
-
     private static final String DUMMY_PDF_FILEPATH = "dummy.pdf";
     private static final File dummyPdf;
+
     static {
         try {
             dummyPdf = FilVerktoey.lastRessurs(DUMMY_PDF_FILEPATH);
@@ -65,6 +49,11 @@ public class AltinnInntektService {
             throw new RuntimeException("Kunne ikke initialisere klassen pga IOException ved lasting av " + DUMMY_PDF_FILEPATH, e);
         }
     }
+    // TODO: Add enums to Arbeidsforhold-fields
+
+    private final AaregService aaregService;
+    private final AltinnInntektConsumer altinnInntektConsumer;
+    private final DokmotConsumer dokmotConsumer;
 
     public AltinnInntektService(
             AaregService aaregService,
@@ -76,10 +65,17 @@ public class AltinnInntektService {
         this.dokmotConsumer = dokmotConsumer;
     }
 
+    private static String getValueFromEnumIfSet(AltinnEnum altinnEnum) {
+        return Objects.isNull(altinnEnum) ? null : altinnEnum.getValue();
+    }
+
     public List<String> lagAltinnMeldinger(AltinnDollyRequest dollyRequest) throws ValidationException {
         var miljoe = dollyRequest.getMiljoe();
         var ident = dollyRequest.getArbeidstakerFnr();
         var inntekterAaOpprette = dollyRequest.getInntekter();
+        RsJoarkMetadata metadata = dollyRequest.getJoarkMetadata() != null
+                ? dollyRequest.getJoarkMetadata()
+                : new RsJoarkMetadata();
 
         var arbeidsforholdListe = aaregService.hentArbeidsforhold(ident, miljoe);
         if (arbeidsforholdListe == null || arbeidsforholdListe.isEmpty()) {
@@ -88,22 +84,39 @@ public class AltinnInntektService {
 
         // TODO: Refaktorering -- dersom én av virksomhetsnumrene feiler, kutter alle. Beholder for MVP
         var altinnInntektMeldinger = new ArrayList<String>(inntekterAaOpprette.size());
-        for (var inntekt : inntekterAaOpprette) {
+
+
+        ArrayList<InntektDokument> inntektDokuments = new ArrayList<>();
+
+        inntekterAaOpprette.forEach(inntekt -> {
             var virksomhetsnummer = inntekt.getArbeidsgiver().getVirksomhetsnummer();
             var kontaktinformasjon = hentKontaktinformasjon(virksomhetsnummer, miljoe);
-            var nyesteArbeidsforhold = AaregService.finnNyesteArbeidsforholdIOrganisasjon(ident, virksomhetsnummer, arbeidsforholdListe);
+            Arbeidsforhold nyesteArbeidsforhold = null;
 
-            if (Objects.isNull(nyesteArbeidsforhold)) {
-                continue;
+            try {
+                nyesteArbeidsforhold = AaregService.finnNyesteArbeidsforholdIOrganisasjon(ident, virksomhetsnummer, arbeidsforholdListe);
+            } catch (ValidationException e) {
+                log.warn("Fant ikke nyeste arbeidsforhold for {}", virksomhetsnummer);
+                return;
             }
 
-            var altinnInntektRequest = lagAltinnInntektRequest(inntekt, nyesteArbeidsforhold, kontaktinformasjon, ident);
-            var altinnInntektResponse = altinnInntektConsumer.getInntektsmeldingXml201812(altinnInntektRequest);
+            var request = lagAltinnInntektRequest(inntekt, nyesteArbeidsforhold, kontaktinformasjon, ident);
+            var response = altinnInntektConsumer.getInntektsmeldingXml201812(request);
+            altinnInntektMeldinger.add(response);
+            inntektDokuments.add(
+                    InntektDokument
+                            .builder()
+                            .arbeidstakerFnr(dollyRequest.getArbeidstakerFnr())
+                            .metadata(metadata)
+                            .datoMottatt(Date.from(inntekt.getAvsendersystem().getInnsendingstidspunkt().atZone(ZoneId.systemDefault()).toInstant()))
+                            .virksomhetsnavn(inntekt.getArbeidsgiver().getKontaktinformasjon().getKontaktinformasjonNavn())
+                            .virksomhetsnummer(inntekt.getArbeidsgiver().getVirksomhetsnummer())
+                            .xml(response)
+                            .build()
+            );
+        });
 
-            altinnInntektMeldinger.add(altinnInntektResponse);
-
-            lagreMeldingIJoark(altinnInntektResponse, inntekt, dollyRequest);
-        }
+        dokmotConsumer.opprettJournalpost(dollyRequest.getMiljoe(), inntektDokuments);
         return altinnInntektMeldinger;
     }
 
@@ -115,9 +128,9 @@ public class AltinnInntektService {
     ) {
         String virksomhetsnummer = "";
         if (nyesteArbeidsforhold.getOpplysningspliktig().getType().equals(TYPE_ORGANISASJON)) {
-            virksomhetsnummer = ((Organisasjon)nyesteArbeidsforhold.getOpplysningspliktig()).getOrganisasjonsnummer();
+            virksomhetsnummer = ((Organisasjon) nyesteArbeidsforhold.getOpplysningspliktig()).getOrganisasjonsnummer();
         } else if (nyesteArbeidsforhold.getOpplysningspliktig().getType().equals(TYPE_PERSON)) {
-            virksomhetsnummer = ((Person)nyesteArbeidsforhold.getOpplysningspliktig()).getOffentligIdent();
+            virksomhetsnummer = ((Person) nyesteArbeidsforhold.getOpplysningspliktig()).getOffentligIdent();
         }
 
         kontaktinformasjon = Objects.isNull(inntekt.getArbeidsgiver().getKontaktinformasjon()) ? kontaktinformasjon : inntekt.getArbeidsgiver().getKontaktinformasjon();
@@ -176,53 +189,11 @@ public class AltinnInntektService {
         return tmp.build();
     }
 
-    private static String getValueFromEnumIfSet(AltinnEnum altinnEnum) {
-        return Objects.isNull(altinnEnum) ? null : altinnEnum.getValue();
-    }
-
     private RsKontaktinformasjon hentKontaktinformasjon(String virksomhetsnummer, String miljoe) {
         // TODO: hent kontaktinformasjon fra ereg
         return RsKontaktinformasjon.builder()
                 .kontaktinformasjonNavn("SJÆFEN SJØL")
                 .telefonnummer("99999999")
                 .build();
-    }
-
-    private void lagreMeldingIJoark(String xmlMelding, RsAltinnInntektInfo inntekt, AltinnDollyRequest dollyRequest) {
-        var metadata = dollyRequest.getJoarkMetadata();
-        if (Objects.isNull(metadata)) {
-            metadata = new RsJoarkMetadata();
-        }
-        var request = DokmotRequest.builder()
-                .journalposttype(metadata.getJournalpostType())
-                .avsenderMottaker(AvsenderMottaker.builder()
-                        .id(inntekt.getArbeidsgiver().getVirksomhetsnummer())
-                        .idType(metadata.getAvsenderMottakerIdType())
-                        .navn(inntekt.getArbeidsgiver().getKontaktinformasjon().getKontaktinformasjonNavn()).build())
-                .bruker(Bruker.builder()
-                        .id(dollyRequest.getArbeidstakerFnr())
-                        .idType(metadata.getBrukerIdType())
-                        .build())
-                .tema(metadata.getTema())
-                .tittel(metadata.getTittel())
-                .kanal(metadata.getKanal())
-                .eksternReferanseId(metadata.getEksternReferanseId())
-                .datoMottatt(Date.from(inntekt.getAvsendersystem().getInnsendingstidspunkt().atZone(ZoneId.systemDefault()).toInstant()))
-                .dokumenter(Collections.singletonList(Dokument.builder()
-                        .brevkode(metadata.getBrevkode())
-                        .dokumentkategori(metadata.getBrevkategori())
-                        .tittel(metadata.getTittel())
-                        .dokumentvarianter(Arrays.asList(
-                                Dokumentvariant.builder()
-                                        .filtype(metadata.getFiltypeOriginal())
-                                        .variantformat(metadata.getVariantformatOriginal())
-                                        .fysiskDokument(Base64.getEncoder().encode(xmlMelding.getBytes(UTF_8)))
-                                        .build(),
-                                Dokumentvariant.builder()
-                                        .filtype(metadata.getFiltypeArkiv())
-                                        .variantformat(metadata.getVariantformatArkiv())
-                                        .fysiskDokument(FilVerktoey.encodeFilTilBase64Binary(dummyPdf))
-                                        .build())).build())).build();
-        dokmotConsumer.opprettJournalpost(request, dollyRequest.getMiljoe());
     }
 }

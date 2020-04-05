@@ -1,17 +1,27 @@
 package no.nav.registre.inntekt.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Base64;
 
 @Slf4j
 @Component
 public class FilVerktoey {
+
+    private static final File dummyPdf;
+
+    static {
+        try {
+            dummyPdf = FilVerktoey.lastRessurs("dummy.pdf");
+        } catch (IOException e) {
+            throw new RuntimeException("Kunne ikke initialisere klassen pga IOException ved lasting av dummy.pdf", e);
+        }
+    }
 
     private static byte[] lastFil(File fil) throws IOException {
         try (InputStream is = new FileInputStream(fil)) {
@@ -34,6 +44,11 @@ public class FilVerktoey {
         }
     }
 
+
+    public static byte[] encodeFilTilBase64BinaryWithDummy() {
+        return encodeFilTilBase64Binary(dummyPdf);
+    }
+
     public static File lastRessurs(String filNavn) throws IOException {
         var ressurs = Thread.currentThread().getContextClassLoader().getResource(filNavn);
         if (ressurs == null) {
@@ -45,11 +60,10 @@ public class FilVerktoey {
 
     public static byte[] encodeFilTilBase64Binary(File fil) {
         try {
-            byte[] bytes = lastFil(fil);
-            return Base64.getEncoder().encode(bytes);
+            return IOUtils.toByteArray(new FileInputStream(fil));
         } catch (IOException e) {
-            log.error("Kunne ikke laste fil.");
+            log.error("Kunne ikke laste fil.", e);
+            throw new RuntimeException(e);
         }
-        return new byte[0];
     }
 }

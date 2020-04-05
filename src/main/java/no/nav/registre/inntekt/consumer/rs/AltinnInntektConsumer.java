@@ -1,14 +1,14 @@
 package no.nav.registre.inntekt.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
-
-import no.nav.registre.inntekt.domain.altinn.rs.RsInntektsmelding;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
+
+import no.nav.registre.inntekt.domain.altinn.rs.RsInntektsmelding;
 
 
 @Slf4j
@@ -23,7 +23,7 @@ public class AltinnInntektConsumer {
 
     public AltinnInntektConsumer(@Value("${altinnInntekt.rest.api.url}") String altinnInntektUrl, RestTemplate restTemplate) {
         urlMapper201809 = new UriTemplate(altinnInntektUrl + "/v1/inntektsmelding/map/2018/09");
-        urlMapper201812 = new UriTemplate(altinnInntektUrl + "/v1/inntektsmelding/map/2018/12");
+        urlMapper201812 = new UriTemplate(altinnInntektUrl + "/v2/inntektsmelding/2018/12/11");
 
         this.restTemplate = restTemplate;
     }
@@ -35,7 +35,7 @@ public class AltinnInntektConsumer {
         try {
             return restTemplate.exchange(postRequest, String.class).getBody();
         } catch (Exception e) {
-            log.warn("Uventet feil ved mapping til AltinnInntekt.", e);
+            log.error("Uventet feil ved mapping til AltinnInntekt.", e);
         }
         return "";
     }

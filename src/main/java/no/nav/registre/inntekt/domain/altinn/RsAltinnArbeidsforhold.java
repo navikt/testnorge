@@ -7,18 +7,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-import no.nav.registre.inntekt.domain.altinn.rs.RsGraderingIForeldrepenger;
-import no.nav.registre.inntekt.domain.altinn.rs.RsPeriode;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+
+import no.nav.registre.inntekt.domain.altinn.rs.RsGraderingIForeldrepenger;
+import no.nav.registre.inntekt.domain.altinn.rs.RsPeriode;
 
 @ApiModel
 @Builder
 @Value
-@NoArgsConstructor(force = true)
 @AllArgsConstructor
+@NoArgsConstructor(force = true)
 public class RsAltinnArbeidsforhold {
+
     @JsonProperty(defaultValue = "Hentet fra Aareg")
     @ApiModelProperty(value = "Unik ID for det gjeldende arbeidsforholdet")
     private String arbeidsforholdId;
@@ -32,9 +35,9 @@ public class RsAltinnArbeidsforhold {
     @ApiModelProperty(value = "Ferieliste bestående av perioder med ferie")
     private List<RsPeriode> avtaltFerieListe;
     @JsonProperty
-    @ApiModelProperty()
-    private List<RsAltinnUtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
+    @ApiModelProperty
+    private List<RsAltinnUtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe = new ArrayList<>();
     @JsonProperty
-    @ApiModelProperty()
-    private List<RsGraderingIForeldrepenger> graderingIForeldrepengerListe;
+    @ApiModelProperty
+    private List<RsGraderingIForeldrepenger> graderingIForeldrepengerListe = new ArrayList<>();
 }

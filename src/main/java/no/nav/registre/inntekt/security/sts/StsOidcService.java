@@ -73,6 +73,6 @@ public class StsOidcService {
         }
 
         expiry.put(env, LocalDateTime.now().plusSeconds(responseEntity.get("expires_in").asLong()));
-        idToken.put(env, "Bearer " + responseEntity.get("access_token").asText());
+        idToken.put(env, responseEntity.get("access_token").asText());
     }
 }

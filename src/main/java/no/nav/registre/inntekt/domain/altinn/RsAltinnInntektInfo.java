@@ -5,19 +5,19 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import no.nav.registre.inntekt.domain.altinn.enums.AarsakInnsendingKodeListe;
 import no.nav.registre.inntekt.domain.altinn.enums.YtelseKodeListe;
-import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsforhold;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiver;
 import no.nav.registre.inntekt.domain.altinn.rs.RsAvsendersystem;
-import no.nav.registre.inntekt.domain.altinn.rs.RsNaturalytelseDetaljer;
 import no.nav.registre.inntekt.domain.altinn.rs.RsOmsorgspenger;
 import no.nav.registre.inntekt.domain.altinn.rs.RsPeriode;
 import no.nav.registre.inntekt.domain.altinn.rs.RsRefusjon;
 import no.nav.registre.inntekt.domain.altinn.rs.RsSykepengerIArbeidsgiverperioden;
-
-import java.time.LocalDate;
-import java.util.List;
 
 
 /**
@@ -62,11 +62,11 @@ public class RsAltinnInntektInfo {
     private LocalDate startdatoForeldrepengeperiode;
     @JsonProperty
     @ApiModelProperty
-    private List<RsAltinnNaturalytelseDetaljer> opphoerAvNaturalytelseListe;
+    private List<RsAltinnNaturalytelseDetaljer> opphoerAvNaturalytelseListe = new ArrayList<>();
     @JsonProperty
     @ApiModelProperty
-    private List<RsAltinnNaturalytelseDetaljer> gjenopptakelseNaturalytelseListe;
+    private List<RsAltinnNaturalytelseDetaljer> gjenopptakelseNaturalytelseListe = new ArrayList<>();
     @JsonProperty
     @ApiModelProperty
-    private List<RsPeriode> pleiepengerPerioder;
+    private List<RsPeriode> pleiepengerPerioder = new ArrayList<>();
 }
