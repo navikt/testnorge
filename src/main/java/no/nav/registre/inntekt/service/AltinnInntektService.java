@@ -39,17 +39,6 @@ public class AltinnInntektService {
 
     private static final String TYPE_ORGANISASJON = "Organisasjon";
     private static final String TYPE_PERSON = "Person";
-    private static final String DUMMY_PDF_FILEPATH = "dummy.pdf";
-    private static final File dummyPdf;
-
-    static {
-        try {
-            dummyPdf = FilVerktoey.lastRessurs(DUMMY_PDF_FILEPATH);
-        } catch (IOException e) {
-            throw new RuntimeException("Kunne ikke initialisere klassen pga IOException ved lasting av " + DUMMY_PDF_FILEPATH, e);
-        }
-    }
-    // TODO: Add enums to Arbeidsforhold-fields
 
     private final AaregService aaregService;
     private final AltinnInntektConsumer altinnInntektConsumer;
