@@ -21,7 +21,7 @@ import no.nav.registre.inntektsmeldingstub.v20181211.dto.v1.InntektsmeldingDTO;
 @RestController
 @RequestMapping("/api/v2/inntektsmelding/2018/12/11")
 @RequiredArgsConstructor
-public class InntektsmeldingV2Provider {
+public class InntektsmeldingV2Controller {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> create(@RequestBody InntektsmeldingDTO inntektsmeldingDTO) {

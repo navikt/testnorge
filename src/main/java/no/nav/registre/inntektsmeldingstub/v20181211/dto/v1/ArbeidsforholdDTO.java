@@ -24,42 +24,44 @@ public class ArbeidsforholdDTO implements ToXmlElement<XMLArbeidsforhold> {
     @JsonProperty
     private InntektDTO beregnetInntekt;
     @JsonProperty
-    private List<PeriodeDTO> avtaltFerieListe = new ArrayList<>();
+    private List<PeriodeDTO> avtaltFerieListe;
     @JsonProperty
-    private List<UtsettelseAvForeldrepengerDTO> utsettelseAvForeldrepengerListe = new ArrayList<>();
+    private List<UtsettelseAvForeldrepengerDTO> utsettelseAvForeldrepengerListe;
     @JsonProperty
-    private List<GraderingIForeldrepengerDTO> graderingIForeldrepengerListe = new ArrayList<>();
+    private List<GraderingIForeldrepengerDTO> graderingIForeldrepengerListe;
 
     @Override
     public XMLArbeidsforhold toXmlElement() {
         ObjectFactory factory = new ObjectFactory();
-
-        XMLUtsettelseAvForeldrepengerListe xmlUtsettelseAvForeldrepengerListe = factory.createXMLUtsettelseAvForeldrepengerListe();
-        xmlUtsettelseAvForeldrepengerListe.withUtsettelseAvForeldrepenger(
-                UtsettelseAvForeldrepengerDTO.convert(utsettelseAvForeldrepengerListe)
-        );
-
-        XMLGraderingIForeldrepengerListe xmlGraderingIForeldrepengerListe = factory.createXMLGraderingIForeldrepengerListe();
-        xmlGraderingIForeldrepengerListe.withGraderingIForeldrepenger(
-                GraderingIForeldrepengerDTO.convert(graderingIForeldrepengerListe)
-        );
-
-        XMLAvtaltFerieListe xmlAvtaltFerieListe = factory.createXMLAvtaltFerieListe();
-        xmlAvtaltFerieListe.withAvtaltFerie(PeriodeDTO.convert(avtaltFerieListe));
-
         XMLArbeidsforhold xmlArbeidsforhold = factory.createXMLArbeidsforhold();
+
+       if(utsettelseAvForeldrepengerListe != null){
+           XMLUtsettelseAvForeldrepengerListe xmlUtsettelseAvForeldrepengerListe = factory.createXMLUtsettelseAvForeldrepengerListe();
+           xmlUtsettelseAvForeldrepengerListe.withUtsettelseAvForeldrepenger(UtsettelseAvForeldrepengerDTO.convert(utsettelseAvForeldrepengerListe));
+           xmlArbeidsforhold.setUtsettelseAvForeldrepengerListe(
+                   factory.createXMLArbeidsforholdUtsettelseAvForeldrepengerListe(xmlUtsettelseAvForeldrepengerListe)
+           );
+       }
+
+       if(graderingIForeldrepengerListe != null){
+           XMLGraderingIForeldrepengerListe xmlGraderingIForeldrepengerListe = factory.createXMLGraderingIForeldrepengerListe();
+           xmlGraderingIForeldrepengerListe.withGraderingIForeldrepenger(GraderingIForeldrepengerDTO.convert(graderingIForeldrepengerListe));
+           xmlArbeidsforhold.setGraderingIForeldrepengerListe(
+                   factory.createXMLArbeidsforholdGraderingIForeldrepengerListe(xmlGraderingIForeldrepengerListe)
+           );
+       }
+
+       if(avtaltFerieListe != null){
+           XMLAvtaltFerieListe xmlAvtaltFerieListe = factory.createXMLAvtaltFerieListe();
+           xmlAvtaltFerieListe.withAvtaltFerie(PeriodeDTO.convert(avtaltFerieListe));
+           xmlArbeidsforhold.setAvtaltFerieListe(factory.createXMLArbeidsforholdAvtaltFerieListe(xmlAvtaltFerieListe));
+       }
+
         if (beregnetInntekt != null) {
             xmlArbeidsforhold.setBeregnetInntekt(factory.createXMLArbeidsforholdBeregnetInntekt(beregnetInntekt.toXmlElement()));
         }
         xmlArbeidsforhold.setArbeidsforholdId(factory.createXMLArbeidsforholdArbeidsforholdId(arbeidsforholdId));
         xmlArbeidsforhold.setFoersteFravaersdag(factory.createXMLDelvisFravaerDato(foersteFravaersdag));
-        xmlArbeidsforhold.setAvtaltFerieListe(factory.createXMLArbeidsforholdAvtaltFerieListe(xmlAvtaltFerieListe));
-        xmlArbeidsforhold.setGraderingIForeldrepengerListe(
-                factory.createXMLArbeidsforholdGraderingIForeldrepengerListe(xmlGraderingIForeldrepengerListe)
-        );
-        xmlArbeidsforhold.setUtsettelseAvForeldrepengerListe(
-                factory.createXMLArbeidsforholdUtsettelseAvForeldrepengerListe(xmlUtsettelseAvForeldrepengerListe)
-        );
 
         return xmlArbeidsforhold;
     }

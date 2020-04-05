@@ -5,13 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLEndringIRefusjonsListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLRefusjon;
 
-import javax.xml.bind.JAXBElement;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Value
@@ -23,25 +20,27 @@ public class RefusjonDTO implements ToXmlElement<XMLRefusjon> {
     @JsonProperty
     private LocalDate refusjonsopphoersdato;
     @JsonProperty
-    private List<EndringIRefusjonDTO> endringIRefusjonListe = new ArrayList<>();
+    private List<EndringIRefusjonDTO> endringIRefusjonListe;
 
 
     @Override
     public XMLRefusjon toXmlElement() {
         ObjectFactory factory = new ObjectFactory();
-
-        XMLEndringIRefusjonsListe xmlEndringIRefusjonsListe = factory.createXMLEndringIRefusjonsListe();
-        xmlEndringIRefusjonsListe.withEndringIRefusjon(EndringIRefusjonDTO.convert(endringIRefusjonListe));
-
-
         XMLRefusjon xmlRefusjon = factory.createXMLRefusjon();
+
+        if (endringIRefusjonListe != null) {
+            XMLEndringIRefusjonsListe xmlEndringIRefusjonsListe = factory.createXMLEndringIRefusjonsListe();
+            xmlEndringIRefusjonsListe.withEndringIRefusjon(EndringIRefusjonDTO.convert(endringIRefusjonListe));
+            xmlRefusjon.withEndringIRefusjonListe(factory.createXMLRefusjonEndringIRefusjonListe(
+                    xmlEndringIRefusjonsListe
+            ));
+        }
+
         xmlRefusjon.setRefusjonsbeloepPrMnd(factory.createXMLRefusjonRefusjonsbeloepPrMnd(
                 refusjonsbeloepPrMnd != null ? BigDecimal.valueOf(refusjonsbeloepPrMnd) : null
         ));
         xmlRefusjon.setRefusjonsopphoersdato(factory.createXMLRefusjonRefusjonsopphoersdato(refusjonsopphoersdato));
-        xmlRefusjon.withEndringIRefusjonListe(factory.createXMLRefusjonEndringIRefusjonListe(
-                xmlEndringIRefusjonsListe
-        ));
+
 
         return xmlRefusjon;
     }

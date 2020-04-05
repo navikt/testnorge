@@ -8,14 +8,13 @@ import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLArbeidsgiverperiodeListe;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLSykepengerIArbeidsgiverperioden;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Value
 @NoArgsConstructor(force = true)
 public class SykepengerIArbeidsgiverperiodenDTO implements ToXmlElement<XMLSykepengerIArbeidsgiverperioden> {
     @JsonProperty
-    private List<PeriodeDTO> arbeidsgiverperiodeListe = new ArrayList<>();
+    private List<PeriodeDTO> arbeidsgiverperiodeListe;
     @JsonProperty
     private Double bruttoUtbetalt;
     @JsonProperty
@@ -25,13 +24,17 @@ public class SykepengerIArbeidsgiverperiodenDTO implements ToXmlElement<XMLSykep
     public XMLSykepengerIArbeidsgiverperioden toXmlElement() {
         ObjectFactory factory = new ObjectFactory();
 
-        XMLArbeidsgiverperiodeListe xmlArbeidsgiverperiodeListe = factory.createXMLArbeidsgiverperiodeListe();
-        xmlArbeidsgiverperiodeListe.withArbeidsgiverperiode(PeriodeDTO.convert(arbeidsgiverperiodeListe));
-
         XMLSykepengerIArbeidsgiverperioden xmlSykepengerIArbeidsgiverperioden = factory.createXMLSykepengerIArbeidsgiverperioden();
-        xmlSykepengerIArbeidsgiverperioden.setArbeidsgiverperiodeListe(
-                factory.createXMLSykepengerIArbeidsgiverperiodenArbeidsgiverperiodeListe(xmlArbeidsgiverperiodeListe)
-        );
+
+        if (arbeidsgiverperiodeListe != null) {
+            XMLArbeidsgiverperiodeListe xmlArbeidsgiverperiodeListe = factory.createXMLArbeidsgiverperiodeListe();
+            xmlArbeidsgiverperiodeListe.withArbeidsgiverperiode(PeriodeDTO.convert(arbeidsgiverperiodeListe));
+            xmlSykepengerIArbeidsgiverperioden.setArbeidsgiverperiodeListe(
+                    factory.createXMLSykepengerIArbeidsgiverperiodenArbeidsgiverperiodeListe(xmlArbeidsgiverperiodeListe)
+            );
+        }
+
+
         xmlSykepengerIArbeidsgiverperioden.setBruttoUtbetalt(factory.createXMLSykepengerIArbeidsgiverperiodenBruttoUtbetalt(
                 bruttoUtbetalt != null ? BigDecimal.valueOf(bruttoUtbetalt) : null
         ));
