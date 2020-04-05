@@ -2,11 +2,11 @@ package no.nav.registre.inntektsmeldingstub.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -18,11 +18,10 @@ import no.nav.registre.inntektsmeldingstub.MeldingsType;
 import no.nav.registre.inntektsmeldingstub.database.model.Arbeidsgiver;
 import no.nav.registre.inntektsmeldingstub.database.model.Eier;
 import no.nav.registre.inntektsmeldingstub.database.model.Inntektsmelding;
-import no.nav.registre.inntektsmeldingstub.database.repository.InntektsmeldingRepository;
 import no.nav.registre.inntektsmeldingstub.database.repository.ArbeidsgiverRepository;
 import no.nav.registre.inntektsmeldingstub.database.repository.EierRepository;
-
-import javax.transaction.Transactional;
+import no.nav.registre.inntektsmeldingstub.database.repository.InntektsmeldingRepository;
+import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
 
 @Slf4j
 @Service
@@ -41,7 +40,7 @@ public class InntektsmeldingService {
             return Collections.emptyList();
         }
 
-        switch(type) {
+        switch (type) {
             case TYPE_2018_12:
                 return lagreInntektsmelding(inntektsmeldinger, eier, RestToDBMapper::map201812melding);
             case TYPE_2018_09:
