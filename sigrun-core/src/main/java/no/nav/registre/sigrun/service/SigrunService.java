@@ -143,15 +143,15 @@ public class SigrunService {
         return sletteGrunnlagResponse;
     }
 
-    private List<PoppSyntetisererenResponse> finnSyntetiserteMeldinger(List<String> fnrs) {
-        return poppSyntRestConsumer.hentPoppMeldingerFromSyntRest(fnrs);
-    }
-
-    private List<String> finnEksisterendeIdenter(
+    public List<String> finnEksisterendeIdenter(
             String miljoe,
             String testdataEier
     ) {
         return sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe, testdataEier);
+    }
+
+    private List<PoppSyntetisererenResponse> finnSyntetiserteMeldinger(List<String> fnrs) {
+        return poppSyntRestConsumer.hentPoppMeldingerFromSyntRest(fnrs);
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "hodejegeren" })

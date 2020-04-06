@@ -2,6 +2,7 @@ package no.nav.registre.sigrun.provider.rs;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,14 @@ public class IdentController {
 
     @Autowired
     private SigrunService sigrunService;
+
+    @GetMapping
+    public List<String> hentEksisterendeIdenter(
+            @RequestParam String miljoe,
+            @RequestParam String testdataEier
+    ) {
+        return sigrunService.finnEksisterendeIdenter(miljoe, testdataEier);
+    }
 
     @DeleteMapping
     public SletteGrunnlagResponse slettIdenterFraSigrun(
