@@ -1,5 +1,7 @@
 package no.nav.dolly.bestilling.inntektsmelding.mapper;
 
+import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
+
 import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
@@ -21,7 +23,8 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsInntektsmelding.Inntektsmelding rsInntektsmelding,
                             InntektsmeldingRequest.Inntektsmelding inntektsmelding, MappingContext context) {
 
-                        inntektsmelding.setAarsakTilInnsending(AarsakTilInnsendingType.NY);
+                        inntektsmelding.setAarsakTilInnsending(
+                                nullcheckSetDefaultValue(rsInntektsmelding.getAarsakTilInnsending(), AarsakTilInnsendingType.NY));
                     }
                 })
                 .byDefault()

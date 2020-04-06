@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 
+import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakTilInnsendingType;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakTilUtsettelseType;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakVedEndringType;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.BegrunnelseForReduksjonEllerIkkeUtbetaltType;
@@ -17,6 +18,7 @@ public class InntektsmeldingEnumService {
 
     public enum EnumTypes {
 
+        AARSAK_TIL_INNSENDING_TYPE,
         AARSAK_TIL_UTSETTELSE_TYPE,
         AARSAK_VED_ENDRING_TYPE,
         BEGRUNNELSE_TYPE,
@@ -27,6 +29,9 @@ public class InntektsmeldingEnumService {
     public List<String> getEnumType(EnumTypes enumType) {
 
         switch (enumType) {
+
+        case AARSAK_TIL_INNSENDING_TYPE:
+            return Stream.of(AarsakTilInnsendingType.values()).map(Enum::name).collect(Collectors.toList());
 
         case AARSAK_TIL_UTSETTELSE_TYPE:
             return Stream.of(AarsakTilUtsettelseType.values()).map(Enum::name).collect(Collectors.toList());

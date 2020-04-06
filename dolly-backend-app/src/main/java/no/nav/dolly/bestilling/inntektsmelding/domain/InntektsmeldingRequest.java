@@ -58,7 +58,7 @@ public class InntektsmeldingRequest {
         private Avsendersystem avsendersystem;
         private List<NaturalYtelseDetaljer> gjenopptakelseNaturalytelseListe;
         private Boolean naerRelasjon;
-        private List<Omsorgspenger> omsorgspenger;
+        private Omsorgspenger omsorgspenger;
         private List<NaturalYtelseDetaljer> opphoerAvNaturalytelseListe;
         private List<Periode> pleiepengerPerioder;
         private Refusjon refusjon;

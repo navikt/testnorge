@@ -49,12 +49,13 @@ public class RsInntektsmelding {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Inntektsmelding {
 
+        private AarsakTilInnsendingType aarsakTilInnsending;
         private RsArbeidsforhold arbeidsforhold;
         private RsArbeidsgiver arbeidsgiver;
         private RsAvsendersystem avsendersystem;
         private List<RsNaturalYtelseDetaljer> gjenopptakelseNaturalytelseListe;
         private Boolean naerRelasjon;
-        private List<RsOmsorgspenger> omsorgspenger;
+        private RsOmsorgspenger omsorgspenger;
         private List<RsNaturalYtelseDetaljer> opphoerAvNaturalytelseListe;
         private List<RsPeriode> pleiepengerPerioder;
         private RsRefusjon refusjon;
