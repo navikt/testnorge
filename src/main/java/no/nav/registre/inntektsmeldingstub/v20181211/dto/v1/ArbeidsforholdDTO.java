@@ -11,7 +11,6 @@ import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLGraderingIForeldrepengerL
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLUtsettelseAvForeldrepengerListe;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Value
@@ -61,7 +60,7 @@ public class ArbeidsforholdDTO implements ToXmlElement<XMLArbeidsforhold> {
             xmlArbeidsforhold.setBeregnetInntekt(factory.createXMLArbeidsforholdBeregnetInntekt(beregnetInntekt.toXmlElement()));
         }
         xmlArbeidsforhold.setArbeidsforholdId(factory.createXMLArbeidsforholdArbeidsforholdId(arbeidsforholdId));
-        xmlArbeidsforhold.setFoersteFravaersdag(factory.createXMLDelvisFravaerDato(foersteFravaersdag));
+        xmlArbeidsforhold.setFoersteFravaersdag(factory.createXMLArbeidsforholdFoersteFravaersdag(foersteFravaersdag));
 
         return xmlArbeidsforhold;
     }
