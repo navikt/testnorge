@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 @Slf4j
@@ -38,6 +39,16 @@ public class FilVerktoey {
             log.error("Feil ved innlasting av {}", DUMMY_PDF_FILE_NAME, e);
             //throw new RuntimeException("Kunne ikke initialisere klassen pga IOException ved lasting av dummy.pdf", e);
         }
+
+
+        try {
+            InputStream resourceAsStream = FilVerktoey.class.getClassLoader().getResourceAsStream("static/" + DUMMY_PDF_FILE_NAME);
+            byte[] bytes = IOUtils.toByteArray(resourceAsStream);
+            log.info("Fikk lasted fil fra resources! (length: {})", bytes.length);
+        } catch (Exception e){
+            log.error("error", e);
+        }
+
     }
 
     public static byte[] encodeFilTilBase64BinaryWithDummy() {

@@ -52,13 +52,9 @@ public class DokmotConsumer {
 
 
         try {
-            Resource resource = this.resourceLoader.getResource("classpath:static/dummy.pdf");
+            Resource resource = this.resourceLoader.getResource("static/dummy.pdf");
             this.arkiv = IOUtils.toByteArray(resource.getInputStream());
             log.info("Fikk lasted fil fra resources! (length: {})", this.arkiv.length);
-
-            Resource resource22 = this.resourceLoader.getResource("classpath:**/dummy.pdf");
-            log.info("{} eksisterer", resource22.exists());
-
         } catch (Exception e) {
             log.error("Feil ved lasting av arkiv", e);
             this.arkiv = null;
