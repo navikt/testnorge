@@ -23,7 +23,7 @@ public class FileLoader {
     public byte[] getDummyPDF() {
         if (dummyPDF == null) {
             try {
-                InputStream input = LoadResource(DUMMY_PDF_FILE_PATH);
+                InputStream input = loadResource(DUMMY_PDF_FILE_PATH);
                 dummyPDF = IOUtils.toByteArray(input);
                 input.close();
                 log.info("{} lasted inn med byte lengde {}.", DUMMY_PDF_FILE_PATH, dummyPDF.length);
@@ -35,7 +35,7 @@ public class FileLoader {
         return dummyPDF;
     }
 
-    private InputStream LoadResource(String path) {
+    private InputStream loadResource(String path) {
         return FileLoader.class.getClassLoader().getResourceAsStream(path);
     }
 }
