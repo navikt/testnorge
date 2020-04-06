@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
+import no.nav.registre.sigrun.provider.rs.requests.SyntetiserSigrunRequest;
 import no.nav.registre.sigrun.service.SigrunService;
 
 @RestController
@@ -23,9 +23,9 @@ public class SyntetiseringController {
     @PostMapping(value = "/generer")
     public ResponseEntity startSyntetisering(
             @RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,
-            @RequestBody SyntetiserPoppRequest syntetiserPoppRequest
+            @RequestBody SyntetiserSigrunRequest syntetiserSigrunRequest
     ) {
-        var identer = sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest, testdataEier);
-        return sigrunService.genererPoppmeldingerOgSendTilSigrunStub(identer, testdataEier, syntetiserPoppRequest.getMiljoe());
+        var identer = sigrunService.finnEksisterendeOgNyeIdenter(syntetiserSigrunRequest, testdataEier);
+        return sigrunService.genererPoppmeldingerOgSendTilSigrunStub(identer, testdataEier, syntetiserSigrunRequest.getMiljoe());
     }
 }

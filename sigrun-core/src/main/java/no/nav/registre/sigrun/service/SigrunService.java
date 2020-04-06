@@ -15,7 +15,7 @@ import no.nav.registre.sigrun.SigrunSaveInHodejegerenRequest;
 import no.nav.registre.sigrun.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
 import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
-import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
+import no.nav.registre.sigrun.provider.rs.requests.SyntetiserSigrunRequest;
 import no.nav.registre.sigrun.provider.rs.responses.SletteGrunnlagResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
@@ -38,11 +38,11 @@ public class SigrunService {
     private static final String SIGRUN_NAME = "sigrun";
 
     public List<String> finnEksisterendeOgNyeIdenter(
-            SyntetiserPoppRequest syntetiserPoppRequest,
+            SyntetiserSigrunRequest syntetiserSigrunRequest,
             String testdataEier
     ) {
-        var eksisterendeIdenter = finnEksisterendeIdenter(syntetiserPoppRequest.getMiljoe(), testdataEier);
-        var nyeIdenter = finnLevendeIdenter(syntetiserPoppRequest);
+        var eksisterendeIdenter = finnEksisterendeIdenter(syntetiserSigrunRequest.getMiljoe(), testdataEier);
+        var nyeIdenter = finnLevendeIdenter(syntetiserSigrunRequest);
         var antallIdenterAlleredeIStub = 0;
 
         for (var ident : nyeIdenter) {
@@ -155,11 +155,11 @@ public class SigrunService {
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "hodejegeren" })
-    private List<String> finnLevendeIdenter(SyntetiserPoppRequest syntetiserPoppRequest) {
+    private List<String> finnLevendeIdenter(SyntetiserSigrunRequest syntetiserSigrunRequest) {
         return hodejegerenConsumer.getLevende(
-                syntetiserPoppRequest.getAvspillergruppeId(),
-                syntetiserPoppRequest.getMiljoe(),
-                syntetiserPoppRequest.getAntallNyeIdenter(),
+                syntetiserSigrunRequest.getAvspillergruppeId(),
+                syntetiserSigrunRequest.getMiljoe(),
+                syntetiserSigrunRequest.getAntallNyeIdenter(),
                 null);
     }
 }

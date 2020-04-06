@@ -31,7 +31,7 @@ import no.nav.registre.sigrun.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
 import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
 import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
-import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
+import no.nav.registre.sigrun.provider.rs.requests.SyntetiserSigrunRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -86,7 +86,7 @@ public class SigrunServiceTest {
         var miljoe = "t1";
         var antallNyeIdenter = 2;
 
-        var syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+        var syntetiserPoppRequest = new SyntetiserSigrunRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
         when(sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe, testdataEier)).thenReturn(eksisterendeIdenter);
         when(hodejegerenConsumer.getLevende(avspillergruppeId, miljoe, antallNyeIdenter, null)).thenReturn(nyeIdenter);
