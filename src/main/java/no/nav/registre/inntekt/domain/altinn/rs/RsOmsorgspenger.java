@@ -8,7 +8,9 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @ApiModel
 @Builder
@@ -27,4 +29,11 @@ public class RsOmsorgspenger {
     @ApiModelProperty()
     private List<RsDelvisFravaer> delvisFravaersListe;
 
+    public List<RsPeriode> getFravaersPerioder() {
+        return Objects.requireNonNullElse(fravaersPerioder, Collections.emptyList());
+    }
+
+    public List<RsDelvisFravaer> getDelvisFravaersListe() {
+        return Objects.requireNonNullElse(delvisFravaersListe, Collections.emptyList());
+    }
 }

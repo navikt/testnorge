@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import no.nav.registre.inntekt.domain.altinn.rs.RsGraderingIForeldrepenger;
 import no.nav.registre.inntekt.domain.altinn.rs.RsPeriode;
@@ -36,8 +37,21 @@ public class RsAltinnArbeidsforhold {
     private List<RsPeriode> avtaltFerieListe;
     @JsonProperty
     @ApiModelProperty
-    private List<RsAltinnUtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe = new ArrayList<>();
+    private List<RsAltinnUtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
     @JsonProperty
     @ApiModelProperty
-    private List<RsGraderingIForeldrepenger> graderingIForeldrepengerListe = new ArrayList<>();
+    private List<RsGraderingIForeldrepenger> graderingIForeldrepengerListe;
+
+
+    public List<RsPeriode> getAvtaltFerieListe() {
+        return Objects.requireNonNullElse(avtaltFerieListe, Collections.emptyList());
+    }
+
+    public List<RsAltinnUtsettelseAvForeldrepenger> getUtsettelseAvForeldrepengerListe() {
+        return Objects.requireNonNullElse(utsettelseAvForeldrepengerListe, Collections.emptyList());
+    }
+
+    public List<RsGraderingIForeldrepenger> getGraderingIForeldrepengerListe() {
+        return Objects.requireNonNullElse(graderingIForeldrepengerListe, Collections.emptyList());
+    }
 }

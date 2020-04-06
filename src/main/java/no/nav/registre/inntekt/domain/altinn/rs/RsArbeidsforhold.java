@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @ApiModel
 @Builder
@@ -35,4 +37,17 @@ public class RsArbeidsforhold {
     @JsonProperty
     @ApiModelProperty()
     private List<RsGraderingIForeldrepenger> graderingIForeldrepengerListe;
+
+
+    public List<RsPeriode> getAvtaltFerieListe() {
+        return Objects.requireNonNullElse(avtaltFerieListe, Collections.emptyList());
+    }
+
+    public List<RsUtsettelseAvForeldrepenger> getUtsettelseAvForeldrepengerListe() {
+        return Objects.requireNonNullElse(utsettelseAvForeldrepengerListe, Collections.emptyList());
+    }
+
+    public List<RsGraderingIForeldrepenger> getGraderingIForeldrepengerListe() {
+        return Objects.requireNonNullElse(graderingIForeldrepengerListe, Collections.emptyList());
+    }
 }

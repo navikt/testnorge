@@ -10,12 +10,12 @@ import no.nav.registre.inntekt.domain.dokmot.ProsessertInntektDokument;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProsessertInntektDokumentDTO {
     @JsonProperty
-    private final String jornalpostId;
+    private final String journalpostId;
     @JsonProperty
     private final String xml;
 
     public ProsessertInntektDokumentDTO(ProsessertInntektDokument dokument, boolean includeXml) {
-        this.jornalpostId = dokument.getJornalpostId();
+        this.journalpostId = dokument.getJournalpostId();
         this.xml = includeXml ? dokument.getXml() : null;
     }
 }

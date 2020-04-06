@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @ApiModel
 @Builder
@@ -28,4 +30,7 @@ public class RsRefusjon {
     @ApiModelProperty()
     private List<RsEndringIRefusjon> endringIRefusjonListe;
 
+    public List<RsEndringIRefusjon> getEndringIRefusjonListe() {
+        return Objects.requireNonNullElse(endringIRefusjonListe, Collections.emptyList());
+    }
 }

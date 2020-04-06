@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import no.nav.registre.inntekt.domain.altinn.enums.AarsakInnsendingKodeListe;
 import no.nav.registre.inntekt.domain.altinn.enums.YtelseKodeListe;
@@ -62,11 +63,27 @@ public class RsAltinnInntektInfo {
     private LocalDate startdatoForeldrepengeperiode;
     @JsonProperty
     @ApiModelProperty
-    private List<RsAltinnNaturalytelseDetaljer> opphoerAvNaturalytelseListe = new ArrayList<>();
+    private List<RsAltinnNaturalytelseDetaljer> opphoerAvNaturalytelseListe;
     @JsonProperty
     @ApiModelProperty
-    private List<RsAltinnNaturalytelseDetaljer> gjenopptakelseNaturalytelseListe = new ArrayList<>();
+    private List<RsAltinnNaturalytelseDetaljer> gjenopptakelseNaturalytelseListe;
     @JsonProperty
     @ApiModelProperty
-    private List<RsPeriode> pleiepengerPerioder = new ArrayList<>();
+    private List<RsPeriode> pleiepengerPerioder;
+
+    public RsAvsendersystem getAvsendersystem() {
+        return Objects.requireNonNullElse(avsendersystem, new RsAvsendersystem());
+    }
+
+    public List<RsAltinnNaturalytelseDetaljer> getOpphoerAvNaturalytelseListe() {
+        return Objects.requireNonNullElse(opphoerAvNaturalytelseListe, Collections.emptyList());
+    }
+
+    public List<RsAltinnNaturalytelseDetaljer> getGjenopptakelseNaturalytelseListe() {
+        return Objects.requireNonNullElse(gjenopptakelseNaturalytelseListe, Collections.emptyList());
+    }
+
+    public List<RsPeriode> getPleiepengerPerioder() {
+        return Objects.requireNonNullElse(pleiepengerPerioder, Collections.emptyList());
+    }
 }

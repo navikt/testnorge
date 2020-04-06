@@ -7,12 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-import no.nav.registre.inntekt.domain.altinn.enums.AarsakInnsendingKodeListe;
-import no.nav.registre.inntekt.domain.altinn.enums.YtelseKodeListe;
 
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @ApiModel
 @Builder
@@ -72,4 +72,16 @@ public class RsInntektsmelding {
     @ApiModelProperty()
     private List<RsPeriode> pleiepengerPerioder;
 
+
+    public List<RsNaturalytelseDetaljer> getOpphoerAvNaturalytelseListe() {
+        return Objects.requireNonNullElse(opphoerAvNaturalytelseListe, Collections.emptyList());
+    }
+
+    public List<RsNaturalytelseDetaljer> getGjenopptakelseNaturalytelseListe() {
+        return Objects.requireNonNullElse(gjenopptakelseNaturalytelseListe, Collections.emptyList());
+    }
+
+    public List<RsPeriode> getPleiepengerPerioder() {
+        return Objects.requireNonNullElse(pleiepengerPerioder, Collections.emptyList());
+    }
 }
