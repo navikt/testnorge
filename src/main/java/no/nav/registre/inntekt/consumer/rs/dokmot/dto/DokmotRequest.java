@@ -42,12 +42,6 @@ public class DokmotRequest {
                 .variantformat("ORIGINAL")
                 .fysiskDokument(inntektDokument.getXml().getBytes(StandardCharsets.UTF_8))
                 .build();
-        Dokumentvariant arktiv = Dokumentvariant
-                .builder()
-                .filtype("PDF")
-                .variantformat("ARKIV")
-                .fysiskDokument(arkiv)
-                .build();
 
         this.journalposttype = inntektDokument.getMetadata().getJournalpostType();
         this.avsenderMottaker = new AvsenderMottaker(
@@ -61,6 +55,6 @@ public class DokmotRequest {
         this.kanal = inntektDokument.getMetadata().getKanal();
         this.eksternReferanseId = inntektDokument.getMetadata().getEksternReferanseId();
         this.datoMottatt = inntektDokument.getDatoMottatt();
-        this.dokumenter = Collections.singletonList(new Dokument(inntektDokument.getMetadata(), orginal, arktiv));
+        this.dokumenter = Collections.singletonList(new Dokument(inntektDokument.getMetadata(), orginal));
     }
 }
