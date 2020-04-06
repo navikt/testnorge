@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>testnorge-aareg</artifactId>
         <groupId>no.nav.registre</groupId>
-        <version>1.8.0</version>
+        <artifactId>testnorge-aareg</artifactId>
+        <version>1.8.1</version>
     </parent>
 
     <artifactId>aareg-domain</artifactId>
@@ -15,6 +15,11 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.tjenester</groupId>
+            <artifactId>aordningen-arbeidsforhold-v1</artifactId>
+            <version>1.9</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

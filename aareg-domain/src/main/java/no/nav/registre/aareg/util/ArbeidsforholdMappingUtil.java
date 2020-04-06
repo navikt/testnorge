@@ -187,7 +187,7 @@ public class ArbeidsforholdMappingUtil {
             antallTimerForTimeloennetListe.add(AntallTimerForTimeloennet.builder()
                     .periode(mapPeriode(antallTimer.get("periode")))
                     .antallTimer(findDoubleNullSafe(antallTimer, "antallTimer"))
-                    .rapporteringsperiode(findYearMonthNullSage(antallTimer, "rapporteringsperiode"))
+                    .rapporteringsperiode(findYearMonthNullSafe(antallTimer, "rapporteringsperiode"))
                     .sporingsinformasjon(mapSporingsinformasjon(antallTimer.get("sporingsinformasjon")))
                     .build());
         }
@@ -203,7 +203,7 @@ public class ArbeidsforholdMappingUtil {
             utenlandsoppholdListe.add(Utenlandsopphold.builder()
                     .periode(mapPeriode(opphold.get("periode")))
                     .landkode(findStringNullSafe(opphold, "landkode"))
-                    .rapporteringsperiode(findYearMonthNullSage(opphold, "rapporteringsperiode"))
+                    .rapporteringsperiode(findYearMonthNullSafe(opphold, "rapporteringsperiode"))
                     .sporingsinformasjon(mapSporingsinformasjon(opphold.get("sporingsinformasjon")))
                     .build());
         }
@@ -360,7 +360,7 @@ public class ArbeidsforholdMappingUtil {
         return node.get(fieldName) != null ? LocalDateTime.parse(node.get(fieldName).asText()) : null;
     }
 
-    private static YearMonth findYearMonthNullSage(
+    private static YearMonth findYearMonthNullSafe(
             JsonNode node,
             String fieldName
     ) {

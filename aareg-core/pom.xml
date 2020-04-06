@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.registre</groupId>
         <artifactId>testnorge-aareg</artifactId>
-        <version>1.8.0</version>
+        <version>1.8.1</version>
     </parent>
 
     <artifactId>aareg-core</artifactId>
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>no.nav.registre</groupId>
             <artifactId>aareg-domain</artifactId>
-            <version>1.8.0</version>
+            <version>1.8.1</version>
             <scope>compile</scope>
         </dependency>
 
@@ -112,12 +112,6 @@
             <artifactId>nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon</artifactId>
             <version>${behandle.arbeidsforhold.version}</version>
             <classifier>jaxws</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>no.nav.tjenester</groupId>
-            <artifactId>aordningen-arbeidsforhold-v1</artifactId>
-            <version>1.9</version>
         </dependency>
 
         <!-- SECURITY -->
