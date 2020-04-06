@@ -23,7 +23,9 @@ export const SelectOptionsOppslag = {
 			return response
 		}, [DollyApi.getFasteDatasettGruppe])
 		return datasettInfo
-	}
+	},
+
+	hentInntektsmeldingOptions: enumtype => Api.fetchJson(`${uri}/inntektsmelding/${enumtype}`, 'GET')
 }
 
 SelectOptionsOppslag.formatOptions = (type, data) => {

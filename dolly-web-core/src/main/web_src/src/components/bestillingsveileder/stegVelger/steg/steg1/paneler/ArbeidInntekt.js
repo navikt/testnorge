@@ -72,7 +72,11 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 				inntekter: [
 					{
 						arbeidsgiver: {
-							virksomhetsnummer: ''
+							virksomhetsnummer: '',
+							kontaktinformasjon: {
+								kontaktinformasjonNavn: 'Dolly Dollesen',
+								telefonnummer: '99999999'
+							}
 						},
 						arbeidsforhold: {
 							beregnetInntekt: {
@@ -80,10 +84,22 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 							}
 						},
 						avsendersystem: {
-							innsendingstidspunkt: new Date()
-						}
+							innsendingstidspunkt: new Date(),
+							systemnavn: 'Dollytesten',
+							systemversjon: 'v3.5'
+						},
+						refusjon: {
+							refusjonsbeloepPrMnd: '',
+							refusjonsopphoersdato: ''
+						},
+						naerRelasjon: false,
+						ytelse: ''
 					}
-				]
+				],
+				joarkMetadata: {
+					tema: '',
+					tittel: 'En hardkoda søknadstittel'
+				}
 			}),
 		remove: () => del('inntektsmelding')
 	},

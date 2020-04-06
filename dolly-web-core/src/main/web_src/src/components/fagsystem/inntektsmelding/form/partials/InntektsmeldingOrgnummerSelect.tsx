@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { get as _get } from 'lodash'
+import _get from 'lodash/get'
+import _has from 'lodash/has'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
@@ -45,7 +46,8 @@ export default ({ path, formikBag }: InntektsmeldingOrgnummerSelect) => {
 					onChange={setOrgnr}
 					value={_get(formikBag.values, `${path}.orgnummer`)}
 					feil={
-						_get(formikBag.values, `${path}.orgnummer`) === '' && {
+						_has(formikBag.touched, `${path}.virksomhetsnummer`) &&
+						_get(formikBag.values, `${path}.virksomhetsnummer`) === '' && {
 							feilmelding: 'Feltet er påkrevd'
 						}
 					}
