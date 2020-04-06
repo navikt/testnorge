@@ -35,7 +35,7 @@ public class DokmotRequest {
     private List<Dokument> dokumenter;
 
     @Builder
-    public DokmotRequest(InntektDokument inntektDokument) {
+    public DokmotRequest(InntektDokument inntektDokument, byte[] arkiv) {
         Dokumentvariant orginal = Dokumentvariant
                 .builder()
                 .filtype("XML")
@@ -46,7 +46,7 @@ public class DokmotRequest {
                 .builder()
                 .filtype("PDF")
                 .variantformat("ARKIV")
-                .fysiskDokument(FilVerktoey.encodeFilTilBase64BinaryWithDummy())
+                .fysiskDokument(arkiv)
                 .build();
 
         this.journalposttype = inntektDokument.getMetadata().getJournalpostType();

@@ -2,6 +2,8 @@ package no.nav.registre.inntekt.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -13,7 +15,8 @@ import java.net.URL;
 @Component
 public class FilVerktoey {
 
-    private static final File DUMMY_PDF;
+
+    private static File DUMMY_PDF;
     private static final String DUMMY_PDF_FILE_NAME = "dummy.pdf";
 
     static {
@@ -23,7 +26,7 @@ public class FilVerktoey {
             log.info("{} lasted inn.", DUMMY_PDF_FILE_NAME);
         } catch (IOException e) {
             log.error("Feil ved innlasting av {}", DUMMY_PDF_FILE_NAME, e);
-            throw new RuntimeException("Kunne ikke initialisere klassen pga IOException ved lasting av dummy.pdf", e);
+            //throw new RuntimeException("Kunne ikke initialisere klassen pga IOException ved lasting av dummy.pdf", e);
         }
     }
 
@@ -32,7 +35,7 @@ public class FilVerktoey {
     }
 
     public static File lastRessurs(String filNavn) throws IOException {
-        URL resource = FilVerktoey.class.getClassLoader().getResource(filNavn);
+        URL resource = FilVerktoey.class.getClassLoader().getResource("static/" + filNavn);
         if (resource == null) {
             log.error("Kunne ikke finne ressurs " + filNavn);
             throw new IOException("Resource not found exception");
