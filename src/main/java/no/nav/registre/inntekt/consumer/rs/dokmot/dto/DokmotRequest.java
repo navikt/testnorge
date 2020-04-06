@@ -1,7 +1,6 @@
 package no.nav.registre.inntekt.consumer.rs.dokmot.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
 import lombok.Value;
 
 import java.nio.charset.StandardCharsets;
@@ -10,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import no.nav.registre.inntekt.domain.dokmot.InntektDokument;
-import no.nav.registre.inntekt.utils.FilVerktoey;
+import no.nav.registre.inntekt.utils.FileLoader;
 
 @Value
 public class DokmotRequest {
@@ -34,13 +33,18 @@ public class DokmotRequest {
     @JsonProperty
     private List<Dokument> dokumenter;
 
-    @Builder
-    public DokmotRequest(InntektDokument inntektDokument, byte[] arkiv) {
+    public DokmotRequest(InntektDokument inntektDokument) {
         Dokumentvariant orginal = Dokumentvariant
                 .builder()
                 .filtype("XML")
                 .variantformat("ORIGINAL")
                 .fysiskDokument(inntektDokument.getXml().getBytes(StandardCharsets.UTF_8))
+                .build();
+        Dokumentvariant arktiv = Dokumentvariant
+                .builder()
+                .filtype("PDF")
+                .variantformat("ARKIV")
+                .fysiskDokument(FileLoader.inst().getDummyPDF())
                 .build();
 
         this.journalposttype = inntektDokument.getMetadata().getJournalpostType();
@@ -55,6 +59,6 @@ public class DokmotRequest {
         this.kanal = inntektDokument.getMetadata().getKanal();
         this.eksternReferanseId = inntektDokument.getMetadata().getEksternReferanseId();
         this.datoMottatt = inntektDokument.getDatoMottatt();
-        this.dokumenter = Collections.singletonList(new Dokument(inntektDokument.getMetadata(), orginal));
+        this.dokumenter = Collections.singletonList(new Dokument(inntektDokument.getMetadata(), orginal, arktiv));
     }
 }

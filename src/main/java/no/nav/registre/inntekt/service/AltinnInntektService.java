@@ -3,8 +3,6 @@ package no.nav.registre.inntekt.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,7 +25,6 @@ import no.nav.registre.inntekt.domain.altinn.rs.RsUtsettelseAvForeldrepenger;
 import no.nav.registre.inntekt.domain.dokmot.InntektDokument;
 import no.nav.registre.inntekt.domain.dokmot.RsJoarkMetadata;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
-import no.nav.registre.inntekt.utils.FilVerktoey;
 import no.nav.registre.inntekt.utils.ValidationException;
 import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
 import no.nav.tjenester.aordningen.arbeidsforhold.v1.Organisasjon;
