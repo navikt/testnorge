@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.sigrun.service.SigrunService;
 
@@ -21,7 +20,6 @@ public class SyntetiseringController {
     private SigrunService sigrunService;
 
     @ApiOperation(value = "Start syntetisering av personsopptjeningsmeldinger")
-    @LogExceptions
     @PostMapping(value = "/generer")
     public ResponseEntity startSyntetisering(
             @RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,

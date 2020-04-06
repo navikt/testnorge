@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.sigrun.provider.rs.responses.SletteGrunnlagResponse;
 import no.nav.registre.sigrun.service.SigrunService;
 
@@ -21,7 +20,6 @@ public class IdentController {
     @Autowired
     private SigrunService sigrunService;
 
-    @LogExceptions
     @DeleteMapping
     public SletteGrunnlagResponse slettIdenterFraSigrun(
             @RequestHeader(value = "testdataEier") String testdataEier,
