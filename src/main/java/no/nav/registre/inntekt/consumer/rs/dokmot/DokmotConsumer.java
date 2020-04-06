@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.inntekt.consumer.rs.dokmot.command.OpprettJournalpostCommand;
 import no.nav.registre.inntekt.consumer.rs.dokmot.dto.DokmotRequest;
-import no.nav.registre.inntekt.consumer.rs.dokmot.dto.DokmotResponse;
 import no.nav.registre.inntekt.domain.dokmot.InntektDokument;
+import no.nav.registre.inntekt.domain.dokmot.ProsessertInntektDokument;
 import no.nav.registre.inntekt.security.sts.StsOidcService;
 
 @Slf4j
@@ -42,23 +42,25 @@ public class DokmotConsumer {
         Runtime.getRuntime().addShutdownHook(new Thread(executorService::shutdown));
     }
 
-    private CompletableFuture<DokmotResponse> opprettJournalpost(String miljoe, InntektDokument inntektDokument, Executor executor) {
+    private CompletableFuture<ProsessertInntektDokument> opprettJournalpost(String miljoe, InntektDokument inntektDokument, Executor executor) {
         OpprettJournalpostCommand command = new OpprettJournalpostCommand(
                 restTemplate,
                 oidcService.getIdToken(miljoe),
                 url.expand(miljoe),
                 new DokmotRequest(inntektDokument)
         );
-        return CompletableFuture.supplyAsync(command::call, executor);
+        return CompletableFuture
+                .supplyAsync(command::call, executor)
+                .thenApply(response -> new ProsessertInntektDokument(inntektDokument, response));
     }
 
-    public List<DokmotResponse> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumentList) {
+    public List<ProsessertInntektDokument> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumentList) {
         log.info("Oppretter {} journalpost i miljo {} for inntekt dokument...", inntektDokumentList.size(), miljoe);
 
-        List<CompletableFuture<DokmotResponse>> completableDokmotList = new ArrayList<>();
+        List<CompletableFuture<ProsessertInntektDokument>> completableDokmotList = new ArrayList<>();
         inntektDokumentList.forEach(inntektDokument -> completableDokmotList.add(opprettJournalpost(miljoe, inntektDokument, executorService)));
 
-        List<DokmotResponse> responses = completableDokmotList.stream().map(future -> {
+        List<ProsessertInntektDokument> responses = completableDokmotList.stream().map(future -> {
             try {
                 return future.get();
             } catch (Exception e) {

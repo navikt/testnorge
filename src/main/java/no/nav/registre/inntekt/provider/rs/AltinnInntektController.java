@@ -2,8 +2,6 @@ package no.nav.registre.inntekt.provider.rs;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnRequest;
+import no.nav.registre.inntekt.provider.rs.response.AltinnInntektResponse;
 import no.nav.registre.inntekt.service.AltinnInntektService;
 import no.nav.registre.inntekt.utils.ValidationException;
 
@@ -36,12 +35,18 @@ public class AltinnInntektController {
         throw new ValidationException("NOT IMPLEMENTED");
     }
 
-    @PostMapping(value = "/enkeltident", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(value = "/enkeltident")
     public ResponseEntity<?> genererMeldingForIdent(
-            @RequestBody AltinnDollyRequest dollyRequest
+            @RequestBody AltinnDollyRequest dollyRequest,
+            @RequestParam(value = "includeXml", required = false) Boolean includeXml
     ) {
         try {
-            return new ResponseEntity<>(altinnInntektService.lagAltinnMeldinger(dollyRequest).get(0), HttpStatus.CREATED);
+            AltinnInntektResponse altinnInntektResponse = new AltinnInntektResponse(
+                    dollyRequest.getArbeidstakerFnr(),
+                    altinnInntektService.lagAltinnMeldinger(dollyRequest),
+                    includeXml != null && includeXml
+            );
+            return ResponseEntity.ok(altinnInntektResponse);
         } catch (ValidationException e) {
             return new ResponseEntity<>(e.getErrors(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {

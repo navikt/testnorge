@@ -23,6 +23,7 @@ import no.nav.registre.inntekt.domain.altinn.rs.RsKontaktinformasjon;
 import no.nav.registre.inntekt.domain.altinn.rs.RsNaturalytelseDetaljer;
 import no.nav.registre.inntekt.domain.altinn.rs.RsUtsettelseAvForeldrepenger;
 import no.nav.registre.inntekt.domain.dokmot.InntektDokument;
+import no.nav.registre.inntekt.domain.dokmot.ProsessertInntektDokument;
 import no.nav.registre.inntekt.domain.dokmot.RsJoarkMetadata;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
 import no.nav.registre.inntekt.utils.ValidationException;
@@ -55,7 +56,7 @@ public class AltinnInntektService {
         return Objects.isNull(altinnEnum) ? null : altinnEnum.getValue();
     }
 
-    public List<String> lagAltinnMeldinger(AltinnDollyRequest dollyRequest) throws ValidationException {
+    public List<ProsessertInntektDokument> lagAltinnMeldinger(AltinnDollyRequest dollyRequest) throws ValidationException {
         var miljoe = dollyRequest.getMiljoe();
         var ident = dollyRequest.getArbeidstakerFnr();
         var inntekterAaOpprette = dollyRequest.getInntekter();
@@ -102,8 +103,7 @@ public class AltinnInntektService {
             );
         });
 
-        dokmotConsumer.opprettJournalpost(dollyRequest.getMiljoe(), inntektDokuments);
-        return altinnInntektMeldinger;
+        return dokmotConsumer.opprettJournalpost(dollyRequest.getMiljoe(), inntektDokuments);
     }
 
     private RsInntektsmelding lagAltinnInntektRequest(
