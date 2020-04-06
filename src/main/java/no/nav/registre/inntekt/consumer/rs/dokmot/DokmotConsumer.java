@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
@@ -28,33 +29,33 @@ import no.nav.registre.inntekt.security.sts.StsOidcService;
 @Slf4j
 @Component
 public class DokmotConsumer {
-
-
-
-
+    private final ResourceLoader resourceLoader;
 
     private final RestTemplate restTemplate;
     private final StsOidcService oidcService;
-    private final Integer threads;
     private final UriTemplate url;
     private final ExecutorService executorService;
     private byte[] arkiv;
 
     public DokmotConsumer(
+            ResourceLoader resourceLoader,
             @Value("${dokmot.consumer.threads}") Integer threads,
             @Value("${dokmot.joark.rest.api.url}") String joarkUrl,
-            @Value("classpath:static/dummy.pdf") Resource resourceFile,
             RestTemplate restTemplate,
             StsOidcService oidcService
     ) {
-        url = new UriTemplate(joarkUrl + "/rest/journalpostapi/v1/journalpost");
-        this.threads = threads;
+        this.resourceLoader = resourceLoader;
+        this.url = new UriTemplate(joarkUrl + "/rest/journalpostapi/v1/journalpost");
         this.restTemplate = restTemplate;
         this.oidcService = oidcService;
         this.executorService = Executors.newFixedThreadPool(threads);
+
+
         try {
-            this.arkiv = IOUtils.toByteArray(new FileInputStream(resourceFile.getFile()));
-        } catch (IOException e) {
+            Resource resource = this.resourceLoader.getResource("classpath:static/dummy.pdf");
+            this.arkiv = IOUtils.toByteArray(new FileInputStream(resource.getFile()));
+            log.info("Fikk lasted fil fra resources! (length: {})", this.arkiv.length);
+        } catch (Exception e) {
             log.error("Feil ved lasting av arkiv", e);
             this.arkiv = null;
         }
