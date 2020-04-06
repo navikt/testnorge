@@ -1,18 +1,16 @@
 package no.nav.dolly.repository;
 
-import no.nav.dolly.domain.jpa.BestillingKontroll;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Optional;
+import no.nav.dolly.domain.jpa.BestillingKontroll;
 
-public interface BestillingKontrollRepository extends Repository<BestillingKontroll, Long> {
+public interface BestillingKontrollRepository extends CrudRepository<BestillingKontroll, Long> {
 
-    Optional<BestillingKontroll> save(BestillingKontroll bestillingKontroll);
-
-    Optional<BestillingKontroll> findByBestillingIdOrderByBestillingId(Long bestillingId);
+    Optional<BestillingKontroll> findByBestillingId(Long bestillingId);
 
     @Modifying
     @Query("delete from BestillingKontroll bk where bk.bestillingId in (select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
@@ -23,4 +21,3 @@ public interface BestillingKontrollRepository extends Repository<BestillingKontr
             + "not in (select bp.bestillingId from BestillingProgress bp where bp.bestillingId = :bestillingId)")
     int deleteByBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
 }
-

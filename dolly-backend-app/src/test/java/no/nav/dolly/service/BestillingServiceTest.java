@@ -132,7 +132,7 @@ public class BestillingServiceTest {
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Optional.of(Bestilling.builder().build()));
         bestillingService.cancelBestilling(1L);
 
-        verify(bestillingKontrollRepository).findByBestillingIdOrderByBestillingId(BEST_ID);
+        verify(bestillingKontrollRepository).findByBestillingId(BEST_ID);
         verify(bestillingKontrollRepository).save(any(BestillingKontroll.class));
         verify(identRepository).deleteTestidentsByBestillingId(BEST_ID);
         verify(bestillingProgressRepository).deleteByBestillingId(BEST_ID);
@@ -182,6 +182,6 @@ public class BestillingServiceTest {
 
         bestillingService.isStoppet(BEST_ID);
 
-        verify(bestillingKontrollRepository).findByBestillingIdOrderByBestillingId(BEST_ID);
+        verify(bestillingKontrollRepository).findByBestillingId(BEST_ID);
     }
 }

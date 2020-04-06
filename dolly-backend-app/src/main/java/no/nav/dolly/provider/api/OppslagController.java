@@ -1,6 +1,7 @@
 package no.nav.dolly.provider.api;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 import static no.nav.dolly.config.CachingConfig.CACHE_NORG2;
 
@@ -32,8 +33,10 @@ import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
 import no.nav.dolly.consumer.norg2.Norg2EnhetResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
+import no.nav.dolly.repository.TransaksjonMappingRepository;
 import no.nav.dolly.service.InntektsmeldingEnumService;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
@@ -52,6 +55,7 @@ public class OppslagController {
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final IdentpoolConsumer identpoolConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
+    private final TransaksjonMappingRepository transaksjonMappingRepository;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -141,5 +145,12 @@ public class OppslagController {
     public List<String> getInntektsmeldingeTyper(@PathVariable InntektsmeldingEnumService.EnumTypes enumtype) {
 
         return inntektsmeldingEnumService.getEnumType(enumtype);
+    }
+
+    @GetMapping("/transaksjonid/{ident}")
+    @ApiOperation("Henter transaksjon IDer for ident")
+    public List<TransaksjonMapping> getTransaksjonIder(@PathVariable String ident) {
+
+        return transaksjonMappingRepository.findAllByIdent(ident).orElse(emptyList());
     }
 }

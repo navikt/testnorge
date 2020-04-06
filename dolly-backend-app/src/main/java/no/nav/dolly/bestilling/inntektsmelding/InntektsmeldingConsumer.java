@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
+import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 
@@ -35,7 +36,7 @@ public class InntektsmeldingConsumer {
                 RequestEntity.post(URI.create(providersProps.getInntektsmelding().getUrl() + POST_FMT_BLD))
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                        .body(inntekstsmelding), String.class);
+                        .body(inntekstsmelding), InntektsmeldingResponse.class);
     }
 
     private static String getNavCallId() {
