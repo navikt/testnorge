@@ -52,7 +52,7 @@ public class DokmotConsumer {
 
 
         try {
-            Resource resource = this.resourceLoader.getResource("static/dummy.pdf");
+            Resource resource = this.resourceLoader.getResource("classpath:static/dummy.pdf");
             this.arkiv = IOUtils.toByteArray(resource.getInputStream());
             log.info("Fikk lasted fil fra resources! (length: {})", this.arkiv.length);
         } catch (Exception e) {
