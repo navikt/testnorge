@@ -28,5 +28,6 @@ spec:
     limits:
       cpu: 500m
       memory: 2048Mi
+  image: {{ image }}
   ingresses:
     - "https://testnorge-sigrun.nais.preprod.local"
