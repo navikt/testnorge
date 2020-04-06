@@ -2,8 +2,6 @@ package no.nav.registre.inntekt.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -24,6 +22,18 @@ public class FilVerktoey {
             log.info("Laster inn {}...", DUMMY_PDF_FILE_NAME);
             DUMMY_PDF = FilVerktoey.lastRessurs(DUMMY_PDF_FILE_NAME);
             log.info("{} lasted inn.", DUMMY_PDF_FILE_NAME);
+
+
+            if (DUMMY_PDF != null) {
+                if (DUMMY_PDF.exists()) {
+                    log.info("path: {}, length: {}",DUMMY_PDF.getAbsolutePath(), DUMMY_PDF.length());
+                } else {
+                    log.error("{} eksister ikke", DUMMY_PDF_FILE_NAME);
+                }
+            } else {
+                log.info("{} er null", DUMMY_PDF_FILE_NAME);
+            }
+
         } catch (IOException e) {
             log.error("Feil ved innlasting av {}", DUMMY_PDF_FILE_NAME, e);
             //throw new RuntimeException("Kunne ikke initialisere klassen pga IOException ved lasting av dummy.pdf", e);
