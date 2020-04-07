@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.inntektsmelding;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,10 +18,9 @@ import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.repository.TransaksjonMappingRepository;
+import no.nav.dolly.service.TransaksjonMappingService;
 
 @Slf4j
 @Service
@@ -30,7 +30,7 @@ public class InntektsmeldingClient implements ClientRegister {
     private final InntektsmeldingConsumer inntektsmeldingConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
-    private final TransaksjonMappingRepository transaksjonMappingRepository;
+    private final TransaksjonMappingService transaksjonMappingService;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -38,13 +38,15 @@ public class InntektsmeldingClient implements ClientRegister {
         if (nonNull(bestilling.getInntektsmelding())) {
 
             StringBuilder status = new StringBuilder();
+            InntektsmeldingRequest inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class);
             bestilling.getEnvironments().forEach(environment -> {
 
-                InntektsmeldingRequest inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class);
-                inntektsmeldingRequest.setArbeidstakerFnr(tpsPerson.getHovedperson());
-                inntektsmeldingRequest.setMiljoe(environment);
+                if (isOpprettEndre || !transaksjonMappingService.existAlready(INNTKMELD, tpsPerson.getHovedperson(), environment)) {
+                    inntektsmeldingRequest.setArbeidstakerFnr(tpsPerson.getHovedperson());
+                    inntektsmeldingRequest.setMiljoe(environment);
 
-                postInntektsmelding(inntektsmeldingRequest, status);
+                    postInntektsmelding(inntektsmeldingRequest, status);
+                }
             });
 
             progress.setInntektsmeldingStatus(status.length() > 1 ? status.substring(1) : null);
@@ -67,7 +69,7 @@ public class InntektsmeldingClient implements ClientRegister {
                         .append(inntektsmeldingRequest.getMiljoe())
                         .append(":OK");
 
-                transaksjonMappingRepository.saveAll(
+                transaksjonMappingService.saveAll(
                         response.getBody().getDokumenter().stream()
                                 .map(dokument ->
                                         TransaksjonMapping.builder()
@@ -75,7 +77,7 @@ public class InntektsmeldingClient implements ClientRegister {
                                                 .transaksjonId(dokument.getJournalpostId())
                                                 .datoEndret(LocalDateTime.now())
                                                 .miljoe(inntektsmeldingRequest.getMiljoe())
-                                                .system(SystemTyper.INNTKMELD.name())
+                                                .system(INNTKMELD.name())
                                                 .build())
                                 .collect(Collectors.toList())
                 );
