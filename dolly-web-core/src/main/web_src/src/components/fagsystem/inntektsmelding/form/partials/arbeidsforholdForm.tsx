@@ -1,30 +1,37 @@
 import * as React from 'react'
 import { get as _get } from 'lodash'
+import { FormikProps } from 'formik'
+import InntektsmeldingSelect from './InntektsmeldingSelect'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
 interface ArbeidsforholdForm {
 	path: string
 	ytelse: string
+	formikBag: FormikProps<{}>
 }
 
 const initialPeriode = { fom: '', tom: '' }
 
-const eksempelOptions = [{ value: 'test', label: 'Test' }]
-
-export default ({ path, ytelse }: ArbeidsforholdForm) => {
+export default ({ path, ytelse, formikBag }: ArbeidsforholdForm) => {
 	return (
-		<>
+		<div className="flexbox--flex-wrap">
 			<FormikTextInput name={`${path}.beregnetInntekt.beloep`} label="Beløp" type="number" />
+			{/* <InntektsmeldingSelect
+				path={`${path}.beregnetInntekt.aarsakVedEndring`}
+				label="Årsak ved endring"
+				kodeverk="AARSAK_VED_ENDRING_TYPE"
+				formikBag={formikBag}
+			/> */}
+
+			<FormikDatepicker name={`${path}.foersteFravaersdag`} label="Første fraværsdag" />
 			{/* Ferie: Gjelder for sykepoenger, svangerskapspenger, pleie, omsorg og opplæring. Gjør mer elegant! */}
 			{ytelse !== 'FORELDREPENGER' && (
 				<FormikDollyFieldArray
 					name={`${path}.avtaltFerieListe`}
 					header="Avtalt ferieliste"
 					newEntry={initialPeriode}
-					// nested
 				>
 					{(path: string) => (
 						<>
@@ -34,14 +41,6 @@ export default ({ path, ytelse }: ArbeidsforholdForm) => {
 					)}
 				</FormikDollyFieldArray>
 			)}
-			{/* 
-			<FormikSelect
-				name={`${path}.beregnetInntekt.aarsakVedEndring`}
-				label="Årsak ved endring"
-				options={eksempelOptions}
-			/>
-
-			<FormikDatepicker name={`${path}.foersteFravaersdag`} label="Første fraværsdag" /> */}
-		</>
+		</div>
 	)
 }

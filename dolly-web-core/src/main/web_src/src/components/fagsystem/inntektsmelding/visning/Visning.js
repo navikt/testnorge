@@ -5,7 +5,6 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 import ArbeidsforholdVisning from './partials/arbeidsforholdVisning'
-import ArbeidsgiverVisning from './partials/arbeidsgiverVisning'
 import OmsorgspengerVisning from './partials/omsorgspengerVisning'
 import RefusjonVisning from './partials/refusjonVisning'
 
@@ -22,26 +21,31 @@ export const InntektsmeldingVisning = ({ bestilling, loading }) => {
 	return (
 		<div>
 			<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
-			<DollyFieldArray data={data.inntekter} nested>
+			<DollyFieldArray header="Inntekt" data={data.inntekter}>
 				{(inntekt, idx) => (
 					<>
 						<div className="person-visning_content" key={idx}>
-							<TitleValue title="Beløp" value={inntekt.beloep} />
-							<TitleValue
-								title="Innsendingstidspunkt"
-								value={Formatters.formatStringDates(inntekt.dato)}
-							/>
+							<TitleValue title="Årsak til innsending" value={inntekt.aarsakTilInnsending} />
+							<TitleValue title="Ytelse" value={inntekt.ytelse} />
 							<TitleValue title="Virksomhet" value={inntekt.arbeidsgiver.orgnummer} />
 							<TitleValue
 								title="Opplysningspliktig virksomhet"
 								value={inntekt.arbeidsgiver.virksomhetsnummer}
 							/>
+							<TitleValue
+								title="Innsendingstidspunkt"
+								value={Formatters.formatStringDates(inntekt.avsendersystem.dato)}
+							/>
 							<TitleValue title="Har nær relasjon" value={inntekt.naerRelasjon} />
 						</div>
-						{/* <ArbeidsforholdVisning data={data.arbeidsforhold} />
-						<ArbeidsgiverVisning data={data.arbeidsgiver} />
-						<OmsorgspengerVisning data={data.omsorgspenger} />
-						<RefusjonVisning data={data.refusjon} /> */}
+						<ArbeidsforholdVisning data={inntekt.arbeidsforhold} />
+						<OmsorgspengerVisning data={inntekt.omsorgspenger} />
+						<RefusjonVisning data={inntekt.refusjon} />
+						{/* //TODO: Deler som mangler:
+						Sykepengervisning
+						ForeldrepengerVisning
+						NaturalytelseVisning (opphørt og gjenopptakelse)
+						PleiepengerVisning */}
 					</>
 				)}
 			</DollyFieldArray>

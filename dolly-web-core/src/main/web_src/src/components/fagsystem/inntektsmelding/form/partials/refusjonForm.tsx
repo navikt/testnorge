@@ -8,7 +8,7 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 
 interface RefusjonForm {
 	path: string
-	formikBag: any
+	ytelse: string
 }
 
 const initialEndringIRefusjon = {
@@ -16,9 +16,9 @@ const initialEndringIRefusjon = {
 	tom: ''
 }
 
-export default ({ path, formikBag }: RefusjonForm) => {
+export default ({ path, ytelse }: RefusjonForm) => {
 	return (
-		<>
+		<div className="flexbox--flex-wrap">
 			<FormikTextInput
 				name={`${path}.refusjonsbeloepPrMnd`}
 				label="Samlet månedlig refusjonsbeløp"
@@ -27,23 +27,24 @@ export default ({ path, formikBag }: RefusjonForm) => {
 			/>
 			<FormikDatepicker name={`${path}.refusjonsopphoersdato`} label="Opphørsdato for refusjon" />
 			{/* Endring i refusjon gjelder sykepenger, foreldrepenger, svangerskapspenger, pleiepenger, opplæring */}
-			{/* <FormikDollyFieldArray
-				name={`${path}.endringIRefusjonListe`}
-				header="Endring i refusjon"
-				newEntry={initialEndringIRefusjon}
-				nested
-			>
-				{(path: string) => (
-					<>
-						<FormikDatepicker name={`${path}.endringsdato`} label="Endringsdato" />
-						<FormikTextInput
-							name={`${path}.refusjonsbeloepPrMnd`}
-							label="Nytt refusjonsbeløp per måned"
-							type="number"
-						/>
-					</>
-				)}
-			</FormikDollyFieldArray> */}
-		</>
+			{/* {ytelse !== 'OMSORGSPENGER' && (
+				<FormikDollyFieldArray
+					name={`${path}.endringIRefusjonListe`}
+					header="Endring i refusjon"
+					newEntry={initialEndringIRefusjon}
+				>
+					{(path: string) => (
+						<>
+							<FormikDatepicker name={`${path}.endringsdato`} label="Endringsdato" />
+							<FormikTextInput
+								name={`${path}.refusjonsbeloepPrMnd`}
+								label="Nytt refusjonsbeløp per måned"
+								type="number"
+							/>
+						</>
+					)}
+				</FormikDollyFieldArray>
+			)} */}
+		</div>
 	)
 }

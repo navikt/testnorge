@@ -730,7 +730,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	}
 
 	const inntektsmeldingKriterier = bestillingData.inntektsmelding
-
+	//TODO: Mangler en hel del inntektsmeldingegenskaper
 	const mapInntektsmeldingKriterier = meldinger => ({
 		header: 'Inntektsmelding (fra Altinn)',
 		itemRows: meldinger.map((inntekt, i) => [

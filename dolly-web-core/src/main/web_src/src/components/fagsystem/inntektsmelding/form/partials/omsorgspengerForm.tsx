@@ -21,12 +21,11 @@ const initialFravaersperioder = {
 
 export default ({ path }: OmsorgspengerForm) => {
 	return (
-		<>
+		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
 				name={`${path}.delvisFravaersListe`}
 				header="Delvis fravær"
 				newEntry={initialDelvisFravaer}
-				nested
 			>
 				{(path: string) => (
 					<>
@@ -39,7 +38,6 @@ export default ({ path }: OmsorgspengerForm) => {
 				name={`${path}.fravaersPerioder`}
 				header="Fraværsperioder"
 				newEntry={initialFravaersperioder}
-				nested
 			>
 				{(path: string) => (
 					<>
@@ -54,6 +52,6 @@ export default ({ path }: OmsorgspengerForm) => {
 				checkboxMargin
 				size="medium"
 			/>
-		</>
+		</div>
 	)
 }

@@ -8,7 +8,7 @@ import { FormikProps } from 'formik'
 
 interface InntektsmeldingOrgnummerSelect {
 	path: string
-	formikBag: FormikProps<{ setFieldValue: () => void }>
+	formikBag: FormikProps<{}>
 }
 
 type OrgOption = {
@@ -27,6 +27,7 @@ export default ({ path, formikBag }: InntektsmeldingOrgnummerSelect) => {
 	return (
 		<LoadableComponent
 			onFetch={() =>
+				//TODO: lage en type for liste
 				SelectOptionsOppslag.hentOrgnr().then(({ liste }: any) =>
 					liste
 						.filter((org: any) => org.juridiskEnhet)
@@ -46,7 +47,6 @@ export default ({ path, formikBag }: InntektsmeldingOrgnummerSelect) => {
 					onChange={setOrgnr}
 					value={_get(formikBag.values, `${path}.orgnummer`)}
 					feil={
-						_has(formikBag.touched, `${path}.virksomhetsnummer`) &&
 						_get(formikBag.values, `${path}.virksomhetsnummer`) === '' && {
 							feilmelding: 'Feltet er påkrevd'
 						}

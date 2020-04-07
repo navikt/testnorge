@@ -11,30 +11,32 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { requiredDate, requiredString, requiredNumber, messages } from '~/utils/YupValidations'
 import InntektsmeldingOrgnummerSelect from './partials/inntektsmeldingOrgnummerSelect'
-import InntektsmeldingEnumSelect from './partials/inntektsmeldingEnumSelect'
+import InntektsmeldingSelect from './partials/InntektsmeldingSelect'
 import OmsorgspengerForm from './partials/omsorgspengerForm'
 import SykepengerForm from './partials/sykepengerForm'
 import PleiepengerForm from './partials/pleiepengerForm'
 import RefusjonForm from './partials/refusjonForm'
 import ArbeidsforholdForm from './partials/arbeidsforholdForm'
+import { FormikProps } from 'formik'
 
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+interface InntektsmeldingForm {
+	formikBag: FormikProps<{}>
+}
 
 const initialValues = {
+	aarsakTilInnsending: '',
 	arbeidsgiver: {
 		virksomhetsnummer: '',
-		//hardkoding - husk å fjerne fra panelfil også
-
 		kontaktinformasjon: { kontaktinformasjonNavn: 'SJÆFEN SJØL', telefonnummer: '99999999' }
 	},
 	arbeidsforhold: {
 		beregnetInntekt: {
 			beloep: ''
-		}
+		},
+		foersteFravaersdag: ''
 	},
 	avsendersystem: {
 		innsendingstidspunkt: new Date(),
-		//hardkoing - husk å fjerne fra panelfil også
 		systemnavn: 'Ola incorperated sunday test',
 		systemversjon: 'v3.5'
 	},
@@ -48,14 +50,16 @@ const initialValues = {
 const inntektsmeldingAttributt = 'inntektsmelding'
 const informasjonstekst = 'Personen må ha et arbeidsforhold knyttet til den valgte virksomheten.'
 
-export const InntektsmeldingForm = ({ formikBag }) => {
+export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 	return (
+		//@ts-ignore
 		<Vis attributt={inntektsmeldingAttributt}>
 			<Panel
 				heading="Inntektsmelding (fra Altinn)"
 				hasErrors={panelError(formikBag, inntektsmeldingAttributt)}
 				iconType="inntektsmelding"
 				informasjonstekst={informasjonstekst}
+				//@ts-ignore
 				startOpen={() => erForste(formikBag.values, [inntektsmeldingAttributt])}
 			>
 				<FormikDollyFieldArray
@@ -63,27 +67,46 @@ export const InntektsmeldingForm = ({ formikBag }) => {
 					header="Inntekt"
 					newEntry={initialValues}
 				>
-					{(path, idx) => {
+					{(path: any, idx: number) => {
 						const ytelse = _get(formikBag.values, `${path}.ytelse`)
 						return (
-							<div className="flexbox--flex-wrap">
-								<InntektsmeldingEnumSelect
-									path={`${path}.ytelse`}
-									label="Ytelse"
-									formikBag={formikBag}
-								/>
+							//TODO: Erstatte style med classNames. Styling generelt
+							<div style={{ display: 'flex', flexDirection: 'column' }}>
+								<div className="flexbox--flex-wrap">
+									<InntektsmeldingSelect
+										path={`${path}.aarsakTilInnsending`}
+										label="Årsak til innsending"
+										kodeverk="AARSAK_TIL_INNSENDING_TYPE"
+										formikBag={formikBag}
+									/>
+									<InntektsmeldingSelect
+										path={`${path}.ytelse`}
+										idx={idx}
+										label="Ytelse"
+										kodeverk="YTELSE_TYPE"
+										formikBag={formikBag}
+									/>
 
-								<InntektsmeldingOrgnummerSelect
-									path={`${path}.arbeidsgiver`}
+									<InntektsmeldingOrgnummerSelect
+										path={`${path}.arbeidsgiver`}
+										formikBag={formikBag}
+									/>
+									<FormikDatepicker
+										name={`${path}.avsendersystem.innsendingstidspunkt`}
+										label="Innsendingstidspunkt"
+									/>
+									<FormikCheckbox
+										name={`${path}.naerRelasjon`}
+										label="Nær relasjon"
+										checkboxMargin
+									/>
+								</div>
+								<ArbeidsforholdForm
+									path={`${path}.arbeidsforhold`}
+									ytelse={ytelse}
 									formikBag={formikBag}
 								/>
-								<FormikDatepicker
-									name={`${path}.avsendersystem.innsendingstidspunkt`}
-									label="Innsendingstidspunkt"
-								/>
-								<FormikCheckbox name={`${path}.naerRelasjon`} label="Nær relasjon" checkboxMargin />
-								<ArbeidsforholdForm path={`${path}.arbeidsforhold`} ytelse={ytelse} />
-								{/* {ytelse === 'FORELDREPENGER' && (
+								{ytelse === 'FORELDREPENGER' && (
 									<FormikDatepicker
 										name={`${path}.startdatoForeldrepengeperiode`}
 										label="Startdato for foreldrepengeperiode"
@@ -96,14 +119,14 @@ export const InntektsmeldingForm = ({ formikBag }) => {
 								)}
 								{ytelse === 'PLEIEPENGER' && (
 									<PleiepengerForm path={`${path}.pleiepengerPerioder`} />
-								)} */}
+								)}
 								{ytelse === 'OMSORGSPENGER' && (
 									<Kategori title="Omsorgspenger">
 										<OmsorgspengerForm path={`${path}.omsorgspenger`} />
 									</Kategori>
 								)}
 								<Kategori title="Refusjon">
-									<RefusjonForm path={`${path}.refusjon`} />
+									<RefusjonForm path={`${path}.refusjon`} ytelse={ytelse} />
 								</Kategori>
 							</div>
 						)
@@ -118,6 +141,7 @@ InntektsmeldingForm.validation = {
 	inntektsmelding: Yup.object({
 		inntekter: Yup.array().of(
 			Yup.object({
+				aarsakTilInnsending: requiredString,
 				arbeidsgiver: Yup.object({
 					virksomhetsnummer: requiredString
 				}),

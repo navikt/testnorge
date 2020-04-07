@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { get as _get } from 'lodash'
+import InntektsmeldingSelect from './InntektsmeldingSelect'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
 interface SykepengerForm {
 	path: string
@@ -15,23 +15,20 @@ const initialArbeidsperiode = {
 	tom: ''
 }
 
-const eksempelOptions = [{ value: 'test', label: 'test' }]
 export default ({ path }: SykepengerForm) => {
 	return (
-		<>
+		<div className="flexbox--flex-wrap">
 			<FormikTextInput name={`${path}.bruttoUtbetalt`} label="Brutto utbetalt" type="number" />
-			<FormikSelect
-				name={`${path}.begrunnelseForReduksjonEllerIkkeUtbetalt`}
+			<InntektsmeldingSelect
+				path={`${path}.begrunnelseForReduksjonEllerIkkeUtbetalt`}
 				label="Begrunnelse for reduksjon eller ikke utbetalt"
-				options={eksempelOptions}
-				size="medium"
-				isClearable={false}
+				kodeverk="BEGRUNNELSE_TYPE"
+				size="large"
 			/>
 			<FormikDollyFieldArray
 				name={`${path}.arbeidsgiverperiodeListe`}
 				header="Arbeidsgiverperioder"
 				newEntry={initialArbeidsperiode}
-				nested
 			>
 				{(path: string) => (
 					<>
@@ -40,6 +37,6 @@ export default ({ path }: SykepengerForm) => {
 					</>
 				)}
 			</FormikDollyFieldArray>
-		</>
+		</div>
 	)
 }

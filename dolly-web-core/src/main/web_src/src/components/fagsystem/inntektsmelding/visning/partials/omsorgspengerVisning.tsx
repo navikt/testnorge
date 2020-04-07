@@ -3,7 +3,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
 interface OmsorgspengerVisning {
-	data: Array<Omsorgspenger>
+	data?: Omsorgspenger
 }
 
 type Omsorgspenger = {
@@ -23,7 +23,7 @@ type FravaersPerioder = {
 }
 
 export default ({ data }: OmsorgspengerVisning) => {
-	if (!data || data.length < 1) return null
+	if (!data) return null
 
 	return (
 		<>

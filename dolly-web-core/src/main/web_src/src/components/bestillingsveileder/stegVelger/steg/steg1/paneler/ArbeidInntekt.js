@@ -70,7 +70,9 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		add: () =>
 			set('inntektsmelding', {
 				inntekter: [
+					//TODO Hardkoding flyttes backend etter påske
 					{
+						aarsakTilInnsending: '',
 						arbeidsgiver: {
 							virksomhetsnummer: '',
 							kontaktinformasjon: {
@@ -81,7 +83,8 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 						arbeidsforhold: {
 							beregnetInntekt: {
 								beloep: ''
-							}
+							},
+							foersteFravaersdag: ''
 						},
 						avsendersystem: {
 							innsendingstidspunkt: new Date(),
@@ -98,7 +101,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 				],
 				joarkMetadata: {
 					tema: '',
-					tittel: 'En hardkoda søknadstittel'
+					titel: 'En hardkoda søknadstittel'
 				}
 			}),
 		remove: () => del('inntektsmelding')
