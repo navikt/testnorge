@@ -9,4 +9,6 @@ import no.nav.dolly.domain.jpa.TransaksjonMapping;
 public interface TransaksjonMappingRepository extends CrudRepository<TransaksjonMapping, Long> {
 
     Optional<List<TransaksjonMapping>> findAllByIdent(String ident);
+
+    Optional<List<TransaksjonMapping>> findAllBySystemAndIdent(String Syetem, String ident);
 }

@@ -75,7 +75,7 @@ public class InntektsmeldingClient implements ClientRegister {
                                                 .transaksjonId(dokument.getJournalpostId())
                                                 .datoEndret(LocalDateTime.now())
                                                 .miljoe(inntektsmeldingRequest.getMiljoe())
-                                                .system(SystemTyper.INNTKMELD)
+                                                .system(SystemTyper.INNTKMELD.name())
                                                 .build())
                                 .collect(Collectors.toList())
                 );

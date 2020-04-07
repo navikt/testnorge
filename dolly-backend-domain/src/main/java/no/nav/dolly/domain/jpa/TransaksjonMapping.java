@@ -5,8 +5,6 @@ import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATO
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -18,7 +16,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.SystemTyper;
 
 @Entity
 @Getter
@@ -42,8 +39,7 @@ public class TransaksjonMapping {
     private String ident;
 
     @Column(name = "SYSTEM")
-    @Enumerated(EnumType.STRING)
-    private SystemTyper system;
+    private String system;
 
     @Column(name = "MILJOE")
     private String miljoe;

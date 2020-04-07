@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 import static no.nav.dolly.config.CachingConfig.CACHE_NORG2;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.List;
 import java.util.Set;
@@ -147,10 +148,12 @@ public class OppslagController {
         return inntektsmeldingEnumService.getEnumType(enumtype);
     }
 
-    @GetMapping("/transaksjonid/{ident}")
+    @GetMapping("/transaksjonid/{system}/{ident}")
     @ApiOperation("Henter transaksjon IDer for ident")
-    public List<TransaksjonMapping> getTransaksjonIder(@PathVariable String ident) {
+    public List<TransaksjonMapping> getTransaksjonIder(@PathVariable(required = false) SystemTyper system, @PathVariable String ident) {
 
-        return transaksjonMappingRepository.findAllByIdent(ident).orElse(emptyList());
+        return isNotBlank(system.name()) ?
+                transaksjonMappingRepository.findAllBySystemAndIdent(system.name(), ident).orElse(emptyList()) :
+                transaksjonMappingRepository.findAllByIdent(ident).orElse(emptyList());
     }
 }
