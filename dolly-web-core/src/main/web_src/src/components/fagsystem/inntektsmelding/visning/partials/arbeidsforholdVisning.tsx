@@ -4,10 +4,10 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { InntektstubKodeverk } from '~/config/kodeverk'
 
-interface ArbforholdVisning {
+interface ArbeidsforholdVisning {
 	data?: any
 }
-export default ({ data }: ArbforholdVisning) => {
+export default ({ data }: ArbeidsforholdVisning) => {
 	if (!data) return null
 
 	return (

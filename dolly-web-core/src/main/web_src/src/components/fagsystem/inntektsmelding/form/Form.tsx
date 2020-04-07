@@ -2,15 +2,18 @@ import React from 'react'
 import * as Yup from 'yup'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
+import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
-import Panel from '~/components/ui/panel/Panel'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { requiredDate, requiredString, requiredNumber, messages } from '~/utils/YupValidations'
+import { FormikProps } from 'formik'
+import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { Kodeverk, Ytelser } from '../InntektsmeldingTypes'
 import InntektsmeldingOrgnummerSelect from './partials/InntektsmeldingOrgnummerSelect'
 import InntektsmeldingSelect from './partials/InntektsmeldingSelect'
 import OmsorgspengerForm from './partials/omsorgspengerForm'
@@ -18,9 +21,7 @@ import SykepengerForm from './partials/sykepengerForm'
 import PleiepengerForm from './partials/pleiepengerForm'
 import RefusjonForm from './partials/refusjonForm'
 import ArbeidsforholdForm from './partials/arbeidsforholdForm'
-import { FormikProps } from 'formik'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
-import { Kodeverk, Ytelser } from '../InntektsmeldingTypes'
+import NaturalytelseForm from './partials/naturalytelseForm'
 
 interface InntektsmeldingForm {
 	formikBag: FormikProps<{}>
@@ -117,11 +118,19 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 									ytelse={ytelse}
 									formikBag={formikBag}
 								/>
+								<Kategori title="Refusjon">
+									<RefusjonForm path={`${path}.refusjon`} ytelse={ytelse} />
+								</Kategori>
+								<Kategori title="Naturalytelse">
+									<NaturalytelseForm path={`${path}`} />
+								</Kategori>
 								{ytelse === Ytelser.Foreldrepenger && (
-									<FormikDatepicker
-										name={`${path}.startdatoForeldrepengeperiode`}
-										label="Startdato for foreldrepengeperiode"
-									/>
+									<Kategori title="Foreldrepenger">
+										<FormikDatepicker
+											name={`${path}.startdatoForeldrepengeperiode`}
+											label="Startdato for periode"
+										/>
+									</Kategori>
 								)}
 								{ytelse === Ytelser.Sykepenger && (
 									<Kategori title="Sykepenger">
@@ -136,10 +145,6 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 										<OmsorgspengerForm path={`${path}.omsorgspenger`} />
 									</Kategori>
 								)}
-								<Kategori title="Refusjon">
-									<RefusjonForm path={`${path}.refusjon`} ytelse={ytelse} />
-								</Kategori>
-								{/* //TODO: Deler som mangler: naturalytelse */}
 							</div>
 						)
 					}}

@@ -9,6 +9,7 @@ import OmsorgspengerVisning from './partials/omsorgspengerVisning'
 import RefusjonVisning from './partials/refusjonVisning'
 import SykepengerVisning from './partials/sykepengerVisning'
 import PleiepengerVisning from './partials/pleiepengerVisning'
+import NaturalytelseVisning from './partials/naturalytelseVisning'
 
 export const InntektsmeldingVisning = ({ bestilling, loading }) => {
 	//TODO: Gjøre om til tsx
@@ -51,9 +52,14 @@ export const InntektsmeldingVisning = ({ bestilling, loading }) => {
 						<RefusjonVisning data={inntekt.refusjon} />
 						<SykepengerVisning data={inntekt.sykepengerIArbeidsgiverperioden} />
 						<PleiepengerVisning data={inntekt.pleiepengerPerioder} />
-						{/* //TODO: Deler som mangler:
-						NaturalytelseVisning (opphørt og gjenopptakelse)
-						 */}
+						<NaturalytelseVisning
+							data={inntekt.gjenopptakelseNaturalytelseListe}
+							header="Gjenopptagekse av naturalytelse"
+						/>
+						<NaturalytelseVisning
+							data={inntekt.opphoerAvNaturalytelseListe}
+							header="Opphør av naturalytelse"
+						/>
 					</>
 				)}
 			</DollyFieldArray>

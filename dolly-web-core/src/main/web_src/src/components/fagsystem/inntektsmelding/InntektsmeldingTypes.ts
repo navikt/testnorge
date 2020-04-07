@@ -55,7 +55,21 @@ export type Arbeidsgiver = {}
 export type Avsendersystem = {}
 export type GjenopptakelseNaturalytelse = {}
 export type OpphoerAvNaturalytelse = {}
-export type Omsorgspenger = {}
+export type Omsorgspenger = {
+	delvisFravaersListe?: Array<DelvisFravaer>
+	fravaersPerioder?: Array<Fravaer>
+	harUtbetaltPliktigeDager?: boolean
+}
+
+type DelvisFravaer = {
+	dato?: string
+	timer?: number
+}
+
+type Fravaer = {
+	fom?: string
+	tom?: string
+}
 export type Pleiepenger = {}
 export type Refusjon = {
 	refusjonsbeloepPrMnd?: number
@@ -67,3 +81,9 @@ type EndringIRefusjon = {
 	endringsdato?: string
 }
 export type SykepengerIArbeidsgiverperioden = {}
+
+export type Naturalytelse = {
+	beloepPrMnd?: string
+	fom?: string
+	naturaytelseType: string
+}

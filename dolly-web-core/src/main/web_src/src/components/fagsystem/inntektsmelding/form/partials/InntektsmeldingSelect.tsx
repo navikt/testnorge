@@ -68,14 +68,7 @@ export default ({
 						isClearable={false}
 					/>
 				) : (
-					<FormikSelect
-						name={path}
-						label={label}
-						options={data}
-						type="text"
-						size={size}
-						isClearable={false}
-					/>
+					<FormikSelect name={path} label={label} options={data} type="text" size={size} />
 				)
 			}
 		/>

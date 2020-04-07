@@ -8,17 +8,17 @@ interface OmsorgspengerVisning {
 }
 
 type Omsorgspenger = {
-	delvisFravaersListe?: DelvisFravaersListe
-	fravaersPerioder?: string
+	delvisFravaersListe?: Array<DelvisFravaer>
+	fravaersPerioder?: Array<Fravaer>
 	harUtbetaltPliktigeDager?: boolean
 }
 
-type DelvisFravaersListe = {
+type DelvisFravaer = {
 	dato?: string
 	timer?: number
 }
 
-type FravaersPerioder = {
+type Fravaer = {
 	fom?: string
 	tom?: string
 }
@@ -30,10 +30,13 @@ export default ({ data }: OmsorgspengerVisning) => {
 		<>
 			<h4>Omsorgspenger</h4>
 			<div className="person-visning_content">
-				<TitleValue title="Har utbetalt pliktige dager" value={data.harUtbetaltPliktigeDager} />
+				<TitleValue
+					title="Har utbetalt pliktige dager"
+					value={Formatters.oversettBoolean(data.harUtbetaltPliktigeDager)}
+				/>
 				{data.delvisFravaersListe && (
 					<DollyFieldArray data={data.delvisFravaersListe} header="Delvis fravær">
-						{(id: DelvisFravaersListe) => (
+						{(id: DelvisFravaer) => (
 							<>
 								<div className="person-visning_content">
 									<TitleValue title="Dato" value={Formatters.formatDate(id.dato)} />
@@ -46,7 +49,7 @@ export default ({ data }: OmsorgspengerVisning) => {
 
 				{data.fravaersPerioder && (
 					<DollyFieldArray data={data.fravaersPerioder} header="Delvis fraværsperioder">
-						{(id: FravaersPerioder) => (
+						{(id: Fravaer) => (
 							<>
 								<div className="person-visning_content">
 									<TitleValue title="Fra og med dato" value={Formatters.formatDate(id.fom)} />
