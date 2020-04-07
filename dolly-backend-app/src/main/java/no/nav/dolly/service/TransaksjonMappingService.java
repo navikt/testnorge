@@ -37,6 +37,6 @@ public class TransaksjonMappingService {
     @Transactional
     public void saveAll(Collection<TransaksjonMapping> entries) {
 
-        transaksjonMappingRepository.saveAll(entries);
+        entries.forEach(transaksjonMappingRepository::save);
     }
 }
