@@ -6,6 +6,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
@@ -33,6 +34,7 @@ public class TransaksjonMappingService {
                 .anyMatch(mapping -> miljoe.equals(mapping.getMiljoe()));
     }
 
+    @Transactional
     public void saveAll(Collection<TransaksjonMapping> entries) {
 
         transaksjonMappingRepository.saveAll(entries);
