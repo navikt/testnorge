@@ -3,12 +3,14 @@ package no.nav.dolly.repository;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 
-public interface BestillingKontrollRepository extends CrudRepository<BestillingKontroll, Long> {
+public interface BestillingKontrollRepository extends Repository<BestillingKontroll, Long> {
+
+    Optional<BestillingKontroll> save(BestillingKontroll bestillingKontroll);
 
     Optional<BestillingKontroll> findByBestillingId(Long bestillingId);
 

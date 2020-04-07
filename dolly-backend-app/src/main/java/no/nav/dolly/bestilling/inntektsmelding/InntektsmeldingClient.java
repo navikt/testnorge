@@ -41,12 +41,11 @@ public class InntektsmeldingClient implements ClientRegister {
             InntektsmeldingRequest inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class);
             bestilling.getEnvironments().forEach(environment -> {
 
-                if (isOpprettEndre || !transaksjonMappingService.existAlready(INNTKMELD, tpsPerson.getHovedperson(), environment)) {
-                    inntektsmeldingRequest.setArbeidstakerFnr(tpsPerson.getHovedperson());
-                    inntektsmeldingRequest.setMiljoe(environment);
-
-                    postInntektsmelding(inntektsmeldingRequest, status);
-                }
+                inntektsmeldingRequest.setArbeidstakerFnr(tpsPerson.getHovedperson());
+                inntektsmeldingRequest.setMiljoe(environment);
+                postInntektsmelding(isOpprettEndre ||
+                        !transaksjonMappingService.existAlready(INNTKMELD, tpsPerson.getHovedperson(), environment),
+                        inntektsmeldingRequest, status);
             });
 
             progress.setInntektsmeldingStatus(status.length() > 1 ? status.substring(1) : null);
@@ -59,29 +58,31 @@ public class InntektsmeldingClient implements ClientRegister {
         // Inntektsmelding mangler pt. sletting
     }
 
-    private void postInntektsmelding(InntektsmeldingRequest inntektsmeldingRequest, StringBuilder status) {
+    private void postInntektsmelding(boolean isSendMelding, InntektsmeldingRequest inntektsmeldingRequest, StringBuilder status) {
 
         try {
-            ResponseEntity<InntektsmeldingResponse> response = inntektsmeldingConsumer.postInntektsmelding(inntektsmeldingRequest);
+            if (isSendMelding) {
+                ResponseEntity<InntektsmeldingResponse> response = inntektsmeldingConsumer.postInntektsmelding(inntektsmeldingRequest);
 
-            if (response.hasBody()) {
-                status.append(',')
-                        .append(inntektsmeldingRequest.getMiljoe())
-                        .append(":OK");
-
-                transaksjonMappingService.saveAll(
-                        response.getBody().getDokumenter().stream()
-                                .map(dokument ->
-                                        TransaksjonMapping.builder()
-                                                .ident(inntektsmeldingRequest.getArbeidstakerFnr())
-                                                .transaksjonId(dokument.getJournalpostId())
-                                                .datoEndret(LocalDateTime.now())
-                                                .miljoe(inntektsmeldingRequest.getMiljoe())
-                                                .system(INNTKMELD.name())
-                                                .build())
-                                .collect(Collectors.toList())
-                );
+                if (response.hasBody()) {
+                    transaksjonMappingService.saveAll(
+                            response.getBody().getDokumenter().stream()
+                                    .map(dokument ->
+                                            TransaksjonMapping.builder()
+                                                    .ident(inntektsmeldingRequest.getArbeidstakerFnr())
+                                                    .transaksjonId(dokument.getJournalpostId())
+                                                    .datoEndret(LocalDateTime.now())
+                                                    .miljoe(inntektsmeldingRequest.getMiljoe())
+                                                    .system(INNTKMELD.name())
+                                                    .build())
+                                    .collect(Collectors.toList())
+                    );
+                }
             }
+
+            status.append(',')
+                    .append(inntektsmeldingRequest.getMiljoe())
+                    .append(":OK");
 
         } catch (RuntimeException re) {
 
