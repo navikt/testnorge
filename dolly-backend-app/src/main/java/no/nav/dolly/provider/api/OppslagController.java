@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.aareg.AaregConsumer;
-import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
+import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
 import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
@@ -32,8 +32,11 @@ import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
 import no.nav.dolly.consumer.norg2.Norg2EnhetResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
+import no.nav.dolly.service.InntektsmeldingEnumService;
+import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
 @RestController
@@ -50,6 +53,8 @@ public class OppslagController {
     private final FasteDatasettConsumer fasteDatasettConsumer;
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final IdentpoolConsumer identpoolConsumer;
+    private final InntektsmeldingEnumService inntektsmeldingEnumService;
+    private final TransaksjonMappingService transaksjonMappingService;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -132,5 +137,19 @@ public class OppslagController {
     @ApiOperation("Henter 10 syntetiske personnavn")
     public ResponseEntity getPersonnavn() {
         return identpoolConsumer.getPersonnavn();
+    }
+
+    @GetMapping("/inntektsmelding/{enumtype}")
+    @ApiOperation("Henter enumtyper for inntektsmelding")
+    public List<String> getInntektsmeldingeTyper(@PathVariable InntektsmeldingEnumService.EnumTypes enumtype) {
+
+        return inntektsmeldingEnumService.getEnumType(enumtype);
+    }
+
+    @GetMapping("/transaksjonid/{system}/{ident}")
+    @ApiOperation("Henter transaksjon IDer for ident")
+    public List<TransaksjonMapping> getTransaksjonIder(@PathVariable SystemTyper system, @PathVariable String ident) {
+
+        return transaksjonMappingService.getTransaksjonMapping(system, ident);
     }
 }
