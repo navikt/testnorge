@@ -239,7 +239,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	const aaregKriterier = bestillingData.aareg
 	if (aaregKriterier) {
 		const aareg = {
-			header: 'Arbeidsforhold',
+			header: 'Arbeidsforhold (Aareg)',
 			itemRows: []
 		}
 
@@ -318,7 +318,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		})
 
 		const sigrunStub = {
-			header: 'Inntekter',
+			header: 'Skatteoppgjør (Sigrun)',
 			itemRows: []
 		}
 
@@ -352,7 +352,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	if (inntektStubKriterier) {
 		const inntektStub = {
-			header: 'Inntektskomponenten (A-ordningen)',
+			header: 'A-ordningen (Inntektskomponenten)',
 			// items: [
 			// 	obj('Prosentøkning per år', inntektStubKriterier.prosentOekningPerAaar)
 			// ],
@@ -714,7 +714,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	if (pensjonKriterier) {
 		const pensjonforvalter = {
-			header: 'Pensjonsgivende inntekt',
+			header: 'Pensjonsgivende inntekt (POPP)',
 			items: [
 				obj('Fra og med år', pensjonKriterier.inntekt.fomAar),
 				obj('Til og med år', pensjonKriterier.inntekt.tomAar),
@@ -728,6 +728,27 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 		data.push(pensjonforvalter)
 	}
+
+	const inntektsmeldingKriterier = bestillingData.inntektsmelding
+	//TODO: Mangler en hel del inntektsmeldingegenskaper
+	const mapInntektsmeldingKriterier = meldinger => ({
+		header: 'Inntektsmelding (fra Altinn)',
+		itemRows: meldinger.map((inntekt, i) => [
+			{
+				numberHeader: `Inntekt ${i + 1}`
+			},
+			obj(
+				'Innsendingstidspunkt',
+				Formatters.formatDate(inntekt.avsendersystem.innsendingstidspunkt)
+			),
+			obj('Virksomhet', inntekt.arbeidsgiver.orgnummer),
+			obj('Opplysningspliktig virksomhet', inntekt.arbeidsgiver.virksomhetsnummer),
+			obj('Beløp', inntekt.arbeidsforhold.beregnetInntekt.beloep)
+		])
+	})
+
+	if (inntektsmeldingKriterier)
+		data.push(mapInntektsmeldingKriterier(inntektsmeldingKriterier.inntekter))
 
 	return data
 }

@@ -18,17 +18,20 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arbeid"
 		>
-			<AttributtKategori title="Arbeidsforhold">
+			<AttributtKategori title="Arbeidsforhold (Aareg)">
 				<Attributt attr={sm.attrs.aareg} />
 			</AttributtKategori>
-			<AttributtKategori title="Inntekt">
+			<AttributtKategori title="Skatteoppgjør (Sigrun)">
 				<Attributt attr={sm.attrs.sigrunstub} />
 			</AttributtKategori>
-			<AttributtKategori title="Pensjonsgivende inntekt">
+			<AttributtKategori title="Pensjonsgivende inntekt (POPP)">
 				<Attributt attr={sm.attrs.pensjonforvalter} />
 			</AttributtKategori>
-			<AttributtKategori title="Inntektskomponenten (A-ordningen)">
+			<AttributtKategori title="A-ordningen (Inntektskomponenten)">
 				<Attributt attr={sm.attrs.inntektstub} />
+			</AttributtKategori>
+			<AttributtKategori title="Inntektsmelding (fra Altinn) - beta">
+				<Attributt attr={sm.attrs.inntektsmelding} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -48,7 +51,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		}
 	},
 	sigrunstub: {
-		label: 'Inntekt',
+		label: 'Har inntekt',
 		checked: has('sigrunstub'),
 		add: () =>
 			set('sigrunstub', [
@@ -61,8 +64,50 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 			]),
 		remove: () => del('sigrunstub')
 	},
+	inntektsmelding: {
+		label: 'Har inntektsmelding',
+		checked: has('inntektsmelding'),
+		add: () =>
+			set('inntektsmelding', {
+				inntekter: [
+					//TODO Hardkoding flyttes backend etter påske
+					{
+						aarsakTilInnsending: 'NY',
+						arbeidsgiver: {
+							virksomhetsnummer: '',
+							kontaktinformasjon: {
+								kontaktinformasjonNavn: 'Dolly Dollesen',
+								telefonnummer: '99999999'
+							}
+						},
+						arbeidsforhold: {
+							beregnetInntekt: {
+								beloep: ''
+							},
+							foersteFravaersdag: ''
+						},
+						avsendersystem: {
+							innsendingstidspunkt: new Date(),
+							systemnavn: 'Dolly',
+							systemversjon: 'v1'
+						},
+						refusjon: {
+							refusjonsbeloepPrMnd: '',
+							refusjonsopphoersdato: ''
+						},
+						naerRelasjon: false,
+						ytelse: ''
+					}
+				],
+				joarkMetadata: {
+					tema: '',
+					titel: 'En hardkoda søknadstittel'
+				}
+			}),
+		remove: () => del('inntektsmelding')
+	},
 	pensjonforvalter: {
-		label: 'Pensjonsgivende inntekt',
+		label: 'Har inntekt',
 		checked: has('pensjonforvalter'),
 		add: () =>
 			set('pensjonforvalter.inntekt', {
@@ -74,7 +119,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		remove: () => del('pensjonforvalter.inntekt')
 	},
 	inntektstub: {
-		label: 'Har inntekter',
+		label: 'Har inntekt',
 		checked: has('inntektstub'),
 		add: () =>
 			set('inntektstub', {
