@@ -21,6 +21,7 @@
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <spring.boot.maven.plugin.version>2.1.8.RELEASE</spring.boot.maven.plugin.version>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
+        <commons-csv.version>1.8</commons-csv.version>
     </properties>
 
     <dependencies>
@@ -31,6 +32,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>${commons-csv.version}</version>
         </dependency>
 
         <!-- LOMBOK -->
@@ -142,8 +148,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler-plugin.version}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>

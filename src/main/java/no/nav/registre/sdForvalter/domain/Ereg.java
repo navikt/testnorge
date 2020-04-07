@@ -36,6 +36,20 @@ public class Ereg extends FasteData {
     @JsonProperty
     private final Adresse postadresse;
 
+    @Builder
+    public Ereg(String gruppe, String opprinnelse, String orgnr, String enhetstype, String navn, String epost, String internetAdresse, String naeringskode, String juridiskEnhet, Adresse forretningsAdresse, Adresse postadresse) {
+        super(gruppe, opprinnelse);
+        this.orgnr = orgnr;
+        this.enhetstype = enhetstype;
+        this.navn = navn;
+        this.epost = epost;
+        this.internetAdresse = internetAdresse;
+        this.naeringskode = naeringskode;
+        this.juridiskEnhet = juridiskEnhet;
+        this.forretningsAdresse = forretningsAdresse;
+        this.postadresse = postadresse;
+    }
+
     public Ereg(EregModel model) {
         super(model);
         orgnr = model.getOrgnr();
