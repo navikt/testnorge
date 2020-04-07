@@ -13,7 +13,7 @@ interface NaturalytelseForm {
 const initialNaturalytelse = {
 	beloepPrMnd: '',
 	fom: '',
-	naturaytelseType: ''
+	naturalytelseType: ''
 }
 
 export default ({ path }: NaturalytelseForm) => (
@@ -28,7 +28,7 @@ export default ({ path }: NaturalytelseForm) => (
 					<FormikTextInput name={`${path}.beloepPrMnd`} label="Beløp per måned" type="number" />
 					<FormikDatepicker name={`${path}.fom`} label="Fra og med dato" />
 					<InntektsmeldingSelect
-						path={`${path}.naturaytelseType`}
+						path={`${path}.naturalytelseType`}
 						label="Årsak til innsending"
 						kodeverk={Kodeverk.NaturalYtelse}
 						size="medium"
@@ -46,7 +46,7 @@ export default ({ path }: NaturalytelseForm) => (
 					<FormikTextInput name={`${path}.beloepPrMnd`} label="Beløp per måned" type="number" />
 					<FormikDatepicker name={`${path}.fom`} label="Fra og med dato" />
 					<InntektsmeldingSelect
-						path={`${path}.naturaytelseType`}
+						path={`${path}.naturalytelseType`}
 						label="Årsak til innsending"
 						kodeverk={Kodeverk.NaturalYtelse}
 						size="medium"

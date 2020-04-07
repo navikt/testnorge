@@ -85,5 +85,5 @@ export type SykepengerIArbeidsgiverperioden = {}
 export type Naturalytelse = {
 	beloepPrMnd?: string
 	fom?: string
-	naturaytelseType: string
+	naturalytelseType: string
 }
