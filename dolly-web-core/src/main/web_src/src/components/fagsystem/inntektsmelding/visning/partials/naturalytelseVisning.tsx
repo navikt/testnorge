@@ -12,7 +12,7 @@ interface NaturalytelseVisning {
 type Naturalytelse = {
 	beloepPrMnd?: string
 	fom?: string
-	naturaytelseType: string
+	naturalytelseType: string
 }
 
 export default ({ data, header }: NaturalytelseVisning) => {
@@ -23,7 +23,7 @@ export default ({ data, header }: NaturalytelseVisning) => {
 				<>
 					<div className="person-visning_content">
 						<TitleValue title="Beløp per måned" value={id.beloepPrMnd} />
-						<TitleValue title="Naturalytelse type" value={id.naturaytelseType} />
+						<TitleValue title="Naturalytelse type" value={id.naturalytelseType} />
 						<TitleValue title="Fra og med dato" value={Formatters.formatDate(id.fom)} />
 					</div>
 				</>
