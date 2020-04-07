@@ -10,5 +10,5 @@ public interface TransaksjonMappingRepository extends CrudRepository<Transaksjon
 
     Optional<List<TransaksjonMapping>> findAllByIdent(String ident);
 
-    Optional<List<TransaksjonMapping>> findAllBySystemAndIdent(String System, String ident);
+    Optional<List<TransaksjonMapping>> findAllBySystemAndIdent(String system, String ident);
 }
