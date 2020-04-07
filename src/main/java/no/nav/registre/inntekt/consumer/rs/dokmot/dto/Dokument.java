@@ -24,7 +24,7 @@ public class Dokument {
     private List<Dokumentvariant> dokumentvarianter;
 
     public Dokument(RsJoarkMetadata metadata, Dokumentvariant... dokumentvariants) {
-        this.titel = metadata.getTitel();
+        this.titel = metadata.getTittel();
         this.brevkode = metadata.getBrevkode();
         this.dokumentkategori = metadata.getBrevkategori();
         this.dokumentvarianter = Arrays.asList(dokumentvariants);

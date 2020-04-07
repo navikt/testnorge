@@ -55,7 +55,7 @@ public class DokmotRequest {
         );
         this.bruker = new Bruker(inntektDokument.getArbeidstakerFnr(), inntektDokument.getMetadata().getBrukerIdType());
         this.tema = inntektDokument.getMetadata().getTema();
-        this.titel = inntektDokument.getMetadata().getTitel();
+        this.titel = inntektDokument.getMetadata().getTittel();
         this.kanal = inntektDokument.getMetadata().getKanal();
         this.eksternReferanseId = inntektDokument.getMetadata().getEksternReferanseId();
         this.datoMottatt = inntektDokument.getDatoMottatt();

@@ -12,7 +12,7 @@ public class RsJoarkMetadata {
     private static final String AVSENDER_MOTTAKER_ID_TYPE = "ORGNR";
     private static final String BRUKER_ID_TYPE = "FNR";
     private static final String TEMA = "FOR";
-    private static final String TITEL = "Syntetisk Inntektsmelding";
+    private static final String TITTEL = "Syntetisk Inntektsmelding";
     private static final String KANAL = "ALTINN";
     private static final String EKSTERN_REFERANSE_ID = "INGEN";
     private static final String FILTYPE_XML = "XML";
@@ -30,8 +30,8 @@ public class RsJoarkMetadata {
     private String brukerIdType;
     @JsonProperty(defaultValue = TEMA)
     private String tema;
-    @JsonProperty(defaultValue = TITEL)
-    private String titel;
+    @JsonProperty(defaultValue = TITTEL)
+    private String tittel;
     @JsonProperty(defaultValue = KANAL)
     private String kanal;
     @JsonProperty(defaultValue = EKSTERN_REFERANSE_ID)
@@ -58,7 +58,7 @@ public class RsJoarkMetadata {
         this.avsenderMottakerIdType = AVSENDER_MOTTAKER_ID_TYPE;
         this.brukerIdType = BRUKER_ID_TYPE;
         this.tema = TEMA;
-        this.titel = TITEL;
+        this.tittel = TITTEL;
         this.kanal = KANAL;
         this.eksternReferanseId = EKSTERN_REFERANSE_ID;
         this.filtypeOriginal = FILTYPE_XML;
