@@ -1,6 +1,24 @@
 //TODO Ikke tatt i bruk enda. Denne kan brukes av både form og visning
 
-type Inntekter = {
+export enum Kodeverk {
+	AarsakTilInnsending = 'AARSAK_TIL_INNSENDING_TYPE',
+	AarsakTilUtsettelse = 'AARSAK_TIL_UTSETTELSE_TYPE',
+	AarsakVedEndring = 'AARSAK_VED_ENDRING_TYPE',
+	Begrunnelse = 'BEGRUNNELSE_TYPE',
+	NaturalYtelse = 'NATURALYTELSE_TYPE',
+	Ytelse = 'YTELSE_TYPE'
+}
+
+export enum Ytelser {
+	Sykepenger = 'SYKEPENGER',
+	Foreldrepenger = 'FORELDREPENGER',
+	Svangerskapspenger = 'SVANGERSKAPSPENGER',
+	Pleiepenger = 'PLEIEPENGER',
+	Omsorgspenger = 'OMSORGSPENGER',
+	Opplaeringspenger = 'OPPLAERINGSPENGER'
+}
+
+export type Inntekter = {
 	aarsakTilInnsending: string
 	naerRelasjon: boolean
 	startdatoForeldrepengeperiode: string
@@ -16,28 +34,36 @@ type Inntekter = {
 	sykepengerIArbeidsgiverperioden?: SykepengerIArbeidsgiverperioden
 }
 
-type Arbeidsforhold = {
+export type Arbeidsforhold = {
 	beregnetInntekt: BeregnetInntekt
 	avtaltFerieListe?: Array<AvtaltFerie>
 	foersteFravaersdag?: string
 }
 
-type BeregnetInntekt = {
+export type BeregnetInntekt = {
 	beloep: number
 	aarsakVedEndring: string //enum?
 }
 
-type AvtaltFerie = {
+export type AvtaltFerie = {
 	fom: string
 	tom: string
 }
 
-type Arbeidsgiver = {}
+export type Arbeidsgiver = {}
 
-type Avsendersystem = {}
-type GjenopptakelseNaturalytelse = {}
-type OpphoerAvNaturalytelse = {}
-type Omsorgspenger = {}
-type Pleiepenger = {}
-type Refusjon = {}
-type SykepengerIArbeidsgiverperioden = {}
+export type Avsendersystem = {}
+export type GjenopptakelseNaturalytelse = {}
+export type OpphoerAvNaturalytelse = {}
+export type Omsorgspenger = {}
+export type Pleiepenger = {}
+export type Refusjon = {
+	refusjonsbeloepPrMnd?: number
+	refusjonsopphoersdato?: string
+	endringIRefusjonListe?: Array<EndringIRefusjon>
+}
+type EndringIRefusjon = {
+	refusjonsbeloepPrMnd?: number
+	endringsdato?: string
+}
+export type SykepengerIArbeidsgiverperioden = {}

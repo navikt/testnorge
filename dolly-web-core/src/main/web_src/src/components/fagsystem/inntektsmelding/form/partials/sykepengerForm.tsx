@@ -4,7 +4,7 @@ import InntektsmeldingSelect from './InntektsmeldingSelect'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { Kodeverk } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
 interface SykepengerForm {
 	path: string
@@ -22,7 +22,7 @@ export default ({ path }: SykepengerForm) => {
 			<InntektsmeldingSelect
 				path={`${path}.begrunnelseForReduksjonEllerIkkeUtbetalt`}
 				label="Begrunnelse for reduksjon eller ikke utbetalt"
-				kodeverk="BEGRUNNELSE_TYPE"
+				kodeverk={Kodeverk.Begrunnelse}
 				size="large"
 			/>
 			<FormikDollyFieldArray

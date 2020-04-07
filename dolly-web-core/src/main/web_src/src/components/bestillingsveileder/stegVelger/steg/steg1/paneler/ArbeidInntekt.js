@@ -88,8 +88,8 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 						},
 						avsendersystem: {
 							innsendingstidspunkt: new Date(),
-							systemnavn: 'Dollytesten',
-							systemversjon: 'v3.5'
+							systemnavn: 'Dolly',
+							systemversjon: 'v1'
 						},
 						refusjon: {
 							refusjonsbeloepPrMnd: '',

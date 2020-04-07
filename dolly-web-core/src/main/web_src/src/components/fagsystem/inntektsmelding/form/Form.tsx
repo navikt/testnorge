@@ -11,7 +11,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { requiredDate, requiredString, requiredNumber, messages } from '~/utils/YupValidations'
-import InntektsmeldingOrgnummerSelect from './partials/inntektsmeldingOrgnummerSelect'
+import InntektsmeldingOrgnummerSelect from './partials/InntektsmeldingOrgnummerSelect'
 import InntektsmeldingSelect from './partials/InntektsmeldingSelect'
 import OmsorgspengerForm from './partials/omsorgspengerForm'
 import SykepengerForm from './partials/sykepengerForm'
@@ -20,6 +20,7 @@ import RefusjonForm from './partials/refusjonForm'
 import ArbeidsforholdForm from './partials/arbeidsforholdForm'
 import { FormikProps } from 'formik'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { Kodeverk, Ytelser } from '../InntektsmeldingTypes'
 
 interface InntektsmeldingForm {
 	formikBag: FormikProps<{}>
@@ -39,8 +40,8 @@ const initialValues = {
 	},
 	avsendersystem: {
 		innsendingstidspunkt: new Date(),
-		systemnavn: 'Ola incorperated sunday test',
-		systemversjon: 'v3.5'
+		systemnavn: 'Dolly',
+		systemversjon: 'v1'
 	},
 	refusjon: {
 		refusjonsbeloepPrMnd: '',
@@ -86,14 +87,14 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 									<InntektsmeldingSelect
 										path={`${path}.aarsakTilInnsending`}
 										label="Årsak til innsending"
-										kodeverk="AARSAK_TIL_INNSENDING_TYPE"
+										kodeverk={Kodeverk.AarsakTilInnsending}
 										formikBag={formikBag}
 									/>
 									<InntektsmeldingSelect
 										path={`${path}.ytelse`}
 										idx={idx}
 										label="Ytelse"
-										kodeverk="YTELSE_TYPE"
+										kodeverk={Kodeverk.Ytelse}
 										formikBag={formikBag}
 									/>
 
@@ -116,21 +117,21 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 									ytelse={ytelse}
 									formikBag={formikBag}
 								/>
-								{ytelse === 'FORELDREPENGER' && (
+								{ytelse === Ytelser.Foreldrepenger && (
 									<FormikDatepicker
 										name={`${path}.startdatoForeldrepengeperiode`}
 										label="Startdato for foreldrepengeperiode"
 									/>
 								)}
-								{ytelse === 'SYKEPENGER' && (
+								{ytelse === Ytelser.Sykepenger && (
 									<Kategori title="Sykepenger">
 										<SykepengerForm path={`${path}.sykepengerIArbeidsgiverperioden`} />
 									</Kategori>
 								)}
-								{ytelse === 'PLEIEPENGER' && (
+								{ytelse === Ytelser.Pleiepenger && (
 									<PleiepengerForm path={`${path}.pleiepengerPerioder`} />
 								)}
-								{ytelse === 'OMSORGSPENGER' && (
+								{ytelse === Ytelser.Omsorgspenger && (
 									<Kategori title="Omsorgspenger">
 										<OmsorgspengerForm path={`${path}.omsorgspenger`} />
 									</Kategori>

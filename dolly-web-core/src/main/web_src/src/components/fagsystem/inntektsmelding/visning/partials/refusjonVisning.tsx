@@ -30,12 +30,10 @@ export default ({ data }: RefusjonVisning) => {
 				{data.endringIRefusjonListe && (
 					<DollyFieldArray data={data.endringIRefusjonListe} header="Endring i refusjon">
 						{(id: EndringIRefusjon) => (
-							<>
-								<div className="person-visning_content">
-									<TitleValue title="Ednringsdato" value={Formatters.formatDate(id.endringsdato)} />
-									<TitleValue title="Refusjonsbeløp per måned" value={id.refusjonsbeloepPrMnd} />
-								</div>
-							</>
+							<div className="person-visning_content">
+								<TitleValue title="Ednringsdato" value={Formatters.formatDate(id.endringsdato)} />
+								<TitleValue title="Refusjonsbeløp per måned" value={id.refusjonsbeloepPrMnd} />
+							</div>
 						)}
 					</DollyFieldArray>
 				)}

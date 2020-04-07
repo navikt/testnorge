@@ -5,6 +5,7 @@ import Button from '~/components/ui/button/Button'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { Ytelser } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
 interface RefusjonForm {
 	path: string
@@ -27,7 +28,7 @@ export default ({ path, ytelse }: RefusjonForm) => {
 			/>
 			<FormikDatepicker name={`${path}.refusjonsopphoersdato`} label="Opphørsdato for refusjon" />
 			{/* Endring i refusjon gjelder sykepenger, foreldrepenger, svangerskapspenger, pleiepenger, opplæring */}
-			{ytelse !== 'OMSORGSPENGER' && (
+			{ytelse !== Ytelser.Omsorgspenger && (
 				<FormikDollyFieldArray
 					name={`${path}.endringIRefusjonListe`}
 					header="Endring i refusjon"
