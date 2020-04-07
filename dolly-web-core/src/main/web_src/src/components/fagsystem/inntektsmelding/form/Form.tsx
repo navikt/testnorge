@@ -1,6 +1,7 @@
 import React from 'react'
 import * as Yup from 'yup'
 import _get from 'lodash/get'
+import _has from 'lodash/has'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
@@ -18,6 +19,7 @@ import PleiepengerForm from './partials/pleiepengerForm'
 import RefusjonForm from './partials/refusjonForm'
 import ArbeidsforholdForm from './partials/arbeidsforholdForm'
 import { FormikProps } from 'formik'
+import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 
 interface InntektsmeldingForm {
 	formikBag: FormikProps<{}>
@@ -62,6 +64,14 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 				//@ts-ignore
 				startOpen={() => erForste(formikBag.values, [inntektsmeldingAttributt])}
 			>
+				{/* //TODO Vi må finne på en god løsning her! */}
+				{!_has(formikBag.values, 'aareg') && (
+					<AlertStripeInfo>
+						Personen må ha et arbeidsforhold knyttet til den samme virksomheten som du velger i
+						inntektsmeldingen. Gå tilbake til forrige steg og huk av for Arbeidsforhold (Aareg)
+						også.
+					</AlertStripeInfo>
+				)}
 				<FormikDollyFieldArray
 					name="inntektsmelding.inntekter"
 					header="Inntekt"
@@ -128,6 +138,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 								<Kategori title="Refusjon">
 									<RefusjonForm path={`${path}.refusjon`} ytelse={ytelse} />
 								</Kategori>
+								{/* //TODO: Deler som mangler: naturalytelse */}
 							</div>
 						)
 					}}

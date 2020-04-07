@@ -72,7 +72,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 				inntekter: [
 					//TODO Hardkoding flyttes backend etter påske
 					{
-						aarsakTilInnsending: '',
+						aarsakTilInnsending: 'NY',
 						arbeidsgiver: {
 							virksomhetsnummer: '',
 							kontaktinformasjon: {

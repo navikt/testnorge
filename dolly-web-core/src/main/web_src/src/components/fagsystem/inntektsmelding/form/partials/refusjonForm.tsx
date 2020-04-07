@@ -27,7 +27,7 @@ export default ({ path, ytelse }: RefusjonForm) => {
 			/>
 			<FormikDatepicker name={`${path}.refusjonsopphoersdato`} label="Opphørsdato for refusjon" />
 			{/* Endring i refusjon gjelder sykepenger, foreldrepenger, svangerskapspenger, pleiepenger, opplæring */}
-			{/* {ytelse !== 'OMSORGSPENGER' && (
+			{ytelse !== 'OMSORGSPENGER' && (
 				<FormikDollyFieldArray
 					name={`${path}.endringIRefusjonListe`}
 					header="Endring i refusjon"
@@ -44,7 +44,7 @@ export default ({ path, ytelse }: RefusjonForm) => {
 						</>
 					)}
 				</FormikDollyFieldArray>
-			)} */}
+			)}
 		</div>
 	)
 }

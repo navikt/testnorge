@@ -18,15 +18,14 @@ export default ({ path, ytelse, formikBag }: ArbeidsforholdForm) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikTextInput name={`${path}.beregnetInntekt.beloep`} label="Beløp" type="number" />
-			{/* <InntektsmeldingSelect
+			<InntektsmeldingSelect
 				path={`${path}.beregnetInntekt.aarsakVedEndring`}
 				label="Årsak ved endring"
 				kodeverk="AARSAK_VED_ENDRING_TYPE"
 				formikBag={formikBag}
-			/> */}
-
+			/>
 			<FormikDatepicker name={`${path}.foersteFravaersdag`} label="Første fraværsdag" />
-			{/* Ferie: Gjelder for sykepoenger, svangerskapspenger, pleie, omsorg og opplæring. Gjør mer elegant! */}
+			{/* Ferie: Gjelder for sykepoenger, svangerskapspenger, pleie, omsorg og opplæring. TODO Gjør mer elegant! */}
 			{ytelse !== 'FORELDREPENGER' && (
 				<FormikDollyFieldArray
 					name={`${path}.avtaltFerieListe`}

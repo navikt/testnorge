@@ -7,8 +7,11 @@ import Loading from '~/components/ui/loading/Loading'
 import ArbeidsforholdVisning from './partials/arbeidsforholdVisning'
 import OmsorgspengerVisning from './partials/omsorgspengerVisning'
 import RefusjonVisning from './partials/refusjonVisning'
+import SykepengerVisning from './partials/sykepengerVisning'
+import PleiepengerVisning from './partials/pleiepengerVisning'
 
 export const InntektsmeldingVisning = ({ bestilling, loading }) => {
+	//TODO: Gjøre om til tsx
 	// export const InntektsmeldingVisning = ({ data, loading }) => {
 	// if (loading) return <Loading label="laster inntektsmelding data" />
 	// if (!data) return false
@@ -24,6 +27,7 @@ export const InntektsmeldingVisning = ({ bestilling, loading }) => {
 			<DollyFieldArray header="Inntekt" data={data.inntekter}>
 				{(inntekt, idx) => (
 					<>
+						{/* //TODO: Oversette kodeverk */}
 						<div className="person-visning_content" key={idx}>
 							<TitleValue title="Årsak til innsending" value={inntekt.aarsakTilInnsending} />
 							<TitleValue title="Ytelse" value={inntekt.ytelse} />
@@ -34,18 +38,22 @@ export const InntektsmeldingVisning = ({ bestilling, loading }) => {
 							/>
 							<TitleValue
 								title="Innsendingstidspunkt"
-								value={Formatters.formatStringDates(inntekt.avsendersystem.dato)}
+								value={Formatters.formatDate(inntekt.avsendersystem.innsendingstidspunkt)}
 							/>
 							<TitleValue title="Har nær relasjon" value={inntekt.naerRelasjon} />
+							<TitleValue
+								title="Startdato foreldrepenger"
+								value={Formatters.formatDate(inntekt.startdatoForeldrepengeperiode)}
+							/>
 						</div>
 						<ArbeidsforholdVisning data={inntekt.arbeidsforhold} />
 						<OmsorgspengerVisning data={inntekt.omsorgspenger} />
 						<RefusjonVisning data={inntekt.refusjon} />
+						<SykepengerVisning data={inntekt.sykepengerIArbeidsgiverperioden} />
+						<PleiepengerVisning data={inntekt.pleiepengerPerioder} />
 						{/* //TODO: Deler som mangler:
-						Sykepengervisning
-						ForeldrepengerVisning
 						NaturalytelseVisning (opphørt og gjenopptakelse)
-						PleiepengerVisning */}
+						 */}
 					</>
 				)}
 			</DollyFieldArray>
