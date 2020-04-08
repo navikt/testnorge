@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.xml.transform.TransformerException;
 import java.util.List;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageResponse;
 import no.nav.registre.endringsmeldinger.provider.rs.requests.GenererKontonummerRequest;
 import no.nav.registre.endringsmeldinger.service.TestdataService;
@@ -23,7 +22,6 @@ public class TestdataController {
     @Autowired
     private TestdataService testdataService;
 
-    @LogExceptions
     @ApiOperation(value = "Her opprettes det meldinger for endring av norsk gironummer på en liste med identer. Alle identer får det gitte gironummeret, og endringsmeldingene sendes til angitt kø i det angitte miljøet.")
     @PostMapping(value = "/genererKontonummer")
     public List<RsPureXmlMessageResponse> genererKontonummerPaaIdenter(
