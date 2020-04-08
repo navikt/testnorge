@@ -53,8 +53,11 @@ public class DokmotConsumer {
                 .supplyAsync(command::call, executor)
                 .thenApply(response -> new ProsessertInntektDokument(inntektDokument, response));
     }
-
     public List<ProsessertInntektDokument> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumentList) {
+        return opprettJournalpost(miljoe, inntektDokumentList, false);
+    }
+
+    public List<ProsessertInntektDokument> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumentList, boolean continueOnError) {
         log.info("Oppretter {} journalpost i miljo {} for inntekt dokument...", inntektDokumentList.size(), miljoe);
 
         List<CompletableFuture<ProsessertInntektDokument>> completableDokmotList = new ArrayList<>();
@@ -65,7 +68,10 @@ public class DokmotConsumer {
                 return future.get();
             } catch (Exception e) {
                 log.error("Klarer ikke å opprette jornalpost.", e);
-                return null;
+                if(continueOnError){
+                    return null;
+                }
+                throw new RuntimeException("Feil ved opprettelse av journalpost for inntektsmelding", e);
             }
         }).filter(Objects::nonNull).collect(Collectors.toList());
 
