@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.sam.multitenancy.TenantContext;
 import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.sam.service.SyntetiseringService;
@@ -20,7 +19,6 @@ public class SyntetiseringController {
     @Autowired
     private SyntetiseringService syntetiseringService;
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man starte generering av syntetiske samordningsmeldinger på personer i en gitt TPSF-avspillergruppe i et gitt miljø.")
     @PostMapping(value = "/generer")
     public ResponseEntity genererSamordningsmeldinger(

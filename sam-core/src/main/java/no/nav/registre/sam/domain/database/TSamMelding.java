@@ -83,7 +83,7 @@ public class TSamMelding {
         this.datoPurret = DateUtils.formatDate(obj.getDatoPurret());
         this.refusjonskrav = obj.getRefusjonskrav();
         this.datoOpprettet = DateUtils.formatTimestamp(obj.getDatoOpprettet());
-        this.opprettetAv = ("".equals(obj.getOpprettetAv())) ? ENDRET_OPPRETTET_AV : obj.getOpprettetAv();
+        this.opprettetAv = "".equals(obj.getOpprettetAv()) ? ENDRET_OPPRETTET_AV : obj.getOpprettetAv();
         this.datoEndret = DateUtils.formatTimestamp(obj.getDatoEndret());
         this.endretAv = ENDRET_OPPRETTET_AV;
         this.versjon = (int) Double.parseDouble(obj.getVersjon());

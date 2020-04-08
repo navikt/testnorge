@@ -38,7 +38,7 @@ public class IdentService {
         List<List<String>> partisjoner = new ArrayList<>(m);
         for (int i = 0; i < m; i++) {
             int fromIndex = i * PAGE_SIZE;
-            int toIndex = (i * PAGE_SIZE + PAGE_SIZE < size) ? (i * PAGE_SIZE + PAGE_SIZE) : size;
+            int toIndex = i * PAGE_SIZE + PAGE_SIZE < size ? i * PAGE_SIZE + PAGE_SIZE : size;
 
             partisjoner.add(new ArrayList<>(list.subList(fromIndex, toIndex)));
         }

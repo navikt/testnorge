@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.sam.multitenancy.TenantContext;
 import no.nav.registre.sam.service.IdentService;
 
@@ -21,7 +20,6 @@ public class IdentController {
 
     private final IdentService identService;
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente de identene fra en gitt liste som finnes i sam.")
     @PostMapping(value = "/filtrerIdenter/{miljoe}")
     public List<String> filtrerIdenter(

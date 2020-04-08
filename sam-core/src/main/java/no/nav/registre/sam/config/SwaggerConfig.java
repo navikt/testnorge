@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.annotations.ApiIgnore;
+import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -44,15 +45,15 @@ public class SwaggerConfig implements WebMvcConfigurer {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfo(
-                "Testnorge-Sam",
-                "Testnorge-Sam er adapteren mellom orkestratoren og Sam for opprettelse av syntetiske samordningsmeldinger.",
-                "" + appVersion,
-                "https://nav.no",
-                new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/testnorge-skd/browse", null),
-                "Super Strict Licence",
-                "https://opensource.org/licenses/super-strict-license"
-        );
+        return new ApiInfoBuilder()
+                .title("Testnorge-Sam")
+                .description("Testnorge-Sam er adapteren mellom orkestratoren og Sam for opprettelse av syntetiske samordningsmeldinger.")
+                .version(appVersion)
+                .termsOfServiceUrl("https://nav.no")
+                .contact(new Contact("Fellesregistrene på NAV", "https://github.com/navikt/testnorge-sam", null))
+                .license("Super Strict Licence")
+                .licenseUrl("https://opensource.org/licenses/super-strict-license")
+                .build();
     }
 
     @Override

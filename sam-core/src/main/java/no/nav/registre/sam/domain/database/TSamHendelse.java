@@ -71,7 +71,7 @@ public class TSamHendelse {
         this.tssEksternIdFk = obj.getTssEksternIdFk();
         this.samMeldingIdFk = null;
         this.datoOpprettet = DateUtils.formatTimestamp(obj.getDatoOpprettet());
-        this.opprettetAv = (!"".equals(obj.getOpprettetAv())) ? obj.getOpprettetAv() : ENDRET_OPPRETTET_AV;
+        this.opprettetAv = !"".equals(obj.getOpprettetAv()) ? obj.getOpprettetAv() : ENDRET_OPPRETTET_AV;
         this.datoEndret = DateUtils.formatTimestamp(obj.getDatoEndret());
         this.endretAv = ENDRET_OPPRETTET_AV;
         this.versjon = (int) Double.parseDouble(obj.getVersjon());

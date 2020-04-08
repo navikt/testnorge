@@ -88,7 +88,7 @@ public class TSamVedtak {
         this.datoFom = DateUtils.formatDate(obj.getDatoFom());
         this.datoTom = DateUtils.formatDate(obj.getDatoTom());
         this.datoOpprettet = DateUtils.formatTimestamp(obj.getDatoOpprettet());
-        this.opprettetAv = ("".equals(obj.getOpprettetAv())) ? ENDRET_OPPRETTET_AV : obj.getOpprettetAv();
+        this.opprettetAv = "".equals(obj.getOpprettetAv()) ? ENDRET_OPPRETTET_AV : obj.getOpprettetAv();
         this.datoEndret = DateUtils.formatTimestamp(obj.getDatoEndret());
         this.endretAv = ENDRET_OPPRETTET_AV;
         this.versjon = (int) Double.parseDouble(obj.getVersjon());
