@@ -50,7 +50,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .description("Applikasjon som håndterer integrasjon mellom inst2 og resten av synt-stacken.")
                 .version(appVersion)
                 .termsOfServiceUrl("https://nav.no")
-                .contact(new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/testnorge-inst/browse", null))
+                .contact(new Contact("Fellesregistrene på NAV", "https://github.com/navikt/testnorge-inst", null))
                 .license("Super Strict Licence")
                 .licenseUrl("https://opensource.org/licenses/super-strict-license")
                 .build();
