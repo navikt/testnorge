@@ -100,8 +100,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 					}
 				],
 				joarkMetadata: {
-					tema: '',
-					titel: 'En hardkoda søknadstittel'
+					tema: ''
 				}
 			}),
 		remove: () => del('inntektsmelding')
