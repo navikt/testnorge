@@ -116,16 +116,6 @@ public class Inst2ConsumerTest {
         assertThat(responseStatus, is(HttpStatus.OK));
     }
 
-    private void stubTokenProvider() {
-        stubFor(get(urlPathEqualTo("/freg-token-provider/token/user"))
-                .withHeader("accept", equalTo("*/*"))
-                .withHeader("username", equalTo("dummy"))
-                .withHeader("password", equalTo("dummy"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("token.json"))));
-    }
-
     private void stubGetInstitusjonsopphold() {
         stubFor(get(urlPathEqualTo("/inst2/web/api/person/institusjonsopphold"))
                 .withHeader("accept", equalTo("*/*"))

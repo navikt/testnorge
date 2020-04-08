@@ -110,13 +110,6 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- FREG SECURITY -->
-        <dependency>
-            <groupId>no.nav.freg</groupId>
-            <artifactId>freg-security-oidc-utility</artifactId>
-            <version>${freg.security.oidc.utility.version}</version>
-        </dependency>
-
         <!--CODE ANALYSIS-->
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>

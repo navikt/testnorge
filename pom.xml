@@ -46,7 +46,6 @@
         <swagger.version>2.9.2</swagger.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
-        <freg.security.oidc.utility.version>2.0.0</freg.security.oidc.utility.version>
     </properties>
 
     <dependencyManagement>

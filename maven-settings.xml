@@ -1,11 +1,4 @@
 <settings>
-    <mirrors>
-        <mirror>
-            <id>Nexus NAV Repository Group</id>
-            <mirrorOf>external:*,!public-snapshots</mirrorOf>
-            <url>https://repo.adeo.no/repository/maven-public/</url>
-        </mirror>
-    </mirrors>
     <servers>
         <server>
             <id>github</id>
