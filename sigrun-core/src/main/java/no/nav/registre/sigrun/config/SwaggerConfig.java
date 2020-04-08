@@ -50,7 +50,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .description("Testnorge-Sigrun er adapteren for opprettelse av pensjonsopptjeningsmeldinger som legges inn i sigrun-skd-stub. ")
                 .version(appVersion)
                 .termsOfServiceUrl("https://nav.no")
-                .contact(new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/testnorge-sigrun/browse", null))
+                .contact(new Contact("Fellesregistrene på NAV", "https://github.com/navikt/testnorge-sigrun", null))
                 .license("Super Strict Licence")
                 .licenseUrl("https://opensource.org/licenses/super-strict-license")
                 .build();
