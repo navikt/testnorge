@@ -26,8 +26,8 @@ export type Inntekter = {
 	arbeidsforhold: Arbeidsforhold
 	arbeidsgiver: Arbeidsgiver
 	avsendersystem?: Avsendersystem
-	gjenopptakelseNaturalytelseListe?: Array<GjenopptakelseNaturalytelse>
-	opphoerAvNaturalytelseListe?: Array<OpphoerAvNaturalytelse>
+	gjenopptakelseNaturalytelseListe?: Array<Naturalytelse>
+	opphoerAvNaturalytelseListe?: Array<Naturalytelse>
 	omsorgspenger?: Omsorgspenger
 	pleiepengerPerioder?: Array<Pleiepenger>
 	refusjon?: Refusjon
@@ -50,11 +50,18 @@ export type AvtaltFerie = {
 	tom: string
 }
 
-export type Arbeidsgiver = {}
+export type Arbeidsgiver = {
+	kontaktinformasjon: { kontaktinformasjonNavn: string; telefonnummer: string }
+	virksomhetsnummer: string
+	orgnummer?: string
+}
 
-export type Avsendersystem = {}
-export type GjenopptakelseNaturalytelse = {}
-export type OpphoerAvNaturalytelse = {}
+export type Avsendersystem = {
+	innsendingstidspunkt: string
+	systemnavn: string
+	systemversjon: string
+}
+export type Naturalytelse = { beloepPrMnd?: number; fom?: string; naturalytelseType?: string } //enum
 export type Omsorgspenger = {
 	delvisFravaersListe?: Array<DelvisFravaer>
 	fravaersPerioder?: Array<Fravaer>
@@ -70,7 +77,7 @@ type Fravaer = {
 	fom?: string
 	tom?: string
 }
-export type Pleiepenger = {}
+export type Pleiepenger = { fom: string; tom: string }
 export type Refusjon = {
 	refusjonsbeloepPrMnd?: number
 	refusjonsopphoersdato?: string
@@ -81,9 +88,3 @@ type EndringIRefusjon = {
 	endringsdato?: string
 }
 export type SykepengerIArbeidsgiverperioden = {}
-
-export type Naturalytelse = {
-	beloepPrMnd?: string
-	fom?: string
-	naturalytelseType: string
-}
