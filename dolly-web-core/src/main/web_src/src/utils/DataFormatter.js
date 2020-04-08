@@ -81,6 +81,17 @@ Formatters.allCapsToCapitalized = value => {
 	return _capitalize(value)
 }
 
+Formatters.codeToNorskLabel = value => {
+	if (!value) return null
+	return Formatters.uppercaseAndUnderscoreToCapitalized(value)
+		.replace('oe', 'ø')
+		.replace('Oe', 'Ø')
+		.replace('ae', 'æ')
+		.replace('Ae', 'Æ')
+		.replace('aa', 'å')
+		.replace('Aa', 'Å')
+}
+
 Formatters.oversettBoolean = value => {
 	if (_isNil(value)) return value
 	return value === true || value === 'true'

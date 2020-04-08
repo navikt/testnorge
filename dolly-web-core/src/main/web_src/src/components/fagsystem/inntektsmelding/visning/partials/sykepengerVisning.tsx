@@ -28,7 +28,7 @@ export default ({ data }: SykepengerVisning) => {
 				<TitleValue title="Brutto utbetalt" value={data.bruttoUtbetalt} />
 				<TitleValue
 					title="Begrunnelse for reduksjon eller ikke utbetalt"
-					value={data.begrunnelseForReduksjonEllerIkkeUtbetalt}
+					value={Formatters.codeToNorskLabel(data.begrunnelseForReduksjonEllerIkkeUtbetalt)}
 				/>
 				{data.arbeidsgiverperiodeListe && (
 					<DollyFieldArray data={data.arbeidsgiverperiodeListe} header="Arbeidsgiverperioder">

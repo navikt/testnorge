@@ -16,6 +16,7 @@ import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { Kodeverk, Ytelser } from '../InntektsmeldingTypes'
 import InntektsmeldingOrgnummerSelect from './partials/InntektsmeldingOrgnummerSelect'
 import InntektsmeldingSelect from './partials/InntektsmeldingSelect'
+import InntektsmeldingYtelseSelect from './partials/InntektsmeldingYtelseSelect'
 import OmsorgspengerForm from './partials/omsorgspengerForm'
 import SykepengerForm from './partials/sykepengerForm'
 import PleiepengerForm from './partials/pleiepengerForm'
@@ -89,9 +90,8 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 										path={`${path}.aarsakTilInnsending`}
 										label="Årsak til innsending"
 										kodeverk={Kodeverk.AarsakTilInnsending}
-										formikBag={formikBag}
 									/>
-									<InntektsmeldingSelect
+									<InntektsmeldingYtelseSelect
 										path={`${path}.ytelse`}
 										idx={idx}
 										label="Ytelse"
@@ -113,11 +113,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 										checkboxMargin
 									/>
 								</div>
-								<ArbeidsforholdForm
-									path={`${path}.arbeidsforhold`}
-									ytelse={ytelse}
-									formikBag={formikBag}
-								/>
+								<ArbeidsforholdForm path={`${path}.arbeidsforhold`} ytelse={ytelse} />
 								<Kategori title="Refusjon">
 									<RefusjonForm path={`${path}.refusjon`} ytelse={ytelse} />
 								</Kategori>

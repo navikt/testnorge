@@ -28,10 +28,12 @@ export const InntektsmeldingVisning = ({ bestilling, loading }) => {
 			<DollyFieldArray header="Inntekt" data={data.inntekter}>
 				{(inntekt, idx) => (
 					<>
-						{/* //TODO: Oversette kodeverk */}
 						<div className="person-visning_content" key={idx}>
-							<TitleValue title="Årsak til innsending" value={inntekt.aarsakTilInnsending} />
-							<TitleValue title="Ytelse" value={inntekt.ytelse} />
+							<TitleValue
+								title="Årsak til innsending"
+								value={Formatters.codeToNorskLabel(inntekt.aarsakTilInnsending)}
+							/>
+							<TitleValue title="Ytelse" value={Formatters.codeToNorskLabel(inntekt.ytelse)} />
 							<TitleValue title="Virksomhet" value={inntekt.arbeidsgiver.orgnummer} />
 							<TitleValue
 								title="Opplysningspliktig virksomhet"

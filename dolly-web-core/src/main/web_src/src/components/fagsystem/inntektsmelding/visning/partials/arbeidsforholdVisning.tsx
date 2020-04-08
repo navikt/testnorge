@@ -19,7 +19,10 @@ export default ({ data }: ArbeidsforholdVisning) => {
 					title="Første fraværsdag"
 					value={Formatters.formatDate(data.beregnetInntekt.foersteFravaersdag)}
 				/>
-				<TitleValue title="Årsak ved endring" value={data.beregnetInntekt.aarsakVedEndring} />
+				<TitleValue
+					title="Årsak ved endring"
+					value={Formatters.codeToNorskLabel(data.beregnetInntekt.aarsakVedEndring)}
+				/>
 				{data.avtaltFerieListe && (
 					<DollyFieldArray data={data.avtaltFerieListe} header="Avtalt ferie" nested>
 						{(id: any, idx: number) => (

@@ -23,7 +23,10 @@ export default ({ data, header }: NaturalytelseVisning) => {
 				<>
 					<div className="person-visning_content">
 						<TitleValue title="Beløp per måned" value={id.beloepPrMnd} />
-						<TitleValue title="Naturalytelse type" value={id.naturalytelseType} />
+						<TitleValue
+							title="Naturalytelse type"
+							value={Formatters.codeToNorskLabel(id.naturalytelseType)}
+						/>
 						<TitleValue title="Fra og med dato" value={Formatters.formatDate(id.fom)} />
 					</div>
 				</>
