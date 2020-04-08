@@ -50,7 +50,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .description("Testnorge-Nav-Endringsmeldinger er adapteren for opprettelse av nav-endringsmeldinger som sendes til TPS som XML-meldinger gjennom TPSF.")
                 .version(appVersion)
                 .termsOfServiceUrl("https://nav.no")
-                .contact(new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/testnorge-nav-endringsmeldinger/browse", null))
+                .contact(new Contact("Fellesregistrene på NAV", "https://github.com/navikt/testnorge-nav-endringsmeldinger", null))
                 .license("Super Strict Licence")
                 .licenseUrl("https://opensource.org/licenses/super-strict-license")
                 .build();
