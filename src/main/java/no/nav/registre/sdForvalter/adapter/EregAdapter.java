@@ -3,7 +3,9 @@ package no.nav.registre.sdForvalter.adapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.database.model.EregModel;
@@ -37,12 +39,40 @@ public class EregAdapter extends FasteDataAdapter {
     }
 
     public EregListe save(EregListe liste) {
-        List<Ereg> list = liste.itemsNotIn(fetch());
+        List<Ereg> list = liste.getListe();
         if (list.isEmpty()) {
             log.info("Fant ingen nye ereg");
             return new EregListe();
         }
-        return new EregListe(repository.saveAll(list
+        return new EregListe(save(new ArrayList<>(), list));
+    }
+
+    private List<Ereg> save(final List<Ereg> saved, final List<Ereg> notSaved) {
+        if (notSaved.isEmpty()) {
+            return saved;
+        }
+
+        List<Ereg> dependency = notSaved
+                .stream()
+                .filter(value -> value.getJuridiskEnhet() != null)
+                .filter(value -> notSaved.stream().anyMatch(containsJuridiskEnhet(value)))
+                .collect(Collectors.toList());
+
+        List<Ereg> noDependency = notSaved
+                .stream()
+                .filter(value -> !dependency.contains(value))
+                .collect(Collectors.toList());
+
+        return save(persist(noDependency), dependency);
+    }
+
+    private Predicate<Ereg> containsJuridiskEnhet(final Ereg value) {
+        return other -> value.getJuridiskEnhet().equals(other.getOrgnr());
+    }
+
+    private List<Ereg> persist(final List<Ereg> liste) {
+        List<Ereg> persisted = new ArrayList<>();
+        repository.saveAll(liste
                 .stream()
                 .map(item -> new EregModel(
                         item,
@@ -50,7 +80,8 @@ public class EregAdapter extends FasteDataAdapter {
                         getOppinnelse(item),
                         getGruppe(item)
                 ))
-                .collect(Collectors.toList()))
-        );
+                .collect(Collectors.toList())
+        ).forEach(item -> persisted.add(new Ereg(item)));
+        return persisted;
     }
 }

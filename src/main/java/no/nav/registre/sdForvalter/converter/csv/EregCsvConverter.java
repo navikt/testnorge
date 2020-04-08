@@ -1,0 +1,118 @@
+package no.nav.registre.sdForvalter.converter.csv;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import no.nav.registre.sdForvalter.domain.Adresse;
+import no.nav.registre.sdForvalter.domain.Ereg;
+
+public class EregCsvConverter extends CsvConverter<Ereg> {
+    static EregCsvConverter inst;
+
+    private EregCsvConverter() {
+    }
+
+    public static EregCsvConverter inst() {
+        if (inst == null) {
+            inst = new EregCsvConverter();
+        }
+        return inst;
+    }
+
+    private enum Headers implements CsvHeader {
+        ORGNUMMER("Organisasjonsnummer*"),
+        ENHETSTYPE("Enhetstype*"),
+        NAVN("Navn"),
+        EPOST("Epost"),
+        JURIDISK_ENHET("Juridisk enhet"),
+        GRUPPE("Gruppe"),
+        OPPRINNELSE("Opprinnelse"),
+        FORRETNINGS_ADRESSE("Forretnings adresse"),
+        FORRETNINGS_POSTNR("Forretnings postnr"),
+        FORRETNINGS_KOMMUNENR("Forretnings kommunenr"),
+        FORRETNINGS_LANDKODE("Forretnings landkode"),
+        FORRETNINGS_POSTSTED("Forretnings poststed"),
+        POSTADRESSE_ADRESSE("Postadresse adresse"),
+        POSTADRESSE_POSTNR("Postadresse postnr"),
+        POSTADRESSE_KOMMUNENR("Postadresse kommunenr"),
+        POSTADRESSE_LANDKODE("Postadresse landkode"),
+        POSTADRESSE_POSTSTED("Postadresse poststed");
+
+        private final String header;
+
+        Headers(String header) {
+            this.header = header;
+        }
+
+        @Override
+        public String getValue() {
+            return header;
+        }
+    }
+
+    @Override
+    protected RowConverter<Ereg> getRowConverter() {
+        return map -> Ereg
+                .builder()
+                .orgnr(getString(map, Headers.ORGNUMMER))
+                .enhetstype(getString(map, Headers.ENHETSTYPE))
+                .navn(getString(map, Headers.NAVN))
+                .epost(getString(map, Headers.EPOST))
+                .juridiskEnhet(getString(map, Headers.JURIDISK_ENHET))
+                .gruppe(getString(map, Headers.GRUPPE))
+                .opprinnelse(getString(map, Headers.OPPRINNELSE))
+                .forretningsAdresse(Adresse
+                        .builder()
+                        .adresse(getString(map, Headers.FORRETNINGS_ADRESSE))
+                        .adresse(getString(map, Headers.FORRETNINGS_POSTNR))
+                        .adresse(getString(map, Headers.FORRETNINGS_KOMMUNENR))
+                        .adresse(getString(map, Headers.FORRETNINGS_LANDKODE))
+                        .adresse(getString(map, Headers.FORRETNINGS_POSTSTED))
+                        .build()
+                ).postadresse(Adresse
+                        .builder()
+                        .adresse(getString(map, Headers.POSTADRESSE_ADRESSE))
+                        .adresse(getString(map, Headers.POSTADRESSE_POSTNR))
+                        .adresse(getString(map, Headers.POSTADRESSE_KOMMUNENR))
+                        .adresse(getString(map, Headers.POSTADRESSE_LANDKODE))
+                        .adresse(getString(map, Headers.POSTADRESSE_POSTSTED))
+                        .build()
+                ).build();
+    }
+
+    @Override
+    protected ObjectConverter<Ereg> getObjectConverter() {
+        return item -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put(Headers.ORGNUMMER.getValue(), item.getOrgnr());
+            map.put(Headers.ENHETSTYPE.getValue(), item.getEnhetstype());
+            map.put(Headers.NAVN.getValue(), item.getNavn());
+            map.put(Headers.EPOST.getValue(), item.getEpost());
+            map.put(Headers.GRUPPE.getValue(), item.getGruppe());
+            map.put(Headers.JURIDISK_ENHET.getValue(), item.getJuridiskEnhet());
+            map.put(Headers.OPPRINNELSE.getValue(), item.getOpprinnelse());
+            Adresse forretningsAdresse = item.getForretningsAdresse();
+            if (forretningsAdresse != null) {
+                map.put(Headers.FORRETNINGS_ADRESSE.getValue(), forretningsAdresse.getAdresse());
+                map.put(Headers.FORRETNINGS_POSTNR.getValue(), forretningsAdresse.getPostnr());
+                map.put(Headers.FORRETNINGS_KOMMUNENR.getValue(), forretningsAdresse.getKommunenr());
+                map.put(Headers.FORRETNINGS_LANDKODE.getValue(), forretningsAdresse.getLandkode());
+                map.put(Headers.FORRETNINGS_POSTSTED.getValue(), forretningsAdresse.getPoststed());
+            }
+            Adresse postadresse = item.getPostadresse();
+            if (postadresse != null) {
+                map.put(Headers.POSTADRESSE_ADRESSE.getValue(), postadresse.getAdresse());
+                map.put(Headers.POSTADRESSE_POSTNR.getValue(), postadresse.getPostnr());
+                map.put(Headers.POSTADRESSE_KOMMUNENR.getValue(), postadresse.getKommunenr());
+                map.put(Headers.POSTADRESSE_LANDKODE.getValue(), postadresse.getLandkode());
+                map.put(Headers.POSTADRESSE_POSTSTED.getValue(), postadresse.getPoststed());
+            }
+            return map;
+        };
+    }
+
+    @Override
+    protected CsvHeader[] getHeaders() {
+        return Headers.values();
+    }
+}

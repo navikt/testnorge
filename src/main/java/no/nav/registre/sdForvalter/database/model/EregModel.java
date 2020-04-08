@@ -65,7 +65,7 @@ public class EregModel extends FasteDataModel<Ereg> {
         this.epost = ereg.getEpost();
         this.internetAdresse = ereg.getInternetAdresse();
         this.parent = parent;
-        this.forretningsAdresse = ereg.getInternetAdresse() != null ? new AdresseModel(ereg.getForretningsAdresse()) : null;
+        this.forretningsAdresse = ereg.getForretningsAdresse() != null ? new AdresseModel(ereg.getForretningsAdresse()) : null;
         this.postadresse = ereg.getPostadresse() != null ? new AdresseModel(ereg.getPostadresse()) : null;
     }
 
