@@ -15,7 +15,6 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import no.nav.registre.inst.service.SyntetiseringService;
@@ -27,11 +26,10 @@ public class SyntetiseringController {
     @Autowired
     private SyntetiseringService syntetiseringService;
 
-    @LogExceptions
     @PostMapping(value = "/generer")
     public Map<String, List<OppholdResponse>> genererInstitusjonsmeldinger(
-            @RequestHeader (HEADER_NAV_CALL_ID) @NotBlank String navCallId,
-            @RequestHeader (HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
+            @RequestHeader(HEADER_NAV_CALL_ID) @NotBlank String navCallId,
+            @RequestHeader(HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
             @RequestParam String miljoe,
             @RequestBody SyntetiserInstRequest syntetiserInstRequest
     ) {

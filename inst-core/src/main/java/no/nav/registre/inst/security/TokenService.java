@@ -1,6 +1,5 @@
 package no.nav.registre.inst.security;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -13,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.time.LocalDateTime;
-import java.util.Base64;
 
 @Component
 @RequiredArgsConstructor
@@ -95,7 +93,6 @@ public class TokenService {
         RequestEntity getRequest = RequestEntity
                 .get(URI.create(url))
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
-                // .header(AUTHORIZATION, generateBasicAuthToken())
                 .header("username", username)
                 .header("password", password)
                 .build();
@@ -111,9 +108,5 @@ public class TokenService {
             expiryT = LocalDateTime.now().plusSeconds(result.get("expiresIn").asLong());
             idTokenT = "Bearer " + result.get("idToken").asText();
         }
-    }
-
-    private String generateBasicAuthToken() {
-        return "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(UTF_8));
     }
 }

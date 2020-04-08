@@ -28,5 +28,6 @@ spec:
     requests:
       cpu: 200m
       memory: 1024Mi
+  image: {{ image }}
   ingresses:
     - "https://testnorge-inst.nais.preprod.local"
