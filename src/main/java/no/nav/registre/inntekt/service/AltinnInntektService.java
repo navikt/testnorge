@@ -157,8 +157,8 @@ public class AltinnInntektService {
                     .build());
         }
 
+        //TODO (OL): Legge til arbeidsforholdId når dette settes tilsvarende i AA-Reg
         tmp.arbeidsforhold(RsArbeidsforhold.builder()
-                .arbeidsforholdId(nyesteArbeidsforhold.getArbeidsforholdId())
                 .beregnetInntekt(RsInntekt.builder()
                         .beloep(inntekt.getArbeidsforhold().getBeregnetInntekt().getBeloep())
                         .aarsakVedEndring(getValueFromEnumIfSet(inntekt.getArbeidsforhold().getBeregnetInntekt().getAarsakVedEndring()))
