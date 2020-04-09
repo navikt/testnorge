@@ -113,10 +113,10 @@ public class AltinnInntektService {
             String ident
     ) {
         String virksomhetsnummer = "";
-        if (nyesteArbeidsforhold.getOpplysningspliktig().getType().equals(TYPE_ORGANISASJON)) {
-            virksomhetsnummer = ((Organisasjon) nyesteArbeidsforhold.getOpplysningspliktig()).getOrganisasjonsnummer();
-        } else if (nyesteArbeidsforhold.getOpplysningspliktig().getType().equals(TYPE_PERSON)) {
-            virksomhetsnummer = ((Person) nyesteArbeidsforhold.getOpplysningspliktig()).getOffentligIdent();
+        if (nyesteArbeidsforhold.getArbeidsgiver().getType().equals(TYPE_ORGANISASJON)) {
+            virksomhetsnummer = ((Organisasjon) nyesteArbeidsforhold.getArbeidsgiver()).getOrganisasjonsnummer();
+        } else if (nyesteArbeidsforhold.getArbeidsgiver().getType().equals(TYPE_PERSON)) {
+            virksomhetsnummer = ((Person) nyesteArbeidsforhold.getArbeidsgiver()).getOffentligIdent();
         }
 
         kontaktinformasjon = Objects.isNull(inntekt.getArbeidsgiver().getKontaktinformasjon()) ? kontaktinformasjon : inntekt.getArbeidsgiver().getKontaktinformasjon();
@@ -145,7 +145,7 @@ public class AltinnInntektService {
                         .collect(Collectors.toList()))
                 .pleiepengerPerioder(inntekt.getPleiepengerPerioder());
 
-        if (nyesteArbeidsforhold.getOpplysningspliktig().getType().equals(TYPE_PERSON)) {
+        if (nyesteArbeidsforhold.getArbeidsgiver().getType().equals(TYPE_PERSON)) {
             tmp.arbeidsgiverPrivat(RsArbeidsgiverPrivat.builder()
                     .arbeidsgiverFnr(virksomhetsnummer)
                     .kontaktinformasjon(kontaktinformasjon)
