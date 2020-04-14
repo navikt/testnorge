@@ -97,6 +97,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 				<PersonVisningConnector
 					personId={bruker.ident.ident}
 					bestillingId={bruker.ident.bestillingId[0]}
+					bestillinger={bruker.ident.bestillingId}
 					gruppeId={bruker.ident.gruppeId}
 				/>
 			)}

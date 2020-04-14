@@ -25,6 +25,7 @@ export const PersonVisning = ({
 	data,
 	ident,
 	bestilling,
+	bestillingsListe,
 	loading,
 	slettPerson,
 	leggTilPaaPerson
@@ -47,7 +48,7 @@ export const PersonVisning = ({
 			<InstVisning data={data.instdata} loading={loading.instdata} />
 			<ArenaVisning
 				data={data.arenaforvalteren}
-				bestData={bestilling.bestilling.arenaforvalter}
+				bestillinger={bestillingsListe}
 				loading={loading.arenaforvalteren}
 			/>
 			<UdiVisning

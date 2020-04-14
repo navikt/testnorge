@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { createSelector } from 'reselect'
 import { push } from 'connected-react-router'
-import { getBestillingById } from '~/ducks/bestillingStatus'
+import { getBestillingById, getBestillingsListe } from '~/ducks/bestillingStatus'
 import { selectIdentById } from '~/ducks/gruppe'
 import { fetchDataFraFagsystemer, selectDataForIdent, actions } from '~/ducks/fagsystem'
 import { createLoadingSelector } from '~/ducks/loading'
@@ -43,7 +43,8 @@ const mapStateToProps = (state, ownProps) => ({
 	loading: loadingSelector(state),
 	ident: selectIdentById(state, ownProps.personId),
 	data: selectDataForIdent(state, ownProps.personId),
-	bestilling: getBestillingById(state, ownProps.bestillingId)
+	bestilling: getBestillingById(state, ownProps.bestillingId),
+	bestillingsListe: getBestillingsListe(state, ownProps.bestillinger)
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
