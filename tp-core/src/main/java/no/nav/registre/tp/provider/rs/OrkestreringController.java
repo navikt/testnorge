@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.tp.database.multitenancy.TenantContext;
 import no.nav.registre.tp.provider.rs.request.OrkestreringRequest;
 import no.nav.registre.tp.service.TpService;
@@ -28,7 +27,6 @@ public class OrkestreringController {
 
     private final TpService tpService;
 
-    @LogExceptions
     @ApiOperation(value = "Dette endepunktet kan benyttes for å initialisere en database i et gitt miljø. Identer som ikke finnes i TJPEN databasen, men i avspillergruppen på det gitte miljøet vil bli "
             + "opprettet uten noen tilhørende ytelser.")
     @PostMapping("/init")
@@ -40,7 +38,6 @@ public class OrkestreringController {
         return ResponseEntity.ok(count);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Dette endepunktet kan benyttes for å opprette gitte personer. De vil bli opprettet i TJPEN. Det er ikke noen verifikasjon av FNR mot TPS eller om det er et gyldig FNR.")
     @PostMapping("/opprettPersoner/{miljoe}")
     public ResponseEntity<List<String>> addPeople(
@@ -53,7 +50,6 @@ public class OrkestreringController {
         return ResponseEntity.ok(feilet);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Dette endepunktet kan benyttes for å hente personer fra en gitt liste som finnes i TP.")
     @PostMapping("/hentPersonerITp/{miljoe}")
     public List<String> getPeopleInTp(

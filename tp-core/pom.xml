@@ -57,7 +57,7 @@
 
         <!--DATABASE-->
         <dependency>
-            <groupId>com.oracle</groupId>
+            <groupId>com.oracle.jdbc</groupId>
             <artifactId>ojdbc8</artifactId>
             <scope>runtime</scope>
         </dependency>
@@ -67,12 +67,6 @@
         </dependency>
 
         <!--NAV-->
-        <dependency>
-            <groupId>no.nav.freg</groupId>
-            <artifactId>freg-spring-boot-starter-log-exceptions</artifactId>
-            <version>${log.exceptions.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>no.nav.registre</groupId>
             <artifactId>tp-domain</artifactId>
@@ -109,6 +103,14 @@
             <artifactId>testnorge-consumers</artifactId>
             <version>1.8.0-RELEASE</version>
         </dependency>
+
+        <!--CODE ANALYSIS-->
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>${maven-pmd-plugin.version}</version>
+            <type>maven-plugin</type>
+        </dependency>
     </dependencies>
 
     <build>
@@ -127,6 +129,22 @@
                     <target>1.11</target>
                     <release>11</release>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven-pmd-plugin.version}</version>
+                <configuration>
+                    <failOnViolation>true</failOnViolation>
+                    <printFailingErrors>true</printFailingErrors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

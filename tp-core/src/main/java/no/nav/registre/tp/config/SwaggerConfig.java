@@ -50,7 +50,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 "Testnorge-TP er integrasjonen mellom Orkestratoren og TJPEN databasen. Testnorge-TP går mot TJPEN i gitte miljøer",
                 "" + appVersion,
                 "https://nav.no",
-                new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/testnorge-tp/browse", null),
+                new Contact("Fellesregistrene på NAV", "https://github.com/navikt/testnorge-tp", null),
                 "Super Strict Licence",
                 "https://opensource.org/licenses/super-strict-license",
                 Collections.emptyList()

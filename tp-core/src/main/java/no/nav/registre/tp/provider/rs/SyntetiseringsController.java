@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.tp.database.multitenancy.TenantContext;
 import no.nav.registre.tp.provider.rs.request.SyntetiseringsRequest;
 import no.nav.registre.tp.service.TpService;
@@ -24,7 +23,6 @@ public class SyntetiseringsController {
     @Autowired
     private TpService tpService;
 
-    @LogExceptions
     @ApiOperation(value = "Dette endepunktet kan benyttes for å generere syntetiserte ytelser på tilfeldige personer i en gitt avspillergruppe som er definert i TPS-Forvalteren.")
     @PostMapping(value = "/generer")
     public ResponseEntity createYtelseWithRelations(
@@ -35,7 +33,6 @@ public class SyntetiseringsController {
         return ResponseEntity.ok().build();
     }
 
-    @LogExceptions
     @ApiOperation(value = "Dette endepunktet kan benyttes for å hente ut alle forhold i et gitt miljø.")
     @GetMapping(value = "/forhold/{miljoe}")
     public ResponseEntity getForhold(
