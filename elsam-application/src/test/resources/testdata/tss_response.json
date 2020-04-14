@@ -1,0 +1,138 @@
+{
+  "19098723229": {
+    "response110": [
+      {
+        "idKode": "110",
+        "idOff": "19098723229",
+        "kodeIdenttype": "FNR",
+        "kodeSamhType": "LE",
+        "beskrSamhType": "Lege",
+        "datoSamhType": "20190919",
+        "datoSamhTom": "",
+        "navn": "PRODUKSJON UNG",
+        "kodeSpraak": "NO",
+        "etatsmerke": "",
+        "utbetalingssperre": "",
+        "kodeKontrint": "",
+        "beskrKontrint": "",
+        "kodeStatus": "GYLD",
+        "beskrStatus": "Gyldig",
+        "oppdater": "",
+        "kilde": "SYNT",
+        "brukerId": "ORK",
+        "tidReg": "201909191449"
+      }
+    ],
+    "response111": [
+      {
+        "idKode": "111",
+        "idAlternativ": "19098723229",
+        "kodeAltIdenttype": "FNR",
+        "beskrAltIdenttype": "Norsk fødselsnummer",
+        "datoIdentFom": "20190919",
+        "datoIdentTom": "",
+        "gyldigIdent": "J",
+        "kilde": "SYNT",
+        "brukerid": "ORK",
+        "tidReg": "201909191449"
+      },
+      {
+        "idKode": "111",
+        "idAlternativ": "311272976",
+        "kodeAltIdenttype": "HPR",
+        "beskrAltIdenttype": "HPR-nummer",
+        "datoIdentFom": "20190919",
+        "datoIdentTom": "",
+        "gyldigIdent": "J",
+        "kilde": "SYNT",
+        "brukerid": "ORK",
+        "tidReg": "201909191449"
+      }
+    ],
+    "response125": [
+      {
+        "idKode": "125",
+        "avdelingsnr": "01",
+        "avdelingsnavn": "",
+        "typeAvdeling": "",
+        "beskrAvdelingstype": "",
+        "datoAvdelingFrom": "20190919",
+        "datoAvdelingTom": "",
+        "gyldigAvdeling": "J",
+        "idTSSEkstern": "80900100007",
+        "avdOffnr": "",
+        "kilde": "SYNT",
+        "brukerid": "ORK",
+        "tidReg": "201909191449"
+      }
+    ]
+  },
+  "03126126084": {
+    "response110": [
+      {
+        "idKode": "110",
+        "idOff": "03126126084",
+        "kodeIdenttype": "FNR",
+        "kodeSamhType": "LE",
+        "beskrSamhType": "Lege",
+        "datoSamhType": "20190919",
+        "datoSamhTom": "",
+        "navn": "STORSKJERM TYDELIG SKRIVE",
+        "kodeSpraak": "NO",
+        "etatsmerke": "",
+        "utbetalingssperre": "",
+        "kodeKontrint": "",
+        "beskrKontrint": "",
+        "kodeStatus": "GYLD",
+        "beskrStatus": "Gyldig",
+        "oppdater": "",
+        "kilde": "SYNT",
+        "brukerId": "ORK",
+        "tidReg": "201909191449"
+      }
+    ],
+    "response111": [
+      {
+        "idKode": "111",
+        "idAlternativ": "03126126084",
+        "kodeAltIdenttype": "FNR",
+        "beskrAltIdenttype": "Norsk fødselsnummer",
+        "datoIdentFom": "20190919",
+        "datoIdentTom": "",
+        "gyldigIdent": "J",
+        "kilde": "SYNT",
+        "brukerid": "ORK",
+        "tidReg": "201909191449"
+      },
+      {
+        "idKode": "111",
+        "idAlternativ": "735917527",
+        "kodeAltIdenttype": "HPR",
+        "beskrAltIdenttype": "HPR-nummer",
+        "datoIdentFom": "20190919",
+        "datoIdentTom": "",
+        "gyldigIdent": "J",
+        "kilde": "SYNT",
+        "brukerid": "ORK",
+        "tidReg": "201909191449"
+      }
+    ],
+    "response125": [
+      {
+        "idKode": "125",
+        "avdelingsnr": "01",
+        "avdelingsnavn": "",
+        "typeAvdeling": "",
+        "beskrAvdelingstype": "",
+        "datoAvdelingFrom": "20190919",
+        "datoAvdelingTom": "",
+        "gyldigAvdeling": "J",
+        "idTSSEkstern": "80900100045",
+        "avdOffnr": "",
+        "kilde": "SYNT",
+        "brukerid": "ORK",
+        "tidReg": "201909191449"
+      }
+    ]
+  }
+}

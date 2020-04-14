@@ -1,0 +1,70 @@
+{
+  "organisasjonsnummer": "975293378",
+  "type": "Virksomhet",
+  "navn": {
+    "redigertnavn": "ASKVOLL KOMMUNE SKULEADMINISTRASJON",
+    "navnelinje1": "ASKVOLL KOMMUNE SKULEADMINISTRASJON",
+    "bruksperiode": {
+      "fom": "2016-08-21T04:02:20.727"
+    },
+    "gyldighetsperiode": {
+      "fom": "2016-08-20"
+    }
+  },
+  "organisasjonDetaljer": {
+    "registreringsdato": "1996-10-15T00:00:00",
+    "enhetstyper": [
+      {
+        "enhetstype": "BEDR",
+        "bruksperiode": {
+          "fom": "2014-05-21T15:21:27.899"
+        },
+        "gyldighetsperiode": {
+          "fom": "1996-10-15"
+        }
+      }
+    ],
+    "naeringer": [
+      {
+        "naeringskode": "84.120",
+        "hjelpeenhet": false,
+        "bruksperiode": {
+          "fom": "2014-05-22T00:58:34.354"
+        },
+        "gyldighetsperiode": {
+          "fom": "1978-01-25"
+        }
+      }
+    ],
+    "navn": [
+      {
+        "redigertnavn": "ASKVOLL KOMMUNE SKULEADMINISTRASJON",
+        "navnelinje1": "ASKVOLL KOMMUNE SKULEADMINISTRASJON",
+        "bruksperiode": {
+          "fom": "2016-08-21T04:02:20.727"
+        },
+        "gyldighetsperiode": {
+          "fom": "2016-08-20"
+        }
+      }
+    ],
+    "forretningsadresser": [
+      {
+        "postnummer": "6980",
+        "landkode": "NO",
+        "kommunenummer": "1428",
+        "bruksperiode": {
+          "fom": "2015-02-23T10:38:34.403"
+        },
+        "gyldighetsperiode": {
+          "fom": "1996-10-15"
+        }
+      }
+    ],
+    "sistEndret": "2016-08-20"
+  },
+  "virksomhetDetaljer": {
+    "enhetstype": "BEDR",
+    "oppstartsdato": "1972-12-28"
+  }
+}
