@@ -105,6 +105,12 @@
             <version>1.4.195</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc7</artifactId>
+            <version>12.1.0.2</version>
+            <scope>runtime</scope>
+        </dependency>
 
         <dependency>
             <groupId>no.nav.registre</groupId>
@@ -128,7 +134,7 @@
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pmd-plugin</artifactId>
-            <version>3.13.0</version>
+            <version>${maven-pmd-plugin.version}</version>
             <type>maven-plugin</type>
         </dependency>
     </dependencies>
@@ -153,6 +159,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven-pmd-plugin.version}</version>
                 <configuration>
                     <failOnViolation>true</failOnViolation>
                     <printFailingErrors>true</printFailingErrors>

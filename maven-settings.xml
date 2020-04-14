@@ -1,4 +1,21 @@
 <settings>
+
+    <activeProfiles>
+        <activeProfile>github</activeProfile>
+    </activeProfiles>
+
+    <profiles>
+        <profile>
+            <id>github</id>
+            <repositories>
+                <repository>
+                    <id>icm</id>
+                    <url>http://nexus.saas.hand-china.com/content/repositories/rdc/</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+
     <servers>
         <server>
             <id>github</id>
