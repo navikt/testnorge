@@ -1,21 +1,4 @@
 <settings>
-
-    <activeProfiles>
-        <activeProfile>github</activeProfile>
-    </activeProfiles>
-
-    <profiles>
-        <profile>
-            <id>github</id>
-            <repositories>
-                <repository>
-                    <id>icm</id>
-                    <url>http://maven.icm.edu.pl/artifactory/repo/</url>
-                </repository>
-            </repositories>
-        </profile>
-    </profiles>
-
     <servers>
         <server>
             <id>github</id>
