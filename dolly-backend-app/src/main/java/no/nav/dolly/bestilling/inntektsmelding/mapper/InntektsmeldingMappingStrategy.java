@@ -25,7 +25,6 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
 
                         inntektsmelding.setAarsakTilInnsending(
                                 nullcheckSetDefaultValue(rsInntektsmelding.getAarsakTilInnsending(), AarsakTilInnsendingType.NY));
-                        inntektsmelding.getArbeidsgiver().setVirksomhetsnummer(rsInntektsmelding.getArbeidsgiver().getOrgnummer());
                     }
                 })
                 .byDefault()
