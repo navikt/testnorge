@@ -44,7 +44,7 @@ const mapStateToProps = (state, ownProps) => ({
 	ident: selectIdentById(state, ownProps.personId),
 	data: selectDataForIdent(state, ownProps.personId),
 	bestilling: getBestillingById(state, ownProps.bestillingId),
-	bestillingsListe: getBestillingsListe(state, ownProps.bestillinger)
+	bestillingsListe: getBestillingsListe(state, ownProps.bestillingsIdListe)
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
