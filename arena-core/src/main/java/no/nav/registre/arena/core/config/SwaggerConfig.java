@@ -48,10 +48,10 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
         return new ApiInfoBuilder()
                 .title("Testnorge-arena")
-                .description("Testnorge-arena tilbyr endepunkt for å legge identer fra mini-norge inn i Arena Frovalteren")
+                .description("Testnorge-arena tilbyr endepunkt for å legge identer fra mini-norge inn i Arena Forvalteren")
                 .version("" + appVersion)
                 .termsOfServiceUrl("https://nav.no")
-                .contact(new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/orkestratoren/browse", null))
+                .contact(new Contact("Fellesregistrene på NAV", "https://github.com/navikt/testnorge-arena", null))
                 .license("Super Strict Licence")
                 .licenseUrl("https://opensource.org/licenses/super-strict-license")
                 .build();
