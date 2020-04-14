@@ -1,13 +1,17 @@
 package no.nav.dolly.bestilling.inntektsmelding.mapper;
 
+import static java.util.Objects.isNull;
+import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.Avsendersystem;
+import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.Inntektsmelding;
+import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.Kontaktinformasjon;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
+import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakTilInnsendingType;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.mapper.MappingStrategy;
@@ -17,15 +21,30 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(RsInntektsmelding.Inntektsmelding.class, InntektsmeldingRequest.Inntektsmelding.class)
-                .customize(new CustomMapper<RsInntektsmelding.Inntektsmelding, InntektsmeldingRequest.Inntektsmelding>() {
+
+        factory.classMap(RsInntektsmelding.Inntektsmelding.class, Inntektsmelding.class)
+                .customize(new CustomMapper<RsInntektsmelding.Inntektsmelding, Inntektsmelding>() {
                     @Override
                     public void mapAtoB(RsInntektsmelding.Inntektsmelding rsInntektsmelding,
-                            InntektsmeldingRequest.Inntektsmelding inntektsmelding, MappingContext context) {
+                            Inntektsmelding inntektsmelding, MappingContext context) {
 
                         inntektsmelding.setAarsakTilInnsending(
                                 nullcheckSetDefaultValue(rsInntektsmelding.getAarsakTilInnsending(), AarsakTilInnsendingType.NY));
-                        inntektsmelding.getArbeidsgiver().setVirksomhetsnummer(rsInntektsmelding.getArbeidsgiver().getOrgnummer());
+
+                        if (isNull(inntektsmelding.getArbeidsgiver().getKontaktinformasjon())) {
+                            inntektsmelding.getArbeidsgiver().setKontaktinformasjon(
+                                    Kontaktinformasjon.builder()
+                                            .kontaktinformasjonNavn("Dolly Dollesen")
+                                            .telefonnummer("99999999")
+                                            .build());
+                        }
+                        if (isNull(inntektsmelding.getAvsendersystem())) {
+                            inntektsmelding.setAvsendersystem(Avsendersystem.builder()
+                                    .innsendingstidspunkt(LocalDateTime.now())
+                                    .build());
+                        }
+                        inntektsmelding.getAvsendersystem().setSystemnavn("Dolly");
+                        inntektsmelding.getAvsendersystem().setSystemversjon("2.0");
                     }
                 })
                 .byDefault()
