@@ -155,7 +155,6 @@ public class RsInntektsmelding {
 
         private RsKontaktinformasjon kontaktinformasjon;
         private String virksomhetsnummer;
-        private String orgnummer;
     }
 
     @Getter
