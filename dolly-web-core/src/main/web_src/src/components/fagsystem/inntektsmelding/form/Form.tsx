@@ -31,8 +31,7 @@ interface InntektsmeldingForm {
 const initialValues = {
 	aarsakTilInnsending: '',
 	arbeidsgiver: {
-		virksomhetsnummer: '',
-		kontaktinformasjon: { kontaktinformasjonNavn: 'SJÆFEN SJØL', telefonnummer: '99999999' }
+		virksomhetsnummer: ''
 	},
 	arbeidsforhold: {
 		beregnetInntekt: {
@@ -41,9 +40,7 @@ const initialValues = {
 		foersteFravaersdag: ''
 	},
 	avsendersystem: {
-		innsendingstidspunkt: new Date(),
-		systemnavn: 'Dolly',
-		systemversjon: 'v1'
+		innsendingstidspunkt: new Date()
 	},
 	refusjon: {
 		refusjonsbeloepPrMnd: '',
@@ -99,10 +96,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 										formikBag={formikBag}
 									/>
 
-									<InntektsmeldingOrgnummerSelect
-										path={`${path}.arbeidsgiver`}
-										formikBag={formikBag}
-									/>
+									<InntektsmeldingOrgnummerSelect path={`${path}.arbeidsgiver.virksomhetsnummer`} />
 									<FormikDatepicker
 										name={`${path}.avsendersystem.innsendingstidspunkt`}
 										label="Innsendingstidspunkt"
