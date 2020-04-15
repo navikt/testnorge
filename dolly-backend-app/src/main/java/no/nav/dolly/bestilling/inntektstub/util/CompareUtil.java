@@ -25,17 +25,22 @@ public class CompareUtil {
     private static boolean isMatch(Inntektsinformasjon rsInntektsinformasjon, List<Inntektsinformasjon> eksisterendeInntekter) {
 
         boolean match = false;
-        for (Inntektsinformasjon inntektsinformasjon : eksisterendeInntekter) {
-            if (inntektsinformasjon.equals(rsInntektsinformasjon) &&
-                    hasInntekter(rsInntektsinformasjon, inntektsinformasjon) &&
-                    hasArbeidforhold(rsInntektsinformasjon, inntektsinformasjon) &&
-                    hasForskuddstrekk(rsInntektsinformasjon, inntektsinformasjon) &&
-                    hasFradrag(rsInntektsinformasjon, inntektsinformasjon)) {
+        for (Inntektsinformasjon eksiterendeInntektInfo : eksisterendeInntekter) {
+            if (eksiterendeInntektInfo.equals(rsInntektsinformasjon) &&
+                    hasInntekter(rsInntektsinformasjon, eksiterendeInntektInfo) &&
+                    hasOtherBusiness(rsInntektsinformasjon, eksiterendeInntektInfo)) {
                 match = true;
                 break;
             }
         }
         return match;
+    }
+
+    private static boolean hasOtherBusiness(Inntektsinformasjon inntektInfoRequest, Inntektsinformasjon eksisterendeInntektInfo) {
+
+        return hasArbeidforhold(inntektInfoRequest, eksisterendeInntektInfo) &&
+                hasForskuddstrekk(inntektInfoRequest, eksisterendeInntektInfo) &&
+                hasFradrag(inntektInfoRequest, eksisterendeInntektInfo);
     }
 
     private static boolean hasInntekter(Inntektsinformasjon inntektInfoRequest, Inntektsinformasjon inntektsinformasjon) {
