@@ -70,15 +70,10 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		add: () =>
 			set('inntektsmelding', {
 				inntekter: [
-					//TODO Hardkoding flyttes backend etter påske
 					{
 						aarsakTilInnsending: 'NY',
 						arbeidsgiver: {
-							virksomhetsnummer: '',
-							kontaktinformasjon: {
-								kontaktinformasjonNavn: 'Dolly Dollesen',
-								telefonnummer: '99999999'
-							}
+							virksomhetsnummer: ''
 						},
 						arbeidsforhold: {
 							beregnetInntekt: {
@@ -87,9 +82,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 							foersteFravaersdag: ''
 						},
 						avsendersystem: {
-							innsendingstidspunkt: new Date(),
-							systemnavn: 'Dolly',
-							systemversjon: 'v1'
+							innsendingstidspunkt: new Date()
 						},
 						refusjon: {
 							refusjonsbeloepPrMnd: '',
