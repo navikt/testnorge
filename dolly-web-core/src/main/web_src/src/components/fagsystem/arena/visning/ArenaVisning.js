@@ -24,10 +24,16 @@ export const Arena = ({ data, bestData, loading }) => {
 	if (loading) return <Loading label="Laster arena-data" />
 	if (!data) return false
 
+	const sortedData = Array.isArray(data.arbeidsokerList)
+		? data.arbeidsokerList.slice().reverse()
+		: data.arbeidsokerList
+
+	console.log('data :', data)
+	console.log('bestData :', bestData)
 	const visningData = []
 
 	// Areneforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
-	data.arbeidsokerList.forEach((info, idx) => {
+	sortedData.forEach((info, idx) => {
 		const { kvalifiseringsgruppe, inaktiveringDato, aap115, aap } = bestData[
 			idx
 		].bestilling.arenaforvalter
