@@ -17,8 +17,8 @@ const P_TitleValue = ({ title, value, titleType = 'h4', size = 'small', children
 	)
 }
 
-export const TitleValue = ({ kodeverk, ...restProps }) => {
-	if (!restProps.value && !restProps.children) return false
+export const TitleValue = ({ kodeverk = null, ...restProps }) => {
+	if (!restProps.value && !restProps.children) return null
 
 	if (kodeverk) {
 		const { value, children, ...rest } = restProps

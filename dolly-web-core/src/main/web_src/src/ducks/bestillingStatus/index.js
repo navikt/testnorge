@@ -59,20 +59,18 @@ export default handleActions(
  */
 export const getBestillingById = (state, id) => state.bestillingStatuser.byId[id]
 
+export const getBestillingsListe = (state, IDer) => {
+	var bestillingsListe = []
+	for (let i = 0; i < IDer.length; i++) {
+		bestillingsListe.push(state.bestillingStatuser.byId[IDer[i]].bestilling)
+	}
+	return bestillingsListe
+}
+
 // Henter bestilling objecter basert på nye bestillinger (Array av ID'er)
 export const nyeBestillingerSelector = state => {
 	// Filter() -> Fjerner non-truthy values hvis find funksjon feiler
 	return state.bestillingStatuser.ny.map(id => getBestillingById(state, id)).filter(x => Boolean(x))
-}
-
-// Henter alle bestillinger som er gjort på en ident
-export const getAlleBestillingerPrIdent = (state, personId) => {
-	const bestillingId = state.gruppe.ident[personId].bestillingId
-	const bestillingInfo = []
-	bestillingId.forEach(id => {
-		bestillingInfo.push(state.bestillingStatuser.byId[id])
-	})
-	return bestillingInfo
 }
 
 // Filtrer bestillinger basert på søkestreng

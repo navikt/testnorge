@@ -14,7 +14,7 @@ const aaregAttributt = 'aareg'
 export const AaregForm = ({ formikBag }) => (
 	<Vis attributt={aaregAttributt}>
 		<Panel
-			heading="Arbeidsforhold"
+			heading="Arbeidsforhold (Aareg)"
 			hasErrors={panelError(formikBag, aaregAttributt)}
 			iconType="arbeid"
 			startOpen={() => erForste(formikBag.values, [aaregAttributt])}

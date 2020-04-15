@@ -6,12 +6,13 @@ import { TpsfForm } from '~/components/fagsystem/tpsf/form/Form'
 import { KrrstubForm } from '~/components/fagsystem/krrstub/form/Form'
 import { SigrunstubForm } from '~/components/fagsystem/sigrunstub/form/Form'
 import { InntektstubForm } from '~/components/fagsystem/inntektstub/form/Form'
+import { InntektsmeldingForm } from '~/components/fagsystem/inntektsmelding/form/Form'
 import { AaregForm } from '~/components/fagsystem/aareg/form/Form'
 import { PdlfForm } from '~/components/fagsystem/pdlf/form/Form'
 import { ArenaForm } from '~/components/fagsystem/arena/form/Form'
 import { InstForm } from '~/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '~/components/fagsystem/udistub/form/Form'
-import { PensjonForm } from "~/components/fagsystem/pensjon/form/Form";
+import { PensjonForm } from '~/components/fagsystem/pensjon/form/Form'
 
 export const Steg2 = ({ formikBag }) => {
 	if (!harAvhukedeAttributter(formikBag.values)) {
@@ -27,8 +28,9 @@ export const Steg2 = ({ formikBag }) => {
 			<TpsfForm formikBag={formikBag} />
 			<AaregForm formikBag={formikBag} />
 			<SigrunstubForm formikBag={formikBag} />
-			<PensjonForm formikBag={formikBag}/>
+			<PensjonForm formikBag={formikBag} />
 			<InntektstubForm formikBag={formikBag} />
+			<InntektsmeldingForm formikBag={formikBag} />
 			<PdlfForm formikBag={formikBag} />
 			<InstForm formikBag={formikBag} />
 			<KrrstubForm formikBag={formikBag} />
@@ -47,6 +49,7 @@ Steg2.validation = Yup.object({
 	...SigrunstubForm.validation,
 	...PensjonForm.validation,
 	...InntektstubForm.validation,
+	...InntektsmeldingForm.validation,
 	...InstForm.validation,
 	...KrrstubForm.validation,
 	...ArenaForm.validation,

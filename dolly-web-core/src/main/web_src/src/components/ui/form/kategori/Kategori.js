@@ -5,7 +5,13 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 
 import './kategori.less'
 
-export const Kategori = ({ title = 'Kategori', flex = true, vis, hjelpetekst, children }) => {
+export const Kategori = ({
+	title = 'Kategori',
+	flex = true,
+	vis = null,
+	hjelpetekst = null,
+	children
+}) => {
 	const css = cn({
 		'form-kategori-flex': flex
 	})

@@ -22,7 +22,7 @@ export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 	return (
 		<FormikDollyFieldArray
 			name={`${inntektsinformasjonPath}.arbeidsforholdsliste`}
-			header="Arbeidsforhold"
+			header="Arbeidsforhold (Aareg)"
 			newEntry={initialValues}
 		>
 			{path => (

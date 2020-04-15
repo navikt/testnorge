@@ -5,7 +5,7 @@ import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 import { Historikk } from '~/components/ui/historikk/Historikk'
 
-export const ArenaVisning = ({ data }) => {
+export const Visning = ({ data }) => {
 	return (
 		<>
 			<TitleValue title="Brukertype" value={data.brukertype} />
@@ -20,7 +20,7 @@ export const ArenaVisning = ({ data }) => {
 	)
 }
 
-export const Arena = ({ data, bestData, loading }) => {
+export const ArenaVisning = ({ data, bestillinger, loading }) => {
 	if (loading) return <Loading label="Laster arena-data" />
 	if (!data) return false
 
@@ -28,32 +28,36 @@ export const Arena = ({ data, bestData, loading }) => {
 		? data.arbeidsokerList.slice().reverse()
 		: data.arbeidsokerList
 
-	console.log('data :', data)
-	console.log('bestData :', bestData)
+	const arenaBestillinger = bestillinger.filter(bestilling =>
+		bestilling.hasOwnProperty('arenaforvalter')
+	)
+
 	const visningData = []
 
-	// Areneforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
+	// Arenaforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
 	sortedData.forEach((info, idx) => {
-		const { kvalifiseringsgruppe, inaktiveringDato, aap115, aap } = bestData[
-			idx
-		].bestilling.arenaforvalter
-		visningData.push({
-			brukertype: info.servicebehov ? 'Med servicebehov' : 'Uten servicebehov',
-			servicebehov: servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe),
-			inaktiveringDato: Formatters.formatDate(inaktiveringDato),
-			harAap115: aap115 && 'Ja',
-			aap115FraDato: aap115 && Formatters.formatDate(aap115[0].fraDato),
-			harAap: aap && 'Ja',
-			aapFraDato: aap && Formatters.formatDate(aap[0].fraDato),
-			aapTilDato: aap && Formatters.formatDate(aap[0].tilDato)
-		})
+		if (arenaBestillinger[idx].arenaforvalter !== undefined) {
+			const { kvalifiseringsgruppe, inaktiveringDato, aap115, aap } = arenaBestillinger[
+				idx
+			].arenaforvalter
+			visningData.push({
+				brukertype: info.servicebehov ? 'Med servicebehov' : 'Uten servicebehov',
+				servicebehov: servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe),
+				inaktiveringDato: Formatters.formatDate(inaktiveringDato),
+				harAap115: aap115 && 'Ja',
+				aap115FraDato: aap115 && Formatters.formatDate(aap115[0].fraDato),
+				harAap: aap && 'Ja',
+				aapFraDato: aap && Formatters.formatDate(aap[0].fraDato),
+				aapTilDato: aap && Formatters.formatDate(aap[0].tilDato)
+			})
+		}
 	})
 
 	return (
 		<div>
 			<SubOverskrift label="Arena" />
 			<div className="person-visning_content">
-				<Historikk component={ArenaVisning} data={visningData} />
+				<Historikk component={Visning} data={visningData} />
 			</div>
 		</div>
 	)
