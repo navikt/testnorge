@@ -3,7 +3,7 @@ import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
 
-export const ArbeidInntektPanel = ({ stateModifier, leggTil }) => {
+export const ArbeidInntektPanel = ({ stateModifier }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
 
 	const infoTekst =
