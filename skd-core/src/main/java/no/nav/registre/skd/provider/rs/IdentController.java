@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.skd.service.IdentService;
 
 @RestController
@@ -21,7 +20,6 @@ public class IdentController {
     @Autowired
     private IdentService identService;
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man slette alle skd-meldinger tilhørende identer fra en gitt avspillergruppe. Returnerer en liste av melding-idene som er sendt til sletting.")
     @DeleteMapping("{avspillergruppeId}")
     public List<Long> slettIdenterFraAvspillergruppe(

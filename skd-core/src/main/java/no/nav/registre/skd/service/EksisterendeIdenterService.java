@@ -312,7 +312,7 @@ public class EksisterendeIdenterService {
             }
 
             var statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
-                    (Map<String, String> a) -> (a.get(DATO_DO) != null && !a.get(DATO_DO).isEmpty()) || !STATSBORGER_NORGE.equals(a.get(STATSBORGER)));
+                    (Map<String, String> a) -> a.get(DATO_DO) != null && !a.get(DATO_DO).isEmpty() || !STATSBORGER_NORGE.equals(a.get(STATSBORGER)));
 
             var ident = statusQuoIdent.get(IDENT);
 
@@ -357,7 +357,7 @@ public class EksisterendeIdenterService {
             }
 
             var statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
-                    (Map<String, String> a) -> (a.get(DATO_DO) != null && !a.get(DATO_DO).isEmpty()) || !STATSBORGER_NORGE.equals(a.get(STATSBORGER)));
+                    (Map<String, String> a) -> a.get(DATO_DO) != null && !a.get(DATO_DO).isEmpty() || !STATSBORGER_NORGE.equals(a.get(STATSBORGER)));
 
             var ident = statusQuoIdent.get(IDENT);
 

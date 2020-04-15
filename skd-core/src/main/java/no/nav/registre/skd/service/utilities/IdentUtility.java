@@ -44,7 +44,7 @@ public class IdentUtility {
 
         // Find century
         int century;
-        if (individ < 500 || (individ >= 900 && year > 39)) {
+        if (individ < 500 || individ >= 900 && year > 39) {
             century = 1900;
         } else if (year < 40) {
             century = 2000;

@@ -16,7 +16,6 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
@@ -33,7 +32,6 @@ public class SyntetiseringController {
     @Autowired
     private FasteMeldingerService fasteMeldingerService;
 
-    @LogExceptions
     @ApiOperation(value = "Her bestilles genererering av syntetiske meldinger for nye og eksisterende identer. "
             + "Disse meldingene lagres i angitt gruppe i TPSF. ", notes = "Eksisterende identer hentes fra avspillergruppen og status quo på disse hentes fra TPS i angitt miljø. " +
             "\n\nSpesialbehandlinger: \n\n" +
@@ -48,7 +46,6 @@ public class SyntetiseringController {
         return syntetiseringService.puttIdenterIMeldingerOgLagre(genereringsOrdreRequest);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man starte avspilling av en TPSF-avspillergruppe. Dette innebærer at alle skd-meldingene i en gitt gruppe sendes til TPS i et gitt miljø.")
     @PostMapping(value = "/startAvspilling/{avspillergruppeId}")
     public SkdMeldingerTilTpsRespons startAvspillingAvTpsfAvspillergruppe(
@@ -58,7 +55,6 @@ public class SyntetiseringController {
         return fasteMeldingerService.startAvspillingAvTpsfAvspillergruppe(avspillergruppeId, miljoe);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man legge nye identer inn i en gitt avspillergruppe i TPSF. Identene vil få opprettet en innvandringsmelding hver.")
     @PostMapping(value = "/leggTilNyeMeldinger/{avspillergruppeId}")
     public List<Long> leggTilNyeMeldingerIGruppe(
