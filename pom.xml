@@ -25,7 +25,8 @@
         <logstash.logback.encoder.version>4.11</logstash.logback.encoder.version>
         <freg.security.oidc.utility.version>3.0.3</freg.security.oidc.utility.version>
         <cxf.version>3.2.2</cxf.version>
-        <swagger.version>2.8.0</swagger.version>
+        <swagger.version>2.9.2</swagger.version>
+        <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
     </properties>
 
     <modules>
