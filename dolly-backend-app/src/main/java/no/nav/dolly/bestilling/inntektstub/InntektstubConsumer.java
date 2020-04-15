@@ -8,7 +8,6 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
@@ -33,7 +32,7 @@ public class InntektstubConsumer {
 
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(format("%s%s%s", providersProps.getInntektstub().getUrl(), GET_INNTEKTER_URL, ident)))
-                .build(), JsonNode.class);
+                .build(), Inntektsinformasjon[].class);
     }
 
     @Timed(name = "providers", tags = { "operation", "inntk_deleteInntekter" })
