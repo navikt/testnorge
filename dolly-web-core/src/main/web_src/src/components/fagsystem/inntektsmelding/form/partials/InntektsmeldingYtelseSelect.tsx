@@ -6,7 +6,7 @@ import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import Formatters from '~/utils/DataFormatter'
 import { FormikProps } from 'formik'
-import { Kodeverk, Ytelser } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { Ytelser, Tema } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
 interface InntektsmeldingSelect {
 	path: string
@@ -63,9 +63,10 @@ export default ({
 )
 
 const findTema = (ytelse: string) => {
-	if (['SYKEPENGER'].includes(ytelse)) return 'SYK'
-	else if (['FORELDREPENGER', 'SVANGERSKAPSPENGER'].includes(ytelse)) return 'FOR'
-	else return 'OMS'
+	if (ytelse === Ytelser.Sykepenger) return Tema.Syk
+	else if (ytelse === Ytelser.Foreldrepenger || ytelse === Ytelser.Svangerskapspenger)
+		return Tema.For
+	else return Tema.Oms
 }
 
 const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string, idx: number) => {
