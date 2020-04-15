@@ -27,9 +27,10 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
-        <swagger.version>2.9.0</swagger.version>
+        <swagger.version>2.9.2</swagger.version>
         <person-tps-avstemming-v1.version>1.0.1</person-tps-avstemming-v1.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
+        <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
     </properties>
 
     <dependencyManagement>

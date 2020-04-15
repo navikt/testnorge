@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.consumer.rs.response.RsPureXmlMessageResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
@@ -80,7 +79,6 @@ public class SyntetiseringsController {
     @Autowired
     private TestnorgeMedlService testnorgeMedlService;
 
-    @LogExceptions
     @PostMapping(value = "/tps/skdmeldinger/generer")
     public ResponseEntity opprettSkdmeldingerITPS(
             @RequestBody SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest
@@ -90,7 +88,6 @@ public class SyntetiseringsController {
                 syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode());
     }
 
-    @LogExceptions
     @PostMapping(value = "/nav/endringsmeldinger/generer")
     public List<RsPureXmlMessageResponse> opprettNavmeldingerITPS(
             @RequestBody SyntetiserNavmeldingerRequest syntetiserNavmeldingerRequest
@@ -98,7 +95,6 @@ public class SyntetiseringsController {
         return testnorgeSkdService.genererNavmeldinger(syntetiserNavmeldingerRequest);
     }
 
-    @LogExceptions
     @PostMapping(value = "/inntekt/generer")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public Map<String, List<Object>> opprettSyntetiskInntektsmeldingIInntektstub(
@@ -107,7 +103,6 @@ public class SyntetiseringsController {
         return testnorgeInntektService.genererInntektsmeldinger(syntetiserInntektsmeldingRequest);
     }
 
-    @LogExceptions
     @PostMapping(value = "/elsam/sykemeldinger/generer")
     public List<String> opprettSykemeldingerIElsam(
             @RequestBody SyntetiserElsamRequest syntetiserElsamRequest
@@ -117,7 +112,6 @@ public class SyntetiseringsController {
         return fnrMedGenererteMeldinger;
     }
 
-    @LogExceptions
     @PostMapping(value = "/popp/skattegrunnlag/generer")
     public ResponseEntity opprettSkattegrunnlagISigrun(
             @RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,
@@ -126,7 +120,6 @@ public class SyntetiseringsController {
         return testnorgeSigrunService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
     }
 
-    @LogExceptions
     @PostMapping(value = "/aareg/arbeidsforhold/generer")
     public ResponseEntity opprettArbeidsforholdIAareg(
             @RequestParam boolean sendAlleEksisterende,
@@ -135,7 +128,6 @@ public class SyntetiseringsController {
         return testnorgeAaregService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, sendAlleEksisterende);
     }
 
-    @LogExceptions
     @PostMapping(value = "/inst/institusjonsforhold/generer")
     public Object opprettInstitutjonsforholdIInst(
             @RequestBody SyntetiserInstRequest syntetiserInstRequest
@@ -143,7 +135,6 @@ public class SyntetiseringsController {
         return testnorgeInstService.genererInstitusjonsforhold(syntetiserInstRequest);
     }
 
-    @LogExceptions
     @PostMapping(value = "/bisys/bistandsmeldinger/generer")
     public Object opprettBistandsmeldingerIBisys(
             @RequestBody SyntetiserBisysRequest syntetiserBisysRequest
@@ -151,7 +142,6 @@ public class SyntetiseringsController {
         return testnorgeBisysService.genererBistandsmeldinger(syntetiserBisysRequest);
     }
 
-    @LogExceptions
     @PostMapping(value = "/tp/ytelser/generer")
     public ResponseEntity opprettYtelserITp(
             @RequestBody SyntetiserTpRequest request
@@ -159,7 +149,6 @@ public class SyntetiseringsController {
         return testnorgeTpService.genererTp(request);
     }
 
-    @LogExceptions
     @PostMapping(value = "/sam/samordningsmeldinger/generer")
     public ResponseEntity opprettSamordningsmeldingerISam(
             @RequestBody SyntetiserSamRequest syntetiserSamRequest
@@ -167,7 +156,6 @@ public class SyntetiseringsController {
         return testnorgeSamService.genererSamordningsmeldinger(syntetiserSamRequest);
     }
 
-    @LogExceptions
     @PostMapping(value = "/arena/arbeidsoeker/generer")
     public List<String> opprettArbeidssoekereIArena(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
@@ -175,7 +163,6 @@ public class SyntetiseringsController {
         return tesnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest);
     }
 
-    @LogExceptions
     @PostMapping(value = "/medl/medlemskap/generer")
     public Object opprettMedlemskapIMedl(
             @RequestBody SyntetiserMedlRequest syntetiserMedlRequest

@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.provider.rs.responses.SlettedeIdenterResponse;
 import no.nav.registre.orkestratoren.service.IdentService;
 
@@ -28,17 +27,16 @@ public class IdentController {
     @Value("#{${batch.avspillergruppeId.miljoe}}")
     private Map<Long, String> avspillergruppeIdMedMiljoe;
 
-    @LogExceptions
     @DeleteMapping
     public SlettedeIdenterResponse slettIdenterFraAdaptere(
             @RequestParam Long avspillergruppeId,
             @RequestParam String miljoe,
             @RequestParam String testdataEier,
-            @RequestBody List<String> identer) {
+            @RequestBody List<String> identer
+    ) {
         return identService.slettIdenterFraAdaptere(avspillergruppeId, miljoe, testdataEier, identer);
     }
 
-    @LogExceptions
     @PostMapping("/synkronisering")
     @Scheduled(cron = "0 0 1 1 * *")
     public Map<Long, SlettedeIdenterResponse> synkroniserMedTps() {
@@ -50,7 +48,6 @@ public class IdentController {
         return avspillergruppeMedFjernedeIdenter;
     }
 
-    @LogExceptions
     @PostMapping("/rensAvspillergruppe")
     @Scheduled(cron = "0 0 2 * * *")
     public Map<Long, SlettedeIdenterResponse> rensAvspillergruppe() {
