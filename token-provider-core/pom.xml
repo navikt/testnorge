@@ -43,6 +43,13 @@
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
 
+        <!-- LOMBOK -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!--CODE ANALYSIS-->
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
