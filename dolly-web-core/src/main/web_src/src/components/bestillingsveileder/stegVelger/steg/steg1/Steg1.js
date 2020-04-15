@@ -36,20 +36,20 @@ export const Steg1 = ({ stateModifier }) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			{!opts.is.leggTil && <PersoninformasjonPanel stateModifier={stateModifier} />}
+			{!opts.is.leggTil && <PersoninformasjonPanel stateModifier={stateModifier}/>}
 
-			<AdressePanel stateModifier={stateModifier} />
-            <IdentifikasjonPanel stateModifier={stateModifier} />
-			<KontaktDoedsboPanel stateModifier={stateModifier} />
+			<AdressePanel stateModifier={stateModifier}/>
+			<IdentifikasjonPanel stateModifier={stateModifier}/>
+			<KontaktDoedsboPanel stateModifier={stateModifier}/>
 
 			{!opts.is.leggTil && (
 				<React.Fragment>
-					<FamilierelasjonPanel stateModifier={stateModifier} />
-					<ArbeidInntektPanel stateModifier={stateModifier} />
-					<InstitusjonsoppholdPanel stateModifier={stateModifier} />
-					<KontaktReservasjonsPanel stateModifier={stateModifier} />
-					<ArenaPanel stateModifier={stateModifier} />
-					<UdiPanel stateModifier={stateModifier} />
+					<FamilierelasjonPanel stateModifier={stateModifier}/>
+					<ArbeidInntektPanel stateModifier={stateModifier}/>
+					<InstitusjonsoppholdPanel stateModifier={stateModifier}/>
+					<KontaktReservasjonsPanel stateModifier={stateModifier}/>
+					<ArenaPanel stateModifier={stateModifier}/>
+					<UdiPanel stateModifier={stateModifier}/>
 				</React.Fragment>
 			)}
 
