@@ -10,5 +10,10 @@
             <username>token</username>
             <password>${env.GITHUB_TOKEN}</password>
         </server>
+        <server>
+            <id>https://maven.pkg.github.com/navikt/syfosm-common</id>
+            <username>token</username>
+            <password>${env.GITHUB_TOKEN}</password>
+        </server>
     </servers>
 </settings>
