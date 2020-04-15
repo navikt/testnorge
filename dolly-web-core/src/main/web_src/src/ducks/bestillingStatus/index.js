@@ -59,6 +59,14 @@ export default handleActions(
  */
 export const getBestillingById = (state, id) => state.bestillingStatuser.byId[id]
 
+export const getBestillingsListe = (state, IDer) => {
+	var bestillingsListe = []
+	for (let i = 0; i < IDer.length; i++) {
+		bestillingsListe.push(state.bestillingStatuser.byId[IDer[i]].bestilling)
+	}
+	return bestillingsListe
+}
+
 // Henter bestilling objecter basert på nye bestillinger (Array av ID'er)
 export const nyeBestillingerSelector = state => {
 	// Filter() -> Fjerner non-truthy values hvis find funksjon feiler
