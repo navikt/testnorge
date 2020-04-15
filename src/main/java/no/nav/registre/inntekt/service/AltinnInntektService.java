@@ -83,7 +83,7 @@ public class AltinnInntektService {
             try {
                 nyesteArbeidsforhold = AaregService.finnNyesteArbeidsforholdIOrganisasjon(ident, virksomhetsnummer, arbeidsforholdListe);
             } catch (ValidationException e) {
-                log.warn("Fant ikke nyeste arbeidsforhold for {}", virksomhetsnummer);
+                log.error("Fant ikke nyeste arbeidsforhold for {}", virksomhetsnummer, e);
                 return;
             }
 
