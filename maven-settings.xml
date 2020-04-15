@@ -1,4 +1,22 @@
 <settings>
+
+    <activeProfiles>
+        <activeProfile>github</activeProfile>
+    </activeProfiles>
+
+    <profiles>
+        <profile>
+            <id>github</id>
+            <repositories>
+                <repository>
+                    <id>github-syfosm-common</id>
+                    <name>GitHub Apache Maven Packages</name>
+                    <url>https://maven.pkg.github.com/navikt/syfosm-common</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+
     <servers>
         <server>
             <id>github</id>
@@ -11,7 +29,7 @@
             <password>${env.GITHUB_TOKEN}</password>
         </server>
         <server>
-            <id>https://maven.pkg.github.com/navikt/syfosm-common</id>
+            <id>github-syfosm-common</id>
             <username>token</username>
             <password>${env.GITHUB_TOKEN}</password>
         </server>
