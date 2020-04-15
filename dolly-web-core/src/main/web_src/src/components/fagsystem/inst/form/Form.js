@@ -1,5 +1,4 @@
 import React from 'react'
-import * as Yup from 'yup'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
@@ -8,7 +7,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { requiredDate, requiredString } from '~/utils/YupValidations'
+import { validation } from '~/components/fagsystem/inst/form/validation'
 
 const initialValues = {
 	institusjonstype: '',
@@ -43,11 +42,4 @@ export const InstForm = ({ formikBag }) => (
 	</Vis>
 )
 
-InstForm.validation = {
-	instdata: Yup.array().of(
-		Yup.object({
-			institusjonstype: requiredString,
-			startdato: requiredDate
-		})
-	)
-}
+InstForm.validation = validation
