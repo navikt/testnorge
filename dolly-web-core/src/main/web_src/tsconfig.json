@@ -3,7 +3,9 @@
 		"outDir": "./dist/dev",
 		"sourceMap": true,
 		"noImplicitAny": true,
-		"module": "commonjs",
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"module": "es6",
 		"target": "ESNext",
 		"allowJs": true,
 		"jsx": "react",
@@ -13,5 +15,5 @@
 			"~/*": ["./src/*"]
 		}
 	},
-	"exclude": ["node_modules"]
+	"exclude": ["node_modules", "**/node_modules/*"]
 }

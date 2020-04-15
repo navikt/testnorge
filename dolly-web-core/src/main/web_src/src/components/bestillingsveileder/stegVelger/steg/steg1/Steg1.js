@@ -41,12 +41,12 @@ export const Steg1 = ({ stateModifier }) => {
 				personFoerLeggTil={opts.personFoerLeggTil}
 			/>
 			<AdressePanel stateModifier={stateModifier} />
+			<ArbeidInntektPanel stateModifier={stateModifier} leggTil={opts.is.leggTil} />
+			<IdentifikasjonPanel stateModifier={stateModifier} />
 
 			{!opts.is.leggTil && (
 				<React.Fragment>
 					<FamilierelasjonPanel stateModifier={stateModifier} />
-					<ArbeidInntektPanel stateModifier={stateModifier} />
-					<IdentifikasjonPanel stateModifier={stateModifier} />
 					<KontaktDoedsboPanel stateModifier={stateModifier} />
 					<InstitusjonsoppholdPanel stateModifier={stateModifier} />
 					<KontaktReservasjonsPanel stateModifier={stateModifier} />
@@ -57,10 +57,10 @@ export const Steg1 = ({ stateModifier }) => {
 
 			{opts.is.leggTil && (
 				<AlertStripeInfo>
-					<b>Kun støtte for å legge til innvandret, utvandret og adresse</b>
+					<b>Funksjonen er under utvikling</b>
 					<p>
 						Det er foreløpig redusert støtte for å legge til attributter på person. Flere
-						attributter vil blir lagt til etterhvert.
+						attributter vil blir lagt til fortløpende.
 					</p>
 				</AlertStripeInfo>
 			)}

@@ -4,13 +4,21 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 
-export const ArenaVisning = ({ data, bestData, loading }) => {
+const getSisteBestData = (bestillinger) => {
+	for (let i = 0; i < bestillinger.length; i++) {
+		if (bestillinger[i].arenaforvalter !== undefined) {
+			return bestillinger[i].arenaforvalter
+		}
+	}
+}
+
+export const ArenaVisning = ({ data, bestillinger, loading }) => {
 	if (loading) return <Loading label="Laster arena-data" />
 	if (!data) return false
 
 	// Areneforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
 	const brukertype = data.arbeidsokerList[0].servicebehov
-	const { kvalifiseringsgruppe, inaktiveringDato, aap115, aap } = bestData
+	const { kvalifiseringsgruppe, inaktiveringDato, aap115, aap } = getSisteBestData(bestillinger)
 
 	return (
 		<div>
