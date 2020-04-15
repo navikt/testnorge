@@ -3,7 +3,7 @@ import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
 
-export const ArbeidInntektPanel = ({ stateModifier }) => {
+export const ArbeidInntektPanel = ({ stateModifier, leggTil }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
 
 	const infoTekst =
@@ -18,9 +18,6 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arbeid"
 		>
-			<AttributtKategori title="Arbeidsforhold (Aareg)">
-				<Attributt attr={sm.attrs.aareg} />
-			</AttributtKategori>
 			<AttributtKategori title="Skatteoppgjør (Sigrun)">
 				<Attributt attr={sm.attrs.sigrunstub} />
 			</AttributtKategori>
@@ -30,9 +27,16 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 			<AttributtKategori title="A-ordningen (Inntektskomponenten)">
 				<Attributt attr={sm.attrs.inntektstub} />
 			</AttributtKategori>
-			<AttributtKategori title="Inntektsmelding (fra Altinn) - beta">
-				<Attributt attr={sm.attrs.inntektsmelding} />
-			</AttributtKategori>
+			{!leggTil && (
+				<>
+					<AttributtKategori title="Arbeidsforhold (Aareg)">
+						<Attributt attr={sm.attrs.aareg} />
+					</AttributtKategori>
+					<AttributtKategori title="Inntektsmelding (fra Altinn) - beta">
+						<Attributt attr={sm.attrs.inntektsmelding} />
+					</AttributtKategori>
+				</>
+			)}
 		</Panel>
 	)
 }

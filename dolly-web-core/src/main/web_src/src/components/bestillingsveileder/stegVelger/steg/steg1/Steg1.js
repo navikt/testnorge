@@ -39,12 +39,12 @@ export const Steg1 = ({ stateModifier }) => {
 			{!opts.is.leggTil && <PersoninformasjonPanel stateModifier={stateModifier} />}
 
 			<AdressePanel stateModifier={stateModifier} />
+			<ArbeidInntektPanel stateModifier={stateModifier} leggTil={opts.is.leggTil} />
 			<IdentifikasjonPanel stateModifier={stateModifier} />
 
 			{!opts.is.leggTil && (
 				<React.Fragment>
 					<FamilierelasjonPanel stateModifier={stateModifier} />
-					<ArbeidInntektPanel stateModifier={stateModifier} />
 					<KontaktDoedsboPanel stateModifier={stateModifier} />
 					<InstitusjonsoppholdPanel stateModifier={stateModifier} />
 					<KontaktReservasjonsPanel stateModifier={stateModifier} />
