@@ -30,12 +30,6 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.freg</groupId>
-            <artifactId>freg-security-oidc-utility</artifactId>
-            <version>${freg.security.oidc.utility.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
@@ -70,7 +64,7 @@
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>${maven-pmd-plugin.version}</version>
                 <configuration>
-                    <failOnViolation>false</failOnViolation>
+                    <failOnViolation>true</failOnViolation>
                     <printFailingErrors>true</printFailingErrors>
                 </configuration>
                 <executions>
