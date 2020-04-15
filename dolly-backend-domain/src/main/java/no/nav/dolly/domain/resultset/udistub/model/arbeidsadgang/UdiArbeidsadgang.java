@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +15,7 @@ import no.nav.dolly.domain.resultset.udistub.model.UdiPeriode;
 @Setter
 @Getter
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UdiArbeidsadgang {
 
     private UdiArbeidOmfangType arbeidsOmfang;
