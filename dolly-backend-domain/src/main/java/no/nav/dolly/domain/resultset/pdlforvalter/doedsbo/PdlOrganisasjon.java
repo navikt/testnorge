@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.resultset.pdlforvalter.doedsbo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +14,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PdlOrganisasjon extends PdlSomAdressat {
 
     private PdlPersonnavn kontaktperson;

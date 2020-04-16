@@ -2,6 +2,8 @@ package no.nav.dolly.domain.resultset.krrstub;
 
 import java.time.ZonedDateTime;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +15,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DigitalKontaktdata {
 
         private Long id;

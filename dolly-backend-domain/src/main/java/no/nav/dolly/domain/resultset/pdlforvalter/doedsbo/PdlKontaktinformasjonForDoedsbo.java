@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.pdlforvalter.doedsbo;
 
 import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +14,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PdlKontaktinformasjonForDoedsbo {
 
     private Adressat adressat;
@@ -30,6 +32,7 @@ public class PdlKontaktinformasjonForDoedsbo {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Adressat {
 
         private PdlAdvokat advokatSomAdressat;

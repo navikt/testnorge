@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -15,6 +16,7 @@ import lombok.Setter;
 })
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class RsPdlRettIdentitet {
 
     @ApiModelProperty(

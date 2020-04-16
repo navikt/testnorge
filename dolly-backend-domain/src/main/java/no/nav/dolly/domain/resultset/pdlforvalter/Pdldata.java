@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.pdlforvalter;
 
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdent
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Pdldata {
 
     private PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo;
