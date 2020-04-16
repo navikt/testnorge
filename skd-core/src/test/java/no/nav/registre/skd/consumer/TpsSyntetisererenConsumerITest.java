@@ -41,7 +41,7 @@ public class TpsSyntetisererenConsumerITest {
         var endringskode = "0211";
         var antallMeldinger = 1;
 
-        this.server.expect(requestToUriTemplate(serverUrl + "/v1/generate/tps/" + endringskode + "?numToGenerate=" + antallMeldinger))
+        this.server.expect(requestToUriTemplate(serverUrl + "/api/v1/generate/tps/" + endringskode + "?numToGenerate=" + antallMeldinger))
                 .andRespond(withSuccess("[null]", MediaType.APPLICATION_JSON));
 
         consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);
@@ -58,7 +58,7 @@ public class TpsSyntetisererenConsumerITest {
         var endringskode = "0211";
         var antallMeldinger = 1;
         this.server.expect(requestToUriTemplate(serverUrl +
-                "/v1/generate/tps/" + endringskode + "?numToGenerate=" + antallMeldinger))
+                "/api/v1/generate/tps/" + endringskode + "?numToGenerate=" + antallMeldinger))
                 .andRespond(withSuccess(getResourceFileContent("__files/tpssynt/tpsSynt_NotNullFields_Response.json"), MediaType.APPLICATION_JSON));
 
         var skdmeldinger = consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);
