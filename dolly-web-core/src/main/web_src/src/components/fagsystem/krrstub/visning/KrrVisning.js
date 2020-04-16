@@ -5,7 +5,7 @@ import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 import { Historikk } from '~/components/ui/historikk/Historikk'
 
-export const KrrVisning = ({ data }) => {
+export const Visning = ({ data }) => {
 	return (
 		<>
 			<TitleValue title="Mobilnummer" value={data.mobil} />
@@ -20,7 +20,7 @@ export const KrrVisning = ({ data }) => {
 	)
 }
 
-export const Krr = ({ data, loading }) => {
+export const KrrVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="laster krr data" />
 	if (!data) return false
 
@@ -30,7 +30,7 @@ export const Krr = ({ data, loading }) => {
 		<div>
 			<SubOverskrift label="Kontaktinformasjon og reservasjon" iconKind="krr" />
 			<div className="person-visning_content">
-				<Historikk component={KrrVisning} data={sortedData} />
+				<Historikk component={Visning} data={sortedData} />
 			</div>
 		</div>
 	)

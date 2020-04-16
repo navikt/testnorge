@@ -3,13 +3,14 @@ import { useMount } from 'react-use'
 import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
-import { Krr } from '~/components/fagsystem/krrstub/visning/KrrVisning'
+import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
 import { PdlfVisning } from '~/components/fagsystem/pdlf/visning/Visning'
 import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
 import { AaregVisning } from '~/components/fagsystem/aareg/visning/Visning'
 import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
 import { SigrunstubVisning } from '~/components/fagsystem/sigrunstub/visning/Visning'
 import { InntektstubVisning } from '~/components/fagsystem/inntektstub/visning/Visning'
+import { InntektsmeldingVisning } from '~/components/fagsystem/inntektsmelding/visning/Visning'
 import { InstVisning } from '~/components/fagsystem/inst/visning/InstVisning'
 import { PensjonVisning } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
@@ -24,12 +25,12 @@ export const PersonVisning = ({
 	data,
 	ident,
 	bestilling,
+	bestillingsListe,
 	loading,
 	slettPerson,
 	leggTilPaaPerson
 }) => {
 	useMount(fetchDataFraFagsystemer)
-
 	return (
 		<div className="person-visning">
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.bestilling.tpsf)} />
@@ -38,11 +39,16 @@ export const PersonVisning = ({
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
 			<InntektstubVisning data={data.inntektstub} loading={loading.inntektstub} />
-			<Krr data={data.krrstub} loading={loading.krrstub} />
+			<InntektsmeldingVisning
+				data={data.inntektsmelding}
+				loading={loading.inntektsmelding}
+				bestilling={InntektsmeldingVisning.filterValues(bestillingsListe, bestilling)}
+			/>
+			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			<InstVisning data={data.instdata} loading={loading.instdata} />
 			<ArenaVisning
 				data={data.arenaforvalteren}
-				bestData={bestilling.bestilling.arenaforvalter}
+				bestillinger={bestillingsListe}
 				loading={loading.arenaforvalteren}
 			/>
 			<UdiVisning

@@ -12,6 +12,7 @@ spec:
   port: 8080
   ingresses:
     - https://dolly.nais.preprod.local
+    - https://dolly.nais-dev-fss.adeo.no
   liveness:
     path: /internal/isAlive
     initialDelay: 20

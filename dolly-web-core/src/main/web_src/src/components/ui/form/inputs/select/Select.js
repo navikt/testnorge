@@ -124,7 +124,7 @@ const P_FormikSelect = ({ fastfield, ...props }) => (
 	</FormikField>
 )
 
-export const FormikSelect = ({ visHvisAvhuket, ...props }) => {
+export const FormikSelect = ({ visHvisAvhuket = false, ...props }) => {
 	const component = <P_FormikSelect {...props} />
 	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
 }
