@@ -2,6 +2,7 @@ import React from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
+import _isEmpty from 'lodash/isEmpty'
 import { addDays } from 'date-fns'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -23,8 +24,7 @@ export const Sivilstand = ({
 	formikBag,
 	locked,
 	erSistePartner,
-	sisteSivilstandKode,
-	minimumDato
+	sisteSivilstand = {}
 }) => (
 	<FieldArray name={basePath}>
 		{arrayHelpers => {
@@ -36,7 +36,7 @@ export const Sivilstand = ({
 			if (sivilstander.length > 1) {
 				sivilstandKode = sivilstander[sivilstander.length - 2].sivilstand
 			}
-			const options = nesteGyldigStatuser(sivilstandKode || sisteSivilstandKode)
+			const options = nesteGyldigStatuser(sivilstandKode || sisteSivilstand.sivilstand)
 
 			const ugyldigSisteSivilstand =
 				_has(formikBag.errors, basePath) || tomSisteSivilstand(formikBag, basePath)
@@ -49,7 +49,7 @@ export const Sivilstand = ({
 						const isLast = idx === sivilstander.length - 1
 
 						// Det er kun mulig å slette siste forhold
-						const showRemove = isLast && idx > 0 && !locked
+						const showRemove = isLast && (!_isEmpty(sisteSivilstand) || idx > 0) && !locked
 						const clickRemove = () => arrayHelpers.remove(idx)
 						return (
 							<DollyFaBlokk
@@ -62,7 +62,7 @@ export const Sivilstand = ({
 									path={path}
 									options={options}
 									readOnly={!isLast || locked}
-									minimumDato={minimumDato}
+									minimumDato={sisteSivilstand.sivilstandRegdato}
 								/>
 							</DollyFaBlokk>
 						)
@@ -95,7 +95,6 @@ export const SivilstandForm = ({ path, options, readOnly, minimumDato = null }) 
 			disabled={readOnly}
 			fastfield={false}
 		/>
-		{console.log('minimumDato :', minimumDato)}
 		<FormikDatepicker
 			name={`${path}.sivilstandRegdato`}
 			label="Sivilstand fra dato"
