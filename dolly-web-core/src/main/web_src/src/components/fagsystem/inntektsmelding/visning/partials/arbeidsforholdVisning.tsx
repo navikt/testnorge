@@ -2,11 +2,15 @@ import React from 'react'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import { InntektstubKodeverk } from '~/config/kodeverk'
+import {
+	Arbeidsforhold,
+	AvtaltFerie
+} from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
 interface ArbeidsforholdVisning {
-	data?: any
+	data?: Arbeidsforhold
 }
+
 export default ({ data }: ArbeidsforholdVisning) => {
 	if (!data) return null
 
@@ -16,23 +20,19 @@ export default ({ data }: ArbeidsforholdVisning) => {
 			<div className="person-visning_content">
 				<TitleValue title="Beløp" value={data.beregnetInntekt.beloep} />
 				<TitleValue
-					title="Første fraværsdag"
-					value={Formatters.formatDate(data.beregnetInntekt.foersteFravaersdag)}
-				/>
-				<TitleValue
 					title="Årsak ved endring"
 					value={Formatters.codeToNorskLabel(data.beregnetInntekt.aarsakVedEndring)}
 				/>
+				<TitleValue
+					title="Første fraværsdag"
+					value={Formatters.formatDate(data.foersteFravaersdag)}
+				/>
 				{data.avtaltFerieListe && (
 					<DollyFieldArray data={data.avtaltFerieListe} header="Avtalt ferie" nested>
-						{(id: any, idx: number) => (
+						{(id: AvtaltFerie, idx: number) => (
 							<div className="person-visning_content" key={idx}>
-								<TitleValue title="Beløp" value={id.beloep} />
-								<TitleValue
-									title="Beskrivelse"
-									value={id.beskrivelse}
-									kodeverk={InntektstubKodeverk.Fradragbeskrivelse}
-								/>
+								<TitleValue title="Fra og med" value={Formatters.formatDate(id.fom)} />
+								<TitleValue title="Til og med" value={Formatters.formatDate(id.tom)} />
 							</div>
 						)}
 					</DollyFieldArray>

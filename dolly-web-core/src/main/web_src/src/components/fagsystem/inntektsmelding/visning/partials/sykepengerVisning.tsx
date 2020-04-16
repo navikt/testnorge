@@ -3,20 +3,10 @@ import _isEmpty from 'lodash/isEmpty'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
+import { Sykepenger, Periode } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
 interface SykepengerVisning {
 	data?: Sykepenger
-}
-
-type Sykepenger = {
-	arbeidsgiverperiodeListe?: Array<Periode>
-	begrunnelseForReduksjonEllerIkkeUtbetalt?: string //enum
-	bruttoUtbetalt?: number
-}
-
-type Periode = {
-	fom?: string
-	tom?: string
 }
 
 export default ({ data }: SykepengerVisning) => {

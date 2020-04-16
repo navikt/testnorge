@@ -3,16 +3,11 @@ import _isEmpty from 'lodash/isEmpty'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
+import { Naturalytelse } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
 interface NaturalytelseVisning {
 	data?: Array<Naturalytelse>
 	header: string
-}
-
-type Naturalytelse = {
-	beloepPrMnd?: string
-	fom?: string
-	naturalytelseType: string
 }
 
 export default ({ data, header }: NaturalytelseVisning) => {

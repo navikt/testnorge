@@ -13,6 +13,7 @@ type Response = {
 	orgnr: string
 	enhetstype: string
 	navn: string
+	juridiskEnhet: string | null
 }
 
 type OrgOption = {
@@ -29,8 +30,8 @@ export default ({ path }: InntektsmeldingOrgnummerSelect) => {
 				SelectOptionsOppslag.hentOrgnr().then(
 					({ liste }): Array<Response> =>
 						liste
-							.filter((org: any) => org.juridiskEnhet)
-							.map((org: any) => ({
+							.filter((org: Response) => org.juridiskEnhet)
+							.map((org: Response) => ({
 								value: org.orgnr,
 								label: `${org.orgnr} (${org.enhetstype}) - ${org.navn}`
 							}))
