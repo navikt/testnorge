@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.resultset.pensjon;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PensjonData {
 
     @ApiModelProperty(
@@ -22,6 +25,7 @@ public class PensjonData {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class PoppInntekt {
         @ApiModelProperty(
                 value = "Fra og med år YYYY",
