@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.aareg;
 
 import java.math.BigDecimal;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsAntallTimerIPerioden {
 
     @ApiModelProperty(
