@@ -40,9 +40,8 @@ export const PersonVisning = ({
 			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
 			<InntektstubVisning data={data.inntektstub} loading={loading.inntektstub} />
 			<InntektsmeldingVisning
-				data={data.inntektsmelding}
-				loading={loading.inntektsmelding}
-				bestilling={InntektsmeldingVisning.filterValues(bestillingsListe, bestilling)}
+				data={InntektsmeldingVisning.filterValues(bestillingsListe)}
+				ident={ident.ident}
 			/>
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			<InstVisning data={data.instdata} loading={loading.instdata} />

@@ -122,4 +122,8 @@ export default class DollyEndpoints {
 	static getPersonnavn() {
 		return `${uri}/personnavn`
 	}
+
+	static getTransaksjonsid(system, ident) {
+		return `${uri}/transaksjonid/${system}/${ident}`
+	}
 }

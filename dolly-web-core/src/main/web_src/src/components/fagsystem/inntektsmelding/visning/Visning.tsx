@@ -4,42 +4,51 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import Loading from '~/components/ui/loading/Loading'
+import {
+	Inntektsmelding,
+	Inntekter
+} from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import ArbeidsforholdVisning from './partials/arbeidsforholdVisning'
 import OmsorgspengerVisning from './partials/omsorgspengerVisning'
 import RefusjonVisning from './partials/refusjonVisning'
 import SykepengerVisning from './partials/sykepengerVisning'
 import PleiepengerVisning from './partials/pleiepengerVisning'
 import NaturalytelseVisning from './partials/naturalytelseVisning'
+import JournalpostidVisning from './partials/journalpostidVisning'
 
-export const InntektsmeldingVisning = ({ bestilling, loading }) => {
-	//TODO: Gjøre om til tsx
-	// export const InntektsmeldingVisning = ({ data, loading }) => {
-	// if (loading) return <Loading label="laster inntektsmelding data" />
-	// if (!data) return false
+interface InntektsmeldingVisning {
+	data: Array<Inntektsmelding>
+	ident: string
+}
 
-	// Midlertidig løsning der vi viser bestilte verdier istedenfor å lese tilbake fra kilde.
-	// Data hentes egentlig som prop. Husk å fjerne at bestilling sendes fra PersonVisning.js også
-	if (!bestilling || bestilling.inntektsmelding.length < 1) return false
-	const inntektsmeldingData = bestilling.inntektsmelding
+type EnkelInntektsmelding = {
+	data: Array<Inntekter>
+	ident: string
+}
+
+export const InntektsmeldingVisning = ({ data, ident }: InntektsmeldingVisning) => {
+	//Viser data fra bestillingen
+	if (!data || data.length < 1) return false
 
 	return (
 		<div>
 			<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
-			{inntektsmeldingData.length > 1 ? (
-				<DollyFieldArray header="Inntektsmeldinger" data={inntektsmeldingData} nested>
-					{inntektsmelding => <Inntektsmelding header="Inntekt" data={inntektsmelding.inntekter} />}
+			{data.length > 1 ? (
+				<DollyFieldArray header="Inntektsmeldinger" data={data} nested>
+					{(inntektsmelding: Inntektsmelding) => (
+						<Inntektsmelding data={inntektsmelding.inntekter} ident={ident} />
+					)}
 				</DollyFieldArray>
 			) : (
-				<Inntektsmelding header="Inntekt" data={inntektsmeldingData[0].inntekter} />
+				<Inntektsmelding data={data[0].inntekter} ident={ident} />
 			)}
 		</div>
 	)
 }
 
-const Inntektsmelding = ({ header, data }) => (
-	<DollyFieldArray header={header} data={data}>
-		{(inntekt, idx) => (
+const Inntektsmelding = ({ data, ident }: EnkelInntektsmelding) => (
+	<DollyFieldArray header="Inntekt" data={data}>
+		{(inntekt: Inntekter, idx: number) => (
 			<>
 				<div className="person-visning_content" key={idx}>
 					<TitleValue
@@ -75,15 +84,15 @@ const Inntektsmelding = ({ header, data }) => (
 					data={inntekt.opphoerAvNaturalytelseListe}
 					header="Opphør av naturalytelse"
 				/>
+				<JournalpostidVisning ident={ident} />
 			</>
 		)}
 	</DollyFieldArray>
 )
-InntektsmeldingVisning.filterValues = (bestillinger, currentBestilling) => {
-	if (!bestillinger || !currentBestilling) return false
+InntektsmeldingVisning.filterValues = (bestillinger: any) => {
+	if (!bestillinger) return false
 
-	const inntektsmeldinger = bestillinger
-		.map(bestilling => bestilling.inntektsmelding)
-		.filter(inntektsmelding => inntektsmelding)
-	return { ...currentBestilling.bestilling, inntektsmelding: inntektsmeldinger }
+	return bestillinger
+		.map((bestilling: any) => bestilling.inntektsmelding)
+		.filter((inntektsmelding: Inntektsmelding) => inntektsmelding)
 }
