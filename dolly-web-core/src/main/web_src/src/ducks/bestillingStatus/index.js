@@ -3,7 +3,6 @@ import { createActions } from 'redux-actions'
 import _isNil from 'lodash/isNil'
 import _mapValues from 'lodash/mapValues'
 import _uniq from 'lodash/uniq'
-import _has from 'lodash/has'
 import { DollyApi } from '~/service/Api'
 import bestillingStatusMapper from './bestillingStatusMapper'
 import { onSuccess } from '~/ducks/utils/requestActions'
@@ -67,7 +66,7 @@ export const getBestillingsListe = (state, IDer) => {
 		const bestilling = state.bestillingStatuser.byId[IDer[i]].bestilling
 		const suksessMiloer = successMiljoSelector(state.bestillingStatuser.byId[IDer[i]].status)
 		// Arena-bestillinger brukes i personvisning, skal derfor ikke returnere Arena-bestillinger som har feilet
-		if (!_has(bestilling, 'arenaforvalter') || _has(suksessMiloer, 'ARENA')) {
+		if (!bestilling.hasOwnProperty('arenaforvalter') || suksessMiloer.hasOwnProperty('ARENA')) {
 			bestillingsListe.push(bestilling)
 		}
 	}
