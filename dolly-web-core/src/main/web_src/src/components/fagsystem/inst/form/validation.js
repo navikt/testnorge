@@ -1,7 +1,6 @@
 import * as Yup from 'yup'
 import { requiredDate, requiredString } from '~/utils/YupValidations'
 import _get from 'lodash/get'
-import _isNil from 'lodash/isNil'
 
 const datoOverlapperIkkeAndreOppholdTest = (validation, validerStart) => {
 	const errorMsgAge =
@@ -11,12 +10,12 @@ const datoOverlapperIkkeAndreOppholdTest = (validation, validerStart) => {
 		'range',
 		errorMsgAge,
 		function isWithinTest(val) {
-			if ( !val ) return true
+			if (!val) return true
 
-			const dateValue = new Date(val)
+			const selectedDate = new Date(val)
 			const path = this.path.split('[')[0]
 			const values = this.options.context
-			const arrayPos = parseInt(this.path.match(/\d+/)[0]);
+			const arrayPos = parseInt(this.path.match(/\d+/)[0])
 			const alleOpphold = _get(values, `${path}`)
 
 			for (let i = 0; i < alleOpphold.length; i++) {
@@ -25,19 +24,22 @@ const datoOverlapperIkkeAndreOppholdTest = (validation, validerStart) => {
 				const sluttDato = new Date(sluttDatoValue)
 				const startDato = new Date(startDatoValue)
 
-				if(i===arrayPos){
-					if(validerStart){
-						if (sluttDatoValue!=='' && dateValue > sluttDato) return false
+				if(validerStart){
+					if (i === arrayPos) {
+						if (sluttDatoValue!=='' && selectedDate >= sluttDato) return false
 					}else{
-						if(!_isNil(startDatoValue) && dateValue < startDato) return false
+						if (sluttDatoValue!=='') {
+							if (selectedDate < sluttDato && selectedDate >= startDato) return false
+						} else if (selectedDate >= startDato) return false
 					}
-
 				}else{
-					if (sluttDatoValue!=='') {
-						if(dateValue < sluttDato && dateValue > startDato) return false
-					}else if(validerStart){
-						if(dateValue >= startDato) return false
-					}else if(dateValue > startDato) return false
+					if (i === arrayPos) {
+						if (startDatoValue!=='' && selectedDate <= startDato) return false
+					} else {
+						if (sluttDatoValue!=='') {
+							if (selectedDate <= sluttDato && selectedDate > startDato) return false
+						} else if (selectedDate > startDato) return false
+					}
 				}
 			}
 			return true
