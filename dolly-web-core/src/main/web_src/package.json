@@ -93,6 +93,7 @@
 		"@types/lodash": "^4.14.149",
 		"@types/react": "^16.9.23",
 		"@types/react-dom": "^16.9.5",
+		"@types/yup": "^0.26.34",
 		"babel-loader": "^8.0.6",
 		"clean-webpack-plugin": "^3.0.0",
 		"cpx": "^1.5.0",

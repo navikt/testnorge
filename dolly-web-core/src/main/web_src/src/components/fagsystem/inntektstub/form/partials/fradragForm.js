@@ -23,7 +23,7 @@ export const FradragForm = ({ formikBag, inntektsinformasjonPath }) => {
 						name={`${path}.beskrivelse`}
 						label="Beskrivelse"
 						kodeverk={InntektstubKodeverk.Fradragbeskrivelse}
-						size="large"
+						size="xlarge"
 					/>
 				</React.Fragment>
 			)}

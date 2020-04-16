@@ -10,9 +10,9 @@ const initialValues = {
 	startdato: undefined,
 	sluttdato: undefined,
 	antallTimerPerUkeSomEnFullStillingTilsvarer: '',
-	avloenningstype: '',
-	yrke: '',
-	arbeidstidsordning: '',
+	avloenningstype: undefined,
+	yrke: undefined,
+	arbeidstidsordning: undefined,
 	stillingsprosent: '',
 	sisteLoennsendringsdato: undefined,
 	sisteDatoForStillingsprosentendring: undefined
@@ -22,7 +22,7 @@ export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 	return (
 		<FormikDollyFieldArray
 			name={`${inntektsinformasjonPath}.arbeidsforholdsliste`}
-			header="Arbeidsforhold"
+			header="Arbeidsforhold (Aareg)"
 			newEntry={initialValues}
 		>
 			{path => (
@@ -32,12 +32,18 @@ export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 						label="Arbeidsforholdstype"
 						kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
 						size="medium"
+						isClearable={false}
 					/>
 					<FormikDatepicker name={`${path}.startdato`} label="Startdato" />
 					<FormikDatepicker name={`${path}.sluttdato`} label="Sluttdato" />
 					<FormikTextInput
 						name={`${path}.antallTimerPerUkeSomEnFullStillingTilsvarer`}
 						label="Timer per uke (full stilling)"
+						type="number"
+					/>
+					<FormikTextInput
+						name={`${path}.stillingsprosent`}
+						label="Stillingsprosent"
 						type="number"
 					/>
 					<FormikSelect
@@ -50,19 +56,16 @@ export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 						name={`${path}.yrke`}
 						label="Yrke"
 						kodeverk={ArbeidKodeverk.Yrker}
-						size="large"
+						size="xxlarge"
+						optionHeight={50}
 					/>
 					<FormikSelect
 						name={`${path}.arbeidstidsordning`}
 						label="Arbeidstidsordning"
 						kodeverk={ArbeidKodeverk.Arbeidstidsordninger}
-						size="medium"
+						size="xxlarge"
 					/>
-					<FormikTextInput
-						name={`${path}.stillingsprosent`}
-						label="Stillingsprosent"
-						type="number"
-					/>
+
 					<FormikDatepicker
 						name={`${path}.sisteLoennsendringsdato`}
 						label="Siste lønnsendringsdato"
