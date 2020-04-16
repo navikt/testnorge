@@ -52,7 +52,7 @@ import no.nav.registre.skd.service.SyntetiseringService;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { ApplicationTestConfig.class, ApplicationStarter.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
-@ActiveProfiles("itest")
+@ActiveProfiles("test")
 public class FeilhaandteringCompTest {
 
     private final String testfeilmelding = "testfeilmelding";

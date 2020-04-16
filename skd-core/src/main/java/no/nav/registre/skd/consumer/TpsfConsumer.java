@@ -1,5 +1,7 @@
 package no.nav.registre.skd.consumer;
 
+import static no.nav.registre.skd.consumer.ConsumerUtils.getHttpRequestFactory;
+
 import com.google.common.collect.Lists;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
@@ -42,12 +44,11 @@ public class TpsfConsumer {
     private final UriTemplate urlSlettIdenterFraTps;
 
     public TpsfConsumer(
-            RestTemplateBuilder restTemplateBuilder,
             @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
             @Value("${testnorges.ida.credential.tpsf.username}") String username,
             @Value("${testnorges.ida.credential.tpsf.password}") String password
     ) {
-        this.restTemplate = restTemplateBuilder.build();
+        this.restTemplate = new RestTemplate(getHttpRequestFactory());
         this.restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
         this.uriTemplateSaveToTpsf = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/save/{gruppeId}");
         this.uriTemplateSaveToTps = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/send/{gruppeId}");
@@ -62,7 +63,7 @@ public class TpsfConsumer {
             Long gruppeId,
             List<RsMeldingstype> skdmeldinger
     ) {
-        if(log.isInfoEnabled()) {
+        if (log.isInfoEnabled()) {
             log.info("Lagrer {} skd endringsmeldinger i tps-forvalteren med gruppe id {}", skdmeldinger.size(), gruppeId);
         }
         var postRequest = RequestEntity.post(uriTemplateSaveToTpsf.expand(gruppeId)).body(skdmeldinger);

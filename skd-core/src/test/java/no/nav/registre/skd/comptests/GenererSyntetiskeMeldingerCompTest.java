@@ -38,7 +38,7 @@ import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { ApplicationTestConfig.class, ApplicationStarter.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
-@ActiveProfiles("itest")
+@ActiveProfiles("test")
 public class GenererSyntetiskeMeldingerCompTest {
 
     private final List<Long> expectedMeldingsIdsITpsf = new ArrayList<>();
