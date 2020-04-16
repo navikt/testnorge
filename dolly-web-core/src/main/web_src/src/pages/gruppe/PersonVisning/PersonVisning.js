@@ -58,7 +58,7 @@ export const PersonVisning = ({
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} />
 			<div className="person-visning_actions">
-				<Button onClick={leggTilPaaPerson} kind="add-circle">
+				<Button onClick={() => leggTilPaaPerson(data)} kind="add-circle">
 					LEGG TIL
 				</Button>
 
