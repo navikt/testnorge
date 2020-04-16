@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.resultset.tpsf.adresse;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -13,6 +14,7 @@ import lombok.Setter;
 @JsonTypeName("Gateadresse")
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsGateadresse extends RsAdresse {
 
     @ApiModelProperty(

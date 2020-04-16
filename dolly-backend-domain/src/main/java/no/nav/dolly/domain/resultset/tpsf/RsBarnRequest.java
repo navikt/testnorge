@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsBarnRequest extends RsRelasjon{
 
     public enum BarnType {MITT, FELLES, DITT}
