@@ -47,7 +47,7 @@ public class InstdataConsumer {
                             .build(), String[].class).getBody();
 
         } catch (RuntimeException e) {
-            log.error("Kunne ikke lese fra endepunkt for aa hente miljoer: {} ", e.getMessage(), e);
+            log.error("Kunne ikke lese fra endepunkt for å hente miljøer: {} ", e.getMessage(), e);
             return DEFAULT_ENV;
         }
     }
