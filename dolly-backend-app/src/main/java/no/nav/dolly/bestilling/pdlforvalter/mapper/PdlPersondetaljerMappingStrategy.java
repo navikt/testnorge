@@ -4,6 +4,7 @@ import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KILDE;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.UGRADERT;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import org.springframework.stereotype.Component;
 
@@ -76,7 +77,8 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Statsborgerskap statsborgerskap, PdlStatsborgerskap pdlStatsborgerskap, MappingContext context) {
 
-                        pdlStatsborgerskap.setLandkode(statsborgerskap.getStatsborgerskap());
+                        pdlStatsborgerskap.setLandkode(isNotBlank(statsborgerskap.getStatsborgerskap()) ?
+                                statsborgerskap.getStatsborgerskap() : "NOR");
                         pdlStatsborgerskap.setKilde(KILDE);
                     }
                 })
