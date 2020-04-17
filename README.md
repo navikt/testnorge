@@ -1,5 +1,1 @@
-**INFO**
-
-Koden er flyttet til github: https://github.com/navikt/orkestratoren
-
-Repoet tillater ikke lenger pushing til master
+Orkestratoren er applikasjonen som orkestrerer opprettelse av syntetiske hendelser i den syntetiske populasjonen "mininorge".
