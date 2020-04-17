@@ -1,10 +1,9 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import static no.nav.registre.orkestratoren.consumer.utils.ConsumerUtils.getHttpRequestFactory;
-
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -28,9 +27,10 @@ public class TestnorgeSkdConsumer {
     private UriTemplate slettIdenterUrl;
 
     public TestnorgeSkdConsumer(
+            RestTemplateBuilder restTemplateBuilder,
             @Value("${testnorge-skd.rest.api.url}") String skdServerUrl
     ) {
-        this.restTemplate = new RestTemplate(getHttpRequestFactory());
+        this.restTemplate = restTemplateBuilder.build();
         this.startSyntetiseringUrl = new UriTemplate(skdServerUrl + "/v1/syntetisering/generer");
         this.slettIdenterUrl = new UriTemplate(skdServerUrl + "/v1/ident/{avspillergruppeId}?miljoer={miljoer}");
     }
