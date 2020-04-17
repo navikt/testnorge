@@ -2,7 +2,6 @@ package no.nav.registre.hodejegeren.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.rtv.namespacetps.TpsPersonDokumentType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -27,6 +26,7 @@ import no.nav.registre.hodejegeren.provider.rs.requests.DataRequest;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 import no.nav.registre.hodejegeren.provider.rs.requests.skd.PersonDokumentWrapper;
 import no.nav.registre.hodejegeren.service.utilities.PersonDokumentUtility;
+import no.nav.registre.testnorge.consumers.namespacetps.TpsPersonDokumentType;
 
 @Slf4j
 @RequiredArgsConstructor

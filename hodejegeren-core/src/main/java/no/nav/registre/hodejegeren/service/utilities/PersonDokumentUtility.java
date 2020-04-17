@@ -1,28 +1,5 @@
 package no.nav.registre.hodejegeren.service.utilities;
 
-import no.rtv.namespacetps.BoadresseType;
-import no.rtv.namespacetps.DodType;
-import no.rtv.namespacetps.ForeldreansvarType;
-import no.rtv.namespacetps.GironummerType;
-import no.rtv.namespacetps.MigrasjonType;
-import no.rtv.namespacetps.NavnType;
-import no.rtv.namespacetps.OppholdstillatelseType;
-import no.rtv.namespacetps.PersonIdentStatusType;
-import no.rtv.namespacetps.PersonIdentType;
-import no.rtv.namespacetps.PersonInfoType;
-import no.rtv.namespacetps.PersonStatusType;
-import no.rtv.namespacetps.PostType;
-import no.rtv.namespacetps.PrioritertadresseType;
-import no.rtv.namespacetps.RelasjonType;
-import no.rtv.namespacetps.SivilstandType;
-import no.rtv.namespacetps.StatsborgerType;
-import no.rtv.namespacetps.TelefonJobbType;
-import no.rtv.namespacetps.TelefonMobilType;
-import no.rtv.namespacetps.TelefonPrivatType;
-import no.rtv.namespacetps.TelefonType;
-import no.rtv.namespacetps.TilleggType;
-import no.rtv.namespacetps.TpsPersonDokumentType;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +23,28 @@ import no.nav.registre.hodejegeren.provider.rs.requests.skd.innhold.TelefonJobb;
 import no.nav.registre.hodejegeren.provider.rs.requests.skd.innhold.TelefonMobil;
 import no.nav.registre.hodejegeren.provider.rs.requests.skd.innhold.TelefonPrivat;
 import no.nav.registre.hodejegeren.provider.rs.requests.skd.innhold.Tillegg;
+import no.nav.registre.testnorge.consumers.namespacetps.BoadresseType;
+import no.nav.registre.testnorge.consumers.namespacetps.DodType;
+import no.nav.registre.testnorge.consumers.namespacetps.ForeldreansvarType;
+import no.nav.registre.testnorge.consumers.namespacetps.GironummerType;
+import no.nav.registre.testnorge.consumers.namespacetps.MigrasjonType;
+import no.nav.registre.testnorge.consumers.namespacetps.NavnType;
+import no.nav.registre.testnorge.consumers.namespacetps.OppholdstillatelseType;
+import no.nav.registre.testnorge.consumers.namespacetps.PersonIdentStatusType;
+import no.nav.registre.testnorge.consumers.namespacetps.PersonIdentType;
+import no.nav.registre.testnorge.consumers.namespacetps.PersonInfoType;
+import no.nav.registre.testnorge.consumers.namespacetps.PersonStatusType;
+import no.nav.registre.testnorge.consumers.namespacetps.PostType;
+import no.nav.registre.testnorge.consumers.namespacetps.PrioritertadresseType;
+import no.nav.registre.testnorge.consumers.namespacetps.RelasjonType;
+import no.nav.registre.testnorge.consumers.namespacetps.SivilstandType;
+import no.nav.registre.testnorge.consumers.namespacetps.StatsborgerType;
+import no.nav.registre.testnorge.consumers.namespacetps.TelefonJobbType;
+import no.nav.registre.testnorge.consumers.namespacetps.TelefonMobilType;
+import no.nav.registre.testnorge.consumers.namespacetps.TelefonPrivatType;
+import no.nav.registre.testnorge.consumers.namespacetps.TelefonType;
+import no.nav.registre.testnorge.consumers.namespacetps.TilleggType;
+import no.nav.registre.testnorge.consumers.namespacetps.TpsPersonDokumentType;
 
 public class PersonDokumentUtility {
 
@@ -215,7 +214,10 @@ public class PersonDokumentUtility {
         }
     }
 
-    private static PersonIdent buildPersonident(PersonIdentType personIdentType, PersonIdentStatusType personIdentStatusType) {
+    private static PersonIdent buildPersonident(
+            PersonIdentType personIdentType,
+            PersonIdentStatusType personIdentStatusType
+    ) {
         PersonIdent personIdent = PersonIdent.builder().build();
         if (personIdentType != null) {
             personIdent.setId(personIdentType.getPersonIdent().trim());
@@ -229,7 +231,10 @@ public class PersonDokumentUtility {
         return personIdent;
     }
 
-    private static PersonInfo buildPersonInfo(PersonInfoType personInfoType, PersonStatusType personStatusType) {
+    private static PersonInfo buildPersonInfo(
+            PersonInfoType personInfoType,
+            PersonStatusType personStatusType
+    ) {
         PersonInfo personInfo = PersonInfo.builder().build();
         if (personInfoType != null) {
             personInfo.setKjoenn(personInfoType.getPersonKjonn().trim());
