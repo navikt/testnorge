@@ -35,33 +35,31 @@ export const Steg1 = ({ stateModifier }) => {
 		.filter(v => v.values.length)
 	return (
 		<AttributtVelger checked={checked}>
-			{!opts.is.leggTil && (
-				<PersoninformasjonPanel
-					stateModifier={stateModifier}
-					personFoerLeggTil={opts.personFoerLeggTil}
-				/>
-			)}
+			{!opts.is.leggTil && <PersoninformasjonPanel stateModifier={stateModifier} />}
+
 			<AdressePanel stateModifier={stateModifier} />
 			<FamilierelasjonPanel stateModifier={stateModifier} valgtPerson={opts.personFoerLeggTil} />
+			<ArbeidInntektPanel stateModifier={stateModifier} />
+			<IdentifikasjonPanel stateModifier={stateModifier} />
+			<KontaktDoedsboPanel stateModifier={stateModifier} />
 
 			{!opts.is.leggTil && (
-				<React.Fragment>
-					<ArbeidInntektPanel stateModifier={stateModifier} />
-					<IdentifikasjonPanel stateModifier={stateModifier} />
-					<KontaktDoedsboPanel stateModifier={stateModifier} />
+				<>
 					<InstitusjonsoppholdPanel stateModifier={stateModifier} />
-					<KontaktReservasjonsPanel stateModifier={stateModifier} />
-					<ArenaPanel stateModifier={stateModifier} />
-					<UdiPanel stateModifier={stateModifier} />
-				</React.Fragment>
+				</>
 			)}
+
+			<KontaktReservasjonsPanel stateModifier={stateModifier} />
+			<ArenaPanel stateModifier={stateModifier} />
+
+			{!opts.is.leggTil && <UdiPanel stateModifier={stateModifier} />}
 
 			{opts.is.leggTil && (
 				<AlertStripeInfo>
-					<b>Kun støtte for å legge til adresse</b>
+					<b>Funksjonen er under utvikling</b>
 					<p>
 						Det er foreløpig redusert støtte for å legge til attributter på person. Flere
-						attributter vil blir lagt til etterhvert.
+						attributter vil bli lagt til fortløpende.
 					</p>
 				</AlertStripeInfo>
 			)}

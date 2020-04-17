@@ -20,7 +20,7 @@ export const DollyCheckbox = ({ isSwitch = false, size, checkboxMargin, ...props
 	</InputWrapper>
 )
 
-export const FormikCheckbox = ({ afterChange, fastfield, ...props }) => (
+export const FormikCheckbox = ({ afterChange = null, fastfield = false, ...props }) => (
 	<FormikField name={props.name} fastfield={fastfield}>
 		{({ field, form, meta }) => {
 			const handleChange = event => {

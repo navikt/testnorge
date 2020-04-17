@@ -4,7 +4,6 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-// import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import texts from '../texts'
 import tilleggsinformasjonPaths from '../paths'
 
@@ -34,6 +33,8 @@ const numberFields = [
 	'antall'
 ]
 
+const wideFields = ['beskrivelse', 'inntjeningsforhold', 'persontype']
+
 const booleanField = options => {
 	return options.length > 0 && typeof options[0] === 'boolean'
 }
@@ -59,9 +60,7 @@ const fieldReslover = (field, options = [], handleChange, values, path, index) =
 				kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 				fastfield={false}
 				afterChange={handleChange}
-				// size="large"
-				size={booleanField(options) ? 'medium' : 'large'}
-				// size={field == 'beskrivelse' ? 'xxlarge' : 'large'} // TODO Fortsett her!!
+				size="large"
 				feil={sjekkFelt(field, options, values, path)}
 			/>
 		)
@@ -82,18 +81,6 @@ const fieldReslover = (field, options = [], handleChange, values, path, index) =
 			/>
 		)
 	}
-	// TODO: Sjekk om det er mulig å sette booleans som checkboxes
-	// else if (options.length > 0 && typeof options[0] === 'boolean') {
-	// 	return (
-	// 		<FormikCheckbox
-	// 			name={field}
-	// 			label={texts(field)}
-	// 			afterChange={handleChange}
-	// 			disabled={options.length == 1 && options[0] === false}
-	// 			checkboxMargin
-	// 		/>
-	// 	)
-	// }
 
 	return (
 		<FormikSelect
@@ -105,7 +92,7 @@ const fieldReslover = (field, options = [], handleChange, values, path, index) =
 				.map(option => ({ label: texts(option), value: option }))}
 			fastfield={false}
 			afterChange={handleChange}
-			size="large"
+			size={booleanField(options) ? 'small' : wideFields.includes(field) ? 'xxlarge' : 'large'}
 			feil={sjekkFelt(field, options, values, path)}
 			isClearable={field !== 'inntektstype'}
 		/>

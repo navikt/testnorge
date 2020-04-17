@@ -10,9 +10,10 @@ import { FieldArrayAddButton } from '~/components/ui/form/fieldArray/DollyFieldA
 import { erOpprettNyPartnerGyldig } from '../SivilstandOptions'
 import TidligerePartner from './TidligerePartner'
 import Formatters from '~/utils/DataFormatter'
+import { FormikProps } from 'formik'
 
 interface LeggTilPaaPartnere {
-	formikBag: any
+	formikBag: FormikProps<{}>
 	personFoerLeggTil: any
 }
 
@@ -46,11 +47,11 @@ const tidligerePartnere = personFoerLeggTil =>
 		.filter((relasjon: any) => relasjon.relasjonTypeNavn === 'PARTNER')
 		.map((relasjon: any) => relasjon.personRelasjonMed)
 
-const oppdatertTidligerePartner = (formikBag): boolean =>
+const oppdatertTidligerePartner = (formikBag: FormikProps<{}>): boolean =>
 	_has(formikBag.values, `${partnerPath}[0].sivilstander`) &&
 	!_has(formikBag.values, `${partnerPath}[0].identtype`)
 
-const harNyPartner = (formikBag): boolean =>
+const harNyPartner = (formikBag: FormikProps<{}>): boolean =>
 	_get(formikBag.values, partnerPath).some(partner => _has(partner, 'identtype'))
 
 export default ({ formikBag, personFoerLeggTil }: LeggTilPaaPartnere) => {

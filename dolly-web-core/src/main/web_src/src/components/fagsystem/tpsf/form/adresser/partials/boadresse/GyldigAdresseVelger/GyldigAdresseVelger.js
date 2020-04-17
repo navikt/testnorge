@@ -16,9 +16,9 @@ export const GyldigAdresseVelger = ({ settBoadresse }) => {
 			? await TpsfApi.generateAddress(query)
 			: await TpsfApi.generateRandomAddress()
 
-		const addressData = result.data.response.data1.adrData
+		const addressData = result.data.response.data1.adrData || []
 
-		if (addressData) {
+		if (addressData.length > 0) {
 			const addressDataArr = Array.isArray(addressData) ? addressData : [addressData]
 			setAdresser(addressDataArr)
 		} else {

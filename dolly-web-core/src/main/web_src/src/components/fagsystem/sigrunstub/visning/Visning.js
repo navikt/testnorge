@@ -14,7 +14,7 @@ export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
 
 	return (
 		<div>
-			{visTittel && <SubOverskrift label="Inntekt" iconKind="sigrun" />}
+			{visTittel && <SubOverskrift label="Skatteoppgjør (Sigrun)" iconKind="sigrun" />}
 			<div className="person-visning_content">
 				{grunnlag && (
 					<DollyFieldArray header="Fastlands-Norge" data={data[0].grunnlag} nested>
