@@ -9,7 +9,6 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.rtv.namespacetps.TpsPersonDokumentType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +20,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
+
+import no.nav.registre.testnorge.consumers.namespacetps.TpsPersonDokumentType;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(HodejegerenHistorikkConsumer.class)
@@ -39,7 +40,6 @@ public class HodejegerenHistorikkConsumerTest {
     private TpsPersonDokumentType tpsPersonDokument;
     private String fnr = "01010101010";
     private Long avspillergruppeId = 123L;
-    private String miljoe = "q2";
 
     @Before
     public void setUp() {
@@ -68,24 +68,6 @@ public class HodejegerenHistorikkConsumerTest {
         server.expect(requestToUriTemplate(expectedUri, fnr))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(content().json(asJsonString(tpsPersonDokument)))
-                .andRespond(withSuccess("[\"" + fnr + "\"]", MediaType.APPLICATION_JSON));
-    }
-
-    private void stubHentAlleIdenter(String expectedUri) {
-        server.expect(requestToUriTemplate(expectedUri, avspillergruppeId))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess("[\"" + fnr + "\"]", MediaType.APPLICATION_JSON));
-    }
-
-    private void stubHentIdenterIkkeITps(String expectedUri) {
-        server.expect(requestToUriTemplate(expectedUri, avspillergruppeId, miljoe))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess("[\"" + fnr + "\"]", MediaType.APPLICATION_JSON));
-    }
-
-    private void stubHentIdenterSomKolliderer(String expectedUri) {
-        server.expect(requestToUriTemplate(expectedUri, avspillergruppeId))
-                .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess("[\"" + fnr + "\"]", MediaType.APPLICATION_JSON));
     }
 
