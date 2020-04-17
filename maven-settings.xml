@@ -1,22 +1,4 @@
 <settings>
-
-    <activeProfiles>
-        <activeProfile>github</activeProfile>
-    </activeProfiles>
-
-    <profiles>
-        <profile>
-            <id>github</id>
-            <repositories>
-                <repository>
-                    <id>github-testnorge-consumers</id>
-                    <name>GitHub Sonatype Maven Packages</name>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </repositories>
-        </profile>
-    </profiles>
-
     <servers>
         <server>
             <id>github</id>
@@ -25,11 +7,6 @@
         </server>
         <server>
             <id>github-package-registry-navikt</id>
-            <username>token</username>
-            <password>${env.GITHUB_TOKEN}</password>
-        </server>
-        <server>
-            <id>github-testnorge-consumers</id>
             <username>token</username>
             <password>${env.GITHUB_TOKEN}</password>
         </server>
