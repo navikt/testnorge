@@ -1,9 +1,10 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
+import static no.nav.registre.orkestratoren.consumer.utils.ConsumerUtils.getHttpRequestFactory;
+
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -22,20 +23,14 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldinger
 @Slf4j
 public class TestnorgeSkdConsumer {
 
-    private static final ParameterizedTypeReference<SkdMeldingerTilTpsRespons> RESPONSE_TYPE_START_SYNT = new ParameterizedTypeReference<>() {
-    };
-    private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<>() {
-    };
-
     private RestTemplate restTemplate;
     private UriTemplate startSyntetiseringUrl;
     private UriTemplate slettIdenterUrl;
 
     public TestnorgeSkdConsumer(
-            RestTemplateBuilder restTemplateBuilder,
             @Value("${testnorge-skd.rest.api.url}") String skdServerUrl
     ) {
-        this.restTemplate = restTemplateBuilder.build();
+        this.restTemplate = new RestTemplate(getHttpRequestFactory());
         this.startSyntetiseringUrl = new UriTemplate(skdServerUrl + "/v1/syntetisering/generer");
         this.slettIdenterUrl = new UriTemplate(skdServerUrl + "/v1/ident/{avspillergruppeId}?miljoer={miljoer}");
     }
@@ -45,7 +40,8 @@ public class TestnorgeSkdConsumer {
             SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest
     ) {
         var postRequest = RequestEntity.post(startSyntetiseringUrl.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserSkdmeldingerRequest);
-        return restTemplate.exchange(postRequest, RESPONSE_TYPE_START_SYNT);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<SkdMeldingerTilTpsRespons>() {
+        });
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "skd" })
@@ -56,6 +52,7 @@ public class TestnorgeSkdConsumer {
     ) {
         var miljoerSomString = String.join(",", miljoer);
         var deleteRequest = RequestEntity.method(HttpMethod.DELETE, slettIdenterUrl.expand(avspillergruppeId, miljoerSomString)).contentType(MediaType.APPLICATION_JSON).body(identer);
-        return restTemplate.exchange(deleteRequest, RESPONSE_TYPE_DELETE).getBody();
+        return restTemplate.exchange(deleteRequest, new ParameterizedTypeReference<List<Long>>() {
+        }).getBody();
     }
 }

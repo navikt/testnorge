@@ -9,11 +9,11 @@ import lombok.Setter;
 
 import java.util.Map;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
 @Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SyntetiserNavmeldingerRequest {
 
     @JsonProperty("avspillergruppeId")
