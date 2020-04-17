@@ -46,7 +46,6 @@ export const Steg1 = ({ stateModifier }) => {
 			{!opts.is.leggTil && (
 				<>
 					<FamilierelasjonPanel stateModifier={stateModifier} />
-					<KontaktDoedsboPanel stateModifier={stateModifier} />
 					<InstitusjonsoppholdPanel stateModifier={stateModifier} />
 				</>
 			)}
