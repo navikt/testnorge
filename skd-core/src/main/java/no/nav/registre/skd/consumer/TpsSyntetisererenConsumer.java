@@ -1,10 +1,9 @@
 package no.nav.registre.skd.consumer;
 
-import static no.nav.registre.skd.consumer.ConsumerUtils.getHttpRequestFactory;
-
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
@@ -27,9 +26,10 @@ public class TpsSyntetisererenConsumer {
     private final RestTemplate restTemplate;
 
     public TpsSyntetisererenConsumer(
+            RestTemplateBuilder restTemplateBuilder,
             @Value("${syntrest.rest.api.url}") String syntrestServerUrl
     ) {
-        this.restTemplate = new RestTemplate(getHttpRequestFactory());
+        this.restTemplate = restTemplateBuilder.build();
         this.serverUrl = syntrestServerUrl;
     }
 

@@ -1,7 +1,5 @@
 package no.nav.registre.skd.consumer;
 
-import static no.nav.registre.skd.consumer.ConsumerUtils.getHttpRequestFactory;
-
 import com.google.common.collect.Lists;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
@@ -44,11 +42,12 @@ public class TpsfConsumer {
     private final UriTemplate urlSlettIdenterFraTps;
 
     public TpsfConsumer(
+            RestTemplateBuilder restTemplateBuilder,
             @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
             @Value("${testnorges.ida.credential.tpsf.username}") String username,
             @Value("${testnorges.ida.credential.tpsf.password}") String password
     ) {
-        this.restTemplate = new RestTemplate(getHttpRequestFactory());
+        this.restTemplate = restTemplateBuilder.build();
         this.restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
         this.uriTemplateSaveToTpsf = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/save/{gruppeId}");
         this.uriTemplateSaveToTps = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/send/{gruppeId}");
