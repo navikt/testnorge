@@ -99,8 +99,8 @@ public class JenkinsConsumer {
                     .filename(filename)
                     .build();
             fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
-            fileMap.set("Content-Type", ContentType.TEXT_PLAIN.withCharset(StandardCharsets.UTF_8).toString());
-            HttpEntity<byte[]> fileEntity = new HttpEntity<>(flatFile.getBytes(), fileMap);
+            fileMap.set("Content-Type", ContentType.TEXT_PLAIN.withCharset(StandardCharsets.ISO_8859_1).toString());
+            HttpEntity<byte[]> fileEntity = new HttpEntity<>(flatFile.getBytes(StandardCharsets.ISO_8859_1), fileMap);
             map.add("input_file", fileEntity);
         } catch (IOException e) {
             log.error(e.getLocalizedMessage(), e);

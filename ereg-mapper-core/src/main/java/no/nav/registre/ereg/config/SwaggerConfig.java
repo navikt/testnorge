@@ -1,4 +1,4 @@
-package no.nav.registre.ereg.mapper.config;
+package no.nav.registre.ereg.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
