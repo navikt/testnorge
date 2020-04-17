@@ -2,7 +2,6 @@ package no.nav.dolly.mapper;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.String.format;
-import static no.nav.dolly.bestilling.instdata.InstdataClient.OK_RESULT;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +12,8 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AbstractRsStatusMiljoeIdentForhold {
+
+    private static final String OK_RESULT = "OK";
 
     public static void checkAndUpdateStatus(Map<String, Map<String, Set<String>>> statusEnvIdents, String ident, String environ, String errMsg) {
 
