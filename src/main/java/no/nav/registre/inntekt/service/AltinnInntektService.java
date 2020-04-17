@@ -103,7 +103,7 @@ public class AltinnInntektService {
                             .build()
             );
         });
-        if(!continueOnError & inntektDokuments.size()!=inntekterAaOpprette.size()){
+        if(!continueOnError && (inntektDokuments.size()!=inntekterAaOpprette.size())){
             throw new ValidationException("Fant ikke nyeste arbeidsforhold for alle virksomhetsnummer");
         }
 
