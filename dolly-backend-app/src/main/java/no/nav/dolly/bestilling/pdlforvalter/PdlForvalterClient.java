@@ -256,7 +256,7 @@ public class PdlForvalterClient implements ClientRegister {
 
         person.getStatsborgerskap().forEach(statsborgerskap ->
                 pdlForvalterConsumer.postStatsborgerskap(mapperFacade.map(statsborgerskap, PdlStatsborgerskap.class),
-                        person.getIdent(), "adressebeskyttelse")
+                        person.getIdent(), "statsborgerskap")
         );
     }
 
