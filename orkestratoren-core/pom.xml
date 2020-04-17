@@ -89,22 +89,17 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.9.8</version>
         </dependency>
-        <dependency>
-            <groupId>no.nav.person.tps.tjenester</groupId>
-            <artifactId>person-tps-avstemming-v1</artifactId>
-            <version>${person-tps-avstemming-v1.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
         </dependency>
 
-        <!-- HODEJEGEREN -->
+        <!-- TESTNORGE -->
         <dependency>
             <groupId>no.nav.registre</groupId>
             <artifactId>testnorge-consumers</artifactId>
-            <version>1.10.8-RELEASE</version>
+            <version>${testnorge-consumers.version}</version>
         </dependency>
 
         <!--CODE ANALYSIS-->
