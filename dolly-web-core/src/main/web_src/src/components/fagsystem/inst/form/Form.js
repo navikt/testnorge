@@ -9,7 +9,7 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { validation } from '~/components/fagsystem/inst/form/validation'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { getAllDatesBetween } from './utils'
+import { getExcludedDatesAndMaxDate } from './utils'
 import { addYears } from 'date-fns'
 import _isNil from 'lodash/isNil'
 
@@ -25,24 +25,12 @@ export const InstForm = ({ formikBag }) => {
 	const { data } = opts
 
 	let excludeDates = []
-	let maxDate = null
+	let maxDate = addYears(new Date(), 5)
 	if (opts.is.leggTil && data.instdata !== undefined) {
-		for (let i = 0; i < data.instdata.length; i++) {
-			const startdato = data.instdata[i].startdato
-			const sluttdato = data.instdata[i].faktiskSluttdato
-			let days = []
-
-			if (_isNil(sluttdato)) {
-				const start = new Date(startdato)
-				maxDate = start.setDate(start.getDate() - 1)
-			} else{
-				days = getAllDatesBetween(new Date(startdato), new Date(sluttdato))
-				excludeDates = excludeDates.concat(days)
-			}
-		}
+		const dateInfo = getExcludedDatesAndMaxDate(data)
+		excludeDates = dateInfo[0]
+		maxDate = dateInfo[1]
 	}
-
-	maxDate = maxDate === null ? addYears(new Date(), 5) : maxDate
 
 	return (
 		<Vis attributt={instAttributt}>
