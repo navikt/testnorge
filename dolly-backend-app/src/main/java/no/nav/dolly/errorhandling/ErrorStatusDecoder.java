@@ -1,6 +1,7 @@
 package no.nav.dolly.errorhandling;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,18 @@ public class ErrorStatusDecoder {
 
             if (((HttpClientErrorException) e).getResponseBodyAsString().contains("{")) {
                 try {
-                    builder.append(encodeErrorStatus((String) objectMapper.readValue(((HttpClientErrorException) e).getResponseBodyAsString(), Map.class).get("message")));
+                    Map<String, Object> status = objectMapper.readValue(((HttpClientErrorException) e).getResponseBodyAsString(), Map.class);
+                    if (status.containsKey("message")) {
+                        builder.append(encodeErrorStatus((String) status.get("message")));
+                    }
+                    if (status.containsKey("details") && status.get("details") instanceof List) {
+                        StringBuilder meldinger = new StringBuilder("=");
+                        List<Map<String, String>> details = (List) status.get("details");
+                        details.forEach(entry ->
+                                entry.forEach((key, value) ->
+                                        meldinger.append(' ').append(key).append("= ").append(value)));
+                        builder.append(encodeErrorStatus(meldinger.toString()));
+                    }
 
                 } catch (IOException ioe) {
                     builder.append(encodeErrorStatus(ioe.getMessage()));

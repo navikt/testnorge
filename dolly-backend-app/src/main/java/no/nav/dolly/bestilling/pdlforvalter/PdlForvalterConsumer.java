@@ -58,8 +58,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_PERSONSTATUS = "/api/v1/personstatus";
     private static final String PREPROD_ENV = "q";
 
-    private static final String SEND_ERROR = "Feilet å sende %s for ident %s til PDL-forvalter";
-    private static final String SEND_ERROR_2 = SEND_ERROR + ": %s";
+    private static final String SEND_ERROR = "Feilet å sende %s: %s";
 
     @Value("${dolly.environment.name}")
     private String environment;
@@ -202,7 +201,7 @@ public class PdlForvalterConsumer {
 
         } catch (RuntimeException e) {
 
-            throw new DollyFunctionalException(format(SEND_ERROR_2, beskrivelse, ident,
+            throw new DollyFunctionalException(format(SEND_ERROR, beskrivelse,
                     errorStatusDecoder.decodeRuntimeException(e)), e);
         }
     }
