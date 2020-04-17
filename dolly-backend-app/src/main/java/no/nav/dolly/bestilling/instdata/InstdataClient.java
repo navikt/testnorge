@@ -50,17 +50,17 @@ public class InstdataClient implements ClientRegister {
 
             if (!environments.isEmpty()) {
 
+                List<Instdata> instdataListe = mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class);
+                instdataListe.forEach(instdata ->
+                        instdata.setPersonident(tpsPerson.getHovedperson())
+                );
+
                 environments.forEach(environment -> {
 
-                    List<Instdata> instdataListe = mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class);
-                    instdataListe.forEach(instdata ->
-                            instdata.setPersonident(tpsPerson.getHovedperson())
-                    );
-
                     try {
-                        if (isOpprettEndre || !existInstadata(instdataListe, environment)) {
-                            postInstdata(instdataListe, environment, status);
-                        }
+                        String postStatus = postInstdata(isOpprettEndre || !existInstadata(instdataListe, environment),
+                                instdataListe, environment);
+                        status.append(postStatus);
 
                     } catch (RuntimeException e) {
                         status.append(',')
@@ -68,7 +68,7 @@ public class InstdataClient implements ClientRegister {
                                 .append(':')
                                 .append(errorStatusDecoder.decodeRuntimeException(e));
 
-                        log.error("Feilet å legge inn person: {} til INST miljø: {}", tpsPerson.getHovedperson(), environment, e);
+                        log.error("Feilet å legge til opphold for person: {} til INST miljø: {}", tpsPerson.getHovedperson(), environment, e);
                     }
                 });
             }
@@ -130,22 +130,33 @@ public class InstdataClient implements ClientRegister {
         }
     }
 
-    private void postInstdata(List<Instdata> instdata, String environment, StringBuilder status) {
+    private String postInstdata(boolean isNewOpphold, List<Instdata> instdata, String environment) {
 
-        ResponseEntity<InstdataResponse[]> response = instdataConsumer.postInstdata(instdata, environment);
+        StringBuilder status = new StringBuilder();
 
-        if (response.hasBody()) {
+        if (isNewOpphold) {
+            ResponseEntity<InstdataResponse[]> response = instdataConsumer.postInstdata(instdata, environment);
 
-            for (int i = 0; i < response.getBody().length; i++) {
-                status.append(',')
-                        .append(environment)
-                        .append(':')
-                        .append("opphold=")
-                        .append(i + 1)
-                        .append('$')
-                        .append(CREATED.equals(response.getBody()[i].getStatus()) ? OK_RESULT :
-                                errorStatusDecoder.getErrorText(response.getBody()[i].getStatus(), response.getBody()[i].getFeilmelding()));
+            if (response.hasBody()) {
+
+                for (int i = 0; i < response.getBody().length; i++) {
+                    status.append(',')
+                            .append(environment)
+                            .append(':')
+                            .append("opphold=")
+                            .append(i + 1)
+                            .append('$')
+                            .append(CREATED.equals(response.getBody()[i].getStatus()) ? OK_RESULT :
+                                    errorStatusDecoder.getErrorText(response.getBody()[i].getStatus(), response.getBody()[i].getFeilmelding()));
+                }
             }
+
+        } else {
+            status.append(',')
+                    .append(environment)
+                    .append(":opphold=1$OK");
         }
+
+        return status.toString();
     }
 }
