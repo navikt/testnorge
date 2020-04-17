@@ -18,7 +18,6 @@ const loadingSelectorInst = createLoadingSelector(actions.getInst)
 const loadingSelectorUdi = createLoadingSelector(actions.getUdi)
 const loadingSelectorSlettPerson = createLoadingSelector(actions.slettPerson)
 const loadingSelectorPensjon = createLoadingSelector(actions.getPensjon)
-// const loadingSelectorInntektsmelding = createLoadingSelector(actions.getInntektsmelding)
 
 const loadingSelector = createSelector(
 	state => state.loading,
@@ -34,7 +33,6 @@ const loadingSelector = createSelector(
 			udistub: loadingSelectorUdi({ loading }),
 			slettPerson: loadingSelectorSlettPerson({ loading }),
 			pensjonforvalter: loadingSelectorPensjon({ loading })
-			// inntektsmelding: loadingSelectorInntektsmelding({ loading })
 		}
 	}
 )

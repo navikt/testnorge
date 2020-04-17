@@ -18,6 +18,12 @@ export enum Ytelser {
 	Opplaeringspenger = 'OPPLAERINGSPENGER'
 }
 
+export enum Tema {
+	Syk = 'SYK',
+	Oms = 'OMS',
+	For = 'FOR'
+}
+
 export type Inntekter = {
 	aarsakTilInnsending: string
 	naerRelasjon: boolean
