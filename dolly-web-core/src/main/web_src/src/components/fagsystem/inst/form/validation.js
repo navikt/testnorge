@@ -5,12 +5,14 @@ import _get from 'lodash/get'
 const datoOverlapperIkkeAndreOppholdTest = (validation, validerStart) => {
 	const errorMsgAge =
 		'Startdato må være før sluttdato og tidsrommet for et opphold kan ikke overlappe et annet.'
+	const errorMsgEmptySlutt =
+		'Startdato må være før sluttdato og tidsrommet for et opphold kan ikke overlappe et annet.'
 
 	return validation.test(
 		'range',
 		errorMsgAge,
 		function isWithinTest(val) {
-			if (!val) return true
+			if (!val && validerStart) return true
 
 			const selectedDate = new Date(val)
 			const path = this.path.split('[')[0]
@@ -24,20 +26,26 @@ const datoOverlapperIkkeAndreOppholdTest = (validation, validerStart) => {
 				const sluttDato = new Date(sluttDatoValue)
 				const startDato = new Date(startDatoValue)
 
-				if(validerStart){
+				if (validerStart) {
 					if (i === arrayPos) {
-						if (sluttDatoValue!=='' && selectedDate >= sluttDato) return false
-					}else{
-						if (sluttDatoValue!=='') {
+						return !(sluttDatoValue !== '' && selectedDate >= sluttDato)
+					} else {
+						if (sluttDatoValue !== '') {
 							if (selectedDate < sluttDato && selectedDate >= startDato) return false
 						} else if (selectedDate >= startDato) return false
 					}
-				}else{
-					if (i === arrayPos) {
-						if (startDatoValue!=='' && selectedDate <= startDato) return false
+				} else {
+					const selectedStartValue = _get(values, `${path}[${arrayPos}].startdato`)
+					if (!val) {
+						if (i < arrayPos && selectedStartValue !== '') {
+							if (sluttDatoValue === '') return false
+						}
+					} else if (i === arrayPos) {
+						return !(startDatoValue !== '' && selectedDate <= startDato)
 					} else {
-						if (sluttDatoValue!=='') {
+						if (sluttDatoValue !== '') {
 							if (selectedDate <= sluttDato && selectedDate > startDato) return false
+							if (selectedDate >= sluttDato && new Date(selectedStartValue) <= startDato) return false
 						} else if (selectedDate > startDato) return false
 					}
 				}
@@ -56,3 +64,4 @@ export const validation = {
 		})
 	)
 }
+
