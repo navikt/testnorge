@@ -51,13 +51,9 @@ export const Steg1 = ({ stateModifier }) => {
 			)}
 
 			<KontaktReservasjonsPanel stateModifier={stateModifier} />
+			<ArenaPanel stateModifier={stateModifier} />
 
-			{!opts.is.leggTil && (
-				<>
-					<ArenaPanel stateModifier={stateModifier} />
-					<UdiPanel stateModifier={stateModifier} />
-				</>
-			)}
+			{!opts.is.leggTil && <UdiPanel stateModifier={stateModifier} />}
 
 			{opts.is.leggTil && (
 				<AlertStripeInfo>
