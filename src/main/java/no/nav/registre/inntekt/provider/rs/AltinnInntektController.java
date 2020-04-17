@@ -50,19 +50,10 @@ public class AltinnInntektController {
             return ResponseEntity.ok(altinnInntektResponse);
         } catch (ValidationException e) {
             log.error("Feil ved laging av Altinn meldinger", e);
-            if(continueOnError){
-                return new ResponseEntity<>(e.getErrors(), HttpStatus.BAD_REQUEST);
-            }else{
-                throw e;
-            }
+            return new ResponseEntity<>(e.getErrors(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             log.error("Feil ved opprettelse av enkeltindent", e);
-            if(continueOnError){
-                return new ResponseEntity<>(e.getStackTrace(), HttpStatus.INTERNAL_SERVER_ERROR);
-            }else{
-                throw e;
-            }
-
+            return new ResponseEntity<>(e.getStackTrace(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
