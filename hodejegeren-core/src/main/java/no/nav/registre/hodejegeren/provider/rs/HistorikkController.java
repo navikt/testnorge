@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 import no.nav.registre.hodejegeren.service.HistorikkService;
@@ -34,7 +33,6 @@ public class HistorikkController {
     @Autowired
     private HistorikkService historikkService;
 
-    @LogExceptions
     @ApiOperation(value = "Hent all historikk fra databasen.")
     @GetMapping()
     public List<SyntHistorikk> hentAllHistorikk(
@@ -47,7 +45,6 @@ public class HistorikkController {
         return historikkService.hentAllHistorikk(pageNumber, pageSize);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Hent all historikk med en gitt kilde fra databasen.")
     @GetMapping("medKilde")
     public List<SyntHistorikk> hentHistorikkMedKilde(
@@ -61,7 +58,6 @@ public class HistorikkController {
         return historikkService.hentHistorikkMedKilder(kilder, pageNumber, pageSize);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Hent historikk med visse kriterier fra databasen.")
     @GetMapping("soek/{keywords}")
     public List<SyntHistorikk> hentHistorikkMedKriterier(
@@ -76,21 +72,18 @@ public class HistorikkController {
         return historikkService.hentHistorikkMedKriterier(kilder, pageNumber, pageSize, new ArrayList<>(Arrays.asList(keywords.split("&"))));
     }
 
-    @LogExceptions
     @ApiOperation(value = "Hent alle id-ene som er registrert med en gitt kilde fra databasen.")
     @GetMapping("idsMedKilde")
     public Set<String> hentIdsMedKilde(@RequestParam List<String> kilder) {
         return historikkService.hentIdsMedKilder(kilder);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Hent all historikk på en gitt id fra databasen.")
     @GetMapping("{id}")
     public SyntHistorikk hentHistorikkMedId(@PathVariable String id) {
         return historikkService.hentHistorikkMedId(id);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Legg til ny historikk i databasen")
     @PostMapping()
     public List<String> leggTilHistorikk(@RequestBody HistorikkRequest historikkRequest) {
@@ -102,7 +95,6 @@ public class HistorikkController {
         }
     }
 
-    @LogExceptions
     @ApiOperation(value = "Oppdater persondokument i databasen.")
     @PostMapping(value = "skd/oppdaterDokument/{ident}")
     public List<String> oppdaterTpsPersonDokument(
@@ -112,14 +104,12 @@ public class HistorikkController {
         return historikkService.oppdaterTpsPersonDokument(ident, tpsPersonDokument);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Slett historikk med en gitt id fra databasen.")
     @DeleteMapping(value = "{id}")
     public ResponseEntity slettHistorikk(@PathVariable String id) {
         return historikkService.slettHistorikk(id);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Slett historikk på en gitt kilde på en gitt id fra databasen.")
     @DeleteMapping(value = "kilde/{id}")
     public ResponseEntity slettKilde(

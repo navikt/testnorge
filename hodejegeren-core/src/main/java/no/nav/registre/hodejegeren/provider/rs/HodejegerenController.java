@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.kontoinfo.KontoinfoResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
@@ -41,7 +40,6 @@ public class HodejegerenController {
     @Autowired
     private EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente alle identer i en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/alle-identer/{avspillergruppeId}")
     public List<String> hentAlleIdenterIGruppe(
@@ -50,7 +48,6 @@ public class HodejegerenController {
         return cacheService.hentAlleIdenterCache(avspillergruppeId);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente alle levende identer i en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/alle-levende-identer/{avspillergruppeId}")
     public List<String> hentLevendeIdenterIGruppe(
@@ -59,7 +56,6 @@ public class HodejegerenController {
         return cacheService.hentLevendeIdenterCache(avspillergruppeId);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente alle døde og utvandrede identer fra en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/doede-identer/{avspillergruppeId}")
     public List<String> hentDoedeOgUtvandredeIdenterIGruppe(
@@ -68,7 +64,6 @@ public class HodejegerenController {
         return cacheService.hentDoedeOgUtvandredeIdenterCache(avspillergruppeId);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente et gitt antall gifte identer fra en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/gifte-identer/{avspillergruppeId}")
     public List<String> hentGifteIdenterIGruppe(
@@ -77,7 +72,6 @@ public class HodejegerenController {
         return cacheService.hentGifteIdenterCache(avspillergruppeId);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan et gitt antall levende identer hentes fra en gitt avspillergruppe i TPSF. "
             + "Systemet sjekker status-quo på personen i det angitte miljø. En minimum alder på personene kan oppgis.")
     @GetMapping("api/v1/levende-identer/{avspillergruppeId}")
@@ -93,7 +87,6 @@ public class HodejegerenController {
         return eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallIdenter, minimumAlder);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente ut alle levende identer over en viss alder.")
     @GetMapping("api/v1/levende-identer-over-alder/{avspillergruppeId}")
     public List<String> hentAlleLevendeIdenterOverAlder(
@@ -106,7 +99,6 @@ public class HodejegerenController {
         return eksisterendeIdenterService.finnAlleIdenterOverAlder(avspillergruppeId, minimumAlder);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente ut alle levende identer i en viss aldersgruppe.")
     @GetMapping("api/v1/levende-identer-i-aldersgruppe/{avspillergruppeId}")
     public List<String> hentAlleIdenterIAldersgruppe(
@@ -118,7 +110,6 @@ public class HodejegerenController {
         return eksisterendeIdenterService.finnLevendeIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her bestilles et gitt antall identer med tilhørende nav-enhet som hentes tilfeldig fra TPSF. \n"
             + "Disse er føreløpig ikke garantert til å være gyldige fnr med tilhørende arbeidsforhold for å få en sykemelding.\n"
             + "De er garantert til å være myndige.")
@@ -132,7 +123,6 @@ public class HodejegerenController {
         return eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, myndigeIdenter);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man sjekke status quo på en ident i TPS.")
     @GetMapping("api/v1/status-quo")
     public Map<String, String> hentStatusQuoFraEndringskode(
@@ -143,7 +133,6 @@ public class HodejegerenController {
         return new HashMap<>(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskode, miljoe, fnr));
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente en liste over identer i en gitt avspillergruppe med tilhørende status-quo "
             + "i et gitt miljø.")
     @GetMapping("api/v1/status-quo-identer/{avspillergruppeId}")
@@ -158,7 +147,6 @@ public class HodejegerenController {
         return eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, antallIdenter, minimumAlder, maksimumAlder);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente navn- og adresseinformasjon til gitte identer i et gitt miljø.")
     @PostMapping("api/v1/adresse-paa-identer")
     public Map<String, JsonNode> hentAdressePaaIdenter(
@@ -168,7 +156,6 @@ public class HodejegerenController {
         return eksisterendeIdenterService.hentAdressePaaIdenter(miljoe, identer);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente alle fødte identer fra en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/foedte-identer/{avspillergruppeId}")
     public List<String> hentFoedteIdenter(
@@ -180,7 +167,6 @@ public class HodejegerenController {
         return eksisterendeIdenterService.finnFoedteIdenter(avspillergruppeId, minimumAlder, maksimumAlder);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente persondata til en ident i et gitt miljø i TPS.")
     @GetMapping("api/v1/persondata")
     public PersondataResponse hentPersondataTilIdent(
@@ -190,7 +176,6 @@ public class HodejegerenController {
         return eksisterendeIdenterService.hentPersondata(ident, miljoe);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente identer med norsk kontonummer og tilhørende kjerneinfo")
     @GetMapping("api/v1/identer-med-kontonummer/{avspillergruppeId}")
     public List<KontoinfoResponse> hentPersondataMedKontoinformasjon(
@@ -204,7 +189,6 @@ public class HodejegerenController {
         return eksisterendeIdenterService.hentGittAntallIdenterMedKononummerinfo(avspillergruppeId, miljoe, antallIdenter, minimumAlder, maksimumAlder);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente relasjonene til en ident i et gitt miljø i TPS.")
     @GetMapping("api/v1/relasjoner-til-ident")
     public RelasjonsResponse hentRelasjonerTilIdent(
@@ -214,7 +198,6 @@ public class HodejegerenController {
         return eksisterendeIdenterService.hentRelasjoner(ident, miljoe);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente identer som er i avspillergruppe, men ikke i TPS i gitt miljø.")
     @GetMapping("api/v1/identer-ikke-i-tps/{avspillergruppeId}")
     public List<String> hentIdenterSomIkkeErITps(
@@ -224,7 +207,6 @@ public class HodejegerenController {
         return eksisterendeIdenterService.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man hente identer som er i avspillergruppe, og som kolliderer med miljø p i TPS.")
     @GetMapping("api/v1/identer-som-kolliderer/{avspillergruppeId}")
     public List<String> hentIdenterSomKolliderer(
@@ -233,7 +215,6 @@ public class HodejegerenController {
         return eksisterendeIdenterService.hentIdenterSomKolliderer(avspillergruppeId);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Her kan man finne ut hvilke identer i en gitt liste, som finnes i en gitt avspillergruppe. Endepunktet returnerer de identene i lista som også finnes i avspillergruppen.")
     @PostMapping("api/v1/filtrerIdenter/{avspillergruppeId}")
     public Set<String> filtrerIdenter(
