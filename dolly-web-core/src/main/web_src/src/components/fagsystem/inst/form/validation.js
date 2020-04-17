@@ -5,8 +5,6 @@ import _get from 'lodash/get'
 const datoOverlapperIkkeAndreOppholdTest = (validation, validerStart) => {
 	const errorMsgAge =
 		'Startdato må være før sluttdato og tidsrommet for et opphold kan ikke overlappe et annet.'
-	const errorMsgEmptySlutt =
-		'Startdato må være før sluttdato og tidsrommet for et opphold kan ikke overlappe et annet.'
 
 	return validation.test(
 		'range',
