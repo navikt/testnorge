@@ -56,7 +56,7 @@ public class AltinnInntektService {
         return Objects.isNull(altinnEnum) ? null : altinnEnum.getValue();
     }
 
-    public List<ProsessertInntektDokument> lagAltinnMeldinger(AltinnDollyRequest dollyRequest) throws ValidationException {
+    public List<ProsessertInntektDokument> lagAltinnMeldinger(AltinnDollyRequest dollyRequest, Boolean continueOnError) throws ValidationException {
         var miljoe = dollyRequest.getMiljoe();
         var ident = dollyRequest.getArbeidstakerFnr();
         var inntekterAaOpprette = dollyRequest.getInntekter();
@@ -66,6 +66,7 @@ public class AltinnInntektService {
 
         var arbeidsforholdListe = aaregService.hentArbeidsforhold(ident, miljoe);
         if (arbeidsforholdListe == null || arbeidsforholdListe.isEmpty()) {
+            log.error("Kunne ikke finne arbeidsforhold for ident");
             throw new ValidationException("Kunne ikke finne arbeidsforhold for ident " + ident);
         }
 
@@ -88,7 +89,7 @@ public class AltinnInntektService {
             }
 
             var request = lagAltinnInntektRequest(inntekt, nyesteArbeidsforhold, kontaktinformasjon, ident);
-            var response = altinnInntektConsumer.getInntektsmeldingXml201812(request);
+            var response = altinnInntektConsumer.getInntektsmeldingXml201812(request, continueOnError);
             altinnInntektMeldinger.add(response);
             inntektDokuments.add(
                     InntektDokument
@@ -102,6 +103,9 @@ public class AltinnInntektService {
                             .build()
             );
         });
+        if(!continueOnError & inntektDokuments.size()!=inntekterAaOpprette.size()){
+            throw new ValidationException("Fant ikke nyeste arbeidsforhold for alle virksomhetsnummer");
+        }
 
         return dokmotConsumer.opprettJournalpost(dollyRequest.getMiljoe(), inntektDokuments);
     }
