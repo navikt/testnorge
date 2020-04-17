@@ -113,8 +113,8 @@ public class InstdataClient implements ClientRegister {
             ResponseEntity<DeleteResponse> response = instdataConsumer.deleteInstdata(ident, environment);
 
             if (!response.hasBody() ||
-                    (!NOT_FOUND.name().equals(response.getBody().getStatus()) &&
-                            !OK.name().equals(response.getBody().getStatus()))) {
+                    (!NOT_FOUND.equals(response.getBody().getStatus()) &&
+                            !OK.equals(response.getBody().getStatus()))) {
 
                 log.error(DELETE_ERROR, ident, environment);
             }
