@@ -17,7 +17,3 @@ jobs:
         java-version: 1.11
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    - name: Run Sonar
-      run: mvn sonar:soanr -Dsonar.login=${SONAR_TOKEN}
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
