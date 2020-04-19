@@ -133,6 +133,10 @@
                                     <xsd>${basedir}/src/main/resources/xsd/HentRoller.xsd</xsd>
                                     <packagename>no.nav.brregstub.tjenestekontrakter.hentroller</packagename>
                                 </xsdOption>
+                                <xsdOption>
+                                    <xsd>${basedir}/src/main/resources/xsd/Rolleutskrift.xsd</xsd>
+                                    <packagename>no.nav.brregstub.tjenestekontrakter.rolleutskrift</packagename>
+                                </xsdOption>
                             </xsdOptions>
                         </configuration>
                     </execution>
