@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<grunndata xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ftp2.brreg.no/xml/skjema/grunndata/2007/12/17/hentRoller.xsd">
+    <responseHeader prossessDato="2019-03-21" tjeneste="hentRoller">
+        <orgnr>971524553</orgnr>
+        <hovedStatus>0</hovedStatus>
+        <underStatus>
+            <underStatusMelding kode="0">Data returnert</underStatusMelding>
+            <underStatusMelding kode="1180">Enhet 971524553 har ikke Rolleblokk 2</underStatusMelding>
+        </underStatus>
+    </responseHeader>
+    <melding tjeneste="hentRoller">
+        <organisasjonsnummer registreringsDato="1999-03-12">971524553</organisasjonsnummer>
+        <kontaktperson>
+            <samendring beskrivelse="Daglig leder/ adm.direkt&#xf8;r" registreringsDato="2019-06-23" samendringstype="DAGL">
+                <rolle beskrivelse="Daglig leder/ adm.direkt&#xf8;r" rolletype="DAGL">
+                    <person beskrivelse="Lever" statuskode="L">
+                        <fodselsnr>11111111111</fodselsnr>
+                        <fornavn>Daglig</fornavn>
+                        <slektsnavn>Daligsen</slektsnavn>
+                        <adresse1>Dagligveien 12</adresse1>
+                        <postnr>9999</postnr>
+                        <poststed>OSLO</poststed>
+                        <land landkode4="NOR">Norge</land>
+                        <fratraadt>N</fratraadt>
+                    </person>
+                </rolle>
+            </samendring>
+        </kontaktperson>
+        <styre>
+            <samendring beskrivelse="Styre" registreringsDato="2019-11-18" samendringstype="STYR">
+                <rolle beskrivelse="Styrets leder" rolletype="LEDE">
+                    <person beskrivelse="Lever" statuskode="L">
+                        <fodselsnr>22222222222</fodselsnr>
+                        <fornavn>Leder</fornavn>
+                        <slektsnavn>Ledersen</slektsnavn>
+                        <adresse1>Styrelederveien 39</adresse1>
+                        <postnr>8888</postnr>
+                        <poststed>OSLO</poststed>
+                        <land landkode4="NOR">Norge</land>
+                        <fratraadt>N</fratraadt>
+                    </person>
+                </rolle>
+                <rolle beskrivelse="Styremedlem" rolletype="MEDL">
+                    <person beskrivelse="Lever" statuskode="L">
+                        <fodselsnr>33333333333</fodselsnr>
+                        <fornavn>MedlemEn</fornavn>
+                        <slektsnavn>MedlemEnsen</slektsnavn>
+                        <adresse1>Medlemsveien 24</adresse1>
+                        <postnr>7777</postnr>
+                        <poststed>HAUGESUND</poststed>
+                        <land landkode4="NOR">Norge</land>
+                        <fratraadt>N</fratraadt>
+                    </person>
+                    <person beskrivelse="Lever" statuskode="L">
+                        <fodselsnr>44444444444</fodselsnr>
+                        <fornavn>MedlemTo</fornavn>
+                        <mellomnavn>MellomMedlem</mellomnavn>
+                        <slektsnavn>MedlemTosen</slektsnavn>
+                        <adresse1>Medlemsvegen 2</adresse1>
+                        <postnr>0000</postnr>
+                        <poststed>BERGEN</poststed>
+                        <land landkode4="NOR">Norge</land>
+                        <fratraadt>N</fratraadt>
+                    </person>
+                </rolle>
+                <rolle beskrivelse="Observat&#xf8;r" rolletype="OBS">
+                    <person beskrivelse="Lever" statuskode="L">
+                        <fodselsnr>55555555555</fodselsnr>
+                        <fornavn>Observatør</fornavn>
+                        <slektsnavn>Observatørsen</slektsnavn>
+                        <adresse1>Observatørvien 4</adresse1>
+                        <postnr>9999</postnr>
+                        <poststed>TROMSØ</poststed>
+                        <land landkode4="NOR">Norge</land>
+                        <valgtAv kode="AREP">Representant for de ansatte</valgtAv>
+                        <fratraadt>N</fratraadt>
+                    </person>
+                </rolle>
+            </samendring>
+        </styre>
+        <revisor>
+            <samendring beskrivelse="Revisor" registreringsDato="1998-12-09" samendringstype="REVI">
+                <rolle beskrivelse="Revisor" rolletype="REVI">
+                    <enhet beskrivelse="Normal" statuskode="OK">
+                        <orgnr>000000001</orgnr>
+                        <navn1>Mock AS</navn1>
+                        <adresse1>Mock gate 14</adresse1>
+                        <postnr>0001</postnr>
+                        <poststed>OSLO</poststed>
+                        <land landkode4="NOR">Norge</land>
+                        <fratraadt>N</fratraadt>
+                        <revisorKategori>400</revisorKategori>
+                        <revisorRkode>5</revisorRkode>
+                        <reTekst>Godkjent revisjonsselskap</reTekst>
+                    </enhet>
+                </rolle>
+            </samendring>
+        </revisor>
+        <regnskapsfoerer>
+            <samendring beskrivelse="Regnskapsf&#xf8;rer" registreringsDato="2012-01-17" samendringstype="REGN">
+                <rolle beskrivelse="Regnskapsf&#xf8;rer" rolletype="REGN">
+                    <enhet beskrivelse="Normal" statuskode="OK">
+                        <orgnr>000000000</orgnr>
+                        <navn1>Dummy AS</navn1>
+                        <adresse1>Osloveien</adresse1>
+                        <postnr>2381</postnr>
+                        <poststed>OSLO</poststed>
+                        <land landkode4="NOR">Norge</land>
+                        <fratraadt>N</fratraadt>
+                        <reTekst>Autorisert regnskapsf&#xf8;rerselskap</reTekst>
+                    </enhet>
+                </rolle>
+            </samendring>
+        </regnskapsfoerer>
+    </melding>
+</grunndata>

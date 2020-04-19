@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<grunndata xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://ftp2.brreg.no/xml/skjema/grunndata/2007/12/17/hentRoller.xsd">
+    <responseHeader prossessDato="2020-04-15" tjeneste="hentRolleutskrift">
+        <!--You have a CHOICE of the next 3 items at this level-->
+        <orgnr>971524553</orgnr>
+        <fodselsnr>24118222292</fodselsnr>
+        <requestID>string</requestID>
+        <hovedStatus>3</hovedStatus>
+        <underStatus>
+            <underStatusMelding kode="0">Data returnert</underStatusMelding>
+            <underStatusMelding kode="1180">Enhet 971524553 har ikke Rolleblokk 2</underStatusMelding>
+        </underStatus>
+    </responseHeader>
+    <!--Optional:-->
+    <melding tjeneste="hentRolleutskrift">
+        <rolleInnehaver>
+            <!--You have a CHOICE of the next 3 items at this level-->
+            <orgnr ledetekst="string">3</orgnr>
+            <fodselsnr ledetekst="string">string</fodselsnr>
+            <fodselsdato ledetekst="string">2014-09-19</fodselsdato>
+            <navn ledetekst="string">
+                <navn1>string</navn1>
+                <!--Optional:-->
+                <navn2>string</navn2>
+                <!--Optional:-->
+                <navn3>string</navn3>
+                <!--Optional:-->
+                <navn4>string</navn4>
+                <!--Optional:-->
+                <navn5>string</navn5>
+            </navn>
+            <adresse ledetekst="string">
+                <!--Optional:-->
+                <adresse1>string</adresse1>
+                <!--Optional:-->
+                <adresse2>string</adresse2>
+                <!--Optional:-->
+                <adresse3>string</adresse3>
+                <!--Optional:-->
+                <postnr>string</postnr>
+                <!--Optional:-->
+                <poststed>string</poststed>
+                <land landkode1="string">string</land>
+            </adresse>
+        </rolleInnehaver>
+        <!--Optional:-->
+        <roller ledetekst="string">
+            <!--1 or more repetitions:-->
+            <enhet nr="3" registreringsDato="2006-08-19+02:00">
+                <rolleBeskrivelse ledetekst="string">string</rolleBeskrivelse>
+                <orgnr ledetekst="string">3</orgnr>
+                <navn ledetekst="string">
+                    <navn1>string</navn1>
+                    <!--Optional:-->
+                    <navn2>string</navn2>
+                    <!--Optional:-->
+                    <navn3>string</navn3>
+                    <!--Optional:-->
+                    <navn4>string</navn4>
+                    <!--Optional:-->
+                    <navn5>string</navn5>
+                </navn>
+                <adresse>
+                    <!--Optional:-->
+                    <forretningsAdresse ledetekst="string">
+                        <!--Optional:-->
+                        <adresse1>string</adresse1>
+                        <!--Optional:-->
+                        <adresse2>string</adresse2>
+                        <!--Optional:-->
+                        <adresse3>string</adresse3>
+                        <!--Optional:-->
+                        <postnr>string</postnr>
+                        <!--Optional:-->
+                        <poststed>string</poststed>
+                        <!--Optional:-->
+                        <kommune kommnr="string" ledetekst="string">string</kommune>
+                        <land landkode1="string" ledetekst="string">string</land>
+                    </forretningsAdresse>
+                    <!--Optional:-->
+                    <postAdresse ledetekst="string">
+                        <!--Optional:-->
+                        <adresse1>string</adresse1>
+                        <!--Optional:-->
+                        <adresse2>string</adresse2>
+                        <!--Optional:-->
+                        <adresse3>string</adresse3>
+                        <!--Optional:-->
+                        <postnr>string</postnr>
+                        <!--Optional:-->
+                        <poststed>string</poststed>
+                        <!--Optional:-->
+                        <kommune kommnr="string" ledetekst="string">string</kommune>
+                        <land landkode1="string" ledetekst="string">string</land>
+                    </postAdresse>
+                </adresse>
+            </enhet>
+        </roller>
+    </melding>
+</grunndata>

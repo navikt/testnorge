@@ -1,13 +1,13 @@
 package no.nav.brregstub.ws;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import no.nav.brregstub.tjenestekontrakter.hentroller.Grunndata;
+import no.nav.brregstub.service.BrregService;
 import no.nav.brregstub.tjenestekontrakter.ws.HentRoller;
 import no.nav.brregstub.tjenestekontrakter.ws.HentRollerResponse;
 import no.nav.brregstub.tjenestekontrakter.ws.HentRolleutskrift;
 import no.nav.brregstub.tjenestekontrakter.ws.HentRolleutskriftResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -26,24 +26,22 @@ public class BrregEndpoint {
 
     private static final String NAMESPACE_URI = "http://no/brreg/saksys/grunndata/ws";
 
+    private final BrregService brregService;
+
+    @Autowired
+    public BrregEndpoint(BrregService brregService) {
+        this.brregService = brregService;
+    }
+
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "hentRoller")
     @ResponsePayload
     public JAXBElement<HentRollerResponse> hentRollerResponse(
-            @RequestPayload JAXBElement<HentRoller> request) throws JsonProcessingException {
-        LOGGER.debug("Received request object: {}");
+            @RequestPayload JAXBElement<HentRoller> request) {
+        LOGGER.debug("Received request object: {}", request);
 
         var response = new HentRollerResponse();
-        var grunndata = new Grunndata();
-        var melding = new Grunndata.Melding();
-        var organisasjonsnummer = new Grunndata.Melding.Organisasjonsnummer();
-        organisasjonsnummer.setValue("123");
-        melding.setOrganisasjonsnummer(organisasjonsnummer);
-        grunndata.setMelding(melding);
-        StringWriter sw = new StringWriter();
-        JAXB.marshal(grunndata, sw);
-        String xmlString = sw.toString();
-        response.setReturn(xmlString);
+        response.setReturn(konverterGrunndataTilString(brregService.hentRoller(request.getValue().getOrgnr())));
 
         return new JAXBElement<>(new QName("hentRollerResponse"), HentRollerResponse.class, response);
     }
@@ -52,13 +50,20 @@ public class BrregEndpoint {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "hentRolleutskrift")
     @ResponsePayload
     public JAXBElement<HentRolleutskriftResponse> hentRolleutskrift(
-            @RequestPayload JAXBElement<HentRolleutskrift> request) throws JsonProcessingException {
-        LOGGER.debug("Received request object: {}");
+            @RequestPayload JAXBElement<HentRolleutskrift> request) {
+        LOGGER.debug("Received request object: {}", request);
 
         var response = new HentRolleutskriftResponse();
+        response.setReturn(konverterGrunndataTilString(brregService.hentRolleutskrift(request.getValue().getRequestId())));
 
 
         return new JAXBElement<>(new QName("hentRolleutskriftResponse"), HentRolleutskriftResponse.class, response);
+    }
+
+    private static String konverterGrunndataTilString(Object xml) {
+        StringWriter sw = new StringWriter();
+        JAXB.marshal(xml, sw);
+        return sw.toString();
     }
 
 }
