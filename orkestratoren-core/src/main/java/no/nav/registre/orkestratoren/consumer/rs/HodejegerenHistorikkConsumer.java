@@ -9,9 +9,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.testnorge.consumers.namespacetps.TpsPersonDokumentType;
@@ -42,7 +44,13 @@ public class HodejegerenHistorikkConsumer {
             String personIdent
     ) {
         var postRequest = RequestEntity.post(sendTilHodejegerenUrl.expand(personIdent)).contentType(MediaType.APPLICATION_JSON).body(tpsPersonDokument);
-        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
+        List<String> response = new ArrayList<>();
+        try {
+            response = restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
+        } catch (HttpStatusCodeException e) {
+            log.error("Kunne ikke sende tps-persondokument for ident {} til hodejegeren. ", personIdent, e);
+        }
+        return response;
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })
