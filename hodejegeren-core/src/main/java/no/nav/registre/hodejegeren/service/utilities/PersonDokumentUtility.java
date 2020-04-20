@@ -68,7 +68,6 @@ public class PersonDokumentUtility {
 
         var foreldreansvarTypeListe = extractForeldreansvarType(tpsPersonDokumentType);
         for (var foreldreansvarType : foreldreansvarTypeListe) {
-
             var foreldreansvaret = buildForeldreansvar(foreldreansvarType);
             if (!foreldreansvaret.getIdent().isEmpty()) {
                 foreldreansvar.add(foreldreansvaret);
@@ -179,7 +178,11 @@ public class PersonDokumentUtility {
     }
 
     private static List<ForeldreansvarType> extractForeldreansvarType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getPerson().getForeldreansvar();
+        var foreldreansvar = tpsPersonDokumentType.getPerson().getForeldreansvar();
+        if (foreldreansvar == null) {
+            return new ArrayList<>();
+        }
+        return foreldreansvar;
     }
 
     private static OppholdstillatelseType extractOppholdstillatelseType(TpsPersonDokumentType tpsPersonDokumentType) {
@@ -203,7 +206,11 @@ public class PersonDokumentUtility {
     }
 
     private static List<RelasjonType> extractRelasjonType(TpsPersonDokumentType tpsPersonDokumentType) {
-        return tpsPersonDokumentType.getRelasjon();
+        var relasjoner = tpsPersonDokumentType.getRelasjon();
+        if (relasjoner == null) {
+            return new ArrayList<>();
+        }
+        return relasjoner;
     }
 
     private static Object extractIfNotEmpty(List<?> list) {
