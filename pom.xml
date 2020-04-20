@@ -24,6 +24,7 @@
         <hikari.version>3.4.2</hikari.version>
         <jaxws.maven.plugin.version>2.6</jaxws.maven.plugin.version>
         <cxf.version>3.3.6</cxf.version>
+        <main-class>no.nav.brregstub.Launcher</main-class>
     </properties>
 
     <dependencies>
@@ -139,6 +140,21 @@
                                 </xsdOption>
                             </xsdOptions>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                    <mainClass>${main-class}</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
