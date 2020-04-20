@@ -36,29 +36,31 @@ export const Steg1 = ({ stateModifier }) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			{!opts.is.leggTil && <PersoninformasjonPanel stateModifier={stateModifier} />}
+			{!opts.is.leggTil && <PersoninformasjonPanel stateModifier={stateModifier}/>}
 
 			<AdressePanel stateModifier={stateModifier} />
-			<ArbeidInntektPanel stateModifier={stateModifier} leggTil={opts.is.leggTil} />
+			<ArbeidInntektPanel stateModifier={stateModifier} />
 			<IdentifikasjonPanel stateModifier={stateModifier} />
+			<KontaktDoedsboPanel stateModifier={stateModifier}/>
 
 			{!opts.is.leggTil && (
-				<React.Fragment>
+				<>
 					<FamilierelasjonPanel stateModifier={stateModifier} />
-					<KontaktDoedsboPanel stateModifier={stateModifier} />
 					<InstitusjonsoppholdPanel stateModifier={stateModifier} />
-					<KontaktReservasjonsPanel stateModifier={stateModifier} />
-					<ArenaPanel stateModifier={stateModifier} />
-					<UdiPanel stateModifier={stateModifier} />
-				</React.Fragment>
+				</>
 			)}
+
+			<KontaktReservasjonsPanel stateModifier={stateModifier} />
+			<ArenaPanel stateModifier={stateModifier} />
+
+			{!opts.is.leggTil && <UdiPanel stateModifier={stateModifier} />}
 
 			{opts.is.leggTil && (
 				<AlertStripeInfo>
 					<b>Funksjonen er under utvikling</b>
 					<p>
 						Det er foreløpig redusert støtte for å legge til attributter på person. Flere
-						attributter vil blir lagt til fortløpende.
+						attributter vil bli lagt til fortløpende.
 					</p>
 				</AlertStripeInfo>
 			)}

@@ -97,15 +97,15 @@ export const Adresser = ({ formikBag }) => {
 					<Vis attributt="tpsf.boadresse.flyttedato">
 						<RadioPanelGruppe
 							name="botype"
-							legend="Hva slags adresse vil du opprette?"
+							legend="Hva slags boadresse vil du opprette?"
 							radios={[
 								{
-									label: 'Tilfeldig adresse basert på postnummer ...',
+									label: 'Tilfeldig gateadresse basert på postnummer ...',
 									value: 'postnr',
 									id: 'postnr'
 								},
 								{
-									label: 'Tilfeldig adresse basert på kommunenummer ...',
+									label: 'Tilfeldig gateadresse basert på kommunenummer ...',
 									value: 'kommunenr',
 									id: 'kommunenr'
 								},
