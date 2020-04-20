@@ -97,10 +97,13 @@ public class EregMapper {
                 );
 
         for (EregDataRequest eregDataRequest : data) {
-            if (validate) {
+            if (validate && eregDataRequest.getEndringsType().equals("N")) {
                 if (eregConsumer.checkExists(eregDataRequest.getOrgnr(), miljoe)) {
+                    log.warn("Hopper over orgnr {} siden det allerede eksisterer i ereg {}", eregDataRequest.getOrgnr(), miljoe);
                     continue;
                 }
+            } else if (eregDataRequest.getEndringsType().equals("E")) {
+                log.info("Utfoerer endring paa orgnr {}", eregDataRequest.getOrgnr());
             }
             RecordsAndCount unit = createUnit(eregDataRequest);
             totalRecords += unit.numRecords;
@@ -116,8 +119,8 @@ public class EregMapper {
     private RecordsAndCount createUnit(EregDataRequest data) {
         int numRecords = 0;
         StringBuilder file;
-        if ("U".equals(data.getEndringsType())) {
-            file = new StringBuilder(createENH(data.getOrgnr(), data.getEnhetstype(), "U"));
+        if ("E".equals(data.getEndringsType())) {
+            file = new StringBuilder(createENH(data.getOrgnr(), data.getEnhetstype(), "E"));
         } else {
             file = new StringBuilder(createENH(data.getOrgnr(), data.getEnhetstype(), "N"));
         }
@@ -316,7 +319,8 @@ public class EregMapper {
 
         List<Knytning> knytninger = data.getKnytninger();
         if (knytninger != null) {
-            List<String> collect = knytninger.stream().map(k -> createKnyntningRecord(k.getType(),
+            List<String> collect = knytninger.stream().map(k -> createKnyntningsRecord(
+                    k.getType(),
                     k.getAnsvarsandel(),
                     k.getFratreden(),
                     k.getOrgnr(),
@@ -341,13 +345,16 @@ public class EregMapper {
 
         String dateNowFormatted = getDateNowFormatted();
 
+        String undersakstype = endringsType.equals("E") ? "EN" : "NY";
+
         stringBuilder.replace(0, "ENH".length(), "ENH")
                 .replace(4, 4 + orgId.length(), orgId)
                 .replace(13, 13 + unitType.length(), unitType)
                 .replace(17, 18, endringsType)
-                .replace(18, 18 + "NY".length(), "NY")
+                .replace(18, 18 + undersakstype.length(), undersakstype)
                 .replace(22, 22 + (dateNowFormatted + dateNowFormatted).length(), dateNowFormatted + dateNowFormatted + "J")
                 .append("\n");
+
         return stringBuilder.toString();
     }
 
@@ -564,7 +571,7 @@ public class EregMapper {
         return stringBuilder.toString();
     }
 
-    private String createKnyntningRecord(
+    private String createKnyntningsRecord(
             String type,
             String ansvarsandel,
             String fratreden,
