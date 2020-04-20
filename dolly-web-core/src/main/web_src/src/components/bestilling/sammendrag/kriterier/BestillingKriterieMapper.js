@@ -764,7 +764,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			obj(
 				'Endring i refusjon',
 				_has(inntekt, 'refusjon.endringIRefusjonListe') && inntekt.refusjon.endringIRefusjonListe
-			), //TODO: Kan hasOwnProperty brukes?
+			),
 			//Omsorg
 			obj('Har utbetalt pliktige dager', _get(inntekt, 'omsorgspenger.harUtbetaltPliktigeDager')),
 			obj(

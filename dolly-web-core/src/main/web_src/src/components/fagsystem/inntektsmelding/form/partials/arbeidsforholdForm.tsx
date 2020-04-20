@@ -22,7 +22,7 @@ export default ({ path, ytelse }: ArbeidsforholdForm) => (
 			kodeverk={Kodeverk.AarsakVedEndring}
 		/>
 		<FormikDatepicker name={`${path}.foersteFravaersdag`} label="Første fraværsdag" />
-		{/* Ferie: Gjelder for sykepoenger, svangerskapspenger, pleie, omsorg og opplæring. TODO Gjør mer elegant! */}
+		{/* Gjelder for sykepoenger, svangerskapspenger, pleie, omsorg og opplæring*/}
 		{ytelse !== Ytelser.Foreldrepenger && (
 			<FormikDollyFieldArray
 				name={`${path}.avtaltFerieListe`}
