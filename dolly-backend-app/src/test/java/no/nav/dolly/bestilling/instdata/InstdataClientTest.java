@@ -15,11 +15,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.inst.Instdata;
@@ -79,11 +77,6 @@ public class InstdataClientTest {
         when(instdataConsumer.getMiljoer()).thenReturn(new String[] { "q2" });
         when(mapperFacade.mapAsList(anyList(), eq(Instdata.class))).thenReturn(newArrayList(Instdata.builder().build()));
         when(instdataConsumer.getInstdata(IDENT, ENVIRONMENT)).thenReturn(ResponseEntity.ok(new Instdata[] {}));
-
-        when(instdataConsumer.postInstdata(anyList(), eq(ENVIRONMENT))).thenReturn(
-                ResponseEntity.ok(new InstdataResponse[] { InstdataResponse.builder()
-                        .status(HttpStatus.CREATED).build() })
-        );
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setInstdata(newArrayList(RsInstdata.builder().build()));

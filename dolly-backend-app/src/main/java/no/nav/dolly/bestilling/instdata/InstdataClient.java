@@ -1,13 +1,13 @@
 package no.nav.dolly.bestilling.instdata;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.emptyList;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
@@ -85,19 +85,18 @@ public class InstdataClient implements ClientRegister {
         }
     }
 
-    private List<Instdata> filterInstdata (List<Instdata> instdataRequest, String miljoe) {
+    private List<Instdata> filterInstdata(List<Instdata> instdataRequest, String miljoe) {
 
         ResponseEntity<Instdata[]> eksisterendeInstdata = instdataConsumer.getInstdata(instdataRequest.get(0).getPersonident(), miljoe);
 
         if (eksisterendeInstdata.hasBody() && eksisterendeInstdata.getBody().length > 0) {
 
-            return instdataRequest.stream().filter(request ->
-                    Arrays.stream(eksisterendeInstdata.getBody())
+            return instdataRequest.stream().filter(request -> Arrays.stream(eksisterendeInstdata.getBody())
                     .noneMatch(eksisterende -> eksisterende.equals(request)))
                     .collect(Collectors.toList());
         } else {
 
-            return Collections.emptyList();
+            return emptyList();
         }
     }
 
@@ -153,7 +152,8 @@ public class InstdataClient implements ClientRegister {
                             .append(i + 1)
                             .append('$')
                             .append(CREATED.equals(response.getBody()[i].getStatus()) ? OK_RESULT :
-                                    errorStatusDecoder.getErrorText(response.getBody()[i].getStatus(), response.getBody()[i].getFeilmelding()));
+                                    errorStatusDecoder.getErrorText(response.getBody()[i].getStatus(),
+                                            response.getBody()[i].getFeilmelding()));
                 }
             }
 
