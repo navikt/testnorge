@@ -11,8 +11,8 @@
     <melding tjeneste="hentRoller">
         <organisasjonsnummer registreringsDato="1999-03-12">971524553</organisasjonsnummer>
         <kontaktperson>
-            <samendring beskrivelse="Daglig leder/ adm.direkt&#xf8;r" registreringsDato="2019-06-23" samendringstype="DAGL">
-                <rolle beskrivelse="Daglig leder/ adm.direkt&#xf8;r" rolletype="DAGL">
+            <samendring beskrivelse="Daglig leder/ adm.direktør" registreringsDato="2019-06-23" samendringstype="DAGL">
+                <rolle beskrivelse="Daglig leder/ adm.direktør" rolletype="DAGL">
                     <person beskrivelse="Lever" statuskode="L">
                         <fodselsnr>11111111111</fodselsnr>
                         <fornavn>Daglig</fornavn>
@@ -63,7 +63,7 @@
                         <fratraadt>N</fratraadt>
                     </person>
                 </rolle>
-                <rolle beskrivelse="Observat&#xf8;r" rolletype="OBS">
+                <rolle beskrivelse="Observatør" rolletype="OBS">
                     <person beskrivelse="Lever" statuskode="L">
                         <fodselsnr>55555555555</fodselsnr>
                         <fornavn>Observatør</fornavn>
@@ -97,8 +97,8 @@
             </samendring>
         </revisor>
         <regnskapsfoerer>
-            <samendring beskrivelse="Regnskapsf&#xf8;rer" registreringsDato="2012-01-17" samendringstype="REGN">
-                <rolle beskrivelse="Regnskapsf&#xf8;rer" rolletype="REGN">
+            <samendring beskrivelse="Regnskapsfører" registreringsDato="2012-01-17" samendringstype="REGN">
+                <rolle beskrivelse="Regnskapsfører" rolletype="REGN">
                     <enhet beskrivelse="Normal" statuskode="OK">
                         <orgnr>000000000</orgnr>
                         <navn1>Dummy AS</navn1>
@@ -107,7 +107,7 @@
                         <poststed>OSLO</poststed>
                         <land landkode4="NOR">Norge</land>
                         <fratraadt>N</fratraadt>
-                        <reTekst>Autorisert regnskapsf&#xf8;rerselskap</reTekst>
+                        <reTekst>Autorisert regnskapsførerselskap</reTekst>
                     </enhet>
                 </rolle>
             </samendring>

@@ -72,6 +72,19 @@
         </dependency>
 
         <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>cxf</artifactId>
+            <version>1.2019.11.06-15.14-6ca860e6cead</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>no.nav.common</groupId>
+                    <artifactId>log</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
             <version>5.2</version>
@@ -92,11 +105,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>

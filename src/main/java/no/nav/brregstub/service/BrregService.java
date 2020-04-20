@@ -1,27 +1,25 @@
 package no.nav.brregstub.service;
 
 import no.nav.brregstub.tjenestekontrakter.hentroller.Grunndata;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXB;
-import java.io.IOException;
-import java.io.InputStream;
 
 @Service
 public class BrregService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BrregService.class);
-
-    public Grunndata hentRoller(String orgnr) {
-        InputStream in = this.getClass().getResourceAsStream("/response/HentRollerResponse.xml");
-        return JAXB.unmarshal(in, Grunndata.class);
+    public Grunndata hentRoller(String orgnummer) {
+        var in = this.getClass().getResourceAsStream("/response/HentRollerResponse.xml");
+        var grunndata = JAXB.unmarshal(in, Grunndata.class);
+        grunndata.getResponseHeader().setOrgnr(Integer.valueOf(orgnummer));
+        return grunndata;
     }
 
     public no.nav.brregstub.tjenestekontrakter.rolleutskrift.Grunndata hentRolleutskrift(String requestId) {
-        InputStream in = this.getClass().getResourceAsStream("/response/HentRolleutskriftResponse.xml");
-        return JAXB.unmarshal(in, no.nav.brregstub.tjenestekontrakter.rolleutskrift.Grunndata.class);
+        var in = this.getClass().getResourceAsStream("/response/HentRolleutskriftResponse.xml");
+
+        var grunndata = JAXB.unmarshal(in, no.nav.brregstub.tjenestekontrakter.rolleutskrift.Grunndata.class);
+        grunndata.getResponseHeader().setFodselsnr(requestId);
+        return grunndata;
     }
 }
