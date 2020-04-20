@@ -1,98 +1,94 @@
 <?xml version="1.0"?>
-<grunndata xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:noNamespaceSchemaLocation="http://ftp2.brreg.no/xml/skjema/grunndata/2007/12/17/hentRolleutskrift.xsd">
-    <responseHeader prossessDato="2020-04-15" tjeneste="hentRolleutskrift">
-        <!--You have a CHOICE of the next 3 items at this level-->
-        <orgnr>971524553</orgnr>
-        <fodselsnr>24118222292</fodselsnr>
-        <requestID>string</requestID>
-        <hovedStatus>3</hovedStatus>
+<grunndata xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           xsi:noNamespaceSchemaLocation="https://schema.brreg.no/grunndata/hentRolleutskrift.xsd">
+    <responseHeader prossessDato="2020-04-20" tjeneste="hentRolleutskrift">
+        <fodselsnr>2020010199999</fodselsnr>
+        <hovedStatus>0</hovedStatus>
         <underStatus>
             <underStatusMelding kode="0">Data returnert</underStatusMelding>
-            <underStatusMelding kode="1180">Enhet 971524553 har ikke Rolleblokk 2</underStatusMelding>
         </underStatus>
     </responseHeader>
-    <!--Optional:-->
     <melding tjeneste="hentRolleutskrift">
         <rolleInnehaver>
-            <!--You have a CHOICE of the next 3 items at this level-->
-            <orgnr ledetekst="string">3</orgnr>
-            <fodselsnr ledetekst="string">string</fodselsnr>
-            <fodselsdato ledetekst="string">2014-09-19</fodselsdato>
-            <navn ledetekst="string">
-                <navn1>string</navn1>
-                <!--Optional:-->
-                <navn2>string</navn2>
-                <!--Optional:-->
-                <navn3>string</navn3>
-                <!--Optional:-->
-                <navn4>string</navn4>
-                <!--Optional:-->
-                <navn5>string</navn5>
+            <fodselsdato ledetekst="F&#xf8;dselsdato">2000-01-01</fodselsdato>
+            <navn ledetekst="Navn">
+                <navn1>Navn</navn1>
+                <navn3>Navnesen</navn3>
             </navn>
-            <adresse ledetekst="string">
-                <!--Optional:-->
-                <adresse1>string</adresse1>
-                <!--Optional:-->
-                <adresse2>string</adresse2>
-                <!--Optional:-->
-                <adresse3>string</adresse3>
-                <!--Optional:-->
-                <postnr>string</postnr>
-                <!--Optional:-->
-                <poststed>string</poststed>
-                <land landkode1="string">string</land>
+            <adresse ledetekst="Adresse">
+                <adresse1>Syntveien 1</adresse1>
+                <postnr>2020</postnr>
+                <poststed>OSLO</poststed>
+                <land landkode1="NO">Norge</land>
             </adresse>
         </rolleInnehaver>
-        <!--Optional:-->
-        <roller ledetekst="string">
-            <!--1 or more repetitions:-->
-            <enhet nr="3" registreringsDato="2006-08-19+02:00">
-                <rolleBeskrivelse ledetekst="string">string</rolleBeskrivelse>
-                <orgnr ledetekst="string">3</orgnr>
-                <navn ledetekst="string">
-                    <navn1>string</navn1>
-                    <!--Optional:-->
-                    <navn2>string</navn2>
-                    <!--Optional:-->
-                    <navn3>string</navn3>
-                    <!--Optional:-->
-                    <navn4>string</navn4>
-                    <!--Optional:-->
-                    <navn5>string</navn5>
+        <roller ledetekst="Oversikt over innf&#xf8;rte roller i Foretaksregisteret og innf&#xf8;rte roller i tilknytning til n&#xe6;ringsvirksomhet i Enhetsregisteret pr. 20.04.2020">
+            <enhet nr="1" registreringsDato="2020-01-01">
+                <rolleBeskrivelse ledetekst="Rolle">Prokura i fellesskap</rolleBeskrivelse>
+                <orgnr ledetekst="Organisasjonsnummer">999999999</orgnr>
+                <navn ledetekst="Foretaksnavn">
+                    <navn1>SELSKAP AS</navn1>
                 </navn>
                 <adresse>
-                    <!--Optional:-->
-                    <forretningsAdresse ledetekst="string">
-                        <!--Optional:-->
-                        <adresse1>string</adresse1>
-                        <!--Optional:-->
-                        <adresse2>string</adresse2>
-                        <!--Optional:-->
-                        <adresse3>string</adresse3>
-                        <!--Optional:-->
-                        <postnr>string</postnr>
-                        <!--Optional:-->
-                        <poststed>string</poststed>
-                        <!--Optional:-->
-                        <kommune kommnr="string" ledetekst="string">string</kommune>
-                        <land landkode1="string" ledetekst="string">string</land>
+                    <forretningsAdresse ledetekst="Forretningsadresse">
+                        <adresse1>Dollyveien 1</adresse1>
+                        <postnr>2020</postnr>
+                        <poststed>OSLO</poststed>
+                        <kommune kommnr="1010" ledetekst="Kommune">OSLO</kommune>
+                        <land landkode1="NO" ledetekst="Land">Norge</land>
                     </forretningsAdresse>
-                    <!--Optional:-->
-                    <postAdresse ledetekst="string">
-                        <!--Optional:-->
-                        <adresse1>string</adresse1>
-                        <!--Optional:-->
-                        <adresse2>string</adresse2>
-                        <!--Optional:-->
-                        <adresse3>string</adresse3>
-                        <!--Optional:-->
-                        <postnr>string</postnr>
-                        <!--Optional:-->
-                        <poststed>string</poststed>
-                        <!--Optional:-->
-                        <kommune kommnr="string" ledetekst="string">string</kommune>
-                        <land landkode1="string" ledetekst="string">string</land>
+                    <postAdresse ledetekst="Postadresse">
+                        <adresse1>Postboks 3</adresse1>
+                        <postnr>1337</postnr>
+                        <poststed>DRAMMEN</poststed>
+                        <kommune kommnr="1010" ledetekst="Kommune">DRAMMEN</kommune>
+                        <land landkode1="NO" ledetekst="Land">Norge</land>
+                    </postAdresse>
+                </adresse>
+            </enhet>
+            <enhet nr="2" registreringsDato="2018-07-25">
+                <rolleBeskrivelse ledetekst="Rolle">Daglig leder/ adm.direkt&#xf8;r</rolleBeskrivelse>
+                <orgnr ledetekst="Organisasjonsnummer">222222222</orgnr>
+                <navn ledetekst="Foretaksnavn">
+                    <navn1>DIDGERIDOO AS</navn1>
+                </navn>
+                <adresse>
+                    <forretningsAdresse ledetekst="Forretningsadresse">
+                        <adresse1>Gata 1</adresse1>
+                        <postnr>2020</postnr>
+                        <poststed>OSLO</poststed>
+                        <kommune kommnr="1010" ledetekst="Kommune">OSLO</kommune>
+                        <land landkode1="NO" ledetekst="Land">Norge</land>
+                    </forretningsAdresse>
+                    <postAdresse ledetekst="Postadresse">
+                        <adresse1>Postboks 1</adresse1>
+                        <postnr>1337</postnr>
+                        <poststed>DRAMMEN</poststed>
+                        <kommune kommnr="2020" ledetekst="Kommune">DRAMMEN</kommune>
+                        <land landkode1="NO" ledetekst="Land">Norge</land>
+                    </postAdresse>
+                </adresse>
+            </enhet>
+            <enhet nr="3" registreringsDato="2019-01-01">
+                <rolleBeskrivelse ledetekst="Rolle">Prokura i fellesskap</rolleBeskrivelse>
+                <orgnr ledetekst="Organisasjonsnummer">333333333</orgnr>
+                <navn ledetekst="Foretaksnavn">
+                    <navn1>ILA AS</navn1>
+                </navn>
+                <adresse>
+                    <forretningsAdresse ledetekst="Forretningsadresse">
+                        <adresse1>Veien 7</adresse1>
+                        <postnr>7331</postnr>
+                        <poststed>HOLM</poststed>
+                        <kommune kommnr="1111" ledetekst="Kommune">HOLMEN</kommune>
+                        <land landkode1="NO" ledetekst="Land">Norge</land>
+                    </forretningsAdresse>
+                    <postAdresse ledetekst="Postadresse">
+                        <adresse1>Postboks 10</adresse1>
+                        <postnr>7331</postnr>
+                        <poststed>FOLM</poststed>
+                        <kommune kommnr="1111" ledetekst="Kommune">HOLMEN</kommune>
+                        <land landkode1="NO" ledetekst="Land">Norge</land>
                     </postAdresse>
                 </adresse>
             </enhet>
