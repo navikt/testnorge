@@ -10,13 +10,6 @@ public class CompareUtil {
 
     public static boolean isSubsetOf(List<Instdata> instdataRequest, List<Instdata> eksisterendeInstdata) {
 
-        boolean match = true;
-        for (Instdata instRequest : instdataRequest) {
-            if (eksisterendeInstdata.stream().noneMatch(instdata -> instdata.equals(instRequest))) {
-                match = false;
-                break;
-            }
-        }
-        return match;
+        return eksisterendeInstdata.stream().allMatch(eksisterende -> instdataRequest.stream().allMatch(eksisterende::equals));
     }
 }

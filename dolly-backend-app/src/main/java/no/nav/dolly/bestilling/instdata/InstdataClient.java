@@ -6,7 +6,10 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -17,7 +20,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
-import no.nav.dolly.bestilling.instdata.util.CompareUtil;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.inst.Instdata;
@@ -58,8 +60,7 @@ public class InstdataClient implements ClientRegister {
                 environments.forEach(environment -> {
 
                     try {
-                        String postStatus = postInstdata(isOpprettEndre || !existInstadata(instdataListe, environment),
-                                instdataListe, environment);
+                        String postStatus = postInstdata(isOpprettEndre, instdataListe, environment);
                         status.append(postStatus);
 
                     } catch (RuntimeException e) {
@@ -84,16 +85,19 @@ public class InstdataClient implements ClientRegister {
         }
     }
 
-    private boolean existInstadata(List<Instdata> instdataRequest, String miljoe) {
+    private List<Instdata> filterInstdata (List<Instdata> instdataRequest, String miljoe) {
 
         ResponseEntity<Instdata[]> eksisterendeInstdata = instdataConsumer.getInstdata(instdataRequest.get(0).getPersonident(), miljoe);
 
         if (eksisterendeInstdata.hasBody() && eksisterendeInstdata.getBody().length > 0) {
 
-            return CompareUtil.isSubsetOf(instdataRequest, newArrayList(eksisterendeInstdata.getBody()));
+            return instdataRequest.stream().filter(request ->
+                    Arrays.stream(eksisterendeInstdata.getBody())
+                    .noneMatch(eksisterende -> eksisterende.equals(request)))
+                    .collect(Collectors.toList());
         } else {
 
-            return false;
+            return Collections.emptyList();
         }
     }
 
@@ -134,8 +138,10 @@ public class InstdataClient implements ClientRegister {
 
         StringBuilder status = new StringBuilder();
 
-        if (isNewOpphold) {
-            ResponseEntity<InstdataResponse[]> response = instdataConsumer.postInstdata(instdata, environment);
+        List<Instdata> newInstdata = isNewOpphold ? instdata : filterInstdata(instdata, environment);
+
+        if (!newInstdata.isEmpty()) {
+            ResponseEntity<InstdataResponse[]> response = instdataConsumer.postInstdata(newInstdata, environment);
 
             if (response.hasBody()) {
 

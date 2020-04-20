@@ -1,5 +1,8 @@
 package no.nav.dolly.bestilling.instdata.mapper;
 
+import static no.nav.dolly.domain.resultset.inst.TssEksternId.ADAMSTUEN_SYKEHJEM;
+import static no.nav.dolly.domain.resultset.inst.TssEksternId.HELGELANDSSYKEHUSET_HF;
+import static no.nav.dolly.domain.resultset.inst.TssEksternId.INDRE_OSTFOLD_FENGSEL;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import org.springframework.stereotype.Component;
@@ -60,12 +63,12 @@ public class InstdataMappingStrategy implements MappingStrategy {
 
                         switch (type) {
                         case AS:
-                            return "80000464106"; // ADAMSTUEN SYKEHJEM
+                            return ADAMSTUEN_SYKEHJEM.getId();
                         case FO:
-                            return "80000465653"; // INDRE ØSTFOLD FENGSEL
+                            return INDRE_OSTFOLD_FENGSEL.getId();
                         case HS:
                         default:
-                            return "80000464241"; // HELGELANDSSYKEHUSET HF
+                            return HELGELANDSSYKEHUSET_HF.getId();
                         }
                     }
                 })
