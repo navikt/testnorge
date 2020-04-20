@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.instdata;
+package no.nav.dolly.bestilling.instdata.domain;
 
 import org.springframework.http.HttpStatus;
 

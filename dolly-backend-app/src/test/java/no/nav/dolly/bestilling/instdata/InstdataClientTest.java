@@ -15,14 +15,15 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InstdataClientTest {
@@ -33,6 +34,9 @@ public class InstdataClientTest {
 
     @Mock
     private MapperFacade mapperFacade;
+
+    @Mock
+    private ErrorStatusDecoder errorStatusDecoder;
 
     @Mock
     private InstdataConsumer instdataConsumer;
@@ -51,11 +55,11 @@ public class InstdataClientTest {
     }
 
     @Test
-    public void gjenopprettMiljøIkkeStøttet_SkalGiFeilmedling() {
+    public void gjenopprettMiljoeIkkeStoettet_SkalGiFeilmedling() {
 
         BestillingProgress progress = new BestillingProgress();
 
-        when(instdataConsumer.getMiljoer()).thenReturn(ResponseEntity.ok(new String[]{"u5"}));
+        when(instdataConsumer.getMiljoer()).thenReturn(new String[] { "u5" });
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setInstdata(newArrayList(RsInstdata.builder().build()));
@@ -66,21 +70,13 @@ public class InstdataClientTest {
     }
 
     @Test
-    public void gjenopprettNårInstdataIkkeFinnesFraFoer_SkalGiOk() {
+    public void gjenopprettNaarInstdataIkkeFinnesFraFoer_SkalGiOk() {
 
         BestillingProgress progress = new BestillingProgress();
 
-        when(instdataConsumer.getMiljoer()).thenReturn(ResponseEntity.ok(new String[]{"q2"}));
-        when(instdataConsumer.deleteInstdata(IDENT, ENVIRONMENT)).thenReturn(ResponseEntity.ok(
-                new InstdataResponse[] { InstdataResponse.builder()
-                        .status(HttpStatus.NOT_FOUND)
-                        .feilmelding("Fant ingen institusjonsopphold på ident.")
-                        .build() }));
-
-        when(instdataConsumer.postInstdata(anyList(), eq(ENVIRONMENT))).thenReturn(
-                ResponseEntity.ok(new InstdataResponse[] { InstdataResponse.builder()
-                        .status(HttpStatus.CREATED).build() })
-        );
+        when(instdataConsumer.getMiljoer()).thenReturn(new String[] { "q2" });
+        when(mapperFacade.mapAsList(anyList(), eq(Instdata.class))).thenReturn(newArrayList(Instdata.builder().build()));
+        when(instdataConsumer.getInstdata(IDENT, ENVIRONMENT)).thenReturn(ResponseEntity.ok(new Instdata[] {}));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setInstdata(newArrayList(RsInstdata.builder().build()));
