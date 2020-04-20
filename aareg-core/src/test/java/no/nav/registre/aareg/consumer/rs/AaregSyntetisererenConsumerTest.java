@@ -1,28 +1,31 @@
 package no.nav.registre.aareg.consumer.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static no.nav.registre.aareg.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,17 +34,27 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 0)
+@RestClientTest(AaregSyntetisererenConsumer.class)
 @ActiveProfiles("test")
 public class AaregSyntetisererenConsumerTest {
 
     @Autowired
     private AaregSyntetisererenConsumer aaregSyntetisererenConsumer;
 
+    @Autowired
+    private MockRestServiceServer server;
+
+    @Value("${syntrest.rest.api.url}")
+    private String serverUrl;
+
     private final String fnr1 = "01010101010";
     private final String fnr2 = "02020202020";
     private final String fnr3 = "03030303030";
+
+    @Before
+    public void setUp() {
+        serverUrl += "/v1/generate/aareg";
+    }
 
     @Test
     public void shouldGetSyntetiserteMeldinger() {
@@ -97,31 +110,28 @@ public class AaregSyntetisererenConsumerTest {
     }
 
     private void stubAaregSyntetisererenConsumer() {
-        stubFor(post(urlPathEqualTo("/synthdata-aareg/api/v1/generate/aareg"))
-                .withRequestBody(equalToJson("[\"" + fnr1 + "\", \"" + fnr2 + "\"]"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("arbeidsforholdsmelding.json"))));
+        server.expect(requestToUriTemplate(serverUrl))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("[\"" + fnr1 + "\", \"" + fnr2 + "\"]"))
+                .andRespond(withSuccess(getResourceFileContent("arbeidsforholdsmelding.json"), MediaType.APPLICATION_JSON));
     }
 
     private void stubAaregSyntetisererenConsumerWithPaging() {
-        stubFor(post(urlPathEqualTo("/synthdata-aareg/api/v1/generate/aareg"))
-                .withRequestBody(equalToJson("[\"" + fnr1 + "\", \"" + fnr2 + "\"]"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("arbeidsforholdsmelding.json"))));
+        server.expect(requestToUriTemplate(serverUrl))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("[\"" + fnr1 + "\", \"" + fnr2 + "\"]"))
+                .andRespond(withSuccess(getResourceFileContent("arbeidsforholdsmelding.json"), MediaType.APPLICATION_JSON));
 
-        stubFor(post(urlPathEqualTo("/synthdata-aareg/api/v1/generate/aareg"))
-                .withRequestBody(equalToJson("[\"" + fnr3 + "\"]"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("arbeidsforholdsmelding_paged.json"))));
+        server.expect(requestToUriTemplate(serverUrl))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("[\"" + fnr3 + "\"]"))
+                .andRespond(withSuccess(getResourceFileContent("arbeidsforholdsmelding_paged.json"), MediaType.APPLICATION_JSON));
     }
 
     private void stubAaregSyntetisererenConsumerWithEmptyBody() {
-        stubFor(post(urlPathEqualTo("/synthdata-aareg/api/v1/generate/aareg"))
-                .withRequestBody(equalToJson("[\"" + fnr1 + "\"]"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")));
+        server.expect(requestToUriTemplate(serverUrl))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("[\"" + fnr1 + "\"]"))
+                .andRespond(withSuccess());
     }
 }

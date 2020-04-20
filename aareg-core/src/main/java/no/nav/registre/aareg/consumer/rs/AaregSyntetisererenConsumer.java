@@ -5,6 +5,7 @@ import static no.nav.registre.aareg.domain.CommonKeys.RESPONSE_TYPE_LIST_AAREG_R
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -28,9 +29,10 @@ public class AaregSyntetisererenConsumer {
     private final UriTemplate url;
 
     public AaregSyntetisererenConsumer(
+            RestTemplateBuilder restTemplateBuilder,
             @Value("${syntrest.rest.api.url}") String syntrestServerUrl
     ) {
-        this.restTemplate = new RestTemplate();
+        this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(syntrestServerUrl + "/v1/generate/aareg");
     }
 
