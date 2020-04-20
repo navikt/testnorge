@@ -28,7 +28,7 @@ type EnkelInntektsmelding = {
 
 export const InntektsmeldingVisning = ({ data, ident }: InntektsmeldingVisning) => {
 	//Viser data fra bestillingen
-	if (!data || data.length < 1) return false
+	if (!data || data.length < 1) return null
 
 	return (
 		<div>
@@ -36,17 +36,17 @@ export const InntektsmeldingVisning = ({ data, ident }: InntektsmeldingVisning) 
 			{data.length > 1 ? (
 				<DollyFieldArray header="Inntektsmeldinger" data={data} nested>
 					{(inntektsmelding: Inntektsmelding) => (
-						<Inntektsmelding data={inntektsmelding.inntekter} ident={ident} />
+						<EnkelInntektsmeldingVisning data={inntektsmelding.inntekter} ident={ident} />
 					)}
 				</DollyFieldArray>
 			) : (
-				<Inntektsmelding data={data[0].inntekter} ident={ident} />
+				<EnkelInntektsmeldingVisning data={data[0].inntekter} ident={ident} />
 			)}
 		</div>
 	)
 }
 
-const Inntektsmelding = ({ data, ident }: EnkelInntektsmelding) => (
+const EnkelInntektsmeldingVisning = ({ data, ident }: EnkelInntektsmelding) => (
 	<DollyFieldArray header="Inntekt" data={data}>
 		{(inntekt: Inntekter, idx: number) => (
 			<>
@@ -89,7 +89,12 @@ const Inntektsmelding = ({ data, ident }: EnkelInntektsmelding) => (
 		)}
 	</DollyFieldArray>
 )
-InntektsmeldingVisning.filterValues = (bestillinger: any) => {
+
+type Bestilling = {
+	inntektsmelding?: Array<Inntektsmelding>
+}
+
+InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>) => {
 	if (!bestillinger) return false
 
 	return bestillinger

@@ -37,7 +37,7 @@ export default ({ data }: OmsorgspengerVisning) => {
 				)}
 
 				{data.fravaersPerioder && (
-					<DollyFieldArray data={data.fravaersPerioder} header="Delvis fraværsperioder">
+					<DollyFieldArray data={data.fravaersPerioder} header="Fraværsperioder">
 						{(id: Fravaer) => (
 							<>
 								<div className="person-visning_content">
