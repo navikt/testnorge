@@ -3,4 +3,4 @@ LABEL maintainer="Team Dolly"
 
 EXPOSE 8080
 
-COPY target/brreg-stub.jar app.jar
+COPY target/brreg-stub-1.0.0-SNAPSHOT.jar app.jar
