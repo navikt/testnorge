@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<grunndata xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.brreg.no/grunndata/hentRolleutskrift.xsd">
+<grunndata xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://schema.brreg.no/grunndata/hentRolleutskrift.xsd">
     <responseHeader prossessDato="2020-04-20" tjeneste="hentRolleutskrift">
         <fodselsnr>2020010199999</fodselsnr>
         <hovedStatus>0</hovedStatus>
