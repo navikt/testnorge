@@ -42,7 +42,7 @@ public class BrregEndpoint {
             var response = new HentRollerResponse();
             response.setReturn(konverterGrunndataTilString(brregService.hentRoller(request.getValue().getOrgnr())));
 
-            return new JAXBElement<>(new QName("hentRollerResponse"), HentRollerResponse.class, response);
+            return new JAXBElement<>(new QName("http://no/brreg/saksys/grunndata/ws", "hentRollerResponse"), HentRollerResponse.class, response);
         } catch (Exception e) {
             LOGGER.error("Ukjent feil ved kall av hentRoller", e);
             throw new RuntimeException("Ukjent feil ved kall av hentRoller");
@@ -59,7 +59,7 @@ public class BrregEndpoint {
             response.setReturn(konverterGrunndataTilString(brregService.hentRolleutskrift(request.getValue().getRequestId())));
 
 
-            return new JAXBElement<>(new QName("hentRolleutskriftResponse"), HentRolleutskriftResponse.class, response);
+            return new JAXBElement<>(new QName("http://no/brreg/saksys/grunndata/ws","hentRolleutskriftResponse"), HentRolleutskriftResponse.class, response);
         } catch (Exception e) {
             LOGGER.error("Ukjent feil ved kall av hentRolleutskrift", e);
             throw new RuntimeException("Ukjent feil ved kall av hentRoller");

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <grunndata xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:noNamespaceSchemaLocation="http://ftp2.brreg.no/xml/skjema/grunndata/2007/12/17/hentRoller.xsd">
+           xsi:noNamespaceSchemaLocation="http://ftp2.brreg.no/xml/skjema/grunndata/2007/12/17/hentRolleutskrift.xsd">
     <responseHeader prossessDato="2020-04-15" tjeneste="hentRolleutskrift">
         <!--You have a CHOICE of the next 3 items at this level-->
         <orgnr>971524553</orgnr>
