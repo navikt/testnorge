@@ -44,8 +44,8 @@ import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
 
 @Service
 @Slf4j

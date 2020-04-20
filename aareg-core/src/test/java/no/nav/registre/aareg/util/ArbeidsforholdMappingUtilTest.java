@@ -18,16 +18,16 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 
 import no.nav.registre.aareg.domain.RsOrganisasjon;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Ansettelsesperiode;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.AntallTimerForTimeloennet;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsavtale;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Organisasjon;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Periode;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.PermisjonPermittering;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Person;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Sporingsinformasjon;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Utenlandsopphold;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Ansettelsesperiode;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.AntallTimerForTimeloennet;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsavtale;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Periode;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.PermisjonPermittering;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Sporingsinformasjon;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Utenlandsopphold;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArbeidsforholdMappingUtilTest {
@@ -53,7 +53,7 @@ public class ArbeidsforholdMappingUtilTest {
 
     @Test
     public void shouldMapArbeidsforholdToRsArbeidsforhold() {
-        var arbeidsforhold = buildArbeidsforhjold();
+        var arbeidsforhold = buildArbeidsforhold();
 
         var rsArbeidsforhold = mapArbeidsforholdToRsArbeidsforhold(arbeidsforhold);
 
@@ -74,7 +74,7 @@ public class ArbeidsforholdMappingUtilTest {
         assertThat(rsArbeidsforhold.getUtenlandsopphold().get(0).getPeriode().getFom(), equalTo(arbeidsforhold.getUtenlandsopphold().get(0).getPeriode().getFom().atStartOfDay()));
     }
 
-    private Arbeidsforhold buildArbeidsforhjold() {
+    private Arbeidsforhold buildArbeidsforhold() {
         return Arbeidsforhold.builder()
                 .navArbeidsforholdId(123L)
                 .arbeidsforholdId("234")

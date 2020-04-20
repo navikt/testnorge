@@ -19,7 +19,7 @@ import no.nav.registre.aareg.provider.rs.response.SletteArbeidsforholdResponse;
 import no.nav.registre.aareg.service.AaregService;
 import no.nav.registre.aareg.service.IdentService;
 import no.nav.registre.aareg.service.SyntetiseringService;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
 
 @RestController
 @RequestMapping("api/v1/ident")

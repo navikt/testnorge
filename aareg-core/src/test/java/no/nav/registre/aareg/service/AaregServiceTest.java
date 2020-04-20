@@ -24,12 +24,12 @@ import no.nav.registre.aareg.consumer.rs.AaregRestConsumer;
 import no.nav.registre.aareg.consumer.ws.AaregWsConsumer;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Ansettelsesperiode;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsavtale;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Organisasjon;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Periode;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Person;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Ansettelsesperiode;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsavtale;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Periode;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AaregServiceTest {

@@ -19,19 +19,19 @@ import no.nav.registre.aareg.domain.RsPeriode;
 import no.nav.registre.aareg.domain.RsPermisjon;
 import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.domain.RsUtenlandsopphold;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Ansettelsesperiode;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.AntallTimerForTimeloennet;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsavtale;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Bruksperiode;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Gyldighetsperiode;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.OpplysningspliktigArbeidsgiver;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Organisasjon;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Periode;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.PermisjonPermittering;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Person;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Sporingsinformasjon;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Utenlandsopphold;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Ansettelsesperiode;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.AntallTimerForTimeloennet;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsavtale;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Bruksperiode;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Gyldighetsperiode;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.OpplysningspliktigArbeidsgiver;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Periode;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.PermisjonPermittering;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Sporingsinformasjon;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Utenlandsopphold;
 
 public class ArbeidsforholdMappingUtil {
 

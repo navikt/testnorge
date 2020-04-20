@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.aareg.security.sts.StsOidcService;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
 
 @Slf4j
 @Component

@@ -28,9 +28,9 @@ import no.nav.registre.aareg.domain.RsPeriode;
 import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Organisasjon;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Person;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
 
 @Slf4j
 @Service
