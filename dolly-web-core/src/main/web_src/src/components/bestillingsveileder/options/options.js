@@ -10,7 +10,8 @@ export const BVOptions = ({
 	identtype = 'FNR',
 	mal,
 	opprettFraIdenter,
-	leggTilPaaFnr
+	leggTilPaaFnr,
+	data
 } = {}) => {
 	let initialValues = {
 		antall,
@@ -40,6 +41,7 @@ export const BVOptions = ({
 		mal,
 		opprettFraIdenter,
 		leggTilPaaFnr,
+		data,
 		is: {
 			nyBestilling: bestType === TYPE.NY_BESTILLING,
 			nyBestillingFraMal: bestType === TYPE.NY_BESTILLING_FRA_MAL,
