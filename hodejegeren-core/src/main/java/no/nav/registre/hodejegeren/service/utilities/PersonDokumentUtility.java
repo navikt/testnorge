@@ -207,7 +207,7 @@ public class PersonDokumentUtility {
     }
 
     private static Object extractIfNotEmpty(List<?> list) {
-        if (!list.isEmpty()) {
+        if (list != null && !list.isEmpty()) {
             return list.get(0);
         } else {
             return null;
