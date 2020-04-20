@@ -38,12 +38,15 @@ public class BrregEndpoint {
     @ResponsePayload
     public JAXBElement<HentRollerResponse> hentRollerResponse(
             @RequestPayload JAXBElement<HentRoller> request) {
-        LOGGER.debug("Received request object: {}", request);
+        try {
+            var response = new HentRollerResponse();
+            response.setReturn(konverterGrunndataTilString(brregService.hentRoller(request.getValue().getOrgnr())));
 
-        var response = new HentRollerResponse();
-        response.setReturn(konverterGrunndataTilString(brregService.hentRoller(request.getValue().getOrgnr())));
-
-        return new JAXBElement<>(new QName("hentRollerResponse"), HentRollerResponse.class, response);
+            return new JAXBElement<>(new QName("hentRollerResponse"), HentRollerResponse.class, response);
+        } catch (Exception e) {
+            LOGGER.error("Ukjent feil ved kall av hentRoller", e);
+            throw new RuntimeException("Ukjent feil ved kall av hentRoller");
+        }
     }
 
 
@@ -51,13 +54,16 @@ public class BrregEndpoint {
     @ResponsePayload
     public JAXBElement<HentRolleutskriftResponse> hentRolleutskrift(
             @RequestPayload JAXBElement<HentRolleutskrift> request) {
-        LOGGER.debug("Received request object: {}", request);
+        try {
+            var response = new HentRolleutskriftResponse();
+            response.setReturn(konverterGrunndataTilString(brregService.hentRolleutskrift(request.getValue().getRequestId())));
 
-        var response = new HentRolleutskriftResponse();
-        response.setReturn(konverterGrunndataTilString(brregService.hentRolleutskrift(request.getValue().getRequestId())));
 
-
-        return new JAXBElement<>(new QName("hentRolleutskriftResponse"), HentRolleutskriftResponse.class, response);
+            return new JAXBElement<>(new QName("hentRolleutskriftResponse"), HentRolleutskriftResponse.class, response);
+        } catch (Exception e) {
+            LOGGER.error("Ukjent feil ved kall av hentRolleutskrift", e);
+            throw new RuntimeException("Ukjent feil ved kall av hentRoller");
+        }
     }
 
     private static String konverterGrunndataTilString(Object xml) {
