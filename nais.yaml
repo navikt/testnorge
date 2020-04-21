@@ -29,3 +29,4 @@ spec:
       memory: 1024Mi
   ingresses:
     - "https://brreg-stub.nais.preprod.local"
+    - "https://brreg-stub.dev-fss.nais.io"
