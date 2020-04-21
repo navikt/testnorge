@@ -54,16 +54,6 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .title("Inntektsmelding-stub")
                 .version(appVersion)
                 .build();
-
-//        return new ApiInfo(
-//                "Inntektsmelding-stub",
-//                "Stub for lagring og innsending av inntektsmeldinger",
-//                "" + appVersion,
-//                "https://nav.no",
-//                new Contact("Fellesregistrene på NAV", "https://github.com/navikt/testnorge-statisk-data-forvalter", null),
-//                "Super Strict Licence",
-//                "https://opensource.org/licenses/super-strict-license"
-//        );
     }
 
     @Override

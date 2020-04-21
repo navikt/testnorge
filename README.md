@@ -1,23 +1,10 @@
 # Inntektsmelding-stub
 
-Stub for lagring og innsending av inntektsmeldinger.
-Meldingene skal sendes inn til ...(inntektstub?)... på altinns XML-format for inntektsmeldinger, der formatet er 
-definert av [denne XSD'en](https://github.com/navikt/tjenestespesifikasjoner/blob/master/nav-altinn-inntektsmelding/src/main/xsd/Inntektsmelding20181211.xsd).
- 
-Den har endepunkter for å opprette inntektsmeldinger på 201809- og 201812-formater, og lagrer dem i en database. Man 
-kan også hente opp inntektsmeldinger man allerede har laget.
+Microservice for å mappe inntektsmeldinger i JSON format til XML format basert på [kodeverk](https://github.com/navikt/tjenestespesifikasjoner/blob/master/nav-altinn-inntektsmelding/src/main/xsd/).  
+Foreløpig er bare 201812 format støttet.
 
-![databasemodell](graphics/databasemodell.png)
-
-Flytskjema for Kontekst:
-
-![flowchart](graphics/inntektsmelding.png)
 
 ## Mangler
-- [ ] Foreløpig ikke implementert innsending av meldingene (hvor? inntektstub?)
-- [x] XML output feiler, se todo i koden
-- [x] Datbase er ikke satt opp i vault
-- [x] Migrasjonscript er ikke på plass
 - [ ] Testing
 - [ ] Bedre støtte for enkelt å legge til nye endringer i meldingene (?) 
 - [x] CircleCI prosjekt er ikke satt opp
@@ -27,6 +14,7 @@ Flytskjema for Kontekst:
 ### Implementeres i adapteret testnorge-inntekt
 - [ ] Hente data fra inntektstub (Må vente på inntektstub v.2)
 - [ ] Hente syntetisk data fra synt-rest
+- [x] Foreløpig ikke implementert innsending av meldingene til Joark
 
 ## REG-5838
 Trenger tre funksjonaliteter til inntektsmelding-stub (mest ryddig med egen adapter)
