@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Set;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.aareg.provider.rs.response.SletteArbeidsforholdResponse;
 import no.nav.registre.aareg.service.AaregService;
 import no.nav.registre.aareg.service.IdentService;
@@ -46,7 +45,6 @@ public class IdentController {
         return aaregService.hentArbeidsforhold(ident, miljoe);
     }
 
-    @LogExceptions
     @GetMapping(value = "/avspillergruppe/{avspillergruppeId}")
     public Set<String> hentIdenterIAvspillergruppeMedArbeidsforhold(
             @PathVariable Long avspillergruppeId,

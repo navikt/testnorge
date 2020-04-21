@@ -2,7 +2,7 @@ apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
   name: testnorge-aareg
-  namespace: default
+  namespace: u2
   labels:
     team: orkestrator
 spec:
@@ -28,5 +28,6 @@ spec:
     limits:
       cpu: 1000m
       memory: 2048Mi
+  image: {{ image }}
   ingresses:
-    - "https://testnorge-aareg.nais.preprod.local"
+    - "https://testnorge-aareg-u2.nais.preprod.local"

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.aareg.service.SyntetiseringService;
@@ -23,7 +22,6 @@ public class SyntetiseringController {
 
     private final SyntetiseringService syntetiseringService;
 
-    @LogExceptions
     @PostMapping(value = "/generer")
     public ResponseEntity genererArbeidsforholdsmeldinger(
             @RequestParam(defaultValue = "true") Boolean sendAlleEksisterende,
@@ -32,7 +30,6 @@ public class SyntetiseringController {
         return syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, sendAlleEksisterende);
     }
 
-    @LogExceptions
     @PostMapping(value = "/sendTilAareg")
     public List<RsAaregResponse> sendArbeidsforholdTilAareg(
             @RequestParam(required = false, defaultValue = "false") Boolean fyllUtArbeidsforhold,
