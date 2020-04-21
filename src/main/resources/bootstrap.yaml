@@ -1,4 +1,26 @@
 spring:
   cloud:
     vault:
-      enabled: false
+      enabled: true
+      uri: https://vault.adeo.no
+      connection-timeout: 5000
+      read-timeout: 15000
+      config:
+        order: -10
+        lifecycle:
+          enabled: true
+          expiry-threshold: 2m
+      authentication: KUBERNETES
+      database:
+        enabled: true
+        role: brreg-stub-admin
+        backend: postgresql/preprod-fss
+      kubernetes:
+        role: brreg-stub
+        kubernetes-path: kubernetes/preprod/fss
+        service-account-token-file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      generic:
+        enabled: true
+        backend: kv/preprod/fss
+        application-name: brreg-stub/default
+        default-context: brreg-stub/default
