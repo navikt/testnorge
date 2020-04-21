@@ -15,8 +15,7 @@ export const ArbeidsforholdVisning = ({ data }) => {
 					<div className="person-visning_content" key={idx}>
 						<TitleValue
 							title="Arbeidsforholdstype"
-							value={id.arbeidsforholdstype}
-							kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
+							value={Formatters.codeToNorskLabel(id.arbeidsforholdstype)}
 						/>
 						<TitleValue title="Startdato" value={Formatters.formatStringDates(id.startdato)} />
 						<TitleValue title="Sluttdato" value={Formatters.formatStringDates(id.sluttdato)} />
