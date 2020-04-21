@@ -54,10 +54,6 @@ public class StsOidcService {
         return !expiry.containsKey(env) || LocalDateTime.now().plusMinutes(1L).isAfter(expiry.get(env));
     }
 
-    private boolean isExpired(Environment env) {
-        return !expiry.containsKey(env) || LocalDateTime.now().isAfter(expiry.get(env));
-    }
-
     private void updateToken(Environment env) {
         var getRequest = RequestEntity
                 .get(URI.create(credentialProps.getTokenUrl(env).concat("?grant_type=client_credentials&scope=openid")))
