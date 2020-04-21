@@ -24,8 +24,8 @@
         </rolleInnehaver>
         <roller ledetekst="Oversikt over innførte roller i Foretaksregisteret og innførte roller i tilknytning til næringsvirksomhet i Enhetsregisteret pr. 20.04.2020">
             <enhet nr="1" registreringsDato="2020-01-01">
-                <rolleBeskrivelse ledetekst="Rolle">Prokura i fellesskap</rolleBeskrivelse>
-                <orgnr ledetekst="Organisasjonsnummer">999999999</orgnr>
+                <rolleBeskrivelse ledetekst="Rolle">Innehaver</rolleBeskrivelse>
+                <orgnr ledetekst="Organisasjonsnummer">905203974</orgnr>
                 <navn ledetekst="Foretaksnavn">
                     <navn1>SELSKAP AS</navn1>
                 </navn>
@@ -47,8 +47,8 @@
                 </adresse>
             </enhet>
             <enhet nr="2" registreringsDato="2018-07-25">
-                <rolleBeskrivelse ledetekst="Rolle">Daglig leder/ adm.direktør</rolleBeskrivelse>
-                <orgnr ledetekst="Organisasjonsnummer">222222222</orgnr>
+                <rolleBeskrivelse ledetekst="Rolle">Deltaker med delt ansvar</rolleBeskrivelse>
+                <orgnr ledetekst="Organisasjonsnummer">996532912</orgnr>
                 <navn ledetekst="Foretaksnavn">
                     <navn1>DIDGERIDOO AS</navn1>
                 </navn>
@@ -70,8 +70,8 @@
                 </adresse>
             </enhet>
             <enhet nr="3" registreringsDato="2019-01-01">
-                <rolleBeskrivelse ledetekst="Rolle">Prokura i fellesskap</rolleBeskrivelse>
-                <orgnr ledetekst="Organisasjonsnummer">333333333</orgnr>
+                <rolleBeskrivelse ledetekst="Rolle">Deltaker med fullt ansvar</rolleBeskrivelse>
+                <orgnr ledetekst="Organisasjonsnummer">932805512</orgnr>
                 <navn ledetekst="Foretaksnavn">
                     <navn1>ILA AS</navn1>
                 </navn>
