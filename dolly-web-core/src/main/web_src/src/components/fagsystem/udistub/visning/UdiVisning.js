@@ -10,7 +10,6 @@ import { Annet } from './partials/Annet'
 export const UdiVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster UDI-data" />
 	if (!data) return false
-	console.log('data :', data)
 
 	return (
 		<div>
