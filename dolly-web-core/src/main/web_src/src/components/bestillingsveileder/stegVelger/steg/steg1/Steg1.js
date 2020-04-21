@@ -53,7 +53,7 @@ export const Steg1 = ({ stateModifier }) => {
 			<KontaktReservasjonsPanel stateModifier={stateModifier} />
 			<ArenaPanel stateModifier={stateModifier} />
 			{/* Vi kan foreløpig kun legge til UDI-attributter på personer som ikke har noen fra før */}
-			{!opts.data.udistub ? (
+			{!opts.is.leggTil || !opts.data.udistub ? (
 				<UdiPanel stateModifier={stateModifier} />
 			) : (
 				<>
