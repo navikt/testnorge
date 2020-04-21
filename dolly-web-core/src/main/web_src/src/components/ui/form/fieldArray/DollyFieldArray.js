@@ -64,7 +64,13 @@ export const DollyFaBlokkNested = ({ idx, handleRemove, children }) => (
 	</div>
 )
 
-export const DollyFieldArray = ({ header, hjelpetekst, data, nested = false, children }) => (
+export const DollyFieldArray = ({
+	header = null,
+	hjelpetekst = null,
+	data,
+	nested = false,
+	children
+}) => (
 	<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
 		{data.map((curr, idx) => {
 			return nested ? (
@@ -82,10 +88,10 @@ export const DollyFieldArray = ({ header, hjelpetekst, data, nested = false, chi
 
 export const FormikDollyFieldArray = ({
 	name,
-	title,
+	title = null,
 	header,
 	newEntry,
-	hjelpetekst,
+	hjelpetekst = null,
 	nested = false,
 	children
 }) => (

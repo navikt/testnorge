@@ -12,7 +12,7 @@ const sigrunAttributt = 'sigrunstub'
 export const SigrunstubForm = ({ formikBag }) => (
 	<Vis attributt={sigrunAttributt}>
 		<Panel
-			heading="Inntekt"
+			heading="Skatteoppgjør (Sigrun)"
 			hasErrors={panelError(formikBag, sigrunAttributt)}
 			iconType="sigrun"
 			startOpen={() => erForste(formikBag.values, [sigrunAttributt])}

@@ -1,4 +1,5 @@
 import _get from 'lodash/get'
+import _has from 'lodash/has'
 import _dropRight from 'lodash/dropRight'
 import _takeRight from 'lodash/takeRight'
 import _isEmpty from 'lodash/isEmpty'
@@ -239,7 +240,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	const aaregKriterier = bestillingData.aareg
 	if (aaregKriterier) {
 		const aareg = {
-			header: 'Arbeidsforhold',
+			header: 'Arbeidsforhold (Aareg)',
 			itemRows: []
 		}
 
@@ -318,7 +319,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		})
 
 		const sigrunStub = {
-			header: 'Inntekter',
+			header: 'Skatteoppgjør (Sigrun)',
 			itemRows: []
 		}
 
@@ -352,7 +353,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	if (inntektStubKriterier) {
 		const inntektStub = {
-			header: 'Inntektskomponenten (A-ordningen)',
+			header: 'A-ordningen (Inntektskomponenten)',
 			// items: [
 			// 	obj('Prosentøkning per år', inntektStubKriterier.prosentOekningPerAaar)
 			// ],
@@ -714,7 +715,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	if (pensjonKriterier) {
 		const pensjonforvalter = {
-			header: 'Pensjonsgivende inntekt',
+			header: 'Pensjonsgivende inntekt (POPP)',
 			items: [
 				obj('Fra og med år', pensjonKriterier.inntekt.fomAar),
 				obj('Til og med år', pensjonKriterier.inntekt.tomAar),
@@ -728,6 +729,85 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 		data.push(pensjonforvalter)
 	}
+
+	const inntektsmeldingKriterier = bestillingData.inntektsmelding
+
+	const mapInntektsmeldingKriterier = meldinger => ({
+		header: 'Inntektsmelding (fra Altinn)',
+		itemRows: meldinger.map((inntekt, i) => [
+			{
+				numberHeader: `Inntekt ${i + 1}`
+			},
+			obj('Årsak til innsending', Formatters.codeToNorskLabel(inntekt.aarsakTilInnsending)),
+			obj('Ytelse', Formatters.codeToNorskLabel(inntekt.ytelse)),
+			obj('Nær relasjon', Formatters.oversettBoolean(inntekt.naerRelasjon)),
+			obj(
+				'Innsendingstidspunkt',
+				Formatters.formatDate(inntekt.avsendersystem.innsendingstidspunkt)
+			),
+
+			obj('Virksomhet', inntekt.arbeidsgiver.orgnummer),
+
+			obj('Beløp', inntekt.arbeidsforhold.beregnetInntekt.beloep),
+			obj(
+				'Årsak ved endring',
+				Formatters.codeToNorskLabel(inntekt.arbeidsforhold.aarsakVedEndring)
+			),
+			obj('Første fraværsdag', Formatters.formatDate(inntekt.arbeidsforhold.foersteFravaersdag)),
+			obj(
+				'Avtalte ferier',
+				inntekt.arbeidsforhold.avtaltFerieListe && inntekt.arbeidsforhold.avtaltFerieListe.length
+			),
+			//Refusjon
+			obj('Refusjonsbeløp per måned', inntekt.refusjon.refusjonsbeloepPrMnd),
+			obj('Opphørsdato refusjon', Formatters.formatDate(inntekt.refusjon.refusjonsopphoersdato)),
+			obj(
+				'Endring i refusjon',
+				_has(inntekt, 'refusjon.endringIRefusjonListe') && inntekt.refusjon.endringIRefusjonListe
+			),
+			//Omsorg
+			obj('Har utbetalt pliktige dager', _get(inntekt, 'omsorgspenger.harUtbetaltPliktigeDager')),
+			obj(
+				'Fraværsperioder',
+				_has(inntekt, 'omsorgspenger.fravaersPerioder') &&
+					inntekt.omsorgspenger.fravaersPerioder.length
+			),
+			obj(
+				'Delvis fravær',
+				_has(inntekt, 'omsorgspenger.delvisFravaersListe') &&
+					inntekt.omsorgspenger.delvisFravaersListe.length
+			),
+			//Sykepenger
+			obj('Brutto utbetalt', _get(inntekt, 'sykepengerIArbeidsgiverperioden.bruttoUtbetalt')),
+			obj(
+				'Begrunnelse for reduksjon eller ikke utbetalt',
+				Formatters.codeToNorskLabel(
+					_get(inntekt, 'sykepengerIArbeidsgiverperioden.begrunnelseForReduksjonEllerIkkeUtbetalt')
+				)
+			),
+			obj(
+				'Arbeidsgiverperioder',
+				_has(inntekt, 'sykepengerIArbeidsgiverperioden.arbeidsgiverperiodeListe') &&
+					inntekt.sykepengerIArbeidsgiverperioden.arbeidsgiverperiodeListe.length
+			),
+			//Foreldrepenger
+			obj('Startdato foreldrepenger', Formatters.formatDate(inntekt.startdatoForeldrepengeperiode)),
+			//Pleiepenger
+			obj('Pleiepengerperioder', inntekt.pleiepengerPerioder && inntekt.pleiepengerPerioder.length),
+			//Naturalytelse
+			obj(
+				'Gjenopptagelse Naturalytelse',
+				inntekt.gjenopptakelseNaturalytelseListe && inntekt.gjenopptakelseNaturalytelseListe.length
+			),
+			obj(
+				'Opphør av Naturalytelse',
+				inntekt.opphoerAvNaturalytelseListe && inntekt.opphoerAvNaturalytelseListe.length
+			)
+		])
+	})
+
+	if (inntektsmeldingKriterier)
+		data.push(mapInntektsmeldingKriterier(inntektsmeldingKriterier.inntekter))
 
 	return data
 }

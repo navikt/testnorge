@@ -9,14 +9,13 @@ export const ArbeidsforholdVisning = ({ data }) => {
 
 	return (
 		<React.Fragment>
-			<h4>Arbeidsforhold</h4>
+			<h4>Arbeidsforhold (Aareg)</h4>
 			<DollyFieldArray data={data} nested>
 				{(id, idx) => (
 					<div className="person-visning_content" key={idx}>
 						<TitleValue
 							title="Arbeidsforholdstype"
-							value={id.arbeidsforholdstype}
-							kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
+							value={Formatters.codeToNorskLabel(id.arbeidsforholdstype)}
 						/>
 						<TitleValue title="Startdato" value={Formatters.formatStringDates(id.startdato)} />
 						<TitleValue title="Sluttdato" value={Formatters.formatStringDates(id.sluttdato)} />

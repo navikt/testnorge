@@ -130,5 +130,9 @@ export default {
 
 	getPersonnavn() {
 		return Request.get(Endpoints.getPersonnavn())
+	},
+
+	getTransaksjonid(system, ident) {
+		return Request.get(Endpoints.getTransaksjonsid(system, ident))
 	}
 }

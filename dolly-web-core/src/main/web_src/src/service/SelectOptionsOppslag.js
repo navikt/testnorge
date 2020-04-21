@@ -23,6 +23,17 @@ export const SelectOptionsOppslag = {
 			return response
 		}, [DollyApi.getFasteDatasettGruppe])
 		return datasettInfo
+	},
+
+	hentInntektsmeldingOptions: enumtype =>
+		Api.fetchJson(`${uri}/inntektsmelding/${enumtype}`, 'GET'),
+
+	hentArbeidsforholdstyperInntektstub: () => {
+		const arbeidsforholdstyper = useAsync(async () => {
+			const response = await DollyApi.getKodeverkByNavn('Arbeidsforholdstyper')
+			return response
+		}, [DollyApi.getKodeverkByNavn])
+		return arbeidsforholdstyper
 	}
 }
 
@@ -51,6 +62,18 @@ SelectOptionsOppslag.formatOptions = (type, data) => {
 						': ' +
 						personInfo.fnr
 					options.push({ value: personInfo.fnr, label: navnOgFnr })
+				}
+			})
+		return options
+	} else if (type === 'arbeidsforholdstyper') {
+		const options = data.value ? data.value.data.koder : []
+		options.length > 0 &&
+			options.forEach(option => {
+				if (option.value === 'frilanserOppdragstakerHonorarPersonerMm') {
+					option.label = 'Frilansere/oppdragstakere, honorar, m.m.'
+				}
+				if (option.value === 'pensjonOgAndreTyperYtelserUtenAnsettelsesforhold') {
+					option.label = 'Pensjoner og andre typer ytelser uten ansettelsesforhold'
 				}
 			})
 		return options

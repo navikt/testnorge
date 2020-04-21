@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { createSelector } from 'reselect'
 import { push } from 'connected-react-router'
-import { getBestillingById } from '~/ducks/bestillingStatus'
+import { getBestillingById, getBestillingsListe } from '~/ducks/bestillingStatus'
 import { selectIdentById } from '~/ducks/gruppe'
 import { fetchDataFraFagsystemer, selectDataForIdent, actions } from '~/ducks/fagsystem'
 import { createLoadingSelector } from '~/ducks/loading'
@@ -32,7 +32,7 @@ const loadingSelector = createSelector(
 			instdata: loadingSelectorInst({ loading }),
 			udistub: loadingSelectorUdi({ loading }),
 			slettPerson: loadingSelectorSlettPerson({ loading }),
-			pensjonforvalter: loadingSelectorPensjon({ loading } )
+			pensjonforvalter: loadingSelectorPensjon({ loading })
 		}
 	}
 )
@@ -41,16 +41,18 @@ const mapStateToProps = (state, ownProps) => ({
 	loading: loadingSelector(state),
 	ident: selectIdentById(state, ownProps.personId),
 	data: selectDataForIdent(state, ownProps.personId),
-	bestilling: getBestillingById(state, ownProps.bestillingId)
+	bestilling: getBestillingById(state, ownProps.bestillingId),
+	bestillingsListe: getBestillingsListe(state, ownProps.bestillingsIdListe)
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
 	slettPerson: () => dispatch(actions.slettPerson(ownProps.personId)),
-	leggTilPaaPerson: () =>
+	leggTilPaaPerson: (data) =>
 		dispatch(
 			push(`/gruppe/${ownProps.match.params.gruppeId}/bestilling`, {
-				leggTilPaaFnr: ownProps.personId
+				leggTilPaaFnr: ownProps.personId,
+				data: data
 			})
 		)
 })
