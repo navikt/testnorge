@@ -69,4 +69,18 @@
         </dependencies>
     </dependencyManagement>
 
+    <repositories>
+        <repository>
+            <id>nexus-internal-release</id>
+            <url>https://repo.adeo.no/repository/maven-release</url>
+        </repository>
+        <repository>
+            <id>nexus-internal-mirror</id>
+            <url>https://repo.adeo.no/repository/maven-public</url>
+        </repository>
+        <repository>
+            <id>github-package-registry-navikt</id>
+            <url>https://maven.pkg.github.com/navikt/maven-release</url>
+        </repository>
+    </repositories>
 </project>
