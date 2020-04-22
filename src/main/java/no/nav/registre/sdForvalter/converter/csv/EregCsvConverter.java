@@ -64,18 +64,18 @@ public class EregCsvConverter extends CsvConverter<Ereg> {
                 .forretningsAdresse(Adresse
                         .builder()
                         .adresse(getString(map, Headers.FORRETNINGS_ADRESSE))
-                        .adresse(getString(map, Headers.FORRETNINGS_POSTNR))
-                        .adresse(getString(map, Headers.FORRETNINGS_KOMMUNENR))
-                        .adresse(getString(map, Headers.FORRETNINGS_LANDKODE))
-                        .adresse(getString(map, Headers.FORRETNINGS_POSTSTED))
+                        .postnr(getString(map, Headers.FORRETNINGS_POSTNR))
+                        .kommunenr(getString(map, Headers.FORRETNINGS_KOMMUNENR))
+                        .landkode(getString(map, Headers.FORRETNINGS_LANDKODE))
+                        .poststed(getString(map, Headers.FORRETNINGS_POSTSTED))
                         .build()
                 ).postadresse(Adresse
                         .builder()
                         .adresse(getString(map, Headers.POSTADRESSE_ADRESSE))
-                        .adresse(getString(map, Headers.POSTADRESSE_POSTNR))
-                        .adresse(getString(map, Headers.POSTADRESSE_KOMMUNENR))
-                        .adresse(getString(map, Headers.POSTADRESSE_LANDKODE))
-                        .adresse(getString(map, Headers.POSTADRESSE_POSTSTED))
+                        .postnr(getString(map, Headers.POSTADRESSE_POSTNR))
+                        .kommunenr(getString(map, Headers.POSTADRESSE_KOMMUNENR))
+                        .landkode(getString(map, Headers.POSTADRESSE_LANDKODE))
+                        .poststed(getString(map, Headers.POSTADRESSE_POSTSTED))
                         .build()
                 ).build();
     }
