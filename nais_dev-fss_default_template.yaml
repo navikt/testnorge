@@ -21,6 +21,9 @@ spec:
     max: 1
   vault:
     enabled: true
+    paths:
+      - kvPath: /kv/preprod/fss/testnorge-inntekt/default
+        mountPath: /var/run/secrets/nais.io/vault
   resources:
     requests:
       cpu: 200m
