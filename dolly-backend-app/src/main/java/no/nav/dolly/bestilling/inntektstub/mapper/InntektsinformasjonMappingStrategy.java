@@ -34,7 +34,7 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
 
                             do {
                                 Inntektsinformasjon inntektsinformasjon1 = mapperFacade.map(
-                                        inntektMultiplierWrapper.getInntektsinformasjon().get(0), Inntektsinformasjon.class);
+                                        inntektsinformasjon, Inntektsinformasjon.class);
 
                                 inntektsinformasjon1.setAarMaaned(yearMonth.format(YEAR_MONTH_FORMAT));
                                 yearMonth = yearMonth.minusMonths(1);
