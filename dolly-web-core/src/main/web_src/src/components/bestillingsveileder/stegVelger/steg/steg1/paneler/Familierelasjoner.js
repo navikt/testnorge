@@ -1,12 +1,13 @@
-import React from 'react'
-import { useLocation } from 'react-use'
+import React, { useContext } from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 export const FamilierelasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
-	const leggTil = useLocation().state.state.hasOwnProperty('leggTilPaaFnr')
+	const opts = useContext(BestillingsveilederContext)
+	const leggTil = opts.is.leggTil
 
 	return (
 		<Panel
