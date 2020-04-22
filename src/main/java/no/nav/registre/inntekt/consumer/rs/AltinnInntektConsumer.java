@@ -28,7 +28,7 @@ public class AltinnInntektConsumer {
         this.restTemplate = restTemplate;
     }
 
-    public String getInntektsmeldingXml201812(RsInntektsmelding inntektsmelding) {
+    public String getInntektsmeldingXml201812(RsInntektsmelding inntektsmelding, Boolean continueOnError) {
         RequestEntity postRequest = RequestEntity.post(urlMapper201812.expand())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(inntektsmelding);
@@ -36,6 +36,9 @@ public class AltinnInntektConsumer {
             return restTemplate.exchange(postRequest, String.class).getBody();
         } catch (Exception e) {
             log.error("Uventet feil ved mapping til AltinnInntekt.", e);
+            if(!continueOnError){
+                throw e;
+            }
         }
         return "";
     }

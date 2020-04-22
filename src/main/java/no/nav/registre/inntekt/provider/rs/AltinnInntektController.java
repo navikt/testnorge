@@ -38,16 +38,18 @@ public class AltinnInntektController {
     @PostMapping(value = "/enkeltident")
     public ResponseEntity<?> genererMeldingForIdent(
             @RequestBody AltinnDollyRequest dollyRequest,
-            @RequestParam(value = "includeXml", required = false) Boolean includeXml
-    ) {
+            @RequestParam(value = "includeXml", required = false) Boolean includeXml,
+            @RequestParam(value = "continueOnError", defaultValue = "false") Boolean continueOnError
+    ) throws ValidationException {
         try {
             AltinnInntektResponse altinnInntektResponse = new AltinnInntektResponse(
                     dollyRequest.getArbeidstakerFnr(),
-                    altinnInntektService.lagAltinnMeldinger(dollyRequest),
+                    altinnInntektService.lagAltinnMeldinger(dollyRequest, continueOnError),
                     includeXml != null && includeXml
             );
             return ResponseEntity.ok(altinnInntektResponse);
         } catch (ValidationException e) {
+            log.error("Feil ved laging av Altinn meldinger", e);
             return new ResponseEntity<>(e.getErrors(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             log.error("Feil ved opprettelse av enkeltindent", e);
