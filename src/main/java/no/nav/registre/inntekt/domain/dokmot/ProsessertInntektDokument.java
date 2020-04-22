@@ -15,17 +15,13 @@ public class ProsessertInntektDokument {
     private final String xml;
 
     public ProsessertInntektDokument(InntektDokument dokument, DokmotResponse response) {
-        String dokumentInfoIdTmp;
+        List<DokumentInfo> dokumentInfoListe = response.getDokumenter();
 
         this.fnr = dokument.getArbeidstakerFnr();
         this.journalpostId = response.getJournalpostId();
-        List<DokumentInfo> tmp = response.getDokumenter();
-        dokumentInfoIdTmp = null;
-        if (!tmp.isEmpty()) {
-            // Inntektsmeldinger har bare ett dokument per journalpost.
-            dokumentInfoIdTmp = tmp.get(0).getDokumentInfoId();
-        }
-        this.dokumentInfoId = dokumentInfoIdTmp;
+
+        this.dokumentInfoId = dokumentInfoListe != null && !dokumentInfoListe.isEmpty() ?
+                dokumentInfoListe.get(0).getDokumentInfoId() : null;
         this.xml = dokument.getXml();
     }
 }
