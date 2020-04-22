@@ -36,10 +36,10 @@ export const Steg1 = ({ stateModifier }) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			{!opts.is.leggTil && <PersoninformasjonPanel stateModifier={stateModifier}/>}
+			{!opts.is.leggTil && <PersoninformasjonPanel stateModifier={stateModifier} />}
 
 			<AdressePanel stateModifier={stateModifier} />
-      
+
 			{!opts.is.leggTil && (
 				<>
 					<FamilierelasjonPanel stateModifier={stateModifier} />
@@ -52,8 +52,21 @@ export const Steg1 = ({ stateModifier }) => {
 			<InstitusjonsoppholdPanel stateModifier={stateModifier} />
 			<KontaktReservasjonsPanel stateModifier={stateModifier} />
 			<ArenaPanel stateModifier={stateModifier} />
-
-			{!opts.is.leggTil && <UdiPanel stateModifier={stateModifier} />}
+			{/* Vi kan foreløpig kun legge til UDI-attributter på personer som ikke har noen fra før */}
+			{!opts.is.leggTil || !opts.data.udistub ? (
+				<UdiPanel stateModifier={stateModifier} />
+			) : (
+				<>
+					<AlertStripeInfo>
+						<b>UDI</b>
+						<p>
+							Det er foreløpig ikke mulig å legge til UDI-attributter på personer som allerede har
+							dette.
+						</p>
+					</AlertStripeInfo>
+					<p />
+				</>
+			)}
 
 			{opts.is.leggTil && (
 				<AlertStripeInfo>
