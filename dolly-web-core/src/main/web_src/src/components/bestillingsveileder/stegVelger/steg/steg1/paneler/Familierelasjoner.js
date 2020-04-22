@@ -1,13 +1,12 @@
 import React from 'react'
 import { useLocation } from 'react-use'
-import _has from 'lodash/has'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 
 export const FamilierelasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
-	const leggTil = _has(useLocation(), 'state.state.leggTilPaaFnr')
+	const leggTil = useLocation().state.state.hasOwnProperty('leggTilPaaFnr')
 
 	return (
 		<Panel
