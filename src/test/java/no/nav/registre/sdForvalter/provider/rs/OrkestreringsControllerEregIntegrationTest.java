@@ -62,7 +62,7 @@ public class OrkestreringsControllerEregIntegrationTest {
 
         verifyPost(
                 CREATE_IN_EREG_URL_PATTERN,
-                Collections.singletonList(new EregMapperRequest(new Ereg(model))),
+                Collections.singletonList(new EregMapperRequest(new Ereg(model), false)),
                 objectMapper
         );
     }

@@ -27,7 +27,7 @@ public class EregAdapter extends FasteDataAdapter {
         return new EregListe(repository.findAll());
     }
 
-    private EregModel fetchByOrgnr(String orgnr) {
+    private EregModel fetchModelByOrgnr(String orgnr) {
         return repository.findById(orgnr).orElseThrow(
                 () -> new RuntimeException("Finner ikke orgnr = " + orgnr + " i ereg databasen.")
         );
@@ -36,6 +36,10 @@ public class EregAdapter extends FasteDataAdapter {
     public EregListe fetchBy(String gruppe) {
         log.info("Henter ereg data med gruppe {}", gruppe);
         return new EregListe(fetch().filterOnGruppe(gruppe));
+    }
+
+    public Ereg fetchByOrgnr(String orgnr) {
+        return new Ereg(fetchModelByOrgnr(orgnr));
     }
 
     public EregListe save(EregListe liste) {
@@ -76,7 +80,7 @@ public class EregAdapter extends FasteDataAdapter {
                 .stream()
                 .map(item -> new EregModel(
                         item,
-                        item.getJuridiskEnhet() != null ? fetchByOrgnr(item.getJuridiskEnhet()) : null,
+                        item.getJuridiskEnhet() != null ? fetchModelByOrgnr(item.getJuridiskEnhet()) : null,
                         getOppinnelse(item),
                         getGruppe(item)
                 ))

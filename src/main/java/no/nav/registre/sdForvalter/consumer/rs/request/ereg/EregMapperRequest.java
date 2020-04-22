@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.domain.Ereg;
 
 @Getter
@@ -23,6 +22,7 @@ import no.nav.registre.sdForvalter.domain.Ereg;
 @Builder
 public class EregMapperRequest {
 
+
     @NotNull
     private String orgnr;
 
@@ -30,6 +30,7 @@ public class EregMapperRequest {
 
     @NotNull
     private String enhetstype;
+    private String endringsType = "N";
 
     private String epost;
     private String internetAdresse;
@@ -38,17 +39,20 @@ public class EregMapperRequest {
     private Adresse adresse;
     private List<Map<String, String>> knytninger;
 
-    public EregMapperRequest(Ereg model) {
+    public EregMapperRequest(Ereg model, boolean update) {
         enhetstype = model.getEnhetstype();
         epost = model.getEpost();
         internetAdresse = model.getInternetAdresse();
         if (Strings.isNotBlank(model.getNavn())) {
             navn = Navn.builder().navneListe(Collections.singletonList(model.getNavn())).build();
         }
+        endringsType = update ? "E" : "N";
         orgnr = model.getOrgnr();
         if (model.getJuridiskEnhet() != null) {
-            knytninger = Collections.singletonList(new HashMap<String, String>() {{
+            String type = new StringBuilder("    NSSY").replace(0, model.getEnhetstype().length(), model.getEnhetstype()).toString();
+            knytninger = Collections.singletonList(new HashMap<>() {{
                 put("orgnr", model.getJuridiskEnhet());
+                put("type", type);
             }});
         }
         if (model.getForretningsAdresse() != null) {
