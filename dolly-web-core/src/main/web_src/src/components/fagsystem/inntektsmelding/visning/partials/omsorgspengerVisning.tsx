@@ -2,25 +2,14 @@ import React from 'react'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
+import {
+	Omsorgspenger,
+	DelvisFravaer,
+	Fravaer
+} from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
 interface OmsorgspengerVisning {
 	data?: Omsorgspenger
-}
-
-type Omsorgspenger = {
-	delvisFravaersListe?: Array<DelvisFravaer>
-	fravaersPerioder?: Array<Fravaer>
-	harUtbetaltPliktigeDager?: boolean
-}
-
-type DelvisFravaer = {
-	dato?: string
-	timer?: number
-}
-
-type Fravaer = {
-	fom?: string
-	tom?: string
 }
 
 export default ({ data }: OmsorgspengerVisning) => {
@@ -48,7 +37,7 @@ export default ({ data }: OmsorgspengerVisning) => {
 				)}
 
 				{data.fravaersPerioder && (
-					<DollyFieldArray data={data.fravaersPerioder} header="Delvis fraværsperioder">
+					<DollyFieldArray data={data.fravaersPerioder} header="Fraværsperioder">
 						{(id: Fravaer) => (
 							<>
 								<div className="person-visning_content">

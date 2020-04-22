@@ -59,10 +59,16 @@ export default handleActions(
  */
 export const getBestillingById = (state, id) => state.bestillingStatuser.byId[id]
 
+// Henter alle bestillinger som er gjort på en ident
 export const getBestillingsListe = (state, IDer) => {
 	var bestillingsListe = []
 	for (let i = 0; i < IDer.length; i++) {
-		bestillingsListe.push(state.bestillingStatuser.byId[IDer[i]].bestilling)
+		const bestilling = state.bestillingStatuser.byId[IDer[i]].bestilling
+		const suksessMiloer = successMiljoSelector(state.bestillingStatuser.byId[IDer[i]].status)
+		// Arena-bestillinger brukes i personvisning, skal derfor ikke returnere Arena-bestillinger som har feilet
+		if (!bestilling.hasOwnProperty('arenaforvalter') || suksessMiloer.hasOwnProperty('ARENA')) {
+			bestillingsListe.push(bestilling)
+		}
 	}
 	return bestillingsListe
 }

@@ -3,7 +3,7 @@ import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
 
-export const ArbeidInntektPanel = ({ stateModifier, leggTil }) => {
+export const ArbeidInntektPanel = ({ stateModifier }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
 
 	const infoTekst =
@@ -19,23 +19,19 @@ export const ArbeidInntektPanel = ({ stateModifier, leggTil }) => {
 			iconType="arbeid"
 		>
 			<AttributtKategori title="Arbeidsforhold (Aareg)">
-				<Attributt attr={sm.attrs.aareg} />
+				<Attributt attr={sm.attrs.aareg}/>
 			</AttributtKategori>
-			{!leggTil && (
-				<>
-					<AttributtKategori title="Skatteoppgjør (Sigrun)">
-						<Attributt attr={sm.attrs.sigrunstub} />
-					</AttributtKategori>
-					<AttributtKategori title="Pensjonsgivende inntekt (POPP)">
-						<Attributt attr={sm.attrs.pensjonforvalter} />
-					</AttributtKategori>
-					<AttributtKategori title="A-ordningen (Inntektskomponenten)">
-						<Attributt attr={sm.attrs.inntektstub} />
-					</AttributtKategori>
-				</>
-			)}
+			<AttributtKategori title="Skatteoppgjør (Sigrun)">
+				<Attributt attr={sm.attrs.sigrunstub}/>
+			</AttributtKategori>
+			<AttributtKategori title="Pensjonsgivende inntekt (POPP)">
+				<Attributt attr={sm.attrs.pensjonforvalter}/>
+			</AttributtKategori>
+			<AttributtKategori title="A-ordningen (Inntektskomponenten)">
+				<Attributt attr={sm.attrs.inntektstub}/>
+			</AttributtKategori>
 			<AttributtKategori title="Inntektsmelding (fra Altinn) - beta">
-				<Attributt attr={sm.attrs.inntektsmelding} />
+				<Attributt attr={sm.attrs.inntektsmelding}/>
 			</AttributtKategori>
 		</Panel>
 	)

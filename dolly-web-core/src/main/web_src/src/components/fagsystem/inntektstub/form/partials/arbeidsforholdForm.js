@@ -1,8 +1,10 @@
 import React from 'react'
+import _get from 'lodash/get'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Select'
+import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 
 const initialValues = {
@@ -19,6 +21,12 @@ const initialValues = {
 }
 
 export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
+	const arbeidsforholdstyper = SelectOptionsOppslag.hentArbeidsforholdstyperInntektstub()
+	const arbeidsforholdstyperFormatted = SelectOptionsOppslag.formatOptions(
+		'arbeidsforholdstyper',
+		arbeidsforholdstyper
+	)
+
 	return (
 		<FormikDollyFieldArray
 			name={`${inntektsinformasjonPath}.arbeidsforholdsliste`}
@@ -27,13 +35,19 @@ export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 		>
 			{path => (
 				<React.Fragment>
-					<FormikSelect
+					<DollySelect
 						name={`${path}.arbeidsforholdstype`}
 						label="Arbeidsforholdstype"
-						kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-						size="medium"
+						options={arbeidsforholdstyperFormatted}
+						isLoading={arbeidsforholdstyper.loading}
+						onChange={forhold =>
+							formikBag.setFieldValue(`${path}.arbeidsforholdstype`, forhold.value)
+						}
+						value={_get(formikBag.values, `${path}.arbeidsforholdstype`)}
+						size="xlarge"
 						isClearable={false}
 					/>
+
 					<FormikDatepicker name={`${path}.startdato`} label="Startdato" />
 					<FormikDatepicker name={`${path}.sluttdato`} label="Sluttdato" />
 					<FormikTextInput
