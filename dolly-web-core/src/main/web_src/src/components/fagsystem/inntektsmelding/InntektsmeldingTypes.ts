@@ -1,5 +1,3 @@
-//TODO Ikke tatt i bruk enda. Denne kan brukes av både form og visning
-
 export enum Kodeverk {
 	AarsakTilInnsending = 'AARSAK_TIL_INNSENDING_TYPE',
 	AarsakTilUtsettelse = 'AARSAK_TIL_UTSETTELSE_TYPE',
@@ -24,6 +22,11 @@ export enum Tema {
 	For = 'FOR'
 }
 
+export type Inntektsmelding = {
+	joarkMetadata: { tema: string }
+	inntekter: Array<Inntekter>
+}
+
 export type Inntekter = {
 	aarsakTilInnsending: string
 	naerRelasjon: boolean
@@ -37,7 +40,7 @@ export type Inntekter = {
 	omsorgspenger?: Omsorgspenger
 	pleiepengerPerioder?: Array<Pleiepenger>
 	refusjon?: Refusjon
-	sykepengerIArbeidsgiverperioden?: SykepengerIArbeidsgiverperioden
+	sykepengerIArbeidsgiverperioden?: Sykepenger
 }
 
 export type Arbeidsforhold = {
@@ -74,12 +77,12 @@ export type Omsorgspenger = {
 	harUtbetaltPliktigeDager?: boolean
 }
 
-type DelvisFravaer = {
+export type DelvisFravaer = {
 	dato?: string
 	timer?: number
 }
 
-type Fravaer = {
+export type Fravaer = {
 	fom?: string
 	tom?: string
 }
@@ -89,8 +92,17 @@ export type Refusjon = {
 	refusjonsopphoersdato?: string
 	endringIRefusjonListe?: Array<EndringIRefusjon>
 }
-type EndringIRefusjon = {
+export type EndringIRefusjon = {
 	refusjonsbeloepPrMnd?: number
 	endringsdato?: string
 }
-export type SykepengerIArbeidsgiverperioden = {}
+export type Sykepenger = {
+	arbeidsgiverperiodeListe?: Array<Periode>
+	begrunnelseForReduksjonEllerIkkeUtbetalt?: string //enum
+	bruttoUtbetalt?: number
+}
+
+export type Periode = {
+	fom?: string
+	tom?: string
+}

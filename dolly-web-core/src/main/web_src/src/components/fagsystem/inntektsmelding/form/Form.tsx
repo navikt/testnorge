@@ -75,11 +75,10 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 					header="Inntekt"
 					newEntry={initialValues}
 				>
-					{(path: any, idx: number) => {
+					{(path: string, idx: number) => {
 						const ytelse = _get(formikBag.values, `${path}.ytelse`)
 						return (
-							//TODO: Erstatte style med classNames. Styling generelt
-							<div style={{ display: 'flex', flexDirection: 'column' }}>
+							<div className="flexbox--column">
 								<div className="flexbox--flex-wrap">
 									<InntektsmeldingSelect
 										path={`${path}.aarsakTilInnsending`}
@@ -87,7 +86,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 										kodeverk={Kodeverk.AarsakTilInnsending}
 									/>
 									<InntektsmeldingYtelseSelect
-										path={`${path}.ytelse`}
+										path={path}
 										idx={idx}
 										label="Ytelse"
 										kodeverk={Kodeverk.Ytelse}

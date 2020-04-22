@@ -30,37 +30,40 @@ export default ({
 	kodeverk,
 	formikBag,
 	size = 'medium'
-}: InntektsmeldingSelect) => (
-	<LoadableComponent
-		onFetch={() =>
-			SelectOptionsOppslag.hentInntektsmeldingOptions(kodeverk).then(response =>
-				response.map((value: string) => ({
-					value,
-					label: Formatters.codeToNorskLabel(value),
-					tema: findTema(value)
-				}))
-			)
-		}
-		render={(data: Array<Option>) => (
-			<DollySelect
-				name={path}
-				label={label}
-				options={data}
-				type="text"
-				size={size}
-				value={_get(formikBag.values, path)}
-				onChange={(e: Option) => setYtelseOgTema(e, formikBag, path, idx)}
-				feil={
-					_has(formikBag.touched, path) &&
-					_get(formikBag.values, path) === '' && {
-						feilmelding: 'Feltet er påkrevd'
+}: InntektsmeldingSelect) => {
+	const ytelsePath = `${path}.ytelse`
+	return (
+		<LoadableComponent
+			onFetch={() =>
+				SelectOptionsOppslag.hentInntektsmeldingOptions(kodeverk).then(response =>
+					response.map((value: string) => ({
+						value,
+						label: Formatters.codeToNorskLabel(value),
+						tema: findTema(value)
+					}))
+				)
+			}
+			render={(data: Array<Option>) => (
+				<DollySelect
+					name={ytelsePath}
+					label={label}
+					options={data}
+					type="text"
+					size={size}
+					value={_get(formikBag.values, ytelsePath)}
+					onChange={(e: Option) => setYtelseOgTema(e, formikBag, path, idx)}
+					feil={
+						_has(formikBag.touched, ytelsePath) &&
+						_get(formikBag.values, ytelsePath) === '' && {
+							feilmelding: 'Feltet er påkrevd'
+						}
 					}
-				}
-				isClearable={false}
-			/>
-		)}
-	/>
-)
+					isClearable={false}
+				/>
+			)}
+		/>
+	)
+}
 
 const findTema = (ytelse: string) => {
 	if (ytelse === Ytelser.Sykepenger) return Tema.Syk
@@ -70,8 +73,6 @@ const findTema = (ytelse: string) => {
 }
 
 const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string, idx: number) => {
-	const inntektPath = `inntektsmelding.inntekter[${idx}]` //TODO hente hele path!
-
 	formikBag.setFieldValue('inntektsmelding.joarkMetadata.tema', value.tema)
 
 	const {
@@ -80,18 +81,18 @@ const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string
 		pleiepengerPerioder,
 		omsorgspenger,
 		...rest
-	} = _get(formikBag.values, inntektPath)
+	} = _get(formikBag.values, path)
 
 	switch (value.value) {
 		case Ytelser.Omsorgspenger:
-			formikBag.setFieldValue(inntektPath, {
+			formikBag.setFieldValue(path, {
 				...rest,
 				ytelse: value.value,
 				omsorgspenger: { harUtbetaltPliktigeDager: false }
 			})
 			break
 		case Ytelser.Sykepenger:
-			formikBag.setFieldValue(inntektPath, {
+			formikBag.setFieldValue(path, {
 				...rest,
 				ytelse: value.value,
 				sykepengerIArbeidsgiverperioden: { bruttoUtbetalt: '' }
@@ -99,14 +100,14 @@ const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string
 
 			break
 		case Ytelser.Foreldrepenger:
-			formikBag.setFieldValue(inntektPath, {
+			formikBag.setFieldValue(path, {
 				...rest,
 				ytelse: value.value,
 				startdatoForeldrepengeperiode: ''
 			})
 			break
 		case Ytelser.Pleiepenger:
-			formikBag.setFieldValue(inntektPath, {
+			formikBag.setFieldValue(path, {
 				...rest,
 				ytelse: value.value,
 				pleiepengerPerioder: [{ fom: '', tom: '' }]
@@ -114,6 +115,6 @@ const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string
 			break
 		default:
 			// Foreløpig ingen spesielle keys for opplærings- og svangerskapspenger
-			formikBag.setFieldValue(path, value.value)
+			formikBag.setFieldValue(`${path}.ytelse`, value.value)
 	}
 }

@@ -38,17 +38,15 @@ export const Steg1 = ({ stateModifier }) => {
 			{!opts.is.leggTil && <PersoninformasjonPanel stateModifier={stateModifier} />}
 
 			<AdressePanel stateModifier={stateModifier} />
-			<FamilierelasjonPanel stateModifier={stateModifier} valgtPerson={opts.personFoerLeggTil} />
+
+			{!opts.is.leggTil && (
+				<FamilierelasjonPanel stateModifier={stateModifier} valgtPerson={opts.personFoerLeggTil} />
+			)}
+
 			<ArbeidInntektPanel stateModifier={stateModifier} />
 			<IdentifikasjonPanel stateModifier={stateModifier} />
 			<KontaktDoedsboPanel stateModifier={stateModifier} />
-
-			{!opts.is.leggTil && (
-				<>
-					<InstitusjonsoppholdPanel stateModifier={stateModifier} />
-				</>
-			)}
-
+			<InstitusjonsoppholdPanel stateModifier={stateModifier} />
 			<KontaktReservasjonsPanel stateModifier={stateModifier} />
 			<ArenaPanel stateModifier={stateModifier} />
 

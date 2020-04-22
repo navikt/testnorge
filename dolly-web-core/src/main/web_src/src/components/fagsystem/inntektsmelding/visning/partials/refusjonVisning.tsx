@@ -3,20 +3,13 @@ import _isEmpty from 'lodash/isEmpty'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
+import {
+	Refusjon,
+	EndringIRefusjon
+} from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
 interface RefusjonVisning {
 	data?: Refusjon
-}
-
-type Refusjon = {
-	refusjonsbeloepPrMnd?: number
-	refusjonsopphoersdato?: string
-	endringIRefusjonListe?: Array<EndringIRefusjon>
-}
-
-type EndringIRefusjon = {
-	refusjonsbeloepPrMnd?: number
-	endringsdato?: string
 }
 
 export default ({ data }: RefusjonVisning) => {

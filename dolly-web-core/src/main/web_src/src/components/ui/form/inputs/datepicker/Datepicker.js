@@ -21,6 +21,7 @@ export const Datepicker = ({
 	onBlur,
 	disabled = false,
 	feil,
+	excludeDates,
 	minDate,
 	maxDate
 }) => {
@@ -42,6 +43,7 @@ export const Datepicker = ({
 			id={name}
 			autoComplete="off"
 			customInput={<TextInput icon="calendar" feil={feil} />}
+			excludeDates={excludeDates}
 		/>
 	)
 }
