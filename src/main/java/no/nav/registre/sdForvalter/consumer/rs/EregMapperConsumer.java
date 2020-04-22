@@ -10,13 +10,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregMapperRequest;
-import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.domain.Ereg;
 import no.nav.registre.sdForvalter.domain.EregListe;
 
@@ -36,16 +33,23 @@ public class EregMapperConsumer {
     }
 
     public void create(EregListe eregListe, String env) {
-        uploadToEreg(eregListe, env);
+        uploadToEreg(eregListe, env, false);
     }
 
+    public void update(Ereg ereg, String env) {
+        update(new EregListe(ereg), env);
+    }
 
-    private void uploadToEreg(EregListe eregListe, String env) {
+    public void update(EregListe eregListe, String env) {
+        uploadToEreg(eregListe, env, true);
+    }
+
+    private void uploadToEreg(EregListe eregListe, String env, boolean update) {
         UriTemplate uriTemplate = new UriTemplate(eregUrl + "/orkestrering/opprett?lastOpp=true&miljoe={miljoe}");
         RequestEntity<List<EregMapperRequest>> requestEntity = new RequestEntity<>(
                 eregListe.getListe()
                         .stream()
-                        .map(EregMapperRequest::new)
+                        .map(item -> new EregMapperRequest(item, update))
                         .collect(Collectors.toList()),
                 HttpMethod.POST, uriTemplate.expand(env));
         ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);

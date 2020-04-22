@@ -58,6 +58,12 @@ public class EnvironmentInitializationService {
         log.info("Init of Ereg er ferdig.");
     }
 
+    public void updateEreg(String environment, String orgnr) {
+        log.info("Oppdater {} i {} Ereg...", orgnr, environment);
+        eregMapperConsumer.update(eregAdapter.fetchByOrgnr(orgnr), environment);
+        log.info("Oppdatering er ferdig.");
+    }
+
     public void initializeKrr(String gruppe) {
         log.info("Start init av KRR ...");
         krrConsumer.send(krrAdapter.fetchBy(gruppe));
