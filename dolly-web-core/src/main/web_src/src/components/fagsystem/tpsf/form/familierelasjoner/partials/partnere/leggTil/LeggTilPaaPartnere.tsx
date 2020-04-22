@@ -19,10 +19,22 @@ interface LeggTilPaaPartnere {
 
 type TidligerePartner = {
 	sistePartner: any
-	formikBag: any
+	formikBag: FormikProps<{}>
 	sisteSivilstand: SivilstandObj
 }
 
+type PersonBestilling = {
+	identtype: string
+}
+type PersonHentet = {
+	relasjoner?: Array<Relasjon>
+}
+
+type Relasjon = {
+	person: PersonHentet
+	personRelasjonMed: PersonHentet
+	relasjonTypeNavn: string
+}
 type SivilstandObj = {
 	sivilstand: string
 	sivilstandRegdato: string
@@ -42,30 +54,28 @@ const initialValues = {
 }
 
 const partnerPath: string = 'tpsf.relasjoner.partnere'
-const tidligerePartnere = personFoerLeggTil =>
+const tidligerePartnere = (personFoerLeggTil: PersonHentet) =>
 	_get(personFoerLeggTil, 'relasjoner', [])
-		.filter((relasjon: any) => relasjon.relasjonTypeNavn === 'PARTNER')
-		.map((relasjon: any) => relasjon.personRelasjonMed)
+		.filter((relasjon: Relasjon) => relasjon.relasjonTypeNavn === 'PARTNER')
+		.map((relasjon: Relasjon) => relasjon.personRelasjonMed)
 
 const oppdatertTidligerePartner = (formikBag: FormikProps<{}>): boolean =>
 	_has(formikBag.values, `${partnerPath}[0].sivilstander`) &&
 	!_has(formikBag.values, `${partnerPath}[0].identtype`)
 
 const harNyPartner = (formikBag: FormikProps<{}>): boolean =>
-	_get(formikBag.values, partnerPath).some(partner => _has(partner, 'identtype'))
+	_get(formikBag.values, partnerPath).some((partner: PersonBestilling) =>
+		_has(partner, 'identtype')
+	)
 
 export default ({ formikBag, personFoerLeggTil }: LeggTilPaaPartnere) => {
-	const [oppdatererTidligerePartner, oppdaterer, oppdatererIkke] = useBoolean(
-		oppdatertTidligerePartner(formikBag)
-	)
 	const [nyPartner, lagtTilNyPartner, fjernNyPartner] = useBoolean(harNyPartner(formikBag))
 	const sistePartner = _head(tidligerePartnere(personFoerLeggTil))
 
 	//Ingen partner fra før
 	if (!sistePartner) return <Partnere formikBag={formikBag} />
 
-	//TODO Alternativ ([]) er ikke sivilstandobj
-	const sisteSivilstand: SivilstandObj = _head(_get(sistePartner, 'sivilstander', []))
+	const sisteSivilstand: SivilstandObj = _head(_get(sistePartner, 'sivilstander'))
 
 	//Sjekker sivilstand på siste tidligere partner og siste nye partner
 	const kanOppretteFoersteNyePartner: boolean = oppdatertTidligerePartner(formikBag)
@@ -85,16 +95,13 @@ export default ({ formikBag, personFoerLeggTil }: LeggTilPaaPartnere) => {
 					sisteSivilstand={sisteSivilstand}
 					formikBag={formikBag}
 				/>
-				{!nyPartner &&
-				!oppdatertTidligerePartner(formikBag) && ( //!oppdatererTidligerePartner && (
-						<LeggTilFlereSivilstander
-							formikBag={formikBag}
-							oppdatererTidligerePartner={oppdaterer}
-						/>
-					)}
+
+				{!nyPartner && !oppdatertTidligerePartner(formikBag) && (
+					<LeggTilFlereSivilstander formikBag={formikBag} />
+				)}
 			</div>
 			//TODO Hvordan oppdatere oppdatererTidligerePartnere når sivilstand slettes?
-			{oppdatertTidligerePartner(formikBag) && ( // && oppdatererTidligerePartner && (
+			{oppdatertTidligerePartner(formikBag) && (
 				<Sivilstand
 					basePath={`${partnerPath}[0].sivilstander`}
 					formikBag={formikBag}
@@ -106,7 +113,8 @@ export default ({ formikBag, personFoerLeggTil }: LeggTilPaaPartnere) => {
 			{nyPartner ? (
 				<Partnere
 					formikBag={formikBag}
-					eksisterendePartner={oppdatertTidligerePartner(formikBag)}
+					oppdatertSistePartner={oppdatertTidligerePartner(formikBag)}
+					sisteSivilstandForrigePartner={sisteSivilstand}
 				/>
 			) : (
 				<FieldArrayAddButton
@@ -124,9 +132,12 @@ export default ({ formikBag, personFoerLeggTil }: LeggTilPaaPartnere) => {
 	)
 }
 
-const LeggTilFlereSivilstander = ({ formikBag, oppdatererTidligerePartner }) => {
+type LeggTilFlereSivilstander = {
+	formikBag: FormikProps<{}>
+}
+
+const LeggTilFlereSivilstander = ({ formikBag }: LeggTilFlereSivilstander) => {
 	const addNewSivilstand = () => {
-		oppdatererTidligerePartner()
 		formikBag.setFieldValue(`${partnerPath}[0]`, { sivilstander: [initialSivilstand] })
 	}
 	return (

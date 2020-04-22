@@ -3,6 +3,7 @@ import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import _drop from 'lodash/drop'
+import _isEmpty from 'lodash/isEmpty'
 import { AdresseKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -55,16 +56,21 @@ export const sjekkKanOppretteNyPartner = (partnere, formikBag) => {
 }
 
 const path = 'tpsf.relasjoner.partnere'
-export const Partnere = ({ formikBag, eksisterendePartner = false }) => (
+export const Partnere = ({
+	formikBag,
+	oppdatertSistePartner = false,
+	sisteSivilstandForrigePartner = {}
+}) => (
 	<FieldArray name={path}>
 		{arrayHelpers => {
 			const partnere = _get(arrayHelpers.form.values, path, [])
 			const kanOppretteNyPartner = sjekkKanOppretteNyPartner(partnere, formikBag)
 			const addNewEntry = () => arrayHelpers.push(initialValues)
+
 			return (
 				<DollyFieldArrayWrapper header="Partner">
 					{partnere.map((c, idx) => {
-						if (eksisterendePartner && idx === 0) return null
+						if (oppdatertSistePartner && idx === 0) return null
 						const isLast = idx === partnere.length - 1
 
 						// Det er kun mulig å slette siste forhold
@@ -82,6 +88,7 @@ export const Partnere = ({ formikBag, eksisterendePartner = false }) => (
 									idx={idx}
 									formikBag={formikBag}
 									locked={idx !== partnere.length - 1}
+									sisteSivilstandForrigePartner={sisteSivilstandForrigePartner}
 								/>
 							</DollyFaBlokk>
 						)
@@ -102,7 +109,7 @@ export const Partnere = ({ formikBag, eksisterendePartner = false }) => (
 	</FieldArray>
 )
 
-const PartnerForm = ({ path, idx, formikBag, locked }) => {
+const PartnerForm = ({ path, idx, formikBag, locked, sisteSivilstandForrigePartner = {} }) => {
 	const basePath = `${path}[${idx}]`
 	const erSistePartner = _get(formikBag.values, path).length === idx + 1
 	return (
@@ -136,6 +143,7 @@ const PartnerForm = ({ path, idx, formikBag, locked }) => {
 				basePath={`${basePath}.sivilstander`}
 				locked={locked}
 				erSistePartner={erSistePartner}
+				sisteSivilstand={sisteSivilstandForrigePartner}
 			/>
 		</>
 	)

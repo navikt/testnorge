@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
 import _get from 'lodash/get'
-import _has from 'lodash/has'
 import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'
@@ -29,7 +28,7 @@ export const Familierelasjoner = ({ formikBag }) => {
 				startOpen={() => erForste(formikBag.values, [relasjonerAttributt])}
 			>
 				<Kategori title="Partnere" vis="tpsf.relasjoner.partnere">
-					{_has(opts, 'personFoerLeggTil') ? (
+					{opts.hasOwnProperty('personFoerLeggTil') ? (
 						<LeggTilPaaPartnere formikBag={formikBag} personFoerLeggTil={opts.personFoerLeggTil} />
 					) : (
 						<Partnere formikBag={formikBag} />
