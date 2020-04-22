@@ -6,7 +6,7 @@ Arbeidsforholdene til inntektsmeldingene blir validert mot Aareg i miljø.
 
 ## Dokumentasjon
 ### Swagger
-Swagger finnes under [/api](https://testnorge-spion.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-inntekt.nais.preprod.local/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 
