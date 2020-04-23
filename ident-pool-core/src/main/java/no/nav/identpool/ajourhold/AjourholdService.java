@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -98,7 +97,7 @@ public class AjourholdService {
                 LEDIG);
         boolean isCritical = count < antallPerDag * days;
         if (year > 2018 && type == Identtype.FNR) {
-            log.info("criticalForYear: year:{}, isCritical:{}, count:{}, antallPerDag:{}, days:{}", year, isCritical, count, antallPerDag, days);
+            log.info("criticalForYear: year:{}, isCritical:{}, count:{}, antallPerDag:{}, days:{}, totaltDetteÅret: {}000000", year, isCritical, count, antallPerDag, days, antallPerDag * days);
         }
         return isCritical;
     }
@@ -124,7 +123,7 @@ public class AjourholdService {
 
         Map<LocalDate, List<String>> pinMap = identGeneratorService.genererIdenterMap(firstDate, lastDate, type);
 
-        filterIdents(antallPerDag, pinMap, Math.toIntExact(ChronoUnit.DAYS.between(firstDate, lastDate) * antallPerDag));
+        filterIdents(antallPerDag, pinMap);
     }
 
     private int adjustForYear(
@@ -132,22 +131,22 @@ public class AjourholdService {
             int antallPerDag
     ) {
         if (antallPerDag < MIN_ANTALL_IDENTER_PER_DAG) {
+            antallPerDag = MIN_ANTALL_IDENTER_PER_DAG;
+        }
+        if (antallPerDag < MIN_ANTALL_IDENTER_PER_DAG_SENERE_AAR) {
             LocalDate dateOfYear = LocalDate.of(year, 1, 1);
             if (dateOfYear.isBefore(LocalDate.now()) && ChronoUnit.YEARS.between(dateOfYear, LocalDate.now()) <= 3) {
                 log.info("Genererer flere identer per dag for år {}", year);
                 return MIN_ANTALL_IDENTER_PER_DAG_SENERE_AAR;
             }
-            return MIN_ANTALL_IDENTER_PER_DAG;
         }
         return antallPerDag;
     }
 
     private void filterIdents(
             int antallPerDag,
-            Map<LocalDate, List<String>> pinMap,
-            int totaltAntallIdenter
+            Map<LocalDate, List<String>> pinMap
     ) {
-        log.info("filterIdents: Opprettet {} identer", totaltAntallIdenter);
         List<String> identsNotInDatabase = filterAgainstDatabase(antallPerDag, pinMap);
         Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase, new ArrayList<>());
 
@@ -164,11 +163,6 @@ public class AjourholdService {
                 .map(TpsStatus::getIdent)
                 .collect(Collectors.toList());
 
-        if (ledig.size() > totaltAntallIdenter) {
-            log.info("filterIdents: lager subliste");
-            Collections.shuffle(ledig);
-            ledig = ledig.subList(0, totaltAntallIdenter);
-        }
         newIdentCount += ledig.size();
         saveIdents(ledig, LEDIG, null);
     }
