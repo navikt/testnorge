@@ -169,6 +169,34 @@ const testTelefonnummer = nr =>
 		.required(messages.required)
 		.matches(/^[1-9][0-9]*$/, 'Telefonnummer må være numerisk, og kan ikke starte med 0')
 
+const foedtFoerOgEtterTest = (validation, validerFoedtFoer) => {
+	const errorMsgFoedtFoer = 'Født Før dato kan ikke være før Født Etter dato.'
+	const errorMsgFoedtEtter = 'Født Etter dato kan ikke være etter Født Før dato.'
+	return validation.test(
+		'range',
+		validerFoedtFoer ? errorMsgFoedtFoer : errorMsgFoedtEtter,
+		function isWithinTest(val) {
+			if (!val) return true
+
+			const values = this.options.context
+
+			const foedtEtterValue = _get(values, 'tpsf.foedtEtter')
+			const foedtFoerValue = _get(values, 'tpsf.foedtFoer')
+
+			if (validerFoedtFoer) {
+				if (foedtEtterValue !== '') {
+					if(new Date(val) < new Date(foedtEtterValue))return false
+				}
+			} else {
+				if (foedtFoerValue !== '') {
+					if(new Date(val) > new Date(foedtFoerValue)) return false
+				}
+			}
+			return true
+		}
+	)
+}
+
 export const validation = {
 	tpsf: ifPresent(
 		'$tpsf',
@@ -177,8 +205,8 @@ export const validation = {
 				.min(0, 'Alder må være et positivt tall')
 				.max(119, 'Alder må være under 120')
 				.typeError(messages.required),
-			foedtEtter: Yup.date().nullable(),
-			foedtFoer: Yup.date().nullable(),
+			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(),false),
+			foedtFoer: foedtFoerOgEtterTest(Yup.date().nullable(), true),
 			doedsdato: Yup.date().nullable(),
 			kjonn: ifPresent('$tpsf.kjonn', requiredString),
 			statsborgerskap: ifPresent('$tpsf.statsborgerskap', requiredString),
