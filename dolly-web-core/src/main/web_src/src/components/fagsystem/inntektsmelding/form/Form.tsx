@@ -28,7 +28,7 @@ interface InntektsmeldingForm {
 	formikBag: FormikProps<{}>
 }
 
-const initialValues = {
+export const initialValues = {
 	aarsakTilInnsending: '',
 	arbeidsgiver: {
 		virksomhetsnummer: ''
