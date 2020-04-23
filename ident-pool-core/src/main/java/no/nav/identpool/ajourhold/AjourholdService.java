@@ -95,7 +95,11 @@ public class AjourholdService {
                 LocalDate.of(year + 1, 1, 1),
                 type,
                 LEDIG);
-        return count < antallPerDag * days;
+        boolean isCritical = count < antallPerDag * days;
+        if (year > 2018) {
+            log.info("criticalForYear: year:{}, isCritical:{}, count:{}, antallPerDag:{}, days:{}", year, isCritical, count, antallPerDag, days);
+        }
+        return isCritical;
     }
 
     void generateForYear(
