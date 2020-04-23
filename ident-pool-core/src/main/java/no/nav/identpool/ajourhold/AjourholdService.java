@@ -89,7 +89,7 @@ public class AjourholdService {
     ) {
         int antallPerDag = IdentDistribusjonUtil.antallPersonerPerDagPerAar(year);
         antallPerDag = adjustForYear(year, antallPerDag);
-        int days = (year == current.getYear() ? 365 - current.getDayOfYear() : 365);
+        int days = (year == current.getYear() ? 365 - (365 - current.getDayOfYear()) : 365);
         long count = identRepository.countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatus(
                 LocalDate.of(year, 1, 1),
                 LocalDate.of(year + 1, 1, 1),
