@@ -97,6 +97,42 @@ export const sivilstander = Yup.array().of(
 	})
 )
 
+const foedtFoerOgEtterTest = (validation, validerFoedtFoer) => {
+	const errorMsgFoedtFoer =
+		'Født Før dato kan ikke være før Født Etter dato og det må være minst en dag mellom datoene.'
+	const errorMsgFoedtEtter =
+		'Født Etter dato kan ikke være etter Født Før dato og det må være minst en dag mellom datoene.'
+	return validation.test(
+		'range',
+		validerFoedtFoer ? errorMsgFoedtFoer : errorMsgFoedtEtter,
+		function isWithinTest(val) {
+			if (!val) return true
+
+			const values = this.options.context
+			const path = this.path.substring(0, this.path.lastIndexOf('.'))
+
+			let selectedDato = new Date(new Date(val).toDateString())
+			const foedtEtterValue = _get(values, `${path}.foedtEtter`)
+			const foedtFoerValue = _get(values, `${path}.foedtFoer`)
+
+			if (validerFoedtFoer) {
+				if (foedtEtterValue !== '' && foedtEtterValue !== undefined) {
+					const foedtEtterDato = new Date(foedtEtterValue)
+					foedtEtterDato.setDate(foedtEtterDato.getDate() + 1)
+					if (selectedDato <= new Date(foedtEtterDato.toDateString())) return false
+				}
+			} else {
+				if (foedtFoerValue !== '' && foedtFoerValue !== undefined) {
+					let foedtFoerDato = new Date(foedtFoerValue)
+					foedtFoerDato.setDate(foedtFoerDato.getDate() - 1)
+					if (selectedDato >= new Date(foedtFoerDato.toDateString())) return false
+				}
+			}
+			return true
+		}
+	)
+}
+
 const partnere = Yup.array()
 	.of(
 		Yup.object({
@@ -106,8 +142,8 @@ const partnere = Yup.array()
 				.transform(num => (isNaN(num) ? undefined : num))
 				.min(0, 'Alder må være et positivt tall')
 				.max(119, 'Alder må være under 120'),
-			foedtEtter: Yup.date().nullable(),
-			foedtFoer: Yup.date().nullable(),
+			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(),false),
+			foedtFoer: foedtFoerOgEtterTest(Yup.date().nullable(), true),
 			spesreg: Yup.string()
 				.when('utenFastBopel', {
 					is: true,
@@ -141,6 +177,8 @@ const barn = Yup.array()
 				.transform(num => (isNaN(num) ? undefined : num))
 				.min(0, 'Alder må være et positivt tall')
 				.max(119, 'Alder må være under 120'),
+			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(),false),
+			foedtFoer: foedtFoerOgEtterTest(Yup.date().nullable(), true),
 			spesreg: Yup.string()
 				.when('utenFastBopel', {
 					is: true,
@@ -168,34 +206,6 @@ const testTelefonnummer = nr =>
 		})
 		.required(messages.required)
 		.matches(/^[1-9][0-9]*$/, 'Telefonnummer må være numerisk, og kan ikke starte med 0')
-
-const foedtFoerOgEtterTest = (validation, validerFoedtFoer) => {
-	const errorMsgFoedtFoer = 'Født Før dato kan ikke være før Født Etter dato.'
-	const errorMsgFoedtEtter = 'Født Etter dato kan ikke være etter Født Før dato.'
-	return validation.test(
-		'range',
-		validerFoedtFoer ? errorMsgFoedtFoer : errorMsgFoedtEtter,
-		function isWithinTest(val) {
-			if (!val) return true
-
-			const values = this.options.context
-
-			const foedtEtterValue = _get(values, 'tpsf.foedtEtter')
-			const foedtFoerValue = _get(values, 'tpsf.foedtFoer')
-
-			if (validerFoedtFoer) {
-				if (foedtEtterValue !== '') {
-					if(new Date(val) < new Date(foedtEtterValue))return false
-				}
-			} else {
-				if (foedtFoerValue !== '') {
-					if(new Date(val) > new Date(foedtFoerValue)) return false
-				}
-			}
-			return true
-		}
-	)
-}
 
 export const validation = {
 	tpsf: ifPresent(
