@@ -15,7 +15,7 @@ export const InntektstubVisning = ({ data, loading }) => {
 	return (
 		<div>
 			<SubOverskrift label="A-ordningen (Inntektskomponenten)" iconKind="inntektstub" />
-			<DollyFieldArray header="Inntektsinformasjon" data={data} expandable>
+			<DollyFieldArray header="Inntektsinformasjon" data={data} expandable={data.length > 1}>
 				{(id, idx) => (
 					<React.Fragment>
 						<div className="person-visning_content">

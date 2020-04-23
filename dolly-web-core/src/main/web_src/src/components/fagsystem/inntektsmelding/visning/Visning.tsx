@@ -47,7 +47,7 @@ export const InntektsmeldingVisning = ({ data, ident }: InntektsmeldingVisning) 
 }
 
 const EnkelInntektsmeldingVisning = ({ data, ident }: EnkelInntektsmelding) => (
-	<DollyFieldArray header="Inntekt" data={data}>
+	<DollyFieldArray header="Inntekt" data={data} expandable={data.length > 1}>
 		{(inntekt: Inntekter, idx: number) => (
 			<>
 				<div className="person-visning_content" key={idx}>

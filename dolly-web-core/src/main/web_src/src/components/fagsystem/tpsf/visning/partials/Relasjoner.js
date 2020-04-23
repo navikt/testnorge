@@ -37,11 +37,11 @@ export const Relasjoner = ({ relasjoner }) => {
 	return (
 		<React.Fragment>
 			<SubOverskrift label="Familierelasjoner" iconKind="relasjoner" />
-			<DollyFieldArray data={partnere} header="Partner">
+			<DollyFieldArray data={partnere} header="Partner" expandable={partnere.length > 1}>
 				{(partner, idx) => <Partner key={idx} data={partner.personRelasjonMed} />}
 			</DollyFieldArray>
 
-			<DollyFieldArray data={barn} header="Barn">
+			<DollyFieldArray data={barn} header="Barn" expandable={barn.length > 1}>
 				{(barnet, idx) => (
 					<Barn key={idx} data={barnet.personRelasjonMed} type={barnet.relasjonTypeNavn} />
 				)}
