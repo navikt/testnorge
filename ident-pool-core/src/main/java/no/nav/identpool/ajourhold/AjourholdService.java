@@ -147,6 +147,7 @@ public class AjourholdService {
             Map<LocalDate, List<String>> pinMap,
             int totaltAntallIdenter
     ) {
+        log.info("filterIdents: Opprettet {} identer", totaltAntallIdenter);
         List<String> identsNotInDatabase = filterAgainstDatabase(antallPerDag, pinMap);
         Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase, new ArrayList<>());
 
@@ -164,6 +165,7 @@ public class AjourholdService {
                 .collect(Collectors.toList());
 
         if (ledig.size() > totaltAntallIdenter) {
+            log.info("filterIdents: lager subliste");
             Collections.shuffle(ledig);
             ledig = ledig.subList(0, totaltAntallIdenter);
         }
