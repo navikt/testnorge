@@ -1,9 +1,19 @@
 import React, { useState } from 'react'
 import ExpandButton from '~/components/ui/button/ExpandButton'
 
-const Numbering = ({ idx }) => <span className="dfa-blokk-number">{idx + 1}</span>
+type Numbering = {
+	idx: number
+}
 
-export default function DollyExpandableBlokk({ header, idx, children }) {
+interface ExpandableBlokk {
+	header: string
+	idx: number
+	children: any
+}
+
+const Numbering = ({ idx }: Numbering) => <span className="dfa-blokk-number">{idx + 1}</span>
+
+export default function ExpandableBlokk({ header, idx, children }: ExpandableBlokk) {
 	const [isExpanded, setIsExpanded] = useState(false)
 
 	return (
