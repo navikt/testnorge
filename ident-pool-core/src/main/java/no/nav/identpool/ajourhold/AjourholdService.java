@@ -123,6 +123,7 @@ public class AjourholdService {
             int year,
             int antallPerDag
     ) {
+        log.info("adjustForYear: year: {}. antallPerDag: {}", year, antallPerDag);
         if (antallPerDag < MIN_ANTALL_IDENTER_PER_DAG) {
             LocalDate dateOfYear = LocalDate.of(year, 1, 1);
             if (dateOfYear.isBefore(LocalDate.now()) && ChronoUnit.YEARS.between(dateOfYear, LocalDate.now()) <= 3) {
