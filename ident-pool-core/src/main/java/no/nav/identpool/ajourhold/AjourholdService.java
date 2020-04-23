@@ -113,7 +113,9 @@ public class AjourholdService {
         if (lastDate.isEqual(firstDate)) {
             lastDate = lastDate.plusDays(1);
         }
-        log.info("generateForYear: firstDate: {}, lastDate:{}", firstDate.toString(), lastDate.toString());
+        if (year > 2018) {
+            log.info("generateForYear: firstDate: {}, lastDate:{}", firstDate.toString(), lastDate.toString());
+        }
 
         Map<LocalDate, List<String>> pinMap = identGeneratorService.genererIdenterMap(firstDate, lastDate, type);
 
