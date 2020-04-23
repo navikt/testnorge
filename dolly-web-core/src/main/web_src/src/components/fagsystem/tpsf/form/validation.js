@@ -11,8 +11,12 @@ const boadresse = Yup.object({
 		ifKeyHasValue(
 			'$tpsf.adresseNrInfo',
 			[null],
-			Yup.string().required(
-				'Bruk adressevelgeren over for å hente gyldige adresser og velge et av forslagene'
+			ifKeyHasValue(
+				'$tpsf.utenFastBopel',
+				[!true],
+				Yup.string().required(
+					'Bruk adressevelgeren over for å hente gyldige adresser og velge et av forslagene'
+				)
 			)
 		)
 	),

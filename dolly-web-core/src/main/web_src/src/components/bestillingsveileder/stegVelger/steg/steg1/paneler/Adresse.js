@@ -1,5 +1,6 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
+import { boadressePaths } from '~/components/fagsystem/tpsf/form/adresser/Adresser'
 import { Attributt, AttributtKategori } from '../Attributt'
 
 export const AdressePanel = ({ stateModifier }) => {
@@ -28,7 +29,7 @@ AdressePanel.heading = 'Adresser'
 AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 	boadresse: {
 		label: 'Har boadresse',
-		checked: has('tpsf.boadresse.flyttedato'),
+		checked: boadressePaths.some(path => has(path)),
 		add() {
 			setMulti(['tpsf.boadresse', { flyttedato: null }], ['tpsf.adresseNrInfo', null])
 		},
