@@ -37,14 +37,14 @@ public class AltinnInntektController {
     @PostMapping(value = "/enkeltident")
     public ResponseEntity<?> genererMeldingForIdent(
             @RequestBody AltinnDollyRequest dollyRequest,
-            @RequestParam(value = "validerOrgnr", required = false) Boolean validerOrgnr,
+            @RequestParam(value = "valider", required = false) Boolean valider,
             @RequestParam(value = "includeXml", required = false) Boolean includeXml,
             @RequestParam(value = "continueOnError", defaultValue = "false") Boolean continueOnError
     ) throws ValidationException {
         try {
             var altinnInntektResponse = new AltinnInntektResponse(
                     dollyRequest.getArbeidstakerFnr(),
-                    altinnInntektService.lagAltinnMeldinger(dollyRequest, continueOnError,validerOrgnr),
+                    altinnInntektService.lagAltinnMeldinger(dollyRequest, continueOnError,valider),
                     includeXml != null && includeXml
             );
             return ResponseEntity.ok(altinnInntektResponse);

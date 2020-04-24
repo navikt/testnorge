@@ -59,9 +59,9 @@ public class AltinnInntektService {
     public List<ProsessertInntektDokument> lagAltinnMeldinger(
             AltinnDollyRequest dollyRequest,
             Boolean continueOnError,
-            Boolean validerOrgnr
+            Boolean valider
     ) throws ValidationException {
-        var inntektDokuments = validerOrgnr ?
+        var inntektDokuments = valider != null && valider ?
                 lagInntektDokumenter(dollyRequest, continueOnError) :
                 lagInntektDokumenter(dollyRequest);
 
