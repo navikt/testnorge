@@ -1,4 +1,4 @@
-name: Deploy to preprod-fss
+name: Deploy to namespace u
 
 on:
   push:
