@@ -165,7 +165,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({
 	},
 	spesreg: {
 		label: 'Diskresjonskode',
-		checked: has('tpsf.spesreg'),
+		checked: has('tpsf.spesreg') || has('tpsf.utenFastBopel'),
 		add() {
 			setMulti(['tpsf.spesreg', ''], ['tpsf.utenFastBopel', false])
 		},
