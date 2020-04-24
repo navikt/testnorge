@@ -78,13 +78,18 @@ public class AjourholdService {
     ) {
         int maxRuns = 3;
         int runs = 0;
-        while (runs < maxRuns && criticalForYear(date.getYear(), type)) {
-            generateForYear(date.getYear(), type);
+        while (runs < maxRuns) {
+            int numberOfMissingIdents = getNumberOfMissingIdents(date.getYear(), type);
+            if (numberOfMissingIdents > 0) {
+                generateForYear(date.getYear(), type, numberOfMissingIdents);
+            } else {
+                break;
+            }
             runs++;
         }
     }
 
-    private boolean criticalForYear(
+    private int getNumberOfMissingIdents(
             int year,
             Identtype type
     ) {
@@ -96,16 +101,19 @@ public class AjourholdService {
                 LocalDate.of(year + 1, 1, 1),
                 type,
                 LEDIG);
+        int numberOfMissingIdents = Math.toIntExact((antallPerDag * days) - count);
         boolean isCritical = count < antallPerDag * days;
         if (year > 2018 && type == Identtype.FNR) {
-            log.info("criticalForYear: year:{}, isCritical:{}, count:{}, antallPerDag:{}, days:{}, totaltDetteÅret: {}", year, isCritical, count, antallPerDag, days, antallPerDag * days);
+            log.info("getNumberOfMissingIdents: year:{}, isCritical:{}, count:{}, antallPerDag:{}, days:{}, totaltDetteÅret: {}, missingIdents: {}", year, isCritical, count, antallPerDag, days, antallPerDag * days,
+                    numberOfMissingIdents);
         }
-        return isCritical;
+        return numberOfMissingIdents;
     }
 
     void generateForYear(
             int year,
-            Identtype type
+            Identtype type,
+            int numberOfIdents
     ) {
         int antallPerDag = IdentDistribusjonUtil.antallPersonerPerDagPerAar(year + 1) * 2;
         antallPerDag = adjustForYear(year, antallPerDag);
@@ -118,13 +126,13 @@ public class AjourholdService {
         if (lastDate.isEqual(firstDate)) {
             lastDate = lastDate.plusDays(1);
         }
-        if (year > 2018) {
+        if (year > 2018 && type == Identtype.FNR) {
             log.info("generateForYear: firstDate: {}, lastDate:{}, antallPerDag: {}", firstDate.toString(), lastDate.toString(), antallPerDag);
         }
 
         Map<LocalDate, List<String>> pinMap = identGeneratorService.genererIdenterMap(firstDate, lastDate, type);
 
-        filterIdents(antallPerDag, pinMap, Math.toIntExact(ChronoUnit.DAYS.between(firstDate, lastDate) * antallPerDag));
+        filterIdents(antallPerDag, pinMap, numberOfIdents);
     }
 
     private int adjustForYear(
@@ -145,12 +153,12 @@ public class AjourholdService {
     }
 
     private void filterIdents(
-            int antallPerDag,
+            int identsPerDay,
             Map<LocalDate, List<String>> pinMap,
-            int totaltAntallIdenter
+            int numberOfIdents
     ) {
-        log.info("filterIdents: antallPerDag: {}, totaltAntallIdenter: {}", antallPerDag, totaltAntallIdenter);
-        List<String> identsNotInDatabase = filterAgainstDatabase(antallPerDag, pinMap);
+        log.info("filterIdents: antallPerDag: {}, totaltAntallIdenter: {}", identsPerDay, numberOfIdents);
+        List<String> identsNotInDatabase = filterAgainstDatabase(identsPerDay, pinMap);
         Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase, new ArrayList<>());
 
         List<String> rekvirert = tpsStatuses.stream()
@@ -166,10 +174,10 @@ public class AjourholdService {
                 .map(TpsStatus::getIdent)
                 .collect(Collectors.toList());
 
-        if (ledig.size() > totaltAntallIdenter) {
-            log.info("Size of ledig({}) is bigger than totaltAntallIdenter({})", ledig.size(), totaltAntallIdenter);
+        if (ledig.size() > numberOfIdents) {
+            log.info("Size of ledig({}) is bigger than totaltAntallIdenter({})", ledig.size(), numberOfIdents);
             Collections.shuffle(ledig);
-            ledig = ledig.subList(0, totaltAntallIdenter);
+            ledig = ledig.subList(0, numberOfIdents);
         }
 
         newIdentCount += ledig.size();

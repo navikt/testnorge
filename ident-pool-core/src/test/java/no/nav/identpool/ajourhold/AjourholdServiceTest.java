@@ -72,9 +72,9 @@ class AjourholdServiceTest {
 
     @Test
     void identerBlirGenerertForHvertAar() {
-        doNothing().when(ajourholdService).generateForYear(anyInt(), eq(Identtype.FNR));
-        doNothing().when(ajourholdService).generateForYear(anyInt(), eq(Identtype.DNR));
-        doNothing().when(ajourholdService).generateForYear(anyInt(), eq(Identtype.BOST));
+        doNothing().when(ajourholdService).generateForYear(anyInt(), eq(Identtype.FNR), anyInt());
+        doNothing().when(ajourholdService).generateForYear(anyInt(), eq(Identtype.DNR), anyInt());
+        doNothing().when(ajourholdService).generateForYear(anyInt(), eq(Identtype.BOST), anyInt());
         ajourholdService.checkCriticalAndGenerate();
         int number = 112;
         if (LocalDate.now().getDayOfYear() == 1) {
@@ -91,7 +91,7 @@ class AjourholdServiceTest {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatus(p, false)).collect(Collectors.toSet());
         });
-        ajourholdService.generateForYear(1941, Identtype.FNR);
+        ajourholdService.generateForYear(1941, Identtype.FNR, 365 * 4);
         verify(identRepository, times(2)).saveAll(anyIterable());
         assertThat(entities.size(), is(365 * 4));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.FNR)));
@@ -105,7 +105,7 @@ class AjourholdServiceTest {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
         });
-        ajourholdService.generateForYear(1941, Identtype.DNR);
+        ajourholdService.generateForYear(1941, Identtype.DNR, 0);
         verify(identRepository, times(2)).saveAll(anyIterable());
         assertThat(entities.size(), is(365 * 4));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.DNR)));
@@ -119,7 +119,7 @@ class AjourholdServiceTest {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
         });
-        ajourholdService.generateForYear(1941, Identtype.BOST);
+        ajourholdService.generateForYear(1941, Identtype.BOST, 0);
         verify(identRepository, times(2)).saveAll(anyIterable());
         assertThat(entities.size(), is(365 * 4));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.BOST)));
@@ -135,7 +135,7 @@ class AjourholdServiceTest {
         });
         LocalDate dayOfYear = LocalDate.of(1941, 4, 10);
         ajourholdService.current = dayOfYear;
-        ajourholdService.generateForYear(1941, Identtype.DNR);
+        ajourholdService.generateForYear(1941, Identtype.DNR, 0);
         verify(identRepository, times(2)).saveAll(anyIterable());
         assertThat(entities.size(), is(dayOfYear.minusDays(1).getDayOfYear() * 4));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.DNR)));
@@ -151,7 +151,7 @@ class AjourholdServiceTest {
         });
         LocalDate dayOfYear = LocalDate.of(1941, 4, 10);
         ajourholdService.current = dayOfYear;
-        ajourholdService.generateForYear(1941, Identtype.BOST);
+        ajourholdService.generateForYear(1941, Identtype.BOST, 0);
         verify(identRepository, times(2)).saveAll(anyIterable());
         assertThat(entities.size(), is(dayOfYear.minusDays(1).getDayOfYear() * 4));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.BOST)));
