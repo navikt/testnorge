@@ -61,7 +61,7 @@ public class AltinnInntektService {
             Boolean continueOnError,
             Boolean valider
     ) throws ValidationException {
-        var inntektDokuments = valider != null && valider ?
+        var inntektDokuments = valider == null || valider ?
                 lagInntektDokumenter(dollyRequest, continueOnError) :
                 lagInntektDokumenter(dollyRequest);
 
