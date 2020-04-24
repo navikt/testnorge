@@ -17,7 +17,14 @@ import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.OppdaterArbeidsforholdArbeidsforholdIkkeFunnet;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.OppdaterArbeidsforholdSikkerhetsbegrensning;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.OppdaterArbeidsforholdUgyldigInput;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.OpprettArbeidsforholdSikkerhetsbegrensning;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.OpprettArbeidsforholdUgyldigInput;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Arbeidsforhold;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.meldinger.OppdaterArbeidsforholdRequest;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.meldinger.OpprettArbeidsforholdRequest;
 
 @Slf4j
 @Component
