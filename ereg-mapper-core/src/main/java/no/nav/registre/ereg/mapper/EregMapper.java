@@ -111,6 +111,11 @@ public class EregMapper {
             units++;
         }
 
+        if (units == 0) {
+            log.warn("Ingen units aa legge inn i EREG");
+            return null;
+        }
+
         eregFile.append(createTrailer(units, totalRecords));
 
         return eregFile.toString();
@@ -119,7 +124,7 @@ public class EregMapper {
     private RecordsAndCount createUnit(EregDataRequest data) {
         int numRecords = 0;
         StringBuilder file;
-        if ("E".equals(data.getEndringsType())) {
+        if ("E" .equals(data.getEndringsType())) {
             file = new StringBuilder(createENH(data.getOrgnr(), data.getEnhetstype(), "E"));
         } else {
             file = new StringBuilder(createENH(data.getOrgnr(), data.getEnhetstype(), "N"));
@@ -347,7 +352,7 @@ public class EregMapper {
 
         String undersakstype = endringsType.equals("E") ? "EN" : "NY";
 
-        stringBuilder.replace(0, "ENH".length(), "ENH")
+        stringBuilder.replace(0, "ENH" .length(), "ENH")
                 .replace(4, 4 + orgId.length(), orgId)
                 .replace(13, 13 + unitType.length(), unitType)
                 .replace(17, 18, endringsType)

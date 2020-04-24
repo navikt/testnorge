@@ -20,7 +20,7 @@ public class EregConsumer {
 
     private final RestTemplate restTemplate;
 
-    @Value("${EREG_API_URL}")
+    @Value("${ereg.api.url}")
     private String eregApiUrl;
 
     public boolean checkExists(
