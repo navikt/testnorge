@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -118,12 +119,12 @@ public class AjourholdService {
             lastDate = lastDate.plusDays(1);
         }
         if (year > 2018) {
-            log.info("generateForYear: firstDate: {}, lastDate:{}", firstDate.toString(), lastDate.toString());
+            log.info("generateForYear: firstDate: {}, lastDate:{}, antallPerDag: {}", firstDate.toString(), lastDate.toString(), antallPerDag);
         }
 
         Map<LocalDate, List<String>> pinMap = identGeneratorService.genererIdenterMap(firstDate, lastDate, type);
 
-        filterIdents(antallPerDag, pinMap);
+        filterIdents(antallPerDag, pinMap, Math.toIntExact(ChronoUnit.DAYS.between(firstDate, lastDate) * antallPerDag));
     }
 
     private int adjustForYear(
@@ -145,8 +146,10 @@ public class AjourholdService {
 
     private void filterIdents(
             int antallPerDag,
-            Map<LocalDate, List<String>> pinMap
+            Map<LocalDate, List<String>> pinMap,
+            int totaltAntallIdenter
     ) {
+        log.info("filterIdents: antallPerDag: {}, totaltAntallIdenter: {}", antallPerDag, totaltAntallIdenter);
         List<String> identsNotInDatabase = filterAgainstDatabase(antallPerDag, pinMap);
         Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase, new ArrayList<>());
 
@@ -162,6 +165,12 @@ public class AjourholdService {
                 .filter(i -> !i.isInUse())
                 .map(TpsStatus::getIdent)
                 .collect(Collectors.toList());
+
+        if (ledig.size() > totaltAntallIdenter) {
+            log.info("Size of ledig({}) is bigger than totaltAntallIdenter({})", ledig.size(), totaltAntallIdenter);
+            Collections.shuffle(ledig);
+            ledig = ledig.subList(0, totaltAntallIdenter);
+        }
 
         newIdentCount += ledig.size();
         saveIdents(ledig, LEDIG, null);
