@@ -13,21 +13,21 @@ import no.nav.registre.aareg.domain.RsOrganisasjon;
 import no.nav.registre.aareg.domain.RsPermisjon;
 import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.domain.RsUtenlandsopphold;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsavtale;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforholdstyper;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidstidsordninger;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Avloenningstyper;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Kodeverdi;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Landkoder;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.NorskIdent;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Organisasjon;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Permisjon;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.PermisjonsOgPermitteringsBeskrivelse;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Person;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Personidenter;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Utenlandsopphold;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Yrker;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Arbeidsavtale;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Arbeidsforhold;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Arbeidsforholdstyper;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Arbeidstidsordninger;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Avloenningstyper;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Kodeverdi;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Landkoder;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.NorskIdent;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Organisasjon;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Permisjon;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.PermisjonsOgPermitteringsBeskrivelse;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Person;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Personidenter;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Utenlandsopphold;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Yrker;
 
 @Component
 public class AaregMappingStrategy implements MappingStrategy {

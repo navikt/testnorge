@@ -64,7 +64,7 @@
             <dependency>
                 <groupId>no.nav.registre</groupId>
                 <artifactId>testnorge-consumers</artifactId>
-                <version>1.11.3-RELEASE</version>
+                <version>1.11.5-RELEASE</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -15,7 +15,7 @@ import java.util.Map;
 import no.nav.registre.aareg.cxf.TimeoutFeature;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.security.sts.StsSamlTokenService;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.BehandleArbeidsforholdPortType;
 
 @Component
 @RequiredArgsConstructor
@@ -55,7 +55,10 @@ public class BehandleArbeidsforholdV1Proxy {
         return isNull(expiry) || LocalDateTime.now().isAfter(expiry);
     }
 
-    private BehandleArbeidsforholdPortType createBehandleArbeidsforholdPortType(String env, String url) {
+    private BehandleArbeidsforholdPortType createBehandleArbeidsforholdPortType(
+            String env,
+            String url
+    ) {
         var factoryBean = new JaxWsProxyFactoryBean();
         factoryBean.setWsdlURL(WSDL_URL);
         factoryBean.setServiceName(BEHANDLE_ARBEIDSFORHOLD_V1);

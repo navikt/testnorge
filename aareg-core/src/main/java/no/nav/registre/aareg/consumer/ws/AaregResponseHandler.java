@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.feil.ForretningsmessigUnntak;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.feil.ForretningsmessigUnntak;
 
 @Slf4j final class AaregResponseHandler {
 
