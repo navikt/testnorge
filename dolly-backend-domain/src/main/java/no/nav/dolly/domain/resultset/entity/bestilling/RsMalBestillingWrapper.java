@@ -77,6 +77,6 @@ public class RsMalBestillingWrapper {
         private Arenadata arenaforvalter;
         private RsUdiPerson udistub;
         private RsInntektsmelding inntektsmelding;
-        private PensjonData pensjonData;
+        private PensjonData pensjonforvalter;
     }
 }
