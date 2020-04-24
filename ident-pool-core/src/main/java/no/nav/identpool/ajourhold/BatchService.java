@@ -19,13 +19,7 @@ public class BatchService {
     private final AjourholdRepository ajourholdRepository;
     private final AjourholdService ajourholdService;
 
-    private int waitCounter = 0;
-
     public void startGeneratingIdentsBatch() {
-        if (waitCounter > 0) {
-            waitCounter--;
-            return;
-        }
         Ajourhold entity = Ajourhold.builder()
                 .sistOppdatert(LocalDateTime.now())
                 .status(BatchStatus.STARTED)
@@ -48,7 +42,6 @@ public class BatchService {
                 ajourholdRepository.delete(ajourhold);
             }
         } catch (Exception e) {
-            waitCounter = 10;
             String exceptionString = ExceptionUtils.getFullStackTrace(e);
             if (exceptionString.length() > 1023) {
                 exceptionString = exceptionString.substring(0, 1023);

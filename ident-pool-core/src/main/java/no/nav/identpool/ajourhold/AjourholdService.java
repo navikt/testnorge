@@ -97,7 +97,7 @@ public class AjourholdService {
                 LEDIG);
         boolean isCritical = count < antallPerDag * days;
         if (year > 2018 && type == Identtype.FNR) {
-            log.info("criticalForYear: year:{}, isCritical:{}, count:{}, antallPerDag:{}, days:{}, totaltDetteÅret: {}000000", year, isCritical, count, antallPerDag, days, antallPerDag * days);
+            log.info("criticalForYear: year:{}, isCritical:{}, count:{}, antallPerDag:{}, days:{}, totaltDetteÅret: {}", year, isCritical, count, antallPerDag, days, antallPerDag * days);
         }
         return isCritical;
     }

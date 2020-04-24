@@ -36,13 +36,10 @@ class BatchServiceTest {
     @BeforeEach
     void init() {
         doAnswer((Answer<Void>) invocation -> {
-            Ajourhold ajourhold = (Ajourhold) invocation.getArguments()[0];
-            this.entity = ajourhold;
+            this.entity = (Ajourhold) invocation.getArguments()[0];
             return null;
         }).when(ajourholdRepository).update(any(Ajourhold.class));
         doNothing().when(ajourholdRepository).delete(any(Ajourhold.class));
-
-//        batchService = new BatchService(ajourholdRepository, ajourholdService);
     }
 
     @Test
@@ -61,7 +58,8 @@ class BatchServiceTest {
         assertThat(entity.getFeilmelding(), containsString(exception));
         Ajourhold prev = entity;
         batchService.startGeneratingIdentsBatch();
-        assertThat(prev, is(entity));
+        assertThat(prev.getIdentity(), is(entity.getIdentity()));
+        assertThat(prev.getStatus(), is(entity.getStatus()));
     }
 
     @Test
