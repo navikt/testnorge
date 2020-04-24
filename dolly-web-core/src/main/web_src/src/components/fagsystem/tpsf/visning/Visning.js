@@ -29,13 +29,22 @@ export const TpsfVisning = ({ data }) => {
  * verdier som er uinteressante for bruker
  */
 TpsfVisning.filterValues = (data, tpsfKriterier) => {
+	const siste = data.innvandretUtvandret.length - 1
+
 	// Fast bopel
 	if (!tpsfKriterier.utenFastBopel) data = _omit(data, 'utenFastBopel')
-
-	// Innvandret
-	if (!tpsfKriterier.innvandretFraLand) {
-		data = _omit(data, ['innvandretFraLand', 'innvandretFraLandFlyttedato'])
-	}
+	// Innvandret/ Utvandret
+	data.innvandretUtvandret.forEach((curr, idx) => {
+		if (data.innvandretUtvandret) {
+			if (idx === siste) {
+				data.innvandretUtvandret = _omit(data.innvandretUtvandret, idx)
+			}
+			var result = Object.keys(data.innvandretUtvandret).map(function(key) {
+				return [data.innvandretUtvandret[key]]
+			})
+			data.innvandretUtvandret = result.flat()
+		}
+	})
 
 	// Relasjoner
 	if (!_has(tpsfKriterier, 'relasjoner.partner.innvandretFraLand')) {
