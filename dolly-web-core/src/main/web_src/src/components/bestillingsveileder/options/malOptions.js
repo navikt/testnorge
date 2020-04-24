@@ -92,23 +92,26 @@ const getUpdatedPdlfData = pdlfData => {
 
 const getUpdatedTpsfData = tpsfData => {
 	const newTpsfData = Object.assign({}, tpsfData)
+	if(tpsfData.relasjoner){
+		if (tpsfData.relasjoner.partnere) {
+			console.log("test")
+			for (let i = 0; i < tpsfData.relasjoner.partnere.length; i++) {
+				newTpsfData.relasjoner.partnere[i] = updateData(
+					newTpsfData.relasjoner.partnere[i],
+					initialValues.partnere
+				)
+			}
+		}
+		if (tpsfData.relasjoner.barn) {
+			for (let i = 0; i < tpsfData.relasjoner.barn.length; i++) {
+				newTpsfData.relasjoner.barn[i] = updateData(
+					newTpsfData.relasjoner.barn[i],
+					initialValues.barn
+				)
+			}
+		}
+	}
 
-	if (tpsfData.relasjoner.partnere) {
-		for (let i = 0; i < tpsfData.relasjoner.partnere.length; i++) {
-			newTpsfData.relasjoner.partnere[i] = updateData(
-				newTpsfData.relasjoner.partnere[i],
-				initialValues.partnere
-			)
-		}
-	}
-	if (tpsfData.relasjoner.barn) {
-		for (let i = 0; i < tpsfData.relasjoner.barn.length; i++) {
-			newTpsfData.relasjoner.barn[i] = updateData(
-				newTpsfData.relasjoner.barn[i],
-				initialValues.barn
-			)
-		}
-	}
 
 	return newTpsfData
 }
