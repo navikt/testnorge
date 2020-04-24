@@ -20,6 +20,7 @@ import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
+import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
@@ -76,5 +77,6 @@ public class RsMalBestillingWrapper {
         private Arenadata arenaforvalter;
         private RsUdiPerson udistub;
         private RsInntektsmelding inntektsmelding;
+        private PensjonData pensjonData;
     }
 }
