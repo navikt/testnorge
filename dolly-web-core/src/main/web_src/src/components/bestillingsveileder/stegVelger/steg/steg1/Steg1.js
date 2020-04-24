@@ -36,8 +36,7 @@ export const Steg1 = ({ stateModifier }) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			{!opts.is.leggTil && <PersoninformasjonPanel stateModifier={stateModifier} />}
-
+			<PersoninformasjonPanel stateModifier={stateModifier} />
 			<AdressePanel stateModifier={stateModifier} />
 
 			{!opts.is.leggTil && (
