@@ -101,13 +101,7 @@ public class AjourholdService {
                 LocalDate.of(year + 1, 1, 1),
                 type,
                 LEDIG);
-        int numberOfMissingIdents = Math.toIntExact((antallPerDag * days) - count);
-        boolean isCritical = count < antallPerDag * days;
-        if (year > 2018 && type == Identtype.FNR) {
-            log.info("getNumberOfMissingIdents: year:{}, isCritical:{}, count:{}, antallPerDag:{}, days:{}, totaltDetteÅret: {}, missingIdents: {}", year, isCritical, count, antallPerDag, days, antallPerDag * days,
-                    numberOfMissingIdents);
-        }
-        return numberOfMissingIdents;
+        return Math.toIntExact((antallPerDag * days) - count);
     }
 
     void generateForYear(
@@ -126,9 +120,6 @@ public class AjourholdService {
         if (lastDate.isEqual(firstDate)) {
             lastDate = lastDate.plusDays(1);
         }
-        if (year > 2018 && type == Identtype.FNR) {
-            log.info("generateForYear: firstDate: {}, lastDate:{}, antallPerDag: {}", firstDate.toString(), lastDate.toString(), antallPerDag);
-        }
 
         Map<LocalDate, List<String>> pinMap = identGeneratorService.genererIdenterMap(firstDate, lastDate, type);
 
@@ -145,7 +136,6 @@ public class AjourholdService {
         if (antallPerDag < MIN_ANTALL_IDENTER_PER_DAG_SENERE_AAR) {
             LocalDate dateOfYear = LocalDate.of(year, 1, 1);
             if (dateOfYear.isBefore(LocalDate.now()) && ChronoUnit.YEARS.between(dateOfYear, LocalDate.now()) <= 3) {
-                log.info("Genererer flere identer per dag for år {}", year);
                 return MIN_ANTALL_IDENTER_PER_DAG_SENERE_AAR;
             }
         }
@@ -157,7 +147,6 @@ public class AjourholdService {
             Map<LocalDate, List<String>> pinMap,
             int numberOfIdents
     ) {
-        log.info("filterIdents: antallPerDag: {}, totaltAntallIdenter: {}", identsPerDay, numberOfIdents);
         List<String> identsNotInDatabase = filterAgainstDatabase(identsPerDay, pinMap);
         Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase, new ArrayList<>());
 
@@ -175,7 +164,6 @@ public class AjourholdService {
                 .collect(Collectors.toList());
 
         if (ledig.size() > numberOfIdents) {
-            log.info("Size of ledig({}) is bigger than totaltAntallIdenter({})", ledig.size(), numberOfIdents);
             Collections.shuffle(ledig);
             ledig = ledig.subList(0, numberOfIdents);
         }
