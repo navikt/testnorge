@@ -3,7 +3,6 @@ package no.nav.registre.inntekt.provider.rs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,13 +37,14 @@ public class AltinnInntektController {
     @PostMapping(value = "/enkeltident")
     public ResponseEntity<?> genererMeldingForIdent(
             @RequestBody AltinnDollyRequest dollyRequest,
+            @RequestParam(value = "validerOrgnr", required = false) Boolean validerOrgnr,
             @RequestParam(value = "includeXml", required = false) Boolean includeXml,
             @RequestParam(value = "continueOnError", defaultValue = "false") Boolean continueOnError
     ) throws ValidationException {
         try {
-            AltinnInntektResponse altinnInntektResponse = new AltinnInntektResponse(
+            var altinnInntektResponse = new AltinnInntektResponse(
                     dollyRequest.getArbeidstakerFnr(),
-                    altinnInntektService.lagAltinnMeldinger(dollyRequest, continueOnError),
+                    altinnInntektService.lagAltinnMeldinger(dollyRequest, continueOnError,validerOrgnr),
                     includeXml != null && includeXml
             );
             return ResponseEntity.ok(altinnInntektResponse);

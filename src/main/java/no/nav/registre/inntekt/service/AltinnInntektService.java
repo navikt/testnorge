@@ -56,25 +56,37 @@ public class AltinnInntektService {
         return Objects.isNull(altinnEnum) ? null : altinnEnum.getValue();
     }
 
-    public List<ProsessertInntektDokument> lagAltinnMeldinger(AltinnDollyRequest dollyRequest, Boolean continueOnError) throws ValidationException {
+    public List<ProsessertInntektDokument> lagAltinnMeldinger(
+            AltinnDollyRequest dollyRequest,
+            Boolean continueOnError,
+            Boolean validerOrgnr
+    ) throws ValidationException {
+        var inntektDokuments = validerOrgnr ?
+                lagInntektDokumenter(dollyRequest, continueOnError) :
+                lagInntektDokumenter(dollyRequest);
+
+        return dokmotConsumer.opprettJournalpost(dollyRequest.getMiljoe(), inntektDokuments);
+    }
+
+    private List<InntektDokument> lagInntektDokumenter(
+            AltinnDollyRequest dollyRequest,
+            Boolean continueOnError
+    ) throws ValidationException {
+
         var miljoe = dollyRequest.getMiljoe();
         var ident = dollyRequest.getArbeidstakerFnr();
         var inntekterAaOpprette = dollyRequest.getInntekter();
-        RsJoarkMetadata metadata = dollyRequest.getJoarkMetadata() != null
+        var metadata = dollyRequest.getJoarkMetadata() != null
                 ? dollyRequest.getJoarkMetadata()
                 : new RsJoarkMetadata();
+        var inntektDokumenter = new ArrayList<InntektDokument>(inntekterAaOpprette.size());
 
+        /////////// starter validering ////////////////
         var arbeidsforholdListe = aaregService.hentArbeidsforhold(ident, miljoe);
         if (arbeidsforholdListe == null || arbeidsforholdListe.isEmpty()) {
             log.error("Kunne ikke finne arbeidsforhold for ident");
             throw new ValidationException("Kunne ikke finne arbeidsforhold for ident " + ident);
         }
-
-        // TODO: Refaktorering -- dersom én av virksomhetsnumrene feiler, kutter alle. Beholder for MVP
-        var altinnInntektMeldinger = new ArrayList<String>(inntekterAaOpprette.size());
-
-
-        ArrayList<InntektDokument> inntektDokuments = new ArrayList<>();
 
         inntekterAaOpprette.forEach(inntekt -> {
             var virksomhetsnummer = inntekt.getArbeidsgiver().getVirksomhetsnummer();
@@ -90,8 +102,7 @@ public class AltinnInntektService {
 
             var request = lagAltinnInntektRequest(inntekt, nyesteArbeidsforhold, kontaktinformasjon, ident);
             var response = altinnInntektConsumer.getInntektsmeldingXml201812(request, continueOnError);
-            altinnInntektMeldinger.add(response);
-            inntektDokuments.add(
+            inntektDokumenter.add(
                     InntektDokument
                             .builder()
                             .arbeidstakerFnr(dollyRequest.getArbeidstakerFnr())
@@ -103,11 +114,71 @@ public class AltinnInntektService {
                             .build()
             );
         });
-        if(!continueOnError && (inntektDokuments.size()!=inntekterAaOpprette.size())){
+        if(!continueOnError && (inntektDokumenter.size()!=inntekterAaOpprette.size())){
             throw new ValidationException("Fant ikke nyeste arbeidsforhold for alle virksomhetsnummer");
         }
+        return inntektDokumenter;
+    }
 
-        return dokmotConsumer.opprettJournalpost(dollyRequest.getMiljoe(), inntektDokuments);
+    private List<InntektDokument> lagInntektDokumenter(AltinnDollyRequest dollyRequest) {
+        var ident = dollyRequest.getArbeidstakerFnr();
+        var inntekterAaOpprette = dollyRequest.getInntekter();
+        var metadata = dollyRequest.getJoarkMetadata() != null
+                ? dollyRequest.getJoarkMetadata()
+                : new RsJoarkMetadata();
+
+        var inntektDokumenter = new ArrayList<InntektDokument>(inntekterAaOpprette.size());
+
+        inntekterAaOpprette.forEach(inntekt -> {
+            try {
+                var rsInntektsmelding = lagAltinnInntektRequest(inntekt, ident);
+                var respons = altinnInntektConsumer.getInntektsmeldingXml201812(rsInntektsmelding, true);
+
+                inntektDokumenter.add(InntektDokument.builder()
+                        .arbeidstakerFnr(rsInntektsmelding.getArbeidstakerFnr())
+                        .metadata(metadata)
+                        .datoMottatt(Date.from(rsInntektsmelding.getAvsendersystem().getInnsendingstidspunkt().atZone(ZoneId.systemDefault()).toInstant()))
+                        .virksomhetsnavn(inntekt.getArbeidsgiver().getKontaktinformasjon().getKontaktinformasjonNavn())
+                        .virksomhetsnummer(inntekt.getArbeidsgiver().getVirksomhetsnummer())
+                        .xml(respons)
+                        .build());
+            } catch (ValidationException ignore) {}
+        });
+
+        return inntektDokumenter;
+    }
+
+    private RsInntektsmelding lagAltinnInntektRequest(
+            RsAltinnInntektInfo inntektInfo,
+            String ident
+    ) throws ValidationException {
+        var tmp = mapAltinnInntektInfoTilRsInntektsmelding(ident, inntektInfo);
+        if (inntektInfo.getArbeidsgiver() == null) {
+            throw new ValidationException("Må legge ved arbeidsgiver for å kunne opprette inntekt.");
+        }
+        if (inntektInfo.getArbeidsgiver().getKontaktinformasjon() == null) {
+            throw new ValidationException("Må legge ved kontaktinformasjon for arbeidsgiver.");
+        }
+        var arbeidsgiver = inntektInfo.getArbeidsgiver();
+        // TODO: Dette er en quick fix som bare sjekker lengde for å gi svar på Privat/Offentlig arbeidsgiver.
+        if (inntektInfo.getArbeidsgiver().getVirksomhetsnummer().length() > 9) {
+            tmp.arbeidsgiver(RsArbeidsgiver.builder()
+                    .kontaktinformasjon(RsKontaktinformasjon.builder()
+                            .telefonnummer(arbeidsgiver.getKontaktinformasjon().getTelefonnummer())
+                            .kontaktinformasjonNavn(arbeidsgiver.getKontaktinformasjon().getKontaktinformasjonNavn())
+                            .build())
+                    .virksomhetsnummer(arbeidsgiver.getVirksomhetsnummer())
+                    .build());
+        } else {
+            tmp.arbeidsgiverPrivat(RsArbeidsgiverPrivat.builder()
+                    .kontaktinformasjon(RsKontaktinformasjon.builder()
+                            .telefonnummer(arbeidsgiver.getKontaktinformasjon().getTelefonnummer())
+                            .kontaktinformasjonNavn(arbeidsgiver.getKontaktinformasjon().getKontaktinformasjonNavn())
+                            .build())
+                    .arbeidsgiverFnr(arbeidsgiver.getVirksomhetsnummer())
+                    .build());
+        }
+        return tmp.build();
     }
 
     private RsInntektsmelding lagAltinnInntektRequest(
@@ -125,7 +196,28 @@ public class AltinnInntektService {
 
         kontaktinformasjon = Objects.isNull(inntekt.getArbeidsgiver().getKontaktinformasjon()) ? kontaktinformasjon : inntekt.getArbeidsgiver().getKontaktinformasjon();
 
-        var tmp = RsInntektsmelding.builder()
+        var tmp = mapAltinnInntektInfoTilRsInntektsmelding(ident, inntekt);
+
+        if (nyesteArbeidsforhold.getArbeidsgiver().getType().equals(TYPE_PERSON)) {
+            tmp.arbeidsgiverPrivat(RsArbeidsgiverPrivat.builder()
+                    .arbeidsgiverFnr(virksomhetsnummer)
+                    .kontaktinformasjon(kontaktinformasjon)
+                    .build());
+        } else {
+            tmp.arbeidsgiver(RsArbeidsgiver.builder()
+                    .virksomhetsnummer(virksomhetsnummer)
+                    .kontaktinformasjon(kontaktinformasjon)
+                    .build());
+        }
+
+        return tmp.build();
+    }
+
+    private RsInntektsmelding.RsInntektsmeldingBuilder mapAltinnInntektInfoTilRsInntektsmelding(
+            String ident,
+            RsAltinnInntektInfo inntekt
+    ) {
+        return RsInntektsmelding.builder()
                 .ytelse(getValueFromEnumIfSet(inntekt.getYtelse()))
                 .aarsakTilInnsending(getValueFromEnumIfSet(inntekt.getAarsakTilInnsending()))
                 .arbeidstakerFnr(ident)
@@ -147,22 +239,8 @@ public class AltinnInntektService {
                                 .beloepPrMnd(m.getBeloepPrMnd())
                                 .fom(m.getFom()).build())
                         .collect(Collectors.toList()))
-                .pleiepengerPerioder(inntekt.getPleiepengerPerioder());
-
-        if (nyesteArbeidsforhold.getArbeidsgiver().getType().equals(TYPE_PERSON)) {
-            tmp.arbeidsgiverPrivat(RsArbeidsgiverPrivat.builder()
-                    .arbeidsgiverFnr(virksomhetsnummer)
-                    .kontaktinformasjon(kontaktinformasjon)
-                    .build());
-        } else {
-            tmp.arbeidsgiver(RsArbeidsgiver.builder()
-                    .virksomhetsnummer(virksomhetsnummer)
-                    .kontaktinformasjon(kontaktinformasjon)
-                    .build());
-        }
-
-        //TODO (OL): Legge til arbeidsforholdId når dette settes tilsvarende i AA-Reg
-        tmp.arbeidsforhold(RsArbeidsforhold.builder()
+                .pleiepengerPerioder(inntekt.getPleiepengerPerioder())
+                .arbeidsforhold(RsArbeidsforhold.builder()
                 .beregnetInntekt(RsInntekt.builder()
                         .beloep(inntekt.getArbeidsforhold().getBeregnetInntekt().getBeloep())
                         .aarsakVedEndring(getValueFromEnumIfSet(inntekt.getArbeidsforhold().getBeregnetInntekt().getAarsakVedEndring()))
@@ -175,8 +253,6 @@ public class AltinnInntektService {
                                 .aarsakTilUtsettelse(getValueFromEnumIfSet(m.getAarsakTilUtsettelse()))
                                 .periode(m.getPeriode()).build()).collect(Collectors.toList()))
                 .build());
-
-        return tmp.build();
     }
 
     private RsKontaktinformasjon hentKontaktinformasjon(String virksomhetsnummer, String miljoe) {
