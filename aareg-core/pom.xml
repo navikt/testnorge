@@ -100,14 +100,6 @@
             <artifactId>testnorge-consumers</artifactId>
         </dependency>
 
-        <!-- ARBEIDSFORHOLD -->
-        <dependency>
-            <groupId>no.nav.tjenester.domene.arbeidsforhold</groupId>
-            <artifactId>nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon</artifactId>
-            <version>${behandle.arbeidsforhold.version}</version>
-            <classifier>jaxws</classifier>
-        </dependency>
-
         <!-- SECURITY -->
         <dependency>
             <groupId>org.apache.neethi</groupId>
@@ -117,6 +109,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- OIDC-TOKEN -->
+        <dependency>
+            <groupId>no.nav.freg</groupId>
+            <artifactId>freg-security-oidc</artifactId>
+            <version>${freg-security-oidc.version}</version>
         </dependency>
 
         <!-- CXF -->
@@ -140,13 +139,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-        </dependency>
-
-        <!-- OIDC-TOKEN -->
-        <dependency>
-            <groupId>no.nav.freg</groupId>
-            <artifactId>freg-security-oidc</artifactId>
-            <version>${freg-security-oidc.version}</version>
         </dependency>
 
         <!-- ORIKA-MAPPER -->

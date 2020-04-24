@@ -48,7 +48,7 @@
         <behandle.arbeidsforhold.version>1.2.1</behandle.arbeidsforhold.version>
         <neethi.version>3.1.1</neethi.version>
         <cxf.version>3.3.3</cxf.version>
-        <freg-security-oidc.version>3.0.5</freg-security-oidc.version>
+        <freg-security-oidc.version>e603e2b2</freg-security-oidc.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
     </properties>
@@ -70,14 +70,6 @@
     </dependencyManagement>
 
     <repositories>
-        <repository>
-            <id>nexus-internal-release</id>
-            <url>https://repo.adeo.no/repository/maven-release</url>
-        </repository>
-        <repository>
-            <id>nexus-internal-mirror</id>
-            <url>https://repo.adeo.no/repository/maven-public</url>
-        </repository>
         <repository>
             <id>github-package-registry-navikt</id>
             <url>https://maven.pkg.github.com/navikt/maven-release</url>
