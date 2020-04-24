@@ -91,7 +91,16 @@ const getUpdatedPdlfData = pdlfData => {
 }
 
 const getUpdatedTpsfData = tpsfData => {
-	const newTpsfData = Object.assign({}, tpsfData)
+	var newTpsfData = Object.assign({}, tpsfData)
+	if(tpsfData.statsborgerskap){
+		newTpsfData = updateData(newTpsfData, initialValues.statborgerskap)
+	}
+	if(tpsfData.innvandretFraLand){
+		newTpsfData = updateData(newTpsfData, initialValues.innvandretFra)
+	}
+	if(tpsfData.utvandretTilLand){
+		newTpsfData = updateData(newTpsfData, initialValues.utvandretTil)
+	}
 	if(tpsfData.relasjoner){
 		if (tpsfData.relasjoner.partnere) {
 			console.log("test")
@@ -111,7 +120,6 @@ const getUpdatedTpsfData = tpsfData => {
 			}
 		}
 	}
-
 
 	return newTpsfData
 }

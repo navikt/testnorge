@@ -6,7 +6,6 @@ import {
 } from '~/components/fagsystem/aareg/form/initialValues'
 import { initialValues as initialValuesInntektsmelding } from '~/components/fagsystem/inntektsmelding/form/Form'
 import { initialValues as initialValuesInst } from '~/components/fagsystem/inst/form/Form'
-import Formatters from '~/utils/DataFormatter'
 
 export const initialValues = {
 	inntektstub: initialValuesInntektstub,
@@ -92,6 +91,18 @@ export const initialValues = {
 		utenFastBopel: false,
 		statsborgerskap: '',
 		statsborgerskapRegdato: ''
+	},
+	statborgerskap:{
+		statborgerskap:'',
+		statsborgerskapRegdato: ''
+	},
+	utvandretTil:{
+		utvandretTilLand:'',
+		utvandretTilLandFlyttedato: ''
+	},
+	innvandretFra:{
+		innvandretFraLand:'',
+		innvandretFraLandFlyttedato: ''
 	}
 }
 
