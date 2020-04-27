@@ -30,7 +30,7 @@ public class BehandleArbeidsforholdV1Proxy {
 
     private static final int DEFAULT_TIMEOUT = 5_000;
 
-    private static final String WSDL_URL = "no/nav/registre/aareg/consumer/ws/wsdl/BehandleArbeidsforhold.wsdl";
+    private static final String WSDL_URL = "wsdl/BehandleArbeidsforhold.wsdl";
     private static final String NAMESPACE = "http://nav.no/tjeneste/domene/behandleArbeidsforhold/v1/";
     private static final QName BEHANDLE_ARBEIDSFORHOLD_V1 = new QName(NAMESPACE, "BehandleArbeidsforhold_v1");
 
@@ -68,7 +68,7 @@ public class BehandleArbeidsforholdV1Proxy {
     ) {
         Scanner scanner = null;
         try {
-            ClassPathResource classPathResource = new ClassPathResource("wsdl/BehandleArbeidsforhold.wsdl", BehandleArbeidsforholdV1Proxy.class);
+            ClassPathResource classPathResource = new ClassPathResource("wsdl/BehandleArbeidsforhold.wsdl");
             log.info("Leser fra path {}", classPathResource.getPath());
             try {
                 log.info("har url {}", classPathResource.getURL());
