@@ -94,6 +94,13 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- ARBEIDSFORHOLD -->
+        <dependency>
+            <groupId>no.nav.tjenester</groupId>
+            <artifactId>aordningen-arbeidsforhold-v1</artifactId>
+            <version>1.9</version>
+        </dependency>
+
         <!--HODEJEGEREN-->
         <dependency>
             <groupId>no.nav.registre</groupId>
