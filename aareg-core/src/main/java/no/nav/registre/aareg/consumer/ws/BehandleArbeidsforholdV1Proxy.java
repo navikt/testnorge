@@ -3,20 +3,25 @@ package no.nav.registre.aareg.consumer.ws;
 import static java.util.Objects.isNull;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
 import org.springframework.stereotype.Component;
 
 import javax.xml.namespace.QName;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 import no.nav.registre.aareg.cxf.TimeoutFeature;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.security.sts.StsSamlTokenService;
 import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.BehandleArbeidsforholdPortType;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class BehandleArbeidsforholdV1Proxy {
@@ -59,6 +64,29 @@ public class BehandleArbeidsforholdV1Proxy {
             String env,
             String url
     ) {
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(new File("no/nav/registre/aareg/consumer/ws/wsdl/BehandleArbeidsforhold.wsdl"));
+            log.info(scanner.nextLine());
+        } catch (FileNotFoundException e) {
+            log.error("Kunne ikke åpne fil 1", e);
+        } finally {
+            if (scanner != null) {
+                scanner.close();
+            }
+        }
+
+        try {
+            scanner = new Scanner(new File("wsdl/BehandleArbeidsforhold.wsdl"));
+            log.info(scanner.nextLine());
+        } catch (FileNotFoundException e) {
+            log.error("Kunne ikke åpne fil 2", e);
+        } finally {
+            if (scanner != null) {
+                scanner.close();
+            }
+        }
+
         var factoryBean = new JaxWsProxyFactoryBean();
         factoryBean.setWsdlURL(WSDL_URL);
         factoryBean.setServiceName(BEHANDLE_ARBEIDSFORHOLD_V1);
