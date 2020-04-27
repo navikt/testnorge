@@ -47,7 +47,7 @@ const sisteTidligereSivilstandRegdato = partnere => {
 		'data.sivilstander',
 		[]
 	).filter(sivilstand => !sivilstand.ny)
-	return _last(tidligereSivilstander).data.sivilstandRegdato //Obs, er denne safe?
+	return _get(_last(tidligereSivilstander), 'data.sivilstandRegdato', null)
 }
 
 // Det er 3 kriterier for å opprette ny partner
@@ -69,6 +69,8 @@ const path = 'tpsf.relasjoner.partnere'
 export const Partnere = ({ formikBag, personFoerLeggTil }) => (
 	<FieldArray name={path}>
 		{arrayHelpers => {
+			// Vil også vise partnere og sivilstander fra tidligere bestillinger uten å legge dem i formikBag.
+			// Lager derfor nytt partnerarray med både nye og tidligere partnere tagget med 'ny: true/false'.
 			const { partnere, partnereUtenomFormikBag, oppdatertPartner } = Partnerliste(
 				formikBag,
 				personFoerLeggTil,

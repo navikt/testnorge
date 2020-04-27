@@ -23,11 +23,7 @@ export const Sivilstand = ({
 }) => (
 	<FieldArray name={basePath}>
 		{arrayHelpers => {
-			const antallTidligereSivilstander = sivilstander.reduce(
-				(acc, curr) => (!curr.ny ? acc + 1 : acc),
-				0
-			)
-
+			const antallTidligereSivilstander = sivilstander.reduce((acc, curr) => acc + !curr.ny, 0)
 			// Sjekk forrige (nest siste) sivilstandstatus, for å sette
 			// gyldige options for current sivilstandstatus
 			let sivilstandKode

@@ -9,7 +9,8 @@ import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bes
 
 export const FamilierelasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
-	const leggTil = _has(useLocation(), 'state.state.leggTilPaaFnr')
+	const opts = useContext(BestillingsveilederContext)
+	const leggTil = opts.is.leggTil
 
 	return (
 		<Panel
