@@ -62,7 +62,9 @@ export const nesteGyldigStatuser = kode => {
 export const erOpprettNyPartnerGyldig = kode => gyldigSisteStatus.includes(kode)
 
 export const tomSisteSivilstand = (formikBag, sivilstandBasePath) => {
-	const sivilstander = _get(formikBag.values, sivilstandBasePath)
+	const sivilstander = _get(formikBag.values, sivilstandBasePath, [])
+	if (sivilstander.length < 1) return false
+
 	const antallSivilstander = sivilstander.length
 	return sivilstander[antallSivilstander - 1].sivilstand.length < 1
 }

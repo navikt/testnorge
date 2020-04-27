@@ -6,7 +6,6 @@ import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { Partnere } from './partials/partnere/Partnere'
-import LeggTilPaaPartnere from './partials/partnere/leggTil/LeggTilPaaPartnere'
 import { Barn } from './partials/Barn'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
@@ -28,11 +27,7 @@ export const Familierelasjoner = ({ formikBag }) => {
 				startOpen={() => erForste(formikBag.values, [relasjonerAttributt])}
 			>
 				<Kategori title="Partnere" vis="tpsf.relasjoner.partnere">
-					{opts.hasOwnProperty('personFoerLeggTil') ? (
-						<LeggTilPaaPartnere formikBag={formikBag} personFoerLeggTil={opts.personFoerLeggTil} />
-					) : (
-						<Partnere formikBag={formikBag} />
-					)}
+					<Partnere formikBag={formikBag} personFoerLeggTil={opts.data} />
 				</Kategori>
 				<Kategori title="Barn" vis="tpsf.relasjoner.barn">
 					<Barn formikBag={formikBag} />
