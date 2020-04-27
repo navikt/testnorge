@@ -6,11 +6,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,21 +68,17 @@ public class BehandleArbeidsforholdV1Proxy {
     ) {
         Scanner scanner = null;
         try {
-            scanner = new Scanner(new File("no/nav/registre/aareg/consumer/ws/wsdl/BehandleArbeidsforhold.wsdl"));
-            log.info(scanner.nextLine());
-        } catch (FileNotFoundException e) {
-            log.error("Kunne ikke åpne fil 1", e);
-        } finally {
-            if (scanner != null) {
-                scanner.close();
+            ClassPathResource classPathResource = new ClassPathResource("wsdl/BehandleArbeidsforhold.wsdl", BehandleArbeidsforholdV1Proxy.class);
+            log.info("Leser fra path {}", classPathResource.getPath());
+            try {
+                log.info("har url {}", classPathResource.getURL());
+            } catch (IOException e) {
+                log.info("Kunne ikke skrive url", e);
             }
-        }
-
-        try {
-            scanner = new Scanner(new File("wsdl/BehandleArbeidsforhold.wsdl"));
+            scanner = new Scanner(new File(classPathResource.getPath()));
             log.info(scanner.nextLine());
         } catch (FileNotFoundException e) {
-            log.error("Kunne ikke åpne fil 2", e);
+            log.error("Kunne ikke åpne fil", e);
         } finally {
             if (scanner != null) {
                 scanner.close();
