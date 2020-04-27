@@ -3,21 +3,17 @@ import _isEmpty from 'lodash/isEmpty'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
+import { Pleiepenger } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
 interface PleiepengerVisning {
-	data?: Array<PleiepengePeriode>
-}
-
-type PleiepengePeriode = {
-	fom?: string
-	tom?: string
+	data?: Array<Pleiepenger>
 }
 
 export default ({ data }: PleiepengerVisning) => {
 	if (!data || data.length < 1) return null
 	return (
 		<DollyFieldArray data={data} header="Pleiepenger">
-			{(id: PleiepengePeriode) => (
+			{(id: Pleiepenger) => (
 				<>
 					<div className="person-visning_content">
 						<TitleValue title="Fra og med dato" value={Formatters.formatDate(id.fom)} />
