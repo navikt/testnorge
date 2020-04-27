@@ -18,5 +18,7 @@ For dokumentasjon av applikasjonen sine endepunkter: `/api`
 ## Deployment
 
 Applikasjonen deployes til dev-fss ved bruk av [Github Actions.](https://www.brreg.no/produkter-og-tjenester/bestille-produkter/maskinlesbare-data-enhetsregisteret/full-tilgang-enhetsregisteret/teknisk-dokumentasjon-for-maskinell-tilgang-til-enhetsregisteret/
-) 
+) Nytt bygg trigges ved PR eller merge til master. 
+
+Applikasjonen kan også startes opp lokalt ved å bruke LocalApplicationStarter
 
