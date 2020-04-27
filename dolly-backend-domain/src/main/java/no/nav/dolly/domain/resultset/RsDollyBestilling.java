@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
+import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
@@ -93,6 +94,11 @@ public class RsDollyBestilling {
             position = 11
     )
     private RsInntektsmelding inntektsmelding;
+
+    @ApiModelProperty(
+            position = 12
+    )
+    private RsBregdata bregstub;
 
     public List<RsArbeidsforhold> getAareg() {
         if (isNull(aareg)) {
