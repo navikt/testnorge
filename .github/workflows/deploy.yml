@@ -1,6 +1,6 @@
 name: Build, push, and deploy
 
-on: [push]
+on: [push,pull_request]
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/brreg-stub:${{ github.sha }}
@@ -27,6 +27,7 @@ jobs:
   deploy:
     name: Deploy to NAIS
     needs: build
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
