@@ -1,13 +1,13 @@
 {
 	"compilerOptions": {
-		"allowJs": true,
+		"outDir": "./dist/dev",
 		"sourceMap": true,
 		"noImplicitAny": true,
 		"moduleResolution": "node",
 		"esModuleInterop": true,
 		"module": "es6",
 		"target": "ESNext",
-		"outDir": "./dist",
+		"allowJs": true,
 		"jsx": "react",
 		"lib": ["esnext", "dom"],
 		"baseUrl": ".",

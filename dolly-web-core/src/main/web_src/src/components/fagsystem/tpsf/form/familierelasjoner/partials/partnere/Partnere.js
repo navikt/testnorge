@@ -84,11 +84,6 @@ export const Partnere = ({ formikBag, personFoerLeggTil }) => (
 							!c.ny && !oppdatertPartner
 								? idx - (partnereUtenomFormikBag - 1)
 								: idx - partnereUtenomFormikBag
-						// const formikIdx = c.ny
-						// 	? idx - partnereUtenomFormikBag
-						// 	: oppdatertPartner
-						// 	? idx - partnereUtenomFormikBag
-						// 	: idx - (partnereUtenomFormikBag - 1)
 
 						const formikPath = `${path}[${formikIdx}]`
 						const isLast = idx === partnere.length - 1
