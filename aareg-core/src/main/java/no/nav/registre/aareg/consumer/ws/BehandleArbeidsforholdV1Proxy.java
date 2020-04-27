@@ -3,16 +3,11 @@ package no.nav.registre.aareg.consumer.ws;
 import static java.util.Objects.isNull;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import javax.xml.namespace.QName;
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,14 +17,13 @@ import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.security.sts.StsSamlTokenService;
 import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.BehandleArbeidsforholdPortType;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class BehandleArbeidsforholdV1Proxy {
 
     private static final int DEFAULT_TIMEOUT = 5_000;
 
-    private static final String WSDL_URL = "wsdl/BehandleArbeidsforhold.wsdl";
+    private static final String WSDL_URL = "wsdl/no/nav/registre/testnorge/consumers/tjenestespesifikasjon/arbeidsforhold/BehandleArbeidsforhold.wsdl";
     private static final String NAMESPACE = "http://nav.no/tjeneste/domene/behandleArbeidsforhold/v1/";
     private static final QName BEHANDLE_ARBEIDSFORHOLD_V1 = new QName(NAMESPACE, "BehandleArbeidsforhold_v1");
 
@@ -65,27 +59,6 @@ public class BehandleArbeidsforholdV1Proxy {
             String env,
             String url
     ) {
-        Resource resource = new ClassPathResource("wsdl/BehandleArbeidsforhold.wsdl");
-
-        try {
-            log.info("resource: URI:{}", resource.getURI());
-        } catch (IOException e) {
-            log.error("kunne ikke finne URI", e);
-        }
-
-        try {
-            log.info("resource: URL:{}", resource.getURL());
-        } catch (IOException e) {
-            log.error("kunne ikke finne URL", e);
-        }
-
-        try {
-            File file = resource.getFile();
-            log.info("File: path:{}, absoulute path: {}", file.getPath(), file.getAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         var factoryBean = new JaxWsProxyFactoryBean();
         factoryBean.setWsdlURL(WSDL_URL);
         factoryBean.setServiceName(BEHANDLE_ARBEIDSFORHOLD_V1);
