@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://nav.no/tjeneste/domene/behandleArbeidsforhold/v1/informasjon" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:metadata="http://nav.no/tjeneste/domene/behandleArbeidsforhold/v1/metadata" xmlns:informasjon="http://nav.no/tjeneste/domene/behandleArbeidsforhold/v1/informasjon">
+	<xs:import namespace="http://nav.no/tjeneste/domene/behandleArbeidsforhold/v1/metadata" schemaLocation="../metadata/metadata.xsd"/>
+	<xs:complexType name="Aktoer" abstract="true">
+		<xs:sequence/>
+	</xs:complexType>
+	<xs:complexType name="Organisasjon">
+		<xs:complexContent>
+			<xs:extension base="informasjon:Aktoer">
+				<xs:sequence>
+					<xs:element name="orgnummer" type="informasjon:Organisasjonsidentifikator" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="Person">
+		<xs:complexContent>
+			<xs:extension base="informasjon:Aktoer">
+				<xs:sequence>
+					<xs:element name="ident" type="informasjon:NorskIdent" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="AntallTimerIPerioden">
+		<xs:sequence>
+			<xs:element name="periode" type="informasjon:Gyldighetsperiode" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="antallTimer" type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Gyldighetsperiode">
+		<xs:annotation>
+			<xs:documentation>Gyldighetsperioden angir den perioden dataene den gjelder gjaldt i den virkelige verden.
+
+fom er pålagt attributt for instanser av gyldighetsperiode.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="informasjon:Periode">
+				<xs:sequence/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="Periode">
+		<xs:annotation>
+			<xs:documentation>En periode angis som et tidsintervall fra-og-med og til-og-med, i fortid, nåtid eller fremtid. Datatypen på attributtene er satt til datetime. Dette for å dekke ulike behov mht. "oppløsning"/granularitet på tidsangivelsen.
+
+Merk! For perioder som ikke skal ha detaljert tidsstempel, brukes ikke klokkeslettssleddet. Vær ellers oppmerksom på hva som skjer ifm. fysisk representasjon (xs:date) av klokkeslett i perioden (sommertid + 1:00)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="fom" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="tom" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="ArbeidsforholdsID">
+		<xs:restriction base="xs:long"/>
+	</xs:simpleType>
+	<xs:simpleType name="Identifikator">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="Organisasjonsidentifikator">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="PermisjonsID">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	
+	<xs:complexType name="Arbeidstidsordninger">
+		<xs:annotation>
+			<xs:documentation>http://nav.no/kodeverk/Kodeverk/Arbeidstidsordninger</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="informasjon:Kodeverdi">
+				<xs:attribute name="kodeverksRef" use="optional" fixed="http://nav.no/kodeverk/Kodeverk/Arbeidstidsordninger" type="xs:anyURI"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="Avloenningstyper">
+		<xs:annotation>
+			<xs:documentation>http://nav.no/kodeverk/Kodeverk/Avloenningstyper</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="informasjon:Kodeverdi">
+				<xs:attribute name="kodeverksRef" use="optional" fixed="http://nav.no/kodeverk/Kodeverk/Avloenningstyper" type="xs:anyURI"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="Fartsomraader">
+		<xs:annotation>
+			<xs:documentation>http://nav.no/kodeverk/Kodeverk/Fartsomraader</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="informasjon:Kodeverdi">
+				<xs:attribute name="kodeverksRef" use="optional" fixed="http://nav.no/kodeverk/Kodeverk/Fartsomraader" type="xs:anyURI"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="Landkoder">
+		<xs:annotation>
+			<xs:documentation>Sett med unike koder for land.
+http://nav.no/kodeverk/Kodeverk/Landkoder
+
+(fra TPS)</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="informasjon:Kodeverdi">
+				<xs:attribute name="kodeverksRef" use="optional" fixed="http://nav.no/kodeverk/Kodeverk/Landkoder" type="xs:anyURI"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="Personidenter">
+		<xs:annotation>
+			<xs:documentation>Tillatte typer identer, f.eks. fødselsnummer, D-nummer, ...
+http://nav.no/kodeverk/Kodeverk/Personidenter</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="informasjon:Kodeverdi">
+				<xs:attribute name="kodeverksRef" use="optional" fixed="http://nav.no/kodeverk/Kodeverk/Personidenter" type="xs:anyURI"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="Skipsregistre">
+		<xs:annotation>
+			<xs:documentation>http://nav.no/kodeverk/Kodeverk/Skipsregistre</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="informasjon:Kodeverdi">
+				<xs:attribute name="kodeverksRef" use="optional" fixed="http://nav.no/kodeverk/Kodeverk/Skipsregistre" type="xs:anyURI"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="Skipstyper">
+		<xs:annotation>
+			<xs:documentation>http://nav.no/kodeverk/Kodeverk/Skipstyper</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="informasjon:Kodeverdi">
+				<xs:attribute name="kodeverksRef" use="optional" fixed="http://nav.no/kodeverk/Kodeverk/Skipstyper" type="xs:anyURI"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="Yrker">
+		<xs:annotation>
+			<xs:documentation>http://nav.no/kodeverk/Kodeverk/Yrker</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="informasjon:Kodeverdi">
+				<xs:attribute name="kodeverksRef" use="optional" fixed="http://nav.no/kodeverk/Kodeverk/Yrker" type="xs:anyURI"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="Arbeidsforholdstyper">
+		<xs:annotation>
+			<xs:documentation>http://nav.no/kodeverk/Kodeverk/Arbeidsforholdstyper</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="informasjon:Kodeverdi">
+				<xs:attribute name="kodeverksRef" use="optional" fixed="http://nav.no/kodeverk/Kodeverk/Arbeidsforholdstyper" type="xs:anyURI"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="PermisjonsOgPermitteringsBeskrivelse">
+		<xs:annotation>
+			<xs:documentation>http://nav.no/kodeverk/Kodeverk/PermisjonsOgPermitteringsBeskrivelse</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="informasjon:Kodeverdi">
+				<xs:attribute name="kodeverksRef" use="optional" fixed="http://nav.no/kodeverk/Kodeverk/PermisjonsOgPermitteringsBeskrivelse" type="xs:anyURI"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="Arbeidsavtale">
+		<xs:sequence>
+			<xs:element name="arbeidstidsordning" type="informasjon:Arbeidstidsordninger" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="avloenningstype" type="informasjon:Avloenningstyper" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="yrke" type="informasjon:Yrker" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="avtaltArbeidstimerPerUke" type="xs:decimal" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="stillingsprosent" type="xs:decimal" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="antallKonverterteTimer" type="xs:decimal" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="endringsdatoStillingsprosent" type="xs:date" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+ Merk! xsd:date kan valgfritt returneres med eller uten tidssone av tilbyder. Dette må håndteres av konsumenter.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sisteLoennsendringsdato" type="xs:date" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+ Merk! xsd:date kan valgfritt returneres med eller uten tidssone av tilbyder. Dette må håndteres av konsumenter.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="NorskIdent">
+		<xs:annotation>
+			<xs:documentation>Fødselsnr, SSN, ...</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ident" type="informasjon:Identifikator" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="type" type="informasjon:Personidenter" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Permisjon">
+		<xs:sequence>
+			<xs:element name="permisjonsId" type="informasjon:PermisjonsID" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="permisjonsPeriode" type="informasjon:Gyldighetsperiode" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="permisjonsprosent" type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="permisjonOgPermittering" type="informasjon:PermisjonsOgPermitteringsBeskrivelse" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Utenlandsopphold">
+		<xs:sequence>
+			<xs:element name="periode" type="informasjon:Gyldighetsperiode" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="land" type="informasjon:Landkoder" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Arbeidsforhold">
+		<xs:annotation>
+			<xs:documentation>Et avtaleforhold hvor den ene part (arbeidstakeren, BEGREP-179) forplikter seg til å utføre arbeid for den annen part (arbeidsgiveren, BEGREP-193) i henhold til dennes ledelse, og hvor arbeidsgiveren har risikoen for at arbeidsinnsatsen resulterer i et arbeidsresultat.
+I EDAGsmeldingen behandles frilansere som en "arbeidsforholdstype" sammen med pensjons- og ytelsesmottakere.
+Freelancere skal filtreres i EDAG fellesforvaltning før det sendes til Aa-registeret. </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="arbeidsforholdID" type="informasjon:Identifikator" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="arbeidsforholdIDnav" type="informasjon:ArbeidsforholdsID" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="ansettelsesPeriode" minOccurs="1" maxOccurs="1">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="informasjon:Gyldighetsperiode">
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="arbeidsforholdstype" type="informasjon:Arbeidsforholdstyper" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="antallTimerForTimeloennet" type="informasjon:AntallTimerIPerioden" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="arbeidsavtale" type="informasjon:Arbeidsavtale" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="permisjon" type="informasjon:Permisjon" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="utenlandsopphold" type="informasjon:Utenlandsopphold" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="arbeidsgiver" type="informasjon:Aktoer" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="arbeidstaker" type="informasjon:Person" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<!--xs:attributeGroup ref="metadata:Tidspunkter"/-->
+	</xs:complexType>
+	
+	<xs:complexType name="MaritimtArbeidsforhold">
+		<xs:complexContent>
+			<xs:extension base="informasjon:Arbeidsavtale">
+				<xs:sequence>
+					<xs:element name="fartsomraade" type="informasjon:Fartsomraader" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="skipsregister" type="informasjon:Skipsregistre" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="skipstype" type="informasjon:Skipstyper" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="Kodeverdi">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="kodeRef" use="optional" type="xs:anyURI"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+</xs:schema>

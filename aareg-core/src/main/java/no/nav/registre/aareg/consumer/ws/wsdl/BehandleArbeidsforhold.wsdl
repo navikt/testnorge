@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="BehandleArbeidsforhold" targetNamespace="http://nav.no/tjeneste/domene/behandleArbeidsforhold/v1/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://nav.no/tjeneste/domene/behandleArbeidsforhold/v1/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xs:schema targetNamespace="http://nav.no/tjeneste/domene/behandleArbeidsforhold/v1/" xmlns:feil="http://nav.no/tjeneste/domene/behandleArbeidsforhold/v1/feil" xmlns:meldinger="http://nav.no/tjeneste/domene/behandleArbeidsforhold/v1/meldinger">
+			<xs:import namespace="http://nav.no/tjeneste/domene/behandleArbeidsforhold/v1/meldinger" schemaLocation="meldinger/meldinger.xsd"/>
+			<xs:import namespace="http://nav.no/tjeneste/domene/behandleArbeidsforhold/v1/feil" schemaLocation="feil/feil.xsd"/>
+
+			<xs:element name="oppdaterArbeidsforholdResponse">
+				<xs:complexType>
+					<xs:sequence/>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="oppdaterArbeidsforhold">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="1" minOccurs="1" name="request" type="meldinger:OppdaterArbeidsforholdRequest"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="opprettArbeidsforholdResponse">
+				<xs:complexType>
+					<xs:sequence/>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="opprettArbeidsforhold">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="1" minOccurs="1" name="request" type="meldinger:OpprettArbeidsforholdRequest"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="arbeidsforholdIkkeFunnet" type="feil:ArbeidsforholdIkkeFunnet"/>
+			<xs:element name="sikkerhetsbegrensning" type="feil:Sikkerhetsbegrensning"/>
+			<xs:element name="ugyldigInput" type="feil:UgyldigInput"/>
+
+			<xs:element name="ping">
+				<xs:complexType>
+					<xs:sequence>
+
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="pingResponse">
+				<xs:complexType>
+					<xs:sequence>
+
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="opprettArbeidsforhold_sikkerhetsbegrensning">
+    <wsdl:part name="sikkerhetsbegrensning" element="tns:sikkerhetsbegrensning">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="opprettArbeidsforholdRequest">
+    <wsdl:part name="parameters" element="tns:opprettArbeidsforhold">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="oppdaterArbeidsforhold_ugyldigInput">
+    <wsdl:part name="ugyldigInput" element="tns:ugyldigInput">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="opprettArbeidsforholdResponse">
+    <wsdl:part name="parameters" element="tns:opprettArbeidsforholdResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="opprettArbeidsforhold_ugyldigInput">
+    <wsdl:part name="ugyldigInput" element="tns:ugyldigInput">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="oppdaterArbeidsforhold_arbeidsforholdIkkeFunnet">
+    <wsdl:part name="arbeidsforholdIkkeFunnet" element="tns:arbeidsforholdIkkeFunnet">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="oppdaterArbeidsforhold_sikkerhetsbegrensning">
+    <wsdl:part name="sikkerhetsbegrensning" element="tns:sikkerhetsbegrensning">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="pingResponse">
+    <wsdl:part name="parameters" element="tns:pingResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="pingRequest">
+    <wsdl:part name="parameters" element="tns:ping">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="oppdaterArbeidsforholdRequest">
+    <wsdl:part name="parameters" element="tns:oppdaterArbeidsforhold">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="oppdaterArbeidsforholdResponse">
+    <wsdl:part name="parameters" element="tns:oppdaterArbeidsforholdResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="BehandleArbeidsforholdPortType">
+    <wsdl:operation name="oppdaterArbeidsforhold">
+      <wsdl:input name="oppdaterArbeidsforholdRequest" message="tns:oppdaterArbeidsforholdRequest">
+    </wsdl:input>
+      <wsdl:output name="oppdaterArbeidsforholdResponse" message="tns:oppdaterArbeidsforholdResponse">
+    </wsdl:output>
+      <wsdl:fault name="arbeidsforholdIkkeFunnet" message="tns:oppdaterArbeidsforhold_arbeidsforholdIkkeFunnet">
+    </wsdl:fault>
+      <wsdl:fault name="sikkerhetsbegrensning" message="tns:oppdaterArbeidsforhold_sikkerhetsbegrensning">
+    </wsdl:fault>
+      <wsdl:fault name="ugyldigInput" message="tns:oppdaterArbeidsforhold_ugyldigInput">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="opprettArbeidsforhold">
+      <wsdl:input name="opprettArbeidsforholdRequest" message="tns:opprettArbeidsforholdRequest">
+    </wsdl:input>
+      <wsdl:output name="opprettArbeidsforholdResponse" message="tns:opprettArbeidsforholdResponse">
+    </wsdl:output>
+      <wsdl:fault name="sikkerhetsbegrensning" message="tns:opprettArbeidsforhold_sikkerhetsbegrensning">
+    </wsdl:fault>
+      <wsdl:fault name="ugyldigInput" message="tns:opprettArbeidsforhold_ugyldigInput">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ping">
+      <wsdl:input name="pingRequest" message="tns:pingRequest">
+    </wsdl:input>
+      <wsdl:output name="pingResponse" message="tns:pingResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BehandleArbeidsforholdBinding" type="tns:BehandleArbeidsforholdPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsaw:UsingAddressing/>
+    <wsdl:operation name="oppdaterArbeidsforhold">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="oppdaterArbeidsforholdRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="oppdaterArbeidsforholdResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="arbeidsforholdIkkeFunnet">
+        <soap:fault name="arbeidsforholdIkkeFunnet" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="sikkerhetsbegrensning">
+        <soap:fault name="sikkerhetsbegrensning" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="ugyldigInput">
+        <soap:fault name="ugyldigInput" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="opprettArbeidsforhold">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="opprettArbeidsforholdRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="opprettArbeidsforholdResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="sikkerhetsbegrensning">
+        <soap:fault name="sikkerhetsbegrensning" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="ugyldigInput">
+        <soap:fault name="ugyldigInput" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ping">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="pingRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="pingResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="BehandleArbeidsforhold_v1">
+    <wsdl:port name="BehandleArbeidsforhold_v1" binding="tns:BehandleArbeidsforholdBinding">
+      <soap:address location="http://localhost:9080"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
