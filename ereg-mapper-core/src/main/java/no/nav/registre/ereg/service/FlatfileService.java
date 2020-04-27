@@ -22,10 +22,13 @@ public class FlatfileService {
 
     public String mapEreg(List<EregDataRequest> data, boolean sendToEreg, String env) {
         String eregData = mapper.mapEregFromRequests(data, env, sendToEreg);
+        if (eregData == null) {
+            return "";
+        }
         log.info(eregData);
         if (sendToEreg) {
 
-            if ("".equals(env)) {
+            if ("" .equals(env)) {
                 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Manglende miljoe variabel");
             }
 
