@@ -1,4 +1,4 @@
-package no.nav.registre.sdForvalter.provider.rs;
+package no.nav.registre.sdForvalter.provider.rs.v1;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +35,7 @@ import no.nav.registre.sdForvalter.domain.KrrListe;
 @TestPropertySource(
         locations = "classpath:application-test.properties"
 )
-public class StaticDataControllerKrrIntegrationTest {
+public class StaticDataControllerV1KrrIntegrationTest {
     @Autowired
     private MockMvc mvc;
 
