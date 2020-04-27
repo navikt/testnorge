@@ -5,6 +5,7 @@ import Formatters from '~/utils/DataFormatter'
 import { PersoninformasjonKodeverk, GtKodeverk } from '~/config/kodeverk'
 
 export const Personinfo = ({ data, visTittel = true }) => {
+	console.log('data :>> ', data)
 	return (
 		<div>
 			{visTittel && <SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />}

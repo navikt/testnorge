@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { useLocation } from 'react-use'
 import _has from 'lodash/has'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
 	const opprettFraEksisterende = _has(useLocation(), 'state.state.opprettFraIdenter')
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende
+
+	const opts = useContext(BestillingsveilederContext)
+	const leggTil = opts.is.leggTil
 
 	return (
 		<Panel
@@ -18,21 +22,28 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'personinformasjon'}
 		>
-			<AttributtKategori title="Alder">
-				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende} />
-				<Attributt attr={sm.attrs.doedsdato} />
-			</AttributtKategori>
+			{!leggTil && (
+				<AttributtKategori title="Alder">
+					<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende} />
+					<Attributt attr={sm.attrs.doedsdato} />
+				</AttributtKategori>
+			)}
 
-			<AttributtKategori title="Nasjonalitet">
-				<Attributt attr={sm.attrs.statsborgerskap} />
-				<Attributt attr={sm.attrs.innvandretFraLand} />
-				<Attributt attr={sm.attrs.utvandretTilLand} />
-			</AttributtKategori>
+			{!leggTil && (
+				<AttributtKategori title="Nasjonalitet">
+					<Attributt attr={sm.attrs.statsborgerskap} />
+					<Attributt attr={sm.attrs.innvandretFraLand} />
+					<Attributt attr={sm.attrs.utvandretTilLand} />
+				</AttributtKategori>
+			)}
 
 			<AttributtKategori title="Diverse">
 				<Attributt attr={sm.attrs.identHistorikk} />
-				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
-				<Attributt attr={sm.attrs.harMellomnavn} />
+				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende && !leggTil} />
+				<Attributt
+					attr={sm.attrs.harMellomnavn}
+					vis={!leggTil || !opts.personFoerLeggTil.mellomnavn}
+				/>
 				<Attributt attr={sm.attrs.sprakKode} />
 				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 				<Attributt attr={sm.attrs.erForsvunnet} />
