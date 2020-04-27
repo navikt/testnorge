@@ -20,9 +20,6 @@ spec:
     max: 1
   vault:
     enabled: true
-    paths:
-      - kvPath: /kv/preprod/fss/brreg-stub/default
-        mountPath: /var/run/secrets/nais.io/vault
   resources:
     limits:
       cpu: 500m

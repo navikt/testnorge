@@ -1,2 +1,32 @@
 application:
   name: brreg-stub
+
+app.db.flyway.role: brreg-stub-admin
+app.db.flyway.backend: postgresql/preprod-fss/creds
+
+spring:
+  main.banner-mode: "off"
+  datasource:
+    url: "jdbc:postgresql://b27dbvl013.preprod.local:5432/brreg-stub"
+    hikari:
+      maximum-pool-size: 2
+      connection-test-query: "select 1"
+      max-lifetime: 30000
+      minimum-idle: 1
+    jpa:
+      hibernate:
+        ddl-auto: none
+      properties:
+        hibernate:
+          dialect: "org.hibernate.dialect.PostgreSQLDialect"
+  jpa:
+    open-in-view: false
+  flyway:
+    enabled: true
+    locations: "classpath:db/migration/postgresql"
+  http:
+    encoding:
+      charset: UTF-8
+
+logging:
+  config: "classpath:logback-spring.xml"

@@ -25,10 +25,16 @@
         <jaxws.maven.plugin.version>2.6</jaxws.maven.plugin.version>
         <cxf.version>3.3.6</cxf.version>
         <main-class>no.nav.brregstub.Launcher</main-class>
+        <springfox.version>2.9.2</springfox.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
 
+        <!-- Spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -36,6 +42,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web-services</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
         <!--DATABASE-->
@@ -59,6 +69,10 @@
             <artifactId>spring-cloud-vault-config-databases</artifactId>
             <version>${spring.cloud.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.cxf</groupId>
@@ -71,6 +85,26 @@
             <artifactId>wsdl4j</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>5.2</version>
+        </dependency>
+
+        <!-- Swagger -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
+
+        <!-- Test -->
         <dependency>
             <groupId>no.nav.common</groupId>
             <artifactId>cxf</artifactId>
@@ -85,9 +119,9 @@
         </dependency>
 
         <dependency>
-            <groupId>net.logstash.logback</groupId>
-            <artifactId>logstash-logback-encoder</artifactId>
-            <version>5.2</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
