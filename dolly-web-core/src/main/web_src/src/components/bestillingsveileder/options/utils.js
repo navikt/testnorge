@@ -105,7 +105,3 @@ export const initialValues = {
 		innvandretFraLandFlyttedato: ''
 	}
 }
-
-const tpsf = {
-
-}

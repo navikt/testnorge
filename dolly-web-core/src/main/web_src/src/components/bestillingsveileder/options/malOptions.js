@@ -9,8 +9,8 @@ export const initialValuesBasedOnMal = mal => {
 		initialValuesMal.aareg = getUpdatedAaregData(initialValuesMal.aareg)
 	}
 	if (initialValuesMal.inntektsmelding) {
-		initialValuesMal.inntektsmelding = getUpdatedInntektsmeldingData(
-			initialValuesMal.inntektsmelding
+		initialValuesMal.inntektsmelding.inntekter = getUpdatedInntektsmeldingData(
+			initialValuesMal.inntektsmelding.inntekter
 		)
 	}
 	if (initialValuesMal.inntektstub) {
@@ -33,51 +33,27 @@ export const initialValuesBasedOnMal = mal => {
 }
 
 const getUpdatedInntektstubData = inntektstubData => {
-	const newInntektstubData = Object.assign({}, inntektstubData)
-	const inntektInfo = newInntektstubData.inntektsinformasjon
-	for (let i = 0; i < inntektInfo.length; i++) {
-		inntektInfo[i] = updateData(inntektInfo[i], initialValues.inntektstub)
-	}
+	let newInntektstubData = Object.assign({}, inntektstubData)
+	newInntektstubData.inntektsinformasjon = newInntektstubData.inntektsinformasjon.map(inntekt =>
+		updateData(inntekt, initialValues.inntektstub)
+	)
 	return newInntektstubData
 }
 
-const getUpdatedAaregData = aaregData => {
-	const newAaregData = Object.assign([], aaregData)
+const getUpdatedAaregData = aaregData =>
+	aaregData.map(data => {
+		data = updateData(data, initialValues.aareg[0])
+		data.permisjon = data.permisjon.map(data => updateData(data, initialValues.permisjon))
+		data.utenlandsopphold = data.utenlandsopphold.map(data =>
+			updateData(data, initialValues.utenlandsopphold)
+		)
+		return data
+	})
+const getUpdatedInntektsmeldingData = inntektsmeldingData =>
+	inntektsmeldingData.map(inntekt => updateData(inntekt, initialValues.inntektsmelding))
 
-	for (let i = 0; i < newAaregData.length; i++) {
-		newAaregData[i] = updateData(newAaregData[i], initialValues.aareg[0])
-		const permisjon = newAaregData[i]['permisjon']
-		const utenlandsopphold = newAaregData[i]['utenlandsopphold']
-		if (permisjon.length > 0) {
-			for (let j = 0; j < permisjon.length; j++) {
-				permisjon[j] = updateData(permisjon[j], initialValues.permisjon)
-			}
-		}
-		if (utenlandsopphold.length > 0) {
-			for (let j = 0; j < utenlandsopphold.length; j++) {
-				utenlandsopphold[j] = updateData(utenlandsopphold[j], initialValues.utenlandsopphold)
-			}
-		}
-	}
-	return newAaregData
-}
-
-const getUpdatedInntektsmeldingData = inntektsmeldingData => {
-	const newInntektsmeldingData = Object.assign({}, inntektsmeldingData)
-	const inntekter = newInntektsmeldingData.inntekter
-	for (let i = 0; i < inntekter.length; i++) {
-		inntekter[i] = updateData(inntekter[i], initialValues.inntektsmelding)
-	}
-	return newInntektsmeldingData
-}
-
-const getUpdatedInstData = instData => {
-	const newInstData = Object.assign([], instData)
-	for (let i = 0; i < newInstData.length; i++) {
-		newInstData[i] = updateData(newInstData[i], initialValues.instdata)
-	}
-	return newInstData
-}
+const getUpdatedInstData = instData =>
+	instData.map(data => updateData(data, initialValues.instdata))
 
 const getUpdatedPdlfData = pdlfData => {
 	const newPdlfData = Object.assign({}, pdlfData)
@@ -92,32 +68,25 @@ const getUpdatedPdlfData = pdlfData => {
 
 const getUpdatedTpsfData = tpsfData => {
 	var newTpsfData = Object.assign({}, tpsfData)
-	if(tpsfData.statsborgerskap){
+	if (tpsfData.statsborgerskap) {
 		newTpsfData = updateData(newTpsfData, initialValues.statborgerskap)
 	}
-	if(tpsfData.innvandretFraLand){
+	if (tpsfData.innvandretFraLand) {
 		newTpsfData = updateData(newTpsfData, initialValues.innvandretFra)
 	}
-	if(tpsfData.utvandretTilLand){
+	if (tpsfData.utvandretTilLand) {
 		newTpsfData = updateData(newTpsfData, initialValues.utvandretTil)
 	}
-	if(tpsfData.relasjoner){
+	if (tpsfData.relasjoner) {
 		if (tpsfData.relasjoner.partnere) {
-			console.log("test")
-			for (let i = 0; i < tpsfData.relasjoner.partnere.length; i++) {
-				newTpsfData.relasjoner.partnere[i] = updateData(
-					newTpsfData.relasjoner.partnere[i],
-					initialValues.partnere
-				)
-			}
+			newTpsfData.relasjoner.partnere = newTpsfData.relasjoner.partnere.map(partner =>
+				updateData(partner, initialValues.partnere)
+			)
 		}
 		if (tpsfData.relasjoner.barn) {
-			for (let i = 0; i < tpsfData.relasjoner.barn.length; i++) {
-				newTpsfData.relasjoner.barn[i] = updateData(
-					newTpsfData.relasjoner.barn[i],
-					initialValues.barn
-				)
-			}
+			newTpsfData.relasjoner.barn = newTpsfData.relasjoner.barn.map(barn =>
+				updateData(barn, initialValues.barn)
+			)
 		}
 	}
 
