@@ -25,7 +25,7 @@ jobs:
       - name: Compile
         env:
           GITHUB_USERNAME: token
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: mvn --settings maven-settings.xml compile
       - name: Test
         run: mvn --settings maven-settings.xml test
