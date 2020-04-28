@@ -4,13 +4,9 @@ import static no.nav.registre.testnorge.elsam.utils.DatoUtil.hentAlderFraFnr;
 
 import com.google.common.base.Charsets;
 import lombok.extern.slf4j.Slf4j;
-import no.kith.xmlstds.msghead._2006_05_24.XMLAddress;
-import no.kith.xmlstds.msghead._2006_05_24.XMLIdent;
-import no.kith.xmlstds.msghead._2006_05_24.XMLMsgHead;
-import no.kith.xmlstds.msghead._2006_05_24.XMLOrganisation;
-import no.kith.xmlstds.msghead._2006_05_24.XMLPatient;
-import no.trygdeetaten.xml.eiff._1.XMLEIFellesformat;
-import no.trygdeetaten.xml.eiff._1.XMLMottakenhetBlokk;
+import no.nav.helse.eiFellesformat.XMLMottakenhetBlokk;
+import no.nav.helse.msgHead.*;
+import no.nav.helse.eiFellesformat.XMLEIFellesformat;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

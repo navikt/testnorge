@@ -7,8 +7,8 @@ import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
 import static javax.xml.bind.Marshaller.JAXB_FRAGMENT;
 
 import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
-import no.kith.xmlstds.msghead._2006_05_24.XMLMsgHead;
-import no.trygdeetaten.xml.eiff._1.XMLEIFellesformat;
+import no.nav.helse.eiFellesformat.XMLEIFellesformat;
+import no.nav.helse.msgHead.XMLMsgHead;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

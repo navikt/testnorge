@@ -45,20 +45,19 @@
             <artifactId>mq-jms-spring-boot-starter</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>javax.activation</artifactId>
+            <version>${javax.activation.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>${jaxb.api.version}</version>
+        </dependency>
+
         <!--SYKMELDINGER-->
-
-        <dependency>
-            <groupId>no.nav.helse.xml</groupId>
-            <artifactId>fellesformat</artifactId>
-            <version>1.9daf0fa</version>
-        </dependency>
-
-        <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>nav-virksomhet-dokumentnotifikasjon-v1-meldingsdefinisjon</artifactId>
-            <version>${tjenestespesifikasjon.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>no.nav.helse.xml</groupId>
             <artifactId>kith-hodemelding</artifactId>
@@ -72,15 +71,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.sun.activation</groupId>
-            <artifactId>javax.activation</artifactId>
-            <version>${javax.activation.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <version>${jaxb.api.version}</version>
+            <groupId>no.nav.helse.xml</groupId>
+            <artifactId>xmlfellesformat</artifactId>
+            <version>1.e1999cf</version>
         </dependency>
 
         <!--DOCUMENTATION-->
