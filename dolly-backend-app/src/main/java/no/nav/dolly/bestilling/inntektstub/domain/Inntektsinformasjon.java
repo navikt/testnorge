@@ -38,7 +38,6 @@ public class Inntektsinformasjon {
     @EqualsAndHashCode.Exclude
     private List<Arbeidsforhold> arbeidsforholdsliste;
 
-    @EqualsAndHashCode.Exclude
     private Integer versjon;
 
     @EqualsAndHashCode.Exclude

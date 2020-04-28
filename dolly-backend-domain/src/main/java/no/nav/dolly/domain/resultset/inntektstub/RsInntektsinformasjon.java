@@ -69,6 +69,11 @@ public class RsInntektsinformasjon {
     )
     private List<Arbeidsforhold> arbeidsforholdsliste;
 
+    @ApiModelProperty(
+            position = 9
+    )
+    private Integer versjon;
+
     @Getter
     @Setter
     @Builder
