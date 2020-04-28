@@ -12,6 +12,7 @@ import { KontaktReservasjonsPanel } from './paneler/KontaktReservasjon'
 import { KontaktDoedsboPanel } from './paneler/KontaktDoedsbo'
 import { ArenaPanel } from './paneler/Arena'
 import { UdiPanel } from './paneler/Udi'
+import { BrregPanel } from './paneler/Brreg'
 
 export const Steg1 = ({ stateModifier }) => {
 	const opts = useContext(BestillingsveilederContext)
@@ -21,6 +22,7 @@ export const Steg1 = ({ stateModifier }) => {
 		AdressePanel,
 		FamilierelasjonPanel,
 		ArbeidInntektPanel,
+		BrregPanel,
 		IdentifikasjonPanel,
 		KontaktDoedsboPanel,
 		InstitusjonsoppholdPanel,
@@ -46,6 +48,13 @@ export const Steg1 = ({ stateModifier }) => {
 			)}
 
 			<ArbeidInntektPanel stateModifier={stateModifier} />
+
+			{!opts.is.leggTil && (
+				<>
+					<BrregPanel stateModifier={stateModifier} />
+				</>
+			)}
+
 			<IdentifikasjonPanel stateModifier={stateModifier} />
 			<KontaktDoedsboPanel stateModifier={stateModifier} />
 			<InstitusjonsoppholdPanel stateModifier={stateModifier} />
