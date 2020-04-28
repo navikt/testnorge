@@ -53,9 +53,9 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.syfo.tjenester</groupId>
+            <groupId>no.nav.helse.xml</groupId>
             <artifactId>fellesformat</artifactId>
-            <version>1.0-20180312.133836-1</version>
+            <version>1.9daf0fa</version>
         </dependency>
 
         <dependency>
