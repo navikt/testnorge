@@ -49,7 +49,7 @@ BrregstubForm.validation = {
 		understatuser: requiredNumber,
 		enheter: Yup.array().of(
 			Yup.object({
-				rollekode: requiredString.typeError(messages.required),
+				rollebeskrivelse: requiredString.typeError(messages.required),
 				registreringsdato: requiredDate,
 				foretaksNavn: Yup.object({
 					navn1: requiredString

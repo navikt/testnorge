@@ -7,7 +7,7 @@ import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 const initialValues = {
-	rollekode: '',
+	rollebeskrivelse: '',
 	registreringsdato: new Date(),
 	foretaksNavn: {
 		navn1: ''
@@ -24,14 +24,14 @@ export const EnheterForm = ({ formikBag }) => {
 			{path => (
 				<>
 					<DollySelect
-						name={`${path}.rollekode`}
-						label="Rollekode"
+						name={`${path}.rollebeskrivelse`}
+						label="Rollebeskrivelse"
 						options={rollerOptions}
 						isLoading={roller.loading}
-						onChange={rolle => formikBag.setFieldValue(`${path}.rollekode`, rolle.value)}
-						value={_get(formikBag.values, `${path}.rollekode`)}
+						onChange={rolle => formikBag.setFieldValue(`${path}.rollebeskrivelse`, rolle.value)}
+						value={_get(formikBag.values, `${path}.rollebeskrivelse`)}
 						feil={
-							_get(formikBag.values, `${path}.rollekode`) === '' && {
+							_get(formikBag.values, `${path}.rollebeskrivelse`) === '' && {
 								feilmelding: 'Feltet er påkrevd'
 							}
 						}

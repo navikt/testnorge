@@ -12,5 +12,10 @@ export default {
 	getUnderstatus() {
 		const endpoint = `${getBrregstubUrl()}/kode/understatus`
 		return Request.get(endpoint)
+	},
+
+	getPerson(ident) {
+		const endpoint = `${getBrregstubUrl()}/rolleoversikt`
+		return Request.get(endpoint, { headers: { 'Nav-Personident': ident } })
 	}
 }

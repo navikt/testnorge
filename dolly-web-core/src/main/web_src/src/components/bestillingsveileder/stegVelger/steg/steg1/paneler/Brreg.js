@@ -4,12 +4,10 @@ import { Attributt, AttributtKategori } from '../Attributt'
 
 export const BrregPanel = ({ stateModifier }) => {
 	const sm = stateModifier(BrregPanel.initialValues)
-	// TODO: Infotekst?
 
 	return (
 		<Panel
 			heading={BrregPanel.heading}
-			// informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="brreg"
@@ -32,13 +30,12 @@ BrregPanel.initialValues = ({ set, del, has }) => ({
 				understatuser: 0,
 				enheter: [
 					{
-						rollekode: '',
+						rollebeskrivelse: '',
 						registreringsdato: new Date(),
 						foretaksNavn: {
 							navn1: ''
 						},
 						orgNr: ''
-						// 922753458
 					}
 				]
 			})

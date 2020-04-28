@@ -104,7 +104,7 @@ SelectOptionsOppslag.formatOptions = (type, data) => {
 		const roller = data.value ? Object.entries(data.value.data) : []
 		const options = []
 		roller.forEach(rolle => {
-			options.push({ value: rolle[0], label: rolle[1] })
+			options.push({ value: rolle[1], label: rolle[1] })
 		})
 		return options
 	}
