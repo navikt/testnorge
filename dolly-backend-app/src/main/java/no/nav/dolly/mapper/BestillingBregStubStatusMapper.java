@@ -37,7 +37,7 @@ public final class BestillingBregStubStatusMapper {
                 singletonList(RsStatusRapport.builder().id(BREGSTUB).navn(BREGSTUB.getBeskrivelse())
                         .statuser(statusMap.entrySet().stream()
                                 .map(entry -> RsStatusRapport.Status.builder()
-                                        .melding(entry.getKey())
+                                        .melding(entry.getKey().replaceAll("=", ":"))
                                         .identer(entry.getValue())
                                         .build())
                                 .collect(Collectors.toList()))
