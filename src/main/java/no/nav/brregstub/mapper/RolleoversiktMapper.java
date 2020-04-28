@@ -49,13 +49,22 @@ public class RolleoversiktMapper {
         responseHeader.setFodselsnr(to.getFnr());
         responseHeader.setHovedStatus(to.getHovedstatus());
         var underStatus = new UnderStatus();
-        for (Integer understatus : to.getUnderstatuser()) {
+        if (to.getUnderstatuser() == null || to.getUnderstatuser().isEmpty()) {
             var underStatusMelding = new UnderStatusMelding();
-            underStatusMelding.setKode(understatus);
-            underStatusMelding.setValue(understatusKoder.get(understatus));
+            underStatusMelding.setKode(0);
+            underStatusMelding.setValue(understatusKoder.get(0));
 
             underStatus.getUnderStatusMelding().add(underStatusMelding);
+        } else {
+            for (Integer understatus : to.getUnderstatuser()) {
+                var underStatusMelding = new UnderStatusMelding();
+                underStatusMelding.setKode(understatus);
+                underStatusMelding.setValue(understatusKoder.get(understatus));
+
+                underStatus.getUnderStatusMelding().add(underStatusMelding);
+            }
         }
+
         responseHeader.setUnderStatus(underStatus);
         return responseHeader;
     }
