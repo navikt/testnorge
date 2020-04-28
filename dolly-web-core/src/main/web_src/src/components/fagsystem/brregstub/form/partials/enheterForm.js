@@ -30,6 +30,11 @@ export const EnheterForm = ({ formikBag }) => {
 						isLoading={roller.loading}
 						onChange={rolle => formikBag.setFieldValue(`${path}.rollekode`, rolle.value)}
 						value={_get(formikBag.values, `${path}.rollekode`)}
+						feil={
+							_get(formikBag.values, `${path}.rollekode`) === '' && {
+								feilmelding: 'Feltet er påkrevd'
+							}
+						}
 						size="large"
 						isClearable={false}
 					/>

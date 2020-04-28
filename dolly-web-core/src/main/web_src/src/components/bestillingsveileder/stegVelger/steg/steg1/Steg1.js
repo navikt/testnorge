@@ -22,6 +22,7 @@ export const Steg1 = ({ stateModifier }) => {
 		AdressePanel,
 		FamilierelasjonPanel,
 		ArbeidInntektPanel,
+		BrregPanel,
 		IdentifikasjonPanel,
 		KontaktDoedsboPanel,
 		InstitusjonsoppholdPanel,

@@ -39,7 +39,6 @@ export const SelectOptionsOppslag = {
 	hentRollerFraBrregstub: () => {
 		const rollerInfo = useAsync(async () => {
 			const response = await BrregstubApi.getRoller()
-			// console.log('response :>> ', response)
 			return response
 		}, [BrregstubApi.getRoller])
 		return rollerInfo
@@ -48,7 +47,6 @@ export const SelectOptionsOppslag = {
 	hentUnderstatusFraBrregstub: () => {
 		const understatusInfo = useAsync(async () => {
 			const response = await BrregstubApi.getUnderstatus()
-			// console.log('response :>> ', response)
 			return response
 		}, [BrregstubApi.getUnderstatus])
 		return understatusInfo

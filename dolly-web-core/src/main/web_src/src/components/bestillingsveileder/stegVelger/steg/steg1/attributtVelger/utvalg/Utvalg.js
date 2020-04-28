@@ -2,7 +2,6 @@ import React from 'react'
 import './Utvalg.less'
 
 export const Utvalg = ({ checked }) => {
-	console.log('checked :>> ', checked)
 	const renderPanel = ({ label, values }, idx) => (
 		<ul key={idx}>
 			<li>
