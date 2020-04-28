@@ -122,14 +122,17 @@ export const initialValues = {
 	},
 	statborgerskap: {
 		statborgerskap: '',
-		statsborgerskapRegdato: ''
+		// @ts-ignore
+		statsborgerskapRegdato: null
 	},
 	utvandretTil: {
 		utvandretTilLand: '',
-		utvandretTilLandFlyttedato: ''
+		// @ts-ignore
+		utvandretTilLandFlyttedato: null
 	},
 	innvandretFra: {
 		innvandretFraLand: '',
-		innvandretFraLandFlyttedato: ''
+		// @ts-ignore
+		innvandretFraLandFlyttedato: null
 	}
 }
