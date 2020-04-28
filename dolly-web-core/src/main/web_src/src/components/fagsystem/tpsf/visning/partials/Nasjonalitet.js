@@ -32,29 +32,31 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 				<TitleValue title="Språk" kodeverk="Språk" value={sprakKode} />
 			</div>
 
-			<DollyFieldArray data={innvandretUtvandret} header={'Innvandret/utvandret'}>
-				{(id, idx) => (
-					<React.Fragment>
-						{innvandretUtvandret && (
-							<>
-								<TitleValue
-									title={
-										innvandretUtvandret[idx].innutvandret === 'UTVANDRET'
-											? 'Utvandret til'
-											: 'Innvandret fra'
-									}
-									kodeverk="Landkoder"
-									value={innvandretUtvandret[idx].landkode}
-								/>
-								<TitleValue
-									title="Flyttedato"
-									value={Formatters.formatDate(innvandretUtvandret[idx].flyttedato)}
-								/>
-							</>
-						)}
-					</React.Fragment>
-				)}
-			</DollyFieldArray>
+			{innvandretUtvandret.length > 0 && (
+				<DollyFieldArray data={innvandretUtvandret} header={'Innvandret/utvandret'} nested>
+					{(id, idx) => (
+						<React.Fragment>
+							{innvandretUtvandret && (
+								<>
+									<TitleValue
+										title={
+											innvandretUtvandret[idx].innutvandret === 'UTVANDRET'
+												? 'Utvandret til'
+												: 'Innvandret fra'
+										}
+										kodeverk="Landkoder"
+										value={innvandretUtvandret[idx].landkode}
+									/>
+									<TitleValue
+										title="Flyttedato"
+										value={Formatters.formatDate(innvandretUtvandret[idx].flyttedato)}
+									/>
+								</>
+							)}
+						</React.Fragment>
+					)}
+				</DollyFieldArray>
+			)}
 		</div>
 	)
 }

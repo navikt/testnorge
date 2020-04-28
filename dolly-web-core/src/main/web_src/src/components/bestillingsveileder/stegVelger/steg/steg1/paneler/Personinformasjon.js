@@ -12,7 +12,7 @@ export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => 
 
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende
 	if (leggTil && personFoerLeggTil) {
-		const innvandretEllerUtvandret = personFoerLeggTil.innvandretUtvandret[0].innutvandret
+		const innvandret = personFoerLeggTil.innvandretUtvandret[0].innutvandret === 'INNVANDRET'
 
 		const infoTekst =
 			'For å utvandre, må en person først innvandre. Det er heller ikke mulig å innvandre to ganger på rad uten først å utvandre'
@@ -31,11 +31,13 @@ export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => 
 					<AttributtKategori title="Nasjonalitet">
 						<Attributt
 							attr={sm.attrs.innvandretFraLand}
-							disabled={innvandretEllerUtvandret == 'INNVANDRET'}
+							disabled={innvandret}
+							title={innvandret ? 'Personen må utvandre før den kan innvandre igjen' : null}
 						/>
 						<Attributt
 							attr={sm.attrs.utvandretTilLand}
-							disabled={innvandretEllerUtvandret == 'UTVANDRET'}
+							disabled={!innvandret}
+							title={!innvandret ? 'Personen må innvandre før den kan utvandre igjen' : null}
 						/>
 					</AttributtKategori>
 				</Panel>

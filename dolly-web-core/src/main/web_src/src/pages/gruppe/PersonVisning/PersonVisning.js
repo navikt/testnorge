@@ -33,7 +33,7 @@ export const PersonVisning = ({
 	useMount(fetchDataFraFagsystemer)
 	return (
 		<div className="person-visning">
-			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.bestilling.tpsf)} />
+			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)} />
 			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			<AaregVisning data={data.aareg} loading={loading.aareg} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
