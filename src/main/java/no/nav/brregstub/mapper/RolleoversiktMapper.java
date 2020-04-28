@@ -131,6 +131,9 @@ public class RolleoversiktMapper {
 
 
     private static AdresseType1 mapTilAdresse(AdresseTo to) {
+        if (to == null) {
+            return null;
+        }
         var adresse = new AdresseType1();
         adresse.setAdresse1(to.getAdresse1());
         adresse.setAdresse2(to.getAdresse2());
@@ -145,6 +148,9 @@ public class RolleoversiktMapper {
     }
 
     private static AdresseType2 mapTilAdresse2(AdresseTo to) {
+        if (to == null) {
+            return null;
+        }
         var adresse = new AdresseType2();
         adresse.setAdresse1(to.getAdresse1());
         adresse.setAdresse2(to.getAdresse2());
