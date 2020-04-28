@@ -9,7 +9,7 @@ export const AaregOrgnummerSelect = ({ path }) => (
 		onFetch={() =>
 			SelectOptionsOppslag.hentOrgnr().then(({ liste }) =>
 				liste
-					.filter(org => org.juridiskEnhet)
+					.filter(org => org.kanHaArbeidsforhold)
 					.map(org => ({
 						value: org.orgnr,
 						label: `${org.orgnr} (${org.enhetstype}) - ${org.navn}`
