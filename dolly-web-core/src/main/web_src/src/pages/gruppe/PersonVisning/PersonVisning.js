@@ -32,7 +32,7 @@ export const PersonVisning = ({
 	leggTilPaaPerson
 }) => {
 	useMount(fetchDataFraFagsystemer)
-	// console.log('data :>> ', data)
+
 	return (
 		<div className="person-visning">
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestilling.bestilling.tpsf)} />
