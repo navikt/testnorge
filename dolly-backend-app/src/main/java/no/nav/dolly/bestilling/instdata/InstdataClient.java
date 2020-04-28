@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.instdata;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Collections.emptyList;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
@@ -96,7 +95,7 @@ public class InstdataClient implements ClientRegister {
                     .collect(Collectors.toList());
         } else {
 
-            return emptyList();
+            return instdataRequest;
         }
     }
 
