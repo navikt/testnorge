@@ -2,9 +2,9 @@ package no.nav.dolly.bestilling.bregstub.mapper;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.bregstub.domain.RolleutskriftTo.AdresseTo;
-import static no.nav.dolly.bestilling.bregstub.domain.RolleutskriftTo.NavnTo;
-import static no.nav.dolly.bestilling.bregstub.domain.RolleutskriftTo.RolleTo;
+import static no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo.AdresseTo;
+import static no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo.NavnTo;
+import static no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo.RolleTo;
 
 import java.time.LocalDate;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.bregstub.domain.RolleutskriftTo;
+import no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
@@ -26,20 +26,20 @@ public class RolleutskriftMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(RolleUtskriftMapper.BregPerson.class, RolleutskriftTo.class)
-                .customize(new CustomMapper<RolleUtskriftMapper.BregPerson, RolleutskriftTo>() {
+        factory.classMap(RolleUtskriftMapper.BregPerson.class, RolleoversiktTo.class)
+                .customize(new CustomMapper<RolleUtskriftMapper.BregPerson, RolleoversiktTo>() {
                     @Override
-                    public void mapAtoB(RolleUtskriftMapper.BregPerson bregPerson, RolleutskriftTo rolleutskriftTo, MappingContext context) {
+                    public void mapAtoB(RolleUtskriftMapper.BregPerson bregPerson, RolleoversiktTo rolleoversiktTo, MappingContext context) {
 
                         Person rollePerson = bregPerson.getTpsPerson().getPerson(bregPerson.getTpsPerson().getHovedperson());
 
-                        rolleutskriftTo.setEnheter(mapperFacade.mapAsList(bregPerson.getBregdata().getEnheter(), RolleTo.class));
+                        rolleoversiktTo.setEnheter(mapperFacade.mapAsList(bregPerson.getBregdata().getEnheter(), RolleTo.class));
 
-                        rolleutskriftTo.setFnr(bregPerson.getTpsPerson().getHovedperson());
-                        rolleutskriftTo.setFodselsdato(rollePerson.getFoedselsdato().toLocalDate());
-                        rolleutskriftTo.setNavn(mapperFacade.map(rollePerson, NavnTo.class));
-                        rolleutskriftTo.setAdresse(mapperFacade.map(rollePerson, AdresseTo.class));
-                        rolleutskriftTo.setHovedstatus(0);
+                        rolleoversiktTo.setFnr(bregPerson.getTpsPerson().getHovedperson());
+                        rolleoversiktTo.setFodselsdato(rollePerson.getFoedselsdato().toLocalDate());
+                        rolleoversiktTo.setNavn(mapperFacade.map(rollePerson, NavnTo.class));
+                        rolleoversiktTo.setAdresse(mapperFacade.map(rollePerson, AdresseTo.class));
+                        rolleoversiktTo.setHovedstatus(0);
                     }
                 })
                 .register();

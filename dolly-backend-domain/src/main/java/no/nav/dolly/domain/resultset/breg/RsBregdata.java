@@ -18,11 +18,6 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsBregdata {
 
-    public enum Rollekode {
-        BEST, BOBE, DAGL, DELT, DTPR, DTSO, FFØR, INNH, KOMP, KONT,
-        LEDE, MEDL, NEST, OBS, PROK, REGN, REPR, SIGN, STYR, SAM, VARA
-    }
-
     @ApiModelProperty(
             position = 1
     )
@@ -70,7 +65,7 @@ public class RsBregdata {
                 position = 6,
                 required = true
         )
-        private Rollekode rollekode;
+        private String rollebeskrivelse;
     }
 
     @Getter
@@ -123,34 +118,21 @@ public class RsBregdata {
         @ApiModelProperty(
                 position = 4
         )
-        private String kommune;
-
-        @ApiModelProperty(
-                position = 5
-        )
         private String kommunenr;
 
         @ApiModelProperty(
-                position = 6,
-                required = true
-        )
-        private String land;
-
-        @ApiModelProperty(
-                position = 7,
+                position = 5,
                 required = true
         )
         private String landKode;
 
         @ApiModelProperty(
-                position = 8,
-                required = true
+                position = 6
         )
         private String postnr;
 
         @ApiModelProperty(
-                position = 9,
-                required = true
+                position = 7
         )
         private String poststed;
     }

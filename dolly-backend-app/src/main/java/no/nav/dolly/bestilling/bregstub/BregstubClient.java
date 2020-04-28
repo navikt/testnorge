@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.bregstub.domain.RolleutskriftTo;
+import no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo;
 import no.nav.dolly.bestilling.bregstub.mapper.RolleUtskriftMapper;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -28,10 +28,10 @@ public class BregstubClient implements ClientRegister {
 
         if (nonNull(bestilling.getBregstub())) {
 
-            RolleutskriftTo rolleutskriftTo = rolleUtskriftMapper.map(bestilling.getBregstub(), tpsPerson);
+            RolleoversiktTo rolleoversiktTo = rolleUtskriftMapper.map(bestilling.getBregstub(), tpsPerson);
             bregstubConsumer.deleteGrunndata(tpsPerson.getHovedperson());
 
-            progress.setBregstubStatus(postRolleutskrift(rolleutskriftTo));
+            progress.setBregstubStatus(postRolleutskrift(rolleoversiktTo));
         }
     }
 
@@ -40,10 +40,10 @@ public class BregstubClient implements ClientRegister {
         identer.forEach(bregstubConsumer::deleteGrunndata);
     }
 
-    private String postRolleutskrift(RolleutskriftTo rolleutskriftTo) {
+    private String postRolleutskrift(RolleoversiktTo rolleoversiktTo) {
 
         try {
-            ResponseEntity status = bregstubConsumer.postGrunndata(rolleutskriftTo);
+            ResponseEntity status = bregstubConsumer.postGrunndata(rolleoversiktTo);
             if (HttpStatus.CREATED == status.getStatusCode()) {
                 return "OK";
             }

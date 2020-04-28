@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RolleutskriftTo {
+public class RolleoversiktTo {
 
     private AdresseTo adresse;
     private List<RolleTo> enheter;

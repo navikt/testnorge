@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.bregstub.domain.RolleutskriftTo;
+import no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.service.TpsfPersonCache;
@@ -19,10 +19,10 @@ public class RolleUtskriftMapper {
     private final MapperFacade mapperFacade;
     private final TpsfPersonCache tpsfPersonCache;
 
-    public RolleutskriftTo map(RsBregdata bregdata, TpsPerson tpsPerson) {
+    public RolleoversiktTo map(RsBregdata bregdata, TpsPerson tpsPerson) {
 
         tpsfPersonCache.fetchIfEmpty(tpsPerson);
-        return mapperFacade.map(new BregPerson(bregdata, tpsPerson), RolleutskriftTo.class);
+        return mapperFacade.map(new BregPerson(bregdata, tpsPerson), RolleoversiktTo.class);
     }
 
     @Getter

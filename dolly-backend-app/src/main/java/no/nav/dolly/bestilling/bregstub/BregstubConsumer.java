@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.bregstub.domain.RolleutskriftTo;
+import no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
@@ -22,11 +22,11 @@ public class BregstubConsumer {
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
 
-    public ResponseEntity postGrunndata(RolleutskriftTo rolleutskriftTo) {
+    public ResponseEntity postGrunndata(RolleoversiktTo rolleoversiktTo) {
 
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getBregstub().getUrl() + GRUNNDATA_URL))
-                .body(rolleutskriftTo), RolleutskriftTo.class);
+                .body(rolleoversiktTo), RolleoversiktTo.class);
     }
 
     public void deleteGrunndata(String ident) {
