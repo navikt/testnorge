@@ -1,25 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import _get from 'lodash/get'
+import React, { useState } from 'react'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { AaregOrgnummerSelect } from './aaregOrgnummerSelect'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 
 const inputValg = { fraListe: 'velg', skrivSelv: 'skriv' }
 
 export const OrgnummerToggle = ({ formikBag, path }) => {
-	const [inputType, setInputType] = useState()
-
-	useEffect(() => {
-		const orgnr = _get(formikBag.values, path)
-		const setInitial = async () => {
-			const response = await SelectOptionsOppslag.hentOrgnr()
-			if (!orgnr || response.liste.some(org => org.orgnr === orgnr)) {
-				setInputType(inputValg.fraListe)
-			} else setInputType(inputValg.skrivSelv)
-		}
-		setInitial()
-	}, [])
+	const [inputType, setInputType] = useState(inputValg.fraListe)
 
 	const handleToggleChange = event => {
 		setInputType(event.target.value)
@@ -46,7 +33,7 @@ export const OrgnummerToggle = ({ formikBag, path }) => {
 			</ToggleGruppe>
 
 			{inputType === inputValg.fraListe ? (
-				<AaregOrgnummerSelect path={path} />
+				<OrganisasjonMedArbeidsforholdSelect path={path} label={'Organisasjonsnummer'} />
 			) : (
 				<FormikTextInput name={path} size="xlarge" />
 			)}
