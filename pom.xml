@@ -46,6 +46,7 @@
         <javax.activation.version>1.2.0</javax.activation.version>
         <jaxb.api.version>2.3.0</jaxb.api.version>
         <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
+        <tjenestespesifikasjon.version>1.2020.04.27-15.39-c32c8960a220</tjenestespesifikasjon.version>
     </properties>
 
     <dependencyManagement>

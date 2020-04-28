@@ -46,11 +46,6 @@
         </dependency>
 
         <!--SYKMELDINGER-->
-        <dependency>
-            <groupId>no.nav.syfo.tjenester</groupId>
-            <artifactId>fellesformat</artifactId>
-            <version>1.0</version>
-        </dependency>
 
         <dependency>
             <groupId>no.nav.helse.xml</groupId>
@@ -59,21 +54,21 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.syfo.tjenester</groupId>
-            <artifactId>dokumentnotifikasjon-v1</artifactId>
-            <version>1.0</version>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
+            <artifactId>nav-virksomhet-dokumentnotifikasjon-v1-meldingsdefinisjon</artifactId>
+            <version>${tjenestespesifikasjon.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>no.nav.syfo.tjenester</groupId>
+            <groupId>no.nav.helse.xml</groupId>
             <artifactId>kith-hodemelding</artifactId>
-            <version>1.1</version>
+            <version>1.9daf0fa</version>
         </dependency>
 
         <dependency>
-            <groupId>no.nav.sbl</groupId>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>digisyfo-sykmelding</artifactId>
-            <version>1.0.1</version>
+            <version>${tjenestespesifikasjon.version}</version>
         </dependency>
 
         <dependency>
