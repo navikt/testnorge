@@ -1,5 +1,5 @@
 import { useAsync } from 'react-use'
-import { DollyApi } from '~/service/Api'
+import { DollyApi, BrregstubApi } from '~/service/Api'
 import config from '~/config'
 import Api from '~/api'
 import _isNil from 'lodash/isNil'
@@ -34,6 +34,24 @@ export const SelectOptionsOppslag = {
 			return response
 		}, [DollyApi.getKodeverkByNavn])
 		return arbeidsforholdstyper
+	},
+
+	hentRollerFraBrregstub: () => {
+		const rollerInfo = useAsync(async () => {
+			const response = await BrregstubApi.getRoller()
+			// console.log('response :>> ', response)
+			return response
+		}, [BrregstubApi.getRoller])
+		return rollerInfo
+	},
+
+	hentUnderstatusFraBrregstub: () => {
+		const understatusInfo = useAsync(async () => {
+			const response = await BrregstubApi.getUnderstatus()
+			// console.log('response :>> ', response)
+			return response
+		}, [BrregstubApi.getUnderstatus])
+		return understatusInfo
 	}
 }
 
@@ -76,6 +94,20 @@ SelectOptionsOppslag.formatOptions = (type, data) => {
 					option.label = 'Pensjoner og andre typer ytelser uten ansettelsesforhold'
 				}
 			})
+		return options
+	} else if (type === 'understatuser') {
+		const statuser = data.value ? Object.entries(data.value.data) : []
+		const options = []
+		statuser.forEach(status => {
+			options.push({ value: parseInt(status[0]), label: `${status[0]}: ${status[1]}` })
+		})
+		return options
+	} else if (type === 'roller') {
+		const roller = data.value ? Object.entries(data.value.data) : []
+		const options = []
+		roller.forEach(rolle => {
+			options.push({ value: rolle[0], label: rolle[1] })
+		})
 		return options
 	}
 }

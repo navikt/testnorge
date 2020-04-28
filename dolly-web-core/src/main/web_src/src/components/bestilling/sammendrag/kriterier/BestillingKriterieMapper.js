@@ -389,6 +389,28 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(inntektStub)
 	}
 
+	console.log('bestillingData :>> ', bestillingData)
+	const brregstubKriterier = bestillingData.bregstub
+
+	if (brregstubKriterier) {
+		const brregstub = {
+			header: 'Brønnøysundregistrene',
+			items: [obj('Understatus', brregstubKriterier.understatuser)], // TODO: vis med label
+			itemRows: []
+		}
+		brregstubKriterier.enheter.forEach((enhet, i) => {
+			brregstub.itemRows.push([
+				{ numberHeader: `Enhet ${i + 1}` },
+				obj('Rollekode', enhet.rollekode), // TODO: vis med label
+				obj('Registreringsdato', Formatters.formatDate(enhet.registreringsdato)),
+				obj('Foretaksnavn', enhet.foretaksNavn.navn1),
+				obj('Organisasjonsnummer', enhet.orgNr)
+			])
+		})
+
+		data.push(brregstub)
+	}
+
 	const krrKriterier = bestillingData.krrstub
 
 	if (krrKriterier) {
