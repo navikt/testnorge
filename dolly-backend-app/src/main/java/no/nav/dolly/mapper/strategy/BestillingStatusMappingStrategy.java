@@ -35,7 +35,8 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
 
     private final JsonBestillingMapper jsonBestillingMapper;
 
-    @Override public void register(MapperFactory factory) {
+    @Override
+    public void register(MapperFactory factory) {
         factory.classMap(Bestilling.class, RsBestillingStatus.class)
                 .customize(new CustomMapper<Bestilling, RsBestillingStatus>() {
                     @Override public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {

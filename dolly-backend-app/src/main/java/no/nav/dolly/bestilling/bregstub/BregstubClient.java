@@ -24,7 +24,8 @@ public class BregstubClient implements ClientRegister {
     private final RolleUtskriftMapper rolleUtskriftMapper;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    @Override public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    @Override
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getBregstub())) {
 
@@ -35,7 +36,8 @@ public class BregstubClient implements ClientRegister {
         }
     }
 
-    @Override public void release(List<String> identer) {
+    @Override
+    public void release(List<String> identer) {
 
         identer.forEach(bregstubConsumer::deleteGrunndata);
     }
