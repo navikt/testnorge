@@ -1,6 +1,5 @@
 package no.nav.registre.sdForvalter.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -26,7 +25,7 @@ public abstract class FasteDataListe<T extends FasteData> {
     @JsonProperty
     private final List<T> liste;
 
-    <I extends FasteDataModel<T>> FasteDataListe(Iterable<I> iterable) {
+     <I extends FasteDataModel<T>> FasteDataListe(Iterable<I> iterable) {
         liste = new ArrayList<>();
         iterable.forEach(item -> liste.add(item.toDomain()));
     }

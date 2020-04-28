@@ -1,4 +1,4 @@
-package no.nav.registre.sdForvalter.provider.rs;
+package no.nav.registre.sdForvalter.provider.rs.v1;
 
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
@@ -31,7 +31,7 @@ import no.nav.registre.sdForvalter.domain.AaregListe;
 @TestPropertySource(
         locations = "classpath:application-test.properties"
 )
-public class StaticDataControllerAaregIntegrationTest {
+public class StaticDataControllerV1AaregIntegrationTest {
     @Autowired
     private MockMvc mvc;
 

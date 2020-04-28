@@ -1,4 +1,4 @@
-package no.nav.registre.sdForvalter.provider.rs;
+package no.nav.registre.sdForvalter.provider.rs.v1;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import no.nav.registre.sdForvalter.adapter.AaregAdapter;
 import no.nav.registre.sdForvalter.adapter.EregAdapter;
 import no.nav.registre.sdForvalter.adapter.KrrAdapter;
 import no.nav.registre.sdForvalter.adapter.TpsIdenterAdapter;
 import no.nav.registre.sdForvalter.domain.AaregListe;
+import no.nav.registre.sdForvalter.domain.Ereg;
 import no.nav.registre.sdForvalter.domain.EregListe;
 import no.nav.registre.sdForvalter.domain.KrrListe;
 import no.nav.registre.sdForvalter.domain.TpsIdentListe;
@@ -23,7 +27,7 @@ import no.nav.registre.sdForvalter.domain.TpsIdentListe;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/faste-data")
-public class StaticDataController {
+public class StaticDataControllerV1 {
 
     private final TpsIdenterAdapter tpsIdenterAdapter;
     private final EregAdapter eregAdapter;
@@ -61,11 +65,25 @@ public class StaticDataController {
         return ResponseEntity.ok(krrAdapter.save(liste));
     }
 
+
+    /**
+     * @deprecated bruk v2 av apiet
+     */
+    @Deprecated
     @GetMapping("/ereg")
     public ResponseEntity<EregListe> getEregStaticData(@RequestParam(name = "gruppe", required = false) String gruppe) {
-        return ResponseEntity.ok(eregAdapter.fetchBy(gruppe));
+        List<Ereg> list = eregAdapter
+                .fetchBy(gruppe)
+                .stream()
+                .filter(item -> item.getEnhetstype().equals("AS") || item.getEnhetstype().equals("BEDR"))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(new EregListe(list));
     }
 
+    /**
+     * @deprecated bruk v2 av apiet
+     */
+    @Deprecated
     @PostMapping("/ereg")
     public ResponseEntity<EregListe> createEregStaticData(@RequestBody EregListe eregs) {
         return ResponseEntity.ok(eregAdapter.save(eregs));

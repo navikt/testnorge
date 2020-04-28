@@ -1,4 +1,4 @@
-package no.nav.registre.sdForvalter.provider.rs;
+package no.nav.registre.sdForvalter.provider.rs.v2;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,8 +19,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 
 import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.GruppeModel;
@@ -39,7 +39,8 @@ import no.nav.registre.sdForvalter.domain.Opprinnelse;
 @TestPropertySource(
         locations = "classpath:application-test.properties"
 )
-public class StaticDataControllerEregIntegrationTest {
+public class StaticDataControllerV2EregIntegrationTest {
+    private static final String EREG_API = "/api/v2/faste-data/ereg/";
     @Autowired
     private MockMvc mvc;
 
@@ -56,13 +57,80 @@ public class StaticDataControllerEregIntegrationTest {
     private GruppeRepository gruppeRepository;
 
     @Test
+    public void should_not_have_arbeidsforhold() throws Exception {
+        EregModel as = createEregModel("999999999", "AS");
+        EregModel ans = createEregModel("888888888", "ANS");
+
+        eregRepository.saveAll(Arrays.asList(as, ans));
+
+        String json = mvc.perform(get(EREG_API)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        EregListe response = objectMapper.readValue(json, EregListe.class);
+        assertThat(response.getListe()).hasSize(2);
+        assertThat(response.getListe().get(0).isKanHaArbeidsforhold()).isFalse();
+        assertThat(response.getListe().get(1).isKanHaArbeidsforhold()).isFalse();
+    }
+
+
+    @Test
+    public void should_have_arbeidsforhold() throws Exception {
+        EregModel aafy = createEregModel("999999999", "AAFY");
+        EregModel bedr = createEregModel("888888888", "BEDR");
+
+        eregRepository.saveAll(Arrays.asList(aafy, bedr));
+
+        String json = mvc.perform(get(EREG_API)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        EregListe response = objectMapper.readValue(json, EregListe.class);
+        assertThat(response.getListe()).hasSize(2);
+        assertThat(response.getListe().get(0).isKanHaArbeidsforhold()).isTrue();
+        assertThat(response.getListe().get(1).isKanHaArbeidsforhold()).isTrue();
+    }
+
+    @Test
+    public void should_only_get_EREGS() throws Exception {
+        EregModel as = createEregModel("999999999", "AS");
+        EregModel bedr = createEregModel("888888888", "BEDR");
+        EregModel ans = createEregModel("888888881", "ANS");
+        EregModel enk = createEregModel("888888882", "ENK");
+
+        eregRepository.saveAll(Arrays.asList(as, bedr, ans, enk));
+
+        String json = mvc.perform(get(EREG_API)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        EregListe response = objectMapper.readValue(json, EregListe.class);
+        assertThat(response.getListe()).containsOnly(
+                new Ereg(as),
+                new Ereg(bedr),
+                new Ereg(enk),
+                new Ereg(ans)
+        );
+    }
+
+
+    @Test
     public void shouldGetEregsWithOpprinnelse() throws Exception {
         OpprinnelseModel altinn = opprinnelseRepository.save(new OpprinnelseModel("Altinn"));
         EregModel model = createEregModel("123456789", "BEDR", altinn);
 
         eregRepository.save(model);
 
-        String json = mvc.perform(get("/api/v1/faste-data/ereg/")
+        String json = mvc.perform(get(EREG_API)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -76,7 +144,7 @@ public class StaticDataControllerEregIntegrationTest {
     @Test
     public void shouldAddEregSetToDatabase() throws Exception {
         Ereg ereg = createEreg("987654321", "BEDR");
-        mvc.perform(post("/api/v1/faste-data/ereg/")
+        mvc.perform(post(EREG_API)
                 .content(objectMapper.writeValueAsString(create(ereg)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -100,7 +168,7 @@ public class StaticDataControllerEregIntegrationTest {
         EregModel eregModel = createEregModel("987654321", "BEDR", gruppeModel);
         eregRepository.save(eregModel);
 
-        String json = mvc.perform(get("/api/v1/faste-data/ereg/")
+        String json = mvc.perform(get(EREG_API)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -125,7 +193,7 @@ public class StaticDataControllerEregIntegrationTest {
         eregRepository.saveAll(Arrays.asList(eregModel, eregWithGruppeModel));
 
         String json = mvc.perform(
-                get("/api/v1/faste-data/ereg/")
+                get(EREG_API)
                         .param("gruppe", gruppeModel.getKode())
                         .contentType(MediaType.APPLICATION_JSON)
         )
@@ -147,7 +215,7 @@ public class StaticDataControllerEregIntegrationTest {
         ));
         Ereg ereg = createEreg("987654321", "BEDR", new Gruppe(gruppeModel));
 
-        mvc.perform(post("/api/v1/faste-data/ereg/")
+        mvc.perform(post(EREG_API)
                 .content(objectMapper.writeValueAsString(create(ereg)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -164,7 +232,7 @@ public class StaticDataControllerEregIntegrationTest {
         Opprinnelse altinn = new Opprinnelse("Altinn");
         Ereg ereg_123456789 = createEreg("123456789", "BEDR", altinn.getNavn());
         Ereg ereg_987654321 = createEreg("987654321", "BEDR", altinn.getNavn());
-        mvc.perform(post("/api/v1/faste-data/ereg/")
+        mvc.perform(post(EREG_API)
                 .content(objectMapper.writeValueAsString(create(ereg_123456789, ereg_987654321)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
