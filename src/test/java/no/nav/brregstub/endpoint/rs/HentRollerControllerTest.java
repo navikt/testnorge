@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,7 +59,7 @@ public class HentRollerControllerTest {
 
 
     @Test
-    @DisplayName("DELETE rolleutskrift skal slette rolleutskrift")
+    @DisplayName("DELETE rolle skal slettes fra database")
     public void skalSletteRolleutskrift() {
         var rolleSomSkalSlettes = new HentRolle();
         rolleSomSkalSlettes.setOrgnr(3);
@@ -75,16 +76,28 @@ public class HentRollerControllerTest {
 
 
     @Test
-    @DisplayName("POST rolleutskrift skal opprette ny rolleutskrift")
+    @DisplayName("POST rolle skal opprette ny databaseinnslag")
     public void skalLagreRequestIDatabase() {
         var to = new OrganisasjonTo();
         to.setOrgnr(4);
-        to.setHovedstatus(1);
+        to.setRegistreringsdato(LocalDate.now());
+
 
         var response =
                 restTemplate.exchange(API_V_1_ROLLER, HttpMethod.POST, new HttpEntity<>(to), Map.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody().get("path")).isEqualTo("/api/v1/hentrolle/4");
+
+    }
+
+    @Test
+    @DisplayName("POST rolle returnere bad request ved manglende feilt")
+    public void skalReturnereBadRequestVedValideringsFeil() {
+        var to = new OrganisasjonTo();
+
+        var response =
+                restTemplate.exchange(API_V_1_ROLLER, HttpMethod.POST, new HttpEntity<>(to), Map.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
     }
 }

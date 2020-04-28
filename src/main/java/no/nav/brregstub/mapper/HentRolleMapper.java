@@ -67,46 +67,64 @@ public class HentRolleMapper {
     }
 
     private static Melding.Kontaktperson mapTilKontaktperson(OrganisasjonTo to) {
-        var kontaktperson = new Melding.Kontaktperson();
-        kontaktperson.getSamendring().add(mapTilSamendring(to.getKontaktperson(), RolleKode.KONT));
-        return kontaktperson;
+        if (to.getKontaktperson() != null) {
+            var kontaktperson = new Melding.Kontaktperson();
+            kontaktperson.getSamendring().add(mapTilSamendring(to.getKontaktperson(), RolleKode.KONT));
+            return kontaktperson;
+        }
+        return null;
     }
 
     private static Melding.Styre mapTilStyre(OrganisasjonTo to) {
-        var styre = new Melding.Styre();
-        styre.getSamendring().add(mapTilSamendring(to.getStyre(), RolleKode.STYR));
-        return styre;
+        if (to.getStyre() != null) {
+            var styre = new Melding.Styre();
+            styre.getSamendring().add(mapTilSamendring(to.getStyre(), RolleKode.STYR));
+            return styre;
+        }
+        return null;
     }
 
     private static Melding.Deltakere mapTilDeltakere(OrganisasjonTo to) {
-        var deltakere = new Melding.Deltakere();
-        deltakere.getSamendring().add(mapTilSamendring(to.getDeltakere(), RolleKode.DELT));
-        return deltakere;
+        if (to.getDeltakere() != null) {
+            var deltakere = new Melding.Deltakere();
+            deltakere.getSamendring().add(mapTilSamendring(to.getDeltakere(), RolleKode.DELT));
+            return deltakere;
+        }
+        return null;
     }
 
     private static Melding.Komplementar mapTilKomplementar(OrganisasjonTo to) {
-        var komplementar = new Melding.Komplementar();
-        komplementar.getSamendring().add(mapTilSamendring(to.getKomplementar(), RolleKode.KOMP));
-        return komplementar;
+        if (to.getKomplementar() != null) {
+            var komplementar = new Melding.Komplementar();
+            komplementar.getSamendring().add(mapTilSamendring(to.getKomplementar(), RolleKode.KOMP));
+            return komplementar;
+        }
+        return null;
     }
 
     private static Melding.Sameiere mapTilSameiere(OrganisasjonTo to) {
-        var sameier = new Melding.Sameiere();
-        sameier.getSamendring().add(mapTilSamendring(to.getSameier(), RolleKode.SAM));
-        return sameier;
+        if (to.getSameier() != null) {
+            var sameier = new Melding.Sameiere();
+            sameier.getSamendring().add(mapTilSamendring(to.getSameier(), RolleKode.SAM));
+            return sameier;
+        }
+        return null;
     }
 
     private static Samendring mapTilSamendring(SamendringTo to, RolleKode rolleKode) {
-        var samendring = new Samendring();
-        samendring.setSamendringstype(rolleKode.name());
-        samendring.setBeskrivelse(rolleKode.getBeskrivelse());
-        samendring.setRegistreringsDato(localDateToXmlGregorianCalendar(to.getRegistringsDato()));
+        if (to.getRoller().size() > 0) {
+            var samendring = new Samendring();
+            samendring.setSamendringstype(rolleKode.name());
+            samendring.setBeskrivelse(rolleKode.getBeskrivelse());
+            samendring.setRegistreringsDato(localDateToXmlGregorianCalendar(to.getRegistringsDato()));
 
-        for (PersonOgRolleTo rolle : to.getRoller()) {
-            samendring.getRolle().add(mapTilSamendringRolle(rolle));
+            for (PersonOgRolleTo rolle : to.getRoller()) {
+                samendring.getRolle().add(mapTilSamendringRolle(rolle));
+            }
+
+            return samendring;
         }
-
-        return samendring;
+        return null;
     }
 
     private static Samendring.Rolle mapTilSamendringRolle(PersonOgRolleTo to) {

@@ -48,7 +48,7 @@ public class HentRolleService {
     }
 
     public void slettHentRolle(Integer ident) {
-        hentRolleRepository.findByOrgnr(ident).ifPresent(ru -> hentRolleRepository.delete(ru));
+        hentRolleRepository.findByOrgnr(ident).ifPresent(hentRolleRepository::delete);
     }
 
 }

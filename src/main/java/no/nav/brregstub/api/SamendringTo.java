@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,7 +20,11 @@ import java.util.List;
 public class SamendringTo {
 
     @ApiModelProperty(dataType = "java.lang.String", example = "2004-01-01", required = true)
+    @NotNull
     private LocalDate registringsDato;
+
+    @NotEmpty
+    @Valid
     private List<PersonOgRolleTo> roller = new LinkedList<>();
 
 }

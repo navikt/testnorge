@@ -9,8 +9,8 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Getter
 @Setter
-@Table(name = "rolleutskrift")
-public class Rolleutskrift {
+@Table(name = "rolleoversikt")
+public class Rolleoversikt {
 
     @Id
     @GeneratedValue

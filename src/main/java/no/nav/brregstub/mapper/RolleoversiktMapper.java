@@ -4,7 +4,7 @@ import lombok.SneakyThrows;
 import no.nav.brregstub.api.AdresseTo;
 import no.nav.brregstub.api.NavnTo;
 import no.nav.brregstub.api.RolleTo;
-import no.nav.brregstub.api.RolleutskriftTo;
+import no.nav.brregstub.api.RolleoversiktTo;
 import no.nav.brregstub.tjenestekontrakter.rolleutskrift.AdresseType1;
 import no.nav.brregstub.tjenestekontrakter.rolleutskrift.AdresseType2;
 import no.nav.brregstub.tjenestekontrakter.rolleutskrift.Grunndata;
@@ -24,12 +24,12 @@ import java.time.LocalDate;
 import static java.time.format.DateTimeFormatter.ISO_DATE;
 import static no.nav.brregstub.api.UnderstatusKode.understatusKoder;
 
-public class RolleutskriftMapper {
+public class RolleoversiktMapper {
 
 
     public static final String TJENESTE_NAVN = "hentRolleutskrift";
 
-    public static Grunndata map(RolleutskriftTo to) {
+    public static Grunndata map(RolleoversiktTo to) {
         var grunndata = new Grunndata();
         var responseHeader = mapTilResponseHeader(to);
         grunndata.setResponseHeader(responseHeader);
@@ -42,7 +42,7 @@ public class RolleutskriftMapper {
         return grunndata;
     }
 
-    private static ResponseHeader mapTilResponseHeader(RolleutskriftTo to) {
+    private static ResponseHeader mapTilResponseHeader(RolleoversiktTo to) {
         var responseHeader = new ResponseHeader();
         responseHeader.setProssessDato(localDateToXmlGregorianCalendar(LocalDate.now()));
         responseHeader.setTjeneste(TJENESTE_NAVN);
@@ -60,7 +60,7 @@ public class RolleutskriftMapper {
         return responseHeader;
     }
 
-    private static Melding mapTilMelding(RolleutskriftTo to) {
+    private static Melding mapTilMelding(RolleoversiktTo to) {
         var melding = new Melding();
         melding.setRolleInnehaver(mapTilRolleInnhaver(to));
         melding.setRoller(mapTilRoller(to));
@@ -69,7 +69,7 @@ public class RolleutskriftMapper {
         return melding;
     }
 
-    private static Melding.Roller mapTilRoller(RolleutskriftTo to) {
+    private static Melding.Roller mapTilRoller(RolleoversiktTo to) {
         var roller = new Melding.Roller();
         if (to.getEnheter() != null) {
             int count = 1;
@@ -110,7 +110,7 @@ public class RolleutskriftMapper {
         return navn;
     }
 
-    private static RolleInnehaver mapTilRolleInnhaver(RolleutskriftTo to) {
+    private static RolleInnehaver mapTilRolleInnhaver(RolleoversiktTo to) {
         var rolleInnehaver = new RolleInnehaver();
         rolleInnehaver.setNavn(mapTilNavntype(to.getNavn()));
         Fodselsdato fødselsdato = new Fodselsdato();

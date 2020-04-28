@@ -5,9 +5,9 @@ import com.google.common.io.Resources;
 import no.nav.brregstub.api.RolleKode;
 import no.nav.brregstub.config.JacksonConfig;
 import no.nav.brregstub.database.domene.HentRolle;
-import no.nav.brregstub.database.domene.Rolleutskrift;
+import no.nav.brregstub.database.domene.Rolleoversikt;
 import no.nav.brregstub.database.repository.HentRolleRepository;
-import no.nav.brregstub.database.repository.RolleutskriftRepository;
+import no.nav.brregstub.database.repository.RolleoversiktRepository;
 import no.nav.brregstub.tjenestekontrakter.hentroller.Grunndata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,14 +37,14 @@ public class BrregServiceTest {
     @MockBean
     private HentRolleRepository hentRolleRepositoryMock;
     @MockBean
-    private RolleutskriftRepository rolleutskriftRepositoryMock;
+    private RolleoversiktRepository rolleoversiktRepositoryMock;
     @Autowired
     private ObjectMapper objectMapper;
     private BrregService brregService;
 
     @BeforeEach
     public void onSetup() {
-        brregService = new BrregService(rolleutskriftRepositoryMock, hentRolleRepositoryMock, objectMapper);
+        brregService = new BrregService(rolleoversiktRepositoryMock, hentRolleRepositoryMock, objectMapper);
     }
 
     @Test
@@ -234,9 +234,9 @@ public class BrregServiceTest {
     @Test
     @DisplayName("rolleutskrift returnerer en gyldig responseheader med status 0")
     public void hentRolleutskriftForPersonResponseHeader() {
-        var rolleutskrift = new Rolleutskrift();
+        var rolleutskrift = new Rolleoversikt();
         rolleutskrift.setJson(classpathToString("testdata/rolleutskrift.json"));
-        when(rolleutskriftRepositoryMock.findByIdent(FNR)).thenReturn(Optional.of(rolleutskrift));
+        when(rolleoversiktRepositoryMock.findByIdent(FNR)).thenReturn(Optional.of(rolleutskrift));
 
         var grunndata = brregService.hentRolleutskrift(FNR);
 
@@ -257,9 +257,9 @@ public class BrregServiceTest {
     @Test
     @DisplayName("rolleutskrift returnerer en gyldig meldiong")
     public void hentRolleutskriftForPersonMelding() {
-        var rolleutskrift = new Rolleutskrift();
+        var rolleutskrift = new Rolleoversikt();
         rolleutskrift.setJson(classpathToString("testdata/rolleutskrift.json"));
-        when(rolleutskriftRepositoryMock.findByIdent(FNR)).thenReturn(Optional.of(rolleutskrift));
+        when(rolleoversiktRepositoryMock.findByIdent(FNR)).thenReturn(Optional.of(rolleutskrift));
 
         var grunndata = brregService.hentRolleutskrift(FNR);
 
@@ -285,9 +285,9 @@ public class BrregServiceTest {
     @Test
     @DisplayName("rolleutskrift returnerer en gyldig grunndata med roller")
     public void hentRolleutskriftForPersonRoller() {
-        var rolleutskrift = new Rolleutskrift();
+        var rolleutskrift = new Rolleoversikt();
         rolleutskrift.setJson(classpathToString("testdata/rolleutskrift.json"));
-        when(rolleutskriftRepositoryMock.findByIdent(FNR)).thenReturn(Optional.of(rolleutskrift));
+        when(rolleoversiktRepositoryMock.findByIdent(FNR)).thenReturn(Optional.of(rolleutskrift));
 
         var grunndata = brregService.hentRolleutskrift(FNR);
 
