@@ -395,7 +395,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (brregstubKriterier) {
 		const brregstub = {
 			header: 'Brønnøysundregistrene',
-			items: [obj('Understatus', brregstubKriterier.understatuser)], // TODO: vis med label
+			items: [obj('Understatus', brregstubKriterier.understatuser.toString())], // TODO: vis med label
 			itemRows: []
 		}
 		brregstubKriterier.enheter.forEach((enhet, i) => {

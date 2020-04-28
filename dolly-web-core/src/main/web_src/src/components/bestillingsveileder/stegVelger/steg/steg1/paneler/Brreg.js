@@ -12,7 +12,7 @@ export const BrregPanel = ({ stateModifier }) => {
 			// informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="arbeid" // TODO: Fiks nytt ikon
+			iconType="brreg"
 		>
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.bregstub} />

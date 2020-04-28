@@ -26,6 +26,8 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 
 	const _handleSubmit = (values, formikBag) => {
 		const { setSubmitting } = formikBag
+		console.log('values :>> ', values)
+		console.log('formikBag :>> ', formikBag)
 
 		if (!isLastStep()) {
 			setSubmitting(false)

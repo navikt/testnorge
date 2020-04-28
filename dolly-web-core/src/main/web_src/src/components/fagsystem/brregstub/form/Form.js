@@ -21,7 +21,7 @@ export const BrregstubForm = ({ formikBag }) => {
 			<Panel
 				heading="Brønnøysundregistrene"
 				hasErrors={panelError(formikBag, brregAttributt)}
-				iconType="arbeid" // TODO: Finn nytt ikon
+				iconType="brreg"
 				startOpen={() => erForste(formikBag.values, [brregAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
@@ -44,7 +44,6 @@ export const BrregstubForm = ({ formikBag }) => {
 	)
 }
 
-//TODO: BrregstubForm.validation
 BrregstubForm.validation = {
 	bregstub: Yup.object({
 		understatuser: requiredNumber,
