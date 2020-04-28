@@ -1,6 +1,5 @@
 import { FormikProps } from 'formik'
 import _get from 'lodash/get'
-import _last from 'lodash/last'
 import { Partner, PersonHentet, Relasjon, Sivilstand, Relasjonstyper } from './partnerTypes'
 
 export default function Partnerliste(

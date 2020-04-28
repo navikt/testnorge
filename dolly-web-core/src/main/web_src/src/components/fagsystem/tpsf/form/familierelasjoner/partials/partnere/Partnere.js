@@ -4,7 +4,6 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import _drop from 'lodash/drop'
 import _isEmpty from 'lodash/isEmpty'
-import _last from 'lodash/last'
 import {
 	DollyFieldArrayWrapper,
 	DollyFaBlokk,

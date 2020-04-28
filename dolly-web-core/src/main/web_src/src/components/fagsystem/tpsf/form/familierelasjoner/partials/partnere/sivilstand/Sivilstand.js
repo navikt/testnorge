@@ -1,8 +1,6 @@
 import React from 'react'
 import { FieldArray } from 'formik'
-import _get from 'lodash/get'
 import _has from 'lodash/has'
-import _isEmpty from 'lodash/isEmpty'
 import {
 	DollyFieldArrayWrapper,
 	DollyFaBlokk,
