@@ -12,7 +12,7 @@ import {
 } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import Formatters from '~/utils/DataFormatter'
 import { erOpprettNyPartnerGyldig } from './sivilstand/SivilstandOptions'
-import Partnerliste from './partnere/mapPartnerliste'
+import Partnerliste from './partnere/partnerliste'
 import PartnerForm from './partnere/partnerForm'
 
 const initialValues = {
@@ -33,21 +33,18 @@ const ugyldigSivilstandState = errors =>
 const sistePartner = (partnere = []) => partnere[partnere.length - 1]
 
 const sisteSivilstand = (partner = {}) => {
-	const sivilstander = _get(partner, 'data.sivilstander', [])
-	return (
-		_get(sivilstander[sivilstander.length - 1], 'data') || sivilstander[sivilstander.length - 1]
-	)
+	const sivilstander = partner.sivilstander || []
+	return sivilstander[sivilstander.length - 1]
 }
 
 const sisteTidligereSivilstandRegdato = partnere => {
 	const tidligerePartnere = partnere.filter(partner => !partner.ny)
 	if (tidligerePartnere.length < 1) return null
-	const tidligereSivilstander = _get(
-		sistePartner(tidligerePartnere),
-		'data.sivilstander',
-		[]
-	).filter(sivilstand => !sivilstand.ny)
-	return _get(_last(tidligereSivilstander), 'data.sivilstandRegdato', null)
+
+	const tidligereSivilstander = sistePartner(tidligerePartnere).sivilstander.filter(
+		sivilstand => !sivilstand.ny
+	)
+	return tidligereSivilstander[tidligereSivilstander.length - 1].sivilstandRegdato
 }
 
 // Det er 3 kriterier for å opprette ny partner

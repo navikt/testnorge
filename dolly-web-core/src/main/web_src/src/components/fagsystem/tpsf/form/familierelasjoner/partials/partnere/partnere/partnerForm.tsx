@@ -12,12 +12,12 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
 import { Diskresjonskoder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/diskresjonskoder/Diskresjonskoder'
 import { Sivilstand } from '../sivilstand/Sivilstand'
-import { FormikPartner } from './partnerTypes'
+import { Partner } from './partnerTypes'
 
 interface PartnerForm {
 	path: string
 	formikBag: FormikProps<{}>
-	partner: FormikPartner
+	partner: Partner
 	locked: boolean
 	minDatoSivilstand: string
 	vurderFjernePartner: () => void
@@ -54,11 +54,11 @@ export default ({ path, formikBag, partner, ...rest }: PartnerForm) => (
 			</>
 		) : (
 			<h4>
-				{partner.data.fornavn} {partner.data.etternavn} ({partner.data.ident})
+				{partner.fornavn} {partner.etternavn} ({partner.ident})
 			</h4>
 		)}
 		<Sivilstand
-			sivilstander={partner.data.sivilstander}
+			sivilstander={partner.sivilstander}
 			formikBag={formikBag}
 			basePath={`${path}.sivilstander`}
 			{...rest}

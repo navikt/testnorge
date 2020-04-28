@@ -7,11 +7,11 @@ import { addDays } from 'date-fns'
 import { DollyDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { statuser as SivilstandStatuser } from './SivilstandOptions'
-import { SivilstandObj } from '../partnere/partnerTypes'
+import { Sivilstand } from '../partnere/partnerTypes'
 
 interface SivilstandForm {
 	formikPath: string
-	sivilstand: SivilstandObj
+	sivilstand: Sivilstand
 	options: Array<Options>
 	readOnly: boolean
 	formikBag: FormikProps<{}>

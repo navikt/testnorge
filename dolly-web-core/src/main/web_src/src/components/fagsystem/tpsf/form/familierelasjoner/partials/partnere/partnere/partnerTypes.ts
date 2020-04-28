@@ -1,22 +1,10 @@
-export type FormikPartner = {
-	ny: boolean
-	data: FormikPartnerData
-}
-
-type FormikPartnerData = {
-	sivilstander?: Array<FormikSivilstandObj>
-	fornavn?: string
-	etternavn?: string
-	ident?: string
-}
-
-export type FormikSivilstandObj = {
-	ny: boolean
-	data: SivilstandObj
+export enum Relasjonstyper {
+	Partner = 'PARTNER'
 }
 
 export type Partner = {
-	sivilstander?: Array<SivilstandObj>
+	ny?: boolean
+	sivilstander?: Array<Sivilstand>
 	fornavn?: string
 	etternavn?: string
 	ident?: string
@@ -31,7 +19,8 @@ export type Relasjon = {
 	relasjonTypeNavn: string
 }
 
-export type SivilstandObj = {
+export type Sivilstand = {
+	ny?: boolean
 	sivilstand?: string
 	sivilstandRegdato?: string
 }

@@ -53,8 +53,12 @@ export const gyldigNesteStatus = {
 // Gyldige statuser før oppretting av ny partner
 export const gyldigSisteStatus = ['ENKE', 'SKIL', 'GJPA', 'SKPA']
 
-// Hjelpe funksjoner for uthenting
-export const nesteGyldigStatuser = kode => {
+// Hjelpefunksjoner for uthenting
+const sisteSivilstandKode = sivilstander =>
+	sivilstander.length > 1 ? sivilstander[sivilstander.length - 2].sivilstand : null
+
+export const nesteGyldigStatuser = sivilstander => {
+	const kode = sisteSivilstandKode(sivilstander)
 	const nesteOpts = gyldigNesteStatus[kode] || gyldigNesteStatus.init
 	return nesteOpts.map(statusKode => statuser[statusKode])
 }
