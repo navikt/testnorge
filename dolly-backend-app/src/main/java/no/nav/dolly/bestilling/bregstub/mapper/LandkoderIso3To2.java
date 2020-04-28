@@ -9,7 +9,7 @@ import lombok.experimental.UtilityClass;
 public class LandkoderIso3To2 {
 
     private static Map<String, String> countryISOMapping = new HashMap<>();
-    static {
+    static {//NOSONAR
         countryISOMapping.put("AFG", "AF");
         countryISOMapping.put("ALA", "AX");
         countryISOMapping.put("ALB", "AL");
