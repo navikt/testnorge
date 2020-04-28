@@ -14,6 +14,10 @@ export const initialValues = {
 	utenlandsopphold: initialUtenlandsopphold,
 	inntektsmelding: initialValuesInntektsmelding,
 	instdata: initialValuesInst,
+	boadresse: {
+		// @ts-ignore
+		flyttedato: null
+	},
 	kontaktinformasjonForDoedsbo: {
 		adressat: { adressatType: '' },
 		adresselinje1: '',
@@ -25,47 +29,64 @@ export const initialValues = {
 		utstedtDato: ''
 	},
 	arbeidsadgang: {
+		// @ts-ignore
 		arbeidsOmfang: null,
 		harArbeidsAdgang: 'JA',
 		periode: {
+			// @ts-ignore
 			fra: null,
+			// @ts-ignore
 			til: null
 		},
+		// @ts-ignore
 		typeArbeidsadgang: null
 	},
 	udistub: [
 		{
 			eosEllerEFTABeslutningOmOppholdsrettPeriode: {
+				// @ts-ignore
 				fra: null,
+				// @ts-ignore
 				til: null
 			},
+			// @ts-ignore
 			eosEllerEFTABeslutningOmOppholdsrettEffektuering: null,
 			eosEllerEFTABeslutningOmOppholdsrett: ''
 		},
 		{
 			eosEllerEFTAVedtakOmVarigOppholdsrettPeriode: {
-				fra: null,
+				// @ts-ignore
+				fra : null,
+				// @ts-ignore
 				til: null
 			},
+			// @ts-ignore
 			eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering: null,
 			eosEllerEFTAVedtakOmVarigOppholdsrett: ''
 		},
 		{
 			eosEllerEFTAOppholdstillatelsePeriode: {
+				// @ts-ignore
 				fra: null,
+				// @ts-ignore
 				til: null
 			},
+			// @ts-ignore
 			eosEllerEFTAOppholdstillatelseEffektuering: null,
 			eosEllerEFTAOppholdstillatelse: ''
 		},
 		{
 			oppholdSammeVilkaar: {
 				oppholdSammeVilkaarPeriode: {
+					// @ts-ignore
 					fra: null,
+					// @ts-ignore
 					til: null
 				},
-				oppholdSammeVilkaarEffektuering: null,
-				oppholdstillatelseVedtaksDato: null,
+				// @ts-ignore
+				oppholdSammeVilkaarEffektuering: null, //date
+				// @ts-ignore
+				oppholdstillatelseVedtaksDato: null, //date
 				oppholdstillatelseType: ''
 			}
 		}
@@ -73,7 +94,13 @@ export const initialValues = {
 	partnere: {
 		identtype: 'FNR',
 		kjonn: '',
-		sivilstander: [{ sivilstand: '', sivilstandRegdato: null }],
+		sivilstander: [
+			{
+				sivilstand: '',
+				// @ts-ignore
+				sivilstandRegdato: null
+			}
+		],
 		harFellesAdresse: false,
 		spesreg: '',
 		utenFastBopel: false,
@@ -84,6 +111,7 @@ export const initialValues = {
 		identtype: 'FNR',
 		kjonn: '',
 		barnType: '',
+		// @ts-ignore
 		partnerNr: null,
 		borHos: '',
 		erAdoptert: false,
@@ -92,16 +120,16 @@ export const initialValues = {
 		statsborgerskap: '',
 		statsborgerskapRegdato: ''
 	},
-	statborgerskap:{
-		statborgerskap:'',
+	statborgerskap: {
+		statborgerskap: '',
 		statsborgerskapRegdato: ''
 	},
-	utvandretTil:{
-		utvandretTilLand:'',
+	utvandretTil: {
+		utvandretTilLand: '',
 		utvandretTilLandFlyttedato: ''
 	},
-	innvandretFra:{
-		innvandretFraLand:'',
+	innvandretFra: {
+		innvandretFraLand: '',
 		innvandretFraLandFlyttedato: ''
 	}
 }

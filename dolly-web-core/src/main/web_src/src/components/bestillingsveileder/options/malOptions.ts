@@ -1,10 +1,9 @@
 import { initialValues } from './utils'
+import _ from 'lodash'
 
-export const initialValuesBasedOnMal = mal => {
+export const initialValuesBasedOnMal = (mal: any) => {
 	let initialValuesMal = Object.assign({}, mal.bestilling)
-	if (initialValuesMal.inntektstub) {
-		initialValuesMal.inntektstub = getUpdatedInntektstubData(initialValuesMal.inntektstub)
-	}
+
 	if (initialValuesMal.aareg) {
 		initialValuesMal.aareg = getUpdatedAaregData(initialValuesMal.aareg)
 	}
@@ -32,30 +31,30 @@ export const initialValuesBasedOnMal = mal => {
 	return initialValuesMal
 }
 
-const getUpdatedInntektstubData = inntektstubData => {
+const getUpdatedInntektstubData = (inntektstubData: any) => {
 	let newInntektstubData = Object.assign({}, inntektstubData)
-	newInntektstubData.inntektsinformasjon = newInntektstubData.inntektsinformasjon.map(inntekt =>
-		updateData(inntekt, initialValues.inntektstub)
+	newInntektstubData.inntektsinformasjon = newInntektstubData.inntektsinformasjon.map(
+		(inntekt: any) => updateData(inntekt, initialValues.inntektstub)
 	)
 	return newInntektstubData
 }
 
-const getUpdatedAaregData = aaregData =>
-	aaregData.map(data => {
+const getUpdatedAaregData = (aaregData: any) =>
+	aaregData.map((data: any) => {
 		data = updateData(data, initialValues.aareg[0])
-		data.permisjon = data.permisjon.map(data => updateData(data, initialValues.permisjon))
-		data.utenlandsopphold = data.utenlandsopphold.map(data =>
+		data.permisjon = data.permisjon.map((data: any) => updateData(data, initialValues.permisjon))
+		data.utenlandsopphold = data.utenlandsopphold.map((data: any) =>
 			updateData(data, initialValues.utenlandsopphold)
 		)
 		return data
 	})
-const getUpdatedInntektsmeldingData = inntektsmeldingData =>
-	inntektsmeldingData.map(inntekt => updateData(inntekt, initialValues.inntektsmelding))
+const getUpdatedInntektsmeldingData = (inntektsmeldingData: any) =>
+	inntektsmeldingData.map((inntekt: any) => updateData(inntekt, initialValues.inntektsmelding))
 
-const getUpdatedInstData = instData =>
-	instData.map(data => updateData(data, initialValues.instdata))
+const getUpdatedInstData = (instData: any) =>
+	instData.map((data: any) => updateData(data, initialValues.instdata))
 
-const getUpdatedPdlfData = pdlfData => {
+const getUpdatedPdlfData = (pdlfData: any) => {
 	const newPdlfData = Object.assign({}, pdlfData)
 	if (pdlfData.kontaktinformasjonForDoedsbo) {
 		newPdlfData.kontaktinformasjonForDoedsbo = updateData(
@@ -66,7 +65,7 @@ const getUpdatedPdlfData = pdlfData => {
 	return newPdlfData
 }
 
-const getUpdatedTpsfData = tpsfData => {
+const getUpdatedTpsfData = (tpsfData: any) => {
 	var newTpsfData = Object.assign({}, tpsfData)
 	if (tpsfData.statsborgerskap) {
 		newTpsfData = updateData(newTpsfData, initialValues.statborgerskap)
@@ -79,21 +78,24 @@ const getUpdatedTpsfData = tpsfData => {
 	}
 	if (tpsfData.relasjoner) {
 		if (tpsfData.relasjoner.partnere) {
-			newTpsfData.relasjoner.partnere = newTpsfData.relasjoner.partnere.map(partner =>
+			newTpsfData.relasjoner.partnere = newTpsfData.relasjoner.partnere.map((partner: any) =>
 				updateData(partner, initialValues.partnere)
 			)
 		}
 		if (tpsfData.relasjoner.barn) {
-			newTpsfData.relasjoner.barn = newTpsfData.relasjoner.barn.map(barn =>
+			newTpsfData.relasjoner.barn = newTpsfData.relasjoner.barn.map((barn: any) =>
 				updateData(barn, initialValues.barn)
 			)
 		}
+	}
+	if (tpsfData.boadresse) {
+		newTpsfData.boadresse = updateData(newTpsfData.boadresse, initialValues.boadresse)
 	}
 
 	return newTpsfData
 }
 
-const getUpdatedUdistubData = udistubData => {
+const getUpdatedUdistubData = (udistubData: any) => {
 	const newUdistubData = Object.assign({}, udistubData)
 	const oppholdStatus = udistubData.oppholdStatus
 	if (oppholdStatus) {
@@ -129,7 +131,7 @@ const getUpdatedUdistubData = udistubData => {
 	return newUdistubData
 }
 
-const updateData = (data, initalValues) => {
+const updateData = (data: any, initalValues: any) => {
 	var newData = Object.assign({}, data)
 	newData = _.extend({}, initalValues, newData)
 	for (let key in initalValues) {
