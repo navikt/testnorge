@@ -1,18 +1,17 @@
 package no.nav.registre.inntekt.service;
 
 import lombok.RequiredArgsConstructor;
-
-import no.nav.registre.inntekt.consumer.rs.TestnorgeAaregConsumer;
-import no.nav.registre.inntekt.utils.ValidationException;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
-
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Organisasjon;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Person;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import no.nav.registre.inntekt.consumer.rs.TestnorgeAaregConsumer;
+import no.nav.registre.inntekt.utils.ValidationException;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
 
 @Service
 @RequiredArgsConstructor
@@ -23,15 +22,21 @@ public class AaregService {
     private static final String TYPE_ORGANISASJON = "Organisasjon";
     private static final String TYPE_PERSON = "Person";
 
-    public List<Arbeidsforhold> hentArbeidsforhold(String ident, String miljoe) {
+    public List<Arbeidsforhold> hentArbeidsforhold(
+            String ident,
+            String miljoe
+    ) {
         return testnorgeAaregConsumer.hentArbeidsforholdTilIdentIMiljoe(ident, miljoe);
     }
 
-    public List<String> hentIdenterMedArbeidsforhold(Long avspillergruppeId, String miljoe) {
+    public List<String> hentIdenterMedArbeidsforhold(
+            Long avspillergruppeId,
+            String miljoe
+    ) {
         return testnorgeAaregConsumer.hentIdenterIAvspillergruppeMedArbeidsforhold(avspillergruppeId, miljoe);
     }
 
-    public static Arbeidsforhold finnNyesteArbeidsforholdIOrganisasjon (
+    public static Arbeidsforhold finnNyesteArbeidsforholdIOrganisasjon(
             String ident,
             String organisasjonsnummer,
             List<Arbeidsforhold> arbeidsforholdsListe
@@ -52,31 +57,34 @@ public class AaregService {
     }
 
     // TODO: simplify
-    private static boolean isValidOrganisasjonsnummer(Arbeidsforhold arbeidsforhold, String organisasjonsnummer) {
+    private static boolean isValidOrganisasjonsnummer(
+            Arbeidsforhold arbeidsforhold,
+            String organisasjonsnummer
+    ) {
 
         if (arbeidsforhold.getOpplysningspliktig().getType().equals(TYPE_ORGANISASJON)) {
-            Organisasjon org = (Organisasjon)arbeidsforhold.getOpplysningspliktig();
+            Organisasjon org = (Organisasjon) arbeidsforhold.getOpplysningspliktig();
             if (org.getOrganisasjonsnummer().equals(organisasjonsnummer)) {
                 return true;
             }
         }
 
         if (arbeidsforhold.getOpplysningspliktig().getType().equals(TYPE_PERSON)) {
-            Person pers = (Person)arbeidsforhold.getOpplysningspliktig();
+            Person pers = (Person) arbeidsforhold.getOpplysningspliktig();
             if (pers.getOffentligIdent().equals(organisasjonsnummer)) {
                 return true;
             }
         }
 
         if (arbeidsforhold.getArbeidsgiver().getType().equals(TYPE_ORGANISASJON)) {
-            Organisasjon org = (Organisasjon)arbeidsforhold.getArbeidsgiver();
+            Organisasjon org = (Organisasjon) arbeidsforhold.getArbeidsgiver();
             if (org.getOrganisasjonsnummer().equals(organisasjonsnummer)) {
                 return true;
             }
         }
 
         if (arbeidsforhold.getArbeidsgiver().getType().equals(TYPE_PERSON)) {
-            Person pers = (Person)arbeidsforhold.getArbeidsgiver();
+            Person pers = (Person) arbeidsforhold.getArbeidsgiver();
             if (pers.getOffentligIdent().equals(organisasjonsnummer)) {
                 return true;
             }

@@ -27,9 +27,9 @@ import no.nav.registre.inntekt.domain.dokmot.ProsessertInntektDokument;
 import no.nav.registre.inntekt.domain.dokmot.RsJoarkMetadata;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
 import no.nav.registre.inntekt.utils.ValidationException;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Arbeidsforhold;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Organisasjon;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Person;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
 
 @Slf4j
 @Service

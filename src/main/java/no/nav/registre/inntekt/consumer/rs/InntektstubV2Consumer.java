@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.inntekt.domain.RsInntekt;
-import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
+import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
 @Slf4j
 @Component

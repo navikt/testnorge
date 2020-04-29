@@ -5,8 +5,6 @@ import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnavnFraMaaneds
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Organisasjon;
-import no.nav.tjenester.aordningen.arbeidsforhold.v1.Person;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +27,10 @@ import no.nav.registre.inntekt.domain.InntektSaveInHodejegerenRequest;
 import no.nav.registre.inntekt.domain.RsInntekt;
 import no.nav.registre.inntekt.domain.RsInntektsinformasjonsType;
 import no.nav.registre.inntekt.provider.rs.requests.SyntetiseringsRequest;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
+import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
 @Slf4j
 @Service
@@ -248,9 +248,9 @@ public class SyntetiseringService {
 
         var type = opplysningspliktig.getType();
         if (TYPE_ORGANISASJON.equals(type)) {
-            return ((Organisasjon)opplysningspliktig).getOrganisasjonsnummer();
+            return ((Organisasjon) opplysningspliktig).getOrganisasjonsnummer();
         } else if (TYPE_PERSON.equals(type)) {
-            return ((Person)opplysningspliktig).getOffentligIdent();
+            return ((Person) opplysningspliktig).getOffentligIdent();
         }
         return null;
     }

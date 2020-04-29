@@ -6,9 +6,9 @@ import java.util.Collections;
 
 import no.nav.registre.inntekt.domain.RsInntekt;
 import no.nav.registre.inntekt.domain.RsInntektsinformasjonsType;
-import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntekt;
-import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
-import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype;
+import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntekt;
+import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
+import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype;
 
 public class InntektGenerator {
 
@@ -25,7 +25,10 @@ public class InntektGenerator {
         return inntektEntry;
     }
 
-    public static Inntektsinformasjon genererFeiletInntektsinformasjon(String ident, double beloep) {
+    public static Inntektsinformasjon genererFeiletInntektsinformasjon(
+            String ident,
+            double beloep
+    ) {
         Inntektsinformasjon inntektEntry = new Inntektsinformasjon();
 
         Inntekt inntekt = new Inntekt();

@@ -27,12 +27,11 @@ import java.util.TreeMap;
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
-import no.nav.registre.inntekt.consumer.rs.TestnorgeAaregConsumer;
 import no.nav.registre.inntekt.domain.RsInntekt;
 import no.nav.registre.inntekt.provider.rs.requests.SyntetiseringsRequest;
 import no.nav.registre.inntekt.testUtils.InntektGenerator;
+import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringServiceTest {

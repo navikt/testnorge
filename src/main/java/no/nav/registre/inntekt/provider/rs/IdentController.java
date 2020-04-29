@@ -13,7 +13,7 @@ import java.util.Map;
 
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
 import no.nav.registre.inntekt.domain.RsInntekt;
-import no.nav.tjenester.stub.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
+import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
 @RestController
 @RequestMapping("/api/v1")

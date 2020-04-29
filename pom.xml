@@ -26,7 +26,7 @@
         <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
         <springfox.version>2.9.2</springfox.version>
         <springframework.cloud.version>2.1.2.RELEASE</springframework.cloud.version>
-        <testnorge-consumers.version>1.8.0-RELEASE</testnorge-consumers.version>
+        <testnorge-consumers.version>1.11.10-RELEASE</testnorge-consumers.version>
     </properties>
 
     <dependencies>
@@ -85,23 +85,6 @@
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash.logback.encoder.version}</version>
-        </dependency>
-
-        <!-- INNTEKTSTUB -->
-        <dependency>
-            <groupId>no.nav.tjenester</groupId>
-            <artifactId>stub-aordningen-inntektsinformasjon-v2</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.tjenester</groupId>
-            <artifactId>aordningen-arbeidsforhold-v1</artifactId>
-            <version>1.9</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>nav-altinn-inntektsmelding</artifactId>
-            <version>1.2019.08.16-13.46-35cbdfd492d4</version>
         </dependency>
 
         <!--VAULT-->
