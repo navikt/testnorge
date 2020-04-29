@@ -18,7 +18,9 @@ export const OrganisasjonLoader = ({ filter = () => true, render }: Organisasjon
 				liste.filter(filter).map((response: EregResponse) => ({
 					value: response.orgnr,
 					label: formatLabel(response),
-					juridiskEnhet: response.juridiskEnhet
+					juridiskEnhet: response.juridiskEnhet,
+					forretningsAdresse: response.forretningsAdresse,
+					postadresse: response.postadresse
 				}))
 		)
 	return <LoadableComponent onFetch={onFetch} render={(list: Organisasjon[]) => render(list)} />

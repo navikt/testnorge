@@ -4,4 +4,6 @@ export type EregResponse = {
 	navn: string
 	juridiskEnhet: string | null
 	kanHaArbeidsforhold: boolean
+	forretningsAdresse: any
+	postadresse: any
 }
