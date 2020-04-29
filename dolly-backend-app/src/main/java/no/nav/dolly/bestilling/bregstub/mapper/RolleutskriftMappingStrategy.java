@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.bregstub.mapper;
 
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo.AdresseTo;
 import static no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo.NavnTo;
@@ -49,13 +50,15 @@ public class RolleutskriftMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsBregdata.RolleTo rsRolleTo, RolleTo rolleTo, MappingContext context) {
 
-                        rolleTo.setForretningsAdresse(
-                                AdresseTo.builder()
-                                        .adresse1("BOLETTE WIESES GATE 4")
-                                        .postnr("1349")
-                                        .poststed("RYKKINN")
-                                        .kommunenr("3024")
-                                        .build());
+                        if (isNull(rolleTo.getForretningsAdresse())) {
+                            rolleTo.setForretningsAdresse(
+                                    AdresseTo.builder()
+                                            .adresse1("BOLETTE WIESES GATE 4")
+                                            .postnr("1349")
+                                            .poststed("RYKKINN")
+                                            .kommunenr("3024")
+                                            .build());
+                        }
                         rolleTo.setRegistreringsdato(nonNull(rsRolleTo.getRegistreringsdato()) ?
                                 rsRolleTo.getRegistreringsdato().toLocalDate() : LocalDate.now());
                     }
