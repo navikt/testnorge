@@ -45,7 +45,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .title("Testnorge-Inntekt")
                 .description("Testnorge-Inntekt er adapteren for opprettelse av inntektsmeldinger som legges inn i inntektstub.")
                 .termsOfServiceUrl("https://nav.no")
-                .contact(new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/testnorge-inntekt/browse", null))
+                .contact(new Contact("Fellesregistrene på NAV", "https://github.com/navikt/testnorge-inntekt", null))
                 .license("Super Strict Licence")
                 .licenseUrl("https://opensource.org/licenses/super-strict-license")
                 .build();
