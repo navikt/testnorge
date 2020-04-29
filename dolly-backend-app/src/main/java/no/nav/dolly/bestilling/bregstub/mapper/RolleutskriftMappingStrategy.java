@@ -41,6 +41,7 @@ public class RolleutskriftMappingStrategy implements MappingStrategy {
                         rolleoversiktTo.setNavn(mapperFacade.map(rollePerson, NavnTo.class));
                         rolleoversiktTo.setAdresse(mapperFacade.map(rollePerson, AdresseTo.class));
                         rolleoversiktTo.setHovedstatus(0);
+                        rolleoversiktTo.setUnderstatuser(bregPerson.getBregdata().getUnderstatuser());
                     }
                 })
                 .register();
