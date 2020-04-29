@@ -44,6 +44,23 @@ public class EregMapperConsumer {
         uploadToEreg(eregListe, env, true);
     }
 
+    public String generateFlatfil(EregListe eregListe, boolean update) {
+        UriTemplate uriTemplate = new UriTemplate(eregUrl + "/orkestrering/generer");
+        try {
+            RequestEntity<List<EregMapperRequest>> requestEntity = new RequestEntity<>(
+                    eregListe.getListe()
+                            .stream()
+                            .map(item -> new EregMapperRequest(item, update))
+                            .collect(Collectors.toList()),
+                    HttpMethod.POST, uriTemplate.expand());
+            ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
+            return response.getBody();
+        } catch (Exception e) {
+            log.error("Klarte ikke å generere flatfil.", e);
+            throw e;
+        }
+    }
+
     private void uploadToEreg(EregListe eregListe, String env, boolean update) {
         UriTemplate uriTemplate = new UriTemplate(eregUrl + "/orkestrering/opprett?lastOpp=true&miljoe={miljoe}");
         RequestEntity<List<EregMapperRequest>> requestEntity = new RequestEntity<>(

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,15 @@ public class EregAdapter extends FasteDataAdapter {
         return repository.findById(orgnr).orElseThrow(
                 () -> new RuntimeException("Finner ikke orgnr = " + orgnr + " i ereg databasen.")
         );
+    }
+
+    public EregListe fetchByIds(Set<String> ids) {
+        log.info("Henter organisasjoner fra orgnummere: {}", String.join(", ", ids));
+        EregListe eregListe = new EregListe(repository.findAllById(ids));
+        if (eregListe.getListe().size() < ids.size()) {
+            log.warn("Fant bare {}/{} orgnummer.", eregListe.getListe().size(), ids.size());
+        }
+        return eregListe;
     }
 
     public EregListe fetchBy(String gruppe) {

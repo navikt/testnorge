@@ -10,10 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Set;
-
-import no.nav.registre.sdForvalter.consumer.rs.response.AaregResponse;
 import no.nav.registre.sdForvalter.service.EnvironmentInitializationService;
 
 @Slf4j
@@ -63,8 +59,13 @@ public class OrkestreringsController {
 
     @PostMapping(value = "/ereg/{miljoe}/update/{regnr}")
     public ResponseEntity updateEreg(@PathVariable String miljoe, @PathVariable("regnr") String regnr) {
-        environmentInitializationService.updateEreg(miljoe, regnr);
+        environmentInitializationService.updateEregByOrgnr(miljoe, regnr);
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping(value = "/ereg/{miljoe}/update")
+    public ResponseEntity updateEregByGruppe(@PathVariable String miljoe, @RequestParam(name = "gruppe") String gruppe) {
+        environmentInitializationService.updateEregByGruppe(miljoe, gruppe);
+        return ResponseEntity.ok().build();
+    }
 }

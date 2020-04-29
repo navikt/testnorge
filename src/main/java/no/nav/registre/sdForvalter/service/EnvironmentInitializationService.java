@@ -11,6 +11,7 @@ import no.nav.registre.sdForvalter.adapter.KrrAdapter;
 import no.nav.registre.sdForvalter.consumer.rs.AaregConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.EregMapperConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.KrrConsumer;
+import no.nav.registre.sdForvalter.domain.status.ereg.OrganisasjonStatusMap;
 
 @Slf4j
 @Service
@@ -20,6 +21,7 @@ public class EnvironmentInitializationService {
     private final AaregConsumer aaregConsumer;
     private final KrrConsumer krrConsumer;
     private final EregMapperConsumer eregMapperConsumer;
+    private final EregStatusService eregStatusService;
 
     private final EregAdapter eregAdapter;
     private final KrrAdapter krrAdapter;
@@ -58,9 +60,21 @@ public class EnvironmentInitializationService {
         log.info("Init of Ereg er ferdig.");
     }
 
-    public void updateEreg(String environment, String orgnr) {
+    public void updateEregByOrgnr(String environment, String orgnr) {
         log.info("Oppdater {} i {} Ereg...", orgnr, environment);
         eregMapperConsumer.update(eregAdapter.fetchByOrgnr(orgnr), environment);
+        log.info("Oppdatering er ferdig.");
+    }
+
+    public void updateEregByGruppe(String environment, String gruppe) {
+        log.info("Oppdater {} gruppen i {} Ereg...", gruppe, environment);
+        OrganisasjonStatusMap status = eregStatusService.getStatus(environment, gruppe, false);
+        if (status.getMap().isEmpty()) {
+            log.info("Fant ingen endringer i gruppen {} for {} Ereg", gruppe, environment);
+        } else {
+            log.info("Oppdaterer {} organisasjoner.", status.getMap().size());
+            eregMapperConsumer.update(eregAdapter.fetchByIds(status.getMap().keySet()), environment);
+        }
         log.info("Oppdatering er ferdig.");
     }
 
@@ -69,5 +83,4 @@ public class EnvironmentInitializationService {
         krrConsumer.send(krrAdapter.fetchBy(gruppe));
         log.info("Init av krr er ferdig.");
     }
-
 }

@@ -23,7 +23,7 @@ public class Organisasjon {
     public Organisasjon(Ereg ereg) {
         orgnummer = ereg.getOrgnr();
         enhetType = ereg.getEnhetstype();
-        navn = ereg.getNavn();
+        navn = ereg.getNavn() != null ? ereg.getNavn().toUpperCase() : null;
         juridiskEnhet = ereg.getJuridiskEnhet();
     }
 }
