@@ -20,34 +20,38 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 	const [step, setStep] = useState(0)
 
 	const opts = useContext(BestillingsveilederContext)
+	const leggTil = opts.is.leggTil
 	const { data } = opts
 
-	const leggTilPersonFoerLeggTil = (values, formikBag) => {
+	const leggTilPersonFoerLeggTil = (formikBag) => {
 		formikBag.setFieldValue('personFoerLeggTil.foedselsdato', data.tpsf.foedselsdato)
 		if (data.tpsf.doedsdato) {
 			formikBag.setFieldValue('personFoerLeggTil.doedsdato', data.tpsf.doedsdato)
 		}
 	}
-	const fjernPersonFoerLeggTil = (values, formikBag) => {
-		return delete values['personFoerLeggTil']
+	const fjernPersonFoerLeggTil = formikBag => {
+		formikBag.setFieldValue('personFoerLeggTil', undefined)
+		formikBag.setFieldTouched('personFoerLeggTil', false)
 	}
 
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => setStep(step + 1)
 
-	const handleBack = (values, formikBag) => {
-		if (isLastStep()) leggTilPersonFoerLeggTil(values, formikBag)
+	const handleBack = (formikBag) => {
+		if (leggTil && formikBag.values.pensjonforvalter)
+			if(isLastStep()) leggTilPersonFoerLeggTil(formikBag)
+			else if (step ===1) fjernPersonFoerLeggTil(formikBag)
 		if (step !== 0) setStep(step - 1)
 	}
 
 	const _handleSubmit = (values, formikBag) => {
 		const { setSubmitting } = formikBag
-		if (step === 0 && data) {
-			leggTilPersonFoerLeggTil(values, formikBag)
+		if (leggTil && step === 0 && values.pensjonforvalter) {
+			leggTilPersonFoerLeggTil(formikBag)
 		}
 
-		if (data && step === 1) {
-			values = fjernPersonFoerLeggTil(values, formikBag)
+		if (leggTil && step === 1 && values.pensjonforvalter) {
+			fjernPersonFoerLeggTil(formikBag)
 		}
 
 		if (!isLastStep()) {
@@ -77,11 +81,11 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 
 						<CurrentStepComponent formikBag={formikBag} stateModifier={stateModifier} />
 
-						{/*<DisplayFormikState {...formikBag} />*/}
+						<DisplayFormikState {...formikBag} />
 
 						<Navigation
 							showPrevious={step > 0}
-							onPrevious={() => handleBack(formikBag.values, formikBag)}
+							onPrevious={() => handleBack(formikBag)}
 							isLastStep={isLastStep()}
 							formikBag={formikBag}
 						/>
