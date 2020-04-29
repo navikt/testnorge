@@ -9,21 +9,16 @@ export default function Partnerliste(
 ) {
 	const tidligerePartnere: Array<Partner> = mapTidligerePartnere(personFoerLeggTil)
 	const sisteTidligerePartner: Partner = tidligerePartnere[tidligerePartnere.length - 1]
-
 	const formikPartnere: Array<Partner> = mapNyePartnere(formikBag, path, sisteTidligerePartner)
 	const oppdatertPartner: boolean = formikPartnere.some((partner: Partner) => !partner.ny)
-	const tidligerePartnereUtenOppdateringer: Array<Partner> = oppdatertPartner
-		? tidligerePartnere.slice(0, -1)
-		: tidligerePartnere
 
-	const partnere: Array<Partner> = (tidligerePartnere.length > 0
-		? tidligerePartnereUtenOppdateringer
-		: []
-	).concat(formikPartnere)
+	oppdatertPartner && tidligerePartnere.pop() //Fjerner tidligere partner som er oppdatert
+
+	const partnere: Array<Partner> = tidligerePartnere.concat(formikPartnere)
 
 	return {
 		partnere,
-		partnereUtenomFormikBag: tidligerePartnereUtenOppdateringer.length,
+		partnereUtenomFormikBag: tidligerePartnere.length,
 		oppdatertPartner
 	}
 }
