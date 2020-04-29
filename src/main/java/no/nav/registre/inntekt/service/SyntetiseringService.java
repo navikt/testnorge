@@ -63,8 +63,8 @@ public class SyntetiseringService {
 
         identerIInntektstub.retainAll(identerIAareg);
 
-        int antallNyeIdenterMedInntekt = (identer.size() / andelNyeIdenter) - identerIInntektstub.size();
-        int antallIdenterUtenArbeidsforhold = (identer.size() / andelNyeIdenter) - identerIAareg.size();
+        int antallNyeIdenterMedInntekt = identer.size() / andelNyeIdenter - identerIInntektstub.size();
+        int antallIdenterUtenArbeidsforhold = identer.size() / andelNyeIdenter - identerIAareg.size();
 
         log.info("{} identer mangler inntekt", antallNyeIdenterMedInntekt);
         log.info("{} identer mangler arbeidsforhold", antallIdenterUtenArbeidsforhold);

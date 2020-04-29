@@ -22,13 +22,10 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
-        env:
-          GITHUB_USERNAME: token
-          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       - name: Compile
         env:
           GITHUB_USERNAME: token
-          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: mvn --settings maven-settings.xml compile
       - name: Test
         run: mvn --settings maven-settings.xml test

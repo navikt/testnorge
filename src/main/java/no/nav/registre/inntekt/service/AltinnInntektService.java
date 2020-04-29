@@ -114,7 +114,7 @@ public class AltinnInntektService {
                             .build()
             );
         });
-        if(!continueOnError && (inntektDokumenter.size()!=inntekterAaOpprette.size())){
+        if (!continueOnError && (inntektDokumenter.size() != inntekterAaOpprette.size())) {
             throw new ValidationException("Fant ikke nyeste arbeidsforhold for alle virksomhetsnummer");
         }
         return inntektDokumenter;
@@ -142,7 +142,8 @@ public class AltinnInntektService {
                         .virksomhetsnummer(inntekt.getArbeidsgiver().getVirksomhetsnummer())
                         .xml(respons)
                         .build());
-            } catch (ValidationException ignore) {}
+            } catch (ValidationException ignore) {
+            }
         });
 
         return inntektDokumenter;
@@ -241,21 +242,24 @@ public class AltinnInntektService {
                         .collect(Collectors.toList()))
                 .pleiepengerPerioder(inntekt.getPleiepengerPerioder())
                 .arbeidsforhold(RsArbeidsforhold.builder()
-                .beregnetInntekt(RsInntekt.builder()
-                        .beloep(inntekt.getArbeidsforhold().getBeregnetInntekt().getBeloep())
-                        .aarsakVedEndring(getValueFromEnumIfSet(inntekt.getArbeidsforhold().getBeregnetInntekt().getAarsakVedEndring()))
-                        .build())
-                .avtaltFerieListe(inntekt.getArbeidsforhold().getAvtaltFerieListe())
-                .foersteFravaersdag(inntekt.getArbeidsforhold().getFoersteFravaersdag())
-                .graderingIForeldrepengerListe(inntekt.getArbeidsforhold().getGraderingIForeldrepengerListe())
-                .utsettelseAvForeldrepengerListe(inntekt.getArbeidsforhold().getUtsettelseAvForeldrepengerListe().stream().map(
-                        m -> RsUtsettelseAvForeldrepenger.builder()
-                                .aarsakTilUtsettelse(getValueFromEnumIfSet(m.getAarsakTilUtsettelse()))
-                                .periode(m.getPeriode()).build()).collect(Collectors.toList()))
-                .build());
+                        .beregnetInntekt(RsInntekt.builder()
+                                .beloep(inntekt.getArbeidsforhold().getBeregnetInntekt().getBeloep())
+                                .aarsakVedEndring(getValueFromEnumIfSet(inntekt.getArbeidsforhold().getBeregnetInntekt().getAarsakVedEndring()))
+                                .build())
+                        .avtaltFerieListe(inntekt.getArbeidsforhold().getAvtaltFerieListe())
+                        .foersteFravaersdag(inntekt.getArbeidsforhold().getFoersteFravaersdag())
+                        .graderingIForeldrepengerListe(inntekt.getArbeidsforhold().getGraderingIForeldrepengerListe())
+                        .utsettelseAvForeldrepengerListe(inntekt.getArbeidsforhold().getUtsettelseAvForeldrepengerListe().stream().map(
+                                m -> RsUtsettelseAvForeldrepenger.builder()
+                                        .aarsakTilUtsettelse(getValueFromEnumIfSet(m.getAarsakTilUtsettelse()))
+                                        .periode(m.getPeriode()).build()).collect(Collectors.toList()))
+                        .build());
     }
 
-    private RsKontaktinformasjon hentKontaktinformasjon(String virksomhetsnummer, String miljoe) {
+    private RsKontaktinformasjon hentKontaktinformasjon(
+            String virksomhetsnummer,
+            String miljoe
+    ) {
         // TODO: hent kontaktinformasjon fra ereg
         return RsKontaktinformasjon.builder()
                 .kontaktinformasjonNavn("SJÆFEN SJØL")
