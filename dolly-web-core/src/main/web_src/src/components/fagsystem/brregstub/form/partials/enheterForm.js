@@ -24,28 +24,22 @@ export const EnheterForm = ({ formikBag }) => {
 		formikBag.setFieldValue(`${path}.orgNr`, org.value)
 		formikBag.setFieldValue(`${path}.foretaksNavn.navn1`, org.navn)
 		if (org.forretningsAdresse) {
-			console.log('org.forretningsAdresse :>> ', org.forretningsAdresse)
-			formikBag.setFieldValue(`${path}.forretningsAdresse.adresse1`, org.forretningsAdresse.adresse)
-			formikBag.setFieldValue(
-				`${path}.forretningsAdresse.kommunenr`,
-				org.forretningsAdresse.kommunenr
-			)
-			formikBag.setFieldValue(
-				`${path}.forretningsAdresse.landKode`,
-				org.forretningsAdresse.landkode
-			)
-			formikBag.setFieldValue(`${path}.forretningsAdresse.postnr`, org.forretningsAdresse.postnr)
-			formikBag.setFieldValue(
-				`${path}.forretningsAdresse.poststed`,
-				org.forretningsAdresse.poststed
-			)
+			formikBag.setFieldValue(`${path}.forretningsAdresse`, {
+				adresse1: org.forretningsAdresse.adresse,
+				kommunenr: org.forretningsAdresse.kommunenr,
+				landKode: org.forretningsAdresse.landkode,
+				postnr: org.forretningsAdresse.postnr,
+				poststed: org.forretningsAdresse.poststed
+			})
 		}
 		if (org.postadresse) {
-			formikBag.setFieldValue(`${path}.postAdresse.adresse1`, org.postadresse.adresse)
-			formikBag.setFieldValue(`${path}.postAdresse.kommunenr`, org.postadresse.kommunenr)
-			formikBag.setFieldValue(`${path}.postAdresse.landKode`, org.postadresse.landkode)
-			formikBag.setFieldValue(`${path}.postAdresse.postnr`, org.postadresse.postnr)
-			formikBag.setFieldValue(`${path}.postAdresse.poststed`, org.postadresse.poststed)
+			formikBag.setFieldValue(`${path}.postAdresse`, {
+				adresse1: org.forretningsAdresse.adresse,
+				kommunenr: org.forretningsAdresse.kommunenr,
+				landKode: org.forretningsAdresse.landkode,
+				postnr: org.forretningsAdresse.postnr,
+				poststed: org.forretningsAdresse.poststed
+			})
 		}
 	}
 
