@@ -26,7 +26,7 @@ public class RsBregdata {
     @ApiModelProperty(
             position = 2
     )
-    private Integer understatuser;
+    private List<Integer> understatuser;
 
     @Getter
     @Setter
