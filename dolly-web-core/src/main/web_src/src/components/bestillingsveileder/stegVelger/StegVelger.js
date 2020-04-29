@@ -19,36 +19,17 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 	const [step, setStep] = useState(0)
 
 	const opts = useContext(BestillingsveilederContext)
-	const leggTil = opts.is.leggTil
 	const { data } = opts
-
-	const leggTilPersonFoerLeggTil = formikBag => {
-		formikBag.setFieldValue('personFoerLeggTil.foedselsdato', data.tpsf.foedselsdato)
-		if (data.tpsf.doedsdato) {
-			formikBag.setFieldValue('personFoerLeggTil.doedsdato', data.tpsf.doedsdato)
-		}
-	}
-	const fjernPersonFoerLeggTil = formikBag => {
-		formikBag.setFieldValue('personFoerLeggTil', undefined)
-		formikBag.setFieldTouched('personFoerLeggTil', false)
-	}
 
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => setStep(step + 1)
 
-	const handleBack = formikBag => {
-		if (leggTil && formikBag.values.pensjonforvalter)
-			if (isLastStep()) leggTilPersonFoerLeggTil(formikBag)
-			else if (step === 1) fjernPersonFoerLeggTil(formikBag)
+	const handleBack = () => {
 		if (step !== 0) setStep(step - 1)
 	}
 
 	const _handleSubmit = (values, formikBag) => {
 		const { setSubmitting } = formikBag
-		if (leggTil && values.pensjonforvalter) {
-			if(step === 0) leggTilPersonFoerLeggTil(formikBag)
-			else if(step === 1) fjernPersonFoerLeggTil(formikBag)
-		}
 
 		if (!isLastStep()) {
 			setSubmitting(false)
@@ -61,7 +42,8 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 
 	const CurrentStepComponent = STEPS[step]
 
-	const _validate = values => validate(values, CurrentStepComponent.validation)
+	const _validate = values =>
+		validate({ ...values, personFoerLeggTil: data }, CurrentStepComponent.validation)
 
 	const labels = STEPS.map(v => ({ label: v.label }))
 
@@ -81,7 +63,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 
 						<Navigation
 							showPrevious={step > 0}
-							onPrevious={() => handleBack(formikBag)}
+							onPrevious={handleBack}
 							isLastStep={isLastStep()}
 							formikBag={formikBag}
 						/>

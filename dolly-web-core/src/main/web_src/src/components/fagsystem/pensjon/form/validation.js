@@ -22,18 +22,16 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge, validate
 			if (!val) return true
 
 			const dateValue = val
-			const path = this.path
+			let path = this.path.substring(0, this.path.lastIndexOf('.'))
 			const values = this.options.context
-			const arrayPos = path.split('.')[0] // feks: pensjonforvalter[1]
 
 			if (validateFomBasedOnAge) {
-				const inntektFom = _get(values, `${arrayPos}.inntekt.fomAar`)
+				const inntektFom = val
 				let alder = _get(values, 'tpsf.alder')
-				const foedselsdato = _get(values, 'personFoerLeggTil.foedselsdato')
-
-				if (!_isNil(foedselsdato)) {
-					alder = calculate_age(new Date(foedselsdato))
+				if (values.personFoerLeggTil) {
+					alder = calculate_age(new Date(values.personFoerLeggTil.tpsf.foedselsdato))
 				}
+
 				const foedtFoer = _get(values, 'tpsf.foedtFoer')
 				const foedtEtter = _get(values, 'tpsf.foedtEtter')
 
@@ -46,7 +44,7 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge, validate
 					let month = foedtFoer.getMonth()
 					let year = foedtFoer.getFullYear()
 
-					year = day == 1 && month == 0 ? year - 1 : year
+					year = day === 1 && month === 0 ? year - 1 : year
 
 					if (year + 18 > inntektFom) {
 						return false
@@ -63,11 +61,12 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge, validate
 			}
 
 			if (validateBasedOnDeath) {
-				const inntektTom = _get(values, `${arrayPos}.inntekt.tomAar`)
+				const inntektTom = val
 
-				let doedsdato = _get(values, 'personFoerLeggTil.doedsdato')
-				if (_isNil(doedsdato)) {
-					doedsdato = _get(values, 'tpsf.doedsdato')
+				let doedsdato = _get(values, 'tpsf.doedsdato')
+
+				if (values.personFoerLeggTil && values.personFoerLeggTil.tpsf.doedsdato) {
+					doedsdato = values.personFoerLeggTil.tpsf.doedsdato
 				}
 
 				if (!_isNil(doedsdato)) {
@@ -78,8 +77,8 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge, validate
 				}
 			}
 
-			const inntektFom = _get(values, `${arrayPos}.inntekt.fomAar`)
-			const inntektTom = _get(values, `${arrayPos}.inntekt.tomAar`)
+			const inntektFom = _get(values, `${path}.fomAar`)
+			const inntektTom = _get(values, `${path}.tomAar`)
 
 			return (
 				dateValue >= inntektFom &&
