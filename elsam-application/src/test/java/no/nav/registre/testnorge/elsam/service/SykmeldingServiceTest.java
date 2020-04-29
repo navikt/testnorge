@@ -5,8 +5,8 @@ import static org.hamcrest.Matchers.equalTo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
-import no.kith.xmlstds.msghead._2006_05_24.XMLMsgHead;
-import no.trygdeetaten.xml.eiff._1.XMLEIFellesformat;
+import no.nav.helse.eiFellesformat.XMLEIFellesformat;
+import no.nav.helse.msgHead.XMLMsgHead;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
