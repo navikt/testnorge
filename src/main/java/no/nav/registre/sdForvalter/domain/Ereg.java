@@ -7,8 +7,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.Value;
+import org.apache.logging.log4j.util.Strings;
 
 import no.nav.registre.sdForvalter.database.model.EregModel;
+import no.nav.registre.sdForvalter.domain.Adresse;
+import no.nav.registre.sdForvalter.domain.FasteData;
 
 
 @Value
@@ -35,6 +38,11 @@ public class Ereg extends FasteData {
     private final Adresse forretningsAdresse;
     @JsonProperty
     private final Adresse postadresse;
+
+    @JsonProperty
+    public boolean isKanHaArbeidsforhold() {
+        return Strings.isNotBlank(enhetstype) && (enhetstype.equals("BEDR") || enhetstype.equals("AAFY"));
+    }
 
     @Builder
     public Ereg(String gruppe, String opprinnelse, String orgnr, String enhetstype, String navn, String epost, String internetAdresse, String naeringskode, String juridiskEnhet, Adresse forretningsAdresse, Adresse postadresse) {

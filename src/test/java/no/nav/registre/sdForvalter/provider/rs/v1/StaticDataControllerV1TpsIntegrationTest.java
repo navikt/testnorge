@@ -1,4 +1,4 @@
-package no.nav.registre.sdForvalter.provider.rs;
+package no.nav.registre.sdForvalter.provider.rs.v1;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,7 +37,7 @@ import no.nav.registre.sdForvalter.domain.TpsIdentListe;
 @TestPropertySource(
         locations = "classpath:application-test.properties"
 )
-public class StaticDataControllerTpsIntegrationTest {
+public class StaticDataControllerV1TpsIntegrationTest {
     @Autowired
     private MockMvc mvc;
 
