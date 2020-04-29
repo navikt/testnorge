@@ -8,14 +8,10 @@ import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bes
 
 export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
-
 	const opts = useContext(BestillingsveilederContext)
 	const opprettFraEksisterende = opts.is.opprettFraIdenter
 	const leggTil = opts.is.leggTil
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
-
-	const opts = useContext(BestillingsveilederContext)
-	const leggTil = opts.is.leggTil
 
 	return (
 		<Panel
