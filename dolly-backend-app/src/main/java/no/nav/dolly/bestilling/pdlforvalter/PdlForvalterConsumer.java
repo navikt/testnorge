@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
 import static java.lang.String.format;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_TOKEN;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -71,7 +72,8 @@ public class PdlForvalterConsumer {
     public ResponseEntity deleteIdent(String ident) {
         return restTemplate.exchange(RequestEntity.delete(
                 URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_SLETTING_URL))
-                .header(AUTHORIZATION, resolveToken())
+                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                .header(HEADER_NAV_CONSUMER_TOKEN, resolveToken())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .build(), JsonNode.class);
     }
@@ -80,7 +82,8 @@ public class PdlForvalterConsumer {
     public ResponseEntity<JsonNode> getPersonstatus(String ident) {
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(providersProps.getPdlForvalter().getUrl() + PDL_PERSONSTATUS))
-                .header(AUTHORIZATION, resolveToken())
+                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                .header(HEADER_NAV_CONSUMER_TOKEN, resolveToken())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .build(), JsonNode.class);
     }
@@ -191,7 +194,8 @@ public class PdlForvalterConsumer {
         try {
         return restTemplate.exchange(RequestEntity.post(URI.create(url))
                 .contentType(APPLICATION_JSON)
-                .header(AUTHORIZATION, resolveToken())
+                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                .header(HEADER_NAV_CONSUMER_TOKEN, resolveToken())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .body(body), JsonNode.class);
 
@@ -206,7 +210,8 @@ public class PdlForvalterConsumer {
 
         return restTemplate.exchange(RequestEntity.post(URI.create(url))
                 .contentType(APPLICATION_JSON)
-                .header(AUTHORIZATION, resolveToken())
+                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                .header(HEADER_NAV_CONSUMER_TOKEN, resolveToken())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .body(body), JsonNode.class);
     }
