@@ -57,7 +57,7 @@ BrregstubForm.validation = {
 				.required('Velg minst én understatus'),
 			enheter: Yup.array().of(
 				Yup.object({
-					rollebeskrivelse: requiredString.typeError(messages.required),
+					rollebeskrivelse: requiredString,
 					registreringsdato: requiredDate,
 					foretaksNavn: Yup.object({
 						navn1: requiredString
