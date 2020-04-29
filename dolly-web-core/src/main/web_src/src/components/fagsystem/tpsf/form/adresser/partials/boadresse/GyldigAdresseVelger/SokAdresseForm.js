@@ -5,11 +5,12 @@ import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import Icon from '~/components/ui/icon/Icon'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { AdresseKodeverk } from '~/config/kodeverk'
+import _get from 'lodash/get'
 
-export const SokAdresseForm = ({ onSearch }) => {
+export const SokAdresseForm = ({ onSearch, formikBag}) => {
 	const [gatenavn, setGatenavn] = useState('')
-	const [postnummer, setPostnummer] = useState('')
-	const [kommunenummer, setKommunenummer] = useState('')
+	const [postnummer, setPostnummer] = useState(_get(formikBag.values, 'tpsf.boadresse.postnr'))
+	const [kommunenummer, setKommunenummer] = useState(_get(formikBag.values, 'tpsf.boadresse.kommunenr'))
 
 	const sokAdresse = () => {
 		const query = createQueryString(gatenavn, postnummer, kommunenummer)

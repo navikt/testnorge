@@ -13,13 +13,14 @@ const boadresse = Yup.object({
 			[null],
 			ifKeyHasValue(
 				'$tpsf.utenFastBopel',
-				[!true],
+				[undefined, false],
 				Yup.string().required(
 					'Bruk adressevelgeren over for å hente gyldige adresser og velge et av forslagene'
 				)
 			)
 		)
 	),
+	adressetype: requiredString,
 	gardsnr: Yup.string().when('adressetype', {
 		is: 'MATR',
 		then: Yup.string()
@@ -146,7 +147,7 @@ const partnere = Yup.array()
 				.transform(num => (isNaN(num) ? undefined : num))
 				.min(0, 'Alder må være et positivt tall')
 				.max(119, 'Alder må være under 120'),
-			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(),false),
+			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(), false),
 			foedtFoer: foedtFoerOgEtterTest(Yup.date().nullable(), true),
 			spesreg: Yup.string()
 				.when('utenFastBopel', {
@@ -181,7 +182,7 @@ const barn = Yup.array()
 				.transform(num => (isNaN(num) ? undefined : num))
 				.min(0, 'Alder må være et positivt tall')
 				.max(119, 'Alder må være under 120'),
-			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(),false),
+			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(), false),
 			foedtFoer: foedtFoerOgEtterTest(Yup.date().nullable(), true),
 			spesreg: Yup.string()
 				.when('utenFastBopel', {
@@ -219,7 +220,7 @@ export const validation = {
 				.min(0, 'Alder må være et positivt tall')
 				.max(119, 'Alder må være under 120')
 				.typeError(messages.required),
-			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(),false),
+			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(), false),
 			foedtFoer: foedtFoerOgEtterTest(Yup.date().nullable(), true),
 			doedsdato: Yup.date().nullable(),
 			kjonn: ifPresent('$tpsf.kjonn', requiredString),
