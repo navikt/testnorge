@@ -9,7 +9,7 @@ import {
 	ifPresent
 } from '~/utils/YupValidations'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
+import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
@@ -31,17 +31,15 @@ export const BrregstubForm = ({ formikBag }) => {
 				startOpen={() => erForste(formikBag.values, [brregAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
-					<DollySelect
+					<FormikSelect
 						name="bregstub.understatuser"
-						label="Understatus"
+						label="Understatuser"
 						options={understatuserOptions}
 						isLoading={understatuser.loading}
-						onChange={understatus =>
-							formikBag.setFieldValue('bregstub.understatuser', understatus.value)
-						}
-						value={_get(formikBag.values, 'bregstub.understatuser')}
-						size="xxlarge"
+						isMulti={true}
+						size="grow"
 						isClearable={false}
+						fastfield={false}
 					/>
 					<EnheterForm formikBag={formikBag} />
 				</div>
@@ -54,7 +52,9 @@ BrregstubForm.validation = {
 	bregstub: ifPresent(
 		'$bregstub',
 		Yup.object({
-			understatuser: requiredNumber,
+			understatuser: Yup.array()
+				.of(Yup.number())
+				.required('Velg minst én understatus'),
 			enheter: Yup.array().of(
 				Yup.object({
 					rollebeskrivelse: requiredString.typeError(messages.required),

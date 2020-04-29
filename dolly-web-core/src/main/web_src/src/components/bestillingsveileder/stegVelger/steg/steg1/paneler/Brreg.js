@@ -27,7 +27,7 @@ BrregPanel.initialValues = ({ set, del, has }) => ({
 		checked: has('bregstub'),
 		add() {
 			set('bregstub', {
-				understatuser: 0,
+				understatuser: [0],
 				enheter: [
 					{
 						rollebeskrivelse: '',
