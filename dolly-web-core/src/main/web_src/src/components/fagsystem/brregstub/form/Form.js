@@ -1,7 +1,13 @@
 import React from 'react'
 import _get from 'lodash/get'
 import * as Yup from 'yup'
-import { requiredDate, requiredString, requiredNumber, messages } from '~/utils/YupValidations'
+import {
+	requiredDate,
+	requiredString,
+	requiredNumber,
+	messages,
+	ifPresent
+} from '~/utils/YupValidations'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
@@ -45,24 +51,27 @@ export const BrregstubForm = ({ formikBag }) => {
 }
 
 BrregstubForm.validation = {
-	bregstub: Yup.object({
-		understatuser: requiredNumber,
-		enheter: Yup.array().of(
-			Yup.object({
-				rollebeskrivelse: requiredString.typeError(messages.required),
-				registreringsdato: requiredDate,
-				foretaksNavn: Yup.object({
-					navn1: requiredString
-				}),
-				orgNr: requiredNumber
-					.transform((i, j) => (j === '' ? null : i))
-					.test(
-						'len',
-						'Orgnummer må være et tall med 9 sifre',
-						val => val && val.toString().length === 9
-					)
-					.nullable()
-			})
-		)
-	})
+	bregstub: ifPresent(
+		'$bregstub',
+		Yup.object({
+			understatuser: requiredNumber,
+			enheter: Yup.array().of(
+				Yup.object({
+					rollebeskrivelse: requiredString.typeError(messages.required),
+					registreringsdato: requiredDate,
+					foretaksNavn: Yup.object({
+						navn1: requiredString
+					}),
+					orgNr: requiredNumber
+						.transform((i, j) => (j === '' ? null : i))
+						.test(
+							'len',
+							'Orgnummer må være et tall med 9 sifre',
+							val => val && val.toString().length === 9
+						)
+						.nullable()
+				})
+			)
+		})
+	)
 }
