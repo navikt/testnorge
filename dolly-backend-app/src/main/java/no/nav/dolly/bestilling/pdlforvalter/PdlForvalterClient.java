@@ -60,7 +60,7 @@ public class PdlForvalterClient implements ClientRegister {
 
     private static final String UKJENT = "U";
     private static final String HENDELSE_ID = "hendelseId";
-    private static final int MAX_COUNT = 30;
+    private static final int MAX_COUNT = 100;
     private static final int TIMEOUT = 100;
 
     private final PdlForvalterConsumer pdlForvalterConsumer;
@@ -162,6 +162,7 @@ public class PdlForvalterClient implements ClientRegister {
         try {
             tpsPerson.getPersondetaljer().forEach(person -> {
                 sendOpprettPerson(person);
+                syncMotPdl(person.getIdent());
                 sendFoedselsmelding(person);
                 sendNavn(person);
                 sendKjoenn(person, isOpprettEndre, tpsPerson.getNyePartnereOgBarn());
@@ -172,8 +173,7 @@ public class PdlForvalterClient implements ClientRegister {
                 sendTelefonnummer(person);
                 sendDoedsfall(person);
             });
-
-            syncMedPdl(tpsPerson.getHovedperson(), status);
+            status.append("&OK");
 
         } catch (DollyFunctionalException e) {
 
@@ -181,7 +181,7 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void syncMedPdl(String ident, StringBuilder status) {
+    private void syncMotPdl(String ident) {
 
         int count = 0;
         try {
@@ -195,11 +195,9 @@ public class PdlForvalterClient implements ClientRegister {
         }
 
         if (count < MAX_COUNT) {
-            status.append("&OK");
             log.info("Synkronisering mot PDL-forvalter tok {} ms.", count * TIMEOUT);
         } else {
-            status.append("&Synkronisering av person i PDL tok for lang tid");
-            log.warn("Synkronisering mot PDL-forvalter gitt opp etter 1000 ms.");
+            log.warn("Synkronisering mot PDL-forvalter gitt opp etter {} ms.", MAX_COUNT * TIMEOUT);
         }
     }
 
