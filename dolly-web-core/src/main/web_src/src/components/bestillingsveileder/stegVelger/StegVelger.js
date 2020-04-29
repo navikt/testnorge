@@ -5,7 +5,6 @@ import { Navigation } from './Navigation/Navigation'
 import { stateModifierFns } from '../stateModifier'
 import { validate } from '~/utils/YupValidations'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
-import _get from 'lodash/get'
 
 import DisplayFormikState from '~/utils/DisplayFormikState'
 
@@ -23,7 +22,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 	const leggTil = opts.is.leggTil
 	const { data } = opts
 
-	const leggTilPersonFoerLeggTil = (formikBag) => {
+	const leggTilPersonFoerLeggTil = formikBag => {
 		formikBag.setFieldValue('personFoerLeggTil.foedselsdato', data.tpsf.foedselsdato)
 		if (data.tpsf.doedsdato) {
 			formikBag.setFieldValue('personFoerLeggTil.doedsdato', data.tpsf.doedsdato)
@@ -37,21 +36,18 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => setStep(step + 1)
 
-	const handleBack = (formikBag) => {
+	const handleBack = formikBag => {
 		if (leggTil && formikBag.values.pensjonforvalter)
-			if(isLastStep()) leggTilPersonFoerLeggTil(formikBag)
-			else if (step ===1) fjernPersonFoerLeggTil(formikBag)
+			if (isLastStep()) leggTilPersonFoerLeggTil(formikBag)
+			else if (step === 1) fjernPersonFoerLeggTil(formikBag)
 		if (step !== 0) setStep(step - 1)
 	}
 
 	const _handleSubmit = (values, formikBag) => {
 		const { setSubmitting } = formikBag
-		if (leggTil && step === 0 && values.pensjonforvalter) {
-			leggTilPersonFoerLeggTil(formikBag)
-		}
-
-		if (leggTil && step === 1 && values.pensjonforvalter) {
-			fjernPersonFoerLeggTil(formikBag)
+		if (leggTil && values.pensjonforvalter) {
+			if(step === 0) leggTilPersonFoerLeggTil(formikBag)
+			else if(step === 1) fjernPersonFoerLeggTil(formikBag)
 		}
 
 		if (!isLastStep()) {
@@ -81,7 +77,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 
 						<CurrentStepComponent formikBag={formikBag} stateModifier={stateModifier} />
 
-						<DisplayFormikState {...formikBag} />
+						{/*<DisplayFormikState {...formikBag} />*/}
 
 						<Navigation
 							showPrevious={step > 0}
