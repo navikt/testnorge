@@ -16,7 +16,7 @@ import no.nav.registre.sdForvalter.domain.EregListe;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v2/faste-data")
+@RequestMapping("/api/v1/faste-data")
 public class StaticDataControllerV2 {
 
     private final EregAdapter eregAdapter;

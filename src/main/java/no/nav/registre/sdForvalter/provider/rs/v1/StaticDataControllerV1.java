@@ -65,27 +65,4 @@ public class StaticDataControllerV1 {
         return ResponseEntity.ok(krrAdapter.save(liste));
     }
 
-
-    /**
-     * @deprecated bruk v2 av apiet
-     */
-    @Deprecated
-    @GetMapping("/ereg")
-    public ResponseEntity<EregListe> getEregStaticData(@RequestParam(name = "gruppe", required = false) String gruppe) {
-        List<Ereg> list = eregAdapter
-                .fetchBy(gruppe)
-                .stream()
-                .filter(item -> item.getEnhetstype().equals("AS") || item.getEnhetstype().equals("BEDR"))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(new EregListe(list));
-    }
-
-    /**
-     * @deprecated bruk v2 av apiet
-     */
-    @Deprecated
-    @PostMapping("/ereg")
-    public ResponseEntity<EregListe> createEregStaticData(@RequestBody EregListe eregs) {
-        return ResponseEntity.ok(eregAdapter.save(eregs));
-    }
 }

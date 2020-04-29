@@ -40,7 +40,7 @@ import no.nav.registre.sdForvalter.domain.Opprinnelse;
         locations = "classpath:application-test.properties"
 )
 public class StaticDataControllerV2EregIntegrationTest {
-    private static final String EREG_API = "/api/v2/faste-data/ereg/";
+    private static final String EREG_API = "/api/v1/faste-data/ereg/";
     @Autowired
     private MockMvc mvc;
 
