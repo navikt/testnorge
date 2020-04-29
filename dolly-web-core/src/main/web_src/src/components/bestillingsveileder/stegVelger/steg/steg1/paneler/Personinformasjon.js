@@ -14,6 +14,9 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const leggTil = opts.is.leggTil
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
+	const opts = useContext(BestillingsveilederContext)
+	const leggTil = opts.is.leggTil
+
 	return (
 		<Panel
 			heading={PersoninformasjonPanel.heading}
@@ -22,13 +25,10 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'personinformasjon'}
 		>
-			{!leggTil && (
-				<AttributtKategori title="Alder">
-					<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende} />
-					<Attributt attr={sm.attrs.doedsdato} />
-				</AttributtKategori>
-			)}
-
+			<AttributtKategori title="Alder">
+				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
+				<Attributt attr={sm.attrs.doedsdato} />
+			</AttributtKategori>
 			<AttributtKategori title="Nasjonalitet">
 				<Attributt attr={sm.attrs.statsborgerskap} />
 				<Attributt attr={sm.attrs.innvandretFraLand} vis={!leggTil} />
