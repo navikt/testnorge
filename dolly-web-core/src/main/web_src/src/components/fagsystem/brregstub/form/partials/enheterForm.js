@@ -2,8 +2,9 @@ import React from 'react'
 import _get from 'lodash/get'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
+import { OrganisasjonLoader } from '~/components/organisasjonSelect'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 const initialValues = {
@@ -19,28 +20,61 @@ export const EnheterForm = ({ formikBag }) => {
 	const roller = SelectOptionsOppslag.hentRollerFraBrregstub()
 	const rollerOptions = SelectOptionsOppslag.formatOptions('roller', roller)
 
+	const setEnhetsinfo = (org, path) => {
+		formikBag.setFieldValue(`${path}.orgNr`, org.value)
+		formikBag.setFieldValue(`${path}.foretaksNavn.navn1`, org.navn)
+		if (org.forretningsAdresse) {
+			formikBag.setFieldValue(`${path}.forretningsAdresse`, {
+				adresse1: org.forretningsAdresse.adresse,
+				kommunenr: org.forretningsAdresse.kommunenr,
+				landKode: org.forretningsAdresse.landkode,
+				postnr: org.forretningsAdresse.postnr,
+				poststed: org.forretningsAdresse.poststed
+			})
+		}
+		if (org.postadresse) {
+			formikBag.setFieldValue(`${path}.postAdresse`, {
+				adresse1: org.forretningsAdresse.adresse,
+				kommunenr: org.forretningsAdresse.kommunenr,
+				landKode: org.forretningsAdresse.landkode,
+				postnr: org.forretningsAdresse.postnr,
+				poststed: org.forretningsAdresse.poststed
+			})
+		}
+	}
+
 	return (
 		<FormikDollyFieldArray name="bregstub.enheter" header="Enhet" newEntry={initialValues}>
 			{path => (
 				<>
-					<DollySelect
+					<FormikSelect
 						name={`${path}.rollebeskrivelse`}
 						label="Rollebeskrivelse"
 						options={rollerOptions}
 						isLoading={roller.loading}
-						onChange={rolle => formikBag.setFieldValue(`${path}.rollebeskrivelse`, rolle.value)}
-						value={_get(formikBag.values, `${path}.rollebeskrivelse`)}
-						feil={
-							_get(formikBag.values, `${path}.rollebeskrivelse`) === '' && {
-								feilmelding: 'Feltet er påkrevd'
-							}
-						}
 						size="large"
 						isClearable={false}
+						fastfield={false}
 					/>
 					<FormikDatepicker name={`${path}.registreringsdato`} label="Registreringsdato" />
-					<FormikTextInput name={`${path}.foretaksNavn.navn1`} label="Foretaksnavn" size="large" />
-					<FormikTextInput name={`${path}.orgNr`} label="Organisasjonsnummer" type="number" />
+					<OrganisasjonLoader
+						render={data => (
+							<DollySelect
+								name={`${path}.orgNr`}
+								label="Organisasjonsnummer"
+								options={data}
+								size="xlarge"
+								onChange={org => setEnhetsinfo(org, path)}
+								value={_get(formikBag.values, `${path}.orgNr`)}
+								feil={
+									_get(formikBag.values, `${path}.orgNr`) === '' && {
+										feilmelding: 'Feltet er påkrevd'
+									}
+								}
+								isClearable={false}
+							/>
+						)}
+					/>
 				</>
 			)}
 		</FormikDollyFieldArray>
