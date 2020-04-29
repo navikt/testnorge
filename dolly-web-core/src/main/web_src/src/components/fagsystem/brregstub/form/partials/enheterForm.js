@@ -2,7 +2,6 @@ import React from 'react'
 import _get from 'lodash/get'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { OrganisasjonLoader } from '~/components/organisasjonSelect'
@@ -23,6 +22,7 @@ export const EnheterForm = ({ formikBag }) => {
 
 	const setEnhetsinfo = (org, path) => {
 		formikBag.setFieldValue(`${path}.orgNr`, org.value)
+		formikBag.setFieldValue(`${path}.foretaksNavn.navn1`, org.navn)
 		if (org.forretningsAdresse) {
 			console.log('org.forretningsAdresse :>> ', org.forretningsAdresse)
 			formikBag.setFieldValue(`${path}.forretningsAdresse.adresse1`, org.forretningsAdresse.adresse)
@@ -63,7 +63,6 @@ export const EnheterForm = ({ formikBag }) => {
 						fastfield={false}
 					/>
 					<FormikDatepicker name={`${path}.registreringsdato`} label="Registreringsdato" />
-					<FormikTextInput name={`${path}.foretaksNavn.navn1`} label="Foretaksnavn" size="large" />
 					<OrganisasjonLoader
 						render={data => (
 							<DollySelect

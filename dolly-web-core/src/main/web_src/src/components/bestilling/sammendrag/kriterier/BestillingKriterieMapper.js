@@ -402,8 +402,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				{ numberHeader: `Enhet ${i + 1}` },
 				obj('Rollebeskrivelse', enhet.rollebeskrivelse),
 				obj('Registreringsdato', Formatters.formatDate(enhet.registreringsdato)),
-				obj('Foretaksnavn', enhet.foretaksNavn.navn1),
-				obj('Organisasjonsnummer', enhet.orgNr)
+				obj('Organisasjonsnummer', enhet.orgNr),
+				obj('Foretaksnavn', enhet.foretaksNavn.navn1)
 			])
 		})
 

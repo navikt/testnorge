@@ -53,9 +53,6 @@ BrregstubForm.validation = {
 				Yup.object({
 					rollebeskrivelse: requiredString,
 					registreringsdato: requiredDate,
-					foretaksNavn: Yup.object({
-						navn1: requiredString
-					}),
 					orgNr: requiredNumber
 				})
 			)

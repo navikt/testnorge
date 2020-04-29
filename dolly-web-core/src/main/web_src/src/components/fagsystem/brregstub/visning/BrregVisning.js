@@ -25,8 +25,8 @@ export const BrregVisning = ({ data, loading }) => {
 								title="Registreringsdato"
 								value={Formatters.formatStringDates(enhet.registreringsdato)}
 							/>
-							<TitleValue title="Foretaksnavn" value={enhet.foretaksNavn.navn1} />
 							<TitleValue title="Organisasjonsnummer" value={enhet.orgNr} />
+							<TitleValue title="Foretaksnavn" value={enhet.foretaksNavn.navn1} />
 						</div>
 					)}
 				</DollyFieldArray>

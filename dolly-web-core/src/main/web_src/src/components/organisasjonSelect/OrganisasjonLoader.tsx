@@ -19,6 +19,7 @@ export const OrganisasjonLoader = ({ filter = () => true, render }: Organisasjon
 					value: response.orgnr,
 					label: formatLabel(response),
 					juridiskEnhet: response.juridiskEnhet,
+					navn: response.navn,
 					forretningsAdresse: response.forretningsAdresse,
 					postadresse: response.postadresse
 				}))
