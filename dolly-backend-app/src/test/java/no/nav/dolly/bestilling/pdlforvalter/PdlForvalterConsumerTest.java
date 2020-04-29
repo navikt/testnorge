@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.pdlforvalter;
 
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
@@ -77,7 +76,7 @@ public class PdlForvalterConsumerTest {
         pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo.builder().build(), IDENT);
 
         verify(providersProps).getPdlForvalter();
-        verify(stsOidcService, times(2)).getIdToken(anyString());
+        verify(stsOidcService).getIdToken(anyString());
     }
 
     @Test
@@ -90,7 +89,7 @@ public class PdlForvalterConsumerTest {
         pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer.builder().build(), IDENT);
 
         verify(providersProps).getPdlForvalter();
-        verify(stsOidcService, times(2)).getIdToken(anyString());
+        verify(stsOidcService).getIdToken(anyString());
     }
 
     @Test
@@ -104,7 +103,7 @@ public class PdlForvalterConsumerTest {
         pdlForvalterConsumer.postFalskIdentitet(PdlFalskIdentitet.builder().build(), IDENT);
 
         verify(providersProps).getPdlForvalter();
-        verify(stsOidcService, times(2)).getIdToken(anyString());
+        verify(stsOidcService).getIdToken(anyString());
     }
 
     @Test
@@ -118,7 +117,7 @@ public class PdlForvalterConsumerTest {
         pdlForvalterConsumer.deleteIdent(IDENT);
 
         verify(providersProps).getPdlForvalter();
-        verify(stsOidcService, times(2)).getIdToken(anyString());
+        verify(stsOidcService).getIdToken(anyString());
     }
 
     @Test
@@ -132,7 +131,7 @@ public class PdlForvalterConsumerTest {
         pdlForvalterConsumer.postOpprettPerson(PdlOpprettPerson.builder().opprettetIdent(IDENT).build(), IDENT, "OpprettPerson");
 
         verify(providersProps).getPdlForvalter();
-        verify(stsOidcService, times(2)).getIdToken(anyString());
+        verify(stsOidcService).getIdToken(anyString());
     }
 
     @Test
