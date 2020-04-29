@@ -8,11 +8,10 @@ import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bes
 
 export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
-	const opprettFraEksisterende = _has(useLocation(), 'state.state.opprettFraIdenter')
-	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende
-
 	const opts = useContext(BestillingsveilederContext)
+	const opprettFraEksisterende = opts.is.opprettFraIdenter
 	const leggTil = opts.is.leggTil
+	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
 	return (
 		<Panel
@@ -26,14 +25,11 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
 				<Attributt attr={sm.attrs.doedsdato} />
 			</AttributtKategori>
-
-			{!leggTil && (
-				<AttributtKategori title="Nasjonalitet">
-					<Attributt attr={sm.attrs.statsborgerskap} />
-					<Attributt attr={sm.attrs.innvandretFraLand} />
-					<Attributt attr={sm.attrs.utvandretTilLand} />
-				</AttributtKategori>
-			)}
+			<AttributtKategori title="Nasjonalitet">
+				<Attributt attr={sm.attrs.statsborgerskap} />
+				<Attributt attr={sm.attrs.innvandretFraLand} vis={!leggTil} />
+				<Attributt attr={sm.attrs.utvandretTilLand} vis={!leggTil} />
+			</AttributtKategori>
 
 			{!leggTil && (
 				<AttributtKategori title="Diverse">
