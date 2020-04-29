@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo;
@@ -23,6 +25,7 @@ public class BregstubClient implements ClientRegister {
     private final BregstubConsumer bregstubConsumer;
     private final RolleUtskriftMapper rolleUtskriftMapper;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final ObjectMapper objectMapper;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {

@@ -21,7 +21,7 @@ public class RolleoversiktTo {
     private LocalDate fodselsdato;
     private Integer hovedstatus;
     private NavnTo navn;
-    private Integer understatuser;
+    private List<Integer> understatuser;
 
     @Getter
     @Setter

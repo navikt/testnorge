@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 public enum DatasettType {
 
     AAREG("/aareg"),
-    EREG("/ereg"),
+    EREG("/ereg?gruppe=DOLLY"),
     KRR("/krr"),
     TPS("/tps");
 
