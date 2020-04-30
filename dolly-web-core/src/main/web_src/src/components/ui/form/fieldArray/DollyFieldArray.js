@@ -80,7 +80,7 @@ export const DollyFieldArray = ({
 					{children(curr, idx)}
 				</DollyFaBlokkNested>
 			) : expandable ? (
-				<ExpandableBlokk key={idx} idx={idx} header={header}>
+				<ExpandableBlokk key={idx} idx={idx} header={header} data={curr}>
 					{children(curr, idx)}
 				</ExpandableBlokk>
 			) : (
