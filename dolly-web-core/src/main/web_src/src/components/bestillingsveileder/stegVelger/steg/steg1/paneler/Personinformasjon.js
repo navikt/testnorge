@@ -40,10 +40,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 			<AttributtKategori title="Diverse">
 				<Attributt attr={sm.attrs.identHistorikk} />
 				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende && !leggTil} />
-				<Attributt
-					attr={sm.attrs.harMellomnavn}
-					vis={!leggTil || !opts.personFoerLeggTil.mellomnavn}
-				/>
+				<Attributt attr={sm.attrs.harMellomnavn} />
 				<Attributt attr={sm.attrs.sprakKode} />
 				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 				<Attributt attr={sm.attrs.erForsvunnet} />
