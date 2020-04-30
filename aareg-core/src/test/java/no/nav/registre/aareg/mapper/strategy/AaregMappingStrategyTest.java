@@ -8,8 +8,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Arbeidsforhold;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Organisasjon;
+
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Organisasjon;
 import org.junit.Before;
 import org.junit.Test;
 

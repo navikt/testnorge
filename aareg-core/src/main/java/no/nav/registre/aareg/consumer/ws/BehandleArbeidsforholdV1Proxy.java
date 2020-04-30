@@ -3,6 +3,7 @@ package no.nav.registre.aareg.consumer.ws;
 import static java.util.Objects.isNull;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,6 @@ import java.util.Map;
 import no.nav.registre.aareg.cxf.TimeoutFeature;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.security.sts.StsSamlTokenService;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.BehandleArbeidsforholdPortType;
 
 @Component
 @RequiredArgsConstructor

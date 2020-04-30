@@ -5,11 +5,10 @@ import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.feil.ForretningsmessigUnntak;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
-
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.feil.ForretningsmessigUnntak;
 
 @Slf4j final class AaregResponseHandler {
 

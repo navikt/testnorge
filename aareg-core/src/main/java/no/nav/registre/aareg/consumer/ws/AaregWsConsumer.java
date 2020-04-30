@@ -5,6 +5,14 @@ import static java.util.Objects.nonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdArbeidsforholdIkkeFunnet;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdSikkerhetsbegrensning;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdUgyldigInput;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OpprettArbeidsforholdSikkerhetsbegrensning;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OpprettArbeidsforholdUgyldigInput;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OppdaterArbeidsforholdRequest;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeidsforholdRequest;
 import org.springframework.stereotype.Component;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -17,14 +25,6 @@ import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.OppdaterArbeidsforholdArbeidsforholdIkkeFunnet;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.OppdaterArbeidsforholdSikkerhetsbegrensning;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.OppdaterArbeidsforholdUgyldigInput;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.OpprettArbeidsforholdSikkerhetsbegrensning;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.OpprettArbeidsforholdUgyldigInput;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Arbeidsforhold;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.meldinger.OppdaterArbeidsforholdRequest;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.meldinger.OpprettArbeidsforholdRequest;
 
 @Slf4j
 @Component
