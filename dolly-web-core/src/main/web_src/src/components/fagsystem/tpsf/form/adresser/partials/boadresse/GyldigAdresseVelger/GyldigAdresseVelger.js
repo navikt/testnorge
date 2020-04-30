@@ -5,7 +5,7 @@ import Loading from '~/components/ui/loading/Loading'
 import { SokAdresseForm } from './SokAdresseForm'
 import { VelgAdresseForm } from './VelgAdresseForm'
 
-export const GyldigAdresseVelger = ({ settBoadresse }) => {
+export const GyldigAdresseVelger = ({ settBoadresse, formikBag }) => {
 	const [adresser, setAdresser] = useState()
 	const [feilmelding, setFeilmelding] = useState()
 	const [state, fetch] = useAsyncFn(async query => {
@@ -31,7 +31,7 @@ export const GyldigAdresseVelger = ({ settBoadresse }) => {
 
 	return (
 		<div className="gyldigAdresse">
-			<SokAdresseForm onSearch={fetch} />
+			<SokAdresseForm onSearch={fetch} formikBag={formikBag}/>
 			{state.loading && <Loading label="henter gyldige adresser" />}
 			{!feilmelding && adresser && (
 				<VelgAdresseForm adresser={adresser} velgAdresse={settBoadresse} />

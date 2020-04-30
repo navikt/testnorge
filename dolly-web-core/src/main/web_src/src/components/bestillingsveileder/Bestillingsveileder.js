@@ -9,10 +9,9 @@ import './bestillingsveileder.less'
 
 export const BestillingsveilederContext = createContext()
 
-export const Bestillingsveileder = ({ error, location, sendBestilling }) => {
+export const Bestillingsveileder = ({ error, location, sendBestilling, match }) => {
 	const options = BVOptions(location.state)
-	const { leggTilPaaFnr } = options
-
+	const personId = match.params.personId
 	const handleSubmit = (values, formikBag) => {
 		sendBestilling(values, options)
 	}
@@ -20,11 +19,11 @@ export const Bestillingsveileder = ({ error, location, sendBestilling }) => {
 	if (error) {
 		return <AppError title="Det skjedde en feil ved bestilling" message={error.message} />
 	}
-	if (leggTilPaaFnr) {
+	if (personId) {
 		return (
 			<LoadableComponent
 				onFetch={() =>
-					TpsfApi.getPersoner([leggTilPaaFnr]).then(response =>
+					TpsfApi.getPersoner([personId]).then(response =>
 						response.data.length > 0 ? response.data[0] : null
 					)
 				}

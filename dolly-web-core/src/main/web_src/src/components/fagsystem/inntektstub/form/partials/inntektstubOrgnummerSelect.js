@@ -1,8 +1,7 @@
 import React from 'react'
 import _get from 'lodash/get'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { OrganisasjonLoader } from '~/components/organisasjonSelect'
 
 export const InntektstubOrgnummerSelect = ({ path, formikBag }) => {
 	const setOrgnummer = org => {
@@ -11,18 +10,8 @@ export const InntektstubOrgnummerSelect = ({ path, formikBag }) => {
 	}
 
 	return (
-		<LoadableComponent
-			onFetch={() =>
-				SelectOptionsOppslag.hentOrgnr().then(({ liste }) =>
-					liste
-						.filter(org => org.juridiskEnhet)
-						.map(org => ({
-							value: org.orgnr,
-							label: `${org.orgnr} (${org.enhetstype}) - ${org.navn}`,
-							juridiskEnhet: org.juridiskEnhet
-						}))
-				)
-			}
+		<OrganisasjonLoader
+			filter={response => response.kanHaArbeidsforhold}
 			render={data => (
 				<DollySelect
 					name={`${path}.virksomhet`}

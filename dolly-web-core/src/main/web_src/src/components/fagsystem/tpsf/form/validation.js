@@ -13,13 +13,14 @@ const boadresse = Yup.object({
 			[null],
 			ifKeyHasValue(
 				'$tpsf.utenFastBopel',
-				[!true],
+				[undefined, false],
 				Yup.string().required(
 					'Bruk adressevelgeren over for å hente gyldige adresser og velge et av forslagene'
 				)
 			)
 		)
 	),
+	adressetype: requiredString,
 	gardsnr: Yup.string().when('adressetype', {
 		is: 'MATR',
 		then: Yup.string()
@@ -101,6 +102,67 @@ export const sivilstander = Yup.array().of(
 	})
 )
 
+const innvandringUtvandringDatoTest = schema => {
+	return schema.test(
+		'datoEtterSisteInnUtvandring',
+		`Datoen må være etter siste inn-/utvandring (${''})`,
+		function erEtterSisteDato(dato) {
+			const values = this.options.context
+			const personFoerLeggTil = values.personFoerLeggTil
+			if (!dato || !personFoerLeggTil) return true
+
+			const sisteDato = _get(personFoerLeggTil, 'tpsf.innvandretUtvandret[0].flyttedato')
+			const dateValid = isAfter(new Date(dato), new Date(sisteDato))
+
+			return (
+				dateValid ||
+				this.createError({
+					message: `Dato må være etter siste inn-/utvandring (${Dataformatter.formatDate(
+						sisteDato
+					)})`,
+					path: this.options.path
+				})
+			)
+		}
+	)
+}
+
+const foedtFoerOgEtterTest = (validation, validerFoedtFoer) => {
+	const errorMsgFoedtFoer =
+		'Født Før dato kan ikke være før Født Etter dato og det må være minst en dag mellom datoene.'
+	const errorMsgFoedtEtter =
+		'Født Etter dato kan ikke være etter Født Før dato og det må være minst en dag mellom datoene.'
+	return validation.test(
+		'range',
+		validerFoedtFoer ? errorMsgFoedtFoer : errorMsgFoedtEtter,
+		function isWithinTest(val) {
+			if (!val) return true
+
+			const values = this.options.context
+			const path = this.path.substring(0, this.path.lastIndexOf('.'))
+
+			let selectedDato = new Date(new Date(val).toDateString())
+			const foedtEtterValue = _get(values, `${path}.foedtEtter`)
+			const foedtFoerValue = _get(values, `${path}.foedtFoer`)
+
+			if (validerFoedtFoer) {
+				if (foedtEtterValue !== '' && foedtEtterValue !== undefined) {
+					const foedtEtterDato = new Date(foedtEtterValue)
+					foedtEtterDato.setDate(foedtEtterDato.getDate() + 1)
+					if (selectedDato <= new Date(foedtEtterDato.toDateString())) return false
+				}
+			} else {
+				if (foedtFoerValue !== '' && foedtFoerValue !== undefined) {
+					let foedtFoerDato = new Date(foedtFoerValue)
+					foedtFoerDato.setDate(foedtFoerDato.getDate() - 1)
+					if (selectedDato >= new Date(foedtFoerDato.toDateString())) return false
+				}
+			}
+			return true
+		}
+	)
+}
+
 const partnere = Yup.array()
 	.of(
 		Yup.object({
@@ -110,8 +172,8 @@ const partnere = Yup.array()
 				.transform(num => (isNaN(num) ? undefined : num))
 				.min(0, 'Alder må være et positivt tall')
 				.max(119, 'Alder må være under 120'),
-			foedtEtter: Yup.date().nullable(),
-			foedtFoer: Yup.date().nullable(),
+			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(), false),
+			foedtFoer: foedtFoerOgEtterTest(Yup.date().nullable(), true),
 			spesreg: Yup.string()
 				.when('utenFastBopel', {
 					is: true,
@@ -145,6 +207,8 @@ const barn = Yup.array()
 				.transform(num => (isNaN(num) ? undefined : num))
 				.min(0, 'Alder må være et positivt tall')
 				.max(119, 'Alder må være under 120'),
+			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(), false),
+			foedtFoer: foedtFoerOgEtterTest(Yup.date().nullable(), true),
 			spesreg: Yup.string()
 				.when('utenFastBopel', {
 					is: true,
@@ -181,16 +245,22 @@ export const validation = {
 				.min(0, 'Alder må være et positivt tall')
 				.max(119, 'Alder må være under 120')
 				.typeError(messages.required),
-			foedtEtter: Yup.date().nullable(),
-			foedtFoer: Yup.date().nullable(),
+			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(), false),
+			foedtFoer: foedtFoerOgEtterTest(Yup.date().nullable(), true),
 			doedsdato: Yup.date().nullable(),
 			kjonn: ifPresent('$tpsf.kjonn', requiredString),
 			statsborgerskap: ifPresent('$tpsf.statsborgerskap', requiredString),
 			statsborgerskapRegdato: Yup.date().nullable(),
 			innvandretFraLand: ifPresent('$tpsf.innvandretFraLand', requiredString),
-			innvandretFraLandFlyttedato: Yup.date().nullable(),
+			innvandretFraLandFlyttedato: ifPresent(
+				'$tpsf.innvandretFraLandFlyttedato',
+				innvandringUtvandringDatoTest(Yup.date().nullable())
+			),
 			utvandretTilLand: ifPresent('$tpsf.utvandretTilLand', requiredString),
-			utvandretTilLandFlyttedato: Yup.date().nullable(),
+			utvandretTilLandFlyttedato: ifPresent(
+				'$tpsf.utvandretTilLandFlyttedato',
+				innvandringUtvandringDatoTest(Yup.date().nullable())
+			),
 			sprakKode: ifPresent('$tpsf.sprakKode', requiredString),
 			telefonLandskode_1: ifPresent('$tpsf.telefonLandskode_1', requiredString),
 			telefonnummer_1: ifPresent('$tpsf.telefonnummer_1', testTelefonnummer('1')),

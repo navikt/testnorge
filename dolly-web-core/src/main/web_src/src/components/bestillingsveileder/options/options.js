@@ -1,3 +1,5 @@
+import { initialValuesBasedOnMal } from '~/components/bestillingsveileder/options/malOptions'
+
 const TYPE = Object.freeze({
 	NY_BESTILLING: 'NY_BESTILLING',
 	NY_BESTILLING_FRA_MAL: 'NY_BESTILLING_FRA_MAL',
@@ -22,7 +24,7 @@ export const BVOptions = ({
 
 	if (mal) {
 		bestType = TYPE.NY_BESTILLING_FRA_MAL
-		initialValues = Object.assign(initialValues, mal.bestilling)
+		initialValues = Object.assign(initialValues, initialValuesBasedOnMal(mal))
 	}
 
 	if (opprettFraIdenter) {

@@ -5,9 +5,10 @@ import KrrService from './services/krr/KrrService'
 import ArenaService from './services/arena/ArenaService'
 import InstService from './services/inst/InstService'
 import UdiService from './services/udi/UdiService'
-import PensjonService from "./services/pensjon/PensjonService";
-import AaregService from "./services/aareg/AaregService";
-import InntektstubService from "./services/inntektstub/InntektstubService";
+import PensjonService from './services/pensjon/PensjonService';
+import AaregService from './services/aareg/AaregService';
+import InntektstubService from './services/inntektstub/InntektstubService';
+import BrregstubService from './services/brregstub/BrregstubService';
 
 export const DollyApi = DollyService
 export const TpsfApi = TpsfService
@@ -19,6 +20,7 @@ export const UdiApi = UdiService
 export const PensjonApi = PensjonService
 export const AaregApi = AaregService
 export const InntektstubApi = InntektstubService
+export const BrregstubApi = BrregstubService
 
 export default {
 	DollyApi: DollyService,
@@ -30,5 +32,6 @@ export default {
 	UdiApi: UdiService,
 	PensjonApi: PensjonService,
 	AaregApi: AaregService,
-	InntektstubApi: InntektstubService
+	InntektstubApi: InntektstubService,
+	BrregstubApi: BrregstubService
 }

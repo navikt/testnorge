@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 export const FamilierelasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
+	const opts = useContext(BestillingsveilederContext)
+	const leggTil = opts.is.leggTil
 
 	return (
 		<Panel
@@ -13,9 +16,12 @@ export const FamilierelasjonPanel = ({ stateModifier }) => {
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'relasjoner'}
 		>
-			<AttributtKategori title="Partner">
-				<Attributt attr={sm.attrs.partner} />
-			</AttributtKategori>
+			{!leggTil && (
+				<AttributtKategori title="Partner">
+					<Attributt attr={sm.attrs.partner} />
+				</AttributtKategori>
+			)}
+
 			<AttributtKategori title="Barn">
 				<Attributt attr={sm.attrs.barn} />
 			</AttributtKategori>
