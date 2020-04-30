@@ -13,6 +13,14 @@ import { MatrikkelAdresse } from './partials/MatrikkelAdresse'
 import { AdresseNr } from './partials/AdresseNr'
 
 const paths = ['tpsf.boadresse', 'tpsf.postadresse']
+/* Fordi UFB også bruker boadresse kan vi ikke bare sjekke den. 
+Flyttedato er for nye bestillinger. Postnr (detaljert gateadr og matr) og adresseNrInfo er for maler
+*/
+export const boadressePaths = [
+	'tpsf.boadresse.flyttedato',
+	'tpsf.boadresse.postnr',
+	'tpsf.adresseNrInfo'
+]
 
 const initialBoType = formikBag => {
 	const adresseType = _get(formikBag.values, 'tpsf.boadresse.adressetype')
@@ -27,9 +35,7 @@ export const Adresser = ({ formikBag }) => {
 	const [boType, setBoType] = useState(initialBoType(formikBag))
 
 	// Sjekker om adresse er valgt på steg 1, da panelet ikke skal vises dersom bare diskresjonskoder (med UFB og kommunenummer) er valgt
-	const erValgt =
-		_has(formikBag.values, 'tpsf.boadresse.flyttedato') ||
-		_has(formikBag.values, 'tpsf.postadresse')
+	const erValgt = [...boadressePaths, 'tpsf.postadresse'].some(path => _has(formikBag.values, path))
 
 	const handleRadioChange = e => {
 		const nyType = e.target.value
@@ -94,7 +100,7 @@ export const Adresser = ({ formikBag }) => {
 					iconType="adresse"
 					startOpen={() => erForste(formikBag.values, paths)}
 				>
-					<Vis attributt="tpsf.boadresse.flyttedato">
+					<Vis attributt={boadressePaths}>
 						<RadioPanelGruppe
 							name="botype"
 							legend="Hva slags boadresse vil du opprette?"

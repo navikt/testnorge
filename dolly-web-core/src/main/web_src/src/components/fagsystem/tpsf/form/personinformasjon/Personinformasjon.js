@@ -24,6 +24,7 @@ const diversePaths = [
 	'tpsf.sprakKode',
 	'tpsf.egenAnsattDatoFom',
 	'tpsf.spesreg',
+	'tpsf.utenFastBopel',
 	'tpsf.erForsvunnet',
 	'tpsf.harBankkontonr',
 	'tpsf.telefonnummer_1'
