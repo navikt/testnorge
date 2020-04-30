@@ -53,7 +53,7 @@ export const Boadresse = ({ formikBag }) => {
 	return (
 		<Kategori title="Gateadresse">
 			<div className="gateadresse">
-				<GyldigAdresseVelger settBoadresse={settBoadresse} />
+				<GyldigAdresseVelger settBoadresse={settBoadresse} formikBag={formikBag}/>
 				<LoadableComponent
 					onFetch={() => DollyApi.getKodeverkByNavn(AdresseKodeverk.Postnummer)}
 					render={data => {

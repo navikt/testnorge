@@ -13,13 +13,14 @@ const boadresse = Yup.object({
 			[null],
 			ifKeyHasValue(
 				'$tpsf.utenFastBopel',
-				[!true],
+				[undefined, false],
 				Yup.string().required(
 					'Bruk adressevelgeren over for å hente gyldige adresser og velge et av forslagene'
 				)
 			)
 		)
 	),
+	adressetype: requiredString,
 	gardsnr: Yup.string().when('adressetype', {
 		is: 'MATR',
 		then: Yup.string()
