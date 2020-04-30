@@ -100,6 +100,13 @@
             <artifactId>testnorge-consumers</artifactId>
         </dependency>
 
+        <!-- ARBEIDSFORHOLD -->
+        <dependency>
+            <groupId>no.nav.tjenestespesifikasjoner</groupId>
+            <artifactId>nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon</artifactId>
+            <version>${tjenestespesifikasjoner.version}</version>
+        </dependency>
+
         <!-- SECURITY -->
         <dependency>
             <groupId>org.apache.neethi</groupId>
