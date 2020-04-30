@@ -139,7 +139,8 @@ export default class BestillingProgresjon extends PureComponent {
 						<div>
 							<Icon kind={'report-problem-circle'} />
 							<h5 className="feil-status-text">
-								Dette tar lengre tid enn forventet. Noe kan ha gått galt med bestillingen din.
+								Dette tar lengre tid enn forventet. Hvis det er en kompleks bestilling kan du gi
+								Dolly litt mer tid før du eventuelt avbryter.
 							</h5>
 						</div>
 						<NavButton type="fare" onClick={this._onCancelBtn}>
