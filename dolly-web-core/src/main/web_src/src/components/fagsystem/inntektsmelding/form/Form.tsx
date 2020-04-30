@@ -14,7 +14,6 @@ import { requiredDate, requiredString, requiredNumber, messages } from '~/utils/
 import { FormikProps } from 'formik'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { Kodeverk, Ytelser } from '../InntektsmeldingTypes'
-import InntektsmeldingOrgnummerSelect from './partials/InntektsmeldingOrgnummerSelect'
 import InntektsmeldingSelect from './partials/InntektsmeldingSelect'
 import InntektsmeldingYtelseSelect from './partials/InntektsmeldingYtelseSelect'
 import OmsorgspengerForm from './partials/omsorgspengerForm'
@@ -23,6 +22,7 @@ import PleiepengerForm from './partials/pleiepengerForm'
 import RefusjonForm from './partials/refusjonForm'
 import ArbeidsforholdForm from './partials/arbeidsforholdForm'
 import NaturalytelseForm from './partials/naturalytelseForm'
+import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 
 interface InntektsmeldingForm {
 	formikBag: FormikProps<{}>
@@ -92,8 +92,11 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 										kodeverk={Kodeverk.Ytelse}
 										formikBag={formikBag}
 									/>
-
-									<InntektsmeldingOrgnummerSelect path={`${path}.arbeidsgiver.virksomhetsnummer`} />
+									<OrganisasjonMedArbeidsforholdSelect
+										path={`${path}.arbeidsgiver.virksomhetsnummer`}
+										label="Virksomhet (orgnr/id)"
+										isClearable={false}
+									/>
 									<FormikDatepicker
 										name={`${path}.avsendersystem.innsendingstidspunkt`}
 										label="Innsendingstidspunkt"

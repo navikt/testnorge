@@ -43,6 +43,7 @@ public class SecurityConfig implements HttpSecurityConfigurer {
                 "Access-Control-Request-Headers",
                 "Access-Control-Request-Method",
                 "X-Requested-With",
+                "Nav-Personident",
                 "X-XSRF-TOKEN",
                 "Content-Type"
         ));

@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState, Fragment, useContext } from 'react'
 import { Formik } from 'formik'
 import Stegindikator from 'nav-frontend-stegindikator'
 import { Navigation } from './Navigation/Navigation'
@@ -11,11 +11,15 @@ import DisplayFormikState from '~/utils/DisplayFormikState'
 import { Steg1 } from './steg/steg1/Steg1'
 import { Steg2 } from './steg/steg2/Steg2'
 import { Steg3 } from './steg/steg3/Steg3'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
 export const StegVelger = ({ initialValues, onSubmit, children }) => {
 	const [step, setStep] = useState(0)
+
+	const opts = useContext(BestillingsveilederContext)
+	const { data } = opts
 
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => setStep(step + 1)
@@ -38,7 +42,8 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 
 	const CurrentStepComponent = STEPS[step]
 
-	const _validate = values => validate(values, CurrentStepComponent.validation)
+	const _validate = values =>
+		validate({ ...values, personFoerLeggTil: data }, CurrentStepComponent.validation)
 
 	const labels = STEPS.map(v => ({ label: v.label }))
 
@@ -54,7 +59,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 
 						<CurrentStepComponent formikBag={formikBag} stateModifier={stateModifier} />
 
-						 {/*<DisplayFormikState {...formikBag} />*/}
+						{/*<DisplayFormikState {...formikBag} />*/}
 
 						<Navigation
 							showPrevious={step > 0}
