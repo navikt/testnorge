@@ -35,9 +35,13 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 		return <ContentContainer>Søket gav ingen resultater.</ContentContainer>
 	}
 
-	const getKommentarTekst = tekst =>{
-		const kommentar = tekst.length>170 ? tekst.substring(0,170)+"..." : tekst
-		return <div style={{ maxWidth: 200 }}><p>{kommentar}</p></div>
+	const getKommentarTekst = tekst => {
+		const kommentar = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
+		return (
+			<div style={{ maxWidth: 200 }}>
+				<p>{kommentar}</p>
+			</div>
+		)
 	}
 
 	const columns = [
