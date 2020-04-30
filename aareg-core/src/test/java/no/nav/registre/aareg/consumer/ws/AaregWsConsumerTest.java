@@ -12,13 +12,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.BehandleArbeidsforholdPortType;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.OppdaterArbeidsforholdSikkerhetsbegrensning;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.OpprettArbeidsforholdSikkerhetsbegrensning;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.feil.Sikkerhetsbegrensning;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Arbeidsforhold;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.meldinger.OppdaterArbeidsforholdRequest;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.meldinger.OpprettArbeidsforholdRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +27,13 @@ import java.time.LocalDateTime;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.BehandleArbeidsforholdPortType;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.OppdaterArbeidsforholdSikkerhetsbegrensning;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.OpprettArbeidsforholdSikkerhetsbegrensning;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.feil.Sikkerhetsbegrensning;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Arbeidsforhold;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.meldinger.OppdaterArbeidsforholdRequest;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.meldinger.OpprettArbeidsforholdRequest;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AaregWsConsumerTest {

@@ -8,8 +8,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Arbeidsforhold;
-import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Organisasjon;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,6 +24,8 @@ import no.nav.registre.aareg.domain.RsPermisjon;
 import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.domain.RsUtenlandsopphold;
 import no.nav.registre.aareg.testutils.MapperTestUtils;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Arbeidsforhold;
+import no.nav.registre.testnorge.consumers.tjenestespesifikasjon.arbeidsforhold.informasjon.Organisasjon;
 
 public class AaregMappingStrategyTest {
 
