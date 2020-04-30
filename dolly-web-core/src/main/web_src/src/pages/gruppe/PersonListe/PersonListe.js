@@ -35,6 +35,11 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 		return <ContentContainer>Søket gav ingen resultater.</ContentContainer>
 	}
 
+	const getKommentarTekst = tekst =>{
+		const kommentar = tekst.length>170 ? tekst.substring(0,170)+"..." : tekst
+		return <div style={{ maxWidth: 200 }}><p>{kommentar}</p></div>
+	}
+
 	const columns = [
 		{
 			text: 'Ident',
@@ -79,13 +84,13 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 				if (row.ident.beskrivelse) {
 					return (
 						<Tooltip
-							overlay={<p>{row.ident.beskrivelse}</p>}
+							overlay={getKommentarTekst(row.ident.beskrivelse)}
 							placement="top"
 							destroyTooltipOnHide={true}
 							mouseEnterDelay={0}
 							mouseLeaveDelay={0.1}
 						>
-							<div>
+							<div style={{textAlign: "center"}}>
 									<Icon kind="kommentar" size={20} />
 							</div>
 						</Tooltip>
