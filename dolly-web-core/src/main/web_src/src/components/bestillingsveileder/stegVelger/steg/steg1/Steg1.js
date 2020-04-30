@@ -38,7 +38,10 @@ export const Steg1 = ({ stateModifier }) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			<PersoninformasjonPanel stateModifier={stateModifier} />
+			<PersoninformasjonPanel
+				stateModifier={stateModifier}
+				personFoerLeggTil={opts.personFoerLeggTil}
+			/>
 			<AdressePanel stateModifier={stateModifier} />
 
 			{!opts.is.leggTil && (

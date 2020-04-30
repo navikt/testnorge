@@ -20,14 +20,7 @@ const Statsborgerskap = ({ statsborgerskap }) => (
 )
 
 export const Nasjonalitet = ({ data, visTittel = true }) => {
-	const {
-		statsborgerskap,
-		sprakKode,
-		innvandretFraLand,
-		innvandretFraLandFlyttedato,
-		utvandretTilLand,
-		utvandretTilLandFlyttedato
-	} = data
+	const { statsborgerskap, sprakKode, innvandretUtvandret } = data
 
 	return (
 		<div>
@@ -41,25 +34,33 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 					<Statsborgerskap statsborgerskap={statsborgerskap[0]} />
 				)}
 				<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprakKode} />
-				<TitleValue
-					title="Innvandret fra land"
-					kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-					value={innvandretFraLand}
-				/>
-				<TitleValue
-					title="Innvandret dato"
-					value={Formatters.formatDate(innvandretFraLandFlyttedato)}
-				/>
-				<TitleValue
-					title="Utvandret til land"
-					kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-					value={utvandretTilLand}
-				/>
-				<TitleValue
-					title="Utvandret dato"
-					value={Formatters.formatDate(utvandretTilLandFlyttedato)}
-				/>
 			</div>
+
+			{innvandretUtvandret.length > 0 && (
+				<DollyFieldArray data={innvandretUtvandret} header={'Innvandret/utvandret'} nested>
+					{(id, idx) => (
+						<React.Fragment>
+							{innvandretUtvandret && (
+								<>
+									<TitleValue
+										title={
+											innvandretUtvandret[idx].innutvandret === 'UTVANDRET'
+												? 'Utvandret til'
+												: 'Innvandret fra'
+										}
+										kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+										value={innvandretUtvandret[idx].landkode}
+									/>
+									<TitleValue
+										title="Flyttedato"
+										value={Formatters.formatDate(innvandretUtvandret[idx].flyttedato)}
+									/>
+								</>
+							)}
+						</React.Fragment>
+					)}
+				</DollyFieldArray>
+			)}
 		</div>
 	)
 }

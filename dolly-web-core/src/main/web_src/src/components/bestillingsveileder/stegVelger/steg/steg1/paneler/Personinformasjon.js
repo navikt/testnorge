@@ -1,12 +1,14 @@
 import React, { useContext } from 'react'
+import _get from 'lodash/get'
 import Panel from '~/components/ui/panel/Panel'
-import { useLocation } from 'react-use'
-import _has from 'lodash/has'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
-export const PersoninformasjonPanel = ({ stateModifier }) => {
+const innvandret = personFoerLeggTil =>
+	_get(personFoerLeggTil, 'innvandretUtvandret[0].innutvandret') === 'INNVANDRET'
+
+export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 	const opprettFraEksisterende = opts.is.opprettFraIdenter
@@ -27,8 +29,24 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 			</AttributtKategori>
 			<AttributtKategori title="Nasjonalitet">
 				<Attributt attr={sm.attrs.statsborgerskap} />
-				<Attributt attr={sm.attrs.innvandretFraLand} vis={!leggTil} />
-				<Attributt attr={sm.attrs.utvandretTilLand} vis={!leggTil} />
+				<Attributt
+					attr={sm.attrs.innvandretFraLand}
+					disabled={innvandret(personFoerLeggTil)}
+					title={
+						innvandret(personFoerLeggTil)
+							? 'Personen må utvandre før den kan innvandre igjen'
+							: null
+					}
+				/>
+				<Attributt
+					attr={sm.attrs.utvandretTilLand}
+					disabled={leggTil && !innvandret(personFoerLeggTil)}
+					title={
+						leggTil && !innvandret(personFoerLeggTil)
+							? 'Personen må innvandre før den kan utvandre igjen'
+							: null
+					}
+				/>
 			</AttributtKategori>
 
 			{!leggTil && (
