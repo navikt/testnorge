@@ -103,8 +103,8 @@
         <!-- ARBEIDSFORHOLD -->
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
-            <artifactId>nav-fim-arbeidsforhold-v1-tjenestespesifikasjon</artifactId>
-            <version>1.2020.04.27-15.39-c32c8960a220</version>
+            <artifactId>nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon</artifactId>
+            <version>${tjenestespesifikasjoner.version}</version>
         </dependency>
 
         <!-- SECURITY -->
