@@ -15,7 +15,8 @@ import {
 	UdiApi,
 	PensjonApi,
 	AaregApi,
-	InntektstubApi
+	InntektstubApi,
+	BrregstubApi
 } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
@@ -80,6 +81,12 @@ export const actions = createActions(
 				ident
 			})
 		],
+		getBrreg: [
+			BrregstubApi.getPerson,
+			ident => ({
+				ident
+			})
+		],
 		getPDL: [
 			DollyApi.getPersonFraPdlperson,
 			ident => ({
@@ -129,7 +136,8 @@ const initialState = {
 	pdlforvalter: {},
 	instdata: {},
 	udistub: {},
-	pensjonforvalter: {}
+	pensjonforvalter: {},
+	brregstub: {}
 }
 
 export default handleActions(
@@ -171,6 +179,9 @@ export default handleActions(
 		[onSuccess(actions.getUdi)](state, action) {
 			state.udistub[action.meta.ident] = action.payload.data.person
 		},
+		[onSuccess(actions.getBrreg)](state, action) {
+			state.brregstub[action.meta.ident] = action.payload.data
+		},
 		[onSuccess(actions.getPDL)](state, action) {
 			state.pdlforvalter[action.meta.ident] = action.payload.data
 		},
@@ -188,6 +199,7 @@ export default handleActions(
 			delete state.instdata[action.meta.ident]
 			delete state.udistub[action.meta.ident]
 			delete state.pensjonforvalter[action.meta.ident]
+			delete state.brregstub[action.meta.ident]
 		}
 	},
 	initialState
@@ -245,6 +257,8 @@ export const fetchDataFraFagsystemer = personId => (dispatch, getState) => {
 				return dispatch(actions.getInst(personId, success[system][0]))
 			case 'PEN_INNTEKT':
 				return dispatch(actions.getPensjon(personId, success[system][0]))
+			case 'BREGSTUB':
+				return dispatch(actions.getBrreg(personId))
 		}
 	})
 }
@@ -322,6 +336,7 @@ export const selectDataForIdent = (state, ident) => {
 		pdlforvalter: state.fagsystem.pdlforvalter[ident],
 		instdata: state.fagsystem.instdata[ident],
 		udistub: state.fagsystem.udistub[ident],
-		pensjonforvalter: state.fagsystem.pensjonforvalter[ident]
+		pensjonforvalter: state.fagsystem.pensjonforvalter[ident],
+		brregstub: state.fagsystem.brregstub[ident]
 	}
 }

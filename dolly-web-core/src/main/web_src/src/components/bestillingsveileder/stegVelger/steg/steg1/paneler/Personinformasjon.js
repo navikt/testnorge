@@ -1,68 +1,47 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { useLocation } from 'react-use'
 import _has from 'lodash/has'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+
+const innvandret = personFoerLeggTil.innvandretUtvandret[0].innutvandret === 'INNVANDRET'
 
 export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
-	const opprettFraEksisterende = _has(useLocation(), 'state.state.opprettFraIdenter')
-	const leggTil = _has(useLocation(), 'state.state.leggTilPaaFnr')
+	const opts = useContext(BestillingsveilederContext)
+	const opprettFraEksisterende = opts.is.opprettFraIdenter
+	const leggTil = opts.is.leggTil
+	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
-	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende
-	if (leggTil && personFoerLeggTil) {
-		const innvandret = personFoerLeggTil.innvandretUtvandret[0].innutvandret === 'INNVANDRET'
+	return (
+		<Panel
+			heading={PersoninformasjonPanel.heading}
+			startOpen
+			checkAttributeArray={sm.batchAdd}
+			uncheckAttributeArray={sm.batchRemove}
+			iconType={'personinformasjon'}
+		>
+			<AttributtKategori title="Alder">
+				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
+				<Attributt attr={sm.attrs.doedsdato} />
+			</AttributtKategori>
+			<AttributtKategori title="Nasjonalitet">
+				<Attributt attr={sm.attrs.statsborgerskap} />
+				<Attributt
+					attr={sm.attrs.innvandretFraLand}
+					disabled={innvandret}
+					title={innvandret ? 'Personen må utvandre før den kan innvandre igjen' : null}
+				/>
+				<Attributt
+					attr={sm.attrs.utvandretTilLand}
+					disabled={!innvandret}
+					title={!innvandret ? 'Personen må innvandre før den kan utvandre igjen' : null}
+				/>
+			</AttributtKategori>
 
-		const infoTekst =
-			'For å utvandre, må en person først innvandre. Det er heller ikke mulig å innvandre to ganger på rad uten først å utvandre'
-
-		return (
-			// Panel som innholder attributer som er støttet i Legg til
-			<>
-				<Panel
-					heading={PersoninformasjonPanel.heading}
-					startOpen
-					checkAttributeArray={sm.batchAdd}
-					uncheckAttributeArray={sm.batchRemove}
-					iconType={'personinformasjon'}
-					informasjonstekst={infoTekst}
-				>
-					<AttributtKategori title="Nasjonalitet">
-						<Attributt
-							attr={sm.attrs.innvandretFraLand}
-							disabled={innvandret}
-							title={innvandret ? 'Personen må utvandre før den kan innvandre igjen' : null}
-						/>
-						<Attributt
-							attr={sm.attrs.utvandretTilLand}
-							disabled={!innvandret}
-							title={!innvandret ? 'Personen må innvandre før den kan utvandre igjen' : null}
-						/>
-					</AttributtKategori>
-				</Panel>
-			</>
-		)
-	} else if (!leggTil) {
-		return (
-			<Panel
-				heading={PersoninformasjonPanel.heading}
-				startOpen
-				checkAttributeArray={sm.batchAdd}
-				uncheckAttributeArray={sm.batchRemove}
-				iconType={'personinformasjon'}
-			>
-				<AttributtKategori title="Alder">
-					<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende} />
-					<Attributt attr={sm.attrs.doedsdato} />
-				</AttributtKategori>
-
-				<AttributtKategori title="Nasjonalitet">
-					<Attributt attr={sm.attrs.statsborgerskap} />
-					<Attributt attr={sm.attrs.innvandretFraLand} />
-					<Attributt attr={sm.attrs.utvandretTilLand} />
-				</AttributtKategori>
-
+			{!leggTil && (
 				<AttributtKategori title="Diverse">
 					<Attributt attr={sm.attrs.identHistorikk} />
 					<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
@@ -74,10 +53,42 @@ export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => 
 					<Attributt attr={sm.attrs.telefonnummer_1} />
 					<Attributt attr={sm.attrs.spesreg} />
 				</AttributtKategori>
-			</Panel>
-		)
-	}
+			)}
+		</Panel>
+	)
 }
+
+const innvandret = personFoerLeggTil.innvandretUtvandret[0].innutvandret === 'INNVANDRET'
+
+const infoTekst =
+	'For å utvandre, må en person først innvandre. Det er heller ikke mulig å innvandre to ganger på rad uten først å utvandre'
+
+return (
+	// Panel som innholder attributer som er støttet i Legg til
+	<>
+		<Panel
+			heading={PersoninformasjonPanel.heading}
+			startOpen
+			checkAttributeArray={sm.batchAdd}
+			uncheckAttributeArray={sm.batchRemove}
+			iconType={'personinformasjon'}
+			informasjonstekst={infoTekst}
+		>
+			<AttributtKategori title="Nasjonalitet">
+				<Attributt
+					attr={sm.attrs.innvandretFraLand}
+					disabled={innvandret}
+					title={innvandret ? 'Personen må utvandre før den kan innvandre igjen' : null}
+				/>
+				<Attributt
+					attr={sm.attrs.utvandretTilLand}
+					disabled={!innvandret}
+					title={!innvandret ? 'Personen må innvandre før den kan utvandre igjen' : null}
+				/>
+			</AttributtKategori>
+		</Panel>
+	</>
+)
 PersoninformasjonPanel.heading = 'Personinformasjon'
 
 PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({

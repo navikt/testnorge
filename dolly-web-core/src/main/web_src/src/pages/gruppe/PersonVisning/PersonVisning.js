@@ -13,6 +13,7 @@ import { InntektstubVisning } from '~/components/fagsystem/inntektstub/visning/V
 import { InntektsmeldingVisning } from '~/components/fagsystem/inntektsmelding/visning/Visning'
 import { InstVisning } from '~/components/fagsystem/inst/visning/InstVisning'
 import { PensjonVisning } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
+import { BrregVisning } from '~/components/fagsystem/brregstub/visning/BrregVisning'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/SammendragModal'
@@ -31,6 +32,7 @@ export const PersonVisning = ({
 	leggTilPaaPerson
 }) => {
 	useMount(fetchDataFraFagsystemer)
+
 	return (
 		<div className="person-visning">
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)} />
@@ -43,6 +45,7 @@ export const PersonVisning = ({
 				data={InntektsmeldingVisning.filterValues(bestillingsListe)}
 				ident={ident.ident}
 			/>
+			<BrregVisning data={data.brregstub} loading={loading.bregstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			<InstVisning data={data.instdata} loading={loading.instdata} />
 			<ArenaVisning

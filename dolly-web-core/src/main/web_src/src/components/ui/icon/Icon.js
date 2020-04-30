@@ -60,6 +60,7 @@ import Woman from '~/assets/icons/custom/Woman.svg'
 import Love from '~/assets/icons/custom/Love.svg'
 import Baby from '~/assets/icons/custom/Baby.svg'
 import Dolly from '~/assets/icons/custom/Dolly.svg'
+import BrregLogo from '~/assets/icons/custom/Brreg_logo.svg'
 
 import './Icon.less'
 
@@ -122,7 +123,8 @@ export const icons = {
 	partner: Love,
 	barn: Baby,
 	dolly: Dolly,
-	pensjon: PiggyBank
+	pensjon: PiggyBank,
+	brreg: BrregLogo
 }
 
 const px = v => `${v}px`
