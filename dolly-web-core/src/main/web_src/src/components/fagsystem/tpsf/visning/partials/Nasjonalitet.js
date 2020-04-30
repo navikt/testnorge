@@ -34,24 +34,6 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 					<Statsborgerskap statsborgerskap={statsborgerskap[0]} />
 				)}
 				<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprakKode} />
-				<TitleValue
-					title="Innvandret fra land"
-					kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-					value={innvandretFraLand}
-				/>
-				<TitleValue
-					title="Innvandret dato"
-					value={Formatters.formatDate(innvandretFraLandFlyttedato)}
-				/>
-				<TitleValue
-					title="Utvandret til land"
-					kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-					value={utvandretTilLand}
-				/>
-				<TitleValue
-					title="Utvandret dato"
-					value={Formatters.formatDate(utvandretTilLandFlyttedato)}
-				/>
 			</div>
 
 			{innvandretUtvandret.length > 0 && (
@@ -66,7 +48,7 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 												? 'Utvandret til'
 												: 'Innvandret fra'
 										}
-										kodeverk="Landkoder"
+										kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
 										value={innvandretUtvandret[idx].landkode}
 									/>
 									<TitleValue

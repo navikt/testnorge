@@ -1,12 +1,12 @@
 import React, { useContext } from 'react'
+import _get from 'lodash/get'
 import Panel from '~/components/ui/panel/Panel'
-import { useLocation } from 'react-use'
-import _has from 'lodash/has'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
-const innvandret = personFoerLeggTil.innvandretUtvandret[0].innutvandret === 'INNVANDRET'
+const innvandret = personFoerLeggTil =>
+	_get(personFoerLeggTil, 'innvandretUtvandret[0].innutvandret') === 'INNVANDRET'
 
 export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
@@ -31,13 +31,21 @@ export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => 
 				<Attributt attr={sm.attrs.statsborgerskap} />
 				<Attributt
 					attr={sm.attrs.innvandretFraLand}
-					disabled={innvandret}
-					title={innvandret ? 'Personen må utvandre før den kan innvandre igjen' : null}
+					disabled={innvandret(personFoerLeggTil)}
+					title={
+						innvandret(personFoerLeggTil)
+							? 'Personen må utvandre før den kan innvandre igjen'
+							: null
+					}
 				/>
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
-					disabled={!innvandret}
-					title={!innvandret ? 'Personen må innvandre før den kan utvandre igjen' : null}
+					disabled={leggTil && !innvandret(personFoerLeggTil)}
+					title={
+						leggTil && !innvandret(personFoerLeggTil)
+							? 'Personen må innvandre før den kan utvandre igjen'
+							: null
+					}
 				/>
 			</AttributtKategori>
 
@@ -58,37 +66,6 @@ export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => 
 	)
 }
 
-const innvandret = personFoerLeggTil.innvandretUtvandret[0].innutvandret === 'INNVANDRET'
-
-const infoTekst =
-	'For å utvandre, må en person først innvandre. Det er heller ikke mulig å innvandre to ganger på rad uten først å utvandre'
-
-return (
-	// Panel som innholder attributer som er støttet i Legg til
-	<>
-		<Panel
-			heading={PersoninformasjonPanel.heading}
-			startOpen
-			checkAttributeArray={sm.batchAdd}
-			uncheckAttributeArray={sm.batchRemove}
-			iconType={'personinformasjon'}
-			informasjonstekst={infoTekst}
-		>
-			<AttributtKategori title="Nasjonalitet">
-				<Attributt
-					attr={sm.attrs.innvandretFraLand}
-					disabled={innvandret}
-					title={innvandret ? 'Personen må utvandre før den kan innvandre igjen' : null}
-				/>
-				<Attributt
-					attr={sm.attrs.utvandretTilLand}
-					disabled={!innvandret}
-					title={!innvandret ? 'Personen må innvandre før den kan utvandre igjen' : null}
-				/>
-			</AttributtKategori>
-		</Panel>
-	</>
-)
 PersoninformasjonPanel.heading = 'Personinformasjon'
 
 PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({

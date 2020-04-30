@@ -101,6 +101,31 @@ export const sivilstander = Yup.array().of(
 	})
 )
 
+const innvandringUtvandringDatoTest = schema => {
+	return schema.test(
+		'datoEtterSisteInnUtvandring',
+		`Datoen må være etter siste inn-/utvandring (${''})`,
+		function erEtterSisteDato(dato) {
+			const values = this.options.context
+			const personFoerLeggTil = values.personFoerLeggTil
+			if (!dato || !personFoerLeggTil) return true
+
+			const sisteDato = _get(personFoerLeggTil, 'tpsf.innvandretUtvandret[0].flyttedato')
+			const dateValid = isAfter(new Date(dato), new Date(sisteDato))
+
+			return (
+				dateValid ||
+				this.createError({
+					message: `Dato må være etter siste inn-/utvandring (${Dataformatter.formatDate(
+						sisteDato
+					)})`,
+					path: this.options.path
+				})
+			)
+		}
+	)
+}
+
 const foedtFoerOgEtterTest = (validation, validerFoedtFoer) => {
 	const errorMsgFoedtFoer =
 		'Født Før dato kan ikke være før Født Etter dato og det må være minst en dag mellom datoene.'
@@ -146,7 +171,7 @@ const partnere = Yup.array()
 				.transform(num => (isNaN(num) ? undefined : num))
 				.min(0, 'Alder må være et positivt tall')
 				.max(119, 'Alder må være under 120'),
-			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(),false),
+			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(), false),
 			foedtFoer: foedtFoerOgEtterTest(Yup.date().nullable(), true),
 			spesreg: Yup.string()
 				.when('utenFastBopel', {
@@ -181,7 +206,7 @@ const barn = Yup.array()
 				.transform(num => (isNaN(num) ? undefined : num))
 				.min(0, 'Alder må være et positivt tall')
 				.max(119, 'Alder må være under 120'),
-			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(),false),
+			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(), false),
 			foedtFoer: foedtFoerOgEtterTest(Yup.date().nullable(), true),
 			spesreg: Yup.string()
 				.when('utenFastBopel', {
@@ -219,16 +244,22 @@ export const validation = {
 				.min(0, 'Alder må være et positivt tall')
 				.max(119, 'Alder må være under 120')
 				.typeError(messages.required),
-			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(),false),
+			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(), false),
 			foedtFoer: foedtFoerOgEtterTest(Yup.date().nullable(), true),
 			doedsdato: Yup.date().nullable(),
 			kjonn: ifPresent('$tpsf.kjonn', requiredString),
 			statsborgerskap: ifPresent('$tpsf.statsborgerskap', requiredString),
 			statsborgerskapRegdato: Yup.date().nullable(),
 			innvandretFraLand: ifPresent('$tpsf.innvandretFraLand', requiredString),
-			innvandretFraLandFlyttedato: Yup.date().nullable(),
+			innvandretFraLandFlyttedato: ifPresent(
+				'$tpsf.innvandretFraLandFlyttedato',
+				innvandringUtvandringDatoTest(Yup.date().nullable())
+			),
 			utvandretTilLand: ifPresent('$tpsf.utvandretTilLand', requiredString),
-			utvandretTilLandFlyttedato: Yup.date().nullable(),
+			utvandretTilLandFlyttedato: ifPresent(
+				'$tpsf.utvandretTilLandFlyttedato',
+				innvandringUtvandringDatoTest(Yup.date().nullable())
+			),
 			sprakKode: ifPresent('$tpsf.sprakKode', requiredString),
 			telefonLandskode_1: ifPresent('$tpsf.telefonLandskode_1', requiredString),
 			telefonnummer_1: ifPresent('$tpsf.telefonnummer_1', testTelefonnummer('1')),
