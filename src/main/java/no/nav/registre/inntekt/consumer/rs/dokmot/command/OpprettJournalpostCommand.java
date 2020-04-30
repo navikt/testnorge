@@ -4,6 +4,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -26,7 +27,10 @@ public class OpprettJournalpostCommand implements Callable<DokmotResponse> {
     public DokmotResponse call() {
         try {
             DokmotResponse response = restTemplate.exchange(
-                    RequestEntity.post(url).header(AUTHORIZATION, "Bearer " + token).body(this.request),
+                    RequestEntity.post(url)
+                            .header(AUTHORIZATION, "Bearer " + token)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(this.request),
                     DokmotResponse.class
             ).getBody();
 
