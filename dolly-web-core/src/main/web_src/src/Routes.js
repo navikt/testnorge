@@ -13,9 +13,15 @@ const routes = [
 	{ path: '/', exact: true, breadcrumb: 'Testdatagrupper', component: GruppeOversikt },
 	{ path: '/gruppe/:gruppeId', exact: true, breadcrumb: GruppeBreadcrumb, component: Gruppe },
 	{
+		path: '/gruppe/:gruppeId/bestilling/:personId',
+		exact: true,
+		breadcrumb: 'Legg til på personer',
+		component: BestillingsveilederConnector
+	},
+	{
 		path: '/gruppe/:gruppeId/bestilling',
 		exact: true,
-		breadcrumb: 'Legg til personer',
+		breadcrumb: 'Opprett personer',
 		component: BestillingsveilederConnector
 	},
 	{ path: '/tpsendring', exact: true, breadcrumb: 'TPSEndring', component: TPSEndring },

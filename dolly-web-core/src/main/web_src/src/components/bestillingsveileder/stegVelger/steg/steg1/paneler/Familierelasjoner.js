@@ -1,7 +1,5 @@
 import React, { useContext } from 'react'
-import _has from 'lodash/has'
 import _get from 'lodash/get'
-import { useLocation } from 'react-use'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
@@ -22,11 +20,9 @@ export const FamilierelasjonPanel = ({ stateModifier }) => {
 			<AttributtKategori title="Partner">
 				<Attributt attr={sm.attrs.partner} />
 			</AttributtKategori>
-			{!leggTil && (
-				<AttributtKategori title="Barn">
-					<Attributt attr={sm.attrs.barn} />
-				</AttributtKategori>
-			)}
+			<AttributtKategori title="Barn">
+				<Attributt attr={sm.attrs.barn} />
+			</AttributtKategori>
 		</Panel>
 	)
 }

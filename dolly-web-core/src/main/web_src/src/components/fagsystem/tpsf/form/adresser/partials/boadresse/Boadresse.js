@@ -4,8 +4,10 @@ import _has from 'lodash/has'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { GyldigAdresseVelger } from './GyldigAdresseVelger/GyldigAdresseVelger'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-
+import { AdresseKodeverk } from '~/config/kodeverk'
 import './Boadresse.less'
+import { DollyApi } from '~/service/Api'
+import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 
 export const Boadresse = ({ formikBag }) => {
 	const settBoadresse = adresse => {
@@ -21,9 +23,21 @@ export const Boadresse = ({ formikBag }) => {
 		formikBag.setFieldValue('tpsf.boadresse.husnummer', adresse.husnummer)
 	}
 
-	const renderAdresse = () => {
-		const { gateadresse, husnummer, postnr, poststed } = formikBag.values.tpsf.boadresse
+	const renderAdresse = postnummerListe => {
+		const { gateadresse, husnummer, postnr } = formikBag.values.tpsf.boadresse
+		let poststed = formikBag.values.tpsf.boadresse.poststed
 		if (!gateadresse) return ''
+
+		if (postnummerListe.koder && postnr && !poststed) {
+			for (let i = 0; i < postnummerListe.koder.length; i++) {
+				if (postnummerListe.koder[i].value === postnr) {
+					poststed = postnummerListe.koder[i].label
+					formikBag.setFieldValue('tpsf.boadresse.poststed', poststed)
+					break
+				}
+			}
+		}
+
 		return `${gateadresse} ${parseInt(husnummer)}, ${postnr} ${poststed}`
 	}
 
@@ -39,16 +53,23 @@ export const Boadresse = ({ formikBag }) => {
 	return (
 		<Kategori title="Gateadresse">
 			<div className="gateadresse">
-				<GyldigAdresseVelger settBoadresse={settBoadresse} />
-				<DollyTextInput
-					name="boadresse"
-					size="grow"
-					value={renderAdresse()}
-					label="Boadresse"
-					readOnly
-					placeholder="Ingen valgt adresse"
-					title="Endre adressen i adressevelgeren over"
-					feil={feilmelding()}
+				<GyldigAdresseVelger settBoadresse={settBoadresse} formikBag={formikBag}/>
+				<LoadableComponent
+					onFetch={() => DollyApi.getKodeverkByNavn(AdresseKodeverk.Postnummer)}
+					render={data => {
+						return (
+							<DollyTextInput
+								name="boadresse"
+								size="grow"
+								value={renderAdresse(data.data)}
+								label="Boadresse"
+								readOnly
+								placeholder="Ingen valgt adresse"
+								title="Endre adressen i adressevelgeren over"
+								feil={feilmelding()}
+							/>
+						)
+					}}
 				/>
 			</div>
 		</Kategori>
