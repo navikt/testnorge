@@ -8,6 +8,7 @@ import BestillingDetaljer from '~/components/bestilling/detaljer/Detaljer'
 import { BestillingIconItem } from '~/components/ui/icon/IconItem'
 
 import Icon from '~/components/ui/icon/Icon'
+import Spinner from '~/components/ui/loading/Spinner'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -58,7 +59,13 @@ export default function BestillingListe({ bestillinger, searchActive, isFetching
 			text: 'Status',
 			width: '10',
 			dataField: 'listedata[4]',
-			formatter: (cell, row) => <Icon kind={ikonTypeMap[cell]} title={cell} />
+			formatter: (cell, row) => {
+				return cell === 'Pågår' ? (
+					<Spinner size={24} />
+				) : (
+					<Icon kind={ikonTypeMap[cell]} title={cell} />
+				)
+			}
 		}
 	]
 
