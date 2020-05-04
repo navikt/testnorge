@@ -25,8 +25,9 @@ export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => 
 		>
 			<AttributtKategori title="Alder">
 				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
-				<Attributt attr={sm.attrs.doedsdato} />
+				<Attributt attr={sm.attrs.doedsdato} vis={!_get(opts, 'data.tpsf.doedsdato')} />
 			</AttributtKategori>
+
 			<AttributtKategori title="Nasjonalitet">
 				<Attributt attr={sm.attrs.statsborgerskap} />
 				<Attributt
