@@ -41,7 +41,7 @@ public class BregstubConsumer {
             log.error("Feilet å lese fra BREGSTUB", e);
         }
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok().build();
     }
 
     public ResponseEntity postRolleoversikt(RolleoversiktTo rolleoversiktTo) {
