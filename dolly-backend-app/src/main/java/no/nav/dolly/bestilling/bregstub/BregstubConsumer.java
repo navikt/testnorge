@@ -1,9 +1,11 @@
 package no.nav.dolly.bestilling.bregstub;
 
 import java.net.URI;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import lombok.RequiredArgsConstructor;
@@ -17,27 +19,47 @@ import no.nav.dolly.properties.ProvidersProps;
 public class BregstubConsumer {
 
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
-    private static final String GRUNNDATA_URL = "/api/v1/rolleoversikt";
+    private static final String ROLLEOVERSIKT_URL = "/api/v1/rolleoversikt";
 
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
 
-    public ResponseEntity postGrunndata(RolleoversiktTo rolleoversiktTo) {
+    public ResponseEntity<RolleoversiktTo> getRolleoversikt(String ident) {
+
+        try {
+            return restTemplate.exchange(RequestEntity.get(
+                    URI.create(providersProps.getBregstub().getUrl() + ROLLEOVERSIKT_URL))
+                    .header(NAV_PERSON_IDENT, ident)
+                    .build(), RolleoversiktTo.class);
+
+        } catch (HttpClientErrorException e) {
+            if (HttpStatus.NOT_FOUND != e.getStatusCode()) {
+                log.error("Feilet å lese fra BREGSTUB", e);
+            }
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å lese fra BREGSTUB", e);
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity postRolleoversikt(RolleoversiktTo rolleoversiktTo) {
 
         return restTemplate.exchange(RequestEntity.post(
-                URI.create(providersProps.getBregstub().getUrl() + GRUNNDATA_URL))
+                URI.create(providersProps.getBregstub().getUrl() + ROLLEOVERSIKT_URL))
                 .body(rolleoversiktTo), RolleoversiktTo.class);
     }
 
-    public void deleteGrunndata(String ident) {
+    public void deleteRolleoversikt(String ident) {
 
         try {
             restTemplate.exchange(RequestEntity.delete(
-                    URI.create(providersProps.getBregstub().getUrl() + GRUNNDATA_URL))
+                    URI.create(providersProps.getBregstub().getUrl() + ROLLEOVERSIKT_URL))
                     .header(NAV_PERSON_IDENT, ident)
                     .build(), String.class);
 
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
 
             log.error("BREGSTUB: Feilet å slette rolledata for ident {}", ident, e);
         }
