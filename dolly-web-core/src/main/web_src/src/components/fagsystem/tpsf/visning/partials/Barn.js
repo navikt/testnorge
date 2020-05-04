@@ -7,7 +7,7 @@ import { PostadresseVisning } from './Postadresse'
 import { Historikk } from '~/components/ui/historikk/Historikk'
 
 export const Barn = ({ data, type }) => {
-	if (!data) return false
+	if (!data) return null
 	const [barnInfo, setBarnInfo] = useState(null)
 	const [isLoading, setIsLoading] = useState(false)
 

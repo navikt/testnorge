@@ -17,7 +17,7 @@ import NaturalytelseVisning from './partials/naturalytelseVisning'
 import JournalpostidVisning from './partials/journalpostidVisning'
 
 interface InntektsmeldingVisning {
-	data: Array<Inntektsmelding>
+	liste: Array<Inntektsmelding>
 	ident: string
 }
 
@@ -26,28 +26,32 @@ type EnkelInntektsmelding = {
 	ident: string
 }
 
-export const InntektsmeldingVisning = ({ data, ident }: InntektsmeldingVisning) => {
+const getHeader = (data: Inntekter) => {
+	return `Inntekt (${data.arbeidsgiver.virksomhetsnummer})`
+}
+
+export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning) => {
 	//Viser data fra bestillingen
-	if (!data || data.length < 1) return null
+	if (!liste || liste.length < 1) return null
 
 	return (
 		<div>
 			<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
-			{data.length > 1 ? (
-				<DollyFieldArray header="Inntektsmeldinger" data={data} nested>
+			{liste.length > 1 ? (
+				<DollyFieldArray header="Inntektsmeldinger" data={liste} nested>
 					{(inntektsmelding: Inntektsmelding) => (
 						<EnkelInntektsmeldingVisning data={inntektsmelding.inntekter} ident={ident} />
 					)}
 				</DollyFieldArray>
 			) : (
-				<EnkelInntektsmeldingVisning data={data[0].inntekter} ident={ident} />
+				<EnkelInntektsmeldingVisning data={liste[0].inntekter} ident={ident} />
 			)}
 		</div>
 	)
 }
 
 const EnkelInntektsmeldingVisning = ({ data, ident }: EnkelInntektsmelding) => (
-	<DollyFieldArray header="Inntekt" data={data} expandable={data.length > 1}>
+	<DollyFieldArray header="Inntekt" getHeader={getHeader} data={data} expandable={data.length > 1}>
 		{(inntekt: Inntekter, idx: number) => (
 			<>
 				<div className="person-visning_content" key={idx}>

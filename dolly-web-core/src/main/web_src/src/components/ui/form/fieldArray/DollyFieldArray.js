@@ -71,7 +71,8 @@ export const DollyFieldArray = ({
 	data,
 	nested = false,
 	children,
-	expandable = false
+	expandable = false,
+	getHeader = null
 }) => (
 	<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
 		{data.map((curr, idx) => {
@@ -80,7 +81,12 @@ export const DollyFieldArray = ({
 					{children(curr, idx)}
 				</DollyFaBlokkNested>
 			) : expandable ? (
-				<ExpandableBlokk key={idx} idx={idx} header={header} data={curr}>
+				<ExpandableBlokk
+					key={idx}
+					idx={idx}
+					getHeader={getHeader ? getHeader : () => header}
+					data={curr}
+				>
 					{children(curr, idx)}
 				</ExpandableBlokk>
 			) : (
