@@ -27,6 +27,20 @@ public class RolleoversiktTo {
     private NavnTo navn;
     private List<Integer> understatuser;
 
+    public List<Integer> getUnderstatuser() {
+        if (isNull(understatuser)){
+            understatuser = new ArrayList<>();
+        }
+        return understatuser;
+    }
+
+    public List<RolleTo> getEnheter() {
+        if (isNull(enheter)) {
+            enheter = new ArrayList<>();
+        }
+        return enheter;
+    }
+
     @Getter
     @Setter
     @EqualsAndHashCode
@@ -76,19 +90,5 @@ public class RolleoversiktTo {
         private String landKode;
         private String postnr;
         private String poststed;
-    }
-
-    public List<Integer> getUnderstatuser() {
-        if (isNull(understatuser)){
-            understatuser = new ArrayList<>();
-        }
-        return understatuser;
-    }
-
-    public List<RolleTo> getEnheter() {
-        if (isNull(enheter)) {
-            enheter = new ArrayList<>();
-        }
-        return enheter;
     }
 }
