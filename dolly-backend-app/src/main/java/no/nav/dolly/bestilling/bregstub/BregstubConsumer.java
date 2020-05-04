@@ -31,13 +31,16 @@ public class BregstubConsumer {
                     URI.create(providersProps.getBregstub().getUrl() + ROLLEOVERSIKT_URL))
                     .header(NAV_PERSON_IDENT, ident)
                     .build(), RolleoversiktTo.class);
+
         } catch (HttpClientErrorException e) {
             if (HttpStatus.NOT_FOUND != e.getStatusCode()) {
                 log.error("Feilet å lese fra BREGSTUB", e);
             }
+
         } catch (RuntimeException e) {
             log.error("Feilet å lese fra BREGSTUB", e);
         }
+
         return ResponseEntity.ok(null);
     }
 
