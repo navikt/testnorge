@@ -12,6 +12,7 @@ import { KontaktReservasjonsPanel } from './paneler/KontaktReservasjon'
 import { KontaktDoedsboPanel } from './paneler/KontaktDoedsbo'
 import { ArenaPanel } from './paneler/Arena'
 import { UdiPanel } from './paneler/Udi'
+import { BrregPanel } from './paneler/Brreg'
 
 export const Steg1 = ({ stateModifier }) => {
 	const opts = useContext(BestillingsveilederContext)
@@ -21,6 +22,7 @@ export const Steg1 = ({ stateModifier }) => {
 		AdressePanel,
 		FamilierelasjonPanel,
 		ArbeidInntektPanel,
+		BrregPanel,
 		IdentifikasjonPanel,
 		KontaktDoedsboPanel,
 		InstitusjonsoppholdPanel,
@@ -33,27 +35,36 @@ export const Steg1 = ({ stateModifier }) => {
 			values: stateModifier(panel.initialValues).checked
 		}))
 		.filter(v => v.values.length)
-
 	return (
 		<AttributtVelger checked={checked}>
-			{!opts.is.leggTil && <PersoninformasjonPanel stateModifier={stateModifier}/>}
-
+			<PersoninformasjonPanel
+				stateModifier={stateModifier}
+				personFoerLeggTil={opts.personFoerLeggTil}
+			/>
 			<AdressePanel stateModifier={stateModifier} />
-      
-			{!opts.is.leggTil && (
-				<>
-					<FamilierelasjonPanel stateModifier={stateModifier} />
-				</>
-			)}
-
+			<FamilierelasjonPanel stateModifier={stateModifier} />
 			<ArbeidInntektPanel stateModifier={stateModifier} />
+			<BrregPanel stateModifier={stateModifier} />
 			<IdentifikasjonPanel stateModifier={stateModifier} />
 			<KontaktDoedsboPanel stateModifier={stateModifier} />
 			<InstitusjonsoppholdPanel stateModifier={stateModifier} />
 			<KontaktReservasjonsPanel stateModifier={stateModifier} />
 			<ArenaPanel stateModifier={stateModifier} />
-
-			{!opts.is.leggTil && <UdiPanel stateModifier={stateModifier} />}
+			{/* Vi kan foreløpig kun legge til UDI-attributter på personer som ikke har noen fra før */}
+			{!opts.is.leggTil || !opts.data.udistub ? (
+				<UdiPanel stateModifier={stateModifier} />
+			) : (
+				<>
+					<AlertStripeInfo>
+						<b>UDI</b>
+						<p>
+							Det er foreløpig ikke mulig å legge til UDI-attributter på personer som allerede har
+							dette.
+						</p>
+					</AlertStripeInfo>
+					<p />
+				</>
+			)}
 
 			{opts.is.leggTil && (
 				<AlertStripeInfo>

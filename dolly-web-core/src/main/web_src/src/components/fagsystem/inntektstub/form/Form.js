@@ -12,7 +12,7 @@ import { FradragForm } from './partials/fradragForm'
 import { ForskuddstrekkForm } from './partials/forskuddstrekkForm'
 import { ArbeidsforholdForm } from './partials/arbeidsforholdForm'
 
-const initialValues = {
+export const initialValues = {
 	sisteAarMaaned: '',
 	antallMaaneder: '',
 	virksomhet: '',

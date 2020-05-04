@@ -56,6 +56,10 @@ public class ProxyController {
     @Value("${fagsystem.inntektstub.url}")
     private String inntektstubUrl;
 
+    @Value("${fagsystem.brregstub.url}")
+    private String brregstubUrl;
+
+
     private final ProxyService proxyService;
 
     @RequestMapping("/v1/**")
@@ -187,6 +191,18 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, inntektstubUrl + "/api/v2", PROXY_URI + "/inntektstub");
+        HttpHeaders headers = proxyService.copyHeaders(request);
+
+        return proxyService.proxyRequest(body, method, headers, requestURL);
+    }
+
+    @RequestMapping("/proxy/brregstub/**")
+    public ResponseEntity<String> brregstubProxy(
+            @RequestBody(required = false) String body,
+            HttpMethod method,
+            HttpServletRequest request) throws UnsupportedEncodingException {
+
+        String requestURL = createURL(request, brregstubUrl + API_URI, PROXY_URI + "/brregstub");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
         return proxyService.proxyRequest(body, method, headers, requestURL);

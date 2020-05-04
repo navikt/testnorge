@@ -1,14 +1,19 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import _get from 'lodash/get'
 import Panel from '~/components/ui/panel/Panel'
-import { useLocation } from 'react-use'
-import _has from 'lodash/has'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
-export const PersoninformasjonPanel = ({ stateModifier }) => {
+const innvandret = personFoerLeggTil =>
+	_get(personFoerLeggTil, 'innvandretUtvandret[0].innutvandret') === 'INNVANDRET'
+
+export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
-	const opprettFraEksisterende = _has(useLocation(), 'state.state.opprettFraIdenter')
-	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende
+	const opts = useContext(BestillingsveilederContext)
+	const opprettFraEksisterende = opts.is.opprettFraIdenter
+	const leggTil = opts.is.leggTil
+	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
 	return (
 		<Panel
@@ -19,27 +24,44 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 			iconType={'personinformasjon'}
 		>
 			<AttributtKategori title="Alder">
-				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende} />
+				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
 				<Attributt attr={sm.attrs.doedsdato} />
 			</AttributtKategori>
-
 			<AttributtKategori title="Nasjonalitet">
 				<Attributt attr={sm.attrs.statsborgerskap} />
-				<Attributt attr={sm.attrs.innvandretFraLand} />
-				<Attributt attr={sm.attrs.utvandretTilLand} />
+				<Attributt
+					attr={sm.attrs.innvandretFraLand}
+					disabled={innvandret(personFoerLeggTil)}
+					title={
+						innvandret(personFoerLeggTil)
+							? 'Personen må utvandre før den kan innvandre igjen'
+							: null
+					}
+				/>
+				<Attributt
+					attr={sm.attrs.utvandretTilLand}
+					disabled={leggTil && !innvandret(personFoerLeggTil)}
+					title={
+						leggTil && !innvandret(personFoerLeggTil)
+							? 'Personen må innvandre før den kan utvandre igjen'
+							: null
+					}
+				/>
 			</AttributtKategori>
 
-			<AttributtKategori title="Diverse">
-				<Attributt attr={sm.attrs.identHistorikk} />
-				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
-				<Attributt attr={sm.attrs.harMellomnavn} />
-				<Attributt attr={sm.attrs.sprakKode} />
-				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
-				<Attributt attr={sm.attrs.erForsvunnet} />
-				<Attributt attr={sm.attrs.harBankkontonr} />
-				<Attributt attr={sm.attrs.telefonnummer_1} />
-				<Attributt attr={sm.attrs.spesreg} />
-			</AttributtKategori>
+			{!leggTil && (
+				<AttributtKategori title="Diverse">
+					<Attributt attr={sm.attrs.identHistorikk} />
+					<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
+					<Attributt attr={sm.attrs.harMellomnavn} />
+					<Attributt attr={sm.attrs.sprakKode} />
+					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
+					<Attributt attr={sm.attrs.erForsvunnet} />
+					<Attributt attr={sm.attrs.harBankkontonr} />
+					<Attributt attr={sm.attrs.telefonnummer_1} />
+					<Attributt attr={sm.attrs.spesreg} />
+				</AttributtKategori>
+			)}
 		</Panel>
 	)
 }
@@ -165,7 +187,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({
 	},
 	spesreg: {
 		label: 'Diskresjonskode',
-		checked: has('tpsf.spesreg'),
+		checked: has('tpsf.spesreg') || has('tpsf.utenFastBopel'),
 		add() {
 			setMulti(['tpsf.spesreg', ''], ['tpsf.utenFastBopel', false])
 		},

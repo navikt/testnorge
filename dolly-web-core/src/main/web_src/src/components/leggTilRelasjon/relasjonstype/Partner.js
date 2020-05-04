@@ -4,7 +4,7 @@ import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { Sivilstand } from '~/components/fagsystem/tpsf/form/familierelasjoner/partials/partnere/Sivilstand'
+import { Sivilstand } from '~/components/fagsystem/tpsf/form/familierelasjoner/partials/partnere/sivilstand/Sivilstand'
 
 export const Partner = ({ lagOptions, identInfo, hovedIdent, formikBag }) => {
 	const valgbareIdenter = lagOptions(muligePartnere(identInfo, hovedIdent), identInfo)

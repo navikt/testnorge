@@ -1,16 +1,18 @@
 import React from 'react'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
-export const Attributt = ({ attr, vis = true, disabled = false }) => {
+export const Attributt = ({ attr, vis = true, disabled = false, title = null }) => {
 	return (
 		vis && (
-			<DollyCheckbox
-				label={attr.label}
-				size="grow"
-				onChange={attr.checked ? attr.remove : attr.add}
-				checked={attr.checked}
-				disabled={disabled}
-			/>
+			<div title={title}>
+				<DollyCheckbox
+					label={attr.label}
+					size="grow"
+					onChange={attr.checked ? attr.remove : attr.add}
+					checked={attr.checked}
+					disabled={disabled}
+				/>
+			</div>
 		)
 	)
 }

@@ -12,7 +12,7 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 // @ts-ignore
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 
-import { FormikProps }  from 'formik'
+import { FormikProps } from 'formik'
 
 export interface TelefonnummerValues {
 	telefonLandskode_1?: string
@@ -26,9 +26,8 @@ interface TelefonnummerProps {
 }
 
 export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
-
 	const [harToTlfnr, settToTlfnr, settEttTlfnr] = useBoolean(
-		formikBag.values.tpsf.hasOwnProperty("telefonnummer_2")
+		formikBag.values.tpsf.hasOwnProperty('telefonnummer_2')
 	)
 
 	const paths = {

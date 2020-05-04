@@ -13,7 +13,7 @@ import { getExcludedDatesAndMaxDate } from './utils'
 import { addYears } from 'date-fns'
 import _isNil from 'lodash/isNil'
 
-const initialValues = {
+export const initialValues = {
 	institusjonstype: '',
 	startdato: '',
 	faktiskSluttdato: ''
