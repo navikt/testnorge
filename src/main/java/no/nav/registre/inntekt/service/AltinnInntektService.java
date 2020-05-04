@@ -162,7 +162,7 @@ public class AltinnInntektService {
         }
         var arbeidsgiver = inntektInfo.getArbeidsgiver();
         // TODO: Dette er en quick fix som bare sjekker lengde for å gi svar på Privat/Offentlig arbeidsgiver.
-        if (inntektInfo.getArbeidsgiver().getVirksomhetsnummer().length() > 9) {
+        if (inntektInfo.getArbeidsgiver().getVirksomhetsnummer().length() >= 9) {
             tmp.arbeidsgiver(RsArbeidsgiver.builder()
                     .kontaktinformasjon(RsKontaktinformasjon.builder()
                             .telefonnummer(arbeidsgiver.getKontaktinformasjon().getTelefonnummer())
