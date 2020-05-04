@@ -28,6 +28,7 @@ export default ({ brukerData }) => {
 				<a href="/swagger-ui.html" target="_blank">
 					API-dok
 				</a>
+				<NavLink to="/soek">Søk i Mini-Norge</NavLink>
 			</div>
 
 			<div className="profil-area flexbox--all-center">
