@@ -2,26 +2,22 @@ import React from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import { AdresseKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import _drop from 'lodash/drop'
+import _isEmpty from 'lodash/isEmpty'
 import {
 	DollyFieldArrayWrapper,
 	DollyFaBlokk,
 	FieldArrayAddButton
 } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
-import { Diskresjonskoder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/diskresjonskoder/Diskresjonskoder'
 import Formatters from '~/utils/DataFormatter'
-import { Sivilstand } from './Sivilstand'
-import { erOpprettNyPartnerGyldig } from './SivilstandOptions'
+import { erOpprettNyPartnerGyldig } from './sivilstand/SivilstandOptions'
+import Partnerliste from './partnere/partnerliste'
+import PartnerForm from './partnere/partnerForm'
 
 const initialValues = {
 	identtype: 'FNR',
 	kjonn: '',
-	sivilstander: [{ sivilstand: '', sivilstandRegdato: null }],
+	sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
 	harFellesAdresse: false,
 	alder: Formatters.randomIntInRange(30, 60),
 	spesreg: '',
@@ -40,34 +36,60 @@ const sisteSivilstand = (partner = {}) => {
 	return sivilstander[sivilstander.length - 1]
 }
 
+const sisteTidligereSivilstandRegdato = partnere => {
+	const tidligerePartnere = partnere.filter(partner => !partner.ny)
+	if (tidligerePartnere.length < 1) return null
+
+	const tidligereSivilstander = sistePartner(tidligerePartnere).sivilstander.filter(
+		sivilstand => !sivilstand.ny
+	)
+	return tidligereSivilstander[tidligereSivilstander.length - 1].sivilstandRegdato
+}
+
 // Det er 3 kriterier for å opprette ny partner
 // - Må ha regDato for forholder (error validering sjekker om dato er gyldig)
 // - Må ha sivilstandKode som er gyldig som "siste forholdstype"
 // - Må ikke finnes errors i sivilstandform
-const sjekkKanOppretteNyPartner = (partnere, formikBag) => {
+export const sjekkKanOppretteNyPartner = (partnere, formikBag) => {
+	if (partnere.length < 1) return null
 	const { sivilstand, sivilstandRegdato } = sisteSivilstand(sistePartner(partnere))
+
 	const gyldigKode = erOpprettNyPartnerGyldig(sivilstand)
+
 	const harRegdato = sivilstandRegdato !== null
 	const harGyldigSivilstander = !ugyldigSivilstandState(formikBag.errors)
 	return harGyldigSivilstander && gyldigKode && harRegdato
 }
 
 const path = 'tpsf.relasjoner.partnere'
-export const Partnere = ({ formikBag }) => (
+export const Partnere = ({ formikBag, personFoerLeggTil }) => (
 	<FieldArray name={path}>
 		{arrayHelpers => {
-			const partnere = _get(arrayHelpers.form.values, path, [])
+			// Vil også vise partnere og sivilstander fra tidligere bestillinger uten å legge dem i formikBag.
+			// Lager derfor nytt partnerarray med både nye og tidligere partnere tagget med 'ny: true/false'.
+			const { partnere, partnereUtenomFormikBag, oppdatertPartner } = Partnerliste(
+				formikBag,
+				personFoerLeggTil,
+				path
+			)
 			const kanOppretteNyPartner = sjekkKanOppretteNyPartner(partnere, formikBag)
 			const addNewEntry = () => arrayHelpers.push(initialValues)
 
 			return (
 				<DollyFieldArrayWrapper header="Partner">
 					{partnere.map((c, idx) => {
+						const formikIdx =
+							!c.ny && !oppdatertPartner
+								? idx - (partnereUtenomFormikBag - 1)
+								: idx - partnereUtenomFormikBag
+
+						const formikPath = `${path}[${formikIdx}]`
 						const isLast = idx === partnere.length - 1
 
 						// Det er kun mulig å slette siste forhold
-						const showRemove = isLast && idx > 0
-						const clickRemove = () => arrayHelpers.remove(idx)
+						const showRemove = isLast && idx > 0 && c.ny
+						const clickRemove = () => arrayHelpers.remove(formikIdx)
+						const vurderFjernePartner = () => !c.ny && arrayHelpers.remove(formikIdx)
 						return (
 							<DollyFaBlokk
 								key={idx}
@@ -76,10 +98,12 @@ export const Partnere = ({ formikBag }) => (
 								handleRemove={showRemove && clickRemove}
 							>
 								<PartnerForm
-									path={path}
-									idx={idx}
+									path={formikPath}
 									formikBag={formikBag}
+									partner={c}
 									locked={idx !== partnere.length - 1}
+									minDatoSivilstand={sisteTidligereSivilstandRegdato(partnere)}
+									vurderFjernePartner={vurderFjernePartner}
 								/>
 							</DollyFaBlokk>
 						)
@@ -99,42 +123,3 @@ export const Partnere = ({ formikBag }) => (
 		}}
 	</FieldArray>
 )
-
-const PartnerForm = ({ path, idx, formikBag, locked }) => {
-	const basePath = `${path}[${idx}]`
-	const erSistePartner = _get(formikBag.values, path).length === idx + 1
-	return (
-		<>
-			<FormikSelect
-				name={`${basePath}.identtype`}
-				label="Identtype"
-				options={Options('identtype')}
-				isClearable={false}
-			/>
-			<FormikSelect
-				name={`${basePath}.kjonn`}
-				label="Kjønn"
-				kodeverk={PersoninformasjonKodeverk.Kjoennstyper}
-			/>
-			<FormikCheckbox
-				name={`${basePath}.harFellesAdresse`}
-				label="Har felles adresse"
-				checkboxMargin
-			/>
-			<FormikSelect
-				name={`${basePath}.statsborgerskap`}
-				label="Statsborgerskap"
-				kodeverk={AdresseKodeverk.StatsborgerskapLand}
-			/>
-			<FormikDatepicker name={`${basePath}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
-			<Diskresjonskoder basePath={basePath} formikBag={formikBag} />
-			<Alder basePath={basePath} formikBag={formikBag} title="Alder" />
-			<Sivilstand
-				formikBag={formikBag}
-				basePath={`${basePath}.sivilstander`}
-				locked={locked}
-				erSistePartner={erSistePartner}
-			/>
-		</>
-	)
-}

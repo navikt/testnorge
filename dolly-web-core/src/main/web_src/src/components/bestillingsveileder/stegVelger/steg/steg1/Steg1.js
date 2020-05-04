@@ -35,7 +35,6 @@ export const Steg1 = ({ stateModifier }) => {
 			values: stateModifier(panel.initialValues).checked
 		}))
 		.filter(v => v.values.length)
-
 	return (
 		<AttributtVelger checked={checked}>
 			<PersoninformasjonPanel
@@ -45,9 +44,7 @@ export const Steg1 = ({ stateModifier }) => {
 			<AdressePanel stateModifier={stateModifier} />
 			<FamilierelasjonPanel stateModifier={stateModifier} />
 			<ArbeidInntektPanel stateModifier={stateModifier} />
-
 			<BrregPanel stateModifier={stateModifier} />
-
 			<IdentifikasjonPanel stateModifier={stateModifier} />
 			<KontaktDoedsboPanel stateModifier={stateModifier} />
 			<InstitusjonsoppholdPanel stateModifier={stateModifier} />

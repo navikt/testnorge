@@ -28,9 +28,12 @@ export const Bestillingsveileder = ({ error, location, sendBestilling, match }) 
 					)
 				}
 				render={data => {
-					const initialValues = { ...options.initialValues }
 					const leggTilPaaPersonOptions = { ...options, personFoerLeggTil: data }
-					return renderBestillingsVeileder(initialValues, leggTilPaaPersonOptions, handleSubmit)
+					return renderBestillingsVeileder(
+						options.initialValues,
+						leggTilPaaPersonOptions,
+						handleSubmit
+					)
 				}}
 			/>
 		)
