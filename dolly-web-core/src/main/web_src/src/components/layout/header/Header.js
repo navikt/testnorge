@@ -25,10 +25,10 @@ export default ({ brukerData }) => {
 					Testdatagrupper
 				</NavLink>
 				<NavLink to="/tpsendring">Endringsmelding</NavLink>
+				<NavLink to="/soek">Søk</NavLink>
 				<a href="/swagger-ui.html" target="_blank">
 					API-dok
 				</a>
-				<NavLink to="/soek">Søk i Mini-Norge</NavLink>
 			</div>
 
 			<div className="profil-area flexbox--all-center">
