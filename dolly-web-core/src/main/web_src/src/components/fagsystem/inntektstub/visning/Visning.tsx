@@ -29,7 +29,7 @@ const getHeader = (data: Inntektsinformasjon) => {
 
 export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
 	if (loading) return <Loading label="Laster Inntektstub-data" />
-	if (!liste) return false
+	if (!liste) return null
 
 	return (
 		<div>

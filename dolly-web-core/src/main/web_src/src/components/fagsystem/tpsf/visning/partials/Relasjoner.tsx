@@ -33,7 +33,6 @@ const getHeader = (navn: string) => {
 
 export const Relasjoner = ({ relasjoner }: RelasjonerProps) => {
 	if (!relasjoner) return null
-	console.log('relasjoner :>> ', relasjoner)
 
 	const barn = relasjoner.filter(
 		({ relasjonTypeNavn }) =>
