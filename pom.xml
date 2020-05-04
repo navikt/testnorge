@@ -22,7 +22,7 @@
         <application.name>testnorge-token-provider</application.name>
         <application.version>${project.version}</application.version>
         <java.version>1.8</java.version>
-        <logstash.logback.encoder.version>4.11</logstash.logback.encoder.version>
+        <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <freg.security.oidc.utility.version>3.0.3</freg.security.oidc.utility.version>
         <cxf.version>3.2.2</cxf.version>
         <swagger.version>2.9.2</swagger.version>
