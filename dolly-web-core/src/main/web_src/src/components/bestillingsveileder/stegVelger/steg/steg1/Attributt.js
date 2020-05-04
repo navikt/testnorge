@@ -18,8 +18,9 @@ export const Attributt = ({ attr, vis = true, disabled = false, title = null }) 
 }
 
 export const AttributtKategori = ({ title, children }) => {
-	const attributterSomSkalVises = children.some(
-		child => child.props.vis || !child.props.hasOwnProperty('vis')
+	const attributter = Array.isArray(children) ? children : [children]
+	const attributterSomSkalVises = attributter.some(
+		attr => attr.props.vis || !attr.props.hasOwnProperty('vis')
 	)
 	return (
 		attributterSomSkalVises && (
