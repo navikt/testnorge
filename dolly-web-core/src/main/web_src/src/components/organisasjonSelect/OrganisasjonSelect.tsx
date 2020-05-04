@@ -25,6 +25,7 @@ export const OrganisasjonSelect = ({
 				type="text"
 				size="xlarge"
 				isClearable={false}
+				optionHeight={50}
 			/>
 		)}
 	/>

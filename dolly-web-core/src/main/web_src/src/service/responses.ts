@@ -6,6 +6,7 @@ export type EregResponse = {
 	kanHaArbeidsforhold: boolean
 	forretningsAdresse?: Adresse
 	postadresse?: Adresse
+	opprinnelse?: string
 }
 
 export type Adresse = {
