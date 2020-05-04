@@ -1,10 +1,14 @@
 package no.nav.dolly.bestilling.bregstub.domain;
 
+import static java.util.Objects.isNull;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,15 +29,25 @@ public class RolleoversiktTo {
 
     @Getter
     @Setter
+    @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RolleTo {
 
+        @EqualsAndHashCode.Exclude
         private NavnTo foretaksNavn;
+
+        @EqualsAndHashCode.Exclude
         private AdresseTo forretningsAdresse;
+
         private String orgNr;
+
+        @EqualsAndHashCode.Exclude
         private AdresseTo postAdresse;
+
+        @EqualsAndHashCode.Exclude
         private LocalDate registreringsdato;
+
         private String rollebeskrivelse;
     }
 
@@ -62,5 +76,19 @@ public class RolleoversiktTo {
         private String landKode;
         private String postnr;
         private String poststed;
+    }
+
+    public List<Integer> getUnderstatuser() {
+        if (isNull(understatuser)){
+            understatuser = new ArrayList<>();
+        }
+        return understatuser;
+    }
+
+    public List<RolleTo> getEnheter() {
+        if (isNull(enheter)) {
+            enheter = new ArrayList<>();
+        }
+        return enheter;
     }
 }
