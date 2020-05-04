@@ -358,7 +358,7 @@ public class ArbeidsforholdMappingUtil {
             JsonNode node,
             String fieldName
     ) {
-        return node.get(fieldName) != null ? LocalDateTime.parse(node.get(fieldName).asText()) : null;
+        return node.get(fieldName) != null && !"".equals(node.get(fieldName).asText()) ? LocalDateTime.parse(node.get(fieldName).asText()) : null;
     }
 
     private static YearMonth findYearMonthNullSage(
