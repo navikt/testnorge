@@ -18,10 +18,15 @@ export const Attributt = ({ attr, vis = true, disabled = false, title = null }) 
 }
 
 export const AttributtKategori = ({ title, children }) => {
+	const attributterSomSkalVises = children.some(
+		child => child.props.vis || !child.props.hasOwnProperty('vis')
+	)
 	return (
-		<React.Fragment>
-			{title && <h3>{title}</h3>}
-			<div className="attributt-velger_panelsubcontent">{children}</div>
-		</React.Fragment>
+		attributterSomSkalVises && (
+			<React.Fragment>
+				{title && <h3>{title}</h3>}
+				<div className="attributt-velger_panelsubcontent">{children}</div>
+			</React.Fragment>
+		)
 	)
 }
