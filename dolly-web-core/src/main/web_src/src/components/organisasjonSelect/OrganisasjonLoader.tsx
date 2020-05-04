@@ -15,14 +15,21 @@ export const OrganisasjonLoader = ({ filter = () => true, render }: Organisasjon
 	const onFetch = () =>
 		SelectOptionsOppslag.hentOrgnr().then(
 			({ liste }): Array<EregResponse> =>
-				liste.filter(filter).map((response: EregResponse) => ({
-					value: response.orgnr,
-					label: formatLabel(response),
-					juridiskEnhet: response.juridiskEnhet,
-					navn: response.navn,
-					forretningsAdresse: response.forretningsAdresse,
-					postadresse: response.postadresse
-				}))
+				liste
+					.sort(function(a: EregResponse, b: EregResponse) {
+						if (a.opprinnelse < b.opprinnelse) return 1
+						if (a.opprinnelse > b.opprinnelse) return -1
+						return 0
+					})
+					.filter(filter)
+					.map((response: EregResponse) => ({
+						value: response.orgnr,
+						label: formatLabel(response),
+						juridiskEnhet: response.juridiskEnhet,
+						navn: response.navn,
+						forretningsAdresse: response.forretningsAdresse,
+						postadresse: response.postadresse
+					}))
 		)
 	return <LoadableComponent onFetch={onFetch} render={(list: Organisasjon[]) => render(list)} />
 }
