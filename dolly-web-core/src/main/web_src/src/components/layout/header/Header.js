@@ -25,6 +25,7 @@ export default ({ brukerData }) => {
 					Testdatagrupper
 				</NavLink>
 				<NavLink to="/tpsendring">Endringsmelding</NavLink>
+				<NavLink to="/soek">Søk</NavLink>
 				<a href="/swagger-ui.html" target="_blank">
 					API-dok
 				</a>

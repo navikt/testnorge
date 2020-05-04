@@ -14,7 +14,7 @@ public class ForwardAndRedirectController {
     @Value("${dolly.url}")
     private String dollyUrl;
 
-    @RequestMapping(value = {"/profil/**", "/team/**", "/gruppe/**", "/maler/**", "/tpsendring/**"})
+    @RequestMapping(value = {"/profil/**", "/team/**", "/gruppe/**", "/maler/**", "/tpsendring/**", "/soek/**"})
     public String forwardToRoot() {
         return "forward:/";
     }
