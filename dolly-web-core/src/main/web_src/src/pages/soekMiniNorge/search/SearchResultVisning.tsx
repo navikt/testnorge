@@ -3,23 +3,11 @@ import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 
 interface SearchResultVisningProps {
-	searchActive: boolean
-	soekOptions: string
+	personListe: any
 }
 
-export const SearchResultVisning = ({ searchActive, soekOptions}:SearchResultVisningProps) => {
-	if (!searchActive)
-		return (
-			<ContentContainer>
-				Ingen søk er gjort.
-			</ContentContainer>
-		)
-
-	if(searchActive && soekOptions===''){
-		return <ContentContainer>Vennligst fyll inn en eller flere verdier å søke på.</ContentContainer>
-	}
-
-	if (searchActive) {
+export const SearchResultVisning = ({personListe}:SearchResultVisningProps) => {
+	if (!personListe || personListe.kilder[0].data.length===0) {
 		return <ContentContainer>Søket gav ingen resultater.</ContentContainer>
 	}
 
@@ -27,30 +15,30 @@ export const SearchResultVisning = ({ searchActive, soekOptions}:SearchResultVis
 		{
 			text: 'Ident',
 			width: '20',
-			dataField: 'personIdent.id',
+			dataField: 'innhold.personIdent.id',
 			unique: true
 		},
 		{
 			text: 'Type',
 			width: '20',
-			dataField: 'personIdent.type',
+			dataField: 'innhold.personIdent.type',
 		},
 		{
 			text: 'Navn',
 			width: '30',
-			dataField: 'navn.forkortet'
+			dataField: 'innhold.navn.forkortet'
 		},
 		{
 			text: 'Kjønn',
 			width: '30',
-			dataField: 'personInfo.kjoenn'
+			dataField: 'innhold.personInfo.kjoenn'
 		},
 		{
 			text: 'Alder',
 			width: '30',
-			dataField: 'personInfo.datoFoedt',
+			dataField: 'innhold.personInfo.datoFoedt',
 			formatter: (cell:any, row:any) => {
-				const foedselsdato = new Date(row.personInfo.datoFoedt)
+				const foedselsdato = new Date(row.innhold.personInfo.datoFoedt)
 				const diff_ms = Date.now() - foedselsdato.getTime()
 				const age_dt = new Date(diff_ms)
 
@@ -59,10 +47,9 @@ export const SearchResultVisning = ({ searchActive, soekOptions}:SearchResultVis
 		}
 	]
 
-
 	return (
 		<DollyTable
-			data={[]}
+			data={personListe.kilder[0].data}
 			columns={columns}
 			pagination
 			onExpand={() => (

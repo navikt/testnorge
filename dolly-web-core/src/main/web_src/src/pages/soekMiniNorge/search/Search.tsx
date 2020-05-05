@@ -7,6 +7,10 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import './Search.less'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import _ from 'lodash'
+import { DollyApi, HodejegerenApi, TpsfApi } from '~/service/Api'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 
 export const Search = () => {
 	const [soekOptions, setSoekOptions] = useState('')
@@ -86,7 +90,24 @@ export const Search = () => {
 									<SearchOptions formikBag={formikBag} onSubmit={_onSubmit} />
 								</div>
 								<div className="search-field_resultat">
-									<SearchResultVisning personListe={[]} searchActive={searchActive} soekOptions={soekOptions}/>
+									{!searchActive ? (
+										<ContentContainer>Ingen søk er gjort</ContentContainer>
+									) : searchActive && soekOptions === '' ? (
+										<ContentContainer>
+											Vennligst fyll inne en eller flere verdier å søke på.
+										</ContentContainer>
+									) : (
+										<LoadableComponent
+											onFetch={() =>
+												HodejegerenApi.soek(soekOptions).then(response =>{
+													return response.data.length > 0 ? response.data[0]: null}
+												)
+											}
+											render={(data: Array<Response>) =>
+												<SearchResultVisning personListe={data} />
+											}
+										/>
+									)}
 								</div>
 							</div>
 						</div>
