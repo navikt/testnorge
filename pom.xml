@@ -26,7 +26,6 @@
 
 		<apache.version>4.5.9</apache.version>
 		<application.version>${project.version}</application.version>
-		<freg.exceptions.version>2.0.0</freg.exceptions.version>
 		<hikari.version>3.3.1</hikari.version>
 		<logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
 		<postgresql.version>42.2.6</postgresql.version>
@@ -54,11 +53,6 @@
 				<groupId>net.logstash.logback</groupId>
 				<artifactId>logstash-logback-encoder</artifactId>
 				<version>${logstash.logback.encoder.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>no.nav.freg</groupId>
-				<artifactId>freg-spring-boot-starter-log-exceptions</artifactId>
-				<version>${freg.exceptions.version}</version>
 			</dependency>
 
 			<!--DATABASE-->
