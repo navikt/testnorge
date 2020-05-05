@@ -33,6 +33,7 @@ public class EregMapperConsumer {
     }
 
     public void create(EregListe eregListe, String env) {
+        log.info("Oppretter EREG med {} nye organisasjoner...", eregListe.getListe().size());
         uploadToEreg(eregListe, env, false);
     }
 
@@ -41,6 +42,7 @@ public class EregMapperConsumer {
     }
 
     public void update(EregListe eregListe, String env) {
+        log.info("Oppdaterer EREG med {} organisasjoner...", eregListe.getListe().size());
         uploadToEreg(eregListe, env, true);
     }
 

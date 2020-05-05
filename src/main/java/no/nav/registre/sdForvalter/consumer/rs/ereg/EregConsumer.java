@@ -39,6 +39,7 @@ public class EregConsumer {
     }
 
     public Map<String, Organisasjon> getOrganisasjoner(List<String> orgnummerList, String miljo) {
+        log.info("Henter ut {} fra ereg", String.join(", ", orgnummerList));
         ExecutorService executorService = Executors.newFixedThreadPool(5);
         AsyncOrganisasjonMap asyncMap = new AsyncOrganisasjonMap();
         orgnummerList.forEach(orgnummer -> asyncMap.put(orgnummer, getOrganisasjon(orgnummer, miljo, executorService)));

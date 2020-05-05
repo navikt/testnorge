@@ -28,7 +28,7 @@ public class GetOrganisasjon implements Callable<EregOrganisasjon> {
     @Override
     public EregOrganisasjon call() {
         try {
-            log.info("Henter {} fra Ereg i {}...", orgnummer, miljo);
+            log.debug("Henter {} fra Ereg i {}...", orgnummer, miljo);
             ResponseEntity<EregOrganisasjon> entity = restTemplate.getForEntity(
                     new UriTemplate(this.url + "/organisasjon/{orgnummer}?inkluderHierarki=true&inkluderHistorikk=false")
                             .expand(miljo, orgnummer),
@@ -36,7 +36,7 @@ public class GetOrganisasjon implements Callable<EregOrganisasjon> {
             );
 
             if (entity.hasBody()) {
-                log.info("Hentet {} fra Ereg i {}", orgnummer, miljo);
+                log.debug("Hentet {} fra Ereg i {}", orgnummer, miljo);
                 return entity.getBody();
             }
             if (entity.getStatusCode() == HttpStatus.NOT_FOUND) {
