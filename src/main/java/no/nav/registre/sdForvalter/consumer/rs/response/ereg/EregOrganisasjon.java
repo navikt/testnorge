@@ -20,18 +20,20 @@ public class EregOrganisasjon {
     @JsonProperty(required = true)
     private final String organisasjonsnummer;
     @JsonProperty
-    private final OrganisasjonDetaljer virksomhetDetaljer;
+    private final Detaljer virksomhetDetaljer;
     @JsonProperty
-    private final OrganisasjonDetaljer juridiskEnhetDetaljer;
+    private final Detaljer juridiskEnhetDetaljer;
     @JsonProperty(required = true)
     private final Navn navn;
     @JsonProperty(required = true)
     private final String type;
     @JsonProperty
     private final List<EregOrganisasjon> inngaarIJuridiskEnheter = new ArrayList<>();
+    @JsonProperty
+    private final OrganisasjonDetaljer organisasjonDetaljer;
 
     public Organisasjon toOrganisasjon() {
-        OrganisasjonDetaljer detaljer = type.equals("JuridiskEnhet") ? juridiskEnhetDetaljer : virksomhetDetaljer;
+        Detaljer detaljer = type.equals("JuridiskEnhet") ? juridiskEnhetDetaljer : virksomhetDetaljer;
 
         Organisasjon.OrganisasjonBuilder builder = Organisasjon
                 .builder()
@@ -43,15 +45,15 @@ public class EregOrganisasjon {
                 )
                 .enhetType(detaljer.getEnhetstype());
 
-        if(detaljer.getPostadresser()!= null && !detaljer.getPostadresser().isEmpty()){
-            EregAdresse postadresse = detaljer.getPostadresser().get(0);
+        if (organisasjonDetaljer.getPostadresser() != null && !organisasjonDetaljer.getPostadresser().isEmpty()) {
+            EregAdresse postadresse = organisasjonDetaljer.getPostadresser().get(0);
             builder.postadresse(Adresse.builder()
                     .kommunenummer(postadresse.getKommunenummer())
                     .build());
         }
 
-        if(detaljer.getForretningsadresser() != null && !detaljer.getForretningsadresser().isEmpty()){
-            EregAdresse forretningsadresse = detaljer.getForretningsadresser().get(0);
+        if (organisasjonDetaljer.getForretningsadresser() != null && !organisasjonDetaljer.getForretningsadresser().isEmpty()) {
+            EregAdresse forretningsadresse = organisasjonDetaljer.getForretningsadresser().get(0);
             builder.forretningsadresser(
                     Adresse.builder()
                             .kommunenummer(forretningsadresse.getKommunenummer())

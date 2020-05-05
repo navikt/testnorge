@@ -10,9 +10,8 @@ import java.util.List;
 @Value
 @NoArgsConstructor(force = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OrganisasjonDetaljer {
+public class Detaljer {
     @JsonProperty
-    private final List<EregAdresse> forretningsadresser;
-    @JsonProperty
-    private final List<EregAdresse> postadresser;
+    private String enhetstype;
 }
+
