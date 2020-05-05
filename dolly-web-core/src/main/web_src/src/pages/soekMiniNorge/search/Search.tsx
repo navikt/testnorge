@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { SearchOptions } from '~/pages/soekMiniNorge/search/SearchOptions'
 import { Formik } from 'formik'
 import { stateModifierFns } from '~/components/bestillingsveileder/stateModifier'
@@ -6,9 +6,36 @@ import { SearchResultVisning } from '~/pages/soekMiniNorge/search/SearchResultVi
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import './Search.less'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import _ from 'lodash'
 
 export const Search = () => {
-	const _onSubmit = (values: any) => {}
+	const [soekOptions, setSoekOptions] = useState('')
+	const [searchActive, setSearchActive] = useState(false)
+
+	const _onSubmit = (values: any) => {
+		let newSoekOptions = ''
+		for (let key in values) {
+			if (Object.prototype.toString.call(values[key]) === '[object Object]') {
+				for (let innerKey in values[key]) {
+					const value = (values[key][innerKey] + '').toUpperCase()
+					if (value !== '') {
+						if (newSoekOptions === '') newSoekOptions = key + '.' + innerKey + '=' + value
+						else newSoekOptions = newSoekOptions + '&' + key + '.' + innerKey + '=' + value
+					}
+				}
+			} else {
+				const value = values[key] + ''.toUpperCase()
+				if (value !== '') {
+					if (newSoekOptions === '') newSoekOptions = key + '=' + value
+					else newSoekOptions = newSoekOptions + '&' + key + '=' + value
+					newSoekOptions = newSoekOptions + '&' + key + '=' + value
+				}
+			}
+		}
+		setSoekOptions(newSoekOptions)
+		setSearchActive(true)
+	}
+
 	const initialValues = {
 		personIdent: {
 			id: '',
@@ -47,7 +74,6 @@ export const Search = () => {
 		'Beta-versjon for søk i Mini-Norge jobbes med fortløpende.'
 
 	return (
-		// @ts-ignore
 		<div className="search-content">
 			<Formik onSubmit={_onSubmit} initialValues={initialValues} enableReinitialize>
 				{formikBag => {
@@ -57,10 +83,10 @@ export const Search = () => {
 							<AlertStripeInfo>{infoTekst}</AlertStripeInfo>
 							<div className="flexbox">
 								<div className="search-field_options">
-									<SearchOptions formikBag={formikBag} />
+									<SearchOptions formikBag={formikBag} onSubmit={_onSubmit} />
 								</div>
 								<div className="search-field_resultat">
-									<SearchResultVisning personListe={[]} searchActive={false} />
+									<SearchResultVisning personListe={[]} searchActive={searchActive} soekOptions={soekOptions}/>
 								</div>
 							</div>
 						</div>

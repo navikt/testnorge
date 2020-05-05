@@ -3,20 +3,23 @@ import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 
 interface SearchResultVisningProps {
-	personListe: Array<any>
 	searchActive: boolean
+	soekOptions: string
 }
 
-export const SearchResultVisning = ({personListe, searchActive= false}:SearchResultVisningProps) => {
-
-	if (!personListe || personListe.length === 0)
+export const SearchResultVisning = ({ searchActive, soekOptions}:SearchResultVisningProps) => {
+	if (!searchActive)
 		return (
 			<ContentContainer>
-				Trykk på søk.
+				Ingen søk er gjort.
 			</ContentContainer>
 		)
 
-	if (personListe.length <= 0 ) {
+	if(searchActive && soekOptions===''){
+		return <ContentContainer>Vennligst fyll inn en eller flere verdier å søke på.</ContentContainer>
+	}
+
+	if (searchActive) {
 		return <ContentContainer>Søket gav ingen resultater.</ContentContainer>
 	}
 
@@ -54,13 +57,12 @@ export const SearchResultVisning = ({personListe, searchActive= false}:SearchRes
 				return Math.abs(age_dt.getUTCFullYear() - 1970)
 			}
 		}
-
 	]
 
 
 	return (
 		<DollyTable
-			data={personListe}
+			data={[]}
 			columns={columns}
 			pagination
 			onExpand={() => (
