@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.registre.udistub.core.exception.CouldNotCreatePersonException;
+import no.nav.registre.udistub.core.exception.CouldNotUpdatePersonException;
 import no.nav.registre.udistub.core.exception.NotFoundException;
 import no.nav.registre.udistub.core.service.PersonService;
 import no.nav.registre.udistub.core.service.to.UdiPerson;
@@ -33,6 +35,14 @@ public class PersonController {
         UdiPerson createdPerson = personService.opprettPerson(udiPerson)
                 .orElseThrow(() -> new CouldNotCreatePersonException(String.format("Kunne ikke opprette person med fnr:%s", udiPerson.getIdent())));
         return ResponseEntity.status(HttpStatus.CREATED).body(new PersonControllerResponse(createdPerson));
+    }
+
+    @PutMapping
+    public ResponseEntity<PersonControllerResponse> oppdaterPerson(@RequestBody UdiPerson udiPerson) {
+        UdiPerson updatedPerson = personService.oppdaterPerson(udiPerson)
+                .orElseThrow(() -> new CouldNotUpdatePersonException(String.format("Kunne ikke oppdatere person med fnr:%s", udiPerson.getIdent())));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new PersonControllerResponse(updatedPerson));
+
     }
 
     @GetMapping("/{ident}")
