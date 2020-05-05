@@ -28,10 +28,13 @@ public class EregOrganisasjon {
     @JsonProperty(required = true)
     private final String type;
     @JsonProperty
-    @JsonAlias({"inngaarIJuridiskEnheter", "driverVirksomheter"})
+    @JsonAlias({"inngaarIJuridiskEnheter"})
     private final List<EregOrganisasjon> parents = new ArrayList<>();
     @JsonProperty
     private final OrganisasjonDetaljer organisasjonDetaljer;
+    @JsonProperty
+    @JsonAlias({"driverVirksomheter"})
+    private final List<EregOrganisasjon> children = new ArrayList<>();
 
     public Organisasjon toOrganisasjon() {
         Organisasjon.OrganisasjonBuilder builder = Organisasjon
