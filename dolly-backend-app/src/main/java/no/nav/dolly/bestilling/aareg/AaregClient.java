@@ -13,11 +13,12 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.domain.AaregOppdaterRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
 import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
+import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
+import no.nav.dolly.bestilling.aareg.mapper.ArbeidsforholdMapper;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAktoer;
@@ -35,7 +36,7 @@ public class AaregClient implements ClientRegister {
     private static final String ARBEIDSGIVER = "arbeidsgiver";
 
     private final AaregConsumer aaregConsumer;
-    private final MapperFacade mapperFacade;
+    private final ArbeidsforholdMapper arbeidsforholdMapper;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -45,10 +46,11 @@ public class AaregClient implements ClientRegister {
         if (!bestilling.getAareg().isEmpty()) {
 
             bestilling.getEnvironments().forEach(env -> {
+                List<Arbeidsforhold> arbeidsforholdRequest = arbeidsforholdMapper.map(bestilling.getAareg(), tpsPerson);
 
-                ResponseEntity<Map[]> response = ResponseEntity.ok(new Map[] {});
+                ResponseEntity<ArbeidsforholdResponse> eksisterendeArbeidsforhold;
                 try {
-                    response = aaregConsumer.hentArbeidsforhold(tpsPerson.getHovedperson(), env);
+                    eksisterendeArbeidsforhold = aaregConsumer.hentArbeidsforhold(tpsPerson.getHovedperson(), env);
                 } catch (RuntimeException e) {
                     log.error("Lesing av aareg i {} feilet, {}", env, e.getLocalizedMessage());
                 }
@@ -60,8 +62,8 @@ public class AaregClient implements ClientRegister {
                     setPermisjonId(arbfInput);
 
                     boolean found = false;
-                    for (int j = 0; j < response.getBody().length; j++) {
-                        Map arbfFraAareg = response.getBody()[j];
+                    for (int j = 0; j < eksisterendeArbeidsforhold.getBody().length; j++) {
+                        Map arbfFraAareg = eksisterendeArbeidsforhold.getBody()[j];
 
                         if ((isMatchArbgivOrgnummer(arbfInput.getArbeidsgiver(), getIdentifyingNumber(arbfFraAareg)) ||
                                 isMatchArbgivPersonnummer(arbfInput.getArbeidsgiver(), getIdentifyingNumber(arbfFraAareg))) &&

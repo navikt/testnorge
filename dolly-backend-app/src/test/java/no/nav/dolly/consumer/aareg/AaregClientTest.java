@@ -29,7 +29,7 @@ import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
-import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
+import no.nav.dolly.domain.resultset.aareg.RsAaregArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
@@ -53,7 +53,7 @@ public class AaregClientTest {
 
     @Before
     public void setup() {
-        when(mapperFacade.map(any(RsArbeidsforhold.class), eq(Arbeidsforhold.class))).thenReturn(Arbeidsforhold.builder()
+        when(mapperFacade.map(any(RsAaregArbeidsforhold.class), eq(Arbeidsforhold.class))).thenReturn(Arbeidsforhold.builder()
                 .arbeidsgiver(RsOrganisasjon.builder().orgnummer(ORGNUMMER).build())
                 .arbeidstaker(RsPersonAareg.builder().ident(IDENT).build())
                 .build());
@@ -71,7 +71,7 @@ public class AaregClientTest {
         when(aaregConsumer.opprettArbeidsforhold(any(AaregOpprettRequest.class))).thenReturn(aaregResponse);
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
-        request.setAareg(singletonList(RsArbeidsforhold.builder().build()));
+        request.setAareg(singletonList(RsAaregArbeidsforhold.builder().build()));
         request.setEnvironments(singletonList("u2"));
         aaregClient.gjenopprett(request,
                 TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
@@ -91,7 +91,7 @@ public class AaregClientTest {
         when(aaregConsumer.opprettArbeidsforhold(any(AaregOpprettRequest.class))).thenReturn(aaregResponse);
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
-        request.setAareg(singletonList(RsArbeidsforhold.builder().build()));
+        request.setAareg(singletonList(RsAaregArbeidsforhold.builder().build()));
         request.setEnvironments(singletonList("u2"));
         aaregClient.gjenopprett(request,
                 TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
@@ -111,7 +111,7 @@ public class AaregClientTest {
         when(aaregConsumer.oppdaterArbeidsforhold(any(AaregOppdaterRequest.class))).thenReturn(aaregResponse);
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
-        request.setAareg(singletonList(RsArbeidsforhold.builder()
+        request.setAareg(singletonList(RsAaregArbeidsforhold.builder()
                 .arbeidsgiver(RsOrganisasjon.builder().orgnummer(ORGNUMMER).build())
                 .build()));
         request.setEnvironments(singletonList("u2"));
@@ -131,12 +131,12 @@ public class AaregClientTest {
         when(aaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(buildArbeidsforhold(false)));
         when(aaregConsumer.oppdaterArbeidsforhold(any(AaregOppdaterRequest.class))).thenReturn(aaregResponse);
 
-        when(mapperFacade.map(any(RsArbeidsforhold.class), eq(Arbeidsforhold.class))).thenReturn(Arbeidsforhold.builder()
+        when(mapperFacade.map(any(RsAaregArbeidsforhold.class), eq(Arbeidsforhold.class))).thenReturn(Arbeidsforhold.builder()
                 .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
                 .build());
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
-        request.setAareg(singletonList(RsArbeidsforhold.builder()
+        request.setAareg(singletonList(RsAaregArbeidsforhold.builder()
                 .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
                 .build()));
         request.setEnvironments(singletonList("u2"));
@@ -157,14 +157,14 @@ public class AaregClientTest {
                 .build();
         when(aaregConsumer.oppdaterArbeidsforhold(any(AaregOppdaterRequest.class))).thenReturn(aaregResponse);
 
-        when(mapperFacade.map(any(RsArbeidsforhold.class), eq(Arbeidsforhold.class))).thenReturn(Arbeidsforhold.builder()
+        when(mapperFacade.map(any(RsAaregArbeidsforhold.class), eq(Arbeidsforhold.class))).thenReturn(Arbeidsforhold.builder()
                 .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
                 .build());
 
         BestillingProgress progress = new BestillingProgress();
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
-        request.setAareg(singletonList(RsArbeidsforhold.builder()
+        request.setAareg(singletonList(RsAaregArbeidsforhold.builder()
                 .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
                 .build()));
         request.setEnvironments(singletonList("u2"));

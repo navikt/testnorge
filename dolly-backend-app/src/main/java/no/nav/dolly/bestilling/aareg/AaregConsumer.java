@@ -1,14 +1,13 @@
 package no.nav.dolly.bestilling.aareg;
 
 import static java.lang.String.format;
+import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.net.URI;
-import java.util.Map;
 import java.util.UUID;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.aareg.domain.AaregOppdaterRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
+import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 
@@ -58,14 +58,14 @@ public class AaregConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "aareg_getArbeidforhold" })
-    public ResponseEntity<Map[]> hentArbeidsforhold(String ident, String miljoe) {
+    public ResponseEntity<ArbeidsforholdResponse> hentArbeidsforhold(String ident, String miljoe) {
         RequestEntity getRequest =
                 RequestEntity.get(URI.create(format(HENT_ARBEIDSFORHOLD, providersProps.getAaregdata().getUrl(), ident, miljoe)))
                         .header(AUTHORIZATION, getUserIdToken())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .build();
-        return restTemplate.exchange(getRequest, Map[].class);
+        return restTemplate.exchange(getRequest, ArbeidsforholdResponse.class);
     }
 
     @Timed(name = "providers", tags = { "operation", "aareg_deleteArbeidsforhold" })

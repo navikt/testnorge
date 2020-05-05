@@ -12,7 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
+import no.nav.dolly.domain.resultset.aareg.RsAaregArbeidsforhold;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
@@ -63,7 +63,7 @@ public class RsDollyBestilling {
     @ApiModelProperty(
             position = 6
     )
-    private List<RsArbeidsforhold> aareg;
+    private List<RsAaregArbeidsforhold> aareg;
 
     @ApiModelProperty(
             position = 7
@@ -100,7 +100,7 @@ public class RsDollyBestilling {
     )
     private RsBregdata bregstub;
 
-    public List<RsArbeidsforhold> getAareg() {
+    public List<RsAaregArbeidsforhold> getAareg() {
         if (isNull(aareg)) {
             aareg = new ArrayList();
         }

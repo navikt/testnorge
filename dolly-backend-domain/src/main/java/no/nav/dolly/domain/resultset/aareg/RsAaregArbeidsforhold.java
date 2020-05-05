@@ -16,7 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-public class RsArbeidsforhold {
+public class RsAaregArbeidsforhold {
 
     @ApiModelProperty(
             required = true,

@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
+import no.nav.dolly.domain.resultset.aareg.RsAaregArbeidsforhold;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
@@ -30,7 +30,7 @@ import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 @JsonInclude(value = Include.NON_EMPTY)
 public class BestilteKriterier {
 
-    private List<RsArbeidsforhold> aareg;
+    private List<RsAaregArbeidsforhold> aareg;
 	private RsDigitalKontaktdata krrstub;
     private RsUdiPerson udistub;
     private List<OpprettSkattegrunnlag> sigrunstub;
