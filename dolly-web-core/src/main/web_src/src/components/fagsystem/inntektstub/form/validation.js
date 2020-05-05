@@ -1,6 +1,7 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
+import { isWithinInterval, areIntervalsOverlapping, subMonths } from 'date-fns'
 import { requiredDate, requiredString, requiredNumber, messages } from '~/utils/YupValidations'
 
 const innenforMaanedAarTest = validation => {
@@ -25,6 +26,75 @@ const innenforMaanedAarTest = validation => {
 			return true
 		}
 		return false
+	})
+}
+
+const unikOrgMndTest = validation => {
+	const errorMsg = 'Kombinasjonen av år, måned og virksomhet er ikke unik'
+	return validation.test('unikhet', errorMsg, function isUniqueCombination(orgnr) {
+		if (!orgnr) return true
+
+		const values = this.options.context
+		const path = this.options.path
+		const currInntektsinformasjonPath = path.split('.', 2).join('.')
+		const inntektsinformasjonPath = currInntektsinformasjonPath.split('[')[0]
+
+		const currInntektsinformasjon = _get(values, currInntektsinformasjonPath)
+		const alleInntektsinformasjon = _get(values, inntektsinformasjonPath).filter(
+			inntektinfo => !(inntektinfo.version > 1) //nye versjoner skal ikke være en del av test
+		)
+
+		const virksomheter = alleInntektsinformasjon.map(inntektinfo => inntektinfo.virksomhet)
+		const maaneder = alleInntektsinformasjon.map(inntektinfo => ({
+			maanedAar: inntektinfo.sisteAarMaaned,
+			antallMaaneder: inntektinfo.antallMaaneder
+		}))
+		console.log('virksomheter :>> ', virksomheter)
+		console.log('maaneder :>> ', maaneder)
+		const likeOrgnrIndex = indexOfLikeOrgnr(virksomheter, currInntektsinformasjon.virksomhet)
+		console.log('likeOrgnrIndex :>> ', likeOrgnrIndex)
+		//Hvis ingen orgnr er like trenger vi ikke sjekke datoer. Hvis orgnr er like -> finn måneder
+		if (likeOrgnrIndex.length < 2) return true
+		const tidsrom = finnTidsrom(maaneder)
+		console.log('tidsrom :>> ', tidsrom)
+		console.log(
+			'!finnesOverlappendeDato(tidsrom, likeOrgnrIndex) :>> ',
+			!finnesOverlappendeDato(tidsrom, likeOrgnrIndex)
+		)
+		return !finnesOverlappendeDato(tidsrom, likeOrgnrIndex)
+	})
+}
+
+const indexOfLikeOrgnr = (virksomheter, orgnr) => {
+	const index = []
+	virksomheter.forEach((virksomhet, idx) => virksomhet === orgnr && index.push(idx))
+	return index
+}
+
+const finnTidsrom = maaneder =>
+	maaneder.map(maaned => {
+		const year = maaned.maanedAar.split('-')[0]
+		const month = maaned.maanedAar.split('-')[1]
+		const dateOfLastMonth = new Date(year, month - 1)
+		console.log('dateOfLastMonth :>> ', dateOfLastMonth)
+		return {
+			start: subMonths(dateOfLastMonth, maaned.antallMaaneder),
+			end: dateOfLastMonth
+		}
+	})
+
+const finnesOverlappendeDato = (tidsrom, index) => {
+	console.log('index :>> ', index)
+	console.log('tidsrom :>> ', tidsrom)
+	const tidsromSomIkkeKanOverlappe = index.map(idx => tidsrom[idx])
+	console.log('tidsromSomIkkeKanOverlappe :>> ', tidsromSomIkkeKanOverlappe)
+	const firstInterval = tidsromSomIkkeKanOverlappe[0]
+	return tidsromSomIkkeKanOverlappe.some((tidsrom, idx) => {
+		if (idx === 0) return //Tester mot første tidsrom
+		return areIntervalsOverlapping(
+			{ start: firstInterval.start, end: firstInterval.end },
+			{ start: tidsrom.start, end: tidsrom.end }
+		)
 	})
 }
 
@@ -81,7 +151,8 @@ export const validation = {
 					.integer('Kan ikke være et desimaltall')
 					.transform((i, j) => (j === '' ? null : i))
 					.nullable(),
-				virksomhet: requiredString.typeError(messages.required),
+				virksomhet: unikOrgMndTest(requiredString.typeError(messages.required)),
+				// virksomhet: requiredString.typeError(messages.required),
 				opplysningspliktig: requiredString,
 				inntektsliste: inntektsliste,
 				fradragsliste: fradragsliste,
