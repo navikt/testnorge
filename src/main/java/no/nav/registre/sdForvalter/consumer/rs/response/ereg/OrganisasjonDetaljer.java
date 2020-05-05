@@ -5,10 +5,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+import java.util.List;
+
 @Value
 @NoArgsConstructor(force = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class VirksomhetDetaljer {
+public class OrganisasjonDetaljer {
     @JsonProperty
     private String enhetstype;
+    @JsonProperty
+    private final List<EregAdresse> forretningsadresser;
+    @JsonProperty
+    private final List<EregAdresse> postadresser;
 }
