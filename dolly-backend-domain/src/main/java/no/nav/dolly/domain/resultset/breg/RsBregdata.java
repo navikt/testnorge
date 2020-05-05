@@ -18,6 +18,8 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsBregdata {
 
+    public enum Egenskap {Deltager, Komplementar, Kontaktperson, Sameier, Styre}
+
     @ApiModelProperty(
             position = 1
     )
@@ -57,7 +59,8 @@ public class RsBregdata {
         private AdresseTo postAdresse;
 
         @ApiModelProperty(
-                position = 5
+                position = 5,
+                notes = "Default dagens dato"
         )
         private LocalDateTime registreringsdato;
 
@@ -65,7 +68,37 @@ public class RsBregdata {
                 position = 6,
                 required = true
         )
-        private String rollebeskrivelse;
+        private String rolle;
+
+        @ApiModelProperty(
+                position = 7
+        )
+        private List<PersonRolle> personroller;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class PersonRolle {
+
+        @ApiModelProperty(
+                position = 1
+        )
+        private Egenskap egenskap;
+
+        @ApiModelProperty(
+                position = 2,
+                notes = "Default false"
+        )
+        private Boolean fratraadt;
+
+        @ApiModelProperty(
+                position = 3,
+                notes = "Default hentes dato fra nivå over"
+        )
+        private LocalDateTime registringsDato;
     }
 
     @Getter
