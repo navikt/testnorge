@@ -15,5 +15,5 @@ public class LogEventDTO {
 
     private Level level;
     private String message;
-    private String keyword;
+    private String key;
 }

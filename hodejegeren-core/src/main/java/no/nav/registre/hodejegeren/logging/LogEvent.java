@@ -10,19 +10,19 @@ public class LogEvent {
 
     private Level level;
     private String message;
-    private String keyword;
+    private String key;
 
     public LogEvent(
             LogEventDTO dto
     ) {
         level = dto.getLevel();
         message = dto.getMessage();
-        keyword = dto.getKeyword();
+        key = dto.getKey();
     }
 
     public Map<String, String> toPropertyMap() {
         Map<String, String> properties = new HashMap<>();
-        properties.put("keyword", keyword);
+        properties.put("key", key);
         return properties;
     }
 }

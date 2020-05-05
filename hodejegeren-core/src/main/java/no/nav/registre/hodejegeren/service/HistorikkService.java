@@ -77,8 +77,8 @@ public class HistorikkService {
             var result = mongoTemplate.find(query, SyntHistorikk.class);
             logService.log(new LogEvent(LogEventDTO.builder()
                     .level(Level.INFO)
-                    .message("testnorge-hodejegeren-search - search for keyword: " + keyValue[0] + ". Number of results: " + result.size() + ". Limit: " + pageSize)
-                    .keyword(keyValue[0])
+                    .message("testnorge-hodejegeren-search - search for key: " + keyValue[0] + ". Number of results: " + result.size() + ". Limit: " + pageSize)
+                    .key(keyValue[0])
                     .build()));
             results.addAll(result);
         }
