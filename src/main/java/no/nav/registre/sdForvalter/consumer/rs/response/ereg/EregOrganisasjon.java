@@ -1,5 +1,6 @@
 package no.nav.registre.sdForvalter.consumer.rs.response.ereg;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.NoArgsConstructor;
@@ -19,28 +20,26 @@ import no.nav.registre.sdForvalter.domain.status.ereg.Organisasjon;
 public class EregOrganisasjon {
     @JsonProperty(required = true)
     private final String organisasjonsnummer;
-    @JsonProperty
-    private final Detaljer virksomhetDetaljer;
-    @JsonProperty
-    private final Detaljer juridiskEnhetDetaljer;
+    @JsonProperty(required = true)
+    @JsonAlias({"virksomhetDetaljer", "juridiskEnhetDetaljer", "organisasjonsleddDetaljer"})
+    private final Detaljer detaljer;
     @JsonProperty(required = true)
     private final Navn navn;
     @JsonProperty(required = true)
     private final String type;
     @JsonProperty
-    private final List<EregOrganisasjon> inngaarIJuridiskEnheter = new ArrayList<>();
+    @JsonAlias({"inngaarIJuridiskEnheter", "driverVirksomheter"})
+    private final List<EregOrganisasjon> parents = new ArrayList<>();
     @JsonProperty
     private final OrganisasjonDetaljer organisasjonDetaljer;
 
     public Organisasjon toOrganisasjon() {
-        Detaljer detaljer = type.equals("JuridiskEnhet") ? juridiskEnhetDetaljer : virksomhetDetaljer;
-
         Organisasjon.OrganisasjonBuilder builder = Organisasjon
                 .builder()
                 .navn(navn.getNavnelinje1())
                 .orgnummer(organisasjonsnummer)
-                .juridiskEnhet(!inngaarIJuridiskEnheter.isEmpty()
-                        ? inngaarIJuridiskEnheter.get(0).getOrganisasjonsnummer()
+                .juridiskEnhet(!parents.isEmpty()
+                        ? parents.get(0).getOrganisasjonsnummer()
                         : null
                 )
                 .enhetType(detaljer.getEnhetstype());

@@ -20,4 +20,9 @@ public class OrganisasjonStatusMap {
         this.miljo = miljo;
         statuses.forEach(status -> map.put(status.getOrgnummer(), status));
     }
+
+    @JsonProperty
+    public Integer getSize(){
+        return map.size();
+    }
 }
