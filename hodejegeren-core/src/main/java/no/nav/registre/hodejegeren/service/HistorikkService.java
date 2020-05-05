@@ -1,7 +1,6 @@
 package no.nav.registre.hodejegeren.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -18,6 +17,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import no.nav.registre.hodejegeren.logging.Level;
+import no.nav.registre.hodejegeren.logging.LogEvent;
+import no.nav.registre.hodejegeren.logging.LogEventDTO;
+import no.nav.registre.hodejegeren.logging.LogService;
 import no.nav.registre.hodejegeren.mongodb.Data;
 import no.nav.registre.hodejegeren.mongodb.Kilde;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
@@ -28,13 +31,13 @@ import no.nav.registre.hodejegeren.provider.rs.requests.skd.PersonDokumentWrappe
 import no.nav.registre.hodejegeren.service.utilities.PersonDokumentUtility;
 import no.nav.registre.testnorge.consumers.namespacetps.TpsPersonDokumentType;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class HistorikkService {
 
     private final SyntHistorikkRepository syntHistorikkRepository;
     private final MongoTemplate mongoTemplate;
+    private final LogService logService;
 
     public List<SyntHistorikk> hentAllHistorikk(
             int pageNumber,
@@ -70,8 +73,13 @@ public class HistorikkService {
             // query.addCriteria(Criteria.where("kilder.data.innhold." + keyValue[0]).is(Pattern.compile(keyValue[1], Pattern.CASE_INSENSITIVE))); // finner også substrings. Sikkerhet?
             query.addCriteria(Criteria.where("kilder.data.innhold." + keyValue[0]).is(keyValue[1]));
             query.limit(pageSize);
+
             var result = mongoTemplate.find(query, SyntHistorikk.class);
-            log.info("testnorge-hodejegeren-search - search for keyword: {}. Number of results: {}. Limit: {}", keyValue[0], result.size(), pageSize);
+            logService.log(new LogEvent(LogEventDTO.builder()
+                    .level(Level.INFO)
+                    .message("testnorge-hodejegeren-search - search for keyword: " + keyValue[0] + ". Number of results: " + result.size() + ". Limit: " + pageSize)
+                    .keyword(keyValue[0])
+                    .build()));
             results.addAll(result);
         }
 
