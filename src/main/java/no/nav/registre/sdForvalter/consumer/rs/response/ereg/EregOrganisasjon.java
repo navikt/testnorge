@@ -45,14 +45,14 @@ public class EregOrganisasjon {
                 )
                 .enhetType(detaljer.getEnhetstype());
 
-        if (organisasjonDetaljer.getPostadresser() != null && !organisasjonDetaljer.getPostadresser().isEmpty()) {
+        if (organisasjonDetaljer != null && organisasjonDetaljer.getPostadresser() != null && !organisasjonDetaljer.getPostadresser().isEmpty()) {
             EregAdresse postadresse = organisasjonDetaljer.getPostadresser().get(0);
             builder.postadresse(Adresse.builder()
                     .kommunenummer(postadresse.getKommunenummer())
                     .build());
         }
 
-        if (organisasjonDetaljer.getForretningsadresser() != null && !organisasjonDetaljer.getForretningsadresser().isEmpty()) {
+        if (organisasjonDetaljer != null && organisasjonDetaljer.getForretningsadresser() != null && !organisasjonDetaljer.getForretningsadresser().isEmpty()) {
             EregAdresse forretningsadresse = organisasjonDetaljer.getForretningsadresser().get(0);
             builder.forretningsadresser(
                     Adresse.builder()
