@@ -65,13 +65,14 @@ public class HistorikkService {
     ) {
         List<SyntHistorikk> results = new ArrayList<>();
         for (var keyword : keywordList) {
-            String[] keyValue = keyword.split("=");
-            Query query = new Query();
+            var keyValue = keyword.split("=");
+            var query = new Query();
             // query.addCriteria(Criteria.where("kilder.data.innhold." + keyValue[0]).is(Pattern.compile(keyValue[1], Pattern.CASE_INSENSITIVE))); // finner også substrings. Sikkerhet?
-            log.info("testnorge-hodejegeren-search: search for keyword '{}'", keyValue[0]);
             query.addCriteria(Criteria.where("kilder.data.innhold." + keyValue[0]).is(keyValue[1]));
             query.limit(pageSize);
-            results.addAll(mongoTemplate.find(query, SyntHistorikk.class));
+            var result = mongoTemplate.find(query, SyntHistorikk.class);
+            log.info("testnorge-hodejegeren-search - search for keyword: {}. Number of results: {}. Limit: {}", keyValue[0], result.size(), pageSize);
+            results.addAll(result);
         }
 
         return results;
