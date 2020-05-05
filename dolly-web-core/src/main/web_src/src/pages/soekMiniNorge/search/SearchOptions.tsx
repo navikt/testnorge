@@ -12,7 +12,7 @@ export const SearchOptions = ({ formikBag }: SearchOptionsProps) => {
 		<React.Fragment>
 			<FormikTextInput name='navn.fornavn' label="Fornavn" />
 			<FormikTextInput name='navn.mellomnavn' label="Mellomnavn" />
-			<FormikTextInput name='navn.etternavn' label="Etternavn" />
+			<FormikTextInput name='navn.slektsnavn' label="Etternavn" />
 		</React.Fragment>
 		)
 }
