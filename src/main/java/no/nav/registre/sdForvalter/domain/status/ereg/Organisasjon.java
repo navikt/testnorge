@@ -19,11 +19,17 @@ public class Organisasjon {
     private String navn;
     @JsonProperty
     private String juridiskEnhet;
+    @JsonProperty
+    private Adresse postadresse;
+    @JsonProperty
+    private Adresse forretningsadresser;
 
     public Organisasjon(Ereg ereg) {
         orgnummer = ereg.getOrgnr();
         enhetType = ereg.getEnhetstype();
         navn = ereg.getNavn() != null ? ereg.getNavn().toUpperCase() : null;
         juridiskEnhet = ereg.getJuridiskEnhet();
+        postadresse = ereg.getPostadresse() != null ? new Adresse(ereg.getPostadresse()) : null;
+        forretningsadresser = ereg.getForretningsAdresse() != null ? new Adresse(ereg.getForretningsAdresse()) : null;
     }
 }

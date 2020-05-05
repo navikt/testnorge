@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.List;
 
+import no.nav.registre.sdForvalter.domain.status.ereg.Adresse;
 import no.nav.registre.sdForvalter.domain.status.ereg.Organisasjon;
 
 @Slf4j
@@ -28,9 +29,13 @@ public class EregOrganisasjon {
     private final String type;
     @JsonProperty
     private final List<EregOrganisasjon> inngaarIJuridiskEnheter = new ArrayList<>();
+    @JsonProperty
+    private final List<EregAdresse> forretningsadresser;
+    @JsonProperty
+    private final List<EregAdresse> postadresser;
 
     public Organisasjon toOrganisasjon() {
-        return Organisasjon
+        Organisasjon.OrganisasjonBuilder builder = Organisasjon
                 .builder()
                 .navn(navn.getNavnelinje1())
                 .orgnummer(organisasjonsnummer)
@@ -41,7 +46,25 @@ public class EregOrganisasjon {
                 .enhetType(type.equals("JuridiskEnhet")
                         ? juridiskEnhetDetaljer.getEnhetstype()
                         : virksomhetDetaljer.getEnhetstype()
-                ).build();
-    }
+                );
 
+
+        if(postadresser!= null && !postadresser.isEmpty()){
+            EregAdresse postadresse = postadresser.get(0);
+            builder.postadresse(Adresse.builder()
+                    .kommunenummer(postadresse.getKommunenummer())
+                    .build());
+        }
+
+        if(forretningsadresser!= null && !forretningsadresser.isEmpty()){
+            EregAdresse forretningsadresse = forretningsadresser.get(0);
+            builder.forretningsadresser(
+                    Adresse.builder()
+                            .kommunenummer(forretningsadresse.getKommunenummer())
+                            .build()
+            );
+        }
+
+        return builder.build();
+    }
 }
