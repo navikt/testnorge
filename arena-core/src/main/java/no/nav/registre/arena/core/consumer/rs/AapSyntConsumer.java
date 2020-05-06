@@ -2,7 +2,6 @@ package no.nav.registre.arena.core.consumer.rs;
 
 import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.UTFALL_JA;
 import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.VEDTAK_TYPE_KODE_O;
-import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.getFoedselsdatoFraFnr;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
