@@ -6,7 +6,7 @@ import { Boadresse } from '~/components/fagsystem/tpsf/visning/partials/Boadress
 import { Postadresse } from '~/components/fagsystem/tpsf/visning/partials/Postadresse'
 import { Identhistorikk } from '~/components/fagsystem/tpsf/visning/partials/Identhistorikk'
 import { Relasjoner } from '~/components/fagsystem/tpsf/visning/partials/Relasjoner'
-import {getBoadresse} from './utils'
+import { getBoadresse, getNasjonalitet } from './utils'
 
 export const MiniNorgeVisning = (data: any) => {
 	if (!data) return null
@@ -14,8 +14,7 @@ export const MiniNorgeVisning = (data: any) => {
 	return (
 		<div>
 			{/*<Personinfo data={data} />*/}
-			{/*<Nasjonalitet data={data} />*/}
-			//@ts-ignore
+			<Nasjonalitet data={getNasjonalitet(data.data)} />
 			<Boadresse boadresse={getBoadresse(data.data.boadresse)} />
 			{/*<Identhistorikk identhistorikk={data.identHistorikk} />*/}
 			{/*<Relasjoner relasjoner={data.relasjoner} />*/}
