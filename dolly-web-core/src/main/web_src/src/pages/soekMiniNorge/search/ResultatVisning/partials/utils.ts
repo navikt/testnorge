@@ -29,7 +29,37 @@ const getStatsborgerskap = (data: Statsborger) => {
 }
 
 export const getNasjonalitet = (data: any) => {
+	var innutvandret: string[];
+	innutvandret = [];
 	return {
-		statsborgerskap: getStatsborgerskap(data.statsborger)
+		statsborgerskap: getStatsborgerskap(data.statsborger),
+		innvandretUtvandret: innutvandret
+	}
+}
+
+const getAlder = (datoFoedt: string) =>{
+	const foedselsdato = new Date(datoFoedt)
+	const diff_ms = Date.now() - foedselsdato.getTime()
+	const age_dt = new Date(diff_ms)
+
+	return Math.abs(age_dt.getUTCFullYear() - 1970)
+}
+
+export const getPersonInfo = (data: any) =>{
+	const tlf1 = data.telefonPrivat.nummer ? 'privat' : 'mobil'
+	return {
+		identtype: data.personIdent.type,
+		ident: data.personIdent.id,
+		fornavn: data.navn.fornavn,
+		mellomnavn: data.navn.mellomnavn,
+		etternavn: data.navn.slektsnavn,
+		kjonn: data.personInfo.kjoenn,
+		alder: getAlder(data.personInfo.datoFoedt),
+		doedsdato: data.doedshistorikk.dato,
+		sivilstand: data.sivilstand.type,
+		telefonnummer_1: tlf1==='privat' ? data.telefonPrivat.nummer : data.telefonMobil.nummer,
+		telefonLandskode_1: tlf1==='privat' ? data.telefonPrivat.retningslinje : data.telefonMobil.retningslinje,
+		telefonnummer_2: tlf1==='mobil' ? data.telefonPrivat.nummer : data.telefonMobil.nummer,
+		telefonLandskode_2: tlf1==='mobil' ? data.telefonPrivat.retningslinje : data.telefonMobil.retningslinje
 	}
 }
