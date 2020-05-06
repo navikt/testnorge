@@ -36,7 +36,7 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
-public class RolleutskriftMappingStrategy implements MappingStrategy {
+public class BregRolleMappingStrategy implements MappingStrategy {
 
     private static final String UTEN_BESKRIVELSE = "Beskrivelse mangler";
 
@@ -186,7 +186,7 @@ public class RolleutskriftMappingStrategy implements MappingStrategy {
 
     @Getter
     @Setter
-    private static class RolleWrapper {
+    public static class RolleWrapper {
 
         private RsBregdata.RolleTo rolleFra;
         private Map<String, String> koderoller;
