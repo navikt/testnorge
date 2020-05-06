@@ -60,6 +60,17 @@ export const getPersonInfo = (data: any) =>{
 		telefonnummer_1: tlf1==='privat' ? data.telefonPrivat.nummer : data.telefonMobil.nummer,
 		telefonLandskode_1: tlf1==='privat' ? data.telefonPrivat.retningslinje : data.telefonMobil.retningslinje,
 		telefonnummer_2: tlf1==='mobil' ? data.telefonPrivat.nummer : data.telefonMobil.nummer,
-		telefonLandskode_2: tlf1==='mobil' ? data.telefonPrivat.retningslinje : data.telefonMobil.retningslinje
+		telefonLandskode_2: tlf1==='mobil' ? data.telefonPrivat.retningslinje : data.telefonMobil.retningslinje,
+		bankkontonr: data.giro.nummer,
+		bankkontonrRegdato: data.giro.fraDato
 	}
+}
+
+export const getPostAdresse = (data: any) =>{
+	return [{
+		postLinje1: data.post.adresse1,
+		postLinje2: data.post.adresse2,
+		postLinje3: data.post.adresse3,
+		postLand: data.post.postLand
+	}]
 }
