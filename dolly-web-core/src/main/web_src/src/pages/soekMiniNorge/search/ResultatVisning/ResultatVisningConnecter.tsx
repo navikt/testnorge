@@ -39,11 +39,12 @@ const loadingSelector = createSelector(
 const mapStateToProps = (state:any, ownProps:any) => ({
 	loading: loadingSelector(state),
 	ident: selectIdentById(state, ownProps.personId),
-	data: selectDataForIdent(state, ownProps.personId)
+	data: selectDataForIdent(state, ownProps.personId),
+	dataFraMiniNorge: ownProps.data
 })
 
 const mapDispatchToProps = (dispatch:any, ownProps:any) => ({
-	fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemerForSoek(ownProps.personId)),
+	fetchDataFraFagsystemerForSoek: () => dispatch(fetchDataFraFagsystemerForSoek(ownProps.personId)),
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ResultatVisning))

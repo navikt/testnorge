@@ -13,7 +13,7 @@ interface SearchResultVisningProps {
 	soekNummer: number
 }
 
-export const SearchResultVisning = (props: SearchResultVisningProps) => {
+export const SearchResult = (props: SearchResultVisningProps) => {
 	if (!props.searchActive) {
 		return <ContentContainer>Ingen søk er gjort</ContentContainer>
 	}
@@ -86,6 +86,7 @@ export const SearchResultVisning = (props: SearchResultVisningProps) => {
 						iconItem={(bruker:any) => (bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />)}
 						onExpand={(bruker: any) => <ResultatVisningConnecter
 							personId={bruker.personIdent.id}
+							data={bruker}
 						/>}
 					/>
 				)

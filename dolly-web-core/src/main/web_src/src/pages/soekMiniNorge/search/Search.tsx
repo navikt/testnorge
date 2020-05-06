@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { SearchOptions } from '~/pages/soekMiniNorge/search/SearchOptions'
 import { Formik } from 'formik'
 import { stateModifierFns } from '~/components/bestillingsveileder/stateModifier'
-import { SearchResultVisning } from '~/pages/soekMiniNorge/search/SearchResultVisning'
+import { SearchResult } from '~/pages/soekMiniNorge/search/SearchResult'
 import './Search.less'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { getSoekOptions, initialValues, infoTekst } from '~/pages/soekMiniNorge/search/utils'
@@ -32,7 +32,7 @@ export const Search = () => {
 									<SearchOptions formikBag={formikBag} onSubmit={_onSubmit} />
 								</div>
 								<div className="search-field_resultat">
-									<SearchResultVisning
+									<SearchResult
 										soekOptions={soekOptions}
 										searchActive={isSearchActive}
 										soekNummer={soekNummer}

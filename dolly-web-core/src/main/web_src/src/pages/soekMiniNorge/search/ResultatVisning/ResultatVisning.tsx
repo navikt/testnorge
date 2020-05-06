@@ -1,6 +1,5 @@
 import React from 'react'
 import { useMount } from 'react-use'
-import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
 import { PdlfVisning } from '~/components/fagsystem/pdlf/visning/Visning'
 import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
@@ -12,36 +11,47 @@ import { InntektsmeldingVisning } from '~/components/fagsystem/inntektsmelding/v
 import { InstVisning } from '~/components/fagsystem/inst/visning/InstVisning'
 import { PensjonVisning } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 import { BrregVisning } from '~/components/fagsystem/brregstub/visning/BrregVisning'
+import Panel from '~/components/ui/panel/Panel'
 
 import './ResultatVisning.less'
+import { MiniNorgeVisning } from '~/pages/soekMiniNorge/search/ResultatVisning/partials/MiniNorgeVisning'
+
+type Loading = {
+	pdlforvalter: boolean
+	pensjonforvalter: boolean
+	inntektstub: boolean
+	krrstub: boolean
+	instdata: boolean
+	sigrunstub: boolean
+	arenaforvalteren: boolean
+	udistib: boolean
+	bregstub: boolean
+	aareg: boolean
+}
 
 interface ResultatVisningProps {
-	fetchDataFraFagsystemer: any
+	fetchDataFraFagsystemerForSoek: any
 	data: any
+	dataFraMiniNorge: any
 	ident: string
-	loading: any
+	loading: Loading
 }
 
 export const ResultatVisning = ({
-	fetchDataFraFagsystemer,
+	fetchDataFraFagsystemerForSoek,
 	data,
+	dataFraMiniNorge,
 	ident,
 	loading
 }: ResultatVisningProps) => {
-	useMount(fetchDataFraFagsystemer)
+	useMount(fetchDataFraFagsystemerForSoek)
+
 	return (
 		<div className="resultat-visning">
+			{dataFraMiniNorge && <MiniNorgeVisning data={dataFraMiniNorge}/>}
 			{data.pdlforvalter && (
 				//@ts-ignore
 				<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
-			)}
-			{data.aareg && data.aareg.length > 0 && (
-				//@ts-ignore
-				<AaregVisning data={data.aareg} loading={loading.aareg} />
-			)}
-			{data.sigrunstub && data.sigrunstub.length > 0 && (
-				//@ts-ignore
-				<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			)}
 			{data.pensjonforvalter && data.pensjonforvalter.length > 0 && (
 				//@ts-ignore
@@ -59,6 +69,13 @@ export const ResultatVisning = ({
 				//@ts-ignore
 				<InstVisning data={data.instdata} loading={loading.instdata} />
 			)}
+			{data.sigrunstub && data.sigrunstub.length > 0 && (
+				//@ts-ignore
+				<Panel heading="Skatteoppgjør (Sigrun)">
+					<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
+				</Panel>
+			)}
 		</div>
 	)
 }
+//TODO: vise data fra aareg, udistub, brreegstub, arena, tpsf, inntektsmelding
