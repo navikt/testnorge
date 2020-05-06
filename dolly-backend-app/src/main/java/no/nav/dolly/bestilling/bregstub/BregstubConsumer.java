@@ -10,6 +10,8 @@ import org.springframework.web.client.RestTemplate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.bregstub.domain.KodeRoller;
+import no.nav.dolly.bestilling.bregstub.domain.OrganisasjonTo;
 import no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo;
 import no.nav.dolly.properties.ProvidersProps;
 
@@ -20,6 +22,8 @@ public class BregstubConsumer {
 
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
     private static final String ROLLEOVERSIKT_URL = "/api/v1/rolleoversikt";
+    private static final String ROLLE_URL = "/api/v1/hentrolle";
+    private static final String KODE_ROLLER_URL = "/api/v1/kode/roller";
 
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
@@ -44,11 +48,32 @@ public class BregstubConsumer {
         return ResponseEntity.ok().build();
     }
 
+    public ResponseEntity<KodeRoller> getKodeRoller() {
+
+        try {
+            return restTemplate.exchange(RequestEntity.get(
+                    URI.create(providersProps.getBregstub().getUrl() + KODE_ROLLER_URL))
+                    .build(), KodeRoller.class);
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å lese koderoller fra BREGSTUB", e);
+        }
+
+        return ResponseEntity.ok(new KodeRoller());
+    }
+
     public ResponseEntity postRolleoversikt(RolleoversiktTo rolleoversiktTo) {
 
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getBregstub().getUrl() + ROLLEOVERSIKT_URL))
                 .body(rolleoversiktTo), RolleoversiktTo.class);
+    }
+
+    public ResponseEntity postOrganisasjon(OrganisasjonTo organisasjonTo) {
+
+        return restTemplate.exchange(RequestEntity.post(
+                URI.create(providersProps.getBregstub().getUrl() + ROLLE_URL))
+                .body(organisasjonTo), OrganisasjonTo.class);
     }
 
     public void deleteRolleoversikt(String ident) {

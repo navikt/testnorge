@@ -1,8 +1,10 @@
 package no.nav.dolly.domain.resultset.breg;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import static java.util.Objects.isNull;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -29,6 +31,20 @@ public class RsBregdata {
             position = 2
     )
     private List<Integer> understatuser;
+
+    public List<RolleTo> getEnheter() {
+        if (isNull(enheter)) {
+            enheter = new ArrayList<>();
+        }
+        return enheter;
+    }
+
+    public List<Integer> getUnderstatuser() {
+        if (isNull(understatuser)) {
+            understatuser = new ArrayList<>();
+        }
+        return understatuser;
+    }
 
     @Getter
     @Setter
@@ -74,6 +90,13 @@ public class RsBregdata {
                 position = 7
         )
         private List<PersonRolle> personroller;
+
+        public List<PersonRolle> getPersonroller() {
+            if (isNull(personroller)) {
+                personroller = new ArrayList<>();
+            }
+            return personroller;
+        }
     }
 
     @Getter

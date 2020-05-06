@@ -6,13 +6,26 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo.AdresseTo;
 import static no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo.NavnTo;
 import static no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo.RolleTo;
+import static no.nav.dolly.domain.resultset.breg.RsBregdata.Egenskap.Deltager;
+import static no.nav.dolly.domain.resultset.breg.RsBregdata.Egenskap.Komplementar;
+import static no.nav.dolly.domain.resultset.breg.RsBregdata.Egenskap.Kontaktperson;
+import static no.nav.dolly.domain.resultset.breg.RsBregdata.Egenskap.Sameier;
+import static no.nav.dolly.domain.resultset.breg.RsBregdata.Egenskap.Styre;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 
+import lombok.Getter;
+import lombok.Setter;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.bregstub.domain.BrregRequestWrapper;
+import no.nav.dolly.bestilling.bregstub.domain.OrganisasjonTo;
 import no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -25,46 +38,100 @@ import no.nav.dolly.mapper.MappingStrategy;
 @Component
 public class RolleutskriftMappingStrategy implements MappingStrategy {
 
+    private static final String UTEN_BESKRIVELSE = "Beskrivelse mangler";
+
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(RolleUtskriftMapper.BregPerson.class, RolleoversiktTo.class)
-                .customize(new CustomMapper<RolleUtskriftMapper.BregPerson, RolleoversiktTo>() {
+        factory.classMap(RolleUtskriftMapper.BregPerson.class, BrregRequestWrapper.class)
+                .customize(new CustomMapper<RolleUtskriftMapper.BregPerson, BrregRequestWrapper>() {
                     @Override
-                    public void mapAtoB(RolleUtskriftMapper.BregPerson bregPerson, RolleoversiktTo rolleoversiktTo, MappingContext context) {
+                    public void mapAtoB(RolleUtskriftMapper.BregPerson bregPerson, BrregRequestWrapper wrapper, MappingContext context) {
 
                         Person rollePerson = bregPerson.getTpsPerson().getPerson(bregPerson.getTpsPerson().getHovedperson());
 
-                        rolleoversiktTo.setEnheter(mapperFacade.mapAsList(bregPerson.getBregdata().getEnheter(), RolleTo.class));
+                        RolleoversiktTo rolleoversikt = RolleoversiktTo.builder()
+                                .enheter(mapperFacade.mapAsList(bregPerson.getBregdata().getEnheter(), RolleTo.class))
+                                .fnr(bregPerson.getTpsPerson().getHovedperson())
+                                .fodselsdato(rollePerson.getFoedselsdato().toLocalDate())
+                                .navn(mapperFacade.map(rollePerson, NavnTo.class))
+                                .adresse(mapperFacade.map(rollePerson, AdresseTo.class))
+                                .hovedstatus(0)
+                                .understatuser(bregPerson.getBregdata().getUnderstatuser())
+                                .build();
 
-                        rolleoversiktTo.setFnr(bregPerson.getTpsPerson().getHovedperson());
-                        rolleoversiktTo.setFodselsdato(rollePerson.getFoedselsdato().toLocalDate());
-                        rolleoversiktTo.setNavn(mapperFacade.map(rollePerson, NavnTo.class));
-                        rolleoversiktTo.setAdresse(mapperFacade.map(rollePerson, AdresseTo.class));
-                        rolleoversiktTo.setHovedstatus(0);
-                        rolleoversiktTo.setUnderstatuser(bregPerson.getBregdata().getUnderstatuser());
+                        Map<Integer, OrganisasjonTo> organisasjoner = new HashMap<>();
+
+                        bregPerson.getBregdata().getEnheter().forEach(enhet -> {
+
+                            OrganisasjonTo organisasjon = organisasjoner.getOrDefault(enhet.getOrgNr(), new OrganisasjonTo());
+                            organisasjon.setHovedstatus(0);
+                            organisasjon.setUnderstatuser(bregPerson.getBregdata().getUnderstatuser());
+                            organisasjon.setOrgnr(enhet.getOrgNr());
+                            organisasjon.setRegistringsDato(nonNull(enhet.getRegistreringsdato()) ?
+                                    enhet.getRegistreringsdato().toLocalDate() : LocalDate.now());
+                            organisasjon.setDeltagere(appendRolle(organisasjon.getDeltagere(), enhet, Deltager, rolleoversikt, bregPerson.getKodeRoller()));
+                            organisasjon.setKomplementar(appendRolle(organisasjon.getDeltagere(), enhet, Komplementar, rolleoversikt, bregPerson.getKodeRoller()));
+                            organisasjon.setKontaktperson(appendRolle(organisasjon.getDeltagere(), enhet, Kontaktperson, rolleoversikt, bregPerson.getKodeRoller()));
+                            organisasjon.setSameier(appendRolle(organisasjon.getDeltagere(), enhet, Sameier, rolleoversikt, bregPerson.getKodeRoller()));
+                            organisasjon.setStyre(appendRolle(organisasjon.getDeltagere(), enhet, Styre, rolleoversikt, bregPerson.getKodeRoller()));
+                            organisasjoner.put(enhet.getOrgNr(), organisasjon);
+                        });
+
+                        wrapper.setRolleoversiktTo(rolleoversikt);
+                        wrapper.getOrganisasjonTo().addAll(organisasjoner.values());
+                    }
+
+                    private OrganisasjonTo.SamendringTo appendRolle(OrganisasjonTo.SamendringTo samendring, RsBregdata.RolleTo enhet,
+                            RsBregdata.Egenskap egenskap, RolleoversiktTo rolleoversikt, Map<String, String> kodeRoller) {
+
+                        RsBregdata.PersonRolle personRolle = enhet.getPersonroller().stream()
+                                .filter(personRolle1 -> personRolle1.getEgenskap() == egenskap)
+                                .findFirst().orElse(null);
+
+                        if (isNull(personRolle)) {
+                            return null;
+                        }
+                        OrganisasjonTo.SamendringTo oppdatertSamendring = nonNull(samendring) ? samendring : new OrganisasjonTo.SamendringTo();
+
+                        oppdatertSamendring.setRegistringsDato(getLocalDate(personRolle.getRegistringsDato()));
+                        oppdatertSamendring.getRoller().add(
+                                OrganisasjonTo.PersonOgRolleTo.builder()
+                                        .adresse1(rolleoversikt.getAdresse().getAdresse1())
+                                        .fodselsnr(rolleoversikt.getFnr())
+                                        .fornavn(rolleoversikt.getNavn().getNavn1())
+                                        .fratraadt(isTrue(personRolle.getFratraadt()))
+                                        .postnr(rolleoversikt.getAdresse().getPostnr())
+                                        .poststed(rolleoversikt.getAdresse().getPoststed())
+                                        .rolle(enhet.getRolle())
+                                        .rollebeskrivelse(kodeRoller.getOrDefault(enhet.getRolle(), UTEN_BESKRIVELSE))
+                                        .slektsnavn(rolleoversikt.getNavn().getNavn3())
+                                        .build());
+
+                        return oppdatertSamendring;
                     }
                 })
                 .register();
 
-        factory.classMap(RsBregdata.RolleTo.class, RolleTo.class)
-                .customize(new CustomMapper<RsBregdata.RolleTo, RolleTo>() {
+        factory.classMap(RolleWrapper.class, RolleTo.class)
+                .customize(new CustomMapper<RolleWrapper, RolleTo>() {
                     @Override
-                    public void mapAtoB(RsBregdata.RolleTo rsRolleTo, RolleTo rolleTo, MappingContext context) {
+                    public void mapAtoB(RolleWrapper wrapper, RolleTo rolleTo, MappingContext context) {
 
-                        if (isNull(rolleTo.getForretningsAdresse())) {
-                            rolleTo.setForretningsAdresse(
-                                    AdresseTo.builder()
-                                            .adresse1("BOLETTE WIESES GATE 4")
-                                            .postnr("1349")
-                                            .poststed("RYKKINN")
-                                            .kommunenr("3024")
-                                            .build());
-                        }
-                        rolleTo.setRegistreringsdato(nonNull(rsRolleTo.getRegistreringsdato()) ?
-                                rsRolleTo.getRegistreringsdato().toLocalDate() : LocalDate.now());
+                        rolleTo.setForetaksNavn(mapperFacade.map(wrapper.getRolleFra().getForetaksNavn(), NavnTo.class));
+                        rolleTo.setForretningsAdresse(nonNull(wrapper.getRolleFra().getForretningsAdresse()) ?
+                                mapperFacade.map(wrapper.getRolleFra().getForretningsAdresse(), AdresseTo.class) :
+                                AdresseTo.builder()
+                                        .adresse1("BOLETTE WIESES GATE 4")
+                                        .postnr("1349")
+                                        .poststed("RYKKINN")
+                                        .kommunenr("3024")
+                                        .build());
+                        rolleTo.setOrgNr(wrapper.getRolleFra().getOrgNr());
+                        rolleTo.setPostAdresse(mapperFacade.map(wrapper.getRolleFra().getPostAdresse(), AdresseTo.class));
+                        rolleTo.setRegistreringsdato(getLocalDate(wrapper.getRolleFra().getRegistreringsdato()));
+                        rolleTo.setRollebeskrivelse(wrapper.getKoderoller().getOrDefault(wrapper.getRolleFra().getRolle(), UTEN_BESKRIVELSE));
                     }
                 })
-                .byDefault()
                 .register();
 
         factory.classMap(Person.class, AdresseTo.class)
@@ -111,5 +178,17 @@ public class RolleutskriftMappingStrategy implements MappingStrategy {
                     }
                 })
                 .register();
+    }
+
+    private static LocalDate getLocalDate(LocalDateTime dateTime) {
+        return nonNull(dateTime) ? dateTime.toLocalDate() : LocalDate.now();
+    }
+
+    @Getter
+    @Setter
+    private static class RolleWrapper {
+
+        private RsBregdata.RolleTo rolleFra;
+        private Map<String, String> koderoller;
     }
 }

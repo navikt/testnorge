@@ -15,6 +15,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RolleoversiktTo {
@@ -54,7 +55,7 @@ public class RolleoversiktTo {
         @EqualsAndHashCode.Exclude
         private AdresseTo forretningsAdresse;
 
-        private String orgNr;
+        private Integer orgNr;
 
         @EqualsAndHashCode.Exclude
         private AdresseTo postAdresse;

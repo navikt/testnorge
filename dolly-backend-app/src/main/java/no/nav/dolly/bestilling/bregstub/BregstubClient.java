@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.bregstub.domain.BrregRequestWrapper;
+import no.nav.dolly.bestilling.bregstub.domain.OrganisasjonTo;
 import no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo;
 import no.nav.dolly.bestilling.bregstub.mapper.RolleUtskriftMapper;
 import no.nav.dolly.bestilling.bregstub.util.BregstubMergeUtil;
@@ -30,9 +32,10 @@ public class BregstubClient implements ClientRegister {
 
         if (nonNull(bestilling.getBregstub())) {
 
-            RolleoversiktTo rolleoversiktTo = rolleUtskriftMapper.map(bestilling.getBregstub(), tpsPerson);
+            BrregRequestWrapper wrapper = rolleUtskriftMapper.map(bestilling.getBregstub(), tpsPerson);
 
-            RolleoversiktTo mergetRolleoversikt = prepareRequest(rolleoversiktTo, tpsPerson.getHovedperson());
+            RolleoversiktTo mergetRolleoversikt = prepareRequest(wrapper.getRolleoversiktTo(), tpsPerson.getHovedperson());
+            postOrganisasjon(wrapper.getOrganisasjonTo());
 
             progress.setBregstubStatus(postRolleutskrift(mergetRolleoversikt));
         }
@@ -64,5 +67,18 @@ public class BregstubClient implements ClientRegister {
         }
 
         return "Uspesifisert feil";
+    }
+
+    private void postOrganisasjon(List<OrganisasjonTo> organisasjonTo) {
+
+        try {
+            organisasjonTo.forEach(organisasjon ->
+                    bregstubConsumer.postOrganisasjon(organisasjon)
+            );
+
+        } catch (RuntimeException e) {
+
+            errorStatusDecoder.decodeRuntimeException(e);
+        }
     }
 }
