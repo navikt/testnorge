@@ -30,12 +30,13 @@ BrregPanel.initialValues = ({ set, del, has }) => ({
 				understatuser: [0],
 				enheter: [
 					{
-						rollebeskrivelse: '',
+						rolle: '',
 						registreringsdato: new Date(),
 						foretaksNavn: {
 							navn1: ''
 						},
-						orgNr: ''
+						orgNr: '',
+						personroller: []
 					}
 				]
 			})

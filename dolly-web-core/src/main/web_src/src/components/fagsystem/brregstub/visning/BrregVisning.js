@@ -17,16 +17,17 @@ export const BrregVisning = ({ data, loading }) => {
 					title="Understatuser"
 					value={data.understatuser && data.understatuser.join(', ')}
 				/>
-				<DollyFieldArray data={data.enheter} header="Enheter" nested>
+				<DollyFieldArray data={data.enheter} header="Enhet">
 					{(enhet, idx) => (
 						<div className="person-visning_content" key={idx}>
-							<TitleValue title="Rollebeskrivelse" value={enhet.rollebeskrivelse} />
+							<TitleValue title="Rolle" value={enhet.rollebeskrivelse} />
 							<TitleValue
 								title="Registreringsdato"
 								value={Formatters.formatStringDates(enhet.registreringsdato)}
 							/>
 							<TitleValue title="Organisasjonsnummer" value={enhet.orgNr} />
 							<TitleValue title="Foretaksnavn" value={enhet.foretaksNavn.navn1} />
+							{/* TODO: Vise personroller som nested fieldArray. Vent på brreg-endepunkt */}
 						</div>
 					)}
 				</DollyFieldArray>

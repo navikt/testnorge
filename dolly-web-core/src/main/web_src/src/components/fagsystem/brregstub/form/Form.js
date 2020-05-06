@@ -42,6 +42,7 @@ export const BrregstubForm = ({ formikBag }) => {
 	)
 }
 
+// TODO: Required egenskap på personrolle?
 BrregstubForm.validation = {
 	bregstub: ifPresent(
 		'$bregstub',
@@ -51,7 +52,7 @@ BrregstubForm.validation = {
 				.required('Velg minst én understatus'),
 			enheter: Yup.array().of(
 				Yup.object({
-					rollebeskrivelse: requiredString,
+					rolle: requiredString,
 					registreringsdato: requiredDate,
 					orgNr: requiredNumber
 				})
