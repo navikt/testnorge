@@ -5,7 +5,7 @@ import Formatters from '~/utils/DataFormatter'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 
 export const Arbeidsavtaler = ({ data }) => {
-	if (!data || data.length === 0) return false
+	if (!data || data.length === 0) return null
 
 	return (
 		<React.Fragment>

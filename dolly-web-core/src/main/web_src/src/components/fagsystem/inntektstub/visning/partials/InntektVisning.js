@@ -6,7 +6,7 @@ import Formatters from '~/utils/DataFormatter'
 import texts from '~/components/inntektStub/texts'
 
 export const InntektVisning = ({ data }) => {
-	if (!data || data.length === 0) return false
+	if (!data || data.length === 0) return null
 
 	return (
 		<React.Fragment>
