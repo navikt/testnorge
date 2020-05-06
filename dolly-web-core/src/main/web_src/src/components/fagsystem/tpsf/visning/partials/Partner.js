@@ -9,7 +9,7 @@ import { PostadresseVisning } from './Postadresse'
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 
 export const Partner = ({ data }) => {
-	if (!data) return false
+	if (!data) return null
 
 	return (
 		<React.Fragment>

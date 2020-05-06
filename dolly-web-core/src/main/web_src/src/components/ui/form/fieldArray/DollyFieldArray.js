@@ -3,6 +3,7 @@ import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import Button from '~/components/ui/button/Button'
 import Hjelpetekst from '~/components/hjelpetekst'
+import ExpandableBlokk from './ExpandableBlokk.tsx'
 
 import './dollyFieldArray.less'
 
@@ -69,7 +70,9 @@ export const DollyFieldArray = ({
 	hjelpetekst = null,
 	data,
 	nested = false,
-	children
+	children,
+	expandable = false,
+	getHeader = null
 }) => (
 	<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
 		{data.map((curr, idx) => {
@@ -77,6 +80,15 @@ export const DollyFieldArray = ({
 				<DollyFaBlokkNested key={idx} idx={idx}>
 					{children(curr, idx)}
 				</DollyFaBlokkNested>
+			) : expandable ? (
+				<ExpandableBlokk
+					key={idx}
+					idx={idx}
+					getHeader={getHeader ? getHeader : () => header}
+					data={curr}
+				>
+					{children(curr, idx)}
+				</ExpandableBlokk>
 			) : (
 				<DollyFaBlokk key={idx} idx={idx} header={header} hjelpetekst={hjelpetekst}>
 					{children(curr, idx)}

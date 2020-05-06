@@ -37,12 +37,12 @@ export const PersonVisning = ({
 		<div className="person-visning">
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)} />
 			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
-			<AaregVisning data={data.aareg} loading={loading.aareg} />
+			<AaregVisning liste={data.aareg} loading={loading.aareg} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
-			<InntektstubVisning data={data.inntektstub} loading={loading.inntektstub} />
+			<InntektstubVisning liste={data.inntektstub} loading={loading.inntektstub} />
 			<InntektsmeldingVisning
-				data={InntektsmeldingVisning.filterValues(bestillingsListe)}
+				liste={InntektsmeldingVisning.filterValues(bestillingsListe)}
 				ident={ident.ident}
 			/>
 			<BrregVisning data={data.brregstub} loading={loading.bregstub} />
