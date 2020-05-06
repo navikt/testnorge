@@ -101,6 +101,7 @@ public class HistorikkController {
             @PathVariable String ident,
             @RequestBody TpsPersonDokumentType tpsPersonDokument
     ) {
+        log.info("Oppdaterer persondokument for ident {}", ident);
         return historikkService.oppdaterTpsPersonDokument(ident, tpsPersonDokument);
     }
 
