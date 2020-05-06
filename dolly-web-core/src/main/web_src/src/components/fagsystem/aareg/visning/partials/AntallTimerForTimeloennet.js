@@ -4,7 +4,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 
 export const AntallTimerForTimeloennet = ({ data }) => {
-	if (!data || data.length === 0) return false
+	if (!data || data.length === 0) return null
 
 	return (
 		<React.Fragment>

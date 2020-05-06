@@ -5,7 +5,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
 export const Utenlandsopphold = ({ data }) => {
-	if (!data) return false
+	if (!data) return null
 
 	return (
 		<React.Fragment>

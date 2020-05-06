@@ -49,20 +49,17 @@ export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => 
 					}
 				/>
 			</AttributtKategori>
-
-			{!leggTil && (
-				<AttributtKategori title="Diverse">
-					<Attributt attr={sm.attrs.identHistorikk} />
-					<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
-					<Attributt attr={sm.attrs.harMellomnavn} />
-					<Attributt attr={sm.attrs.sprakKode} />
-					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
-					<Attributt attr={sm.attrs.erForsvunnet} />
-					<Attributt attr={sm.attrs.harBankkontonr} />
-					<Attributt attr={sm.attrs.telefonnummer_1} />
-					<Attributt attr={sm.attrs.spesreg} />
-				</AttributtKategori>
-			)}
+			<AttributtKategori title="Diverse">
+				<Attributt attr={sm.attrs.identHistorikk} />
+				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende && !leggTil} />
+				<Attributt attr={sm.attrs.harMellomnavn} />
+				<Attributt attr={sm.attrs.sprakKode} />
+				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
+				<Attributt attr={sm.attrs.erForsvunnet} />
+				<Attributt attr={sm.attrs.harBankkontonr} />
+				<Attributt attr={sm.attrs.telefonnummer_1} />
+				<Attributt attr={sm.attrs.spesreg} />
+			</AttributtKategori>
 		</Panel>
 	)
 }

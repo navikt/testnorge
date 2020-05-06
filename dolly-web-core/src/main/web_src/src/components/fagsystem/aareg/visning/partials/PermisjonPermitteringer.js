@@ -5,7 +5,7 @@ import Formatters from '~/utils/DataFormatter'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 
 export const PermisjonPermitteringer = ({ data }) => {
-	if (!data) return false
+	if (!data) return null
 
 	return (
 		<React.Fragment>
