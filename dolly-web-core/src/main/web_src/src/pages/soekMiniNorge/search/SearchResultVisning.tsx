@@ -3,6 +3,9 @@ import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { HodejegerenApi } from '~/service/Api'
+import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
+import PersonVisningConnector from '~/pages/gruppe/PersonVisning/PersonVisningConnector'
+import ResultatVisningConnecter from '~/pages/soekMiniNorge/search/ResultatVisning/ResultatVisningConnecter'
 
 interface SearchResultVisningProps {
 	soekOptions: string
@@ -11,7 +14,6 @@ interface SearchResultVisningProps {
 }
 
 export const SearchResultVisning = (props: SearchResultVisningProps) => {
-
 	if (!props.searchActive) {
 		return <ContentContainer>Ingen søk er gjort</ContentContainer>
 	}
@@ -23,33 +25,33 @@ export const SearchResultVisning = (props: SearchResultVisningProps) => {
 		{
 			text: 'Ident',
 			width: '40',
-			dataField: 'innhold.personIdent.id',
+			dataField: 'personIdent.id',
 			unique: true
 		},
 		{
 			text: 'Type',
 			width: '20',
-			dataField: 'innhold.personIdent.type'
+			dataField: 'personIdent.type'
 		},
 		{
 			text: 'Navn',
 			width: '50',
-			dataField: 'innhold.navn.fornavn',
+			dataField: 'navn.fornavn',
 			formatter: (cell: any, row: any) => {
-				return row.innhold.navn.fornavn + ' ' + row.innhold.navn.slektsnavn
+				return row.navn.fornavn + ' ' + row.navn.slektsnavn
 			}
 		},
 		{
 			text: 'Kjønn',
 			width: '20',
-			dataField: 'innhold.personInfo.kjoenn'
+			dataField: 'personInfo.kjoenn'
 		},
 		{
 			text: 'Alder',
 			width: '30',
-			dataField: 'innhold.personInfo.datoFoedt',
+			dataField: 'personInfo.datoFoedt',
 			formatter: (cell: any, row: any) => {
-				const foedselsdato = new Date(row.innhold.personInfo.datoFoedt)
+				const foedselsdato = new Date(row.personInfo.datoFoedt)
 				const diff_ms = Date.now() - foedselsdato.getTime()
 				const age_dt = new Date(diff_ms)
 
@@ -63,7 +65,12 @@ export const SearchResultVisning = (props: SearchResultVisningProps) => {
 			key={props.soekNummer}
 			onFetch={() =>
 				HodejegerenApi.soek(props.soekOptions).then(response => {
-					return response.data.length > 0 ? response.data[0].kilder[0].data : null
+					if (response.data.length > 0) {
+						return response.data.map(function(res: any) {
+							return res.kilder[0].data[0].innhold
+						})
+					}
+					return null
 				})
 			}
 			render={(data: Array<Response>) => {
@@ -72,7 +79,15 @@ export const SearchResultVisning = (props: SearchResultVisningProps) => {
 				}
 
 				return (
-					<DollyTable data={data} columns={columns} pagination onExpand={() => <h1>Test</h1>} />
+					<DollyTable
+						data={data}
+						columns={columns}
+						pagination
+						iconItem={(bruker:any) => (bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />)}
+						onExpand={(bruker: any) => <ResultatVisningConnecter
+							personId={bruker.personIdent.id}
+						/>}
+					/>
 				)
 			}}
 		/>

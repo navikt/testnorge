@@ -252,6 +252,7 @@ export const fetchDataFraFagsystemer = personId => (dispatch, getState) => {
 			case 'UDISTUB':
 				return dispatch(actions.getUdi(personId))
 			case 'AAREG':
+				console.log(success[system][0])
 				return dispatch(actions.getAareg(personId, success[system][0]))
 			case 'INST2':
 				return dispatch(actions.getInst(personId, success[system][0]))
@@ -262,6 +263,46 @@ export const fetchDataFraFagsystemer = personId => (dispatch, getState) => {
 		}
 	})
 }
+
+export const fetchDataFraFagsystemerForSoek = personId => (dispatch, getState) => {
+	const state = getState()
+
+	// Liste over systemer
+	const success = {
+		KRRSTUB:'',
+		SIGRUNSTUB:'',
+		INNTK: '',
+		ARENA: '',
+		PDL: '',
+		AAREG: '',
+		INST2: '',
+		PEN_INNTEKT: ''
+	}
+
+	Object.keys(success).forEach(system => {
+		switch (system) {
+			case 'KRRSTUB':
+				return dispatch(actions.getKrr(personId))
+			case 'SIGRUNSTUB':
+				dispatch(actions.getSigrun(personId))
+				return dispatch(actions.getSigrunSekvensnr(personId))
+			case 'INNTK':
+				return dispatch(actions.getInntektstub(personId))
+			case 'ARENA':
+				return dispatch(actions.getArena(personId))
+			case 'PDL':
+				return dispatch(actions.getPDL(personId))
+			case 'AAREG':
+				return dispatch(actions.getAareg(personId, "q2"))
+			case 'INST2':
+				return dispatch(actions.getInst(personId, "q2"))
+			case 'PEN_INNTEKT':
+				return dispatch(actions.getPensjon(personId, "q2"))
+		}
+	})
+}
+
+
 
 // Selectors
 export const sokSelector = (items, searchStr) => {
