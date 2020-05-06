@@ -73,6 +73,7 @@ public class HistorikkService {
             // query.addCriteria(Criteria.where("kilder.data.innhold." + keyValue[0]).is(Pattern.compile(keyValue[1], Pattern.CASE_INSENSITIVE))); // finner også substrings. Sikkerhet?
             query.addCriteria(Criteria.where("kilder.data.innhold." + keyValue[0]).is(keyValue[1]));
             query.limit(pageSize);
+            query.skip(pageNumber * pageSize);
 
             var result = mongoTemplate.find(query, SyntHistorikk.class);
             logService.log(new LogEvent(LogEventDTO.builder()
@@ -82,6 +83,8 @@ public class HistorikkService {
                     .build()));
             results.addAll(result);
         }
+
+        results.forEach(historikk -> historikk.getKilder().removeIf(kilde -> !kilder.contains(kilde.getNavn())));
 
         return results;
     }
