@@ -1,6 +1,8 @@
 package no.nav.dolly.bestilling.bregstub;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.bregstub.domain.KodeRoller;
 import no.nav.dolly.bestilling.bregstub.domain.OrganisasjonTo;
 import no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo;
 import no.nav.dolly.properties.ProvidersProps;
@@ -48,18 +49,18 @@ public class BregstubConsumer {
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<KodeRoller> getKodeRoller() {
+    public ResponseEntity<Map> getKodeRoller() {
 
         try {
             return restTemplate.exchange(RequestEntity.get(
                     URI.create(providersProps.getBregstub().getUrl() + KODE_ROLLER_URL))
-                    .build(), KodeRoller.class);
+                    .build(), Map.class);
 
         } catch (RuntimeException e) {
             log.error("Feilet å lese koderoller fra BREGSTUB", e);
         }
 
-        return ResponseEntity.ok(new KodeRoller());
+        return ResponseEntity.ok(new HashMap());
     }
 
     public ResponseEntity postRolleoversikt(RolleoversiktTo rolleoversiktTo) {

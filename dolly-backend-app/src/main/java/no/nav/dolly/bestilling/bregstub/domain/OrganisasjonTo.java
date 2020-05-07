@@ -1,6 +1,9 @@
 package no.nav.dolly.bestilling.bregstub.domain;
 
+import static java.util.Objects.isNull;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -33,6 +36,13 @@ public class OrganisasjonTo {
 
         private LocalDate registringsDato;
         private List<PersonOgRolleTo> roller;
+
+        public List<PersonOgRolleTo> getRoller() {
+            if (isNull(roller)) {
+                roller = new ArrayList<>();
+            }
+            return roller;
+        }
     }
 
     @Getter

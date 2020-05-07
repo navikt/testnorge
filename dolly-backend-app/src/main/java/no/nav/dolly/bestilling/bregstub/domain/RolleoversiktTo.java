@@ -44,6 +44,7 @@ public class RolleoversiktTo {
 
     @Getter
     @Setter
+    @Builder
     @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor

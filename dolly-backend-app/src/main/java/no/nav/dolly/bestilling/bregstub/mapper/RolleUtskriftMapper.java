@@ -25,7 +25,8 @@ public class RolleUtskriftMapper {
     public BrregRequestWrapper map(RsBregdata bregdata, TpsPerson tpsPerson) {
 
         tpsfPersonCache.fetchIfEmpty(tpsPerson);
-        return mapperFacade.map(new BregPerson(bregdata, tpsPerson, bregstubConsumer.getKodeRoller().getBody().getRoller()), BrregRequestWrapper.class);
+        Map<String, String> koderoller = bregstubConsumer.getKodeRoller().getBody();
+        return mapperFacade.map(new BregPerson(bregdata, tpsPerson, koderoller), BrregRequestWrapper.class);
     }
 
     @Getter
