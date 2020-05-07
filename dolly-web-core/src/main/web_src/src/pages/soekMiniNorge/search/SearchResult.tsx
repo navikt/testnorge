@@ -5,6 +5,7 @@ import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { HodejegerenApi } from '~/service/Api'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import ResultatVisningConnecter from '~/pages/soekMiniNorge/search/ResultatVisning/ResultatVisningConnecter'
+import { HodejegerenResponse } from '../hodejegeren/types'
 
 interface SearchResultVisningProps {
 	soekOptions: string
@@ -83,8 +84,8 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 						data={data}
 						columns={columns}
 						pagination
-						iconItem={(bruker:any) => (bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />)}
-						onExpand={(bruker: any) => <ResultatVisningConnecter
+						iconItem={(bruker: HodejegerenResponse) => (bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />)}
+						onExpand={(bruker: HodejegerenResponse) => <ResultatVisningConnecter
 							personId={bruker.personIdent.id}
 							data={bruker}
 						/>}

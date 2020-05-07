@@ -24,7 +24,6 @@ export const Search = () => {
 		<div className="search-content">
 			<Formik onSubmit={_onSubmit} initialValues={initialValues} enableReinitialize>
 				{formikBag => {
-					const stateModifier = stateModifierFns(formikBag.values, formikBag.setValues)
 					return (
 						<div className="search-field">
 							<AlertStripeInfo>{infoTekst}</AlertStripeInfo>

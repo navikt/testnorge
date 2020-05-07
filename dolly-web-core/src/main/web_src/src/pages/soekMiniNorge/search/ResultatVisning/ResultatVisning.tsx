@@ -13,7 +13,6 @@ import { PensjonVisning } from '~/components/fagsystem/pensjon/visning/PensjonVi
 import { BrregVisning } from '~/components/fagsystem/brregstub/visning/BrregVisning'
 import Panel from '~/components/ui/panel/Panel'
 
-import './ResultatVisning.less'
 import { MiniNorgeVisning } from '~/pages/soekMiniNorge/search/ResultatVisning/partials/MiniNorgeVisning'
 
 type Loading = {
@@ -78,4 +77,6 @@ export const ResultatVisning = ({
 		</div>
 	)
 }
-//TODO: vise data fra aareg, udistub, brreegstub, arena, tpsf, inntektsmelding
+//TODO:
+// hente (se ducks/fagsystem/index) og vise data fra aareg, udistub, brreegstub
+// vise data for arena, inntektsmelding

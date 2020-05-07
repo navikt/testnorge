@@ -155,11 +155,13 @@ export default handleActions(
 		},
 		[onSuccess(actions.getSigrunSekvensnr)](state, action) {
 			const inntektData = state.sigrunstub[action.meta.ident]
-			state.sigrunstub[action.meta.ident] = inntektData.map(i => {
-				const sekvens = action.payload.data.find(s => s.gjelderPeriode === i.inntektsaar)
-				const sekvensnummer = sekvens && sekvens.sekvensnummer.toString()
-				return { ...i, sekvensnummer }
-			})
+			if(inntektData){
+				state.sigrunstub[action.meta.ident] = inntektData.map(i => {
+					const sekvens = action.payload.data.find(s => s.gjelderPeriode === i.inntektsaar)
+					const sekvensnummer = sekvens && sekvens.sekvensnummer.toString()
+					return { ...i, sekvensnummer }
+				})
+			}
 		},
 		[onSuccess(actions.getInntektstub)](state, action) {
 			state.inntektstub[action.meta.ident] = action.payload.data

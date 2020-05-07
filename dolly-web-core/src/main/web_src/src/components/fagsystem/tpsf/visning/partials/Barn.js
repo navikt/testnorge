@@ -32,10 +32,10 @@ export const Barn = ({ data, type }) => {
 				<TitleValue title="Alder" value={Formatters.formatAlder(data.alder, data.doedsdato)} />
 				<TitleValue title="Diskresjonskode" value={Formatters.showLabel(data.spesreg)} />
 				<TitleValue title="Uten fast bopel" value={data.utenFastBopel && 'Ja'} />
-				{barnInfo && !isLoading && (
+				{barnInfo && !isLoading && barnInfo.length > 0 && (
 					<TitleValue title="Foreldre" value={finnForeldre(barnInfo[0].relasjoner).join(', ')} />
 				)}
-				<TitleValue title="Er adoptert" value={Formatters.oversettBoolean(type === 'BARN')} />
+				<TitleValue title="Er adoptert" value={data.adoptert? data.adoptert : Formatters.oversettBoolean(type === 'BARN')} />
 			</div>
 			{data.boadresse.length > 0 && (
 				<Historikk component={Adressevisning} propName="boadresse" data={data.boadresse} />

@@ -4,9 +4,9 @@ import { Nasjonalitet } from '~/components/fagsystem/tpsf/visning/partials/Nasjo
 
 import { Boadresse } from '~/components/fagsystem/tpsf/visning/partials/Boadresse'
 import { Postadresse } from '~/components/fagsystem/tpsf/visning/partials/Postadresse'
-import { Identhistorikk } from '~/components/fagsystem/tpsf/visning/partials/Identhistorikk'
 import { Relasjoner } from '~/components/fagsystem/tpsf/visning/partials/Relasjoner'
-import { getBoadresse, getNasjonalitet, getPersonInfo, getPostAdresse } from './utils'
+import { getBoadresse, getNasjonalitet, getPersonInfo, getPostAdresse, getRelasjoner } from './utils'
+
 
 export const MiniNorgeVisning = (data: any) => {
 	if (!data) return null
@@ -16,12 +16,14 @@ export const MiniNorgeVisning = (data: any) => {
 			<Nasjonalitet data={getNasjonalitet(data.data)} />
 			{data.data.boadresse &&
 			// @ts-ignore
-			<Boadresse boadresse={getBoadresse(data.data.boadresse)} />}
+			<Boadresse boadresse={getBoadresse(data.data)} />}
 			{data.data.post.adresse1 &&
 			// @ts-ignore
 			<Postadresse postadresse={getPostAdresse(data.data)} />}
-			{/*<Relasjoner relasjoner={data.relasjoner} />*/}
+			{data.data.relasjoner.length>0 &&
+			// @ts-ignore
+			<Relasjoner relasjoner={getRelasjoner(data.data)} />}
 		</div>
 	)
 }
-//TODO relasjoner
+//TODO relasjoner, oppholdstilatelse
