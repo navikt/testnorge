@@ -389,7 +389,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(inntektStub)
 	}
 
-	const brregstubKriterier = bestillingData.bregstub
+	const brregstubKriterier = bestillingData.brregstub
 
 	if (brregstubKriterier) {
 		const brregstub = {

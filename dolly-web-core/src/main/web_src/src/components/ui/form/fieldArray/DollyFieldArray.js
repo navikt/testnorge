@@ -105,7 +105,8 @@ export const FormikDollyFieldArray = ({
 	newEntry,
 	hjelpetekst = null,
 	nested = false,
-	children
+	children,
+	isFull = false
 }) => (
 	<FieldArray name={name}>
 		{arrayHelpers => {
@@ -136,6 +137,7 @@ export const FormikDollyFieldArray = ({
 						hoverText={title}
 						addEntryButtonText={header}
 						onClick={addNewEntry}
+						disabled={isFull}
 					/>
 				</DollyFieldArrayWrapper>
 			)

@@ -14,7 +14,8 @@ const initialValues = {
 	foretaksNavn: {
 		navn1: ''
 	},
-	orgNr: ''
+	orgNr: '',
+	personroller: []
 }
 
 export const EnheterForm = ({ formikBag }) => {
@@ -45,7 +46,7 @@ export const EnheterForm = ({ formikBag }) => {
 	}
 
 	return (
-		<FormikDollyFieldArray name="bregstub.enheter" header="Enhet" newEntry={initialValues}>
+		<FormikDollyFieldArray name="brregstub.enheter" header="Enhet" newEntry={initialValues}>
 			{path => (
 				<>
 					<FormikSelect

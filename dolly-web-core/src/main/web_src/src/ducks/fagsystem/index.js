@@ -257,7 +257,7 @@ export const fetchDataFraFagsystemer = personId => (dispatch, getState) => {
 				return dispatch(actions.getInst(personId, success[system][0]))
 			case 'PEN_INNTEKT':
 				return dispatch(actions.getPensjon(personId, success[system][0]))
-			case 'BREGSTUB':
+			case 'BRREGSTUB':
 				return dispatch(actions.getBrreg(personId))
 		}
 	})

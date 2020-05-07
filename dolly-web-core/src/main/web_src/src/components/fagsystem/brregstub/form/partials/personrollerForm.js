@@ -3,8 +3,8 @@ import _get from 'lodash/get'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 
 const initialValues = {
 	egenskap: '',
@@ -25,20 +25,37 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 	}
 	const egenskapOptions = getEgenskapOptions()
 
-	// TODO: Få Egenskap-select til å vise value (selv om den ikke er i options)
 	return (
 		<FormikDollyFieldArray
 			name={`${path}.personroller`}
 			header="Personrolle"
 			newEntry={initialValues}
+			isFull={_get(formikBag.values, `${path}.personroller`).length > 4}
+			title={
+				_get(formikBag.values, `${path}.personroller`).length > 4
+					? 'Alle mulige personroller er lagt til'
+					: null
+			}
 		>
 			{path => (
 				<>
-					<FormikSelect
+					<DollySelect
 						name={`${path}.egenskap`}
 						label="Egenskap"
 						options={egenskapOptions}
-						size="medium"
+						onChange={egenskap => formikBag.setFieldValue(`${path}.egenskap`, egenskap.value)}
+						value={_get(formikBag.values, `${path}.egenskap`)}
+						placeholder={
+							_get(formikBag.values, `${path}.egenskap`)
+								? _get(formikBag.values, `${path}.egenskap`)
+								: 'Velg..'
+						}
+						isClearable={false}
+						feil={
+							_get(formikBag.values, `${path}.egenskap`) === '' && {
+								feilmelding: 'Feltet er påkrevd'
+							}
+						}
 					/>
 					<FormikDatepicker name={`${path}.registringsDato`} label="Registreringsdato" />
 					<FormikCheckbox name={`${path}.fratraadt`} label="Har fratrådt" checkboxMargin />

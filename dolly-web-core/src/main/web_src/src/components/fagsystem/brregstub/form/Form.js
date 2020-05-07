@@ -10,7 +10,7 @@ import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
 import { EnheterForm } from './partials/enheterForm'
 
-const brregAttributt = 'bregstub'
+const brregAttributt = 'brregstub'
 
 export const BrregstubForm = ({ formikBag }) => {
 	const understatuser = SelectOptionsOppslag.hentUnderstatusFraBrregstub()
@@ -26,7 +26,7 @@ export const BrregstubForm = ({ formikBag }) => {
 			>
 				<div className="flexbox--flex-wrap">
 					<FormikSelect
-						name="bregstub.understatuser"
+						name="brregstub.understatuser"
 						label="Understatuser"
 						options={understatuserOptions}
 						isLoading={understatuser.loading}
@@ -42,10 +42,9 @@ export const BrregstubForm = ({ formikBag }) => {
 	)
 }
 
-// TODO: Required egenskap på personrolle?
 BrregstubForm.validation = {
-	bregstub: ifPresent(
-		'$bregstub',
+	brregstub: ifPresent(
+		'$brregstub',
 		Yup.object({
 			understatuser: Yup.array()
 				.of(Yup.number())
@@ -54,7 +53,14 @@ BrregstubForm.validation = {
 				Yup.object({
 					rolle: requiredString,
 					registreringsdato: requiredDate,
-					orgNr: requiredNumber
+					orgNr: requiredNumber,
+					personroller: Yup.array().of(
+						Yup.object({
+							egenskap: requiredString,
+							fratraadt: Yup.boolean(),
+							registreringsdato: Yup.date()
+						})
+					)
 				})
 			)
 		})
