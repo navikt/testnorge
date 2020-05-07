@@ -75,11 +75,11 @@ public class BrregRolleMappingStrategy implements MappingStrategy {
                             organisasjon.setUnderstatuser(bregPerson.getBregdata().getUnderstatuser());
                             organisasjon.setOrgnr(enhet.getOrgNr());
                             organisasjon.setRegistreringsdato(getLocalDate(enhet.getRegistreringsdato()));
-                            organisasjon.setDeltagere(appendRolle(organisasjon.getDeltagere(), enhet, Deltager, rolleoversikt, bregPerson.getKodeRoller()));
-                            organisasjon.setKomplementar(appendRolle(organisasjon.getDeltagere(), enhet, Komplementar, rolleoversikt, bregPerson.getKodeRoller()));
-                            organisasjon.setKontaktperson(appendRolle(organisasjon.getDeltagere(), enhet, Kontaktperson, rolleoversikt, bregPerson.getKodeRoller()));
-                            organisasjon.setSameier(appendRolle(organisasjon.getDeltagere(), enhet, Sameier, rolleoversikt, bregPerson.getKodeRoller()));
-                            organisasjon.setStyre(appendRolle(organisasjon.getDeltagere(), enhet, Styre, rolleoversikt, bregPerson.getKodeRoller()));
+                            organisasjon.setDeltakere(appendRolle(organisasjon.getDeltakere(), enhet, Deltager, rolleoversikt, bregPerson.getKodeRoller()));
+                            organisasjon.setKomplementar(appendRolle(organisasjon.getDeltakere(), enhet, Komplementar, rolleoversikt, bregPerson.getKodeRoller()));
+                            organisasjon.setKontaktperson(appendRolle(organisasjon.getDeltakere(), enhet, Kontaktperson, rolleoversikt, bregPerson.getKodeRoller()));
+                            organisasjon.setSameier(appendRolle(organisasjon.getDeltakere(), enhet, Sameier, rolleoversikt, bregPerson.getKodeRoller()));
+                            organisasjon.setStyre(appendRolle(organisasjon.getDeltakere(), enhet, Styre, rolleoversikt, bregPerson.getKodeRoller()));
                             organisasjoner.put(enhet.getOrgNr(), organisasjon);
                         });
 
