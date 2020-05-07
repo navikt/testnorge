@@ -70,8 +70,10 @@ export const ResultatVisning = ({
 			)}
 			{data.sigrunstub && data.sigrunstub.length > 0 && (
 				//@ts-ignore
-				<Panel heading="Skatteoppgjør (Sigrun)">
+				<Panel heading="Skatteoppgjør (Sigrun)" iconType={"sigrun"}>{
+					//@ts-ignore
 					<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
+				}
 				</Panel>
 			)}
 		</div>
