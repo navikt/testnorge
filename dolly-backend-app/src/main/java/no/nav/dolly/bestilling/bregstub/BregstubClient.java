@@ -73,9 +73,7 @@ public class BregstubClient implements ClientRegister {
     private String postOrganisasjon(List<OrganisasjonTo> organisasjonTo) {
 
         try {
-            organisasjonTo.forEach(organisasjon ->
-                    bregstubConsumer.postOrganisasjon(organisasjon)
-            );
+            organisasjonTo.forEach(bregstubConsumer::postOrganisasjon);
             return OK_STATUS;
 
         } catch (RuntimeException e) {
