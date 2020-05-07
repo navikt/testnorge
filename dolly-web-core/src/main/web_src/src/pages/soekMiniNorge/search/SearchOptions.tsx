@@ -6,6 +6,8 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { AdresseKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { antallResultatOptions } from '~/pages/soekMiniNorge/search/utils'
+import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 interface SearchOptionsProps {
 	formikBag: FormikProps<{}>
@@ -15,14 +17,19 @@ interface SearchOptionsProps {
 export const SearchOptions = (props: SearchOptionsProps) => {
 	return (
 		<React.Fragment>
-			<div>
+			<div className="search-field_options-fields">
+				<FormikSelect
+					name="antallResultat"
+					label="Maks antall resultat"
+					options={antallResultatOptions}
+				/>
 				<h2>Personinformasjon</h2>
 				<h3>Ident</h3>
 				<FormikTextInput name="personIdent.id" label="ID" type="number"/>
 				<FormikSelect
 					name="personIdent.type"
 					label="Type"
-					options={[{value: 'FNR', label:'FNR'}, {value: 'DNR', label:'DNR'}]}
+					options={Options('identtype')}
 				/>
 				<h3>Navn</h3>
 				<FormikTextInput name="navn.fornavn" label="Fornavn" />
@@ -33,6 +40,7 @@ export const SearchOptions = (props: SearchOptionsProps) => {
 					name="statsborger.land"
 					label="Statsborgerskap"
 					kodeverk={AdresseKodeverk.StatsborgerskapLand}
+					optionHeight={50}
 				/>
 				<h3>Boadresse</h3>
 				<FormikTextInput name="boadresse.adresse" label="Gatenavn" />

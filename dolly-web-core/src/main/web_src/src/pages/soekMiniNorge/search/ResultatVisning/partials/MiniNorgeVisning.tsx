@@ -14,8 +14,12 @@ export const MiniNorgeVisning = (data: any) => {
 		<div>
 			<Personinfo data={getPersonInfo(data.data)} />
 			<Nasjonalitet data={getNasjonalitet(data.data)} />
-			{data.data.boadresse && <Boadresse boadresse={getBoadresse(data.data.boadresse)} />}
-			{data.data.post.adresse1 && <Postadresse postadresse={getPostAdresse(data.data)} />}
+			{data.data.boadresse &&
+			// @ts-ignore
+			<Boadresse boadresse={getBoadresse(data.data.boadresse)} />}
+			{data.data.post.adresse1 &&
+			// @ts-ignore
+			<Postadresse postadresse={getPostAdresse(data.data)} />}
 			{/*<Relasjoner relasjoner={data.relasjoner} />*/}
 		</div>
 	)

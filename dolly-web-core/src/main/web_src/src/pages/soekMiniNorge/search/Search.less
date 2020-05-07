@@ -16,7 +16,7 @@
 
 .search-field{
 
-  &_options{
+  &_options-container{
     padding: 20px;
     width: 30%;
     border-right: solid black 1px;
@@ -25,7 +25,12 @@
     padding: 20px;
     width: 70%;
   }
+  &_options-fields{
+    overflow-y: scroll;
+    height: 700px
+  }
 }
 .search-button{
+  margin-top: 20px;
   //text-Align: center;
 }

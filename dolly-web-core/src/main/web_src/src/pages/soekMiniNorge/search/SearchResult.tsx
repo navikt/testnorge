@@ -4,13 +4,13 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { HodejegerenApi } from '~/service/Api'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
-import PersonVisningConnector from '~/pages/gruppe/PersonVisning/PersonVisningConnector'
 import ResultatVisningConnecter from '~/pages/soekMiniNorge/search/ResultatVisning/ResultatVisningConnecter'
 
 interface SearchResultVisningProps {
 	soekOptions: string
 	searchActive: boolean
 	soekNummer: number
+	antallResultat: number
 }
 
 export const SearchResult = (props: SearchResultVisningProps) => {
@@ -64,7 +64,7 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 		<LoadableComponent
 			key={props.soekNummer}
 			onFetch={() =>
-				HodejegerenApi.soek(props.soekOptions).then(response => {
+				HodejegerenApi.soek(props.soekOptions, props.antallResultat).then(response => {
 					if (response.data.length > 0) {
 						return response.data.map(function(res: any) {
 							return res.kilder[0].data[0].innhold

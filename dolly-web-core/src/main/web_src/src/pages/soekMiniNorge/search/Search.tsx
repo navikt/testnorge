@@ -7,6 +7,7 @@ import './Search.less'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { getSoekOptions, initialValues, infoTekst } from '~/pages/soekMiniNorge/search/utils'
 import useBoolean from '~/utils/hooks/useBoolean'
+import _get from 'lodash/get'
 
 export const Search = () => {
 	const [soekOptions, setSoekOptions] = useState('')
@@ -28,7 +29,7 @@ export const Search = () => {
 						<div className="search-field">
 							<AlertStripeInfo>{infoTekst}</AlertStripeInfo>
 							<div className="flexbox">
-								<div className="search-field_options">
+								<div className="search-field_options-container">
 									<SearchOptions formikBag={formikBag} onSubmit={_onSubmit} />
 								</div>
 								<div className="search-field_resultat">
@@ -36,6 +37,7 @@ export const Search = () => {
 										soekOptions={soekOptions}
 										searchActive={isSearchActive}
 										soekNummer={soekNummer}
+										antallResultat={_get(formikBag.values, 'antallResultat')}
 									/>
 								</div>
 							</div>
