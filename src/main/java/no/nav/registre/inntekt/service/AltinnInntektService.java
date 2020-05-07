@@ -1,6 +1,9 @@
 package no.nav.registre.inntekt.service;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
 import org.springframework.stereotype.Service;
 
 import java.time.ZoneId;
@@ -27,9 +30,6 @@ import no.nav.registre.inntekt.domain.dokmot.ProsessertInntektDokument;
 import no.nav.registre.inntekt.domain.dokmot.RsJoarkMetadata;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
 import no.nav.registre.inntekt.utils.ValidationException;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
 
 @Slf4j
 @Service

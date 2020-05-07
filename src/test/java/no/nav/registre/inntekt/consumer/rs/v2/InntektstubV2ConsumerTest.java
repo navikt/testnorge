@@ -9,6 +9,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +33,6 @@ import java.util.Map;
 import no.nav.registre.inntekt.consumer.rs.ConsumerUtils;
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
 import no.nav.registre.inntekt.domain.RsInntekt;
-import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
 @RunWith(SpringRunner.class)
 @RestClientTest({ InntektstubV2Consumer.class, ConsumerUtils.class })

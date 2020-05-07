@@ -26,7 +26,8 @@
         <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
         <springfox.version>2.9.2</springfox.version>
         <springframework.cloud.version>2.1.2.RELEASE</springframework.cloud.version>
-        <testnorge-consumers.version>1.11.10-RELEASE</testnorge-consumers.version>
+        <testnorge-consumers.version>1.11.11-RELEASE</testnorge-consumers.version>
+        <testnorge-domain.version>1.2020.05.07-08.54-6fb2dc16a8f2</testnorge-domain.version>
     </properties>
 
     <dependencies>
@@ -53,6 +54,13 @@
             <groupId>no.nav.registre</groupId>
             <artifactId>testnorge-consumers</artifactId>
             <version>${testnorge-consumers.version}</version>
+        </dependency>
+
+        <!-- DOMAIN -->
+        <dependency>
+            <groupId>no.nav.registre.testnorge</groupId>
+            <artifactId>testnorge-domain</artifactId>
+            <version>${testnorge-domain.version}</version>
         </dependency>
 
         <!-- TEST -->

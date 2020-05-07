@@ -1,11 +1,17 @@
 package no.nav.registre.inntekt.consumer.rs;
 
 import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnummerFraMaanedsnavn;
-import static no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.LOENNSINNTEKT;
-import static no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.NAERINGSINNTEKT;
-import static no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.PENSJON_ELLER_TRYGD;
-import static no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.YTELSE_FRA_OFFENTLIGE;
+import static no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.LOENNSINNTEKT;
+import static no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.NAERINGSINNTEKT;
+import static no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.PENSJON_ELLER_TRYGD;
+import static no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.YTELSE_FRA_OFFENTLIGE;
 
+import no.nav.registre.inntekt.domain.RsInntekt;
+import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntekt;
+import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
+import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype;
+import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Tilleggsinformasjon;
+import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.tilleggsinformasjon.AldersUfoereEtterlatteAvtalefestetOgKrigspensjon;
 import org.springframework.stereotype.Service;
 
 import java.time.Month;
@@ -15,13 +21,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import no.nav.registre.inntekt.domain.RsInntekt;
-import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntekt;
-import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
-import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype;
-import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Tilleggsinformasjon;
-import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.tilleggsinformasjon.AldersUfoereEtterlatteAvtalefestetOgKrigspensjon;
 
 @Service
 public class ConsumerUtils {

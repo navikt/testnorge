@@ -1,6 +1,9 @@
 package no.nav.registre.inntekt.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -9,9 +12,6 @@ import java.util.List;
 
 import no.nav.registre.inntekt.consumer.rs.TestnorgeAaregConsumer;
 import no.nav.registre.inntekt.utils.ValidationException;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
 
 @Service
 @RequiredArgsConstructor

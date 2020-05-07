@@ -6,9 +6,9 @@ import java.util.Collections;
 
 import no.nav.registre.inntekt.domain.RsInntekt;
 import no.nav.registre.inntekt.domain.RsInntektsinformasjonsType;
-import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntekt;
-import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
-import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype;
+import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntekt;
+import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
+import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype;
 
 public class InntektGenerator {
 
