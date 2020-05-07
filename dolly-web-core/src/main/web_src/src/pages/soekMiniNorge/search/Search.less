@@ -1,0 +1,58 @@
+@import (reference) '~lessVars';
+
+.search-content {
+  padding: 20px;
+  background-color: transparent;
+  margin-bottom: 40px;
+}
+.alertstripe {
+  &--info {
+    margin-Bottom: 20px;
+  }
+  .alertstripe__tekst {
+    max-width: 51.5rem;
+    white-space: pre-wrap;
+  }
+}
+
+.search-field{
+
+  &_options-container{
+    padding: 20px;
+    width: 30%;
+    border-right: solid black 1px;
+  }
+  &_resultat{
+    padding: 20px;
+    width: 70%;
+  }
+  &_options-fields{
+    overflow-y: scroll;
+    height: 700px
+  }
+}
+.search-button{
+  margin-top: 20px;
+  //text-Align: center;
+}
+
+.resultat-visning {
+  &_content {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-bottom: 10px;
+
+    .title-value {
+      margin-bottom: 10px;
+    }
+  }
+  &_actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    button {
+      margin-left: 10px;
+    }
+  }
+}
