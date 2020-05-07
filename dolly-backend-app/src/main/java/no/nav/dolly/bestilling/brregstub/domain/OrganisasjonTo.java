@@ -21,7 +21,7 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrganisasjonTo {
 
-    private SamendringTo deltagere;
+    private SamendringTo deltakere;
     private Integer hovedstatus;
     private SamendringTo komplementar;
     private SamendringTo kontaktperson;

@@ -24,6 +24,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 public class BrregstubClient implements ClientRegister {
 
     private static final String OK_STATUS = "OK";
+
     private final BrregstubConsumer brregstubConsumer;
     private final RolleUtskriftMapper rolleUtskriftMapper;
     private final ErrorStatusDecoder errorStatusDecoder;
