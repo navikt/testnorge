@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.bregstub;
+package no.nav.dolly.bestilling.brregstub;
 
 import static java.util.Objects.nonNull;
 
@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.bregstub.domain.BrregRequestWrapper;
-import no.nav.dolly.bestilling.bregstub.domain.OrganisasjonTo;
-import no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo;
-import no.nav.dolly.bestilling.bregstub.mapper.RolleUtskriftMapper;
-import no.nav.dolly.bestilling.bregstub.util.BregstubMergeUtil;
+import no.nav.dolly.bestilling.brregstub.domain.BrregRequestWrapper;
+import no.nav.dolly.bestilling.brregstub.domain.OrganisasjonTo;
+import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
+import no.nav.dolly.bestilling.brregstub.mapper.RolleUtskriftMapper;
+import no.nav.dolly.bestilling.brregstub.util.BrregstubMergeUtil;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
@@ -21,44 +21,44 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @Service
 @RequiredArgsConstructor
-public class BregstubClient implements ClientRegister {
+public class BrregstubClient implements ClientRegister {
 
     private static final String OK_STATUS = "OK";
-    private final BregstubConsumer bregstubConsumer;
+    private final BrregstubConsumer brregstubConsumer;
     private final RolleUtskriftMapper rolleUtskriftMapper;
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (nonNull(bestilling.getBregstub())) {
+        if (nonNull(bestilling.getBrregstub())) {
 
-            BrregRequestWrapper wrapper = rolleUtskriftMapper.map(bestilling.getBregstub(), tpsPerson);
+            BrregRequestWrapper wrapper = rolleUtskriftMapper.map(bestilling.getBrregstub(), tpsPerson);
 
             RolleoversiktTo mergetRolleoversikt = prepareRequest(wrapper.getRolleoversiktTo(), tpsPerson.getHovedperson());
             String status = postRolleutskrift(mergetRolleoversikt);
 
-            progress.setBregstubStatus(OK_STATUS.equals(status) ? postOrganisasjon(wrapper.getOrganisasjonTo()) : status);
+            progress.setBrregstubStatus(OK_STATUS.equals(status) ? postOrganisasjon(wrapper.getOrganisasjonTo()) : status);
         }
     }
 
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(bregstubConsumer::deleteRolleoversikt);
+        identer.forEach(brregstubConsumer::deleteRolleoversikt);
     }
 
     private RolleoversiktTo prepareRequest(RolleoversiktTo nyRolleovesikt, String ident) {
 
-        RolleoversiktTo eksisterendeRoller = bregstubConsumer.getRolleoversikt(ident).getBody();
+        RolleoversiktTo eksisterendeRoller = brregstubConsumer.getRolleoversikt(ident).getBody();
 
-        return BregstubMergeUtil.merge(nyRolleovesikt, eksisterendeRoller);
+        return BrregstubMergeUtil.merge(nyRolleovesikt, eksisterendeRoller);
     }
 
     private String postRolleutskrift(RolleoversiktTo rolleoversiktTo) {
 
         try {
-            ResponseEntity status = bregstubConsumer.postRolleoversikt(rolleoversiktTo);
+            ResponseEntity status = brregstubConsumer.postRolleoversikt(rolleoversiktTo);
             if (HttpStatus.CREATED == status.getStatusCode()) {
                 return OK_STATUS;
             }
@@ -73,7 +73,7 @@ public class BregstubClient implements ClientRegister {
     private String postOrganisasjon(List<OrganisasjonTo> organisasjonTo) {
 
         try {
-            organisasjonTo.forEach(bregstubConsumer::postOrganisasjon);
+            organisasjonTo.forEach(brregstubConsumer::postOrganisasjon);
             return OK_STATUS;
 
         } catch (RuntimeException e) {

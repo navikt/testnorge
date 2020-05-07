@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.bregstub.domain;
+package no.nav.dolly.bestilling.brregstub.domain;
 
 import static java.util.Objects.isNull;
 

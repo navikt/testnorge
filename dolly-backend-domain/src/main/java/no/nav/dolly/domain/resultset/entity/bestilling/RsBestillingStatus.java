@@ -87,6 +87,6 @@ public class RsBestillingStatus {
         private RsUdiPerson udistub;
         private PensjonData pensjonforvalter;
         private RsInntektsmelding inntektsmelding;
-        private RsBregdata bregstub;
+        private RsBregdata brregstub;
     }
 }

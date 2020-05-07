@@ -2,7 +2,7 @@ package no.nav.dolly.mapper.strategy;
 
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
-import static no.nav.dolly.mapper.BestillingBregStubStatusMapper.buildBregStubStatusMap;
+import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStubStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektsmeldingStatusMapper.buildInntektsmeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektstubStatusMapper.buildInntektstubStatusMap;
 import static no.nav.dolly.mapper.BestillingInstdataStatusMapper.buildInstdataStatusMap;
@@ -65,7 +65,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildInntektstubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildPensjonforvalterStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildInntektsmeldingStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildBregStubStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildBrregStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
                                 .pdlforvalter(bestillingRequest.getPdlforvalter())
                                 .aareg(bestillingRequest.getAareg())
@@ -77,7 +77,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .udistub(bestillingRequest.getUdistub())
                                 .pensjonforvalter(bestillingRequest.getPensjonforvalter())
                                 .inntektsmelding(bestillingRequest.getInntektsmelding())
-                                .bregstub(bestillingRequest.getBregstub())
+                                .brregstub(bestillingRequest.getBrregstub())
                                 .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .build());
                     }

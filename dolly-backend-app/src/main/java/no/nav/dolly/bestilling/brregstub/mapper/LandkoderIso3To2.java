@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.bregstub.mapper;
+package no.nav.dolly.bestilling.brregstub.mapper;
 
 import java.util.HashMap;
 import java.util.Map;

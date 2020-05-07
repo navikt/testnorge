@@ -32,7 +32,7 @@ public class ProvidersProps {
     private Pensjonforvalter pensjonforvalter = new Pensjonforvalter();
     private Inntektsmelding inntektsmelding = new Inntektsmelding();
     private IdentPool identPool = new IdentPool();
-    private Bregstub bregstub = new Bregstub();
+    private Brregstub brregstub = new Brregstub();
 
     @Getter
     @Setter
@@ -208,7 +208,7 @@ public class ProvidersProps {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Bregstub {
+    public static class Brregstub {
 
         private String url;
     }

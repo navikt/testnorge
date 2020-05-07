@@ -25,7 +25,7 @@ public enum SystemTyper {
     PEN_FORVALTER("Pensjon (PEN)"),
     PEN_INNTEKT("Pensjonsopptjening (POPP)"),
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)"),
-    BREGSTUB("Brønnøysundregistrene (BREGSTUB)");
+    BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)");
 
     SystemTyper(String beskrivelse) {
         this.beskrivelse = beskrivelse;

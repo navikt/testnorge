@@ -1,14 +1,14 @@
-package no.nav.dolly.bestilling.bregstub.util;
+package no.nav.dolly.bestilling.brregstub.util;
 
 import static java.util.Objects.isNull;
 
 import java.util.stream.Collectors;
 
 import lombok.experimental.UtilityClass;
-import no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo;
+import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 
 @UtilityClass
-public class BregstubMergeUtil {
+public class BrregstubMergeUtil {
 
     public static RolleoversiktTo merge(RolleoversiktTo nyRolleovesikt, RolleoversiktTo eksisterendeRoller) {
 

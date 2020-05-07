@@ -1,11 +1,11 @@
-package no.nav.dolly.bestilling.bregstub.mapper;
+package no.nav.dolly.bestilling.brregstub.mapper;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo.AdresseTo;
-import static no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo.NavnTo;
-import static no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo.RolleTo;
+import static no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo.AdresseTo;
+import static no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo.NavnTo;
+import static no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo.RolleTo;
 import static no.nav.dolly.domain.resultset.breg.RsBregdata.Egenskap.Deltager;
 import static no.nav.dolly.domain.resultset.breg.RsBregdata.Egenskap.Komplementar;
 import static no.nav.dolly.domain.resultset.breg.RsBregdata.Egenskap.Kontaktperson;
@@ -28,9 +28,9 @@ import lombok.Setter;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.bregstub.domain.BrregRequestWrapper;
-import no.nav.dolly.bestilling.bregstub.domain.OrganisasjonTo;
-import no.nav.dolly.bestilling.bregstub.domain.RolleoversiktTo;
+import no.nav.dolly.bestilling.brregstub.domain.BrregRequestWrapper;
+import no.nav.dolly.bestilling.brregstub.domain.OrganisasjonTo;
+import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
@@ -40,7 +40,7 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
-public class BregRolleMappingStrategy implements MappingStrategy {
+public class BrregRolleMappingStrategy implements MappingStrategy {
 
     private static final String UTEN_BESKRIVELSE = "Beskrivelse mangler";
 
@@ -74,7 +74,7 @@ public class BregRolleMappingStrategy implements MappingStrategy {
                             organisasjon.setHovedstatus(0);
                             organisasjon.setUnderstatuser(bregPerson.getBregdata().getUnderstatuser());
                             organisasjon.setOrgnr(enhet.getOrgNr());
-                            organisasjon.setRegistringsDato(getLocalDate(enhet.getRegistreringsdato()));
+                            organisasjon.setRegistreringsdato(getLocalDate(enhet.getRegistreringsdato()));
                             organisasjon.setDeltagere(appendRolle(organisasjon.getDeltagere(), enhet, Deltager, rolleoversikt, bregPerson.getKodeRoller()));
                             organisasjon.setKomplementar(appendRolle(organisasjon.getDeltagere(), enhet, Komplementar, rolleoversikt, bregPerson.getKodeRoller()));
                             organisasjon.setKontaktperson(appendRolle(organisasjon.getDeltagere(), enhet, Kontaktperson, rolleoversikt, bregPerson.getKodeRoller()));

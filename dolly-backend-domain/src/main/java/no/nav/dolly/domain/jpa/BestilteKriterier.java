@@ -40,5 +40,5 @@ public class BestilteKriterier {
     private InntektMultiplierWrapper inntektstub;
     private PensjonData pensjonforvalter;
     private RsInntektsmelding inntektsmelding;
-    private RsBregdata bregstub;
+    private RsBregdata brregstub;
 }
