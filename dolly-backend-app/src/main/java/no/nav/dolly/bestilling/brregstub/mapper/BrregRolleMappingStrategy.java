@@ -98,14 +98,7 @@ public class BrregRolleMappingStrategy implements MappingStrategy {
                                 list.add(
                                         RolleTo.builder()
                                                 .foretaksNavn(mapperFacade.map(enhet.getForetaksNavn(), NavnTo.class))
-                                                .forretningsAdresse(nonNull(enhet.getForretningsAdresse()) ?
-                                                        mapperFacade.map(enhet.getForretningsAdresse(), AdresseTo.class) :
-                                                        AdresseTo.builder()
-                                                                .adresse1("BOLETTE WIESES GATE 4")
-                                                                .postnr("1349")
-                                                                .poststed("RYKKINN")
-                                                                .kommunenr("3024")
-                                                                .build())
+                                                .forretningsAdresse(mapperFacade.map(enhet.getForretningsAdresse(), AdresseTo.class))
                                                 .orgNr(enhet.getOrgNr())
                                                 .postAdresse(mapperFacade.map(enhet.getPostAdresse(), AdresseTo.class))
                                                 .registreringsdato(getLocalDate(enhet.getRegistreringsdato()))
