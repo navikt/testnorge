@@ -76,10 +76,10 @@ public class BrregRolleMappingStrategy implements MappingStrategy {
                             organisasjon.setOrgnr(enhet.getOrgNr());
                             organisasjon.setRegistreringsdato(getLocalDate(enhet.getRegistreringsdato()));
                             organisasjon.setDeltakere(appendRolle(organisasjon.getDeltakere(), enhet, Deltager, rolleoversikt, bregPerson.getKodeRoller()));
-                            organisasjon.setKomplementar(appendRolle(organisasjon.getDeltakere(), enhet, Komplementar, rolleoversikt, bregPerson.getKodeRoller()));
-                            organisasjon.setKontaktperson(appendRolle(organisasjon.getDeltakere(), enhet, Kontaktperson, rolleoversikt, bregPerson.getKodeRoller()));
-                            organisasjon.setSameier(appendRolle(organisasjon.getDeltakere(), enhet, Sameier, rolleoversikt, bregPerson.getKodeRoller()));
-                            organisasjon.setStyre(appendRolle(organisasjon.getDeltakere(), enhet, Styre, rolleoversikt, bregPerson.getKodeRoller()));
+                            organisasjon.setKomplementar(appendRolle(organisasjon.getKomplementar(), enhet, Komplementar, rolleoversikt, bregPerson.getKodeRoller()));
+                            organisasjon.setKontaktperson(appendRolle(organisasjon.getKontaktperson(), enhet, Kontaktperson, rolleoversikt, bregPerson.getKodeRoller()));
+                            organisasjon.setSameier(appendRolle(organisasjon.getSameier(), enhet, Sameier, rolleoversikt, bregPerson.getKodeRoller()));
+                            organisasjon.setStyre(appendRolle(organisasjon.getStyre(), enhet, Styre, rolleoversikt, bregPerson.getKodeRoller()));
                             organisasjoner.put(enhet.getOrgNr(), organisasjon);
                         });
 
