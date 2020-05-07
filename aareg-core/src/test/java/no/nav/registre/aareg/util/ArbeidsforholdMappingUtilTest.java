@@ -8,6 +8,16 @@ import static org.hamcrest.Matchers.equalTo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Ansettelsesperiode;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.AntallTimerForTimeloennet;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsavtale;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Periode;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.PermisjonPermittering;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Sporingsinformasjon;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Utenlandsopphold;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -18,16 +28,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 
 import no.nav.registre.aareg.domain.RsOrganisasjon;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Ansettelsesperiode;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.AntallTimerForTimeloennet;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsavtale;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Periode;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.PermisjonPermittering;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Sporingsinformasjon;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Utenlandsopphold;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArbeidsforholdMappingUtilTest {

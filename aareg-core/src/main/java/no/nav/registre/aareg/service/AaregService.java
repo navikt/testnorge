@@ -6,6 +6,9 @@ import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.getLocalDateT
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,9 +31,6 @@ import no.nav.registre.aareg.domain.RsPeriode;
 import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
 
 @Slf4j
 @Service

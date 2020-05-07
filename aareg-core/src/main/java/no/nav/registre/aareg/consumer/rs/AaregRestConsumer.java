@@ -11,6 +11,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.aareg.security.sts.StsOidcService;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
 
 @Slf4j
 @Component

@@ -2,6 +2,7 @@ package no.nav.registre.aareg.provider.rs;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,7 +24,6 @@ import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.aareg.service.AaregService;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
 
 @RestController
 @CrossOrigin

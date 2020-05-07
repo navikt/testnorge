@@ -7,6 +7,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Ansettelsesperiode;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsavtale;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Periode;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,12 +30,6 @@ import no.nav.registre.aareg.consumer.rs.AaregRestConsumer;
 import no.nav.registre.aareg.consumer.ws.AaregWsConsumer;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Ansettelsesperiode;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsavtale;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Periode;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AaregServiceTest {

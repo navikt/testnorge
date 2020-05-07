@@ -8,6 +8,7 @@ import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.mapArbeidsfor
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,6 @@ import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Service
@@ -296,7 +296,7 @@ public class SyntetiseringService {
                 .build();
     }
 
-    @Timed(value = "aareg.resource.latency", extraTags = { "operation", "hodejegeren" })
+    @Timed(value = "aareg.resource.latency", extraTags = {"operation", "hodejegeren"})
     private List<String> hentLevendeIdenter(
             Long avspillergruppeId,
             int minimumAlder

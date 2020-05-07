@@ -19,19 +19,19 @@ import no.nav.registre.aareg.domain.RsPeriode;
 import no.nav.registre.aareg.domain.RsPermisjon;
 import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.domain.RsUtenlandsopphold;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Ansettelsesperiode;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.AntallTimerForTimeloennet;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsavtale;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Bruksperiode;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Gyldighetsperiode;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.OpplysningspliktigArbeidsgiver;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Periode;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.PermisjonPermittering;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Sporingsinformasjon;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Utenlandsopphold;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Ansettelsesperiode;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.AntallTimerForTimeloennet;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsavtale;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Bruksperiode;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Gyldighetsperiode;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.OpplysningspliktigArbeidsgiver;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Periode;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.PermisjonPermittering;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Sporingsinformasjon;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Utenlandsopphold;
 
 public class ArbeidsforholdMappingUtil {
 

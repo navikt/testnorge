@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +42,6 @@ import no.nav.registre.aareg.consumer.rs.response.KodeverkResponse;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)

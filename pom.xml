@@ -50,6 +50,7 @@
         <cxf.version>3.3.3</cxf.version>
         <freg-security-oidc.version>e603e2b2</freg-security-oidc.version>
         <tjenestespesifikasjoner.version>1.2020.04.30-11.45-a45e1248c063</tjenestespesifikasjoner.version>
+        <testnorge-domain.version>1.2020.05.07-08.54-6fb2dc16a8f2</testnorge-domain.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
     </properties>
@@ -65,7 +66,12 @@
             <dependency>
                 <groupId>no.nav.registre</groupId>
                 <artifactId>testnorge-consumers</artifactId>
-                <version>1.11.10-RELEASE</version>
+                <version>1.11.11-RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.registre.testnorge</groupId>
+                <artifactId>testnorge-domain</artifactId>
+                <version>${testnorge-domain.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -99,6 +99,10 @@
             <groupId>no.nav.registre</groupId>
             <artifactId>testnorge-consumers</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.registre.testnorge</groupId>
+            <artifactId>testnorge-domain</artifactId>
+        </dependency>
 
         <!-- ARBEIDSFORHOLD -->
         <dependency>
