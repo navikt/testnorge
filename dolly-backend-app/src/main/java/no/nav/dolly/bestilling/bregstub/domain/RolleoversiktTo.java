@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -18,6 +20,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RolleoversiktTo {
 
     private AdresseTo adresse;
@@ -48,6 +51,7 @@ public class RolleoversiktTo {
     @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RolleTo {
 
         @EqualsAndHashCode.Exclude
@@ -71,6 +75,7 @@ public class RolleoversiktTo {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class NavnTo {
 
         private String navn1;
@@ -83,6 +88,7 @@ public class RolleoversiktTo {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class AdresseTo {
 
         private String adresse1;

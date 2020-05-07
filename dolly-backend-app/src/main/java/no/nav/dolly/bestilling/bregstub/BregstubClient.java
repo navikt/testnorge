@@ -23,6 +23,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 @RequiredArgsConstructor
 public class BregstubClient implements ClientRegister {
 
+    private static final String OK_STATUS = "OK";
     private final BregstubConsumer bregstubConsumer;
     private final RolleUtskriftMapper rolleUtskriftMapper;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -35,9 +36,9 @@ public class BregstubClient implements ClientRegister {
             BrregRequestWrapper wrapper = rolleUtskriftMapper.map(bestilling.getBregstub(), tpsPerson);
 
             RolleoversiktTo mergetRolleoversikt = prepareRequest(wrapper.getRolleoversiktTo(), tpsPerson.getHovedperson());
-            postOrganisasjon(wrapper.getOrganisasjonTo());
+            String status = postRolleutskrift(mergetRolleoversikt);
 
-            progress.setBregstubStatus(postRolleutskrift(mergetRolleoversikt));
+            progress.setBregstubStatus(OK_STATUS.equals(status) ? postOrganisasjon(wrapper.getOrganisasjonTo()) : status);
         }
     }
 
@@ -59,7 +60,7 @@ public class BregstubClient implements ClientRegister {
         try {
             ResponseEntity status = bregstubConsumer.postRolleoversikt(rolleoversiktTo);
             if (HttpStatus.CREATED == status.getStatusCode()) {
-                return "OK";
+                return OK_STATUS;
             }
         } catch (RuntimeException e) {
 
@@ -69,16 +70,17 @@ public class BregstubClient implements ClientRegister {
         return "Uspesifisert feil";
     }
 
-    private void postOrganisasjon(List<OrganisasjonTo> organisasjonTo) {
+    private String postOrganisasjon(List<OrganisasjonTo> organisasjonTo) {
 
         try {
             organisasjonTo.forEach(organisasjon ->
                     bregstubConsumer.postOrganisasjon(organisasjon)
             );
+            return OK_STATUS;
 
         } catch (RuntimeException e) {
 
-            errorStatusDecoder.decodeRuntimeException(e);
+            return errorStatusDecoder.decodeRuntimeException(e);
         }
     }
 }
