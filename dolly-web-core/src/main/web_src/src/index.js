@@ -27,6 +27,7 @@ window.onerror = message => {
 	}
 }
 
+const root = document.getElementById('root')
 render(
 	<Provider store={store}>
 		<ConnectedRouter history={history}>
@@ -35,5 +36,5 @@ render(
 			</ErrorBoundary>
 		</ConnectedRouter>
 	</Provider>,
-	document.getElementById('root')
+	root
 )

@@ -1,12 +1,13 @@
-import React from 'react'
-import Gruppe from './pages/gruppe/GruppeConnector'
-import GruppeOversikt from './pages/gruppeOversikt/GruppeOversiktConnector'
-import TPSEndring from './pages/tpsEndring/TpsEndring'
-import BestillingsveilederConnector from './components/bestillingsveileder/BestillingsveilederConnector'
-import MinSide from './pages/minSide/MinSideConnector'
-import UI from './pages/ui/index'
-// import InntektStubPage from './pages/inntektStubPage/InntektStubPage'
+import React, { lazy } from 'react'
 
+const Gruppe = lazy(() => import('./pages/gruppe/GruppeConnector'))
+const GruppeOversikt = lazy(() => import('./pages/gruppeOversikt/GruppeOversiktConnector'))
+const TPSEndring = lazy(() => import('./pages/tpsEndring/TpsEndring'))
+const BestillingsveilederConnector = lazy(() =>
+	import('./components/bestillingsveileder/BestillingsveilederConnector')
+)
+const MinSide = lazy(() => import('./pages/minSide/MinSideConnector'))
+const UI = lazy(() => import('./pages/ui/index'))
 const GruppeBreadcrumb = props => <span>Gruppe #{props.match.params.gruppeId}</span>
 
 const routes = [
@@ -27,7 +28,6 @@ const routes = [
 	{ path: '/tpsendring', exact: true, breadcrumb: 'TPSEndring', component: TPSEndring },
 	{ path: '/minside', exact: true, breadcrumb: 'Min side', component: MinSide },
 	{ path: '/ui', exact: true, breadcrumb: 'UI demo', component: UI }
-	// { path: '/inntektstub', exact: true, breadcrumb: 'Inntektstub', component: InntektStubPage }
 ]
 
 export default routes
