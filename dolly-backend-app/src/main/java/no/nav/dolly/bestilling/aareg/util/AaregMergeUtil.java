@@ -6,54 +6,88 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import lombok.experimental.UtilityClass;
+import no.nav.dolly.bestilling.aareg.domain.Aktoer;
 import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
+import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 
 @UtilityClass
 public class AaregMergeUtil {
 
-    public List<Arbeidsforhold> merge(List<Arbeidsforhold> nyeArbeidsforhold, ArbeidsforholdResponse eksisterendeArbeidsforhold, boolean isLeggTil) {
+    public List<Arbeidsforhold> merge(List<Arbeidsforhold> nyeArbeidsforhold,
+            List<ArbeidsforholdResponse> eksisterendeArbeidsforhold, String ident, boolean isLeggTil) {
 
-        if (eksisterendeArbeidsforhold.getArbeidsforhold().isEmpty() || isLeggTil) {
+        if (eksisterendeArbeidsforhold.isEmpty() || isLeggTil) {
 
-            return appendArbeidforholdId(nyeArbeidsforhold, eksisterendeArbeidsforhold);
+            return appendIds(nyeArbeidsforhold, eksisterendeArbeidsforhold, ident);
         }
 
         List<Arbeidsforhold> arbeidsforhold = nyeArbeidsforhold.stream()
-                .filter(arbforhold -> eksisterendeArbeidsforhold.getArbeidsforhold().stream()
-                        .noneMatch(arbforhold2 -> arbforhold2.equals(arbforhold)))
+                .filter(arbforhold -> eksisterendeArbeidsforhold.stream()
+                        .noneMatch(arbforhold2 ->
+                                isEqual(arbforhold, arbforhold2)))
                 .collect(Collectors.toList());
 
-        (isMatchArbgivOrgnummer(arbfInput.getArbeidsgiver(), getIdentifyingNumber(arbfFraAareg)) ||
-                isMatchArbgivPersonnummer(arbfInput.getArbeidsgiver(), getIdentifyingNumber(arbfFraAareg))) &&
-                arbfInput.getArbeidsforholdID().equals(getArbforholdId(arbfFraAareg)))
-
-
+        return appendIds(arbeidsforhold, eksisterendeArbeidsforhold, ident);
     }
 
-    private static boolean isEqual(Arbeidsforhold nytt, ArbeidsforholdResponse.Arbeidsforhold eksisterende) {
+    private static boolean isEqual(Arbeidsforhold nytt, ArbeidsforholdResponse eksisterende) {
 
-        return isOrgnummer(nytt, eksisterende) &&
-                ((RsOrganisasjon) nytt.getArbeidsgiver()).getOrgnummer().equals(eksisterende.getArbeidsgiver().getOrganisasjonsnummer());
+        return (isEqualOrgnummer(nytt, eksisterende) || isEqualPersonnr(nytt, eksisterende)) &&
+                isEqualArbeidsAvtale(nytt, eksisterende);
     }
 
-    private static boolean isOrgnummer(Arbeidsforhold nytt, ArbeidsforholdResponse.Arbeidsforhold eksisterende) {
+    private static boolean isEqualArbeidsAvtale(Arbeidsforhold nytt, ArbeidsforholdResponse eksisterende) {
+
+        return eksisterende.getArbeidsavtaler().stream().anyMatch(arbeidsavtale ->
+                arbeidsavtale.getYrke().equals(nytt.getArbeidsavtale().getYrke()) &&
+                        arbeidsavtale.getArbeidstidsordning().equals(nytt.getArbeidsavtale().getArbeidstidsordning())
+        );
+    }
+
+    private static boolean isEqualOrgnummer(Arbeidsforhold nytt, ArbeidsforholdResponse eksisterende) {
+
         return "ORG".equals(nytt.getArbeidsgiver().getAktoertype()) &&
-                eksisterende.getArbeidsgiver().getType() == ArbeidsforholdResponse.Aktoer.Organisasjon;
+                eksisterende.getArbeidsgiver().getType() == Aktoer.Organisasjon &&
+                ((RsOrganisasjon) nytt.getArbeidsgiver()).getOrgnummer()
+                        .equals(eksisterende.getArbeidsgiver().getOrganisasjonsnummer());
     }
 
-    private static List<Arbeidsforhold> appendArbeidforholdId(List<Arbeidsforhold> nyeArbeidsforhold,
-            ArbeidsforholdResponse eksisterendeArbeidsforhold) {
+    private static boolean isEqualPersonnr(Arbeidsforhold nytt, ArbeidsforholdResponse eksisterende) {
+
+        return "PERS".equals(nytt.getArbeidsgiver().getAktoertype()) &&
+                eksisterende.getArbeidsgiver().getType() == Aktoer.Person &&
+                ((RsAktoerPerson) nytt.getArbeidsgiver()).getIdent()
+                        .equals(eksisterende.getArbeidsgiver().getOffentligIdent());
+    }
+
+    private static List<Arbeidsforhold> appendIds(List<Arbeidsforhold> nyeArbeidsforhold,
+            List<ArbeidsforholdResponse> eksisterendeArbeidsforhold, String ident) {
 
         AtomicInteger arbeidsforholdId = new AtomicInteger(
-                eksisterendeArbeidsforhold.getArbeidsforhold().stream()
-                        .map(ArbeidsforholdResponse.Arbeidsforhold::getArbeidsforholdId).map(Integer::new)
+                eksisterendeArbeidsforhold.stream()
+                        .map(ArbeidsforholdResponse::getArbeidsforholdId)
+                        .map(Integer::new)
                         .max(Comparator.reverseOrder()).orElse(0)
         );
 
-        nyeArbeidsforhold.forEach(arbeidforhold ->
-                arbeidforhold.setArbeidsforholdID(Integer.toString(arbeidsforholdId.addAndGet(1))));
+        AtomicInteger permisjonId = new AtomicInteger(
+                eksisterendeArbeidsforhold.stream()
+                        .map(ArbeidsforholdResponse::getPermisjonPermitteringer)
+                        .flatMap(permisjonPermittering -> permisjonPermittering.stream()
+                                .map(ArbeidsforholdResponse.PermisjonPermittering::getPermisjonPermitteringId)
+                                .map(Integer::new)
+                        )
+                        .max(Comparator.reverseOrder()).orElse(0)
+        );
+
+        nyeArbeidsforhold.forEach(arbeidforhold -> {
+            arbeidforhold.setArbeidsforholdID(Integer.toString(arbeidsforholdId.addAndGet(1)));
+            arbeidforhold.getPermisjon().forEach(permisjon ->
+                    permisjon.setPermisjonsId(Integer.toString(permisjonId.addAndGet(1))));
+            arbeidforhold.getArbeidstaker().setIdent(ident);
+        });
 
         return nyeArbeidsforhold;
     }

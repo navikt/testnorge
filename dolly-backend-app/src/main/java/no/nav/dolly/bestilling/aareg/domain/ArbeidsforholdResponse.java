@@ -5,24 +5,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArbeidsforholdResponse {
 
-    public enum Aktoer {Organisasjon, Person}
-    private List<Arbeidsforhold> arbeidsforhold;
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Arbeidsforhold {
         private Ansettelsesperiode ansettelsesperiode;
         private List<AntallTimerForTimeloennet> antallTimerForTimeloennet;
         private List<Arbeidsavtale> arbeidsavtaler;
@@ -37,7 +31,6 @@ public class ArbeidsforholdResponse {
         private LocalDateTime sistBekreftet;
         private String type;
         private List<Utenlandsopphold> utenlandsopphold;
-    }
 
     @Getter
     @Setter

@@ -9,8 +9,6 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +31,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.dolly.bestilling.aareg.AaregConsumer;
-import no.nav.dolly.bestilling.aareg.domain.AaregOppdaterRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
 import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
@@ -66,9 +63,7 @@ public class AaregConsumerTest {
     private String ident = "01010101010";
     private String miljoe = "t0";
     private AaregOpprettRequest opprettRequest;
-    private AaregOppdaterRequest oppdaterRequest;
     private AaregResponse opprettResponse;
-    private AaregResponse oppdaterResponse;
     private AaregResponse slettResponse;
 
     @Before
@@ -88,14 +83,6 @@ public class AaregConsumerTest {
                 .statusPerMiljoe(status)
                 .build();
 
-        oppdaterRequest = new AaregOppdaterRequest(LocalDateTime.of(2019, 1, 1, 0, 0, 0));
-        oppdaterRequest.setArbeidsforhold(Arbeidsforhold.builder().build());
-        oppdaterRequest.setEnvironments(Collections.singletonList(miljoe));
-
-        oppdaterResponse = AaregResponse.builder()
-                .statusPerMiljoe(status)
-                .build();
-
         slettResponse = AaregResponse.builder()
                 .statusPerMiljoe(status)
                 .build();
@@ -111,16 +98,6 @@ public class AaregConsumerTest {
         stubOpprettArbeidsforhold(expectedUri, opprettResponse);
 
         AaregResponse response = aaregConsumer.opprettArbeidsforhold(opprettRequest);
-
-        assertThat(response.getStatusPerMiljoe().get(miljoe), equalTo("OK"));
-    }
-
-    @Test
-    public void oppdaterArbeidsforhold() throws JsonProcessingException {
-        String expectedUri = serverUrl + "/api/v1/arbeidsforhold";
-        stubOppdaterArbeidsforhold(expectedUri, oppdaterResponse);
-
-        AaregResponse response = aaregConsumer.oppdaterArbeidsforhold(oppdaterRequest);
 
         assertThat(response.getStatusPerMiljoe().get(miljoe), equalTo("OK"));
     }
@@ -151,20 +128,6 @@ public class AaregConsumerTest {
                         withStatus(HttpStatus.CREATED)
                                 .body(asJsonString(response))
                                 .contentType(MediaType.APPLICATION_JSON));
-    }
-
-    private void stubOppdaterArbeidsforhold(String expectedUri, AaregResponse response) throws JsonProcessingException {
-        server.expect(requestToUriTemplate(expectedUri))
-                .andExpect(method(HttpMethod.PUT))
-                .andExpect(content().string(
-                        String.format(
-                                "{\"environments\":%s,\"arbeidsforhold\":%s,\"arkivreferanse\":%s,\"rapporteringsperiode\":%s}",
-                                asJsonString(oppdaterRequest.getEnvironments()),
-                                asJsonString(oppdaterRequest.getArbeidsforhold()),
-                                asJsonString(oppdaterRequest.getArkivreferanse()),
-                                asJsonString(oppdaterRequest.getRapporteringsperiode().format(DateTimeFormatter.ISO_DATE_TIME)))
-                ))
-                .andRespond(withSuccess(asJsonString(response), MediaType.APPLICATION_JSON));
     }
 
     private void stubHentArbeidsforhold(String expectedUri) {
