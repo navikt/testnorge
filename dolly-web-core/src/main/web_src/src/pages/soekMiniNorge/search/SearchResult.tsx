@@ -6,6 +6,7 @@ import { HodejegerenApi } from '~/service/Api'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import ResultatVisningConnecter from '~/pages/soekMiniNorge/search/ResultatVisning/ResultatVisningConnecter'
 import { HodejegerenResponse } from '../hodejegeren/types'
+import { Feedback } from '~/components/feedback'
 
 interface SearchResultVisningProps {
 	soekOptions: string
@@ -80,16 +81,23 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 				}
 
 				return (
-					<DollyTable
-						data={data}
-						columns={columns}
-						pagination
-						iconItem={(bruker: HodejegerenResponse) => (bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />)}
-						onExpand={(bruker: HodejegerenResponse) => <ResultatVisningConnecter
-							personId={bruker.personIdent.id}
-							data={bruker}
-						/>}
-					/>
+					<div>
+						<DollyTable
+							data={data}
+							columns={columns}
+							pagination
+							iconItem={(bruker: HodejegerenResponse) =>
+								bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />
+							}
+							onExpand={(bruker: HodejegerenResponse) => (
+								<ResultatVisningConnecter personId={bruker.personIdent.id} data={bruker} />
+							)}
+						/>
+						<Feedback
+							label="Hva var negativt med din opplevelse med bruk av Søk i Mini-Norge?"
+							feedbackFor="Bruk av Søk i Mini Norge"
+						/>
+					</div>
 				)
 			}}
 		/>

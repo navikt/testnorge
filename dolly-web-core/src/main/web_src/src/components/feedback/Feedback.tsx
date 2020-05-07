@@ -23,14 +23,21 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 	const [uuid] = useState(_uuid())
 	const [submit, setSubmit] = useState(false)
 
+	const onClick = (rating: Rating) => {
+		setRating(rating)
+		if (rating === Rating.Positive) {
+			Logger.log({ event: `Vurdering av: ${feedbackFor}`, rating: rating, uuid: uuid })
+		}
+	}
+
 	return (
 		<ThumbsRating
 			label={label}
 			ratingFor={feedbackFor}
-			onClick={rating => setRating(rating)}
+			onClick={rating => onClick(rating)}
 			uuid={uuid}
 		>
-			{!submit && (
+			{!submit && rating === Rating.Negative && (
 				<form className="feedback-form">
 					<Textarea
 						value={text}
