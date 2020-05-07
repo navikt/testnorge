@@ -56,7 +56,7 @@ export const initialValues = {
 		{
 			eosEllerEFTAVedtakOmVarigOppholdsrettPeriode: {
 				// @ts-ignore
-				fra : null,
+				fra: null,
 				// @ts-ignore
 				til: null
 			},

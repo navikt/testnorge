@@ -22,7 +22,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	fetchConfig: () => ConfigService.fetchConfig()
 })
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(App)
+export default connect(mapStateToProps, mapDispatchToProps)(App)
