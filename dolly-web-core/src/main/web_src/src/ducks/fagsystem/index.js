@@ -298,10 +298,9 @@ export const fetchDataFraFagsystemerForSoek = personId => (dispatch) => {
 				return dispatch(actions.getInst(personId, "q2"))
 			case 'PEN_INNTEKT':
 				return dispatch(actions.getPensjon(personId, "q2"))
-
+			case 'AAREG':
+				return dispatch(actions.getAareg(personId, "q2"))
 			//TODO: hente data fra disse fagsystemene
-			// case 'AAREG':
-			// 	return dispatch(actions.getAareg(personId, "q2"))
 			// case 'UDISTUB':
 			// 	return dispatch(actions.getUdi(personId))
 			// case 'BREGSTUB':

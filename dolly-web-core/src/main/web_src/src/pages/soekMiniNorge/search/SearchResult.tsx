@@ -2,10 +2,11 @@ import React from 'react'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+// @ts-ignore
 import { HodejegerenApi } from '~/service/Api'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import ResultatVisningConnecter from '~/pages/soekMiniNorge/search/ResultatVisning/ResultatVisningConnecter'
-import { Innhold, HodejegerenResponse } from '../hodejegeren/types'
+import { Innhold} from '../hodejegeren/types'
 
 interface SearchResultVisningProps {
 	soekOptions: string

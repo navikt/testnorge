@@ -6,12 +6,15 @@ import {
 	SigrunstubVisning,
 	InntektstubVisning,
 	InstVisning,
-	PensjonVisning
+	PensjonVisning, AaregVisning
 } from '~/components/fagsystem'
 import Panel from '~/components/ui/panel/Panel'
 
 import { MiniNorgeVisning } from '~/pages/soekMiniNorge/search/ResultatVisning/partials/MiniNorgeVisning'
 import { Innhold } from '~/pages/soekMiniNorge/hodejegeren/types'
+import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
+import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import { AaregApi } from '~/service/Api'
 
 type Loading = {
 	pdlforvalter: boolean
@@ -50,6 +53,9 @@ export const ResultatVisning = ({
 				//@ts-ignore
 				<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			)}
+			{data.aareg && data.aareg.length>0 && (
+				<AaregVisning liste={data.aareg} loading={false} />
+			)}
 			{data.pensjonforvalter && data.pensjonforvalter.length > 0 && (
 				//@ts-ignore
 				<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
@@ -78,5 +84,5 @@ export const ResultatVisning = ({
 	)
 }
 //TODO:
-// hente (se ducks/fagsystem/index) og vise data fra aareg, udistub, brreegstub
+// hente (se ducks/fagsystem/index) og vise data fra udistub, brreegstub
 // vise data for arena, inntektsmelding
