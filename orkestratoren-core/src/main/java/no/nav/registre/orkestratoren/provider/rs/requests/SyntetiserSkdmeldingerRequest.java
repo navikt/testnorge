@@ -11,8 +11,8 @@ import java.util.Map;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class SyntetiserSkdmeldingerRequest {
 
     @NotNull

@@ -10,8 +10,8 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class SyntetiserTpRequest {
 
     @NotNull

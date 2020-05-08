@@ -1,0 +1,1 @@
+Orkestratoren er applikasjonen som orkestrerer opprettelse av syntetiske hendelser i den syntetiske populasjonen "mininorge".
