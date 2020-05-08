@@ -1,10 +1,12 @@
-package no.nav.dolly.bestilling.bregstub.domain;
+package no.nav.dolly.bestilling.brregstub.domain;
 
 import static java.util.Objects.isNull;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,8 +17,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RolleoversiktTo {
 
     private AdresseTo adresse;
@@ -43,9 +47,11 @@ public class RolleoversiktTo {
 
     @Getter
     @Setter
+    @Builder
     @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RolleTo {
 
         @EqualsAndHashCode.Exclude
@@ -54,7 +60,7 @@ public class RolleoversiktTo {
         @EqualsAndHashCode.Exclude
         private AdresseTo forretningsAdresse;
 
-        private String orgNr;
+        private Integer orgNr;
 
         @EqualsAndHashCode.Exclude
         private AdresseTo postAdresse;
@@ -69,6 +75,7 @@ public class RolleoversiktTo {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class NavnTo {
 
         private String navn1;
@@ -81,6 +88,7 @@ public class RolleoversiktTo {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class AdresseTo {
 
         private String adresse1;

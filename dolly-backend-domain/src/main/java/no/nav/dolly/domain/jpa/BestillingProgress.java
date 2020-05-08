@@ -72,7 +72,7 @@ public class BestillingProgress {
     private String inntektsmeldingStatus;
 
     @Column(name = "BREGSTUB_STATUS")
-    private String bregstubStatus;
+    private String brregstubStatus;
 
     private String feil;
 

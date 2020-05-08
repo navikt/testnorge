@@ -98,7 +98,7 @@ public class RsDollyBestilling {
     @ApiModelProperty(
             position = 12
     )
-    private RsBregdata bregstub;
+    private RsBregdata brregstub;
 
     public List<RsArbeidsforhold> getAareg() {
         if (isNull(aareg)) {

@@ -79,6 +79,6 @@ public class RsMalBestillingWrapper {
         private RsUdiPerson udistub;
         private RsInntektsmelding inntektsmelding;
         private PensjonData pensjonforvalter;
-        private RsBregdata bregstub;
+        private RsBregdata brregstub;
     }
 }
