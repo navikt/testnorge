@@ -1,4 +1,4 @@
-import { initialValues as initialValuesInntektstub } from '~/components/fagsystem/inntektstub/form/Form'
+import { initialValues as initialValuesInntektstub } from '~/components/fagsystem/inntektstub/form/partials/inntektsinformasjon'
 import { initialValues as initialValuesAareg } from '~/components/fagsystem/aareg/form/initialValues'
 import {
 	initialPermisjon,
@@ -56,7 +56,7 @@ export const initialValues = {
 		{
 			eosEllerEFTAVedtakOmVarigOppholdsrettPeriode: {
 				// @ts-ignore
-				fra : null,
+				fra: null,
 				// @ts-ignore
 				til: null
 			},

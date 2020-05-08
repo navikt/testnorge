@@ -41,7 +41,7 @@ const unikOrgMndTest = validation => {
 
 		const currInntektsinformasjon = _get(values, currInntektsinformasjonPath)
 		const alleInntektsinformasjon = _get(values, inntektsinformasjonPath).filter(
-			inntektinfo => !(inntektinfo.version > 1) //nye versjoner skal ikke være en del av test
+			inntektinfo => _isNil(inntektinfo.versjon) //nye versjoner skal ikke være en del av test
 		)
 
 		const virksomheter = alleInntektsinformasjon.map(inntektinfo => inntektinfo.virksomhet)
@@ -49,18 +49,11 @@ const unikOrgMndTest = validation => {
 			maanedAar: inntektinfo.sisteAarMaaned,
 			antallMaaneder: inntektinfo.antallMaaneder
 		}))
-		console.log('virksomheter :>> ', virksomheter)
-		console.log('maaneder :>> ', maaneder)
 		const likeOrgnrIndex = indexOfLikeOrgnr(virksomheter, currInntektsinformasjon.virksomhet)
-		console.log('likeOrgnrIndex :>> ', likeOrgnrIndex)
 		//Hvis ingen orgnr er like trenger vi ikke sjekke datoer. Hvis orgnr er like -> finn måneder
 		if (likeOrgnrIndex.length < 2) return true
 		const tidsrom = finnTidsrom(maaneder)
-		console.log('tidsrom :>> ', tidsrom)
-		console.log(
-			'!finnesOverlappendeDato(tidsrom, likeOrgnrIndex) :>> ',
-			!finnesOverlappendeDato(tidsrom, likeOrgnrIndex)
-		)
+
 		return !finnesOverlappendeDato(tidsrom, likeOrgnrIndex)
 	})
 }
@@ -76,7 +69,6 @@ const finnTidsrom = maaneder =>
 		const year = maaned.maanedAar.split('-')[0]
 		const month = maaned.maanedAar.split('-')[1]
 		const dateOfLastMonth = new Date(year, month - 1)
-		console.log('dateOfLastMonth :>> ', dateOfLastMonth)
 		return {
 			start: subMonths(dateOfLastMonth, maaned.antallMaaneder),
 			end: dateOfLastMonth
@@ -84,11 +76,9 @@ const finnTidsrom = maaneder =>
 	})
 
 const finnesOverlappendeDato = (tidsrom, index) => {
-	console.log('index :>> ', index)
-	console.log('tidsrom :>> ', tidsrom)
 	const tidsromSomIkkeKanOverlappe = index.map(idx => tidsrom[idx])
-	console.log('tidsromSomIkkeKanOverlappe :>> ', tidsromSomIkkeKanOverlappe)
 	const firstInterval = tidsromSomIkkeKanOverlappe[0]
+
 	return tidsromSomIkkeKanOverlappe.some((tidsrom, idx) => {
 		if (idx === 0) return //Tester mot første tidsrom
 		return areIntervalsOverlapping(

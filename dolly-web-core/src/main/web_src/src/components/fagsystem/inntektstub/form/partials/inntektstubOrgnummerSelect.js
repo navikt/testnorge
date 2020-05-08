@@ -3,10 +3,20 @@ import _get from 'lodash/get'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { OrganisasjonLoader } from '~/components/organisasjonSelect'
 
-export const InntektstubOrgnummerSelect = ({ path, formikBag, locked }) => {
+export const InntektstubOrgnummerSelect = ({ path, formikBag, locked, versjonering }) => {
 	const setOrgnummer = org => {
 		formikBag.setFieldValue(`${path}.virksomhet`, org.value)
 		formikBag.setFieldValue(`${path}.opplysningspliktig`, org.juridiskEnhet)
+
+		if (versjonering.harAvhengigheter) {
+			versjonering.underversjoner.forEach(versjon => {
+				formikBag.setFieldValue(`${versjonering.path}[${versjon}].virksomhet`, org.value)
+				formikBag.setFieldValue(
+					`${versjonering.path}[${versjon}].opplysningspliktig`,
+					org.juridiskEnhet
+				)
+			})
+		}
 	}
 
 	const getFeilmelding = () => {
