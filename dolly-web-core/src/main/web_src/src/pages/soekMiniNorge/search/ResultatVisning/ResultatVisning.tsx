@@ -12,9 +12,6 @@ import Panel from '~/components/ui/panel/Panel'
 
 import { MiniNorgeVisning } from '~/pages/soekMiniNorge/search/ResultatVisning/partials/MiniNorgeVisning'
 import { Innhold } from '~/pages/soekMiniNorge/hodejegeren/types'
-import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
-import { AaregApi } from '~/service/Api'
 
 type Loading = {
 	pdlforvalter: boolean
