@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.udistub;
+package no.nav.dolly.bestilling.udistub.domain;
 
 import static java.util.Objects.isNull;
 

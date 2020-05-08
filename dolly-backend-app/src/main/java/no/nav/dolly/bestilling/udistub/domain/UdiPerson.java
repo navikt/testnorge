@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.udistub.model;
+package no.nav.dolly.bestilling.udistub.domain;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.udistub.model.UdiHarType;
+import no.nav.dolly.domain.resultset.udistub.model.UdiPersonNavn;
 import no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang.UdiArbeidsadgang;
 import no.nav.dolly.domain.resultset.udistub.model.avgjoerelse.UdiAvgjorelse;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdStatus;
@@ -34,4 +36,16 @@ public class UdiPerson {
     private UdiOppholdStatus oppholdStatus;
     private UdiHarType soeknadOmBeskyttelseUnderBehandling;
     private LocalDate soknadDato;
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    @Setter
+    @Builder
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class UdiAlias {
+
+        private String fnr;
+        private UdiPersonNavn navn;
+    }
 }
