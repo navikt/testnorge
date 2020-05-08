@@ -51,7 +51,7 @@ export const ResultatVisning = ({
 				<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			)}
 			{data.aareg && data.aareg.length>0 && (
-				<AaregVisning liste={data.aareg} loading={false} />
+				<AaregVisning liste={data.aareg} loading={loading.aareg} />
 			)}
 			{data.pensjonforvalter && data.pensjonforvalter.length > 0 && (
 				//@ts-ignore
