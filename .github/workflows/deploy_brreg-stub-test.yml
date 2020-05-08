@@ -1,15 +1,15 @@
-name: Build, push, and deploy
+name: Build, push, and deploy to q2
 
 on:
   push:
-    branches: master
+    branches: brreg-stub-test
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/brreg-stub:${{ github.sha }}
 
 jobs:
   build:
-    name: Bygg app/image, push til github, deploy til dev-fss
+    name: Bygg app/image, push til github, deploy til q2
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -31,16 +31,9 @@ jobs:
           docker build --tag ${IMAGE} .
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
-
-  deploy:
-    name: Deploy to NAIS
-    needs: build
-    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: nais/deploy/actions/deploy@v1
+      - name: Deploy to nais q2 namespace
+        uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
-          RESOURCE: nais.yaml
+          RESOURCE: nais_brreg-stub-test.yaml

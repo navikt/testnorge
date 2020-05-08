@@ -1,0 +1,31 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: brreg-stub
+  namespace: q2
+  labels:
+    team: dolly
+spec:
+  image: {{ image }}
+  port: 8080
+  liveness:
+    path: /isAlive
+    periodSeconds: 30
+    initialDelay: 30
+  readiness:
+    path: /isReady
+    initialDelay: 30
+  replicas:
+    min: 1
+    max: 1
+  vault:
+    enabled: true
+  resources:
+    limits:
+      cpu: 500m
+      memory: 2048Mi
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+  ingresses:
+    - "https://brreg-stub-q2.nais.preprod.local"
