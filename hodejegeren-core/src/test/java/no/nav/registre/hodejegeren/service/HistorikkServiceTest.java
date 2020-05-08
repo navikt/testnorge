@@ -16,6 +16,7 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.common.io.Resources;
+import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +40,6 @@ import no.nav.registre.hodejegeren.mongodb.Kilde;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikkRepository;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
-import no.nav.registre.testnorge.consumers.namespacetps.TpsPersonDokumentType;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HistorikkServiceTest {

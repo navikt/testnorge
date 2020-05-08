@@ -2,6 +2,7 @@ package no.nav.registre.hodejegeren.provider.rs;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +22,6 @@ import java.util.Set;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 import no.nav.registre.hodejegeren.service.HistorikkService;
-import no.nav.registre.testnorge.consumers.namespacetps.TpsPersonDokumentType;
 
 @Slf4j
 @RestController
