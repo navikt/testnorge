@@ -1,31 +1,36 @@
 import React from 'react'
-import { Personinfo } from '~/components/fagsystem/tpsf/visning/partials/Personinfo'
-import { Nasjonalitet } from '~/components/fagsystem/tpsf/visning/partials/Nasjonalitet'
-
-import { Boadresse } from '~/components/fagsystem/tpsf/visning/partials/Boadresse'
-import { Postadresse } from '~/components/fagsystem/tpsf/visning/partials/Postadresse'
-import { Relasjoner } from '~/components/fagsystem/tpsf/visning/partials/Relasjoner'
+import {
+	Personinfo,
+	Nasjonalitet,
+	Boadresse,
+	Postadresse,
+	Relasjoner
+} from '~/components/fagsystem/tpsf/visning/partials'
 import { getBoadresse, getNasjonalitet, getPersonInfo, getPostAdresse, getRelasjoner } from './utils'
+import { Innhold } from '~/pages/soekMiniNorge/hodejegeren/types'
 
+interface MiniNorgeVisningProps {
+	data: Innhold
+}
 
-export const MiniNorgeVisning = (data: any) => {
+export const MiniNorgeVisning = ({data}: MiniNorgeVisningProps) => {
 	if (!data) return null
 
-	const relasjoner = getRelasjoner(data.data)
+	const relasjoner = getRelasjoner(data)
 	return (
 		<div>
-			<Personinfo data={getPersonInfo(data.data)} />
-			<Nasjonalitet data={getNasjonalitet(data.data)} />
-			{data.data.boadresse.postnr &&
+			<Personinfo data={getPersonInfo(data)} />
+			<Nasjonalitet data={getNasjonalitet(data)} />
+			{data.boadresse.postnr &&
 			// @ts-ignore
-			<Boadresse boadresse={getBoadresse(data.data)} />}
-			{data.data.post.adresse1 &&
+			<Boadresse boadresse={getBoadresse(data)} />}
+			{data.post.adresse1 &&
 			// @ts-ignore
-			<Postadresse postadresse={getPostAdresse(data.data)} />}
+			<Postadresse postadresse={getPostAdresse(data)} />}
 			{relasjoner.length > 0 &&
 			// @ts-ignore
 			<Relasjoner relasjoner={relasjoner}/>}
 		</div>
 	)
 }
-//TODO relasjoner, oppholdstilatelse
+//TODO oppholdstillatelse

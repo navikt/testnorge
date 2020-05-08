@@ -1,7 +1,6 @@
-import { Statsborger, HodejegerenResponse } from '../../../hodejegeren/types'
-import { sivilstander } from '~/components/fagsystem/tpsf/form/validation'
+import { Statsborger, Innhold } from '../../../hodejegeren/types'
 
-export const getBoadresse = (data: HodejegerenResponse) => {
+export const getBoadresse = (data: Innhold) => {
 	const boadresseData = data.boadresse
 	const type = boadresseData.matrikkelGardsnr ? 'MATR' : 'GATE'
 	return [
@@ -29,8 +28,8 @@ const getStatsborgerskap = (data: Statsborger) => {
 	]
 }
 
-export const getNasjonalitet = (data: HodejegerenResponse) => {
-	var innutvandret: string[]
+export const getNasjonalitet = (data: Innhold) => {
+	let innutvandret: string[]
 	innutvandret = []
 	return {
 		statsborgerskap: getStatsborgerskap(data.statsborger),
@@ -46,7 +45,7 @@ const getAlder = (datoFoedt: Date) => {
 	return Math.abs(age_dt.getUTCFullYear() - 1970)
 }
 
-export const getPersonInfo = (data: HodejegerenResponse) => {
+export const getPersonInfo = (data: Innhold) => {
 	const tlf1 = data.telefonPrivat.nummer ? 'privat' : 'mobil'
 	const personInfo = {
 		identtype: data.personIdent.type,
@@ -74,7 +73,7 @@ export const getPersonInfo = (data: HodejegerenResponse) => {
 	return personInfo
 }
 
-export const getPostAdresse = (data: HodejegerenResponse) => {
+export const getPostAdresse = (data: Innhold) => {
 	return [
 		{
 			postLinje1: data.post.adresse1,
@@ -85,13 +84,13 @@ export const getPostAdresse = (data: HodejegerenResponse) => {
 	]
 }
 
-export const getRelasjoner = (data: HodejegerenResponse) => {
+export const getRelasjoner = (data: Innhold) => {
 	let emptyArray: string[]
 	emptyArray = []
 	let dollyRelasjoner = []
 	for (let i = 0; i < data.relasjoner.length; i++) {
 		const type = getRelasjonsType(data.relasjoner[i].rolle)
-		if(type ==='MOR' || type === 'FAR') continue
+		if(type === Relasjon.MOR || type === Relasjon.FAR) continue
 		dollyRelasjoner.push({
 			relasjonTypeNavn: type,
 			personRelasjonMed: {
@@ -106,6 +105,14 @@ export const getRelasjoner = (data: HodejegerenResponse) => {
 		})
 	}
 	return dollyRelasjoner
+}
+
+enum Relasjon {
+	MOR = 'MOR',
+	FAR = 'FAR',
+	EKTEFELLE = 'EKTEFELLE',
+	PARTNER = 'PARTNER',
+	BARN = 'BARN'
 }
 
 const getRelasjonsType = (rolle: string) => {

@@ -5,7 +5,7 @@ import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { HodejegerenApi } from '~/service/Api'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import ResultatVisningConnecter from '~/pages/soekMiniNorge/search/ResultatVisning/ResultatVisningConnecter'
-import { HodejegerenResponse } from '../hodejegeren/types'
+import { Innhold, HodejegerenResponse } from '../hodejegeren/types'
 
 interface SearchResultVisningProps {
 	soekOptions: string
@@ -38,7 +38,7 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 			text: 'Navn',
 			width: '50',
 			dataField: 'navn.fornavn',
-			formatter: (cell: any, row: any) => {
+			formatter: (cell: string, row: Innhold) => {
 				return row.navn.fornavn + ' ' + row.navn.slektsnavn
 			}
 		},
@@ -51,7 +51,7 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 			text: 'Alder',
 			width: '30',
 			dataField: 'personInfo.datoFoedt',
-			formatter: (cell: any, row: any) => {
+			formatter: (cell: Date, row: Innhold) => {
 				const foedselsdato = new Date(row.personInfo.datoFoedt)
 				const diff_ms = Date.now() - foedselsdato.getTime()
 				const age_dt = new Date(diff_ms)
@@ -65,27 +65,19 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 		<LoadableComponent
 			key={props.soekNummer}
 			onFetch={() =>
-				HodejegerenApi.soek(props.soekOptions, props.antallResultat).then(response => {
-					if (response.data.length > 0) {
-						return response.data.map(function(res: any) {
-							return res.kilder[0].data[0].innhold
-						})
-					}
-					return null
-				})
+				HodejegerenApi.soek(props.soekOptions, props.antallResultat)
 			}
-			render={(data: Array<Response>) => {
+			render={(data: Array<Innhold>) => {
 				if (!data) {
 					return <ContentContainer>Søket gav ingen resultater.</ContentContainer>
 				}
-
 				return (
 					<DollyTable
 						data={data}
 						columns={columns}
 						pagination
-						iconItem={(bruker: HodejegerenResponse) => (bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />)}
-						onExpand={(bruker: HodejegerenResponse) => <ResultatVisningConnecter
+						iconItem={(bruker: Innhold) => (bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />)}
+						onExpand={(bruker: Innhold) => <ResultatVisningConnecter
 							personId={bruker.personIdent.id}
 							data={bruker}
 						/>}

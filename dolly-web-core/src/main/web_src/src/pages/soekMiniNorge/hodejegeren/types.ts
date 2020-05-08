@@ -1,3 +1,44 @@
+export type HodejegerenResponse = {
+	data: ResponseData[]
+}
+
+export type ResponseData = {
+	id?: string
+	datoRekvirert?: Date
+	kilder: Kilder[]
+}
+
+type Kilder = {
+	navn?: string
+	data: KilderData[]
+}
+
+type KilderData = {
+	datoOpprettet?: Date
+	datoEndret?: Date
+	innhold: Innhold[]
+}
+
+export type Innhold = {
+	personIdent: PersonIdent
+	personInfo: PersonInfo
+	navn: Navn
+	sivilstand: Sivilstand
+	statsborger: Statsborger
+	doedshistorikk: Doedshistorikk
+	telefonPrivat: Telefon
+	telefonMobil: Telefon
+	telefonJobb: Telefon
+	boadresse: Boadresse
+	prioritertAdresse: PrioritertAdresse
+	foreldreansvar: Foreldeansvar[]
+	oppholdstillatelse: Oppholdstillatelse
+	giro: Giro
+	tillegg: Tillegg
+	post: Post
+	migrasjon: Migrasjon
+	relasjoner: Relasjon[]
+}
 
 type PersonIdent = {
 	id: string
@@ -131,26 +172,4 @@ type Relasjon = {
 	rolle?: string
 	fraDato?: string
 	tilDato?: string
-}
-
-
-export type HodejegerenResponse = {
-	personIdent: PersonIdent
-	personInfo: PersonInfo
-	navn: Navn
-	sivilstand: Sivilstand
-	statsborger: Statsborger
-	doedshistorikk: Doedshistorikk
-	telefonPrivat: Telefon
-	telefonMobil: Telefon
-	telefonJobb: Telefon
-	boadresse: Boadresse
-	prioritertAdresse: PrioritertAdresse
-	foreldreansvar: Foreldeansvar[]
-	oppholdstillatelse: Oppholdstillatelse
-	giro: Giro
-	tillegg: Tillegg
-	post: Post
-	migrasjon: Migrasjon
-	relasjoner: Relasjon[]
 }
