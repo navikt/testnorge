@@ -27,6 +27,14 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 
 	const egenskapOptions = getEgenskapOptions()
 	const antallEgenskaper = 5 // Det finnes fem ulike egenskaper for personroller, som hver kan velges én gang
+	const colorStyles = {
+		placeholder: defaultStyles => {
+			return {
+				...defaultStyles,
+				color: '#000000'
+			}
+		}
+	}
 
 	return (
 		<FormikDollyFieldArray
@@ -57,6 +65,7 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 									feilmelding: 'Feltet er påkrevd'
 								}
 							}
+							styles={_get(formikBag.values, egenskap) ? colorStyles : null}
 						/>
 						<FormikDatepicker name={`${path}.registringsDato`} label="Registreringsdato" />
 						<FormikCheckbox name={`${path}.fratraadt`} label="Har fratrådt" checkboxMargin />

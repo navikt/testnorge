@@ -36,7 +36,7 @@ export const BrregVisning = ({ data, bestillinger, loading }) => {
 							<TitleValue title="Organisasjonsnummer" value={enhet.orgNr} />
 							<TitleValue title="Foretaksnavn" value={enhet.foretaksNavn.navn1} />
 							{/* Vi kan foreløpig ikke lese tilbake personroller pr. person, viser derfor bestillingsinfo */}
-							{brregBestillinger.length === 1 && (
+							{brregBestillinger.length === 1 && getPersonroller(idx).length > 0 && (
 								<DollyFieldArray data={getPersonroller(idx)} header="Personroller" nested>
 									{(personrolle, idx) => (
 										<div className="person-visning_content" key={idx}>
