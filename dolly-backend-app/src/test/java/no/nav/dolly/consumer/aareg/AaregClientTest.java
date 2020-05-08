@@ -14,7 +14,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -34,7 +33,6 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
-import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -52,14 +50,6 @@ public class AaregClientTest {
 
     @InjectMocks
     private AaregClient aaregClient;
-
-    @Before
-    public void setup() {
-        when(mapperFacade.map(any(RsAaregArbeidsforhold.class), eq(Arbeidsforhold.class))).thenReturn(Arbeidsforhold.builder()
-                .arbeidsgiver(RsOrganisasjon.builder().orgnummer(ORGNUMMER).build())
-                .arbeidstaker(RsPersonAareg.builder().ident(IDENT).build())
-                .build());
-    }
 
     @Test
     public void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_OK() {
@@ -131,10 +121,6 @@ public class AaregClientTest {
 
         when(aaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(asList(buildArbeidsforhold(false)));
 
-        when(mapperFacade.map(any(RsAaregArbeidsforhold.class), eq(Arbeidsforhold.class))).thenReturn(Arbeidsforhold.builder()
-                .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
-                .build());
-
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAaregArbeidsforhold.builder()
                 .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
@@ -153,10 +139,6 @@ public class AaregClientTest {
         AaregResponse aaregResponse = AaregResponse.builder()
                 .statusPerMiljoe(status)
                 .build();
-
-        when(mapperFacade.map(any(RsAaregArbeidsforhold.class), eq(Arbeidsforhold.class))).thenReturn(Arbeidsforhold.builder()
-                .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
-                .build());
 
         BestillingProgress progress = new BestillingProgress();
 
