@@ -1,7 +1,7 @@
-export type Versjonering = {
+export type VersjonInfo = {
 	underversjoner: Array<Number>
 	path: string
-	harAvhengigheter: boolean
+	gjeldendeInntektMedHistorikk: boolean
 }
 
 export type Inntektsinformasjon = {
@@ -9,7 +9,7 @@ export type Inntektsinformasjon = {
 	antallMaaneder: string
 	virksomhet: string
 	opplysningspliktig: string
-	versjon?: number | null
+	versjon?: number
 	inntektsliste: Array<Inntekt>
 	fradragsliste: Array<Fradrag>
 	forskuddstrekksliste: Array<Forskudd>

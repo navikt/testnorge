@@ -7,29 +7,24 @@ import { InntektForm } from './inntektForm'
 import { FradragForm } from './fradragForm'
 import { ForskuddstrekkForm } from './forskuddstrekkForm'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
+import { VersjonInfo } from './inntektinformasjonTypes'
 
 interface InntektsinformasjonForm {
 	path: string
 	formikBag: FormikProps<{}>
 	locked: boolean
-	versjonering: Versjonering
-}
-
-type Versjonering = {
-	underversjoner: Array<Number>
-	path: string
-	harAvhengigheter: boolean
+	versjonInfo: VersjonInfo
 }
 
 const lockedHoverText = 'Historikk må ha samme virksomhet og år/måned som gjeldende inntekt'
 
-export default ({ path, formikBag, locked, versjonering }: InntektsinformasjonForm) => {
+export default ({ path, formikBag, locked, versjonInfo }: InntektsinformasjonForm) => {
 	const handleChange = (inputPath: string, value: string, label: string) => {
 		formikBag.setFieldValue(`${inputPath}.${label}`, value)
 
-		if (versjonering.harAvhengigheter) {
-			versjonering.underversjoner.forEach(versjon => {
-				formikBag.setFieldValue(`${versjonering.path}[${versjon}].${label}`, value)
+		if (versjonInfo.gjeldendeInntektMedHistorikk) {
+			versjonInfo.underversjoner.forEach(versjon => {
+				formikBag.setFieldValue(`${versjonInfo.path}[${versjon}].${label}`, value)
 			})
 		}
 	}
@@ -42,7 +37,9 @@ export default ({ path, formikBag, locked, versjonering }: InntektsinformasjonFo
 					label="Måned/år"
 					type="month"
 					value={_get(formikBag.values, `${path}.sisteAarMaaned`)}
-					onChange={(e: any) => handleChange(path, e.target.value, e.target.name)}
+					onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+						handleChange(path, e.target.value, e.target.name)
+					}
 					disabled={locked}
 				/>
 				<DollyTextInput
@@ -50,14 +47,16 @@ export default ({ path, formikBag, locked, versjonering }: InntektsinformasjonFo
 					label="Generer antall måneder"
 					type="number"
 					value={_get(formikBag.values, `${path}.antallMaaneder`)}
-					onChange={(e: any) => handleChange(path, e.target.value, e.target.name)}
+					onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+						handleChange(path, e.target.value, e.target.name)
+					}
 					disabled={locked}
 				/>
 				<InntektstubOrgnummerSelect
 					path={path}
 					locked={locked}
 					formikBag={formikBag}
-					versjonering={versjonering}
+					versjonInfo={versjonInfo}
 				/>
 			</div>
 			<InntektForm formikBag={formikBag} inntektsinformasjonPath={path} />

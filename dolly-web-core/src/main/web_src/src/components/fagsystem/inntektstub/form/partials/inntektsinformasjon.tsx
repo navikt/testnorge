@@ -1,7 +1,6 @@
 import React from 'react'
 import _get from 'lodash/get'
-import _isNil from 'lodash/isNil'
-import { FormikProps, FieldArrayRenderProps, FieldArray } from 'formik'
+import { FormikProps, FieldArray } from 'formik'
 import {
 	DollyFieldArrayWrapper,
 	DollyFaBlokk,
@@ -46,7 +45,7 @@ const addNyVersjonEntry = (
 	const nyInntektValues = [...inntektValues]
 	nyInntektValues.splice(newEntryIdx, 0, {
 		...versjonBasertPaa,
-		versjon: _isNil(versjonBasertPaa.versjon) ? 1 : versjonBasertPaa.versjon + 1
+		versjon: versjonBasertPaa.versjon === null ? 1 : versjonBasertPaa.versjon + 1
 	})
 	formikBag.setFieldValue(inntektstubPath, nyInntektValues)
 }
@@ -67,7 +66,7 @@ export default ({ formikBag }: InntektsinformasjonInput) => (
 					<DollyFieldArrayWrapper>
 						{inntektValues.map((curr: Inntektsinformasjon, idx: number) => {
 							const path: string = `${inntektstubPath}.${idx}`
-							const locked: boolean = !_isNil(curr.versjon)
+							const locked: boolean = curr.versjon !== null
 
 							const {
 								gjeldendeInntektMedHistorikk,
@@ -101,10 +100,10 @@ export default ({ formikBag }: InntektsinformasjonInput) => (
 										path={path}
 										locked={locked}
 										formikBag={formikBag}
-										versjonering={{
+										versjonInfo={{
 											underversjoner: underversjonerIdx,
 											path: inntektstubPath,
-											harAvhengigheter: gjeldendeInntektMedHistorikk
+											gjeldendeInntektMedHistorikk: gjeldendeInntektMedHistorikk
 										}}
 									/>
 									{visOpprettNyVersjon && (
