@@ -12,6 +12,7 @@ import org.apache.logging.log4j.util.Strings;
 import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.domain.Adresse;
 import no.nav.registre.sdForvalter.domain.FasteData;
+import no.nav.registre.sdForvalter.dto.organisasjon.v1.OrganisasjonDTO;
 
 
 @Value
@@ -69,5 +70,34 @@ public class Ereg extends FasteData {
         juridiskEnhet = model.getParent() != null ? model.getParent().getOrgnr() : null;
         forretningsAdresse = model.getForretningsAdresse() != null ? new Adresse(model.getForretningsAdresse()) : null;
         postadresse = model.getPostadresse() != null ? new Adresse(model.getPostadresse()) : null;
+    }
+
+    public Ereg(OrganisasjonDTO dto){
+        super(dto.getGruppe(), dto.getOpprinnelse());
+        orgnr = dto.getOrgnr();
+        enhetstype = dto.getEnhetstype();
+        navn = dto.getNavn();
+        epost = dto.getEpost();
+        internetAdresse = dto.getInternetAdresse();
+        naeringskode = dto.getNaeringskode();
+        juridiskEnhet = dto.getJuridiskEnhet();
+        forretningsAdresse = new Adresse(dto.getForretningsAdresse());
+        postadresse = new Adresse(dto.getPostadresse());
+    }
+
+    public OrganisasjonDTO toDTO() {
+        return OrganisasjonDTO
+                .builder()
+                .orgnr(orgnr)
+                .enhetstype(enhetstype)
+                .navn(navn)
+                .epost(epost)
+                .forretningsAdresse(forretningsAdresse != null ? forretningsAdresse.toDTO(): null)
+                .postadresse(postadresse != null ? postadresse.toDTO() : null)
+                .internetAdresse(internetAdresse)
+                .juridiskEnhet(juridiskEnhet)
+                .naeringskode(naeringskode)
+                .kanHaArbeidsforhold(isKanHaArbeidsforhold())
+                .build();
     }
 }

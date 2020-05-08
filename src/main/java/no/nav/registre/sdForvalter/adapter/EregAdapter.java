@@ -1,7 +1,9 @@
 package no.nav.registre.sdForvalter.adapter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,10 @@ public class EregAdapter extends FasteDataAdapter {
 
     private EregModel fetchModelByOrgnr(String orgnr) {
         return repository.findById(orgnr).orElseThrow(
-                () -> new RuntimeException("Finner ikke orgnr = " + orgnr + " i ereg databasen.")
+                () -> new HttpClientErrorException(
+                        HttpStatus.NOT_FOUND,
+                        "Finner ikke orgnr = " + orgnr + " i ereg databasen."
+                )
         );
     }
 
