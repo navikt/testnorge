@@ -13,9 +13,10 @@ const initialValues = {
 }
 
 export const PersonrollerForm = ({ formikBag, path }) => {
+	const personroller = _get(formikBag.values, `${path}.personroller`)
+
 	const getEgenskapOptions = () => {
 		const valgteOptions = []
-		const personroller = _get(formikBag.values, `${path}.personroller`)
 		if (personroller) {
 			personroller.forEach(rolle => {
 				valgteOptions.push(rolle.egenskap)
@@ -23,44 +24,45 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 		}
 		return Options('rolleEgenskap').filter(option => !valgteOptions.includes(option.value))
 	}
+
 	const egenskapOptions = getEgenskapOptions()
+	const antallEgenskaper = 5 // Det finnes fem ulike egenskaper for personroller, som hver kan velges én gang
 
 	return (
 		<FormikDollyFieldArray
 			name={`${path}.personroller`}
 			header="Personrolle"
 			newEntry={initialValues}
-			isFull={_get(formikBag.values, `${path}.personroller`).length > 4}
+			isFull={personroller.length >= antallEgenskaper}
 			title={
-				_get(formikBag.values, `${path}.personroller`).length > 4
-					? 'Alle mulige personroller er lagt til'
-					: null
+				personroller.length >= antallEgenskaper ? 'Alle mulige personroller er lagt til' : null
 			}
 		>
-			{path => (
-				<>
-					<DollySelect
-						name={`${path}.egenskap`}
-						label="Egenskap"
-						options={egenskapOptions}
-						onChange={egenskap => formikBag.setFieldValue(`${path}.egenskap`, egenskap.value)}
-						value={_get(formikBag.values, `${path}.egenskap`)}
-						placeholder={
-							_get(formikBag.values, `${path}.egenskap`)
-								? _get(formikBag.values, `${path}.egenskap`)
-								: 'Velg..'
-						}
-						isClearable={false}
-						feil={
-							_get(formikBag.values, `${path}.egenskap`) === '' && {
-								feilmelding: 'Feltet er påkrevd'
+			{path => {
+				const egenskap = `${path}.egenskap`
+				return (
+					<>
+						<DollySelect
+							name={egenskap}
+							label="Egenskap"
+							options={egenskapOptions}
+							onChange={egenskapen => formikBag.setFieldValue(egenskap, egenskapen.value)}
+							value={_get(formikBag.values, egenskap)}
+							placeholder={
+								_get(formikBag.values, egenskap) ? _get(formikBag.values, egenskap) : 'Velg..'
 							}
-						}
-					/>
-					<FormikDatepicker name={`${path}.registringsDato`} label="Registreringsdato" />
-					<FormikCheckbox name={`${path}.fratraadt`} label="Har fratrådt" checkboxMargin />
-				</>
-			)}
+							isClearable={false}
+							feil={
+								_get(formikBag.values, egenskap) === '' && {
+									feilmelding: 'Feltet er påkrevd'
+								}
+							}
+						/>
+						<FormikDatepicker name={`${path}.registringsDato`} label="Registreringsdato" />
+						<FormikCheckbox name={`${path}.fratraadt`} label="Har fratrådt" checkboxMargin />
+					</>
+				)
+			}}
 		</FormikDollyFieldArray>
 	)
 }
