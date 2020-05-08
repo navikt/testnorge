@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import no.nav.registre.sdForvalter.database.model.AdresseModel;
+import no.nav.registre.sdForvalter.dto.organisasjon.v1.AdresseDTO;
 
 @Value
 @AllArgsConstructor
@@ -26,11 +27,31 @@ public class Adresse {
     @JsonProperty
     private final String poststed;
 
-    public Adresse(AdresseModel model){
+    public Adresse(AdresseModel model) {
         this.adresse = model.getAdresse();
         this.postnr = model.getPostnr();
         this.kommunenr = model.getKommunenr();
         this.landkode = model.getLandkode();
         this.poststed = model.getPoststed();
     }
+
+    public AdresseDTO toDTO() {
+        return AdresseDTO
+                .builder()
+                .adresselinje1(adresse)
+                .postnr(postnr)
+                .kommunenr(kommunenr)
+                .landkode(landkode)
+                .poststed(poststed)
+                .build();
+    }
+
+    public Adresse(AdresseDTO dto) {
+        adresse = dto.getAdresselinje1();
+        postnr = dto.getPostnr();
+        kommunenr = dto.getKommunenr();
+        landkode = dto.getLandkode();
+        poststed = dto.getPoststed();
+    }
+
 }

@@ -5,8 +5,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.database.model.EregModel;
+import no.nav.registre.sdForvalter.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.registre.sdForvalter.dto.organisasjon.v1.OrganisasjonListeDTO;
 
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -23,4 +26,17 @@ public final class EregListe extends FasteDataListe<Ereg> {
     public EregListe(List<Ereg> liste) {
         super(liste);
     }
+
+
+    public EregListe(OrganisasjonListeDTO listeDTO){
+       this(listeDTO.getListe().stream().map(Ereg::new).collect(Collectors.toList()));
+    }
+
+    public OrganisasjonListeDTO toDTO(){
+        return OrganisasjonListeDTO
+                .builder()
+                .liste(this.getListe().stream().map(Ereg::toDTO).collect(Collectors.toList()))
+                .build();
+    }
+
 }
