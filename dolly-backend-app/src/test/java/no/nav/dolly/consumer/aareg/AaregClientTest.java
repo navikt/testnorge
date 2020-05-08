@@ -1,11 +1,13 @@
 package no.nav.dolly.consumer.aareg;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,6 +26,7 @@ import no.nav.dolly.bestilling.aareg.AaregClient;
 import no.nav.dolly.bestilling.aareg.AaregConsumer;
 import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
+import no.nav.dolly.bestilling.aareg.domain.Aktoer;
 import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -40,7 +43,6 @@ public class AaregClientTest {
     private static final String IDENT = "111111111111";
     private static final String ENV = "u2";
     private static final String ORGNUMMER = "222222222";
-    private static final Integer NAV_ARBFORHOLD_ID = 333333333;
 
     @Mock
     private AaregConsumer aaregConsumer;
@@ -67,7 +69,8 @@ public class AaregClientTest {
                 .statusPerMiljoe(status)
                 .build();
 
-        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(asList(new ArbeidsforholdResponse()));
+        when(mapperFacade.mapAsList(anyList(),eq(Arbeidsforhold.class))).thenReturn(asList(new Arbeidsforhold()));
+        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(emptyList());
         when(aaregConsumer.opprettArbeidsforhold(any(AaregOpprettRequest.class))).thenReturn(aaregResponse);
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
@@ -87,7 +90,8 @@ public class AaregClientTest {
                 .statusPerMiljoe(status)
                 .build();
 
-        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenThrow(new RuntimeException());
+        when(mapperFacade.mapAsList(anyList(),eq(Arbeidsforhold.class))).thenReturn(asList(new Arbeidsforhold()));
+        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(emptyList());
         when(aaregConsumer.opprettArbeidsforhold(any(AaregOpprettRequest.class))).thenReturn(aaregResponse);
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
@@ -163,29 +167,29 @@ public class AaregClientTest {
         request.setEnvironments(singletonList("u2"));
         aaregClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
 
-        assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=1$OK")));
+        assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=0$OK")));
     }
 
     private ArbeidsforholdResponse buildArbeidsforhold(boolean isOrgnummer) {
 
-
-        Map<String, Object> arbeidstaker = new HashMap<>();
-        arbeidstaker.put("offentligIdent", IDENT);
-        Map<String, Object> arbeidsgiver = new HashMap<>();
-        if (isOrgnummer) {
-            arbeidsgiver.put("type", "Organisasjon");
-            arbeidsgiver.put("organisasjonsnummer", ORGNUMMER);
-        } else {
-            arbeidsgiver.put("type", "Person");
-            arbeidsgiver.put("offentligIdent", IDENT);
-        }
-        Map<String, Object> arbeidsforhold = new HashMap<>();
-        arbeidsforhold.put("arbeidsgiver", arbeidsgiver);
-        arbeidsforhold.put("arbeidsforholdId", "1");
-        arbeidsforhold.put("arbeidstaker", arbeidstaker);
-        arbeidsforhold.put("navArbeidsforholdId", NAV_ARBFORHOLD_ID);
-
-//        return new Map[]{arbeidsforhold};
-        return null;
+        return ArbeidsforholdResponse.builder()
+                .arbeidstaker(ArbeidsforholdResponse.Arbeidstaker.builder()
+                        .offentligIdent(IDENT)
+                        .build())
+                .arbeidsgiver(isOrgnummer ?
+                        ArbeidsforholdResponse.Arbeidsgiver.builder()
+                                .type(Aktoer.Organisasjon)
+                                .organisasjonsnummer(ORGNUMMER)
+                                .build() :
+                        ArbeidsforholdResponse.Arbeidsgiver.builder()
+                                .type(Aktoer.Person)
+                                .offentligIdent(IDENT)
+                                .build())
+                .arbeidsavtaler(asList(ArbeidsforholdResponse.Arbeidsavtale.builder()
+                        .yrke("121232")
+                        .arbeidstidsordning("nada")
+                        .build()))
+                .arbeidsforholdId("1")
+                .build();
     }
 }

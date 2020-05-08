@@ -44,6 +44,7 @@ public class ArbeidsforholdResponse {
 
     @Getter
     @Setter
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Utenlandsopphold {
@@ -55,6 +56,7 @@ public class ArbeidsforholdResponse {
 
     @Getter
     @Setter
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PermisjonPermittering {
@@ -67,6 +69,7 @@ public class ArbeidsforholdResponse {
 
     @Getter
     @Setter
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Arbeidsgiver {
@@ -78,6 +81,7 @@ public class ArbeidsforholdResponse {
 
     @Getter
     @Setter
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Arbeidstaker {
@@ -89,6 +93,7 @@ public class ArbeidsforholdResponse {
 
     @Getter
     @Setter
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Arbeidsavtale {
@@ -106,6 +111,7 @@ public class ArbeidsforholdResponse {
 
     @Getter
     @Setter
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AntallTimerForTimeloennet {
@@ -117,6 +123,7 @@ public class ArbeidsforholdResponse {
 
     @Getter
     @Setter
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Ansettelsesperiode {
@@ -127,6 +134,7 @@ public class ArbeidsforholdResponse {
 
     @Getter
     @Setter
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Periode {
