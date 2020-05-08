@@ -27,7 +27,8 @@ export const Select = ({
 	isClearable = true,
 	placeholder = 'Velg..',
 	options = [],
-	isMulti = false
+	isMulti = false,
+	styles
 }) => {
 	let _value = options.filter(o => o.value === value)
 
@@ -56,7 +57,7 @@ export const Select = ({
 			isLoading={isLoading}
 			isClearable={isClearable}
 			isMulti={isMulti}
-			styles={{ menuPortal: base => ({ ...base, zIndex: 99999 }) }}
+			styles={styles ? styles : { menuPortal: base => ({ ...base, zIndex: 99999 }) }}
 			menuPortalTarget={document.getElementById('react-select-root')}
 			optionHeight={optionHeight}
 		/>
