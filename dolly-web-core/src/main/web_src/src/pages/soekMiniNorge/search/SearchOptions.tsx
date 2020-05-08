@@ -25,7 +25,6 @@ export const SearchOptions = (props: SearchOptionsProps) => {
 				/>
 				<h2>Personinformasjon</h2>
 				<h3>Ident</h3>
-				<FormikTextInput name="personIdent.id" label="ID" type="number"/>
 				<FormikSelect
 					name="personIdent.type"
 					label="Type"

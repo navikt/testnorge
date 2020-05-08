@@ -10,19 +10,21 @@ import { getBoadresse, getNasjonalitet, getPersonInfo, getPostAdresse, getRelasj
 
 export const MiniNorgeVisning = (data: any) => {
 	if (!data) return null
+
+	const relasjoner = getRelasjoner(data.data)
 	return (
 		<div>
 			<Personinfo data={getPersonInfo(data.data)} />
 			<Nasjonalitet data={getNasjonalitet(data.data)} />
-			{data.data.boadresse &&
+			{data.data.boadresse.postnr &&
 			// @ts-ignore
 			<Boadresse boadresse={getBoadresse(data.data)} />}
 			{data.data.post.adresse1 &&
 			// @ts-ignore
 			<Postadresse postadresse={getPostAdresse(data.data)} />}
-			{data.data.relasjoner.length>0 &&
+			{relasjoner.length > 0 &&
 			// @ts-ignore
-			<Relasjoner relasjoner={getRelasjoner(data.data)} />}
+			<Relasjoner relasjoner={relasjoner}/>}
 		</div>
 	)
 }

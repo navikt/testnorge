@@ -23,7 +23,7 @@ type Loading = {
 	instdata: boolean
 	sigrunstub: boolean
 	arenaforvalteren: boolean
-	udistib: boolean
+	udistub: boolean
 	bregstub: boolean
 	aareg: boolean
 }
@@ -72,7 +72,7 @@ export const ResultatVisning = ({
 				//@ts-ignore
 				<Panel heading="Skatteoppgjør (Sigrun)" iconType={"sigrun"}>{
 					//@ts-ignore
-					<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
+					<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} visTittel={false} />
 				}
 				</Panel>
 			)}

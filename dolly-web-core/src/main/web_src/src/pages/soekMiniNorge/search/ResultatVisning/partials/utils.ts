@@ -1,4 +1,5 @@
 import { Statsborger, HodejegerenResponse } from '../../../hodejegeren/types'
+import { sivilstander } from '~/components/fagsystem/tpsf/form/validation'
 
 export const getBoadresse = (data: HodejegerenResponse) => {
 	const boadresseData = data.boadresse
@@ -47,7 +48,7 @@ const getAlder = (datoFoedt: Date) => {
 
 export const getPersonInfo = (data: HodejegerenResponse) => {
 	const tlf1 = data.telefonPrivat.nummer ? 'privat' : 'mobil'
-	return {
+	const personInfo = {
 		identtype: data.personIdent.type,
 		ident: data.personIdent.id,
 		fornavn: data.navn.fornavn,
@@ -66,6 +67,11 @@ export const getPersonInfo = (data: HodejegerenResponse) => {
 		bankkontonr: data.giro.nummer,
 		bankkontonrRegdato: data.giro.fraDato
 	}
+
+	if(!personInfo.telefonLandskode_1) personInfo.telefonLandskode_1=''
+	if(!personInfo.telefonLandskode_2) personInfo.telefonLandskode_2=''
+	if(personInfo.sivilstand==="NULL") personInfo.sivilstand=''
+	return personInfo
 }
 
 export const getPostAdresse = (data: HodejegerenResponse) => {
@@ -85,6 +91,7 @@ export const getRelasjoner = (data: HodejegerenResponse) => {
 	let dollyRelasjoner = []
 	for (let i = 0; i < data.relasjoner.length; i++) {
 		const type = getRelasjonsType(data.relasjoner[i].rolle)
+		if(type ==='MOR' || type === 'FAR') continue
 		dollyRelasjoner.push({
 			relasjonTypeNavn: type,
 			personRelasjonMed: {
