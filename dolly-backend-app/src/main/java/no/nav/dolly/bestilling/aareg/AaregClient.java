@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.aareg;
 
 import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,10 @@ public class AaregClient implements ClientRegister {
                                 .environments(singletonList(env))
                                 .build()).getStatusPerMiljoe(), arbforhold.getArbeidsforholdID(), result)
                         );
+
+                if (arbeidsforhold.isEmpty()) {
+                    appendResult(singletonMap(env, "OK"), "0", result);
+                }
             });
         }
 

@@ -11,6 +11,7 @@ import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
+import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 
 @UtilityClass
 public class AaregMergeUtil {
@@ -68,8 +69,8 @@ public class AaregMergeUtil {
         AtomicInteger arbeidsforholdId = new AtomicInteger(
                 eksisterendeArbeidsforhold.stream()
                         .map(ArbeidsforholdResponse::getArbeidsforholdId)
-                        .map(Integer::new)
-                        .max(Comparator.reverseOrder()).orElse(0)
+                        .mapToInt(Integer::new)
+                        .max().orElse(0)
         );
 
         AtomicInteger permisjonId = new AtomicInteger(
@@ -79,14 +80,16 @@ public class AaregMergeUtil {
                                 .map(ArbeidsforholdResponse.PermisjonPermittering::getPermisjonPermitteringId)
                                 .map(Integer::new)
                         )
-                        .max(Comparator.reverseOrder()).orElse(0)
+                        .max(Comparator.comparing(Integer::new)).orElse(0)
         );
 
         nyeArbeidsforhold.forEach(arbeidforhold -> {
             arbeidforhold.setArbeidsforholdID(Integer.toString(arbeidsforholdId.addAndGet(1)));
             arbeidforhold.getPermisjon().forEach(permisjon ->
                     permisjon.setPermisjonsId(Integer.toString(permisjonId.addAndGet(1))));
-            arbeidforhold.getArbeidstaker().setIdent(ident);
+            arbeidforhold.setArbeidstaker(RsPersonAareg.builder()
+                    .ident(ident)
+                    .build());
         });
 
         return nyeArbeidsforhold;

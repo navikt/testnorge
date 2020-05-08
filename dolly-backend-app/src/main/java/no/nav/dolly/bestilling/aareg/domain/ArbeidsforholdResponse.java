@@ -1,7 +1,10 @@
 package no.nav.dolly.bestilling.aareg.domain;
 
+import static java.util.Objects.isNull;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -31,6 +34,13 @@ public class ArbeidsforholdResponse {
         private LocalDateTime sistBekreftet;
         private String type;
         private List<Utenlandsopphold> utenlandsopphold;
+
+    public List<PermisjonPermittering> getPermisjonPermitteringer() {
+        if (isNull(permisjonPermitteringer)) {
+            permisjonPermitteringer = new ArrayList<>();
+        }
+        return permisjonPermitteringer;
+    }
 
     @Getter
     @Setter
