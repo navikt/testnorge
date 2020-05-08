@@ -1,11 +1,11 @@
 package no.nav.registre.orkestratoren.consumer.utils;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import no.nav.registre.orkestratoren.config.exception.UnrecoverableException;
-import no.nav.registre.testnorge.consumers.namespacetps.TpsPersonDokumentType;
 
 @Component
 public class PersondokumentConverter {

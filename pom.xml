@@ -30,7 +30,8 @@
         <swagger.version>2.9.2</swagger.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
-        <testnorge-consumers.version>1.11.1-RELEASE</testnorge-consumers.version>
+        <testnorge-consumers.version>1.11.11-RELEASE</testnorge-consumers.version>
+        <testnorge-domain.version>1.2020.05.07-08.54-6fb2dc16a8f2</testnorge-domain.version>
     </properties>
 
     <dependencyManagement>
@@ -45,6 +46,11 @@
                 <groupId>com.ibm.mq</groupId>
                 <artifactId>mq-jms-spring-boot-starter</artifactId>
                 <version>2.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.registre.testnorge</groupId>
+                <artifactId>testnorge-domain</artifactId>
+                <version>${testnorge-domain.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

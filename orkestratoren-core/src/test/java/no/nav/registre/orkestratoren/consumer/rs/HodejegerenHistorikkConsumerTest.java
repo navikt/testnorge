@@ -9,6 +9,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
-
-import no.nav.registre.testnorge.consumers.namespacetps.TpsPersonDokumentType;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(HodejegerenHistorikkConsumer.class)
