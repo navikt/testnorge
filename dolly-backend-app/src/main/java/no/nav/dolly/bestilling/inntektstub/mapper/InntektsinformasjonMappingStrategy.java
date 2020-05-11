@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.inntektstub.mapper;
 
 import static java.util.Objects.isNull;
-import static no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon.builder;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -51,7 +50,7 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                                 AtomicInteger versjon = new AtomicInteger(0);
                                 inntektsinformasjon.getHistorikk().forEach(historikk ->
 
-                                    inntektsinformasjonWrapper.getInntektsinformasjon().add(builder()
+                                    inntektsinformasjonWrapper.getInntektsinformasjon().add(Inntektsinformasjon.builder()
                                             .aarMaaned(yearMonth.get().format(YEAR_MONTH_FORMAT))
                                             .opplysningspliktig(inntektsinformasjon.getOpplysningspliktig())
                                             .virksomhet(inntektsinformasjon.getVirksomhet())
