@@ -35,7 +35,7 @@ export const stateModifierFns = (initial, setInitial, options=null) => {
 			const ignores = Array.isArray(ignoreKeys) ? ignoreKeys : [ignoreKeys]
 			if (ignores.includes(curr)) return acc
 
-			const sm_local = stateModifierFns(acc, newState => (acc = newState))(fn)
+			const sm_local = stateModifierFns(acc, newState => (acc = newState), opts)(fn)
 			sm_local.attrs[curr][key]()
 			return acc
 		}, Object.assign({}, initial))

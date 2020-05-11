@@ -80,7 +80,7 @@ const defaultPartner = opts => {
 		}
 	]
 
-	const harEksisterendePartner = _get(opts, 'personFoerLeggTil.relasjoner', []).some(
+	const harEksisterendePartner = _get(opts, 'data.tpsf.relasjoner', []).some(
 		relasjon => relasjon.relasjonTypeNavn === 'PARTNER'
 	)
 
