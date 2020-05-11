@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Suspense } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import Header from '~/components/layout/header/Header'
 import Breadcrumb from '~/components/layout/breadcrumb/BreadcrumbWithHoc'
@@ -41,18 +41,20 @@ export default class App extends Component {
 				<Header brukerData={brukerData} />
 				<Breadcrumb />
 				<main>
-					<Switch>
-						{routes.map((route, idx) => {
-							return route.component ? (
-								<Route
-									key={idx}
-									path={route.path}
-									exact={route.exact}
-									render={props => <route.component {...props} />}
-								/>
-							) : null
-						})}
-					</Switch>
+					<Suspense fallback={<Loading label="Laster inn" />}>
+						<Switch>
+							{routes.map((route, idx) => {
+								return route.component ? (
+									<Route
+										key={idx}
+										path={route.path}
+										exact={route.exact}
+										render={props => <route.component {...props} />}
+									/>
+								) : null
+							})}
+						</Switch>
+					</Suspense>
 				</main>
 				{applicationError && <Toast error={applicationError} clearErrors={clearAllErrors} />}
 			</React.Fragment>

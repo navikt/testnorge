@@ -7,7 +7,12 @@ import ExpandableBlokk from './ExpandableBlokk.tsx'
 
 import './dollyFieldArray.less'
 
-export const FieldArrayAddButton = ({ hoverText, addEntryButtonText, onClick, disabled }) => (
+export const FieldArrayAddButton = ({
+	hoverText = null,
+	addEntryButtonText,
+	onClick,
+	disabled = false
+}) => (
 	<Button
 		kind="add-circle"
 		onClick={onClick}
@@ -28,8 +33,14 @@ const DeleteButton = ({ onClick }) => {
 }
 
 const Numbering = ({ idx }) => <span className="dfa-blokk-number">{idx + 1}</span>
+const NumberingWithText = ({ idx }) => <span className="dfa-blokk-number">{idx}</span>
 
-export const DollyFieldArrayWrapper = ({ header, hjelpetekst, nested, children }) => (
+export const DollyFieldArrayWrapper = ({
+	header = null,
+	hjelpetekst = null,
+	nested = false,
+	children
+}) => (
 	<div className="dfa">
 		{nested && header && (
 			<div className="dfa-blokk-nested_title">
@@ -44,7 +55,7 @@ export const DollyFieldArrayWrapper = ({ header, hjelpetekst, nested, children }
 export const DollyFaBlokk = ({ header, idx, handleRemove, hjelpetekst, children }) => (
 	<div className="dfa-blokk">
 		<div className="dfa-blokk_header">
-			<Numbering idx={idx} />
+			{typeof idx === 'number' ? <Numbering idx={idx} /> : <NumberingWithText idx={idx} />}
 			<h2>{header}</h2>
 			{hjelpetekst && <Hjelpetekst hjelpetekstFor={header}>{hjelpetekst}</Hjelpetekst>}
 			<DeleteButton onClick={handleRemove} />
@@ -105,7 +116,8 @@ export const FormikDollyFieldArray = ({
 	newEntry,
 	hjelpetekst = null,
 	nested = false,
-	children
+	children,
+	isFull = false
 }) => (
 	<FieldArray name={name}>
 		{arrayHelpers => {
@@ -136,6 +148,7 @@ export const FormikDollyFieldArray = ({
 						hoverText={title}
 						addEntryButtonText={header}
 						onClick={addNewEntry}
+						disabled={isFull}
 					/>
 				</DollyFieldArrayWrapper>
 			)

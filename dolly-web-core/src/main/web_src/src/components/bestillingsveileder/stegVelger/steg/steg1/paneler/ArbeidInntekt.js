@@ -121,6 +121,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 						antallMaaneder: '',
 						virksomhet: '',
 						opplysningspliktig: '',
+						versjon: null,
 						inntektsliste: [
 							{
 								beloep: '',

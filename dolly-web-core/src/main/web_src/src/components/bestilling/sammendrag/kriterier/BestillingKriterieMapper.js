@@ -367,6 +367,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Generer antall måneder', inntektsinfo.antallMaaneder),
 				obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
 				obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
+				obj('Versjon', inntektsinfo.versjon),
 				obj(
 					'Antall registrerte inntekter',
 					inntektsinfo.inntektsliste && inntektsinfo.inntektsliste.length
@@ -389,7 +390,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(inntektStub)
 	}
 
-	const brregstubKriterier = bestillingData.bregstub
+	const brregstubKriterier = bestillingData.brregstub
 
 	if (brregstubKriterier) {
 		const brregstub = {
@@ -400,10 +401,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		brregstubKriterier.enheter.forEach((enhet, i) => {
 			brregstub.itemRows.push([
 				{ numberHeader: `Enhet ${i + 1}` },
-				obj('Rollebeskrivelse', enhet.rollebeskrivelse),
+				obj('Rolle', enhet.rolle),
 				obj('Registreringsdato', Formatters.formatDate(enhet.registreringsdato)),
 				obj('Organisasjonsnummer', enhet.orgNr),
-				obj('Foretaksnavn', enhet.foretaksNavn.navn1)
+				obj('Foretaksnavn', enhet.foretaksNavn.navn1),
+				obj('Antall registrerte personroller', enhet.personroller && enhet.personroller.length)
 			])
 		})
 

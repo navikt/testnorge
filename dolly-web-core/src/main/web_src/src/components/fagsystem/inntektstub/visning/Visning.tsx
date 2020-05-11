@@ -21,10 +21,13 @@ type Inntektsinformasjon = {
 	fradragsliste?: Array<unknown>
 	forskuddstrekksliste?: Array<unknown>
 	arbeidsforholdsliste?: Array<unknown>
+	versjon?: number
 }
 
 const getHeader = (data: Inntektsinformasjon) => {
-	return `Inntektsinformasjon (${data.aarMaaned})`
+	return `Inntektsinformasjon (${data.aarMaaned}) ${
+		data.versjon ? ` - historikk (versjon ${data.versjon})` : ' '
+	}`
 }
 
 export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {

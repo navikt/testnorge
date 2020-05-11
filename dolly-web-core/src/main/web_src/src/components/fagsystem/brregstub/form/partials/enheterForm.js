@@ -6,14 +6,16 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { OrganisasjonLoader } from '~/components/organisasjonSelect'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { PersonrollerForm } from './personrollerForm'
 
 const initialValues = {
-	rollebeskrivelse: '',
+	rolle: '',
 	registreringsdato: new Date(),
 	foretaksNavn: {
 		navn1: ''
 	},
-	orgNr: ''
+	orgNr: '',
+	personroller: []
 }
 
 export const EnheterForm = ({ formikBag }) => {
@@ -44,12 +46,12 @@ export const EnheterForm = ({ formikBag }) => {
 	}
 
 	return (
-		<FormikDollyFieldArray name="bregstub.enheter" header="Enhet" newEntry={initialValues}>
+		<FormikDollyFieldArray name="brregstub.enheter" header="Enhet" newEntry={initialValues}>
 			{path => (
 				<>
 					<FormikSelect
-						name={`${path}.rollebeskrivelse`}
-						label="Rollebeskrivelse"
+						name={`${path}.rolle`}
+						label="Rolle"
 						options={rollerOptions}
 						isLoading={roller.loading}
 						size="large"
@@ -75,6 +77,7 @@ export const EnheterForm = ({ formikBag }) => {
 							/>
 						)}
 					/>
+					<PersonrollerForm formikBag={formikBag} path={path} />
 				</>
 			)}
 		</FormikDollyFieldArray>

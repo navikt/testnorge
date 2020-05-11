@@ -217,6 +217,15 @@ const selectOptions: SelectOptions = {
 	identtypeUtenBost: [
 		{ value: 'FNR', label: 'FNR' },
 		{ value: 'DNR', label: 'DNR' }
+	],
+
+	// Brregstub:
+	rolleEgenskap: [
+		{ value: 'Deltager', label: 'Deltager' },
+		{ value: 'Komplementar', label: 'Komplementar' },
+		{ value: 'Kontaktperson', label: 'Kontaktperson' },
+		{ value: 'Sameier', label: 'Sameier' },
+		{ value: 'Styre', label: 'Styre' }
 	]
 }
 

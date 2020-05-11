@@ -13,7 +13,7 @@ export const BrregPanel = ({ stateModifier }) => {
 			iconType="brreg"
 		>
 			<AttributtKategori>
-				<Attributt attr={sm.attrs.bregstub} />
+				<Attributt attr={sm.attrs.brregstub} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -22,26 +22,27 @@ export const BrregPanel = ({ stateModifier }) => {
 BrregPanel.heading = 'Brønnøysundregistrene'
 
 BrregPanel.initialValues = ({ set, del, has }) => ({
-	bregstub: {
+	brregstub: {
 		label: 'Har roller i Brreg',
-		checked: has('bregstub'),
+		checked: has('brregstub'),
 		add() {
-			set('bregstub', {
+			set('brregstub', {
 				understatuser: [0],
 				enheter: [
 					{
-						rollebeskrivelse: '',
+						rolle: '',
 						registreringsdato: new Date(),
 						foretaksNavn: {
 							navn1: ''
 						},
-						orgNr: ''
+						orgNr: '',
+						personroller: []
 					}
 				]
 			})
 		},
 		remove() {
-			del('bregstub')
+			del('brregstub')
 		}
 	}
 })
