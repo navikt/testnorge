@@ -38,7 +38,6 @@ const loadingSelector = createSelector(
 
 const mapStateToProps = (state:any, ownProps:any) => ({
 	loading: loadingSelector(state),
-	ident: selectIdentById(state, ownProps.personId),
 	data: selectDataForIdent(state, ownProps.personId),
 	dataFraMiniNorge: ownProps.data
 })

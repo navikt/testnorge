@@ -41,3 +41,7 @@ export enum GtKodeverk {
 	BYDEL = 'Bydeler',
 	LAND = 'Landkoder'
 }
+
+export enum OppholdstillatelseKodeverk {
+	Oppholdstillatelser = 'Oppholdstillatelser'
+}

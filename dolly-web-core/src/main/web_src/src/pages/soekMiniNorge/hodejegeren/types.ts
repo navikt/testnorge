@@ -119,7 +119,7 @@ type Foreldeansvar = {
 	tilDato?: Date
 }
 
-type Oppholdstillatelse = {
+export type Oppholdstillatelse = {
 	status?: string
 	fraDato?: Date
 	tilDato?: Date

@@ -6,11 +6,12 @@ import {
 	SigrunstubVisning,
 	InntektstubVisning,
 	InstVisning,
-	PensjonVisning, AaregVisning
+	PensjonVisning,
+	AaregVisning
 } from '~/components/fagsystem'
 import Panel from '~/components/ui/panel/Panel'
 
-import { MiniNorgeVisning } from '~/pages/soekMiniNorge/search/ResultatVisning/partials/MiniNorgeVisning'
+import { MiniNorgeVisning, ArenaVisning } from '~/pages/soekMiniNorge/search/ResultatVisning/partials'
 import { Innhold } from '~/pages/soekMiniNorge/hodejegeren/types'
 
 type Loading = {
@@ -38,19 +39,17 @@ export const ResultatVisning = ({
 	fetchDataFraFagsystemerForSoek,
 	data,
 	dataFraMiniNorge,
-	ident,
 	loading
 }: ResultatVisningProps) => {
 	useMount(fetchDataFraFagsystemerForSoek)
 	return (
 		<div className="resultat-visning">
-			{dataFraMiniNorge &&
-			<MiniNorgeVisning data={dataFraMiniNorge}/>}
+			{dataFraMiniNorge && <MiniNorgeVisning data={dataFraMiniNorge} />}
 			{data.pdlforvalter && (
 				//@ts-ignore
 				<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			)}
-			{data.aareg && data.aareg.length>0 && (
+			{data.aareg && data.aareg.length > 0 && (
 				<AaregVisning liste={data.aareg} loading={loading.aareg} />
 			)}
 			{data.pensjonforvalter && data.pensjonforvalter.length > 0 && (
@@ -69,17 +68,25 @@ export const ResultatVisning = ({
 				//@ts-ignore
 				<InstVisning data={data.instdata} loading={loading.instdata} />
 			)}
+			{data.arenaforvalteren && data.arenaforvalteren.arbeidsokerList.length>0 && (
+				//@ts-ignore
+				<ArenaVisning data={data.arenaforvalteren} loading={loading.arenaforvalteren} />
+			)}
 			{data.sigrunstub && data.sigrunstub.length > 0 && (
 				//@ts-ignore
-				<Panel heading="Skatteoppgjør (Sigrun)" iconType={"sigrun"}>{
-					//@ts-ignore
-					<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} visTittel={false} />
-				}
+				<Panel heading="Skatteoppgjør (Sigrun)" iconType={'sigrun'}>
+					{
+						//@ts-ignore
+						<SigrunstubVisning
+							data={data.sigrunstub}
+							loading={loading.sigrunstub}
+							visTittel={false}
+						/>
+					}
 				</Panel>
 			)}
 		</div>
 	)
 }
 //TODO:
-// hente (se ducks/fagsystem/index) og vise data fra udistub, brreegstub
-// vise data for arena, inntektsmelding
+// vise data for inntektsmelding?
