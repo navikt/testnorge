@@ -19,19 +19,19 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 			iconType="arbeid"
 		>
 			<AttributtKategori title="Arbeidsforhold (Aareg)">
-				<Attributt attr={sm.attrs.aareg}/>
+				<Attributt attr={sm.attrs.aareg} />
 			</AttributtKategori>
 			<AttributtKategori title="Skatteoppgjør (Sigrun)">
-				<Attributt attr={sm.attrs.sigrunstub}/>
+				<Attributt attr={sm.attrs.sigrunstub} />
 			</AttributtKategori>
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)">
-				<Attributt attr={sm.attrs.pensjonforvalter}/>
+				<Attributt attr={sm.attrs.pensjonforvalter} />
 			</AttributtKategori>
 			<AttributtKategori title="A-ordningen (Inntektskomponenten)">
-				<Attributt attr={sm.attrs.inntektstub}/>
+				<Attributt attr={sm.attrs.inntektstub} />
 			</AttributtKategori>
 			<AttributtKategori title="Inntektsmelding (fra Altinn) - beta">
-				<Attributt attr={sm.attrs.inntektsmelding}/>
+				<Attributt attr={sm.attrs.inntektsmelding} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -121,6 +121,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 						antallMaaneder: '',
 						virksomhet: '',
 						opplysningspliktig: '',
+						versjon: null,
 						inntektsliste: [
 							{
 								beloep: '',
