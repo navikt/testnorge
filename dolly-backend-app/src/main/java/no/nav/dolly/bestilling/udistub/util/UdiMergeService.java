@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.udistub.util;
 import static java.util.Objects.isNull;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -32,11 +33,16 @@ public class UdiMergeService {
 
         UdiPerson udiPerson = mapperFacade.map(nyUdiPerson, UdiPerson.class);
 
-        if (isNull(eksisterendeUdiPerson) || isLeggTil) {
+        if (isNull(eksisterendeUdiPerson)) {
             return appendAttributes(udiPerson, nyUdiPerson.getAliaser(), Status.NEW, tpsPerson);
         }
 
-        return
+        udiPerson.setAvgjoerelser(udiPerson.getAvgjoerelser().stream()
+                .filter(nyAvgjoerelse -> eksisterendeUdiPerson.getPerson().getAvgjoerelser().stream()
+                .noneMatch(eksisterendeAvgjoerelse -> eksisterendeAvgjoerelse.equals(nyAvgjoerelse)))
+                .collect(Collectors.toList()));
+
+        return appendAttributes(udiPerson, nyUdiPerson.getAliaser(), isLeggTil ? Status.NEW : Status.UPDATE, tpsPerson);
     }
 
     private UdiPersonWrapper appendAttributes(UdiPerson udiPerson, List<RsUdiAlias> aliaser, Status status, TpsPerson tpsPerson) {
