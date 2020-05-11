@@ -1,6 +1,9 @@
 package no.nav.dolly.domain.resultset.inntektstub;
 
+import static java.util.Objects.isNull;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -72,7 +75,19 @@ public class RsInntektsinformasjon {
     @ApiModelProperty(
             position = 9
     )
+    private List<Historikk> historikk;
+
+    @ApiModelProperty(
+            position = 10
+    )
     private Integer versjon;
+
+    public List<Historikk> getHistorikk() {
+        if (isNull(historikk)) {
+            historikk = new ArrayList<>();
+        }
+        return historikk;
+    }
 
     @Getter
     @Setter
@@ -180,5 +195,32 @@ public class RsInntektsinformasjon {
                 position = 10
         )
         private LocalDateTime sisteDatoForStillingsprosentendring;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private class Historikk {
+
+        @ApiModelProperty(
+                position = 1
+        )
+        private List<Inntekt> inntektsliste;
+
+        @ApiModelProperty(
+                position = 2
+        )
+        private List<Fradrag> fradragsliste;
+
+        @ApiModelProperty(
+                position = 3
+        )
+        private List<Forskuddstrekk> forskuddstrekksliste;
+
+        @ApiModelProperty(
+                position = 4
+        )
+        private List<Arbeidsforhold> arbeidsforholdsliste;
     }
 }
