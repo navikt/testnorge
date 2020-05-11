@@ -20,6 +20,7 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.dolly.domain.resultset.inst.Instdata;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.properties.ProvidersProps;
 
 @ActiveProfiles("test")
@@ -32,6 +33,9 @@ public class InstdataConsumerTest {
 
     @MockBean
     private ProvidersProps providersProps;
+
+    @MockBean
+    private ErrorStatusDecoder errorStatusDecoder;
 
     private MockRestServiceServer server;
 
