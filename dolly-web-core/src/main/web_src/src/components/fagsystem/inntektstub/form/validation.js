@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
-import { isWithinInterval, areIntervalsOverlapping, subMonths } from 'date-fns'
+import { areIntervalsOverlapping, subMonths, addDays } from 'date-fns'
 import { requiredDate, requiredString, requiredNumber, messages } from '~/utils/YupValidations'
 
 const innenforMaanedAarTest = validation => {
@@ -36,17 +36,26 @@ const unikOrgMndTest = validation => {
 
 		const values = this.options.context
 		const path = this.options.path
+		const { personFoerLeggTil } = values
 		const currInntektsinformasjonPath = path.split('.', 2).join('.')
 		const inntektsinformasjonPath = currInntektsinformasjonPath.split('[')[0]
 
 		const currInntektsinformasjon = _get(values, currInntektsinformasjonPath)
+		if (!currInntektsinformasjon.sisteAarMaaned) return true
 		const alleInntektsinformasjon = _get(values, inntektsinformasjonPath).filter(
 			inntektinfo => _isNil(inntektinfo.versjon) //nye versjoner skal ikke være en del av test
 		)
 
+		if (tidligereInntekterOverlapper(personFoerLeggTil, currInntektsinformasjon)) {
+			return this.createError({
+				message: `Det finnes allerede inntekter for denne organisasjonen i dette tidsrommet fra en tidligere bestilling.`,
+				path: this.options.path
+			})
+		}
+
 		const virksomheter = alleInntektsinformasjon.map(inntektinfo => inntektinfo.virksomhet)
 		const maaneder = alleInntektsinformasjon.map(inntektinfo => ({
-			maanedAar: inntektinfo.sisteAarMaaned,
+			aarMaaned: inntektinfo.sisteAarMaaned,
 			antallMaaneder: inntektinfo.antallMaaneder
 		}))
 		const likeOrgnrIndex = indexOfLikeOrgnr(virksomheter, currInntektsinformasjon.virksomhet)
@@ -64,13 +73,17 @@ const indexOfLikeOrgnr = (virksomheter, orgnr) => {
 	return index
 }
 
+const dato = aarMaaned => {
+	const year = aarMaaned.split('-')[0]
+	const month = aarMaaned.split('-')[1]
+	return new Date(year, month - 1)
+}
+
 const finnTidsrom = maaneder =>
 	maaneder.map(maaned => {
-		const year = maaned.maanedAar.split('-')[0]
-		const month = maaned.maanedAar.split('-')[1]
-		const dateOfLastMonth = new Date(year, month - 1)
+		const dateOfLastMonth = dato(maaned.aarMaaned)
 		return {
-			start: subMonths(dateOfLastMonth, maaned.antallMaaneder),
+			start: subMonths(dateOfLastMonth, maaned.antallMaaneder || 0),
 			end: dateOfLastMonth
 		}
 	})
@@ -84,6 +97,24 @@ const finnesOverlappendeDato = (tidsrom, index) => {
 		return areIntervalsOverlapping(
 			{ start: firstInterval.start, end: firstInterval.end },
 			{ start: tidsrom.start, end: tidsrom.end }
+		)
+	})
+}
+
+const tidligereInntekterOverlapper = (personFoerLeggTil, currInntektsinformasjon) => {
+	if (!personFoerLeggTil.inntektstub) return false
+
+	const tidligereInntekter = personFoerLeggTil.inntektstub
+	const likeVirksomheter = tidligereInntekter.filter(
+		inntekt => inntekt.virksomhet === currInntektsinformasjon.virksomhet
+	)
+
+	const datoSisteMaaned = dato(currInntektsinformasjon.sisteAarMaaned)
+	return likeVirksomheter.some(inntekt => {
+		const tidligereDato = dato(inntekt.aarMaaned)
+		return areIntervalsOverlapping(
+			{ start: tidligereDato, end: addDays(tidligereDato, 27) },
+			{ start: currInntektsinformasjon.antallMaaneder, end: datoSisteMaaned }
 		)
 	})
 }
