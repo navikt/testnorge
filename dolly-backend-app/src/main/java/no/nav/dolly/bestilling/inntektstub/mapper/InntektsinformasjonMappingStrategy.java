@@ -14,6 +14,9 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntekt;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
+import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon.Arbeidsforhold;
+import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon.Forskuddstrekk;
+import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon.Fradrag;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.mapper.MappingStrategy;
@@ -53,9 +56,9 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                                             .opplysningspliktig(inntektsinformasjon.getOpplysningspliktig())
                                             .virksomhet(inntektsinformasjon.getVirksomhet())
                                             .inntektsliste(mapperFacade.mapAsList(historikk.getInntektsliste(), Inntekt.class))
-                                            .fradragsliste(mapperFacade.mapAsList(historikk.getFradragsliste(), Inntektsinformasjon.Fradrag.class))
-                                            .forskuddstrekksliste(mapperFacade.mapAsList(historikk.getForskuddstrekksliste(), Inntektsinformasjon.Forskuddstrekk.class))
-                                            .arbeidsforholdsliste(mapperFacade.mapAsList(historikk.getArbeidsforholdsliste(), Inntektsinformasjon.Arbeidsforhold.class))
+                                            .fradragsliste(mapperFacade.mapAsList(historikk.getFradragsliste(), Fradrag.class))
+                                            .forskuddstrekksliste(mapperFacade.mapAsList(historikk.getForskuddstrekksliste(), Forskuddstrekk.class))
+                                            .arbeidsforholdsliste(mapperFacade.mapAsList(historikk.getArbeidsforholdsliste(), Arbeidsforhold.class))
                                             .versjon(versjon.addAndGet(1))
                                             .build())
                                 );
