@@ -17,42 +17,20 @@
 
 .search-field{
 
-  &_options-container{
+  &__options-container{
     padding: 20px;
     width: 30%;
     border-right: solid black 1px;
+    &__fields{
+      overflow-y: scroll;
+      height: 700px
+    }
   }
-  &_resultat{
+  &__resultat{
     padding: 20px;
     width: 70%;
-  }
-  &_options-fields{
-    overflow-y: scroll;
-    height: 700px
   }
 }
 .search-button{
   margin-top: 20px;
-  //text-Align: center;
-}
-
-.resultat-visning {
-  &_content {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    margin-bottom: 10px;
-
-    .title-value {
-      margin-bottom: 10px;
-    }
-  }
-  &_actions {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    button {
-      margin-left: 10px;
-    }
-  }
 }

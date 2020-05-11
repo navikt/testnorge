@@ -2,11 +2,12 @@ import React from 'react'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+// @ts-ignore
 import { HodejegerenApi } from '~/service/Api'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import ResultatVisningConnecter from '~/pages/soekMiniNorge/search/ResultatVisning/ResultatVisningConnecter'
-import { HodejegerenResponse } from '../hodejegeren/types'
 import { Feedback } from '~/components/feedback'
+import { Innhold } from '../hodejegeren/types'
 
 interface SearchResultVisningProps {
 	soekOptions: string
@@ -39,7 +40,7 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 			text: 'Navn',
 			width: '50',
 			dataField: 'navn.fornavn',
-			formatter: (cell: any, row: any) => {
+			formatter: (cell: string, row: Innhold) => {
 				return row.navn.fornavn + ' ' + row.navn.slektsnavn
 			}
 		},
@@ -52,7 +53,7 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 			text: 'Alder',
 			width: '30',
 			dataField: 'personInfo.datoFoedt',
-			formatter: (cell: any, row: any) => {
+			formatter: (cell: Date, row: Innhold) => {
 				const foedselsdato = new Date(row.personInfo.datoFoedt)
 				const diff_ms = Date.now() - foedselsdato.getTime()
 				const age_dt = new Date(diff_ms)
@@ -65,36 +66,26 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 	return (
 		<LoadableComponent
 			key={props.soekNummer}
-			onFetch={() =>
-				HodejegerenApi.soek(props.soekOptions, props.antallResultat).then(response => {
-					if (response.data.length > 0) {
-						return response.data.map(function(res: any) {
-							return res.kilder[0].data[0].innhold
-						})
-					}
-					return null
-				})
-			}
-			render={(data: Array<Response>) => {
+			onFetch={() => HodejegerenApi.soek(props.soekOptions, props.antallResultat)}
+			render={(data: Array<Innhold>) => {
 				if (!data) {
 					return <ContentContainer>Søket gav ingen resultater.</ContentContainer>
 				}
-
 				return (
 					<div>
 						<DollyTable
 							data={data}
 							columns={columns}
 							pagination
-							iconItem={(bruker: HodejegerenResponse) =>
+							iconItem={(bruker: Innhold) =>
 								bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />
 							}
-							onExpand={(bruker: HodejegerenResponse) => (
+							onExpand={(bruker: Innhold) => (
 								<ResultatVisningConnecter personId={bruker.personIdent.id} data={bruker} />
 							)}
 						/>
 						<Feedback
-							label="Hva var negativt med din opplevelse med bruk av Søk i Mini-Norge?"
+							label="Hvordan var din opplevelse med bruk av Søk i Mini-Norge?"
 							feedbackFor="Bruk av Søk i Mini Norge"
 						/>
 					</div>

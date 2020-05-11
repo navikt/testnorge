@@ -1,13 +1,13 @@
 import React from 'react'
 import _has from 'lodash/has'
-import _omit from 'lodash/omit'
-import _isEmpty from 'lodash/isEmpty'
-import { Personinfo } from './partials/Personinfo'
-import { Nasjonalitet } from './partials/Nasjonalitet'
-import { Boadresse } from './partials/Boadresse'
-import { Postadresse } from './partials/Postadresse'
-import { Identhistorikk } from './partials/Identhistorikk'
-import { Relasjoner } from './partials/Relasjoner'
+import {
+	Personinfo,
+	Nasjonalitet,
+	Boadresse,
+	Postadresse,
+	Identhistorikk,
+	Relasjoner
+} from './partials'
 
 export const TpsfVisning = ({ data }) => {
 	if (!data) return null

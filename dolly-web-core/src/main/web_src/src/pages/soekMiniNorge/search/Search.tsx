@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { SearchOptions } from '~/pages/soekMiniNorge/search/SearchOptions'
 import { Formik } from 'formik'
-import { stateModifierFns } from '~/components/bestillingsveileder/stateModifier'
 import { SearchResult } from '~/pages/soekMiniNorge/search/SearchResult'
 import './Search.less'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
@@ -28,10 +27,10 @@ export const Search = () => {
 						<div className="search-field">
 							<AlertStripeInfo>{infoTekst}</AlertStripeInfo>
 							<div className="flexbox">
-								<div className="search-field_options-container">
+								<div className="search-field__options-container">
 									<SearchOptions formikBag={formikBag} onSubmit={_onSubmit} />
 								</div>
-								<div className="search-field_resultat">
+								<div className="search-field__resultat">
 									<SearchResult
 										soekOptions={soekOptions}
 										searchActive={isSearchActive}

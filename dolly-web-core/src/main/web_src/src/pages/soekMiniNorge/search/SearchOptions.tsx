@@ -11,13 +11,13 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 interface SearchOptionsProps {
 	formikBag: FormikProps<{}>
-	onSubmit: (x:any) => void
+	onSubmit: (x:unknown) => void
 }
 
 export const SearchOptions = (props: SearchOptionsProps) => {
 	return (
-		<React.Fragment>
-			<div className="search-field_options-fields">
+		<>
+			<div className="search-field__options-container__fields">
 				<FormikSelect
 					name="antallResultat"
 					label="Maks antall resultat"
@@ -25,7 +25,6 @@ export const SearchOptions = (props: SearchOptionsProps) => {
 				/>
 				<h2>Personinformasjon</h2>
 				<h3>Ident</h3>
-				<FormikTextInput name="personIdent.id" label="ID" type="number"/>
 				<FormikSelect
 					name="personIdent.type"
 					label="Type"
@@ -70,6 +69,6 @@ export const SearchOptions = (props: SearchOptionsProps) => {
 			<div className="search-button">
 				<NavButton onClick={() => props.onSubmit(props.formikBag.values)}>Søk</NavButton>
 			</div>
-		</React.Fragment>
+		</>
 	)
 }

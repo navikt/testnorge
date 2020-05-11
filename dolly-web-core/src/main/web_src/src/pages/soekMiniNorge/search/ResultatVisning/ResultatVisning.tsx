@@ -1,19 +1,17 @@
 import React from 'react'
 import { useMount } from 'react-use'
-import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
-import { PdlfVisning } from '~/components/fagsystem/pdlf/visning/Visning'
-import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
-import { AaregVisning } from '~/components/fagsystem/aareg/visning/Visning'
-import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
-import { SigrunstubVisning } from '~/components/fagsystem/sigrunstub/visning/Visning'
-import { InntektstubVisning } from '~/components/fagsystem/inntektstub/visning/Visning'
-import { InntektsmeldingVisning } from '~/components/fagsystem/inntektsmelding/visning/Visning'
-import { InstVisning } from '~/components/fagsystem/inst/visning/InstVisning'
-import { PensjonVisning } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
-import { BrregVisning } from '~/components/fagsystem/brregstub/visning/BrregVisning'
+import {
+	KrrVisning,
+	PdlfVisning,
+	SigrunstubVisning,
+	InntektstubVisning,
+	InstVisning,
+	PensjonVisning, AaregVisning
+} from '~/components/fagsystem'
 import Panel from '~/components/ui/panel/Panel'
 
 import { MiniNorgeVisning } from '~/pages/soekMiniNorge/search/ResultatVisning/partials/MiniNorgeVisning'
+import { Innhold } from '~/pages/soekMiniNorge/hodejegeren/types'
 
 type Loading = {
 	pdlforvalter: boolean
@@ -23,15 +21,15 @@ type Loading = {
 	instdata: boolean
 	sigrunstub: boolean
 	arenaforvalteren: boolean
-	udistib: boolean
+	udistub: boolean
 	bregstub: boolean
 	aareg: boolean
 }
 
 interface ResultatVisningProps {
-	fetchDataFraFagsystemerForSoek: any
+	fetchDataFraFagsystemerForSoek: () => void
 	data: any
-	dataFraMiniNorge: any
+	dataFraMiniNorge: Innhold
 	ident: string
 	loading: Loading
 }
@@ -44,13 +42,16 @@ export const ResultatVisning = ({
 	loading
 }: ResultatVisningProps) => {
 	useMount(fetchDataFraFagsystemerForSoek)
-
 	return (
 		<div className="resultat-visning">
-			{dataFraMiniNorge && <MiniNorgeVisning data={dataFraMiniNorge}/>}
+			{dataFraMiniNorge &&
+			<MiniNorgeVisning data={dataFraMiniNorge}/>}
 			{data.pdlforvalter && (
 				//@ts-ignore
 				<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
+			)}
+			{data.aareg && data.aareg.length>0 && (
+				<AaregVisning liste={data.aareg} loading={loading.aareg} />
 			)}
 			{data.pensjonforvalter && data.pensjonforvalter.length > 0 && (
 				//@ts-ignore
@@ -70,13 +71,15 @@ export const ResultatVisning = ({
 			)}
 			{data.sigrunstub && data.sigrunstub.length > 0 && (
 				//@ts-ignore
-				<Panel heading="Skatteoppgjør (Sigrun)">
-					<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
+				<Panel heading="Skatteoppgjør (Sigrun)" iconType={"sigrun"}>{
+					//@ts-ignore
+					<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} visTittel={false} />
+				}
 				</Panel>
 			)}
 		</div>
 	)
 }
 //TODO:
-// hente (se ducks/fagsystem/index) og vise data fra aareg, udistub, brreegstub
+// hente (se ducks/fagsystem/index) og vise data fra udistub, brreegstub
 // vise data for arena, inntektsmelding
