@@ -76,7 +76,7 @@ public class InstdataConsumer {
                             .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                             .build(), InstdataResponse[].class);
 
-            if (response.hasBody() &&
+            if (response.hasBody() && response.getBody().length > 0 &&
                     !NOT_FOUND.equals(response.getBody()[0].getStatus()) &&
                     !OK.equals(response.getBody()[0].getStatus())) {
 
