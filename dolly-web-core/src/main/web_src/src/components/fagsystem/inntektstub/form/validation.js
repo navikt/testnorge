@@ -11,6 +11,7 @@ const unikOrgMndTest = validation => {
 
 		const values = this.options.context
 		const path = this.options.path
+		console.log('this.options :>> ', this.options)
 		const currInntektsinformasjonPath = path.split('.', 2).join('.')
 		const inntektsinformasjonPath = currInntektsinformasjonPath.split('[')[0]
 
@@ -44,9 +45,9 @@ const nyeInntekterOverlapper = (alleInntekter, currInntektsinformasjon) => {
 }
 
 const tidligereInntekterOverlapperMedNy = (personFoerLeggTil, currInntektsinformasjon) => {
-	if (!personFoerLeggTil.inntektstub) return false
+	const tidligereInntekter = _get(personFoerLeggTil, 'inntektstub')
+	if (!tidligereInntekter) return false
 
-	const tidligereInntekter = personFoerLeggTil.inntektstub
 	const likeVirksomheter = tidligereInntekter.filter(
 		inntekt => inntekt.virksomhet === currInntektsinformasjon.virksomhet
 	)
