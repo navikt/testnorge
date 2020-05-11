@@ -4,31 +4,6 @@ import _isNil from 'lodash/isNil'
 import { areIntervalsOverlapping, subMonths, addDays } from 'date-fns'
 import { requiredDate, requiredString, requiredNumber, messages } from '~/utils/YupValidations'
 
-const innenforMaanedAarTest = validation => {
-	const errorMsg = 'Dato må være innenfor måned/år for denne inntektsinformasjonen'
-
-	return validation.test('range', errorMsg, function isWithinMonth(val) {
-		if (!val) return true
-
-		const dateValue = new Date(val)
-		const path = this.path
-		const values = this.options.context
-
-		const dateValueMaanedAar = `${dateValue.getFullYear()}-${(
-			'0' +
-			(dateValue.getMonth() + 1)
-		).slice(-2)}`
-
-		const inntektsinformasjonPath = path.split('.', 2).join('.')
-		const inntektsinformasjonMaanedAar = _get(values, `${inntektsinformasjonPath}.sisteAarMaaned`)
-
-		if (!inntektsinformasjonMaanedAar || dateValueMaanedAar === inntektsinformasjonMaanedAar) {
-			return true
-		}
-		return false
-	})
-}
-
 const unikOrgMndTest = validation => {
 	const errorMsg = 'Kombinasjonen av år, måned og virksomhet er ikke unik'
 	return validation.test('unikhet', errorMsg, function isUniqueCombination(orgnr) {
@@ -122,8 +97,8 @@ const tidligereInntekterOverlapper = (personFoerLeggTil, currInntektsinformasjon
 const inntektsliste = Yup.array().of(
 	Yup.object({
 		beloep: requiredNumber.typeError(messages.required),
-		startOpptjeningsperiode: innenforMaanedAarTest(Yup.string().nullable()),
-		sluttOpptjeningsperiode: innenforMaanedAarTest(Yup.string().nullable())
+		startOpptjeningsperiode: Yup.string(),
+		sluttOpptjeningsperiode: Yup.string()
 	})
 )
 
