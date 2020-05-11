@@ -201,7 +201,7 @@ public class RsInntektsinformasjon {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    private class Historikk {
+    public static class Historikk {
 
         @ApiModelProperty(
                 position = 1
