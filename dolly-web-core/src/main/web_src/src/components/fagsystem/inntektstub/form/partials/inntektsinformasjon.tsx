@@ -8,7 +8,7 @@ import {
 } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import InntektsinformasjonForm from './inntektsinformasjonForm'
 import { Inntektsinformasjon } from './inntektinformasjonTypes'
-import Versjonsinformasjon from './versjon'
+import versjonsinformasjon from './versjon'
 
 interface InntektsinformasjonInput {
 	formikBag: FormikProps<{}>
@@ -72,7 +72,7 @@ export default ({ formikBag }: InntektsinformasjonInput) => (
 								gjeldendeInntektMedHistorikk,
 								underversjonerIdx,
 								gjeldendeIdx
-							} = Versjonsinformasjon(formikBag, inntektstubPath, inntektValues, idx)
+							} = versjonsinformasjon(formikBag, inntektstubPath, inntektValues, idx)
 
 							const visSlett: boolean = !gjeldendeInntektMedHistorikk
 							const handleRemove = () => arrayHelpers.remove(idx)

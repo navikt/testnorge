@@ -14,7 +14,7 @@ type SpesifikkVersjon = {
 	gjeldendeInntektMedHistorikk?: boolean
 }
 
-export default function Versjonsinformasjon(
+export default function versjonsinformasjon(
 	formikBag: FormikProps<{}>,
 	inntektstubPath: string,
 	inntektValues: Array<Inntektsinformasjon>,
