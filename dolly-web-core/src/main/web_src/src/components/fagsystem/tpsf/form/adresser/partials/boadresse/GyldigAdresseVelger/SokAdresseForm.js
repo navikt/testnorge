@@ -7,10 +7,12 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import _get from 'lodash/get'
 
-export const SokAdresseForm = ({ onSearch, formikBag}) => {
+export const SokAdresseForm = ({ onSearch, formikBag }) => {
 	const [gatenavn, setGatenavn] = useState('')
 	const [postnummer, setPostnummer] = useState(_get(formikBag.values, 'tpsf.boadresse.postnr'))
-	const [kommunenummer, setKommunenummer] = useState(_get(formikBag.values, 'tpsf.boadresse.kommunenr'))
+	const [kommunenummer, setKommunenummer] = useState(
+		_get(formikBag.values, 'tpsf.boadresse.kommunenr')
+	)
 
 	const sokAdresse = () => {
 		const query = createQueryString(gatenavn, postnummer, kommunenummer)
@@ -22,7 +24,8 @@ export const SokAdresseForm = ({ onSearch, formikBag}) => {
 	return (
 		<div className="soekAdresse">
 			<div className="flexbox">
-				<h4>Søk etter gyldig adresse</h4> <Hjelpetekst hjelpetekstFor="Søk etter gyldig adresse">{informasjonstekst}</Hjelpetekst>
+				<h4>Søk etter gyldig adresse</h4>{' '}
+				<Hjelpetekst hjelpetekstFor="Søk etter gyldig adresse">{informasjonstekst}</Hjelpetekst>
 			</div>
 			<div className="flexbox">
 				<DollyTextInput

@@ -32,7 +32,9 @@ export default function GruppeOversikt({
 		<div className="oversikt-container">
 			<div className="page-header flexbox--align-center--justify-start">
 				<h1>Testdatagrupper</h1>
-				<Hjelpetekst hjelpetekstFor="Testdatagrupper">Testdatagruppen inneholder alle personene dine (FNR/DNR/BOST).</Hjelpetekst>
+				<Hjelpetekst hjelpetekstFor="Testdatagrupper">
+					Testdatagruppen inneholder alle personene dine (FNR/DNR/BOST).
+				</Hjelpetekst>
 			</div>
 
 			<div className="toolbar">

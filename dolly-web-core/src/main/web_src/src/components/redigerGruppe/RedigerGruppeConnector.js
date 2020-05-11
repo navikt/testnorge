@@ -18,7 +18,4 @@ const mapDispatchToProps = {
 	updateGruppe: actions.update
 }
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(RedigerGruppe)
+export default connect(mapStateToProps, mapDispatchToProps)(RedigerGruppe)

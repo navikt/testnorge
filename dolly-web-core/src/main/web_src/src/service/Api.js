@@ -5,10 +5,10 @@ import KrrService from './services/krr/KrrService'
 import ArenaService from './services/arena/ArenaService'
 import InstService from './services/inst/InstService'
 import UdiService from './services/udi/UdiService'
-import PensjonService from './services/pensjon/PensjonService';
-import AaregService from './services/aareg/AaregService';
-import InntektstubService from './services/inntektstub/InntektstubService';
-import BrregstubService from './services/brregstub/BrregstubService';
+import PensjonService from './services/pensjon/PensjonService'
+import AaregService from './services/aareg/AaregService'
+import InntektstubService from './services/inntektstub/InntektstubService'
+import BrregstubService from './services/brregstub/BrregstubService'
 
 export const DollyApi = DollyService
 export const TpsfApi = TpsfService

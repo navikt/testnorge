@@ -146,7 +146,7 @@ Formatters.showLabel = (optionsGruppe, value) => {
 }
 
 Formatters.getYearRangeOptions = (start, stop) => {
-	let years = []
+	const years = []
 	for (let i = start; i <= stop; i++) {
 		years.push({ value: i, label: i.toString() })
 	}

@@ -54,7 +54,7 @@ const sjekkKanOppretteNyVersjon = (values: Inntektsinformasjon): boolean =>
 	values.virksomhet !== '' && values.sisteAarMaaned !== ''
 
 const inntektstubPath = 'inntektstub.inntektsinformasjon'
-const infotekst: string =
+const infotekst =
 	'For å generere samme inntektsinformasjon for flere måneder - fyll inn siste måned/år, samt antall måneder bakover inntektsinformasjonen skal genereres for.'
 
 export default ({ formikBag }: InntektsinformasjonInput) => (
@@ -65,7 +65,7 @@ export default ({ formikBag }: InntektsinformasjonInput) => (
 				return (
 					<DollyFieldArrayWrapper>
 						{inntektValues.map((curr: Inntektsinformasjon, idx: number) => {
-							const path: string = `${inntektstubPath}.${idx}`
+							const path = `${inntektstubPath}.${idx}`
 							const locked: boolean = curr.versjon !== null
 
 							const {
@@ -74,7 +74,7 @@ export default ({ formikBag }: InntektsinformasjonInput) => (
 								gjeldendeIdx
 							} = versjonsinformasjon(formikBag, inntektstubPath, inntektValues, idx)
 
-							const visSlett: boolean = !gjeldendeInntektMedHistorikk
+							const visSlett = !gjeldendeInntektMedHistorikk
 							const handleRemove = () => arrayHelpers.remove(idx)
 
 							const kanOppretteNyVersjon: boolean = sjekkKanOppretteNyVersjon(curr)
@@ -84,7 +84,7 @@ export default ({ formikBag }: InntektsinformasjonInput) => (
 							const visningIdx: string | number = curr.versjon
 								? `Historikk (versjon ${curr.versjon})`
 								: gjeldendeIdx
-							const header: string = `Inntektsinformasjon ${
+							const header = `Inntektsinformasjon ${
 								gjeldendeInntektMedHistorikk ? '(Gjeldende)' : ''
 							}`
 
