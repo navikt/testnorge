@@ -1,5 +1,8 @@
 package no.nav.dolly.bestilling.aareg.domain;
 
+import static java.util.Objects.isNull;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +23,9 @@ public class AaregOpprettRequest {
     private String arkivreferanse;
 
     public List<String> getEnvironments() {
+        if (isNull(environments)) {
+            environments = new ArrayList<>();
+        }
         return environments;
     }
 }

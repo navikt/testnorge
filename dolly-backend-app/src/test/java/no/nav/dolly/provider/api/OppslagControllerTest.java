@@ -15,10 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
-import no.nav.dolly.bestilling.aareg.AaregConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
@@ -33,8 +30,6 @@ public class OppslagControllerTest {
     private static final String STANDARD_KODEVERK_NAME = "name";
     private static final String TKNR = "0123";
     private static final String ENHET_NAVN = "Nav Sagene";
-    private static final String IDENT = "12345678901";
-    private static final String OPPLYSNINGER = "Personopplysninger";
 
     @Mock
     private KodeverkConsumer kodeverkConsumer;
@@ -56,9 +51,6 @@ public class OppslagControllerTest {
 
     @Mock
     private GetKodeverkKoderBetydningerResponse getKodeverkKoderBetydningerResponse;
-
-    @Mock
-    private AaregConsumer aaregConsumer;
 
     @Test
     public void fetchKodeverkByName_happyPath() {
@@ -89,16 +81,5 @@ public class OppslagControllerTest {
         assertThat(target.getEnhetNr(), is(equalTo(TKNR)));
         assertThat(target.getNavn(), is(equalTo(ENHET_NAVN)));
         verify(norg2Consumer).fetchEnhetByEnhetNr(TKNR);
-    }
-
-    @Test
-    public void aareg_happyPath() {
-        String miljoe = "t1";
-        when(aaregConsumer.hentArbeidsforhold(IDENT, miljoe)).thenReturn(ResponseEntity.ok().build());
-
-        ResponseEntity response = oppslagController.getArbeidsforhold(IDENT, miljoe);
-
-        verify(aaregConsumer).hentArbeidsforhold(IDENT, miljoe);
-        assertThat(response.getStatusCode(), is(equalTo(HttpStatus.OK)));
     }
 }

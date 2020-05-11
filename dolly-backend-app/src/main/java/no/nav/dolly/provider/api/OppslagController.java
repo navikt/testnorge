@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.aareg.AaregConsumer;
+import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
@@ -111,7 +112,7 @@ public class OppslagController {
 
     @GetMapping("/aareg/arbeidsforhold")
     @ApiOperation("Hent arbeidsforhold fra aareg")
-    public ResponseEntity getArbeidsforhold(@RequestParam String ident, @RequestParam String miljoe) {
+    public List<ArbeidsforholdResponse> getArbeidsforhold(@RequestParam String ident, @RequestParam String miljoe) {
         return aaregConsumer.hentArbeidsforhold(ident, miljoe);
     }
 
