@@ -3,6 +3,7 @@ import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import Button from '~/components/ui/button/Button'
 import Hjelpetekst from '~/components/hjelpetekst'
+import ExpandableBlokk from './ExpandableBlokk'
 
 import './dollyFieldArray.less'
 

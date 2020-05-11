@@ -11,34 +11,52 @@ const unikOrgMndTest = validation => {
 
 		const values = this.options.context
 		const path = this.options.path
-		const { personFoerLeggTil } = values
 		const currInntektsinformasjonPath = path.split('.', 2).join('.')
 		const inntektsinformasjonPath = currInntektsinformasjonPath.split('[')[0]
 
+		const alleInntekter = _get(values, inntektsinformasjonPath)
 		const currInntektsinformasjon = _get(values, currInntektsinformasjonPath)
 		if (!currInntektsinformasjon.sisteAarMaaned) return true
-		const alleInntektsinformasjon = _get(values, inntektsinformasjonPath).filter(
-			inntektinfo => _isNil(inntektinfo.versjon) //nye versjoner skal ikke være en del av test
-		)
 
-		if (tidligereInntekterOverlapper(personFoerLeggTil, currInntektsinformasjon)) {
+		if (tidligereInntekterOverlapperMedNy(values.personFoerLeggTil, currInntektsinformasjon)) {
 			return this.createError({
 				message: `Det finnes allerede inntekter for denne organisasjonen i dette tidsrommet fra en tidligere bestilling.`,
 				path: this.options.path
 			})
 		}
+		return !nyeInntekterOverlapper(alleInntekter, currInntektsinformasjon)
+	})
+}
 
-		const virksomheter = alleInntektsinformasjon.map(inntektinfo => inntektinfo.virksomhet)
-		const maaneder = alleInntektsinformasjon.map(inntektinfo => ({
-			aarMaaned: inntektinfo.sisteAarMaaned,
-			antallMaaneder: inntektinfo.antallMaaneder
-		}))
-		const likeOrgnrIndex = indexOfLikeOrgnr(virksomheter, currInntektsinformasjon.virksomhet)
-		//Hvis ingen orgnr er like trenger vi ikke sjekke datoer. Hvis orgnr er like -> finn måneder
-		if (likeOrgnrIndex.length < 2) return true
-		const tidsrom = finnTidsrom(maaneder)
+const nyeInntekterOverlapper = (alleInntekter, currInntektsinformasjon) => {
+	const virksomheter = alleInntekter.map(inntektinfo => inntektinfo.virksomhet)
+	const maaneder = alleInntekter.map(inntektinfo => ({
+		sisteAarMaaned: inntektinfo.sisteAarMaaned,
+		antallMaaneder: inntektinfo.antallMaaneder
+	}))
 
-		return !finnesOverlappendeDato(tidsrom, likeOrgnrIndex)
+	const likeOrgnrIndex = indexOfLikeOrgnr(virksomheter, currInntektsinformasjon.virksomhet)
+	//Hvis ingen orgnr er like trenger vi ikke sjekke datoer. Hvis orgnr er like -> finn måneder
+	if (likeOrgnrIndex.length < 2) return false
+
+	const tidsrom = finnTidsrom(maaneder)
+	return finnesOverlappendeDato(tidsrom, likeOrgnrIndex)
+}
+
+const tidligereInntekterOverlapperMedNy = (personFoerLeggTil, currInntektsinformasjon) => {
+	if (!personFoerLeggTil.inntektstub) return false
+
+	const tidligereInntekter = personFoerLeggTil.inntektstub
+	const likeVirksomheter = tidligereInntekter.filter(
+		inntekt => inntekt.virksomhet === currInntektsinformasjon.virksomhet
+	)
+
+	return likeVirksomheter.some(inntekt => {
+		const tidligereDato = dato(inntekt.aarMaaned)
+		return areIntervalsOverlapping(
+			{ start: tidligereDato, end: addDays(tidligereDato, 1) },
+			getInterval(currInntektsinformasjon)
+		)
 	})
 }
 
@@ -54,14 +72,20 @@ const dato = aarMaaned => {
 	return new Date(year, month - 1)
 }
 
-const finnTidsrom = maaneder =>
-	maaneder.map(maaned => {
-		const dateOfLastMonth = dato(maaned.aarMaaned)
-		return {
-			start: subMonths(dateOfLastMonth, maaned.antallMaaneder || 0),
-			end: dateOfLastMonth
-		}
-	})
+const finnTidsrom = maaneder => maaneder.map(maaned => getInterval(maaned))
+
+const getInterval = inntektsinformasjon => {
+	const currDato = dato(inntektsinformasjon.sisteAarMaaned)
+	return inntektsinformasjon.antallMaaneder
+		? {
+				start: subMonths(currDato, inntektsinformasjon.antallMaaneder),
+				end: currDato
+		  }
+		: {
+				start: currDato,
+				end: addDays(currDato, 1)
+		  }
+}
 
 const finnesOverlappendeDato = (tidsrom, index) => {
 	const tidsromSomIkkeKanOverlappe = index.map(idx => tidsrom[idx])
@@ -72,24 +96,6 @@ const finnesOverlappendeDato = (tidsrom, index) => {
 		return areIntervalsOverlapping(
 			{ start: firstInterval.start, end: firstInterval.end },
 			{ start: tidsrom.start, end: tidsrom.end }
-		)
-	})
-}
-
-const tidligereInntekterOverlapper = (personFoerLeggTil, currInntektsinformasjon) => {
-	if (!personFoerLeggTil.inntektstub) return false
-
-	const tidligereInntekter = personFoerLeggTil.inntektstub
-	const likeVirksomheter = tidligereInntekter.filter(
-		inntekt => inntekt.virksomhet === currInntektsinformasjon.virksomhet
-	)
-
-	const datoSisteMaaned = dato(currInntektsinformasjon.sisteAarMaaned)
-	return likeVirksomheter.some(inntekt => {
-		const tidligereDato = dato(inntekt.aarMaaned)
-		return areIntervalsOverlapping(
-			{ start: tidligereDato, end: addDays(tidligereDato, 27) },
-			{ start: currInntektsinformasjon.antallMaaneder, end: datoSisteMaaned }
 		)
 	})
 }
