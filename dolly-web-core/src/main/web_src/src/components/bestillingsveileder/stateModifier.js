@@ -3,7 +3,8 @@ import _set from 'lodash/fp/set'
 import _omit from 'lodash/omit'
 import _isEmpty from 'lodash/isEmpty'
 
-export const stateModifierFns = (initial, setInitial) => {
+export const stateModifierFns = (initial, setInitial, options = null) => {
+	const opts = options
 	const set = (path, value) => setInitial(_set(path, value, initial))
 	const has = path => _has(initial, path)
 	const del = path => {
@@ -34,7 +35,7 @@ export const stateModifierFns = (initial, setInitial) => {
 			const ignores = Array.isArray(ignoreKeys) ? ignoreKeys : [ignoreKeys]
 			if (ignores.includes(curr)) return acc
 
-			const sm_local = stateModifierFns(acc, newState => (acc = newState))(fn)
+			const sm_local = stateModifierFns(acc, newState => (acc = newState), opts)(fn)
 			sm_local.attrs[curr][key]()
 			return acc
 		}, Object.assign({}, initial))
@@ -43,7 +44,7 @@ export const stateModifierFns = (initial, setInitial) => {
 	}
 
 	return fn => {
-		const attrs = fn({ set, setMulti, del, has, initial, setInitial }) || {}
+		const attrs = fn({ set, setMulti, del, has, opts, initial, setInitial }) || {}
 		const checked = allCheckedLabels(attrs)
 		return {
 			attrs,

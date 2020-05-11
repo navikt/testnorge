@@ -16,6 +16,7 @@ import { BrregPanel } from './paneler/Brreg'
 
 export const Steg1 = ({ stateModifier }) => {
 	const opts = useContext(BestillingsveilederContext)
+	const leggTil = opts.is.leggTil
 
 	const checked = [
 		PersoninformasjonPanel,
@@ -37,10 +38,7 @@ export const Steg1 = ({ stateModifier }) => {
 		.filter(v => v.values.length)
 	return (
 		<AttributtVelger checked={checked}>
-			<PersoninformasjonPanel
-				stateModifier={stateModifier}
-				personFoerLeggTil={opts.personFoerLeggTil}
-			/>
+			<PersoninformasjonPanel stateModifier={stateModifier} />
 			<AdressePanel stateModifier={stateModifier} />
 			<FamilierelasjonPanel stateModifier={stateModifier} />
 			<ArbeidInntektPanel stateModifier={stateModifier} />
@@ -51,7 +49,7 @@ export const Steg1 = ({ stateModifier }) => {
 			<KontaktReservasjonsPanel stateModifier={stateModifier} />
 			<ArenaPanel stateModifier={stateModifier} />
 			{/* Vi kan foreløpig kun legge til UDI-attributter på personer som ikke har noen fra før */}
-			{!opts.is.leggTil || !opts.data.udistub ? (
+			{!leggTil || !opts.personFoerLeggTil.udistub ? (
 				<UdiPanel stateModifier={stateModifier} />
 			) : (
 				<>
@@ -66,7 +64,7 @@ export const Steg1 = ({ stateModifier }) => {
 				</>
 			)}
 
-			{opts.is.leggTil && (
+			{leggTil && (
 				<AlertStripeInfo>
 					<b>Funksjonen er under utvikling</b>
 					<p>
