@@ -44,7 +44,7 @@ export const stateModifierFns = (initial, setInitial, options=null) => {
 	}
 
 	return fn => {
-		const attrs = fn({ set, setMulti, del, has, initial, setInitial }) || {}
+		const attrs = fn({ set, setMulti, del, has, opts, initial, setInitial }) || {}
 		const checked = allCheckedLabels(attrs)
 		return {
 			attrs,
