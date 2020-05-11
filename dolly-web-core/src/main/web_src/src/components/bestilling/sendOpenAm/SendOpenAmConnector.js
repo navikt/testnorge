@@ -6,7 +6,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	getBestillinger: () => dispatch(getBestillinger(ownProps.bestilling.gruppeId))
 })
 
-export default connect(
-	null,
-	mapDispatchToProps
-)(SendOpenAm)
+export default connect(null, mapDispatchToProps)(SendOpenAm)

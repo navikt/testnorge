@@ -20,7 +20,4 @@ const mapDispatchToProps = {
 	fetchMineGrupper
 }
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(GruppeOversikt)
+export default connect(mapStateToProps, mapDispatchToProps)(GruppeOversikt)

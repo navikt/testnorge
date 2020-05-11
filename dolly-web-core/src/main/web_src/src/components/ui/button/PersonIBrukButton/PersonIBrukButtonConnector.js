@@ -6,7 +6,4 @@ const mapDispatchToProps = {
 	updateIdentIbruk: actions.updateIdentIbruk
 }
 
-export default connect(
-	null,
-	mapDispatchToProps
-)(PersonIBrukButton)
+export default connect(null, mapDispatchToProps)(PersonIBrukButton)

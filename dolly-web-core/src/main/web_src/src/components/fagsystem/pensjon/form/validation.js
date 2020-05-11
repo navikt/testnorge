@@ -22,7 +22,7 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge, validate
 			if (!val) return true
 
 			const dateValue = val
-			let path = this.path.substring(0, this.path.lastIndexOf('.'))
+			const path = this.path.substring(0, this.path.lastIndexOf('.'))
 			const values = this.options.context
 
 			if (validateFomBasedOnAge) {
@@ -40,8 +40,8 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge, validate
 						return false
 					}
 				} else if (!_isNil(foedtFoer)) {
-					let day = foedtFoer.getDate()
-					let month = foedtFoer.getMonth()
+					const day = foedtFoer.getDate()
+					const month = foedtFoer.getMonth()
 					let year = foedtFoer.getFullYear()
 
 					year = day === 1 && month === 0 ? year - 1 : year
@@ -70,7 +70,7 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge, validate
 				}
 
 				if (!_isNil(doedsdato)) {
-					let year = new Date(doedsdato).getFullYear()
+					const year = new Date(doedsdato).getFullYear()
 					if (year < inntektTom) {
 						return false
 					}

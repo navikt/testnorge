@@ -41,8 +41,8 @@ export default class SendDoedsmelding extends PureComponent {
 
 	_onSubmit = (values, { resetForm }) => {
 		const body = values
-		var success_envs = []
-		var error_envs = []
+		let success_envs = []
+		let error_envs = []
 
 		this.setState(
 			{
@@ -54,7 +54,7 @@ export default class SendDoedsmelding extends PureComponent {
 			},
 			async () => {
 				try {
-					let response = await TpsfApi.createDoedsmelding(body)
+					const response = await TpsfApi.createDoedsmelding(body)
 					const status = response.data.status
 					Object.keys(status).map(key => {
 						if (status[key] === 'OK') success_envs = [...success_envs, key]
@@ -89,7 +89,7 @@ export default class SendDoedsmelding extends PureComponent {
 	}
 
 	_handleOnBlurInput = e => {
-		let fnr = e.target.value.replace(/\s+/g, '')
+		const fnr = e.target.value.replace(/\s+/g, '')
 
 		if (fnr.length === 11 && !isNaN(fnr)) {
 			this.setState(
@@ -107,7 +107,7 @@ export default class SendDoedsmelding extends PureComponent {
 						const getMiljoerByFnrRes = await TpsfApi.getMiljoerByFnr(fnr)
 						const res_environments = getMiljoerByFnrRes.data.statusPaaIdenter[0].env
 
-						let miljoer = []
+						const miljoer = []
 
 						if (res_environments.length < 1) {
 							return this.setState({
@@ -138,7 +138,7 @@ export default class SendDoedsmelding extends PureComponent {
 	}
 
 	_renderMeldingSent = () => {
-		var handling = ''
+		let handling = ''
 
 		switch (this.state.handlingsType) {
 			case 'C':
@@ -155,9 +155,9 @@ export default class SendDoedsmelding extends PureComponent {
 	}
 
 	_renderResponseMessage = () => {
-		var handling = ''
-		var suksessMiljoer = ''
-		var feilMiljoer = ''
+		let handling = ''
+		let suksessMiljoer = ''
+		let feilMiljoer = ''
 
 		const object = this.state.errorFormatted,
 			errorMsgArray = Object.keys(object).reduce(function(r, k) {
@@ -205,7 +205,7 @@ export default class SendDoedsmelding extends PureComponent {
 	render() {
 		const { foundIdent, environments, currentfnr, miljoer, handlingsType } = this.state
 
-		let initialValues = {
+		const initialValues = {
 			ident: currentfnr,
 			handling: 'C',
 			doedsdato: '',
