@@ -16,5 +16,6 @@ public class UdiPersonWrapper {
     public enum Status {NEW, UPDATE}
 
     private UdiPerson udiPerson;
+    private RsAliasRequest aliasRequest;
     private Status status;
 }
